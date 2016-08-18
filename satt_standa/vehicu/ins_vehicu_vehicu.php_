@@ -1,0 +1,892 @@
+<?php
+class Proc_vehicu
+{
+ var $conexion,
+ 	 $cod_aplica,
+     $usuario;
+
+ function Proc_vehicu($co, $us, $ca)
+ {
+  $this -> conexion = $co;
+  $this -> usuario = $us;
+  $this -> cod_aplica = $ca;
+  $this -> principal();
+ }
+
+ function principal()
+ {
+  if(!isset($GLOBALS[opcion]))
+   $this -> Capturar();
+  else
+     {
+      switch($GLOBALS[opcion])
+       {
+        case "1":
+          $this -> Capturar();
+          break;
+        case "2":
+          $this -> InsertRelaci();
+          break;
+        case "4":
+          $this -> Insert();
+          break;
+        case "5":
+          $this -> ListarDespac();
+          break;
+        }//FIN SWITCH
+     }// FIN ELSE GLOBALS OPCION
+ }//FIN FUNCION PRINCIPAL
+
+ function Asignar($vehicu)
+ {
+  $datos_usuario = $this -> usuario -> retornar();
+  $usuario = $datos_usuario["cod_usuari"];
+
+  $inicio[0][0] = 0;
+  $inicio[0][1] = "-";
+
+  $formulario = new Formulario ("index.php\" enctype=\"multipart/form-data\"","post","VEHICULOS","form_conduc");
+  $formulario -> oculto("vehicu",$vehicu,0);
+
+  if($datos_usuario["cod_perfil"] == "")
+   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_usuari"]);
+  else
+   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
+
+  if($filtro -> listar($this -> conexion))
+  {
+   $datos_filtro = $filtro -> retornar();
+   $formulario -> oculto("transp",$datos_filtro[clv_filtro],0);
+
+   $query = "SELECT a.num_placax,a.num_placax
+               FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
+              	    ".BASE_DATOS.".tab_transp_vehicu b
+              WHERE a.num_placax = b.num_placax AND
+              		b.cod_transp = '".$datos_filtro[clv_filtro]."' AND
+              		b.num_placax = '".$vehicu."'
+           ";
+
+   $consulta = new Consulta($query, $this -> conexion);
+   $exisasig = $consulta -> ret_matriz();
+
+   if($exisasig)
+   {
+   	$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Intentar Nuevamente</a></b>";
+
+    $mensaje = "El Vehiculo <B>".$exisasig[0][1]."</B> ya se Encuentra Registrado en el Sistema.";
+    $mens = new mensajes();
+    $mens -> advert("ADVERTENCIA", $mensaje.$link_a);
+   }
+   else
+   {
+    $query = "SELECT a.num_placax,b.nom_marcax,e.nom_lineax,d.nom_colorx,
+                     a.ano_modelo,a.ind_estado
+            	FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
+		      		 ".BASE_DATOS.".tab_genera_marcas b,
+                     ".BASE_DATOS.".tab_vehige_carroc c,
+		      		 ".BASE_DATOS.".tab_vehige_colore d,
+		      		 ".BASE_DATOS.".tab_vehige_lineas e
+           	   WHERE a.cod_marcax = e.cod_marcax AND
+                     a.cod_lineax = e.cod_lineax AND
+                     e.cod_marcax = b.cod_marcax AND
+                     a.cod_carroc = c.cod_carroc AND
+                     a.cod_colorx = d.cod_colorx AND
+                     a.num_placax = '".$vehicu."'
+              ";
+
+    $consulta = new Consulta($query, $this -> conexion);
+    $infoterc = $consulta -> ret_matriz();
+
+    if($infoterc[0][5] == COD_ESTADO_ACTIVO)
+     $estado = "Activo";
+    else if($infoterc[0][5] == COD_ESTADO_INACTI)
+     $estado = "Inactivo";
+    else if($infoterc[0][5] == COD_ESTADO_PENDIE)
+     $estado = "Pendiente";
+
+    $formulario -> nueva_tabla();
+    $formulario -> linea("Informaci&oacute;n B&aacute;sica",1,"t2");
+
+    $formulario -> nueva_tabla();
+    $formulario -> linea("Vehiculo",0,"t");
+    $formulario -> linea($infoterc[0][0],1,"i");
+    $formulario -> linea("Marca",0,"t");
+    $formulario -> linea($infoterc[0][1],1,"i");
+    $formulario -> linea("Linea",0,"t");
+    $formulario -> linea($infoterc[0][2],1,"i");
+    $formulario -> linea("Color",0,"t");
+    $formulario -> linea($infoterc[0][3],1,"i");
+    $formulario -> linea("Modelo",0,"t");
+    $formulario -> linea($infoterc[0][4],1,"i");
+    $formulario -> linea("Estado",0,"t");
+    $formulario -> linea($estado,1,"i");
+
+    $formulario -> nueva_tabla();
+    $formulario -> linea("El Vehiculo ya se Encuentra Registrado en el Sistema, Desea Relacionarlo a la Transportadora.?",1,"h");
+    $formulario -> nueva_tabla();
+    $formulario -> boton("Aceptar","submit",1);
+   }
+  }
+  else
+  {
+   $query = "SELECT a.cod_tercer,a.abr_tercer
+   			   FROM ".BASE_DATOS.".tab_tercer_tercer a,
+   			        ".BASE_DATOS.".tab_tercer_activi b LEFT JOIN
+   			        ".BASE_DATOS.".tab_transp_vehicu c ON
+   			        a.cod_tercer = c.cod_transp AND
+   			        c.num_placax = '".$vehicu."'
+   			  WHERE c.num_placax IS NULL AND
+   			        a.cod_tercer = b.cod_tercer AND
+   			        b.cod_activi = ".COD_FILTRO_EMPTRA."
+   			        GROUP BY 1 ORDER BY 2
+   			";
+
+   $consulta = new Consulta($query, $this -> conexion);
+   $transpor = $consulta -> ret_matriz();
+
+   if($transpor)
+   {
+    $transpor = array_merge($inicio,$transpor);
+    $formulario -> linea("Asignaci&oacute;n del Vehiculo a Una Transportadora",0,"t2");
+    $formulario -> nueva_tabla();
+    $formulario -> lista("Transportadora","transp",$transpor,1);
+    $formulario -> boton("Aceptar","button\" onClick=\"if(form_conduc.transp.value == 0){alert('Debe Seleccionar Una Transportadora')}else if(confirm('Esta Seguro de Insertar el Vehiculo a la Transportadora.?')){form_conduc.submit()}",1);
+   }
+   else
+   {
+   	$formulario -> linea("El Vehiculo se Encuentra Relacionado a Todas las Transportadores Disponibles",1,"e");
+   }
+  }
+
+  $formulario -> nueva_tabla();
+  $formulario -> oculto("window","central",0);
+  $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+  $formulario -> oculto("opcion",2,0);
+
+  $formulario -> cerrar();
+  exit;
+ }
+
+ function InsertRelaci()
+ {
+  $datos_usuario = $this -> usuario -> retornar();
+  $usuario = $datos_usuario["cod_usuari"];
+
+  $query = "INSERT INTO ".BASE_DATOS.".tab_transp_vehicu
+  		                (cod_transp,num_placax,usr_creaci,fec_creaci)
+  		         VALUES ('".$GLOBALS[transp]."','".$GLOBALS[vehicu]."','".$usuario."',NOW())
+  		   ";
+
+  $consulta = new Consulta($query, $this -> conexion,"BR");
+
+  if($consulta = new Consulta("COMMIT", $this -> conexion))
+  {
+   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otro Vehiculo</a></b>";
+
+   $mensaje = "El Vehiculo se Registro en el Sistema Exitosamente.";
+   $mens = new mensajes();
+   $mens -> correcto("RELACIONAR VEHICULO", $mensaje.$link_a);
+  }
+ }
+
+
+ function Capturar()
+ {
+     //Carga Funciones
+     include( "../".DIR_APLICA_CENTRAL."/lib/general/functions.inc" );
+     
+     $datos_usuario = $this -> usuario -> retornar();
+     $usuario=$datos_usuario["cod_usuari"];
+
+     $fec_actual = date("Y-m-d H:i:s");
+
+     $inicio[0][0]='';
+     $inicio[0][1]='-';
+
+     $query = "SELECT a.num_placax
+                 FROM ".BASE_DATOS.".tab_vehicu_vehicu a
+                WHERE a.num_placax = '".$GLOBALS[placa]."'
+                		";
+
+     $consulta = new Consulta($query, $this -> conexion);
+     $existpla = $consulta -> ret_matriz();
+
+     if($existpla)
+     {
+      $this -> Asignar($GLOBALS[placa]);
+     }
+
+     if($GLOBALS[placa])
+     {
+       //Query para pedir la marca del vehiculo
+       $query = "SELECT cod_marcax, nom_marcax
+           FROM ".BASE_DATOS.".tab_genera_marcas ";
+       if($GLOBALS[marca])
+      {
+        $query1 = $query." WHERE cod_marcax = '$GLOBALS[marca]'";
+           $consulta = new Consulta($query1, $this -> conexion);
+           $marca = $consulta -> ret_matriz();
+      }
+      else
+           $marca = $inicio;
+           $query = $query." ORDER BY 2";
+           $consulta = new Consulta($query, $this -> conexion);
+           $marcas = $consulta -> ret_matriz();
+           $marca=array_merge($marca,$marcas);
+
+     if($GLOBALS[marca])
+     {
+              //Query para pedir el color del Veh�culo
+              $query = "SELECT cod_colorx, nom_colorx
+                        FROM ".BASE_DATOS.".tab_vehige_colore";
+
+              if(isset($GLOBALS[color]) AND $GLOBALS[color] != 0)
+                $query = $query." WHERE cod_colorx = '$GLOBALS[color]'";
+
+              $query = $query." ORDER BY 2";
+              $consulta = new Consulta($query, $this -> conexion);
+              $color = $consulta -> ret_matriz();
+              if(isset($GLOBALS[color]) AND $GLOBALS[color] != 0)
+                $color = array_merge($color,$inicio);
+              else
+                $color = array_merge($inicio,$color);
+
+
+              //Query para pedir la linea del Veh�culo
+              $query = "SELECT cod_lineax, nom_lineax
+                        FROM ".BASE_DATOS.".tab_vehige_lineas
+                       WHERE cod_marcax = '$GLOBALS[marca]' ";
+
+               if(isset($GLOBALS[linea]) AND $GLOBALS[linea] != 0)
+                $query = $query." AND cod_lineax = '$GLOBALS[linea]'";
+
+                $query = $query." ORDER BY 2";
+
+              $consulta = new Consulta($query, $this -> conexion);
+              $linea = $consulta -> ret_matriz();
+              if(isset($GLOBALS[linea]) AND $GLOBALS[linea] != 0)
+              $linea = array_merge($linea,$inicio);
+              else
+              $linea = array_merge($inicio,$linea);
+
+              //Query para pedir el tipo de servicio del Veh�culo
+              $query = "SELECT cod_tipser, des_servic
+                        FROM ".BASE_DATOS.".tab_vehige_tipser ";
+
+               if(isset($GLOBALS[tipser]) AND $GLOBALS[tipser] != 0)
+                 $query = $query." WHERE cod_tipser = '$GLOBALS[tipser]'";
+
+               $query = $query." ORDER BY 2";
+
+              $consulta = new Consulta($query, $this -> conexion);
+              $tip_serv = $consulta -> ret_matriz();
+              if(isset($GLOBALS[tipser]) AND $GLOBALS[tipser] != 0)
+                $tip_serv = array_merge($tip_serv,$inicio);
+              else
+                $tip_serv = array_merge($inicio,$tip_serv);
+
+              //Query para pedir el tipo de carrocer�a del Veh�culo
+              $query = "SELECT cod_carroc, nom_carroc
+                        FROM ".BASE_DATOS.".tab_vehige_carroc ";
+
+               if(isset($GLOBALS[carroc]) AND $GLOBALS[carroc] != 0)
+                 $query = $query." WHERE cod_carroc = '$GLOBALS[carroc]'";
+
+               $query = $query." ORDER BY 2";
+
+              $consulta = new Consulta($query, $this -> conexion);
+              $tip_carroc = $consulta -> ret_matriz();
+              if(isset($GLOBALS[carroc]) AND $GLOBALS[carroc] != 0)
+               $tip_carroc = array_merge($tip_carroc,$inicio);
+              else
+                $tip_carroc = array_merge($inicio,$tip_carroc);
+
+               //lista tipo vinculaci�n
+                 $query = "SELECT cod_tipveh,nom_tipveh
+                             FROM ".BASE_DATOS.".tab_genera_tipveh ";
+
+                  if(isset($GLOBALS[tipvin]) AND $GLOBALS[tipvin] != 0)
+                 $query = $query." WHERE cod_tipveh = '$GLOBALS[tipvin]'";
+
+                 $query = $query." ORDER BY 2 ";
+
+                 $consulta = new Consulta($query, $this -> conexion);
+                 $tipvin = $consulta -> ret_matriz();
+                 if(isset($GLOBALS[tipvin]) AND $GLOBALS[tipvin] != 0)
+                   $tipvin = array_merge($tipvin,$inicio);
+                 else
+                     $tipvin = array_merge($inicio,$tipvin);
+
+              //Query para las configuraciones
+              $query = "SELECT a.num_config,a.num_config
+                          FROM ".BASE_DATOS.".tab_vehige_config a
+                          WHERE a.ind_estado = '1'";
+              if($GLOBALS[capaci])
+                 $query .= " AND a.val_pesmax >= '$GLOBALS[capaci]'";
+              $query .= " ORDER BY 2";
+              $consulta = new Consulta($query, $this -> conexion);
+              $config1  = $consulta -> ret_matriz();
+
+              //Query para las configuraciones
+              $query = "SELECT a.num_config,a.num_config
+                          FROM ".BASE_DATOS.".tab_vehige_config a
+                          WHERE a.ind_estado = '1'
+                          AND a.num_config = '$GLOBALS[config]'
+                          AND a.val_pesmax >= '$GLOBALS[capaci]'
+                          ORDER BY 2 ";
+              $consulta = new Consulta($query, $this -> conexion);
+              $config = $consulta -> ret_matriz();
+
+              if($GLOBALS[config])
+                      $config = array_merge($config,$inicio,$config1);
+              else
+                      $config = array_merge($inicio,$config1);
+
+             
+              //Query para los propietarios
+              $query = "SELECT a.cod_tercer, CONCAT( a.cod_tercer, ' - ', a.abr_tercer )
+                          FROM ".BASE_DATOS.".tab_tercer_tercer a,
+                          	   ".BASE_DATOS.".tab_tercer_activi b
+                         WHERE a.cod_tercer = b.cod_tercer AND
+                               b.cod_activi = ".COD_FILTRO_PROPIE."
+                               ORDER BY a.abr_tercer ";
+              $consulta = new Consulta($query, $this -> conexion);
+              $pro_ten1 = $consulta -> ret_matriz();
+
+                //Query para los poseedores
+              $query = "SELECT a.cod_tercer, CONCAT( a.cod_tercer, ' - ', REPLACE( UPPER( a.abr_tercer ), 'Ñ', 'N' ) ) AS abr_tercer
+                          FROM ".BASE_DATOS.".tab_tercer_tercer a,
+                               ".BASE_DATOS.".tab_tercer_activi b
+                         WHERE a.cod_tercer = b.cod_tercer AND
+                               b.cod_activi = ".COD_FILTRO_POSEED."
+                               ORDER BY a.abr_tercer ";
+              $consulta = new Consulta($query, $this -> conexion);
+              $tenedor1 = $consulta -> ret_matriz();
+
+              //Query para los Conductores
+              $query = "SELECT a.cod_tercer, CONCAT( a.cod_tercer, ' - ', a.abr_tercer )
+                          FROM ".BASE_DATOS.".tab_tercer_tercer a,
+                          	   ".BASE_DATOS.".tab_tercer_activi b
+                         WHERE  a.cod_tercer = b.cod_tercer AND
+                                b.cod_activi = ".COD_FILTRO_CONDUC."
+                               ORDER BY a.abr_tercer ";
+
+              $consulta = new Consulta($query, $this -> conexion);
+              $conduc1 = $consulta -> ret_matriz();
+
+
+               $query = "SELECT a.cod_tercer,a.abr_tercer
+                          FROM ".BASE_DATOS.".tab_tercer_tercer a,
+                               ".BASE_DATOS.".tab_tercer_activi b
+                         WHERE  a.cod_tercer = b.cod_tercer AND
+                                b.cod_activi = ".COD_FILTRO_CONDUC." AND
+                                a.cod_tercer = '".$GLOBALS[conduc]."'
+                                ORDER BY 2 ";
+
+              $consulta = new Consulta($query, $this -> conexion);
+              $conduc = $consulta -> ret_matriz();
+
+              $query = "SELECT a.cod_tercer, REPLACE( UPPER( a.abr_tercer ), 'Ñ', 'N' ) AS abr_tercer
+                          FROM ".BASE_DATOS.".tab_tercer_tercer a,
+                          	   ".BASE_DATOS.".tab_tercer_activi b
+                         WHERE a.cod_tercer = b.cod_tercer AND
+                               b.cod_activi = ".COD_FILTRO_POSEED." AND
+                               a.cod_tercer = '".$GLOBALS[tenedo]."'
+                               ORDER BY 2 ";
+              $consulta = new Consulta($query, $this -> conexion);
+              $tenedor = $consulta -> ret_matriz();
+
+              //Query para los propietarios
+              $query = "SELECT a.cod_tercer,a.abr_tercer
+                          FROM ".BASE_DATOS.".tab_tercer_tercer a,
+                          	   ".BASE_DATOS.".tab_tercer_activi b
+                         WHERE a.cod_tercer = b.cod_tercer AND
+                               b.cod_activi = ".COD_FILTRO_PROPIE." AND
+                               a.cod_tercer = '".$GLOBALS[propie]."'
+                               ORDER BY 2  ";
+
+              $consulta = new Consulta($query, $this -> conexion);
+              $pro_ten = $consulta -> ret_matriz();
+
+
+               $conduc = array_merge($conduc,$inicio,$conduc1);
+               
+               //$tenedo = array_merge($tenedor,$inicio,$tenedor1);
+               
+               $aux = array_merge( $tenedor, $tenedor1 );
+               $aux = SortMatrix( $aux, 'abr_tercer' );
+               
+               $tenedo = array_merge( $inicio, $aux );
+               
+               echo "<pre style='display:none'>";
+               print_r( $tenedo );
+               echo "</pre>";
+               /*
+               echo "<pre style='display:none'>";
+               print_r( $inicio );
+               echo "</pre>";
+               echo "<pre style='display:none'>";
+               print_r( $tenedor1 );
+               echo "</pre>";
+               */
+               
+               $propie = array_merge($pro_ten,$inicio,$pro_ten1);
+
+              //lista tipo calificacion
+                 $query = "SELECT cod_califi,nom_califi
+                             FROM ".BASE_DATOS.".tab_genera_califi ";
+
+                  if(isset($GLOBALS[califi]) AND $GLOBALS[califi] != 0)
+                 $query = $query." WHERE cod_califi = '$GLOBALS[califi]'";
+
+                 $query = $query." ORDER BY 2 ";
+
+                 $consulta = new Consulta($query, $this -> conexion);
+                 $califi = $consulta -> ret_matriz();
+                 if(isset($GLOBALS[califi]) AND $GLOBALS[califi] != 0)
+                   $califi = array_merge($califi,$inicio);
+                 else
+                     $califi = array_merge($inicio,$califi);
+
+              $query = "SELECT a.num_trayle,a.num_trayle
+                          FROM ".BASE_DATOS.".tab_vehige_trayle a
+                         WHERE a.num_trayle = '".$GLOBALS[trayler]."'
+                       ";
+
+              $consulta = new Consulta($query, $this -> conexion);
+              $trayle_a = $consulta -> ret_matriz();
+
+              $query = "SELECT a.num_trayle,a.num_trayle
+                          FROM ".BASE_DATOS.".tab_vehige_trayle a
+                          	   ORDER BY 1";
+
+              $consulta = new Consulta($query, $this -> conexion);
+              $trayle_t = $consulta -> ret_matriz();
+
+              if($trayle_a)
+               $trayle_t = array_merge($trayle_a,$inicio,$trayle_t);
+              else
+               $trayle_t = array_merge($inicio,$trayle_t);
+             
+         }
+   }
+
+   $fec_imp = new Fecha();
+   $fec_imp1 = new Fecha();
+   $fec_imp2 = new Fecha();
+
+  echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/vehiculos.js\"></script>\n";
+  echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/fecha.js\"></script>\n";
+  $formulario = new Formulario ("index.php\" enctype=\"multipart/form-data\"","post","INGRESO DE VEHICULOS","form_vehiculos");
+  //para enviar los datos basicos del servicio
+  //y si se elige una marca antes de terminar
+  //la carga de todo el formulario
+  $formulario -> oculto("cod_servic","$GLOBALS[cod_servic]",0);
+  $formulario -> oculto("window","central",0);
+  //fin
+  $formulario -> linea("Datos B&aacute;sicos",0,"t2");
+
+  $formulario -> nueva_tabla();
+
+  if($datos_usuario["cod_perfil"] == "")
+   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_usuari"]);
+  else
+   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
+
+  if($filtro -> listar($this -> conexion))
+  {
+   $datos_filtro = $filtro -> retornar();
+   $formulario -> oculto("transp",$datos_filtro[clv_filtro],0);
+  }
+  else
+  {
+   $query = "SELECT a.cod_tercer,a.abr_tercer
+   			   FROM ".BASE_DATOS.".tab_tercer_tercer a,
+   			        ".BASE_DATOS.".tab_tercer_activi b
+   			  WHERE a.cod_tercer = b.cod_tercer AND
+   			        b.cod_activi = ".COD_FILTRO_EMPTRA."
+   			        ORDER BY 2
+   			 ";
+
+   $consulta = new Consulta($query, $this -> conexion);
+   $transpor = $consulta -> ret_matriz();
+   $transpor = array_merge($inicio,$transpor);
+
+   if($GLOBALS[transp])
+   {
+    $query = "SELECT a.cod_tercer,a.abr_tercer
+   			    FROM ".BASE_DATOS.".tab_tercer_tercer a,
+   			         ".BASE_DATOS.".tab_tercer_activi b
+   			   WHERE a.cod_tercer = b.cod_tercer AND
+   			         b.cod_activi = ".COD_FILTRO_EMPTRA." AND
+   			         a.cod_tercer = '".$GLOBALS[transp]."'
+   			         ORDER BY 2
+   			  	  ";
+
+    $consulta = new Consulta($query, $this -> conexion);
+    $transp_a = $consulta -> ret_matriz();
+    $transpor = array_merge($transp_a,$transpor);
+   }
+
+   $formulario -> lista("Transportadora","transp",$transpor,1,1);
+  }
+
+  $formulario -> nueva_tabla();
+  $formulario -> texto ("Placa(AAA000)","text","placa\" onChange=\"form_vehiculos.submit()",0,6,6,"","$GLOBALS[placa]","","",NULL,1);
+  $formulario -> lista("Marca:","marca\" onBlur=\"form_vehiculos.submit() ",$marca,1,1);
+  $formulario -> lista("L&iacute;nea:","linea",$linea,0,1);
+  $formulario -> texto("Modelo:","text","modelo\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,5,4,"","$GLOBALS[modelo]","","",NULL,1);
+  $formulario -> texto("Repotenciado a:","text","repote\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,6,6,"","$GLOBALS[repote]");
+  $formulario -> lista("Color:", "color",$color,1,1);
+  $formulario -> lista("Tipo Vinculaci&oacute;n:", "tipvin",$tipvin,0,0);
+  $formulario -> lista("Tip. Carrocer&iacute;a:", "carroc",$tip_carroc,1,0);
+  $formulario -> texto("N&uacute;mero Motor:","text","motor",0,15,25,"","$GLOBALS[motor]","","",NULL,0);
+  $formulario -> texto("N&uacute;mero Serie:","text","serie",1,15,25,"","$GLOBALS[serie]","","",NULL,0);
+  $formulario -> texto("Peso Vacio(Tn):","text","peso\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,5,5,"","$GLOBALS[peso]","","",NULL,0);
+  $formulario -> texto("Capacidad(Tn):","text","capaci\" onChange=\"form_vehiculos.submit()\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}", 1,5,4,"","$GLOBALS[capaci]","","",NULL,0);
+  $formulario -> lista("Configuraci&oacute;n:","config",$config,1,1);
+  $formulario -> texto("Vinculado a:","text","afilia",0,20,50,"","$GLOBALS[afilia]");
+  $formulario -> fecha_calendar("Fecha Vencimiento","fecha3","form_vehiculos",$GLOBALS[fecha3],"yyyy-mm-dd",1);
+  $formulario -> texto("Revisi&oacute;n Tecno Mecanica:","text","gases",0,20,50,"","$GLOBALS[gases]");
+  $formulario -> fecha_calendar("Fecha Vencimiento","rev_mecani","form_vehiculos",$GLOBALS[rev_mecani],"yyyy-mm-dd",1);
+  $formulario -> texto("Reg.Nal.Carga:","text","regnal",0,10,10,"","$GLOBALS[regnal]","","",NULL,0);
+  $formulario -> texto("Lic.Transito:","text","tarpro",1,10,10,"","$GLOBALS[tarpro]");
+  $formulario -> texto("Tarjeta de Operaci&oacute;n:","text","tarope",0,10,10,"","$GLOBALS[tarope]");
+  $formulario -> lista("Calificaci&oacute;n:","califi",$califi,1);
+  $formulario -> caja("Check List Express","list_express",1,$GLOBALS[list_express],0);
+
+  $formulario -> nueva_tabla();
+  $formulario -> linea("Seguros",0,"t2");
+
+  $formulario -> nueva_tabla();
+  $formulario -> texto("SOAT","text","poliza",0,10,30,"","$GLOBALS[poliza]","","",NULL,0);
+  $formulario -> texto("Aseguradora","text","asegra",0,30,30,"","$GLOBALS[asegra]","","",NULL,0);
+  $formulario -> fecha_calendar("Fecha Vencimiento","fecha1","form_vehiculos",$GLOBALS[fecha1],"yyyy-mm-dd",1,0,0);
+
+  $formulario -> nueva_tabla();
+  $formulario -> linea("Selecci&oacute;n del Remolque",0,"t2");
+
+  $formulario -> nueva_tabla();
+  $formulario -> lista("Remolque:","trayler",$trayle_t,0);
+
+  $formulario -> nueva_tabla();
+  $formulario -> linea("Datos Personas",0,"t2");
+
+  $formulario -> nueva_tabla();
+  $formulario -> lista("Poseedor:","tenedo",$tenedo,1,1);
+  $formulario -> lista("Propietario:","propie",$propie,1,1);
+  $formulario -> lista("Conductor:","conduc",$conduc,1,1);
+  /*echo "<pre style='display:none'>";
+  print_r( $tenedo );  
+  echo "</pre>";
+  echo "<pre style='display:none'>";
+  print_r( $propie );
+  echo "</pre>";
+  echo "<pre style='display:none'>";
+  print_r( $conduc );
+  echo "</pre>";*/
+  $formulario -> nueva_tabla();
+  $formulario -> linea("Fotos del Veh&iacute;culo",0,"t2");
+
+  $formulario -> nueva_tabla();
+  $formulario -> archivo("Foto Frente:","f_frente",12,200,"",0);
+  $formulario -> archivo("Foto Izquierda:","f_izqui",12,200,'',1);
+  $formulario -> archivo("Foto Derecha:","f_derec",12,200,'',0);
+  $formulario -> archivo("Foto Posterior:","f_poster",12,200,'',1);
+  $formulario -> oculto("MAX_FILE_SIZE", "2000000", 0);
+
+  if($GLOBALS[placa])
+  {
+    //Manejo de la Interfaz GPS
+    $interf_gps = new Interfaz_GPS();
+    $interf_gps -> Interfaz_GPS_envio($GLOBALS[transp],BASE_DATOS,$usuario,$this -> conexion);
+
+    if($interf_gps -> cant_interf > 0)
+    {
+    	$formulario -> nueva_tabla();
+    	echo "<hr>";
+    	$formulario -> linea("Operadores GPS - Activaci&oacute;n de Veh&iacute;culos con Operadores",1,"t2");
+
+	$formulario -> nueva_tabla();
+
+    	for($i = 0; $i < $interf_gps -> cant_interf; $i++)
+    	{
+	  if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_PLACAX)
+	  {
+	   if($interf_gps -> getVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transp]))
+		$activo_v = 1;
+	   else	$activo_v = 0;
+
+	   $formulario -> caja("Activar Veh&iacute;culo con el Operador GPS <b>".$interf_gps -> nom_operad[$i][0]."</b>: ","operador_gps[$i]",$interf_gps -> cod_operad[$i][0],$activo_v,1);
+	  }
+	  else if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_IDGPSX)
+	  {
+	   if($interf_gps -> getVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transp]))
+		$activo_v = 1;
+	   else	$activo_v = 0;
+
+	   $formulario -> caja("Activar Veh&iacute;culo con el Operador GPS <b>".$interf_gps -> nom_operad[$i][0]."</b>: ","operador_gps[$i]",$interf_gps -> cod_operad[$i][0],$activo_v,0);
+	   $formulario -> texto("ID Dispositivo GPS","text","idgpsx[$i]",1,10,10,"","");
+	  }
+    	}
+    }
+  }
+  $formulario -> nueva_tabla();
+  $formulario -> texto("Observaciones:","textarea","obs_r",0,50,3,"","");
+
+  $formulario -> nueva_tabla();
+  $formulario -> oculto("fec_actual",date("Y-m-d H:i:s"),0);
+  $formulario -> oculto("usuario","$usuario",0);
+  $formulario -> oculto("opcion",1,0);
+  if($trayle)
+  $formulario -> oculto("ejes",$trayle[1],0);
+  $formulario -> oculto("cod_servic","$GLOBALS[cod_servic]",0);
+  $formulario -> oculto("window","central",0);
+  $formulario -> botoni("Aceptar","validar_form()",0);
+  $formulario -> botoni("Borrar","form_vehiculos.reset()",1);
+  $formulario -> cerrar();
+ }//FIN FUNCION CAPTURAR
+
+ function Insert()
+ {
+   $operador_gps = $GLOBALS[operador_gps];
+   $idgps = $GLOBALS[idgpsx];
+
+   if(!$GLOBALS[fecha3])
+    $GLOBALS[fecha3] = "NULL";
+   else
+    $GLOBALS[fecha3] = "'".$GLOBALS[fecha3]."'";
+   if(!$GLOBALS[rev_mecani])
+    $GLOBALS[rev_mecani] = "NULL";
+   else
+    $GLOBALS[rev_mecani] = "'".$GLOBALS[rev_mecani]."'";
+
+   if($GLOBALS[f_frente])
+   {
+    if(move_uploaded_file($GLOBALS[f_frente],URL_VEHICU."foto1_".$GLOBALS[placa].".jpg"))
+     $GLOBALS[f_frente] = "'foto1_".$GLOBALS[placa].".jpg'";
+    else
+     $GLOBALS[f_frente] = "NULL";
+   }
+   else
+    $GLOBALS[f_frente] = "NULL";
+
+   if($GLOBALS[f_izqui])
+   {
+    if(move_uploaded_file($GLOBALS[f_izqui],URL_VEHICU."foto2_".$GLOBALS[placa].".jpg"))
+     $GLOBALS[f_izqui] = "'foto2_".$GLOBALS[placa].".jpg'";
+    else
+     $GLOBALS[f_izqui] = "NULL";
+   }
+   else
+    $GLOBALS[f_izqui] = "NULL";
+
+   if($GLOBALS[f_derec])
+   {
+    if(move_uploaded_file($GLOBALS[f_derec],URL_VEHICU."foto3_".$GLOBALS[placa].".jpg"))
+     $GLOBALS[f_derec] = "'foto3_".$GLOBALS[placa].".jpg'";
+    else
+     $GLOBALS[f_derec] = "NULL";
+   }
+   else
+    $GLOBALS[f_derec] = "NULL";
+
+   if($GLOBALS[f_poster])
+   {
+    if(move_uploaded_file($GLOBALS[f_poster],URL_VEHICU."foto4_".$GLOBALS[placa].".jpg"))
+     $GLOBALS[f_poster] = "'foto4_".$GLOBALS[placa].".jpg'";
+    else
+     $GLOBALS[f_poster] = "NULL";
+   }
+   else
+    $GLOBALS[f_poster] = "NULL";
+
+  $fec_actual = date("Y-m-d H:i:s");
+
+
+  // sql para traer los tipos de regimen del tercero
+  $query = "SELECT ind_estveh
+            FROM ".BASE_DATOS.".tab_config_parame";
+  $consulta = new Consulta($query, $this -> conexion);
+  $indcon = $consulta -> ret_arreglo();
+
+  if($indcon[0])
+   $estado = COD_ESTADO_INACTI;
+  elseif(!$indcon[1])
+   $estado = COD_ESTADO_ACTIVO;
+
+  if(!$GLOBALS[califi])
+   $GLOBALS[califi] = "NULL";
+  else
+   $GLOBALS[califi] = "'".$GLOBALS[califi]."'";
+
+  //Query de insercion
+  $query = "INSERT ".BASE_DATOS.".tab_vehicu_vehicu
+
+           (num_placax,cod_marcax,cod_lineax,ano_modelo,cod_colorx,cod_carroc,num_motorx,
+            num_seriex,num_chasis,val_pesove,val_capaci,reg_nalcar,num_poliza,nom_asesoa,
+            fec_vigfin,ano_repote,num_config,cod_propie,cod_tenedo,cod_conduc,nom_vincul,
+            num_tarpro,cod_califi,fec_vigvin,num_polirc,fec_venprc,cod_aseprc,
+            ind_estado,obs_vehicu,cod_tipveh,ind_chelis,fec_revmec,num_agases,fec_vengas,
+            dir_fotfre,dir_fotizq,dir_fotder,dir_fotpos,usr_creaci,fec_creaci,num_tarope)
+
+           VALUES ('$GLOBALS[placa]','$GLOBALS[marca]','$GLOBALS[linea]',
+           '$GLOBALS[modelo]','$GLOBALS[color]',
+           '$GLOBALS[carroc]','$GLOBALS[motor]','$GLOBALS[serie]',
+           '$GLOBALS[chasis]','$GLOBALS[peso]','$GLOBALS[capaci]','$GLOBALS[regnal]','".$GLOBALS[poliza]."',
+           '".$GLOBALS[asegra]."','$GLOBALS[fecha1]','$GLOBALS[repote]','$GLOBALS[config]',
+           '$GLOBALS[propie]','$GLOBALS[tenedo]','$GLOBALS[conduc]','$GLOBALS[afilia]',
+           '$GLOBALS[tarpro]',".$GLOBALS[califi].",".$GLOBALS[fecha3].",'$GLOBALS[poliza_rc]',
+           '$GLOBALS[fecha2]','$GLOBALS[asegra_rc]','$estado','$GLOBALS[obs_r]','$GLOBALS[tipvin]',
+           '$GLOBALS[list_express]',".$GLOBALS[rev_mecani].",'$GLOBALS[gases]','$GLOBALS[fecha4]',
+           $GLOBALS[f_frente],$GLOBALS[f_izqui],$GLOBALS[f_derec],$GLOBALS[f_poster],'$GLOBALS[usuario]','$fec_actual','".$GLOBALS[tarope]."')";
+   $insertar = new Consulta($query, $this -> conexion, "BR");
+
+   $query = "INSERT INTO ".BASE_DATOS.".tab_transp_vehicu
+   						 (cod_transp,num_placax,usr_creaci,fec_creaci)
+   				  VALUES ('".$GLOBALS[transp]."','".$GLOBALS[placa]."','".$GLOBALS[usuario]."','".$fec_actual."')
+   		    ";
+
+   $insertar = new Consulta($query, $this -> conexion, "R");
+
+   if($GLOBALS[trayler])
+   {
+    // trae la ultima novedad de acuerdo al vehiculo
+    $query = "SELECT Max(a.num_noveda) AS maximo
+                    FROM ".BASE_DATOS.".tab_trayle_placas a
+                    WHERE a.num_placax = '$GLOBALS[placa]'";
+        //obtiene el consecutivo
+    $consec = new Consulta($query, $this -> conexion);
+    $ultimo = $consec -> ret_matriz();
+    $nuevo_consec = $ultimo[0][0]+1;
+
+          $query = "INSERT ".BASE_DATOS.".tab_trayle_placas
+                         VALUES ('$GLOBALS[placa]','$GLOBALS[trayler]','$nuevo_consec',
+                                                    '$fec_actual','S')";
+           $consulta = new Consulta($query, $this -> conexion, "R");
+  }
+
+  //Manejo de Interfaz GPS
+
+  $interf_gps = new Interfaz_GPS();
+  $interf_gps -> Interfaz_GPS_envio($GLOBALS[transp],BASE_DATOS,$GLOBALS[usuario],$this -> conexion);
+
+  for($i = 0; $i < $interf_gps -> cant_interf; $i++)
+  {
+   $ind_selecc = 0;
+
+   for($j = 0; $j < $interf_gps -> cant_interf; $j++)
+   {
+    if($interf_gps -> cod_operad[$i][0] == $operador_gps[$j])
+     $ind_selecc = 1;
+   }
+
+   if($ind_selecc == 1)
+   {
+    $nomope = $interf_gps -> getNomOperador($interf_gps -> cod_operad[$i][0]);
+
+    if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_PLACAX)
+    {
+     if($interf_gps -> EstadoVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transp],"1","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA.""))
+	    $mensaje = "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Activo el Veh&iacute;culo con el Operador GPS ".$nomope." Satisfactoriamente.</b>";
+	   else
+	    $mensaje = "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"><b>Existio un Error al Activar el Veh&iacute;culo con el Operador GPS ".$nomope.".</b>";
+
+	   echo $mensaje;
+    }
+    else if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_IDGPSX)
+    {
+     if($interf_gps -> EstadoVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transp],"1","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA."",$idgps[$i]))
+	    $mensaje = "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Activo el Veh&iacute;culo con el Operador GPS ".$nomope." Satisfactoriamente.</b>";
+	   else
+	    $mensaje = "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"><b>Existio un Error al Activar el Veh&iacute;culo con el Operador GPS ".$nomope.".</b>";
+
+	   echo $mensaje;
+    }
+   }
+  }
+
+  if($consulta = new Consulta ("COMMIT", $this -> conexion))
+  {
+   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otro Vehiculo</a></b>";
+
+   $mensaje = "El Vehiculo <b>".$GLOBALS[placa]."</b> se Inserto con Exito<br>".$link;
+   $mens = new mensajes();
+   $mens -> correcto("INSERTAR VEHICULO",$mensaje);
+  }
+
+ }
+
+ function ListarDespac()
+ {
+   $js = $_GET['frm_remote'] == NULL ? NULL : "opener.document.forms[0].submit()";
+
+
+  $query = "SELECT a.num_placax,g.abr_tercer,g.num_telef1,h.abr_tercer,
+		      		h.num_telmov,b.nom_marcax,c.nom_lineax,d.nom_colorx,
+                    e.nom_carroc,a.ano_modelo,a.ind_estado,a.fec_creaci
+               FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
+		      		".BASE_DATOS.".tab_genera_marcas b,
+                    ".BASE_DATOS.".tab_vehige_carroc e,
+		      		".BASE_DATOS.".tab_vehige_colore d,
+		      		".BASE_DATOS.".tab_vehige_lineas c,
+		      		".BASE_DATOS.".tab_vehige_config i,
+                    ".BASE_DATOS.".tab_tercer_tercer g,
+                    ".BASE_DATOS.".tab_tercer_tercer h,
+                    ".BASE_DATOS.".tab_transp_vehicu j
+           	  WHERE a.cod_marcax = b.cod_marcax AND
+		      		a.num_config = i.num_config AND
+		      	    a.cod_marcax = c.cod_marcax AND
+		      		a.cod_lineax = c.cod_lineax AND
+		      		a.cod_colorx = d.cod_colorx AND
+                    a.cod_carroc = e.cod_carroc AND
+                    a.cod_tenedo = g.cod_tercer AND
+                    a.cod_conduc = h.cod_tercer AND
+                    a.num_placax = j.num_placax AND
+                    a.ind_estado = '1' AND
+                    j.cod_transp = '".$GLOBALS[transport]."'
+         ";
+
+  $consulta = new Consulta($query, $this -> conexion);
+  $vehiculo = $consulta -> ret_matriz();
+
+  $formulario = new Formulario ("index.php","post","Listado de Vehiculos","form_item");
+
+  $formulario -> linea ("Se Encontro un Total de ".sizeof($vehiculo)." Vehiculo(s)",1,"t2");
+
+  $formulario -> nueva_tabla();
+  $formulario -> linea("Placa",0,"t");
+  $formulario -> linea("Poseedor",0,"t");
+  $formulario -> linea("Tel&eacute;fono",0,"t");
+  $formulario -> linea("Conductor",0,"t");
+  $formulario -> linea("Celular",0,"t");
+  $formulario -> linea("Marca",0,"t");
+  $formulario -> linea("L&iacute;nea",0,"t");
+  $formulario -> linea("Color",0,"t");
+  $formulario -> linea("Carrocer&iacute;nea",0,"t");
+  $formulario -> linea("Modelo",0,"t");
+  $formulario -> linea("Remolque",1,"t");
+
+  for($i = 0; $i < sizeof($vehiculo); $i++)
+  {
+   $vehiculo[$i][0] = "<a href=# onClick=\"opener.document.forms[0].placa.value='".$vehiculo[$i][0]."'; top.close(); ".$js."\">".$vehiculo[$i][0]."</a>";
+
+   $formulario -> linea($vehiculo[$i][0],0,"i");
+   $formulario -> linea($vehiculo[$i][1],0,"i");
+   $formulario -> linea($vehiculo[$i][2],0,"i");
+   $formulario -> linea($vehiculo[$i][3],0,"i");
+   $formulario -> linea($vehiculo[$i][4],0,"i");
+   $formulario -> linea($vehiculo[$i][5],0,"i");
+   $formulario -> linea($vehiculo[$i][6],0,"i");
+   $formulario -> linea($vehiculo[$i][7],0,"i");
+   $formulario -> linea($vehiculo[$i][8],0,"i");
+   $formulario -> linea($vehiculo[$i][9],0,"i");
+   $formulario -> linea($vehiculo[$i][10],1,"i");
+  }
+
+  $formulario -> cerrar();
+ }
+}
+
+$proceso = new Proc_vehicu($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
+?>

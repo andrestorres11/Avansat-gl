@@ -1,0 +1,170 @@
+$("document").ready(function() {
+
+	var standa = $("#standaID").val();
+	var atributes = '&Ajax=on&standa=' + standa;
+
+	$("#origenID").autocomplete({
+		source: "../" + standa + "/rutas/class_rutasx_rutasx.php?Option=getCiudades" + atributes,
+		minLength: 3,
+		select: function(event, ui) {
+			$("#cod_ciuoriID").val(ui.item.id);
+		}
+	});
+
+	$("#destinoID").autocomplete({
+		source: "../" + standa + "/rutas/class_rutasx_rutasx.php?Option=getCiudades" + atributes,
+		minLength: 3,
+		select: function(event, ui) {
+			$("#cod_ciudesID").val(ui.item.id);
+		}
+	});
+
+	$("#transpID").autocomplete({
+		source: "../" + standa + "/rutas/class_rutasx_rutasx.php?Option=getTransp" + atributes,
+		minLength: 3,
+		select: function(event, ui) {
+			$("#cod_transpID").val(ui.item.id);
+		}
+	});
+
+	$("input[name^='contr']").each(function() {
+		$(this).autocomplete({
+			source: "../" + standa + "/rutas/class_rutasx_rutasx.php?Option=getPC" + atributes,
+			minLength: 3,
+			select: function(event, ui) {
+				var nameID = $(this).attr("nameID");
+				$("#" + nameID).val(ui.item.id);
+			}
+		});
+	});
+
+});
+
+function aceptar_insert(formulario) {
+	validacion = true
+	formulario = document.form_ins
+	if (formulario.nom.value == '') {
+		window.alert("El Nombre la Rutas es Requerido")
+		formulario.nom.focus()
+		validacion = false
+	} else if (formulario.origen.value == "0") {
+		window.alert("Seleccione la ciudad de Origen")
+		formulario.origen.focus()
+		validacion = false
+	} else if (formulario.destino.value == "0") {
+		window.alert("Seleccione la cuidad de Destino")
+		formulario.destino.focus()
+		validacion = false
+	} else if (confirm("Desea Crear La ruta " + formulario.nom.value + " ?")) {
+		formulario.opcion.value = 1;
+		formulario.submit();
+	}
+}
+
+function aceptar_lis(formulario) {
+	validacion = true
+	formulario = document.form_list
+	if (formulario.ruta.value == "") {
+		window.alert("La Ruta es Requerida")
+		validacion = false
+	} else {
+		formulario.opcion.value = 2;
+		formulario.submit();
+	}
+}
+
+function aceptar_act(formulario) {
+	validacion = true
+	formulario = document.form_act
+	if (formulario.ruta.value == "") {
+		window.alert("La Ruta es Requerida")
+		formulario.ruta.focus()
+		validacion = false
+	} else if (formulario.origen.value == "0") {
+		window.alert("Seleccione la ciudad de Origen")
+		formulario.origen.focus()
+		validacion = false
+	} else if (formulario.destino.value == "0") {
+		window.alert("Seleccione la ciudad de Destino")
+		formulario.destino.focus()
+		validacion = false
+	} else if (confirm("Desea actualizar la ruta?")) {
+		formulario.opcion.value = 1;
+		formulario.submit();
+	}
+}
+
+function aceptar_eli(formulario) {
+	validacion = true
+	formulario = document.form_eli
+	if (formulario.ruta.value == "") {
+		window.alert("La Ruta es Requerida")
+		validacion = false
+	} else {
+		formulario.opcion.value = 1;
+		formulario.submit();
+	}
+}
+
+function aceptar_act2(formulario) {
+	validacion = true
+	formulario = document.form_item
+	if (formulario.nombre.value == '') {
+		window.alert("El Nombre la Rutas es Requerida")
+		validacion = false
+	} else {
+		formulario.opcion.value = 3;
+		formulario.submit();
+	}
+}
+
+function aceptar_act3(formulario) {
+	validacion = true
+	formulario = document.form_item
+	if (formulario.ruta.value == '') {
+		window.alert("El Nombre la Rutas es Requerida")
+		validacion = false
+	} else {
+		formulario.opcion.value = 1;
+		formulario.submit();
+	}
+}
+
+function aceptar_actuali(formulario) {
+	validacion = true
+	formulario = document.form_item
+	valorMayor = $("#timepcultID");
+
+	var numerico = /^[0-9]+\.?[0-9]*$/
+
+	if (formulario.origen.value == "0") {
+		window.alert("La Ciudad de Origen es Requerida.")
+		validacion = false
+		formulario.origen.focus();
+	} else if (formulario.destino.value == "0") {
+		window.alert("La Ciudad de Destino es Requerida.")
+		validacion = false
+		formulario.destino.focus();
+	} else if (formulario.nom.value == "") {
+		window.alert("La Descripcion de la Via es Requerida")
+		validacion = false
+		formulario.nom.focus();
+	} else if (formulario.timepcult.value == "") {
+		window.alert("Debe Asignar los Minutos Desde el Origen Para Ultimo Puesto de Control")
+		validacion = false
+		formulario.timepcult.focus();
+	} else if (!numerico.test(formulario.timepcult.value)) {
+		window.alert("Los Minutos Desde el Origen Deben Contener Solo Valores Numericos.")
+		validacion = false
+		formulario.timepcult.focus();
+	} else if (parseInt(formulario.timepcult.value) <= valorMayor.value) {
+		window.alert("Los Minutos Desde el Origen Para Ultimo Puesto de Control Debe ser Mayor que los Anteriores.")
+		validacion = false
+		formulario.timepcult.focus();
+	} else {
+		if (confirm("Desea Modificar la Ruta.?")) {
+			formulario.opcion.value = 3;
+			formulario.submit();
+		}
+	}
+}

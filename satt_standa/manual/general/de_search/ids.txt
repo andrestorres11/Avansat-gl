@@ -1,0 +1,741 @@
+1
+ Página principal
+ index.htm
+2
+ MANUAL DE USUARIO AVANSAT GL
+ manual_de_usuario_avansat_gl.htm
+3
+ Para tener en cuenta...
+ para_tener_en_cuenta___.htm
+4
+ 	INTRODUCCIÓN A AVANSAT GL
+ _introduccion_a_avansat_gl.htm
+5
+ ¿Qué es AVANSAT GL?
+ _que_es_avansat_gl_.htm
+6
+ Características Técnicas AVANSAT GL
+ caracteristicas_tecnicas_avansat_gl.htm
+7
+ Ingresar a AVANSAT GL
+ ingresar_a_avansat_gl.htm
+8
+ UTILIZAR AVANSAT GL
+ utilizar_avansat_gl.htm
+9
+ BANDEJA DE ENTRADA
+ bandeja_de_entrada.htm
+10
+ MENÚ DE OPCIONES AVANSAT GL
+ menu_de_opciones_avansat_gl.htm
+11
+ Transportadoras
+ transportadoras.htm
+12
+ Insertar
+ insertar_1.htm
+13
+ Listar
+ listar_1.htm
+14
+ Actualizar
+ actualizar_1.htm
+15
+ Eliminar
+ eliminar_1.htm
+16
+ Activar/Inactivar
+ activar_inactivar_1.htm
+17
+ Agencias
+ agencias.htm
+18
+ Insertar
+ insertar_2.htm
+19
+ Listar
+ listar_2.htm
+20
+ Actualizar
+ actualizar_2.htm
+21
+ Eliminar
+ eliminar_2.htm
+22
+ Remitentes/Destinatarios
+ remitentes_destinatarios.htm
+23
+ Tablas Fletes
+ tablas_fletes.htm
+24
+ Puestos de Control
+ puestos_de_control_1.htm
+25
+ Listar
+ listar_3.htm
+26
+ Insertar
+ insertar_3.htm
+27
+ Tipo de Servicio
+ tipo_de_servicio.htm
+28
+ Homologar EAL
+ homologar_eal.htm
+29
+ Recursos
+ recursos.htm
+30
+ Conductores
+ conductores_1.htm
+31
+ Insertar
+ insertar_4.htm
+32
+ Listar
+ listar_4.htm
+33
+ Actualizar
+ actualizar_3.htm
+34
+ Eliminar
+ eliminar_3.htm
+35
+ Imprimir
+ imprimir_1.htm
+36
+ Terceros
+ terceros_1.htm
+37
+ Insertar
+ insertar_5.htm
+38
+ Listar
+ listar_5.htm
+39
+ Actualizar
+ actualizar_4.htm
+40
+ Eliminar
+ eliminar_4.htm
+41
+ Remolques
+ remolques.htm
+42
+ Insertar
+ insertar_6.htm
+43
+ Listar
+ listar_6.htm
+44
+ Actualizar
+ actualizar_5.htm
+45
+ Eliminar
+ eliminar_5.htm
+46
+ Vehículos
+ vehiculos_1.htm
+47
+ Insertar
+ insertar_7.htm
+48
+ Listar
+ listar_7.htm
+49
+ Actualizar
+ actualizar_6.htm
+50
+ Eliminar
+ eliminar_6.htm
+51
+ Imprimir
+ imprimir_2.htm
+52
+ Estado Recursos
+ estado_recursos.htm
+53
+ Conductores
+ conductores_2.htm
+54
+ Activar/Inactivar
+ activar_inactivar_2.htm
+55
+ Terceros
+ terceros_2.htm
+56
+ Activar/Inactivar
+ activar_inactivar_3.htm
+57
+ Vehículos
+ vehiculos_2.htm
+58
+ Activar/Inactivar
+ activar_inactivar_4.htm
+59
+ Rutas y P. de Control
+ rutas_y_p__de_control.htm
+60
+ Puestos de Control
+ puestos_de_control_2.htm
+61
+ Insertar
+ insertar_8.htm
+62
+ Listar
+ listar_8.htm
+63
+ Actualizar
+ actualizar_7.htm
+64
+ Eliminar
+ eliminar_7.htm
+65
+ Homologación PC
+ homologacion_pc.htm
+66
+ Insertar
+ insertar_9.htm
+67
+ Listar
+ listar_9.htm
+68
+ Actualizar
+ actualizar_8.htm
+69
+ Desactivar
+ desactivar.htm
+70
+ Rutas
+ rutas.htm
+71
+ Insertar
+ insertar_10.htm
+72
+ Listar
+ listar_10.htm
+73
+ Actualizar
+ actualizar_9.htm
+74
+ Eliminar
+ eliminar_8.htm
+75
+ Copiar Ruta
+ copiar_ruta.htm
+76
+ Activar/Inactivar
+ activar_inactivar_5.htm
+77
+ Rutas y Transportadoras
+ rutas_y_transportadoras.htm
+78
+ Asignar
+ asignar_1.htm
+79
+ Actualizar
+ actualizar_10.htm
+80
+ Listar
+ listar_11.htm
+81
+ Desasignar
+ desasignar.htm
+82
+ Homologar Zonas
+ homologar_zonas.htm
+83
+ Zonas Operador GPS
+ zonas_operador_gps.htm
+84
+ Despachos
+ despachos.htm
+85
+ Insertar
+ insertar_11.htm
+86
+ Listar
+ listar_12.htm
+87
+ Actualizar
+ actualizar_11.htm
+88
+ Eliminar
+ eliminar_9.htm
+89
+ Anular
+ anular_1.htm
+90
+ Importar Despacho
+ importar_despacho.htm
+91
+ Tiempo de Seguimiento
+ tiempo_de_seguimiento.htm
+92
+ Probar GPS
+ probar_gps.htm
+93
+ Plan de Ruta
+ plan_de_ruta.htm
+94
+ Insertar
+ insertar_12.htm
+95
+ Eliminar
+ eliminar_10.htm
+96
+ Imprimir
+ imprimir_3.htm
+97
+ Imprimir con Tramo
+ imprimir_con_tramo.htm
+98
+ Control Tráfico
+ control_trafico.htm
+99
+ Salida
+ salida.htm
+100
+ Llegada
+ llegada.htm
+101
+ Novedades Urbanos
+ novedades_urbanos.htm
+102
+ Seguimiento
+ seguimiento.htm
+103
+ Calificación Conductor
+ calificacion_conductor.htm
+104
+ Registro de Novedades
+ registro_de_novedades.htm
+105
+ Informes
+ informes.htm
+106
+ Trazabilidad Diaria
+ trazabilidad_diaria.htm
+107
+ Despachos en Ruta
+ despachos_en_ruta.htm
+108
+ Despachos en Transito
+ despachos_en_transito.htm
+109
+ Retrasados
+ retrasados.htm
+110
+ Despachos por Ruta
+ despachos_por_ruta.htm
+111
+ Despachos por Pto de Control
+ despachos_por_pto_de_control.htm
+112
+ Por Fecha de Salida
+ por_fecha_de_salida.htm
+113
+ Vehículos Disponibles
+ vehiculos_disponibles.htm
+114
+ Finalizados
+ finalizados.htm
+115
+ Trazabilidad Documentos
+ trazabilidad_documentos.htm
+116
+ Novedad por Usuario
+ novedad_por_usuario.htm
+117
+ Novedad por Usuario (2)
+ novedad_por_usuario__2_.htm
+118
+ Nº Novedades por Usuario
+ n__novedades_por_usuario.htm
+119
+ Por Despacho
+ por_despacho.htm
+120
+ Indicadores de Gestión
+ indicadores_de_gestion_1.htm
+121
+ Novedades Despachos en Ruta
+ novedades_despachos_en_ruta.htm
+122
+ Cantidad Despachos por Empresa
+ cantidad_despachos_por_empresa.htm
+123
+ Informe de Conductores
+ informe_de_conductores.htm
+124
+ Reportes por Esfera
+ reportes_por_esfera.htm
+125
+ Novedades por Empresa
+ novedades_por_empresa.htm
+126
+ Consolidado de Novedades
+ consolidado_de_novedades.htm
+127
+ Proyección de Novedades
+ proyeccion_de_novedades.htm
+128
+ Proyección de Despachos por Usuario
+ proyeccion_de_despachos_por_usuario.htm
+129
+ Novedades por Tiempo
+ novedades_por_tiempo_1.htm
+130
+ Despachos en Transito (N)
+ despachos_en_transito__n_.htm
+131
+ Consulta ASTRANS
+ consulta_astrans.htm
+132
+ Usuario asignado a Novedades
+ usuario_asignado_a_novedades.htm
+133
+ Indicadores de Gestión
+ indicadores_de_gestion_2.htm
+134
+ Cumplimiento Citas de Cargue/Descargue
+ cumplimiento_citas_de_cargue_descargue.htm
+135
+ Estadía en Planta
+ estadia_en_planta.htm
+136
+ Solución de Novedades
+ solucion_de_novedades.htm
+137
+ Parametrizar Indicador Solución
+ parametrizar_indicador_solucion.htm
+138
+ Pendientes Móvil
+ pendientes_movil.htm
+139
+ Síntesis Operación
+ sintesis_operacion.htm
+140
+ Novedades por Tiempo
+ novedades_por_tiempo_2.htm
+141
+ Expedición Certificado Laboral
+ expedicion_certificado_laboral.htm
+142
+ Auditoría de Viajes
+ auditoria_de_viajes.htm
+143
+ Generar Informe de Operación
+ generar_informe_de_operacion.htm
+144
+ Indicador Call Center
+ indicador_call_center.htm
+145
+ Informe Despachos Limpios
+ informe_despachos_limpios.htm
+146
+ Despachos Recomendados
+ despachos_recomendados.htm
+147
+ Seguridad
+ seguridad.htm
+148
+ Usuarios
+ usuarios.htm
+149
+ Insertar
+ insertar_13.htm
+150
+ Listar
+ listar_13.htm
+151
+ Actualizar
+ actualizar_12.htm
+152
+ Eliminar
+ eliminar_11.htm
+153
+ Activar/Inactivar
+ activar_inactivar_6.htm
+154
+ Administrar claves móvil
+ administrar_claves_movil.htm
+155
+ Perfiles
+ perfiles.htm
+156
+ Insertar
+ insertar_14.htm
+157
+ Listar
+ listar_14.htm
+158
+ Actualizar
+ actualizar_13.htm
+159
+ Eliminar
+ eliminar_12.htm
+160
+ Copiar
+ copiar.htm
+161
+ Usuarios WAP
+ usuarios_wap.htm
+162
+ Insertar
+ insertar_15.htm
+163
+ Listar
+ listar_15.htm
+164
+ Actualizar
+ actualizar_14.htm
+165
+ Eliminar
+ eliminar_13.htm
+166
+ Cambio de Clave
+ cambio_de_clave.htm
+167
+ Aviso de Suspensión
+ aviso_de_suspension.htm
+168
+ Configuración
+ configuracion_1.htm
+169
+ Niveles de Autorización
+ niveles_de_autorizacion.htm
+170
+ Parámetros
+ parametros.htm
+171
+ Alertas Visuales
+ alertas_visuales.htm
+172
+ Insertar
+ insertar_16.htm
+173
+ Listar
+ listar_16.htm
+174
+ Actualizar
+ actualizar_15.htm
+175
+ Eliminar
+ eliminar_14.htm
+176
+ Mensajes de Texto
+ mensajes_de_texto.htm
+177
+ Alarmas
+ alarmas_1.htm
+178
+ Dispositivos
+ dispositivos.htm
+179
+ Configuración
+ configuracion_2.htm
+180
+ Emails
+ emails.htm
+181
+ Alarmas
+ alarmas_2.htm
+182
+ Asignación de Turnos
+ asignacion_de_turnos.htm
+183
+ Empresa
+ empresa.htm
+184
+ Insertar
+ insertar_17.htm
+185
+ Listar
+ listar_17.htm
+186
+ Actualizar
+ actualizar_16.htm
+187
+ Copiar Turnos
+ copiar_turnos.htm
+188
+ Cambiar Bandeja
+ cambiar_bandeja.htm
+189
+ Tablas
+ tablas.htm
+190
+ Lugares
+ lugares.htm
+191
+ Ciudades
+ ciudades.htm
+192
+ Novedades
+ novedades.htm
+193
+ Insertar
+ insertar_18.htm
+194
+ Listar
+ listar_18.htm
+195
+ Actualizar
+ actualizar_17.htm
+196
+ Eliminar
+ eliminar_15.htm
+197
+ Trayectos
+ trayectos.htm
+198
+ Insertar
+ insertar_19.htm
+199
+ Listar
+ listar_19.htm
+200
+ Actualizar
+ actualizar_18.htm
+201
+ Eliminar
+ eliminar_16.htm
+202
+ Protocolos
+ protocolos.htm
+203
+ Insertar
+ insertar_20.htm
+204
+ Asignar
+ asignar_2.htm
+205
+ Parametrizar Subcausas
+ parametrizar_subcausas.htm
+206
+ Asignar Subcausas a Protocolo
+ asignar_subcausas_a_protocolo.htm
+207
+ Transporte
+ transporte.htm
+208
+ Centro de Operaciones
+ centro_de_operaciones.htm
+209
+ Operaciones
+ operaciones.htm
+210
+ Impactos
+ impactos.htm
+211
+ Homologar Configuración
+ homologar_configuracion.htm
+212
+ Tiempos Logísticos
+ tiempos_logisticos.htm
+213
+ Recomendados
+ recomendados.htm
+214
+ Manual
+ manual.htm
+215
+ Informe Reportes
+ informe_reportes.htm
+216
+ Tarifas
+ tarifas.htm
+217
+ Tarifa Standar
+ tarifa_standar.htm
+218
+ Insertar
+ insertar_21.htm
+219
+ Listar
+ listar_20.htm
+220
+ Anular
+ anular_2.htm
+221
+ Tarifa Empresa
+ tarifa_empresa.htm
+222
+ Insertar
+ insertar_22.htm
+223
+ Listar
+ listar_21.htm
+224
+ Anular
+ anular_3.htm
+225
+ Reportes
+ reportes.htm
+226
+ Facturación FARO
+ facturacion_faro.htm
+227
+ Despachos en Transito (2)
+ despachos_en_transito__2_.htm
+228
+ Despachos (N)
+ despachos__n_.htm
+229
+ Insertar
+ insertar_23.htm
+230
+ Destinatarios
+ destinatarios.htm
+231
+ Importar Novedades
+ importar_novedades.htm
+232
+ Homologar Causas Saferbo
+ homologar_causas_saferbo.htm
+233
+ Comunicaciones
+ comunicaciones.htm
+234
+ Productos
+ productos.htm
+235
+ Zonas
+ zonas.htm
+236
+ Canales
+ canales.htm
+237
+ Asignar
+ asignar_3.htm
+238
+ Listar Asignación
+ listar_asignacion.htm
+239
+ Tipo Transporte
+ tipo_transporte.htm
+240
+ Orígenes por Transportadora
+ origenes_por_transportadora.htm
+241
+ Inactivación Temporal
+ inactivacion_temporal.htm
+242
+ Depósitos
+ depositos.htm
+243
+ Clientes
+ clientes.htm
+244
+ Insertar
+ insertar_24.htm
+245
+ Listar
+ listar_22.htm
+246
+ Actualizar
+ actualizar_19.htm
+247
+ Eliminar
+ eliminar_17.htm

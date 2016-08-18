@@ -1,0 +1,167 @@
+<?php
+class AnuStanda
+{
+    var $conexion;
+
+    function __construct($co, $us, $ca)
+ 		{
+			  $this -> conexion = $co;
+			  $this -> usuario = $us;
+			  $this -> cod_aplica = $ca;
+        switch($_POST[opcion])
+        {
+            case "1":
+            {
+              $this->formulario();
+            }
+            break;
+            case "2":
+				      $this ->Anular();
+            break;
+            default:
+            {
+            	$this->formulario();
+            }
+            break;
+        }
+    }
+
+
+
+    function formulario()
+    {
+        $tipos[0][0] = 0;
+        $tipos[0][1] = "-";
+				$tipos[1][0] = 'N';
+        $tipos[1][1] = "Novedades";
+				$tipos[2][0] = 'D';
+        $tipos[2][1] = "Despachos";
+        
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
+				echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/tarifa.js\"></script>\n";
+
+				$formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "ANULAR TARIFA STANDA", "form_insert\" id=\"formularioID");
+			
+        $formulario -> nueva_tabla();
+        $formulario -> lista( "Tipo de Cobro:","tip_tarifa\" id=\"tip_tarifaID\" onChange=\"form_insert.submit()",$tipos,1);
+				if($GLOBALS['tip_tarifa']){
+					$query = "SELECT cod_tarifa, tip_tarifa,
+													 val_minimo, DATE_FORMAT(fec_creaci,'%d-%m-%Y')
+			              FROM ".BASE_DATOS.".tab_genera_tarifa a 
+			              WHERE tip_tarifa = '".$GLOBALS['tip_tarifa']."' AND
+													ind_estado = '1' ";
+					$consulta = new Consulta($query, $this -> conexion);
+					$tarifa = $consulta -> ret_matriz();
+					if($tarifa){
+						echo "<tr><td class='celda_titulo' align='right' >";
+					  	echo "Observacion de Anulado";
+					  echo "</td>";
+						echo "<td class='celda_info' >";
+					  	echo "<textarea name='obs_anulad' id='obs_anuladID'  cols='40' Rows='2'></textarea>";
+					  echo "</td></tr>";
+						$formulario -> nueva_tabla();
+						$formulario -> boton("Aceptar","button\" onClick=\"anular()",0);
+						$formulario -> nueva_tabla();
+						$formulario -> linea("Datos de la Tarifa",0,"t2");						
+				    $formulario -> nueva_tabla();
+						$formulario -> linea("Valor Minimo",0,"t2");
+						$formulario -> linea(number_format($tarifa[0][2],0),1,"t");
+						$formulario -> linea("Fecha de Creacion",0,"t2");
+						$formulario -> linea($tarifa[0][3],1,"t");
+					}
+					if($tarifa[0][1]=='D'){
+						$query= "SELECT val_tarifa
+			         			 FROM ".BASE_DATOS.".tab_detall_tarifa
+							 			 WHERE cod_tarifa= '".$tarifa[0][0]."' ";
+						$consulta = new Consulta($query, $this -> conexion);
+						$val_tarifa = $consulta -> ret_matriz();
+						$formulario -> linea("Valor Despachos",0,"t2");
+						$formulario -> linea(number_format($val_tarifa[0][0],0),1,"t");
+					}
+					if($tarifa[0][1]=='N'){
+						$query= "SELECT can_minimo, can_maximo, val_tarifa
+			         			 FROM ".BASE_DATOS.".tab_detall_tarifa
+							 			 WHERE cod_tarifa= '".$tarifa[0][0]."' ";
+						$consulta = new Consulta($query, $this -> conexion);
+						$detall = $consulta -> ret_matriz();
+						$formulario -> nueva_tabla();
+						
+						echo '<td align="center" colspan="0" style="padding:4px;" class="celda_etiqueta">
+										Cantidad Minima</td>';
+						echo '<td align="center" colspan="0" style="padding:4px;" class="celda_etiqueta">
+										Cantidad Maxima&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+						echo '<td align="center" colspan="0" style="padding:4px;" class="celda_etiqueta">
+										Valor
+										&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';								
+						echo "</tr>";
+						$j=0;
+						$formulario -> nueva_tabla();
+						echo '<tr ><td width="100%"><div id="AplicationEndDIV" width="100%"></div>
+			          <div id="RyuCalendarDIV" width="100%"></div>
+			          <div id="popupDIV" width="100%">
+			
+					  <div id="filtros" width="100%">
+						
+					  </div><div id="tarifasID" width="100%">';
+							for( $i=0; $i < sizeof( $detall ); $i++ )
+							{	
+								echo 	"<table id='tarifas".$i."ID' width='100%'>";
+								//echo "<td class='celda_etiqueta' style='padding:4px;'   colspan='0' > </td>";		
+								echo "<td align='center'   class='celda_info' style='padding:4px;'   colspan='0' >
+												<input class='campo_texto' style='backgroun:none;border:0' readonly='true' value=".$detall[$i][0]."  type='text' size='5' maxlength='5' 
+								 				name='can_minimo[]'    /></td>";
+								echo "<td align='center' class='celda_info'  style='padding:4px;'   colspan='0' >
+												<input class='campo_texto' style='backgroun:none;border:0' readonly='true' value=".$detall[$i][1]."  type='text' size='5' maxlength='5' 
+								 				name='can_maximo[]'   /></td>";
+								echo "<td align='center' class='celda_info'  style='padding:4px;'   colspan='0' >
+												<input class='campo_texto' style='backgroun:none;border:0' readonly='true' type='text' value=".number_format($detall[$i][2])."  size='10' maxlength='10' 
+								 				name='val_tarifa[]'   /></td>";								
+								echo "</tr></table>";
+								
+							}
+					}
+				}
+				$formulario -> nueva_tabla();
+        $formulario -> oculto("url_archiv\" id=\"url_archivID\"","ins_client_emailx.php",0);
+		    $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
+				$formulario -> oculto("maxtarifa\" id=\"maxtarifaID",$j,0);
+        $formulario -> oculto("num_serie",0,0);
+        $formulario -> oculto("window","central",0);
+        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("opcion\" id=\"opcionID",1,0);
+        $formulario -> cerrar();
+        echo '
+					<script>
+			 			document.getElementById("tip_tarifaID").value="'.$GLOBALS["tip_tarifa"].'";	
+       		</script>';
+    }
+
+  
+	
+
+    function anular()
+    {
+    	$datos_usuario = $this -> usuario -> retornar();
+  		$query =  "UPDATE ".BASE_DATOS.".tab_genera_tarifa
+                 	SET	ind_estado = 0,
+											fec_modifi = NOW(),
+											usr_modifi = '".$datos_usuario['cod_usuari']."',
+											usr_anulad = '".$datos_usuario['cod_usuari']."',
+											obs_anulad = '".$GLOBALS['obs_anulad']."'
+								 WHERE tip_tarifa = '".$GLOBALS['tip_tarifa']."' AND
+								 			 ind_estado = 1";
+      $insercion = new Consulta($query, $this -> conexion,"BR");
+			if($insercion = new Consulta("COMMIT", $this -> conexion)){
+		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">ANULAR OTRA TARIFA STANDA</a></b>";
+		
+		     $mensaje =  " Se Anulo con Exito".$link_a;
+		     $mens = new mensajes();
+		     $mens -> correcto("ANULAR TARIFA STANDA",$mensaje);
+			}
+    }
+
+}
+$service = new AnuStanda($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
+?> 

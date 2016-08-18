@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Grupo OET - SAT GL</title>
+	 <link rel="stylesheet" type="text/css" href="css/loginNew.css">  
+	 <link rel="stylesheet" href="../satt_standa/estilos/jquery.css" type="text/css">
+	 
+	  
+
+	<script language="JavaScript" src="../satt_standa/js/forgot.js"></script>
+
+	<script language="JavaScript" src="../satt_standa/js/min.js"></script>
+	<script language="JavaScript" src="../satt_standa/js/jquery.js"></script>
+	<script language="JavaScript" src="../satt_standa/js/jquery.blockUI.js"></script>  
+
+
+	<script language="JavaScript" src="login.js"></script>
+
+ 
+
+	
+</head>
+
+
+
+
+<body>
+	<!-- -->
+	<div   class="wrapper">
+	<div class="container"> 
+		<div class="nelson"> 
+			<br>
+		<h1><img  style="border-radius:15px; background-color: #ffffff;" border="1" src="https://web10.intrared.net/ap/satt_faro/imagenes/logo-sat-color.png" /></h1>
+		 
+		<form id="login" class="form" name="login" method="post" action="session.php">
+			<input type="text" placeholder="USUARIO" name="usuario" required >
+			<input type="password" placeholder="CLAVE" name="clave" required >
+			<button type="submit" id="login-button"><b>ENTRAR</b></button>
+			<div class="enlaces">
+					            <a onclick="setForgot();"  > &iquest; Olvid&oacute; su Contrase&ntilde;a?</a>
+			</div>	
+			<span id="visible" class="aviso"><p>$login[2]</p></span>
+		    <input name="op" type="hidden" id="op" value="1">
+		    <input name="standa" id="standaID" type="hidden" value="satt_standa">
+		</form>
+	</div>
+	</div>
+	
+	<ul class="bg-bubbles">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+	<div id="footer">	 	
+		<a href="http://www.intrared.net/" class="intrared"><img src="imagenes/logo-intrared.png" height="52" width="117" alt="Logo intrared"></a>
+		<span class="derechos">Copyright © 2016 All rights reserved Intrared.</span>
+	</div>
+</div>
+	<!-- -->
+	 
+	<div id="forgotID" style="display:none;"></div>
+	
+</body>
+</html>

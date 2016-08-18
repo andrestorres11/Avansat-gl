@@ -1,0 +1,3 @@
+ÓPTICO; 3;
+ÓPTIMAS; 47;
+ÓPTIMO; 93;

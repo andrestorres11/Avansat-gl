@@ -1,0 +1,234 @@
+<?php
+class LisStanda
+{
+    var $conexion;
+
+    function LisStanda($co, $us, $ca)
+ 		{
+			  $this -> conexion = $co;
+			  $this -> usuario = $us;
+			  $this -> cod_aplica = $ca;
+        switch($_POST[opcion])
+        {
+            case "1":
+            {
+              $this->formulario();
+            }
+            break;
+            case "2":
+				      $this ->listar();
+            break;
+						case "3":
+				      $this ->infoTarifa();
+            break;
+            default:
+            {
+            	$this->formulario();
+            }
+            break;
+        }
+    }
+
+
+
+    function formulario()
+    {
+        $tipos[0][0] = 0;
+        $tipos[0][1] = "-";
+				$tipos[1][0] = 'N';
+        $tipos[1][1] = "Novedades";
+				$tipos[2][0] = 'D';
+        $tipos[2][1] = "Despachos";
+        
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
+				echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/tarifa.js\"></script>\n";
+
+				$formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "ANULAR TARIFA STANDA", "form_insert\" id=\"formularioID");
+			
+        $formulario -> nueva_tabla();
+        $formulario -> lista( "Tipo de Cobro:","tip_tarifa\" id=\"tip_tarifaID",$tipos,1);
+				echo "<tr><td class='celda_titulo' align='right' >";
+			  	echo "Observacion de Anulado";
+			  echo "</td>";
+				echo "<td class='celda_info' >";
+			  	echo "<textarea name='obs' id='obsID'  cols='20' Rows='4'></textarea>";
+			  echo "</td></tr>";
+				$formulario -> nueva_tabla();
+				$formulario -> boton("Aceptar","button\" onClick=\"aceptar_ins()",0);
+        $formulario -> oculto("url_archiv\" id=\"url_archivID\"","ins_client_emailx.php",0);
+		    $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
+				$formulario -> oculto("maxtarifa\" id=\"maxtarifaID",$j,0);
+        $formulario -> oculto("num_serie",0,0);
+        $formulario -> oculto("window","central",0);
+        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("opcion\" id=\"opcionID",1,0);
+        $formulario -> cerrar();
+        echo '
+					<script>
+			 			document.getElementById("tip_tarifaID").value="'.$GLOBALS["tip_tarifa"].'";	
+       		</script>';
+    }
+
+  
+	
+
+    function listar()
+    {
+        include( "../".DIR_APLICA_CENTRAL."/lib/general/dinamic_list.inc" );
+
+        echo "<link rel=\"stylesheet\" href=\"../".DIR_APLICA_CENTRAL."/estilos/dinamic_list.css\" type=\"text/css\">";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/dinamic_list.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/tarifa.js\"></script>\n";
+
+        $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "LISTAR TARIFAS STANDA", "formulario");
+        $sql = "SELECT cod_tarifa, if(tip_tarifa='N','NOVEDADES','DESPACHOS'),
+											 val_minimo, DATE_FORMAT(fec_creaci,'%d-%m-%Y'),
+											 if(ind_estado = '1','Activa','Inactiva')
+                FROM ".BASE_DATOS.".tab_genera_tarifa a 
+                WHERE 1 = 1 ";
+        if($GLOBALS['tip_tarifa'])
+          $sql .= " AND tip_tarifa = '".$GLOBALS['tip_tarifa']."' ";
+				if($GLOBALS['fec_creini'] && $GLOBALS['fec_crefin'])
+          $sql .= " AND fec_creaci >= '".$GLOBALS['fec_creini']."' AND  fec_creaci <= '".$GLOBALS['fec_crefin']."'";
+				if($GLOBALS['ind_estado']){
+					if($GLOBALS['ind_estado']=='A')
+          	$sql .= " AND ind_estado ='1'";	 
+					if($GLOBALS['ind_estado']=='I')
+          	$sql .= " AND ind_estado ='0'";	 
+				}
+
+        $list = new DinamicList($this->conexion, $sql, 1 );
+        $list->SetClose('no');
+        $list->SetHeader("Consecutivo", "field:cod_consec; type:link; onclick:infoTarifa()");
+        $list->SetHeader("Tipo", "field:tip_tarifa");
+				$list->SetHeader("Valor Minimo", "field:val_minimo");
+        $list->SetHeader("Fecha", "field:fec_creaci");
+				$list->SetHeader("Estado", "field:ind_estado");
+        $list->Display($this->conexion);
+
+        $_SESSION["DINAMIC_LIST"] = $list;
+        echo "<td>";
+        echo $list->GetHtml();
+        echo "</td>";
+
+        $formulario -> nueva_tabla();
+        $formulario -> oculto("url_archiv\" id=\"url_archivID\"","lis_tarifa_standa.php",0);
+		    $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
+        $formulario -> oculto("window","central",0);
+        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("opcion",2,0);
+
+        $formulario -> cerrar();
+        
+        echo '<tr><td><div id="AplicationEndDIV"></div>
+              <div id="RyuCalendarDIV" style="position: absolute; background: white; left: 0px; top: 0px; z-index: 3; display: none; border: 1px solid black; "></div>
+              <div id="popupDIV" style="position: absolute; left: 0px; top: 0px; width: 300px; height: 300px; z-index: 3; visibility: hidden; overflow: auto; border: 5px solid #333333; background: white; ">
+
+    		  <div id="filtros" >
+    		  </div>
+
+    		  <div id="result" >
+
+
+    		  </div>
+     		  </div><div id="alg"> <table></table></div></td></tr>';
+			echo"";
+    }
+
+	function infoTarifa()
+ 	{
+    ini_set('display_errors', true);
+		error_reporting(E_ALL & ~E_NOTICE);
+		global $HTTP_POST_FILES;
+		session_start();
+		$BASE = $_SESSION[BASE_DATOS];
+		define ('DIR_APLICA_CENTRAL', $_SESSION['DIR_APLICA_CENTRAL']);
+    define ('ESTILO', $_SESSION['ESTILO']);
+    define ('BASE_DATOS', $_SESSION['BASE_DATOS']);
+		include( "../lib/general/conexion_lib.inc" );
+		include( "../lib/general/form_lib.inc" );
+		include( "../lib/general/tabla_lib.inc" );
+		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/tarifa.js\"></script>\n";
+		$this -> conexion = new Conexion( "localhost", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+		$query = "SELECT cod_tarifa, if(tip_tarifa='N','NOVEDADES','DESPACHOS'),
+										 val_minimo, DATE_FORMAT(fec_creaci,'%d-%m-%Y'),
+										 if(ind_estado = '1','Activa','Inactiva')
+              FROM ".BASE_DATOS.".tab_genera_tarifa a 
+              WHERE cod_tarifa = '".$_POST['cod_tarifa']."' ";
+		$consulta = new Consulta($query, $this -> conexion);
+		$tarifa = $consulta -> ret_matriz();						
+		$formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "DETALLE TARIFA STANDA", "form_insert\" id=\"formularioID");
+    $formulario -> nueva_tabla();
+		$formulario -> linea("Tipo de Cobro",0,"t2");
+		$formulario -> linea($tarifa[0][1],0,"t");
+		$formulario -> linea("Valor Minimo",0,"t2");
+		$formulario -> linea(number_format($tarifa[0][2],0),1,"t");
+		$formulario -> linea("Fecha de Creacion",0,"t2");
+		$formulario -> linea($tarifa[0][3],0,"t");
+		$formulario -> linea("Estado",0,"t2");
+		$formulario -> linea($tarifa[0][4],1,"t");
+    
+		if($tarifa[0][1]=='DESPACHOS'){
+			$query= "SELECT val_tarifa
+         			 FROM ".BASE_DATOS.".tab_detall_tarifa
+				 			 WHERE cod_tarifa= '".$_POST['cod_tarifa']."' ";
+			$consulta = new Consulta($query, $this -> conexion);
+			$val_tarifa = $consulta -> ret_matriz();
+			$formulario -> linea("Valor Despachos",0,"t2");
+			$formulario -> linea(number_format($val_tarifa[0][0],0),1,"t");
+		}
+		if($tarifa[0][1]=='NOVEDADES'){
+			$query= "SELECT can_minimo, can_maximo, val_tarifa
+         			 FROM ".BASE_DATOS.".tab_detall_tarifa
+				 			 WHERE cod_tarifa= '".$_POST['cod_tarifa']."' ";
+			$consulta = new Consulta($query, $this -> conexion);
+			$detall = $consulta -> ret_matriz();
+			$formulario -> nueva_tabla();
+			
+			echo '<td align="center" colspan="0" style="padding:4px;" class="celda_etiqueta">
+							Cantidad Minima</td>';
+			echo '<td align="center" colspan="0" style="padding:4px;" class="celda_etiqueta">
+							Cantidad Maxima</td>';
+			echo '<td align="center" colspan="0" style="padding:4px;" class="celda_etiqueta">
+							Valor
+							&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>';								
+			echo "</tr>";
+			$j=0;
+			$formulario -> nueva_tabla();
+			echo '<tr ><td width="100%"><div id="AplicationEndDIV" width="100%"></div>
+          <div id="RyuCalendarDIV" width="100%"></div>
+          <div id="popupDIV" width="100%">
+
+		  <div id="filtros" width="100%">
+			
+		  </div><div id="tarifasID" width="100%">';
+				for( $i=0; $i < sizeof( $detall ); $i++ )
+				{	
+					echo 	"<table id='tarifas".$i."ID' width='100%'>";
+					//echo "<td class='celda_etiqueta' style='padding:4px;'   colspan='0' > </td>";		
+					echo "<td align='center'   class='celda_info' style='padding:4px;'   colspan='0' >
+									<input class='campo_texto' style='backgroun:none;border:0' readonly='true' value=".$detall[$i][0]."  type='text' size='5' maxlength='5' 
+					 				name='can_minimo[]'    /></td>";
+					echo "<td align='center' class='celda_info'  style='padding:4px;'   colspan='0' >
+									<input class='campo_texto' style='backgroun:none;border:0' readonly='true' value=".$detall[$i][1]."  type='text' size='5' maxlength='5' 
+					 				name='can_maximo[]'   /></td>";
+					echo "<td align='center' class='celda_info'  style='padding:4px;'   colspan='0' >
+									<input class='campo_texto' style='backgroun:none;border:0' readonly='true' type='text' value=".number_format($detall[$i][2])."  size='10' maxlength='10' 
+					 				name='val_tarifa[]'   /></td>";								
+					echo "</tr></table>";
+					
+				}
+		}
+		$formulario -> nueva_tabla();
+		$formulario -> boton("Cerrar","button\" onClick=\"ClosePopup()",0);
+    $formulario -> oculto("window","central",0);
+    $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+    $formulario -> oculto("opcion\" id=\"opcionID",3,0);
+    $formulario -> cerrar();
+	}
+}
+$service = new LisStanda($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
+?> 

@@ -1,0 +1,364 @@
+<?php
+
+class InsEvent
+{
+ var $conexion,
+     $cod_aplica,
+     $usuario;
+
+ function InsEvent($co, $us, $ca)
+ {
+  $this -> conexion = $co;
+  $this -> usuario = $us;
+  $this -> cod_aplica = $ca;
+  $this -> principal();
+ }
+
+ function principal()
+ {
+
+      switch($GLOBALS[opcion])
+      {
+        case "1":
+          $this -> Formulario();
+          break;
+        case "2":
+          $this -> registrar();
+          break;
+        case "3":
+          $this -> actualizar();
+          break;
+        case "4":
+          $this -> eliminar();
+          break;
+          case "5":
+          $this -> protocolo();
+          break;    
+        default:
+          $this -> Formulario();
+          break;
+      }
+ }
+
+
+
+
+
+ function Formulario()
+ {
+   $inicio[0][0] = 0;
+   $inicio[0][1] = '-';
+	 //transportadoras
+   $query = "SELECT a.cod_tercer,a.abr_tercer
+   				FROM ".BASE_DATOS.".tab_tercer_tercer a,
+   			     	 ".BASE_DATOS.".tab_tercer_activi b
+   			   WHERE a.cod_tercer = b.cod_tercer AND
+   			         b.cod_activi = ".COD_FILTRO_EMPTRA."
+   			         ORDER BY 2
+   			 ";
+    $consulta = new Consulta($query, $this -> conexion);
+    $trans = $consulta -> ret_matriz();
+    $transpor = array_merge($inicio, $trans);
+    if($GLOBALS['transp']){
+     $query = "SELECT cod_tercer,abr_tercer
+   				     FROM ".BASE_DATOS.".tab_tercer_tercer 
+   			       WHERE cod_tercer = '".$GLOBALS['transp']."'";
+    $consulta = new Consulta($query, $this -> conexion);
+    $trans = $consulta -> ret_matriz();
+    $transpor = array_merge($trans, $transpor);
+   }
+   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
+   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
+   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/proto.js\"></script>\n";
+   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
+   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
+   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
+   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
+   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
+
+  $formulario = new Formulario ("index.php","post","Insetar Evento","form_ins\" id=\"formularioID");
+  $formulario -> nueva_tabla();
+  $formulario -> lista("Transportador","transp\" id=\"transpID\" onchange=\"form_ins.submit();",$transpor,1); 
+  $formulario -> nueva_tabla();
+  $formulario -> oculto("window","central",0);
+  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("opcion\" id=\"opcionID",1,0);
+  $formulario -> oculto("url_archiv\" id=\"url_archivID\"","ins_evento_protoc.php",0);
+  $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
+  $formulario -> nueva_tabla();
+  if($GLOBALS['transp']){
+    
+    $usuario = $_SESSION["datos_usuario"]["cod_usuari"];
+    $formulario -> nueva_tabla();
+    $query = "SELECT cod_evento, nom_evento, cod_tiposx,
+                     acc_propue, acc_acorda, acc_frecci,
+                     acc_respon
+  				    FROM ".BASE_DATOS.".tab_evento_protoc
+              WHERE cod_transp = '".$GLOBALS['transp']."'";
+    $consulta = new Consulta($query, $this -> conexion);
+    $eventos = $consulta -> ret_matriz();
+    $query = "SELECT cod_consec,nom_tiposx
+   				    FROM ".BASE_DATOS.".tab_tiposx_protoc  ";
+    $consulta = new Consulta($query, $this -> conexion);
+    $tipos = $consulta -> ret_matriz();
+    $tipos = array_merge($inicio, $tipos);
+    $formulario -> nueva_tabla();
+    $formulario -> texto ("Evento","text","nom_evento\" id=\"nom_eventoID",0,20,20,"","" );
+    $formulario -> lista("Tipo","cod_tipox\" id=\"cod_tiposxID",$tipos,1);
+    echo "<tr><td align='left' class='celda_titulo'>Accion Propuesta
+             </td>";
+    echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="3" id="acc_propueID" name="acc_propue" ></textarea></td>';
+    echo "<td align='left' class='celda_titulo'>Accion Acordada
+             </td>";
+    echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="3" id="acc_acordaID" name="acc_acorda" ></textarea></td></tr>';
+    echo "<tr><td align='left' class='celda_titulo'>Frecuencia de la Accion
+             </td>";
+    echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="3" id="acc_frecciID" name="acc_frecci" ></textarea></td>';
+    echo "<td align='left' class='celda_titulo'>Responsable de la accion Acordada
+             </td>";
+    echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="3" id="acc_responID" name="acc_respon" ></textarea></td></tr>';
+    $formulario -> nueva_tabla();
+    $formulario -> botoni("Guardar","nuevo()",0);
+    echo '</tr></table><div style="height:300px; overflow:scroll"><table width="100%"  cellspacing="0" cellpadding="4" class="formulario" id="algoID">
+    <tbody><tr>'; 
+    for($i=0;$i<= sizeof($eventos)-1;$i++){
+      $tipo='';
+      $query = "SELECT cod_consec,nom_tiposx
+     				    FROM ".BASE_DATOS.".tab_tiposx_protoc  
+                WHERE cod_consec ='".$eventos[$i][2]."'";
+      $consulta = new Consulta($query, $this -> conexion);
+      $tipo = $consulta -> ret_matriz();
+      $tipo = array_merge( $tipo,$tipos);
+      $formulario -> nueva_tabla();
+      $formulario -> oculto("cod_evento$i\" id=\"cod_eventoID$i",$eventos[$i][0],0);
+      $formulario -> texto ("Evento","text","nom_evento$i\" id=\"nom_eventoID$i",0,20,20,"",$eventos[$i][1] );
+      $formulario -> lista("Tipo","cod_tiposx$i\" id=\"cod_tiposxID$i",$tipo,1);
+      echo "<tr><td align='left' class='celda_titulo'>Accion Propuesta
+               </td>";
+      echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="3" id="acc_propueID'.$i.'" name="acc_propue$i" >'.$eventos[$i][3].'</textarea></td>';
+      echo "<td align='left' class='celda_titulo'>Accion Acordada
+               </td>";
+      echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="3" id="acc_acordaID'.$i.'" name="acc_acorda$i" >'.$eventos[$i][4].'</textarea></td></tr>';
+      echo "<tr><td align='left' class='celda_titulo'>Frecuencia de la Accion
+               </td>";
+      echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="3" id="acc_frecciID'.$i.'" name="acc_frecci$i" >'.$eventos[$i][5].'</textarea></td>';
+      echo "<td align='left' class='celda_titulo'>Responsable de la accion Acordada
+               </td>";
+      echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="3" id="acc_responID'.$i.'" name="acc_respon$i" >'.$eventos[$i][6].'</textarea></td></tr>';
+      $formulario -> nueva_tabla();
+      $formulario -> botoni("Actualizar","actualizar($i)",0);
+      $formulario -> botoni("Eliminar","delEvento($i)",0);
+    }
+    echo "</table></div>";
+    
+    }
+
+  $formulario -> cerrar();
+  
+  echo '<tr><td><div id="AplicationEndDIV"></div>
+              <div id="RyuCalendarDIV" style="position: absolute; background: white; left: 0px; top: 0px; z-index: 3; display: none; border: 1px solid black; "></div>
+              <div id="popupDIV" style="position: absolute; left: 0px; top: 0px; width: 300px; height: 300px; z-index: 3; visibility: hidden; overflow: auto; border: 5px solid #333333; background: white; ">
+
+    		  <div id="filtros" >
+    		  </div>
+
+    		  <div id="result" >
+
+
+    		  </div>
+     		  </div><div id="alg"> <table></table></div></td></tr>';
+			echo"";
+
+ }
+
+   function registrar()
+    {		
+        ini_set('display_errors', true);
+    		error_reporting(E_ALL & ~E_NOTICE);
+    		global $HTTP_POST_FILES;
+    		session_start();
+    		$BASE = $_SESSION[BASE_DATOS];
+    		define ('DIR_APLICA_CENTRAL', $_SESSION['DIR_APLICA_CENTRAL']);
+        define ('ESTILO', $_SESSION['ESTILO']);
+        define ('BASE_DATOS', $_SESSION['BASE_DATOS']);
+    		include( "../lib/general/conexion_lib.inc" );
+    		include( "../lib/general/form_lib.inc" );
+    		include( "../lib/general/tabla_lib.inc" );
+        $this -> conexion = new Conexion( "localhost", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+        $usuario = $_SESSION["datos_usuario"]["cod_usuari"];
+        $error = 0;
+        $query= "SELECT MAX(cod_evento) 
+                 FROM ".BASE_DATOS.".tab_evento_protoc 
+                 WHERE cod_transp = '".$_POST["cod_transp"]."'";
+        $max = new Consulta($query, $this -> conexion,"BR");
+        $max = $max -> ret_matriz();
+        $max = $max[0][0]+1;
+        $encabe = "INSERT INTO ".BASE_DATOS.".tab_evento_protoc
+										( 
+											cod_evento, nom_evento, cod_tiposx, 
+											cod_transp, acc_propue, acc_acorda,
+                      acc_frecci, acc_respon, usr_creaci,
+                      fec_creaci 
+										)
+										VALUES
+										( 
+											'".$max."', '".$_POST["nom_evento"]."', '".$_POST["cod_tiposx"]."',
+                      '".$_POST["cod_transp"]."', '".$_POST["acc_propue"]."', '".$_POST["acc_acorda"]."',
+                      '".$_POST["acc_frecci"]."', '".$_POST["acc_respon"]."', '$usuario',
+                      NOW()
+										)";
+			  $insercion = new Consulta( $encabe, $this -> conexion, "BR" );
+
+        $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "ANULAR CONCILIACION", "formulario");
+        if( $insercion = new Consulta("COMMIT", $this -> conexion))
+        {
+          $formulario -> oculto("even\" id=\"evenID",1,0);  
+        }else{
+          $formulario -> oculto("even\" id=\"evenID","",0);
+        }
+    }
+
+  
+	  function actualizar()
+    {		
+        ini_set('display_errors', true);
+    		error_reporting(E_ALL & ~E_NOTICE);
+    		global $HTTP_POST_FILES;
+    		session_start();
+    		$BASE = $_SESSION[BASE_DATOS];
+    		define ('DIR_APLICA_CENTRAL', $_SESSION['DIR_APLICA_CENTRAL']);
+        define ('ESTILO', $_SESSION['ESTILO']);
+        define ('BASE_DATOS', $_SESSION['BASE_DATOS']);
+    		include( "../lib/general/conexion_lib.inc" );
+    		include( "../lib/general/form_lib.inc" );
+    		include( "../lib/general/tabla_lib.inc" );
+        $this -> conexion = new Conexion( "localhost", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+        $usuario = $_SESSION["datos_usuario"]["cod_usuari"];
+        $encabe = "UPDATE ".BASE_DATOS.".tab_evento_protoc
+										SET nom_evento = '".$_POST["nom_evento"]."',
+                        cod_tiposx = '".$_POST["cod_tiposx"]."', 
+											  acc_propue = '".$_POST["acc_propue"]."',
+                        acc_acorda = '".$_POST["acc_acorda"]."',
+                        acc_frecci = '".$_POST["acc_frecci"]."',
+                        acc_respon = '".$_POST["acc_respon"]."',
+                        usr_modifi = '$usuario',
+                        fec_modifi = NOW() 
+									 WHERE cod_evento = '".$_POST["cod_evento"]."' AND
+                         cod_transp = '".$_POST["cod_transp"]."'";
+                   echo $encabe; 
+			  $insercion = new Consulta( $encabe, $this -> conexion, "BR" );
+
+        $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "ANULAR CONCILIACION", "formulario");
+        if( $insercion = new Consulta("COMMIT", $this -> conexion))
+        {
+          $formulario -> oculto("even\" id=\"evenID",1,0);  
+        }else{
+          $formulario -> oculto("even\" id=\"evenID","",0);
+        }
+    }
+	
+	
+    function eliminar()
+    {		
+        ini_set('display_errors', true);
+    		error_reporting(E_ALL & ~E_NOTICE);
+    		global $HTTP_POST_FILES;
+    		session_start();
+    		$BASE = $_SESSION[BASE_DATOS];
+    		define ('DIR_APLICA_CENTRAL', $_SESSION['DIR_APLICA_CENTRAL']);
+        define ('ESTILO', $_SESSION['ESTILO']);
+        define ('BASE_DATOS', $_SESSION['BASE_DATOS']);
+    		include( "../lib/general/conexion_lib.inc" );
+    		include( "../lib/general/form_lib.inc" );
+    		include( "../lib/general/tabla_lib.inc" );
+        $this -> conexion = new Conexion( "localhost", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+        $usuario = $_SESSION["datos_usuario"]["cod_usuari"];
+        $encabe = "DELETE FROM ".BASE_DATOS.".tab_evento_protoc
+									 WHERE cod_evento = '".$_POST["cod_evento"]."' AND
+                         cod_transp = '".$_POST["cod_transp"]."'";
+			  $insercion = new Consulta( $encabe, $this -> conexion, "BR" );
+
+        $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "ANULAR CONCILIACION", "formulario");
+        if( $insercion = new Consulta("COMMIT", $this -> conexion))
+        {
+          $formulario -> oculto("even\" id=\"evenID",1,0);  
+        }else{
+          $formulario -> oculto("even\" id=\"evenID","",0);
+        }
+    }
+  
+  
+  function protocolo()
+ {
+    ini_set('display_errors', true);
+		error_reporting(E_ALL & ~E_NOTICE);
+		global $HTTP_POST_FILES;
+		session_start();
+		$BASE = $_SESSION[BASE_DATOS];
+		define ('DIR_APLICA_CENTRAL', $_SESSION['DIR_APLICA_CENTRAL']);
+    define ('ESTILO', $_SESSION['ESTILO']);
+    define ('BASE_DATOS', $_SESSION['BASE_DATOS']);
+		include( "../lib/general/conexion_lib.inc" );
+		include( "../lib/general/form_lib.inc" );
+		include( "../lib/general/tabla_lib.inc" );
+    include ("../lib/mensajes_lib.inc");
+		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
+		$this -> conexion = new Conexion( "localhost", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+    $query = "SELECT a.cod_evento, a.nom_evento, b.nom_tiposx,
+                     a.acc_propue, a.acc_acorda, a.acc_frecci,
+                     a.acc_respon
+  				    FROM ".BASE_DATOS.".tab_evento_protoc a,
+                   ".BASE_DATOS.".tab_tiposx_protoc b   
+              WHERE a.cod_transp = '".$GLOBALS['cod_transp']."' AND
+                    a.cod_tiposx = b.cod_consec 
+              ORDER BY a.cod_tiposx";
+    $consulta = new Consulta($query, $this -> conexion);
+    $eventos = $consulta -> ret_matriz();
+    $formulario = new Formulario ("index.php","post","Protocolos","form\" id=\"formuID");
+    $formulario -> nueva_tabla();
+    $formulario -> botoni("Cerrar","ClosePopup()",1);//validarCumplidos()
+    if(!$eventos){
+      $mensaje =  "La Transportadora no Tiene Protocolo";
+      $mens = new mensajes();
+      $mens -> error("",$mensaje);
+    }else{
+      $tipo='';
+      foreach($eventos AS $evento){
+        if($tipo!= $evento[2]){
+          echo "<br>";
+          $tipo=$evento[2];
+          $formulario -> nueva_tabla();
+          $formulario -> linea("Tipo de Protocolo :".$evento[2],1,"t2");
+        }
+        echo "<br>";
+        $formulario -> linea("Evento ",0,"t");
+        echo "<td align='left' >".$evento[1]."
+             </td></tr>";
+        $formulario -> linea("Accion Acordada",0,"t");     
+        echo '<td width="15%" align="left" class="celda_info"><textarea readonly=true cols="20" rows="3" id="acc_propueID" name="acc_propue" >'.$evento[3].'</textarea></td>';
+        $formulario -> linea("Accion Propuesta",0,"t");
+        echo '<td width="15%" align="left" class="celda_info"><textarea readonly=true cols="20" rows="3" id="acc_acordaID" name="acc_acorda" >'.$evento[4].'</textarea></td></tr>';
+        $formulario -> linea("Frecuencia de la Accion",0,"t");
+        echo '<td width="15%" align="left" class="celda_info"><textarea readonly=true cols="20" rows="3" id="acc_frecciID" name="acc_frecci" >'.$evento[5].'</textarea></td>';
+        $formulario -> linea("Responsable de la Accion",0,"t");
+        echo '<td width="15%" align="left" class="celda_info"><textarea cols="20" readonly=true rows="3" id="acc_responID" name="acc_respon" >'.$evento[6].'</textarea></td></tr>';
+      }
+      
+    }
+    
+    $formulario -> nueva_tabla();
+    $formulario -> botoni("Cerrar","ClosePopup()",1);//validarCumplidos()
+    $formulario -> cerrar();
+ }
+  
+  
+  
+  
+	
+}//FIN CLASE PROC_DESPAC
+
+   $proceso = new InsEvent($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
+
+
+
+?>

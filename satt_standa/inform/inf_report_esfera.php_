@@ -1,0 +1,373 @@
+<?
+
+class Informe
+{
+	var $conexion;
+	
+	function __construct( $conexion )
+	{
+		$this -> conexion = $conexion;
+		
+		switch( $GLOBALS[opcion] )
+		{
+			case "xls":
+				$this -> XLS();
+			break;
+      case "2":
+				$this -> getInforme();
+			break;
+			default:
+				$this -> Filtros();
+			break;
+		}
+	}
+	
+	function XLS()
+	{
+		session_start();
+		ini_set('memory_limit', '128M');
+		$archivo = "Informe".date("Y_m_d").".xls";
+		header('Content-Type: application/octetstream');
+		header('Expires: 0');
+		header('Content-Disposition: attachment; filename="'.$archivo.'"');
+		header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+		header('Pragma: public');
+
+		ob_start("ob_gzhandler");
+		echo $HTML = $_SESSION[html_info];
+		ob_end_flush();
+	}
+	
+	function Filtros()
+	{
+		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
+		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
+		
+		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
+		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
+		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
+		
+    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_report_esfera.js\"></script>\n";
+		
+		echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
+		
+		echo '
+		<style>
+			.cellHead
+			{
+				padding:3px 10px;
+				border-top:1px solid #FFF;
+				border-left:1px solid #FFF;
+				border-right:1px solid #DDD;
+				border-bottom:1px solid #DDD;
+			}
+			
+			.cellInfo
+			{
+				padding:3px 10px;
+				border-top:1px solid #FFF;
+				border-left:1px solid #FFF;
+				border-right:1px solid #DDD;
+				border-bottom:1px solid #DDD;
+			}
+      .celda_titulo2
+				{
+					border-right:1px solid #AAA;
+					font-size:12px;
+					width:20%;
+				}
+				
+				.celda_info
+				{
+					width:20%;
+					text-align:center;
+				}
+				
+				.campo
+				{
+					border:1px solid #CCC;		
+					text-transform:uppercase;
+				}
+				
+				.info
+				{
+					border:0px;		
+					text-align:center;					
+				}			
+				
+				.ui-autocomplete-loading 
+				{ 
+					background: white url(\'../".DIR_APLICA_CENTRAL."/estilos/images/ui-anim_basic_16x16.gif\') right center no-repeat; 
+				}	
+				
+				.ui-corner-all
+				{
+					cursor:pointer;
+				}
+				
+				/*.ui-autocomplete 
+				{
+					max-height: 200px;
+					height: 200px;
+					overflow-y: auto;
+				}*/
+		</style>
+		<script>
+		$(function() 
+		{
+				
+			
+			$.mask.definitions["A"]="[12]";
+			$.mask.definitions["M"]="[01]";
+		    $.mask.definitions["D"]="[0123]";
+			
+			$.mask.definitions["H"]="[012]";
+		    $.mask.definitions["N"]="[012345]";
+		    $.mask.definitions["n"]="[0123456789]";
+			
+			$( "#fec_incial" ).mask("Annn-Mn-Dn");
+			$( "#fec_incial" ).datepicker();
+			
+			$( "#fec_finali" ).mask("Annn-Mn-Dn");
+			$( "#fec_finali" ).datepicker();
+			
+		  });
+		</script>';
+
+		$transpor = $this -> getTransports();
+    $puestos =  $this -> getPuestos();
+    
+    	echo '
+		<script>
+		$(function() {
+			var tranportadoras = 
+			[';
+		
+			if( $transpor )
+			{
+				echo "\"Ninguna\"";
+				foreach( $transpor as $row )
+				{
+					echo ", \"$row[cod_tercer] - $row[abr_tercer]\"";
+				}			
+			};
+		
+		echo ']
+    
+    var esferas = 
+			[';
+		
+			if( $puestos )
+			{
+				echo "\"Ninguna\"";
+				foreach( $puestos as $row )
+				{
+					echo ", \"$row[cod_contro] - $row[nom_contro]\"";
+				}			
+			};
+		
+		echo ']
+    
+			$( "#busq_transp" ).autocomplete({
+				source: tranportadoras,
+				delay: 100
+			}).bind( "autocompleteclose", function(event, ui){$("#form_insID").submit();} );
+      
+      $( "#busq_transp" ).bind( "autocompletechange", function(event, ui){$("#form_insID").submit();} ); 
+            
+      $( "#busq_esfera" ).autocomplete({
+				source: esferas,
+				delay: 100
+			}).bind( "autocompleteclose", function(event, ui){$("#form_insID").submit();} );
+      
+      $( "#busq_esfera" ).bind( "autocompletechange", function(event, ui){$("#form_insID").submit();} ); 
+      });
+
+		</script>';
+		
+		$formulario = new Formulario ( "index.php", "post", "Informe Reporte por Esfera", "formulario" );
+	
+    $formulario -> linea( "-Filtros", 1, "t2" );
+		$formulario -> nueva_tabla();
+		$formulario -> texto ( "Fecha Inicio:", "text", "fec_incial\" id=\"fec_incial", 0, 10, 10, "", $_POST[fec_incial], "", "", NULL, 1 );
+		$formulario -> texto ( "Fecha Final:", "text", "fec_finali\" id=\"fec_finali", 0, 10, 10, "", $_POST[fec_finali], "", "", NULL, 1 );	
+    
+    $formulario -> nueva_tabla();
+		echo "<tr>";
+		echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0'>";
+		echo "<tr>";
+		echo "<td class='celda_titulo2' style='padding:4px;' width='100%' colspan='4' >B&uacute;squeda por Transportadora</td>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td class='celda_titulo' style='padding:4px;' width='50%' colspan='2' align='right' >
+				Nit / Nombre: </td>";
+		echo "<td class='celda_titulo' style='padding:4px;' width='50%' colspan='2' >
+				<input class='campo_texto' type='text'  
+					size='25' name='busq_transp' id='busq_transp' /></td>";
+		echo "</tr>";
+    
+    echo "<tr>";
+		echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0'>";
+		echo "<tr>";
+		echo "<td class='celda_titulo2' style='padding:4px;' width='100%' colspan='4' >B&uacute;squeda Por Esfera</td>";
+		echo "</tr>";
+		echo "<tr>";
+		echo "<td class='celda_titulo' style='padding:4px;' width='50%' colspan='2' align='right' >
+				Nombre Esfera: </td>";
+		echo "<td class='celda_titulo' style='padding:4px;' width='50%' colspan='2' >
+				<input class='campo_texto' type='text'  
+					size='25' name='busq_esfera' id='busq_esfera' /></td>";
+		echo "</tr>";
+		
+
+		$formulario -> nueva_tabla();
+		$formulario -> boton( "Aceptar", "button\" onClick=\"Validar();", 0 );		
+		$formulario -> oculto( "window", "central", 0 );
+		$formulario -> oculto( "opcion", 2, 0 );
+		$formulario -> oculto( "cod_servic", $GLOBALS[cod_servic], 0 );			
+		$formulario -> cerrar();
+	}
+	
+	function getTransports( $datos_usuario = NULL)
+	{
+              
+		$mSql = "SELECT a.cod_tercer, UPPER( a.abr_tercer ) as abr_tercer
+				  FROM ".BASE_DATOS.".tab_tercer_tercer a,
+					   ".BASE_DATOS.".tab_tercer_activi b,
+					   ".BASE_DATOS.".tab_despac_vehige c
+				  WHERE a.cod_tercer = b.cod_tercer AND
+                a.cod_tercer = c.cod_transp AND
+						    b.cod_activi = ".COD_FILTRO_EMPTRA."
+				  GROUP BY 1 
+          ORDER BY 2 ASC";
+		
+		$consult = new Consulta( $mSql, $this -> conexion );      
+		$report = $consult -> ret_matriz( 'a' ) ;
+		
+		return $report;
+	}
+  
+  function getPuestos( $datos_usuario = NULL)
+	{
+              
+		$mSql = "SELECT cod_contro, TRIM( nom_contro ) AS nom_contro
+             FROM ".BASE_DATOS.".tab_genera_contro
+             WHERE ind_virtua = '0' AND
+                   ind_estado = '1' AND 
+                   nom_contro LIKE 'EAL%'
+             GROUP BY 2";
+		
+		$consult = new Consulta( $mSql, $this -> conexion );      
+		$report = $consult -> ret_matriz( 'a' ) ;
+		
+		return $report;
+	}
+  
+  function homologaEAL( $cod_eal )
+  {
+  
+    $mSql = "SELECT cod_contro
+             FROM ".BASE_DATOS.".tab_homolo_pcxeal
+             WHERE cod_contro = '". $cod_eal ."' OR
+                   cod_homolo = '". $cod_eal ."'
+             GROUP BY cod_contro";
+     
+		
+		$consult = new Consulta( $mSql, $this -> conexion );      
+		$eal = $consult -> ret_matriz( 'a' ) ;
+    $padre = $eal[0][0];
+    if( $padre )
+    {
+      $mSql = "SELECT cod_homolo
+             FROM ".BASE_DATOS.".tab_homolo_pcxeal
+             WHERE cod_contro = '". $padre ."'  ";
+   
+      $consult = new Consulta( $mSql, $this -> conexion );      
+      $hijos = $consult -> ret_matriz( 'i' ) ;       
+    }
+    return $hijos;
+  }
+  function getInforme()
+  {
+    if( $_REQUEST[busq_transp] && $_REQUEST[busq_transp] != '')
+    {
+      $cod_tercer = explode( "-" , $_REQUEST[busq_transp] );
+      $cod_tercer = trim( $cod_tercer[0] );
+    }
+    if( $_REQUEST[busq_esfera] && $_REQUEST[busq_esfera] != '')
+    {
+      $cod_eal = explode( "-" , $_REQUEST[busq_esfera] );
+      $cod_eal = trim( $cod_eal[0] );
+      $cod_esfera = $this -> homologaEAL($cod_eal);
+    }
+    
+    
+    $mSql = " SELECT a.*, c.num_placax, IF( c.cod_conduc = '1001', c.nom_conduc, d.abr_tercer ) AS nom_conduc, h.abr_tercer, f.nom_ciudad AS nom_ciuori, g.nom_ciudad AS nom_ciudes FROM (
+              SELECT b.cod_contro, b.nom_contro, a.num_despac, a.fec_noveda ";
+
+    $mSql .= " FROM ". BASE_DATOS .".tab_despac_noveda a,
+                    ". BASE_DATOS .".tab_genera_contro b ";
+
+    $mSql .= " WHERE a.cod_contro = b.cod_contro AND
+                     b.ind_virtua = '0' AND
+                     b.ind_estado = '1' AND 
+                     b.nom_contro LIKE '%EAL%' ";
+    
+    if( $_REQUEST[fec_incial] && $_REQUEST[fec_finali] )
+    {
+      $mSql .= " 
+                AND DATE(a.fec_noveda) BETWEEN '".$_REQUEST[fec_incial]."' AND '".$_REQUEST[fec_finali]."' ";
+    }
+                     
+     $mSql .= ") AS a,";
+
+    $mSql .= " ". BASE_DATOS .".tab_despac_vehige c, 
+                    ". BASE_DATOS .".tab_tercer_tercer d,
+                    ". BASE_DATOS .".tab_despac_despac e,  
+                    ". BASE_DATOS .".tab_genera_ciudad f,  
+                    ". BASE_DATOS .".tab_genera_ciudad g,  
+                    ". BASE_DATOS .".tab_tercer_tercer h  ";
+                    
+    $mSql .= "WHERE a.num_despac = c.num_despac AND
+                    c.cod_conduc = d.cod_tercer AND
+                    a.num_despac = e.num_despac AND
+                    e.cod_ciuori = f.cod_ciudad AND
+                    e.cod_ciudes = g.cod_ciudad AND
+                    c.cod_transp = h.cod_tercer ";
+
+    if( $cod_tercer && $cod_tercer != '' )
+    {
+      $mSql .= " AND h.cod_tercer = '".$cod_tercer."' ";
+    }
+    
+        
+    if( $cod_esfera )
+    {
+      $mSql .= " AND a.cod_contro IN( ";
+      foreach( $cod_esfera as $row )
+      {
+      $mSql .= join(',', $row );
+      }
+      
+      $mSql .= " )";
+    }
+    else
+    {
+      $mSql .= " AND a.cod_contro = ". $cod_eal ." ";
+    }
+    
+    echo "<pre>";
+    print_r($mSql);
+    echo "</pre>";
+    die();
+    
+    
+    $consult = new Consulta( $mSql, $this -> conexion );      
+		$_INFORME = $consult -> ret_matriz( 'a' ) ;
+  }
+
+}
+
+$pagina = new Informe( $this -> conexion );
+
+?>

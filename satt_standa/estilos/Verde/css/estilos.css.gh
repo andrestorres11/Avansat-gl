@@ -1,0 +1,755 @@
+/* CSS Document */
+.barra
+{
+	background-color:#008000;
+	cursor:pointer;
+}
+
+.barra:hover
+{
+	background-color:#ffffff;
+	cursor:pointer;
+}
+
+
+/*GENERAL*/
+
+body,td,th {
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 11px;
+
+        color: #000000;
+
+}
+
+
+
+a {
+
+        text-decoration:none;
+
+        color: #336600;
+
+}
+
+
+
+a:hover {
+
+        text-decoration:underline;
+
+        color:#333333
+
+}
+
+.small {
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 12px;
+
+        color: #000000;
+
+}
+
+.texto1 {
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 12px;
+
+        color: #FFFFFF;
+
+        font-weight:bold;
+
+}
+
+.titulo1 {
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 12px;
+
+        font-weight: bold;
+
+}
+
+.titulo2 {
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 12px;
+
+        color:#CC3333;
+
+        font-weight: bold;
+
+}
+
+
+
+
+
+/*LISTAS*/
+
+.header {
+
+        background-color: #E1E1E1;
+
+        border-left: 2px solid #CDCDCD;
+
+        border-right: 2px solid #CDCDCD;
+
+        background-image:url("../imagenes/backg_03.gif")}
+
+
+
+.listar {
+
+        background-color: #CCCCCC;
+
+        border: 1px solid #CDCDCD;
+
+}
+
+.celda_titulo {
+
+        border-bottom:1px solid #999999;
+
+        background-color: #F5F5F5;
+
+        background-image:url("../imagenes/backg_01.gif");
+
+        color: #333333;
+
+        font-weight:bold;
+
+}
+
+.celda_error {
+
+        padding-left:10px;
+
+        padding-right:10px;
+
+        border-bottom:1px solid #efefef;
+
+        border-right:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#FFFFFF;
+
+        color:#740002;
+
+}
+
+.celda_aproba {
+
+        padding-left:10px;
+
+        padding-right:10px;
+
+        border-bottom:1px solid #efefef;
+
+        border-right:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#FFFFFF;
+
+        color:#336600;
+
+}
+
+
+
+.celda {
+
+        background-color:#ffffff;
+
+}
+
+.celda2 {
+
+        background-color: #F8F8F8;
+
+}
+
+
+
+.celda_dato_Hover {
+
+        background-color: #E6FCD8;
+
+
+
+}
+
+
+
+
+
+/*DATOS*/
+
+.celda_titulo2 {
+
+        border-bottom:1px solid #999999;
+
+        background-color: #F5F5F5;
+
+        background-image:url("../imagenes/backg_01.gif");
+
+        font-size:11px;
+
+        color: #336600;
+
+        font-weight:bold;
+
+}
+
+.tabla_datos {
+
+        border: 1px solid #CDCDCD;
+
+}
+
+.tabla_datos_ad {
+
+        border-bottom:1px solid #CDCDCD;
+
+        border-left:1px solid #CDCDCD;
+
+        border-right:1px solid #CDCDCD;
+
+}
+
+.celda_etiqueta {
+
+        background-color: #F5F5F5;
+
+        padding-right:10px;
+
+        padding-left:10px;
+
+        border-bottom:1px solid #cdcdcd;
+
+        border-top:1px solid #ffffff ;
+
+        color:#545454;
+
+        white-space:nowrap;
+
+        font-weight:bold;
+
+}
+
+.celda_info {
+
+        padding-left:10px;
+
+        padding-right:10px;
+
+        border-bottom:1px solid #efefef;
+
+        border-right:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#FFFFFF;
+
+        color:#000000;
+
+}
+
+.celda_error_relleno {
+
+        padding-left:10px;
+
+        padding-right:10px;
+
+        border-bottom:1px solid #efefef;
+
+        border-right:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#FFD9D9;
+
+        color:#000000;
+
+}
+
+.celda_urban_relleno {
+
+        padding-left:10px;
+
+        padding-right:10px;
+
+        border-bottom:1px solid #efefef;
+
+        border-right:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#99CC99;
+
+        color:#000000;
+
+}
+
+.celda_ultim_relleno {
+
+        padding-left:10px;
+
+        padding-right:10px;
+
+        border-bottom:1px solid #efefef;
+
+        border-right:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#d1ffcc;
+
+        color:#000000;
+
+}
+
+
+
+
+
+/*FORMULARIOS*/
+
+.form_01 {
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 11px;
+
+        color: #000000;
+
+}
+
+.campo_texto {
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 11px;
+
+        color: #000000;
+
+        border:1px solid #bababa;
+
+        padding-left:5px;
+
+        background-color:#ffffff;
+
+}
+
+
+
+.campo_texto_on {
+
+        font-family: Arial, Helvetica, sans-serif;
+
+        font-size: 11px;
+
+        color: #000000;
+
+        border:1px solid #bababa;
+
+        padding-left:5px;
+
+        background-color: #FFFFCC;
+
+}
+
+.crmButton{
+
+
+
+        border-left:1px solid #ffffff;
+
+        border-top:1px solid #ffffff;
+
+        border-right:1px solid #555555;
+
+        border-bottom:1px solid #555555;
+
+        width: 70px;
+
+}
+
+.save{
+
+        background-color: #336600;
+
+        border-bottom: 1px solid  #999999;
+
+        border-left: 1px solid #999999;
+
+        border-right: 1px solid #999999;
+
+        border-top: 1px solid #999999;
+
+        color:#fff;
+
+        font-weight:bold;
+
+}
+
+.cancel {
+
+        background-color: #DFDFDF;
+
+        border-bottom: 1px solid  #999999;
+
+        border-left: 1px solid #999999;
+
+        border-right: 1px solid #999999;
+
+        border-top: 1px solid #999999;
+
+        color:#444444;
+
+        font-weight:bold;
+
+}
+
+
+
+
+
+/* MENU */
+
+
+
+.celda_top {
+
+        background-color: #CCCCCC;
+
+        background-image: url("../imagenes/backg_menu_top.jpg");
+
+        border-bottom:1px solid #cdcdcd;
+
+}
+
+
+
+.menu {
+
+        background-color:#CCCCCC;
+
+        background-image: url("../imagenes/backg_menu.jpg");
+
+}
+
+
+
+.celda_menu_n1 {
+
+        border-top:1px solid #D7D7D7;
+
+        background-color: #F5F5F5;
+
+        background-image:url("../imagenes/backg_01.gif");
+
+        color: #333333;
+
+        font-weight:bold;
+
+
+
+}
+
+.celda_menu_n1_Hover {
+
+        border-top:1px solid #D7D7D7;
+
+        background-color: #F5F5F5;
+
+        background-image:url("../imagenes/backg_01_b.gif");
+
+        color: #333333;
+
+        font-weight:bold;
+
+
+
+}
+
+
+
+.celda_menu_n2 {
+
+        padding-left:10px;
+
+        border-bottom:1px solid #FFFFFF;
+
+        white-space:nowrap;
+
+        background-color: #F0F0F0;
+
+        color:#333333;
+
+        font-weight:bold;
+
+}
+
+.celda_menu_n2_Hover {
+
+        padding-left:10px;
+
+        border-bottom:1px solid #FFFFFF;
+
+        white-space:nowrap;
+
+        background-color: #E6FCD8;
+
+        color:#333333;
+
+        font-weight:bold;
+
+}
+
+.menu_n2:link {
+
+        color: #333333;
+
+        text-decoration: none;
+
+}
+
+.menu_n2:visited {
+
+        text-decoration: none;
+
+        color: #333333;
+
+}
+
+.menu_n2:hover {
+
+        text-decoration: underline;
+
+        color: #333333;
+
+}
+
+.menu_n2:active {
+
+        text-decoration: none;
+
+        color: #333333;
+
+}
+
+
+
+
+
+.celda_menu_n3 {
+
+        padding-left:20px;
+
+        border-bottom:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#FFFFFF;
+
+        color:#000000;
+
+}
+
+.celda_menu_n3_Hover {
+
+        padding-left:20px;
+
+        border-bottom:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#E6FCD8;
+
+        color:#000000;
+
+}
+
+.menu_n3:link {
+
+        color: #000000;
+
+        text-decoration: none;
+
+}
+
+.menu_n3:visited {
+
+        text-decoration: none;
+
+        color: #000000;
+
+}
+
+.menu_n3:hover {
+
+        text-decoration: underline;
+
+        color: #000000;
+
+}
+
+.menu_n3:active {
+
+        text-decoration: none;
+
+        color: #000000;
+
+}
+
+
+
+.celda_menu_n4 {
+
+        padding-left:30px;
+
+        border-bottom:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#FFFFFF;
+
+        color:#336600;
+
+}
+
+.celda_menu_n4_Hover {
+
+        padding-left:30px;
+
+        border-bottom:1px solid #efefef;
+
+        white-space:nowrap;
+
+        background-color:#E6FCD8;
+
+        color:#000000;
+
+}
+
+.menu_n4:link {
+
+        color: #336600;
+
+        text-decoration: none;
+
+}
+
+.menu_n4:visited {
+
+        text-decoration: none;
+
+        color: #336600;
+
+}
+
+.menu_n4:hover {
+
+        text-decoration: underline;
+
+        color: #333333;
+
+}
+
+.menu_n4:active {
+
+        text-decoration: none;
+
+        color: #336600;
+
+}
+
+
+
+.celdaV { font-size: 9pt; color: #000000; background-color: #DDBBFF }
+
+
+
+.celdaV a:active {  color: #333333; text-decoration: none}
+
+
+
+.celdaV a:hover {  color: #333333; background-color: #EEEEEE}
+
+
+
+.celdaV a:link {  color: #333333; text-decoration: none}
+
+
+
+.celdav a:visited {  color: #333333}
+
+
+
+.celdaR { font-size: 9pt; color: #000000; background-color: #FF8891 }
+
+
+
+.celdaR a:active {  color: #333333; text-decoration: none}
+
+
+
+.celdaR a:hover {  color: #333333; background-color: #EEEEEE}
+
+
+
+.celdaR a:link {  color: #333333; text-decoration: none}
+
+
+
+.celdaR a:visited {  color: #333333}
+
+
+
+.celdaN { font-size: 9pt; color: #000000; background-color: #FF9E5E }
+
+
+
+.celdaN a:active {  color: #333333; text-decoration: none}
+
+
+
+.celdaN a:hover {  color: #333333; background-color: #EEEEEE}
+
+
+
+.celdaN a:link {  color: #333333; text-decoration: none}
+
+
+
+.celdaN a:visited {  color: #333333}
+
+
+
+.celdaA { font-size: 9pt; color: #000000; background-color: #FFFF6C }
+
+
+
+.celdaA a:active {  color: #333333; text-decoration: none}
+
+
+
+.celdaA a:hover {  color: #333333; background-color: #EEEEEE}
+
+
+
+.celdaA a:link {  color: #333333; text-decoration: none}
+
+
+
+.celdaA a:visited {  color: #333333}

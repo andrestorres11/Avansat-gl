@@ -1,0 +1,13 @@
+/*VALIDATOR*/
+.inc_alert{
+    background: #72B42D;
+    padding: 2px;
+    color: white;
+    border-radius: 5px; 
+    position: relative;
+    z-index: 500 !important;
+    font-size: 9px;
+    margin-top:-22px;
+    box-shadow: 2px 2px 2px #0A0B0A;
+    cursor: pointer;
+}

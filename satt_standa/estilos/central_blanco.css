@@ -1,0 +1,158 @@
+body
+
+{ font-family: Arial, Helvetica, sans-serif;font-size: 10pt;background-color: #FFFFFF;color: #000000 }
+
+input
+
+{ font-family: Arial, Helvetica, sans-serif; font-size: 8pt; color: #000000 }
+
+select
+
+{ font-family: Arial, Helvetica, sans-serif; font-size: 8pt; color: #000000 }
+
+
+
+.titulo_menu
+
+{ font-size: 10pt;color: #FFFFFF;text-align: center;font-weight: bolder }
+
+
+
+.item_menu
+
+{ font-size: 9pt;color: #FFFFFF;background-color: #888888; }
+
+.item_menu a:hover
+
+{ color: #FFFFFF;background-color: #003399;text-decoration: none }
+
+.item_menu a:link
+
+{ color: #FFFFFF;text-decoration: none }
+
+.item_menu a:visited
+
+{ color: #FFFFFF;text-decoration: none }
+
+.item_menu a:active
+
+{ color: #FFFFFF;text-decoration: none }
+
+
+
+.etiqueta
+
+{ font-size: 8pt;color: #000000;  background-color: #CCCCCC }
+
+.etiqueta2
+
+{ font-size: 8pt; color: #FFFFFF; background-color: #B11902 }
+
+
+
+.celda
+
+{ font-size: 8pt;color: #000000;background-color: #F7F7F7 }
+
+.celda a:active
+
+{ color: #0033FF;text-decoration: none }
+
+.celda a:hover
+
+{ color: #0033FF;background-color: #BBBBBB }
+
+.celda a:link
+
+{ color: #0033FF;text-decoration: none }
+
+.celda a:visited
+
+{ color: #0033FF }
+
+
+
+.celda2
+
+{ font-size: 8pt; color: #000000; background-color: #EEEEEE }
+
+.celda2 a:active
+
+{ color: #0033FF; text-decoration: none }
+
+.celda2 a:hover
+
+{ color: #0033FF; background-color: #CCCCCC }
+
+.celda2 a:link
+
+{ color: #0033FF; text-decoration: none }
+
+.celda2 a:visited
+
+{ color: #0033FF }
+
+
+
+.celda3
+
+{ font-size: 8pt; color: #000000; background-color: #CCCCCC }
+
+.celda3 a:active
+
+{ color: #0033FF; text-decoration: none}
+
+.celda3 a:hover
+
+{  color: #0033FF; background-color: #CCCCCC}
+
+.celda3 a:link
+
+{  color: #0033FF; text-decoration: none}
+
+.celda3 a:visited
+
+{  color: #0033FF}
+/* Incluidos por fpinzon */
+TD.ubicacion
+{
+        font-size: 11px;
+        background-color: #DDDDDD;
+        color: #000000;
+        font-weight: bold;
+}
+/* Incluidos por lromero*/
+.planru_eti
+{
+        font-family: Trebuchet MS;
+        font-size: 10pt;
+        font-weight: bold;
+        color: #000000;
+        vertical-align: middle;
+}
+.planru_tex
+{
+        font-family: "Trebuchet MS";
+        font-size: 10pt;
+        color: #000000;
+        vertical-align: middle;
+}
+.planru_eti_tit {
+        font-family: Trebuchet MS;
+        font-size: 10pt;
+        font-weight: bold;
+        color: #000000;
+        border-top: thin solid #990000;
+        border-right: thin solid #990000;
+        border-left: thin solid #990000;
+}
+.planru_tex_tit {
+
+        font-family: "Trebuchet MS";
+        font-size: 10pt;
+        color: #000000;
+        vertical-align: bottom;
+        border-bottom: thin solid #990000;
+        border-right: thin solid #990000;
+        border-left: thin solid #990000;
+}

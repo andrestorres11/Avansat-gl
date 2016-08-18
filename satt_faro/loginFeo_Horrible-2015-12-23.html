@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<title>Grupo OET - SAT GL</title>
+	<link rel="stylesheet" type="text/css" href="css/login.css">
+	<link href='http://fonts.googleapis.com/css?family=Lato:300,700' rel='stylesheet' type='text/css'>
+</head>
+
+
+<script language="JavaScript" src="login.js"></script>
+<script language="JavaScript" src="../satt_standa/js/min.js"></script>
+<script language="JavaScript" src="../satt_standa/js/jquery.js"></script>
+<script language="JavaScript" src="../satt_standa/js/forgot.js"></script>
+<script language="JavaScript" src="../satt_standa/js/jquery.blockUI.js"></script>
+
+<link rel="stylesheet" href="../satt_standa/estilos/jquery.css" type="text/css">
+
+<body>
+	<div class="right">
+		<div class="logo-sat">
+			<img src="imagenes/logo-sat-gl.png" height="77" width="145" alt="">
+		</div>
+	</div>
+	<div class="left">
+		<form id="login" name="login" method="post" action="session.php">
+					<section class="imput">
+						<div class="logo"><img src="imagenes/logo-sat-color.png" height="97" width="165" alt="logo sat"></div>
+						<div> 
+	                		<input type="text" placeholder="Usuario" class="text-area" name="usuario" maxlength="32" required/> 
+	            		</div> 
+					    <div> 
+					        <input type="password" placeholder="Contrase&ntilde;a" class="text-area" name="clave" maxlength="32" required/> 
+					    </div> 
+
+					    <span id="visible" class="aviso"><p>$login[2]</p></span>
+					    <input name="op" type="hidden" id="op" value="1">
+					    <input name="standa" id="standaID" type="hidden" value="satt_standa">
+					    <div> 
+					        <input name="submit" type="submit" value="Entrar" id="submit" class="transition-b"/> 
+					        <div class="enlaces transition-b">
+					            <a onclick="setForgot();" style="text-decoration:none;cursor:pointer;font-size:11px;color:#224831;"> &iquest; Olvid&oacute; su Contrase&ntilde;a?</a>
+					        </div>					            
+					     </div>
+				
+					</section>
+			</form>
+	</div>
+
+	<div id="forgotID" style="display:none;"></div>
+
+	<footer>
+		
+		<a href="http://www.intrared.net/" class="intrared"><img src="imagenes/logo-intrared.png" height="52" width="117" alt="Logo intrared"></a>
+		<p class="derechos">Copyright © 2014 All rights reserved Intrared.</p>
+	</footer>
+</body>
+</html>
