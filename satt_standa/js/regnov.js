@@ -32,6 +32,16 @@ function aceptar_ins(formulario)
 	var min= (hora.value).substr(3,2);
 	var fecnov= new Date(ano,mes,dia,hor,min,"00");
 
+	if(obs.value == ""){
+		window.alert("La Observacion es Requerida")
+		validacion = false
+		return obs.focus();
+	}else if(obs.value.length < 9 ) {
+		window.alert("La Observacion Requiere minimo 9 caracteres")
+		validacion = false
+		return obs.focus();
+	}
+
 	if(date.value==""){
 		window.alert("La Fecha de la Novedad es Requerida")
 		validacion = false
