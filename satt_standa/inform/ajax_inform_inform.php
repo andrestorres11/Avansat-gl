@@ -78,8 +78,8 @@ class inform {
    /*! \fn: getInform
     *  \brief: Funcion de trancision para el reporte de No. de Novedades por usuario
     *  \author: Ing. Alexander Correa
-    *  \date: dia/mes/aÃ±o
-    *  \date modified: dia/mes/aÃ±o
+    *  \date: dia/mes/año
+    *  \date modified: dia/mes/año
     *  \param: 
     *  \param: 
     *  \return 
@@ -98,7 +98,7 @@ class inform {
         $intervalo = " 1 month"; // para los meses
       }
       
-      $data = $this->getDatosInform($datos->fec_inicia, $datos->fec_finali, $datos->usuario, $intervalo, $datos->perfil);
+      $data = $this->getDatosInform($datos->fec_inicia, $datos->fec_finali, $datos->usuario, $intervalo, $datos->perfil, $datos->tipInform);
        
       if( $datos->tipo == 1){
         $this->infoDia($data, $datos);
@@ -120,7 +120,7 @@ class inform {
      *  \param: $intervalo = intervalo de tiempo de la consulta
      *  \return objeto con los datos de la consulta
      */
-    private function getDatosInform($finicia, $ffinali, $usuario, $intervalo, $perfil){
+    private function getDatosInform($finicia, $ffinali, $usuario, $intervalo, $perfil, $tipInform = NULL){
         $and = "";
         $fec1 = "";
         $group = "";
@@ -146,38 +146,76 @@ class inform {
         if($usuario){
           $u = " AND a.usr_creaci IN ($usuario)";
         }
-        
-         $sql = "SELECT COUNT(DISTINCT(x.num_despac)) AS can_despac, COUNT(x.num_despac) AS can_regist, 
-                        x.usr_creaci, x.cod_perfil $fec1
+
+        $datoSelect = "x.num_despac";
+        $datoGroup = "x.usr_creaci"; 
+        $datoLabel = "x.usr_creaci";
+        $datoCodig = "x.cod_perfil";
+
+        if( $tipInform == "nov"){
+
+          $datoSelect = "x.cod_noveda";
+          $datoGroup = "x.cod_noveda"; 
+          $datoLabel = "x.cod_noveda";
+          $datoCodig = "x.cod_noveda";
+        }
+
+
+         $sql = "SELECT COUNT(DISTINCT($datoSelect)) AS can_despac, COUNT($datoSelect) AS can_regist, 
+                        $datoLabel AS usr_creaci, $datoCodig AS cod_perfil $fec1
                   FROM (
-                          (SELECT a.num_despac, a.fec_creaci, a.usr_creaci, b.cod_perfil  $and
+                          (SELECT a.cod_noveda, d.nom_noveda, a.num_despac, a.fec_creaci, a.usr_creaci, b.cod_perfil  $and
                                 FROM ".BASE_DATOS.".tab_despac_contro a
                                 INNER JOIN ".BASE_DATOS.".tab_genera_usuari b ON b.cod_usuari = a.usr_creaci
-                                INNER JOIN ".BASE_DATOS.".tab_genera_perfil c ON c.cod_perfil = b.cod_perfil 
+                                INNER JOIN ".BASE_DATOS.".tab_genera_perfil c ON c.cod_perfil = b.cod_perfil
+                                INNER JOIN ".BASE_DATOS.".tab_genera_noveda d ON a.cod_noveda = d.cod_noveda
                                 WHERE  a.fec_creaci >= '$finicia' AND  a.fec_creaci < '$ffinali' $p $u
                                 $group
                           )
-                         UNION 
-                         (SELECT a.num_despac, a.fec_creaci, a.usr_creaci, b.cod_perfil $and
+                         UNION ALL
+                         (SELECT a.cod_noveda, d.nom_noveda, a.num_despac, a.fec_creaci, a.usr_creaci, b.cod_perfil $and
                                 FROM ".BASE_DATOS.".tab_despac_noveda a 
                                 INNER JOIN ".BASE_DATOS.".tab_genera_usuari b ON b.cod_usuari = a.usr_creaci 
-                                INNER JOIN ".BASE_DATOS.".tab_genera_perfil c ON c.cod_perfil = b.cod_perfil 
+                                INNER JOIN ".BASE_DATOS.".tab_genera_perfil c ON c.cod_perfil = b.cod_perfil
+                                INNER JOIN ".BASE_DATOS.".tab_genera_noveda d ON a.cod_noveda = d.cod_noveda
                                 WHERE a.fec_creaci >= '$finicia' AND  a.fec_creaci < '$ffinali' $p $u
                                 $group
                           )
                       ) x 
-                  GROUP BY x.usr_creaci $fec1 
-                  ORDER BY x.usr_creaci $fec1";
+                  GROUP BY $datoGroup $fec1 
+                  ORDER BY $datoGroup $fec1"; 
+ 
         $consulta = new Consulta($sql, self::$cConexion);
-        $result= $consulta->ret_matrix("a");
+        $result= $consulta->ret_matrix("a"); 
+
         return $result;
+    }
+
+    /*! \fn: getNameNoveda
+    *  \brief: trae el nombre de una novedad
+    *  \author: Ing. Miguel Romero
+    *  \date: 07/09/2016 
+    *  \param: novedad
+    */
+    
+    
+    public function getNameNoveda($novedad)
+    {
+        $sql = "SELECT a.nom_noveda 
+                  FROM ".BASE_DATOS.".tab_genera_noveda a
+                 WHERE a.cod_noveda = ".$novedad; 
+ 
+        $consulta = new Consulta($sql, self::$cConexion);
+        $result= $consulta->ret_matrix("a"); 
+
+        return $result[0]['nom_noveda'];
     }
 
     /*! \fn: infoDia
      *  \brief: pinta el informe por dia del reporte de Numero de novedades por usuario
      *  \author: Ing. Alexander Correa
      *  \date: 26/11/2015 
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $datos = datos del post
      *  \param: $data = datos de la consulta para pintar los datos
      *  \return html
@@ -271,10 +309,22 @@ class inform {
             }
           $mTfoot .=$key == (count($mAux)-1)? "<tr style='text-align:center'><th colspan='2' class='CellHead2' style='text-align:center'>TOTAL</th>" : "";
           $mTr .= $j == 0 ? "<tr style='text-align:center'>" : ""; //para los totales del footer
-          $mTr3 .= $j == 0 ? "<tr style='text-align:center'><th rowspan='2' class='CellHead2'>C&oacute;digo Perfil</th><th class='CellHead2' rowspan='2'>Usuario</th>" : "";
+
+          if( $datos->tipInform == "usr" ){
+            $mTr3 .= $j == 0 ? "<tr style='text-align:center'><th rowspan='2' class='CellHead2'>C&oacute;digo Perfil</th><th class='CellHead2' rowspan='2'>Usuario</th>" : "";
+          }else{
+            $mTr3 .= $j == 0 ? "<tr style='text-align:center'><th rowspan='2' class='CellHead2'>C&oacute;digo Novedad</th><th class='CellHead2' rowspan='2'>Novedad</th>" : "";
+          }
+
           $mTr2 = "<tr style='text-align:center'>";
-          $mTr2.="<td class='cellInfo onlyCell'>".$mAux2[$key]."</td>
-                  <td class='cellInfo onlyCell' >$value</td>";
+          $mTr2.="<td class='cellInfo onlyCell'>".$mAux2[$key]."</td>";
+
+          if($datos->tipInform == 'usr'){
+            $mTr2.="<td class='cellInfo onlyCell' >".strtoupper($value)."</td>"; 
+          }else{ 
+            $mTr2.="<td class='cellInfo onlyCell' >".strtoupper($this -> getNameNoveda($value))." </td>"; 
+          }
+
           $i = 0; $x = 0;//variables para saber cuantas horas van en el reporte
           $tDespac = 0;
           $tDespac2 = 0;
@@ -283,7 +333,11 @@ class inform {
           $final2 = ($final);
          while($inici != $final){
             $mTr .= $j == 0 ? "<th colspan='2' class='CellHead2' style='text-align:center'> $inici:00</th>": "";
-            $mTr3 .= $j == 0 ? "<th class='CellHead2'>D. Tr&aacute;nsito</th><th class='CellHead2'>Registros</th>": "";
+            if ( $datos->tipInform != "usr" ) {
+              $mTr3 .= $j == 0 ? "<th colspan=\"2\" class='CellHead2'>Registros</th>": ""; 
+            }else{
+              $mTr3 .= $j == 0 ? "<th class='CellHead2'>D. Tr&aacute;nsito</th><th class='CellHead2'>Registros</th>": "";              
+            }
             $hora = $inici;
             if(strlen($inici) == 1){
               $hora = "0".$inici;
@@ -309,18 +363,34 @@ class inform {
             $img5 ="";
             $img6 ="";
             $imgData = '<img src="../' . DIR_APLICA_CENTRAL . '/imagenes/ver.png" width="16px" height="16px" style="cursor:pointer" />';
-            if($despachos > 0){
-                $img1 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(1,'."'$fec_inicia $inici2'".','."'$fec_inicia ".($hora_reporte)."'".','."'$value'".'  )">'.$despachos.'</a>'; 
+            if( $datos->tipInform == "usr" ){
+              if($despachos > 0 ){
+                  $img1 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(1,'."'$fec_inicia $inici2'".','."'$fec_inicia ".($hora_reporte)."'".','."'$value'".', '."'$datos->tipInform'".'  )">'.$despachos.'</a>'; 
+              }else{
+                $img1 = 0;
+              }
+
+              if($registros > 0){
+                  $img2 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(2,'."'$fec_inicia $hora'".','."'$fec_inicia ".($hora_reporte)."'".','."'$value'".' , '."'$datos->tipInform'".'  )">'.$registros.'</a>';
+              }else{
+                $img2 = 0;
+              }
             }else{
-            	$img1 = 0;
+
+              if($registros > 0){
+                  $img2 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(2,'."'$fec_inicia $hora'".','."'$fec_inicia ".($hora_reporte)."'".','."'$mAux2[$key]'".', '."'$datos->tipInform'".'   )">'.$registros.'</a>';
+              }else{
+                $img2 = 0;
+              }
             }
-            if($registros > 0){
-                $img2 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(2,'."'$fec_inicia $hora'".','."'$fec_inicia ".($hora_reporte)."'".','."'$value'".'  )">'.$registros.'</a>';
+            if( $datos->tipInform == "usr" ){
+              $mTr2.="<td class='cellInfo onlyCell'>$img1</td>
+                      <td class='cellInfo onlyCell'>$img2</td>";
+
             }else{
-            	$img2 = 0;
+
+              $mTr2.="<td colspan='2' class='cellInfo onlyCell'>$img2</td>";
             }
-            $mTr2.="<td class='cellInfo onlyCell'>$img1</td>
-                    <td class='cellInfo onlyCell'>$img2</td>";
             if( $key == (count($mAux)-1)){
                 $desp_totl = $mData[$fec_inicia." ".$hora]['can_despac'];
                 $regi_totl = $mData[$fec_inicia." ".$hora]['can_regist'];
@@ -329,18 +399,23 @@ class inform {
                 $mtregist += $regi_totl;
                 $usuarios = trim($usuarios, ',');
                 if($dth[$fec_inicia][$hora] >0 ){
-                    $img1 = '<a style="cursor:pointer;color: #000000  !important;" onclick = "detalle(1,'."'$fec_inicia $inici2'".','."'$fec_inicia " .($hora_reporte)."'".','."'$usuarios'".'  )">'.($dth[$fec_inicia][$hora]+0).'</a>';
+                    $img1 = '<a style="cursor:pointer;color: #000000  !important;" onclick = "detalle(1,'."'$fec_inicia $inici2'".','."'$fec_inicia " .($hora_reporte)."'".','."'$usuarios'".' , '."'$datos->tipInform'".'  )">'.($dth[$fec_inicia][$hora]+0).'</a>';
                 }else{
                 	$img1 = 0;
                 }
                 if($regi_totl > 0){
-                  $img2 = '<a style="cursor:pointer;color: #000000 !important;" onclick = "detalle(2,'."'$fec_inicia $hora'".','."'$fec_inicia ".($hora_reporte)."'".','."'$usuarios'".'  )">'.($regi_totl+0).'</a>';
+                  $img2 = '<a style="cursor:pointer;color: #000000 !important;" onclick = "detalle(2,'."'$fec_inicia $hora'".','."'$fec_inicia ".($hora_reporte)."'".','."'$usuarios'".' , '."'$datos->tipInform'".'  )">'.($regi_totl+0).'</a>';
                 }else{
                 	$img2 = 0;
                 }
             }
-            $mTfoot .= $key == (count($mAux)-1)? "<th class='CellHead2' style='text-align:center'>$img1</th>
-                                                  <th class='CellHead2' style='text-align:center'>$img2</th>": "";
+            if ($datos->tipInform == "usr") { 
+              $mTfoot .= $key == (count($mAux)-1)? "<th class='CellHead2' style='text-align:center'>$img1</th>
+                                                    <th class='CellHead2' style='text-align:center'>$img2</th>": "";
+            }else{
+
+              $mTfoot .= $key == (count($mAux)-1)? "<th colspan='2' class='CellHead2' style='text-align:center'>$img2</th>": "";
+            }
             
             /*if($inici == 24){
               $inici = 0;
@@ -350,40 +425,68 @@ class inform {
             
           }
           if($mtdespac >0 ){
-            $img5 = '<a style="cursor:pointer;color:#000000 !important;" onclick = "detalle(1,'."'$fec_inicia $datos->hor_inicia'".','."'".$fec_inicia ." ".($datos->hor_finali +1)."'".','."'$usuarios'".'  )">'.$mtdespac.'</a>';
+            $img5 = '<a style="cursor:pointer;color:#000000 !important;" onclick = "detalle(1,'."'$fec_inicia $datos->hor_inicia'".','."'".$fec_inicia ." ".($datos->hor_finali +1)."'".','."'$usuarios'".' , '."'$datos->tipInform'".'  )">'.$mtdespac.'</a>';
           }else{
           	$img5 = 0;
           }
           if($mtregist > 0){
-            $img6 = '<a style="cursor:pointer;color:#000000 !important;" onclick = "detalle(2,'."'$fec_inicia $datos->hor_inicia'".','."'".$fec_inicia ." ".($datos->hor_finali +1)."'".','."'$usuarios'".'  )">'.$mtregist.'</a>';
+            $img6 = '<a style="cursor:pointer;color:#000000 !important;" onclick = "detalle(2,'."'$fec_inicia $datos->hor_inicia'".','."'".$fec_inicia ." ".($datos->hor_finali +1)."'".','."'$usuarios'".' , '."'$datos->tipInform'".'  )">'.$mtregist.'</a>';
           }else{
           	$img6 = 0;
           }
           
-          $mTfoot .= $key == (count($mAux)-1)? "<th class='CellHead2' style='text-align:center'>$img5</th><th class='CellHead2' style='text-align:center'>$img6</th>": "";
-          $mTfoot .=  $key == (count($mAux)-1)? "</tr><tr><td class='cellInfo onlyCell' colspan='".(($i*2)+4)."'>&nbsp;</td></tr>": "";
-          $mTr .= $j == 0 ? "<td colspan='2' class='CellHead2'> Total</td></tr>": "";
-          $mTr3 .= $j == 0 ? "<th class='CellHead2'>D. Tr&aacute;nsito</th><th class='CellHead2'>Registros</th>": "";
+          if ($datos->tipInform == "usr" ) {
+            
+            $mTfoot .= $key == (count($mAux)-1)? "<th class='CellHead2' style='text-align:center'>$img5</th><th class='CellHead2' style='text-align:center'>$img6</th>": "";
+          }else{
 
+            $mTfoot .= $key == (count($mAux)-1)? "<th class='CellHead2' colspan='2' style='text-align:center'>$img6</th>": "";
+          }
+
+
+          $mTfoot .=  $key == (count($mAux)-1)? "</tr><tr><td class='cellInfo onlyCell' colspan='".(($i*2)+4)."'>&nbsp;</td></tr>": "";
+
+
+          $mTr .= $j == 0 ? "<td colspan='2' class='CellHead2'> Total</td></tr>": "";
+          if ( $datos->tipInform != "usr" ) {
+            $mTr3 .= $j == 0 ? "<th colspan=\"2\" class='CellHead2'>Registros</th>": "";
+          }else{
+            $mTr3 .= $j == 0 ? "<th class='CellHead2'>D. Tr&aacute;nsito</th><th class='CellHead2'>Registros</th>": "";
+          }
           $img3 = "";
           $img4 = "";
-          if($tDespac > 0){
-              $img3 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(1,'."'$fec_inicia $inici2'".','."'$fec_inicia $final2'".','."'$value'".')"> '.$tDespac.'</a>';
-	      }else{
-	      	$img3 = 0;
-	      }
-	      if($tRegist > 0){
-	          $img4 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(2,'."'$fec_inicia $inici2'".','."'$fec_inicia $final2'".','."'$value'".')"> '.$tRegist.'</a>';
-	      }else{
-	      	$img4 = 0;
-	      }
-          $mTr2 .= "<td class='cellInfo onlyCell'>$img3</td> 
-                    <td class='cellInfo onlyCell'>$img4</td>";
+          if($datos->tipInform == "usr" ){
+ 
+            if($tDespac > 0){
+                  $img3 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(1,'."'$fec_inicia $inici2'".','."'$fec_inicia $final2'".','."'$value'".', '."'$datos->tipInform'".' )"> '.$tDespac.'</a>';
+    	      }else{
+    	      	$img3 = 0;
+    	      }  
+    	      if($tRegist > 0){
+    	          $img4 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(2,'."'$fec_inicia $inici2'".','."'$fec_inicia $final2'".','."'$value'".', '."'$datos->tipInform'".' )"> '.$tRegist.'</a>';
+    	      }else{
+    	      	$img4 = 0;
+    	      }
+          }else{
+            if($tRegist > 0){
+                $img4 = '<a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle(2,'."'$fec_inicia $inici2'".','."'$fec_inicia $final2'".','."'$mAux2[$key]'".', '."'$datos->tipInform'".' )"> '.$tRegist.'</a>';
+            }else{
+              $img4 = 0;
+            }
+          }
+          if( $datos->tipInform == "usr" ){
+
+            $mTr2 .= "<td class='cellInfo onlyCell'>$img3</td> 
+                      <td class='cellInfo onlyCell'>$img4</td>";
+          }else{
+
+            $mTr2 .= "<td colspan='2' class='cellInfo onlyCell'>$img4</td>";
+          }
           $mTr2 .= "</tr>";
           
           if( $j == 0 ){
             $mtitulo = "<tr>
-                           <th class='CellHead2' colspan='".(($i*2)+4)."' style='text-align:center'> <b>$fec_inicia $datos->hor_inicia a $datos->hor_finali</b></th>
+                           <th class='CellHead2' colspan='".(($i*2)+4)."' style='text-align:center'> <b>$fec_inicia $datos->hor_inicia a $datos->hor_finali </b></th>
                          </tr>";
           }else{
             $mtitulo= "";
@@ -401,7 +504,7 @@ class inform {
 
       if(!$mData){
         $mHtml = "<div class='col-md-12 Style2DIV'>
-                        <b style='color:#000000 !important; text-align:center !important;'>No se encontrÃ³ informaciÃ³n para los parametros de busqueda especificados.</b>
+                        <b style='color:#000000 !important; text-align:center !important;'>No se encontró información para los parametros de busqueda especificados.</b>
                   </div>";
       }
 
@@ -411,8 +514,8 @@ class inform {
     /*! \fn: infoSemana
      *  \brief: Funcion para pintar el general semanal del reporte No de Novedades por usuario
      *  \author: Ing. Alexander Correa
-     *  \date: dia/mes/aÃ±o
-     *  \date modified: dia/mes/aÃ±o
+     *  \date: dia/mes/año
+     *  \date modified: dia/mes/año
      *  \param: $data -> arreglo con los datos a pintar
      *  \param: $datos -> rreglo con los datos del post
      *  \return 
@@ -441,6 +544,9 @@ class inform {
       }
       ?>
       <div class="col-md-12 Style2DIV scroll">
+        <div id="tabla" class="col-md-12 Style2DIV">
+        <label><img src="../<?=$_SESSION['DIR_APLICA_CENTRAL']?>/imagenes/excel.jpg"  style="cursor:pointer" onclick="pintarExcel()"/></label>
+        <table width="100%" id="TablaDetalle" cellspacing="0" cellpadding="2" border="0" class="table hoverTable">
         <table width="100%" cellspacing="0" cellpadding="2" border="0" id="detalle" class="table hoverTable">
       <?php
 
@@ -449,35 +555,70 @@ class inform {
            <tr>
             <th class='CellHead2' style='text-align:center' colspan="4">Registros de la semana No. <?= $sem_inicia ?></th>
            </tr>
-           <tr>
-            <th class='CellHead2' style='text-align:center'>C&oacute;digo de Perfil</th>
-            <th class='CellHead2' style='text-align:center'>Usuario</th>
-            <th class='CellHead2' style='text-align:center'>Total de Despachos En tr&aacute;nsito</th>
-            <th class='CellHead2' style='text-align:center'>Total de Registros</th>
-          </tr> 
-      <?php
-          foreach ($mAux as $key => $value) {
-            ?>
+      <?php 
+        if( $datos->tipInform == "nov"){
+          ?>           
+               <tr>
+                <th class='CellHead2' style='text-align:center'>C&oacute;digo de Novedad</th>
+                <th class='CellHead2' style='text-align:center'>Novedad</th> 
+                <th class='CellHead2' style='text-align:center'>Total de Registros</th>
+              </tr> 
+          <?php
+        }else{
+          ?>           
+               <tr>
+                <th class='CellHead2' style='text-align:center'>C&oacute;digo de Perfil</th>
+                <th class='CellHead2' style='text-align:center'>Usuario</th>
+                <th class='CellHead2' style='text-align:center'>Total de Despachos En tr&aacute;nsito</th>
+                <th class='CellHead2' style='text-align:center'>Total de Registros</th>
+              </tr> 
+          <?php
+        }   
+          foreach ($mAux as $key => $value) { 
+            if( $datos->tipInform == "nov"){
+            ?>           
                <tr>
                  <td class='cellInfo onlyCell' style='text-align:center'><?= $mAux2[$key] ?></td>
-                 <td class='cellInfo onlyCell' style='text-align:center'><?= $value ?></td>
-                 <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$sem_inicia]['can_despac']+0) ?></td>
+                 <td class='cellInfo onlyCell' style='text-align:center'><?= strtoupper($this -> getNameNoveda($value)) ?></td> 
                  <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$sem_inicia]['can_regist']+0) ?></td>
                </tr>
+              <?php
+            }else{
+              ?>           
+                 <tr>
+                   <td class='cellInfo onlyCell' style='text-align:center'><?= $mAux2[$key] ?></td>
+                   <td class='cellInfo onlyCell' style='text-align:center'><?= $value ?></td>
+                   <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$sem_inicia]['can_despac']+0) ?></td>
+                   <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$sem_inicia]['can_regist']+0) ?></td>
+                 </tr>
+              <?php
+            }    
+          }  
+          if( $datos->tipInform == "nov"){
+          ?>           
+           <tr>
+               <th colspan="2" class='CellHead2' style='text-align:center'>Total</th>  
+               <th class='CellHead2' style='text-align:center'><?= $mData[$sem_inicia]['can_regist'] ?></th>
+           </tr>
             <?php
-          }
-          ?>
+          }else{
+            ?>           
            <tr>
                <th colspan="2" class='CellHead2' style='text-align:center'>Total</th>
                <th class='CellHead2' style='text-align:center'><?= $mData[$sem_inicia]['can_despac'] ?></th>
                <th class='CellHead2' style='text-align:center'><?= $mData[$sem_inicia]['can_regist'] ?></th>
            </tr>
+            <?php
+          } 
+            ?>
+
            <tr>
              <th colspan="4">&nbsp;</th>
            </tr>
           <?php 
             $sem_inicia ++;
           } ?>
+        </table>
         </table>
       </div>
       <?php
@@ -486,8 +627,8 @@ class inform {
     /*! \fn: infoMes
      *  \brief: Funcion para pintar el general mensual del reporte No de Novedades por usuario
      *  \author: Ing. Alexander Correa
-     *  \date: dia/mes/aÃ±o
-     *  \date modified: dia/mes/aÃ±o
+     *  \date: dia/mes/año
+     *  \date modified: dia/mes/año
      *  \param: $data -> arreglo con los datos a pintar
      *  \param: $datos -> rreglo con los datos del post
      *  \return 
@@ -510,6 +651,9 @@ class inform {
       }
       ?>
       <div class="col-md-12 Style2DIV scroll">
+        <div id="tabla" class="col-md-12 Style2DIV">
+        <label><img src="../<?= $_SESSION['DIR_APLICA_CENTRAL']?>/imagenes/excel.jpg"  style="cursor:pointer" onclick="pintarExcel()"/></label>
+        <table width="100%" id="TablaDetalle" cellspacing="0" cellpadding="2" border="0" class="table hoverTable">
         <table width="100%" cellspacing="0" cellpadding="2" border="0" id="detalle" class="table hoverTable">
           
           <?php
@@ -520,29 +664,63 @@ class inform {
                  <tr>
                   <th class='CellHead2' style='text-align:center' colspan="4">Registros del mes <?= $fec_inicia ?></th>
                  </tr>
-                 <tr>
-                  <th class='CellHead2' style='text-align:center'>C&oacute;digo de Perfil</th>
-                  <th class='CellHead2' style='text-align:center'>Usuario</th>
-                  <th class='CellHead2' style='text-align:center'>Total de Despachos En tr&aacute;nsito</th>
-                  <th class='CellHead2' style='text-align:center'>Total de Registros</th>
-                </tr> 
-            <?php
+
+                <?php
+                if( $datos->tipInform == "nov"){ 
+                ?>
+                   <tr>
+                    <th class='CellHead2' style='text-align:center'>C&oacute;digo de Novedad</th>
+                    <th class='CellHead2' style='text-align:center'>Novedad</th> 
+                    <th class='CellHead2' colspan='2' style='text-align:center'>Total de Registros</th>
+                  </tr> 
+                  <?php
+                }else{
+                  ?>           
+                   <tr>
+                    <th class='CellHead2' style='text-align:center'>C&oacute;digo de Perfil</th>
+                    <th class='CellHead2' style='text-align:center'>Usuario</th>
+                    <th class='CellHead2' style='text-align:center'>Total de Despachos En tr&aacute;nsito</th>
+                    <th class='CellHead2' style='text-align:center'>Total de Registros</th>
+                  </tr> 
+                  <?php
+                } 
                 foreach ($mAux as $key => $value) {
-                 ?>
-                 <tr>
-                   <td class='cellInfo onlyCell' style='text-align:center'><?= $mAux2[$key] ?></td>
-                   <td class='cellInfo onlyCell' style='text-align:center'><?= $value ?></td>
-                   <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$fec_inicia]['can_despac']+0) ?></td>
-                   <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$fec_inicia]['can_regist']+0) ?></td>
-                 </tr>
-                 <?php
+                  if( $datos->tipInform == "nov"){ 
+                  ?>
+                     <tr>
+                       <td class='cellInfo onlyCell' style='text-align:center'><?= $mAux2[$key] ?></td>
+                       <td class='cellInfo onlyCell' style='text-align:center'><?= strtoupper($this -> getNameNoveda($value)) ?></td> 
+                       <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$fec_inicia]['can_regist']+0) ?></td>
+                     </tr> 
+                    <?php
+                  }else{
+                    ?>     
+                     <tr>
+                       <td class='cellInfo onlyCell' style='text-align:center'><?= $mAux2[$key] ?></td>
+                       <td class='cellInfo onlyCell' style='text-align:center'><?= $value ?></td>
+                       <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$fec_inicia]['can_despac']+0) ?></td>
+                       <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$fec_inicia]['can_regist']+0) ?></td>
+                     </tr> 
+                    <?php
+                  } 
                 }
-               ?>
-               <tr>
-                   <th colspan="2" class='CellHead2' style='text-align:center'>Total</th>
-                   <th class='CellHead2' style='text-align:center'><?= $mData[$fec_inicia]['can_despac'] ?></th>
-                   <th class='CellHead2' style='text-align:center'><?= $mData[$fec_inicia]['can_regist'] ?></th>
-               </tr>
+                if( $datos->tipInform == "nov"){ 
+                  ?>
+                     <tr>
+                         <th colspan="2" class='CellHead2' style='text-align:center'>Total</th> 
+                         <th class='CellHead2' style='text-align:center'><?= $mData[$fec_inicia]['can_regist'] ?></th>
+                     </tr>
+                    <?php
+                  }else{
+                    ?>     
+                       <tr>
+                           <th colspan="2" class='CellHead2' style='text-align:center'>Total</th>
+                           <th class='CellHead2' style='text-align:center'><?= $mData[$fec_inicia]['can_despac'] ?></th>
+                           <th class='CellHead2' style='text-align:center'><?= $mData[$fec_inicia]['can_regist'] ?></th>
+                       </tr>
+                    <?php
+                  } 
+                  ?> 
                <tr>
                  <th colspan="4">&nbsp;</th>
                </tr>
@@ -551,6 +729,7 @@ class inform {
             $fec_inicia = date ( 'Y-m' , $fec_inicia );
           } ?>
         </table>
+        </table>
       </div>
       <?php
     }
@@ -558,8 +737,8 @@ class inform {
    /*! \fn: getDetalle
      *  \brief: Funcion para pintar el detallado del reporte No de Novedades por usuario
      *  \author: Ing. Alexander Correa
-     *  \date: dia/mes/aÃ±o
-     *  \date modified: dia/mes/aÃ±o
+     *  \date: dia/mes/año
+     *  \date modified: dia/mes/año
      *  \param: $data -> arreglo con los datos a pintar
      *  \param: $datos -> rreglo con los datos del post
      *  \return 
@@ -571,21 +750,38 @@ class inform {
     $datos->fec_finali = $datos->fec_finali.":00:00";
     $datos->fec_finali = strtotime ( '-1 second' , strtotime ( $datos->fec_finali ) ) ;
     $datos->fec_finali = date ( 'Y-m-d H:i:s',$datos->fec_finali );
-    $standa = $datos->standa;
-    $sql = "SELECT x.num_despac, x.usr_creaci, x.cod_perfil, e.abr_tercer, x.fec_creaci, c.nom_noveda, x.fec1, x.obs_noveda
+    $standa = $datos->standa; 
+ 
+
+    //---------------- filtros ----------------\\
+
+    $where = "a.usr_creaci"; 
+    $campo2 = "x.cod_perfil"; 
+
+    //------------ fin filtros ----------------\\ 
+    if($datos->tipInform == "nov"){
+      $where = "c.cod_noveda"; 
+      $campo2 = "x.cod_noveda AS cod_perfil";
+    } 
+ 
+    $sql = "SELECT x.num_despac, x.usr_creaci, $campo2, e.abr_tercer, x.fec_creaci, c.nom_noveda, x.fec1, x.obs_noveda
               FROM (
                       (SELECT a.num_despac, a.fec_creaci, a.usr_creaci, a.obs_contro obs_noveda, b.cod_perfil, a.cod_noveda, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d %H') AS fec1
                             FROM ".BASE_DATOS.".tab_despac_contro a
                             INNER JOIN ".BASE_DATOS.".tab_genera_usuari b ON b.cod_usuari = a.usr_creaci 
-                            WHERE a.usr_creaci IN ('$datos->usuarios') 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_noveda c ON a.cod_noveda = c.cod_noveda
+                            WHERE $where IN ('$datos->usuarios') 
                               AND a.fec_creaci >= '$datos->fec_inicia' AND a.fec_creaci < '$datos->fec_finali'
+                              AND b.cod_perfil IN ($datos->perfil)
                       )
-                     UNION 
+                     UNION
                       (SELECT a.num_despac, a.fec_creaci, a.usr_creaci, a.des_noveda obs_noveda, b.cod_perfil, a.cod_noveda, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d %H') AS fec1
                             FROM ".BASE_DATOS.".tab_despac_noveda a 
                             INNER JOIN ".BASE_DATOS.".tab_genera_usuari b ON b.cod_usuari = a.usr_creaci 
-                            WHERE a.usr_creaci IN ('$datos->usuarios') 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_noveda c ON a.cod_noveda = c.cod_noveda
+                            WHERE $where IN ('$datos->usuarios') 
                               AND a.fec_creaci >= '$datos->fec_inicia' AND a.fec_creaci < '$datos->fec_finali'
+                              AND b.cod_perfil IN ($datos->perfil)
                       )
                    ) x  
         LEFT JOIN ".BASE_DATOS.".tab_genera_noveda c ON x.cod_noveda = c.cod_noveda 
@@ -594,9 +790,12 @@ class inform {
             ";
     $sql .= $datos->tipo == '1' ? " GROUP BY x.usr_creaci,x.num_despac, x.fec1  " : "";
     $sql .= " ORDER BY x.usr_creaci ";
+ 
 
     $consulta = new Consulta($sql, self::$cConexion);
     $result= $consulta->ret_matrix("a");
+
+ 
     $datos = $result;
     ?>
     <div class="col-md-12 Style2DIV scroll" id="tabla2">
@@ -616,7 +815,7 @@ class inform {
             $data = (object) $value;
             ?>
             <tr>
-              <td class='cellInfo onlyCell' style='text-align:center'><a href="index.php?cod_servic=3302&window=central&despac='<?= $data->num_despac ?>'&tie_ultnov=0&opcion=1"><font style="color: #000000; cursor:pointer;"><?= $data->num_despac ?></font></a></td>
+              <td class='cellInfo onlyCell' style='text-align:center'><a href="index.php?cod_servic=3302&window=central&despac=<?= $data->num_despac ?>&tie_ultnov=0&opcion=1"><font style="color: #000000; cursor:pointer;"><?= $data->num_despac ?></font></a></td>
               <td  class='cellInfo onlyCell' style='text-align:center'><?= $data->usr_creaci ?></td>
               <td class='cellInfo onlyCell' style='text-align:center'><?= $data->abr_tercer ?></td>
               <td class='cellInfo onlyCell' style='text-align:center'><?= $data->fec_creaci ?></td>
@@ -640,7 +839,7 @@ class inform {
    *  \brief: Funcion de transicion para pintar el general del infome de Eal
    *  \author: Ing. Alexander Correa
    *  \date: 13/01/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: 
    *  \param: 
    *  \return 
@@ -662,7 +861,7 @@ class inform {
    *  \brief: esta funcion trae los datos generales de la eal
    *  \author: Ing. Alexander Correa
    *  \date: 13/01/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: $datos -> Objeto con los datos del formulario
    *  \param: 
    *  \return objeto con los datos de la consulta
@@ -705,15 +904,14 @@ class inform {
                           INNER JOIN ".BASE_DATOS.".tab_genera_contro c ON c.cod_contro = b.cod_contro  
                            LEFT JOIN ".BASE_DATOS.".tab_despac_noveda d ON d.num_despac = a.num_despac AND c.cod_contro = d.cod_contro AND d.fec_creaci = ( SELECT MAX(x.fec_creaci) FROM ".BASE_DATOS.".tab_despac_noveda x WHERE x.num_despac = d.num_despac AND x.cod_contro = d.cod_contro )
                           INNER JOIN ".BASE_DATOS.".tab_despac_vehige e ON e.num_despac = a.num_despac
-                          INNER JOIN ".BASE_DATOS.".tab_despac_sisext f ON f.num_despac = a.num_despac
-                           LEFT JOIN ".BASE_DATOS.".tab_despac_corona g ON g.num_dessat = a.num_despac
+                           LEFT JOIN ".BASE_DATOS.".tab_despac_sisext f ON f.num_despac = a.num_despac
+                           LEFT JOIN ".BASE_DATOS.".tab_despac_corona g ON g.num_dessat = a.num_despac AND  g.tip_transp IS NOT NULL
                            WHERE a.ind_anulad = 'R' 
                            AND c.ind_virtua = 0 $and 
                            AND e.cod_transp = '$datos->cod_transp'
                            AND b.ind_estado != 2
-                           AND g.tip_transp IS NOT NULL
                            AND a.fec_creaci >= '$datos->fec_inicia 00:00:00' AND  a.fec_creaci <= '$datos->fec_finali 23:59:59' ) x $group ";
-   
+  
     $consulta = new Consulta($sql, self::$cConexion);
     $result= $consulta->ret_matrix("a");
     if($datos->tipo == 2){
@@ -722,13 +920,13 @@ class inform {
           INNER JOIN ".BASE_DATOS.".tab_despac_vehige e ON e.num_despac = a.num_despac
           INNER JOIN ".BASE_DATOS.".tab_despac_seguim b ON b.num_despac = a.num_despac 
           INNER JOIN ".BASE_DATOS.".tab_genera_contro c ON c.cod_contro = b.cod_contro  
-          INNER JOIN ".BASE_DATOS.".tab_despac_sisext f ON f.num_despac = a.num_despac
-           LEFT JOIN ".BASE_DATOS.".tab_despac_corona g ON g.num_dessat = a.num_despac
+           LEFT JOIN ".BASE_DATOS.".tab_despac_sisext f ON f.num_despac = a.num_despac
+           LEFT JOIN ".BASE_DATOS.".tab_despac_corona g ON g.num_dessat = a.num_despac AND g.tip_transp IS NOT NULL
                WHERE a.ind_anulad = 'R'
                  AND c.ind_virtua = 0 
                  AND a.fec_creaci BETWEEN '$datos->fec_inicia 00:00:00' AND '$datos->fec_finali 23:59:59'
                  AND e.cod_transp = '$datos->cod_transp'
-                 AND g.tip_transp IS NOT NULL  $and
+                   $and
             GROUP BY c.ind_virtua ";
       $consulta = new Consulta($sql, self::$cConexion);
       $mCant = $consulta->ret_matrix("i");
@@ -741,7 +939,7 @@ class inform {
    *  \brief: funcion para pintar el informe genera por dias  
    *  \author: Ing. Alexander Correa
    *  \date: 13/01/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: $datos -> datos del formulario
    *  \param: $data -> resuntado de la consulta
    *  \return html con la informacion
@@ -971,7 +1169,7 @@ class inform {
    *  \brief: pinta el detalle del infomre de eal cumplidas
    *  \author: Ing. Alexander Correa
    *  \date: 20/01/2016
-  *  \date modified: dia/mes/aÃ±o
+  *  \date modified: dia/mes/año
    *  \param: 
    *  \param: 
    *  \return html con el resultado
@@ -990,7 +1188,7 @@ class inform {
           <div id="ch" class="Style2DIV">
             <table id="dataDetalle" width="100%" cellspacing="0" cellpadding="0">
             <tr>
-                <th class="CellHead" colspan="18" style="text-align:center"><b>Se encontrÃ³ un total de <?= count($data) ?> Registros</b>&nbsp;&nbsp;&nbsp;<a style="cursor:pointer"><img src="../<?= $_SESSION['DIR_APLICA_CENTRAL'] ?>/imagenes/excel.jpg" onclick="getExcelEal();" ></a></th>
+                <th class="CellHead" colspan="18" style="text-align:center"><b>Se encontró un total de <?= count($data) ?> Registros</b>&nbsp;&nbsp;&nbsp;<a style="cursor:pointer"><img src="../<?= $_SESSION['DIR_APLICA_CENTRAL'] ?>/imagenes/excel.jpg" onclick="getExcelEal();" ></a></th>
             </tr>
             <tr class="Style2DIV">
               <th class="CellHead" style="text-align:center"> Consecutivo </th>
@@ -1003,7 +1201,7 @@ class inform {
               <th class="CellHead" style="text-align:center"> Ciudad Destino </th>
               <th class="CellHead" style="text-align:center"> Placa </th>
               <th class="CellHead" style="text-align:center"> Conductor </th>
-              <th class="CellHead" style="text-align:center"> CÃ©dula </th>
+              <th class="CellHead" style="text-align:center"> Cédula </th>
               <th class="CellHead" style="text-align:center"> Celular </th>
               <th class="CellHead" style="text-align:center"> Fecha de Salida </th>
               <th class="CellHead" style="text-align:center"> Fecha de llegada </th>
@@ -1084,7 +1282,7 @@ class inform {
                    a.fec_llegad, j.abr_tercer transporta,  count(l.cod_contro) can_regist, sum(IF(m.cod_noveda IS NOT NULL, 1, 0) ) can_cumpli,
                    sum(IF(m.cod_noveda IS NULL, 1, 0) ) can_incump
                     FROM ".BASE_DATOS.".tab_despac_despac a 
-              INNER JOIN ".BASE_DATOS.".tab_despac_sisext b ON b.num_despac = a.num_despac               
+              LEFT  JOIN ".BASE_DATOS.".tab_despac_sisext b ON b.num_despac = a.num_despac               
               LEFT  JOIN ".BASE_DATOS.".tab_genera_tipdes c ON c.cod_tipdes = a.cod_tipdes 
               INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON d.num_despac = a.num_despac 
               LEFT  JOIN ".BASE_DATOS.".tab_vehicu_vehicu e ON e.num_placax = d.num_placax 
@@ -1109,7 +1307,7 @@ class inform {
    *  \brief: muestra el general del informe de salida de despachos
    *  \author: Ing. Alexander Correa
    *  \date: 21/01/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: 
    *  \param: 
    *  \return html com los datos ordemandos de la consulta
@@ -1213,7 +1411,7 @@ class inform {
    *  \brief: Funcion que estrae los datos para el informe general de indicador de salia de despachos
    *  \author: Ing. Alexander Correa
    *  \date: 21/01/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: $datos -> objeto con los parametros de consulta
    *  \param: 
    *  \return array con el resultado de la consulta
@@ -1276,7 +1474,7 @@ class inform {
    *  \brief: Trae el detalle del informe del indicador de salida de despachos
    *  \author: Ing. Alexander Correa
    *  \date: 22/01/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: 
    *  \param: 
    *  \return html con los datos de la consulta
@@ -1292,7 +1490,7 @@ class inform {
           <div id="ch" class="Style2DIV">
             <table id="dataDetalle" width="100%" cellspacing="0" cellpadding="0">
             <tr>
-                <th class="CellHead" colspan="18" style="text-align:center"><b>Se encontrÃ³ un total de <?= count($data) ?> Registros</b>&nbsp;&nbsp;&nbsp;<a style="cursor:pointer"><img src="../<?= $_SESSION['DIR_APLICA_CENTRAL'] ?>/imagenes/excel.jpg" onclick="getExcelSalDes();" ></a></th>
+                <th class="CellHead" colspan="18" style="text-align:center"><b>Se encontró un total de <?= count($data) ?> Registros</b>&nbsp;&nbsp;&nbsp;<a style="cursor:pointer"><img src="../<?= $_SESSION['DIR_APLICA_CENTRAL'] ?>/imagenes/excel.jpg" onclick="getExcelSalDes();" ></a></th>
             </tr>
             <tr class="Style2DIV">
               <th class="CellHead" style="text-align:center"> Consecutivo </th>
@@ -1305,9 +1503,9 @@ class inform {
               <th class="CellHead" style="text-align:center"> Ciudad Destino </th>
               <th class="CellHead" style="text-align:center"> Placa </th>
               <th class="CellHead" style="text-align:center"> Conductor </th>
-              <th class="CellHead" style="text-align:center"> CÃ©dula </th>
+              <th class="CellHead" style="text-align:center"> Cédula </th>
               <th class="CellHead" style="text-align:center"> Celular </th>
-              <th class="CellHead" style="text-align:center"> Fecha de CreaciÃ³n del Despacho </th>
+              <th class="CellHead" style="text-align:center"> Fecha de Creación del Despacho </th>
               <th class="CellHead" style="text-align:center"> Fecha de Cita de Cargue </th>
               <th class="CellHead" style="text-align:center"> Cumplimiento  </th>
               <th class="CellHead" style="text-align:center"> Diferencia De Tiempo  </th>
@@ -1349,7 +1547,7 @@ class inform {
    *  \brief: funcion que extrae los datos para pintar en el detallado
    *  \author: Ing. Alexander Correa
    *  \date: 22/01/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: $datos -> objeto con los datos del post
    *  \param: 
    *  \return arreglo con los datos de la consulta
@@ -1377,9 +1575,9 @@ class inform {
     }
 
     if($datos->indicador == 1){
-      $WHERE .= " WHERE x.ind_cumpli = 'CumpliÃ³'";
+      $WHERE .= " WHERE x.ind_cumpli = 'Cumplió'";
     }else if($datos->indicador == 2){
-      $WHERE .= " WHERE x.ind_cumpli = 'IncumpliÃ³'";
+      $WHERE .= " WHERE x.ind_cumpli = 'Incumplió'";
     }
 
     $sql = "SELECT x.num_despac, x.cod_manifi, x.num_desext, x.nom_tipdes, x.poseedor, x.origen, x.destino,
@@ -1400,7 +1598,7 @@ class inform {
                                                  when 6 then ".$tipSer[0]['tie_cartr2']."
                                END
                               )
-                            ), 'CumpliÃ³', 'IncumpliÃ³'
+                            ), 'Cumplió', 'Incumplió'
                           ) ind_cumpli
                         FROM ".BASE_DATOS.".tab_despac_despac a 
                   INNER JOIN ".BASE_DATOS.".tab_despac_sisext b ON b.num_despac = a.num_despac 
@@ -1433,7 +1631,7 @@ class inform {
    *  \brief: extrae los tipos de transprte de la base de datos
    *  \author: Ing. Alexander Correa
    *  \date: 02/02/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: 
    *  \return arreglo con los tipos de transporte
    */
@@ -1449,7 +1647,7 @@ class inform {
    *  \brief: devuelve la lista de los poseedores de una transportadora
    *  \author: Ing. Alexander Correa
    *  \date: 02/02/2016
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: 
    *  \param: 
    *  \return multi select con los poseedores

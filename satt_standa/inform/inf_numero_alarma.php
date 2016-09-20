@@ -72,7 +72,7 @@
             <input type="hidden" name='datosPintar' id='datosPintarID'>
             <input type="hidden" name='option' id='optionID' value='expInformExcel'>
         </form>
-        <div id="acordeonID" class="col-md-12 ancho">
+        <div id="acordeonID" class="col-md-12 ancho accordion">
           <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Informe de Novedades Por Usuario</b></h1>
           <div id="contenido">
             <div  class="Style2DIV">
@@ -153,9 +153,11 @@
         </div>
           <div class="col-md-12 tabs ancho" id="tabs">
              <ul>
-               <li><a id="liGenera" href="#generaID" style="cursor:pointer">REPORTE</a></li>
+               <li><a id="liGenera" href="#generaID" style="cursor:pointer" tipo="usr">REPORTE</a></li>
+               <li><a id="liNoveda" href="#novedaID" style="cursor:pointer" tipo="nov">NOVEDAD</a></li>
              </ul>
              <div class="col-md-12" id="generaID" ></div>
+             <div class="col-md-12" id="novedaID" ></div>
           </div>
           <div class="col-md-12" id="hidden" style="display:none"></div>
          
@@ -297,7 +299,7 @@
             include( "../lib/general/form_lib.inc" );
             include( "../lib/general/tabla_lib.inc" );
             
-            $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+            $this -> conexion = new Conexion( "bd7.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
             $_USUARIO_ = $this -> getUsuarios( array('cod_usuari' => $__REQUEST[cod_usuar]) );
             
             

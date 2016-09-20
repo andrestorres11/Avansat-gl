@@ -137,8 +137,9 @@ $(function() {
   });
   $("#contenido").css("height", "auto");
 
-  $("#liGenera").click(function () {
+  $("#liGenera, #liNoveda").click(function () {
     try{
+        obj = $(this);
         var Standa = $("#standaID").val();
         var fec_inicia = $("#fec_iniciaID").val();
         var fec_finali = $("#fec_finaliID").val();
@@ -190,7 +191,7 @@ $(function() {
         }else{
             $.ajax({
                 url: "../" + Standa + "/inform/ajax_inform_inform.php",
-                data: "Option=getInform&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali+"&hor_inicia="+hor_inicia+"&hor_finali="+hor_finali+"&usuario="+cod_usuari+"&tipo="+tipo+"&perfil="+cod_perfil,
+                data: "Option=getInform&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali+"&hor_inicia="+hor_inicia+"&hor_finali="+hor_finali+"&usuario="+cod_usuari+"&tipo="+tipo+"&perfil="+cod_perfil+"&tipInform="+$(this).attr("tipo"),
                 type: "POST",
                 async: true,
                 beforeSend: function (obj){
@@ -203,7 +204,14 @@ $(function() {
                 },
                 success: function (data){
                     $.unblockUI();
-                    $("#generaID").html(data);
+
+                    if( obj.attr("tipo") == "usr" ){ 
+
+                      $("#generaID").html(data); 
+                    }else if( obj.attr("tipo") == "nov" ){
+
+                      $("#novedaID").html(data); 
+                    }
                     $("#tabla").css('overflow', 'scroll');
                     $("#tabla").css('height', ( $(window).height() - 195 ) );
                 }
@@ -257,11 +265,26 @@ function Alerta(title, message, focus){
  *  \return html con los datos
  */
 
- function detalle(tipo,fec_inicia,fec_finali,usuarios){
+ function detalle(tipo,fec_inicia,fec_finali,usuarios, tipInform){
       var Standa = $("#standaID").val();
+
+
+      var cod_perfil = 0;
+
+      $("input[type=checkbox]:checked").each(function(i,o){
+           
+        if($(this).attr("name") == 'multiselect_perfilID' ){
+          if( cod_perfil == 0 ){
+            cod_perfil =  $(this).val() ;
+          }else{
+            cod_perfil += ','+ $(this).val();
+          }
+        }
+      });
+
       $.ajax({
           url: "../" + Standa + "/inform/ajax_inform_inform.php",
-          data: "Option=getDetalle&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali+"&tipo="+tipo+"&usuarios="+usuarios+"&standa="+Standa,
+          data: "Option=getDetalle&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali+"&tipo="+tipo+"&usuarios="+usuarios+"&standa="+Standa+"&tipInform="+tipInform+"&perfil="+cod_perfil,
           type: "POST",
           async: true,
           beforeSend: function (obj){
