@@ -304,7 +304,7 @@ function comprobar() {
 		var documento = $("#cod_tercerID").val();
 		var standa = $("#standaID").val();
 		var parametros = "Option=verificar&Ajax=on&documento=" + documento;
-		
+		console.log(parametros);
 		$.ajax({
 			url: "../" + standa + "/conduc/ajax_conduc_conduc.php",
 			type: "POST",

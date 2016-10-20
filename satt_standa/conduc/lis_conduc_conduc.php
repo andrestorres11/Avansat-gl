@@ -21,12 +21,12 @@ class Lis_conduc_conduc
 //********METODOS
  function principal()
  {
-  echo $GLOBALS[opcion];die;
-  if(!isset($GLOBALS[opcion]))
+  echo $_REQUEST[opcion];die;
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -76,14 +76,14 @@ class Lis_conduc_conduc
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  ";
 
@@ -109,7 +109,7 @@ class Lis_conduc_conduc
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Cancelar","form_act.reset()",1);
    $formulario -> cerrar();
@@ -128,17 +128,17 @@ class Lis_conduc_conduc
 				   ".BASE_DATOS.".tab_tercer_conduc c 
              WHERE  1 = 1 AND  a.cod_tercer = c.cod_tercer";
 
-  if($GLOBALS[transp])
-   $query .= " AND b.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[fil] == 1)
-   $query = $query." AND a.cod_tercer = '".$GLOBALS[tercer]."'";
-  else if($GLOBALS[fil] == 2)
-   $query = $query." AND a.abr_tercer LIKE '%".$GLOBALS[tercer]."%'";
-  else if($GLOBALS[fil] == 3)
+  if($_REQUEST[transp])
+   $query .= " AND b.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[fil] == 1)
+   $query = $query." AND a.cod_tercer = '".$_REQUEST[tercer]."'";
+  else if($_REQUEST[fil] == 2)
+   $query = $query." AND a.abr_tercer LIKE '%".$_REQUEST[tercer]."%'";
+  else if($_REQUEST[fil] == 3)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_ACTIVO."";
-  else if($GLOBALS[fil] == 4)
+  else if($_REQUEST[fil] == 4)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_INACTI."";
-  else if($GLOBALS[fil] == 5)
+  else if($_REQUEST[fil] == 5)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_PENDIE."";
 
   $query = $query." GROUP BY 1 ORDER BY 2";
@@ -153,9 +153,9 @@ class Lis_conduc_conduc
     $_URL  = "../".DIR_APLICA_CENTRAL."/export/exp_recurs_recurs.php?op=3";
     $_URL .= "&url=".DIR_APLICA_CENTRAL;
     $_URL .= "&db=".BASE_DATOS;
-    $_URL .= !empty($GLOBALS[transp]) ? "&transp=".$GLOBALS[transp] : '';
-    $_URL .= !empty($GLOBALS[fil])    ? "&fil=".$GLOBALS[fil] : '';
-    $_URL .= !empty($GLOBALS[tercer])     ? "&tercer=".$GLOBALS[tercer] : '';
+    $_URL .= !empty($_REQUEST[transp]) ? "&transp=".$_REQUEST[transp] : '';
+    $_URL .= !empty($_REQUEST[fil])    ? "&fil=".$_REQUEST[fil] : '';
+    $_URL .= !empty($_REQUEST[tercer])     ? "&tercer=".$_REQUEST[tercer] : '';
     
   
   $formulario = new Formulario ("index.php","post","LISTADO DE CONDUCTORES","form_item");
@@ -171,7 +171,7 @@ class Lis_conduc_conduc
   $formulario -> linea("E-mail",0,"t2");
   $formulario -> linea("Estado",1,"t2");
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
   for($i = 0; $i < sizeof($matriz); $i++)
   {
@@ -190,7 +190,7 @@ class Lis_conduc_conduc
 
    $ciudad_a = $objciud -> getSeleccCiudad($matriz[$i][4]);
 
-   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&conduc=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&conduc=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario -> linea($matriz[$i][0],0,$estilo);
    $formulario -> linea($matriz[$i][1]." ".$matriz[$i][2]." ".$matriz[$i][3],0,$estilo);
@@ -206,7 +206,7 @@ class Lis_conduc_conduc
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION
  function Datos()
@@ -228,7 +228,7 @@ class Lis_conduc_conduc
                  ".BASE_DATOS.".tab_tercer_conduc c 
          LEFT JOIN ".BASE_DATOS.".tab_genera_catlic e ON c.num_catlic = e.cod_catlic
            WHERE a.cod_tercer = c.cod_tercer AND 
-           a.cod_tercer = '$GLOBALS[conduc]'";
+           a.cod_tercer = '$_REQUEST[conduc]'";
           
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
@@ -340,7 +340,7 @@ class Lis_conduc_conduc
 
   $query = "SELECT a.nom_empre,a.tel_empre,a.num_viajes,a.num_atigue,a.nom_mercan
             FROM ".BASE_DATOS.".tab_conduc_refere a
-           WHERE  a.cod_conduc = '$GLOBALS[conduc]'";
+           WHERE  a.cod_conduc = '$_REQUEST[conduc]'";
   $consec = new Consulta($query, $this -> conexion);
   $resulta2 = $consec -> ret_matriz();
 
@@ -365,7 +365,7 @@ class Lis_conduc_conduc
   $formulario -> oculto("listo",1,0);
   $formulario -> oculto("opcion",1,0);
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> botoni("Volver","volver()",0);
 
   $formulario -> cerrar();

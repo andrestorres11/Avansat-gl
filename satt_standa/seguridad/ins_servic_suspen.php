@@ -1,235 +1,284 @@
 <?php
-/**
- * Actualizado por:			MIGUEL ANGEL GARCIA RIVERA
- * Fecha Actualización:	2012/10/16
+/* ! \archive: ins_servic_suspen.php
+ *  \brief: archivo para el manejo de la suspencion de servicos a empresas
+ *  \author: Ing. Alexander Correa
+ *  \author: aleander.correa@intrared.net
+ *  \date: 15/04/2016
+ *  \date modified: dia/mes/año
+ *  \warning:   
+ *  \ 
  */
+session_start();
 
-class Proc_usuari
-{
+require "ajax_perfil_perfil.php";
 
-    var $conexion,
-        $cod_aplica,
-        $usuario;
+class ins_servic_suspen {
 
-    function __construct($co, $us, $ca)
-    {
-        $this -> conexion = $co;
-        $this -> usuario = $us;
-        $this -> cod_aplica = $ca;
+    var $conexion, $usuario, $cod_aplica;
+    private static $cFunciones;
 
-        if(!isset($GLOBALS[opcion]))
-        {
-            $this -> Buscar();  
-        }
-        else
-        {
-            switch($GLOBALS[opcion])
-            {
-                case 1:
-                    $this -> Listado();
-                    break;
-                case 2:
-                    $this -> Insertar();
-                    break;
-            }
-        }
-    }
+    function __construct($co, $us, $ca) {
+        #importa los  css y js necesarios
+        ?>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/min.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/jquery.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/functions.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/dinamic_list.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/suspension.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/validator.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/new_ajax.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/time.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/mask.js" language="javascript"></script>
+        <script type="text/javascript" language="JavaScript" src="../<?= DIR_APLICA_CENTRAL ?>/js/sweetalert-dev.js"></script>
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/dinamic_list.css" rel="stylesheet">
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/validator.css" rel="stylesheet">
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/jquery.css" rel="stylesheet">
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/informes.css" rel="stylesheet">
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/bootstrap.css" rel="stylesheet">
+        <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/sweetalert.css' type='text/css'>
 
-    function Buscar()
-    {
-        $cod_perfil = $this -> GetPerfil();
-        
-        $formulario = new Formulario ("index.php","post","DESPACHOS","form_insert","","");
-        $formulario -> linea("Ingrese los Criterios de Busqueda",1,"t2");
-
-        $formulario -> nueva_tabla();
-        $formulario -> texto("Usuario: ","text","cod_usuari\" id=\"cod_usuariID",1,6,6,"","");
-        //$formulario -> texto("Perfil: ","text","cod_perfil\" id=\"cod_perfilID",1,10,11,"","");
-        $formulario -> lista ("Perfil: ","cod_perfil\" id=\"cod_perfilID",$cod_perfil,1 );
-
-        $formulario -> nueva_tabla();
-        $formulario -> oculto("window","central",0);
-        $formulario -> oculto("opcion",1,0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
-        $formulario -> botoni("Buscar","form_insert.submit();",1);
-        $formulario -> cerrar();
-    }
-
-    function GetPerfil()
-    {
-        $inicio[0][0] = 0;
-        $inicio[0][1] = '-';
-        $sql ="SELECT cod_perfil, nom_perfil 
-                 FROM ".BASE_DATOS.".tab_genera_perfil ";
-        $consulta = new Consulta($sql, $this -> conexion);
-        $usuari = $consulta -> ret_matriz(); 
-        return array_merge($inicio,$usuari); 
-    }
-    
-    function Listado()
-    {
-
-        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/suspension.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
-        echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
-
-        echo '
-            <script type="text/javascript">
-                jQuery(function($) { 
-
-                    $( ".date" ).datepicker();      
-                    $( ".time" ).timepicker({
-                        timeFormat:"hh:mm",
-                        showSecond: false
-                    });
-
-                    $.mask.definitions["A"]="[12]";
-                    $.mask.definitions["M"]="[01]";
-                    $.mask.definitions["D"]="[0123]";
-
-                    $.mask.definitions["H"]="[012]";
-                    $.mask.definitions["N"]="[012345]";
-                    $.mask.definitions["n"]="[0123456789]";
-
-                    $( ".date" ).mask("Annn-Mn-Dn");
-                    $( ".time" ).mask("Hn:Nn");
-
-                });
-            </script>
-
-            ';
-            
-        $datos_usuario = $this -> usuario -> retornar();
-
-        $query = "SELECT a.cod_usuari,a.nom_usuari,a.usr_emailx,
-                         if(a.cod_perfil IS NULL,'-',b.nom_perfil)
-                    FROM ".BASE_DATOS.".tab_genera_usuari a 
-               LEFT JOIN ".BASE_DATOS.".tab_genera_perfil b 
-                      ON a.cod_perfil = b.cod_perfil 
-                   WHERE a.ind_estado = '1' ";
-        
-        if($GLOBALS['cod_usuari'])
-            $query .= " AND a.cod_usuari = '".$GLOBALS['cod_usuari']."'";
-        
-        if($GLOBALS['cod_perfil'])
-            $query .= " AND a.cod_perfil = ".$GLOBALS['cod_perfil']."";
-        
-        $query .= " ORDER BY 1,3 ";
-        $consulta = new Consulta($query, $this -> conexion);
-        $matriz = $consulta -> ret_matriz();
-
-        $formulario = new Formulario("index.php","post","LSITADO DE USUARIOS", "form_ins\" id=\"form_insID");
-
-        $formulario -> nueva_tabla();
-        $formulario -> linea("Se Econtro un Total de ".sizeof($matriz)." Usuario(s)",1,"t2");
-
-        $formulario -> nueva_tabla();
-        $formulario -> linea("Usuario",0,"t");
-        $formulario -> linea("Nombre",0,"t");
-        $formulario -> linea("Perfil",0,"t");
-        $formulario -> linea("Suspensión",0,"t");
-        $formulario -> linea("Fecha",0,"t");
-        $formulario -> linea("Hora",1,"t");
-
-        for($i = 0; $i < sizeof($matriz); $i++)
-        {
-            $mQueryx = "SELECT fec_suspen, hor_suspen
-                          FROM ".BASE_DATOS.".tab_genera_suspen
-                         WHERE cod_usuari = '".$matriz[$i][0]."' 
-                           AND ind_suspen = 1 
-                         LIMIT 1 ";
-            $consulta = new Consulta($mQueryx, $this -> conexion);
-            $datos_ds = $consulta -> ret_matriz('i'); 
-            
-            if(count($datos_ds)>0)
-            {
-                $checked = ' checked="checked" ';
-                $val = 1;
-                $fec = $datos_ds[0]['fec_suspen'];
-                $hor = $datos_ds[0]['hor_suspen'];
-            }
-            else
-            {
-                $checked = '';
-                $val = 0;
-                $fec = date("Y-m-d");
-                $hor = date("H:i");
-            }
-            $formulario -> linea("<input type='hidden' name='cod_usuari".$i."' id='cod_usuari".$i."ID' value='".$matriz[$i][0]."' />".$matriz[$i][0],0,"i");
-            $formulario -> linea($matriz[$i][1],0,"i");
-            $formulario -> linea($matriz[$i][3],0,"i");
-            echo '<td align="center" class="celda_etiqueta"><input type="checkbox" '.$checked.' onclick="this.value = ( this.checked==true ?  1 : 0 ); " value="'.$val.'" id="ind_suspen'.$i.'ID" name="ind_suspen'.$i.'"></td>';
-            echo '<td align="center" class="celda_etiqueta"><input type="text" class="campo_texto date" style="text-align: center;" size="10" id="fec_suspen'.$i.'ID" name="fec_suspen'.$i.'" value="'.$fec.'" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'"></td>';
-            echo '<td align="center" class="celda_etiqueta"><input type="text" class="campo_texto time" style="text-align: center;" size="10" id="hor_suspen'.$i.'ID" name="hor_suspen'.$i.'" value="'.$hor.'" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'"></td></tr>';
-        }
-
-        $formulario -> nueva_tabla();
-        $formulario -> oculto("opcion",2, 0);
-        $formulario -> oculto("size_suspen", "$i\" id=\"size_suspenID", 0);
-        $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0);
-        $formulario -> oculto("window","central", 0);
-        $formulario -> boton("Guardar", "button\" onClick=\"aceptar_ins1()", 0);
-        $formulario -> cerrar();
-    } 
- 
-    function Insertar()
-    {
-        $datos_usuario = $this -> usuario -> retornar();
-        $size =  $_REQUEST['size_suspen'];
-        $cont = 0;
-        $mQueryy = array();
-        $mQuery = "INSERT INTO ".BASE_DATOS.".tab_genera_suspen 
-                               ( cod_usuari, ind_suspen, fec_suspen, hor_suspen, fec_creaci, usr_creaci )
-                       VALUES  ";
-        for($i=0; $i<(int)$size; $i++)
-        {		 
-            $mQueryx = "SELECT 1 
-                          FROM ".BASE_DATOS.".tab_genera_suspen
-                         WHERE cod_usuari = '".$_REQUEST['cod_usuari'.$i]."' ";
-            $consulta = new Consulta($mQueryx, $this -> conexion);
-            $datos_ds = $consulta -> ret_matriz('i');
-            
-            if(count($datos_ds)>0)
-            {
-                $mQueryy[] = "UPDATE ".BASE_DATOS.".tab_genera_suspen 
-                                 SET ind_suspen = '".$_REQUEST['ind_suspen'.$i]."',
-                                     fec_suspen = '".$_REQUEST['fec_suspen'.$i]."',
-                                     hor_suspen = '".$_REQUEST['hor_suspen'.$i]."',
-                                     fec_modifi = NOW(),
-                                     usr_modifi = '".$datos_usuario[cod_usuari]."'
-                               WHERE cod_usuari = '".$_REQUEST['cod_usuari'.$i]."'  ";
-            }
-            else
-            {        
-                $mQuery .= "('".$_REQUEST['cod_usuari'.$i]."', '".$_REQUEST['ind_suspen'.$i]."', '".$_REQUEST['fec_suspen'.$i]."', '".$_REQUEST['hor_suspen'.$i]."', NOW(), '".$datos_usuario[cod_usuari]."'  ),";       
-                $cont++;
-            }
-        }
-
-        if($cont>0)
-        {
-            $mQuery   = substr($mQuery, 0, -1);   
-            $consulta = new Consulta($mQuery, $this -> conexion);
-        }
-        else
-        {
-            foreach($mQueryy as $mQueryz)
-            {
-                $consulta = new Consulta($mQueryz, $this -> conexion);
-            }
-        }
-        if($consulta)
-        {
-            $mensaje .= "<br><b><a href=\"#\" onclick=\"javascript:history.back()\">Volver al Listado Principal</a></b>";
-            $mens = new mensajes();
-            $mens -> correcto("Se Ingreso la Información Existosamente...",$mensaje);
+        <?php
+        $this->conexion = $co;
+        $this->usuario = $us;
+        $this->cod_aplica = $ca;
+        self::$cFunciones = new seguri($co, $us, $ca);
+        switch ($_REQUEST[opcion]) {
+            case 1: //registrar nuevo
+            case 2: //editar            
+                $this->Formulario();
+                break;
+            default:
+                $this->lista();
+                break;
         }
     }
- 
+
+    /* ! \fn: lista
+     *  \brief: funcion inicial que muestra una lista con las empresas y los servicios contratados
+     *  \author: Ing. Alexander Correa
+     *  \date: 15/04/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return 
+     */
+
+    function lista() {
+
+        $datos_usuario = $this->usuario->retornar();
+        $usuario = $datos_usuario["cod_usuari"];
+        ?>
+        </table>
+        <form action="index.php" method="post" name="form_search" id="form_searchID" enctype="multipart/form-data">        
+            <div class="accordion">
+                <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>LISTADO DE USUARIOS</b></h3>
+                <div class="" id="sec2">
+                    <div class="Style2DIV" id="form3">
+                    <?php
+                        echo self::$cFunciones->listaEmpresasParametrizadas();
+                    ?>
+                    </div>
+                </div>
+            </div>            
+            <input type="hidden" name="standa" id="standa" value="<?= DIR_APLICA_CENTRAL ?>"/>
+            <input type="hidden" name="window" id="window" value="central"/>
+            <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>"/>
+            <input type="hidden" name="opcion" id="opcion" value="1"/>            
+            <input type="hidden" name="cod_tercer" id="cod_tercer" value=""/>
+            <input type="hidden" name="nom_tercer" id="nom_tercer" value=""/>
+            <input type="hidden" name="dir_emailx" id="dir_emailx" value=""/>
+        </form>
+        <?php
+    }
+
+    /* ! \fn: formulario
+     *  \brief: pinta el formulario para editar una configuracion de transportadora
+     *  \author: Ing. Alexander Correa
+     *  \date: 15/04/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return 
+     */
+
+    function Formulario() {
+       $datos = (object) $_POST;
+      
+       ?>
+       </table>
+       <form action="index.php" method="post" name="form_search" id="form_searchID" enctype="multipart/form-data">
+            <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>"/>
+            <input type="hidden" name="standa" id="standa" value="<?= DIR_APLICA_CENTRAL ?>"/>
+            <input type="hidden" name="window" id="window" value="central"/>
+       </form>
+       <div class="accordion">
+       <h1 style="padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>INFORMACI&Oacute;N B&Aacute;SICA DEL CLIENTE</b></h1>
+       <div id="contenido">
+            <div class="Style2DIV">
+                <table width="100%" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center" class="CellHead contenido">
+                                <div class="col-md-12 ancho">
+                                    <div class="col-md-3 text-right">NIT</div>
+                                    <div class="col-md-3 text-left">
+                                        <input class="text-center" type="text" readonly name="cod_tercer" id="cod_tercer" value="<?= $datos->cod_tercer ?>"/>
+                                    </div>
+                                    <div class="col-md-3 text-right">Transportadora </div>
+                                    <div class="col-md-3 text-left">
+                                        <input type="text" class="ancho text-center" readonly name="nom_tercer" id="nom_tercer" value="<?= $datos->nom_tercer ?>"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 CellHead">
+                                    <b>Suspenci&oacute;n/Activaci&oacute;n</b>
+                                </div>
+                                <div class="col-md-12 text-center">
+                                <div class="col-md-5"></div>
+                                <div class="col-md-2">
+                                    <select id="tip_bitaco" name="tip_bitaco" obl="1" validate="select">
+                                            <option value="">Seeccione una Opci&oacute;n</option>
+                                            <option value="1">Activaci&oacute;n</option>
+                                            <option value="0">Suspenci&oacute;n</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-5"></div>
+                                    
+                                </div>
+                                <div class="col-md-12 contenido">
+                                    <div class="col-md-2">Fecha:</div>
+                                    <div class="col-md-2"><input type="text" obl="1" validate="date" maxlength="10" minlength="10" class="date text-center" id="fec_operac" name="fec_operac" readonly /></div>
+                                    <div class="col-md-2">Hora:</div>
+                                    <div class="col-md-2"><input type="text" obl="1" validate="dir" maxlength="5" minlength="5" class="time text-center" id="hor_operac" name="hor_operac" readonly onfocus="removeStyle('hor_operac')" /></div>
+                                    <div class="col-md-2">Observaci&oacute;n:</div>
+                                    <div class="col-md-2"><input type="text" obl="1" validate="texto" maxlength="200" minlength="2"  class="text-center" name="obs_operac" id="obs_suspen" placeholder="Ingresa una observaci&oacute;n"/></div>
+                                </div> 
+                                <div class="col-md-12 CellHead">
+                                    <b>Servicios a Suspender/Activar</b>
+                                </div>
+                                 <div class="col-md-12 ancho">
+                                    <div class="col-md-3 text-right">EAL</div>
+                                    <div class="col-md-3 text-left">
+                                        <input type="checkbox" name="sus_ealxxx" id="sus_ealxxx" value="1"/>
+                                    </div>
+                                    <div class="col-md-3 text-right">M/A </div>
+                                    <div class="col-md-3 text-left">
+                                        <input type="checkbox" name="sus_monati" id="sus_monati" value="2"/>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 CellHead">
+                                    <b>Notificaciones</b>
+                                </div>
+                                <div class="col-md-12"></div>
+                                <div class="col-md-12 CellHead">
+                                    <div class="col-md-3"><b>Email</b></div>
+                                    <div class="col-md-8">
+                                        <div class="col-md-6"><b>Desde:</b></div>
+                                        <div class="col-md-6"><b>Hasta:</b></div>
+                                        <div class="col-md-12 contenido"></div>
+                                        <div class="col-md-3"><b>Fecha</b></div>
+                                        <div class="col-md-3"><b>Hora</b></div>
+                                        <div class="col-md-3"><b>Fecha</b></div>
+                                        <div class="col-md-3"><b>Hora</b></div>
+                                    </div>
+                                    <div class="col-md-1"><b>Eliminar</b></div>                                   
+                                </div>
+                                <div class="col-md-12 text-center">Para agregar otro Email haga click <a style="cursor: pointer; color: black; text-decoration: none" onclick="addMail()"><b>aqu&iacute;...</b></a></div> 
+                                <div id="emails" class="col-md-12 ancho">
+                                    <?php $emails = explode(",",$datos->dir_emailx);
+                                    foreach ($emails as $key => $value) {
+                                        if(trim($value)!= ""){
+                                       ?>
+                                           <div id="email<?= $key ?>" class="col-md-12">
+                                                <div class="col-md-3">
+                                                    <input class="ancho text-center" obl="1" maxlength="50" minlength="15" type="text" name="dir_emailx[]" minlength="8" maxlength="50" validate="email" id="dir_emailx<?= $key ?>" value="<?= $value ?>"/>
+                                                </div>
+                                                <div class="col-md-8">
+                                                    <div class="col-md-3">    
+                                                        <input type="text" obl="1" maxlength="10" minlength="10" validate="date"  class="date text-center" id="fec_inicia<?= $key ?>" readonly name="fec_inicia[]"/>
+                                                    </div>
+                                                    <div class="col-md-3"> 
+                                                        <input type="text" obl="1" maxlength="5" minlength="5" validate="dir"  class="time text-center" onfocus="removeStyle('hor_inicia<?= $key ?>')" id="hor_inicia<?= $key ?>" readonly name="hor_inicia[]"/>
+                                                    </div>
+                                                    <div class="col-md-3"> 
+                                                        <input type="text" obl="1" maxlength="10" minlength="10" validate="date"   class="date text-center" id="fec_finali<?= $key ?>" readonly name="fec_finali[]"/>
+                                                    </div>
+                                                    <div class="col-md-3"> 
+                                                        <input type="text" obl="1" maxlength="5" minlength="5" validate="dir" class="time text-center" onfocus="removeStyle('hor_finali<?= $key ?>')" id="hor_finali<?= $key ?>" readonly name="hor_finali[]"/>
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-1">
+                                                    <img class="pointer" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" width="14px" height="14px" onclick="removeEmail(<?= $key ?>)">
+                                                </div>
+                                           </div>
+                                       <?php
+                                        }
+                                    }
+                                     ?>
+                                </div>
+                                <input type="hidden" value="<?= $key ?>" id="tot_emailxx"/>
+                                <input type="hidden" name="standa" id="standa" value="<?= DIR_APLICA_CENTRAL ?>"/>                               
+                                
+                                <div class="col-md-12 CellHead">
+                                    <b>Bit&aacute;cora de Suspenciones y Activaciones</b>
+                                </div>
+                                <div class="col-md-2"></div>
+                                <div class="col-md-12 CellHead">
+                                    <div class="col-md-2"><b>Fecha y Hora de Suspenci&oacute;n</b></div>
+                                    <div class="col-md-2"><b>Usuario</b></div>
+                                    <div class="col-md-2"><b>Observaci&oacute;n</b></div>
+                                    <div class="col-md-2"><b>Fecha y Hora de Activaci&oacute;n</b></div>
+                                    <div class="col-md-2"><b>Usuario</b></div>
+                                    <div class="col-md-2"><b>Observaci&oacute;n</b></div>
+                                </div> 
+                                <div class="col-md-6 contenido">
+                                <?php 
+                                $suspenciones = self::$cFunciones->getRegistroSuspenciones($datos->cod_tercer);  
+                                if(!$suspenciones){
+                                     ?>
+                                    <b>No hay registros de suspenciones para esta empresa.</b>
+                                    <?php
+                                }else{
+                                    foreach ($suspenciones as $key => $value) {
+                                        ?>
+                                        <div class="col-md-4"><?= $value['fec_operac'] ?></div>
+                                        <div class="col-md-4"><?= $value['usr_creaci'] ?></div>
+                                        <div class="col-md-4"><?= $value['obs_bitaco'] ?></div>
+                                        <?php
+                                    }
+                                }
+                                ?>                                    
+                                </div>                              
+                                <div class="col-md-6 contenido">
+                                <?php 
+                                $activciones = self::$cFunciones->getRegistroActivaciones($datos->cod_tercer); 
+                                if(!$activciones){
+                                    ?>
+                                    <b>No hay registros de activaciones para esta empresa.</b>
+                                    <?php
+                                }else{
+                                    foreach ($activciones as $key => $value) {
+                                       ?>
+                                        <div class="col-md-4"><?= $value['fec_operac'] ?></div>
+                                        <div class="col-md-4"><?= $value['usr_creaci'] ?></div>
+                                        <div class="col-md-4"><?= $value['obs_bitaco'] ?></div>
+                                       <?php
+                                    }
+                                }
+                                ?>   
+                                </div>
+                                <div class="col-md-12 text-center">
+                                   <input type="button" name="aceptar" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all pointer" id="aceptar" value="Registrar" onclick="registrarSuspencion()"/>
+                                </div>                              
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>           
+        </div>
+    </div>
+       <?php
+    }
+
 }
-$proceso = new Proc_usuari($this -> conexion, $this -> usuario_aplicacion,$this-> codigo);
+//FIN CLASE
+$proceso = new ins_servic_suspen($this->conexion, $this->usuario_aplicacion, $this->codigo);
 ?>

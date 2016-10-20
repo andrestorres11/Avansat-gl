@@ -23,7 +23,7 @@ class Proc_act_usuari
 
     function principal()
     {
-        if($GLOBALS["actual"] == 1)
+        if($_REQUEST["actual"] == 1)
            $this -> actualizar();
         else
            $this -> formulario();
@@ -34,16 +34,16 @@ class Proc_act_usuari
         $this->usuario->listar($this -> conexion);
         $datos_usuari = $this->usuario-> retornar();
 
-        if($GLOBALS["clave"])
-           $GLOBALS["clv_usuari"] = base64_encode($GLOBALS["new_clv_usuari"]);
+        if($_REQUEST["clave"])
+           $_REQUEST["clv_usuari"] = base64_encode($_REQUEST["new_clv_usuari"]);
         else
-           $GLOBALS["clv_usuari"] = base64_encode($GLOBALS["clv_usuari"]);
+           $_REQUEST["clv_usuari"] = base64_encode($_REQUEST["clv_usuari"]);
 
-        $this->usuario->actualizar($this -> conexion, "BRC", $GLOBALS["clv_usuari"], $GLOBALS["nom_usuari"], $GLOBALS["usr_emailx"], $datos_usuari["cod_perfil"], $datos_usuari["cod_inicio"], $GLOBALS["num_cedula"]);
+        $this->usuario->actualizar($this -> conexion, "BRC", $_REQUEST["clv_usuari"], $_REQUEST["nom_usuari"], $_REQUEST["usr_emailx"], $datos_usuari["cod_perfil"], $datos_usuari["cod_inicio"], $_REQUEST["num_cedula"]);
 
-        //echo "<img src=\"../sadc_standa/imagenes/ok.gif\">Los Datos del ".$GLOBALS["nom_usuari"]." se modificaron con exito";
-        echo "<img src=\"../" . DIR_APLICA_CENTRAL . "/imagenes/ok.gif\">Los Datos del ".$GLOBALS["nom_usuari"]." se modificaron con exito";
-           unset($GLOBALS[actual]);
+        //echo "<img src=\"../sadc_standa/imagenes/ok.gif\">Los Datos del ".$_REQUEST["nom_usuari"]." se modificaron con exito";
+        echo "<img src=\"../" . DIR_APLICA_CENTRAL . "/imagenes/ok.gif\">Los Datos del ".$_REQUEST["nom_usuari"]." se modificaron con exito";
+           unset($_REQUEST[actual]);
            $this -> formulario();
     }
 
@@ -74,9 +74,9 @@ class Proc_act_usuari
             $formulario -> oculto("actual", 0, 0, 0);
             $formulario -> oculto("clv_usuari", $datos_usuari["clv_usuari"], 0, 0);
             $formulario -> oculto("confirma", $datos_usuari["clv_usuari"], 0, 0);
-            $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0, 0);
-            $formulario -> oculto("cod_serant", $GLOBALS["cod_servic"], 0, 0);
-            $formulario -> oculto("window", $GLOBALS["window"], 0, 0);
+            $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0, 0);
+            $formulario -> oculto("cod_serant", $_REQUEST["cod_servic"], 0, 0);
+            $formulario -> oculto("window", $_REQUEST["window"], 0, 0);
             $formulario -> botoni("Aceptar","validar()",0);
 
             $formulario -> cerrar();

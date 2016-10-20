@@ -16,11 +16,11 @@ class Proc_despac
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Listar();
   else
   {
-   switch($GLOBALS[opcion])
+   switch($_REQUEST[opcion])
    {
     case "1":
     $this -> Datos();
@@ -36,7 +36,7 @@ class Proc_despac
  {
    $datos_usuario = $this -> usuario -> retornar();
 
-   $listado_prin = new Despachos($GLOBALS[cod_servic],1,$this -> cod_aplica,$this -> conexion);
+   $listado_prin = new Despachos($_REQUEST[cod_servic],1,$this -> cod_aplica,$this -> conexion);
    $listado_prin -> ListadoPrincipal($datos_usuario);
 
  }//FIN FUNCION LISTAR
@@ -66,7 +66,7 @@ class Proc_despac
 		    e.cod_depart = f.cod_depart AND
 		    e.cod_paisxx = f.cod_paisxx AND
 		    b.cod_rutasx = g.cod_rutasx AND
-		    a.num_despac = ".$GLOBALS[despac]."
+		    a.num_despac = ".$_REQUEST[despac]."
 	    ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -87,7 +87,7 @@ class Proc_despac
 		   ".BASE_DATOS.".tab_genera_depart h,
 		   ".BASE_DATOS.".tab_genera_paises i,
 		   ".BASE_DATOS.".tab_genera_paises j
-	      WHERE a.num_despac = ".$GLOBALS[despac]." AND
+	      WHERE a.num_despac = ".$_REQUEST[despac]." AND
 		    a.cod_ciuori = c.cod_ciuori AND
 		    a.cod_ciudes = c.cod_ciudes AND
 		    a.num_despac = b.num_despac AND
@@ -147,7 +147,7 @@ class Proc_despac
 
     for($i = 0; $i < sizeof($rutasx); $i++)
     {
-	 if($GLOBALS[rutasx] == $rutasx[$i][0])
+	 if($_REQUEST[rutasx] == $rutasx[$i][0])
 	  $formulario -> radio("","rutasx\"",$rutasx[$i][0],1,0);
 	 else
 	  $formulario -> radio("","rutasx\" onClick=\"form_ins.submit()",$rutasx[$i][0],0,0);
@@ -158,13 +158,13 @@ class Proc_despac
 	 $formulario -> linea($rutasx[$i][4],1,"i");
     }
 
-    if($GLOBALS[rutasx])
+    if($_REQUEST[rutasx])
     {
      $query = "SELECT c.val_duraci,a.fec_noveda,a.cod_contro
 		 		 FROM ".BASE_DATOS.".tab_despac_noveda a,
 		      		  ".BASE_DATOS.".tab_genera_rutcon c
-				WHERE a.num_despac = ".$GLOBALS[despac]." AND
-		      		  a.cod_rutasx = ".$GLOBALS[rutasx]." AND
+				WHERE a.num_despac = ".$_REQUEST[despac]." AND
+		      		  a.cod_rutasx = ".$_REQUEST[rutasx]." AND
 		      		  a.cod_rutasx = c.cod_rutasx AND
 		      		  a.cod_contro = c.cod_contro AND
 		      		  a.fec_noveda = (SELECT MAX(b.fec_noveda)
@@ -180,8 +180,8 @@ class Proc_despac
      $query = "SELECT c.val_duraci,a.fec_contro,a.cod_contro
 		 		 FROM ".BASE_DATOS.".tab_despac_contro a,
 		      		  ".BASE_DATOS.".tab_genera_rutcon c
-				WHERE a.num_despac = ".$GLOBALS[despac]." AND
-		      		  a.cod_rutasx = ".$GLOBALS[rutasx]." AND
+				WHERE a.num_despac = ".$_REQUEST[despac]." AND
+		      		  a.cod_rutasx = ".$_REQUEST[rutasx]." AND
 		      		  a.cod_rutasx = c.cod_rutasx AND
 		      		  a.cod_contro = c.cod_contro AND
 		      		  a.fec_contro = (SELECT MAX(b.fec_contro)
@@ -205,7 +205,7 @@ class Proc_despac
 	          	  FROM ".BASE_DATOS.".tab_genera_contro a,
 		       		   ".BASE_DATOS.".tab_genera_rutcon b
 	      	 	 WHERE a.cod_contro = b.cod_contro AND
-		       		   b.cod_rutasx = ".$GLOBALS[rutasx]." AND
+		       		   b.cod_rutasx = ".$_REQUEST[rutasx]." AND
 		       		   b.val_duraci > ".$datultrep[0][0]." AND
 		       		   b.ind_estado = '1' AND
 		       		   a.ind_estado = '1'
@@ -218,11 +218,11 @@ class Proc_despac
 		       		   ".BASE_DATOS.".tab_genera_rutcon b LEFT JOIN
 		       		   ".BASE_DATOS.".tab_despac_noveda c ON
 		       		   a.cod_contro = c.cod_contro AND
-		       		   c.num_despac = ".$GLOBALS[despac]."
+		       		   c.num_despac = ".$_REQUEST[despac]."
 		 		 WHERE c.cod_contro IS NULL AND
 		       		   c.num_despac IS NULL AND
 		       		   a.cod_contro = b.cod_contro AND
-		       		   b.cod_rutasx = ".$GLOBALS[rutasx]." AND
+		       		   b.cod_rutasx = ".$_REQUEST[rutasx]." AND
 		       		   b.ind_estado = '1' AND
 		       		   a.ind_estado = '1'
 		       		   GROUP BY 1 ORDER BY 3
@@ -231,14 +231,14 @@ class Proc_despac
 	 $consulta = new Consulta($query, $this -> conexion);
      $pcontros = $consulta -> ret_matriz();
 
-     if($GLOBALS[rutasx] != $GLOBALS[rutasel])
-      $GLOBALS[controbase] = NULL;
+     if($_REQUEST[rutasx] != $_REQUEST[rutasel])
+      $_REQUEST[controbase] = NULL;
 
-     if($GLOBALS[controbase])
+     if($_REQUEST[controbase])
      {
       $query = "SELECT a.cod_contro,a.nom_contro
 		  FROM ".BASE_DATOS.".tab_genera_contro a
-		 WHERE a.cod_contro = ".$GLOBALS[controbase]."
+		 WHERE a.cod_contro = ".$_REQUEST[controbase]."
 	       ";
 
       $consulta = new Consulta($query, $this -> conexion);
@@ -251,18 +251,18 @@ class Proc_despac
      $formulario -> linea("Seleccion Empalme de Puesto de Control",1,"t2");
      $formulario -> nueva_tabla();
      $formulario -> lista("Proximo P/C","controbase\" onChange=\"form_ins.submit()",$pcontros,0);
-     $formulario -> texto("Tiempo de Llegada (Min)","text","tmplle\" onChange=\"form_ins.submit()",1,5,5,"",$GLOBALS[tmplle]);
+     $formulario -> texto("Tiempo de Llegada (Min)","text","tmplle\" onChange=\"form_ins.submit()",1,5,5,"",$_REQUEST[tmplle]);
 
-     $formulario -> oculto("rutasel",$GLOBALS[rutasx],0);
+     $formulario -> oculto("rutasel",$_REQUEST[rutasx],0);
     }
 
-    if($GLOBALS[controbase] && $GLOBALS[tmplle])
+    if($_REQUEST[controbase] && $_REQUEST[tmplle])
     {
      $query = "SELECT c.val_duraci,a.fec_noveda,a.cod_contro
 		 FROM ".BASE_DATOS.".tab_despac_noveda a,
 		      ".BASE_DATOS.".tab_despac_vehige b,
 		      ".BASE_DATOS.".tab_genera_rutcon c
-		WHERE a.num_despac = ".$GLOBALS[despac]." AND
+		WHERE a.num_despac = ".$_REQUEST[despac]." AND
 		      a.num_despac = b.num_despac AND
 		      a.cod_rutasx = b.cod_rutasx AND
 		      a.cod_rutasx = c.cod_rutasx AND
@@ -301,39 +301,39 @@ class Proc_despac
 
      $formulario -> nueva_tabla();
 
-     if(!$GLOBALS[fechaprog])
-      $GLOBALS[fechaprog] = date("Y-m-d H:i");
+     if(!$_REQUEST[fechaprog])
+      $_REQUEST[fechaprog] = date("Y-m-d H:i");
      else
-      $GLOBALS[fechaprog] = str_replace("/","-",$GLOBALS[fechaprog]);
+      $_REQUEST[fechaprog] = str_replace("/","-",$_REQUEST[fechaprog]);
 
      if($maxnoact)
      {
-      if(!($GLOBALS[fechaprog] > $maxnoact[0][1] && $GLOBALS[fechaprog] <= date("Y-m-d H:i")))
+      if(!($_REQUEST[fechaprog] > $maxnoact[0][1] && $_REQUEST[fechaprog] <= date("Y-m-d H:i")))
       {
 	   $formulario -> linea("<div align = \"center\"><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">No Puede Asignar una Fecha Posterior a la Actual &oacute; Menor a la Ultima Novedad Para el Cambio de Ruta del Despacho. Se Asignara La Fecha y Hora Actual</div>",1,"e");
-       $GLOBALS[fechaprog] = date("Y-m-d H:i");
+       $_REQUEST[fechaprog] = date("Y-m-d H:i");
       }
      }
-     else if(!$GLOBALS[fechaprog] <= date("Y-m-d H:i"))
+     else if(!$_REQUEST[fechaprog] <= date("Y-m-d H:i"))
      {
       $formulario -> linea("<div align = \"center\"><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">No Puede Asignar una Fecha Posterior a la Actual Para el Cambio de Ruta del Despacho. Se Asignara La Fecha y Hora Actual</div>",1,"e");
-      $GLOBALS[fechaprog] = date("Y-m-d H:i");
+      $_REQUEST[fechaprog] = date("Y-m-d H:i");
      }
 
 	 $formulario -> nueva_tabla();
-     $formulario -> fecha_calendar("Fecha/Hora","fechaprog","form_ins",$GLOBALS[fechaprog],"yyyy/mm/dd hh:ii",1,1);
-     $feccal = $GLOBALS[fechaprog];
+     $formulario -> fecha_calendar("Fecha/Hora","fechaprog","form_ins",$_REQUEST[fechaprog],"yyyy/mm/dd hh:ii",1,1);
+     $feccal = $_REQUEST[fechaprog];
 
      $query = "SELECT a.cod_contro,a.nom_contro,c.val_duraci,
 		    if(a.ind_virtua = '0','Fisico','Virtual')
 	       FROM ".BASE_DATOS.".tab_genera_contro a,
 		    ".BASE_DATOS.".tab_genera_rutcon c
-	      WHERE c.cod_rutasx = '".$GLOBALS[rutasx]."' AND
+	      WHERE c.cod_rutasx = '".$_REQUEST[rutasx]."' AND
 		    c.cod_contro = a.cod_contro AND
 		    c.val_duraci >= (SELECT b.val_duraci
 				       FROM ".BASE_DATOS.".tab_genera_rutcon b
 				      WHERE b.cod_rutasx = c.cod_rutasx AND
-					    b.cod_contro = ".$GLOBALS[controbase]."
+					    b.cod_contro = ".$_REQUEST[controbase]."
 				    ) AND
 		    c.ind_estado = '1' AND
 		    a.ind_estado = '1'
@@ -358,15 +358,15 @@ class Proc_despac
      $formulario -> linea("Tiempo Estimado",0,"t");
      $formulario -> linea("Fecha y Hora Planeada",1,"t");
 
-     $pcontro=$GLOBALS[pcontro];
-     $pctime=$GLOBALS[pctime];
-     $pcnove=$GLOBALS[pcnove];
+     $pcontro=$_REQUEST[pcontro];
+     $pctime=$_REQUEST[pctime];
+     $pcnove=$_REQUEST[pcnove];
 
      $tiemacu = 0;
 
      for($i = 0; $i < sizeof($pcontr); $i++)
      {
-	if(!$GLOBALS[pcontro])
+	if(!$_REQUEST[pcontro])
 	 $pcontro[$i] = 1;
 
 	$temp_nove = $noveda;
@@ -384,10 +384,10 @@ class Proc_despac
 	 $temp_nove = array_merge($nove_selec,$temp_nove);
 	}
 
-	if($GLOBALS[controbase] == $pcontr[$i][0])
-	 $tiempcum = $GLOBALS[tmplle];
+	if($_REQUEST[controbase] == $pcontr[$i][0])
+	 $tiempcum = $_REQUEST[tmplle];
 	else
-	 $tiempcum = $tiemacu + ($pcontr[$i][2] - $pcontr[0][2]) + $GLOBALS[tmplle];
+	 $tiempcum = $tiemacu + ($pcontr[$i][2] - $pcontr[0][2]) + $_REQUEST[tmplle];
 
 	$query = "SELECT DATE_ADD('".$feccal."', INTERVAL ".$tiempcum." MINUTE)
 		 ";
@@ -429,28 +429,28 @@ class Proc_despac
 
      $formulario -> nueva_tabla();
      $formulario -> oculto("usuario","$usuario",0);
-     $formulario -> oculto("opcion",$GLOBALS[opcion],0);
+     $formulario -> oculto("opcion",$_REQUEST[opcion],0);
      $formulario -> oculto("window","central",0);
-     $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+     $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    }
 
-   $formulario -> oculto("despac",$GLOBALS[despac],0);
+   $formulario -> oculto("despac",$_REQUEST[despac],0);
    $formulario -> cerrar();
  }
 
  function Insertar()
  {
    $fec_actual = date("Y-m-d H:i:s");
-   $fec_cambru = $GLOBALS[fechaprog];
+   $fec_cambru = $_REQUEST[fechaprog];
 
-   $pcontro = $GLOBALS[pcontro];
-   $pcnove = $GLOBALS[pcnove];
-   $pctime = $GLOBALS[pctime];
+   $pcontro = $_REQUEST[pcontro];
+   $pcnove = $_REQUEST[pcnove];
+   $pctime = $_REQUEST[pctime];
 
    $query = "SELECT b.cod_contro,b.cod_rutasx
 	       FROM ".BASE_DATOS.".tab_despac_vehige a,
 		    ".BASE_DATOS.".tab_despac_seguim b
-	      WHERE a.num_despac = ".$GLOBALS[despac]." AND
+	      WHERE a.num_despac = ".$_REQUEST[despac]." AND
 		    b.num_despac = a.num_despac AND
 		    b.cod_rutasx = a.cod_rutasx
 	    ";
@@ -462,7 +462,7 @@ class Proc_despac
    {
      $query = "SELECT a.cod_contro
 		 FROM ".BASE_DATOS.".tab_despac_noveda a
-		WHERE a.num_despac = ".$GLOBALS[despac]." AND
+		WHERE a.num_despac = ".$_REQUEST[despac]." AND
 		      a.cod_rutasx = ".$antplaru[0][1]." AND
 		      a.cod_contro = ".$antplaru[$i][0]."
               ";
@@ -472,7 +472,7 @@ class Proc_despac
 
      $query = "SELECT a.cod_contro
 		 FROM ".BASE_DATOS.".tab_despac_contro a
-		WHERE a.num_despac = ".$GLOBALS[despac]." AND
+		WHERE a.num_despac = ".$_REQUEST[despac]." AND
 		      a.cod_rutasx = ".$antplaru[0][1]." AND
 		      a.cod_contro = ".$antplaru[$i][0]."
               ";
@@ -483,7 +483,7 @@ class Proc_despac
      if(!$extnoved && !$extnovco)
      {
       $query = "DELETE FROM ".BASE_DATOS.".tab_despac_seguim
-		      WHERE num_despac = ".$GLOBALS[despac]." AND
+		      WHERE num_despac = ".$_REQUEST[despac]." AND
 			    cod_rutasx = ".$antplaru[0][1]." AND
 			    cod_contro = ".$antplaru[$i][0]."
 	       ";
@@ -494,8 +494,8 @@ class Proc_despac
 
    $query = "SELECT a.val_duraci
 	       FROM ".BASE_DATOS.".tab_genera_rutcon a
-	      WHERE a.cod_rutasx = ".$GLOBALS[rutasx]." AND
-		    a.cod_contro = ".$GLOBALS[controbase]."
+	      WHERE a.cod_rutasx = ".$_REQUEST[rutasx]." AND
+		    a.cod_contro = ".$_REQUEST[controbase]."
 	    ";
 
    $consulta = new Consulta($query, $this -> conexion,"R");
@@ -503,23 +503,23 @@ class Proc_despac
 
    $tiemacu = 0;
 
-   for($i = 0; $i < $GLOBALS[totapc]; $i++)
+   for($i = 0; $i < $_REQUEST[totapc]; $i++)
    {
     if($pcontro[$i])
     {
      $query = "SELECT a.val_duraci
 		 FROM ".BASE_DATOS.".tab_genera_rutcon a
-		WHERE a.cod_rutasx = ".$GLOBALS[rutasx]." AND
+		WHERE a.cod_rutasx = ".$_REQUEST[rutasx]." AND
 		      a.cod_contro = ".$pcontro[$i]."
 	      ";
 
      $consulta = new Consulta($query, $this -> conexion);
      $pcduraci = $consulta -> ret_matriz();
 
-     if($GLOBALS[controbase] == $pcontro[$i])
-      $tiempcum = $GLOBALS[tmplle];
+     if($_REQUEST[controbase] == $pcontro[$i])
+      $tiempcum = $_REQUEST[tmplle];
      else
-      $tiempcum = $tiemacu + ($pcduraci[0][0] - $pcduracibase[0][0]) + $GLOBALS[tmplle];
+      $tiempcum = $tiemacu + ($pcduraci[0][0] - $pcduracibase[0][0]) + $_REQUEST[tmplle];
 
      $query = "SELECT DATE_ADD('".$fec_cambru."', INTERVAL ".$tiempcum." MINUTE)
 	      ";
@@ -529,8 +529,8 @@ class Proc_despac
 
       $query = "SELECT a.cod_contro
 		  FROM ".BASE_DATOS.".tab_despac_seguim a
-		 WHERE a.num_despac = ".$GLOBALS[despac]." AND
-		       a.cod_rutasx = ".$GLOBALS[rutasx]." AND
+		 WHERE a.num_despac = ".$_REQUEST[despac]." AND
+		       a.cod_rutasx = ".$_REQUEST[rutasx]." AND
 		       a.cod_contro = ".$pcontro[$i]."
 	       ";
 
@@ -541,18 +541,18 @@ class Proc_despac
        $query = "UPDATE ".BASE_DATOS.".tab_despac_seguim
 		    SET fec_planea = '".$timemost[0][0]."',
 		        fec_alarma = '".$timemost[0][0]."',
-		        usr_modifi = '".$GLOBALS[usuario]."',
+		        usr_modifi = '".$_REQUEST[usuario]."',
 		        fec_modifi = '".$fec_actual."'
-		  WHERE num_despac = ".$GLOBALS[despac]." AND
-		        cod_rutasx = ".$GLOBALS[rutasx]." AND
+		  WHERE num_despac = ".$_REQUEST[despac]." AND
+		        cod_rutasx = ".$_REQUEST[rutasx]." AND
 		        cod_contro = ".$pcontro[$i]."
 	        ";
       else
        $query = "INSERT INTO ".BASE_DATOS.".tab_despac_seguim
 			     (num_despac,cod_contro,cod_rutasx,fec_planea,
 			      fec_alarma,usr_creaci,fec_creaci)
-		      VALUES (".$GLOBALS[despac].",".$pcontro[$i].",".$GLOBALS[rutasx].",
-			      '".$timemost[0][0]."','".$timemost[0][0]."','".$GLOBALS[usuario]."',
+		      VALUES (".$_REQUEST[despac].",".$pcontro[$i].",".$_REQUEST[rutasx].",
+			      '".$timemost[0][0]."','".$timemost[0][0]."','".$_REQUEST[usuario]."',
 			      '".$fec_actual."')
 	        ";
 
@@ -562,8 +562,8 @@ class Proc_despac
       {
        $query = "SELECT a.cod_contro
 		   FROM ".BASE_DATOS.".tab_despac_pernoc a
-		  WHERE a.num_despac = ".$GLOBALS[despac]." AND
-		        a.cod_rutasx = ".$GLOBALS[rutasx]." AND
+		  WHERE a.num_despac = ".$_REQUEST[despac]." AND
+		        a.cod_rutasx = ".$_REQUEST[rutasx]." AND
 		        a.cod_contro = ".$pcontro[$i]."
 	        ";
 
@@ -574,18 +574,18 @@ class Proc_despac
         $query = "UPDATE ".BASE_DATOS.".tab_despac_pernoc
 		     SET cod_noveda = ".$pcnove[$i].",
 			 val_pernoc = ".$pctime[$i].",
-			 usr_modifi = '".$GLOBALS[usuario]."',
+			 usr_modifi = '".$_REQUEST[usuario]."',
 			 fec_modifi = '".$fec_actual."'
-		   WHERE num_despac = ".$GLOBALS[despac]." AND
-			 cod_rutasx = ".$GLOBALS[rutasx]." AND
+		   WHERE num_despac = ".$_REQUEST[despac]." AND
+			 cod_rutasx = ".$_REQUEST[rutasx]." AND
 			 cod_contro = ".$pcontro[$i]."
 		 ";
        else
         $query = "INSERT INTO ".BASE_DATOS.".tab_despac_pernoc
 			      (num_despac,cod_contro,cod_rutasx,cod_noveda,
 			       val_pernoc,usr_creaci,fec_creaci)
-		       VALUES (".$GLOBALS[despac].",".$pcontro[$i].",".$GLOBALS[rutasx].",
-			       ".$pcnove[$i].",".$pctime[$i].",'".$GLOBALS[usuario]."',
+		       VALUES (".$_REQUEST[despac].",".$pcontro[$i].",".$_REQUEST[rutasx].",
+			       ".$pcnove[$i].",".$pctime[$i].",'".$_REQUEST[usuario]."',
 			       '".$fec_actual."'
 			      )
 		 ";
@@ -598,10 +598,10 @@ class Proc_despac
    }
 
    $query = "UPDATE ".BASE_DATOS.".tab_despac_vehige
-		SET cod_rutasx = ".$GLOBALS[rutasx].",
-		    usr_modifi = '".$GLOBALS[usuario]."',
+		SET cod_rutasx = ".$_REQUEST[rutasx].",
+		    usr_modifi = '".$_REQUEST[usuario]."',
 		    fec_modifi = '".$fec_actual."'
-	      WHERE num_despac = ".$GLOBALS[despac]."
+	      WHERE num_despac = ".$_REQUEST[despac]."
 	    ";
 
    $consulta = new Consulta($query, $this -> conexion,"R");
@@ -610,9 +610,9 @@ class Proc_despac
 
    if($consulta = new Consulta("COMMIT", $this -> conexion))
    {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Generar Otro Cambio de Ruta</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Generar Otro Cambio de Ruta</a></b>";
 
-     $mensaje =  "Se Genero el Cambio de Ruta Para el Despacho # <b>".$GLOBALS[numdespac]."</b> con Exito".$link_a;
+     $mensaje =  "Se Genero el Cambio de Ruta Para el Despacho # <b>".$_REQUEST[numdespac]."</b> con Exito".$link_a;
      $mens = new mensajes();
      $mens -> correcto("CAMBIO DE RUTA",$mensaje);
    }

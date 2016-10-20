@@ -38,7 +38,7 @@ class Proc_contro
    */
   function principal()
   {
-    switch($GLOBALS[opcion])
+    switch($_REQUEST[opcion])
     {
       case "1":
         $this -> Resultado();
@@ -77,7 +77,7 @@ class Proc_contro
     $formulario -> oculto("opcion",1,0);
     $formulario -> oculto("valor",$valor,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> botoni("Buscar","form_list.submit()",0);
     $formulario -> cerrar();
   }
@@ -167,7 +167,7 @@ class Proc_contro
     $formulario -> oculto("opcion",2,0);
     $formulario -> oculto("valor",$valor,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> cerrar();
   }
 

@@ -799,7 +799,7 @@ class Proc_salida
 		    usr_modifi = '".$_REQUEST[usuario]."',
 		    fec_modifi = '".$fec_actual."',
         fec_ultnov = '".$fecpla."'
-	      WHERE num_despac = '".$GLOBALS[despac]."'
+	      WHERE num_despac = '".$_REQUEST[despac]."'
 	    ";
 
     $insercion = new Consulta($query, $this -> conexion,"R");
@@ -940,7 +940,7 @@ class Proc_salida
 	         FROM ".BASE_DATOS.".tab_despac_vehige a,
 		      ".BASE_DATOS.".tab_despac_despac b,
 		      ".BASE_DATOS.".tab_genera_agenci c
-		WHERE a.num_despac = '".$GLOBALS[despac]."' AND
+		WHERE a.num_despac = '".$_REQUEST[despac]."' AND
 		      b.num_despac = a.num_despac AND
 		      a.cod_agenci = c.cod_agenci
 	      ";
@@ -959,7 +959,7 @@ class Proc_salida
      //query para traer el primer cliente del Despacho
      $query = "SELECT MIN(a.cod_client)
 	         FROM ".BASE_DATOS.".tab_despac_remesa a
-		WHERE a.num_despac = '".$GLOBALS[despac]."'
+		WHERE a.num_despac = '".$_REQUEST[despac]."'
 	      ";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -1001,7 +1001,7 @@ class Proc_salida
                	 FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
 		      ".BASE_DATOS.".tab_despac_vehige b,
 		      ".BASE_DATOS.".tab_tercer_tercer c
-               WHERE b.num_despac = '".$GLOBALS[despac]."' AND
+               WHERE b.num_despac = '".$_REQUEST[despac]."' AND
 		     a.num_placax = b.num_placax AND
 		     a.cod_propie = c.cod_tercer
 	      ";
@@ -1032,7 +1032,7 @@ class Proc_salida
                	 FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
 		      ".BASE_DATOS.".tab_despac_vehige b,
 		      ".BASE_DATOS.".tab_tercer_tercer c
-               WHERE b.num_despac = '".$GLOBALS[despac]."' AND
+               WHERE b.num_despac = '".$_REQUEST[despac]."' AND
 		     a.num_placax = b.num_placax AND
 		     a.cod_tenedo = c.cod_tercer
 	      ";
@@ -1065,7 +1065,7 @@ class Proc_salida
 		      ".BASE_DATOS.".tab_despac_vehige b,
 		      ".BASE_DATOS.".tab_tercer_tercer c,
 		      ".BASE_DATOS.".tab_tercer_conduc d
-               WHERE b.num_despac = '".$GLOBALS[despac]."' AND
+               WHERE b.num_despac = '".$_REQUEST[despac]."' AND
 		     a.num_placax = b.num_placax AND
 		     a.cod_conduc = c.cod_tercer AND
 		     c.cod_tercer = d.cod_tercer
@@ -1098,7 +1098,7 @@ class Proc_salida
                	 FROM ".BASE_DATOS.".tab_despac_vehige b,
 		      ".BASE_DATOS.".tab_tercer_tercer c,
 		      ".BASE_DATOS.".tab_tercer_conduc d
-               WHERE b.num_despac = '".$GLOBALS[despac]."' AND
+               WHERE b.num_despac = '".$_REQUEST[despac]."' AND
 		     c.cod_tercer = b.cod_conduc AND
 		     d.cod_tercer = c.cod_tercer
 	      ";
@@ -1128,7 +1128,7 @@ class Proc_salida
 		      b.cod_conduc
                	 FROM ".BASE_DATOS.".tab_despac_vehige a,
 		      ".BASE_DATOS.".tab_vehicu_vehicu b
-               WHERE a.num_despac = '".$GLOBALS[despac]."' AND
+               WHERE a.num_despac = '".$_REQUEST[despac]."' AND
 		     a.num_placax = b.num_placax
 	      ";
 
@@ -1176,7 +1176,7 @@ class Proc_salida
 		 FROM ".BASE_DATOS.".tab_despac_despac a,
 		      ".BASE_DATOS.".tab_despac_vehige b
 		WHERE a.num_despac = b.num_despac AND
-		      a.num_despac = '".$GLOBALS[despac]."'
+		      a.num_despac = '".$_REQUEST[despac]."'
 	      ";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -1185,7 +1185,7 @@ class Proc_salida
      $query = "SELECT a.cod_contro
 		 FROM ".BASE_DATOS.".tab_despac_seguim a
 		WHERE a.cod_rutasx = ".$datfin[6]." AND
-		      a.num_despac = ".$GLOBALS[despac]."
+		      a.num_despac = ".$_REQUEST[despac]."
 		      ORDER BY a.fec_planea
 	      ";
 
@@ -1200,7 +1200,7 @@ class Proc_salida
      $query = "SELECT a.cod_contro,a.cod_noveda,a.val_pernoc
 		 FROM ".BASE_DATOS.".tab_despac_pernoc a
 		WHERE a.cod_rutasx = ".$datfin[6]." AND
-		      a.num_despac = ".$GLOBALS[despac]."
+		      a.num_despac = ".$_REQUEST[despac]."
 	      ";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -1231,7 +1231,7 @@ class Proc_salida
      else
       $genera_d = "";
 
-     $despac_ws["despac"] = $GLOBALS[despac];
+     $despac_ws["despac"] = $_REQUEST[despac];
      $despac_ws["manifi"] = $datfin[0];
      $despac_ws["genera"] = $genera_d;
      $despac_ws["fechax"] = $datfin[1];
@@ -1258,7 +1258,7 @@ class Proc_salida
 
      if($resultado_ws["Confirmacion"] == "OK")
      {
-      $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">El Vehiculo con Placas <b>".$GLOBALS[placa]."</b> ha Salido Correctamente en la Interfaz ".$interfaz -> interfaz[$i]["nombre"].".";
+      $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">El Vehiculo con Placas <b>".$_REQUEST[placa]."</b> ha Salido Correctamente en la Interfaz ".$interfaz -> interfaz[$i]["nombre"].".";
      }
      else
      {
@@ -1273,7 +1273,7 @@ class Proc_salida
 */
   $query = "SELECT a.cod_transp
   		      FROM ".BASE_DATOS.".tab_despac_vehige a
-  		     WHERE a.num_despac = ".$GLOBALS[despac]."
+  		     WHERE a.num_despac = ".$_REQUEST[despac]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -1281,17 +1281,17 @@ class Proc_salida
 
   //Manejo de Interfaz GPS
   /*$interf_gps = new Interfaz_GPS();
-  $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$GLOBALS[usuario],$this -> conexion);
+  $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$_REQUEST[usuario],$this -> conexion);
 
   for($i = 0; $i  < $interf_gps -> cant_interf; $i++)
   {
-	if($interf_gps -> getVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$transdes[0][0]))
+	if($interf_gps -> getVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$transdes[0][0]))
 	{
-	 $idgps = $interf_gps -> getIdGPS($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
+	 $idgps = $interf_gps -> getIdGPS($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
 
-	 if($interf_gps -> setSalidaGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$GLOBALS[placa],$idgps,$GLOBALS[despac]))
+	 if($interf_gps -> setSalidaGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$_REQUEST[placa],$idgps,$_REQUEST[despac]))
 	 {
-	    if($interf_gps -> setAcTimeRepor($interf_gps -> cod_operad[$i][0],$transdes[0][0],$GLOBALS[placa],$idgps,$GLOBALS[despac],$fec_actual,$interf_gps -> val_timtra[$i][0]))
+	    if($interf_gps -> setAcTimeRepor($interf_gps -> cod_operad[$i][0],$transdes[0][0],$_REQUEST[placa],$idgps,$_REQUEST[despac],$fec_actual,$interf_gps -> val_timtra[$i][0]))
 	    {
 	    	$mensaje_gps = "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Activado Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
 	    }
@@ -1311,9 +1311,9 @@ class Proc_salida
   {
    if($consulta = new Consulta ("COMMIT", $this -> conexion))
    {
-    $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otra Salida</a></b>";
+    $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otra Salida</a></b>";
 
-     $mensaje = "El Vehiculo <b>".$GLOBALS[placa]."</b> Asignado al Despacho # <b>".$GLOBALS[despac]."</b> Salio Exitosamente.".$mensaje_sat.$mensaje_gps;
+     $mensaje = "El Vehiculo <b>".$_REQUEST[placa]."</b> Asignado al Despacho # <b>".$_REQUEST[despac]."</b> Salio Exitosamente.".$mensaje_sat.$mensaje_gps;
      $mens = new mensajes();
      $mens -> correcto("SALIDA DE DESPACHOS", $mensaje);
    }

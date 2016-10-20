@@ -21,11 +21,11 @@ class Act_config_vehicu
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -58,7 +58,7 @@ class Act_config_vehicu
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Borrar","form_act.reset",1);
@@ -74,12 +74,12 @@ class Act_config_vehicu
    $usuario=$datos_usuario["cod_usuari"];
   $query = "SELECT   num_config,nom_config,if(ind_estado,'Activa','Inactiva')
             FROM     ".BASE_DATOS.".tab_vehige_config
-           WHERE num_config LIKE '%$GLOBALS[config]%'
+           WHERE num_config LIKE '%$_REQUEST[config]%'
         ORDER BY 2";
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
   for($i=0;$i<sizeof($matriz);$i++)
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&config=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&config=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario = new Formulario ("index.php","post","Resultado de la Consulta","form_item");
    $formulario -> linea("<b>Se Encontraron ".sizeof($matriz)." Registros</b>",0);
@@ -113,7 +113,7 @@ class Act_config_vehicu
    $formulario -> oculto("window","central",0);
 
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
 // *********************************************************************************
@@ -127,7 +127,7 @@ class Act_config_vehicu
    $query = "SELECT   num_config,nom_config,if(ind_estado,'Activa','Inactiva'),fot_config,
                       val_pesmax,ind_estado
             FROM     ".BASE_DATOS.".tab_vehige_config
-           WHERE num_config = '$GLOBALS[config]'";
+           WHERE num_config = '$_REQUEST[config]'";
   $consulta = new Consulta($query, $this -> conexion);
   $matriz = $consulta -> ret_matriz();
 
@@ -154,11 +154,11 @@ class Act_config_vehicu
    $formulario -> nueva_tabla();
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",3,0);
-   $formulario -> oculto("config",$GLOBALS[config],0);
+   $formulario -> oculto("config",$_REQUEST[config],0);
    $formulario -> oculto("nombre",$matriz[0][0],0);
 
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Actualizar","aceptar_act()",0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
@@ -172,20 +172,20 @@ class Act_config_vehicu
   $fec_actual = date("Y-m-d H:i:s");
   //ultimo despacho
 
-  if(!$GLOBALS[estado])
-   $GLOBALS[estado]=0;
+  if(!$_REQUEST[estado])
+   $_REQUEST[estado]=0;
 
   //query de insercion de despacho
    $query = "UPDATE ".BASE_DATOS.".tab_vehige_config
-               SET ind_estado = '$GLOBALS[estado]',
-                   val_pesmax = '$GLOBALS[peso]',
-                   usr_modifi = '$GLOBALS[usuario]',
+               SET ind_estado = '$_REQUEST[estado]',
+                   val_pesmax = '$_REQUEST[peso]',
+                   usr_modifi = '$_REQUEST[usuario]',
                    fec_modifi = '$fec_actual'
-             WHERE num_config = '$GLOBALS[config]'";
+             WHERE num_config = '$_REQUEST[config]'";
   $insercion = new Consulta($query, $this -> conexion);
 
 
-    echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>La Configuración $GLOBALS[nombre] ha sido Actualizada Correctamente</b><p></p>";
+    echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>La Configuración $_REQUEST[nombre] ha sido Actualizada Correctamente</b><p></p>";
 
 
 

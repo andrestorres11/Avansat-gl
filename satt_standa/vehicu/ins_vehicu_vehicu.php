@@ -16,7 +16,7 @@ class Ins_vehicu_vehicu {
         $this->cod_aplica = $ca;
         self::$cFunciones = new trayle($co, $us, $ca);
         self::$cTransp = new Despac($co, $us, $ca);
-        switch ($GLOBALS[opcion]) {
+        switch ($_REQUEST[opcion]) {
             case 1:
               $this->Formulario();
             break;
@@ -187,7 +187,7 @@ class Ins_vehicu_vehicu {
           $mHtml->OpenDiv("id:contentID; class:contentAccordion");
             # Accordion1
             $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
-              $mHtml->SetBody("<h3 style='padding:6px;'><center>Datos Básicos</center></h3>");
+              $mHtml->SetBody("<h3 style='padding:6px;'><center>Datos B&aacute;sicos</center></h3>");
             $mHtml->OpenDiv("id:sec1;");
               $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                 $mHtml->Table("tr");
@@ -206,14 +206,14 @@ class Ins_vehicu_vehicu {
                   $mHtml->Label("Color:", "width:25%; :1;");
                   $mHtml->Select2 ($datos->colores,  array("name" => "vehicu[cod_colorx]", "validate" => "select",  "id" => "cod_colorxID", "width" => "25%", "key"=> $datos->principal->cod_colorx, "end" => true) );
                   
-                  $mHtml->Label(("Tipo de Vinculación:"), "width:25%; :1;");
+                  $mHtml->Label(("Tipo de Vinculaci&oacute;n:"), "width:25%; :1;");
                   $mHtml->Select2 ($datos->vinculaciones,  array("name" => "vehicu[cod_tipveh]", "validate" => "select", "id" => "cod_tipvehID", "width" => "25%", "key"=> $datos->principal->cod_tipveh) );
                   $mHtml->Label(("Tipo de Carroceria:"), "width:25%; :1;");
                   $mHtml->Select2 ($datos->carrocerias,  array("name" => "vehicu[cod_carroc]", "validate" => "select", "id" => "cod_carrocID", "width" => "25%", "key"=> $datos->principal->cod_carroc,  "end" => true) );
                   
-                  $mHtml->Label("Número de Motor:", "width:25%; *:1;"); 
+                  $mHtml->Label("N&uacute;mero de Motor:", "width:25%; *:1;"); 
                   $mHtml->Input (array("name" => "vehicu[num_motorx]", "validate" => "dir",  "obl" => "1", "id" => "num_motorxID",  "minlength" => "7", "maxlength" => "20", "width" => "25%", "value"=> $datos->principal->num_motorx) );
-                  $mHtml->Label("Número de Serie:", "width:25%; *:1;");
+                  $mHtml->Label("N&uacute;mero de Serie:", "width:25%; *:1;");
                   $mHtml->Input (array("name" => "vehicu[num_seriex]", "validate" => "alpha",  "obl" => "1", "id" => "num_seriexID",  "minlength" => "7", "maxlength" => "20", "width" => "25%", "value"=> $datos->principal->num_seriex, "end"=> true) );
                   
 				          $mHtml->Label("Peso Vacio (TN):", "width:25%; *:1;"); 
@@ -221,7 +221,7 @@ class Ins_vehicu_vehicu {
                   $mHtml->Label("Capacidad (TN):", "width:25%; *:1;");
                   $mHtml->Input (array("name" => "vehicu[val_capaci]", "validate" => "numero", "size"=>"4", "obl" => "1", "id" => "val_capaciID",  "minlength" => "1", "maxlength" => "4", "width" => "25%", "value"=> $datos->principal->val_capaci,  "end" => true) );
 
-                  $mHtml->Label("Configuración:", "width:25%; *:1;");
+                  $mHtml->Label("Configuraci&oacute;n:", "width:25%; *:1;");
                   $mHtml->Select2 ($datos->configuraciones,  array("name" => "vehicu[num_config]", "validate" => "select",  "obl" => "1", "id" => "num_configID", "width" => "25%", "key"=> $datos->principal->num_config,  "end" => true) );
                   
                   $mHtml->Label("Vinculado a:", "width:25%; :1;"); 
@@ -229,14 +229,14 @@ class Ins_vehicu_vehicu {
                   $mHtml->Label("Fecha de Vencimiento:", "width:25%; :1;");                   
                   $mHtml->Input(array("type" => "date", "name" => "vehicu[fec_vigvin]", "size"=>"10", "id" => "fec_vigvinID", "minlength" => "7", "maxlength" => "10", "width" => "25%", "value" => $datos->principal->fec_vigvin,  "end" => true));
 				
-				          $mHtml->Label("Revisión Tecno Mecanica:", "width:25%; *:1;"); 
+				          $mHtml->Label("Revisi&oacute;n Tecno Mecanica:", "width:25%; *:1;"); 
                   $mHtml->Input (array("name" => "vehicu[num_agases]", "validate" => "numero", "obl"=> "1", "id" => "num_agasesID",  "minlength" => "7", "maxlength" => "10", "width" => "25%", "value"=> $datos->principal->num_agases) );
                   $mHtml->Label("Fecha de Vencimiento:", "width:25%; *:1;");                   
                   $mHtml->Input(array("type" => "date", "name" => "vehicu[fec_vengas]", "size"=>"10", "obl"=> "1", "id" => "fec_vengasID", "validate"=>"date", "minlength" => "10", "maxlength" => "10", "width" => "25%", "value" => $datos->principal->fec_vengas,  "end" => true));
 				
-				          $mHtml->Label("Licencia de Tránsito:", "width:25%; *:1;"); 
+				          $mHtml->Label("Licencia de Tr&aacute;nsito:", "width:25%; *:1;"); 
                   $mHtml->Input (array("name" => "vehicu[num_tarpro]", "validate" => "numero", "obl"=> "1", "id" => "num_tarproID",  "minlength" => "8", "maxlength" => "12", "width" => "25%", "value"=> $datos->principal->num_tarpro) );
-                  $mHtml->Label("Calificación:", "width:25%; *:1;");
+                  $mHtml->Label("Calificaci&oacute;n:", "width:25%; *:1;");
                   $mHtml->Select2 ($datos->calificaciones,  array("name" => "vehicu[cod_califi]", "obl"=>"1", "validate" => "select",  "id" => "cod_califiID", "width" => "25%", "key"=> $datos->principal->cod_califi, "end" => true) );
                    
                 $mHtml->CloseTable("tr");
@@ -263,7 +263,7 @@ class Ins_vehicu_vehicu {
           # Fin accordion2
           # Accordion3
           $mHtml->OpenDiv("id:remolquesID; class:accordion");
-          $mHtml->SetBody("<h3 style='padding:6px;'><center>Selección del Remolque</center></h3>");
+          $mHtml->SetBody("<h3 style='padding:6px;'><center>Selecci&oacute;n del Remolque</center></h3>");
             $mHtml->OpenDiv("id:sec3");
               $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
                 $mHtml->Table("tr");
@@ -301,7 +301,7 @@ class Ins_vehicu_vehicu {
           #fin Acordeon 4
         #Acordeon 5
         $mHtml->OpenDiv("id:DatosSecundariosID; class:accordion");
-        $mHtml->SetBody("<h3 style='padding:6px;'><center>Fotos del Vehículo</center></h3>");
+        $mHtml->SetBody("<h3 style='padding:6px;'><center>Fotos del Veh&iacute;culo</center></h3>");
           $mHtml->OpenDiv("id:sec5");
             $mHtml->OpenDiv("id:form5; class:contentAccordionForm");
               $mHtml->Table("tr");
@@ -347,7 +347,7 @@ class Ins_vehicu_vehicu {
             }
          
           $mHtml->OpenDiv("id:fotoID; class:accordion");
-          $mHtml->SetBody("<h3 style='padding:6px;'><center>Fotos del Vehículo</center></h3>");
+          $mHtml->SetBody("<h3 style='padding:6px;'><center>Fotos del Veh&iacute;culo</center></h3>");
             $mHtml->OpenDiv("id:sec7");
               $mHtml->OpenDiv("id:form7; class:contentAccordionForm");
                 $mHtml->Table("tr");

@@ -46,11 +46,11 @@ class AnuStanda
 			
         $formulario -> nueva_tabla();
         $formulario -> lista( "Tipo de Cobro:","tip_tarifa\" id=\"tip_tarifaID\" onChange=\"form_insert.submit()",$tipos,1);
-				if($GLOBALS['tip_tarifa']){
+				if($_REQUEST['tip_tarifa']){
 					$query = "SELECT cod_tarifa, tip_tarifa,
 													 val_minimo, DATE_FORMAT(fec_creaci,'%d-%m-%Y')
 			              FROM ".BASE_DATOS.".tab_genera_tarifa a 
-			              WHERE tip_tarifa = '".$GLOBALS['tip_tarifa']."' AND
+			              WHERE tip_tarifa = '".$_REQUEST['tip_tarifa']."' AND
 													ind_estado = '1' ";
 					$consulta = new Consulta($query, $this -> conexion);
 					$tarifa = $consulta -> ret_matriz();
@@ -129,12 +129,12 @@ class AnuStanda
 				$formulario -> oculto("maxtarifa\" id=\"maxtarifaID",$j,0);
         $formulario -> oculto("num_serie",0,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion\" id=\"opcionID",1,0);
         $formulario -> cerrar();
         echo '
 					<script>
-			 			document.getElementById("tip_tarifaID").value="'.$GLOBALS["tip_tarifa"].'";	
+			 			document.getElementById("tip_tarifaID").value="'.$_REQUEST["tip_tarifa"].'";	
        		</script>';
     }
 
@@ -149,12 +149,12 @@ class AnuStanda
 											fec_modifi = NOW(),
 											usr_modifi = '".$datos_usuario['cod_usuari']."',
 											usr_anulad = '".$datos_usuario['cod_usuari']."',
-											obs_anulad = '".$GLOBALS['obs_anulad']."'
-								 WHERE tip_tarifa = '".$GLOBALS['tip_tarifa']."' AND
+											obs_anulad = '".$_REQUEST['obs_anulad']."'
+								 WHERE tip_tarifa = '".$_REQUEST['tip_tarifa']."' AND
 								 			 ind_estado = 1";
       $insercion = new Consulta($query, $this -> conexion,"BR");
 			if($insercion = new Consulta("COMMIT", $this -> conexion)){
-		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">ANULAR OTRA TARIFA STANDA</a></b>";
+		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">ANULAR OTRA TARIFA STANDA</a></b>";
 		
 		     $mensaje =  " Se Anulo con Exito".$link_a;
 		     $mens = new mensajes();

@@ -1,15 +1,15 @@
 <?php
 
-if(isset($GLOBALS["fpass"]))
+if(isset($_REQUEST["fpass"]))
 {
-	DEFINE("host","bd10.intrared.net:3306");
+	DEFINE("host","aglbd.intrared.net");
 	DEFINE("usu","jpreciado");
 	DEFINE("clv","Jorge_2015");
 	DEFINE("bd","satt_faro");
 
-	if($GLOBALS["fpass"] == "8256e0201424b7755f79e6af5e6de58e")
+	if($_REQUEST["fpass"] == "8256e0201424b7755f79e6af5e6de58e")
 	{
-		if(isset($GLOBALS["opcion"]))
+		if(isset($_REQUEST["opcion"]))
 		{
 			busqueda();
 		}

@@ -31,7 +31,7 @@ class Proc_despac
   }
   else
      {  
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           if($this -> VerifyInterfRit( $_GET[despac] ) === '1')   
@@ -52,7 +52,7 @@ class Proc_despac
  function Listar()
  {
    $datos_usuario = $this -> usuario -> retornar();
-   $listado_prin = new Despachos($GLOBALS[cod_servic],1,$this -> cod_aplica,$this -> conexion);
+   $listado_prin = new Despachos($_REQUEST[cod_servic],1,$this -> cod_aplica,$this -> conexion);
    $listado_prin -> ListadoPrincipal($datos_usuario,0,NULL,0,NULL,NULL,1,0,0,NULL,0,1);  
    
  }
@@ -136,9 +136,9 @@ class Proc_despac
   $formulario -> oculto("feclle","$fec_actual",0);
   $formulario -> oculto("horlle","$hor_actual",0);
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> oculto("opcion\" id=\"opcionID\" ",2,0);
-  $formulario -> oculto("despac",$GLOBALS[despac],0);
+  $formulario -> oculto("despac",$_REQUEST[despac],0);
   $formulario -> nueva_tabla();
   $formulario -> botoni("Aceptar","InsertCumpli()",0);
   $formulario -> botoni("Borrar","form_ins.reset()",1);
@@ -246,7 +246,7 @@ class Proc_despac
       if($mResult[0] === true)
       {
         // Actualiza estado del despacho para la calificación --------------------------------------------------------------------
-        $mSql = "UPDATE ".BASE_DATOS.".tab_despac_despac SET ind_califi = '1' WHERE num_despac = '{$GLOBALS['despac']}' ";
+        $mSql = "UPDATE ".BASE_DATOS.".tab_despac_despac SET ind_califi = '1' WHERE num_despac = '{$_REQUEST['despac']}' ";
         $mUpdate = new Consulta( $mSql, $this -> conexion ); 
         $mNumDespac['num_despac'] = $_POST['despac'];
         $mDataCalifi = $this -> GetManifiData( $mNumDespac );
@@ -274,20 +274,20 @@ class Proc_despac
         {
           $mensaje = "<table><tr><td align=left>Respuesta RIT:</td></tr><tr><td>".utf8_decode( $mResult[1] )." </td></tr>
                              <tr><td>Datos: ".$mResult[2]."</td></tr>
-                             <tr><td>Despacho: ".$GLOBALS['despac']."</td></tr>
-                             <tr><td><a href='?cod_servic=".$GLOBALS["cod_servic"]."&window=central'>CALIFICAR OTRO CONDUCTOR</a></td></tr>
+                             <tr><td>Despacho: ".$_REQUEST['despac']."</td></tr>
+                             <tr><td><a href='?cod_servic=".$_REQUEST["cod_servic"]."&window=central'>CALIFICAR OTRO CONDUCTOR</a></td></tr>
                       </table>";
           $mens->correcto("REGISTRO CALIFICACIÓN CONDUCTOR RIT", $mensaje);
         }
         else
         {
-          $mensaje = "<table><tr><td>Error insercion BD Local </td></tr><tr><td>Datos: ".$mResult[2]."</td></tr><tr><td>Despacho: ".$GLOBALS['despac']."</td></tr></table>";
+          $mensaje = "<table><tr><td>Error insercion BD Local </td></tr><tr><td>Datos: ".$mResult[2]."</td></tr><tr><td>Despacho: ".$_REQUEST['despac']."</td></tr></table>";
           $mens->error("REGISTRO CALIFICACION CONDUCTOR RIT", $mensaje);
         }
       }
       else
       {
-        $mensaje = "Ha ocurrido un(os) Error(es) con la Interfaz del RIT:<br>".$mResult[1]." <br>Datos:".$mResult[2]."<br>Despacho:".$GLOBALS['despac'];
+        $mensaje = "Ha ocurrido un(os) Error(es) con la Interfaz del RIT:<br>".$mResult[1]." <br>Datos:".$mResult[2]."<br>Despacho:".$_REQUEST['despac'];
         $mens->error("REGISTRO CALIFICACION CONDUCTOR RIT", $mensaje);
       }
    }

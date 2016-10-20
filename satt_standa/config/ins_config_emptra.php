@@ -15,17 +15,17 @@ class Ins_config_emptra
 //********METODOS DE LA CLASE*************
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Captura();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
-         $this -> Poliza($GLOBALS[datos]);
+         $this -> Poliza($_REQUEST[datos]);
         break;
         case "2":
-         $this -> Insertar($GLOBALS[datos],$GLOBALS[datos2]);
+         $this -> Insertar($_REQUEST[datos],$_REQUEST[datos2]);
         break;
        }//FIN SWITCH
      }// FIN ELSE GLOBALS OPCION
@@ -110,7 +110,7 @@ class Ins_config_emptra
      $formulario -> oculto("window","central",0);
      $formulario -> oculto("opcion",1,0);
      $formulario -> nueva_tabla();
-     $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+     $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
      $formulario -> botoni("Siguiente","siguiente()",0);
      $formulario -> botoni("Borrar","form_transpor.reset()",1);
      $formulario -> cerrar();
@@ -142,9 +142,9 @@ class Ins_config_emptra
      $fecha2 = New Fecha();
      $fecha3 = New Fecha();
      //reasigan los valores anteriores
-     $datos1=$GLOBALS[datos1];
-     $maximo=$GLOBALS[maximo];
-     $modali=$GLOBALS[modali];
+     $datos1=$_REQUEST[datos1];
+     $maximo=$_REQUEST[maximo];
+     $modali=$_REQUEST[modali];
      //formulario de insercion
      echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/config.js\"></script>\n";
      $formulario = new Formulario ("index.php","post","<b>Datos Basicos de la Poliza</b>","form_poliza");
@@ -156,8 +156,8 @@ class Ins_config_emptra
      $formulario -> linea("Vigencia Final",0);
      $fecha1 -> pedir_fecha("ano2","mes2","dia2");
      $formulario -> nueva_tabla();
-     $formulario -> texto ("Valor Maximo por Despacho:","text","valmax",0,20,30,"","$GLOBALS[valmax]");
-     $formulario -> texto ("Rango de Modelo de Vehículos:","text","modelo",1,10,10,"","$GLOBALS[modelo]");
+     $formulario -> texto ("Valor Maximo por Despacho:","text","valmax",0,20,30,"","$_REQUEST[valmax]");
+     $formulario -> texto ("Rango de Modelo de Vehículos:","text","modelo",1,10,10,"","$_REQUEST[modelo]");
      $formulario -> nueva_tabla();
      $formulario -> linea("Restricciones de Horario",0);
      $formulario -> nueva_tabla();
@@ -182,28 +182,28 @@ class Ins_config_emptra
         $formulario -> oculto("datos[$i]","$datos[$i]",0);
       for($i=0;$i<$maximo;$i++){
       $formulario -> oculto("modali[$i]","".$modali[$i]."",0);}
-     $formulario -> oculto("nom","$GLOBALS[nom]",0);
-     $formulario -> oculto("abr","$GLOBALS[abr]",0);
-     $formulario -> oculto("tercer","$GLOBALS[tercer]",0);
-     $formulario -> oculto("dijver","$GLOBALS[dijver]",0);
-     $formulario -> oculto("ciures","$GLOBALS[ciures]",0);
-     $formulario -> oculto("direc","$GLOBALS[direc]",0);
-     $formulario -> oculto("telef","$GLOBALS[telef]",0);
-     $formulario -> oculto("nomsed","$GLOBALS[nomsed]",0);
-     $formulario -> oculto("dirsed","$GLOBALS[dirsed]",0);
-     $formulario -> oculto("telsed","$GLOBALS[telsed]",0);
-     $formulario -> oculto("ciused","$GLOBALS[ciused]",0);
-     $formulario -> oculto("regimen","$GLOBALS[regimen]",0);
-     $formulario -> oculto("indcon","$GLOBALS[indcon]",0);
+     $formulario -> oculto("nom","$_REQUEST[nom]",0);
+     $formulario -> oculto("abr","$_REQUEST[abr]",0);
+     $formulario -> oculto("tercer","$_REQUEST[tercer]",0);
+     $formulario -> oculto("dijver","$_REQUEST[dijver]",0);
+     $formulario -> oculto("ciures","$_REQUEST[ciures]",0);
+     $formulario -> oculto("direc","$_REQUEST[direc]",0);
+     $formulario -> oculto("telef","$_REQUEST[telef]",0);
+     $formulario -> oculto("nomsed","$_REQUEST[nomsed]",0);
+     $formulario -> oculto("dirsed","$_REQUEST[dirsed]",0);
+     $formulario -> oculto("telsed","$_REQUEST[telsed]",0);
+     $formulario -> oculto("ciused","$_REQUEST[ciused]",0);
+     $formulario -> oculto("regimen","$_REQUEST[regimen]",0);
+     $formulario -> oculto("indcon","$_REQUEST[indcon]",0);
 
-     $formulario -> oculto("pedido","$GLOBALS[pedido]",0);
+     $formulario -> oculto("pedido","$_REQUEST[pedido]",0);
 
      $formulario -> oculto("maximo","$maximo",0);
      $formulario -> nueva_tabla();
      $formulario -> oculto("usuario","$usuario",0);
      $formulario -> oculto("window","central",0);
-     $formulario -> oculto("opcion",$GLOBALS[opcion],0);
-     $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+     $formulario -> oculto("opcion",$_REQUEST[opcion],0);
+     $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
      $formulario -> botoni("Aceptar","aceptar()",0);
      $formulario -> botoni("Borrar","form_poliza.reset()",1);
      $formulario -> cerrar();
@@ -215,15 +215,15 @@ class Ins_config_emptra
   $fec_actual = date("Y-m-d H:i:s");
 
    //datos de la poliza
-  $fec1 = mktime(12,0,0,"$GLOBALS[mes]","$GLOBALS[dia]","$GLOBALS[ano]");
+  $fec1 = mktime(12,0,0,"$_REQUEST[mes]","$_REQUEST[dia]","$_REQUEST[ano]");
   $fecha1= date ('Y-m-d H:i:s',$fec1);
-  $fec2 = mktime(12,0,0,"$GLOBALS[mes2]","$GLOBALS[dia2]","$GLOBALS[ano2]");
+  $fec2 = mktime(12,0,0,"$_REQUEST[mes2]","$_REQUEST[dia2]","$_REQUEST[ano2]");
   $fecha2= date ('Y-m-d H:i:s',$fec2);
 
 
   $query = "SELECT cod_paisxx,cod_depart
                  FROM ".BASE_DATOS.".tab_genera_ciudad
-                WHERE cod_ciudad = '$GLOBALS[ciures]'";
+                WHERE cod_ciudad = '$_REQUEST[ciures]'";
      $consulta = new Consulta($query, $this -> conexion);
      $ciudad = $consulta -> ret_matriz();
 
@@ -232,15 +232,15 @@ class Ins_config_emptra
                                        abr_tercer,dir_domici,num_telef1,cod_paisxx,cod_depart,cod_ciudad,dir_emailx,
                                        num_faxxxx,
                                        obs_tercer,usr_creaci,fec_creaci)
-            VALUES ('$GLOBALS[tercer]','$GLOBALS[dijver]','N','$GLOBALS[regimen]',
-                    '$GLOBALS[nom]','$GLOBALS[abr]','$GLOBALS[direc]','$GLOBALS[telef]',
-                    '".$ciudad[0][0]."','".$ciudad[0][1]."','$GLOBALS[ciures]','$datos_ins[14]',
+            VALUES ('$_REQUEST[tercer]','$_REQUEST[dijver]','N','$_REQUEST[regimen]',
+                    '$_REQUEST[nom]','$_REQUEST[abr]','$_REQUEST[direc]','$_REQUEST[telef]',
+                    '".$ciudad[0][0]."','".$ciudad[0][1]."','$_REQUEST[ciures]','$datos_ins[14]',
                     '$datos_ins[13]',
-                    '$datos_ins[2]','$GLOBALS[usuario]','$fec_actual')";
+                    '$datos_ins[2]','$_REQUEST[usuario]','$fec_actual')";
   $insercion = new Consulta($query, $this -> conexion, "BR");
    //insercion de la actividad del tercero
    $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
-            VALUES ('$GLOBALS[tercer]','9')";
+            VALUES ('$_REQUEST[tercer]','9')";
   $insercion = new Consulta($query, $this -> conexion, "R");
 
 
@@ -270,44 +270,44 @@ class Ins_config_emptra
 
   $query = "SELECT cod_paisxx,cod_depart
                  FROM ".BASE_DATOS.".tab_genera_ciudad
-                WHERE cod_ciudad = '$GLOBALS[ciused]'";
+                WHERE cod_ciudad = '$_REQUEST[ciused]'";
      $consulta = new Consulta($query, $this -> conexion);
      $ciused = $consulta -> ret_matriz();
 
         //insercion del tercero
            $query = "UPDATE ".C_CONSULTOR.".tab_genera_tercer
-                        SET dig_codigo = '$GLOBALS[dijver]',
+                        SET dig_codigo = '$_REQUEST[dijver]',
                             cod_tipdoc = 'N',
-                            nom_tercer = '$GLOBALS[nom]',
-                            abr_tercer = '$GLOBALS[abr]',
-                            dir_tercer = '$GLOBALS[direc]',
-                            tel_terce1 = '$GLOBALS[telef]',
+                            nom_tercer = '$_REQUEST[nom]',
+                            abr_tercer = '$_REQUEST[abr]',
+                            dir_tercer = '$_REQUEST[direc]',
+                            tel_terce1 = '$_REQUEST[telef]',
                             cod_paisxx = '".$ciudad[0][0]."',
                             cod_depart = '".$ciudad[0][1]."',
-                            cod_ciudad = '$GLOBALS[ciures]',
+                            cod_ciudad = '$_REQUEST[ciures]',
                             dir_correo = '$datos_ins[14]',
                             fax_tercer = '$datos_ins[13]',
-                            usr_modifi = '$GLOBALS[usuario]',
+                            usr_modifi = '$_REQUEST[usuario]',
                             fec_modifi = '$fec_actual'
-                    WHERE cod_tercer = '$GLOBALS[tercer]'";
+                    WHERE cod_tercer = '$_REQUEST[tercer]'";
           $insercion = new Consulta($query, $this -> conexion, "R");
            //insercion de la actividad del tercero
            $query = "UPDATE ".C_CONSULTOR.".tab_genera_teract
                         SET cod_activi = '9'
-                      WHERE cod_tercer = '$GLOBALS[tercer]'
+                      WHERE cod_tercer = '$_REQUEST[tercer]'
                         AND cod_activi = '1'";
           $insercion = new Consulta($query, $this -> conexion, "R");
 
           $query = "UPDATE ".C_CONSULTOR.".tab_genera_oficin
-                        SET nom_oficin = '$GLOBALS[nomsed]',
-                            abr_oficin = '$GLOBALS[nomsed]',
+                        SET nom_oficin = '$_REQUEST[nomsed]',
+                            abr_oficin = '$_REQUEST[nomsed]',
                             cod_paisxx = '".$ciused[0][0]."',
                             cod_depart = '".$ciused[0][1]."',
-                            cod_ciudad = '$GLOBALS[ciused]',
-                            dir_oficin = '$GLOBALS[dirsed]',
-                            tel_oficin = '$GLOBALS[telsed]',
+                            cod_ciudad = '$_REQUEST[ciused]',
+                            dir_oficin = '$_REQUEST[dirsed]',
+                            tel_oficin = '$_REQUEST[telsed]',
                             con_oficin = '$datos_ins[11]',
-                            usr_modifi = '$GLOBALS[usuario]',
+                            usr_modifi = '$_REQUEST[usuario]',
                             fec_modifi = '$fec_actual'
                     WHERE   cod_oficin = '1'";
         $insercion = new Consulta($query, $this -> conexion, "R");
@@ -319,10 +319,10 @@ class Ins_config_emptra
                                      ind_ceriso,fec_ceriso,ind_cerbas,fec_cerbas,
                                      otr_certif,
                                      nom_repleg,usr_creaci,fec_creaci)
-            VALUES ('$GLOBALS[tercer]','$GLOBALS[nom]','$GLOBALS[asegra]',
-                    '$GLOBALS[poliza]','$fecha2',
+            VALUES ('$_REQUEST[tercer]','$_REQUEST[nom]','$_REQUEST[asegra]',
+                    '$_REQUEST[poliza]','$fecha2',
                     '$iso','$datos_ins[4]','$basc','$datos_ins[6]','$datos_ins[7]',
-                    '$datos_ins[1]','$GLOBALS[usuario]','$fec_actual')";
+                    '$datos_ins[1]','$_REQUEST[usuario]','$fec_actual')";
   $insercion = new Consulta($query, $this -> conexion, "R");
 
 
@@ -337,23 +337,23 @@ class Ins_config_emptra
   $query = "INSERT INTO ".BASE_DATOS.".tab_genera_agenci(cod_agenci,nom_agenci,cod_ciudad,
                                      dir_agenci,tel_agenci,con_agenci,dir_emailx,num_faxxxx,
                                      usr_creaci,fec_creaci)
-            VALUES ('$nuevo_consec','$GLOBALS[nomsed]','$GLOBALS[ciused]','$GLOBALS[dirsed]',
-                    '$GLOBALS[telsed]','$datos_ins[11]','$datos_ins[14]',
-                    '$datos_ins[13]','$GLOBALS[usuario]','$fec_actual')";
+            VALUES ('$nuevo_consec','$_REQUEST[nomsed]','$_REQUEST[ciused]','$_REQUEST[dirsed]',
+                    '$_REQUEST[telsed]','$datos_ins[11]','$datos_ins[14]',
+                    '$datos_ins[13]','$_REQUEST[usuario]','$fec_actual')";
  $insercion = new Consulta($query, $this -> conexion, "R");
 
   $query = "INSERT INTO ".BASE_DATOS.".tab_poliza_tercer
-            VALUES ('$GLOBALS[tercer]','$GLOBALS[poliza]','$GLOBALS[asegra]',
-            '$fecha1','$fecha2','$GLOBALS[valmax]','$GLOBALS[modelo]',
-            '$GLOBALS[usuario]','$fec_actual','$GLOBALS[usuario]','$fec_actual')";
+            VALUES ('$_REQUEST[tercer]','$_REQUEST[poliza]','$_REQUEST[asegra]',
+            '$fecha1','$fecha2','$_REQUEST[valmax]','$_REQUEST[modelo]',
+            '$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual')";
   $insercion = new Consulta($query, $this -> conexion, "R");
 
   //reasignacion de variables para las horarios
-  $dias=$GLOBALS[dias];
-  $hora =$GLOBALS[hora];
-  $minuto =$GLOBALS[minuto];
-  $hora2 =$GLOBALS[hora2];
-  $minuto2 =$GLOBALS[minuto2];
+  $dias=$_REQUEST[dias];
+  $hora =$_REQUEST[hora];
+  $minuto =$_REQUEST[minuto];
+  $hora2 =$_REQUEST[hora2];
+  $minuto2 =$_REQUEST[minuto2];
   for($i=0;$i<sizeof($dias);$i++)
   {
    if($dias[$i] != Null or $dias[$i] != 0)
@@ -364,19 +364,19 @@ class Ins_config_emptra
      $fecha2= date ('H:i:s',$fec2);
 
      $query = "INSERT INTO ".BASE_DATOS.".tab_poliza_restri
-               VALUES ('$GLOBALS[tercer]','$GLOBALS[poliza]','$dias[$i]','$fecha','$fecha2',
-               '$GLOBALS[usuario]','$fec_actual','$GLOBALS[usuario]','$fec_actual')";
+               VALUES ('$_REQUEST[tercer]','$_REQUEST[poliza]','$dias[$i]','$fecha','$fecha2',
+               '$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual')";
     $insercion = new Consulta($query, $this -> conexion, "R");
    }//fin if
   }//fin for
 
-  $modali=$GLOBALS[modali];
-  for($i=0;$i<$GLOBALS[maximo];$i++)
+  $modali=$_REQUEST[modali];
+  for($i=0;$i<$_REQUEST[maximo];$i++)
   {
    if($modali[$i] != Null AND $modali[$i] != 0)
    {
      $query = "INSERT INTO ".BASE_DATOS.".tab_emptra_modali
-               VALUES ('$GLOBALS[tercer]','$modali[$i]')";
+               VALUES ('$_REQUEST[tercer]','$modali[$i]')";
      $insercion = new Consulta($query, $this -> conexion, "R");
    }//fin if
   }//fin for

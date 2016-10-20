@@ -17,7 +17,7 @@ class InsEvent
  function principal()
  {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Formulario();
@@ -59,10 +59,10 @@ class InsEvent
     $consulta = new Consulta($query, $this -> conexion);
     $trans = $consulta -> ret_matriz();
     $transpor = array_merge($inicio, $trans);
-    if($GLOBALS['transp']){
+    if($_REQUEST['transp']){
      $query = "SELECT cod_tercer,abr_tercer
    				     FROM ".BASE_DATOS.".tab_tercer_tercer 
-   			       WHERE cod_tercer = '".$GLOBALS['transp']."'";
+   			       WHERE cod_tercer = '".$_REQUEST['transp']."'";
     $consulta = new Consulta($query, $this -> conexion);
     $trans = $consulta -> ret_matriz();
     $transpor = array_merge($trans, $transpor);
@@ -81,12 +81,12 @@ class InsEvent
   $formulario -> lista("Transportador","transp\" id=\"transpID\" onchange=\"form_ins.submit();",$transpor,1); 
   $formulario -> nueva_tabla();
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> oculto("opcion\" id=\"opcionID",1,0);
   $formulario -> oculto("url_archiv\" id=\"url_archivID\"","ins_evento_protoc.php",0);
   $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
   $formulario -> nueva_tabla();
-  if($GLOBALS['transp']){
+  if($_REQUEST['transp']){
     
     $usuario = $_SESSION["datos_usuario"]["cod_usuari"];
     $formulario -> nueva_tabla();
@@ -94,7 +94,7 @@ class InsEvent
                      acc_propue, acc_acorda, acc_frecci,
                      acc_respon
   				    FROM ".BASE_DATOS.".tab_evento_protoc
-              WHERE cod_transp = '".$GLOBALS['transp']."'";
+              WHERE cod_transp = '".$_REQUEST['transp']."'";
     $consulta = new Consulta($query, $this -> conexion);
     $eventos = $consulta -> ret_matriz();
     $query = "SELECT cod_consec,nom_tiposx
@@ -310,7 +310,7 @@ class InsEvent
                      a.acc_respon
   				    FROM ".BASE_DATOS.".tab_evento_protoc a,
                    ".BASE_DATOS.".tab_tiposx_protoc b   
-              WHERE a.cod_transp = '".$GLOBALS['cod_transp']."' AND
+              WHERE a.cod_transp = '".$_REQUEST['cod_transp']."' AND
                     a.cod_tiposx = b.cod_consec 
               ORDER BY a.cod_tiposx";
     $consulta = new Consulta($query, $this -> conexion);

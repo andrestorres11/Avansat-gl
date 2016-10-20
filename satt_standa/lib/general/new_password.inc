@@ -18,11 +18,6 @@ class NewPassword
   
   function __construct( $mData )
   {
-    /*
-    echo "<pre>";
-    print_r( $mData );
-    echo "</pre>";
-    */
     //---------------------------------------------------------------------------------------
     //@SI NO LLEGAN LAS VARIABLES DE LOGIN O SI LA ACCION ES MAIN
     if ( $mData['usuario'] == NULL || $mData['clave'] == NULL || $mData['action'] == 'mainSATT' )
@@ -33,9 +28,9 @@ class NewPassword
     {
       die( 'El Archivo de Constantes del Directorio Cliente no existe o no ha sido debidamente configurado.' );
     }
-    //include( 'constantes.inc' );
+    
     //--------------------------------------------------------------------------
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", USUARIO, CLAVE, BASE_DATOS );
+    $this -> conexion = new Conexion( HOST, USUARIO, CLAVE, BASE_DATOS );
     //--------------------------------------------------------------------------
     $this -> cod_usuari  =  $mData['usuario'];
     $this -> clv_usuari  =  $mData['clave'];
@@ -53,13 +48,6 @@ class NewPassword
     //---------------------------------------------------------------------------------------
     //@SE OBTIENE LA INFORMACIÓN DEL USUARIO AUTENTICADO
     $_USER  =  $this -> GetUserData( $this -> cod_usuari, $this -> clv_usuari );
-    
-    /*
-    echo '<pre>';
-    print_r( $_USER );
-    echo '</pre>';
-    */
-    
     
     $_USER['num_credit'] = $this -> GetCredits( $_USER['num_diasxx'], $_USER['fec_cambio'] );
     $this -> num_credit  = $_USER['num_credit'];
@@ -224,9 +212,6 @@ class NewPassword
         }
         fclose( $file );
         
-        
-        
-        
         //-------------------------------------------------------------------------------------------------
         //@ACTUALIZACIÓN DE LA CONTRASEÑA EN LA TABLA DE USUARIOS
         $mSql  = "UPDATE ".BASE_DATOS.".tab_genera_usuari 
@@ -328,18 +313,6 @@ class NewPassword
   }
   
   /************************************************************************************************************
-   * Metodo que verifica si existe autorización para validar expiración de contraseñas                        *
-   * @fn VerifyPasswordAutori                                                                                 *  
-   ************************************************************************************************************/
-  /*function VerifyPasswordAutori()
-  {
-    $mSql = "SELECT a.val_parame FROM ".BASE_DATOS.".tab_genera_parame a WHERE a.nom_parame = 'ind_passwo' AND a.ind_estado = '1' ";
-    $mMatriz = new Consulta( $mSql, $this -> conexion );
-    $mMatriz = $mMatriz -> ret_matriz( "a" );
-    return count( $mMatriz ) == 0 ? FALSE : TRUE;
-  }
-  
-  /************************************************************************************************************
    * Metodo Privado que obtiene el número de días que restan para restablecer la contraseña                   *
    * @fn GetCredits                                                                                           *
    * @return int : entero con la cantidad de días restantes                                                   *
@@ -349,11 +322,7 @@ class NewPassword
     $fec_limite = date( "Y-m-d", strtotime( $fec_cambio . " +" . $num_diasxx . " days" ) );
     $fec_inicia = date( "Y-m-d", strtotime( $fec_cambio . " +" . ( $num_diasxx - 5 ) . " days" ) );
     $fec_actual = date( "Y-m-d" );
-    /*
-    echo "<hr />fec_limite: " . $fec_limite;
-    echo "<hr />fec_inicia: " . $fec_inicia;
-    echo "<hr />fec_actual: " . $fec_actual;
-    */
+
     if ( $fec_inicia == $fec_actual )
     {
       return 5;

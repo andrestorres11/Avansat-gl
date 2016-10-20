@@ -16,11 +16,11 @@ class Proc_contro
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Formulario();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
           case "1":
           $this -> Formulario();
@@ -84,7 +84,7 @@ class Proc_contro
    {
    	for($j = 0; $j < sizeof($activado); $j++)
    	{
-   	 eval("\$cont = \$GLOBALS[cont".$j."];");
+   	 eval("\$cont = \$_REQUEST[cont".$j."];");
 
    	 if(!$cont)
    	 {
@@ -111,11 +111,11 @@ class Proc_contro
    	 }
    	 else
    	 {
-   	  eval("\$disabl".$j." = \$GLOBALS[disabl".$j."];");
-   	  eval("\$selecc".$j." = \$GLOBALS[selecc".$j."];");
-      eval("\$numdis".$j." = \$GLOBALS[numdis".$j."];");
-      eval("\$operad".$j." = \$GLOBALS[operad".$j."];");
-      eval("\$estado".$j." = \$GLOBALS[estado".$j."];");
+   	  eval("\$disabl".$j." = \$_REQUEST[disabl".$j."];");
+   	  eval("\$selecc".$j." = \$_REQUEST[selecc".$j."];");
+      eval("\$numdis".$j." = \$_REQUEST[numdis".$j."];");
+      eval("\$operad".$j." = \$_REQUEST[operad".$j."];");
+      eval("\$estado".$j." = \$_REQUEST[estado".$j."];");
    	 }
 
      $query = "SELECT a.cod_operad,CONCAT(a.nom_operad,' (@',a.dns_operad,')')
@@ -222,7 +222,7 @@ class Proc_contro
    $formulario -> oculto("maximo",sizeof($activado),0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> nueva_tabla();
    $formulario -> boton("Aceptar","button\" onClick=\"dispositivo(form_item)",0);
@@ -237,14 +237,14 @@ class Proc_contro
 
   $consulta = new Consulta("SELECT NOW()", $this -> conexion,"BR");
 
-  for($j = 0; $j < $GLOBALS[maximo]; $j++)
+  for($j = 0; $j < $_REQUEST[maximo]; $j++)
   {
-   eval("\$cont = \$GLOBALS[cont".$j."];");
-   eval("\$selecc = \$GLOBALS[selecc".$j."];");
-   eval("\$numdis = \$GLOBALS[numdis".$j."];");
-   eval("\$operad = \$GLOBALS[operad".$j."];");
-   eval("\$estado = \$GLOBALS[estado".$j."];");
-   eval("\$traorig = \$GLOBALS[traorig".$j."];");
+   eval("\$cont = \$_REQUEST[cont".$j."];");
+   eval("\$selecc = \$_REQUEST[selecc".$j."];");
+   eval("\$numdis = \$_REQUEST[numdis".$j."];");
+   eval("\$operad = \$_REQUEST[operad".$j."];");
+   eval("\$estado = \$_REQUEST[estado".$j."];");
+   eval("\$traorig = \$_REQUEST[traorig".$j."];");
 
    for($i = 0; $i < $cont; $i++)
    {

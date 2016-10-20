@@ -1,7 +1,7 @@
 <?php
 
 
-#die("<center><fieldset><legend>URL Inactivada</legend>URL Inactivada, por favor ingrese a la siguiente URL <br><a href='https://web10.intrared.net/ap/satt_faro/index.php?'>Aquí</a></fieldset></center>");
+#die("<center><fieldset><legend>URL Inactivada</legend>URL Inactivada, por favor ingrese a la siguiente URL <br><a href='https://avansatgl.intrared.net/ap/satt_faro/index.php?'>Aquí</a></fieldset></center>");
 
 include ("constantes.inc");
 include ("../".DIR_APLICA_CENTRAL."/lib/generales.inc");

@@ -22,11 +22,11 @@ class Proc_alerta
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Resultado();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario();
@@ -55,7 +55,7 @@ class Proc_alerta
 
   for($i=0;$i<sizeof($matriz);$i++)
 
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&alarma=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&alarma=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
 
    $formulario = new Formulario ("index.php","post","Listar Alarmas","form_item");
@@ -95,7 +95,7 @@ class Proc_alerta
 
    $formulario -> oculto("window","central",0);
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> cerrar();
 
@@ -110,7 +110,7 @@ class Proc_alerta
    //Trae los datos de las alarmas
    $query = "SELECT a.nom_alarma, a.cant_tiempo, a.cod_colorx
              FROM tab_genera_alarma a
-             WHERE a.cod_alarma = '$GLOBALS[alarma]'";
+             WHERE a.cod_alarma = '$_REQUEST[alarma]'";
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
 
@@ -133,9 +133,9 @@ class Proc_alerta
 
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_alarma",$GLOBALS[alarma],0);
+   $formulario -> oculto("cod_alarma",$_REQUEST[alarma],0);
    $formulario -> oculto("opcion",3,0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],1);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],1);
    $formulario -> botoni("Actualizar","aceptar_insert() ",0);
    $formulario -> botoni("Borrar","ins_alert.reset()",1);
    $formulario -> cerrar();
@@ -149,12 +149,12 @@ class Proc_alerta
 
    //query de insercion
    $query = "UPDATE ".BASE_DATOS.".tab_genera_alarma
-             SET nom_alarma = '$GLOBALS[nom_ala]',
-                 cod_colorx = '$GLOBALS[color]',
-                 cant_tiempo= '$GLOBALS[tiempo]',
+             SET nom_alarma = '$_REQUEST[nom_ala]',
+                 cod_colorx = '$_REQUEST[color]',
+                 cant_tiempo= '$_REQUEST[tiempo]',
                  usr_modifi= '".$usuario."',
                  fec_modifi= NOW()
-             WHERE cod_alarma = '$GLOBALS[cod_alarma]' ";
+             WHERE cod_alarma = '$_REQUEST[cod_alarma]' ";
 
    $consulta = new Consulta($query, $this -> conexion,"BR");
 
@@ -162,10 +162,10 @@ class Proc_alerta
     {
        //Se actualiza la alarma en los standas de sat basico y sat trafico
       $data['nom_proces'] = "Actualizar Alarma";
-      $mParams = array( "cod_alarma" => $GLOBALS[cod_alarma],
-                        "nom_alarma" => $GLOBALS[nom_ala],
-                        "cod_colorx" => $GLOBALS[color],
-                        "can_tiempo" => $GLOBALS[tiempo],
+      $mParams = array( "cod_alarma" => $_REQUEST[cod_alarma],
+                        "nom_alarma" => $_REQUEST[nom_ala],
+                        "cod_colorx" => $_REQUEST[color],
+                        "can_tiempo" => $_REQUEST[tiempo],
                         "nom_llavex" => 'f74ca8ee40d8e9c9b2cd529ce297a9a8'
                         );
 
@@ -451,9 +451,9 @@ class Proc_alerta
 
       
       
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otra Alerta</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otra Alerta</a></b>";
 
-     $mensaje =  "Se Actualizo la Alerta <b>".$GLOBALS[nom_ala]."</b> con Exito".$link_a;
+     $mensaje =  "Se Actualizo la Alerta <b>".$_REQUEST[nom_ala]."</b> con Exito".$link_a;
      
      if( $data['error'] )
        $mensaje .= "<br><b>Error en ".$data['error']."</b>";

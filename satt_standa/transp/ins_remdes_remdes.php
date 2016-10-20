@@ -16,11 +16,11 @@ class Proc_tercer
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "2":
           $this -> Resultado();
@@ -56,14 +56,14 @@ class Proc_tercer
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_list.submit()",0);
    $formulario -> cerrar();
  }
 
  function Resultado()
  {
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
    $query = "SELECT a.cod_tercer,a.nom_tercer,a.num_telef1,a.cod_ciudad,a.dir_domici
               FROM ".BASE_DATOS.".tab_tercer_tercer a,
@@ -72,15 +72,15 @@ class Proc_tercer
                    b.cod_activi = ".COD_FILTRO_EMPTRA."
              ";
 
-   if($GLOBALS[fil] == 1)
-    $query .= " AND a.cod_tercer = '".$GLOBALS[tercer]."'";
-   else if($GLOBALS[fil] == 2)
-    $query .= " AND a.abr_tercer LIKE '%".$GLOBALS[tercer]."%'";
-   else if($GLOBALS[fil] == 3)
+   if($_REQUEST[fil] == 1)
+    $query .= " AND a.cod_tercer = '".$_REQUEST[tercer]."'";
+   else if($_REQUEST[fil] == 2)
+    $query .= " AND a.abr_tercer LIKE '%".$_REQUEST[tercer]."%'";
+   else if($_REQUEST[fil] == 3)
     $query .= " AND a.cod_estado = ".COD_ESTADO_ACTIVO."";
-   else if($GLOBALS[fil] == 4)
+   else if($_REQUEST[fil] == 4)
     $query .= " AND a.cod_estado = ".COD_ESTADO_INACTI."";
-   else if($GLOBALS[fil] == 5)
+   else if($_REQUEST[fil] == 5)
     $query .= " AND a.cod_estado = ".COD_ESTADO_PENDIE."";
 
    $query .= " GROUP BY 1 ORDER BY 2";
@@ -100,7 +100,7 @@ class Proc_tercer
 
    for($i = 0; $i < sizeof($matriz); $i++)
    {
-    $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&tercer=".$matriz[$i][0]."&opcion=3 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+    $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&tercer=".$matriz[$i][0]."&opcion=3 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
     $ciudad_a = $objciud -> getSeleccCiudad($matriz[$i][3]);
 
     $formulario -> linea($matriz[$i][0],0,"i");
@@ -117,7 +117,7 @@ class Proc_tercer
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -133,7 +133,7 @@ class Proc_tercer
 
   $opcird = array_merge($inicio,$remite,$destin);
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
   $query = "SELECT a.cod_tercer,a.nom_tercer,a.abr_tercer,a.cod_ciudad,a.dir_domici,
                    a.num_telef1,a.num_telef2,a.num_telmov,a.num_faxxxx,d.nom_activi,e.nom_repleg,
@@ -149,7 +149,7 @@ class Proc_tercer
                  a.cod_tercer = c.cod_tercer AND
                  c.cod_activi = d.cod_activi AND
                  a.cod_terreg = f.cod_terreg AND
-                 a.cod_tercer = '$GLOBALS[tercer]'";
+                 a.cod_tercer = '$_REQUEST[tercer]'";
 
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
@@ -157,13 +157,13 @@ class Proc_tercer
   $query = "SELECT a.cod_remdes,a.num_remdes,a.nom_remdes,a.obs_adicio,
   		           a.ind_remdes,a.ind_estado
   		      FROM ".BASE_DATOS.".tab_genera_remdes a
-  		     WHERE a.cod_transp = '".$GLOBALS[tercer]."'
+  		     WHERE a.cod_transp = '".$_REQUEST[tercer]."'
   		   ";
 
   $consec = new Consulta($query, $this -> conexion);
   $remdes = $consec -> ret_matriz();
 
-  if(!$GLOBALS[maximo])
+  if(!$_REQUEST[maximo])
   {
    for($i = 0; $i < sizeof($remdes); $i++)
    {
@@ -176,20 +176,20 @@ class Proc_tercer
    	$estard[$i] = $remdes[$i][5];
    }
 
-   $GLOBALS[maximo] = sizeof($remdes);
+   $_REQUEST[maximo] = sizeof($remdes);
   }
   else
   {
-   $selecc = $GLOBALS[selecc];
-   $codird = $GLOBALS[codird];
-   $docurd = $GLOBALS[docurd];
-   $nombrd = $GLOBALS[nombrd];
-   $obserd = $GLOBALS[obserd];
-   $tipord = $GLOBALS[tipord];
-   $estard = $GLOBALS[estard];
+   $selecc = $_REQUEST[selecc];
+   $codird = $_REQUEST[codird];
+   $docurd = $_REQUEST[docurd];
+   $nombrd = $_REQUEST[nombrd];
+   $obserd = $_REQUEST[obserd];
+   $tipord = $_REQUEST[tipord];
+   $estard = $_REQUEST[estard];
   }
 
-  $GLOBALS[maximo]++;
+  $_REQUEST[maximo]++;
 
   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/config.js\"></script>\n";
   $formulario = new Formulario ("index.php","post","REMITENTES/DESTINATARIOS","form_item");
@@ -238,7 +238,7 @@ class Proc_tercer
    $formulario -> linea("",0,"t");
    $formulario -> linea("Estado",1,"t");
 
-   for($i = 0; $i < $GLOBALS[maximo]; $i++)
+   for($i = 0; $i < $_REQUEST[maximo]; $i++)
    {
     if($tipord[$i] == 1)
 	 $opasrd = array_merge($remite,$opcird);
@@ -253,7 +253,7 @@ class Proc_tercer
     if(!$selecc[$i])
      $selecc[$i] = 0;
 
-    if($i == $GLOBALS[maximo] - 1)
+    if($i == $_REQUEST[maximo] - 1)
     {
      $selecc[$i] = 1;
      $estard[$i] = 1;
@@ -278,11 +278,11 @@ class Proc_tercer
    $formulario -> botoni("Volver","javascript:history.go(-1)",1);
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("tercer",$GLOBALS[tercer],0);
-   $formulario -> oculto("maximo",$GLOBALS[maximo],0);
-   $formulario -> oculto("opcion",$GLOBALS[opcion],0);
+   $formulario -> oculto("tercer",$_REQUEST[tercer],0);
+   $formulario -> oculto("maximo",$_REQUEST[maximo],0);
+   $formulario -> oculto("opcion",$_REQUEST[opcion],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -290,17 +290,17 @@ class Proc_tercer
  {
   $datos_usuario = $this -> usuario -> retornar();
 
-  $selecc = $GLOBALS[selecc];
-  $codird = $GLOBALS[codird];
-  $docurd = $GLOBALS[docurd];
-  $nombrd = $GLOBALS[nombrd];
-  $obserd = $GLOBALS[obserd];
-  $tipord = $GLOBALS[tipord];
-  $estard = $GLOBALS[estard];
+  $selecc = $_REQUEST[selecc];
+  $codird = $_REQUEST[codird];
+  $docurd = $_REQUEST[docurd];
+  $nombrd = $_REQUEST[nombrd];
+  $obserd = $_REQUEST[obserd];
+  $tipord = $_REQUEST[tipord];
+  $estard = $_REQUEST[estard];
 
   $consulta = new Consulta("SELECT NOW()", $this -> conexion,"BR");
 
-  for($i = 0; $i < $GLOBALS[maximo]; $i++)
+  for($i = 0; $i < $_REQUEST[maximo]; $i++)
   {
    if(!$obserd[$i])
     $obserd[$i] = NULL;
@@ -325,7 +325,7 @@ class Proc_tercer
    			 			   cod_transp,ind_remdes,ind_estado,usr_creaci,
    			 			   fec_creaci)
    			 	   VALUES (".$consecut[0][0].",'".$docurd[$i]."','".$nombrd[$i]."',".$obserd[$i].",
-   			 			   '".$GLOBALS[tercer]."','".$tipord[$i]."','".$estard[$i]."','".$datos_usuario["cod_usuari"]."',
+   			 			   '".$_REQUEST[tercer]."','".$tipord[$i]."','".$estard[$i]."','".$datos_usuario["cod_usuari"]."',
    			 			   NOW())
    			 ";
 
@@ -371,7 +371,7 @@ class Proc_tercer
 
   if($consulta = new Consulta ("COMMIT", $this -> conexion))
   {
-   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Buscar Otra Transportadora</a></b>";
+   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Buscar Otra Transportadora</a></b>";
 
    $mensaje = "Se Actualizo la Informaci&oacute;n de la Transportadora de Forma Exitosa.".$mensaj_adici."<br>".$link;
    $mens = new mensajes();
@@ -383,17 +383,17 @@ class Proc_tercer
  {
   $query = "SELECT a.cod_remdes,a.num_remdes,a.nom_remdes,a.obs_adicio
   		      FROM ".BASE_DATOS.".tab_genera_remdes a
-  		     WHERE a.ind_remdes = '".$GLOBALS[tipoxx]."' AND
+  		     WHERE a.ind_remdes = '".$_REQUEST[tipoxx]."' AND
   		   		   a.ind_estado = '".COD_ESTADO_ACTIVO."' AND
-  		   		   a.cod_transp = '".$GLOBALS[transport]."'
+  		   		   a.cod_transp = '".$_REQUEST[transport]."'
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
   $remdest = $consulta -> ret_matriz();
 
-  if($GLOBALS[tipoxx] == 1)
+  if($_REQUEST[tipoxx] == 1)
    $nomopcio = "Remitente";
-  else if($GLOBALS[tipoxx] == 2)
+  else if($_REQUEST[tipoxx] == 2)
    $nomopcio = "Destinatario";
 
   $formulario = new Formulario ("index.php","post","Listado de ".$nomopcio."s","form_item");
@@ -409,7 +409,7 @@ class Proc_tercer
 
    for($i = 0; $i < sizeof($remdest); $i++)
    {
-    $remdest[$i][1] = "<a href=# onClick=\"opener.document.forms[0].cod".$GLOBALS[indice].$GLOBALS[codigo].".value='".$remdest[$i][0]."';opener.document.forms[0].doc".$GLOBALS[indice].$GLOBALS[codigo].".value='".$remdest[$i][1]."';opener.document.forms[0].nom".$GLOBALS[indice].$GLOBALS[codigo].".value='".$remdest[$i][2]."';opener.document.forms[0].obs".$GLOBALS[indice].$GLOBALS[codigo].".value='".$remdest[$i][3]."'; top.close()\">".$remdest[$i][1]."</a>";
+    $remdest[$i][1] = "<a href=# onClick=\"opener.document.forms[0].cod".$_REQUEST[indice].$_REQUEST[codigo].".value='".$remdest[$i][0]."';opener.document.forms[0].doc".$_REQUEST[indice].$_REQUEST[codigo].".value='".$remdest[$i][1]."';opener.document.forms[0].nom".$_REQUEST[indice].$_REQUEST[codigo].".value='".$remdest[$i][2]."';opener.document.forms[0].obs".$_REQUEST[indice].$_REQUEST[codigo].".value='".$remdest[$i][3]."'; top.close()\">".$remdest[$i][1]."</a>";
 
    	$formulario -> linea($remdest[$i][1],0,"i");
    	$formulario -> linea($remdest[$i][2],0,"i");

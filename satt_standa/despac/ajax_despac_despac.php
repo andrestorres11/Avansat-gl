@@ -393,8 +393,7 @@ class AjaxDespac
             $consulta = new Consulta($mUpdte, $this->conexion);
 
             self::insertBitacoUpdNov( array("cod_novold" => $_REQUEST[oCod], "cod_novnew" => $mCodNovnew, "obs_novold" => $_REQUEST[obs_novold], 
-                                            "obs_novnew" => $_REQUEST[desc], "obs_motivo" => $_REQUEST[obs_motivo], "num_despac" => $_REQUEST[despac],
-                                            "fec_noveda" => $mData[0]['fec_noveda']) );
+                                          "obs_novnew" => $_REQUEST[desc], "obs_motivo" => $_REQUEST[obs_motivo], "num_despac" => $_REQUEST[despac]) );
           }
           else 
             $mFlag = false;
@@ -433,8 +432,7 @@ class AjaxDespac
           $consulta = new Consulta($mUdpdate, $this->conexion);
 
           self::insertBitacoUpdNov( array("cod_novold" => $_REQUEST[oCod], "cod_novnew" => $mCodNovnew, "obs_novold" => $_REQUEST[obs_novold], 
-                                          "obs_novnew" => $_REQUEST[desc], "obs_motivo" => $_REQUEST[obs_motivo], "num_despac" => $_REQUEST[despac],
-                                          "fec_noveda" => $mData[0]['fec_noveda']) );
+                                          "obs_novnew" => $_REQUEST[desc], "obs_motivo" => $_REQUEST[obs_motivo], "num_despac" => $_REQUEST[despac]) );
         }
         else
           $mFlag = false;
@@ -860,12 +858,12 @@ class AjaxDespac
       $mSql = "INSERT INTO ".BASE_DATOS.".tab_bitaco_actnov
                   ( cod_novold, cod_novnew, obs_novold, 
                     obs_novnew, obs_motivo, num_despac, 
-                    fec_noveda, usr_creaci, fec_creaci 
+                    usr_creaci, fec_creaci 
                   )
                 VALUES 
                   ( '$mData[cod_novold]', '$mData[cod_novnew]', '$mData[obs_novold]', 
                     '$mData[obs_novnew]', '$mData[obs_motivo]', '$mData[num_despac]', 
-                    '$mData[fec_noveda]', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() 
+                    '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() 
                   )
               ";
       $consulta = new Consulta($mSql, $this->conexion);

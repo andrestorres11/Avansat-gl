@@ -20,7 +20,7 @@ class act_conduc_conduc
 
  function principal()
  {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Resultado();
@@ -73,14 +73,14 @@ class act_conduc_conduc
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  ";
 
@@ -105,7 +105,7 @@ class act_conduc_conduc
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Cancelar","form_act.reset()",1);
    $formulario -> cerrar();
@@ -126,17 +126,17 @@ class act_conduc_conduc
              	   a.cod_tercer = c.cod_tercer
            ";
 
-  if($GLOBALS[transp])
-   $query .= " AND b.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[fil] == 1)
-   $query = $query." AND a.cod_tercer = '".$GLOBALS[tercer]."'";
-  else if($GLOBALS[fil] == 2)
-   $query = $query." AND a.abr_tercer LIKE '%".$GLOBALS[tercer]."%'";
-  else if($GLOBALS[fil] == 3)
+  if($_REQUEST[transp])
+   $query .= " AND b.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[fil] == 1)
+   $query = $query." AND a.cod_tercer = '".$_REQUEST[tercer]."'";
+  else if($_REQUEST[fil] == 2)
+   $query = $query." AND a.abr_tercer LIKE '%".$_REQUEST[tercer]."%'";
+  else if($_REQUEST[fil] == 3)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_ACTIVO."";
-  else if($GLOBALS[fil] == 4)
+  else if($_REQUEST[fil] == 4)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_INACTI."";
-  else if($GLOBALS[fil] == 5)
+  else if($_REQUEST[fil] == 5)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_PENDIE."";
   $query = $query." GROUP BY 1 ORDER BY 2 Limit 1000";
   $consec = new Consulta($query, $this -> conexion);
@@ -155,7 +155,7 @@ class act_conduc_conduc
   $formulario -> linea("E-mail",0,"t2");
   $formulario -> linea("Estado",1,"t2");
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
   for($i = 0; $i < sizeof($matriz); $i++)
   {
@@ -174,7 +174,7 @@ class act_conduc_conduc
 
    $ciudad_a = $objciud -> getSeleccCiudad($matriz[$i][4]);
 
-   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&conduc=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&conduc=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario -> linea($matriz[$i][0],0,$estilo);
    $formulario -> linea($matriz[$i][1]." ".$matriz[$i][2]." ".$matriz[$i][3],0,$estilo);
@@ -190,7 +190,7 @@ class act_conduc_conduc
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -199,7 +199,7 @@ class act_conduc_conduc
      $datos_usuario = $this -> usuario -> retornar();
      $usuario=$datos_usuario["cod_usuari"];
 
-     if(!isset($GLOBALS["tipdocu"]))
+     if(!isset($_REQUEST["tipdocu"]))
        {
                      $query = "SELECT a.cod_tercer,a.cod_tipdoc,a.nom_tercer,a.abr_tercer,a.nom_apell1,
                                       a.nom_apell2,a.num_telef1,a.num_telef2,b.cod_grupsa,b.cod_tipsex,
@@ -210,59 +210,59 @@ class act_conduc_conduc
                                  FROM ".BASE_DATOS.".tab_tercer_tercer a,
                                       ".BASE_DATOS.".tab_tercer_conduc b
                                 WHERE a.cod_tercer = b.cod_tercer AND
-                                      a.cod_tercer = '$GLOBALS[conduc]'";
+                                      a.cod_tercer = '$_REQUEST[conduc]'";
                       $consulta = new Consulta($query, $this -> conexion);
                       $conductor = $consulta -> ret_arreglo();
-                      $GLOBALS[nom] = $conductor[nom_tercer];
-                      $GLOBALS[ciudad] = $conductor[cod_ciudad];
-                      $GLOBALS[tipdocu] = $conductor[cod_tipdoc];
-                      $GLOBALS[apell1] = $conductor[nom_apell1];
-                      $GLOBALS[apell2] = $conductor[nom_apell2];
-                      $GLOBALS[tiporh] = $conductor[cod_grupsa];
+                      $_REQUEST[nom] = $conductor[nom_tercer];
+                      $_REQUEST[ciudad] = $conductor[cod_ciudad];
+                      $_REQUEST[tipdocu] = $conductor[cod_tipdoc];
+                      $_REQUEST[apell1] = $conductor[nom_apell1];
+                      $_REQUEST[apell2] = $conductor[nom_apell2];
+                      $_REQUEST[tiporh] = $conductor[cod_grupsa];
 
                      if($conductor[cod_tipsex] == '1')
-                             $GLOBALS[tipsex] = '1';
-					 $GLOBALS[operad] = $conductor[operad];
-                     $GLOBALS[dir1] = $conductor[dir_domici];
-                     $GLOBALS[tel] = $conductor[num_telef1];
-                     $GLOBALS[tel2] = $conductor[num_telef2];
-                     $GLOBALS[celu] = $conductor[num_telmov];
-                     $GLOBALS[licencia] = $conductor[num_licenc];
-                     $GLOBALS[catlic] = $conductor[num_catlic];
-                     $GLOBALS[feclic] = $conductor[fec_venlic];
-                     $GLOBALS[califi] = $conductor[cod_califi];
-                     $GLOBALS[eps] = $conductor[nom_epsxxx];
-                     $GLOBALS[arp] = $conductor[nom_arpxxx];
-                     $GLOBALS[pensiones] = $conductor[nom_pensio];
-                     $GLOBALS[pasjudi] = $conductor[num_pasado];
-                     $GLOBALS[fecpas] = $conductor[fec_venpas];
-                     $GLOBALS[libtripu] = $conductor[num_libtri];
-                     $GLOBALS[fectripus] = $conductor[fec_ventri];
-                     $GLOBALS[nomref] = $conductor[nom_refper];
-                     $GLOBALS[telref] = $conductor[tel_refper];
-                     $GLOBALS[fotant] = $conductor[dir_ultfot];
-                     $GLOBALS[obs] = $conductor[obs_tercer];
+                             $_REQUEST[tipsex] = '1';
+					 $_REQUEST[operad] = $conductor[operad];
+                     $_REQUEST[dir1] = $conductor[dir_domici];
+                     $_REQUEST[tel] = $conductor[num_telef1];
+                     $_REQUEST[tel2] = $conductor[num_telef2];
+                     $_REQUEST[celu] = $conductor[num_telmov];
+                     $_REQUEST[licencia] = $conductor[num_licenc];
+                     $_REQUEST[catlic] = $conductor[num_catlic];
+                     $_REQUEST[feclic] = $conductor[fec_venlic];
+                     $_REQUEST[califi] = $conductor[cod_califi];
+                     $_REQUEST[eps] = $conductor[nom_epsxxx];
+                     $_REQUEST[arp] = $conductor[nom_arpxxx];
+                     $_REQUEST[pensiones] = $conductor[nom_pensio];
+                     $_REQUEST[pasjudi] = $conductor[num_pasado];
+                     $_REQUEST[fecpas] = $conductor[fec_venpas];
+                     $_REQUEST[libtripu] = $conductor[num_libtri];
+                     $_REQUEST[fectripus] = $conductor[fec_ventri];
+                     $_REQUEST[nomref] = $conductor[nom_refper];
+                     $_REQUEST[telref] = $conductor[tel_refper];
+                     $_REQUEST[fotant] = $conductor[dir_ultfot];
+                     $_REQUEST[obs] = $conductor[obs_tercer];
 
 
                     $query = "SELECT b.nom_empre,b.tel_empre,b.num_viajes,b.num_atigue,b.nom_mercan
                                FROM ".BASE_DATOS.".tab_conduc_refere b
-                              WHERE b.cod_conduc = '$GLOBALS[conduc]'";
+                              WHERE b.cod_conduc = '$_REQUEST[conduc]'";
 
                 $consulta = new Consulta($query, $this -> conexion);
                 $condrefe = $consulta -> ret_matriz();
-                $GLOBALS[maximo] = sizeof($condrefe);
-                for($i = 0; $i < $GLOBALS[maximo]; $i++)
+                $_REQUEST[maximo] = sizeof($condrefe);
+                for($i = 0; $i < $_REQUEST[maximo]; $i++)
                    {
-                    $GLOBALS[empresa][$i] = $condrefe[$i][nom_empre];
-                    $GLOBALS[tellab][$i] = $condrefe[$i][tel_empre];
-                    $GLOBALS[viajes][$i] = $condrefe[$i][num_viajes];
-                    $GLOBALS[antigue][$i] = $condrefe[$i][num_atigue];
-                    $GLOBALS[mercan][$i] = $condrefe[$i][nom_mercan];
+                    $_REQUEST[empresa][$i] = $condrefe[$i][nom_empre];
+                    $_REQUEST[tellab][$i] = $condrefe[$i][tel_empre];
+                    $_REQUEST[viajes][$i] = $condrefe[$i][num_viajes];
+                    $_REQUEST[antigue][$i] = $condrefe[$i][num_atigue];
+                    $_REQUEST[mercan][$i] = $condrefe[$i][nom_mercan];
                     }
 
                 $query = "SELECT cod_activi
                             FROM ".BASE_DATOS.".tab_tercer_activi
-                           WHERE cod_tercer = '$GLOBALS[conduc]' AND
+                           WHERE cod_tercer = '$_REQUEST[conduc]' AND
                                  (cod_activi = ".COD_FILTRO_PROPIE." OR
                                   cod_activi = ".COD_FILTRO_POSEED.")
 					   ";
@@ -273,9 +273,9 @@ class act_conduc_conduc
                 for($i = 0; $i < sizeof($condacti); $i++)
                 {
                  if($condacti[$i][0] == COD_FILTRO_PROPIE)
-                  $GLOBALS[propie] = 1;
+                  $_REQUEST[propie] = 1;
                  else if($condacti[$i][0] == COD_FILTRO_POSEED)
-                  $GLOBALS[tenedo] = 1;
+                  $_REQUEST[tenedo] = 1;
                 }
 
        }
@@ -297,7 +297,7 @@ class act_conduc_conduc
 
      $query = "SELECT cod_ciudad, nom_ciudad
                  FROM ".BASE_DATOS.".tab_genera_ciudad
-                 WHERE cod_ciudad = '$GLOBALS[ciudad]'";
+                 WHERE cod_ciudad = '$_REQUEST[ciudad]'";
      $consulta = new Consulta($query, $this -> conexion);
      $ciudad_a = $consulta -> ret_matriz();
 
@@ -312,7 +312,7 @@ class act_conduc_conduc
 
      $query = "SELECT cod_tipdoc,nom_tipdoc
                  FROM ".BASE_DATOS.".tab_genera_tipdoc
-                 WHERE cod_tipdoc = '$GLOBALS[tipdocu]'";
+                 WHERE cod_tipdoc = '$_REQUEST[tipdocu]'";
 
      $consulta = new Consulta($query, $this -> conexion);
      $tipdoc_a = $consulta -> ret_matriz();
@@ -331,7 +331,7 @@ class act_conduc_conduc
 
      $query = "SELECT cod_catlic,nom_catlic
                 FROM ".BASE_DATOS.".tab_genera_catlic
-             WHERE cod_catlic = '$GLOBALS[catlic]'";
+             WHERE cod_catlic = '$_REQUEST[catlic]'";
      $consulta = new Consulta($query, $this -> conexion);
      $catlic_a = $consulta -> ret_matriz();
      $catlic = array_merge($catlic_a,$inicio,$catlic);
@@ -345,7 +345,7 @@ class act_conduc_conduc
 
     $query = "SELECT cod_califi,nom_califi
               FROM ".BASE_DATOS.".tab_genera_califi
-              WHERE cod_califi = '$GLOBALS[califi]'";
+              WHERE cod_califi = '$_REQUEST[califi]'";
     $consulta = new Consulta($query, $this -> conexion);
     if($califi = $consulta -> ret_matriz())
         $califis =array_merge($califi,$inicio,$califis);
@@ -365,7 +365,7 @@ class act_conduc_conduc
 
     $query = "SELECT nom_tiporh,nom_tiporh
             FROM ".BASE_DATOS.".tab_genera_tiporh
-        WHERE nom_tiporh = '$GLOBALS[tiporh]'";
+        WHERE nom_tiporh = '$_REQUEST[tiporh]'";
     $consulta = new Consulta($query, $this -> conexion);
     $tiporh_a = $consulta -> ret_matriz();
 
@@ -406,18 +406,18 @@ class act_conduc_conduc
      $formulario -> nueva_tabla();
 	 $formulario -> lista("Tipo Documento", "tipdocu", $tipdoc,0,1);
      $formulario -> linea("No. Documento",0);
-     $formulario -> linea($GLOBALS[conduc],1,"i");
-     $formulario -> texto ("Nombres:","text","nom",0,30,50,"",$GLOBALS[nom],"","",NULL,1);
-     $formulario -> texto ("Apellido 1:","text","apell1",1,20,50,"",$GLOBALS[apell1],"","",NULL,1);
-     $formulario -> texto ("Apellido 2:","text","apell2",0,20,50,"",$GLOBALS[apell2]);
+     $formulario -> linea($_REQUEST[conduc],1,"i");
+     $formulario -> texto ("Nombres:","text","nom",0,30,50,"",$_REQUEST[nom],"","",NULL,1);
+     $formulario -> texto ("Apellido 1:","text","apell1",1,20,50,"",$_REQUEST[apell1],"","",NULL,1);
+     $formulario -> texto ("Apellido 2:","text","apell2",0,20,50,"",$_REQUEST[apell2]);
      $formulario -> lista ("Factor RH", "tiporh", $tiporh, 1,1);
-     $formulario -> radio("Masculino","tipsex",1,$GLOBALS[tipsex],0);
-     $formulario -> radio("Femenino","tipsex",2,!$GLOBALS[tipsex],1);
-     $formulario -> texto ("Direcci&oacute;n:","text","dir1",0,30,80,"",$GLOBALS[dir1],"","",NULL,1);
+     $formulario -> radio("Masculino","tipsex",1,$_REQUEST[tipsex],0);
+     $formulario -> radio("Femenino","tipsex",2,!$_REQUEST[tipsex],1);
+     $formulario -> texto ("Direcci&oacute;n:","text","dir1",0,30,80,"",$_REQUEST[dir1],"","",NULL,1);
      $formulario -> lista ("Ciudad", "ciudad", $ciudad, 1,1);
-     $formulario -> texto ("Tel&eacute;fono 1:","text","tel\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,20,20,"",$GLOBALS[tel],"","",NULL,1);
-     $formulario -> texto ("Tel&eacute;fono 2:","text","tel2\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,20,20,"",$GLOBALS[tel2]);
-     $formulario -> texto ("Tel&eacute;fono Movil:","text","celu\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,20,20,"",$GLOBALS[celu],"","",NULL,1);
+     $formulario -> texto ("Tel&eacute;fono 1:","text","tel\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,20,20,"",$_REQUEST[tel],"","",NULL,1);
+     $formulario -> texto ("Tel&eacute;fono 2:","text","tel2\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,20,20,"",$_REQUEST[tel2]);
+     $formulario -> texto ("Tel&eacute;fono Movil:","text","celu\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,20,20,"",$_REQUEST[celu],"","",NULL,1);
      $formulario -> lista ("Operador", "operad", $operad, 1);
 	 $formulario -> archivo("Foto:","foto",12,200,"",1);
      $formulario -> lista ("Calificaci&oacute;n", "califi", $califis, 0);
@@ -427,49 +427,49 @@ class act_conduc_conduc
      $formulario -> linea("Datos de la Licencia",1,"t2");
 
      $formulario -> nueva_tabla();
-     $formulario -> texto("N Licencia","text","licencia",0,10,30,"",$GLOBALS[licencia],"","",NULL,1);
+     $formulario -> texto("N Licencia","text","licencia",0,10,30,"",$_REQUEST[licencia],"","",NULL,1);
      $formulario -> lista ("Categoria", "catlic",$catlic, 0,1);
-     $formulario -> fecha_calendar("Fecha Vencimiento","feclic","form_conduc",$GLOBALS[feclic],"yyyy-mm-dd",1,0,1);
+     $formulario -> fecha_calendar("Fecha Vencimiento","feclic","form_conduc",$_REQUEST[feclic],"yyyy-mm-dd",1,0,1);
 
      $formulario -> nueva_tabla();
      $formulario -> linea("Datos de Seguridad Social",1,"t2");
 
      $formulario -> nueva_tabla();
-     $formulario -> texto("EPS","text","eps",1,40,70,"",$GLOBALS[eps]);
-     $formulario -> texto("ARP","text","arp",1,40,70,"",$GLOBALS[arp]);
-     $formulario -> texto("Fondo de Pensiones","text","pensiones",1,40,70,"",$GLOBALS[pensiones]);
+     $formulario -> texto("EPS","text","eps",1,40,70,"",$_REQUEST[eps]);
+     $formulario -> texto("ARP","text","arp",1,40,70,"",$_REQUEST[arp]);
+     $formulario -> texto("Fondo de Pensiones","text","pensiones",1,40,70,"",$_REQUEST[pensiones]);
 
      $formulario -> nueva_tabla();
      $formulario -> linea("Datos Complementarios",1,"t2");
 
      $formulario -> nueva_tabla();
-     $formulario -> texto("Pasado Judicial","text","pasjudi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,10,30,"",$GLOBALS[pasjudi]);
-     $formulario -> fecha_calendar("Fecha Vencimiento","fecpas","form_conduc",$GLOBALS[fecpas],"yyyy-mm-dd",1);
-     $formulario -> texto("Nro.Lib.Tripula","text","libtripu",0,10,30,"",$GLOBALS[libtripu]);
-     $formulario -> fecha_calendar("Fecha Vencimiento","fectripu","form_conduc",$GLOBALS[fectripu],"yyyy-mm-dd",1);
+     $formulario -> texto("Pasado Judicial","text","pasjudi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,10,30,"",$_REQUEST[pasjudi]);
+     $formulario -> fecha_calendar("Fecha Vencimiento","fecpas","form_conduc",$_REQUEST[fecpas],"yyyy-mm-dd",1);
+     $formulario -> texto("Nro.Lib.Tripula","text","libtripu",0,10,30,"",$_REQUEST[libtripu]);
+     $formulario -> fecha_calendar("Fecha Vencimiento","fectripu","form_conduc",$_REQUEST[fectripu],"yyyy-mm-dd",1);
 
      $formulario -> nueva_tabla();
      $formulario -> linea("Referencias Personales (Caso de Accidente)",1,"t2");
 
      $formulario -> nueva_tabla();
-     $formulario -> texto("Nombre","text","nomref",0,30,70,"",$GLOBALS[nomref],"","",NULL,1);
-     $formulario -> texto("Tel&eacute;fono","text","telref\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,10,15,"",$GLOBALS[telref],"","",NULL,1);
+     $formulario -> texto("Nombre","text","nomref",0,30,70,"",$_REQUEST[nomref],"","",NULL,1);
+     $formulario -> texto("Tel&eacute;fono","text","telref\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,10,15,"",$_REQUEST[telref],"","",NULL,1);
 
      $formulario -> nueva_tabla();
      $formulario -> linea("Referencias Laborales",1,"t2");
 
      $formulario -> nueva_tabla();
-     $empresa=$GLOBALS[empresa];
-     $tellab=$GLOBALS[tellab];
-     $viajes=$GLOBALS[viajes];
-     $antigue=$GLOBALS[antigue];
-     $mercan=$GLOBALS[mercan];
+     $empresa=$_REQUEST[empresa];
+     $tellab=$_REQUEST[tellab];
+     $viajes=$_REQUEST[viajes];
+     $antigue=$_REQUEST[antigue];
+     $mercan=$_REQUEST[mercan];
 
-     if(!isset($GLOBALS[maximo]))
-               $GLOBALS[maximo]=1;
+     if(!isset($_REQUEST[maximo]))
+               $_REQUEST[maximo]=1;
 
         ///////////////
-        for($i=0;$i<$GLOBALS[maximo];$i++)
+        for($i=0;$i<$_REQUEST[maximo];$i++)
            {
            $formulario -> texto ("Empresa","text","empresa[$i]",0,10,40,"","$empresa[$i]");
            $formulario -> texto ("Tel&eacute;fono","text","tellab[$i]\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,8,15,"","$tellab[$i]");
@@ -485,20 +485,20 @@ class act_conduc_conduc
      $formulario -> linea("Otras Actividades",1,"t2");
 
      $formulario -> nueva_tabla();
-     $formulario -> caja("Propietario","propie",1,$GLOBALS[propie],0);
-     $formulario -> caja("Tenedor","tenedo",1,$GLOBALS[tenedo],1);
+     $formulario -> caja("Propietario","propie",1,$_REQUEST[propie],0);
+     $formulario -> caja("Tenedor","tenedo",1,$_REQUEST[tenedo],1);
 
      $formulario -> nueva_tabla();
-     $formulario -> texto ("Observaciones","textarea","obs",1,60,2,"",$GLOBALS[obs]);
+     $formulario -> texto ("Observaciones","textarea","obs",1,60,2,"",$_REQUEST[obs]);
 
      $formulario -> nueva_tabla();
      $formulario -> oculto("fec_actual",date("Y-m-d"),0);
-     $formulario -> oculto("conduc","$GLOBALS[conduc]",0);
-     $formulario -> oculto("fotant","$GLOBALS[fotant]",0);
+     $formulario -> oculto("conduc","$_REQUEST[conduc]",0);
+     $formulario -> oculto("fotant","$_REQUEST[fotant]",0);
      $formulario -> oculto("usuario","$usuario",0);
-     $formulario -> oculto("maximo","$GLOBALS[maximo]",0);
+     $formulario -> oculto("maximo","$_REQUEST[maximo]",0);
      $formulario -> oculto("window","central",0);
-     $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+     $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
      $formulario -> oculto("opcion",2,0);
      $formulario -> botoni("Aceptar","aceptar_update()",0);
      $formulario -> botoni("Borrar","form_conduc.reset()",1);
@@ -513,125 +513,125 @@ class act_conduc_conduc
         $usuario=$datos_usuario["cod_usuari"];
         $query = "SELECT cod_paisxx, cod_depart, cod_ciudad
                   FROM ".BASE_DATOS.".tab_genera_ciudad
-                  WHERE cod_ciudad = '$GLOBALS[ciudad]'";
+                  WHERE cod_ciudad = '$_REQUEST[ciudad]'";
 
     $consulta = new Consulta($query, $this -> conexion);
     $padeci = $consulta -> ret_arreglo();
 
-     if($GLOBALS[foto])
+     if($_REQUEST[foto])
    {
-    if(move_uploaded_file($GLOBALS[foto],URL_CONDUC.$GLOBALS[conduc].".jpg"))
-     $GLOBALS[foto] = "'".$GLOBALS[conduc].".jpg'";
+    if(move_uploaded_file($_REQUEST[foto],URL_CONDUC.$_REQUEST[conduc].".jpg"))
+     $_REQUEST[foto] = "'".$_REQUEST[conduc].".jpg'";
     else
-     $GLOBALS[foto] = "NULL";
+     $_REQUEST[foto] = "NULL";
    }
    else
-    $GLOBALS[foto] = "NULL";
+    $_REQUEST[foto] = "NULL";
 
-         $empresa=$GLOBALS[empresa];
-         $tellab=$GLOBALS[tellab];
-         $viajes=$GLOBALS[viajes];
-         $antigue=$GLOBALS[antigue];
-         $mercan=$GLOBALS[mercan];
+         $empresa=$_REQUEST[empresa];
+         $tellab=$_REQUEST[tellab];
+         $viajes=$_REQUEST[viajes];
+         $antigue=$_REQUEST[antigue];
+         $mercan=$_REQUEST[mercan];
 
     $fec_actual = date("Y-m-d H:i:s");
-    $GLOBALS[abr]=$GLOBALS[apell1]." ".$GLOBALS[nom];
+    $_REQUEST[abr]=$_REQUEST[apell1]." ".$_REQUEST[nom];
 
    $query = "UPDATE ".BASE_DATOS.".tab_tercer_tercer
-                                     SET cod_tipdoc = '$GLOBALS[tipdocu]',
-                                               nom_apell1 = '$GLOBALS[apell1]',
-                                               nom_apell2 = '$GLOBALS[apell2]',
-                                               nom_tercer = '$GLOBALS[nom]',
-                                               abr_tercer = '$GLOBALS[abr]',
-                    dir_domici = '$GLOBALS[dir1]',
-                    num_telef1 = '$GLOBALS[tel]',
-                    num_telef2 = '$GLOBALS[tel2]',
-                    num_telmov = '$GLOBALS[celu]',
+                                     SET cod_tipdoc = '$_REQUEST[tipdocu]',
+                                               nom_apell1 = '$_REQUEST[apell1]',
+                                               nom_apell2 = '$_REQUEST[apell2]',
+                                               nom_tercer = '$_REQUEST[nom]',
+                                               abr_tercer = '$_REQUEST[abr]',
+                    dir_domici = '$_REQUEST[dir1]',
+                    num_telef1 = '$_REQUEST[tel]',
+                    num_telef2 = '$_REQUEST[tel2]',
+                    num_telmov = '$_REQUEST[celu]',
                     cod_paisxx = '".$padeci[0]."',
                     cod_depart = '".$padeci[1]."',
                     cod_ciudad = '".$padeci[2]."',
-                    dir_ultfot = $GLOBALS[foto],
+                    dir_ultfot = $_REQUEST[foto],
 
-                    obs_tercer = '$GLOBALS[obs]',
+                    obs_tercer = '$_REQUEST[obs]',
 
-                                                  usr_modifi = '$GLOBALS[usuario]',
+                                                  usr_modifi = '$_REQUEST[usuario]',
 
                                                   fec_modifi = '$fec_actual'
 
-              WHERE cod_tercer = '$GLOBALS[conduc]'";
+              WHERE cod_tercer = '$_REQUEST[conduc]'";
 
   $insercion = new Consulta($query, $this -> conexion,"BR");
 
   $query = "DELETE FROM ".BASE_DATOS.".tab_tercer_activi
-                   WHERE cod_tercer = '$GLOBALS[conduc]' AND
+                   WHERE cod_tercer = '$_REQUEST[conduc]' AND
                          (cod_activi = ".COD_FILTRO_PROPIE." OR
                           cod_activi = ".COD_FILTRO_POSEED.")";
    $consulta = new Consulta($query, $this -> conexion, "R");
 
-     if($GLOBALS[propie])
+     if($_REQUEST[propie])
      {
         $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
-              VALUES ('$GLOBALS[conduc]',".COD_FILTRO_PROPIE.")";
+              VALUES ('$_REQUEST[conduc]',".COD_FILTRO_PROPIE.")";
        $insercion = new Consulta($query, $this -> conexion,"R");
      }
 
-     if($GLOBALS[tenedo])
+     if($_REQUEST[tenedo])
      {
        $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
-              VALUES ('$GLOBALS[conduc]',".COD_FILTRO_POSEED.")";
+              VALUES ('$_REQUEST[conduc]',".COD_FILTRO_POSEED.")";
        $insercion = new Consulta($query, $this -> conexion,"R");
      }
 
-  if(!$GLOBALS[califi])
-      $GLOBALS[califi] = "NULL";
+  if(!$_REQUEST[califi])
+      $_REQUEST[califi] = "NULL";
   else
-      $GLOBALS[califi] = "'".$GLOBALS[califi]."'";
+      $_REQUEST[califi] = "'".$_REQUEST[califi]."'";
 
      $query = "UPDATE ".BASE_DATOS.".tab_tercer_conduc
-                  SET cod_tipsex = '$GLOBALS[tipsex]',
-                      cod_grupsa = '$GLOBALS[tiporh]',
-                      num_licenc = '$GLOBALS[licencia]',
-                      num_catlic = '$GLOBALS[catlic]',
-                      fec_venlic = '$GLOBALS[feclic]',
-                      cod_califi = $GLOBALS[califi],
-                      num_libtri = '$GLOBALS[libtripu]',
-                      fec_ventri = '$GLOBALS[fectripu]',
-                      nom_epsxxx = '$GLOBALS[eps]',
-                      nom_arpxxx = '$GLOBALS[arp]',
-                      nom_pensio = '$GLOBALS[pensiones]',
-                      num_pasado = '$GLOBALS[pasjudi]',
-                      fec_venpas = '$GLOBALS[fecpas]',
-                      nom_refper = '$GLOBALS[nomref]',
-                      tel_refper = '$GLOBALS[telref]',
-					  cod_operad = '$GLOBALS[operad]',
-                      usr_modifi = '$GLOBALS[usuario]',
+                  SET cod_tipsex = '$_REQUEST[tipsex]',
+                      cod_grupsa = '$_REQUEST[tiporh]',
+                      num_licenc = '$_REQUEST[licencia]',
+                      num_catlic = '$_REQUEST[catlic]',
+                      fec_venlic = '$_REQUEST[feclic]',
+                      cod_califi = $_REQUEST[califi],
+                      num_libtri = '$_REQUEST[libtripu]',
+                      fec_ventri = '$_REQUEST[fectripu]',
+                      nom_epsxxx = '$_REQUEST[eps]',
+                      nom_arpxxx = '$_REQUEST[arp]',
+                      nom_pensio = '$_REQUEST[pensiones]',
+                      num_pasado = '$_REQUEST[pasjudi]',
+                      fec_venpas = '$_REQUEST[fecpas]',
+                      nom_refper = '$_REQUEST[nomref]',
+                      tel_refper = '$_REQUEST[telref]',
+					  cod_operad = '$_REQUEST[operad]',
+                      usr_modifi = '$_REQUEST[usuario]',
                       fec_modifi  = '$fec_actual'
-                WHERE cod_tercer = '$GLOBALS[conduc]'";
+                WHERE cod_tercer = '$_REQUEST[conduc]'";
     $insercion = new Consulta($query, $this -> conexion,"R");
 
      $query = "DELETE FROM ".BASE_DATOS.".tab_conduc_refere
-                     WHERE cod_conduc = '$GLOBALS[conduc]'";
+                     WHERE cod_conduc = '$_REQUEST[conduc]'";
      $consulta = new Consulta($query, $this -> conexion, "R");
 
-    for($i=0;$i<$GLOBALS[maximo];$i++)
+    for($i=0;$i<$_REQUEST[maximo];$i++)
        {
        if($empresa[$i] != Null)
           {
            $query = "INSERT INTO ".BASE_DATOS.".tab_conduc_refere(
                                                      cod_conduc,cod_refere,nom_empre,tel_empre,num_viajes,num_atigue,
                                                       nom_mercan,usr_creaci,fec_creaci,usr_modifi,fec_modifi)
-                                              VALUES ('$GLOBALS[conduc]','$i','$empresa[$i]','$tellab[$i]','$viajes[$i]',
-                                                '$antigue[$i]','$mercan[$i]','$GLOBALS[usuario]',
-                                                '$fec_actual','$GLOBALS[usuario]','$fec_actual')";
+                                              VALUES ('$_REQUEST[conduc]','$i','$empresa[$i]','$tellab[$i]','$viajes[$i]',
+                                                '$antigue[$i]','$mercan[$i]','$_REQUEST[usuario]',
+                                                '$fec_actual','$_REQUEST[usuario]','$fec_actual')";
                  $insercion = new Consulta($query, $this -> conexion,"R");
           }
        }
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
   {
-   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Conductor</a></b>";
+   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Conductor</a></b>";
 
-   $mensaje =  "El Conductor <b>".$GLOBALS[abr]."</b> Se Actualizo con Exito".$link_a;
+   $mensaje =  "El Conductor <b>".$_REQUEST[abr]."</b> Se Actualizo con Exito".$link_a;
    $mens = new mensajes();
    $mens -> correcto("ACTUALIZAR CONDUCTORES",$mensaje);
   }

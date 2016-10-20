@@ -23,11 +23,11 @@ class Proc_alerta
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Formulario();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario();
@@ -50,9 +50,9 @@ class Proc_alerta
    $formulario = new Formulario ("index.php","post","Configuracion de Alertas Visuales","ins_alert");
    $formulario -> linea("Datos Basicos de Alertas",1,"t2");
    $formulario -> nueva_tabla();
-   $formulario -> texto ("Nombre de Alarma:","text","nom_ala",0,10,10,"","$GLOBALS[tiemp1]");
-   $formulario -> texto ("Tiempo de Alarma:","text","tiempo",0,3,3,"","$GLOBALS[tiemp1]");
-   $formulario -> texto ("Color:","text","color\"  onBlur=\"setColor();\"",0,7,7,"","$GLOBALS[color]");
+   $formulario -> texto ("Nombre de Alarma:","text","nom_ala",0,10,10,"","$_REQUEST[tiemp1]");
+   $formulario -> texto ("Tiempo de Alarma:","text","tiempo",0,3,3,"","$_REQUEST[tiemp1]");
+   $formulario -> texto ("Color:","text","color\"  onBlur=\"setColor();\"",0,7,7,"","$_REQUEST[color]");
    echo "<td nowrap='nowrap'>
          <a href='#' onClick=\"newwin=open('../".DIR_APLICA_CENTRAL."/config/colores.php?nom=color', 'calwin', 'width=320, height=300, scollbars=false');\" class='etiqueta'>Cambiar Color</a>
          </td>
@@ -65,7 +65,7 @@ class Proc_alerta
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("opcion",1,0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],1);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],1);
    $formulario -> botoni("Insertar","aceptar_insert()",0);
    $formulario -> botoni("Borrar","ins_alert.reset()",1);
    $formulario -> cerrar();
@@ -89,8 +89,8 @@ class Proc_alerta
 
    //query de insercion
    $query = "INSERT INTO ".BASE_DATOS.".tab_genera_alarma( cod_alarma, nom_alarma, cod_colorx, cant_tiempo, usr_creaci, fec_creaci )
-             VALUES ( '$nuevo_consec','$GLOBALS[nom_ala]','$GLOBALS[color]',
-             '$GLOBALS[tiempo]', '$usuario', NOW() ) ";
+             VALUES ( '$nuevo_consec','$_REQUEST[nom_ala]','$_REQUEST[color]',
+             '$_REQUEST[tiempo]', '$usuario', NOW() ) ";
    $consulta = new Consulta($query, $this -> conexion,"BR");
 
    if($insercion = new Consulta("COMMIT", $this -> conexion))
@@ -99,8 +99,8 @@ class Proc_alerta
       /*
       //Se inserta la alarma en los standas de sat basico y sat trafico
       $data['nom_proces'] = "Insertar Alarma";
-      $mParams = array( "cod_alarma" => $nuevo_consec, "nom_alarma" => $GLOBALS[nom_ala], 
-                        "cod_colorx" => $GLOBALS[color], "can_tiempo" => $GLOBALS[tiempo], "nom_llavex" => 'f74ca8ee40d8e9c9b2cd529ce297a9a8' );
+      $mParams = array( "cod_alarma" => $nuevo_consec, "nom_alarma" => $_REQUEST[nom_ala], 
+                        "cod_colorx" => $_REQUEST[color], "can_tiempo" => $_REQUEST[tiempo], "nom_llavex" => 'f74ca8ee40d8e9c9b2cd529ce297a9a8' );
 
       $oSoapClient = new soapclient( URL_INTERF_SATAPX, true );
       $oSoapClient -> soap_defencoding = 'ISO-8859-1';
@@ -140,9 +140,9 @@ class Proc_alerta
       /********************* PARAMETROS SOAP *********************/
       $data['nom_proces'] = "Insertar Alarma";
       $mParams = array( "cod_alarma" => $nuevo_consec,
-                        "nom_alarma" => $GLOBALS[nom_ala],
-                        "cod_colorx" => $GLOBALS[color],
-                        "can_tiempo" => $GLOBALS[tiempo],
+                        "nom_alarma" => $_REQUEST[nom_ala],
+                        "cod_colorx" => $_REQUEST[color],
+                        "can_tiempo" => $_REQUEST[tiempo],
                         "nom_llavex" => 'f74ca8ee40d8e9c9b2cd529ce297a9a8'
                         );
 
@@ -467,9 +467,9 @@ class Proc_alerta
 
 
       
-      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otra Alerta</a></b>";
+      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otra Alerta</a></b>";
 
-      $mensaje =  "Se Inserto la Alerta <b>".$GLOBALS[nom_ala]."</b> con Exito".$link_a;
+      $mensaje =  "Se Inserto la Alerta <b>".$_REQUEST[nom_ala]."</b> con Exito".$link_a;
       
       if( $data['error'] )
         $mensaje .= "<br><b>Error en ".$data['error']."</b>";

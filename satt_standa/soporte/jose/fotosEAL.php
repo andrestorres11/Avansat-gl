@@ -1,6 +1,6 @@
 <?php
 
-mysql_connect("bd10.intrared.net:3306","satt_faro","sattfaro")or die("Error al conectar con el servidor ".mysql_error());
+mysql_connect("aglbd.intrared.net","satt_faro","sattfaro")or die("Error al conectar con el servidor ".mysql_error());
 mysql_select_db("satt_faro") or die("No se pudo usar satt_faro");
 
 $query = "SELECT * FROM tab_despac_images where num_despac = '1718704' ";

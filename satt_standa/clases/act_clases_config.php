@@ -21,11 +21,11 @@ class Act_clases_config
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -58,7 +58,7 @@ class Act_clases_config
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Borrar","form_act.reset",1);
@@ -74,12 +74,12 @@ class Act_clases_config
    $usuario=$datos_usuario["cod_usuari"];
   $query = "SELECT cod_clasex,nom_clasex
             FROM ".BASE_DATOS.".tab_genera_clases
-           WHERE nom_clasex LIKE '%$GLOBALS[clasex]%'
+           WHERE nom_clasex LIKE '%$_REQUEST[clasex]%'
         ORDER BY 2";
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
   for($i=0;$i<sizeof($matriz);$i++)
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&clasex=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&clasex=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario = new Formulario ("index.php","post","Resultado de la Consulta","form_item");
    $formulario -> linea("<b>Se Encontraron ".sizeof($matriz)." Registros</b>",0);
@@ -108,7 +108,7 @@ class Act_clases_config
    $formulario -> oculto("window","central",0);
 
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
 // *********************************************************************************
@@ -121,7 +121,7 @@ class Act_clases_config
    $usuario=$datos_usuario["cod_usuari"];
   $query = "SELECT cod_clasex,nom_clasex,obs_clasex
             FROM ".BASE_DATOS.".tab_genera_clases
-           WHERE cod_clasex = '$GLOBALS[clasex]'";
+           WHERE cod_clasex = '$_REQUEST[clasex]'";
   $consulta = new Consulta($query, $this -> conexion);
   $matriz = $consulta -> ret_matriz();
      $inicio[0][0]='-';
@@ -132,19 +132,19 @@ class Act_clases_config
    $formulario -> texto ("Nombre","text","nombre",1,50,100,"","".$matriz[0][1]."");
    $formulario -> nueva_tabla();
 
-   if(!isset($GLOBALS[maximo]))
+   if(!isset($_REQUEST[maximo]))
    {
       $query = "SELECT num_config
                    FROM ".BASE_DATOS.".tab_config_clasex
-                   WHERE cod_clasex = '$GLOBALS[clasex]'";
+                   WHERE cod_clasex = '$_REQUEST[clasex]'";
       $consulta = new Consulta($query, $this -> conexion);
       $config_a = $consulta -> ret_matriz();
-      $GLOBALS[maximo]=sizeof($config_a);
+      $_REQUEST[maximo]=sizeof($config_a);
    }
 
 
-      if(!$GLOBALS[maximo])
-         $GLOBALS[maximo]=1;
+      if(!$_REQUEST[maximo])
+         $_REQUEST[maximo]=1;
 
    $query = "SELECT num_config,CONCAT(nom_config,' - ',num_config)
               FROM ".BASE_DATOS.".tab_vehige_config";
@@ -152,10 +152,10 @@ class Act_clases_config
    $config = $consulta -> ret_matriz();
 
 
-        for($i=0;$i<$GLOBALS[maximo];$i++)
+        for($i=0;$i<$_REQUEST[maximo];$i++)
         {
-          if($GLOBALS[config][$i])
-             $config_a[$i][0] = $GLOBALS[config][$i];
+          if($_REQUEST[config][$i])
+             $config_a[$i][0] = $_REQUEST[config][$i];
 
 
           //lista la configuracion del vehiculo
@@ -173,17 +173,17 @@ class Act_clases_config
 
             $formulario -> nueva_tabla();
             $formulario -> botoni("Otra","form_item.submit()",0);
-            $GLOBALS[maximo]=$GLOBALS[maximo]+1;
+            $_REQUEST[maximo]=$_REQUEST[maximo]+1;
 
    $formulario -> nueva_tabla();
    $formulario -> texto ("Observaciones","textarea","obs",1,55,2,"","".$matriz[0][2]."");
    $formulario -> nueva_tabla();
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",2,0);
-   $formulario -> oculto("clasex",$GLOBALS[clasex],0);
-   $formulario -> oculto("maximo","$GLOBALS[maximo]",0);
+   $formulario -> oculto("clasex",$_REQUEST[clasex],0);
+   $formulario -> oculto("maximo","$_REQUEST[maximo]",0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Actualizar","aceptar_act()",0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
@@ -200,32 +200,32 @@ class Act_clases_config
 
   //query de insercion de despacho
   $query = "UPDATE ".BASE_DATOS.".tab_genera_clases
-               SET nom_clasex = '$GLOBALS[nombre]',
-                   obs_clasex = '$GLOBALS[obs]'
-             WHERE cod_clasex = '$GLOBALS[clasex]'";
+               SET nom_clasex = '$_REQUEST[nombre]',
+                   obs_clasex = '$_REQUEST[obs]'
+             WHERE cod_clasex = '$_REQUEST[clasex]'";
   $insercion = new Consulta($query, $this -> conexion,"BR");
 
   $query = "DELETE FROM ".BASE_DATOS.".tab_config_clasex
-             WHERE cod_clasex = '$GLOBALS[clasex]'";
+             WHERE cod_clasex = '$_REQUEST[clasex]'";
   $eliminar = new Consulta($query, $this -> conexion,"R");
 
-  $config = $GLOBALS[config];
-  $asigna = $GLOBALS[asigna];
+  $config = $_REQUEST[config];
+  $asigna = $_REQUEST[asigna];
 
-  for($i=0;$i<$GLOBALS[maximo];$i++)
+  for($i=0;$i<$_REQUEST[maximo];$i++)
       {
          if($config[$i] AND $asigna[$i])
          {
             //inserta el valor de la tarifa
             $query2 = "INSERT INTO ".BASE_DATOS.".tab_config_clasex
-                           VALUES ('$GLOBALS[clasex]','$config[$i]')";
+                           VALUES ('$_REQUEST[clasex]','$config[$i]')";
            $insercion2 = new Consulta($query2, $this -> conexion,"R");
          }
       }
   if(!mysql_error())
   {
      $consulta = new Consulta("COMMIT", $this -> conexion);
-     echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>El Clase $GLOBALS[nombre]  ha sido Actualizada Correctamente</b><p></p>";
+     echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>El Clase $_REQUEST[nombre]  ha sido Actualizada Correctamente</b><p></p>";
   }
   else
      $consulta = new Consulta("ROLLBACK", $this -> conexion);

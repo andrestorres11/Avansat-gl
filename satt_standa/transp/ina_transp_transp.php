@@ -16,11 +16,11 @@ class Proc_tercer
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "2":
           $this -> Resultado();
@@ -53,14 +53,14 @@ class Proc_tercer
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_list.submit()",0);
    $formulario -> cerrar();
  }
 
  function Resultado()
  {
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
    $query = "SELECT a.cod_tercer,a.nom_tercer,a.num_telef1,a.cod_ciudad,a.dir_domici
               FROM ".BASE_DATOS.".tab_tercer_tercer a,
@@ -69,15 +69,15 @@ class Proc_tercer
                    b.cod_activi = ".COD_FILTRO_EMPTRA."
              ";
 
-   if($GLOBALS[fil] == 1)
-    $query .= " AND a.cod_tercer = '".$GLOBALS[tercer]."'";
-   else if($GLOBALS[fil] == 2)
-    $query .= " AND a.abr_tercer LIKE '%".$GLOBALS[tercer]."%'";
-   else if($GLOBALS[fil] == 3)
+   if($_REQUEST[fil] == 1)
+    $query .= " AND a.cod_tercer = '".$_REQUEST[tercer]."'";
+   else if($_REQUEST[fil] == 2)
+    $query .= " AND a.abr_tercer LIKE '%".$_REQUEST[tercer]."%'";
+   else if($_REQUEST[fil] == 3)
     $query .= " AND a.cod_estado = ".COD_ESTADO_ACTIVO."";
-   else if($GLOBALS[fil] == 4)
+   else if($_REQUEST[fil] == 4)
     $query .= " AND a.cod_estado = ".COD_ESTADO_INACTI."";
-   else if($GLOBALS[fil] == 5)
+   else if($_REQUEST[fil] == 5)
     $query .= " AND a.cod_estado = ".COD_ESTADO_PENDIE."";
 
    $query .= " GROUP BY 1 ORDER BY 2";
@@ -97,7 +97,7 @@ class Proc_tercer
 
    for($i = 0; $i < sizeof($matriz); $i++)
    {
-    $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&tercer=".$matriz[$i][0]."&opcion=3 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+    $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&tercer=".$matriz[$i][0]."&opcion=3 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
     $ciudad_a = $objciud -> getSeleccCiudad($matriz[$i][3]);
 
     $formulario -> linea($matriz[$i][0],0,"i");
@@ -115,7 +115,7 @@ class Proc_tercer
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -126,13 +126,13 @@ class Proc_tercer
   				   a.dir_domici,a.num_telef1,a.num_telef2,a.num_telmov,
   				   a.num_faxxxx,a.cod_estado
               FROM ".BASE_DATOS.".tab_tercer_tercer a
-             WHERE a.cod_tercer = '".$GLOBALS[tercer]."'
+             WHERE a.cod_tercer = '".$_REQUEST[tercer]."'
            ";
 
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
   $ciudad = $objciud -> getSeleccCiudad($matriz[0][3]);
 
   $estpen = $estact = $estina = 0;
@@ -195,10 +195,10 @@ class Proc_tercer
    $formulario -> botoni("Aceptar","if(form_item.obs.value != ''){if(confirm('Esta Seguro de Cambiar el Estado de la Transportadora.?')){form_item.submit()}}else{alert('Las Observaciones del Cambio de Estado son Obligatioras.')}",0);
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("tercer", $GLOBALS[tercer],0);
+   $formulario -> oculto("tercer", $_REQUEST[tercer],0);
    $formulario -> oculto("opcion",4,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -207,32 +207,32 @@ class Proc_tercer
   $datos_usuario = $this -> usuario -> retornar();
   $usuario = $datos_usuario["cod_usuari"];
 
-  if(!$GLOBALS[estado])
-   $GLOBALS[estado] = 0;
+  if(!$_REQUEST[estado])
+   $_REQUEST[estado] = 0;
 
   $query = "SELECT a.obs_aproba
   			  FROM ".BASE_DATOS.".tab_tercer_tercer a
-  		     WHERE a.cod_tercer = '".$GLOBALS[tercer]."'
+  		     WHERE a.cod_tercer = '".$_REQUEST[tercer]."'
   		   ";
 
   $consec = new Consulta($query, $this -> conexion);
   $observ = $consec -> ret_matriz();
 
-  $observ[0][0] .= "\n".$GLOBALS[obs];
+  $observ[0][0] .= "\n".$_REQUEST[obs];
 
   $query = "UPDATE ".BASE_DATOS.".tab_tercer_tercer
-  		       SET cod_estado = '".$GLOBALS[estado]."',
+  		       SET cod_estado = '".$_REQUEST[estado]."',
   		           obs_aproba = '".$observ[0][0]."',
   		           usr_modifi = '".$usuario."',
   		           fec_modifi = NOW()
-  		     WHERE cod_tercer = '".$GLOBALS[tercer]."'
+  		     WHERE cod_tercer = '".$_REQUEST[tercer]."'
   		   ";
 
   $consec = new Consulta($query, $this -> conexion,"BR");
 
   if($consulta = new Consulta ("COMMIT", $this -> conexion))
   {
-   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Activar/Inactivar Otra Transportadora</a></b>";
+   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Activar/Inactivar Otra Transportadora</a></b>";
 
    $mensaje = "Se Actualizo el Estado de la Transportadora Exitosamente.".$link_a;
    $mens = new mensajes();

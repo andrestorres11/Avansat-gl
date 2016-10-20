@@ -36,7 +36,7 @@ class Proc_servic
 
  {
 
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
 
      $this -> Listar();
 
@@ -44,7 +44,7 @@ class Proc_servic
 
      {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
 
        {
 
@@ -140,7 +140,7 @@ class Proc_servic
 
      for($i=0;$i<sizeof($matriz);$i++)
 
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&servic=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&servic=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
 
 
@@ -200,7 +200,7 @@ class Proc_servic
 
    $formulario -> oculto("window","central",0);
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> cerrar();
 
@@ -230,7 +230,7 @@ class Proc_servic
 
                        b.cod_serpad = c.cod_servic
 
-                 WHERE a.cod_servic = '$GLOBALS[servic]'
+                 WHERE a.cod_servic = '$_REQUEST[servic]'
 
               ORDER BY 1";
 
@@ -311,7 +311,7 @@ class Proc_servic
 
       $formulario -> oculto("opcion",1, 0);
 
-            $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+            $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0);
 
       $formulario -> oculto("window","central", 0);
 

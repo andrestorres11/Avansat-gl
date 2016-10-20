@@ -40,7 +40,7 @@ class Proc_filtro
 
  {
 
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
 
      $this -> Formulario();
 
@@ -48,7 +48,7 @@ class Proc_filtro
 
      {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
 
        {
 
@@ -89,7 +89,7 @@ class Proc_filtro
 
    $formulario -> oculto("maximo","".sizeof($matriz)."", 0);
 
-   $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+   $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0);
 
    $formulario -> oculto("window","central", 0);
 
@@ -127,15 +127,15 @@ class Proc_filtro
 
    $query = "INSERT INTO ".CENTRAL.".tab_genera_filtro
 
-             VALUES ('$nuevo_consec','$GLOBALS[nombre]','$GLOBALS[query]',
-                      '$GLOBALS[usuario]', '$fec_actual',
-                      '$GLOBALS[usuario]', '$fec_actual') ";
+             VALUES ('$nuevo_consec','$_REQUEST[nombre]','$_REQUEST[query]',
+                      '$_REQUEST[usuario]', '$fec_actual',
+                      '$_REQUEST[usuario]', '$fec_actual') ";
 
    $consulta = new Consulta($query, $this -> conexion);
 
 
 
-   echo "<br><br><b>TRANSACCION EXITOSA <br> EL FILTRO $GLOBALS[nombre] FUE INSERTADO</b>";
+   echo "<br><br><b>TRANSACCION EXITOSA <br> EL FILTRO $_REQUEST[nombre] FUE INSERTADO</b>";
 
  }//FIN FUNCTION INSERTAR
 

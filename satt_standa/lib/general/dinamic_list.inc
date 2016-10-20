@@ -3,7 +3,7 @@
 -------------------------------------------------------------------------------------------------------------------------------------------------
 @Class: DinamicList
 @Author: Ing. Christiam Barrera Arango
-@Company: Intrared LTDA. Bogot� - Colombia
+@Company: Intrared LTDA. Bogotï¿½ - Colombia
 @Date: 2008-08-31
 -------------------------------------------------------------------------------------------------------------------------------------------------
 */
@@ -317,7 +317,7 @@ Class DinamicList    {
 
     function Properties( $tag )
     {
-      if ( isset( $tag["value"] ) ) echo ' value="'.htmlentities( $tag["value"] ).'"';
+      if ( isset( $tag["value"] ) ) echo ' value="'.htmlentities( $tag["value"], ENT_COMPAT, 'ISO-8859-1', true ).'"';
       if ( isset( $tag["align"] ) ) echo ' align="'.$tag["align"].'"';
       if ( isset( $tag["width"] ) ) echo ' width="'.$tag["width"].'"';
       if ( isset( $tag["maxlength"] ) ) echo ' maxlength="'.$tag["maxlength"].'"';
@@ -337,15 +337,16 @@ Class DinamicList    {
       if ( isset( $tag["onreset"] ) ) echo ' onreset="javascript:'.$tag["onreset"].'"';
       if ( isset( $tag["onselect"] ) ) echo ' onselect="javascript:'.$tag["onselect"].'"';
       if ( isset( $tag["onchange"] ) ) echo ' onchange="javascript:'.$tag["onchange"].'"';
-      if ( isset( $tag["title"] ) ) echo ' title="'.htmlentities( $tag["title"] ).'"';
+      if ( isset( $tag["title"] ) ) echo ' title="'.htmlentities( $tag["title"], ENT_COMPAT, 'ISO-8859-1', true ).'"';
       if ( isset( $tag["readonly"] ) ) echo ' readonly="readonly"';
       if ( isset( $tag["disabled"] ) ) echo ' disabled="disabled"';
       if ( isset( $tag["selected"] ) ) echo ' selected="selected"';
       if ( isset( $tag["checked"] ) ) echo ' checked="checked"';
       if ( isset( $tag["onclikDisable"] ) ) echo ' onclick="javascript:'.$tag["onclikDisable"].'"';
       if ( isset( $tag["onclikEnable"] ) ) echo ' onclick="javascript:'.$tag["onclikEnable"].'"';
-      if ( isset( $tag["onclikEdit"] ) )    echo ' onclick="javascript:'.$tag["onclikEdit"].'"';
-      if ( isset( $tag["onclikPrint"] ) )    echo ' onclick="javascript:'.$tag["onclikPrint"].'"';
+      if ( isset( $tag["onclikEdit"] ) )  echo ' onclick="javascript:'.$tag["onclikEdit"].'"';
+      if ( isset( $tag["onclikPrint"] ) ) echo ' onclick="javascript:'.$tag["onclikPrint"].'"';
+      if ( isset( $tag["onclickCopy"] ) ) echo ' onclick="javascript:'.$tag["onclickCopy"].'"';
     }
 
   function Draw( &$mConecction )
@@ -420,7 +421,7 @@ Class DinamicList    {
     $mReturn .= "\n           ";
     $mReturn .= "<td>";
     $mReturn .= "\n             ";
-    $mReturn .= htmlentities( "Paginar Listado cada " );
+    $mReturn .= htmlentities( "Paginar Listado cada ", ENT_COMPAT, 'ISO-8859-1', true);
 
     if( $this -> length < 100 )
     {
@@ -485,7 +486,7 @@ Class DinamicList    {
     $mReturn .= "\n         ";
     $mReturn .= "<td>";
 
-    $mReturn .= htmlentities( "Pagina" )." Nro. ";
+    $mReturn .= htmlentities( "Pagina", ENT_COMPAT, 'ISO-8859-1', true )." Nro. ";
 
     if( $this -> length < 100 )
     {
@@ -504,8 +505,8 @@ Class DinamicList    {
       $mReturn .= '/>';
       $mReturn .= "\n           ";
     }
-    $mReturn .= "de <b>".$mPages."</b> ".htmlentities( "p�ginas." );
-    $mReturn .= " Orden por <b>\"".( htmlentities( $this -> headers[$this -> sort_col-1][0] ) )."\"</b> ";
+    $mReturn .= "de <b>".$mPages."</b> ".htmlentities( "páginas." , ENT_COMPAT, 'ISO-8859-1', true);
+    $mReturn .= " Orden por <b>\"".( htmlentities( $this -> headers[$this -> sort_col-1][0], ENT_COMPAT, 'ISO-8859-1', true ) )."\"</b> ";
 
     if( $this -> way == "ASC" ) 
       $mReturn .= "Ascendente.";
@@ -523,12 +524,12 @@ Class DinamicList    {
 
     if( $this -> page == 1 )
     {
-      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Primera ] [ Anterior ] " ).'</span>';
+      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Primera ] [ Anterior ] " , ENT_COMPAT, 'ISO-8859-1', true).'</span>';
     }
     else
     {
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( 1 );" title="'.htmlentities( "Ir a la Primera Pagina (1)" ).'">[ Primera ]</a> ';
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.( $this -> page - 1 ).' );" title="'.htmlentities( "Ir a la Anterior Pagina" ).' ('.( $this -> page-1 ).')">[ Anterior ]</a> ';
+      $mReturn .= '<a href="#" onclick="javascript:DLPage( 1 );" title="'.htmlentities( "Ir a la Primera Pagina (1)", ENT_COMPAT, 'ISO-8859-1', true ).'">[ Primera ]</a> ';
+      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.( $this -> page - 1 ).' );" title="'.htmlentities( "Ir a la Anterior Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $this -> page-1 ).')">[ Anterior ]</a> ';
     }
     ( $this -> page > 7 ) ? $s = $this -> page - 7 : $s = 1;
     $p = $s + 14;
@@ -544,18 +545,18 @@ Class DinamicList    {
       }
       else
       {
-        $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$i.' );" title="'.htmlentities( "Ir a la Pagina ".$i ).'">'.$i.'</a>';
+        $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$i.' );" title="'.htmlentities( "Ir a la Pagina ".$i , ENT_COMPAT, 'ISO-8859-1', true).'">'.$i.'</a>';
       }
       $mReturn .= " ";
     }
     if( $this -> page == $mPages )
     {
-      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Siguiente ] [ �ltima ] " ).'</span>';
+      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Siguiente ] [ Última ] " , ENT_COMPAT, 'ISO-8859-1', true).'</span>';
     }
     else
     {
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.( $this -> page + 1 ).' );" title="'.htmlentities( "Ir a la Siguiente Pagina" ).' ('.( $this -> page+1 ).')">[ Siguiente ]</a> ';
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$mPages.' );" title="'.htmlentities( "Ir a la ultima Pagina" ).' ('.( $mPages ).')">[ '.htmlentities( "�ltima" ).' ]</a> ';
+      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.( $this -> page + 1 ).' );" title="'.htmlentities( "Ir a la Siguiente Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $this -> page+1 ).')">[ Siguiente ]</a> ';
+      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$mPages.' );" title="'.htmlentities( "Ir a la ultima Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $mPages ).')">[ '.htmlentities( "Última", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a> ';
     }
     
     if( $this -> create )
@@ -572,7 +573,7 @@ Class DinamicList    {
     
     if ( strtolower( $this -> cClose ) != "no" )
     {
-        $mReturn .= '<a href="#" onclick="javascript:DLClose();" title="'.htmlentities( "Cerrar Listado" ).'">[ '.htmlentities( "Cerrar Listado" ).' ]</a>';
+        $mReturn .= '<a href="#" onclick="javascript:DLClose();" title="'.htmlentities( "Cerrar Listado" , ENT_COMPAT, 'ISO-8859-1', true).'">[ '.htmlentities( "Cerrar Listado", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a>';
     }
 
     $mReturn .= "\n           ";
@@ -616,15 +617,15 @@ Class DinamicList    {
         isset( $mProperties["width"] ) ? $width = $mProperties["width"] : $mWidth = "";
 
         if( $this -> way == "ASC" && ( $this -> sort_col - 1 ) == $h )
-          $htitle = "Ordenar por ".htmlentities( $mHeader[0] )." Descendente.";
+          $htitle = "Ordenar por ".htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true)." Descendente.";
         else
-          $htitle = "Ordenar por ".htmlentities( $mHeader[0] )." Ascendente.";
+          $htitle = "Ordenar por ".htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true)." Ascendente.";
 
         $mReturn .= "\n           ";
         $mReturn .= '<th align="center" width="'.$width.'">';
         $mReturn .= "\n             ";
         $mReturn .= '<a id="DLHeader" class="DLHeader" href="#" onclick="javascript:DLSort( '.( $h + 1 ).' );" title="'.$htitle.'">';
-        $mReturn .= htmlentities( $mHeader[0] );
+        $mReturn .= htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true);
         $mReturn .= '</a>';
 
         if( ( $this -> sort_col-1 ) == $h )
@@ -663,7 +664,7 @@ Class DinamicList    {
             if( $mOption[0] == $value )
               $mReturn .= ' selected="selected"';
             $mReturn .= '>';
-            $mReturn .= htmlentities( $mOption[1] );
+            $mReturn .= htmlentities( $mOption[1] , ENT_COMPAT, 'ISO-8859-1', true);
             $mReturn .= '</option>';
           }
           $mReturn .= "\n             ";
@@ -699,7 +700,7 @@ Class DinamicList    {
       $mReturn .= '<tr id="DLNullRow" class="DLNULLRow">';
       $mReturn .= "\n           ";
       $mReturn .= '<td id="DLNullCell" colspan="'.$ck.'" style="color:white">';
-      $mReturn .= htmlentities( "No se encontraron registros." );
+      $mReturn .= htmlentities( "No se encontraron registros." , ENT_COMPAT, 'ISO-8859-1', true  );
       $mReturn .= '</td>';
       $mReturn .= "\n         ";
       $mReturn .= '</tr>';
@@ -768,7 +769,7 @@ Class DinamicList    {
           if( $mProperties["type"] == "link" )
             $mReturn .= '<a class="DLLink" style="color:  #000000;" id="'.$mItemLink.'" onclick="DLGet_Item( \''.$r.'\', \''.$c.'\'  ); '.$mProperties["onclick"].'">';
 
-          $mReturn .= htmlentities( $mItem );
+          $mReturn .= htmlentities( $mItem , ENT_COMPAT, 'ISO-8859-1', true );
 
           if( $mProperties["type"] == "link" )
             $mReturn .= '</a>';
@@ -787,8 +788,8 @@ Class DinamicList    {
           if( !isset( $mOptionsx["onclikdisable"] ) )
             $mOptionsx["onclikdisable"] = "";
 
-          if( !isset( $mOptionsx["onclikaenable"] ) )
-            $mOptionsx["onclikaenable"] = "";
+          if( !isset( $mOptionsx["onclikenable"] ) )
+            $mOptionsx["onclikenable"] = "";
 
           if( !isset( $mOptionsx["onclikedit"] ) )
             $mOptionsx["onclikedit"] = "";
@@ -796,21 +797,31 @@ Class DinamicList    {
           if( !isset( $mOptionsx["onclikprint"] ) )
             $mOptionsx["onclikprint"] = "";
 
-           
+          if( !isset( $mOptionsx["onclickcopy"] ) )
+            $mOptionsx["onclickcopy"] = "";
+
+          
            $mOpt = end($row);
+          
            $mReturn .= '<td style="text-align:center">';
            # Si esta activo muestra inactivar
-           if( $mOpt == '1' ) { 
+            if($mOptionsx["onclikdisable"] != "" || $mOptionsx["onclikenable"] != ""){
+              if( $mOpt == '1' ) { 
                $mReturn .='<img title="Inactivar"  class="ImagenDinamicList" src="../'.DIR_APLICA_CENTRAL.'/images/delete.png"  onclick="javascript:'. $mOptionsx["onclikdisable"].'"   />&nbsp;&nbsp;&nbsp;&nbsp;';
-           }else { 
+              }elseif( $mOpt == '0' ){ 
                $mReturn .='<img title="Activar"  class="ImagenDinamicList"   src="../'.DIR_APLICA_CENTRAL.'/images/active.png" onclick="javascript:'. $mOptionsx["onclikenable"].'"     />&nbsp;&nbsp;&nbsp;&nbsp;';
-           }
+              }
+            }
            if($mOptionsx["onclikedit"]){          
                 $mReturn .='<img title="Editar" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/edit.png"   onclick="javascript:'. $mOptionsx["onclikedit"].'"/>';
            }
 
             if($mOptionsx["onclikprint"] != ""){
                $mReturn .='&nbsp;&nbsp;&nbsp;&nbsp;<img title="Imprimir" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/print.png"   onclick="javascript:'.  $mOptionsx["onclikprint"].'"/>';
+            }
+
+            if($mOptionsx["onclickcopy"] != ""){
+               $mReturn .='&nbsp;&nbsp;&nbsp;&nbsp;<img title="Copiar" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/cp.png"   onclick="javascript:'.  $mOptionsx["onclickcopy"].'"/>';
             }
            $mReturn .= '</td>';
         }

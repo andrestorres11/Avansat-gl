@@ -19,7 +19,7 @@ class Proc_usuari
  function principal()
  {
 
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
 
      $this -> Formulario();
 
@@ -27,7 +27,7 @@ class Proc_usuari
 
      {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
 
        {
 
@@ -147,7 +147,7 @@ class Proc_usuari
 
       $formulario -> oculto("maximo","".sizeof($matriz)."", 0);
 
-      $formulario -> oculto("cod_servic", $GLOBALS[cod_servic], 0);
+      $formulario -> oculto("cod_servic", $_REQUEST[cod_servic], 0);
 
       $formulario -> oculto("window","central", 0);
 
@@ -169,17 +169,17 @@ class Proc_usuari
 
    $fec_actual = date("Y-m-d H:i:s");
 
-   if($GLOBALS[filtro] == 1)
+   if($_REQUEST[filtro] == 1)
 
-     $id_filtro = $GLOBALS[cliente];
+     $id_filtro = $_REQUEST[cliente];
 
-   else if($GLOBALS[filtro] == 2)
+   else if($_REQUEST[filtro] == 2)
 
-     $id_filtro = $GLOBALS[contro];
+     $id_filtro = $_REQUEST[contro];
 
-   else if($GLOBALS[filtro] == 3)
+   else if($_REQUEST[filtro] == 3)
 
-     $id_filtro = $GLOBALS[conduc];
+     $id_filtro = $_REQUEST[conduc];
 
    else
 
@@ -187,13 +187,13 @@ class Proc_usuari
 
    //reasignacion de variables
 
-   $clave = base64_encode($GLOBALS[clave1]);
+   $clave = base64_encode($_REQUEST[clave1]);
 
    //query de insercion
 
    $query = "INSERT INTO ".BASE_DATOS.".tab_usuari_wapxxx
 
-             VALUES ('$GLOBALS[usuari]','$clave','$GLOBALS[filtro]','$id_filtro') ";
+             VALUES ('$_REQUEST[usuari]','$clave','$_REQUEST[filtro]','$id_filtro') ";
 
    $consulta = new Consulta($query, $this -> conexion,"BR");
 
@@ -201,9 +201,9 @@ class Proc_usuari
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
   {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otro Usuario</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otro Usuario</a></b>";
 
-     $mensaje =  "El Usuario <b>".$GLOBALS[usuari]."</b> Se Inserto con Exito".$link_a;
+     $mensaje =  "El Usuario <b>".$_REQUEST[usuari]."</b> Se Inserto con Exito".$link_a;
      $mens = new mensajes();
      $mens -> correcto("INSERTAR USUARIOS WAP",$mensaje);
   }

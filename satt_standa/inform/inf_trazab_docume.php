@@ -14,17 +14,17 @@ class Proc_despac
   $this -> conexion = $co;
   $this -> usuario = $us;
   $this -> cod_aplica = $ca;
-  $this -> paginador = new Paginador_listado($GLOBALS[opcion],$GLOBALS[cod_servic],$this -> conexion);
+  $this -> paginador = new Paginador_listado($_REQUEST[opcion],$_REQUEST[cod_servic],$this -> conexion);
   $this -> principal();
  }
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
   {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "2":
           $this -> Listar();
@@ -444,7 +444,7 @@ class Proc_despac
    $formulario -> nueva_tabla();
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_list.submit()",0);
    $formulario -> cerrar();
  }
@@ -452,10 +452,10 @@ class Proc_despac
  function Listar()
  {
    $datos_usuario = $this -> usuario -> retornar();
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
-   $fechaini = $GLOBALS[fecini]." 00:00:00";
-   $fechafin = $GLOBALS[fecfin]." 23:59:59";
+   $fechaini = $_REQUEST[fecini]." 00:00:00";
+   $fechafin = $_REQUEST[fecfin]." 23:59:59";
 
    $todos[0][0] = 0;
    $todos[0][1] = "Todos";
@@ -580,45 +580,45 @@ class Proc_despac
    }
   }
 
-  if($GLOBALS[bciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[bciuori]."";
-  if($GLOBALS[bciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[bciudes]."";
-  if($GLOBALS[bconduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[bconduc]."'";
-  if($GLOBALS[btransp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[btransp]."'";
-  if($GLOBALS[bdespac])
-   $query .= " AND a.num_despac = ".$GLOBALS[bdespac]."";
-  if($GLOBALS[bdocume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[bdocume]."'";
-  if($GLOBALS[bremisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[bremisi]."'";
-  if($GLOBALS[bpedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[bpedido]."'";
-  if($GLOBALS[bplacax])
-   $query .= " AND d.num_placax = '".$GLOBALS[bplacax]."'";
-  if($GLOBALS[bdestinat])
-   $query .= " AND j.cod_remdes = '".$GLOBALS[bdestinat]."'";
+  if($_REQUEST[bciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[bciuori]."";
+  if($_REQUEST[bciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[bciudes]."";
+  if($_REQUEST[bconduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[bconduc]."'";
+  if($_REQUEST[btransp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[btransp]."'";
+  if($_REQUEST[bdespac])
+   $query .= " AND a.num_despac = ".$_REQUEST[bdespac]."";
+  if($_REQUEST[bdocume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[bdocume]."'";
+  if($_REQUEST[bremisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[bremisi]."'";
+  if($_REQUEST[bpedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[bpedido]."'";
+  if($_REQUEST[bplacax])
+   $query .= " AND d.num_placax = '".$_REQUEST[bplacax]."'";
+  if($_REQUEST[bdestinat])
+   $query .= " AND j.cod_remdes = '".$_REQUEST[bdestinat]."'";
 
-  if($GLOBALS[transp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[despac])
-   $query .= " AND a.num_despac = ".$GLOBALS[despac]."";
-  if($GLOBALS[docume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[docume]."'";
-  if($GLOBALS[remisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[remisi]."'";
-  if($GLOBALS[pedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[pedido]."'";
-  if($GLOBALS[placax])
-   $query .= " AND d.num_placax = '".$GLOBALS[placax]."'";
-  if($GLOBALS[conduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[conduc]."'";
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
+  if($_REQUEST[transp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[despac])
+   $query .= " AND a.num_despac = ".$_REQUEST[despac]."";
+  if($_REQUEST[docume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[docume]."'";
+  if($_REQUEST[remisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[remisi]."'";
+  if($_REQUEST[pedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[pedido]."'";
+  if($_REQUEST[placax])
+   $query .= " AND d.num_placax = '".$_REQUEST[placax]."'";
+  if($_REQUEST[conduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[conduc]."'";
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
 
   $query .= " AND a.fec_despac BETWEEN '".$fechaini."' AND '".$fechafin."'";
 
@@ -627,7 +627,7 @@ class Proc_despac
   $consulta = new Consulta($query, $this -> conexion);
   $ciuori = $consulta -> ret_matriz();
 
-  if($GLOBALS[bciuori])
+  if($_REQUEST[bciuori])
    $ciuori = array_merge($ciuori,$todos);
   else
    $ciuori = array_merge($titori,$ciuori);
@@ -742,45 +742,45 @@ class Proc_despac
    }
   }
 
-  if($GLOBALS[bciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[bciuori]."";
-  if($GLOBALS[bciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[bciudes]."";
-  if($GLOBALS[bconduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[bconduc]."'";
-  if($GLOBALS[btransp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[btransp]."'";
-  if($GLOBALS[bdespac])
-   $query .= " AND a.num_despac = ".$GLOBALS[bdespac]."";
-  if($GLOBALS[bdocume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[bdocume]."'";
-  if($GLOBALS[bremisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[bremisi]."'";
-  if($GLOBALS[bpedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[bpedido]."'";
-  if($GLOBALS[bplacax])
-   $query .= " AND d.num_placax = '".$GLOBALS[bplacax]."'";
-  if($GLOBALS[bdestinat])
-   $query .= " AND j.cod_remdes = '".$GLOBALS[bdestinat]."'";
+  if($_REQUEST[bciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[bciuori]."";
+  if($_REQUEST[bciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[bciudes]."";
+  if($_REQUEST[bconduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[bconduc]."'";
+  if($_REQUEST[btransp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[btransp]."'";
+  if($_REQUEST[bdespac])
+   $query .= " AND a.num_despac = ".$_REQUEST[bdespac]."";
+  if($_REQUEST[bdocume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[bdocume]."'";
+  if($_REQUEST[bremisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[bremisi]."'";
+  if($_REQUEST[bpedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[bpedido]."'";
+  if($_REQUEST[bplacax])
+   $query .= " AND d.num_placax = '".$_REQUEST[bplacax]."'";
+  if($_REQUEST[bdestinat])
+   $query .= " AND j.cod_remdes = '".$_REQUEST[bdestinat]."'";
 
-  if($GLOBALS[transp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[despac])
-   $query .= " AND a.num_despac = ".$GLOBALS[despac]."";
-  if($GLOBALS[docume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[docume]."'";
-  if($GLOBALS[remisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[remisi]."'";
-  if($GLOBALS[pedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[pedido]."'";
-  if($GLOBALS[placax])
-   $query .= " AND d.num_placax = '".$GLOBALS[placax]."'";
-  if($GLOBALS[conduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[conduc]."'";
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
+  if($_REQUEST[transp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[despac])
+   $query .= " AND a.num_despac = ".$_REQUEST[despac]."";
+  if($_REQUEST[docume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[docume]."'";
+  if($_REQUEST[remisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[remisi]."'";
+  if($_REQUEST[pedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[pedido]."'";
+  if($_REQUEST[placax])
+   $query .= " AND d.num_placax = '".$_REQUEST[placax]."'";
+  if($_REQUEST[conduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[conduc]."'";
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
 
   $query .= " AND a.fec_despac BETWEEN '".$fechaini."' AND '".$fechafin."'";
 
@@ -789,7 +789,7 @@ class Proc_despac
   $consulta = new Consulta($query, $this -> conexion);
   $ciudes = $consulta -> ret_matriz();
 
-  if($GLOBALS[bciudes])
+  if($_REQUEST[bciudes])
    $ciudes = array_merge($ciudes,$todos);
   else
    $ciudes = array_merge($titdes,$ciudes);
@@ -898,45 +898,45 @@ class Proc_despac
    }
   }
 
-  if($GLOBALS[bciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[bciuori]."";
-  if($GLOBALS[bciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[bciudes]."";
-  if($GLOBALS[bconduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[bconduc]."'";
-  if($GLOBALS[btransp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[btransp]."'";
-  if($GLOBALS[bdespac])
-   $query .= " AND a.num_despac = ".$GLOBALS[bdespac]."";
-  if($GLOBALS[bdocume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[bdocume]."'";
-  if($GLOBALS[bremisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[bremisi]."'";
-  if($GLOBALS[bpedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[bpedido]."'";
-  if($GLOBALS[bplacax])
-   $query .= " AND d.num_placax = '".$GLOBALS[bplacax]."'";
-  if($GLOBALS[bdestinat])
-   $query .= " AND j.cod_remdes = '".$GLOBALS[bdestinat]."'";
+  if($_REQUEST[bciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[bciuori]."";
+  if($_REQUEST[bciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[bciudes]."";
+  if($_REQUEST[bconduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[bconduc]."'";
+  if($_REQUEST[btransp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[btransp]."'";
+  if($_REQUEST[bdespac])
+   $query .= " AND a.num_despac = ".$_REQUEST[bdespac]."";
+  if($_REQUEST[bdocume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[bdocume]."'";
+  if($_REQUEST[bremisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[bremisi]."'";
+  if($_REQUEST[bpedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[bpedido]."'";
+  if($_REQUEST[bplacax])
+   $query .= " AND d.num_placax = '".$_REQUEST[bplacax]."'";
+  if($_REQUEST[bdestinat])
+   $query .= " AND j.cod_remdes = '".$_REQUEST[bdestinat]."'";
 
-  if($GLOBALS[transp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[despac])
-   $query .= " AND a.num_despac = ".$GLOBALS[despac]."";
-  if($GLOBALS[docume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[docume]."'";
-  if($GLOBALS[remisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[remisi]."'";
-  if($GLOBALS[pedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[pedido]."'";
-  if($GLOBALS[placax])
-   $query .= " AND d.num_placax = '".$GLOBALS[placax]."'";
-  if($GLOBALS[conduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[conduc]."'";
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
+  if($_REQUEST[transp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[despac])
+   $query .= " AND a.num_despac = ".$_REQUEST[despac]."";
+  if($_REQUEST[docume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[docume]."'";
+  if($_REQUEST[remisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[remisi]."'";
+  if($_REQUEST[pedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[pedido]."'";
+  if($_REQUEST[placax])
+   $query .= " AND d.num_placax = '".$_REQUEST[placax]."'";
+  if($_REQUEST[conduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[conduc]."'";
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
 
 
   $query .= " AND a.fec_despac BETWEEN '".$fechaini."' AND '".$fechafin."'";
@@ -946,7 +946,7 @@ class Proc_despac
   $consulta = new Consulta($query, $this -> conexion);
   $conduc = $consulta -> ret_matriz();
 
-  if($GLOBALS[bconduc])
+  if($_REQUEST[bconduc])
    $conduc = array_merge($conduc,$todos);
   else
    $conduc = array_merge($titcon,$conduc);
@@ -1054,45 +1054,45 @@ class Proc_despac
    }
   }
 
-  if($GLOBALS[bciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[bciuori]."";
-  if($GLOBALS[bciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[bciudes]."";
-  if($GLOBALS[bconduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[bconduc]."'";
-  if($GLOBALS[btransp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[btransp]."'";
-  if($GLOBALS[bdespac])
-   $query .= " AND a.num_despac = ".$GLOBALS[bdespac]."";
-  if($GLOBALS[bdocume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[bdocume]."'";
-  if($GLOBALS[bremisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[bremisi]."'";
-  if($GLOBALS[bpedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[bpedido]."'";
-  if($GLOBALS[bplacax])
-   $query .= " AND d.num_placax = '".$GLOBALS[bplacax]."'";
-  if($GLOBALS[bdestinat])
-   $query .= " AND j.cod_remdes = '".$GLOBALS[bdestinat]."'";
+  if($_REQUEST[bciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[bciuori]."";
+  if($_REQUEST[bciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[bciudes]."";
+  if($_REQUEST[bconduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[bconduc]."'";
+  if($_REQUEST[btransp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[btransp]."'";
+  if($_REQUEST[bdespac])
+   $query .= " AND a.num_despac = ".$_REQUEST[bdespac]."";
+  if($_REQUEST[bdocume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[bdocume]."'";
+  if($_REQUEST[bremisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[bremisi]."'";
+  if($_REQUEST[bpedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[bpedido]."'";
+  if($_REQUEST[bplacax])
+   $query .= " AND d.num_placax = '".$_REQUEST[bplacax]."'";
+  if($_REQUEST[bdestinat])
+   $query .= " AND j.cod_remdes = '".$_REQUEST[bdestinat]."'";
 
-  if($GLOBALS[transp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[despac])
-   $query .= " AND a.num_despac = ".$GLOBALS[despac]."";
-  if($GLOBALS[docume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[docume]."'";
-  if($GLOBALS[remisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[remisi]."'";
-  if($GLOBALS[pedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[pedido]."'";
-  if($GLOBALS[placax])
-   $query .= " AND d.num_placax = '".$GLOBALS[placax]."'";
-  if($GLOBALS[conduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[conduc]."'";
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
+  if($_REQUEST[transp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[despac])
+   $query .= " AND a.num_despac = ".$_REQUEST[despac]."";
+  if($_REQUEST[docume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[docume]."'";
+  if($_REQUEST[remisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[remisi]."'";
+  if($_REQUEST[pedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[pedido]."'";
+  if($_REQUEST[placax])
+   $query .= " AND d.num_placax = '".$_REQUEST[placax]."'";
+  if($_REQUEST[conduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[conduc]."'";
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
 
 
   $query .= " AND a.fec_despac BETWEEN '".$fechaini."' AND '".$fechafin."'";
@@ -1102,7 +1102,7 @@ class Proc_despac
   $consulta = new Consulta($query, $this -> conexion);
   $transp = $consulta -> ret_matriz();
 
-  if($GLOBALS[btransp])
+  if($_REQUEST[btransp])
    $transp = array_merge($transp,$todos);
   else
    $transp = array_merge($tittra,$transp);
@@ -1210,45 +1210,45 @@ class Proc_despac
    }
   }
 
-  if($GLOBALS[bciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[bciuori]."";
-  if($GLOBALS[bciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[bciudes]."";
-  if($GLOBALS[bconduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[bconduc]."'";
-  if($GLOBALS[btransp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[btransp]."'";
-  if($GLOBALS[bdespac])
-   $query .= " AND a.num_despac = ".$GLOBALS[bdespac]."";
-  if($GLOBALS[bdocume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[bdocume]."'";
-  if($GLOBALS[bremisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[bremisi]."'";
-  if($GLOBALS[bpedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[bpedido]."'";
-  if($GLOBALS[bplacax])
-   $query .= " AND d.num_placax = '".$GLOBALS[bplacax]."'";
-  if($GLOBALS[bdestinat])
-   $query .= " AND j.cod_remdes = '".$GLOBALS[bdestinat]."'";
+  if($_REQUEST[bciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[bciuori]."";
+  if($_REQUEST[bciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[bciudes]."";
+  if($_REQUEST[bconduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[bconduc]."'";
+  if($_REQUEST[btransp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[btransp]."'";
+  if($_REQUEST[bdespac])
+   $query .= " AND a.num_despac = ".$_REQUEST[bdespac]."";
+  if($_REQUEST[bdocume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[bdocume]."'";
+  if($_REQUEST[bremisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[bremisi]."'";
+  if($_REQUEST[bpedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[bpedido]."'";
+  if($_REQUEST[bplacax])
+   $query .= " AND d.num_placax = '".$_REQUEST[bplacax]."'";
+  if($_REQUEST[bdestinat])
+   $query .= " AND j.cod_remdes = '".$_REQUEST[bdestinat]."'";
 
-  if($GLOBALS[transp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[despac])
-   $query .= " AND a.num_despac = ".$GLOBALS[despac]."";
-  if($GLOBALS[docume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[docume]."'";
-  if($GLOBALS[remisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[remisi]."'";
-  if($GLOBALS[pedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[pedido]."'";
-  if($GLOBALS[placax])
-   $query .= " AND d.num_placax = '".$GLOBALS[placax]."'";
-  if($GLOBALS[conduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[conduc]."'";
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
+  if($_REQUEST[transp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[despac])
+   $query .= " AND a.num_despac = ".$_REQUEST[despac]."";
+  if($_REQUEST[docume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[docume]."'";
+  if($_REQUEST[remisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[remisi]."'";
+  if($_REQUEST[pedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[pedido]."'";
+  if($_REQUEST[placax])
+   $query .= " AND d.num_placax = '".$_REQUEST[placax]."'";
+  if($_REQUEST[conduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[conduc]."'";
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
 
 
   $query .= " AND a.fec_despac BETWEEN '".$fechaini."' AND '".$fechafin."'";
@@ -1258,7 +1258,7 @@ class Proc_despac
   $consulta = new Consulta($query, $this -> conexion);
   $destinat = $consulta -> ret_matriz();
 
-  if($GLOBALS[bdestinat])
+  if($_REQUEST[bdestinat])
    $destinat = array_merge($destinat,$todos);
   else
    $destinat = array_merge($titdesti,$destinat);
@@ -1386,45 +1386,45 @@ class Proc_despac
    }
   }
 
-  if($GLOBALS[bciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[bciuori]."";
-  if($GLOBALS[bciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[bciudes]."";
-  if($GLOBALS[bconduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[bconduc]."'";
-  if($GLOBALS[btransp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[btransp]."'";
-  if($GLOBALS[bdespac])
-   $query .= " AND a.num_despac = ".$GLOBALS[bdespac]."";
-  if($GLOBALS[bdocume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[bdocume]."'";
-  if($GLOBALS[bremisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[bremisi]."'";
-  if($GLOBALS[bpedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[bpedido]."'";
-  if($GLOBALS[bplacax])
-   $query .= " AND d.num_placax = '".$GLOBALS[bplacax]."'";
-  if($GLOBALS[bdestinat])
-   $query .= " AND j.cod_remdes = '".$GLOBALS[bdestinat]."'";
+  if($_REQUEST[bciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[bciuori]."";
+  if($_REQUEST[bciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[bciudes]."";
+  if($_REQUEST[bconduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[bconduc]."'";
+  if($_REQUEST[btransp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[btransp]."'";
+  if($_REQUEST[bdespac])
+   $query .= " AND a.num_despac = ".$_REQUEST[bdespac]."";
+  if($_REQUEST[bdocume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[bdocume]."'";
+  if($_REQUEST[bremisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[bremisi]."'";
+  if($_REQUEST[bpedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[bpedido]."'";
+  if($_REQUEST[bplacax])
+   $query .= " AND d.num_placax = '".$_REQUEST[bplacax]."'";
+  if($_REQUEST[bdestinat])
+   $query .= " AND j.cod_remdes = '".$_REQUEST[bdestinat]."'";
 
-  if($GLOBALS[transp])
-   $query .= " AND d.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[despac])
-   $query .= " AND a.num_despac = ".$GLOBALS[despac]."";
-  if($GLOBALS[docume])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[docume]."'";
-  if($GLOBALS[remisi])
-   $query .= " AND j.num_docume = '".$GLOBALS[remisi]."'";
-  if($GLOBALS[pedido])
-   $query .= " AND j.num_pedido = '".$GLOBALS[pedido]."'";
-  if($GLOBALS[placax])
-   $query .= " AND d.num_placax = '".$GLOBALS[placax]."'";
-  if($GLOBALS[conduc])
-   $query .= " AND d.cod_conduc = '".$GLOBALS[conduc]."'";
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
+  if($_REQUEST[transp])
+   $query .= " AND d.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[despac])
+   $query .= " AND a.num_despac = ".$_REQUEST[despac]."";
+  if($_REQUEST[docume])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[docume]."'";
+  if($_REQUEST[remisi])
+   $query .= " AND j.num_docume = '".$_REQUEST[remisi]."'";
+  if($_REQUEST[pedido])
+   $query .= " AND j.num_pedido = '".$_REQUEST[pedido]."'";
+  if($_REQUEST[placax])
+   $query .= " AND d.num_placax = '".$_REQUEST[placax]."'";
+  if($_REQUEST[conduc])
+   $query .= " AND d.cod_conduc = '".$_REQUEST[conduc]."'";
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
 
 
   $query .= " AND a.fec_despac BETWEEN '".$fechaini."' AND '".$fechafin."'";
@@ -1432,56 +1432,56 @@ class Proc_despac
 
   //echo $query;
 
-  $despac = $this -> paginador -> ejecPaginador($GLOBALS[npagina],$query);
+  $despac = $this -> paginador -> ejecPaginador($_REQUEST[npagina],$query);
 
   $formulario = new Formulario ("index.php","post","Trazabilidad de Documentos","form_item");
 
   $query_exp = $this -> paginador -> query;
-  $exp .= "&url=".NOM_URL_APLICA."&db=".BASE_DATOS."&fi=".$fechaini."&ff=".$fechafin."&eciuori=".$GLOBALS[bciuori]."&eciudes=".$GLOBALS[bciudes]."&econduc=".$GLOBALS[bconduc]."&etransp=".$GLOBALS[btransp]."&edespac=".$GLOBALS[bdespac]."&edocume=".$GLOBALS[bdocume]."&eremisi=".$GLOBALS[bremisi]."&epedido=".$GLOBALS[bpedido]."&eplacax=".$GLOBALS[bplacax]."&edestinat=".$GLOBALS[bdestinat]."&ciuori=".$GLOBALS[ciuori]."&ciudes=".$GLOBALS[ciudes]."&conduc=".$GLOBALS[conduc]."&transp=".$GLOBALS[transp]."&despac=".$GLOBALS[despac]."&docume=".$GLOBALS[docume]."&remisi=".$GLOBALS[remisi]."&pedido=".$GLOBALS[pedido]."&placax=".$GLOBALS[placax]."";
+  $exp .= "&url=".NOM_URL_APLICA."&db=".BASE_DATOS."&fi=".$fechaini."&ff=".$fechafin."&eciuori=".$_REQUEST[bciuori]."&eciudes=".$_REQUEST[bciudes]."&econduc=".$_REQUEST[bconduc]."&etransp=".$_REQUEST[btransp]."&edespac=".$_REQUEST[bdespac]."&edocume=".$_REQUEST[bdocume]."&eremisi=".$_REQUEST[bremisi]."&epedido=".$_REQUEST[bpedido]."&eplacax=".$_REQUEST[bplacax]."&edestinat=".$_REQUEST[bdestinat]."&ciuori=".$_REQUEST[ciuori]."&ciudes=".$_REQUEST[ciudes]."&conduc=".$_REQUEST[conduc]."&transp=".$_REQUEST[transp]."&despac=".$_REQUEST[despac]."&docume=".$_REQUEST[docume]."&remisi=".$_REQUEST[remisi]."&pedido=".$_REQUEST[pedido]."&placax=".$_REQUEST[placax]."";
   $formulario -> nueva_tabla();
   $formulario -> imagen("Exportar","../".DIR_APLICA_CENTRAL."/imagenes/excel.jpg","Exportar",30,30,0,"onClick=\"top.window.open('../".DIR_APLICA_CENTRAL."/export/exp_trazab_docume.php?".$exp."')\"",1,0);
 
   $ind = 0;
   $varadici[$ind]["nomvar"] = "transp";
-  $varadici[$ind]["valvar"] = $GLOBALS[transp];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[transp];$ind++;
   $varadici[$ind]["nomvar"] = "bciuori";
-  $varadici[$ind]["valvar"] = $GLOBALS[bciuori];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bciuori];$ind++;
   $varadici[$ind]["nomvar"] = "bciudes";
-  $varadici[$ind]["valvar"] = $GLOBALS[bciudes];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bciudes];$ind++;
   $varadici[$ind]["nomvar"] = "bconduc";
-  $varadici[$ind]["valvar"] = $GLOBALS[bconduc];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bconduc];$ind++;
   $varadici[$ind]["nomvar"] = "btransp";
-  $varadici[$ind]["valvar"] = $GLOBALS[btransp];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[btransp];$ind++;
   $varadici[$ind]["nomvar"] = "bdespac";
-  $varadici[$ind]["valvar"] = $GLOBALS[bdespac];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bdespac];$ind++;
   $varadici[$ind]["nomvar"] = "bdocume";
-  $varadici[$ind]["valvar"] = $GLOBALS[bdocume];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bdocume];$ind++;
   $varadici[$ind]["nomvar"] = "bremisi";
-  $varadici[$ind]["valvar"] = $GLOBALS[bremisis];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bremisis];$ind++;
   $varadici[$ind]["nomvar"] = "bpedido";
-  $varadici[$ind]["valvar"] = $GLOBALS[bpedido];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bpedido];$ind++;
   $varadici[$ind]["nomvar"] = "bplacax";
-  $varadici[$ind]["valvar"] = $GLOBALS[bplacax];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bplacax];$ind++;
   $varadici[$ind]["nomvar"] = "bdestinat";
-  $varadici[$ind]["valvar"] = $GLOBALS[bdestinat];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[bdestinat];$ind++;
   $varadici[$ind]["nomvar"] = "transp";
-  $varadici[$ind]["valvar"] = $GLOBALS[transp];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[transp];$ind++;
   $varadici[$ind]["nomvar"] = "despac";
-  $varadici[$ind]["valvar"] = $GLOBALS[despac];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[despac];$ind++;
   $varadici[$ind]["nomvar"] = "docume";
-  $varadici[$ind]["valvar"] = $GLOBALS[docume];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[docume];$ind++;
   $varadici[$ind]["nomvar"] = "remisi";
-  $varadici[$ind]["valvar"] = $GLOBALS[remisi];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[remisi];$ind++;
   $varadici[$ind]["nomvar"] = "pedido";
-  $varadici[$ind]["valvar"] = $GLOBALS[pedido];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[pedido];$ind++;
   $varadici[$ind]["nomvar"] = "placax";
-  $varadici[$ind]["valvar"] = $GLOBALS[placax];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[placax];$ind++;
   $varadici[$ind]["nomvar"] = "conduc";
-  $varadici[$ind]["valvar"] = $GLOBALS[conduc];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[conduc];$ind++;
   $varadici[$ind]["nomvar"] = "ciuori";
-  $varadici[$ind]["valvar"] = $GLOBALS[ciuori];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[ciuori];$ind++;
   $varadici[$ind]["nomvar"] = "ciudes";
-  $varadici[$ind]["valvar"] = $GLOBALS[ciudes];$ind++;
+  $varadici[$ind]["valvar"] = $_REQUEST[ciudes];$ind++;
   $varadici[$ind]["nomvar"] = "fecini";
   $varadici[$ind]["valvar"] = $fechaini;$ind++;
   $varadici[$ind]["nomvar"] = "fecfin";
@@ -1492,11 +1492,11 @@ class Proc_despac
   $formulario -> linea ("Se Encontro un Total de ".$this -> paginador -> totalr." Documento(s).",1,"t2");
 
   $formulario -> nueva_tabla();
-  $formulario -> texto("Despacho","text","bdespac\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,6,6,"",$GLOBALS[bdespac],"","",1);
-  $formulario -> texto("Número de Transporte","text","bdocume\" onChange=\"form_item.submit()",0,7,7,"",$GLOBALS[bdocume],"","",1);
+  $formulario -> texto("Despacho","text","bdespac\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,6,6,"",$_REQUEST[bdespac],"","",1);
+  $formulario -> texto("Número de Transporte","text","bdocume\" onChange=\"form_item.submit()",0,7,7,"",$_REQUEST[bdocume],"","",1);
   $formulario -> lista_titulo("","bdestinat\" onChange=\"form_item.submit()",$destinat,0);
-  $formulario -> texto("Remisi&oacute;n","text","bremisi\" onChange=\"form_item.submit()",0,10,10,"",$GLOBALS[bremisi],"","",1);
-  $formulario -> texto("Pedido","text","bpedido\" onChange=\"form_item.submit()",0,10,10,"",$GLOBALS[bpedido],"","	",1);
+  $formulario -> texto("Remisi&oacute;n","text","bremisi\" onChange=\"form_item.submit()",0,10,10,"",$_REQUEST[bremisi],"","",1);
+  $formulario -> texto("Pedido","text","bpedido\" onChange=\"form_item.submit()",0,10,10,"",$_REQUEST[bpedido],"","	",1);
   $formulario -> lista_titulo("","bciuori\" onChange=\"form_item.submit()",$ciuori,0);
   $formulario -> lista_titulo("","bciudes\" onChange=\"form_item.submit()",$ciudes,0);
   $formulario -> linea ("Peso (Tn)",0,"t");
@@ -1505,7 +1505,7 @@ class Proc_despac
   $formulario -> linea ("Valor Flete",0,"t");
   $formulario -> linea ("Trayecto",0,"t");
   $formulario -> lista_titulo("","btransp\" onChange=\"form_item.submit()",$transp,0);
-  $formulario -> texto("Placa","text","bplacax\" onChange=\"form_item.submit()",0,6,6,"",$GLOBALS[bplacax],"","",1);
+  $formulario -> texto("Placa","text","bplacax\" onChange=\"form_item.submit()",0,6,6,"",$_REQUEST[bplacax],"","",1);
   $formulario -> lista_titulo("","bconduc\" onChange=\"form_item.submit()",$conduc,0);
   $formulario -> linea("Fecha/Despacho",0,"t");
   $formulario -> linea("Fecha/Salida",0,"t");
@@ -1637,20 +1637,20 @@ class Proc_despac
 
   $formulario -> nueva_tabla();
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
-  $formulario -> oculto("opcion",$GLOBALS[opcion],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+  $formulario -> oculto("opcion",$_REQUEST[opcion],0);
 
-  $formulario -> oculto("transp",$GLOBALS[transp],0);
-  $formulario -> oculto("despac",$GLOBALS[despac],0);
-  $formulario -> oculto("docume",$GLOBALS[docume],0);
-  $formulario -> oculto("remisi",$GLOBALS[remisi],0);
-  $formulario -> oculto("pedido",$GLOBALS[pedido],0);
-  $formulario -> oculto("placax",$GLOBALS[placax],0);
-  $formulario -> oculto("conduc",$GLOBALS[conduc],0);
-  $formulario -> oculto("ciuori",$GLOBALS[ciuori],0);
-  $formulario -> oculto("ciudes",$GLOBALS[ciudes],0);
-  $formulario -> oculto("fecini",$GLOBALS[fecini],0);
-  $formulario -> oculto("fecfin",$GLOBALS[fecfin],0);
+  $formulario -> oculto("transp",$_REQUEST[transp],0);
+  $formulario -> oculto("despac",$_REQUEST[despac],0);
+  $formulario -> oculto("docume",$_REQUEST[docume],0);
+  $formulario -> oculto("remisi",$_REQUEST[remisi],0);
+  $formulario -> oculto("pedido",$_REQUEST[pedido],0);
+  $formulario -> oculto("placax",$_REQUEST[placax],0);
+  $formulario -> oculto("conduc",$_REQUEST[conduc],0);
+  $formulario -> oculto("ciuori",$_REQUEST[ciuori],0);
+  $formulario -> oculto("ciudes",$_REQUEST[ciudes],0);
+  $formulario -> oculto("fecini",$_REQUEST[fecini],0);
+  $formulario -> oculto("fecfin",$_REQUEST[fecfin],0);
 
   $formulario -> cerrar();
  }

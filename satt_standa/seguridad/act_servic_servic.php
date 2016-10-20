@@ -38,7 +38,7 @@ class Proc_servic
 
  {
 
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
 
      $this -> Listar();
 
@@ -46,7 +46,7 @@ class Proc_servic
 
      {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
 
        {
 
@@ -150,7 +150,7 @@ class Proc_servic
 
      for($i=0;$i<sizeof($matriz);$i++)
 
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&servic=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&servic=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
 
 
@@ -210,7 +210,7 @@ class Proc_servic
 
    $formulario -> oculto("window","central",0);
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> cerrar();
 
@@ -246,7 +246,7 @@ class Proc_servic
 
                        b.cod_serpad = c.cod_servic
 
-                 WHERE a.cod_servic = '$GLOBALS[servic]'
+                 WHERE a.cod_servic = '$_REQUEST[servic]'
 
               ORDER BY 1";
 
@@ -557,7 +557,7 @@ class Proc_servic
 
       $formulario -> oculto("codigo","".$matriz0[0][0]."", 0);
 
-      $formulario -> oculto("cod_servic", $GLOBALS[cod_servic], 0);
+      $formulario -> oculto("cod_servic", $_REQUEST[cod_servic], 0);
 
       $formulario -> oculto("window","central", 0);
 
@@ -589,7 +589,7 @@ class Proc_servic
 
    $bandera1 = 0;
 
-   $hijo = $GLOBALS[codigo];
+   $hijo = $_REQUEST[codigo];
 
    $cont = 0;
 
@@ -729,7 +729,7 @@ class Proc_servic
 
    $bandera1 = 0;
 
-   $hijo = $GLOBALS[codigo];
+   $hijo = $_REQUEST[codigo];
 
    $cont = 0;
 
@@ -869,7 +869,7 @@ class Proc_servic
 
    $query = "DELETE FROM ".CENTRAL.".tab_servic_servic
 
-                   WHERE cod_serhij = '$GLOBALS[codigo]' ";
+                   WHERE cod_serhij = '$_REQUEST[codigo]' ";
 
    $delete = new Consulta($query, $this -> conexion);
 
@@ -877,7 +877,7 @@ class Proc_servic
 
    $query = "DELETE FROM ".BASE_DATOS.".tab_perfil_servic
 
-                   WHERE cod_servic = '$GLOBALS[codigo]' ";
+                   WHERE cod_servic = '$_REQUEST[codigo]' ";
 
    $delete = new Consulta($query, $this -> conexion);
 
@@ -885,7 +885,7 @@ class Proc_servic
 
    $query = "DELETE FROM ".BASE_DATOS.".tab_servic_usuari
 
-                   WHERE cod_servic = '$GLOBALS[codigo]' ";
+                   WHERE cod_servic = '$_REQUEST[codigo]' ";
 
    $delete = new Consulta($query, $this -> conexion);
 
@@ -893,11 +893,11 @@ class Proc_servic
 
    //reasignacion de variables
 
-   $perfiles = $GLOBALS[perfiles];
+   $perfiles = $_REQUEST[perfiles];
 
-   $usuarios = $GLOBALS[usuarios];
+   $usuarios = $_REQUEST[usuarios];
 
-   $nuevo_consec = $GLOBALS[codigo];
+   $nuevo_consec = $_REQUEST[codigo];
 
 
 
@@ -905,17 +905,17 @@ class Proc_servic
 
    $query = "UPDATE ".CENTRAL.".tab_genera_servic
 
-                SET nom_servic = '$GLOBALS[nombre]',
+                SET nom_servic = '$_REQUEST[nombre]',
 
-                    des_servic = '$GLOBALS[descri]',
+                    des_servic = '$_REQUEST[descri]',
 
-                    rut_archiv = '$GLOBALS[ruta]',
+                    rut_archiv = '$_REQUEST[ruta]',
 
-                    rut_jscrip = '$GLOBALS[jscript]',
+                    rut_jscrip = '$_REQUEST[jscript]',
 
-                    bod_jscrip = '$GLOBALS[bjscrip]',
+                    bod_jscrip = '$_REQUEST[bjscrip]',
 
-                    usr_modifi = '$GLOBALS[usuario]',
+                    usr_modifi = '$_REQUEST[usuario]',
 
                     fec_modifi = '$fec_actual'
 
@@ -925,13 +925,13 @@ class Proc_servic
 
    //query de insercion de la relacion con el servicio padre
 
-   if($GLOBALS[padre] != Null OR $GLOBALS[padre] != 0)
+   if($_REQUEST[padre] != Null OR $_REQUEST[padre] != 0)
 
    {
 
       $query = "INSERT INTO ".CENTRAL.".tab_servic_servic
 
-                VALUES ('$GLOBALS[padre]','$nuevo_consec') ";
+                VALUES ('$_REQUEST[padre]','$nuevo_consec') ";
 
       $consulta = new Consulta($query, $this -> conexion);
 
@@ -939,7 +939,7 @@ class Proc_servic
 
    //asignacion de servicios a los perfiles elegidos
 
-   for($i=0;$i<$GLOBALS[max_per];$i++)
+   for($i=0;$i<$_REQUEST[max_per];$i++)
 
    {
 
@@ -1029,7 +1029,7 @@ class Proc_servic
 
    //asignacion de servicios a los usuarios elegidos
 
-   for($i=0;$i<$GLOBALS[max_usu];$i++)
+   for($i=0;$i<$_REQUEST[max_usu];$i++)
 
    {
 
@@ -1119,7 +1119,7 @@ class Proc_servic
 
    if(isset($consulta))
 
-     echo "<br><br><b>TRANSACCION EXITOSA <br> EL SERVICIO $GLOBALS[nombre] FUE ACTUALIZADO</b>";
+     echo "<br><br><b>TRANSACCION EXITOSA <br> EL SERVICIO $_REQUEST[nombre] FUE ACTUALIZADO</b>";
 
  }//FIN FUNCTION ACTUALIZAR
 

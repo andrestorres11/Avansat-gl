@@ -16,7 +16,7 @@ class Proc_anula
 
  function principal()
  {
-   switch($GLOBALS[opcion])
+   switch($_REQUEST[opcion])
    {
         case "1":
           $this -> Resultado();
@@ -54,7 +54,7 @@ class Proc_anula
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("opcion",1,0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> boton("Aceptar","button\" onClick=\"form_item.submit()",1);
    $formulario -> cerrar();
@@ -64,8 +64,8 @@ class Proc_anula
  {
    $datos_usuario = $this -> usuario -> retornar();
 
-   $fechaini = $GLOBALS[fecini]." 00:00:00";
-   $fechafin = $GLOBALS[fecfin]." 23:59:59";
+   $fechaini = $_REQUEST[fecini]." 00:00:00";
+   $fechafin = $_REQUEST[fecfin]." 23:59:59";
 
    $titori[0][0] = 0;
    $titori[0][1] = "Origen";
@@ -82,7 +82,7 @@ class Proc_anula
                     ".BASE_DATOS.".tab_despac_vehige b
              ";
 
-        if($GLOBALS[fil] == 2)
+        if($_REQUEST[fil] == 2)
          $query .= " LEFT JOIN ".BASE_DATOS.".tab_despac_noveda f ON b.num_despac = f.num_despac
                  LEFT JOIN ".BASE_DATOS.".tab_despac_contro g ON b.num_despac = g.num_despac
                ";
@@ -95,26 +95,26 @@ class Proc_anula
                     a.ind_anulad != 'A'
             ";
 
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori];
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes];
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori];
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes];
 
-  if($GLOBALS[manifi])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[manifi]."'";
-  if($GLOBALS[numdes])
-   $query .= " AND a.num_despac = '".$GLOBALS[numdes]."'";
-  if($GLOBALS[vehicu])
-   $query .= " AND b.num_placax = '".$GLOBALS[vehicu]."'";
-  if($GLOBALS[trayle])
-   $query .= " AND b.num_trayle = '".$GLOBALS[trayle]."'";
+  if($_REQUEST[manifi])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[manifi]."'";
+  if($_REQUEST[numdes])
+   $query .= " AND a.num_despac = '".$_REQUEST[numdes]."'";
+  if($_REQUEST[vehicu])
+   $query .= " AND b.num_placax = '".$_REQUEST[vehicu]."'";
+  if($_REQUEST[trayle])
+   $query .= " AND b.num_trayle = '".$_REQUEST[trayle]."'";
 
-  if($GLOBALS[fil] == 1)
+  if($_REQUEST[fil] == 1)
   {
    $query .= " AND a.fec_llegad IS NULL";
    $campfecha = "fec_despac";
   }
-  else if($GLOBALS[fil] == 2)
+  else if($_REQUEST[fil] == 2)
   {
    $query .= " AND a.fec_salida IS NOT NULL AND a.fec_llegad IS NULL
    		       AND f.num_despac IS NULL
@@ -122,13 +122,13 @@ class Proc_anula
    		     ";
    $campfecha = "fec_salida";
   }
-  else if($GLOBALS[fil] == 3)
+  else if($_REQUEST[fil] == 3)
   {
    $query .= " AND a.fec_llegad IS NOT NULL";
    $campfecha = "fec_llegad";
   }
 
-  if($GLOBALS[por_fecha])
+  if($_REQUEST[por_fecha])
   $query .= " AND a.".$campfecha." BETWEEN '".$fechaini."' AND '".$fechafin."'";
 
   if($datos_usuario["cod_perfil"] == "")
@@ -178,7 +178,7 @@ class Proc_anula
   $consec = new Consulta($query, $this -> conexion);
   $origenes = $consec -> ret_matriz();
 
-  if($GLOBALS[ciuori])
+  if($_REQUEST[ciuori])
    $origenes = array_merge($origenes,$todos);
   else
    $origenes = array_merge($titori,$origenes);
@@ -191,7 +191,7 @@ class Proc_anula
                     ".BASE_DATOS.".tab_despac_vehige b
              ";
 
-        if($GLOBALS[fil] == 2)
+        if($_REQUEST[fil] == 2)
          $query .= " LEFT JOIN ".BASE_DATOS.".tab_despac_noveda f ON b.num_despac = f.num_despac
          		     LEFT JOIN ".BASE_DATOS.".tab_despac_contro g ON b.num_despac = g.num_despac
          		   ";
@@ -204,26 +204,26 @@ class Proc_anula
                     a.ind_anulad != 'A'
             ";
 
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori];
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes];
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori];
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes];
 
-  if($GLOBALS[manifi])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[manifi]."'";
-  if($GLOBALS[numdes])
-   $query .= " AND a.num_despac = '".$GLOBALS[numdes]."'";
-  if($GLOBALS[vehicu])
-   $query .= " AND b.num_placax = '".$GLOBALS[vehicu]."'";
-  if($GLOBALS[trayle])
-   $query .= " AND b.num_trayle = '".$GLOBALS[trayle]."'";
+  if($_REQUEST[manifi])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[manifi]."'";
+  if($_REQUEST[numdes])
+   $query .= " AND a.num_despac = '".$_REQUEST[numdes]."'";
+  if($_REQUEST[vehicu])
+   $query .= " AND b.num_placax = '".$_REQUEST[vehicu]."'";
+  if($_REQUEST[trayle])
+   $query .= " AND b.num_trayle = '".$_REQUEST[trayle]."'";
 
-  if($GLOBALS[fil] == 1)
+  if($_REQUEST[fil] == 1)
   {
    $query .= " AND a.fec_llegad IS NULL";
    $campfecha = "fec_despac";
   }
-  else if($GLOBALS[fil] == 2)
+  else if($_REQUEST[fil] == 2)
   {
    $query .= " AND a.fec_salida IS NOT NULL AND a.fec_llegad IS NULL
    		       AND f.num_despac IS NULL
@@ -231,13 +231,13 @@ class Proc_anula
    		     ";
    $campfecha = "fec_salida";
   }
-  else if($GLOBALS[fil] == 3)
+  else if($_REQUEST[fil] == 3)
   {
    $query .= " AND a.fec_llegad IS NOT NULL";
    $campfecha = "fec_llegad";
   }
 
-  if($GLOBALS[por_fecha])
+  if($_REQUEST[por_fecha])
   $query .= " AND a.".$campfecha." BETWEEN '".$fechaini."' AND '".$fechafin."'";
 
   if($datos_usuario["cod_perfil"] == "")
@@ -287,7 +287,7 @@ class Proc_anula
   $consec = new Consulta($query, $this -> conexion);?><script>alert(<?=$query?>);</script><?php
   $destinos = $consec -> ret_matriz();
 
-  if($GLOBALS[ciudes])
+  if($_REQUEST[ciudes])
    $destinos = array_merge($destinos,$todos);
   else
    $destinos = array_merge($titdes,$destinos);
@@ -301,7 +301,7 @@ class Proc_anula
                     ".BASE_DATOS.".tab_despac_vehige b
              ";
 
-        if($GLOBALS[fil] == 2)
+        if($_REQUEST[fil] == 2)
          $query .= " LEFT JOIN ".BASE_DATOS.".tab_despac_noveda f ON b.num_despac = f.num_despac
                  LEFT JOIN ".BASE_DATOS.".tab_despac_contro g ON b.num_despac = g.num_despac
                ";
@@ -312,26 +312,26 @@ class Proc_anula
                     a.ind_anulad != 'A'
             ";
 
-  if($GLOBALS[ciuori])
-   $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori];
-  if($GLOBALS[ciudes])
-   $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes];
+  if($_REQUEST[ciuori])
+   $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori];
+  if($_REQUEST[ciudes])
+   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes];
 
-  if($GLOBALS[manifi])
-   $query .= " AND a.cod_manifi = '".$GLOBALS[manifi]."'";
-  if($GLOBALS[numdes])
-   $query .= " AND a.num_despac = '".$GLOBALS[numdes]."'";
-  if($GLOBALS[vehicu])
-   $query .= " AND b.num_placax = '".$GLOBALS[vehicu]."'";
-  if($GLOBALS[trayle])
-   $query .= " AND b.num_trayle = '".$GLOBALS[trayle]."'";
+  if($_REQUEST[manifi])
+   $query .= " AND a.cod_manifi = '".$_REQUEST[manifi]."'";
+  if($_REQUEST[numdes])
+   $query .= " AND a.num_despac = '".$_REQUEST[numdes]."'";
+  if($_REQUEST[vehicu])
+   $query .= " AND b.num_placax = '".$_REQUEST[vehicu]."'";
+  if($_REQUEST[trayle])
+   $query .= " AND b.num_trayle = '".$_REQUEST[trayle]."'";
 
-  if($GLOBALS[fil] == 1)
+  if($_REQUEST[fil] == 1)
   {
    $query .= " AND a.fec_llegad IS NULL";
    $campfecha = "fec_despac";
   }
-  else if($GLOBALS[fil] == 2)
+  else if($_REQUEST[fil] == 2)
   {
    $query .= " AND a.fec_salida IS NOT NULL AND a.fec_llegad IS NULL
    		       AND f.num_despac IS NULL
@@ -339,13 +339,13 @@ class Proc_anula
    		     ";
    $campfecha = "fec_salida";
   }
-  else if($GLOBALS[fil] == 3)
+  else if($_REQUEST[fil] == 3)
   {
    $query .= " AND a.fec_llegad IS NOT NULL";
    $campfecha = "fec_llegad";
   }
 
-  if($GLOBALS[por_fecha])
+  if($_REQUEST[por_fecha])
   $query .= " AND a.".$campfecha." BETWEEN '".$fechaini."' AND '".$fechafin."'";
 
   if($datos_usuario["cod_perfil"] == "")
@@ -400,14 +400,14 @@ class Proc_anula
   $formulario -> linea("Se Encontro un Total de ".sizeof($matriz)." Despacho(s).",0,"t2");
 
   $formulario -> nueva_tabla();
-  $formulario -> texto("Despacho","text","numdes\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,6,6,"",$GLOBALS[numdes],"","",1);
-  $formulario -> texto("Documento/Despacho","text","manifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,7,7,"",$GLOBALS[manifi],"","",1);
+  $formulario -> texto("Despacho","text","numdes\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,6,6,"",$_REQUEST[numdes],"","",1);
+  $formulario -> texto("Documento/Despacho","text","manifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,7,7,"",$_REQUEST[manifi],"","",1);
   $formulario -> linea("Estado",0,"t");
   $formulario -> lista_titulo("","ciuori\" onChange=\"form_item.submit()",$origenes,0);
   $formulario -> lista_titulo("","ciudes\" onChange=\"form_item.submit()",$destinos,0);
   $formulario -> linea("Transportadora",0,"t");
-  $formulario -> texto("Vehiculo","text","vehicu\" onChange=\"form_item.submit()",0,6,6,"",$GLOBALS[vehicu],"","",1);
-  $formulario -> texto("Remolque","text","trayle\" onChange=\"form_item.submit()",0,6,6,"",$GLOBALS[trayle],"","",1);
+  $formulario -> texto("Vehiculo","text","vehicu\" onChange=\"form_item.submit()",0,6,6,"",$_REQUEST[vehicu],"","",1);
+  $formulario -> texto("Remolque","text","trayle\" onChange=\"form_item.submit()",0,6,6,"",$_REQUEST[trayle],"","",1);
   $formulario -> linea("Conductor",1,"t");
 
    for($i = 0; $i < sizeof($matriz); $i++)
@@ -422,11 +422,11 @@ class Proc_anula
     else if($matriz[$i][2] == "A")
      $estado = "Inactivo";
 
-    $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+    $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
     $ciudad_o = $objciud -> getSeleccCiudad($matriz[$i][3]);
     $ciudad_d = $objciud -> getSeleccCiudad($matriz[$i][4]);
 
-    $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&despac=".$matriz[$i][0]."&fil=".$GLOBALS[fil]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+    $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&despac=".$matriz[$i][0]."&fil=".$_REQUEST[fil]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
     $formulario -> linea($matriz[$i][0],0,$estilo);
     $formulario -> linea($matriz[$i][1],0,$estilo);
@@ -441,14 +441,14 @@ class Proc_anula
    }
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("fil",$GLOBALS[fil],0);
-   $formulario -> oculto("fecini",$GLOBALS[fecini],0);
-   $formulario -> oculto("fecfin",$GLOBALS[fecfin],0);
-   $formulario -> oculto("por_fecha",$GLOBALS[por_fecha],0);
+   $formulario -> oculto("fil",$_REQUEST[fil],0);
+   $formulario -> oculto("fecini",$_REQUEST[fecini],0);
+   $formulario -> oculto("fecfin",$_REQUEST[fecfin],0);
+   $formulario -> oculto("por_fecha",$_REQUEST[por_fecha],0);
 
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -456,24 +456,24 @@ class Proc_anula
  {
   $datos_usuario = $this -> usuario -> retornar();
 
-  if($GLOBALS[fil] == 1)
+  if($_REQUEST[fil] == 1)
    $nomopera = "Anular el";
-  else if($GLOBALS[fil] == 2)
+  else if($_REQUEST[fil] == 2)
    $nomopera = "Reversar la Salida del";
-  else if($GLOBALS[fil] == 3)
+  else if($_REQUEST[fil] == 3)
    $nomopera = "Reversar la Llegada del";
 
   $formulario = new Formulario ("index.php","post","Informacion del Despacho","form_ins");
 
-  $formulario -> oculto("fil",$GLOBALS[fil],0);
-  $formulario -> oculto("despac",$GLOBALS[despac],0);
+  $formulario -> oculto("fil",$_REQUEST[fil],0);
+  $formulario -> oculto("despac",$_REQUEST[despac],0);
   $formulario -> oculto("usuario","$usuario",0);
   $formulario -> oculto("window","central",0);
   $formulario -> oculto("opcion",3,0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
-  $listado_prin = new Despachos($GLOBALS[cod_servic],3,$this -> aplica,$this -> conexion,2);
-  $listado_prin  -> Encabezado($GLOBALS[despac],$datos_usuario);
+  $listado_prin = new Despachos($_REQUEST[cod_servic],3,$this -> aplica,$this -> conexion,2);
+  $listado_prin  -> Encabezado($_REQUEST[despac],$datos_usuario);
 
   $formulario -> nueva_tabla();
   $formulario -> texto("Observaciones","textarea","obs",1,24,2,"","");
@@ -500,7 +500,7 @@ class Proc_anula
 
   $query = "SELECT a.num_placax,a.cod_rutasx
 	          FROM ".BASE_DATOS.".tab_despac_vehige a
-	     	 WHERE a.num_despac = ".$GLOBALS[despac]."
+	     	 WHERE a.num_despac = ".$_REQUEST[despac]."
 	   ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -508,20 +508,20 @@ class Proc_anula
 
   $query = "SELECT a.cod_transp
   		      FROM ".BASE_DATOS.".tab_despac_vehige a
-  		     WHERE a.num_despac = ".$GLOBALS[despac]."
+  		     WHERE a.num_despac = ".$_REQUEST[despac]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
   $transdes = $consulta -> ret_matriz();
 
-  if($GLOBALS[fil] == 1)
+  if($_REQUEST[fil] == 1)
   {
    $query = "UPDATE ".BASE_DATOS.".tab_despac_vehige
                   SET ind_activo = 'N',
-                      obs_anulad = '".$GLOBALS[obs]."\n',
+                      obs_anulad = '".$_REQUEST[obs]."\n',
                       usr_modifi = '".$usuario."',
                       fec_modifi = '".$fec_actual."'
-                WHERE num_despac = ".$GLOBALS[despac]."
+                WHERE num_despac = ".$_REQUEST[despac]."
              ";
 
    $consulta = new Consulta($query, $this -> conexion,"BR");
@@ -530,7 +530,7 @@ class Proc_anula
                 SET  ind_anulad = 'A',
                      usr_modifi = '".$usuario."',
                      fec_modifi = '".$fec_actual."'
-               WHERE num_despac = ".$GLOBALS[despac]."
+               WHERE num_despac = ".$_REQUEST[despac]."
             ";
 
    $update1 = new Consulta($query, $this -> conexion,"R");
@@ -542,13 +542,13 @@ class Proc_anula
   	{
    	 for($i = 0; $i < $interfaz -> totalact; $i++)
    	 {
-      $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS[despac]);
+      $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[despac]);
 
       if($homolodespac["DespacHomolo"] > 0)
       {
-       $despac_ws["despac"] = $GLOBALS[despac];
+       $despac_ws["despac"] = $_REQUEST[despac];
        $despac_ws["fechax"] = $fec_actual;
-       $despac_ws["observ"] = $GLOBALS[obs];
+       $despac_ws["observ"] = $_REQUEST[obs];
 	   $despac_ws["tipoan"] = "1";
 
        $resultado_ws = $interfaz -> insAnular($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$despac_ws);
@@ -571,7 +571,7 @@ class Proc_anula
 	 {
 	  $idgps = $interf_gps -> getIdGPS($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
 
-	  if($interf_gps -> setLlegadGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$GLOBALS[despac]))
+	  if($interf_gps -> setLlegadGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$_REQUEST[despac]))
 	  {
 	    $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Se Finalizo Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0]."</b> Correctamente.";
 	  }
@@ -584,22 +584,22 @@ class Proc_anula
 */
     if($consulta = new Consulta("COMMIT", $this -> conexion))
 	{
-	 $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Anular Otro Despacho</a></b>";
+	 $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Anular Otro Despacho</a></b>";
 
-     $mensaje = "Se Anulo el Despacho <b>".$GLOBALS[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
+     $mensaje = "Se Anulo el Despacho <b>".$_REQUEST[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
      $mens = new mensajes();
      $mens -> correcto("ANULAR DESPACHOS", $mensaje.$link_a);
 	}
   }
 
-  if($GLOBALS[fil] == 2)
+  if($_REQUEST[fil] == 2)
   {
    $query = "UPDATE ".BASE_DATOS.".tab_despac_vehige
                 SET ind_activo = 'R',
-                    obs_anulad = '".$GLOBALS[obs]."\n',
+                    obs_anulad = '".$_REQUEST[obs]."\n',
                     usr_modifi = '".$usuario."',
                     fec_modifi = '".$fec_actual."'
-              WHERE num_despac = ".$GLOBALS[despac]."
+              WHERE num_despac = ".$_REQUEST[despac]."
             ";
 
    $consultare = new Consulta($query, $this -> conexion,"BR");
@@ -608,7 +608,7 @@ class Proc_anula
                 SET fec_salida = NULL,
                     usr_modifi = '".$usuario."',
                     fec_modifi = '".$fec_actual."'
-              WHERE num_despac = ".$GLOBALS[despac]."
+              WHERE num_despac = ".$_REQUEST[despac]."
             ";
 
    $update1 = new Consulta($query, $this -> conexion,"R");
@@ -620,13 +620,13 @@ class Proc_anula
    {
     for($i = 0; $i < $interfaz -> totalact; $i++)
    	{
-     $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS[despac]);
+     $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[despac]);
 
      if($homolodespac["DespacHomolo"] > 0)
      {
-      $despac_ws["despac"] = $GLOBALS[despac];
+      $despac_ws["despac"] = $_REQUEST[despac];
       $despac_ws["fechax"] = $fec_actual;
-      $despac_ws["observ"] = $GLOBALS[obs];
+      $despac_ws["observ"] = $_REQUEST[obs];
 	  $despac_ws["tipoan"] = "2";
 
       $resultado_ws = $interfaz -> insAnular($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$despac_ws);
@@ -641,7 +641,7 @@ class Proc_anula
 */
    //Manejo de Interfaz GPS
    /*$interf_gps = new Interfaz_GPS();
-   $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$GLOBALS[usuario],$this -> conexion);
+   $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$_REQUEST[usuario],$this -> conexion);
 
    for($i = 0; $i  < $interf_gps -> cant_interf; $i++)
    {
@@ -649,7 +649,7 @@ class Proc_anula
 	{
 	 $idgps = $interf_gps -> getIdGPS($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
 
-	 if($interf_gps -> setLlegadGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$GLOBALS[despac]))
+	 if($interf_gps -> setLlegadGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$_REQUEST[despac]))
 	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Se Finalizo Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0]."</b> Correctamente.";
 	 else
 	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ocurrio un Error al Finalizar Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
@@ -658,15 +658,15 @@ class Proc_anula
 */
    if($consulta = new Consulta("COMMIT", $this -> conexion))
    {
-   	$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Reversar Otro Despacho</a></b>";
+   	$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Reversar Otro Despacho</a></b>";
 
-    $mensaje = "Se Reverso la Salida del Despacho <b>".$GLOBALS[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
+    $mensaje = "Se Reverso la Salida del Despacho <b>".$_REQUEST[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
     $mens = new mensajes();
     $mens -> correcto("REVERSAR SALIDA DE DESPACHOS", $mensaje.$link_a);
    }
   }
 
-  if($GLOBALS[fil] == 3)
+  if($_REQUEST[fil] == 3)
   {
    $nodasalida = 0;
 
@@ -677,13 +677,13 @@ class Proc_anula
    {
     for($i = 0; $i < $interfaz -> totalact; $i++)
    	{
-     $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS[despac]);
+     $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[despac]);
 
      if($homolodespac["DespacHomolo"] > 0)
      {
-      $despac_ws["despac"] = $GLOBALS[despac];
+      $despac_ws["despac"] = $_REQUEST[despac];
       $despac_ws["fechax"] = $fec_actual;
-      $despac_ws["observ"] = $GLOBALS[obs];
+      $despac_ws["observ"] = $_REQUEST[obs];
 	  $despac_ws["tipoan"] = "3";
 	  $despac_ws["placax"] = $placax[0];
 	  $despac_ws["rutasx"] = $placax[1];
@@ -704,7 +704,7 @@ class Proc_anula
 
    //Manejo de Interfaz GPS
    /*$interf_gps = new Interfaz_GPS();
-   $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$GLOBALS[usuario],$this -> conexion);
+   $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$_REQUEST[usuario],$this -> conexion);
 
    for($i = 0; $i  < $interf_gps -> cant_interf; $i++)
    {
@@ -712,9 +712,9 @@ class Proc_anula
 	{
 	 $idgps = $interf_gps -> getIdGPS($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
 
-	 if($interf_gps -> setSalidaGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$GLOBALS[despac]))
+	 if($interf_gps -> setSalidaGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$_REQUEST[despac]))
 	 {
-	  if($interf_gps -> setAcTimeRepor($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$GLOBALS[despac],$fec_actual,$interf_gps -> val_timtra[$i][0]))
+	  if($interf_gps -> setAcTimeRepor($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$_REQUEST[despac],$fec_actual,$interf_gps -> val_timtra[$i][0]))
 	   $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Activado Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
 	 }
 	 else
@@ -730,16 +730,16 @@ class Proc_anula
                  SET fec_llegad = NULL,
                      usr_modifi = '".$usuario."',
                      fec_modifi = '".$fec_actual."'
-               WHERE num_despac = ".$GLOBALS[despac]."
+               WHERE num_despac = ".$_REQUEST[despac]."
              ";
 
     $update1 = new Consulta($query, $this -> conexion,"BR");
 
 	if($consulta = new Consulta("COMMIT", $this -> conexion))
     {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Reversar Otro Despacho</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Reversar Otro Despacho</a></b>";
 
-     $mensaje = "Se Reverso la Llegada del Despacho <b>".$GLOBALS[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
+     $mensaje = "Se Reverso la Llegada del Despacho <b>".$_REQUEST[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
      $mens = new mensajes();
      $mens -> correcto("REVERSAR LLEGADA DE DESPACHOS", $mensaje.$link_a);
     }

@@ -85,8 +85,8 @@ function SetDestinatarios(num_despac)
             resizable: false,
             draggable: false,
             title: "Destinatarios del Despacho No." + num_despac.text(),
-            width: $(document).width() - 400,
-            heigth: 500,
+            width: ($(window).width() - 40),
+            heigth: ($(window).height() - 80),
             position: ['middle', 25],
             bgiframe: true,
             closeOnEscape: false,
@@ -102,16 +102,25 @@ function SetDestinatarios(num_despac)
             url: "../" + Standa + "/desnew/ajax_despac_destin.php",
             data: 'standa=' + Standa + '&option=SetDestinatarios&num_despac=' + num_despac.text() + "&num_viajex=" + viajex,
             method: 'POST',
-            beforeSend:
-                    function ()
-                    {
-                        $("#PopUpID").html('<table align="center"><tr><td><img src="../' + Standa + '/imagenes/ajax-loader2.gif" /></td></tr><tr><td></td></tr></table>');
-                    },
-            success:
-                    function (data)
-                    {
-                        $("#PopUpID").html(data);
-                    }
+            beforeSend: function () {
+                $("#PopUpID").html('<table align="center"><tr><td><img src="../' + Standa + '/imagenes/ajax-loader2.gif" /></td></tr><tr><td></td></tr></table>');
+            },
+            success: function (data) {
+                $("#PopUpID").html(data);
+            },
+            complete: function() {
+                $("#PopUpID").css({
+                    "height": ($(window).height() - 80)
+                });
+                $("#DestinID").css({
+                    "width": "auto",
+                    "min-width": "1250px",
+                });
+                $("#DestinID").next().css({
+                    "width": "auto",
+                    "min-width": "1250px",
+                });
+            }
         });
     }
     catch (e)

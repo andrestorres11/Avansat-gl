@@ -1,6 +1,4 @@
 <?php
-ini_set('display_errors', true);
-error_reporting(E_ALL & ~E_NOTICE);
 
 include_once("general/conexion_lib.inc");
 class PruebaNovedades
@@ -10,11 +8,22 @@ class PruebaNovedades
   var $cStan = 'satt_standa';
   var $cClie = 'satt_faro';
   var $cURls = '';
+
+  private static $cBD;
   
   //968028
   function __construct()
   {
-  
+  	$mHost = $_SERVER['HTTP_HOST'];
+    $mHost = explode('.', $mHost);
+
+    switch ($mHost[0]) {
+        case 'web7':      self::$cBD = "bd7.intrared.net:3306";  break;
+        case 'web13':     self::$cBD = "bd13.intrared.net:3306"; break;
+        case 'avansatgl': self::$cBD = "aglbd.intrared.net";     break;
+        default:          self::$cBD = "demo.intrared.net";      break;
+    }
+
     switch($_POST["Opcion"])
 	{
 	  case "1": PruebaNovedades::Enviar1(); break;
@@ -112,7 +121,7 @@ class PruebaNovedades
   function Enviar1()
   {
     ini_set( "soap.wsdl_cache_enabled", "0" );
-    $this -> conexion = new Conexion("bd10.intrared.net:3306",$this -> cUser ,$this -> cPass, $this -> cStan);
+    $this -> conexion = new Conexion(self::$cBD,$this -> cUser ,$this -> cPass, $this -> cStan);
     
 	#Datos de conexion
 	$query = "SELECT a.cod_operad, a.nom_operad, a.nom_usuari, a.clv_usuari, a.val_timtra  

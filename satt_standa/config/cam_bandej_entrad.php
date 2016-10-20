@@ -17,7 +17,7 @@ class CamBan
  function principal()
  {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Formulario();
@@ -44,10 +44,10 @@ class CamBan
    $consulta = new Consulta( $query, $this -> conexion );
 	 $usuarios = $consulta -> ret_matriz();
    $usuari = array_merge($inicio, $usuarios);
-   if($GLOBALS[usuari]){
+   if($_REQUEST[usuari]){
      $query = "SELECT cod_usuari,nom_usuari 
                FROM ".BASE_DATOS.".tab_genera_usuari 
-               WHERE cod_usuari = '".$GLOBALS[usuari]."'";
+               WHERE cod_usuari = '".$_REQUEST[usuari]."'";
      $consulta = new Consulta( $query, $this -> conexion );
   	 $usuar = $consulta -> ret_matriz();
      $usuari = array_merge($usuar,$usuari);  
@@ -59,14 +59,14 @@ class CamBan
    $formulario -> nueva_tabla();
    $formulario -> lista("Usuario","usuari\" id=\"usuariID\" onchange=\"form_ins.submit();",$usuari,1); 
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> oculto("opcion\" id=\"opcionID",1,0);
 
-  if($GLOBALS['usuari']){
+  if($_REQUEST['usuari']){
     $usuario = $_SESSION["datos_usuario"]["cod_usuari"];
     $query = "SELECT cod_inicio
    				    FROM ".BASE_DATOS.".tab_genera_usuari
-   			      WHERE cod_usuari = '".$GLOBALS['usuari']."'";
+   			      WHERE cod_usuari = '".$_REQUEST['usuari']."'";
     $consulta = new Consulta($query, $this -> conexion);
     $cod_inicio = $consulta -> ret_matriz();
     if($cod_inicio[0][0] == '' || $cod_inicio[0][0] == '1'){
@@ -97,13 +97,13 @@ class CamBan
         global $HTTP_POST_FILES;
         $usuario = $_SESSION["datos_usuario"]["cod_usuari"];
         $query = "UPDATE ".BASE_DATOS.".tab_genera_usuari
-									 SET cod_inicio = '".$GLOBALS['bandeja']."' 
-									 WHERE cod_usuari = '".$GLOBALS['usuari']."' 
+									 SET cod_inicio = '".$_REQUEST['bandeja']."' 
+									 WHERE cod_usuari = '".$_REQUEST['usuari']."' 
 										";
 			  $insercion = new Consulta( $query, $this -> conexion, "BR" );
         if( $insercion = new Consulta("COMMIT", $this -> conexion))
         {
-            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Cambiar Otra Bandeja de Entrada</a></b>";
+            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Cambiar Otra Bandeja de Entrada</a></b>";
 
             if($msm)
                 $mensaje = $msm;

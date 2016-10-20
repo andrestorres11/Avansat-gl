@@ -1,7 +1,4 @@
 <?php
-//error_reporting("E_ERROR");
-ini_set('display_errors', true);
-error_reporting(E_ALL &~E_NOTICE);
 
 include ("../lib/general/constantes.inc");
 include ("../lib/general/conexion_lib.inc");
@@ -12,19 +9,18 @@ include ("../despac/Despachos.inc");
 include ("../lib/interfaz_lib_sat.inc");
 include ("../lib/GeneralFunctions.inc");
 include ("../lib/general/tabla_lib.inc");
-include("../../".$GLOBALS['url']."/constantes.inc");
+include("../../".$_REQUEST['url']."/constantes.inc");
 
 class Proc_exp_enruta
 {
- var $conexion,
- 	 $GeneralFunctions;
+  var $conexion, $GeneralFunctions;
 
  function Proc_exp_enruta()
  {
-  $this -> conexion = new Conexion("bd10.intrared.net:3306", USUARIO, CLAVE, $GLOBALS["db"]);
+  $this -> conexion = new Conexion(HOST, USUARIO, CLAVE, $_REQUEST["db"]);
   $this -> GeneralFunctions = new GeneralFunctions($this -> conexion);
   
-  if($GLOBALS[tipexp] == 2)
+  if($_REQUEST[tipexp] == 2)
    $this -> DetalleDespacho();
   else
    $this -> Listar();
@@ -32,7 +28,7 @@ class Proc_exp_enruta
 
  function DetalleDespacho()
  {
-  $archivo = "Detalle_".$GLOBALS[nomexp]."_".date("Y_m_d");
+  $archivo = "Detalle_".$_REQUEST[nomexp]."_".date("Y_m_d");
 
   $query = "SELECT a.ind_remdes
   		      FROM ".BASE_DATOS.".tab_config_parame a
@@ -58,7 +54,7 @@ class Proc_exp_enruta
    			         c.cod_trayec = d.cod_trayec
    			   WHERE a.cod_remdes = b.cod_remdes AND
    			         a.ind_remdes = '2' AND
-   			         b.num_despac = ".$GLOBALS[despac]."
+   			         b.num_despac = ".$_REQUEST[despac]."
    			 ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -80,7 +76,7 @@ class Proc_exp_enruta
                     ".BASE_DATOS.".tab_tercer_tercer c
               WHERE a.num_despac = b.num_despac AND
                     b.cod_conduc = c.cod_tercer AND
-                    a.num_despac = ".$GLOBALS[despac]."
+                    a.num_despac = ".$_REQUEST[despac]."
 	    ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -102,7 +98,7 @@ class Proc_exp_enruta
                    c.cod_colorx = f.cod_colorx AND
                    c.num_config = g.num_config AND
                    c.cod_carroc = h.cod_carroc AND
-                   b.num_despac = ".$GLOBALS[despac]."
+                   b.num_despac = ".$_REQUEST[despac]."
 	  ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -119,13 +115,13 @@ class Proc_exp_enruta
              WHERE a.num_despac = b.num_despac AND
                    b.cod_rutasx = e.cod_rutasx AND
                    b.cod_agenci = g.cod_agenci AND
-                   a.num_despac = ".$GLOBALS[despac]."
+                   a.num_despac = ".$_REQUEST[despac]."
            ";
 
   $consulta = new Consulta($query, $this -> conexion);
   $encab3 = $consulta -> ret_matriz();
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
   $origen = $objciud -> getSeleccCiudad($encab3[0][2]);
   $destin = $objciud -> getSeleccCiudad($encab3[0][3]);
@@ -138,11 +134,11 @@ class Proc_exp_enruta
   $consulta = new Consulta($query, $this -> conexion);
   $viscalti = $consulta -> ret_matriz();
 
-  if($viscalti && $GLOBALS[finali])
+  if($viscalti && $_REQUEST[finali])
   {
    $query = "SELECT MAX(a.fec_planea)
    		       FROM ".BASE_DATOS.".tab_despac_seguim a
-   		      WHERE a.num_despac = ".$GLOBALS[despac]."
+   		      WHERE a.num_despac = ".$_REQUEST[despac]."
    		    ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -150,7 +146,7 @@ class Proc_exp_enruta
 
    $query = "SELECT SUM(a.val_pernoc)
    		       FROM ".BASE_DATOS.".tab_despac_pernoc a
-   		      WHERE a.num_despac = ".$GLOBALS[despac]."
+   		      WHERE a.num_despac = ".$_REQUEST[despac]."
    		    ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -162,7 +158,7 @@ class Proc_exp_enruta
    		       FROM ".BASE_DATOS.".tab_despac_despac a,
    		            ".BASE_DATOS.".tab_despac_vehige b
    		      WHERE a.num_despac = b.num_despac AND
-   		            a.num_despac = ".$GLOBALS[despac]."
+   		            a.num_despac = ".$_REQUEST[despac]."
    		    ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -177,7 +173,7 @@ class Proc_exp_enruta
               FROM ".BASE_DATOS.".tab_despac_despac a,
 		   		   ".BASE_DATOS.".tab_despac_vehige b
              WHERE a.num_despac = b.num_despac AND
-                   a.num_despac = ".$GLOBALS[despac]."
+                   a.num_despac = ".$_REQUEST[despac]."
 	  ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -192,7 +188,7 @@ class Proc_exp_enruta
 		   		   ".BASE_DATOS.".tab_genera_noveda c
              WHERE a.cod_contro = b.cod_contro AND
 		   		   a.cod_noveda = c.cod_noveda AND
-                   a.num_despac = ".$GLOBALS[despac]."
+                   a.num_despac = ".$_REQUEST[despac]."
                    ORDER BY a.fec_contro
           ";
 
@@ -201,7 +197,7 @@ class Proc_exp_enruta
 
   $query = "SELECT a.cod_rutasx
 	      	  FROM ".BASE_DATOS.".tab_despac_seguim a
-	     	 WHERE a.num_despac = ".$GLOBALS[despac]."
+	     	 WHERE a.num_despac = ".$_REQUEST[despac]."
 		   		   GROUP BY 1
 	   ";
 
@@ -237,7 +233,7 @@ class Proc_exp_enruta
                    b.cod_noveda = d.cod_noveda
              WHERE a.cod_contro = c.cod_contro AND
                    a.num_despac = e.num_despac AND
-                   e.num_despac = ".$GLOBALS[despac]."
+                   e.num_despac = ".$_REQUEST[despac]."
 		   		   ORDER BY 9";
 
   if(sizeof($totrutas) < 2) $query .= ",11,15";
@@ -245,7 +241,7 @@ class Proc_exp_enruta
   $consulta = new Consulta($query, $this -> conexion);
   $matriz = $consulta -> ret_matriz();
 
-  if($GLOBALS[manpdf])
+  if($_REQUEST[manpdf])
    $this -> expDetallePdf($archivo,$encab1,$encab2,$encab3,$matriz,$seguim,$observ,$viscalti,$calminti,$tiemprog,$objciud,$manredes,$liremdes,$timecolo);
   else
    $this -> expDetalleExcel($archivo,$encab1,$encab2,$encab3,$matriz,$seguim,$observ,$viscalti,$calminti,$tiemprog,$objciud,$manredes,$liremdes,$timecolo);
@@ -284,7 +280,7 @@ class Proc_exp_enruta
   $formulario -> linea("C.C.",0,"t");
   $formulario -> linea($encab1[0][3],0,"i");
 
-  if(!$GLOBALS[finali])
+  if(!$_REQUEST[finali])
   {
    $formulario -> linea("Fecha Planeada Llegada",0,"t");
    $formulario -> linea($encab3[0][5],1,"i");
@@ -316,7 +312,7 @@ class Proc_exp_enruta
   $formulario -> linea("Modelo",0,"t");
   $formulario -> linea($encab2[0][6],1,"i");
 
-  if($viscalti && $GLOBALS[finali])
+  if($viscalti && $_REQUEST[finali])
   {
    for($i = 0; $i < 3; $i++)
    {
@@ -392,7 +388,7 @@ class Proc_exp_enruta
    $formulario -> nueva_tabla();
    $formulario -> linea("Oficina de Control",0,"t");
    $formulario -> linea("Hora/Fecha Programada",0,"t");
-   if($viscalti && $GLOBALS[finali])
+   if($viscalti && $_REQUEST[finali])
     $formulario -> linea("",0,"t");
    $formulario -> linea("Hora/Fecha Control",0,"t");
    $formulario -> linea("Novedad",0,"t");
@@ -426,7 +422,7 @@ class Proc_exp_enruta
      $nomost = 1;
     }
 
-    if($viscalti && $GLOBALS[finali])
+    if($viscalti && $_REQUEST[finali])
   	{
    	 $query = "SELECT (TIME_TO_SEC(TIMEDIFF('".$matriz[$i][1]."','".$matriz[$i][2]."'))/60)
    	    ";
@@ -477,7 +473,7 @@ class Proc_exp_enruta
   	{
   	 echo "<td bgcolor=\"#99CC99\">".$matriz[$i][0]."</td>";
   	 echo "<td bgcolor=\"#99CC99\">".$matriz[$i][1]."</td>";
-  	 if($viscalti && $GLOBALS[finali])
+  	 if($viscalti && $_REQUEST[finali])
       echo "<td><font color=\"".$estilo."\">".$difftempo."</font></td>";
   	 echo "<td bgcolor=\"#99CC99\">".$matriz[$i][2]."</td>";
   	 echo "<td bgcolor=\"#99CC99\">".$matriz[$i][3]."</td>";
@@ -492,7 +488,7 @@ class Proc_exp_enruta
   	{
      $formulario -> linea($matriz[$i][0],0,"i","16%");
      $formulario -> linea($matriz[$i][1],0,"i","16%");
-     if($viscalti && $GLOBALS[finali])
+     if($viscalti && $_REQUEST[finali])
       echo "<td><font color=\"".$estilo."\">".$difftempo."</font></td>";
      $formulario -> linea($matriz[$i][2],0,"i","16%");
      $formulario -> linea($matriz[$i][3],0,"i","16%");
@@ -577,7 +573,7 @@ class Proc_exp_enruta
   $pdf -> AliasNbPages();
   $pdf -> AddPage();
 
-  $pdf -> SetTitle("Detalle ".$GLOBALS[nomexp]);
+  $pdf -> SetTitle("Detalle ".$_REQUEST[nomexp]);
 
   $pdf -> Ln();
   $pdf -> Ln();
@@ -613,7 +609,7 @@ class Proc_exp_enruta
   $pdf -> Cell(30,8,"C.C.",1,0,"L",1);
   $pdf -> Cell(65,8,$encab1[0][3],1,0,"R");
 
-  if(!$GLOBALS[finali])
+  if(!$_REQUEST[finali])
   {
    $pdf -> Cell(30,8,"Fecha Planeada Llegada",1,0,"L",1);
    $pdf -> Cell(65,8,$encab3[0][5],1,0,"R");
@@ -653,7 +649,7 @@ class Proc_exp_enruta
   $columnae = $this -> convertHexad("#740002");
   $columnaa = $this -> convertHexad("#336600");
 
-  if($viscalti && $GLOBALS[finali])
+  if($viscalti && $_REQUEST[finali])
   {
    for($i = 0; $i < 3; $i++)
    {
@@ -741,14 +737,14 @@ class Proc_exp_enruta
   $pdf -> Ln();
   $pdf -> Cell(30,8,"Oficina de Control",1,0,"C",1);
   $pdf -> Cell(25,8,"Fecha Programada",1,0,"C",1);
-  if($viscalti && $GLOBALS[finali])
+  if($viscalti && $_REQUEST[finali])
    $pdf -> Cell(25,8,"",1,0,"C",1);
   $pdf -> Cell(25,8,"Fecha Control",1,0,"C",1);
   $pdf -> Cell(20,8,"Novedad",1,0,"C",1);
   $pdf -> Cell(20,8,"Retraso",1,0,"C",1);
   $pdf -> Cell(25,8,"Fecha Novedad",1,0,"C",1);
   $pdf -> Cell(40,8,"Observaciones",1,0,"C",1);
-  if(!($viscalti && $GLOBALS[finali]))
+  if(!($viscalti && $_REQUEST[finali]))
    $pdf -> Cell(25,8,"Usuario",1,0,"C",1);
 
   for($i = 0; $i < sizeof($matriz); $i++)
@@ -759,7 +755,7 @@ class Proc_exp_enruta
     $nomost = 1;
    }
 
-   if($viscalti && $GLOBALS[finali])
+   if($viscalti && $_REQUEST[finali])
   	{
    	 $query = "SELECT (TIME_TO_SEC(TIMEDIFF('".$matriz[$i][1]."','".$matriz[$i][2]."'))/60)
    	    ";
@@ -822,7 +818,7 @@ class Proc_exp_enruta
 
    $pdf -> Cell(30,8,$matriz[$i][0],1,0,"C");
    $pdf -> Cell(25,8,$matriz[$i][1],1,0,"R");
-   if($viscalti && $GLOBALS[finali])
+   if($viscalti && $_REQUEST[finali])
    {
    	$pdf -> SetTextColor($estilo[0],$estilo[1],$estilo[2]);
     $pdf -> Cell(25,8,$difftempo,1,0,"R");
@@ -838,7 +834,7 @@ class Proc_exp_enruta
    $pdf -> SetFillColor($rsultco[0],$rsultco[1],$rsultco[2]);
    $pdf -> Cell(25,8,$matriz[$i][4],1,0,"R");
    $pdf -> Cell(40,8,$matriz[$i][5],1,0,"L");
-   if(!($viscalti && $GLOBALS[finali]))
+   if(!($viscalti && $_REQUEST[finali]))
     $pdf -> Cell(25,8,$matriz[$i][9],1,0,"R");
   }
 
@@ -950,9 +946,9 @@ class Proc_exp_enruta
    $consulta = new Consulta($query, $this -> conexion);
    $resptran = $consulta -> ret_matriz();
 
-   $archivo = $GLOBALS[nom_opcion].date("Y_m_d");
+   $archivo = $_REQUEST[nom_opcion].date("Y_m_d");
    session_start();
-   //$query = base64_decode($GLOBALS[query_exp]);
+   //$query = base64_decode($_REQUEST[query_exp]);
    
    $query = $_SESSION['sql']; 	
    $consulta = new Consulta($query, $this -> conexion);
@@ -961,9 +957,9 @@ class Proc_exp_enruta
    $ind_porlleg = 0;
    $ind_enrutas = 0;
 
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
    
-   if($GLOBALS[finali])
+   if($_REQUEST[finali])
    {
     $this -> GeneralFunctions -> ViewVisibilityInterf(array("transp" => $matriz[$i][15]));
 
@@ -1161,7 +1157,7 @@ class Proc_exp_enruta
     }
    }
 
-   if(!$GLOBALS[finali])
+   if(!$_REQUEST[finali])
    {
     $query = "SELECT nom_alarma, cant_tiempo, cod_colorx
                 FROM ".BASE_DATOS.".tab_genera_alarma
@@ -1363,7 +1359,7 @@ class Proc_exp_enruta
 
      $valimp = 0;
 
-     if($GLOBALS[des_retras])
+     if($_REQUEST[des_retras])
      {
       if($tiemp_alarma[0] != NULL)
        $valimp = 1;
@@ -1454,7 +1450,7 @@ class Proc_exp_enruta
     $porllegadfinal[$i] = $porllegad[$i];
    }
 
-   if($GLOBALS[manpdf])
+   if($_REQUEST[manpdf])
     $this -> expListadoPdf($archivo,$desenrutafinal,$porllegadfinal,$ind_enrutas,$ind_porlleg,$alarmas,$manredes,$desurb);
    else
     $this -> expListadoExcel($archivo,$desenrutafinal,$porllegadfinal,$ind_enrutas,$ind_porlleg,$alarmas,$manredes,$desurb);
@@ -1473,20 +1469,20 @@ class Proc_exp_enruta
   $desenrutafinal = array_merge($desenrutafinal);
   $porllegadfinal = array_merge($porllegadfinal);
 
-  if(!$GLOBALS[finali])
+  if(!$_REQUEST[finali])
    $formulario = new Formulario ("index.php","post","Despachos en Ruta","form_item", "","","100%",0,1);
   else
    $formulario = new Formulario ("index.php","post","Despachos Finalizados","form_item", "","","100%",0,1);
 
-  if(!$GLOBALS[des_retras])
+  if(!$_REQUEST[des_retras])
   {
    $formulario -> nueva_tabla();
-   if(!$GLOBALS[finali])
+   if(!$_REQUEST[finali])
     $formulario -> linea("Se Encontro un Total de ".$ind_enrutas." Despacho(s) en Ruta",0,"t2");
   }
 
 
-  if(!$GLOBALS[finali])
+  if(!$_REQUEST[finali])
   {
    $formulario -> nueva_tabla();
    for($i=0; $i < sizeof($alarmas); $i++ )
@@ -1542,11 +1538,11 @@ class Proc_exp_enruta
 	 $formulario -> linea($generador,1,"i");
   }
 
-  if($ind_porlleg && !$GLOBALS[des_retras])
+  if($ind_porlleg && !$_REQUEST[des_retras])
   {
    $formulario -> nueva_tabla();
 
-   if(!$GLOBALS[finali])
+   if(!$_REQUEST[finali])
    {
    	if($manredes && $desurb)
      $formulario -> linea("Se Encontro un Total de ".$ind_porlleg." Despacho(s) Urbanos &oacute; Pendientes por Llegada",0,"t2");
@@ -1641,14 +1637,14 @@ class Proc_exp_enruta
 
   if($desenrutafinal)
   {
-   if(!$GLOBALS[des_retras])
+   if(!$_REQUEST[des_retras])
    {
     $pdf -> Ln();
-    if(!$GLOBALS[finali])
+    if(!$_REQUEST[finali])
      $pdf -> Cell(190,8,"Se Encontro un Total de ".$ind_enrutas." Despacho(s) en Ruta",1,0,"C");
    }
 
-   if(!$GLOBALS[finali])
+   if(!$_REQUEST[finali])
    {
     $pdf -> Ln();
     $wxalarma = floor(190 / sizeof($alarmas));
@@ -1712,11 +1708,11 @@ class Proc_exp_enruta
    }
   }
 
-  if($ind_porlleg && !$GLOBALS[des_retras])
+  if($ind_porlleg && !$_REQUEST[des_retras])
   {
    $pdf -> Ln();
 
-   if(!$GLOBALS[finali])
+   if(!$_REQUEST[finali])
    {
    	if($manredes && $desurb)
      $pdf -> Cell(190,8,"Se Encontro un Total de ".$ind_porlleg." Despacho(s) Urbanos &oacute; Pendientes por Llegada",1,0,"C");

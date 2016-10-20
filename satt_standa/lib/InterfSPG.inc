@@ -20,7 +20,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 class InterfSPG
 {
   private static $cConection = NULL;
-  private static $cUrlSPG = "https://web6.intrared.net:8083/ap/interf/app/spg/wsdl/spg2.wsdl";
+  private static $cUrlSPG = "https://interno.intrared.net:8083/ap/interf/app/spg/wsdl/spg2.wsdl";
   private static $cExcept = NULL;
   private static $cNotMail = "soporte@intrared.net";
   private static $cLogDir  = "/var/www/html/ap/satt_faro/logs"; 

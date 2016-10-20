@@ -12,12 +12,13 @@ class PruebaPad
       define("CLAVE", "sattfaro");
       define("BASE_DATOS", "satt_faro");
       define("DIR_APLICA_CENTRAL", "satt_standa");
+      define("HOST", "aglbd.intrared.net");
 
       echo "<h2>Inicio Prueba PHP 5</h2><br>";
       
     
        include_once("../lib/general/conexion_lib.inc");
-       $this -> conexion = new Conexion("bd10.intrared.net:3306", USUARIO, CLAVE, "".BASE_DATOS."");//Se crea la conexion a la base de datos
+       $this -> conexion = new Conexion(HOST, USUARIO, CLAVE, BASE_DATOS);//Se crea la conexion a la base de datos
 
    
         $regist["despac"] = "1419912";

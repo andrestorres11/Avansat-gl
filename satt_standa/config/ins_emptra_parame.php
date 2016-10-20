@@ -15,11 +15,11 @@ class Ins_emptra_parame
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Captura();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
          $this -> Captura();
@@ -91,7 +91,7 @@ class Ins_emptra_parame
      $formulario -> oculto("usuario","$usuario",0);
      $formulario -> oculto("window","central",0);
      $formulario -> oculto("opcion",1,0);
-     $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+     $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
      $formulario -> botoni("Aceptar","aceptar(document.form_transpor)",0);
      $formulario -> cerrar();
  }
@@ -100,28 +100,28 @@ class Ins_emptra_parame
  {
   $fec_actual = date("Y-m-d H:i:s");
 
-  if($GLOBALS[estper]!= 1)
-    $GLOBALS[estper]=0;
-   if($GLOBALS[estcon]!= 1)
-    $GLOBALS[estcon]=0;
-  if($GLOBALS[estveh]!= 1)
-    $GLOBALS[estveh]=0;
-  if($GLOBALS[estter]!= 1)
-    $GLOBALS[estter]=0;
-  if(!$GLOBALS[califi])
-    $GLOBALS[califi]=0;
-  if(!$GLOBALS[fincal])
-    $GLOBALS[fincal]=0;
-  if(!$GLOBALS[remdes])
-    $GLOBALS[remdes]=0;
-  if(!$GLOBALS[desurb])
-    $GLOBALS[desurb]=0;
-  if(!$GLOBALS[restra])
-    $GLOBALS[restra]=0;
-  if(!$GLOBALS[inidet])
-    $GLOBALS[inidet]=0;
-  if(!$GLOBALS[feplle])
-    $GLOBALS[feplle]=0;    
+  if($_REQUEST[estper]!= 1)
+    $_REQUEST[estper]=0;
+   if($_REQUEST[estcon]!= 1)
+    $_REQUEST[estcon]=0;
+  if($_REQUEST[estveh]!= 1)
+    $_REQUEST[estveh]=0;
+  if($_REQUEST[estter]!= 1)
+    $_REQUEST[estter]=0;
+  if(!$_REQUEST[califi])
+    $_REQUEST[califi]=0;
+  if(!$_REQUEST[fincal])
+    $_REQUEST[fincal]=0;
+  if(!$_REQUEST[remdes])
+    $_REQUEST[remdes]=0;
+  if(!$_REQUEST[desurb])
+    $_REQUEST[desurb]=0;
+  if(!$_REQUEST[restra])
+    $_REQUEST[restra]=0;
+  if(!$_REQUEST[inidet])
+    $_REQUEST[inidet]=0;
+  if(!$_REQUEST[feplle])
+    $_REQUEST[feplle]=0;    
 
     $query = "SELECT a.cod_aplica
                 FROM ".BASE_DATOS.".tab_config_parame a
@@ -133,26 +133,26 @@ class Ins_emptra_parame
     if($matriz)
     {
           $query = "UPDATE ".BASE_DATOS.".tab_config_parame
-                        SET cod_emptra = '$GLOBALS[nitemp]',
-                            nom_razsoc = '$GLOBALS[razsoc]',
-                            tel_ofipri = '$GLOBALS[telpri]',
-                            dir_ofupri = '$GLOBALS[dirpri]',
-                            dir_emailx = '$GLOBALS[dirmai]',
-                            nom_contac = '$GLOBALS[contac]',
-                            val_multpc = '$GLOBALS[multa]',
-                            ind_estcli = '$GLOBALS[estper]',
-                            ind_estcon = '$GLOBALS[estcon]',
-                            ind_estveh = '$GLOBALS[estveh]',
-                            ind_estter = '$GLOBALS[estter]',
-                            ind_califi = '$GLOBALS[califi]',
-                            obs_planru = '$GLOBALS[obs_planru]',
-                            ind_fincal = '$GLOBALS[fincal]',
-                            ind_remdes = '$GLOBALS[remdes]',
-                            ind_desurb = '$GLOBALS[desurb]',
-                            ind_restra = '$GLOBALS[restra]',
-                            ind_inidet = '$GLOBALS[inidet]',
-                            ind_feplle = '$GLOBALS[feplle]',
-                            usr_modifi = '$GLOBALS[usuario]',
+                        SET cod_emptra = '$_REQUEST[nitemp]',
+                            nom_razsoc = '$_REQUEST[razsoc]',
+                            tel_ofipri = '$_REQUEST[telpri]',
+                            dir_ofupri = '$_REQUEST[dirpri]',
+                            dir_emailx = '$_REQUEST[dirmai]',
+                            nom_contac = '$_REQUEST[contac]',
+                            val_multpc = '$_REQUEST[multa]',
+                            ind_estcli = '$_REQUEST[estper]',
+                            ind_estcon = '$_REQUEST[estcon]',
+                            ind_estveh = '$_REQUEST[estveh]',
+                            ind_estter = '$_REQUEST[estter]',
+                            ind_califi = '$_REQUEST[califi]',
+                            obs_planru = '$_REQUEST[obs_planru]',
+                            ind_fincal = '$_REQUEST[fincal]',
+                            ind_remdes = '$_REQUEST[remdes]',
+                            ind_desurb = '$_REQUEST[desurb]',
+                            ind_restra = '$_REQUEST[restra]',
+                            ind_inidet = '$_REQUEST[inidet]',
+                            ind_feplle = '$_REQUEST[feplle]',
+                            usr_modifi = '$_REQUEST[usuario]',
                             fec_modifi = '$fec_actual'";
     }
     else
@@ -164,11 +164,11 @@ class Ins_emptra_parame
                                    obs_planru,usr_creaci,fec_creaci,cod_aplica,
                                    ind_fincal,ind_remdes,ind_restra,ind_inidet,
                                    ind_feplle)
-                           VALUES ('$GLOBALS[nitemp]','$GLOBALS[razsoc]','$GLOBALS[telpri]','$GLOBALS[dirpri]',
-                                   '$GLOBALS[dirmai]','$GLOBALS[contac]','$GLOBALS[multa]','$GLOBALS[estper]',
-                                   '$GLOBALS[estcon]','$GLOBALS[estveh]','$GLOBALS[estter]','$GLOBALS[califi]',
-                                   '$GLOBALS[obs_planru]','$GLOBALS[usuario]','$fec_actual',1,'$GLOBALS[fincal]',
-                                   '$GLOBALS[remdes]','$GLOBALS[restra]','$GLOBALS[inidet]','$GLOBALS[feplle]')
+                           VALUES ('$_REQUEST[nitemp]','$_REQUEST[razsoc]','$_REQUEST[telpri]','$_REQUEST[dirpri]',
+                                   '$_REQUEST[dirmai]','$_REQUEST[contac]','$_REQUEST[multa]','$_REQUEST[estper]',
+                                   '$_REQUEST[estcon]','$_REQUEST[estveh]','$_REQUEST[estter]','$_REQUEST[califi]',
+                                   '$_REQUEST[obs_planru]','$_REQUEST[usuario]','$fec_actual',1,'$_REQUEST[fincal]',
+                                   '$_REQUEST[remdes]','$_REQUEST[restra]','$_REQUEST[inidet]','$_REQUEST[feplle]')
                      ";
     }
 
@@ -176,7 +176,7 @@ class Ins_emptra_parame
 
     if($insercion = new Consulta("COMMIT", $this -> conexion))
     {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Volver a Parametros</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Volver a Parametros</a></b>";
 
      $mensaje =  "Se Actualizar&oacute;n los Parametros del Sistema".$link_a;
      $mens = new mensajes();

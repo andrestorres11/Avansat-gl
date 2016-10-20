@@ -65,7 +65,7 @@
             }
             </style>";
 
-      $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+      $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
       
       $obj_destra = new DespacRuta($this->conexion, $mData);
       $_REPORT = $obj_destra->GetDespacTransiReport( $_REQUEST['cod_transp'] );
@@ -182,7 +182,7 @@
             }
             </style>";
 
-      $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+      $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
      
       $obj_destra = new DespacRuta($this->conexion, $mData);
       $_REPORT = $obj_destra->GetDespacTransiReport( $_REQUEST['cod_transp'] );

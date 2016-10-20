@@ -785,7 +785,7 @@ class InformDespacSeguim
         include( "../lib/general/tabla_lib.inc" );
         include( "../lib/general/constantes.inc" );
         define('BASE_DATOS', $_SESSION['BASE_DATOS']);
-        $this->conexion = new Conexion("bd7.intrared.net", $_SESSION["USUARIO"], $_SESSION["CLAVE"], BASE_DATOS);
+        $this->conexion = new Conexion($_SESSION['HOST'], $_SESSION["USUARIO"], $_SESSION["CLAVE"], BASE_DATOS);
 
         $num_despac = $_REQUEST["num_despac"];
 

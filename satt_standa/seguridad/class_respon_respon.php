@@ -251,12 +251,18 @@ class responsable
 																		"pes_descar"=>"Pestaña Descargue", 
 																		"pes_pernoc"=>"Pestaña C. Pernotacion" 
 																	  )
-														)
+														),
+									"sec_detail"=>array( "name"=>"Detalle",
+														 "sub"=>array(
+														 				"lla_cargue"=>"Llamadas Cargue"
+														 				)
+														 )
 								  );
-
+				
 				$mArray[1] = array( "fil_genera"=>array("ind_visibl"=>1, "sub"=>array("tip_despac"=>1, "tip_servic"=>1, "otr_filtro"=>1) ),
 									"fil_especi"=>array("ind_visibl"=>1, "sub"=>array() ),
-									"sec_inform"=>array("ind_visibl"=>1, "sub"=>array("pes_genera"=>1, "pes_cargax"=>1, "pes_transi"=>1, "pes_descar"=>1, "pes_pernoc"=>1) )
+									"sec_inform"=>array("ind_visibl"=>1, "sub"=>array("pes_genera"=>1, "pes_cargax"=>1, "pes_transi"=>1, "pes_descar"=>1, "pes_pernoc"=>1) ),
+									"sec_detail"=>array("ind_visibl"=>1, "sub"=>array("lla_cargue"=>1))
 								   );
 			break;
 
@@ -286,12 +292,14 @@ class responsable
 
 			case 'jso_plarut':
 				$mArray[0] = array( "inf_planru"=>array("name"=>"Informacion del Plan de Ruta", "sub"=>array(
-																							"usr_creaci"=>"Usuario"
+																							"usr_creaci"=>"Usuario",
+																							"ali_usuari"=>"Alias de usuario"
 																						 ) 
 														),
 									"inf_llegad"=>array("name"=>"Llegada", "sub"=>array() ),
 									"inf_notcon"=>array("name"=>"Informacion de Notas de Controlador", "sub"=>array(
-																							"usr_creaci"=>"Usuario"
+																							"usr_creaci"=>"Usuario",
+																							"ali_usuari"=>"Alias de usuario"
 																						 ) 
 														),
 									"inf_crodok"=>array("name"=>"Trazabilidad Cross Doking", "sub"=>array() ),
@@ -303,14 +311,14 @@ class responsable
 														)
 								  );
 
-				$mArray[1] = array( "inf_planru"=>array("ind_visibl"=>1, "sub"=>array("usr_creaci"=>1)), 
+				$mArray[1] = array( "inf_planru"=>array("ind_visibl"=>1, "sub"=>array("usr_creaci"=>1,"ali_usuari"=>1)), 
 									"inf_llegad"=>array("ind_visibl"=>1, "sub"=>array()), 
-									"inf_notcon"=>array("ind_visibl"=>1, "sub"=>array("usr_creaci"=>1)), 
+									"inf_notcon"=>array("ind_visibl"=>1, "sub"=>array("usr_creaci"=>1,"ali_usuari"=>1)), 
 									"inf_crodok"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"obs_genera"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"img_adjunt"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"pop_califi"=>array("ind_visibl"=>1, "sub"=>array("usr_califi"=>1)) 
-								   );
+								   ); 
 			break;
 
 			case 'jso_infcal':

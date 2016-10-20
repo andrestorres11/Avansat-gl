@@ -17,11 +17,11 @@ class Proc_usuari
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Formulario1();
   else
   {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Formulario1();
@@ -58,11 +58,11 @@ class Proc_usuari
   $perfiles = $consulta -> ret_matriz();
   $perfiles = array_merge($inicio,$perfiles);
 
-  if($GLOBALS[perfil])
+  if($_REQUEST[perfil])
   {
    $query = "SELECT cod_perfil, nom_perfil
                FROM ".BASE_DATOS.".tab_genera_perfil
-              WHERE cod_perfil = ".$GLOBALS[perfil]."
+              WHERE cod_perfil = ".$_REQUEST[perfil]."
                 	ORDER BY 1
              ";
 
@@ -78,11 +78,11 @@ class Proc_usuari
   $formulario -> linea("Informaci&oacute;n B&aacute;sica del Usuario",1,"t2");
 
   $formulario -> nueva_tabla();
-  $formulario -> texto("Usuario","text","usuari", 1, 10,  20,"","$GLOBALS[usuari]");
-  $formulario -> texto("Clave","password","clave1", 1, 10,  20,"","$GLOBALS[clave1]");
-  $formulario -> texto("Confirmar Clave","password","clave2", 1, 10,  20,"","$GLOBALS[clave2]");
-  $formulario -> texto("Nombre","text","nombre", 1,50,150,"","$GLOBALS[nombre]");
-  $formulario -> texto("Correo","text","mail", 1,50,150,"","$GLOBALS[mail]");
+  $formulario -> texto("Usuario","text","usuari", 1, 10,  20,"","$_REQUEST[usuari]");
+  $formulario -> texto("Clave","password","clave1", 1, 10,  20,"","$_REQUEST[clave1]");
+  $formulario -> texto("Confirmar Clave","password","clave2", 1, 10,  20,"","$_REQUEST[clave2]");
+  $formulario -> texto("Nombre","text","nombre", 1,50,150,"","$_REQUEST[nombre]");
+  $formulario -> texto("Correo","text","mail", 1,50,150,"","$_REQUEST[mail]");
   $formulario -> lista("Perfil", "perfil\" onChange=\"form_ins.submit()", $perfiles, 1);
 
   $formulario -> nueva_tabla();
@@ -90,7 +90,7 @@ class Proc_usuari
 
   $formulario -> nueva_tabla();
 
-  if($GLOBALS[perfil])
+  if($_REQUEST[perfil])
   {
    $query = "SELECT a.cod_servic, a.nom_servic
                FROM ".BASE_DATOS.".tab_perfil_servic c,
@@ -99,7 +99,7 @@ class Proc_usuari
 		    		a.cod_servic = b.cod_serhij
               WHERE b.cod_serhij IS NULL AND
               		a.cod_servic = c.cod_servic AND
-              		c.cod_perfil = ".$GLOBALS[perfil]."
+              		c.cod_perfil = ".$_REQUEST[perfil]."
                     GROUP BY 1 ORDER BY 1";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -113,7 +113,7 @@ class Proc_usuari
 			         ".BASE_DATOS.".tab_perfil_servic c
 		   	   WHERE a.cod_servic = b.cod_serhij AND
 			 		 a.cod_servic = c.cod_servic AND
-			 		 c.cod_perfil = ".$GLOBALS[perfil]." AND
+			 		 c.cod_perfil = ".$_REQUEST[perfil]." AND
 			 		 b.cod_serpad = '".$servpadr[$i][0]."'
 		 ";
 
@@ -135,7 +135,7 @@ class Proc_usuari
                       ".BASE_DATOS.".tab_perfil_servic c
                 WHERE a.cod_servic = b.cod_serhij AND
 			  		  a.cod_servic = c.cod_servic AND
-			  		  c.cod_perfil = ".$GLOBALS[perfil]." AND
+			  		  c.cod_perfil = ".$_REQUEST[perfil]." AND
 			  		  b.cod_serpad = ".$servhijo[$j][0] ;
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -231,7 +231,7 @@ class Proc_usuari
 
   $formulario -> nueva_tabla();
   $formulario -> oculto("opcion",1,0);
-  $formulario -> oculto("cod_servic", $GLOBALS[cod_servic], 0);
+  $formulario -> oculto("cod_servic", $_REQUEST[cod_servic], 0);
   $formulario -> oculto("window","central", 0);
   $formulario -> boton("Aceptar", "button\" onClick=\"aceptar_ins1()", 0);
   $formulario -> cerrar();
@@ -239,13 +239,13 @@ class Proc_usuari
 
  function Formulario2()
  {
-  if($GLOBALS[perfil])
+  if($_REQUEST[perfil])
   {
    $query = "SELECT a.nom_filtro,b.clv_filtro
 	       	   FROM ".CENTRAL.".tab_genera_filtro a,
 	       	   		".BASE_DATOS.".tab_aplica_filtro_perfil b
 	      	  WHERE a.cod_filtro = b.cod_filtro AND
-	      	  		b.cod_perfil = ".$GLOBALS[perfil]."
+	      	  		b.cod_perfil = ".$_REQUEST[perfil]."
 	      	  		ORDER BY a.cod_filtro
 	    	";
 
@@ -254,7 +254,7 @@ class Proc_usuari
 
    $query = "SELECT a.nom_perfil
 	       	   FROM ".BASE_DATOS.".tab_genera_perfil a
-	      	  WHERE a.cod_perfil = ".$GLOBALS[perfil]."
+	      	  WHERE a.cod_perfil = ".$_REQUEST[perfil]."
 	    	";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -266,11 +266,11 @@ class Proc_usuari
 
    $formulario -> nueva_tabla();
    $formulario -> linea("Usuario",0,"t");
-   $formulario -> linea($GLOBALS[usuari],1,"i");
+   $formulario -> linea($_REQUEST[usuari],1,"i");
    $formulario -> linea("Nombre",0,"t");
-   $formulario -> linea($GLOBALS[nombre],1,"i");
+   $formulario -> linea($_REQUEST[nombre],1,"i");
    $formulario -> linea("E-mail",0,"t");
-   $formulario -> linea($GLOBALS[mail],1,"i");
+   $formulario -> linea($_REQUEST[mail],1,"i");
    $formulario -> linea("Perfil",0,"t");
    $formulario -> linea($perfil[0][0],1,"i");
 
@@ -324,18 +324,18 @@ class Proc_usuari
 
    $formulario -> nueva_tabla();
    $formulario -> linea("Usuario",0,"t");
-   $formulario -> linea($GLOBALS[usuari],1,"i");
+   $formulario -> linea($_REQUEST[usuari],1,"i");
    $formulario -> linea("Nombre",0,"t");
-   $formulario -> linea($GLOBALS[nombre],1,"i");
+   $formulario -> linea($_REQUEST[nombre],1,"i");
    $formulario -> linea("E-mail",0,"t");
-   $formulario -> linea($GLOBALS[mail],1,"i");
+   $formulario -> linea($_REQUEST[mail],1,"i");
 
    $formulario -> nueva_tabla();
    $formulario -> linea("Servicios",1,"t2");
 
    $formulario -> nueva_tabla();
 
-   $filtrosel = $GLOBALS[codigos];
+   $filtrosel = $_REQUEST[codigos];
 
    for($i = 0; $i < sizeof($matriz); $i++)
    {
@@ -381,7 +381,7 @@ class Proc_usuari
     }
    }
 
-   $servicios = $GLOBALS[permi];
+   $servicios = $_REQUEST[permi];
    $servicios = array_merge($servicios);
 
    $formulario -> nueva_tabla();
@@ -392,14 +392,14 @@ class Proc_usuari
   }
 
   $formulario -> nueva_tabla();
-  $formulario -> oculto("usuari",$GLOBALS[usuari], 0);
-  $formulario -> oculto("clave1",$GLOBALS[clave1], 0);
-  $formulario -> oculto("nombre",$GLOBALS[nombre], 0);
-  $formulario -> oculto("mail",$GLOBALS[mail], 0);
-  $formulario -> oculto("perfil",$GLOBALS[perfil], 0);
+  $formulario -> oculto("usuari",$_REQUEST[usuari], 0);
+  $formulario -> oculto("clave1",$_REQUEST[clave1], 0);
+  $formulario -> oculto("nombre",$_REQUEST[nombre], 0);
+  $formulario -> oculto("mail",$_REQUEST[mail], 0);
+  $formulario -> oculto("perfil",$_REQUEST[perfil], 0);
 
-  $formulario -> oculto("opcion",$GLOBALS[opcion], 0);
-  $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+  $formulario -> oculto("opcion",$_REQUEST[opcion], 0);
+  $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0);
   $formulario -> oculto("window","central", 0);
   $formulario -> boton("Insertar", "button\" onClick=\"if(confirm('Esta Seguro de Insertar el Usuario.?')){form_ins.opcion.value = 3; form_ins.submit();}", 0);
   $formulario -> cerrar();
@@ -409,31 +409,31 @@ class Proc_usuari
  function Insertar()
  {
    $fec_actual = date("Y-m-d H:i:s");
-   $clave = base64_encode($GLOBALS[clave1]);
+   $clave = base64_encode($_REQUEST[clave1]);
 
-   if(!$GLOBALS[perfil])
+   if(!$_REQUEST[perfil])
     $perfil = "NULL";
    else
-    $perfil = $GLOBALS[perfil];
+    $perfil = $_REQUEST[perfil];
 
    $query = "INSERT INTO ".BASE_DATOS.".tab_genera_usuari
    		                 (cod_usuari,clv_usuari,nom_usuari,usr_emailx,
    		    			  cod_perfil)
-   		    	  VALUES ('".$GLOBALS[usuari]."','".$clave."','".$GLOBALS[nombre]."','".$GLOBALS[mail]."',
+   		    	  VALUES ('".$_REQUEST[usuari]."','".$clave."','".$_REQUEST[nombre]."','".$_REQUEST[mail]."',
    		    	  		  ".$perfil.")
    		    ";
 
    $consulta = new Consulta($query, $this -> conexion,"BR");
 
-   if(!$GLOBALS[perfil])
+   if(!$_REQUEST[perfil])
    {
    	//reasignacion de variables
-    $servicios = $GLOBALS[permi];
-    $filtros = $GLOBALS[seleccion];
-    $codigos = $GLOBALS[codigos];
+    $servicios = $_REQUEST[permi];
+    $filtros = $_REQUEST[seleccion];
+    $codigos = $_REQUEST[codigos];
 
     $query = "INSERT INTO ".BASE_DATOS.".tab_aplica_usuari
-                  VALUES ('".$this -> cod_aplica."','".$GLOBALS[usuari]."') ";
+                  VALUES ('".$this -> cod_aplica."','".$_REQUEST[usuari]."') ";
 
     $consulta = new Consulta($query, $this -> conexion, "R");
 
@@ -443,14 +443,14 @@ class Proc_usuari
 	$query = "SELECT cod_servic
                          FROM ".BASE_DATOS.".tab_servic_usuari
                         WHERE cod_servic = ".$servicios[$i]." AND
-                              cod_usuari = '".$GLOBALS[usuari]."' ";
+                              cod_usuari = '".$_REQUEST[usuari]."' ";
 
              $consulta = new Consulta($query, $this -> conexion);
              $matriz2 = $consulta -> ret_matriz();
        if(!sizeof($matriz2))
        {  
        $query = "INSERT INTO ".BASE_DATOS.".tab_servic_usuari
-                 VALUES (".$servicios[$i].",'".$GLOBALS[usuari]."') ";
+                 VALUES (".$servicios[$i].",'".$_REQUEST[usuari]."') ";
 
        $consulta = new Consulta($query, $this -> conexion, "R");
 
@@ -481,7 +481,7 @@ class Proc_usuari
              $query = "SELECT cod_servic
                          FROM ".BASE_DATOS.".tab_servic_usuari
                         WHERE cod_servic = ".$matriz1[0][0]." AND
-                              cod_usuari = '".$GLOBALS[usuari]."' ";
+                              cod_usuari = '".$_REQUEST[usuari]."' ";
 
              $consulta = new Consulta($query, $this -> conexion);
              $matriz2 = $consulta -> ret_matriz();
@@ -489,7 +489,7 @@ class Proc_usuari
              if(!sizeof($matriz2))
              {
                $query = "INSERT INTO ".BASE_DATOS.".tab_servic_usuari
-                         VALUES (".$matriz1[0][0].",'".$GLOBALS[usuari]."') ";
+                         VALUES (".$matriz1[0][0].",'".$_REQUEST[usuari]."') ";
 
                $consulta = new Consulta($query, $this -> conexion, "R");
 
@@ -501,14 +501,14 @@ class Proc_usuari
         }//fin while
    }//fin for
 
-   for($i=0;$i<$GLOBALS[max_ser];$i++)
+   for($i=0;$i<$_REQUEST[max_ser];$i++)
    {
      if($filtros[$i] != Null)
      {
        //query de insercion
        $query = "INSERT INTO ".BASE_DATOS.".tab_aplica_filtro_usuari
                  VALUES ('".COD_APLICACION."','".$filtros[$i]."',
-                         '".$GLOBALS[usuari]."','".$codigos[$i]."') ";
+                         '".$_REQUEST[usuari]."','".$codigos[$i]."') ";
 
        $consulta = new Consulta($query, $this -> conexion, "R");
      }//fin if $filtros[$i]
@@ -517,9 +517,9 @@ class Proc_usuari
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
   {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otro Usuario</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otro Usuario</a></b>";
 
-     $mensaje =  "El Usuario <b>".$GLOBALS[usuari]."</b> Se Inserto con Exito".$link_a;
+     $mensaje =  "El Usuario <b>".$_REQUEST[usuari]."</b> Se Inserto con Exito".$link_a;
      $mens = new mensajes();
      $mens -> correcto("INSERTAR USUARIO",$mensaje);
   }

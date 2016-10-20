@@ -32,7 +32,7 @@ class InfCallCenter
   
   function principal()
   {
-    switch($GLOBALS[opcion])
+    switch($_REQUEST[opcion])
     {
       case 99:
         InfCallCenter::getInform();
@@ -274,7 +274,7 @@ class InfCallCenter
 
     $formulario = new Formulario ( "?", "post", "Informe Indicador Call Center ", "frm_callce\" id=\"frm_callceID");
     
-   # echo '<a href="index.php?cod_servic='.$GLOBALS['cod_servic'].'&window=central&opcion=1 "target="centralFrame"><img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" border="0"></a>';
+   # echo '<a href="index.php?cod_servic='.$_REQUEST['cod_servic'].'&window=central&opcion=1 "target="centralFrame"><img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" border="0"></a>';
     echo ' <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" border="0" onclick="exportExcel();"> ';
     
     $mHtml  = "<table border='1'>";
@@ -370,7 +370,7 @@ class InfCallCenter
     $mHtml .= '<input type="hidden" value="" name="excelExport" id="excelExportID">';
     $mHtml .= '<input type="hidden" value="central" name="window">';
     $mHtml .= '<input id="opcionID" type="hidden" value="1" name="opcion">';
-    $mHtml .= '<input type="hidden" value="'.$GLOBALS[cod_servic].'" name="cod_servic">';
+    $mHtml .= '<input type="hidden" value="'.$_REQUEST[cod_servic].'" name="cod_servic">';
 
     echo $mHtml;
     echo $mhtmlModded;
@@ -507,7 +507,7 @@ class InfCallCenter
     $formulario -> nueva_tabla();
     $formulario -> oculto("window","central",0);
     $formulario -> oculto("opcion\" id=\"opcionID",99,0);
-    $formulario -> oculto("cod_servic",$GLOBALS['cod_servic'],0);
+    $formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
     $formulario -> cerrar();
   }
 

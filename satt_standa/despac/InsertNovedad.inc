@@ -1156,6 +1156,47 @@ class InsertNovedad {
         }
     }
 
+    /*! \fn: loadImage
+    *  \brief: carga imagenes en la bd
+    *  \author: Ing. Miguel Romero
+    *    \date: 14/09/2016 
+    *  \param: binFoto = binario de la foto 
+    *  \return valor que retorna
+    */
+    
+    
+    public function loadImage($numDespac, $binFoto, $pueContro)
+    {
+
+        $max =  "SELECT MAX(num_consec) AS consecutivo
+                   FROM ".BASE_DATOS.".tab_despac_images
+                WHERE num_despac = '".$numDespac."'";
+ 
+        $mConsult = new Consulta($max, $this->conexion);
+        $consecutivo = $mConsult->ret_matrix('a');
+
+        $consecutivo = ($consecutivo[0]['consecutivo']+1);
+ 
+        $sql = "INSERT INTO ".BASE_DATOS.".tab_despac_images (
+                            num_despac ,
+                            cod_contro ,
+                            num_consec ,
+                            bin_fotoxx ,
+                            usr_creaci ,
+                            fec_creaci
+                            )
+                            VALUES (
+                            '".$numDespac."',  
+                            '".$pueContro."',  
+                            ".$consecutivo.",  
+                            '".$binFoto."',
+                            '".$_SESSION['datos_usuario']['cod_usuari']."',  
+                            NOW());"; 
+
+        $mConsult = new Consulta($sql, $this->conexion, "R"); 
+ 
+    }
+
     /* ! \fn: InsertarNovedadNC
      *  \brief: Guarda las novedades antes de sitio
      *  \author: 
@@ -2273,7 +2314,7 @@ class InsertNovedad {
 
             /* NUEVO FORMATO ID:151900 */
             $info .= "<tr>";
-            $info .= "<td style='font-family:Trebuchet MS, Verdana, Arial; font-size:20px; background-color: #35650F; color:#FFFFFF; padding: 4px;' align='center'><img src='https://web10.intrared.net/ap/satt_faro/imagenes/logo.gif' height='40' width='90' style='background-color:#FFFFFF;'></td>";
+            $info .= "<td style='font-family:Trebuchet MS, Verdana, Arial; font-size:20px; background-color: #35650F; color:#FFFFFF; padding: 4px;' align='center'><img src='https://".HOST_WEB.".intrared.net/ap/satt_faro/imagenes/logo.gif' height='40' width='90' style='background-color:#FFFFFF;'></td>";
             $info .= "<td style='font-family:Trebuchet MS, Verdana, Arial; font-size:20px; background-color: #35650F; color:#FFFFFF; padding: 4px;' align='center'>REPROGRAMACION CITA DE ENTREGA " . $num_viajex . " - " . $_DATACON[0]['num_placax'] . "</td>";
             $info .= "</tr>";
 
@@ -3671,7 +3712,8 @@ class InsertNovedad {
                             'ind_alarma' => $mDatNoveda['ind_alarma'],
                             'ind_tiempo' => $mDatNoveda['ind_tiempo'],
                             'nov_especi_' => $mDatNoveda['nov_especi'],
-                            'ind_manala' => $mDatNoveda['ind_manala']
+                            'ind_manala' => $mDatNoveda['ind_manala'],
+                            'bin_fotcon' => $regist['bin_fotcon']
                         );
 
                         if (!$error_) {
@@ -3787,7 +3829,7 @@ class InsertNovedad {
                         ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
                         try {
                             //Ruta Web Service Faro.
-                            $url_webser = "https://web10.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl";
+                            $url_webser = "https://".HOST_WEB.".intrared.net/ap/interf/app/faro/wsdl/faro.wsdl";
                             $mFecha[0] = date('Y-m-d', strtotime($regist['fecnov']));
                             $mFecha[1] = date('H:i', strtotime($regist['fecnov']));
 
@@ -4115,12 +4157,12 @@ class InsertNovedad {
      */
 
     private function sendMail($datos) {
-        if( $this->cod_transp  )
-
-        if( in_array($this->cod_transp, self::$cLisTrans['MailNotHtml']) ) {
-            return $this->sendMailNotHtml($datos);
+        if( $this->cod_transp  ) {
+            if( in_array($this->cod_transp, self::$cLisTrans['MailNotHtml']) ) {
+                return $this->sendMailNotHtml($datos);
+            }
         }
-
+        
         $cabeceras = 'MIME-Version: 1.0' . "\r\n";
         $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $cabeceras .= 'From: ' . MAIL_SUPERVISORES;

@@ -29,7 +29,8 @@ class AjaxDespachos{
 		switch ($mHost[0]) {
 			case 'web7': 	$mBD = "bd7.intrared.net:3306"; break;
 			case 'web13': 	$mBD = "bd13.intrared.net:3306"; break;
-			case 'web10': 	$mBD = "bd10.intrared.net"; break;
+			case 'avansatgl': 	$mBD = "aglbd.intrared.net"; break;
+			default: $mBD = "demo.intrared.net"; break;
 		}
 
 		$this -> conexion = new Conexion( $mBD, $_SESSION['USUARIO'], $_SESSION['CLAVE'], $_SESSION['BASE_DATOS']  );

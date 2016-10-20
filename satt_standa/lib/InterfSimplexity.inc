@@ -17,7 +17,8 @@
 class InterfSimplexity
 {
   private static $cConection = NULL;
-  private static $cUrlAstrans =    "https://200.32.81.202:8065/ServicioViajes.svc?wsdl";  
+  private static $cUrlAstrans =    "https://astrans.coronaindustrial.net:8065/ServicioViajes.svc?wsdl";
+  #private static $cUrlAstrans =    "https://200.32.81.202:8065/ServicioViajes.svc?wsdl";
   private static $cUrlAstransSVC = "https://astrans.coronaindustrial.net:8065/ServicioViajes.svc";
   private static $cUserApl = NULL;
   private static $cNotMail = "soporte@intrared.net";
@@ -138,7 +139,7 @@ class InterfSimplexity
         $mXmlEnvelope = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/" xmlns:sim="http://schemas.datacontract.org/2004/07/Simplexity.AsTrans.Corona.Application.Main.DTOs">
                         <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
                         <wsa:Action>http://tempuri.org/IServicioViajes/RegistrarCargue</wsa:Action>
-                        <wsa:To>https://200.32.81.202:8065/ServicioViajes.svc</wsa:To>
+                        <wsa:To>https://astrans.coronaindustrial.net:8065/ServicioViajes.svc</wsa:To>
                        </soap:Header>
                        <soap:Body>
                           <tem:RegistrarCargue>
@@ -171,7 +172,8 @@ class InterfSimplexity
  
           # Convierte el Xml a Array --------------------------------------------------------------------------------------------------------------------------
           $mXml2 = self::XMLtoArray($mResultSoap);
-      
+ 
+         
           # Captura de los valores que retorna Mensage, numero transaccion Tipo
           $mMessage =      $mXml2["S:ENVELOPE"]["S:BODY"]["REGISTRARCARGUERESPONSE"]["REGISTRARCARGUERESULT"]["B:MESSAGE"];
           $mNumberTransa = $mXml2["S:ENVELOPE"]["S:BODY"]["REGISTRARCARGUERESPONSE"]["REGISTRARCARGUERESULT"]["B:TRANSACTIONNUMBER"]["I:NIL"];
@@ -255,7 +257,7 @@ class InterfSimplexity
         $mXmlEnvelope = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/" xmlns:sim="http://schemas.datacontract.org/2004/07/Simplexity.AsTrans.Corona.Application.Main.DTOs">
                            <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
                               <wsa:Action>http://tempuri.org/IServicioViajes/RegistrarDescargueRemesa</wsa:Action>
-                              <wsa:To>https://200.32.81.202:8065/ServicioViajes.svc/wsa:To>
+                              <wsa:To>https://astrans.coronaindustrial.net:8065/ServicioViajes.svc</wsa:To>
                            </soap:Header>
                            <soap:Body>
                               <tem:RegistrarDescargueRemesa>
@@ -289,7 +291,7 @@ class InterfSimplexity
 
           # Convierte el Xml a Array --------------------------------------------------------------------------------------------------------------------------
           $mXml2 = self::XMLtoArray($mResultSoap);
-      
+
           # Captura de los valores que retorna Mensage, numero transaccion Tipo
           $mMessage = $mXml2["S:ENVELOPE"]["S:BODY"]["REGISTRARDESCARGUEREMESARESPONSE"]["REGISTRARDESCARGUEREMESARESULT"]["B:MESSAGE"];
           $mNumberTransa = $mXml2["S:ENVELOPE"]["S:BODY"]["REGISTRARDESCARGUEREMESARESPONSE"]["REGISTRARDESCARGUEREMESARESULT"]["B:TRANSACTIONNUMBER"]["I:NIL"];
@@ -369,7 +371,7 @@ class InterfSimplexity
         $mXmlEnvelope = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/" xmlns:sim="http://schemas.datacontract.org/2004/07/Simplexity.AsTrans.Corona.Application.Main.DTOs">
                             <soap:Header xmlns:wsa="http://www.w3.org/2005/08/addressing">
                                 <wsa:Action>http://tempuri.org/IServicioViajes/RegistrarDescargueRemision</wsa:Action>
-                                <wsa:To>https://200.32.81.202:8065/ServicioViajes.svc</wsa:To>
+                                <wsa:To>https://astrans.coronaindustrial.net:8065/ServicioViajes.svc</wsa:To>
                             </soap:Header>
                              <soap:Body>
                                 <tem:RegistrarDescargueRemision>
@@ -402,7 +404,8 @@ class InterfSimplexity
           curl_close($mSoapAnstran);
  
           # Convierte el Xml a Array --------------------------------------------------------------------------------------------------------------------------
-          $mXml2 = self::XMLtoArray($mResultSoap);     
+          $mXml2 = self::XMLtoArray($mResultSoap);
+        
 
           # Captura de los valores que retorna Mensage, numero transaccion Tipo
           $mMessage = $mXml2["S:ENVELOPE"]["S:BODY"]["REGISTRARDESCARGUEREMISIONRESPONSE"]["REGISTRARDESCARGUEREMISIONRESULT"]["B:MESSAGE"];

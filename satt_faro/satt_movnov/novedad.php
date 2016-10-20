@@ -330,7 +330,7 @@ class Novedad
         $_POST["cod_ciudes"] = $pc["cod_ciudes"];
         $_POST["fec_llegpl"] = $pc["fec_llegpl"];
 
-        define( "URL_INTERF_FAROXX", "https://web10.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl" );
+        define( "URL_INTERF_FAROXX", "https://avansatgl.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl" );
         //define( "URL_INTERF_FAROXX", "https://dev.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl" );
         try
         {

@@ -15,11 +15,11 @@ class Proc_activi
 //********METODOS DE LA CLASE PROC_LISTA DE PRECIOS ESTANDAR*************
         function principal()
         {
-                if(!isset($GLOBALS[opcion]))
+                if(!isset($_REQUEST[opcion]))
                         $this -> Activi();
                 else
                 {
-                        switch($GLOBALS[opcion])
+                        switch($_REQUEST[opcion])
                         {
                                 case "4":
                                 $this -> Cambiar_Estado();
@@ -53,13 +53,13 @@ class Proc_activi
                                 {
                                         echo "<td class=\"celda2\">".$activi[$i][0]."</td>";
                                         echo "<td class=\"celda2\">".$activi[$i][1]."</td>";
-                                        echo "<td class=\"celda2\"><a href=\"index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=4&cod_activi=".$activi[$i][0]."&ind_estado=".$activi[$i][2]."\">$texto</a></td></tr><tr>";
+                                        echo "<td class=\"celda2\"><a href=\"index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=4&cod_activi=".$activi[$i][0]."&ind_estado=".$activi[$i][2]."\">$texto</a></td></tr><tr>";
                                 }//fin if
                                 else
                                 {
                                         echo "<td class=\"celda\">".$activi[$i][0]."</td>";
                                         echo "<td class=\"celda\">".$activi[$i][1]."</td>";
-                                        echo "<td class=\"celda2\"><a href=\"index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=4&cod_activi=".$activi[$i][0]."&ind_estado=".$activi[$i][2]."\">$texto</a></td></tr><tr>";
+                                        echo "<td class=\"celda2\"><a href=\"index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=4&cod_activi=".$activi[$i][0]."&ind_estado=".$activi[$i][2]."\">$texto</a></td></tr><tr>";
                                 }//fin else
                         }//fin for
                 }//fin if

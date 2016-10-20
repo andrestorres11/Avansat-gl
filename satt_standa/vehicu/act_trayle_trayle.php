@@ -15,11 +15,11 @@ class Proc_traylers
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
    $this -> Buscar();
   else
   {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Resultado();
@@ -70,14 +70,14 @@ class Proc_traylers
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  ";
 
@@ -102,7 +102,7 @@ class Proc_traylers
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Cancelar","form_act.reset()",1);
    $formulario -> cerrar();
@@ -122,15 +122,15 @@ class Proc_traylers
 				   a.num_trayle = c.num_trayle
            ";
 
-  if($GLOBALS[transp])
-   $query .= " AND c.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[fil] == 1)
-   $query = $query." AND a.num_trayle LIKE '%".$GLOBALS[remolq]."%'";
-  else if($GLOBALS[fil] == 2)
+  if($_REQUEST[transp])
+   $query .= " AND c.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[fil] == 1)
+   $query = $query." AND a.num_trayle LIKE '%".$_REQUEST[remolq]."%'";
+  else if($_REQUEST[fil] == 2)
    $query = $query." AND a.ind_estado = ".COD_ESTADO_ACTIVO."";
-  else if($GLOBALS[fil] == 3)
+  else if($_REQUEST[fil] == 3)
    $query = $query." AND a.ind_estado = ".COD_ESTADO_INACTI."";
-  else if($GLOBALS[fil] == 4)
+  else if($_REQUEST[fil] == 4)
    $query = $query." AND a.ind_estado = ".COD_ESTADO_PENDIE."";
 
   $query = $query." GROUP BY 1 ORDER BY 2";
@@ -163,7 +163,7 @@ class Proc_traylers
    else if($matriz[$i][5] == COD_ESTADO_PENDIE)
     $estado = "Pendiente";
 
-   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&trayle=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&trayle=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario -> linea($matriz[$i][0],0,$estilo);
    $formulario -> linea($matriz[$i][1],0,$estilo);
@@ -177,7 +177,7 @@ class Proc_traylers
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -194,7 +194,7 @@ class Proc_traylers
                    a.tip_tramit,a.cod_carroc,a.ser_chasis,a.nom_propie,a.cod_config,
                    a.dir_fottra,a.cod_colore
            FROM ".BASE_DATOS.".tab_vehige_trayle a
-           WHERE a.num_trayle = '$GLOBALS[trayle]'";
+           WHERE a.num_trayle = '$_REQUEST[trayle]'";
    $consulta = new Consulta($query, $this -> conexion);
    $matriz = $consulta -> ret_matriz();
 
@@ -272,7 +272,7 @@ class Proc_traylers
   //y si se elige una marca antes de terminar
   //la carga de todo el formulario
 
-  $formulario -> oculto("cod_servic","$GLOBALS[cod_servic]",0);
+  $formulario -> oculto("cod_servic","$_REQUEST[cod_servic]",0);
   $formulario -> oculto("window","central",0);
 
   $formulario -> linea("Datos B&aacute;sicos",0,"t2");
@@ -312,7 +312,7 @@ class Proc_traylers
   $formulario -> oculto("MAX_FILE_SIZE","200000",0);
   $formulario -> oculto("usuario","$usuario",0);
   $formulario -> oculto("opcion",2,0);
-  $formulario -> oculto("cod_servic","$GLOBALS[cod_servic]",0);
+  $formulario -> oculto("cod_servic","$_REQUEST[cod_servic]",0);
 
   $formulario -> oculto("trayle","".$matriz[0][0]."",0);
 
@@ -327,50 +327,50 @@ class Proc_traylers
 
   $fec_actual = date("Y-m-d H:i:s");
 
-   if($GLOBALS[fot_trayle])
+   if($_REQUEST[fot_trayle])
    {
-    if(move_uploaded_file($GLOBALS[fot_trayle],URL_REMOLQ.$GLOBALS[trayler].".jpg"))
-     $GLOBALS[fot_trayle] = "'".$GLOBALS[trayler].".jpg'";
+    if(move_uploaded_file($_REQUEST[fot_trayle],URL_REMOLQ.$_REQUEST[trayler].".jpg"))
+     $_REQUEST[fot_trayle] = "'".$_REQUEST[trayler].".jpg'";
     else
-     $GLOBALS[fot_trayle] = "NULL";
+     $_REQUEST[fot_trayle] = "NULL";
    }
    else
-    $GLOBALS[fot_trayle] = "NULL";
+    $_REQUEST[fot_trayle] = "NULL";
 
-          if( strlen($GLOBALS[config])== 3 )
-        {     $ejes = substr($GLOBALS[config],2,1); }
+          if( strlen($_REQUEST[config])== 3 )
+        {     $ejes = substr($_REQUEST[config],2,1); }
         else
-        {     $ejes = $GLOBALS[config]; }
+        {     $ejes = $_REQUEST[config]; }
 
  $query = "UPDATE ".BASE_DATOS.".tab_vehige_trayle
-               SET num_trayle = '$GLOBALS[trayler]',
-                   cod_marcax = '$GLOBALS[marca]',
-                   cod_colore = '$GLOBALS[color]',
-                   cod_carroc = '$GLOBALS[carroc]',
-                   ano_modelo = '$GLOBALS[modelo]',
+               SET num_trayle = '$_REQUEST[trayler]',
+                   cod_marcax = '$_REQUEST[marca]',
+                   cod_colore = '$_REQUEST[color]',
+                   cod_carroc = '$_REQUEST[carroc]',
+                   ano_modelo = '$_REQUEST[modelo]',
                    nro_ejes   = '$ejes',
-                   dir_fottra = ".$GLOBALS[fot_trayle].",
-                   ser_chasis = '$GLOBALS[chasis]',
-                   tra_anchox = '$GLOBALS[ancho]',
-                   tra_altoxx = '$GLOBALS[alto]',
-                   tra_largox = '$GLOBALS[largo]',
-                   tra_volpos = '$GLOBALS[volpos]',
-                   tra_pesoxx = '$GLOBALS[peso]',
-                   tra_capaci = '$GLOBALS[capaci]',
-                   tip_tramit = '$GLOBALS[tiptram]',
-                   nom_propie = '$GLOBALS[propie]',
-                   cod_config = '$GLOBALS[config]',
-                   usr_modifi = '$GLOBALS[usuario]',
+                   dir_fottra = ".$_REQUEST[fot_trayle].",
+                   ser_chasis = '$_REQUEST[chasis]',
+                   tra_anchox = '$_REQUEST[ancho]',
+                   tra_altoxx = '$_REQUEST[alto]',
+                   tra_largox = '$_REQUEST[largo]',
+                   tra_volpos = '$_REQUEST[volpos]',
+                   tra_pesoxx = '$_REQUEST[peso]',
+                   tra_capaci = '$_REQUEST[capaci]',
+                   tip_tramit = '$_REQUEST[tiptram]',
+                   nom_propie = '$_REQUEST[propie]',
+                   cod_config = '$_REQUEST[config]',
+                   usr_modifi = '$_REQUEST[usuario]',
                    fec_modifi = '$fec_actual'
-             WHERE num_trayle = '$GLOBALS[trayle]'";
+             WHERE num_trayle = '$_REQUEST[trayle]'";
 
   $insercion = new Consulta($query, $this -> conexion,"BR");
 
   if($consulta = new Consulta ("COMMIT", $this -> conexion))
   {
-   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Remolque</a></b>";
+   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Remolque</a></b>";
 
-   $mensaje = "El Remolque <b>".$GLOBALS[trayler]."</b> se Actualizo con Exito<br>".$link;
+   $mensaje = "El Remolque <b>".$_REQUEST[trayler]."</b> se Actualizo con Exito<br>".$link;
    $mens = new mensajes();
    $mens -> correcto("ACTUALIZAR REMOLQUE",$mensaje);
   }

@@ -413,13 +413,13 @@ class Ins_conduc_conduc {
                     $mHtml->Input(array("type" => "numeric", "name" => "conduc[cod_tercer]", "id" => "cod_tercerID", "onblur"=>"comprobar()", "width" => "10%", "obl" => "1", "minlength" => "7", "maxlength" => "10", "validate" => "numero", "value" =>  $datos->principal->cod_tercer, $disabled, "end" => true));
 
                     $mHtml->Label("Nombres:", "width:25%; *:1;");
-                    $mHtml->Input(array("type" => "alpha", "name" => "conduc[nom_tercer]", "validate" => "alpha", "obl" => "1", "minlength" => "3", "maxlength" => "50", "id" => "nom_tercerID", "width" => "25%", "value" => $datos->principal->nom_tercer));
+                    $mHtml->Input(array("type" => "alpha", "name" => "conduc[nom_tercer]", "validate" => "alpha", "obl" => "1", "minlength" => "4", "maxlength" => "50", "id" => "nom_tercerID", "width" => "25%", "value" => $datos->principal->nom_tercer));
 
                     $mHtml->Label(("Primer Apellido:"), "width:25%; *:1;");
-                    $mHtml->Input(array("type" => "alpha", "name" => "conduc[nom_apell1]", "id" => "nom_apell1", "validate" => "alpha",  "obl" => "1", "minlength" => "3", "maxlength" => "20", "width" => "100px", "value" => $datos->principal->nom_apell1, "end" => true));
+                    $mHtml->Input(array("type" => "alpha", "name" => "conduc[nom_apell1]", "id" => "nom_apell1", "validate" => "alpha",  "obl" => "1", "minlength" => "4", "maxlength" => "20", "width" => "100px", "value" => $datos->principal->nom_apell1, "end" => true));
 
                     $mHtml->Label(("Segundo Apellido:"), "width:25%; :1;");
-                    $mHtml->Input(array("type" => "alpha", "name" => "conduc[nom_apell2]", "validate" => "alpha", "minlength" => "3", "maxlength" => "20", "id" => "nom_apell2", "width" => "25%", "value" => $datos->principal->nom_apell2));
+                    $mHtml->Input(array("type" => "alpha", "name" => "conduc[nom_apell2]", "validate" => "alpha", "minlength" => "4", "maxlength" => "20", "id" => "nom_apell2", "width" => "25%", "value" => $datos->principal->nom_apell2));
                     $mHtml->Label("Factor RH:", "width:25%; :1;");
                     $mHtml->Select2 ($datos->grupoSanguineo,  array("name" => "conduc[cod_grupsa]", "validate" => "select",  "id" => "cod_grupsaID", "width" => "25%", "key"=> $datos->principal->cod_grupsa, "end" => true) );
                     

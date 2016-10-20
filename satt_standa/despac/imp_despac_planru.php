@@ -23,13 +23,13 @@ class ImprimirPlandeRuta
 
   function principal()
   {
-    if(!isset($GLOBALS[opcion]))
+    if(!isset($_REQUEST[opcion]))
     {
       $this -> Listar();
     }
     else
     {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "0":
         $this -> Listar();
@@ -95,9 +95,28 @@ class ImprimirPlandeRuta
           
           function Print_Despac( despac )
           {
+            $("<div><div style=\"background-color:#FFFFFF; width:100%; height: 100px;border-radius: 10px;\"><center><br><div style=\"width:50%; border-style: solid;border-width: 5px;background-color:rgb(0,128,0)\"><label style=\"color:#FFFFFF\"><b>TIPO DE QR: </b></label></div><br><input type=\"radio\" name=\"radTipQR\" value=\"1\" checked=\"checked\"><label style=\"color:#000000\" >Waze</label>&nbsp;&nbsp;&nbsp;<input type=\"radio\" name=\"radTipQR\" value=\"2\"><label style=\"color:#000000\">Google Maps</label></center></div></div>").dialog({
+              modal:true,
+              buttons:{
+                "Con codigo Qr":function(){
+                  data = $("[name=\"radTipQR\"]:checked").val(); 
+                  $("#tipoqrID").val(data); 
             $("#opcionID").val("1");
             $("#despacID").val( despac.text() );
             $("#formID").submit();
+                },
+                "Sin Codigo Qr":function(){
+                  $("#tipoqrID").val(0); 
+                  $("#opcionID").val("1");
+                  $("#despacID").val( despac.text() );
+                  $("#formID").submit();
+                },
+                "Cancelar":function(){
+                   $(this).dialog("close");
+          }
+          
+              }
+            });  
           }
           
           </script>';
@@ -385,7 +404,8 @@ SELECT a.num_despac,
     $formulario -> oculto("window","central",0);
     $formulario -> oculto("opcion\" id=\"opcionID",0,0);
     $formulario -> oculto("despac\" id=\"despacID",0,0);
-    $formulario -> oculto("cod_servic",$GLOBALS['cod_servic'],0);
+    $formulario -> oculto("tipoqr\" id=\"tipoqrID",0,0);
+    $formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
     $formulario -> cerrar();     
   }
 
@@ -393,6 +413,10 @@ SELECT a.num_despac,
 
   function Imprimir()
   {
+    echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/jquery.js\"></script>\n";
+    echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/imp_planru_contro.js\"></script>\n";
+    echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/jquery.qrcode-0.12.0.js\"></script>\n";
+    echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/jquery.qrcode-0.12.0.min.js\"></script>\n";
     if( $_REQUEST['sisext'] )
     {
       $mSql = "SELECT num_despac 
@@ -405,13 +429,13 @@ SELECT a.num_despac,
     
       if( sizeof( $_SISEXT ) > 0 )
       {
-        $GLOBALS['despac'] = $_SISEXT[0][0];
+        $_REQUEST['despac'] = $_SISEXT[0][0];
       }
       else
       {
         $formulario = new Formulario ("index.php","post","Imprimir Plan de Ruta","form_lispalnruimp");
 
-        $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Intentar de Nuevo</a></b>";
+        $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Intentar de Nuevo</a></b>";
 
         $mensaje =  "El Nro. de Viaje <b>".$_REQUEST['sisext']."</b> no se Encuentra Registrado.".$link_a;
         $mens = new mensajes();
@@ -422,7 +446,7 @@ SELECT a.num_despac,
       }
     }
     
-    $_SESSION['num_despac'] = $GLOBALS['despac'];
+    $_SESSION['num_despac'] = $_REQUEST['despac'];
   
     $datos_usuario = $this -> usuario -> retornar();
     $usuario=$datos_usuario["cod_usuari"];
@@ -439,7 +463,7 @@ SELECT a.num_despac,
                      f.num_placax = d.num_placax AND
                      a.ind_planru = 'S' AND
                      a.ind_anulad = 'R' AND
-                     a.num_despac = '$GLOBALS[despac]'";
+                     a.num_despac = '$_REQUEST[despac]'";
 
     if($datos_usuario["cod_perfil"] == "")
     {
@@ -547,9 +571,9 @@ SELECT a.num_despac,
     {
       $formulario = new Formulario ("index.php","post","Imprimir Plan de Ruta","form_lispalnruimp");
 
-      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Intentar de Nuevo</a></b>";
+      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Intentar de Nuevo</a></b>";
 
-      $mensaje =  "El Despacho # <b>".$GLOBALS[despac]."</b> no se Encuentra Registrado &oacute; el Perfil Actual del Usuario no Tiene los Permisos Correspondientes.".$link_a;
+      $mensaje =  "El Despacho # <b>".$_REQUEST[despac]."</b> no se Encuentra Registrado &oacute; el Perfil Actual del Usuario no Tiene los Permisos Correspondientes.".$link_a;
       $mens = new mensajes();
       $mens -> correcto("IMPRIMIR PLAN DE RUTA",$mensaje);
 
@@ -560,7 +584,7 @@ SELECT a.num_despac,
       $query = "SELECT b.cod_rutasx,b.nom_rutasx
                   FROM ".BASE_DATOS.".tab_despac_vehige a,
                        ".BASE_DATOS.".tab_genera_rutasx b
-                 WHERE a.num_despac = ".$GLOBALS[despac]." AND
+                 WHERE a.num_despac = ".$_REQUEST[despac]." AND
                        a.cod_rutasx = b.cod_rutasx
                  GROUP BY 1";
 
@@ -571,7 +595,7 @@ SELECT a.num_despac,
       $query = "SELECT a.cod_transp,b.abr_tercer,b.dir_domici
                   FROM ".BASE_DATOS.".tab_despac_vehige a,
                        ".BASE_DATOS.".tab_tercer_tercer b
-                 WHERE a.num_despac = ".$GLOBALS[despac]." AND
+                 WHERE a.num_despac = ".$_REQUEST[despac]." AND
                        b.cod_tercer = a.cod_transp
                  GROUP BY 1";
 
@@ -620,7 +644,7 @@ SELECT a.num_despac,
                        i.cod_carroc = k.cod_carroc AND
                        i.cod_lineax = m.cod_lineax AND
                        i.cod_marcax = m.cod_marcax AND
-                       a.num_despac = '".$GLOBALS[despac]."'";
+                       a.num_despac = '".$_REQUEST[despac]."'";
       
       $consulta = new Consulta($query, $this -> conexion);
       $matriz = $consulta -> ret_matriz();
@@ -628,7 +652,7 @@ SELECT a.num_despac,
 
       $query = "SELECT a.num_trayle
                   FROM ".BASE_DATOS.".tab_despac_vehige a
-                 WHERE a.num_despac = ".$GLOBALS[despac]."";
+                 WHERE a.num_despac = ".$_REQUEST[despac]."";
 
       $consec = new Consulta($query, $this -> conexion);
       $trayler = $consec -> ret_matriz();
@@ -659,7 +683,7 @@ SELECT a.num_despac,
         $f2 = "../".BASE_DATOS."/".URL_VEHICU.$matriz[0][15];
       }
 
-      $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+      $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
       $ciudad_o = $objciud -> getSeleccCiudad($matriz[0][1]);
       $ciudad_d = $objciud -> getSeleccCiudad($matriz[0][2]);
 
@@ -748,7 +772,7 @@ SELECT a.num_despac,
       if($_SESSION['datos_usuario']['cod_perfil'] == 741){
         $d18 = "Se&ntilde;or Conductor es de su Responsabilidad contestar todas las llamadas realizadas del departamento de Seguridad TRANSFOREX S.A y del CL FARO, Repostarse en todos los Puestos de Control definidos en este Plan de Ruta ya que &eacute;l no Reporte tendr&aacute; una SANCION de $ 50.000 pesos por cada Uno. ";
       }
-      $d19 = $GLOBALS[despac]; //numero de despacho
+      $d19 = $_REQUEST[despac]; //numero de despacho
       $d20 = $matriz[0]['nom_tipdes']; //numero de caravana
       $d21 = $matriz[0][17]; //Fecha de llegada planeada
       $d22 = number_format($paramet[0][0]); //valor de la multa
@@ -781,15 +805,31 @@ SELECT a.num_despac,
       $tipser = $consul[0][0];
       /*************************************************************************************************************************************************/
 
+
+      if($_REQUEST['tipoqr'] != 0){
+        $tipoQr = ($_REQUEST['tipoqr'] == 1 ? 'url_wazexx' : 'url_google' );
       $query = "SELECT if(b.ind_virtua = '1',CONCAT(b.nom_contro,' (Virtual)'),b.nom_contro),b.dir_contro,
+                         a.fec_planea,a.fec_alarma,b.cod_contro,if(b.ind_urbano = '1','Urbano',''), ".$tipoQr."
+                    FROM ".BASE_DATOS.".tab_despac_seguim a,
+                         ".BASE_DATOS.".tab_genera_contro b,
+                         ".BASE_DATOS.".tab_despac_vehige e
+                   WHERE a.cod_contro = b.cod_contro AND
+                         a.num_despac = ".$_REQUEST[despac]." AND
+                         a.num_despac = e.num_despac";
+  
+      }else{
+    
+        $query = "SELECT if(b.ind_virtua = '1',CONCAT(b.nom_contro,' (Virtual)'),b.nom_contro),b.dir_contro,
                        a.fec_planea,a.fec_alarma,b.cod_contro,if(b.ind_urbano = '1','Urbano','')
                   FROM ".BASE_DATOS.".tab_despac_seguim a,
                        ".BASE_DATOS.".tab_genera_contro b,
                        ".BASE_DATOS.".tab_despac_vehige e
                  WHERE a.cod_contro = b.cod_contro AND
-                       a.num_despac = ".$GLOBALS[despac]." AND
+                       a.num_despac = ".$_REQUEST[despac]." AND
                        a.num_despac = e.num_despac";
     
+      }
+ 
       if( $tipser == '1' )
       {
         $query .= " AND b.ind_virtua = '0'";
@@ -802,7 +842,7 @@ SELECT a.num_despac,
       
       $query .= " ORDER BY 3";
       
-      if( $GLOBALS['despac'] == '1071259' )
+      if( $_REQUEST['despac'] == '1071259' )
       {
         echo "<pre style='display:none'>";
         print_r( $query );
@@ -819,7 +859,7 @@ SELECT a.num_despac,
                  WHERE a.num_despac = b.num_despac AND
                        b.cod_noveda = c.cod_noveda AND
                        b.cod_noveda != '0' AND
-                       a.num_despac = '$GLOBALS[despac]'";
+                       a.num_despac = '$_REQUEST[despac]'";
 
       $novedades = new Consulta($query, $this -> conexion);
       $novedad = $novedades -> ret_matriz();
@@ -847,13 +887,18 @@ SELECT a.num_despac,
         if($matriz1[$j][5])
           $adicional = "<br>".$matriz1[$j][5];
           
-          $d[$i] = $matriz1[$j][0]."<small><br>".$matriz1[$j][1]."<br>".$matriz1[$j][2]." <br>".$matriz1[$j][5]." </small>";
+            if($_REQUEST['tipoqr'] != 0 && strlen($matriz1[$j][6]) > 1){
+
+              $d[$i] = $matriz1[$j][0]."<br><div name='qr' style='display:inline'></div><div align='justify'><small><br>".$matriz1[$j][1]."<br>".$matriz1[$j][2]."<br>".$matriz1[$j][5]." </small></div><input type='hidden' name='url_ubicac' value='".$matriz1[$j][6]."'>";
+            }else{
+              $d[$i] = $matriz1[$j][0]."<div align='justify'><small><br>".$matriz1[$j][1]."<br>".$matriz1[$j][2]."<br>".$matriz1[$j][5]." </small></div><input type='hidden' name='url_ubicac' value='".$matriz1[$j][6]."'>";
+            }
           $j++;
       }
       
       $_SESSION['mat'] = $d;
 
-      if( $GLOBALS[posi] == 0 || !$GLOBALS[posi] )
+      if( $_REQUEST[posi] == 0 || !$_REQUEST[posi] )
       {  
         $tmpl_file = "../".DIR_APLICA_CENTRAL."/despac/plandeviaje.html";
         
@@ -894,11 +939,11 @@ SELECT a.num_despac,
 
             ."<td width=\"25%\" align=\"center\">\n"
 
-            ."<input type=\"hidden\" name=\"despac\" value=\"$GLOBALS[despac]\">\n"
+            ."<input type=\"hidden\" name=\"despac\" value=\"$_REQUEST[despac]\">\n"
 
             ."<input type=\"hidden\" name=\"window\" value=\"central\">\n"
 
-            ."<input type=\"hidden\" name=\"cod_servic\" value=\"$GLOBALS[cod_servic]\">\n"
+            ."<input type=\"hidden\" name=\"cod_servic\" value=\"$_REQUEST[cod_servic]\">\n"
 
             ."<input type=\"hidden\" name=\"opcion\" value=\"1\">\n"
 
@@ -937,7 +982,7 @@ SELECT a.num_despac,
         echo "</div>";
       }
       
-      if( sizeof( $matriz1 ) > $_LIMITE && $GLOBALS[posi] == 1 )
+      if( sizeof( $matriz1 ) > $_LIMITE && $_REQUEST[posi] == 1 )
       {
         $tmpl_file = "../".DIR_APLICA_CENTRAL."/despac/plandeviaje_2.html";
         if( $_FORMAT['rut_anexox'] != '' )
@@ -961,11 +1006,11 @@ SELECT a.num_despac,
 
             ."<td width=\"50%\" align=\"center\">\n"
 
-            ."<input type=\"hidden\" name=\"despac\" value=\"$GLOBALS[despac]\">\n"
+            ."<input type=\"hidden\" name=\"despac\" value=\"$_REQUEST[despac]\">\n"
 
             ."<input type=\"hidden\" name=\"window\" value=\"central\">\n"
 
-            ."<input type=\"hidden\" name=\"cod_servic\" value=\"$GLOBALS[cod_servic]\">\n"
+            ."<input type=\"hidden\" name=\"cod_servic\" value=\"$_REQUEST[cod_servic]\">\n"
 
             ."<input type=\"hidden\" name=\"opcion\" value=\"1\">\n"
 

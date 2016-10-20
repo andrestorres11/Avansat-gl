@@ -40,32 +40,32 @@ class Despac
 		if($_REQUEST[Ajax] === 'on' ){
 			@include_once( "../lib/ajax.inc" );
 			@include_once( "../lib/general/constantes.inc" );
-			Despac::$cConexion = $AjaxConnection;
+			self::$cConexion = $AjaxConnection;
 		}else{
-			Despac::$cConexion = $co;
-			Despac::$cUsuario = $us;
-			Despac::$cCodAplica = $ca;
+			self::$cConexion = $co;
+			self::$cUsuario = $us;
+			self::$cCodAplica = $ca;
 		}
 
-		Despac::$cHoy = date("Y-m-d H:i:s");
-		Despac::$cTypeUser = Despac::typeUser();
+		self::$cHoy = date("Y-m-d H:i:s");
+		self::$cTypeUser = self::typeUser();
 
-		if( Despac::$cTypeUser[tip_perfil] == 'CONTROL' )
+		if( self::$cTypeUser[tip_perfil] == 'CONTROL' )
 		{
-			Despac::$cControlador = Despac::getInfoControlador( $_SESSION[datos_usuario][cod_usuari] );
+			self::$cControlador = self::getInfoControlador( $_SESSION[datos_usuario][cod_usuari] );
 
-			Despac::$cTipDespacContro .= Despac::$cControlador[ind_desurb] == 1 ? ',"1"' : '';
-			Despac::$cTipDespacContro .= Despac::$cControlador[ind_desnac] == 1 ? ',"2"' : '';
-			Despac::$cTipDespacContro .= Despac::$cControlador[ind_desimp] == 1 ? ',"3"' : '';
-			Despac::$cTipDespacContro .= Despac::$cControlador[ind_desexp] == 1 ? ',"4"' : '';
-			Despac::$cTipDespacContro .= Despac::$cControlador[ind_desxd1] == 1 ? ',"5"' : '';
-			Despac::$cTipDespacContro .= Despac::$cControlador[ind_desxd2] == 1 ? ',"6"' : '';
-			Despac::$cTipDespacContro = Despac::$cTipDespacContro == '"","1","2","3","4","5","6"' ? '""' : Despac::$cTipDespacContro; #Si tiene asignado todos los tipos de despacho no es necesario filtrar por tipo de despacho
+			self::$cTipDespacContro .= self::$cControlador[ind_desurb] == 1 ? ',"1"' : '';
+			self::$cTipDespacContro .= self::$cControlador[ind_desnac] == 1 ? ',"2"' : '';
+			self::$cTipDespacContro .= self::$cControlador[ind_desimp] == 1 ? ',"3"' : '';
+			self::$cTipDespacContro .= self::$cControlador[ind_desexp] == 1 ? ',"4"' : '';
+			self::$cTipDespacContro .= self::$cControlador[ind_desxd1] == 1 ? ',"5"' : '';
+			self::$cTipDespacContro .= self::$cControlador[ind_desxd2] == 1 ? ',"6"' : '';
+			self::$cTipDespacContro = self::$cTipDespacContro == '"","1","2","3","4","5","6"' ? '""' : self::$cTipDespacContro; #Si tiene asignado todos los tipos de despacho no es necesario filtrar por tipo de despacho
 		}
 
-		$mTipDespac = Despac::getTipoDespac();
+		$mTipDespac = self::getTipoDespac();
 		foreach ($mTipDespac as $row){
-			Despac::$cTipDespac .= $_REQUEST["tip_despac".$row[0]] == '1' ? ',"'.$row[0].'"' : '';
+			self::$cTipDespac .= $_REQUEST["tip_despac".$row[0]] == '1' ? ',"'.$row[0].'"' : '';
 		}
 
 		if($_REQUEST['Ajax'] === 'on' )
@@ -73,27 +73,31 @@ class Despac
 			switch($_REQUEST['Option'])
 			{
 				case "infoGeneral":
-					Despac::infoGeneral();
+					self::infoGeneral();
 					break;
 
 				case "infoCargue":
-					Despac::infoCargue();
+					self::infoCargue();
 					break;
 
 				case 'infoTransito':
-					Despac::infoTransito();
+					self::infoTransito();
 					break;
 
 				case 'infoDescargue':
-					Despac::infoDescargue();
+					self::infoDescargue();
 					break;
 
 				case "detailBand":
-					Despac::detailBand();
+					self::detailBand();
 					break;
 
 				case "detailSearch":
-					Despac::detailSearch();
+					self::detailSearch();
+					break;
+
+				case "infoPernoctacion":
+					self::infoPernoctacion();
 					break;
 
 				default:
@@ -113,7 +117,7 @@ class Despac
 	 */
 	public function infoGeneral()
 	{
-		$mContent = $_REQUEST['ind_filact'] == '1' || Despac::$cTypeUser['tip_perfil'] == 'CLIENTE' ? Despac::printInformGeneral() : 'Por Favor Seleccione los Parametros de Busqueda Para Generar el Informe.';
+		$mContent = $_REQUEST['ind_filact'] == '1' || self::$cTypeUser['tip_perfil'] == 'CLIENTE' ? self::printInformGeneral() : 'Por Favor Seleccione los Parametros de Busqueda Para Generar el Informe.';
 		$mHtml  = '<div id=table1ID>';
 		$mHtml .= $mContent;
 		$mHtml .= '</div>';
@@ -136,7 +140,7 @@ class Despac
 		$mTittle['style'] = array('', '', '', '', '', 'bgC1', 'bgC2', 'bgC3', 'bgC4', '', '');
 
 		$mHtml  = '<div id=table2ID>';
-		$mHtml .= Despac::printInform( $mIndEtapa, $mTittle );
+		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
 		$mHtml .= '</div>';
 
 		echo $mHtml;
@@ -157,7 +161,7 @@ class Despac
 		$mTittle['style'] = array('', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id=table3ID>';
-		$mHtml .= Despac::printInform( $mIndEtapa, $mTittle );
+		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
 		$mHtml .= '</div>';
 
 		echo $mHtml;
@@ -178,7 +182,26 @@ class Despac
 		$mTittle['style'] = array('', '', '', '', '', 'bgD1', 'bgD2', 'bgD3', 'bgD4', '', '');
 
 		$mHtml  = '<div id=table4ID>';
-		$mHtml .= Despac::printInform( $mIndEtapa, $mTittle );
+		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
+		$mHtml .= '</div>';
+
+		echo $mHtml;
+	}
+
+	/*! \fn: infoPernoctacion
+	 *  \brief: Informe C. Pernoctacion
+	 *  \author: Ing. Fabian Salinas
+	 *  \date: 03/03/2016
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: 
+	 *  \return: 
+	 */
+	private function infoPernoctacion(){
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '', '');
+
+		$mHtml  = '<div id=table5ID>';
+		$mHtml .= self::printInformPernoc( $mTittle );
 		$mHtml .= '</div>';
 
 		echo $mHtml;
@@ -195,8 +218,8 @@ class Despac
 	 */
 	private function printInform( $mIndEtapa, $mTittle )
 	{
-		$mTransp = Despac::getTranspServic( $mIndEtapa );
-		$mLimitFor = Despac::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
+		$mTransp = self::getTranspServic( $mIndEtapa );
+		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
 		$mHtml = '';
 		$j=1;
 
@@ -206,23 +229,23 @@ class Despac
 			#Trae los Despachos Segun Etapa
 			switch ($mIndEtapa){
 				case 'ind_segcar':
-					$mDespac = Despac::getDespacCargue( $mTransp[$i] );
+					$mDespac = self::getDespacCargue( $mTransp[$i] );
 					break;
 				case 'ind_segtra':
 					if( $mTransp[$i][ind_segcar] == '0' && $mTransp[$i][ind_segdes] == '0' )
-						$mDespac = Despac::getDespacTransi1( $mTransp[$i] );
+						$mDespac = self::getDespacTransi1( $mTransp[$i] );
 					else
-						$mDespac = Despac::getDespacTransi2( $mTransp[$i] );
+						$mDespac = self::getDespacTransi2( $mTransp[$i] );
 					break;
 				case 'ind_segdes':
-					$mDespac = Despac::getDespacDescar( $mTransp[$i] );
+					$mDespac = self::getDespacDescar( $mTransp[$i] );
 					break;
 			}
 
 			#Si la Transportadora tiene Despachos
 			if( $mDespac != false )
 			{
-				$mData = Despac::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
+				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 				
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
@@ -241,7 +264,7 @@ class Despac
 
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[ind_acargo] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[ind_acargo].'</td>';
 
-				if( Despac::$cTypeUser[tip_perfil] == 'OTRO' )
+				if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 					$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.( $mTransp[$i][usr_asigna] != '' ? $mTransp[$i][usr_asigna] : 'SIN ASIGNAR' ).'</td>';
 
 				$mHtml .= '</tr>';
@@ -278,7 +301,7 @@ class Despac
 
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[8] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[8].'</th>';
 
-		if( Despac::$cTypeUser[tip_perfil] == 'OTRO' )
+		if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 			$mHtml1 .= '<th class="classTotal" nowrap="" align="center">&nbsp;</th>';
 
 		$mHtml1 .= '</tr>';
@@ -313,7 +336,7 @@ class Despac
 		$mSql = " SELECT cod_tipdes, nom_tipdes 
 					FROM ".BASE_DATOS.".tab_genera_tipdes 
 				ORDER BY cod_tipdes ASC ";
-		$mConsult = new Consulta($mSql, Despac::$cConexion );
+		$mConsult = new Consulta($mSql, self::$cConexion );
 		return $mResult = $mConsult -> ret_matrix('i');
 	}
 
@@ -337,19 +360,19 @@ class Despac
 		if ( $_SESSION['datos_usuario']['cod_perfil'] == NULL ) 
 		{#PARA EL FILTRO DE EMPRESA
 			$filtro = new Aplica_Filtro_Usuari( 1, COD_FILTRO_EMPTRA, $_SESSION[datos_usuario][cod_usuari] );
-			if ( $filtro -> listar( Despac::$cConexion ) ) : 
+			if ( $filtro -> listar( self::$cConexion ) ) : 
 				$datos_filtro = $filtro -> retornar();
 				$mSql .= " AND a.cod_tercer = '".$datos_filtro[clv_filtro]."' ";
 			endif;
 		}else{#PARA EL FILTRO DE EMPRESA
 			$filtro = new Aplica_Filtro_Perfil( 1, COD_FILTRO_EMPTRA, $_SESSION[datos_usuario][cod_perfil] );
-			if ( $filtro -> listar( Despac::$cConexion ) ) : 
+			if ( $filtro -> listar( self::$cConexion ) ) : 
 				$datos_filtro = $filtro -> retornar();
 				$mSql .= " AND a.cod_tercer = '".$datos_filtro[clv_filtro]."' ";
 			endif;
 		}
 		$mSql .= " ORDER BY a.abr_tercer ASC ";
-		$consulta = new Consulta( $mSql, Despac::$cConexion );
+		$consulta = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $consulta -> ret_matrix('i');
 	}
 
@@ -376,7 +399,7 @@ class Despac
 					 AND c.cod_perfil NOT IN ( ".CONS_PERFIL." ) 
 				GROUP BY 1 
 				ORDER BY 1 ";
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $mConsult -> ret_matrix('i');
 	}
 
@@ -407,7 +430,7 @@ class Despac
 					 AND c.cod_perfil NOT IN ( ".CONS_PERFIL." ) 
 				GROUP BY 1 
 				ORDER BY 1 ";
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mResult = $mConsult -> ret_matrix('a');
 
 		return $mResult[0];
@@ -431,7 +454,7 @@ class Despac
 		elseif( $mPerfil == '70' || $mPerfil == '80' || $mPerfil == '669' )
 			$mResult[tip_perfil] = 'EAL'; #Perfil EAL
 		else{
-			$mTransp = Despac::getTransp();
+			$mTransp = self::getTransp();
 			if( sizeof($mTransp) == '1' ){
 				$mResult[tip_perfil] = 'CLIENTE'; #Perfil Cliente
 				$mResult[cod_transp] = $mTransp[0][0];
@@ -468,7 +491,7 @@ class Despac
 						AND yy.ind_activo = 'S' 
 						AND ( zz.fec_salida IS NULL OR zz.fec_salida = '0000-00-00 00:00:00' )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
 		if( sizeof($mDespac) < 1 )
@@ -530,23 +553,23 @@ class Despac
 		{
 			#Filtros por Formulario
 			#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
-			$mSql .= Despac::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". Despac::$cTipDespac .") " : "";
+			$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
 
 			#Filtros por usuario
-			$mSql .= Despac::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. Despac::$cTipDespacContro .') ' : '';	
+			$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		}
 
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
-		$mTipValida = Despac::tipValidaTiempo( $mTransp );
+		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		# Verifica Novedades por despacho
 		$j=0;
 		$mResult = array();
 		for( $i=0; $i<sizeof($mDespac); $i++ )
 		{
-			$mData = Despac::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
+			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
 
 			#Verifica que el siguiente PC sea el Primero o Segundo ( Parametro Despachos Etapa Cargue )
 			if( $mData[sig_pcontr][cod_contro] == $mData[pla_rutaxx][0][cod_contro] || $mData[sig_pcontr][cod_contro] == $mData[pla_rutaxx][1][cod_contro] )
@@ -602,7 +625,7 @@ class Despac
 	 */
 	private function getDespacDescar( $mTransp, $mTipReturn = NULL, $mSinFiltro = false )
 	{
-		$mDespacCargue = Despac::getDespacCargue( $mTransp, 'list', true );
+		$mDespacCargue = self::getDespacCargue( $mTransp, 'list', true );
 		 
 		$mDespacCargue = ($mDespacCargue == NULL ? '0' : $mDespacCargue );
 
@@ -619,7 +642,7 @@ class Despac
 						AND yy.ind_activo = 'S' 
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' 
 						AND xx.num_despac NOT IN ( {$mDespacCargue} ) ";
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
 		if( sizeof($mDespac) < 1 )
@@ -646,7 +669,7 @@ class Despac
 						 WHERE c.num_despac IN ( {$mDespac} ) 
 						   AND d.cod_etapax IN ( 4, 5 )
 				) ";
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespacDes = $mConsult -> ret_matrix('a');
 		$mDespacDes = join( ',', GetColumnFromMatrix( $mDespacDes, 'num_despac' ) );
 
@@ -655,7 +678,7 @@ class Despac
 					   FROM ".BASE_DATOS.".tab_despac_despac a 
 					  WHERE a.num_despac IN ( {$mDespac} ) ";
 		$mSql .= $mDespacDes != "" ? " AND a.num_despac NOT IN ( {$mDespacDes} ) " : "";
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('i');
 
 		$mDespacDes = $mDespacDes == "" ? '""' : $mDespacDes;
@@ -663,12 +686,12 @@ class Despac
 		#Recorre Despachos Para verificar Filtro 2
 		foreach ($mDespac as $row)
 		{
-			$mNextPC = getNextPC( Despac::$cConexion, $row[0] ); #Siguiente PC del Plan de ruta
-			$mRutaDespac = getControDespac( Despac::$cConexion, $row[0] ); # Ruta del Despacho
+			$mNextPC = getNextPC( self::$cConexion, $row[0] ); #Siguiente PC del Plan de ruta
+			$mRutaDespac = getControDespac( self::$cConexion, $row[0] ); # Ruta del Despacho
 			$mPosPC = (sizeof($mRutaDespac))-1; #Posicion Ultimo PC
 
 
-			if(    ( $mNextPC[cod_contro] == $mRutaDespac[$mPosPC][cod_contro] ) #Siguiente PC igual al ultimo PC del plan de ruta
+			if(	( $mNextPC[cod_contro] == $mRutaDespac[$mPosPC][cod_contro] ) #Siguiente PC igual al ultimo PC del plan de ruta
 				|| ( $mNextPC[cod_contro] == $mRutaDespac[($mPosPC-1)][cod_contro] && $mNextPC[ind_ensiti] == '1' ) #Siguiente PC igual al penultimo PC del plan de ruta con Novedades en Sitio
 			  )
 			{
@@ -679,11 +702,11 @@ class Despac
 					 || ( $mNextPC[cod_contro] == $mRutaDespac[($mPosPC-2)][cod_contro] && $mNextPC[ind_ensiti] == '1' ) #Siguiente PC igual al antepenultimo PC del plan de ruta con Novedades en Sitio
 				  )
 			{
-				$mTime = Despac::getTimeDescargue( $mTransp, $row[1] );
+				$mTime = self::getTimeDescargue( $mTransp, $row[1] );
 				$mTime = "-".$mTime." minute";
 				$mDate = date ( 'Y-m-d H:i:s', ( strtotime( $mTime, strtotime ( $mNextPC[fec_planea] ) ) ) ); #Fecha Planeada para iniciar Seguimiento en Descargue
 
-				if( $mDate <= Despac::$cHoy )
+				if( $mDate <= self::$cHoy )
 					$mDespacDes .= ','.$row[0];
 			}
 		}
@@ -727,24 +750,24 @@ class Despac
 		{
 			#Filtros por Formulario
 			#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
-			$mSql .= Despac::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". Despac::$cTipDespac .") " : "";
+			$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
 
 			#Filtros por usuario
-			$mSql .= Despac::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. Despac::$cTipDespacContro .') ' : '';	
+			$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		}
 
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
 		
-		$mTipValida = Despac::tipValidaTiempo( $mTransp );
+		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		# Verifica Novedades por despacho
 		$j=0;
 		$mResult = array();
 		for( $i=0; $i<sizeof($mDespac); $i++ )
 		{
-			$mData = Despac::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
+			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
 
 			#warning1
 			if( ($_REQUEST[ind_limpio] === '1' || $_REQUEST[ind_limpio] === '0') && $mSinFiltro == false )
@@ -839,22 +862,22 @@ class Despac
 
 		#Filtros por Formulario
 		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
-		$mSql .= Despac::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". Despac::$cTipDespac .") " : "";
+		$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
 
 		#Filtros por usuario
-		$mSql .= Despac::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. Despac::$cTipDespacContro .') ' : '';	
+		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
-		$mTipValida = Despac::tipValidaTiempo( $mTransp );
+		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		# Verifica Novedades por despacho
 		$j=0;
 		$mResult = array();
 		for( $i=0; $i<sizeof($mDespac); $i++ )
 		{
-			$mData = Despac::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
+			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
 
 			#warning1
 			if( $_REQUEST[ind_limpio] === '1' || $_REQUEST[ind_limpio] === '0' )
@@ -901,7 +924,7 @@ class Despac
 	 */
 	private function getDespacTransi2( $mTransp )
 	{
-		$mDespacCarDes = Despac::getDespacDescar( $mTransp, 'list2', true ); #Despachos en Etapas Cargue y Descargue
+		$mDespacCarDes = self::getDespacDescar( $mTransp, 'list2', true ); #Despachos en Etapas Cargue y Descargue
 		$mDespacCarDes = trim($mDespacCarDes, ',');
 
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
@@ -945,22 +968,22 @@ class Despac
 
 		#Filtros por Formulario
 		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
-		$mSql .= Despac::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". Despac::$cTipDespac .") " : "";
+		$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
 
 		#Filtros por usuario
-		$mSql .= Despac::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. Despac::$cTipDespacContro .') ' : '';	
+		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
-		$mTipValida = Despac::tipValidaTiempo( $mTransp );
+		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		# Verifica Novedades por despacho
 		$j=0;
 		$mResult = array();
 		for( $i=0; $i<sizeof($mDespac); $i++ )
 		{
-			$mData = Despac::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
+			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
 
 			#warning1
 			if( $_REQUEST[ind_limpio] === '1' || $_REQUEST[ind_limpio] === '0' )
@@ -1007,7 +1030,7 @@ class Despac
 	 */
 	private function getInfoDespac( $mDespac, $mTransp, $mTipValida )
 	{
-		$mNovDespac = getNovedadesDespac( Despac::$cConexion, $mDespac[num_despac], 1 ); # Novedades del Despacho -- Script /lib/general/function.inc
+		$mNovDespac = getNovedadesDespac( self::$cConexion, $mDespac[num_despac], 1 ); # Novedades del Despacho -- Script /lib/general/function.inc
 		$mCantNoved = sizeof($mNovDespac); # Cantidad de Novedades del Despacho
 		$mPosN = $mCantNoved-1; #Posicion ultima Novedad
 
@@ -1017,8 +1040,8 @@ class Despac
 		$mResult[fec_ultnov] = $mNovDespac[$mPosN][fec_crenov];
 		$mResult[nom_ultnov] = $mNovDespac[$mPosN][nom_noveda] == '' ? '-' : $mNovDespac[$mPosN][nom_noveda];
 		$mResult[nom_sitiox] = $mNovDespac[$mPosN][nom_sitiox] == '' ? '-' : $mNovDespac[$mPosN][nom_sitiox];
-		$mResult[sig_pcontr] = getNextPC( Despac::$cConexion, $mDespac[num_despac] );
-		$mResult[pla_rutaxx] = getControDespac( Despac::$cConexion, $mDespac[num_despac] ); # Plan de Ruta del Despacho -- Script /lib/general/function.inc
+		$mResult[sig_pcontr] = getNextPC( self::$cConexion, $mDespac[num_despac] );
+		$mResult[pla_rutaxx] = getControDespac( self::$cConexion, $mDespac[num_despac] ); # Plan de Ruta del Despacho -- Script /lib/general/function.inc
 
 		if( $mTipValida == 'tie_parame' )
 		{
@@ -1061,7 +1084,7 @@ class Despac
 			}else{
 			  	if( $mNovDespac[$mPosN][ind_manala] == '0' )
 				{ #Si la ultima novedad no mantiene alarma
-					$mTime = $mDespac[cod_tipdes] == '1' ? Despac::$cTime[ind_desurb] : Despac::$cTime[ind_desnac];
+					$mTime = $mDespac[cod_tipdes] == '1' ? self::$cTime[ind_desurb] : self::$cTime[ind_desnac];
 					$mTime = "+".$mTime." minute";
 					$mResult[fec_planea] = date ( 'Y-m-d H:i:s', ( strtotime( $mTime, strtotime ( $mResult[fec_ultnov] ) ) ) );
 				}
@@ -1101,21 +1124,21 @@ class Despac
 					 AND b.cod_transp = '{$mCodTransp}'
 					 AND a.num_despac != '{$mNumDespac}' 
 					 AND a.ind_defini = '0' ";
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('i');
 
 		if( sizeof($mDespac) > 0 )
 		{
 			foreach ($mDespac as $row)
 			{
-				$mUltPC = getControDespac( Despac::$cConexion, $row[0] );
+				$mUltPC = getControDespac( self::$cConexion, $row[0] );
 				$mUltPC = end( $mUltPC );
 
 				$mSql = "SELECT a.cod_noveda 
 						   FROM ".BASE_DATOS.".tab_despac_noveda a 
 						  WHERE a.num_despac = '{$row[0]}' 
 							AND a.cod_contro = '{$mUltPC[cod_contro]}' ";
-				$mConsult = new Consulta( $mSql, Despac::$cConexion );
+				$mConsult = new Consulta( $mSql, self::$cConexion );
 				$mNovedad = $mConsult -> ret_matrix('i');
 
 				if( sizeof($mNovedad) < 1 )
@@ -1131,6 +1154,27 @@ class Despac
 			return $mColor[2];
 	}
 
+	/*! \fn: getTranspCargaControlador
+	 *  \brief: trae las transportadoras asignadas como carga laboral de un controlador o eal
+	 *  \author: Ing. Fabian Salinas
+	 *  \date: 21/09/2016
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: 
+	 *  \return: string
+	 */
+	private function getTranspCargaControlador() {
+		if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL' ) {
+			$mSql = "SELECT GROUP_CONCAT(a.cod_transp SEPARATOR ',') AS lis_transp
+					   FROM satt_faro.vis_monito_encdet a
+					  WHERE a.cod_usuari = '".$_SESSION[datos_usuario][cod_usuari]."' ";
+			$mConsult = new Consulta( $mSql, self::$cConexion );
+			$mResult = $mConsult -> ret_arreglo();
+			return $mResult[0];
+		} else {
+			return null;
+		}
+	}
+
 	/*! \fn: getTranspServic
 	 *  \brief: Traer las transportadoras según tipo de servicio
 	 *  \author: Ing. Fabian Salinas
@@ -1138,51 +1182,52 @@ class Despac
 	 *	\date modified: dia/mes/año
 	 *  \param: mTipEtapax  String   Tipo de Seguimiento ( ind_segcar, ind_segtra, ind_segdes )
 	 *  \param: mCodTransp  Integer  Codigo de la transportadora 
+	 *  \param: mAddWherex  String   Where adicional
 	 *  \return: Matriz
 	 */
-	public function getTranspServic( $mTipEtapax = NULL, $mCodTransp = NULL )
+	public function getTranspServic( $mTipEtapax = NULL, $mCodTransp = NULL, $mAddWherex = NULL )
 	{
 		$mTipServic = '""';
 		$mTipServic .= $_REQUEST[tip_servic1] == '1' ? ',"1"' : '';
 		$mTipServic .= $_REQUEST[tip_servic2] == '1' ? ',"2"' : '';
 		$mTipServic .= $_REQUEST[tip_servic3] == '1' ? ',"3"' : '';
+		$mLisTransp = $this->getTranspCargaControlador();
 
-		$mSql = " SELECT a.cod_transp, a.nom_tipser, UPPER(a.abr_tercer) AS nom_transp, 
-						 a.tie_nacion, a.tie_urbano, a.ind_segcar, a.ind_segtra, 
-						 a.ind_segdes, a.tie_desurb, a.tie_desnac, a.tie_desimp, 
-						 a.tie_desexp, a.tie_destr1, a.tie_destr2, a.cod_tipser, 
+		$mSql = " SELECT a.*,
 						 GROUP_CONCAT(h.cod_usuari ORDER BY h.cod_usuari ASC SEPARATOR ', ' ) AS usr_asigna
 					FROM (
-							SELECT b.cod_transp, b.nom_tipser, b.abr_tercer, 
-								   b.ind_segcar, b.ind_segtra, b.ind_segdes, 
-								   b.tie_nacion, b.tie_urbano, b.tie_desurb, 
-								   b.tie_desnac, b.tie_desimp, b.tie_desexp, 
-								   b.tie_destr1, b.tie_destr2, b.cod_tipser 
-							FROM (
 										SELECT c.ind_segcar, c.ind_segtra, c.ind_segdes, 
 											   c.cod_transp, c.num_consec, d.nom_tipser, 
-											   e.abr_tercer, c.tie_contro AS tie_nacion, 
+											   UPPER(e.abr_tercer) AS nom_transp, c.tie_contro AS tie_nacion, 
 											   c.tie_conurb AS tie_urbano, c.tie_desurb, 
 											   c.tie_desnac, c.tie_desimp, c.tie_desexp, 
-											   c.tie_destr1, c.tie_destr2, c.cod_tipser 
+											   c.tie_destr1, c.tie_destr2, c.cod_tipser, 
+											   c.ind_conper, c.hor_pe1urb, c.hor_pe2urb, 
+											   c.hor_pe1nac, c.hor_pe2nac, c.hor_pe1imp, 
+											   c.hor_pe2imp, c.hor_pe1exp, c.hor_pe2exp, 
+											   c.hor_pe1tr1, c.hor_pe2tr1, c.hor_pe1tr2, 
+											   c.hor_pe2tr2 
 										  FROM ".BASE_DATOS.".tab_transp_tipser c 
 									INNER JOIN ".BASE_DATOS.".tab_genera_tipser d 
 											ON c.cod_tipser = d.cod_tipser 
 									INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e 
 											ON c.cod_transp = e.cod_tercer 
-									  ORDER BY c.cod_transp, c.num_consec DESC
-								 ) b
-							GROUP BY b.cod_transp
+									INNER JOIN (	  SELECT cod_transp , MAX(num_consec) AS num_consec 
+														FROM ".BASE_DATOS.".tab_transp_tipser  
+													GROUP BY cod_transp 
+											   ) f ON c.cod_transp = f.cod_transp AND c.num_consec = f.num_consec
+									  GROUP BY c.cod_transp
 						 ) a 
 			   LEFT JOIN ".BASE_DATOS.".vis_monito_encdet h
 					  ON a.cod_transp = h.cod_transp
 					WHERE 1=1 ";
 
-		$mSql .= $mTipEtapax != NULL ? " AND a.{$mTipEtapax} = 1 " : "";
+		$mSql .= $mTipEtapax == NULL ? "" : " AND a.{$mTipEtapax} = 1 ";
+		$mSql .= $mAddWherex == NULL ? "" : $mAddWherex;
 
 		#Filtro por codigo de Transportadora
-		if( Despac::$cTypeUser[tip_perfil] == 'CLIENTE' )
-			$mSql .= " AND a.cod_transp = '". Despac::$cTypeUser[cod_transp] ."' ";
+		if( self::$cTypeUser[tip_perfil] == 'CLIENTE' )
+			$mSql .= " AND a.cod_transp = '". self::$cTypeUser[cod_transp] ."' ";
 		else{
 			if( $mCodTransp != NULL )
 				$mSql .= $mCodTransp != 'TODAS' ? " AND a.cod_transp IN ( {$mCodTransp} ) " : "";
@@ -1200,9 +1245,10 @@ class Despac
 		}
 
 		#Filtro Por Usuario Asignado
-		if( Despac::$cTypeUser[tip_perfil] == 'CONTROL' || Despac::$cTypeUser[tip_perfil] == 'EAL' )
+		if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL' ){
 			$mSql .= " AND h.cod_usuari = '".$_SESSION[datos_usuario][cod_usuari]."' ";
-		elseif( $mSinFiltro == true )
+			$mSql .= $mLisTransp != '' && $mLisTransp != null ? " AND a.cod_transp IN ( $mLisTransp ) " : " AND a.cod_transp IN ( '' ) ";
+		} elseif( $mSinFiltro == true )
 			$mSql .= " AND ( h.cod_transp IS NULL OR h.cod_usuari IN ({$_REQUEST[cod_usuari]}) )";
 		else
 			$mSql .= $_REQUEST[cod_usuari] ? " AND h.cod_usuari IN ( {$_REQUEST[cod_usuari]} ) " : "";
@@ -1210,10 +1256,10 @@ class Despac
 		#Otros Filtros
 		$mSql .= $mTipServic != '""' ? " AND a.cod_tipser IN (".$mTipServic.") " : "";
 
-		$mSql .= " GROUP BY a.cod_transp ORDER BY a.abr_tercer ASC ";
+		$mSql .= " GROUP BY a.cod_transp ORDER BY a.nom_transp ASC ";
 
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
-		return $mResult = $mConsult -> ret_matrix('a');
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+		return $mConsult -> ret_matrix('a');
 	}
 
 	/*! \fn: tipValidaTiempo
@@ -1288,12 +1334,12 @@ class Despac
 	 *  \param: $mTransp   Array  	Informacion de la transportadora
 	 *  \param: $mIndCant  Integer  0:Retorna Despachos con Tiempos; 1:Retorna Cantidades
 	 *  \param: $mFiltro   String  	Filtro para el detallado por color, sinF = Todos
-	 *  \param: $mColor    Array  	Colores por Etapa
+	 *  \param: $mColor	Array  	Colores por Etapa
 	 *  \return: Matriz
 	 */
 	private function calTimeAlarma( $mDespac, $mTransp, $mIndCant = 0, $mFiltro = NULL, $mColor = NULL )
 	{
-		$mTipValida = Despac::tipValidaTiempo( $mTransp );
+		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		if( $mIndCant == 1 )
 		{ #Define Cantidades según estado
@@ -1324,13 +1370,13 @@ class Despac
 
 			if( $mDespac[$i][can_noveda] > 0 )
 			{#Despacho con Novedades
-				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_planea], Despac::$cHoy ); #Script /lib/general/function.inc
+				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_planea], self::$cHoy ); #Script /lib/general/function.inc
 
 				if( $mDespac[$i][ind_fuepla] == '1' && $mDespac[$i][tiempo] < 0 )
 					$mPernoc = true;
 			}
 			else #Despacho Sin Novedades
-				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_salida], Despac::$cHoy ); #Script /lib/general/function.inc
+				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
 
 
 			# Arma la matriz resultante 
@@ -1371,13 +1417,13 @@ class Despac
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
 						$mResult[neg_tieesp][$mNegTieesp][color] = $mColor[0];
-						$mResult[neg_tieesp][$mNegTieesp][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[neg_tieesp][$mNegTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[neg_tieesp][$mNegTieesp][fase] = 'est_pernoc';
 						$mNegTieesp++;
 					}else{
 						$mResult[neg_tiempo][$mNegTiempo] = $mDespac[$i];
 						$mResult[neg_tiempo][$mNegTiempo][color] = $mColor[0];
-						$mResult[neg_tiempo][$mNegTiempo][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[neg_tiempo][$mNegTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[neg_tiempo][$mNegTiempo][fase] = 'est_pernoc';
 						$mNegTiempo++;
 					}
@@ -1415,13 +1461,13 @@ class Despac
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
 						$mResult[neg_tieesp][$mNegTieesp][color] = $mColor[0];
-						$mResult[neg_tieesp][$mNegTieesp][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[neg_tieesp][$mNegTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[neg_tieesp][$mNegTieesp][fase] = 'sin_retras';
 						$mNegTieesp++;
 					}else{
 						$mResult[neg_tiempo][$mNegTiempo] = $mDespac[$i];
 						$mResult[neg_tiempo][$mNegTiempo][color] = $mColor[0];
-						$mResult[neg_tiempo][$mNegTiempo][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[neg_tiempo][$mNegTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[neg_tiempo][$mNegTiempo][fase] = 'sin_retras';
 						$mNegTiempo++;
 					}
@@ -1431,13 +1477,13 @@ class Despac
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
 						$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[1];
-						$mResult[pos_tieesp][$mPosTieesp][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_00A30x';
 						$mPosTieesp++;
 					}else{
 						$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
 						$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[1];
-						$mResult[pos_tiempo][$mPosTiempo][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_00A30x';
 						$mPosTiempo++;
 					}
@@ -1447,13 +1493,13 @@ class Despac
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
 						$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[2];
-						$mResult[pos_tieesp][$mPosTieesp][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_31A60x';
 						$mPosTieesp++;
 					}else{
 						$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
 						$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[2];
-						$mResult[pos_tiempo][$mPosTiempo][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_31A60x';
 						$mPosTiempo++;
 					}
@@ -1463,13 +1509,13 @@ class Despac
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
 						$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[3];
-						$mResult[pos_tieesp][$mPosTieesp][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_61A90x';
 						$mPosTieesp++;
 					}else{
 						$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
 						$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[3];
-						$mResult[pos_tiempo][$mPosTiempo][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_61A90x';
 						$mPosTiempo++;
 					}
@@ -1479,13 +1525,13 @@ class Despac
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
 						$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[4];
-						$mResult[pos_tieesp][$mPosTieesp][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_91Amas';
 						$mPosTieesp++;
 					}else{
 						$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
 						$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[4];
-						$mResult[pos_tiempo][$mPosTiempo][color2] = Despac::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+						$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
 						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_91Amas';
 						$mPosTiempo++;
 					}
@@ -1508,7 +1554,7 @@ class Despac
 	private function detailBand()
 	{
 		$mTittle = array('NO.', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
-		$mTransp = Despac::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
+		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
 
 		#Según Etapa
 		switch ( $_REQUEST['ind_etapax'] )
@@ -1547,8 +1593,8 @@ class Despac
 			if( $_REQUEST['ind_etapax'] == 'ind_segtra' )
 				$mNameFunction = $mTransp[$i]['ind_segcar'] == '1' && $mTransp[$i]['ind_segdes'] == '1' ? 'getDespacTransi2' : 'getDespacTransi1';
 
-			$mDespac = Despac::$mNameFunction( $mTransp[$i] );
-			$mDespac = Despac::calTimeAlarma( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
+			$mDespac = self::$mNameFunction( $mTransp[$i] );
+			$mDespac = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
 
 			$mNegTieesp = $mDespac['neg_tieesp'] ? array_merge($mNegTieesp, $mDespac['neg_tieesp']) : $mNegTieesp;
 			$mPosTieesp = $mDespac['pos_tieesp'] ? array_merge($mPosTieesp, $mDespac['pos_tieesp']) : $mPosTieesp;
@@ -1560,15 +1606,15 @@ class Despac
 			$mPosAcargo = $mDespac['pos_acargo'] ? array_merge($mPosAcargo, $mDespac['pos_acargo']) : $mPosAcargo;
 		}
 
-		$mData = Despac::orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
+		$mData = self::orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
 
 		#Pinta tablas
 		$mHtml  = '';
-		$mHtml .= $mData['tieesp'] ? Despac::printTabDetail( $mTittle, $mData['tieesp'], sizeof($mData['tieesp']).' DESPACHOS CON TIEMPO MODIFICADO', '1' ) : '';
-		$mHtml .= $mData['tiemp0'] ? Despac::printTabDetail( $mTittle, $mData['tiemp0'], sizeof($mData['tiemp0']).' DESPACHOS EN SEGUIMIENTO SIN NOVEDADES', '1' ) : '';
-		$mHtml .= $mData['tiempo'] ? Despac::printTabDetail( $mTittle, $mData['tiempo'], sizeof($mData['tiempo']).' DESPACHOS EN SEGUIMIENTO CON NOVEDADES', '1' ) : '';
-		$mHtml .= $mData['acargo'] ? Despac::printTabDetail( $mTittle, $mData['acargo'], sizeof($mData['acargo']).' DESPACHOS A CARGO EMPRESA', '1' ) : '';
-		$mHtml .= $mData['finrut'] ? Despac::printTabDetail( $mTittle, $mData['finrut'], sizeof($mData['finrut']).' DESPACHOS PENDIENTE LLEGADA', '1' ) : '';
+		$mHtml .= $mData['tieesp'] ? self::printTabDetail( $mTittle, $mData['tieesp'], sizeof($mData['tieesp']).' DESPACHOS CON TIEMPO MODIFICADO', '1' ) : '';
+		$mHtml .= $mData['tiemp0'] ? self::printTabDetail( $mTittle, $mData['tiemp0'], sizeof($mData['tiemp0']).' DESPACHOS EN SEGUIMIENTO SIN NOVEDADES', '1' ) : '';
+		$mHtml .= $mData['tiempo'] ? self::printTabDetail( $mTittle, $mData['tiempo'], sizeof($mData['tiempo']).' DESPACHOS EN SEGUIMIENTO CON NOVEDADES', '1' ) : '';
+		$mHtml .= $mData['acargo'] ? self::printTabDetail( $mTittle, $mData['acargo'], sizeof($mData['acargo']).' DESPACHOS A CARGO EMPRESA', '1' ) : '';
+		$mHtml .= $mData['finrut'] ? self::printTabDetail( $mTittle, $mData['finrut'], sizeof($mData['finrut']).' DESPACHOS PENDIENTE LLEGADA', '1' ) : '';
 
 		echo $mHtml;
 	}
@@ -1655,24 +1701,16 @@ class Despac
 		$mPosi = $mPosTieesp ? SortMatrix( $mPosTieesp, 'tiempo', 'DESC' ) : array();
 		$mData['tieesp'] = array_merge($mPosi, $mNega);
 
-		if($_REQUEST['Option'] == "infoCargue") {
-			$mNegTiempo = Despac::separateMatrix($mNegTiempo);
-			$mPosTiempo = Despac::separateMatrix($mPosTiempo);
+		$mNegTiempo = self::separateMatrix($mNegTiempo);
+		$mPosTiempo = self::separateMatrix($mPosTiempo);
 
-			$mNega = $mNegTiempo[0] ? SortMatrix( $mNegTiempo[0], 'tiempo', 'ASC'  ) : array();
-			$mPosi = $mPosTiempo[0] ? SortMatrix( $mPosTiempo[0], 'tiempo', 'DESC' ) : array();
-			$mData['tiemp0'] = array_merge($mPosi, $mNega);
+		$mNega = $mNegTiempo[0] ? SortMatrix( $mNegTiempo[0], 'tiempo', 'ASC'  ) : array();
+		$mPosi = $mPosTiempo[0] ? SortMatrix( $mPosTiempo[0], 'tiempo', 'DESC' ) : array();
+		$mData['tiemp0'] = array_merge($mPosi, $mNega);
 
-			$mNega = $mNegTiempo[1] ? SortMatrix( $mNegTiempo[1], 'tiempo', 'ASC'  ) : array();
-			$mPosi = $mPosTiempo[1] ? SortMatrix( $mPosTiempo[1], 'tiempo', 'DESC' ) : array();
-			$mData['tiempo'] = array_merge($mPosi, $mNega);
-		} else {
-			$mData['tiemp0'] = array();
-
-			$mNega = $mNegTiempo ? SortMatrix( $mNegTiempo, 'tiempo', 'ASC'  ) : array();
-			$mPosi = $mPosTiempo ? SortMatrix( $mPosTiempo, 'tiempo', 'DESC' ) : array();
-			$mData['tiempo'] = array_merge($mPosi, $mNega);
-		}
+		$mNega = $mNegTiempo[1] ? SortMatrix( $mNegTiempo[1], 'tiempo', 'ASC'  ) : array();
+		$mPosi = $mPosTiempo[1] ? SortMatrix( $mPosTiempo[1], 'tiempo', 'DESC' ) : array();
+		$mData['tiempo'] = array_merge($mPosi, $mNega);
 
 		$mNega = $mNegFinrut ? SortMatrix( $mNegFinrut, 'tiempo', 'ASC'  ) : array();
 		$mPosi = $mPosFinrut ? SortMatrix( $mPosFinrut, 'tiempo', 'DESC' ) : array();
@@ -1696,10 +1734,10 @@ class Despac
 	private function detailSearch()
 	{
 		if( $_REQUEST[ind_entran] == '1' )
-			echo Despac::search();
+			echo self::search();
 
 		if( $_REQUEST[ind_fintra] == '1' )
-			echo Despac::search( true );
+			echo self::search( true );
 	}
 
 	/*! \fn: search
@@ -1716,14 +1754,14 @@ class Despac
 		$mColor = array('', 'bgT1', 'bgT2', 'bgT3', 'bgT4');
 		$mIndConsol = false;
 
-		$mDespac = Despac::getDataSearch( $mIndFinrut );
+		$mDespac = self::getDataSearch( $mIndFinrut );
 
 		if( sizeof($mDespac) < 1 && $_REQUEST['num_viajex'] )
 		{#Verifica si el viaje fue consolidado
-			$mNumDespac = Despac::getDespacConsol( $_REQUEST['num_viajex'] );
+			$mNumDespac = self::getDespacConsol( $_REQUEST['num_viajex'] );
 
 			if( sizeof($mNumDespac) > 0 ){
-				$mDespac = Despac::getDataSearch( $mIndFinrut, $mNumDespac );
+				$mDespac = self::getDataSearch( $mIndFinrut, $mNumDespac );
 				$mIndConsol = true;
 			}
 		}
@@ -1745,7 +1783,7 @@ class Despac
 		}
 		elseif( $mIndConsol == true )
 		{#Despachos consolidados
-			$mNovedades = getNovedadesDespac( Despac::$cConexion , $mDespac[$i][num_despac], 1 ); #Novedades del despacho
+			$mNovedades = getNovedadesDespac( self::$cConexion , $mDespac[$i][num_despac], 1 ); #Novedades del despacho
 			$n = sizeof($mNovedades);
 
 			$mDespac[0][can_noveda] = $n;
@@ -1753,7 +1791,7 @@ class Despac
 			$mDespac[0][nom_sitiox] = $mNovedades[($n-1)][nom_sitiox];
 			$mDespac[0][tiempo] = '-';
 
-			$mHtml = Despac::printTabDetail( $mTittle, $mDespac, sizeof($mDespac).' DESPACHOS CONSOLIDADOS', '1' );
+			$mHtml = self::printTabDetail( $mTittle, $mDespac, sizeof($mDespac).' DESPACHOS CONSOLIDADOS', '1' );
 		}
 		elseif( $mIndFinrut == false )
 		{#Despachos en transito
@@ -1769,9 +1807,9 @@ class Despac
 			# Verifica Novedades por despacho
 			for( $i=0; $i<sizeof($mDespac); $i++ )
 			{
-				$mTransp = Despac::getTranspServic( NULL, $mDespac[$i][cod_transp] );
-				$mTipValida = Despac::tipValidaTiempo( $mTransp[0] );
-				$mData = Despac::getInfoDespac( $mDespac[$i], $mTransp[0], $mTipValida );
+				$mTransp = self::getTranspServic( NULL, $mDespac[$i][cod_transp] );
+				$mTipValida = self::tipValidaTiempo( $mTransp[0] );
+				$mData = self::getInfoDespac( $mDespac[$i], $mTransp[0], $mTipValida );
 
 				$mDespac[$i][can_noveda] = $mData[can_noveda];
 				$mDespac[$i][fec_ultnov] = $mData[fec_ultnov];
@@ -1781,7 +1819,7 @@ class Despac
 				$mDespac[$i][ind_finrut] = $mData[sig_pcontr][ind_finrut]; 
 
 				$mDespacho[0] = $mDespac[$i];
-				$mData = Despac::calTimeAlarma( $mDespacho, $mTransp, 0, 'sinF', $mColor );
+				$mData = self::calTimeAlarma( $mDespacho, $mTransp, 0, 'sinF', $mColor );
 
 				$mNegTieesp = $mData[neg_tieesp] ? array_merge($mNegTieesp, $mData[neg_tieesp]) : $mNegTieesp;
 				$mPosTieesp = $mData[pos_tieesp] ? array_merge($mPosTieesp, $mData[pos_tieesp]) : $mPosTieesp;
@@ -1793,21 +1831,21 @@ class Despac
 				$mPosAcargo = $mData[pos_acargo] ? array_merge($mPosAcargo, $mData[pos_acargo]) : $mPosAcargo;
 			}
 
-			$mData = Despac::orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
+			$mData = self::orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
 
 			#Pinta tablas
 			$mHtml  = '';
-			$mHtml .= $mData['tieesp'] ? Despac::printTabDetail( $mTittle, $mData['tieesp'], sizeof($mData['tieesp']).' DESPACHOS CON TIEMPO MODIFICADO', '1' ) : '';
-			$mHtml .= $mData['tiemp0'] ? Despac::printTabDetail( $mTittle, $mData['tiemp0'], sizeof($mData['tiemp0']).' DESPACHOS EN SEGUIMIENTO SIN NOVEDADES', '1' ) : '';
-			$mHtml .= $mData['tiempo'] ? Despac::printTabDetail( $mTittle, $mData['tiempo'], sizeof($mData['tiempo']).' DESPACHOS EN SEGUIMIENTO CON NOVEDADES', '1' ) : '';
-			$mHtml .= $mData['acargo'] ? Despac::printTabDetail( $mTittle, $mData['acargo'], sizeof($mData['acargo']).' DESPACHOS A CARGO EMPRESA', '1' ) : '';
-			$mHtml .= $mData['finrut'] ? Despac::printTabDetail( $mTittle, $mData['finrut'], sizeof($mData['finrut']).' DESPACHOS PENDIENTE LLEGADA', '1' ) : '';
+			$mHtml .= $mData['tieesp'] ? self::printTabDetail( $mTittle, $mData['tieesp'], sizeof($mData['tieesp']).' DESPACHOS CON TIEMPO MODIFICADO', '1' ) : '';
+			$mHtml .= $mData['tiemp0'] ? self::printTabDetail( $mTittle, $mData['tiemp0'], sizeof($mData['tiemp0']).' DESPACHOS EN SEGUIMIENTO SIN NOVEDADES', '1' ) : '';
+			$mHtml .= $mData['tiempo'] ? self::printTabDetail( $mTittle, $mData['tiempo'], sizeof($mData['tiempo']).' DESPACHOS EN SEGUIMIENTO CON NOVEDADES', '1' ) : '';
+			$mHtml .= $mData['acargo'] ? self::printTabDetail( $mTittle, $mData['acargo'], sizeof($mData['acargo']).' DESPACHOS A CARGO EMPRESA', '1' ) : '';
+			$mHtml .= $mData['finrut'] ? self::printTabDetail( $mTittle, $mData['finrut'], sizeof($mData['finrut']).' DESPACHOS PENDIENTE LLEGADA', '1' ) : '';
 		}
 		else
 		{#Despachos Finalizados
 			for ($i=0; $i < sizeof($mDespac); $i++)
 			{
-				$mNovedades = getNovedadesDespac( Despac::$cConexion , $mDespac[$i][num_despac], 1 ); #Novedades del despacho
+				$mNovedades = getNovedadesDespac( self::$cConexion , $mDespac[$i][num_despac], 1 ); #Novedades del despacho
 				$n = sizeof($mNovedades);
 
 				$mDespac[$i][can_noveda] = $n;
@@ -1816,7 +1854,7 @@ class Despac
 				$mDespac[$i][tiempo] = '-';
 			}
 
-			$mHtml = Despac::printTabDetail( $mTittle, $mDespac, sizeof($mDespac).' DESPACHOS FINALIZADOS', '2' );
+			$mHtml = self::printTabDetail( $mTittle, $mDespac, sizeof($mDespac).' DESPACHOS FINALIZADOS', '2' );
 		}
 
 		return utf8_encode($mHtml);
@@ -1838,7 +1876,7 @@ class Despac
 					 ON a.cod_deshij = b.num_despac 
 				  WHERE b.num_desext LIKE '{$mNumViajex}' ";
 
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mResult = $mConsult -> ret_arreglo();
 
 		return $mResult[0];
@@ -1895,8 +1933,8 @@ class Despac
 					 ON a.num_despac = y.num_despac 
 				  WHERE 1=1 ";
 
-		if( Despac::$cTypeUser[tip_perfil] == 'CLIENTE' ){
-			$mSql .= " AND b.cod_transp = ".Despac::$cTypeUser[cod_transp];
+		if( self::$cTypeUser[tip_perfil] == 'CLIENTE' ){
+			$mSql .= " AND b.cod_transp = ".self::$cTypeUser[cod_transp];
 		}
 
 		if( $mNumDespac == NULL ){
@@ -1914,7 +1952,7 @@ class Despac
 		$mSql .= $mIndFinrut == false ? "" : " ORDER BY a.fec_llegad DESC ";
 		$mSql .= $mIndFinrut == false ? "" : " LIMIT 10 ";
 
-		$mConsult = new Consulta( $mSql, Despac::$cConexion );
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $mConsult -> ret_matrix('a');
 	}
 
@@ -1930,8 +1968,8 @@ class Despac
 	{
 		$mTittle[texto] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'EN SEGUIMIENTO', 'NO. DESPACHOS', 'CARGUE', 'TRANSITO', 'DESCARGUE', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
 		$mTittle[style] = array('', '', '', 'bgAZ', '', 'bgC3', 'bgT1', 'bgD3', '', '', '', '');
-		$mLimitFor = Despac::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
-		$mTransp = Despac::getTranspServic();
+		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
+		$mTransp = self::getTranspServic();
 		$mReport = array();
 		$mHtml1 = '';
 		$n=1;
@@ -1940,27 +1978,27 @@ class Despac
 		{
 			if( $mTransp[$i][ind_segcar] == 1 )
 			{
-				$mDespac = Despac::getDespacCargue( $mTransp[$i] );
-				$mData = Despac::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
+				$mDespac = self::getDespacCargue( $mTransp[$i] );
+				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 				$mReport[$i][can_cargue] = sizeof($mDespac);
 			}
 
 			if( $mTransp[$i][ind_segtra] == 1 )
 			{
 				if( $mTransp[$i][ind_segcar] == 1  && $mTransp[$i][ind_segtra] == 1  && $mTransp[$i][ind_segdes] == 1  )
-					$mDespac = Despac::getDespacTransi2( $mTransp[$i] ); 
+					$mDespac = self::getDespacTransi2( $mTransp[$i] ); 
 				else
-					$mDespac = Despac::getDespacTransi1( $mTransp[$i] );
+					$mDespac = self::getDespacTransi1( $mTransp[$i] );
 
-				$mData = Despac::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
+				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 
 				$mReport[$i][can_transi] = sizeof($mDespac);
 			}
 
 			if( $mTransp[$i][ind_segdes] == 1 )
 			{
-				$mDespac = Despac::getDespacDescar( $mTransp[$i] );
-				$mData = Despac::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
+				$mDespac = self::getDespacDescar( $mTransp[$i] );
+				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 				$mReport[$i][can_descar] = sizeof($mDespac);
 			}
 
@@ -1976,7 +2014,7 @@ class Despac
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="left">'.  $mTransp[$i][nom_tipser].'</td>';
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="left">'.  $mTransp[$i][nom_transp].'</td>';
 
-				if( Despac::$cTypeUser[tip_perfil] == 'OTRO' )
+				if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 					$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.	$mEnSegi .'</td>';
 
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.$mReport[$i][tot_despac].'</td>';
@@ -1987,7 +2025,7 @@ class Despac
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.( $mData[fin_rutaxx] ? $mData[fin_rutaxx] : '-' ).'</td>';
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.( $mData[ind_acargo] ? $mData[ind_acargo] : '-' ).'</td>';
 
-				if( Despac::$cTypeUser[tip_perfil] == 'OTRO' )
+				if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 					$mHtml1 .= 	'<td class="classCell" nowrap="" align="left">'.  ( $mTransp[$i][usr_asigna] != '' ? $mTransp[$i][usr_asigna] : 'SIN ASIGNAR' ).'</td>';
 				
 				$mHtml1 .= '</tr>';
@@ -2009,7 +2047,7 @@ class Despac
 		$mHtml2  = '<tr>';
 		$mHtml2 .= '<th class="classTotal" nowrap="" align="right" colspan="3">TOTALES:</th>';
 
-		if( Despac::$cTypeUser[tip_perfil] == 'OTRO' )
+		if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 			$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[7].'</th>';
 
 		$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[0].'</th>';
@@ -2020,7 +2058,7 @@ class Despac
 		$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[5].'</th>';
 		$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[6].'</th>';
 
-		if( Despac::$cTypeUser[tip_perfil] == 'OTRO' )
+		if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 			$mHtml2 .= '<th class="classTotal" nowrap="" align="center">&nbsp;</th>';
 
 		$mHtml2 .= '</tr>';
@@ -2030,7 +2068,7 @@ class Despac
 		$mHtml  = '<table class="classTable" width="100%" cellspacing="0" cellpadding="0" align="center">';
 		$mHtml .= 	'<tr>';
 		for ($i=0; $i < $mLimitFor; $i++) {
-			$mHtml .= $i != 3 || ( $i == 3 && Despac::$cTypeUser[tip_perfil] == 'OTRO' ) ? '<th class="classHead bt '.$mTittle[style][$i].'" align="center">'.$mTittle[texto][$i].'</th>' : '';
+			$mHtml .= $i != 3 || ( $i == 3 && self::$cTypeUser[tip_perfil] == 'OTRO' ) ? '<th class="classHead bt '.$mTittle[style][$i].'" align="center">'.$mTittle[texto][$i].'</th>' : '';
 		}
 		$mHtml .= 	'</tr>';
 
@@ -2089,7 +2127,7 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
 					 ON a.cod_respon = b.cod_respon 
 				  WHERE b.cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."' ";
-		$mConsult = new Consulta($mSql, Despac::$cConexion);
+		$mConsult = new Consulta($mSql, self::$cConexion);
 		$mData = $mConsult->ret_matrix('a');
 
 		return json_decode($mData[0][$mCatego]);
@@ -2114,6 +2152,150 @@ class Despac
 					$mResult[0][] = $row;
 				}
 			}
+		}
+
+		return $mResult;
+	}
+
+	/*! \fn: printInformPernoc
+	 *  \brief: Imprime el informe C. Pernoctacion
+	 *  \author: Ing. Fabian Salinas
+	 *  \date: 03/03/2016
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: 
+	 *  \return: 
+	 */
+	private function printInformPernoc( $mTittle ){
+		$mData = self::getDataPernoc();
+		$mLimitFor = self::$cTypeUser['tip_perfil'] == 'OTRO' ? sizeof($mTittle['texto']) : sizeof($mTittle['texto'])-1;
+
+		#Dibuja la Tabla Completa
+		$mHtml  = '<table class="classTable" width="100%" cellspacing="0" cellpadding="0" align="center">';
+		$mHtml .= 	'<tr>';
+		for ($i=0; $i < $mLimitFor; $i++){
+			$mHtml .= '<th class="classHead bt '.$mTittle['style'][$i].'" align="center">'.$mTittle['texto'][$i].'</th>';
+		}
+		$mHtml .= 	'</tr>';
+
+		$j=1;
+		foreach ($mData as $row) {
+			$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
+				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['nom_tipser'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['nom_transp'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['num_cantid'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.($row['usr_asigna'] != '' ? $row['usr_asigna'] : 'SIN ASIGNAR').'</td>';
+			$mHtml .= '<tr>';
+
+			$j++;
+		}
+
+		echo $mHtml;
+	}
+
+	/*! \fn: getDataPernoc
+	 *  \brief: Trae la data para la pestaña C. PERNOCTACION
+	 *  \author: Ing. Fabian Salinas
+	 *  \date: 18/03/2016
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: 
+	 *  \return: 
+	 */
+	private function getDataPernoc(){
+		$mTransp = self::getTranspServic(NULL, NULL, " AND a.ind_conper = 1 ");
+
+		#Filtros por Formulario
+		#$mWhere .= $_REQUEST[ind_limpio] ? " AND x.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
+		$mWhere .= self::$cTipDespac != '""' ? " AND x.cod_tipdes IN (". self::$cTipDespac .") " : "";
+
+		#Filtros por usuario
+		$mWhere .= self::$cTipDespacContro != '""' ? 'AND x.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
+
+		$i=0;
+		foreach ($mTransp as $row) {
+			$mSql = "
+					 SELECT b.* 
+					   FROM ( SELECT DATE_FORMAT(NOW(), '%Y-%m-%d %H:%i') AS fec_actual ) a, 
+							(
+								 SELECT v.*, 
+										CONCAT(DATE_FORMAT(NOW(), '%Y-%m-%d'), ' ', v.hor_perini) AS fec_perini, 
+										CONCAT(DATE_FORMAT(NOW(), '%Y-%m-%d'), ' ', v.hor_perfin) AS fec_perfin 
+								   FROM (
+											 SELECT x.num_despac, x.cod_tipdes, y.cod_transp, 
+													x.cod_ciuori, x.cod_depori, x.cod_paiori, 
+													x.cod_ciudes, x.cod_depdes, x.cod_paides, 
+													y.cod_conduc, z.cod_consec AS cod_pernoc, 
+													DATE_FORMAT(z.fec_creaci, '%Y-%m-%d %H:%i') AS fec_pernoc, 
+													CASE x.cod_tipdes 
+														WHEN 1 THEN '$row[hor_pe1urb]'
+														WHEN 2 THEN '$row[hor_pe1nac]'
+														WHEN 3 THEN '$row[hor_pe1imp]'
+														WHEN 4 THEN '$row[hor_pe1exp]'
+														WHEN 5 THEN '$row[hor_pe1tr1]'
+														WHEN 6 THEN '$row[hor_pe1tr2]'
+													END AS hor_perini,
+													CASE x.cod_tipdes 
+														WHEN 1 THEN '$row[hor_pe2urb]'
+														WHEN 2 THEN '$row[hor_pe2nac]'
+														WHEN 3 THEN '$row[hor_pe2imp]'
+														WHEN 4 THEN '$row[hor_pe2exp]'
+														WHEN 5 THEN '$row[hor_pe2tr1]'
+														WHEN 6 THEN '$row[hor_pe2tr2]'
+													END AS hor_perfin 
+											   FROM ".BASE_DATOS.".tab_despac_despac x 
+										 INNER JOIN ".BASE_DATOS.".tab_despac_vehige y 
+												 ON x.num_despac = y.num_despac 
+										  LEFT JOIN ".BASE_DATOS.".tab_despac_perno2 z 
+												 ON x.num_despac = z.num_despac 
+											  WHERE x.fec_salida IS NOT NULL 
+												AND x.fec_salida <= NOW() 
+												AND (x.fec_llegad IS NULL OR x.fec_llegad = '0000-00-00 00:00:00')
+												AND x.ind_planru = 'S' 
+												AND x.ind_anulad = 'R'
+												AND y.ind_activo = 'S' 
+												AND y.cod_transp = '$row[cod_transp]' 
+												AND x.cod_tipdes IN (1,2,3,4,5,6) 
+												$mWhere
+										   ORDER BY x.num_despac ASC, z.fec_creaci DESC
+										) v 
+								  WHERE v.hor_perini != '' 
+									AND v.hor_perfin != '' 
+									AND v.hor_perini IS NOT NULL 
+									AND v.hor_perfin IS NOT NULL 
+							   GROUP BY v.num_despac 
+							) b 
+				 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
+						 ON b.cod_ciuori = d.cod_ciudad 
+						AND b.cod_depori = d.cod_depart 
+						AND b.cod_paiori = d.cod_paisxx 
+				 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad e 
+						 ON b.cod_ciudes = e.cod_ciudad 
+						AND b.cod_depdes = e.cod_depart 
+						AND b.cod_paides = e.cod_paisxx 
+				 INNER JOIN ".BASE_DATOS.".tab_genera_depart f 
+						 ON b.cod_depori = f.cod_depart 
+						AND b.cod_paiori = f.cod_paisxx 
+				 INNER JOIN ".BASE_DATOS.".tab_genera_depart g 
+						 ON b.cod_depdes = g.cod_depart 
+						AND b.cod_paides = g.cod_paisxx 
+				 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer h 
+						 ON b.cod_conduc = h.cod_tercer 
+					  WHERE a.fec_actual BETWEEN b.fec_perini AND b.fec_perfin 
+						AND (b.fec_pernoc IS NULL OR b.fec_pernoc NOT BETWEEN b.fec_perini AND b.fec_perfin ) 
+				   GROUP BY b.num_despac ";
+
+			$mSql = "SELECT xx.cod_transp, COUNT(xx.cod_transp) AS num_cantid 
+					   FROM ( $mSql ) xx 
+				   GROUP BY xx.cod_transp ";
+			$mConsult = new Consulta($mSql, self::$cConexion);
+			$mData = $mConsult->ret_matrix('a');
+
+			$mResult[$i] = $mData[0];
+			$mResult[$i]['nom_transp'] = $row['nom_transp'];
+			$mResult[$i]['nom_tipser'] = $row['nom_tipser'];
+			$mResult[$i]['usr_asigna'] = $row['usr_asigna'];
+
+			$i++;
 		}
 
 		return $mResult;

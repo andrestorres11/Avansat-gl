@@ -50,7 +50,7 @@ class FleConcil
         include( "../lib/general/form_lib.inc" );
         include( "../lib/general/tabla_lib.inc" );
         include ("../lib/mensajes_lib.inc");
-        $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+        $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
         
         $query = "SELECT a.bin_fotoxx, b.nom_contro, b.cod_contro, a.fec_creaci, a.num_consec
                   FROM ".BASE_DATOS.".tab_despac_images a,
@@ -102,7 +102,7 @@ class FleConcil
         define ('BASE_DATOS', $_SESSION['BASE_DATOS']);
         include( "../lib/general/conexion_lib.inc" );
        
-        $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+        $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
         
         $query = "SELECT a.bin_fotoxx, b.nom_contro
                   FROM ".BASE_DATOS.".tab_despac_images a,

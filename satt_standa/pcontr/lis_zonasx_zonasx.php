@@ -16,11 +16,11 @@ class Proc_contro
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Resultado();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
           case "1":
           $this -> Resultado();
@@ -130,7 +130,7 @@ class Proc_contro
      $formulario -> oculto("opcion",2,0);
      $formulario -> oculto("valor",$valor,0);
      $formulario -> oculto("window","central",0);
-     $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+     $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
      echo "<hr>";
      $formulario -> boton("Actualizar Zonas","submit",0);
@@ -152,7 +152,7 @@ class Proc_contro
    $datos_usuario = $this -> usuario -> retornar();
    $usuario=$datos_usuario["cod_usuari"];
 
-   $transporact = $GLOBALS[transporact];
+   $transporact = $_REQUEST[transporact];
 
    /*$interf_gps = new Interfaz_GPS();
 

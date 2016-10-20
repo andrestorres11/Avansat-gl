@@ -15,11 +15,11 @@ class Lis_compro_cuenta
 //********METODOS DE LA CLASE*************
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Captura();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
          $this -> Captura();
@@ -43,13 +43,13 @@ class Lis_compro_cuenta
                  FROM ".BASE_DATOS.".tab_genera_antici a,
                       ".BASE_DATOS.".tab_compro_cuenta b
                  WHERE a.cod_antici= b.cod_tiptra";
-     if(isset($GLOBALS[tiptra]) AND $GLOBALS[tiptra]!= 0)
-            $query = $query." AND a.cod_antici = '$GLOBALS[tiptra]' ";
+     if(isset($_REQUEST[tiptra]) AND $_REQUEST[tiptra]!= 0)
+            $query = $query." AND a.cod_antici = '$_REQUEST[tiptra]' ";
 
             $query = $query." GROUP BY 1 ORDER BY 2 ";
      $consulta = new Consulta($query, $this -> conexion);
      $antici = $consulta -> ret_matriz();
-     if(isset($GLOBALS[tiptra]) AND $GLOBALS[tiptra]!= 0)
+     if(isset($_REQUEST[tiptra]) AND $_REQUEST[tiptra]!= 0)
       $antici = array_merge($antici,$inicio);
      else
       $antici = array_merge($inicio,$antici);
@@ -58,15 +58,15 @@ class Lis_compro_cuenta
                  FROM ".CONSULTOR.".tab_genera_bancos a,
                       ".BASE_DATOS.".tab_compro_cuenta b
                  WHERE a.cod_bancox = b.cod_bancox
-                   AND b.cod_tiptra = '$GLOBALS[tiptra]' ";
-         if(isset($GLOBALS[banco]) AND $GLOBALS[banco]!= 0)
-            $query = $query." AND a.cod_bancox = '$GLOBALS[banco]' ";
+                   AND b.cod_tiptra = '$_REQUEST[tiptra]' ";
+         if(isset($_REQUEST[banco]) AND $_REQUEST[banco]!= 0)
+            $query = $query." AND a.cod_bancox = '$_REQUEST[banco]' ";
 
             $query = $query." GROUP BY 1 ORDER BY 2 ";
 
      $consulta = new Consulta($query, $this -> conexion);
      $bancos = $consulta -> ret_matriz();
-     if(isset($GLOBALS[banco]) AND $GLOBALS[banco]!= 0)
+     if(isset($_REQUEST[banco]) AND $_REQUEST[banco]!= 0)
       $bancos = array_merge($bancos,$inicio);
      else
       $bancos = array_merge($inicio,$bancos);
@@ -76,16 +76,16 @@ class Lis_compro_cuenta
                  FROM ".C_CONSULTOR.".tab_genera_tipcom a,
                       ".BASE_DATOS.".tab_compro_cuenta b
                  WHERE a.cod_tipcom = b.cod_tipcom AND
-                       b.cod_tiptra = '$GLOBALS[tiptra]' AND
-                       b.cod_bancox = '$GLOBALS[banco]' ";
-      if(isset($GLOBALS[tipcom]) AND $GLOBALS[tipcom]!= 0)
-            $query = $query." AND a.cod_tipcom = '$GLOBALS[tipcom]' ";
+                       b.cod_tiptra = '$_REQUEST[tiptra]' AND
+                       b.cod_bancox = '$_REQUEST[banco]' ";
+      if(isset($_REQUEST[tipcom]) AND $_REQUEST[tipcom]!= 0)
+            $query = $query." AND a.cod_tipcom = '$_REQUEST[tipcom]' ";
 
             $query = $query." GROUP BY 1 ORDER BY 2 ";
 
      $consulta = new Consulta($query, $this -> conexion);
      $tipcom = $consulta -> ret_matriz();
-     if(isset($GLOBALS[tipcom]) AND $GLOBALS[tipcom]!= 0)
+     if(isset($_REQUEST[tipcom]) AND $_REQUEST[tipcom]!= 0)
       $tipcom = array_merge($tipcom,$inicio);
      else
       $tipcom = array_merge($inicio,$tipcom);
@@ -95,17 +95,17 @@ class Lis_compro_cuenta
                  FROM ".BASE_DATOS.".tab_genera_agenci a,
                       ".BASE_DATOS.".tab_compro_cuenta b
                  WHERE a.cod_agenci = b.cod_agenci
-                   AND b.cod_tiptra = '$GLOBALS[tiptra]'
-                   AND b.cod_bancox = '$GLOBALS[banco]'
-                   AND b.cod_tipcom = '$GLOBALS[tipcom]'";
-        if(isset($GLOBALS[agencia]) AND $GLOBALS[agencia]!= 0)
-            $query = $query." AND a.cod_agenci = '$GLOBALS[agencia]' ";
+                   AND b.cod_tiptra = '$_REQUEST[tiptra]'
+                   AND b.cod_bancox = '$_REQUEST[banco]'
+                   AND b.cod_tipcom = '$_REQUEST[tipcom]'";
+        if(isset($_REQUEST[agencia]) AND $_REQUEST[agencia]!= 0)
+            $query = $query." AND a.cod_agenci = '$_REQUEST[agencia]' ";
 
             $query = $query." GROUP BY 1 ORDER BY 2 ";
 
      $consulta = new Consulta($query, $this -> conexion);
      $agencias = $consulta -> ret_matriz();
-     if(isset($GLOBALS[agencia]) AND $GLOBALS[agencia]!= 0)
+     if(isset($_REQUEST[agencia]) AND $_REQUEST[agencia]!= 0)
        $agencias = array_merge($agencias,$inicio);
      else
        $agencias = array_merge($inicio,$agencias);
@@ -115,7 +115,7 @@ class Lis_compro_cuenta
      echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/config.js\"></script>\n";
      $formulario = new Formulario ("index.php","post","<b>Contable</b>","form_compro");
      $formulario -> lista("Transacción", "tiptra\" onChange=\"form_compro.banco.value=''; form_compro.tipcom.value=''; form_compro.agencia.value=''; form_compro.submit()", $antici, 0);
-     if(($GLOBALS[tiptra] != 10)&&($GLOBALS[tiptra] != 3)&&($GLOBALS[tiptra] != 21)&&($GLOBALS[tiptra] != 30)&&($GLOBALS[tiptra] != 50))
+     if(($_REQUEST[tiptra] != 10)&&($_REQUEST[tiptra] != 3)&&($_REQUEST[tiptra] != 21)&&($_REQUEST[tiptra] != 30)&&($_REQUEST[tiptra] != 50))
      {
              $formulario -> lista("Bancos", "banco\" onChange=\"form_compro.tipcom.value=''; form_compro.agencia.value=''; form_compro.submit()", $bancos, 0);
              $formulario -> lista("Tipo Comprobante", "tipcom\" onChange=\"form_compro.agencia.value=''; form_compro.submit()",$tipcom, 1);
@@ -138,10 +138,10 @@ class Lis_compro_cuenta
                        a.cod_cuenta = b.cod_cuenta AND
                        a.cod_subcue = b.cod_subcue AND
                        a.cod_auxili = b.cod_auxili AND
-                       b.cod_agenci = '$GLOBALS[agencia]'
-                   AND b.cod_tiptra = '$GLOBALS[tiptra]'
-                   AND b.cod_bancox = '$GLOBALS[banco]'
-                   AND b.cod_tipcom = '$GLOBALS[tipcom]'
+                       b.cod_agenci = '$_REQUEST[agencia]'
+                   AND b.cod_tiptra = '$_REQUEST[tiptra]'
+                   AND b.cod_bancox = '$_REQUEST[banco]'
+                   AND b.cod_tipcom = '$_REQUEST[tipcom]'
                    AND b.ind_nattra = '0'";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -158,23 +158,23 @@ class Lis_compro_cuenta
                        a.cod_cuenta = b.cod_cuenta AND
                        a.cod_subcue = b.cod_subcue AND
                        a.cod_auxili = b.cod_auxili AND
-                       b.cod_agenci = '$GLOBALS[agencia]'
-                   AND b.cod_tiptra = '$GLOBALS[tiptra]'
-                   AND b.cod_bancox = '$GLOBALS[banco]'
-                   AND b.cod_tipcom = '$GLOBALS[tipcom]'
+                       b.cod_agenci = '$_REQUEST[agencia]'
+                   AND b.cod_tiptra = '$_REQUEST[tiptra]'
+                   AND b.cod_bancox = '$_REQUEST[banco]'
+                   AND b.cod_tipcom = '$_REQUEST[tipcom]'
                    AND b.ind_nattra = '1'";
 
      $consulta = new Consulta($query, $this -> conexion);
      $cuecre = $consulta -> ret_matriz();
 
-     if((($GLOBALS[tiptra] < 10)||($GLOBALS[tiptra] >= 20))&&(($GLOBALS[tiptra] < 30)||($GLOBALS[tiptra] >= 40)))//no es liquidacion ni facturacion
+     if((($_REQUEST[tiptra] < 10)||($_REQUEST[tiptra] >= 20))&&(($_REQUEST[tiptra] < 30)||($_REQUEST[tiptra] >= 40)))//no es liquidacion ni facturacion
      {
 
      $formulario -> linea("Cuenta Debito",0);
      $formulario -> linea($cuedeb[0][8],0);
      $formulario -> linea("Nombre:",0);
      $formulario -> linea($cuedeb[0][9],1);
-     if($GLOBALS[tiptra]>= 40 && $GLOBALS[tiptra]< 50)//recaudo
+     if($_REQUEST[tiptra]>= 40 && $_REQUEST[tiptra]< 50)//recaudo
      {
        $ano_actual = date("Y");
 
@@ -216,7 +216,7 @@ class Lis_compro_cuenta
      $formulario -> linea("Nombre:",0);
      $formulario -> linea($cuecre[0][9],1);
 
-     if($GLOBALS[tiptra]>= 40 && $GLOBALS[tiptra]< 50)//recaudo
+     if($_REQUEST[tiptra]>= 40 && $_REQUEST[tiptra]< 50)//recaudo
      {
       $formulario -> linea("Ingresos Varios",0);
       $formulario -> linea($cuecre[1][8],0);
@@ -224,7 +224,7 @@ class Lis_compro_cuenta
       $formulario -> linea($cuecre[1][9],1);
      }
      }
-     else if($GLOBALS[tiptra] != 10)//Facturacion
+     else if($_REQUEST[tiptra] != 10)//Facturacion
      {
 
       $ano_actual = date("Y");
@@ -356,7 +356,7 @@ class Lis_compro_cuenta
      $formulario -> oculto("window","central",0);
      $formulario -> oculto("opcion",1,0);
      $formulario -> nueva_tabla();
-     $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+     $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
      $formulario -> botoni("Aceptar","compro_cuenta()",1);
      $formulario -> cerrar();
  }//FIN FUNCTION CAPTURA
@@ -369,20 +369,20 @@ class Lis_compro_cuenta
   $consec = 0;
   $consulta = new Consulta ("START TRANSACTION", $this -> conexion);
 
-  if($GLOBALS[tiptra] == 10)
+  if($_REQUEST[tiptra] == 10)
      $cuedeb[1] = $cuedeb[0];
 
   for($i=0; $i<sizeof($cuedeb); $i++)
   {
    $ica = "NULL";
    $ret = "NULL";
-   if(($i == 1)&&($GLOBALS[tiptra] == 30))
-      $ret = "'".$GLOBALS[retefu]."'";
-   if(($i == 2)&&($GLOBALS[tiptra] == 30))
-      $ica = "'".$GLOBALS[retica]."'";
+   if(($i == 1)&&($_REQUEST[tiptra] == 30))
+      $ret = "'".$_REQUEST[retefu]."'";
+   if(($i == 2)&&($_REQUEST[tiptra] == 30))
+      $ica = "'".$_REQUEST[retica]."'";
 
       $tr = 0;
-      if($GLOBALS[tiptra] != 30)
+      if($_REQUEST[tiptra] != 30)
       {
           if($i == 1)
                   $tr = 1;
@@ -391,30 +391,30 @@ class Lis_compro_cuenta
                          cod_bancox,cod_agenci,num_consec,ind_nattra,
                          cod_clasec,cod_grupoc,cod_cuenta,cod_subcue,
                          cod_auxili,cod_retefu,cod_retica,usr_creaci, fec_creaci)
-             VALUES ('$GLOBALS[tiptra]','$GLOBALS[tipcom]','$GLOBALS[banco]','$GLOBALS[agencia]',
+             VALUES ('$_REQUEST[tiptra]','$_REQUEST[tipcom]','$_REQUEST[banco]','$_REQUEST[agencia]',
                      '$consec','$tr','".substr($cuedeb[$i],0,1)."','".substr($cuedeb[$i],1,1)."',
                      '".substr($cuedeb[$i],2,2)."','".substr($cuedeb[$i],4,2)."','".substr($cuedeb[$i],6,2)."',
-                     $ret,$ica,'$GLOBALS[usuario]','$fec_actual')";
+                     $ret,$ica,'$_REQUEST[usuario]','$fec_actual')";
   $insercion = new Consulta($query, $this -> conexion, "R");
   $consec++;
   }
-  for($i=0; $i<sizeof($GLOBALS[cuecre]); $i++)
+  for($i=0; $i<sizeof($_REQUEST[cuecre]); $i++)
   {
    $ica = "NULL";
    $ret = "NULL";
-   if((!$i)&&($GLOBALS[tiptra] == 10))
-      $ret = "'".$GLOBALS[retefu]."'";
-   if(($i == 1)&&($GLOBALS[tiptra] == 10))
-      $ica = "'".$GLOBALS[retica]."'";
+   if((!$i)&&($_REQUEST[tiptra] == 10))
+      $ret = "'".$_REQUEST[retefu]."'";
+   if(($i == 1)&&($_REQUEST[tiptra] == 10))
+      $ica = "'".$_REQUEST[retica]."'";
 
    $query = "INSERT INTO ".BASE_DATOS.".tab_compro_cuenta(cod_tiptra,cod_tipcom,
                          cod_bancox,cod_agenci,num_consec,ind_nattra,
                          cod_clasec,cod_grupoc,cod_cuenta,cod_subcue,
                          cod_auxili,cod_retefu,cod_retica,usr_creaci,fec_creaci)
-             VALUES ('$GLOBALS[tiptra]','$GLOBALS[tipcom]','$GLOBALS[banco]','$GLOBALS[agencia]',
-                     '$consec','1','".substr($GLOBALS[cuecre][$i],0,1)."','".substr($GLOBALS[cuecre][$i],1,1)."',
-                     '".substr($GLOBALS[cuecre][$i],2,2)."','".substr($GLOBALS[cuecre][$i],4,2)."','".substr($GLOBALS[cuecre][$i],6,2)."',
-                     $ret,$ica,'$GLOBALS[usuario]','$fec_actual')";
+             VALUES ('$_REQUEST[tiptra]','$_REQUEST[tipcom]','$_REQUEST[banco]','$_REQUEST[agencia]',
+                     '$consec','1','".substr($_REQUEST[cuecre][$i],0,1)."','".substr($_REQUEST[cuecre][$i],1,1)."',
+                     '".substr($_REQUEST[cuecre][$i],2,2)."','".substr($_REQUEST[cuecre][$i],4,2)."','".substr($_REQUEST[cuecre][$i],6,2)."',
+                     $ret,$ica,'$_REQUEST[usuario]','$fec_actual')";
   $insercion = new Consulta($query, $this -> conexion, "R");
   $consec++;
   };
@@ -427,12 +427,12 @@ class Lis_compro_cuenta
      else
          $consulta = new Consulta ("ROLLBACK", $this -> conexion);
 
-  unset($GLOBALS[tiptra]);
-  unset($GLOBALS[tipcom]);
-  unset($GLOBALS[banco]);
-  unset($GLOBALS[agenci]);
+  unset($_REQUEST[tiptra]);
+  unset($_REQUEST[tipcom]);
+  unset($_REQUEST[banco]);
+  unset($_REQUEST[agenci]);
   unset($cuedeb);
-  unset($GLOBALS[cuecre]);
+  unset($_REQUEST[cuecre]);
  }//FIN FUNCION INSERT
 
 }//FIN CLASE

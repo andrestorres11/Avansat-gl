@@ -2,10 +2,6 @@
     
     session_start();
     
-    ini_set('display_errors', true);
-    error_reporting(E_ALL & ~E_NOTICE);
-
-    
     class InfNovedadesUsuario{
         
         var $conexion;
@@ -72,7 +68,7 @@
             echo "<BR><BR>";
             echo "<BR><BR>";
             $formulario -> oculto("window","central",0);
-            $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+            $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
             $formulario -> oculto("option\" id=\"optionID",'',0);
             $formulario -> cerrar();
             
@@ -102,7 +98,7 @@
             $formulario -> oculto("based\" id=\"basedID\"",BASE_DATOS,0);
             $formulario -> oculto("num_serie",0,0);
             $formulario -> oculto("window","central",0);
-            $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+            $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
             $formulario -> oculto("opcion",2,0);
             $formulario -> nueva_tabla();
             $formulario -> linea("Cantidad de Novedades por Usuario al ".$_REQUEST[fecha_corte]  ,1,"t2"); 
@@ -202,7 +198,7 @@
             include( "../lib/general/form_lib.inc" );
             include( "../lib/general/tabla_lib.inc" );
             
-            $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+            $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
             $_USUARIO_ = $this -> getUsuarios( array('cod_usuari' => $__REQUEST[cod_usuar]) );
             
             

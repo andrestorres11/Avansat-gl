@@ -15,11 +15,11 @@ class Proc_tipser
 //********METODOS DE LA CLASE PROC_LISTA DE PRECIOS ESTANDAR*************
         function principal()
         {
-                if(!isset($GLOBALS[opcion]))
+                if(!isset($_REQUEST[opcion]))
                         $this -> Tipser();
                 else
                 {
-                        switch($GLOBALS[opcion])
+                        switch($_REQUEST[opcion])
                         {
                                 case "1":
                                 $this -> Insertar();
@@ -65,13 +65,13 @@ class Proc_tipser
                                 {
                                         echo "<td class=\"celda2\">".$tipser[$i][0]."</td>";
                                         echo "<td class=\"celda2\">".$tipser[$i][1]."</td>";
-                                        echo "<td class=\"celda2\"><a href=\"index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=4&cod_tipser=".$tipser[$i][0]."&ind_estado=".$tipser[$i][2]."\">$texto</a> - <a href=\"index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=5&cod_tipser=".$tipser[$i][0]."\">Actualizar</a> - <a href=\"#\" onClick=\"if(confirm('Esta seguro de que desea eliminar el tipo de servicio No. ".$tipser[$i][0]." ?')){ location.reload('index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=3&cod_tipser=".$tipser[$i][0]."');/*document.form_lis_tipser.opcion.value=3; document.form_lis_tipser.submit();*/}; return false;\">Eliminar</a></td></tr><tr>";
+                                        echo "<td class=\"celda2\"><a href=\"index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=4&cod_tipser=".$tipser[$i][0]."&ind_estado=".$tipser[$i][2]."\">$texto</a> - <a href=\"index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=5&cod_tipser=".$tipser[$i][0]."\">Actualizar</a> - <a href=\"#\" onClick=\"if(confirm('Esta seguro de que desea eliminar el tipo de servicio No. ".$tipser[$i][0]." ?')){ location.reload('index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=3&cod_tipser=".$tipser[$i][0]."');/*document.form_lis_tipser.opcion.value=3; document.form_lis_tipser.submit();*/}; return false;\">Eliminar</a></td></tr><tr>";
                                 }//fin if
                                 else
                                 {
                                         echo "<td class=\"celda\">".$tipser[$i][0]."</td>";
                                         echo "<td class=\"celda\">".$tipser[$i][1]."</td>";
-                                        echo "<td class=\"celda2\"><a href=\"index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=4&cod_tipser=".$tipser[$i][0]."&ind_estado=".$tipser[$i][2]."\">$texto</a> - <a href=\"index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=5&cod_tipser=".$tipser[$i][0]."\">Actualizar</a> - <a href=\"#\" onClick=\"if(confirm('Esta seguro de que desea eliminar el tipo de servicio No. ".$tipser[$i][0]." ?')){ location.reload('index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=3&cod_tipser=".$tipser[$i][0]."');/*document.form_lis_tipser.opcion.value=3; document.form_lis_tipser.submit();*/}; return false;\">Eliminar</a></td></tr><tr>";
+                                        echo "<td class=\"celda2\"><a href=\"index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=4&cod_tipser=".$tipser[$i][0]."&ind_estado=".$tipser[$i][2]."\">$texto</a> - <a href=\"index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=5&cod_tipser=".$tipser[$i][0]."\">Actualizar</a> - <a href=\"#\" onClick=\"if(confirm('Esta seguro de que desea eliminar el tipo de servicio No. ".$tipser[$i][0]." ?')){ location.reload('index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=3&cod_tipser=".$tipser[$i][0]."');/*document.form_lis_tipser.opcion.value=3; document.form_lis_tipser.submit();*/}; return false;\">Eliminar</a></td></tr><tr>";
                                 }//fin else
                         }//fin for
                 }//fin if
@@ -109,7 +109,7 @@ class Proc_tipser
                 $formulario -> oculto("opcion",$op,0);
                 $formulario -> oculto("cod_tipser",$tip[0]['cod_tipser'],0);
                 $formulario -> oculto("window","central",0);
-                $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+                $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
                 $formulario -> botoni("Aceptar","aceptar_form()",0);
                 $formulario -> botoni("Borrar","form_tipser.reset()",1);
                 $formulario -> cerrar();

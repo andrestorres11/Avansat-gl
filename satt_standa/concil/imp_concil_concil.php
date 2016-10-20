@@ -65,7 +65,7 @@ class PorCumplir
 		$formulario -> nueva_tabla();
 		$formulario -> oculto("num_despac",0,0);
   		$formulario -> oculto("window","central",0);
-  		$formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+  		$formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
   		$formulario -> oculto("opcion",1,0);
   
 		$formulario -> cerrar();
@@ -131,8 +131,8 @@ class PorCumplir
 			$placa.= " AND a.cod_manifi = '$_POST[cod_despac]'";
 		}
 		
-		$fechaini = $GLOBALS[fecini]." 00:00:00";
-		$fechafin = $GLOBALS[fecfin]." 23:59:59";
+		$fechaini = $_REQUEST[fecini]." 00:00:00";
+		$fechafin = $_REQUEST[fecfin]." 23:59:59";
 		
 		if($_POST[fecini] && $_POST[fecfin])
 		{
@@ -168,7 +168,7 @@ class PorCumplir
 		$formulario -> nueva_tabla();
 		$formulario -> oculto("num_despac",0,0);
   		$formulario -> oculto("window","central",0);
-  		$formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+  		$formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
   		$formulario -> oculto("opcion",2,0);
   
 		$formulario -> cerrar();
@@ -321,7 +321,7 @@ class PorCumplir
 				."<table border=\"0\" width=\"100%\">"
 				."<tr>"
 				."<td align=\"center\">"
-				."<input type=\"hidden\" name=\"cod_servic\" value=\"$GLOBALS[cod_servic]\">"
+				."<input type=\"hidden\" name=\"cod_servic\" value=\"$_REQUEST[cod_servic]\">"
 				."<input type=\"hidden\" name=\"window\" value=\"central\">"
 				."<input type=\"button\" onClick=\"form.Imprimir.style.visibility='hidden';form.Volver.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.Volver.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">"
 				."</td>"

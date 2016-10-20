@@ -118,7 +118,7 @@
 2003-10-21, version 0.6.6
 - soap_transport_http: only include port in Host header if it was specified in the URL
 - soap_transport_http: add some code to use OpenSSL for PHP ssl:// scheme, but comment out since it's not ready
-- soap_server: use $_SERVER['PHP_SELF'] if $GLOBALS['PHP_SELF'] is not set
+- soap_server: use $_SERVER['PHP_SELF'] if $_REQUEST['PHP_SELF'] is not set
 - wsdl: add WSDL request and response and transport debug to debug
 - wsdl: handle custom type extending xmlschema namespace (GLUE ... Thanks Matt)
 - soap_parser: add param to docs

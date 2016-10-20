@@ -15,8 +15,8 @@ class Tram_rutas
 
   function principal()
   {
-    //echo "<pre>"; print_r("Opcion-> ".$GLOBALS[opcion]); echo "</pre>";
-    switch($GLOBALS[opcion])
+    //echo "<pre>"; print_r("Opcion-> ".$_REQUEST[opcion]); echo "</pre>";
+    switch($_REQUEST[opcion])
      {
         case "lista":
           $this -> Lista();
@@ -65,7 +65,7 @@ class Tram_rutas
     $formulario -> oculto("MAX_FILE_SIZE", "2000000", 0);
     $formulario -> oculto("usuario","$usuario",0);
     $formulario -> oculto("opcion","lista",0);
-    $formulario -> oculto("cod_servic","$GLOBALS[cod_servic]",0);
+    $formulario -> oculto("cod_servic","$_REQUEST[cod_servic]",0);
     $formulario -> oculto("window","central",0);
     $formulario -> botoni("Aceptar","Validate_Form()",0);//
     $formulario -> cerrar();
@@ -125,7 +125,7 @@ class Tram_rutas
     }
     for($n =0 ; $n< sizeof($mRutas) ; $n++)
     {
-      $mRutas[$n][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&rutax=".$mRutas[$n][0]."&opcion=tramo&nom_ruta=".$mRutas[$n][nom_rutasx]." \"target=\"centralFrame\">".$mRutas[$n][0]."</a>";
+      $mRutas[$n][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&rutax=".$mRutas[$n][0]."&opcion=tramo&nom_ruta=".$mRutas[$n][nom_rutasx]." \"target=\"centralFrame\">".$mRutas[$n][0]."</a>";
       
       $estilo = "i";
       $formulario -> linea($mRutas[$n][0],0,$estilo);
@@ -154,7 +154,7 @@ class Tram_rutas
     $formulario -> linea("Filtro:",0,"t2");
     
     $formulario -> nueva_tabla();
-    $formulario -> linea("Código: ".$GLOBALS[rutax]." || Ruta: ".$GLOBALS[nom_ruta]."",0,"t"); //  $mRutaContro[0][1]
+    $formulario -> linea("Código: ".$_REQUEST[rutax]." || Ruta: ".$_REQUEST[nom_ruta]."",0,"t"); //  $mRutaContro[0][1]
     
     $formulario -> nueva_tabla();
     $formulario -> linea("Origen:",0,"t");
@@ -166,14 +166,14 @@ class Tram_rutas
     $formulario -> linea("Trámos entre puestos de control físicos",0,"t2");
     
     //--------------------------------------------------------------
-    $mRutaContro = $this -> getRutaContro($GLOBALS[rutax]); // P/C para insertar Tramos         
-    $mTramoContro = $this -> getTramoContro($GLOBALS[rutax]); // P/C para actualizar Tramos   
+    $mRutaContro = $this -> getRutaContro($_REQUEST[rutax]); // P/C para insertar Tramos         
+    $mTramoContro = $this -> getTramoContro($_REQUEST[rutax]); // P/C para actualizar Tramos   
     //--------------------------------------------------------------
     if($mTramoContro == NULL)
     { //nueva Insercion
       $mCiu_Origen = array(
                          0=>array(
-                                  0=> $GLOBALS[rutax], "cod_rutasx"=>$GLOBALS[rutax]               , 1=>$GLOBALS[nom_ruta], "nom_rutasx"=>$GLOBALS[nom_ruta],
+                                  0=> $_REQUEST[rutax], "cod_rutasx"=>$_REQUEST[rutax]               , 1=>$_REQUEST[nom_ruta], "nom_rutasx"=>$_REQUEST[nom_ruta],
                                   2=> $_SESSION[origen], "cod_ciuori" => $_SESSION[origen] , 3=>$_SESSION[destin],"cod_ciudes" => $_SESSION[destin],
                                   4=> $_SESSION[origen], "cod_contro" => $_SESSION[origen] , 5=>$mOrigen, "nom_contro" => $mOrigen,
                                   6=> "1", "val_duraci" => "1"                                  
@@ -182,7 +182,7 @@ class Tram_rutas
     
       $mCiu_destin = array(
                          0=>array(
-                                  0=> $GLOBALS[rutax], "cod_rutasx"=>$GLOBALS[rutax]               , 1=>$GLOBALS[nom_ruta], "nom_rutasx"=>$GLOBALS[nom_ruta],
+                                  0=> $_REQUEST[rutax], "cod_rutasx"=>$_REQUEST[rutax]               , 1=>$_REQUEST[nom_ruta], "nom_rutasx"=>$_REQUEST[nom_ruta],
                                   2=> $_SESSION[origen], "cod_ciuori" => $_SESSION[origen] , 3=>$_SESSION[destin],"cod_ciudes" => $_SESSION[destin],
                                   4=> $_SESSION[origen], "cod_contro" => $_SESSION[destin] , 5=>$mDestin, "nom_contro" => $mDestin,
                                   6=> "1", "val_duraci" => "1"                                  
@@ -268,7 +268,7 @@ class Tram_rutas
         //$cod_ruta = $mTramoContro[0][0];
       }
     }
-    $html .= "<input type='hidden' id='rutax' name='rutax' value = '".$GLOBALS[rutax]."' />";
+    $html .= "<input type='hidden' id='rutax' name='rutax' value = '".$_REQUEST[rutax]."' />";
     $html .= "<input type='hidden' name='rows' value='".$a."' />";
     $html .= "<input type='hidden' name='UpDate' value='".$mUpdate."' />";
     $html .="</tbody>";
@@ -277,7 +277,7 @@ class Tram_rutas
     //--------------------------------------------------- 
     $formulario -> oculto("usuario","$usuario",0);
     $formulario -> oculto("opcion","insert",0);
-    $formulario -> oculto("cod_servic","$GLOBALS[cod_servic]",0);
+    $formulario -> oculto("cod_servic","$_REQUEST[cod_servic]",0);
     $formulario -> oculto("window","central",0);
     
     if(count( $mRutaContro ) == 0)
@@ -340,20 +340,20 @@ class Tram_rutas
                       ";
      $indwhere = 0;
 
-     if($GLOBALS[origen]) {
+     if($_REQUEST[origen]) {
       if($indwhere)
-       $query .= " AND a.cod_ciuori = '".$GLOBALS[origen]."'";
+       $query .= " AND a.cod_ciuori = '".$_REQUEST[origen]."'";
       else   {
-       $query .= " WHERE a.cod_ciuori = '".$GLOBALS[origen]."'";
+       $query .= " WHERE a.cod_ciuori = '".$_REQUEST[origen]."'";
        $indwhere = 1;
       }
      }
 
-     if($GLOBALS[destin])     {
+     if($_REQUEST[destin])     {
       if($indwhere)
-       $query .= " AND a.cod_ciudes = '".$GLOBALS[destin]."'";
+       $query .= " AND a.cod_ciudes = '".$_REQUEST[destin]."'";
       else      {
-       $query .= " WHERE a.cod_ciudes = '".$GLOBALS[destin]."' ";
+       $query .= " WHERE a.cod_ciudes = '".$_REQUEST[destin]."' ";
        $indwhere = 1;
       }
      }
@@ -395,13 +395,13 @@ class Tram_rutas
     $datos_usuario = $this -> usuario -> retornar();
     $usuario=$datos_usuario["cod_usuari"];
     
-    if($GLOBALS[origen] && $GLOBALS[destin])
+    if($_REQUEST[origen] && $_REQUEST[destin])
     {
       $query = "SELECT a.cod_rutasx, a.nom_rutasx
                   FROM ".BASE_DATOS.".tab_genera_rutasx a, 
                        ".BASE_DATOS.".tab_tramos_rutasx d
                  WHERE a.cod_rutasx = d.cod_rutasx AND
-                       (d.cod_contra = '".$GLOBALS[origen]."'  OR d.cod_contrb = '".$GLOBALS[destin]."' ) AND
+                       (d.cod_contra = '".$_REQUEST[origen]."'  OR d.cod_contrb = '".$_REQUEST[destin]."' ) AND
                        d.ind_estado = '1'";
     }
     else
@@ -412,20 +412,20 @@ class Tram_rutas
              ";
      $indwhere = 0;    
      
-     if($GLOBALS[origen]) {
+     if($_REQUEST[origen]) {
       if($indwhere)
-       $query .= " AND d.cod_contra = '".$GLOBALS[origen]."'";
+       $query .= " AND d.cod_contra = '".$_REQUEST[origen]."'";
       else   {
-       $query .= " WHERE d.cod_contra = '".$GLOBALS[origen]."' AND a.cod_rutasx = d.cod_rutasx AND d.ind_estado = '1'";
+       $query .= " WHERE d.cod_contra = '".$_REQUEST[origen]."' AND a.cod_rutasx = d.cod_rutasx AND d.ind_estado = '1'";
        $indwhere = 1;
       }
      }
 
-     if($GLOBALS[destin])     {
+     if($_REQUEST[destin])     {
       if($indwhere)
-       $query .= " AND d.cod_contrb = '".$GLOBALS[destin]."'";
+       $query .= " AND d.cod_contrb = '".$_REQUEST[destin]."'";
       else      {
-       $query .= " WHERE d.cod_contrb = '".$GLOBALS[destin]."' AND a.cod_rutasx = d.cod_rutasx AND d.ind_estado = '1'";
+       $query .= " WHERE d.cod_contrb = '".$_REQUEST[destin]."' AND a.cod_rutasx = d.cod_rutasx AND d.ind_estado = '1'";
        $indwhere = 1;
       }
      }
@@ -651,7 +651,7 @@ class Tram_rutas
       }
     }
     //------------------------------------------------------------------------------------------------------
-    $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Volver</a></b>";
+    $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Volver</a></b>";
     
     if($UpDate != 1)
       $mensaje = "Se ha <b>CREADO</b> los tramos para la ruta:  <br><b>".$mNomRuta[0]."</b> <br>".$link;
@@ -718,7 +718,7 @@ class Tram_rutas
     }
    
     //------------------------------------------------------------------------------------------------------
-    $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Volver</a></b>";
+    $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Volver</a></b>";
     $mensaje = "Se han <b>Desactivado</b> los tramos para la ruta:  <br><b>".$mNomRuta[0]."</b> <br>".$link;
     
     $mens = new mensajes();

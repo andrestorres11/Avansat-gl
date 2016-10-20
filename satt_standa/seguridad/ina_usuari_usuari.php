@@ -17,11 +17,11 @@ class Proc_usuari
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Listado();
   else
   {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Formulario();
@@ -62,7 +62,7 @@ class Proc_usuari
 
    for($i = 0; $i < sizeof($matriz); $i++)
    {
-   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&opcion=1&usuari=".$matriz[$i][0]." \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&opcion=1&usuari=".$matriz[$i][0]." \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    	$formulario -> linea($matriz[$i][0],0,"i");
    	$formulario -> linea($matriz[$i][1],0,"i");
@@ -72,8 +72,8 @@ class Proc_usuari
    }
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("opcion",$GLOBALS[opcion], 0);
-   $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+   $formulario -> oculto("opcion",$_REQUEST[opcion], 0);
+   $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0);
    $formulario -> oculto("window","central", 0);
    $formulario -> cerrar();
  }
@@ -85,7 +85,7 @@ class Proc_usuari
    $query = "SELECT a.cod_usuari,a.nom_usuari,a.usr_emailx,if(ind_estado='1','Activo','Inactivo'),
              ind_estado
 	       	   FROM ".BASE_DATOS.".tab_genera_usuari a
-	      	  WHERE a.cod_usuari = '".$GLOBALS[usuari]."'
+	      	  WHERE a.cod_usuari = '".$_REQUEST[usuari]."'
 	    	";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -100,7 +100,7 @@ class Proc_usuari
 
               FROM ".BASE_DATOS.".tab_usuari_histor
 
-             WHERE cod_usuari = '$GLOBALS[usuari]'";
+             WHERE cod_usuari = '$_REQUEST[usuari]'";
 
    $consulta = new Consulta($query, $this -> conexion);
 
@@ -150,10 +150,10 @@ class Proc_usuari
   }
     
    $formulario -> nueva_tabla();
-   $formulario -> oculto("usuari",$GLOBALS[usuari], 0);
+   $formulario -> oculto("usuari",$_REQUEST[usuari], 0);
    $formulario -> oculto("opcion",2, 0);
    $formulario -> oculto("estado", $usuario[0][4], 0);
-   $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+   $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0);
    $formulario -> oculto("window","central", 0);
    $formulario -> botoni($estado,"onClick=Confir_Cambio('$estado')",0);
    $formulario -> cerrar();
@@ -171,22 +171,22 @@ class Proc_usuari
    $cod_histor= $cod_histor[0][0]+1;
   
   $estado='1';
-  if($GLOBALS[estado]==1) 
+  if($_REQUEST[estado]==1) 
     $estado=0;
     //actualiza el estado del usuario
   $query= "UPDATE ".BASE_DATOS.".tab_genera_usuari ".
              "SET ind_estado='$estado' 
-              WHERE cod_usuari='".$GLOBALS[usuari]."'";
+              WHERE cod_usuari='".$_REQUEST[usuari]."'";
   $insercion = new Consulta($query, $this -> conexion,"BR");
   //INSERTA la observacion en la bitacora
   $query= "INSERT INTO  ".BASE_DATOS.".tab_usuari_histor
            (cod_histor, cod_usuari,obs_histor , ind_estado , usr_creaci,fec_creaci)
-           VALUES('$cod_histor', '".$GLOBALS[usuari]."','".$GLOBALS[obs_histor]."','$estado','". $datos_usuario["cod_usuari"]."',NOW())";
+           VALUES('$cod_histor', '".$_REQUEST[usuari]."','".$_REQUEST[obs_histor]."','$estado','". $datos_usuario["cod_usuari"]."',NOW())";
   $insercion = new Consulta($query, $this -> conexion,"RC");
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
   {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Activar/Inactivar Otro Usuario</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Activar/Inactivar Otro Usuario</a></b>";
 
      $mensaje =  "TRANSACCION EXITOSA".$link_a;
      $mens = new mensajes();

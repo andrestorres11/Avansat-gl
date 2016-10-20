@@ -58,7 +58,7 @@ error_reporting(E_ALL & ~E_NOTICE);
         $formulario = new Formulario( "index.php", "post", "Registrar Ciudad", "formulario" );
         $formulario -> linea( "Insertar Nueva Ciudad", 0, "t2");
 		$formulario -> oculto( "window", "central", 0);
-		$formulario -> oculto( "cod_servic", $GLOBALS["cod_servic"], 0);
+		$formulario -> oculto( "cod_servic", $_REQUEST["cod_servic"], 0);
 		$formulario -> oculto( "opcion", "insert", 0);
 		$formulario -> oculto( "cod_paisxx", 3, 0);//Codigo del Pais 3 = Colombia.
 		

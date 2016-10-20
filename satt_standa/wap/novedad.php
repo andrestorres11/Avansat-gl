@@ -163,9 +163,9 @@ function pedir_novedad($despac, $link, $usuario, $fi1, $fi2, $fi3, $vallis, $con
 	  $totpag = floor((sizeof($regnov) / $carepa)) + 1;//Total de paginadores a utilizar
 
 	  if( $vallis == "ava1" )
-	    $pagact = $GLOBALS[pagact] + 1;
+	    $pagact = $_REQUEST[pagact] + 1;
 	  elseif( $vallis == "ret1" )
-	    $pagact = $GLOBALS[pagact] - 1;
+	    $pagact = $_REQUEST[pagact] - 1;
 	  else
 	    $pagact = 1;
 
@@ -284,7 +284,7 @@ function insertar_novedad( $placa, $despac, $contro, $noveda, $usuario, $link, $
     $regist["ultrep"] = $ultrep[0][0];
     $regist["usuari"] = $usuario;
 
-    $transac_nov = new Despachos( $GLOBALS[cod_servic], $GLOBALS[opcion], $this -> aplica, $link );
+    $transac_nov = new Despachos( $_REQUEST[cod_servic], $_REQUEST[opcion], $this -> aplica, $link );
     $RESPON = $transac_nov -> InsertarNovedadPC( BASE_DATOS, $regist, 1 );
 
     $fNumRepor = array();

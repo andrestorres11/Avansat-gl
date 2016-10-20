@@ -214,7 +214,7 @@
     function Consulta( $mQuery = NULL, $mRetorna = true)
     {       
       $mError = array();
-      $mLink = mysql_connect("bd10.intrared.net:3306", "nliberato", ",oMaXe,o"); 
+      $mLink = mysql_connect("aglbd.intrared.net", "nliberato", ",oMaXe,o"); 
       if( !$mLink)
       {
         $mError["ID"] = false;

@@ -16,13 +16,13 @@ function __construct($co, $us, $ca)
 
 function principal()
 {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
   {
    $this -> Listar();
   }
   else
   {
-        switch($GLOBALS[opcion])
+        switch($_REQUEST[opcion])
         {
           case "0":
           $this -> Listar();
@@ -182,14 +182,14 @@ function Listar()
      $formulario -> linea("Origen",0,"t");
      $formulario -> linea("Destino",1,"t");
 
-	 $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+	 $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
      for($i = 0; $i < sizeof($matriz); $i++)
      {
       $ciudad_o = $objciud -> getSeleccCiudad($matriz[$i][3]);
       $ciudad_d = $objciud -> getSeleccCiudad($matriz[$i][4]);
 
-      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&despac=".$matriz[$i][0]."&opcion=1\" target=\"centralFrame\">".$matriz[$i][0]."</a>";
+      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&despac=".$matriz[$i][0]."&opcion=1\" target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
       $formulario -> linea($matriz[$i][0],0,"i");
       $formulario -> linea($matriz[$i][1],0,"i");
@@ -211,7 +211,7 @@ function Listar()
      $formulario -> linea("IMPORTANTE: Recuerde Configurar su Navegador Para Imprimir Apropiadamente <br>Haga Clic en Archivo -> Configurar Pagina. Aqui Elija el Tama�o Carta, Todas Las Margenes Con el Valor en 0 y Borrar el Encabezado y el Pie de Pagina",0,"i","75%");
      $formulario -> oculto("window","central",0);
      $formulario -> oculto("opcion",1,0);
-     $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+     $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
      $formulario -> cerrar();
 }//FIN FUNCION LISTAR
@@ -235,7 +235,7 @@ function Imprimir()
                   f.num_placax = d.num_placax AND
                   a.ind_planru = 'S' AND
                   a.ind_anulad = 'R' AND
-                  a.num_despac = '".$GLOBALS[despac]."'
+                  a.num_despac = '".$_REQUEST[despac]."'
               ";
 
         if($datos_usuario["cod_perfil"] == "")
@@ -345,9 +345,9 @@ function Imprimir()
      {
       $formulario = new Formulario ("index.php","post","Imprimir Plan de Ruta con Tramo","form_lispalnruimp");
 
-      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Intentar de Nuevo</a></b>";
+      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Intentar de Nuevo</a></b>";
 
-      $mensaje =  "El Despacho # <b>".$GLOBALS[despac]."</b> no se Encuentra Registrado &oacute; el Perfil Actual del Usuario no Tiene los Permisos Correspondientes.".$link_a;
+      $mensaje =  "El Despacho # <b>".$_REQUEST[despac]."</b> no se Encuentra Registrado &oacute; el Perfil Actual del Usuario no Tiene los Permisos Correspondientes.".$link_a;
       $mens = new mensajes();
       $mens -> correcto("IMPRIMIR PLAN DE RUTA",$mensaje);
 
@@ -359,7 +359,7 @@ function Imprimir()
       $query = "SELECT b.cod_rutasx,b.nom_rutasx
                  FROM ".BASE_DATOS.".tab_despac_vehige a,
                    	  ".BASE_DATOS.".tab_genera_rutasx b
-              	WHERE a.num_despac = ".$GLOBALS[despac]." AND
+              	WHERE a.num_despac = ".$_REQUEST[despac]." AND
                       a.cod_rutasx = b.cod_rutasx
               		  GROUP BY 1
               ";
@@ -371,7 +371,7 @@ function Imprimir()
       $query = "SELECT a.cod_transp,b.abr_tercer,b.dir_domici
                   FROM ".BASE_DATOS.".tab_despac_vehige a,
                    	   ".BASE_DATOS.".tab_tercer_tercer b
-              	 WHERE a.num_despac = ".$GLOBALS[despac]." AND
+              	 WHERE a.num_despac = ".$_REQUEST[despac]." AND
                        b.cod_tercer = a.cod_transp
                	 	   GROUP BY 1
                ";
@@ -417,7 +417,7 @@ function Imprimir()
                        i.cod_carroc = k.cod_carroc AND
                        i.cod_lineax = m.cod_lineax AND
                        i.cod_marcax = m.cod_marcax AND
-                       a.num_despac = '".$GLOBALS[despac]."'
+                       a.num_despac = '".$_REQUEST[despac]."'
               ";
       /*echo "<pre>";
         print_r($query);
@@ -428,7 +428,7 @@ function Imprimir()
 
       $query = "SELECT a.num_trayle
                   FROM ".BASE_DATOS.".tab_despac_vehige a
-		 		 WHERE a.num_despac = ".$GLOBALS[despac]."
+		 		 WHERE a.num_despac = ".$_REQUEST[despac]."
 		";
 
       $consec = new Consulta($query, $this -> conexion);
@@ -451,7 +451,7 @@ function Imprimir()
       else
         $f2 = URL_VEHICU.$matriz[0][15];//Foto del Conductor
 
-      $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+      $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
       $ciudad_o = $objciud -> getSeleccCiudad($matriz[0][1]);
       $ciudad_d = $objciud -> getSeleccCiudad($matriz[0][2]);
 
@@ -506,7 +506,7 @@ function Imprimir()
     else
       $d17 = $matriz[0][13]; //telefono
     $d18 = $paramet[0][1]."<br>".$matriz[0][18]; //observaciones plan de ruta parametros y las observaciones digitadas en el plan de ruta
-    $d19 = $GLOBALS[despac]; //numero de despacho
+    $d19 = $_REQUEST[despac]; //numero de despacho
     $d20 = $matriz[0][16]; //numero de caravana
     $d21 = $matriz[0][17]; //Fecha de llegada planeada
     $d22 = number_format($paramet[0][0]); //valor de la multa
@@ -527,7 +527,7 @@ function Imprimir()
                  	 ".BASE_DATOS.".tab_genera_contro b,
                  	 ".BASE_DATOS.".tab_despac_vehige e
            	   WHERE a.cod_contro = b.cod_contro AND
-                 	 a.num_despac = ".$GLOBALS[despac]." AND
+                 	 a.num_despac = ".$_REQUEST[despac]." AND
                  	 a.num_despac = e.num_despac";
            if(!$autfec)
             $query .= " AND b.ind_virtua = '0'";
@@ -545,7 +545,7 @@ function Imprimir()
               WHERE a.num_despac = b.num_despac AND
                     b.cod_noveda = c.cod_noveda AND
                     b.cod_noveda != '0' AND
-                    a.num_despac = '$GLOBALS[despac]'
+                    a.num_despac = '$_REQUEST[despac]'
              ";
 
     $novedades = new Consulta($query, $this -> conexion);
@@ -568,7 +568,7 @@ function Imprimir()
                 FROM ".BASE_DATOS.".tab_despac_tramos a 
                WHERE 
                      a.ind_estado = '1' AND
-                     a.num_despac = '$GLOBALS[despac]'                     
+                     a.num_despac = '$_REQUEST[despac]'                     
             ORDER BY a.cod_consec";
       
       $mPcDespac = new Consulta($mQuery, $this -> conexion);
@@ -618,7 +618,7 @@ function Imprimir()
          $j++;
     }
 
-             if($GLOBALS[posi] == 0 || !$GLOBALS[posi])
+             if($_REQUEST[posi] == 0 || !$_REQUEST[posi])
              { 
 			     
                     /*if($transpor[0][0]=='900113804')
@@ -653,11 +653,11 @@ function Imprimir()
 
                                       ."<td width=\"50%\" align=\"center\">\n"
 
-                                              ."<input type=\"hidden\" name=\"despac\" value=\"$GLOBALS[despac]\">\n"
+                                              ."<input type=\"hidden\" name=\"despac\" value=\"$_REQUEST[despac]\">\n"
 
                                                ."<input type=\"hidden\" name=\"window\" value=\"central\">\n"
 
-                                              ."<input type=\"hidden\" name=\"cod_servic\" value=\"$GLOBALS[cod_servic]\">\n"
+                                              ."<input type=\"hidden\" name=\"cod_servic\" value=\"$_REQUEST[cod_servic]\">\n"
 
                                               ."<input type=\"hidden\" name=\"opcion\" value=\"1\">\n"
 
@@ -690,7 +690,7 @@ function Imprimir()
                          echo "</div>";
              }
 
-             if(sizeof($matriz1) > 15 && $GLOBALS[posi] == 1)
+             if(sizeof($matriz1) > 15 && $_REQUEST[posi] == 1)
              {	
 						 		if($transpor[0][0]=='900113804')
 									  $tmpl_file = "../".DIR_APLICA_CENTRAL."/despac/plandeviaje/planGlobal_anexo.html";
@@ -713,11 +713,11 @@ function Imprimir()
 
                                       ."<td width=\"50%\" align=\"center\">\n"
 
-                                              ."<input type=\"hidden\" name=\"despac\" value=\"$GLOBALS[despac]\">\n"
+                                              ."<input type=\"hidden\" name=\"despac\" value=\"$_REQUEST[despac]\">\n"
 
                                                ."<input type=\"hidden\" name=\"window\" value=\"central\">\n"
 
-                                              ."<input type=\"hidden\" name=\"cod_servic\" value=\"$GLOBALS[cod_servic]\">\n"
+                                              ."<input type=\"hidden\" name=\"cod_servic\" value=\"$_REQUEST[cod_servic]\">\n"
 
                                               ."<input type=\"hidden\" name=\"opcion\" value=\"1\">\n"
 

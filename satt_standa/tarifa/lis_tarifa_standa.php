@@ -82,7 +82,7 @@ class LisStanda
         $formulario -> oculto("url_archiv\" id=\"url_archivID\"","ins_client_emailx.php",0);
 		    $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion\" id=\"opcionID",1,0);
         
 				$formulario -> cerrar();
@@ -107,14 +107,14 @@ class LisStanda
 											 if(ind_estado = '1','Activa','Inactiva')
                 FROM ".BASE_DATOS.".tab_genera_tarifa a 
                 WHERE 1 = 1 ";
-        if($GLOBALS['tip_tarifa'])
-          $sql .= " AND tip_tarifa = '".$GLOBALS['tip_tarifa']."' ";
-				if($GLOBALS['fec_creini'] && $GLOBALS['fec_crefin'])
-          $sql .= " AND fec_creaci >= '".$GLOBALS['fec_creini']."' AND  fec_creaci <= '".$GLOBALS['fec_crefin']."'";
-				if($GLOBALS['ind_estado']){
-					if($GLOBALS['ind_estado']=='A')
+        if($_REQUEST['tip_tarifa'])
+          $sql .= " AND tip_tarifa = '".$_REQUEST['tip_tarifa']."' ";
+				if($_REQUEST['fec_creini'] && $_REQUEST['fec_crefin'])
+          $sql .= " AND fec_creaci >= '".$_REQUEST['fec_creini']."' AND  fec_creaci <= '".$_REQUEST['fec_crefin']."'";
+				if($_REQUEST['ind_estado']){
+					if($_REQUEST['ind_estado']=='A')
           	$sql .= " AND ind_estado ='1'";	 
-					if($GLOBALS['ind_estado']=='I')
+					if($_REQUEST['ind_estado']=='I')
           	$sql .= " AND ind_estado ='0'";	 
 				}
 
@@ -136,7 +136,7 @@ class LisStanda
         $formulario -> oculto("url_archiv\" id=\"url_archivID\"","lis_tarifa_standa.php",0);
 		    $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion",2,0);
 
         $formulario -> cerrar();
@@ -170,7 +170,7 @@ class LisStanda
 		include( "../lib/general/form_lib.inc" );
 		include( "../lib/general/tabla_lib.inc" );
 		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/tarifa.js\"></script>\n";
-		$this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+		$this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
 		$query = "SELECT cod_tarifa, if(tip_tarifa='N','NOVEDADES','DESPACHOS'),
 										 val_minimo, DATE_FORMAT(fec_creaci,'%d-%m-%Y'),
 										 if(ind_estado = '1','Activa','Inactiva'), DATE_FORMAT(fec_inifac,'%d-%m-%Y'),
@@ -248,7 +248,7 @@ class LisStanda
 		$formulario -> nueva_tabla();
 		$formulario -> boton("Cerrar","button\" onClick=\"ClosePopup()",0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+    $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
     $formulario -> oculto("opcion\" id=\"opcionID",3,0);
     $formulario -> cerrar();
 	}

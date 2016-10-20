@@ -59,7 +59,7 @@ class InformBandejEntrad
         $html .= $this->DrawReport($mData);
         $html .= '</div>';
         $html .= '<input type="hidden" name="dir_centra" id="dir_centraID" value="' . DIR_APLICA_CENTRAL . '" />';
-        $html .= '<input type="hidden" name="cod_servic" id="cod_servicID" value="' . $GLOBALS['cod_servic'] . '" />';
+        $html .= '<input type="hidden" name="cod_servic" id="cod_servicID" value="' . $_REQUEST['cod_servic'] . '" />';
         $html .= '<input type="hidden" name="window" id="windowID" value="central" />';
         $html .= '</form>';
         $html .= '<script language="javascript">ReloadReport();</script>';

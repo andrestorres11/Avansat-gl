@@ -15,7 +15,7 @@ class HoraMoni {
 
     function principal() {
 
-        switch ($GLOBALS[opcion]) {
+        switch ($_REQUEST[opcion]) {
             case "1":
                 $this->Filtro();
                 break;
@@ -86,11 +86,11 @@ class HoraMoni {
         $formulario->nueva_tabla();
         $formulario->lista("Usuario", "usuari\" id=\"usuariID", $usuari, 1);
         $formulario->lista("Transportadora", "transp\" id=\"transpID", $transpor, 1);
-        $formulario->texto("Fecha Inicio", "text", "fecini\" id=\"feciniID", 0, 9, 12, "", "$GLOBALS[fecini]");
-        $formulario->texto("Fecha Final", "text", "fecfin\" id=\"fecfinID", 0, 9, 12, "", "$GLOBALS[fecfin]");
+        $formulario->texto("Fecha Inicio", "text", "fecini\" id=\"feciniID", 0, 9, 12, "", "$_REQUEST[fecini]");
+        $formulario->texto("Fecha Final", "text", "fecfin\" id=\"fecfinID", 0, 9, 12, "", "$_REQUEST[fecfin]");
         $formulario->nueva_tabla();
         $formulario->oculto("window", "central", 0);
-        $formulario->oculto("cod_servic", $GLOBALS[cod_servic], 0);
+        $formulario->oculto("cod_servic", $_REQUEST[cod_servic], 0);
         $formulario->oculto("opcion\" id=\"opcionID", 1, 0);
 
         $formulario->botoni("Buscar", "listar()", 0);
@@ -120,12 +120,12 @@ class HoraMoni {
    			          WHERE a.cod_usuari = b.cod_usuari AND
                         c.cod_consec = a.cod_consec AND 
                         a.ind_estado = 1 ";
-        if ($GLOBALS['usuari'])
-            $sql .= " AND a.cod_usuari = '" . $GLOBALS['usuari'] . "' ";
-        if ($GLOBALS['transp'])
-            $sql .= " AND c.cod_tercer = '" . $GLOBALS['transp'] . "' ";
-        if ($GLOBALS['fecini'] && $GLOBALS['fecfin'])
-            $sql .= " AND ((a.fec_inicia >= '" . $GLOBALS['fecini'] . " 00:00:00'  AND a.fec_inicia <= '" . $GLOBALS['fecini'] . " 23:59:00') OR (a.fec_finalx >= '" . $GLOBALS['fecfin'] . " 00:00:00' AND a.fec_finalx <= '" . $GLOBALS['fecfin'] . " 23:59:00'))";
+        if ($_REQUEST['usuari'])
+            $sql .= " AND a.cod_usuari = '" . $_REQUEST['usuari'] . "' ";
+        if ($_REQUEST['transp'])
+            $sql .= " AND c.cod_tercer = '" . $_REQUEST['transp'] . "' ";
+        if ($_REQUEST['fecini'] && $_REQUEST['fecfin'])
+            $sql .= " AND ((a.fec_inicia >= '" . $_REQUEST['fecini'] . " 00:00:00'  AND a.fec_inicia <= '" . $_REQUEST['fecini'] . " 23:59:00') OR (a.fec_finalx >= '" . $_REQUEST['fecfin'] . " 00:00:00' AND a.fec_finalx <= '" . $_REQUEST['fecfin'] . " 23:59:00'))";
         $sql .=" GROUP BY 1";
         $_SESSION["queryXLS"] = $sql;
         $list = new DinamicList($this->conexion, $sql, 1);
@@ -150,7 +150,7 @@ class HoraMoni {
         $formulario->oculto("dir_aplica\" id=\"dir_aplicaID\"", DIR_APLICA_CENTRAL, 0);
         $formulario->oculto("cod_consec\" id=\"cod_consecID", 0, 0);
         $formulario->oculto("window", "central", 0);
-        $formulario->oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+        $formulario->oculto("cod_servic", $_REQUEST["cod_servic"], 0);
         $formulario->oculto("opcion\" id=\"opcionID", 2, 0);
 
         $formulario->cerrar();
@@ -254,7 +254,7 @@ class HoraMoni {
             echo '<td width="15%" align="left" class="celda_info"><textarea cols="30" rows="2" id="obs_anuladID' . $i . '" name="obs_anulad' . $i . '" ></textarea></td></tr>';
         }
         $formulario->oculto("window", "central", 0);
-        $formulario->oculto("cod_servic", $GLOBALS[cod_servic], 0);
+        $formulario->oculto("cod_servic", $_REQUEST[cod_servic], 0);
         $formulario->oculto("opcion\" id=\"opcionID", 1, 0);
         $formulario->oculto("cod_consec\" id=\"cod_consecID", $_POST['cod_consec'], 0);
         $formulario->oculto("anul\" id=\"numanulID", sizeof($horari), 0);
@@ -415,7 +415,7 @@ class HoraMoni {
         }
 
         if ($insercion = new Consulta("COMMIT", $this->conexion)) {
-            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $GLOBALS[cod_servic] . " \"target=\"centralFrame\">Actualizar Otro Horario</a></b>";
+            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $_REQUEST[cod_servic] . " \"target=\"centralFrame\">Actualizar Otro Horario</a></b>";
 
             if ($msm)
                 $mensaje = $msm;

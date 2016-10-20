@@ -51,7 +51,7 @@ class InformViajes
 		$formulario -> oculto("cod_modali\" id=\"cod_modaliID","",0);
 		$formulario -> oculto("window","central",0);
 		$formulario -> oculto("opcion\" id=\"opcionID",99,0);
-		$formulario -> oculto("cod_servic",$GLOBALS['cod_servic'],0);
+		$formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
 		$formulario -> oculto("standaID\" id=\"standaID",DIR_APLICA_CENTRAL,0); 
 
 		$formulario -> oculto("cod_transp\" id=\"cod_transpID",$_REQUEST['cod_transp'],0);
@@ -292,7 +292,7 @@ class InformViajes
 			$formulario -> oculto("cod_modali\" id=\"cod_modaliID","",0);
 			$formulario -> oculto("window","central",0);
 			$formulario -> oculto("opcion\" id=\"opcionID",99,0);
-			$formulario -> oculto("cod_servic",$GLOBALS['cod_servic'],0);
+			$formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
 			$formulario -> oculto("standaID\" id=\"standaID",DIR_APLICA_CENTRAL,0); 
 
   }

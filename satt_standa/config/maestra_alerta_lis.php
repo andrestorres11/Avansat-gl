@@ -22,11 +22,11 @@ class Proc_alerta
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Resultado();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario();
@@ -94,7 +94,7 @@ class Proc_alerta
 
    $formulario -> oculto("window","central",0);
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> cerrar();
 

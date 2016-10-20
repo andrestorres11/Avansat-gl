@@ -465,17 +465,17 @@ function count_numeric_items(&$array){
 }
 
 function XMLRPC_debug($function_name, $debug_message){
-	$GLOBALS['XMLRPC_DEBUG_INFO'][] = array($function_name, $debug_message);
+	$_REQUEST['XMLRPC_DEBUG_INFO'][] = array($function_name, $debug_message);
 }
 
 function XMLRPC_debug_print(){
-	if($GLOBALS['XMLRPC_DEBUG_INFO']){
+	if($_REQUEST['XMLRPC_DEBUG_INFO']){
 		echo "<table border=\"1\" width=\"100%\">\n";
-		foreach($GLOBALS['XMLRPC_DEBUG_INFO'] as $debug){
+		foreach($_REQUEST['XMLRPC_DEBUG_INFO'] as $debug){
 			echo "<tr><th style=\"vertical-align: top\">$debug[0]</th><td>$debug[1]</td></tr>\n";
 		}
 		echo "</table>\n";
-		unset($GLOBALS['XMLRPC_DEBUG_INFO']);
+		unset($_REQUEST['XMLRPC_DEBUG_INFO']);
 	}else{
 		echo "<p>No debugging information available yet.</p>";
 	}

@@ -47,7 +47,7 @@ class Despachos
         }
 
         if ($GLOBALS_ADD[9]["valor"] != '')
-            $GLOBALS["bdespac"] = $GLOBALS_ADD[9]["valor"];
+            $_REQUEST["bdespac"] = $GLOBALS_ADD[9]["valor"];
 
         $query = "SELECT a.ind_remdes, a.ind_desurb
   		     FROM " . BASE_DATOS . ".tab_config_parame a
@@ -107,33 +107,33 @@ class Despachos
                 $query .= " AND a.fec_salida > NOW()";
         }
 
-        if ($GLOBALS["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $GLOBALS["bplaca"] . "'";
-        if ($GLOBALS["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $GLOBALS["bmanifi"] . "'";
-        if ($GLOBALS["bdespac"])
-            $query = $query . " AND a.num_despac = " . $GLOBALS["bdespac"] . "";
+        if ($_REQUEST["bplaca"])
+            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
+        if ($_REQUEST["bmanifi"])
+            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
+        if ($_REQUEST["bdespac"])
+            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
 
         if (!$finali)
             $query .= " AND a.fec_llegad Is Null";
         else
             $query .= " AND a.fec_llegad Is Not Null";
 
-        if ($GLOBALS["destino"])
-            $query .= " AND a.cod_ciudes = " . $GLOBALS["destino"] . "";
-        if ($GLOBALS["origen"])
-            $query .= " AND a.cod_ciuori = " . $GLOBALS["origen"] . "";
-        if ($GLOBALS["transp"])
-            $query .= " AND d.cod_transp = " . $GLOBALS["transp"] . "";
+        if ($_REQUEST["destino"])
+            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
+        if ($_REQUEST["origen"])
+            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
+        if ($_REQUEST["transp"])
+            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
 
         if ($busque)
         {
-            if ($GLOBALS["placa"])
-                $query = $query . " AND d.num_placax = '" . $GLOBALS["placa"] . "'";
-            if ($GLOBALS["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $GLOBALS["manifi"] . "'";
-            if ($GLOBALS["despac"])
-                $query = $query . " AND a.num_despac = '" . $GLOBALS["despac"] . "'";
+            if ($_REQUEST["placa"])
+                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
+            if ($_REQUEST["manifi"])
+                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
+            if ($_REQUEST["despac"])
+                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
         }
 
         if ($validmatriz)
@@ -224,7 +224,7 @@ class Despachos
         $consulta = new Consulta($query, $this->conexion);
         $origen = $consulta->ret_matriz();
 
-        if ($GLOBALS["origen"])
+        if ($_REQUEST["origen"])
             $origen = array_merge($origen, $todas);
         else
             $origen = array_merge($titori, $origen);
@@ -252,33 +252,33 @@ class Despachos
                 $query .= " AND a.fec_salida > NOW()";
         }
 
-        if ($GLOBALS["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $GLOBALS["bplaca"] . "'";
-        if ($GLOBALS["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $GLOBALS["bmanifi"] . "'";
-        if ($GLOBALS["bdespac"])
-            $query = $query . " AND a.num_despac = " . $GLOBALS["bdespac"] . "";
+        if ($_REQUEST["bplaca"])
+            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
+        if ($_REQUEST["bmanifi"])
+            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
+        if ($_REQUEST["bdespac"])
+            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
 
         if (!$finali)
             $query .= " AND a.fec_llegad Is Null";
         else
             $query .= " AND a.fec_llegad Is Not Null";
 
-        if ($GLOBALS["destino"])
-            $query .= " AND a.cod_ciudes = " . $GLOBALS["destino"] . "";
-        if ($GLOBALS["origen"])
-            $query .= " AND a.cod_ciuori = " . $GLOBALS["origen"] . "";
-        if ($GLOBALS["transp"])
-            $query .= " AND d.cod_transp = " . $GLOBALS["transp"] . "";
+        if ($_REQUEST["destino"])
+            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
+        if ($_REQUEST["origen"])
+            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
+        if ($_REQUEST["transp"])
+            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
 
         if ($busque)
         {
-            if ($GLOBALS["placa"])
-                $query = $query . " AND d.num_placax = '" . $GLOBALS["placa"] . "'";
-            if ($GLOBALS["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $GLOBALS["manifi"] . "'";
-            if ($GLOBALS["despac"])
-                $query = $query . " AND a.num_despac = '" . $GLOBALS["despac"] . "'";
+            if ($_REQUEST["placa"])
+                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
+            if ($_REQUEST["manifi"])
+                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
+            if ($_REQUEST["despac"])
+                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
         }
 
         if ($validmatriz)
@@ -369,7 +369,7 @@ class Despachos
         $consulta = new Consulta($query, $this->conexion);
         $destino = $consulta->ret_matriz();
 
-        if ($GLOBALS["destino"])
+        if ($_REQUEST["destino"])
             $destino = array_merge($destino, $todas);
         else
             $destino = array_merge($titdes, $destino);
@@ -397,33 +397,33 @@ class Despachos
                 $query .= " AND a.fec_salida > NOW()";
         }
 
-        if ($GLOBALS["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $GLOBALS["bplaca"] . "'";
-        if ($GLOBALS["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $GLOBALS["bmanifi"] . "'";
-        if ($GLOBALS["bdespac"])
-            $query = $query . " AND a.num_despac = " . $GLOBALS["bdespac"] . "";
+        if ($_REQUEST["bplaca"])
+            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
+        if ($_REQUEST["bmanifi"])
+            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
+        if ($_REQUEST["bdespac"])
+            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
 
         if (!$finali)
             $query .= " AND a.fec_llegad Is Null";
         else
             $query .= " AND a.fec_llegad Is Not Null";
 
-        if ($GLOBALS["destino"])
-            $query .= " AND a.cod_ciudes = " . $GLOBALS["destino"] . "";
-        if ($GLOBALS["origen"])
-            $query .= " AND a.cod_ciuori = " . $GLOBALS["origen"] . "";
-        if ($GLOBALS["transp"])
-            $query .= " AND d.cod_transp = " . $GLOBALS["transp"] . "";
+        if ($_REQUEST["destino"])
+            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
+        if ($_REQUEST["origen"])
+            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
+        if ($_REQUEST["transp"])
+            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
 
         if ($busque)
         {
-            if ($GLOBALS["placa"])
-                $query = $query . " AND d.num_placax = '" . $GLOBALS["placa"] . "'";
-            if ($GLOBALS["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $GLOBALS["manifi"] . "'";
-            if ($GLOBALS["despac"])
-                $query = $query . " AND a.num_despac = '" . $GLOBALS["despac"] . "'";
+            if ($_REQUEST["placa"])
+                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
+            if ($_REQUEST["manifi"])
+                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
+            if ($_REQUEST["despac"])
+                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
         }
 
         if ($validmatriz)
@@ -513,7 +513,7 @@ class Despachos
         $consulta = new Consulta($query, $this->conexion);
         $transpors = $consulta->ret_matriz();
 
-        if ($GLOBALS["transp"])
+        if ($_REQUEST["transp"])
             $transpors = array_merge($transpors, $todas);
         else
             $transpors = array_merge($titra, $transpors);
@@ -543,33 +543,33 @@ class Despachos
                 $query .= " AND a.fec_salida > NOW()";
         }
 
-        if ($GLOBALS["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $GLOBALS["bplaca"] . "'";
-        if ($GLOBALS["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $GLOBALS["bmanifi"] . "'";
-        if ($GLOBALS["bdespac"])
-            $query = $query . " AND a.num_despac = " . $GLOBALS["bdespac"] . "";
+        if ($_REQUEST["bplaca"])
+            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
+        if ($_REQUEST["bmanifi"])
+            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
+        if ($_REQUEST["bdespac"])
+            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
 
         if (!$finali)
             $query .= " AND a.fec_llegad Is Null";
         else
             $query .= " AND a.fec_llegad Is Not Null";
 
-        if ($GLOBALS["destino"])
-            $query .= " AND a.cod_ciudes = " . $GLOBALS["destino"] . "";
-        if ($GLOBALS["origen"])
-            $query .= " AND a.cod_ciuori = " . $GLOBALS["origen"] . "";
-        if ($GLOBALS["transp"])
-            $query .= " AND d.cod_transp = " . $GLOBALS["transp"] . "";
+        if ($_REQUEST["destino"])
+            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
+        if ($_REQUEST["origen"])
+            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
+        if ($_REQUEST["transp"])
+            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
 
         if ($busque)
         {
-            if ($GLOBALS["placa"])
-                $query = $query . " AND d.num_placax = '" . $GLOBALS["placa"] . "'";
-            if ($GLOBALS["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $GLOBALS["manifi"] . "'";
-            if ($GLOBALS["despac"])
-                $query = $query . " AND a.num_despac = '" . $GLOBALS["despac"] . "'";
+            if ($_REQUEST["placa"])
+                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
+            if ($_REQUEST["manifi"])
+                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
+            if ($_REQUEST["despac"])
+                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
         }
 
         if ($validmatriz)
@@ -659,7 +659,7 @@ class Despachos
         $consulta = new Consulta($query, $this->conexion);
         $placax = $consulta->ret_matriz();
         
-        if ($GLOBALS["bplaca"])
+        if ($_REQUEST["bplaca"])
             $placax = array_merge($placax, $todas);
         else
             $placax = array_merge($tipla, $placax);
@@ -706,14 +706,14 @@ class Despachos
                 $query .= " AND a.fec_salida > NOW()";
         }
 
-        if ($GLOBALS["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $GLOBALS["bplaca"] . "'";
-        if ($GLOBALS["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $GLOBALS["bmanifi"] . "'";
-        if ($GLOBALS["bdespac"])
-            $query = $query . " AND a.num_despac = " . $GLOBALS["bdespac"] . "";
-        if ($GLOBALS["busq_transp"])
-            $query = $query . " AND d.cod_conduc = '" . $GLOBALS["busq_transp"] . "'";
+        if ($_REQUEST["bplaca"])
+            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
+        if ($_REQUEST["bmanifi"])
+            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
+        if ($_REQUEST["bdespac"])
+            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
+        if ($_REQUEST["busq_transp"])
+            $query = $query . " AND d.cod_conduc = '" . $_REQUEST["busq_transp"] . "'";
             
 
         if (!$finali)
@@ -721,21 +721,21 @@ class Despachos
         else
             $query .= " AND a.fec_llegad Is Not Null";
 
-        if ($GLOBALS["destino"])
-            $query .= " AND a.cod_ciudes = " . $GLOBALS["destino"] . "";
-        if ($GLOBALS["origen"])
-            $query .= " AND a.cod_ciuori = " . $GLOBALS["origen"] . "";
-        if ($GLOBALS["transp"])
-            $query .= " AND d.cod_transp = " . $GLOBALS["transp"] . "";
+        if ($_REQUEST["destino"])
+            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
+        if ($_REQUEST["origen"])
+            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
+        if ($_REQUEST["transp"])
+            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
 
         if ($busque)
         {
-            if ($GLOBALS["placa"])
-                $query = $query . " AND d.num_placax = '" . $GLOBALS["placa"] . "'";
-            if ($GLOBALS["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $GLOBALS["manifi"] . "'";
-            if ($GLOBALS["despac"])
-                $query = $query . " AND a.num_despac = '" . $GLOBALS["despac"] . "'";
+            if ($_REQUEST["placa"])
+                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
+            if ($_REQUEST["manifi"])
+                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
+            if ($_REQUEST["despac"])
+                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
             
         }
 
@@ -831,7 +831,7 @@ class Despachos
         else
             $query = $query . " GROUP BY 1 ORDER BY a.fec_llegad,1";
         //echo $query;
-        $matriz = $this->paginador->ejecPaginador($GLOBALS["npagina"], $query);
+        $matriz = $this->paginador->ejecPaginador($_REQUEST["npagina"], $query);
 
 
         $query_exp = $this->paginador->query;
@@ -1029,7 +1029,7 @@ class Despachos
                     }
                     else
                     {
-                        if ($GLOBALS["defini"] == $matriz[$i]["ind_defini"] || $GLOBALS["defini"] == '')
+                        if ($_REQUEST["defini"] == $matriz[$i]["ind_defini"] || $_REQUEST["defini"] == '')
                         {
                             $desenruta[$ind_enrutas] = $matriz[$i];
                             $ind_enrutas++;
@@ -1082,9 +1082,9 @@ class Despachos
             $formulario->linea("Filtros de Busqueda", 1, "t2");
 
             $formulario->nueva_tabla();
-            $formulario->texto("Placa", "text", "placa", 0, 6, 6, "", $GLOBALS["placa"]);
-            $formulario->texto("Manifiesto", "text", "manifi", 0, 7, 7, "", $GLOBALS["manifi"]);
-            $formulario->texto("Despacho", "text", "despac", 1, 6, 6, "", $GLOBALS["despac"]);
+            $formulario->texto("Placa", "text", "placa", 0, 6, 6, "", $_REQUEST["placa"]);
+            $formulario->texto("Manifiesto", "text", "manifi", 0, 7, 7, "", $_REQUEST["manifi"]);
+            $formulario->texto("Despacho", "text", "despac", 1, 6, 6, "", $_REQUEST["despac"]);
 
             $formulario->nueva_tabla();
             $formulario->boton("Buscar", "button\" onClick=\"if(form_item.placa.value || form_item.manifi.value || form_item.despac.value){form.submit()}else{alert('Digite parametro de Busqueda')}", 0);
@@ -1151,7 +1151,7 @@ class Despachos
                 echo "<td style ='font-size: 8pt;color: #000000;background-color: " . $alarmas[$i][2] . "'>" . $alarmas[$i][0] . " = " . $alarmas[$i][1] . " Min</td>";
 
             $formulario->nueva_tabla();
-            $formulario->texto("Despacho", "text", "bdespac\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()", 0, 6, 6, "", $GLOBALS["bdespac"], "", "", 1);
+            $formulario->texto("Despacho", "text", "bdespac\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()", 0, 6, 6, "", $_REQUEST["bdespac"], "", "", 1);
             $formulario->linea("Tiempo", 0, "t");
             echo '<td align="center" class="celda_titulo"><b>A cargo Empresa <br></b>';
             echo '<select onchange="form_item.submit()"  id="definiID" onChange="form_item.submit()" name="defini" class="form_01">
@@ -1161,7 +1161,7 @@ class Despachos
 				<option value=0>NO</option>
 			</select>';
             echo "</td>";
-            $formulario->texto("Manifiesto", "text", "bmanifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()", 0, 7, 7, "", $GLOBALS["bmanifi"], "", "", 1);
+            $formulario->texto("Manifiesto", "text", "bmanifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()", 0, 7, 7, "", $_REQUEST["bmanifi"], "", "", 1);
             //$formulario->linea("Aseguradora", 0, "t");
             //$formulario->linea("Novedades", 0, "t");
 
@@ -1184,7 +1184,7 @@ class Despachos
                 $formulario->linea("Transportadora", 0, "t");
             }
 
-            $formulario->texto("Placa", "text", "bplaca\" onChange=\"form_item.submit()", 0, 6, 6, "", $GLOBALS["bplaca"], "", "", 1);
+            $formulario->texto("Placa", "text", "bplaca\" onChange=\"form_item.submit()", 0, 6, 6, "", $_REQUEST["bplaca"], "", "", 1);
             $formulario->linea("Conductor", 0, "t");
             $formulario->linea("Celular", 0, "t");
 
@@ -1235,12 +1235,12 @@ class Despachos
                 $consulta = new Consulta($query, $this->conexion);
                 $fuer_plan = $consulta->ret_matriz();
 
-                if ($GLOBALS['FUEPLA'] == '1' && $fuer_plan[0][0] != '1')
+                if ($_REQUEST['FUEPLA'] == '1' && $fuer_plan[0][0] != '1')
                 {
                     continue;
                 }
 
-                //if( $fuer_plan[0][0]=='1' && $GLOBALS['alacla'] != 'F' )
+                //if( $fuer_plan[0][0]=='1' && $_REQUEST['alacla'] != 'F' )
                 //{
                 //continue;
                 //}
@@ -1428,7 +1428,7 @@ class Despachos
 
                     for ($z = 0; $z <= sizeof($colores); $z++)
                     {
-                        if ($z + 1 == $GLOBALS['alacla'])
+                        if ($z + 1 == $_REQUEST['alacla'])
                         {
                             $color_alacla = $colores[$z][1];
                         }
@@ -1456,13 +1456,13 @@ class Despachos
 
 
 
-                    if ('S' == $GLOBALS['alacla'])
+                    if ('S' == $_REQUEST['alacla'])
                     {
                         $color_alacla = '#FFFFFF';
                     }
                 }
 
-                if ($color_a[0] != $color_alacla && $GLOBALS["alacla"])
+                if ($color_a[0] != $color_alacla && $_REQUEST["alacla"])
                 {
                     //Si el despacho tiene un color distinto al del alacla no se imprime ese despacho
                     continue;
@@ -1662,7 +1662,7 @@ class Despachos
             $formulario->linea("Se Encontro un Total de " . $en_bandeja . " Despacho(s) con Alarma Amarilla", 0, "t2");
         }
 
-        //if($ind_porlleg && !$des_retras && !$desfut && $GLOBALS['alacla']!='ecl')
+        //if($ind_porlleg && !$des_retras && !$desfut && $_REQUEST['alacla']!='ecl')
         if ($ind_porlleg && !$des_retras && !$desfut)
         {
 
@@ -1689,22 +1689,22 @@ class Despachos
                     $formulario->linea("Se Encontro un Total de <span id='tot2ID'>" . $this->paginador->totalr . "</span>  Despacho(s) Finalizado(s)", 0, "t2");
 
                 $varadici[$i]["nomvar"] = "origen";
-                $varadici[$i]["valvar"] = $GLOBALS["origen"];
+                $varadici[$i]["valvar"] = $_REQUEST["origen"];
                 $i++;
                 $varadici[$i]["nomvar"] = "destino";
-                $varadici[$i]["valvar"] = $GLOBALS["destino"];
+                $varadici[$i]["valvar"] = $_REQUEST["destino"];
                 $i++;
                 $varadici[$i]["nomvar"] = "despac";
-                $varadici[$i]["valvar"] = $GLOBALS["despac"];
+                $varadici[$i]["valvar"] = $_REQUEST["despac"];
                 $i++;
                 $varadici[$i]["nomvar"] = "manifi";
-                $varadici[$i]["valvar"] = $GLOBALS["manifi"];
+                $varadici[$i]["valvar"] = $_REQUEST["manifi"];
                 $i++;
                 $varadici[$i]["nomvar"] = "placa";
-                $varadici[$i]["valvar"] = $GLOBALS["placa"];
+                $varadici[$i]["valvar"] = $_REQUEST["placa"];
                 $i++;
                 $varadici[$i]["nomvar"] = "transp";
-                $varadici[$i]["valvar"] = $GLOBALS["transp"];
+                $varadici[$i]["valvar"] = $_REQUEST["transp"];
 
                 $this->paginador->getPaginas($formulario, "npagina", $varadici);
 
@@ -1752,7 +1752,7 @@ class Despachos
             for ($i = 0; $i < sizeof($porllegad); $i++)
             {
                 //Si le dieron clic a los despachos por fuera de plataforma, los despachos pendientes por dar llegada no son necesarios
-                if ($GLOBALS['FUEPLA'] == '1')
+                if ($_REQUEST['FUEPLA'] == '1')
                 {
                     continue;
                 }
@@ -1961,10 +1961,10 @@ class Despachos
 
         $formulario->cerrar();
 
-        if ($GLOBALS["defini"] == 0 || $GLOBALS["defini"] == 1)
+        if ($_REQUEST["defini"] == 0 || $_REQUEST["defini"] == 1)
         {
             echo "<script language=\"JavaScript\">";
-            echo "document.getElementById('definiID').value=" . $GLOBALS["defini"] . ";";
+            echo "document.getElementById('definiID').value=" . $_REQUEST["defini"] . ";";
             echo "</script>";
         }
     }
@@ -2357,7 +2357,7 @@ class Despachos
    			         c.cod_trayec = d.cod_trayec
    			   WHERE a.cod_remdes = b.cod_remdes AND
    			         a.ind_remdes = '2' AND
-   			         b.num_despac = " . $GLOBALS["despac"] . "
+   			         b.num_despac = " . $_REQUEST["despac"] . "
    			 ";
 
             $consulta = new Consulta($query, $this->conexion);
@@ -2412,7 +2412,7 @@ class Despachos
 						 des_mercan,abr_client,abr_remite,
 						 abr_destin
 				FROM ".BASE_DATOS.".tab_despac_remesa 
-				WHERE num_despac = '".$GLOBALS["despac"]."'";
+				WHERE num_despac = '".$_REQUEST["despac"]."'";
 		$consulta = new Consulta($query, $this->conexion);
         $remesas = $consulta->ret_matriz();
 		
@@ -2846,7 +2846,7 @@ class Despachos
 
                    " . BASE_DATOS . ".tab_despac_vehige d
 
-             WHERE d.num_despac = '" . $GLOBALS["despac"] . "' AND
+             WHERE d.num_despac = '" . $_REQUEST["despac"] . "' AND
 
                    d.num_despac = b.num_despac AND
 
@@ -2882,7 +2882,7 @@ class Despachos
 
                    " . BASE_DATOS . ".tab_despac_vehige d
 
-             WHERE d.num_despac = '" . $GLOBALS["despac"] . "' AND
+             WHERE d.num_despac = '" . $_REQUEST["despac"] . "' AND
 
                    d.num_despac = b.num_despac AND
 
@@ -3389,7 +3389,7 @@ class Despachos
             }
             
           if($ind_gpsxxx == CONS_NOVEDA_GPSXXX){
-            if($GLOBALS[mos_mapa]== 1 && $GLOBALS[detalles]== 1){    
+            if($_REQUEST[mos_mapa]== 1 && $_REQUEST[detalles]== 1){    
               echo '<table align="center" cellspacing="0" cellpadding="0" width="100%" style="background-color:#FFF" >';
               echo '<tr>';
               echo '<td align="center" width="100%">';
@@ -3405,7 +3405,7 @@ class Despachos
               $formulario->boton("Ocultar", "button\" onClick=\"mos_mapa.value='0'; form.submit()", 0);
               echo '<td>';
               echo '<tr>'; 
-            }elseif($GLOBALS[mos_mapa]== 1 && $GLOBALS[detalles]== 0){
+            }elseif($_REQUEST[mos_mapa]== 1 && $_REQUEST[detalles]== 0){
               echo '<table align="center" cellspacing="0" cellpadding="0" width="100%" style="background-color:#FFF" >';
               echo '<tr>';
               echo '<td align="center" width="100%">';
@@ -3434,8 +3434,8 @@ class Despachos
               echo '</table>'; 
             }
           }
-          $formulario->oculto("detalles\" id=\"detalles",$GLOBALS[detalles],0);
-          $formulario->oculto("mos_mapa\" id=\"mos_mapa",$GLOBALS[mos_mapa],0);
+          $formulario->oculto("detalles\" id=\"detalles",$_REQUEST[detalles],0);
+          $formulario->oculto("mos_mapa\" id=\"mos_mapa",$_REQUEST[mos_mapa],0);
           $num_notgps = 0;
           for($i=0;$i<count($seguim);$i++)
           {

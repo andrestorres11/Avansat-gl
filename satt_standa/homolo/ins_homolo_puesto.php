@@ -319,7 +319,7 @@ class Reporte
 		$insercion = new Consulta("COMMIT", $this -> conexion);
 		
 		$link_a = "<br><b>
-					<a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">
+					<a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">
 					Hacer otra Homologacion</a></b>";
 
 	   $mensaje =  "La Homologacion se realizo exitosamente".$link_a;
@@ -523,7 +523,7 @@ class Reporte
 		
 		
 		$formulario -> nueva_tabla();
-		$formulario -> texto ("Puesto de Control: ","text", "nom_contro", 0, 20, 20, "", $GLOBALS[nom_contro], "", "", NULL, NULL );
+		$formulario -> texto ("Puesto de Control: ","text", "nom_contro", 0, 20, 20, "", $_REQUEST[nom_contro], "", "", NULL, NULL );
 		$formulario -> lista ("Ciudad: ", "cod_ciudad", $ciudades, 0, 0 );
 		
 		$formulario -> nueva_tabla();

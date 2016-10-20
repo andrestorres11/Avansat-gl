@@ -21,11 +21,11 @@ class Lis_clases_config
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -54,7 +54,7 @@ class Lis_clases_config
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Borrar","form_act.reset",1);
@@ -70,12 +70,12 @@ class Lis_clases_config
    $usuario=$datos_usuario["cod_usuari"];
   $query = "SELECT cod_clasex,nom_clasex
             FROM ".BASE_DATOS.".tab_genera_clases
-           WHERE nom_clasex LIKE '%$GLOBALS[clasex]%'
+           WHERE nom_clasex LIKE '%$_REQUEST[clasex]%'
         ORDER BY 2";
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
   for($i=0;$i<sizeof($matriz);$i++)
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&clasex=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&clasex=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario = new Formulario ("index.php","post","Resultado de la Consulta","form_item");
    $formulario -> linea("<b>Se Encontraron ".sizeof($matriz)." Registros</b>",0);
@@ -104,7 +104,7 @@ class Lis_clases_config
    $formulario -> oculto("window","central",0);
 
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
 // *********************************************************************************
@@ -117,7 +117,7 @@ class Lis_clases_config
    $usuario=$datos_usuario["cod_usuari"];
   $query = "SELECT cod_clasex,nom_clasex,obs_clasex
             FROM ".BASE_DATOS.".tab_genera_clases
-           WHERE cod_clasex = '$GLOBALS[clasex]'";
+           WHERE cod_clasex = '$_REQUEST[clasex]'";
   $consulta = new Consulta($query, $this -> conexion);
   $matriz = $consulta -> ret_matriz();
      $inicio[0][0]='-';
@@ -133,7 +133,7 @@ class Lis_clases_config
       $query = "SELECT a.num_config,b.nom_config
                    FROM ".BASE_DATOS.".tab_config_clasex a, ".BASE_DATOS.".tab_vehige_config b
                    WHERE  a.num_config = b.num_config AND
-                          a.cod_clasex = '$GLOBALS[clasex]'";
+                          a.cod_clasex = '$_REQUEST[clasex]'";
       $consulta = new Consulta($query, $this -> conexion);
       $resulta2 = $consulta -> ret_matriz();
 
@@ -157,7 +157,7 @@ class Lis_clases_config
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Volver","history.go(-2)",0);
    $formulario -> cerrar();
  }//FIN FUNCION

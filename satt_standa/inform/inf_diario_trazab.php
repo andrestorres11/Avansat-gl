@@ -18,7 +18,7 @@ class Informe
   {
     $this -> conexion = $conexion;
     $this -> cod_aplica = $cod_aplica;
-    switch( $GLOBALS[option] )
+    switch( $_REQUEST[option] )
     {     
       case "buscar":
         $this -> Buscar();
@@ -124,7 +124,7 @@ class Informe
 		$formulario -> botoni( "Buscar", "Validate()", 0 );
     $formulario -> oculto("option","buscar",0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+    $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
 
     $formulario -> cerrar(); // Cierra el formulario    
   } 
@@ -328,7 +328,7 @@ class Informe
     
     $html .= "<table>";
       $html .= "<tr>";
-        //$htmlx .="<td><a href ='index.php?window=central&cod_servic=$GLOBALS[cod_servic]&option=xls' >[ Excel ]</a></td>";
+        //$htmlx .="<td><a href ='index.php?window=central&cod_servic=$_REQUEST[cod_servic]&option=xls' >[ Excel ]</a></td>";
         $html .="<td><a href ='../".DIR_APLICA_CENTRAL."/export/exp_diario_trazab.php?central=".NOM_URL_APLICA."' >[ Excel ]</a></td>";
       $html .= "</tr>";
     $html .= "</table>";

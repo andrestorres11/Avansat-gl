@@ -9,7 +9,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 define("USUARIO", "satt_faro");
 define("CLAVE", "sattfaro");
-define("SERVIDOR", "bd10.intrared.net");
+define("SERVIDOR", "aglbd.intrared.net");
 define("BD_STANDA", "satt_standa");
 define("BASE_DATOS", "satt_faro");
 
@@ -217,7 +217,7 @@ include( '/var/www/html/ap/satt_standa/lib/general/tabla_lib.inc' );
       try
       {
 
-        $mLink = mysql_connect("bd10.intrared.net", "satt_faro", "sattfaro");
+        $mLink = mysql_connect("aglbd.intrared.net", "satt_faro", "sattfaro");
         if(!$mLink){         
           throw new Exception("Error no se pudo conectar al servidor de datos: ".mysql_error($mLink), 3001);          
         }

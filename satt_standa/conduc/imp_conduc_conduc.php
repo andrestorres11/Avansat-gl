@@ -21,11 +21,11 @@ class Imp_Conduc_Conduc
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "2":
           $this -> Resultado();
@@ -51,7 +51,7 @@ class Imp_Conduc_Conduc
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Aceptar","form_imp.submit()",0);
    $formulario -> cerrar();
  }//FIN FUNCION BUSCAR
@@ -92,10 +92,10 @@ class Imp_Conduc_Conduc
                   a.cod_ciudad = b.cod_ciudad ";
     }
 
-          if(($GLOBALS[fil]=='1') AND($GLOBALS[tercer]!=''))
-         $query = $query." AND a.cod_tercer LIKE '%$GLOBALS[tercer]%'";
-         if(($GLOBALS[fil]=='2') AND($GLOBALS[tercer]!=''))
-         $query = $query." AND (a.nom_tercer LIKE '%$GLOBALS[tercer]%' OR a.abr_tercer LIKE '%$GLOBALS[tercer]%')";
+          if(($_REQUEST[fil]=='1') AND($_REQUEST[tercer]!=''))
+         $query = $query." AND a.cod_tercer LIKE '%$_REQUEST[tercer]%'";
+         if(($_REQUEST[fil]=='2') AND($_REQUEST[tercer]!=''))
+         $query = $query." AND (a.nom_tercer LIKE '%$_REQUEST[tercer]%' OR a.abr_tercer LIKE '%$_REQUEST[tercer]%')";
 
 
       if($datos_usuario["cod_perfil"] == "")
@@ -125,7 +125,7 @@ class Imp_Conduc_Conduc
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
   for($i=0;$i<sizeof($matriz);$i++)
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&conduc=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&conduc=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario = new Formulario ("index.php","post","CONDUCTORES","form_item");
    $formulario -> linea("Se Encontraron ".sizeof($matriz)." Conductores",0);
@@ -163,7 +163,7 @@ class Imp_Conduc_Conduc
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION
 
@@ -212,7 +212,7 @@ class Imp_Conduc_Conduc
                 "AND b.cod_tercer = d.cod_tercer ".
                 "AND d.cod_ciudad = e.cod_ciudad ".
                 "AND b.num_catlic = f.cod_catlic ".
-                "AND b.cod_tercer = '".$GLOBALS[conduc]."' 
+                "AND b.cod_tercer = '".$_REQUEST[conduc]."' 
        ORDER BY  v.fec_creaci DESC ";
 
     $consulta = new Consulta($query, $this -> conexion);
@@ -223,7 +223,7 @@ class Imp_Conduc_Conduc
                     "".BASE_DATOS.".tab_conduc_refere b ".
               "WHERE a.cod_tercer = b.cod_conduc ".
                 "AND b.cod_refere = '0' ".
-                "AND a.cod_tercer = '".$GLOBALS[conduc]."' ";
+                "AND a.cod_tercer = '".$_REQUEST[conduc]."' ";
     $consulta = new Consulta($query, $this -> conexion);
     $reflab0 = $consulta -> ret_matriz();
 
@@ -232,7 +232,7 @@ class Imp_Conduc_Conduc
                     "".BASE_DATOS.".tab_conduc_refere b ".
               "WHERE a.cod_tercer = b.cod_conduc ".
                 "AND b.cod_refere = '1' ".
-                "AND a.cod_tercer = '".$GLOBALS[conduc]."' ";
+                "AND a.cod_tercer = '".$_REQUEST[conduc]."' ";
     $consulta = new Consulta($query, $this -> conexion);
     $reflab1 = $consulta -> ret_matriz();
 
@@ -241,7 +241,7 @@ class Imp_Conduc_Conduc
                     "".BASE_DATOS.".tab_conduc_refere b ".
               "WHERE a.cod_tercer = b.cod_conduc ".
                 "AND b.cod_refere = '2' ".
-                "AND a.cod_tercer = '".$GLOBALS[conduc]."' ";
+                "AND a.cod_tercer = '".$_REQUEST[conduc]."' ";
     $consulta = new Consulta($query, $this -> conexion);
     $reflab2 = $consulta -> ret_matriz();
 
@@ -331,7 +331,7 @@ class Imp_Conduc_Conduc
         ."<table border=\"0\" width=\"100%\">"
         ."<tr>"
           ."<td align=\"center\">"
-            ."<input type=\"hidden\" name=\"cod_servic\" value=\"$GLOBALS[cod_servic]\">"
+            ."<input type=\"hidden\" name=\"cod_servic\" value=\"$_REQUEST[cod_servic]\">"
             ."<input type=\"hidden\" name=\"window\" value=\"central\">"
             ."<input type=\"button\" onClick=\"form.Imprimir.style.visibility='hidden';form.Volver.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.Volver.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">"
           ."</td>"

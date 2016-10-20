@@ -76,11 +76,11 @@ class TarTransp
         $formulario -> nueva_tabla();
         $formulario -> lista( "Tipo de Cobro:","tip_tarifa\" id=\"tip_tarifaID\" onChange=\"valTipo()",$tipos,0);
 				$formulario -> lista( "Transportadora:","cod_tercer\" id=\"cod_tercerID\" onChange=\"valTipo()",$transp,1);
-				if($GLOBALS['tip_tarifa']=='D'){
+				if($_REQUEST['tip_tarifa']=='D'){
 					$query= "SELECT cod_tarifa, val_minimo, fec_inifac,
 													fec_finfac
              			 FROM ".BASE_DATOS.".tab_transp_tarifa
-						 			 WHERE cod_tercer = '".$GLOBALS['cod_tercer']."' AND
+						 			 WHERE cod_tercer = '".$_REQUEST['cod_tercer']."' AND
 									 			 ind_estado = 1 AND
 												 tip_tarifa = 'D'";
     			$consulta = new Consulta($query, $this -> conexion);
@@ -111,11 +111,11 @@ class TarTransp
 					$formulario -> texto ("Fecha Inicial de Facturacion","text","fec_inifac\" id=\"feciniID",0,9,9,"", $val_minim[0][2]);
 					$formulario -> texto ("Fecha Final de Facturacion","text","fec_finfac\" id=\"fecfinID",0,9,9,"",$val_minim[0][3]);
 				}
-				if($GLOBALS['tip_tarifa']=='N'){
+				if($_REQUEST['tip_tarifa']=='N'){
 					$query= "SELECT cod_tarifa, val_minimo, fec_inifac,
 														fec_finfac
              			 FROM ".BASE_DATOS.".tab_transp_tarifa
-						 			 WHERE cod_tercer = '".$GLOBALS['cod_tercer']."' AND
+						 			 WHERE cod_tercer = '".$_REQUEST['cod_tercer']."' AND
 									 			 ind_estado =1 AND
 												 tip_tarifa = 'N'";
     			$consulta = new Consulta($query, $this -> conexion);
@@ -215,13 +215,13 @@ class TarTransp
 				$formulario -> oculto("maxtarifa\" id=\"maxtarifaID",$j,0);
         $formulario -> oculto("num_serie",0,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion\" id=\"opcionID",1,0);
         $formulario -> cerrar();
         echo '
 					<script>
-			 			document.getElementById("tip_tarifaID").value="'.$GLOBALS["tip_tarifa"].'";
-						document.getElementById("cod_tercerID").value="'.$GLOBALS["cod_tercer"].'";	
+			 			document.getElementById("tip_tarifaID").value="'.$_REQUEST["tip_tarifa"].'";
+						document.getElementById("cod_tercerID").value="'.$_REQUEST["cod_tercer"].'";	
        		</script>';
     }
 
@@ -236,7 +236,7 @@ class TarTransp
                    	SET	ind_estado = 0,
 												fec_modifi = NOW(),
 												usr_modifi = '".$datos_usuario['cod_usuari']."'
-									 WHERE cod_tercer = '".$GLOBALS['cod_tercer']."'";
+									 WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'";
 	      $insercion = new Consulta($query, $this -> conexion,"BR");
 				$query= "SELECT MAX(cod_tarifa)
              		 FROM ".BASE_DATOS.".tab_transp_tarifa";
@@ -247,9 +247,9 @@ class TarTransp
 	                      cod_tarifa, cod_tercer, tip_tarifa,
 												val_minimo, ind_estado, usr_creaci,
 												fec_creaci, fec_inifac, fec_finfac)
-	                 VALUES('".$max."', '".$GLOBALS['cod_tercer']."', 'D', 
+	                 VALUES('".$max."', '".$_REQUEST['cod_tercer']."', 'D', 
 									 				'".$this -> moneyToDouble($_POST['val_minim'])."', 1,'".$datos_usuario['cod_usuari']."',
-													NOW(), '".$GLOBALS['fec_inifac']."', '".$GLOBALS['fec_finfac']."')";
+													NOW(), '".$_REQUEST['fec_inifac']."', '".$_REQUEST['fec_finfac']."')";
 	      $insercion = new Consulta($query, $this -> conexion,"R");
 				$query= "SELECT MAX(cod_consec)
              		 FROM ".BASE_DATOS.".tab_transp_tardell";
@@ -261,7 +261,7 @@ class TarTransp
 	                 VALUES('".$max."', '".$consec."', '".$this -> moneyToDouble($_POST['val_tarifa'])."')";
 	      $insercion = new Consulta($query, $this -> conexion,"R");
 				if($insercion = new Consulta("COMMIT", $this -> conexion)){
-		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">INSERTAR OTRA TARIFA POR TRANSPORTADORA</a></b>";
+		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">INSERTAR OTRA TARIFA POR TRANSPORTADORA</a></b>";
 		
 		     $mensaje =  " Se Inserto con Exito".$link_a;
 		     $mens = new mensajes();
@@ -277,7 +277,7 @@ class TarTransp
                    	SET	ind_estado = 0,
 												fec_modifi = NOW(),
 												usr_modifi = '".$datos_usuario['cod_usuari']."'
-									 WHERE cod_tercer = '".$GLOBALS['cod_tercer']."'";
+									 WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'";
 	      $insercion = new Consulta($query, $this -> conexion,"BR");
 				$query= "SELECT MAX(cod_tarifa)
              FROM ".BASE_DATOS.".tab_transp_tarifa";
@@ -288,9 +288,9 @@ class TarTransp
 	                      cod_tarifa, cod_tercer, tip_tarifa, 
 												val_minimo, ind_estado, usr_creaci,
 												fec_creaci, fec_inifac, fec_finfac)
-	                 VALUES('".$max."', '".$GLOBALS['cod_tercer']."', 'N',
+	                 VALUES('".$max."', '".$_REQUEST['cod_tercer']."', 'N',
 									 			  '".$this -> moneyToDouble($_POST['val_minim'])."', 1,'".$datos_usuario['cod_usuari']."',
-													NOW(), '".$GLOBALS['fec_inifac']."', '".$GLOBALS['fec_finfac']."')";
+													NOW(), '".$_REQUEST['fec_inifac']."', '".$_REQUEST['fec_finfac']."')";
 	      $insercion = new Consulta($query, $this -> conexion,"R");
 				$query= "SELECT MAX(cod_consec)
              		 FROM ".BASE_DATOS.".tab_transp_tardell";
@@ -308,7 +308,7 @@ class TarTransp
 				}
 				
 				if($insercion = new Consulta("COMMIT", $this -> conexion)){
-		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">INSERTAR OTRA TARIFA POR TRANSPORTADORA</a></b>";
+		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">INSERTAR OTRA TARIFA POR TRANSPORTADORA</a></b>";
 		
 		     $mensaje =  " Se Inserto con Exito".$link_a;
 		     $mens = new mensajes();

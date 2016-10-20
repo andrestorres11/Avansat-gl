@@ -137,7 +137,7 @@
       $formulario -> nueva_tabla();
       $formulario -> oculto("opcion","anu",0);
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS['cod_servic'],0);
+      $formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
 
       $formulario -> nueva_tabla();
       $formulario -> boton("Anular","button\" onClick=\"VerifyAnula();",1);
@@ -174,14 +174,14 @@
                                         WHERE f.num_manifi = zz.num_manifi AND
                                               zz.ind_aproba = '1')";
 
-      if($GLOBALS[manifi])
-        $query .= " AND a.cod_manifi = '".$GLOBALS[manifi]."'";
-      if($GLOBALS[numdes])
-        $query .= " AND a.num_despac = '".$GLOBALS[numdes]."'";
-      if($GLOBALS[vehicu])
-        $query .= " AND b.num_placax = '".$GLOBALS[vehicu]."'";
-      if($GLOBALS[trayle])
-        $query .= " AND b.num_trayle = '".$GLOBALS[trayle]."'";
+      if($_REQUEST[manifi])
+        $query .= " AND a.cod_manifi = '".$_REQUEST[manifi]."'";
+      if($_REQUEST[numdes])
+        $query .= " AND a.num_despac = '".$_REQUEST[numdes]."'";
+      if($_REQUEST[vehicu])
+        $query .= " AND b.num_placax = '".$_REQUEST[vehicu]."'";
+      if($_REQUEST[trayle])
+        $query .= " AND b.num_trayle = '".$_REQUEST[trayle]."'";
       
       if($datos_usuario["cod_perfil"] == "")
       {
@@ -271,7 +271,7 @@
             }
           }
 
-          $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+          $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
           $ciudad_o = $objciud -> getSeleccCiudad($matriz[$i][16]);
           $ciudad_d = $objciud -> getSeleccCiudad($matriz[$i][17]);
           
@@ -294,7 +294,7 @@
       }
       $formulario -> oculto("opcion",1,0);
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+      $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
       $formulario -> cerrar();
     }
 

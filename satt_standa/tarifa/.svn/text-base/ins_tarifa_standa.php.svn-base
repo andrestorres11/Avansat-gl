@@ -64,7 +64,7 @@ class TarStanda
 			
         $formulario -> nueva_tabla();
         $formulario -> lista( "Tipo de Cobro:","tip_tarifa\" id=\"tip_tarifaID\" onChange=\"form_insert.submit()",$tipos,1);
-				if($GLOBALS['tip_tarifa']=='D'){
+				if($_REQUEST['tip_tarifa']=='D'){
 					$query= "SELECT cod_tarifa, val_minimo , fec_inifac,
 													fec_finfac
              			 FROM ".BASE_DATOS.".tab_genera_tarifa
@@ -83,7 +83,7 @@ class TarStanda
 					$formulario -> texto ("Fecha Inicial de Facturacion","text","fec_inifac\" id=\"feciniID",0,9,9,"", $val_minim[0][2]);
 					$formulario -> texto ("Fecha Final de Facturacion","text","fec_finfac\" id=\"fecfinID",1,9,9,"",$val_minim[0][3]);
 				}
-				if($GLOBALS['tip_tarifa']=='N'){
+				if($_REQUEST['tip_tarifa']=='N'){
 					$query= "SELECT cod_tarifa, val_minimo, fec_inifac,
 													fec_finfac
              			 FROM ".BASE_DATOS.".tab_genera_tarifa
@@ -170,12 +170,12 @@ class TarStanda
 				$formulario -> oculto("maxtarifa\" id=\"maxtarifaID",$j,0);
         $formulario -> oculto("num_serie",0,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion\" id=\"opcionID",1,0);
         $formulario -> cerrar();
         echo '
 					<script>
-			 			document.getElementById("tip_tarifaID").value="'.$GLOBALS["tip_tarifa"].'";	
+			 			document.getElementById("tip_tarifaID").value="'.$_REQUEST["tip_tarifa"].'";	
        		</script>';
     }
 
@@ -215,7 +215,7 @@ class TarStanda
 	                 VALUES('".$max."', '".$consec."', '".$this -> moneyToDouble($_POST['val_tarifa'])."')";
 	      $insercion = new Consulta($query, $this -> conexion,"R");
 				if($insercion = new Consulta("COMMIT", $this -> conexion)){
-		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">INSERTAR OTRA TARIFA STANDA</a></b>";
+		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">INSERTAR OTRA TARIFA STANDA</a></b>";
 		
 		     $mensaje =  " Se Inserto con Exito".$link_a;
 		     $mens = new mensajes();
@@ -262,7 +262,7 @@ class TarStanda
 				}
 				
 				if($insercion = new Consulta("COMMIT", $this -> conexion)){
-		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">INSERTAR OTRA TARIFA STANDA</a></b>";
+		     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">INSERTAR OTRA TARIFA STANDA</a></b>";
 		
 		     $mensaje =  " Se Inserto con Exito".$link_a;
 		     $mens = new mensajes();

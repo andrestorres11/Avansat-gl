@@ -16,11 +16,11 @@ class Proc_contro
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Formulario();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
           case "1":
           $this -> Formulario();
@@ -217,7 +217,7 @@ class Proc_contro
     $formulario -> oculto("totala",sizeof($alarmas),0);
     $formulario -> oculto("opcion",2,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> boton("Aceptar","button\" onClick=\"if(confirm('Está Seguro de Actualizar la Informacion de Alarmas?')){form_item.submit()}",0);
     $formulario -> cerrar();
    }
@@ -233,9 +233,9 @@ class Proc_contro
   $datos_usuario = $this -> usuario -> retornar();
   $usuario=$datos_usuario["cod_usuari"];
 
-  $novala = $GLOBALS[novala];
-  $codigo = $GLOBALS[codigo];
-  $listransp = $GLOBALS[listransp];
+  $novala = $_REQUEST[novala];
+  $codigo = $_REQUEST[codigo];
+  $listransp = $_REQUEST[listransp];
 
   for($i = 0; $i < sizeof($listransp); $i++)
   {
@@ -255,7 +255,7 @@ class Proc_contro
    $consulta = new Consulta($query, $this -> conexion,"R");
   }
 
-  for($i = 0; $i < $GLOBALS[cont]; $i++)
+  for($i = 0; $i < $_REQUEST[cont]; $i++)
   {
    if($novala[$i])
    {
@@ -272,7 +272,7 @@ class Proc_contro
     $consulta = new Consulta($query, $this -> conexion,"R");
    }
 
-   for($j = 0; $j < $GLOBALS[totala]; $j++)
+   for($j = 0; $j < $_REQUEST[totala]; $j++)
    {
     if($codigo[$i][$j])
     {

@@ -1,19 +1,21 @@
 <?php
 
- 
   ini_set( "soap.wsdl_cache_enabled", "0" ); // disabling WSDL cache
-
-  
-
-
  
   class TraficoPad
   {
     private $cConexion = NULL;
-    private $cUrlWsdlA = "https://web5.intrared.net/ap/si_pad/ws/server.wsdl";
+    private $cUrlWsdlA = "https://oet.intrared.net/ap/pad_asistr/ws/server.wsdl";
+
+    private static $cBD;
 
     function __construct()
     {
+        $mHost = $_SERVER['HTTP_HOST'];
+        $mHost = explode('.', $mHost);
+
+        self::$cBD = "aglbd.intrared.net";
+
         if( !$_POST ) $_POST = $_GET;
 
         switch ($_POST["Opcion"]) 
@@ -345,7 +347,7 @@
     function Consulta( $mQuery = NULL, $mRetorna = true)
     {
       $mError = array();
-      $mLink = mysql_connect("bd10.intrared.net:3306", "satt_faro", "sattfaro"); 
+      $mLink = mysql_connect(self::$cBD, "satt_faro", "sattfaro"); 
       if( !$mLink)
       {
         $mError["ID"] = false;

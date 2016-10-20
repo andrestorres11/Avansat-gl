@@ -82,7 +82,7 @@ class Proc_servic
 
 
 
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
 
 
 
@@ -98,7 +98,7 @@ class Proc_servic
 
 
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
 
 
 
@@ -495,7 +495,7 @@ class Proc_servic
 
 
 
-      $formulario -> oculto("cod_servic", $GLOBALS[cod_servic], 0);
+      $formulario -> oculto("cod_servic", $_REQUEST[cod_servic], 0);
 
 
 
@@ -543,11 +543,11 @@ class Proc_servic
 
 
 
-   $perfiles = $GLOBALS[perfiles];
+   $perfiles = $_REQUEST[perfiles];
 
 
 
-   $usuarios = $GLOBALS[usuarios];
+   $usuarios = $_REQUEST[usuarios];
 
 
 
@@ -557,7 +557,7 @@ class Proc_servic
 
                FROM ".CENTRAL.".tab_genera_servic
 
-              WHERE cod_servic = '$GLOBALS[codigo]' ";
+              WHERE cod_servic = '$_REQUEST[codigo]' ";
 
    $consulta = new Consulta($query, $this -> conexion);
 
@@ -581,59 +581,59 @@ class Proc_servic
 
     else
 
-       $nuevo_consec = $GLOBALS[codigo];
+       $nuevo_consec = $_REQUEST[codigo];
 
 
 
    //query de insercion del servicio
 
-   if(!$GLOBALS[descri])
+   if(!$_REQUEST[descri])
 
-       $GLOBALS[descri] = "NULL";
-
-   else
-
-       $GLOBALS[descri] = "'$GLOBALS[descri]'";
-
-
-
-   if(!$GLOBALS[ruta])
-
-       $GLOBALS[ruta] = "NULL";
+       $_REQUEST[descri] = "NULL";
 
    else
 
-       $GLOBALS[ruta] = "'$GLOBALS[ruta]'";
+       $_REQUEST[descri] = "'$_REQUEST[descri]'";
 
 
 
-   if(!$GLOBALS[jscript])
+   if(!$_REQUEST[ruta])
 
-       $GLOBALS[jscript] = "NULL";
-
-   else
-
-       $GLOBALS[jscript] = "'$GLOBALS[jscript]'";
-
-
-
-   if(!$GLOBALS[bjscrip])
-
-       $GLOBALS[bjscrip] = "NULL";
+       $_REQUEST[ruta] = "NULL";
 
    else
 
-       $GLOBALS[bjscrip] = "'$GLOBALS[bjscrip]'";
+       $_REQUEST[ruta] = "'$_REQUEST[ruta]'";
+
+
+
+   if(!$_REQUEST[jscript])
+
+       $_REQUEST[jscript] = "NULL";
+
+   else
+
+       $_REQUEST[jscript] = "'$_REQUEST[jscript]'";
+
+
+
+   if(!$_REQUEST[bjscrip])
+
+       $_REQUEST[bjscrip] = "NULL";
+
+   else
+
+       $_REQUEST[bjscrip] = "'$_REQUEST[bjscrip]'";
 
 
 
    $query = "INSERT INTO ".CENTRAL.".tab_genera_servic
 
-             VALUES ('$nuevo_consec','$GLOBALS[nombre]',$GLOBALS[descri],
+             VALUES ('$nuevo_consec','$_REQUEST[nombre]',$_REQUEST[descri],
 
-                      $GLOBALS[ruta],$GLOBALS[jscript],$GLOBALS[bjscrip],
+                      $_REQUEST[ruta],$_REQUEST[jscript],$_REQUEST[bjscrip],
 
-                      '".COD_APLICACION."','$GLOBALS[usuario]','$fec_actual',NULL,NULL)";
+                      '".COD_APLICACION."','$_REQUEST[usuario]','$fec_actual',NULL,NULL)";
 
    $consulta = new Consulta($query, $this -> conexion);
 
@@ -643,7 +643,7 @@ class Proc_servic
 
 
 
-   if($GLOBALS[padre])
+   if($_REQUEST[padre])
 
 
 
@@ -655,7 +655,7 @@ class Proc_servic
 
 
 
-                VALUES ('$GLOBALS[padre]','$nuevo_consec') ";
+                VALUES ('$_REQUEST[padre]','$nuevo_consec') ";
 
 
 
@@ -671,7 +671,7 @@ class Proc_servic
 
 
 
-   for($i=0;$i<$GLOBALS[max_per];$i++)
+   for($i=0;$i<$_REQUEST[max_per];$i++)
 
 
 
@@ -851,7 +851,7 @@ class Proc_servic
 
 
 
-   for($i=0;$i<$GLOBALS[max_usu];$i++)
+   for($i=0;$i<$_REQUEST[max_usu];$i++)
 
 
 
@@ -1031,7 +1031,7 @@ class Proc_servic
 
 
 
-     echo "<br><br><b>TRANSACCION EXITOSA <br> EL SERVICIO $GLOBALS[nombre] FUE INSERTADO</b>";
+     echo "<br><br><b>TRANSACCION EXITOSA <br> EL SERVICIO $_REQUEST[nombre] FUE INSERTADO</b>";
 
 
 

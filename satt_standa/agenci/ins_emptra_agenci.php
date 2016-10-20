@@ -1,8 +1,5 @@
 <?php
-   /* ini_set('display_errors', true);
-    error_reporting(E_ALL & ~E_NOTICE);
-*/
-    require "ajax_emptra_agenci.php";
+require "ajax_emptra_agenci.php";
 
 class Ins_emptra_agenci {
 
@@ -19,8 +16,8 @@ class Ins_emptra_agenci {
 
         switch ($_REQUEST[opcion]) {
             case 1:
-              $this->Formulario();
-            break;
+                $this->Formulario();
+                break;
 
             default:
                 $this->filtro();
@@ -29,14 +26,14 @@ class Ins_emptra_agenci {
     }
     
     
-    /*! \fn: getTransp
-*  \brief: Trae las transportadoras
-*  \author: Ing. Fabian Salinas
-* \date: 17/06/2015
-* \date modified: dia/mes/año
-*  \param: 
-*  \return:
-*/
+/*! \fn: getTransp
+ *  \brief: Trae las transportadoras
+ *  \author: Ing. Fabian Salinas
+ * \date: 17/06/2015
+ * \date modified: dia/mes/año
+ *  \param: 
+ *  \return:
+ */
 public function getTransp()
 {
     $mSql = "SELECT a.cod_tercer, UPPER(a.abr_tercer) AS nom_tercer 
@@ -102,10 +99,11 @@ public function getTransp()
        
          
         $cod_transp = $this->getTransp();
-        $and ="";
-        if($cod_transp){
+        if(sizeof($cod_transp) == 1 ) {
           $and = "WHERE cod_transp = '".$cod_transp[0][0]."'";
-        } 
+        } else {
+            $and ="";
+        }
        
         #creo el acordeon para el filtro
         #<DIV fitro>

@@ -5,9 +5,9 @@ FUNCION:  INFORME DE NOVEDADES DE LA TRANSP
 AUTOR: JORGE PRECIADO
 FECHA CREACION : 17 OCTUBRE 2013
 ****************************************************************************/
-ini_set('display_errors', true);
-error_reporting(E_ALL & ~E_NOTICE);
+
 session_start();
+
 class CanDesTra
 {
     var  $conexion;
@@ -225,7 +225,7 @@ class CanDesTra
         include( "../lib/general/tabla_lib.inc" );
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
         
-        $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION['USUARIO'], $_SESSION['CLAVE'], $_SESSION['BASE_DATOS'] );
+        $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION['USUARIO'], $_SESSION['CLAVE'], $_SESSION['BASE_DATOS'] );
         
         $mHtml = NULL;
         $mHtml2 = NULL;

@@ -37,11 +37,11 @@ class Proc_contro
    */
   function principal()
   {
-    if(!isset($GLOBALS[opcion]))
+    if(!isset($_REQUEST[opcion]))
       $this -> Formulario();
     else
     {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Formulario();
@@ -72,15 +72,15 @@ class Proc_contro
      $inicio[0][0]=0;
      $inicio[0][1]='-';
 
-     $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+     $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
      $ciudad = $objciud -> getListadoCiudades();
 
      $ciudades = array_merge($inicio,$ciudad);
      $ciudagen = array_merge($inicio,$ciudad);
 
-     if($GLOBALS[ciudad])
+     if($_REQUEST[ciudad])
      {
-      $ciudad_a = $objciud -> getSeleccCiudad($GLOBALS[ciudad]);
+      $ciudad_a = $objciud -> getSeleccCiudad($_REQUEST[ciudad]);
       $ciudades = array_merge($ciudad_a,$ciudades);
      }
 
@@ -90,25 +90,27 @@ class Proc_contro
      $formulario -> linea("Datos B&aacute;sicos",1,"t2");
 
      $formulario -> nueva_tabla();
-     $formulario -> texto ("Nombre:","text","nom",0,50,100,"",$GLOBALS[nom]);
-     $formulario -> texto ("Nombre del Encargado:","text","enc",1,30,100,"",$GLOBALS[enc]);
-     $formulario -> texto ("Telefono:","text","tel",0,30,20,"",$GLOBALS[tel]);
+     $formulario -> texto ("Nombre:","text","nom",0,50,100,"",$_REQUEST[nom]);
+     $formulario -> texto ("Nombre del Encargado:","text","enc",1,30,100,"",$_REQUEST[enc]);
+     $formulario -> texto ("Telefono:","text","tel",0,30,20,"",$_REQUEST[tel]);
      $formulario -> lista ("Ciudad:", "ciudad", $ciudades, 1);
-     $formulario -> texto ("Direcci&oacute;n:","text","dir",0,50,400,"",$GLOBALS[dir]);
+     $formulario -> texto ("Direcci&oacute;n:","text","dir",0,50,400,"",$_REQUEST[dir]);
      $formulario -> lista ("Sentido Vial:", "sentido\" id=\"sentidoID", $mArraySentido, 1);
      $formulario -> texto ("Sentido 1:","text","sent1\" id=\"sent1ID",0,50,250,"", NULL);
      $formulario -> texto ("Sentido 2:","text","sent2\" id=\"sent2ID",1,50,250,"", NULL);
-     $formulario -> texto ("Longitud:","text","longi",0,30,30,"",$GLOBALS[longi]);
-     $formulario -> texto ("Latitud:","text","latit",1,30,30,"",$GLOBALS[latit]);
-     $formulario -> texto ("Temperatura:","text","tempe",0,30,5,"",$GLOBALS[tempe]);
-     $formulario -> texto ("Altimetria:","text","altim",1,30,10,"",$GLOBALS[altim]);
+     $formulario -> texto ("* Latitud:","text","longi\" onkeyup=\"reload_url()",0,30,30,"",$_REQUEST[longi]);
+     $formulario -> texto ("* Longitud:","text","latit\" onkeyup=\"reload_url()",1,30,30,"",$_REQUEST[latit]);
+     $formulario -> texto ("Url Waze:","text","url_wazexx\" readonly=\"readonly",0,30,30,"",$_REQUEST[url_wazexx]);
+     $formulario -> texto ("Url Google Maps:","text","url_google\" readonly=\"readonly",1,30,30,"",$_REQUEST[url_google]);
+     $formulario -> texto ("Temperatura:","text","tempe",0,30,5,"",$_REQUEST[tempe]);
+     $formulario -> texto ("Altimetria:","text","altim",1,30,10,"",$_REQUEST[altim]);
 
      $formulario -> radio ("Puesto Fisico:","virtua\" id=\"virtuaID","0",0,0);
      $formulario -> radio ("Puesto Virtual:","virtua\" id=\"virtuaID","1",0,1);
 
      $formulario -> caja ("Puesto Urbano:","urbano \" id=\"urbanoID\"  ",1,0,0); //onclick=\"ShowRow();\"  checked=\"checked\"
      $formulario -> archivo("Foto:","foto",12,200,"",1);
-     $formulario -> texto ("Color:","text","color\"  id=\"colorID\" onBlur=\"setColor()\"",0,7,7,"","$GLOBALS[color]");
+     $formulario -> texto ("Color:","text","color\"  id=\"colorID\" onBlur=\"setColor()\"",0,7,7,"","$_REQUEST[color]");
      $formulario -> oculto("MAX_FILE_SIZE", "2000000", 0);
 
      echo "<td nowrap='nowrap' id='coloreal'>
@@ -123,7 +125,7 @@ class Proc_contro
      $formulario -> oculto("window","central",0);
      $formulario -> oculto("opcion",1,0);
      //$formulario -> oculto("maximo",$interfaz -> cant_interf,0);
-     $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+     $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
      $formulario -> botoni("Insertar","aceptar_insert()",0);
      $formulario -> botoni("Borrar","form_insert.reset()",1);
      $formulario -> cerrar();
@@ -141,12 +143,12 @@ class Proc_contro
   {
      $fec_actual = date("Y-m-d H:i:s");
 
-     $zona = $GLOBALS[zona];
-     $operador = $GLOBALS[operador_gps];
-     $nom_operador = $GLOBALS[nom_operador_gps];
+     $zona = $_REQUEST[zona];
+     $operador = $_REQUEST[operador_gps];
+     $nom_operador = $_REQUEST[nom_operador_gps];
 
-     if(!$GLOBALS[urbano])
-      $GLOBALS[urbano] = 0;
+     if(!$_REQUEST[urbano])
+      $_REQUEST[urbano] = 0;
 
      //trae el consecutivo de la tabla
      $query = "SELECT Max(cod_contro)
@@ -160,63 +162,65 @@ class Proc_contro
      $ultimo_consec = $ultimo[0][0];
      $nuevo_consec = $ultimo_consec+1;
 
-     if($GLOBALS[foto])
+     if($_REQUEST[foto])
      {
-      if(move_uploaded_file($GLOBALS[foto],URL_PCTCON.$nuevo_consec.".jpg"))
-       $GLOBALS[foto] = "'".$nuevo_consec.".jpg'";
+      if(move_uploaded_file($_REQUEST[foto],URL_PCTCON.$nuevo_consec.".jpg"))
+       $_REQUEST[foto] = "'".$nuevo_consec.".jpg'";
       else
-       $GLOBALS[foto] = "NULL";
+       $_REQUEST[foto] = "NULL";
      }
      else
-      $GLOBALS[foto] = "NULL";
+      $_REQUEST[foto] = "NULL";
 
-     if(!$GLOBALS[longi])
-      $GLOBALS[longi] = "NULL";
+     if(!$_REQUEST[longi])
+      $_REQUEST[longi] = "NULL";
      else
-      $GLOBALS[longi] = "'".$GLOBALS[longi]."'";
+      $_REQUEST[longi] = "'".$_REQUEST[longi]."'";
 
-     if(!$GLOBALS[latit])
-      $GLOBALS[latit] = "NULL";
+     if(!$_REQUEST[latit])
+      $_REQUEST[latit] = "NULL";
      else
-      $GLOBALS[latit] = "'".$GLOBALS[latit]."'";
+      $_REQUEST[latit] = "'".$_REQUEST[latit]."'";
 
-     if(!$GLOBALS[tempe])
-      $GLOBALS[tempe] = "NULL";
+     if(!$_REQUEST[tempe])
+      $_REQUEST[tempe] = "NULL";
      else
-      $GLOBALS[tempe] = "'".$GLOBALS[tempe]."'";
+      $_REQUEST[tempe] = "'".$_REQUEST[tempe]."'";
 
-     if(!$GLOBALS[altim])
-      $GLOBALS[altim] = "NULL";
+     if(!$_REQUEST[altim])
+      $_REQUEST[altim] = "NULL";
      else
-      $GLOBALS[altim] = "'".$GLOBALS[altim]."'";
-
+      $_REQUEST[altim] = "'".$_REQUEST[altim]."'";
+ 
      //query de insercion
      $query = "INSERT INTO ".BASE_DATOS.".tab_genera_contro
                	         (cod_contro,nom_contro,cod_ciudad,nom_encarg,
           			  			  dir_contro,tel_contro,ind_virtua,val_longit,
           			  			  val_latitu,val_temper,val_altitu,dir_fotopc,
           			  			  usr_creaci,fec_creaci,ind_estado,ind_urbano,cod_colorx, ind_pcpadr, 
-                          val_senvia, dir_senti1, dir_senti2 
+                          val_senvia, dir_senti1, dir_senti2,
+                          url_wazexx, url_google
           	     		 		 )
                        	  VALUES 
-                          ( ".$nuevo_consec.", '".$GLOBALS[nom]."', 
-                            ".$GLOBALS[ciudad].", '".$GLOBALS[enc]."', '".$GLOBALS[dir]."', 
-                            '".$GLOBALS[tel]."', '".$GLOBALS[virtua]."', ".$GLOBALS[longi].", 
-                            ".$GLOBALS[latit].", ".$GLOBALS[tempe].", ".$GLOBALS[altim].", 
-                            ".$GLOBALS[foto].", '".$GLOBALS[usuario]."', '".$fec_actual."', 
-                            '".COD_ESTADO_ACTIVO."', ".$GLOBALS[urbano].", '".$GLOBALS[color]."',  '1', 
-                            '".$_REQUEST[sentido]."', '".$_REQUEST[sent1]."', '".$_REQUEST[sent2]."' )  ";
+                          ( ".$nuevo_consec.", '".$_REQUEST[nom]."', 
+                            ".$_REQUEST[ciudad].", '".$_REQUEST[enc]."', '".$_REQUEST[dir]."', 
+                            '".$_REQUEST[tel]."', '".$_REQUEST[virtua]."', ".$_REQUEST[longi].", 
+                            ".$_REQUEST[latit].", ".$_REQUEST[tempe].", ".$_REQUEST[altim].", 
+                            ".$_REQUEST[foto].", '".$_REQUEST[usuario]."', '".$fec_actual."', 
+                            '".COD_ESTADO_ACTIVO."', ".$_REQUEST[urbano].", '".$_REQUEST[color]."',  '1', 
+                            '".$_REQUEST[sentido]."', '".$_REQUEST[sent1]."', '".$_REQUEST[sent2]."' 
+                            , '".$_REQUEST['url_wazexx']."','".$_REQUEST['url_google']."' )  ";
 
      $consulta = new Consulta($query, $this -> conexion,"BR");
-     $pcinterf = $GLOBALS[pcinterf];
-     $operad = $GLOBALS[operad];
+     $pcinterf = $_REQUEST[pcinterf];
+     $operad = $_REQUEST[operad];
 
 
     if($consulta = new Consulta ("COMMIT", $this -> conexion))
     {
-     $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otro Puesto de Control</a></b>";
+     $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otro Puesto de Control</a></b>";
 
-     $mensaje = "El Puesto de Control <b>".$GLOBALS[nom]."</b> se Inserto con Exito<br>".$link;
+     $mensaje = "El Puesto de Control <b>".$_REQUEST[nom]."</b> se Inserto con Exito<br>".$link;
      $mens = new mensajes();
      $mens -> correcto("INSERTAR PUESTO DE CONTROL",$mensaje);
     }

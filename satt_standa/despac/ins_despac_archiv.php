@@ -17,8 +17,8 @@ class Proc_ins_despac
     function principal()
     {
      $this -> formulario();
-     $is_scv = substr($GLOBALS["archivo"],0,-3);
-     if($GLOBALS["archivo"])
+     $is_scv = substr($_REQUEST["archivo"],0,-3);
+     if($_REQUEST["archivo"])
       $this -> insertar();
     }
 
@@ -35,10 +35,10 @@ class Proc_ins_despac
         $formulario -> linea("<a href='../".DIR_APLICA_CENTRAL."/despac/archiv_plan.xls'>Descargue la plantilla del archivo</a>",1);
 
         $formulario -> nueva_tabla();
-        $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0, 0);
+        $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0, 0);
         $formulario -> oculto("usuario","$usuario",0);
         $formulario -> oculto("MAX_FILE_SIZE", "2000000", 0, 0);
-        $formulario -> oculto("window", $GLOBALS["window"], 0, 0);
+        $formulario -> oculto("window", $_REQUEST["window"], 0, 0);
         $formulario -> boton("Aceptar","submit",0);
         $formulario -> cerrar();
     }
@@ -52,7 +52,7 @@ class Proc_ins_despac
         $mensaje_cod = 0;
         $i = 1;
 
-        if(!$archivo = fopen($GLOBALS['_FILES']['archivo']['tmp_name'], "r"))
+        if(!$archivo = fopen($_REQUEST['_FILES']['archivo']['tmp_name'], "r"))
         	echo "<br>No se Pudo Abrir el Archivo";
 
             $e = 0;
@@ -137,7 +137,7 @@ class Proc_ins_despac
 
              if(!$agenci[0])
              {
-                  if($GLOBALS[subir])
+                  if($_REQUEST[subir])
                   {
                   $this -> ins_agenci($registro[1],$registro[2]);
                   echo "crea la agencia ";
@@ -163,7 +163,7 @@ class Proc_ins_despac
 
                      if($generador == 0)
                      {
-                             if($GLOBALS[subir])
+                             if($_REQUEST[subir])
                              {
                                      $this -> ins_tercer($registro[3],$registro[4],"","N");
                                      $this -> act_activi($registro[3],10);
@@ -182,7 +182,7 @@ class Proc_ins_despac
                              $activi = $this -> is_activi($registro[3],10);
                              if(!$activi)
                              {
-                                     if($GLOBALS[subir])
+                                     if($_REQUEST[subir])
                                      {
                                              $this -> act_activi($registro[3],10);
                                              echo "<br>Actualiza la actividad del generador<br>";
@@ -200,7 +200,7 @@ class Proc_ins_despac
              $conduc =    $this -> is_tercer($registro[12]);
              if($conduc == 0)
              {
-                  if($GLOBALS[subir])
+                  if($_REQUEST[subir])
                   {
                     $nombre = $registro[13]." ".$registro[14]." ".$registro[15];
                     $this -> ins_conpos($registro[12],$nombre,$registro[14],$registro[15],$registro[16],"C",$registro[17]);
@@ -223,7 +223,7 @@ class Proc_ins_despac
 
                   if(!$activi)
                   {
-                      if($GLOBALS[subir])
+                      if($_REQUEST[subir])
                       {
                          $this -> act_activi($registro[12],16);
                          echo "<br>Actualiza la actividad del Conductor<br>";
@@ -240,7 +240,7 @@ class Proc_ins_despac
              $poseed =  $this -> is_tercer($registro[18]);
              if($poseed == 0)
              {
-                  if($GLOBALS[subir])
+                  if($_REQUEST[subir])
                   {
                     $nombre = $registro[19]." ".$registro[20]." ".$registro[21];
                     $this -> ins_conpos($registro[18],$nombre,$registro[14],$registro[15],$registro[22],"C",$registro[23]);
@@ -262,7 +262,7 @@ class Proc_ins_despac
 
                   if(!$activi)
                   {
-                      if($GLOBALS[subir])
+                      if($_REQUEST[subir])
                      {
                          $this -> act_activi($registro[18],18);
                          echo "<br>Actualiza la actividad del Poseedor<br>";
@@ -280,7 +280,7 @@ class Proc_ins_despac
              $propie =    $this -> is_tercer($registro[24]);
              if($propie == 0)
              {
-                  if($GLOBALS[subir])
+                  if($_REQUEST[subir])
                   {
                     $nombre = $registro[25]." ".$registro[26]." ".$registro[27];
                     $this -> ins_tercer($registro[24],$nombre, $registro[28], "C", $registro[29]);
@@ -301,7 +301,7 @@ class Proc_ins_despac
                 $activi = $this -> is_activi($registro[24],15);
                   if(!$activi)
                   {
-                      if($GLOBALS[subir])
+                      if($_REQUEST[subir])
                       {
                          $this -> act_activi($registro[24],15);
                          echo "<br>Actualiza la actividad del Propietario<br>";
@@ -322,7 +322,7 @@ class Proc_ins_despac
 
               if(!$placa[0])
               {
-                if($GLOBALS[subir])
+                if($_REQUEST[subir])
                 {
                      $this ->  ins_vehicu($registro[5],$registro[6], $registro[7],$registro[8],$registro[9],
                                           $registro[10],$registro[11],$registro[12],$registro[18],$registro[24]);
@@ -360,7 +360,7 @@ class Proc_ins_despac
 
              if(!$mercan[0])
              {
-                 if($GLOBALS[subir])
+                 if($_REQUEST[subir])
                  {
                     $this ->  ins_mercan($registro[30]);
                     echo "Actualiza la mercancia<br>";
@@ -380,7 +380,7 @@ class Proc_ins_despac
 
              if(!$origen[0])
              {
-                 if($GLOBALS[subir])
+                 if($_REQUEST[subir])
                  {
                    echo "Actualiza la Ciudad<br>";
                  }
@@ -401,7 +401,7 @@ class Proc_ins_despac
 
              if(!$origen[0])
              {
-                 if($GLOBALS[subir])
+                 if($_REQUEST[subir])
                  {
                    echo "Actualiza la Ciudad";
                   }
@@ -513,7 +513,7 @@ class Proc_ins_despac
                  '".$registro[31]."','".$registro[32]."','".$registro[35]."','".$registro[36]."',
                  '".$registro[37]."','$retefu','".$registro[38]."','".$registro[39]."','".$registro[1]."',
                  '".$registro[40]."','".$registro[41]."','".$registro[42]."','Insertado por Interfaz Web',
-                 '".$registro[34]."','N','R','".$datospoli[0]."','".$datospoli[1]."','$GLOBALS[usuario]','$fec_actual','$GLOBALS[usuario]','$fec_actual') ";
+                 '".$registro[34]."','N','R','".$datospoli[0]."','".$datospoli[1]."','$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual') ";
 
        $consulta = new Consulta($query, $this -> conexion, "R");
 
@@ -525,7 +525,7 @@ class Proc_ins_despac
                   fec_creaci, usr_modifi, fec_modifi)
                  VALUES ('$nuevo_consec','".NIT_TRANSPOR."','".$registro[1]."','$ruta',
                  '".$registro[12]."','".$registro[5]."','".$registro[16]."',
-                 '$fec_actual','$fec_actual','R','$GLOBALS[usuario]','$fec_actual','$GLOBALS[usuario]','$fec_actual') ";
+                 '$fec_actual','$fec_actual','R','$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual') ";
 
        $consulta = new Consulta($query, $this -> conexion, "R");
        $this -> ins_remesa($nuevo_consec,$registro[0],$registro[46],$registro[43], $registro[44],$registro[45],$registro[30],$registro[3],$registro[38],$registro[39]);
@@ -590,7 +590,7 @@ class Proc_ins_despac
    {
            $query = "INSERT INTO ".BASE_DATOS.".tab_genera_agenci (cod_agenci,
                     nom_agenci,cod_ciudad,usr_creaci, fec_creaci)
-                     VALUES ('$cod','$nombre', '1','$GLOBALS[usuario]',NOW())";
+                     VALUES ('$cod','$nombre', '1','$_REQUEST[usuario]',NOW())";
            $insert = new Consulta($query, $this -> conexion, "R");
    }
     // inserta el conductor o poseedor
@@ -600,7 +600,7 @@ class Proc_ins_despac
             $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer (cod_tercer,nom_apell1,nom_apell2,cod_tipdoc,nom_tercer,
                       abr_tercer, num_telmov, dir_domici,cod_paisxx,cod_depart,cod_ciudad, usr_creaci, fec_creaci)
                       VALUES ('$nit','$apell1','$apell2','$tipdoc','$nombre','$nombre','$tel', '$direcc' ,'3','1',
-                      '1', '$GLOBALS[usuario]', NOW())";
+                      '1', '$_REQUEST[usuario]', NOW())";
             $insert = new Consulta($query, $this -> conexion,"R");
 
            //conduc = 16, propiet = 15, genera = 10
@@ -612,7 +612,7 @@ class Proc_ins_despac
             $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer (cod_tercer,cod_tipdoc,nom_tercer,
                       abr_tercer, num_telmov, dir_domici,cod_paisxx,cod_depart,cod_ciudad, usr_creaci, fec_creaci)
                       VALUES ('$nit','$tipdoc','$nombre','$nombre','$tel', '$direcc' ,'3','1',
-                      '1', '$GLOBALS[usuario]', NOW())";
+                      '1', '$_REQUEST[usuario]', NOW())";
             $insert = new Consulta($query, $this -> conexion,"R");
 
            //conduc = 16, propiet = 15, genera = 10
@@ -629,7 +629,7 @@ class Proc_ins_despac
             {
                      $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_conduc (cod_tercer, cod_tipsex, cod_grupsa,
                                           cod_califi, usr_creaci, fec_creaci,num_catlic)
-                             VALUES ('$nit','1','O (+)','1','$GLOBALS[usuario]', NOW(),1)";
+                             VALUES ('$nit','1','O (+)','1','$_REQUEST[usuario]', NOW(),1)";
                     $insert = new Consulta($query, $this -> conexion, "R");
 
             }
@@ -638,7 +638,7 @@ class Proc_ins_despac
 
                     $query = "INSERT INTO tab_tercer_client (cod_tercer, cod_estper, cod_terreg,
                                           usr_creaci, fec_creaci)
-                             VALUES ('$nit','1','1','$GLOBALS[usuario]', NOW())";
+                             VALUES ('$nit','1','1','$_REQUEST[usuario]', NOW())";
                     $insert = new Consulta($query, $this -> conexion, "R");
 
             }
@@ -672,7 +672,7 @@ class Proc_ins_despac
                                  '$cod_asesoa',
                                  '$color','$carroc','$config',
                                  '$cod_propie','$cod_poseed','$cod_conduc',
-                                 '$GLOBALS[usuario]', NOW(),1,1) ";
+                                 '$_REQUEST[usuario]', NOW(),1,1) ";
                $insert = new Consulta($query, $this -> conexion, "R");
 
     }//fin ins_vehicu
@@ -744,7 +744,7 @@ class Proc_ins_despac
            if($is_merca->ret_num_rows())
            {
                       $query = "INSERT INTO ".BASE_DATOS.".tab_genera_mercan (cod_mercan,abr_mercan,
-                               nom_mercan,cod_minmer,ind_activa, usr_creaci, fec_creaci) SELECT cod_minmer, nom_minmer, nom_minmer, cod_minmer, '1', '$GLOBALS[usuario]', NOW()
+                               nom_mercan,cod_minmer,ind_activa, usr_creaci, fec_creaci) SELECT cod_minmer, nom_minmer, nom_minmer, cod_minmer, '1', '$_REQUEST[usuario]', NOW()
                                 FROM ".BASE_DATOS.".tab_minist_mercan
                                 WHERE cod_minmer = '$cod'";
                       $insert = new Consulta($query, $this -> conexion, "R");
@@ -780,7 +780,7 @@ class Proc_ins_despac
                      VALUES ('$remesa','$despac','$manifi',
                              '$peso','$volumen','$empaque',
                              '$mercan','$client','$remite',
-                             '$destin','$GLOBALS[usuario]', NOW())";
+                             '$destin','$_REQUEST[usuario]', NOW())";
            $ins_reme = new Consulta($query, $this -> conexion, "RC");
            }
 

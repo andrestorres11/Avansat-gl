@@ -16,11 +16,11 @@ class Proc_trayle
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -70,14 +70,14 @@ class Proc_trayle
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  ";
 
@@ -102,7 +102,7 @@ class Proc_trayle
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Cancelar","form_act.reset()",1);
    $formulario -> cerrar();
@@ -122,15 +122,15 @@ class Proc_trayle
 				   a.num_trayle = c.num_trayle
            ";
 
-  if($GLOBALS[transp])
-   $query .= " AND c.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[fil] == 1)
-   $query = $query." AND a.num_trayle LIKE '%".$GLOBALS[remolq]."%'";
-  else if($GLOBALS[fil] == 2)
+  if($_REQUEST[transp])
+   $query .= " AND c.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[fil] == 1)
+   $query = $query." AND a.num_trayle LIKE '%".$_REQUEST[remolq]."%'";
+  else if($_REQUEST[fil] == 2)
    $query = $query." AND a.ind_estado = ".COD_ESTADO_ACTIVO."";
-  else if($GLOBALS[fil] == 3)
+  else if($_REQUEST[fil] == 3)
    $query = $query." AND a.ind_estado = ".COD_ESTADO_INACTI."";
-  else if($GLOBALS[fil] == 4)
+  else if($_REQUEST[fil] == 4)
    $query = $query." AND a.ind_estado = ".COD_ESTADO_PENDIE."";
 
   $query = $query." GROUP BY 1 ORDER BY 2";
@@ -163,7 +163,7 @@ class Proc_trayle
    else if($matriz[$i][5] == COD_ESTADO_PENDIE)
     $estado = "Pendiente";
 
-   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&trayle=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&trayle=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario -> linea($matriz[$i][0],0,$estilo);
    $formulario -> linea($matriz[$i][1],0,$estilo);
@@ -177,7 +177,7 @@ class Proc_trayle
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION
 
@@ -191,7 +191,7 @@ class Proc_trayle
                    ".BASE_DATOS.".tab_vehige_carroc c
              WHERE a.cod_marcax = b.cod_martra AND
                    a.cod_carroc = c.cod_carroc AND
-                   a.num_trayle = '$GLOBALS[trayle]'";
+                   a.num_trayle = '$_REQUEST[trayle]'";
 
   $consulta = new Consulta($query, $this -> conexion);
   $matriz = $consulta -> ret_matriz();
@@ -268,8 +268,8 @@ class Proc_trayle
   $formulario -> oculto("listo",1,0);
   $formulario -> oculto("opcion",3,0);
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
-  $formulario -> oculto("trayle",$GLOBALS[trayle],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+  $formulario -> oculto("trayle",$_REQUEST[trayle],0);
 
   if(!$existveh && !$existdes)
    $formulario -> botoni("Eliminar","if(confirm('Esta Seguro en Eliminar Este Remolque.?')){form_trayle.submit()}",0);
@@ -283,15 +283,15 @@ class Proc_trayle
  {
 
    $query = "DELETE FROM ".BASE_DATOS.".tab_vehige_trayle
-                       WHERE num_trayle = '$GLOBALS[trayle]'";
+                       WHERE num_trayle = '$_REQUEST[trayle]'";
 
    $eliminacion = new Consulta($query, $this -> conexion,"BR");
 
    if($consulta = new Consulta ("COMMIT", $this -> conexion))
    {
-    $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Eliminar Otro Remolque</a></b>";
+    $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Eliminar Otro Remolque</a></b>";
 
-    $mensaje = "El Remolque <b>".$GLOBALS[trayle]."</b> se Elimino Exitosamente<br>".$link;
+    $mensaje = "El Remolque <b>".$_REQUEST[trayle]."</b> se Elimino Exitosamente<br>".$link;
     $mens = new mensajes();
     $mens -> correcto("ELIMINAR REMOLQUE",$mensaje);
    }

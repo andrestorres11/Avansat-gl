@@ -15,7 +15,7 @@ class Interfaz_SAT
   function Interfaz_SAT($bdsata = "",$transp,$usuari,$conexion = "",$convisibi = 1,$ejecWSClient = 1)
   {
     if($conexion == "")
-      $this -> conexion = new Conexion("bd10.intrared.net:3306",USUARIO,CLAVE,BASE_DATOS);
+      $this -> conexion = new Conexion(HOST,USUARIO,CLAVE,BASE_DATOS);
     else
       $this -> conexion = $conexion;
 
@@ -724,7 +724,7 @@ class Interfaz_SAT_client
  function Interfaz_SAT_client($conexion = "")
  {
   if($conexion == "")
-   $this -> conexion = new Conexion("bd10.intrared.net:3306",USUARIO,CLAVE,BASE_DATOS);
+   $this -> conexion = new Conexion(HOST,USUARIO,CLAVE,BASE_DATOS);
   else
    $this -> conexion = $conexion;
  }

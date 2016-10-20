@@ -129,7 +129,7 @@
             $formulario -> nueva_tabla();
 
             $formulario -> oculto("window","central",0);
-            $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+            $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
             $formulario -> oculto("option\" id=\"optionID",'getInforme',0);
             $formulario -> cerrar();
             
@@ -178,7 +178,7 @@
             $formulario -> oculto("based\" id=\"basedID\"",BASE_DATOS,0);
             $formulario -> oculto("num_serie",0,0);
             $formulario -> oculto("window","central",0);
-            $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+            $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
             $formulario -> oculto("opcion",2,0);
             $formulario -> nueva_tabla();
             $formulario -> linea("Cantidad de Novedades por Transportadora de ".$_REQUEST[fecha_ini]." al ".$_REQUEST[fecha_fin]  ,1,"t2"); 
@@ -331,7 +331,7 @@
             include( "../lib/general/tabla_lib.inc" );
             include( "../lib/general/constantes.inc" );
 
-            $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+            $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
             $_USUARIO_ = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
 
             $array = array();

@@ -21,7 +21,7 @@ class Ins_config_emptra {
         $this->cod_aplica = $ca;
         self::$cFunciones = new trans($co, $us, $ca);
 
-        switch ($GLOBALS[opcion]) {
+        switch ($_REQUEST[opcion]) {
            	case 1;
            		$this->Formulario();
            	break;

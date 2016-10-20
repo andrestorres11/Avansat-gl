@@ -35,7 +35,7 @@ function SelectExtra(fTag, fId, fEvent) {
 
 
 //---------------------------------------------------------------------------
-//@VALIDA QUE LOS CAPOS NO ESTEN VACIOS PARA A袮DIR NUEVO O ENVIAR FORMULARIO
+//@VALIDA QUE LOS CAPOS NO ESTEN VACIOS PARA A脩ADIR NUEVO O ENVIAR FORMULARIO
 function ValidateGridRow(fForm, fContainer) {
   //-----------------------------------------------------------------
   //@SE OBTIENE EL FORMULARIO
@@ -384,7 +384,7 @@ function removeElement(id) {
 
 
 //--------------------------------------------------------------------------------------------------------------
-//RETORNA UNA MATRIZ CON LOS A袿S COMPRENDIDOS ENTRE LOS LIMITES INGRESADOS APTA PARA LOS OPTIONS DE LOS SELECTS
+//RETORNA UNA MATRIZ CON LOS A脩OS COMPRENDIDOS ENTRE LOS LIMITES INGRESADOS APTA PARA LOS OPTIONS DE LOS SELECTS
 function ArrayYears(fElement, fYear1, fYear2) {
   try {
     fElement = typeof(fElement) == 'string' ? document.getElementById(fElement) : fElement;
@@ -579,7 +579,7 @@ function exportToXL(eSrc) {
 
 
 /*
- *@Funci髇 que Oculta y Muestra un Frame
+ *@Funci贸n que Oculta y Muestra un Frame
  */
 function DisplayFrame(fFrameID, fCols) {
   var fFrameset = parent.document.getElementById(frameID);
@@ -608,14 +608,14 @@ function AjaxLoader(fDisplay, fParent) {
 //------------------------------------------------------------------------------------------------------
 
 /*
- *@Funci髇 fija la clase CSS de un Tag HTML
+ *@Funci贸n fija la clase CSS de un Tag HTML
  */
 function SetClassName(fTag, fClass) {
   fTag.className = fClass;
 }
 
 /*
- *@Funci髇 fija el foco sobre un Elemento HTML
+ *@Funci贸n fija el foco sobre un Elemento HTML
  */
 function FocusTag(fTag) {
   fTag.focus();
@@ -663,7 +663,7 @@ function Moneda(value) {
 }
 
 /*
- *@Funci髇 que restringe el ingreso de caracteres a s髄o n鷐ericos
+ *@Funci贸n que restringe el ingreso de caracteres a s贸lo n煤mericos
  */
 function NumericInput(fEvent) {
   var fKeyPressed = (fEvent.which) ? fEvent.which : fEvent.keyCode;
@@ -671,7 +671,7 @@ function NumericInput(fEvent) {
 }
 
 /*
- *@Funci髇 que determina si una cadena es n鷐erica. Retorno Booleano.
+ *@Funci贸n que determina si una cadena es n煤merica. Retorno Booleano.
  */
 function IsNumeric(fText) {
   var fChars = "0123456789.";
@@ -687,7 +687,7 @@ function IsNumeric(fText) {
 }
 
 /*
- *@Funci髇 que limpia el valor de un Elemento HTML en caso de no ser n鷐erico.
+ *@Funci贸n que limpia el valor de un Elemento HTML en caso de no ser n煤merico.
  */
 function FormatNumericInput(fInput) {
   if (!fInput.value)
@@ -699,7 +699,7 @@ function FormatNumericInput(fInput) {
 }
 
 /*
- *@Funci髇 que restringe el ingreso de caracteres a s髄o decimales
+ *@Funci贸n que restringe el ingreso de caracteres a s贸lo decimales
  */
 function DecimalInput(fEvent) {
   var fKeyPressed = (fEvent.which) ? fEvent.which : fEvent.keyCode;
@@ -707,7 +707,7 @@ function DecimalInput(fEvent) {
 }
 
 /*
- *@Funci髇 que restringe el ingreso de varios puntos en una cadena. Invocada en el evento HTML onkeydown
+ *@Funci贸n que restringe el ingreso de varios puntos en una cadena. Invocada en el evento HTML onkeydown
  */
 function DecimalFormat(fInput) {
   var fStr = fInput.value;
@@ -725,7 +725,7 @@ function DecimalFormat(fInput) {
 }
 
 /*
- *@Funci髇 que restringe el ingreso de caracteres a formato placa Colombiana (AAA000) o Venezolana (AA0000)
+ *@Funci贸n que restringe el ingreso de caracteres a formato placa Colombiana (AAA000) o Venezolana (AA0000)
  */
 function PlacaInput(fInput) {
   fInput.value = fInput.value.toUpperCase();
@@ -747,7 +747,7 @@ function PlacaInput(fInput) {
 }
 
 /*
- *@Funci髇 que limpia el valor de un Elemento HTML en caso de no estar en formato Placa.
+ *@Funci贸n que limpia el valor de un Elemento HTML en caso de no estar en formato Placa.
  */
 function FormatPlacaInput(fInput) {
   var fPlaca = fInput.value;
@@ -992,7 +992,7 @@ function NegativeMoneyInput( fInput )
 
 
 /*
- *@Funci髇 que limpia el valor de un Elemento HTML en caso de no ser n鷐erico.
+ *@Funci贸n que limpia el valor de un Elemento HTML en caso de no ser n煤merico.
  */
 function FormatDateInput(fInput) {
   if (!fInput.value)
@@ -1192,7 +1192,7 @@ function NegativeMoneyInput(fEvent, fInput) {
 function CharsInput(fTag, fSize) {
   if (fTag.value.length != fSize) {
     fTag.value = "";
-    //alert( "Este campo debe tener "+String( fSize )+" car醕teres ex醕tamente." );
+    //alert( "Este campo debe tener "+String( fSize )+" car谩cteres ex谩ctamente." );
   } else
     return false;
 }
@@ -1406,7 +1406,7 @@ function in_array(fItem, fArray) {
 
 
 //-----------------------------------------------------------------------------------------
-//Nota: Debe enviarse un campo "OFFSET" oculto para poder leer el l韒ite offset
+//Nota: Debe enviarse un campo "OFFSET" oculto para poder leer el l铆mite offset
 function LimitDays(YearID, MonthID, DayID, Offset) {
   if (!Offset) {
     Offset = 1;
@@ -1539,7 +1539,7 @@ function VerifyNum(nit, inputId) {
 
     input.value = digito_chequeo;
   } catch (e) {
-    alert('Error Funci髇 VerifyNum : ' + e.message);
+    alert('Error Funci贸n VerifyNum : ' + e.message);
   }
 }
 
@@ -1710,7 +1710,7 @@ function onBlurDecim(thisInput) {
       thisInput.value = MoneyDecimal(valor, ',');
     }
   } catch (e) {
-    alert('Error Funci髇 onBlurDecim : ' + e.message);
+    alert('Error Funci贸n onBlurDecim : ' + e.message);
   }
 }
 
@@ -1791,7 +1791,7 @@ function AlphaInput(evt) {
 
 /*************************************************************************
  *Metodo que recoge todos los campos obligatorios dentro de un formulario*
- *y realiza la validaci髇.                                               *
+ *y realiza la validaci贸n.                                               *
  *
  *@return retorna un booleano
  *
@@ -1905,7 +1905,7 @@ function validaciones() {
  *  \brief: Crea o destruye PopUp
  *  \author: Ing. Fabian Salinas
  * \date: 24/06/2015
- * \date modified: dia/mes/a駉
+ * \date modified: dia/mes/a帽o
  *  \param: opcion   String   open, close
  *  \param: titulo   String   Titulo del PopUp
  *  \param: alto   Integer  Altura PopUp
@@ -1946,10 +1946,10 @@ function LoadPopupJQ(opcion, titulo, alto, ancho, redimen, dragg, lockBack, idPo
 }
 
 /*! \fn: LoadPopupJQNoButton
- *  \brief: Crea o destruye PopUp similar al LoadPopupJQ pero el boton se inyecta por html de acuerdo a la operaci髇 realizada
+ *  \brief: Crea o destruye PopUp similar al LoadPopupJQ pero el boton se inyecta por html de acuerdo a la operaci贸n realizada
  *  \author: Ing. Alexander Correa
  * \date: 04/09/2015
- * \date modified: dia/mes/a駉
+ * \date modified: dia/mes/a帽o
  *  \param: opcion   String   open, close
  *  \param: titulo   String   Titulo del PopUp
  *  \param: alto   Integer  Altura PopUp
@@ -2049,21 +2049,32 @@ function imprimir() {
 
 $(document).ready(function() {
 
-  $(".accordion").accordion({
-    collapsible: true,
-    heightStyle: "content",
-    icons: {
-      "header": "ui-icon-circle-arrow-e",
-      "activeHeader": "ui-icon-circle-arrow-s"
+    $(".accordion").accordion({
+        collapsible: true,
+        heightStyle: "content",
+        icons: {
+            "header": "ui-icon-circle-arrow-e",
+            "activeHeader": "ui-icon-circle-arrow-s"
+        }
+    }).click(function() {
+        $("body").removeAttr("class");
+    });
+    if ($(document).hasClass('date')) {
+        $(".date").datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
     }
-  }).click(function() {
-    $("body").removeAttr("class");
-  });
+    if ($(document).hasClass('time')) {
+        $(".time").timepicker({
+            timeFormat: "hh:mm",
+            showSecond: false
+        });
+    }
 
 });
 
 function checkConnection() {
-  return navigator.onLine;
+    return navigator.onLine;
 }
 
 /*! \fn: confirmGL
@@ -2072,8 +2083,8 @@ function checkConnection() {
  *  \date:  01/02/2015
  *  \date modified: dd/mm/aaaa
  *  \modified by: 
- *  \param: txt           String  Mensaje de Confirmaci髇
- *  \param: nameFunction  String  Nombre de la funci髇 y sus parametros nameFunction(var1, var2, ...); si presionan SI
+ *  \param: txt           String  Mensaje de Confirmaci贸n
+ *  \param: nameFunction  String  Nombre de la funci贸n y sus parametros nameFunction(var1, var2, ...); si presionan SI
  *  \runExample:  confirmGL(txt, "editActivi2(\'" + ind_estado + "\', \'" + obj.val() + "\');" );
  *  \return: 
  */
@@ -2095,7 +2106,14 @@ function confirmGL(txt, nameFunction) {
   }
 }
 
-//funcion para cerrar solo el popUp sin alterar formulario
+/*! \fn: closePopUp
+ *  \brief: funcion para cerrar solo el popUp sin alterar formulario
+ *  \author: Ing. Fabian Salinas
+ *  \date: 
+ *  \date modified: dd/mm/aaaa
+ *  \param: idPopup  String  ID del div del popup 
+ *  \return: 
+ */
 function closePopUp(idPopup) {
   var id = 'popID';
   if (idPopup)
@@ -2104,27 +2122,176 @@ function closePopUp(idPopup) {
   $("#" + id).dialog("destroy").remove();
 }
 
-//Funcion para bloquear pantalla mientra carga ajax requiere jquery.blockUI.js
+/*! \fn: BlocK
+ *  \brief: Funcion para bloquear pantalla mientra carga ajax requiere jquery.blockUI.js
+ *  \author: Ing. Fabian Salinas
+ *  \date: 
+ *  \date modified: dd/mm/aaaa
+ *  \param: txt  String   Texto Contenido del mensaje
+ *  \param: ind  Boolean  Indica si se crea o se destrulle
+ *  \return: 
+ */
 function BlocK(txt, ind) {
-  try {
-    if (ind == true) {
-      $.blockUI({
-        message: '<h1> ' + txt + '</h1>',
-        css: {
-          border: 'none',
-          padding: '15px',
-          backgroundColor: '#438710',
-          '-webkit-border-radius': '20px',
-          '-moz-border-radius': '20px',
-          opacity: .8,
-          color: '#fff'
+    try {
+        if (ind == true) {
+            $.blockUI({
+                message: '<h1> ' + txt + '</h1><img src="../satt_standa/images/puntos.gif">',
+                css: {
+                    border: 'none',
+                    padding: '15px',
+                    backgroundColor: '#438710',
+                    '-webkit-border-radius': '20px',
+                    '-moz-border-radius': '20px',
+                    opacity: .8,
+                    color: '#fff'
+                }
+            });
+        } else {
+            $.unblockUI();
         }
-      });
-    } else {
-      $.unblockUI();
+    } catch (e) {
+        console.log("Error Function blocK: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
     }
-  } catch (e) {
-    console.log("Error Function blocK: " + e.message + "\nLine: " + e.lineNumber);
-    return false;
-  }
 }
+
+/* ! \fn: removeStyle
+*  \brief: elimina el ancho del selector de hora para su correcta visualizacion
+*  \author: Ing. Alexander Correa
+*  \date: 19/04/2016
+*  \date modified: dia/mes/a帽o
+*  \param: id => int => id del campo que hace de selector de hora     
+*  \return 
+*/
+
+function removeStyle(id) {
+    $("#ui-timepicker-div-" + id).removeAttr('style');
+}
+
+/*! \fn: cargarPopupAlert
+ *  \brief: Crea un popUp y lo coloca sobre los iframe
+ *  \author: Ing. Nelson Liberato, modified by Ing. David Rinc贸n
+ *  \date modified: 01/08/2016
+ *  \param: NINGUNO
+ *  \return No devuelve valores pero prepara los divs contenedores
+ */
+
+  function cargarPopupAlert()
+  {
+    try
+    {
+      var fondo = document.getElementById( "blokerDIV" );
+      var popup = document.getElementById( "formularioDIV" );
+
+      var x = document.body.scrollWidth;
+      var y = getViewportYAlert();
+  //    var y = document.body.scrollHeight;
+  //  var y = window.innerHeight;
+
+      var width = Math.round(x / 1.2);
+      var height = Math.round(y / 1.8);
+
+      var left = Math.round(x / 12);
+      var top = Math.round(y / 20);
+
+      document.body.style.overflow = "hidden";
+
+      //popup.style.width = String(width) + "px";
+      //popup.style.height = String(height) + "px";
+      //popup.style.left = String(left) + "px";
+      fondo.style.display = "block";
+      fondo.style.zIndex = "9999";
+
+      popup.style.width = "100%";
+      popup.style.height = "100%";
+      popup.style.left = "0px";
+
+      popup.style.top = "0px";
+
+      popup.style.display = "block";
+      popup.style.padding = "10px";
+      popup.style.zIndex = "10000";
+      popup.style.position = "fixed";
+
+      //popup.style.position = "absolute";
+
+      /*fondo.style.display = "block";
+      fondo.style.width = "100%";
+      fondo.style.height = (y + 50) + "px";*/
+      popup.focus();
+      //window.pageYOffset es la posici贸n del scroll en la pantalla
+      //popup.style.top = (top+window.pageYOffset) + "px";
+      popup.style.top = "0px";
+
+    }
+    catch (e)
+    {
+        //return false;
+        alert( "Error cargarPopupAlert " + e.message + e.lineNumber);
+    }
+  }
+
+/*! \fn: colocarPopupAlert
+ *  \brief: Carga un javascript sobre los iframe, ya que el objeto que busca est谩 por dentro de uno de los iframe
+ *  \author: Ing. Nelson Liberato, modified by Ing. David Rinc贸n
+ *  \date modified: 01/08/2016
+ *  \param: NINGUNO
+ *  \return No devuelve valores pero coloca el popUp que quedar谩 listo para su impresi贸n
+ */
+
+  function colocarPopupAlert()
+  {
+    try
+    {
+      var minuevoscript = parent.document.createElement( "script" );
+      minuevoscript.src = '../satt_standa/js/ajax_alerta_llamad.js'; // Ruta del JS donde estan las funciones que necesita
+      minuevoscript.setAttribute( 'type', 'text/javascript' );
+
+      cargarPopupAlert(); // Llama la funcion que mustra el div que bloquea la pantalla
+      //AjaxGetDataLocked(params, "formularioDIV", "post" );  // Hace ajax, donde coloca HTML en el popup (DIV) desplegado con la funcion: cargarPopup(); 
+
+      // Esta linea carga el ***.js sobre los iframe, para poder usar las funciones
+      var head = parent.document.getElementsByTagName( 'head' ).item(0);
+      head.appendChild( minuevoscript );
+    }
+    catch (e)
+    {
+        //return false;
+        alert( "Error colocarPopupAlert " + e.message + e.lineNumber);
+    }
+  }
+
+/*! \fn: getViewportYAlert
+ *  \brief: Devuelve el valor de Y en la pantalla
+ *  \author: Ing. Nelson Liberato, modified by Ing. David Rinc贸n
+ *  \date modified: 01/08/2016
+ *  \param: NINGUNO
+ *  \return No devuelve valores pero retorna un n煤mero con el valor de Y
+ */
+  function getViewportYAlert(){
+    var viewportheight;
+   
+    // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+   
+   if (typeof window.innerWidth != 'undefined')
+   {
+     viewportheight = window.innerHeight
+   }
+   
+    // IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+
+    else if (typeof document.documentElement != 'undefined'
+       && typeof document.documentElement.clientWidth !=
+       'undefined' && document.documentElement.clientWidth != 0)
+    {
+      viewportheight = document.documentElement.clientHeight
+    }
+   
+    // older versions of IE
+   
+    else
+    {
+         viewportheight = document.getElementsByTagName('body')[0].clientHeight
+    }
+    return viewportheight;
+  }

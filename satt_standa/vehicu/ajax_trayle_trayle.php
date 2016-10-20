@@ -10,12 +10,7 @@
  *  \warning1: Si se requieren agregar mas columnas en las funciones listarConductor, listarPropietarios y listarPoseedor por favor agregarlas despues de la segunda ya que las primeras son utilizadas para pintar la informacion
  *             Buscar #warning1 para ubicar las lineas afectadas
  */
-ini_set('display_errors', true);
-error_reporting(E_ALL & ~E_NOTICE);
 
-header('Content-Type: text/html; charset=UTF-8');
-#ini_set('memory_limit', '2048M');
-#date_default_timezone_get('America/Bogota');
 setlocale(LC_ALL,"es_ES");
 
 /*! \class: trans
@@ -145,14 +140,14 @@ class trayle{
         $list = new DinamicList(self::$cConexion, $mSql, "7" , "no", 'ASC');
         $list->SetClose('no');
         $list->SetCreate("Agregar Remolque", "onclick:formulario()");
-        $list->SetHeader(utf8_decode("Nro. de Remolque"), "field:a.num_trayle; width:1%;  ");
-        $list->SetHeader(utf8_decode("Poseedor"), "field:a.nom_propie; width:1%");
-        $list->SetHeader(utf8_decode("Marca"), "field:a.nom_martra; width:1%");
-        $list->SetHeader(utf8_decode("Color"), "field:a.nom_colorx" );
-        $list->SetHeader(utf8_decode("Capacidad (TN)"), "field:a.tra_capaci" );
-        $list->SetHeader(utf8_decode("Carroceria"), "field:a.nom_carroc" );
-        $list->SetHeader(utf8_decode("Estado"), "field:a.cod_estado" );
-        $list->SetOption(utf8_decode("Opciones"),"field:cod_option; width:1%; onclikDisable:editarRemolque( 2, this ); onclikEnable:editarRemolque( 1, this ); onclikEdit:editarRemolque( 99, this );" );
+        $list->SetHeader(("Nro. de Remolque"), "field:a.num_trayle; width:1%;  ");
+        $list->SetHeader(("Poseedor"), "field:a.nom_propie; width:1%");
+        $list->SetHeader(("Marca"), "field:a.nom_martra; width:1%");
+        $list->SetHeader(("Color"), "field:a.nom_colorx" );
+        $list->SetHeader(("Capacidad (TN)"), "field:a.tra_capaci" );
+        $list->SetHeader(("Carroceria"), "field:a.nom_carroc" );
+        $list->SetHeader(("Estado"), "field:a.cod_estado" );
+        $list->SetOption(("Opciones"),"field:cod_option; width:1%; onclikDisable:editarRemolque( 2, this ); onclikEnable:editarRemolque( 1, this ); onclikEdit:editarRemolque( 99, this );" );
         $list->SetHidden("num_trayle", "0" );
         $list->SetHidden("nom_propie", "1" );
 
@@ -239,7 +234,7 @@ class trayle{
       #arma los objetos para cada una de las tablas necesarias
       $trayle = (object) $_POST['trayle']; #datos principales del trayler
 
-      #pregunta si ya hay algun trayler con el número ingresado
+      #pregunta si ya hay algun trayler con el n&uacute;mero ingresado
       $query = "SELECT num_trayle
             FROM ".BASE_DATOS.".tab_vehige_trayle
             WHERE num_trayle = '$trayle->num_trayle'";
@@ -279,17 +274,17 @@ class trayle{
              VALUES ('$trayle->cod_tercer','$trayle->num_trayle','$trayle->usr_creaci','$trayle->fec_creaci')";
         $consulta = new Consulta($query,  self::$cConexion);
         if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-            header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1100&menant=1100&window=central&resultado=1&operacion=Registró&opcion=123&conductor='.$trayle->nom_propie);
-            /*$mensaje = "<font color='#000000'>Se Registró El Trayler: <b>$trayle->num_trayle</b> Exitosamente.<br></font>";
+            header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1100&menant=1100&window=central&resultado=1&operacion=Registr&oacute;&opcion=123&conductor='.$trayle->nom_propie);
+            /*$mensaje = "<font color='#000000'>Se Registr&oacute; El Trayler: <b>$trayle->num_trayle</b> Exitosamente.<br></font>";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             echo $mens->correcto2("INSERTAR TRAYLER", $mensaje);*/
 
 
         }else{
-          header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1100&menant=1100&window=central&resultado=1&operacion=Registró&opcion=123&conductor='.$trayle->nom_propie);
+          header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1100&menant=1100&window=central&resultado=1&operacion=Registr&oacute;&opcion=123&conductor='.$trayle->nom_propie);
             /*
-            $mensaje = "<font color='#000000'>Ocurrió un Error inesperado al registrar el Trayler: <b>$tercer->num_trayle</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
+            $mensaje = "<font color='#000000'>Ocurri&oacute; un Error inesperado al registrar el Trayler: <b>$tercer->num_trayle</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
             $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             echo $mens->error2("INSERTAR TRAYLER", $mensaje);*/
@@ -307,13 +302,13 @@ class trayle{
                VALUES ('$trayle->cod_tercer','$trayle->num_trayle','$trayle->usr_creaci','$trayle->fec_creaci')";
           $consulta = new Consulta($query,  self::$cConexion);
         }
-        $this->modificar("Registró");
+        $this->modificar("Registr&oacute;");
       }
     }
 
     /******************************************************************************
      *  \fn: activar                                                              *
-     *  \brief: función para activar una trayler                                  *
+     *  \brief: funci&oacute;n para activar una trayler                                  *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 24/09/2015                                                         *
      *  \date modified:                                                           *
@@ -338,7 +333,7 @@ class trayle{
                             WHERE num_trayle = '$trayle->num_trayle' ";
         $insercion = new Consulta($query, self::$cConexion, "R");
         if($consulta = new Consulta ("COMMIT",self::$cConexion)) {
-           $mensaje = "Se activó el Trayler de : ".$trayle->nom_propie." exitosamente.";
+           $mensaje = "Se activ&oacute; el Trayler de : ".$trayle->nom_propie." exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
            $mens -> correcto2("ACTIVAR TRAYLER",$mensaje);
@@ -348,7 +343,7 @@ class trayle{
     }
     /******************************************************************************
      *  \fn: inactivar                                                            *
-     *  \brief: función para inactivar una trayler                                *
+     *  \brief: funci&oacute;n para inactivar una trayler                                *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 24/09/2015                                                         *
      *  \date modified:                                                           *
@@ -373,7 +368,7 @@ class trayle{
                             WHERE num_trayle = '$trayle->num_trayle' ";
         $insercion = new Consulta($query, self::$cConexion, "R");
         if($consulta = new Consulta ("COMMIT",self::$cConexion)) {
-           $mensaje = "Se inactivó el  Trayler de : ".$trayle->nom_propie." exitosamente.";
+           $mensaje = "Se inactiv&oacute; el  Trayler de : ".$trayle->nom_propie." exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
            $mens -> correcto2("INACTIVAR TRAYLER",$mensaje);
@@ -383,7 +378,7 @@ class trayle{
     }
     /******************************************************************************
      *  \fn: modificar                                                            *
-     *  \brief: función para modificar una conductores                            *
+     *  \brief: funci&oacute;n para modificar una conductores                            *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 23/09/2015                                                         *
      *  \date modified:                                                           *
@@ -393,7 +388,7 @@ class trayle{
     ******************************************************************************/
     private function modificar($operacion = null){
       if(!$operacion){
-        $operacion = "Modificó";
+        $operacion = "Modific&oacute;";
       }
       $trayle = (object) $_POST['trayle']; #datos principales del tercero
       $trayle->usr_modifi =$_SESSION['datos_usuario']['cod_usuari'];
@@ -432,7 +427,7 @@ class trayle{
 
       if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
         header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1100&menant=1100&window=central&resultado=1&operacion='.$operacion.'&opcion=123&conductor='.$trayle->nom_propie);
-           /* $mensaje = "<font color='#000000'>Se Modificó El Trayler de: <b>$trayle->nom_propie</b> Exitosamente.<br></font>";
+           /* $mensaje = "<font color='#000000'>Se Modific&oacute; El Trayler de: <b>$trayle->nom_propie</b> Exitosamente.<br></font>";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             echo $mens->correcto2("MODIFICAR TERCERO", $mensaje)*/;
@@ -440,7 +435,7 @@ class trayle{
 
       }else{
           header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1100&menant=1100&window=central&opcion=123&resultado=0');
-          /*$mensaje = "<font color='#000000'>Ocurrió un Error inesperado al modificar el Trayler de: <b>$trayle->nom_propie</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
+          /*$mensaje = "<font color='#000000'>Ocurri&oacute; un Error inesperado al modificar el Trayler de: <b>$trayle->nom_propie</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
           $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
           $mens = new mensajes();
           echo $mens->error2("MODIFICAR TERCERO", $mensaje);
@@ -450,7 +445,7 @@ class trayle{
 
     /******************************************************************************
      *  \fn: getDatosTrayler                                                      *
-     *  \brief: función que consulta los datos de trayler                         *
+     *  \brief: funci&oacute;n que consulta los datos de trayler                         *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 23/09/2015                                                         *
      *  \date modified:                                                           *
@@ -829,7 +824,7 @@ class trayle{
               $vehicu->dir_fotpos = "NULL";
             }
           }
-            #inserción de los datos básicos de el vehiculo
+            #inserci&oacute;n de los datos b&aacute;sicos de el vehiculo
           $query = "INSERT ".BASE_DATOS.".tab_vehicu_vehicu
                           (num_placax,cod_marcax,cod_lineax,ano_modelo,cod_colorx,cod_carroc,num_motorx,
                            num_seriex,num_chasis,val_pesove,val_capaci,reg_nalcar,num_poliza,nom_asesoa,
@@ -900,8 +895,8 @@ class trayle{
 
           
           if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-                header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1120&menant=1120&window=central&resultado=1&operacion=Registró&opcion=123&placa='.$vehicu->num_placax);
-                /*$mensaje = "<font color='#000000'>Se Registró El Trayler: <b>$trayle->num_trayle</b> Exitosamente.<br></font>";
+                header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1120&menant=1120&window=central&resultado=1&operacion=Registr&oacute;&opcion=123&placa='.$vehicu->num_placax);
+                /*$mensaje = "<font color='#000000'>Se Registr&oacute; El Trayler: <b>$trayle->num_trayle</b> Exitosamente.<br></font>";
                 $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
                 $mens = new mensajes();
                 echo $mens->correcto2("INSERTAR TRAYLER", $mensaje);*/
@@ -910,7 +905,7 @@ class trayle{
           }else{
             header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1120&menant=1120&window=central&opcion=123&resultado=0');
               /*
-              $mensaje = "<font color='#000000'>Ocurrió un Error inesperado al registrar el Trayler: <b>$tercer->num_trayle</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
+              $mensaje = "<font color='#000000'>Ocurri&oacute; un Error inesperado al registrar el Trayler: <b>$tercer->num_trayle</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
               $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
               $mens = new mensajes();
               echo $mens->error2("INSERTAR TRAYLER", $mensaje);*/
@@ -926,12 +921,12 @@ class trayle{
                    (cod_transp,num_placax,usr_creaci,fec_creaci)
                 VALUES ('$vehicu->cod_transp','$vehicu->num_placax','$vehicu->usr_creaci','$vehicu->fec_creaci')";
             if($insercion = new Consulta($query,self::$cConexion,"R")){
-              $this->modificarVehiculo("Registró");
+              $this->modificarVehiculo("Registr&oacute;");
             }else{
               header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1120&menant=1120&window=central&opcion=123&resultado=0');
             }          
           }else{
-             $this->modificarVehiculo("Registró");
+             $this->modificarVehiculo("Registr&oacute;");
           }
         }
       }else{
@@ -941,7 +936,7 @@ class trayle{
 
   public function modificarVehiculo($operacion = null){
     if(!$operacion){
-      $operacion = "Registró";
+      $operacion = "Registr&oacute;";
     }
     $vehicu = (object) $_POST["vehicu"];
     $sql = "SELECT cod_tercer FROM ".BASE_DATOS.".tab_tercer_conduc WHERE cod_tercer = '$vehicu->cod_conduc'";
@@ -1074,14 +1069,14 @@ class trayle{
 
       if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
             header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1120&menant=1120&window=central&resultado=1&operacion='.$operacion.'&opcion=123&placa='.$vehicu->num_placax);
-            /*$mensaje = "<font color='#000000'>Se Modificó El Trayler: <b>$trayle->num_trayle</b> Exitosamente.<br></font>";
+            /*$mensaje = "<font color='#000000'>Se Modific&oacute; El Trayler: <b>$trayle->num_trayle</b> Exitosamente.<br></font>";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             echo $mens->correcto2("INSERTAR TRAYLER", $mensaje);*/
       }else{
         header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1120&menant=1120&window=central&opcion=123&resultado=0');
         /*
-        $mensaje = "<font color='#000000'>Ocurrió un Error inesperado al registrar el Trayler: <b>$tercer->num_trayle</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
+        $mensaje = "<font color='#000000'>Ocurri&oacute; un Error inesperado al registrar el Trayler: <b>$tercer->num_trayle</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
         $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
         $mens = new mensajes();
         echo $mens->error2("INSERTAR TRAYLER", $mensaje);*/
@@ -1104,13 +1099,13 @@ class trayle{
   
       $consulta = new Consulta($query, self::$cConexion, "R");
       if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-             $mensaje = "<font color='#000000'>Se Inactivó El Vehículo de placa: <b>$placa</b> Exitosamente.<br></font>";
+             $mensaje = "<font color='#000000'>Se Inactiv&oacute; El Veh&iacute;culo de placa: <b>$placa</b> Exitosamente.<br></font>";
               $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
               $mens = new mensajes();
               echo $mens->correcto2("INACTIVAR VEHÍCULO", $mensaje);
 
       }else{
-          $mensaje = "<font color='#000000'>Ocurrió un Error inesperado al inactivar el vehiculo de placa: <b>$placa</b><br> por favor, intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
+          $mensaje = "<font color='#000000'>Ocurri&oacute; un Error inesperado al inactivar el vehiculo de placa: <b>$placa</b><br> por favor, intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
           $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
           $mens = new mensajes();
           echo $mens->error2("INACTIVAR VEHÍCULO", $mensaje);
@@ -1129,13 +1124,13 @@ class trayle{
                    AND cod_transp = '$transp'";
       $consulta = new Consulta($query, self::$cConexion, "R");
       if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-             $mensaje = "<font color='#000000'>Se Activó El Vehículo de placa: <b>$placa</b> Exitosamente.<br></font>";
+             $mensaje = "<font color='#000000'>Se Activ&oacute; El Veh&iacute;culo de placa: <b>$placa</b> Exitosamente.<br></font>";
               $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
               $mens = new mensajes();
               echo $mens->correcto2("ACTIVAR VEHÍCULO", $mensaje);
 
       }else{
-          $mensaje = "<font color='#000000'>Ocurrió un Error inesperado al actiar el vehiculo de placa: <b>$placa</b><br> por favor, intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
+          $mensaje = "<font color='#000000'>Ocurri&oacute; un Error inesperado al actiar el vehiculo de placa: <b>$placa</b><br> por favor, intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
           $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
           $mens = new mensajes();
           echo $mens->error2("ACTIVAR VEHÍCULO", $mensaje);

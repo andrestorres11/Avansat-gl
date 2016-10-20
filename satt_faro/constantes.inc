@@ -28,14 +28,14 @@ $mHost = explode('.', $_SERVER['HTTP_HOST']);
 switch ($mHost[0]) {
 	case 'web7': $mBD  = 'bd7.intrared.net:3306'; break;
 	case 'web13': $mBD = 'bd13.intrared.net:3306'; break;
-	case 'web10': $mBD = 'bd10.intrared.net'; break;
-	default: $mBD = 'demo.intrared.net'; break; #Esta URL No existe!
+	case 'avansatgl': $mBD = 'aglbd.intrared.net'; break;
+	default: $mBD = 'aglbd.intrared.net'; break; #Esta URL No existe!
 }
 
 define("HOST", $mBD);
 define("HOST_WEB", $mHost[0]);   #Host Actual
 define("HOST_WEB_DEV", "web7");  #Host Desarrollo
 define("HOST_WEB_TES", "web13"); #Host Pruebas
-define("HOST_WEB_PRO", "web10"); #Host Produccion
+define("HOST_WEB_PRO", "avansatgl"); #Host Produccion
 
 ?>

@@ -212,12 +212,17 @@ class Proc_despac {
                 }
               </style>";
 
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/min.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/jquery.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/es.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/time.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/mask.js\"></script>\n";
-        echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>";
+	    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
+	    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
+	    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
+	    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
+	    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
+	    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
+	    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/par_confir_pernoc.js\"></script>\n";
+	    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.blockUI.js\"></script>\n";
+
+	    echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
+	    echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>";
         echo '
         <script>
           jQuery(function($) { 
@@ -236,6 +241,8 @@ class Proc_despac {
             $( "#date,#fecha" ).mask("Annn-Mn-Dn");
             $( "#hora" ).mask("Hn:Nn:Nn");
             $( "#hor" ).mask("Hn:Nn");
+
+	        verifyConfirPernoc( 2, $("#num_despacID").val(), $("#cod_controID").val() );
           });
          </script>';
 
@@ -298,7 +305,16 @@ class Proc_despac {
                 echo "</tr>";
                 echo "<tr>";
                 echo "<td class='fotoList' style='padding:4px;' width='50%' colspan='2' align='center' >
-                        <img src='fotcon/$DATOS[fot_conduc]' onerror='this.src=\"../" . DIR_APLICA_CENTRAL . "/imagenes/conduc.jpg\"; ' width=100 height=120 ><br><b>Foto Conductor</b></td>";
+                        <center><table cellspacing='20px'>
+                            <tr>
+                                <td> 
+                                    <center><img src='fotcon/$DATOS[fot_conduc]' onerror='this.src=\"../" . DIR_APLICA_CENTRAL . "/imagenes/conduc.jpg\"; ' width=100 height=120 id='fot_conduc'><br><b>Foto Conductor</b></center>
+                                </td>
+                                <td> 
+                                    <center><img src='../" . DIR_APLICA_CENTRAL . "/images/camara-de-fotos.png' width=100 height=100 onclick='showDialog(this);' id='fot_actual'><br><b>Tomar Foto</b></center>
+                                </td>
+                            </tr>
+                        </table></center></td>";
                 echo "<td class='fotoList' style='padding:4px;' width='50%' colspan='2' align='center' >
                         <img src='fotveh/foto1_$_REQUEST[placa].jpg' onerror='this.src=\"../" . DIR_APLICA_CENTRAL . "/imagenes/vehiculo.jpg\"; ' width=120 height=100 ><br><b>Foto Vehiculo</b></td>";
                 echo "</tr>";
@@ -643,6 +659,7 @@ class Proc_despac {
                 echo "<tr>";
                 echo "<td class='cellHead' width='100%' >El Despacho no Posee Novedades Anteriores </td>";
                 echo "</tr>";
+                
                 $formulario->nueva_tabla();
 
                 if ($novedad_a[0][2] == "1") {
@@ -657,9 +674,15 @@ class Proc_despac {
                 $formulario->oculto("cod_rutasx", "$cod_rutasx", 0);
                 $formulario->oculto("hornov", "$hor_actual", 0);
                 $formulario->oculto("buffpal", $_REQUEST[buffpal], 0);
-                $formulario->oculto("despac", $VEHICULO[0][0], 0);
+                $formulario->oculto("despac\" id=\"num_despacID", $VEHICULO[0][0], 0);
+                $formulario->oculto("central\" id=\"central", DIR_APLICA_CENTRAL, 0);
                 $formulario->oculto("ultrep", $ultrep[0][0], 0);
+                $formulario->oculto("standa",DIR_APLICA_CENTRAL , 0);
+                $formulario->oculto("cod_conduc",$DATOS[cod_conduc] , 0);
+                $formulario->oculto("cod_contro\" id=\"cod_controID", self::getContro($VEHICULO[0][0]), 0);
+                $formulario->oculto("bin_fotcon","" , 0);
                 $formulario->oculto("dateSystem\" id=\"dateSystemID\" ", date('Y-m-d H:i:s'), 0);
+                
                 $formulario->nueva_tabla();
                 $formulario->boton("Aceptar", "button\" onClick=\"aceptar_ins()", 0);
                 $formulario->boton("Borrar", "reset", 1);
@@ -711,6 +734,8 @@ class Proc_despac {
         $regist["ultrep"] = $_REQUEST[ultrep];
         $regist["rutax"] = $_REQUEST[cod_rutasx];
         $regist["usuari"] = $_SESSION['datos_usuario']['cod_usuari'];
+        $regist["bin_fotcon"] = $_REQUEST["bin_fotcon"];
+        $regist["cod_conduc"] = $_REQUEST["cod_conduc"];
 
         if ($_SESSION['ind_qrcode'] == 'yes') {
             $regist["observ"] .= '. Insertado por Código QR.';
@@ -718,11 +743,13 @@ class Proc_despac {
         }
 
         $consulta = new Consulta("SELECT NOW()", $this->conexion, "BR");
+        
         include_once("../" . DIR_APLICA_CENTRAL . "/despac/InsertNovedad.inc");
         $transac_nov = new InsertNovedad($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion);
+ 
         $RESPON = $transac_nov->InsertarNovedadPC(BASE_DATOS, $regist, 0);
+        $transac_nov->loadImage($regist["despac"], $regist["bin_fotcon"],$_REQUEST["contro"]);
 
-       
         if ($RESPON[0]["indica"]) {
             $consulta = new Consulta("COMMIT", $this->conexion);
             $mensaje = $RESPON[0]["mensaj"];                    
@@ -747,6 +774,39 @@ class Proc_despac {
             $mens = new mensajes();
             $mens->advert("REGISTRO DE NOVEDADES", $mensaje);
         }
+    }
+    
+    /*! \fn: getContro
+     *  \brief: Trae el PC para la novedad
+     *  \author: Ing. Fabian Salinas
+     *  \date: 15/03/2016
+     *  \date modified: dd/mm/aaaa
+     *  \param: mNumDespac  Integer  Numero Del Despacho
+     *  \return: Matriz
+     */
+    private function getContro( $mNumDespac ){
+    	$mSql = "SELECT a.cod_contro 
+				   FROM ".BASE_DATOS.".tab_genera_usuari a 
+				  WHERE a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' ";
+
+		$mSql = "SELECT x.cod_contro 
+				   FROM ".BASE_DATOS.".tab_despac_seguim x 
+			 INNER JOIN (
+							 (
+								 SELECT b.cod_homolo AS cod_contro 
+								   FROM ".BASE_DATOS.".tab_homolo_pcxeal b 
+								  WHERE b.cod_contro IN ( $mSql ) 
+							 ) UNION (
+							 	$mSql 
+							 )
+  						) y 
+					 ON x.cod_contro = y.cod_contro 
+				  WHERE x.num_despac = '$mNumDespac' 
+				";
+		$mConsult = new Consulta($mSql, $this -> conexion);
+		$mResult = $mConsult -> ret_matrix('i');
+
+		return $mResult[0][0];
     }
 
     /* ! \fn: sendEmail
@@ -813,7 +873,6 @@ class Proc_despac {
             return mail("leidy.acosta@intrared.net", 'Reporte Novedad EAL Alto del Trigo',$html, $cabeceras);
         }      
      }
-
 }
 
 $proceso = new Proc_despac($this->conexion, $this->usuario_aplicacion, $this->codigo);

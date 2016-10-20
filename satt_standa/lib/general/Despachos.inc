@@ -114,7 +114,7 @@ class Despachos {
                                g.cod_conduc = i.cod_tercer AND
                                g.cod_conduc = j.cod_tercer AND
                                a.num_despac = g.num_despac AND
-                               a.num_despac = '$GLOBALS[despac]' AND
+                               a.num_despac = '$_REQUEST[despac]' AND
                                a.cod_ciuori = b.cod_ciudad AND
                                a.cod_ciudes = c.cod_ciudad
                                ORDER BY 1,2";
@@ -161,7 +161,7 @@ class Despachos {
                          c.cod_colorx = f.cod_colorx AND
                          c.num_config = g.num_config AND
                          c.cod_carroc = h.cod_carroc AND
-                         b.num_despac = '$GLOBALS[despac]'
+                         b.num_despac = '$_REQUEST[despac]'
                  ORDER BY 2";
 
           $consulta = new Consulta($query, $this -> conexion);
@@ -181,7 +181,7 @@ class Despachos {
                          a.cod_ciudes = d.cod_ciudad AND
                          b.cod_rutasx = e.cod_rutasx AND
                          b.cod_agenci = g.cod_agenci AND
-                         a.num_despac = '$GLOBALS[despac]'
+                         a.num_despac = '$_REQUEST[despac]'
                 ORDER BY 2";
 
           $consulta = new Consulta($query, $this -> conexion);
@@ -227,7 +227,7 @@ function encabezado(){
 
                        g.cod_conduc = i.cod_tercer AND
 
-                       a.num_despac = '$GLOBALS[despac]'
+                       a.num_despac = '$_REQUEST[despac]'
 
                        ORDER BY 1,2";
 
@@ -257,7 +257,7 @@ function encabezado(){
                  c.cod_colorx = f.cod_colorx AND
                  c.num_config = g.num_config AND
                  c.cod_carroc = h.cod_carroc AND
-                 b.num_despac = '$GLOBALS[despac]'
+                 b.num_despac = '$_REQUEST[despac]'
          ORDER BY 2";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -277,7 +277,7 @@ function encabezado(){
                  a.cod_ciudes = d.cod_ciudad AND
                  b.cod_rutasx = e.cod_rutasx AND
                  b.cod_agenci = g.cod_agenci AND
-                 a.num_despac = '$GLOBALS[despac]'
+                 a.num_despac = '$_REQUEST[despac]'
         ORDER BY 2";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -317,7 +317,7 @@ function encabezado(){
                  WHERE  a.cod_empaqu = b.cod_empaqu AND
                         a.cod_mercan = c.cod_mercan AND
                         a.cod_client = d.cod_tercer AND
-                        a.num_despac = '$GLOBALS[despac]'
+                        a.num_despac = '$_REQUEST[despac]'
                        ORDER BY 1";
 
 
@@ -391,10 +391,10 @@ function encabezado(){
           //trae el tiempo al puesto de control
           $tiempo=$actual[0][1];
 
-          if($GLOBALS[tiem_duraci])
+          if($_REQUEST[tiem_duraci])
              for($i=0; $i < sizeof($contro); $i++)
              {
-                   $contro[$i][1] = $contro[$i][1]+$GLOBALS[tiem_duraci];
+                   $contro[$i][1] = $contro[$i][1]+$_REQUEST[tiem_duraci];
              }
 
 
@@ -450,7 +450,7 @@ function encabezado(){
 
               $query = "UPDATE  ".BASE_DATOS.".tab_despac_seguim
                         SET  fec_alarma = DATE_ADD('$fec_actual', INTERVAL ".$contro[$i][1]." MINUTE),
-                             usr_modifi = '$GLOBALS[usuario]',
+                             usr_modifi = '$_REQUEST[usuario]',
                              fec_modifi = '$fec_actual'
                        WHERE num_despac = '".$this -> despacho."' AND
                              cod_contro = '".$contro[$i][0]."'";
@@ -553,7 +553,7 @@ function encabezado(){
 
                      $query = "INSERT INTO ".BASE_DATOS.".tab_despac_seguim
                                VALUES ('".$this -> despacho ."','".$pcon[$i][0]."','".$rutNueva."',
-                                       '".$fec_actual."','".$fec_actual."','$GLOBALS[usuario]','$fec_actual','$GLOBALS[usuario]','$fec_actual')";
+                                       '".$fec_actual."','".$fec_actual."','$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual')";
                     $insercion = new Consulta($query, $this -> conexion,"R");
                     }
         }//fin for
@@ -566,7 +566,7 @@ function encabezado(){
    $query = "UPDATE ".BASE_DATOS.".tab_despac_vehige
                SET fec_llegpl = '".$fec_llegpla[0]."',
                    cod_rutasx = '".$rutNueva."',
-                   usr_modifi = '$GLOBALS[usuario]',
+                   usr_modifi = '$_REQUEST[usuario]',
                    fec_modifi = NOW()
              WHERE num_despac = '".$this -> despacho."' ";
       $update = new Consulta($query, $this -> conexion,"R");
@@ -615,8 +615,8 @@ function encabezado(){
                 fec_creaci,usr_modifi,fec_modifi)
                 VALUES ('".$this -> despacho."', '".$pc_noveda."',
                         '".$noveda."','".$fec_actual."','".$observ."','".$tiempo."',
-                        '$GLOBALS[usuario]', '$fec_actual',
-                        '$GLOBALS[usuario]', '$fec_actual')";
+                        '$_REQUEST[usuario]', '$fec_actual',
+                        '$_REQUEST[usuario]', '$fec_actual')";
 
   $insercion = new Consulta($query, $this -> conexion, "R");
     return true;
@@ -687,7 +687,7 @@ function encabezado(){
               for($k=0 ; $k<sizeof($matrizlink) ; $k++)
         {
             if($matriz[$j][0] == $matrizlink[$k][1])
-               $matriz[$j][0]= "<a href=\"index.php?cod_servic=".$GLOBALS[cod_servic]."&window=central&despac=".$this -> despacho."&opcion=2&pc=".$matriz[$j][0]."&codpc=".$matrizlink[$k][0]." \"target=\"centralFrame\">".$matriz[$j][0]."</a>";
+               $matriz[$j][0]= "<a href=\"index.php?cod_servic=".$_REQUEST[cod_servic]."&window=central&despac=".$this -> despacho."&opcion=2&pc=".$matriz[$j][0]."&codpc=".$matrizlink[$k][0]." \"target=\"centralFrame\">".$matriz[$j][0]."</a>";
             if($matriz[$j][0] != $matrizlink[$j][1])
                     if($matriz[$j][3] == NULL)
                        $matriz[$j][3] = "Sin Ejecutar";
@@ -716,7 +716,7 @@ function encabezado(){
                for($k=0 ; $k<sizeof($matrizlink) ; $k++)
         {
             if($matriz[$j][0] == $matrizlink[$k][1])
-               $matriz[$j][0]= "<a href=\"index.php?cod_servic=".$GLOBALS[cod_servic]."&window=central&despac=".$this -> despacho."&opcion=2&pc=".$matriz[$j][0]."&codpc=".$matrizlink[$k][0]." \"target=\"centralFrame\">".$matriz[$j][0]."</a>";
+               $matriz[$j][0]= "<a href=\"index.php?cod_servic=".$_REQUEST[cod_servic]."&window=central&despac=".$this -> despacho."&opcion=2&pc=".$matriz[$j][0]."&codpc=".$matrizlink[$k][0]." \"target=\"centralFrame\">".$matriz[$j][0]."</a>";
             if($matriz[$j][0] != $matrizlink[$j][1])
                     if($matriz[$j][3] == NULL)
                      $matriz[$j][3] = "Sin Ejecutar";
@@ -860,8 +860,8 @@ function encabezado(){
            echo "<hr>";
      ECHO $query2 = "INSERT INTO ".BASE_DATOS.".tab_despac_pernoc
                VALUES ('".$this -> despacho."', '".$pcontro."','".$cod_noveda."',
-                       '".$duraci."','".$GLOBALS[usuario]."','$fec_actual',
-                       '".$GLOBALS[usuario]."','$fec_actual')";
+                       '".$duraci."','".$_REQUEST[usuario]."','$fec_actual',
+                       '".$_REQUEST[usuario]."','$fec_actual')";
            echo "<hr>";
     $insercion2 = new Consulta($query2, $this -> conexion,"R");
 

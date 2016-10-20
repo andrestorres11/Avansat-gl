@@ -44,7 +44,7 @@ class InsHomoP2
     echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/jquery.js\"></script>\n";
     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 
-    switch($GLOBALS[opcion])
+    switch($_REQUEST[opcion])
     {
       case "1":
         InsHomoP2::HomPuesto();
@@ -228,8 +228,8 @@ class InsHomoP2
     $formulario -> nueva_tabla();
     $formulario -> oculto("opcion\" id=\"opcionID",1,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
-    $formulario -> oculto("ind_virtua",$GLOBALS[ind_virtua],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+    $formulario -> oculto("ind_virtua",$_REQUEST[ind_virtua],0);
     $formulario -> botoni("Guardar","validarForm()",0);
     $formulario -> cerrar();
   }
@@ -278,7 +278,7 @@ class InsHomoP2
     $formulario -> nueva_tabla();
     $formulario -> oculto("opcion\" id=\"opcionID",2,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> botoni("Buscar","verifyFilter();",0);
     $formulario -> cerrar();
   }

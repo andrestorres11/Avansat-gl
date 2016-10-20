@@ -15,7 +15,7 @@ class CopHor {
 
     function principal() {
 
-        switch ($GLOBALS[opcion]) {
+        switch ($_REQUEST[opcion]) {
             case "1":
                 $this->Formulario();
                 break;
@@ -43,10 +43,10 @@ class CopHor {
         $consulta = new Consulta($query, $this->conexion);
         $usuar = $consulta->ret_matriz();
         $usuari = array_merge($inicio, $usuar);
-        if ($GLOBALS[usuari]) {
+        if ($_REQUEST[usuari]) {
             $query = "SELECT cod_usuari,nom_usuari 
                FROM " . BASE_DATOS . ".tab_genera_usuari 
-               WHERE cod_usuari = '" . $GLOBALS[usuari] . "'";
+               WHERE cod_usuari = '" . $_REQUEST[usuari] . "'";
             $consulta = new Consulta($query, $this->conexion);
             $usuar = $consulta->ret_matriz();
             $usuari = array_merge($usuar, $usuari);
@@ -60,10 +60,10 @@ class CopHor {
         $consulta = new Consulta($query, $this->conexion);
         $usuar = $consulta->ret_matriz();
         $usua = array_merge($inicio, $usuar);
-        if ($GLOBALS[usua]) {
+        if ($_REQUEST[usua]) {
             $query = "SELECT cod_usuari,nom_usuari 
                FROM " . BASE_DATOS . ".tab_genera_usuari 
-               WHERE cod_usuari = '" . $GLOBALS[usua] . "'
+               WHERE cod_usuari = '" . $_REQUEST[usua] . "'
                GROUP BY 1";
             $consulta = new Consulta($query, $this->conexion);
             $usuar = $consulta->ret_matriz();
@@ -100,23 +100,23 @@ class CopHor {
         $( "#horiniID,#horfinID" ).mask("Hn:Nn");
      })
      </script>';
-        if ($GLOBALS['usuari'] && $GLOBALS['fecini'] && $GLOBALS['fecfin'])
+        if ($_REQUEST['usuari'] && $_REQUEST['fecini'] && $_REQUEST['fecfin'])
             $aux = " onchange='form_ins.submit()'";
         $formulario = new Formulario("index.php", "post", "Copiar Horarios de Monitoreo", "form_ins\" id=\"formularioID");
         $formulario->nueva_tabla();
         $formulario->lista("Usuario", "usuari\" $aux id=\"usuariID", $usuari, 1);
-        $formulario->texto("Fecha Inicio", "text", "fecini\" $aux id=\"feciniID", 0, 9, 12, "", "$GLOBALS[fecini]");
-        $formulario->texto("Hora Inicio", "text", "horini\" $aux id=\"horiniID", 1, 9, 12, "", "$GLOBALS[horini]");
-        $formulario->texto("Fecha Final", "text", "fecfin\" $aux id=\"fecfinID", 0, 9, 12, "", "$GLOBALS[fecfin]");
-        $formulario->texto("Hora Final", "text", "horfin\" $aux id=\"horfinID", 1, 9, 12, "", "$GLOBALS[horfin]");
+        $formulario->texto("Fecha Inicio", "text", "fecini\" $aux id=\"feciniID", 0, 9, 12, "", "$_REQUEST[fecini]");
+        $formulario->texto("Hora Inicio", "text", "horini\" $aux id=\"horiniID", 1, 9, 12, "", "$_REQUEST[horini]");
+        $formulario->texto("Fecha Final", "text", "fecfin\" $aux id=\"fecfinID", 0, 9, 12, "", "$_REQUEST[fecfin]");
+        $formulario->texto("Hora Final", "text", "horfin\" $aux id=\"horfinID", 1, 9, 12, "", "$_REQUEST[horfin]");
         $formulario->lista("Copiar de ", "usua\" $aux id=\"usuaID", $usua, 1);
         $formulario->nueva_tabla();
         $formulario->oculto("window", "central", 0);
-        $formulario->oculto("cod_servic", $GLOBALS[cod_servic], 0);
+        $formulario->oculto("cod_servic", $_REQUEST[cod_servic], 0);
         $formulario->oculto("opcion\" id=\"opcionID", 1, 0);
 
         $formulario->nueva_tabla();
-        if ($GLOBALS['usuari'] && $GLOBALS['fecini'] && $GLOBALS['fecfin'] && $GLOBALS['usua']) {
+        if ($_REQUEST['usuari'] && $_REQUEST['fecini'] && $_REQUEST['fecfin'] && $_REQUEST['usua']) {
             $usuario = $_SESSION["datos_usuario"]["cod_usuari"];
             $formulario->nueva_tabla();
             $formulario->botoni("Cancelar", "aceptar_ins(2)", 1);
@@ -126,9 +126,9 @@ class CopHor {
             $query = "SELECT 1
    				FROM " . BASE_DATOS . ".tab_monito_encabe a
    			   WHERE a.ind_estado = 1 AND
-                 a.cod_usuari = '" . $GLOBALS['usuari'] . "' AND 
-                 (fec_inicia <= '" . $GLOBALS['fecini'] . " " . $GLOBALS['horini'] . "' AND 
-                  fec_finalx >= '" . $GLOBALS['fecini'] . " " . $GLOBALS['horini'] . "') 
+                 a.cod_usuari = '" . $_REQUEST['usuari'] . "' AND 
+                 (fec_inicia <= '" . $_REQUEST['fecini'] . " " . $_REQUEST['horini'] . "' AND 
+                  fec_finalx >= '" . $_REQUEST['fecini'] . " " . $_REQUEST['horini'] . "') 
                  ";
             $consulta = new Consulta($query, $this->conexion);
             $fec = $consulta->ret_matriz();
@@ -139,9 +139,9 @@ class CopHor {
             $query = "SELECT 1
    				FROM " . BASE_DATOS . ".tab_monito_encabe a
    			   WHERE a.ind_estado = 1 AND
-                 a.cod_usuari = '" . $GLOBALS['usuari'] . "' AND 
-                 (fec_inicia <= '" . $GLOBALS['fecfin'] . " " . $GLOBALS['horfin'] . "' AND 
-                  fec_finalx >= '" . $GLOBALS['fecfin'] . " " . $GLOBALS['horfin'] . "') 
+                 a.cod_usuari = '" . $_REQUEST['usuari'] . "' AND 
+                 (fec_inicia <= '" . $_REQUEST['fecfin'] . " " . $_REQUEST['horfin'] . "' AND 
+                  fec_finalx >= '" . $_REQUEST['fecfin'] . " " . $_REQUEST['horfin'] . "') 
                  ";
             $consulta = new Consulta($query, $this->conexion);
             $fec = $consulta->ret_matriz();
@@ -155,7 +155,7 @@ class CopHor {
             }
             $sql = "SELECT MAX(d.cod_consec) 
           FROM " . BASE_DATOS . ".tab_monito_encabe d
-          WHERE d.cod_usuari = '" . $GLOBALS['usua'] . "'";
+          WHERE d.cod_usuari = '" . $_REQUEST['usua'] . "'";
             $consulta = new Consulta($sql, $this->conexion);
             $max = $consulta->ret_matriz();
             $max = $max[0][0];
@@ -390,7 +390,7 @@ class CopHor {
 
 
         if ($insercion = new Consulta("COMMIT", $this->conexion)) {
-            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $GLOBALS[cod_servic] . " \"target=\"centralFrame\">Insertar Otro Horario</a></b>";
+            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $_REQUEST[cod_servic] . " \"target=\"centralFrame\">Insertar Otro Horario</a></b>";
 
             if ($msm)
                 $mensaje = $msm;

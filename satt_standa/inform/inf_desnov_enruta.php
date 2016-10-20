@@ -178,7 +178,7 @@
       $formulario -> nueva_tabla();
       $formulario -> oculto("opcion",1,0);
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+      $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
       $formulario -> botoni("Buscar","form_list.submit()",0);
       $formulario -> cerrar();
     
@@ -454,7 +454,7 @@
             $mHtml  .= " <td align='center' colspan='12'> 
                           <input type='hidden' value='2' name='opcion' > 
                           <input type='hidden' value='central' name='window' > 
-                          <input type='hidden' value='".$GLOBALS[cod_servic]."' name='cod_servic' > 
+                          <input type='hidden' value='".$_REQUEST[cod_servic]."' name='cod_servic' > 
                           <input type='button' onclick='javascript:history.go(-1)' value='Atras' name='Atras' class='crmButton small save'> 
                           <input type='button' onclick='form_list.submit()' value='Excel' name='xsl' class='crmButton small save'> 
                         </td>";

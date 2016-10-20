@@ -23,11 +23,11 @@ class Proc_alerta
  {
  
  ini_set("memory_limit", "128M");
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> FormularioBusqueda();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario();
@@ -121,7 +121,7 @@ class Proc_alerta
    if( sizeof( $matriz ) == 1 )
    {
      //Si retorna 1 solo resultado se redirecciona hacia la captura final
-     $GLOBALS[cod_transp] = $matriz[0][0];
+     $_REQUEST[cod_transp] = $matriz[0][0];
      $this -> Formulario();
    }
    else
@@ -143,7 +143,7 @@ class Proc_alerta
         
         for($i=0;$i<sizeof($matriz);$i++)
         {
-          $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&cod_transp=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+          $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&cod_transp=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
           $formulario -> linea($matriz[$i][0],0,"i");
           $formulario -> linea($matriz[$i][1],0,"i");
           $formulario -> linea($matriz[$i][2],1,"i");
@@ -156,7 +156,7 @@ class Proc_alerta
      $formulario -> oculto("opcion",1,0);
      $formulario -> oculto("valor",$valor,0);
      $formulario -> oculto("window","central",0);
-     $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+     $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
      $formulario -> botoni("Volver","javascript:history.go(-1)",0);
   
      $formulario -> cerrar();
@@ -259,7 +259,7 @@ class Proc_alerta
 		$formulario = new Formulario ( "index.php", "post", "Asignar Puestos de Control Transportadoras", "formulario" );
 		echo "<td>";
 		$formulario -> oculto( "window","central",0 );
-		$formulario -> oculto( "cod_servic", $GLOBALS[cod_servic],0 );
+		$formulario -> oculto( "cod_servic", $_REQUEST[cod_servic],0 );
 		$formulario -> oculto( "opcion",3,0 );
 		echo "<td></tr>";
 		echo "<tr>";
@@ -285,7 +285,7 @@ class Proc_alerta
   function Formulario()
  {
     ini_set("memory_limit", "128M");
-   $cod_transp = $GLOBALS['cod_transp'];
+   $cod_transp = $_REQUEST['cod_transp'];
    $datos_usuario = $this -> usuario -> retornar();
    $usuario=$datos_usuario["cod_usuari"];
    
@@ -362,7 +362,7 @@ class Proc_alerta
    $formulario -> oculto("url_archiv",'ins_tercer_contro.php',0);
    $formulario -> oculto("num_filas",$numFilas,0);
    $formulario -> oculto("opcion",3,0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],1);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],1);
    $formulario -> botoni("Aceptar","aceptar_tercer_contro()",0);
    $formulario -> botoni("Volver","javascript:history.go(-1)",0);
    $formulario -> cerrar();
@@ -375,7 +375,7 @@ class Proc_alerta
     include( "../lib/general/tabla_lib.inc" );
     include( "../lib/general/constantes.inc" );
     define('BASE_DATOS', $_SESSION['BASE_DATOS']);
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], BASE_DATOS );
+    $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], BASE_DATOS );
  
     $filas = $_POST["filas"];
 
@@ -438,9 +438,9 @@ class Proc_alerta
     
    if($insercion = new Consulta("COMMIT", $this -> conexion))
    {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Configurar Los puestos de control contratados de Otra Transportadora</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Configurar Los puestos de control contratados de Otra Transportadora</a></b>";
 
-     $mensaje =  "Se realiz&oacute; la asignaci&oacute;n de los puestos de control para la transportadora <b>".$GLOBALS[cod_transp]." - ".$GLOBALS[nom_transp]."</b> con &Eacute;xito".$link_a;
+     $mensaje =  "Se realiz&oacute; la asignaci&oacute;n de los puestos de control para la transportadora <b>".$_REQUEST[cod_transp]." - ".$_REQUEST[nom_transp]."</b> con &Eacute;xito".$link_a;
      $mens = new mensajes();
      $mens -> correcto("ASIGNAR PUESTOS DE CONTROL",$mensaje);
    }

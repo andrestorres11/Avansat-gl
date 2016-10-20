@@ -15,11 +15,11 @@ class Proc_trayec
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "2":
           $this -> Resultado();
@@ -42,7 +42,7 @@ class Proc_trayec
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> boton("Buscar","button\" onClick=\"aceptar_lis() ",0);
    $formulario -> boton("Todas","button\" onClick=\"form_list.submit() ",0);
    $formulario -> cerrar();
@@ -58,7 +58,7 @@ class Proc_trayec
   
   $query = "SELECT cod_trayec,nom_trayec,cod_estado
               		FROM ".BASE_DATOS.".tab_genera_trayec
-		            WHERE nom_trayec LIKE '%".$GLOBALS[trayec]."%' AND cod_estado = '1' OR cod_estado = '2'
+		            WHERE nom_trayec LIKE '%".$_REQUEST[trayec]."%' AND cod_estado = '1' OR cod_estado = '2'
 	                ORDER BY 2";
 
   $consec = new Consulta($query, $this -> conexion);
@@ -98,7 +98,7 @@ class Proc_trayec
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
 
  }//fin funcion

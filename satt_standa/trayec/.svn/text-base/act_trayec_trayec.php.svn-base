@@ -16,11 +16,11 @@ class Proc_trayec
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -49,7 +49,7 @@ class Proc_trayec
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> boton("Aceptar","button\" onClick=\"form_list.submit() ",0);
    $formulario -> cerrar();
  }
@@ -61,7 +61,7 @@ class Proc_trayec
 
   $query = "SELECT cod_trayec,nom_trayec,cod_estado
               FROM ".BASE_DATOS.".tab_genera_trayec
-           	 WHERE nom_trayec LIKE '%".$GLOBALS[trayec]."%' AND
+           	 WHERE nom_trayec LIKE '%".$_REQUEST[trayec]."%' AND
 		 		   cod_estado = ".COD_ESTADO_ACTIVO." OR
               	   cod_estado = ".COD_ESTADO_INACTI."
         		   ORDER BY 2";
@@ -79,7 +79,7 @@ class Proc_trayec
    
    for($i=0;$i<sizeof($matriz);$i++)
    {
-   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&trayec=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&trayec=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    	$formulario -> linea($matriz[$i][0],0,"i");
    	$formulario -> linea($matriz[$i][1],0,"i");
@@ -96,7 +96,7 @@ class Proc_trayec
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
 
@@ -107,7 +107,7 @@ class Proc_trayec
   
   $query = "SELECT cod_trayec,nom_trayec,cod_estado
             FROM ".BASE_DATOS.".tab_genera_trayec
-           WHERE cod_trayec = ".$GLOBALS[trayec]."
+           WHERE cod_trayec = ".$_REQUEST[trayec]."
            ";
            
   $consulta = new Consulta($query, $this -> conexion);
@@ -131,9 +131,9 @@ class Proc_trayec
    $formulario -> oculto("maximo",$interfaz -> cant_interf,0);
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",2,0);
-   $formulario -> oculto("trayec",$GLOBALS[trayec],0);
+   $formulario -> oculto("trayec",$_REQUEST[trayec],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    //$formulario -> boton("Actualizar","button\" onClick=\"if(confirm('Desea Actualiza el Trayecto.?')){form_item.opcion.value = 3; form_item.submit();}",0);
    $formulario -> boton("Actualizar","button\" onClick=\"aceptar_act() ",0);
    $formulario -> boton("Cancelar","button\" onClick=\"javascript:history.go(-3)",0);
@@ -148,25 +148,25 @@ class Proc_trayec
 
   $fec_actual = date("Y-m-d H:i:s");
    //valida el indicador
-   if($GLOBALS[estado] == COD_ESTADO_ACTIVO)
+   if($_REQUEST[estado] == COD_ESTADO_ACTIVO)
      $estado = COD_ESTADO_ACTIVO;
    else
      $estado = COD_ESTADO_INACTI;
 
   $query = "UPDATE ".BASE_DATOS.".tab_genera_trayec
-               SET nom_trayec = '$GLOBALS[nombre]',
+               SET nom_trayec = '$_REQUEST[nombre]',
                    cod_estado = '".$estado."',                   
                    usr_creaci = '".$usuario."',
                    fec_creaci = '".$fec_actual."'
-             WHERE cod_trayec = '$GLOBALS[trayec]'
+             WHERE cod_trayec = '$_REQUEST[trayec]'
            ";
   $insercion = new Consulta($query, $this -> conexion,"BR");
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
     {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Trayecto</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Trayecto</a></b>";
 
-     $mensaje =  "El Trayecto <b>".$GLOBALS[nombre]."</b> Se Actualizo con Exito".$mensaje_sat.$link_a;
+     $mensaje =  "El Trayecto <b>".$_REQUEST[nombre]."</b> Se Actualizo con Exito".$mensaje_sat.$link_a;
      $mens = new mensajes();
      $mens -> correcto("ACTUALIZAR TRAYECTOS",$mensaje);
     }

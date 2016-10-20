@@ -1,427 +1,249 @@
-<?php
+<?php 
 
-class Proc_perfil
-{
+/* ! \archive: ins_perfil_perfil.php
+ *  \brief: archivo para el manejo de perfiles
+ *  \author: Ing. Alexander Correa
+ *  \author: aleander.correa@intrared.net
+ *  \date: 06/04/2016
+ *  \date modified: dia/mes/año
+ *  \warning:   
+ *  \ 
+ */
+session_start();
 
-    var $conexion,
-            $cod_aplica,
-            $usuario;
+require "ajax_perfil_perfil.php";
 
-    function __construct($co, $us, $ca)
-    {
+class ins_perfil_perfil {
 
+    var $conexion, $usuario, $cod_aplica;
+    private static $cFunciones;
+
+    function __construct($co, $us, $ca) {
+        #importa los  css y js necesarios
+        ?>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/jquery.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/functions.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/dinamic_list.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/perfil.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/validator.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/new_ajax.js" language="javascript"></script>
+        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/blockUI.jquery.js" language="javascript"></script>
+        <script type="text/javascript" language="JavaScript" src="../<?= DIR_APLICA_CENTRAL ?>/js/sweetalert-dev.js"></script>
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/dinamic_list.css" rel="stylesheet">
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/validator.css" rel="stylesheet">
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/jquery.css" rel="stylesheet">
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/informes.css" rel="stylesheet">
+        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/bootstrap.css" rel="stylesheet">
+        <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/sweetalert.css' type='text/css'>
+
+        <?php
+        
         $this->conexion = $co;
         $this->usuario = $us;
         $this->cod_aplica = $ca;
-        $this->principal();
+        self::$cFunciones = new seguri($co, $us, $ca);
+        switch ($_REQUEST[opcion]) {
+            case 1: //registrar nuevo
+            case 2: //editar
+            case 3: //copiar
+                $this->Formulario();
+            break;
+            default:
+                $this->lista();
+                break;
+        }
     }
-
-    function principal()
-    {
-        if (!isset($GLOBALS[opcion]))
-            $this->Formulario1();
-        else
-        {
-            switch ($GLOBALS[opcion])
-            {
-                case "1":
-                    $this->Formulario2();
-                    break;
-                case "2":
-                    $this->Insertar();
-                    break;
-            }//FIN SWITCH
-        }// FIN ELSE GLOBALS OPCION
-    }
-
-    function Formulario1()
-    {
+    /*! \fn: lista
+     *  \brief: funcion inicial que muestra una lista con los perfiles creados
+     *  \author: Ing. Alexander Correa
+     *  \date: 06/04/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return 
+     */
+    
+    function lista() {
+      
         $datos_usuario = $this->usuario->retornar();
-
-        $query = "SELECT MAX(a.cod_perfil)
-	       	   FROM " . BASE_DATOS . ".tab_genera_perfil a
-	      	  WHERE a.cod_perfil != " . COD_PERFIL_SUPERUSR . "
-	    	";
-
-        $consulta = new Consulta($query, $this->conexion);
-        $consecut = $consulta->ret_matriz();
-
-        $query = "SELECT a.cod_servic, a.nom_servic
-               FROM " . CENTRAL . ".tab_genera_servic a LEFT JOIN
-		    		" . CENTRAL . ".tab_servic_servic b ON
-		    		a.cod_servic = b.cod_serhij
-              WHERE b.cod_serhij IS NULL
-                    GROUP BY 1 ORDER BY 1";
-
-        $consulta = new Consulta($query, $this->conexion);
-        $servpadr = $consulta->ret_matriz();
-
-        $consecut[0][0] += 1;
-
-        echo "<script language=\"JavaScript\" src=\"./lib/js/perfil.js\"></script>\n";
-
-        $formulario = new Formulario("index.php", "post", "INSERTAR PERFIL", "form_princi");
-        $formulario->nueva_tabla();
-        $formulario->linea("INFORMACION BASICA DEL PERFIL", 1, "t2");
-
-        $formulario->nueva_tabla();
-        $formulario->texto("Codigo", "text", "cod\" disabled", 1, 50, 20, "", "" . $consecut[0][0] . "");
-        $formulario->texto("Nombre", "text", "nom", 1, 50, 100, "", "");
-
-        $formulario->nueva_tabla();
-        $formulario->linea("SELECCION DE PERMISOS", 1, "t2");
-        $formulario->nueva_tabla();
-
-        $l = 0;
-
-        for ($i = 0; $i < sizeof($servpadr); $i++)
-        {
-            $query = "SELECT a.cod_servic,a.nom_servic
-		        FROM " . CENTRAL . ".tab_genera_servic a,
-			         " . CENTRAL . ".tab_servic_servic b
-		   	   WHERE a.cod_servic = b.cod_serhij AND
-			 		 b.cod_serpad = '" . $servpadr[$i][0] . "'
-		 ";
-
-            $consulta = new Consulta($query, $this->conexion);
-            $servhijo = $consulta->ret_matriz();
+        $usuario = $datos_usuario["cod_usuari"];
+        
+        ?>
+        </table>
+        <form action="index.php" method="post" name="form_search" id="form_searchID" enctype="multipart/form-data">        
+            <div class="accordion">
+                <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>LISTADO DE PERFILES</b></h3>
+                <div class="" id="sec2">
+                    <div class="Style2DIV" id="form3">
+                        <?php
+                            echo self::$cFunciones->listPerfiles();
+                         ?>
+                    </div>
+                </div>
+            </div>            
+            <input type="hidden" name="standa" id="standa" value="<?= DIR_APLICA_CENTRAL ?>"></input>
+            <input type="hidden" name="window" id="window" value="central"></input>
+            <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>"></input>
+            <input type="hidden" name="opcion" id="opcion" value="1"></input>
+            <input type="hidden" name="cod_perfil" id="cod_perfil" value=""></input>
+            <input type="hidden" name="nom_perfil" id="nom_perfil" value=""></input>
+            <input type="hidden" name="cod_respon" id="cod_respon" value=""></input>
+        </form>
+        <?php
+    }
 
 
-            $formulario->linea("", 1, "i");
-            $formulario->linea("Modulo :: " . $servpadr[$i][1] . "", 1, "t2");
+    /* ! \fn: formulario
+     *  \brief: pinta el formulario para crear, editar y copiar un perfil
+     *  \author: Ing. Alexander Correa
+     *  \date: 06/04/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return 
+     */
+    function Formulario() {
+        $datos = (object) $_POST;
+        
+        if($datos->opcion != 2 ){
+            $cod_perfil = self::$cFunciones->getNewConsec();
+            $datos->nom_perfil = "";
+        }else{
 
-            if (!$servhijo)
-            {
-                $formulario->caja("" . $servpadr[$i][1] . "", "permi[$l]", $servpadr[$i][0], 0, 1);
-                $l++;
-            }
-
-            for ($j = 0; $j < sizeof($servhijo); $j++)
-            {
-                $query = "SELECT a.cod_servic, a.nom_servic
-                 FROM " . CENTRAL . ".tab_genera_servic a,
-                      " . CENTRAL . ".tab_servic_servic b
-                WHERE a.cod_servic = b.cod_serhij AND
-			  		  b.cod_serpad = " . $servhijo[$j][0];
-
-                $consulta = new Consulta($query, $this->conexion);
-                $sniveles = $consulta->ret_matriz();
-
-                if ($sniveles)
-                {
-
-                    $formulario->linea("", 1, "i");
-                    $formulario->linea(">>> SubNivel :: " . $servhijo[$j][1] . "", 1, "h");
-
-                    for ($k = 0; $k < sizeof($sniveles); $k++)
-                    {
-                        if (($k + 1) % 2 == 0)
-                            $formulario->caja("" . $sniveles[$k][1] . "", "permi[$l]", $sniveles[$k][0], 0, 1);
-                        else
-                            $formulario->caja("" . $sniveles[$k][1] . "", "permi[$l]", $sniveles[$k][0], 0, 0);
-                        $l++;
-                    }
-                }
-                else
-                {
-                    if (($j + 1) % 2 == 0)
-                        $formulario->caja("" . $servhijo[$j][1] . "", "permi[$l]", $servhijo[$j][0], 0, 1);
-                    else
-                        $formulario->caja("" . $servhijo[$j][1] . "", "permi[$l]", $servhijo[$j][0], 0, 0);
-                    $l++;
-                }
-            }
+            $cod_perfil = $datos->cod_perfil;
         }
 
-        $formulario->nueva_tabla();
-        $formulario->oculto("usuario", "$usuario", 0);
-        $formulario->oculto("window", "central", 0);
-        $formulario->oculto("opcion", 1, 0);
-        $formulario->oculto("cod_perfil", "" . $consecut[0][0] . "", 0);
-        $formulario->oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+        $padres = self::$cFunciones->getServicNivel($datos->cod_perfil);
 
-        $formulario->boton("Insertar", "button\" onClick=\"insertar()", 0);
-        $formulario->cerrar();
-    }
+        $responsables = self::$cFunciones->getResponsables();
 
-    function Formulario2()
-    {
-        $query = "SELECT a.cod_filtro,a.nom_filtro,a.cod_queryx
-               FROM " . CENTRAL . ".tab_genera_filtro a
-             		ORDER BY 1
-            ";
+        $nov_perfil = self::$cFunciones->getNovPerrfil($cod_perfil);
+        $nov_perfil = implode(",",$nov_perfil);
+    ?>
+    </table>
+    <form style="display:none;" action="index.php" method="post" name="form_search" id="form_searchID" enctype="multipart/form-data">
+        <input type="hidden" name="standa" value="<?= DIR_APLICA_CENTRAL ?>" id="standa">
+        <input type="hidden" name="window" id="window" value="central">
+        <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>">
+        <input type="hidden" name="cod_noveda" id="cod_noveda" value="<?= $nov_perfil ?>">
+    </form>
+    <div class="accordion"  >
+        <h1 style="padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>INFORMACI&Oacute;N B&Aacute;SICA DEL PERFIL</b></h1>
+        <div id="contenido">
+            <div class="Style2DIV">
+                <table width="100%" cellspacing="0" cellpadding="0">
+                    <tbody>
+                        <tr>
+                            <td style="text-align:center" class="CellHead contenido">
+                                <div class="col-md-6 text-right">C&oacute;digo<font style="color:red">*</font>:</div>
+                                <div class="col-md-6 text-left">
+                                    <input class="text-center" type="text" name="cod_perfil" id="cod_perfil" readonly value="<?= $cod_perfil ?>" obl="1" maxlength="5" minlength="1" validate="numero"></input>
+                                </div>
+                                <div class="col-md-6 text-right">Nombre<font style="color:red">*</font>:</div>
+                                <div class="col-md-6 text-left">
+                                    <input class="text-center" type="text" name="nom_perfil" id="nom_perfil" value="<?= $datos->nom_perfil ?>" validate="dir" obl="1" maxlength="50" minlength="5"></input>
+                                </div>
+                                <div class="col-md-6 text-right">Responsable<font style="color:red">*</font>:</div>
+                                <div class="col-md-6 text-left">
+                                    <select id="cod_respon" name="cod_respon" obl="1" validate="select">
+                                        <option>Seleccione una Opci&oacute;n</option>
+                                        <?php 
+                                        
+                                        foreach ($responsables as $key => $value){ 
+                                            $cod_respon = "";
+                                            if ($datos->cod_respon == $value['cod_respon']){
+                                                $cod_respon = "selected='true'";
+                                            }
+                                            ?>
+                                          <option <?= $cod_respon ?> value="<?= $value['cod_respon'] ?>"><?= $value['nom_respon'] ?></option>  
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+              </table>
+            </div>
+        </div>
+    </div>
+    <div class="accordion"  >
+        <h1 style="padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>SECCI&Oacute;N DE PERMISOS</b></h1>
+        <div id="contenido">
+            <div class="Style2DIV">
 
-        $consulta = new Consulta($query, $this->conexion);
-        $matriz = $consulta->ret_matriz();
-
-        $inicio[0][0] = 0;
-        $inicio[0][1] = '-';
-
-        //responsable
-        $query = "SELECT a.cod_respon, a.nom_respon
-                FROM ".BASE_DATOS.".tab_genera_respon a
-               WHERE a.ind_activo = '1'";
-        $query .= " ORDER BY 2";
-
-        $consulta = new Consulta($query, $this->conexion);
-        $respon = $consulta->ret_matriz('i');
-                
-        $responsable = array_merge( $inicio, $respon );
-        
-        echo "<script language=\"JavaScript\" src=\"js/perfil.js\"></script>\n";
-        $formulario = new Formulario("index.php", "post", "INSERTAR PERFILES", "form_ins");
-
-        $formulario->nueva_tabla();
-        $formulario->linea("Informaci&oacute;n Base del Perfil", 1, "t2");
-
-        $formulario->nueva_tabla();
-        $formulario->linea("Codigo", 0, "t");
-        $formulario->linea($GLOBALS[cod_perfil], 1, "i");
-        $formulario->linea("Nombre", 0, "t");
-        $formulario->linea($GLOBALS[nom], 1, "i");
-        
-        $formulario->linea("Responsable", 0, "t");
-        $formulario->lista_titulo("", "cod_respon", $responsable, 1);
-        //$formulario->linea("--> Responsable =)", 1, "i");
-
-        $formulario->nueva_tabla();
-        $formulario->linea("Servicios", 1, "t2");
-
-        $formulario->nueva_tabla();
-
-        $filtrosel = $GLOBALS[codigos];
-
-        for ($i = 0; $i < sizeof($matriz); $i++)
-        {
-            if ($filtrosel[0] && $matriz[$i][0] == COD_FILTRO_EMPTRA)
-            {
-                $formulario->caja("" . $matriz[$i][1] . "", "seleccfil[$i]\" disabled ", "" . $matriz[$i][0] . "", 1, 0);
-                $formulario->oculto("seleccion[$i]", $matriz[$i][0], 0);
-            }
-            else if ($filtrosel[0])
-                $formulario->caja("" . $matriz[$i][1] . "", "seleccion[$i]", "" . $matriz[$i][0] . "", 0, 0);
-            else
-                $formulario->caja("" . $matriz[$i][1] . "", "seleccion[$i]\" disabled ", "" . $matriz[$i][0] . "", 0, 0);
-
-            if ($matriz[$i][2])
-            {
-                $query = $querysel = $matriz[$i][2];
-
-                if ($filtrosel[0] && $matriz[$i][0] == COD_FILTRO_AGENCI)
-                    $query .= " AND c.cod_transp = '" . $filtrosel[0] . "'";
-
-                //if($matriz[$i][0] != COD_FILTRO_EMPTRA)
-                //$query .= " AND cod_transp = '".$filtrosel[0]."'";
-
-                $query .= " GROUP BY 1 ORDER BY 2";
-
-                $consulta = new Consulta($query, $this->conexion);
-                $porfiltro = $consulta->ret_matriz();
-
-                $matriz1 = array_merge($inicio, $porfiltro);
-
-                if ($filtrosel[0] && $matriz[$i][0] == COD_FILTRO_EMPTRA)
-                {
-                    $querysel .= " AND a.cod_tercer = '" . $filtrosel[0] . "'";
-                    $querysel .= " GROUP BY 1 ORDER BY 2";
-
-                    $consulta = new Consulta($querysel, $this->conexion);
-                    $portrans = $consulta->ret_matriz();
-
-                    $matriz1 = array_merge($portrans, $matriz1);
-                }
-
-                if ($matriz[$i][0] == COD_FILTRO_EMPTRA)
-                    $formulario->lista_titulo("", "codigos[$i]\" onChange=\"form_ins.submit()", $matriz1, 1);
-                else
-                    $formulario->lista_titulo("", "codigos[$i]", $matriz1, 1);
-            }
-        }
-
-        $servicios = $GLOBALS[permi];
-        $servicios = array_merge($servicios);
-		
-		
-		$formulario->nueva_tabla();
-        $formulario->linea( "Filtro Novedades", 1, "t2" );
-		
-		$novedades = $this -> getNovedades();
-		
-		$end = "";
-		$i = 0;
-		
-		if( $novedades )
-		{
-			$formulario->nueva_tabla();
-			foreach( $novedades as $row )
-			{				
-				if( $_POST[sel_todos] ) 
-					$checked = 1;
-				
-				$formulario->caja( ucwords( strtolower( $row[1] ) ), "novedad[$i]", $row[0], $checked, $end );
-				$i++;
-				
-				if( $i % 2 != 0 ) $end = 1;
-				else $end = 0;				
-			}
-			
-			$formulario->caja( "Seleccionar Todos", "sel_todos\" onChange=\"form_ins.submit()", 1, $checked, $end );
-		}
-
-        $formulario->nueva_tabla();
-        $formulario->oculto("opcion", $GLOBALS[opcion], 0);
-        $formulario->oculto("cod_servic", $GLOBALS["cod_servic"], 0);
-        $formulario->oculto("cod_perfil", $GLOBALS[cod_perfil], 0);
-        $formulario->oculto("nom", $GLOBALS[nom], 0);
-        $formulario->oculto("max_ser", "" . sizeof($matriz) . "", 0);
-
-        for ($i = 0; $i < sizeof($servicios); $i++)
-            $formulario->oculto("permi[$i]", $servicios[$i], 0);
-
-        $formulario->oculto("window", "central", 0);
-        $formulario->boton("Insertar", "button\" onClick=\"if(confirm('Esta Seguro de Insertar el Perfil.?')){form_ins.opcion.value = 2; form_ins.submit();}", 0);
-        $formulario->cerrar();
-    }
-	
-	function getNovedades()
-    {
-        $query = "SELECT a.cod_noveda, a.nom_noveda
-				  FROM " . BASE_DATOS . ".tab_genera_noveda a
-				  ORDER BY 2";
-
-        $consulta = new Consulta($query, $this->conexion);
-        $matriz = $consulta -> ret_matriz( "i" );
-		
-		return $matriz;
-    }
-
-    function Insertar()
-    {
-        $fec_actual = date("Y-m-d H:i:s");
-        
-        // echo "<pre>";
-        // print_r( $_REQUEST );
-        // echo "</pre>";
-        // die();
-        
-        //reasignacion de variables
-        $servicios = $GLOBALS[permi];
-        $filtros = $GLOBALS[seleccion];
-        $codigos = $GLOBALS[codigos];
-
-        $nuevo_consec = $GLOBALS[cod_perfil];
-        
-        $_REQUEST['cod_respon'] = $_REQUEST['cod_respon'] != '' ? $_REQUEST['cod_respon'] : 'NULL' ;
-
-        $query = "INSERT INTO " . BASE_DATOS . ".tab_genera_perfil
-   						 (cod_perfil,nom_perfil,cod_respon,usr_creaci,fec_creaci)
-                  VALUES (" . $nuevo_consec . ",'" . $GLOBALS[nom] . "', '".$_REQUEST['cod_respon']."',
-                     	  '" . $this->usuario->cod_usuari . "','" . $fec_actual . "')";
-
-        //die();
-        $consulta = new Consulta($query, $this->conexion, "BR");
-
-        $query = "INSERT INTO " . BASE_DATOS . ".tab_aplica_perfil
-                  VALUES ('" . $this->cod_aplica . "'," . $nuevo_consec . ") ";
-
-        $consulta = new Consulta($query, $this->conexion, "R");
-
-        for ($i = 0; $i < sizeof($servicios); $i++)
-        {
-            $query = "INSERT INTO " . BASE_DATOS . ".tab_perfil_servic
-                 VALUES (" . $nuevo_consec . "," . $servicios[$i] . ") ";
-
-            $consulta = new Consulta($query, $this->conexion, "R");
-
-            $bandera1 = 0;
-            $hijo = $servicios[$i];
-
-            $cont = 0;
-
-            while (!$bandera1)
-            {
-                $query = "SELECT a.cod_serpad,b.nom_servic
-                      FROM " . CENTRAL . ".tab_servic_servic a,
-                           " . CENTRAL . ".tab_genera_servic b
-                     WHERE a.cod_serpad = b.cod_servic AND
-                           a.cod_serhij = '" . $hijo . "' ";
-
-                $consulta = new Consulta($query, $this->conexion);
-                $matriz1 = $consulta->ret_matriz();
-
-                if (!sizeof($matriz1))
+                <div class="accordion"  >
+                    <?php foreach ($padres as $key => $value){
+                        self::$cFunciones->cServic = array(); 
+                        $padre[0] = $value;
+                        self::$cFunciones->getServicChildren($padre, 2, $datos->cod_perfil);
+                        $hijos = self::$cFunciones->cServic;
+                        
+                        ?>               
+                            <h1 style="padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>M&oacute;dulo <?= $value[1] ?></b></h1>
+                            <div id="contenido">
+                                <div class="Style2DIV">
+                                    <table width="100%" cellspacing="0" cellpadding="0">
+                                        <tbody>
+                                        <?php foreach ($hijos as $k => $val){ 
+                                            $espacio = "";
+                                            for ($i=0; $i < $val[2] ; $i++) { 
+                                                $espacio .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+                                            }
+                                            ?>
+                                                <tr>
+                                                    <td class="CellHead contenido text-left">
+                                                        <div class="col-md-6 "><?= $espacio."<img src='../".DIR_APLICA_CENTRAL."/images/point$val[2].png'>&nbsp;&nbsp;".$val[1] ?></div>
+                                                        <div class="col-md-6 text-left">
+                                                            <?php
+                                                            $checked = "";
+                                                             if($val[3] == 1){
+                                                                $checked = "checked='true'";
+                                                                } ?>
+                                                            <input type="checkbox" <?= $checked ?> value="<?= $val[0] ?>" id="adm_<?= $val[1] ?>" name="cod_servic[]"></input>
+                                                         </div>
+                                                         <div class="col-md-12" style="background-color: #416F1E"></div>                                                     
+                                                    </td>
+                                                </tr>
+                                            <?php } ?>
+                                            
+                                        </tbody>
+                                  </table>
+                                </div>
+                            </div>
+                    <?php } ?>
+                </div>
+                <br>
+                <center>
+                    <input type="button" name="registar" value="Novedades" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" onclick="novedades(<?= $cod_perfil ?>)"></input>
+                    <?php
+                    switch ($datos->opcion) {
+                    case 1: //registrar nuevo
+                        ?>
+                        <input type="button" name="registar" value="Registrar" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" onclick="registrar(1)"></input>
+                        <?php
                     break;
-                else
-                {
-                    $query = "SELECT cod_servic
-                         FROM " . BASE_DATOS . ".tab_perfil_servic
-                        WHERE cod_servic = '" . $matriz1[0][0] . "' AND
-                              cod_perfil = '" . $nuevo_consec . "' ";
-
-                    $consulta = new Consulta($query, $this->conexion);
-                    $matriz2 = $consulta->ret_matriz();
-
-                    if (!sizeof($matriz2))
-                    {
-                        $query = "INSERT INTO " . BASE_DATOS . ".tab_perfil_servic
-                         VALUES ('$nuevo_consec','" . $matriz1[0][0] . "') ";
-
-                        $consulta = new Consulta($query, $this->conexion, "R");
-
-                        $hijo = $matriz1[0][0];
-                    }//fin if
-                    else
-                        break;
-                }//fin if
-            }//fin while
-        }//fin for
-
-        for ($i = 0; $i < $GLOBALS[max_ser]; $i++)
-        {
-            if ($filtros[$i] != Null)
-            {
-                //query de insercion
-                $query = "INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil
-                 VALUES ('" . COD_APLICACION . "','" . $filtros[$i] . "',
-                         '$nuevo_consec','" . $codigos[$i] . "') ";
-
-                $consulta = new Consulta($query, $this->conexion, "R");
-            }//fin if $filtros[$i]
-        }//fin for $i
-		
-		//Filtro de Novedades.
-		$novedades = $_POST[novedad];
-		
-		if( $novedades )
-		foreach( $novedades as $row )
-		{
-			$insert = "INSERT INTO  " . BASE_DATOS . ".tab_perfil_noveda 
-						(
-							cod_perfil , cod_noveda
-						)
-						VALUES 
-						(
-							'$GLOBALS[cod_perfil]',  '$row'
-						)";
-			
-			$consulta = new Consulta( $insert, $this -> conexion, "R" );
-		}		
-
-        if ($insercion = new Consulta("COMMIT", $this->conexion))
-        {
-            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $GLOBALS[cod_servic] . " \"target=\"centralFrame\">Insertar Otro Perfil</a></b>";
-
-            $mensaje = "El Perfil <b>" . $GLOBALS[nom] . "</b> Se Inserto con Exito" . $link_a;
-            $mens = new mensajes();
-            $mens->correcto("INSERTAR PERFILES", $mensaje);
-        }
+                    case 2: //editar
+                        ?>
+                        <input type="button" name="registar" value="Editar" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" onclick="registrar(2)"></input>
+                        <?php
+                    break;
+                    case 3: //copiar
+                        ?>
+                        <input type="button" name="registar" value="Copiar" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" onclick="registrar(3)"></input>
+                        <?php
+                    break;
+                    }
+                     ?>
+                </center>          
+            </div>
+        </div>
+       
+    </div>
+    
+    <?php
+        
     }
 
 }
 
-//FIN CLASE PROC_PERFIL
-
-
-
-$proceso = new Proc_perfil($this->conexion, $this->usuario_aplicacion, $this->codigo);
+//FIN CLASE
+$proceso = new ins_perfil_perfil($this->conexion, $this->usuario_aplicacion, $this->codigo);
 ?>

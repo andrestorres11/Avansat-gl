@@ -44,7 +44,7 @@ class LisHomoP
     echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/jquery.js\"></script>\n";
     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 
-    switch($GLOBALS[opcion])
+    switch($_REQUEST[opcion])
     {
       case "1":
         LisHomoP::PcPadres();
@@ -83,7 +83,7 @@ class LisHomoP
     $formulario -> oculto("opcion",1,0);
     $formulario -> oculto("valor",$valor,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> botoni("Buscar","form_list.submit()",0);
     $formulario -> cerrar();
   }
@@ -112,7 +112,7 @@ class LisHomoP
   		   		         a.nom_encarg,'',if(a.ind_virtua = '0','Fisico','Virtual'),
   		   		         a.ind_estado,if(a.ind_urbano = '1',' - Urbano',''), a.cod_colorx
                 FROM ".BASE_DATOS.".tab_genera_contro a
-               WHERE a.nom_contro LIKE '%$GLOBALS[contro]%' 
+               WHERE a.nom_contro LIKE '%$_REQUEST[contro]%' 
                  AND a.cod_contro != ".CONS_CODIGO_PCLLEG." ".$cond1." 
                  AND a.ind_pcpadr = '1' ";
     $query .= $_REQUEST[virtua] === '1' ? " AND a.ind_virtua = '1' " : " AND a.ind_virtua = '0' ";
@@ -159,7 +159,7 @@ class LisHomoP
       else if($matriz[$i][7] == COD_ESTADO_INACTI)
         $estado = "Inactivo";
 
-      #$txt = '<a href="index.php?cod_servic='. $GLOBALS[cod_servic] .'&window=central&cod_contro='. $matriz[$i][0] .'&opcion=2 "target="centralFrame">'. $matriz[$i][0] .'</a>';
+      #$txt = '<a href="index.php?cod_servic='. $_REQUEST[cod_servic] .'&window=central&cod_contro='. $matriz[$i][0] .'&opcion=2 "target="centralFrame">'. $matriz[$i][0] .'</a>';
       $txt = '<span onclick="showListChildren('.$matriz[$i][0].')">'. $matriz[$i][0] .'</span>';
 
       $formulario -> linea($txt,0,$estilo,null,null,null,$estilo);
@@ -177,7 +177,7 @@ class LisHomoP
     $formulario -> oculto("opcion",2,0);
     $formulario -> oculto("valor",$valor,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> oculto("standa",DIR_APLICA_CENTRAL,0);
     $formulario -> cerrar();
   }

@@ -16,11 +16,11 @@ class Proc_despac
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Listar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario();
@@ -52,7 +52,7 @@ class Proc_despac
     $formulario -> linea("Consultar última ubicación Vehiculo",1,"t2");
     
     $formulario -> nueva_tabla();
-    $formulario -> texto ("Despacho:","text","num_despac\" id=\"num_despacID\"  onclick=\"cambio('num_placasID', 'cod_manifiID');\" onkeypress=\"return TextInputNumeric( event )\"",0,50,10,"",$GLOBALS['num_despac']);    
+    $formulario -> texto ("Despacho:","text","num_despac\" id=\"num_despacID\"  onclick=\"cambio('num_placasID', 'cod_manifiID');\" onkeypress=\"return TextInputNumeric( event )\"",0,50,10,"",$_REQUEST['num_despac']);    
     $formulario -> texto ("Manfiesto:","text","cod_manifi\" id=\"cod_manifiID\" onclick=\"cambio('num_despacID', 'num_placasID');\" onkeypress=\"return TextInputNumeric( event )\"",0,50,10,"",$_POST['cod_manifi']);    
     $formulario -> texto ("Placa:","text","num_placas\" id=\"num_placasID\"     onclick=\"cambio('num_despacID', 'cod_manifiID');\"",0,50,10,"",$_POST['num_placas']);    
    
@@ -62,7 +62,7 @@ class Proc_despac
     { 
       $mReset = '1';
      if(  $this -> getExistDespac ( $_POST['num_despac'] , $_POST['num_placas'], $_POST['cod_manifi']) !== true)       
-        echo "<script>alert('El Despacho no Existe'); location.href='?window=central&cod_servic=".$GLOBALS[cod_servic]."';</script>";     
+        echo "<script>alert('El Despacho no Existe'); location.href='?window=central&cod_servic=".$_REQUEST[cod_servic]."';</script>";     
       else
       {
         $mFlag = false;      
@@ -71,14 +71,14 @@ class Proc_despac
           //Para placas
           $mDataDespa = $this -> getDataPlaca ( $_POST ); // Busca si ya no está en ruta 
           if( !$mDataDespa )          
-            echo "<script>alert('La placa ".$_POST['num_placas']." Ya no está en ruta.'); location.href='?window=central&cod_servic=".$GLOBALS[cod_servic]."';</script>"; 
+            echo "<script>alert('La placa ".$_POST['num_placas']." Ya no está en ruta.'); location.href='?window=central&cod_servic=".$_REQUEST[cod_servic]."';</script>"; 
           else
           {
             $_POST['num_despac'] = $mDataDespa;
             $mDataGPS = $this -> getDataGps ( $_POST ); // datos GPS
             if( $mDataGPS == NULL)
             {
-              echo "<script>alert('El despacho ".$_POST['num_despac']." no tiene datos GPS'); location.href='?window=central&cod_servic=".$GLOBALS[cod_servic]."&opcion=2&num_despac=".$_POST['num_despac']."';</script>";    
+              echo "<script>alert('El despacho ".$_POST['num_despac']." no tiene datos GPS'); location.href='?window=central&cod_servic=".$_REQUEST[cod_servic]."&opcion=2&num_despac=".$_POST['num_despac']."';</script>";    
             }
           }
         }
@@ -88,21 +88,21 @@ class Proc_despac
           $mDataGPS = $this -> getDataGps ( $_POST ); // datos GPS
           if( $mDataGPS == NULL)
           {
-            echo "<script>alert('El despacho ".$_POST['num_despac']." no tiene datos GPS'); location.href='?window=central&cod_servic=".$GLOBALS[cod_servic]."&opcion=2&num_despac=".$_POST['num_despac']."';</script>";    
+            echo "<script>alert('El despacho ".$_POST['num_despac']." no tiene datos GPS'); location.href='?window=central&cod_servic=".$_REQUEST[cod_servic]."&opcion=2&num_despac=".$_POST['num_despac']."';</script>";    
           }
         }
         else if($_POST['cod_manifi'] != NULL)
         {
           $mDataDespa = $this -> getDataPlaca ( $_POST ); // Busca por numero de manifiesto
           if( !$mDataDespa )          
-            echo "<script>alert('El Manifiesto ".$_POST['cod_manifi']." Ya no está en ruta.'); location.href='?window=central&cod_servic=".$GLOBALS[cod_servic]."';</script>"; 
+            echo "<script>alert('El Manifiesto ".$_POST['cod_manifi']." Ya no está en ruta.'); location.href='?window=central&cod_servic=".$_REQUEST[cod_servic]."';</script>"; 
           else
           {
             $_POST['num_despac'] = $mDataDespa;
             $mDataGPS = $this -> getDataGps ( $_POST ); // datos GPS
             if( $mDataGPS == NULL)
             {
-              echo "<script>alert('El despacho ".$_POST['num_despac']." no tiene datos GPS'); location.href='?window=central&cod_servic=".$GLOBALS[cod_servic]."';</script>";    
+              echo "<script>alert('El despacho ".$_POST['num_despac']." no tiene datos GPS'); location.href='?window=central&cod_servic=".$_REQUEST[cod_servic]."';</script>";    
             }
           }
         }
@@ -196,15 +196,15 @@ class Proc_despac
     $formulario -> nueva_tabla();
     $formulario -> oculto("reset\" id=\"resetID\"",$mReset,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic\" id=\"cod_servicID\"",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic\" id=\"cod_servicID\"",$_REQUEST[cod_servic],0);
     $formulario -> oculto("opcion\" id=\"opcionID\"",NULL,0);
     $formulario -> oculto("fStandar\" id=\"fStandarID\"",DIR_APLICA_CENTRAL,0);
     // -------------------------------------------------------------------------------------
     $formulario -> nueva_tabla();
       $formulario -> botoni("Buscar","buscar_despac()",0);     
-      //$formulario -> botoni("Ingresar","document.location='?window=central&cod_servic=".$GLOBALS[cod_servic]."&opcion=3'",0);     
+      //$formulario -> botoni("Ingresar","document.location='?window=central&cod_servic=".$_REQUEST[cod_servic]."&opcion=3'",0);     
     if($_POST['num_despac'] != '')      
-      $formulario -> botoni("Volver","document.location='?window=central&cod_servic=".$GLOBALS[cod_servic]."'",1);   
+      $formulario -> botoni("Volver","document.location='?window=central&cod_servic=".$_REQUEST[cod_servic]."'",1);   
    
     $formulario -> cerrar();    
   }
@@ -250,11 +250,11 @@ class Proc_despac
           $formulario -> lista ("Operador:","cod_operadHiddenReq\" id=\"cod_operadHiddenReqID\" ", $this -> getOperadGpsReq( $mDataGPS ), "t2");
             echo "</table>";
           echo "</div>";
-           $formulario -> oculto("cod_servic\" id=\"cod_servicID\"",$GLOBALS[cod_servic],0);
+           $formulario -> oculto("cod_servic\" id=\"cod_servicID\"",$_REQUEST[cod_servic],0);
          /* echo "<div id='RegresarID' style='display:none'>";
             echo "<table align='center'>";
-              $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
-              $formulario -> botoni("Regresar","location.href= '?window=central&cod_servic=".$GLOBALS[cod_servic]."&num_despac=".$_GET['num_despac']."'",0);     
+              $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+              $formulario -> botoni("Regresar","location.href= '?window=central&cod_servic=".$_REQUEST[cod_servic]."&num_despac=".$_GET['num_despac']."'",0);     
             echo "</table>";
           echo "</div>";*/
   }

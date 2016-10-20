@@ -20,11 +20,11 @@ class Ins_clases_config
 //********METODOS DE LA CLASE Ins_clases_config*************
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Formulario();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario();
@@ -51,19 +51,19 @@ class Ins_clases_config
    $formulario = new Formulario ("index.php","post","<b>Ingreso de Clases</b>","form_insert");
    $formulario -> linea("Datos Basicos de la Clase",1);
    $formulario -> nueva_tabla();
-   $formulario -> texto ("Nombre o Descripcion de la Clase:","text","nom",1,30,100,"",$GLOBALS[nom]);
+   $formulario -> texto ("Nombre o Descripcion de la Clase:","text","nom",1,30,100,"",$_REQUEST[nom]);
    $formulario -> nueva_tabla();
    $formulario -> linea("Asignacion de Configuraciones",1);
    $formulario -> nueva_tabla();
 
-   $config=$GLOBALS[config];
+   $config=$_REQUEST[config];
 
-     if(!isset($GLOBALS[maximo]))
-     $GLOBALS[maximo]=1;
+     if(!isset($_REQUEST[maximo]))
+     $_REQUEST[maximo]=1;
 
-     //    echo "maximo".$GLOBALS[maximo];
+     //    echo "maximo".$_REQUEST[maximo];
         ///////////////
-        for($i=0;$i<$GLOBALS[maximo];$i++)
+        for($i=0;$i<$_REQUEST[maximo];$i++)
         {
          if($config[$i])
          {
@@ -92,7 +92,7 @@ class Ins_clases_config
 
             $formulario -> nueva_tabla();
             $formulario -> botoni("Otra","form_insert.submit()",0);
-            $GLOBALS[maximo]=$GLOBALS[maximo]+1;
+            $_REQUEST[maximo]=$_REQUEST[maximo]+1;
 
 
    $formulario -> nueva_tabla();
@@ -101,8 +101,8 @@ class Ins_clases_config
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("opcion",1,0);
-   $formulario -> oculto("maximo","$GLOBALS[maximo]",0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("maximo","$_REQUEST[maximo]",0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    $formulario -> botoni("Aceptar","aceptar_insert()",0);
    $formulario -> botoni("Borrar","form_insert.reset()",0);
    $formulario -> cerrar();
@@ -124,14 +124,14 @@ class Ins_clases_config
 
    //query de insercion
    $query = "INSERT INTO ".BASE_DATOS.".tab_genera_clases
-             VALUES ('$nuevo_consec','$GLOBALS[nom]','$GLOBALS[obs]',
-             '$GLOBALS[usuario]','$fec_actual','$GLOBALS[usuario]','$fec_actual') ";
+             VALUES ('$nuevo_consec','$_REQUEST[nom]','$_REQUEST[obs]',
+             '$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual') ";
    $consulta = new Consulta($query, $this -> conexion,"BR");
 
-   $config=$GLOBALS[config];
+   $config=$_REQUEST[config];
 
 
-   for($i=0;$i<$GLOBALS[maximo];$i++)
+   for($i=0;$i<$_REQUEST[maximo];$i++)
       {
          if($config[$i])
          {
@@ -144,7 +144,7 @@ class Ins_clases_config
   if(!mysql_error())
   {
      $consulta = new Consulta("COMMIT", $this -> conexion);
-     echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>El Clase $GLOBALS[nom]  ha sido Ingresada Correctamente</b><p></p>";
+     echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>El Clase $_REQUEST[nom]  ha sido Ingresada Correctamente</b><p></p>";
   }
   else
      $consulta = new Consulta("ROLLBACK", $this -> conexion);

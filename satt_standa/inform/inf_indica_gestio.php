@@ -515,7 +515,7 @@ class IndicadoresGestion
         $formulario->nueva_tabla();
         $formulario->botoni("Buscar", "formulario.submit()", 0);
         $formulario->oculto("window", "central", 0);
-        $formulario->oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+        $formulario->oculto("cod_servic", $_REQUEST["cod_servic"], 0);
         $formulario->oculto("opcion\" id=\"opcionID", 1, 0);
         $formulario->cerrar();
     }

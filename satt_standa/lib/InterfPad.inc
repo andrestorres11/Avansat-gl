@@ -1,22 +1,29 @@
 <?php
 
- 
   ini_set( "soap.wsdl_cache_enabled", "0" ); // disabling WSDL cache
 
-  
-
-
- 
   class TraficoPad
   {
     private $cConexion = NULL;
     private $cMsgError = "";
-    private $cUrlWsdlA = "https://web9.intrared.net/ap/pad_asistr/ws/server.wsdl";
+    private $cUrlWsdlA = "https://oet.intrared.net/ap/pad_asistr/ws/server.wsdl";
     private $cParamRec = "";
     private $cParamDis = "";
 
+    private static $cBD;
+
     function __construct( $mCo = NULL)
     {
+        $mHost = $_SERVER['HTTP_HOST'];
+        $mHost = explode('.', $mHost);
+
+        switch ($mHost[0]) {
+            case 'web7':      self::$cBD = "bd7.intrared.net:3306";  break;
+            case 'web13':     self::$cBD = "bd13.intrared.net:3306"; break;
+            case 'avansatgl': self::$cBD = "aglbd.intrared.net";     break;
+            default:          self::$cBD = "demo.intrared.net";      break;
+        }
+
          $this -> cConexion = $mCo;
     }
 
@@ -29,7 +36,6 @@
     {
       return $this -> cMsgError;
     }
-
 
 
     function sendError( $mSendData, $mAditionalData, $mArraData = NULL )
@@ -479,7 +485,7 @@
     function Consulta( $mQuery = NULL, $mRetorna = true)
     {       
       $mError = array();
-      $mLink = mysql_connect("bd10.intrared.net:3306", USUARIO, CLAVE); 
+      $mLink = mysql_connect(self::$cBD, USUARIO, CLAVE); 
       if( !$mLink)
       {
         $mError["ID"] = false;

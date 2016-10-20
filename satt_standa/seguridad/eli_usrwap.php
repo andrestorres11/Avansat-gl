@@ -16,11 +16,11 @@ class Proc_usuari
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Listar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Datos();
@@ -42,7 +42,7 @@ class Proc_usuari
 
      for($i=0;$i<sizeof($matriz);$i++)
      {
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&usuari=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&usuari=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
         if($matriz[$i][1] == 0)
         {
            $matriz[$i][1] = 'SIN FILTRO';
@@ -104,7 +104,7 @@ class Proc_usuari
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCTION CAPTURA
 
@@ -113,7 +113,7 @@ class Proc_usuari
             //trae los datos basicos del usuario
       $query = "SELECT cod_usuari,cod_clavex,idx_filtro,cod_filtro
                   FROM ".BASE_DATOS.".tab_usuari_wapxxx
-                 WHERE cod_usuari = '$GLOBALS[usuari]'
+                 WHERE cod_usuari = '$_REQUEST[usuari]'
               ORDER BY 1";
       $consulta = new Consulta($query, $this -> conexion);
       $matriz = $consulta -> ret_matriz();
@@ -177,9 +177,9 @@ class Proc_usuari
 
       $formulario -> nueva_tabla();
       $formulario -> oculto("usuario","$usuario",0);
-      $formulario -> oculto("usuari", $GLOBALS[usuari], 0);
+      $formulario -> oculto("usuari", $_REQUEST[usuari], 0);
       $formulario -> oculto("opcion",2, 0);
-      $formulario -> oculto("cod_servic", $GLOBALS[cod_servic], 0);
+      $formulario -> oculto("cod_servic", $_REQUEST[cod_servic], 0);
       $formulario -> oculto("window","central", 0);
       $formulario -> botoni("Eliminar","eli_usuario()",0);
       $formulario -> cerrar();
@@ -190,13 +190,13 @@ class Proc_usuari
  {
    //query de insercion
    $query = "DELETE FROM ".BASE_DATOS.".tab_usuari_wapxxx
-              WHERE cod_usuari = '$GLOBALS[usuari]'";
+              WHERE cod_usuari = '$_REQUEST[usuari]'";
 
    $consulta = new Consulta($query, $this -> conexion,"BR");
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
   {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Eliminar Otro Usuario</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Eliminar Otro Usuario</a></b>";
 
      $mensaje =  "El Usuario Se Elimino con Exito".$link_a;
      $mens = new mensajes();

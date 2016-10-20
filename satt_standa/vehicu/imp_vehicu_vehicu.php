@@ -16,7 +16,7 @@ class Imp_vehicu_vehicu
 
  function principal()
  {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -315,14 +315,14 @@ function Buscar()
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  ";
 
@@ -367,7 +367,7 @@ function Buscar()
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","if(form_list.por_modelo.checked){if(form_list.mod1.value == '' || form_list.mod2.value == '')alert('Por favor Ingrese el Rango de los Modelos a Filtrar.'); else form_list.submit()}else if(form_list.mod1.value != '' || form_list.mod2.value != '')alert('Por Favor Activa La Casilla De Modelo si Desea Filtrar un Rango de Modelos.'); else form_list.submit();",0);
    $formulario -> cerrar();
  }//FIN FUNCION
@@ -377,8 +377,8 @@ function Buscar()
    $datos_usuario = $this -> usuario -> retornar();
 
    $fec_actual = date("Y-m-d");
-   $fecha1 = $GLOBALS[ano]."-".$GLOBALS[mes]."-".$GLOBALS[dia]." 00:00:00";
-   $fecha2 = $GLOBALS[ano2]."-".$GLOBALS[mes2]."-".$GLOBALS[dia2]." 23:59:59";
+   $fecha1 = $_REQUEST[ano]."-".$_REQUEST[mes]."-".$_REQUEST[dia]." 00:00:00";
+   $fecha2 = $_REQUEST[ano2]."-".$_REQUEST[mes2]."-".$_REQUEST[dia2]." 23:59:59";
 
    $query = "SELECT a.num_placax,g.abr_tercer,g.num_telef1,h.abr_tercer,
 		      		h.num_telmov,b.nom_marcax,c.nom_lineax,d.nom_colorx,
@@ -401,22 +401,22 @@ function Buscar()
                     a.cod_tenedo = g.cod_tercer AND
                     a.cod_conduc = h.cod_tercer AND
                     a.num_placax = j.num_placax AND
-                    a.num_placax LIKE '%".$GLOBALS[placa]."%'";
+                    a.num_placax LIKE '%".$_REQUEST[placa]."%'";
 
-	   if($GLOBALS[transp])
-        $query = $query." AND j.cod_transp = '".$GLOBALS[transp]."'";
-       if($GLOBALS[por_fecha])
+	   if($_REQUEST[transp])
+        $query = $query." AND j.cod_transp = '".$_REQUEST[transp]."'";
+       if($_REQUEST[por_fecha])
         $query = $query." AND a.fec_creaci  BETWEEN '".$fecha1."' AND '".$fecha2."'";
-       if($GLOBALS[marcax])
-          $query = $query." AND a.cod_marcax = '".$GLOBALS[marcax]."'";
-       if($GLOBALS[carroc])
-          $query = $query." AND a.cod_carroc = '".$GLOBALS[carroc]."'";
-       if($GLOBALS[colorx])
-          $query = $query." AND a.cod_colorx = '".$GLOBALS[colorx]."'";
-       if($GLOBALS[config])
-          $query = $query." AND a.num_config = '".$GLOBALS[config]."'";
-       if($GLOBALS[por_modelo])
-          $query = $query." AND a.ano_modelo >= ".$GLOBALS[mod1]." AND a.ano_modelo <= ".$GLOBALS[mod2];
+       if($_REQUEST[marcax])
+          $query = $query." AND a.cod_marcax = '".$_REQUEST[marcax]."'";
+       if($_REQUEST[carroc])
+          $query = $query." AND a.cod_carroc = '".$_REQUEST[carroc]."'";
+       if($_REQUEST[colorx])
+          $query = $query." AND a.cod_colorx = '".$_REQUEST[colorx]."'";
+       if($_REQUEST[config])
+          $query = $query." AND a.num_config = '".$_REQUEST[config]."'";
+       if($_REQUEST[por_modelo])
+          $query = $query." AND a.ano_modelo >= ".$_REQUEST[mod1]." AND a.ano_modelo <= ".$_REQUEST[mod2];
 
    if($datos_usuario["cod_perfil"] == "")
    {
@@ -483,7 +483,7 @@ function Buscar()
   $formulario = new Formulario ("index.php","post","LISTADO DE VEHICULOS","form_item");
 
    $formulario -> linea("Se Encontraron ".sizeof($matriz)." Registros",1,"t2");
-   if($GLOBALS[por_fecha])
+   if($_REQUEST[por_fecha])
    $formulario -> linea("Fecha Inicial $fecha1 Fecha Final $fecha2",0);
 
    $formulario -> nueva_tabla();
@@ -536,7 +536,7 @@ function Buscar()
      else if($matriz[$i][10] == COD_ESTADO_PENDIE)
       $estado = "Pendiente";
 
-     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&placa=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&placa=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
      $formulario -> linea($matriz[$i][0],0,$estilo);
      $formulario -> linea($matriz[$i][1],0,$estilo);
@@ -557,7 +557,7 @@ function Buscar()
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Volver","form_item.opcion.value='0';form_item.submit()",1);
    $formulario -> cerrar();
  }
@@ -611,7 +611,7 @@ function Buscar()
                 "AND a.cod_tenedo = z.cod_tercer ".
                 "AND z.cod_tipdoc = h.cod_tipdoc ".
                 "AND z.cod_ciudad = x.cod_ciudad ".
-                "AND a.num_placax = '".$GLOBALS[placa]."' ".
+                "AND a.num_placax = '".$_REQUEST[placa]."' ".
               "GROUP BY 1";
 
     $consulta = new Consulta($query, $this -> conexion);
@@ -619,7 +619,7 @@ function Buscar()
 
     $query = "SELECT a.num_trayle ".
                "FROM ".BASE_DATOS.".tab_trayle_placas a ".
-              "WHERE a.num_placax = '$GLOBALS[placa]' ".
+              "WHERE a.num_placax = '$_REQUEST[placa]' ".
                 "AND a.ind_actual = 'S' ".
                 "AND a.fec_asigna = ( SELECT MAX( b.fec_asigna ) ".
                                        "FROM ".BASE_DATOS.".tab_trayle_placas b ".
@@ -782,7 +782,7 @@ function Buscar()
         ."<table border=\"0\" width=\"100%\">"
           ."<tr>"
             ."<td align=\"center\">"
-              ."<input type=\"hidden\" name=\"cod_servic\" value=\"$GLOBALS[cod_servic]\">"
+              ."<input type=\"hidden\" name=\"cod_servic\" value=\"$_REQUEST[cod_servic]\">"
               ."<input type=\"hidden\" name=\"window\" value=\"central\">"
               ."<input type=\"button\" onClick=\"form.Imprimir.style.visibility='hidden';form.Volver.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.Volver.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">"
             ."</td>"

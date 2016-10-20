@@ -17,11 +17,11 @@ class Proc_usuari
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Listar();
   else
   {
-   switch($GLOBALS[opcion])
+   switch($_REQUEST[opcion])
    {
     case "1":
      $this -> Datos();
@@ -103,7 +103,7 @@ class Proc_usuari
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCTION CAPTURA
 

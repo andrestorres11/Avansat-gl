@@ -5,7 +5,7 @@ include ("../lib/general/constantes.inc");
 include ("../lib/general/conexion_lib.inc");
 include ("../lib/general/form_lib.inc");
 include ("../lib/general/paginador_lib.inc");
-include("../../".$GLOBALS['url']."/constantes.inc");
+include("../../".$_REQUEST['url']."/constantes.inc");
 include ("../despac/Despachos.inc");
 
 

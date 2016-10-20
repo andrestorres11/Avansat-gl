@@ -36,11 +36,11 @@ class Proc_rutas
     IncludeJS("rutas.js");
     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 
-    if(!isset($GLOBALS[opcion]))
+    if(!isset($_REQUEST[opcion]))
       $this -> Buscar();
     else
     {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "2":
           $this -> Resultado();
@@ -105,14 +105,14 @@ class Proc_rutas
                     a.cod_rutasx = d.cod_rutasx";
    $indwhere = 0;
 
-   if($GLOBALS[ruta] != "")
+   if($_REQUEST[ruta] != "")
    {
     if($indwhere)
-     $query .= " AND a.nom_rutasx LIKE '%".$GLOBALS[ruta]."%'";
+     $query .= " AND a.nom_rutasx LIKE '%".$_REQUEST[ruta]."%'";
 
     else
     {
-     $query .= " WHERE a.nom_rutasx LIKE '%".$GLOBALS[ruta]."%'";
+     $query .= " WHERE a.nom_rutasx LIKE '%".$_REQUEST[ruta]."%'";
      $indwhere = 1;
     }
    }
@@ -144,7 +144,7 @@ class Proc_rutas
   $matriz = $consec -> ret_matriz();
 
   for($i=0;$i<sizeof($matriz);$i++)
-      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=3 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=3 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario = new Formulario ("index.php","post","LISTADO DE RUTAS","form_item");
 
@@ -183,7 +183,7 @@ class Proc_rutas
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -199,7 +199,7 @@ class Proc_rutas
                     ".BASE_DATOS.".tab_genera_contro e
               WHERE a.cod_rutasx = d.cod_rutasx AND
                     d.cod_contro = e.cod_contro AND
-                    a.cod_rutasx = '$GLOBALS[ruta]'
+                    a.cod_rutasx = '$_REQUEST[ruta]'
         		    ORDER BY 7
             ";
 
@@ -208,7 +208,7 @@ class Proc_rutas
 
    $query = "SELECT a.cod_rutasx
    		       FROM ".BASE_DATOS.".tab_genera_ruttra a
-   		      WHERE a.cod_rutasx = ".$GLOBALS[ruta]."
+   		      WHERE a.cod_rutasx = ".$_REQUEST[ruta]."
    		    ";
 
    $consec = new Consulta($query, $this -> conexion);
@@ -216,7 +216,7 @@ class Proc_rutas
 
    $query = "SELECT a.cod_rutasx
    		       FROM ".BASE_DATOS.".tab_despac_vehige a
-   		      WHERE a.cod_rutasx = ".$GLOBALS[ruta]."
+   		      WHERE a.cod_rutasx = ".$_REQUEST[ruta]."
    		    ";
 
    $consec = new Consulta($query, $this -> conexion);
@@ -226,14 +226,14 @@ class Proc_rutas
    {
     $query = "SELECT a.cod_rutasx
    		        FROM ".BASE_DATOS.".tab_despac_seguim a
-   		       WHERE a.cod_rutasx = ".$GLOBALS[ruta]."
+   		       WHERE a.cod_rutasx = ".$_REQUEST[ruta]."
    		     ";
 
     $consec = new Consulta($query, $this -> conexion);
     $existd = $consec -> ret_matriz();
    }
 
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
    $origen = $objciud -> getSeleccCiudad($matriz[0][2]);
    $destino = $objciud -> getSeleccCiudad($matriz[0][3]);
 
@@ -301,13 +301,13 @@ class Proc_rutas
 
    for($i = 0; $i < $interfaz -> totalact; $i++)
    {
-    $homolocon = $interfaz -> getHomoloTranspRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS[ruta]);
+    $homolocon = $interfaz -> getHomoloTranspRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[ruta]);
 
     if($homolocon["RUTAHomolo"] > 0)
     {
      $query = "SELECT a.cod_ciuori,a.cod_ciudes
 		 FROM ".BASE_DATOS.".tab_genera_rutasx a
-		WHERE a.cod_rutasx = ".$GLOBALS[ruta]."
+		WHERE a.cod_rutasx = ".$_REQUEST[ruta]."
 	      ";
 
      $consec = new Consulta($query, $this -> conexion);
@@ -328,11 +328,11 @@ class Proc_rutas
    }
 */
    $formulario -> nueva_tabla();
-   $formulario -> oculto("ruta",$GLOBALS[ruta],0);
+   $formulario -> oculto("ruta",$_REQUEST[ruta],0);
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",4,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    if(!$existt && !$existd)
     $formulario -> botoni("Eliminar","if(confirm('Esta Seguro de Eliminar Esta Ruta?')){form_item.submit()}",1);
@@ -344,14 +344,14 @@ class Proc_rutas
  function Eliminar()
  {
   $query = "DELETE FROM ".BASE_DATOS.".tab_genera_rutasx
-  		          WHERE cod_rutasx = ".$GLOBALS[ruta]."
+  		          WHERE cod_rutasx = ".$_REQUEST[ruta]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion,"BR");
 
   if($consulta = new Consulta ("COMMIT", $this -> conexion))
   {
-   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Eliminar Otra Ruta</a></b>";
+   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Eliminar Otra Ruta</a></b>";
 
    $mensaje = "La Ruta se Elimino con Exito<br>".$link;
    $mens = new mensajes();

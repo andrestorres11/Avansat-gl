@@ -70,7 +70,7 @@ class PorConciliar
 		$formulario -> nueva_tabla();
 		$formulario -> oculto("num_despac",0,0);
   		$formulario -> oculto("window","central",0);
-  		$formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+  		$formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
   		$formulario -> oculto("opcion",1,0);
   
 		$formulario -> cerrar();
@@ -180,8 +180,8 @@ class PorConciliar
 			$placa.= " AND a.fec_concil IS NULL";
 		}
 		
-		$fechaini = $GLOBALS[fecini]." 00:00:00";
-		$fechafin = $GLOBALS[fecfin]." 23:59:59";
+		$fechaini = $_REQUEST[fecini]." 00:00:00";
+		$fechafin = $_REQUEST[fecfin]." 23:59:59";
 		
 		if($_POST[fecini] && $_POST[fecfin])
 		{
@@ -226,7 +226,7 @@ class PorConciliar
 		$formulario -> nueva_tabla();
 		$formulario -> oculto("num_despac",0,0);
   		$formulario -> oculto("window","central",0);
-  		$formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+  		$formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
   		$formulario -> oculto("opcion",2,0);
   
 		$formulario -> cerrar();
@@ -285,7 +285,7 @@ class PorConciliar
 		
 		if(!$cumpli)
 		{
-			$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Listar otros cumplidos</a></b>";
+			$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Listar otros cumplidos</a></b>";
 			$mensaje = "<font color='red' size='2'>El Despacho $_POST[num_despac] no tiene Cumplidos.</font>";
            	echo "<div align='center'><img src=\"../satt_standa/imagenes/error.gif\"><br><b>$mensaje</b><hr>$link_a</div>";
 			die();
@@ -372,7 +372,7 @@ class PorConciliar
 		
 		$formulario -> nueva_tabla();
   		$formulario -> oculto("window","central",0);
-  		$formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+  		$formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
   		$formulario -> oculto("opcion",0,0);
   
 		$formulario -> cerrar();

@@ -19,11 +19,11 @@ class Proc_noveda
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS["opcion"]))
+  if(!isset($_REQUEST["opcion"]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS["opcion"])
+      switch($_REQUEST["opcion"])
        {
         case "1":
           $this -> Resultado();
@@ -52,7 +52,7 @@ class Proc_noveda
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    $formulario -> boton("Aceptar","button\" onClick=\"form_list.submit() ",0);
    $formulario -> boton("Todas","button\" onClick=\"form_list.submit() ",0);
    $formulario -> cerrar();
@@ -74,7 +74,7 @@ class Proc_noveda
          LEFT JOIN ".CENTRAL.".tab_genera_opegps b 
                 ON a.cod_operad = b.cod_operad 
                AND b.ind_estado = '1'
-         	  WHERE nom_noveda LIKE '%$GLOBALS[noveda]%' AND
+         	  WHERE nom_noveda LIKE '%$_REQUEST[noveda]%' AND
 		 		          cod_noveda != ".CONS_NOVEDA_PCLLEG." AND
 									cod_noveda != ".CONS_NOVEDA_ACAEMP." AND
 									cod_noveda != ".CONS_NOVEDA_ACAFAR." AND
@@ -106,7 +106,7 @@ class Proc_noveda
    $formulario -> linea("Visibilidad",1,"t");
    for($i=0;$i<sizeof($matriz);$i++)
    {
-   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&noveda=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&noveda=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    	$formulario -> linea($matriz[$i][0],0,"i");
    	$formulario -> linea($matriz[$i][1],0,"i");
@@ -131,7 +131,7 @@ class Proc_noveda
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
 
@@ -147,7 +147,7 @@ class Proc_noveda
                      a.cod_homolo, a.ind_visibl, a.ind_insveh, 
                      a.ind_ealxxx, a.ind_limpio, a.cod_etapax 
               FROM ".BASE_DATOS.".tab_genera_noveda a 
-             WHERE cod_noveda = '$GLOBALS[noveda]'";
+             WHERE cod_noveda = '$_REQUEST[noveda]'";
     $consulta = new Consulta($query, $this -> conexion);
     $matriz = $consulta -> ret_matriz();
 
@@ -237,7 +237,7 @@ class Proc_noveda
 			foreach( $perfiles as $row )
 			{
 				if( !isset( $_POST["perfil"][$i] ))
-					$checked = $this -> getPermiso( $GLOBALS["noveda"], $row[0] );
+					$checked = $this -> getPermiso( $_REQUEST["noveda"], $row[0] );
 				
 				if( $_POST["sel_todos"] ) 
 					$checked = 1;
@@ -257,9 +257,9 @@ class Proc_noveda
 		$formulario -> oculto("maximo",$interfaz -> cant_interf,0);
 		$formulario -> oculto("usuario","$usuario",0);
 		$formulario -> oculto("opcion",2,0);
-		$formulario -> oculto("noveda",$GLOBALS["noveda"],0);
+		$formulario -> oculto("noveda",$_REQUEST["noveda"],0);
 		$formulario -> oculto("window","central",0);
-		$formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+		$formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
 		$formulario -> boton("Actualizar","button\" onClick=\"if(confirm('Desea Actualiza la Novedad.?')){form_item.opcion.value = 3; form_item.submit();}",0);
 		$formulario -> boton("Cancelar","button\" onClick=\"javascript:history.go(-3)",0);
 		$formulario -> cerrar();
@@ -316,32 +316,32 @@ class Proc_noveda
 
   $fec_actual = date("Y-m-d H:i:s");
    //valida el indicador
-   if($GLOBALS["indala"] == 1)
+   if($_REQUEST["indala"] == 1)
      $alarma = 'S';
    else
      $alarma = 'N';
 
    //valida el indicador de solicitud de tiempos por novedad
-     if($GLOBALS["indtiemp"])
-     $tiempo = $GLOBALS["indtiemp"];
+     if($_REQUEST["indtiemp"])
+     $tiempo = $_REQUEST["indtiemp"];
      else
      $tiempo = 0;
 
 
  //valida novedad especial
-  if($GLOBALS["nov_especi"])
+  if($_REQUEST["nov_especi"])
    $nov_especi = 1;
   else
    $nov_especi = 0;
 
   //valida Mantiene Alamra
-  if($GLOBALS["ind_manala"])
+  if($_REQUEST["ind_manala"])
    $ind_manala = 1;
   else
    $ind_manala = 0;
    
   //valida Fuera de Plataforma
-  if($GLOBALS["ind_fuepla"])
+  if($_REQUEST["ind_fuepla"])
   {
     $ind_fuepla = 1;
     $tiempo = 1;
@@ -350,7 +350,7 @@ class Proc_noveda
    $ind_fuepla = 0;   
 
   //valida Notifica Supervisor
-  if($GLOBALS["ind_notsup"])
+  if($_REQUEST["ind_notsup"])
   {
     $ind_notsup = 1;
     // $ind_manala = 1;
@@ -359,30 +359,30 @@ class Proc_noveda
    $ind_notsup = 0;      
   
   //valida Notifica Supervisor
-  if($GLOBALS["ind_insveh"])
+  if($_REQUEST["ind_insveh"])
     $ind_insveh = 1;
   else
    $ind_insveh = 0; 
   
   //valida visible esferas
-  if($GLOBALS["ind_ealxxx"])
+  if($_REQUEST["ind_ealxxx"])
     $ind_ealxxx = 1;
   else
    $ind_ealxxx = 0;
 
   //valida indicador limpio
-  if($GLOBALS["ind_limpio"])
+  if($_REQUEST["ind_limpio"])
     $ind_limpio = 1;
   else
    $ind_limpio = 0; 
   
-  $cod_operad = $GLOBALS["cod_operad"]; 
-  $cod_homolo = $GLOBALS["cod_homolo"];   
-  $ind_visibl = $GLOBALS["ind_visibl"] == NULL ? '0' : $GLOBALS["ind_visibl"];    
+  $cod_operad = $_REQUEST["cod_operad"]; 
+  $cod_homolo = $_REQUEST["cod_homolo"];   
+  $ind_visibl = $_REQUEST["ind_visibl"] == NULL ? '0' : $_REQUEST["ind_visibl"];    
 
   //query de insercion de despacho
   $query = "UPDATE ".BASE_DATOS.".tab_genera_noveda
-               SET nom_noveda = '".$GLOBALS["nombre"]."',
+               SET nom_noveda = '".$_REQUEST["nombre"]."',
                    ind_alarma = '".$alarma."',
                    ind_tiempo = '".$tiempo."',
                    usr_modifi = '".$usuario."',
@@ -398,17 +398,17 @@ class Proc_noveda
                    ind_ealxxx = '".$ind_ealxxx."',
                    ind_limpio = '".$ind_limpio."',
                    cod_etapax = '".$_REQUEST[cod_etapax]."'
-             WHERE cod_noveda = '".$GLOBALS["noveda"]."'
+             WHERE cod_noveda = '".$_REQUEST["noveda"]."'
            ";
            
   $insercion = new Consulta($query, $this -> conexion,"BR");
 
-  $novedaint = $GLOBALS["novedaint"];
-  $operad = $GLOBALS["operad"];
-  $homoloini = $GLOBALS["homoloini"];
+  $novedaint = $_REQUEST["novedaint"];
+  $operad = $_REQUEST["operad"];
+  $homoloini = $_REQUEST["homoloini"];
 
   //Manejo de la Interfaz Aplicaciones SAT
-  $interfaz = new Interfaz_SAT(BASE_DATOS,NIT_TRANSPOR,$GLOBALS["usuario"],$this -> conexion);
+  $interfaz = new Interfaz_SAT(BASE_DATOS,NIT_TRANSPOR,$_REQUEST["usuario"],$this -> conexion);
 
   for($i = 0; $i < $interfaz -> totalact; $i++)
   {
@@ -416,7 +416,7 @@ class Proc_noveda
    {
     if($homoloini[$i] != $novedaint[$i])
     {
-     $resultado_sat = $interfaz -> actHomoloNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS["noveda"],$novedaint[$i]);
+     $resultado_sat = $interfaz -> actHomoloNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST["noveda"],$novedaint[$i]);
 
      if($resultado_sat["Confirmacion"] == "OK")
       $mensaje_sat .= "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">La Novedad Se Homologo en la Interfaz  <b>".$interfaz -> interfaz[$i]["nombre"].".</b><br>";
@@ -430,7 +430,7 @@ class Proc_noveda
     {
      $novedaint[$i] = $homoloini[$i];
 
-     $resultado_sat = $interfaz -> eliHomoloNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS["noveda"],$novedaint[$i]);
+     $resultado_sat = $interfaz -> eliHomoloNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST["noveda"],$novedaint[$i]);
 
      if($resultado_sat["Confirmacion"] == "OK")
       $mensaje_sat .= "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Se Elimino la Homologacion de la Novedad en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"].".</b><br>";
@@ -441,7 +441,7 @@ class Proc_noveda
   }
 		//Filtro de Perfiles.
 		$query = "DELETE FROM " . BASE_DATOS . ".tab_perfil_noveda
-				  WHERE cod_noveda = '$GLOBALS[noveda]' ";
+				  WHERE cod_noveda = '$_REQUEST[noveda]' ";
 
         $consulta = new Consulta( $query, $this->conexion, "R" );
 		
@@ -456,7 +456,7 @@ class Proc_noveda
 						)
 						VALUES 
 						(
-							'$row',  '$GLOBALS[noveda]'
+							'$row',  '$_REQUEST[noveda]'
 						)";
 			
 			$consulta = new Consulta( $insert, $this -> conexion, "R" );
@@ -464,9 +464,9 @@ class Proc_noveda
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
     {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS["cod_servic"]." \"target=\"centralFrame\">Actualizar Otra Novedad</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST["cod_servic"]." \"target=\"centralFrame\">Actualizar Otra Novedad</a></b>";
 
-     $mensaje =  "La Novedad <b>".$GLOBALS["nombre"]."</b> Se Actualizo con Exito".$mensaje_sat.$link_a;
+     $mensaje =  "La Novedad <b>".$_REQUEST["nombre"]."</b> Se Actualizo con Exito".$mensaje_sat.$link_a;
      $mens = new mensajes();
      $mens -> correcto("ACTUALIZAR NOVEDADES",$mensaje);
     }

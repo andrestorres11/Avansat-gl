@@ -16,11 +16,11 @@ class Proc_trayec
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Formulario();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
 	  case "1":
           $this -> Formulario();
@@ -42,14 +42,14 @@ class Proc_trayec
    $formulario = new Formulario ("index.php","post","INSERTAR TRAYECTO","form_insert");
    $formulario -> linea("Datos Basicos del Trayecto",1,"t2");
    $formulario -> nueva_tabla();
-   $formulario -> texto ("Nombre del Trayecto","text","nom",1,50,50,"",$GLOBALS[nom]);
+   $formulario -> texto ("Nombre del Trayecto","text","nom",1,50,50,"",$_REQUEST[nom]);
 
    $formulario -> nueva_tabla();
 
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("opcion",1,0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    $formulario -> boton("Insertar","button\" onClick=\"ins_tab_trayec() ",0);
    $formulario -> boton("Borrar","reset",1);
    $formulario -> cerrar();
@@ -71,7 +71,7 @@ class Proc_trayec
    $query = "INSERT INTO ".BASE_DATOS.".tab_genera_trayec
    						 (cod_trayec,nom_trayec,cod_estado,usr_creaci,
    						  fec_creaci)
-                  VALUES (".$ultimo[0][0].",'".$GLOBALS[nom]."',".COD_ESTADO_ACTIVO.",'".$GLOBALS[usuario]."',
+                  VALUES (".$ultimo[0][0].",'".$_REQUEST[nom]."',".COD_ESTADO_ACTIVO.",'".$_REQUEST[usuario]."',
    						  '".$fec_actual."')
    		    ";
 
@@ -79,9 +79,9 @@ class Proc_trayec
 
    if($insercion = new Consulta("COMMIT", $this -> conexion))
     {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otro Trayecto</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otro Trayecto</a></b>";
 
-     $mensaje =  "El Trayecto <b>".$GLOBALS[nom]."</b> Se Inserto con Exito".$mensaje_sat.$link_a;
+     $mensaje =  "El Trayecto <b>".$_REQUEST[nom]."</b> Se Inserto con Exito".$mensaje_sat.$link_a;
      $mens = new mensajes();
      $mens -> correcto("INSERTAR TRAYECTO",$mensaje);
     }

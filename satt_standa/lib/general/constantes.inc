@@ -1,7 +1,6 @@
 <?php
 //define("URL_DIREC_APLICA", "190.143.80.47/ap");
-//define("URL_DIREC_APLICA", "web10.intrared.net/ap");	//ORIGINAL 
-define("URL_DIREC_APLICA", "54.215.8.158/ap");	//ORIGINAL 
+define("URL_DIREC_APLICA", "avansatgl.intrared.net/ap");	//ORIGINAL 
 
 //define("COD_PERFIL_SUPERUSR", "666");// constante para perfil administrador del sistema
 define("COD_PERFIL_SUPERUSR", "73");// constante para perfil administrador del sistema
@@ -83,7 +82,7 @@ define("URL_INTERF_SATFLI", "https://dev.intrared.net/ap/interf/app/sat/wsdl/sat
 define("URL_INTERF_SATCLO", "https://dev.intrared.net/ap/interf/app/sat/wsdl/sat.wsdl");
 
 
-define("URL_INTERF_GPSXXX", "https://web10.intrared.net/ap/interf/app/gps/wsdl/gps.wsdl");
+define("URL_INTERF_GPSXXX", "https://avansatgl.intrared.net/ap/interf/app/gps/wsdl/gps.wsdl");
 
 
 
@@ -103,7 +102,7 @@ define("URL_INTERF_PROTEK", "http://www.protekto.net/SerWeb/SWOET.asmx?WSDL");
 
 // CONSTANTES INTERFAZ RIT
 //define("URL_INTERF_RITXXX", "https://web9.intrared.net/ap/interf/app/rit/wsdl/rit.wsdl");
-define("URL_INTERF_RITXXX", "https://54.241.36.240/ap/interf/app/rit/wsdl/rit.wsdl");
+define("URL_INTERF_RITXXX", "https://oet.intrared.net/ap/interf/app/rit/wsdl/rit.wsdl");
 define("URL_USERXX_RITXXX", "InterfCalifi");
 define("URL_PASSXX_RITXXX", "1nt3rF@RiT!*2014");
 //---------------------------------------------------------------------------------------------------

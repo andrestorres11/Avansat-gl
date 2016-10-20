@@ -16,7 +16,7 @@ class Proc_despac
 	
 	function principal()
 	{
-		switch($GLOBALS[opcion])
+		switch($_REQUEST[opcion])
 		{
 			case "1":
 				$this -> Datos();
@@ -35,7 +35,7 @@ class Proc_despac
 		print_r( $datos_usuario );
 		echo "</pre>";
 		
-		$listado_prin = new Despachos($GLOBALS[cod_servic],1, 1 ,$this -> conexion);
+		$listado_prin = new Despachos($_REQUEST[cod_servic],1, 1 ,$this -> conexion);
 		$listado_prin -> ListadoPrincipal($datos_usuario,0,"Despachos en Ruta");
 	}
 
@@ -46,15 +46,15 @@ class Proc_despac
 
    $formulario = new Formulario ("index.php","post","Informacion del Despacho","form_item");
 
-   $listado_prin = new Despachos($GLOBALS[cod_servic],2, '1' ,$this -> conexion);
-   $listado_prin  -> Encabezado($GLOBALS[despac],$formulario,$datos_usuario,0,"Despachos en Ruta");
-   $listado_prin  -> PlanDeRuta($GLOBALS[despac],$formulario,0);
+   $listado_prin = new Despachos($_REQUEST[cod_servic],2, '1' ,$this -> conexion);
+   $listado_prin  -> Encabezado($_REQUEST[despac],$formulario,$datos_usuario,0,"Despachos en Ruta");
+   $listado_prin  -> PlanDeRuta($_REQUEST[despac],$formulario,0);
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("despac",$GLOBALS[despac],0);
-   $formulario -> oculto("opcion",$GLOBALS[opcion],0);
+   $formulario -> oculto("despac",$_REQUEST[despac],0);
+   $formulario -> oculto("opcion",$_REQUEST[opcion],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> cerrar();
    

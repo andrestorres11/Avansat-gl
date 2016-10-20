@@ -15,11 +15,11 @@ class Proc_marcas
 //********METODOS DE LA CLASE PROC_LISTA DE PRECIOS ESTANDAR*************
         function principal()
         {
-                if(!isset($GLOBALS[opcion]))
+                if(!isset($_REQUEST[opcion]))
                         $this -> Marcas();
                 else
                 {
-                        switch($GLOBALS[opcion])
+                        switch($_REQUEST[opcion])
                         {
                                 case "5":
                                 $this -> Mostrar();
@@ -44,7 +44,7 @@ class Proc_marcas
         {
                 $query = "SELECT a.cod_marcax,a.nom_marcax
                             FROM ".BASE_DATOS.".tab_genera_marcas a
-                           WHERE a.nom_marcax LIKE '%$GLOBALS[marcas]%'";
+                           WHERE a.nom_marcax LIKE '%$_REQUEST[marcas]%'";
                 $con_marcas = new Consulta($query, $this -> conexion);
                 $marcas = $con_marcas -> ret_matriz();
                 $this -> form_marcas();
@@ -91,7 +91,7 @@ class Proc_marcas
                         $formulario -> nueva_tabla();
                         $formulario -> oculto("opcion",5,0);
                         $formulario -> oculto("window","central",0);
-                        $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+                        $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
                         $formulario -> botoni("Buscar","if(form_list.marcas.value == '') alert('Debe ingresar un texto para la busqueda.'); else form_list.submit();",1);
                         $formulario -> cerrar();
         }//FIN FUNCION ACTUALIZAR

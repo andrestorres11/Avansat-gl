@@ -259,7 +259,7 @@
       $formulario -> nueva_tabla();
       $formulario -> oculto("opcion","ins",0);
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS['cod_servic'],0);
+      $formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
 
       $formulario -> nueva_tabla();
       $formulario -> boton("Insertar","button\" onClick=\"VerifyEscolta();",1);
@@ -304,14 +304,14 @@
                        a.ind_planru = 'S' AND
                        a.fec_salida IS NULL ";
 
-      if($GLOBALS[manifi])
-        $query .= " AND a.cod_manifi = '".$GLOBALS[manifi]."'";
-      if($GLOBALS[numdes])
-        $query .= " AND a.num_despac = '".$GLOBALS[numdes]."'";
-      if($GLOBALS[vehicu])
-        $query .= " AND b.num_placax = '".$GLOBALS[vehicu]."'";
-      if($GLOBALS[trayle])
-        $query .= " AND b.num_trayle = '".$GLOBALS[trayle]."'";
+      if($_REQUEST[manifi])
+        $query .= " AND a.cod_manifi = '".$_REQUEST[manifi]."'";
+      if($_REQUEST[numdes])
+        $query .= " AND a.num_despac = '".$_REQUEST[numdes]."'";
+      if($_REQUEST[vehicu])
+        $query .= " AND b.num_placax = '".$_REQUEST[vehicu]."'";
+      if($_REQUEST[trayle])
+        $query .= " AND b.num_trayle = '".$_REQUEST[trayle]."'";
 
       $query .= " AND a.num_despac = '".$num_despac."'";
       
@@ -389,14 +389,14 @@
         $query .= " AND a.cod_manifi NOT IN(". join(',', $cond ).")";
       }
                     
-      if($GLOBALS[manifi])
-       $query .= " AND a.cod_manifi = '".$GLOBALS[manifi]."'";
-      if($GLOBALS[numdes])
-       $query .= " AND a.num_despac = '".$GLOBALS[numdes]."'";
-      if($GLOBALS[vehicu])
-       $query .= " AND b.num_placax = '".$GLOBALS[vehicu]."'";
-      if($GLOBALS[trayle])
-       $query .= " AND b.num_trayle = '".$GLOBALS[trayle]."'";
+      if($_REQUEST[manifi])
+       $query .= " AND a.cod_manifi = '".$_REQUEST[manifi]."'";
+      if($_REQUEST[numdes])
+       $query .= " AND a.num_despac = '".$_REQUEST[numdes]."'";
+      if($_REQUEST[vehicu])
+       $query .= " AND b.num_placax = '".$_REQUEST[vehicu]."'";
+      if($_REQUEST[trayle])
+       $query .= " AND b.num_trayle = '".$_REQUEST[trayle]."'";
 
       if($datos_usuario["cod_perfil"] == "")
        {
@@ -450,14 +450,14 @@
       $formulario -> linea("Se Encontro un Total de ".sizeof($matriz)." Despacho(s).",0,"t2");
 
       $formulario -> nueva_tabla();
-      $formulario -> texto("Despacho","text","numdes\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,8,8,"",$GLOBALS[numdes],"","",1);
-      $formulario -> texto("Documento/Despacho","text","manifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,8,8,"",$GLOBALS[manifi],"","",1);
+      $formulario -> texto("Despacho","text","numdes\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,8,8,"",$_REQUEST[numdes],"","",1);
+      $formulario -> texto("Documento/Despacho","text","manifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()",0,8,8,"",$_REQUEST[manifi],"","",1);
       $formulario -> linea("Estado",0,"t");
       $formulario -> linea("Origen",0,"t");
       $formulario -> linea("Destino",0,"t");
       $formulario -> linea("Transportadora",0,"t");
-      $formulario -> texto("Vehiculo","text","vehicu\" onChange=\"form_item.submit()",0,8,8,"",$GLOBALS[vehicu],"","",1);
-      $formulario -> texto("Remolque","text","trayle\" onChange=\"form_item.submit()",0,8,8,"",$GLOBALS[trayle],"","",1);
+      $formulario -> texto("Vehiculo","text","vehicu\" onChange=\"form_item.submit()",0,8,8,"",$_REQUEST[vehicu],"","",1);
+      $formulario -> texto("Remolque","text","trayle\" onChange=\"form_item.submit()",0,8,8,"",$_REQUEST[trayle],"","",1);
       $formulario -> linea("Conductor",1,"t");
 
       for($i = 0; $i < sizeof($matriz); $i++)
@@ -472,11 +472,11 @@
       else if($matriz[$i][2] == "A")
       $estado = "Anulado";
 
-      $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+      $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
       $ciudad_o = $objciud -> getSeleccCiudad($matriz[$i][3]);
       $ciudad_d = $objciud -> getSeleccCiudad($matriz[$i][4]);
 
-      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&despac=".$matriz[$i][0]."&opcion=sel \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&despac=".$matriz[$i][0]."&opcion=sel \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
       $formulario -> linea($matriz[$i][0],0,$estilo);
       $formulario -> linea($matriz[$i][1],0,$estilo);
@@ -491,16 +491,16 @@
       }
 
       $formulario -> nueva_tabla();
-      $formulario -> oculto("b_ciuori",$GLOBALS[b_ciuori],0);
-      $formulario -> oculto("b_ciudes",$GLOBALS[b_ciudes],0);
-      $formulario -> oculto("transp",$GLOBALS[transp],0);
-      $formulario -> oculto("fil",$GLOBALS[fil],0);
-      $formulario -> oculto("fecini",$GLOBALS[fecini],0);
-      $formulario -> oculto("fecfin",$GLOBALS[fecfin],0);
+      $formulario -> oculto("b_ciuori",$_REQUEST[b_ciuori],0);
+      $formulario -> oculto("b_ciudes",$_REQUEST[b_ciudes],0);
+      $formulario -> oculto("transp",$_REQUEST[transp],0);
+      $formulario -> oculto("fil",$_REQUEST[fil],0);
+      $formulario -> oculto("fecini",$_REQUEST[fecini],0);
+      $formulario -> oculto("fecfin",$_REQUEST[fecfin],0);
 
       $formulario -> oculto("opcion",1,0);
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+      $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
       $formulario -> cerrar();
 
 

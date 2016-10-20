@@ -17,11 +17,11 @@ class Proc_perfil
 
     function principal()
     {
-        if (!isset($GLOBALS[opcion]))
+        if (!isset($_REQUEST[opcion]))
             $this->Listado();
         else
         {
-            switch ($GLOBALS[opcion])
+            switch ($_REQUEST[opcion])
             {
                 case "1":
                     $this->Formulario1();
@@ -66,15 +66,15 @@ class Proc_perfil
 
         for ($i = 0; $i < sizeof($matriz); $i++)
         {
-            $matriz[$i][0] = "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&opcion=1&perfil=" . $matriz[$i][0] . " \"target=\"centralFrame\">" . $matriz[$i][0] . "</a>";
+            $matriz[$i][0] = "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&opcion=1&perfil=" . $matriz[$i][0] . " \"target=\"centralFrame\">" . $matriz[$i][0] . "</a>";
 
             $formulario->linea($matriz[$i][0], 0, "i");
             $formulario->linea($matriz[$i][1], 1, "i");
         }
 
         $formulario->nueva_tabla();
-        $formulario->oculto("opcion", $GLOBALS[opcion], 0);
-        $formulario->oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+        $formulario->oculto("opcion", $_REQUEST[opcion], 0);
+        $formulario->oculto("cod_servic", $_REQUEST["cod_servic"], 0);
         $formulario->oculto("window", "central", 0);
         $formulario->cerrar();
     }
@@ -85,7 +85,7 @@ class Proc_perfil
 
         $query = "SELECT a.cod_perfil,a.nom_perfil, a.cod_respon
 	       	   FROM " . BASE_DATOS . ".tab_genera_perfil a
-	      	  WHERE a.cod_perfil = " . $GLOBALS[perfil] . "
+	      	  WHERE a.cod_perfil = " . $_REQUEST[perfil] . "
 	    	";
 
         $consulta = new Consulta($query, $this->conexion);
@@ -144,7 +144,7 @@ class Proc_perfil
                 $query = "SELECT a.cod_perfil
 			     FROM " . BASE_DATOS . ".tab_perfil_servic a
 			    WHERE a.cod_servic = " . $servpadr[$i][0] . " AND
-			   		  a.cod_perfil = " . $GLOBALS[perfil] . "
+			   		  a.cod_perfil = " . $_REQUEST[perfil] . "
 			  ";
 
                 $consulta = new Consulta($query, $this->conexion);
@@ -173,7 +173,7 @@ class Proc_perfil
                 $query = "SELECT a.cod_perfil
 			     FROM " . BASE_DATOS . ".tab_perfil_servic a
 			    WHERE a.cod_servic = " . $servhijo[$j][0] . " AND
-			   		  a.cod_perfil = " . $GLOBALS[perfil] . "
+			   		  a.cod_perfil = " . $_REQUEST[perfil] . "
 			  ";
 
                 $consulta = new Consulta($query, $this->conexion);
@@ -194,7 +194,7 @@ class Proc_perfil
                         $query = "SELECT a.cod_perfil
 			        FROM " . BASE_DATOS . ".tab_perfil_servic a
 			       WHERE a.cod_servic = " . $sniveles[$k][0] . " AND
-			   		     a.cod_perfil = " . $GLOBALS[perfil] . "
+			   		     a.cod_perfil = " . $_REQUEST[perfil] . "
 			     ";
 
                         $consulta = new Consulta($query, $this->conexion);
@@ -225,8 +225,8 @@ class Proc_perfil
         $formulario->oculto("usuario", "$usuario", 0);
         $formulario->oculto("window", "central", 0);
         $formulario->oculto("opcion", 2, 0);
-        $formulario->oculto("cod_perfil", $GLOBALS[perfil], 0);
-        $formulario->oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+        $formulario->oculto("cod_perfil", $_REQUEST[perfil], 0);
+        $formulario->oculto("cod_servic", $_REQUEST["cod_servic"], 0);
 
         $formulario->boton("Aceptar", "button\" onClick=\"actualizar()", 0);
         $formulario->cerrar();
@@ -244,13 +244,13 @@ class Proc_perfil
 
         $query = "SELECT a.cod_filtro,a.clv_filtro
    		       FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil a
-   		      WHERE a.cod_perfil = " . $GLOBALS[cod_perfil] . "
+   		      WHERE a.cod_perfil = " . $_REQUEST[cod_perfil] . "
    		    ";
 
         $consulta = new Consulta($query, $this->conexion);
         $asignado = $consulta->ret_matriz();
 
-        if (!$GLOBALS[codigos])
+        if (!$_REQUEST[codigos])
         {
             for ($i = 0; $i < sizeof($matriz); $i++)
             {
@@ -262,7 +262,7 @@ class Proc_perfil
             }
         }
         else
-            $filtrosel = $GLOBALS[codigos];
+            $filtrosel = $_REQUEST[codigos];
 
         $inicio[0][0] = 0;
         $inicio[0][1] = '-';
@@ -299,9 +299,9 @@ class Proc_perfil
 
         $formulario->nueva_tabla();
         $formulario->linea("Codigo", 0, "t");
-        $formulario->linea($GLOBALS[cod_perfil], 1, "i");
+        $formulario->linea($_REQUEST[cod_perfil], 1, "i");
         $formulario->linea("Nombre", 0, "t");
-        $formulario->linea($GLOBALS[nom], 1, "i");
+        $formulario->linea($_REQUEST[nom], 1, "i");
         
         $formulario->linea("Responsable", 0, "t");
         $formulario->lista_titulo("", "cod_respon", $responsable, 1);
@@ -405,7 +405,7 @@ class Proc_perfil
             }
         }
 
-        $servicios = $GLOBALS[permi];
+        $servicios = $_REQUEST[permi];
         $servicios = array_merge($servicios);
         
         $formulario->nueva_tabla();
@@ -421,7 +421,7 @@ class Proc_perfil
 			$formulario->nueva_tabla();
 			foreach( $novedades as $row )
 			{
-				$checked = $this -> getPermiso( $GLOBALS[cod_perfil], $row[0] );
+				$checked = $this -> getPermiso( $_REQUEST[cod_perfil], $row[0] );
 				
 				if( $_POST[sel_todos] ) 
 					$checked = 1;
@@ -437,10 +437,10 @@ class Proc_perfil
 		}
 
         $formulario->nueva_tabla();
-        $formulario->oculto("opcion", $GLOBALS[opcion], 0);
-        $formulario->oculto("cod_servic", $GLOBALS["cod_servic"], 0);
-        $formulario->oculto("cod_perfil", $GLOBALS[cod_perfil], 0);
-        $formulario->oculto("nom", $GLOBALS[nom], 0);
+        $formulario->oculto("opcion", $_REQUEST[opcion], 0);
+        $formulario->oculto("cod_servic", $_REQUEST["cod_servic"], 0);
+        $formulario->oculto("cod_perfil", $_REQUEST[cod_perfil], 0);
+        $formulario->oculto("nom", $_REQUEST[nom], 0);
         $formulario->oculto("max_ser", "" . sizeof($matriz) . "", 0);
 
         for ($i = 0; $i < sizeof($servicios); $i++)
@@ -487,16 +487,16 @@ class Proc_perfil
         $fec_actual = date("Y-m-d H:i:s");
 
         //reasignacion de variables
-        $servicios = $GLOBALS[permi];
-        $filtros = $GLOBALS[seleccion];
-        $codigos = $GLOBALS[codigos];
+        $servicios = $_REQUEST[permi];
+        $filtros = $_REQUEST[seleccion];
+        $codigos = $_REQUEST[codigos];
 
-        $nuevo_consec = $GLOBALS[cod_perfil];
+        $nuevo_consec = $_REQUEST[cod_perfil];
         
         $_REQUEST['cod_respon'] = $_REQUEST['cod_respon'] != '' ? $_REQUEST['cod_respon'] : 'NULL' ;
 
         $query = "UPDATE " . BASE_DATOS . ".tab_genera_perfil
-   				SET nom_perfil = '" . $GLOBALS[nom] . "',
+   				SET nom_perfil = '" . $_REQUEST[nom] . "',
               cod_respon = '".$_REQUEST['cod_respon']."',
                     usr_modifi = '" . $this->usuario->cod_usuari . "',
                     fec_modifi = '" . $fec_actual . "'
@@ -566,7 +566,7 @@ class Proc_perfil
             }//fin while
         }//fin for
 
-        for ($i = 0; $i < $GLOBALS[max_ser]; $i++)
+        for ($i = 0; $i < $_REQUEST[max_ser]; $i++)
         {
             if ($filtros[$i] != Null)
             {
@@ -597,7 +597,7 @@ class Proc_perfil
 						)
 						VALUES 
 						(
-							'$GLOBALS[cod_perfil]',  '$row'
+							'$_REQUEST[cod_perfil]',  '$row'
 						)";
 			
 			$consulta = new Consulta( $insert, $this -> conexion, "R" );
@@ -606,9 +606,9 @@ class Proc_perfil
 
         if ($insercion = new Consulta("COMMIT", $this->conexion))
         {
-            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $GLOBALS[cod_servic] . " \"target=\"centralFrame\">Actualizar Otro Perfil</a></b>";
+            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $_REQUEST[cod_servic] . " \"target=\"centralFrame\">Actualizar Otro Perfil</a></b>";
 
-            $mensaje = "El Perfil <b>" . $GLOBALS[nom] . "</b> Se Actualizo con Exito" . $link_a;
+            $mensaje = "El Perfil <b>" . $_REQUEST[nom] . "</b> Se Actualizo con Exito" . $link_a;
             $mens = new mensajes();
             $mens->correcto("ACTUALIZAR PERFILES", $mensaje);
         }

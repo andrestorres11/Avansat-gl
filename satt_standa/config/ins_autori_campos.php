@@ -28,11 +28,11 @@ class Ins_Autori_Campos
 
  {
 
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Listar_Perfiles();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
 
         case "1":
@@ -65,7 +65,7 @@ class Ins_Autori_Campos
              $matriz = $consulta -> ret_matriz();
 
         for($i=0;$i<sizeof($matriz);$i++)
-             $matriz[$i][0]= "<a href=\"index.php?cod_servic=".$GLOBALS["cod_servic"]."&window=central&perfil=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+             $matriz[$i][0]= "<a href=\"index.php?cod_servic=".$_REQUEST["cod_servic"]."&window=central&perfil=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
       $formulario = new Formulario ("index.php","post","NIVELES DE AUTORIZACION","form_perfil");
       $formulario -> linea("Listado de Perfiles",0,"t2");
@@ -94,7 +94,7 @@ class Ins_Autori_Campos
 
      $query = "SELECT cod_perfil,nom_perfil
                  FROM ".BASE_DATOS.".tab_genera_perfil
-                WHERE cod_perfil = '$GLOBALS[perfil]'";
+                WHERE cod_perfil = '$_REQUEST[perfil]'";
 
      $consulta = new Consulta($query, $this -> conexion);
      $perfil_a = $consulta -> ret_arreglo();
@@ -130,19 +130,19 @@ class Ins_Autori_Campos
 	$query = "SELECT val_minimo, val_maximo
 		  FROM ".BASE_DATOS.".tab_autori_perfil
 		  WHERE cod_autori = '".$matriz[$i][1]."'
-		  AND   cod_perfil = '$GLOBALS[perfil]'";
+		  AND   cod_perfil = '$_REQUEST[perfil]'";
 	$consulta = new Consulta($query, $this -> conexion);
 	if($autori = $consulta -> ret_arreglo())
 	{
 	   $chek = 1;
-	   $GLOBALS["valmin"][$i] = $autori[0];
-	   $GLOBALS["valmax"][$i] = $autori[1];
+	   $_REQUEST["valmin"][$i] = $autori[0];
+	   $_REQUEST["valmax"][$i] = $autori[1];
 	}
 	else
 	{
 	   $chek = 0;
-	   $GLOBALS["valmin"][$i] = 0;
-	   $GLOBALS["valmax"][$i] = 0;
+	   $_REQUEST["valmin"][$i] = 0;
+	   $_REQUEST["valmax"][$i] = 0;
 	};
 
         if($i%2 == 0)
@@ -150,8 +150,8 @@ class Ins_Autori_Campos
 
           $formulario -> caja("","nivel[$i]",$matriz[$i][1],$chek,0);
           $formulario -> linea($matriz[$i][0],0,"i");
-          $formulario -> texto ("","text","valmin[$i]\" id=mi$i onKeyUp=\"if(isNaN(this.value)){this.value=''}\"",0,10,20,"",$GLOBALS["valmin"][$i]);
-          $formulario -> texto ("","text","valmax[$i]\" id=ma$i onKeyUp=\"if(isNaN(this.value)){this.value=''}\" onBlur=\"if(this.value < form_nivaut.mi$i.value){this.value=''}\"",1,10,20,"",$GLOBALS["valmin"][$i]);
+          $formulario -> texto ("","text","valmin[$i]\" id=mi$i onKeyUp=\"if(isNaN(this.value)){this.value=''}\"",0,10,20,"",$_REQUEST["valmin"][$i]);
+          $formulario -> texto ("","text","valmax[$i]\" id=ma$i onKeyUp=\"if(isNaN(this.value)){this.value=''}\" onBlur=\"if(this.value < form_nivaut.mi$i.value){this.value=''}\"",1,10,20,"",$_REQUEST["valmin"][$i]);
 
         }
 
@@ -159,18 +159,18 @@ class Ins_Autori_Campos
         {
           $formulario -> caja("","nivel[$i]",$matriz[$i][1],$chek,0);
           $formulario -> linea($matriz[$i][0],0,"i");
-          $formulario -> texto ("","text","valmin[$i]\" id=mi$i onKeyUp=\"if(isNaN(this.value)){this.value=''}\"",0,10,20,"",$GLOBALS["valmin"][$i]);
-          $formulario -> texto ("","text","valmax[$i]\" id=ma$i onKeyUp=\"if(isNaN(this.value)){this.value=''}\" onBlur=\"if(this.value < form_nivaut.mi$i.value){this.value=''}\"",1,10,20,"",$GLOBALS["valmax"][$i]);
+          $formulario -> texto ("","text","valmin[$i]\" id=mi$i onKeyUp=\"if(isNaN(this.value)){this.value=''}\"",0,10,20,"",$_REQUEST["valmin"][$i]);
+          $formulario -> texto ("","text","valmax[$i]\" id=ma$i onKeyUp=\"if(isNaN(this.value)){this.value=''}\" onBlur=\"if(this.value < form_nivaut.mi$i.value){this.value=''}\"",1,10,20,"",$_REQUEST["valmax"][$i]);
 
        }
       }//fin for
       $formulario -> oculto("usuario","$usuario",0);
       $formulario -> oculto("nperfi","".$encabe[1][1]."",0);
-      $formulario -> oculto("perfil","$GLOBALS[perfil]",0);
+      $formulario -> oculto("perfil","$_REQUEST[perfil]",0);
       $formulario -> oculto("window","central",0);
       $formulario -> oculto("maximo","".sizeof($matriz)."",0);
       $formulario -> oculto("opcion",2,0);
-      $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+      $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
       $formulario -> nueva_tabla();
       $formulario -> botoni("Aceptar","acep_autori()",0);
       $formulario -> botoni("Borrar","form_nivaut.reset()",1);
@@ -184,32 +184,32 @@ class Ins_Autori_Campos
    $fec_actual = date("Y-m-d H:i:s");
 
    $query = "DELETE FROM ".BASE_DATOS.".tab_autori_perfil
-	     WHERE cod_perfil = '$GLOBALS[perfil]'";
+	     WHERE cod_perfil = '$_REQUEST[perfil]'";
    $insercion = new Consulta($query, $this -> conexion, "BR");
 
-   for($i = 0; $i < $GLOBALS[maximo]; $i++)
+   for($i = 0; $i < $_REQUEST[maximo]; $i++)
    {
 
-    if($GLOBALS[nivel][$i])
+    if($_REQUEST[nivel][$i])
     {
 
-     if(!$GLOBALS[valmin][$i] && !$GLOBALS[valmax][$i])
+     if(!$_REQUEST[valmin][$i] && !$_REQUEST[valmax][$i])
      {
-       $GLOBALS[valmin][$i] = 'NULL';
-       $GLOBALS[valmax][$i] = 'NULL';
+       $_REQUEST[valmin][$i] = 'NULL';
+       $_REQUEST[valmax][$i] = 'NULL';
      }
      else
      {
-       $GLOBALS[valmin][$i] = "'".$GLOBALS[valmin][$i]."'";
-       $GLOBALS[valmax][$i] = "'".$GLOBALS[valmax][$i]."'";
+       $_REQUEST[valmin][$i] = "'".$_REQUEST[valmin][$i]."'";
+       $_REQUEST[valmax][$i] = "'".$_REQUEST[valmax][$i]."'";
      };
 
      $query = "INSERT INTO ".BASE_DATOS.".tab_autori_perfil(
                            cod_autori,cod_perfil,val_minimo,val_maximo,
                            usr_creaci,fec_creaci)
-                      VALUES ('".$GLOBALS[nivel][$i]."','$GLOBALS[perfil]',
-                              ".$GLOBALS[valmin][$i].",".$GLOBALS[valmax][$i].",
-                              '$GLOBALS[usuario]','$fec_actual')";
+                      VALUES ('".$_REQUEST[nivel][$i]."','$_REQUEST[perfil]',
+                              ".$_REQUEST[valmin][$i].",".$_REQUEST[valmax][$i].",
+                              '$_REQUEST[usuario]','$fec_actual')";
      $insercion = new Consulta($query, $this -> conexion, "R");
 
     }
@@ -217,9 +217,9 @@ class Ins_Autori_Campos
 
    if($insercion = new Consulta("COMMIT", $this -> conexion))
    {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Volver al Listado</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Volver al Listado</a></b>";
 
-     $mensaje =  "Se Han Registrado los Niveles de Autorizaci&oacute;n Para el Perfil <b>".$GLOBALS[perfil]."</b>".$link_a;
+     $mensaje =  "Se Han Registrado los Niveles de Autorizaci&oacute;n Para el Perfil <b>".$_REQUEST[perfil]."</b>".$link_a;
      $mens = new mensajes();
      $mens -> correcto("NIVELES DE AUTORIZACION",$mensaje);
    }

@@ -361,7 +361,7 @@
             include( "../lib/general/tabla_lib.inc" );
             include( "../lib/general/constantes.inc" );
 
-            $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+            $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
             
             if($__REQUEST[cod_transp])
             {

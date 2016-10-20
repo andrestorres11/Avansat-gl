@@ -10,8 +10,6 @@ include( "lib/general/dinamic_list.inc" );
 
 session_start();
 
-//echo "<hr />".$_SESSION["USUARIO"]."<hr />";
-
 
 define( BASE_DATOS , $_SESSION["BASE_DATOS"] );
 define( DIR_APLICA_CENTRAL , $_SESSION["DIR_APLICA_CENTRAL"] );
@@ -33,7 +31,7 @@ if( isset($_SESSION["conexionADS"]) && $_SESSION["conexionADS"] == TRUE )
 }
 else
 {
-  $conexion = new Conexion( 'bd10.intrared.net:3306' , USUARIO, CLAVE, BASE_DATOS );
+  $conexion = new Conexion( HOST , USUARIO, CLAVE, BASE_DATOS );
 }
 
 if ( isset( $_GET["Action"] ) ) $_AJAX = $_GET;

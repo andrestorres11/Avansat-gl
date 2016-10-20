@@ -23,7 +23,7 @@ class AjaxForgotPass
       include_once( "../satt_standa/lib/bd/seguridad/aplica_filtro_perfil_lib.inc" );
       include_once( "../satt_standa/lib/bd/seguridad/aplica_filtro_usuari_lib.inc" );
       
-      $AjaxConnection = new Conexion( "bd10.intrared.net:3306", USUARIO, CLAVE, BASE_DATOS );
+      $AjaxConnection = new Conexion( HOST, USUARIO, CLAVE, BASE_DATOS );
     }
     else
     {
@@ -111,7 +111,7 @@ class AjaxForgotPass
     if( sizeof( $mValida ) > 0 )
     {
       //$mUrl = str_replace('http', 'https', DIREC_APLICA ).'forgot.php?cod_usuari='.base64_encode($mData['cod_usuari']).'&ema_usuari='.base64_encode($mData['ema_usuari']).'&token='.sha1( $mData['cod_usuari'] );
-      $mUrl = 'https://web10.intrared.net/ap/satt_faro/forgot.php?cod_usuari='.base64_encode( $mData['cod_usuari'] ).'&ema_usuari='.base64_encode( $mData['ema_usuari'] ).'&token='.sha1( $mData['cod_usuari'] );
+      $mUrl = 'https://avansatgl.intrared.net/ap/satt_faro/forgot.php?cod_usuari='.base64_encode( $mData['cod_usuari'] ).'&ema_usuari='.base64_encode( $mData['ema_usuari'] ).'&token='.sha1( $mData['cod_usuari'] );
       $mShortURL = $this -> shortURL( $mUrl, 'intrared', 'R_bded69919c544634ba7ffe709e74d4b4', 'xml' );      
 
       $cod_usuari = $mData['cod_usuari'];
@@ -310,7 +310,7 @@ class AjaxForgotPass
         $mHtml .= '</tr>';
 
         //$mUrl = DIREC_APLICA.'index.php';
-        $mUrl = 'https://web10.intrared.net/ap/satt_faro/index.php';
+        $mUrl = 'https://avansatgl.intrared.net/ap/satt_faro/index.php';
         
         $mHtml .= '<tr>';
         $mHtml .= '<td class="CellHead" align="center" style="padding:5px;font-size:14px;"><a href="'.$mUrl.'" style="cursor:pointer;text-decoration:none;color:#FFFFFF;">Inciar Sesi&oacute;n en SAT TRAFICO</a></td>';

@@ -73,7 +73,7 @@ class Inf_Proyec_Despac
     include( "../lib/general/form_lib.inc" );
     include( "../lib/general/tabla_lib.inc" );
 
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+    $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
     
     $_USUARIO = $this -> getUsers( $_REQUEST );
     

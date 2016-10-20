@@ -59,7 +59,7 @@ class ActProtocMatcom
     $formulario -> oculto("window","central",0);
     $formulario -> oculto("opcion\" id=\"opcionID",99,0);
     $formulario -> oculto("standa\" id=\"StandaID",DIR_APLICA_CENTRAL,0);
-    $formulario -> oculto("cod_servic",$GLOBALS['cod_servic'],0);
+    $formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
     $formulario -> cerrar();     
     
     $mHtml  = '</tr><tr><td><center>';

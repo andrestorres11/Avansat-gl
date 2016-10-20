@@ -76,7 +76,7 @@ class ImportNovedad
             $mHtml .= '<td class="'.$class.'" align="center"><b>'.( $j + 1 ).'</b></td>';
             $mHtml .= '<td class="'.$class.'" align="center">'.$_INFO[$j][0].'</td>';
             $mHtml .= '<td class="'.$class.'" align="center">'.$_INFO[$j][1].'</td>';
-            $valor = $_INFO[$j][2] ? $_INFO[$j][2] :'( VACÕO )';
+            $valor = $_INFO[$j][2] ? $_INFO[$j][2] :'( VAC√çO )';
             $mHtml .= '<td class="'.$class.'" align="center">'.$valor.'</td>';
             $mHtml .= '<td class="'.$class.'">'.$_INFO[$j][3].'</td>';
           $mHtml .= '</tr>';
@@ -146,15 +146,11 @@ class ImportNovedad
   function insertNovedad( $row )
   {
     include_once("../".DIR_APLICA_CENTRAL."/despac/InsertNovedad.inc");
+    include_once("../".DIR_APLICA_CENTRAL."/lib/general/functions.inc");
 
     $mDataDespac = self::getDataDespac( $row[0] );
-    
-    $mSql = "SELECT cod_contro, val_duraci
-               FROM ".BASE_DATOS.".tab_genera_rutcon
-              WHERE cod_rutasx = '".$mDataDespac[0]['cod_rutasx']."' 
-              ORDER BY val_duraci ASC";
-    $consulta = new Consulta( $mSql, $this -> conexion );
-    $mDataContro = $consulta -> ret_matriz();
+
+    $mDataContro = getNextPC($this->conexion, $mDataDespac[0]['num_despac']);
    
     $mSql = "SELECT MAX(a.cod_consec) AS maximo
                FROM ".BASE_DATOS.".tab_despac_contro a,  
@@ -169,7 +165,7 @@ class ImportNovedad
     $mNumDespac = $mDataDespac[0]['num_despac'];
     $mCodRutasx = $mDataDespac[0]['cod_rutasx'];
     $mCodConsec = $mNewConsec[0][0] + 1;
-    $mCodContro = $mDataContro[1]['cod_contro'];
+    $mCodContro = $mDataContro['cod_contro'];
     $mObsContro = $row[4];
     $mFecContro = $row[2];
     $mCodNoveda = $row[1];

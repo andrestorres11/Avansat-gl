@@ -13,6 +13,7 @@ class Usuari
         $usr_emailx,
         $cod_perfil,
         $cod_inicio,
+        $cod_grupox,
         $ind_estado;
 
     //Metodos
@@ -45,8 +46,8 @@ class Usuari
         $consulta = new Consulta($query, $conexion, $transaccion);
         $this -> clv_usuari = $cl;
         $this -> nom_usuari = $no;
-                $this -> usr_emailx = $ue;
-                $this -> cod_perfil = $cp;
+        $this -> usr_emailx = $ue;
+        $this -> cod_perfil = $cp;
         $this -> cod_inicio = $ci;
     }
 
@@ -54,10 +55,11 @@ class Usuari
     {
         $query = "SELECT clv_usuari,
                          nom_usuari,
-                                                 usr_emailx,
-                             cod_perfil,
-                             cod_inicio,
-                             ind_estado
+                         usr_emailx,
+                         cod_perfil,
+                         cod_inicio,
+                         cod_grupox,
+                         ind_estado
                     FROM ".BASE_DATOS.".tab_genera_usuari
                    WHERE cod_usuari = '" . $this -> cod_usuari . "'";
         $consulta = new Consulta($query, $conexion);
@@ -68,8 +70,9 @@ class Usuari
             $this -> clv_usuari = $datos["clv_usuari"];
             $this -> nom_usuari = $datos["nom_usuari"];
             $this -> usr_emailx = $datos["usr_emailx"];
-                    $this -> cod_perfil = $datos["cod_perfil"];
+            $this -> cod_perfil = $datos["cod_perfil"];
             $this -> cod_inicio = $datos["cod_inicio"];
+            $this -> cod_grupox = $datos["cod_grupox"];
             $this -> ind_estado = $datos["ind_estado"];
         }
         return $num_filas;
@@ -113,9 +116,10 @@ class Usuari
         $datos["clv_usuari"] = $this -> clv_usuari;
         $datos["nom_usuari"] = $this -> nom_usuari;
         $datos["usr_emailx"] = $this -> usr_emailx;
-            $datos["cod_perfil"] = $this -> cod_perfil;
-            $datos["cod_inicio"] = $this -> cod_inicio;
-            $datos["ind_estado"] = $this -> ind_estado;
+        $datos["cod_perfil"] = $this -> cod_perfil;
+        $datos["cod_inicio"] = $this -> cod_inicio;
+        $datos["cod_grupox"] = $this -> cod_grupox;
+        $datos["ind_estado"] = $this -> ind_estado;
         return $datos;
     }
 

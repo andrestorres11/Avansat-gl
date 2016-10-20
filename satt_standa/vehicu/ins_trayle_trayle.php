@@ -16,7 +16,7 @@ class Ins_trayle_trayle {
         $this->cod_aplica = $ca;
         self::$cFunciones = new trayle($co, $us, $ca);
         self::$cTransp = new Despac($co, $us, $ca);
-        switch ($GLOBALS[opcion]) { 
+        switch ($_REQUEST[opcion]) { 
             case 1:
               $this->Formulario();
             break;
@@ -180,11 +180,11 @@ class Ins_trayle_trayle {
       $mHtml->OpenDiv("id:contentID; class:contentAccordion");
         # Accordion1
         $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
-        $mHtml->SetBody("<h3 style='padding:6px;'><center>Información Básica</center></h3>");
+        $mHtml->SetBody("<h3 style='padding:6px;'><center>Informaci&oacute;n B&aacute;sica</center></h3>");
         $mHtml->OpenDiv("id:sec1;");
           $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
             $mHtml->Table("tr");
-              $mHtml->Label("Número de Remolque:", "width:25%; *:1;");
+              $mHtml->Label("N&uacute;mero de Remolque:", "width:25%; *:1;");
                if($datos->principal->num_trayle){
                 $mHtml->Input(array( "name" => "trayle[num_trayle]", "id" => "num_trayleID", "width" => "25%", "maxlength" => "6", "minlength" => "6",  "validate" => "alpha", "obl" => "1", "value" => $datos->principal->num_trayle, "disabled" => true));
               }else{
@@ -195,7 +195,7 @@ class Ins_trayle_trayle {
               
               $mHtml->Label("Modelo:", "width:25%; :1;");
               $mHtml->Input(array("type" => "numeric", "name" => "trayle[ano_modelo]", "validate" => "numero",  "minlength" => "4", "maxlength" => "4", "id" => "ano_modeloID", "width" => "25%", "value" => $datos->principal->ano_modelo));
-              $mHtml->Label("Configuración:", "width:25%; :1;");
+              $mHtml->Label("Configuraci&oacute;n:", "width:25%; :1;");
               $mHtml->Select2 ($datos->configuraciones,  array("name" => "trayle[cod_config]", "validate" => "select", "id" => "cod_configID", "width" => "25%", "key"=> $datos->principal->cod_config, "end"=>true) );
               
               $mHtml->Label("Peso Vacio (TN):", "width:25%; *:1;");

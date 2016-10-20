@@ -15,11 +15,11 @@ class Hab_conduc_conduc
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -69,14 +69,14 @@ function Buscar()
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  ";
 
@@ -102,7 +102,7 @@ function Buscar()
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Cancelar","form_act.reset()",1);
    $formulario -> cerrar();
@@ -123,17 +123,17 @@ function Buscar()
              	   a.cod_tercer = c.cod_tercer
            ";
 
-  if($GLOBALS[transp])
-   $query .= " AND b.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[fil] == 1)
-   $query = $query." AND a.cod_tercer = '".$GLOBALS[tercer]."'";
-  else if($GLOBALS[fil] == 2)
-   $query = $query." AND a.abr_tercer LIKE '%".$GLOBALS[tercer]."%'";
-  else if($GLOBALS[fil] == 3)
+  if($_REQUEST[transp])
+   $query .= " AND b.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[fil] == 1)
+   $query = $query." AND a.cod_tercer = '".$_REQUEST[tercer]."'";
+  else if($_REQUEST[fil] == 2)
+   $query = $query." AND a.abr_tercer LIKE '%".$_REQUEST[tercer]."%'";
+  else if($_REQUEST[fil] == 3)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_ACTIVO."";
-  else if($GLOBALS[fil] == 4)
+  else if($_REQUEST[fil] == 4)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_INACTI."";
-  else if($GLOBALS[fil] == 5)
+  else if($_REQUEST[fil] == 5)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_PENDIE."";
 
   $query = $query." GROUP BY 1 ORDER BY 2";
@@ -154,7 +154,7 @@ function Buscar()
   $formulario -> linea("E-mail",0,"t2");
   $formulario -> linea("Estado",1,"t2");
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
   for($i = 0; $i < sizeof($matriz); $i++)
   {
@@ -173,7 +173,7 @@ function Buscar()
 
    $ciudad_a = $objciud -> getSeleccCiudad($matriz[$i][4]);
 
-   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&conduc=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&conduc=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario -> linea($matriz[$i][0],0,$estilo);
    $formulario -> linea($matriz[$i][1]." ".$matriz[$i][2]." ".$matriz[$i][3],0,$estilo);
@@ -189,7 +189,7 @@ function Buscar()
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -210,7 +210,7 @@ function Buscar()
                     a.cod_tercer = c.cod_tercer AND
                     a.cod_tercer = e.cod_tercer AND
                     c.cod_activi = d.cod_activi AND
-                    a.cod_tercer = '$GLOBALS[conduc]'
+                    a.cod_tercer = '$_REQUEST[conduc]'
               ORDER BY 7";
         $consec = new Consulta($query, $this -> conexion);
         $matriz = $consec -> ret_matriz();
@@ -273,10 +273,10 @@ function Buscar()
    $formulario -> radio("Pendiente","estcon",COD_ESTADO_PENDIE,$estpen,1);
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("conduc",$GLOBALS[conduc],0);
+   $formulario -> oculto("conduc",$_REQUEST[conduc],0);
    $formulario -> oculto("opcion",3,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Aceptar","if(confirm('Esta Seguro de Modificar el Estado del Conductor.?')){form_conduc.submit()}",1);
    $formulario -> cerrar();
  }//FIN FUNCION DATOS
@@ -287,21 +287,21 @@ function Buscar()
   $datos_usuario = $this -> usuario -> retornar();
   $usuario = $datos_usuario["cod_usuari"];
 
-  if(!$GLOBALS[estcon])
-   $GLOBALS[estcon] = 0;
+  if(!$_REQUEST[estcon])
+   $_REQUEST[estcon] = 0;
 
   $query = "UPDATE ".BASE_DATOS.".tab_tercer_tercer
-  			   SET cod_estado = '".$GLOBALS[estcon]."',
+  			   SET cod_estado = '".$_REQUEST[estcon]."',
   			  	   usr_modifi = '".$usuario."',
   			  	   fec_modifi = NOW()
-  			 WHERE cod_tercer = '".$GLOBALS[conduc]."'
+  			 WHERE cod_tercer = '".$_REQUEST[conduc]."'
   		   ";
 
   $insercion = new Consulta($query, $this -> conexion,"BR");
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
   {
-   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Activar/Inactivar Otro Conductor</a></b>";
+   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Activar/Inactivar Otro Conductor</a></b>";
 
    $mensaje =  "Se Actualizo el Conductor Exitosamente".$link_a;
    $mens = new mensajes();

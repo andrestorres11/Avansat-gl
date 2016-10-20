@@ -15,11 +15,11 @@ class Proc_tercer
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -70,14 +70,14 @@ class Proc_tercer
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  ";
 
@@ -165,7 +165,7 @@ class Proc_tercer
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","form_act.submit()",0);
    $formulario -> botoni("Cancelar","form_act.reset()",1);
    $formulario -> cerrar();
@@ -232,19 +232,19 @@ class Proc_tercer
     }
    }
 
-  if($GLOBALS[transp])
-   $query .= " AND b.cod_transp = '".$GLOBALS[transp]."'";
-  if($GLOBALS[activi])
-   $query = $query." AND c.cod_activi = ".$GLOBALS[activi]."";
-  if($GLOBALS[fil] == 1)
-   $query = $query." AND a.cod_tercer = '".$GLOBALS[tercer]."'";
-  else if($GLOBALS[fil] == 2)
-   $query = $query." AND a.abr_tercer LIKE '%".$GLOBALS[tercer]."%'";
-  else if($GLOBALS[fil] == 3)
+  if($_REQUEST[transp])
+   $query .= " AND b.cod_transp = '".$_REQUEST[transp]."'";
+  if($_REQUEST[activi])
+   $query = $query." AND c.cod_activi = ".$_REQUEST[activi]."";
+  if($_REQUEST[fil] == 1)
+   $query = $query." AND a.cod_tercer = '".$_REQUEST[tercer]."'";
+  else if($_REQUEST[fil] == 2)
+   $query = $query." AND a.abr_tercer LIKE '%".$_REQUEST[tercer]."%'";
+  else if($_REQUEST[fil] == 3)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_ACTIVO."";
-  else if($GLOBALS[fil] == 4)
+  else if($_REQUEST[fil] == 4)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_INACTI."";
-  else if($GLOBALS[fil] == 5)
+  else if($_REQUEST[fil] == 5)
    $query = $query." AND a.cod_estado = ".COD_ESTADO_PENDIE."";
 
   $query = $query." GROUP BY 1 ORDER BY 2";
@@ -265,7 +265,7 @@ class Proc_tercer
   $formulario -> linea("E-mail",0,"t2");
   $formulario -> linea("Estado",1,"t2");
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
   for($i = 0; $i < sizeof($matriz); $i++)
   {
@@ -284,7 +284,7 @@ class Proc_tercer
 
    $ciudad_a = $objciud -> getSeleccCiudad($matriz[$i][4]);
 
-   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&tercer=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&tercer=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario -> linea($matriz[$i][0],0,$estilo);
    $formulario -> linea($matriz[$i][1]." ".$matriz[$i][2]." ".$matriz[$i][3],0,$estilo);
@@ -300,7 +300,7 @@ class Proc_tercer
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -314,7 +314,7 @@ class Proc_tercer
                     a.dir_emailx ,a.dir_urlweb ,a.cod_estado,a.obs_tercer,
                     a.usr_creaci, a.fec_creaci,a.usr_modifi, a.fec_modifi
                FROM ".BASE_DATOS.".tab_tercer_tercer a
-              WHERE a.cod_tercer = '".$GLOBALS[tercer]."'
+              WHERE a.cod_tercer = '".$_REQUEST[tercer]."'
             ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -324,7 +324,7 @@ class Proc_tercer
    		       FROM ".BASE_DATOS.".tab_tercer_activi a,
    		       		".BASE_DATOS.".tab_genera_activi b
    		      WHERE a.cod_activi = b.cod_activi AND
-   		      		a.cod_tercer = '".$GLOBALS[tercer]."' AND
+   		      		a.cod_tercer = '".$_REQUEST[tercer]."' AND
    		            a.cod_activi <> ".COD_FILTRO_EMPTRA." AND
    		            a.cod_activi <> ".COD_FILTRO_AGENCI." AND
    		            a.cod_activi <> ".COD_FILTRO_CONDUC."
@@ -338,7 +338,7 @@ class Proc_tercer
    		       FROM ".BASE_DATOS.".tab_tercer_activi a
    		      WHERE (a.cod_activi = ".COD_FILTRO_EMPTRA." OR
    		            a.cod_activi = ".COD_FILTRO_CONDUC.") AND
-   		            a.cod_tercer = '".$GLOBALS[tercer]."'
+   		            a.cod_tercer = '".$_REQUEST[tercer]."'
    		    ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -346,7 +346,7 @@ class Proc_tercer
 
    $query = "SELECT a.cod_conduc
    		       FROM ".BASE_DATOS.".tab_despac_vehige a
-   		      WHERE a.cod_conduc = '".$GLOBALS[tercer]."'
+   		      WHERE a.cod_conduc = '".$_REQUEST[tercer]."'
    		    ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -354,7 +354,7 @@ class Proc_tercer
 
    $query = "SELECT a.cod_client
    		       FROM ".BASE_DATOS.".tab_despac_despac a
-   		      WHERE a.cod_client = '".$GLOBALS[tercer]."'
+   		      WHERE a.cod_client = '".$_REQUEST[tercer]."'
    		    ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -362,15 +362,15 @@ class Proc_tercer
 
    $query = "SELECT a.num_placax
    		       FROM ".BASE_DATOS.".tab_vehicu_vehicu a
-   		      WHERE (a.cod_conduc = '".$GLOBALS[tercer]."' OR
-   		            a.cod_tenedo = '".$GLOBALS[tercer]."' OR
-   		            a.cod_propie = '".$GLOBALS[tercer]."')
+   		      WHERE (a.cod_conduc = '".$_REQUEST[tercer]."' OR
+   		            a.cod_tenedo = '".$_REQUEST[tercer]."' OR
+   		            a.cod_propie = '".$_REQUEST[tercer]."')
    		    ";
 
    $consulta = new Consulta($query, $this -> conexion);
    $existveh = $consulta -> ret_matriz();
 
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
    $ciudad_a = $objciud -> getSeleccCiudad($matriz[0][4]);
 
    if($matriz[0][11] == COD_ESTADO_ACTIVO)
@@ -444,7 +444,7 @@ class Proc_tercer
    $formulario -> oculto("opcion",3,0);
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("tercer","".$matriz[0][0]."",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
 
  }//FIN FUNCION
@@ -452,13 +452,13 @@ class Proc_tercer
  function Eliminar()
  {
    $query = "DELETE FROM ".BASE_DATOS.".tab_tercer_tercer
-                       WHERE cod_tercer = '$GLOBALS[tercer]'";
+                       WHERE cod_tercer = '$_REQUEST[tercer]'";
 
    $eliminacion = new Consulta($query, $this -> conexion,"BR");
 
    if($insercion = new Consulta("COMMIT", $this -> conexion))
    {
-    $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Eliminar Otro Tercero</a></b>";
+    $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Eliminar Otro Tercero</a></b>";
 
     $mensaje =  "El Tercero Se Elimino con Exito".$link_a;
     $mens = new mensajes();

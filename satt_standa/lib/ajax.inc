@@ -5,6 +5,9 @@
 session_start();
 
 //------------------------
+if( !defined( 'HOST' ) )
+	define( 'HOST', $_SESSION["HOST"] );
+//------------------------
 if( !defined( 'BASE_DATOS' ) )
 	define( 'BASE_DATOS', $_SESSION["BASE_DATOS"] );
 //------------------------
@@ -15,8 +18,8 @@ if( !defined( 'CLAVE' ) )
 	define( 'CLAVE', $_SESSION["CLAVE"] );
 //------------------------
 if( !defined( 'BD_STANDA' ) )
-	//define( 'BD_STANDA', $_SESSION["BD_STANDA"] );
 	define( 'BD_STANDA', 'satt_standa' );
+	//define( 'BD_STANDA', $_SESSION["BD_STANDA"] );
 //------------------------
 if( !defined( 'DIR_APLICA_CENTRAL' ) )
 	define( 'DIR_APLICA_CENTRAL', $_SESSION["DIR_APLICA_CENTRAL"] );
@@ -42,7 +45,7 @@ include_once( "../lib/bd/seguridad/aplica_filtro_usuari_lib.inc" );
 include_once("../lib/mensajes_lib.inc");
 include_once("../lib/general/FormLib.class.php");
 
-$AjaxConnection = new Conexion( "bd10.intrared.net:3306", USUARIO, CLAVE, BASE_DATOS );
+$AjaxConnection = new Conexion( HOST, USUARIO, CLAVE, BASE_DATOS );
 
 if ( isset( $_GET ["Ajax"] ) ) $_AJAX = $_GET;
 if ( isset( $_POST["Ajax"] ) ) $_AJAX = $_POST;

@@ -215,7 +215,7 @@ function insertar_llegada($despac, $link, $usuario, $fi1, $fi2, $fi3)
     //actualiza la hora de llegada del despacho
     $query="UPDATE ".BASE_DATOS.".tab_despac_despac
                SET fec_llegad = '$fec_actual',
-                   obs_llegad = '$GLOBALS[obs]',
+                   obs_llegad = '$_REQUEST[obs]',
 		   usr_modifi = '".$usuario."',
 		   fec_modifi = '".$fec_actual."'
              WHERE num_despac = '$despac' ";
@@ -244,7 +244,7 @@ function insertar_llegada($despac, $link, $usuario, $fi1, $fi2, $fi3)
     {
        $despac_ws["despac"] = $despac;
        $despac_ws["fechax"] = $fec_actual;
-       $despac_ws["observ"] = $GLOBALS[obs];
+       $despac_ws["observ"] = $_REQUEST[obs];
 
        $resultado_ws = $interfaz -> insLlegad($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$despac_ws);
 
@@ -259,7 +259,7 @@ function insertar_llegada($despac, $link, $usuario, $fi1, $fi2, $fi3)
   //Manejo de Interfaz GPS
 
   /*$interf_gps = new Interfaz_GPS();
-  $interf_gps -> Interfaz_GPS_envio(NIT_TRANSPOR,BASE_DATOS,$GLOBALS[usuario],$link);
+  $interf_gps -> Interfaz_GPS_envio(NIT_TRANSPOR,BASE_DATOS,$_REQUEST[usuario],$link);
 
   for($i = 0; $i  < $interf_gps -> cant_interf; $i++)
   {

@@ -16,11 +16,11 @@ class Mod_agencias
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
    $this -> Buscar();
   else
   {
-   switch($GLOBALS[opcion])
+   switch($_REQUEST[opcion])
    {
     case "1":
      $this -> Resultado();
@@ -79,7 +79,7 @@ class Mod_agencias
   $formulario -> nueva_tabla();
   $formulario -> oculto("window","central",0);
   $formulario -> oculto("opcion",1,0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> botoni("Aceptar","form_agenci.submit()",0);
  }
 
@@ -91,11 +91,11 @@ class Mod_agencias
                FROM ".BASE_DATOS.".tab_genera_agenci a,
                     ".BASE_DATOS.".tab_transp_agenci b
               WHERE a.cod_agenci = b.cod_agenci AND
-              		a.nom_agenci LIKE '%".$GLOBALS[nombre]."%'
+              		a.nom_agenci LIKE '%".$_REQUEST[nombre]."%'
              ";
 
-   if($GLOBALS[transp])
-    $query .= " AND b.cod_transp = '".$GLOBALS[transp]."'";
+   if($_REQUEST[transp])
+    $query .= " AND b.cod_transp = '".$_REQUEST[transp]."'";
 
    $query .= " GROUP BY 1 ORDER BY 1";
 
@@ -116,11 +116,11 @@ class Mod_agencias
    $formulario -> linea("E-mail",0,"t");
    $formulario -> linea("Fax",1,"t");
 
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
    for($i=0;$i<sizeof($agencias);$i++)
    {
-   	$agencias[$i][0] = "<a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]."&opcion=2&agenci=".$agencias[$i][0]." \"target=\"centralFrame\">".$agencias[$i][0]."</a>";
+   	$agencias[$i][0] = "<a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]."&opcion=2&agenci=".$agencias[$i][0]." \"target=\"centralFrame\">".$agencias[$i][0]."</a>";
     $ciudad_a = $objciud -> getSeleccCiudad($agencias[$i][2]);
 
     $formulario -> linea($agencias[$i][0],0,"i");
@@ -137,7 +137,7 @@ class Mod_agencias
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("opcion",2,0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -154,7 +154,7 @@ class Mod_agencias
   		      FROM ".BASE_DATOS.".tab_genera_agenci a,
   		      	   ".BASE_DATOS.".tab_transp_agenci b,
   		      	   ".BASE_DATOS.".tab_tercer_tercer c
-  		     WHERE a.cod_agenci = ".$GLOBALS[agenci]." AND
+  		     WHERE a.cod_agenci = ".$_REQUEST[agenci]." AND
   		     	   a.cod_agenci = b.cod_agenci AND
   		     	   b.cod_transp = c.cod_tercer
   		   ";
@@ -164,7 +164,7 @@ class Mod_agencias
 
   $query = "SELECT a.cod_agedes
   		      FROM ".BASE_DATOS.".tab_despac_despac a
-  		     WHERE a.cod_agedes = ".$GLOBALS[agenci]."
+  		     WHERE a.cod_agedes = ".$_REQUEST[agenci]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -172,13 +172,13 @@ class Mod_agencias
 
   $query = "SELECT a.cod_agenci
   		      FROM ".BASE_DATOS.".tab_despac_vehige a
-  		     WHERE a.cod_agenci = ".$GLOBALS[agenci]."
+  		     WHERE a.cod_agenci = ".$_REQUEST[agenci]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
   $exiveh = $consulta -> ret_matriz();
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
   $ciudad_a = $objciud -> getSeleccCiudad($agenci[0][2]);
 
   echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/agenci.js\"></script>\n";
@@ -206,10 +206,10 @@ class Mod_agencias
   $formulario -> linea($agenci[0][7],1,"i");
 
   $formulario -> nueva_tabla();
-  $formulario -> oculto("agenci",$GLOBALS[agenci],0);
+  $formulario -> oculto("agenci",$_REQUEST[agenci],0);
   $formulario -> oculto("window","central",0);
   $formulario -> oculto("opcion",3,0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
   if(!$exides && !$exiveh)
    $formulario -> botoni("Eliminar","if(confirm('Esta Seguro de Eliminar la Agencia.?')){form_agenci.submit()}",0);
@@ -221,14 +221,14 @@ class Mod_agencias
  function Eliminar()
  {
   $query = "DELETE FROM ".BASE_DATOS.".tab_genera_agenci
-  		          WHERE cod_agenci = ".$GLOBALS[agenci]."
+  		          WHERE cod_agenci = ".$_REQUEST[agenci]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion,"BR");
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
   {
-   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Eliminar Otra Agencia</a></b>";
+   $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Eliminar Otra Agencia</a></b>";
 
    $mensaje =  "La Agencia Se Elimino con Exito".$link_a;
    $mens = new mensajes();

@@ -11,7 +11,7 @@ ini_set("soap.wsdl_cache_enabled", 0);
 class WsdlCall
 {
 	#Variables de la clase
-	private $cUrlWsdl = 'https://web10.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl';
+	private $cUrlWsdl = 'https://avansatgl.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl';
 	private $cUsrCall = 'InterfIndCall';
 	private $cPasCall = 'U4f=)Ja.0';
 	private $cTokCall = '*K4czOUZxtt{Y|ND5c=q';

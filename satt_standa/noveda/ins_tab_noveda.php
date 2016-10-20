@@ -16,11 +16,11 @@
 
     function principal()
     {
-      if(!isset($GLOBALS["opcion"]))
+      if(!isset($_REQUEST["opcion"]))
         $this -> Formulario();
       else
       {
-        switch($GLOBALS["opcion"])
+        switch($_REQUEST["opcion"])
         {
           case "1":
             $this -> Formulario();
@@ -47,16 +47,16 @@
       $formulario = new Formulario ("index.php","post","INSERTAR NOVEDADES","form_insert");
       $formulario -> linea("Datos Basicos de la Noveda",1,"t2");
       $formulario -> nueva_tabla();
-      $formulario -> texto ("Nombre o Descripcion de la Novedad","text","nom",1,50,100,"",$GLOBALS["nom"]);
-      $formulario -> caja ("Genera Alerta","indala","1",$GLOBALS["indala"],1);
-      $formulario -> caja ("Solicita Tiempos","indtiemp","1",$GLOBALS["indtiemp"],1);
-      $formulario -> caja ("Novedad Especial","nov_especi","1",$GLOBALS["nov_especi"],1);
-      $formulario -> caja ("Mantiene Alarma","ind_manala","1",$GLOBALS["ind_manala"],1);
-      $formulario -> caja ("Fuera de Plataforma","ind_fuepla","1",$GLOBALS["ind_fuepla"],1);
-      $formulario -> caja ("Notifica Supervisor","ind_notsup","1",$GLOBALS["ind_notsup"],1);
-      $formulario -> caja ("Inspección Vehicular","ind_insveh","1",$GLOBALS["ind_insveh"],1);
-      $formulario -> caja ("Visible Esferas","ind_ealxxx","1",$GLOBALS["ind_ealxxx"],1);
-      $formulario -> caja ("Limpio","ind_limpio","1",$GLOBALS["ind_limpio"],1);
+      $formulario -> texto ("Nombre o Descripcion de la Novedad","text","nom",1,50,100,"",$_REQUEST["nom"]);
+      $formulario -> caja ("Genera Alerta","indala","1",$_REQUEST["indala"],1);
+      $formulario -> caja ("Solicita Tiempos","indtiemp","1",$_REQUEST["indtiemp"],1);
+      $formulario -> caja ("Novedad Especial","nov_especi","1",$_REQUEST["nov_especi"],1);
+      $formulario -> caja ("Mantiene Alarma","ind_manala","1",$_REQUEST["ind_manala"],1);
+      $formulario -> caja ("Fuera de Plataforma","ind_fuepla","1",$_REQUEST["ind_fuepla"],1);
+      $formulario -> caja ("Notifica Supervisor","ind_notsup","1",$_REQUEST["ind_notsup"],1);
+      $formulario -> caja ("Inspección Vehicular","ind_insveh","1",$_REQUEST["ind_insveh"],1);
+      $formulario -> caja ("Visible Esferas","ind_ealxxx","1",$_REQUEST["ind_ealxxx"],1);
+      $formulario -> caja ("Limpio","ind_limpio","1",$_REQUEST["ind_limpio"],1);
       $formulario -> lista ("Etapa:", "cod_etapax", $mEtapas, 1);
       $formulario -> nueva_tabla();
       
@@ -67,8 +67,8 @@
         
       $formulario->nueva_tabla();      
         $formulario -> lista("Operador Novedad:", "cod_operad", $this -> getOperadores(), 0);
-        $formulario -> texto("Código de homologación:","text","cod_homolo\"onkeypress=\"return TextInputAlpha( event )",1,10,11,"",$GLOBALS["cod_homolo"]);
-        $formulario -> caja ("Visibilidad (S/N):","ind_visibl","1",$GLOBALS["ind_visibl"],1);
+        $formulario -> texto("Código de homologación:","text","cod_homolo\"onkeypress=\"return TextInputAlpha( event )",1,10,11,"",$_REQUEST["cod_homolo"]);
+        $formulario -> caja ("Visibilidad (S/N):","ind_visibl","1",$_REQUEST["ind_visibl"],1);
     // ------------------------------------------------------------------------------------------------------------------------
 		$formulario->nueva_tabla();
         $formulario->linea( "Filtro de Perfiles", 1, "t2" );
@@ -100,7 +100,7 @@
       $formulario -> oculto("window","central",0);
       $formulario -> oculto("opcion",1,0);
       $formulario -> oculto("maximo",$interfaz -> cant_interf,0);
-      $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+      $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
       $formulario -> boton("Insertar","button\" onClick=\"ins_tab_noveda() ",0);
       $formulario -> boton("Borrar","reset",1);
       $formulario -> cerrar();
@@ -151,50 +151,50 @@
       $nuevo_consec = $ultimo_consec+1;
 
       //valida el indicador de alarma
-      if($GLOBALS["indala"] == 1)
+      if($_REQUEST["indala"] == 1)
         $alarma = 'S';
       else
         $alarma = 'N';
 
       //valida el indicador de solicitud de tiempos por novedad
-      if($GLOBALS["indtiemp"])
-        $tiempo = $GLOBALS["indtiemp"];
+      if($_REQUEST["indtiemp"])
+        $tiempo = $_REQUEST["indtiemp"];
       else
         $tiempo = 0;
 
       //valida novedad especial
-      if($GLOBALS["nov_especi"])
+      if($_REQUEST["nov_especi"])
         $nov_especi = 1;
       else
         $nov_especi = 0;
 
       //valida Mantiene Alarma
-      if($GLOBALS["ind_manala"])
+      if($_REQUEST["ind_manala"])
         $ind_manala = 1;
       else
         $ind_manala = 0;
       
       //valida Inspeccion Vehicular
-      if($GLOBALS["ind_insveh"])
+      if($_REQUEST["ind_insveh"])
         $ind_insveh = 1;
       else
         $ind_insveh = 0;
 
       //valida Visible Esferas
-      if($GLOBALS["ind_ealxxx"])
+      if($_REQUEST["ind_ealxxx"])
         $ind_ealxxx = 1;
       else
         $ind_ealxxx = 0;
 
 
       //valida Visible Limpio
-      if($GLOBALS["ind_limpio"])
+      if($_REQUEST["ind_limpio"])
         $ind_limpio = 1;
       else
         $ind_limpio = 0;
 
       //valida Fuera de Plataforma
-      if($GLOBALS["ind_fuepla"])
+      if($_REQUEST["ind_fuepla"])
       {
         $ind_fuepla = 1;
         $tiempo = 1;
@@ -203,7 +203,7 @@
         $ind_fuepla = 0;
         
       //valida Notifica Supervisor
-      if($GLOBALS["ind_notsup"])
+      if($_REQUEST["ind_notsup"])
       {
         $ind_notsup = 1;
         $ind_manala = 1;
@@ -211,9 +211,9 @@
       else
         $ind_notsup = 0;   
 
-      $cod_operad = $GLOBALS["cod_operad"]; 
-      $cod_homolo = $GLOBALS["cod_homolo"];   
-      $ind_visibl = $GLOBALS["ind_visibl"] == NULL ? '0' : $GLOBALS["ind_visibl"];   
+      $cod_operad = $_REQUEST["cod_operad"]; 
+      $cod_homolo = $_REQUEST["cod_homolo"];   
+      $ind_visibl = $_REQUEST["ind_visibl"] == NULL ? '0' : $_REQUEST["ind_visibl"];   
 
       //query de insercion
       $mQuery = "INSERT INTO ".BASE_DATOS.".tab_genera_noveda 
@@ -223,21 +223,21 @@
                  ind_fuepla  , ind_insveh  , ind_ealxxx  , ind_limpio  ,
                  cod_etapax  , usr_creaci  , fec_creaci ) 
                  VALUES 
-                ('$nuevo_consec','$GLOBALS[nom]',NULL       ,'$alarma'  ,
+                ('$nuevo_consec','$_REQUEST[nom]',NULL       ,'$alarma'  ,
                  '$tiempo'  , '$nov_especi','$ind_manala', '$ind_notsup', 
                  '0'       ,'$cod_operad','$cod_homolo', '$ind_visibl', 
                  '$ind_fuepla', '$ind_insveh', '$ind_ealxxx', '$ind_limpio' , 
-                 '".$_REQUEST[cod_etapax]."', '$GLOBALS[usuario]','$fec_actual') ;
+                 '".$_REQUEST[cod_etapax]."', '$_REQUEST[usuario]','$fec_actual') ;
                  ";
       #echo "<pre>"; print_r($mQuery); echo "</pre>";
 
       $consulta = new Consulta($mQuery, $this -> conexion,"BR");
 
-      $operad = $GLOBALS["operad"];
-      $novedaint = $GLOBALS["novedaint"];
+      $operad = $_REQUEST["operad"];
+      $novedaint = $_REQUEST["novedaint"];
 
       //Manejo de la Interfaz Aplicaciones SAT
-      $interfaz = new Interfaz_SAT(BASE_DATOS,NIT_TRANSPOR,$GLOBALS["usuario"],$this -> conexion);
+      $interfaz = new Interfaz_SAT(BASE_DATOS,NIT_TRANSPOR,$_REQUEST["usuario"],$this -> conexion);
 
       for($i = 0; $i < $interfaz -> totalact; $i++)
       {
@@ -271,9 +271,9 @@
 		
       if($insercion = new Consulta("COMMIT", $this -> conexion))
       {
-        $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS["cod_servic"]." \"target=\"centralFrame\">Insertar Otra Novedad</a></b>";
+        $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST["cod_servic"]." \"target=\"centralFrame\">Insertar Otra Novedad</a></b>";
 
-        $mensaje =  "La Novedad <b>".$GLOBALS["nom"]."</b> Se Inserto con Exito".$mensaje_sat.$link_a;
+        $mensaje =  "La Novedad <b>".$_REQUEST["nom"]."</b> Se Inserto con Exito".$mensaje_sat.$link_a;
         $mens = new mensajes();
         $mens -> correcto("INSERTAR NOVEDADES",$mensaje);
       }

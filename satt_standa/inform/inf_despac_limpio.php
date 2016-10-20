@@ -19,7 +19,7 @@ class InformViajes
   
   function principal()
   {
-    switch($GLOBALS[opcion])
+    switch($_REQUEST[opcion])
     {
       case 99:
         $this -> getInform();
@@ -174,7 +174,7 @@ class InformViajes
     
 
 
-    echo '<a href="index.php?cod_servic='.$GLOBALS['cod_servic'].'&window=central&opcion=1 "target="centralFrame"><img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" border="0"></a>';
+    echo '<a href="index.php?cod_servic='.$_REQUEST['cod_servic'].'&window=central&opcion=1 "target="centralFrame"><img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" border="0"></a>';
     $mHtml  = "<table border='1'>";
       if( sizeof( $_INFORM ) > 0 )
       {
@@ -479,7 +479,7 @@ class InformViajes
     $formulario -> oculto("cod_modali\" id=\"cod_modaliID","",0);
     $formulario -> oculto("window","central",0);
     $formulario -> oculto("opcion\" id=\"opcionID",99,0);
-    $formulario -> oculto("cod_servic",$GLOBALS['cod_servic'],0);
+    $formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
     $formulario -> oculto("standaID\" id=\"standaID",DIR_APLICA_CENTRAL,0);
     $formulario -> oculto("fec_inicia\" id=\"fec_inicia","",0); 
     $formulario -> oculto("cod_transp\" id=\"cod_transp","",0);

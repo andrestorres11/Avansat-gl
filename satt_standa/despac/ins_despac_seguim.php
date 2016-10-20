@@ -32,7 +32,7 @@ class Proc_segui
         switch ($mHost[0]) {
             case 'web7':    $this->cBD = "bd7.intrared.net:3306"; break;
             case 'web13':   $this->cBD = "bd13.intrared.net:3306"; break;
-            case 'web10':   $this->cBD = "bd10.intrared.net"; break;
+            case 'avansatgl':   $this->cBD = "aglbd.intrared.net"; break;
         }
 
         $this->principal();

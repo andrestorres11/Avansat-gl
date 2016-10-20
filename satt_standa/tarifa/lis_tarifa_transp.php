@@ -96,7 +96,7 @@ class LisTransp
         $formulario -> oculto("url_archiv\" id=\"url_archivID\"","ins_client_emailx.php",0);
 		    $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion\" id=\"opcionID",1,0);
         
 				$formulario -> cerrar();
@@ -123,16 +123,16 @@ class LisTransp
                 		 ".BASE_DATOS.".tab_tercer_tercer b
 								WHERE 1 = 1 AND
 											a.cod_tercer = b.cod_tercer ";
-        if($GLOBALS['tip_tarifa'])
-          $sql .= " AND a.tip_tarifa = '".$GLOBALS['tip_tarifa']."' ";
-				if($GLOBALS['cod_tercer'])
-          $sql .= " AND a.cod_tercer = '".$GLOBALS['cod_tercer']."' ";	
-				if($GLOBALS['fec_creini'] && $GLOBALS['fec_crefin'])
-          $sql .= " AND a.fec_creaci >= '".$GLOBALS['fec_creini']."' AND  a.fec_creaci <= '".$GLOBALS['fec_crefin']."'";
-				if($GLOBALS['ind_estado']){
-					if($GLOBALS['ind_estado']=='A')
+        if($_REQUEST['tip_tarifa'])
+          $sql .= " AND a.tip_tarifa = '".$_REQUEST['tip_tarifa']."' ";
+				if($_REQUEST['cod_tercer'])
+          $sql .= " AND a.cod_tercer = '".$_REQUEST['cod_tercer']."' ";	
+				if($_REQUEST['fec_creini'] && $_REQUEST['fec_crefin'])
+          $sql .= " AND a.fec_creaci >= '".$_REQUEST['fec_creini']."' AND  a.fec_creaci <= '".$_REQUEST['fec_crefin']."'";
+				if($_REQUEST['ind_estado']){
+					if($_REQUEST['ind_estado']=='A')
           	$sql .= " AND a.ind_estado ='1'";	 
-					if($GLOBALS['ind_estado']=='I')
+					if($_REQUEST['ind_estado']=='I')
           	$sql .= " AND a.ind_estado ='0'";	 
 				}
 
@@ -155,7 +155,7 @@ class LisTransp
         $formulario -> oculto("url_archiv\" id=\"url_archivID\"","lis_tarifa_transp.php",0);
 		    $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion",2,0);
 
         $formulario -> cerrar();
@@ -189,7 +189,7 @@ class LisTransp
 		include( "../lib/general/form_lib.inc" );
 		include( "../lib/general/tabla_lib.inc" );
 		echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/tarifa.js\"></script>\n";
-		$this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+		$this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
 		$query = "SELECT a.cod_tarifa, if(a.tip_tarifa='N','NOVEDADES','DESPACHOS'),
 										 a.val_minimo, DATE_FORMAT(a.fec_creaci,'%d-%m-%Y'),
 										 if(a.ind_estado = '1','Activa','Inactiva'), b.abr_tercer,
@@ -271,7 +271,7 @@ class LisTransp
 		$formulario -> nueva_tabla();
 		$formulario -> boton("Cerrar","button\" onClick=\"ClosePopup()",0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+    $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
     $formulario -> oculto("opcion\" id=\"opcionID",3,0);
     $formulario -> cerrar();
 	}

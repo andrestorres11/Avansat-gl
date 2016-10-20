@@ -505,3 +505,8 @@ tr.row:hover td {
     width: 94%;
     margin-top: 5px;
 }
+
+.text-vertical{
+    writing-mode: vertical-lr;
+    transform: rotate(0deg);
+}

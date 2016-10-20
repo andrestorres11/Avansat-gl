@@ -632,8 +632,17 @@ class Novedad
 
 }
 
+$host = $_SERVER['HTTP_HOST'];
+$host = explode('.', $host);
 
-$new = new Conexion("bd10.intrared.net:3306", $_POST[user], $_POST[pass], $_POST[base]);
+switch ($host[0]) {
+    case 'web7':      $BD = "bd7.intrared.net:3306";  break;
+    case 'web13':     $BD = "bd13.intrared.net:3306"; break;
+    case 'avansatgl': $BD = "aglbd.intrared.net";     break;
+    default:          $BD = "demo.intrared.net";      break;
+}
+
+$new = new Conexion($BD, $_POST[user], $_POST[pass], $_POST[base]);
 
 $remesa = new Novedad( $new );
 

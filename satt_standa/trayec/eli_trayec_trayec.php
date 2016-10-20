@@ -16,11 +16,11 @@ class Proc_trayec
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -45,7 +45,7 @@ class Proc_trayec
    $formulario -> nueva_tabla();
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> boton("Buscar","button\" onClick=\"aceptar_eli() ",0);
    $formulario -> boton("Todas","button\" onClick=\"form_eli.submit() ",0);
    $formulario -> cerrar();
@@ -58,7 +58,7 @@ class Proc_trayec
 
   $query = "SELECT cod_trayec,nom_trayec,cod_estado
               FROM ".BASE_DATOS.".tab_genera_trayec
-           	 WHERE nom_trayec LIKE '%".$GLOBALS[trayec]."%' AND
+           	 WHERE nom_trayec LIKE '%".$_REQUEST[trayec]."%' AND
 		 		   cod_estado = ".COD_ESTADO_ACTIVO." OR
                	   cod_estado = ".COD_ESTADO_INACTI."
         		   ORDER BY 2";
@@ -76,7 +76,7 @@ class Proc_trayec
    
    for($i=0;$i<sizeof($matriz);$i++)
    {
-   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&trayec=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&trayec=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    	$formulario -> linea($matriz[$i][0],0,"i");
    	$formulario -> linea($matriz[$i][1],0,"i");
@@ -92,7 +92,7 @@ class Proc_trayec
    $formulario -> nueva_tabla();
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -102,14 +102,14 @@ class Proc_trayec
    $usuario=$datos_usuario["cod_usuari"];
    $query = "SELECT cod_trayec,nom_trayec,cod_estado
             FROM ".BASE_DATOS.".tab_genera_trayec
-            WHERE cod_trayec = '$GLOBALS[trayec]'";
+            WHERE cod_trayec = '$_REQUEST[trayec]'";
 
    $consulta = new Consulta($query, $this -> conexion);
    $matriz = $consulta -> ret_matriz();
             
    $query = "SELECT a.cod_trayec
   		      FROM ".BASE_DATOS.".tab_despac_remdes a
-  		     WHERE a.cod_trayec = ".$GLOBALS[trayec]."
+  		     WHERE a.cod_trayec = ".$_REQUEST[trayec]."
   		   ";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -132,10 +132,10 @@ class Proc_trayec
    $formulario -> nueva_tabla();
 
    $formulario -> oculto("opcion",3,0);
-   //$formulario -> oculto("trayec",$GLOBALS[cod_trayec],0);
+   //$formulario -> oculto("trayec",$_REQUEST[cod_trayec],0);
    $formulario -> oculto("trayec",$matriz[0][0],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    if(!$existdes)
    	$formulario -> boton("Eliminar","submit\" onClick=\"return confirm('Esta Seguro de Eliminar Este Trayecto.?')",0);
    else
@@ -150,12 +150,12 @@ class Proc_trayec
   //ultimo despacho
   //query de insercion de despacho
   $query = "DELETE FROM ".BASE_DATOS.".tab_genera_trayec
-             WHERE cod_trayec = '$GLOBALS[trayec]'";
+             WHERE cod_trayec = '$_REQUEST[trayec]'";
   $insercion = new Consulta($query, $this -> conexion,"BR");
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
     {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Eliminar Otro Trayecto</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Eliminar Otro Trayecto</a></b>";
 
      $mensaje =  "El Trayecto se Elimino con Exito".$mensaje_sat.$link_a;
      $mens = new mensajes();

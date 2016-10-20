@@ -53,7 +53,7 @@ class FleConcil
         $formulario -> oculto("url_archiv\" id=\"url_archivID\"","ins_tiposx_protoc.php",0);
 		    $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion\" id=\"opcionID",2,0);
         $i=1;
         $formulario -> nueva_tabla();
@@ -100,7 +100,7 @@ class FleConcil
 		include( "../lib/general/conexion_lib.inc" );
 		include( "../lib/general/form_lib.inc" );
 		include( "../lib/general/tabla_lib.inc" );
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+    $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
 		$query =  "UPDATE ".BASE_DATOS.".tab_tiposx_protoc
                SET nom_tiposx ='".$_POST['nom_tiposx']."',
                    fec_modifi = NOW(),
@@ -133,7 +133,7 @@ class FleConcil
 		include( "../lib/general/conexion_lib.inc" );
 		include( "../lib/general/form_lib.inc" );
 		include( "../lib/general/tabla_lib.inc" );
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+    $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
 		$query =  "DELETE FROM ".BASE_DATOS.".tab_tiposx_protoc
                WHERE cod_consec = '".$_POST['cod_consec']."' ";
     $insercion = new Consulta($query, $this -> conexion,"BR");
@@ -164,13 +164,13 @@ class FleConcil
 										)
 										VALUES
 										( 
-											'".$max."', '".$GLOBALS["nom_tiposx"]."',
+											'".$max."', '".$_REQUEST["nom_tiposx"]."',
 											'$usuario',NOW()
 										)";
       $insercion = new Consulta($query, $this -> conexion,"BR");
       if( $insercion = new Consulta("COMMIT", $this -> conexion))
         {
-            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otro Tipo de Protocolo</a></b>";
+            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otro Tipo de Protocolo</a></b>";
 
             if($msm)
                 $mensaje = $msm;
@@ -196,7 +196,7 @@ class FleConcil
 		include( "../lib/general/conexion_lib.inc" );
 		include( "../lib/general/form_lib.inc" );
 		include( "../lib/general/tabla_lib.inc" );
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+    $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
     $query= "SELECT a.cod_tiposx 
              FROM ".BASE_DATOS.".tab_concil_tiposx a
              WHERE a.cod_tiposx ='".$_POST['cod_tiposx']."'";

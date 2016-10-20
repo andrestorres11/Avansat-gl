@@ -16,6 +16,199 @@ function busq_serv()
 	}
 }
 
+//Nos aseguramos que estén definidas
+//algunas funciones básicas
+window.URL = window.URL || window.webkitURL;
+navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia ||
+function() {
+    alert('Su navegador no soporta navigator.getUserMedia().');
+};
+
+window.datosVideo = {
+    'StreamVideo': null,
+    'url': null
+}
+
+/*! \fn: guardarFoto
+ *  \brief: Guarda la foto en un input del formulario
+ *  \author: Ing. Fabian Salinas
+ *	\date: 25/05/2025
+ *	\date modified: dia/mes/año
+ *  \param: 
+ *  \return:
+ */
+function guardarFoto()
+{
+	try
+	{
+		var canvasFoto = $("#foto");
+		var foto = canvasFoto[0].toDataURL("image/jpeg", 0.3); // obtenemos la imagen como jpeg
+  
+		$("[name=bin_fotcon]").val(foto); 
+		$("#fot_actual").attr("src",foto); 
+
+		LoadPopupRegnov('close');
+	}
+	catch(e)
+	{
+		console.log( "Error Fuction guardarFoto: "+e.message+"\nLine: "+e.lineNumber );
+		return false;
+	}
+}
+
+
+/*! \fn: Fotocam
+ *  \brief: Toma Foto
+ *  \author: Ing. Fabian Salinas
+ *	\date: 25/05/2015
+ *	\date modified: dia/mes/año
+ *  \param: 
+ *  \return:
+ */
+function Fotocam()
+{
+	try
+	{
+		var oCamara, oFoto, oContexto, w, h;
+
+		oCamara = $('#camara');
+		oFoto = $('#foto');
+		w = oCamara.width();
+		h = oCamara.height();
+		oFoto.attr({
+			'width': w,
+			'height': h
+		});
+		oContexto = oFoto[0].getContext('2d');
+		oContexto.drawImage(oCamara[0], 0, 0, w, h);
+	}
+	catch(e)
+	{
+		console.log( "Error Fuction Fotocam: "+e.message+"\nLine: "+e.lineNumber );
+		return false;
+	}
+}
+/*! \fn: showDialog
+ *  \brief: Muestra Popup para tomar fotos
+ *  \author: Ing. Fabian Salinas
+ *	\date: 25/05/2015
+ *	\date modified: dia/mes/año
+ *  \param: num_foto
+ *  \return:
+ */
+function showDialog(num_fotoxx)
+{
+	var standa = $("[name=standa]").val();
+	try{
+		var atributes  = 'AJAX=on&op=showCamara'; 
+
+		//Carga Popup
+		LoadPopupRegnov('open');
+		$.ajax({
+			url: "../"+standa+"/despac/ajax_fotos.php",
+			type: "POST",
+			data: atributes,
+			beforeSend: function(){
+				$("#FormContacID").html("<center>Cargando Formulario...</center>");
+			},
+			success: function(data){
+				$("#FormContacID").html(data);
+				CenterDIV();
+			}
+		});
+	}
+	catch(e)
+	{
+		console.log( "Error Función showDialog: "+e.message+"\nLine: "+e.lineNumber );
+    	return false;
+	}
+}
+
+/*! \fn: LoadPopupRegnov
+ *  \brief: Crea el PopUp
+ *  \author: Ing. Fabian Salinas
+ *	\date: 25/05/2015
+ *	\date modified: dia/mes/año
+ *  \param:
+ *  \return:
+ */
+function LoadPopupRegnov( type )
+{
+	try
+	{
+		if(type == 'open')
+		{
+
+			$('<div id="FormContacID"><center>Cargando...</center></div>').dialog({
+				width : 100,
+				heigth: 500,
+				modal: true,
+				closeOnEscape: false,
+				resizable: false,
+				draggable: false,
+				close: function(){
+					$("#FormContacID").dialog("destroy").remove();
+				}
+			});
+		}
+		else
+		{
+			$("#FormContacID").dialog("destroy").remove();
+		}
+
+	}
+	catch(e)
+	{
+		console.log("Error Función LoadPopup: "+e.message+"\nLine: "+e.lineNumber);
+	}
+}
+
+/*! \fn: CenterDiv
+ *  \brief: Centra el PopUP
+ *  \author: Ing. Fabian Salinas
+ *	\date: 25/05/2015
+ *	\date modified: dia/mes/año
+ *  \param: 
+ *  \return:
+ */
+function CenterDIV()
+{
+	var WindowH = $(window).width();
+	var popupH =  $('.ui-dialog').outerWidth();
+	var Left = ((WindowH - popupH) / 2);
+	$(".ui-dialog").css({"width": ($(window).width() - 8 )+"px" , "left":"0px", top : "200px"});
+}
+
+/*! \fn: Inicam
+ *  \brief: Solicita permisos al navegador para encender la camara
+ *  \author: Ing. Fabian Salinas
+ *	\date: 25/05/2015
+ *	\date modified: dia/mes/año
+ *  \param: 
+ *  \return:
+ */
+function Inicam(obj)
+{
+	try
+	{
+		navigator.getUserMedia({
+			'audio': false,
+			'video': true
+		}, function(streamVideo) {
+			datosVideo.StreamVideo = streamVideo;
+			datosVideo.url = window.URL.createObjectURL(streamVideo);
+			$('#camara').attr('src', datosVideo.url);
+		}, function() {
+			alert('No fue posible obtener acceso a la cámara.');
+		});
+	}
+	catch(e)
+	{
+		console.log( "Error Fuction Inicam: "+e.message+"\nLine: "+e.lineNumber );
+		return false;
+	}
+}
+
 function aceptar_ins(formulario)
 {
 	validacion = true;

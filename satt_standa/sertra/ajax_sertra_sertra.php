@@ -1,6 +1,6 @@
 <?php
 /* ! \file: ajax_certra_certra.php
- *  \brief: archivo con multiples funciones para la configuracion del os tipos de servicio de una transportadora
+ *  \brief: archivo con multiples funciones para la configuracion de los tipos de servicio de una transportadora
  *  \author: Ing. Alexander Correa
  *  \author: alexander.correa@intrared.net
  *  \version: 1.0
@@ -10,15 +10,17 @@
  *  \warning:
  */
 
-setlocale(LC_ALL, "es_ES");
-
 class ajax_certra_certra {
 
     private static $cConexion,
-            $cCodAplica,
-            $cUsuario,
-            $cTotalDespac,
-            $cNull = array(array('', '-----'));
+        $cCodAplica,
+        $cUsuario,
+        $cTotalDespac,
+        $cNull = array(array('', '-----'));
+
+    private static $cIndLaboral1 = 3; # Indicador de configuracion horario laboral 1
+    private static $cIndLaboral2 = 4; # Indicador de configuracion horario laboral 2
+
     var $Week = array(
         'L' => 'Lunes',
         'M' => 'Martes',
@@ -26,8 +28,10 @@ class ajax_certra_certra {
         'J' => 'Jueves',
         'V' => 'Viernes',
         'S' => 'S&aacute;bado',
-        'D' => 'Domingo'
+        'D' => 'Domingo',
+        'F' => 'Festivo'
     );
+
     var $Year = array(
         '01' => 'Enero',
         '02' => 'Febrero',
@@ -44,7 +48,6 @@ class ajax_certra_certra {
     );
 
     function __construct($co = null, $us = null, $ca = null) {
-
         if ($_REQUEST[Ajax] === 'on' || $_POST[Ajax] === 'on') {
 
             @include_once( "../lib/ajax.inc" );
@@ -84,6 +87,9 @@ class ajax_certra_certra {
                     break;
                 case "registrarTipoServicio";
                     $this->registrarTipoServicio();
+                    break;
+                case "deleteConfiguracion";
+                    $this->deleteConfiguracion();
                     break;
 
                 default:
@@ -127,7 +133,8 @@ class ajax_certra_certra {
             ind_planru, tie_traexp, tie_traimp, tie_tratr1, tie_tratr2, cod_grupox, 
             cod_operac, cod_priori, ind_conper, hor_pe1urb, hor_pe2urb, hor_pe1nac, 
             hor_pe2nac, hor_pe1imp, hor_pe2imp, hor_pe1exp, hor_pe2exp, hor_pe1tr1, 
-            hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, ind_solpol, cod_asegur, num_poliza
+            hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, ind_solpol, cod_asegur, num_poliza, 
+            fec_valreg
             FROM " . BASE_DATOS . ".tab_transp_tipser 
             WHERE cod_transp = '$datos->cod_transp' 
             AND num_consec = $datos->num_consec";
@@ -154,11 +161,8 @@ class ajax_certra_certra {
         $servers = $consulta->ret_matrix("a");
         $datos->servers = $servers;
 
-        //consulto los horarios laborales de la transportadora y los agrego al objeto principal
-        $sql = "SELECT com_diasxx, hor_ingres, hor_salida FROM " . BASE_DATOS . ".tab_config_horlab WHERE cod_tercer = '$datos->cod_transp' AND ind_config = 3 AND cod_ciudad = 3 ";
-        $consulta = new Consulta($sql, self::$cConexion);
-        $conf = $consulta->ret_matrix("a");
-        $datos->configuracion = $conf;
+        $datos->configuracion = $this->getHorarioLaboralTransp(self::$cIndLaboral1, $datos->cod_transp);
+        $datos->configuracionAdicional = $this->getHorarioLaboralTransp(self::$cIndLaboral2, $datos->cod_transp);
 
         //consulto las esferas que tenga configuradas la empresa
         $sql = "SELECT cod_ealxxx, val_ealxxx, fec_inieal, fec_fineal FROM " . BASE_DATOS . ".tab_ealxxx_transp WHERE cod_transp = '$datos->cod_transp'";
@@ -166,7 +170,62 @@ class ajax_certra_certra {
         $esferas = $consulta->ret_matrix("a");
         $datos->esferas = $esferas;
 
+
+        #si no hay datos pueden venir por post algunos
+        if (!$datos->principal['fec_iniser'] || $_POST['fec_iniser']) {
+            $datos->principal['fec_iniser'] = $_POST['fec_iniser'];
+        }
+        if (!$datos->principal['hor_iniser'] || $_POST['hor_iniser']) {
+            $datos->principal['hor_iniser'] = $_POST['hor_iniser'];
+        }
+        if (!$datos->principal['fec_finser'] || $_POST['fec_finser']) {
+            $datos->principal['fec_finser'] = $_POST['fec_finser'];
+        }
+        if (!$datos->principal['hor_finser'] || $_POST['hor_finser']) {
+            $datos->principal['hor_finser'] = $_POST['hor_finser'];
+        }
+        if (!$datos->principal['cod_tipser'] || $_POST['cod_tipser']) {
+            $datos->principal['cod_tipser'] = $_POST['cod_tipser'];
+        }
+        if (!$datos->principal['val_regist'] || $_POST['val_regist']) {
+            $datos->principal['val_regist'] = $_POST['val_regist'];
+        }
+        if (!$datos->principal['cod_server'] || $_POST['cod_server']) {
+            $datos->principal['cod_server'] = $_POST['cod_server'];
+        }
+        if (!$datos->principal['nom_aplica'] || $_POST['nom_aplica']) {
+            $datos->principal['nom_aplica'] = $_POST['nom_aplica'];
+        }
+        if (!$datos->principal['ind_solpol'] || $_POST['ind_solpol']) {
+            $datos->principal['ind_solpol'] = $_POST['ind_solpol'];
+        }
+        if (!$datos->principal['cod_asegur'] || $_POST['cod_asegur']) {
+            $datos->principal['cod_asegur'] = $_POST['cod_asegur'];
+        }
+        if (!$datos->principal['num_poliza'] || $_POST['num_poliza']) {
+            $datos->principal['num_poliza'] = $_POST['num_poliza'];
+        }
+
         $this->pintarFormulario($datos);
+    }
+
+    /*! \fn: getHorarioLaboralTransp
+     *  \brief: consulto los horarios laborales de la transportadora segun indicador de configuracion
+     *  \author: Ing. Fabian Salinas
+     *  \date: 12/08/2016
+     *  \date modified: dd/mm/aaaa
+     *  \param: indConfig  integer
+     *  \param: codTransp  integer
+     *  \return: 
+     */
+    private function getHorarioLaboralTransp($indConfig, $codTransp) {
+        $sql = "SELECT com_diasxx, hor_ingres, hor_salida 
+                  FROM " . BASE_DATOS . ".tab_config_horlab 
+                WHERE cod_tercer = '$codTransp' 
+                  AND ind_config = $indConfig 
+                  AND cod_ciudad = $indConfig ";
+        $consulta = new Consulta($sql, self::$cConexion);
+        return $consulta->ret_matrix("a");
     }
 
     /* ! \fn: pintarFormulario
@@ -178,112 +237,131 @@ class ajax_certra_certra {
      *  \param: 
      *  \return 
      */
-
     private function pintarFormulario($datos) {
         $grupos = $this->getGrupos();
         $operaciones = $this->getOperaciones();
         $eals = $this->getEals();
         ?>
         <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
-            <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuración del Servicio</b></h3>
+            <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuraci&oacute;n del Servicio</b></h3>
             <div id="contenido_conf">
                 <div class="StyleDIV contenido" style="min-height: 165px !important;">
-                    <div class="col-md-3 centrado">Fecha Inicio del Servicio<font style="color:red">*</font></div>
-                    <div class="col-md-2 centrado">
-                        <input type="text" value="<?= $datos->principal['fec_iniser'] ?>" class="fecha centrado ancho" obl="1" name="fec_iniser" validate="date" id="fec_iniserID" maxlength="10" minlength="10" obl="true" >
-                    </div>
                     <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Hora Inicio del Servicio<font style="color:red">*</font></div>
-                    <div class="col-md-2 centrado">
-                        <input type="text" readonly="true" value="<?= $datos->principal['hor_iniser'] ?>" class="hora centrado ancho" obl="1" name="hor_iniser" validate="dir" id="hor_iniserID" maxlength="5" minlength="5" obl="true" >
-                    </div>
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Fecha Fin del Servicio<font style="color:red">*</font></div>
-                    <div class="col-md-2 centrado">
-                        <input type="text" value="<?= $datos->principal['fec_finser'] ?>" class="fecha centrado ancho" obl="1" name="fec_finser" validate="date" id="fec_finserID" maxlength="10" minlength="10" obl="true" >
-                    </div>
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Hora Fin del Servicio<font style="color:red">*</font></div>
-                    <div class="col-md-2 centrado">
-                        <input type="text" readonly="true" value="<?= $datos->principal['hor_finser'] ?>" obl="1"  class="hora centrado ancho" name="hor_finser" validate="dir" id="hor_finserID" maxlength="5" minlength="5" obl="true" >
-                    </div>
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Tipo de Servicio Contratado<font style="color:red">*</font></div>
-                    <div class="col-md-2 centrado">
-                        <select id="cod_tipserID" name="cod_tipser" obl="1" validate="select">
-                            <option value="">Seleccione una Opción.</option>
-                            <?php
-                            foreach ($datos->servicios as $key => $value) {
-                                $sel = "";
-                                if ($value['cod_tipser'] == $datos->principal['cod_tipser']) {
-                                    $sel = "selected";
+                    <div class="col-md-10">
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Fecha Inicio del Servicio<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="fecha text-center ancho" obl="1" name="fec_iniser" validate="date" id="fec_iniserID" maxlength="10" minlength="10" obl="true" value="<?= $datos->principal['fec_iniser'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Hora Inicio del Servicio<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" readonly="true" class="hora text-center ancho" obl="1" name="hor_iniser" validate="dir" id="hor_iniserID" maxlength="5" minlength="5" obl="true" onclick="removeStyle('hor_iniserID')" value="<?= $datos->principal['hor_iniser'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Fecha Fin del Servicio<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="fecha text-center ancho" obl="1" name="fec_finser" validate="date" id="fec_finserID" maxlength="10" minlength="10" obl="true" value="<?= $datos->principal['fec_finser'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Hora Fin del Servicio<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" readonly="true" obl="1"  class="hora text-center ancho" name="hor_finser" validate="dir" id="hor_finserID" maxlength="5" minlength="5" obl="true" onclick="removeStyle('hor_finserID')" value="<?= $datos->principal['hor_finser'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Valor del Registro<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="val_regist" id="val_registID" validate="numero" obl="1" maxlength="4" minlength="3" value="<?= $datos->principal['val_regist'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Interfaz con Servidor<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <select id="cod_serverID" name="cod_server" class="ancho" obl="1" validate="select">
+                                    <option value="">Seleccione una Opci&oacute;n.</option>
+                                    <?php
+                                    foreach ($datos->servers as $key => $value) {
+                                        $sel = "";
+                                        if ($value['cod_server'] == $datos->principal['cod_server']) {
+                                            $sel = "selected";
+                                        }
+                                        ?>
+                                        <option <?= $sel ?> value="<?= $value['cod_server'] ?>"><?= $value['nom_server'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Vigencia Valor del Registro<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="fecha text-center ancho" name="fec_valreg" id="fec_valregID" validate="date" obl="1" maxlength="10" minlength="10" value="<?= $datos->principal['fec_valreg'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Nombre de la Aplicaci&oacute;n<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" value="<?= $datos->principal['nom_aplica'] ?>" name="nom_aplica" id="nom_aplicaID" validate="alphanumerico" obl="1" maxlength="15" minlength="4" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Activar Solicitud de P&oacute;lizas</div>
+                            <div class="col-md-6 text-left">
+                                <?php
+                                $ind_solpol = "";
+                                if ($datos->principal['ind_solpol'] == 1) {
+                                    $ind_solpol = "checked='true'";
                                 }
                                 ?>
-                                <option <?= $sel ?> value="<?= $value['cod_tipser'] ?>"><?= $value['nom_tipser'] ?>.</option>
-        <?php } ?>
-                        </select>
+                                <input type="checkbox" name="ind_solpol" id="ind_solpol" value="1" <?= $ind_solpol ?> >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Aseguradora</div>
+                            <div class="col-md-6 text-left">
+                                <select class="ancho" name="cod_asegur" id="cod_asegur">
+                                    <option value="">Seleccione una Opci&oacute;n</option>
+                                    <?php
+                                    $aseguradoras = $this->getAseguradoras();
+                                    foreach ($aseguradoras as $key => $value) {
+                                        $sel = "";
+                                        if ($value['cod_tercer'] == $datos->principal['cod_asegur']) {
+                                            $sel = "selected";
+                                        }
+                                        ?>
+                                        <option <?= $sel ?> value="<?= $value['cod_tercer'] ?>"><?= $value['abr_tercer'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">N&uacute;mero de P&oacute;liza</div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" name="num_poliza" id="num_poliza" class="text-center ancho" validate="dir" maxlength="20" minlength="5" value="<?= $datos->principal['num_poliza'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Tipo de Servicio Contratado<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <select id="cod_tipserID" name="cod_tipser" class="ancho" obl="1" validate="select">
+                                    <option value="">Seleccione una Opci&oacute;n.</option>
+                                    <?php
+                                    foreach ($datos->servicios as $key => $value) {
+                                        $sel = "";
+                                        if ($value['cod_tipser'] == $datos->principal['cod_tipser']) {
+                                            $sel = "selected";
+                                        }
+                                        ?>
+                                        <option <?= $sel ?> value="<?= $value['cod_tipser'] ?>"><?= $value['nom_tipser'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Valor del Registro<font style="color:red">*</font></div>
-                    <div class="col-md-2 centrado">
-                        <input type="text" class="centrado ancho" value="<?= $datos->principal['val_regist'] ?>" name="val_regist" id="val_registID" validate="numero" obl="1" maxlength="4" minlength="3" >
-                    </div>
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Interfaz con Servidor<font style="color:red">*</font></div>
-                    <div class="col-md-2 centrado">
-                        <select id="cod_serverID" name="cod_server" obl="1" validate="select">
-                            <option value="">Seleccione una Opción.</option>
-                            <?php
-                            foreach ($datos->servers as $key => $value) {
-                                $sel = "";
-                                if ($value['cod_server'] == $datos->principal['cod_server']) {
-                                    $sel = "selected";
-                                }
-                                ?>
-                                <option <?= $sel ?> value="<?= $value['cod_server'] ?>"><?= $value['nom_server'] ?>.</option>
-        <?php } ?>
-                        </select>
-                    </div>
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Nombre de la Aplicación<font style="color:red">*</font></div>
-                    <div class="col-md-2 centrado">
-                        <input type="text" class="centrado ancho" value="<?= $datos->principal['nom_aplica'] ?>" name="nom_aplica" id="nom_aplicaID" validate="texto" obl="1" maxlength="15" minlength="4" >
-                    </div>
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Activar Solicitud de Pólizas</div>
-                    <div class="col-md-2 centrado">
-                        <?php
-                            $ind_solpol = "";
-                            if ($datos->principal['ind_solpol'] == 1) {
-                                $ind_solpol = "checked='true'";
-                            }
-                        ?>
-                        <input <?=  $ind_solpol ?> type="checkbox" name="ind_solpol" id="ind_solpol" value="1"></input>
-                    </div>
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Aseguradora</div>
-                    <div class="col-md-2 centrado">
-                        <select name="cod_asegur" id="cod_asegur">
-                            <option value="">Seleccione una Opción</option>
-                            <?php
-                            $aseguradoras = $this->getAseguradoras();
-                            foreach ($aseguradoras as $key => $value) {
-                                $sel = "";
-                                if ($value['cod_tercer'] == $datos->principal['cod_asegur']) {
-                                    $sel = "selected";
-                                }
-                                ?>
-                                <option <?= $sel ?> value="<?= $value['cod_tercer'] ?>"> <?= $value['abr_tercer'] ?></option>
-        <?php } ?>
-                        </select>
-                    </div>                   
-                    <div class="col-md-1">&nbsp;</div>
-                    <div class="col-md-3 centrado">Número de Póliza</div>
-                    <div class="col-md-2 centrado">
-                        <input type="text" name="num_poliza" id="num_poliza" value="<?= $datos->principal['num_poliza'] ?>" validate="dir" maxlength="20" minlength="5"></input>
-                    </div>
-                    <div class="col-md-6">&nbsp;</div>                    
                 </div>
             </div>
         </div>
@@ -291,16 +369,17 @@ class ajax_certra_certra {
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Horario del Servicio Contratado</b></h3>
             <div id="contenido_serv">
                 <div class="StyleDIV contenido" style="min-height: 180px !important;" >
-                    <div class="col-md-12 CellHead"  style="text-align:center;">Horarios Laborales <input type="button" value="Nueva Configuración" class="small save  ui-state-default ui-corner-all" onclick="CreateConfig('<?= $datos->cod_transp ?>', 3, 3)"></div>
-        <?php if (!$datos->configuracion) { ?>
-                        <div class="col-md-12" style="text-align:center;">Actualmente no tiene una configuración parametrizada</div> 
-        <?php } else { ?>
+                    <div class="col-md-12 CellHead"  style="text-align:center;">Horarios Laborales <input type="button" value="Nueva Configuraci&oacute;n" class="small save  ui-state-default ui-corner-all" onclick="CreateConfig('<?= $datos->cod_transp ?>', 3)"></div>
+                    <?php if (!$datos->configuracion && !$datos->configuracionAdicional) { ?>
+                        <div class="col-md-12" style="text-align:center;">Actualmente no tiene una configuraci&oacute;n parametrizada</div> 
+                    <?php } else { ?>
                         <div class="col-md-12 contenido" id="mensaje"></div>
                         <div class="col-md-12 CellHead centrado" id="mensaje"><b>DIAS DE LA SEMANA PARAMETRIZADOS</b></div>
                         <div class="col-md-12 contenido"></div>
-                        <div class="col-md-6 CellHead centrado"><b>Día</b></div>
-                        <div class="col-md-3 CellHead centrado"><b>Hora de Ingreso</b></div>
-                        <div class="col-md-3 CellHead centrado"><b>Hora de Salida</b></div>
+                        <div class="col-md-6 CellHead centrado"><b>D&iacute;a</b></div>
+                        <div class="col-md-2 CellHead centrado"><b>Hora de Ingreso</b></div>
+                        <div class="col-md-2 CellHead centrado"><b>Hora de Salida</b></div>
+                        <div class="col-md-2 CellHead centrado"><b>Eliminar</b></div>
                         <?php
                         foreach ($datos->configuracion as $row) {
                             $mDiasxx = '';
@@ -310,19 +389,34 @@ class ajax_certra_certra {
                             ?>
 
                             <div class="col-md-6 contenido centrado" ><?= $mDiasxx ?></div> 
-                            <div class="col-md-3 contenido centrado"><?= $this->HoraLegible($row['hor_ingres']) ?></div>  
-                            <div class="col-md-3 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>   
+                            <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_ingres']) ?></div>  
+                            <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>   
+                            <div class="col-md-2 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteConfiguracion(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 3)"></div>   
+
+                            <?php
+                        }
+                        foreach ($datos->configuracionAdicional as $row) {
+                            $mDiasxx = '';
+                            foreach (explode('|', $row['com_diasxx']) as $nameWeek) {
+                                $mDiasxx .= $mDiasxx != '' ? ', ' . $this->Week[$nameWeek] : $this->Week[$nameWeek];
+                            }
+                            ?>
+
+                            <div class="col-md-6 contenido centrado" ><?= $mDiasxx ?></div> 
+                            <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_ingres']) ?></div>  
+                            <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>   
+                            <div class="col-md-2 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteConfiguracion(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 4)"></div>   
 
                             <?php
                         }
                     }
                     ?>
-                    <div class="col-md-12 CellHead"  style="text-align:center;">Festivos por Año</div>
+                    <div class="col-md-12 CellHead"  style="text-align:center;">Festivos por A&ntilde;o</div>
                     <div class="col-md-12" style="text-align:center;">
                         <input id="ind_configID" type="hidden" value="3" name="ind_config">
                         <input id="cod_ciudadID" type="hidden" value="3" name="cod_ciudad">
                         <select id="sel_yearxxID" name="sel_yearxx" onchange="setFestivos()">
-                            <option value="">Seleccione una Opción</option>
+                            <option value="">Seleccione una Opci&oacute;n</option>
                             <?php
                             $mYear = date('Y');
                             for ($i = 0; $i < 5; $i++) {
@@ -340,7 +434,7 @@ class ajax_certra_certra {
         <div id="conf_etapasID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Etapas y tipo de Seguimiento Contratado</b></h3>
             <div id="contenido_etap">
-                <div class="StyleDIV" style="min-height: 440px !important;">
+                <div class="StyleDIV" style="min-height: 485px !important;">
                     <div class="col-md-12 CellHead centrado">
                         Cargue 
                         <?php
@@ -353,19 +447,27 @@ class ajax_certra_certra {
                     <div class="col-md-12 contenido">&nbsp;</div>
                     <div class="col-md-2 CellHead">Nacional</div>
                     <div class="col-md-2 CellHead">Urbano</div>
-                    <div class="col-md-2 CellHead">Exportación</div>
-                    <div class="col-md-2 CellHead">Importación</div>
+                    <div class="col-md-2 CellHead">Exportaci&oacute;n</div>
+                    <div class="col-md-2 CellHead">Importaci&oacute;n</div>
                     <div class="col-md-2 CellHead">Tramo D1</div>
                     <div class="col-md-2 CellHead">Tramo D2</div>
-                    <div class="col-md-2 contenido"><input type="text" name="tie_carnac" id="tie_carnacID" value="<?= $datos->principal['tie_carnac'] ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" name="tie_carurb" id="tie_carurbID" value="<?= $datos->principal['tie_carurb'] ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" name="tie_carexp" id="tie_carexpID" value="<?= $datos->principal['tie_carexp'] ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" name="tie_carimp" id="tie_carimpID" value="<?= $datos->principal['tie_carimp'] ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" name="tie_cartr1" id="tie_cartr1ID" value="<?= $datos->principal['tie_cartr1'] ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" name="tie_cartr2" id="tie_cartr2ID" value="<?= $datos->principal['tie_cartr2'] ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempos</b></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_carnac" id="tie_carnacID" value="<?= $datos->principal['tie_carnac'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_carurb" id="tie_carurbID" value="<?= $datos->principal['tie_carurb'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_carexp" id="tie_carexpID" value="<?= $datos->principal['tie_carexp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_carimp" id="tie_carimpID" value="<?= $datos->principal['tie_carimp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_cartr1" id="tie_cartr1ID" value="<?= $datos->principal['tie_cartr1'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_cartr2" id="tie_cartr2ID" value="<?= $datos->principal['tie_cartr2'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-12 contenido text-center verde"><b>Cantidad de Llamadas</b></div>
+                    <div class="col-md-2 contenido"><input type="text" name="can_llaurb" id="can_llaurbID" value="<?= $datos->principal['can_llaurb'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="can_llanac" id="can_llanacID" value="<?= $datos->principal['can_llanac'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="can_llaexp" id="can_llaexpID" value="<?= $datos->principal['can_llaexp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="can_llaimp" id="can_llaimpID" value="<?= $datos->principal['can_llaimp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="can_llatr1" id="can_llatr1ID" value="<?= $datos->principal['can_llatr1'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="can_llatr2" id="can_llatr2ID" value="<?= $datos->principal['can_llatr2'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-12 contenido">&nbsp;</div>
                     <div class="col-md-6 CellHead centrado" >
-                        Tránsito
+                        Tr&aacute;nsito
                         <?php
                         if ($datos->principal['ind_segtra'] != 0) {
                             $ind_segtra = "checked='true'";
@@ -379,22 +481,22 @@ class ajax_certra_certra {
                             $ind_planru = "checked='true'";
                         }
                         ?>
-                        Recalculo Según Plan de Ruta 
+                        Recalculo Seg&uacute;n Plan de Ruta 
                         <input <?= $ind_planru ?> type="checkbox" name="ind_planru" id="ind_planruID" value="1" onclick="enableDisable(3)">
                     </div>
                     <div class="col-md-12 contenido">&nbsp;</div>
                     <div class="col-md-2 CellHead">Nacional</div>
                     <div class="col-md-2 CellHead">Urbano</div>
-                    <div class="col-md-2 CellHead">Exportación</div>
-                    <div class="col-md-2 CellHead">Importación</div>
+                    <div class="col-md-2 CellHead">Exportaci&oacute;n</div>
+                    <div class="col-md-2 CellHead">Importaci&oacute;n</div>
                     <div class="col-md-2 CellHead">Tramo D1</div>
                     <div class="col-md-2 CellHead">Tramo D2</div>
-                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_contro'] ?>" name="tie_contro" id="tie_controID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_conurb'] ?>" name="tie_conurb" id="tie_conurbID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_traexp'] ?>" name="tie_traexp" id="tie_traexpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_traimp'] ?>" name="tie_traimp" id="tie_traimpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_tratr1'] ?>" name="tie_tratr1" id="tie_tratr1ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
-                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_tratr2'] ?>" name="tie_tratr2" id="tie_tratr2ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_contro'] + 0 ?>" name="tie_contro" id="tie_controID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_conurb'] + 0 ?>" name="tie_conurb" id="tie_conurbID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_traexp'] + 0 ?>" name="tie_traexp" id="tie_traexpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_traimp'] + 0 ?>" name="tie_traimp" id="tie_traimpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_tratr1'] + 0 ?>" name="tie_tratr1" id="tie_tratr1ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_tratr2'] + 0 ?>" name="tie_tratr2" id="tie_tratr2ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-12 contenido">&nbsp;</div>
 
                     <div class="col-md-12 CellHead centrado">
@@ -409,32 +511,32 @@ class ajax_certra_certra {
                     <div class="col-md-12 contenido">&nbsp;</div>
                     <div class="col-md-2 CellHead">Nacional</div>
                     <div class="col-md-2 CellHead">Urbano</div>
-                    <div class="col-md-2 CellHead">Exportación</div>
-                    <div class="col-md-2 CellHead">Importación</div>
+                    <div class="col-md-2 CellHead">Exportaci&oacute;n</div>
+                    <div class="col-md-2 CellHead">Importaci&oacute;n</div>
                     <div class="col-md-2 CellHead">Tramo D1</div>
                     <div class="col-md-2 CellHead">Tramo D2</div>
                     <div class="col-md-2 contenido">
-                        <input type="text" value="<?= $datos->principal['tie_desnac'] ?>" name="tie_desnac" id="tie_desnacID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
+                        <input type="text" value="<?= $datos->principal['tie_desnac'] + 0 ?>" name="tie_desnac" id="tie_desnacID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
                     </div>
                     <div class="col-md-2 contenido">
-                        <input type="text" value="<?= $datos->principal['tie_desurb'] ?>" name="tie_desurb" id="tie_desurbID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
+                        <input type="text" value="<?= $datos->principal['tie_desurb'] + 0 ?>" name="tie_desurb" id="tie_desurbID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
                     </div>
                     <div class="col-md-2 contenido">
-                        <input type="text" value="<?= $datos->principal['tie_desexp'] ?>" name="tie_desexp" id="tie_desexpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
+                        <input type="text" value="<?= $datos->principal['tie_desexp'] + 0 ?>" name="tie_desexp" id="tie_desexpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
                     </div>
                     <div class="col-md-2 contenido">
-                        <input type="text" value="<?= $datos->principal['tie_desimp'] ?>" name="tie_desimp" id="tie_desimpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
+                        <input type="text" value="<?= $datos->principal['tie_desimp'] + 0 ?>" name="tie_desimp" id="tie_desimpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
                     </div>
                     <div class="col-md-2 contenido">
-                        <input type="text" value="<?= $datos->principal['tie_destr1'] ?>" name="tie_destr1" id="tie_destr1ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
+                        <input type="text" value="<?= $datos->principal['tie_destr1'] + 0 ?>" name="tie_destr1" id="tie_destr1ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
                     </div>
                     <div class="col-md-2 contenido">
-                        <input type="text" value="<?= $datos->principal['tie_destr2'] ?>" name="tie_destr2" id="tie_destr2ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
+                        <input type="text" value="<?= $datos->principal['tie_destr2'] + 0 ?>" name="tie_destr2" id="tie_destr2ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
                     </div>
                     <div class="col-md-12 contenido">&nbsp;</div>
 
                     <div class="col-md-12 CellHead centrado">
-                        Requiere Confinración de Pernoctación
+                        Requiere Confirmaci&oacute;n de Pernoctaci&oacute;n
                         <?php
                         if ($datos->principal['ind_conper'] == 1) {
                             $ind_conper = "checked='true'";
@@ -445,50 +547,50 @@ class ajax_certra_certra {
                     <div class="col-md-12 contenido">&nbsp;</div>
                     <div class="col-md-2 CellHead">Nacional</div>
                     <div class="col-md-2 CellHead">Urbano</div>
-                    <div class="col-md-2 CellHead">Exportación</div>
-                    <div class="col-md-2 CellHead">Importación</div>
+                    <div class="col-md-2 CellHead">Exportaci&oacute;n</div>
+                    <div class="col-md-2 CellHead">Importaci&oacute;n</div>
                     <div class="col-md-2 CellHead">Tramo D1</div>
                     <div class="col-md-2 CellHead">Tramo D2</div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe1nac'] ?>" name="hor_pe1nac" id="hor_pe1nacID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe1nac'] ?>" name="hor_pe1nac" id="hor_pe1nacID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true" onfocus="removeStyle('hor_pe1nacID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe2nac'] ?>" name="hor_pe2nac" id="hor_pe2nacID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe2nac'] ?>" name="hor_pe2nac" id="hor_pe2nacID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe2nacID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe1urb'] ?>" name="hor_pe1urb" id="hor_pe1urbID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe1urb'] ?>" name="hor_pe1urb" id="hor_pe1urbID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe1urbID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe2urb'] ?>" name="hor_pe2urb" id="hor_pe2urbID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe2urb'] ?>" name="hor_pe2urb" id="hor_pe2urbID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe2urbID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe1exp'] ?>" name="hor_pe1exp" id="hor_pe1expID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe1exp'] ?>" name="hor_pe1exp" id="hor_pe1expID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe1expID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe2exp'] ?>" name="hor_pe2exp" id="hor_pe2expID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe2exp'] ?>" name="hor_pe2exp" id="hor_pe2expID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe2expID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe1imp'] ?>" name="hor_pe1imp" id="hor_pe1impID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe1imp'] ?>" name="hor_pe1imp" id="hor_pe1impID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe1impID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe2imp'] ?>" name="hor_pe2imp" id="hor_pe2impID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe2imp'] ?>" name="hor_pe2imp" id="hor_pe2impID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe2impID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe1tr1'] ?>" name="hor_pe1tr1" id="hor_pe1tr1ID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe1tr1'] ?>" name="hor_pe1tr1" id="hor_pe1tr1ID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe1tr1ID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe2tr1'] ?>" name="hor_pe2tr1" id="hor_pe2tr1ID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe2tr1'] ?>" name="hor_pe2tr1" id="hor_pe2tr1ID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe2tr1ID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe1tr2'] ?>" name="hor_pe1tr2" id="hor_pe1tr2ID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe1tr2'] ?>" name="hor_pe1tr2" id="hor_pe1tr2ID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe1tr2ID')">
                     </div>
                     <div class="col-md-1 contenido">
-                        <input type="text" value="<?= $datos->principal['hor_pe2tr2'] ?>" name="hor_pe2tr2" id="hor_pe2tr2ID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true">
+                        <input type="text" value="<?= $datos->principal['hor_pe2tr2'] ?>" name="hor_pe2tr2" id="hor_pe2tr2ID" validate="dir" maxlength="5" minlength="0" class="ancho centrado hora" placeholder="00:00" readonly="true"  onfocus="removeStyle('hor_pe2tr2ID')">
                     </div>
                 </div>
             </div>
         </div>
-        <div id="conf_etapasID" class="col-md-12 accordion defecto ancho">
+        <div id="otra_parameID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Otras Parametrizaiones</b></h3>
             <div id="contenido_etap">
                 <div class="StyleDIV contenido" style="min-height: 180px !important;" >
@@ -513,7 +615,7 @@ class ajax_certra_certra {
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
-                        Notificación por Agencia 
+                        Notificaci&oacute;n por Agencia 
                         <?php
                         if ($datos->principal['ind_notage'] == 1) {
                             $ind_notage = "checked='true'";
@@ -553,9 +655,9 @@ class ajax_certra_certra {
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
-                        Grupo al que Pertenece 
-                        <select id="cod_grupoxID" name="cod_grupox">
-                            <option value="">Seleccione una Opción</option>
+                        Grupo al que Pertenece <font style="color:red">*</font>
+                        <select id="cod_grupoxID" validate="select" obl="1" name="cod_grupox">
+                            <option value="">Seleccione una Opci&oacute;n</option>
                             <?php
                             foreach ($grupos as $key => $value) {
                                 if ($datos->principal['cod_grupox'] == $value['cod_grupox']) {
@@ -565,22 +667,22 @@ class ajax_certra_certra {
                                 }
                                 ?>
                                 <option <?= $cod_grupox ?> value="<?= $value['cod_grupox'] ?>"><?= $value['nom_grupox'] ?></option>
-            <?php
-        }
-        ?>
+                                <?php
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="col-md-2">&nbsp;</div>
                     <div class="col-md-5 izquierda">
-        <?php $tie_trazab = str_replace(',', '.', round($datos->principal['tie_trazab'] / 60, 1)); ?>
+                        <?php $tie_trazab = str_replace(',', '.', round($datos->principal['tie_trazab'] / 60, 1)); ?>
                         <input class="centrado select" value="<?= $tie_trazab ?>"  onblur="validaCampo()" maxlength="4" minlength="1" type="text" name="tie_trazab" id="tie_trazabID" >
                         Tiempo Trazabilidad Diaria
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
-                        Prioridad 
-                        <select id="cod_prioriID" name="cod_priori">
-                            <option value="">Seleccione una Opción</option>
+                        Prioridad <font style="color:red">*</font>
+                        <select id="cod_prioriID" validate="select" obl="1" name="cod_priori">
+                            <option value="">Seleccione una Opci&oacute;n</option>
                             <?php
                             for ($i = 1; $i <= 3; $i++) {
                                 if ($datos->principal['cod_priori'] == $i) {
@@ -590,15 +692,15 @@ class ajax_certra_certra {
                                 }
                                 ?>
                                 <option <?= $cod_priori ?> value="<?= $i ?>"><?= $i ?></option>
-            <?php
-        }
-        ?>
+                                <?php
+                            }
+                            ?>
                         </select>
                     </div>
                     <div class="col-md-2">&nbsp;</div>
                     <div class="col-md-5 izquierda">
-                        <select id="cod_operacID" name="cod_operac">
-                            <option value="">Seleccione una Opción</option>
+                        <select id="cod_operacID" validate="select" obl="1" name="cod_operac">
+                            <option value="">Seleccione una Opci&oacute;n</option>
                             <?php
                             foreach ($operaciones as $key => $value) {
                                 if ($value['cod_operac'] == $datos->principal['cod_operac']) {
@@ -607,12 +709,12 @@ class ajax_certra_certra {
                                     $cod_operac = "";
                                 }
                                 ?>
-                                <option <?= $cod_operac ?>value="<?= $value['cod_operac'] ?>"> <?= utf8_encode($value['nom_operac']) ?></option>
-            <?php
-        }
-        ?>
+                                <option <?= $cod_operac ?>value="<?= $value['cod_operac'] ?>"> <?= $value['nom_operac'] ?></option>
+                                <?php
+                            }
+                            ?>
                         </select>
-                        Tipo de Operación
+                        Tipo de Operaci&oacute;n <font style="color:red">*</font>
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                 </div>
@@ -621,7 +723,7 @@ class ajax_certra_certra {
         <div id="conf_ealID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>EAL Contratadas</b></h3>
             <div id="contenido_serv">
-                <div class="StyleDIV contenido" style="min-height: <?= (count($eals) * 25 + 70) ?>px !important;" >
+                <div class="StyleDIV contenido" style="min-height: <?= (count($eals) * 25 + 30) ?>px !important;" >
                     <div class="col-md-12">
                         <div class="col-md-3"></div>
                         <div class="col-md-6">
@@ -654,9 +756,9 @@ class ajax_certra_certra {
                                         <td width="20%"><input type="text" value="<?= $inicio ?>" class="fecha ancho centrado" readonly="true" validate="date" minlength="4" maxlength="6" name="fecini[]" id="fecini<?= $key ?>"></td>
                                         <td width="20%"><input type="text" value="<?= $fin ?>" class="fecha ancho centrado" readonly="true" validate="date" minlength="4" maxlength="6" name="fecfin[]" id="fecfin<?= $key ?>"></td>
                                     </tr>
-            <?php
-        }
-        ?>
+                                    <?php
+                                }
+                                ?>
                             </table>
                         </div>
                         <div class="col-md-3"></div>
@@ -696,7 +798,6 @@ class ajax_certra_certra {
      *  \param: 
      *  \return arreglo con los tipos de operaciones
      */
-
     private function getOperaciones() {
         $sql = "SELECT cod_operac, nom_operac FROM " . BASE_DATOS . ".tab_callce_operac WHERE ind_estado = 1";
         $consulta = new Consulta($sql, self::$cConexion);
@@ -712,17 +813,11 @@ class ajax_certra_certra {
      *  \param: 
      *  \return 
      */
-
     private function CreateConfig() {
         $datos = (object) $_POST;
-        $sql = "SELECT com_diasxx 
-        FROM " . BASE_DATOS . ".tab_config_horlab
-        WHERE cod_tercer = '$datos->cod_tercer' 
-        AND ind_config = '$datos->ind_config' 
-        AND cod_ciudad = '$datos->cod_ciudad' ";
+        $_CONFIG = $this->getHorarioLaboralTransp(self::$cIndLaboral1, $datos->cod_tercer);
+        $_CONFIG2 = $this->getHorarioLaboralTransp(self::$cIndLaboral2, $datos->cod_tercer);
 
-        $consulta = new Consulta($sql, self::$cConexion);
-        $_CONFIG = $consulta->ret_matrix("a");
         $mActual = '';
         foreach ($_CONFIG as $key => $value) {
             $mActual .= $mActual != '' ? '|' . $value['com_diasxx'] : $value['com_diasxx'];
@@ -732,33 +827,60 @@ class ajax_certra_certra {
         foreach (explode('|', $mActual) as $llave) {
             $mArrayActual[] = $llave;
         }
-        ?>
-        <div class="StyleDIV col-md-12">
-            <div class="col-md-12 CellHead centrado" id="mensaje"><b>DIAS DE LA SEMANA AUN NO PARAMETRIZADOS</b></div>
-            <div class="col-md-12">
-                <div class="col-md-3 cellInfo1"></div>
-                <div class="col-md-6 cellInfo1">
-        <?php
-        $count = 0;
-        $contador = 0;
-        foreach ($this->Week as $mDay => $mDia) {
-            if (!in_array($mDay, $mArrayActual)) {
-                ?>
-                            <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
-                            <div class="col-md-4 izquierda"><input type="checkbox" name="nom_diasxx" value="<?= $mDay ?>" /></div>
-                <?php
-            }
+        $mActual2 = '';
+        foreach ($_CONFIG2 as $key => $value) {
+            $mActual2 .= $mActual2 != '' ? '|' . $value['com_diasxx'] : $value['com_diasxx'];
         }
-        ?>
-                </div>
-                <div class="col-md-3 cellInfo1"></div>
-                <div class="col-md-12">
-                    <div class="col-md-6 CellHead centrado"><b>HORARIO DE ENTRADA</b></div>
-                    <div class="col-md-6 CellHead centrado"><b>HORARIO DE SALIDA</b></div>
-                </div>
 
-                <div class="col-md-6 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_ingres" id="hor_ingresID" value="08:00" /></div>
-                <div class="col-md-6 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_salida" id="hor_salidaID" value="16:00" /></div>       
+        $mArrayActua2l = array();
+        foreach (explode('|', $mActual2) as $llave) {
+            $mArrayActual2[] = $llave;
+        }
+
+        if (count($mArrayActual) < count($this->Week) || count($mArrayActual2) < count($this->Week)) {
+            ?>
+            <div class="StyleDIV col-md-12">
+                <div class="col-md-12 CellHead centrado" id="mensaje"><b>DIAS DE LA SEMANA AUN NO PARAMETRIZADOS</b></div>
+                <div class="col-md-12">
+                    <div class="col-md-3 cellInfo1"></div>
+                    <div class="col-md-6 cellInfo1">
+                        <?php
+                        $count = 0;
+                        $contador = 0;
+                        foreach ($this->Week as $mDay => $mDia) {
+                            if (!in_array($mDay, $mArrayActual)) {
+                                ?>
+                                <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
+                                <div class="col-md-4 izquierda"><input type="checkbox" ind_config="3" name="nom_diasxx" value="<?= $mDay ?>" /></div>
+                                <?php
+                            }
+                        }
+                        ?>
+                        <div class="col-md-12 centrado CellHead"><b>Seguimineto Espacial</b></div>
+                        <?php
+                        foreach ($this->Week as $mDay => $mDia) {
+                            if (!in_array($mDay, $mArrayActual2)) {
+                                ?>
+                                <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
+                                <div class="col-md-4 izquierda"><input type="checkbox" ind_config="4" name="nom_diasxx" value="<?= $mDay ?>" /></div>
+                                <?php
+                            }
+                        }
+                        ?>
+                    </div>
+                    <div class="col-md-3 cellInfo1"></div>
+                    <div class="col-md-12">
+                        <div class="col-md-6 CellHead centrado"><b>HORA INICIO</b></div>
+                        <div class="col-md-6 CellHead centrado"><b>HORA FINALIZACI&Oacute;N</b></div>
+                    </div>
+
+                    <div class="col-md-6 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_ingres" id="hor_ingresID" value="00:00" /></div>                
+                    <div class="col-md-6 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_salida" id="hor_salidaID" value="23:59" /></div> 
+                    <?php
+                } else {
+                    die("1");
+                }
+                ?>      
             </div>
         </div>
 
@@ -779,17 +901,22 @@ class ajax_certra_certra {
         $fecha = date("Y-m-d");
         $sql = "SELECT fec_festiv
         FROM " . BASE_DATOS . ".tab_config_festiv 
-        WHERE cod_tercer = '$datos->cod_transp' 
-        AND ind_config = '$datos->ind_config' 
-        AND cod_ciudad = '$datos->cod_ciudad' 
+        WHERE cod_tercer = 1 
+        AND ind_config = 3
+        AND cod_ciudad = 3
         AND YEAR( fec_festiv ) = '$datos->sel_yearxx' ";
+       
         $consulta = new Consulta($sql, self::$cConexion);
         $mFechas = $consulta->ret_matrix("a");
         ?>
 
         <div class="col-md-12">
-            <div class="col-md-6 centrado"><input type="text" style="width:100%" class="fecha centrado negro" value="<?= $fecha ?>" name="fec_insert" id="fec_insertID" readonly="true" /></div>
-            <div class="col-md-6 centrado"><input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" name="Registrar" value="Registrar" onclick="InsertFestivo('<?= $datos->cod_transp ?>', '<?= $datos->ind_config ?>', '<?= $datos->cod_ciudad ?>');"/></div>
+            <div class="col-md-6 centrado">
+                <input type="text" style="width:100%" class="fecha centrado contenido negro" value="<?= $fecha ?>" name="fec_insert" id="fec_insertID" readonly="true">
+            </div>
+            <div class="col-md-6 centrado">
+                <input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" name="Registrar" value="Registrar" onclick="InsertFestivo('<?= $datos->cod_transp ?>', '<?= $datos->ind_config ?>', '<?= $datos->cod_ciudad ?>');">
+            </div>
         </div>
         <div class="col-md-12 centrado cellInfo1" >
             <?php
@@ -800,7 +927,7 @@ class ajax_certra_certra {
                     $mMesesConfig[$eFecha[1]] .= $mMesesConfig[$eFecha[1]] != '' ? '|' . $eFecha[2] : $eFecha[2];
                 }
                 ?>
-                <div class="col-md-12 CellHead">FESTIVOS PARAMETRIZADOS DE AÑO <?= $datos->sel_yearxx ?><br>Para Eliminar un Festivo Haga Click sobre el dia dentro del Calendario</div>
+                <div class="col-md-12 CellHead">FESTIVOS PARAMETRIZADOS DE A&Ntilde;O <?= $datos->sel_yearxx ?><br>Para Eliminar un Festivo Haga Click sobre el dia dentro del Calendario</div>
                 <?php
                 $count = 0;
                 $contador = 0;
@@ -828,12 +955,12 @@ class ajax_certra_certra {
                                 <td width="14%" style="r-bottom:2px solid #000000;" align="center"><b>S</b></td>
                                 <td width="14%" style="r-bottom:2px solid #000000;" align="center"><b>D</b></td>
                             </tr>
-                                <?php
-                                $count2 = 0;
-                                $counttr = 0;
-                                for ($i = 1, $consec = 1; $consec <= $mLimit; $i++) {
-                                    if ($count2 == 0) {
-                                        ?>
+                            <?php
+                            $count2 = 0;
+                            $counttr = 0;
+                            for ($i = 1, $consec = 1; $consec <= $mLimit; $i++) {
+                                if ($count2 == 0) {
+                                    ?>
                                     <tr>
                                         <?php
                                         $counttr ++;
@@ -854,12 +981,12 @@ class ajax_certra_certra {
                                         }
                                         ?>
                                         <td width="14%" <?= $click ?> style="<?= $add ?>r:1px solid #ADADAD;padding-right:10px;padding-top:3px;" align="right"><?= $link ?></td>
-                                    <?php
-                                    $consec++;
-                                }
-                                $count2++;
-                                if ($count2 > 6) {
-                                    ?>
+                                        <?php
+                                        $consec++;
+                                    }
+                                    $count2++;
+                                    if ($count2 > 6) {
+                                        ?>
                                     </tr>
                                     <?php
                                     $count2 = 0;
@@ -868,9 +995,9 @@ class ajax_certra_certra {
                             if ($counttr <= 5) {
                                 ?>
                                 <tr><td colspan="7">&nbsp;<br>&nbsp;</td></tr>
-                        <?php
-                    }
-                    ?>
+                                <?php
+                            }
+                            ?>
                         </table>
                     </div>
 
@@ -878,10 +1005,10 @@ class ajax_certra_certra {
                 }
             } else {
                 ?>
-                <div class="CellHead centrado">NO HAY FESTIVOS PARAMETRIZADOS PARA EL AÑO <?= $datos->sel_yearxx ?></div>
-            <?php
-        }
-        ?>
+                <div class="CellHead centrado">NO HAY FESTIVOS PARAMETRIZADOS PARA EL A&Ntilde;O <?= $datos->sel_yearxx ?></div>
+                <?php
+            }
+            ?>
 
         </div>
         <?php
@@ -899,11 +1026,13 @@ class ajax_certra_certra {
 
     private function InsertFestivo() {
         $datos = (object) $_POST;
+        $fec_festiv = explode("/", $datos->fec_insert);
+        $datos->fec_insert = $fec_festiv[2] . "-" . $fec_festiv[0] . "-" . $fec_festiv[1];
         $sql = "SELECT 1 
         FROM " . BASE_DATOS . ".tab_config_festiv
-        WHERE cod_tercer = '$datos->cod_transp' 
-        AND ind_config = '$datos->ind_config' 
-        AND cod_ciudad = '$datos->cod_ciudad' 
+        WHERE cod_tercer = 1
+        AND ind_config = 3
+        AND cod_ciudad = 3
         AND fec_festiv = '$datos->fec_insert' ";
         $consulta = new Consulta($sql, self::$cConexion);
         $mExiste = $consulta->ret_matrix("a");
@@ -912,7 +1041,7 @@ class ajax_certra_certra {
         } else {
             $sql = "INSERT INTO " . BASE_DATOS . ".tab_config_festiv
             ( cod_tercer, fec_festiv, ind_config, cod_ciudad )
-            VALUES( '$datos->cod_transp', '$datos->fec_insert', '$datos->ind_config', '$datos->cod_ciudad' ) ";
+            VALUES( 1, '$datos->fec_insert', '3', '3' ) ";
             if ($consulta = new Consulta($sql, self::$cConexion)) {
                 $result = '1000';
             } else {
@@ -1105,7 +1234,7 @@ class ajax_certra_certra {
             cod_operac, cod_server, cod_priori, cod_transp, usr_creaci, fec_creaci, 
             hor_pe1nac, hor_pe2nac, hor_pe1urb, hor_pe2urb, hor_pe1exp, hor_pe2exp, 
             hor_pe1imp, hor_pe2imp, hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, 
-            ind_conper, ind_solpol, cod_asegur, num_poliza
+            ind_conper, ind_solpol, cod_asegur, num_poliza, fec_valreg
         ) VALUES  ( 
         '$datos->num_consec', '$datos->cod_tipser', '$datos->tie_contro', '$datos->ind_estado', '$datos->tie_conurb', '$datos->ind_llegad', 
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
@@ -1118,7 +1247,7 @@ class ajax_certra_certra {
         '$datos->cod_operac', '$datos->cod_server', '$datos->cod_priori', '$datos->cod_transp', '$datos->usr_creaci', NOW(), 
         '$datos->hor_pe1nac', '$datos->hor_pe2nac', '$datos->hor_pe1urb', '$datos->hor_pe2urb', '$datos->hor_pe1exp', '$datos->hor_pe2exp', 
         '$datos->hor_pe1imp', '$datos->hor_pe2imp', '$datos->hor_pe1tr1', '$datos->hor_pe2tr1', '$datos->hor_pe1tr2', '$datos->hor_pe2tr2', 
-        '$datos->ind_conper', '$datos->ind_solpol', '$datos->cod_asegur', '$datos->num_poliza')";
+        '$datos->ind_conper', '$datos->ind_solpol', '$datos->cod_asegur', '$datos->num_poliza', '$datos->fec_valreg')";
 
         if ($datos->eal != array()) {
             $consulta = new Consulta($query, self::$cConexion, "BR");
@@ -1184,6 +1313,29 @@ class ajax_certra_certra {
         echo "</pre>";
         $consulta = new Consulta($sql, self::$cConexion);
         return $consulta->ret_matrix("a");
+    }
+
+    /* ! \fn: deleteConfiguracion
+     *  \brief: elimina una configuracion laboral de una empresa
+     *  \author: Ing. Alexander Correa
+     *  \date: 16/05/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return boolean 
+     */
+
+    private function deleteConfiguracion() {
+        $datos = (object) $_POST;
+        $sql = "DELETE FROM " . BASE_DATOS . ".tab_config_horlab 
+    				  WHERE cod_tercer = '$datos->cod_transp' 
+    				  AND com_diasxx = '$datos->dia' 
+    				  AND ind_config = $datos->ind_config 
+    				  AND cod_ciudad = $datos->ind_config ";
+        if ($consulta = new Consulta($sql, self::$cConexion)) {
+            die('1');
+        } else {
+            die('0');
+        }
     }
 
 }

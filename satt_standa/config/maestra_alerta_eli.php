@@ -22,11 +22,11 @@ class Proc_alerta
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Resultado();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Eliminar();
@@ -83,7 +83,7 @@ class Proc_alerta
 
    if($okelim)
    {
-    $matriz[$i][3]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&cod_alarma=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\" onClick=\"javascript:
+    $matriz[$i][3]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&cod_alarma=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\" onClick=\"javascript:
     if(confirm('Desea Eliminar la Alarma'))
     {
      submit();
@@ -138,7 +138,7 @@ class Proc_alerta
 
    $formulario -> oculto("window","central",0);
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> cerrar();
 
@@ -149,12 +149,12 @@ class Proc_alerta
    $query = "DELETE FROM ".BD_STANDA.".tab_mensaj_alarma
                    WHERE cod_transp = '".NIT_TRANSPOR."' AND
                          nom_bdsata = '".BASE_DATOS."' AND
-                         cod_alarma = ".$GLOBALS[cod_alarma]."";
+                         cod_alarma = ".$_REQUEST[cod_alarma]."";
 
    $consulta = new Consulta($query, $this -> conexion,"BR");
 
    $query = "DELETE FROM ".BASE_DATOS.".tab_genera_alarma
-             WHERE cod_alarma = '$GLOBALS[cod_alarma]' ";
+             WHERE cod_alarma = '$_REQUEST[cod_alarma]' ";
 
    $consulta = new Consulta($query, $this -> conexion,"R");
 
@@ -162,7 +162,7 @@ class Proc_alerta
    {
      //Se inserta la alarma en los standas de sat basico y sat trafico
       $data['nom_proces'] = "Eliminar Alarma";
-      $mParams = array( "cod_alarma" => $GLOBALS[cod_alarma],
+      $mParams = array( "cod_alarma" => $_REQUEST[cod_alarma],
                         "nom_llavex" => 'f74ca8ee40d8e9c9b2cd529ce297a9a8'
                         );
 
@@ -447,9 +447,9 @@ class Proc_alerta
 
 
      
-      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Eliminar Otra Alerta</a></b>";
+      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Eliminar Otra Alerta</a></b>";
 
-     $mensaje =  "Transaccion Exitosa La Alarma $GLOBALS[nom_ala] Fue Eliminada".$link_a;
+     $mensaje =  "Transaccion Exitosa La Alarma $_REQUEST[nom_ala] Fue Eliminada".$link_a;
      if( $data['error'] )
       $mensaje .= "<br><b>Error en ".$data['error']."</b>";
      

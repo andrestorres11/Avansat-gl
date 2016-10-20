@@ -42,7 +42,7 @@ class Proc_lineas
 
  {
 
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
 
     $this -> Buscar();
 
@@ -50,7 +50,7 @@ class Proc_lineas
 
      {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
 
        {
 
@@ -102,7 +102,7 @@ class Proc_lineas
 
    $formulario -> oculto("window","central",0);
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> boton("Buscar","button\" onClick=\"aceptar_lis() ",0);
 
@@ -134,7 +134,7 @@ class Proc_lineas
 
            WHERE a.cod_marcax = b.cod_marcax AND
 
-                 a.nom_lineax LIKE '%$GLOBALS[linea]%'
+                 a.nom_lineax LIKE '%$_REQUEST[linea]%'
 
         ORDER BY 3,2";
 
@@ -206,7 +206,7 @@ class Proc_lineas
 
    $formulario -> oculto("window","central",0);
 
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> cerrar();
 

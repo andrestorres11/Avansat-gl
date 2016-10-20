@@ -19,11 +19,11 @@ class Proc_despac
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Formulario1();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario1();
@@ -47,10 +47,10 @@ class Proc_despac
    $fec_actual = date("d-m-Y");
    $hor_actual = date("H:i");
    //presenta por defecta la fecha actual
-   if(!isset($GLOBALS[fecpla]))
-      $GLOBALS[fecpla]=$fec_actual;
-   if(!isset($GLOBALS[horpla]))
-      $GLOBALS[horpla]=$hor_actual;
+   if(!isset($_REQUEST[fecpla]))
+      $_REQUEST[fecpla]=$fec_actual;
+   if(!isset($_REQUEST[horpla]))
+      $_REQUEST[horpla]=$hor_actual;
    $inicio[0][0]='0';
    $inicio[0][1]='-';
 
@@ -71,7 +71,7 @@ class Proc_despac
    //trae la agencia anterior
    $query = "SELECT a.cod_agenci,a.nom_agenci
              FROM ".BASE_DATOS.".tab_genera_agenci a 
-             WHERE a.cod_agenci = '$GLOBALS[agencia]'";
+             WHERE a.cod_agenci = '$_REQUEST[agencia]'";
 
    $consulta = new Consulta($query, $this -> conexion);
    $agencia_a = $consulta -> ret_matriz();
@@ -87,7 +87,7 @@ class Proc_despac
    //trae el cliente anterior
    $query = "SELECT cod_tercer,abr_tercer
                FROM ".BASE_DATOS.".tab_tercer_tercer
-              WHERE cod_tercer = '$GLOBALS[cliente]' ";
+              WHERE cod_tercer = '$_REQUEST[cliente]' ";
    $consulta = new Consulta($query, $this -> conexion);
    $cliente_a = $consulta -> ret_matriz();
 
@@ -107,7 +107,7 @@ class Proc_despac
    //trae la aseguradora anterior
    $query = "SELECT cod_tercer,abr_tercer
                FROM ".BASE_DATOS.".tab_tercer_tercer
-              WHERE cod_tercer = '$GLOBALS[asegra]' ";
+              WHERE cod_tercer = '$_REQUEST[asegra]' ";
    $consulta = new Consulta($query, $this -> conexion);
    $asegra_a = $consulta -> ret_matriz();
 
@@ -127,7 +127,7 @@ class Proc_despac
    $consulta = new Consulta($query, $this -> conexion);
    $asegras = $consulta -> ret_matriz();
 
-   if($GLOBALS[asegra])
+   if($_REQUEST[asegra])
    $asegras = array_merge($asegra_a,$inicio,$asegras);
    else
    $asegras = array_merge($asegra_emptra,$inicio,$asegras);
@@ -145,12 +145,12 @@ class Proc_despac
 
    $ciuoris = array_merge($inicio,$ciuoris);
 
-   if($GLOBALS[ciuori])
+   if($_REQUEST[ciuori])
    {
     //trae la ciudad de origen anterior
     $query = "SELECT cod_ciudad,abr_ciudad
                 FROM ".BASE_DATOS.".tab_genera_ciudad
-               WHERE cod_ciudad = ".$GLOBALS[ciuori]."
+               WHERE cod_ciudad = ".$_REQUEST[ciuori]."
 	     ";
 
     $consulta = new Consulta($query, $this -> conexion);
@@ -163,7 +163,7 @@ class Proc_despac
                 FROM ".BASE_DATOS.".tab_genera_ciudad a,
 		     ".BASE_DATOS.".tab_genera_rutasx b
                WHERE a.cod_ciudad = b.cod_ciudes AND
-                     b.cod_ciuori = ".$GLOBALS[ciuori]." AND
+                     b.cod_ciuori = ".$_REQUEST[ciuori]." AND
 		     b.ind_estado = '1'
            	     GROUP BY 1 ORDER BY 2 ";
 
@@ -172,12 +172,12 @@ class Proc_despac
 
     $ciudess = array_merge($inicio,$ciudess);
 
-    if($GLOBALS[ciudes])
+    if($_REQUEST[ciudes])
     {
      //trae la ciudad destino anterior
      $query = "SELECT cod_ciudad,abr_ciudad
                  FROM ".BASE_DATOS.".tab_genera_ciudad
-                WHERE cod_ciudad = ".$GLOBALS[ciudes]."
+                WHERE cod_ciudad = ".$_REQUEST[ciudes]."
 	      ";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -188,8 +188,8 @@ class Proc_despac
      //trae las rutas segun la ciudad de origen y la ciudad de destino
      $query = "SELECT a.cod_rutasx,a.nom_rutasx
                  FROM ".BASE_DATOS.".tab_genera_rutasx a
-                WHERE a.cod_ciuori = ".$GLOBALS[ciuori]." AND
-                      a.cod_ciudes = ".$GLOBALS[ciudes]." AND
+                WHERE a.cod_ciuori = ".$_REQUEST[ciuori]." AND
+                      a.cod_ciudes = ".$_REQUEST[ciudes]." AND
 		      a.ind_estado = '1' 
                       GROUP BY 1 ORDER BY 2 ";
 
@@ -198,12 +198,12 @@ class Proc_despac
 
      $rutas = array_merge($inicio,$rutas);
 
-     if($GLOBALS[ruta])
+     if($_REQUEST[ruta])
      {
       //trae la ruta anterior
       $query = "SELECT cod_rutasx,nom_rutasx
                   FROM ".BASE_DATOS.".tab_genera_rutasx
-                 WHERE cod_rutasx = ".$GLOBALS[ruta]."
+                 WHERE cod_rutasx = ".$_REQUEST[ruta]."
            	       ORDER BY 2 ";
 
       $consulta = new Consulta($query, $this -> conexion);
@@ -217,7 +217,7 @@ class Proc_despac
    //trae el tipo anterior
    $query = "SELECT cod_tipdes,nom_tipdes
                FROM ".BASE_DATOS.".tab_genera_tipdes
-              WHERE cod_tipdes = '$GLOBALS[tipdes]'
+              WHERE cod_tipdes = '$_REQUEST[tipdes]'
            ORDER BY 2 ";
    $consulta = new Consulta($query, $this -> conexion);
    $tipdes_a = $consulta -> ret_matriz();
@@ -238,8 +238,8 @@ class Proc_despac
                   a.fec_llegad IS NULL AND
                   a.ind_anulad = 'R' AND
                   a.num_carava != 0 AND
-                  a.cod_ciuori = '".$GLOBALS[ciuori]."' AND
-                  a.cod_ciudes = '".$GLOBALS[ciudes]."'
+                  a.cod_ciuori = '".$_REQUEST[ciuori]."' AND
+                  a.cod_ciudes = '".$_REQUEST[ciudes]."'
             GROUP BY 1
             ORDER BY 1 ";
         $consulta = new Consulta($query, $this -> conexion);
@@ -252,17 +252,17 @@ class Proc_despac
                       a.fec_llegad IS NULL AND
                       a.ind_anulad = 'R' AND
                   	  a.num_carava != 0 AND
-                      a.num_carava = '".$GLOBALS[num_carava]."' AND
-                      a.cod_ciuori = '".$GLOBALS[ciuori]."' AND
-                      a.cod_ciudes = '".$GLOBALS[ciudes]."'
+                      a.num_carava = '".$_REQUEST[num_carava]."' AND
+                      a.cod_ciuori = '".$_REQUEST[ciuori]."' AND
+                      a.cod_ciudes = '".$_REQUEST[ciudes]."'
                 GROUP BY 1
                 ORDER BY 1 ";
         $consulta = new Consulta($query, $this -> conexion);
         if($carava_a = $consulta -> ret_matriz())
         	$carava = array_merge($carava_a,$inicio,$carava, $ncarava, $scarava);
-        else if($GLOBALS[num_carava] == "n")
+        else if($_REQUEST[num_carava] == "n")
                 $carava = array_merge($ncarava,$inicio,$carava,$scarava);
-        else if($GLOBALS[num_carava] == "s" )
+        else if($_REQUEST[num_carava] == "s" )
         	$carava = array_merge($scarava, $inicio,$carava,$ncarava);
         else
         	$carava = array_merge($inicio,$carava, $ncarava, $scarava);
@@ -273,8 +273,8 @@ class Proc_despac
                        ".BASE_DATOS.".tab_despac_despac b
                   WHERE a.num_despac = b.num_despac AND
                        	b.num_carava != '0' AND
-                        b.num_carava = '".$GLOBALS[num_carava]."' AND
-                        a.num_placax = '".$GLOBALS[placa]."' AND
+                        b.num_carava = '".$_REQUEST[num_carava]."' AND
+                        a.num_placax = '".$_REQUEST[placa]."' AND
                         b.ind_anulad = 'R'";
         $consulta = new Consulta($query, $this -> conexion);
         $ind_placa = $consulta -> ret_arreglo();
@@ -282,7 +282,7 @@ class Proc_despac
    //trae la mercancia anterior
    $query = "SELECT cod_mercan,abr_mercan
                FROM ".BASE_DATOS.".tab_genera_mercan
-              WHERE cod_mercan = '$GLOBALS[mercan]' AND
+              WHERE cod_mercan = '$_REQUEST[mercan]' AND
                                 ind_activa = '1'
            ORDER BY 2 ";
    $consulta = new Consulta($query, $this -> conexion);
@@ -313,11 +313,11 @@ class Proc_despac
                  a.cod_conduc = g.cod_tercer AND
                  g.cod_tercer = h.cod_tercer AND
                  a.num_config = f.num_config AND
-                 a.num_placax = '$GLOBALS[placa]'
+                 a.num_placax = '$_REQUEST[placa]'
             ORDER BY 1 ";
   $consulta = new Consulta($query, $this -> conexion);
   if(!$placas = $consulta -> ret_matriz())
-  	unset($GLOBALS[placa]);
+  	unset($_REQUEST[placa]);
 
   //trae los conductores
   $query = "SELECT a.cod_tercer, CONCAT(a.nom_tercer,' ',a.nom_apell1),a.num_telmov
@@ -339,7 +339,7 @@ class Proc_despac
             WHERE a.cod_tercer = c.cod_tercer AND
                   a.cod_tercer = b.cod_tercer AND
                   b.cod_activi = '16' AND
-                  a.cod_tercer = '$GLOBALS[conduc]' ";
+                  a.cod_tercer = '$_REQUEST[conduc]' ";
    $consulta = new Consulta($query, $this -> conexion);
    $conduc_e  = $consulta -> ret_matriz();
 
@@ -347,7 +347,7 @@ class Proc_despac
    $formulario = new Formulario ("index.php","post","","form_insert");
    $formulario -> linea("Datos Basicos del Despacho",1);
    $formulario -> nueva_tabla();
-   $formulario -> texto ("Manifiesto N:","text","manifi",0,7,7,"","$GLOBALS[manifi]");
+   $formulario -> texto ("Manifiesto N:","text","manifi",0,7,7,"","$_REQUEST[manifi]");
    $formulario -> lista("Cliente:", "cliente", $clientes, 1);
    $formulario -> lista("Aseguradora:", "asegra", $asegras, 1);
    $formulario -> lista("Agencia:", "agencia", $agencias, 0);
@@ -355,36 +355,36 @@ class Proc_despac
    $formulario -> lista("Destino:", "ciudes\" onBlur=\"form_insert.submit()\"", $ciudess, 0);
    $formulario -> lista("Ruta:", "ruta", $rutas, 0);
    $formulario -> nueva_tabla();
-   $formulario -> texto ("Fecha Salida (dd-mm-yyyy)","text","fecpla",0,10,10,"","$GLOBALS[fecpla]");
-   $formulario -> texto ("Hora Salida (HH:mm)","text","horpla",0,5,5,"","$GLOBALS[horpla]");
+   $formulario -> texto ("Fecha Salida (dd-mm-yyyy)","text","fecpla",0,10,10,"","$_REQUEST[fecpla]");
+   $formulario -> texto ("Hora Salida (HH:mm)","text","horpla",0,5,5,"","$_REQUEST[horpla]");
    $formulario -> nueva_tabla();
    $formulario -> lista("Identificacion de Caravana:", "num_carava\" onChange=\"form_insert.submit()\"", $carava, 0);
-   if($GLOBALS[num_carava] == 'n')
+   if($_REQUEST[num_carava] == 'n')
    {
-   	if(!$GLOBALS[n_carava])
+   	if(!$_REQUEST[n_carava])
    	{
    		$query = "SELECT MAX(num_carava)+1
    					FROM ".BASE_DATOS.".tab_despac_despac
    					WHERE ind_anulad = 'R'";
    		$consulta = new Consulta($query, $this -> conexion);
    		$n_carava = $consulta -> ret_arreglo();
-   		$GLOBALS[n_carava] = $n_carava[0];
+   		$_REQUEST[n_carava] = $n_carava[0];
    	}
    	else
    	{
    		$query = "SELECT num_carava
    					FROM ".BASE_DATOS.".tab_despac_despac
    					WHERE ind_anulad = 'R'
-   					  AND num_carava = '".$GLOBALS[n_carava]."'";
+   					  AND num_carava = '".$_REQUEST[n_carava]."'";
    		$consulta = new Consulta($query, $this -> conexion);
    		if($consulta -> ret_arreglo())
    		{
-   			$GLOBALS[n_carava] = '';
+   			$_REQUEST[n_carava] = '';
 	 		$mensajes_error++;
-	 		echo "<br><div align = \"center\"><small><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">La Caravana <b>".$GLOBALS[n_carava]."</b> se Encuentra Asignada</b>, Asigne Otro N&uacute;mero.</small></div>";
+	 		echo "<br><div align = \"center\"><small><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">La Caravana <b>".$_REQUEST[n_carava]."</b> se Encuentra Asignada</b>, Asigne Otro N&uacute;mero.</small></div>";
    		}
    	}   	
-   	$formulario -> texto ("No.","text","n_carava",0,4,4,"","$GLOBALS[n_carava]");
+   	$formulario -> texto ("No.","text","n_carava",0,4,4,"","$_REQUEST[n_carava]");
    }
    else
    	$formulario -> oculto("n_carava",0,0);
@@ -401,7 +401,7 @@ class Proc_despac
    else
    $formulario -> oculto("regplaca",0,0);
    $formulario -> nueva_tabla();
-   $formulario -> texto ("Placa N:","text","placa\" onChange=\"form_insert.submit()\"",0,8,8,"","$GLOBALS[placa]");
+   $formulario -> texto ("Placa N:","text","placa\" onChange=\"form_insert.submit()\"",0,8,8,"","$_REQUEST[placa]");
    //si la placa digitada trae un registro
    //imprime los datos del vehiculo y del conductor
    if(sizeof($placas) == 1)
@@ -420,7 +420,7 @@ class Proc_despac
      $formulario -> nueva_tabla();
      echo "<td class=\"etiqueta\"><b>Datos del Conductor</b></td>";
 
-     if($GLOBALS[conduc]  != null)
+     if($_REQUEST[conduc]  != null)
      {
      $conducs = array_merge($conduc_e, $inicio, $conducs);
      $formulario -> nueva_tabla();
@@ -474,15 +474,15 @@ class Proc_despac
      }
      else if($trayler)
      {
-       if(!$GLOBALS[l_trayle])
+       if(!$_REQUEST[l_trayle])
        {
         $mi_trayler[0][0] = $trayler[0];
         $mi_trayler[0][1] = $trayler[0];
        }
        else
        {
-        $mi_trayler[0][0] = $GLOBALS[l_trayle];
-        $mi_trayler[0][1] = $GLOBALS[l_trayle];
+        $mi_trayler[0][0] = $_REQUEST[l_trayle];
+        $mi_trayler[0][1] = $_REQUEST[l_trayle];
        }
 
        $listatra = array_merge($mi_trayler,$listatra);
@@ -491,10 +491,10 @@ class Proc_despac
      }
      else
      {
-       if($GLOBALS[l_trayle])
+       if($_REQUEST[l_trayle])
        {
-        $mi_trayler[0][0] = $GLOBALS[l_trayle];
-        $mi_trayler[0][1] = $GLOBALS[l_trayle];
+        $mi_trayler[0][0] = $_REQUEST[l_trayle];
+        $mi_trayler[0][1] = $_REQUEST[l_trayle];
 
         $listatra = array_merge($mi_trayler,$listatra);
        }
@@ -507,18 +507,18 @@ class Proc_despac
    $formulario -> nueva_tabla();
    $formulario -> lista("Mercancia:", "mercan", $mercans, 0);
    $formulario -> lista("Tipo Despacho:", "tipdes", $tipdess, 1);
-   $formulario -> texto ("Valor Flete Cliente:","text","val_flecli",0,10,10,"","$GLOBALS[val_flecli]");
-   $formulario -> texto ("Valor Flete Conductor:","text","val_flecon",1,10,10,"","$GLOBALS[val_flecon]");
+   $formulario -> texto ("Valor Flete Cliente:","text","val_flecli",0,10,10,"","$_REQUEST[val_flecli]");
+   $formulario -> texto ("Valor Flete Conductor:","text","val_flecon",1,10,10,"","$_REQUEST[val_flecon]");
    $formulario -> nueva_tabla();
-   $formulario -> texto ("Protecciones Especiales:","textarea","protec",1,50,2,"","$GLOBALS[protec]");
-   $formulario -> texto ("Medios de Comunicacion:","textarea","medcom",1,50,2,"","$GLOBALS[med_com]");
-   $formulario -> texto ("Observaciones Generales:","textarea","obsgrl",1,50,2,"","$GLOBALS[obsgrl]");
+   $formulario -> texto ("Protecciones Especiales:","textarea","protec",1,50,2,"","$_REQUEST[protec]");
+   $formulario -> texto ("Medios de Comunicacion:","textarea","medcom",1,50,2,"","$_REQUEST[med_com]");
+   $formulario -> texto ("Observaciones Generales:","textarea","obsgrl",1,50,2,"","$_REQUEST[obsgrl]");
    $formulario -> nueva_tabla();
    $formulario -> oculto("transpor",$transpor[0][0],0);
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("opcion",1,0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    $formulario -> botoni("Aceptar","aceptar_insert()",0);
    $formulario -> botoni("Borrar","form_insert.reset()",1);
    $formulario -> cerrar();
@@ -530,13 +530,13 @@ class Proc_despac
  function Insertar()
  {
    $fec_actual = date("Y-m-d H:i:s");
-   $fecha=explode("-",$GLOBALS[fecpla]);
-   $fecha=$fecha[2]."-".$fecha[1]."-".$fecha[0]." ".$GLOBALS[horpla].":00";
+   $fecha=explode("-",$_REQUEST[fecpla]);
+   $fecha=$fecha[2]."-".$fecha[1]."-".$fecha[0]." ".$_REQUEST[horpla].":00";
 
-   if(!$GLOBALS[l_trayle])
-    $GLOBALS[l_trayle] = "null";
+   if(!$_REQUEST[l_trayle])
+    $_REQUEST[l_trayle] = "null";
    else
-    $GLOBALS[l_trayle] = "'".$GLOBALS[l_trayle]."'";
+    $_REQUEST[l_trayle] = "'".$_REQUEST[l_trayle]."'";
    
    //Se trae la aseguradora y número de poliza actual
 	$query = "SELECT a.cod_asegra,a.num_poliza
@@ -557,55 +557,55 @@ class Proc_despac
    $ultimo_consec = $ultimo[0][0];
    $nuevo_consec = $ultimo_consec+1;
 
-   if($GLOBALS[num_carava] == 's' || $GLOBALS[num_carava] == 'n')
-   		$GLOBALS[num_carava] = $GLOBALS[n_carava];
+   if($_REQUEST[num_carava] == 's' || $_REQUEST[num_carava] == 'n')
+   		$_REQUEST[num_carava] = $_REQUEST[n_carava];
 
    //query de insercion de despachos
    $query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac (num_despac,cod_manifi,fec_despac,cod_tipdes,cod_client,
 		cod_ciuori,cod_ciudes,val_flecon,cod_agedes,cod_unimed,cod_natemp,obs_despac,num_carava,cod_asegra,num_poliza,usr_creaci,
 		fec_creaci)
-             VALUES ('$nuevo_consec','$GLOBALS[manifi]','$fec_actual','$GLOBALS[tipdes]','".$GLOBALS[cliente]."',
-		     '$GLOBALS[ciuori]','$GLOBALS[ciudes]','$GLOBALS[val_flecon]','$GLOBALS[agencia]','1','1',
-		     '$GLOBALS[obsgrl]','$GLOBALS[num_carava]','".$datospoli[0]."','".$datospoli[1]."','$GLOBALS[usuario]','$fec_actual') ";
+             VALUES ('$nuevo_consec','$_REQUEST[manifi]','$fec_actual','$_REQUEST[tipdes]','".$_REQUEST[cliente]."',
+		     '$_REQUEST[ciuori]','$_REQUEST[ciudes]','$_REQUEST[val_flecon]','$_REQUEST[agencia]','1','1',
+		     '$_REQUEST[obsgrl]','$_REQUEST[num_carava]','".$datospoli[0]."','".$datospoli[1]."','$_REQUEST[usuario]','$fec_actual') ";
    $consulta = new Consulta($query, $this -> conexion, "BR");
 
    //query de insercion de despachos vehiculos
    $query = "INSERT INTO ".BASE_DATOS.".tab_despac_vehige (num_despac, cod_transp, cod_agenci, cod_rutasx, cod_conduc, num_placax, num_trayle, obs_proesp, obs_medcom, fec_salipl, ind_activo, usr_creaci, fec_creaci)
 
-             VALUES ('$nuevo_consec','$GLOBALS[transpor]','$GLOBALS[agencia]','$GLOBALS[ruta]',
-             '$GLOBALS[conduc]','$GLOBALS[placa]',".$GLOBALS[l_trayle].",'$GLOBALS[protec]','$GLOBALS[medcom]',
+             VALUES ('$nuevo_consec','$_REQUEST[transpor]','$_REQUEST[agencia]','$_REQUEST[ruta]',
+             '$_REQUEST[conduc]','$_REQUEST[placa]',".$_REQUEST[l_trayle].",'$_REQUEST[protec]','$_REQUEST[medcom]',
              '$fecha','R',
-             '$GLOBALS[usuario]','$fec_actual') ";
+             '$_REQUEST[usuario]','$fec_actual') ";
 
    $consulta = new Consulta($query, $this -> conexion, "R");
 
    if(!$consulta = new Consulta("COMMIT", $this -> conexion));
    else
-    $mensaje ="El vehiculo con Placas $GLOBALS[placa] fue
+    $mensaje ="El vehiculo con Placas $_REQUEST[placa] fue
             asignado al despacho No<font size = '3'>$nuevo_consec";
 
    echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">$mensaje <hr>";
    
-   unset($GLOBALS[manifi]);
-   unset($GLOBALS[tipdes]);
-   unset($GLOBALS[cliente]);
-   unset($GLOBALS[ciuori]);
-   unset($GLOBALS[ciudes]);
-   unset($GLOBALS[val_flecon]);
-   unset($GLOBALS[agencia]);
-   unset($GLOBALS[obsgrl]);
-   unset($GLOBALS[num_carava]);
-   unset($GLOBALS[transpor]);
-   unset($GLOBALS[ruta]);
-   unset($GLOBALS[conduc]);
-   unset($GLOBALS[placa]);
-   unset($GLOBALS[l_trayle]);
-   unset($GLOBALS[protec]);
-   unset($GLOBALS[medcom]);
-   unset($GLOBALS[asegra]);
-   unset($GLOBALS[val_flecli]);
-   unset($GLOBALS[fecpla]);
-   unset($GLOBALS[horpla]);
+   unset($_REQUEST[manifi]);
+   unset($_REQUEST[tipdes]);
+   unset($_REQUEST[cliente]);
+   unset($_REQUEST[ciuori]);
+   unset($_REQUEST[ciudes]);
+   unset($_REQUEST[val_flecon]);
+   unset($_REQUEST[agencia]);
+   unset($_REQUEST[obsgrl]);
+   unset($_REQUEST[num_carava]);
+   unset($_REQUEST[transpor]);
+   unset($_REQUEST[ruta]);
+   unset($_REQUEST[conduc]);
+   unset($_REQUEST[placa]);
+   unset($_REQUEST[l_trayle]);
+   unset($_REQUEST[protec]);
+   unset($_REQUEST[medcom]);
+   unset($_REQUEST[asegra]);
+   unset($_REQUEST[val_flecli]);
+   unset($_REQUEST[fecpla]);
+   unset($_REQUEST[horpla]);
  }//FIN FUNCTION INSERTAR
 
 }//FIN CLASE PROC_DESPAC

@@ -289,7 +289,7 @@ function inc_dir(obj, min, max, obl) {
             var tam = ele.length;
             var cantidad = inc_cantidad(obj, tam, min, max, obl);
             if (cantidad == true) {
-                var expreg = /^[A-Za-z0-9\s\xF1\xD1\_\(\)\&\-\#\°\.\:\,\áÁéÉíÍóÓúÚ]+$/; //Solo letras y numeros espacios ñ y Ñ
+                var expreg = /^[A-Za-z0-9\s\xF1\xD1\_\(\)\&\-\/\#\°\.\:\,\áÁéÉíÍóÓúÚ]+$/; //Solo letras y numeros espacios ñ y Ñ
                 if (!expreg.test(ele) && tam > 0) {
                     msg = "¡Caracteres no validos!";
                     inc_alerta(obj, msg);
@@ -347,7 +347,13 @@ function inc_mayor(obj, min) {
 
 //funcion para saber si una placa es valida
 function inc_placa(obj, min, max) {
-    if( min == true ){
+    var placa = $("#" + obj).val();
+    if (placa.length < 6 && placa.length > 0) {
+        msg = "La placa debe contener 6 caractéres";
+        inc_alerta(obj, msg);
+        return 1;
+    }
+    if (min == true || placa.length == 6) {
         var placa = $.trim($('#' + obj).val());
         var inicio = placa.substring(0, 3);
         var fin = placa.substring(3, 6);
@@ -360,7 +366,7 @@ function inc_placa(obj, min, max) {
         } else {
             return 0;
         }
-    }else{
+    } else {
         return 0;
     }
 }
@@ -459,7 +465,6 @@ function inc_email(obj, min, max, obl) {
         if (min >= 0 && max >= 0) {
             var correos = $('#' + obj).val();
             var myArray = correos.split(',');
-            console.log(myArray);
             for (var i = 0; i < myArray.length; i++) {
                 var ele = $.trim(myArray[i]);
                 var tam = ele.length;
@@ -645,10 +650,6 @@ function inc_cantidad(obj, tam, min, max, obl) {
 /*FUNCION QUE SE ENCARGA DE HACER VISIBLES LOS MENSAJES DE ALERTA*/
 function inc_alerta(obj, msg) {
     var elemento = document.getElementById('inc_val_' + obj);
-    //        if(elemento){
-    //            console.log("borra")
-    //           $('#inc_val_'+obj).remove();
-    //        }
     var evento = 'onclick = "inc_remover_alerta(this)"';
     var error = '<div class="inc_alert" style="display:none; text-align:center" id="inc_val_' + obj + '" ' + evento + '>' + msg + '</div>';
     if (elemento == null)

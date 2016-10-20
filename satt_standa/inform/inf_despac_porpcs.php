@@ -17,11 +17,11 @@ class Proc_por_pc
 
      function principal()
      {
-      if(!isset($GLOBALS[opcion]))
+      if(!isset($_REQUEST[opcion]))
         $this -> Listars();
       else
          {
-          switch($GLOBALS[opcion])
+          switch($_REQUEST[opcion])
            {
             case "1":
               $this -> Listar();
@@ -159,7 +159,7 @@ class Proc_por_pc
 
     for($i=0; $i < (sizeof($matriz)/1); $i++)
     {
-     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&contro=".$matriz[$i][4]."&window=central&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&contro=".$matriz[$i][4]."&window=central&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
      $formulario -> linea($matriz[$i][0],0,"i");
      $formulario -> linea($matriz[$i][1],0,"i");
@@ -169,7 +169,7 @@ class Proc_por_pc
 
     $formulario -> oculto("usuario","$datos_usuario[cod_usuari]",0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic","$GLOBALS[cod_servic]",0);
+    $formulario -> oculto("cod_servic","$_REQUEST[cod_servic]",0);
     $formulario -> cerrar();
   }//fin function
 
@@ -177,12 +177,12 @@ class Proc_por_pc
  {
    $datos_usuario = $this -> usuario -> retornar();
 
-   $validmatriz[0]["linea"] = " AND b.cod_contro = ".$GLOBALS[contro];
+   $validmatriz[0]["linea"] = " AND b.cod_contro = ".$_REQUEST[contro];
 
    $GLOBALS_ADD[0]["campo"] = "contro";
-   $GLOBALS_ADD[0]["valor"] = $GLOBALS[contro];
+   $GLOBALS_ADD[0]["valor"] = $_REQUEST[contro];
 
-   $listado_prin = new Despachos($GLOBALS[cod_servic],2,$this -> cod_aplica,$this -> conexion,1);
+   $listado_prin = new Despachos($_REQUEST[cod_servic],2,$this -> cod_aplica,$this -> conexion,1);
    $listado_prin -> ListadoPrincipal($datos_usuario,0,"Despachos Por P/C",0,$validmatriz,$GLOBALS_ADD);
  }
 
@@ -193,15 +193,15 @@ class Proc_por_pc
 
    $formulario = new Formulario ("index.php","post","Informacion del Despacho","form_item");
 
-   $listado_prin = new Despachos($GLOBALS[cod_servic],2,$this -> cod_aplica,$this -> conexion);
-   $listado_prin  -> Encabezado($GLOBALS[despac],$formulario,$datos_usuario,0,"Despachos Por P/C");
-   $listado_prin  -> PlanDeRuta($GLOBALS[despac],$formulario,0);
+   $listado_prin = new Despachos($_REQUEST[cod_servic],2,$this -> cod_aplica,$this -> conexion);
+   $listado_prin  -> Encabezado($_REQUEST[despac],$formulario,$datos_usuario,0,"Despachos Por P/C");
+   $listado_prin  -> PlanDeRuta($_REQUEST[despac],$formulario,0);
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("despac",$GLOBALS[despac],0);
-   $formulario -> oculto("opcion",$GLOBALS[opcion],0);
+   $formulario -> oculto("despac",$_REQUEST[despac],0);
+   $formulario -> oculto("opcion",$_REQUEST[opcion],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
    $formulario -> cerrar();
    

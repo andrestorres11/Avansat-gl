@@ -175,7 +175,7 @@ class FacturCorona
 
           $formulario -> oculto("num_despac",0,0);
           $formulario -> oculto("window","central",0);
-          $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+          $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
           $formulario -> oculto("opcion\" id=\"opcion",1,0);
           $formulario -> oculto("Standa\" id=\"StandaID", DIR_APLICA_CENTRAL, 0);
 

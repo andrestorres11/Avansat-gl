@@ -20,11 +20,11 @@ class Proc_filtro
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "2":
           $this -> Resultado();
@@ -50,7 +50,7 @@ class Proc_filtro
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> boton("Buscar","button\" onClick=\"aceptar_lis() ",0);
    $formulario -> boton("Ver Todas","button\" onClick=\"form_list.submit() ",0);
    $formulario -> cerrar();
@@ -65,7 +65,7 @@ class Proc_filtro
    $usuario=$datos_usuario["cod_usuari"];
   $query = "SELECT cod_filtro,nom_filtro,cod_queryx
             FROM ".CENTRAL.".tab_genera_filtro
-           WHERE nom_filtro LIKE '%$GLOBALS[filtro]%'
+           WHERE nom_filtro LIKE '%$_REQUEST[filtro]%'
         ORDER BY 2";
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
@@ -116,7 +116,7 @@ class Proc_filtro
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
 // *********************************************************************************

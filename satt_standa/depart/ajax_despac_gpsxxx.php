@@ -41,7 +41,7 @@ class Ajax
           else*/
     $html = "<b><span style='font-size:17px; color:red;'>Se ha Insertado los datos GPS del despacho: ".$_AJAX['num_despac'].", de manera Exitosa.</span></b>
              <br>
-             <input class='crmButton small save' value='Regresar' onclick= 'location.href=\"?window=central&cod_servic=\".$GLOBALS[cod_servic].\"&num_despac=\".$_AJAX['num_despac'].\"\" />
+             <input class='crmButton small save' value='Regresar' onclick= 'location.href=\"?window=central&cod_servic=\".$_REQUEST[cod_servic].\"&num_despac=\".$_AJAX['num_despac'].\"\" />
              ";
         
        

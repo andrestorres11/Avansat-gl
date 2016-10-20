@@ -14,7 +14,7 @@ class IndicadorSolucionNovedades {
         $this->usuario = $us;
         $this->cod_aplica = $ca;
         self::$cFunciones = new noveda($co, $us, $ca);
-        switch ($GLOBALS[opcion]) {
+        switch ($_REQUEST[opcion]) {
             default:
                 $this->filtro();
             break;

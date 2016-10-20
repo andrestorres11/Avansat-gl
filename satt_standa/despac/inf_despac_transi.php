@@ -14,11 +14,11 @@ class Proc_despac
 	function principal()
 	{       
 echo "....";
-		if(!isset($GLOBALS[opcion]))
+		if(!isset($_REQUEST[opcion]))
 			$this -> Listar();
 		else
 		{
-			switch($GLOBALS[opcion])
+			switch($_REQUEST[opcion])
 			{
 				case "1":
 					$this -> Datos();
@@ -79,12 +79,12 @@ echo "....";
 		define( BASE_DATOS, $BD );
 		define( ESTILO, $ES );
 		
-        $this -> conexion = new Conexion( "bd10.intrared.net:3306", $US, $CL , $BD );
+        $this -> conexion = new Conexion( $_SESSION['HOST'], $US, $CL , $BD );
 				
 		
 		$this -> aplica = 1;
 		
-		$objciud = new Despachos( $GLOBALS[cod_servic], $GLOBALS[opcion], $this -> aplica, $this -> conexion );
+		$objciud = new Despachos( $_REQUEST[cod_servic], $_REQUEST[opcion], $this -> aplica, $this -> conexion );
 		$fechoract = date("d-M-Y h:i:s A");
 		
 		$query = "SELECT a.ind_remdes
@@ -539,8 +539,8 @@ echo "....";
 		}
 		
 		$formulario -> oculto("window","central",0);
-		$formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
-		$formulario -> oculto("opcion",$GLOBALS[opcion],0);
+		$formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+		$formulario -> oculto("opcion",$_REQUEST[opcion],0);
 		
 		$formulario -> cerrar();
 		echo "<TABLE>";
@@ -586,15 +586,15 @@ echo "....";
 	{
 		$datos_usuario = $this -> usuario -> retornar();
 		$formulario = new Formulario ("index.php","post","Informacion del Despacho","form_item");
-		$listado_prin = new Despachos($GLOBALS[cod_servic],2,$this -> aplica,$this -> conexion);
-		$listado_prin  -> Encabezado($GLOBALS[despac],$formulario,$datos_usuario,0,"Despachos en Ruta");
-		$listado_prin  -> PlanDeRuta($GLOBALS[despac],$formulario,0);
+		$listado_prin = new Despachos($_REQUEST[cod_servic],2,$this -> aplica,$this -> conexion);
+		$listado_prin  -> Encabezado($_REQUEST[despac],$formulario,$datos_usuario,0,"Despachos en Ruta");
+		$listado_prin  -> PlanDeRuta($_REQUEST[despac],$formulario,0);
 		
 		$formulario -> nueva_tabla();
-		$formulario -> oculto("despac",$GLOBALS[despac],0);
-		$formulario -> oculto("opcion",$GLOBALS[opcion],0);
+		$formulario -> oculto("despac",$_REQUEST[despac],0);
+		$formulario -> oculto("opcion",$_REQUEST[opcion],0);
 		$formulario -> oculto("window","central",0);
-		$formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+		$formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 		
 		$formulario -> cerrar();
 	}

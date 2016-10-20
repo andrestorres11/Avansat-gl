@@ -15,11 +15,11 @@ class Proc_ciudad
 //********METODOS DE LA CLASE PROC_LISTA DE PRECIOS ESTANDAR*************
         function principal()
         {
-                if(!isset($GLOBALS[opcion]))
+                if(!isset($_REQUEST[opcion]))
                         $this -> Ciudad();
                 else
                 {
-                        switch($GLOBALS[opcion])
+                        switch($_REQUEST[opcion])
                         {
                                 case "5":
                                 $this -> Mostrar();
@@ -55,7 +55,7 @@ class Proc_ciudad
                                  ".BASE_DATOS.".tab_genera_paises c
                            WHERE a.cod_depart = b.cod_depart AND
                                  a.cod_paisxx = c.cod_paisxx AND
-                                 a.nom_ciudad LIKE '%$GLOBALS[ciudad]%'
+                                 a.nom_ciudad LIKE '%$_REQUEST[ciudad]%'
                         ORDER BY 5,2";
                 $con_ciudad = new Consulta($query, $this -> conexion);
                 $ciudad = $con_ciudad -> ret_matriz();
@@ -76,7 +76,7 @@ class Proc_ciudad
                                         $texto = "Desactivar";
                                 else
                                         $texto = "Activar";
-                                	$link = "<a href=\"index.php?window=central&cod_servic=".$GLOBALS['cod_servic']."&opcion=4&cod_ciudad=".$ciudad[$i][0]."&ind_permit=".$ciudad[$i][5]."\">$texto</a>";
+                                	$link = "<a href=\"index.php?window=central&cod_servic=".$_REQUEST['cod_servic']."&opcion=4&cod_ciudad=".$ciudad[$i][0]."&ind_permit=".$ciudad[$i][5]."\">$texto</a>";
 
                                         $formulario -> linea($ciudad[$i][0],0,"i");
                                         $formulario -> linea($ciudad[$i][1],0,"i");
@@ -106,7 +106,7 @@ class Proc_ciudad
                         $formulario -> nueva_tabla();
                         $formulario -> oculto("opcion",5,0);
                         $formulario -> oculto("window","central",0);
-                        $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+                        $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
                         $formulario -> botoni("Buscar","if(form_list.ciudad.value == '') alert('Debe ingresar un texto para la busqueda.'); else form_list.submit();",1);
                         $formulario -> cerrar();
         }//FIN FUNCION ACTUALIZAR
@@ -136,7 +136,7 @@ function Cambiar_Estado()
 
     if($insercion = new Consulta("COMMIT", $this -> conexion))
     {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otra Ciudad</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otra Ciudad</a></b>";
 
      $mensaje =  "Se Cambio el Estado de la Ciudad con Exito".$link_a;
      $mens = new mensajes();
@@ -168,9 +168,9 @@ function Listar()
 
                 WHERE a.ind_estado = '1'";
 
-         if(($GLOBALS[fil]=='1') AND($GLOBALS[ciudad]!=''))
+         if(($_REQUEST[fil]=='1') AND($_REQUEST[ciudad]!=''))
 
-         $query = $query." AND a.nom_ciudad LIKE '%$GLOBALS[ciudad]%'";
+         $query = $query." AND a.nom_ciudad LIKE '%$_REQUEST[ciudad]%'";
 
 
      $query = $query." GROUP BY 2 ORDER BY 2 LIMIT 0,20";
@@ -181,7 +181,7 @@ function Listar()
 
      if($matriz = $consulta -> ret_matriz())
            for($i=0;$i<sizeof($matriz);$i++)
-                 $matriz[$i][0]= "<a href=# onClick=\"opener.document.forms[0].dest".$GLOBALS[codigo].".value='".$matriz[$i][0]."';opener.document.forms[0].abrdest".$GLOBALS[codigo].".value='".$matriz[$i][1]."'; top.close()\">".$matriz[$i][0]."</a>";
+                 $matriz[$i][0]= "<a href=# onClick=\"opener.document.forms[0].dest".$_REQUEST[codigo].".value='".$matriz[$i][0]."';opener.document.forms[0].abrdest".$_REQUEST[codigo].".value='".$matriz[$i][1]."'; top.close()\">".$matriz[$i][0]."</a>";
 
    $formulario -> nueva_tabla();
    $formulario -> botoni("Buscar","form_list.submit()",1);
@@ -210,9 +210,9 @@ function Listar()
       $formulario -> nueva_tabla();
       $formulario -> oculto("usuario","$usuario",0);
       $formulario -> oculto("opcion",6,0);
-      $formulario -> oculto("codigo",$GLOBALS[codigo],0);
+      $formulario -> oculto("codigo",$_REQUEST[codigo],0);
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+      $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
       $formulario -> cerrar();
  }
 

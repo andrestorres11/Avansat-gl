@@ -15,11 +15,11 @@ class Proc_colore
 //********METODOS DE LA CLASE PROC_LISTA DE PRECIOS ESTANDAR*************
         function principal()
         {
-                if(!isset($GLOBALS[opcion]))
+                if(!isset($_REQUEST[opcion]))
                         $this -> Colore();
                 else
                 {
-                        switch($GLOBALS[opcion])
+                        switch($_REQUEST[opcion])
                         {
                                 case "5":
                                 $this -> Mostrar();
@@ -44,7 +44,7 @@ class Proc_colore
         {
                 $query = "SELECT a.cod_colorx,a.nom_colorx
                             FROM ".BASE_DATOS.".tab_vehige_colore a
-                           WHERE a.nom_colorx LIKE '%$GLOBALS[colore]%'";
+                           WHERE a.nom_colorx LIKE '%$_REQUEST[colore]%'";
                 $con_colore = new Consulta($query, $this -> conexion);
                 $colore = $con_colore -> ret_matriz();
                 $this -> form_colore();
@@ -91,7 +91,7 @@ class Proc_colore
                         $formulario -> nueva_tabla();
                         $formulario -> oculto("opcion",5,0);
                         $formulario -> oculto("window","central",0);
-                        $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+                        $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
                         $formulario -> botoni("Buscar","if(form_list.colore.value == '') alert('Debe ingresar un texto para la busqueda.'); else form_list.submit();",1);
                         $formulario -> cerrar();
         }//FIN FUNCION ACTUALIZAR

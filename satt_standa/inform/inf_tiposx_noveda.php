@@ -37,15 +37,15 @@ class InfNoveda
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_noveda.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
-        if(!$GLOBALS["horaini"])
-          $GLOBALS["horaini"]='00:00:00';
-        if(!$GLOBALS["horafin"])
-          $GLOBALS["horafin"]='23:59:00';  
+        if(!$_REQUEST["horaini"])
+          $_REQUEST["horaini"]='00:00:00';
+        if(!$_REQUEST["horafin"])
+          $_REQUEST["horafin"]='23:59:00';  
         $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "INFORME DE NOVEDADES", "formulario\" id=\"formularioID");
         $sql ="SELECT cod_usuari,nom_usuari 
                FROM ".BASE_DATOS.".tab_genera_usuari ";
-        if($GLOBALS['cod_usuari'])
-          $sql .= "WHERE cod_usuari ='".$GLOBALS['cod_usuari']."'";       
+        if($_REQUEST['cod_usuari'])
+          $sql .= "WHERE cod_usuari ='".$_REQUEST['cod_usuari']."'";       
         $consulta = new Consulta($sql, $this -> conexion);
         $usuarios = $consulta -> ret_matriz();
         $formulario -> nueva_tabla();
@@ -54,10 +54,10 @@ class InfNoveda
         $formulario -> oculto("based\" id=\"basedID\"",BASE_DATOS,0);//Jorge 2703-2012
         $formulario -> oculto("num_serie",0,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion",2,0);
         $formulario -> nueva_tabla();
-        $formulario -> linea("Informe de Novedades de ".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']." al ".$GLOBALS['fec_final']." ".$GLOBALS['horafin']  ,1,"t2"); 
+        $formulario -> linea("Informe de Novedades de ".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']." al ".$_REQUEST['fec_final']." ".$_REQUEST['horafin']  ,1,"t2"); 
         $grantotal=0;
         $totot=0;
         $totne=0;
@@ -72,8 +72,8 @@ class InfNoveda
           $sql ="SELECT  b.usr_creaci 
                    FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_contro b
                    WHERE a.cod_noveda = b.cod_noveda
-                         AND b.fec_contro >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                         AND b.fec_contro <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."' 
+                         AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                         AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
                          AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $tot = $consulta -> ret_matriz();
@@ -81,8 +81,8 @@ class InfNoveda
           $sql ="SELECT b.usr_creaci 
                  FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_noveda b
                  WHERE a.cod_noveda = b.cod_noveda
-                       AND b.fec_noveda >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                       AND b.fec_noveda <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."'  
+                       AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                       AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
                        AND b.usr_creaci = '".$usuari[0]."'";
           $consulta = new Consulta($sql, $this -> conexion);
           $tot = $consulta -> ret_matriz();
@@ -98,8 +98,8 @@ class InfNoveda
                          AND a.ind_tiempo !='1'
                          AND a.ind_manala !='1'
                          AND a.ind_alarma !='S'
-                         AND b.fec_contro >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                         AND b.fec_contro <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."' 
+                         AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                         AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
                          AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $otr = $consulta -> ret_matriz();
@@ -111,8 +111,8 @@ class InfNoveda
                        AND a.ind_tiempo !='1'
                        AND a.ind_manala !='1'
                        AND a.ind_alarma !='S'
-                       AND b.fec_noveda >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                       AND b.fec_noveda <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."'  
+                       AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                       AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
                        AND b.usr_creaci = '".$usuari[0]."'";
           $consulta = new Consulta($sql, $this -> conexion);
           $otr = $consulta -> ret_matriz();
@@ -125,8 +125,8 @@ class InfNoveda
                    FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_contro b
                    WHERE a.cod_noveda = b.cod_noveda
                          AND a.nov_especi ='1'
-                         AND b.fec_contro >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                         AND b.fec_contro <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."' 
+                         AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                         AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
                          AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $nov_especi = $consulta -> ret_matriz();
@@ -135,8 +135,8 @@ class InfNoveda
                  FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_noveda b
                  WHERE a.cod_noveda = b.cod_noveda
                        AND a.nov_especi ='1'
-                       AND b.fec_noveda >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                       AND b.fec_noveda <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."'  
+                       AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                       AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
                        AND b.usr_creaci = '".$usuari[0]."'";
           $consulta = new Consulta($sql, $this -> conexion);
           $nov_especi = $consulta -> ret_matriz();
@@ -149,8 +149,8 @@ class InfNoveda
                    FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_contro b
                    WHERE a.cod_noveda = b.cod_noveda
                          AND a.ind_tiempo ='1'
-                         AND b.fec_contro >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                         AND b.fec_contro <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."' 
+                         AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                         AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
                          AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $tiem = $consulta -> ret_matriz();
@@ -159,8 +159,8 @@ class InfNoveda
                  FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_noveda b
                  WHERE a.cod_noveda = b.cod_noveda
                        AND a.ind_tiempo ='1'
-                       AND b.fec_noveda >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                       AND b.fec_noveda <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."'  
+                       AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                       AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
                        AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $tiem = $consulta -> ret_matriz();
@@ -173,8 +173,8 @@ class InfNoveda
                    FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_contro b
                    WHERE a.cod_noveda = b.cod_noveda
                          AND a.ind_manala ='1'
-                         AND b.fec_contro >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                         AND b.fec_contro <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."' 
+                         AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                         AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
                          AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $man = $consulta -> ret_matriz();
@@ -183,8 +183,8 @@ class InfNoveda
                  FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_noveda b
                  WHERE a.cod_noveda = b.cod_noveda
                        AND a.ind_manala ='1'
-                       AND b.fec_noveda >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                       AND b.fec_noveda <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."'  
+                       AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                       AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
                        AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $man = $consulta -> ret_matriz();
@@ -197,8 +197,8 @@ class InfNoveda
                    FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_contro b
                    WHERE a.cod_noveda = b.cod_noveda
                          AND a.ind_alarma ='S'
-                         AND b.fec_contro >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                         AND b.fec_contro <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."' 
+                         AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                         AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
                          AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $alarma = $consulta -> ret_matriz();
@@ -207,8 +207,8 @@ class InfNoveda
                  FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_noveda b
                  WHERE a.cod_noveda = b.cod_noveda
                        AND a.ind_alarma ='S'
-                       AND b.fec_noveda >= '".$GLOBALS['fec_inicial']." ".$GLOBALS['horaini']."'
-                       AND b.fec_noveda <= '".$GLOBALS['fec_final']." ".$GLOBALS['horafin']."'  
+                       AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
+                       AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
                        AND b.usr_creaci = '".$usuari[0]."' ";
           $consulta = new Consulta($sql, $this -> conexion);
           $alarma = $consulta -> ret_matriz();
@@ -221,27 +221,27 @@ class InfNoveda
             $formulario -> linea("Usuario: ".$usuari[0]." Nombre: ".$usuari[1],1,"t2");
             $formulario -> nueva_tabla();
             $formulario -> linea("Total",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('TO','".$usuari[0]."','".$GLOBALS['fec_inicial']."','".$GLOBALS['fec_final']."','".$GLOBALS['horaini']."', '".$GLOBALS['horafin']."');\">";
+            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('TO','".$usuari[0]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
             echo "<b>$total ";
             echo "</td></tr>";
             $formulario -> linea("Otros",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('OT','".$usuari[0]."','".$GLOBALS['fec_inicial']."','".$GLOBALS['fec_final']."','".$GLOBALS['horaini']."', '".$GLOBALS['horafin']."');\">";
+            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('OT','".$usuari[0]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
             echo "<b>$otros ";
             echo "</td></tr>";
             $formulario -> linea("Novedad Especial",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('NE','".$usuari[0]."','".$GLOBALS['fec_inicial']."','".$GLOBALS['fec_final']."','".$GLOBALS['horaini']."', '".$GLOBALS['horafin']."');\">";
+            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('NE','".$usuari[0]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
             echo "<b>$especi ";
             echo "</td></tr>";
             $formulario -> linea("Solicita Tiempo",0,"t");
-             echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('ST','".$usuari[0]."','".$GLOBALS['fec_inicial']."','".$GLOBALS['fec_final']."','".$GLOBALS['horaini']."', '".$GLOBALS['horafin']."');\">";
+             echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('ST','".$usuari[0]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
             echo "<b>$tiempo ";
             echo "</td></tr>";
             $formulario -> linea("Mantiene Alerta",0,"t");
-             echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('MA','".$usuari[0]."','".$GLOBALS['fec_inicial']."','".$GLOBALS['fec_final']."','".$GLOBALS['horaini']."', '".$GLOBALS['horafin']."');\">";
+             echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('MA','".$usuari[0]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
             echo "<b>$mantiene ";
             echo "</td></tr>";
             $formulario -> linea("Genera Alarma",0,"t");
-             echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('GA','".$usuari[0]."','".$GLOBALS['fec_inicial']."','".$GLOBALS['fec_final']."','".$GLOBALS['horaini']."', '".$GLOBALS['horafin']."');\">";
+             echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNoveda('GA','".$usuari[0]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
             echo "<b>$genera ";
             echo "</td></tr>";
         
@@ -385,7 +385,7 @@ class InfNoveda
         echo "<BR><BR>";
         echo "<BR><BR>";
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion\" id=\"opcionID",1,0);
         $formulario -> cerrar();
 
@@ -412,7 +412,7 @@ class InfNoveda
 		include( "../lib/general/conexion_lib.inc" );
 		include( "../lib/general/form_lib.inc" );
 		include( "../lib/general/tabla_lib.inc" );
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+    $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
 		if($_POST['tipo']=='TO')    
       $aux=" 1='1'";
     if($_POST['tipo']=='OT')    
@@ -438,8 +438,8 @@ class InfNoveda
                  AND $aux
                  AND c.num_despac = b.num_despac
                  AND c.cod_transp = d.cod_tercer
-                 AND b.fec_contro >= '".$_POST['fec_inicial']." ".$GLOBALS['horaini']."'
-                 AND b.fec_contro <= '".$_POST['fec_final']." ".$GLOBALS['horafin']."' 
+                 AND b.fec_contro >= '".$_POST['fec_inicial']." ".$_REQUEST['horaini']."'
+                 AND b.fec_contro <= '".$_POST['fec_final']." ".$_REQUEST['horafin']."' 
                  AND b.usr_creaci = '".$_POST['usuari']."') 
            UNION ALL
            (SELECT b.num_despac, a.nom_noveda, b.fec_noveda ,
@@ -452,8 +452,8 @@ class InfNoveda
                  AND $aux
                  AND c.num_despac = b.num_despac
                  AND c.cod_transp = d.cod_tercer
-                 AND b.fec_noveda >= '".$_POST['fec_inicial']." ".$GLOBALS['horaini']."'
-                 AND b.fec_noveda <= '".$_POST['fec_final']." ".$GLOBALS['horafin']."' 
+                 AND b.fec_noveda >= '".$_POST['fec_inicial']." ".$_REQUEST['horaini']."'
+                 AND b.fec_noveda <= '".$_POST['fec_final']." ".$_REQUEST['horafin']."' 
                  AND b.usr_creaci = '".$_POST['usuari']."')
            ORDER BY 5,1,3";
     $consulta = new Consulta($sql, $this -> conexion);
@@ -492,8 +492,8 @@ class InfNoveda
            FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_contro b
            WHERE a.cod_noveda = b.cod_noveda
                  AND $aux
-                 AND b.fec_contro >= '".$_POST['fec_inicial']." ".$GLOBALS['horaini']."'
-                 AND b.fec_contro <= '".$_POST['fec_final']." ".$GLOBALS['horafin']."' 
+                 AND b.fec_contro >= '".$_POST['fec_inicial']." ".$_REQUEST['horaini']."'
+                 AND b.fec_contro <= '".$_POST['fec_final']." ".$_REQUEST['horafin']."' 
                  AND b.usr_creaci = '".$_POST['usuari']."' 
            GROUP BY a.cod_noveda) 
            UNION ALL
@@ -501,8 +501,8 @@ class InfNoveda
            FROM ".BASE_DATOS.".tab_genera_noveda a, ".BASE_DATOS.".tab_despac_noveda b
            WHERE a.cod_noveda = b.cod_noveda
                  AND $aux
-                 AND b.fec_noveda >= '".$_POST['fec_inicial']." ".$GLOBALS['horaini']."'
-                 AND b.fec_noveda <= '".$_POST['fec_final']." ".$GLOBALS['horafin']."' 
+                 AND b.fec_noveda >= '".$_POST['fec_inicial']." ".$_REQUEST['horaini']."'
+                 AND b.fec_noveda <= '".$_POST['fec_final']." ".$_REQUEST['horafin']."' 
                  AND b.usr_creaci = '".$_POST['usuari']."'
            GROUP BY a.cod_noveda)
            ORDER BY 1,2";

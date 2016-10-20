@@ -377,7 +377,7 @@ class PruebaMatrizCorona
 }
 
 
-$mLink = mysql_connect("bd10.intrared.net", "satt_faro", "sattfaro");
+$mLink = mysql_connect("aglbd.intrared.net", "satt_faro", "sattfaro");
 mysql_select_db("satt_faro");
 
 

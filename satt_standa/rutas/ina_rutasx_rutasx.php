@@ -35,13 +35,13 @@ class Proc_rutas
     IncludeJS("jquery.js");
     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 
-    if(!isset($GLOBALS[opcion])){
+    if(!isset($_REQUEST[opcion])){
       IncludeJS("rutas.js");
       $this -> Buscar();
     }
     else
     {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "2":
           $this -> Resultado();
@@ -92,7 +92,7 @@ class Proc_rutas
     $formulario -> oculto("opcion",2,0);
     $formulario -> oculto("standa\" id=\"standaID", DIR_APLICA_CENTRAL, 0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> botoni("Buscar","form_list.submit()",0);
     $formulario -> cerrar();
   }
@@ -118,9 +118,9 @@ class Proc_rutas
     ";
     $indwhere = 0;
 
-    if($GLOBALS[tipter])
+    if($_REQUEST[tipter])
     {
-      if($GLOBALS[tipter] == COD_ESTADO_ACTIVO )
+      if($_REQUEST[tipter] == COD_ESTADO_ACTIVO )
       {
         $query .= " WHERE a.ind_estado = ".COD_ESTADO_ACTIVO." ";
       }
@@ -130,13 +130,13 @@ class Proc_rutas
       }
     }
 
-    if($GLOBALS[ruta] != "")
+    if($_REQUEST[ruta] != "")
     {
       if($indwhere)
-        $query .= " AND a.nom_rutasx LIKE '%".$GLOBALS[ruta]."%'";
+        $query .= " AND a.nom_rutasx LIKE '%".$_REQUEST[ruta]."%'";
       else
       {
-        $query .= " AND a.nom_rutasx LIKE '%".$GLOBALS[ruta]."%'";
+        $query .= " AND a.nom_rutasx LIKE '%".$_REQUEST[ruta]."%'";
         $indwhere = 1;
       }
     }
@@ -183,7 +183,7 @@ class Proc_rutas
     $matriz = $consec -> ret_matriz();
 
     for($i=0;$i<sizeof($matriz);$i++)
-      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=3&tipter=$GLOBALS[tipter] \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=3&tipter=$_REQUEST[tipter] \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
     $formulario = new Formulario ("index.php","post","LISTADO DE RUTAS","form_item");
 
@@ -222,7 +222,7 @@ class Proc_rutas
     $formulario -> oculto("opcion",2,0);
     $formulario -> oculto("valor",$valor,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> cerrar();
   }
 
@@ -238,13 +238,13 @@ class Proc_rutas
                       ".BASE_DATOS.".tab_genera_contro e
                 WHERE a.cod_rutasx = d.cod_rutasx AND
                       d.cod_contro = e.cod_contro AND
-                      a.cod_rutasx = '$GLOBALS[ruta]'
+                      a.cod_rutasx = '$_REQUEST[ruta]'
              ORDER BY 7 ";
     $consec = new Consulta($query, $this -> conexion);
     $matriz = $consec -> ret_matriz();
 
     $usuario = $_SESSION[datos_usuario][cod_usuari];
-    $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+    $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
     $origen = $objciud -> getSeleccCiudad($matriz[0][2]);
     $destino = $objciud -> getSeleccCiudad($matriz[0][3]);
 
@@ -253,7 +253,7 @@ class Proc_rutas
 
     $formulario -> oculto("num_ruta",$matriz[0][0],0);
     $formulario -> oculto("nom_ruta",$matriz[0][1],0);
-    $formulario -> oculto("tipter",$GLOBALS[tipter],0);
+    $formulario -> oculto("tipter",$_REQUEST[tipter],0);
 
     $formulario -> nueva_tabla();
     $formulario -> linea("C&oacute;digo",0,"t");
@@ -318,9 +318,9 @@ class Proc_rutas
     $formulario -> oculto("usuario","$usuario",0);
     $formulario -> oculto("opcion",4,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
-    if($GLOBALS[tipter] == 1)
+    if($_REQUEST[tipter] == 1)
       $formulario -> boton("Inactivar","button\" onClick=\"Valida_Inactivar();",0);
     else
       $formulario -> boton("Activar","button\" onClick=\"Valida_Inactivar();",0);
@@ -357,7 +357,7 @@ class Proc_rutas
 
     if($consulta = new Consulta ("COMMIT", $this -> conexion))
     {
-      $link = "<b><a href=\"index.php?window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">".$msg2." Otra Ruta</a></b>";
+      $link = "<b><a href=\"index.php?window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">".$msg2." Otra Ruta</a></b>";
 
       $mensaje = "La Ruta No. <b>". $cod_ruta.": ".$nom_ruta."</b> se ".$msg." con Éxito<br>".$link;
       $mens = new mensajes();

@@ -11,17 +11,17 @@ class Proc_fletes
   $this -> conexion = $co;
   $this -> usuario = $us;
   $this -> cod_aplica = $ca;
-  $this -> paginador = new Paginador_listado($GLOBALS[opcion],$GLOBALS[cod_servic],$this -> conexion);
+  $this -> paginador = new Paginador_listado($_REQUEST[opcion],$_REQUEST[cod_servic],$this -> conexion);
   $this -> principal();
  }
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "2":
           $this -> Datos();
@@ -88,23 +88,23 @@ class Proc_fletes
     }
    }
 
-   if($GLOBALS[ciudes])
-    $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
-   if($GLOBALS[ciuori])
-    $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-   if($GLOBALS[carroc])
-    $query .= " AND a.cod_carroc = ".$GLOBALS[carroc]."";
-   if($GLOBALS[trayec])
-    $query .= " AND a.cod_trayec = ".$GLOBALS[trayec]."";
-   if($GLOBALS[transp])
-    $query .= " AND a.cod_transp = ".$GLOBALS[transp]."";
+   if($_REQUEST[ciudes])
+    $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
+   if($_REQUEST[ciuori])
+    $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+   if($_REQUEST[carroc])
+    $query .= " AND a.cod_carroc = ".$_REQUEST[carroc]."";
+   if($_REQUEST[trayec])
+    $query .= " AND a.cod_trayec = ".$_REQUEST[trayec]."";
+   if($_REQUEST[transp])
+    $query .= " AND a.cod_transp = ".$_REQUEST[transp]."";
 
    $query .= " GROUP BY 1 ORDER BY 2";
 
    $consulta = new Consulta($query, $this -> conexion);
    $ciuori = $consulta -> ret_matriz();
 
-   if($GLOBALS[ciuori])
+   if($_REQUEST[ciuori])
     $ciuori = array_merge($ciuori,$todos);
    else
     $ciuori = array_merge($titori,$ciuori);
@@ -139,23 +139,23 @@ class Proc_fletes
     }
    }
 
-   if($GLOBALS[ciudes])
-    $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
-   if($GLOBALS[ciuori])
-    $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-   if($GLOBALS[carroc])
-    $query .= " AND a.cod_carroc = ".$GLOBALS[carroc]."";
-   if($GLOBALS[trayec])
-    $query .= " AND a.cod_trayec = ".$GLOBALS[trayec]."";
-   if($GLOBALS[transp])
-    $query .= " AND a.cod_transp = ".$GLOBALS[transp]."";
+   if($_REQUEST[ciudes])
+    $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
+   if($_REQUEST[ciuori])
+    $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+   if($_REQUEST[carroc])
+    $query .= " AND a.cod_carroc = ".$_REQUEST[carroc]."";
+   if($_REQUEST[trayec])
+    $query .= " AND a.cod_trayec = ".$_REQUEST[trayec]."";
+   if($_REQUEST[transp])
+    $query .= " AND a.cod_transp = ".$_REQUEST[transp]."";
 
    $query .= " GROUP BY 1 ORDER BY 2";
 
    $consulta = new Consulta($query, $this -> conexion);
    $ciudes = $consulta -> ret_matriz();
 
-   if($GLOBALS[ciudes])
+   if($_REQUEST[ciudes])
     $ciudes = array_merge($ciudes,$todos);
    else
     $ciudes = array_merge($titdes,$ciudes);
@@ -185,23 +185,23 @@ class Proc_fletes
     }
    }
 
-   if($GLOBALS[ciudes])
-    $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
-   if($GLOBALS[ciuori])
-    $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-   if($GLOBALS[carroc])
-    $query .= " AND a.cod_carroc = ".$GLOBALS[carroc]."";
-   if($GLOBALS[trayec])
-    $query .= " AND a.cod_trayec = ".$GLOBALS[trayec]."";
-   if($GLOBALS[transp])
-    $query .= " AND a.cod_transp = ".$GLOBALS[transp]."";
+   if($_REQUEST[ciudes])
+    $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
+   if($_REQUEST[ciuori])
+    $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+   if($_REQUEST[carroc])
+    $query .= " AND a.cod_carroc = ".$_REQUEST[carroc]."";
+   if($_REQUEST[trayec])
+    $query .= " AND a.cod_trayec = ".$_REQUEST[trayec]."";
+   if($_REQUEST[transp])
+    $query .= " AND a.cod_transp = ".$_REQUEST[transp]."";
 
    $query .= " GROUP BY 1 ORDER BY 2";
 
    $consulta = new Consulta($query, $this -> conexion);
    $carroc = $consulta -> ret_matriz();
 
-   if($GLOBALS[carroc])
+   if($_REQUEST[carroc])
     $carroc = array_merge($carroc,$todos);
    else
     $carroc = array_merge($titcar,$carroc);
@@ -231,23 +231,23 @@ class Proc_fletes
     }
    }
 
-   if($GLOBALS[ciudes])
-    $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
-   if($GLOBALS[ciuori])
-    $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-   if($GLOBALS[carroc])
-    $query .= " AND a.cod_carroc = ".$GLOBALS[carroc]."";
-   if($GLOBALS[trayec])
-    $query .= " AND a.cod_trayec = ".$GLOBALS[trayec]."";
-   if($GLOBALS[transp])
-    $query .= " AND a.cod_transp = ".$GLOBALS[transp]."";
+   if($_REQUEST[ciudes])
+    $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
+   if($_REQUEST[ciuori])
+    $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+   if($_REQUEST[carroc])
+    $query .= " AND a.cod_carroc = ".$_REQUEST[carroc]."";
+   if($_REQUEST[trayec])
+    $query .= " AND a.cod_trayec = ".$_REQUEST[trayec]."";
+   if($_REQUEST[transp])
+    $query .= " AND a.cod_transp = ".$_REQUEST[transp]."";
 
    $query .= " GROUP BY 1 ORDER BY 2";
 
    $consulta = new Consulta($query, $this -> conexion);
    $trayec = $consulta -> ret_matriz();
 
-   if($GLOBALS[trayec])
+   if($_REQUEST[trayec])
     $trayec = array_merge($trayec,$todos);
    else
     $trayec = array_merge($tittra,$trayec);
@@ -277,23 +277,23 @@ class Proc_fletes
     }
    }
 
-   if($GLOBALS[ciudes])
-    $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
-   if($GLOBALS[ciuori])
-    $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-   if($GLOBALS[carroc])
-    $query .= " AND a.cod_carroc = ".$GLOBALS[carroc]."";
-   if($GLOBALS[trayec])
-    $query .= " AND a.cod_trayec = ".$GLOBALS[trayec]."";
-   if($GLOBALS[transp])
-    $query .= " AND a.cod_transp = ".$GLOBALS[transp]."";
+   if($_REQUEST[ciudes])
+    $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
+   if($_REQUEST[ciuori])
+    $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+   if($_REQUEST[carroc])
+    $query .= " AND a.cod_carroc = ".$_REQUEST[carroc]."";
+   if($_REQUEST[trayec])
+    $query .= " AND a.cod_trayec = ".$_REQUEST[trayec]."";
+   if($_REQUEST[transp])
+    $query .= " AND a.cod_transp = ".$_REQUEST[transp]."";
 
    $query .= " GROUP BY 1 ORDER BY 2";
 
    $consulta = new Consulta($query, $this -> conexion);
    $transp = $consulta -> ret_matriz();
 
-   if($GLOBALS[transp])
+   if($_REQUEST[transp])
     $transp = array_merge($transp,$todos);
    else
     $transp = array_merge($titpor,$transp);
@@ -324,20 +324,20 @@ class Proc_fletes
     }
    }
 
-   if($GLOBALS[ciudes])
-    $query .= " AND a.cod_ciudes = ".$GLOBALS[ciudes]."";
-   if($GLOBALS[ciuori])
-    $query .= " AND a.cod_ciuori = ".$GLOBALS[ciuori]."";
-   if($GLOBALS[carroc])
-    $query .= " AND a.cod_carroc = ".$GLOBALS[carroc]."";
-   if($GLOBALS[trayec])
-    $query .= " AND a.cod_trayec = ".$GLOBALS[trayec]."";
-   if($GLOBALS[transp])
-    $query .= " AND a.cod_transp = ".$GLOBALS[transp]."";
+   if($_REQUEST[ciudes])
+    $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
+   if($_REQUEST[ciuori])
+    $query .= " AND a.cod_ciuori = ".$_REQUEST[ciuori]."";
+   if($_REQUEST[carroc])
+    $query .= " AND a.cod_carroc = ".$_REQUEST[carroc]."";
+   if($_REQUEST[trayec])
+    $query .= " AND a.cod_trayec = ".$_REQUEST[trayec]."";
+   if($_REQUEST[transp])
+    $query .= " AND a.cod_transp = ".$_REQUEST[transp]."";
 
    $query .= " GROUP BY 1 ORDER BY 8,1";
 
-   $matriz = $this -> paginador -> ejecPaginador($GLOBALS[npagina],$query);
+   $matriz = $this -> paginador -> ejecPaginador($_REQUEST[npagina],$query);
 
    $query_exp = $query;
 
@@ -349,22 +349,22 @@ class Proc_fletes
    $formulario -> imagen("Exportar","../".DIR_APLICA_CENTRAL."/imagenes/excel.jpg","Exportar",30,30,0,"onClick=\"top.window.open('../".DIR_APLICA_CENTRAL."/export/exp_tabla_fletes.php?".$exp."')\"",1,0);
 
    $formulario -> nueva_tabla();
-   $formulario -> linea("<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&opcion=2 \"target=\"centralFrame\">===> Insertar Nuevo Registro <===</a>",1,"h");
+   $formulario -> linea("<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&opcion=2 \"target=\"centralFrame\">===> Insertar Nuevo Registro <===</a>",1,"h");
 
    $formulario -> nueva_tabla();
    $formulario -> linea("Se Encontro un Total de ".$this -> paginador -> totalr." Flete(s)",0,"t2");
 
    $i=0;
    $varadici[$i]["nomvar"] = "ciudes";
-   $varadici[$i]["valvar"] = $GLOBALS[ciudes];$i++;
+   $varadici[$i]["valvar"] = $_REQUEST[ciudes];$i++;
    $varadici[$i]["nomvar"] = "ciuori";
-   $varadici[$i]["valvar"] = $GLOBALS[ciuori];$i++;
+   $varadici[$i]["valvar"] = $_REQUEST[ciuori];$i++;
    $varadici[$i]["nomvar"] = "carroc";
-   $varadici[$i]["valvar"] = $GLOBALS[carroc];$i++;
+   $varadici[$i]["valvar"] = $_REQUEST[carroc];$i++;
    $varadici[$i]["nomvar"] = "trayec";
-   $varadici[$i]["valvar"] = $GLOBALS[trayec];$i++;
+   $varadici[$i]["valvar"] = $_REQUEST[trayec];$i++;
    $varadici[$i]["nomvar"] = "transp";
-   $varadici[$i]["valvar"] = $GLOBALS[transp];$i++;
+   $varadici[$i]["valvar"] = $_REQUEST[transp];$i++;
 
    $this -> paginador -> getPaginas($formulario,"npagina",$varadici);
 
@@ -379,7 +379,7 @@ class Proc_fletes
    $formulario -> linea("Valor (Unit)",0,"t");
    $formulario -> linea("Estado",1,"t");
 
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
    for($i=0;$i<sizeof($matriz);$i++)
    {
@@ -426,7 +426,7 @@ class Proc_fletes
      $estilo = "ie";
     }
 
-    $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&flete=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+    $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&flete=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    	$formulario -> linea($matriz[$i][0],0,$estilo);
    	$formulario -> linea($ciudad_o[0][1],0,$estilo);
@@ -443,9 +443,9 @@ class Proc_fletes
 
    $formulario -> nueva_tabla();
    $formulario -> oculto("usuario","$usuario",0);
-   $formulario -> oculto("opcion",$GLOBALS[opcion],0);
+   $formulario -> oculto("opcion",$_REQUEST[opcion],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
 
  }//FIN BUSCAR
@@ -458,7 +458,7 @@ function Datos()
    $datos_usuario = $this -> usuario -> retornar();
    $usuario = $datos_usuario["cod_usuari"];
 
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
    $listado_ciudades = $objciud -> getListadoCiudades();
 
    $ciuori = array_merge($inicio,$listado_ciudades);
@@ -484,7 +484,7 @@ function Datos()
    $trayec = $consulta -> ret_matriz();
    $trayec = array_merge($inicio,$trayec);
 
-   if($GLOBALS[flete])
+   if($_REQUEST[flete])
    {
    	$indton = $activo = 0;
 
@@ -494,7 +494,7 @@ function Datos()
   			    FROM ".BASE_DATOS.".tab_tablax_fletes a,
   			    	 ".BASE_DATOS.".tab_vehige_carroc b,
   			    	 ".BASE_DATOS.".tab_genera_trayec c
-           	   WHERE a.cod_consec = ".$GLOBALS[flete]." AND
+           	   WHERE a.cod_consec = ".$_REQUEST[flete]." AND
   			    	 a.cod_carroc = b.cod_carroc AND
   			    	 a.cod_trayec = c.cod_trayec
              ";
@@ -502,7 +502,7 @@ function Datos()
     $consulta = new Consulta($query, $this -> conexion);
     $matriz = $consulta -> ret_matriz();
 
-    $GLOBALS[transp] = $matriz[0][11];
+    $_REQUEST[transp] = $matriz[0][11];
 
     $ciudad_o = $objciud -> getSeleccCiudad($matriz[0][1]);
     $ciudad_d = $objciud -> getSeleccCiudad($matriz[0][2]);
@@ -521,8 +521,8 @@ function Datos()
     if($matriz[0][7] == COD_ESTADO_ACTIVO)
      $indton = 1;
 
-    $GLOBALS[canton] = $matriz[0][8];
-    $GLOBALS[coston] = $matriz[0][9];
+    $_REQUEST[canton] = $matriz[0][8];
+    $_REQUEST[coston] = $matriz[0][9];
 
 	if($matriz[0][10] == COD_ESTADO_ACTIVO)
      $activo = 1;
@@ -547,7 +547,7 @@ function Datos()
    {
     $datos_filtro = $filtro -> retornar();
     $formulario -> oculto("transp",$datos_filtro[clv_filtro],0);
-    $GLOBALS[transp] = $datos_filtro[clv_filtro];
+    $_REQUEST[transp] = $datos_filtro[clv_filtro];
    }
    else
    {
@@ -563,14 +563,14 @@ function Datos()
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  	  ";
 
@@ -589,8 +589,8 @@ function Datos()
    $formulario -> lista("Destino","ciudes",$ciudes,1);
    $formulario -> lista("Carrocer&acute;a","carroc",$carroc,0);
    $formulario -> lista("Trayecto","trayec",$trayec,1);
-   $formulario -> texto("Toneladas (Cant)","text","canton\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,10,10,"",$GLOBALS[canton]);
-   $formulario -> texto("Valor x Ton \$","text","coston\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,10,10,"",$GLOBALS[coston]);
+   $formulario -> texto("Toneladas (Cant)","text","canton\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,10,10,"",$_REQUEST[canton]);
+   $formulario -> texto("Valor x Ton \$","text","coston\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,10,10,"",$_REQUEST[coston]);
    $formulario -> caja("Por Tonelada","indton",1,$indton,0);
    $formulario -> caja("Activo","estado",1,$activo,1);
 
@@ -598,10 +598,10 @@ function Datos()
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",2,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
-   $formulario -> oculto("flete",$GLOBALS[flete],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+   $formulario -> oculto("flete",$_REQUEST[flete],0);
 
-   if(!$GLOBALS[flete])
+   if(!$_REQUEST[flete])
     $formulario -> boton("Insertar","button\" onClick=\"aceptar() ",0);
    else
     $formulario -> boton("Actualizar","button\" onClick=\"aceptar() ",0);
@@ -619,7 +619,7 @@ function Datos()
 
    $query = "SELECT a.cod_paisxx,a.cod_depart
                FROM ".BASE_DATOS.".tab_genera_ciudad a
-              WHERE a.cod_ciudad = ".$GLOBALS[ciuori]."
+              WHERE a.cod_ciudad = ".$_REQUEST[ciuori]."
             ";
 
    $ciudad = new Consulta($query, $this -> conexion);
@@ -627,39 +627,39 @@ function Datos()
 
    $query = "SELECT a.cod_paisxx,a.cod_depart
                FROM ".BASE_DATOS.".tab_genera_ciudad a
-              WHERE a.cod_ciudad = ".$GLOBALS[ciudes]."
+              WHERE a.cod_ciudad = ".$_REQUEST[ciudes]."
             ";
 
    $ciudad = new Consulta($query, $this -> conexion);
    $ciudes = $ciudad -> ret_matriz();
 
-   if(!$GLOBALS[estado])
-    $GLOBALS[estado] = COD_ESTADO_INACTI;
+   if(!$_REQUEST[estado])
+    $_REQUEST[estado] = COD_ESTADO_INACTI;
 
-   if(!$GLOBALS[indton])
-    $GLOBALS[indton] = COD_ESTADO_INACTI;
+   if(!$_REQUEST[indton])
+    $_REQUEST[indton] = COD_ESTADO_INACTI;
 
-   if($GLOBALS[flete])
+   if($_REQUEST[flete])
    {
    	$nom_actp = "Actualizo";
 
    	$query = "UPDATE ".BASE_DATOS.".tab_tablax_fletes
                SET cod_paiori = ".$ciuori[0][0].",
                	   cod_depori = ".$ciuori[0][1].",
-               	   cod_ciuori = ".$GLOBALS[ciuori].",
+               	   cod_ciuori = ".$_REQUEST[ciuori].",
                	   cod_paides = ".$ciudes[0][0].",
                	   cod_depdes = ".$ciudes[0][1].",
-               	   cod_ciudes = ".$GLOBALS[ciudes].",
-                   cod_carroc = ".$GLOBALS[carroc].",
-                   cod_trayec = ".$GLOBALS[trayec].",
-                   cod_transp = ".$GLOBALS[transp].",
-                   ind_tonela = ".$GLOBALS[indton].",
-                   val_costos = ".$GLOBALS[coston].",
-                   can_tonela = ".$GLOBALS[canton].",
-                   cod_estado = ".$GLOBALS[estado].",
+               	   cod_ciudes = ".$_REQUEST[ciudes].",
+                   cod_carroc = ".$_REQUEST[carroc].",
+                   cod_trayec = ".$_REQUEST[trayec].",
+                   cod_transp = ".$_REQUEST[transp].",
+                   ind_tonela = ".$_REQUEST[indton].",
+                   val_costos = ".$_REQUEST[coston].",
+                   can_tonela = ".$_REQUEST[canton].",
+                   cod_estado = ".$_REQUEST[estado].",
                    usr_modifi = '".$usuario."',
                    fec_modifi = '".$fec_actual."'
-             WHERE cod_consec = ".$GLOBALS[flete]."
+             WHERE cod_consec = ".$_REQUEST[flete]."
            ";
    }
    else
@@ -680,16 +680,16 @@ function Datos()
    						  cod_paides,cod_depdes,cod_ciudes,cod_carroc,
    						  cod_trayec,cod_transp,val_costos,ind_tonela,
    						  can_tonela,cod_estado,usr_creaci,fec_creaci)
-                  VALUES (".$ultimo[0][0].",".$ciuori[0][0].",".$ciuori[0][1].",".$GLOBALS[ciuori].",
-   						  ".$ciudes[0][0].",".$ciudes[0][1].",".$GLOBALS[ciudes].",".$GLOBALS[carroc].",
-   						  ".$GLOBALS[trayec].",".$GLOBALS[transp].",".$GLOBALS[coston].",".$GLOBALS[indton].",
-   						  ".$GLOBALS[canton].",".$GLOBALS[estado].",'".$GLOBALS[usuario]."','".$fec_actual."')
+                  VALUES (".$ultimo[0][0].",".$ciuori[0][0].",".$ciuori[0][1].",".$_REQUEST[ciuori].",
+   						  ".$ciudes[0][0].",".$ciudes[0][1].",".$_REQUEST[ciudes].",".$_REQUEST[carroc].",
+   						  ".$_REQUEST[trayec].",".$_REQUEST[transp].",".$_REQUEST[coston].",".$_REQUEST[indton].",
+   						  ".$_REQUEST[canton].",".$_REQUEST[estado].",'".$_REQUEST[usuario]."','".$fec_actual."')
    		    ";
    }
 
    if($consulta = new Consulta($query, $this -> conexion,"BRC"))
    {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Volver al Listado Principal</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Volver al Listado Principal</a></b>";
 
      $mensaje =  "El Flete Se ".$nom_actp." Exitosamente.".$link_a;
      $mens = new mensajes();
@@ -701,9 +701,9 @@ function Datos()
  {
   $formulario = new Formulario ("index.php","post","Tabla de Fletes","form_item");
 
-  if($GLOBALS[ciuoritab] && $GLOBALS[carroctab] && $GLOBALS[valobj0])
+  if($_REQUEST[ciuoritab] && $_REQUEST[carroctab] && $_REQUEST[valobj0])
   {
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
    $query = "SELECT a.cod_consec,a.cod_ciuori,a.cod_ciudes,b.nom_carroc,
   		            c.nom_trayec,a.ind_tonela,a.val_costos,a.can_tonela
@@ -712,10 +712,10 @@ function Datos()
   		            ".BASE_DATOS.".tab_genera_trayec c
   		      WHERE a.cod_carroc = b.cod_carroc AND
   		            a.cod_trayec = c.cod_trayec AND
-  		            a.cod_transp = '".$GLOBALS[transport]."' AND
-  		            a.cod_ciuori = ".$GLOBALS[ciuoritab]." AND
-  		            a.cod_ciudes = ".$GLOBALS[valobj0]." AND
-  		            a.cod_carroc = ".$GLOBALS[carroctab]." AND
+  		            a.cod_transp = '".$_REQUEST[transport]."' AND
+  		            a.cod_ciuori = ".$_REQUEST[ciuoritab]." AND
+  		            a.cod_ciudes = ".$_REQUEST[valobj0]." AND
+  		            a.cod_carroc = ".$_REQUEST[carroctab]." AND
   		            a.cod_estado = '".COD_ESTADO_ACTIVO."'
             ";
 
@@ -739,7 +739,7 @@ function Datos()
     {
      $nom_estado = "Si";
      $costos = $tablafle[$i][6] / $tablafle[$i][7];
-     $valtot = ($tablafle[$i][6] / $tablafle[$i][7]) * $GLOBALS[valobj1];
+     $valtot = ($tablafle[$i][6] / $tablafle[$i][7]) * $_REQUEST[valobj1];
     }
     else
     {
@@ -747,7 +747,7 @@ function Datos()
      $costos = $valtot = $tablafle[$i][6];     
     }
         
-    $tablafle[$i][0] = "<a href=# onClick=\"opener.document.forms[0].tabfle".$GLOBALS[indice].$GLOBALS[codigo].".value='".$valtot."'; opener.document.forms[0].fleuni".$GLOBALS[indice].$GLOBALS[codigo].".value='".$costos."'; opener.document.forms[0].codfle".$GLOBALS[indice].$GLOBALS[codigo].".value='".$tablafle[$i][0]."'; top.close()\">".$tablafle[$i][0]."</a>";
+    $tablafle[$i][0] = "<a href=# onClick=\"opener.document.forms[0].tabfle".$_REQUEST[indice].$_REQUEST[codigo].".value='".$valtot."'; opener.document.forms[0].fleuni".$_REQUEST[indice].$_REQUEST[codigo].".value='".$costos."'; opener.document.forms[0].codfle".$_REQUEST[indice].$_REQUEST[codigo].".value='".$tablafle[$i][0]."'; top.close()\">".$tablafle[$i][0]."</a>";
 
     $ciudad_o = $objciud -> getSeleccCiudad($tablafle[$i][1]);
     $ciudad_d = $objciud -> getSeleccCiudad($tablafle[$i][2]);    

@@ -16,7 +16,7 @@ class Act_vehicu_vehicu
 
  function principal()
  {
-  switch($GLOBALS[opcion])
+  switch($_REQUEST[opcion])
    {
     case "1":
       $this -> Resultado();
@@ -317,14 +317,14 @@ function Buscar()
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			          ".BASE_DATOS.".tab_tercer_activi b
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          b.cod_activi = ".COD_FILTRO_EMPTRA." AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  ";
 
@@ -369,7 +369,7 @@ function Buscar()
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Buscar","if(form_list.por_modelo.checked){if(form_list.mod1.value == '' || form_list.mod2.value == '')alert('Por favor Ingrese el Rango de los Modelos a Filtrar.'); else form_list.submit()}else if(form_list.mod1.value != '' || form_list.mod2.value != '')alert('Por Favor Activa La Casilla De Modelo si Desea Filtrar un Rango de Modelos.'); else form_list.submit();",0);
    $formulario -> cerrar();
  }//FIN FUNCION
@@ -378,8 +378,8 @@ function Buscar()
 	{
 		$datos_usuario = $this -> usuario -> retornar();
 		$fec_actual = date("Y-m-d");
-		$fecha1 = $GLOBALS[ano]."-".$GLOBALS[mes]."-".$GLOBALS[dia]." 00:00:00";
-		$fecha2 = $GLOBALS[ano2]."-".$GLOBALS[mes2]."-".$GLOBALS[dia2]." 23:59:59";
+		$fecha1 = $_REQUEST[ano]."-".$_REQUEST[mes]."-".$_REQUEST[dia]." 00:00:00";
+		$fecha2 = $_REQUEST[ano2]."-".$_REQUEST[mes2]."-".$_REQUEST[dia2]." 23:59:59";
 		
 		$query = "SELECT a.num_placax, g.abr_tercer, g.num_telef1, 
 						 h.abr_tercer, h.num_telmov, b.nom_marcax, 
@@ -402,22 +402,22 @@ function Buscar()
 							ON a.cod_conduc = h.cod_tercer 
 							LEFT JOIN ".BASE_DATOS.".tab_transp_vehicu j 
 							ON a.num_placax = j.num_placax
-				  WHERE a.num_placax LIKE '%".$GLOBALS[placa]."%'";
+				  WHERE a.num_placax LIKE '%".$_REQUEST[placa]."%'";
 
-	   if($GLOBALS[transp])
-        $query = $query." AND j.cod_transp = '".$GLOBALS[transp]."'";
-       if($GLOBALS[por_fecha])
+	   if($_REQUEST[transp])
+        $query = $query." AND j.cod_transp = '".$_REQUEST[transp]."'";
+       if($_REQUEST[por_fecha])
         $query = $query." AND a.fec_creaci  BETWEEN '".$fecha1."' AND '".$fecha2."'";
-       if($GLOBALS[marcax])
-          $query = $query." AND a.cod_marcax = '".$GLOBALS[marcax]."'";
-       if($GLOBALS[carroc])
-          $query = $query." AND a.cod_carroc = '".$GLOBALS[carroc]."'";
-       if($GLOBALS[colorx])
-          $query = $query." AND a.cod_colorx = '".$GLOBALS[colorx]."'";
-       if($GLOBALS[config])
-          $query = $query." AND a.num_config = '".$GLOBALS[config]."'";
-       if($GLOBALS[por_modelo])
-          $query = $query." AND a.ano_modelo >= ".$GLOBALS[mod1]." AND a.ano_modelo <= ".$GLOBALS[mod2];
+       if($_REQUEST[marcax])
+          $query = $query." AND a.cod_marcax = '".$_REQUEST[marcax]."'";
+       if($_REQUEST[carroc])
+          $query = $query." AND a.cod_carroc = '".$_REQUEST[carroc]."'";
+       if($_REQUEST[colorx])
+          $query = $query." AND a.cod_colorx = '".$_REQUEST[colorx]."'";
+       if($_REQUEST[config])
+          $query = $query." AND a.num_config = '".$_REQUEST[config]."'";
+       if($_REQUEST[por_modelo])
+          $query = $query." AND a.ano_modelo >= ".$_REQUEST[mod1]." AND a.ano_modelo <= ".$_REQUEST[mod2];
 
    if($datos_usuario["cod_perfil"] == "")
    {
@@ -484,7 +484,7 @@ function Buscar()
   $formulario = new Formulario ("index.php","post","LISTADO DE VEHICULOS","form_item");
 
    $formulario -> linea("Se Encontraron ".sizeof($matriz)." Registros",1,"t2");
-   if($GLOBALS[por_fecha])
+   if($_REQUEST[por_fecha])
    $formulario -> linea("Fecha Inicial $fecha1 Fecha Final $fecha2",0);
 
    $formulario -> nueva_tabla();
@@ -537,7 +537,7 @@ function Buscar()
      else if($matriz[$i][10] == COD_ESTADO_PENDIE)
       $estado = "Pendiente";
 
-     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&placa=".$matriz[$i][0]."&opcion=2&transp=".$GLOBALS[transp]." \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&placa=".$matriz[$i][0]."&opcion=2&transp=".$_REQUEST[transp]." \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
      $formulario -> linea($matriz[$i][0],0,$estilo);
      $formulario -> linea($matriz[$i][1],0,$estilo);
@@ -556,10 +556,10 @@ function Buscar()
 
    $formulario -> nueva_tabla();
    $formulario -> oculto("usuario","$usuario",0);
-   $formulario -> oculto("transp",$GLOBALS[transp],0);
+   $formulario -> oculto("transp",$_REQUEST[transp],0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> botoni("Volver","form_item.opcion.value='0';form_item.submit()",1);
    $formulario -> cerrar();
  }
@@ -572,7 +572,7 @@ function Buscar()
    $inicio[0][0] = 0;
    $inicio[0][1] = "-";
 
-   if(!isset($GLOBALS[marca]))
+   if(!isset($_REQUEST[marca]))
    {
       //datos
       $query = "SELECT a.num_placax,a.cod_marcax,a.cod_lineax,
@@ -588,43 +588,43 @@ function Buscar()
                        a.cod_colorx,a.num_tarpro,a.obs_vehicu,
                        a.usr_creaci, a.fec_creaci,a.usr_modifi, a.fec_modifi
                   FROM ".BASE_DATOS.".tab_vehicu_vehicu a
-                 WHERE a.num_placax = '$GLOBALS[placa]'
+                 WHERE a.num_placax = '$_REQUEST[placa]'
               ORDER BY 2";
       $consulta = new Consulta($query, $this -> conexion);
       $matriz = $consulta -> ret_matriz();
 
-      $GLOBALS[marca]=$matriz[0][1];
-      $GLOBALS[linea]=$matriz[0][2];
-      $GLOBALS[modelo]=$matriz[0][3];
-      $GLOBALS[repote]=$matriz[0][4];
-      $GLOBALS[tipveh]=$matriz[0][5];
-      $GLOBALS[carroc]=$matriz[0][6];
-      $GLOBALS[motor]=$matriz[0][7];
-      $GLOBALS[serie]=$matriz[0][8];
-      $GLOBALS[pesva]=$matriz[0][9];
-      $GLOBALS[capaci]=$matriz[0][10];
-      $GLOBALS[config]=$matriz[0][11];
-      $GLOBALS[revmec]=$matriz[0][12];
-      $GLOBALS[vincula]=$matriz[0][13];
-      $GLOBALS[vigvinv]=$matriz[0][14];
-      $GLOBALS[gases]=$matriz[0][15];
-      $GLOBALS[viggas]=$matriz[0][16];
-      $GLOBALS[regnal]=$matriz[0][17];
-      $GLOBALS[tarope]=$matriz[0][18];
-      $GLOBALS[califi]=$matriz[0][19];
-      $GLOBALS[chelis]=$matriz[0][20];
-      $GLOBALS[numsoa]=$matriz[0][21];
-      $GLOBALS[asesoa]=$matriz[0][22];
-      $GLOBALS[vigsoa]=$matriz[0][23];
-      $GLOBALS[polirc]=$matriz[0][24];
-      $GLOBALS[aseprc]=$matriz[0][25];
-      $GLOBALS[vigprc]=$matriz[0][26];
-      $GLOBALS[tenedo]=$matriz[0][27];
-      $GLOBALS[propie]=$matriz[0][28];
-      $GLOBALS[conduc]=$matriz[0][29];
-      $GLOBALS[colorx]=$matriz[0][30];
-      $GLOBALS[tarpro]=$matriz[0][31];
-      $GLOBALS[obs]=$matriz[0][32];
+      $_REQUEST[marca]=$matriz[0][1];
+      $_REQUEST[linea]=$matriz[0][2];
+      $_REQUEST[modelo]=$matriz[0][3];
+      $_REQUEST[repote]=$matriz[0][4];
+      $_REQUEST[tipveh]=$matriz[0][5];
+      $_REQUEST[carroc]=$matriz[0][6];
+      $_REQUEST[motor]=$matriz[0][7];
+      $_REQUEST[serie]=$matriz[0][8];
+      $_REQUEST[pesva]=$matriz[0][9];
+      $_REQUEST[capaci]=$matriz[0][10];
+      $_REQUEST[config]=$matriz[0][11];
+      $_REQUEST[revmec]=$matriz[0][12];
+      $_REQUEST[vincula]=$matriz[0][13];
+      $_REQUEST[vigvinv]=$matriz[0][14];
+      $_REQUEST[gases]=$matriz[0][15];
+      $_REQUEST[viggas]=$matriz[0][16];
+      $_REQUEST[regnal]=$matriz[0][17];
+      $_REQUEST[tarope]=$matriz[0][18];
+      $_REQUEST[califi]=$matriz[0][19];
+      $_REQUEST[chelis]=$matriz[0][20];
+      $_REQUEST[numsoa]=$matriz[0][21];
+      $_REQUEST[asesoa]=$matriz[0][22];
+      $_REQUEST[vigsoa]=$matriz[0][23];
+      $_REQUEST[polirc]=$matriz[0][24];
+      $_REQUEST[aseprc]=$matriz[0][25];
+      $_REQUEST[vigprc]=$matriz[0][26];
+      $_REQUEST[tenedo]=$matriz[0][27];
+      $_REQUEST[propie]=$matriz[0][28];
+      $_REQUEST[conduc]=$matriz[0][29];
+      $_REQUEST[colorx]=$matriz[0][30];
+      $_REQUEST[tarpro]=$matriz[0][31];
+      $_REQUEST[obs]=$matriz[0][32];
     }
 
    $inicio[0][0]='0';
@@ -653,7 +653,7 @@ function Buscar()
 
 
    //------------------------------
-   if( !$GLOBALS['transp'] )
+   if( !$_REQUEST['transp'] )
    {
       //--------------------------
       $query = "SELECT a.cod_tercer,a.abr_tercer
@@ -672,7 +672,7 @@ function Buscar()
                 FROM  ".BASE_DATOS.".tab_transp_vehicu a JOIN
                       ".BASE_DATOS.".tab_tercer_emptra b ON a.cod_transp = b.cod_tercer JOIN 
                       ".BASE_DATOS.".tab_tercer_tercer c ON a.cod_transp = c.cod_tercer
-               WHERE  a.num_placax = '" . $GLOBALS['placa'] . "'";
+               WHERE  a.num_placax = '" . $_REQUEST['placa'] . "'";
 
       $consulta = new Consulta( $SQL, $this -> conexion );
       $trareg = $consulta -> ret_matriz();  // Transportadora Regsitrada para la Placa
@@ -684,19 +684,19 @@ function Buscar()
       else
       {
         //$listtran = array_merge( $trareg, $inicio, $listtran );
-        if( !$GLOBALS['transpor'] )
-        $GLOBALS['transpor'] = $trareg[0][0];
+        if( !$_REQUEST['transpor'] )
+        $_REQUEST['transpor'] = $trareg[0][0];
       }
       //--------------------------
 
-      if( $GLOBALS['transpor'] )
+      if( $_REQUEST['transpor'] )
       {
         $query = "SELECT  a.cod_tercer,a.abr_tercer
                      FROM ".BASE_DATOS.".tab_tercer_tercer a,
                           ".BASE_DATOS.".tab_tercer_emptra b
                     WHERE a.cod_tercer = b.cod_tercer AND
                           a.cod_estado != '".COD_ESTADO_INACTI."' AND
-                          a.cod_tercer = '".$GLOBALS['transpor']."'
+                          a.cod_tercer = '".$_REQUEST['transpor']."'
                     ";
 
         $consulta = new Consulta($query, $this -> conexion);
@@ -707,10 +707,10 @@ function Buscar()
     }
     else
     {
-      $GLOBALS['transpor'] = $GLOBALS['transp'];
-      $formulario -> oculto("transpor",$GLOBALS['transpor'],0);
+      $_REQUEST['transpor'] = $_REQUEST['transp'];
+      $formulario -> oculto("transpor",$_REQUEST['transpor'],0);
 
-      //$formulario -> linea("$GLOBALS[transpor]",0,"t2");
+      //$formulario -> linea("$_REQUEST[transpor]",0,"t2");
     }
    //------------------------------
 
@@ -718,7 +718,7 @@ function Buscar()
 
    $query = "SELECT b.num_trayle,b.num_trayle
                FROM ".BASE_DATOS.".tab_trayle_placas b
-              WHERE b.num_placax = '$GLOBALS[placa]' AND
+              WHERE b.num_placax = '$_REQUEST[placa]' AND
                     b.ind_actual = 'S' AND
                     b.num_noveda = ( SELECT Max(d.num_noveda)
                                                      FROM ".BASE_DATOS.".tab_trayle_placas d
@@ -736,7 +736,7 @@ function Buscar()
 
    $query = "SELECT cod_tipveh,nom_tipveh
                FROM ".BASE_DATOS.".tab_genera_tipveh
-              WHERE cod_tipveh = '".$GLOBALS[tipveh]."' ";
+              WHERE cod_tipveh = '".$_REQUEST[tipveh]."' ";
 
    $consulta = new Consulta($query, $this -> conexion);
    $tipveh_a = $consulta -> ret_matriz();
@@ -751,7 +751,7 @@ function Buscar()
    //trae la marca anterior
    $query = "SELECT cod_marcax,nom_marcax
                FROM ".BASE_DATOS.".tab_genera_marcas
-              WHERE cod_marcax = '$GLOBALS[marca]' ";
+              WHERE cod_marcax = '$_REQUEST[marca]' ";
    $consulta = new Consulta($query, $this -> conexion);
    $marca_a = $consulta -> ret_matriz();
 
@@ -766,15 +766,15 @@ function Buscar()
    //trae la linea anterior
    $query = "SELECT cod_lineax,nom_lineax
                FROM ".BASE_DATOS.".tab_vehige_lineas
-              WHERE cod_lineax = '$GLOBALS[linea]'
-                AND cod_marcax = '$GLOBALS[marca]'";
+              WHERE cod_lineax = '$_REQUEST[linea]'
+                AND cod_marcax = '$_REQUEST[marca]'";
    $consulta = new Consulta($query, $this -> conexion);
    $linea_a = $consulta -> ret_matriz();
 
    //trae las lineas de la marca escogida
    $query = "SELECT cod_lineax,nom_lineax
                FROM ".BASE_DATOS.".tab_vehige_lineas
-              WHERE cod_marcax = '$GLOBALS[marca]'
+              WHERE cod_marcax = '$_REQUEST[marca]'
            ORDER BY 2 ";
    $consulta = new Consulta($query, $this -> conexion);
    $lineas = $consulta -> ret_matriz();
@@ -783,7 +783,7 @@ function Buscar()
    //trae el color anterior
    $query = "SELECT cod_colorx,nom_colorx
                FROM ".BASE_DATOS.".tab_vehige_colore
-           WHERE cod_colorx = '$GLOBALS[colorx]' ";
+           WHERE cod_colorx = '$_REQUEST[colorx]' ";
    $consulta = new Consulta($query, $this -> conexion);
    $color_a = $consulta -> ret_matriz();
 
@@ -804,7 +804,7 @@ function Buscar()
 
    $query = "SELECT num_config,num_config
                FROM ".BASE_DATOS.".tab_vehige_config
-           WHERE num_config = '$GLOBALS[config]' ";
+           WHERE num_config = '$_REQUEST[config]' ";
    $consulta = new Consulta($query, $this -> conexion);
    $config_a= $consulta -> ret_matriz();
    $config = array_merge($config_a,$inicio,$config);
@@ -814,7 +814,7 @@ function Buscar()
    //trae la carroceria anterior
    $query = "SELECT cod_carroc,nom_carroc
                FROM ".BASE_DATOS.".tab_vehige_carroc
-           WHERE cod_carroc = '$GLOBALS[carroc]' ";
+           WHERE cod_carroc = '$_REQUEST[carroc]' ";
    $consulta = new Consulta($query, $this -> conexion);
    $carroc_a = $consulta -> ret_matriz();
 
@@ -835,7 +835,7 @@ function Buscar()
                           ".BASE_DATOS.".tab_transp_tercer d
                     WHERE a.cod_tercer = b.cod_tercer AND
                           a.cod_tercer = d.cod_tercer AND
-                          d.cod_transp = '$GLOBALS[transpor]' AND
+                          d.cod_transp = '$_REQUEST[transpor]' AND
                           a.cod_tercer = c.cod_tercer AND
                           a.cod_estado = '1' AND
                           b.cod_activi = ".COD_FILTRO_CONDUC."
@@ -849,7 +849,7 @@ function Buscar()
 
     $query = "SELECT a.cod_tercer,CONCAT(a.abr_tercer,' - ',a.cod_tercer)
                FROM ".BASE_DATOS.".tab_tercer_tercer a
-              WHERE a.cod_tercer = '$GLOBALS[conduc]'";
+              WHERE a.cod_tercer = '$_REQUEST[conduc]'";
    $consulta = new Consulta($query, $this -> conexion);
    $conduc_a = $consulta -> ret_matriz();
    $conductores = array_merge($conduc_a,$inicio,$conductores);
@@ -858,14 +858,14 @@ function Buscar()
 
    $query = "SELECT a.cod_tercer,CONCAT(a.abr_tercer,' - ',a.cod_tercer)
                FROM ".BASE_DATOS.".tab_tercer_tercer a
-              WHERE a.cod_tercer = '$GLOBALS[propie]'";
+              WHERE a.cod_tercer = '$_REQUEST[propie]'";
    $consulta = new Consulta($query, $this -> conexion);
    $propie_a = $consulta -> ret_matriz();
 
    //------------------
    $query = "SELECT a.cod_tercer,CONCAT(a.abr_tercer,' - ',a.cod_tercer)
                FROM ".BASE_DATOS.".tab_tercer_tercer a
-              WHERE a.cod_tercer = '$GLOBALS[tenedo]'";
+              WHERE a.cod_tercer = '$_REQUEST[tenedo]'";
    $consulta = new Consulta($query, $this -> conexion);
    $tenedo_a = $consulta -> ret_matriz();
    //------------------
@@ -878,7 +878,7 @@ function Buscar()
                           ".BASE_DATOS.".tab_transp_tercer d
                     WHERE a.cod_tercer = b.cod_tercer AND
                           a.cod_tercer = d.cod_tercer AND
-                          d.cod_transp = '$GLOBALS[transpor]' AND
+                          d.cod_transp = '$_REQUEST[transpor]' AND
                           a.cod_estado = '1' AND
                           b.cod_activi = ".COD_FILTRO_PROPIE."
                  GROUP BY 1,2";
@@ -898,7 +898,7 @@ function Buscar()
                           ".BASE_DATOS.".tab_transp_tercer d
                     WHERE a.cod_tercer = b.cod_tercer AND
                           a.cod_tercer = d.cod_tercer AND
-                          d.cod_transp = '$GLOBALS[transpor]' AND
+                          d.cod_transp = '$_REQUEST[transpor]' AND
                           a.cod_estado = '1' AND
                           b.cod_activi = ".COD_FILTRO_POSEED."
                  GROUP BY 1,2";
@@ -913,7 +913,7 @@ function Buscar()
    //las calificacion anterior
    $query = "SELECT a.cod_califi,a.nom_califi
                FROM ".BASE_DATOS.".tab_genera_califi a
-              WHERE a.cod_califi = '$GLOBALS[califi]'";
+              WHERE a.cod_califi = '$_REQUEST[califi]'";
    $consulta = new Consulta($query, $this -> conexion);
    $califi_a = $consulta -> ret_matriz();
 
@@ -953,43 +953,43 @@ function Buscar()
    $formulario -> nueva_tabla();
    $formulario -> linea("Datos B&aacute;sicos del Veh&iacute;culo",1,"t2");
 
-    if( !$GLOBALS['transp'] )
+    if( !$_REQUEST['transp'] )
     {
       $formulario -> nueva_tabla();
       $formulario -> lista("Transportadora","transpor\" onChange=\"form_actua.submit()",$listtran,1);
     }
 
    $formulario -> nueva_tabla();
-   $formulario -> texto("Placa(AAA000):","text","placa\" readonly ",0,6,6,"","$GLOBALS[placa]");
+   $formulario -> texto("Placa(AAA000):","text","placa\" readonly ",0,6,6,"","$_REQUEST[placa]");
    $formulario -> lista("Marca:","marca\" onBlur=\"form_actua.submit() ",$marcas,1,1);
    $formulario -> lista("L&iacute;nea:","linea\" id=\"lineaID",$linea,0,1);
-   $formulario -> texto("Modelo:","text","modelo\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,4,4,"","$GLOBALS[modelo]","","",NULL,1);
-   $formulario -> texto("Repotenciado a:","text","repote\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,4,4,"","$GLOBALS[repote]");
+   $formulario -> texto("Modelo:","text","modelo\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,4,4,"","$_REQUEST[modelo]","","",NULL,1);
+   $formulario -> texto("Repotenciado a:","text","repote\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,4,4,"","$_REQUEST[repote]");
    $formulario -> lista("Color:", "colorx",$colorx,1,1);
    $formulario -> lista("Tipo Vinculaci&oacute;n:", "tipveh",$tipveh,0,1);
    $formulario -> lista("Tip. Carrocer&iacute;a:", "carroc",$carrocerias,1,1);
-   $formulario -> texto("N&uacute;mero Motor:","text","motor",0,15,25,"","$GLOBALS[motor]","","",NULL,1);
-   $formulario -> texto("N&uacute;mero Serie:","text","serie",1,15,25,"","$GLOBALS[serie]","","",NULL,1);
-   $formulario -> texto("Peso Vacio(Tn):","text","pesva\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,6,6,"","$GLOBALS[pesva]","","",NULL,1);
-   $formulario -> texto("Capacidad(Tn):","text","capaci\" onChange=\"form_vehiculos.submit()\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,5,4,"","$GLOBALS[capaci]","","",NULL,1);
+   $formulario -> texto("N&uacute;mero Motor:","text","motor",0,15,25,"","$_REQUEST[motor]","","",NULL,1);
+   $formulario -> texto("N&uacute;mero Serie:","text","serie",1,15,25,"","$_REQUEST[serie]","","",NULL,1);
+   $formulario -> texto("Peso Vacio(Tn):","text","pesva\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,6,6,"","$_REQUEST[pesva]","","",NULL,1);
+   $formulario -> texto("Capacidad(Tn):","text","capaci\" onChange=\"form_vehiculos.submit()\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,5,4,"","$_REQUEST[capaci]","","",NULL,1);
    $formulario -> lista("Configuraci&oacute;n:","config",$config,1,1);
-   $formulario -> texto("Vinculado a:","text","vincula",0,20,50,"","$GLOBALS[vincula]");
-   $formulario -> fecha_calendar("Fecha Vencimiento","vigvinv","form_actua",$GLOBALS[vigvinv],"yyyy-mm-dd",1);
-   $formulario -> texto("Revisi&oacute;n Tecno Mecanica:","text","gases",0,20,50,"","$GLOBALS[gases]");
-   $formulario -> fecha_calendar("Fecha Vencimiento","revmec","form_actua",$GLOBALS[revmec],"yyyy-mm-dd",1);
-   $formulario -> texto("Reg.Nal.Carga:","text","regnal",0,10,10,"","$GLOBALS[regnal]","","",NULL,1);
-   $formulario -> texto("Lic. Transito:","text","tarpro",1,11,11,"","$GLOBALS[tarpro]");
-   $formulario -> texto("Tarjeta de Operaci&oacute;n:","text","tarope",0,10,10,"","$GLOBALS[tarope]");
+   $formulario -> texto("Vinculado a:","text","vincula",0,20,50,"","$_REQUEST[vincula]");
+   $formulario -> fecha_calendar("Fecha Vencimiento","vigvinv","form_actua",$_REQUEST[vigvinv],"yyyy-mm-dd",1);
+   $formulario -> texto("Revisi&oacute;n Tecno Mecanica:","text","gases",0,20,50,"","$_REQUEST[gases]");
+   $formulario -> fecha_calendar("Fecha Vencimiento","revmec","form_actua",$_REQUEST[revmec],"yyyy-mm-dd",1);
+   $formulario -> texto("Reg.Nal.Carga:","text","regnal",0,10,10,"","$_REQUEST[regnal]","","",NULL,1);
+   $formulario -> texto("Lic. Transito:","text","tarpro",1,11,11,"","$_REQUEST[tarpro]");
+   $formulario -> texto("Tarjeta de Operaci&oacute;n:","text","tarope",0,10,10,"","$_REQUEST[tarope]");
    $formulario -> lista("Calificaci&oacute;n:","califi",$califi,1);
-   $formulario -> caja("Check List Express","chelis",1,"$GLOBALS[chelis]",0);
+   $formulario -> caja("Check List Express","chelis",1,"$_REQUEST[chelis]",0);
 
   $formulario -> nueva_tabla();
   $formulario -> linea("Seguros",0,"t2");
 
   $formulario -> nueva_tabla();
-  $formulario -> texto("SOAT","text","numsoa",0,10,30,"","$GLOBALS[numsoa]","","",NULL,1);
-  $formulario -> texto("Aseguradora","text","asesoa",0,30,30,"","$GLOBALS[asesoa]","","",NULL,1);
-  $formulario -> fecha_calendar("Fecha Vencimiento","vigsoa","form_actua",$GLOBALS[vigsoa],"yyyy-mm-dd",1,0,1);
+  $formulario -> texto("SOAT","text","numsoa",0,10,30,"","$_REQUEST[numsoa]","","",NULL,1);
+  $formulario -> texto("Aseguradora","text","asesoa",0,30,30,"","$_REQUEST[asesoa]","","",NULL,1);
+  $formulario -> fecha_calendar("Fecha Vencimiento","vigsoa","form_actua",$_REQUEST[vigsoa],"yyyy-mm-dd",1,0,1);
 
    $formulario -> nueva_tabla();
    $formulario -> linea("Selecci&oacute;n del Remolque",0,"t2");
@@ -1016,16 +1016,16 @@ function Buscar()
                     ".BASE_DATOS.".tab_transp_tercer d
               WHERE a.cod_tercer = b.cod_tercer AND
                     a.cod_tercer = d.cod_tercer AND
-                    d.cod_transp = '$GLOBALS[transpor]' AND
+                    d.cod_transp = '$_REQUEST[transpor]' AND
                     b.cod_activi = ".COD_FILTRO_PROPIE." AND
                     a.cod_estado = '1' AND 
-                    a.cod_tercer = '$GLOBALS[propie]' ";
+                    a.cod_tercer = '$_REQUEST[propie]' ";
 
   $consulta = new Consulta( $query, $this -> conexion );
   $propie_a = $consulta -> ret_matriz();
   //-----------------------------------
   if( count( $propie_a ) > 0 )
-    $mDATA['propie'] = $GLOBALS['propie'];
+    $mDATA['propie'] = $_REQUEST['propie'];
   else
     $mDATA['propie'] = '';
   //-----------------------------------
@@ -1054,16 +1054,16 @@ function Buscar()
                     ".BASE_DATOS.".tab_transp_tercer d
               WHERE a.cod_tercer = b.cod_tercer AND
                     a.cod_tercer = d.cod_tercer AND
-                    d.cod_transp = '$GLOBALS[transpor]' AND
+                    d.cod_transp = '$_REQUEST[transpor]' AND
                     b.cod_activi = ".COD_FILTRO_POSEED." AND
                     a.cod_estado = '1' AND 
-                    a.cod_tercer = '$GLOBALS[tenedo]' ";
+                    a.cod_tercer = '$_REQUEST[tenedo]' ";
 
   $consulta = new Consulta( $query, $this -> conexion );
   $tenedo_a = $consulta -> ret_matriz();
   //-----------------------------------
   if( count( $tenedo_a ) > 0 )
-    $mDATA['tenedo'] = $GLOBALS['tenedo'];
+    $mDATA['tenedo'] = $_REQUEST['tenedo'];
   else
     $mDATA['tenedo'] = '';
   //-----------------------------------
@@ -1093,16 +1093,16 @@ function Buscar()
                   ".BASE_DATOS.".tab_transp_tercer d
             WHERE a.cod_tercer = b.cod_tercer AND
                   a.cod_tercer = d.cod_tercer AND
-                  d.cod_transp = '$GLOBALS[transpor]' AND
+                  d.cod_transp = '$_REQUEST[transpor]' AND
                   a.cod_tercer = c.cod_tercer AND
                   a.cod_estado = '1' AND 
-                  a.cod_tercer = '$GLOBALS[conduc]' ";
+                  a.cod_tercer = '$_REQUEST[conduc]' ";
 
   $consulta = new Consulta( $query, $this -> conexion );
   $conduc_a = $consulta -> ret_matriz();
   //-----------------------------------
   if( count( $conduc_a ) > 0 )
-    $mDATA['conduc'] = $GLOBALS['conduc'];
+    $mDATA['conduc'] = $_REQUEST['conduc'];
   else
     $mDATA['conduc'] = '';
   //-----------------------------------
@@ -1137,9 +1137,9 @@ function Buscar()
 /*
    //Manejo de la Interfaz GPS
     $interf_gps = new Interfaz_GPS();
-    $interf_gps -> Interfaz_GPS_envio($GLOBALS[transpor],BASE_DATOS,$usuario,$this -> conexion);
+    $interf_gps -> Interfaz_GPS_envio($_REQUEST[transpor],BASE_DATOS,$usuario,$this -> conexion);
 
-    if($interf_gps -> cant_interf > 0 && $GLOBALS[transpor])
+    if($interf_gps -> cant_interf > 0 && $_REQUEST[transpor])
     {
      $formulario -> nueva_tabla();
      echo "<hr>";
@@ -1151,7 +1151,7 @@ function Buscar()
      {
 	  if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_PLACAX)
 	  {
-	   if($interf_gps -> getVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor]))
+	   if($interf_gps -> getVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor]))
 		$activo_v = 1;
 	   else
 	    $activo_v = 0;
@@ -1160,9 +1160,9 @@ function Buscar()
 	  }
 	  else if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_IDGPSX)
 	  {
-	   $idgps = $interf_gps -> getIdGPS($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor]);
+	   $idgps = $interf_gps -> getIdGPS($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor]);
 
-	   if($interf_gps -> getVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor]))
+	   if($interf_gps -> getVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor]))
 		$activo_v = 1;
 	   else
 	    $activo_v = 0;
@@ -1174,7 +1174,7 @@ function Buscar()
     }
 */
    $formulario -> nueva_tabla();
-   $formulario -> texto("Observaciones:","textarea","$GLOBALS[obs]",0,50,3,"","$GLOBALS[obs]");
+   $formulario -> texto("Observaciones:","textarea","$_REQUEST[obs]",0,50,3,"","$_REQUEST[obs]");
    $formulario -> nueva_tabla();
    $formulario -> oculto("fStandar\" id=\"fStandarID\"",DIR_APLICA_CENTRAL,0);
    $formulario -> oculto("ActualRow\" id=\"ActualRowID\"","0",0);
@@ -1182,7 +1182,7 @@ function Buscar()
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("opcion",2,0);
-   $formulario -> oculto("cod_servic\" id=\"cod_servicID",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic\" id=\"cod_servicID",$_REQUEST["cod_servic"],0);
    
    //---------------------------------------------------------------------------------
    //echo "<pre>"; print_r( $this -> usuario ); echo "</pre>";
@@ -1210,144 +1210,144 @@ function Buscar()
 
  function Actualizar()
  {
-   $operador_gps = $GLOBALS[operador_gps];
-   $codidgps = $GLOBALS[idgpsx];
+   $operador_gps = $_REQUEST[operador_gps];
+   $codidgps = $_REQUEST[idgpsx];
 
-   if(!$GLOBALS[vigvinv])
-    $GLOBALS[vigvinv] = "NULL";
+   if(!$_REQUEST[vigvinv])
+    $_REQUEST[vigvinv] = "NULL";
    else
-    $GLOBALS[vigvinv] = "'".$GLOBALS[vigvinv]."'";
-   if(!$GLOBALS[revmec])
-    $GLOBALS[revmec] = "NULL";
+    $_REQUEST[vigvinv] = "'".$_REQUEST[vigvinv]."'";
+   if(!$_REQUEST[revmec])
+    $_REQUEST[revmec] = "NULL";
    else
-    $GLOBALS[revmec] = "'".$GLOBALS[revmec]."'";
+    $_REQUEST[revmec] = "'".$_REQUEST[revmec]."'";
 
    $query = "SELECT a.dir_fotfre,a.dir_fotizq,a.dir_fotder,a.dir_fotpos
                 FROM ".BASE_DATOS.".tab_vehicu_vehicu a
-               WHERE a.num_placax = '$GLOBALS[placa]'";
+               WHERE a.num_placax = '$_REQUEST[placa]'";
    $consulta = new Consulta($query, $this -> conexion);
    $matriz = $consulta -> ret_matriz();
 
- if($GLOBALS[f_frente])
+ if($_REQUEST[f_frente])
    {
-    if(move_uploaded_file($GLOBALS[f_frente],URL_VEHICU."foto1_".$GLOBALS[placa].".jpg"))
-     $GLOBALS[f_frente] = "'foto1_".$GLOBALS[placa].".jpg'";
+    if(move_uploaded_file($_REQUEST[f_frente],URL_VEHICU."foto1_".$_REQUEST[placa].".jpg"))
+     $_REQUEST[f_frente] = "'foto1_".$_REQUEST[placa].".jpg'";
     else
-     $GLOBALS[f_frente] = "NULL";
+     $_REQUEST[f_frente] = "NULL";
    }
    else if($matriz[0][0])
-    $GLOBALS[f_frente] = "'".$matriz[0][0]."'";
+    $_REQUEST[f_frente] = "'".$matriz[0][0]."'";
    else
-    $GLOBALS[f_frente] = "NULL";
+    $_REQUEST[f_frente] = "NULL";
 
-   if($GLOBALS[f_izqui])
+   if($_REQUEST[f_izqui])
    {
-    if(move_uploaded_file($GLOBALS[f_izqui],URL_VEHICU."foto2_".$GLOBALS[placa].".jpg"))
-     $GLOBALS[f_izqui] = "'foto2_".$GLOBALS[placa].".jpg'";
+    if(move_uploaded_file($_REQUEST[f_izqui],URL_VEHICU."foto2_".$_REQUEST[placa].".jpg"))
+     $_REQUEST[f_izqui] = "'foto2_".$_REQUEST[placa].".jpg'";
     else
-     $GLOBALS[f_izqui] = "NULL";
+     $_REQUEST[f_izqui] = "NULL";
    }
    else if($matriz[0][1])
-    $GLOBALS[f_izqui] = "'".$matriz[0][1]."'";
+    $_REQUEST[f_izqui] = "'".$matriz[0][1]."'";
    else
-    $GLOBALS[f_izqui] = "NULL";
+    $_REQUEST[f_izqui] = "NULL";
 
-   if($GLOBALS[f_derec])
+   if($_REQUEST[f_derec])
    {
-    if(move_uploaded_file($GLOBALS[f_derec],URL_VEHICU."foto3_".$GLOBALS[placa].".jpg"))
-     $GLOBALS[f_derec] = "'foto3_".$GLOBALS[placa].".jpg'";
+    if(move_uploaded_file($_REQUEST[f_derec],URL_VEHICU."foto3_".$_REQUEST[placa].".jpg"))
+     $_REQUEST[f_derec] = "'foto3_".$_REQUEST[placa].".jpg'";
     else
-     $GLOBALS[f_derec] = "NULL";
+     $_REQUEST[f_derec] = "NULL";
    }
    else if($matriz[0][2])
-    $GLOBALS[f_derec] = "'".$matriz[0][2]."'";
+    $_REQUEST[f_derec] = "'".$matriz[0][2]."'";
    else
-    $GLOBALS[f_derec] = "NULL";
+    $_REQUEST[f_derec] = "NULL";
 
-   if($GLOBALS[f_poster])
+   if($_REQUEST[f_poster])
    {
-    if(move_uploaded_file($GLOBALS[f_poster],URL_VEHICU."foto4_".$GLOBALS[placa].".jpg"))
-     $GLOBALS[f_poster] = "'foto4_".$GLOBALS[placa].".jpg'";
+    if(move_uploaded_file($_REQUEST[f_poster],URL_VEHICU."foto4_".$_REQUEST[placa].".jpg"))
+     $_REQUEST[f_poster] = "'foto4_".$_REQUEST[placa].".jpg'";
     else
-     $GLOBALS[f_poster] = "NULL";
+     $_REQUEST[f_poster] = "NULL";
    }
    else if($matriz[0][3])
-    $GLOBALS[f_poster] = "'".$matriz[0][3]."'";
+    $_REQUEST[f_poster] = "'".$matriz[0][3]."'";
    else
-    $GLOBALS[f_poster] = "NULL";
+    $_REQUEST[f_poster] = "NULL";
 
-  if(!$GLOBALS[califi])
-   $GLOBALS[califi] = "NULL";
+  if(!$_REQUEST[califi])
+   $_REQUEST[califi] = "NULL";
   else
-   $GLOBALS[califi] = "'".$GLOBALS[califi]."'";
+   $_REQUEST[califi] = "'".$_REQUEST[califi]."'";
 
 
   $fec_actual = date("Y-m-d H:i:s");
   //query de insercion de despacho
   $query = "UPDATE ".BASE_DATOS.".tab_vehicu_vehicu
-               SET cod_marcax = '$GLOBALS[marca]',
-                   cod_lineax = '$GLOBALS[linea]',
-                   ano_modelo = '$GLOBALS[modelo]',
-                   ano_repote = '$GLOBALS[repote]',
-                   cod_tipveh = '$GLOBALS[tipveh]',
-                   cod_carroc = '$GLOBALS[carroc]',
-                   cod_colorx = '$GLOBALS[colorx]',
-                   num_motorx = '$GLOBALS[motor]',
-                   num_seriex = '$GLOBALS[serie]',
-                   val_pesove = '$GLOBALS[pesva]',
-                   val_capaci = '$GLOBALS[capaci]',
-                   num_config = '$GLOBALS[config]',
-                   fec_revmec = ".$GLOBALS[revmec].",
-                   nom_vincul = '$GLOBALS[vincula]',
-                   fec_vigvin = ".$GLOBALS[vigvinv].",
-                   num_agases = '$GLOBALS[gases]',
-                   num_poliza = '".$GLOBALS[numsoa]."',
-                   nom_asesoa = '".$GLOBALS[asesoa]."',
-                   fec_vigfin = '".$GLOBALS[vigsoa]."',
-                   reg_nalcar = '$GLOBALS[regnal]',
-                   fec_vigfin = '$GLOBALS[vigsoa]',
-                   num_polirc = '$GLOBALS[polirc]',
-                   cod_aseprc = '$GLOBALS[aseprc]',
-                   fec_venprc = '$GLOBALS[vigprc]',
-                   cod_propie = '$GLOBALS[propie]',
-                   cod_tenedo = '$GLOBALS[tenedo]',
-                   cod_conduc = '$GLOBALS[conduc]',
-                   num_tarpro = '$GLOBALS[tarpro]',
-                   num_tarope = '$GLOBALS[tarope]',
-                   cod_califi = ".$GLOBALS[califi].",
-                   ind_chelis = '$GLOBALS[chelis]',
-                   obs_vehicu = '$GLOBALS[obs]',
-                   dir_fotfre = $GLOBALS[f_frente],
-                   dir_fotizq = $GLOBALS[f_izqui],
-                   dir_fotder = $GLOBALS[f_derec],
-                   dir_fotpos = $GLOBALS[f_poster],
-                   usr_modifi = '$GLOBALS[usuario]',
+               SET cod_marcax = '$_REQUEST[marca]',
+                   cod_lineax = '$_REQUEST[linea]',
+                   ano_modelo = '$_REQUEST[modelo]',
+                   ano_repote = '$_REQUEST[repote]',
+                   cod_tipveh = '$_REQUEST[tipveh]',
+                   cod_carroc = '$_REQUEST[carroc]',
+                   cod_colorx = '$_REQUEST[colorx]',
+                   num_motorx = '$_REQUEST[motor]',
+                   num_seriex = '$_REQUEST[serie]',
+                   val_pesove = '$_REQUEST[pesva]',
+                   val_capaci = '$_REQUEST[capaci]',
+                   num_config = '$_REQUEST[config]',
+                   fec_revmec = ".$_REQUEST[revmec].",
+                   nom_vincul = '$_REQUEST[vincula]',
+                   fec_vigvin = ".$_REQUEST[vigvinv].",
+                   num_agases = '$_REQUEST[gases]',
+                   num_poliza = '".$_REQUEST[numsoa]."',
+                   nom_asesoa = '".$_REQUEST[asesoa]."',
+                   fec_vigfin = '".$_REQUEST[vigsoa]."',
+                   reg_nalcar = '$_REQUEST[regnal]',
+                   fec_vigfin = '$_REQUEST[vigsoa]',
+                   num_polirc = '$_REQUEST[polirc]',
+                   cod_aseprc = '$_REQUEST[aseprc]',
+                   fec_venprc = '$_REQUEST[vigprc]',
+                   cod_propie = '$_REQUEST[propie]',
+                   cod_tenedo = '$_REQUEST[tenedo]',
+                   cod_conduc = '$_REQUEST[conduc]',
+                   num_tarpro = '$_REQUEST[tarpro]',
+                   num_tarope = '$_REQUEST[tarope]',
+                   cod_califi = ".$_REQUEST[califi].",
+                   ind_chelis = '$_REQUEST[chelis]',
+                   obs_vehicu = '$_REQUEST[obs]',
+                   dir_fotfre = $_REQUEST[f_frente],
+                   dir_fotizq = $_REQUEST[f_izqui],
+                   dir_fotder = $_REQUEST[f_derec],
+                   dir_fotpos = $_REQUEST[f_poster],
+                   usr_modifi = '$_REQUEST[usuario]',
                    fec_modifi = '$fec_actual'
-             WHERE num_placax = '$GLOBALS[placa]'";
+             WHERE num_placax = '$_REQUEST[placa]'";
   $insercion = new Consulta($query, $this -> conexion,"BR");
 
     // trae la ultima novedad de acuerdo al vehiculo
    $query = "SELECT Max(a.num_noveda) AS maximo
                     FROM ".BASE_DATOS.".tab_trayle_placas a
-                    WHERE a.num_placax = '$GLOBALS[placa]'";
+                    WHERE a.num_placax = '$_REQUEST[placa]'";
         //obtiene el consecutivo
         $consec = new Consulta($query, $this -> conexion);
         $ultimo = $consec -> ret_matriz();
         $ultimo_consec = $ultimo[0][0];
         $nuevo_consec = $ultimo_consec+1;
 
-    if($GLOBALS[trayler])
+    if($_REQUEST[trayler])
     {
                   //Query de insercion
            $query = "INSERT ".BASE_DATOS.".tab_trayle_placas
-                               VALUES ('$GLOBALS[placa]','$GLOBALS[trayler]','$nuevo_consec','$fec_actual','S')";
+                               VALUES ('$_REQUEST[placa]','$_REQUEST[trayler]','$nuevo_consec','$fec_actual','S')";
                   $insercion = new Consulta($query, $this -> conexion,"R");
     }
     else
     {
       $query = "SELECT Max(a.num_noveda) AS maximo
                   FROM ".BASE_DATOS.".tab_trayle_placas a
-                 WHERE a.num_placax = '$GLOBALS[placa]'";
+                 WHERE a.num_placax = '$_REQUEST[placa]'";
       //obtiene el consecutivo
       $consec = new Consulta($query, $this -> conexion);
       $ultimo = $consec -> ret_matriz();
@@ -1356,7 +1356,7 @@ function Buscar()
 
       $query = "UPDATE ".BASE_DATOS.".tab_trayle_placas
                SET ind_actual = 'S'
-             WHERE num_placax = '$GLOBALS[placa]' AND
+             WHERE num_placax = '$_REQUEST[placa]' AND
                    num_noveda = '".$nuevo_consec."'";
       $insercion = new Consulta($query, $this -> conexion,"R");
     }//fin else
@@ -1381,7 +1381,7 @@ function Buscar()
                 FROM  ".BASE_DATOS.".tab_transp_vehicu a JOIN
                       ".BASE_DATOS.".tab_tercer_emptra b ON a.cod_transp = b.cod_tercer JOIN 
                       ".BASE_DATOS.".tab_tercer_tercer c ON a.cod_transp = c.cod_tercer
-               WHERE  a.num_placax = '" . $GLOBALS['placa'] . "'";
+               WHERE  a.num_placax = '" . $_REQUEST['placa'] . "'";
       $consulta = new Consulta( $SQL, $this -> conexion );
       $trareg = $consulta -> ret_matriz();  // Transportadora Regsitrada para la Placa
 
@@ -1412,7 +1412,7 @@ function Buscar()
     //Manejo de Interfaz GPS
 /*
   $interf_gps = new Interfaz_GPS();
-  $interf_gps -> Interfaz_GPS_envio($GLOBALS[transpor],BASE_DATOS,$GLOBALS[uuario],$this -> conexion);
+  $interf_gps -> Interfaz_GPS_envio($_REQUEST[transpor],BASE_DATOS,$_REQUEST[uuario],$this -> conexion);
 
   if($operador_gps)
   {
@@ -1420,7 +1420,7 @@ function Buscar()
 	{
 	  $indact = 0;
 
-	  if($interf_gps -> getVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor]))
+	  if($interf_gps -> getVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor]))
 	  {
 	    for($j = 0; $j < $interf_gps -> cant_interf; $j++)
 	    {
@@ -1434,16 +1434,16 @@ function Buscar()
 	    {
 	     if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_PLACAX)
 	     {
-	    	if($interf_gps -> EstadoVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor],"0","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA.""))
+	    	if($interf_gps -> EstadoVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor],"0","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA.""))
 	      	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Desactivo el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0]." Satisfactoriamente.</b>";
 	    	else
 	    	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"><b>Existio un Error al Desactivar el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0].".</b>";
 	     }
 	     else if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_IDGPSX)
 	     {
-		$idgps = $interf_gps -> getIdGPS($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor]);
+		$idgps = $interf_gps -> getIdGPS($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor]);
 
-		if($interf_gps -> EstadoVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor],"0","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA."",$idgps))
+		if($interf_gps -> EstadoVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor],"0","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA."",$idgps))
 	      	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Desactivo el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0]." Satisfactoriamente.</b>";
 	    	else
 	    	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"><b>Existio un Error al Desactivar el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0].".</b>";
@@ -1464,14 +1464,14 @@ function Buscar()
 	    {
 	     if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_PLACAX)
 	     {
-	    	if($interf_gps -> EstadoVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor],"1","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA.""))
+	    	if($interf_gps -> EstadoVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor],"1","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA.""))
 	      	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Activo el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0]." Satisfactoriamente.</b>";
 	    	else
 	    	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"><b>Existio un Error al Activar el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0].".</b>";
 	     }
 	     else if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_IDGPSX)
 	     {
-		if($interf_gps -> EstadoVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor],"1","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA."",$codidgps[$i]))
+		if($interf_gps -> EstadoVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor],"1","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA."",$codidgps[$i]))
 	      	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Activo el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0]." Satisfactoriamente.</b>";
 	    	else
 	    	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"><b>Existio un Error al Activar el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0].".</b>";
@@ -1484,20 +1484,20 @@ function Buscar()
   {
 	for($i = 0; $i < $interf_gps -> cant_interf; $i++)
 	{
-	  if($interf_gps -> getVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor]))
+	  if($interf_gps -> getVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor]))
 	  {
 	   if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_PLACAX)
 	   {
-	    if($interf_gps -> EstadoVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor],"0","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA.""))
+	    if($interf_gps -> EstadoVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor],"0","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA.""))
 	      $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Desactivo el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0]." Satisfactoriamente.</b>";
 	    else
 	      $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"><b>Existio un Error al Desactivar el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0].".</b>";
 	   }
 	   else if($interf_gps -> ind_modind[$i][0] == CONS_MODIND_IDGPSX)
 	   {
-	    $idgps = $interf_gps -> getIdGPS($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor]);
+	    $idgps = $interf_gps -> getIdGPS($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor]);
 
-	    if($interf_gps -> EstadoVehiculo($GLOBALS[placa],$interf_gps -> cod_operad[$i][0],$GLOBALS[transpor],"0","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA."",$idgps))
+	    if($interf_gps -> EstadoVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$_REQUEST[transpor],"0","".CONS_APLICA_BASICO."","".CONS_SERVID_INDICA."",$idgps))
 	      $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Desactivo el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0]." Satisfactoriamente.</b>";
 	    else
 	      $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"><b>Existio un Error al Desactivar el Veh&iacute;culo con el Operador GPS ".$interf_gps -> nom_operad[$i][0].".</b>";
@@ -1508,9 +1508,9 @@ function Buscar()
 */
  if($consulta = new Consulta ("COMMIT", $this -> conexion))
   {
-   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Vehiculo</a></b>";
+   $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Vehiculo</a></b>";
 
-   $mensaje = "El Vehiculo <b>".$GLOBALS[placa]."</b> se Actualizo con Exito<br>".$mensaje_gps."<br>".$link;
+   $mensaje = "El Vehiculo <b>".$_REQUEST[placa]."</b> se Actualizo con Exito<br>".$mensaje_gps."<br>".$link;
    $mens = new mensajes();
    $mens -> correcto("ACTUALIZAR VEHICULO",$mensaje);
   }

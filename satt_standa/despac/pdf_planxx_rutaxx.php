@@ -17,7 +17,7 @@ class AjaxPDF
     include( "../lib/general/constantes.inc" );
     $this -> CENTRAL = $_REQUEST['standa'];
     $this -> BASE_DATOS = $_REQUEST['aplica'];
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION['USUARIO'], $_SESSION['CLAVE'], $this -> BASE_DATOS );
+    $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION['USUARIO'], $_SESSION['CLAVE'], $this -> BASE_DATOS );
     $this -> GeneratePDF();
   }
 

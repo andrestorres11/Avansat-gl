@@ -17,7 +17,7 @@ class Ins_extenc_extenc {
         $this->usuario = $us;
         $this->cod_aplica = $ca;
         self::$cFunciones = new extenc($co, $us, $ca);
-        switch ($GLOBALS[option]) {
+        switch ($_REQUEST[option]) {
 
           case 'getExcelLlamadas':
               $this->getExcelLlamadas();

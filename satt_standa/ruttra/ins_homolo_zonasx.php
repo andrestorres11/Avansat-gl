@@ -16,11 +16,11 @@ class Proc_rutas
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
   {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Resultado();
@@ -53,7 +53,7 @@ class Proc_rutas
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> boton("Buscar","button\" onClick=\"form_ins.submit() ",0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
@@ -76,7 +76,7 @@ class Proc_rutas
                    f.ind_estado = '1' AND
                    f.cod_operad = g.cod_operad AND
                    f.cod_transp = g.cod_transp AND
-                   b.nom_rutasx LIKE '%$GLOBALS[ruta]%'
+                   b.nom_rutasx LIKE '%$_REQUEST[ruta]%'
                 ";
 
   if($datos_usuario["cod_perfil"] == "")
@@ -105,7 +105,7 @@ class Proc_rutas
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
    $formulario = new Formulario ("index.php","post","LISTADO DE RUTAS","form_item");
    $formulario -> nueva_tabla();
@@ -133,7 +133,7 @@ class Proc_rutas
      $consulta = new Consulta($query, $this -> conexion);
      $canpcpru = $consulta -> ret_matriz();
 
-     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
      $ciudad_o = $objciud -> getSeleccCiudad($matriz[$i][2]);
      $ciudad_d = $objciud -> getSeleccCiudad($matriz[$i][3]);
@@ -153,7 +153,7 @@ class Proc_rutas
     $formulario -> nueva_tabla();
     $formulario -> linea("1.) No Existen Operadores GPS Activos con la Interfaz.",1,"i");
     $formulario -> linea("2.) No Existen Listados de Zonas Correspondientes Para La(s) Transportadora(s).",1,"i");
-    $formulario -> linea("3.) La Relaci&oacute;n de B&uacute;squeda Para \"".$GLOBALS[ruta]."\" no Coincide en el Sistema.",1,"i");
+    $formulario -> linea("3.) La Relaci&oacute;n de B&uacute;squeda Para \"".$_REQUEST[ruta]."\" no Coincide en el Sistema.",1,"i");
    }
 
    $formulario -> nueva_tabla();
@@ -163,7 +163,7 @@ class Proc_rutas
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -178,7 +178,7 @@ class Proc_rutas
    $query = "SELECT a.cod_rutasx,a.nom_rutasx,a.cod_ciuori,a.cod_ciudes,
                     a.cod_ciuori,a.cod_ciudes
                FROM ".BASE_DATOS.".tab_genera_rutasx a
-              WHERE a.cod_rutasx = '".$GLOBALS[ruta]."'
+              WHERE a.cod_rutasx = '".$_REQUEST[ruta]."'
                     ORDER BY 2";
 
    $consec = new Consulta($query, $this -> conexion);
@@ -189,7 +189,7 @@ class Proc_rutas
                    ".BASE_DATOS.".tab_genera_ruttra b,
                    ".BASE_DATOS.".tab_interf_gps c
              WHERE a.cod_tercer = b.cod_transp AND
-                   b.cod_rutasx = ".$GLOBALS[ruta]." AND
+                   b.cod_rutasx = ".$_REQUEST[ruta]." AND
                    a.cod_tercer = c.cod_transp AND
                    c.ind_estado = '1'
            ";
@@ -220,14 +220,14 @@ class Proc_rutas
   $consec = new Consulta($query, $this -> conexion);
   $transp = $consec -> ret_matriz();
 
-  if($GLOBALS[transp] && $GLOBALS[transp] != "0")
+  if($_REQUEST[transp] && $_REQUEST[transp] != "0")
   {
    $query = "SELECT a.cod_tercer,a.abr_tercer
                FROM ".BASE_DATOS.".tab_tercer_tercer a,
                     ".BASE_DATOS.".tab_genera_ruttra b
               WHERE a.cod_tercer = b.cod_transp AND
-                    b.cod_rutasx = ".$GLOBALS[ruta]." AND
-                    b.cod_transp = '".$GLOBALS[transp]."'
+                    b.cod_rutasx = ".$_REQUEST[ruta]." AND
+                    b.cod_transp = '".$_REQUEST[transp]."'
                     GROUP BY 1
             ";
 
@@ -239,7 +239,7 @@ class Proc_rutas
   else
    $transp = array_merge($inicio,$transp);
 
-  $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+  $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
   $ciudad_o = $objciud -> getSeleccCiudad($matriz[0][2]);
   $ciudad_d = $objciud -> getSeleccCiudad($matriz[0][3]);
 
@@ -264,7 +264,7 @@ class Proc_rutas
 
    $indbot = 1;
 
-   if($GLOBALS[transp] && $GLOBALS[transp] != "0")
+   if($_REQUEST[transp] && $_REQUEST[transp] != "0")
    {
 
     //trae los puestos de control de la ruta
@@ -275,8 +275,8 @@ class Proc_rutas
                WHERE a.cod_contro = c.cod_contro AND
                      a.cod_rutasx = b.cod_rutasx AND
                      c.cod_contro = b.cod_contro AND
-                     a.cod_rutasx = '".$GLOBALS[ruta]."' AND
-                     a.cod_transp = '".$GLOBALS[transp]."'
+                     a.cod_rutasx = '".$_REQUEST[ruta]."' AND
+                     a.cod_transp = '".$_REQUEST[transp]."'
                      ORDER BY 3";
 
     $consec = new Consulta($query, $this -> conexion);
@@ -288,7 +288,7 @@ class Proc_rutas
                WHERE a.cod_tercer = b.cod_transp AND
                      b.ind_operad = '0' AND
 		     		 b.ind_estado = '1' AND
-                     b.cod_transp = '".$GLOBALS[transp]."'
+                     b.cod_transp = '".$_REQUEST[transp]."'
              ";
 
     $consec = new Consulta($query, $this -> conexion);
@@ -298,7 +298,7 @@ class Proc_rutas
     {
     //Manejo de la Interfaz GPS
     $interf_gps = new Interfaz_GPS();
-    $interf_gps -> Interfaz_GPS_envio($GLOBALS[transp],BASE_DATOS,$usuario,$this -> conexion);
+    $interf_gps -> Interfaz_GPS_envio($_REQUEST[transp],BASE_DATOS,$usuario,$this -> conexion);
 
     if($interf_gps -> cant_interf > 0)
     {
@@ -306,7 +306,7 @@ class Proc_rutas
         for($i = 0; $i < $interf_gps -> cant_interf; $i++)
         {
           if($interf_gps -> SeleccionInterfaz($interf_gps -> cod_operad[$i][0]));
-          $zonaxxl = $interf_gps -> getZonasxx($interf_gps -> cod_operad[$i][0],$GLOBALS[transp]);
+          $zonaxxl = $interf_gps -> getZonasxx($interf_gps -> cod_operad[$i][0],$_REQUEST[transp]);
 
           if($zonaxxl)
           {
@@ -322,7 +322,7 @@ class Proc_rutas
 
             for($j = 0; $j < sizeof($matriz2); $j++)
             {
-             $zona_homolo = $interf_gps -> getHomozonasxx($interf_gps -> cod_operad[$i][0],$GLOBALS[transp],$matriz2[$j][0]);
+             $zona_homolo = $interf_gps -> getHomozonasxx($interf_gps -> cod_operad[$i][0],$_REQUEST[transp],$matriz2[$j][0]);
 
              if($zona_homolo)
               $zonapcon = array_merge($zona_homolo,$inicio,$zonaxxl);
@@ -372,12 +372,12 @@ class Proc_rutas
    $formulario -> nueva_tabla();
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("maximo","".sizeof($matriz2)."",0);
-   $formulario -> oculto("opcion",$GLOBALS[opcion],0);
-   $formulario -> oculto("ruta",$GLOBALS[ruta],0);
+   $formulario -> oculto("opcion",$_REQUEST[opcion],0);
+   $formulario -> oculto("ruta",$_REQUEST[ruta],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
-   if($GLOBALS[transp] && $GLOBALS[transp] != "0" && $indbot)
+   if($_REQUEST[transp] && $_REQUEST[transp] != "0" && $indbot)
    {
     $formulario -> boton("Aceptar","button\" onClick=\"if(confirm('Desea Actualizar la Homologacion de los Puestos de Control')){form_ins.opcion.value = 3; form_ins.submit();}",0);
     $formulario -> boton("Restaurar","reset",1);
@@ -389,15 +389,15 @@ class Proc_rutas
  {
   $fec_actual = date("Y-m-d H:i:s");
 
-  $zona = array_merge($GLOBALS[zona]);
-  $operador = array_merge($GLOBALS[operador_gps]);
-  $nom_operador = array_merge($GLOBALS[nom_operador_gps]);
-  $contro_cod = array_merge($GLOBALS[contro_cod]);
-  $contro_nom = array_merge($GLOBALS[contro_nom]);
+  $zona = array_merge($_REQUEST[zona]);
+  $operador = array_merge($_REQUEST[operador_gps]);
+  $nom_operador = array_merge($_REQUEST[nom_operador_gps]);
+  $contro_cod = array_merge($_REQUEST[contro_cod]);
+  $contro_nom = array_merge($_REQUEST[contro_nom]);
 
   $query = "SELECT a.abr_tercer
               FROM ".BASE_DATOS.".tab_tercer_tercer a
-             WHERE a.cod_tercer = '".$GLOBALS[transp]."'
+             WHERE a.cod_tercer = '".$_REQUEST[transp]."'
            ";
 
   $consec = new Consulta($query, $this -> conexion);
@@ -407,7 +407,7 @@ class Proc_rutas
 
   //Manejo de la Interfaz GPS
     /*$interf_gps = new Interfaz_GPS();
-    $interf_gps -> Interfaz_GPS_conexion($this -> conexion,BASE_DATOS,$GLOBALS[usuario]);
+    $interf_gps -> Interfaz_GPS_conexion($this -> conexion,BASE_DATOS,$_REQUEST[usuario]);
 
     if($operador)
     {
@@ -415,7 +415,7 @@ class Proc_rutas
             {
          if($contro_cod[$i] != "0")
          {
-          if($interf_gps -> actHomoloZonasxx($operador[$i],$GLOBALS[transp],$zona[$i],$contro_cod[$i]))
+          if($interf_gps -> actHomoloZonasxx($operador[$i],$_REQUEST[transp],$zona[$i],$contro_cod[$i]))
           {
             $mensaje_gps .= "<br><img src=\"../sadc_standa/imagenes/ok.gif\">El Puesto de Control <b>".$contro_nom[$i]."</b> Se Homologo en Interfaz GPS :: <b>".$nom_operador[$i]."</b> :: Para :: <b>".$transpor[0][0]."</b> ::";
           }

@@ -19,11 +19,11 @@ class Proc_contro
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Resultado();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
           case "1":
           $this -> Resultado();
@@ -94,7 +94,7 @@ class Proc_contro
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> nueva_tabla();
    $formulario -> boton("Aceptar","button\" onClick=\"configuracion(form_item)",1);
    $formulario -> cerrar();
@@ -106,14 +106,14 @@ class Proc_contro
    $datos_usuario = $this -> usuario -> retornar();
    $usuario=$datos_usuario["cod_usuari"];
 
-   $diftim = $GLOBALS[diftim];
-   $transp = $GLOBALS[transp];
-   $transpvef = $GLOBALS[transpvef];
-   $estadovef = $GLOBALS[estadovef];
+   $diftim = $_REQUEST[diftim];
+   $transp = $_REQUEST[transp];
+   $transpvef = $_REQUEST[transpvef];
+   $estadovef = $_REQUEST[estadovef];
 
    $consulta = new Consulta ("SELECT NOW()", $this -> conexion,"BR");
 
-   for($i = 0; $i < $GLOBALS[maximo]; $i++)
+   for($i = 0; $i < $_REQUEST[maximo]; $i++)
    {
    	if($transp[$i])
    	{

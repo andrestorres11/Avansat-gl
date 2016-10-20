@@ -16,11 +16,11 @@ class Proc_contro
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Formulario();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
           case "1":
           $this -> Formulario();
@@ -96,7 +96,7 @@ class Proc_contro
     $formulario -> nueva_tabla();
     $formulario -> oculto("opcion",2,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> boton("Insertar","button\" onClick=\"operador(form_item)",1);
     $formulario -> cerrar();
    }
@@ -124,8 +124,8 @@ class Proc_contro
   $query = "INSERT INTO ".BD_STANDA.".tab_mensaj_operad
   						(cod_operad,cod_transp,nom_bdsata,nom_operad,
   						 dns_operad,ind_emailx,usr_creaci,fec_creaci)
-  				 VALUES (".$consecut[0][0].",'".$GLOBALS[transp]."','".BASE_DATOS."',
-  				 		 '".$GLOBALS[nombre]."','".$GLOBALS[dns]."','".$GLOBALS[indmai]."',
+  				 VALUES (".$consecut[0][0].",'".$_REQUEST[transp]."','".BASE_DATOS."',
+  				 		 '".$_REQUEST[nombre]."','".$_REQUEST[dns]."','".$_REQUEST[indmai]."',
   				 		 '".$usuario."',NOW())
   		";
 

@@ -21,7 +21,7 @@ if ( file_exists( "../../".DIR_APLICA_CENTRAL."/wap/cache.inc" ) )
 
 if( !isset( $servicio ) )
 {
-  $link = new Conexion( "bd10.intrared.net:3306", USUARIO, CLAVE, BASE_DATOS );
+  $link = new Conexion( HOST, USUARIO, CLAVE, BASE_DATOS );
 }
 
 function menu( $usuario, $fi1, $fi2, $fi3 )

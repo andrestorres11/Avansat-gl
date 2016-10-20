@@ -17,11 +17,11 @@ class Proc_perfil
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
      $this -> Listado();
   else
   {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Formulario();
@@ -60,15 +60,15 @@ class Proc_perfil
 
    for($i = 0; $i < sizeof($matriz); $i++)
    {
-   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&opcion=1&perfil=".$matriz[$i][0]." \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&opcion=1&perfil=".$matriz[$i][0]." \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    	$formulario -> linea($matriz[$i][0],0,"i");
    	$formulario -> linea($matriz[$i][1],1,"i");
    }
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("opcion",$GLOBALS[opcion], 0);
-   $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+   $formulario -> oculto("opcion",$_REQUEST[opcion], 0);
+   $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0);
    $formulario -> oculto("window","central", 0);
    $formulario -> cerrar();
  }
@@ -81,7 +81,7 @@ class Proc_perfil
 	       	   FROM ".CENTRAL.".tab_genera_filtro a,
 	       	   		".BASE_DATOS.".tab_aplica_filtro_perfil b
 	      	  WHERE a.cod_filtro = b.cod_filtro AND
-	      	  		b.cod_perfil = ".$GLOBALS[perfil]."
+	      	  		b.cod_perfil = ".$_REQUEST[perfil]."
 	      	  		ORDER BY a.cod_filtro
 	    	";
 
@@ -90,7 +90,7 @@ class Proc_perfil
 
    $query = "SELECT a.cod_perfil,a.nom_perfil
 	       	   FROM ".BASE_DATOS.".tab_genera_perfil a
-	      	  WHERE a.cod_perfil = ".$GLOBALS[perfil]."
+	      	  WHERE a.cod_perfil = ".$_REQUEST[perfil]."
 	    	";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -103,7 +103,7 @@ class Proc_perfil
 		    		a.cod_servic = b.cod_serhij
               WHERE b.cod_serhij IS NULL AND
               		a.cod_servic = c.cod_servic AND
-              		c.cod_perfil = ".$GLOBALS[perfil]."
+              		c.cod_perfil = ".$_REQUEST[perfil]."
                     GROUP BY 1 ORDER BY 1";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -117,7 +117,7 @@ class Proc_perfil
 
    $formulario -> nueva_tabla();
    $formulario -> linea("C&oacute;digo",0,"t");
-   $formulario -> linea($GLOBALS[perfil],1,"i");
+   $formulario -> linea($_REQUEST[perfil],1,"i");
    $formulario -> linea("Nombre",0,"t");
    $formulario -> linea($perfil[0][1],1,"i");
 
@@ -163,7 +163,7 @@ class Proc_perfil
 			         ".BASE_DATOS.".tab_perfil_servic c
 		   	   WHERE a.cod_servic = b.cod_serhij AND
 			 		 a.cod_servic = c.cod_servic AND
-			 		 c.cod_perfil = ".$GLOBALS[perfil]." AND
+			 		 c.cod_perfil = ".$_REQUEST[perfil]." AND
 			 		 b.cod_serpad = '".$servpadr[$i][0]."'
 		 ";
 
@@ -185,7 +185,7 @@ class Proc_perfil
                       ".BASE_DATOS.".tab_perfil_servic c
                 WHERE a.cod_servic = b.cod_serhij AND
 			  		  a.cod_servic = c.cod_servic AND
-			  		  c.cod_perfil = ".$GLOBALS[perfil]." AND
+			  		  c.cod_perfil = ".$_REQUEST[perfil]." AND
 			  		  b.cod_serpad = ".$servhijo[$j][0] ;
 
      $consulta = new Consulta($query, $this -> conexion);

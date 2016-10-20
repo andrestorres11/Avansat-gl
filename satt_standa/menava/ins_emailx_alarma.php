@@ -10,10 +10,10 @@ class Proc_contro{
     $this -> principal();
   }
   function principal(){
-    if(!isset($GLOBALS[opcion])){
+    if(!isset($_REQUEST[opcion])){
       $this -> Formulario();
     }else{
-      switch($GLOBALS[opcion]){
+      switch($_REQUEST[opcion]){
         case "1":
           $this -> Formulario();
         break;
@@ -77,16 +77,16 @@ class Proc_contro{
         $indfilt = 1;
       }
     }
-    if(isset($GLOBALS[transp])){
-        $query2 = $query.((int)$GLOBALS[transp]!=999?"  AND a.cod_transp = '".$GLOBALS[transp]."' ":'');
-        echo "<input type='hidden' name='htransp' id='htranspID' value='".$GLOBALS[transp]."'>";
+    if(isset($_REQUEST[transp])){
+        $query2 = $query.((int)$_REQUEST[transp]!=999?"  AND a.cod_transp = '".$_REQUEST[transp]."' ":'');
+        echo "<input type='hidden' name='htransp' id='htranspID' value='".$_REQUEST[transp]."'>";
     }
     $query  .= " ORDER BY 2";
     $query2 .= " ORDER BY 2";
     $consulta  = new Consulta($query, $this -> conexion);
     $tranpsact = $consulta -> ret_matriz();
     
-    if(isset($GLOBALS[transp])){
+    if(isset($_REQUEST[transp])){
       $consulta  = new Consulta($query2, $this -> conexion);
       $activado = $consulta -> ret_matriz();
     }
@@ -107,13 +107,13 @@ class Proc_contro{
       $formulario -> nueva_tabla();
       echo "<input type='hidden' id='opcionID' name='opcion' value=1 />";
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+      $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
       $formulario -> boton("Consultar","button\" onClick=\"consulope(form_item)",1);
       echo "<input type='hidden' name='dir_aplica_central' id='dir_aplica_centralID' value='".DIR_APLICA_CENTRAL."'>"; 
       
       $array_operadores = array();
       
-      if(isset($GLOBALS[transp]) && $activado)
+      if(isset($_REQUEST[transp]) && $activado)
       for($l = 0; $l < sizeof($activado); $l++){
         $formulario -> oculto("listransp[$l]",$activado[$l][0],0);
         
@@ -275,12 +275,12 @@ class Proc_contro{
     
       
     
-      if(isset($GLOBALS[transp]) && $activado && in_array(1, $array_operadores)){
+      if(isset($_REQUEST[transp]) && $activado && in_array(1, $array_operadores)){
          
           $formulario -> oculto("cont",$a,0);
           $formulario -> oculto("totala",sizeof($alarmas),0);
           $formulario -> oculto("window","central",0);
-          $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+          $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
           
 
           
@@ -342,7 +342,7 @@ class Proc_contro{
 
     $BASE = $_SESSION[BASE_DATOS];
     $BD_STANDA = $_SESSION[BD_STANDA];
-    $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+    $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
     $datos_usuario = $_SESSION[USUARIO];
     $usuario=$datos_usuario["cod_usuari"];
     $query = "SELECT MAX(cod_operad)
@@ -354,7 +354,7 @@ class Proc_contro{
     
     $query = "INSERT INTO ".$BD_STANDA.".tab_mensaj_operad
                 (cod_operad,cod_transp,nom_bdsata,nom_operad,dns_operad,ind_emailx,usr_creaci,fec_creaci)
-              VALUES (".$consecut[0][0].",'".$GLOBALS[transp]."','".$BASE."','".$GLOBALS[nombre]."','".$GLOBALS[dns]."','".$GLOBALS[indmai]."','".$usuario."',NOW())";
+              VALUES (".$consecut[0][0].",'".$_REQUEST[transp]."','".$BASE."','".$_REQUEST[nombre]."','".$_REQUEST[dns]."','".$_REQUEST[indmai]."','".$usuario."',NOW())";
     $consulta = new Consulta($query, $this -> conexion,"BR");
    
     if($consulta = new Consulta ("COMMIT", $this -> conexion)){
@@ -369,30 +369,30 @@ class Proc_contro{
       include_once( "../lib/mensajes_lib.inc" );
       $BASE = $_SESSION[BASE_DATOS];
       $BD_STANDA = $_SESSION[BD_STANDA];
-      $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+      $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
       $datos_usuario = $_SESSION[USUARIO];
       $usuario=$datos_usuario["cod_usuari"];
       
       $query = "SELECT 1 
                 FROM ".$BD_STANDA.".tab_mensaj_dispos 
-                WHERE cod_transp='".$GLOBALS[transp]."' 
+                WHERE cod_transp='".$_REQUEST[transp]."' 
                 AND nom_bdsata='".$BASE."' 
-                AND dir_dispos='".$GLOBALS[numdis]."' 
-                AND cod_operad='".$GLOBALS[operador]."'";
+                AND dir_dispos='".$_REQUEST[numdis]."' 
+                AND cod_operad='".$_REQUEST[operador]."'";
       $consulta = new Consulta($query, $this -> conexion); 
       $dispo = $consulta -> ret_matriz();
       if(count($dispo)==0){
         $query = "INSERT INTO ".$BD_STANDA.".tab_mensaj_dispos
                      (cod_transp,nom_bdsata,dir_dispos,cod_operad,ind_estado)
-                  VALUES ('".$GLOBALS[transp]."','".$BASE."','".$GLOBALS[numdis]."',".$GLOBALS[operador].",'1')";
+                  VALUES ('".$_REQUEST[transp]."','".$BASE."','".$_REQUEST[numdis]."',".$_REQUEST[operador].",'1')";
         $consulta = new Consulta($query, $this -> conexion,"BR");  
         if($consulta = new Consulta ("COMMIT", $this -> conexion)){
-          $mensaje =  "Se realizo la asignacion del dispositvo para la transportadora <b>".$GLOBALS[transp]."</b> con Exito";
+          $mensaje =  "Se realizo la asignacion del dispositvo para la transportadora <b>".$_REQUEST[transp]."</b> con Exito";
           $mens = new mensajes();
           $mens -> correcto("ASIGNAR DISPOSITIVO",$mensaje);
         }
       }else{
-          $mensaje =  "El dispositvo ya Existe para la transportadora <b>".$GLOBALS[transp]."</b>";
+          $mensaje =  "El dispositvo ya Existe para la transportadora <b>".$_REQUEST[transp]."</b>";
           $mens = new mensajes();
           $mens -> correcto("ASIGNAR DISPOSITIVO",$mensaje);
       }
@@ -416,10 +416,10 @@ class Proc_contro{
      include_once( "../lib/mensajes_lib.inc" );
      $BASE = $_SESSION[BASE_DATOS];
      $BD_STANDA = $_SESSION[BD_STANDA];
-     $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+     $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
      $query = "SELECT a.cod_operad,CONCAT(a.nom_operad,' (@',a.dns_operad,')') AS dns
     		      FROM   ".$BD_STANDA.".tab_mensaj_operad a
-    		      WHERE ((a.cod_transp = '".$GLOBALS[transp]."' AND
+    		      WHERE ((a.cod_transp = '".$_REQUEST[transp]."' AND
     		   		       a.nom_bdsata = '".$BASE."') OR
     		   		      (a.cod_transp IS NULL AND a.nom_bdsata IS NULL))
               ORDER BY 2";
@@ -435,9 +435,9 @@ class Proc_contro{
       echo "</select>";
   }
   function Eliminar(){
-    $novala = $GLOBALS[novala];
-    $codigo = $GLOBALS[codigo];
-    $listransp = $GLOBALS[listransp];
+    $novala = $_REQUEST[novala];
+    $codigo = $_REQUEST[codigo];
+    $listransp = $_REQUEST[listransp];
     
     $query = "SELECT * 
               FROM ".BD_STANDA.".tab_mensaj_dispos 
@@ -450,7 +450,7 @@ class Proc_contro{
     $m=0;
     for($j = 0; $j < sizeof($alardisp); $j++){
       $control = false;
-      for($i = 0; $i < $GLOBALS[cont]; $i++){
+      for($i = 0; $i < $_REQUEST[cont]; $i++){
         if($novala[$i]){
           $novala_m = explode("|",$novala[$i]);
           if( strcmp($alardisp[$j][dir_dispos], $novala_m[0])==0  && (int)$alardisp[$j][cod_operad] == (int)$novala_m[1]){
@@ -486,17 +486,17 @@ class Proc_contro{
   function Insertar(){
     $datos_usuario = $this -> usuario -> retornar();
     $usuario = $datos_usuario["cod_usuari"];
-    $novala  = $GLOBALS[novala];
-    $novala2 = $GLOBALS[novala2];
-    $estado  = $GLOBALS[estado]; 
-    $codigo  = $GLOBALS[codigo];
-    $listransp = $GLOBALS[listransp];
+    $novala  = $_REQUEST[novala];
+    $novala2 = $_REQUEST[novala2];
+    $estado  = $_REQUEST[estado]; 
+    $codigo  = $_REQUEST[codigo];
+    $listransp = $_REQUEST[listransp];
     
     /***** Funcion Para Eliminar Dispositivos ***********/
      $this->Eliminar($GLOBALS);
     /***************/ 
    
-    for($i = 0; $i < $GLOBALS[cont]; $i++){
+    for($i = 0; $i < $_REQUEST[cont]; $i++){
       if($novala[$i]){
         $novala_m = explode("|",$novala[$i]);
         $novala_x = explode("|",$novala2[$i]);
@@ -512,7 +512,7 @@ class Proc_contro{
 
         $consulta = new Consulta($query, $this -> conexion,"R");
       }
-      for($j = 0; $j < $GLOBALS[totala]; $j++){
+      for($j = 0; $j < $_REQUEST[totala]; $j++){
         if($codigo[$i][$j]){
           $codigo_m = explode("|",$codigo[$i][$j]);
           $query = "SELECT 1 
@@ -534,7 +534,7 @@ class Proc_contro{
       }
     }
     if($consulta = new Consulta ("COMMIT", $this -> conexion)){
-      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Configurar Alarmas Otra Transportadora</a></b>";
+      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Configurar Alarmas Otra Transportadora</a></b>";
       $mensaje =  "Se Actualizo la Informaci&oacute;n de las Alarmas Exitosamente. ".$link_a;
       $mens = new mensajes();
       $mens -> correcto("ALARMAS",$mensaje);

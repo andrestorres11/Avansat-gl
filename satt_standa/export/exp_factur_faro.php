@@ -7,7 +7,7 @@ include ("../lib/general/constantes.inc");
 include ("../lib/general/conexion_lib.inc");
 include ("../lib/general/form_lib.inc");
 include ("../lib/general/paginador_lib.inc");
-include("../../".$GLOBALS['url']."/constantes.inc");
+include("../../".$_REQUEST['url']."/constantes.inc");
 
 class Proc_Factur_Faro
 {
@@ -34,7 +34,7 @@ class Proc_Factur_Faro
 		#ob_end_clean();
 		$formulario = new Formulario ("index.php","post",$archivo,"form_item", "","");
     $formulario -> nueva_tabla();
-		$formulario -> linea("Numero Total de Despachos entre ".$GLOBALS["fecini"]." hasta el ".$GLOBALS["fecfin"]."(".sizeof($factur).")",1,"t2");
+		$formulario -> linea("Numero Total de Despachos entre ".$_REQUEST["fecini"]." hasta el ".$_REQUEST["fecfin"]."(".sizeof($factur).")",1,"t2");
 		$formulario -> nueva_tabla();
     $formulario -> linea("#",0,"t2");
 		$formulario -> linea("Despacho",0,"t2");

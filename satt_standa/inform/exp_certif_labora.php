@@ -95,7 +95,7 @@ class CertifLaboral
    $formulario -> nueva_tabla();
    $formulario -> oculto("window","central",0);
    $formulario -> oculto("opcion",1,0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    echo  "<input type='hidden' name='base' id='baseID' value='".DIR_APLICA_CENTRAL."'>";
    echo  "<input type='hidden' name='user_id' id='user_idID' value='".$this -> usuario -> cod_usuari."'>";
   

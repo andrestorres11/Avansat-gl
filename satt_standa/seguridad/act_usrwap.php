@@ -27,7 +27,7 @@ class Proc_usuari
 
  {
 
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
 
      $this -> Listar();
 
@@ -35,7 +35,7 @@ class Proc_usuari
 
      {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
 
        {
 
@@ -120,7 +120,7 @@ function Listar()
 
     for($i=0; $i< sizeof($matriz); $i++)
     {
-     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&opcion=1&usuari=".$matriz[$i][0]." \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+     $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&opcion=1&usuari=".$matriz[$i][0]." \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
      $formulario -> linea($matriz[$i][0],0,"i");
      $formulario -> linea($matriz[$i][1],0,"i");
@@ -132,7 +132,7 @@ function Listar()
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }
 
@@ -146,7 +146,7 @@ function Listar()
 
                   FROM ".BASE_DATOS.".tab_usuari_wapxxx
 
-                 WHERE cod_usuari = '$GLOBALS[usuari]'
+                 WHERE cod_usuari = '$_REQUEST[usuari]'
 
               ORDER BY 1";
 
@@ -259,9 +259,9 @@ function Listar()
 
       $formulario -> oculto("usuari",$matriz[0][0],0);
 
-      $formulario -> texto("Nueva Clave:","password","clave1", 0, 15,  20,"","$GLOBALS[clave1]");
+      $formulario -> texto("Nueva Clave:","password","clave1", 0, 15,  20,"","$_REQUEST[clave1]");
 
-      $formulario -> texto("Confirmar Nueva Clave:","password","clave2", 1, 15,  20,"","$GLOBALS[clave2]");
+      $formulario -> texto("Confirmar Nueva Clave:","password","clave2", 1, 15,  20,"","$_REQUEST[clave2]");
 
             $formulario -> nueva_tabla();
 
@@ -309,7 +309,7 @@ function Listar()
 
       $formulario -> oculto("usuario","$usuario",0);
 
-      $formulario -> oculto("usuari_a", $GLOBALS[usuari], 0);
+      $formulario -> oculto("usuari_a", $_REQUEST[usuari], 0);
 
       $clave_a = $matriz[0][1];
 
@@ -319,7 +319,7 @@ function Listar()
 
       $formulario -> oculto("opcion",0, 0);
 
-      $formulario -> oculto("cod_servic", $GLOBALS[cod_servic], 0);
+      $formulario -> oculto("cod_servic", $_REQUEST[cod_servic], 0);
 
       $formulario -> oculto("window","central", 0);
 
@@ -343,17 +343,17 @@ function Listar()
 
    $fec_actual = date("Y-m-d H:i:s");
 
-   if($GLOBALS[filtro] == 1)
+   if($_REQUEST[filtro] == 1)
 
-     $id_filtro = $GLOBALS[cliente];
+     $id_filtro = $_REQUEST[cliente];
 
-   else if($GLOBALS[filtro] == 2)
+   else if($_REQUEST[filtro] == 2)
 
-     $id_filtro = $GLOBALS[contro];
+     $id_filtro = $_REQUEST[contro];
 
-   else if($GLOBALS[filtro] == 3)
+   else if($_REQUEST[filtro] == 3)
 
-     $id_filtro = $GLOBALS[conduc];
+     $id_filtro = $_REQUEST[conduc];
 
    else
 
@@ -361,27 +361,27 @@ function Listar()
 
    //reasignacion de variables
 
-   if($GLOBALS[clave1] == "")
+   if($_REQUEST[clave1] == "")
 
-     $clave = base64_encode($GLOBALS[clave_ant]);
+     $clave = base64_encode($_REQUEST[clave_ant]);
 
    else
 
-     $clave = base64_encode($GLOBALS[clave1]);
+     $clave = base64_encode($_REQUEST[clave1]);
 
    //query de insercion
 
    $query = "UPDATE ".BASE_DATOS.".tab_usuari_wapxxx
 
-                SET cod_usuari = '$GLOBALS[usuari]',
+                SET cod_usuari = '$_REQUEST[usuari]',
 
                     cod_clavex = '$clave',
 
-                    idx_filtro = '$GLOBALS[filtro]',
+                    idx_filtro = '$_REQUEST[filtro]',
 
                     cod_filtro = '$id_filtro'
 
-              WHERE cod_usuari = '$GLOBALS[usuari_a]'";
+              WHERE cod_usuari = '$_REQUEST[usuari_a]'";
 
    $consulta = new Consulta($query, $this -> conexion);
 
@@ -389,9 +389,9 @@ function Listar()
 
   if($insercion = new Consulta("COMMIT", $this -> conexion))
   {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Usuario</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otro Usuario</a></b>";
 
-     $mensaje =  "El Usuario <b>".$GLOBALS[usuari]."</b> Se Actualizo con Exito".$link_a;
+     $mensaje =  "El Usuario <b>".$_REQUEST[usuari]."</b> Se Actualizo con Exito".$link_a;
      $mens = new mensajes();
      $mens -> correcto("ACTUALIZAR USUARIOS WAP",$mensaje);
   }

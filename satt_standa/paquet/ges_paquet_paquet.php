@@ -101,7 +101,7 @@ class GesPaquet
 	  $mHtml .= '</tr>';
 	  
 	  $i=0;
-        echo '<a href="index.php?cod_servic='.$GLOBALS['cod_servic'].'&window=central&opcion=3 "target="centralFrame"><img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" border="0" aling="left"></a>';
+        echo '<a href="index.php?cod_servic='.$_REQUEST['cod_servic'].'&window=central&opcion=3 "target="centralFrame"><img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" border="0" aling="left"></a>';
     foreach ($mArrayData as $row) {
 
 	    $mHtml .= '<tr>';

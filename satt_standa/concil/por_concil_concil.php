@@ -108,7 +108,7 @@ class PorConcil
         $formulario -> nueva_tabla();
         $formulario -> oculto("num_despac",0,0);
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion",2,0);
 
         $formulario -> cerrar();
@@ -164,7 +164,7 @@ class PorConcil
 
         if(!$cumpli)
         {
-            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Listar otras conciliaciones</a></b>";
+            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Listar otras conciliaciones</a></b>";
             $mensaje = "<font color='green' size='2'>El Despacho $_POST[num_despac] no posee remisiones para conciliar.</font>";
             echo "<div align='center'><img src=\"../satt_standa/imagenes/error.gif\"><br><b>$mensaje</b><hr>$link_a</div>";
             die();
@@ -254,7 +254,7 @@ class PorConcil
 
         $formulario -> nueva_tabla();
         $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion",3,0);
 
         $formulario -> cerrar();
@@ -280,10 +280,10 @@ class PorConcil
          if($HTTP_POST_FILES["foto"]["tmp_name"] && $error != '1')
          {
             if($subir)
-                $GLOBALS[foto] = "'fotcum/".$GLOBALS[num_despac].".jpg'";
+                $_REQUEST[foto] = "'fotcum/".$_REQUEST[num_despac].".jpg'";
             else
             {
-             $GLOBALS[foto] = "NULL";
+             $_REQUEST[foto] = "NULL";
              $msm = "La Imagen no pudo ser cargada al cumplido.";
             }
          }
@@ -297,12 +297,12 @@ class PorConcil
           elseif($error == '4')
             $msm = "<b>La Imagen no fue cargada.</b><br>";
 
-          $GLOBALS[foto] = "NULL";
+          $_REQUEST[foto] = "NULL";
          }
          else
          {
           $msm = "La Imagen no pudo ser cargada al cumplido.";
-          $GLOBALS[foto] = "NULL";
+          $_REQUEST[foto] = "NULL";
          }*/
 
         $cumplido_total = 0;
@@ -348,7 +348,7 @@ class PorConcil
 
         if( $insercion = new Consulta("COMMIT", $this -> conexion))
         {
-            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar otros conciliaciones</a></b>";
+            $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar otros conciliaciones</a></b>";
 
             if($msm)
                 $mensaje = $msm;

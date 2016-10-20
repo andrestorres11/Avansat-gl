@@ -13,7 +13,7 @@ class Actualizar
 	
 	function principal()
 	{
-		switch( $GLOBALS[opcion] )
+		switch( $_REQUEST[opcion] )
 		{
 			case "insert":
 				$this -> ActualizarRuta();
@@ -33,17 +33,17 @@ class Actualizar
 	function ActualizarRuta()
 	{		
 		$fec_actual = date("Y-m-d H:i:s");
-		$asigna = $GLOBALS[asigna];
+		$asigna = $_REQUEST[asigna];
 		
 		$_POST[usr_creaci] = $_SESSION[datos_usuario][cod_usuari];
 		
 		$query = "DELETE FROM ".BASE_DATOS.".tab_genera_ruttra
-  		   		  WHERE cod_rutasx = '$GLOBALS[cod_rutasx]' AND
-  		   			    cod_transp = '$GLOBALS[cod_transp]' ";
+  		   		  WHERE cod_rutasx = '$_REQUEST[cod_rutasx]' AND
+  		   			    cod_transp = '$_REQUEST[cod_transp]' ";
 
 		$insercion = new Consulta($query, $this -> conexion,"BR");
 		
-		for($i = 0; $i < $GLOBALS[maximo]; $i++)
+		for($i = 0; $i < $_REQUEST[maximo]; $i++)
 		{
 			if($asigna[$i])
 			{
@@ -54,7 +54,7 @@ class Actualizar
 						  )
 						  VALUES 
 						  (
-							".$GLOBALS[cod_rutasx].", ".$asigna[$i].", '".$GLOBALS[cod_transp]."',
+							".$_REQUEST[cod_rutasx].", ".$asigna[$i].", '".$_REQUEST[cod_transp]."',
 							'$_POST[usr_creaci]', NOW()
 						  ) ";
 				
@@ -64,7 +64,7 @@ class Actualizar
 		
 		if($insercion = new Consulta("COMMIT", $this -> conexion))
 		{
-			$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otra Ruta</a></b>";
+			$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otra Ruta</a></b>";
 			
 			$mensaje =  "Se Actualizo a la Ruta con Exito".$link_a;
 			$mens = new mensajes();
@@ -157,10 +157,10 @@ class Actualizar
 		$formulario -> nueva_tabla();
 		$formulario -> oculto("maximo","".sizeof($puestos)."",0);
 		$formulario -> oculto("opcion","insert",0);
-		$formulario -> oculto("cod_rutasx",$GLOBALS[cod_rutasx],0);
-		$formulario -> oculto("cod_transp",$GLOBALS[cod_transp],0);
+		$formulario -> oculto("cod_rutasx",$_REQUEST[cod_rutasx],0);
+		$formulario -> oculto("cod_transp",$_REQUEST[cod_transp],0);
 		$formulario -> oculto("window","central",0);
-		$formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+		$formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 		$formulario -> boton("Actualizar","button\" onClick=\"ActualizarRuta()",1);	
 		$formulario -> cerrar();
 	}
@@ -198,7 +198,7 @@ class Actualizar
 		if( $rutas )
 		foreach( $rutas as $row )
 		{
-			$link = "<a href='index.php?cod_servic=$GLOBALS[cod_servic]&window=central&cod_rutasx=$row[0]&opcion=listar&cod_transp=$_GET[cod_transp]' >$row[0]</a>";
+			$link = "<a href='index.php?cod_servic=$_REQUEST[cod_servic]&window=central&cod_rutasx=$row[0]&opcion=listar&cod_transp=$_GET[cod_transp]' >$row[0]</a>";
 			
 			$formulario -> linea($link ,0,"i");
 			$formulario -> linea($row[1],0,"i");
@@ -304,7 +304,7 @@ class Actualizar
 		if( $transportadoras )
 		foreach( $transportadoras as $row )
 		{
-			$link = "<a href='index.php?cod_servic=$GLOBALS[cod_servic]&window=central&cod_transp=$row[0]&opcion=ruta' >$row[0]</a>";
+			$link = "<a href='index.php?cod_servic=$_REQUEST[cod_servic]&window=central&cod_transp=$row[0]&opcion=ruta' >$row[0]</a>";
 			
 			$formulario -> linea($link ,0,"i");
 			$formulario -> linea($row[1],0,"i");

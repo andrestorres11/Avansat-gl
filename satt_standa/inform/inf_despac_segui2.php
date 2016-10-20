@@ -75,7 +75,7 @@ class InformDespacSeguim
         $html .= '<input type="hidden" name="tip_alarma" id="tip_alarmaID" value="' . $mData['tip_alarma'] . '" />';
         $html .= '<input type="hidden" name="cod_transp" id="cod_transpID" value="' . $this->cod_transp . '" />';
         $html .= '<input type="hidden" name="dir_centra" id="dir_centraID" value="' . DIR_APLICA_CENTRAL . '" />';
-        $html .= '<input type="hidden" name="cod_servic" id="cod_servicID" value="' . $GLOBALS['cod_servic'] . '" />';
+        $html .= '<input type="hidden" name="cod_servic" id="cod_servicID" value="' . $_REQUEST['cod_servic'] . '" />';
         $html .= '<input type="hidden" name="window" id="windowID" value="central" />';
         $html .= '</form>';
         $html .= '<script language="javascript">ReloadReport();</script>';
@@ -1108,7 +1108,7 @@ class InformDespacSeguim
         include( "../lib/general/tabla_lib.inc" );
         include( "../lib/general/constantes.inc" );
         define('BASE_DATOS', $_SESSION['BASE_DATOS']);
-        $this->conexion = new Conexion("bd10.intrared.net:3306", $_SESSION["USUARIO"], $_SESSION["CLAVE"], BASE_DATOS);
+        $this->conexion = new Conexion($_SESSION['HOST'], $_SESSION["USUARIO"], $_SESSION["CLAVE"], BASE_DATOS);
 
         $num_despac = $_REQUEST["num_despac"];
 

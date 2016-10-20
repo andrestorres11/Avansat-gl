@@ -36,11 +36,11 @@ class Proc_rutas
     $this -> usuario = $us;
     $this -> cod_aplica = $ca;
 
-    if(!isset($GLOBALS[opcion]))
+    if(!isset($_REQUEST[opcion]))
       $this -> Buscar();
     else
     {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
       {
         case "1":
           $this -> Resultado();
@@ -113,12 +113,12 @@ class Proc_rutas
                   ON a.cod_rutasx = d.cod_rutasx ";
     $indwhere = 0;
 
-    if($GLOBALS[ruta] != "")
+    if($_REQUEST[ruta] != "")
     {
       if($indwhere)
-        $query .= " AND a.nom_rutasx LIKE '%".$GLOBALS[ruta]."%'";
+        $query .= " AND a.nom_rutasx LIKE '%".$_REQUEST[ruta]."%'";
       else{
-        $query .= " WHERE a.nom_rutasx LIKE '%".$GLOBALS[ruta]."%'";
+        $query .= " WHERE a.nom_rutasx LIKE '%".$_REQUEST[ruta]."%'";
         $indwhere = 1;
       }
     }
@@ -148,7 +148,7 @@ class Proc_rutas
     $matriz = $consec -> ret_matriz();
 
     for($i=0;$i<sizeof($matriz);$i++)
-      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
     $formulario = new Formulario ("index.php","post","LISTADO DE RUTAS","form_item");
 
@@ -187,7 +187,7 @@ class Proc_rutas
     $formulario -> oculto("opcion",2,0);
     $formulario -> oculto("valor",$valor,0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
     $formulario -> cerrar();
   }
 
@@ -224,7 +224,7 @@ class Proc_rutas
                   AND d.cod_contro != ".CONS_CODIGO_PCLLEG." 
             LEFT JOIN ".BASE_DATOS.".tab_genera_contro e 
                    ON d.cod_contro = e.cod_contro
-                WHERE a.cod_rutasx = '$GLOBALS[ruta]'
+                WHERE a.cod_rutasx = '$_REQUEST[ruta]'
              ORDER BY 7";
     $consec = new Consulta($query, $this -> conexion);
     $matriz = $consec -> ret_matriz();
@@ -234,8 +234,8 @@ class Proc_rutas
     if($nombre_des[1])
       $matriz[0][1] = $nombre_des[1];
 
-    if(!$GLOBALS[nom])
-      $GLOBALS[nom] = $matriz[0][1];
+    if(!$_REQUEST[nom])
+      $_REQUEST[nom] = $matriz[0][1];
 
     if(isset($_REQUEST[cod_ciuori]))
       $origen_a=$_REQUEST[cod_ciuori];
@@ -247,13 +247,13 @@ class Proc_rutas
     else
       $destino_a=$matriz[0][11];
 
-    if(isset($GLOBALS[asigna]) AND isset($GLOBALS[contro]) AND isset($GLOBALS[val]))
+    if(isset($_REQUEST[asigna]) AND isset($_REQUEST[contro]) AND isset($_REQUEST[val]))
     {
-      $asigna=$GLOBALS[asigna];
+      $asigna=$_REQUEST[asigna];
       $contro=$_REQUEST[cod_contro];
-      $val   =$GLOBALS[val];
-      $kil   =$GLOBALS[kil];
-      $activo=$GLOBALS[activo];
+      $val   =$_REQUEST[val];
+      $kil   =$_REQUEST[kil];
+      $activo=$_REQUEST[activo];
     }//fin if
     else
     {
@@ -267,13 +267,13 @@ class Proc_rutas
       }//fin for
     }//fin else
 
-    if(!$GLOBALS[cont])
+    if(!$_REQUEST[cont])
     {
-      $GLOBALS[cont] = sizeof($matriz);
-      $GLOBALS[cinicial] = sizeof($matriz);
+      $_REQUEST[cont] = sizeof($matriz);
+      $_REQUEST[cinicial] = sizeof($matriz);
     }
-    else if($GLOBALS[adican])
-      $GLOBALS[cont] += $GLOBALS[adican];
+    else if($_REQUEST[adican])
+      $_REQUEST[cont] += $_REQUEST[adican];
 
     if(!$_REQUEST[cod_ciuori])
       $_REQUEST[cod_ciuori] = $origen_a;
@@ -286,7 +286,7 @@ class Proc_rutas
 
     $query = "SELECT cod_rutasx
                 FROM ".BASE_DATOS.".tab_despac_vehige
-               WHERE cod_rutasx = '$GLOBALS[ruta]' ";
+               WHERE cod_rutasx = '$_REQUEST[ruta]' ";
     $consulta = new Consulta($query,$this -> conexion);
     $existe_rut   = $consulta -> ret_arreglo();
 
@@ -325,12 +325,12 @@ class Proc_rutas
       $formulario -> oculto("cod_ciudes",$mCiuDes[0][cod_ciudad],0);
     }
 
-    if(!$GLOBALS[rutactiva])
-      $GLOBALS[rutactiva] = $matriz[0][15];
+    if(!$_REQUEST[rutactiva])
+      $_REQUEST[rutactiva] = $matriz[0][15];
 
-    $formulario -> texto ("Via","text","nom",1,60,255,"",$GLOBALS[nom]);
+    $formulario -> texto ("Via","text","nom",1,60,255,"",$_REQUEST[nom]);
 
-    if($GLOBALS[rutactiva] == COD_ESTADO_ACTIVO)
+    if($_REQUEST[rutactiva] == COD_ESTADO_ACTIVO)
       $formulario -> caja ("Activa","rutactiva",1,1,1);
     else
       $formulario -> caja ("Activa","rutactiva",1,0,1);
@@ -351,7 +351,7 @@ class Proc_rutas
     $formulario -> linea("",0,"t");
     $formulario -> linea("Activo",1,"t");
 
-    for($i=0;$i<$GLOBALS[cont];$i++)
+    for($i=0;$i<$_REQUEST[cont];$i++)
     {
       $disabledvar = "";
 
@@ -360,7 +360,7 @@ class Proc_rutas
         $query = "SELECT a.cod_contro
                     FROM ".BASE_DATOS.".tab_despac_seguim a
                    WHERE a.cod_contro = ".$contro[$i]." AND
-                         a.cod_rutasx = ".$GLOBALS[ruta]." ";
+                         a.cod_rutasx = ".$_REQUEST[ruta]." ";
         $consulta = new Consulta($query, $this -> conexion);
         $existcon = $consulta -> ret_matriz();
 
@@ -375,7 +375,7 @@ class Proc_rutas
       {
         if($asigna[$i] == 1)
           $formulario -> caja("","asigna[$i]".$disabledvar, "1", 1,0);
-        else if($i+1 == $GLOBALS[cont])
+        else if($i+1 == $_REQUEST[cont])
           $formulario -> caja("","asigna[$i]".$disabledvar, "1", 1,0);
         else
           $formulario -> caja("","asigna[$i]".$disabledvar, "1", 0,0);
@@ -431,24 +431,24 @@ class Proc_rutas
                 FROM ".BASE_DATOS.".tab_genera_contro a LEFT JOIN
                      ".BASE_DATOS.".tab_genera_rutcon b ON
                      a.cod_contro = b.cod_contro AND
-                     b.cod_rutasx = ".$GLOBALS[ruta]."
+                     b.cod_rutasx = ".$_REQUEST[ruta]."
                WHERE a.cod_contro = ".CONS_CODIGO_PCLLEG." ";
     $consulta = new Consulta($query, $this -> conexion);
     $ultcon = $consulta -> ret_matriz();
 
-    if(!$GLOBALS[timepcult])
-      $GLOBALS[timepcult] = $ultcon[0][2];
+    if(!$_REQUEST[timepcult])
+      $_REQUEST[timepcult] = $ultcon[0][2];
 
-    if(!$GLOBALS[kilulti])
-      $GLOBALS[kilulti] = $ultcon[0][3];
+    if(!$_REQUEST[kilulti])
+      $_REQUEST[kilulti] = $ultcon[0][3];
 
     $formulario -> caja("","asipcult\" disabled ", "1", 1,0);
     $formulario -> oculto("codpcult\" id=\"codpcultID", $ultcon[0][0], 0);
     echo '<td class="celda_info">
             <input type="text" maxlength="40" value="'.$ultcon[0][1].'" size="40" id="codipcultID" name="codipcult" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'" class="campo_texto" disabled>
           </td>';
-    $formulario -> texto("Duraci&oacute;n (Min)","text","timepcult\" id=\"timepcultID",0,5,4,"",$GLOBALS[timepcult]);
-    $formulario -> texto("Distancia (K/m)","text","kilulti\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,6,6,"",$GLOBALS[kilulti]);
+    $formulario -> texto("Duraci&oacute;n (Min)","text","timepcult\" id=\"timepcultID",0,5,4,"",$_REQUEST[timepcult]);
+    $formulario -> texto("Distancia (K/m)","text","kilulti\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,6,6,"",$_REQUEST[kilulti]);
     $formulario -> caja("","activoulti\" disabled ","1",1,1);
 
     $formulario -> nueva_tabla();
@@ -460,18 +460,18 @@ class Proc_rutas
       if($interfaz -> totalact > 0)
         $formulario -> linea("El Sistema Tiene Interfases Activas Debe Homologar este P/C",1,"t2");
     */
-    $rutaint = $GLOBALS[rutaint];
-    $homoloini = $GLOBALS[homoloini];
-    $copia = $GLOBALS[copia];
+    $rutaint = $_REQUEST[rutaint];
+    $homoloini = $_REQUEST[homoloini];
+    $copia = $_REQUEST[copia];
 
     /*
       for($i = 0; $i < $interfaz -> totalact; $i++)
       {
         if($_REQUEST[cod_ciuori] && $_REQUEST[cod_ciudes])
         {
-          $homolocon = $interfaz -> getHomoloTranspRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS[ruta]);
+          $homolocon = $interfaz -> getHomoloTranspRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[ruta]);
 
-          if($homolocon["RUTAHomolo"] > 0 && !$GLOBALS[homoloini])
+          if($homolocon["RUTAHomolo"] > 0 && !$_REQUEST[homoloini])
           {
             $rutaint[$i] = $homolocon["RUTAHomolo"];
             $homoloini[$i] = $homolocon["RUTAHomolo"];
@@ -548,19 +548,19 @@ class Proc_rutas
     */
     $formulario -> nueva_tabla();
     $formulario -> oculto("usuario","$usuario",0);
-    $formulario -> oculto("cont","$GLOBALS[cont]",0);
-    $formulario -> oculto("cinicial","$GLOBALS[cinicial]",0);
-    $formulario -> oculto("opcion",$GLOBALS[opcion],0);
+    $formulario -> oculto("cont","$_REQUEST[cont]",0);
+    $formulario -> oculto("cinicial","$_REQUEST[cinicial]",0);
+    $formulario -> oculto("opcion",$_REQUEST[opcion],0);
     $formulario -> oculto("standa\" id=\"standaID", DIR_APLICA_CENTRAL, 0);
     //$formulario -> oculto("maximo",$interfaz -> cant_interf,0);
-    $formulario -> oculto("ruta",$GLOBALS[ruta],0);
+    $formulario -> oculto("ruta",$_REQUEST[ruta],0);
     $formulario -> oculto("window","central",0);
-    $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+    $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
 
     $formulario -> botoni("Actualizar","aceptar_actuali()",0);
     $formulario -> texto("Adicionar Puesto(s) de Control","text","adican\" onChange=\"form_item.submit()",0,2,2,"","");
 
-    if($GLOBALS[cont] > $GLOBALS[cinicial])
+    if($_REQUEST[cont] > $_REQUEST[cinicial])
       $formulario -> botoni("Borrar","form_item.cont.value--; form_item.submit();",1);
 
     $formulario -> cerrar();
@@ -581,11 +581,11 @@ class Proc_rutas
 
     //reasigna los valores
 
-    $asigna=$GLOBALS[asigna];
+    $asigna=$_REQUEST[asigna];
     $contro=$_REQUEST[cod_contro];
-    $val   =$GLOBALS[val];
-    $kil   =$GLOBALS[kil];
-    $activo=$GLOBALS[activo];
+    $val   =$_REQUEST[val];
+    $kil   =$_REQUEST[kil];
+    $activo=$_REQUEST[activo];
 
     $query = "SELECT a.cod_paisxx,a.cod_depart
                 FROM ".BASE_DATOS.".tab_genera_ciudad a
@@ -599,34 +599,34 @@ class Proc_rutas
     $consulta = new Consulta($query, $this -> conexion,"R");
     $paidepdes = $consulta -> ret_matriz();
 
-    $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+    $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
     $ciuori = $objciud -> getSeleccCiudad($_REQUEST[cod_ciuori]);
     $ciudes = $objciud -> getSeleccCiudad($_REQUEST[cod_ciudes]);
 
-    $GLOBALS[nom] = $ciuori[0][1]." - ".$ciudes[0][1]." VIA ".$GLOBALS[nom];
+    $_REQUEST[nom] = $ciuori[0][1]." - ".$ciudes[0][1]." VIA ".$_REQUEST[nom];
 
-    if(!$GLOBALS[rutactiva])
-      $GLOBALS[rutactiva] = COD_ESTADO_INACTI;
+    if(!$_REQUEST[rutactiva])
+      $_REQUEST[rutactiva] = COD_ESTADO_INACTI;
     else
-      $GLOBALS[rutactiva] = COD_ESTADO_ACTIVO;
+      $_REQUEST[rutactiva] = COD_ESTADO_ACTIVO;
 
     //query que actualiza
 
     $query = " UPDATE ".BASE_DATOS.".tab_genera_rutasx
-                  SET nom_rutasx = '".$GLOBALS[nom]."',
+                  SET nom_rutasx = '".$_REQUEST[nom]."',
                       cod_paiori = ".$paidepori[0][0].",
                       cod_depori = ".$paidepori[0][1].",
                       cod_ciuori = ".$_REQUEST[cod_ciuori].",
                       cod_paides = ".$paidepdes[0][0].",
                       cod_depdes = ".$paidepdes[0][1].",
                       cod_ciudes = ".$_REQUEST[cod_ciudes].",
-                      ind_estado = '".$GLOBALS[rutactiva]."',
-                      usr_modifi = '$GLOBALS[usuario]',
+                      ind_estado = '".$_REQUEST[rutactiva]."',
+                      usr_modifi = '$_REQUEST[usuario]',
                       fec_modifi = '$fec_actual'
-                WHERE cod_rutasx = '$GLOBALS[ruta]'";
+                WHERE cod_rutasx = '$_REQUEST[ruta]'";
     $insercion = new Consulta($query, $this -> conexion,"BR");
 
-    for($i = 0; $i < $GLOBALS[cont]; $i++)
+    for($i = 0; $i < $_REQUEST[cont]; $i++)
     {
       if($asigna[$i] == 1 AND $contro[$i] != 0)
       {
@@ -634,7 +634,7 @@ class Proc_rutas
 
         $query ="SELECT cod_contro
                    FROM ".BASE_DATOS.".tab_genera_rutcon
-                  WHERE cod_rutasx = '$GLOBALS[ruta]' AND
+                  WHERE cod_rutasx = '$_REQUEST[ruta]' AND
                         cod_contro = '".$contro[$i]."' ";
         $consulta = new  Consulta($query, $this -> conexion,"R");
         $pcontrol = $consulta -> ret_matriz();
@@ -648,8 +648,8 @@ class Proc_rutas
           $query = "INSERT INTO ".BASE_DATOS.".tab_genera_rutcon
                     (cod_rutasx,cod_contro,val_duraci,val_distan,
                     usr_creaci,fec_creaci)
-                    VALUES ('$GLOBALS[ruta]','$contro[$i]','$val[$i]','".$kil[$i]."',
-                    '$GLOBALS[usuario]','$fec_actual') ";
+                    VALUES ('$_REQUEST[ruta]','$contro[$i]','$val[$i]','".$kil[$i]."',
+                    '$_REQUEST[usuario]','$fec_actual') ";
           $insercion = new Consulta($query, $this -> conexion,"R");
         }
 
@@ -665,9 +665,9 @@ class Proc_rutas
                         SET val_duraci = '$val[$i]',
                             val_distan = '".$kil[$i]."',
                             ind_estado = '".$activo[$i]."',
-                            usr_modifi = '$GLOBALS[usuario]',
+                            usr_modifi = '$_REQUEST[usuario]',
                             fec_modifi = '$fec_actual'
-                      WHERE cod_rutasx = '$GLOBALS[ruta]' AND
+                      WHERE cod_rutasx = '$_REQUEST[ruta]' AND
                             cod_contro = '".$contro[$i]."'";
           $actualizar = new Consulta($query, $this -> conexion,"R");
         }
@@ -686,7 +686,7 @@ class Proc_rutas
         $nom_contro = $consulta -> ret_matriz();
 
         $query = "DELETE FROM ".BASE_DATOS.".tab_genera_rutcon
-                  WHERE cod_rutasx = '$GLOBALS[ruta]' AND
+                  WHERE cod_rutasx = '$_REQUEST[ruta]' AND
                   cod_contro = '".$contro[$i]."' ";
         $delete = new Consulta($query, $this -> conexion,"R");
       }
@@ -695,17 +695,17 @@ class Proc_rutas
     //query que Actualiza
 
     $query = " UPDATE ".BASE_DATOS.".tab_genera_rutcon
-                  SET val_duraci = '".$GLOBALS[timepcult]."',
-                      val_distan = '".$GLOBALS[kilulti]."',
-                      usr_modifi = '$GLOBALS[usuario]',
+                  SET val_duraci = '".$_REQUEST[timepcult]."',
+                      val_distan = '".$_REQUEST[kilulti]."',
+                      usr_modifi = '$_REQUEST[usuario]',
                       fec_modifi = '$fec_actual'
-                WHERE cod_rutasx = '$GLOBALS[ruta]' AND
-                      cod_contro = '".$GLOBALS[codpcult]."'";
+                WHERE cod_rutasx = '$_REQUEST[ruta]' AND
+                      cod_contro = '".$_REQUEST[codpcult]."'";
     $actualizar = new Consulta($query, $this -> conexion,"R");
 
-    $rutaint = $GLOBALS[rutaint];
-    $operad = $GLOBALS[operad];
-    $homoloini = $GLOBALS[homoloini];
+    $rutaint = $_REQUEST[rutaint];
+    $operad = $_REQUEST[operad];
+    $homoloini = $_REQUEST[homoloini];
 
     //Manejo de la Interfaz Aplicaciones SAT
     /*
@@ -717,7 +717,7 @@ class Proc_rutas
         {
           if($homoloini[$i] != $rutaint[$i])
           {
-            $resultado_sat = $interfaz -> actHomoloRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS[ruta],$rutaint[$i]);
+            $resultado_sat = $interfaz -> actHomoloRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[ruta],$rutaint[$i]);
 
             if($resultado_sat["Confirmacion"] == "OK")
               $mensaje_sat .= "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">La Ruta Se Homologo en la Interfaz  <b>".$interfaz -> interfaz[$i]["nombre"].".</b><br>";
@@ -730,7 +730,7 @@ class Proc_rutas
           if($homoloini[$i])
             $rutaint[$i] = $homoloini[$i];
 
-          $resultado_sat = $interfaz -> eliHomoloRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS[ruta],$rutaint[$i]);
+          $resultado_sat = $interfaz -> eliHomoloRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[ruta],$rutaint[$i]);
 
           if($resultado_sat["Confirmacion"] == "OK")
             $mensaje_sat .= "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Se Elimino la Homologacion de la Ruta en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"].".</b><br>";
@@ -741,9 +741,9 @@ class Proc_rutas
     */
     if($consulta = new Consulta ("COMMIT", $this -> conexion))
     {
-      $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Actualizar Otra Ruta</a></b>";
+      $link = "<b><a href=\"index.php?cod_servic=".$this -> servic."&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Actualizar Otra Ruta</a></b>";
 
-      $mensaje = "La Ruta <b>".$GLOBALS[nom]."</b> se Actualizo con Exito<br>".$link;
+      $mensaje = "La Ruta <b>".$_REQUEST[nom]."</b> se Actualizo con Exito<br>".$link;
       $mens = new mensajes();
       $mens -> correcto("ACTUALIZAR RUTAS",$mensaje);
     }

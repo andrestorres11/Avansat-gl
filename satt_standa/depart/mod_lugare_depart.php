@@ -15,11 +15,11 @@ class Proc_depart
 //********METODOS DE LA CLASE PROC_LISTA DE PRECIOS ESTANDAR*************
         function principal()
         {
-                if(!isset($GLOBALS[opcion]))
+                if(!isset($_REQUEST[opcion]))
                         $this -> Depart();
                 else
                 {
-                        switch($GLOBALS[opcion])
+                        switch($_REQUEST[opcion])
                         {
                                 case "5":
                                 $this -> Mostrar();
@@ -45,7 +45,7 @@ class Proc_depart
                 $query = "SELECT a.cod_depart,a.nom_depart,a.abr_depart,b.abr_paisxx
                             FROM ".BASE_DATOS.".tab_genera_depart a,".BASE_DATOS.".tab_genera_paises b
                            WHERE a.cod_paisxx = b.cod_paisxx AND
-                                 a.nom_depart LIKE '%$GLOBALS[depart]%'
+                                 a.nom_depart LIKE '%$_REQUEST[depart]%'
                         ORDER BY 4,2";
                 $con_depart = new Consulta($query, $this -> conexion);
                 $depart = $con_depart -> ret_matriz();
@@ -99,7 +99,7 @@ class Proc_depart
                         $formulario -> nueva_tabla();
                         $formulario -> oculto("opcion",5,0);
                         $formulario -> oculto("window","central",0);
-                        $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+                        $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
                         $formulario -> botoni("Buscar","if(form_list.depart.value == '') alert('Debe ingresar un texto para la busqueda.'); else form_list.submit();",1);
                         $formulario -> cerrar();
         }//FIN FUNCION ACTUALIZAR

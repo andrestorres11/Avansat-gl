@@ -2,9 +2,9 @@
 
 include ("./EnvioMensajes.inc");
 
-if($GLOBALS[envmenext])
+if($_REQUEST[envmenext])
 {
- $infomen = explode("|",$GLOBALS[envmenext]);
+ $infomen = explode("|",$_REQUEST[envmenext]);
 
  $datos_men["tipopc"] = $infomen[1];
  $datos_men["manifi"] = $infomen[2];

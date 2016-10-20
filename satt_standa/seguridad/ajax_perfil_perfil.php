@@ -571,7 +571,7 @@ class seguri {
                 <div class='col-md-6 text-right'>" . $value['nom_filtro'] . "</div>
                 <div class='col-md-3'>
                     <select id='$value[cod_filtro]' name='$value[cod_filtro]' class='ancho'>
-                        <option value=''>Seleccione una Opción</option>";
+                        <option value=''>Seleccione una Opci&oacute;n</option>";
             foreach ($res as $k => $val) {
                 $selected = "";
 
@@ -599,8 +599,7 @@ class seguri {
      */
 
     private function RegisterDataUser() {
-        $datos = (object) $_POST;
-
+        $datos = (object) $_POST; 
         if ($datos->ind == 1) {
             self::registerUser($datos);
         } else {
@@ -642,11 +641,11 @@ class seguri {
         $sql = "INSERT INTO " . BASE_DATOS . ".tab_genera_usuari 
                 (cod_usuari, num_cedula, clv_usuari, nom_usuari, usr_emailx, ind_cambio,
                  num_diasxx, fec_cambio, cod_perfil, cod_grupox, cod_priori, cod_contro,
-                 ind_estado, usr_interf, usr_creaci, fec_creaci )
+                 ind_estado, usr_interf, usr_creaci, fec_creaci, ali_usuari )
                 VALUES
                 ('$datos->cod_usuari', '$datos->num_cedula', '$datos->clv_usuari', '$datos->nom_usuari', '$datos->usr_emailx', $datos->ind_cambio,
                   $datos->num_diasxx,  $datos->fec_cambio,   '$datos->cod_perfil',  $datos->cod_grupox,   $datos->cod_priori,  $datos->cod_contro,
-                  $datos->ind_estado , $datos->usr_interf, '$datos->usr_creaci', NOW())";
+                  $datos->ind_estado , $datos->usr_interf, '$datos->usr_creaci', NOW(), '$datos->ali_usuari')";
         if ($consulta = new Consulta($sql, self::$cConexion)) {
             $fil = $datos->val_filtro;
             if ($datos->cod_filtro) {
@@ -713,7 +712,8 @@ class seguri {
                     num_cedula = '$datos->num_cedula',
                     nom_usuari = '$datos->nom_usuari',
                     usr_emailx = '$datos->usr_emailx', 
-                    cod_perfil = '$datos->cod_perfil'
+                    cod_perfil = '$datos->cod_perfil',
+                    ali_usuari = '$datos->ali_usuari'
                                 $set
                             WHERE 
                     cod_consec = $datos->cod_consec ";
@@ -775,7 +775,7 @@ class seguri {
 
     public function listaEmpresasParametrizadas() {
 
-        $sql = "SELECT a.cod_tercer, a.nom_tercer, c.nom_tipser, d.nom_server, a.dir_emailx, if(a.cod_estado = 1, 'Activa', 'Inactiva') estado, 
+        $sql = "SELECT a.cod_tercer, a.nom_tercer, c.nom_tipser, d.nom_server, if(a.cod_estado = 1, 'Activa', 'Inactiva') estado, a.dir_emailx,
                         a.cod_estado
                       FROM " . BASE_DATOS . ".tab_tercer_tercer a 
                 INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON b.cod_transp = a.cod_tercer  
@@ -791,18 +791,18 @@ class seguri {
             include_once("../" . DIR_APLICA_CENTRAL . "/lib/general/dinamic_list.inc");
         }
 
-        $list = new DinamicList(self::$cConexion, $sql, "1", "no", 'ASC');
+        $list = new DinamicList(self::$cConexion, $sql, "5,1", "no", 'ASC');
         $list->SetClose('no');
         $list->SetHeader("Doc/NIT", "field:a.cod_tercer; width:1%;  ");
         $list->SetHeader("Empresa", "field:a.nom_tercer; width:1%");
         $list->SetHeader("Servicio Contratado", "field:b.nom_tipser; width:1%");
         $list->SetHeader("Servidor", "field:a.nom_server; width:1%");
-        $list->SetHeader("E-mail", "field:dir_emailx; width:1%");
         $list->SetHeader("Estado", "field:IF(a.cod_estado = 1, 'ACTIVO', 'INACTIVO') estado; width:1%");
+        $list->SetHeader("E-mail", "field:dir_emailx; width:1%");
         $list->SetOption("Editar", "field:cod_estado; width:1%; onclikEdit:editarEmpresa( this )");
         $list->SetHidden("cod_tercer", "0");
         $list->SetHidden("nom_tercer", "1");
-        $list->SetHidden("dir_emailx", "4");
+        $list->SetHidden("dir_emailx", "5");
         $list->Display(self::$cConexion);
 
         $_SESSION["DINAMIC_LIST"] = $list;

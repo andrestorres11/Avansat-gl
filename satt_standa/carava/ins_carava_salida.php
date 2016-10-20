@@ -26,11 +26,11 @@ class Proc_despac
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Listar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario();
@@ -74,20 +74,20 @@ class Proc_despac
                  a.ind_anulad = 'R' AND
                  a.num_carava != 0 ";
 
-     if(isset($GLOBALS[origen]) AND $GLOBALS[origen] != 0)
+     if(isset($_REQUEST[origen]) AND $_REQUEST[origen] != 0)
 
-        $query = $query." AND b.cod_ciudad = '$GLOBALS[origen]'";
+        $query = $query." AND b.cod_ciudad = '$_REQUEST[origen]'";
 
-     if(isset($GLOBALS[destino]) AND $GLOBALS[destino] != 0)
+     if(isset($_REQUEST[destino]) AND $_REQUEST[destino] != 0)
 
-        $query = $query." AND a.cod_ciudes = '$GLOBALS[destino]'";
+        $query = $query." AND a.cod_ciudes = '$_REQUEST[destino]'";
 
      $query = $query." GROUP BY 1,2 ORDER BY 2";
 
      $consulta = new Consulta($query, $this -> conexion);
      $origen = $consulta -> ret_matriz();
 
-     if(isset($GLOBALS[origen]) AND $GLOBALS[origen] != 0)
+     if(isset($_REQUEST[origen]) AND $_REQUEST[origen] != 0)
 
         $origen=array_merge($origen,$todas);
 
@@ -107,20 +107,20 @@ class Proc_despac
                  a.ind_anulad = 'R' AND
                  a.num_carava != 0 ";
 
-     if(isset($GLOBALS[destino]) AND $GLOBALS[destino] != 0)
+     if(isset($_REQUEST[destino]) AND $_REQUEST[destino] != 0)
 
-        $query = $query." AND b.cod_ciudad = '$GLOBALS[destino]'";
+        $query = $query." AND b.cod_ciudad = '$_REQUEST[destino]'";
 
-     if(isset($GLOBALS[origen]) AND $GLOBALS[origen] != 0)
+     if(isset($_REQUEST[origen]) AND $_REQUEST[origen] != 0)
 
-        $query = $query." AND a.cod_ciuori = '$GLOBALS[origen]'";
+        $query = $query." AND a.cod_ciuori = '$_REQUEST[origen]'";
 
      $query = $query." GROUP BY 1,2 ORDER BY 2";
 
      $consulta = new Consulta($query, $this -> conexion);
      $destino = $consulta -> ret_matriz();
 
-     if(isset($GLOBALS[destino]) AND $GLOBALS[destino] != 0)
+     if(isset($_REQUEST[destino]) AND $_REQUEST[destino] != 0)
 
         $destino=array_merge($destino,$todas);
 
@@ -144,11 +144,11 @@ class Proc_despac
                  a.fec_salida Is Null AND
                  a.fec_llegad Is Null ";
 
-     if(isset($GLOBALS[destino]) AND $GLOBALS[destino] != 0)
-        $query = $query." AND d.cod_ciudad = '$GLOBALS[destino]'";
+     if(isset($_REQUEST[destino]) AND $_REQUEST[destino] != 0)
+        $query = $query." AND d.cod_ciudad = '$_REQUEST[destino]'";
 
-     if(isset($GLOBALS[origen]) AND $GLOBALS[origen] != 0)
-        $query = $query." AND a.cod_ciuori = '$GLOBALS[origen]'";
+     if(isset($_REQUEST[origen]) AND $_REQUEST[origen] != 0)
+        $query = $query." AND a.cod_ciuori = '$_REQUEST[origen]'";
 
   $query = $query." GROUP BY 1 ORDER BY 1";
 
@@ -157,7 +157,7 @@ class Proc_despac
 
   for($i=0;$i<sizeof($matriz);$i++)
 
-        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&ruta=".$matriz[$i][4]."&carava=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+        $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&ruta=".$matriz[$i][4]."&carava=".$matriz[$i][0]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario = new Formulario ("index.php","post","","form_item");
    $formulario -> linea("<b>Se Encontraron ".sizeof($matriz)." Caravanas</b>",0);
@@ -196,7 +196,7 @@ class Proc_despac
    $formulario -> oculto("opcion",4,0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
 
  }//FIN FUNCION LISTAR
@@ -213,14 +213,14 @@ class Proc_despac
    $fec_actual = date("d-m-Y");
    $hor_actual = date("H:i");
    //presenta por defecta la fecha actual
-   if(!isset($GLOBALS[fecsal]))
-      $GLOBALS[fecsal]=$fec_actual;
-   if(!isset($GLOBALS[horsal]))
-      $GLOBALS[horsal]=$hor_actual;
+   if(!isset($_REQUEST[fecsal]))
+      $_REQUEST[fecsal]=$fec_actual;
+   if(!isset($_REQUEST[horsal]))
+      $_REQUEST[horsal]=$hor_actual;
 
-      if($GLOBALS[desasign])
+      if($_REQUEST[desasign])
       {
-      $tmp = $GLOBALS[desasign];
+      $tmp = $_REQUEST[desasign];
       $desa = array_values($tmp);
       }
       if($desa)
@@ -247,7 +247,7 @@ class Proc_despac
                  d.ind_activo = 'R' AND
                  a.cod_ciuori = f.cod_ciudad AND
                  a.cod_ciudes = g.cod_ciudad AND
-                 a.num_carava = '".$GLOBALS[carava]."' AND
+                 a.num_carava = '".$_REQUEST[carava]."' AND
                  a.fec_salida Is Null AND
                  a.fec_llegad Is Null
                  ORDER BY 1 ";
@@ -295,7 +295,7 @@ class Proc_despac
                    a.cod_rutasx = c.cod_rutasx AND
                    c.num_despac = d.num_despac AND
                    a.cod_contro = d.cod_contro AND
-                   a.cod_rutasx = '".$GLOBALS[ruta]."'
+                   a.cod_rutasx = '".$_REQUEST[ruta]."'
              GROUP BY a.cod_contro ORDER BY a.val_duraci";
    $consulta = new Consulta($query, $this -> conexion);
 
@@ -348,7 +348,7 @@ class Proc_despac
   $formulario = new Formulario ("index.php","post","","form_ins");
 
   $formulario -> nueva_tabla();
-  $formulario -> linea("DATOS DE LA CARAVANA NUMERO ".$GLOBALS[carava]." ",0);
+  $formulario -> linea("DATOS DE LA CARAVANA NUMERO ".$_REQUEST[carava]." ",0);
   $formulario -> nueva_tabla();
    if(sizeof($encabe) > 0)
    {
@@ -394,8 +394,8 @@ class Proc_despac
   $formulario -> nueva_tabla();
   $formulario -> linea("Sitios de Pernoctacion",0);
   $formulario -> nueva_tabla();
-  $formulario -> texto ("Fecha Salida (dd-mm-yyyy)","text","fecsal",0,10,10,"","$GLOBALS[fecsal]");
-  $formulario -> texto ("Hora Salida (HH:mm)","text","horsal",0,5,5,"","$GLOBALS[horsal]");
+  $formulario -> texto ("Fecha Salida (dd-mm-yyyy)","text","fecsal",0,10,10,"","$_REQUEST[fecsal]");
+  $formulario -> texto ("Hora Salida (HH:mm)","text","horsal",0,5,5,"","$_REQUEST[horsal]");
   $formulario -> nueva_tabla();
   $formulario -> linea("",0);
   $formulario -> linea("S/N",0);
@@ -435,13 +435,13 @@ class Proc_despac
   $formulario -> oculto("usuario","$usuario",0);
   $formulario -> oculto("tercero","$tercero",0);
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> oculto("opcion",3,0);
   for($i=0;$i<sizeof($despac);$i++)
   $formulario -> oculto("despac[$i]",$despac[$i],0);
 
-  $formulario -> oculto("ruta", $GLOBALS[ruta],0);
-  $formulario -> oculto("carava", "$GLOBALS[carava]",0);
+  $formulario -> oculto("ruta", $_REQUEST[ruta],0);
+  $formulario -> oculto("carava", "$_REQUEST[carava]",0);
   $formulario -> nueva_tabla();
   $formulario -> botoni("Aceptar","aceptar_ins()",0);
   if($plac_enruta > 0)
@@ -456,15 +456,15 @@ class Proc_despac
 
  {
   $fec_actual = date('Y-m-d H:m:s');
-  $fecha=explode("-",$GLOBALS[fecsal]);
+  $fecha=explode("-",$_REQUEST[fecsal]);
 
-  $fecha=$fecha[2]."-".$fecha[1]."-".$fecha[0]." ".$GLOBALS[horsal].":00";
+  $fecha=$fecha[2]."-".$fecha[1]."-".$fecha[0]." ".$_REQUEST[horsal].":00";
 
-  $despa = array_values($GLOBALS[des]);
+  $despa = array_values($_REQUEST[des]);
 
-    $contros=$GLOBALS[contro];
-    $tiempos=$GLOBALS[tiempo];
-    $novedades=$GLOBALS[novedad];
+    $contros=$_REQUEST[contro];
+    $tiempos=$_REQUEST[tiempo];
+    $novedades=$_REQUEST[novedad];
 
 
 
@@ -549,13 +549,13 @@ class Proc_despac
                              //ins_salida($bd_interf,$cod_trans,$despac_sad,$rut_sad,$placa,$fec_salida,$puestos_sad,$fec_salpl)
                if($interfaz -> ins_salida($interf[$j][2],NIT_TRANSPOR,$despa[$i],$rutaxx[0],$placa[0][0],$fecha,$puestos_sad,$fec_salpl[0]))
 
-                  echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">El Vechiculo con Placas <b>$GLOBALS[placa]</b> Salio Correctamente en ".$interf[$i][1]." <br>";
+                  echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">El Vechiculo con Placas <b>$_REQUEST[placa]</b> Salio Correctamente en ".$interf[$i][1]." <br>";
 
               else
 
               {
 
-                   echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">El Vechiculo con Placas <b>$GLOBALS[placa]</b> esta en ruta reporte en ".$interf[$i][1]."<br>";
+                   echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">El Vechiculo con Placas <b>$_REQUEST[placa]</b> esta en ruta reporte en ".$interf[$i][1]."<br>";
 
                    exit;
 
@@ -592,7 +592,7 @@ class Proc_despac
        //inserta la novedad
        $query = "INSERT INTO ".BASE_DATOS.".tab_despac_pernoc
                  VALUES ('".$despa[$i]."', '".$matriz[$j][0]."','".$novedades[$i]."','".$tiempos[$i]."',
-                 '$GLOBALS[usuario]', '$fec_actual', '$GLOBALS[usuario]', '$fec_actual')";
+                 '$_REQUEST[usuario]', '$fec_actual', '$_REQUEST[usuario]', '$fec_actual')";
       $insercion = new Consulta($query, $this -> conexion, "R");
 
       }//fin if
@@ -660,7 +660,7 @@ class Proc_despac
                  d.ind_activo = 'R' AND
                  a.cod_ciuori = f.cod_ciudad AND
                  a.cod_ciudes = g.cod_ciudad AND
-                 a.num_carava = '".$GLOBALS[carava]."' AND
+                 a.num_carava = '".$_REQUEST[carava]."' AND
                  a.fec_salida Is Null AND
                  a.fec_llegad Is Null
                  ORDER BY 1 ";
@@ -701,7 +701,7 @@ class Proc_despac
   $formulario = new Formulario ("index.php","post","Desasignar Despacho","form_desasi");
         print_r($despac);
   $formulario -> nueva_tabla();
-  $formulario -> linea("DATOS DE LA CARAVANA NUMERO ".$GLOBALS[carava]." ",0);
+  $formulario -> linea("DATOS DE LA CARAVANA NUMERO ".$_REQUEST[carava]." ",0);
   $formulario -> nueva_tabla();
    if(sizeof($encabe) > 0)
    {
@@ -755,10 +755,10 @@ class Proc_despac
   $formulario -> oculto("usuario","$usuario",0);
   $formulario -> oculto("tercero","$tercero",0);
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> oculto("opcion",1,0);
-  $formulario -> oculto("ruta", $GLOBALS[ruta],0);
-  $formulario -> oculto("carava", "$GLOBALS[carava]",0);
+  $formulario -> oculto("ruta", $_REQUEST[ruta],0);
+  $formulario -> oculto("carava", "$_REQUEST[carava]",0);
   $formulario -> nueva_tabla();
   $formulario -> boton("Aceptar","button\" onClick=\"if(confirm('Esta seguro que desea Desasignar los Vehiculos Seleccionados de la Caravana?')){form_desasi.submit()}",0);
   $formulario -> boton("Borrar","reset",1);

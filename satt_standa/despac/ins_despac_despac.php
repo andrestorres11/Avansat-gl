@@ -16,7 +16,7 @@ class Proc_despac
 	
 	function principal()
 	{
-		switch($GLOBALS[opcion])
+		switch($_REQUEST[opcion])
 		{
 			case "buscar":
 				$this -> Buscar();
@@ -49,7 +49,7 @@ class Proc_despac
 		
 		$BASE = $_SESSION[BASE_DATOS];
 		
-		$this -> conexion = new Conexion( "bd7.intrared.net:3306", $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
+		$this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );//cod_transp
 				
 		$select = "SELECT a.cod_tercer, a.abr_tercer, a.num_telmov, 
 						  b.fec_venlic
@@ -166,13 +166,13 @@ class Proc_despac
   $consulta = new Consulta($query, $this -> conexion);
   $asegura = $consulta -> ret_matriz();
   $asegura = array_merge($inicio,$asegura);
-  if($GLOBALS[asegur]){
+  if($_REQUEST[asegur]){
     $query = "SELECT a.cod_tercer,a.abr_tercer
   		      FROM ".BASE_DATOS.".tab_tercer_tercer a,
                  ".BASE_DATOS.".tab_tercer_activi b
   		     WHERE a.cod_tercer = b.cod_tercer AND
                  b.cod_activi = 7 AND
-                 a.cod_tercer ='".$GLOBALS[asegur]."'
+                 a.cod_tercer ='".$_REQUEST[asegur]."'
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -206,7 +206,7 @@ class Proc_despac
    {
     $datos_filtro = $filtro -> retornar();
     $formulario -> oculto("transp",$datos_filtro[clv_filtro],0);
-    $GLOBALS[transp] = $datos_filtro[clv_filtro];
+    $_REQUEST[transp] = $datos_filtro[clv_filtro];
 	 $transpor[0]['cod_tercer'] = $datos_filtro[clv_filtro];
    }
    else
@@ -223,14 +223,14 @@ class Proc_despac
     $transpor = $consulta -> ret_matriz();
     $transpor = array_merge($inicio,$transpor);
 
-    if($GLOBALS[transp])
+    if($_REQUEST[transp])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer, max(c.num_consec) num_consec, c.dup_manifi
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a
    			     INNER JOIN ".BASE_DATOS.".tab_tercer_activi b ON b.cod_activi = ".COD_FILTRO_EMPTRA."
    			     INNER JOIN ".BASE_DATOS.".tab_transp_tipser c ON c.cod_transp = a.cod_tercer
    			    WHERE a.cod_tercer = b.cod_tercer AND
-   			          a.cod_tercer = '".$GLOBALS[transp]."'
+   			          a.cod_tercer = '".$_REQUEST[transp]."'
    			          ORDER BY 2
    			  	  ";
 
@@ -252,7 +252,7 @@ class Proc_despac
 		if( $transpor[0][0] = "891857878" )
 			$formulario -> oculto( "ind_reqcam\" id=\"ind_reqcamID", 1, 0 );
 
-   if($GLOBALS[transp])
+   if($_REQUEST[transp])
    {
      //Combo Tipo despacho
      $query = "SELECT a.cod_tipdes, UPPER( a.nom_tipdes ) AS nom_tipdes
@@ -265,23 +265,23 @@ class Proc_despac
 
     $tipdes = array_merge($inicio,$tipdes);
     
-//    if($GLOBALS[ruta])
+//    if($_REQUEST[ruta])
 //    {
 //      $query = "SELECT a.cod_tipdes, UPPER( b.nom_tipdes ) AS nom_tipdes
 //             FROM ".BASE_DATOS.".tab_genera_rutasx a LEFT JOIN 
 //                  ".BASE_DATOS.".tab_genera_tipdes b ON a.cod_tipdes = b.cod_tipdes
-//            WHERE a.cod_rutasx = ".$GLOBALS[ruta]."
+//            WHERE a.cod_rutasx = ".$_REQUEST[ruta]."
 //          ";
 //
 //     $consulta = new Consulta($query, $this -> conexion);
 //     $tipdes_a = $consulta -> ret_matriz();
 //    }
     
-    if($GLOBALS[cod_tipdes])
+    if($_REQUEST[cod_tipdes])
     {
      $query = "SELECT a.cod_tipdes, UPPER( a.nom_tipdes ) AS nom_tipdes
              FROM ".BASE_DATOS.".tab_genera_tipdes a
-            WHERE a.cod_tipdes = ".$GLOBALS[cod_tipdes]."
+            WHERE a.cod_tipdes = ".$_REQUEST[cod_tipdes]."
           ";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -289,15 +289,15 @@ class Proc_despac
      $tipdes = array_merge($tipdes_a,$tipdes);
     }
    
-   	$formulario -> texto("Documento #/Despacho","text","manifi\" id=\"manifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,9,9,"",$GLOBALS[manifi]);
-    $formulario -> texto("Viaje VJ-(00000000)","text","viaje\" maxlength=\"8\" size=\"8\" id=\"viaje\" onkeypress=\"return NumericInput(event)",1,9,9,"",$GLOBALS["viaje"]);
+   	$formulario -> texto("Documento #/Despacho","text","manifi\" id=\"manifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,9,9,"",$_REQUEST[manifi]);
+    $formulario -> texto("Viaje VJ-(00000000)","text","viaje\" maxlength=\"8\" size=\"8\" id=\"viaje\" onkeypress=\"return NumericInput(event)",1,9,9,"",$_REQUEST["viaje"]);
     $query = "SELECT a.cod_tercer,a.abr_tercer
    			    FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			         ".BASE_DATOS.".tab_tercer_activi b,
    			         ".BASE_DATOS.".tab_transp_tercer c
    			   WHERE a.cod_tercer = b.cod_tercer AND
    			         a.cod_tercer = c.cod_tercer AND
-   			         c.cod_transp = '".$GLOBALS[transp]."' AND
+   			         c.cod_transp = '".$_REQUEST[transp]."' AND
    			         b.cod_activi = ".COD_FILTRO_CLIENT."
                  ORDER BY 2 ASC
    			 ";
@@ -307,7 +307,7 @@ class Proc_despac
 
     $listgene = array_merge($inicio,$listgene);
 
-    if($GLOBALS[generador])
+    if($_REQUEST[generador])
     {
      $query = "SELECT a.cod_tercer,a.abr_tercer
    			     FROM ".BASE_DATOS.".tab_tercer_tercer a,
@@ -315,9 +315,9 @@ class Proc_despac
    			          ".BASE_DATOS.".tab_transp_tercer c
    			    WHERE a.cod_tercer = b.cod_tercer AND
    			          a.cod_tercer = c.cod_tercer AND
-   			          c.cod_transp = '".$GLOBALS[transp]."' AND
+   			          c.cod_transp = '".$_REQUEST[transp]."' AND
    			          b.cod_activi = ".COD_FILTRO_CLIENT." AND
-   			          a.cod_tercer = '".$GLOBALS[generador]."'
+   			          a.cod_tercer = '".$_REQUEST[generador]."'
                   ORDER BY 2 ASC
    			  ";
 
@@ -354,7 +354,7 @@ class Proc_despac
                 FROM ".BASE_DATOS.".tab_genera_agenci a,
                		 ".BASE_DATOS.".tab_transp_agenci b
                WHERE a.cod_agenci = b.cod_agenci AND
-               		 b.cod_transp = '".$GLOBALS[transp]."'
+               		 b.cod_transp = '".$_REQUEST[transp]."'
            	  ";
 
     if($datos_usuario["cod_perfil"] == "")
@@ -383,11 +383,11 @@ class Proc_despac
 
     $agencias = array_merge($inicio,$agencia);
 
-    if($GLOBALS[agencia])
+    if($_REQUEST[agencia])
     {
      $query = "SELECT a.cod_agenci,a.nom_agenci
      		     FROM ".BASE_DATOS.".tab_genera_agenci a
-     		    WHERE a.cod_agenci = ".$GLOBALS[agencia]."
+     		    WHERE a.cod_agenci = ".$_REQUEST[agencia]."
      		  ";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -407,11 +407,11 @@ class Proc_despac
 
     $tipdes = array_merge($inicio,$tipdes);
     
-    if($GLOBALS[cod_tipdes])
+    if($_REQUEST[cod_tipdes])
     {
      $query = "SELECT a.cod_tipdes,a.nom_tipdes
      		     FROM ".BASE_DATOS.".tab_genera_tipdes a
-     		    WHERE a.cod_tipdes = ".$GLOBALS[cod_tipdes]."
+     		    WHERE a.cod_tipdes = ".$_REQUEST[cod_tipdes]."
      		  ";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -420,7 +420,7 @@ class Proc_despac
      $tipdes = array_merge($tipdes_a,$tipdes);
     }
 
-    $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+    $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
     //trae las ciudades de Origen
     $query = "SELECT a.cod_ciudad,CONCAT(a.abr_ciudad,' (',LEFT(d.abr_depart,4),') - ',LEFT(e.nom_paisxx,3))
@@ -434,7 +434,7 @@ class Proc_despac
 		     		 b.cod_paiori = d.cod_paisxx AND
 		     		 d.cod_paisxx = e.cod_paisxx AND
 		     		 b.cod_rutasx = c.cod_rutasx AND
-		     		 c.cod_transp = '".$GLOBALS[transp]."' AND
+		     		 c.cod_transp = '".$_REQUEST[transp]."' AND
 		     		 b.ind_estado = '".COD_ESTADO_ACTIVO."'
            	     	 GROUP BY 1 ORDER BY 2
            	  ";
@@ -444,9 +444,9 @@ class Proc_despac
 
     $ciuoris = array_merge($inicio,$ciuoris);
 
-    if($GLOBALS[ciuori])
+    if($_REQUEST[ciuori])
     {
-   	 $ciudad_a = $objciud -> getSeleccCiudad($GLOBALS[ciuori]);
+   	 $ciudad_a = $objciud -> getSeleccCiudad($_REQUEST[ciuori]);
    	 $ciuoris = array_merge($ciudad_a,$ciuoris);
 
      //trae las ciudades de destino
@@ -460,9 +460,9 @@ class Proc_despac
 		     		  b.cod_depdes = d.cod_depart AND
 		     		  b.cod_paides = d.cod_paisxx AND
 		     		  d.cod_paisxx = e.cod_paisxx AND
-                      b.cod_ciuori = ".$GLOBALS[ciuori]." AND
+                      b.cod_ciuori = ".$_REQUEST[ciuori]." AND
 		     		  b.cod_rutasx = c.cod_rutasx AND
-		     		  c.cod_transp = '".$GLOBALS[transp]."' AND
+		     		  c.cod_transp = '".$_REQUEST[transp]."' AND
 		     		  b.ind_estado = '".COD_ESTADO_ACTIVO."'
            	     	  GROUP BY 1 ORDER BY 2
            	  ";
@@ -472,9 +472,9 @@ class Proc_despac
 
      $ciudess = array_merge($inicio,$ciudess);
 
-     if($GLOBALS[ciudes])
+     if($_REQUEST[ciudes])
      {
-      $ciudad_a = $objciud -> getSeleccCiudad($GLOBALS[ciudes]);
+      $ciudad_a = $objciud -> getSeleccCiudad($_REQUEST[ciudes]);
       $ciudess = array_merge($ciudad_a,$ciudess);
 
       //trae las rutas segun la ciudad de origen y la ciudad de destino
@@ -482,9 +482,9 @@ class Proc_despac
                   FROM ".BASE_DATOS.".tab_genera_rutasx a,
                  	   ".BASE_DATOS.".tab_genera_ruttra b
                  WHERE a.cod_rutasx = b.cod_rutasx AND
-                       b.cod_transp = '".$GLOBALS[transp]."' AND
-                       a.cod_ciuori = ".$GLOBALS[ciuori]." AND
-                       a.cod_ciudes = ".$GLOBALS[ciudes]." AND
+                       b.cod_transp = '".$_REQUEST[transp]."' AND
+                       a.cod_ciuori = ".$_REQUEST[ciuori]." AND
+                       a.cod_ciudes = ".$_REQUEST[ciudes]." AND
 		      		   a.ind_estado = '".COD_ESTADO_ACTIVO."'
                        GROUP BY 1 ORDER BY 2 ";
 
@@ -493,11 +493,11 @@ class Proc_despac
 
       $rutas = array_merge($inicio,$rutas);
 
-      if($GLOBALS[ruta])
+      if($_REQUEST[ruta])
       {
        $query = "SELECT cod_rutasx,nom_rutasx
                    FROM ".BASE_DATOS.".tab_genera_rutasx
-                  WHERE cod_rutasx = ".$GLOBALS[ruta]."
+                  WHERE cod_rutasx = ".$_REQUEST[ruta]."
            	       	    ORDER BY 2 ";
 
        $consulta = new Consulta($query, $this -> conexion);
@@ -507,7 +507,7 @@ class Proc_despac
       }
      }
     }
-	if($GLOBALS[placa] )
+	if($_REQUEST[placa] )
 	{
     $query = "SELECT a.num_placax, b.nom_marcax, c.nom_lineax, d.nom_colorx,
                      e.nom_carroc, a.ano_modelo, a.num_config, a.cod_conduc,
@@ -527,9 +527,9 @@ class Proc_despac
                  AND a.cod_carroc = e.cod_carroc 
                  AND a.num_placax = i.num_placax    
                  AND i.cod_transp = j.cod_transp               
-                 AND a.num_placax = '".$GLOBALS[placa]."' 
+                 AND a.num_placax = '".$_REQUEST[placa]."' 
                  AND a.ind_estado = '".COD_ESTADO_ACTIVO."' 
-                 AND i.cod_transp = '".$GLOBALS[transp]."' 
+                 AND i.cod_transp = '".$_REQUEST[transp]."' 
             ";
      $consulta = new Consulta($query, $this -> conexion);
      $placas = $consulta -> ret_matriz();
@@ -546,7 +546,7 @@ class Proc_despac
       		      	   a.cod_tercer = c.cod_tercer AND
       		      	   a.cod_estado = '".COD_ESTADO_ACTIVO."' AND
       		      	   b.cod_activi = ".COD_FILTRO_PROPIE." AND
-      		      	   c.cod_transp = '".$GLOBALS[transp]."' AND
+      		      	   c.cod_transp = '".$_REQUEST[transp]."' AND
       		      	   a.cod_tercer = '".$placas[0][8]."'
       		   ";
 
@@ -570,7 +570,7 @@ class Proc_despac
 						a.cod_tercer = c.cod_tercer AND
 						a.cod_estado = '".COD_ESTADO_ACTIVO."' AND
 						b.cod_activi = '6' AND
-						c.cod_transp = '".$GLOBALS[transp]."' AND
+						c.cod_transp = '".$_REQUEST[transp]."' AND
       		      	    a.cod_tercer = '".$placas[0][9]."' ";
 
       
@@ -589,7 +589,7 @@ class Proc_despac
                        ".BASE_DATOS.".tab_transp_tercer c
                  WHERE a.cod_tercer = b.cod_tercer AND
                        a.cod_tercer = c.cod_tercer AND
-                       c.cod_transp = '".$GLOBALS[transp]."' AND
+                       c.cod_transp = '".$_REQUEST[transp]."' AND
                        a.cod_estado = ".COD_ESTADO_ACTIVO."
 					   ORDER BY 2
 			";
@@ -601,7 +601,7 @@ class Proc_despac
 
       $conducs = array_merge($inicio,$conducs);
 
-      if($GLOBALS[conduc])
+      if($_REQUEST[conduc])
 	  {
        $query = "SELECT a.cod_tercer,a.abr_tercer,a.num_telmov
                    FROM ".BASE_DATOS.".tab_tercer_tercer a,
@@ -610,8 +610,8 @@ class Proc_despac
                   WHERE a.cod_tercer = c.cod_tercer AND
                         a.cod_tercer = b.cod_tercer AND
                         a.cod_estado = ".COD_ESTADO_ACTIVO." AND
-                        a.cod_tercer = '".$GLOBALS[conduc]."' AND
-                        c.cod_transp = '".$GLOBALS[transp]."'
+                        a.cod_tercer = '".$_REQUEST[conduc]."' AND
+                        c.cod_transp = '".$_REQUEST[transp]."'
                  ";
 
      
@@ -629,7 +629,7 @@ class Proc_despac
       		      WHERE a.cod_tercer = b.cod_tercer AND
       		            a.cod_tercer = c.cod_tercer AND
                         a.cod_estado = ".COD_ESTADO_ACTIVO." AND
-      		            c.cod_transp = '".$GLOBALS[transp]."' AND
+      		            c.cod_transp = '".$_REQUEST[transp]."' AND
       		            a.cod_tercer = '".$placas[0][7]."'
       		    ";
 
@@ -644,10 +644,10 @@ class Proc_despac
    
 else
      {
-      if($GLOBALS[placa])
+      if($_REQUEST[placa])
            {
-           $mensaje_vehi = "El Vehiculo con Placas <b>".$GLOBALS[placa]."</b> No se Existe en el Sistema &oacute; no se Encuentra Activo.";
-           unset($GLOBALS[placa]);
+           $mensaje_vehi = "El Vehiculo con Placas <b>".$_REQUEST[placa]."</b> No se Existe en el Sistema &oacute; no se Encuentra Activo.";
+           unset($_REQUEST[placa]);
            } 
  }
 }
@@ -658,10 +658,10 @@ else
 
     if($autfec)
     {
-     if(!$GLOBALS[fecman])
-      $GLOBALS[fecman]= $fec_manifi;
+     if(!$_REQUEST[fecman])
+      $_REQUEST[fecman]= $fec_manifi;
 
-     $formulario -> fecha_calendar("Fecha(YYYY/MM/DD)","fecman","form_insert",$GLOBALS[fecman],"yyyy/mm/dd",1);
+     $formulario -> fecha_calendar("Fecha(YYYY/MM/DD)","fecman","form_insert",$_REQUEST[fecman],"yyyy/mm/dd",1);
     }
     else
     {
@@ -676,14 +676,14 @@ else
     $formulario -> lista("Ruta", "ruta\" onChange=\"form_insert.submit()", $rutas, 0);
     $formulario -> lista("Tipo Despacho", "cod_tipdes", $tipdes, 1);
     $formulario -> lista("Generador", "generador",$listgene, 0);
-    $formulario -> texto("No. Caravana","text","carava",1,4,4,"","$GLOBALS[carava]");//jorge
-    $formulario -> texto ("Valor Declarado del Despacho","text","valdec\" onkeyup=\"puntos(this,this.value.charAt(this.value.length-1))",0,9,12,"","$GLOBALS[valdec]");
-    $formulario -> texto ("Peso (Tn)","text","pesoxx\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,5,5,"","$GLOBALS[pesoxx]");
+    $formulario -> texto("No. Caravana","text","carava",1,4,4,"","$_REQUEST[carava]");//jorge
+    $formulario -> texto ("Valor Declarado del Despacho","text","valdec\" onkeyup=\"puntos(this,this.value.charAt(this.value.length-1))",0,9,12,"","$_REQUEST[valdec]");
+    $formulario -> texto ("Peso (Tn)","text","pesoxx\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",1,5,5,"","$_REQUEST[pesoxx]");
     $formulario -> texto("Operador Gps","text","gps_operad",0,15,15,"",$_POST['gps_operad'],"","",0);
     $formulario -> texto("Usuario Gps","text","gps_usuari",1,15,15,"",$_POST['gps_usuari'],"","",0);
     $formulario -> texto("Contraseña Gps","text","gps_paswor",1,15,15,"",$_POST['gps_paswor'],"","",0);
     $formulario -> lista("Aseguradora","asegur",$asegura,1);
-    $formulario -> texto ("No. Poliza","text","poliza",0,20,15,"","$GLOBALS[poliza]");
+    $formulario -> texto ("No. Poliza","text","poliza",0,20,15,"","$_REQUEST[poliza]");
     $formulario -> oculto("duplicar\" id=\"duplicar",$transpor[0]['dup_manifi'],0);
   
     if($placas)
@@ -710,7 +710,7 @@ else
 
 
     $formulario -> nueva_tabla();
-    $formulario -> texto ("Placa","text","placa\" id=\"num_placaxID\" onchange=\"if(this.value){form_insert.submit()}else{this.focus()}\" value=\"$GLOBALS[placa]");
+    $formulario -> texto ("Placa","text","placa\" id=\"num_placaxID\" onchange=\"if(this.value){form_insert.submit()}else{this.focus()}\" value=\"$_REQUEST[placa]");
     echo "<td><input type='button' name='search' id='search' onClick='PopupVehiculos()' value='Buscar'></td></tr><tr>";
 
     if($placas)
@@ -746,7 +746,7 @@ else
 		echo "<td class='celda_titulo' align='right' >* Conductor:</td>";
 		echo "<td class='celda_info' align='left' >
 				<input type='text' class='campo_texto' readonly name='cod_conduc' id='cod_conduc' value='$_POST[cod_conduc]'  >
-        <input type='button' value='#' class='crmButton small save' style='width:23px' maxlength='15' size='15' onclick='CargarCondutores( \"$GLOBALS[transp]\" )' >
+        <input type='button' value='#' class='crmButton small save' style='width:23px' maxlength='15' size='15' onclick='CargarCondutores( \"$_REQUEST[transp]\" )' >
 			  </td>";
 		echo "<td class='celda_titulo' align='right' >* Nombre:</td>";
 		echo "<td class='celda_info' align='left' >
@@ -765,7 +765,7 @@ else
 		      		  ".BASE_DATOS.".tab_transp_trayle c
      		    WHERE a.num_trayle = b.num_trayle AND
 		      		  a.num_trayle = c.num_trayle AND
-		      		  c.cod_transp = '".$GLOBALS[transp]."' AND
+		      		  c.cod_transp = '".$_REQUEST[transp]."' AND
 		      		  b.ind_estado = '".COD_ESTADO_ACTIVO."' AND
 		      	 	  a.num_placax = '".$placas[0][0]."'
 		      		  GROUP BY 1
@@ -779,7 +779,7 @@ else
      		     	  ".BASE_DATOS.".tab_transp_trayle b
 	        	WHERE a.ind_estado = '".COD_ESTADO_ACTIVO."' AND
 		      		  a.num_trayle = b.num_trayle AND
-		      		  b.cod_transp = '".$GLOBALS[transp]."'
+		      		  b.cod_transp = '".$_REQUEST[transp]."'
      		      	  ORDER BY 1
      		  ";
 
@@ -799,15 +799,15 @@ else
      }
      else if($trayler)
      {
-       if(!$GLOBALS[l_trayle])
+       if(!$_REQUEST[l_trayle])
        {
         $mi_trayler[0][0] = $trayler[0];
         $mi_trayler[0][1] = $trayler[0];
        }
        else
        {
-        $mi_trayler[0][0] = $GLOBALS[l_trayle];
-        $mi_trayler[0][1] = $GLOBALS[l_trayle];
+        $mi_trayler[0][0] = $_REQUEST[l_trayle];
+        $mi_trayler[0][1] = $_REQUEST[l_trayle];
        }
 
        $listatra = array_merge($mi_trayler,$listatra);
@@ -817,10 +817,10 @@ else
      }
      else
      {
-       if($GLOBALS[l_trayle])
+       if($_REQUEST[l_trayle])
        {
-        $mi_trayler[0][0] = $GLOBALS[l_trayle];
-        $mi_trayler[0][1] = $GLOBALS[l_trayle];
+        $mi_trayler[0][0] = $_REQUEST[l_trayle];
+        $mi_trayler[0][1] = $_REQUEST[l_trayle];
 
         $listatra = array_merge($mi_trayler,$listatra);
        }
@@ -835,7 +835,7 @@ else
                  FROM ".BASE_DATOS.".tab_vehicu_vehicu a
                 WHERE a.fec_revmec < NOW() AND
                       a.ind_estado = '".COD_ESTADO_ACTIVO."' AND
-                      a.num_placax = '".$GLOBALS[placa]."'
+                      a.num_placax = '".$_REQUEST[placa]."'
                ";
 
      $consulta = new Consulta($query, $this -> conexion);
@@ -858,8 +858,8 @@ else
     $formulario -> linea("Informaci&oacute;n Adicional",1,"t2");
 
     $formulario -> nueva_tabla();
-    $formulario -> texto ("Medios de Comunicaci&oacute;n:","textarea","medcom",0,20,2,"","$GLOBALS[medcom]");
-    $formulario -> texto ("Observaciones Generales:","textarea","obsgrl",1,20,2,"","$GLOBALS[obsgrl]");
+    $formulario -> texto ("Medios de Comunicaci&oacute;n:","textarea","medcom",0,20,2,"","$_REQUEST[medcom]");
+    $formulario -> texto ("Observaciones Generales:","textarea","obsgrl",1,20,2,"","$_REQUEST[obsgrl]");
 
     if($manredes)
     {
@@ -901,27 +901,27 @@ else
      $formulario -> linea("",0,"t");
      $formulario -> linea("Pedido",1,"t");
 
-	 $codrem = $GLOBALS[codrem];
-     $docrem = $GLOBALS[docrem];
-     $obsrem = $GLOBALS[obsrem];
-     $nomrem = $GLOBALS[nomrem];
-     $ciurem = $GLOBALS[ciurem];
-     $dirrem = $GLOBALS[dirrem];
-     $pesrem = $GLOBALS[pesrem];
-     $remsel = $GLOBALS[remsel];
-     $refrem = $GLOBALS[refrem];
-     $pedrem = $GLOBALS[pedrem];
-     $contel = $GLOBALS[contel];
+	 $codrem = $_REQUEST[codrem];
+     $docrem = $_REQUEST[docrem];
+     $obsrem = $_REQUEST[obsrem];
+     $nomrem = $_REQUEST[nomrem];
+     $ciurem = $_REQUEST[ciurem];
+     $dirrem = $_REQUEST[dirrem];
+     $pesrem = $_REQUEST[pesrem];
+     $remsel = $_REQUEST[remsel];
+     $refrem = $_REQUEST[refrem];
+     $pedrem = $_REQUEST[pedrem];
+     $contel = $_REQUEST[contel];
 
-     $conlon = $GLOBALS[conlon];
-     $conlat = $GLOBALS[conlat];
+     $conlon = $_REQUEST[conlon];
+     $conlat = $_REQUEST[conlat];
 
-     $tabfle = $GLOBALS[tabfle];
-     $fleuni = $GLOBALS[fleuni];
-     $codfle = $GLOBALS[codfle];
+     $tabfle = $_REQUEST[tabfle];
+     $fleuni = $_REQUEST[fleuni];
+     $codfle = $_REQUEST[codfle];
 
-     if(!$GLOBALS[maxrem])
-      $GLOBALS[maxrem] = 1;
+     if(!$_REQUEST[maxrem])
+      $_REQUEST[maxrem] = 1;
 
      $ciudades = $objciud -> getListadoCiudades();
      $ciurem_t = array_merge($inicio,$ciudades);
@@ -933,7 +933,7 @@ else
 	 $matpopup[2]["nomvar"] = "indice";
 	 $matpopup[2]["valorx"] = "rem";
 
-     for($i = 0; $i < $GLOBALS[maxrem]; $i++)
+     for($i = 0; $i < $_REQUEST[maxrem]; $i++)
      {
       if($ciurem[$i])
       {
@@ -945,10 +945,10 @@ else
 
       $estado = 0;
 
-      if($remsel[$i] || $i == $GLOBALS[maxrem] - 1)
+      if($remsel[$i] || $i == $_REQUEST[maxrem] - 1)
        $estado = 1;
 
-      eval("\$sasignado = \$GLOBALS[codrem".$i."];");
+      eval("\$sasignado = \$_REQUEST[codrem".$i."];");
 
       if($sasignado != "n")
        $formulario -> oculto("codrem".$i,$sasignado,0);
@@ -970,7 +970,7 @@ else
       }
 
       $matpopup[3]["nomvar"] = "ciuoritab";
-	  $matpopup[3]["valorx"] = $GLOBALS[ciuori];
+	  $matpopup[3]["valorx"] = $_REQUEST[ciuori];
 	  $matpopup[4]["nomvar"] = "carroctab";
 	  $matpopup[4]["valorx"] = $placas[0][10];
 	  
@@ -989,7 +989,7 @@ else
 	 $formulario -> nueva_tabla();
      $formulario -> botoni("Otro","form_insert.maxrem.value++; form_insert.submit();",1);
 
-     $formulario -> oculto("maxrem",$GLOBALS[maxrem],0);
+     $formulario -> oculto("maxrem",$_REQUEST[maxrem],0);
     }
 
     $formulario -> nueva_tabla();
@@ -1022,7 +1022,7 @@ else
 		$formulario -> oculto("url_archiv\" id=\"url_archiv","ins_despac_despac.php",0);
 		
 		$formulario -> oculto("opcion",1,0);
-		$formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+		$formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
 		$formulario -> cerrar();
    
 		echo '<tr><td><div id="AplicationEndDIV"></div>              
@@ -1046,23 +1046,23 @@ else
 		$fec_actual = date("Y-m-d H:i:s");
 		$hor_actual = date("H:i:s");
 		
-		$GLOBALS[fecman]= $GLOBALS[fecman]." ".$hor_actual;
-		if(!$GLOBALS[generador])
-			$GLOBALS[generador] = "NULL";
+		$_REQUEST[fecman]= $_REQUEST[fecman]." ".$hor_actual;
+		if(!$_REQUEST[generador])
+			$_REQUEST[generador] = "NULL";
 		else
-			$GLOBALS[generador] = "'".$GLOBALS[generador]."'";
+			$_REQUEST[generador] = "'".$_REQUEST[generador]."'";
 		
-		if(!$GLOBALS[l_trayle])
-			$GLOBALS[l_trayle] = "null";
+		if(!$_REQUEST[l_trayle])
+			$_REQUEST[l_trayle] = "null";
 		else
-			$GLOBALS[l_trayle] = "'".$GLOBALS[l_trayle]."'";
+			$_REQUEST[l_trayle] = "'".$_REQUEST[l_trayle]."'";
 		
-		if(!$GLOBALS[pesoxx])
-			$GLOBALS[pesoxx] = 0;
+		if(!$_REQUEST[pesoxx])
+			$_REQUEST[pesoxx] = 0;
       
     //jorge
-    if(!$GLOBALS[carava])
-			$GLOBALS[carava] = 0;
+    if(!$_REQUEST[carava])
+			$_REQUEST[carava] = 0;
 		
 		$query = "SELECT Max(num_despac) AS maximo
 				  FROM ".BASE_DATOS.".tab_despac_despac ";
@@ -1075,14 +1075,14 @@ else
 		
 		$query = "SELECT a.cod_paisxx,a.cod_depart
 			      FROM ".BASE_DATOS.".tab_genera_ciudad a
-				  WHERE a.cod_ciudad = ".$GLOBALS[ciuori]." ";
+				  WHERE a.cod_ciudad = ".$_REQUEST[ciuori]." ";
 		
 		$consulta = new Consulta($query, $this -> conexion);
 		$paidepori = $consulta -> ret_matriz();
 		
 		$query = "SELECT a.cod_paisxx,a.cod_depart
 				  FROM ".BASE_DATOS.".tab_genera_ciudad a
-				  WHERE a.cod_ciudad = ".$GLOBALS[ciudes]." ";
+				  WHERE a.cod_ciudad = ".$_REQUEST[ciudes]." ";
 
 		$consulta = new Consulta($query, $this -> conexion);
 		$paidepdes = $consulta -> ret_matriz();
@@ -1090,16 +1090,16 @@ else
 		//Se obtiene la informacion del conductor
 		$query = "SELECT a.num_telef1, a.num_telmov, a.dir_domici
 				  FROM ".BASE_DATOS.".tab_tercer_tercer a
-				  WHERE a.cod_tercer = ".$GLOBALS[cod_conduc]." ";
+				  WHERE a.cod_tercer = ".$_REQUEST[cod_conduc]." ";
 
 		$consulta = new Consulta($query, $this -> conexion);
 		$conduc = $consulta -> ret_matriz();
 		
-		$GLOBALS[valdec] = str_replace('.','',$GLOBALS[valdec]);
-		$GLOBALS[flete] = str_replace('.','',$GLOBALS[flete]);
-		$GLOBALS[antici] = str_replace('.','',$GLOBALS[antici]);
-		$GLOBALS[despac] = str_replace('.','',$GLOBALS[despac]);
-		$GLOBALS["asegur"] = $GLOBALS["asegur"] ? "'".$GLOBALS["asegur"]."'" : 'NULL' ;
+		$_REQUEST[valdec] = str_replace('.','',$_REQUEST[valdec]);
+		$_REQUEST[flete] = str_replace('.','',$_REQUEST[flete]);
+		$_REQUEST[antici] = str_replace('.','',$_REQUEST[antici]);
+		$_REQUEST[despac] = str_replace('.','',$_REQUEST[despac]);
+		$_REQUEST["asegur"] = $_REQUEST["asegur"] ? "'".$_REQUEST["asegur"]."'" : 'NULL' ;
 		//query de insercion de despachos Jorge num_carava
 		$query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
 					(
@@ -1117,17 +1117,17 @@ else
 					)
 					VALUES 
 					(
-						".$nuevo_consec.", '".$GLOBALS[manifi]."', '".$GLOBALS[fecman]."', 
-						".$GLOBALS[generador].", ".$paidepori[0][0].", ".$paidepori[0][1].", 
-						".$GLOBALS[ciuori].", ".$paidepdes[0][0].", ".$paidepdes[0][1].", 
-						".$GLOBALS[ciudes].", NULL, NULL,
+						".$nuevo_consec.", '".$_REQUEST[manifi]."', '".$_REQUEST[fecman]."', 
+						".$_REQUEST[generador].", ".$paidepori[0][0].", ".$paidepori[0][1].", 
+						".$_REQUEST[ciuori].", ".$paidepdes[0][0].", ".$paidepdes[0][1].", 
+						".$_REQUEST[ciudes].", NULL, NULL,
 						NULL, NULL, NULL, 
-						NULL, '".$GLOBALS[agencia]."', NULL, 
-						'".$GLOBALS[obsgrl]."', '".$GLOBALS[valdec]."', '".$GLOBALS[usuario]."', 
-						'$fec_actual', ".$GLOBALS[pesoxx].", '".$conduc[0][0]."',
-						'".$conduc[0][1]."', '".$conduc[0][2]."', '".$GLOBALS['cod_tipdes']."',
-            '".$GLOBALS[gps_operad]."', '".$GLOBALS[gps_usuari]."', '".$GLOBALS[gps_paswor]."',
-            ".$GLOBALS['asegur'].", '".$GLOBALS['poliza']."', '".$GLOBALS['carava']."'
+						NULL, '".$_REQUEST[agencia]."', NULL, 
+						'".$_REQUEST[obsgrl]."', '".$_REQUEST[valdec]."', '".$_REQUEST[usuario]."', 
+						'$fec_actual', ".$_REQUEST[pesoxx].", '".$conduc[0][0]."',
+						'".$conduc[0][1]."', '".$conduc[0][2]."', '".$_REQUEST['cod_tipdes']."',
+            '".$_REQUEST[gps_operad]."', '".$_REQUEST[gps_usuari]."', '".$_REQUEST[gps_paswor]."',
+            ".$_REQUEST['asegur'].", '".$_REQUEST['poliza']."', '".$_REQUEST['carava']."'
 					)";
 		
 		$consulta = new Consulta($query, $this -> conexion, "BR");
@@ -1142,35 +1142,35 @@ else
 					)
 					VALUES 
 					(
-						'$nuevo_consec', '$GLOBALS[transp]', '$GLOBALS[agencia]', 
-						'$GLOBALS[ruta]', '$GLOBALS[cod_conduc]', '$GLOBALS[placa]', 
-						".$GLOBALS[l_trayle].", '$GLOBALS[medcom]', 'R',
-						'$GLOBALS[usuario]', '$fec_actual' 
+						'$nuevo_consec', '$_REQUEST[transp]', '$_REQUEST[agencia]', 
+						'$_REQUEST[ruta]', '$_REQUEST[cod_conduc]', '$_REQUEST[placa]', 
+						".$_REQUEST[l_trayle].", '$_REQUEST[medcom]', 'R',
+						'$_REQUEST[usuario]', '$fec_actual' 
 					)";
 		
 		$consulta = new Consulta( $query, $this -> conexion, "R" );
 		
-		if( $GLOBALS[manredes] )
+		if( $_REQUEST[manredes] )
 		{
-			$docrem = $GLOBALS[docrem];
-			$obsrem = $GLOBALS[obsrem];
-			$nomrem = $GLOBALS[nomrem];
-			$ciurem = $GLOBALS[ciurem];
-			$dirrem = $GLOBALS[dirrem];
-			$pesrem = $GLOBALS[pesrem];
-			$remsel = $GLOBALS[remsel];
-			$refrem = $GLOBALS[refrem];
-			$pedrem = $GLOBALS[pedrem];
-			$contel = $GLOBALS[contel];
-			$conlon = $GLOBALS[conlon];
-			$conlat = $GLOBALS[conlat];     
-			$codfle = $GLOBALS[codfle];
+			$docrem = $_REQUEST[docrem];
+			$obsrem = $_REQUEST[obsrem];
+			$nomrem = $_REQUEST[nomrem];
+			$ciurem = $_REQUEST[ciurem];
+			$dirrem = $_REQUEST[dirrem];
+			$pesrem = $_REQUEST[pesrem];
+			$remsel = $_REQUEST[remsel];
+			$refrem = $_REQUEST[refrem];
+			$pedrem = $_REQUEST[pedrem];
+			$contel = $_REQUEST[contel];
+			$conlon = $_REQUEST[conlon];
+			$conlat = $_REQUEST[conlat];     
+			$codfle = $_REQUEST[codfle];
 			
 			if( sizeof( $remsel ) )
 			{
-				for( $i = 0; $i < $GLOBALS[maxrem]; $i++ )
+				for( $i = 0; $i < $_REQUEST[maxrem]; $i++ )
 				{
-					eval("\$existvalucod = \$GLOBALS[codrem".$i."];");
+					eval("\$existvalucod = \$_REQUEST[codrem".$i."];");
 					
 					if(!$existvalucod)
 						$existvalucod = "n";
@@ -1235,8 +1235,8 @@ else
 									VALUES
 									(
 										".$consecut[0][0].", '".$docrem[$i]."', '".$nomrem[$i]."', 
-										".$obsrem[$i].", '".$GLOBALS[transp]."', '2', 
-										'".COD_ESTADO_ACTIVO."', '".$GLOBALS[usuario]."', '".$fec_actual."' 
+										".$obsrem[$i].", '".$_REQUEST[transp]."', '2', 
+										'".COD_ESTADO_ACTIVO."', '".$_REQUEST[usuario]."', '".$fec_actual."' 
 									)";
 						
 						$coddes = $consecut[0][0];
@@ -1247,7 +1247,7 @@ else
 								  SET num_remdes = '".$docrem[$i]."',
 									  nom_remdes = '".$nomrem[$i]."',
 									  obs_adicio = ".$obsrem[$i].",
-									  usr_modifi = '".$GLOBALS[usuario]."',
+									  usr_modifi = '".$_REQUEST[usuario]."',
 									  fec_modifi = '".$fec_actual."'
 								  WHERE cod_remdes = ".$existvalucod." ";
 						
@@ -1264,7 +1264,7 @@ else
 					$consecut_con = $consulta -> ret_matriz();
 					$consecut_con[0][0]++;
 					
-					if($GLOBALS[desurb] && ($remsel[$i] && $existvalucod == "n"))
+					if($_REQUEST[desurb] && ($remsel[$i] && $existvalucod == "n"))
 					{
 						$query = "INSERT INTO ".BASE_DATOS.".tab_genera_contro
 									(
@@ -1278,7 +1278,7 @@ else
 										".$consecut_con[0][0].", '".$nomrem[$i]."', ".$ciurem[$i].", 
 										'".$nomrem[$i]."', ".$dirrem[$i].", '".$contel[$i]."', 
 										'".$conlon[$i]."', '".$conlat[$i]."', '".COD_ESTADO_ACTIVO."', 
-										'".$GLOBALS[usuario]."', '".$fec_actual."' 
+										'".$_REQUEST[usuario]."', '".$fec_actual."' 
 									)";
 						
 						$consulta = new Consulta($query, $this -> conexion,"R");
@@ -1313,7 +1313,7 @@ else
 										  tel_contro = '".$contel[$i]."',
 										  val_longit = '".$conlon[$i]."',
 										  val_latitu = '".$conlat[$i]."',
-										  usr_modifi = '".$GLOBALS[usuario]."',
+										  usr_modifi = '".$_REQUEST[usuario]."',
 										  fec_modifi = '".$fec_actual."'
 										  WHERE cod_contro = ".$codcondes[0][0]." ";
 							
@@ -1340,7 +1340,7 @@ else
 											".$consecut_con[0][0].", '".$nomrem[$i]."', ".$ciurem[$i].", 
 											'".$nomrem[$i]."', ".$dirrem[$i].", '".$contel[$i]."', 
 											'".$conlon[$i]."','".$conlat[$i]."', '".COD_ESTADO_ACTIVO."', 
-											'".$GLOBALS[usuario]."','".$fec_actual."' 
+											'".$_REQUEST[usuario]."','".$fec_actual."' 
 										)";
 							
 							$consulta = new Consulta($query, $this -> conexion,"R");
@@ -1383,7 +1383,7 @@ else
       $mInsert = "INSERT INTO  ".BASE_DATOS.".tab_despac_viajex 
                   ( num_despac, num_viajex, cod_transp, usr_creaci, fec_creaci ) 
                   VALUES 
-                  ('{$nuevo_consec}','VJ-{$_POST[viaje]}', '{$GLOBALS[transp]}','{$GLOBALS['usuario']}', NOW() ) ";
+                  ('{$nuevo_consec}','VJ-{$_POST[viaje]}', '{$_REQUEST[transp]}','{$_REQUEST['usuario']}', NOW() ) ";
       $consulta = new Consulta($mInsert, $this -> conexion, "R");
     }
 
@@ -1392,7 +1392,7 @@ else
 		
 		if($insercion = new Consulta("COMMIT", $this -> conexion))
 		{
-			$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS[cod_servic]." \"target=\"centralFrame\">Insertar Otro Despacho</a></b>";
+			$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otro Despacho</a></b>";
 			
 			$mensaje =  "El Despacho # <b>".$nuevo_consec."</b> Se Inserto con Exito".$link_a;
 			$mens = new mensajes();

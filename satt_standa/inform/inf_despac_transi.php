@@ -1,8 +1,9 @@
 <?php
 session_start();
 //date_default_timezone_set('America/Bogota');
-  class Proc_despac
-  {
+
+class Proc_despac
+{
     var $conexion, $cod_aplica, $usuario;
   
     function __construct($co, $us, $ca)
@@ -15,13 +16,13 @@ session_start();
 
     function principal()
     {
-      if(!isset($GLOBALS["opcion"]))
+      if(!isset($_REQUEST["opcion"]))
       {
         $this -> Listar();
       }
       else
       {
-        switch($GLOBALS["opcion"])
+        switch($_REQUEST["opcion"])
         {
           case "1":
             $this -> Datos();
@@ -140,11 +141,11 @@ session_start();
       define( BASE_DATOS, $BD );
       define( ESTILO, $ES );
 
-      $this -> conexion = new Conexion( "bd10.intrared.net:3306", $US, $CL , $BD );
+      $this -> conexion = new Conexion( $_SESSION['HOST'], $US, $CL , $BD );
 
       $this -> aplica = 1;
 
-      $objciud = new Despachos( $GLOBALS["cod_servic"], $GLOBALS["opcion"], $this -> aplica, $this -> conexion );
+      $objciud = new Despachos( $_REQUEST["cod_servic"], $_REQUEST["opcion"], $this -> aplica, $this -> conexion );
       $fechoract = date("d-M-Y h:i:s A");
 
       /*$query = "SELECT a.ind_remdes
@@ -837,7 +838,7 @@ session_start();
       $formulario = new Formulario ("index.php","post","Despachos en Transito","form_despac\" id= \"formdespacID");
       $_SESSION["ind_atras"] = "si";
       $formulario -> nueva_tabla();
-      $formulario -> texto ("Celular:","text","celular\" id=\"celularID\" onchange=\"if(this.value!=''){location.href='index.php?window=central&cod_servic=3302&menant=3302&opcion=8&celu='+this.value+'';}",0,9,12,"t2","$GLOBALS[valdec]");
+      $formulario -> texto ("Celular:","text","celular\" id=\"celularID\" onchange=\"if(this.value!=''){location.href='index.php?window=central&cod_servic=3302&menant=3302&opcion=8&celu='+this.value+'';}",0,9,12,"t2","$_REQUEST[valdec]");
       //$formulario -> nueva_tabla();
       //$formulario -> imagen("Exportar","../".DIR_APLICA_CENTRAL."/imagenes/boton_excel.jpg",  "Exportar",120,30,0,  "onClick=\"top.window.open('../".DIR_APLICA_CENTRAL."/export/exp_despac_transi.php?".$exp."')\"",1,0);
 
@@ -1108,8 +1109,8 @@ session_start();
           $formulario -> linea ($pordefin,1,"i",0,0,"center");//A cargo Empresa
       }
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
-      $formulario -> oculto("opcion",$GLOBALS["opcion"],0);
+      $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
+      $formulario -> oculto("opcion",$_REQUEST["opcion"],0);
       $formulario -> cerrar();
       echo "<TABLE></TABLE>";
       mysql_close();
@@ -1119,15 +1120,15 @@ session_start();
     {
       $datos_usuario = $this -> usuario -> retornar();
       $formulario = new Formulario ("index.php","post","Informacion del Despacho","form_item");
-      $listado_prin = new Despachos($GLOBALS["cod_servic"],2,$this -> aplica,$this -> conexion);
-      $listado_prin  -> Encabezado($GLOBALS["despac"],$formulario,$datos_usuario,0,"Despachos en Ruta");
-      $listado_prin  -> PlanDeRuta($GLOBALS["despac"],$formulario,0);
+      $listado_prin = new Despachos($_REQUEST["cod_servic"],2,$this -> aplica,$this -> conexion);
+      $listado_prin  -> Encabezado($_REQUEST["despac"],$formulario,$datos_usuario,0,"Despachos en Ruta");
+      $listado_prin  -> PlanDeRuta($_REQUEST["despac"],$formulario,0);
 
       $formulario -> nueva_tabla();
-      $formulario -> oculto("despac",$GLOBALS["despac"],0);
-      $formulario -> oculto("opcion",$GLOBALS["opcion"],0);
+      $formulario -> oculto("despac",$_REQUEST["despac"],0);
+      $formulario -> oculto("opcion",$_REQUEST["opcion"],0);
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+      $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
 
     $formulario -> cerrar();
     }
@@ -1180,11 +1181,11 @@ session_start();
       define( BASE_DATOS, $BD );
       define( ESTILO, $ES );
 
-      $this -> conexion = new Conexion( "bd10.intrared.net:3306", $US, $CL , $BD );
+      $this -> conexion = new Conexion( $_SESSION['HOST'], $US, $CL , $BD );
 
       $this -> aplica = 1;
 
-      $objciud = new Despachos( $GLOBALS["cod_servic"], $GLOBALS["opcion"], $this -> aplica, $this -> conexion );
+      $objciud = new Despachos( $_REQUEST["cod_servic"], $_REQUEST["opcion"], $this -> aplica, $this -> conexion );
       $fechoract = date("d-M-Y h:i:s A");
 
       /*$query = "SELECT a.ind_remdes
@@ -2069,8 +2070,8 @@ $pordefin++;
 
       $formulario -> oculto("us1\" id=\"us1ID","",0);
       $formulario -> oculto("window","central",0);
-      $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
-      $formulario -> oculto("opcion",$GLOBALS["opcion"],0);
+      $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
+      $formulario -> oculto("opcion",$_REQUEST["opcion"],0);
 
       $formulario -> cerrar();
       echo "<TABLE></TABLE>";
@@ -2109,7 +2110,7 @@ $pordefin++;
       include( "../lib/general/tabla_lib.inc" );
       include( "../lib/general/constantes.inc" );
       define('BASE_DATOS', $_SESSION['BASE_DATOS']);
-      $this -> conexion = new Conexion( "bd10.intrared.net:3306", $_SESSION["USUARIO"], $_SESSION["CLAVE"], BASE_DATOS );
+      $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION["USUARIO"], $_SESSION["CLAVE"], BASE_DATOS );
       
       $num_despac = $_REQUEST["num_despac"];
       
@@ -2162,15 +2163,11 @@ $pordefin++;
         $mHtml .= "</table>";
       $mHtml .= "</div>";
 
-      echo $mHtml;
-      
+      echo $mHtml; 
     }
-    
-    
-//-------------------------------------
-  }
+}
   
-  //$proceso = new Proc_despac($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
-  $proceso = new Proc_despac($_SESSION['conexion'], $_SESSION['usuario_aplicacion'], $_SESSION['codigo']);
+//$proceso = new Proc_despac($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
+$proceso = new Proc_despac($_SESSION['conexion'], $_SESSION['usuario_aplicacion'], $_SESSION['codigo']);
 
 ?>

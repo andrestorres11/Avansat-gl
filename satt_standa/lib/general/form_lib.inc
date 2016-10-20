@@ -438,7 +438,7 @@ class Form_texto
             echo "variaobj[$i] = \"".$idelement[$i]["nomvar"]."\";";
 
            echo "</script>";
-           echo "<a href=\"#\" onClick=\"hija('', '', '$serhij', '".$datos[0]."','".$GLOBALS["cod_servic"]."', '".BASE_DATOS."', 'b', '350', '".$datos[1]."',variahij,variaobj)\"><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/botone/puntos.gif\" border=\"0\" alt=\"buscar\"></a>";
+           echo "<a href=\"#\" onClick=\"hija('', '', '$serhij', '".$datos[0]."','".$_REQUEST["cod_servic"]."', '".BASE_DATOS."', 'b', '350', '".$datos[1]."',variahij,variaobj)\"><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/botone/puntos.gif\" border=\"0\" alt=\"buscar\"></a>";
         }
 
         printf("</td>\n");

@@ -161,14 +161,14 @@ class infBandeja
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="num_soliciID" name="num_solici" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
 				$mHtml2 .= '	</td>';
-				$mHtml2 .= '	<td class="cellInfo1" align="right">No. Pedido:</td>';
+				$mHtml2 .= '	<td class="cellInfo1" align="right">No. Transporte:</td>';
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="num_pedidoID" name="num_pedido" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
 				$mHtml2 .= '	</td>';
 				$mHtml2 .= '</tr>';
 
 				$mHtml2 .= '<tr>';
-				$mHtml2 .= '	<td class="cellInfo1" align="right">No. Factura:</td>';
+				$mHtml2 .= '	<td class="cellInfo1" align="right">No. Remisi&oacute;n:</td>';
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="num_facturID" name="num_factur" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
 				$mHtml2 .= '	</td>';
@@ -213,16 +213,23 @@ class infBandeja
 		{
 			$mBand  = '</table><div id="tabs">';
 				$mBand .= '<ul>';
-					$mBand .= $mView->sec_inform->sub->pes_genera == 1 ? '<li><a id="liGenera" href="#tabs-1">GENERAL</a></li>' : '';
-					$mBand .= $mView->sec_inform->sub->pes_cargax == 1 ? '<li class="ui-state-default ui-corner-top"><a id="liCargue" href="#tabs-2">CARGUE</a></li>' : '';
-					$mBand .= $mView->sec_inform->sub->pes_transi == 1 ? '<li class="ui-state-default ui-corner-top"><a id="liTransi" href="#tabs-3">TRANSITO</a></li>' : '';
-					$mBand .= $mView->sec_inform->sub->pes_descar == 1 ? '<li class="ui-state-default ui-corner-top"><a id="liDescar" href="#tabs-4">DESCARGUE</a></li>' : '';
+					if( $mView->sec_inform->sub->pes_genera == 1 )
+						$mBand .= '<li><a id="liGenera" href="#tabs-1">GENERAL</a></li>';
+					if( $mView->sec_inform->sub->pes_cargax == 1 )
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liCargue" href="#tabs-2">CARGUE</a></li>';
+					if( $mView->sec_inform->sub->pes_transi == 1 )
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liTransi" href="#tabs-3">TRANSITO</a></li>';
+					if( $mView->sec_inform->sub->pes_descar == 1 )
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liDescar" href="#tabs-4">DESCARGUE</a></li>';
+					if( $mView->sec_inform->sub->pes_pernoc == 1 )
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPernoc" href="#tabs-5">C. PERNOTACION</a></li>';
 				$mBand .= '</ul>';
 
 				$mBand .= $mView->sec_inform->sub->pes_genera == 1 ? '<div id="tabs-1"></div>' : ''; #DIV General
 				$mBand .= $mView->sec_inform->sub->pes_cargax == 1 ? '<div id="tabs-2"></div>' : ''; #DIV Etapa Cargue
 				$mBand .= $mView->sec_inform->sub->pes_transi == 1 ? '<div id="tabs-3"></div>' : ''; #DIV Etapa Transito
 				$mBand .= $mView->sec_inform->sub->pes_descar == 1 ? '<div id="tabs-4"></div>' : ''; #DIV Etapa Descargue
+				$mBand .= $mView->sec_inform->sub->pes_pernoc == 1 ? '<div id="tabs-5"></div>' : ''; #DIV c. Pernotacion
 
 			$mBand .= '</div>';
 

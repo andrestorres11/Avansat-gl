@@ -19,11 +19,11 @@ class Proc_noveda
 
  function principal()
  {
-  if(!isset($GLOBALS["opcion"]))
+  if(!isset($_REQUEST["opcion"]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS["opcion"])
+      switch($_REQUEST["opcion"])
        {
         case "1":
           $this -> Resultado();
@@ -52,7 +52,7 @@ class Proc_noveda
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    $formulario -> boton("Buscar","button\" onClick=\"form_list.submit()",0);
    $formulario -> boton("Todas","button\" onClick=\"form_list.submit() ",0);
    $formulario -> cerrar();
@@ -68,7 +68,7 @@ class Proc_noveda
                    IF(a.ind_notsup = '1', 'SI', 'NO'), IF(b.nom_operad IS NULL, '---',b.nom_operad), IF(a.cod_homolo IS NULL , '---', a.cod_homolo), IF(a.ind_visibl = '1', 'SI', 'NO'),
                    IF(a.ind_insveh = '1', 'SI', 'NO'), IF(a.ind_ealxxx = '1', 'SI', 'NO')
             FROM ".BASE_DATOS.".tab_genera_noveda a LEFT JOIN ".CENTRAL.".tab_genera_opegps b ON a.cod_operad = b.cod_operad
-           	WHERE nom_noveda LIKE '%$GLOBALS[noveda]%' AND
+           	WHERE nom_noveda LIKE '%$_REQUEST[noveda]%' AND
 		 			   			cod_noveda != ".CONS_NOVEDA_PCLLEG." AND
 					 				cod_noveda != ".CONS_NOVEDA_ACAEMP." AND
 									cod_noveda != ".CONS_NOVEDA_ACAFAR." AND
@@ -99,7 +99,7 @@ class Proc_noveda
 
    for($i=0;$i<sizeof($matriz);$i++)
    {
-   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&noveda=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+   	$matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&noveda=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    	$formulario -> linea($matriz[$i][0],0,"i");
    	$formulario -> linea($matriz[$i][1],0,"i");
@@ -122,7 +122,7 @@ class Proc_noveda
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    $formulario -> cerrar();
  }
 
@@ -135,13 +135,13 @@ class Proc_noveda
                     if(ind_notsup = '1', 'SI', 'NO'), IF(b.nom_operad IS NULL, '---',b.nom_operad), IF(a.cod_homolo IS NULL , '---', a.cod_homolo), IF(a.ind_visibl = '1', 'SI', 'NO'),
                     IF(a.ind_insveh = '1', 'SI', 'NO'), IF(a.ind_ealxxx = '1', 'SI', 'NO')
             FROM ".BASE_DATOS.".tab_genera_noveda a LEFT JOIN ".CENTRAL.".tab_genera_opegps b ON a.cod_operad = b.cod_operad
-            WHERE cod_noveda = '$GLOBALS[noveda]'";
+            WHERE cod_noveda = '$_REQUEST[noveda]'";
   $consulta = new Consulta($query, $this -> conexion);
   $matriz = $consulta -> ret_matriz();
 
   $query = "SELECT a.cod_noveda
   		      FROM ".BASE_DATOS.".tab_despac_noveda a
-  		     WHERE a.cod_noveda = ".$GLOBALS["noveda"]."
+  		     WHERE a.cod_noveda = ".$_REQUEST["noveda"]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -149,7 +149,7 @@ class Proc_noveda
 
   $query = "SELECT a.cod_noveda
   		      FROM ".BASE_DATOS.".tab_despac_contro a
-  		     WHERE a.cod_noveda = ".$GLOBALS["noveda"]."
+  		     WHERE a.cod_noveda = ".$_REQUEST["noveda"]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -157,7 +157,7 @@ class Proc_noveda
 
   $query = "SELECT a.cod_noveda
   		      FROM ".BASE_DATOS.".tab_despac_pernoc a
-  		     WHERE a.cod_noveda = ".$GLOBALS["noveda"]."
+  		     WHERE a.cod_noveda = ".$_REQUEST["noveda"]."
   		   ";
 
   $consulta = new Consulta($query, $this -> conexion);
@@ -208,7 +208,7 @@ class Proc_noveda
 
    for($i = 0; $i < $interfaz -> totalact; $i++)
    {
-    $homolocon = $interfaz -> getHomoloTranspNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS["noveda"]);
+    $homolocon = $interfaz -> getHomoloTranspNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST["noveda"]);
 
     if($homolocon["NovedadHomolo"] > 0)
     {
@@ -230,10 +230,10 @@ class Proc_noveda
 
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("opcion",3,0);
-   $formulario -> oculto("noveda",$GLOBALS["noveda"],0);
+   $formulario -> oculto("noveda",$_REQUEST["noveda"],0);
    $formulario -> oculto("nombre",$matriz[0][1],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS["cod_servic"],0);
+   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
    if(!$existnov && !$existcon && !$existper)
     $formulario -> boton("Eliminar","submit\" onClick=\"return confirm('Esta Seguro de Eliminar Esta Novedad.?')",0);
    else
@@ -249,12 +249,12 @@ class Proc_noveda
 		$insercion = new Consulta( "START TRANSACTION", $this -> conexion );
 		
 		$query = "DELETE FROM " . BASE_DATOS . ".tab_perfil_noveda
-				  WHERE cod_noveda = '$GLOBALS[noveda]' ";
+				  WHERE cod_noveda = '$_REQUEST[noveda]' ";
 
         $consulta = new Consulta( $query, $this->conexion, "R" );
 		
   $query = "DELETE FROM ".BASE_DATOS.".tab_genera_noveda
-             WHERE cod_noveda = '$GLOBALS[noveda]'";
+             WHERE cod_noveda = '$_REQUEST[noveda]'";
   $insercion = new Consulta($query, $this -> conexion,"R");
 /*
   //Manejo de la Interfaz Aplicaciones SAT
@@ -262,11 +262,11 @@ class Proc_noveda
 
   for($i = 0; $i < $interfaz -> totalact; $i++)
   {
-   $homolocon = $interfaz -> getHomoloTranspNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS["noveda"]);
+   $homolocon = $interfaz -> getHomoloTranspNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST["noveda"]);
 
    if($homolocon["NovedadHomolo"] > 0)
    {
-    $resultado_sat = $interfaz -> eliHomoloNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$GLOBALS["noveda"],$homolocon["NovedadHomolo"]);
+    $resultado_sat = $interfaz -> eliHomoloNoveda($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST["noveda"],$homolocon["NovedadHomolo"]);
 
     if($resultado_sat["Confirmacion"] == "OK")
      $mensaje_sat .= "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Se Elimino la Homologacion de la Novedad en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"].".</b><br>";
@@ -277,7 +277,7 @@ class Proc_noveda
 */
   if($insercion = new Consulta("COMMIT", $this -> conexion))
     {
-     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$GLOBALS["cod_servic"]." \"target=\"centralFrame\">Eliminar Otra Novedad</a></b>";
+     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST["cod_servic"]." \"target=\"centralFrame\">Eliminar Otra Novedad</a></b>";
 
      $mensaje =  "La Novedad Se Elimino con Exito".$mensaje_sat.$link_a;
      $mens = new mensajes();

@@ -16,11 +16,11 @@ class Mod_agencias
 
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
    $this -> Buscar();
   else
   {
-   switch($GLOBALS[opcion])
+   switch($_REQUEST[opcion])
    {
     case "1":
      $this -> Datos();
@@ -73,7 +73,7 @@ class Mod_agencias
   $formulario -> nueva_tabla();
   $formulario -> oculto("window","central",0);
   $formulario -> oculto("opcion",1,0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> botoni("Aceptar","form_agenci.submit()",0);
  }
 
@@ -85,11 +85,11 @@ class Mod_agencias
                FROM ".BASE_DATOS.".tab_genera_agenci a,
                     ".BASE_DATOS.".tab_transp_agenci b
               WHERE a.cod_agenci = b.cod_agenci AND
-              		a.nom_agenci LIKE '%".$GLOBALS[nombre]."%'
+              		a.nom_agenci LIKE '%".$_REQUEST[nombre]."%'
              ";
 
-   if($GLOBALS[transp])
-    $query .= " AND b.cod_transp = '".$GLOBALS[transp]."'";
+   if($_REQUEST[transp])
+    $query .= " AND b.cod_transp = '".$_REQUEST[transp]."'";
 
    $query .= " GROUP BY 1 ORDER BY 1";
 
@@ -110,7 +110,7 @@ class Mod_agencias
    $formulario -> linea("E-mail",0,"t");
    $formulario -> linea("Fax",1,"t");
 
-   $objciud = new Despachos($GLOBALS[cod_servic],$GLOBALS[opcion],$this -> aplica,$this -> conexion);
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
 
    for($i=0;$i<sizeof($agencias);$i++)
    {
@@ -129,7 +129,7 @@ class Mod_agencias
    $formulario -> nueva_tabla();
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION
 }//FIN CLASE

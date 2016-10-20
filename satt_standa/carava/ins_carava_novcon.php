@@ -32,13 +32,13 @@ class Proc_despac
  function principal()
 
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Listar();
 
   else
      {
 
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Formulario();
@@ -77,15 +77,15 @@ class Proc_despac
                      a.fec_llegad IS NULL AND
                      a.ind_anulad = 'R'";
 
-     if ($GLOBALS[num_carava])
-     $query .= " AND a.num_carava = '$GLOBALS[num_carava]' ";
+     if ($_REQUEST[num_carava])
+     $query .= " AND a.num_carava = '$_REQUEST[num_carava]' ";
 
      $query .= " GROUP BY 1 ORDER BY 1";
      $consulta = new Consulta($query, $this -> conexion);
 
      $carava = $consulta -> ret_matriz();
 
-     if($GLOBALS[num_carava])
+     if($_REQUEST[num_carava])
 
         $carava=array_merge($carava,$titcarava);
 
@@ -104,11 +104,11 @@ class Proc_despac
                     a.fec_llegad Is Null AND
                      a.ind_anulad = 'R'";
 
-     if($GLOBALS[origen])
-           $query .= " AND b.cod_ciudad = '$GLOBALS[origen]'";
+     if($_REQUEST[origen])
+           $query .= " AND b.cod_ciudad = '$_REQUEST[origen]'";
 
-     if($GLOBALS[destino])
-           $query .= " AND a.cod_ciudes = '$GLOBALS[destino]'";
+     if($_REQUEST[destino])
+           $query .= " AND a.cod_ciudes = '$_REQUEST[destino]'";
 
        $query .= " GROUP BY 1,2 ORDER BY 2";
 
@@ -119,7 +119,7 @@ class Proc_despac
      //Prepara la presentacion del cuadro de lista
      //solo presenta la ciudad escogida y da la
      //posibilidad de cambiarla
-     if($GLOBALS[origen])
+     if($_REQUEST[origen])
 
         $origen=array_merge($origen,$todas);
 
@@ -136,11 +136,11 @@ class Proc_despac
                      a.fec_llegad Is Null AND
                      a.ind_anulad = 'R'";
 
-     if($GLOBALS[destino])
-        $query .= " AND b.cod_ciudad = '$GLOBALS[destino]'";
+     if($_REQUEST[destino])
+        $query .= " AND b.cod_ciudad = '$_REQUEST[destino]'";
 
-     if($GLOBALS[origen])
-        $query .= " AND a.cod_ciuori = '$GLOBALS[origen]'";
+     if($_REQUEST[origen])
+        $query .= " AND a.cod_ciuori = '$_REQUEST[origen]'";
 
      $query .= " GROUP BY 1,2 ORDER BY 2";
 
@@ -150,7 +150,7 @@ class Proc_despac
      //Prepara la presentacion del cuadro de lista
      //solo presenta la ciudad escogida y da la
      //posibilidad de cambiarla
-     if($GLOBALS[destino])
+     if($_REQUEST[destino])
         $destino=array_merge($destino,$todas);
      //presenta todas las ciudades con su respetivo titulo
      else
@@ -167,14 +167,14 @@ class Proc_despac
                  a.num_carava != 0 AND
                  a.ind_anulad = 'R'";
 
-     if ($GLOBALS[num_carava])
-     $query .= " AND a.num_carava = '$GLOBALS[num_carava]' ";
+     if ($_REQUEST[num_carava])
+     $query .= " AND a.num_carava = '$_REQUEST[num_carava]' ";
 
-     if($GLOBALS[destino])
-        $query .= " AND g.cod_ciudad = '$GLOBALS[destino]'";
+     if($_REQUEST[destino])
+        $query .= " AND g.cod_ciudad = '$_REQUEST[destino]'";
 
-     if($GLOBALS[origen])
-        $query .= " AND a.cod_ciuori = '$GLOBALS[origen]'";
+     if($_REQUEST[origen])
+        $query .= " AND a.cod_ciuori = '$_REQUEST[origen]'";
 
         $query .= " GROUP BY 1 ORDER BY 1,4";
 
@@ -281,7 +281,7 @@ class Proc_despac
              $consulta = new Consulta ($query, $this -> conexion);
              $color_a  = $consulta -> ret_arreglo();
 
-             $matriz[$i][0]= "<a href=\"index.php?cod_servic=".$GLOBALS[cod_servic]."&window=central&carava=".$matriz[$i][0]."&despac=".$matriz[$i][4]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+             $matriz[$i][0]= "<a href=\"index.php?cod_servic=".$_REQUEST[cod_servic]."&window=central&carava=".$matriz[$i][0]."&despac=".$matriz[$i][4]."&opcion=1 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
              if($i%2 == 0)
              {
 
@@ -316,7 +316,7 @@ class Proc_despac
    $formulario -> oculto("usuario","$usuario",0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION LISTAR
 
@@ -331,13 +331,13 @@ class Proc_despac
    $hor_actual = date("H:i");
 
    //presenta por defecta la fecha actual
-   if(!isset($GLOBALS[fecnov]))
+   if(!isset($_REQUEST[fecnov]))
 
-      $GLOBALS[fecnov]=$fec_actual;
+      $_REQUEST[fecnov]=$fec_actual;
 
-   if(!isset($GLOBALS[hornov]))
+   if(!isset($_REQUEST[hornov]))
 
-      $GLOBALS[hornov]=$hor_actual;
+      $_REQUEST[hornov]=$hor_actual;
 
       //Encabezado del despacho
       $this -> encabezado();
@@ -355,12 +355,12 @@ class Proc_despac
 
    $query = "SELECT cod_noveda,nom_noveda
                FROM ".BASE_DATOS.".tab_genera_noveda
-               WHERE cod_noveda = '".$GLOBALS[novedad]."' AND
+               WHERE cod_noveda = '".$_REQUEST[novedad]."' AND
                      ind_tiempo = '1' ";
    $consulta = new Consulta($query, $this -> conexion);
    $novedades_a = $consulta -> ret_matriz();
 
-   if($GLOBALS[novedad])
+   if($_REQUEST[novedad])
    $novedades = array_merge($novedades_a,$inicio,$novedades);
    else
    $novedades = array_merge($inicio,$novedades);
@@ -368,7 +368,7 @@ class Proc_despac
   //lista las novedades
   $query = "SELECT ind_tiempo
             FROM ".BASE_DATOS.".tab_genera_noveda
-            WHERE cod_noveda = '".$GLOBALS[novedad]."'
+            WHERE cod_noveda = '".$_REQUEST[novedad]."'
            ORDER BY 1";
 
    $consulta = new Consulta($query, $this -> conexion);
@@ -386,7 +386,7 @@ class Proc_despac
                  b.cod_noveda = d.cod_noveda
            WHERE a.cod_contro = c.cod_contro AND
                  a.num_despac = e.num_despac AND
-                 e.num_carava = '$GLOBALS[carava]' AND
+                 e.num_carava = '$_REQUEST[carava]' AND
                  b.fec_noveda is null ";
 
     //final de los filtros asignados al usuario o perfil actual
@@ -403,7 +403,7 @@ class Proc_despac
                  ".BASE_DATOS.".tab_genera_noveda d ON
                  b.cod_noveda = d.cod_noveda
            WHERE a.cod_contro = c.cod_contro AND
-                 c.cod_contro = '$GLOBALS[codpc]' AND
+                 c.cod_contro = '$_REQUEST[codpc]' AND
                  b.fec_noveda is null ";
 
   //final de los filtros asignados al usuario o perfil actual
@@ -417,7 +417,7 @@ class Proc_despac
                  ".BASE_DATOS.".tab_genera_contro c
            WHERE a.num_despac = b.num_despac AND
                  b.cod_contro = c.cod_contro AND
-                 a.num_carava = '$GLOBALS[carava]' AND
+                 a.num_carava = '$_REQUEST[carava]' AND
                  b.fec_noveda is not null ";
 
     //final de los filtros asignados al usuario o perfil actual
@@ -428,7 +428,7 @@ class Proc_despac
   if($puesto_repor)
   $puestos = array_merge($puesto_repor,$puestos);
 
-  if($GLOBALS[codpc])
+  if($_REQUEST[codpc])
     $puestos = array_merge($puestos_a,$inicio,$puestos);
   else
     $puestos = array_merge($inicio, $puestos);
@@ -447,14 +447,14 @@ class Proc_despac
   $formulario -> oculto("usuario","$usuario",0);
   $formulario -> oculto("tercero","$tercero",0);
   $formulario -> oculto("window","central",0);
-  $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+  $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
   $formulario -> oculto("opcion",1,0);
   if($ind_tiempo[0])
   $formulario -> oculto("tiem",1,0);
   else
   $formulario -> oculto("tiem",0,0);
-  $formulario -> oculto("carava", $GLOBALS[carava],0);
-  $formulario -> oculto("despac",$GLOBALS[despac],0);
+  $formulario -> oculto("carava", $_REQUEST[carava],0);
+  $formulario -> oculto("despac",$_REQUEST[despac],0);
   $formulario -> nueva_tabla();
   $formulario -> boton("Aceptar","button\" onClick=\"aceptar_ins()",0);
   $formulario -> boton("Borrar","reset",1);
@@ -479,7 +479,7 @@ class Proc_despac
                  d.cod_conduc = e.cod_tercer AND
                  a.cod_ciuori = f.cod_ciudad AND
                  a.cod_ciudes = g.cod_ciudad AND
-                 a.num_carava = '".$GLOBALS[carava]."' AND
+                 a.num_carava = '".$_REQUEST[carava]."' AND
                  a.fec_salida Is Not Null AND
                  a.fec_llegad Is Null
                  ORDER BY 1 ";
@@ -502,8 +502,8 @@ class Proc_despac
   //inserta la novedad
 
   $query = "INSERT INTO ".BASE_DATOS.".tab_despac_contro
-            VALUES ('".$despachos[$i][0]."', '$nuevo_consec','$GLOBALS[obs]', '$GLOBALS[novedad]','$GLOBALS[tiem_duraci]' ,'$fec_actual',
-            '$GLOBALS[usuario]', '$fec_actual', '$GLOBALS[usuario]', '$fec_actual')";
+            VALUES ('".$despachos[$i][0]."', '$nuevo_consec','$_REQUEST[obs]', '$_REQUEST[novedad]','$_REQUEST[tiem_duraci]' ,'$fec_actual',
+            '$_REQUEST[usuario]', '$fec_actual', '$_REQUEST[usuario]', '$fec_actual')";
 
   $insercion = new Consulta($query, $this -> conexion, "BR");
 
@@ -523,7 +523,7 @@ class Proc_despac
            {
                //inserta la novedad
                 //ins_noveda($bd_interf,nit_transp,$despac_sad,$pc_noveda, $noveda, $tiempo,$observ= "",$ind_interf=1)
-               if($interfaz -> ins_notas($interf[$i][2],NIT_TRANSPOR,$despachos[$i][0],$GLOBALS[codpc],$GLOBALS[novedad],$fec_actual,$GLOBALS[tiem_duraci],$GLOBALS[obs]))
+               if($interfaz -> ins_notas($interf[$i][2],NIT_TRANSPOR,$despachos[$i][0],$_REQUEST[codpc],$_REQUEST[novedad],$fec_actual,$_REQUEST[tiem_duraci],$_REQUEST[obs]))
                    echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Novedad registrada en ".$interf[$i][1]." <br>";
               else
               {
@@ -566,7 +566,7 @@ class Proc_despac
                    b.cod_rutasx = c.cod_rutasx AND
                    a.cod_contro = c.cod_contro AND
                    a.num_despac = '".$des."' AND
-                   a.cod_contro = '$GLOBALS[codpc]' ";
+                   a.cod_contro = '$_REQUEST[codpc]' ";
  $consulta = new Consulta($query, $this -> conexion);
  $actual = $consulta -> ret_matriz();
 
@@ -599,10 +599,10 @@ class Proc_despac
    //trae el tiempo al puesto de control
    $tiempo=$actual[0][1];
 
-   if($GLOBALS[tiem_duraci])
+   if($_REQUEST[tiem_duraci])
       for($i=0; $i < sizeof($contro); $i++)
       {
-            $contro[$i][1] = $contro[$i][1]+$GLOBALS[tiem_duraci];
+            $contro[$i][1] = $contro[$i][1]+$_REQUEST[tiem_duraci];
       }
 
 
@@ -646,10 +646,10 @@ class Proc_despac
 
   $query = "UPDATE  ".BASE_DATOS.".tab_despac_seguim
                 SET  fec_alarma = '$fec_actual',
-                     usr_modifi = '$GLOBALS[usuario]',
+                     usr_modifi = '$_REQUEST[usuario]',
                      fec_modifi = '$fec_actual'
                WHERE num_despac = '".$des."' AND
-                     cod_contro = '$GLOBALS[codpc]'";
+                     cod_contro = '$_REQUEST[codpc]'";
 
    $update = new Consulta($query, $this -> conexion, "R");
 
@@ -662,7 +662,7 @@ class Proc_despac
 
                     $query = "UPDATE  ".BASE_DATOS.".tab_despac_seguim
                               SET  fec_alarma = DATE_ADD('$fec_actual', INTERVAL ".$contro[$i][1]." MINUTE),
-                                   usr_modifi = '$GLOBALS[usuario]',
+                                   usr_modifi = '$_REQUEST[usuario]',
                                    fec_modifi = '$fec_actual'
                              WHERE num_despac = '".$des."' AND
                                    cod_contro = '".$contro[$i][0]."'";
@@ -716,7 +716,7 @@ function encabezado($tit= "Caravanas"){
                  d.cod_conduc = e.cod_tercer AND
                  a.cod_ciuori = f.cod_ciudad AND
                  a.cod_ciudes = g.cod_ciudad AND
-                 a.num_carava = '".$GLOBALS[carava]."' AND
+                 a.num_carava = '".$_REQUEST[carava]."' AND
                  a.fec_salida Is Not Null AND
                  a.fec_llegad Is Null
                  GROUP BY 1 ORDER BY 1 ";
@@ -728,7 +728,7 @@ function encabezado($tit= "Caravanas"){
   $formulario = new Formulario ("index.php","post","","form");
 
   $formulario -> nueva_tabla();
-  $formulario -> linea("DATOS DE LA CARAVANA NUMERO ".$GLOBALS[carava]." ",0);
+  $formulario -> linea("DATOS DE LA CARAVANA NUMERO ".$_REQUEST[carava]." ",0);
   $formulario -> nueva_tabla();
    if(sizeof($encabe) > 0)
    {

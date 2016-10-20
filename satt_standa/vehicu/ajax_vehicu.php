@@ -313,7 +313,7 @@ class Ajax
                     ON a.cod_config = c.cod_config LEFT JOIN ".BD_STANDA.".tab_minist_martra b 
                     ON a.cod_marcax = b.cod_martra   
                WHERE    
-                    a.num_trayle LIKE '%$GLOBALS[trayle]%' ";    
+                    a.num_trayle LIKE '%$_REQUEST[trayle]%' ";    
                     
       //echo $mSql;
       return $mSql;                    

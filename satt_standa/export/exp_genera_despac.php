@@ -23,15 +23,10 @@ class Proc_exp_enruta {
         $mHost = explode('.', $mHost);
 
         switch ($mHost[0]) {
-            case 'web7':
-                self::$cBD = "bd7.intrared.net:3306";
-                break;
-            case 'web13':
-                self::$cBD = "bd13.intrared.net:3306";
-                break;
-            case 'web10':
-                self::$cBD = "bd10.intrared.net";
-                break;
+            case 'web7':      self::$cBD = "bd7.intrared.net:3306";  break;
+            case 'web13':     self::$cBD = "bd13.intrared.net:3306"; break;
+            case 'avansatgl': self::$cBD = "aglbd.intrared.net";     break;
+            default:          self::$cBD = "demo.intrared.net";      break;
         }
 
         $this->conexion = new Conexion(self::$cBD, USUARIO, CLAVE, $_REQUEST["db"]);

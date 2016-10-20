@@ -952,7 +952,7 @@ class Interfaz
 
                                '$datos[dir_emailx]','$datos[cod_ciudad]','$datos[obs_tercer]',
 
-                               '1', '$GLOBALS[usuario]', NOW())";
+                               '1', '$_REQUEST[usuario]', NOW())";
 
             $insert = new Consulta($query, $this -> conexion,"R");
 
@@ -971,7 +971,7 @@ class Interfaz
             }
 
             $query = "INSERT INTO ".$bd_interf.".tab_tercer_emptra (cod_tercer, cod_emptra, usr_creaci, fec_creaci)
-                      VALUES ('$cod_tercer','$cod_transp','$GLOBALS[usuario]', NOW())";
+                      VALUES ('$cod_tercer','$cod_transp','$_REQUEST[usuario]', NOW())";
 
             $insert = new Consulta($query, $this -> conexion,"R");
             return true;
@@ -1134,7 +1134,7 @@ class Interfaz
 
             $query = "INSERT INTO ".$bd_interf.".tab_genera_teract (cod_tercer,cod_activi,usr_creaci, fec_creaci)
 
-                      VALUE ('$nit','$activi','$GLOBALS[usuario]',NOW()) ";
+                      VALUE ('$nit','$activi','$_REQUEST[usuario]',NOW()) ";
 
             $insert = new Consulta($query, $this -> conexion,"R");
 
@@ -1176,7 +1176,7 @@ class Interfaz
 
                                '$datos[val_pesove]','$datos[cod_propie]','$datos[cod_tenedo]',
 
-                               '$datos[cod_conduc]','$GLOBALS[usuario]', NOW())";
+                               '$datos[cod_conduc]','$_REQUEST[usuario]', NOW())";
 
             $insert = new Consulta($query, $this -> conexion,"R");
 
@@ -1184,7 +1184,7 @@ class Interfaz
 
             $query = "INSERT INTO ".$bd_interf.".tab_vehige_emptra (num_placax, cod_emptra, usr_creaci, fec_creaci)
 
-                      VALUES ('$num_placa','$cod_transp','$GLOBALS[usuario]', NOW())";
+                      VALUES ('$num_placa','$cod_transp','$_REQUEST[usuario]', NOW())";
 
             $insert = new Consulta($query, $this -> conexion,"R");
 
@@ -1226,7 +1226,7 @@ class Interfaz
 
                         $query = "INSERT INTO ".$bd_interf.".tab_vehige_emptra (num_placax, cod_emptra, usr_creaci, fec_creaci)
 
-                                  VALUES ('$num_placa','$cod_transp','$GLOBALS[usuario]', NOW())";
+                                  VALUES ('$num_placa','$cod_transp','$_REQUEST[usuario]', NOW())";
 
                         $insert = new Consulta($query, $this -> conexion,"R");
 
@@ -1405,7 +1405,7 @@ class Interfaz
 
                               '$ciuori','$ciudes','$obsgen',
 
-                              '$GLOBALS[usuario]', NOW() )";
+                              '$_REQUEST[usuario]', NOW() )";
 
             $consulta = new Consulta($query, $this -> conexion,"R");
 
@@ -1488,9 +1488,9 @@ function ins_fec_salpl($bd_interf,$cod_transp,$despac_sad,$fecha_sal,$nov_antici
 
                                  VALUES ('$despac_interf', '".$puesto."','".$nov."',
 
-                                         '".$nov_antici[$k][2]."','$GLOBALS[usuario]',NOW(),
+                                         '".$nov_antici[$k][2]."','$_REQUEST[usuario]',NOW(),
 
-                                          '$GLOBALS[usuario]',NOW())";
+                                          '$_REQUEST[usuario]',NOW())";
 
                       $consulta = new Consulta($query, $this -> conexion);
 
@@ -1558,7 +1558,7 @@ function ins_fec_salpl($bd_interf,$cod_transp,$despac_sad,$fecha_sal,$nov_antici
 
                           obs_despac = '$despac_sad[obsgrl]',
 
-                          usr_modifi = '$GLOBALS[usuario]',
+                          usr_modifi = '$_REQUEST[usuario]',
 
                           fec_modifi = NOW()
 
@@ -1584,7 +1584,7 @@ function ins_fec_salpl($bd_interf,$cod_transp,$despac_sad,$fecha_sal,$nov_antici
 
                           ind_activo = 'N',
 
-                          usr_modifi = '$GLOBALS[usuario]'
+                          usr_modifi = '$_REQUEST[usuario]'
 
                           fec_modifi = NOW()
 
@@ -1748,7 +1748,7 @@ function ins_fec_salpl($bd_interf,$cod_transp,$despac_sad,$fecha_sal,$nov_antici
 
       if(!$j)
       {
-       echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ninguno de Los Puestos de Control Seleccionados Se Encuentra Homologado en Interfaz ".$this -> nom_interf[$this -> cant_interf - 1][0].", o Se Encuentra Homologado Con Un Puesto De Control en Ruta Diferente. Se Interrumpe la Salida del Vehiculo Placa <b>$GLOBALS[placa]</b>.<br>";
+       echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ninguno de Los Puestos de Control Seleccionados Se Encuentra Homologado en Interfaz ".$this -> nom_interf[$this -> cant_interf - 1][0].", o Se Encuentra Homologado Con Un Puesto De Control en Ruta Diferente. Se Interrumpe la Salida del Vehiculo Placa <b>$_REQUEST[placa]</b>.<br>";
 
        exit;
       }
@@ -2051,7 +2051,7 @@ function ins_fec_salpl($bd_interf,$cod_transp,$despac_sad,$fecha_sal,$nov_antici
 
       if(!$j)
       {
-       echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ninguno de Los Puestos de Control Seleccionados Se Encuentra Homologado en Interfaz ".$this -> nom_interf[$this -> cant_interf - 1][0].", o Se Encuentra Homologado Con Un Puesto De Control en Ruta Diferente. Se Interrumpe la Salida del Vehiculo Placa <b>$GLOBALS[placa]</b>.<br>";
+       echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ninguno de Los Puestos de Control Seleccionados Se Encuentra Homologado en Interfaz ".$this -> nom_interf[$this -> cant_interf - 1][0].", o Se Encuentra Homologado Con Un Puesto De Control en Ruta Diferente. Se Interrumpe la Salida del Vehiculo Placa <b>$_REQUEST[placa]</b>.<br>";
 
        exit;
       }
@@ -2339,7 +2339,7 @@ function ins_fec_salpl($bd_interf,$cod_transp,$despac_sad,$fecha_sal,$nov_antici
        }
       }
 
-      $tieacu = $GLOBALS[tiemp_adicis];
+      $tieacu = $_REQUEST[tiemp_adicis];
 
       for($i = 0; $i < sizeof($pcontro); $i++)
       {
@@ -2961,7 +2961,7 @@ function ins_fec_salpl($bd_interf,$cod_transp,$despac_sad,$fecha_sal,$nov_antici
 
                                 SET  fec_alarma = DATE_ADD('$fech1', INTERVAL ".$contro[$i][1]." MINUTE),
 
-                                     usr_modifi = '$GLOBALS[usuario]',
+                                     usr_modifi = '$_REQUEST[usuario]',
 
                                      fec_modifi = '$fec_actual'
 

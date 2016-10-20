@@ -20,11 +20,11 @@ class Proc_filtro
 //********METODOS
  function principal()
  {
-  if(!isset($GLOBALS[opcion]))
+  if(!isset($_REQUEST[opcion]))
     $this -> Buscar();
   else
      {
-      switch($GLOBALS[opcion])
+      switch($_REQUEST[opcion])
        {
         case "1":
           $this -> Resultado();
@@ -56,7 +56,7 @@ class Proc_filtro
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> boton("Buscar","button\" onClick=\"aceptar_act() ",0);
    $formulario -> boton("Ver Todas","button\" onClick=\"form_list.submit() ",0);
    $formulario -> cerrar();
@@ -71,12 +71,12 @@ class Proc_filtro
    $usuario=$datos_usuario["cod_usuari"];
   $query = "SELECT cod_filtro,nom_filtro,cod_queryx
             FROM ".CENTRAL.".tab_genera_filtro
-           WHERE nom_filtro LIKE '%$GLOBALS[filtro]%'
+           WHERE nom_filtro LIKE '%$_REQUEST[filtro]%'
         ORDER BY 2";
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
   for($i=0;$i<sizeof($matriz);$i++)
-      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$GLOBALS[cod_servic]&window=central&filtro=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&filtro=".$matriz[$i][0]."&opcion=2 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
 
    $formulario = new Formulario ("index.php","post","RESULTADO DE LA CONSULTA","form_item");
    $formulario -> linea("<b>SE ENCONTRARON ".sizeof($matriz)." REGISTROS</b>",0);
@@ -124,7 +124,7 @@ class Proc_filtro
    $formulario -> oculto("opcion",1,0);
    $formulario -> oculto("valor",$valor,0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$GLOBALS[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
    $formulario -> cerrar();
  }//FIN FUNCION ACTUALIZAR
 // *****************************************************
@@ -134,7 +134,7 @@ class Proc_filtro
  {
   $query = "SELECT cod_filtro,nom_filtro,cod_queryx
             FROM ".CENTRAL.".tab_genera_filtro
-           WHERE cod_filtro = '$GLOBALS[filtro]' ";
+           WHERE cod_filtro = '$_REQUEST[filtro]' ";
   $consec = new Consulta($query, $this -> conexion);
   $matriz = $consec -> ret_matriz();
 
@@ -144,8 +144,8 @@ class Proc_filtro
    $formulario -> texto("Código SQL:","textarea","query", 1,40,5,"","".$matriz[0][2]."");
  	 $formulario -> nueva_tabla();
    $formulario -> oculto("opcion",3, 0);
-   $formulario -> oculto("filtro","$GLOBALS[filtro]", 0);
-   $formulario -> oculto("cod_servic", $GLOBALS["cod_servic"], 0);
+   $formulario -> oculto("filtro","$_REQUEST[filtro]", 0);
+   $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0);
    $formulario -> oculto("window","central", 0);
    $formulario -> boton("Actualizar","submit",0);
    $formulario -> boton("Borrar","reset",0);
@@ -157,11 +157,11 @@ class Proc_filtro
  function Actualizar()
  {
   $query = "UPDATE ".CENTRAL.".tab_genera_filtro
-               SET nom_filtro = '$GLOBALS[nombre]',
-                   cod_queryx = '$GLOBALS[query]'
-             WHERE cod_filtro = '$GLOBALS[filtro]' ";
+               SET nom_filtro = '$_REQUEST[nombre]',
+                   cod_queryx = '$_REQUEST[query]'
+             WHERE cod_filtro = '$_REQUEST[filtro]' ";
   $consec = new Consulta($query, $this -> conexion);
-  echo "<br><br><b>TRANSACCION EXITOSA<br>EL FILTRO $GLOBALS[nombre] FUE ACTUALIZADO <b>";
+  echo "<br><br><b>TRANSACCION EXITOSA<br>EL FILTRO $_REQUEST[nombre] FUE ACTUALIZADO <b>";
   $formulario = new Formulario ("index.php","post","","form_item");
   $formulario -> boton("Volver <==","button\" onClick=\"javascript:history.go(-2)",0);
   $formulario -> cerrar();
