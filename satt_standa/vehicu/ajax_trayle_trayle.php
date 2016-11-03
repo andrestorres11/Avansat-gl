@@ -1062,7 +1062,7 @@ class trayle{
         if(!$existe){
           $query = "INSERT INTO ".BASE_DATOS.".tab_transp_tercer
                          (cod_transp,cod_tercer,usr_creaci,fec_creaci)
-                            VALUES ('$vehicu->cod_transp',$vehicu->cod_tenedo','$vehicu->usr_creaci','$vehicu->fec_creaci')";
+                            VALUES ('$vehicu->cod_transp','$vehicu->cod_tenedo','$vehicu->usr_creaci','$vehicu->fec_creaci')";
                   $insercion = new Consulta($query,self::$cConexion,"R");
         }
       }
