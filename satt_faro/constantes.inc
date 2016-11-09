@@ -32,6 +32,9 @@ switch ($mHost[0]) {
 	default: $mBD = 'aglbd.intrared.net'; break; #Esta URL No existe!
 }
 
+
+
+
 define("HOST", $mBD);
 define("HOST_WEB", $mHost[0]);   #Host Actual
 define("HOST_WEB_DEV", "web7");  #Host Desarrollo
