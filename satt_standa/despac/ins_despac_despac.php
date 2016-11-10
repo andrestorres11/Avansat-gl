@@ -1383,7 +1383,7 @@ else
       $mInsert = "INSERT INTO  ".BASE_DATOS.".tab_despac_viajex 
                   ( num_despac, num_viajex, cod_transp, usr_creaci, fec_creaci ) 
                   VALUES 
-                  ('{$nuevo_consec}','VJ-{$_POST[viaje]}', '{$_REQUEST[transp]}','{$_REQUEST['usuario']}', NOW() ) ";
+                  ('{$nuevo_consec}','VS-{$_POST[viaje]}', '{$_REQUEST[transp]}','{$_REQUEST['usuario']}', NOW() ) ";
       $consulta = new Consulta($mInsert, $this -> conexion, "R");
     }
 
