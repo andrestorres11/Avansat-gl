@@ -37,12 +37,22 @@ $(function() {
 
     $("body").removeAttr("class");
 
+
+    $( "#cod_operacID" ).change( function( event ){
+
+        data = "Option=getSubOperad&cod_operad="+$(this).val();
+        $("#cod_subopeID").html("<option value=''>--</option>");
+        
+        AjaxGetXml("../"+standa+"/extenc/ajax_extenc_extenc.php", data, "post" );
+    });
+ 
 });
 
 function informeLlamadasEntrantes(pestana) {
     var fec_inicia = $("#fec_iniciaID").val();
     var fec_finali = $("#fec_finaliID").val();
     var cod_operac = $("#cod_operacID").val();
+    var cod_subope = $("#cod_subopeID").val();
     var errores = false;
     //valido la fecha inicial y la final
     if (!fec_inicia) {
@@ -70,7 +80,7 @@ function informeLlamadasEntrantes(pestana) {
                 var num_celula = $("#num_celulaID").val();
                 var standa = $("#standaID").val();
                 //llamo a la funcion ajax para pintar los datos 
-                var formData = "Option=informeLlamadasEntrantes&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali + "&cod_operac=" + cod_operac + "&num_celula=" + num_celula + "&pestana=" + pestana;
+                var formData = "Option=informeLlamadasEntrantes&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali + "&cod_operac=" + cod_operac + "&num_celula=" + num_celula + "&pestana=" + pestana + "&cod_subope=" + cod_subope;
                 $.ajax({
                     url: "../" + standa + "/extenc/ajax_extenc_extenc.php",
                     type: "POST",
@@ -398,8 +408,9 @@ function register(operacion) {
 
 function detalle(cod_operac, fec_inicia, fec_finali, tipo_consulta) {
     var fecha_inicial = $("#fec_iniciaID").val();
-    var fecha_final = $("#fec_finaliID").val();
-    var formData = "Option=GetDetalle&Ajax=on&cod_operac=" + cod_operac + "&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali + "&tipo=" + tipo_consulta + "&fecha_inicial=" + fecha_inicial + "&fecha_final=" + fecha_final + "&num_celula=" + $("#num_celulaID").val();
+    var fecha_final = $("#fec_finaliID").val(); 
+    var cod_subope = $("#cod_subopeID").val();
+    var formData = "Option=GetDetalle&Ajax=on&cod_operac=" + cod_operac + "&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali + "&tipo=" + tipo_consulta + "&fecha_inicial=" + fecha_inicial + "&fecha_final=" + fecha_final + "&num_celula=" + $("#num_celulaID").val() + "&cod_subope=" + cod_subope;
     var standa = $("#standaID").val();
     //cierra popUp si hay inicialiado
     closePopUp('popID');

@@ -17,12 +17,8 @@ class Ins_extenc_extenc {
         $this->usuario = $us;
         $this->cod_aplica = $ca;
         self::$cFunciones = new extenc($co, $us, $ca);
-        switch ($_REQUEST[option]) {
-
-          case 'getExcelLlamadas':
-              $this->getExcelLlamadas();
-          break;
-
+        
+        switch ($GLOBALS[option]) {
             default:
                 $this->filtro();
             break;
@@ -95,6 +91,8 @@ class Ins_extenc_extenc {
                     <div class="col-md-3"><input type="text" maxlength="10" style="width: 100%" value="<?= $hoy ?>" size="10" id="fec_finaliID" readonly="" name="fec_finali"></div>
                     <div class="col-md-3">Celular: </div>
                     <div class="col-md-3"><input type="text" minlength="10" style="width: 100%" maxlength="10" size="10" id="num_celulaID" name="num_celula"></div>
+                    <div class="col-md-3">Sub Operacion: </div>
+                    <div class="col-md-3"><select id="cod_subopeID"></select></div>
                   </td>
                 </tr>
                     <div id="ocultos" style="display:block">
@@ -106,7 +104,7 @@ class Ins_extenc_extenc {
             </div>
           </div>
         </div>
-          <div class="col-md-12 tabs" id="tabs">
+          <div class="col-md-12 tabs ancho" id="tabs">
              <ul>
                <li><a id="liGenera" href="#generaID" style="cursor:pointer" onclick="informeLlamadasEntrantes('generaID')">INFORME</a></li>
               <!-- <li><a id="liContes" href="#contesID" onclick="informeLlamadasEntrantes('contesID')">CONTESTADAS</a></li>
@@ -125,17 +123,6 @@ class Ins_extenc_extenc {
 
         # Muestra Html
         echo $mHtml->MakeHtml();
-    }
-
-    function getExcelLlamadas(){
-      $archivo = "Listado_de_llamadas.xls";
-      header('Content-Type: application/octetstream');
-      header('Expires: 0');
-      header('Content-Disposition: attachment; filename="'.$archivo.'"');
-      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-      header('Pragma: public');
-      flush();
-      echo $_REQUEST['datosPintar'];
     }
 }
 

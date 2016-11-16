@@ -69,6 +69,7 @@ class infCallCe
 		$mTransp = self::$cCallCe -> getTransp();
 		$mTipDes = self::$cCallCe -> getTipoDespac();
 		$mTipTra = self::$cCallCe -> getTipoTransp();
+		$mTipOpe = self::$cCallCe -> getTipOperad();
 		$mHtml1 = '';
 		$mHtml2 = '';
 		$mScript = '';
@@ -119,6 +120,10 @@ class infCallCe
 						$mHtml .= self::$cCallCe -> lista( 'Tipo de Despacho:', 'cod_tipdes', array_merge( self::$cNull, $mTipDes), 'cellInfo1' );
 						$mHtml .= self::$cCallCe -> lista( 'Tipo de Transporte:', 'cod_tiptra', array_merge( self::$cNull, $mTipTra), 'cellInfo1' );
 						$mHtml .= self::$cCallCe -> lista( 'Estado Llamada:', 'nom_estado', array_merge( self::$cNull, $mEstado), 'cellInfo1' );
+						$mHtml .= '</tr>';
+
+						$mHtml .= '<tr>'; 
+						$mHtml .= self::$cCallCe -> lista( 'Tipo Operación:', 'cod_operad', array_merge( self::$cNull, $mTipOpe), 'cellInfo1' );
 						$mHtml .= '</tr>';
 
 						$mHtml .= '<input id="windowID" type="hidden" value="central" name="window">';
