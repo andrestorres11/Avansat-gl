@@ -641,6 +641,7 @@ function validateCumpliSeguimCargue2() {
 }
 
 function SaveFechaAdicio(index) {
+	/*
 	var dir_aplica = document.getElementById("dir_aplicaID");
 	var tip_fechax = $("#tip_comple" + index);
 	var fec_comple = $("#fec_comple" + index);
@@ -688,9 +689,11 @@ function SaveFechaAdicio(index) {
 			}
 		});
 	}
+	*/
 }
 
 function SaveCumdes(index) {
+	/*
 	var message = new Array();
 	var dir_aplica = document.getElementById("dir_aplicaID");
 	var atributes = "ind_cumdes=" + $("input:radio[name=ind_cumdes" + index + "]:checked").val();
@@ -751,9 +754,11 @@ function SaveCumdes(index) {
 			$.unblockUI();
 		}
 	});
+	*/
 }
 
 function SaveCumdesCliente(index, cliente) {
+	/*
 	var message = new Array();
 	var dir_aplica = document.getElementById("dir_aplicaID");
 	var atributes = "ind_cliente_cumdes=" + $("input:radio[name=ind_cliente_cumdes" + index + "]:checked").val();
@@ -810,6 +815,7 @@ function SaveCumdesCliente(index, cliente) {
 			$.unblockUI();
 		}
 	});
+	*/
 }
 
 /* FUNCIONES PARA ELIMINAR O EDITAR ---------------------------------------------------------------------------------------------------------------- */
