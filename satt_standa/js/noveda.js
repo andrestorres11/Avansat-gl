@@ -124,12 +124,13 @@ function aceptar_ins() {
 									data: attributes,
 									async: false,
 									success: function(data) {
-										if (data == '1') {
+										/*if (data == '1') {
 											alert("Por favor diligencie la grilla de descargue");
 											return false;
 										} else {
 											confirmAceptarIns();
-										}
+										}*/
+											confirmAceptarIns();
 									}
 								});
 							} else {
