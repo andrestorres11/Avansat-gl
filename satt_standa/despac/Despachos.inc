@@ -3291,7 +3291,15 @@ class Despachos
             }
             else
             {
-              if( $_SESSION['datos_usuario']['cod_perfil'] == 713 || $_SESSION['datos_usuario']['cod_perfil'] == 1 )
+              if(  $_SESSION['datos_usuario']['cod_perfil'] == 712 ||
+                   $_SESSION['datos_usuario']['cod_perfil'] == 711 ||
+                   $_SESSION['datos_usuario']['cod_perfil'] == 711 ||
+                   $_SESSION['datos_usuario']['cod_perfil'] == 710 ||
+                   $_SESSION['datos_usuario']['cod_perfil'] == 709 ||
+                   $_SESSION['datos_usuario']['cod_perfil'] == 708 ||
+                   $_SESSION['datos_usuario']['cod_perfil'] == 713 ||
+                   $_SESSION['datos_usuario']['cod_perfil'] == 1 
+                )
               {
                 foreach( $mTittlePlanRut as $tittle )
                   $mHtml->Label( $tittle, array("align"=>"left", "class"=>"celda_titulo") );
