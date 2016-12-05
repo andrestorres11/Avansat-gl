@@ -61,7 +61,7 @@ class infBandeja
 		$mTipoDespac = self::$cDespac -> getTipoDespac();
 		$mArrayTransp = self::$cDespac -> getTransp();
 		$mArrayUserAs = self::$cDespac -> getUserAsig();
-		$mUsrSinAsig = array( array('SIN', 'NO REGISTRA') );
+		$mUsrSinAsig = array( array('SIN', 'SIN ASIGNAR') );
 		$mView = self::$cDespac -> getView('jso_bandej');
 
 		#<div FILTROS GENERALES>
