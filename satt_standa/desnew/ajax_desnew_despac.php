@@ -320,8 +320,9 @@ class AjaxInsertDespacho
     
     $mHtml .= '<form id="MainFormID" action="index.php" method="post" name="MainForm">';
     #pregunto si tiene configurados cargue y descargue
-    $TransTipser = getTransTipser($this->conexion, "AND a.cod_transp = '".$_AJAX['cod_transp']."'");
-    
+    $TransTipser = $this -> getTransTipser(  $_AJAX['cod_transp'] );
+
+ 
     $ind_segcarg = $TransTipser[0]['ind_segcar'];
     $ind_segdeca = $TransTipser[0]['ind_segdes'];
 
@@ -348,6 +349,22 @@ class AjaxInsertDespacho
     $mHtml .= '</form>';
     
     echo $mHtml; 
+  }
+
+  private function getTransTipser( $mCodTransp = NULL)
+  {
+     $mSql = "  SELECT  a.ind_segcar, a.ind_segtra,  a.ind_segdes
+                      FROM ".BASE_DATOS.".tab_transp_tipser a
+                      WHERE num_consec = (
+                                                SELECT MAX(c.num_consec) AS num_consec
+                                                  FROM ".BASE_DATOS.".tab_transp_tipser c 
+                                                 WHERE c.cod_transp = '".$mCodTransp."'
+                                             
+                                         ) AND
+                            cod_transp = '".$mCodTransp."'   ";  
+
+      $mConsult = new Consulta( $mSql, $this->conexion );
+      return $mResult = $mConsult -> ret_matrix('a');
   }
   
   private function SetDestinos( $_AJAX )
