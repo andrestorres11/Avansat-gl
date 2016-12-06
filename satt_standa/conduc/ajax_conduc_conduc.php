@@ -162,14 +162,27 @@ class conduc{
 
       $conduc = (object) $_POST['conduc']; #datos principales del conductor
       $conduc->abr_tercer = $conduc->nom_apell1." ".$conduc->nom_tercer;
+
       #pregunto si ya hay alguien con ese documento registrado
-      $query = "SELECT cod_tercer
-            FROM ".BASE_DATOS.".tab_tercer_tercer
-            WHERE cod_tercer = '$conduc->cod_tercer'";
+      $query = "SELECT a.cod_tercer as tercer,b.cod_tercer as conductor,c.cod_tercer as actconduc,d.cod_tercer as actpropie,c.cod_tercer as actposeed
+            FROM ".BASE_DATOS.".tab_tercer_tercer a 
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc b
+             on b.cod_tercer=a.cod_tercer
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_activi c
+             on c.cod_tercer=a.cod_tercer and c.cod_activi=".COD_FILTRO_CONDUC." 
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_activi d
+             on d.cod_tercer=a.cod_tercer and d.cod_activi=".COD_FILTRO_PROPIE." 
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_activi e
+             on e.cod_tercer=a.cod_tercer and e.cod_activi=".COD_FILTRO_POSEED." 
+            WHERE a.cod_tercer = '$conduc->cod_tercer'";
       $consulta = new Consulta($query,  self::$cConexion, "BR");
-      $indter = $consulta -> ret_arreglo();
-      if(!$indter){
-       
+      $rq1 = $consulta -> ret_matrix("a");
+      $existe_tercero = $rq1 ? true : false;
+      $existe_conductor = $rq1 ?  isset($rq1[0]["conductor"]) : false;
+      $actconduc = $rq1 ?  isset($rq1[0]["actconduc"]) : false;
+      $actpropie = $rq1 ?  isset($rq1[0]["actpropie"]) : false;
+      $actposeed = $rq1 ?  isset($rq1[0]["actposeed"]) : false;
+
         $conduc->cod_estado = 1;
 
         $fec_actual = date("Y-m-d H:i:s");
@@ -205,7 +218,7 @@ class conduc{
                           '$conduc->cod_tercer','$conduc->cod_tipdoc','$conduc->nom_apell1','$conduc->nom_apell2','$conduc->nom_tercer','$conduc->abr_tercer',
                           '$conduc->dir_domici','$conduc->num_telef1','$conduc->num_telef2','$conduc->num_telmov','$conduc->cod_paisxx','$conduc->cod_depart',
                           '$conduc->cod_ciudad','$conduc->cod_estado','$conduc->dir_ultfot','$conduc->obs_tercer','$conduc->usr_creaci','$conduc->fec_creaci') ";
-          $insercion = new Consulta($query, self::$cConexion, "BR");
+          if(!$existe_tercero) $insercion = new Consulta($query, self::$cConexion, "BR");
 
           #inserta la relacion entre el conductor y la transportadora si no existe previamente
           $query = "SELECT cod_transp FROM ".BASE_DATOS.".tab_transp_tercer WHERE cod_transp = '$conduc->cod_transp' AND cod_tercer = '$conduc->cod_tercer'";
@@ -227,19 +240,19 @@ class conduc{
               VALUES ('$conduc->cod_tercer','$conduc->cod_tipsex','$conduc->cod_grupsa','$conduc->num_licenc','$conduc->num_catlic','$conduc->fec_venlic',
                       '$conduc->cod_califi','$conduc->nom_epsxxx','$conduc->nom_arpxxx','$conduc->nom_pensio','$conduc->nom_refper','$conduc->tel_refper',
                       '$conduc->cod_operad','$conduc->usr_creaci','$conduc->fec_creaci')";
-          $insercion = new Consulta($query,self::$cConexion,"R");
+          if(!$existe_conductor) $insercion = new Consulta($query,self::$cConexion,"R");
 
           #inserta los adicionales y referencias laborles
           $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
               VALUES ('$conduc->cod_tercer',".COD_FILTRO_CONDUC.")";
-          $insercion = new Consulta($query,self::$cConexion,"R");
+          if(!$actconduc) $insercion = new Consulta($query,self::$cConexion,"R");
 
-           if($conduc->cod_propie==1){
+           if($conduc->cod_propie==1 && !$actpropie){
               $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
                     VALUES ('$conduc->cod_tercer',".COD_FILTRO_PROPIE.")";
             $insercion = new Consulta($query,self::$cConexion,"R");
            }
-           if($conduc->cod_tenedo==1){
+           if($conduc->cod_tenedo==1 && !$actposeed){
              $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
                     VALUES ('$conduc->cod_tercer',".COD_FILTRO_POSEED.")";
              $insercion = new Consulta($query,self::$cConexion,"R");
@@ -281,22 +294,6 @@ class conduc{
             echo $mens->error2("INSERTAR CONDUCTOR", $mensaje);*/
 
         }
-      }else{// si ya existe lo asocio a la nueva transportadora y llamo a la funcion modificar
-        $query = "SELECT cod_transp FROM ".BASE_DATOS.".tab_transp_tercer WHERE cod_transp = '$conduc->cod_transp' AND cod_tercer = '$conduc->cod_tercer'";
-          $consulta = new Consulta($query, self::$cConexion);
-          $existe = $consulta->ret_matriz("a");
-
-          if(!$existe){
-            #inserta la relacion entre el conductor y la transportadora
-            $query = "INSERT INTO ".BASE_DATOS.".tab_transp_tercer
-                   (cod_transp,cod_tercer,usr_creaci,fec_creaci)
-                      VALUES ('$conduc->cod_transp','$conduc->cod_tercer','$conduc->usr_creaci','$conduc->fec_creaci')";
-            $insercion = new Consulta($query,self::$cConexion,"R");
-          }
-          $this->modificar("Registró");
-         
-
-      }
     }
 
     /*****************************************************************************
