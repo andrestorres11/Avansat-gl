@@ -217,7 +217,7 @@ class Ins_conduc_conduc {
             </tr>
             <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683; border-bottom: 2px solid  #8A8683;">
               <td colspan="2" style="text-align:center"><br><br><br><br><br>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _<br>Firma y Cédula del Conductor</b></b></td>
-              <td colspan="2" style="text-align:center"><?php if($datos->principal->dir_ultfot != "NULL" && $datos->principal->dir_ultfot != NULL && $datos->principal->dir_ultfot != ""){ ?><img  width="128px"; height="128px" src="../<?= NOM_URL_APLICA ?>/fotcon/<?= $datos->principal->dir_ultfot ?>"/> <?php }else { ?> <img src="../<?= DIR_APLICA_CENTRAL ?>/imagenes/silueta.png"/> <?php } ?></td>
+              <td colspan="2" style="text-align:center"><?php if($datos->principal->dir_ultfot != "NULL" && $datos->principal->dir_ultfot != NULL && $datos->principal->dir_ultfot != ""){ ?><img  width="128px"; height="128px" src="<?= $datos->principal->dir_ultfot ?>"/> <?php }else { ?> <img src="imagenes/silueta.png"/> <?php } ?></td>
               <td colspan="2" style="text-align:center"><img src="../<?= DIR_APLICA_CENTRAL ?>/imagenes/huella.png"/><br><b>Huella</b></td>              
             </tr>
         </table>
