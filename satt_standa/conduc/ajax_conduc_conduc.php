@@ -111,7 +111,7 @@ class conduc{
                     FROM ".BASE_DATOS.".tab_tercer_tercer a 
                          INNER JOIN ".BASE_DATOS.".tab_transp_tercer b ON a.cod_tercer = b.cod_tercer
                          INNER JOIN ".BASE_DATOS.".tab_tercer_conduc c ON c.cod_tercer = b.cod_tercer
-                         INNER JOIN ".BASE_DATOS.".tab_genera_catlic d ON c.num_catlic = d.cod_catlic
+                         LEFT JOIN ".BASE_DATOS.".tab_genera_catlic d ON c.num_catlic = d.cod_catlic
                    WHERE a.cod_tercer = c.cod_tercer AND b.cod_transp = '$cod_transp'";
 
                                          
@@ -129,9 +129,9 @@ class conduc{
         $list->SetHeader(utf8_decode("Segundo Apellido"), "field:a.nom_apell2; width:1%");
         $list->SetHeader(utf8_decode("Nombres"), "field:a.nom_tercer; width:1%");
         $list->SetHeader(utf8_decode("Nº Teléfono Móvil"), "field:a.num_telmov" );
-        $list->SetHeader(utf8_decode("Nº de Licencia"), "field:a.num_licenc" );
+        $list->SetHeader(utf8_decode("Nº de Licencia"), "field:c.num_licenc" );
         $list->SetHeader(utf8_decode("Vigencia"), "field:a.fec_venlic" );
-        $list->SetHeader(utf8_decode("Categoria"), "field:a.num_catlic" );
+        $list->SetHeader(utf8_decode("Categoria"), "field:d.nom_catlic" );
         $list->SetHeader(utf8_decode("Estado"), "field:a.cod_estado" );
         $list->SetOption(utf8_decode("Opciones"),"field:cod_option; width:1%; onclikDisable:editarConductor( 2, this ); onclikEnable:editarConductor( 1, this ); onclikEdit:editarConductor( 99, this ); onclikPrint:editarConductor(3, this);" );
         $list->SetHidden("cod_tercer", "0" );
