@@ -753,7 +753,9 @@ class Proc_despac {
         if ($RESPON[0]["indica"]) {
             $consulta = new Consulta("COMMIT", $this->conexion);
             $mensaje = $RESPON[0]["mensaj"];                    
-                    if($_REQUEST[novedad] == 102 && $_REQUEST['cod_tercer'] == 900503325 && $_SESSION['datos_usuario']['cod_usuari'] == 'eclaltodeltrigo'){
+                    if($_REQUEST[novedad] == 102 && $_REQUEST['cod_tercer'] == 900503325 && 
+                        ($_SESSION["satt_movil"]["cod_usuari"] == 'eclaltodeltrigo' || $_SESSION["satt_movil"]["cod_usuari"] == 'ealgranada' || $_SESSION["satt_movil"]["cod_usuari"] == 'GRANADA1'  ) )
+                    {
                         $regist['placa'] = $_REQUEST['placa'];
                         $regist['nom_conduc'] = $_REQUEST['nom_conduc'];
                         $this->sendEmail($regist, $_REQUEST['cod_tercer']);
