@@ -228,7 +228,8 @@ class Novedad {
                         //Notifica Errores retornados por el WS
                         $data['error'] = $data['nom_proces'] . ': ' . $mMsgResp[1];                        
                     } else {
-                        if ($_SESSION["satt_movil"]["cod_usuari"] == 'eclaltodeltrigo' && $_POST[$i]["cod_transp"] == 900503325) {
+                        if ( ($_SESSION["satt_movil"]["cod_usuari"] == 'eclaltodeltrigo' || $_SESSION["satt_movil"]["cod_usuari"] == 'ealgranada' || $_SESSION["satt_movil"]["cod_usuari"] == 'GRANADA1'  ) && 
+                              $_POST[$i]["cod_transp"] == 900503325) {
                             $objMail = $this->getDataDespac($_POST[$i]["num_despac"]);
                             $this->sendEmail($objMail, $_POST[$i]["cod_transp"]);
                         }
