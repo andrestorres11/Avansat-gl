@@ -179,9 +179,6 @@ class conduc{
       $rq1 = $consulta -> ret_matrix("a");
       $existe_tercero = $rq1 ? true : false;
       $existe_conductor = $rq1 ?  isset($rq1[0]["conductor"]) : false;
-      $actconduc = $rq1 ?  isset($rq1[0]["actconduc"]) : false;
-      $actpropie = $rq1 ?  isset($rq1[0]["actpropie"]) : false;
-      $actposeed = $rq1 ?  isset($rq1[0]["actposeed"]) : false;
 
         $conduc->cod_estado = 1;
 
@@ -210,7 +207,8 @@ class conduc{
         $conduc->cod_paisxx = $ciudad[0][0];
         $conduc->cod_depart = $ciudad[0][1];
           #incerta la inforacion princial del conductor
-          $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer(
+          $insrep = !$existe_tercero ? "INSERT" : "REPLACE";
+          $query = $insrep." INTO ".BASE_DATOS.".tab_tercer_tercer(
                          cod_tercer,cod_tipdoc,nom_apell1,nom_apell2,nom_tercer,abr_tercer,
                          dir_domici,num_telef1,num_telef2,num_telmov,cod_paisxx,cod_depart,
                          cod_ciudad,cod_estado,dir_ultfot,obs_tercer,usr_creaci,fec_creaci)
@@ -242,17 +240,20 @@ class conduc{
                       '$conduc->cod_operad','$conduc->usr_creaci','$conduc->fec_creaci')";
           if(!$existe_conductor) $insercion = new Consulta($query,self::$cConexion,"R");
 
+          $query = "delete from  ".BASE_DATOS.".tab_tercer_activi where cod_tercer = '$conduc->cod_tercer' and cod_activi in (".COD_FILTRO_PROPIE.",".COD_FILTRO_PROPIE.",".COD_FILTRO_POSEED.")";
+          $eliminar = new Consulta($query,self::$cConexion,"R");
+
           #inserta los adicionales y referencias laborles
           $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
               VALUES ('$conduc->cod_tercer',".COD_FILTRO_CONDUC.")";
-          if(!$actconduc) $insercion = new Consulta($query,self::$cConexion,"R");
+          $insercion = new Consulta($query,self::$cConexion,"R");
 
-           if($conduc->cod_propie==1 && !$actpropie){
+           if($conduc->cod_propie==1){
               $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
                     VALUES ('$conduc->cod_tercer',".COD_FILTRO_PROPIE.")";
             $insercion = new Consulta($query,self::$cConexion,"R");
            }
-           if($conduc->cod_tenedo==1 && !$actposeed){
+           if($conduc->cod_tenedo==1){
              $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
                     VALUES ('$conduc->cod_tercer',".COD_FILTRO_POSEED.")";
              $insercion = new Consulta($query,self::$cConexion,"R");
@@ -627,8 +628,8 @@ class conduc{
                         b.num_licenc,b.num_catlic,b.fec_venlic,b.cod_califi,b.nom_epsxxx,b.nom_arpxxx,
                         b.nom_pensio,b.nom_refper,b.tel_refper,b.cod_operad, CONCAT( UPPER(c.abr_ciudad), '(', LEFT(d.nom_depart, 4), ') - ', LEFT(e.nom_paisxx, 3) ) abr_ciudad
                  FROM ".BASE_DATOS.".tab_tercer_tercer a
-                 INNER JOIN ".BASE_DATOS.".tab_tercer_conduc b ON b.cod_tercer = a.cod_tercer
-                 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad c ON c.cod_ciudad = a.cod_ciudad
+                 LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc b ON b.cod_tercer = a.cod_tercer
+                 LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad c ON c.cod_ciudad = a.cod_ciudad
                  INNER JOIN ".BASE_DATOS.".tab_genera_depart d ON d.cod_depart = c.cod_depart
                  INNER JOIN ".BASE_DATOS.".tab_genera_paises e ON e.cod_paisxx = c.cod_paisxx
                  WHERE a.cod_tercer = '$cod_tercer' ";
