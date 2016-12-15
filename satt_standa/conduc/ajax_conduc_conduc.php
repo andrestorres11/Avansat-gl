@@ -216,7 +216,7 @@ class conduc{
                           '$conduc->cod_tercer','$conduc->cod_tipdoc','$conduc->nom_apell1','$conduc->nom_apell2','$conduc->nom_tercer','$conduc->abr_tercer',
                           '$conduc->dir_domici','$conduc->num_telef1','$conduc->num_telef2','$conduc->num_telmov','$conduc->cod_paisxx','$conduc->cod_depart',
                           '$conduc->cod_ciudad','$conduc->cod_estado','$conduc->dir_ultfot','$conduc->obs_tercer','$conduc->usr_creaci','$conduc->fec_creaci') ";
-          if(!$existe_tercero) $insercion = new Consulta($query, self::$cConexion, "BR");
+          $insercion = new Consulta($query, self::$cConexion, "BR");
 
           #inserta la relacion entre el conductor y la transportadora si no existe previamente
           $query = "SELECT cod_transp FROM ".BASE_DATOS.".tab_transp_tercer WHERE cod_transp = '$conduc->cod_transp' AND cod_tercer = '$conduc->cod_tercer'";
