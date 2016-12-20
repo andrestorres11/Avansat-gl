@@ -164,16 +164,10 @@ class conduc{
       $conduc->abr_tercer = $conduc->nom_apell1." ".$conduc->nom_tercer;
 
       #pregunto si ya hay alguien con ese documento registrado
-      $query = "SELECT a.cod_tercer as tercer,b.cod_tercer as conductor,c.cod_tercer as actconduc,d.cod_tercer as actpropie,c.cod_tercer as actposeed
+      $query = "SELECT a.cod_tercer as tercer,b.cod_tercer as conductor
             FROM ".BASE_DATOS.".tab_tercer_tercer a 
             LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc b
              on b.cod_tercer=a.cod_tercer
-            LEFT JOIN ".BASE_DATOS.".tab_tercer_activi c
-             on c.cod_tercer=a.cod_tercer and c.cod_activi=".COD_FILTRO_CONDUC." 
-            LEFT JOIN ".BASE_DATOS.".tab_tercer_activi d
-             on d.cod_tercer=a.cod_tercer and d.cod_activi=".COD_FILTRO_PROPIE." 
-            LEFT JOIN ".BASE_DATOS.".tab_tercer_activi e
-             on e.cod_tercer=a.cod_tercer and e.cod_activi=".COD_FILTRO_POSEED." 
             WHERE a.cod_tercer = '$conduc->cod_tercer'";
       $consulta = new Consulta($query,  self::$cConexion, "BR");
       $rq1 = $consulta -> ret_matrix("a");
@@ -187,6 +181,7 @@ class conduc{
         $conduc->fec_creaci =$fec_actual;
         $conduc->usr_creaci = $usuario;
         #si se ingreso alguna foto se mueve al servidor y se agrega la vriabla al objeto
+	$foto = "";
         if($_FILES){
           if(move_uploaded_file($_FILES['foto']['tmp_name'], "../../".NOM_URL_APLICA."/".URL_CONDUC.$conduc->cod_tercer.".jpg")){
               $conduc->dir_ultfot= URL_CONDUC.$conduc->cod_tercer.".jpg";
@@ -207,8 +202,8 @@ class conduc{
         $conduc->cod_paisxx = $ciudad[0][0];
         $conduc->cod_depart = $ciudad[0][1];
           #incerta la inforacion princial del conductor
-          $insrep = !$existe_tercero ? "INSERT" : "REPLACE";
-          $query = $insrep." INTO ".BASE_DATOS.".tab_tercer_tercer(
+          if(!$existe_tercero){
+            $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer(
                          cod_tercer,cod_tipdoc,nom_apell1,nom_apell2,nom_tercer,abr_tercer,
                          dir_domici,num_telef1,num_telef2,num_telmov,cod_paisxx,cod_depart,
                          cod_ciudad,cod_estado,dir_ultfot,obs_tercer,usr_creaci,fec_creaci)
@@ -216,8 +211,28 @@ class conduc{
                           '$conduc->cod_tercer','$conduc->cod_tipdoc','$conduc->nom_apell1','$conduc->nom_apell2','$conduc->nom_tercer','$conduc->abr_tercer',
                           '$conduc->dir_domici','$conduc->num_telef1','$conduc->num_telef2','$conduc->num_telmov','$conduc->cod_paisxx','$conduc->cod_depart',
                           '$conduc->cod_ciudad','$conduc->cod_estado','$conduc->dir_ultfot','$conduc->obs_tercer','$conduc->usr_creaci','$conduc->fec_creaci') ";
+          }else{
+            $query = "UPDATE ".BASE_DATOS.".tab_tercer_tercer
+                          SET
+                       cod_tipdoc = '$conduc->cod_tipdoc',
+                       nom_apell1 = '$conduc->nom_apell1',
+                       nom_apell2 = '$conduc->nom_apell2',
+                       nom_tercer = '$conduc->nom_tercer',
+                       abr_tercer = '$conduc->abr_tercer',
+                       dir_domici = '$conduc->dir_domici',
+                       num_telef1 = '$conduc->num_telef1',
+                       num_telef2 = '$conduc->num_telef2',
+                       num_telmov = '$conduc->num_telmov',
+                       cod_paisxx = '$conduc->cod_paisxx',
+                       cod_depart = '$conduc->cod_depart',
+                       cod_ciudad = '$conduc->cod_ciudad',
+                                  $foto
+                       obs_tercer = '$conduc->obs_tercer',
+                       usr_modifi = '$conduc->usr_modifi',
+                       fec_modifi = '$conduc->fec_modifi'
+                       WHERE cod_tercer = '$conduc->cod_tercer'";
+          }
           $insercion = new Consulta($query, self::$cConexion, "BR");
-
           #inserta la relacion entre el conductor y la transportadora si no existe previamente
           $query = "SELECT cod_transp FROM ".BASE_DATOS.".tab_transp_tercer WHERE cod_transp = '$conduc->cod_transp' AND cod_tercer = '$conduc->cod_tercer'";
           $consulta = new Consulta($query, self::$cConexion);
@@ -238,9 +253,11 @@ class conduc{
               VALUES ('$conduc->cod_tercer','$conduc->cod_tipsex','$conduc->cod_grupsa','$conduc->num_licenc','$conduc->num_catlic','$conduc->fec_venlic',
                       '$conduc->cod_califi','$conduc->nom_epsxxx','$conduc->nom_arpxxx','$conduc->nom_pensio','$conduc->nom_refper','$conduc->tel_refper',
                       '$conduc->cod_operad','$conduc->usr_creaci','$conduc->fec_creaci')";
-          if(!$existe_conductor) $insercion = new Consulta($query,self::$cConexion,"R");
+          if(!$existe_conductor) {
+		$insercion = new Consulta($query,self::$cConexion,"R");
+          }
 
-          $query = "delete from  ".BASE_DATOS.".tab_tercer_activi where cod_tercer = '$conduc->cod_tercer' and cod_activi in (".COD_FILTRO_PROPIE.",".COD_FILTRO_PROPIE.",".COD_FILTRO_POSEED.")";
+          $query = "delete from  ".BASE_DATOS.".tab_tercer_activi where cod_tercer = '$conduc->cod_tercer' and cod_activi in (".COD_FILTRO_CONDUC.",".COD_FILTRO_PROPIE.",".COD_FILTRO_POSEED.")";
           $eliminar = new Consulta($query,self::$cConexion,"R");
 
           #inserta los adicionales y referencias laborles
