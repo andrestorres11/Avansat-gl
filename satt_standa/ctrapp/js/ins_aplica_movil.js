@@ -66,7 +66,7 @@ function guardar(){
 		message += "\n-Tipo de Usuario";
 		flag = false;
 	}
-
+	
 	if(flag == true){
 			$.ajax({
 				url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=guardarUsuario",
@@ -79,7 +79,7 @@ function guardar(){
 						"nit_transpor": nit_transpor,
 						"mail": mail
 					 },
-				success: function(result){
+				success: function(result){alert(result);
 					if(result == "ok"){
 						alert("Se ha registrado el usuario Exitosamente");
 						document.forms[0].reset();
