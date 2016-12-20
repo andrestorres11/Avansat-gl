@@ -79,7 +79,7 @@ function guardar(){
 						"nit_transpor": nit_transpor,
 						"mail": mail
 					 },
-				success: function(result){alert(result);
+				success: function(result){
 					if(result == "ok"){
 						alert("Se ha registrado el usuario Exitosamente");
 						document.forms[0].reset();
