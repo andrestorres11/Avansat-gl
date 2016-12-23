@@ -625,6 +625,7 @@ class seguri {
         $datos->fec_cambio = strtotime('+' . $datos->num_diasxx . ' day', strtotime($hoy));
         $datos->fec_cambio = date('Y-m-d H:i:s', $datos->fec_cambio);
         $datos->fec_cambio = "'$datos->fec_cambio'";
+        $bandera='FALSE';
 
         if (!$datos->cod_priori) {
             $datos->cod_priori = 1;
@@ -651,18 +652,34 @@ class seguri {
             if ($datos->cod_filtro) {
                 $sqlx = "INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_usuari  (cod_aplica, cod_filtro, cod_usuari, clv_filtro) VALUES ";
                 foreach ($datos->cod_filtro as $key => $value) {
-                    $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value AND cod_perfil = $datos->cod_perfil";
+                    $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value";
                     $consulta = new Consulta($sql, self::$cConexion);
                     $filtro = $consulta->ret_matrix("a");
                     if (!$filtro) {
                         $sqlx.= " (1, $value, '$datos->cod_usuari', '$fil[$key]'),";
+                        $bandera='TRUE';
+                    }
+                    if($value=="1"){
+                        $sql1 = "SELECT cod_aplica,cod_filtro,cod_perfil,clv_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil WHERE cod_aplica=1 AND cod_filtro = $value AND cod_perfil='$datos->cod_perfil' AND clv_filtro='$fil[$key]'";
+                        $consulta1 = new Consulta($sql1, self::$cConexion);
+                        $filtro1 = $consulta1->ret_matrix("a");
+                        if(!$filtro1){
+                            $sqlTr ="INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil (cod_aplica,cod_filtro,cod_perfil,clv_filtro)
+                            VALUES (1,$value, '$datos->cod_perfil','$fil[$key]')" ;
+                            $consultaTr = new Consulta($sqlTr, self::$cConexion, "RC"); 
+                        }
+                        
                     }
                 }
-                $sqlx = trim($sqlx, ",") . ";";
-                $consulta = new Consulta($sqlx, self::$cConexion, "RC");
+                if($bandera=='TRUE'){
+                    $sqlx = trim($sqlx, ",") . ";";
+                    $consulta = new Consulta($sqlx, self::$cConexion, "RC");
+                    
+                }
                 if (!$insercion = new Consulta("COMMIT", self::$cConexion)) {
                     die("filtros"); //errro al registrar los filtros de usuario
                 }
+               
             }
             die("1"); //proceso correcto
         } else {
