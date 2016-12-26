@@ -1,22 +1,26 @@
-$(document).ready(function() {
+$('body').ready(function() {
   var standa = $("#standaID").val();
   var filter = $("#filterID").val();
+  
+  if($("#nom_transpID").val()!=""){
+    ValidateTransp();
+  }
+
   $("#nom_transpID").autocomplete({
-    source: "../" + standa + "/desnew/ajax_desnew_despac.php?option=getTransp&standa=" + standa + "&filter=" + filter,
-    minLength: 3,
-    delay: 100,
-    select: function(event, ui) {
-      boton = "<input type='button' id='nuevo' value='Crear Despacho' class='small save ui-button ui-widget ui-state-default ui-corner-all' onclick='ValidateTransp();'>";
-      $("#cod_transpID").val(ui.item.id);
-      $("#boton").empty();
-      $("#boton").append(boton);
-      $("body").removeAttr("class");
-    }
+      source: "../" + standa + "/desnew/ajax_desnew_despac.php?option=getTransp&standa=" + standa + "&filter=" + filter,
+      minLength: 3,
+      delay: 100,
+      select: function(event, ui) {
+        boton = "<input type='button' id='nuevo' value='Crear Despacho' class='small save ui-button ui-widget ui-state-default ui-corner-all' onclick='ValidateTransp();'>";
+        $("#cod_transpID").val(ui.item.id);
+        $("#boton").empty();
+        $("#boton").append(boton);
+        $("body").removeAttr("class");
+      }
   });
   $("#datos").css('display', 'none');
   $("#nom_transpID").css('width', '100%');
   $("body").removeAttr("class");
-
 
 
 });
