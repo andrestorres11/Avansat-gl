@@ -54,15 +54,15 @@ class InsSubopeSubope
 	        	$mHtml->OpenDiv("id:contentID; class:contentAccordion");
 	          		# Accordion1
 	          		$mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
-            			$mHtml->SetBody("<h1 style='padding: 6px' ><b>Ingresar Sub-operaci贸n</b></h1>");
+            			$mHtml->SetBody("<h1 style='padding: 6px' ><b>Ingresar Sub-operaci髇</b></h1>");
 	            		$mHtml->OpenDiv("id:sec1;");
 	              			$mHtml->OpenDiv("id:form1; class:contentAccordionForm");
 
 	                			$mHtml->Table("tr");
-	                    		$mHtml->Label("Codigo Operaci贸n:", "width:35%; :1;");
+	                    		$mHtml->Label("Codigo Operaci髇:", "width:35%; :1;");
 	                    		$mHtml->Select($operaciones, array("name" => "cod_operac", "id" => "cod_operacID", "width" => "35%", "end" => "yes")); 
 
-	                    		$mHtml->Label("Nombre Sub-operaci贸n:", "width:35%; :1;");
+	                    		$mHtml->Label("Nombre Sub-operaci髇:", "width:35%; :1;");
 	                    		$mHtml->Input(array("name" => "nom_subope", "id" => "nom_subopeID", "width" => "35%", "end" => "yes"));
   								
 	                    		$mHtml->Hidden(array("name"=>"standa", "value"=>DIR_APLICA_CENTRAL));
@@ -137,7 +137,7 @@ class InsSubopeSubope
         $list->SetHeader(utf8_decode("Operacion"), "field:a.nom_operac; width:1%");
         $list->SetHeader(utf8_decode("Sub Operacion"), "field:a.nom_subope; width:1%");
         $list->SetHeader(utf8_decode("Estado"), "field:a.ind_estado; width:1%"); 
-        $list->SetOption(utf8_decode("Opci贸n"),"field:a.cod_option; width:1%; onclikDisable:disableSubope( this ); onclikEnable:enableSubope( this );" );
+        $list->SetOption(utf8_decode("Opci髇"),"field:a.cod_option; width:1%; onclikDisable:disableSubope( this ); onclikEnable:enableSubope( this );" );
         $list->SetHidden("cod_subope", "0" );
 
         $list->Display($this -> conexion);

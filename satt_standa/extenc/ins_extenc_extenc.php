@@ -30,7 +30,7 @@ class Ins_extenc_extenc {
      *  \brief: funcion inicial para listar registrar extenciones
      *  \author: Ing. Alexander Correa
      *	\date: 04/12/2015
-     *	\date modified: dia/mes/a帽o
+     *	\date modified: dia/mes/a駉
      *  \param: 
      *  \param: 
      *  \return 
@@ -68,7 +68,7 @@ class Ins_extenc_extenc {
 	       	$mHtml->Form(array("action" => "index.php",
 	            "method" => "post",
 	            "name" => "form_search",
-	            "header" => "Insertar Configuraci贸n",
+	            "header" => "Insertar Configuraci髇",
 	            "enctype" => "multipart/form-data"));
 		        $mHtml->Row("td");
 					 $mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
@@ -85,14 +85,12 @@ class Ins_extenc_extenc {
 					$mHtml->OpenDiv("id:sec1");
 						$mHtml->OpenDiv("id:form3; class:contentAccordionForm");
 							$mHtml->SetBody("<div class='col-md-12' style='text-align:center'>
-												<div class='col-md-3' style='color:black'>Tipo de Operaci贸n <font style='color:red'>*</font>:</div>
+												<div class='col-md-3' style='color:black'>Tipo de Operaci髇 <font style='color:red'>*</font>:</div>
 												<div class='col-md-3'>$operaciones</div>
 												<div class='col-md-3' style='color:black'>Grupo <font style='color:red'>*</font>:</div>
 												<div class='col-md-3'>$grupos</div>
 												<div class='col-md-12'>&nbsp;</div>
-												<div class='col-md-3' style='color:black'>N煤mero de Extensi贸n <font style='color:red'>*</font>:</div>
-												<div class='col-md-3'><input class='campo_texto' validate='numero' obl='1' minlength='3' maxlength='4'  type='text' name='num_extenc' style='width:100%' id='num_extencID'></div>
-												<div class='col-md-3' style='color:black'>Sub Operaci贸n <font style='color:red'>*</font>:</div>
+												<div class='col-md-3' style='color:black'>Sub Operaci髇 <font style='color:red'>*</font>:</div>
 												<div class='col-md-3'>
 													<select minlength='3' maxlength='4' ' name='cod_subope' style='width:100%' id='cod_subopeID'></select> 
 												</div>
@@ -101,6 +99,10 @@ class Ins_extenc_extenc {
 													<input class='campo_texto' style='width:100%' obl='1' validate='dir' minlength='10' maxlength='100' type='text' name='usuario' id='usuarioID'>
 													<input type='hidden' id='usr_extenc' value=''>
 												</div>
+
+												<div class='col-md-12'>&nbsp;</div>
+												<div class='col-md-3' style='color:black'>N鷐ero de Extensi髇 <font style='color:red'>*</font>:</div>
+												<div class='col-md-3'><input class='campo_texto' validate='numero' obl='1' minlength='3' maxlength='4'  type='text' name='num_extenc' style='width:100%' id='num_extencID'></div>
 											 </div>
 												");
 							
@@ -132,10 +134,10 @@ class Ins_extenc_extenc {
 					      
 					      $list->SetClose('no');
 					      $list->SetHeader("Consecutivo", "field: a.cod_extenc; width:1%;  ");
-					      $list->SetHeader(utf8_decode("Tipo de Operaci贸n"), "field:b.nom_operaci; width:1%");
-					      $list->SetHeader(utf8_decode("Sub Operaci贸n"), "field:d.nom_subope; width:1%");
+					      $list->SetHeader(utf8_decode("Tipo de Operaci髇"), "field:b.nom_operaci; width:1%");
+					      $list->SetHeader(utf8_decode("Sub Operaci髇"), "field:d.nom_subope; width:1%");
 					      $list->SetHeader(utf8_decode("Grupo"), "field:c.nom_grupox; width:1%");
-					      $list->SetHeader(utf8_decode("No. de Extensi贸n"), "field:a.num_extenc ; width:1%");
+					      $list->SetHeader(utf8_decode("No. de Extensi髇"), "field:a.num_extenc ; width:1%");
 					      $list->SetHeader(utf8_decode("Usuario"), "field:a.usr_extenc; width:1%");
 					      $list->SetHeader("Estado", "field:if(a.cod_estado = 1, 'Activa', 'Inactiva')" );
 					      $list->SetOption("Opciones","field:cod_option; width:1%; onclikDisable:editarConexion( 2, this ); onclikEnable:editarConexion( 1, this );" );

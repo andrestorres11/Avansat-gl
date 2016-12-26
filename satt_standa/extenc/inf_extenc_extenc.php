@@ -17,8 +17,12 @@ class Ins_extenc_extenc {
         $this->usuario = $us;
         $this->cod_aplica = $ca;
         self::$cFunciones = new extenc($co, $us, $ca);
-        
-        switch ($GLOBALS[option]) {
+        switch ($_REQUEST[option]) {
+
+          case 'getExcelLlamadas':
+              $this->getExcelLlamadas();
+          break;
+
             default:
                 $this->filtro();
             break;
@@ -104,7 +108,7 @@ class Ins_extenc_extenc {
             </div>
           </div>
         </div>
-          <div class="col-md-12 tabs ancho" id="tabs">
+          <div class="col-md-12 tabs" id="tabs">
              <ul>
                <li><a id="liGenera" href="#generaID" style="cursor:pointer" onclick="informeLlamadasEntrantes('generaID')">INFORME</a></li>
               <!-- <li><a id="liContes" href="#contesID" onclick="informeLlamadasEntrantes('contesID')">CONTESTADAS</a></li>
@@ -123,6 +127,17 @@ class Ins_extenc_extenc {
 
         # Muestra Html
         echo $mHtml->MakeHtml();
+    }
+
+    function getExcelLlamadas(){
+      $archivo = "Listado_de_llamadas.xls";
+      header('Content-Type: application/octetstream');
+      header('Expires: 0');
+      header('Content-Disposition: attachment; filename="'.$archivo.'"');
+      header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+      header('Pragma: public');
+      flush();
+      echo $_REQUEST['datosPintar'];
     }
 }
 

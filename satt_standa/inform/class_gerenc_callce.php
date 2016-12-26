@@ -107,6 +107,18 @@ class CallCe
 			$mHtml .= '<th class="CellHead">'.$value.'</th>';
 		$mHtml .= '</tr>';
 
+		$mEstate = array("BUSY"=> "Ocupado",
+			      		 "NOANSWER"=> "No Contestado",
+			      		 "NO ANSWER"=> "No Contestado",
+			      		 "ANSWER"=> "Contestado",
+			      		 "ANSWERED"=> "Contestado",
+			      		 "CANCEL"=> "Cancelado",
+			      		 "CONGESTION"=> "Congestionado",
+			      		 "CHANUNAVAIL"=> "Canal no disponible",
+			      		 "FAILED"=> "Falla de marcación",
+			      		 ""=> "Otro"
+			      		 );
+
 		$n=1;
 		foreach ($mData as $row)
 		{
@@ -121,7 +133,8 @@ class CallCe
 			$mHtml .= '<td class="cellInfo onlyCell">'.$row[idx_llamad].'</td>';
 			$mHtml .= '<td class="cellInfo onlyCell">'.$row[num_telefo].'</td>';
 			$mHtml .= '<td class="cellInfo onlyCell" align="center">'.$row[tie_duraci].'</td>';
-			$mHtml .= '<td class="cellInfo onlyCell">'.self::$cDicEst[ $row[nom_estado] ].'</td>';
+			$mHtml .= '<td class="cellInfo onlyCell">'.self::$mEstate[ $row[nom_estado] ].'</td>';
+			#$mHtml .= '<td class="cellInfo onlyCell">'.$row[nom_estado].'</td>';
 			$mHtml .= '<td class="cellInfo onlyCell">'.$row[fec_creaci].'</td>';
 			$mHtml .= '<td class="cellInfo onlyCell" align="center"><img border="0" onclick="PlayAudioCall( \''.$row[num_despac].'\', \''.$row[cod_consec].'\', \''.$_REQUEST[standa].'\' );" style="width: 20px; height:20px; curosr: pointer;" src="../'.DIR_APLICA_CENTRAL.'/imagenes/image_play.gif"></td>';
 			$mHtml .= '</tr>';
@@ -271,6 +284,8 @@ class CallCe
 	 */
 	private function getData( $mFecInicia = NULL, $mFecFinalx = NULL, $mEstLlamad = NULL, $mIndCantid = false )
 	{
+
+	  
 		$mSql = "SELECT a.num_despac, a.cod_manifi, a.cod_tipdes, 
 						a.fec_despac, c.num_placax, d.nom_tipdes, 
 						b.cod_consec, b.idx_llamad, b.num_telefo, 
@@ -510,7 +525,6 @@ class CallCe
 		return $mResult = $mConsult -> ret_matrix('i');
 
 	}
-
 }
 
 if($_REQUEST[Ajax] === 'on' )
