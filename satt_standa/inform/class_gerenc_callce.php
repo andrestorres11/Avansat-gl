@@ -133,7 +133,7 @@ class CallCe
 			$mHtml .= '<td class="cellInfo onlyCell">'.$row[idx_llamad].'</td>';
 			$mHtml .= '<td class="cellInfo onlyCell">'.$row[num_telefo].'</td>';
 			$mHtml .= '<td class="cellInfo onlyCell" align="center">'.$row[tie_duraci].'</td>';
-			$mHtml .= '<td class="cellInfo onlyCell">'.$mEstate[ $row[nom_estado] ].'</td>';
+			$mHtml .= '<td class="cellInfo onlyCell">'.self::$mEstate[ $row[nom_estado] ].'</td>';
 			#$mHtml .= '<td class="cellInfo onlyCell">'.$row[nom_estado].'</td>';
 			$mHtml .= '<td class="cellInfo onlyCell">'.$row[fec_creaci].'</td>';
 			$mHtml .= '<td class="cellInfo onlyCell" align="center"><img border="0" onclick="PlayAudioCall( \''.$row[num_despac].'\', \''.$row[cod_consec].'\', \''.$_REQUEST[standa].'\' );" style="width: 20px; height:20px; curosr: pointer;" src="../'.DIR_APLICA_CENTRAL.'/imagenes/image_play.gif"></td>';
@@ -284,6 +284,8 @@ class CallCe
 	 */
 	private function getData( $mFecInicia = NULL, $mFecFinalx = NULL, $mEstLlamad = NULL, $mIndCantid = false )
 	{
+
+	  
 		$mSql = "SELECT a.num_despac, a.cod_manifi, a.cod_tipdes, 
 						a.fec_despac, c.num_placax, d.nom_tipdes, 
 						b.cod_consec, b.idx_llamad, b.num_telefo, 
@@ -302,37 +304,41 @@ class CallCe
 					AND c.cod_transp = '{$_REQUEST[cod_transp]}' 
 			  LEFT JOIN ".BASE_DATOS.".tab_despac_sisext x 
 					 ON a.num_despac = x.num_despac 
-				  WHERE 1=1 ";
+			  LEFT JOIN ".BASE_DATOS.".vis_despac_callou y
+			  		 ON a.num_despac = y.num_despac 
+				  WHERE 1=1  ";
 
 		$mSql .= !$_REQUEST[num_despac] ? "" : " AND a.num_despac = '{$_REQUEST[num_despac]}' ";
 		$mSql .= !$_REQUEST[num_manifi] ? "" : " AND a.cod_manifi = '{$_REQUEST[num_manifi]}' ";
 		$mSql .= !$_REQUEST[num_placax] ? "" : " AND c.num_placax = '{$_REQUEST[num_placax]}' ";
 		$mSql .= !$_REQUEST[num_viajex] ? "" : " AND x.num_desext = '{$_REQUEST[num_viajex]}' ";
 		$mSql .= !$_REQUEST[cod_tiptra] ? "" : " AND x.tip_transp = '{$_REQUEST[cod_tiptra]}' ";
-		$mSql .= !$_REQUEST[cod_tipdes] ? "" : " AND a.cod_tipdes = '{$_REQUEST[cod_tipdes]}' ";
+		$mSql .= !$_REQUEST[cod_tipdes] ? "" : " AND a.cod_tipdes = '{$_REQUEST[cod_tipdes]}' "; 
 		$mSql .= $_REQUEST[ind_tipdes] == 0 ? "" : " AND a.cod_tipdes = '{$_REQUEST[ind_tipdes]}' ";
 
-		if( $mFecInicia == NULL && $mFecFinalx == NULL ) {
+		if ($_REQUEST[cod_operad]) {
+			$mSql .= "AND y.num_exten IN (
+								           SELECT a.num_extenc
+							                 FROM ".BASE_DATOS.".tab_callce_extenc a
+							                WHERE a.cod_operac = '{$_REQUEST[cod_operad]}' 
+							                )";
+		}
+		if( $mFecInicia == NULL && $mFecFinalx == NULL )
 			$mSql .= !$_REQUEST[fec_inicia] && !$_REQUEST[fec_finalx] ? "" : " AND b.fec_creaci BETWEEN '{$_REQUEST[fec_inicia]}' AND '{$_REQUEST[fec_finalx]}' ";
-		}
-		elseif( $mFecInicia != NULL && $mFecFinalx != NULL ) {
+		elseif( $mFecInicia != NULL && $mFecFinalx != NULL )
 			$mSql .= " AND b.fec_creaci BETWEEN '{$mFecInicia}' AND '{$mFecFinalx}' ";
-		}
 
 		$mSql .= !$_REQUEST[nom_estado] ? "" : " AND b.nom_estado LIKE '{$_REQUEST[nom_estado]}' ";
 
-		if( $mEstLlamad == 'ANSWER' || $mEstLlamad == 'ANSWERED' ) {
+		if( $mEstLlamad == 'ANSWER' || $mEstLlamad == 'ANSWERED' )
 			$mSql .= " AND b.nom_estado IN ('ANSWER', 'ANSWERED') ";
-		}
-		elseif( $mEstLlamad == 'NOANSWER' || $mEstLlamad == 'NO ANSWER' ) {
+		elseif( $mEstLlamad == 'NOANSWER' || $mEstLlamad == 'NO ANSWER' )
 			$mSql .= " AND b.nom_estado IN ('NOANSWER', 'NO ANSWER') ";
-		}
-		elseif( $mEstLlamad == 'OTHER' ) {
+		elseif( $mEstLlamad == 'OTHER' )
 			$mSql .= " AND b.nom_estado NOT IN ('ANSWER', 'ANSWERED', 'NOANSWER', 'NO ANSWER') ";
-		}
 
 		$mSql .= " ORDER BY a.num_despac, b.fec_creaci ";
-		
+		 
 		$mConsult = new Consulta($mSql, self::$cConexion );
 		$mResult = $mConsult -> ret_matrix('a');
 
@@ -510,6 +516,15 @@ class CallCe
 		return $mHtml;
 	}
 
+	public function getTipOperad(){
+
+		$mSql = " SELECT cod_operac, UPPER(nom_operac) 
+					FROM ".BASE_DATOS.".tab_callce_operac 
+				ORDER BY nom_operac ASC ";
+		$mConsult = new Consulta($mSql, self::$cConexion );
+		return $mResult = $mConsult -> ret_matrix('i');
+
+	}
 }
 
 if($_REQUEST[Ajax] === 'on' )
