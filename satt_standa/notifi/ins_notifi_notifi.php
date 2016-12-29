@@ -32,6 +32,7 @@ class notifi
 		
 		IncludeJS( 'jquery.js' );
 		IncludeJS( 'functions.js' );
+		IncludeJS( 'ins_notifi_notifi.js' );
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 		self::lista();
 	}
@@ -111,11 +112,13 @@ class notifi
 								}
 								$srtTbs.="</ul>";
 								$mHtml->SetBody($srtTbs);
-								print_r("dato: ".$tabgeneral);
 								if($tabgeneral)
 								{
 									$mHtml->OpenDiv("id:tabgeneral");
-										$mHtml->SetBody("<h3>general</h3>");
+										$mHtml->Table("tr");
+											$mHtml->Label( "NOTIFICACIONES GENERADAS EN EL PERIDODO ".$val, array("colspan"=>"4", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+											$mHtml->CloseRow();
+									$mHtml->CloseTable('tr');
                             		$mHtml->CloseDiv();
 								}
 								if($tabinfoet)
@@ -225,7 +228,6 @@ class notifi
 		}
 		return $resp;
 	}
-
 }
 
 $_NOTIFI = new notifi( $this -> conexion, $this -> usuario_aplicacion, $this -> codigo );
