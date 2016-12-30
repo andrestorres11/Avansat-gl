@@ -2283,7 +2283,7 @@ class AjaxModuloComunicaciones
        # $mListCr .= ' GROUP BY aa.cod_usuari   ) z, '.BASE_DATOS.'.tab_genera_usuari y WHERE z.cod_usuari = y.cod_usuari   ORDER BY 2 '; 
         $mListCr .= '   ) z, '.BASE_DATOS.'.tab_genera_usuari y WHERE z.cod_usuari = y.cod_usuari   ORDER BY 2 '; 
         
-       #echo "<pre>"; print_r($mListCr); echo "</pre>";
+      #echo "<pre>"; print_r($mListCr); echo "</pre>";
       $consulta = new Consulta( $mListCr, $this -> conexion );
       $mRresult = $consulta -> ret_matriz("a");
 #echo "<pre>"; print_r($mListCr); echo "</pre>";
@@ -2323,7 +2323,7 @@ class AjaxModuloComunicaciones
   public function getNomUsuario()
   {  
 
-     $mSql = "SELECT cod_usuari AS cod_tercer, nom_usuari AS nom_tercer FROM ".BASE_DATOS.".tab_genera_usuari WHERE cod_usuari LIKE '%".$_REQUEST['term']."%' OR nom_usuari LIKE '%".$_REQUEST['term']."%' LIMIT 15";
+        $mSql = "SELECT a.cod_usuari AS cod_tercer, UPPER(a.nom_usuari) AS nom_tercer FROM ".BASE_DATOS.".tab_genera_usuari a INNER JOIN ".BASE_DATOS.".tab_genera_modcom b ON a.cod_usuari=b.cod_usuari WHERE b.cod_usuari LIKE '%".$_REQUEST['term']."%' OR a.nom_usuari LIKE '%".$_REQUEST['term']."%'  GROUP BY a.cod_usuari LIMIT 15";
 
         $consulta = new Consulta( $mSql, $this -> conexion );
         $mResult = $consulta -> ret_matrix('a');
