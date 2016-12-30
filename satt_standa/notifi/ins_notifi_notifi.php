@@ -22,7 +22,7 @@ class notifi
 					$cCodAplica,
 					$cUsuario;
 					
-	function __construct($co, $us, $ca)
+	function __construct($co = null, $us = null, $ca = null)
 	{
 		@include_once( '../' . DIR_APLICA_CENTRAL . '/lib/general/functions.inc' );
 
@@ -37,6 +37,12 @@ class notifi
 		self::lista();
 	}
 
+	/*! \fn: 
+	 *  \brief: 
+	 *  \author:
+	 *	\date: 
+	 *	\date modified: dia/mes/año
+	 */
 	private function lista()
 	{
 		$responseJson=self::getRespond();
@@ -44,7 +50,7 @@ class notifi
 		
 		#HTML
 		$mHtml = new Formlib(2);
-
+		$mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
 		$mHtml->CloseTable('tr');
 		$mHtml->Table("tr");
 			$mHtml->SetBody("<td>");
@@ -60,9 +66,9 @@ class notifi
 
 									$mHtml->Row();
 									$mHtml->Label( "* Fecha inicio:", array("align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
-									$mHtml->Input( array("name"=>"nom_respon", "id"=>"nom_responID", "width"=>"25%", "value"=>'', "class"=>"cellInfo2") );
+									$mHtml->Input( array("name"=>"fec_ini", "id"=>"fec_iniID", "width"=>"25%", "value"=>'', "class"=>"cellInfo2") );
 									$mHtml->Label( "* Fecha fin:", array("align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
-									$mHtml->Input( array("name"=>"nom_respon", "id"=>"nom_responID", "width"=>"25%", "value"=>'', "class"=>"cellInfo2") );
+									$mHtml->Input( array("name"=>"fec_fin", "id"=>"fec_finID", "width"=>"25%", "value"=>'', "class"=>"cellInfo2") );
 								$mHtml->CloseTable('tr');
 							$mHtml->CloseDiv();
 							$mHtml->OpenDiv("id:tabs");
@@ -79,49 +85,67 @@ class notifi
 										{
 											if($nivel2=='fil_genera')
 											{
-												$srtTbs.="<li><a href='#tabgeneral'>GENERAL</a></li>";
 												$tabgeneral=self::recorrerJson($value2, 'ind_visibl', $arrayName = array());
+												if($tabgeneral['ind_visibl']==TRUE)
+												{
+													$srtTbs.="<li><a href='#tabgeneral' onclick='btnGeneral()''>GENERAL</a></li>";
+												}
 											}
 											if($nivel2=='sec_infoet')
 											{
-												$srtTbs.="<li><a href='#tabinfoet'>INFORMACION OET</a></li>";
 												$tabinfoet=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("oet","ins","idi","rep","eli"));
+												if($tabinfoet['ind_visibl']==TRUE)
+												{
+													$srtTbs.="<li><a href='#tabinfoet'>INFORMACION OET</a></li>";
+												}
 											}
 											if($nivel2=='sec_infclf')
 											{
-												$srtTbs.="<li><a href='#tabinfclf'>INFORMACION CLF</a></li>";
 												$tabinfclf=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("clf","ins","idi","rep","eli" ));
+												if($tabinfclf['ind_visibl']==TRUE)
+												{
+													$srtTbs.="<li><a href='#tabinfclf'>INFORMACION CLF</a></li>";
+												}
 											}
 											if($nivel2=='sec_infsup')
-											{
-												$srtTbs.="<li><a href='#tabinfsup'>SUPERVISORES</a></li>";
+											{												
 												$tabinfsup=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("sup","ins","idi","rep","eli" ));
+												if($tabinfsup['ind_visibl']==TRUE)
+												{
+													$srtTbs.="<li><a href='#tabinfsup'>SUPERVISORES</a></li>";
+												}
 											}
 											if($nivel2=='sec_infcon')
-											{
-												$srtTbs.="<li><a href='#tabinfcon'>CONTROLADORES</a></li>";
+											{												
 												$tabinfcon=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("con","ins","idi","rep","eli" ));
+												if($tabinfcon['ind_visibl']==TRUE)
+												{
+													$srtTbs.="<li><a href='#tabinfcon'>CONTROLADORES</a></li>";
+												}
 											}
 											if($nivel2=='sec_infcli')
 											{
-												$srtTbs.="<li><a href='#tabinfcli'>CLIENTES</a></li>";
 												$tabinfcli=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("cli","ins","idi","rep","eli" ));
+												if($tabinfcli['ind_visibl']==TRUE)
+												{
+													$srtTbs.="<li><a href='#tabinfcli'>CLIENTES</a></li>";
+												}
 											}
 										}	
 									}
 								}
 								$srtTbs.="</ul>";
 								$mHtml->SetBody($srtTbs);
-								if($tabgeneral)
+								if($tabgeneral['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabgeneral");
 										$mHtml->Table("tr");
 											$mHtml->Label( "NOTIFICACIONES GENERADAS EN EL PERIDODO ".$val, array("colspan"=>"4", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
 											$mHtml->CloseRow();
-									$mHtml->CloseTable('tr');
-                            		$mHtml->CloseDiv();
+										$mHtml->CloseTable('tr');
+							        $mHtml->CloseDiv();
 								}
-								if($tabinfoet)
+								if($tabinfoet['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfoet");
 									foreach ($tabinfoet as $Kinfoet => $Vinfoet) 
@@ -130,7 +154,7 @@ class notifi
 									}	
                             		$mHtml->CloseDiv();
 								}
-								if($tabinfclf)
+								if($tabinfclf['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfclf");
 									foreach ($tabinfclf as $Kinfoet => $Vinfoet) 
@@ -139,7 +163,7 @@ class notifi
 									}	
                             		$mHtml->CloseDiv();
 								}
-								if($tabinfsup)
+								if($tabinfsup['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfsup");
 									foreach ($tabinfsup as $Kinfoet => $Vinfoet) 
@@ -148,7 +172,7 @@ class notifi
 									}	
                             		$mHtml->CloseDiv();
 								}
-								if($tabinfcon)
+								if($tabinfcon['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfcon");
 									foreach ($tabinfcon as $Kinfoet => $Vinfoet) 
@@ -157,7 +181,7 @@ class notifi
 									}	
                             		$mHtml->CloseDiv();
 								}
-								if($tabinfcli)
+								if($tabinfcli['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfcli");
 									foreach ($tabinfcli as $Kinfoet => $Vinfoet) 
@@ -185,6 +209,13 @@ class notifi
 		echo $mHtml->MakeHtml();
 	}
 
+	/*! \fn: 
+	 *  \brief: 
+	 *  \author:
+	 *	\date: 
+	 *	\date modified: dia/mes/año
+	 *  \return:
+	 */
 	protected function getRespond()
 	{
 		$mSql = "SELECT a.jso_notifi 
@@ -199,15 +230,23 @@ class notifi
 		return json_encode($mData);	
 	}
 
+	/*! \fn: 
+	 *  \brief: 
+	 *  \author: 
+	 *	\date: 
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return:
+	 */
 	protected function recorrerJson($JsonRe = NULL, $Panel = NULL, $arrSub = NULL)
 	{
-		#print_r($JsonRe); echo "; Panel:".$Panel."; array:".$arrSub;
+		#print_r($JsonRe);// echo "; Panel:".$Panel."; array:".$arrSub;
 		$resp=NULL; //= array('ins' =>0 ,'idi'=>0, 'rep'=>0, 'eli'=>0  );
 		foreach ($JsonRe as $nivel3A => $value3A) 
 		{
 			if($nivel3A==$Panel)
 			{
-				$resp[$ind_visibl]=$value3A;
+				$resp[$nivel3A]=TRUE;
 				#echo "existe ind_visibl: ";print_r($value3A);
 			}
 			if($nivel3A=='sub')
@@ -227,6 +266,24 @@ class notifi
 			}
 		}
 		return $resp;
+	}
+
+	/*! \fn: 
+	 *  \brief: 
+	 *  \author:
+	 *	\date: 
+	 *	\date modified: dia/mes/año
+	 *  \return:
+	 */
+	protected function getFormGene()
+	{
+		$mHtml->OpenDiv("id:tabgeneral");
+			$mHtml->Table("tr");
+				$mHtml->Label( "NOTIFICACIONES GENERADAS EN EL PERIDODO ".$val, array("colspan"=>"4", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+				$mHtml->CloseRow();
+			$mHtml->CloseTable('tr');
+        $mHtml->CloseDiv();
+        return $mHtml->MakeHtml(TRUE);
 	}
 }
 
