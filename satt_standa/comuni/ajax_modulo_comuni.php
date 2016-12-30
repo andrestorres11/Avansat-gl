@@ -2043,6 +2043,21 @@ class AjaxModuloComunicaciones
       $mHtml.="</tbody>";
       $mHtml.="</table>";
       $mHtml.="</div>";
+      if($intAuto==1)
+      {
+        $mHtml="<div id='Tbl_AsignacionUserID' class='Tbl_AsignacionUser'>";
+            $mHtml.="<table class='displayDIV2' width='100%'' align='center' cellpadding='3' cellspacing='0' border='0'>";
+              $mHtml.="<thead>";
+                  $mHtml.="<tr>";
+                      $mHtml.="<td class='CellInfo1'>NO SE ENCONTRARON DATOS.</td>"; 
+                  $mHtml.="</tr>";
+              $mHtml.="</thead>";
+              $mHtml.="<tbody>"; 
+              $mHtml.="</tbody>";
+            $mHtml.="</table>";
+        $mHtml.="</div>";
+
+      }
       echo $mHtml;  
      
         
@@ -2099,6 +2114,21 @@ class AjaxModuloComunicaciones
       $mHtml.="</tbody>";
       $mHtml.="</table>";
       $mHtml.="</div>";
+      if(sizeof($mDatas)==0)
+      {
+        $mHtml="<div id='Tbl_AsignacionUserID' class='Tbl_AsignacionUser'>";
+            $mHtml.="<table class='displayDIV2' width='100%'' align='center' cellpadding='3' cellspacing='0' border='0'>";
+              $mHtml.="<thead>";
+                  $mHtml.="<tr>";
+                      $mHtml.="<td class='CellInfo1'>NO SE ENCONTRARON DATOS.</td>"; 
+                  $mHtml.="</tr>";
+              $mHtml.="</thead>";
+              $mHtml.="<tbody>"; 
+              $mHtml.="</tbody>";
+            $mHtml.="</table>";
+        $mHtml.="</div>";
+
+      }
       echo $mHtml; 
      
         

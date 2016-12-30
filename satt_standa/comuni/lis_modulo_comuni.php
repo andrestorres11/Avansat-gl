@@ -108,23 +108,23 @@ class ModuloComunicaciones
         $mHtml->SetBody('<td>');
             $mHtml->SetBody('<div id="contentUser" class="ui-tabs ui-widget ui-widget-content ui-corner-all">');
             //$mHtml->OpenDiv("id:contentUser; class:accordion");
-                $mHtml->SetBody("<h3 style='padding:6px;' class='ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top'><center>FILTROS</center></h3>");
+               /* $mHtml->SetBody("<h3 style='padding:6px;' class='ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top'><center>FILTROS</center></h3>");
                 $mHtml->OpenDiv("id:sec1ID; class:ui-tabs-panel; class:ui-widget-content, class:ui-corner-bottom");
-                    //contenido del acordeon
+                    #contenido del acordeon
                     $mHtml->Table("tr");
                         $mHtml->Row();
                             $mHtml->Label( "SELECCIONES PARAMETROS DE BUSQUEDA",  array("align"=>"center", "class"=>"CellHead", "colspan"=>"2") );
                         $mHtml->CloseRow();
 
                         $mHtml->Row();
-                           $mHtml->Label( "*Nit/ Nombre Transportadora:",  array("align"=>"right", "class"=>"celda_info") );
+                           $mHtml->Label( "Nit/ Nombre Transportadora:",  array("align"=>"right", "class"=>"celda_info") );
                            $mHtml->Input(array("name" => "nom_transp", "id" => "nom_transpID", "width" => "100%","onkeyup"=>"getNomTrans()"));
                         $mHtml->CloseRow();
                     $mHtml->CloseTable("tr");
-                    //fin del contenido del acordeon
-                $mHtml->CloseDiv(); 
+                    #fin del contenido del acordeon
+                $mHtml->CloseDiv();*/
 
-                $mHtml->SetBody("<h3 style='padding:6px;' class='ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top'><center>RESULTADOS</center></h3>");
+                $mHtml->SetBody("<h3 style='padding:6px;' class='ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top'><center>LISTA DE ASIGNACION</center></h3>");
                 $mHtml->OpenDiv("id:sec2ID");
                     //contenido del acordeon
                     $mHtml->OpenDiv("id:tabs");

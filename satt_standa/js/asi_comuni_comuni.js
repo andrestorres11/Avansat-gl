@@ -791,37 +791,49 @@ function AjaxJquery(opcion, date, novedad)
           var cod_nomUsuarioID=$('#cod_nomUsuarioID').val();
           
           if($('#paraID').is(':checked')){
-              var paraID="P";
+              paraID="P";
           }else{
-              var paraID="0";
+              paraID="0";
           }
           if($('#copiaID').is(':checked')){
-              var copiaID="C";
+              copiaID="C";
           }else{
-              var copiaID="0";
+              copiaID="0";
+          }
+          if((paraID!="0" && copiaID!="0") || (paraID=="P" && copiaID=="0") || (paraID=="0" && copiaID=="C"))
+          {
+              if(nom_usuarioID!="")
+              {
+                $.ajax({
+                    type: "POST",
+                    url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
+                    data: "option=ListarAsignacionesUsuarios&cod_nomUsuarioID="+cod_nomUsuarioID+"&nom_usuario="+nom_usuarioID+"&mTypeDestin[0]="+paraID+"&mTypeDestin[1]="+copiaID,
+                    beforeSend: function() {
+                       DialogAsignacion("Buscando datos relacionados ");
+                    },
+                    success: function(data) {
+                      $("#resultadoUsuarioID").html(data); 
+                      $('#ExportExcelUsuariosID').attr('disabled', false);
+                      $("#sec2ID").css({"height":"auto"});
+                    },
+                    complete: function() {
+                      $( "#MessageDialogID" ).dialog( "destroy" ).remove();
+                    },
+                    timeout:100000
+                  });
+              }else{
+                  alert("La selecci\xf3n de un usuario es de car\xe1cter obligatorio");
+                  $('#nom_usuarioID').focus();
+              }
+
+          }
+          else
+          {
+              alert("La selecci\xf3n de un tipo de contacto es de car\xe1cter obligatorio");
+                  $('#paraID').focus();
           }
  
-          if(nom_usuarioID!=""){
-             $.ajax({
-                type: "POST",
-                url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
-                data: "option=ListarAsignacionesUsuarios&cod_nomUsuarioID="+cod_nomUsuarioID+"&nom_usuario="+nom_usuarioID+"&mTypeDestin[0]="+paraID+"&mTypeDestin[1]="+copiaID,
-                beforeSend: function() {
-                   DialogAsignacion("Buscando datos relacionados ");
-                },
-                success: function(data) {
-                  $("#resultadoUsuarioID").html(data); 
-                  $('#ExportExcelUsuariosID').attr('disabled', false);
-                  $("#sec2ID").css({"height":"auto"});
-                },
-                complete: function() {
-                  $( "#MessageDialogID" ).dialog( "destroy" ).remove();
-                } 
-              });
-          }else{
-              alert("La selecci\xf3n de un usuario es de car\xe1cter obligatorio");
-              $('#nom_usuarioID').focus();
-          }
+          
             
         }else if(banderaListAsig==1)
         {
