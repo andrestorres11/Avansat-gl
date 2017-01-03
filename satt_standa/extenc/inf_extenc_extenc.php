@@ -67,7 +67,11 @@ class Ins_extenc_extenc {
         echo "</table>";
 
         ?>
-
+        <style type="text/css">
+          .ui-datepicker-title{
+            color: black !important;
+          }
+        </style>
         <form name="formulario" id="formulario" action="../<?= DIR_APLICA_CENTRAL ?>/lib/exportExcel.php" method="post">
             <input type="hidden" name='nameFile' id='nameFileID' value="informe_llamadas_entrantes">
             <input type="hidden" name='OptionExcel' id='OptionExcelID' value='_REQUEST'>
