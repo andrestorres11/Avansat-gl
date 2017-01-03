@@ -47,7 +47,13 @@ class notifi
 	{
 		$responseJson=self::getRespond();
 		$Json=json_decode($responseJson);
-		
+
+		#captura de fechas
+		$fActual=date('Y-m-j');
+		$fFin=strtotime ( '0 day' , strtotime ( $fActual ) ) ;
+		$fFin = date ( 'Y-m-j' , $fFin );
+		$nuevafecha = strtotime ( '-8 day' , strtotime ( $fActual ) ) ;
+		$nuevafecha = date ( 'Y-m-j' , $nuevafecha );
 		#HTML
 		$mHtml = new Formlib(2);
 		$mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
@@ -66,9 +72,9 @@ class notifi
 
 									$mHtml->Row();
 									$mHtml->Label( "* Fecha inicio:", array("align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
-									$mHtml->Input( array("name"=>"fec_ini", "id"=>"fec_iniID", "width"=>"25%", "value"=>'', "class"=>"cellInfo2") );
+									$mHtml->Input( array("name"=>"fec_ini", "id"=>"fec_iniID", "width"=>"25%", "value"=>$nuevafecha , "class"=>"cellInfo2") );
 									$mHtml->Label( "* Fecha fin:", array("align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
-									$mHtml->Input( array("name"=>"fec_fin", "id"=>"fec_finID", "width"=>"25%", "value"=>'', "class"=>"cellInfo2") );
+									$mHtml->Input( array("name"=>"fec_fin", "id"=>"fec_finID", "width"=>"25%", "value"=>$fFin , "class"=>"cellInfo2") );
 								$mHtml->CloseTable('tr');
 							$mHtml->CloseDiv();
 							$mHtml->OpenDiv("id:tabs");
@@ -139,10 +145,7 @@ class notifi
 								if($tabgeneral['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabgeneral");
-										$mHtml->Table("tr");
-											$mHtml->Label( "NOTIFICACIONES GENERADAS EN EL PERIDODO ".$val, array("colspan"=>"4", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
-											$mHtml->CloseRow();
-										$mHtml->CloseTable('tr');
+										
 							        $mHtml->CloseDiv();
 								}
 								if($tabinfoet['ind_visibl']==TRUE)
@@ -268,23 +271,6 @@ class notifi
 		return $resp;
 	}
 
-	/*! \fn: 
-	 *  \brief: 
-	 *  \author:
-	 *	\date: 
-	 *	\date modified: dia/mes/año
-	 *  \return:
-	 */
-	protected function getFormGene()
-	{
-		$mHtml->OpenDiv("id:tabgeneral");
-			$mHtml->Table("tr");
-				$mHtml->Label( "NOTIFICACIONES GENERADAS EN EL PERIDODO ".$val, array("colspan"=>"4", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
-				$mHtml->CloseRow();
-			$mHtml->CloseTable('tr');
-        $mHtml->CloseDiv();
-        return $mHtml->MakeHtml(TRUE);
-	}
 }
 
 $_NOTIFI = new notifi( $this -> conexion, $this -> usuario_aplicacion, $this -> codigo );
