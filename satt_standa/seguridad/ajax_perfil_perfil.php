@@ -254,6 +254,17 @@ class seguri {
                 $sql = trim($sql, ",") . ";";
                 $mConsult = new Consulta($sql, self::$cConexion, "RC");
             }
+
+            $sqlAp = "SELECT cod_perfil FROM ".BASE_DATOS.".tab_aplica_perfil WHERE cod_perfil=$datos->cod_perfil";
+            $consultaAp = new Consulta($sqlAp, self::$cConexion);
+            $AP = $consultaAp->ret_matrix("a");
+            if(!$AP)
+            {
+                $sqlApi ="INSERT INTO " . BASE_DATOS . ".tab_aplica_perfil (cod_aplica,cod_perfil)
+                            VALUES (1,$datos->cod_perfil)" ;
+                $consultaApi = new Consulta($sqlApi, self::$cConexion, "RC");
+            }
+
         }
         if ($mConsult) {
             return 1;
