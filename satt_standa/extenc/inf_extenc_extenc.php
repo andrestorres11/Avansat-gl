@@ -32,7 +32,7 @@ class Ins_extenc_extenc {
      *  \brief: funcion inicial para listar registrar extenciones
      *  \author: Ing. Alexander Correa
      *	\date: 04/12/2015
-     *	\date modified: dia/mes/aÃ±o
+     *	\date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -67,7 +67,11 @@ class Ins_extenc_extenc {
         echo "</table>";
 
         ?>
-
+        <style type="text/css">
+          .ui-datepicker-title{
+            color: black !important;
+          }
+        </style>
         <form name="formulario" id="formulario" action="../<?= DIR_APLICA_CENTRAL ?>/lib/exportExcel.php" method="post">
             <input type="hidden" name='nameFile' id='nameFileID' value="informe_llamadas_entrantes">
             <input type="hidden" name='OptionExcel' id='OptionExcelID' value='_REQUEST'>
@@ -95,6 +99,8 @@ class Ins_extenc_extenc {
                     <div class="col-md-3"><input type="text" maxlength="10" style="width: 100%" value="<?= $hoy ?>" size="10" id="fec_finaliID" readonly="" name="fec_finali"></div>
                     <div class="col-md-3">Celular: </div>
                     <div class="col-md-3"><input type="text" minlength="10" style="width: 100%" maxlength="10" size="10" id="num_celulaID" name="num_celula"></div>
+                    <div class="col-md-3">Sub Operacion: </div>
+                    <div class="col-md-3"><select id="cod_subopeID"></select></div>
                   </td>
                 </tr>
                     <div id="ocultos" style="display:block">
