@@ -83,6 +83,10 @@ class extenc{
          case 'LoadCallPlay':
           self::LoadCallPlay();
          break;
+         
+         case 'getSubOperad':
+          self::getSubOperad();
+           break;
 
         default:
           header('Location: index.php?window=central&cod_servic=1366&menant=1366');
@@ -115,7 +119,7 @@ class extenc{
         if(!$extencion){
         	#si no existe la extencion ingreso la nueva
         	$sql = "INSERT INTO ".BASE_DATOS.".tab_callce_extenc 
-        			(usr_extenc, cod_operac, cod_grupox, num_extenc, usr_creaci, fec_creaci) 
+        			(usr_extenc, cod_operac, cod_grupox, num_extenc, usr_creaci, fec_creaci, cod_subope)
         			VALUES ('$datos->usr_extenc', '$datos->cod_operac', '$datos->cod_grupox', '$datos->num_extenc', '$usuario', NOW() )";
 			if( $insercion = new Consulta($sql, self::$cConexion, "R")){
 					die('1'); // procedimiento correcto
@@ -123,7 +127,7 @@ class extenc{
 					die('2'); //errror al registrar en la base de datos
 			}
         }else{
-        	die("0"); //para avisar que ya la existe una extensiÃ³n identica para el usuario seleccionado y debe inhabilitarse antes
+        	die("0"); //para avisar que ya la existe una extensión identica para el usuario seleccionado y debe inhabilitarse antes
         } 
     }
 
@@ -136,7 +140,7 @@ class extenc{
  *  \date modified:                                                                 *
  *  \param:                            												*     
  *  \param:                                                                         * 
- *  \returnlista de los tipos de operaciÃ³n                        				    *
+ *  \returnlista de los tipos de operación                        				    *
  ***********************************************************************************/
     public function getTipoDeOperacion(){
       $sesion = (object) $_SESSION['datos_usuario'];
@@ -155,12 +159,12 @@ class extenc{
         }
         if($sesion->cod_perfil == '712'){
            $select = "<select style='width:100%' id='cod_operacID' name='cod_operac' validate='select' obl='1' disabled='true'>
-                  <option value=''>Seleccione un tipo de OperaciÃ³n</option>
+                  <option value=''>Seleccione un tipo de Operación</option>
                   $option
                    </select>";
         }else{
           $select = "<select style='width:100%' id='cod_operacID' name='cod_operac' validate='select' obl='1'>
-                	<option value=''>Seleccione un tipo de OperaciÃ³n</option>
+                	<option value=''>Seleccione un tipo de Operación</option>
                 	$option
                    </select>";
        }
@@ -178,7 +182,7 @@ class extenc{
  *  \date modified:                                                                 *
  *  \param:                            												*     
  *  \param:                                                                         * 
- *  \returnlista de los tipos de operaciÃ³n                        				    *
+ *  \returnlista de los tipos de operación                        				    *
  ***********************************************************************************/
     public function getGrupos(){
 
@@ -232,17 +236,17 @@ class extenc{
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
-        #inactiva la extensiÃ³n
+        #inactiva la extensión
         $query = "UPDATE ".BASE_DATOS.".tab_callce_extenc 
                         SET ind_estado = 0,
                             usr_modifi = '$usuario',
                             fec_modifi = '$fec_actual'
                             WHERE cod_extenc = '$cod_extenc' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se insctivÃ³ la extensiÃ³n exitosamente.";
+           $mensaje = "Se insctivó la extensión exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
-           $mens -> correcto2("INACTIVAR EXTENSIÃ“N",$mensaje);
+           $mens -> correcto2("INACTIVAR EXTENSIÓN",$mensaje);
         }
     }
 
@@ -258,10 +262,10 @@ class extenc{
                             fec_modifi = '$fec_actual'
                             WHERE cod_operac = '$cod_operac' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se inactivÃ³ la operaciÃ³n exitosamente.";
+           $mensaje = "Se inactivó la operación exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
-           $mens -> correcto2("INACTIVAR OPERACÃ“N",$mensaje);
+           $mens -> correcto2("INACTIVAR OPERACÓN",$mensaje);
         }
     }
 
@@ -277,10 +281,10 @@ class extenc{
                             fec_modifi = '$fec_actual'
                             WHERE cod_operac = '$cod_operac' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se activÃ³ la operaciÃ³n exitosamente.";
+           $mensaje = "Se activó la operación exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
-           $mens -> correcto2("INACTIVAR OPERACÃ“N",$mensaje);
+           $mens -> correcto2("INACTIVAR OPERACÓN",$mensaje);
         }
     }
 
@@ -329,14 +333,14 @@ class extenc{
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
-        #inactiva la extensiÃ³n
+        #inactiva la extensión
         $query = "UPDATE ".BASE_DATOS.".tab_callce_grupox 
                         SET ind_estado = 0,
                             usr_modifi = '$usuario',
                             fec_modifi = '$fec_actual'
                             WHERE cod_grupox = '$cod_grupox' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se inactivÃ³ el grupo exitosamente.";
+           $mensaje = "Se inactivó el grupo exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
            $mens -> correcto2("INACTIVAR GRUPO",$mensaje);
@@ -348,14 +352,14 @@ class extenc{
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
-        #inactiva la extensiÃ³n
+        #inactiva la extensión
         $query = "UPDATE ".BASE_DATOS.".tab_callce_grupox 
                         SET ind_estado = 1,
                             usr_modifi = '$usuario',
                             fec_modifi = '$fec_actual'
                             WHERE cod_grupox = '$cod_grupox' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se activÃ³ el grupo exitosamente.";
+           $mensaje = "Se activó el grupo exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
            $mens -> correcto2("INACTIVAR GRUPO",$mensaje);
@@ -377,7 +381,7 @@ class extenc{
       $datos = (object) $_REQUEST;
  
 
-      $info = $this->getInfomr($datos->fec_inicia, $datos->fec_finali,$datos->cod_operac,$datos->num_celula, $datos->pestana);
+      $info = $this->getInfomr($datos->fec_inicia, $datos->fec_finali,$datos->cod_operac,$datos->num_celula, $datos->pestana, $datos->cod_subope);
 
       if($info){
        if($datos->pestana == "generaID"){
@@ -388,18 +392,21 @@ class extenc{
       }else{
         ?>
         <div class="col-md-12 Style2DIV">
-          <label style="color:black">No se encontrÃ³ informaciÃ³n para los parametros de busqueda especificados.</label>
+          <label style="color:black">No se encontró información para los parametros de busqueda especificados.</label>
         </div>
         <?php 
       }
 
     }
 
-    private function getInfomr($fec_inicia, $fec_finali, $cod_operac, $num_celula, $pestana){
+    private function getInfomr($fec_inicia, $fec_finali, $cod_operac, $num_celula, $pestana, $cod_subope){
       if($num_celula){
         $num_celula = "AND num_telefo LIKE '%$num_celula%'";
       }
- 
+      if($cod_subope){
+        $subope = "AND b.cod_subope = '$cod_subope'";
+        $subope2 = "AND d.cod_subope = '$cod_subope'";
+      }
           /*  $sql = "SELECT x.cantidad, x.estado, x.fecha 
                   FROM (
                           ( 
@@ -622,18 +629,18 @@ class extenc{
       $data = $this->getInfromacionDetallada($post);
 
       if($post->tipo == 'todas'){
-        $detalle = "Detallado General de llamadas entrantes para el dÃ­a $post->fec_inicia al $post->fec_finali";
+        $detalle = "Detallado General de llamadas entrantes para el día $post->fec_inicia al $post->fec_finali";
       }else if ($post->tipo == 'ANSWER'){
-        $detalle = "Detallado de llamadas entrantes contestadas para el dÃ­a $post->fec_inicia al $post->fec_finali";
+        $detalle = "Detallado de llamadas entrantes contestadas para el día $post->fec_inicia al $post->fec_finali";
       }else{
-        $detalle = "Detallado de llamadas entrantes no contestadas para el dÃ­a $post->fec_inicia al $post->fec_finali";
+        $detalle = "Detallado de llamadas entrantes no contestadas para el día $post->fec_inicia al $post->fec_finali";
       }
       ?>
       <div class="col-md-12">
         <br>
         <a onclick="pintarExcel('tabla_llamadasID')" style="cursor:pointer"><img border="0" src="../<?= DIR_APLICA_CENTRAL ?>/imagenes/excel.jpg"></a>
         <br>
-        <label>Se encontrÃ³ un total de <?= count($data) ?> registros</label>
+        <label>Se encontró un total de <?= count($data) ?> registros</label>
         <div id="padre">
           <table id="tabla_llamadasID" class="table hoverTable" width="100%" cellspacing="0" cellpadding="2" border="0">
             <tr>
@@ -690,6 +697,10 @@ class extenc{
       }
       if($post->num_celula){
         $and = " AND x.num_telefo LIKE '%$post->num_celula%'";
+      }
+      if($post->cod_subope){
+        $subope = "AND b.cod_subope = '$post->cod_subope'";
+        $subope2 = "AND d.cod_subope = '$post->cod_subope'";
       }
       /* 
         $sql = "SELECT x.cod_consec, x.num_telefo, x.tie_duraci, 
@@ -802,7 +813,7 @@ class extenc{
         $mObjetAudio = $mAudio["msg_respon"];
       }
       else {
-         # Crea el elemento de reproduccion del audio que se descargÃ³ de S3 -----------------------------------------
+         # Crea el elemento de reproduccion del audio que se descargó de S3 -----------------------------------------
          if($_SERVER["HTTP_HOST"] == "web7.intrared.net:8083"){
           $ruta = "/ap/dev/";
          }else{
@@ -815,6 +826,34 @@ class extenc{
                       </audio>';
       }
       echo $mObjetAudio;
+    }
+
+    /*! \fn: getSubOperad
+     *  \brief: Busca datos relacionados con la suboperacion
+     *  \author: Miguel Romero
+     *  \date:  04/01/2017
+     *  \date modified: dd/mm/aaaa 
+     *  \return: xml informacion relacionada
+     */
+    private function getSubOperad(){
+
+      $post = (object) $_REQUEST;
+
+      $mSelect = "SELECT a.cod_subope, a.nom_subope
+                    FROM ".BASE_DATOS.".tab_operad_subope a 
+                   WHERE a.cod_operac = '$post->cod_operad' AND a.ind_estado = 1 ";
+      $consulta = new Consulta( $mSelect, self::$cConexion);
+      $mDataCall = $consulta -> ret_matrix('i'); 
+
+ 
+
+      $mData = array( 
+                      array( "select", "cod_subopeID", "", $mDataCall   ) 
+                    );
+
+     $xml = new Xml( $mData );
+
+
     }
   }
 
