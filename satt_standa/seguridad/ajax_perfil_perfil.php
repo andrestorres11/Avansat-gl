@@ -1,4 +1,4 @@
-<?php
+<?php 
 /* ! \file: ajax_perfil_perfil.php
  *  \brief: archivo con multiples funciones ajax
  *  \author: Ing. Alexander Correa
@@ -68,6 +68,9 @@ class seguri {
                     self::listaNovedades();
                     break;
 
+                case 'getNomTrans':
+                    self::getNomTrans();
+                    break;
 
                 default:
                     header('Location: index.php?window=central&cod_servic=1366&menant=1366');
@@ -636,7 +639,6 @@ class seguri {
         $datos->fec_cambio = strtotime('+' . $datos->num_diasxx . ' day', strtotime($hoy));
         $datos->fec_cambio = date('Y-m-d H:i:s', $datos->fec_cambio);
         $datos->fec_cambio = "'$datos->fec_cambio'";
-        $bandera='FALSE';
 
         if (!$datos->cod_priori) {
             $datos->cod_priori = 1;
@@ -663,34 +665,18 @@ class seguri {
             if ($datos->cod_filtro) {
                 $sqlx = "INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_usuari  (cod_aplica, cod_filtro, cod_usuari, clv_filtro) VALUES ";
                 foreach ($datos->cod_filtro as $key => $value) {
-                    $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value";
+                   $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value AND cod_perfil = $datos->cod_perfil";
                     $consulta = new Consulta($sql, self::$cConexion);
                     $filtro = $consulta->ret_matrix("a");
                     if (!$filtro) {
                         $sqlx.= " (1, $value, '$datos->cod_usuari', '$fil[$key]'),";
-                        $bandera='TRUE';
-                    }
-                    if($value=="1"){
-                        $sql1 = "SELECT cod_aplica,cod_filtro,cod_perfil,clv_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil WHERE cod_aplica=1 AND cod_filtro = $value AND cod_perfil='$datos->cod_perfil' AND clv_filtro='$fil[$key]'";
-                        $consulta1 = new Consulta($sql1, self::$cConexion);
-                        $filtro1 = $consulta1->ret_matrix("a");
-                        if(!$filtro1){
-                            $sqlTr ="INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil (cod_aplica,cod_filtro,cod_perfil,clv_filtro)
-                            VALUES (1,$value, '$datos->cod_perfil','$fil[$key]')" ;
-                            $consultaTr = new Consulta($sqlTr, self::$cConexion, "RC"); 
-                        }
-                        
                     }
                 }
-                if($bandera=='TRUE'){
-                    $sqlx = trim($sqlx, ",") . ";";
-                    $consulta = new Consulta($sqlx, self::$cConexion, "RC");
-                    
-                }
+                $sqlx = trim($sqlx, ",") . ";";
+                $consulta = new Consulta($sqlx, self::$cConexion, "RC");
                 if (!$insercion = new Consulta("COMMIT", self::$cConexion)) {
                     die("filtros"); //errro al registrar los filtros de usuario
                 }
-               
             }
             die("1"); //proceso correcto
         } else {
@@ -1005,6 +991,34 @@ class seguri {
             $newNov[] = $nov['cod_noveda'];
         }
         return $newNov;
+    }
+
+    /* ! \fn: getNomTrans
+     *  \brief: trae las transportadoras activas
+     *  \author: Edward Serrano
+     *  \date: 04/01/2017
+     *  \date modified: dia/mes/año    
+     *  \return json con transportadoras
+     */
+
+    function getNomTrans() {
+        
+        $mSql = "SELECT a.cod_tercer, b.nom_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a INNER JOIN tab_tercer_tercer b ON a.cod_tercer=b.cod_tercer WHERE a.cod_tercer LIKE '%".$_REQUEST['term']."%' OR b.nom_tercer LIKE '%".$_REQUEST['term']."%' LIMIT 15 ";
+        #print_r($mSql);
+        $consulta = new Consulta( $mSql, self::$cConexion);
+        $mResult = $consulta -> ret_matrix('a');
+
+        if( $_REQUEST['term'] )
+        {
+            $mTranps = array();
+            for($i=0; $i<sizeof( $mResult ); $i++){
+                $mTxt = $mResult[$i]['cod_tercer']." - ".utf8_decode($mResult[$i]['nom_tercer']);
+                $mTranps[] = array('value' => utf8_decode($mResult[$i]['nom_tercer']), 'label' => $mTxt, 'id' => $mResult[$i]['cod_tercer'] );
+            }
+            echo json_encode( $mTranps );
+        }
+        else
+            return $mResult;
     }
 
 }

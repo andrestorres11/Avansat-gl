@@ -168,7 +168,7 @@ class ins_usuari_usuari {
                                         </div>
                                         <div class="col-md-3 text-right">Perfil<font style="color:red">*</font>:</div>
                                         <div class="col-md-3 text-left">
-                                            <select id="cod_perfil" obl="1" validate="select" name="cod_perfil" class="ancho" >
+                                            <select id="cod_perfil" obl="1" validate="select" name="cod_perfil" class="ancho" onchange="mostrarOcultos()">
                                                 <option value="">Seleccione una Opci&oacute;n</option>
                                                 <?php foreach ($perfiles as $key => $value){ 
                                                     $cod_perfil = "";
@@ -219,12 +219,12 @@ class ins_usuari_usuari {
                                         </div>
                                     </div>
                                     <div id="servicios" class="col-md-12 ancho text-center" style="display: <?= $disp ?>">
-                                         <!--<div class="col-md-12 CellHead"><b>Filtros Asignados Al Perfil</b></div>-->
-                                         <!--<div class="col-md-12"></div>-->
-                                         <!--<div class="col-md-6 CellHead"><b>Nombre del Filtro</b></div>
-                                         <div class="col-md-6 CellHead"><b>Valor Asignado</b></div>-->
-                                         <div class="col-md-12 ancho" id="datos" hidden>
-                                             <?php   #if($data->cod_usuari){self::$cFunciones->getDatosFiltro($datos->cod_perfil);} ?>
+                                         <div class="col-md-12 CellHead"><b>Filtros Asignados Al Perfil</b></div>
+                                         <div class="col-md-12"></div>
+                                         <div class="col-md-6 CellHead"><b>Nombre del Filtro</b></div>
+                                         <div class="col-md-6 CellHead"><b>Valor Asignado</b></div>
+                                         <div class="col-md-12 ancho" id="datos">
+                                             <?php   if($data->cod_usuari){self::$cFunciones->getDatosFiltro($datos->cod_perfil);} ?>
                                          </div>
                                     </div>
                                     <div id="services" class="col-md-12 ancho text-center" style="display: block">

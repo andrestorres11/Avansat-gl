@@ -124,6 +124,7 @@ class ins_perfil_perfil {
         <input type="hidden" name="window" id="window" value="central">
         <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>">
         <input type="hidden" name="cod_noveda" id="cod_noveda" value="<?= $nov_perfil ?>">
+        <input type="hidden" name="cod_transp" id="cod_transp">
     </form>
     <div class="accordion"  >
         <h1 style="padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>INFORMACI&Oacute;N B&Aacute;SICA DEL PERFIL</b></h1>
@@ -156,6 +157,11 @@ class ins_perfil_perfil {
                                           <option <?= $cod_respon ?> value="<?= $value['cod_respon'] ?>"><?= $value['nom_respon'] ?></option>  
                                         <?php } ?>
                                     </select>
+                                </div>
+                                <!--nuevo campo-->
+                                <div class="col-md-6 text-right">Transportadora:</div>
+                                <div class="col-md-6 text-left">
+                                    <input class="text-center" type="text" name="trans_perfil" id="trans_perfil" maxlength="50" minlength="5"></input>
                                 </div>
                             </td>
                         </tr>
