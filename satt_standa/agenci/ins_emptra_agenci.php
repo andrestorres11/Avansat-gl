@@ -137,7 +137,7 @@ public function getTransp()
                         if(!class_exists(DinamicList)) {
                           include_once("../".DIR_APLICA_CENTRAL."/lib/general/dinamic_list.inc");                         
                         }
-                        $list = new DinamicList( $this->conexion, $mSql, "cod_estado" , "no", 'ASC');
+                        $list = new DinamicList( $this->conexion, $mSql, 7 , "no", 'ASC');
                         
                         $list->SetClose('no');
                         $list->SetCreate("Crear agencia", "onclick:formulario()");
