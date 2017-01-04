@@ -39,20 +39,21 @@ class InsertDespacho
         "enctype" => "multipart/form-data"));
 
   #variables ocultas
-  
+    $validacion=$this->getValidacionPerfil();
     $mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
     $mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
     $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
     $mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>$_REQUEST['opcion']));
-    $mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>''));
+    $mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>($validacion==FALSE ? "" : $validacion."-")));
     $mHtml->Hidden(array( "name" => "resultado", "id" => "resultado", 'value'=>$_REQUEST['resultado']));
     $mHtml->Hidden(array( "name" => "opera", "id" => "opera", 'value'=>$_REQUEST['operacion']));
     $mHtml->Hidden(array( "name" => "filter", "id" => "filterID", 'value'=>COD_FILTRO_EMPTRA));
-
       # Construye accordion
       $mHtml->Row("td");
         $mHtml->OpenDiv("id:contentID; class:contentAccordion");
           # Accordion1
+        if($validacion==FALSE)
+        {
           $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
             $mHtml->SetBody("<h1 style='padding: 6px' ><b>INSERTAR DESPACHO</b></h1>");
             $mHtml->OpenDiv("id:sec1;");
@@ -65,6 +66,12 @@ class InsertDespacho
               $mHtml->CloseDiv();
             $mHtml->CloseDiv();
           $mHtml->CloseDiv();
+        }
+        else
+        {
+          $mHtml->Hidden(array( "name" => "trasp[nom_transp]", "id" => "nom_transpID", 'value'=>$validacion."-"));
+        }
+          
           # Fin accordion1    
           
           $mHtml->SetBody("<div id='resultID'></div>");
@@ -109,6 +116,30 @@ class InsertDespacho
       endif;
     }
     return $datos_filtro;
+  }
+
+  private function getValidacionPerfil(){
+
+    if($_SESSION['datos_usuario']['cod_perfil']=="")
+    {
+      $filtro = new Aplica_Filtro_Usuari(COD_APLICACION ,COD_FILTRO_EMPTRA,$_SESSION['datos_usuario']['cod_usuari']);
+    }
+   else
+    {
+      $filtro = new Aplica_Filtro_Perfil(COD_APLICACION ,COD_FILTRO_EMPTRA,$_SESSION['datos_usuario']['cod_perfil']);
+    }
+
+    if($filtro -> listar($this -> conexion))
+    {
+      $datos_filtro = $filtro -> retornar();
+      $respuesta=$datos_filtro['clv_filtro'];
+    }
+    else
+    {
+      $respuesta=FALSE;
+    }
+    return $respuesta;
+
   }
 
 }
