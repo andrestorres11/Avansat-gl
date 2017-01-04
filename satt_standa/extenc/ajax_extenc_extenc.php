@@ -828,6 +828,13 @@ class extenc{
       echo $mObjetAudio;
     }
 
+    /*! \fn: getSubOperad
+     *  \brief: Busca datos relacionados con la suboperacion
+     *  \author: Miguel Romero
+     *  \date:  04/01/2017
+     *  \date modified: dd/mm/aaaa 
+     *  \return: xml informacion relacionada
+     */
     private function getSubOperad(){
 
       $post = (object) $_REQUEST;
