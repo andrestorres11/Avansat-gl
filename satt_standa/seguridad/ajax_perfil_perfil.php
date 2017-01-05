@@ -268,6 +268,28 @@ class seguri {
                 $consultaApi = new Consulta($sqlApi, self::$cConexion, "RC");
             }
 
+            $sqlAfp = "SELECT cod_aplica,cod_filtro,cod_perfil,clv_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil WHERE cod_aplica=1 AND cod_filtro = 1 AND cod_perfil=$datos->cod_perfil AND clv_filtro='$datos->cod_transp'";
+            $consultaAfp = new Consulta($sqlAfp, self::$cConexion);
+            $AFP = $consultaAfp->ret_matrix("a");
+            if(!$AFP)
+            {
+                $sqlAfpi ="INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                        (cod_aplica,cod_filtro,cod_perfil        ,clv_filtro)
+                                VALUES  (1         ,1         ,$datos->cod_perfil,'$datos->cod_transp')" ;
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC");
+            }
+            else
+            {
+                $sqlAfpi="UPDATE " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                SET
+                                        clv_filtro  =   '$datos->cod_transp'
+                                WHERE
+                                        cod_filtro  =   $datos->cod_perfil
+                                AND     cod_aplica  =   1
+                                AND     cod_filtro  =   1
+                                            ";
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC"); 
+            }
         }
         if ($mConsult) {
             return 1;
@@ -326,6 +348,31 @@ class seguri {
                     $sql = trim($sql, ",") . ";";
                     $mConsult = new Consulta($sql, self::$cConexion, "RC");
                 }
+            }
+            if($datos->trans_perfil==""){
+                $datos->cod_transp=NULL;
+            }
+            $sqlAfp = "SELECT cod_aplica,cod_filtro,cod_perfil,clv_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil WHERE cod_aplica=1 AND cod_filtro = 1 AND cod_perfil=$datos->cod_perfil";
+            $consultaAfp = new Consulta($sqlAfp, self::$cConexion);
+            $AFP = $consultaAfp->ret_matrix("a");
+            if(!$AFP)
+            {
+                $sqlAfpi ="INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                        (cod_aplica,cod_filtro,cod_perfil        ,clv_filtro)
+                                VALUES  (1         ,1         ,$datos->cod_perfil,'$datos->cod_transp')" ;
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC");
+            }
+            else
+            {
+                $sqlAfpi="UPDATE " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                SET
+                                        clv_filtro  =   '$datos->cod_transp'
+                                WHERE
+                                        cod_perfil  =   $datos->cod_perfil
+                                AND     cod_aplica  =   1
+                                AND     cod_filtro  =   1
+                                            ";
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC"); 
             }
         }
         if ($mConsult) {
@@ -1019,6 +1066,33 @@ class seguri {
         }
         else
             return $mResult;
+    }
+
+    /* ! \fn: getTransPerfil
+     *  \brief: trae la transportadora asosiada al perfil
+     *  \author: Edward Serrano
+     *  \date: 05/01/2017
+     *  \date modified: dia/mes/año
+     *  \param: cod_perfil perfil actual   
+     *  \return array con las novedades del perfil
+     */
+
+    function getTransPerfil($cod_perfil) {
+
+        $sqlAfp = "SELECT a.clv_filtro,b.nom_tercer FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil a 
+                            INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b 
+                            ON a.clv_filtro=b.cod_tercer
+                            WHERE cod_aplica=1 AND cod_filtro = 1 AND cod_perfil=".$cod_perfil;
+        $consultaAfp = new Consulta($sqlAfp, self::$cConexion);
+        $AFP = $consultaAfp->ret_matrix("a");
+        if($AFP){
+            $Transpor=$AFP[0];
+        }
+        else
+        {   
+            $Transpor=NULL;
+        }
+        return $Transpor;
     }
 
 }
