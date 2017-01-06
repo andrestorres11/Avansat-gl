@@ -20,12 +20,14 @@ class notifi
 {
 	private static  $cConexion,
 					$cCodAplica,
-					$cUsuario;
+					$cUsuario,
+					$mANotifi;
 					
 	function __construct($co = null, $us = null, $ca = null)
 	{
 		@include_once( '../' . DIR_APLICA_CENTRAL . '/lib/general/functions.inc' );
-
+		@include_once( '../' . DIR_APLICA_CENTRAL . '/notifi/ajax_notifi_notifi.php' );
+		self::$mANotifi = new AjaxNotifiNotifi();
 		self::$cConexion = $co;
 		self::$cUsuario = $us;
 		self::$cCodAplica = $ca;
@@ -37,14 +39,15 @@ class notifi
 		self::lista();
 	}
 
-	/*! \fn: 
-	 *  \brief: 
-	 *  \author:
-	 *	\date: 
+	/*! \fn: lista
+	 *  \brief: Vista principal de modulo
+	 *  \author: Edward serrano
+	 *	\date: 	
 	 *	\date modified: dia/mes/año
 	 */
 	private function lista()
 	{
+		echo self::GridStyle();
 		$responseJson=self::getRespond();
 		$Json=json_decode($responseJson);
 
@@ -94,7 +97,7 @@ class notifi
 												$tabgeneral=self::recorrerJson($value2, 'ind_visibl', $arrayName = array());
 												if($tabgeneral['ind_visibl']==TRUE)
 												{
-													$srtTbs.="<li><a href='#tabgeneral' onclick='btnGeneral()''>GENERAL</a></li>";
+													$srtTbs.="<li><a href='#tabgeneral' onclick='btnGeneral()'>GENERAL</a></li>";
 												}
 											}
 											if($nivel2=='sec_infoet')
@@ -102,40 +105,47 @@ class notifi
 												$tabinfoet=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("oet","ins","idi","rep","eli"));
 												if($tabinfoet['ind_visibl']==TRUE)
 												{
-													$srtTbs.="<li><a href='#tabinfoet'>INFORMACION OET</a></li>";
+													$srtTbs.="<li><a href='#tabinfoet' onclick='btnSubModulos(1)'>INFORMACION OET</a></li>";
 												}
+												self::$mANotifi->setmPermOet($tabinfoet);
+												#print_r( self::$mANotifi->getmPermOet());
 											}
 											if($nivel2=='sec_infclf')
 											{
 												$tabinfclf=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("clf","ins","idi","rep","eli" ));
 												if($tabinfclf['ind_visibl']==TRUE)
 												{
-													$srtTbs.="<li><a href='#tabinfclf'>INFORMACION CLF</a></li>";
+													$srtTbs.="<li><a href='#tabinfclf' onclick='btnSubModulos(2)'>INFORMACION CLF</a></li>";
+													$mHtml->Hidden(array( "name" => "permclf", "id" => "permclfID", 'value'=>$tabinfclf['sub']));
 												}
+												self::$mANotifi->setmPermClf($tabinfclf);
 											}
 											if($nivel2=='sec_infsup')
 											{												
 												$tabinfsup=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("sup","ins","idi","rep","eli" ));
 												if($tabinfsup['ind_visibl']==TRUE)
 												{
-													$srtTbs.="<li><a href='#tabinfsup'>SUPERVISORES</a></li>";
+													$srtTbs.="<li><a href='#tabinfsup' onclick='btnSubModulos(3)'>SUPERVISORES</a></li>";
 												}
+												self::$mANotifi->setmPermSup($tabinfsup);
 											}
 											if($nivel2=='sec_infcon')
 											{												
 												$tabinfcon=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("con","ins","idi","rep","eli" ));
 												if($tabinfcon['ind_visibl']==TRUE)
 												{
-													$srtTbs.="<li><a href='#tabinfcon'>CONTROLADORES</a></li>";
+													$srtTbs.="<li><a href='#tabinfcon' onclick='btnSubModulos(4)'>CONTROLADORES</a></li>";
 												}
+												self::$mANotifi->setmPermCon($tabinfcon);
 											}
 											if($nivel2=='sec_infcli')
 											{
 												$tabinfcli=self::recorrerJson($value2, 'ind_visibl', $arrayName = array("cli","ins","idi","rep","eli" ));
 												if($tabinfcli['ind_visibl']==TRUE)
 												{
-													$srtTbs.="<li><a href='#tabinfcli'>CLIENTES</a></li>";
+													$srtTbs.="<li><a href='#tabinfcli' onclick='btnSubModulos(5)'>CLIENTES</a></li>";
 												}
+												self::$mANotifi->setmPermCli($tabinfcli);
 											}
 										}	
 									}
@@ -151,46 +161,31 @@ class notifi
 								if($tabinfoet['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfoet");
-									foreach ($tabinfoet as $Kinfoet => $Vinfoet) 
-									{
-										$mHtml->SetBody("<h3>".$Kinfoet."</h3>");
-									}	
+									
                             		$mHtml->CloseDiv();
 								}
 								if($tabinfclf['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfclf");
-									foreach ($tabinfclf as $Kinfoet => $Vinfoet) 
-									{
-										$mHtml->SetBody("<h3>".$Kinfoet."</h3>");
-									}	
+									
                             		$mHtml->CloseDiv();
 								}
 								if($tabinfsup['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfsup");
-									foreach ($tabinfsup as $Kinfoet => $Vinfoet) 
-									{
-										$mHtml->SetBody("<h3>".$Kinfoet."</h3>");
-									}	
+									
                             		$mHtml->CloseDiv();
 								}
 								if($tabinfcon['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfcon");
-									foreach ($tabinfcon as $Kinfoet => $Vinfoet) 
-									{
-										$mHtml->SetBody("<h3>".$Kinfoet."</h3>");
-									}	
+									
                             		$mHtml->CloseDiv();
 								}
 								if($tabinfcli['ind_visibl']==TRUE)
 								{
 									$mHtml->OpenDiv("id:tabinfcli");
-									foreach ($tabinfcli as $Kinfoet => $Vinfoet) 
-									{
-										$mHtml->SetBody("<h3>".$Kinfoet."</h3>");
-									}	
+									
                             		$mHtml->CloseDiv();
 								}
 								#print_r($tabinfoet);
@@ -212,9 +207,9 @@ class notifi
 		echo $mHtml->MakeHtml();
 	}
 
-	/*! \fn: 
-	 *  \brief: 
-	 *  \author:
+	/*! \fn: getRespond
+	 *  \brief: retorna los permisos sobre los submodulos
+	 *  \author: Edward Serrano
 	 *	\date: 
 	 *	\date modified: dia/mes/año
 	 *  \return:
@@ -233,12 +228,14 @@ class notifi
 		return json_encode($mData);	
 	}
 
-	/*! \fn: 
-	 *  \brief: 
-	 *  \author: 
+	/*! \fn: recorrerJson
+	 *  \brief: Reccorre json con los permisos asignados
+	 *  \author: Edward Serrano
 	 *	\date: 
 	 *	\date modified: dia/mes/año
-	 *  \param: 
+	 *  \param: $JsonRe-> json de datos
+	 *  \param: $Panel-> subnivel del json
+	 *  \param: arrSub-> Paramentros de bsuqueda
 	 *  \return:
 	 */
 	protected function recorrerJson($JsonRe = NULL, $Panel = NULL, $arrSub = NULL)
@@ -271,6 +268,83 @@ class notifi
 		return $resp;
 	}
 
+	function GridStyle()
+    {
+        echo "<style>
+                .cellth-ltb{
+                     background: #E7E7E7;
+                     border-left: 1px solid #999999; 
+                     border-bottom: 1px solid #999999; 
+                     border-top: 1px solid #999999;
+                }
+                .cellth-lb{
+                     background: #E7E7E7;
+                     border-left: 1px solid #999999; 
+                     border-bottom: 1px solid #999999; 
+                }
+                .cellth-b{
+                     background: #E7E7E7;
+                     border-bottom: 1px solid #999999; 
+                }
+                .cellth-tb{
+                     background: #E7E7E7;
+                     border-bottom: 1px solid #999999; 
+                     border-top: 1px solid #999999;
+                }
+                .celltd-ltb{
+                     border-left: 1px solid #999999; 
+                     border-bottom: 1px solid #999999; 
+                     border-top: 1px solid #999999;
+                }
+                .celltd-tb{
+                     border-bottom: 1px solid #999999; 
+                     border-top: 1px solid #999999;
+                }
+                .celltd-lb{
+                     border-bottom: 1px solid #999999; 
+                     border-left: 1px solid #999999;
+                }
+                .celltd-l{
+                     border-left: 1px solid #999999;
+                }
+                .fontbold{
+                    font-weight: bold;
+                }
+                .divGrilla{
+                    margin: 0;
+                    padding: 0;
+                    border: none;
+                    border-top: 1px solid #999999;
+                    border-bottom: 1px solid #999999;
+                }
+
+                .CellHead {
+                    background-color: #35650f;
+                    color: #ffffff;
+                    font-family: Times New Roman;
+                    font-size: 11px;
+                    padding: 4px;
+                }
+                .cellInfo1 {
+                    background-color: #ebf8e2;
+                    font-family: Times New Roman;
+                    font-size: 11px;
+                    padding: 2px;
+                }
+                .campo_texto {
+                    background-color: #ffffff;
+                    border: 1px solid #bababa;
+                    color: #000000;
+                    font-family: Times New Roman;
+                    font-size: 11px;
+                    padding-left: 5px;
+                }
+                .crmButton {
+                	width:25%;
+                	height: 20px;
+                }
+              </style>";
+    }
 }
 
 $_NOTIFI = new notifi( $this -> conexion, $this -> usuario_aplicacion, $this -> codigo );
