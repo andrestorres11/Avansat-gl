@@ -40,6 +40,11 @@ class AjaxNotifiNotifi
 			case 'getFormNuevaNotifi':
 		       	self::getFormNuevaNotifi();
 		    break;
+
+		    case 'getNomUsuario':
+		       	self::getNomUsuario();
+		    break;
+
 		    default:
 		      	#header('Location: index.php?window=central&cod_servic=20151235&menant=20151235');
 		    break;
@@ -209,26 +214,242 @@ class AjaxNotifiNotifi
 	 *	\date modified: dia/mes/año
 	 */
 	protected function getFormNuevaNotifi()
+	{	$datos = (object) $_REQUEST;
+		if($datos->idForm=="3" || $datos->idForm=="4")
+		{
+			self::getFormNuevaNotifiExt();
+		}
+		else
+		{
+			self::getFormNuevaNotifiComun();
+		}
+	}
+
+	/*! \fn: getFormNuevaNotifiExt
+	 *  \brief: identifica el formulario correspondiete a supervisores y controladores y lo pinta
+	 *  \author: Edward Serrano
+	 *	\date:  06/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	protected function getFormNuevaNotifiExt()
 	{
+		#IncludeJS( 'jquery.js' );
+		IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
+		IncludeJS( 'jquery.multiselect.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
 		$date = new DateTime();
 		$mHtml = new Formlib(2);
 		$mHtml->Hidden(array( "name" => "usr_creaci", "id" => "usr_creaciID", "value"=>self::getCodUsuario($_SESSION['datos_usuario']['cod_usuari'])['cod_consec']));
 		$mHtml->OpenDiv("id:newNotifi");
 			$mHtml->Table("tr");
-				$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo") );
-                $mHtml->Input(array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%"));
+				$mHtml->Row();
+					$mHtml->Radio(array("value"=>"E","name" => "ind_enttur", "id" => "ind_entturID", "width" => "100%", "colspan"=>"1","checked"=>"checked"));
+					$mHtml->Label( "ENTREGA DE TURNO",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Radio(array("value"=>"N","name" => "ind_enttur", "id" => "ind_entturID", "width" => "100%", "colspan"=>"2"));
+					$mHtml->Label( "OTRA NOTIFICACION",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"3") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
-					$mHtml->Label( "Fecha de Notificacion:",  array("align"=>"right", "class"=>"celda_titulo") );
-                	$mHtml->Input(array("value"=>$date->format('Y-m-d H:i:s'),"name" => "fec_creaci", "id" => "fec_creaciID", "width" => "100%", "readonly"=>"readonly"));
+					$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                $mHtml->Input(array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%", "colspan"=>"6"));
 				$mHtml->CloseRow();
 				$mHtml->Row();
-					$mHtml->Label( "Notificado por:",  array("align"=>"right", "class"=>"celda_titulo") );
-                	$mHtml->Input(array("value"=>$_SESSION['datos_usuario']['cod_usuari'],"name" => "NotificadoPor", "id" => "NotificadoPorID", "width" => "100%", "readonly"=>"readonly"));
+					$mHtml->Label( "Fecha de Notificacion:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->Input(array("value"=>$date->format('Y-m-d H:i:s'),"name" => "fec_creaci", "id" => "fec_creaciID", "width" => "100%", "readonly"=>"readonly", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "Notificado por:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->Input(array("value"=>$_SESSION['datos_usuario']['cod_usuari'],"name" => "NotificadoPor", "id" => "NotificadoPorID", "width" => "100%", "readonly"=>"readonly", "colspan"=>"2"));
+                	$mHtml->Label( "Horas laboradas:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->Input(array("name" => "hlaboradas", "id" => "hlaboradasID", "width" => "100%", "colspan"=>"3"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*Publicar a:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Select2 (self::getLisRespon(),  array("name" => "cod_asires", "width" => "25%","colspan"=>"1") );
+					$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
+					
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*Vigencia hasta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Input(array("value"=>"","name" => "fec_vigenc", "id" => "fec_vigencID", "width" => "100%", "colspan"=>"1","onclick"=>"getFechaDatapick('fec_vigencID')"));
+					$mHtml->Label( "*Requiere Respuesta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "SI",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"2") );
+					$mHtml->Radio(array("value"=>"S","name" => "ind_respue", "id" => "ind_respueID", "width" => "100%", "colspan"=>"2"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*DETALLE DE LA NOTIFICACION:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+				$mHtml->CloseRow();
+				$mHtml->Row();
+                	$mHtml->TextArea("", array("name" => "obs_notifi", "id" => "obs_notifiID", "colspan"=>"7" ));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*FORMULARIO DE DILIGENCIAMIENTO:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*Documentos:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "IMAGEN 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->file(array("name" => "file_1", "id" => "file_1ID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "IMAGEN 2 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->file(array("name" => "file_2", "id" => "file_2ID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "IMAGEN 3 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->file(array("name" => "file_1", "id" => "file_3ID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "ARCHIVO :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->file(array("name" => "file_A", "id" => "file_AID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateForm()") );
+					$mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"5","onclick"=>"limpiarForm()") );
 				$mHtml->CloseRow();
 			$mHtml->CloseTable('tr');
 		$mHtml->CloseDiv();
 		echo $mHtml->MakeHtml();
+	}
+
+	/*! \fn: getFormNuevaNotifiComun
+	 *  \brief: identifica el formulario correspondiete y lo pinta
+	 *  \author: Edward Serrano
+	 *	\date:  06/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	protected function getFormNuevaNotifiComun()
+	{
+
+		#IncludeJS( 'jquery.js' );
+		IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
+		IncludeJS( 'jquery.multiselect.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
+		$date = new DateTime();
+		$mHtml = new Formlib(2);
+		$mHtml->Hidden(array( "name" => "usr_creaci", "id" => "usr_creaciID", "value"=>self::getCodUsuario($_SESSION['datos_usuario']['cod_usuari'])['cod_consec']));
+		$mHtml->OpenDiv("id:newNotifi");
+			$mHtml->Table("tr");
+				$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                $mHtml->Input(array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "Fecha de Notificacion:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->Input(array("value"=>$date->format('Y-m-d H:i:s'),"name" => "fec_creaci", "id" => "fec_creaciID", "width" => "100%", "readonly"=>"readonly", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "Notificado por:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->Input(array("value"=>$_SESSION['datos_usuario']['cod_usuari'],"name" => "NotificadoPor", "id" => "NotificadoPorID", "width" => "100%", "readonly"=>"readonly", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*Publicar a:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Select2 (self::getLisRespon(),  array("name" => "cod_asires", "width" => "25%","colspan"=>"1") );
+					$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
+					
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*Vigencia hasta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Input(array("value"=>"","name" => "fec_vigenc", "id" => "fec_vigencID", "width" => "100%", "colspan"=>"1","onclick"=>"getFechaDatapick('fec_vigencID')"));
+					$mHtml->Label( "*Requiere Respuesta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "SI",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Radio(array("value"=>"S","name" => "ind_respue", "id" => "ind_respueID", "width" => "100%", "colspan"=>"1"));
+					$mHtml->Label( "NO",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Radio(array("value"=>"N","name" => "ind_respue", "id" => "ind_respueID", "width" => "100%", "colspan"=>"1","checked"=>"checked"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*DETALLE DE LA NOTIFICACION:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+				$mHtml->CloseRow();
+				$mHtml->Row();
+                	$mHtml->TextArea("", array("name" => "obs_notifi", "id" => "obs_notifiID", "colspan"=>"7" ));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "*Documentos:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "IMAGEN 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->file(array("name" => "file_1", "id" => "file_1ID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "IMAGEN 2 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->file(array("name" => "file_2", "id" => "file_2ID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "IMAGEN 3 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->file(array("name" => "file_1", "id" => "file_3ID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Label( "ARCHIVO :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+                	$mHtml->file(array("name" => "file_A", "id" => "file_AID", "width" => "100%", "colspan"=>"6"));
+				$mHtml->CloseRow();
+				$mHtml->Row();
+					$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateForm()") );
+					$mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"5","onclick"=>"limpiarForm()") );
+				$mHtml->CloseRow();
+			$mHtml->CloseTable('tr');
+		$mHtml->CloseDiv();
+		echo $mHtml->MakeHtml();
+	}
+
+	/*! \fn: getLisRespon
+	 *  \brief: devuelve array de responsables
+	 *  \author: Edward Serrano
+	 *	\date:  10/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function getLisRespon ( $mCodNivel = NULL)
+	{
+        $mSelect = "SELECT cod_respon, nom_respon FROM ".BASE_DATOS.".tab_genera_respon";
+
+	    $mConsult = new Consulta($mSelect, self::$cConexion );
+	    $_RESPON = $mConsult -> ret_matrix("i");
+	    $inicio[0][0]=0;
+	    $inicio[0][1]='-';
+	    $_RESPON=array_merge($inicio,$_RESPON);
+	    return $_RESPON;
+	}
+
+	/*! \fn: getNomUsuario
+	 *  \brief: devuelve array de usuarios
+	 *  \author: Edward Serrano
+	 *	\date:  10/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function getNomUsuario()
+	{  
+		$datos = (object) $_POST;
+		//print_r($datos->cod_Respon);
+		$cod_respon= substr($datos->cod_Respon, 1);
+	    //$mSelect = "SELECT a.cod_consec, UPPER(a.nom_usuari) AS nom_tercer 
+	    	//			FROM ".BASE_DATOS.".tab_genera_usuari a 
+	    	//				INNER JOIN ".BASE_DATOS.".tab_genera_perfil b ON a.cod_consec=b.cod_perfil 
+	    		//				/*WHERE b.cod_respon IN (1,3)*/ GROUP BY a.cod_usuari";
+
+	    /*$mConsult = new Consulta($mSelect, self::$cConexion );
+	    $_RESPON = $mConsult -> ret_matrix("i");
+	    $inicio[0][0]=0;
+	    $inicio[0][1]='-';
+	    $_RESPON=array_merge($inicio,$_RESPON);
+	    return $_RESPON;*/
+	    $mSql = "SELECT a.cod_consec, UPPER(a.nom_usuari) AS nom_tercer 
+	    				FROM ".BASE_DATOS.".tab_genera_usuari a 
+	    					INNER JOIN ".BASE_DATOS.".tab_genera_perfil b ON a.cod_consec=b.cod_perfil 
+	    						WHERE b.cod_respon IN (".$cod_respon.") GROUP BY a.cod_usuari";
+
+	    $consulta = new Consulta( $mSql, self::$cConexion);
+	    $mResult = $consulta -> ret_matrix('i');
+	    $retr="<option value='0' selected='selected'>-</option>";
+	    //print_r($mResult);
+	    foreach ($mResult as $key => $value) {
+	    	$retr.="<option value='".$value[0]."'>".$value[1]."</option>";
+	    }
+
+	    echo $retr;
 	}
 
 	#obejectos para la administracion de perfiles

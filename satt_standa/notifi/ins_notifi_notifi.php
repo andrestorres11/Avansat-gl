@@ -343,6 +343,10 @@ class notifi
                 	width:25%;
                 	height: 20px;
                 }
+                #obs_notifiID	{
+                	height: 100px;
+    				width: 100%;
+            	}
               </style>";
     }
 }
