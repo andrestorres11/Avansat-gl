@@ -49,7 +49,9 @@ class Proc_act_usuari
 
     function formulario()
     {
+
             echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/usuari.js\"></script>\n";
+            
             $this->usuario->listar($this -> conexion);
 
             $datos_usuari = $this->usuario-> retornar();
