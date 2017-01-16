@@ -31,8 +31,9 @@ class notifi
 		self::$cConexion = $co;
 		self::$cUsuario = $us;
 		self::$cCodAplica = $ca;
-		
+		IncludeJS( 'jquery17.js' );
 		IncludeJS( 'jquery.js' );
+		
 		IncludeJS( 'functions.js' );
 		IncludeJS( 'ins_notifi_notifi.js' );
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
@@ -116,7 +117,6 @@ class notifi
 												if($tabinfclf['ind_visibl']==TRUE)
 												{
 													$srtTbs.="<li><a href='#tabinfclf' onclick='btnSubModulos(2)'>INFORMACION CLF</a></li>";
-													$mHtml->Hidden(array( "name" => "permclf", "id" => "permclfID", 'value'=>$tabinfclf['sub']));
 												}
 												self::$mANotifi->setmPermClf($tabinfclf);
 											}

@@ -20,7 +20,27 @@ function preFunction(){
   $(".ui-multiselect-all").click(function(){
       getNomUsuario();
   });
-  
+  $(':file').change(function(){
+      var file = $(this).val();
+      switch(file.substring(file.lastIndexOf('.') + 1).toLowerCase()){
+        case 'jpg' : case 'jpeg': case 'bmp' : case 'tiff' : case 'png' : case 'pdf' : case 'doc' : case 'docx' : case 'xls' : case 'xlsx' : case 'cvs' : case 'zip' : case 'rar' :
+          //alert("ok");
+        break;
+        default:
+          alert("tipo de archivo no permitido");
+          $(this).val("");
+        break;
+      }
+      var filesize=$(this)[0].files[0];
+      if(filesize.size>="5000000")
+      {
+          alert("tamaño del archivo no permitido");
+          $(this).val("");
+      }
+      
+    
+        
+  });
 }
 function ValidarFecha(campo) {
       var RegExPattern = '^([0-9]{4}[-/]?((0[13-9]|1[012])[-/]?(0[1-9]|[12][0-9]|30)|(0[13578]|1[02])[-/]?31|02[-/]?(0[1-9]|1[0-9]|2[0-8]))|([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00)[-/]?02[-/]?29)$';
@@ -124,7 +144,7 @@ function btnGeneral()
                   });
               }else
               {
-                alert("las fecha "+fec_iniID+" es mayor q "+fec_finID);
+                alert("las fecha "+fec_iniID+" es mayor que "+fec_finID);
               } 
           }else
           {
@@ -141,7 +161,7 @@ function btnGeneral()
   function NuevaNoti(id)
   {
     var standa = $("#standaID").val();
-    var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id;
+    var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
     closePopUp('popID');
     LoadPopupJQNoButton('open', 'NUEVA NOTIFICACION', ($(window).height() - 40), ($(window).width() - 40), false, false, true);
     var popup = $("#popID");
@@ -181,10 +201,18 @@ function btnGeneral()
     closePopUp('popID');
   }
 
-  function ValidateForm(){
-    alert($("#obs_notifiID").val());
+  function ValidateFormComun(){
     var standa = $("#standaID").val();
-    if($("#nom_asuntoID").val().length>5 && $("#nom_asuntoID").val().length<100)
+    var nom_asunto = $("#nom_asuntoID").val();
+    var fec_creaci = $("#fec_creaciID").val();
+    var usr_creaci = $("#usr_creaciID").val();
+    var cod_asires = validateChekBox("cod_asiresID");
+    var ind_notusr = validateChekBox("ind_notusrID");
+    var fec_vigenc = $("#fec_vigencID").val();
+    var ind_respue = $("input:radio[name=ind_respue]:checked").val();
+    var obs_notifi = $("#obs_notifiID").val();
+    var cod_tipnot = $("#cod_tipnotID").val();
+    if(nom_asunto.length>5 && nom_asunto.length<100)
     {
       if(validateChekBox("cod_asiresID")!="")
       {
@@ -194,7 +222,42 @@ function btnGeneral()
           {
             if($("#obs_notifiID").val()!="")
             {
-              alert("ok");
+              var mdata = new FormData();
+              mdata.append("option","NuevaNotifiComun");
+              mdata.append("nom_asunto",nom_asunto);
+              mdata.append("fec_creaci",fec_creaci);
+              mdata.append("usr_creaci",usr_creaci);
+              mdata.append("cod_asires",cod_asires);
+              mdata.append("ind_notusr",ind_notusr);
+              mdata.append("fec_vigenc",fec_vigenc);
+              mdata.append("ind_respue",ind_respue);
+              mdata.append("obs_notifi",obs_notifi);
+              mdata.append("cod_tipnot",cod_tipnot);
+              $("#newNotifi").find("input[type=file]").each(function(){
+                  mdata.append($(this).attr('name'),$(this)[0].files[0]);
+              });
+              console.log(mdata);
+              $.ajax({
+                url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
+                type:'POST',
+                contentType:false,
+                data: mdata,
+                //async: false,
+                processData:false,
+                cache:false,
+                success:function(data){
+                  alert(data);
+                  if(data=="OK")
+                  {
+                    alert("Se creo la notificacion correctamente");
+                  }
+                  else
+                  {
+                    alert("error al crear la notificaion");
+                  }
+                  
+                }
+              });
             }
             else
             {
@@ -228,6 +291,120 @@ function btnGeneral()
     //alert(limitCampos("string","#nom_asuntoID","<=","3"));
   }
 
+  function ValidateFormExt(){
+
+    var standa = $("#standaID").val();
+    var ind_enttur = $("input:radio[name=ind_enttur]:checked").val();
+    var nom_asunto = $("#nom_asuntoID").val();
+    var fec_creaci = $("#fec_creaciID").val();
+    var usr_creaci = $("#usr_creaciID").val();
+    var num_horlab = $("#num_horlabID").val();
+    var cod_asires = validateChekBox("cod_asiresID");
+    var ind_notusr = validateChekBox("ind_notusrID");
+    var fec_vigenc = $("#fec_vigencID").val();
+    var ind_respue = $("input:radio[name=ind_respue]:checked").val();
+    var obs_notifi = $("#obs_notifiID").val();
+    var cod_tipnot = $("#cod_tipnotID").val();
+    var mdata = new FormData();
+    mdata.append("option","NuevaNotifiComun");
+    var status={};
+    status.NOTNULL=[];
+    var jsonArray={};
+    jsonArray.SUPERVISORES=[];
+    $("#jsonFormDigi").find("input[type=text]").each(function(){
+        dato=$(this);
+        if($(this).val()!="")
+        {
+          jsonArray.SUPERVISORES.push(dato.attr('name'), dato.val());
+        }
+        else
+        {
+          status.NOTNULL.push(dato.attr('name'), dato.val());
+        }   
+    });
+    jsonArray.CONTROLADORES=[];
+    $("#jsonContro").find("input[type=text]").each(function(){
+        dato=$(this);
+        if($(this).val()!="")
+        {
+          jsonArray.CONTROLADORES.push(dato.attr('name'), dato.val());
+        }
+        else
+        {
+          status.NOTNULL.push(dato.attr('name'), dato.val());
+        }   
+    });
+    jsonArray.ESTADO_VEHICULOS=[];
+    $("#jsonEstVehi").find("input[type=text]").each(function(){
+        dato=$(this);
+        if($(this).val()!="")
+        {
+          jsonArray.ESTADO_VEHICULOS.push(dato.attr('name'), dato.val());
+        }
+        else
+        {
+          status.NOTNULL.push(dato.attr('name'), dato.val());
+        }   
+    });
+    jsonArray.ENCUESTAS=[];
+    $("#jsonEncu").find("input[type=text]").each(function(){
+        dato=$(this);
+        if($(this).val()!="")
+        {
+          jsonArray.ENCUESTAS.push(dato.attr('name'), dato.val());
+        }
+        else
+        {
+          status.NOTNULL.push(dato.attr('name'), dato.val());
+        }   
+    });
+    jsonArray.ESPECIFICAS=[];
+    $("#jsonEspeci").find("input[type=text]").each(function(){
+        dato=$(this);
+        if($(this).val()!="")
+        {
+          jsonArray.ESPECIFICAS.push(dato.attr('name'), dato.val());
+        }
+        else
+        {
+          status.NOTNULL.push(dato.attr('name'), dato.val());
+        }   
+    });
+    jsonArray.ASISTENCIAS=[];
+    $("#jsonAsist").find("input[type=text]").each(function(){
+        dato=$(this);
+        if($(this).val()!="")
+        {
+          jsonArray.ASISTENCIAS.push(dato.attr('name'), dato.val());
+        }
+        else
+        {
+          status.NOTNULL.push(dato.attr('name'), dato.val());
+        }   
+    });
+    jsonArray.RECURSOS_ASIGNADOS=[];
+    $("#jsonRecurAsi").find("input[type=text]").each(function(){
+        dato=$(this);
+        if($(this).val()!="")
+        {
+          jsonArray.RECURSOS_ASIGNADOS.push(dato.attr('name'), dato.val());
+        }
+        else
+        {
+          status.NOTNULL.push(dato.attr('name'), dato.val());
+        }   
+    });
+    console.log(status.NOTNULL.length);
+    if(status.NOTNULL.length>0)
+    {
+      alert("Los datos del frormulario de diligenciamiento son requeridos");
+      console.log(status.NOTNULL);
+    }
+    var myJsonString = JSON.stringify(jsonArray);
+    //console.log(jsonArray);         
+    //console.log(myJsonString);         
+  }
+
   function validateChekBox(campoval){
     var cod_Respon="";
     var box_checke = $("input[type=checkbox]:checked");
@@ -258,4 +435,8 @@ function btnGeneral()
           $("#ind_notusrID").multiselect().multiselectfilter();
         }
     }); 
+  }
+
+  function ActioFormularios(){
+    alert("funcion");
   }
