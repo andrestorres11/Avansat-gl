@@ -49,6 +49,10 @@ class AjaxNotifiNotifi
 		       	self::NuevaNotifiComun();
 		    break;
 
+		    case 'NuevaNotifiExten':
+		    	self::NuevaNotifiExten();
+	    	break;
+
 		    default:
 		      	#header('Location: index.php?window=central&cod_servic=20151235&menant=20151235');
 		    break;
@@ -59,7 +63,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna formulario general
 	 *  \author: Edward Serrano
 	 *	\date:  05/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	public function getFormGeneral()
 	{
@@ -90,7 +94,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta general de notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	protected function getGeneralNotifi(){
 		$sql = "SELECT 'cod_notifi', COUNT('cod_notifi') FROM 'tab_notifi_notifi' GROUP BY cod_notifi";
@@ -100,14 +104,14 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta de notificaciones por tipo
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	protected function getNotifi($mDatosGN){
 		$mSql = "SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari
 					 FROM ".BASE_DATOS.".tab_notifi_notifi a
 					 	INNER JOIN tab_genera_usuari b 
 					 		ON a.usr_creaci=b.cod_consec
-					 			WHERE a.cod_tipnot=".$mDatosGN->cod_notifi." and a.fec_creaci>='".$mDatosGN->fec_iniID."' and a.fec_creaci<='".$mDatosGN->fec_finID."'";
+					 			WHERE a.cod_tipnot=".$mDatosGN->cod_notifi." and a.fec_creaci>='".$mDatosGN->fec_iniID."' and a.fec_creaci<='".$mDatosGN->fec_finID." 23:59:59'";
 		$mConsult = new Consulta($mSql, self::$cConexion );
 		$mResult = $mConsult -> ret_matrix('a');
 		return $mResult;
@@ -117,7 +121,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta de notificaciones por tipo
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	protected function getCodUsuario($cod_usuari){
 		$mSql = "SELECT a.cod_consec
@@ -132,7 +136,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	protected function getForm()
 	{
@@ -145,35 +149,6 @@ class AjaxNotifiNotifi
 		$mHtml->Table("tr",array("class"=>"displayDIV2"));
 			$mHtml->Label( "DETALLE DE NOTIFICACIONES ", array("colspan"=>sizeof($titulos['Nivel1']), "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
 			$mHtml->CloseRow();
-				foreach ($titulos as $keyN1 => $valueN1) {
-					if($keyN1=='Nivel1')
-					{
-						$mHtml->Row();
-						foreach ($valueN1 as $keySub1 => $valueSub1) {
-							$mHtml->Label( $valueSub1,  array("align"=>"right", "class"=>"CellHead") );	
-						}
-						$mHtml->CloseRow();
-					}	
-				}
-				$notificaciones=self::getNotifi($datos);
-				if(sizeof($notificaciones))
-				{
-					foreach ($notificaciones as $keyNot => $valueNot) {
-						$mHtml->Row();
-							$mHtml->Label( $valueNot['cod_notifi'],  array("align"=>"right", "class"=>"CellInfo1", "onclick"=>"ActioFormularios()") );
-							$mHtml->Label( $valueNot['nom_asunto'],  array("align"=>"right", "class"=>"CellInfo1") );
-							$mHtml->Label( $valueNot['fec_creaci'],  array("align"=>"right", "class"=>"CellInfo1") );
-							$mHtml->Label( $valueNot['cod_usuari'],  array("align"=>"right", "class"=>"CellInfo1") );
-						$mHtml->CloseRow();
-					}
-				}
-				else
-				{
-					$mHtml->Row();
-						$mHtml->Label( "NO SE ENCONTRARON NOTIFICACIONES",  array("align"=>"right", "class"=>"CellInfo1") );
-						
-					$mHtml->CloseRow();
-				}
 				if($datos->cod_notifi==1 && self::getmPermOet()['ins']==1)
 				{
 					$mHtml->Row();
@@ -204,7 +179,66 @@ class AjaxNotifiNotifi
 						$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNcliID","name"=>"btnNcli", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(5)") );
 					$mHtml->CloseRow();
 				}
+#cambiar por dimanic list
+/*
+				foreach ($titulos as $keyN1 => $valueN1) {
+					if($keyN1=='Nivel1')
+					{
+						$mHtml->Row();
+						foreach ($valueN1 as $keySub1 => $valueSub1) {
+							$mHtml->Label( $valueSub1,  array("align"=>"right", "class"=>"CellHead") );	
+						}
+						$mHtml->CloseRow();
+					}	
+				}
+				$notificaciones=self::getNotifi($datos);
+				if(sizeof($notificaciones))
+				{
+					foreach ($notificaciones as $keyNot => $valueNot) {
+						$mHtml->Row();
+							$mHtml->Label( $valueNot['cod_notifi'],  array("align"=>"right", "class"=>"CellInfo1", "onclick"=>"ActioFormularios(".$valueNot['cod_notifi'].")") );
+							$mHtml->Label( $valueNot['nom_asunto'],  array("align"=>"right", "class"=>"CellInfo1") );
+							$mHtml->Label( $valueNot['fec_creaci'],  array("align"=>"right", "class"=>"CellInfo1") );
+							$mHtml->Label( $valueNot['cod_usuari'],  array("align"=>"right", "class"=>"CellInfo1") );
+						$mHtml->CloseRow();
+					}
+				}
+				else
+				{
+					$mHtml->Row();
+						$mHtml->Label( "NO SE ENCONTRARON NOTIFICACIONES",  array("align"=>"center", "colspan"=>"4","class"=>"CellInfo1") );
+					$mHtml->CloseRow();
+				}
+*/
+#cambiar por dimanic list
+			
 		$mHtml->CloseTable('tr');
+		$mHtml->OpenDiv("id:sec2");
+			$mHtml->OpenDiv("id:DinamicListDIV");
+				if (!class_exists(DinamicList)) {
+			            include_once("../" . DIR_APLICA_CENTRAL . "/lib/general/dinamic_list.inc");
+			        }
+			        $sql ="SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari,a.cod_tipnot
+						 FROM ".BASE_DATOS.".tab_notifi_notifi a
+						 	INNER JOIN tab_genera_usuari b 
+						 		ON a.usr_creaci=b.cod_consec
+						 			WHERE a.cod_tipnot=".$datos->cod_notifi." and a.fec_creaci>='".$datos->fec_iniID."' and a.fec_creaci<='".$datos->fec_finID." 23:59:59'";
+			        $list = new DinamicList(self::$cConexion, $sql, "2", "no", 'ASC');
+			        $list->SetClose('no');
+			        //$list->SetCreate("Crear Perfil", "onclick:formulario()");
+			        $list->SetHeader(utf8_decode("Consecutivo"), "field:cod_notifi; width:1%;  ");
+			        $list->SetHeader("Asunto", "field:nom_asunto; width:1%");
+			        $list->SetHeader("Fecha y hora", "field:fec_creaci; width:1%");
+			        $list->SetHeader("Notificado por ", "field:cod_usuari; width:1%");
+			        $list->SetOption("Opciones", "field:cod_notifi; width:1%; onclikEdit:editarNotificacion( this ); onclickCopy:copiarPerfil(this)");
+			        $list->SetHidden("cod_notifi", "cod_notifi");
+        			$list->SetHidden("cod_tipnot", "cod_tipnot");
+        			$list->SetHidden("nom_asunto", "nom_asunto");
+			        $list->Display(self::$cConexion);
+			        $Html = $list->GetHtml();
+			        echo $Html;
+			$mHtml->CloseDiv();
+		$mHtml->CloseDiv();
 		$mHtml->OpenDiv("id:popID");
 		$mHtml->CloseDiv();
 		#echo "<pre>";print_r($_SESSION);echo "</pre>";
@@ -215,7 +249,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	protected function getFormNuevaNotifi()
 	{	$datos = (object) $_REQUEST;
@@ -234,7 +268,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete a supervisores y controladores y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	protected function getFormNuevaNotifiExt($ActionForm=NULL)
 	{
@@ -242,11 +276,7 @@ class AjaxNotifiNotifi
 			#realizar consulta
 		}
 		#print_r($_SESSION['subNotifi']['PermOet']);
-		IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
-		IncludeJS( 'jquery.multiselect.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
-		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
-		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
-		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
+		
 		$date = new DateTime();
 		$mHtml = new Formlib(2);
 		$mHtml->OpenDiv("id:newNotifi");
@@ -278,70 +308,87 @@ class AjaxNotifiNotifi
 				$mHtml->Row();
 					$mHtml->Label( "*Publicar a:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
 					$mHtml->Select2 (self::getLisRespon(),  array("name" => "cod_asires", "width" => "25%","colspan"=>"1") );
-					$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-					$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
-					
+					#si es supervisor pinta campos adicionales
+					if($ActionForm->idForm==3){
+						$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
+					}
+					else
+					{
+						$mHtml->Label( "",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"5") );
+					}
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Label( "*Vigencia hasta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
 					$mHtml->Input(array("value"=>"","name" => "fec_vigenc", "id" => "fec_vigencID", "width" => "100%", "colspan"=>"1","onclick"=>"getFechaDatapick('fec_vigencID')"));
 					$mHtml->Label( "*Requiere Respuesta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-					$mHtml->Label( "SI",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Radio(array("value"=>"S","name" => "ind_respue", "id" => "ind_respueID", "width" => "100%", "colspan"=>"2"));
+					$mHtml->Label( "SI",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Radio(array("value"=>"1","name" => "ind_respue", "id" => "ind_respuesID", "width" => "100%", "colspan"=>"1","checked"=>"checked"));
+					$mHtml->Label( "NO",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Radio(array("value"=>"0","name" => "ind_respue", "id" => "ind_respuenID", "width" => "100%", "colspan"=>"1"));
 				$mHtml->CloseRow();
 			$mHtml->CloseTable('tr');
 		$mHtml->CloseDiv();
 		#Formulario de diligenciamiento
-		$mHtml->OpenDiv("id:jsonFormDigi");
-			$mHtml->Table("tr");
-				$mHtml->Row();
-					$mHtml->Label( "*FORMULARIO DE DILIGENCIAMIENTO:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-				$mHtml->CloseRow();
-				
-				$mHtml->Row();
-					$mHtml->Label( "SUPERVISORES",  array("align"=>"center", "class"=>"celda_titulo infJson","colspan"=>"7") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "Supervisor Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Controlador Master Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Supervisor Saliente",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2"));
-					$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2"));
-					$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3"));
-				$mHtml->CloseRow();
-			$mHtml->CloseTable('tr');
-		$mHtml->CloseDiv();
-		$mHtml->OpenDiv("id:jsonContro");
-			$mHtml->Table("tr");
-				$mHtml->Row();
-					$mHtml->Label( "CONTROLADORES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "En Turno",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Ausentes",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Incapacitados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Input(array("name" => "numb_enturno", "id" => "numb_enturnoID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "cont_enturno", "id" => "cont_enturnoID", "width" => "100%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_ausente", "id" => "numb_ausenteID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "cont_ausente", "id" => "cont_ausenteID", "width" => "100%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_incapac", "id" => "numb_incapacID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "supe_incapac", "id" => "supe_incapacID", "width" => "100%", "colspan"=>"2"));
-				$mHtml->CloseRow();
-			$mHtml->CloseTable('tr');
-		$mHtml->CloseDiv();
+		#si es supervisor pinta campos adicionales
+		if($ActionForm->idForm==3){
+			$mHtml->OpenDiv("id:jsonFormDigi");
+				$mHtml->Table("tr");
+					$mHtml->Row();
+						$mHtml->Label( "*FORMULARIO DE DILIGENCIAMIENTO:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					
+					$mHtml->Row();
+						$mHtml->Label( "SUPERVISORES",  array("align"=>"center", "class"=>"celda_titulo infJson","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "Supervisor Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+						$mHtml->Label( "Controlador Master Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+						$mHtml->Label( "Supervisor Saliente",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2"));
+						$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2"));
+						$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3"));
+					$mHtml->CloseRow();
+				$mHtml->CloseTable('tr');
+			$mHtml->CloseDiv();
+			$mHtml->OpenDiv("id:jsonContro");
+				$mHtml->Table("tr");
+					$mHtml->Row();
+						$mHtml->Label( "CONTROLADORES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "En Turno",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Ausentes",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Incapacitados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Input(array("name" => "numb_enturno", "id" => "numb_enturnoID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "cont_enturno", "id" => "cont_enturnoID", "width" => "100%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_ausente", "id" => "numb_ausenteID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "cont_ausente", "id" => "cont_ausenteID", "width" => "100%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_incapac", "id" => "numb_incapacID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "supe_incapac", "id" => "supe_incapacID", "width" => "100%", "colspan"=>"2"));
+					$mHtml->CloseRow();
+				$mHtml->CloseTable('tr');
+			$mHtml->CloseDiv();
+		}
 		$mHtml->OpenDiv("id:jsonEstVehi");
 			$mHtml->Table("tr");
 				$mHtml->Row();
 					$mHtml->Label( "ESTADO DE VEHICULOS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
-					$mHtml->Label( "Cargue",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Transito",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Descargue",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "Cargue",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "Transito",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "Descargue",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Input(array("name" => "numb_cargue", "id" => "numb_cargueID", "width" => "10%", "colspan"=>"1"));
@@ -352,9 +399,12 @@ class AjaxNotifiNotifi
 					$mHtml->Input(array("name" => "vehi_descar", "id" => "vehi_descarID", "width" => "100%", "colspan"=>"2"));
 				$mHtml->CloseRow();
 				$mHtml->Row();
-					$mHtml->Label( "A cargo de empresa",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Pendientes por dar llegada",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "En Pernotacion",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "A cargo de empresa",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "Pendientes por dar llegada",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "En Pernotacion",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Input(array("name" => "numb_carempr", "id" => "numb_caremprID", "width" => "10%", "colspan"=>"1"));
@@ -365,9 +415,12 @@ class AjaxNotifiNotifi
 					$mHtml->Input(array("name" => "vehi_pernota", "id" => "vehi_pernotaID", "width" => "100%", "colspan"=>"2"));
 				$mHtml->CloseRow();
 				$mHtml->Row();
-					$mHtml->Label( "En Seguimiento Especial",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Recomendados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Preventivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "En Seguimiento Especial",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "Recomendados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "Preventivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Input(array("name" => "numb_seguesp", "id" => "numb_seguespID", "width" => "10%", "colspan"=>"1"));
@@ -378,9 +431,12 @@ class AjaxNotifiNotifi
 					$mHtml->Input(array("name" => "vehi_prevent", "id" => "vehi_preventID", "width" => "100%", "colspan"=>"2"));
 				$mHtml->CloseRow();
 				$mHtml->Row();
-					$mHtml->Label( "Hurtados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Accidentados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "En transbordo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "Hurtados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "Accidentados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->Label( "En transbordo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Input(array("name" => "numb_hurtado", "id" => "numb_hurtadoID", "width" => "10%", "colspan"=>"1"));
@@ -392,77 +448,90 @@ class AjaxNotifiNotifi
 				$mHtml->CloseRow();
 			$mHtml->CloseTable('tr');
 		$mHtml->CloseDiv();
-		$mHtml->OpenDiv("id:jsonEncu");
-			$mHtml->Table("tr");
-				$mHtml->Row();
-					$mHtml->Label( "ENCUENTAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Registradas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Por subir a SPG",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Input(array("name" => "numb_enreali", "id" => "numb_enrealiID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "encu_enreali", "id" => "encu_enrealiID", "width" => "100%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_registr", "id" => "numb_registrID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "encu_registr", "id" => "encu_registrID", "width" => "100%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_subaspg", "id" => "numb_subaspgID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "encu_subaspg", "id" => "encu_subaspgID", "width" => "100%", "colspan"=>"2"));
-				$mHtml->CloseRow();
-			$mHtml->CloseTable('tr');
-		$mHtml->CloseDiv();
-		$mHtml->OpenDiv("id:jsonEspeci");
-			$mHtml->Table("tr");
-				$mHtml->Row();
-					$mHtml->Label( "ESPECIFICAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-					$mHtml->Label( "Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Input(array("name" => "numb_esreali", "id" => "numb_esrealiID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "espe_esreali", "id" => "espe_esrealiID", "width" => "100%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_esconsc", "id" => "numb_esconscID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_espende", "id" => "numb_espendeID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "espe_espende", "id" => "espe_espendeID", "width" => "100%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_espenda", "id" => "numb_espendaID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "espe_espenda", "id" => "espe_espendaID", "width" => "100%", "colspan"=>"1"));
-				$mHtml->CloseRow();
-			$mHtml->CloseTable('tr');
-		$mHtml->CloseDiv();
-		$mHtml->OpenDiv("id:jsonAsist");
-			$mHtml->Table("tr");
-				$mHtml->Row();
-					$mHtml->Label( "ASISTENCIAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-					$mHtml->Label( "Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Input(array("name" => "numb_asreali", "id" => "numb_asrealiID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "espe_asreali", "id" => "espe_asrealiID", "width" => "100%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_asconsc", "id" => "numb_asconscID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_aspende", "id" => "numb_aspendeID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "espe_aspende", "id" => "espe_aspendeID", "width" => "100%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "numb_aspenda", "id" => "numb_aspendaID", "width" => "10%", "colspan"=>"1"));
-					$mHtml->Input(array("name" => "espe_aspenda", "id" => "espe_aspendaID", "width" => "100%", "colspan"=>"1"));
-				$mHtml->CloseRow();
-			$mHtml->CloseTable('tr');
-		$mHtml->CloseDiv();
+		#si es supervisor pinta campos adicionales
+		if($ActionForm->idForm==3){
+			$mHtml->OpenDiv("id:jsonEncu");
+				$mHtml->Table("tr");
+					$mHtml->Row();
+						$mHtml->Label( "ENCUENTAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Registradas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Por subir a SPG",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Input(array("name" => "numb_enreali", "id" => "numb_enrealiID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "encu_enreali", "id" => "encu_enrealiID", "width" => "100%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_registr", "id" => "numb_registrID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "encu_registr", "id" => "encu_registrID", "width" => "100%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_subaspg", "id" => "numb_subaspgID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "encu_subaspg", "id" => "encu_subaspgID", "width" => "100%", "colspan"=>"2"));
+					$mHtml->CloseRow();
+				$mHtml->CloseTable('tr');
+			$mHtml->CloseDiv();
+			$mHtml->OpenDiv("id:jsonEspeci");
+				$mHtml->Table("tr");
+					$mHtml->Row();
+						$mHtml->Label( "ESPECIFICAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Input(array("name" => "numb_esreali", "id" => "numb_esrealiID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "espe_esreali", "id" => "espe_esrealiID", "width" => "100%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_esconsc", "id" => "numb_esconscID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_espende", "id" => "numb_espendeID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "espe_espende", "id" => "espe_espendeID", "width" => "100%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_espenda", "id" => "numb_espendaID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "espe_espenda", "id" => "espe_espendaID", "width" => "100%", "colspan"=>"1"));
+					$mHtml->CloseRow();
+				$mHtml->CloseTable('tr');
+			$mHtml->CloseDiv();
+			$mHtml->OpenDiv("id:jsonAsist");
+				$mHtml->Table("tr");
+					$mHtml->Row();
+						$mHtml->Label( "ASISTENCIAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+						$mHtml->Label( "Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Input(array("name" => "numb_asreali", "id" => "numb_asrealiID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "espe_asreali", "id" => "espe_asrealiID", "width" => "100%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_asconsc", "id" => "numb_asconscID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_aspende", "id" => "numb_aspendeID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "espe_aspende", "id" => "espe_aspendeID", "width" => "100%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "numb_aspenda", "id" => "numb_aspendaID", "width" => "10%", "colspan"=>"1"));
+						$mHtml->Input(array("name" => "espe_aspenda", "id" => "espe_aspendaID", "width" => "100%", "colspan"=>"1"));
+					$mHtml->CloseRow();
+				$mHtml->CloseTable('tr');
+			$mHtml->CloseDiv();
+		}
+		
 		$mHtml->OpenDiv("id:jsonRecurAsi");
 			$mHtml->Table("tr");
 				$mHtml->Row();
 					$mHtml->Label( "RECURSOS ASIGNADOS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
-					$mHtml->Label( "NÂ° de puesto Asignado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+					$mHtml->Label( "N° de puesto Asignado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 					$mHtml->Label( "Estado de la diadema",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 					$mHtml->Label( "Estado del mouse",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
 				$mHtml->CloseRow();
@@ -484,7 +553,7 @@ class AjaxNotifiNotifi
 				$mHtml->Row();
 					$mHtml->Label( "Estado del Pad Mouse",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 					$mHtml->Label( "Aseo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-					$mHtml->Label( "NÂ° de registros realizados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
+					$mHtml->Label( "N° de registros realizados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Input(array("name" => "reas_padmous", "id" => "reas_padmousID", "width" => "100%", "colspan"=>"2"));
@@ -510,26 +579,26 @@ class AjaxNotifiNotifi
 		$mHtml->OpenDiv("id:Document");
 			$mHtml->Table("tr");
 				$mHtml->Row();
-					$mHtml->Label( "*Documentos:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "IMAGEN 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+					$mHtml->Label( "ADJUNTO 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
                 	$mHtml->file(array("name" => "file_1", "id" => "file_1ID", "width" => "100%", "colspan"=>"6"));
 				$mHtml->CloseRow();
+				#si es supervisor pinta campos adicionales
+				if($ActionForm->idForm==3){
+					$mHtml->Row();
+						$mHtml->Label( "ADJUNTO 2 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                	$mHtml->file(array("name" => "file_2", "id" => "file_2ID", "width" => "100%", "colspan"=>"6"));
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "ADJUNTO 3 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                	$mHtml->file(array("name" => "file_3", "id" => "file_3ID", "width" => "100%", "colspan"=>"6"));
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "ADJUNTO 4 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                	$mHtml->file(array("name" => "file_4", "id" => "file_4ID", "width" => "100%", "colspan"=>"6"));
+					$mHtml->CloseRow();
+				}
 				$mHtml->Row();
-					$mHtml->Label( "IMAGEN 2 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                	$mHtml->file(array("name" => "file_2", "id" => "file_2ID", "width" => "100%", "colspan"=>"6"));
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "IMAGEN 3 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                	$mHtml->file(array("name" => "file_1", "id" => "file_3ID", "width" => "100%", "colspan"=>"6"));
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "ARCHIVO :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                	$mHtml->file(array("name" => "file_A", "id" => "file_AID", "width" => "100%", "colspan"=>"6"));
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateFormExt()") );
+					$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateFormComun()") );
 					$mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"5","onclick"=>"limpiarForm()") );
 				$mHtml->CloseRow();
 			$mHtml->CloseTable('tr');
@@ -541,15 +610,10 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	protected function getFormNuevaNotifiComun($ActionForm=NULL)
 	{
-		IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
-		IncludeJS( 'jquery.multiselect.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
-		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
-		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
-		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
 		$date = new DateTime();
 		$mHtml = new Formlib(2);
 		$mHtml->OpenDiv("id:newNotifi");
@@ -621,7 +685,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve array de responsables
 	 *  \author: Edward Serrano
 	 *	\date:  10/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function getLisRespon ( $mCodNivel = NULL)
 	{
@@ -639,7 +703,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve array de usuarios
 	 *  \author: Edward Serrano
 	 *	\date:  10/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function getNomUsuario()
 	{  
@@ -662,7 +726,7 @@ class AjaxNotifiNotifi
 	 *  \brief: alamcena las nuevas notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  12/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function NuevaNotifiComun()
 	{
@@ -746,13 +810,111 @@ class AjaxNotifiNotifi
 		}
 	}
 
+	/*! \fn: NuevaNotifiExten
+	 *  \brief: alamcena las nuevas notificaciones para supervisores y controladores
+	 *  \author: Edward Serrano
+	 *	\date:  12/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function NuevaNotifiExten(){
+		$datos = (object) $_REQUEST;
+		$files = array();
+		$Estados = array();
+		$dirServ = "../../".DIR_APLICA_CENTRAL."/lib/filnot/";
+		if($datos->nom_asunto!="" && $datos->fec_creaci!="" && $datos->usr_creaci!="" && $datos->cod_asires!="" && $datos->fec_vigenc!="" && $datos->ind_respue!="" && $datos->obs_notifi!="" && $datos->cod_tipnot!="" && $datos->num_horlab!="" && $datos->jso_notifi!="")
+		{
+			$sql ="INSERT INTO " . BASE_DATOS . ".tab_notifi_notifi 
+                                        (cod_tipnot,	ind_notres,		num_horlab,
+                                         nom_asunto,	fec_vigenc,		ind_respue,	
+                                         obs_notifi,	ind_estado,		usr_creaci,	
+                                         fec_creaci,	ind_enttur)
+                                VALUES  
+                                		($datos->cod_tipnot,'".str_replace("'", "", substr($datos->cod_asires, 1))."',datos->num_horlab,
+                                		'$datos->nom_asunto', '$datos->fec_vigenc',$datos->ind_respue, 
+                                		'$datos->obs_notifi', 1,$datos->usr_creaci, 
+                                		'$datos->fec_creaci', $datos->ind_enttur)" ;
+            $consulta = new Consulta($sql, self::$cConexion, "RC");
+            if($consulta)
+            {
+            	#consulto el utimo registro de la tabla tab_notifi_notifi y con la fecha alamcenada
+	            $sqlNotifi = 'SELECT MAX(cod_notifi) AS cod_notifi FROM ' . BASE_DATOS . '.tab_notifi_notifi WHERE fec_creaci="'.$datos->fec_creaci.'"';
+	            $consultaNotifi = new Consulta( $sqlNotifi, self::$cConexion);
+		    	$mResultNotifi = $consultaNotifi -> ret_matrix('i');
+		    	$rCod_notifi=$mResultNotifi[0][0];
+
+				$sqlJson = "INSERT INTO " . BASE_DATOS . ".tab_notifi_detail 
+										(cod_notifi, jso_notifi)
+								VALUES
+										(". $rCod_notifi .", '$datos->jso_notifi')";
+				$consultaJson = new Consulta($sqlJson, self::$cConexion, "RC");
+	            if($consultaJson)
+	            {
+	            	if(count($_FILES)>0)
+		            {
+		            	$sqlFile = 'INSERT INTO ' . BASE_DATOS . '.tab_notifi_ficher (cod_notifi,nom_ficher,tip_ficher,url_ficher)
+		            												VALUES ';
+		            	#Recorro los archivos adjuntos
+		            	foreach ($_FILES as $keyFile => $valueFile) 
+		            	{
+		            		#separo por punto el mombre del archivo
+		            		$type = explode(".", basename($_FILES[$keyFile]["name"] ));
+		            		#capturo el nombre original del archivo
+		            		$nameFile =$_FILES[$keyFile]["name"];
+		            		#asigno nuevo combre al archivo con codificacion MD5
+		            		$_FILES[$keyFile]["name"]=md5($_FILES[$keyFile]["name"].$datos->fec_creaci).".".$type[1];
+		            		#Asigno ubicacion del archivo en el servidor con el nombre codificado
+		            		$ubicacion = $dirServ.basename($_FILES[$keyFile]["name"] );
+		            		#Preparo la consulta
+		            		$sqlFile.=' (' . $rCod_notifi . ', "' . $nameFile . '", "' .$type[1] . '", "' . $ubicacion . '"),';
+		            		#almaceno el nombre el un arrray para despues mover los archivos
+		            		$files[$keyFile]=$_FILES[$keyFile]['name'];
+		            	}
+		            	$sqlFile = substr($sqlFile, 0, -1);
+		            	$consultaFile = new Consulta($sqlFile, self::$cConexion, "RC");
+		            	if($consultaFile)
+		            	{
+		            		foreach ($files as $keyAr => $valueAr) {
+		            			if ( move_uploaded_file($_FILES[$keyAr]['tmp_name'], $dirServ.$valueAr) )
+			            		{
+			            			$Estados["OK"]["carga"]="se cargo el archivo:".$valueAr;
+			            		}
+			            		else
+			            		{
+			            			$Estados["ERROR"]["carga"]="error cargar archivo:".$valueAr;
+			            		}
+		            		}
+		            	}
+		            }
+	            }
+	            else
+	            {
+	            	$Estados["ERROR"]["consulta"]="error en consulta generar JSon";
+	            }
+            }else
+            {
+            	$Estados["ERROR"]["consulta"]="error en consulta generar notificaion";
+            }
+		}
+		else
+		{
+			$Estados["ERROR"]["validacion"]="Campos obligatios";
+		}
+		if(!$Estados["ERROR"]){
+			$Estados["OK"]="OK";
+			echo "OK";
+		}else
+		{
+			echo "ERROR";
+		}
+	}
+
 	#obejectos para la administracion de perfiles
 
 	/*! \fn: getmPermOet
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function getmPermOet(){
 		return $_SESSION['subNotifi']['PermOet'];
@@ -762,7 +924,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function setmPermOet($mPermOet = NULL){
 		$_SESSION['subNotifi']['PermOet']=$mPermOet;
@@ -772,7 +934,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function getmPermClf(){
 		return $_SESSION['subNotifi']['PermClf'];
@@ -782,7 +944,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function setmPermClf($mPermClf = NULL){
 		$_SESSION['subNotifi']['PermClf']=$mPermClf;
@@ -792,7 +954,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function getmPermSup(){
 		return $_SESSION['subNotifi']['PermSup'];
@@ -802,7 +964,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function setmPermSup($mPermSup = NULL){
 		$_SESSION['subNotifi']['PermSup']=$mPermSup;
@@ -812,7 +974,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function getmPermCon(){
 		return $_SESSION['subNotifi']['PermCon'];
@@ -822,7 +984,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function setmPermCon($mPermCon = NULL){
 		$_SESSION['subNotifi']['PermCon']=$mPermCon;
@@ -832,7 +994,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function getmPermCli(){
 		return $_SESSION['subNotifi']['PermCli'];
@@ -842,7 +1004,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	function setmPermCli($mPermCli = NULL){
 		$_SESSION['subNotifi']['PermCli']=$mPermCli;

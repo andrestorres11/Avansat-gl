@@ -6,9 +6,11 @@ $(document).ready(function()
         dateFormat: 'yy-mm-dd',
   }); 
  preFunction();
+ $('.error').fadeOut();
 });
 
 function preFunction(){
+  $('.error').fadeOut();
   $("input[name=multiselect_cod_asiresID]").click(function(){
       getNomUsuario();
   });
@@ -27,19 +29,32 @@ function preFunction(){
           //alert("ok");
         break;
         default:
-          alert("tipo de archivo no permitido");
+          $(this).focus().after('<span class="error" onclick="cerrarAlert()">Formato no permitido</span>');
           $(this).val("");
         break;
       }
       var filesize=$(this)[0].files[0];
       if(filesize.size>="5000000")
       {
-          alert("tama√±o del archivo no permitido");
+          $(this).focus().after('<span class="error" onclick="cerrarAlert()">tama√±o del archivo no permitido</span>');
+          //alert("tama√±o del archivo no permitido");
           $(this).val("");
       }
-      
-    
-        
+  });
+  $('#num_horlabID, #numb_enturnoID, #numb_ausenteID, #numb_incapacID, #numb_cargueID, #numb_transiID, #numb_descarID, #numb_caremprID, #numb_penllegID, #numb_pernotaID, #numb_seguespID, #numb_recomenID, #numb_preventID, #numb_hurtadoID, #numb_accidenID, #numb_transboID, #numb_enrealiID, #numb_registrID, #numb_subaspgID, #numb_esrealiID, #numb_esconscID, #numb_espendeID, #numb_espendaID, #numb_asrealiID, #numb_asconscID, #numb_aspendeID, #numb_aspendaID').keyup(function(){
+    $('.error').fadeOut();
+      if($(this).val().length>2)
+      {
+        $(this).focus().after('<span class="error" onclick="cerrarAlert()">Valor maximo superado</span>');
+        $(this).val("");
+      }
+      if(!$(this).val().match(/^[0-9]+$/)) 
+      {
+        $(this).focus().after('<span class="error" onclick="cerrarAlert()">Campo Numerico</span>');
+        $(this).val("");
+      }
+      //alert($(this).val());
+
   });
 }
 function ValidarFecha(campo) {
@@ -53,6 +68,7 @@ function ValidarFecha(campo) {
 
 function btnGeneral()
   {
+      $('.error').fadeOut();
       var fec_iniID=$("#fec_iniID").val();
       var fec_finID=$("#fec_finID").val();
       var standa = $("#standaID").val();
@@ -68,6 +84,7 @@ function btnGeneral()
                       type: "POST",
                       data: formData,
                       async: true,
+                      cache:false,
                       beforeSend: function() {
                   
                       },
@@ -79,22 +96,24 @@ function btnGeneral()
                   });
               }else
               {
-                alert("las fecha "+fec_iniID+" es mayor q "+fec_finID);
+                $("#fec_iniID").focus().after('<span class="error" onclick="cerrarAlert()">las fecha '+fec_iniID+' es mayor q '+fec_finID+'</span>');
+                //alert("las fecha "+fec_iniID+" es mayor q "+fec_finID);
               } 
           }else
           {
-            $("#fec_finID").focus();
-            alert("Seleciones una fecha");
+            $("#fec_finID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+            //alert("Seleciones una fecha");
           }
       }else
       {
-        $("#fec_iniID").focus();
-        alert("Seleciones una fecha");
+        $("#fec_iniID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+        //alert("Seleciones una fecha");
       }
   }
 
   function btnSubModulos(cod_notifi)
   {   
+      $('.error').fadeOut();
       var identificador;
       var fec_iniID=$("#fec_iniID").val();
       var fec_finID=$("#fec_finID").val();
@@ -133,10 +152,9 @@ function btnGeneral()
                       type: "POST",
                       data: formData,
                       async: true,
-                      beforeSend: function() {
-                  
-                      },
+                      cache:false,
                       success: function(data) {
+                          $("#"+identificador).html("");
                           $("#"+identificador).html(data);
                           $("#notifiID").css({"height":"auto"});
                           //alert(data);
@@ -144,24 +162,26 @@ function btnGeneral()
                   });
               }else
               {
-                alert("las fecha "+fec_iniID+" es mayor que "+fec_finID);
+                $("#fec_iniID").focus().after('<span class="error" onclick="cerrarAlert()">las fecha '+fec_iniID+' es mayor q '+fec_finID+'</span>');
+                //alert("las fecha "+fec_iniID+" es mayor que "+fec_finID);
               } 
           }else
           {
-            $("#fec_finID").focus();
-            alert("Seleciones una fecha");
+            $("#fec_finID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+            //alert("Seleciones una fecha");
           }
       }else
       {
-        $("#fec_iniID").focus();
-        alert("Seleciones una fecha");
+        $("#fec_iniID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+        //alert("Seleciones una fecha");
       }
   }
 
   function NuevaNoti(id)
   {
+    $('.error').fadeOut();
     var standa = $("#standaID").val();
-    var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
+    var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=idi";
     closePopUp('popID');
     LoadPopupJQNoButton('open', 'NUEVA NOTIFICACION', ($(window).height() - 40), ($(window).width() - 40), false, false, true);
     var popup = $("#popID");
@@ -170,13 +190,12 @@ function btnGeneral()
         type: "POST",
         data: formData,
         async: true,
+        cache:false,
         beforeSend: function(obj) {
-            BlocK('Nueva Notificacion...', true);
             popup.parent().children().children('.ui-dialog-titlebar-close').hide();
         },
         success: function(data) {
             popup.html(data);
-            BlocK();
             $("#cod_asiresID").multiselect().multiselectfilter();
             $("#ind_notusrID").multiselect().multiselectfilter();
             preFunction();
@@ -199,6 +218,7 @@ function btnGeneral()
     $("#fec_vigencID").val("");
     $("#obs_notifiID").val("");
     closePopUp('popID');
+    $('.error').fadeOut();
   }
 
   function ValidateFormComun(){
@@ -210,172 +230,247 @@ function btnGeneral()
     var ind_notusr = validateChekBox("ind_notusrID");
     var fec_vigenc = $("#fec_vigencID").val();
     var ind_respue = $("input:radio[name=ind_respue]:checked").val();
+    var ind_enttur = $("input:radio[name=ind_enttur]:checked").val();
     var obs_notifi = $("#obs_notifiID").val();
     var cod_tipnot = $("#cod_tipnotID").val();
+    var num_horlab = $("#num_horlabID").val();
+    band=1;
+    $('.error').fadeOut();
     if(nom_asunto.length>5 && nom_asunto.length<100)
     {
       if(validateChekBox("cod_asiresID")!="")
       {
-        if(validateChekBox("ind_notusrID")!="")
+        if(cod_tipnot==2 || cod_tipnot==3 || cod_tipnot==5)
+        {
+          if(validateChekBox("ind_notusrID")!="")
+          {
+            band=1;
+          }
+          else
+          {
+             band=0;
+          }          
+        }
+        if(band==1)
         {
           if($("#fec_vigencID").val()!="")
           {
             if($("#obs_notifiID").val()!="")
             {
-              var mdata = new FormData();
-              mdata.append("option","NuevaNotifiComun");
-              mdata.append("nom_asunto",nom_asunto);
-              mdata.append("fec_creaci",fec_creaci);
-              mdata.append("usr_creaci",usr_creaci);
-              mdata.append("cod_asires",cod_asires);
-              mdata.append("ind_notusr",ind_notusr);
-              mdata.append("fec_vigenc",fec_vigenc);
-              mdata.append("ind_respue",ind_respue);
-              mdata.append("obs_notifi",obs_notifi);
-              mdata.append("cod_tipnot",cod_tipnot);
-              $("#newNotifi").find("input[type=file]").each(function(){
-                  mdata.append($(this).attr('name'),$(this)[0].files[0]);
-              });
-              console.log(mdata);
-              $.ajax({
-                url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
-                type:'POST',
-                contentType:false,
-                data: mdata,
-                //async: false,
-                processData:false,
-                cache:false,
-                success:function(data){
-                  alert(data);
-                  if(data=="OK")
+              if(cod_tipnot==3 || cod_tipnot==4)
+              {
+                if((num_horlab.length>0 && num_horlab.length<3) || (num_horlab.val()>24))
+                {
+                  var mdata = new FormData();
+                  mdata.append("option","NuevaNotifiExten");
+                  mdata.append("nom_asunto",nom_asunto);
+                  mdata.append("fec_creaci",fec_creaci);
+                  mdata.append("usr_creaci",usr_creaci);
+                  mdata.append("cod_asires",cod_asires);
+                  mdata.append("ind_notusr",ind_notusr);
+                  mdata.append("fec_vigenc",fec_vigenc);
+                  mdata.append("ind_respue",ind_respue);
+                  mdata.append("obs_notifi",obs_notifi);
+                  mdata.append("cod_tipnot",cod_tipnot);
+                  mdata.append("num_horlab",num_horlab);
+                  mdata.append("ind_enttur",ind_enttur);
+                  $("#Document").find("input[type=file]").each(function(){
+                      mdata.append($(this).attr('name'),$(this)[0].files[0]);
+                  });
+                  console.log(mdata);
+                  returnJson = ValidateFormExt(cod_tipnot);
+                  console.log(returnJson);
+                  if(returnJson.NOTNULL)
                   {
-                    alert("Se creo la notificacion correctamente");
+                    $.each(returnJson.NOTNULL,function(i,v){
+                      $("#"+v+"ID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+                      
+                    });
+                    alert("error en el json");
                   }
                   else
                   {
-                    alert("error al crear la notificaion");
+                    var myJsonString = JSON.stringify(returnJson);
+                    console.log(myJsonString);
+                    mdata.append("jso_notifi",myJsonString);
+                    $.ajax({
+                      url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
+                      type:'POST',
+                      contentType:false,
+                      data: mdata,
+                      //async: false,
+                      processData:false,
+                      cache:false,
+                      success:function(data){
+                        alert(data);
+                        /*if(data=="OK")
+                        {
+                          alert("Se creo la notificacion correctamente");
+                        }
+                        else
+                        {
+                          alert("error al crear la notificaion");
+
+                        }*/
+                        
+                      }
+                    }); 
                   }
-                  
                 }
-              });
+                else
+                {
+                  $("#num_horlabID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+                }
+              }
+              else
+              {
+                var mdata = new FormData();
+                mdata.append("option","NuevaNotifiComun");
+                mdata.append("nom_asunto",nom_asunto);
+                mdata.append("fec_creaci",fec_creaci);
+                mdata.append("usr_creaci",usr_creaci);
+                mdata.append("cod_asires",cod_asires);
+                mdata.append("ind_notusr",ind_notusr);
+                mdata.append("fec_vigenc",fec_vigenc);
+                mdata.append("ind_respue",ind_respue);
+                mdata.append("obs_notifi",obs_notifi);
+                mdata.append("cod_tipnot",cod_tipnot);
+                $("#newNotifi").find("input[type=file]").each(function(){
+                    mdata.append($(this).attr('name'),$(this)[0].files[0]);
+                });
+                console.log(mdata);
+                $.ajax({
+                  url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
+                  type:'POST',
+                  contentType:false,
+                  data: mdata,
+                  //async: false,
+                  processData:false,
+                  cache:false,
+                  success:function(data){
+                    alert(data);
+                    if(data=="OK")
+                    {
+                      alert("Se creo la notificacion correctamente");
+                    }
+                    else
+                    {
+                      alert("error al crear la notificaion");
+
+                    }
+                    
+                  }
+                }); 
+              }
+              
             }
             else
             {
-              alert("Campo es requerida");
-              $("#obs_notifiID").focus();
+              $("#obs_notifiID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+              return false;
             }
           }
           else
           {
-            alert("Campo de seleccion requerida");
-            $("#fec_vigencID").focus();   
+            $("#fec_vigencID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+            return false;
           }
         }
         else
         {
-          alert("Campo de seleccion requerida");
-          $("#ind_notusrID").focus();
+          $("#ind_notusrID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');  
+          return false;
         } 
       }
       else
       {
-        alert("Campo de seleccion requerida");
-        $("#cod_asiresID").focus();
+        $("#cod_asiresID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');  
+        return false;
       } 
     }
     else
     {
-      alert("No cumple la longuitud requerida");
-      $("#nom_asuntoID").focus();
+      $("#nom_asuntoID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');  
+      return false;
     }
     //alert(limitCampos("string","#nom_asuntoID","<=","3"));
   }
 
-  function ValidateFormExt(){
-
-    var standa = $("#standaID").val();
-    var ind_enttur = $("input:radio[name=ind_enttur]:checked").val();
-    var nom_asunto = $("#nom_asuntoID").val();
-    var fec_creaci = $("#fec_creaciID").val();
-    var usr_creaci = $("#usr_creaciID").val();
-    var num_horlab = $("#num_horlabID").val();
-    var cod_asires = validateChekBox("cod_asiresID");
-    var ind_notusr = validateChekBox("ind_notusrID");
-    var fec_vigenc = $("#fec_vigencID").val();
-    var ind_respue = $("input:radio[name=ind_respue]:checked").val();
-    var obs_notifi = $("#obs_notifiID").val();
-    var cod_tipnot = $("#cod_tipnotID").val();
+  function ValidateFormExt(cod_tipnot){
     var mdata = new FormData();
     mdata.append("option","NuevaNotifiComun");
     var status={};
     status.NOTNULL=[];
     var jsonArray={};
-    jsonArray.SUPERVISORES=[];
-    $("#jsonFormDigi").find("input[type=text]").each(function(){
-        dato=$(this);
-        if($(this).val()!="")
-        {
-          jsonArray.SUPERVISORES.push(dato.attr('name'), dato.val());
-        }
-        else
-        {
-          status.NOTNULL.push(dato.attr('name'), dato.val());
-        }   
-    });
-    jsonArray.CONTROLADORES=[];
-    $("#jsonContro").find("input[type=text]").each(function(){
-        dato=$(this);
-        if($(this).val()!="")
-        {
-          jsonArray.CONTROLADORES.push(dato.attr('name'), dato.val());
-        }
-        else
-        {
-          status.NOTNULL.push(dato.attr('name'), dato.val());
-        }   
-    });
+    if(cod_tipnot==3)
+    {
+      jsonArray.SUPERVISORES=[];
+      $("#jsonFormDigi").find("input[type=text]").each(function(){
+          dato=$(this);
+          if($(this).val()!="")
+          {
+            jsonArray.SUPERVISORES.push(dato.attr('name'), dato.val());
+          }
+          else
+          {
+            status.NOTNULL.push(dato.attr('name'), dato.val());
+          }   
+      });
+      jsonArray.CONTROLADORES=[];
+      $("#jsonContro").find("input[type=text]").each(function(){
+          dato=$(this);
+          if($(this).val()!="")
+          {
+            jsonArray.CONTROLADORES.push(dato.attr('name'), dato.val());
+          }
+          else
+          {
+            status.NOTNULL.push(dato.attr('name'), dato.val());
+          }   
+      });
+      jsonArray.ENCUESTAS=[];
+      $("#jsonEncu").find("input[type=text]").each(function(){
+          dato=$(this);
+          if($(this).val()!="")
+          {
+            jsonArray.ENCUESTAS.push(dato.attr('name'), dato.val());
+          }
+          else
+          {
+            status.NOTNULL.push(dato.attr('name'), dato.val());
+          }   
+      });
+      jsonArray.ESPECIFICAS=[];
+      $("#jsonEspeci").find("input[type=text]").each(function(){
+          dato=$(this);
+          if($(this).val()!="")
+          {
+            jsonArray.ESPECIFICAS.push(dato.attr('name'), dato.val());
+          }
+          else
+          {
+            status.NOTNULL.push(dato.attr('name'), dato.val());
+          }   
+      });
+      jsonArray.ASISTENCIAS=[];
+      $("#jsonAsist").find("input[type=text]").each(function(){
+          dato=$(this);
+          if($(this).val()!="")
+          {
+            jsonArray.ASISTENCIAS.push(dato.attr('name'), dato.val());
+          }
+          else
+          {
+            status.NOTNULL.push(dato.attr('name'), dato.val());
+          }   
+      });
+    }
     jsonArray.ESTADO_VEHICULOS=[];
     $("#jsonEstVehi").find("input[type=text]").each(function(){
         dato=$(this);
         if($(this).val()!="")
         {
           jsonArray.ESTADO_VEHICULOS.push(dato.attr('name'), dato.val());
-        }
-        else
-        {
-          status.NOTNULL.push(dato.attr('name'), dato.val());
-        }   
-    });
-    jsonArray.ENCUESTAS=[];
-    $("#jsonEncu").find("input[type=text]").each(function(){
-        dato=$(this);
-        if($(this).val()!="")
-        {
-          jsonArray.ENCUESTAS.push(dato.attr('name'), dato.val());
-        }
-        else
-        {
-          status.NOTNULL.push(dato.attr('name'), dato.val());
-        }   
-    });
-    jsonArray.ESPECIFICAS=[];
-    $("#jsonEspeci").find("input[type=text]").each(function(){
-        dato=$(this);
-        if($(this).val()!="")
-        {
-          jsonArray.ESPECIFICAS.push(dato.attr('name'), dato.val());
-        }
-        else
-        {
-          status.NOTNULL.push(dato.attr('name'), dato.val());
-        }   
-    });
-    jsonArray.ASISTENCIAS=[];
-    $("#jsonAsist").find("input[type=text]").each(function(){
-        dato=$(this);
-        if($(this).val()!="")
-        {
-          jsonArray.ASISTENCIAS.push(dato.attr('name'), dato.val());
         }
         else
         {
@@ -394,15 +489,14 @@ function btnGeneral()
           status.NOTNULL.push(dato.attr('name'), dato.val());
         }   
     });
-    console.log(status.NOTNULL.length);
     if(status.NOTNULL.length>0)
     {
-      alert("Los datos del frormulario de diligenciamiento son requeridos");
-      console.log(status.NOTNULL);
+      return status;
     }
-    var myJsonString = JSON.stringify(jsonArray);
-    //console.log(jsonArray);         
-    //console.log(myJsonString);         
+    else
+    {
+      return jsonArray;
+    }            
   }
 
   function validateChekBox(campoval){
@@ -420,6 +514,7 @@ function btnGeneral()
   }
 
   function getNomUsuario(){
+    $('.error').fadeOut();
     $("#ind_notusrID").multiselect('destroy');
     var cod_Respon=validateChekBox("cod_asiresID");
     var standa = $("#standaID").val();
@@ -429,6 +524,7 @@ function btnGeneral()
         type: "POST",
         data: formData,
         async: true,
+        cache:false,
         success: function(data) {
           $("#ind_notusrID").html(data);
           $("#ind_notusrID").multiselect('destroy');
@@ -437,6 +533,33 @@ function btnGeneral()
     }); 
   }
 
-  function ActioFormularios(){
-    alert("funcion");
+  function cerrarAlert(){
+    //alert($(this));
+    //console.log($(this).hasClass('error'));
+    $(".error").fadeOut();
   }
+
+  function ActioFormularios(Cod_notif){
+    /*swal({
+            title: " Usuario",
+            text: "øRealmente desea  los datos del Usuario?",
+            type: "warning",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+        }, function() {
+          swal({
+              title:"  Usuario",
+              text: "Datos registrados con Èxito.",
+              type: "success"
+          });
+        });*/
+   }
+   function editarNotificacion(row){
+      var objeto = $(row).parent().parent();
+      var cod_notifi = objeto.find("input[id^=cod_notifi]").val();
+      var nom_asunto = objeto.find("input[id^=nom_asunto]").val();
+      var cod_tipnot = objeto.find("input[id^=cod_tipnot]").val();
+      alert("datos: "+cod_notifi+" ,"+nom_asunto+" ,"+cod_tipnot);
+      //console.log(datos);
+   }

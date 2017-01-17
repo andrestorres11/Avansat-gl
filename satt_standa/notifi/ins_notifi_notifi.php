@@ -36,7 +36,20 @@ class notifi
 		
 		IncludeJS( 'functions.js' );
 		IncludeJS( 'ins_notifi_notifi.js' );
+		IncludeJS( 'dinamic_list.js' );
+		IncludeJS( 'new_ajax.js' );
+		IncludeJS( 'sweetalert-dev.js' );
+
+		IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
+		IncludeJS( 'jquery.multiselect.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
+
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/dinamic_list.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/sweetalert.css' type='text/css'>\n";
+
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
 		self::lista();
 	}
 
@@ -44,7 +57,7 @@ class notifi
 	 *  \brief: Vista principal de modulo
 	 *  \author: Edward serrano
 	 *	\date: 	
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 */
 	private function lista()
 	{
@@ -211,7 +224,7 @@ class notifi
 	 *  \brief: retorna los permisos sobre los submodulos
 	 *  \author: Edward Serrano
 	 *	\date: 
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 *  \return:
 	 */
 	protected function getRespond()
@@ -232,7 +245,7 @@ class notifi
 	 *  \brief: Reccorre json con los permisos asignados
 	 *  \author: Edward Serrano
 	 *	\date: 
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 *  \param: $JsonRe-> json de datos
 	 *  \param: $Panel-> subnivel del json
 	 *  \param: arrSub-> Paramentros de bsuqueda
@@ -330,15 +343,16 @@ class notifi
                     font-family: Times New Roman;
                     font-size: 11px;
                     padding: 2px;
+                    height: 10px;
                 }
-                .campo_texto {
+                /*.campo_texto {
                     background-color: #ffffff;
                     border: 1px solid #bababa;
                     color: #000000;
                     font-family: Times New Roman;
                     font-size: 11px;
                     padding-left: 5px;
-                }
+                }*/
                 .crmButton {
                 	width:25%;
                 	height: 20px;
@@ -347,6 +361,55 @@ class notifi
                 	height: 100px;
     				width: 100%;
             	}
+            	.error{
+				    background-color: #45930b;
+				    border-radius: 4px 4px 4px 4px;
+				    color: white;
+				    font-weight: bold;
+				    margin-left: 6px;
+				    margin-top: 3px;
+				    padding: 3px 6px;
+				    position: absolute;
+				}
+            	.error:before{
+				    border-color: transparent #45930b transparent transparent;
+				    border-style: solid;
+				    border-width: 3px 4px;
+				    content: '';
+				    display: block;
+				    height: 0;
+				    left: -16px;
+				    position: absolute;
+				    top: 4px;
+				    width: 0;
+				}
+				.campo_texto{
+					border: 1px solid #DBE1EB;
+					font-size: 10px;
+					font-family: Arial, Verdana;
+					padding-left: 5px;
+					padding-right: 5px;
+					padding-top: 5px;
+					padding-bottom: 5px;
+					border-radius: 4px;
+					-moz-border-radius: 4px;
+					-webkit-border-radius: 4px;
+					-o-border-radius: 4px;
+					background: #FFFFFF;
+					background: linear-gradient(left, #FFFFFF, #F7F9FA);
+					background: -moz-linear-gradient(left, #FFFFFF, #F7F9FA);
+					background: -webkit-linear-gradient(left, #FFFFFF, #F7F9FA);
+					background: -o-linear-gradient(left, #FFFFFF, #F7F9FA);
+					color: #2E3133;
+				}
+				.CellInfohref{
+					cursor:pointer;
+					background-color: #ebf8e2;
+                    font-family: Times New Roman;
+                    font-size: 11px;
+                    padding: 2px;
+                    height: 10px;
+				}
               </style>";
     }
 }
