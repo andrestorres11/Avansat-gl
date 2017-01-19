@@ -53,6 +53,14 @@ class AjaxNotifiNotifi
 		    	self::NuevaNotifiExten();
 	    	break;
 
+	    	case 'EditNotifiComun':
+		       	self::EditNotifiComun();
+		    break;
+
+		    case 'EditNotifiExten':
+		    	self::EditNotifiExten();
+	    	break;
+
 		    default:
 		      	#header('Location: index.php?window=central&cod_servic=20151235&menant=20151235');
 		    break;
@@ -141,108 +149,134 @@ class AjaxNotifiNotifi
 	protected function getForm()
 	{
 		$datos = (object) $_POST;
-		print_r($datos->permoetID);
 		$titulos = array('Nivel1' => array('Consecutivo' => 'Consecutivo', 'Asunto' => 'Asunto', 'Fecha' => 'Fecha y hora', 'notificacion' => 'Notificado por'));
 		$mHtml = new Formlib(2);
-		#print_r($datos->fec_iniID);
-		#echo "fecha inicial: ". $datos->fec_iniID ."; fecha fin: ". $datos->fec_finID;
 		$mHtml->Table("tr",array("class"=>"displayDIV2"));
 			$mHtml->Label( "DETALLE DE NOTIFICACIONES ", array("colspan"=>sizeof($titulos['Nivel1']), "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
 			$mHtml->CloseRow();
-				if($datos->cod_notifi==1 && self::getmPermOet()['ins']==1)
+				#Opciones para la pestana OET
+				if($datos->cod_notifi==1)
 				{
-					$mHtml->Row();
-						$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNoetID","name"=>"btnNoet", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(1)") );
-					$mHtml->CloseRow();
-				}
-				if($datos->cod_notifi==2 && self::getmPermClf()['ins']==1)
-				{
-					$mHtml->Row();
-						$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNclfID","name"=>"btnNclf", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(2)") );
-					$mHtml->CloseRow();
-				}
-				if($datos->cod_notifi==3 && self::getmPermSup()['ins']==1)
-				{
-					$mHtml->Row();
-						$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNsupID","name"=>"btnNsup", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(3)") );
-					$mHtml->CloseRow();
-				}
-				if($datos->cod_notifi==4 && self::getmPermCon()['ins']==1)
-				{
-					$mHtml->Row();
-						$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNconID","name"=>"btnNcon", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(4)") );
-					$mHtml->CloseRow();
-				}
-				if($datos->cod_notifi==5 && self::getmPermCli()['ins']==1)
-				{
-					$mHtml->Row();
-						$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNcliID","name"=>"btnNcli", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(5)") );
-					$mHtml->CloseRow();
-				}
-#cambiar por dimanic list
-/*
-				foreach ($titulos as $keyN1 => $valueN1) {
-					if($keyN1=='Nivel1')
+					if(self::getmPermOet()['ins']==1)
 					{
 						$mHtml->Row();
-						foreach ($valueN1 as $keySub1 => $valueSub1) {
-							$mHtml->Label( $valueSub1,  array("align"=>"right", "class"=>"CellHead") );	
-						}
-						$mHtml->CloseRow();
-					}	
+							$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNoetID","name"=>"btnNoet", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(1)") );
+						$mHtml->CloseRow();	
+					}
+					$mHtml->OpenDiv("id:sec1");
+						$mHtml->OpenDiv("id:DinamicListDIV");
+						echo self::getDinamiList(self::getmPermOet(),$datos);
+						$mHtml->CloseDiv();
+					$mHtml->CloseDiv();
 				}
-				$notificaciones=self::getNotifi($datos);
-				if(sizeof($notificaciones))
+				#Opciones para la pestana faro
+				if($datos->cod_notifi==2)
 				{
-					foreach ($notificaciones as $keyNot => $valueNot) {
+					if(self::getmPermClf()['ins']==1)
+					{
 						$mHtml->Row();
-							$mHtml->Label( $valueNot['cod_notifi'],  array("align"=>"right", "class"=>"CellInfo1", "onclick"=>"ActioFormularios(".$valueNot['cod_notifi'].")") );
-							$mHtml->Label( $valueNot['nom_asunto'],  array("align"=>"right", "class"=>"CellInfo1") );
-							$mHtml->Label( $valueNot['fec_creaci'],  array("align"=>"right", "class"=>"CellInfo1") );
-							$mHtml->Label( $valueNot['cod_usuari'],  array("align"=>"right", "class"=>"CellInfo1") );
+							$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNclfID","name"=>"btnNclf", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(2)") );
 						$mHtml->CloseRow();
 					}
+					$mHtml->OpenDiv("id:sec2");
+						$mHtml->OpenDiv("id:DinamicListDIV");
+						echo self::getDinamiList(self::getmPermClf(),$datos);
+						$mHtml->CloseDiv();
+					$mHtml->CloseDiv();
 				}
-				else
+				#Opciones para la pestana supervisores
+				if($datos->cod_notifi==3)
 				{
-					$mHtml->Row();
-						$mHtml->Label( "NO SE ENCONTRARON NOTIFICACIONES",  array("align"=>"center", "colspan"=>"4","class"=>"CellInfo1") );
-					$mHtml->CloseRow();
+					if(self::getmPermSup()['ins']==1)
+					{
+						$mHtml->Row();
+							$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNsupID","name"=>"btnNsup", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(3)") );
+						$mHtml->CloseRow();
+					}
+					$mHtml->OpenDiv("id:sec3");
+						$mHtml->OpenDiv("id:DinamicListDIV");
+						echo self::getDinamiList(self::getmPermSup(),$datos);
+						$mHtml->CloseDiv();
+					$mHtml->CloseDiv();
+
 				}
-*/
-#cambiar por dimanic list
-			
+				#Opciones para la pestana controladores
+				if($datos->cod_notifi==4)
+				{
+					if(self::getmPermCon()['ins']==1)
+					{
+						$mHtml->Row();
+							$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNconID","name"=>"btnNcon", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(4)") );
+						$mHtml->CloseRow();
+					}
+					$mHtml->OpenDiv("id:sec4");
+						$mHtml->OpenDiv("id:DinamicListDIV");
+						echo self::getDinamiList(self::getmPermCon(),$datos);
+						$mHtml->CloseDiv();
+					$mHtml->CloseDiv();
+					
+				}
+				#Opciones para la pestana clientes
+				if($datos->cod_notifi==5)
+				{
+					if(self::getmPermCli()['ins']==1)
+					{
+						$mHtml->Row();
+							$mHtml->Button( array("value"=>"NUEVA NOTIFICACION", "id"=>"btnNcliID","name"=>"btnNcli", "class"=>"crmButton small save", "align"=>"right", "colspan"=>sizeof($titulos['Nivel1']),"onclick"=>"NuevaNoti(5)") );
+						$mHtml->CloseRow();
+					}
+					$mHtml->OpenDiv("id:sec5");
+						$mHtml->OpenDiv("id:DinamicListDIV");
+						echo self::getDinamiList(self::getmPermCli(),$datos);
+						$mHtml->CloseDiv();
+					$mHtml->CloseDiv();
+					
+				}
 		$mHtml->CloseTable('tr');
-		$mHtml->OpenDiv("id:sec2");
-			$mHtml->OpenDiv("id:DinamicListDIV");
-				if (!class_exists(DinamicList)) {
-			            include_once("../" . DIR_APLICA_CENTRAL . "/lib/general/dinamic_list.inc");
-			        }
-			        $sql ="SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari,a.cod_tipnot
-						 FROM ".BASE_DATOS.".tab_notifi_notifi a
-						 	INNER JOIN tab_genera_usuari b 
-						 		ON a.usr_creaci=b.cod_consec
-						 			WHERE a.cod_tipnot=".$datos->cod_notifi." and a.fec_creaci>='".$datos->fec_iniID."' and a.fec_creaci<='".$datos->fec_finID." 23:59:59'";
-			        $list = new DinamicList(self::$cConexion, $sql, "2", "no", 'ASC');
-			        $list->SetClose('no');
-			        //$list->SetCreate("Crear Perfil", "onclick:formulario()");
-			        $list->SetHeader(utf8_decode("Consecutivo"), "field:cod_notifi; width:1%;  ");
-			        $list->SetHeader("Asunto", "field:nom_asunto; width:1%");
-			        $list->SetHeader("Fecha y hora", "field:fec_creaci; width:1%");
-			        $list->SetHeader("Notificado por ", "field:cod_usuari; width:1%");
-			        $list->SetOption("Opciones", "field:cod_notifi; width:1%; onclikEdit:editarNotificacion( this ); onclickCopy:copiarPerfil(this)");
-			        $list->SetHidden("cod_notifi", "cod_notifi");
-        			$list->SetHidden("cod_tipnot", "cod_tipnot");
-        			$list->SetHidden("nom_asunto", "nom_asunto");
-			        $list->Display(self::$cConexion);
-			        $Html = $list->GetHtml();
-			        echo $Html;
-			$mHtml->CloseDiv();
-		$mHtml->CloseDiv();
 		$mHtml->OpenDiv("id:popID");
 		$mHtml->CloseDiv();
 		#echo "<pre>";print_r($_SESSION);echo "</pre>";
 		echo $mHtml->MakeHtml();
+	}
+
+	/*! \fn: getDinamiList
+	 *  \brief: identifica el formulario correspondiete y lo pinta
+	 *  \author: Edward Serrano
+	 *	\date:  18/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function getDinamiList($permisosActuales,$datos)
+	{	
+		$permActivado="field:cod_notifi; width:1%";
+		$permActivado.=($permisosActuales['idi']==1)?";onclikEdit:editarNotifi( this )":"";
+		$permActivado.=($permisosActuales['rep']==1)?";onclickCopy:responderNotifi( this )":"";
+		$permActivado.=($permisosActuales['eli']==1)?";onclikDisable:eliminarNotifi( this )":"";
+		#print_r($permActivado);
+		if (!class_exists('DinamicList')) 
+		{
+		    include_once("../" . DIR_APLICA_CENTRAL . "/lib/general/dinamic_list.inc");
+		}
+		$sql ="SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari,a.cod_tipnot,a.ind_notres,a.ind_notusr
+				 FROM ".BASE_DATOS.".tab_notifi_notifi a
+				 	INNER JOIN tab_genera_usuari b 
+				 		ON a.usr_creaci=b.cod_consec
+				 			WHERE a.cod_tipnot=".$datos->cod_notifi." and a.fec_creaci>='".$datos->fec_iniID."' and a.fec_creaci<='".$datos->fec_finID." 23:59:59'";
+		$list = new DinamicList(self::$cConexion, $sql, "2", "no", 'ASC');
+		$list->SetClose('no');
+		//$list->SetCreate("Crear Perfil", "onclick:formulario()");
+		$list->SetHeader("Consecutivo", "field:cod_notifi; width:1%;  ");
+		$list->SetHeader("Asunto", "field:nom_asunto; width:1%");
+		$list->SetHeader("Fecha y hora", "field:fec_creaci; width:1%");
+		$list->SetHeader("Notificado por ", "field:cod_usuari; width:1%");
+		$list->SetOption("Opciones", "field:cod_notifi; width:1%; onclikEdit:editarNotifi( this ); onclickCopy:responderNotifi(this); onclikDisable:eliminarNotifi(this);");
+		#$list->SetOption("Opciones", $permActivado);
+		$list->SetHidden("cod_notifi", "cod_notifi");
+        $list->SetHidden("cod_tipnot", "cod_tipnot");
+        $list->SetHidden("nom_asunto", "nom_asunto");
+        $list->SetHidden("ind_notres", "ind_notres");
+        $list->SetHidden("ind_notusr", "ind_notusr");
+		$list->Display(self::$cConexion);
+		return $list->GetHtml();
 	}
 
 	/*! \fn: getFormNuevaNotifi
@@ -252,8 +286,8 @@ class AjaxNotifiNotifi
 	 *	\date modified: dia/mes/año
 	 */
 	protected function getFormNuevaNotifi()
-	{	$datos = (object) $_REQUEST;
-		
+	{	
+		$datos = (object) $_REQUEST;
 		if($datos->idForm=="3" || $datos->idForm=="4")
 		{
 			self::getFormNuevaNotifiExt($datos);
@@ -272,8 +306,12 @@ class AjaxNotifiNotifi
 	 */
 	protected function getFormNuevaNotifiExt($ActionForm=NULL)
 	{
-		if($ActionForm->ActionForm=="idi"){
+		$datosEditar;
+		if($ActionForm->ActionForm=="idi")
+		{
 			#realizar consulta
+			$datosEditar = self::getInfoNotifiEdit($ActionForm);
+			
 		}
 		#print_r($_SESSION['subNotifi']['PermOet']);
 		
@@ -598,7 +636,7 @@ class AjaxNotifiNotifi
 					$mHtml->CloseRow();
 				}
 				$mHtml->Row();
-					$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateFormComun()") );
+					$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateFormComun(".(($datosEditar[0])?"'idi'":"'ins'").")") );
 					$mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"5","onclick"=>"limpiarForm()") );
 				$mHtml->CloseRow();
 			$mHtml->CloseTable('tr');
@@ -614,6 +652,14 @@ class AjaxNotifiNotifi
 	 */
 	protected function getFormNuevaNotifiComun($ActionForm=NULL)
 	{
+		$datosEditar;
+		if($ActionForm->ActionForm=="idi")
+		{
+			#realizar consulta
+			$datosEditar =self::getInfoNotifiEdit($ActionForm);
+			
+		}
+		print_r($datosEditar[0]);
 		$date = new DateTime();
 		$mHtml = new Formlib(2);
 		$mHtml->OpenDiv("id:newNotifi");
@@ -621,7 +667,7 @@ class AjaxNotifiNotifi
 			$mHtml->Hidden(array( "name" => "cod_tipnot", "id" => "cod_tipnotID", "value"=>$ActionForm->idForm));
 			$mHtml->Table("tr");
 				$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                $mHtml->Input(array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%", "colspan"=>"6"));
+                $mHtml->Input(array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%", "value"=>($datosEditar[0][4]!="")?$datosEditar[0][4]:"" ,"colspan"=>"6"));
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Label( "Fecha de Notificacion:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
@@ -636,22 +682,21 @@ class AjaxNotifiNotifi
 					$mHtml->Select2 (self::getLisRespon(),  array("name" => "cod_asires", "width" => "25%","colspan"=>"1") );
 					$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
 					$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
-					
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Label( "*Vigencia hasta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-					$mHtml->Input(array("value"=>"","name" => "fec_vigenc", "id" => "fec_vigencID", "width" => "100%", "colspan"=>"1","onclick"=>"getFechaDatapick('fec_vigencID')"));
+					$mHtml->Input(array("name" => "fec_vigenc", "id" => "fec_vigencID", "width" => "100%", "colspan"=>"1", "value"=>($datosEditar[0][6]!="")?$datosEditar[0][6]:"","onclick"=>($datosEditar[0][6]!="")?"":"getFechaDatapick('fec_vigencID')", "readonly"=>($datosEditar[0][6]!="")?"readonly":""));
 					$mHtml->Label( "*Requiere Respuesta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
 					$mHtml->Label( "SI",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-					$mHtml->Radio(array("value"=>"1","name" => "ind_respue", "id" => "ind_respuesID", "width" => "100%", "colspan"=>"1","checked"=>"checked"));
+					$mHtml->Radio(array("value"=>"1","name" => "ind_respue", "id" => "ind_respuesID", "width" => "100%", "colspan"=>"1","checked"=>($ActionForm->ActionForm=="ins")?"checked":($datosEditar[0][7]==1)?"checked":""));
 					$mHtml->Label( "NO",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-					$mHtml->Radio(array("value"=>"0","name" => "ind_respue", "id" => "ind_respuenID", "width" => "100%", "colspan"=>"1"));
+					$mHtml->Radio(array("value"=>"0","name" => "ind_respue", "id" => "ind_respuenID", "width" => "100%", "colspan"=>"1","checked"=>($ActionForm->ActionForm=="idi")?($datosEditar[0][7]==0)?"checked":"":""));
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Label( "*DETALLE DE LA NOTIFICACION:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 				$mHtml->CloseRow();
 				$mHtml->Row();
-                	$mHtml->TextArea("", array("name" => "obs_notifi", "id" => "obs_notifiID", "colspan"=>"7" ));
+                	$mHtml->TextArea(($datosEditar[0][8]!="")?$datosEditar[0][8]:"", array("name" => "obs_notifi", "id" => "obs_notifiID", "colspan"=>"7"));
 				$mHtml->CloseRow();
 				$mHtml->Row();
 					$mHtml->Label( "*Documentos:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
@@ -673,7 +718,7 @@ class AjaxNotifiNotifi
                 	$mHtml->file(array("name" => "file_4", "id" => "file_4ID", "width" => "100%", "colspan"=>"6"));
 				$mHtml->CloseRow();
 				$mHtml->Row();
-					$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateFormComun()") );
+					$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateFormComun(".(($datosEditar[0])?"'idi'":"'ins'").")") );
 					$mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"5","onclick"=>"limpiarForm()") );
 				$mHtml->CloseRow();
 			$mHtml->CloseTable('tr');
@@ -690,7 +735,6 @@ class AjaxNotifiNotifi
 	function getLisRespon ( $mCodNivel = NULL)
 	{
         $mSelect = "SELECT cod_respon, nom_respon FROM ".BASE_DATOS.".tab_genera_respon";
-
 	    $mConsult = new Consulta($mSelect, self::$cConexion );
 	    $_RESPON = $mConsult -> ret_matrix("i");
 	    $inicio[0][0]=0;
@@ -698,6 +742,43 @@ class AjaxNotifiNotifi
 	    $_RESPON=array_merge($inicio,$_RESPON);
 	    return $_RESPON;
 	}
+
+	/*! \fn: getInfoNotifiEdit
+	 *  \brief: devuelve array de notificaciones
+	 *  \author: Edward Serrano
+	 *	\date:  18/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function getInfoNotifiEdit ( $mData = NULL)
+	{
+        $mSelect;
+        if($mData->idForm==3 || $mData->idForm==4)
+        {
+        	$mSelect = "SELECT  a.cod_notifi,a.cod_tipnot,a.ind_notres,
+          					a.ind_notusr,a.nom_asunto,a.num_horlab,
+          					a.fec_vigenc,a.ind_respue,a.obs_notifi,
+          					a.ind_enttur,a.usr_creaci,a.fec_creaci,
+          					b.cod_notde,b.jso_notifi 
+        					FROM ".BASE_DATOS.".tab_notifi_notifi a
+        						INNER JOIN ".BASE_DATOS.".tab_notifi_detail b
+        						ON a.cod_notifi=b.cod_notifi 
+        							WHERE a.cod_notifi=$mData->cod_notifi AND a.nom_asunto='$mData->nom_asunto' AND cod_tipnot=$mData->idForm";
+        }
+        else
+        {
+        	$mSelect = "SELECT  a.cod_notifi AS cod_notifi ,a.cod_tipnot AS cod_tipnot,a.ind_notres AS ind_notres,
+          						a.ind_notusr AS ind_notusr ,a.nom_asunto AS nom_asunto,a.num_horlab AS num_horlab,
+          						a.fec_vigenc AS fec_vigenc ,a.ind_respue AS ind_respue,a.obs_notifi AS obs_notifi,
+          						a.ind_enttur AS ind_enttur ,a.usr_creaci AS usr_creaci,a.fec_creaci AS fec_creaci 
+        					FROM ".BASE_DATOS.".tab_notifi_notifi a
+        						WHERE a.cod_notifi=$mData->cod_notifi AND a.nom_asunto='$mData->nom_asunto' AND cod_tipnot=$mData->idForm";
+        }
+	    $mConsult = new Consulta($mSelect, self::$cConexion );
+	    $_RESPON = $mConsult -> ret_matrix("i");
+	    return $_RESPON;
+
+	}
+
 
 	/*! \fn: getNomUsuario
 	 *  \brief: devuelve array de usuarios
@@ -906,6 +987,26 @@ class AjaxNotifiNotifi
 		{
 			echo "ERROR";
 		}
+	}
+
+	/*! \fn: EditNotifiComun
+	 *  \brief: edita las notificaciones
+	 *  \author: Edward Serrano
+	 *	\date:  19/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function EditNotifiComun(){
+		echo "llego funcion edit comum";
+	}
+
+	/*! \fn: EditNotifiExten
+	 *  \brief: edita notificaciones para supervisores y controladores
+	 *  \author: Edward Serrano
+	 *	\date:  19/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function EditNotifiExten(){
+		echo "llego funcion edit extent";
 	}
 
 	#obejectos para la administracion de perfiles

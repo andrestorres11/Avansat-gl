@@ -181,7 +181,7 @@ function btnGeneral()
   {
     $('.error').fadeOut();
     var standa = $("#standaID").val();
-    var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=idi";
+    var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
     closePopUp('popID');
     LoadPopupJQNoButton('open', 'NUEVA NOTIFICACION', ($(window).height() - 40), ($(window).width() - 40), false, false, true);
     var popup = $("#popID");
@@ -221,7 +221,7 @@ function btnGeneral()
     $('.error').fadeOut();
   }
 
-  function ValidateFormComun(){
+  function ValidateFormComun(accion){
     var standa = $("#standaID").val();
     var nom_asunto = $("#nom_asuntoID").val();
     var fec_creaci = $("#fec_creaciID").val();
@@ -262,7 +262,15 @@ function btnGeneral()
                 if((num_horlab.length>0 && num_horlab.length<3) || (num_horlab.val()>24))
                 {
                   var mdata = new FormData();
-                  mdata.append("option","NuevaNotifiExten");
+                  if(accion=="ins")
+                  {
+                    mdata.append("option","NuevaNotifiExten");
+                  }
+                  else if(accion=="idi")
+                  {
+                    mdata.append("option","EditNotifiExten");
+                  }
+                  
                   mdata.append("nom_asunto",nom_asunto);
                   mdata.append("fec_creaci",fec_creaci);
                   mdata.append("usr_creaci",usr_creaci);
@@ -325,7 +333,15 @@ function btnGeneral()
               else
               {
                 var mdata = new FormData();
-                mdata.append("option","NuevaNotifiComun");
+                if(accion=="ins")
+                {
+                  mdata.append("option","NuevaNotifiComun");
+                }
+                else if(accion=="idi")
+                {
+                  mdata.append("option","EditNotifiComun");
+                }
+                
                 mdata.append("nom_asunto",nom_asunto);
                 mdata.append("fec_creaci",fec_creaci);
                 mdata.append("usr_creaci",usr_creaci);
@@ -539,27 +555,69 @@ function btnGeneral()
     $(".error").fadeOut();
   }
 
-  function ActioFormularios(Cod_notif){
-    /*swal({
-            title: " Usuario",
-            text: "¿Realmente desea  los datos del Usuario?",
-            type: "warning",
-            showCancelButton: true,
-            closeOnConfirm: false,
-            showLoaderOnConfirm: true,
-        }, function() {
-          swal({
-              title:"  Usuario",
-              text: "Datos registrados con éxito.",
-              type: "success"
-          });
-        });*/
-   }
-   function editarNotificacion(row){
+  function editarNotifi(row){
       var objeto = $(row).parent().parent();
       var cod_notifi = objeto.find("input[id^=cod_notifi]").val();
       var nom_asunto = objeto.find("input[id^=nom_asunto]").val();
       var cod_tipnot = objeto.find("input[id^=cod_tipnot]").val();
-      alert("datos: "+cod_notifi+" ,"+nom_asunto+" ,"+cod_tipnot);
-      //console.log(datos);
-   }
+      var ind_notres = objeto.find("input[id^=ind_notres]").val();
+      var ind_notusr = objeto.find("input[id^=ind_notusr]").val();
+      var temp_ind_notres = ind_notres.split(',');
+      var temp_ind_notusr = ind_notusr.split(',');
+      var standa = $("#standaID").val();
+      closePopUp('popID');
+      LoadPopupJQNoButton('open', 'EDITAR NOTIFICACION '+cod_notifi, ($(window).height() - 40), ($(window).width() - 40), false, false, true);
+      var popup = $("#popID");
+      if(cod_notifi!="" && nom_asunto!="" && cod_tipnot!="")
+      {
+        var formData = "option=getFormNuevaNotifi&standa=" + standa + "&cod_notifi=" + cod_notifi + "&nom_asunto=" + nom_asunto + "&idForm=" + cod_tipnot + "&ActionForm=idi";
+        $.ajax({
+            url: "../" + standa + "/notifi/ajax_notifi_notifi.php",
+            type: "POST",
+            data: formData,
+            async: true,
+            cache:false,
+            success: function(data) {
+              popup.html(data);
+              $("#cod_asiresID").multiselect().multiselectfilter();
+              preFunction();
+              $("input[name=multiselect_cod_asiresID]").each(function( i,v){
+                  for(var xx=0;xx<temp_ind_notres.length;xx++)
+                  {
+                    if(temp_ind_notres[xx]==$(this).val())
+                    {
+                      //console.log($(this));
+                      $(this).attr("aria-selected",true);
+                      $(this).attr("checked",true);
+                    }
+                    
+                  }console.log($(this));
+              });
+              getNomUsuario();
+            },
+            complete:function(){
+              //console.log("multiselect_ind_notusrID:"+$("input[name=multiselect_ind_notusrID]").val());
+              //$("#ind_notusrID").multiselect('destroy');
+              $("#ind_notusrID").multiselect().multiselectfilter();
+              $("input[name=multiselect_ind_notusrID]").each(function( i,v){
+                  /*for(var yy=0;yy<temp_ind_notusr.length;yy++)
+                  {
+                    if(temp_ind_notusr[yy]==$(this).val())
+                    {
+                      console.log($(this));
+                      $(this).attr("aria-selected",true);
+                      $(this).attr("checked",true);
+                    }
+                    
+                  }*/
+                  console.log($(this));
+              });
+            }
+        });
+        
+      }
+      else
+      {
+        alert("error al editar usuario");
+      }
+  }
