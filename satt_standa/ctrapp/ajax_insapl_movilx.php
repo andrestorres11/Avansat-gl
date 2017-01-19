@@ -93,6 +93,7 @@ class AjaxInsertarAutorizacion
     }
  
  	 	$pri_clave = base64_encode($pri_clave);
+ 	 	$decodedPass = base64_decode($pri_clave);
 
 		$query = "INSERT INTO ".BASE_DATOS.".tab_usuari_movilx ( 
 							  cod_tercer ,
@@ -158,17 +159,17 @@ class AjaxInsertarAutorizacion
                 $thefile = "\$r_file=\"" . $thefile . "\";";
                 eval($thefile);
                 $mHtmlxx = $r_file;
-                mail($_REQUEST['mail'], "Codigo de activacion aplicacion SAT ", $mHtmlxx, $mCabece); 
+                mail($_REQUEST['mail'], "Código de activación aplicación AVANSAT ", $mHtmlxx, $mCabece); 
  
 				echo "ok";
 			}
 			else{
-				echo "no n2";
+				echo "no";
 			}
 
 		}
 		else{
-			echo "no n1";
+			echo "no";
 		}
 
 	}
