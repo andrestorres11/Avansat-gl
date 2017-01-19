@@ -159,9 +159,8 @@ class AjaxInsertarAutorizacion
                 $thefile = "\$r_file=\"" . $thefile . "\";";
                 eval($thefile);
                 $mHtmlxx = $r_file;
-                mail($_REQUEST['mail'], "CÃ³digo de activaciÃ³n aplicaciÃ³n AVANSAT ", $mHtmlxx, $mCabece); 
- 
-				echo "ok";
+                mail($_REQUEST['mail'], "Código de activación aplicación AVANSAT ", $mHtmlxx, $mCabece);
+  				echo "ok";
 			}
 			else{
 				echo "no";
