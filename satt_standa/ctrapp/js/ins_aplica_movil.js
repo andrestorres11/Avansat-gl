@@ -82,7 +82,7 @@ function guardar(){
 				success: function(result){
 					result=result.replace("\n","");
 					console.log("-"+result+"-");
-					if(result=="OK"){
+					if(result=="ok"){
 						alert("Se ha registrado el usuario Exitosamente");
 						document.forms[0].reset();
 					}
