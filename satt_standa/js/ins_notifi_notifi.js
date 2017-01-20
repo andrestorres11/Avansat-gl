@@ -90,7 +90,7 @@ function btnGeneral()
                       },
                       success: function(data) {
                           $("#tabgeneral").html(data);
-                          $("#notifiID").css({"height":"auto"});
+                          $("#secID").css({"height":"auto"});
                           //alert(data);
                       }
                   });
@@ -156,7 +156,7 @@ function btnGeneral()
                       success: function(data) {
                           $("#"+identificador).html("");
                           $("#"+identificador).html(data);
-                          $("#notifiID").css({"height":"auto"});
+                          $("#secID").css({"height":"auto"});
                           //alert(data);
                       }
                   });
@@ -420,60 +420,60 @@ function btnGeneral()
     var jsonArray={};
     if(cod_tipnot==3)
     {
-      jsonArray.SUPERVISORES=[];
+      jsonArray.SUPERVISORES={};
       $("#jsonFormDigi").find("input[type=text]").each(function(){
           dato=$(this);
           if($(this).val()!="")
           {
-            jsonArray.SUPERVISORES.push(dato.attr('name'), dato.val());
+            jsonArray.SUPERVISORES[dato.attr('name')]=dato.val();
           }
           else
           {
             status.NOTNULL.push(dato.attr('name'), dato.val());
           }   
       });
-      jsonArray.CONTROLADORES=[];
+      jsonArray.CONTROLADORES={};
       $("#jsonContro").find("input[type=text]").each(function(){
           dato=$(this);
           if($(this).val()!="")
           {
-            jsonArray.CONTROLADORES.push(dato.attr('name'), dato.val());
+            jsonArray.CONTROLADORES[dato.attr('name')]=dato.val();
           }
           else
           {
             status.NOTNULL.push(dato.attr('name'), dato.val());
           }   
       });
-      jsonArray.ENCUESTAS=[];
+      jsonArray.ENCUESTAS={};
       $("#jsonEncu").find("input[type=text]").each(function(){
           dato=$(this);
           if($(this).val()!="")
           {
-            jsonArray.ENCUESTAS.push(dato.attr('name'), dato.val());
+            jsonArray.ENCUESTAS[dato.attr('name')]=dato.val();
           }
           else
           {
             status.NOTNULL.push(dato.attr('name'), dato.val());
           }   
       });
-      jsonArray.ESPECIFICAS=[];
+      jsonArray.ESPECIFICAS={};
       $("#jsonEspeci").find("input[type=text]").each(function(){
           dato=$(this);
           if($(this).val()!="")
           {
-            jsonArray.ESPECIFICAS.push(dato.attr('name'), dato.val());
+            jsonArray.ESPECIFICAS[dato.attr('name')]=dato.val();
           }
           else
           {
             status.NOTNULL.push(dato.attr('name'), dato.val());
           }   
       });
-      jsonArray.ASISTENCIAS=[];
+      jsonArray.ASISTENCIAS={};
       $("#jsonAsist").find("input[type=text]").each(function(){
           dato=$(this);
           if($(this).val()!="")
           {
-            jsonArray.ASISTENCIAS.push(dato.attr('name'), dato.val());
+            jsonArray.ASISTENCIAS[dato.attr('name')]=dato.val();
           }
           else
           {
@@ -481,24 +481,24 @@ function btnGeneral()
           }   
       });
     }
-    jsonArray.ESTADO_VEHICULOS=[];
+    jsonArray.ESTADO_VEHICULOS={};
     $("#jsonEstVehi").find("input[type=text]").each(function(){
         dato=$(this);
         if($(this).val()!="")
         {
-          jsonArray.ESTADO_VEHICULOS.push(dato.attr('name'), dato.val());
+          jsonArray.ESTADO_VEHICULOS[dato.attr('name')]=dato.val();
         }
         else
         {
           status.NOTNULL.push(dato.attr('name'), dato.val());
         }   
     });
-    jsonArray.RECURSOS_ASIGNADOS=[];
+    jsonArray.RECURSOS_ASIGNADOS={};
     $("#jsonRecurAsi").find("input[type=text]").each(function(){
         dato=$(this);
         if($(this).val()!="")
         {
-          jsonArray.RECURSOS_ASIGNADOS.push(dato.attr('name'), dato.val());
+          jsonArray.RECURSOS_ASIGNADOS[dato.attr('name')]=dato.val();
         }
         else
         {
@@ -577,6 +577,9 @@ function btnGeneral()
             data: formData,
             async: true,
             cache:false,
+            beforeSend: function(obj) {
+              popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+            },
             success: function(data) {
               popup.html(data);
               $("#cod_asiresID").multiselect().multiselectfilter();
@@ -591,7 +594,7 @@ function btnGeneral()
                       $(this).attr("checked",true);
                     }
                     
-                  }console.log($(this));
+                  }
               });
               getNomUsuario();
             },
@@ -620,4 +623,60 @@ function btnGeneral()
       {
         alert("error al editar usuario");
       }
+  }
+
+  function FormeliminarNotifi(row)
+  {
+    var objeto = $(row).parent().parent();
+    var cod_notifi = objeto.find("input[id^=cod_notifi]").val();
+    var nom_asunto = objeto.find("input[id^=nom_asunto]").val();
+    var cod_tipnot = objeto.find("input[id^=cod_tipnot]").val();
+    var standa = $("#standaID").val();
+    closePopUp('popID');
+    LoadPopupJQNoButton('open', 'ELIMINAR NOTIFICACION '+cod_notifi, ($(window).height() - 40), ($(window).width() - 40), false, false, true);
+    var popup = $("#popID");
+    if(cod_notifi!="" && nom_asunto!="" && cod_tipnot!="")
+    {
+      var formData = "option=getFormNuevaNotifi&standa=" + standa + "&cod_notifi=" + cod_notifi + "&nom_asunto=" + nom_asunto + "&idForm=" + cod_tipnot + "&ActionForm=eli";
+      $.ajax({
+          url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
+          type: "POST",
+          data: formData,
+          async: true,
+          cache:false,
+          beforeSend: function(obj) {
+            popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+          },
+          success:function(data){
+            popup.html(data);
+            $("#cod_asiresID").multiselect().multiselectfilter();
+            $("#ind_notusrID").multiselect().multiselectfilter();
+          }
+      }); 
+    }
+  }
+
+  function eliminarNotifi()
+  {
+    var standa = $("#standaID").val();
+    var nom_asunto = $("#nom_asuntoID").val();
+    var cod_tipnot = $("#cod_tipnotID").val();
+    var cod_notifi = $("#cod_notifiID").val();
+    var cod_usuari = $("#cod_usuari").val();
+
+    if(nom_asunto!="" && cod_tipnot!="" && cod_notifi!="" && cod_usuari!="")
+    {
+      var formDataEli = "option=elimiNotifi&standa=" + standa + "&cod_notifi=" + cod_notifi + "&nom_asunto=" + nom_asunto + "&cod_tipnot=" + cod_tipnot + "&ActionForm=eli";
+      $.ajax({
+          url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
+          type: "POST",
+          data: formDataEli,
+          async: true,
+          cache:false,
+          success:function(data){
+            alert(data);
+            //limpiarForm();
+          }
+      }); 
+    }
   }
