@@ -1,4 +1,4 @@
-<?php
+<?php 
 /* ! \file: ajax_perfil_perfil.php
  *  \brief: archivo con multiples funciones ajax
  *  \author: Ing. Alexander Correa
@@ -68,6 +68,9 @@ class seguri {
                     self::listaNovedades();
                     break;
 
+                case 'getNomTrans':
+                    self::getNomTrans();
+                    break;
 
                 default:
                     header('Location: index.php?window=central&cod_servic=1366&menant=1366');
@@ -254,6 +257,39 @@ class seguri {
                 $sql = trim($sql, ",") . ";";
                 $mConsult = new Consulta($sql, self::$cConexion, "RC");
             }
+
+            $sqlAp = "SELECT cod_perfil FROM ".BASE_DATOS.".tab_aplica_perfil WHERE cod_perfil=$datos->cod_perfil";
+            $consultaAp = new Consulta($sqlAp, self::$cConexion);
+            $AP = $consultaAp->ret_matrix("a");
+            if(!$AP)
+            {
+                $sqlApi ="INSERT INTO " . BASE_DATOS . ".tab_aplica_perfil (cod_aplica,cod_perfil)
+                            VALUES (1,$datos->cod_perfil)" ;
+                $consultaApi = new Consulta($sqlApi, self::$cConexion, "RC");
+            }
+
+            $sqlAfp = "SELECT cod_aplica,cod_filtro,cod_perfil,clv_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil WHERE cod_aplica=1 AND cod_filtro = 1 AND cod_perfil=$datos->cod_perfil AND clv_filtro='$datos->cod_transp'";
+            $consultaAfp = new Consulta($sqlAfp, self::$cConexion);
+            $AFP = $consultaAfp->ret_matrix("a");
+            if(!$AFP)
+            {
+                $sqlAfpi ="INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                        (cod_aplica,cod_filtro,cod_perfil        ,clv_filtro)
+                                VALUES  (1         ,1         ,$datos->cod_perfil,'$datos->cod_transp')" ;
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC");
+            }
+            else
+            {
+                $sqlAfpi="UPDATE " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                SET
+                                        clv_filtro  =   '$datos->cod_transp'
+                                WHERE
+                                        cod_filtro  =   $datos->cod_perfil
+                                AND     cod_aplica  =   1
+                                AND     cod_filtro  =   1
+                                            ";
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC"); 
+            }
         }
         if ($mConsult) {
             return 1;
@@ -312,6 +348,31 @@ class seguri {
                     $sql = trim($sql, ",") . ";";
                     $mConsult = new Consulta($sql, self::$cConexion, "RC");
                 }
+            }
+            if($datos->trans_perfil==""){
+                $datos->cod_transp=NULL;
+            }
+            $sqlAfp = "SELECT cod_aplica,cod_filtro,cod_perfil,clv_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil WHERE cod_aplica=1 AND cod_filtro = 1 AND cod_perfil=$datos->cod_perfil";
+            $consultaAfp = new Consulta($sqlAfp, self::$cConexion);
+            $AFP = $consultaAfp->ret_matrix("a");
+            if(!$AFP)
+            {
+                $sqlAfpi ="INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                        (cod_aplica,cod_filtro,cod_perfil        ,clv_filtro)
+                                VALUES  (1         ,1         ,$datos->cod_perfil,'$datos->cod_transp')" ;
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC");
+            }
+            else
+            {
+                $sqlAfpi="UPDATE " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                SET
+                                        clv_filtro  =   '$datos->cod_transp'
+                                WHERE
+                                        cod_perfil  =   $datos->cod_perfil
+                                AND     cod_aplica  =   1
+                                AND     cod_filtro  =   1
+                                            ";
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC"); 
             }
         }
         if ($mConsult) {
@@ -651,7 +712,7 @@ class seguri {
             if ($datos->cod_filtro) {
                 $sqlx = "INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_usuari  (cod_aplica, cod_filtro, cod_usuari, clv_filtro) VALUES ";
                 foreach ($datos->cod_filtro as $key => $value) {
-                    $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value AND cod_perfil = $datos->cod_perfil";
+                   $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value AND cod_perfil = $datos->cod_perfil";
                     $consulta = new Consulta($sql, self::$cConexion);
                     $filtro = $consulta->ret_matrix("a");
                     if (!$filtro) {
@@ -977,6 +1038,61 @@ class seguri {
             $newNov[] = $nov['cod_noveda'];
         }
         return $newNov;
+    }
+
+    /* ! \fn: getNomTrans
+     *  \brief: trae las transportadoras activas
+     *  \author: Edward Serrano
+     *  \date: 04/01/2017
+     *  \date modified: dia/mes/año    
+     *  \return json con transportadoras
+     */
+
+    function getNomTrans() {
+        
+        $mSql = "SELECT a.cod_tercer, b.nom_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a INNER JOIN tab_tercer_tercer b ON a.cod_tercer=b.cod_tercer WHERE a.cod_tercer LIKE '%".$_REQUEST['term']."%' OR b.nom_tercer LIKE '%".$_REQUEST['term']."%' LIMIT 15 ";
+        #print_r($mSql);
+        $consulta = new Consulta( $mSql, self::$cConexion);
+        $mResult = $consulta -> ret_matrix('a');
+
+        if( $_REQUEST['term'] )
+        {
+            $mTranps = array();
+            for($i=0; $i<sizeof( $mResult ); $i++){
+                $mTxt = $mResult[$i]['cod_tercer']." - ".utf8_decode($mResult[$i]['nom_tercer']);
+                $mTranps[] = array('value' => utf8_decode($mResult[$i]['nom_tercer']), 'label' => $mTxt, 'id' => $mResult[$i]['cod_tercer'] );
+            }
+            echo json_encode( $mTranps );
+        }
+        else
+            return $mResult;
+    }
+
+    /* ! \fn: getTransPerfil
+     *  \brief: trae la transportadora asosiada al perfil
+     *  \author: Edward Serrano
+     *  \date: 05/01/2017
+     *  \date modified: dia/mes/año
+     *  \param: cod_perfil perfil actual   
+     *  \return array con las novedades del perfil
+     */
+
+    function getTransPerfil($cod_perfil) {
+
+        $sqlAfp = "SELECT a.clv_filtro,b.nom_tercer FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil a 
+                            INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b 
+                            ON a.clv_filtro=b.cod_tercer
+                            WHERE cod_aplica=1 AND cod_filtro = 1 AND cod_perfil=".$cod_perfil;
+        $consultaAfp = new Consulta($sqlAfp, self::$cConexion);
+        $AFP = $consultaAfp->ret_matrix("a");
+        if($AFP){
+            $Transpor=$AFP[0];
+        }
+        else
+        {   
+            $Transpor=NULL;
+        }
+        return $Transpor;
     }
 
 }

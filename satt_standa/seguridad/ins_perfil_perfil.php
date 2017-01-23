@@ -117,6 +117,12 @@ class ins_perfil_perfil {
 
         $nov_perfil = self::$cFunciones->getNovPerrfil($cod_perfil);
         $nov_perfil = implode(",",$nov_perfil);
+        if($datos->cod_perfil){
+            $trans  =   self::$cFunciones->getTransPerfil($datos->cod_perfil);
+            $objTrans= (object) $trans;
+        }
+        
+
     ?>
     </table>
     <form style="display:none;" action="index.php" method="post" name="form_search" id="form_searchID" enctype="multipart/form-data">
@@ -124,6 +130,7 @@ class ins_perfil_perfil {
         <input type="hidden" name="window" id="window" value="central">
         <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>">
         <input type="hidden" name="cod_noveda" id="cod_noveda" value="<?= $nov_perfil ?>">
+        <input type="hidden" name="cod_transp" id="cod_transp" value="<?= $objTrans->clv_filtro  ?>">
     </form>
     <div class="accordion"  >
         <h1 style="padding:6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>INFORMACI&Oacute;N B&Aacute;SICA DEL PERFIL</b></h1>
@@ -156,6 +163,11 @@ class ins_perfil_perfil {
                                           <option <?= $cod_respon ?> value="<?= $value['cod_respon'] ?>"><?= $value['nom_respon'] ?></option>  
                                         <?php } ?>
                                     </select>
+                                </div>
+                                <!--nuevo campo-->
+                                <div class="col-md-6 text-right">Transportadora:</div>
+                                <div class="col-md-6 text-left">
+                                    <input class="text-center" type="text" name="trans_perfil" id="trans_perfil" maxlength="50" minlength="5" value="<?= $objTrans->nom_tercer  ?>"></input>
                                 </div>
                             </td>
                         </tr>
