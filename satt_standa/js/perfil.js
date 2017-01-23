@@ -272,3 +272,15 @@ function setNovedades() {
         closePopUp();
     }
 }
+
+$( function() {
+
+    var Standa = $( "#standa" ).val();
+    $("#trans_perfil").autocomplete({
+        source: "../" + Standa + "/seguridad/ajax_perfil_perfil.php?Ajax=on&Option=getNomTrans",
+        minLength: 3,
+        select: function(event, ui) {
+            $("#cod_transp").val(ui.item.id);
+        }
+    });
+});
