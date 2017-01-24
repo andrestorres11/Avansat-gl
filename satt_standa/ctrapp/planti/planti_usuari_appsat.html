@@ -1,12 +1,18 @@
 <html>
 <head>
-	<title>Codigo Qr</title>
+	<title>Código Qr</title>
 </head>
 <body>
 
 Su codigo de activación es:
-
+<br>
 <img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=$_REQUEST[cod_hashxx]">
-
+<br>
+Su usuario es: $_REQUEST[cod_usuari]
+<br>
+Su clave es: $decodedPass
+<br>
+En caso de no contar con un lector de codigo QR, por favor ingrese este código: <b>$_REQUEST[cod_hashxx]</b> , en el campo Código de activación de la aplicación.
+ 
 </body>
 </html>
