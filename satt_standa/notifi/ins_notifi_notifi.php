@@ -9,9 +9,8 @@
  *  \warning: 
  */
 
-#ini_set('display_errors', true);
-#error_reporting(E_ALL & ~E_NOTICE);
-
+ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);
 
 /*! \class: notifi
  *  \brief: Lista notificaciones
@@ -25,15 +24,17 @@ class notifi
 					
 	function __construct($co = null, $us = null, $ca = null)
 	{
+		@include_once( '../' . DIR_APLICA_CENTRAL . '/lib/general/constantes.inc' );
 		@include_once( '../' . DIR_APLICA_CENTRAL . '/lib/general/functions.inc' );
 		@include_once( '../' . DIR_APLICA_CENTRAL . '/notifi/ajax_notifi_notifi.php' );
 		self::$mANotifi = new AjaxNotifiNotifi();
 		self::$cConexion = $co;
 		self::$cUsuario = $us;
 		self::$cCodAplica = $ca;
+
 		IncludeJS( 'jquery17.js' );
 		IncludeJS( 'jquery.js' );
-		
+			
 		IncludeJS( 'functions.js' );
 		IncludeJS( 'ins_notifi_notifi.js' );
 		IncludeJS( 'dinamic_list.js' );
@@ -50,7 +51,21 @@ class notifi
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
-		self::lista();
+		
+		
+		
+		if($_REQUEST['cod_consec'])
+		{
+			self::verDocumentos();
+		}
+		else
+		{
+			
+			self::lista();
+		}
+		
+	
+		
 	}
 
 	/*! \fn: lista
@@ -357,7 +372,11 @@ class notifi
                 	width:25%;
                 	height: 20px;
                 }
-                #obs_notifiID	{
+                #obs_notifiID {
+                	height: 100px;
+    				width: 100%;
+            	}
+            	#obs_responID {
                 	height: 100px;
     				width: 100%;
             	}
@@ -412,6 +431,74 @@ class notifi
 				}
               </style>";
     }
+    function verDocumentos()
+    {
+    	$datos = (object) $_REQUEST;
+		print_r($datos);
+		$Refdocument=self::getDocument($datos);
+		print_r($Refdocument);
+		//echo "header('Content-Disposition: attachment; filename='".$Refdocument[0]['nom_ficher']."');";
+		switch ($Refdocument[0]['tip_ficher']) {
+			case 'pdf' :
+				/*header('Content-Disposition: attachment; filename="'.$Refdocument[0]['nom_ficher'].'"');
+				header ("Content-Type: application/octet-stream");
+				readfile(substr($Refdocument[0]['url_ficher'], 3));*/
+				/*echo "<object width='900' height='800' type='application/pdf' data='".substr($Refdocument[0]['url_ficher'], 3)."'>
+						<param name='src' value='".substr($Refdocument[0]['url_ficher'], 3)."' />
+						<p>N o PDF available</p>
+					 </object>";*/
+				echo "<embed src='".substr($Refdocument[0]['url_ficher'], 3)."' width='".$datos->width."' height='400'>";
+			break;
+			case 'jpg' : case 'jpeg': case 'bmp' : case 'tiff' : case 'png' :
+
+				//echo "<iframe src></iframe>";
+				//echo "<embed src='".substr($Refdocument[0]['url_ficher'], 3)."' width='".$datos->width."' height='400'>";
+			break;
+
+			case 'doc' : case 'docx' : case 'xls' : case 'xlsx' : case 'cvs' : case 'zip' : case 'rar' :
+				header('Content-Disposition: attachment; filename="'.$Refdocument[0]['nom_ficher'].'"');
+				header('Content-Type: application/msword');
+				//ob_flush();
+				//ob_clean(); 
+				flush();
+				echo file_get_contents(substr($Refdocument[0]['url_ficher'], 3));
+				//readfile(substr($Refdocument[0]['url_ficher'], 3));
+				//echo "<a href='".substr($Refdocument[0]['url_ficher'], 3)."'>Download Here</a>";
+				/*header('Content-Disposition: attachment; filename="'.$Refdocument[0]['nom_ficher'].'"');
+				//header('Content-type: application/pdf');
+				header('Content-Transfer-Encoding: binary');
+				header ("Content-Type: application/octet-stream");
+				header('Accept-Ranges: bytes');
+				readfile(substr($Refdocument[0]['url_ficher'], 3));*/
+			break;
+			
+			default:
+				# code...
+				break;
+		}
+		
+		//$datos = file_get_contents(substr($Refdocument[0]['url_ficher'], 3));
+		//file_put_contents($Refdocument[0]['nom_ficher'], $datos);
+
+		//header("Content-type: MIME");
+		//readfile(substr($Refdocument[0]['url_ficher'], 3));
+    }
+
+    /*! \fn: getDocument
+	 *  \brief: documente asociados
+	 *  \author: Edward Serrano
+	 *	\date:  23/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function getDocument($ActionForm=NULL)
+	{
+		$mSql = "SELECT a.cod_consec,a.cod_notifi,a.nom_ficher,a.tip_ficher,a.url_ficher
+					 FROM ".BASE_DATOS.".tab_notifi_ficher a
+					 		WHERE a.cod_notifi=".$ActionForm->cod_notifi." ".(($ActionForm->cod_consec)?" AND a.cod_consec=".$ActionForm->cod_consec:"");
+		$mConsult = new Consulta($mSql, self::$cConexion );
+		$mResult = $mConsult -> ret_matrix('a');
+		return $mResult;
+	}
 }
 
 $_NOTIFI = new notifi( $this -> conexion, $this -> usuario_aplicacion, $this -> codigo );

@@ -310,16 +310,18 @@ function btnGeneral()
                       processData:false,
                       cache:false,
                       success:function(data){
-                        alert(data);
-                        /*if(data=="OK")
+                        //alert(data);
+                        if(data=="OK")
                         {
                           alert("Se creo la notificacion correctamente");
+                          limpiarForm();
+                          location.reload();
                         }
                         else
                         {
                           alert("error al crear la notificaion");
 
-                        }*/
+                        }
                         
                       }
                     }); 
@@ -364,10 +366,12 @@ function btnGeneral()
                   processData:false,
                   cache:false,
                   success:function(data){
-                    alert(data);
+                    //alert(data);
                     if(data=="OK")
                     {
                       alert("Se creo la notificacion correctamente");
+                      limpiarForm();
+                      location.reload();
                     }
                     else
                     {
@@ -663,7 +667,6 @@ function btnGeneral()
     var cod_tipnot = $("#cod_tipnotID").val();
     var cod_notifi = $("#cod_notifiID").val();
     var cod_usuari = $("#cod_usuari").val();
-
     if(nom_asunto!="" && cod_tipnot!="" && cod_notifi!="" && cod_usuari!="")
     {
       var formDataEli = "option=elimiNotifi&standa=" + standa + "&cod_notifi=" + cod_notifi + "&nom_asunto=" + nom_asunto + "&cod_tipnot=" + cod_tipnot + "&ActionForm=eli";
@@ -674,9 +677,120 @@ function btnGeneral()
           async: true,
           cache:false,
           success:function(data){
-            alert(data);
-            //limpiarForm();
+            if(data=="OK")
+            {
+              alert("Se elimino la notificacion correctamente");
+              limpiarForm();
+              location.reload();
+            }
+            else
+            {
+              alert("Erro al eliminar la plantilla");
+            }
+            
           }
       }); 
     }
+  }
+
+  function FormResponNotifi(row)
+  {
+    var objeto = $(row).parent().parent();
+    var cod_notifi = objeto.find("input[id^=cod_notifi]").val();
+    var nom_asunto = objeto.find("input[id^=nom_asunto]").val();
+    var cod_tipnot = objeto.find("input[id^=cod_tipnot]").val();
+    var standa = $("#standaID").val();
+    closePopUp('popID');
+    LoadPopupJQNoButton('open', 'RESPONDER NOTIFICACION '+cod_notifi, ($(window).height() - 40), ($(window).width() - 40), false, false, true);
+    var popup = $("#popID");
+    if(cod_notifi!="" && nom_asunto!="" && cod_tipnot!="")
+    {
+      var formData = "option=getFormNuevaNotifi&standa=" + standa + "&cod_notifi=" + cod_notifi + "&nom_asunto=" + nom_asunto + "&idForm=" + cod_tipnot + "&ActionForm=rep";
+      $.ajax({
+          url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
+          type: "POST",
+          data: formData,
+          async: true,
+          cache:false,
+          beforeSend: function(obj) {
+            popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+          },
+          success:function(data){
+            popup.html(data);
+            $("#cod_asiresID").multiselect().multiselectfilter();
+            $("#ind_notusrID").multiselect().multiselectfilter();
+          }
+      }); 
+    }
+  }
+
+  function responNotifi()
+  {
+    var standa = $("#standaID").val();
+    var nom_asunto = $("#nom_asuntoID").val();
+    var cod_tipnot = $("#cod_tipnotID").val();
+    var cod_notifi = $("#cod_notifiID").val();
+    var obs_respon = $("#obs_responID").val();
+    if(obs_respon!="")
+    {
+      if(nom_asunto!="" && cod_tipnot!="" && cod_notifi!="" && obs_respon!="")
+      {
+        var formDataRes = "option=responderNotifi&standa=" + standa + "&cod_notifi=" + cod_notifi + "&nom_asunto=" + nom_asunto + "&obs_respon=" + obs_respon + "&idForm=" + cod_tipnot + "&ActionForm=rep";
+        $.ajax({
+          url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
+          type: "POST",
+          data: formDataRes,
+          async: true,
+          cache:false,
+          success:function(data){
+            if(data=="OK")
+            {
+              alert("Su respuesta fue enviada correctamente");
+              limpiarForm();
+              location.reload();
+            }
+            else
+            {
+              alert("Error al responder la notificacion");
+            }
+          }
+        }); 
+      }
+      else
+      {
+        alert("Los campos obligatorios no se encuentan");
+      }
+    }
+    else
+    {
+      $("#obs_responID").focus().after('<span class="error" onclick="cerrarAlert()">Campo Requerido</span>');
+    }
+    
+  }
+
+  function verArchivos(cod_consec)
+  {
+   
+    var standa = $("#standaID").val();
+    var cod_notifi = $("#cod_notifiID").val();
+
+   // window.location.href = "http://www.google.com";
+    window.open("https://dev.intrared.net:8083/ap/eserrano/sat-gl-2015/satt_faro/index.php?window=central&cod_servic=20151235&menant=20151235&cod_consec="+cod_consec+"&cod_notifi="+cod_notifi, '_blank');
+    /*closePopUp('pop1ID');
+    LoadPopupJQNoButton('open', 'DOCUMENTOS NOTIFICACION ', ($(window).height() - 40), ($(window).width() - 40), false, false, false, "pop1ID");
+    var popup = $("#pop1ID");
+    var formDataDoc = "option=getRefDocumet&standa=" + standa + "&cod_notifi=" + cod_notifi + "&cod_consec=" + cod_consec +"&width="+popup.width();
+    $.ajax({
+      url:"../" + standa + "/notifi/ajax_notifi_notifi.php",
+      type: "POST",
+      data: formDataDoc,
+      async: true,
+      cache:false,
+      success:function(data){
+        alert(data);
+        //popup.html(data);
+        //popup.html("<embed src='../satt_standa/lib/filnot/6f35ca53eb27424a8cfac4e204d4c034.docx' width='"+popup.width()+"' height='400'>");
+        //$("#frameDocument").html("<img src='smiley.gif' alt='Smiley face' width='42' height='42'>");
+      }
+    });*/  
   }

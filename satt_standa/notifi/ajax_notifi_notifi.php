@@ -8,7 +8,7 @@
  *  \bug: 
  *  \warning: 
  */
-
+//ini_set('memory_limit', '512M');
 //ini_set('display_errors', true);
 
 /*! \class: AjaxNotifiNotifi
@@ -25,6 +25,7 @@ class AjaxNotifiNotifi
 		$_AJAX=$_REQUEST;
 	    @include_once( "../lib/ajax.inc" );
 	    @include_once( "../lib/general/constantes.inc" );
+	    @include_once( "../lib/general/functions.inc" );
 	    self::$cConexion = $AjaxConnection;
 
 		switch($_AJAX['option'])
@@ -63,6 +64,14 @@ class AjaxNotifiNotifi
 
 	    	case 'elimiNotifi':
 		    	self::elimiNotifi();
+	    	break;
+
+	    	case 'responderNotifi':
+		    	self::responderNotifi();
+	    	break;
+
+	    	case 'getRefDocumet':
+		    	self::getRefDocumet();
 	    	break;
 
 		    default:
@@ -253,7 +262,7 @@ class AjaxNotifiNotifi
 	{	
 		$permActivado="field:cod_notifi; width:1%";
 		$permActivado.=($permisosActuales['idi']==1)?";onclikEdit:editarNotifi( this )":"";
-		$permActivado.=($permisosActuales['rep']==1)?";onclickCopy:responderNotifi( this )":"";
+		$permActivado.=($permisosActuales['rep']==1)?";onclickCopy:FormResponNotifi( this )":"";
 		$permActivado.=($permisosActuales['eli']==1)?";onclikPrint:FormeliminarNotifi( this )":"";
 		#print_r($permActivado);
 		if (!class_exists('DinamicList')) 
@@ -272,10 +281,6 @@ class AjaxNotifiNotifi
 		$list->SetHeader("Asunto", "field:nom_asunto; width:1%");
 		$list->SetHeader("Fecha y hora", "field:fec_creaci; width:1%");
 		$list->SetHeader("Notificado por ", "field:cod_usuari; width:1%");
-		#$list->SetOption("Opciones", "field:cod_notifi; width:1%; onclikEdit:editarNotifi( this );onclickCopy:responderNotifi(this);  onclikDisable:eliminarNotifi(this)");
-		#$list->SetOption("Opciones", "field:cod_notifi; width:1%; onclikEdit:editarNotifi( this );");
-		#$list->SetOption("Opciones", "field:cod_notifi; width:1%; onclickCopy:responderNotifi(this);");
-		#$list->SetOption("Opciones", "field:cod_notifi; width:1%; onclikPrint:eliminarNotifi(this);");
 		$list->SetOption("Opciones", $permActivado);
 		$list->SetHidden("cod_notifi", "cod_notifi");
         $list->SetHidden("cod_tipnot", "cod_tipnot");
@@ -352,7 +357,6 @@ class AjaxNotifiNotifi
 			$ESTADO_VEHICULOS = self::JsonRecor($Json,"ESTADO_VEHICULOS");
 			$RECURSOS_ASIGNADOS = self::JsonRecor($Json,"RECURSOS_ASIGNADOS");
 		}
-		print_r($datosConsult[0][9]);
 		$date = new DateTime();
 		$mHtml = new Formlib(2);
 		$mHtml->OpenDiv("id:newNotifi");
@@ -655,25 +659,90 @@ class AjaxNotifiNotifi
 		#Formulario de diligenciamiento
 		$mHtml->OpenDiv("id:Document");
 			$mHtml->Table("tr");
-				$mHtml->Row();
-					$mHtml->Label( "ADJUNTO 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                	$mHtml->file(array("name" => "file_1", "id" => "file_1ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
-				$mHtml->CloseRow();
-				#si es supervisor pinta campos adicionales
-				if($ActionForm->idForm==3){
+				if($ActionForm->ActionForm=="ins")
+				{
 					$mHtml->Row();
-						$mHtml->Label( "ADJUNTO 2 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-	                	$mHtml->file(array("name" => "file_2", "id" => "file_2ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+						$mHtml->Label( "ADJUNTO 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                	$mHtml->file(array("name" => "file_1", "id" => "file_1ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
 					$mHtml->CloseRow();
-					$mHtml->Row();
-						$mHtml->Label( "ADJUNTO 3 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-	                	$mHtml->file(array("name" => "file_3", "id" => "file_3ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
-					$mHtml->CloseRow();
-					$mHtml->Row();
-						$mHtml->Label( "ADJUNTO 4 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-	                	$mHtml->file(array("name" => "file_4", "id" => "file_4ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
-					$mHtml->CloseRow();
+					#si es supervisor pinta campos adicionales
+					if($ActionForm->idForm==3){
+						$mHtml->Row();
+							$mHtml->Label( "ADJUNTO 2 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+		                	$mHtml->file(array("name" => "file_2", "id" => "file_2ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+						$mHtml->CloseRow();
+						$mHtml->Row();
+							$mHtml->Label( "ADJUNTO 3 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+		                	$mHtml->file(array("name" => "file_3", "id" => "file_3ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+						$mHtml->CloseRow();
+						$mHtml->Row();
+							$mHtml->Label( "ADJUNTO 4 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+		                	$mHtml->file(array("name" => "file_4", "id" => "file_4ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+						$mHtml->CloseRow();
+					}
 				}
+				else
+				{
+					$document=self::getDocument($ActionForm);
+					if($document)
+					{
+						foreach ($document as $keyDA => $valueDA) 
+						{
+							$mHtml->Row();
+								$mHtml->Label( "ADJUNTO 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+								if($ActionForm->ActionForm=="idi")
+								{
+									$mHtml->Button(array("value"=>"Cambiar", "id"=>"Vfile_1ID","name"=>"Vfile_1", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"1","onclick"=>"verArchivos(".$valueDA['cod_consec'].")") );
+									$mHtml->Button(array("value"=>"Eliminar", "id"=>"Vfile_1ID","name"=>"Vfile_1", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"1","onclick"=>"verArchivos(".$valueDA['cod_consec'].")") );
+								}
+								$mHtml->Button(array("value"=>"Vizualizar", "id"=>"Vfile_1ID","name"=>"Vfile_1", "class"=>"crmButton small save", "align"=>"right", "colspan"=>(($ActionForm->ActionForm=="idi")?"4":"6"),"onclick"=>"verArchivos(".$valueDA['cod_consec'].")") );
+							$mHtml->CloseRow();
+						}
+					}
+				}	
+				
+				
+			$mHtml->CloseTable('tr');
+		$mHtml->CloseDiv();
+		if($ActionForm->ActionForm=="rep")
+		{
+			$mHtml->OpenDiv("id:reponNotif");
+				$mHtml->Table("tr");
+					$hisNotifi=self::getHistoNotifi($ActionForm);
+					if($hisNotifi)
+					{
+						$mHtml->Row();
+							$mHtml->Label( "HISTORIAL NOTIFICACIONES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+						$mHtml->CloseRow();
+						foreach ($hisNotifi as $keyHN => $valueHN) 
+						{
+							foreach ($valueHN as $keyRH => $valueRH) 
+							{
+								$mHtml->Row();
+									$mHtml->Label( "Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+					            	$mHtml->Input(array("name" => "nom_asunto".$keyRH, "width" => "100%", "value"=>$valueRH ,"colspan"=>"6", "readonly"=>"readonly", "disabled"=>"disabled"));
+			            		$mHtml->CloseRow();
+							}
+						}
+					}
+					$mHtml->Row();
+						$mHtml->Label( "RESPUESTA NOTIFICACION",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+		            	$mHtml->Input(array("name" => "nom_asuntoN", "id" => "nom_asuntoNID", "width" => "100%", "value"=>$datosConsult[0][8] ,"colspan"=>"6", "readonly"=>"readonly", "disabled"=>"disabled"));
+            		$mHtml->CloseRow();
+            		$mHtml->Row();
+						$mHtml->Label( "*DETALLE",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+	                	$mHtml->TextArea("", array("name" => "obs_respon", "id" => "obs_responID", "colspan"=>"7"));
+					$mHtml->CloseRow();
+            	$mHtml->CloseTable('tr');
+			$mHtml->CloseDiv();
+		}
+		$mHtml->OpenDiv("id:btnNotifi");
+			$mHtml->Table("tr");
 				$mHtml->Row();
 					if($ActionForm->ActionForm=="ins")
 					{
@@ -686,6 +755,10 @@ class AjaxNotifiNotifi
 					if($ActionForm->ActionForm=="eli")
 					{
 						$mHtml->Button( array("value"=>"ELIMINAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"eliminarNotifi()") );
+					}
+					if($ActionForm->ActionForm=="rep")
+					{
+						$mHtml->Button( array("value"=>"RESPONDER", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"responNotifi()") );
 					}
 					$mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"5","onclick"=>"limpiarForm()") );
 				$mHtml->CloseRow();
@@ -723,6 +796,7 @@ class AjaxNotifiNotifi
 		$mHtml->OpenDiv("id:newNotifi");
 			$mHtml->Hidden(array( "name" => "usr_creaci", "id" => "usr_creaciID", "value"=>self::getCodUsuario($_SESSION['datos_usuario']['cod_usuari'])['cod_consec']));
 			$mHtml->Hidden(array( "name" => "cod_tipnot", "id" => "cod_tipnotID", "value"=>$ActionForm->idForm));
+			$mHtml->Hidden(array( "name" => "cod_notifi", "id" => "cod_notifiID", "value"=>($ActionForm->cod_notifi!="")?$ActionForm->cod_notifi:""));
 			$mHtml->Table("tr");
 				#ASUNTO
 				$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
@@ -764,24 +838,85 @@ class AjaxNotifiNotifi
 				$mHtml->Row();
 					$mHtml->Label( "*Documentos:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 				$mHtml->CloseRow();
+				if($ActionForm->ActionForm=="ins")
+				{
+					$mHtml->Row();
+						$mHtml->Label( "ADJUNTO 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                	$mHtml->file(array("name" => "file_1", "id" => "file_1ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "ADJUNTO 2 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                	$mHtml->file(array("name" => "file_2", "id" => "file_2ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "ADJUNTO 3 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                	$mHtml->file(array("name" => "file_3", "id" => "file_3ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "ADJUNTO 4 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+	                	$mHtml->file(array("name" => "file_4", "id" => "file_4ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+					$mHtml->CloseRow();
+				}
+				else
+				{
+					$document=self::getDocument($ActionForm);
+					if($document)
+					{
+						foreach ($document as $keyDA => $valueDA) 
+						{
+							$mHtml->Row();
+								$mHtml->Label( "ADJUNTO 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+								if($ActionForm->ActionForm=="idi")
+								{
+									$mHtml->Button(array("value"=>"Cambiar", "id"=>"Vfile_1ID","name"=>"Vfile_1", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"1","onclick"=>"verArchivos(".$valueDA['cod_consec'].")") );
+									$mHtml->Button(array("value"=>"Eliminar", "id"=>"Vfile_1ID","name"=>"Vfile_1", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"1","onclick"=>"verArchivos(".$valueDA['cod_consec'].")") );
+								}
+								$mHtml->Button(array("value"=>"Vizualizar", "id"=>"Vfile_1ID","name"=>"Vfile_1", "class"=>"crmButton small save", "align"=>"right", "colspan"=>(($ActionForm->ActionForm=="idi")?"4":"6"),"onclick"=>"verArchivos(".$valueDA['cod_consec'].")") );
+							$mHtml->CloseRow();
+						}
+					}
+				}					
+				
+			$mHtml->CloseTable('tr');
+		$mHtml->CloseDiv();
+		if($ActionForm->ActionForm=="rep")
+		{
+			$mHtml->OpenDiv("id:reponNotif");
+				$mHtml->Table("tr");
+					$hisNotifi=self::getHistoNotifi($ActionForm);
+					if($hisNotifi)
+					{
+						$mHtml->Row();
+							$mHtml->Label( "HISTORIAL NOTIFICACIONES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+						$mHtml->CloseRow();
+						foreach ($hisNotifi as $keyHN => $valueHN) {
+							foreach ($valueHN as $keyRH => $valueRH) {
+								$mHtml->Row();
+									$mHtml->Label( "Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+					            	$mHtml->Input(array("name" => "nom_asunto".$keyRH, "width" => "100%", "value"=>$valueRH ,"colspan"=>"6", "readonly"=>"readonly", "disabled"=>"disabled"));
+			            		$mHtml->CloseRow();
+							}
+						}
+					}
+					$mHtml->Row();
+						$mHtml->Label( "RESPUESTA NOTIFICACION",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+		            	$mHtml->Input(array("name" => "nom_asuntoN", "id" => "nom_asuntoNID", "width" => "100%", "value"=>$datosConsult[0][8] ,"colspan"=>"6", "readonly"=>"readonly", "disabled"=>"disabled"));
+            		$mHtml->CloseRow();
+            		$mHtml->Row();
+						$mHtml->Label( "*DETALLE",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+	                	$mHtml->TextArea("", array("name" => "obs_respon", "id" => "obs_responID", "colspan"=>"7"));
+					$mHtml->CloseRow();
+            	$mHtml->CloseTable('tr');
+			$mHtml->CloseDiv();
+		}
+		$mHtml->OpenDiv("id:btnNotifi");
+			$mHtml->Table("tr");
 				$mHtml->Row();
-					$mHtml->Label( "ADJUNTO 1 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                	$mHtml->file(array("name" => "file_1", "id" => "file_1ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "ADJUNTO 2 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                	$mHtml->file(array("name" => "file_2", "id" => "file_2ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "ADJUNTO 3 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                	$mHtml->file(array("name" => "file_3", "id" => "file_3ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					$mHtml->Label( "ADJUNTO 4 :",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-                	$mHtml->file(array("name" => "file_4", "id" => "file_4ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
-				$mHtml->CloseRow();
-				$mHtml->Row();
-					
 					if($ActionForm->ActionForm=="ins")
 					{
 						$mHtml->Button( array("value"=>"ENVIAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"ValidateFormComun(".(($datosConsult[0])?"'idi'":"'ins'").")") );
@@ -794,10 +929,16 @@ class AjaxNotifiNotifi
 					{
 						$mHtml->Button( array("value"=>"ELIMINAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"eliminarNotifi()") );
 					}
+					if($ActionForm->ActionForm=="rep")
+					{
+						$mHtml->Button( array("value"=>"RESPONDER", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"2","onclick"=>"responNotifi()") );
+					}
 					
 					$mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save", "align"=>"right", "colspan"=>"5","onclick"=>"limpiarForm()") );
 				$mHtml->CloseRow();
 			$mHtml->CloseTable('tr');
+		$mHtml->CloseDiv();
+		$mHtml->OpenDiv("id:frameDocument");
 		$mHtml->CloseDiv();
 		echo $mHtml->MakeHtml();
 	}
@@ -986,7 +1127,7 @@ class AjaxNotifiNotifi
                                          obs_notifi,	ind_estado,		usr_creaci,	
                                          fec_creaci,	ind_enttur)
                                 VALUES  
-                                		($datos->cod_tipnot,'".str_replace("'", "", substr($datos->cod_asires, 1))."',datos->num_horlab,
+                                		($datos->cod_tipnot,'".str_replace("'", "", substr($datos->cod_asires, 1))."',$datos->num_horlab,
                                 		'$datos->nom_asunto', '$datos->fec_vigenc',$datos->ind_respue, 
                                 		'$datos->obs_notifi', 1,$datos->usr_creaci, 
                                 		'$datos->fec_creaci', $datos->ind_enttur)" ;
@@ -1121,6 +1262,105 @@ class AjaxNotifiNotifi
 		}
 	}
 
+	/*! \fn: JsonRecor
+	 *  \brief: recorrer json de las notificaciones
+	 *  \author: Edward Serrano
+	 *	\date:  20/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	private function getHistoNotifi($ActionForm=NULL){
+		$mSql = "SELECT a.obs_respon
+					 FROM ".BASE_DATOS.".tab_notifi_respon a
+					 	INNER JOIN ".BASE_DATOS.".tab_notifi_notifi b 
+					 		ON a.cod_notifi=b.cod_notifi
+					 			WHERE a.cod_notifi=".$ActionForm->cod_notifi." AND b.cod_tipnot=".$ActionForm->idForm;
+		$mConsult = new Consulta($mSql, self::$cConexion );
+		$mResult = $mConsult -> ret_matrix('a');
+		return $mResult;
+	}
+
+	/*! \fn: getDocument
+	 *  \brief: documente asociados
+	 *  \author: Edward Serrano
+	 *	\date:  23/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function getDocument($ActionForm=NULL)
+	{
+		$mSql = "SELECT a.cod_consec,a.cod_notifi,a.nom_ficher,a.tip_ficher,a.url_ficher
+					 FROM ".BASE_DATOS.".tab_notifi_ficher a
+					 		WHERE a.cod_notifi=".$ActionForm->cod_notifi." ".(($ActionForm->cod_consec)?" AND a.cod_consec=".$ActionForm->cod_consec:"");
+		$mConsult = new Consulta($mSql, self::$cConexion );
+		$mResult = $mConsult -> ret_matrix('a');
+		return $mResult;
+	}
+	
+
+	/*! \fn: EditNotifiComun
+	 *  \brief: edita las notificaciones
+	 *  \author: Edward Serrano
+	 *	\date:  23/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	function responderNotifi()
+	{
+		$datos = (object) $_REQUEST;
+		$Estados = array();
+		if($datos->cod_notifi!="" && $datos->nom_asunto!="" && $datos->obs_respon!="" && $datos->ActionForm=="rep")
+		{
+			$sql ="INSERT INTO " . BASE_DATOS . ".tab_notifi_respon 
+                                        (cod_notifi,		obs_respon)
+                                VALUES  
+                                		($datos->cod_notifi, '$datos->obs_respon')" ;
+            $consulta = new Consulta($sql, self::$cConexion, "RC");
+            if($consulta)
+            {
+				$Estados["OK"]["guardar"]="Se realiza la consulta correctamente";
+            }
+            else
+            {
+            	$Estados["ERROR"]["consulta"]="error en consulta generar notificaion";
+            }
+		}
+		else
+		{
+			$Estados["ERROR"]["validacion"]="Campos obligatios";
+		}
+		
+		if(!$Estados["ERROR"]){
+			$Estados["OK"]="OK";
+			echo "OK";
+		}else
+		{
+			echo "ERROR";
+		}
+		//print_r($datos);
+	}
+
+	/*! \fn: EditNotifiComun
+	 *  \brief: edita las notificaciones
+	 *  \author: Edward Serrano
+	 *	\date:  19/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	public function getRefDocumet(){
+		$datos = (object) $_REQUEST;
+		$Refdocument=self::getDocument($datos);
+		/*switch ($Refdocument[0]['tip_ficher']) {
+			case 'jpg' : case 'jpeg': case 'bmp' : case 'tiff' : case 'png' : case 'pdf' :
+				echo "<embed src='".substr($Refdocument[0]['url_ficher'], 3)."' width='".$datos->width."' height='400'>";
+			break;
+
+			case 'doc' : case 'docx' : case 'xls' : case 'xlsx' : case 'cvs' : case 'zip' : case 'rar' :
+				echo "<a href='".substr($Refdocument[0]['url_ficher'], 3)."'>Download Here</a>";
+			break;
+			
+			default:
+				# code...
+				break;
+		}*/
+		//echo $Refdocument[0]['url_ficher'];
+	}
 
 	/*! \fn: EditNotifiComun
 	 *  \brief: edita las notificaciones
