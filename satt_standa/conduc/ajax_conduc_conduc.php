@@ -508,30 +508,25 @@ class conduc{
         $viajes = $_POST['viajes']; #arreglo con los numeros de viajes
         $antiguedades = $_POST['antiguedad']; #arreglo con las antiguedades
         $mercancias = $_POST['mercancia']; #arreglo con las mercancias
-        
-        for($i=0;$i<= $conduc->cantidad;$i++){
-          if($i <= $conduc->control){
-             $query = "UPDATE ".BASE_DATOS.".tab_conduc_refere
-                                SET
-                             nom_empre  = '$empresas[$i]',
-                             tel_empre  = '$telefonos[$i]',
-                             num_viajes = '$viajes[$i]',
-                             num_atigue = '$antiguedades[$i]',
-                             nom_mercan = '$mercancias[$i]',
-                             usr_modifi = '$conduc->usr_modifi',
-                             fec_modifi = '#conduc->fec_modifi'
-                             WHERE cod_refere = '$i' AND cod_conduc = '$conduc->cod_tercer'";
-              $insercion = new Consulta($query,self::$cConexion,"R");
-           }else{ //aqui agrega las nuevas referencias
-            if($empresas[$i] != Null){
-              $query = "INSERT INTO ".BASE_DATOS.".tab_conduc_refere
+        #se crea un array para almacenar las referencias enviadas
+        $NewReferencias = array();
+        for($ref=0;$ref<=sizeof($empresas);$ref++){
+          $NewReferencias[$ref]=array('empresa'=>$empresas[$ref], 'telefono'=>$telefonos[$ref], 'viajes'=>$viajes[$ref],'antiguedad'=>$antiguedades[$ref], 'mercancias'=>$mercancias[$ref]);
+        }
+        $query = "DELETE FROM ".BASE_DATOS.".tab_conduc_refere WHERE cod_conduc = '$conduc->cod_tercer'";
+        $insercion = new Consulta($query,self::$cConexion,"R");
+        $h=0;
+        foreach ($NewReferencias as $key => $value) {
+            
+          if($value['empresa'] || $value['telefono'] || $value['viajes'] || $value['antiguedad'] || $value['mercancias'])
+          {
+            $query = "INSERT INTO ".BASE_DATOS.".tab_conduc_refere
                             (cod_conduc,cod_refere,nom_empre,tel_empre,num_viajes,
                              num_atigue,nom_mercan,usr_creaci,fec_creaci)
-                    VALUES ('$conduc->cod_tercer','$i','$empresas[$i]','$telefonos[$i]','$viajes[$i]',
-                            '$antiguedades[$i]','$mercancias[$i]','$conduc->usr_creaci','$conduc->fec_creaci')";
-              $insercion = new Consulta($query,self::$cConexion,"R");
-           }
-        }
+                    VALUES ('$conduc->cod_tercer',".($h++).",'".$value['empresa']."','".$value['telefono']."','".$value['viajes']."',
+                            '".$value['antiguedad']."','".$value['mercancias']."','$conduc->usr_modifi',NOW())";
+            $insercion = new Consulta($query,self::$cConexion,"R");
+          }
       }
       if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
           header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1060&menant=1060&window=central&resultado=1&operacion='.$operacion.'&opcion=123&conductor='.$conduc->abr_tercer);
@@ -542,7 +537,7 @@ class conduc{
 
 
       }else{
-         header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1060&menant=1060&window=central&opcion=123&resultado=0');
+          header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1060&menant=1060&window=central&opcion=123&resultado=0');
           /*$mensaje = "<font color='#000000'>Ocurrió un Error inesperado <b>$conduc->abr_tercer</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
           $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
           $mens = new mensajes();
