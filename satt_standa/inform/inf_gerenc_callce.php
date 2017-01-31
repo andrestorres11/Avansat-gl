@@ -59,7 +59,7 @@ class infCallCe
 	 *  \brief: formulario de filtros
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 18/08/2015
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return:
 	 */
@@ -69,6 +69,7 @@ class infCallCe
 		$mTransp = self::$cCallCe -> getTransp();
 		$mTipDes = self::$cCallCe -> getTipoDespac();
 		$mTipTra = self::$cCallCe -> getTipoTransp();
+		$mTipOpe = self::$cCallCe -> getTipOperad();
 		$mHtml1 = '';
 		$mHtml2 = '';
 		$mScript = '';
@@ -82,7 +83,7 @@ class infCallCe
 		foreach ($mTipDes as $row)
 		{
 			$mID = str_replace(' ', '_', $row[1]);
-			$mHtml1 .= '<li class="ui-state-default ui-corner-top"><a id="'.$mID.'ID" href="#tabs-'.$row[0].'">'.$row[1].'</a></li>'; #PestaÃ±a Tipo de despacho
+			$mHtml1 .= '<li class="ui-state-default ui-corner-top"><a id="'.$mID.'ID" href="#tabs-'.$row[0].'">'.$row[1].'</a></li>'; #Pestaña Tipo de despacho
 			$mHtml2 .= '<div id="tabs-'.$row[0].'"></div>'; #DIV Tipo de despacho
 
 			$mScript .= ' $("#'.$mID.'ID").click(function(){
@@ -121,6 +122,10 @@ class infCallCe
 						$mHtml .= self::$cCallCe -> lista( 'Estado Llamada:', 'nom_estado', array_merge( self::$cNull, $mEstado), 'cellInfo1' );
 						$mHtml .= '</tr>';
 
+						$mHtml .= '<tr>'; 
+						$mHtml .= self::$cCallCe -> lista( 'Tipo Operacion:', 'cod_operad', array_merge( self::$cNull, $mTipOpe), 'cellInfo1' );
+						$mHtml .= '</tr>';
+
 						$mHtml .= '<input id="windowID" type="hidden" value="central" name="window">';
 						$mHtml .= '<input id="standaID" type="hidden" value="'.DIR_APLICA_CENTRAL.'" name="standa">';
 						$mHtml .= '<input id="cod_transpID" type="hidden" value="'.$mTransp[0]['cod_tercer'].'" name="cod_transp">';
@@ -153,7 +158,7 @@ class infCallCe
 	 *  \brief: Esporta contenido de la tabla del informe en un archivo Excel
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 21/08/2015
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return:
 	 */

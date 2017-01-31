@@ -100,7 +100,7 @@
 	/******************************************************************************
 	 *	\fn: registrar												  			  *
 	 *	\brief: funcion para registros nuevos y modificaciones de conductores     *
-	 *		  recibe un string con la operaciÃ³n a realizar registrar o modificar  *
+	 *		  recibe un string con la operación a realizar registrar o modificar  *
 	 *  \author: Ing. Alexander Correa 											  *
 	 *  \date: 31/08/2015														  *
 	 *  \date modified: 														  *
@@ -116,7 +116,7 @@
 		var standa = $("#standaID").val();
 		if (val == true) {
 			//crea el popUp para el mensaje de  respuesta del guardado  
-			LoadPopupJQNoButton('open', 'Resultado de la OperaciÃ³n', 'auto', 'auto', false, false, true);
+			LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
 			var popup = $("#popID");
 
 			var parametros = "Option=" + operacion + "&Ajax=on&";
@@ -152,13 +152,13 @@
 	//funcion de confirmacion para la edicion, eliminacion e inactivacion de conductores
 	function confirmar(operacion) {
 
-		LoadPopupJQNoButton('open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true);
+		LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
 		var popup = $("#popID");
 		var tercero = $("#nom_tercerID").val();
 		var onclick = "onclick='registrar(\"";
 		onclick += operacion;
 		onclick += "\")'";
-		var msj = "<div style='text-align:center'>Â¿EstÃ¡ seguro de <b>" + operacion + "</b> el Tercero: <b>" + tercero + "?</b><br><br><br><br>";
+		var msj = "<div style='text-align:center'>¿Está seguro de <b>" + operacion + "</b> el Tercero: <b>" + tercero + "?</b><br><br><br><br>";
 		msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
 		msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
 
@@ -180,10 +180,10 @@
 		} else if (tipo == 2) {
 			confirmar('inactivar');
 		} else {
-			LoadPopupJQNoButton('open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true);
+			LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
 			var popup = $("#popID");
 			var conductor = $("#nom_tercerID").val();
-			var msj = "<div style='text-align:center'>Â¿EstÃ¡ seguro de <b>editar</b> el tercero: <b>" + conductor + "?</b><br><br><br><br>";
+			var msj = "<div style='text-align:center'>¿Está seguro de <b>editar</b> el tercero: <b>" + conductor + "?</b><br><br><br><br>";
 			msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
 			msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 

@@ -101,33 +101,33 @@ class extenc{
  *  \author: Ing. Alexander Correa                                                  *
  *  \date:  4/12/2015                                                               *
  *  \date modified:                                                                 *
- *  \param: 										                                *     
+ *  \param:                                                     *     
  *  \param:                                                                         * 
  *  \return confirmacion de la insercion correcta o posible error                   *
  ***********************************************************************************/
 
     private function registrarExtencion(){
-    	$datos = (object) $_POST;
-    	$usuario = $_SESSION['datos_usuario']['cod_usuari'];
-    	$sql = "SELECT cod_extenc FROM ".BASE_DATOS.".tab_callce_extenc 
-    			WHERE num_extenc = '$datos->num_extenc' 
-    			/*AND cod_operac = '$datos->cod_operac' 
-    			AND cod_grupox = '$datos->cod_grupox' */
-    			AND ind_estado = 1 ";
-    	$consulta = new Consulta($sql, self::$cConexion);
+      $datos = (object) $_POST; 
+      $usuario = $_SESSION['datos_usuario']['cod_usuari'];
+      $sql = "SELECT cod_extenc FROM ".BASE_DATOS.".tab_callce_extenc 
+          WHERE num_extenc = '$datos->num_extenc' 
+          /*AND cod_operac = '$datos->cod_operac' 
+          AND cod_grupox = '$datos->cod_grupox' */
+          AND ind_estado = 1 ";
+      $consulta = new Consulta($sql, self::$cConexion);
         $extencion = $consulta->ret_matrix("a");
         if(!$extencion){
-        	#si no existe la extencion ingreso la nueva
-        	$sql = "INSERT INTO ".BASE_DATOS.".tab_callce_extenc 
-        			(usr_extenc, cod_operac, cod_grupox, num_extenc, usr_creaci, fec_creaci, cod_subope)
-        			VALUES ('$datos->usr_extenc', '$datos->cod_operac', '$datos->cod_grupox', '$datos->num_extenc', '$usuario', NOW() )";
-			if( $insercion = new Consulta($sql, self::$cConexion, "R")){
-					die('1'); // procedimiento correcto
-			}else{
-					die('2'); //errror al registrar en la base de datos
-			}
+          #si no existe la extencion ingreso la nueva
+          $sql = "INSERT INTO ".BASE_DATOS.".tab_callce_extenc 
+              (usr_extenc, cod_operac, cod_grupox, num_extenc, usr_creaci, fec_creaci, cod_subope) 
+              VALUES ('$datos->usr_extenc', '$datos->cod_operac', '$datos->cod_grupox', '$datos->num_extenc', '$usuario', NOW(), '$datos->cod_subope' )";
+      if( $insercion = new Consulta($sql, self::$cConexion, "R")){
+          die('1'); // procedimiento correcto
+      }else{
+          die('2'); //errror al registrar en la base de datos
+      }
         }else{
-        	die("0"); //para avisar que ya la existe una extensión identica para el usuario seleccionado y debe inhabilitarse antes
+          die("0"); //para avisar que ya la existe una extensión identica para el usuario seleccionado y debe inhabilitarse antes
         } 
     }
 
@@ -138,24 +138,22 @@ class extenc{
  *  \author: Ing. Alexander Correa                                                  *
  *  \date:  4/12/2015                                                               *
  *  \date modified:                                                                 *
- *  \param:                            												*     
+ *  \param:                                                   *     
  *  \param:                                                                         * 
- *  \returnlista de los tipos de operación                        				    *
+ *  \returnlista de los tipos de operación                                    *
  ***********************************************************************************/
     public function getTipoDeOperacion(){
       $sesion = (object) $_SESSION['datos_usuario'];
-      if($sesion->cod_perfil == '712'){
-
-      }
-    	$sql = "SELECT cod_operac, nom_operac FROM ".BASE_DATOS.".tab_callce_operac WHERE ind_estado = 1";
-    	$consulta = new Consulta($sql, self::$cConexion);
+ 
+      $sql = "SELECT cod_operac, nom_operac FROM ".BASE_DATOS.".tab_callce_operac WHERE ind_estado = 1";
+      $consulta = new Consulta($sql, self::$cConexion);
         $operaciones = $consulta->ret_matrix("a");
         $option = "";
         foreach ($operaciones as $key => $value) {
           if($sesion->cod_perfil == '712' && $value['cod_operac'] == '4'){
             $option.= "<option value='$value[cod_operac]' selected = 'selected'>".utf8_encode($value[nom_operac])."</option>";
           }
-        	$option.= "<option value='$value[cod_operac]'>".utf8_encode($value[nom_operac])."</option>";
+          $option.= "<option value='$value[cod_operac]'>".utf8_encode($value[nom_operac])."</option>";
         }
         if($sesion->cod_perfil == '712'){
            $select = "<select style='width:100%' id='cod_operacID' name='cod_operac' validate='select' obl='1' disabled='true'>
@@ -164,8 +162,8 @@ class extenc{
                    </select>";
         }else{
           $select = "<select style='width:100%' id='cod_operacID' name='cod_operac' validate='select' obl='1'>
-                	<option value=''>Seleccione un tipo de Operación</option>
-                	$option
+                  <option value=''>Seleccione un tipo de Operación</option>
+                  $option
                    </select>";
        }
        
@@ -180,23 +178,23 @@ class extenc{
  *  \author: Ing. Alexander Correa                                                  *
  *  \date:  4/12/2015                                                               *
  *  \date modified:                                                                 *
- *  \param:                            												*     
+ *  \param:                                                   *     
  *  \param:                                                                         * 
- *  \returnlista de los tipos de operación                        				    *
+ *  \returnlista de los tipos de operación                                    *
  ***********************************************************************************/
     public function getGrupos(){
 
-    	$sql = "SELECT cod_grupox, nom_grupox FROM ".BASE_DATOS.".tab_callce_grupox WHERE ind_estado = 1";
-    	$consulta = new Consulta($sql, self::$cConexion);
+      $sql = "SELECT cod_grupox, nom_grupox FROM ".BASE_DATOS.".tab_callce_grupox WHERE ind_estado = 1";
+      $consulta = new Consulta($sql, self::$cConexion);
         $grupos = $consulta->ret_matrix("a");
         $option = "";
         foreach ($grupos as $key => $value) {
-        	$option.= "<option value='$value[cod_grupox]'>".utf8_encode($value[nom_grupox])."</option>";
+          $option.= "<option value='$value[cod_grupox]'>".utf8_encode($value[nom_grupox])."</option>";
         }
         
         $select = "<select style='width:100%' id='cod_grupox' name='cod_grupox' validate='select' obl='1'>
-                	<option value=''>Seleccione un grupo</option>
-                	$option
+                  <option value=''>Seleccione un grupo</option>
+                  $option
                    </select>";
        
 
@@ -205,7 +203,7 @@ class extenc{
 
     private function buscarUsuario(){
 
-    	$mSql = "SELECT cod_usuari cod_usuari, 
+      $mSql = "SELECT cod_usuari cod_usuari, 
                         CONCAT(nom_usuari,'-',cod_usuari) usuario
                    FROM ".BASE_DATOS.".tab_genera_usuari 
                   WHERE 1=1 ";
@@ -232,7 +230,7 @@ class extenc{
     }
 
     private function inactivar(){
-    	$cod_extenc = $_POST['cod_extenc'];
+      $cod_extenc = $_POST['cod_extenc'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -251,7 +249,7 @@ class extenc{
     }
 
     private function inactivarOperacion(){
-    	$cod_operac = $_POST['cod_operac'];
+      $cod_operac = $_POST['cod_operac'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -270,7 +268,7 @@ class extenc{
     }
 
     private function activarOperacion(){
-    	$cod_operac = $_POST['cod_operac'];
+      $cod_operac = $_POST['cod_operac'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -289,47 +287,47 @@ class extenc{
     }
 
     private function registrarOperacion(){
-    	$nom_operac = $_POST['nom_operac'];
-    	$fec_actual = date("Y-m-d H:i:s");
+      $nom_operac = $_POST['nom_operac'];
+      $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
 
         $sql = "SELECT cod_operac FROM ".BASE_DATOS.".tab_callce_operac WHERE nom_operac = '$nom_operac'";
         $consulta = new Consulta($sql, self::$cConexion);
         $operacion = $consulta->ret_matrix("a");
         if(!$operacion){
-        	$sql = "INSERT INTO ".BASE_DATOS.".tab_callce_operac (nom_operac, usr_creaci, fec_creaci) VALUES ('$nom_operac', '$usuario', '$fec_actual')";
-        	if( $insercion = new Consulta($sql, self::$cConexion, "R")){
-					die('1'); // procedimiento correcto
-			}else{
-					die('2'); //errror al registrar en la base de datos
-			}
+          $sql = "INSERT INTO ".BASE_DATOS.".tab_callce_operac (nom_operac, usr_creaci, fec_creaci) VALUES ('$nom_operac', '$usuario', '$fec_actual')";
+          if( $insercion = new Consulta($sql, self::$cConexion, "R")){
+          die('1'); // procedimiento correcto
+      }else{
+          die('2'); //errror al registrar en la base de datos
+      }
         }else{
-        	die('0');#ya existe la operacion a registrar
+          die('0');#ya existe la operacion a registrar
         }
     }
 
     private function registrarGrupo(){
-    	$nom_grupox = $_POST['nom_grupox'];
-    	$fec_actual = date("Y-m-d H:i:s");
+      $nom_grupox = $_POST['nom_grupox'];
+      $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
 
         $sql = "SELECT cod_grupox FROM ".BASE_DATOS.".tab_callce_grupox WHERE nom_grupox = '$nom_grupox'";
         $consulta = new Consulta($sql, self::$cConexion);
         $operacion = $consulta->ret_matrix("a");
         if(!$operacion){
-        	$sql = "INSERT INTO ".BASE_DATOS.".tab_callce_grupox (nom_grupox, usr_creaci, fec_creaci) VALUES ('$nom_grupox', '$usuario', '$fec_actual')";
-        	if( $insercion = new Consulta($sql, self::$cConexion, "R")){
-					die('1'); // procedimiento correcto
-			}else{
-					die('2'); //errror al registrar en la base de datos
-			}
+          $sql = "INSERT INTO ".BASE_DATOS.".tab_callce_grupox (nom_grupox, usr_creaci, fec_creaci) VALUES ('$nom_grupox', '$usuario', '$fec_actual')";
+          if( $insercion = new Consulta($sql, self::$cConexion, "R")){
+          die('1'); // procedimiento correcto
+      }else{
+          die('2'); //errror al registrar en la base de datos
+      }
         }else{
-        	die('0');#ya existe el grupo a registrar
+          die('0');#ya existe el grupo a registrar
         }
     }
 
     private function inactivarGrupo(){
-    	$cod_grupox = $_POST['cod_grupox'];
+      $cod_grupox = $_POST['cod_grupox'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -348,7 +346,7 @@ class extenc{
     }
 
     private function activarGrupo(){
-    	$cod_grupox = $_POST['cod_grupox'];
+      $cod_grupox = $_POST['cod_grupox'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -378,8 +376,7 @@ class extenc{
      ***********************************************************************************/
     private function informeLlamadasEntrantes(){
 
-      $datos = (object) $_REQUEST;
- 
+      $datos = (object) $_REQUEST; 
 
       $info = $this->getInfomr($datos->fec_inicia, $datos->fec_finali,$datos->cod_operac,$datos->num_celula, $datos->pestana, $datos->cod_subope);
 
@@ -407,88 +404,46 @@ class extenc{
         $subope = "AND b.cod_subope = '$cod_subope'";
         $subope2 = "AND d.cod_subope = '$cod_subope'";
       }
-          /*  $sql = "SELECT x.cantidad, x.estado, x.fecha 
+
+        $sql = "SELECT x.cantidad, x.estado, x.fecha 
                   FROM (
                           ( 
                                 SELECT COUNT(a.num_telefo) AS cantidad, 'ANSWERED' AS estado, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fecha 
                                   FROM ".BASE_DATOS.".tab_despac_callin a 
-                                INNER JOIN ".BASE_DATOS.".tab_callce_extenc b 
+                            INNER JOIN ".BASE_DATOS.".tab_callce_extenc b 
                                     ON b.num_extenc = a.cod_extenc 
                                  WHERE (a.nom_estado = 'ANSWERED' OR a.nom_estado = 'ANSWER' )
                                    AND b.cod_operac = '$cod_operac'
                                    AND DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') BETWEEN '$fec_inicia' AND '$fec_finali' 
                                        $num_celula 
+                                       $subope
                               GROUP BY fecha 
                           )
                           UNION ALL
                           (
                                 SELECT COUNT(c.num_telefo) AS cantidad, 'NOANSWER' AS estado, DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') AS fecha 
                                   FROM ".BASE_DATOS.".tab_despac_callin c 
-                                  INNER JOIN ".BASE_DATOS.".tab_callce_extenc d 
+                             LEFT JOIN ".BASE_DATOS.".tab_callce_extenc d 
                                     ON d.num_extenc = c.cod_extenc 
-                                 WHERE (c.nom_estado = 'NO ANSWER' OR c.nom_estado = 'NOANSWER' )  
+                                 WHERE c.nom_estado = 'NOANSWER' 
+                                   AND c.cod_extenc = '0'
                                    AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') BETWEEN '$fec_inicia' AND '$fec_finali' 
                                        $num_celula  
-                                       AND d.cod_operac = '$cod_operac' 
+                                       $subope2
                                    AND c.num_telefo IN (
                                                               SELECT DISTINCT(e.num_telefo) AS num_telefo 
                                                                 FROM ".BASE_DATOS.".tab_despac_callin e 
                                                           INNER JOIN ".BASE_DATOS.".tab_callce_extenc f 
                                                                   ON f.num_extenc = e.cod_extenc 
                                                                WHERE DATE_FORMAT(e.fec_creaci, '%Y-%m-%d') BETWEEN '$fec_inicia' AND '$fec_finali' 
-                                                                 AND (e.nom_estado = 'ANSWERED' OR e.nom_estado = 'ANSWER' )
+                                                                 AND e.nom_estado = 'ANSWER' 
                                                                  AND f.cod_operac = '$cod_operac' 
                                                                      $num_celula
                                                         )
                               GROUP BY fecha
                           )
-                       ) x"; 
-          */  
+                       ) x";
 
-          $sql = "SELECT x.cantidad, x.estado, x.fecha 
-                  FROM (
-                          ( 
-                                SELECT COUNT(a.num_telefo) AS cantidad, 'ANSWERED' AS estado, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fecha 
-                                  FROM ".BASE_DATOS.".tab_despac_callin a 
-                                INNER JOIN ".BASE_DATOS.".tab_callce_extenc b 
-                                    ON b.num_extenc = a.cod_extenc 
-                                 WHERE (a.nom_estado = 'ANSWERED' OR a.nom_estado = 'ANSWER' )
-                                   AND b.cod_operac = '$cod_operac'
-                                   AND DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') BETWEEN '$fec_inicia' AND '$fec_finali' 
-                                       $num_celula 
-                              GROUP BY fecha 
-                          )
-                          UNION ALL
-                          (
-                                SELECT COUNT(y.cantidad) AS cantidad, 'NOANSWER' AS estado, y.fecha
-                                FROM (
-                                        SELECT  c.num_telefo AS cantidad, 'NOANSWER' AS estado, DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') AS fecha , nom_estado, c.fec_creaci, DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') AS fec_agrupa, 
-                                                DATE_FORMAT( DATE_SUB(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i')  AS abajo,
-                                                DATE_FORMAT( DATE_ADD(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i')  AS arriba
-
-                                        FROM ".BASE_DATOS.".tab_despac_callin c 
-                                        INNER JOIN ".BASE_DATOS.".tab_callce_extenc d 
-                                          ON d.num_extenc = c.cod_extenc 
-                                        WHERE (c.nom_estado = 'NO ANSWER' OR c.nom_estado = 'NOANSWER' )  
-                                        AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') BETWEEN '$fec_inicia' AND '$fec_finali'                                          
-                                        AND d.cod_operac = '$cod_operac' 
-                                        AND c.num_telefo NOT IN (
-                                                              SELECT DISTINCT(e.num_telefo) AS num_telefo 
-                                                              FROM ".BASE_DATOS.".tab_despac_callin e 
-                                                              INNER JOIN ".BASE_DATOS.".tab_callce_extenc f ON f.num_extenc = e.cod_extenc 
-                                                              WHERE DATE_FORMAT(e.fec_creaci, '%Y-%m-%d') BETWEEN '$fec_inicia' AND '$fec_finali' AND
-                                                                    (e.nom_estado = 'ANSWERED' OR e.nom_estado = 'ANSWER' )  
-                                                                    AND f.cod_operac = '$cod_operac'                                                                      
-                                                              )
-                                        AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') >= DATE_FORMAT( DATE_SUB(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i') 
-                                        AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') <= DATE_FORMAT( DATE_ADD(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i')                                  
-                                        GROUP BY c.num_telefo, fec_agrupa, c.nom_estado
-                                        ORDER BY c.fec_creaci DESC
-                                  ) y
-                                  GROUP BY y.fecha
-                          )
-                       ) x"; 
-         
       $consulta = new Consulta($sql, self::$cConexion);
       return $consulta->ret_matrix("a");
     }
@@ -665,8 +620,7 @@ class extenc{
                     <th class="cellInfo onlyCell" style="text-align:center"><?= $value['cod_extenc'] ?></th>
                     <th class="cellInfo onlyCell" style="text-align:center"><?= $value['num_telefo'] ?></th>
                     <th class="cellInfo onlyCell" style="text-align:center"><?= $value['tie_duraci'] ?></th>
-                    <!--<th class="cellInfo onlyCell" style="text-align:center"><?php if($value['nom_estado'] == "ANSWER"){echo "Contestada";}else{echo "No Contestada";} ?></th>-->
-                    <th class="cellInfo onlyCell" style="text-align:center"><?php if($value['estado'] == "ANSWER"){echo "Contestada";}else{echo "No Contestada";} ?></th>
+                    <th class="cellInfo onlyCell" style="text-align:center"><?php if($value['nom_estado'] == "ANSWER"){echo "Contestada";}else{echo "No Contestada";} ?></th>
                     <th class="cellInfo onlyCell" style="text-align:center"><?= $value['fec_creaci'] ?></th>
                     <th class="cellInfo onlyCell" style="text-align:center">
                       <a>
@@ -693,7 +647,7 @@ class extenc{
     private function getInfromacionDetallada($post){
       $and = "";
       if($post->tipo != 'todas'){
-        $and = ( $post->tipo == "ANSWER" ? " AND (x.nom_estado = 'ANSWERED' OR x.nom_estado = 'ANSWER' ) " : " AND (x.nom_estado = 'NO ANSWER' OR x.nom_estado = 'NOANSWER' )");
+        $and = " AND x.nom_estado = '$post->tipo'";
       }
       if($post->num_celula){
         $and = " AND x.num_telefo LIKE '%$post->num_celula%'";
@@ -702,7 +656,7 @@ class extenc{
         $subope = "AND b.cod_subope = '$post->cod_subope'";
         $subope2 = "AND d.cod_subope = '$post->cod_subope'";
       }
-      /* 
+
         $sql = "SELECT x.cod_consec, x.num_telefo, x.tie_duraci, 
                        x.idx_llamad, x.nom_estado, x.rut_audiox, 
                        x.cod_extenc, x.idx_servic, x.fec_creaci, 
@@ -715,9 +669,10 @@ class extenc{
                                   FROM ".BASE_DATOS.".tab_despac_callin a 
                             INNER JOIN ".BASE_DATOS.".tab_callce_extenc b 
                                     ON b.num_extenc = a.cod_extenc 
-                                 WHERE (a.nom_estado = 'ANSWERED' OR a.nom_estado = 'ANSWER' ) 
+                                 WHERE a.nom_estado = 'ANSWER' 
                                    AND b.cod_operac = '$post->cod_operac'
                                    AND DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') BETWEEN '$post->fec_inicia' AND '$post->fec_finali' 
+                                   $subope
                           )
                           UNION ALL
                           (
@@ -726,10 +681,12 @@ class extenc{
                                        c.cod_extenc, c.idx_servic, c.fec_creaci, 
                                        'NOANSWER' AS estado 
                                   FROM ".BASE_DATOS.".tab_despac_callin c 
-                             INNER JOIN ".BASE_DATOS.".tab_callce_extenc d 
+                             LEFT JOIN ".BASE_DATOS.".tab_callce_extenc d 
                                     ON d.num_extenc = c.cod_extenc 
-                                 WHERE (c.nom_estado = 'NO ANSWER' OR c.nom_estado = 'NOANSWER' ) 
+                                 WHERE c.nom_estado = 'NOANSWER' 
+                                  AND c.cod_extenc = '0'
                                   AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') BETWEEN '$post->fec_inicia' AND '$post->fec_finali' 
+                                  $subope2
                                   AND c.num_telefo IN (
                                                             SELECT DISTINCT(e.num_telefo) 
                                                               FROM ".BASE_DATOS.".tab_despac_callin e 
@@ -741,55 +698,7 @@ class extenc{
                                                       )
                           )
                        ) x 
-                 WHERE 1=1 $and "; 
-*/
-
-         $sql = "SELECT x.cod_consec, x.num_telefo, x.tie_duraci, 
-                       x.idx_llamad, x.nom_estado, x.rut_audiox, 
-                       x.cod_extenc, x.idx_servic, x.fec_creaci, 
-                       x.estado  
-                  FROM (
-                          (     
-                              SELECT a.cod_consec, a.num_telefo, a.tie_duraci, 
-                                       a.idx_llamad, a.nom_estado, a.rut_audiox, 
-                                       a.cod_extenc, a.idx_servic, a.fec_creaci, 
-                                       'ANSWER' AS estado , '' AS fec_agrupa
-                                  FROM ".BASE_DATOS.".tab_despac_callin a 
-                                INNER JOIN ".BASE_DATOS.".tab_callce_extenc b 
-                                    ON b.num_extenc = a.cod_extenc 
-                                 WHERE (a.nom_estado = 'ANSWERED' OR a.nom_estado = 'ANSWER' ) 
-                                   AND b.cod_operac = '$post->cod_operac'
-                                   AND DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') BETWEEN '$post->fec_inicia' AND '$post->fec_finali' 
-                          )
-                          UNION ALL
-                          (                         
-                              SELECT c.cod_consec, c.num_telefo, c.tie_duraci, 
-                                     c.idx_llamad, c.nom_estado, c.rut_audiox, 
-                                     c.cod_extenc, c.idx_servic, c.fec_creaci, 
-                                     'NOANSWER' AS estado , 
-                                     DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') AS fec_agrupa
-                                       
-                              FROM ".BASE_DATOS.".tab_despac_callin c 
-                              INNER JOIN ".BASE_DATOS.".tab_callce_extenc d  ON d.num_extenc = c.cod_extenc 
-                              WHERE (c.nom_estado = 'NO ANSWER' OR c.nom_estado = 'NOANSWER' )  
-                              AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') BETWEEN '$post->fec_inicia' AND '$post->fec_finali'                                         
-                              AND d.cod_operac = '$post->cod_operac'
-                              AND c.num_telefo NOT IN (
-                                                    SELECT DISTINCT(e.num_telefo)  
-                                                    FROM ".BASE_DATOS.".tab_despac_callin e 
-                                                    INNER JOIN ".BASE_DATOS.".tab_callce_extenc f ON f.num_extenc = e.cod_extenc 
-                                                    WHERE DATE_FORMAT(e.fec_creaci, '%Y-%m-%d') BETWEEN '$post->fec_inicia' AND '$post->fec_finali' AND 
-                                                          (e.nom_estado = 'ANSWERED' OR e.nom_estado = 'ANSWER' )  
-                                                          AND f.cod_operac = '$post->cod_operac'  
-                                                          $num_celula                                                                    
-                                                    )
-
-                              AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') >= DATE_FORMAT( DATE_SUB(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i') 
-                              AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') <= DATE_FORMAT( DATE_ADD(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i')                                  
-                              GROUP BY c.num_telefo, fec_agrupa , c.nom_estado
-                          )
-                       ) x 
-                 WHERE 1=1 $and ORDER BY x.fec_creaci DESC ";  
+                 WHERE 1=1 $and ";
  
       $consulta = new Consulta($sql, self::$cConexion);
       return $consulta->ret_matrix("a");
@@ -814,7 +723,7 @@ class extenc{
       }
       else {
          # Crea el elemento de reproduccion del audio que se descargó de S3 -----------------------------------------
-         if($_SERVER["HTTP_HOST"] == "web7.intrared.net:8083"){
+         if($_SERVER["HTTP_HOST"] == "dev.intrared.net:8083"){
           $ruta = "/ap/dev/";
          }else{
           $ruta = "/ap/";
@@ -828,13 +737,6 @@ class extenc{
       echo $mObjetAudio;
     }
 
-    /*! \fn: getSubOperad
-     *  \brief: Busca datos relacionados con la suboperacion
-     *  \author: Miguel Romero
-     *  \date:  04/01/2017
-     *  \date modified: dd/mm/aaaa 
-     *  \return: xml informacion relacionada
-     */
     private function getSubOperad(){
 
       $post = (object) $_REQUEST;
@@ -855,6 +757,7 @@ class extenc{
 
 
     }
+
   }
 
 if($_REQUEST[Ajax] === 'on' )
