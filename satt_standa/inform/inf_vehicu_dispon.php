@@ -156,7 +156,7 @@ class Proc_despac
 
   $ciudes = array_merge($inicio,$ciudes);
 
-  $formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
+  /*$formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
   $formulario -> linea("Ingrese los Criterios de Busqueda",1,"t2");
 
   $formulario -> nueva_tabla();
@@ -170,7 +170,56 @@ class Proc_despac
   $formulario -> oculto("opcion",1,0);
   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
   $formulario -> botoni("Buscar","form_insert.submit()",1);
-  $formulario -> cerrar();
+  $formulario -> cerrar();*/
+  $this->GridStyle();
+  $mHtml = new Formlib(2);
+  $mHtml->SetJs("min");
+  $mHtml->SetJs("jquery");
+  $mHtml->SetJs("es");
+  $mHtml->SetJs("time");
+  $mHtml->SetCssJq("jquery");
+      $mHtml->Table("tr");
+        $mHtml->SetBody('<td>');
+            $mHtml->SetBody('<div id="formBuscarID" class="ui-tabs ui-widget ui-widget-content ui-corner-all">');
+              $mHtml->SetBody("<h3 style='padding:6px;' class='ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top'><center>VEHICULOS DISPONIBLES</center></h3>");
+                $mHtml->OpenDiv("id:sec2ID");
+                  $mHtml->SetBody('<form name="form_insert" method="post" action="index.php?window=central&cod_servic=1382&menant=1382">');
+                    $mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
+                    $mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>"central"));
+                    $mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>"1"));
+                    $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST["cod_servic"]));
+                    $mHtml->Table("tr");
+                        $mHtml->Row();
+                            $mHtml->Label( "Ciudad Destino",  array("align"=>"right", "class"=>"celda_titulo") );
+                            $mHtml->Select2 ($ciudes,  array("name" => "ciudes", "width" => "25%") );
+                        $mHtml->CloseRow();
+                        $mHtml->Row();
+                          $mHtml->Label( "Fecha:", array("align"=>"right", "width"=>"25%") );
+                          $mHtml->Input( array("name"=>"fecbus", "id"=>"fecbusID", "width"=>"25%", "value"=>date('Y-m-j') ) );
+                        $mHtml->CloseRow();
+                        $mHtml->Row();
+                          $mHtml->Button( array("value"=>"Buscar", "id"=>"buscarID","name"=>"buscar", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2" ,"onclick"=>"form_insert.submit()") );
+                        $mHtml->CloseRow();
+                    $mHtml->CloseTable("tr");
+                  $mHtml->SetBody('</form>');
+                $mHtml->CloseDiv();
+            $mHtml->SetBody('</div>');
+      $mHtml->CloseTable('tr');
+    $mHtml->SetBody('<script>
+                        $(document).ready(function() 
+                        {
+                          $("#fecbusID").datepicker({
+                              changeMonth: true,
+                              changeYear: true,
+                              dateFormat: "yy-mm-dd",
+                          });
+                        });
+                        $(function() {
+                          $("#tabs").tabs();
+                        } );
+                        
+                      </script>');
+    echo $mHtml->MakeHtml();
 
  }
 
@@ -186,7 +235,7 @@ class Proc_despac
   $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
                  CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
                  e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
-                 IF( q.tip_transp IS NULL OR q.tip_transp = '', 'N/A', q.tip_transp ) tip_transp
+                 IF( q.tip_transp IS NULL OR q.tip_transp = '', 'N/A', q.tip_transp ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
               FROM ".BASE_DATOS.".tab_despac_despac a
         INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
         INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
@@ -309,7 +358,7 @@ class Proc_despac
   $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
                  CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
                  e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
-                 IF( q.tip_transp IS NULL OR q.tip_transp = '', 'N/A', q.tip_transp ) tip_transp
+                 IF( q.tip_transp IS NULL OR q.tip_transp = '', 'N/A', q.tip_transp ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
               FROM ".BASE_DATOS.".tab_despac_despac a
         INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
         INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
@@ -426,10 +475,8 @@ class Proc_despac
   }
 
   $query = $query." GROUP BY 1";
-  
   $consulta = new Consulta($query, $this -> conexion);
   $desllega = $consulta -> ret_matriz();
-
   $formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
   $formulario -> linea(sizeof($desruta)." Vehiculo(s) en Ruta Con Llegada Planeada Desde ".$_REQUEST[fecbus]." Hasta ".$fechaadic."",1,"t2");
 
@@ -442,6 +489,7 @@ class Proc_despac
   $formulario -> linea("Conductor",0,"t");
   $formulario -> linea("Celular",0,"t");
   $formulario -> linea("Telefono",0,"t");
+  $formulario -> linea("Tipo Vehiculo",0,"t");
   $formulario -> linea("Llegada Planeada",1,"t");
 
   for($i = 0; $i < sizeof($desruta); $i++)
@@ -454,6 +502,7 @@ class Proc_despac
    $formulario -> linea($desruta[$i][3],0,"i");
    $formulario -> linea($desruta[$i][4],0,"i");
    $formulario -> linea($desruta[$i][5],0,"i");
+   $formulario -> linea($desruta[$i][9],0,"i");
    $formulario -> linea($desruta[$i][6],1,"i");
   }
 
@@ -469,6 +518,7 @@ class Proc_despac
   $formulario -> linea("Conductor",0,"t");
   $formulario -> linea("Celular",0,"t");
   $formulario -> linea("Telefono",0,"t");
+  $formulario -> linea("Tipo Vehiculo",0,"t");
   $formulario -> linea("Llegada",1,"t");
 
   for($i = 0; $i < sizeof($desllega); $i++)
@@ -481,6 +531,7 @@ class Proc_despac
    $formulario -> linea($desllega[$i][3],0,"i");
    $formulario -> linea($desllega[$i][4],0,"i");
    $formulario -> linea($desllega[$i][5],0,"i");
+   $formulario -> linea($desllega[$i][9],0,"i");
    $formulario -> linea($desllega[$i][6],1,"i");
   }
 
@@ -507,6 +558,78 @@ class Proc_despac
 
    $formulario -> cerrar();
  }
+ function GridStyle()
+  {
+      echo "<style>
+              .cellth-ltb{
+                   background: #E7E7E7;
+                   border-left: 1px solid #999999; 
+                   border-bottom: 1px solid #999999; 
+                   border-top: 1px solid #999999;
+              }
+              .cellth-lb{
+                   background: #E7E7E7;
+                   border-left: 1px solid #999999; 
+                   border-bottom: 1px solid #999999; 
+              }
+              .cellth-b{
+                   background: #E7E7E7;
+                   border-bottom: 1px solid #999999; 
+              }
+              .cellth-tb{
+                   background: #E7E7E7;
+                   border-bottom: 1px solid #999999; 
+                   border-top: 1px solid #999999;
+              }
+              .celltd-ltb{
+                   border-left: 1px solid #999999; 
+                   border-bottom: 1px solid #999999; 
+                   border-top: 1px solid #999999;
+              }
+              .celltd-tb{
+                   border-bottom: 1px solid #999999; 
+                   border-top: 1px solid #999999;
+              }
+              .celltd-lb{
+                   border-bottom: 1px solid #999999; 
+                   border-left: 1px solid #999999;
+              }
+              .celltd-l{
+                   border-left: 1px solid #999999;
+              }
+              .fontbold{
+                  font-weight: bold;
+              }
+              .divGrilla{
+                  margin: 0;
+                  padding: 0;
+                  border: none;
+                  border-top: 1px solid #999999;
+                  border-bottom: 1px solid #999999;
+              }
+              .CellHead {
+                  background-color: #35650f;
+                  color: #ffffff;
+                  font-family: Times New Roman;
+                  font-size: 11px;
+                  padding: 4px;
+              }
+              .cellInfo1 {
+                  background-color: #ebf8e2;
+                  font-family: Times New Roman;
+                  font-size: 11px;
+                  padding: 2px;
+              }
+              .campo_texto {
+                  background-color: #ffffff;
+                  border: 1px solid #bababa;
+                  color: #000000;
+                  font-family: Times New Roman;
+                  font-size: 11px;
+                  padding-left: 5px;
+              }
+            </style>";
+  }
 
 }
 
