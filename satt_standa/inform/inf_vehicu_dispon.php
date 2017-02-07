@@ -1,5 +1,6 @@
 <?php
-
+//ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);
 class Proc_despac
 {
 
@@ -17,17 +18,18 @@ class Proc_despac
 
  function principal()
  {
-  if(!isset($_REQUEST[opcion]))
+  $this -> Buscar();
+  /*if(!isset($_REQUEST['opcion']))
     $this -> Buscar();
   else
   {
-      switch($_REQUEST[opcion])
+      switch($_REQUEST['opcion'])
       {
         case "1":
           $this -> Listar();
           break;
       }
-  }
+  }*/
  }
 
  function Buscar()
@@ -156,7 +158,7 @@ class Proc_despac
 
   $ciudes = array_merge($inicio,$ciudes);
 
-  $formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
+  /*$formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
   $formulario -> linea("Ingrese los Criterios de Busqueda",1,"t2");
 
   $formulario -> nueva_tabla();
@@ -170,7 +172,86 @@ class Proc_despac
   $formulario -> oculto("opcion",1,0);
   $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
   $formulario -> botoni("Buscar","form_insert.submit()",1);
-  $formulario -> cerrar();
+  $formulario -> cerrar();*/
+  echo $this->GridStyle();
+  $mHtml = new Formlib(2);
+  $mHtml->SetJs("min");
+  $mHtml->SetJs("jquery");
+  $mHtml->SetJs("es");
+  $mHtml->SetJs("time");
+  $mHtml->SetCssJq("jquery");
+      $mHtml->Table("tr");
+        $mHtml->SetBody('<td>');
+            $mHtml->SetBody('<div id="formBuscarID" class="ui-tabs ui-widget ui-widget-content ui-corner-all">');
+              $mHtml->SetBody("<h3 style='padding:6px;' class='ui-accordion-header ui-helper-reset ui-state-default ui-state-active ui-corner-top'><center>VEHICULOS DISPONIBLES</center></h3>");
+                $mHtml->OpenDiv("id:sec2ID");
+                  $mHtml->SetBody('<form name="form_insert" method="post" action="index.php?window=central&cod_servic=1382&menant=1382">');
+                    $mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
+                    $mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>"central"));
+                    $mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>"1"));
+                    $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST["cod_servic"]));
+                    $mHtml->Hidden(array( "name" => "valorSelect", "id" => "valorSelectID", 'value'=>$_REQUEST["ciudes"]));
+                    $mHtml->Table("tr");
+                        $mHtml->Row();
+                            $mHtml->Label( "Ciudad Destino",  array("align"=>"right", "class"=>"celda_titulo") );
+                            $mHtml->Select2 ($ciudes,  array("name" => "ciudes", "width" => "25%") );
+                        $mHtml->CloseRow();
+                        $mHtml->Row();
+                          $mHtml->Label( "Fecha:", array("align"=>"right", "width"=>"25%") );
+                          $mHtml->Input( array("name"=>"fecbus", "id"=>"fecbusID", "width"=>"25%", "value"=>((isset($_REQUEST[fecbus]))?$_REQUEST[fecbus]:date('Y-m-j')) ) );
+                        $mHtml->CloseRow();
+                         $mHtml->Row();
+                          $mHtml->Button( array("value"=>"Buscar", "id"=>"buscarID","name"=>"buscar", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2" ,"onclick"=>"form_insert.submit()") );
+                        $mHtml->CloseRow();
+                    $mHtml->CloseTable("tr");
+                  $mHtml->SetBody('</form>');
+                  $mHtml->OpenDiv("id:tabs");
+                    $mHtml->SetBody("<ul>
+                                        <li><a href='#tabInform' onclick='getInform()''>INFORME</a></li>
+                                    </ul>");
+                    $mHtml->OpenDiv("id:tabInform");
+                      switch($_REQUEST['opcion'])
+                      {
+                        case "1":
+                          //$this -> Listar();
+                          //$mHtml->SetBody('<h3>Listar()</h3>');
+                          $mHtml->SetBody($this -> Listar());
+                          break;
+                      }
+                    $mHtml->CloseDiv();
+                  $mHtml->CloseDiv();
+                $mHtml->CloseDiv();
+            $mHtml->SetBody('</div>');
+      $mHtml->CloseTable('tr');
+    $mHtml->SetBody('<script>
+                        $(document).ready(function() 
+                        {
+                          $("#fecbusID").datepicker({
+                              changeMonth: true,
+                              changeYear: true,
+                              dateFormat: "yy-mm-dd",
+                          });
+                        });
+                        $(function() {
+                          $("#tabs").tabs();
+                        } );
+                        valorSelect=$("#valorSelectID").val();
+                        $("#ciudesID option[value="+ valorSelect +"]").attr("selected",true);
+                        function ExportExcel(campo)
+                        {
+                            try
+                            {   
+                                window.open("data:application/vnd.ms-excel," + encodeURIComponent($("#"+campo).html()));
+
+                                 
+                            }catch(e){
+                              alert("Error en ExportExcelCara: "+e.message+"\nLine:"+e.lineNumber);
+                            }
+                            
+                          
+                        }                        
+                      </script>');
+    echo $mHtml->MakeHtml();
 
  }
 
@@ -186,7 +267,7 @@ class Proc_despac
   $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
                  CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
                  e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
-                 IF( q.tip_transp IS NULL OR q.tip_transp = '', 'N/A', q.tip_transp ) tip_transp
+                 (IF(q.tip_transp IS NUll OR q.tip_transp = '','N/A',IF(q.tip_transp='1','Flota Propia',IF(q.tip_transp='2','Terceros',IF(q.tip_transp='3','Empresa','N/A'))) ) ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
               FROM ".BASE_DATOS.".tab_despac_despac a
         INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
         INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
@@ -309,7 +390,7 @@ class Proc_despac
   $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
                  CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
                  e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
-                 IF( q.tip_transp IS NULL OR q.tip_transp = '', 'N/A', q.tip_transp ) tip_transp
+                 (IF(q.tip_transp IS NUll OR q.tip_transp = '','N/A',IF(q.tip_transp='1','Flota Propia',IF(q.tip_transp='2','Terceros',IF(q.tip_transp='3','Empresa','N/A'))) ) ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
               FROM ".BASE_DATOS.".tab_despac_despac a
         INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
         INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
@@ -426,17 +507,17 @@ class Proc_despac
   }
 
   $query = $query." GROUP BY 1";
-  
   $consulta = new Consulta($query, $this -> conexion);
   $desllega = $consulta -> ret_matriz();
-
-  $formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
+  
+  /*$formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
   $formulario -> linea(sizeof($desruta)." Vehiculo(s) en Ruta Con Llegada Planeada Desde ".$_REQUEST[fecbus]." Hasta ".$fechaadic."",1,"t2");
 
   $formulario -> nueva_tabla();
   $formulario -> linea("Poseedor",0,"t");
   $formulario -> linea("Tipo de Transportadora",0,"t");
   $formulario -> linea("Placa",0,"t");
+  $formulario -> linea("Tipo Vehiculo",0,"t");
   $formulario -> linea("Origen",0,"t");
   $formulario -> linea("Destino",0,"t");
   $formulario -> linea("Conductor",0,"t");
@@ -449,6 +530,7 @@ class Proc_despac
    $formulario -> linea(utf8_encode($desruta[$i][7]),0,"i");
    $formulario -> linea($desruta[$i][8],0,"i");
    $formulario -> linea($desruta[$i][0],0,"i");
+   $formulario -> linea($desruta[$i][9],0,"i");
    $formulario -> linea($desruta[$i][1],0,"i");
    $formulario -> linea($desruta[$i][2],0,"i");
    $formulario -> linea($desruta[$i][3],0,"i");
@@ -464,6 +546,7 @@ class Proc_despac
    $formulario -> linea("Poseedor",0,"t");
   $formulario -> linea("Tipo de Transportadora",0,"t");
   $formulario -> linea("Placa",0,"t");
+  $formulario -> linea("Tipo Vehiculo",0,"t");
   $formulario -> linea("Origen",0,"t");
   $formulario -> linea("Destino",0,"t");
   $formulario -> linea("Conductor",0,"t");
@@ -476,6 +559,7 @@ class Proc_despac
    $formulario -> linea(utf8_encode($desllega[$i][7]),0,"i");
    $formulario -> linea($desllega[$i][8],0,"i");
    $formulario -> linea($desllega[$i][0],0,"i");
+   $formulario -> linea($desllega[$i][9],0,"i");
    $formulario -> linea($desllega[$i][1],0,"i");
    $formulario -> linea($desllega[$i][2],0,"i");
    $formulario -> linea($desllega[$i][3],0,"i");
@@ -484,7 +568,93 @@ class Proc_despac
    $formulario -> linea($desllega[$i][6],1,"i");
   }
 
-  $formulario -> cerrar();
+  $formulario -> cerrar();*/
+
+
+  $mHtml = new Formlib(2, "yes",TRUE);
+  $mHtml->OpenDiv("id:btnVehiculosPla");
+    $mHtml->Table("tr");
+      $mHtml->Label( sizeof($desruta)." Vehiculo(s) en Ruta Con Llegada Planeada Desde ".$_REQUEST[fecbus]." Hasta ".$fechaadic."", array("colspan"=>"11", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+      $mHtml->CloseRow();
+      $mHtml->Row();
+        $mHtml->Label( "Exportar a excel",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Button( array("value"=>"EXCEL", "id"=>"ExportExcelID","name"=>"ExportExcel", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"8","onclick"=>"ExportExcel('respVehiculosPla')") );
+      $mHtml->CloseRow();
+    $mHtml->CloseTable('tr');
+  $mHtml->CloseDiv();
+  $mHtml->OpenDiv("id:respVehiculosPla");
+    $mHtml->Table("tr");
+      //$mHtml->Row();
+        $mHtml->Label( "Poseedor",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Tipo de Transportadora",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Placa",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Tipo Vehiculo",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Origen",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Destino",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Conductor",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Celular",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Telefono",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Llegada Planeada",  array("align"=>"right", "class"=>"celda_titulo") );
+      $mHtml->CloseRow();
+      for($i = 0; $i < sizeof($desruta); $i++)
+      {
+        $mHtml->Row();
+        $mHtml->Label( utf8_encode($desruta[$i][7]),  array("align"=>"right", "class"=>"cellInfo1") );
+        $mHtml->Label( $desruta[$i][8],  array("align"=>"center", "class"=>"CellInfo1") );
+        $mHtml->Label( $desruta[$i][0],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desruta[$i][9],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desruta[$i][1],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desruta[$i][2],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desruta[$i][3],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desruta[$i][4],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desruta[$i][5],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desruta[$i][6],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->CloseRow();
+      }
+    $mHtml->CloseTable('tr');
+  $mHtml->CloseDiv();
+  $mHtml->OpenDiv("id:btnVehiculosLle");
+    $mHtml->Table("tr");
+      $mHtml->Label( sizeof($desllega)." Vehiculo(s) Con Llegada Desde ".$fechadism." Hasta ".$_REQUEST[fecbus]."", array("colspan"=>"11", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+      $mHtml->CloseRow();
+      $mHtml->Row();
+        $mHtml->Label( "Exportar a excel",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Button( array("value"=>"EXCEL", "id"=>"ExportExcelID","name"=>"ExportExcel", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"8","onclick"=>"ExportExcel('respVehiculosLle')") );
+      $mHtml->CloseRow();
+    $mHtml->CloseTable('tr');
+  $mHtml->CloseDiv();
+  $mHtml->OpenDiv("id:respVehiculosLle");
+    $mHtml->Table("tr");
+      //$mHtml->Row();
+        $mHtml->Label( "Poseedor",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Tipo de Transportadora",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Placa",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Tipo Vehiculo",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Origen",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Destino",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Conductor",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Celular",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Telefono",  array("align"=>"right", "class"=>"celda_titulo") );
+        $mHtml->Label( "Llegada",  array("align"=>"right", "class"=>"celda_titulo") );
+      $mHtml->CloseRow();
+      for($i = 0; $i < sizeof($desllega); $i++)
+      {
+        $mHtml->Row();
+        $mHtml->Label( utf8_encode($desllega[$i][7]),  array("align"=>"right", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][8],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][0],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][9],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][1],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][2],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][3],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][4],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][5],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->Label( $desllega[$i][6],  array("align"=>"center", "class"=>"cellInfo1") );
+        $mHtml->CloseRow();
+      }
+    $mHtml->CloseTable('tr');
+  $mHtml->CloseDiv();
+  return $mHtml->MakeHtml();
  }
 
 
@@ -507,6 +677,78 @@ class Proc_despac
 
    $formulario -> cerrar();
  }
+ function GridStyle()
+  {
+      echo "<style>
+              .cellth-ltb{
+                   background: #E7E7E7;
+                   border-left: 1px solid #999999; 
+                   border-bottom: 1px solid #999999; 
+                   border-top: 1px solid #999999;
+              }
+              .cellth-lb{
+                   background: #E7E7E7;
+                   border-left: 1px solid #999999; 
+                   border-bottom: 1px solid #999999; 
+              }
+              .cellth-b{
+                   background: #E7E7E7;
+                   border-bottom: 1px solid #999999; 
+              }
+              .cellth-tb{
+                   background: #E7E7E7;
+                   border-bottom: 1px solid #999999; 
+                   border-top: 1px solid #999999;
+              }
+              .celltd-ltb{
+                   border-left: 1px solid #999999; 
+                   border-bottom: 1px solid #999999; 
+                   border-top: 1px solid #999999;
+              }
+              .celltd-tb{
+                   border-bottom: 1px solid #999999; 
+                   border-top: 1px solid #999999;
+              }
+              .celltd-lb{
+                   border-bottom: 1px solid #999999; 
+                   border-left: 1px solid #999999;
+              }
+              .celltd-l{
+                   border-left: 1px solid #999999;
+              }
+              .fontbold{
+                  font-weight: bold;
+              }
+              .divGrilla{
+                  margin: 0;
+                  padding: 0;
+                  border: none;
+                  border-top: 1px solid #999999;
+                  border-bottom: 1px solid #999999;
+              }
+              .CellHead {
+                  background-color: #35650f;
+                  color: #ffffff;
+                  font-family: Times New Roman;
+                  font-size: 11px;
+                  padding: 4px;
+              }
+              .cellInfo1 {
+                  background-color: #ebf8e2;
+                  font-family: Times New Roman;
+                  font-size: 11px;
+                  padding: 2px;
+              }
+              .campo_texto {
+                  background-color: #ffffff;
+                  border: 1px solid #bababa;
+                  color: #000000;
+                  font-family: Times New Roman;
+                  font-size: 11px;
+                  padding-left: 5px;
+              }
+            </style>";
+  }
 
 }
 
