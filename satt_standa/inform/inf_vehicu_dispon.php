@@ -1,9 +1,18 @@
 <?php
+/*! \file: inf_vehicu_dispon.php
+ *  \brief: informe vehiculos disponibles, se actualizo la clase
+ *  \author: Edward Fabian Serrano
+ *  \author: edward.serrano@intrared.net
+ *  \version: 1.0
+ *  \date: 07/02/2017
+ *  \bug: 
+ *  \warning: 
+ */
+
 //ini_set('display_errors', true);
-error_reporting(E_ALL & ~E_NOTICE);
+//error_reporting(E_ALL & ~E_NOTICE);
 class Proc_despac
 {
-
  var $conexion,
  	 $cod_aplica,
      $usuario;
@@ -16,22 +25,29 @@ class Proc_despac
   $this -> principal();
  }
 
+ /*! \fn: principal
+   *  \brief: funcion principal que direcciona la solicitud
+   *  \author: Edward Serrano
+   *  \date:  07/02/2017
+   *  \date modified: dia/mes/año
+   */
  function principal()
  {
-  $this -> Buscar();
-  /*if(!isset($_REQUEST['opcion']))
+  //$this -> Buscar();
+  if(!isset($_REQUEST['excel']))
     $this -> Buscar();
   else
   {
-      switch($_REQUEST['opcion'])
-      {
-        case "1":
-          $this -> Listar();
-          break;
-      }
-  }*/
+    $this -> exportExcel();
+  }
  }
 
+  /*! \fn: Buscar
+   *  \brief: busca las ciudades y pinta los fitros
+   *  \author: Edward Serrano
+   *  \date:  07/02/2017
+   *  \date modified: dia/mes/año
+   */
  function Buscar()
  {
   $datos_usuario = $this -> usuario -> retornar();
@@ -158,25 +174,11 @@ class Proc_despac
 
   $ciudes = array_merge($inicio,$ciudes);
 
-  /*$formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
-  $formulario -> linea("Ingrese los Criterios de Busqueda",1,"t2");
-
-  $formulario -> nueva_tabla();
-  $formulario -> lista("Ciudad Destino","ciudes",$ciudes,1);
-
-  $formulario -> nueva_tabla();
-  $formulario -> fecha_calendar("Fecha","fecbus","form_insert",$fec_actual,"yyyy/mm/dd",1);
-
-  $formulario -> nueva_tabla();
-  $formulario -> oculto("window","central",0);
-  $formulario -> oculto("opcion",1,0);
-  $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
-  $formulario -> botoni("Buscar","form_insert.submit()",1);
-  $formulario -> cerrar();*/
   echo $this->GridStyle();
   $mHtml = new Formlib(2);
   $mHtml->SetJs("min");
   $mHtml->SetJs("jquery");
+  $mHtml->SetJs("functions");
   $mHtml->SetJs("es");
   $mHtml->SetJs("time");
   $mHtml->SetCssJq("jquery");
@@ -191,6 +193,7 @@ class Proc_despac
                     $mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>"1"));
                     $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST["cod_servic"]));
                     $mHtml->Hidden(array( "name" => "valorSelect", "id" => "valorSelectID", 'value'=>$_REQUEST["ciudes"]));
+                    $mHtml->Hidden(array( "name" => "valorSelectCon", "id" => "valorSelectConID", 'value'=>$_REQUEST["config"]));
                     $mHtml->Table("tr");
                         $mHtml->Row();
                             $mHtml->Label( "Ciudad Destino",  array("align"=>"right", "class"=>"celda_titulo") );
@@ -200,21 +203,23 @@ class Proc_despac
                           $mHtml->Label( "Fecha:", array("align"=>"right", "width"=>"25%") );
                           $mHtml->Input( array("name"=>"fecbus", "id"=>"fecbusID", "width"=>"25%", "value"=>((isset($_REQUEST[fecbus]))?$_REQUEST[fecbus]:date('Y-m-j')) ) );
                         $mHtml->CloseRow();
+                        $mHtml->Row();
+                            $mHtml->Label( "Configuracion",  array("align"=>"right", "class"=>"celda_titulo") );
+                            $mHtml->Select2 ($this->getConfig(),  array("name" => "config", "width" => "25%") );
+                        $mHtml->CloseRow();
                          $mHtml->Row();
-                          $mHtml->Button( array("value"=>"Buscar", "id"=>"buscarID","name"=>"buscar", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2" ,"onclick"=>"form_insert.submit()") );
+                          $mHtml->Button( array("value"=>"Buscar", "id"=>"buscarID","name"=>"buscar", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2" ,"onclick"=>"Buscar()") );
                         $mHtml->CloseRow();
                     $mHtml->CloseTable("tr");
                   $mHtml->SetBody('</form>');
                   $mHtml->OpenDiv("id:tabs");
                     $mHtml->SetBody("<ul>
-                                        <li><a href='#tabInform' onclick='getInform()''>INFORME</a></li>
+                                        <li><a href='#tabInform' onclick='getInform()'>INFORME</a></li>
                                     </ul>");
                     $mHtml->OpenDiv("id:tabInform");
                       switch($_REQUEST['opcion'])
                       {
                         case "1":
-                          //$this -> Listar();
-                          //$mHtml->SetBody('<h3>Listar()</h3>');
                           $mHtml->SetBody($this -> Listar());
                           break;
                       }
@@ -231,345 +236,73 @@ class Proc_despac
                               changeYear: true,
                               dateFormat: "yy-mm-dd",
                           });
+
+                          valorSelect=$("#valorSelectID").val();
+                          valorSelectCon=$("#valorSelectConID").val();
+                          $("#ciudesID option[value="+ valorSelect +"]").attr("selected",true);
+                          $("#configID option[value="+ valorSelectCon +"]").attr("selected",true);
+
                         });
+
                         $(function() {
                           $("#tabs").tabs();
                         } );
-                        valorSelect=$("#valorSelectID").val();
-                        $("#ciudesID option[value="+ valorSelect +"]").attr("selected",true);
+
                         function ExportExcel(campo)
                         {
-                            try
-                            {   
-                                window.open("data:application/vnd.ms-excel," + encodeURIComponent($("#"+campo).html()));
+                          try
+                          {   
+                            var ciudes = $("#ciudesID").val();
+                            var fecbus = $("#fecbusID").val();
+                            var config = $("#configID").val();
+                            window.open("index.php?window=central&cod_servic=1382&menant=1382&excel="+campo+"&ciudes="+ciudes+"&fecbus="+fecbus+"&config="+config);
+                          }
+                          catch(e)
+                          {
+                            alert("Error en ExportExcelCara: "+e.message+"\nLine:"+e.lineNumber);
+                          }
+                        } 
 
-                                 
-                            }catch(e){
-                              alert("Error en ExportExcelCara: "+e.message+"\nLine:"+e.lineNumber);
-                            }
-                            
-                          
+                        function Buscar()
+                        {
+                          try
+                          {   
+                            var standa = $("#standaID").val();
+                            $("#popID").remove();
+                            closePopUp("popID");
+                            LoadPopupJQNoButton("open", "", 200, 200, false, false, true);
+                            var popup = $("#popID");
+                            //popup.html("<table align="center"><tr><td><img src="../" + standa + "/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>"");
+                            popup.parent().children().children(".ui-dialog-titlebar-close").hide();
+                            popup.html("<h3>Buscando.....</h3>")
+                            form_insert.submit();
+                          }
+                          catch(e)
+                          {
+                            alert("Error en Buscar: "+e.message+"\nLine:"+e.lineNumber);
+                          }
                         }                        
                       </script>');
     echo $mHtml->MakeHtml();
-
  }
 
+ /*! \fn: Listar
+   *  \brief: pinta los resultados obtenidos de los filtros
+   *  \author: Edward Serrano
+   *  \date:  07/02/2017
+   *  \date modified: dia/mes/año
+   */
  function Listar()
  {
-  $datos_usuario = $this -> usuario -> retornar();
-
-  $_REQUEST[fecbus] = str_replace("/","-",$_REQUEST[fecbus]);
-
-  $fechaadic = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." +5 day"));
-  $fechadism = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." -5 day"));
-
-  $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
-                 CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
-                 e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
-                 (IF(q.tip_transp IS NUll OR q.tip_transp = '','N/A',IF(q.tip_transp='1','Flota Propia',IF(q.tip_transp='2','Terceros',IF(q.tip_transp='3','Empresa','N/A'))) ) ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
-              FROM ".BASE_DATOS.".tab_despac_despac a
-        INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
-        INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
-        INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu i ON i.num_placax = d.num_placax
-        INNER JOIN ".BASE_DATOS.".tab_genera_ciudad j ON a.cod_ciuori = j.cod_ciudad
-        INNER JOIN ".BASE_DATOS.".tab_genera_depart k ON j.cod_depart = k.cod_depart AND j.cod_paisxx = k.cod_paisxx
-        INNER JOIN ".BASE_DATOS.".tab_genera_paises l ON k.cod_paisxx = l.cod_paisxx
-        INNER JOIN ".BASE_DATOS.".tab_genera_ciudad m ON a.cod_ciudes = m.cod_ciudad
-        INNER JOIN ".BASE_DATOS.".tab_genera_depart n ON m.cod_depart = n.cod_depart AND m.cod_paisxx = n.cod_paisxx
-        INNER JOIN ".BASE_DATOS.".tab_genera_paises o ON  n.cod_paisxx = o.cod_paisxx
-        INNER JOIN ".BASE_DATOS.".tab_tercer_tercer p ON i.cod_propie = p.cod_tercer 
-         LEFT JOIN ".BASE_DATOS.".tab_despac_corona q ON a.num_despac = q.num_dessat
-             WHERE a.fec_salida Is Not Null 
-             AND a.fec_llegad Is Null 
-             AND a.fec_salida <= NOW() 
-             AND a.ind_anulad = 'R' 
-             AND a.ind_planru = 'S' ";
-
-  if($_REQUEST[ciudes])
-   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
-  if($_REQUEST[fecbus])
-   $query .= " AND d.fec_llegpl BETWEEN '".$_REQUEST[fecbus]." 00:00:00' AND '".$fechaadic." 23:59:59'";
-
-  if($datos_usuario["cod_perfil"] == "")
-  {
-   //PARA EL FILTRO DE CONDUCTOR
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CONDUC,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE PROPIETARIO
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_PROPIE,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND i.cod_propie = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE POSEEDOR
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_POSEED,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND i.cod_tenedo = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE ASEGURADORA
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DEL CLIENTE
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE LA AGENCIA
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_AGENCI,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-   }
-  }
-  else
-  {
-   //PARA EL FILTRO DE CONDUCTOR
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_CONDUC,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE PROPIETARIO
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_PROPIE,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND i.cod_propie = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE POSEEDOR
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_POSEED,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND i.cod_tenedo = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE ASEGURADORA
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DEL CLIENTE
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE LA AGENCIA
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_AGENCI,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-   }
-  }
-
-  $query = $query." GROUP BY 1";
-
+  
+  $query=$this->getDesruta();
   $consulta = new Consulta($query, $this -> conexion);
   $desruta = $consulta -> ret_matriz();
 
-  $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
-                 CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
-                 e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
-                 (IF(q.tip_transp IS NUll OR q.tip_transp = '','N/A',IF(q.tip_transp='1','Flota Propia',IF(q.tip_transp='2','Terceros',IF(q.tip_transp='3','Empresa','N/A'))) ) ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
-              FROM ".BASE_DATOS.".tab_despac_despac a
-        INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
-        INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
-        INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu i ON i.num_placax = d.num_placax
-        INNER JOIN ".BASE_DATOS.".tab_genera_ciudad j ON a.cod_ciuori = j.cod_ciudad
-        INNER JOIN ".BASE_DATOS.".tab_genera_depart k ON j.cod_depart = k.cod_depart AND j.cod_paisxx = k.cod_paisxx
-        INNER JOIN ".BASE_DATOS.".tab_genera_paises l ON k.cod_paisxx = l.cod_paisxx
-        INNER JOIN ".BASE_DATOS.".tab_genera_ciudad m ON a.cod_ciudes = m.cod_ciudad
-        INNER JOIN ".BASE_DATOS.".tab_genera_depart n ON m.cod_depart = n.cod_depart AND m.cod_paisxx = n.cod_paisxx
-        INNER JOIN ".BASE_DATOS.".tab_genera_paises o ON  n.cod_paisxx = o.cod_paisxx
-        INNER JOIN ".BASE_DATOS.".tab_tercer_tercer p ON i.cod_propie = p.cod_tercer 
-         LEFT JOIN ".BASE_DATOS.".tab_despac_corona q ON a.num_despac = q.num_dessat
-              WHERE a.fec_salida Is Not Null 
-              AND a.fec_llegad Is not Null 
-              AND a.ind_anulad = 'R' 
-              AND a.ind_planru = 'S'
-	   ";
-
-
-  if($_REQUEST[ciudes])
-   $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
-  if($_REQUEST[fecbus])
-   $query .= " AND a.fec_llegad BETWEEN '".$fechadism." 00:00:00' AND '".$_REQUEST[fecbus]." 23:59:59'";
-
-  if($datos_usuario["cod_perfil"] == "")
-  {
-   //PARA EL FILTRO DE CONDUCTOR
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CONDUC,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE PROPIETARIO
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_PROPIE,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND i.cod_propie = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE POSEEDOR
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_POSEED,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND i.cod_tenedo = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE ASEGURADORA
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DEL CLIENTE
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE LA AGENCIA
-   $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_AGENCI,$datos_usuario["cod_usuari"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-   }
-  }
-  else
-  {
-   //PARA EL FILTRO DE CONDUCTOR
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_CONDUC,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE PROPIETARIO
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_PROPIE,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND i.cod_propie = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE POSEEDOR
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_POSEED,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND i.cod_tenedo = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE ASEGURADORA
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DEL CLIENTE
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-   }
-   //PARA EL FILTRO DE LA AGENCIA
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_AGENCI,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
-    $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-   }
-  }
-
-  $query = $query." GROUP BY 1";
+  $query=$this->getDesllega();
   $consulta = new Consulta($query, $this -> conexion);
   $desllega = $consulta -> ret_matriz();
   
-  /*$formulario = new Formulario ("index.php","post","VEHICULOS DISPONIBLES","form_insert","","");
-  $formulario -> linea(sizeof($desruta)." Vehiculo(s) en Ruta Con Llegada Planeada Desde ".$_REQUEST[fecbus]." Hasta ".$fechaadic."",1,"t2");
-
-  $formulario -> nueva_tabla();
-  $formulario -> linea("Poseedor",0,"t");
-  $formulario -> linea("Tipo de Transportadora",0,"t");
-  $formulario -> linea("Placa",0,"t");
-  $formulario -> linea("Tipo Vehiculo",0,"t");
-  $formulario -> linea("Origen",0,"t");
-  $formulario -> linea("Destino",0,"t");
-  $formulario -> linea("Conductor",0,"t");
-  $formulario -> linea("Celular",0,"t");
-  $formulario -> linea("Telefono",0,"t");
-  $formulario -> linea("Llegada Planeada",1,"t");
-
-  for($i = 0; $i < sizeof($desruta); $i++)
-  {
-   $formulario -> linea(utf8_encode($desruta[$i][7]),0,"i");
-   $formulario -> linea($desruta[$i][8],0,"i");
-   $formulario -> linea($desruta[$i][0],0,"i");
-   $formulario -> linea($desruta[$i][9],0,"i");
-   $formulario -> linea($desruta[$i][1],0,"i");
-   $formulario -> linea($desruta[$i][2],0,"i");
-   $formulario -> linea($desruta[$i][3],0,"i");
-   $formulario -> linea($desruta[$i][4],0,"i");
-   $formulario -> linea($desruta[$i][5],0,"i");
-   $formulario -> linea($desruta[$i][6],1,"i");
-  }
-
-  $formulario -> nueva_tabla();
-  $formulario -> linea(sizeof($desllega)." Vehiculo(s) Con Llegada Desde ".$fechadism." Hasta ".$_REQUEST[fecbus]."",1,"t2");
-
-  $formulario -> nueva_tabla();
-   $formulario -> linea("Poseedor",0,"t");
-  $formulario -> linea("Tipo de Transportadora",0,"t");
-  $formulario -> linea("Placa",0,"t");
-  $formulario -> linea("Tipo Vehiculo",0,"t");
-  $formulario -> linea("Origen",0,"t");
-  $formulario -> linea("Destino",0,"t");
-  $formulario -> linea("Conductor",0,"t");
-  $formulario -> linea("Celular",0,"t");
-  $formulario -> linea("Telefono",0,"t");
-  $formulario -> linea("Llegada",1,"t");
-
-  for($i = 0; $i < sizeof($desllega); $i++)
-  {
-   $formulario -> linea(utf8_encode($desllega[$i][7]),0,"i");
-   $formulario -> linea($desllega[$i][8],0,"i");
-   $formulario -> linea($desllega[$i][0],0,"i");
-   $formulario -> linea($desllega[$i][9],0,"i");
-   $formulario -> linea($desllega[$i][1],0,"i");
-   $formulario -> linea($desllega[$i][2],0,"i");
-   $formulario -> linea($desllega[$i][3],0,"i");
-   $formulario -> linea($desllega[$i][4],0,"i");
-   $formulario -> linea($desllega[$i][5],0,"i");
-   $formulario -> linea($desllega[$i][6],1,"i");
-  }
-
-  $formulario -> cerrar();*/
-
 
   $mHtml = new Formlib(2, "yes",TRUE);
   $mHtml->OpenDiv("id:btnVehiculosPla");
@@ -578,7 +311,7 @@ class Proc_despac
       $mHtml->CloseRow();
       $mHtml->Row();
         $mHtml->Label( "Exportar a excel",  array("align"=>"right", "class"=>"celda_titulo") );
-        $mHtml->Button( array("value"=>"EXCEL", "id"=>"ExportExcelID","name"=>"ExportExcel", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"8","onclick"=>"ExportExcel('respVehiculosPla')") );
+        $mHtml->Button( array("value"=>"EXCEL", "id"=>"ExportExcelID","name"=>"ExportExcel", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"8","onclick"=>"ExportExcel(1)") );
       $mHtml->CloseRow();
     $mHtml->CloseTable('tr');
   $mHtml->CloseDiv();
@@ -619,7 +352,7 @@ class Proc_despac
       $mHtml->CloseRow();
       $mHtml->Row();
         $mHtml->Label( "Exportar a excel",  array("align"=>"right", "class"=>"celda_titulo") );
-        $mHtml->Button( array("value"=>"EXCEL", "id"=>"ExportExcelID","name"=>"ExportExcel", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"8","onclick"=>"ExportExcel('respVehiculosLle')") );
+        $mHtml->Button( array("value"=>"EXCEL", "id"=>"ExportExcelID","name"=>"ExportExcel", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"8","onclick"=>"ExportExcel(2)") );
       $mHtml->CloseRow();
     $mHtml->CloseTable('tr');
   $mHtml->CloseDiv();
@@ -657,7 +390,312 @@ class Proc_despac
   return $mHtml->MakeHtml();
  }
 
+ /*! \fn: getDesruta
+   *  \brief: prepara la consulta para los vehiculos en ruta
+   *  \author: Edward Serrano
+   *  \date:  07/02/2017
+   *  \date modified: dia/mes/año
+   */
+ function getDesruta()
+ {
+    $datos_usuario = $this -> usuario -> retornar();
 
+    $_REQUEST[fecbus] = str_replace("/","-",$_REQUEST[fecbus]);
+
+    $fechaadic = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." +5 day"));
+    $fechadism = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." -5 day"));
+
+    $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
+                   CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
+                   e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
+                   (IF(q.tip_transp IS NUll OR q.tip_transp = '','N/A',IF(q.tip_transp='1','Flota Propia',IF(q.tip_transp='2','Terceros',IF(q.tip_transp='3','Empresa','N/A'))) ) ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
+                FROM ".BASE_DATOS.".tab_despac_despac a
+          INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
+          INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
+          INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu i ON i.num_placax = d.num_placax
+          INNER JOIN ".BASE_DATOS.".tab_genera_ciudad j ON a.cod_ciuori = j.cod_ciudad
+          INNER JOIN ".BASE_DATOS.".tab_genera_depart k ON j.cod_depart = k.cod_depart AND j.cod_paisxx = k.cod_paisxx
+          INNER JOIN ".BASE_DATOS.".tab_genera_paises l ON k.cod_paisxx = l.cod_paisxx
+          INNER JOIN ".BASE_DATOS.".tab_genera_ciudad m ON a.cod_ciudes = m.cod_ciudad
+          INNER JOIN ".BASE_DATOS.".tab_genera_depart n ON m.cod_depart = n.cod_depart AND m.cod_paisxx = n.cod_paisxx
+          INNER JOIN ".BASE_DATOS.".tab_genera_paises o ON  n.cod_paisxx = o.cod_paisxx
+          INNER JOIN ".BASE_DATOS.".tab_tercer_tercer p ON i.cod_propie = p.cod_tercer 
+           LEFT JOIN ".BASE_DATOS.".tab_despac_corona q ON a.num_despac = q.num_dessat
+               WHERE a.fec_salida Is Not Null 
+               AND a.fec_llegad Is Null 
+               AND a.fec_salida <= NOW() 
+               AND a.ind_anulad = 'R' 
+               AND a.ind_planru = 'S' ";
+
+    if($_REQUEST[ciudes])
+     $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
+    if($_REQUEST[config])
+     {
+      $query .= " AND q.tip_vehicu LIKE '$_REQUEST[config]' ";
+     }
+    if($_REQUEST[fecbus])
+     $query .= " AND d.fec_llegpl BETWEEN '".$_REQUEST[fecbus]." 00:00:00' AND '".$fechaadic." 23:59:59'";
+    if($datos_usuario["cod_perfil"] == "")
+    {
+     //PARA EL FILTRO DE CONDUCTOR
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CONDUC,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE PROPIETARIO
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_PROPIE,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND i.cod_propie = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE POSEEDOR
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_POSEED,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND i.cod_tenedo = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE ASEGURADORA
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DEL CLIENTE
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE LA AGENCIA
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_AGENCI,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
+     }
+    }
+    else
+    {
+     //PARA EL FILTRO DE CONDUCTOR
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_CONDUC,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE PROPIETARIO
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_PROPIE,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND i.cod_propie = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE POSEEDOR
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_POSEED,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND i.cod_tenedo = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE ASEGURADORA
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DEL CLIENTE
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE LA AGENCIA
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_AGENCI,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
+     }
+    }
+
+    $query = $query." GROUP BY 1";
+
+    return $query;
+
+ }
+ 
+  /*! \fn: getDesllega
+   *  \brief: prepara la consult para los vehiculos con llegada estimada
+   *  \author: Edward Serrano
+   *  \date:  07/02/2017
+   *  \date modified: dia/mes/año
+   */
+ function getDesllega()
+ {
+
+    $datos_usuario = $this -> usuario -> retornar();
+
+    $_REQUEST[fecbus] = str_replace("/","-",$_REQUEST[fecbus]);
+
+    $fechaadic = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." +5 day"));
+    $fechadism = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." -5 day"));
+     $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
+                   CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
+                   e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
+                   (IF(q.tip_transp IS NUll OR q.tip_transp = '','N/A',IF(q.tip_transp='1','Flota Propia',IF(q.tip_transp='2','Terceros',IF(q.tip_transp='3','Empresa','N/A'))) ) ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
+                FROM ".BASE_DATOS.".tab_despac_despac a
+          INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
+          INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
+          INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu i ON i.num_placax = d.num_placax
+          INNER JOIN ".BASE_DATOS.".tab_genera_ciudad j ON a.cod_ciuori = j.cod_ciudad
+          INNER JOIN ".BASE_DATOS.".tab_genera_depart k ON j.cod_depart = k.cod_depart AND j.cod_paisxx = k.cod_paisxx
+          INNER JOIN ".BASE_DATOS.".tab_genera_paises l ON k.cod_paisxx = l.cod_paisxx
+          INNER JOIN ".BASE_DATOS.".tab_genera_ciudad m ON a.cod_ciudes = m.cod_ciudad
+          INNER JOIN ".BASE_DATOS.".tab_genera_depart n ON m.cod_depart = n.cod_depart AND m.cod_paisxx = n.cod_paisxx
+          INNER JOIN ".BASE_DATOS.".tab_genera_paises o ON  n.cod_paisxx = o.cod_paisxx
+          INNER JOIN ".BASE_DATOS.".tab_tercer_tercer p ON i.cod_propie = p.cod_tercer 
+           LEFT JOIN ".BASE_DATOS.".tab_despac_corona q ON a.num_despac = q.num_dessat
+                WHERE a.fec_salida Is Not Null 
+                AND a.fec_llegad Is not Null 
+                AND a.ind_anulad = 'R' 
+                AND a.ind_planru = 'S'
+       ";
+
+
+    if($_REQUEST[ciudes])
+     $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
+    if($_REQUEST[config])
+     {
+      $query .= " AND q.tip_vehicu LIKE '$_REQUEST[config]' ";
+     }
+    if($_REQUEST[fecbus])
+     $query .= " AND a.fec_llegad BETWEEN '".$fechadism." 00:00:00' AND '".$_REQUEST[fecbus]." 23:59:59'";
+    if($datos_usuario["cod_perfil"] == "")
+    {
+     //PARA EL FILTRO DE CONDUCTOR
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CONDUC,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE PROPIETARIO
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_PROPIE,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND i.cod_propie = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE POSEEDOR
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_POSEED,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND i.cod_tenedo = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE ASEGURADORA
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DEL CLIENTE
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE LA AGENCIA
+     $filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_AGENCI,$datos_usuario["cod_usuari"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
+     }
+    }
+    else
+    {
+     //PARA EL FILTRO DE CONDUCTOR
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_CONDUC,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE PROPIETARIO
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_PROPIE,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND i.cod_propie = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE POSEEDOR
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_POSEED,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND i.cod_tenedo = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE ASEGURADORA
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DEL CLIENTE
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
+     }
+     //PARA EL FILTRO DE LA AGENCIA
+     $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_AGENCI,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
+     }
+    }
+    $query = $query." GROUP BY 1";
+
+    return $query;
+ }
+
+  /*! \fn: getConfig
+   *  \brief: optine las configuraciones existentes
+   *  \author: Edward Serrano
+   *  \date:  08/02/2017
+   *  \date modified: dia/mes/año
+   */
+ function getConfig()
+ {
+    $inicio[0][0] = 0;
+    $inicio[0][1] = "-";
+    $query = "SELECT cod_homolo AS cod, cod_homolo AS nom FROM ".BASE_DATOS.".tab_homolo_config";
+    $consulta = new Consulta($query, $this -> conexion);
+    $resulsql = $consulta -> ret_matriz();
+    $resulsql = array_merge($inicio,$resulsql);
+    return $resulsql;
+
+ }
+  /*! \fn: Datos
+   *  \brief: cabezera
+   *  \author: Edward Serrano
+   *  \date:  07/02/2017
+   *  \date modified: dia/mes/año
+   */
  function Datos()
  {
    $datos_usuario = $this -> usuario -> retornar();
@@ -677,6 +715,13 @@ class Proc_despac
 
    $formulario -> cerrar();
  }
+
+  /*! \fn: GridStyle
+   *  \brief: estilos adicionales para el nuevo framework
+   *  \author: Edward Serrano
+   *  \date:  07/02/2017
+   *  \date modified: dia/mes/año
+   */
  function GridStyle()
   {
       echo "<style>
@@ -750,10 +795,64 @@ class Proc_despac
             </style>";
   }
 
+  /*! \fn: exportExcel
+   *  \brief: genera el archivo de excel a exportar
+   *  \author: Edward Serrano
+   *  \date:  05/01/2017
+   *  \date modified: dia/mes/año
+   */
+  function exportExcel()
+  {
+    $titulos = array('Poseedor' => 'Poseedor'
+                    ,'TipoTrans'=>'Tipo de Transportadora'
+                    ,'Placa'=>'Placa'
+                    ,'TipoVehi'=>'Tipo Vehiculo'
+                    ,'Origen'=>'Origen'
+                    ,'Destino'=>'Destino'
+                    ,'Conductor'=>'Conductor'
+                    ,'Celular'=>'Celular'
+                    ,'Telefono'=>'Telefono'
+                    ,'Llegada'=>'Llegada'
+                    );
+    $reslt= "<table>";
+    $reslt.="<tr>";
+    foreach ($titulos as $key => $value)
+    {
+      $reslt.="<td>".$value.(($key=='Llegada' AND $_REQUEST['excel']==1)?' Planeada':'')."</td>";
+    }
+    $reslt.="</tr>";
+
+    $query=(($_REQUEST['excel']==1)?$this->getDesruta():$this->getDesllega());
+    $consulta = new Consulta($query, $this -> conexion);
+    $resulsql = $consulta -> ret_matriz();
+   // echo "<pre>";print_r($resulsql);echo "</pre>";
+    for($i = 0; $i < sizeof($resulsql); $i++)
+    {
+      $reslt.="<tr>";
+        $reslt.="<td>".utf8_encode($resulsql[$i][7])."</td>";
+        $reslt.="<td>".$resulsql[$i][8]."</td>";
+        $reslt.="<td>".$resulsql[$i][0]."</td>";
+        $reslt.="<td>".$resulsql[$i][9]."</td>";
+        $reslt.="<td>".$resulsql[$i][1]."</td>";
+        $reslt.="<td>".$resulsql[$i][2]."</td>";
+        $reslt.="<td>".$resulsql[$i][3]."</td>";
+        $reslt.="<td>".$resulsql[$i][4]."</td>";
+        $reslt.="<td>".$resulsql[$i][5]."</td>";
+        $reslt.="<td>".$resulsql[$i][6]."</td>";
+      $reslt.="</tr>";
+    }
+    header("Content-Type: application/vnd.ms-excel");
+    header("Expires: 0");
+    header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    header("content-disposition: attachment;filename=Vehiculo_Disponibles_".date('Y-m-j').".xls");
+  
+    ob_clean();
+    ob_end_clean();
+    $reslt.= "</table>";
+    echo $reslt;
+  }
+
 }
 
 $proceso = new Proc_despac($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
-
-
-
 ?>
