@@ -92,7 +92,7 @@ class InsertarAutorizacion{
 		$form -> texto(" Telefono 1 ", "text\" readonly=\"readonly", "num_telef1", NULL,NULL,NULL,NULL,NULL); 	
 		$form -> texto(" Telefono 2 ", "text\" readonly=\"readonly", "num_telef2","1",NULL,NULL,NULL,NULL); 	
 		$form -> texto(" Celular ", "text\" readonly=\"readonly", "num_movilx", NULL,NULL,NULL,NULL,NULL); 	
-		$form -> texto(" E-mail ", "text" , "nom_emailx","1",NULL,NULL,NULL,NULL); 	
+		$form -> texto(" E-mail ", "text\" readonly=\"readonly", "nom_emailx","1",NULL,NULL,NULL,NULL); 	
 
 		$form -> nueva_tabla( );
 
@@ -100,10 +100,10 @@ class InsertarAutorizacion{
 
 		$form -> nueva_tabla( );
 
-		$form -> texto("* Usuario a Generar ", "text", "nom_usrapp", NULL,NULL,NULL,NULL,NULL); 	
-		$form -> texto("* Serie ", "text\" readonly=\"readonly", "cod_seriex","1", NULL,NULL,NULL,NULL,NULL); 	
-		$form -> lista("* Estado ", "cod_estado\" id=\"cod_estadoID",$est_appxxx, NULL); 	
-		$form -> lista("* Tipo de Usuario ", "ind_admini\" id=\"ind_adminiID",$tip_usuari, NULL); 	
+		$form -> texto(" Usuario a Generar ", "text", "nom_usrapp", NULL,NULL,NULL,NULL,NULL); 	
+		$form -> texto(" Serie ", "text\" readonly=\"readonly", "cod_seriex","1", NULL,NULL,NULL,NULL,NULL); 	
+		$form -> lista(" Estado ", "cod_estado\" id=\"cod_estadoID",$est_appxxx, NULL); 	
+		$form -> lista(" Tipo de Usuario ", "ind_admini\" id=\"ind_adminiID",$tip_usuari, NULL); 	
 		$form -> oculto("standa", DIR_APLICA_CENTRAL, NULL); 	
 		$form -> oculto("nit_transpor\" id=\"nit_transpor", NIT_TRANSPOR, NULL); 	
 

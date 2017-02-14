@@ -712,7 +712,9 @@ class seguri {
             if ($datos->cod_filtro) {
                 $sqlx = "INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_usuari  (cod_aplica, cod_filtro, cod_usuari, clv_filtro) VALUES ";
                 foreach ($datos->cod_filtro as $key => $value) {
-                   $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value AND cod_perfil = $datos->cod_perfil";
+
+                    $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value AND cod_perfil = $datos->cod_perfil";
+
                     $consulta = new Consulta($sql, self::$cConexion);
                     $filtro = $consulta->ret_matrix("a");
                     if (!$filtro) {
