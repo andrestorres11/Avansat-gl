@@ -633,6 +633,45 @@ class Proc_salida
 
  function Insertar()
  {
+
+if($_SESSION['datos_usuario']['cod_perfil'] == 754){
+
+ 
+      $consultaNit = "SELECT a.clv_filtro
+        FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
+        WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." ";
+
+      $nit = new Consulta($consultaNit, $this -> conexion);
+      $nit = $nit -> ret_matriz();
+      $nit = $nit[0]['clv_filtro'];
+      ini_set('display_errors', true);
+error_reporting(E_ALL);
+      if( $this -> getInterfParame('85', $nit) == true){    
+
+
+    
+      require_once  URL_ARCHIV_STANDA . "/interf/app/APIClienteApp/controlador/DespachoControlador.php";    
+      $controlador = new DespachoControlador(); 
+      $response = $controlador -> registrar($this -> conexion ,  $_REQUEST[despac], $nit);  
+      print_r($response);
+      $mensaje = $response -> msg_respon;
+
+
+      $mens = new mensajes();
+      if( $response -> cod_respon == 1000 ){ 
+
+        $mens->correcto("REGISTRO DE NOVEDADES", $mensaje);
+
+      }
+      else{ 
+        $mens->advert("REGISTRO DE NOVEDADES", $mensaje);
+      }
+    } 
+
+    die("kjuijmuik");
+
+}
+
      $datos_usuario = $this -> usuario -> retornar();
      $usuario=$datos_usuario["cod_usuari"];
 
@@ -906,371 +945,7 @@ class Proc_salida
     }
 
 
-/*******
-   * 
-   *  Fin Interfaz Destino Seguro
-   * 
-   * *****/
 
-//
-  //Manejo de la Interfaz Aplicaciones SAT
-/*  $interfaz = new Interfaz_SAT(BASE_DATOS,NIT_TRANSPOR,$this -> usuario_aplicacion,$this -> conexion);
-
-  if($interfaz -> totalact > 0)
-  {
-   for($i = 0; $i < $interfaz -> totalact; $i++)
-   {
-    //query para traer el nombre de la ruta
-    $query = "SELECT nom_rutasx
-		FROM ".BASE_DATOS.".tab_genera_rutasx
-	       WHERE cod_rutasx = ".$transpor[0][2]."
-	     ";
-
-    $consulta = new Consulta($query, $this -> conexion);
-    $nomrut = $consulta -> ret_vector();
-
-    $homolocon = $interfaz -> getHomoloTranspRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$transpor[0][2]);
-
-    if($homolocon["RUTAHomolo"] > 0)
-    {
-     //query para traer la agencia del despacho.
-     $query = "SELECT c.cod_agenci,b.cod_ciuori,b.cod_ciudes,c.nom_agenci,
-		      c.con_agenci,c.cod_ciudad,c.dir_agenci,c.tel_agenci,
-		      c.dir_emailx
-	         FROM ".BASE_DATOS.".tab_despac_vehige a,
-		      ".BASE_DATOS.".tab_despac_despac b,
-		      ".BASE_DATOS.".tab_genera_agenci c
-		WHERE a.num_despac = '".$_REQUEST[despac]."' AND
-		      b.num_despac = a.num_despac AND
-		      a.cod_agenci = c.cod_agenci
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $datbas = $consulta -> ret_vector();
-
-     $agenci_ws["agenci"] = $datbas[0];
-     $agenci_ws["nombre"] = $datbas[3];
-     $agenci_ws["contac"] = $datbas[4];
-     $agenci_ws["ciudad"] = $datbas[5];
-     $agenci_ws["direcc"] = $datbas[6];
-     $agenci_ws["telefo"] = $datbas[7];
-     $agenci_ws["correo"] = $datbas[8];
-
-     //query para traer el primer cliente del Despacho
-     $query = "SELECT MIN(a.cod_client)
-	         FROM ".BASE_DATOS.".tab_despac_remesa a
-		WHERE a.num_despac = '".$_REQUEST[despac]."'
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $generador = $consulta -> ret_vector();
-
-     if($generador)
-     {
-      $query = "SELECT a.cod_tercer,a.cod_tipdoc,a.nom_apell1,a.nom_apell2,
-		       a.nom_tercer,a.abr_tercer,a.dir_domici,a.num_telef1,
-		       a.num_telmov,a.dir_emailx,a.cod_ciudad,a.obs_tercer
-		  FROM ".BASE_DATOS.".tab_tercer_tercer a
-		 WHERE a.cod_tercer = '".$generador[0]."'
-	       ";
-
-      $consulta = new Consulta($query, $this -> conexion);
-      $genera = $consulta -> ret_vector();
-
-      $genera_ws["tercer"] = $genera[0];
-      $genera_ws["tipdoc"] = $genera[1];
-      $genera_ws["nombre"] = $genera[4]." ".$genera[2]." ".$genera[3];
-      $genera_ws["abrevi"] = $genera[5];
-      $genera_ws["direcc"] = $genera[6];
-      $genera_ws["telefo"] = $genera[7];
-      $genera_ws["celula"] = $genera[8];
-      $genera_ws["correo"] = $genera[9];
-      $genera_ws["ciudad"] = $genera[10];
-      $genera_ws["licenc"] = "";
-      $genera_ws["catlic"] = "";
-      $genera_ws["venlic"] = "";
-      $genera_ws["observ"] = $genera[11];
-      $genera_ws["estado"] = "1";
-      $genera_ws["activi"] = "1";
-     }
-
-     //query para traer el Propietario
-     $query = "SELECT c.cod_tercer,c.cod_tipdoc,c.nom_apell1,c.nom_apell2,
-		      c.nom_tercer,c.abr_tercer,c.dir_domici,c.num_telef1,
-		      c.num_telmov,c.dir_emailx,c.cod_ciudad,c.obs_tercer
-               	 FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
-		      ".BASE_DATOS.".tab_despac_vehige b,
-		      ".BASE_DATOS.".tab_tercer_tercer c
-               WHERE b.num_despac = '".$_REQUEST[despac]."' AND
-		     a.num_placax = b.num_placax AND
-		     a.cod_propie = c.cod_tercer
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $propie = $consulta -> ret_vector();
-
-     $propie_ws["tercer"] = $propie[0];
-     $propie_ws["tipdoc"] = $propie[1];
-     $propie_ws["nombre"] = $propie[4]." ".$propie[2]." ".$propie[3];
-     $propie_ws["abrevi"] = $propie[5];
-     $propie_ws["direcc"] = $propie[6];
-     $propie_ws["telefo"] = $propie[7];
-     $propie_ws["celula"] = $propie[8];
-     $propie_ws["correo"] = $propie[9];
-     $propie_ws["ciudad"] = $propie[10];
-     $propie_ws["licenc"] = "";
-     $propie_ws["catlic"] = "";
-     $propie_ws["venlic"] = "";
-     $propie_ws["observ"] = $propie[11];
-     $propie_ws["estado"] = "1";
-     $propie_ws["activi"] = "2";
-
-     //query para traer el Tenedor
-     $query = "SELECT c.cod_tercer,c.cod_tipdoc,c.nom_apell1,c.nom_apell2,
-		      c.nom_tercer,c.abr_tercer,c.dir_domici,c.num_telef1,
-		      c.num_telmov,c.dir_emailx,c.cod_ciudad,c.obs_tercer
-               	 FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
-		      ".BASE_DATOS.".tab_despac_vehige b,
-		      ".BASE_DATOS.".tab_tercer_tercer c
-               WHERE b.num_despac = '".$_REQUEST[despac]."' AND
-		     a.num_placax = b.num_placax AND
-		     a.cod_tenedo = c.cod_tercer
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $tenedo = $consulta -> ret_vector();
-
-     $tenedo_ws["tercer"] = $tenedo[0];
-     $tenedo_ws["tipdoc"] = $tenedo[1];
-     $tenedo_ws["nombre"] = $tenedo[4]." ".$tenedo[2]." ".$tenedo[3];
-     $tenedo_ws["abrevi"] = $tenedo[5];
-     $tenedo_ws["direcc"] = $tenedo[6];
-     $tenedo_ws["telefo"] = $tenedo[7];
-     $tenedo_ws["celula"] = $tenedo[8];
-     $tenedo_ws["correo"] = $tenedo[9];
-     $tenedo_ws["ciudad"] = $tenedo[10];
-     $tenedo_ws["licenc"] = "";
-     $tenedo_ws["catlic"] = "";
-     $tenedo_ws["venlic"] = "";
-     $tenedo_ws["observ"] = $tenedo[11];
-     $tenedo_ws["estado"] = "1";
-     $tenedo_ws["activi"] = "3";
-
-     //query para traer el Conductor
-     $query = "SELECT c.cod_tercer,c.cod_tipdoc,c.nom_apell1,c.nom_apell2,
-		      c.nom_tercer,c.abr_tercer,c.dir_domici,c.num_telef1,
-		      c.num_telmov,c.dir_emailx,c.cod_ciudad,c.obs_tercer,
-		      d.num_licenc,d.num_catlic,d.fec_venlic
-               	 FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
-		      ".BASE_DATOS.".tab_despac_vehige b,
-		      ".BASE_DATOS.".tab_tercer_tercer c,
-		      ".BASE_DATOS.".tab_tercer_conduc d
-               WHERE b.num_despac = '".$_REQUEST[despac]."' AND
-		     a.num_placax = b.num_placax AND
-		     a.cod_conduc = c.cod_tercer AND
-		     c.cod_tercer = d.cod_tercer
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $conduc = $consulta -> ret_vector();
-
-     $conduc_ws["tercer"] = $conduc[0];
-     $conduc_ws["tipdoc"] = $conduc[1];
-     $conduc_ws["nombre"] = $conduc[4]." ".$conduc[2]." ".$conduc[3];
-     $conduc_ws["abrevi"] = $conduc[5];
-     $conduc_ws["direcc"] = $conduc[6];
-     $conduc_ws["telefo"] = $conduc[7];
-     $conduc_ws["celula"] = $conduc[8];
-     $conduc_ws["correo"] = $conduc[9];
-     $conduc_ws["ciudad"] = $conduc[10];
-     $conduc_ws["licenc"] = $conduc[12];
-     $conduc_ws["catlic"] = $conduc[13];
-     $conduc_ws["venlic"] = $conduc[14];
-     $conduc_ws["observ"] = $conduc[11];
-     $conduc_ws["estado"] = "1";
-     $conduc_ws["activi"] = "4";
-
-     //query para traer el Conductor del Despacho
-     $query = "SELECT c.cod_tercer,c.cod_tipdoc,c.nom_apell1,c.nom_apell2,
-		      c.nom_tercer,c.abr_tercer,c.dir_domici,c.num_telef1,
-		      c.num_telmov,c.dir_emailx,c.cod_ciudad,c.obs_tercer,
-		      d.num_licenc,d.num_catlic,d.fec_venlic
-               	 FROM ".BASE_DATOS.".tab_despac_vehige b,
-		      ".BASE_DATOS.".tab_tercer_tercer c,
-		      ".BASE_DATOS.".tab_tercer_conduc d
-               WHERE b.num_despac = '".$_REQUEST[despac]."' AND
-		     c.cod_tercer = b.cod_conduc AND
-		     d.cod_tercer = c.cod_tercer
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $conduc_d = $consulta -> ret_vector();
-
-     $conduc_d_ws["tercer"] = $conduc_d[0];
-     $conduc_d_ws["tipdoc"] = $conduc_d[1];
-     $conduc_d_ws["nombre"] = $conduc_d[4]." ".$conduc_d[2]." ".$conduc_d[3];
-     $conduc_d_ws["abrevi"] = $conduc_d[5];
-     $conduc_d_ws["direcc"] = $conduc_d[6];
-     $conduc_d_ws["telefo"] = $conduc_d[7];
-     $conduc_d_ws["celula"] = $conduc_d[8];
-     $conduc_d_ws["correo"] = $conduc_d[9];
-     $conduc_d_ws["ciudad"] = $conduc_d[10];
-     $conduc_d_ws["licenc"] = $conduc_d[12];
-     $conduc_d_ws["catlic"] = $conduc_d[13];
-     $conduc_d_ws["venlic"] = $conduc_d[14];
-     $conduc_d_ws["observ"] = $conduc[11];
-     $conduc_d_ws["estado"] = "1";
-     $conduc_d_ws["activi"] = "4";
-
-     //query para traer el Vehiculo
-     $query = "SELECT b.num_placax,b.cod_marcax,b.cod_lineax,'1',
-		      b.cod_colorx,b.cod_carroc,b.cod_propie,b.cod_tenedo,
-		      b.cod_conduc
-               	 FROM ".BASE_DATOS.".tab_despac_vehige a,
-		      ".BASE_DATOS.".tab_vehicu_vehicu b
-               WHERE a.num_despac = '".$_REQUEST[despac]."' AND
-		     a.num_placax = b.num_placax
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $vehicu = $consulta -> ret_vector();
-
-     $vehicu_ws["placax"] = $vehicu[0];
-     $vehicu_ws["marcax"] = $vehicu[1];
-     $vehicu_ws["lineax"] = $vehicu[2];
-     $vehicu_ws["clasex"] = $vehicu[3];
-     $vehicu_ws["colorx"] = $vehicu[4];
-     $vehicu_ws["carroc"] = $vehicu[5];
-     $vehicu_ws["propie"] = $vehicu[6];
-     $vehicu_ws["poseed"] = $vehicu[7];
-     $vehicu_ws["conduc"] = $vehicu[8];
-
-     if($generador)
-     {
-      //inserta o Actualiza el generador de vehiculo
-      $interfaz -> insTercer($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$genera_ws);
-     }
-
-     //inserta o Actualiza el propietario de vehiculo
-     $interfaz -> insTercer($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$propie_ws);
-
-     //inserta o Actualiza el tenedor del vehiculo
-     $interfaz -> insTercer($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$tenedo_ws);
-
-     //inserta o Actualiza el conductor del vehiculo
-     $interfaz -> insTercer($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$conduc_ws);
-
-     //inserta o Actualiza el conductor asignado en el Despacho
-     $interfaz -> insTercer($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$conduc_d_ws);
-
-     //inserta o Actualiza Agencia
-     $interfaz -> insAgenci($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$agenci_ws);
-
-     //inserta o Actualiza el Vehiculo del despacho
-     $interfaz -> insVehicu($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$vehicu_ws);
-
-     //query para traer las observaciones y datos finales
-     $query = "SELECT a.cod_manifi,a.fec_despac,a.cod_ciuori,a.cod_ciudes,
-		      a.obs_despac,a.fec_salida,b.cod_rutasx,b.obs_proesp,
-		      b.obs_medcom,b.fec_salipl
-		 FROM ".BASE_DATOS.".tab_despac_despac a,
-		      ".BASE_DATOS.".tab_despac_vehige b
-		WHERE a.num_despac = b.num_despac AND
-		      a.num_despac = '".$_REQUEST[despac]."'
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $datfin = $consulta -> ret_vector();
-
-     $query = "SELECT a.cod_contro
-		 FROM ".BASE_DATOS.".tab_despac_seguim a
-		WHERE a.cod_rutasx = ".$datfin[6]." AND
-		      a.num_despac = ".$_REQUEST[despac]."
-		      ORDER BY a.fec_planea
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $planru_d = $consulta -> ret_matriz();
-
-     $planru_ws = $planru_d[0][0];
-
-     for($j = 1; $j < sizeof($planru_d); $j++)
-      $planru_ws .= "|".$planru_d[$j][0];
-
-     $query = "SELECT a.cod_contro,a.cod_noveda,a.val_pernoc
-		 FROM ".BASE_DATOS.".tab_despac_pernoc a
-		WHERE a.cod_rutasx = ".$datfin[6]." AND
-		      a.num_despac = ".$_REQUEST[despac]."
-	      ";
-
-     $consulta = new Consulta($query, $this -> conexion);
-     $pernoc = $consulta -> ret_matriz();
-
-     if($pernoc)
-     {
-      $precon_ws = $pernoc[0][0];
-      $prenov_ws = $pernoc[0][1];
-      $pretie_ws = $pernoc[0][2];
-
-      for($j = 1; $j < sizeof($pernoc); $j++)
-      {
-       $precon_ws .= "|".$pernoc[$j][0];
-       $prenov_ws .= "|".$pernoc[$j][1];
-       $pretie_ws .= "|".$pernoc[$j][2];
-      }
-     }
-     else
-     {
-      $precon_ws = "";
-      $prenov_ws = "";
-      $pretie_ws = "";
-     }
-
-     if($generador)
-      $genera_d = $genera_ws["tercer"];
-     else
-      $genera_d = "";
-
-     $despac_ws["despac"] = $_REQUEST[despac];
-     $despac_ws["manifi"] = $datfin[0];
-     $despac_ws["genera"] = $genera_d;
-     $despac_ws["fechax"] = $datfin[1];
-     $despac_ws["ciuori"] = $datfin[2];
-     $despac_ws["ciudes"] = $datfin[3];
-     $despac_ws["agenci"] = $agenci_ws["agenci"];
-     $despac_ws["observ"] = $datfin[4];
-     $despac_ws["conduc"] = $conduc_d_ws["tercer"];
-     $despac_ws["placax"] = $vehicu_ws["placax"];
-     $despac_ws["salida"] = $datfin[5];
-     $despac_ws["llegad"] = "";
-     $despac_ws["obslle"] = "";
-     $despac_ws["rutasx"] = $datfin[6];
-     $despac_ws["proesp"] = $datfin[7];
-     $despac_ws["medcom"] = $datfin[8];
-     $despac_ws["salipl"] = $datfin[9];
-     $despac_ws["llegpl"] = "";
-     $despac_ws["planru"] = $planru_ws;
-     $despac_ws["precon"] = $precon_ws;
-     $despac_ws["prenov"] = $prenov_ws;
-     $despac_ws["pretie"] = $pretie_ws;
-
-     $resultado_ws = $interfaz -> insSalida($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$despac_ws);
-
-     if($resultado_ws["Confirmacion"] == "OK")
-     {
-      $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">El Vehiculo con Placas <b>".$_REQUEST[placa]."</b> ha Salido Correctamente en la Interfaz ".$interfaz -> interfaz[$i]["nombre"].".";
-     }
-     else
-     {
-      $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">Existe un Error al Insertar el Despacho en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"]."</b>. :: ".$resultado_ws["Confirmacion"];
-      $nopassint = 1;
-     }
-    }
-    else
-     $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">La Ruta <b>".$nomrut[0]."</b> no se Encuentra Actualmente Homologada en la Interfaz ".$interfaz -> interfaz[$i]["nombre"].". No hay Seguimiento.</br>";
-   }
-  }
-*/
   $query = "SELECT a.cod_transp
   		      FROM ".BASE_DATOS.".tab_despac_vehige a
   		     WHERE a.num_despac = ".$_REQUEST[despac]."
@@ -1279,38 +954,36 @@ class Proc_salida
   $consulta = new Consulta($query, $this -> conexion);
   $transdes = $consulta -> ret_matriz();
 
-  //Manejo de Interfaz GPS
-  /*$interf_gps = new Interfaz_GPS();
-  $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$_REQUEST[usuario],$this -> conexion);
 
-  for($i = 0; $i  < $interf_gps -> cant_interf; $i++)
-  {
-	if($interf_gps -> getVehiculo($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$transdes[0][0]))
-	{
-	 $idgps = $interf_gps -> getIdGPS($_REQUEST[placa],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
-
-	 if($interf_gps -> setSalidaGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$_REQUEST[placa],$idgps,$_REQUEST[despac]))
-	 {
-	    if($interf_gps -> setAcTimeRepor($interf_gps -> cod_operad[$i][0],$transdes[0][0],$_REQUEST[placa],$idgps,$_REQUEST[despac],$fec_actual,$interf_gps -> val_timtra[$i][0]))
-	    {
-	    	$mensaje_gps = "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Activado Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
-	    }
-	 }
-	 else
-	 {
-	    $mensaje_gps = "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ocurrio un Error al Activar Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
-	 }
-	}
-	else
-	{
-	 $mensaje_gps = "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">No se Activo Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0]."</b>. El Vehiculo no se Ecuentra Relacionado con el Operador.";
-	}
-  }
-*/
   if(!$nopassint)
   {
    if($consulta = new Consulta ("COMMIT", $this -> conexion))
    {
+    if( $this -> getInterfParame('85', $nit) == true){    
+      $consultaNit = "SELECT a.clv_filtro
+        FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
+        WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." ";
+
+      $nit = new Consulta($consultaNit, $this -> conexion);
+      $nit = $nit -> ret_matriz();
+      $nit = $nit[0]['clv_filtro'];
+
+      require_once  URL_ARCHIV_STANDA . "/interf/app/APIClienteApp/controlador/DespachoControlador.php";    
+      $controlador = new DespachoControlador(); 
+      $response = $controlador -> registrar($this -> conexion ,  $_REQUEST[despac], $nit);  
+      $mensaje = $response -> msg_respon;
+
+
+      $mens = new mensajes();
+      if( $response -> cod_respon == 1000 ){ 
+
+        $mens->correcto("REGISTRO DE NOVEDADES", $mensaje);
+
+      }
+      else{ 
+        $mens->advert("REGISTRO DE NOVEDADES", $mensaje);
+      }
+    } 
     $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otra Salida</a></b>";
 
      $mensaje = "El Vehiculo <b>".$_REQUEST[placa]."</b> Asignado al Despacho # <b>".$_REQUEST[despac]."</b> Salio Exitosamente.".$mensaje_sat.$mensaje_gps;
@@ -1328,6 +1001,25 @@ class Proc_salida
 
   $formulario -> cerrar();
  }
+
+   //---------------------------------------------
+    /*! \fn: getInterfParame
+    *  \brief:Verificar la interfaz con destino seguro esta activa
+    *  \author: Nelson Liberato
+    *  \date: 21/12/2015
+    *  \date modified: 21/12/2015  
+    *  \return BOOL
+    */
+    function getInterfParame( $mCodInterf = NULL, $nit = NULL )
+    { 
+        $mSql = "SELECT ind_estado 
+                   FROM ".BASE_DATOS.".tab_interf_parame a 
+                  WHERE a.cod_operad = '".$mCodInterf."' 
+                    AND a.cod_transp = '".$nit."'";
+        $mMatriz = new Consulta( $mSql, $this -> conexion );
+        $mMatriz = $mMatriz -> ret_matriz( "a" ); 
+        return $mMatriz[0]['ind_estado'] == '1' ? true : false;
+    }
 
 }//FIN CLASE PROC_DESCARGUE
      $proceso = new Proc_salida($this -> conexion, $this -> usuario_aplicacion,$this-> codigo);
