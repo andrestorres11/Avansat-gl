@@ -139,7 +139,7 @@ class AjaxInsertarAutorizacion
 			"ind_admini" => $_REQUEST['ind_admini']
  
 		);	
-	
+		
 		if(	$consulta ){
 
 			include URL_ARCHIV_STANDA."interf/app/APIClienteApp/controlador/UsuarioControlador.php";

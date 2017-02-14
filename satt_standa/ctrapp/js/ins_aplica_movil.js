@@ -66,7 +66,7 @@ function guardar(){
 		message += "\n-Tipo de Usuario";
 		flag = false;
 	}
-	
+
 	if(flag == true){
 			$.ajax({
 				url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=guardarUsuario",

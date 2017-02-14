@@ -1,5 +1,5 @@
 <?php
-//ini_set('display_errors', true);
+ini_set('display_errors', true);
 
 class AjaxModuloComunicaciones 
 {
@@ -1984,6 +1984,7 @@ class AjaxModuloComunicaciones
       $_Data = $consulta -> ret_matrix('a');
       return $_Data;
   }
+  
   
   public function ListarAsignacionesUsuarios( $_AJAX ){
       AjaxModuloComunicaciones::Style(); 
