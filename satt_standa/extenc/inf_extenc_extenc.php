@@ -1,4 +1,5 @@
 <?php
+
 require "ajax_extenc_extenc.php";
 
 class Ins_extenc_extenc {

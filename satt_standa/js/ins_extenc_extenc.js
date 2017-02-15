@@ -1,4 +1,5 @@
 $(function() {
+    
     $("#sec1").css("height", "auto");
     $("#sec2").css("height", "auto");
     $("#contenido").css("height", "auto");
