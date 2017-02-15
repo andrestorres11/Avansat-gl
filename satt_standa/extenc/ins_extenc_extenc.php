@@ -126,7 +126,7 @@ class Ins_extenc_extenc {
 					      
 					      $list->SetClose('no');
 					      $list->SetHeader("Consecutivo", "field: a.cod_extenc; width:1%;  ");
-					      $list->SetHeader(utf8_decode("Tipo de Operación"), "field:b.nom_operaci; width:1%");
+					      $list->SetHeader(utf8_decode("Tipo de Operación"), "field:b.nom_operac; width:1%");
 					      $list->SetHeader(utf8_decode("Grupo"), "field:c.nom_grupox; width:1%");
 					      $list->SetHeader(utf8_decode("No. de Extensión"), "field:a.num_extenc ; width:1%");
 					      $list->SetHeader(utf8_decode("Usuario"), "field:a.usr_extenc; width:1%");
