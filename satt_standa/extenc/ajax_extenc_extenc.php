@@ -818,6 +818,7 @@ class extenc{
     }
   }
 
+
 if($_REQUEST[Ajax] === 'on' )
   $_INFORM = new extenc();
 
