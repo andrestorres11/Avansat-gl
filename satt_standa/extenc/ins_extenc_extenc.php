@@ -1,7 +1,6 @@
 <?php
 	/*ini_set('display_errors', true);
     error_reporting(E_ALL & ~E_NOTICE);*/
-
     require "ajax_extenc_extenc.php";
 
 class Ins_extenc_extenc {
