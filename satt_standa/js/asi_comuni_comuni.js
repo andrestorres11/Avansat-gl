@@ -796,11 +796,12 @@ function AjaxJquery(opcion, date, novedad)
               paraID="0";
           }
           if($('#copiaID').is(':checked')){
-              copiaID="S";
+
+              copiaID="C";
           }else{
               copiaID="0";
           }
-          if((paraID!="0" && copiaID!="0") || (paraID=="P" && copiaID=="0") || (paraID=="0" && copiaID=="S"))
+          if((paraID!="0" && copiaID!="0") || (paraID=="P" && copiaID=="0") || (paraID=="0" && copiaID=="C"))
           {
               if(nom_usuarioID!="")
               {
