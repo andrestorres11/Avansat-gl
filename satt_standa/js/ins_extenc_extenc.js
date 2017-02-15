@@ -38,22 +38,12 @@ $(function() {
 
     $("body").removeAttr("class");
 
-
-    $( "#cod_operacID" ).change( function( event ){
-
-        data = "Option=getSubOperad&cod_operad="+$(this).val();
-        $("#cod_subopeID").html("<option value=''>--</option>");
-        
-        AjaxGetXml("../"+standa+"/extenc/ajax_extenc_extenc.php", data, "post" );
-    });
- 
 });
 
 function informeLlamadasEntrantes(pestana) {
     var fec_inicia = $("#fec_iniciaID").val();
     var fec_finali = $("#fec_finaliID").val();
     var cod_operac = $("#cod_operacID").val();
-    var cod_subope = $("#cod_subopeID").val();
     var errores = false;
     //valido la fecha inicial y la final
     if (!fec_inicia) {
@@ -64,7 +54,7 @@ function informeLlamadasEntrantes(pestana) {
     }
     if (!cod_operac) {
         setTimeout(function() {
-            inc_alerta("cod_operacID", "Por favor selecciona un tipo de operación");
+            inc_alerta("cod_operacID", "Por favor selecciona un tipo de operaciÃ³n");
         }, 510);
         errores = true;
     }
@@ -81,7 +71,7 @@ function informeLlamadasEntrantes(pestana) {
                 var num_celula = $("#num_celulaID").val();
                 var standa = $("#standaID").val();
                 //llamo a la funcion ajax para pintar los datos 
-                var formData = "Option=informeLlamadasEntrantes&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali + "&cod_operac=" + cod_operac + "&num_celula=" + num_celula + "&pestana=" + pestana + "&cod_subope=" + cod_subope;
+                var formData = "Option=informeLlamadasEntrantes&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali + "&cod_operac=" + cod_operac + "&num_celula=" + num_celula + "&pestana=" + pestana;
                 $.ajax({
                     url: "../" + standa + "/extenc/ajax_extenc_extenc.php",
                     type: "POST",
@@ -103,7 +93,7 @@ function informeLlamadasEntrantes(pestana) {
                 });
             } else {
                 setTimeout(function() {
-                    inc_alerta("ocultos", "No tienes conexión a internet por favor verifica.");
+                    inc_alerta("ocultos", "No tienes conexiÃ³n a internet por favor verifica.");
                 }, 510);
             }
         }
@@ -134,7 +124,7 @@ function registrarOperacion() {
                         mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                         mensaje += "<label>Extensiones</label>";
                         mensaje += "<div style='width:97%'>";
-                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Operación ya registrada para el usuario seleccionado <br> debe inactivar primero la existente.<br><img src='" + src + "'>";
+                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>OperaciÃ³n ya registrada para el usuario seleccionado <br> debe inactivar primero la existente.<br><img src='" + src + "'>";
                         mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
                     } else if (data == 1) { // procedimiento correcto
                         var src = "../" + standa + "/imagenes/ok.png";
@@ -142,7 +132,7 @@ function registrarOperacion() {
                         mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                         mensaje += "<label>Extensiones</label>";
                         mensaje += "<div style='width:97%'>";
-                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Se registró la operación Exitosamente.<br></font><br><img src='" + src + "'>";
+                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Se registrÃ³ la operaciÃ³n Exitosamente.<br></font><br><img src='" + src + "'>";
                         mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='formulario();' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
                     } else if (data == 2) { // error en el registro
                         var src = "../" + standa + "/imagenes/bad.png";
@@ -150,10 +140,10 @@ function registrarOperacion() {
                         mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                         mensaje += "<label>Extensiones</label>";
                         mensaje += "<div style='width:97%'>";
-                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurrió un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
+                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>OcurriÃ³ un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
                         mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
                     }
-                    LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
+                    LoadPopupJQNoButton('open', 'Resultado de la OperaciÃ³n', 'auto', 'auto', false, false, true);
                     var popup = $("#popID");
                     popup.parent().children().children('.ui-dialog-titlebar-close').hide();
                     popup.append(mensaje); // //lanza el popUp
@@ -162,7 +152,7 @@ function registrarOperacion() {
             });
         } else {
             setTimeout(function() {
-                inc_alerta("registrar", "No tienes conexión a internet, por favor verifica");
+                inc_alerta("registrar", "No tienes conexiÃ³n a internet, por favor verifica");
             }, 510);
         }
     }
@@ -196,7 +186,7 @@ function registrarGrupo() {
                         mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                         mensaje += "<label>Grupos</label>";
                         mensaje += "<div style='width:97%'>";
-                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Se registró el grupo Exitosamente.<br></font><br><img src='" + src + "'>";
+                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Se registrÃ³ el grupo Exitosamente.<br></font><br><img src='" + src + "'>";
                         mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='formulario();' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
                     } else if (data == 2) { // error en el registro
                         var src = "../" + standa + "/imagenes/bad.png";
@@ -204,10 +194,10 @@ function registrarGrupo() {
                         mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                         mensaje += "<label>Grupos</label>";
                         mensaje += "<div style='width:97%'>";
-                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurrió un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
+                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>OcurriÃ³ un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
                         mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
                     }
-                    LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
+                    LoadPopupJQNoButton('open', 'Resultado de la OperaciÃ³n', 'auto', 'auto', false, false, true);
                     var popup = $("#popID");
                     popup.parent().children().children('.ui-dialog-titlebar-close').hide();
                     popup.append(mensaje); // //lanza el popUp
@@ -216,7 +206,7 @@ function registrarGrupo() {
             });
         } else {
             setTimeout(function() {
-                inc_alerta("registrar", "No tienes conexión a internet, por favor verifica");
+                inc_alerta("registrar", "No tienes conexiÃ³n a internet, por favor verifica");
             }, 510);
         }
     }
@@ -244,7 +234,7 @@ function registrar() {
                         mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                         mensaje += "<label>Extensiones</label>";
                         mensaje += "<div style='width:97%'>";
-                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Configuración ya registrada para el usuario seleccionado <br> debe inactivar primero la existente.<br><img src='" + src + "'>";
+                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>ConfiguraciÃ³n ya registrada para el usuario seleccionado <br> debe inactivar primero la existente.<br><img src='" + src + "'>";
                         mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
                     } else if (data == 1) { // procedimiento correcto
                         var src = "../" + standa + "/imagenes/ok.png";
@@ -252,7 +242,7 @@ function registrar() {
                         mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                         mensaje += "<label>Extensiones</label>";
                         mensaje += "<div style='width:97%'>";
-                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Se registró la extensión Exitosamente.<br></font><br><img src='" + src + "'>";
+                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Se registrÃ³ la extensiÃ³n Exitosamente.<br></font><br><img src='" + src + "'>";
                         mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='formulario();' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
                     } else if (data == 2) { // error en el registro
                         var src = "../" + standa + "/imagenes/bad.png";
@@ -260,10 +250,10 @@ function registrar() {
                         mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                         mensaje += "<label>Extensiones</label>";
                         mensaje += "<div style='width:97%'>";
-                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurrió un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
+                        mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>OcurriÃ³ un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
                         mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
                     }
-                    LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
+                    LoadPopupJQNoButton('open', 'Resultado de la OperaciÃ³n', 'auto', 'auto', false, false, true);
                     var popup = $("#popID");
                     popup.parent().children().children('.ui-dialog-titlebar-close').hide();
                     popup.append(mensaje); // //lanza el popUp
@@ -272,7 +262,7 @@ function registrar() {
             });
         } else {
             setTimeout(function() {
-                inc_alerta("registrar", "No tienes conexión a internet, por favor verifica");
+                inc_alerta("registrar", "No tienes conexiÃ³n a internet, por favor verifica");
             }, 510);
         }
     }
@@ -287,7 +277,7 @@ function editarConexion(tipo, objeto) {
     if (tipo == 2) {
         confirmar2('inactivar');
     } else if (tipo == 1) {
-        inc_alerta("registrar", "Una vez inactivada una extensión no se puede activar. Debes crear una nueva");
+        inc_alerta("registrar", "Una vez inactivada una extensiÃ³n no se puede activar. Debes crear una nueva");
     }
 
 }
@@ -322,14 +312,14 @@ function editarGrupo(tipo, objeto) {
 //funcion de confirmacion para la edicion, eliminacion e inactivacion de conductores
 function confirmar(operacion) {
 
-    LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+    LoadPopupJQNoButton('open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true);
     var popup = $("#popID");
     var cod_operac = $("#codID").val();
     var nomo_perac = $("#operacID").val();
     var onclick = "onclick='register(\"";
     onclick += operacion + "Operacion";
     onclick += "\")'";
-    var msj = "<div style='text-align:center'>¿Está seguro de <b>" + operacion + "</b> la operacion: <b>" + nomo_perac + "?</b><br><br><br><br>";
+    var msj = "<div style='text-align:center'>Â¿EstÃ¡ seguro de <b>" + operacion + "</b> la operacion: <b>" + nomo_perac + "?</b><br><br><br><br>";
     msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
     msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
 
@@ -340,14 +330,14 @@ function confirmar(operacion) {
 
 function confirmar2(operacion) {
 
-    LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+    LoadPopupJQNoButton('open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true);
     var popup = $("#popID");
     var usuario = $("#usrID").val();
     var extenci = $("#extencID").val();
     var onclick = "onclick='register(\"";
     onclick += operacion;
     onclick += "\")'";
-    var msj = "<div style='text-align:center'>¿Está seguro de <b>" + operacion + "</b> la operacion de: <b>" + usuario + "?</b><br><br><br><br>";
+    var msj = "<div style='text-align:center'>Â¿EstÃ¡ seguro de <b>" + operacion + "</b> la operacion de: <b>" + usuario + "?</b><br><br><br><br>";
     msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
     msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
 
@@ -358,14 +348,14 @@ function confirmar2(operacion) {
 
 function confirmar3(operacion) {
 
-    LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+    LoadPopupJQNoButton('open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true);
     var popup = $("#popID");
     var grupox = $("#grupoxID").val();
 
     var onclick = "onclick='register(\"";
     onclick += operacion + "Grupo";
     onclick += "\")'";
-    var msj = "<div style='text-align:center'>¿Está seguro de <b>" + operacion + "</b> el grupo: <b>" + grupox + "?</b><br><br><br><br>";
+    var msj = "<div style='text-align:center'>Â¿EstÃ¡ seguro de <b>" + operacion + "</b> el grupo: <b>" + grupox + "?</b><br><br><br><br>";
     msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
     msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
 
@@ -380,7 +370,7 @@ function register(operacion) {
     LoadPopupJQNoButton('close');
     //valido los datos generales del formulario
     //crea el popUp para el mensaje de  respuesta del guardado 
-    LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
+    LoadPopupJQNoButton('open', 'Resultado de la OperaciÃ³n', 'auto', 'auto', false, false, true);
     var popup = $("#popID");
     var extenci = $("#extencID").val();
     var operaci = $("#codID").val();
@@ -409,9 +399,8 @@ function register(operacion) {
 
 function detalle(cod_operac, fec_inicia, fec_finali, tipo_consulta) {
     var fecha_inicial = $("#fec_iniciaID").val();
-    var fecha_final = $("#fec_finaliID").val(); 
-    var cod_subope = $("#cod_subopeID").val();
-    var formData = "Option=GetDetalle&Ajax=on&cod_operac=" + cod_operac + "&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali + "&tipo=" + tipo_consulta + "&fecha_inicial=" + fecha_inicial + "&fecha_final=" + fecha_final + "&num_celula=" + $("#num_celulaID").val() + "&cod_subope=" + cod_subope;
+    var fecha_final = $("#fec_finaliID").val();
+    var formData = "Option=GetDetalle&Ajax=on&cod_operac=" + cod_operac + "&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali + "&tipo=" + tipo_consulta + "&fecha_inicial=" + fecha_inicial + "&fecha_final=" + fecha_final + "&num_celula=" + $("#num_celulaID").val();
     var standa = $("#standaID").val();
     //cierra popUp si hay inicialiado
     closePopUp('popID');
@@ -437,7 +426,7 @@ function detalle(cod_operac, fec_inicia, fec_finali, tipo_consulta) {
         });
     } else {
         setTimeout(function() {
-            inc_alerta("ocultos", "No tienes conexión a internet por favor verifica.");
+            inc_alerta("ocultos", "No tienes conexiÃ³n a internet por favor verifica.");
         }, 510);
     }
 }
@@ -499,17 +488,17 @@ function PopUpJuery2(option) {
  *  \return: 
  */
 function pintarExcel(idTable) {
-    $("#"+idTable+" img").remove();
-    var pop = $(".ui-dialog").length;
+	$("#"+idTable+" img").remove();
+	var pop = $(".ui-dialog").length;
 
     tabla = "<table>" + $("#"+idTable).html() + "</table>";
     $('#exportExcelID').val(tabla);
     $("#formulario").submit();
 
     if( pop < 1 ){
-        informeLlamadasEntrantes('generaID');
+		informeLlamadasEntrantes('generaID');
     }else{
-        closePopUp();
+    	closePopUp();
     }
 
 }
