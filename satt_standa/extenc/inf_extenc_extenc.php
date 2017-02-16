@@ -1,4 +1,5 @@
 <?php
+
 require "ajax_extenc_extenc.php";
 
 class Ins_extenc_extenc {
@@ -32,7 +33,7 @@ class Ins_extenc_extenc {
      *  \brief: funcion inicial para listar registrar extenciones
      *  \author: Ing. Alexander Correa
      *	\date: 04/12/2015
-     *	\date modified: dia/mes/año
+     *	\date modified: dia/mes/aÃ±o
      *  \param: 
      *  \param: 
      *  \return 
@@ -67,11 +68,7 @@ class Ins_extenc_extenc {
         echo "</table>";
 
         ?>
-        <style type="text/css">
-          .ui-datepicker-title{
-            color: black !important;
-          }
-        </style>
+
         <form name="formulario" id="formulario" action="../<?= DIR_APLICA_CENTRAL ?>/lib/exportExcel.php" method="post">
             <input type="hidden" name='nameFile' id='nameFileID' value="informe_llamadas_entrantes">
             <input type="hidden" name='OptionExcel' id='OptionExcelID' value='_REQUEST'>

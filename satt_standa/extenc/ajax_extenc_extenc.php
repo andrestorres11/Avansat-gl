@@ -125,7 +125,9 @@ class extenc{
 					die('2'); //errror al registrar en la base de datos
 			}
         }else{
+
           die("0"); //para avisar que ya la existe una extensión identica para el usuario seleccionado y debe inhabilitarse antes
+
         } 
     }
 
@@ -143,6 +145,7 @@ class extenc{
     public function getTipoDeOperacion(){
       $sesion = (object) $_SESSION['datos_usuario'];
 
+
       if($sesion->cod_perfil == '712'){
 
       }
@@ -158,13 +161,14 @@ class extenc{
         }
         if($sesion->cod_perfil == '712'){
            $select = "<select style='width:100%' id='cod_operacID' name='cod_operac' validate='select' obl='1' disabled='true'>
-                  <option value=''>Seleccione un tipo de Operación</option>
+                  <option value=''>Seleccione un tipo de OperaciÃ³n</option>
                   $option
                    </select>";
         }else{
           $select = "<select style='width:100%' id='cod_operacID' name='cod_operac' validate='select' obl='1'>
                   <option value=''>Seleccione un tipo de Operación</option>
                   $option
+
                    </select>";
        }
        
@@ -235,17 +239,17 @@ class extenc{
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
-        #inactiva la extensión
+        #inactiva la extensiÃ³n
         $query = "UPDATE ".BASE_DATOS.".tab_callce_extenc 
                         SET ind_estado = 0,
                             usr_modifi = '$usuario',
                             fec_modifi = '$fec_actual'
                             WHERE cod_extenc = '$cod_extenc' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se insctivó la extensión exitosamente.";
+           $mensaje = "Se insctivÃ³ la extensiÃ³n exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
-           $mens -> correcto2("INACTIVAR EXTENSIÓN",$mensaje);
+           $mens -> correcto2("INACTIVAR EXTENSIÃ“N",$mensaje);
         }
     }
 
@@ -261,10 +265,10 @@ class extenc{
                             fec_modifi = '$fec_actual'
                             WHERE cod_operac = '$cod_operac' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se inactivó la operación exitosamente.";
+           $mensaje = "Se inactivÃ³ la operaciÃ³n exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
-           $mens -> correcto2("INACTIVAR OPERACÓN",$mensaje);
+           $mens -> correcto2("INACTIVAR OPERACÃ“N",$mensaje);
         }
     }
 
@@ -280,10 +284,10 @@ class extenc{
                             fec_modifi = '$fec_actual'
                             WHERE cod_operac = '$cod_operac' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se activó la operación exitosamente.";
+           $mensaje = "Se activÃ³ la operaciÃ³n exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
-           $mens -> correcto2("INACTIVAR OPERACÓN",$mensaje);
+           $mens -> correcto2("INACTIVAR OPERACÃ“N",$mensaje);
         }
     }
 
@@ -326,20 +330,21 @@ class extenc{
           die('0');#ya existe el grupo a registrar
         }
     }
+    
 
     private function inactivarGrupo(){
       $cod_grupox = $_POST['cod_grupox'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
-        #inactiva la extensión
+        #inactiva la extensiÃ³n
         $query = "UPDATE ".BASE_DATOS.".tab_callce_grupox 
                         SET ind_estado = 0,
                             usr_modifi = '$usuario',
                             fec_modifi = '$fec_actual'
                             WHERE cod_grupox = '$cod_grupox' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se inactivó el grupo exitosamente.";
+           $mensaje = "Se inactivÃ³ el grupo exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
            $mens -> correcto2("INACTIVAR GRUPO",$mensaje);
@@ -351,14 +356,14 @@ class extenc{
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
-        #inactiva la extensión
+        #inactiva la extensiÃ³n
         $query = "UPDATE ".BASE_DATOS.".tab_callce_grupox 
                         SET ind_estado = 1,
                             usr_modifi = '$usuario',
                             fec_modifi = '$fec_actual'
                             WHERE cod_grupox = '$cod_grupox' ";
         if($insercion = new Consulta($query, self::$cConexion, "R")) {
-           $mensaje = "Se activó el grupo exitosamente.";
+           $mensaje = "Se activÃ³ el grupo exitosamente.";
            $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
            $mens = new mensajes();
            $mens -> correcto2("INACTIVAR GRUPO",$mensaje);
@@ -391,7 +396,7 @@ class extenc{
       }else{
         ?>
         <div class="col-md-12 Style2DIV">
-          <label style="color:black">No se encontró información para los parametros de busqueda especificados.</label>
+          <label style="color:black">No se encontrÃ³ informaciÃ³n para los parametros de busqueda especificados.</label>
         </div>
         <?php 
       }
@@ -403,7 +408,8 @@ class extenc{
         $num_celula = "AND num_telefo LIKE '%$num_celula%'";
       }
  
-          /*  $sql = "SELECT x.cantidad, x.estado, x.fecha 
+
+            $sql = "SELECT x.cantidad, x.estado, x.fecha 
                   FROM (
                           ( 
                                 SELECT COUNT(a.num_telefo) AS cantidad, 'ANSWERED' AS estado, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fecha 
@@ -439,9 +445,9 @@ class extenc{
                               GROUP BY fecha
                           )
                        ) x"; 
-          */  
 
-          $sql = "SELECT x.cantidad, x.estado, x.fecha 
+
+          /*$sql = "SELECT x.cantidad, x.estado, x.fecha 
                   FROM (
                           ( 
                                 SELECT COUNT(a.num_telefo) AS cantidad, 'ANSWERED' AS estado, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fecha 
@@ -483,7 +489,8 @@ class extenc{
                                   ) y
                                   GROUP BY y.fecha
                           )
-                       ) x"; 
+
+                       ) x"; */
          
       $consulta = new Consulta($sql, self::$cConexion);
       return $consulta->ret_matrix("a");
@@ -625,18 +632,18 @@ class extenc{
       $data = $this->getInfromacionDetallada($post);
 
       if($post->tipo == 'todas'){
-        $detalle = "Detallado General de llamadas entrantes para el día $post->fec_inicia al $post->fec_finali";
+        $detalle = "Detallado General de llamadas entrantes para el dÃ­a $post->fec_inicia al $post->fec_finali";
       }else if ($post->tipo == 'ANSWER'){
-        $detalle = "Detallado de llamadas entrantes contestadas para el día $post->fec_inicia al $post->fec_finali";
+        $detalle = "Detallado de llamadas entrantes contestadas para el dÃ­a $post->fec_inicia al $post->fec_finali";
       }else{
-        $detalle = "Detallado de llamadas entrantes no contestadas para el día $post->fec_inicia al $post->fec_finali";
+        $detalle = "Detallado de llamadas entrantes no contestadas para el dÃ­a $post->fec_inicia al $post->fec_finali";
       }
       ?>
       <div class="col-md-12">
         <br>
         <a onclick="pintarExcel('tabla_llamadasID')" style="cursor:pointer"><img border="0" src="../<?= DIR_APLICA_CENTRAL ?>/imagenes/excel.jpg"></a>
         <br>
-        <label>Se encontró un total de <?= count($data) ?> registros</label>
+        <label>Se encontrÃ³ un total de <?= count($data) ?> registros</label>
         <div id="padre">
           <table id="tabla_llamadasID" class="table hoverTable" width="100%" cellspacing="0" cellpadding="2" border="0">
             <tr>
@@ -805,13 +812,8 @@ class extenc{
         $mObjetAudio = $mAudio["msg_respon"];
       }
       else {
-<<<<<<< HEAD
-         # Crea el elemento de reproduccion del audio que se descargó de S3 -----------------------------------------
-         if($_SERVER["HTTP_HOST"] == "dev.intrared.net:8083"){
-=======
          # Crea el elemento de reproduccion del audio que se descargÃ³ de S3 -----------------------------------------
          if($_SERVER["HTTP_HOST"] == "web7.intrared.net:8083"){
->>>>>>> parent of aa0a0cd... Merge branch '203371' into 236868
           $ruta = "/ap/dev/";
          }else{
           $ruta = "/ap/";
@@ -825,6 +827,7 @@ class extenc{
       echo $mObjetAudio;
     }
   }
+
 
 if($_REQUEST[Ajax] === 'on' )
   $_INFORM = new extenc();
