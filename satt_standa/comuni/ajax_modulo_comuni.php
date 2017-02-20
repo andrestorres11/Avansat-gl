@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors', true);
+//ini_set('display_errors', true);
 
 class AjaxModuloComunicaciones 
 {
@@ -202,8 +202,8 @@ class AjaxModuloComunicaciones
                  delay: 100
                }).bind( "autocompleteclose", function(event, ui){SetUsuari( $(this), \'ema\', \''.$_AJAX['cod_transp'].'\'  );} );
 
-			   $( "#nom_usuariID" ).bind( "autocompletechange", function(event, ui){ SetUsuari( $(this), \'nom\', \''.$_AJAX['cod_transp'].'\'  ); } );
-			   $( "#ema_usuariID" ).bind( "autocompletechange", function(event, ui){ SetUsuari( $(this), \'ema\', \''.$_AJAX['cod_transp'].'\'  ); } );
+         $( "#nom_usuariID" ).bind( "autocompletechange", function(event, ui){ SetUsuari( $(this), \'nom\', \''.$_AJAX['cod_transp'].'\'  ); } );
+         $( "#ema_usuariID" ).bind( "autocompletechange", function(event, ui){ SetUsuari( $(this), \'ema\', \''.$_AJAX['cod_transp'].'\'  ); } );
                </script>';
 
     $mHtml  .= '<center>';
@@ -915,7 +915,7 @@ class AjaxModuloComunicaciones
             }
           }
 
-		  //DESTINOS 
+      //DESTINOS 
           $mHtml .= '<tr>';
             $mHtml .= '<td style="padding:5px;">Digite y/o Seleccione una Ciudad</td>';
             $mHtml .= '<td style="padding:5px;" colspan="3"><input type="text" size="35" maxlength="70" name="cod_ciudes" id="cod_ciudesID" />&nbsp;&nbsp;<button onclick="UpCiudes();" name="up" id="upID" >&nbsp;</button></td>';
@@ -924,7 +924,7 @@ class AjaxModuloComunicaciones
         $mHtml .= '</table>';
       $mHtml .= '</div>';
 
-	 
+   
 
     if( $_AJAX['ind_editar'] != '' )
       {
@@ -1985,7 +1985,7 @@ class AjaxModuloComunicaciones
       return $_Data;
   }
   
-  
+
   public function ListarAsignacionesUsuarios( $_AJAX ){
       AjaxModuloComunicaciones::Style(); 
       $intAuto=1;
