@@ -192,7 +192,7 @@ function UpdateConfig( cod_noveda, cod_usuari )
       }
     });
 
-	i = 0;
+  i = 0;
     $(".deposi").each( function(){
       if( $(this).is( ':checked' ) )
       {
@@ -362,7 +362,7 @@ function InsertConfig()
       }
     });
 
-	i = 0;
+  i = 0;
     $(".deposi").each( function(){
       if( $(this).is( ':checked' ) )
       {
@@ -374,19 +374,19 @@ function InsertConfig()
     if( validateResponse( attribs ) )
     {
       $.ajax({
-	    type: "POST",
-	    url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
-	    data: "option=InsertConfig" + attribs,
-	    async: false,
-	    beforeSend: function()
-	    {
-	      $("#resultID").html('<table align="center"><tr><td><img src="../' + Standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
-	    },
-	    success: function( datos )
-	    {
-	      $("#resultID").html( datos );
-	      $("#resultID").show("blind");
-	    }
+      type: "POST",
+      url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
+      data: "option=InsertConfig" + attribs,
+      async: false,
+      beforeSend: function()
+      {
+        $("#resultID").html('<table align="center"><tr><td><img src="../' + Standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+      },
+      success: function( datos )
+      {
+        $("#resultID").html( datos );
+        $("#resultID").show("blind");
+      }
       });
     }
   }
@@ -401,9 +401,9 @@ function validateResponse( attribs )
 {
   try
   {
-  	var Standa = $( "#StandaID" ).val();
-  	var resultado = false;
-  	$.ajax({
+    var Standa = $( "#StandaID" ).val();
+    var resultado = false;
+    $.ajax({
       type: "POST",
       url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
       data: "option=validateResponse" + attribs,
@@ -426,11 +426,11 @@ function validateResponse( attribs )
         }
       }
     });
-  	return resultado;
+    return resultado;
   }
   catch( e )
   {
-  	console.log( e.message );
+    console.log( e.message );
   }
 }
 
