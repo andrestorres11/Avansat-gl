@@ -777,6 +777,7 @@ function AjaxJquery(opcion, date, novedad)
   }
 
 
+
   function ListatAsignacion(banderaListAsig){
       try{
         var Standa = $( "#standaID" ).val();
@@ -1033,3 +1034,4 @@ function AjaxJquery(opcion, date, novedad)
       
     
   }
+
