@@ -192,7 +192,7 @@ function UpdateConfig( cod_noveda, cod_usuari )
       }
     });
 
-	i = 0;
+  i = 0;
     $(".deposi").each( function(){
       if( $(this).is( ':checked' ) )
       {
@@ -362,7 +362,7 @@ function InsertConfig()
       }
     });
 
-	i = 0;
+  i = 0;
     $(".deposi").each( function(){
       if( $(this).is( ':checked' ) )
       {
@@ -374,19 +374,19 @@ function InsertConfig()
     if( validateResponse( attribs ) )
     {
       $.ajax({
-	    type: "POST",
-	    url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
-	    data: "option=InsertConfig" + attribs,
-	    async: false,
-	    beforeSend: function()
-	    {
-	      $("#resultID").html('<table align="center"><tr><td><img src="../' + Standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
-	    },
-	    success: function( datos )
-	    {
-	      $("#resultID").html( datos );
-	      $("#resultID").show("blind");
-	    }
+      type: "POST",
+      url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
+      data: "option=InsertConfig" + attribs,
+      async: false,
+      beforeSend: function()
+      {
+        $("#resultID").html('<table align="center"><tr><td><img src="../' + Standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+      },
+      success: function( datos )
+      {
+        $("#resultID").html( datos );
+        $("#resultID").show("blind");
+      }
       });
     }
   }
@@ -401,9 +401,9 @@ function validateResponse( attribs )
 {
   try
   {
-  	var Standa = $( "#StandaID" ).val();
-  	var resultado = false;
-  	$.ajax({
+    var Standa = $( "#StandaID" ).val();
+    var resultado = false;
+    $.ajax({
       type: "POST",
       url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
       data: "option=validateResponse" + attribs,
@@ -426,11 +426,11 @@ function validateResponse( attribs )
         }
       }
     });
-  	return resultado;
+    return resultado;
   }
   catch( e )
   {
-  	console.log( e.message );
+    console.log( e.message );
   }
 }
 
@@ -774,4 +774,261 @@ function AjaxJquery(opcion, date, novedad)
     {
       alert("Error en ListarDuplicados: "+e.message+"\nLine:"+e.lineNumber);
     }
+  }
+
+
+  function ListatAsignacion(banderaListAsig){
+      try{
+        var Standa = $( "#standaID" ).val();
+        if(banderaListAsig==0)
+        {
+          $("#resultadoUsuarioID").html(); 
+          //var cod_transpID=('#cod_transpID').val();
+          var paraID;
+          var copiaID;
+          var mTypeDestin;
+          var nom_usuarioID=$('#nom_usuarioID').val();
+          var cod_nomUsuarioID=$('#cod_nomUsuarioID').val();
+          
+          if($('#paraID').is(':checked')){
+              paraID="P";
+          }else{
+              paraID="0";
+          }
+          if($('#copiaID').is(':checked')){
+              copiaID="C";
+          }else{
+              copiaID="0";
+          }
+          if((paraID!="0" && copiaID!="0") || (paraID=="P" && copiaID=="0") || (paraID=="0" && copiaID=="C"))
+          {
+              if(nom_usuarioID!="")
+              {
+                $.ajax({
+                    type: "POST",
+                    url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
+                    data: "option=ListarAsignacionesUsuarios&cod_nomUsuarioID="+cod_nomUsuarioID+"&nom_usuario="+nom_usuarioID+"&mTypeDestin[0]="+paraID+"&mTypeDestin[1]="+copiaID,
+                    beforeSend: function() {
+                       DialogAsignacion("Buscando datos relacionados ");
+                    },
+                    success: function(data) {
+                      $("#resultadoUsuarioID").html(data); 
+                      $('#ExportExcelUsuariosID').attr('disabled', false);
+                      $("#sec2ID").css({"height":"auto"});
+                    },
+                    complete: function() {
+                      $( "#MessageDialogID" ).dialog( "destroy" ).remove();
+                    },
+                    timeout:100000
+                  });
+              }else{
+                  alert("La selecci\xf3n de un usuario es de car\xe1cter obligatorio");
+                  $('#nom_usuarioID').focus();
+              }
+
+          }
+          else
+          {
+              alert("La selecci\xf3n de un tipo de contacto es de car\xe1cter obligatorio");
+                  $('#paraID').focus();
+          }
+ 
+          
+            
+        }else if(banderaListAsig==1)
+        {
+          $("#resultUsuarioCaract").html();
+          var SeltNovedadID=$('#SeltNovedadID').val();
+          var SeltTipCorreoID=$('#SeltTipCorreoID').val();
+          var cod_tipdes=$('#SeltTipOperacionID').val();
+          var cod_ciuori=$('#SeltTipOrigenID').val();
+          var cod_ciudes=$('#SeltTipDestinoID').val();
+          var cod_produc=$('#SeltTipProductoID').val();
+          var cod_zonaxx=$('#SeltTipZonaID').val();
+          var cod_canalx=$('#SeltTipCanalID').val();
+          var cod_deposi=$('#SeltTipDepositoID').val();
+          var srtcod_ciudes="";
+          var srtcod_zonaxx="";
+          var srtcod_canalx="";
+          var srtcod_deposi="";
+
+          if(cod_ciudes!='0')
+          {
+            srtcod_ciudes="&cod_ciudes="+cod_ciudes;
+          }
+
+          if(cod_zonaxx!='0')
+          {
+            srtcod_zonaxx="&cod_zonaxx="+cod_zonaxx;
+          }
+
+          if(cod_canalx!='0')
+          {
+            srtcod_canalx="&cod_canalx="+cod_canalx;
+          }
+
+          if(cod_deposi!='0')
+          {
+            srtcod_deposi="&cod_deposi="+cod_deposi;
+          }
+
+          if(SeltNovedadID!="0")
+          {
+              if(SeltTipCorreoID!="0")
+              {
+                  if(cod_tipdes!="0")
+                  {
+                      if(cod_ciuori!="0")
+                      {
+                          if(cod_produc!="0")
+                          {
+                              $.ajax({
+                                type: "POST",
+                                url: "../"+ Standa +"/comuni/ajax_modulo_comuni.php",
+                                data: "option=ListarAsignacionesCaract&SeltNovedadID="+SeltNovedadID
+                                +"&SeltTipCorreoID="+SeltTipCorreoID+"&cod_tipdes="+cod_tipdes
+                                +"&cod_ciuori="+cod_ciuori+srtcod_ciudes+"&cod_produc="+cod_produc
+                                +srtcod_zonaxx+srtcod_canalx+srtcod_deposi,
+                                beforeSend: function() {
+                                   DialogAsignacion("Buscando datos relacionados ");
+                                },
+                                success: function(data) {
+                                  $("#resultUsuarioCaract").html(data);
+                                  $('#ExportExcelCaraID').attr('disabled', false);
+                                  $("#sec2ID").css({"height":"auto"});
+                                },
+                                complete: function() {
+                                  $( "#MessageDialogID" ).dialog( "destroy" ).remove();
+                                } 
+                              });
+                          }
+                          else
+                          {
+                              alert("La selecci\xf3n de un producto es de car\xe1cter obligatorio");
+                              $('#SeltTipProductoID').focus();
+                          }
+                      }
+                      else
+                      {
+                          alert("La selecci\xf3n de un origen es de car\xe1cter obligatorio");
+                          $('#SeltTipOrigenID').focus();
+                      }
+                  }
+                  else
+                  {
+                      alert("La selecci\xf3n de una operacion es de car\xe1cter obligatorio");
+                      $('#SeltTipOperacionID').focus();  
+                  }
+              }
+              else
+              {
+                  alert("La selecci\xf3n de un tipo de correo es de car\xe1cter obligatorio");
+                  $('#SeltTipCorreoID').focus();
+              }
+          }
+          else 
+          {
+              alert("La selecci\xf3n de una novedad es de car\xe1cter obligatorio");
+              $('#SeltNovedadID').focus();
+          }
+
+        }    
+      }catch(e){
+        alert("Error en ListatAsignacion: "+e.message+"\nLine:"+e.lineNumber);
+      }
+      
+    
+  }
+
+  function DialogAsignacion(titulo){
+    try
+    {
+      var html = '<div id="MessageDialogID"><center><b>Cargando</b></center></div>';
+      $(html).dialog({
+        modal: true,
+        draggable: false,
+        resizable: false,
+        closeonEscape: false,
+        title: titulo,
+        open: function(){
+          
+        },
+        close: function(){
+          $("#MessageDialogID").dialog("destroy").remove();
+        }
+      })
+      
+     
+    }
+    catch(e)
+    {
+      alert("Error en LoadDialog()"+e.message+"\nLine:"+e.lineNumber);
+    }
+
+  }
+
+  function getNomTrans(){
+      try
+      {
+          var Standa = $( "#standaID" ).val();
+          $("#nom_transpID").autocomplete({
+              source: "../" + Standa + "/comuni/ajax_modulo_comuni.php?option=getNomTrans",
+              minLength: 3,
+              select: function(event, ui) {
+                  $("#cod_transpID").val(ui.item.id);
+              }
+          });
+
+           
+      }catch(e){
+        alert("Error en getNomTrans: "+e.message+"\nLine:"+e.lineNumber);
+      }
+      
+    
+  }
+
+  function getNomUsuario(){
+      try
+      {
+          var Standa = $( "#standaID" ).val();
+          $("#nom_usuarioID").autocomplete({
+              source: "../" + Standa + "/comuni/ajax_modulo_comuni.php?option=getNomUsuario",
+              minLength: 3,
+              select: function(event, ui) {
+                  $("#cod_nomUsuarioID").val(ui.item.id);
+              }
+          });
+
+           
+      }catch(e){
+        alert("Error en getNomUsuario: "+e.message+"\nLine:"+e.lineNumber);
+      }
+      
+    
+  }
+
+  function ExportExcelUs(){
+      try
+      {
+          window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#Tbl_AsignacionUserID').html()));
+
+           
+      }catch(e){
+        alert("Error en ExportExcelUs: "+e.message+"\nLine:"+e.lineNumber);
+      }
+      
+    
+  }
+
+  function ExportExcelCara(){
+      try
+      {   
+          window.open('data:application/vnd.ms-excel,' + encodeURIComponent($('#Tbl_AsignacionCaraID').html()));
+
+           
+      }catch(e){
+        alert("Error en ExportExcelCara: "+e.message+"\nLine:"+e.lineNumber);
+      }
+      
+    
   }
