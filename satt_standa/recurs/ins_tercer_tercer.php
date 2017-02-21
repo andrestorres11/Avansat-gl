@@ -265,7 +265,7 @@ class Ins_tercer_tercer {
                       $mHtml->Label(("Tipo de Doumento:"), "width:25%; *:1;");
                       $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "tercer[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "val"=> $datos->principal->cod_tipdoc) );
                       $mHtml->Label(("Número de Documento:"), "width:25%; *:1;");
-                      $mHtml->Input (array("name" => "tercer[cod_tercer]", "validate" => "numero",  "id" => "cod_tercerID",  "obl"=> "1", "minlength"=>"6", $disabled, "maxlength"=>"10", "onblur"=>"comprobar()", "width" => "25%", "value"=> $datos->principal->cod_tercer, "end"=>true) );
+                      $mHtml->Input (array("name" => "tercer[cod_tercer]", "validate" => "numero",  "id" => "cod_tercerID",  "obl"=> "1", "minlength"=>"5", $disabled, "maxlength"=>"10", "onblur"=>"comprobar()", "width" => "25%", "value"=> $datos->principal->cod_tercer, "end"=>true) );
                       $mHtml->Label("Nombres:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "tercer[nom_tercer]", "validate"=>"alpha", "id" => "nom_tercerID", "width" => "25%", "minlength"=>"4", "maxlength" => "30", "value" => $datos->principal->nom_tercer));
                       $mHtml->Label("Apellido 1:", "width:25%; *:1;");
