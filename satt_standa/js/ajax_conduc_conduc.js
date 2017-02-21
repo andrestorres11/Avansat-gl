@@ -203,7 +203,7 @@ function editarConductor(tipo, objeto) {
 	} else if (tipo == 2) {
 		confirmar('inactivar', cod_conduc);
 	} else if (tipo == 3) {
-		LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+		LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', '300', false, false, true);
 		var popup = $("#popID");
 		var conductor = $("#nom_conducID").val();
 		var msj = "<div style='text-align:center'>¿Está seguro de <b>Imprimir</b> el conductor: <b>" + conductor + "?</b><br><br><br><br>";
@@ -213,7 +213,7 @@ function editarConductor(tipo, objeto) {
 		popup.parent().children().children('.ui-dialog-titlebar-close').hide();
 		popup.append(msj); // //lanza el popUp
 	} else {
-		LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+		LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', '300', false, false, true);
 		var popup = $("#popID");
 		var conductor = $("#nom_conducID").val();
 		var msj = "<div style='text-align:center'>¿Está seguro de <b>editar</b> el conductor: <b>" + conductor + "?</b><br><br><br><br>";
