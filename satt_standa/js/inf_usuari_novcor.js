@@ -66,7 +66,7 @@ function Details( col, fil, inf, typ )
       resizable : false,
       draggable: false,
       title: " Detalles",
-      width: $(document).width() - 600,
+      width: /*$(document).width() -*/ 700,
       heigth : 700,
       position:['middle',25], 
       bgiframe: true,
