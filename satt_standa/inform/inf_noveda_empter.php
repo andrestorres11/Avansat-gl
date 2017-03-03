@@ -99,7 +99,10 @@ class InfNovedadesEmpTer
 						$mHtml->Input( array("name"=>"fec_finali", "id"=>"fec_finaliID", "value"=>"", "size"=>"8", "class"=>$mTD, "width"=>"16.6%") );
 						$mHtml->Label( "No. Viaje: ", array("class"=>$mTD, "width"=>"16.6%") );
 						$mHtml->Input( array("name"=>"num_viajex", "id"=>"num_viajexID", "value"=>"", "size"=>"15", "class"=>$mTD, "width"=>"16.6%", "end"=>true) );
-
+						$mHtml->Label( "Novedades Resueltas: ", array("class"=>$mTD, "width"=>"25%"));
+						$mHtml->CheckBox( array("name" => "nov_result", "id"=>"nov_resultID", "checked"=>"true", "width" => "25%", "class"=>$mTD));
+						$mHtml->Label( "Novedades Pendientes: ", array("class"=>$mTD, "width"=>"25%"));
+						$mHtml->CheckBox( array("name" => "nov_pendie", "id"=>"nov_pendieID", "checked"=>"true", "width" => "25%", "class"=>$mTD, "colspan"=>"3"));
 						$mHtml->Hidden( array("name"=>"standa", "id"=>"standaID", "value"=>DIR_APLICA_CENTRAL) );
 						$mHtml->Hidden( array("name"=>"window", "id"=>"windowID", "value"=>$_REQUEST['window']) );
 						$mHtml->Hidden( array("name"=>"cod_servic", "id"=>"cod_servicID", "value"=>$_REQUEST['cod_servic']) );
@@ -140,7 +143,7 @@ class InfNovedadesEmpTer
 		$mTittle[1] = array('Fecha', 'Novedades Registradas', 'Novedades Resueltas', '%', 'Novedades Pendientes', '%', 'Otros', '%');*/
 		
 		if( $_REQUEST['fec_inicia'] && $_REQUEST['fec_finali'] )
-		{ #Fechas seg煤n rango filtrado
+		{ #Fechas seg鷑 rango filtrado
 			$mFecInicia = $_REQUEST['fec_inicia'];
 			$mFecFinalx = $_REQUEST['fec_finali'];
 			$mData = self::getData($mFecInicia, $mFecFinalx);
@@ -168,12 +171,17 @@ class InfNovedadesEmpTer
 			$mTotax[3] += $mData[$mDate]['otrosx'];
 
 			$mHtml .= '<tr>';
-				$mHtml .= '<td class="cellInfo onlyCell">'.ucwords($mTxt).'</td>';
+				$mHtml .= '<td class="cellInfo onlyCell">'.utf8_encode(ucwords($mTxt)).'</td>';
 				$mHtml .= $mTotal == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mDate.'\', \''.$mDate.'\', \'g\' );" >'.$mTotal.'</td>';
-				$mHtml .= $mData[$mDate]['ejecut'] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mDate.'\', \''.$mDate.'\', \'ejecut\' );" >'.$mData[$mDate]['ejecut'].'</td>';
-				$mHtml .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mData[$mDate]['ejecut'] / $mTotal), 0) ).'%</td>';
-				$mHtml .= $mData[$mDate]['pendie'] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mDate.'\', \''.$mDate.'\', \'pendie\' );" >'.$mData[$mDate]['pendie'].'</td>';
-				$mHtml .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mData[$mDate]['pendie'] / $mTotal), 0) ).'%</td>';
+				if( isset($_REQUEST['nov_result']) && $_REQUEST['nov_result']=="1" ){
+					$mHtml .= $mData[$mDate]['ejecut'] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mDate.'\', \''.$mDate.'\', \'ejecut\' );" >'.$mData[$mDate]['ejecut'].'</td>';
+					$mHtml .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mData[$mDate]['ejecut'] / $mTotal), 0) ).'%</td>';
+					
+				}
+				if( isset($_REQUEST['nov_pendie']) && $_REQUEST['nov_pendie']=="0"){
+					$mHtml .= $mData[$mDate]['pendie'] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mDate.'\', \''.$mDate.'\', \'pendie\' );" >'.$mData[$mDate]['pendie'].'</td>';
+					$mHtml .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mData[$mDate]['pendie'] / $mTotal), 0) ).'%</td>';
+				}
 				/*$mHtml .= $mData[$mDate]['otrosx'] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mDate.'\', \''.$mDate.'\', \'otrosx\' );" >'.$mData[$mDate]['otrosx'].'</td>';
 				$mHtml .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mData[$mDate]['otrosx'] / $mTotal), 0) ).'%</td>';*/
 			$mHtml .= '</tr>';
@@ -183,10 +191,14 @@ class InfNovedadesEmpTer
 
 		#<Fila de totales>
 			$mHtml3  = $mTotax[0] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mFecInicia.'\', \''.$mFecFinalx.'\', \'g\' );" >'.$mTotax[0].'</td>';
-			$mHtml3 .= $mTotax[1] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mFecInicia.'\', \''.$mFecFinalx.'\', \'ejecut\' );" >'.$mTotax[1].'</td>';
-			$mHtml3 .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mTotax[1] / $mTotax[0]), 0) ).'%</td>';
-			$mHtml3 .= $mTotax[2] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mFecInicia.'\', \''.$mFecFinalx.'\', \'pendie\' );" >'.$mTotax[2].'</td>';
-			$mHtml3 .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mTotax[2] / $mTotax[0]), 0) ).'%</td>';
+			if( isset($_REQUEST['nov_result']) && $_REQUEST['nov_result']=="1" ){
+				$mHtml3 .= $mTotax[1] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mFecInicia.'\', \''.$mFecFinalx.'\', \'ejecut\' );" >'.$mTotax[1].'</td>';
+				$mHtml3 .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mTotax[1] / $mTotax[0]), 0) ).'%</td>';
+			}
+			if( isset($_REQUEST['nov_pendie']) && $_REQUEST['nov_pendie']=="0"){
+				$mHtml3 .= $mTotax[2] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mFecInicia.'\', \''.$mFecFinalx.'\', \'pendie\' );" >'.$mTotax[2].'</td>';
+				$mHtml3 .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mTotax[2] / $mTotax[0]), 0) ).'%</td>';
+			}
 			/*$mHtml3 .= $mTotax[3] == 0 ? $mTd : '<td class="cellInfo onlyCell" align="center" style="cursor: pointer" onclick="showDetail( \''.$mFecInicia.'\', \''.$mFecFinalx.'\', \'otrosx\' );" >'.$mTotax[3].'</td>';
 			$mHtml3 .= '<td class="cellInfo onlyCell" align="center">'.( number_format((100 * $mTotax[3] / $mTotax[0]), 0) ).'%</td>';*/
 		#<Fila de totales>
@@ -199,8 +211,17 @@ class InfNovedadesEmpTer
 			$mHtml2 .= '</tr>';
 
 			$mHtml2 .= '<tr>';
-			foreach ($mTittle[1] as $value)
-				$mHtml2 .= '<th class="CellHead">'.$value.'</th>';
+			foreach ($mTittle[1] as $key => $value){
+				if($key=="0" || $key=="1"){
+					$mHtml2 .= '<th class="CellHead">'.$value.'</th>';
+				}
+				if( isset($_REQUEST['nov_result']) && $_REQUEST['nov_result']=="1" && ($key=="2" || $key=="3")){
+					$mHtml2 .= '<th class="CellHead">'.$value.'</th>';
+				}
+				if( isset($_REQUEST['nov_pendie']) && $_REQUEST['nov_pendie']=="0" && ($key=="4" || $key=="5")){
+					$mHtml2 .= '<th class="CellHead">'.$value.'</th>';
+				}
+			}
 			$mHtml2 .= '</tr>';
 
 			$mHtml2 .= $mHtml;
@@ -221,8 +242,17 @@ class InfNovedadesEmpTer
 			$mHtml1 .= '</tr>';
 
 			$mHtml1 .= '<tr>';
-			foreach ($mTittle[0] as $value)
-				$mHtml1 .= '<th class="CellHead">'.$value.'</th>';
+			foreach ($mTittle[0] as $key => $value){
+				if($key=="0"){
+					$mHtml1 .= '<th class="CellHead">'.$value.'</th>';
+				}
+				if( isset($_REQUEST['nov_result']) && $_REQUEST['nov_result']=="1" && ($key=="1" || $key=="2")){
+					$mHtml1 .= '<th class="CellHead">'.$value.'</th>';
+				}
+				if( isset($_REQUEST['nov_pendie']) && $_REQUEST['nov_pendie']=="0" && ($key=="3" || $key=="4")){
+					$mHtml1 .= '<th class="CellHead">'.$value.'</th>';
+				}
+			}
 			$mHtml1 .= '</tr>';
 
 			$mHtml1 .= '<tr>';
@@ -496,10 +526,10 @@ class InfNovedadesEmpTer
 						  'nom_poseed' => 'Poseedor', 
 						  'nom_produc' => 'Mercancia / Negocio', 
 						  'nom_noveda' => 'Novedad', 
-						  'obs_noveda' => 'Observaci贸n Novedad', 
-						  'fec_asigna' => 'Fecha Asignaci贸n', 
-						  'fec_soluci' => 'Fecha Soluci贸n', 
-						  'obs_noved2' => 'Observaci贸n Soluci贸n', 
+						  'obs_noveda' => 'Observaci&oacute;n Novedad', 
+						  'fec_asigna' => 'Fecha Asignaci&oacute;n', 
+						  'fec_soluci' => 'Fecha Soluci&oacute;n', 
+						  'obs_noved2' => 'Observaci&oacute;n Soluci&oacute;n', 
 						  'num_difere' => 'Diferencia', 
 						  'usr_asigna' => 'Usuario Asignado', 
 						  'usr_ejecut' => 'Usuario que Gestiona' 

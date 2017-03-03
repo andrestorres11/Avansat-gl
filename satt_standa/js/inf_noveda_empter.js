@@ -169,6 +169,20 @@ function getParameFilter()
 			}
 		}
 
+		var NPendiente = $('#nov_pendieID');
+		var NResuelta = $('#nov_resultID');
+
+		if( NPendiente.is(':checked') ){
+			attributes += '&' + NPendiente.attr("name") + '= 0';
+		}
+		if( NResuelta.is(':checked') ){
+			attributes += '&' + NResuelta.attr("name") + '= 1';
+		}
+		if(!NPendiente.is(':checked') && !NResuelta.is(':checked')){
+			attributes += '&' + NPendiente.attr("name") + '= 0';
+			attributes += '&' + NResuelta.attr("name") + '= 1';
+		}
+
 		if( result == false )
 			return false;
 		else
