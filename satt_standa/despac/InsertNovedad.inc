@@ -3065,10 +3065,15 @@ class InsertNovedad {
                 $thefile = "\$r_file=\"" . $thefile . "\";";
                 eval($thefile);
                 $mHtmlxx = $r_file;
-                #if (HOST_WEB == HOST_WEB_PRO) {
+                if( $_SERVER["SERVER_NAME"] == "dev.intrared.net" | $_SERVER["SERVER_NAME"] == "qa.intrared.net" )
+                {
+                  mail("edward.serrano@intrared.net, maribel.garcia@eltransporte.org, sandra.caipa@intrared.net", $mAsunto . " - Validacion Correo PARA DEV - QA", '<div name="'.HOST_WEB.'_faro_07">' . $mHtmlxx . '</div>', $mCabece);
+                }
+                else
+                {
                     mail($_CENOPE['ema_conprX'], $mAsunto, '<div name="'.HOST_WEB.'_faro_06">' . $mHtmlxx . '</div>', $mCabece . 'Cc: ' . $_CENOPE['ema_otrcoX'] . "\r\n");
                     mail(MAIL_SUPERVISORES.", maribel.garcia@eltransporte.org", $mAsunto . " - Validacion Correo PARA ", '<div name="'.HOST_WEB.'_faro_07">' . $mHtmlxx . '</div>' . "<br><br>ENVIADO A: " . $_CENOPE['ema_conprX'] . "<br>COPIADO A: " . $_CENOPE['ema_otrcoX'], $mCabece);
-                #}
+                }
             }
             #</IF 3.2>
         }
