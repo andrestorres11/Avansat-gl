@@ -475,7 +475,7 @@ class Despac
 	 *	\param: mSinFiltro  Boolean  true = No filtra por datos que llegas del formulario $_REQUEST
 	 *  \return: Matriz, Array o String (Segun parametro mTipReturn)
 	 */
-	private function getDespacCargue( $mTransp, $mTipReturn = NULL, $mSinFiltro = false )
+	public function getDespacCargue( $mTransp, $mTipReturn = NULL, $mSinFiltro = false )
 	{
 		$mSql = "	 SELECT xx.num_despac
 					   FROM ".BASE_DATOS.".tab_despac_despac xx 
@@ -623,7 +623,7 @@ class Despac
 	 *	\param: mSinFiltro  Boolean  true = No filtra por datos que llegas del formulario $_REQUEST
 	 *  \return: Matriz, Array o String (Segun parametro mTipReturn)
 	 */
-	private function getDespacDescar( $mTransp, $mTipReturn = NULL, $mSinFiltro = false )
+	public function getDespacDescar( $mTransp, $mTipReturn = NULL, $mSinFiltro = false )
 	{
 		$mDespacCargue = self::getDespacCargue( $mTransp, 'list', true );
 		 
@@ -922,7 +922,7 @@ class Despac
 	 *  \param: mTransp  Array  Informacion transportadora
 	 *  \return: Matriz
 	 */
-	private function getDespacTransi2( $mTransp )
+	public function getDespacTransi2( $mTransp )
 	{
 		$mDespacCarDes = self::getDespacDescar( $mTransp, 'list2', true ); #Despachos en Etapas Cargue y Descargue
 		$mDespacCarDes = trim($mDespacCarDes, ',');

@@ -566,8 +566,8 @@ class ajax_horari_monito {
         <div class="col-md-12 centrado CellHead">
             <div class="col-md-1">No.</div>
             <div class="col-md-3">Usuario</div>
-            <div class="col-md-2">Categoría</div>
-            <div class="col-md-2">No. de Vehículos en Ruta</div>
+            <div class="col-md-2">Categoria</div>
+            <div class="col-md-2">No. de Vehiculos en Ruta</div>
             <div class="col-md-2">Empresas Asignadas</div>
             <div class="col-md-2">Etapa</div>        </div>
         <?php
@@ -1036,7 +1036,7 @@ class ajax_horari_monito {
                 $sql = "INSERT INTO ".BASE_DATOS.".tab_monito_detall
                                         (cod_consec, cod_tercer, can_despac,ind_segcar, ind_segtra, ind_segdes, usr_creaci,fec_creaci )
                                         VALUES
-                                        ($max, '$val', $cantidad, $tipServic[ind_segcar], $tipServic[ind_segtra], $tipServic[ind_segdes], '$usr_creaci', NOW())";
+                                        ($max, '$val', '$cantidad', $tipServic[ind_segcar], $tipServic[ind_segtra], $tipServic[ind_segdes], '$usr_creaci', NOW())";
                 if($key == (count($usuarios)-1) && $k == (count($terceros)-1)){
                     $consulta = new Consulta($sql, self::$cConexion, 'RC');
                 }else{
@@ -1047,9 +1047,11 @@ class ajax_horari_monito {
                     break;
                 }
             }
-            if($contro == true){
-                //envia el corrreo con la carga del controlador
-                $this->enviarCorreos($controlador, $usr_emailx, $fec_inicia, $fec_finali, $contenido, $total);
+            if($contro == true){               
+                if(($_SERVER["SERVER_NAME"] != "dev.intrared.net") && ($_SERVER["SERVER_NAME"] != "qa.intrared.net")){
+                    //envia el corrreo con la carga del controlador
+                    $this->enviarCorreos($controlador, $usr_emailx, $fec_inicia, $fec_finali, $contenido, $total);
+                }
             }
         }
         if($contro == true){
