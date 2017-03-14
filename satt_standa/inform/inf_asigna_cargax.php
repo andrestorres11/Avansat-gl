@@ -22,7 +22,7 @@
          *  \brief: muestra los filtros iniciales para el informe
          *  \author: Ing. Alexander Correa
          *  \date: 08/02/2016
-         *  \date modified: dia/mes/a√±o
+         *  \date modified: dia/mes/aÒo
          *  \param: 
          *  \return 
          */
@@ -46,12 +46,12 @@
             <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/multiselect/jquery.multiselect.css' type='text/css'>
             <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>
             <div id="acordeonID" class="col-md-12 accordion ancho">
-              <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Informe de Asignaci√≥n de Carga</b></h1>
+              <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Informe de AsignaciÛn de Carga</b></h1>
               <div id="contenido">
                 <div  class="Style2DIV">
                   <table width="100%" cellspacing="0" cellpadding="0">
                     <tr>
-                        <th class="CellHead" colspan="6" style="text-align:center"><label id="notify"><b>Ingrese los  Par√°metros de consulta</b></label></th>
+                        <th class="CellHead" colspan="6" style="text-align:center"><label id="notify"><b>Ingrese los  Par·metros de consulta</b></label></th>
                     </tr>
                     <tr class="Style2DIV">
                       <td class="contenido" colspan="6" style="text-align:center">
