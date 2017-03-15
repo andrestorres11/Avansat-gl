@@ -2349,7 +2349,7 @@ class Despachos
   
             $value['obs_noveda'] = self::sanear_string( $value['obs_noveda'] );
             
-            if($value['cod_noveda'] == '4999' && $value['val_latitu'] != ''){
+            if($value['val_longit'] != '' && $value['val_latitu'] != ''){
                 $latLon[] = array(
                         "val_latitu" => $value['val_latitu'],
                         "val_longit" => $value['val_longit'],
