@@ -1268,76 +1268,35 @@ class Proc_Plan_Ruta
       * Fin salida inmediata
       */
       
-    /*** NOTIFICACION CENTRO DE OPERACION *********/
-    
-    $query = "SELECT a.cod_manifi, c.nom_rutasx, b.num_placax,
-                     b.cod_conduc, d.nom_tercer, d.nom_apell1,
-                     d.num_telmov
-                FROM ". BASE_DATOS .".tab_despac_despac a,
-                     ". BASE_DATOS .".tab_despac_vehige b,
-                     ". BASE_DATOS .".tab_genera_rutasx c,
-                     ". BASE_DATOS .".tab_tercer_tercer d
-               WHERE a.num_despac = b.num_despac
-                 AND b.cod_conduc = d.cod_tercer
-                 AND b.cod_rutasx = c.cod_rutasx
-                 AND a.num_despac = '".$_REQUEST['despac']."'";
-      
-    $consulta = new Consulta( $query, $this -> conexion );
-    $despacho = $consulta -> ret_matriz();
-    
-    $datosDespac['manifiesto'] = $despacho[0]['cod_manifi'];
-    $datosDespac['ruta'] = $despacho[0]['nom_rutasx'];
-    $datosDespac['placa'] = $despacho[0]['num_placax'];
-    $datosDespac['cedula'] = $despacho[0]['cod_conduc'];
-    $datosDespac['nombres'] = $despacho[0]['nom_tercer'];
-    $datosDespac['apellidos'] = $despacho[0]['nom_apell1'];
-    $datosDespac['celular'] = $despacho[0]['num_telmov'];
-    
-    
-    
-    $mSql = "SELECT b.nom_cennot, c.nom_contac, c.ema_contac
-               FROM ". BASE_DATOS .".tab_despac_despac a, 
-                    ". BASE_DATOS .".tab_genera_cennot b,
-                    ". BASE_DATOS .".tab_contac_cennot c
-              WHERE a.cod_cenope = b.cod_cennot
-                AND b.cod_transp = c.cod_transp
-                AND b.cod_cennot = c.cod_cennot
-                AND b.cod_transp = '".$_REQUEST['transp']."'
-                AND a.num_despac = '".$_REQUEST['despac']."'";
-    
-    $consulta = new Consulta( $mSql, $this -> conexion );
-    $dat_cenope = $consulta -> ret_matriz();
-    if( sizeof( $dat_cenope ) > 0 )
-    {
-      $_TO = '';
-      foreach( $dat_cenope as $row )
-      {
-        if( $row['ema_contac'] != '' )
-        {
-          $_TO .= $_TO != '' ? ', '.$row['ema_contac'] : $row['ema_contac'];
-        }
-      }
-      /*echo "<pre>";
-      print_r( $_TO );
-      echo "</pre>";*/
-      $mEmailxx = "PLAN DE RUTA \n";
-      $mEmailxx .= "Fecha y Hora: ".date( "Y-m-d H:i" )." \n";
-      $mEmailxx .= "Despacho No.: ".$_REQUEST['despac']." \n";
-      $mEmailxx .= "Manifiesto: ".$datosDespac['manifiesto']." \n";
-      $mEmailxx .= "Placa: ".$datosDespac['placa']." \n";
-      $mEmailxx .= "Ruta: ".$datosDespac['ruta']." \n";
-      $mEmailxx .= "Conductor: ".$datosDespac['cedula']." - ".$datosDespac['apellidos']." ".$datosDespac['nombres']." \n";
-      $mEmailxx .= "Celular: ".$datosDespac['celular']." \n";
-
-      mail( 'felipe.malaver@intrared.net', "Plan de Ruta Asignado", $mEmailxx,'From: soporte.ingenieros@intrared.net' );
-      //mail( $_TO, "Web service Trafico-Destino seguro", $mEmailxx,'From: soporte.ingenieros@intrared.net' );
-    }
-    /**********************************************/
-     
+  
    	 $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otro Plan de Ruta</a></b>";
 
      if( $_REQUEST[ind_salida] == '1' && $consulta )
-       $mensaje = "Se Genero el Plan de Ruta y se le dio salida inmediata Para el Despacho # <b>".$_REQUEST[despac]."</b> Exitosamente.";
+     {
+          $consultaNit = "SELECT a.clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." ";
+          $nit = new Consulta($consultaNit, $this->conexion);
+          $nit = $nit->ret_matriz();
+          $nit = $nit[0]['clv_filtro'];
+
+          if ($this->getInterfParame('85', $nit) == true)
+          {         
+
+            require_once URL_ARCHIV_STANDA."/interf/app/APIClienteApp/controlador/DespachoControlador.php";
+            $controlador = new DespachoControlador();
+            $response    = $controlador->registrar($this->conexion, $_REQUEST[despac], $nit);
+            $mensaje     = $response->msg_respon;
+
+            $mens = new mensajes();
+            if ($response->cod_respon == 1000) {
+
+              $mens->correcto("REGISTRO MOVIL", $mensaje);
+
+            } else {
+              $mens->advert("REGISTRO MOVIL", $mensaje);
+            }
+          }
+          $mensaje = "Se Genero el Plan de Ruta y se le dio salida inmediata Para el Despacho # <b>".$_REQUEST[despac]."</b> Exitosamente.";
+     }
      else
        $mensaje = "Se Genero el Plan de Ruta Para el Despacho # <b>".$_REQUEST[despac]."</b> Exitosamente.";
      
@@ -1370,6 +1329,24 @@ class Proc_Plan_Ruta
     } while( $continue == TRUE );
     return $matriz;
  }
+
+  //---------------------------------------------
+  /*! \fn: getInterfParame
+   *  \brief:Verificar la interfaz con destino seguro esta activa
+   *  \author: Nelson Liberato
+   *  \date: 21/12/2015
+   *  \date modified: 21/12/2015
+   *  \return BOOL
+   */
+  function getInterfParame($mCodInterf = NULL, $nit = NULL) {
+    $mSql = "SELECT ind_estado
+                   FROM ".BASE_DATOS.".tab_interf_parame a
+                  WHERE a.cod_operad = '".$mCodInterf."'
+                    AND a.cod_transp = '".$nit."'";
+    $mMatriz = new Consulta($mSql, $this->conexion);
+    $mMatriz = $mMatriz->ret_matriz("a");
+    return $mMatriz[0]['ind_estado'] == '1'?true:false;
+  }
 
 }//FIN CLASE
 

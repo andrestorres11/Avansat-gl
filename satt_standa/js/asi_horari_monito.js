@@ -12,7 +12,7 @@
 $(function() {
     $(".date").datepicker({
         dateFormat: 'yy-mm-dd',
-        minDate: 0
+        minDate: 0 
     });
 
     $(".time").timepicker({
@@ -794,7 +794,6 @@ function formCargaManualUser( obj ){
 function calcularCantDespacPorUsuario( obj ){
     try {
         var user = $("#tabUsuarios input[name=manual_user]:checked");
-
         // Indica si el usuario tiene checkeado este input en el attr usuario del cliente
         if( $(obj).is(":checked") ) {
             $(obj).attr('user_' + user.val(), '1');
@@ -819,10 +818,9 @@ function calcularCantDespacPorUsuario( obj ){
                 checkAsignacion.attr("checked", true);
                 checkAsignacion.attr('user_' + user.val(), '1');
             });
-        });
-
+        });console.log(checkAsignacion);
         var rowUser = $("#datosID div[name=rowUserAsignacion][consec=" + user.val() + "]");
-        var bandera = false, segcar = false, segtra = false, segdes = false;
+        var bandera = false, segprc = false, segcar = false, segtra = false, segdes = false;
         var cantDespac = 0, cantTotal = 0;
         var labelTransp = "", htmlOptionsDespac = "";
         var tipDespacUser = {};
@@ -847,6 +845,7 @@ function calcularCantDespacPorUsuario( obj ){
                 bandera = true;
 
                 switch( $(check).attr('name') ) {
+                    case "tipdes_prcarg": segprc = true; break;
                     case "tipdes_cargue": segcar = true; break;
                     case "tipdes_transi": segtra = true; break;
                     case "tipdes_descar": segdes = true; break;
@@ -860,7 +859,6 @@ function calcularCantDespacPorUsuario( obj ){
             cantTotal += cantDespac;
             htmlOptionsDespac += '<option cod_grupox="' + $(tab).attr('cod_grupox') + '" cantdespac="' + cantDespac + '" value="' + $(tab).attr('cod_transp') + '">' + $(tab).attr('nom_transp') + '</option>';
         });
-
         // Agrega la data al usuario
         if( bandera == true ) {
             var htmlOptionsTipDespac = "";
@@ -880,6 +878,9 @@ function calcularCantDespacPorUsuario( obj ){
             rowUser.find("div[name=empres]").html(htmlEmpres);
             rowUser.find("select[name=tip_despac_user]").html(htmlOptionsTipDespac);
 
+            if( segprc == true ) {
+                rowUser.find("input[name^=ind_segprc]").attr('checked', true);
+            }
             if( segcar == true ) {
                 rowUser.find("input[name^=ind_segcar]").attr('checked', true);
             }

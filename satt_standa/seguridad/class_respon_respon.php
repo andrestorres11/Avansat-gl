@@ -246,6 +246,7 @@ class responsable
 									"sec_inform"=> array( "name"=>"Pestañas Informes", 
 														  "sub"=>array(
 																		"pes_genera"=>"Pestaña General", 
+																		"pes_prcarg"=>"Pestaña PreCargue", 
 																		"pes_cargax"=>"Pestaña Cargue", 
 																		"pes_transi"=>"Pestaña Transito", 
 																		"pes_descar"=>"Pestaña Descargue", 

@@ -583,13 +583,38 @@ class Proc_anula
   	}
 */
     if($consulta = new Consulta("COMMIT", $this -> conexion))
-	{
-	 $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Anular Otro Despacho</a></b>";
+  	{
 
-     $mensaje = "Se Anulo el Despacho <b>".$_REQUEST[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
-     $mens = new mensajes();
-     $mens -> correcto("ANULAR DESPACHOS", $mensaje.$link_a);
-	}
+      //Quita el despacho en la central
+      $consultaNit = "SELECT a.clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." ";
+      $nit = new Consulta($consultaNit, $this->conexion);
+      $nit = $nit->ret_matriz();
+      $nit = $nit[0]['clv_filtro'];
+      if ($this->getInterfParame('85', $nit) == true)
+      {
+         
+        require_once URL_ARCHIV_STANDA."/interf/app/APIClienteApp/controlador/DespachoControlador.php";
+        $controlador = new DespachoControlador(); 
+        $response = $controlador -> finalizar($this -> conexion ,  $_REQUEST["despac"], $nit);   
+        $message = $response -> msg_respon; 
+        $mensaje .= $message; 
+
+        
+        $mens = new mensajes();
+        if ($response->cod_respon == 1000) {
+          $mens->correcto("REGISTRO MOVIL", $mensaje);
+        } else {
+          $mens->advert("REGISTRO MOVIL", $mensaje);
+        }
+      }
+
+
+  	 $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Anular Otro Despacho</a></b>";
+
+       $mensaje = "Se Anulo el Despacho <b>".$_REQUEST[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
+       $mens = new mensajes();
+       $mens -> correcto("ANULAR DESPACHOS", $mensaje.$link_a);
+  	}
   }
 
   if($_REQUEST[fil] == 2)
@@ -658,6 +683,30 @@ class Proc_anula
 */
    if($consulta = new Consulta("COMMIT", $this -> conexion))
    {
+
+    //Quita el despacho en la central
+    $consultaNit = "SELECT a.clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." ";
+    $nit = new Consulta($consultaNit, $this->conexion);
+    $nit = $nit->ret_matriz();
+    $nit = $nit[0]['clv_filtro'];
+    if ($this->getInterfParame('85', $nit) == true)
+    {
+       
+      require_once URL_ARCHIV_STANDA."/interf/app/APIClienteApp/controlador/DespachoControlador.php";
+      $controlador = new DespachoControlador(); 
+      $response = $controlador -> finalizar($this -> conexion ,  $_REQUEST["despac"], $nit);   
+      $message = $response -> msg_respon; 
+      $mensaje .= $message; 
+
+      
+      $mens = new mensajes();
+      if ($response->cod_respon == 1000) {
+        $mens->correcto("REGISTRO MOVIL", $mensaje);
+      } else {
+        $mens->advert("REGISTRO MOVIL", $mensaje);
+      }
+    }
+    
    	$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Reversar Otro Despacho</a></b>";
 
     $mensaje = "Se Reverso la Salida del Despacho <b>".$_REQUEST[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;

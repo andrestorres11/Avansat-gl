@@ -37,6 +37,33 @@
 }
 
 
+/* PreCargue */
+
+.bgPC1 {
+    background: #4CA20B;
+    color: #000000;
+}
+
+.bgPC2 {
+    background: #285C00;
+    color: #FFFFFF;
+}
+
+.bgPC3 {
+    background: #FF0000;
+    color: #FFFFFF;
+}
+
+.bgPC4 {
+    background: #FFFF00;
+    color: #FFFFFF;
+}
+
+.bgPC5 {
+    background: #FF500E;
+    color: #FFFFFF;
+}
+
 /* Cargue */
 
 .bgC1 {

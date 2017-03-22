@@ -29,6 +29,8 @@ $("body").ready(function() {
     //Multi Select
     $("#cod_usuariID").multiselect().multiselectfilter();
     $("#cod_transpID").multiselect().multiselectfilter();
+    $("#pun_cargueID").multiselect().multiselectfilter();
+    $("#tip_producID").multiselect().multiselectfilter();
 
     //Onclick Pestañas
     $("#liGenera").click(function() {
@@ -52,12 +54,38 @@ $("body").ready(function() {
         generalReport("infoPernoctacion", "tabs-5");
     });
 
+    $("#liPreCar").click(function() {
+        getDataSelectPRC();
+    });
+
+    $("#generarprc").click(function() {
+        if( ($('#hor_inicio').val() != "" && $('#hor_finxxx').val() != "") )
+        {
+            if($('#hor_inicio').val() < $('#hor_finxxx').val() )
+            {
+                generalReport("infoPreCargue", "tabs-6-a");
+           }
+            else
+            {
+                alert("La hora incial debe ser mayor a la final.");
+            }
+        }
+        else if( ($('#hor_inicio').val() == "" && $('#hor_finxxx').val() == "") ){
+            generalReport("infoPreCargue", "tabs-6-a");
+        }
+        else
+        {
+            alert("Se deben diligenciar los campos de hora.");
+        }
+
+    });
+
     //
     $("#cod_transpID option[value=" + $("#sel_transpID").val() + "]").attr("selected", "selected");
     $("#cod_usuariID option[value=" + $("#sel_usuariID").val() + "]").attr("selected", "selected");
 
     //Ejecuta la busqueda por los filtros especificos
-    $("input[type=text]").each(function(i, o) {
+    $(".Style2DIV input[type=text]").each(function(i, o) {
         $(this).blur(function() {
             showDetailSearch($(this));
         });
@@ -113,6 +141,10 @@ function getParameFilter() {
         var rad_checke = $("input[type=radio]:checked");
         var cod_transp = '""';
         var cod_usuari = '""';
+        var pun_cargue = '""';
+        var tip_produc = '""';
+        var hor_inicio = $("#hor_inicio").val();
+        var hor_finxxx = $("#hor_finxxx").val();
         var attributes = '';
 
         box_checke.each(function(i, o) {
@@ -120,6 +152,10 @@ function getParameFilter() {
                 cod_transp += ',"' + $(this).val() + '"';
             else if ($(this).attr("name") == 'multiselect_cod_usuariID')
                 cod_usuari += ',"' + $(this).val() + '"';
+            else if ($(this).attr("name") == 'multiselect_pun_cargueID')
+                pun_cargue += ',"' + $(this).val() + '"';
+            else if ($(this).attr("name") == 'multiselect_tip_producID')
+                tip_produc += ',"' + $(this).val() + '"';
             else {
                 attributes += '&' + $(this).attr("name");
                 attributes += '=' + $(this).val();
@@ -138,6 +174,23 @@ function getParameFilter() {
         if (cod_usuari != '""' && cod_usuari != '"",""') {
             attributes += '&cod_usuari=' + cod_usuari;
         }
+
+        if (pun_cargue != '""' && pun_cargue != '"",""') {
+            attributes += '&pun_cargue=' + pun_cargue;
+        }
+
+        if (tip_produc != '""' && tip_produc != '"",""') {
+            attributes += '&tip_produc=' + tip_produc;
+        }
+
+        if (hor_inicio != '' ) {
+            attributes += '&hor_inicio=' + hor_inicio;
+        }
+
+        if (hor_finxxx != '' ) {
+            attributes += '&hor_finxxx=' + hor_finxxx;
+        }
+
 
         return attributes;
     } catch (e) {
@@ -349,6 +402,55 @@ function generalReport(ind_etapax, id_div) {
 
     } catch (e) {
         console.log("Error Fuction generalReport: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: generalReport
+ *  \brief: Solicita el ajax para mostrar el Informe General
+ *  \author: Ing. Fabian Salinas
+ *  \date: 16/06/2015
+ *  \date modified: dd/mm/aaaa
+ *  \param: 
+ *  \return: 
+ */
+function getDataSelectPRC() {
+    try {
+        var standar = $("#standaID");
+        //Atributos del Ajax
+        var atributes = 'Ajax=on&Option=getLisCiudadOrigne&mIndEtapa=ind_segprc';
+        //Ajax
+        $.ajax({
+            url: "../" + standar.val() + "/inform/class_despac_trans3.php",
+            type: "POST",
+            data: atributes,
+            async: true,
+            success: function(data) {
+                $("#pun_cargueID").append(data).multiselect("refresh");
+            },
+            complete: function() {
+            }
+        });
+
+    } catch (e) {
+        console.log("Error Fuction generalReport: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: generalReport
+ *  \brief: Solicita el ajax para mostrar el Informe General
+ *  \author: Ing. Fabian Salinas
+ *  \date: 16/06/2015
+ *  \date modified: dd/mm/aaaa
+ *  \param: 
+ *  \return: 
+ */
+function exportExcel() {
+    try {
+        location.href="?window=central&cod_servic=1366&menant=1366&opcion=10";
+    } catch (e) {
+        console.log("Error Fuction exportExcel: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
 }

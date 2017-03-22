@@ -693,7 +693,7 @@ function SaveFechaAdicio(index) {
 }
 
 function SaveCumdes(index) {
-	/*
+	
 	var message = new Array();
 	var dir_aplica = document.getElementById("dir_aplicaID");
 	var atributes = "ind_cumdes=" + $("input:radio[name=ind_cumdes" + index + "]:checked").val();
@@ -754,7 +754,7 @@ function SaveCumdes(index) {
 			$.unblockUI();
 		}
 	});
-	*/
+	
 }
 
 function SaveCumdesCliente(index, cliente) {

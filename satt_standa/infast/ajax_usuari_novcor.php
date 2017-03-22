@@ -30,6 +30,7 @@ class AjaxDespacUsuari
   protected function Details( $mData )
   {
     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
+    
     if(  $mData['fil'] == 't'  )
     {
       $_CONSUL = $_SESSION['TOTALY'];
@@ -96,10 +97,10 @@ class AjaxDespacUsuari
     if( $mData['fil'] != 't' )
     {
       if( $mData['inf'] == 'p' ) {
-        $mSelect .= " AND a.usr_asigna = UPPER('".$mData['fil']."') ";
+        $mSelect .= " AND a.usr_asigna = '".$mData['fil']."' ";
       }
       else {
-        $mSelect .= " AND a.usr_ejecut = UPPER('".$mData['fil']."') ";
+        $mSelect .= " AND a.usr_ejecut = '".$mData['fil']."' ";
       }
     }
 
@@ -112,29 +113,10 @@ class AjaxDespacUsuari
       $mSelect .= " AND a.fec_noved2 BETWEEN '".$mData["fec_ini"]."' AND '".$mData["fec_fin"]."' ";
       }
     }
-
-    if( $mData['typ'] == 'd' )
-    {
-      if( $mData['inf'] == 'p' /*|| $mData['inf'] == 'e' */) {
-      $mSelect .= " AND a.fec_noveda BETWEEN '".$mData["fec_ini"]."' AND '".$mData["fec_fin"]."' ";
-      }
-      else {
-      $mSelect .= " AND a.fec_noved2 BETWEEN '".$mData["fec_ini"]."' AND '".$mData["fec_fin"]."' ";
-      }
-    }
-
-    if( $mData['typ'] == 'w' )
-    {
-      if( $mData['inf'] == 'p' /*|| $mData['inf'] == 'e' */) {
-      $mSelect .= " AND a.fec_noveda BETWEEN '".$mData["fec_ini"]."' AND '".$mData["fec_fin"]."' ";
-      }
-      else {
-      $mSelect .= " AND a.fec_noved2 BETWEEN '".$mData["fec_ini"]."' AND '".$mData["fec_fin"]."' ";
-      }
-    }
     
       
     $mSelect .= " ORDER BY 1,2";
+    
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $_DATA = $consulta -> ret_matriz();
     
@@ -276,7 +258,7 @@ class AjaxDespacUsuari
   
   function getUsuario( $cod_usuari = '' )
   {
-    $mSelect = "SELECT UPPER(cod_usuari), UPPER( nom_usuari ) AS nom_usuari 
+    $mSelect = "SELECT cod_usuari, UPPER( nom_usuari ) AS nom_usuari 
                   FROM ".BASE_DATOS.".tab_genera_usuari 
                  WHERE usr_emailx LIKE '%corona%'";
     
@@ -534,7 +516,7 @@ class AjaxDespacUsuari
             $week = $j;
             if( strlen( $j ) == 1 )
               $week = '0'.$j;
-
+            
             $_FECHAS[] = $i."-".$week;
           }
         }
@@ -545,7 +527,7 @@ class AjaxDespacUsuari
             $week = $j;
             if( strlen( $j ) == 1 )
               $week = '0'.$j;
-
+              
             $_FECHAS[] = $i."-".$week;
           }
         }
@@ -603,16 +585,12 @@ class AjaxDespacUsuari
       $ASIGNA = $_NOVEDA[$usuario[0]];
       if( sizeof( $ASIGNA ) <= 0 )
         continue;
+        
       $style = 'cellInfo';
       $mHtml .= '<tr class="row">';
       $mHtml .= '<td nowrap class="CellHead" align="left">'.$usuario[1].'</td>';
       foreach( $_FECHAS as $row )
       {
-        $rowDelimiter=explode("-", $row);
-        if($rowDelimiter[1]>='01' && $rowDelimiter[1]<='09')
-        {
-          $row= $rowDelimiter[0]."-".(int) $rowDelimiter[1];
-        }
         $_TOTALX[$usuario[0]]['p']['countx'] += (int)$ASIGNA['p'][$row]['countx'];
         $_TOTALX[$usuario[0]]['p']['despac'] .= $_TOTALX[$usuario[0]]['p']['despac'] != '' && $ASIGNA['p'][$row]['despac'] != '' ? ','.$ASIGNA['p'][$row]['despac'] : $ASIGNA['p'][$row]['despac'];
         
@@ -644,11 +622,7 @@ class AjaxDespacUsuari
     $mHtml .= '<td class="CellHead2" align="center"><b>TOTAL</b></td>';
     foreach( $_FECHAS as $row )
     {
-      $rowDelimiter=explode("-", $row);
-      if($rowDelimiter[1]>='01' && $rowDelimiter[1]<='09')
-      {
-        $row= $rowDelimiter[0]."-".(int) $rowDelimiter[1];
-      }
+      
       $_TOTALY['t']['p']['countx'] += (int)$_TOTALY[$row]['p']['countx'];
       $_TOTALY['t']['p']['despac'] .= $_TOTALY['t']['p']['despac'] != '' && $_TOTALY[$row]['p']['despac'] != '' ? ','.$_TOTALY[$row]['p']['despac'] : $_TOTALY[$row]['p']['despac'];
       
@@ -688,7 +662,7 @@ class AjaxDespacUsuari
     $date_ini = $mData['fec_inicia']." ".$mData['hor_inicia'];
     $date_fin = $mData['fec_finali']." ".$mData['hor_finali'];
     
-    $mSelect = "SELECT num_despac, num_consec, DATE(fec_noveda) AS fec_noveda, UPPER(usr_asigna) AS usr_asigna
+    $mSelect = "SELECT num_despac, num_consec, DATE(fec_noveda) AS fec_noveda, usr_asigna
                   FROM ".BASE_DATOS.".tab_protoc_asigna 
                  WHERE ind_ejecuc = '0' 
                    AND fec_noveda BETWEEN '".$date_ini."' AND '".$date_fin."' 
@@ -704,10 +678,10 @@ class AjaxDespacUsuari
       $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] .= $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] != '' ? ','.$row['num_despac'] : $row['num_despac'];
     }
     
-    $mSelect = "SELECT num_despac, num_consec, DATE(fec_noved2) AS fec_noveda, UPPER(usr_ejecut) AS usr_asigna
+    $mSelect = "SELECT num_despac, num_consec, DATE(fec_noved2) AS fec_noveda, usr_asigna
                   FROM ".BASE_DATOS.".tab_protoc_asigna 
                  WHERE ind_ejecuc = '1' 
-                   AND fec_noved2 >= '".$date_ini."' AND fec_noved2 <= '".$date_fin."'  
+                   AND fec_noved2 BETWEEN '".$date_ini."' AND '".$date_fin."' 
                  ORDER BY 3";
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $_NOVEDAE = $consulta -> ret_matriz();
@@ -725,7 +699,7 @@ class AjaxDespacUsuari
     $date_ini = $mData['fec_inicia']." ".$mData['hor_inicia'];
     $date_fin = $mData['fec_finali']." ".$mData['hor_finali'];
     
-    $mSelect = "SELECT num_despac, num_consec, CONCAT( YEAR( fec_noveda ), '-', WEEKOFYEAR(DATE( fec_noveda )) )AS fec_noveda, UPPER(usr_asigna) AS usr_asigna
+    $mSelect = "SELECT num_despac, num_consec, CONCAT( YEAR( fec_noveda ), '-', WEEKOFYEAR(DATE( fec_noveda )) )AS fec_noveda, usr_asigna
                   FROM ".BASE_DATOS.".tab_protoc_asigna 
                  WHERE ind_ejecuc = '0' 
                    AND fec_noveda BETWEEN '".$date_ini."' AND '".$date_fin."' 
@@ -741,10 +715,10 @@ class AjaxDespacUsuari
       $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] .= $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] != '' ? ','.$row['num_despac'] : $row['num_despac'];
     }
     
-    $mSelect = "SELECT num_despac, num_consec, CONCAT( YEAR( fec_noved2 ), '-', WEEKOFYEAR(DATE( fec_noved2 )) )AS fec_noveda, UPPER(usr_ejecut) AS usr_asigna
+    $mSelect = "SELECT num_despac, num_consec, CONCAT( YEAR( fec_noved2 ), '-', WEEKOFYEAR(DATE( fec_noved2 )) )AS fec_noveda, usr_asigna
                   FROM ".BASE_DATOS.".tab_protoc_asigna 
                  WHERE ind_ejecuc = '1' 
-                   AND fec_noved2 >= '".$date_ini."' AND fec_noved2 <= '".$date_fin."'  
+                   AND fec_noved2 BETWEEN '".$date_ini."' AND '".$date_fin."' 
                  ORDER BY 3";
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $_NOVEDAE = $consulta -> ret_matriz();
@@ -762,7 +736,7 @@ class AjaxDespacUsuari
     $date_ini = $mData['fec_inicia']." ".$mData['hor_inicia'];
     $date_fin = $mData['fec_finali']." ".$mData['hor_finali'];
     
-    $mSelect = "SELECT num_despac, num_consec, DATE_FORMAT( fec_noveda, '%Y-%m') AS fec_noveda, UPPER(usr_asigna) AS usr_asigna
+    $mSelect = "SELECT num_despac, num_consec, DATE_FORMAT( fec_noveda, '%Y-%m') AS fec_noveda, usr_asigna
                   FROM ".BASE_DATOS.".tab_protoc_asigna 
                  WHERE ind_ejecuc = '0' 
                    AND fec_noveda BETWEEN '".$date_ini."' AND '".$date_fin."' 
@@ -778,13 +752,14 @@ class AjaxDespacUsuari
       $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] .= $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] != '' ? ','.$row['num_despac'] : $row['num_despac'];
     }
     
-    $mSelect = "SELECT num_despac, num_consec, DATE_FORMAT( fec_noved2, '%Y-%m') AS fec_noveda, UPPER(usr_ejecut) AS usr_asigna 
+    $mSelect = "SELECT num_despac, num_consec, DATE_FORMAT( fec_noved2, '%Y-%m') AS fec_noveda, usr_ejecut AS usr_asigna 
                   FROM ".BASE_DATOS.".tab_protoc_asigna 
                  WHERE ind_ejecuc = '1' 
                    AND fec_noved2 >= '".$date_ini."' AND fec_noved2 <= '".$date_fin."' 
                  ORDER BY 3";
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $_NOVEDAE = $consulta -> ret_matriz();
+    
     foreach( $_NOVEDAE as $row )
     {
       $_DATA[$row['usr_asigna']]['e'][$row['fec_noveda']]['countx']++;
