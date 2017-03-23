@@ -1154,6 +1154,54 @@ class Despac
 		$mDespacCarDes = self::getDespacDescar( $mTransp, 'list2', true ); #Despachos en Etapas Cargue y Descargue
 		$mDespacCarDes = trim($mDespacCarDes, ',');
 
+		#Despachos en ruta  
+		$mSql = "	 SELECT xx.num_despac
+					   FROM ".BASE_DATOS.".tab_despac_despac xx 
+				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
+						 ON xx.num_despac = yy.num_despac
+				  LEFT JOIN ".BASE_DATOS.".tab_despac_corona zz 
+						 ON xx.num_despac = zz.num_dessat 
+					  WHERE xx.fec_salida IS NOT NULL 
+						AND xx.fec_salida <= NOW() 
+						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
+						AND xx.ind_planru = 'S' 
+						AND xx.ind_anulad = 'R'
+						AND yy.ind_activo = 'S' 
+						AND ( zz.fec_salida IS NULL OR zz.fec_salida = '0000-00-00 00:00:00' )
+						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+		$mDespac = $mConsult -> ret_matrix('a');
+
+		if( sizeof($mDespac) < 1 )
+			return false;
+
+		$mDespac = join( ',', GetColumnFromMatrix( $mDespac, 'num_despac' ) );
+
+		#Despachos en Etapa Transito Filtro 3
+		$mSql = "( /* Despachos con novedades etapa Descargue en Sitio */
+						SELECT a.num_despac 
+						  FROM ".BASE_DATOS.".tab_despac_noveda a 
+					INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
+							ON a.cod_noveda = b.cod_noveda 
+						 WHERE a.num_despac IN ( {$mDespac} ) 
+						   AND b.cod_etapax IN ( 3 )
+					  GROUP BY a.num_despac
+				)
+				UNION 
+				( /* Despachos con novedades etapa Descargue antes de Sitio */
+						SELECT c.num_despac 
+						  FROM ".BASE_DATOS.".tab_despac_contro c 
+					INNER JOIN ".BASE_DATOS.".tab_genera_noveda d 
+							ON c.cod_noveda = d.cod_noveda 
+						 WHERE c.num_despac IN ( {$mDespac} ) 
+						   AND d.cod_etapax IN ( 3 )
+				) ";
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+		$mDespacTrasi = $mConsult -> ret_matrix('a');
+		$mDespacTrasi = join( ',', GetColumnFromMatrix( $mDespacTrasi, 'num_despac' ) );
+
+
+
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
@@ -1171,6 +1219,7 @@ class Despac
 					AND b.ind_activo = 'S' 
 					AND b.cod_transp = '".$mTransp['cod_transp']."' 
 			".( $mDespacCarDes == '' ? "" : " AND a.num_despac NOT IN ( {$mDespacCarDes} ) " )."
+					AND a.num_despac IN ( {$mDespacTrasi} )
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
 					 ON b.cod_transp = c.cod_tercer 
 			 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
@@ -1191,7 +1240,9 @@ class Despac
 					 ON b.cod_conduc = h.cod_tercer 
 			 INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
 					 ON a.cod_tipdes = i.cod_tipdes 
-				  WHERE 1=1 ";
+			 LEFT JOIN ".BASE_DATOS.".tab_despac_corona j
+			 	 	 ON a.num_despac = j.num_dessat
+				  WHERE 1=1     ";
 
 		#Filtros por Formulario
 		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
@@ -1200,6 +1251,9 @@ class Despac
 		#Filtros por usuario
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
+
+		echo "<pre style='display:none;'>"; print_r($mSql); echo "</pre>";
+
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1838,7 +1892,7 @@ class Despac
 		{
 			if( $_REQUEST['ind_etapax'] == 'ind_segtra' )
 				$mNameFunction = $mTransp[$i]['ind_segcar'] == '1' && $mTransp[$i]['ind_segdes'] == '1' ? 'getDespacTransi2' : 'getDespacTransi1';
-
+ 
 			$mDespac = self::$mNameFunction( $mTransp[$i] );
  
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
@@ -1873,16 +1927,21 @@ class Despac
 		}
 		if($_REQUEST['ind_etapax']=='ind_segprc'){
 			#Pinta tablas
+			//$mData = self::orderMatrizDetailPrc( $con_paradi, $con_paraco, $con_anulad, $con_planta, $con_porter, $con_sinseg, $con_tranpl, $con_cnnlap, $con_cnlapx );
+			//$mComparadi = self::orderMatrizDetailPrc($con_paradi, 'ASC');
+			
+	 
+
 			$mHtml  = '';
-			$mHtml .= $con_paradi ? self::printTabDetail( $mTittle2, $con_paradi, sizeof($con_paradi).'DESPACHOS PENDIENTES', '1' ) : '';
-			$mHtml .= $con_paraco ? self::printTabDetail( $mTittle2, $con_paraco, sizeof($con_paraco).'DESPACHOS PARA EL CORTE', '1' ) : '';
-			$mHtml .= $con_anulad ? self::printTabDetail( $mTittle2, $con_anulad, sizeof($con_anulad).'DESPACHOS ANULADOS', '1' ) : '';
-			$mHtml .= $con_planta ? self::printTabDetail( $mTittle2, $con_planta, sizeof($con_planta).'DESPACHOS EN PLANTA', '1' ) : '';
-			$mHtml .= $con_porter ? self::printTabDetail( $mTittle2, $con_porter, sizeof($con_porter).'DESPACHOS EN PORTERIA', '1' ) : '';
-			$mHtml .= $con_sinseg ? self::printTabDetail( $mTittle2, $con_sinseg, sizeof($con_sinseg).'DESPACHOS SIN COMUNICACION', '1' ) : '';
-			$mHtml .= $con_tranpl ? self::printTabDetail( $mTittle2, $con_tranpl, sizeof($con_tranpl).'DESPACHOS EN TRANSITO A PLANTA', '1' ) : '';
-			$mHtml .= $con_cnnlap ? self::printTabDetail( $mTittle2, $con_cnnlap, sizeof($con_cnnlap).'DESPACHOS CON NOVEDAD NO LLEGADA A PLANTA', '1' ) : '';
-			$mHtml .= $con_cnlapx ? self::printTabDetail( $mTittle2, $con_cnlapx, sizeof($con_cnlapx).'DESPACHOS CON NOVEDAD LLEGADA A PLANTA', '1' ) : '';
+			$mHtml .= $con_paradi ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paradi), sizeof($con_paradi).'DESPACHOS PENDIENTES', '1' ) : '';
+			$mHtml .= $con_paraco ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paraco), sizeof($con_paraco).'DESPACHOS PARA EL CORTE', '1' ) : '';
+			$mHtml .= $con_anulad ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_anulad), sizeof($con_anulad).'DESPACHOS ANULADOS', '1' ) : '';
+			$mHtml .= $con_planta ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_planta), sizeof($con_planta).'DESPACHOS EN PLANTA', '1' ) : '';
+			$mHtml .= $con_porter ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_porter), sizeof($con_porter).'DESPACHOS EN PORTERIA', '1' ) : '';
+			$mHtml .= $con_sinseg ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_sinseg), sizeof($con_sinseg).'DESPACHOS SIN COMUNICACION', '1' ) : '';
+			$mHtml .= $con_tranpl ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_tranpl), sizeof($con_tranpl).'DESPACHOS EN TRANSITO A PLANTA', '1' ) : '';
+			$mHtml .= $con_cnnlap ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_cnnlap), sizeof($con_cnnlap).'DESPACHOS CON NOVEDAD NO LLEGADA A PLANTA', '1' ) : '';
+			$mHtml .= $con_cnlapx ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_cnlapx), sizeof($con_cnlapx).'DESPACHOS CON NOVEDAD LLEGADA A PLANTA', '1' ) : '';
 
 
 		}
@@ -1966,8 +2025,15 @@ class Despac
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$n.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mLink.'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[nom_transp].'</td>';
-				$mHtml .= 	'<td class="classCell '.$row[color2].' nowrap="" align="left" style="color:'.$mColor.'">'.$row[tiempS].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[cod_manifi].'</td>';
+
+				if($row["ind_anulad"] == "A") {
+					$mHtml .= 	'<td class="classCell   nowrap="" align="left"  >N/A</td>';
+				}
+				else{
+					$mHtml .= 	'<td class="classCell '.$row[color2].' nowrap="" align="left" style="color:'.$mColor.'">'. $row[tiempS].'</td>';
+				}
+
 				$mHtml .= 	'<td class="classCell '.$row[color].' nowrap="" align="left" style="color:'.$mColor.'">'.$row[tiempo].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[can_noveda].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[num_placax].'</td>';
@@ -2059,6 +2125,46 @@ class Despac
 		$mData['acargo'] = array_merge($mPosi, $mNega);
 
 		return $mData;
+	}
+	
+	/*! \fn: orderMatrizDetailPrc
+	 *  \brief: Ordena la Matriz Resultante para el detalle
+	 *  \author: Ing. Fabian Salinas
+	 *	\date: 23/07/2015
+	 *	\date modified: 17/05/2016
+	 *  \modified by: Ing. Fabian Salinas
+	 *  \param: mNegTieesp  matriz  Despachos con Tiempo Modificado
+	 *  \param: mPosTieesp  matriz  Despachos con Tiempo Modificado
+	 *  \param: mNegTiempo  matriz  Despachos en Seguimiento tiempo Negativo
+	 *  \param: mPosTiempo  matriz  Despachos en Seguimiento tiempo Positivo
+	 *  \param: mNegFinrut  matriz  Despachos Pendiente Llegada tiempo Negativo
+	 *  \param: mPosFinrut  matriz  Despachos Pendiente Llegada tiempo Positivo
+	 *  \param: mNegAcargo  matriz  Despachos a Cargo Empresa tiempo Negativo
+	 *  \param: mPosAcargo  matriz  Despachos a Cargo Empresa tiempo Positivo
+	 *  \return: Matriz
+	 */
+	private function orderMatrizDetailPrc( $con_paradi )
+	{
+		$mData = array();
+		#Ordena Matriz Por tiempo 
+		$con_paradiPos = array();
+		$con_paradiNeg = array();
+
+		foreach ($con_paradi AS $key => $value) {
+			if($value["tiempo"] >= 0) {
+			 $con_paradiPos[] = $value;
+
+			}
+			else{
+			 $con_paradiNeg[] = $value;
+			}
+		}
+
+		$mPosi = $con_paradi ? SortMatrix( $con_paradiPos, 'tiempo', "DESC" ) : array();  
+		$mNega = $con_paradi ? SortMatrix( $con_paradiNeg, 'tiempo', "ASC" ) : array();  
+	 	
+	 	$mReturn = array_merge($mPosi,$mNega );
+		return $mReturn;
 	}
 
 	/*! \fn: detailSearch
@@ -2894,13 +3000,15 @@ class Despac
 			}
 			else
 			{	
+ 
+
 				$color;//color tiempo para cita de cargue
 				$color2;//color tiempo para seguimiento
 				if($mDespac[$i]["tiempo"] < -30 ){
 					$color = $mColor[0];
 				}
 				elseif($mDespac[$i]["tiempo"] < 0 && $mDespac[$i]["tiempo"] >= -30){
-					$color = $mColor[3];
+					$color = $mColor[4];
 				}
 				elseif ($mDespac[$i]["tiempo"] < 31 && $mDespac[$i]["tiempo"] >= 0) {
 					$color = $mColor[5];
@@ -2919,7 +3027,7 @@ class Despac
 					$color2 = $mColor[0];
 				}
 				elseif($mDespac[$i]["tiempS"] < 0 && $mDespac[$i]["tiempS"] >= -30){
-					$color2 = $mColor[3];
+					$color2 = $mColor[4];
 				}
 				elseif ($mDespac[$i]["tiempS"] < 31 && $mDespac[$i]["tiempS"] >= 0) {
 					$color2 = $mColor[5];
