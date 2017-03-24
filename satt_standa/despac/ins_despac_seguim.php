@@ -1642,13 +1642,13 @@ class Proc_segui
         #Nuevo estado para la etapa de precargue
         if(isset($_REQUEST['cod_estprc']))
         {
-            $query = "SELECT IF( MAX(num_consec)>0,MAX(num_consec)+1,0)
+            $query = "SELECT IF( MAX(num_consec)<=0 OR MAX(num_consec) IS NULL,1,MAX(num_consec)+1)
                                                 FROM ". BASE_DATOS .".tab_despac_estado
                                                     WHERE num_despac = {$_REQUEST[num_despac]}";
 
             $consulta = new Consulta($query, $this->conexion);
             $num_consec = $consulta->ret_matriz();
-            $num_consec[0][0];
+            
             $query = "INSERT INTO ". BASE_DATOS .".tab_despac_estado 
                                     (num_despac,    cod_rutasx,     cod_contro,
                                      cod_noveda,    num_consec,     cod_estado,
