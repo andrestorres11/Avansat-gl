@@ -2815,7 +2815,7 @@ class Despac
 	private function printInformPrc( $mIndEtapa, $mTittle, $mStyleCel )
 	{
 		$mTransp = self::getTranspServic( $mIndEtapa );
-		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
+		$mLimitFor = sizeof($mTittle[texto]) ;
 		$mHtml = '';
 		$j=1;
 
