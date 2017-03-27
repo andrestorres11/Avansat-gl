@@ -560,14 +560,14 @@ class Despac
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
-					AND a.num_despac IN ( {$mDespac} )
-					 /*AND a.num_despac NOT IN (  
+					 AND a.num_despac IN ( {$mDespac} ) 
+					 AND a.num_despac NOT IN (  
 													SELECT da.num_despac 
 													  FROM ".BASE_DATOS.".tab_despac_noveda da 
 												INNER JOIN ".BASE_DATOS.".tab_genera_noveda db 
 														ON da.cod_noveda = db.cod_noveda 
 													 WHERE da.num_despac IN ( {$mDespac} ) 
-													   AND db.cod_etapax NOT IN ( 0, 1, 2,3,4,5,6 )
+													   AND db.cod_etapax  IN ( 3,4,5 )
 											)
 					AND a.num_despac NOT IN (  
 													SELECT ea.num_despac 
@@ -575,8 +575,8 @@ class Despac
 												INNER JOIN ".BASE_DATOS.".tab_genera_noveda eb 
 														ON ea.cod_noveda = eb.cod_noveda 
 													 WHERE ea.num_despac IN ( {$mDespac} ) 
-													   AND eb.cod_etapax NOT IN (  0, 1, 2,3,4,5,6  )
-											) */
+													   AND eb.cod_etapax  IN (  3,4,5 )
+											) 
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
 					 ON b.cod_transp = c.cod_tercer 
 			 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
@@ -599,7 +599,7 @@ class Despac
 					 ON a.cod_tipdes = i.cod_tipdes
 			 INNER JOIN ".BASE_DATOS.".tab_despac_sisext k
 			 		 ON a.num_despac = k.num_despac
-			 INNER JOIN ".BASE_DATOS.".tab_despac_corona z 
+			 LEFT JOIN ".BASE_DATOS.".tab_despac_corona z 
 					 ON a.num_despac = z.num_dessat 
 			  LEFT JOIN ( SELECT m.num_despac,n.num_consec,m.cod_estado
                             FROM tab_despac_estado m
@@ -634,7 +634,7 @@ class Despac
 		}
 		//$mSql .=" GROUP BY a.num_despac";
 
- 		//echo "<pre>"; print_r($mSql); echo "</pre>"; 
+ 		echo "<pre id='NelsonID' style='display:none' >"; print_r($mSql); echo "</pre>"; 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1199,6 +1199,7 @@ class Despac
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespacTrasi = $mConsult -> ret_matrix('a');
 		$mDespacTrasi = join( ',', GetColumnFromMatrix( $mDespacTrasi, 'num_despac' ) );
+		$mDespacTrasi = $mDespacTrasi ? $mDespacTrasi : '0';
 
 
 
@@ -1925,13 +1926,13 @@ class Despac
 			}
 			
 		}
+
+
 		if($_REQUEST['ind_etapax']=='ind_segprc'){
 			#Pinta tablas
 			//$mData = self::orderMatrizDetailPrc( $con_paradi, $con_paraco, $con_anulad, $con_planta, $con_porter, $con_sinseg, $con_tranpl, $con_cnnlap, $con_cnlapx );
 			//$mComparadi = self::orderMatrizDetailPrc($con_paradi, 'ASC');
-			
-	 
-
+ 
 			$mHtml  = '';
 			$mHtml .= $con_paradi ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paradi), sizeof($con_paradi).'DESPACHOS PENDIENTES', '1' ) : '';
 			$mHtml .= $con_paraco ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paraco), sizeof($con_paraco).'DESPACHOS PARA EL CORTE', '1' ) : '';
@@ -2144,11 +2145,13 @@ class Despac
 	 *  \return: Matriz
 	 */
 	private function orderMatrizDetailPrc( $con_paradi )
-	{
+	{ 
 		$mData = array();
 		#Ordena Matriz Por tiempo 
 		$con_paradiPos = array();
 		$con_paradiNeg = array();
+		$mPosi = array();
+		$mNega = array();
 
 		foreach ($con_paradi AS $key => $value) {
 			if($value["tiempo"] >= 0) {
@@ -2160,10 +2163,13 @@ class Despac
 			}
 		}
 
-		$mPosi = $con_paradi ? SortMatrix( $con_paradiPos, 'tiempo', "DESC" ) : array();  
-		$mNega = $con_paradi ? SortMatrix( $con_paradiNeg, 'tiempo', "ASC" ) : array();  
+		$mPosi = $con_paradiPos ? SortMatrix( $con_paradiPos, 'tiempo', "DESC" ) : array();  
+		$mNega = $con_paradiNeg ? SortMatrix( $con_paradiNeg, 'tiempo', "ASC" ) : array();  
 	 	
+ 
 	 	$mReturn = array_merge($mPosi,$mNega );
+
+ 
 		return $mReturn;
 	}
 
@@ -2815,7 +2821,7 @@ class Despac
 	private function printInformPrc( $mIndEtapa, $mTittle, $mStyleCel )
 	{
 		$mTransp = self::getTranspServic( $mIndEtapa );
-		$mLimitFor = sizeof($mTittle[texto]) ;
+		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
 		$mHtml = '';
 		$j=1;
 
