@@ -130,6 +130,11 @@ class infDespacFinali
 						$mHtml->Input( array("class"=>"cellInfo1", "width"=>"30%", "name"=>"num_placax", "id"=>"num_placaxID", "size"=>"10", "minlength"=>"6", "maxlength"=>"6", "validate"=>"placa") );
 						$mHtml->Label( "Conductor: ", $mTD );
 						$mHtml->Input( array("class"=>"cellInfo1", "width"=>"30%", "name"=>"nom_conduc", "id"=>"nom_conducID", "size"=>"40", "end"=>true) );
+
+						$mHtml->Label( "Despachos Finalizados: ", $mTD );
+						$mHtml->CheckBox( array("class"=>"cellInfo1", "name" => "Des_finali", "id"=>"Des_finaliID", "checked"=>"true", "size"=>"10", "value"=>"R"));
+						$mHtml->Label( "Despachos Anulados: ", $mTD );
+						$mHtml->CheckBox( array("class"=>"cellInfo1", "name" => "Des_anulad", "id"=>"Des_anuladID", "size"=>"10", "value"=>"A"));
 					$mHtml->CloseTable('tr');
 
 						$mHtml->Hidden( array("name"=>"standa", "id"=>"standaID", "value"=>DIR_APLICA_CENTRAL) );
@@ -421,7 +426,7 @@ class infDespacFinali
 			  LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer o 
 					 ON a.cod_client = o.cod_tercer 
 				  WHERE a.fec_salida IS NOT NULL 
-					AND a.ind_anulad = 'R' 
+					AND a.ind_anulad IN (".($_REQUEST[Des_finaliID] && $_REQUEST[Des_anuladID]? "'$_REQUEST[Des_finaliID]','$_REQUEST[Des_anuladID]'":($_REQUEST[Des_finaliID]?"'$_REQUEST[Des_finaliID]'":($_REQUEST[Des_anuladID]?"'$_REQUEST[Des_anuladID]'":""))).") 
 					AND a.ind_planru = 'S' 
 					AND a.fec_llegad IS NOT NULL 
 					AND d.cod_transp IN ($_REQUEST[cod_transp]) 
