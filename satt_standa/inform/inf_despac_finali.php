@@ -131,9 +131,9 @@ class infDespacFinali
 						$mHtml->Label( "Conductor: ", $mTD );
 						$mHtml->Input( array("class"=>"cellInfo1", "width"=>"30%", "name"=>"nom_conduc", "id"=>"nom_conducID", "size"=>"40", "end"=>true) );
 
-						$mHtml->Label( "Despachos Finalizados: ", $mTD );
+						$mHtml->Label( "Finalizados: ", $mTD );
 						$mHtml->CheckBox( array("class"=>"cellInfo1", "name" => "Des_finali", "id"=>"Des_finaliID", "checked"=>"true", "size"=>"10", "value"=>"R"));
-						$mHtml->Label( "Despachos Anulados: ", $mTD );
+						$mHtml->Label( "Anulados: ", $mTD );
 						$mHtml->CheckBox( array("class"=>"cellInfo1", "name" => "Des_anulad", "id"=>"Des_anuladID", "size"=>"10", "value"=>"A"));
 					$mHtml->CloseTable('tr');
 
