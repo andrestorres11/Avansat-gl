@@ -2184,9 +2184,9 @@ class AjaxNotifiNotifi
 	private function getPlantillaEnvio($datos)
 	{
 		try {
-			$mCabece = 'MIME-Version: 1.0' . "\r\n";
-            $mCabece .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
-            $mCabece .= 'From: AVANSAT GL  ' . "\r\n";
+			$mCabece  = 'MIME-Version: 1.0' . "\r\n";
+			$mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+			$mCabece .= 'From: AVANSAT <avansat@intrared.net>' . "\r\n";
 			$plantilla = 'pla_notifi_notifi.html';
 			/*variables*/
 			switch ($datos->cod_tipnot) {
