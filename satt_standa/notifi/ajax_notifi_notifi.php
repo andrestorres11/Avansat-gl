@@ -639,14 +639,9 @@ class AjaxNotifiNotifi
 							$mHtml->Label( "*Publicar a:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->Select2 (self::getLisRespon(),  array("name" => "cod_asires", "width" => "25%","colspan"=>"1") );
 							#si es supervisor pinta campos adicionales
-							if($ActionForm->idForm==3){
-								$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
-							}
-							else
-							{
-								$mHtml->Label( "",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"5") );
-							}
+							$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+							$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
+							
 						$mHtml->CloseRow();
 						$mHtml->Row();
 							$mHtml->line("","i",0,7);
@@ -1635,12 +1630,12 @@ class AjaxNotifiNotifi
 	                                        (cod_tipnot,	ind_notres,		num_horlab,
 	                                         nom_asunto,	fec_vigenc,		ind_respue,	
 	                                         obs_notifi,	ind_estado,		usr_creaci,	
-	                                         fec_creaci,	ind_enttur     ". (($datos->cod_tipnot=="3")?",ind_notusr":"") .")
+	                                         fec_creaci,	ind_enttur, 	ind_notusr)
 	                                VALUES  
 	                                		($datos->cod_tipnot,'".str_replace("'", "", substr($datos->cod_asires, 1))."',$datos->num_horlab,
 	                                		'$datos->nom_asunto', '$datos->fec_vigenc',$datos->ind_respue, 
 	                                		'$datos->obs_notifi', 1,$datos->usr_creaci, 
-	                                		NOW(), $datos->ind_enttur ". (($datos->cod_tipnot=="3")?",'".str_replace("'", "", substr($datos->ind_notusr, 1))."'":"") .")";
+	                                		NOW(), $datos->ind_enttur ,'".str_replace("'", "", substr($datos->ind_notusr, 1))."')";
 	            $consulta = new Consulta($sql, self::$cConexion, "BR");
 	            if($consulta)
 	            {
@@ -2067,7 +2062,7 @@ class AjaxNotifiNotifi
 			$files = array();
 			$Estados = array();
 			$dirServ = "../../".DIR_APLICA_CENTRAL."/lib/filnot/";
-			if($datos->nom_asunto!="" && $datos->fec_creaci!="" && $datos->usr_creaci!="" && $datos->cod_asires!="" && $datos->fec_vigenc!="" && $datos->ind_respue!="" && $datos->obs_notifi!="" && $datos->cod_tipnot!="" && $datos->num_horlab!="" && $datos->jso_notifi!="" && $datos->cod_notifi!="")
+			if($datos->nom_asunto!="" && $datos->fec_creaci!="" && $datos->usr_creaci!="" && $datos->cod_asires!="" && $datos->fec_vigenc!="" && $datos->ind_respue!="" && $datos->obs_notifi!="" && $datos->cod_tipnot!="" && $datos->num_horlab!="" && $datos->jso_notifi!="" && $datos->cod_notifi!="" && $datos->ind_notusr!="")
 			{
 				$sql ="UPDATE " . BASE_DATOS . ".tab_notifi_notifi 
 	                            SET
@@ -2075,7 +2070,7 @@ class AjaxNotifiNotifi
 		                            obs_notifi='$datos->obs_notifi',
 		                            fec_vigenc='$datos->fec_vigenc',
 		                            ind_notres='".str_replace("'", "", substr($datos->cod_asires, 1))."',
-		                            ". (($datos->cod_tipnot=="3")?("ind_notusr='".str_replace("'", "", substr($datos->ind_notusr, 1))."',"):"") ."
+		                            ind_notusr='".str_replace("'", "", substr($datos->ind_notusr, 1))."',
 		                            ind_respue=$datos->ind_respue,	
 		                            usr_modifi=$datos->usr_creaci,	
 		                            fec_modifi=NOW()

@@ -354,18 +354,7 @@ function btnGeneral()
     {
       if(validateChekBox("cod_asiresID")!="")
       {
-        if(cod_tipnot==1 || cod_tipnot==2 || cod_tipnot==3 || cod_tipnot==5)
-        {
-          if(validateChekBox("ind_notusrID")!="")
-          {
-            band=1;
-          }
-          else
-          {
-             band=0;
-          }          
-        }
-        if(band==1)
+        if(validateChekBox("ind_notusrID")!="")
         {
           if($("#fec_vigencID").val()!="")
           {
