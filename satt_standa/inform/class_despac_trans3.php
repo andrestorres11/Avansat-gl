@@ -2821,7 +2821,7 @@ class Despac
 	private function printInformPrc( $mIndEtapa, $mTittle, $mStyleCel )
 	{
 		$mTransp = self::getTranspServic( $mIndEtapa );
-		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
+		$mLimitFor =  sizeof($mTittle[texto]);
 		$mHtml = '';
 		$j=1;
 
@@ -3047,7 +3047,7 @@ class Despac
 				elseif ($mDespac[$i]["tiempS"] > 90) {
 					$color2 = $mColor[3];
 				}
-				if(($mFiltro == "con_paradi" || $mFiltro == 'sinF') && $mDespac[$i]['fec_citcar'] == $fec_sisact && $mDespac[$i]["ind_anulad"] != "A" )
+				if(($mFiltro == "con_paradi" || $mFiltro == 'sinF') && $mDespac[$i]['fec_citcar'] <= $fec_sisact && $mDespac[$i]["ind_anulad"] != "A" )
 				{
 					$mResult["con_paradi"][$con_paradi] = $mDespac[$i];
 					$mResult["con_paradi"][$con_paradi]["color"] = $color;
