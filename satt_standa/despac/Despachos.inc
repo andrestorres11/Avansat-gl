@@ -8366,7 +8366,7 @@ class Despachos
                         DATE_FORMAT(a.fec_cumcar, '%Y-%m-%d') AS fec_cumcar,
                         DATE_FORMAT(a.fec_cumcar, '%H:%i:%s') AS hor_cumcar,
                         b.nom_noveda,
-                        a.obs_cumcar,
+                        UPPER(a.obs_cumcar),
                         a.usr_cumcar
                    FROM ".BASE_DATOS.".tab_despac_sisext a,
                         ".BASE_DATOS.".tab_genera_noveda b
@@ -8434,7 +8434,7 @@ class Despachos
                                     $_HTML .= '<td rowspan="2" align="center" style="width: 15%;">'.$_sisextx[0][nom_noveda].'</td>';
                                 
                                 if(is_null($ind_cumcar))
-                                    $_HTML .= '<td rowspan="2" align="center"><textarea name="obs_cumpli" id="obs_cumpli" rows="2" style="width: 100%; font-size: 11px; font-family: Arial,Helvetica,sans-serif;"></textarea></td>';
+                                    $_HTML .= '<td rowspan="2" align="center"><textarea name="obs_cumpli" id="obs_cumpli" onKeyUp="UpperText($(this) )" rows="2" style="width: 100%; font-size: 11px; font-family: Arial,Helvetica,sans-serif;"></textarea></td>';
                                 else
                                     $_HTML .= '<td rowspan="2" align="center">'.$_sisextx[0][obs_cumcar].'</td>';
 
@@ -8576,7 +8576,7 @@ class Despachos
                         DATE_FORMAT(a.fec_cumdes, '%Y-%m-%d') AS fec_cumcar,
                         DATE_FORMAT(a.fec_cumdes, '%H:%i:%s') AS hor_cumcar,
                         b.nom_noveda,
-                        a.obs_cumdes,
+                        UPPER(a.obs_cumdes),
                         a.usr_cumdes
                    FROM ".BASE_DATOS.".tab_despac_destin a,
                         ".BASE_DATOS.".tab_genera_noveda b
