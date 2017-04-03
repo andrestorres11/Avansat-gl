@@ -628,7 +628,7 @@ class Despac
 		
 		if($_REQUEST['pun_cargue'])
 		{
-			$mSql .=" AND a.cod_ciuori IN (". $_REQUEST['pun_cargue'] .") ";
+			$mSql .=" AND a.cod_ciuori IN ( ". $_REQUEST['pun_cargue'] .") /*dd*/ ";
 		} 
 
 		if($_REQUEST['tip_produc'])
@@ -778,6 +778,12 @@ class Despac
 			  		 ON a.num_despac = y.num_despac
 				  WHERE 1=1  AND y.ind_cumcar IS NOT NULL AND y.fec_cumcar IS NOT NULL
 				  ";
+
+		if( ($_REQUEST["Option"] == "infoPreCargue" || $_REQUEST["Option"]  == 'detailBand' ) && $_REQUEST["pun_cargue"] != '')
+		{
+		 
+			$mSql .=" AND a.cod_ciuori IN (". $_REQUEST['pun_cargue'] .") /*cargue*/";		 
+		}
 
 		if( $mSinFiltro == false )
 		{
@@ -1885,6 +1891,7 @@ class Despac
 		$con_paraco = array(); #para el corte
 		$con_anulad = array(); #anuladas
 		$con_planta = array(); #llegada en planta
+		$enx_planta = array(); #en planta de etapa de cargue
 		$con_porter = array(); #en porteria
 		$con_sinseg = array(); #sin seguimineto
 		$con_tranpl = array(); #transito a planta
@@ -1902,11 +1909,13 @@ class Despac
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
 
 				$mDespac = self::getTotalPrecargue( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
-
+				$mDespac['enx_planta']  =  self::getDespacCargue( $mTransp[$i] );
+ 
 				$con_paradi = $mDespac['con_paradi'] ? array_merge($con_paradi, $mDespac['con_paradi']) : $con_paradi;
 				$con_paraco = $mDespac['con_paraco'] ? array_merge($con_paraco, $mDespac['con_paraco']) : $con_paraco;
 				$con_anulad = $mDespac['con_anulad'] ? array_merge($con_anulad, $mDespac['con_anulad']) : $con_anulad;
 				$con_planta = $mDespac['con_planta'] ? array_merge($con_planta, $mDespac['con_planta']) : $con_planta;
+				$enx_planta = $mDespac['enx_planta'] ? array_merge($enx_planta, $mDespac['enx_planta']) : $enx_planta;
 				$con_porter = $mDespac['con_porter'] ? array_merge($con_porter, $mDespac['con_porter']) : $con_porter;
 				$con_sinseg = $mDespac['con_sinseg'] ? array_merge($con_sinseg, $mDespac['con_sinseg']) : $con_sinseg;
 				$con_tranpl = $mDespac['con_tranpl'] ? array_merge($con_tranpl, $mDespac['con_tranpl']) : $con_tranpl;
@@ -1935,12 +1944,13 @@ class Despac
 			#Pinta tablas
 			//$mData = self::orderMatrizDetailPrc( $con_paradi, $con_paraco, $con_anulad, $con_planta, $con_porter, $con_sinseg, $con_tranpl, $con_cnnlap, $con_cnlapx );
 			//$mComparadi = self::orderMatrizDetailPrc($con_paradi, 'ASC');
- 
+		 
 			$mHtml  = '';
 			$mHtml .= $con_paradi ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paradi), sizeof($con_paradi).'DESPACHOS PENDIENTES', '1' ) : '';
 			$mHtml .= $con_paraco ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paraco), sizeof($con_paraco).'DESPACHOS PARA EL CORTE', '1' ) : '';
 			$mHtml .= $con_anulad ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_anulad), sizeof($con_anulad).'DESPACHOS ANULADOS', '1' ) : '';
-			$mHtml .= $con_planta ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_planta), sizeof($con_planta).'DESPACHOS EN PLANTA', '1' ) : '';
+			$mHtml .= $enx_planta ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($enx_planta), sizeof($enx_planta).'DESPACHOS EN PLANTA', '1' ) : '';
+			//$mHtml .= $con_planta ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_planta), sizeof($con_planta).'DESPACHOS EN PLANTA N', '1' ) : '';
 			$mHtml .= $con_porter ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_porter), sizeof($con_porter).'DESPACHOS EN PORTERIA', '1' ) : '';
 			$mHtml .= $con_sinseg ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_sinseg), sizeof($con_sinseg).'DESPACHOS SIN COMUNICACION', '1' ) : '';
 			$mHtml .= $con_tranpl ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_tranpl), sizeof($con_tranpl).'DESPACHOS EN TRANSITO A PLANTA', '1' ) : '';
@@ -2018,8 +2028,9 @@ class Despac
 				
 				//$mTxt = substr($row[color], 3);
 				$mNovedades = getNovedadesDespac( self::$cConexion , $row[num_despac], 1 ); #Novedades del despacho
+
 				$mColor =  '#000000;';
-				if($row["ind_anulad"]=="A"){
+				if($row["ind_anulad"]=="A" || $_REQUEST["ind_filtro"] == 'enx_planta'){
 					$mLink =$row[num_despac];
 				}
 				else
@@ -2044,7 +2055,7 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ciu_origen].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mNonEstado.'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[nom_ultnov].'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mNovedades[sizeof($mNovedades) - 1]["des_noveda"].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left" width="300px">'.$mNovedades[sizeof($mNovedades) - 1]["obs_noveda"].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mNovedades[sizeof($mNovedades) - 1]["fec_crenov"].'</td>';
 				$mHtml .= '</tr>';
 				$n++;
@@ -2841,6 +2852,8 @@ class Despac
 			if( $mDespac != false )
 			{
 				$mData = self::getTotalPrecargue( $mDespac, $mTransp[$i], 1 );
+				$mData["enx_planta"] = sizeof(self::getDespacCargue( $mTransp[$i] ) );
+			 
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_tipser].'</td>';
@@ -2849,8 +2862,14 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_paradi] == 0 ? '' : 'onclick="showDetailBand(\'con_paradi\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_paradi].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_paraco] == 0 ? '' : 'onclick="showDetailBand(\'con_paraco\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_paraco].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_anulad] == 0 ? '' : 'onclick="showDetailBand(\'con_anulad\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_anulad].'</td>';
+				
+				//En planta nuevo, es todo lo que está en pestaña de cargue
+				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[enx_planta] == 0 ? '' : 'onclick="showDetailBand(\'enx_planta\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[enx_planta].'</td>';
+				
+
+				// Con planta pasa a ser oporteria, osea Porteria tiene las condiciones de planta
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_planta] == 0 ? '' : 'onclick="showDetailBand(\'con_planta\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_planta].'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_porter] == 0 ? '' : 'onclick="showDetailBand(\'con_porter\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_porter].'</td>';
+
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_sinseg] == 0 ? '' : 'onclick="showDetailBand(\'con_sinseg\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_sinseg].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_tranpl] == 0 ? '' : 'onclick="showDetailBand(\'con_tranpl\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_tranpl].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_cnnlap] == 0 ? '' : 'onclick="showDetailBand(\'con_cnnlap\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_cnnlap].'</td>';
@@ -2864,7 +2883,7 @@ class Despac
 				$mTotal[1] += $mData[con_paradi];
 				$mTotal[2] += $mData[con_paraco];
 				$mTotal[3] += $mData[con_anulad];
-				$mTotal[4] += $mData[con_planta];
+				$mTotal[4] += $mData[enx_planta];
 				$mTotal[5] += $mData[con_porter];
 				$mTotal[6] += $mData[con_sinseg];
 				$mTotal[7] += $mData[con_tranpl];

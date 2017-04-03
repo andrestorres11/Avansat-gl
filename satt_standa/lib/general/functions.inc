@@ -448,7 +448,8 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                   z.ind_ensiti, z.fec_planea, z.ind_fuepla, z.tiem_duraci, 
                   z.nom_noveda, z.nom_contro, z.ind_limpio, z.ind_manala, 
                   z.fec_progra, z.ind_virtua, z.cod_rutasx, 
-                  IF(z.nom_sitiox = '', z.nom_contro, z.nom_sitiox) AS nom_sitiox
+                  IF(z.nom_sitiox = '', z.nom_contro, z.nom_sitiox) AS nom_sitiox, z.obs_noveda
+
             FROM (
                          SELECT y.cod_contro, y.ind_urbano, y.ind_virtua, 
                                 y.nom_contro, y.cod_colorx, y.fec_progra, 
