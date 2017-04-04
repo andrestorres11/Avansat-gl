@@ -622,7 +622,7 @@ function Guarda() {
 
 function aceptar_act() {
 	validacion = true
-	formulario = document.form_act
+	formulario = document.form_act;
 	if (formulario.noveda.value == "") {
 		window.alert("Digite el Nombre de la Novedad")
 		formulario.noveda.focus()
@@ -633,17 +633,25 @@ function aceptar_act() {
 	}
 }
 
-function ins_tab_noveda(formulario) {
-	validacion = true
-	formulario = document.form_insert
-	if (formulario.nom.value == "") {
-		window.alert("El Nombre es Requerido")
-		validacion = false
-		formulario.nom.focus()
-	} else {
-		formulario.opcion.value = 2;
-		formulario.submit();
+function ins_tab_noveda() {
+	try
+	{
+		validacion = true
+		formulario = document.form_list
+		if (formulario.nom.value == "") {
+			window.alert("El Nombre es Requerido")
+			validacion = false
+			formulario.nom.focus()
+		} else {
+			formulario.opcion.value = 2;
+			formulario.submit();
+		}
 	}
+	catch(e)
+	{
+		alert("Error en:ins_tab_noveda\nLine:"+e.lineNumber+"\n"+e.message );
+	}
+
 }
 
 function aceptar_lis() {
@@ -1271,3 +1279,89 @@ function LoadPopupJQ3(opcion, titulo, alto, ancho, redimen, dragg, lockBack) {
 		return false;
 	}
 }
+
+/*! \fn: getFormNoveda
+* \brief: redirecciona formulario novedad
+* \author: Edward Serrano
+* \date: 31/03/2017
+* \date modified: dia/mes/año
+* \param: paramatro
+* \return valor que retorna
+*/
+
+function getFormNoveda(opcionForm)
+{
+	 try
+	 {
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=1&accion=1";
+	 } catch (e) {
+		console.log("Error Function getFormNoveda: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+/*! \fn: editarNove
+* \brief: redirecciona formulario editar noveda
+* \author: Edward Serrano
+* \date: 03/04/2017
+* \date modified: dia/mes/año
+* \param: paramatro
+* \return valor que retorna
+*/
+
+function editarNove(row)
+{
+	 try
+	 {
+	 	var objeto = $(row).parent().parent();
+   		var cod_noveda = objeto.find("input[id^=cod_noveda]").val();
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=1&accion=2&cod_noveda="+cod_noveda;
+	 } catch (e) {
+		console.log("Error Function editarNove: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+/*! \fn: eliminarNove
+* \brief: redirecciona formulario editar noveda
+* \author: Edward Serrano
+* \date: 03/04/2017
+* \date modified: dia/mes/año
+* \param: paramatro
+* \return valor que retorna
+*/
+
+function eliminarNove(row)
+{
+	 try
+	 {
+	 	var objeto = $(row).parent().parent();
+   		var cod_noveda = objeto.find("input[id^=cod_noveda]").val();
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=3&cod_noveda="+cod_noveda;
+	 } catch (e) {
+		console.log("Error Function editarNove: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+/*! \fn: VolverNovedad
+* \brief: volver al menu principal
+* \author: Edward Serrano
+* \date: 04/04/2017
+* \date modified: dia/mes/año
+* \param: paramatro
+* \return valor que retorna
+*/
+
+function VolverNovedad()
+{
+	 try
+	 {
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209";
+	 } catch (e) {
+		console.log("Error Function VolverNovedad: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+
