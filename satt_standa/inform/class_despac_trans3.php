@@ -252,6 +252,7 @@ class Despac
 	private function printInform( $mIndEtapa, $mTittle )
 	{
 		$mTransp = self::getTranspServic( $mIndEtapa );
+		echo "<pre style='display:none'>"; print_r($mTransp ); echo "</pre>";
 		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
 		$mHtml = '';
 		$j=1;
@@ -541,7 +542,7 @@ class Despac
 						AND xx.ind_anulad in ('R', 'A')
 						AND yy.ind_activo = 'S' 
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' "; 
-		echo "<pre id='Nelson2ID' style='display:none' >";  print_r($mSql); echo "</pre>";
+		 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -637,7 +638,7 @@ class Despac
 		}
 		//$mSql .=" GROUP BY a.num_despac";
 
- 		echo "<pre id='NelsonID' style='display:none' >"; print_r($mSql); echo "</pre>"; 
+ 		 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -716,8 +717,10 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NULL OR zz.fec_salida = '0000-00-00 00:00:00' )
+						AND ( zz.fec_salida IS NOT NULL   )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
+
+						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -794,7 +797,7 @@ class Despac
 			#Filtros por usuario
 			$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		}
-
+		echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1176,7 +1179,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NULL OR zz.fec_salida = '0000-00-00 00:00:00' )
+						AND ( zz.fec_salida IS NOT NULL  )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -1262,7 +1265,7 @@ class Despac
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
 
-		echo "<pre style='display:none;'>"; print_r($mSql); echo "</pre>";
+		echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -1909,13 +1912,12 @@ class Despac
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
 
 				$mDespac = self::getTotalPrecargue( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
-				$mDespac['enx_planta']  =  self::getDespacCargue( $mTransp[$i] );
- 
+				 
 				$con_paradi = $mDespac['con_paradi'] ? array_merge($con_paradi, $mDespac['con_paradi']) : $con_paradi;
 				$con_paraco = $mDespac['con_paraco'] ? array_merge($con_paraco, $mDespac['con_paraco']) : $con_paraco;
 				$con_anulad = $mDespac['con_anulad'] ? array_merge($con_anulad, $mDespac['con_anulad']) : $con_anulad;
 				$con_planta = $mDespac['con_planta'] ? array_merge($con_planta, $mDespac['con_planta']) : $con_planta;
-				$enx_planta = $mDespac['enx_planta'] ? array_merge($enx_planta, $mDespac['enx_planta']) : $enx_planta;
+				$enx_planta = $mDespac['enx_planta'] ? array_merge($enx_planta, self::getDespacCargue( $mTransp[$i] ) ) : $enx_planta;
 				$con_porter = $mDespac['con_porter'] ? array_merge($con_porter, $mDespac['con_porter']) : $con_porter;
 				$con_sinseg = $mDespac['con_sinseg'] ? array_merge($con_sinseg, $mDespac['con_sinseg']) : $con_sinseg;
 				$con_tranpl = $mDespac['con_tranpl'] ? array_merge($con_tranpl, $mDespac['con_tranpl']) : $con_tranpl;
