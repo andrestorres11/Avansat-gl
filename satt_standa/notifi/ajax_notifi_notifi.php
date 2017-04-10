@@ -1500,8 +1500,8 @@ class AjaxNotifiNotifi
 			$cod_respon= substr($datos->cod_Respon, 1);
 		    $mSql = "SELECT a.cod_consec, UPPER(a.nom_usuari) AS nom_tercer 
 		    				FROM ".BASE_DATOS.".tab_genera_usuari a 
-		    					INNER JOIN ".BASE_DATOS.".tab_genera_perfil b ON a.cod_consec=b.cod_perfil 
-		    						WHERE b.cod_respon IN (".$cod_respon.") GROUP BY a.cod_usuari";
+		    					INNER JOIN ".BASE_DATOS.".tab_genera_perfil b ON a.cod_perfil=b.cod_perfil 
+		    						WHERE b.cod_respon IN (".$cod_respon.") AND a.ind_estado=1";
 		    $consulta = new Consulta( $mSql, self::$cConexion);
 		    $mResult = $consulta -> ret_matrix('i');
 		    $retr="<option value='0' selected='selected'>-</option>";
@@ -1527,7 +1527,7 @@ class AjaxNotifiNotifi
 			$datos = (object) $_REQUEST;
 			$files = array();
 			$Estados = array();
-			$dirServ = "../../".DIR_APLICA_CENTRAL."/lib/filnot/";
+			$dirServ = "../../".BASE_DATOS."/filnot/";
 			if($datos->nom_asunto!="" && $datos->fec_creaci!="" && $datos->usr_creaci!="" && $datos->cod_asires!="" && $datos->ind_notusr!="" && $datos->fec_vigenc!="" && $datos->ind_respue!="" && $datos->obs_notifi!="" && $datos->cod_tipnot!="")
 			{
 				$sql ="INSERT INTO " . BASE_DATOS . ".tab_notifi_notifi 
@@ -1603,6 +1603,7 @@ class AjaxNotifiNotifi
 				echo "OK";
 			}else
 			{
+				$consultaFinal = new Consulta("ROLLBACK", self::$cConexion);
 				echo "ERROR";
 			}
 		} catch (Exception $e) {
@@ -1623,7 +1624,7 @@ class AjaxNotifiNotifi
 			$datos = (object) $_REQUEST;
 			$files = array();
 			$Estados = array();
-			$dirServ = "../../".DIR_APLICA_CENTRAL."/lib/filnot/";
+			$dirServ = "../../".BASE_DATOS."/filnot/";
 			if($datos->nom_asunto!="" && $datos->fec_creaci!="" && $datos->usr_creaci!="" && $datos->cod_asires!="" && $datos->fec_vigenc!="" && $datos->ind_respue!="" && $datos->obs_notifi!="" && $datos->cod_tipnot!="" && $datos->num_horlab!="" && $datos->jso_notifi!="")
 			{
 				$sql ="INSERT INTO " . BASE_DATOS . ".tab_notifi_notifi 
@@ -1710,6 +1711,7 @@ class AjaxNotifiNotifi
 				echo "OK";
 			}else
 			{
+				$consultaFinal = new Consulta("ROLLBACK", self::$cConexion);
 				echo "ERROR";
 			}
 		} catch (Exception $e) {
@@ -1949,7 +1951,7 @@ class AjaxNotifiNotifi
 				echo "OK";
 			}else
 			{
-				echo "ERROR";print_r($Estados["ERROR"]);
+				echo "ERROR";
 			}
 		} catch (Exception $e) {
 			echo "error elimiDocument :".$e;
@@ -1969,7 +1971,7 @@ class AjaxNotifiNotifi
 			$datos = (object) $_REQUEST;
 			$files = array();
 			$Estados = array();
-			$dirServ = "../../".DIR_APLICA_CENTRAL."/lib/filnot/";
+			$dirServ = "../../".BASE_DATOS."/filnot/";
 			if($datos->nom_asunto!="" && $datos->fec_creaci!="" && $datos->usr_creaci!="" && $datos->cod_asires!="" && $datos->fec_vigenc!="" && $datos->ind_respue!="" && $datos->obs_notifi!="" && $datos->cod_tipnot!="" && $datos->cod_notifi!="" && $datos->ind_notusr!="")
 			{
 				$sql ="UPDATE " . BASE_DATOS . ".tab_notifi_notifi 
@@ -2041,6 +2043,7 @@ class AjaxNotifiNotifi
 				echo "OK";
 			}else
 			{
+				$consultaFinal = new Consulta("ROLLBACK", self::$cConexion);
 				echo "ERROR";
 			}
 		} catch (Exception $e) {
@@ -2061,7 +2064,7 @@ class AjaxNotifiNotifi
 			$datos = (object) $_REQUEST;
 			$files = array();
 			$Estados = array();
-			$dirServ = "../../".DIR_APLICA_CENTRAL."/lib/filnot/";
+			$dirServ = "../../".BASE_DATOS."/filnot/";
 			if($datos->nom_asunto!="" && $datos->fec_creaci!="" && $datos->usr_creaci!="" && $datos->cod_asires!="" && $datos->fec_vigenc!="" && $datos->ind_respue!="" && $datos->obs_notifi!="" && $datos->cod_tipnot!="" && $datos->num_horlab!="" && $datos->jso_notifi!="" && $datos->cod_notifi!="" && $datos->ind_notusr!="")
 			{
 				$sql ="UPDATE " . BASE_DATOS . ".tab_notifi_notifi 
@@ -2146,6 +2149,7 @@ class AjaxNotifiNotifi
 				echo "OK";
 			}else
 			{
+				$consultaFinal = new Consulta("ROLLBACK", self::$cConexion);
 				echo "ERROR";
 			}
 		} catch (Exception $e) {

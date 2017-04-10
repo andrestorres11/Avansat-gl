@@ -482,16 +482,20 @@ class notifi
 				default:
 					$zip = new ZipArchive();
  					$nameFileZip=explode(".", $Refdocument[0]['nom_ficher']);
-					$filename = '../'.DIR_APLICA_CENTRAL.'/lib/filnot/'.$nameFileZip[0].'.zip';
+					$filename = '../'.BASE_DATOS.'/filnot/'.$nameFileZip[0].'.zip';
 					 
 					if($zip->open($filename,ZIPARCHIVE::CREATE)===true) {
 					    $zip->addFile(substr($Refdocument[0]['url_ficher'], 3),$Refdocument[0]['nom_ficher']);
 					    $zip->close();
 					    if(file_exists($filename))
 					    {
-						    header("Content-type: application/octet-stream");
+					    	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+						    header("Content-type: application/zip");
+						    header("Content-Transfer-Encoding: binary");
 							header("Content-disposition: attachment; filename=".str_replace(" ","_",$nameFileZip[0]).".zip");
+							ob_end_clean();
 							readfile($filename);
+							ob_end_flush();
 							unlink($filename);	
 					    }
 					    else
