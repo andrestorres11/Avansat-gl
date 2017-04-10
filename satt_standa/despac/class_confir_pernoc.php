@@ -87,8 +87,8 @@ class ConfirPernoc
 		}
 
 		if( $mResult ){
-			$mCampos = array("ind_conper", "hor_pe1".$x, "hor_pe2".$x);
-			$mTransp = getTransTipser( self::$cConexion, " AND a.cod_transp = '$mData[cod_transp]' ", $mCampos );
+			 
+			$mTransp = getTransTipser( self::$cConexion, " AND a.cod_transp = '$mData[cod_transp]' ", array("ind_conper", "hor_pe1".$x, "hor_pe2".$x) );
 			$mTransp = $mTransp[0];
 
 			$mFecIni = date($mData['fec_actual']." ".$mTransp["hor_pe1".$x].":00");
@@ -98,9 +98,9 @@ class ConfirPernoc
 			if( $mFecFin <= $mFecIni )
 				$mFecFin = date( "Y-m-d H:i:s", strtotime('+1 day', strtotime($mFecFin)) );
 
-			$mIndVerify = self::getDespacPernoc( $_REQUEST['num_despac'], $mFecini, $mFecFin );
-
-			if( $mFecAct <= $mFecFin && $mFecAct >= $mFecIni && sizeof($mIndVerify) < 1 ){
+			$mIndVerify = self::getDespacPernoc( $_REQUEST['num_despac'], $mFecIni, $mFecFin );
+ 
+			if( $mFecAct <= $mFecFin && $mFecAct >= $mFecIni && sizeof($mIndVerify) < 1 && $mTransp["ind_conper"] == 1 ){
 				$mResult = self::formConfirPernoc();
 			}else{
 				$mResult = false;

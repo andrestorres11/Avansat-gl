@@ -2275,8 +2275,8 @@ class AjaxNotifiNotifi
         	$thefile = "\$r_file=\"" . $thefile . "\";";
         	eval($thefile);
         	$mHtmlxx = $r_file;
-        	//$mailSend='supervisores@eltransporte.org';
-        	$mailSend='edward.serrano@intrared.net';
+        	$mailSend='supervisores@eltransporte.org';
+        	//$mailSend='edward.serrano@intrared.net';
         	mail($mailSend, $mAsunto, '<div name="pruebaNotifi">' . $mHtmlxx . '</div>', $mCabece);
 		} catch (Exception $e) {
 			echo "error getPlantillaEnvio :".$e;

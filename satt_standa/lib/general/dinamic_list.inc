@@ -3,7 +3,7 @@
 -------------------------------------------------------------------------------------------------------------------------------------------------
 @Class: DinamicList
 @Author: Ing. Christiam Barrera Arango
-@Company: Intrared LTDA. Bogotï¿½ - Colombia
+@Company: Intrared LTDA. Bogot� - Colombia
 @Date: 2008-08-31
 -------------------------------------------------------------------------------------------------------------------------------------------------
 */
@@ -34,6 +34,7 @@ Class DinamicList    {
     var $cHtml;
     var $cClose    = NULL;
     var $cHiddens    = NULL;
+    var $excel;
 
     function __construct( &$conecction, $base, $pkey=1, $check="no", $way= "ASC" )
     {
@@ -99,6 +100,10 @@ Class DinamicList    {
       $this -> create = Array( $label, $properties, $options );
     }
     
+    function SetExcel( $label, $properties="", $options="" )
+    {
+      $this -> excel = Array( $label, $properties, $options );
+    }
     
     function SetHeaders( $headers )
     {
@@ -505,7 +510,7 @@ Class DinamicList    {
       $mReturn .= '/>';
       $mReturn .= "\n           ";
     }
-    $mReturn .= "de <b>".$mPages."</b> ".htmlentities( "páginas." , ENT_COMPAT, 'ISO-8859-1', true);
+    $mReturn .= "de <b>".$mPages."</b> ".htmlentities( "p�ginas." , ENT_COMPAT, 'ISO-8859-1', true);
     $mReturn .= " Orden por <b>\"".( htmlentities( $this -> headers[$this -> sort_col-1][0], ENT_COMPAT, 'ISO-8859-1', true ) )."\"</b> ";
 
     if( $this -> way == "ASC" ) 
@@ -551,12 +556,12 @@ Class DinamicList    {
     }
     if( $this -> page == $mPages )
     {
-      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Siguiente ] [ Última ] " , ENT_COMPAT, 'ISO-8859-1', true).'</span>';
+      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Siguiente ] [ �ltima ] " , ENT_COMPAT, 'ISO-8859-1', true).'</span>';
     }
     else
     {
       $mReturn .= '<a href="#" onclick="javascript:DLPage( '.( $this -> page + 1 ).' );" title="'.htmlentities( "Ir a la Siguiente Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $this -> page+1 ).')">[ Siguiente ]</a> ';
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$mPages.' );" title="'.htmlentities( "Ir a la ultima Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $mPages ).')">[ '.htmlentities( "Última", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a> ';
+      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$mPages.' );" title="'.htmlentities( "Ir a la ultima Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $mPages ).')">[ '.htmlentities( "�ltima", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a> ';
     }
     
     if( $this -> create )
@@ -569,6 +574,18 @@ Class DinamicList    {
           $mOptionsx["onclick"] = "";
 
          $mReturn .= '<a href="#" onclick="javascript:'.$mOptionsx["onclick"].'" title="Crear Registro">[ '. $this -> create[0].' ]</a> ';
+    }
+
+    if( $this -> excel )
+    {
+        $mOptionse = $this -> GetProperties( $this -> excel[1] );
+        if( !isset( $mOptionse["align"] ) )
+          $mOptionse["align"] = "center";
+
+        if( !isset( $mOptionse["onclick"] ) )
+          $mOptionse["onclick"] = "";
+
+         $mReturn .= '<a href="#" onclick="javascript:'.$mOptionse["onclick"].'" title="Exportar Excel">[ '. $this -> excel[0].' ]</a> ';
     }
     
     if ( strtolower( $this -> cClose ) != "no" )

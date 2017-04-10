@@ -195,6 +195,7 @@ class trayle{
         $list = new DinamicList(self::$cConexion, $mSql, "11" , "no", 'ASC');
         $list->SetClose('no');
         $list->SetCreate("Agregar Vehiculo", "onclick:formulario()");
+        $list->SetExcel("Excel", "onclick:exportExcel('opcion=3')");
         $list->SetHeader(utf8_decode("Placa"), "field:a.num_placax; width:1%;  ");
         $list->SetHeader(utf8_decode("Poseedor"), "field:b.abr_tercer; width:1%");
         $list->SetHeader(utf8_decode("Teléfono"), "field:b.num_telef1; width:1%");

@@ -252,6 +252,7 @@ class Despac
 	private function printInform( $mIndEtapa, $mTittle )
 	{
 		$mTransp = self::getTranspServic( $mIndEtapa );
+		echo "<pre style='display:none'>"; print_r($mTransp ); echo "</pre>";
 		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
 		$mHtml = '';
 		$j=1;
@@ -513,8 +514,8 @@ class Despac
 	 */
 	public function getDespacPrcCargue( $mTransp, $mTipReturn = NULL, $mSinFiltro = false )
 	{
-		$sal_inicio=date('Y-m-d')." 01:00:00";
-		$sal_finxxx=date('Y-m-d')." 23:59:59";
+		$sal_inicio=date('Y-m-d')." 00:00:01";
+		$sal_finxxx=date('Y-m-d')." 23:59:59"; 
 		$hor_inicio;
 		$hor_finxxx;
 		if ( $_REQUEST['hor_inicio'] && $_REQUEST['hor_finxxx'] ) 
@@ -540,8 +541,8 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad in ('R', 'A')
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NULL OR zz.fec_salida = '0000-00-00 00:00:00' )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' "; 
+		 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -556,7 +557,7 @@ class Despac
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin,
-						l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar, DATE_SUB( '".$sal_finxxx."', INTERVAl 5 DAY ) 
+						l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -602,7 +603,7 @@ class Despac
 			 LEFT JOIN ".BASE_DATOS.".tab_despac_corona z 
 					 ON a.num_despac = z.num_dessat 
 			  LEFT JOIN ( SELECT m.num_despac,n.num_consec,m.cod_estado
-                            FROM tab_despac_estado m
+                            FROM ".BASE_DATOS.".tab_despac_estado m
                                 INNER JOIN ( SELECT n.num_despac, MAX(n.num_consec) num_consec FROM tab_despac_estado n GROUP BY n.num_despac  ) n ON m.num_despac = n.num_despac
                                 AND n.num_consec = m.num_consec
                                 GROUP BY m.num_despac
@@ -611,7 +612,10 @@ class Despac
 				  WHERE k.ind_cumcar IS NULL AND k.fec_cumcar IS NULL AND
 				  		a.fec_inicar IS NULL AND
 				  		a.fec_fincar IS NULL AND				  		 
-				  		a.fec_citcar <= '{$sal_inicio}' AND a.fec_citcar >= DATE_SUB( '".$sal_finxxx."', INTERVAl 5 DAY ) ";
+				  		a.fec_citcar >= DATE_SUB( '".$sal_inicio."', INTERVAl 5 DAY ) AND a.fec_citcar <= '{$sal_finxxx}' 
+
+
+				  		";
 
 		if( $mSinFiltro == false )
 		{
@@ -625,7 +629,7 @@ class Despac
 		
 		if($_REQUEST['pun_cargue'])
 		{
-			$mSql .=" AND a.cod_ciuori IN (". $_REQUEST['pun_cargue'] .") ";
+			$mSql .=" AND a.cod_ciuori IN ( ". $_REQUEST['pun_cargue'] .") /*dd*/ ";
 		} 
 
 		if($_REQUEST['tip_produc'])
@@ -634,7 +638,7 @@ class Despac
 		}
 		//$mSql .=" GROUP BY a.num_despac";
 
- 		echo "<pre id='NelsonID' style='display:none' >"; print_r($mSql); echo "</pre>"; 
+ 		 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -713,8 +717,10 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NULL OR zz.fec_salida = '0000-00-00 00:00:00' )
+						AND ( zz.fec_salida IS NOT NULL   )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
+
+						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -776,6 +782,12 @@ class Despac
 				  WHERE 1=1  AND y.ind_cumcar IS NOT NULL AND y.fec_cumcar IS NOT NULL
 				  ";
 
+		if( ($_REQUEST["Option"] == "infoPreCargue" || $_REQUEST["Option"]  == 'detailBand' ) && $_REQUEST["pun_cargue"] != '')
+		{
+		 
+			$mSql .=" AND a.cod_ciuori IN (". $_REQUEST['pun_cargue'] .") /*cargue*/";		 
+		}
+
 		if( $mSinFiltro == false )
 		{
 			#Filtros por Formulario
@@ -785,7 +797,7 @@ class Despac
 			#Filtros por usuario
 			$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		}
-
+		echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1167,7 +1179,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NULL OR zz.fec_salida = '0000-00-00 00:00:00' )
+						AND ( zz.fec_salida IS NOT NULL  )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -1253,7 +1265,7 @@ class Despac
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
 
-		echo "<pre style='display:none;'>"; print_r($mSql); echo "</pre>";
+		echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -1882,6 +1894,7 @@ class Despac
 		$con_paraco = array(); #para el corte
 		$con_anulad = array(); #anuladas
 		$con_planta = array(); #llegada en planta
+		$enx_planta = array(); #en planta de etapa de cargue
 		$con_porter = array(); #en porteria
 		$con_sinseg = array(); #sin seguimineto
 		$con_tranpl = array(); #transito a planta
@@ -1899,11 +1912,12 @@ class Despac
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
 
 				$mDespac = self::getTotalPrecargue( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
-
+				 
 				$con_paradi = $mDespac['con_paradi'] ? array_merge($con_paradi, $mDespac['con_paradi']) : $con_paradi;
 				$con_paraco = $mDespac['con_paraco'] ? array_merge($con_paraco, $mDespac['con_paraco']) : $con_paraco;
 				$con_anulad = $mDespac['con_anulad'] ? array_merge($con_anulad, $mDespac['con_anulad']) : $con_anulad;
 				$con_planta = $mDespac['con_planta'] ? array_merge($con_planta, $mDespac['con_planta']) : $con_planta;
+				$enx_planta = $mDespac['enx_planta'] ? array_merge($enx_planta, self::getDespacCargue( $mTransp[$i] ) ) : $enx_planta;
 				$con_porter = $mDespac['con_porter'] ? array_merge($con_porter, $mDespac['con_porter']) : $con_porter;
 				$con_sinseg = $mDespac['con_sinseg'] ? array_merge($con_sinseg, $mDespac['con_sinseg']) : $con_sinseg;
 				$con_tranpl = $mDespac['con_tranpl'] ? array_merge($con_tranpl, $mDespac['con_tranpl']) : $con_tranpl;
@@ -1932,12 +1946,13 @@ class Despac
 			#Pinta tablas
 			//$mData = self::orderMatrizDetailPrc( $con_paradi, $con_paraco, $con_anulad, $con_planta, $con_porter, $con_sinseg, $con_tranpl, $con_cnnlap, $con_cnlapx );
 			//$mComparadi = self::orderMatrizDetailPrc($con_paradi, 'ASC');
- 
+		 
 			$mHtml  = '';
 			$mHtml .= $con_paradi ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paradi), sizeof($con_paradi).'DESPACHOS PENDIENTES', '1' ) : '';
 			$mHtml .= $con_paraco ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paraco), sizeof($con_paraco).'DESPACHOS PARA EL CORTE', '1' ) : '';
 			$mHtml .= $con_anulad ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_anulad), sizeof($con_anulad).'DESPACHOS ANULADOS', '1' ) : '';
-			$mHtml .= $con_planta ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_planta), sizeof($con_planta).'DESPACHOS EN PLANTA', '1' ) : '';
+			$mHtml .= $enx_planta ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($enx_planta), sizeof($enx_planta).'DESPACHOS EN PLANTA', '1' ) : '';
+			//$mHtml .= $con_planta ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_planta), sizeof($con_planta).'DESPACHOS EN PLANTA N', '1' ) : '';
 			$mHtml .= $con_porter ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_porter), sizeof($con_porter).'DESPACHOS EN PORTERIA', '1' ) : '';
 			$mHtml .= $con_sinseg ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_sinseg), sizeof($con_sinseg).'DESPACHOS SIN COMUNICACION', '1' ) : '';
 			$mHtml .= $con_tranpl ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_tranpl), sizeof($con_tranpl).'DESPACHOS EN TRANSITO A PLANTA', '1' ) : '';
@@ -2015,8 +2030,9 @@ class Despac
 				
 				//$mTxt = substr($row[color], 3);
 				$mNovedades = getNovedadesDespac( self::$cConexion , $row[num_despac], 1 ); #Novedades del despacho
+
 				$mColor =  '#000000;';
-				if($row["ind_anulad"]=="A"){
+				if($row["ind_anulad"]=="A" || $_REQUEST["ind_filtro"] == 'enx_planta'){
 					$mLink =$row[num_despac];
 				}
 				else
@@ -2041,7 +2057,7 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ciu_origen].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mNonEstado.'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[nom_ultnov].'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mNovedades[sizeof($mNovedades) - 1]["des_noveda"].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left" width="300px">'.$mNovedades[sizeof($mNovedades) - 1]["obs_noveda"].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mNovedades[sizeof($mNovedades) - 1]["fec_crenov"].'</td>';
 				$mHtml .= '</tr>';
 				$n++;
@@ -2838,6 +2854,8 @@ class Despac
 			if( $mDespac != false )
 			{
 				$mData = self::getTotalPrecargue( $mDespac, $mTransp[$i], 1 );
+				$mData["enx_planta"] = sizeof(self::getDespacCargue( $mTransp[$i] ) );
+			 
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_tipser].'</td>';
@@ -2846,8 +2864,14 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_paradi] == 0 ? '' : 'onclick="showDetailBand(\'con_paradi\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_paradi].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_paraco] == 0 ? '' : 'onclick="showDetailBand(\'con_paraco\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_paraco].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_anulad] == 0 ? '' : 'onclick="showDetailBand(\'con_anulad\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_anulad].'</td>';
+				
+				//En planta nuevo, es todo lo que está en pestaña de cargue
+				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[enx_planta] == 0 ? '' : 'onclick="showDetailBand(\'enx_planta\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[enx_planta].'</td>';
+				
+
+				// Con planta pasa a ser oporteria, osea Porteria tiene las condiciones de planta
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_planta] == 0 ? '' : 'onclick="showDetailBand(\'con_planta\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_planta].'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_porter] == 0 ? '' : 'onclick="showDetailBand(\'con_porter\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_porter].'</td>';
+
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_sinseg] == 0 ? '' : 'onclick="showDetailBand(\'con_sinseg\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_sinseg].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_tranpl] == 0 ? '' : 'onclick="showDetailBand(\'con_tranpl\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_tranpl].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_cnnlap] == 0 ? '' : 'onclick="showDetailBand(\'con_cnnlap\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_cnnlap].'</td>';
@@ -2861,7 +2885,7 @@ class Despac
 				$mTotal[1] += $mData[con_paradi];
 				$mTotal[2] += $mData[con_paraco];
 				$mTotal[3] += $mData[con_anulad];
-				$mTotal[4] += $mData[con_planta];
+				$mTotal[4] += $mData[enx_planta];
 				$mTotal[5] += $mData[con_porter];
 				$mTotal[6] += $mData[con_sinseg];
 				$mTotal[7] += $mData[con_tranpl];
@@ -2928,7 +2952,7 @@ class Despac
 	{
 		$mTipValida = self::tipValidaTiempo( $mTransp );
 		$fec_sisact = date("Y-m-d");
-		$fec_sisHoraIni = date("Y-m-d")." ".($_REQUEST['hor_inicio']?$_REQUEST['hor_inicio']:" 01:00:00");
+		$fec_sisHoraIni = date("Y-m-d")." ".($_REQUEST['hor_inicio']?$_REQUEST['hor_inicio']:" 00:00:01");
 		$fec_sisHoraFin = date("Y-m-d")." ".($_REQUEST['hor_finxxx']?$_REQUEST['hor_finxxx']:" 23:59:59");
 		if( $mIndCant == 1 )
 		{ #Define Cantidades según estado
@@ -2971,7 +2995,7 @@ class Despac
 				 
 				if( $mDespac[$i]['fec_citcar'] <= $fec_sisact && $mDespac[$i]["ind_anulad"] != "A" ) // Hora actual
 				{
-					$mResult["con_paradi"]++;
+					//$mResult["con_paradi"]++;
 				}
 				if( strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) >=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraIni ) )) && strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) <=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraFin ) )) && $mDespac[$i]["ind_anulad"] != "A" ) // del día actual
 				{
@@ -3000,6 +3024,9 @@ class Despac
 							break;
 						case '5':
 							$mResult["con_cnlapx"]++;
+							break;
+						default:
+							$mResult["con_paradi"]++;
 							break;
 					}
 				}
@@ -3047,13 +3074,13 @@ class Despac
 				elseif ($mDespac[$i]["tiempS"] > 90) {
 					$color2 = $mColor[3];
 				}
-				if(($mFiltro == "con_paradi" || $mFiltro == 'sinF') && $mDespac[$i]['fec_citcar'] <= $fec_sisact && $mDespac[$i]["ind_anulad"] != "A" )
+				/*if(($mFiltro == "con_paradi" || $mFiltro == 'sinF') && $mDespac[$i]['fec_citcar'] <= $fec_sisact && $mDespac[$i]["ind_anulad"] != "A" )
 				{
 					$mResult["con_paradi"][$con_paradi] = $mDespac[$i];
 					$mResult["con_paradi"][$con_paradi]["color"] = $color;
 					$mResult["con_paradi"][$con_paradi]["color2"] = $color2;
 					$con_paradi++;
-				}
+				}*/
 				if(($mFiltro == "con_paraco" || $mFiltro == 'sinF') && strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) >=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraIni ) )) && strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) <=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraFin ) )) && $mDespac[$i]["ind_anulad"] != "A" )
 				{
 					$mResult["con_paraco"][$con_paraco] = $mDespac[$i];
@@ -3075,6 +3102,48 @@ class Despac
 					$mResult["con_planta"][$con_planta]["color2"] = $color2;
 					$con_planta++;
 				}
+
+				 
+				/*
+					 
+					switch ($mDespac[$i]['cod_estado']) { 
+							case '1':
+								if( ($mFiltro == "con_porter" || $mFiltro == 'sinF') && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A" )
+								{
+									$mResult["con_porter"] = self::setContaEstado($mFiltro ,$mDespac[$i], $mResult,$color, $color2,$con_porter++ );
+								}
+							break;
+							case '2':
+								if( ($mFiltro == "con_sinseg" || $mFiltro == 'sinF') && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A" )
+								{
+									$mResult["con_sinseg"] = self::setContaEstado($mFiltro,$mDespac[$i], $mResult,$color, $color2,$con_sinseg++ );
+								}
+							break;
+							case '3':
+								if( ($mFiltro == "con_tranpl" || $mFiltro == 'sinF' )&& ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A" )
+								{
+									$mResult["con_tranpl"] = self::setContaEstado($mFiltro,$mDespac[$i], $mResult,$color, $color2,$con_tranpl++ );
+									
+								}
+							break;
+							case '4':
+								if( ($mFiltro == "con_cnnlap" || $mFiltro == 'sinF' )&& ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A" )
+								{
+									$mResult["con_cnnlap"] = self::setContaEstado($mFiltro,$mDespac[$i], $mResult,$color, $color2,$con_cnnlap++ );
+								}
+							break;
+							case '5':
+								if( ($mFiltro == "con_cnlapx" || $mFiltro == 'sinF' )&& ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A" )
+								{
+									$mResult["con_cnlapx"] = self::setContaEstado($mFiltro,$mDespac[$i], $mResult,$color, $color2,$con_cnlapx++ );
+								}
+							break;					
+							default:
+								$mResult["con_paradi"] = self::setContaEstado("con_paradi" ,$mDespac[$i], $mResult,$color, $color2,$con_paradi++ );
+							break;
+					}
+				 */
+				
 				if(($mFiltro == "con_porter" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "1" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A")
 				{
 					$mResult["con_porter"][$con_porter] = $mDespac[$i];
@@ -3082,30 +3151,43 @@ class Despac
 					$mResult["con_porter"][$con_porter]["color2"] = $color2;
 					$con_porter++;
 				}
-				if (($mFiltro == "con_sinseg" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "2" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") {
+				if(($mFiltro == "con_sinseg" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "2" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") 
+				{
 					$mResult["con_sinseg"][$con_sinseg] = $mDespac[$i];
 					$mResult["con_sinseg"][$con_sinseg]["color"] = $color;
 					$mResult["con_sinseg"][$con_sinseg]["color2"] = $color2;
 					$con_sinseg++;
 				}
-				if (($mFiltro == "con_tranpl" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "3" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") {
+				if(($mFiltro == "con_tranpl" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "3" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") 
+				{
 					$mResult["con_tranpl"][$con_tranpl] = $mDespac[$i];
 					$mResult["con_tranpl"][$con_tranpl]["color"] = $color;
 					$mResult["con_tranpl"][$con_tranpl]["color2"] = $color2;
 					$con_tranpl++;
 				}
-				if (($mFiltro == "con_cnnlap" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "4" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") {
+				if(($mFiltro == "con_cnnlap" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "4" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") 
+				{
 					$mResult["con_cnnlap"][$con_cnnlap] = $mDespac[$i];
 					$mResult["con_cnnlap"][$con_cnnlap]["color"] = $color;
 					$mResult["con_cnnlap"][$con_cnnlap]["color2"] = $color2;
 					$con_cnnlap++;
 				}
-				if (($mFiltro == "con_cnlapx" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "5" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") {
+				if(($mFiltro == "con_cnlapx" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == "5" && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") 
+				{
 					$mResult["con_cnlapx"][$con_cnlapx] = $mDespac[$i];
 					$mResult["con_cnlapx"][$con_cnlapx]["color"] = $color;
 					$mResult["con_cnlapx"][$con_cnlapx]["color2"] = $color2;
 					$con_cnlapx++;
 				}
+
+				if(($mFiltro == "con_paradi" || $mFiltro == 'sinF') && $mDespac[$i]['cod_estado'] == NULL && ($mDespac[$i]["fec_plalle"]!="" || $mDespac[$i]["fec_plalle"]!="0000-00-00 00:00:00") && $mDespac[$i]["ind_anulad"] != "A") 
+				{
+					$mResult["con_paradi"][$con_paradi] = $mDespac[$i];
+					$mResult["con_paradi"][$con_paradi]["color"] = $color;
+					$mResult["con_paradi"][$con_paradi]["color2"] = $color2;
+					$con_paradi++;
+				}
+				
 			
 			}
 			
@@ -3113,6 +3195,65 @@ class Despac
  
 		return $mResult;
 	}
+
+
+	/*! \fn: setContaEstado
+	 *  \brief: Calcula el tiempo por fecha de alarma para precargue
+	 *  \author: Edward Serrano
+	 *	\date: 12/03/2017
+	 *	\date modified: dia/mes/año
+	 *  \param: $mDespac   Matriz	Datos Despachos
+	 *  \param: $mTransp   Array  	Informacion de la transportadora
+	 *  \param: $mIndCant  Integer  0:Retorna Despachos con Tiempos; 1:Retorna Cantidades
+	 *  \param: $mFiltro   String  	Filtro para el detallado por color, sinF = Todos
+	 *  \param: $mColor	Array  	Colores por Etapa
+	 *  \return: Matriz
+	 */
+	private function setContaEstado($mFiltro , $mDespac, $mResult, $color, $color2, $mContador )
+	{
+		switch ($mFiltro) {
+			case 'con_porter':				
+					$mResult["con_porter"][$mContador] = $mDespac ;
+					$mResult["con_porter"][$mContador]["color"] = $color;
+					$mResult["con_porter"][$mContador]["color2"] = $color2;
+					 
+			break;
+			case 'con_sinseg': 
+					$mResult["con_sinseg"][$mContador] = $mDespac;
+					$mResult["con_sinseg"][$mContador]["color"] = $color;
+					$mResult["con_sinseg"][$mContador]["color2"] = $color2;
+					 
+			break;
+			case 'con_tranpl':
+					$mResult["con_tranpl"][$mContador] = $mDespac;
+					$mResult["con_tranpl"][$mContador]["color"] = $color;
+					$mResult["con_tranpl"][$mContador]["color2"] = $color2;
+					 
+			break;
+			case 'con_cnnlap':
+					$mResult["con_cnnlap"][$mContador] = $mDespac;
+					$mResult["con_cnnlap"][$mContador]["color"] = $color;
+					$mResult["con_cnnlap"][$mContador]["color2"] = $color2;
+					 
+			break;
+			case 'con_cnlapx':
+					$mResult["con_cnlapx"][$mContador] = $mDespac;
+					$mResult["con_cnlapx"][$mContador]["color"] = $color;
+					$mResult["con_cnlapx"][$mContador]["color2"] = $color2;
+					 
+			break;
+			default:
+					$mResult["con_paradi"][$mContador] = $mDespac;
+					$mResult["con_paradi"][$mContador]["color"] = $color;
+					$mResult["con_paradi"][$mContador]["color2"] = $color2;
+					 
+			break;
+
+		}
+		return $mResult;
+	}
+
+
 }
 
 if($_REQUEST['Ajax'] === 'on' )
