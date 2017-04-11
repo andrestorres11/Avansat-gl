@@ -404,14 +404,3 @@ function pintar(objeto, activi) {
 		return false;
 	}
 }
-
-function exportExcel() 
-{
-	try {
-		window.open("index.php?window=central&cod_servic=1055&menant=1055&opcion=3")
-		
-	} catch (e) {
-		console.log("Error Fuction pintar: " + e.message + "\nLine: " + e.lineNumber);
-		return false;
-	}
-}
