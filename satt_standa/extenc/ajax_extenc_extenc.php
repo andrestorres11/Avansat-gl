@@ -84,6 +84,7 @@ class extenc{
           self::LoadCallPlay();
          break;
 
+
         default:
           header('Location: index.php?window=central&cod_servic=1366&menant=1366');
           break;
@@ -97,12 +98,13 @@ class extenc{
  *  \author: Ing. Alexander Correa                                                  *
  *  \date:  4/12/2015                                                               *
  *  \date modified:                                                                 *
- *  \param: 										                                *     
+ *  \param:                                                     *     
  *  \param:                                                                         * 
  *  \return confirmacion de la insercion correcta o posible error                   *
  ***********************************************************************************/
 
     private function registrarExtencion(){
+
     	$datos = (object) $_POST;
     	$usuario = $_SESSION['datos_usuario']['cod_usuari'];
     	$sql = "SELECT cod_extenc FROM ".BASE_DATOS.".tab_callce_extenc 
@@ -123,7 +125,9 @@ class extenc{
 					die('2'); //errror al registrar en la base de datos
 			}
         }else{
-        	die("0"); //para avisar que ya la existe una extensi贸n identica para el usuario seleccionado y debe inhabilitarse antes
+
+          die("0"); //para avisar que ya la existe una extensi髇 identica para el usuario seleccionado y debe inhabilitarse antes
+
         } 
     }
 
@@ -134,12 +138,14 @@ class extenc{
  *  \author: Ing. Alexander Correa                                                  *
  *  \date:  4/12/2015                                                               *
  *  \date modified:                                                                 *
- *  \param:                            												*     
+ *  \param:                                                   *     
  *  \param:                                                                         * 
- *  \returnlista de los tipos de operaci贸n                        				    *
+ *  \returnlista de los tipos de operaci髇                                    *
  ***********************************************************************************/
     public function getTipoDeOperacion(){
       $sesion = (object) $_SESSION['datos_usuario'];
+
+
       if($sesion->cod_perfil == '712'){
 
       }
@@ -151,7 +157,7 @@ class extenc{
           if($sesion->cod_perfil == '712' && $value['cod_operac'] == '4'){
             $option.= "<option value='$value[cod_operac]' selected = 'selected'>".utf8_encode($value[nom_operac])."</option>";
           }
-        	$option.= "<option value='$value[cod_operac]'>".utf8_encode($value[nom_operac])."</option>";
+          $option.= "<option value='$value[cod_operac]'>".utf8_encode($value[nom_operac])."</option>";
         }
         if($sesion->cod_perfil == '712'){
            $select = "<select style='width:100%' id='cod_operacID' name='cod_operac' validate='select' obl='1' disabled='true'>
@@ -160,8 +166,9 @@ class extenc{
                    </select>";
         }else{
           $select = "<select style='width:100%' id='cod_operacID' name='cod_operac' validate='select' obl='1'>
-                	<option value=''>Seleccione un tipo de Operaci贸n</option>
-                	$option
+                  <option value=''>Seleccione un tipo de Operaci髇</option>
+                  $option
+
                    </select>";
        }
        
@@ -176,23 +183,23 @@ class extenc{
  *  \author: Ing. Alexander Correa                                                  *
  *  \date:  4/12/2015                                                               *
  *  \date modified:                                                                 *
- *  \param:                            												*     
+ *  \param:                                                   *     
  *  \param:                                                                         * 
- *  \returnlista de los tipos de operaci贸n                        				    *
+ *  \returnlista de los tipos de operaci髇                                    *
  ***********************************************************************************/
     public function getGrupos(){
 
-    	$sql = "SELECT cod_grupox, nom_grupox FROM ".BASE_DATOS.".tab_callce_grupox WHERE ind_estado = 1";
-    	$consulta = new Consulta($sql, self::$cConexion);
+      $sql = "SELECT cod_grupox, nom_grupox FROM ".BASE_DATOS.".tab_callce_grupox WHERE ind_estado = 1";
+      $consulta = new Consulta($sql, self::$cConexion);
         $grupos = $consulta->ret_matrix("a");
         $option = "";
         foreach ($grupos as $key => $value) {
-        	$option.= "<option value='$value[cod_grupox]'>".utf8_encode($value[nom_grupox])."</option>";
+          $option.= "<option value='$value[cod_grupox]'>".utf8_encode($value[nom_grupox])."</option>";
         }
         
         $select = "<select style='width:100%' id='cod_grupox' name='cod_grupox' validate='select' obl='1'>
-                	<option value=''>Seleccione un grupo</option>
-                	$option
+                  <option value=''>Seleccione un grupo</option>
+                  $option
                    </select>";
        
 
@@ -201,7 +208,7 @@ class extenc{
 
     private function buscarUsuario(){
 
-    	$mSql = "SELECT cod_usuari cod_usuari, 
+      $mSql = "SELECT cod_usuari cod_usuari, 
                         CONCAT(nom_usuari,'-',cod_usuari) usuario
                    FROM ".BASE_DATOS.".tab_genera_usuari 
                   WHERE 1=1 ";
@@ -228,7 +235,7 @@ class extenc{
     }
 
     private function inactivar(){
-    	$cod_extenc = $_POST['cod_extenc'];
+      $cod_extenc = $_POST['cod_extenc'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -247,7 +254,7 @@ class extenc{
     }
 
     private function inactivarOperacion(){
-    	$cod_operac = $_POST['cod_operac'];
+      $cod_operac = $_POST['cod_operac'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -266,7 +273,7 @@ class extenc{
     }
 
     private function activarOperacion(){
-    	$cod_operac = $_POST['cod_operac'];
+      $cod_operac = $_POST['cod_operac'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -285,47 +292,48 @@ class extenc{
     }
 
     private function registrarOperacion(){
-    	$nom_operac = $_POST['nom_operac'];
-    	$fec_actual = date("Y-m-d H:i:s");
+      $nom_operac = $_POST['nom_operac'];
+      $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
 
         $sql = "SELECT cod_operac FROM ".BASE_DATOS.".tab_callce_operac WHERE nom_operac = '$nom_operac'";
         $consulta = new Consulta($sql, self::$cConexion);
         $operacion = $consulta->ret_matrix("a");
         if(!$operacion){
-        	$sql = "INSERT INTO ".BASE_DATOS.".tab_callce_operac (nom_operac, usr_creaci, fec_creaci) VALUES ('$nom_operac', '$usuario', '$fec_actual')";
-        	if( $insercion = new Consulta($sql, self::$cConexion, "R")){
-					die('1'); // procedimiento correcto
-			}else{
-					die('2'); //errror al registrar en la base de datos
-			}
+          $sql = "INSERT INTO ".BASE_DATOS.".tab_callce_operac (nom_operac, usr_creaci, fec_creaci) VALUES ('$nom_operac', '$usuario', '$fec_actual')";
+          if( $insercion = new Consulta($sql, self::$cConexion, "R")){
+          die('1'); // procedimiento correcto
+      }else{
+          die('2'); //errror al registrar en la base de datos
+      }
         }else{
-        	die('0');#ya existe la operacion a registrar
+          die('0');#ya existe la operacion a registrar
         }
     }
 
     private function registrarGrupo(){
-    	$nom_grupox = $_POST['nom_grupox'];
-    	$fec_actual = date("Y-m-d H:i:s");
+      $nom_grupox = $_POST['nom_grupox'];
+      $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
 
         $sql = "SELECT cod_grupox FROM ".BASE_DATOS.".tab_callce_grupox WHERE nom_grupox = '$nom_grupox'";
         $consulta = new Consulta($sql, self::$cConexion);
         $operacion = $consulta->ret_matrix("a");
         if(!$operacion){
-        	$sql = "INSERT INTO ".BASE_DATOS.".tab_callce_grupox (nom_grupox, usr_creaci, fec_creaci) VALUES ('$nom_grupox', '$usuario', '$fec_actual')";
-        	if( $insercion = new Consulta($sql, self::$cConexion, "R")){
-					die('1'); // procedimiento correcto
-			}else{
-					die('2'); //errror al registrar en la base de datos
-			}
+          $sql = "INSERT INTO ".BASE_DATOS.".tab_callce_grupox (nom_grupox, usr_creaci, fec_creaci) VALUES ('$nom_grupox', '$usuario', '$fec_actual')";
+          if( $insercion = new Consulta($sql, self::$cConexion, "R")){
+          die('1'); // procedimiento correcto
+      }else{
+          die('2'); //errror al registrar en la base de datos
+      }
         }else{
-        	die('0');#ya existe el grupo a registrar
+          die('0');#ya existe el grupo a registrar
         }
     }
+    
 
     private function inactivarGrupo(){
-    	$cod_grupox = $_POST['cod_grupox'];
+      $cod_grupox = $_POST['cod_grupox'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -344,7 +352,7 @@ class extenc{
     }
 
     private function activarGrupo(){
-    	$cod_grupox = $_POST['cod_grupox'];
+      $cod_grupox = $_POST['cod_grupox'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
        
@@ -400,7 +408,8 @@ class extenc{
         $num_celula = "AND num_telefo LIKE '%$num_celula%'";
       }
  
-          /*  $sql = "SELECT x.cantidad, x.estado, x.fecha 
+
+            $sql = "SELECT x.cantidad, x.estado, x.fecha 
                   FROM (
                           ( 
                                 SELECT COUNT(a.num_telefo) AS cantidad, 'ANSWERED' AS estado, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fecha 
@@ -436,9 +445,9 @@ class extenc{
                               GROUP BY fecha
                           )
                        ) x"; 
-          */  
 
-          $sql = "SELECT x.cantidad, x.estado, x.fecha 
+
+          /*$sql = "SELECT x.cantidad, x.estado, x.fecha 
                   FROM (
                           ( 
                                 SELECT COUNT(a.num_telefo) AS cantidad, 'ANSWERED' AS estado, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fecha 
@@ -480,7 +489,8 @@ class extenc{
                                   ) y
                                   GROUP BY y.fecha
                           )
-                       ) x"; 
+
+                       ) x"; */
          
       $consulta = new Consulta($sql, self::$cConexion);
       return $consulta->ret_matrix("a");
@@ -817,6 +827,7 @@ class extenc{
       echo $mObjetAudio;
     }
   }
+
 
 if($_REQUEST[Ajax] === 'on' )
   $_INFORM = new extenc();

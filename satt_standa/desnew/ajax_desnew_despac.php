@@ -1708,7 +1708,7 @@ class AjaxInsertDespacho
                               (
                                 '$datos->num_despac', '".$_AJAX[ 'cod_remesa'.$k ]."','".$_AJAX[ 'num_docalt'.$k ]."', ".$cod_genera.",  
                                 '".$_AJAX[ 'nom_destin'.$k ]."', ".$cod_ciudad.",'".$_AJAX[ 'dir_destin'.$k ]."', '".$_AJAX[ 'nom_contac'.$k ]."',  
-                                '".$_AJAX[ 'fec_citdes'.$k ]."', '".$_AJAX[ 'hor_citcar'.$k ]."','$datos->usr_creaci', NOW())";
+                                '".$_AJAX[ 'fec_citdes'.$k ]."', '".$_AJAX[ 'hor_citdes'.$k ]."','$datos->usr_creaci', NOW())";
         $consulta = new Consulta( $mInsert, $this->conexion, "R" );
       
         #segun nuevas especificaciones debe insertar en la tabla  tab_despac_remesa

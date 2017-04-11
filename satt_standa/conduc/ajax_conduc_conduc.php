@@ -111,7 +111,7 @@ class conduc{
                     FROM ".BASE_DATOS.".tab_tercer_tercer a 
                          INNER JOIN ".BASE_DATOS.".tab_transp_tercer b ON a.cod_tercer = b.cod_tercer
                          INNER JOIN ".BASE_DATOS.".tab_tercer_conduc c ON c.cod_tercer = b.cod_tercer
-                         INNER JOIN ".BASE_DATOS.".tab_genera_catlic d ON c.num_catlic = d.cod_catlic
+                         LEFT JOIN ".BASE_DATOS.".tab_genera_catlic d ON c.num_catlic = d.cod_catlic
                    WHERE a.cod_tercer = c.cod_tercer AND b.cod_transp = '$cod_transp'";
 
                                          
@@ -129,9 +129,9 @@ class conduc{
         $list->SetHeader(utf8_decode("Segundo Apellido"), "field:a.nom_apell2; width:1%");
         $list->SetHeader(utf8_decode("Nombres"), "field:a.nom_tercer; width:1%");
         $list->SetHeader(utf8_decode("Nº Teléfono Móvil"), "field:a.num_telmov" );
-        $list->SetHeader(utf8_decode("Nº de Licencia"), "field:a.num_licenc" );
+        $list->SetHeader(utf8_decode("Nº de Licencia"), "field:c.num_licenc" );
         $list->SetHeader(utf8_decode("Vigencia"), "field:a.fec_venlic" );
-        $list->SetHeader(utf8_decode("Categoria"), "field:a.num_catlic" );
+        $list->SetHeader(utf8_decode("Categoria"), "field:d.nom_catlic" );
         $list->SetHeader(utf8_decode("Estado"), "field:a.cod_estado" );
         $list->SetOption(utf8_decode("Opciones"),"field:cod_option; width:1%; onclikDisable:editarConductor( 2, this ); onclikEnable:editarConductor( 1, this ); onclikEdit:editarConductor( 99, this ); onclikPrint:editarConductor(3, this);" );
         $list->SetHidden("cod_tercer", "0" );
@@ -162,14 +162,18 @@ class conduc{
 
       $conduc = (object) $_POST['conduc']; #datos principales del conductor
       $conduc->abr_tercer = $conduc->nom_apell1." ".$conduc->nom_tercer;
+
       #pregunto si ya hay alguien con ese documento registrado
-      $query = "SELECT cod_tercer
-            FROM ".BASE_DATOS.".tab_tercer_tercer
-            WHERE cod_tercer = '$conduc->cod_tercer'";
+      $query = "SELECT a.cod_tercer as tercer,b.cod_tercer as conductor
+            FROM ".BASE_DATOS.".tab_tercer_tercer a 
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc b
+             on b.cod_tercer=a.cod_tercer
+            WHERE a.cod_tercer = '$conduc->cod_tercer'";
       $consulta = new Consulta($query,  self::$cConexion, "BR");
-      $indter = $consulta -> ret_arreglo();
-      if(!$indter){
-       
+      $rq1 = $consulta -> ret_matrix("a");
+      $existe_tercero = $rq1 ? true : false;
+      $existe_conductor = $rq1 ?  isset($rq1[0]["conductor"]) : false;
+
         $conduc->cod_estado = 1;
 
         $fec_actual = date("Y-m-d H:i:s");
@@ -177,6 +181,7 @@ class conduc{
         $conduc->fec_creaci =$fec_actual;
         $conduc->usr_creaci = $usuario;
         #si se ingreso alguna foto se mueve al servidor y se agrega la vriabla al objeto
+	$foto = "";
         if($_FILES){
           if(move_uploaded_file($_FILES['foto']['tmp_name'], "../../".NOM_URL_APLICA."/".URL_CONDUC.$conduc->cod_tercer.".jpg")){
               $conduc->dir_ultfot= URL_CONDUC.$conduc->cod_tercer.".jpg";
@@ -197,7 +202,8 @@ class conduc{
         $conduc->cod_paisxx = $ciudad[0][0];
         $conduc->cod_depart = $ciudad[0][1];
           #incerta la inforacion princial del conductor
-          $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer(
+          if(!$existe_tercero){
+            $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer(
                          cod_tercer,cod_tipdoc,nom_apell1,nom_apell2,nom_tercer,abr_tercer,
                          dir_domici,num_telef1,num_telef2,num_telmov,cod_paisxx,cod_depart,
                          cod_ciudad,cod_estado,dir_ultfot,obs_tercer,usr_creaci,fec_creaci)
@@ -205,8 +211,28 @@ class conduc{
                           '$conduc->cod_tercer','$conduc->cod_tipdoc','$conduc->nom_apell1','$conduc->nom_apell2','$conduc->nom_tercer','$conduc->abr_tercer',
                           '$conduc->dir_domici','$conduc->num_telef1','$conduc->num_telef2','$conduc->num_telmov','$conduc->cod_paisxx','$conduc->cod_depart',
                           '$conduc->cod_ciudad','$conduc->cod_estado','$conduc->dir_ultfot','$conduc->obs_tercer','$conduc->usr_creaci','$conduc->fec_creaci') ";
+          }else{
+            $query = "UPDATE ".BASE_DATOS.".tab_tercer_tercer
+                          SET
+                       cod_tipdoc = '$conduc->cod_tipdoc',
+                       nom_apell1 = '$conduc->nom_apell1',
+                       nom_apell2 = '$conduc->nom_apell2',
+                       nom_tercer = '$conduc->nom_tercer',
+                       abr_tercer = '$conduc->abr_tercer',
+                       dir_domici = '$conduc->dir_domici',
+                       num_telef1 = '$conduc->num_telef1',
+                       num_telef2 = '$conduc->num_telef2',
+                       num_telmov = '$conduc->num_telmov',
+                       cod_paisxx = '$conduc->cod_paisxx',
+                       cod_depart = '$conduc->cod_depart',
+                       cod_ciudad = '$conduc->cod_ciudad',
+                                  $foto
+                       obs_tercer = '$conduc->obs_tercer',
+                       usr_modifi = '$conduc->usr_modifi',
+                       fec_modifi = '$conduc->fec_modifi'
+                       WHERE cod_tercer = '$conduc->cod_tercer'";
+          }
           $insercion = new Consulta($query, self::$cConexion, "BR");
-
           #inserta la relacion entre el conductor y la transportadora si no existe previamente
           $query = "SELECT cod_transp FROM ".BASE_DATOS.".tab_transp_tercer WHERE cod_transp = '$conduc->cod_transp' AND cod_tercer = '$conduc->cod_tercer'";
           $consulta = new Consulta($query, self::$cConexion);
@@ -227,7 +253,12 @@ class conduc{
               VALUES ('$conduc->cod_tercer','$conduc->cod_tipsex','$conduc->cod_grupsa','$conduc->num_licenc','$conduc->num_catlic','$conduc->fec_venlic',
                       '$conduc->cod_califi','$conduc->nom_epsxxx','$conduc->nom_arpxxx','$conduc->nom_pensio','$conduc->nom_refper','$conduc->tel_refper',
                       '$conduc->cod_operad','$conduc->usr_creaci','$conduc->fec_creaci')";
-          $insercion = new Consulta($query,self::$cConexion,"R");
+          if(!$existe_conductor) {
+		$insercion = new Consulta($query,self::$cConexion,"R");
+          }
+
+          $query = "delete from  ".BASE_DATOS.".tab_tercer_activi where cod_tercer = '$conduc->cod_tercer' and cod_activi in (".COD_FILTRO_CONDUC.",".COD_FILTRO_PROPIE.",".COD_FILTRO_POSEED.")";
+          $eliminar = new Consulta($query,self::$cConexion,"R");
 
           #inserta los adicionales y referencias laborles
           $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi
@@ -281,22 +312,6 @@ class conduc{
             echo $mens->error2("INSERTAR CONDUCTOR", $mensaje);*/
 
         }
-      }else{// si ya existe lo asocio a la nueva transportadora y llamo a la funcion modificar
-        $query = "SELECT cod_transp FROM ".BASE_DATOS.".tab_transp_tercer WHERE cod_transp = '$conduc->cod_transp' AND cod_tercer = '$conduc->cod_tercer'";
-          $consulta = new Consulta($query, self::$cConexion);
-          $existe = $consulta->ret_matriz("a");
-
-          if(!$existe){
-            #inserta la relacion entre el conductor y la transportadora
-            $query = "INSERT INTO ".BASE_DATOS.".tab_transp_tercer
-                   (cod_transp,cod_tercer,usr_creaci,fec_creaci)
-                      VALUES ('$conduc->cod_transp','$conduc->cod_tercer','$conduc->usr_creaci','$conduc->fec_creaci')";
-            $insercion = new Consulta($query,self::$cConexion,"R");
-          }
-          $this->modificar("Registró");
-         
-
-      }
     }
 
     /*****************************************************************************
@@ -508,30 +523,25 @@ class conduc{
         $viajes = $_POST['viajes']; #arreglo con los numeros de viajes
         $antiguedades = $_POST['antiguedad']; #arreglo con las antiguedades
         $mercancias = $_POST['mercancia']; #arreglo con las mercancias
-        
-        for($i=0;$i<= $conduc->cantidad;$i++){
-          if($i <= $conduc->control){
-             $query = "UPDATE ".BASE_DATOS.".tab_conduc_refere
-                                SET
-                             nom_empre  = '$empresas[$i]',
-                             tel_empre  = '$telefonos[$i]',
-                             num_viajes = '$viajes[$i]',
-                             num_atigue = '$antiguedades[$i]',
-                             nom_mercan = '$mercancias[$i]',
-                             usr_modifi = '$conduc->usr_modifi',
-                             fec_modifi = '#conduc->fec_modifi'
-                             WHERE cod_refere = '$i' AND cod_conduc = '$conduc->cod_tercer'";
-              $insercion = new Consulta($query,self::$cConexion,"R");
-           }else{ //aqui agrega las nuevas referencias
-            if($empresas[$i] != Null){
-              $query = "INSERT INTO ".BASE_DATOS.".tab_conduc_refere
+        #se crea un array para almacenar las referencias enviadas
+        $NewReferencias = array();
+        for($ref=0;$ref<=sizeof($empresas);$ref++){
+          $NewReferencias[$ref]=array('empresa'=>$empresas[$ref], 'telefono'=>$telefonos[$ref], 'viajes'=>$viajes[$ref],'antiguedad'=>$antiguedades[$ref], 'mercancias'=>$mercancias[$ref]);
+        }
+        $query = "DELETE FROM ".BASE_DATOS.".tab_conduc_refere WHERE cod_conduc = '$conduc->cod_tercer'";
+        $insercion = new Consulta($query,self::$cConexion,"R");
+        $h=0;
+        foreach ($NewReferencias as $key => $value) {
+            
+          if($value['empresa'] || $value['telefono'] || $value['viajes'] || $value['antiguedad'] || $value['mercancias'])
+          {
+            $query = "INSERT INTO ".BASE_DATOS.".tab_conduc_refere
                             (cod_conduc,cod_refere,nom_empre,tel_empre,num_viajes,
                              num_atigue,nom_mercan,usr_creaci,fec_creaci)
-                    VALUES ('$conduc->cod_tercer','$i','$empresas[$i]','$telefonos[$i]','$viajes[$i]',
-                            '$antiguedades[$i]','$mercancias[$i]','$conduc->usr_creaci','$conduc->fec_creaci')";
-              $insercion = new Consulta($query,self::$cConexion,"R");
-           }
-        }
+                    VALUES ('$conduc->cod_tercer',".($h++).",'".$value['empresa']."','".$value['telefono']."','".$value['viajes']."',
+                            '".$value['antiguedad']."','".$value['mercancias']."','$conduc->usr_modifi',NOW())";
+            $insercion = new Consulta($query,self::$cConexion,"R");
+          }
       }
       if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
           header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1060&menant=1060&window=central&resultado=1&operacion='.$operacion.'&opcion=123&conductor='.$conduc->abr_tercer);
@@ -542,7 +552,7 @@ class conduc{
 
 
       }else{
-         header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1060&menant=1060&window=central&opcion=123&resultado=0');
+          header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1060&menant=1060&window=central&opcion=123&resultado=0');
           /*$mensaje = "<font color='#000000'>Ocurrió un Error inesperado <b>$conduc->abr_tercer</b><br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
           $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
           $mens = new mensajes();
@@ -630,8 +640,8 @@ class conduc{
                         b.num_licenc,b.num_catlic,b.fec_venlic,b.cod_califi,b.nom_epsxxx,b.nom_arpxxx,
                         b.nom_pensio,b.nom_refper,b.tel_refper,b.cod_operad, CONCAT( UPPER(c.abr_ciudad), '(', LEFT(d.nom_depart, 4), ') - ', LEFT(e.nom_paisxx, 3) ) abr_ciudad
                  FROM ".BASE_DATOS.".tab_tercer_tercer a
-                 INNER JOIN ".BASE_DATOS.".tab_tercer_conduc b ON b.cod_tercer = a.cod_tercer
-                 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad c ON c.cod_ciudad = a.cod_ciudad
+                 LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc b ON b.cod_tercer = a.cod_tercer
+                 LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad c ON c.cod_ciudad = a.cod_ciudad
                  INNER JOIN ".BASE_DATOS.".tab_genera_depart d ON d.cod_depart = c.cod_depart
                  INNER JOIN ".BASE_DATOS.".tab_genera_paises e ON e.cod_paisxx = c.cod_paisxx
                  WHERE a.cod_tercer = '$cod_tercer' ";

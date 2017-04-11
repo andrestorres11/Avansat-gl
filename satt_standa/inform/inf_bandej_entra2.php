@@ -33,6 +33,7 @@ class infBandeja
 		IncludeJS( 'inf_bandej_entra3.js' );
 		IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
 		IncludeJS( 'jquery.multiselect.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
+		IncludeJS( 'time.js', '../'.DIR_APLICA_CENTRAL.'/js/' );
 
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
@@ -41,6 +42,8 @@ class infBandeja
 
 		switch($_REQUEST[opcion])
 		{
+			case "10":
+                $this->exportExcel();
 			default:
 				self::bandeja();
 				break;
@@ -208,6 +211,48 @@ class infBandeja
 			echo $mHtml;
 		#</Formulario>
 
+		#<FormularioPrecarge>;
+		echo '
+            <script>
+              jQuery(function($) { 
+                $( "#hor_inicio,#hor_finxxx" ).timepicker();      
+                })
+             </script>';
+		$mHtml3  = '<div>';
+			$mHtml3 .= '<div>';
+				$mHtml3 .= '<div  class="Style4DIV">';
+				$mHtml3 .= '<table width="100%" cellspacing="0" cellpadding="0">';
+				
+				$mHtml3 .= '<tr><th class="CellHead" colspan="8" style="text-align:left">Filtros Especificos > Precargue</th></tr>';
+				
+				$mHtml3 .= '<tr>';
+				$mHtml3 .=  self::$cDespac ->lista( 'Punto de Cargue:', 'pun_cargue', self::$cNull, 'cellInfo1' );
+				$mHtml3 .= '	<td class="cellInfo1" align="right">Hora desde</td>';
+				$mHtml3 .= '	<td class="cellInfo1">';
+				$mHtml3 .= '		<input validate="date" obl="1" maxlength="10" minlength="10" type="text" name="hor_inicio" id="hor_inicio">';
+				$mHtml3 .= '	</td>';
+				$mHtml3 .= '	<td class="cellInfo1" align="right">hasta</td>';
+				$mHtml3 .= '	<td class="cellInfo1">';
+				$mHtml3 .= '		<input validate="date" obl="1" maxlength="10" minlength="10" type="text" name="hor_fin" id="hor_finxxx">';
+				$mHtml3 .= '	</td>';
+				$mHtml3 .=  self::$cDespac ->lista( 'Producto:', 'tip_produc', array_merge( self::$cNull, self::$cDespac ->getLisProductos()), 'cellInfo1' );
+				$mHtml3 .= '</tr>';
+
+				$mHtml3 .= '<tr>';
+				$mHtml3 .= '<td class="cellInfo1" align="right" colspan="4"><input type="button" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" value="GENERAR" id="generarprc"></td>';
+				$mHtml3 .= '<td class="cellInfo1" align="left" colspan="4"><input type="button" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" value="EXCEL" id="excelprcGeneral" onclick="exportExcel()"></td>';
+				$mHtml3 .= '</tr>';
+
+				$mHtml3 .= '</table>';
+				$mHtml3 .= '</div>';
+			$mHtml3 .= '</div><br>';
+			$mHtml3 .= '<div id="tabs-6-a"></div>';
+		$mHtml3 .= '</div>';
+
+		#</FormularioPrecarge>
+
+
+
 		#<Bandeja>
 		if( $mView->sec_inform->ind_visibl == 1 )
 		{
@@ -215,6 +260,8 @@ class infBandeja
 				$mBand .= '<ul>';
 					if( $mView->sec_inform->sub->pes_genera == 1 )
 						$mBand .= '<li><a id="liGenera" href="#tabs-1">GENERAL</a></li>';
+					if( $mView->sec_inform->sub->pes_prcarg == 1 )
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPreCar" href="#tabs-6">PRECARGUE</a></li>';
 					if( $mView->sec_inform->sub->pes_cargax == 1 )
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liCargue" href="#tabs-2">CARGUE</a></li>';
 					if( $mView->sec_inform->sub->pes_transi == 1 )
@@ -230,6 +277,7 @@ class infBandeja
 				$mBand .= $mView->sec_inform->sub->pes_transi == 1 ? '<div id="tabs-3"></div>' : ''; #DIV Etapa Transito
 				$mBand .= $mView->sec_inform->sub->pes_descar == 1 ? '<div id="tabs-4"></div>' : ''; #DIV Etapa Descargue
 				$mBand .= $mView->sec_inform->sub->pes_pernoc == 1 ? '<div id="tabs-5"></div>' : ''; #DIV c. Pernotacion
+				$mBand .= $mView->sec_inform->sub->pes_prcarg == 1 ? '<div id="tabs-6">'.$mHtml3.'</div>' : ''; #DIV Etapa PreCargue
 
 			$mBand .= '</div>';
 
@@ -237,6 +285,25 @@ class infBandeja
 		}
 		#</Bandeja>
 	}
+
+	/*! \fn: bandeja
+	 *  \brief: Funcion para exportar a excel
+	 *  \author: Edward Serrano
+	 *	\date: 15/03/2017
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return:
+	 */
+	function exportExcel()
+    {
+    	 $filename = "Precargue_General_" . date('Ymd') . ".xls";
+
+  		header("Content-Disposition: attachment; filename=\"$filename\"");
+  		header("Content-Type: application/vnd.ms-excel");
+        ob_clean();
+       	echo $_SESSION['precargue']['general'];
+       	die;
+    }
 }
 
 $_INFORM = new infBandeja( $this -> conexion, $this -> usuario_aplicacion, $this -> codigo );

@@ -10,6 +10,7 @@
  *  \warning: 
  */
  
+
 session_start();
 
 /*! \class: Proc_segui
@@ -937,8 +938,77 @@ class Proc_segui
                 $mScript5 = '';
                 break;
         }
+        #Array de los estados Precarge
+        $mEstadoPrecar = array(
+                               array('2', 'SIN COMUNICACION'), 
+                               array('1', 'PORTERIA'), 
+                               array('3', 'TRANSITO A PLANTA'), 
+                               array('4', 'CON NOVEDAD NO LLEGA A PLANTA'), 
+                               array('5', 'CON NOVEDAD LLEGA A PLANTA')  
+                               );
 
-
+        $query = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
+                        UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
+                        a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+                        IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
+                        CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
+                        CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin,
+                        l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar
+                   FROM ".BASE_DATOS.".tab_despac_despac a 
+             INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+                     ON a.num_despac = b.num_despac 
+                    AND a.num_despac =".$_REQUEST[despac]."
+                    /* AND a.num_despac NOT IN (  
+                                                    SELECT da.num_despac 
+                                                      FROM ".BASE_DATOS.".tab_despac_noveda da 
+                                                INNER JOIN ".BASE_DATOS.".tab_genera_noveda db 
+                                                        ON da.cod_noveda = db.cod_noveda 
+                                                     WHERE da.num_despac =".$_REQUEST[despac]."
+                                                       AND db.cod_etapax NOT IN ( 0, 1, 2 )
+                                            )
+                    AND a.num_despac NOT IN (  
+                                                    SELECT ea.num_despac 
+                                                      FROM ".BASE_DATOS.".tab_despac_contro ea 
+                                                INNER JOIN ".BASE_DATOS.".tab_genera_noveda eb 
+                                                        ON ea.cod_noveda = eb.cod_noveda 
+                                                     WHERE ea.num_despac =".$_REQUEST[despac]."
+                                                       AND eb.cod_etapax NOT IN ( 0, 1, 2 )
+                                            ) */
+             INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
+                     ON b.cod_transp = c.cod_tercer 
+             INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
+                     ON a.cod_ciuori = d.cod_ciudad 
+                    AND a.cod_depori = d.cod_depart 
+                    AND a.cod_paiori = d.cod_paisxx 
+             INNER JOIN ".BASE_DATOS.".tab_genera_ciudad e 
+                     ON a.cod_ciudes = e.cod_ciudad 
+                    AND a.cod_depdes = e.cod_depart 
+                    AND a.cod_paides = e.cod_paisxx 
+             INNER JOIN ".BASE_DATOS.".tab_genera_depart f 
+                     ON a.cod_depori = f.cod_depart 
+                    AND a.cod_paiori = f.cod_paisxx 
+             INNER JOIN ".BASE_DATOS.".tab_genera_depart g 
+                     ON a.cod_depdes = g.cod_depart 
+                    AND a.cod_paides = g.cod_paisxx 
+             INNER JOIN ".BASE_DATOS.".tab_tercer_tercer h 
+                     ON b.cod_conduc = h.cod_tercer 
+             INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
+                     ON a.cod_tipdes = i.cod_tipdes
+             INNER JOIN ".BASE_DATOS.".tab_despac_sisext k
+                     ON a.num_despac = k.num_despac
+             INNER JOIN ".BASE_DATOS.".tab_despac_corona z 
+                     ON a.num_despac = z.num_dessat 
+              LEFT JOIN ( SELECT m.num_despac,n.num_consec,m.cod_estado
+                            FROM tab_despac_estado m
+                                INNER JOIN ( SELECT n.num_despac, MAX(n.num_consec) num_consec FROM tab_despac_estado n GROUP BY n.num_despac  ) n ON m.num_despac = n.num_despac
+                                AND n.num_consec = m.num_consec
+                                GROUP BY m.num_despac
+                        ) l
+                     ON a.num_despac = l.num_despac  
+                  WHERE k.ind_cumcar IS NULL AND k.fec_cumcar IS NULL
+                     ";
+        $consulta = new Consulta($query, $this->conexion);
+        $Tipo_etapa = $consulta->ret_matriz();
         #Inicio HTML
         $mHtml = new Formlib(2);
 
@@ -976,6 +1046,10 @@ class Proc_segui
                                 #Cabecera 
                                 $mHtml->Label( "Fecha", array("class"=>"celda_titulo2", "align"=>"left") );
                                 $mHtml->Label( "Hora", array("class"=>"celda_titulo2", "align"=>"left") );
+                                if(sizeof($Tipo_etapa)>0)
+                                {
+                                    $mHtml->Label( "Estado", array("class"=>"celda_titulo2", "align"=>"left") );
+                                }
                                 $mHtml->Label( "Novedad", array("class"=>"celda_titulo2", "align"=>"left") );
                                 if ($ind_tiempo[0])
                                     $mHtml->Label( "Tiempo Fecha/Hora", array("class"=>"celda_titulo2", "align"=>"left") );
@@ -997,6 +1071,10 @@ class Proc_segui
                                 $mHtml->SetBody("<td class='celda_info' width='50px'>");
                                 $mHtml->SetBody("<input type='text' class='campo' style='bacground:none; border:0;' size='10' id='horID' readonly='true' name='hor' value='" . date('G:i') . "'>");
                                 $mHtml->SetBody("</td>");
+                                if(sizeof($Tipo_etapa)>0)
+                                {
+                                    $mHtml->Select2( $mEstadoPrecar, array("class"=>'celda_info', 'width'=>'50px', "name"=>'cod_estprc', "id"=>'cod_estprc') );
+                                }
                                 $mHtml->Input( array("class"=>'celda_info', "width"=>'50px', "type"=>'text', "name"=>'noved', "id"=>'novedadID', "maxlength"=>'50',  "value"=>$nove,  "size"=>'50') );
 
                                 if ($ind_tiempo[0])
@@ -1560,6 +1638,27 @@ class Proc_segui
               
            }
             $formulario->cerrar();
+        }
+        #Nuevo estado para la etapa de precargue
+        if(isset($_REQUEST['cod_estprc']))
+        {
+            $query = "SELECT IF( MAX(num_consec)<=0 OR MAX(num_consec) IS NULL,1,MAX(num_consec)+1)
+                                                FROM ". BASE_DATOS .".tab_despac_estado
+                                                    WHERE num_despac = {$_REQUEST[num_despac]}";
+
+            $consulta = new Consulta($query, $this->conexion);
+            $num_consec = $consulta->ret_matriz();
+            
+            $query = "INSERT INTO ". BASE_DATOS .".tab_despac_estado 
+                                    (num_despac,    cod_rutasx,     cod_contro,
+                                     cod_noveda,    num_consec,     cod_estado,
+                                     obs_estado,    usr_creaci,     fec_creaci)
+                                VALUES
+                                    ('{$_REQUEST[num_despac]}',     '{$_REQUEST[rutax]}',   '{$_REQUEST[cod_contro]}',
+                                     '{$_REQUEST[novedad]}',   {$num_consec[0][0]}  ,   '{$_REQUEST[cod_estprc]}',
+                                     '{$_REQUEST[obs]}',     '{$_REQUEST[usuario]}',   NOW()
+                                    )";
+            $consulta = new Consulta($query, $this->conexion, "R");
         }
     }
 

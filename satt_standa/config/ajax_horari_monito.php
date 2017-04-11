@@ -312,7 +312,7 @@ class ajax_horari_monito {
         $sql = "SELECT x.*
         		  FROM (
         		  				SELECT b.cod_tercer, b.abr_tercer, count(DISTINCT(c.num_despac)) despac, 
-				                       a.cod_grupox, a.cod_priori, e.nom_grupox, a.ind_segcar, a.ind_segdes, a.ind_segtra
+				                       a.cod_grupox, a.cod_priori, e.nom_grupox, a.ind_segprc, a.ind_segcar, a.ind_segdes, a.ind_segtra
 						          FROM " . BASE_DATOS . ".tab_transp_tipser a 
 						    INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b ON b.cod_tercer = a.cod_transp 
 						     LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer 
@@ -566,8 +566,8 @@ class ajax_horari_monito {
         <div class="col-md-12 centrado CellHead">
             <div class="col-md-1">No.</div>
             <div class="col-md-3">Usuario</div>
-            <div class="col-md-2">Categoría</div>
-            <div class="col-md-2">No. de Vehículos en Ruta</div>
+            <div class="col-md-2">Categoria</div>
+            <div class="col-md-2">No. de Vehiculos en Ruta</div>
             <div class="col-md-2">Empresas Asignadas</div>
             <div class="col-md-2">Etapa</div>        </div>
         <?php
@@ -660,6 +660,7 @@ class ajax_horari_monito {
                         </select>
                     </div>
                     <div class="col-md-2">
+                        PC <input type="checkbox" name="ind_segprc<?= $key ?>" id="ind_segprc<?= $key ?>" value="1">&nbsp;&nbsp;
                         C <input type="checkbox" name="ind_segcar<?= $key ?>" id="ind_segcar<?= $key ?>" value="1">&nbsp;&nbsp;
                         T <input type="checkbox" name="ind_segtra<?= $key ?>" checked id="ind_segtra<?= $key ?>" value="1">&nbsp;&nbsp;
                         D <input type="checkbox" name="ind_segdes<?= $key ?>" id="ind_segdes<?= $key ?>" value="1">&nbsp;&nbsp;
@@ -811,10 +812,14 @@ class ajax_horari_monito {
         $despachos = explode(",", $datos->despachos);
         $trans = $this->getTransportadoras();
         $usuarios = $this->getUsuarios();
+        $ind_segprc = "";
         $ind_segcar = "";
         $ind_segtra = "";
         $ind_segdes = "";
 
+        if($datos->ind_segprc != 'false'){
+            $ind_segprc = 'checked';
+        }
         if($datos->ind_segcar != 'false'){
             $ind_segcar = 'checked';
         }
@@ -872,6 +877,7 @@ class ajax_horari_monito {
                             } ?>
                         </div>
                         <div class="col-md-12 text-center">
+                           PC <input type="checkbox" name="ind_segprc" <?= $ind_segprc ?> id="ind_segprc" value="1">&nbsp;&nbsp;
                             C <input type="checkbox" name="ind_segcar" <?= $ind_segcar ?> id="ind_segcar" value="1">&nbsp;&nbsp;
                             T <input type="checkbox" name="ind_segtra" <?= $ind_segtra ?> id="ind_segtra" value="1">&nbsp;&nbsp;
                             D <input type="checkbox" name="ind_segdes" <?= $ind_segdes ?> id="ind_segdes" value="1">&nbsp;&nbsp;
@@ -921,7 +927,8 @@ class ajax_horari_monito {
         }
 
         $sql = "UPDATE ".BASE_DATOS.".tab_monito_encabe
-                   SET ind_cargue = $tipServic[ind_segcar],
+                   SET ind_prcarg = $tipServic[ind_segprc],
+                       ind_cargue = $tipServic[ind_segcar],
                        ind_transi = $tipServic[ind_segtra],
                        ind_descar = $tipServic[ind_segdes],
                        usr_modifi = '".self::$cUsuario['cod_usuari']."',
@@ -970,7 +977,6 @@ class ajax_horari_monito {
         $fec_inicia = $datos->fec_inicio." ".$datos->hor_inicio;
         $fec_finali = $datos->fec_finali." ".$datos->hor_finali;
         //para los correos
-
         foreach ($datos->users as $key => $val) {
             $us = $this->getUserByConsec($val);
             $users[$us]['cod_usuari'] = $val;
@@ -980,17 +986,22 @@ class ajax_horari_monito {
 
         $contro = true;
         foreach ($usuarios as $key => $value) {
-            $tipServic = array("ind_segcar" => 0, "ind_segdes" => 0, "ind_segtra" => 0);
+            $tipServic = array("ind_segcar" => 0, "ind_segdes" => 0, "ind_segtra" => 0, "ind_segprc" => 0);
             //para los correos
             $controlador = $value;
             $contenido = "";
             $etapa = "";
 
             #<Tipo de servicio por usuario>
+            $segPrc = "ind_segprc$key";
             $segCar = "ind_segcar$key";
             $segTra = "ind_segtra$key";
             $segDes = "ind_segdes$key";
 
+            if( $datos->$segPrc ) {
+                $tipServic['ind_segprc'] = 1;
+                $etapa .= "Precargue";
+            }
             if( $datos->$segCar ) {
                 $tipServic['ind_segcar'] = 1;
                 $etapa .= "Cargue, ";
@@ -1034,9 +1045,9 @@ class ajax_horari_monito {
                 $contenido .="</tr>";
 
                 $sql = "INSERT INTO ".BASE_DATOS.".tab_monito_detall
-                                        (cod_consec, cod_tercer, can_despac,ind_segcar, ind_segtra, ind_segdes, usr_creaci,fec_creaci )
+                                        (cod_consec, cod_tercer, can_despac, ind_segprc, ind_segcar, ind_segtra, ind_segdes, usr_creaci,fec_creaci )
                                         VALUES
-                                        ($max, '$val', $cantidad, $tipServic[ind_segcar], $tipServic[ind_segtra], $tipServic[ind_segdes], '$usr_creaci', NOW())";
+                                        ($max, '$val', '$cantidad', $tipServic[ind_segprc], $tipServic[ind_segcar], $tipServic[ind_segtra], $tipServic[ind_segdes], '$usr_creaci', NOW())";
                 if($key == (count($usuarios)-1) && $k == (count($terceros)-1)){
                     $consulta = new Consulta($sql, self::$cConexion, 'RC');
                 }else{
@@ -1047,9 +1058,11 @@ class ajax_horari_monito {
                     break;
                 }
             }
-            if($contro == true){
-                //envia el corrreo con la carga del controlador
-                $this->enviarCorreos($controlador, $usr_emailx, $fec_inicia, $fec_finali, $contenido, $total);
+            if($contro == true){               
+                if(($_SERVER["SERVER_NAME"] != "dev.intrared.net") && ($_SERVER["SERVER_NAME"] != "qa.intrared.net")){
+                    //envia el corrreo con la carga del controlador
+                    $this->enviarCorreos($controlador, $usr_emailx, $fec_inicia, $fec_finali, $contenido, $total);
+                }
             }
         }
         if($contro == true){
@@ -1240,6 +1253,10 @@ class ajax_horari_monito {
             </div>
             <div class="col-md-12 contenido">
                 <div class="col-md-1">&nbsp;</div><div class="col-md-3 text-left">
+                    <input disabled value="tipdes_prcarg" type="checkbox" name="asignar_etapas" onclick="calcularCantDespacPorUsuario( $(this) )" id="asignar_etapas_precargue" >
+                    Precargue
+                </div>
+                <div class="col-md-1">&nbsp;</div><div class="col-md-3 text-left">
                     <input disabled value="tipdes_cargue" type="checkbox" name="asignar_etapas" onclick="calcularCantDespacPorUsuario( $(this) )" id="asignar_etapas_cargue" >
                     Cargue
                 </div>
@@ -1337,14 +1354,17 @@ class ajax_horari_monito {
             <div class="col-md-12 centrado CellHead">
                 <b><?= $transp['abr_tercer'] ?></b>
             </div>
-            <div class="col-md-3 centrado CellHead"><b>Tipo de Despacho</b></div>
-            <div class="col-md-3 centrado CellHead"><b>Cargue</b></div>
-            <div class="col-md-3 centrado CellHead"><b>Transito</b></div>
-            <div class="col-md-3 centrado CellHead"><b>Descargue</b></div>
+            <div class="col-md-4 centrado CellHead"><b>Tipo de Despacho</b></div>
+            <div class="col-md-2 centrado CellHead"><b>PreCargue</b></div>
+            <div class="col-md-2 centrado CellHead"><b>Cargue</b></div>
+            <div class="col-md-2 centrado CellHead"><b>Transito</b></div>
+            <div class="col-md-2 centrado CellHead"><b>Descargue</b></div>
 
             <?php
             foreach ($tipdes as $row) {
                 $i = $row['cod_tipdes'];
+                $segprc = $despac['segprc']['by_tipdes'][$i]['cant_despac'];
+                $segprc = $segprc > 0 ? $segprc : 0;
                 $segcar = $despac['segcar']['by_tipdes'][$i]['cant_despac'];
                 $segcar = $segcar > 0 ? $segcar : 0;
                 $segtra = $despac['segtra']['by_tipdes'][$i]['cant_despac'];
@@ -1354,16 +1374,20 @@ class ajax_horari_monito {
 
                 ?>
                 <div name="rowTipDes" class="col-md-12 text-left contenido borde-inferior" id="rowTipDes_<?= $i ?>" cod_tipdes="<?= $i ?>">
-                    <div class="col-md-3"><?= $row['nom_tipdes'] ?></div>
-                    <div class="col-md-3">
+                    <div class="col-md-4"><?= $row['nom_tipdes'] ?></div>
+                    <div class="col-md-2">
+                        <input type="checkbox" name="tipdes_prcarg" disabled onclick="calcularCantDespacPorUsuario( $(this) )" value="<?= $i ?>" cant_despac="<?= $segprc ?>" cod_tipdes="<?= $i ?>">
+                        <label><?= $segprc ?></label>
+                    </div>
+                    <div class="col-md-2">
                         <input type="checkbox" name="tipdes_cargue" disabled onclick="calcularCantDespacPorUsuario( $(this) )" value="<?= $i ?>" cant_despac="<?= $segcar ?>" cod_tipdes="<?= $i ?>">
                         <label><?= $segcar ?></label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <input type="checkbox" name="tipdes_transi" disabled onclick="calcularCantDespacPorUsuario( $(this) )" value="<?= $i ?>" cant_despac="<?= $segtra ?>" cod_tipdes="<?= $i ?>">
                         <label><?= $segtra ?></label>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <input type="checkbox" name="tipdes_descar" disabled onclick="calcularCantDespacPorUsuario( $(this) )" value="<?= $i ?>" cant_despac="<?= $segdes ?>" cod_tipdes="<?= $i ?>">
                         <label><?= $segdes ?></label>
                     </div>
@@ -1413,14 +1437,16 @@ class ajax_horari_monito {
 
         $Despac = new Despac(self::$cConexion, self::$cUsuario, self::$cCodAplica);
 
-        if( $transp['ind_segtra'] == '1' && $transp['ind_segdes'] == '0' && $transp['ind_segcar'] == '0' ) {
+        if( $transp['ind_segtra'] == '1' && $transp['ind_segdes'] == '0' && $transp['ind_segcar'] == '0' && $transp['ind_segprc'] == '0' ) {
             $result['segtra'] = $this->getDespacSoloTransito($transp['cod_tercer']);
         } else {
+            $result['segprc'] = $this->obtenerArrayCargaPorTipoDespac($Despac, $transp['cod_tercer'], 'ind_segprc');
+            //$result['segprc'] = $this->obtenerArrayCargaPorTipoDespac($Despac, $transp['cod_tercer'], 'ind_segcar');
             $result['segcar'] = $this->obtenerArrayCargaPorTipoDespac($Despac, $transp['cod_tercer'], 'ind_segcar');
             $result['segtra'] = $this->obtenerArrayCargaPorTipoDespac($Despac, $transp['cod_tercer'], 'ind_segtra');
             $result['segdes'] = $this->obtenerArrayCargaPorTipoDespac($Despac, $transp['cod_tercer'], 'ind_segdes');
         }
-        
+
         return $result;
     }
 
@@ -1434,11 +1460,11 @@ class ajax_horari_monito {
      */
     private function obtenerArrayCargaPorTipoDespac($Despac, $codTransp, $tipSeguim) {
         $dataTransp = $Despac->getTranspServic($tipSeguim, $codTransp);
-
         if( sizeof($dataTransp) < 1 ) {
             return array();
         } else {
             switch ($tipSeguim) {
+                case 'ind_segprc': $funcion = "getDespacPrcCargue";  break;
                 case 'ind_segcar': $funcion = "getDespacCargue";  break;
                 case 'ind_segtra': $funcion = "getDespacTransi2"; break;
                 case 'ind_segdes': $funcion = "getDespacDescar";  break;
@@ -1554,6 +1580,7 @@ class ajax_horari_monito {
                     <select name="transpControl" class="hidden" id="transpControl_<?= $key ?>"></select>
                 </div>
                 <div class="col-md-2">
+                    PC <input disabled type="checkbox" value="1" id="ind_segprc<?= $key ?>" name="ind_segprc<?= $key ?>">&nbsp;&nbsp;
                     C <input disabled type="checkbox" value="1" id="ind_segcar<?= $key ?>" name="ind_segcar<?= $key ?>">&nbsp;&nbsp;
                     T <input disabled type="checkbox" value="1" id="ind_segtra<?= $key ?>" name="ind_segtra<?= $key ?>">&nbsp;&nbsp;
                     D <input disabled type="checkbox" value="1" id="ind_segdes<?= $key ?>" name="ind_segdes<?= $key ?>">&nbsp;&nbsp;

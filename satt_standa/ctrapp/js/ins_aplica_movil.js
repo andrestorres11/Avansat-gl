@@ -80,7 +80,9 @@ function guardar(){
 						"mail": mail
 					 },
 				success: function(result){
-					if(result == "ok"){
+					result=result.replace("\n","");
+					console.log("-"+result+"-");
+					if(result=="ok"){
 						alert("Se ha registrado el usuario Exitosamente");
 						document.forms[0].reset();
 					}

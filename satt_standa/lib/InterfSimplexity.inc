@@ -178,7 +178,7 @@ class InterfSimplexity
           $mMessage =      $mXml2["S:ENVELOPE"]["S:BODY"]["REGISTRARCARGUERESPONSE"]["REGISTRARCARGUERESULT"]["B:MESSAGE"];
           $mNumberTransa = $mXml2["S:ENVELOPE"]["S:BODY"]["REGISTRARCARGUERESPONSE"]["REGISTRARCARGUERESULT"]["B:TRANSACTIONNUMBER"]["I:NIL"];
           $mType =         $mXml2["S:ENVELOPE"]["S:BODY"]["REGISTRARCARGUERESPONSE"]["REGISTRARCARGUERESULT"]["B:TYPE"];
-
+          
           # Valida el campo del mensage.
           $mMessage = is_array($mMessage) ? $mMessage["I:NIL"] : $mMessage;
   
@@ -197,6 +197,7 @@ class InterfSimplexity
     }
     catch(SoapFault $e) {
       # Si estan cambiadas las variables, raro no?      
+      
       $mXml = array( "xml_respon"=> $mXmlEnvelope,"xml_reques"=> $mResultSoap ,"xml_arrayx"=> var_export($mXml2, true)  );
       $mReturn = array("cod_respon" => $e -> faultstring,  "msg_respon" => $e -> faultcode ); 
       self::LogDataError( $mParams, $mReturn, "1", $mXml);

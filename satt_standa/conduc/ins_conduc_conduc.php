@@ -217,7 +217,7 @@ class Ins_conduc_conduc {
             </tr>
             <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683; border-bottom: 2px solid  #8A8683;">
               <td colspan="2" style="text-align:center"><br><br><br><br><br>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _<br>Firma y Cédula del Conductor</b></b></td>
-              <td colspan="2" style="text-align:center"><?php if($datos->principal->dir_ultfot != "NULL" && $datos->principal->dir_ultfot != NULL && $datos->principal->dir_ultfot != ""){ ?><img  width="128px"; height="128px" src="../<?= NOM_URL_APLICA ?>/fotcon/<?= $datos->principal->dir_ultfot ?>"/> <?php }else { ?> <img src="../<?= DIR_APLICA_CENTRAL ?>/imagenes/silueta.png"/> <?php } ?></td>
+              <td colspan="2" style="text-align:center"><?php if($datos->principal->dir_ultfot != "NULL" && $datos->principal->dir_ultfot != NULL && $datos->principal->dir_ultfot != ""){ ?><img  width="128px"; height="128px" src="<?= $datos->principal->dir_ultfot ?>"/> <?php }else { ?> <img src="imagenes/silueta.png"/> <?php } ?></td>
               <td colspan="2" style="text-align:center"><img src="../<?= DIR_APLICA_CENTRAL ?>/imagenes/huella.png"/><br><b>Huella</b></td>              
             </tr>
         </table>
@@ -410,7 +410,7 @@ class Ins_conduc_conduc {
                   $mHtml->Label("Tipo de Documento:", "width:25%; *:1;");
                     $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "conduc[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "key"=> $datos->principal->cod_tipdoc) );
                     $mHtml->Label("Número de Documento:", "width:25%; :1;");
-                    $mHtml->Input(array("type" => "numeric", "name" => "conduc[cod_tercer]", "id" => "cod_tercerID", "onblur"=>"comprobar()", "width" => "10%", "obl" => "1", "minlength" => "7", "maxlength" => "10", "validate" => "numero", "value" =>  $datos->principal->cod_tercer, $disabled, "end" => true));
+                    $mHtml->Input(array("type" => "numeric", "name" => "conduc[cod_tercer]", "id" => "cod_tercerID", "onblur"=>"comprobar()", "width" => "10%", "obl" => "1", "minlength" => "5", "maxlength" => "10", "validate" => "numero", "value" =>  $datos->principal->cod_tercer, $disabled, "end" => true));
 
                     $mHtml->Label("Nombres:", "width:25%; *:1;");
                     $mHtml->Input(array("type" => "alpha", "name" => "conduc[nom_tercer]", "validate" => "alpha", "obl" => "1", "minlength" => "4", "maxlength" => "50", "id" => "nom_tercerID", "width" => "25%", "value" => $datos->principal->nom_tercer));

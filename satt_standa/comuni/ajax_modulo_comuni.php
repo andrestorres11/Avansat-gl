@@ -1,5 +1,5 @@
 <?php
-ini_set('display_errors', true);
+//ini_set('display_errors', true);
 
 class AjaxModuloComunicaciones 
 {
@@ -202,8 +202,8 @@ class AjaxModuloComunicaciones
                  delay: 100
                }).bind( "autocompleteclose", function(event, ui){SetUsuari( $(this), \'ema\', \''.$_AJAX['cod_transp'].'\'  );} );
 
-			   $( "#nom_usuariID" ).bind( "autocompletechange", function(event, ui){ SetUsuari( $(this), \'nom\', \''.$_AJAX['cod_transp'].'\'  ); } );
-			   $( "#ema_usuariID" ).bind( "autocompletechange", function(event, ui){ SetUsuari( $(this), \'ema\', \''.$_AJAX['cod_transp'].'\'  ); } );
+         $( "#nom_usuariID" ).bind( "autocompletechange", function(event, ui){ SetUsuari( $(this), \'nom\', \''.$_AJAX['cod_transp'].'\'  ); } );
+         $( "#ema_usuariID" ).bind( "autocompletechange", function(event, ui){ SetUsuari( $(this), \'ema\', \''.$_AJAX['cod_transp'].'\'  ); } );
                </script>';
 
     $mHtml  .= '<center>';
@@ -915,7 +915,7 @@ class AjaxModuloComunicaciones
             }
           }
 
-		  //DESTINOS 
+      //DESTINOS 
           $mHtml .= '<tr>';
             $mHtml .= '<td style="padding:5px;">Digite y/o Seleccione una Ciudad</td>';
             $mHtml .= '<td style="padding:5px;" colspan="3"><input type="text" size="35" maxlength="70" name="cod_ciudes" id="cod_ciudesID" />&nbsp;&nbsp;<button onclick="UpCiudes();" name="up" id="upID" >&nbsp;</button></td>';
@@ -924,7 +924,7 @@ class AjaxModuloComunicaciones
         $mHtml .= '</table>';
       $mHtml .= '</div>';
 
-	 
+   
 
     if( $_AJAX['ind_editar'] != '' )
       {
@@ -1985,7 +1985,366 @@ class AjaxModuloComunicaciones
       return $_Data;
   }
   
-  
+
+  public function ListarAsignacionesUsuarios( $_AJAX ){
+      AjaxModuloComunicaciones::Style(); 
+      $intAuto=1;
+      $mValidate="FALSE";
+      $mHtml="<div id='Tbl_AsignacionUserID' class='Tbl_AsignacionUser'>";
+      $mHtml.="<table class='displayDIV2' width='100%'' align='center' cellpadding='3' cellspacing='0' border='0'>";
+        $mHtml.="<thead>";
+          $mHtml.="<tr>";
+              $mHtml.="<th class=CellHead'>#</th>";
+              $mHtml.="<th class=CellHead'>Nombre Funcionario</th>";
+              $mHtml.="<th class=CellHead'>Usuario</th>";
+              $mHtml.="<th class=CellHead'>Novedad</th>";
+              $mHtml.="<th class=CellHead'>Tipo de Correo</th>";
+              $mHtml.="<th class=CellHead'>Origen</th>";
+              $mHtml.="<th class=CellHead'>Destino</th>";
+              $mHtml.="<th class=CellHead'>Producto</th>";
+              $mHtml.="<th class=CellHead'>Tipo de Operacion</th>";
+              $mHtml.="<th class=CellHead'>Tipo de transporte</th>";
+              $mHtml.="<th class=CellHead'>Zona</th>";
+              $mHtml.="<th class=CellHead'>Canal</th>";
+          $mHtml.="</tr>";
+        $mHtml.="</thead>";
+        $mHtml.="<tbody>";  
+       
+      foreach(self::getNovedadMatriz($_AJAX) AS $mKey => $mNoveda) 
+          {
+              foreach( $_AJAX["mTypeDestin"] AS $oKey => $mTypeDestin) 
+              {
+
+                if($mTypeDestin=="0")
+                {
+                    continue;
+                }
+                $mDatas = self::getDataListAsignacion( $mNoveda["cod_noveda"], $_AJAX["cod_nomUsuarioID"], $mTypeDestin, NULL, $mValidate );
+ 
+                 #echo "<pre>"; print_r($mDatas); echo "</pre>";
+                foreach ($mDatas as $key => $mData) {
+                  $mHtml.="<tr>";
+                    $mHtml.="<td class='CellInfo1'>".$intAuto++."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['nom_usuari'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['cod_usuari'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mNoveda["nom_noveda"])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Tipo_Correo'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Origen'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Destino'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Producto'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Tipo_Despacho_Tipo_operacion'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Tipo_Transporte'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Zona'])."</td>";
+                    $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Canal'])."</td>";     
+                 $mHtml.="</tr>";
+                }
+                
+              }
+          }
+      $mHtml.="</tbody>";
+      $mHtml.="</table>";
+      $mHtml.="</div>";
+      if($intAuto==1)
+      {
+        $mHtml="<div id='Tbl_AsignacionUserID' class='Tbl_AsignacionUser'>";
+            $mHtml.="<table class='displayDIV2' width='100%'' align='center' cellpadding='3' cellspacing='0' border='0'>";
+              $mHtml.="<thead>";
+                  $mHtml.="<tr>";
+                      $mHtml.="<td class='CellInfo1'>NO SE ENCONTRARON DATOS.</td>"; 
+                  $mHtml.="</tr>";
+              $mHtml.="</thead>";
+              $mHtml.="<tbody>"; 
+              $mHtml.="</tbody>";
+            $mHtml.="</table>";
+        $mHtml.="</div>";
+
+      }
+      echo $mHtml;  
+     
+        
+  }
+
+  public function ListarAsignacionesCaract( $_AJAX ){
+      AjaxModuloComunicaciones::Style(); 
+      $intAuto=1;
+      $mValidate="TRUE";
+      $mHtml="<div id='Tbl_AsignacionCaraID' class='Tbl_AsignacionCara'>";
+      $mHtml.="<table class='displayDIV2' width='100%'' align='center' cellpadding='3' cellspacing='0' border='0'>";
+        $mHtml.="<thead>";
+          $mHtml.="<tr>";
+              $mHtml.="<th class=CellHead'>#</th>";
+              $mHtml.="<th class=CellHead'>Nombre Funcionario</th>";
+              $mHtml.="<th class=CellHead'>Usuario</th>";
+              $mHtml.="<th class=CellHead'>Novedad</th>";
+              $mHtml.="<th class=CellHead'>Tipo de Correo</th>";
+              $mHtml.="<th class=CellHead'>Origen</th>";
+              $mHtml.="<th class=CellHead'>Destino</th>";
+              $mHtml.="<th class=CellHead'>Producto</th>";
+              $mHtml.="<th class=CellHead'>Tipo de Operacion</th>";
+              $mHtml.="<th class=CellHead'>Tipo de transporte</th>";
+              $mHtml.="<th class=CellHead'>Zona</th>";
+              $mHtml.="<th class=CellHead'>Canal</th>";
+          $mHtml.="</tr>";
+        $mHtml.="</thead>";
+      $mHtml.="<tbody>";     
+      
+      $mDatas = self::getDataListAsignacion( $_AJAX["SeltNovedadID"], NULL, $_AJAX["SeltTipCorreoID"] , $_AJAX , $mValidate );
+         //echo "<pre>"; print_r($mDatas); echo "</pre>";
+
+        foreach ($mDatas as $key => $mData) 
+        {
+        
+        // echo "<pre>"; print_r($mData); echo "</pre>";
+             
+          $mHtml.="<tr>";
+              $mHtml.="<td class='CellInfo1'>".$intAuto++."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['nom_usuari'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['cod_usuari'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData["Novedad"])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Tipo_Correo'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Origen'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Destino'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Producto'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Tipo_Despacho_Tipo_operacion'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Tipo_Transporte'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Zona'])."</td>";
+              $mHtml.="<td class='CellInfo1'>".strtoupper($mData['Canal'])."</td>";
+          $mHtml.="</tr>";
+        }
+          
+      $mHtml.="</tbody>";
+      $mHtml.="</table>";
+      $mHtml.="</div>";
+      if(sizeof($mDatas)==0)
+      {
+        $mHtml="<div id='Tbl_AsignacionUserID' class='Tbl_AsignacionUser'>";
+            $mHtml.="<table class='displayDIV2' width='100%'' align='center' cellpadding='3' cellspacing='0' border='0'>";
+              $mHtml.="<thead>";
+                  $mHtml.="<tr>";
+                      $mHtml.="<td class='CellInfo1'>NO SE ENCONTRARON DATOS.</td>"; 
+                  $mHtml.="</tr>";
+              $mHtml.="</thead>";
+              $mHtml.="<tbody>"; 
+              $mHtml.="</tbody>";
+            $mHtml.="</table>";
+        $mHtml.="</div>";
+
+      }
+      echo $mHtml; 
+     
+        
+  }
+
+  private function getNovedadMatriz($mParam=NULL)
+  {
+      
+    $mSelect = ' SELECT a.cod_noveda, UPPER( b.nom_noveda ) AS nom_noveda
+                     FROM '.BASE_DATOS.'.tab_detail_modcom a INNER JOIN '.BASE_DATOS.'.tab_genera_noveda b ON a.cod_noveda=b.cod_noveda
+                    WHERE a.cod_usuari = "'.$mParam["cod_nomUsuarioID"].'" GROUP BY a.cod_noveda';
+    $consulta = new Consulta( $mSelect, $this -> conexion );
+    return $consulta -> ret_matriz("a");
+
+  }
+
+  protected function getDataListAsignacion( $mCodNoveda = NULL, $mCodUsuari = NULL, $mTypeDestin = NULL, $mData = NULL, $mValidate = NULL ){
+    $mListCr = 'SELECT z.cod_usuari,y.nom_usuari,
+                 IF( "'.$mTypeDestin.'" = "P" , "Para", "Copia") AS Tipo_Correo,
+                 z.ValCriter1 AS Nivel1, 
+                 z.NomCriter1 AS Origen, 
+                 z.ValCriter2 AS Nivel2, 
+                 z.NomCriter2 AS Producto, 
+                 z.ValCriter3 AS Nivel3, 
+                 z.NomCriter3 AS Destino, 
+                 z.ValCriter4 AS Nivel4,
+                 z.NomCriter4 AS Tipo_Despacho_Tipo_operacion,
+                 z.ValCriter5 As Nivel5, 
+                 z.NomCriter5 As Zona, 
+                 z.ValCriter6 AS Nivel6, 
+                 z.NomCriter6 AS Canal, 
+                 z.ValCriter7 AS Nivel7, 
+                 z.NomCriter7 AS Tipo_Transporte, 
+                 z.ValCriter8 AS Nivel8,
+                 z.NomCriter8 AS Desposito ,
+                 (SELECT nom_noveda FROM  '.BASE_DATOS.'.tab_genera_noveda WHERE cod_noveda='.$mCodNoveda.') AS Novedad
+
+
+          FROM ( 
+
+                SELECT aa.cod_usuari , 
+                     aa.val_criter AS ValCriter1, aa.nom_criter AS NomCriter1, 
+                     bb.val_criter AS ValCriter2, bb.nom_criter AS NomCriter2, 
+                     cc.val_criter AS ValCriter3, cc.nom_criter AS NomCriter3,
+                     dd.val_criter AS ValCriter4, dd.nom_criter AS NomCriter4,
+                     ee.val_criter AS ValCriter5, ee.nom_criter AS NomCriter5,
+                     ff.val_criter AS ValCriter6, ff.nom_criter AS NomCriter6,
+                     gg.val_criter AS ValCriter7, gg.nom_criter AS NomCriter7,
+                     hh.val_criter AS ValCriter8, hh.nom_criter AS NomCriter8
+
+              FROM (
+                            SELECT  a.cod_usuari, a.cod_consec
+                              FROM   '.BASE_DATOS.'.tab_genera_modcom a 
+                            WHERE  1 = 1 '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).' GROUP BY a.cod_usuari '.( $mCodUsuari != '' ? ' LIMIT 1' : ''   ).' 
+                   ) xx
+                    INNER JOIN 
+                   (
+                            SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, b.nom_ciudad AS nom_criter
+                             FROM '.BASE_DATOS.'.tab_detail_modcom a ,
+                                  '.BASE_DATOS.'.tab_genera_ciudad b
+                            WHERE a.cod_criter = "1" AND  
+                                  a.val_criter = b.cod_ciudad AND                                                                         
+                                  a.cod_noveda = "'.$mCodNoveda.'" AND 
+                                  a.ind_tipres = "'.$mTypeDestin.'"
+                                  '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).'  
+                   ) aa
+                    ON xx.cod_usuari = aa.cod_usuari '.($mData["cod_ciuori"] != '' ? ' AND  aa.val_criter = "'.$mData["cod_ciuori"].'" /*Origen*/ ' : '').'
+                    INNER JOIN
+                   (
+                            SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bc.nom_produc AS nom_criter
+                             FROM '.BASE_DATOS.'.tab_detail_modcom a, 
+                                  '.BASE_DATOS.'.tab_genera_produc bc 
+                            WHERE a.cod_criter = "2" AND       
+                                  a.val_criter = bc.cod_produc AND                                                                    
+                                  a.cod_noveda = "'.$mCodNoveda.'" AND 
+                                  a.ind_tipres = "'.$mTypeDestin.'"
+                                  '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).'
+                   ) bb
+                    ON xx.cod_usuari = bb.cod_usuari '.($mData["cod_produc"] != '' ? ' AND  bb.val_criter = "'.$mData["cod_produc"].'" /*PRODUC*/ ' : '').'
+                    '.($mData["cod_ciudes"] == ''? 'LEFT':'INNER').' JOIN 
+                   (
+                           SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bd.nom_ciudad AS nom_criter
+                             FROM '.BASE_DATOS.'.tab_detail_modcom a,
+                                  '.BASE_DATOS.'.tab_genera_ciudad bd
+                            WHERE a.cod_criter = "3" AND     
+                                  a.val_criter = bd.cod_ciudad AND                                                                      
+                                  a.cod_noveda = "'.$mCodNoveda.'" AND 
+                                  a.ind_tipres = "'.$mTypeDestin.'"
+                                  '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).'
+                   ) cc
+                   ON xx.cod_usuari = cc.cod_usuari '.( $mData["cod_ciudes"] != '' ? ' AND  cc.val_criter = "'.$mData["cod_ciudes"].'" /*DESTIN*/ ' : ''   ).'
+                   LEFT JOIN 
+                   (
+                           SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, be.nom_tipdes AS nom_criter
+                             FROM '.BASE_DATOS.'.tab_detail_modcom a,
+                                  '.BASE_DATOS.'.tab_genera_tipdes be
+                            WHERE a.cod_criter = "4" AND  
+                                  a.val_criter = be.cod_tipdes AND                                                                         
+                                  a.cod_noveda = "'.$mCodNoveda.'" AND 
+                                  a.ind_tipres = "'.$mTypeDestin.'"
+                                  '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).' 
+                   ) dd
+                   ON xx.cod_usuari = dd.cod_usuari '.($mData["cod_tipdes"] != '' ? ' AND  dd.val_criter = "'.$mData["cod_tipdes"].'" /*TIPDES*/ ' : '').'
+                   LEFT JOIN 
+                   (
+                           SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bf.nom_canalx AS nom_criter
+                             FROM '.BASE_DATOS.'.tab_detail_modcom a,
+                                  '.BASE_DATOS.'.tab_genera_canalx bf 
+                            WHERE a.cod_criter = "6" AND
+                                  a.val_criter = bf.con_consec AND                                                                           
+                                  a.cod_noveda = "'.$mCodNoveda.'" AND 
+                                  a.ind_tipres = "'.$mTypeDestin.'"
+                                  '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).'
+                   ) ff
+                   ON xx.cod_usuari = ff.cod_usuari '.( $mData["cod_canalx"] != '' ? ' AND  ff.val_criter = "'.$mData["cod_canalx"].'" /*Zona*/ ' : ''   ).'
+                   LEFT JOIN 
+                   (
+                           SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bg.nom_zonaxx AS nom_criter
+                             FROM '.BASE_DATOS.'.tab_detail_modcom a,
+                                  '.BASE_DATOS.'.tab_genera_zonasx bg 
+                            WHERE a.cod_criter = "5" AND 
+                                  a.val_criter = bg.cod_zonaxx AND                                                                          
+                                  a.cod_noveda = "'.$mCodNoveda.'" AND 
+                                  a.ind_tipres = "'.$mTypeDestin.'"
+                                  '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).'
+                   ) ee
+                   ON xx.cod_usuari = ee.cod_usuari '.( $mData["cod_zonaxx"] != '' ? ' AND  ee.val_criter = "'.$mData["cod_zonaxx"].'" /*Canal*/ ' : ''   ).'
+                   LEFT JOIN 
+                   (
+                           SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bh.nom_tiptra AS nom_criter
+                             FROM '.BASE_DATOS.'.tab_detail_modcom a,
+                                  '.BASE_DATOS.'.tab_genera_tiptra bh
+                            WHERE a.cod_criter = "7" AND  
+                                  a.val_criter = bh.cod_tiptra AND                                                                         
+                                  a.cod_noveda = "'.$mCodNoveda.'" AND 
+                                  a.ind_tipres = "'.$mTypeDestin.'"
+                                  '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).'  
+                   ) gg
+                   ON xx.cod_usuari = gg.cod_usuari '.( $mData["cod_tiptra"] != '' ? ' AND  gg.val_criter = "'.$mData["cod_tiptra"].'" /*Tiptra*/ ' : ''   ).'
+                   LEFT JOIN 
+                   (
+                           SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bi.nom_deposi AS nom_criter
+                             FROM '.BASE_DATOS.'.tab_detail_modcom a,
+                                  '.BASE_DATOS.'.tab_genera_deposi bi 
+                            WHERE a.cod_criter = "8" AND  
+                                  a.val_criter = bi.cod_deposi AND                                                                         
+                                  a.cod_noveda = "'.$mCodNoveda.'" AND 
+                                  a.ind_tipres = "'.$mTypeDestin.'"
+                                  '.( $mCodUsuari != '' ? ' AND  a.cod_usuari = "'.$mCodUsuari.'"' : ''   ).'  
+                   ) hh
+                   ON xx.cod_usuari = hh.cod_usuari '.( $mData["cod_deposi"] != '' ? ' AND  hh.val_criter = "'.$mData["cod_deposi"].'" /*DEPOSI*/ ' : ''   ).' '  ;
+       # $mListCr .= ' GROUP BY aa.cod_usuari   ) z, '.BASE_DATOS.'.tab_genera_usuari y WHERE z.cod_usuari = y.cod_usuari   ORDER BY 2 '; 
+        $mListCr .= '   ) z, '.BASE_DATOS.'.tab_genera_usuari y WHERE z.cod_usuari = y.cod_usuari   ORDER BY 2 '; 
+        
+      #echo "<pre>"; print_r($mListCr); echo "</pre>";
+      $consulta = new Consulta( $mListCr, $this -> conexion );
+      $mRresult = $consulta -> ret_matriz("a");
+#echo "<pre>"; print_r($mListCr); echo "</pre>";
+      if($mValidate == NULL)
+      {
+          return $mRresult[0];
+      }
+      else
+      {
+          return $mRresult;
+      }
+      
+  }
+
+   public function getNomTrans()
+  {  
+
+     $mSql = "SELECT a.cod_tercer, b.nom_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a INNER JOIN tab_tercer_tercer b ON a.cod_tercer=b.cod_tercer WHERE a.cod_tercer LIKE '%".$_REQUEST['term']."%' OR b.nom_tercer LIKE '%".$_REQUEST['term']."%' LIMIT 15 ";
+
+        $consulta = new Consulta( $mSql, $this -> conexion );
+        $mResult = $consulta -> ret_matrix('a');
+
+        if( $_REQUEST['term'] )
+        {
+            $mTranps = array();
+            for($i=0; $i<sizeof( $mResult ); $i++){
+                $mTxt = $mResult[$i]['cod_tercer']." - ".utf8_decode($mResult[$i]['nom_tercer']);
+                $mTranps[] = array('value' => utf8_decode($mResult[$i]['nom_tercer']), 'label' => $mTxt, 'id' => $mResult[$i]['cod_tercer'] );
+            }
+            echo json_encode( $mTranps );
+        }
+        else
+            return $mResult;    
+
+  }
+
+  public function getNomUsuario()
+  {  
+
+        $mSql = "SELECT a.cod_usuari AS cod_tercer, UPPER(a.nom_usuari) AS nom_tercer FROM ".BASE_DATOS.".tab_genera_usuari a INNER JOIN ".BASE_DATOS.".tab_genera_modcom b ON a.cod_usuari=b.cod_usuari WHERE b.cod_usuari LIKE '%".$_REQUEST['term']."%' OR a.nom_usuari LIKE '%".$_REQUEST['term']."%'  GROUP BY a.cod_usuari LIMIT 15";
+
+        $consulta = new Consulta( $mSql, $this -> conexion );
+        $mResult = $consulta -> ret_matrix('a');
+
+        if( $_REQUEST['term'] )
+        {
+            $mTranps = array();
+            for($i=0; $i<sizeof( $mResult ); $i++){
+                $mTxt = $mResult[$i]['cod_tercer']." - ".utf8_decode($mResult[$i]['nom_tercer']);
+                $mTranps[] = array('value' => utf8_decode($mResult[$i]['nom_tercer']), 'label' => $mTxt, 'id' => $mResult[$i]['cod_tercer'] );
+            }
+            echo json_encode( $mTranps );
+        }
+        else
+            return $mResult;    
+
+  }
+
+
+
 }
 
 $proceso = new AjaxModuloComunicaciones();

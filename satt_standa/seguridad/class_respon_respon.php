@@ -97,11 +97,11 @@ class responsable
 			$mSql = "INSERT INTO ".BASE_DATOS.".tab_genera_respon 
 						( cod_respon, nom_respon, ind_activo, 
 						  jso_bandej, jso_encabe, jso_plarut, 
-						  jso_infcal, usr_creaci, fec_creaci ) 
+						  jso_infcal, jso_notifi, usr_creaci, fec_creaci ) 
 					VALUES 
 						( '".($mCodRespon[0]+1)."', '".$_REQUEST['nom_respon']."', '".$_REQUEST['ind_activo']."', 
 						  '".json_encode($_REQUEST['jso_bandej'])."', '".json_encode($_REQUEST['jso_encabe'])."', '".json_encode($_REQUEST['jso_plarut'])."', 
-						  '".json_encode($_REQUEST['jso_infcal'])."', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() ) 	
+						  '".json_encode($_REQUEST['jso_infcal'])."', '".json_encode($_REQUEST['jso_notifi'])."', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() ) 	
 					";
 			$mConsult = new Consulta($mSql, self::$cConexion);
 		}
@@ -114,7 +114,8 @@ class responsable
 			".( $_REQUEST['ind_editor'] == '1' ? " 	jso_bandej = '".json_encode($_REQUEST['jso_bandej'])."', 
 													jso_encabe = '".json_encode($_REQUEST['jso_encabe'])."', 
 													jso_plarut = '".json_encode($_REQUEST['jso_plarut'])."', 
-													jso_infcal = '".json_encode($_REQUEST['jso_infcal'])."',  " : "" )."
+													jso_infcal = '".json_encode($_REQUEST['jso_infcal'])."',
+													jso_notifi = '".json_encode($_REQUEST['jso_notifi'])."',  " : NULL )."
 						fec_modifi = NOW() 
 					WHERE cod_respon = '".$_REQUEST['cod_respon']."' ";
 			$mConsult = new Consulta($mSql, self::$cConexion);
@@ -143,7 +144,7 @@ class responsable
 	 */
 	private function edicionRespon()
 	{
-		$mSql = "SELECT jso_bandej, jso_encabe, jso_plarut, jso_infcal 
+		$mSql = "SELECT jso_bandej, jso_encabe, jso_plarut, jso_infcal, jso_notifi 
 				   FROM ".BASE_DATOS.".tab_genera_respon 
 				  WHERE cod_respon = '".$_REQUEST['cod_respon']."' ";
 		$mConsult = new Consulta($mSql, self::$cConexion);
@@ -154,10 +155,11 @@ class responsable
 		$mData['jso_encabe'] = json_decode($mData['jso_encabe']);
 		$mData['jso_plarut'] = json_decode($mData['jso_plarut']);
 		$mData['jso_infcal'] = json_decode($mData['jso_infcal']);
+		$mData['jso_notifi'] = json_decode($mData['jso_notifi']);
 
 
 		self::style();
-		$mCategoria = array("jso_bandej"=>'Bandeja', "jso_encabe"=>'Encabezado', "jso_plarut"=>'Plan de Ruta', "jso_infcal"=>'Informe Auditorias General');
+		$mCategoria = array("jso_bandej"=>'Bandeja', "jso_encabe"=>'Encabezado', "jso_plarut"=>'Plan de Ruta', "jso_infcal"=>'Informe Auditorias General', "jso_notifi"=>'de notificaciones');
 		$mChecked = $_REQUEST['ind_activo'] == '1' ? 'true' : 'false';
 
 		$mHtml = new Formlib(2);
@@ -245,7 +247,8 @@ class responsable
 														),
 									"sec_inform"=> array( "name"=>"Pestañas Informes", 
 														  "sub"=>array(
-																		"pes_genera"=>"Pestaña General", 
+																		"pes_genera"=>"Pestaña General",
+																		"pes_prcarg"=>"Pestaña PreCargue",
 																		"pes_cargax"=>"Pestaña Cargue", 
 																		"pes_transi"=>"Pestaña Transito", 
 																		"pes_descar"=>"Pestaña Descargue", 
@@ -339,6 +342,63 @@ class responsable
 				$mArray[1] = array( "fil_genera"=>array("ind_visibl"=>1, "sub"=>array("tip_despac"=>1) ),
 									"sec_inform"=>array("ind_visibl"=>1, "sub"=>array("pes_despac"=>1, "pes_usuari"=>1) )
 								   );
+			break;
+
+			case 'jso_notifi':
+				$mArray[0] = array( "fil_genera"=> array( "name"=>"General", 
+														  "sub"=>array()
+														),
+									"sec_infoet"=> array( "name"=>"Informacion OET", 
+														  "sub"=>array(
+																		"oet_ins"=>"Insertar", 
+																		"oet_idi"=>"Editar",
+																		"oet_rep"=>"Responder",
+																		"oet_eli"=>"Eliminar"
+																	  )
+														),
+									"sec_infclf"=> array( "name"=>"Informacion CLF", 
+														  "sub"=>array(
+																		"clf_ins"=>"Insertar", 
+																		"clf_idi"=>"Editar",
+																		"clf_rep"=>"Responder",
+																		"clf_eli"=>"Eliminar"
+																	  )
+														),
+									"sec_infsup"=> array( "name"=>"Supervisores", 
+														  "sub"=>array(
+																		"sup_ins"=>"Insertar", 
+																		"sup_idi"=>"Editar",
+																		"sup_rep"=>"Responder",
+																		"sup_eli"=>"Eliminar"
+																	  )
+														),
+									"sec_infcon"=> array( "name"=>"Controladores", 
+														  "sub"=>array(
+																		"con_ins"=>"Insertar", 
+																		"con_idi"=>"Editar",
+																		"con_rep"=>"Responder",
+																		"con_eli"=>"Eliminar"
+																	  )
+														),
+									"sec_infcli"=> array( "name"=>"Clientes", 
+														  "sub"=>array(
+																		"cli_ins"=>"Insertar", 
+																		"cli_idi"=>"Editar",
+																		"cli_rep"=>"Responder",
+																		"cli_eli"=>"Eliminar"
+																	  )
+														)
+								  );
+
+				$mArray[1] = array( "fil_genera"=>array("ind_visibl"=>1, "sub"=>array() ),
+									"sec_infoet"=>array("ind_visibl"=>1, "sub"=>array("opt_insoet"=>1,"opt_idioet"=>1,"opt_repoet"=>1,"opt_elioet"=>1) ),
+									"sec_infclf"=>array("ind_visibl"=>1, "sub"=>array("opt_insclf"=>1,"opt_idiclf"=>1,"opt_repclf"=>1,"opt_eliclf"=>1) ),
+									"sec_infsup"=>array("ind_visibl"=>1, "sub"=>array("opt_inssup"=>1,"opt_idisup"=>1,"opt_repsup"=>1,"opt_elisup"=>1) ),
+									"sec_infcon"=>array("ind_visibl"=>1, "sub"=>array("opt_inscon"=>1,"opt_idicon"=>1,"opt_repcon"=>1,"opt_elicon"=>1) ),
+									"sec_infcli"=>array("ind_visibl"=>1, "sub"=>array("opt_inscli"=>1,"opt_idicli"=>1,"opt_repcli"=>1,"opt_elicli"=>1) )
+
+								   );
+
 			break;
 		}
 

@@ -1,6 +1,6 @@
 <?php
-    ini_set('display_errors', true);
-    error_reporting(E_ALL & ~E_NOTICE);
+    //ini_set('display_errors', true);
+    //error_reporting(E_ALL & ~E_NOTICE);
    
 
      require_once "ajax_tercer_tercer.php";
@@ -31,7 +31,7 @@ class Ins_tercer_tercer {
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 31/09/2015
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -199,13 +199,13 @@ class Ins_tercer_tercer {
 
             $mHtml->OpenDiv("id:juridico");
               $mHtml->OpenDiv("id:juridicaID; class:accordion");
-                $mHtml->SetBody("<h3 style='padding:6px;'><center>Persona JurÃ­dica</center></h3>");
+                $mHtml->SetBody("<h3 style='padding:6px;'><center>Persona Jurídica</center></h3>");
                 $mHtml->OpenDiv("id:sec2");
                   $mHtml->OpenDiv("id:form2; class:contentAccordionForm");
                     $mHtml->Table("tr");
-                      $mHtml->Label(("NÃºmero de NIT:"), "width:25%; *:1;");
+                      $mHtml->Label(("Número de NIT:"), "width:25%; *:1;");
                       $mHtml->Input (array("name" => "tercer[cod_tercer]", "validate" => "numero",  "id" => "cod_tercerID",  "obl"=> "1", "minlength"=>"9", $disabled, "maxlength"=>"10", "onblur"=>"comprobar()", "width" => "25%", "value"=> $datos->principal->cod_tercer) );
-                      $mHtml->Label("Digito de VerificaciÃ³n:", "width:25%; *:1;");
+                      $mHtml->Label("Digito de Verificación:", "width:25%; *:1;");
                       $mHtml->Input (array("name" => "tercer[num_verifi]", "validate" => "numero",  "id" => "num_verifiID", "size"=>1, "obl"=> "1", "minlength"=>"1","maxlength"=>"1", "width" => "25%", "value"=> $datos->principal->num_verifi, "end" => true) );
                       $mHtml->Label("Nombre:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "tercer[nom_tercer]", "validate"=>"alpha", "id" => "nom_tercerID", "width" => "25%","minlength"=>"10", "maxlength" => "50", "value" => $datos->principal->nom_tercer));
@@ -215,17 +215,17 @@ class Ins_tercer_tercer {
                       $mHtml->Select2 ($datos->regimen,  array("name" => "tercer[cod_terreg]", "validate" => "select", "obl" => "1", "id" => "cod_terregID", "width" => "25%", "key"=> $datos->principal->cod_terreg) );
                       $mHtml->Label("Ciudad:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "ciudad", "validate"=>"dir", "id" => "ciudadID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => $datos->principal->abr_ciudad, "end" => true));
-                      $mHtml->Label("DirecciÃ³n:", "width:25%; *:1;");
+                      $mHtml->Label("Dirección:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "tercer[dir_domici]", "validate"=>"dir", "id" => "dir_domiciID", "width" => "25%", "minlength"=>"7", "maxlength" => "50", "value" => $datos->principal->dir_domici));
-                      $mHtml->Label("TelÃ©fono 1:", "width:25%; *:1;");
+                      $mHtml->Label("Teléfono 1:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "tercer[num_telef1]", "validate"=>"numero", "id" => "num_telef1ID", "width" => "25%", "minlength"=>"7", "maxlength" => "10", "value" => $datos->principal->num_telef1, "end" => true));
-                      $mHtml->Label("TelÃ©fono 2:", "width:25%; :1;");
+                      $mHtml->Label("Teléfono 2:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[num_telef2]", "id" => "num_telef2ID", "validate"=>"numero", "width" => "25%", "minlength"=>"7", "maxlength" => "10", "value" => $datos->principal->num_telef2));
                       $mHtml->Label("Celular:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[num_telmov]", "id" => "num_telmovID", "validate"=>"numero", "width" => "25%", "minlength"=>"7", "maxlength" => "10", "value" => $datos->principal->num_telmov, "end" => true));
                       $mHtml->Label("Fax:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[num_faxxx]", "id" => "num_faxxxID", "validate"=>"numero", "width" => "25%", "minlength"=>"7", "maxlength" => "10", "value" => $datos->principal->num_faxxx));
-                      $mHtml->Label("PÃ¡gina WEB:", "width:25%; :1;");
+                      $mHtml->Label("Página WEB:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[dir_urlweb]", "id" => "dir_urlwebID", "width" => "25%", "minlength"=>"7", "maxlength" => "100", "value" => $datos->principal->dir_urlweb, "end" => true));
                       $mHtml->Label("E-Mail:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[dir_emailx]", "id" => "dir_emailxID", "width" => "25%", "minlength"=>"7", "maxlength" => "100", "validate"=>"email", "value" => $datos->principal->dir_emailx, "end" => true));
@@ -264,27 +264,27 @@ class Ins_tercer_tercer {
                     $mHtml->Table("tr");
                       $mHtml->Label(("Tipo de Doumento:"), "width:25%; *:1;");
                       $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "tercer[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "val"=> $datos->principal->cod_tipdoc) );
-                      $mHtml->Label(("NÃºmero de Documento:"), "width:25%; *:1;");
-                      $mHtml->Input (array("name" => "tercer[cod_tercer]", "validate" => "numero",  "id" => "cod_tercerID",  "obl"=> "1", "minlength"=>"6", $disabled, "maxlength"=>"10", "onblur"=>"comprobar()", "width" => "25%", "value"=> $datos->principal->cod_tercer, "end"=>true) );
+                      $mHtml->Label(("Número de Documento:"), "width:25%; *:1;");
+                      $mHtml->Input (array("name" => "tercer[cod_tercer]", "validate" => "numero",  "id" => "cod_tercerID",  "obl"=> "1", "minlength"=>"5", $disabled, "maxlength"=>"10", "onblur"=>"comprobar()", "width" => "25%", "value"=> $datos->principal->cod_tercer, "end"=>true) );
                       $mHtml->Label("Nombres:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "tercer[nom_tercer]", "validate"=>"alpha", "id" => "nom_tercerID", "width" => "25%", "minlength"=>"4", "maxlength" => "30", "value" => $datos->principal->nom_tercer));
                       $mHtml->Label("Apellido 1:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "tercer[nom_apell1]", "validate"=>"alpha", "id" => "nom_apell1ID", "width" => "25%", "minlength"=>"4", "maxlength" => "20", "value" => $datos->principal->nom_apell1, "end" => true));
-                      $mHtml->Label("Apellido 2:", "width:25%; *:1;");
-                      $mHtml->Input(array("obl" => "1", "name" => "tercer[nom_apell2]", "validate"=>"alpha", "id" => "nom_apell2ID", "width" => "25%", "minlength"=>"4", "maxlength" => "20", "value" => $datos->principal->nom_apell2));
+                      $mHtml->Label("Apellido 2:", "width:25%; :1;");
+                      $mHtml->Input(array("name" => "tercer[nom_apell2]", "validate"=>"alpha", "id" => "nom_apell2ID", "width" => "25%", "minlength"=>"4", "maxlength" => "20", "value" => $datos->principal->nom_apell2));
                       $mHtml->Label("Ciudad:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "ciudad", "validate"=>"dir", "id" => "ciudadID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => $datos->principal->abr_ciudad, "end" => true));
-                      $mHtml->Label("DirecciÃ³n:", "width:25%; *:1;");
+                      $mHtml->Label("Dirección:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "tercer[dir_domici]", "validate"=>"dir", "id" => "dir_domiciID", "width" => "25%", "minlength"=>"7", "maxlength" => "50", "value" => $datos->principal->dir_domici));
-                      $mHtml->Label("TelÃ©fono 1:", "width:25%; *:1;");
+                      $mHtml->Label("Teléfono 1:", "width:25%; *:1;");
                       $mHtml->Input(array("obl" => "1", "name" => "tercer[num_telef1]", "validate"=>"numero", "id" => "num_telef1ID", "width" => "25%", "minlength"=>"7", "maxlength" => "10", "value" => $datos->principal->num_telef1, "end" => true));
-                      $mHtml->Label("TelÃ©fono 2:", "width:25%; :1;");
+                      $mHtml->Label("Teléfono 2:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[num_telef2]", "id" => "num_telef2ID", "validate"=>"numero", "width" => "25%", "minlength"=>"7", "maxlength" => "10", "value" => $datos->principal->num_telef2));
                       $mHtml->Label("Celular:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[num_telmov]", "id" => "num_telmovID", "validate"=>"numero", "width" => "25%", "minlength"=>"7", "maxlength" => "10", "value" => $datos->principal->num_telmov, "end" => true));
                       $mHtml->Label("Fax:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[num_faxxx]", "id" => "num_faxxxID", "validate"=>"numero", "width" => "25%", "minlength"=>"7", "maxlength" => "10", "value" => $datos->principal->num_faxxx));
-                      $mHtml->Label("PÃ¡gina WEB:", "width:25%; :1;");
+                      $mHtml->Label("Página WEB:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[dir_urlweb]", "id" => "dir_urlwebID", "width" => "25%", "minlength"=>"7", "maxlength" => "100", "value" => $datos->principal->dir_urlweb, "end" => true));
                       $mHtml->Label("E-Mail:", "width:25%; :1;");
                       $mHtml->Input(array("name" => "tercer[dir_emailx]", "id" => "dir_emailxID", "width" => "25%", "minlength"=>"7", "maxlength" => "100", "validate"=>"email", "value" => $datos->principal->dir_emailx, "end" => true));
