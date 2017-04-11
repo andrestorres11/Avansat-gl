@@ -637,12 +637,29 @@ function ins_tab_noveda() {
 	try
 	{
 		validacion = true
-		formulario = document.form_list
+		formulario = document.form_list;
+		if(formulario.cod_opegps.value !="--")
+		{
+			if(formulario.cod_evento.value =="")
+			{
+				window.alert("El Codigo de Evento es Requerido")
+				validacion = false
+				formulario.cod_evento.focus()
+			}
+			else if(formulario.nom_evento.value =="")
+			{
+				window.alert("El nombre de Evento es Requerido")
+				validacion = false
+				formulario.nom_evento.focus()
+			}
+		}
 		if (formulario.nom.value == "") {
 			window.alert("El Nombre es Requerido")
 			validacion = false
 			formulario.nom.focus()
-		} else {
+		}
+		else if(validacion==true)
+		{
 			formulario.opcion.value = 2;
 			formulario.submit();
 		}

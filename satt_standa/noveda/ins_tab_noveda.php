@@ -103,12 +103,13 @@
                 $mHtml->Table("tr");  
                     $mHtml->Label( "Caracteristicas de la Novedad", array("colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
                   $mHtml->CloseRow();
-                  $mHtml->Row();
+                $mHtml->CloseTable("tr");
+                $mHtml->Table("tr");
                     $mHtml->Label( "Estapas de seguimiento", array( "colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"left", "width"=>"25%", "class"=>"cellInfo2", "end" => "true") );
                     foreach ($mEtapas as $NomEtapa => $valorEtapa) 
                     {
-                      $mHtml->Radio(array("colspan"=>"1", "value"=>$valorEtapa[0], "name" => "cod_etapax", "id" => "cod_etapax", "class"=>"cellInfo2", "width" => "100%", "checked"=>($datos["datos"][0]["cod_etapax"] == $valorEtapa[0] ?"checked":($valorEtapa[0]==3 && !$_REQUEST['accion']?"checked":null))));
-                      $mHtml->Label( $valorEtapa[1], array("colspan"=>"1", "align"=>"right", "width"=>"2%", "class"=>"cellInfo2") );
+                      $mHtml->Radio(array("colspan"=>"1", "value"=>$valorEtapa[0], "name" => "cod_etapax", "id" => "cod_etapax", "class"=>"cellInfo2", "width" => "8%", "checked"=>($datos["datos"][0]["cod_etapax"] == $valorEtapa[0] ?"checked":($valorEtapa[0]==3 && !$_REQUEST['accion']?"checked":null))));
+                      $mHtml->Label( $valorEtapa[1], array("colspan"=>"1", "align"=>"right", "width"=>"8%", "class"=>"cellInfo2") );
                     }
                   $mHtml->CloseRow();
                 $mHtml->CloseTable("tr");
@@ -128,6 +129,17 @@
                       }
                     }
                   $mHtml->CloseRow();
+                $mHtml->CloseTable("tr");
+                $mHtml->Table("tr");
+                    $mHtml->Label( "Homologacion Novedad", array("colspan"=>"6", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+                    $mHtml->CloseRow();
+                    $mHtml->Row();
+                      $mHtml->Label( "Operador GPS", array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
+                      $mHtml->Select2 (self::getOpgps(),  array("name" => "cod_opegps", "id"=>"cod_opegps", "width" => "25%", "key" => $datos["perfiles"][0]["cod_opegps"]?$datos["perfiles"][0]["cod_opegps"]:null) );
+                      $mHtml->Label( "Codigo Evento", array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
+                      $mHtml->Input( array("name"=>"cod_evento", "id"=>"cod_evento", "align"=>"right", "class"=>"cellInfo2", "type"=>"numeric", "maxlength"=>"8", "value"=>($datos["perfiles"][0]["cod_evento"]?$datos["perfiles"][0]["cod_evento"]:"")));
+                      $mHtml->Label( "Nombre Evento", array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
+                      $mHtml->Input( array("name"=>"nom_evento", "id"=>"nom_evento", "align"=>"right", "class"=>"cellInfo2", "value"=>($datos["perfiles"][0]["nom_evento"]?$datos["perfiles"][0]["nom_evento"]:"")));
                 $mHtml->CloseTable("tr");
                 $mHtml->Table("tr");
                     $mHtml->Label( "Filtro de perfil", array("colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
@@ -279,7 +291,7 @@
       else
         $ind_notsup = 0;   
 
-      $cod_operad = $_REQUEST["cod_operad"]; 
+      $cod_operad = $_REQUEST["cod_opegps"]; 
       $cod_homolo = $_REQUEST["cod_homolo"];   
       $ind_visibl = $_REQUEST["ind_visibl"] == NULL ? '0' : $_REQUEST["ind_visibl"];   
 
@@ -363,13 +375,16 @@
     {
   		foreach( $perfiles as $row )
   		{
+        $cod_opegps = ($_REQUEST["cod_opegps"]=="--"?null:$_REQUEST["cod_opegps"]);
+        $cod_evento = ($_REQUEST["cod_evento"] && $_REQUEST["cod_opegps"]!="--"?$_REQUEST["cod_evento"]:null);
+        $nom_evento = ($_REQUEST["nom_evento"] && $_REQUEST["cod_opegps"]!="--"?$_REQUEST["nom_evento"]:null);
   			$insert = "INSERT INTO  " . BASE_DATOS . ".tab_perfil_noveda 
   						(
-  							cod_perfil , cod_noveda
+  							cod_perfil , cod_noveda , cod_opegps , cod_evento , nom_evento
   						)
   						VALUES 
   						(
-  							'$row',  '$nuevo_consec'
+  							'$row',  '$nuevo_consec', '$cod_opegps', '$cod_evento', '$nom_evento'
   						)";
   			
   			$consulta = new Consulta( $insert, $this -> conexion, "R" );
@@ -484,10 +499,13 @@
                             IF(a.ind_ealxxx = '1', 'SI', 'NO') AS ind_ealxxx, 
                             IF(a.ind_visibl = '1', 'SI', 'NO') AS ind_visibl,
                             if(a.ind_notsup = '1', 'SI', 'NO') AS ind_notsup, 
-                            IF(a.ind_limpio = '1', 'SI', 'NO') AS ind_limpio
+                            IF(a.ind_limpio = '1', 'SI', 'NO') AS ind_limpio,
+                            IF(b.nom_operad IS NULL, '---',b.nom_operad) AS nom_operad
                   FROM ".BASE_DATOS.".tab_genera_noveda a 
             INNER JOIN ".BASE_DATOS.".tab_genera_etapax c 
                     ON a.cod_etapax = c.cod_etapax 
+            LEFT JOIN ".CENTRAL.".tab_genera_opegps b 
+                    ON a.cod_operad = b.cod_operad
                   WHERE a.ind_estado=1";
                                          
       $_SESSION["queryXLS"] = $mSql;
@@ -509,7 +527,8 @@
       $list->SetHeader("Visibilidad (N/S)",   "field:ind_visibl" );
       $list->SetHeader("Notifica Supervisor", "field:ind_notsup" );
       $list->SetHeader("Limpio",              "field:ind_limpio" );
-      $list->SetOption("Opciones","field:cod_noveda; onclikPrint:eliminarNove( this ); onclikEdit:editarNove( this );" );
+      $list->SetHeader("Operador GPS",        "field:nom_operad" );
+      $list->SetOption("Opciones","field:cod_noveda; onclickCopy:eliminarNove( this ); onclikEdit:editarNove( this );" );
       $list->SetHidden("cod_noveda", "cod_noveda");
       $list->Display($this -> conexion);
 
@@ -540,7 +559,8 @@
                 WHERE a.cod_noveda =".$cod_noveda;
         $mConsult = new Consulta($mSql, $this -> conexion);
 
-        $mSql2 = "SELECT b.cod_perfil AS cod_perfil, b.cod_noveda AS cod_noveda 
+        $mSql2 = "SELECT b.cod_perfil AS cod_perfil, b.cod_noveda AS cod_noveda, b.cod_opegps AS cod_opegps,
+                         b.cod_evento AS cod_evento, b.nom_evento AS nom_evento
                  FROM ".BASE_DATOS.".tab_perfil_noveda b 
                 WHERE b.cod_noveda =".$cod_noveda;
 
@@ -617,6 +637,25 @@
       {
           echo 'Error eliminarNoveda: ',  $e->getMessage(), "\n";
       }
+    }
+
+    /*! \fn: getOpgps
+     *  \brief: Trae los operadores gps 
+     *  \author: Edward Serrano
+     *  \date: 11/04/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return: 
+     */
+    private function getOpgps()
+    {
+
+      $mSql = "SELECT cod_operad, nom_operad 
+                 FROM ".BD_STANDA.".tab_genera_opegps a 
+                WHERE   ind_estado = 1 ";
+      $mConsult = new Consulta($mSql, $this -> conexion);
+      return array_merge(array(array("--","--")),$mConsult -> ret_matriz( "i" ) );
+      
     }
 
     /*! \fn: GridStyle 
@@ -744,7 +783,7 @@
                 background: -webkit-linear-gradient(left, #FFFFFF, #F7F9FA);
                 background: -o-linear-gradient(left, #FFFFFF, #F7F9FA);
                 color: #2E3133;
-                width: 500px;
+                width: 300px;
               }
               .CellInfohref{
                 cursor:pointer;
