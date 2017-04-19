@@ -72,9 +72,9 @@ class parameNoveda
 
 			echo self::GridStyle();
 			$mTabs = array(
-										'ind_tiempo' => 'Solicita tiempo',
-										'ind_manala' => 'Mantiene Alarma',
-										'ind_otrpar' => 'Otras Parametrizaciones'
+										'ind_tiempo' => 'SOLICITA TIEMPO',
+										'ind_manala' => 'MANTINENE ALARMA',
+										'ind_otrpar' => 'OTRAS PARAMETRIZACIONES'
 										//'ind_gpsxxx' => 'GPS'
 										 );
 			$mHtml = new FormLib(2);
@@ -91,19 +91,7 @@ class parameNoveda
       $mHtml->SetCss("dinamic_list");
       $mHtml->SetJs("validator");
       $mHtml->SetJs("time");
-      //$mHtml->SetJs("jquery.multiselect.filter.min");
-      //$mHtml->SetJs("jquery.multiselect.min");
       $mHtml->SetCssJq("validator");
-      # incluye Css
-      //IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
-      //IncludeJS( '.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
-
-      /*echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
-      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/dinamic_list.css' type='text/css'>\n";
-
-      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
-      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
-      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";*/
       $mHtml->SetCssJq("jquery");
 
       #variables ocultas
@@ -123,9 +111,9 @@ class parameNoveda
               $mHtml->OpenDiv("id:sec1");
                 $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
            				$mHtml->Table("tr");
-                    $mHtml->Label( "Parametrizacion Novedades", array("colspan"=>"12", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+                    $mHtml->Label( strtoupper("Parametrizacion Novedades"), array("colspan"=>"12", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
                     $mHtml->Row();
-                      $mHtml->Label( "Filtro de perfiles:", array("colspan"=>"7", "align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
+                      $mHtml->Label( strtoupper("Filtro de perfiles:"), array("colspan"=>"7", "align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
                       	$mHtml->Select2 (self::getPerfiles(),  array("name" => "perfiles", "width" => "25%") );
                     $mHtml->CloseRow();
                   $mHtml->CloseTable("tr");
@@ -177,7 +165,7 @@ class parameNoveda
 			{
 				$query = "SELECT a.cod_perfil, a.nom_perfil
 				  FROM " . BASE_DATOS . ".tab_genera_perfil  a
-				  ORDER BY 2";
+				  WHERE a.ind_estado = 1 ORDER BY 2";
 
     		$consulta = new Consulta($query, self::$cConexion);
     		return $matriz = $consulta -> ret_matriz( "a" );
@@ -200,23 +188,24 @@ class parameNoveda
   {
     try
     {
-      //echo "<pre>";print_r($_REQUEST);echo "</pre>";
-      //echo "<pre>";print_r(self::getNovedPerfil());echo "</pre>";
       $mHtml = new FormLib(2);
       $mHtml->OpenDiv("id:sec3; class:contentAccordionForm");
         $mHtml->Table("tr");
-          $mHtml->Label( "Parametrizacion espacial a aplicar", array("align"=>"center", "width"=>"25%", "class"=>"CellHead", "colspan"=>"6", "end"=>"true") );
+          $mHtml->Label( strtoupper("Parametrizacion Especial a Aplicar"), array("align"=>"center", "width"=>"25%", "class"=>"CellHead", "colspan"=>"6", "end"=>"true") );
           $mHtml->CloseRow();
           $mHtml->Row();
             $mHtml->CheckBox(array("name"=>"ind_apsees", "id"=>"ind_apsees", "class"=>"cellInfo2", "align"=>"right", "checked"=>null));
-            $mHtml->Label( "Aplica para seguimiento especial", array("align"=>"right", "class"=>"cellInfo2" ) );
+            $mHtml->Label( strtoupper("Aplica Para Seguimiento Especial"), array("align"=>"right", "class"=>"cellInfo2" ) );
             $mHtml->CheckBox(array("name"=>"ind_tisees", "id"=>"ind_tisees", "class"=>"cellInfo2", "align"=>"right", "checked"=>null, "onclick"=>"activarMinuto(1)"));
-            $mHtml->Label( "Tiempo de seguimiento especial Automatico", array("align"=>"right", "class"=>"cellInfo2" ) );
+            $mHtml->Label( strtoupper("Tiempo de Seguimiento Especial Automatico"), array("align"=>"right", "class"=>"cellInfo2" ) );
             $mHtml->Input( array("name"=>"num_minuto", "id"=>"num_minuto", "align"=>"right", "class"=>"cellInfo2", "type"=>"numeric", "maxlength"=>"4"));
-            $mHtml->Label( "Tiempo en minutos", array("align"=>"left", "class"=>"cellInfo2" ) );
+            $mHtml->Label( strtoupper("Tiempo en Minutos"), array("align"=>"left", "class"=>"cellInfo2" ) );
           $mHtml->CloseRow();
           $mHtml->Row();
-            $mHtml->Label( "Seleccionar todas:", array("align"=>"left", "class"=>"cellInfo2" ) );
+            $mHtml->Label( strtoupper("Perfiles"), array("align"=>"center", "width"=>"25%", "class"=>"CellHead", "colspan"=>"12", "end"=>"true") );
+          $mHtml->CloseRow();
+          $mHtml->Row();
+            $mHtml->Label( "SELECCIONAR TODAS:", array("align"=>"left", "class"=>"cellInfo2" ) );
             $mHtml->CheckBox(array("name"=>"SeleccionM", "id"=>"SeleccionM", "class"=>"cellInfo2", "align"=>"left", "onchange"=>"checkAll()"));
         $mHtml->CloseTable("tr");
         $mHtml->OpenDiv("id:secNovedadesP");
@@ -233,10 +222,10 @@ class parameNoveda
                   $mHtml->CheckBox(array("name"=>$value["cod_noveda"], "id"=>$value["cod_noveda"], "class"=>"cellInfo2", "align"=>"right", "value"=>$value["cod_noveda"], "checked"=>($novpar[0]?"checked":null)));
                   $mHtml->Label($value["nom_noveda"] , array("align"=>"left", "class"=>"cellInfo2" ) );
                   
-                  $mHtml->Label(($novpar[0]?"Editar":" ") , array("align"=>"left", "class"=>"cellInfo2", "onclick" => ($novpar[0]?"opciones(1, '". $value["cod_noveda"] ."')":"") ) );
-                  $mHtml->Label(($novpar[0]?"Eliminar":" "), array("align"=>"left", "class"=>"cellInfo2", "onclick" =>  ($novpar[0]?"opciones(2, '". $value["cod_noveda"] ."')":"") ) );
+                  $mHtml->Label(($novpar[0]?"Editar":" ") , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEditar", "onclick" => ($novpar[0]?"opciones(1, '". $value["cod_noveda"] ."')":"") ) );
+                  $mHtml->Label(($novpar[0]?"Eliminar":" "), array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEliminar","onclick" =>  ($novpar[0]?"opciones(2, '". $value["cod_noveda"] ."')":"") ) );
                   
-                  if($saltoln==3){
+                  if($saltoln==2){
                     $mHtml->CloseRow();
                     $mHtml->Row();
                     $saltoln=0;
@@ -250,9 +239,9 @@ class parameNoveda
                   $saltoln++;
                   $mHtml->CheckBox(array("name"=>$value["cod_noveda"], "id"=>$value["cod_noveda"], "class"=>"cellInfo2", "align"=>"right", "value"=>$value["cod_noveda"], "checked"=>($novpar[0]?"checked":null)));
                   $mHtml->Label($value["nom_noveda"] , array("align"=>"left", "class"=>"cellInfo2" ) );
-                  $mHtml->Label(($novpar[0]?"Editar":" ")  , array("align"=>"left", "class"=>"cellInfo2", "onclick" => ($novpar[0]?"opciones(1, '". $value["cod_noveda"] ."')":"") ) );
-                  $mHtml->Label(($novpar[0]?"Eliminar":" ") , array("align"=>"left", "class"=>"cellInfo2", "onclick" => ($novpar[0]?"opciones(2, '". $value["cod_noveda"] ."')":"") ) );
-                  if($saltoln==3){
+                  $mHtml->Label(($novpar[0]?"Editar":" ")  , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEditar","onclick" => ($novpar[0]?"opciones(1, '". $value["cod_noveda"] ."')":"") ) );
+                  $mHtml->Label(($novpar[0]?"Eliminar":" ") , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEliminar","onclick" => ($novpar[0]?"opciones(2, '". $value["cod_noveda"] ."')":"") ) );
+                  if($saltoln==2){
                     $mHtml->CloseRow();
                     $mHtml->Row();
                     $saltoln=0;
@@ -264,8 +253,8 @@ class parameNoveda
         $mHtml->CloseDiv();
         $mHtml->OpenDiv("id:secBotoneraP");
           $mHtml->Table("tr");
-            $mHtml->Button( array("value"=>"GUARDAR", "id"=>"btnGuardar","name"=>"btnGuardar", "class"=>"crmButton small save", "align"=>"right", "onclick"=>"almacenarNovedad(1)") );
-            $mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnCancelar","name"=>"btnCancelar", "class"=>"crmButton small save", "align"=>"right", "onclick"=> "cerrarTab()") );
+            $mHtml->Button( array("value"=>"GUARDAR", "id"=>"btnGuardar","name"=>"btnGuardar", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all", "align"=>"right", "onclick"=>"almacenarNovedad(1)") );
+            $mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnCancelar","name"=>"btnCancelar", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all", "align"=>"right", "onclick"=> "cerrarTab()") );
             $mHtml->CloseRow();
           $mHtml->CloseTable('tr');
         $mHtml->CloseDiv();
@@ -291,7 +280,7 @@ class parameNoveda
   {
     try
     {
-      $query ="SELECT a.cod_perfil, a.cod_noveda, b.nom_noveda,
+      $query ="SELECT a.cod_perfil, a.cod_noveda, UPPER(b.nom_noveda) AS nom_noveda,
                       b.ind_manala, b.ind_tiempo 
                       FROM ". BASE_DATOS .".tab_perfil_noveda a
                       INNER JOIN ". BASE_DATOS .".tab_genera_noveda b
@@ -318,7 +307,7 @@ class parameNoveda
   {
     try
     {
-      $query = "SELECT a.nom_noveda AS nom_noveda, a.cod_etapax AS cod_etapax, a.obs_preted AS obs_preted,    
+      $query = "SELECT UPPER(a.nom_noveda) AS nom_noveda, a.cod_etapax AS cod_etapax, a.obs_preted AS obs_preted,    
                        a.ind_alarma AS ind_alarma, a.ind_tiempo AS ind_tiempo, a.nov_especi AS nov_especi,   
                        a.ind_manala AS ind_manala, a.ind_fuepla AS ind_fuepla, a.ind_insveh AS ind_insveh,      
                        a.ind_agenci AS ind_agenci, a.cod_operad AS cod_operad, a.cod_homolo AS cod_homolo,   
@@ -348,12 +337,12 @@ class parameNoveda
     {
       $mDataNoveda = self::getInfoNovedad()[0];
       $mEtapas = self::getEtapa();
-      $novpar = self::getNovedadParame($_REQUEST['cod_noveda'])[0];
+      $novpar = self::getNovedadParame($_REQUEST['cod_noveda'], $_REQUEST['cod_perfil'])[0];
       $mCompor = array(
                        'nov_especi' => 'Novedad Especial',
                        'ind_manala' => 'Mantiene Alarma',
                        'ind_fuepla' => 'Fuera de Plataforma',
-                       'indtiemp'   => 'Solicita Tiempos',
+                       'ind_tiempo' => 'Solicita Tiempos',
                        'ind_ealxxx' => 'Visible Esferas',
                        'ind_visibl' => 'Visibilidad (S/N)',
                        'ind_notsup' => 'Notifica Supervisor',
@@ -364,26 +353,34 @@ class parameNoveda
       $mHtml->Hidden(array( "name" => "cod_novedaIn", "id" => "cod_novedaIn", 'value'=>$_REQUEST["cod_noveda"]));
       $mHtml->OpenDiv("id:secNI; class:contentAccordionForm");
         $mHtml->Table("tr");  
-          $mHtml->Label( $mDataNoveda["nom_noveda"], array("colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+          $mHtml->Label( $mDataNoveda["nom_noveda"], array("colspan"=>"4", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
           $mHtml->CloseRow();
           $mHtml->Row();
-            $mHtml->Label( "Estapas de seguimiento", array( "colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"left", "width"=>"25%", "class"=>"cellInfo2", "end" => "true") );
+            $mHtml->Label( "ETAPAS DE SEGUIMIENTO", array( "colspan"=>"4", "align"=>"left", "width"=>"25%", "class"=>"CellHead", "end" => "true") );
+            $saltoLn = 0;
             foreach ($mEtapas as $NomEtapa => $valorEtapa) 
             {
+              $saltoLn++;
               $mHtml->Radio(array("colspan"=>"1", "value"=>$valorEtapa[0], "name" => "cod_etapax", "id" => "cod_etapax", "class"=>"cellInfo2", "width" => "8%", "readonly"=>"readonly", "disabled"=>"disabled", "checked"=>($mDataNoveda["cod_etapax"] == $valorEtapa[0]?"checked":null)));
-              $mHtml->Label( $valorEtapa[1], array("colspan"=>"1", "align"=>"right", "width"=>"8%", "class"=>"cellInfo2") );
+              $mHtml->Label( $valorEtapa[1], array("colspan"=>"1", "align"=>"left", "width"=>"8%", "class"=>"cellInfo2") );
+              if($saltoLn>=2)
+              {
+                $mHtml->CloseRow();
+                $mHtml->Row();
+                $saltoLn=0;
+              }
             }
           $mHtml->CloseRow();
         $mHtml->CloseTable("tr");
         $mHtml->Table("tr");
-          $mHtml->Label( "Comportamiento", array( "align"=>"left", "width"=>"25%", "class"=>"cellInfo2","end" => "true") );
+          $mHtml->Label( "COMPORTAMIENTO", array( "align"=>"left", "width"=>"25%", "class"=>"CellHead",  "colspan" =>"8","end" => "true") );
           $saltoLn = 0;
           foreach ($mCompor as $idCompor => $valCompor) 
           {
             $saltoLn++;
             $mHtml->CheckBox(array("name" => $idCompor, "id"=>$idCompor, "width" => "25%", "colspan" => "1", "class"=>"cellInfo2", "align"=>"right", "value"=>"1", "readonly"=>"readonly", "disabled"=>"disabled", "checked"=>($mDataNoveda[$idCompor] == 1 || $mDataNoveda[$idCompor] == "S"?"checked":null) ));
-            $mHtml->Label( $valCompor, array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"3" ) );
-            if($saltoLn>=3)
+            $mHtml->Label( strtoupper($valCompor), array("align"=>"left", "width"=>"25%", "class"=>"cellInfo2", "colspan" =>"3" ) );
+            if($saltoLn>=2)
             {
               $mHtml->CloseRow();
               $mHtml->Row();
@@ -393,20 +390,20 @@ class parameNoveda
         $mHtml->CloseRow();
         $mHtml->CloseTable("tr");
           $mHtml->Table("tr");
-            $mHtml->Label( $mDataNoveda["nom_noveda"], array("align"=>"center", "width"=>"25%", "class"=>"CellHead", "colspan"=>"6", "end"=>"true") );
+            $mHtml->Label( strtoupper("Parametrizacion Especial a Aplicar"), array("align"=>"center", "width"=>"25%", "class"=>"CellHead", "colspan"=>"6", "end"=>"true") );
             $mHtml->CloseRow();
             $mHtml->Row();
               $mHtml->CheckBox(array("name"=>"ind_apseesIn", "id"=>"ind_apseesIn", "class"=>"cellInfo2", "align"=>"right", "checked"=>($novpar["ind_apsees"]==1?"checked":null)));
-              $mHtml->Label( "Aplica para seguimiento especial", array("align"=>"right", "class"=>"cellInfo2" ) );
+              $mHtml->Label( strtoupper("Aplica Para Seguimiento Especial"), array("align"=>"right", "class"=>"cellInfo2" ) );
               $mHtml->CheckBox(array("name"=>"ind_tiseesIn", "id"=>"ind_tiseesIn", "class"=>"cellInfo2", "align"=>"right", "checked"=>($novpar["ind_tisees"]==1?"checked":null), "onclick"=>"activarMinuto(2)"));
-              $mHtml->Label( "Tiempo de seguimiento especial Automatico", array("align"=>"right", "class"=>"cellInfo2" ) );
+              $mHtml->Label( strtoupper("Tiempo de Seguimiento Especial Automatico"), array("align"=>"right", "class"=>"cellInfo2" ) );
               $mHtml->Input( array("name"=>"num_minutoIn", "id"=>"num_minutoIn", "class"=>"cellInfo2", "align"=>"right", "type"=>"numeric", "maxlength"=>"4", "value"=>($novpar["num_minuto"]!=0?$novpar["num_minuto"]:"") ));
-              $mHtml->Label( "Tiempo en minutos", array("align"=>"left", "class"=>"cellInfo2" ) );
+              $mHtml->Label( strtoupper("Tiempo en Minutos"), array("align"=>"left", "class"=>"cellInfo2" ) );
             $mHtml->CloseRow();
         $mHtml->CloseTable("tr");
         $mHtml->Table("tr");
-          $mHtml->Button( array("value"=>"GUARDAR", "id"=>"btnGuardar","name"=>"btnGuardar", "class"=>"crmButton small save", "align"=>"right", "onclick"=>"almacenarNovedad(2)") );
-          $mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnCerrarPop","name"=>"btnCerrarPop", "class"=>"crmButton small save", "align"=>"right", "onclick"=> "cerrarPopup()") );
+          $mHtml->Button( array("value"=>"GUARDAR", "id"=>"btnGuardar","name"=>"btnGuardar", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all", "align"=>"right", "onclick"=>"almacenarNovedad(2)") );
+          $mHtml->Button( array("value"=>"CANCELAR", "id"=>"btnCerrarPop","name"=>"btnCerrarPop", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all", "align"=>"right", "onclick"=> "cerrarPopup()") );
           $mHtml->CloseRow();
         $mHtml->CloseTable('tr');
       $mHtml->CloseDiv();
@@ -698,6 +695,9 @@ class parameNoveda
                 font-size: 11px;
                 padding: 2px;
                 height: 10px;
+              }
+              #labelEditar, #labelEliminar:hover{
+                cursor: hand
               }
               </style>";
     	

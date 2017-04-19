@@ -1354,7 +1354,8 @@ function eliminarNove(row)
 	 {
 	 	var objeto = $(row).parent().parent();
    		var cod_noveda = objeto.find("input[id^=cod_noveda]").val();
-	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=3&cod_noveda="+cod_noveda;
+   		var ind_estado = objeto.find("input[id^=ind_estado]").val();
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=3&cod_noveda="+cod_noveda+"&ind_estado="+ind_estado;
 	 } catch (e) {
 		console.log("Error Function editarNove: " + e.message + "\nLine: " + e.lineNumber);
 		return false;
@@ -1381,4 +1382,41 @@ function VolverNovedad()
 	}
 }
 
+/*! \fn: checkAll
+ * \brief: chequea todos los input del tab
+ * \author: Edward Serrano
+ * \date: 06/04/2017
+ * \date modified: dia/mes/año
+ * \param: 
+ * \return valor que retorna
+ */
+ function checkAll()
+ {
+ 	try {
+ 		var estadoCheck = null;
+ 		if( $("#SeleccionM").is(":checked") )
+ 		{
+ 			estadoCheck = 1;
+ 		}
+ 		else
+ 		{
+ 			estadoCheck = 0;
+ 		}
+ 		$("#secPerfiles").find("input[type=checkbox]").each(function(key,value){
+ 			dato = $(this);
+ 			if(estadoCheck == 1)
+ 			{
+ 				dato.attr("checked", "checked");
+ 			}
+ 			else
+ 			{
+ 				dato.removeAttr("checked");
+ 			}
+ 		});
+ 	}
+	catch(err) 
+	{
+    	console.log("Error funcion checkAll:"+err.message);
+	}
+ }
 

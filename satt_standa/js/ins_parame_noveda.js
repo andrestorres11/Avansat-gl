@@ -8,7 +8,8 @@
  *  \bug: 
  *  \warning: 
  */
-
+$(document).on("ready",function(){
+});
  
  /*! \fn: openTabs
  * \brief: Realiza peticion ajax para llenar los tab con el contenido especifico
@@ -24,14 +25,24 @@
 	 	var standa = $("#standaID").val();
 	 	var perfil = $("#perfilesID").val();
 	 	var mdata="Ajax=on&opcion=getFormSoltie&tab="+tab+"&perfil="+perfil;
+	 	closePopUp('popID');
+	    LoadPopupJQNoButton('open', 'Cargando.. ',  150, 300, false, false, true);
+	    var popup = $("#popID");
 	 	$.ajax({
 	 		url:"../"+ standa +"/noveda/ins_parame_noveda.php",
 	 		type:"POST",
 	 		data:mdata,
 	 		cache:false,
+	 		beforeSend: function(){
+	 			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+		     	popup.html("<center><img src='../"+standa+"/imagenes/ajax-loader.gif'></center>");
+		    },
 	 		success:function(data){
 	 			$("#resultDiv").html(data);
 	 			$("#sec1").css({"height":"auto"});
+	 		},
+	 		complete:function(){
+	 			closePopUp('popID');
 	 		}		
 	 	});
 	}
@@ -56,10 +67,11 @@
  		if(indicador==1)
  		{
  			var standa = $("#standaID").val();
+ 			var perfil = $("#perfilesID").val();
 	      	closePopUp('popID');
 	      	LoadPopupJQNoButton('open', 'EDITAR NOVEDAD ', ($(window).height() - 40), ($(window).width() - 40), false, false, true);
 	      	var popup = $("#popID");
-	      	var mdata = "Ajax=on&opcion=getFormIndi&indicador="+ indicador +"&cod_noveda="+cod_noveda;
+	      	var mdata = "Ajax=on&opcion=getFormIndi&indicador="+ indicador +"&cod_noveda="+cod_noveda+"&cod_perfil="+perfil;
 	      	$.ajax({
 	      		url: "../"+ standa + "/noveda/ins_parame_noveda.php",
 	      		type: "POST",
@@ -180,7 +192,7 @@
  					}
  					else
  					{
- 						mensaje("Error","Error al almacernar la parametrizacion de novedad.");
+ 						mensaje("Error","Error al almacernar la parametrizacion de novedad."+data);
  					}
  				}
  			});

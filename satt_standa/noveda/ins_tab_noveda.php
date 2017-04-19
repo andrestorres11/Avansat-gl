@@ -47,7 +47,7 @@
                        'nov_especi' => 'Novedad Especial',
                        'ind_manala' => 'Mantiene Alarma',
                        'ind_fuepla' => 'Fuera de Plataforma',
-                       'indtiemp'   => 'Solicita Tiempos',
+                       'ind_tiempo' => 'Solicita Tiempos',
                        'ind_ealxxx' => 'Visible Esferas',
                        'ind_visibl' => 'Visibilidad (S/N)',
                        'ind_notsup' => 'Notifica Supervisor',
@@ -87,41 +87,57 @@
 
       # Construye accordion
       $mHtml->Row("td");
-        $mHtml->OpenDiv("id:contentID; class:contentAccordion");
         # Accordion1
+        $mHtml->OpenDiv("id:contentID; class:contentAccordion");
           $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
-            $mHtml->SetBody("<h1 style='padding:6px'><b>Novedades</b></h1>");
+            $mHtml->SetBody("<h1 style='padding:6px'><b>".($_REQUEST["cod_noveda"]?"ACTUALIZAR NOVEDAD - CODIGO NOVEDAD: ".$_REQUEST["cod_noveda"]:"REGISTRO DE NOVEDAD")."</b></h1>");
             $mHtml->OpenDiv("id:sec1;");
               $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                 $mHtml->Table("tr");
-                  $mHtml->Label( ($_REQUEST["cod_noveda"]?"Actualizar Novedad - ".$_REQUEST["cod_noveda"]:"Registro de Novedad"), array("colspan"=>"12", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
                   $mHtml->Row();
-                    $mHtml->Label( "Nombre de la novedad", array("colspan"=>"7", "align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
+                    $mHtml->Label( strtoupper("Nombre de la novedad"), array("colspan"=>"7", "align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
                     $mHtml->Input( array("name"=>"nom", "id"=>"nom", "width"=>"50%", "value"=>"" , "class"=>"cellInfo2", "colspan"=>"7", "value" =>($_REQUEST['accion']==2?$datos["datos"][0]["nom_noveda"]:"")) );
                   $mHtml->CloseRow();
                 $mHtml->CloseTable("tr");
+                $mHtml->CloseDiv();
+            $mHtml->CloseDiv();
+          $mHtml->CloseDiv();
+          $mHtml->OpenDiv("id:CaracteristicaID; class:accordion");
+            $mHtml->SetBody("<h1 style='padding:6px'><b>CARACTERISTICAS DE LA NOVEDAD</b></h1>");
+            $mHtml->OpenDiv("id:sec2;");
+              $mHtml->OpenDiv("id:form2; class:contentAccordionForm");
                 $mHtml->Table("tr");  
-                    $mHtml->Label( "Caracteristicas de la Novedad", array("colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+                    $mHtml->Label( "ETAPAS DE SEGUIMIENTO", array("colspan"=>"4", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
                   $mHtml->CloseRow();
                 $mHtml->CloseTable("tr");
                 $mHtml->Table("tr");
-                    $mHtml->Label( "Estapas de seguimiento", array( "colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"left", "width"=>"25%", "class"=>"cellInfo2", "end" => "true") );
+                    $saltoLn = 0;
                     foreach ($mEtapas as $NomEtapa => $valorEtapa) 
                     {
+                      $saltoLn++;
                       $mHtml->Radio(array("colspan"=>"1", "value"=>$valorEtapa[0], "name" => "cod_etapax", "id" => "cod_etapax", "class"=>"cellInfo2", "width" => "8%", "checked"=>($datos["datos"][0]["cod_etapax"] == $valorEtapa[0] ?"checked":($valorEtapa[0]==3 && !$_REQUEST['accion']?"checked":null))));
-                      $mHtml->Label( $valorEtapa[1], array("colspan"=>"1", "align"=>"right", "width"=>"8%", "class"=>"cellInfo2") );
+                      $mHtml->Label( $valorEtapa[1], array("colspan"=>"1", "align"=>"left", "width"=>"8%", "class"=>"cellInfo2") );
+                      if($saltoLn>=2)
+                      {
+                        $mHtml->CloseRow();
+                        $mHtml->Row();
+                        $saltoLn=0;
+                      }
                     }
                   $mHtml->CloseRow();
                 $mHtml->CloseTable("tr");
                 $mHtml->Table("tr");
-                    $mHtml->Label( "Comportamiento", array( "align"=>"left", "width"=>"25%", "class"=>"cellInfo2","end" => "true") );
+                  $mHtml->Label( "COMPORTAMIENTO", array("colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+                  $mHtml->CloseRow();
+                $mHtml->CloseTable("tr");
+                $mHtml->Table("tr");
                     $saltoLn = 0;
                     foreach ($mCompor as $idCompor => $valCompor) 
                     {
                       $saltoLn++;
-                      $mHtml->CheckBox(array("name" => $idCompor, "id"=>$idCompor, "width" => "25%", "colspan" => "1", "class"=>"cellInfo2", "align"=>"right", "value"=>"1", "checked"=>($datos["datos"][0][$idCompor] == 1 || $datos["datos"][0][$idCompor] == "S"?"checked":null) ));
-                      $mHtml->Label( $valCompor, array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"3" ) );
-                      if($saltoLn>=3)
+                      $mHtml->CheckBox(array("name" => $idCompor, "id"=>$idCompor, "width" => "25%", "colspan" => "2", "class"=>"cellInfo2", "align"=>"right", "value"=>"1", "checked"=>($datos["datos"][0][$idCompor] == 1 || $datos["datos"][0][$idCompor] == "S"?"checked":null) ));
+                      $mHtml->Label( strtoupper($valCompor), array("align"=>"left", "width"=>"25%", "class"=>"cellInfo2", "colspan" =>"3" ) );
+                      if($saltoLn>=2)
                       {
                         $mHtml->CloseRow();
                         $mHtml->Row();
@@ -130,46 +146,63 @@
                     }
                   $mHtml->CloseRow();
                 $mHtml->CloseTable("tr");
+              $mHtml->CloseDiv();
+            $mHtml->CloseDiv();
+          $mHtml->CloseDiv();
+          $mHtml->OpenDiv("id:HomologacionID; class:accordion");
+            $mHtml->SetBody("<h1 style='padding:6px'><b>HOMOLOGACION DE NOVEDAD</b></h1>");
+            $mHtml->OpenDiv("id:sec3;");
+              $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
                 $mHtml->Table("tr");
-                    $mHtml->Label( "Homologacion Novedad", array("colspan"=>"6", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
                     $mHtml->CloseRow();
                     $mHtml->Row();
-                      $mHtml->Label( "Operador GPS", array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
+                      $mHtml->Label( strtoupper("Operador GPS"), array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
                       $mHtml->Select2 (self::getOpgps(),  array("name" => "cod_opegps", "id"=>"cod_opegps", "width" => "25%", "key" => $datos["perfiles"][0]["cod_opegps"]?$datos["perfiles"][0]["cod_opegps"]:null) );
-                      $mHtml->Label( "Codigo Evento", array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
+                      $mHtml->Label( strtoupper("Codigo Evento"), array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
                       $mHtml->Input( array("name"=>"cod_evento", "id"=>"cod_evento", "align"=>"right", "class"=>"cellInfo2", "type"=>"numeric", "maxlength"=>"8", "value"=>($datos["perfiles"][0]["cod_evento"]?$datos["perfiles"][0]["cod_evento"]:"")));
-                      $mHtml->Label( "Nombre Evento", array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
+                      $mHtml->Label( strtoupper("Nombre Evento"), array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"1" ) );
                       $mHtml->Input( array("name"=>"nom_evento", "id"=>"nom_evento", "align"=>"right", "class"=>"cellInfo2", "value"=>($datos["perfiles"][0]["nom_evento"]?$datos["perfiles"][0]["nom_evento"]:"")));
                 $mHtml->CloseTable("tr");
+              $mHtml->CloseDiv();
+            $mHtml->CloseDiv();
+          $mHtml->CloseDiv();
+          $mHtml->OpenDiv("id:filtrosperfilID; class:accordion");
+            $mHtml->SetBody("<h1 style='padding:6px'><b>FILTRO DE PERFIL</b></h1>");
+            $mHtml->OpenDiv("id:sec4;");
+              $mHtml->OpenDiv("id:form4; class:contentAccordionForm");
                 $mHtml->Table("tr");
-                    $mHtml->Label( "Filtro de perfil", array("colspan"=>((sizeof($mEtapas)*2)+2), "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
-                  $mHtml->CloseRow();
-                  $mHtml->Row();
-                    $saltoLn=0;
-                    $numReco = 0;
-                    foreach ($mperfil as $idPefil => $valPefil) 
-                    {
-                      $saltoLn++;
-                      $mHtml->CheckBox(array("name" => "perfil[".$valPefil[0]."]", "id"=>"perfil[".$valPefil[0]."]", "width" => "25%", "colspan" => "1", "class"=>"cellInfo2", "align"=>"right", "value"=>$valPefil[0], "checked"=>($datos['perfiles'] && $this->getBuscarArr($valPefil[0],"cod_perfil",$datos['perfiles'])==1?"checked":null)));
-                      $mHtml->Label( $valPefil[1], array("align"=>"right", "width"=>"2%", "class"=>"cellInfo2", "colspan" =>"3" ) );
-                      if($saltoLn>=3)
-                      {
-                        $mHtml->CloseRow();
-                        $mHtml->Row();
-                        $saltoLn=0;
-                      }
-                    }
-                  $mHtml->CloseRow();
+                  $mHtml->Label( "SELECCIONAR TODAS:", array("align"=>"left", "class"=>"cellInfo2", "width"=>"1%" ) );
+                  $mHtml->CheckBox(array("name"=>"SeleccionM", "id"=>"SeleccionM", "class"=>"cellInfo2", "align"=>"left", "width"=>"8%","onchange"=>"checkAll()"));
                 $mHtml->CloseTable("tr");
-                $mHtml->Table("tr");
-                  $mHtml->Button( array("value"=>($_REQUEST['accion']!=2?"Insertar":"Actualizar"), "id"=>"Insertar","name"=>"Insertar", "class"=>"crmButton small save", "align"=>"center", "onclick"=>"ins_tab_noveda()") );
-                  $mHtml->Button( array("value"=>"Volver", "id"=>"volver","name"=>"volver", "class"=>"crmButton small save", "align"=>"center", "onclick"=>"VolverNovedad()", "end"=>"1") );
+                $mHtml->OpenDiv("id:secPerfiles");
+                  $mHtml->Table("tr");
+                    $mHtml->Row();
+                      $saltoLn=0;
+                      $numReco = 0;
+                      foreach ($mperfil as $idPefil => $valPefil) 
+                      {
+                        $saltoLn++;
+                        $mHtml->CheckBox(array("name" => "perfil[".$valPefil[0]."]", "id"=>"perfil[".$valPefil[0]."]", "width" => "25%", "colspan" => "1", "class"=>"cellInfo2", "align"=>"right", "value"=>$valPefil[0], "checked"=>($datos['perfiles'] && $this->getBuscarArr($valPefil[0],"cod_perfil",$datos['perfiles'])==1?"checked":null)));
+                        $mHtml->Label( $valPefil[1], array("align"=>"left", "width"=>"25%", "class"=>"cellInfo2", "colspan" =>"3" ) );
+                        if($saltoLn>=2)
+                        {
+                          $mHtml->CloseRow();
+                          $mHtml->Row();
+                          $saltoLn=0;
+                        }
+                      }
+                    $mHtml->CloseRow();
+                  $mHtml->CloseDiv();
                 $mHtml->CloseTable("tr");
               $mHtml->CloseDiv();
             $mHtml->CloseDiv();
           $mHtml->CloseDiv();
         # Fin accordion1    
         $mHtml->CloseDiv();
+        $mHtml->Table("tr");
+          $mHtml->Button( array("value"=>($_REQUEST['accion']!=2?"INSERTAR":"ACTUALIZAR"), "id"=>"Insertar","name"=>"Insertar", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all", "align"=>"center", "onclick"=>"ins_tab_noveda()") );
+          $mHtml->Button( array("value"=>"VOLVER", "id"=>"volver","name"=>"volver", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all", "align"=>"center", "onclick"=>"VolverNovedad()", "end"=>"1") );
+        $mHtml->CloseTable("tr");
       $mHtml->CloseRow("td");
         # Cierra formulario
       $mHtml->CloseForm();
@@ -183,9 +216,9 @@
 	
 	function getPerfiles()
 	{
-		$query = "SELECT a.cod_perfil, a.nom_perfil
+		$query = "SELECT a.cod_perfil, UPPER(a.nom_perfil) AS nom_perfil
 				  FROM " . BASE_DATOS . ".tab_genera_perfil  a
-				  ORDER BY 2";
+				  WHERE a.ind_estado = 1 ORDER BY 2";
 
     $consulta = new Consulta($query, $this->conexion);
     return $matriz = $consulta -> ret_matriz( "i" );
@@ -237,8 +270,8 @@
         $alarma = 'N';
 
       //valida el indicador de solicitud de tiempos por novedad
-      if($_REQUEST["indtiemp"])
-        $tiempo = $_REQUEST["indtiemp"];
+      if($_REQUEST["ind_tiempo"])
+        $tiempo = $_REQUEST["ind_tiempo"];
       else
         $tiempo = 0;
 
@@ -500,13 +533,14 @@
                             IF(a.ind_visibl = '1', 'SI', 'NO') AS ind_visibl,
                             if(a.ind_notsup = '1', 'SI', 'NO') AS ind_notsup, 
                             IF(a.ind_limpio = '1', 'SI', 'NO') AS ind_limpio,
-                            IF(b.nom_operad IS NULL, '---',b.nom_operad) AS nom_operad
+                            IF(b.nom_operad IS NULL, '---',b.nom_operad) AS nom_operad,
+                            a.ind_estado AS ind_estado
                   FROM ".BASE_DATOS.".tab_genera_noveda a 
             INNER JOIN ".BASE_DATOS.".tab_genera_etapax c 
                     ON a.cod_etapax = c.cod_etapax 
             LEFT JOIN ".CENTRAL.".tab_genera_opegps b 
                     ON a.cod_operad = b.cod_operad
-                  WHERE a.ind_estado=1";
+                    WHERE 1=1";
                                          
       $_SESSION["queryXLS"] = $mSql;
 
@@ -528,8 +562,9 @@
       $list->SetHeader("Notifica Supervisor", "field:ind_notsup" );
       $list->SetHeader("Limpio",              "field:ind_limpio" );
       $list->SetHeader("Operador GPS",        "field:nom_operad" );
-      $list->SetOption("Opciones","field:cod_noveda; onclickCopy:eliminarNove( this ); onclikEdit:editarNove( this );" );
+      $list->SetOption("Opciones","field:cod_noveda; onclikdisable:eliminarNove( this );onclikEnable:eliminarNove( this ); onclikEdit:editarNove( this );" );
       $list->SetHidden("cod_noveda", "cod_noveda");
+      $list->SetHidden("ind_estado", "ind_estado");
       $list->Display($this -> conexion);
 
       $_SESSION["DINAMIC_LIST"] = $list;
@@ -554,7 +589,9 @@
                         a.ind_alarma AS ind_alarma, a.ind_tiempo AS ind_tiempo, a.nov_especi AS nov_especi,   
                         a.ind_manala AS ind_manala, a.ind_fuepla AS ind_fuepla, a.ind_insveh AS ind_insveh,      
                         a.ind_agenci AS ind_agenci, a.cod_operad AS cod_operad, a.cod_homolo AS cod_homolo,   
-                        a.ind_visibl AS ind_visibl, a.ind_limpio AS ind_limpio 
+                        a.ind_visibl AS ind_visibl, a.ind_limpio AS ind_limpio, a.ind_notsup AS ind_notsup,
+                        a.ind_ealxxx AS ind_ealxxx
+
                  FROM ".BASE_DATOS.".tab_genera_noveda a 
                 WHERE a.cod_noveda =".$cod_noveda;
         $mConsult = new Consulta($mSql, $this -> conexion);
@@ -618,20 +655,21 @@
       try
       {
         $fec_actual = date("Y-m-d H:i:s");
+        $ind_estado = ($_REQUEST["ind_estado"]==0?1:0);
   
         $insercion = new Consulta( "START TRANSACTION", $this -> conexion );
         
         $query = "UPDATE ".BASE_DATOS.".tab_genera_noveda SET
-                    ind_estado=0
+                    ind_estado=".$ind_estado."
                  WHERE cod_noveda = '$_REQUEST[cod_noveda]'";
         $insercion = new Consulta($query, $this -> conexion,"R");
         if($insercion = new Consulta("COMMIT", $this -> conexion))
         {
-         $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST["cod_servic"]." \"target=\"centralFrame\">Eliminar Otra Novedad</a></b>";
+         $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST["cod_servic"]." \"target=\"centralFrame\">".($_REQUEST["ind_estado"]==0?"Activar":"Inactivar")." Otra Novedad</a></b>";
 
-         $mensaje =  "La Novedad Se Elimino con Exito".$mensaje_sat.$link_a;
+         $mensaje =  "La Novedad Se ".($_REQUEST["ind_estado"]==0?"activo":"inactivo")." con Exito".$mensaje_sat.$link_a;
          $mens = new mensajes();
-         $mens -> correcto("ELIMINAR NOVEDADES",$mensaje);
+         $mens -> correcto("NOVEDADES",$mensaje);
         }
       }catch(Exception $e)
       {
