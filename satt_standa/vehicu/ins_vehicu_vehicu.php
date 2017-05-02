@@ -216,7 +216,7 @@ class Ins_vehicu_vehicu {
                   $mHtml->Select2 ($datos->carrocerias,  array("name" => "vehicu[cod_carroc]", "validate" => "select", "id" => "cod_carrocID", "width" => "25%", "key"=> $datos->principal->cod_carroc,  "end" => true) );
                   
                   $mHtml->Label("N&uacute;mero de Motor:", "width:25%; *:1;"); 
-                  $mHtml->Input (array("name" => "vehicu[num_motorx]", "validate" => "dir",  "obl" => "1", "id" => "num_motorxID",  "minlength" => "7", "maxlength" => "20", "width" => "25%", "value"=> $datos->principal->num_motorx) );
+                  $mHtml->Input (array("name" => "vehicu[num_motorx]", "validate" => "dir",  "obl" => "1", "id" => "num_motorxID",  "minlength" => "6", "maxlength" => "20", "width" => "25%", "value"=> $datos->principal->num_motorx) );
                   $mHtml->Label("N&uacute;mero de Serie:", "width:25%; *:1;");
                   $mHtml->Input (array("name" => "vehicu[num_seriex]", "validate" => "alpha",  "obl" => "1", "id" => "num_seriexID",  "minlength" => "7", "maxlength" => "20", "width" => "25%", "value"=> $datos->principal->num_seriex, "end"=> true) );
                   
