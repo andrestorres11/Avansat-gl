@@ -2510,6 +2510,8 @@ class Despachos
                                     "nom_ciudes" => "Destino", 
                                     "num_desext" => "N&uacute;mero de Viaje", 
                                     "nom_rutasx" => "Ruta", 
+                                    "num_solici" => "No. Solicitud", 
+                                    "nom_produc" => "Mercancia", 
                                     "nom_conduc" => "Conductor", 
                                     "cod_conduc" => "C.C.", 
                                     "con_telmov" => "Celular", 
@@ -2517,7 +2519,6 @@ class Despachos
                                     "con_telef1" => "Telefono", 
                                     "tip_transp" => "Tipo Transportadora", 
                                     "num_placax" => "Placa", 
-                                    "nom_produc" => "Mercancia", 
                                     "tip_vehicu" => "Tipo Vehiculo", 
                                     "can_noveda" => "No. Novedades" 
                                     );
@@ -3508,7 +3509,8 @@ class Despachos
                         IF( a.gps_usuari IS NULL OR a.gps_usuari = '', ( IF(x.nom_usrgps IS NULL OR x.nom_usrgps = '', '$mObs[0]', x.nom_usrgps) ), a.gps_usuari ) AS gps_usuari, 
                         IF( a.gps_paswor IS NULL OR a.gps_paswor = '', ( IF(x.clv_usrgps IS NULL OR x.clv_usrgps = '', '$mObs[0]', x.clv_usrgps) ), a.gps_paswor ) AS gps_paswor, 
                         IF( a.fec_citcar IS NULL OR a.fec_citcar = '0000-00-00', '$mObs[1]', DATE_FORMAT( CONCAT( a.fec_citcar, ' ', a.hor_citcar ), '%H:%i %d-%m-%Y') ) AS fec_citcar, 
-                        IF( a.gps_operad IS NULL OR a.gps_operad = '', ( IF(y.nom_operad IS NULL OR y.nom_operad = '', '$mObs[0]', UPPER(y.nom_operad)) ), UPPER(a.gps_operad) ) AS nom_opegps 
+                        IF( a.gps_operad IS NULL OR a.gps_operad = '', ( IF(y.nom_operad IS NULL OR y.nom_operad = '', '$mObs[0]', UPPER(y.nom_operad)) ), UPPER(a.gps_operad) ) AS nom_opegps,
+                        k.num_solici 
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
