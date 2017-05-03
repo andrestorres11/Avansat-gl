@@ -5,7 +5,7 @@
  */
 
 $(document).ready(function(){
-	$("[name='url_ubicac']").each(function(i,o){
+	$("[name='url_ubicac1']").each(function(i,o){
 		url = $(this).val();
 		contenedor = $(this).parent().find("div").first(); 
 		$(contenedor).qrcode({
