@@ -220,7 +220,7 @@ class parameNoveda
                 {
                   $saltoln++;
                   $mHtml->CheckBox(array("name"=>$value["cod_noveda"], "id"=>$value["cod_noveda"], "class"=>"cellInfo2", "align"=>"right", "value"=>$value["cod_noveda"], "checked"=>($novpar[0]?"checked":null)));
-                  $mHtml->Label($value["nom_noveda"] , array("align"=>"left", "class"=>"cellInfo2" ) );
+                  $mHtml->Label($value["cod_noveda"]." - ".$value["nom_noveda"] , array("align"=>"left", "class"=>"cellInfo2" ) );
                   
                   $mHtml->Label(($novpar[0]?"Editar":" ") , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEditar", "onclick" => ($novpar[0]?"opciones(1, '". $value["cod_noveda"] ."')":"") ) );
                   $mHtml->Label(($novpar[0]?"Eliminar":" "), array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEliminar","onclick" =>  ($novpar[0]?"opciones(2, '". $value["cod_noveda"] ."')":"") ) );
@@ -238,7 +238,7 @@ class parameNoveda
                 {
                   $saltoln++;
                   $mHtml->CheckBox(array("name"=>$value["cod_noveda"], "id"=>$value["cod_noveda"], "class"=>"cellInfo2", "align"=>"right", "value"=>$value["cod_noveda"], "checked"=>($novpar[0]?"checked":null)));
-                  $mHtml->Label($value["nom_noveda"] , array("align"=>"left", "class"=>"cellInfo2" ) );
+                  $mHtml->Label($value["cod_noveda"]." - ".$value["nom_noveda"] , array("align"=>"left", "class"=>"cellInfo2" ) );
                   $mHtml->Label(($novpar[0]?"Editar":" ")  , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEditar","onclick" => ($novpar[0]?"opciones(1, '". $value["cod_noveda"] ."')":"") ) );
                   $mHtml->Label(($novpar[0]?"Eliminar":" ") , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEliminar","onclick" => ($novpar[0]?"opciones(2, '". $value["cod_noveda"] ."')":"") ) );
                   if($saltoln==2){

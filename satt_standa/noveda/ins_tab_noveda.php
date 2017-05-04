@@ -547,7 +547,7 @@
       if(!class_exists(DinamicList)) {
         include_once("../".DIR_APLICA_CENTRAL."/lib/general/dinamic_list.inc");                         
       }
-      $list = new DinamicList($this -> conexion, $mSql, "2" , "no", 'ASC');
+      $list = new DinamicList($this -> conexion, $mSql, "13" , "no", 'DESC');
       $list->SetClose('no');
       $list->SetCreate("Nueva Novedad", "onclick:getFormNoveda(1)");
       $list->SetHeader("Codigo",              "field:cod_noveda; width:1%;  ");
