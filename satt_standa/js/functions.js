@@ -2295,3 +2295,22 @@ function removeStyle(id) {
     }
     return viewportheight;
   }
+
+  /*! \fn: exportExcel
+ *  \brief: redireccion exportar dentro de la misma clase
+ *  \author: Edward Serrano
+ *  \date modified: 05/04/2017
+ *  \param: opcion: opcion de la clase donde se encuntra la funcion de exportar
+ *  \return No devuelve valores pero retorna un número con el valor de Y
+ */
+  function exportExcel(opcion) 
+  {
+    try {
+      var cod_servic = $("input[name=cod_servic]").val();
+      window.open("index.php?window=central&cod_servic="+cod_servic+"&menant="+cod_servic+"&"+opcion)
+      
+    } catch (e) {
+      console.log("Error Fuction pintar: " + e.message + "\nLine: " + e.lineNumber);
+      return false;
+    }
+  }

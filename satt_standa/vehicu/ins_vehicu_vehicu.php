@@ -25,6 +25,10 @@ class Ins_vehicu_vehicu {
               $this->imprimir();
             break;
 
+            case 3:
+              $this->ExportExcel();
+            break;
+
             default:
                 $this->filtro();
             break;
@@ -386,6 +390,56 @@ class Ins_vehicu_vehicu {
       # Muestra Html
       echo $mHtml->MakeHtml();
     }
+
+    /*! \fn: ExportExcel
+    * \brief: Exportar a excel consuta
+    * \author: Edward Serrano
+    * \date: 31/03/2017
+    * \date modified: dia/mes/año
+    * \param: paramatro
+    * \return valor que retorna
+    */
+    private function ExportExcel()
+    {
+      session_start();
+      $date=date("Y_m_d_h_s");
+      $consulta = new Consulta($_SESSION["queryXLS"],  $this->conexion);
+      $mData = $consulta -> ret_matriz( "i" );
+      header('Content-type: application/vnd.ms-excel');
+      header("Content-Disposition: attachment; filename=Vehiculos".$date.".xls");
+      header("Pragma: no-cache");
+      header("Expires: 0");
+      ob_clean();
+      echo "<table>";
+      echo "  <tr>";
+      echo "     <th>Placa</th>";
+      echo "     <th>Poseedor</th>";
+      echo "     <th>Telefono</th>";
+      echo "     <th>Celular</th>";
+      echo "     <th>Marca</th>";
+      echo "     <th>Linea</th>";
+      echo "     <th>Color</th>";
+      echo "     <th>Carroceria</th>";
+      echo "     <th>Modelo</th>";
+      echo "     <th>Estado</th>";
+      echo "  </tr>";
+      foreach ($mData as $key => $value) 
+      {
+        echo "  <tr>";
+        echo "     <td>".$value["num_placax"]."</td>";
+        echo "     <td>".$value["abr_tercer"]."</td>";
+        echo "     <td>".$value["num_telef1"]."</td>";
+        echo "     <td>".$value["num_telmov"]."</td>";
+        echo "     <td>".$value["nom_marcax"]."</td>";
+        echo "     <td>".$value["nom_lineax"]."</td>";
+        echo "     <td>".$value["nom_colorx"]."</td>";
+        echo "     <td>".$value["nom_carroc"]."</td>";
+        echo "     <td>".$value["ano_modelo"]."</td>";
+        echo "     <td>".$value["cod_estado"]."</td>";
+        echo "  </tr>";
+      }
+
+    } 
 
 //FIN FUNCION INSERT_SEDE
 }

@@ -2349,7 +2349,7 @@ class Despachos
   
             $value['obs_noveda'] = self::sanear_string( $value['obs_noveda'] );
             
-            if($value['cod_noveda'] == '4999' && $value['val_latitu'] != ''){
+            if($value['val_longit'] != '' && $value['val_latitu'] != ''){
                 $latLon[] = array(
                         "val_latitu" => $value['val_latitu'],
                         "val_longit" => $value['val_longit'],
@@ -8434,9 +8434,9 @@ class Despachos
                                     $_HTML .= '<td rowspan="2" align="center" style="width: 15%;">'.$_sisextx[0][nom_noveda].'</td>';
                                 
                                 if(is_null($ind_cumcar))
-                                    $_HTML .= '<td rowspan="2" align="center"><textarea name="obs_cumpli" id="obs_cumpli" rows="2" style="width: 100%; font-size: 11px; font-family: Arial,Helvetica,sans-serif;"></textarea></td>';
+                                    $_HTML .= '<td rowspan="2" align="center"><textarea name="obs_cumpli" id="obs_cumpli" onKeyUp="UpperText($(this) )" rows="2" style="width: 100%; font-size: 11px; font-family: Arial,Helvetica,sans-serif;"></textarea></td>';
                                 else
-                                    $_HTML .= '<td rowspan="2" align="center">'.$_sisextx[0][obs_cumcar].'</td>';
+                                    $_HTML .= '<td rowspan="2" align="center">'.strtoupper($_sisextx[0][obs_cumcar]).'</td>';
 
                                 if(is_null($ind_cumcar))
                                 {#Tiempo Extra
@@ -8576,7 +8576,7 @@ class Despachos
                         DATE_FORMAT(a.fec_cumdes, '%Y-%m-%d') AS fec_cumcar,
                         DATE_FORMAT(a.fec_cumdes, '%H:%i:%s') AS hor_cumcar,
                         b.nom_noveda,
-                        a.obs_cumdes,
+                        UPPER(a.obs_cumdes),
                         a.usr_cumdes
                    FROM ".BASE_DATOS.".tab_despac_destin a,
                         ".BASE_DATOS.".tab_genera_noveda b

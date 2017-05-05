@@ -80,8 +80,10 @@ class AjaxInsertarAutorizacion
 		$tercer = $tercer[0];
 
 		$aes = new Cypher();
+		$patron = array("(\¬)", "(\.)", "(\,)", "(\ )", "(ñ)", "(Ñ)", "(\°)", "(\º)", "(&)", "(Â)", "(\()", "(\))", "(\/)", "(\´)", "(\¤)", "(\Ã)", "(\‘)", "(\ƒ)", "(\â)", "(\€)", "(\˜)", "(\¥)", "(Ò)", "(Í)", "(\É)", "(\Ãƒâ€šÃ‚Â)", "(\·)", "(\ª)", "(\-)", "(\+)", "(\Ó)", "(\ü)", "(\Ü)", "(\é)", "(\;)", "(\¡)", "(\!)", "(\`)", "(\<)", "(\>)", "(\_)", "(\#)", "(\ö)", "(\À)", "(\¿)", "(\Ã±)", "(\±)", "(\*)", "(Ú)", "(\%)", "(\|)", "(\ò)", "(\Ì)", "(\:)", "(\Á)", "(\×)", "(\@)", "(\ )", "(\Ù)", "(\á)", "(\–)", "(\")", "(\È)", "(\])", "(\')", "(\í)", "(\Ç)","(\Nš)","(\‚)", "(\ó)", "(\ )", "(\ )", "(\ï½)", "(\?)" );
+  		$reemplazo = array("", "", "", "", "n", "N", "", "", "Y", "", "", "", "", "", "", "", "", "", "", "", "", "", "O", "I", "E", "", "", "a", "", "", "O","U","U", "e", "", "", "", "", "", "", "", "", "", "A", "", "", "", "", "", "", "", "", "I", "", "A", "", "", "", "U", "a", "", "", "E", "", "", "i", "", "N","", "", "", "", "" , "", ""  ); 
 
-		$tercer['cod_hashxx'] = $aes -> cypher($tercer['cod_tercer'], $tercer['fec_creaci']);
+		$tercer['cod_hashxx'] =preg_replace( $patron, $reemplazo, $aes -> cypher($tercer['cod_tercer'], $tercer['fec_creaci']) ) ;
   
 		echo json_encode($tercer);
 	}
@@ -148,18 +150,19 @@ class AjaxInsertarAutorizacion
 			$respuesta = $cliente -> registrar($data); 
  
 			if($respuesta == "ok"){
-
-	            $mCabece = 'MIME-Version: 1.0' . "\r\n";
-                $mCabece .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
-                $mCabece .= 'From: Aplicacion SAT ' . "\r\n";
-
+ 
 				$tmpl_file = "planti/planti_usuari_appsat.html"; 
                 $thefile = implode("", file($tmpl_file));
                 $thefile = addslashes($thefile);
                 $thefile = "\$r_file=\"" . $thefile . "\";";
                 eval($thefile);
                 $mHtmlxx = $r_file;
-                mail($_REQUEST['mail'], "C�digo de activaci�n aplicaci�n AVANSAT ", $mHtmlxx, $mCabece);
+    
+				$mCabece  = 'MIME-Version: 1.0' . "\r\n";
+				$mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n"; 
+				$mCabece .= 'From: Movil <movil@intrared.net>' . "\r\n";
+
+				mail($_REQUEST['mail'], "Codigo de activacion aplicacion AVANSAT ", $mHtmlxx, $mCabece);
   				echo "ok";
 			}
 			else{

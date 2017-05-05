@@ -448,7 +448,8 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                   z.ind_ensiti, z.fec_planea, z.ind_fuepla, z.tiem_duraci, 
                   z.nom_noveda, z.nom_contro, z.ind_limpio, z.ind_manala, 
                   z.fec_progra, z.ind_virtua, z.cod_rutasx, 
-                  IF(z.nom_sitiox = '', z.nom_contro, z.nom_sitiox) AS nom_sitiox
+                  IF(z.nom_sitiox = '', z.nom_contro, z.nom_sitiox) AS nom_sitiox, z.obs_noveda
+
             FROM (
                          SELECT y.cod_contro, y.ind_urbano, y.ind_virtua, 
                                 y.nom_contro, y.cod_colorx, y.fec_progra, 
@@ -654,8 +655,12 @@ function getTransTipser( &$mConexion, $mSqlWhere = NULL, $mNomCampo = NULL )
                               INNER JOIN ".BASE_DATOS.".tab_genera_tipser d 
                                       ON c.cod_tipser = d.cod_tipser 
                               INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e 
-                                      ON c.cod_transp = e.cod_tercer 
-                                ORDER BY c.cod_transp, c.num_consec DESC
+                                          ON c.cod_transp = e.cod_tercer 
+                                      INNER JOIN (    SELECT cod_transp , MAX(num_consec) AS num_consec 
+                                                FROM ".BASE_DATOS.".tab_transp_tipser  
+                                              GROUP BY cod_transp 
+                                             ) f ON c.cod_transp = f.cod_transp AND c.num_consec = f.num_consec
+                                        GROUP BY c.cod_transp
                            ) b
                       GROUP BY b.cod_transp 
                   ) a 

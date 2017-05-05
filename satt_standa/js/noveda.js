@@ -48,7 +48,17 @@ function aceptar_ins() {
 		var fecnovArray = fecnov.value.split("-");
 		var hornovArray = hornov.value.split(":");
 		var fecSistema = new Date(fecnovArray[2], Number(fecnovArray[1]) - 1, fecnovArray[0], hornovArray[0], hornovArray[1], hornovArray[2]);
-
+		//precarge
+		if(document.getElementById('cod_estprc'))
+		{
+			var cod_estprc = document.getElementById('cod_estprc');
+			if( formulario.cod_estprc.value == "" || formulario.cod_estprc.value == "0" )
+			{
+				alert("EL estado es Requerido");
+				validacion = false;
+				return cod_estprc.focus();
+			}
+		}
 		if (sit.value == '0') {
 			alert("EL Antes/Sitio es Requerido");
 			validacion = false;

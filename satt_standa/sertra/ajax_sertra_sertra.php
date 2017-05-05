@@ -124,12 +124,13 @@ class ajax_certra_certra {
             //consulto los datos de la ultima configuracion de la empresa
             $sql = "SELECT 
             cod_tipser, tie_contro, ind_estado, tie_conurb, ind_llegad, cod_server, 
-            ind_notage, tip_factur, tie_carurb, tie_carnac, tie_carimp, tie_carexp,
+            ind_notage, tip_factur, tie_prcurb, tie_prcnac, tie_prcimp, tie_prcexp,
+            tie_prctr1, tie_prctr2, tie_carurb, tie_carnac, tie_carimp, tie_carexp,
             tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ind_excala, 
             ind_calcon, ind_segcar, ind_segtra, ind_segdes, val_regist, tie_cartr1, 
             tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, ind_biomet, 
             can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, can_llatr2, 
-            fec_iniser, hor_iniser, fec_finser, hor_finser, nom_aplica, 
+            fec_iniser, hor_iniser, fec_finser, hor_finser, nom_aplica, ind_segprc,
             ind_planru, tie_traexp, tie_traimp, tie_tratr1, tie_tratr2, cod_grupox, 
             cod_operac, cod_priori, ind_conper, hor_pe1urb, hor_pe2urb, hor_pe1nac, 
             hor_pe2nac, hor_pe1imp, hor_pe2imp, hor_pe1exp, hor_pe2exp, hor_pe1tr1, 
@@ -435,6 +436,28 @@ class ajax_certra_certra {
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Etapas y tipo de Seguimiento Contratado</b></h3>
             <div id="contenido_etap">
                 <div class="StyleDIV" style="min-height: 485px !important;">
+                    <div class="col-md-12 CellHead centrado">
+                        PreCargue 
+                        <?php
+                        if ($datos->principal['ind_segprc'] == 1) {
+                            $ind_segprc = "checked='true'";
+                        }
+                        ?>
+                        <input type="checkbox" <?= $ind_segprc ?> name="ind_segprc" id="ind_segprcID" value="1" onclick="enableDisable(6)">
+                    </div>
+                    <div class="col-md-12 contenido">&nbsp;</div>
+                    <div class="col-md-2 CellHead">Nacional</div>
+                    <div class="col-md-2 CellHead">Urbano</div>
+                    <div class="col-md-2 CellHead">Exportaci&oacute;n</div>
+                    <div class="col-md-2 CellHead">Importaci&oacute;n</div>
+                    <div class="col-md-2 CellHead">Tramo D1</div>
+                    <div class="col-md-2 CellHead">Tramo D2</div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_prcnac" id="tie_prcnacID" value="<?= $datos->principal['tie_prcnac'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_prcurb" id="tie_prcurbID" value="<?= $datos->principal['tie_prcurb'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_prcexp" id="tie_prcexpID" value="<?= $datos->principal['tie_prcexp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_prcimp" id="tie_prcimpID" value="<?= $datos->principal['tie_prcimp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_prctr1" id="tie_prctr1ID" value="<?= $datos->principal['tie_prctr1'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tie_prctr2" id="tie_prctr2ID" value="<?= $datos->principal['tie_prctr2'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-12 CellHead centrado">
                         Cargue 
                         <?php
@@ -1211,6 +1234,7 @@ class ajax_certra_certra {
         $datos->ind_llegad = $datos->ind_llegad == '1' ? '1' : '0';
         $datos->ind_notage = $datos->ind_notage == '1' ? '1' : '0';
         $datos->ind_calcon = $datos->ind_calcon == '1' ? '1' : '0';
+        $datos->ind_segprc = $datos->ind_segprc == '1' ? '1' : '0';
         $datos->ind_segcar = $datos->ind_segcar == '1' ? '1' : '0';
         $datos->ind_segdes = $datos->ind_segdes == '1' ? '1' : '0';
         $datos->ind_segtra = $datos->ind_segtra == '1' ? '1' : '0';
@@ -1234,7 +1258,8 @@ class ajax_certra_certra {
             cod_operac, cod_server, cod_priori, cod_transp, usr_creaci, fec_creaci, 
             hor_pe1nac, hor_pe2nac, hor_pe1urb, hor_pe2urb, hor_pe1exp, hor_pe2exp, 
             hor_pe1imp, hor_pe2imp, hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, 
-            ind_conper, ind_solpol, cod_asegur, num_poliza, fec_valreg
+            ind_conper, ind_solpol, cod_asegur, num_poliza, fec_valreg, ind_segprc,
+            tie_prcurb, tie_prcnac, tie_prcimp, tie_prcexp, tie_prctr1, tie_prctr2
         ) VALUES  ( 
         '$datos->num_consec', '$datos->cod_tipser', '$datos->tie_contro', '$datos->ind_estado', '$datos->tie_conurb', '$datos->ind_llegad', 
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
@@ -1247,7 +1272,9 @@ class ajax_certra_certra {
         '$datos->cod_operac', '$datos->cod_server', '$datos->cod_priori', '$datos->cod_transp', '$datos->usr_creaci', NOW(), 
         '$datos->hor_pe1nac', '$datos->hor_pe2nac', '$datos->hor_pe1urb', '$datos->hor_pe2urb', '$datos->hor_pe1exp', '$datos->hor_pe2exp', 
         '$datos->hor_pe1imp', '$datos->hor_pe2imp', '$datos->hor_pe1tr1', '$datos->hor_pe2tr1', '$datos->hor_pe1tr2', '$datos->hor_pe2tr2', 
-        '$datos->ind_conper', '$datos->ind_solpol', '$datos->cod_asegur', '$datos->num_poliza', '$datos->fec_valreg')";
+        '$datos->ind_conper', '$datos->ind_solpol', '$datos->cod_asegur', '$datos->num_poliza', '$datos->fec_valreg', '$datos->ind_segprc',
+        '$datos->tie_prcurb', '$datos->tie_prcnac', '$datos->tie_prcimp', '$datos->tie_prcexp', '$datos->tie_prctr1', '$datos->tie_prctr2'
+        )";
 
         if ($datos->eal != array()) {
             $consulta = new Consulta($query, self::$cConexion, "BR");

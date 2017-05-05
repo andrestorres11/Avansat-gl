@@ -652,6 +652,14 @@ function enableDisable(indicador) {
                 activar(false, campos);
             }
             break;
+        case 6:
+            var campos = ["tie_prcnacID", "tie_prcurbID", "tie_prcexpID", "tie_prcimpID", "tie_prctr1ID", "tie_prctr2ID"];
+            if ($("#ind_segprcID").attr('checked')) {
+                activar(true, campos);
+            } else {
+                activar(false, campos);
+            }
+            break;
     }
 }
 /* ! \fn: activar
