@@ -947,7 +947,7 @@ class Proc_salida {
       }
       $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otra Salida</a></b>";
 
-      $mensaje = "El Vehiculo <b>".$_REQUEST[placa]."</b> Asignado al Despacho # <b>".$_REQUEST[despac]."</b> Salio Exitosamente.".$mensaje_sat.$mensaje_gps;
+      $mensaje = "El Vehiculo <b>".$_REQUEST[placa]."</b> Asignado al Despacho # <b>".$_REQUEST[despac]."</b> Salio Exitosamente.".$mensaje_sat.$mensaje_gps.$mensaje_jlt;
       $mens    = new mensajes();
       $mens->correcto("SALIDA DE DESPACHOS", $mensaje);
     }
