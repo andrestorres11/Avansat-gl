@@ -431,7 +431,7 @@
     function getDataDespac($mNumDespac = NULL)
     {      
         $mQuery = "SELECT a.cod_manifi AS num_manifi, a.val_flecon AS val_declar, 
-                         IF(a.cod_tipdes = '0' , '1', IF( a.cod_tipdes = '1', '2', '1' )  ) AS cod_despac,
+                         a.cod_tipdes AS cod_despac,
                          date(a.fec_salida) AS fec_salida, 
                          date(b.fec_llegpl) AS fec_entreg, 
                          a.cod_ciuori, a.cod_ciudes 
