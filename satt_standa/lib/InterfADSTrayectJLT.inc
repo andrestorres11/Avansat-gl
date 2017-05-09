@@ -144,6 +144,7 @@
           $mDespac = $this -> getDataDespac( $mNumDespac );
           $mClient = $this -> getDataClient( $mNumDespac );
           $mRemesa = $this -> getDataRemesa( $mNumDespac );
+          $mNumManifi = $mDespac[num_manifi];
           $mBenefi = NULL; #$this -> getDataBenefi( $mNumDespac );  # Quien en el beneficiario ?
           $mColorx = NULL; #$this -> getDataColorx( $mNumDespac );
           $mLineax = NULL; #$this -> getDataLineax( $mNumDespac );
@@ -194,7 +195,7 @@
 
 
           //Procesa el resultado del WS
-          if( "1000" != $mRespon["cod_respons"] )
+          if( "1000" != $mRespon->cod_respons )
           {
             $this -> setDataErrorWsdl( $mNumDespac, $mNumManifi, $aParametros, $mRespon, NULL ); 
           }
@@ -202,9 +203,9 @@
           {
             $this -> setDataOkWsdl( $mNumDespac, $mNumManifi, $aParametros, $mRespon );
           }
-          $mReturn = array("cod_respon"=>$mRespon["cod_respons"], 
-                            "msg_respon"=>$mRespon["msg_respons"],
-                            "num_certif"=>$mRespon["dat_polizax"]["num_certif"]
+          $mReturn = array("cod_respon"=>$mRespon->cod_respons, 
+                            "msg_respon"=>$mRespon->msg_respons,
+                            "num_certif"=>$mRespon->dat_polizax->num_certif
                             );
       }
       catch(soapFault $e)
@@ -230,7 +231,7 @@
         $mQuery = ' INSERT INTO '.BASE_DATOS.'.tab_errorx_poltra 
                     (num_despac, cod_respon, msg_respon, dat_solici, usr_creaci, fec_creaci) 
                     VALUES 
-                    ( "'.$mNumDespac.'", "'.$mRespon["cod_respons"].'", "'.$mRespon["msg_respons"].'", "'.var_export($aParametros, true).'",
+                    ( "'.$mNumDespac.'", "'.$mRespon->cod_respons.'", "'.$mRespon->msg_respons.'", "'.var_export($aParametros, true).'",
                       "'.$_SESSION["datos_usuario"]["cod_usuari"].'", NOW() )';
       }
       else
@@ -257,8 +258,8 @@
       $mQuery = ' INSERT INTO '.BASE_DATOS.'.tab_manifi_poltra 
                   (num_despac, cod_manifi, num_poliza, num_certif, usr_creaci, fec_creaci) 
                   VALUES 
-                  ( "'.$mNumDespac.'", "'.$mNumManifi.'", "'.$mRespon["dat_polizax"]["num_poliza"].'", 
-                    "'.$mRespon["dat_polizax"]["num_certif"].'", "'.$_SESSION["datos_usuario"]["cod_usuari"].'", NOW() )';
+                  ( "'.$mNumDespac.'", "'.$mNumManifi.'", "'.$mRespon->dat_polizax->num_poliza.'", 
+                    "'.$mRespon->dat_polizax->num_certif.'", "'.$_SESSION["datos_usuario"]["cod_usuari"].'", NOW() )';
       $consulta = new Consulta( $mQuery, $this -> cConexion );
     }
 
