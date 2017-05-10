@@ -147,6 +147,7 @@ function getDataFormDespacFinali() {
         var cod_client = [];
         var cod_transp = [];
         var banderaTransp = false;
+        var tip_despac =[];
 
         if( $("#nom_ciuoriID").val() == '' ){
             $("#cod_ciuoriID").val('');
@@ -203,6 +204,14 @@ function getDataFormDespacFinali() {
             }
         });
 
+        if($('#Des_finaliID').is(':checked'))
+        {
+            result += "&Des_finaliID="+ $('#Des_finaliID').val();
+        }
+        if($('#Des_anuladID').is(':checked'))
+        {
+            result += "&Des_anuladID="+ $('#Des_anuladID').val();
+        }
         return result;
     } catch (e) {
         console.log("Error Function getDataFormDespacFinali: " + e.message + "\nLine: " + e.lineNumber);
@@ -222,6 +231,7 @@ function validaFormDespacFinali(data) {
     try {
         var val = validaciones();
         var va2 = true;
+        var va3 = true;
         var msj;
         var fec_finali = $("#fec_finaliID").val();
         var fec_inicia = $("#fec_iniciaID").val();
@@ -240,7 +250,30 @@ function validaFormDespacFinali(data) {
             msj = 'Seleccione un rango de fechas valido.';
             va2 = false;
         }
-
+        if($('#Des_finaliID').is(':checked'))
+        {
+            Des_finali="1";
+        }else{
+            Des_finali="0";
+        }
+        if($('#Des_anuladID').is(':checked'))
+        {
+            Des_anulad="1";
+        }else{
+            Des_anulad="0";
+        }
+        if((Des_finali=="0" && Des_anulad=="0"))
+        {
+            msj1 = 'Seleccione algun tipo de estado de despacho.';
+            va3 = false;
+        }
+        if(!va3){
+            setTimeout(function() {
+                inc_alerta('Des_finaliID', msj1);
+                inc_alerta('Des_anuladID', msj1);
+            }, 530);
+            return false;
+        }
         if(!va2){
             setTimeout(function() {
                 inc_alerta('fec_iniciaID', msj);
