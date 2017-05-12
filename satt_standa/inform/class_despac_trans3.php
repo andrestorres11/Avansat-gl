@@ -108,6 +108,18 @@ class Despac
 					self::getLisCiudadOrigne();
 					break;
 
+				case "getFormValidaProNove":
+					self::getFormValidaProNove();
+					break;
+
+				case "getNovedad":
+					self::getNovedad();
+					break;
+					
+				case "formNovedadGestion":
+					self::formNovedadGestion();
+					break;
+
 				default:
 					header('Location: index.php?window=central&cod_servic=1366&menant=1366');
 					break;
@@ -1848,7 +1860,7 @@ class Despac
 	 */
 	private function detailBand()
 	{
-		$mTittle = array('NO.', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 
 		$mTittle2 = array('NO.', 'DESPACHO', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
@@ -2067,11 +2079,17 @@ class Despac
 		{
 			foreach ($mData as $row)
 			{
+				$gif = "";
+				if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']==1)
+				{
+					$gif = "<img src='../".CENTRAL."/imagenes/Alert.gif' width='15px' height='15px'>";
+				}
 				$mTxt = substr($row[color], 3);
 				$mColor = $mTxt > 2 ? '#FFFFFF;' : '#000000;';
 				$mLink = '<a href="index.php?cod_servic=3302&window=central&despac='.$row[num_despac].'&tie_ultnov='.$row[tiempo].'&opcion=1" style="color:'.$mColor.'">'.$row[num_despac].'</a>';
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$n.'</th>';
+				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$gif.'</th>';
 				$mHtml .= 	'<td class="classCell bt '.$row[color].'" nowrap="" align="left">'.$mLink.'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[tiempo].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ind_defini].'</td>';
@@ -3253,7 +3271,288 @@ class Despac
 		return $mResult;
 	}
 
+	/*! \fn: getFormValidaProNove
+	 *  \brief: Genera formulario de validacion de novedades NEM
+	 *  \author: Edward Serrano
+	 *	\date: 11/05/2017
+	 *	\date modified: dia/mes/año
+	 *  \return: 
+	 */
+	public function getFormValidaProNove()
+	{
+		try
+		{
+			#array de titulos tabla novedades a gestionar
+			#'nombre'=>'tamano o dimemcion en width'												
+			$mTitulosNG = array('Seleccione' =>'10%' ,
+								'#' =>'10%' ,
+								'Ubicacion' =>'20%' ,
+								'Novedad' =>'40%' ,
+								'Fecha y hora novedad' =>'20%' ,
+			 );
+			$mHtml = new Formlib(2);
+			$mHtml->Hidden(array( "name" => "cod_novedaSol", "id"=>"cod_novedaSolID", "value"=>""));
+			$mHtml->OpenDiv("id:solNovedadesNem");
+				$mHtml->OpenDiv("id:getNoveda");
+					$mHtml->Table("tr",array("class"=>"displayDIV2"));
+						$mHtml->Label( "SELECCIONE LA NOVEDAD A REGISTRAR", array("align"=>"center", "width"=>"100%", "class"=>"CellHead", "colspan"=>"2") );
+						$mHtml->CloseRow();		
+						$mHtml->Row();
+							$mHtml->Label( "* NOVEDAD :",  array("align"=>"right", "class"=>"celda_titulo", "width" => "50%") );
+		                	$mHtml->Input(array("value"=>"","name" => "sol_mNoveda", "id" => "sol_mNovedaID", "width" => "50%", "onkeyup"=>"getNovedad()"));
+						$mHtml->CloseRow();
+						$mHtml->Row();
+							$mHtml->Button( array("value"=>"Continuar", "id"=>"btnContNoveID","name"=>"btnContNove", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2","onclick"=>"formNovedadGestion()") );
+						$mHtml->CloseRow();
+					$mHtml->CloseTable('tr');
+				$mHtml->CloseDiv();
+				$mHtml->OpenDiv("id:NovedaGestion");
+					$mHtml->Table("tr",array("class"=>"displayDIV2"));
+						$mHtml->Label( "NOVEDADES A GESTIONAR", array("align"=>"center", "width"=>"100%", "class"=>"CellHead", "colspan"=>(sizeof($mTitulosNG))) );
+						$mHtml->CloseRow();		
+						$mHtml->Row();
+							#recorro los titulos a pintar
+							foreach ($mTitulosNG as $kTituloNG => $vTituloNG) 
+							{
+								$mHtml->Label( $kTituloNG,  array("align"=>"right", "class"=>"celda_titulo", "width" => $vTituloNG) );
+							}
+						$mHtml->CloseRow();
+					$mHtml->CloseTable('tr');
+				$mHtml->CloseDiv();
+				$mHtml->OpenDiv("id:NovedaProtocolo");
+				$mHtml->CloseDiv();
+			$mHtml->CloseDiv();
+			echo $mHtml->MakeHtml();
+		}
+		catch(Excpetion $e)
+		{
+			echo "Error en la funcion getFormValidaProNove: ", $e->getMessage(), "\n";
+		}
+	}
+	/*! \fn: getNovedad
+	* \brief: Trae las novedades actuales
+	* \author: Edward Serrano
+	* \date: 17/04/2017
+	* \date modified: dia/mes/año
+	* \param: paramatro
+	* \return valor que retorna
+	*/
+	public function getNovedad()
+	{
+		try
+		{
+			#Busco el tipo de destino y la transporadora asociada
+			$mSql = "SELECT a.cod_tipdes, b.cod_transp
+	                   FROM ".BASE_DATOS.".tab_despac_despac a 
+	             INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+							 ON a.num_despac = b.num_despac
+	                  WHERE a.num_despac = '".$_REQUEST["num_despac"]."' ";
+	        $mConsult = new Consulta($mSql, self::$cConexion);
+	        $mData = $mConsult->ret_matrix('a');
+	        #Busco el servicio asociado a la tranportadora
+	        $query = "SELECT tie_conurb, tie_contro, cod_tipser " .
+                "FROM " . BASE_DATOS . ".tab_transp_tipser " .
+                "WHERE cod_transp='".$mData[0]["cod_transp"]."' AND 
+			                num_consec= (SELECT MAX(num_consec) FROM " . BASE_DATOS . ".tab_transp_tipser
+			                						 WHERE cod_transp='" . $mData[0]["cod_transp"] . "') ";
+	        $consulta = new Consulta($query, self::$cConexion);
+	        $transpor = $consulta->ret_matriz();
+	        #Busco las novedades existentes que no esten inactivas
+			$query = " SELECT a.cod_noveda, UPPER( CONCAT( CONVERT( a.nom_noveda USING utf8), 
+						  '', if (a.nov_especi = '1', '(NE)', '' ), 
+						  if( a.ind_alarma = 'S', '(GA)', '' ), 
+						  if( a.ind_manala = '1', '(MA)', '' ),
+						  if( a.ind_tiempo = '1', '(ST)', '' ) )) AS label , 
+						  a.ind_tiempo
+				   FROM " . BASE_DATOS . ".tab_genera_noveda a
+				   INNER JOIN ".BASE_DATOS.".tab_perfil_noveda b
+				   ON a.cod_noveda = b.cod_noveda
+				   WHERE 1 = 1 AND a.ind_visibl = '1' ";
+				   
+	        $query .=" AND a.cod_noveda NOT IN (6,69) AND b.cod_perfil=".$_SESSION["datos_usuario"]["cod_perfil"];
+	        if ($_SESSION["datos_usuario"]["cod_perfil"] != COD_PERFIL_SUPERUSR && $_SESSION["datos_usuario"]["cod_perfil"] != COD_PERFIL_ADMINIST && $_SESSION["datos_usuario"]["cod_perfil"] != COD_PERFIL_SUPEFARO)
+			{
+				if( $_SESSION["datos_usuario"]["cod_perfil"]  != '689' && $_SESSION["datos_usuario"]["cod_perfil"]  != '77' )
+		            $query .=" AND a.cod_noveda !='" . CONS_NOVEDA_ACAEMP . "' ";
+			}
+		    if ($transpor[0][2] == '1')
+		    {
+		        $query .=" AND a.cod_noveda !='" . CONS_NOVEDA_ACAFAR . "' ";
+		    }
+		        
+		    $query .=" AND a.nom_noveda LIKE '%".$_REQUEST['term']."%' OR a.cod_noveda LIKE '%".$_REQUEST['term']."%' GROUP BY (a.cod_noveda) ORDER BY 2 ASC";
+		    $consulta = new Consulta($query, self::$cConexion);
+		    $mResult = $consulta->ret_matriz();
 
+		    if( $_REQUEST['term'] )
+		    {
+		        $mNovedades = array();
+		    	for($i=0; $i<sizeof( $mResult ); $i++){
+		            $mTxt = $mResult[$i]['cod_noveda']." - ".utf8_decode($mResult[$i]['label']);
+		            $mNovedades[] = array('value' => utf8_decode($mResult[$i]['label']), 'label' => $mTxt, 'id' => $mResult[$i]['cod_noveda'] );
+		        }
+		        echo json_encode( $mNovedades );
+		    }
+		    else
+		    {
+		        return $mResult;
+		    }
+	        
+	        
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getInfNovedad
+	* \brief: Trae las  informacion basica de las novedade
+	* \author: Edward Serrano
+	* \date: 12/05/2017
+	* \date modified: dia/mes/año
+	* \param: paramatro
+	* \return valor que retorna
+	*/
+	private function getInfNovedad($cod_noveda)
+	{
+		try
+		{
+			$query = " SELECT a.cod_noveda, UPPER( CONCAT( CONVERT( a.nom_noveda USING utf8), 
+						  '', if (a.nov_especi = '1', 'NE/', '' ), 
+						  if( a.ind_alarma = 'S', 'GA/', '' ), 
+						  if( a.ind_manala = '1', 'MA/', '' ),
+						  if( a.ind_tiempo = '1', 'ST/', '' ) )) AS label , 
+						  a.ind_tiempo
+				   FROM " . BASE_DATOS . ".tab_genera_noveda a
+				   INNER JOIN ".BASE_DATOS.".tab_perfil_noveda b
+				   ON a.cod_noveda = b.cod_noveda
+				   WHERE 1 = 1 AND a.ind_visibl = '1' AND a.cod_noveda=".$cod_noveda." GROUP BY (a.cod_noveda) ORDER BY 2 ASC";
+
+			$consulta = new Consulta($query, self::$cConexion);
+		    return $mResult = $consulta->ret_matriz();
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getProtoNovedad
+	* \brief: consulta si la noveda tiene protocolo
+	* \author: Edward Serrano
+	* \date: 12/05/2017
+	* \date modified: dia/mes/año
+	* \param: paramatro
+	* \return valor que retorna
+	*/
+	private function getProtoNovedad($cod_noveda)
+	{
+		try
+		{
+			$query = " SELECT a.des_protoc, a.tex_protoc
+				   FROM " . BASE_DATOS . ".tab_genera_protoc a
+				   INNER JOIN ".BASE_DATOS.".tab_noveda_protoc b
+				   ON a.cod_protoc = b.cod_protoc
+				   WHERE 1 = 1 AND a.ind_activo = '1' AND b.cod_noveda=".$cod_noveda;//." AND a.cod_respon=".self::getRepon()[0]['cod_respon'];
+
+			$consulta = new Consulta($query, self::$cConexion);
+		    return $mResult = $consulta->ret_matriz();
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+	
+	/*! \fn: formNovedadGestion
+	* \brief: pinta complemento del formulario para la gestio de la nocedad
+	* \author: Edward Serrano
+	* \date: 12/05/2017
+	* \date modified: dia/mes/año
+	* \param: paramatro
+	* \return valor que retorna
+	*/
+	private function formNovedadGestion()
+	{
+		try
+		{
+			$mHtml = new Formlib(2);
+			#protocolos de las novedades
+			$mProtocolosNove = self::getProtoNovedad($_REQUEST['cod_noveda']); 
+			$mHtml->OpenDiv("id:formGestionNovedad");
+				$mHtml->Table("tr",array("class"=>"displayDIV2"));
+					$mHtml->Label( "PROCOLO ASIFNADO A LA NOVEDAD", array("align"=>"center", "width"=>"100%", "class"=>"CellHead", "colspan"=>"2") );
+					$mHtml->CloseRow();		
+					$mHtml->Row();
+						$mHtml->Label( self::getInfNovedad($_REQUEST['cod_noveda'])[0]['label'].($mProtocolosNove[0]['des_protoc']?" - ".$mProtocolosNove[0]['des_protoc']:""),  array("align"=>"center", "class"=>"celda_titulo", "width" => "50%", "colspan"=>"2") );
+					$mHtml->CloseRow();
+					$mHtml->Row();
+						$mHtml->Label( "Accion",  array("align"=>"center", "class"=>"celda_titulo", "width" => "50%", "colspan"=>"2") );
+		               	//$mHtml->Input(array("value"=>"","name" => "sol_mNoveda", "id" => "sol_mNovedaID", "width" => "50%", "onkeyup"=>"getNovedad()"));
+					$mHtml->CloseRow();
+					$mHtml->Row();
+		               	if($mProtocolosNove[0]['des_protoc'])
+		               	{
+		               		$mHtml->Label( "Aca va el resto del formulario para protocolo",  array("align"=>"right", "class"=>"celda_titulo", "width" => "50%") );
+		               	}
+		               	else
+		               	{
+		               		$mHtml->Label( "* Obsevacion de la novedad :",  array("align"=>"right", "class"=>"celda_titulo", "width" => "50%") );
+		               		$mHtml->TextArea("", array("name" => "obs_noveda", "id" => "obs_novedaID", "width" => "100%"));
+		               	}
+					$mHtml->CloseRow();
+				$mHtml->CloseTable('tr');
+			$mHtml->CloseDiv();
+			echo $mHtml->MakeHtml();
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getRepon
+	 *  \brief: Busca el codigo de responsable asigando
+	 *  \author: Edward Serrano
+	 *  \date:  12/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	private function getRepon()
+	{
+		$mSql = "SELECT a.cod_respon 
+				   FROM ".BASE_DATOS.".tab_genera_respon a 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
+					 ON a.cod_respon = b.cod_respon 
+				  WHERE b.cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."' ";
+		$mConsult = new Consulta($mSql, self::$cConexion);
+		return $mData = $mConsult->ret_matrix('a');
+	}
+
+	/*! \fn: getNovedadNem
+	 *  \brief: Busca la novedad registrada en la tabla tab_despac_novnem
+	 *  \author: Edward Serrano
+	 *  \date:  12/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	private function getNovedadNem($num_despac)
+	{
+		$mSql = "SELECT 
+						a.num_consec,	a.num_despac,	a.cod_noveda,
+						a.ind_soluci,	a.fec_soluci,	a.usr_soluci,
+						a.nov_soluci,	a.obs_soluci,	a.ind_realiz,
+						a.usr_creaci,	a.fec_creaci 
+					FROM ".BASE_DATOS.".tab_despac_novnem a 
+				  WHERE a.num_despac = '".$num_despac."' ";
+		$mConsult = new Consulta($mSql, self::$cConexion);
+		return $mData = $mConsult->ret_matrix('a');
+	}
 }
 
 if($_REQUEST['Ajax'] === 'on' )

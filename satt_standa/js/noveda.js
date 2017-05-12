@@ -1271,3 +1271,110 @@ function LoadPopupJQ3(opcion, titulo, alto, ancho, redimen, dragg, lockBack) {
 		return false;
 	}
 }
+
+/*! \fn: ValidarProtoNoveda
+* \brief: Validad si la novedad tiene protocolo
+* \author: Edward Serrano
+* \date: 10/05/2017
+* \date modified: dia/mes/año
+* \param: novedad
+* \return 
+*/
+function ValidarProtoNoveda(cod_noveda)
+{
+	try
+	{
+		LoadPopupJQ3('open', 'Solucion Novedades NEM ', 'auto', 'auto', false, false, true);
+		var pop = $("#popID");
+		var Standa = $("#dir_aplicaID").val();
+        var attr_ = "Ajax=on&Option=getFormValidaProNove&cod_noveda="+cod_noveda;
+        var attr = "&standa="+Standa;
+        $.ajax({
+            type: "POST",
+            url: "../"+ Standa +"/inform/class_despac_trans3.php",
+            data: attr_ + attr,
+            async: false,
+            success: function( datos )
+            {
+               pop.append(datos);
+            }
+        });
+	}
+	catch(e)
+	{
+		console.log("erro en la funcion ValidarProtoNoveda:" + e.message + "\nLine: " + e.lineNumber );
+	}
+}
+
+/*! \fn: getNovedad
+ *  \brief: array de novedades existenes
+ *  \author: Edward Serrano
+ *  \date: 12/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function getNovedad() 
+{
+    try 
+    {
+        var standa = $("#dir_aplicaID").val();
+        var num_despac = $("#despac").val();
+        $("#sol_mNovedaID").autocomplete({
+            source: "../"+ standa +"/inform/class_despac_trans3.php?Ajax=on&Option=getNovedad&num_despac="+num_despac,
+            minLength: 1,
+              select: function(event, ui) {
+                  $("#sol_mNovedaID").val(ui.item.id);
+                  $("#cod_novedaSolID").val(ui.item.id);
+              }
+        });
+        if($("#sol_mNovedaID").val()=="")
+        {
+        	$("#cod_novedaSolID").val("");
+        } 
+    } 
+    catch (e) {
+        console.log("Error Fuction getNovedad: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: formNovedadGestion
+ *  \brief: pinta fromulario dependiendo de la novedad seleccionada
+ *  \author: Edward Serrano
+ *  \date: 12/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function formNovedadGestion() 
+{
+    try 
+    {
+        var new_noveda = $("#cod_novedaSolID").val();
+        if(new_noveda!="")
+        {
+        	var standa = $("#dir_aplicaID").val();
+	        var num_despac = $("#despac").val();
+	        var attr_ = "Ajax=on&Option=formNovedadGestion&cod_noveda="+new_noveda;
+	        var attr = "&standa="+standa;
+	        $.ajax({
+	            type: "POST",
+	            url: "../"+ standa +"/inform/class_despac_trans3.php",
+	            data: attr_ + attr,
+	            async: false,
+	            success: function( datos )
+	            {
+	               $("#NovedaProtocolo").html(datos);
+	            }
+	        });
+        }
+        else
+        {
+        	inc_alerta('sol_mNovedaID', 'la novedad es requerida.');
+        }
+        
+    } 
+    catch (e) {
+        console.log("Error Fuction getNovedad: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}

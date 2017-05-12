@@ -311,7 +311,8 @@ class responsable
 									"pop_califi"=>array("name"=>"Auditoria", "sub"=>array(
 																							"usr_califi"=>"Calificar Usuarios"
 																						 ) 
-														)
+														),
+									"ind_novnem"=>array("name"=>"Novedades en Moviles (NEM)", "sub"=>array() )
 								  );
 
 				$mArray[1] = array( "inf_planru"=>array("ind_visibl"=>1, "sub"=>array("usr_creaci"=>1,"ali_usuari"=>1)), 
@@ -320,7 +321,8 @@ class responsable
 									"inf_crodok"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"obs_genera"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"img_adjunt"=>array("ind_visibl"=>1, "sub"=>array()), 
-									"pop_califi"=>array("ind_visibl"=>1, "sub"=>array("usr_califi"=>1)) 
+									"pop_califi"=>array("ind_visibl"=>1, "sub"=>array("usr_califi"=>1)), 
+									"ind_novnem"=>array("ind_visibl"=>1, "sub"=>array()), 
 								   ); 
 			break;
 

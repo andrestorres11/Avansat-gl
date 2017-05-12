@@ -3071,7 +3071,12 @@ class Despachos
         if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
           $mHtml->Label( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         }
+        
         $mHtml->Label( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+        
+        if( $viewAlias->ind_novnem->ind_visibl == 1 ){
+          $mHtml->Label( 'Solucion a NEM', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+        }
         $mHtml->CloseRow();
 
       
@@ -3151,6 +3156,10 @@ class Despachos
               $mHtml->Label( $mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
 
             $mHtml->SetBody( '<td align="right" class="'.$mStyle.'" width="30%" ><b>'.$mSolEfecti.'</b></td>' );
+
+            if( $viewAlias->ind_novnem->ind_visibl == 1 ){
+              $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."')"));
+            }
           $mHtml->CloseRow();
         }
       }
