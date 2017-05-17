@@ -249,7 +249,8 @@
                          cod_noveda != ".CONS_NOVEDA_TRNAUT." AND
                          cod_noveda != ".CONS_NOVEDA_CONDES." AND
   					   cod_noveda != ".CONS_NOVEDA_CAMCEC." AND
-  					   cod_noveda != ".CONS_NOVEDA_GPSXXX."
+  					   cod_noveda != ".CONS_NOVEDA_GPSXXX." AND
+               cod_noveda < 9000
   					   ";
 
         $consec = new Consulta($query, $this -> conexion);
