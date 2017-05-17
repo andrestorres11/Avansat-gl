@@ -65,7 +65,7 @@ class noveda {
      *  \brief: retorna un arreglo con la lista de los productos
      *  \author: Ing. Alexander Correa
      *  \date: 29/10/2015
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return array con los productos $productos
@@ -86,7 +86,7 @@ class noveda {
      *  \brief: retorna una lista con los tipos de despacho
      *  \author: Ing. Alexander Correa
      *  \date: 30/10/2015
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return array con los despachos $despachos
@@ -107,7 +107,7 @@ class noveda {
      *  \brief: Muestra el informe segun los parametros de busqueda establecidos
      *  \author: Ing. Alexander Correa
      *  \date: 31/10/2015
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return html con el informe $informe
@@ -145,7 +145,7 @@ class noveda {
                 $hor_finali = $cEmpresa[$dia]['hor_salida'];
 
                 if (!in_array($inicial, $festivos)) {
-                    #condicional de acuerdo a la pestaÃ±a
+                    #condicional de acuerdo a la pestaña
                     if ($datos->pestana == "generaID") {
                         $respuesta[$key]['dia'] = strftime("%A, %d de %B del %Y", strtotime($inicial));
                         $respuesta[$key]['datos'] = $this->getDataDiaGeneral($datos->cod_produc, $datos->cod_tipdes, $inicial, $hor_inicia, $hor_finali, $contador);
@@ -347,7 +347,7 @@ class noveda {
               INNER JOIN " . BASE_DATOS . ".tab_despac_despac b ON a.num_despac = b.num_despac  
               INNER JOIN " . BASE_DATOS . ".tab_genera_noveda c ON a.cod_noveda = c.cod_noveda  
               INNER JOIN " . BASE_DATOS . ".tab_despac_sisext d ON b.num_despac = d.num_despac
-                   WHERE (a.fec_noveda BETWEEN '$fec_inicia' AND '$fec_finali') ";
+                   WHERE (a.fec_noveda BETWEEN '$fec_inicia' AND '$fec_finali') AND b.ind_anulad != 'A'";
 
         $query .= $cod_noveda == NULL ? ' AND c.nov_especi = 1 ' : " AND a.cod_noveda = $cod_noveda ";
         $query .= $ind_solucion == 1 ? " AND a.fec_noved2 IS NOT NULL AND a.fec_noved2 <> '0000-00-00 00:00:00' " : " AND (a.fec_noved2 IS NULL OR a.fec_noved2 = '0000-00-00 00:00:00') ";
@@ -361,10 +361,10 @@ class noveda {
     }
 
     /* ! \fn: informePestana()
-     *  \brief: pinta el informe de las pestaÃ±as
+     *  \brief: pinta el informe de las pestañas
      *  \author: Ing. Alexander Correa
      *    \date: 13/11/2015
-     *    \date modified: dia/mes/aÃ±o
+     *    \date modified: dia/mes/año
      *  \param: $datos => arreglo con los datos a pintar
      *  \param: 
      *  \return html
@@ -464,17 +464,17 @@ class noveda {
     }
 
     /* ! \fn: getDataDiaPestana()
-     *  \brief: function que trae los datos dia por dia de las pestaÃ±as excepto la general
+     *  \brief: function que trae los datos dia por dia de las pestañas excepto la general
      *  \author: Ing. Alexander Correa
      *  \date: 05/11/205
-     *  \date modified: dia/mes/aÃ±o
-     *  \param: cod_produc String con los cÃ³digos de producto seleccionados
-     *  \param: cod_tipdes String con los cÃ³digos de tipo de despacho seleccionados
+     *  \date modified: dia/mes/año
+     *  \param: cod_produc String con los códigos de producto seleccionados
+     *  \param: cod_tipdes String con los códigos de tipo de despacho seleccionados
      *  \param: fec_inicia dia en el que se va a realizar la consulta
      *  \param: hor_inicia hora de inicio de la consulta
-     *  \param: hor_finali hora de finalizaciÃ³n de la consulta
-     *  \param: pestana pestaÃ±a para la cual se esta haciendo la consulta
-     *  \param: dias cantidad de dÃ­as de regresion para los acumulados
+     *  \param: hor_finali hora de finalización de la consulta
+     *  \param: pestana pestaña para la cual se esta haciendo la consulta
+     *  \param: dias cantidad de días de regresion para los acumulados
      *  \return valor que retorna
      */
     protected function getDataDiaPestana($cod_produc, $cod_tipdes, $fec_inicia, $hor_inicia, $hor_finali, $novedades, $fecha_final) {
@@ -538,16 +538,16 @@ class noveda {
     }
 
     /* ! \fn: getDataDiagetDataDiaGeneral()
-     *  \brief: funion para traer los datos dia por dia de la pestaÃ±a general
+     *  \brief: funion para traer los datos dia por dia de la pestaña general
      *  \author: Ing. Alexander Correa
      *  \date: 03/11/2015
-     *  \date modified: dia/mes/aÃ±o
-     *  \param: cod_produc String con los cÃ³digos de producto seleccionados
-     *  \param: cod_tipdes String con los cÃ³digos de tipo de despacho seleccionados
+     *  \date modified: dia/mes/año
+     *  \param: cod_produc String con los códigos de producto seleccionados
+     *  \param: cod_tipdes String con los códigos de tipo de despacho seleccionados
      *  \param: fec_inicia dia en el que se va a realizar la consulta
      *  \param: hor_inicia hora de inicio de la consulta
-     *  \param: hor_finali hora de finalizaciÃ³n de la consulta
-     *  \param: dias cantidad de dÃ­as de regresion para los acumulados
+     *  \param: hor_finali hora de finalización de la consulta
+     *  \param: dias cantidad de días de regresion para los acumulados
      *  \return arreglo con los datos para los dias consultados $datos
      */
     protected function getDataDiaGeneral($cod_produc, $cod_tipdes, $fec_inicia, $hor_inicia, $hor_finali, $dias) {
@@ -685,7 +685,7 @@ class noveda {
         $tiempo = 0;
 
         while ($fecha <= $ffinal) {
-            if (!in_array($fecha, $festivos)) {#si no es dÃ­a festivo 
+            if (!in_array($fecha, $festivos)) {#si no es día festivo 
                 $dia = date("N", strtotime($fecha));
                 $dia = $this->formatDay($dia);
 
@@ -770,10 +770,10 @@ class noveda {
     }
 
     /* ! \fn: getDataGeneral
-     *  \brief: funcion que consulta el detallado general dependiendo de la pestaÃ±a en la que se encuentre
+     *  \brief: funcion que consulta el detallado general dependiendo de la pestaña en la que se encuentre
      *  \author: Ing. Alexander Correa
      *  \date: 09/11/2015
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return devuelve un html con los datos de la consulta ordendos
@@ -800,7 +800,7 @@ class noveda {
             $cEmpresa = $this->getConfigEmpres(); //configuracion laboral de la empresa
             $festivos = $this->getFest($data->fec_inicia, $data->fec_finali); //festivos
             $finicial = $data->fec_inicia;
-            $fec_inicia = $this->getDiaHabil($finicial, $festivos, $cEmpresa); //traigo el ultimo dia habil para iniciar la consulta ahÃ­
+            $fec_inicia = $this->getDiaHabil($finicial, $festivos, $cEmpresa); //traigo el ultimo dia habil para iniciar la consulta ahí
 
 
             $diafin = date("N", strtotime($data->fec_finali));
@@ -862,7 +862,7 @@ class noveda {
             INNER JOIN " . BASE_DATOS . ".tab_despac_sisext q ON q.num_despac = a.num_despac
              LEFT JOIN " . BASE_DATOS . ".tab_genera_usuari r ON o.usr_asigna = r.cod_usuari
              LEFT JOIN " . BASE_DATOS . ".tab_genera_usuari s ON o.usr_ejecut = s.cod_usuari
-             WHERE (o.fec_noveda BETWEEN '$fec_inicia' AND '$fec_finali') AND p.nov_especi = 1 ";
+             WHERE (o.fec_noveda BETWEEN '$fec_inicia' AND '$fec_finali') AND p.nov_especi = 1 AND a.ind_anulad != 'A'";
         $mSelect .= $data->cod_produc != "''" ? " AND q.cod_mercan IN ($data->cod_produc) " : '';
         $mSelect .= $data->cod_tipdes != "''" ? " AND a.cod_tipdes IN ($data->cod_tipdes) " : '';
         $mSelect .= "$and ORDER BY a.num_despac";

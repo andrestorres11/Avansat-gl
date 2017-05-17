@@ -32,7 +32,7 @@ class IndicadorSolucionNovedades {
      *  \brief: funcion inicial para realizar el filtro de el informe
      *  \author: Ing. Alexander Correa
      *  \date: 29/10/2015
-     *  \date modified: dia/mes/a√±o
+     *  \date modified: dia/mes/aÒo
      *  \param: 
      *  \param: 
      *  \return 
@@ -140,7 +140,7 @@ class IndicadorSolucionNovedades {
           <div class="col-md-12 tabs ancho" id="tabs">
              <ul>
                <li><a id="liGenera" href="#generaID">GENERAL</a></li>
-               <li><a id="liTransi" href="#transiID">TR√ÅNSITO</a></li>
+               <li><a id="liTransi" href="#transiID">TR¡NSITO</a></li>
                <li><a id="liCargue" href="#cargueID">CARGUE</a></li>
                <li><a id="liDescar" href="#descarID">DESCARGUE</a></li>
              </ul>
@@ -151,6 +151,12 @@ class IndicadorSolucionNovedades {
              <div class="col-md-12" id="descarID"></div>
           </div>
           <div cass="col-md-12" id="hidden" style="display:none"></div>
+          <style type="text/css">
+              select.ui-datepicker-year,select.ui-datepicker-month
+              {
+                color: black;
+              }
+          </style>
         <?php
     }
 
