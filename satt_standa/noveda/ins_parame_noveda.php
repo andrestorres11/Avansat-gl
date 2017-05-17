@@ -219,7 +219,7 @@ class parameNoveda
                 if($value[$_REQUEST["tab"]]==1)
                 {
                   $saltoln++;
-                  $mHtml->CheckBox(array("name"=>$value["cod_noveda"], "id"=>$value["cod_noveda"], "class"=>"cellInfo2", "align"=>"right", "value"=>$value["cod_noveda"], "checked"=>($novpar[0]?"checked":null)));
+                  $mHtml->CheckBox(array("name"=>$value["cod_noveda"], "id"=>$value["cod_noveda"], "class"=>"cellInfo2", "align"=>"right", "value"=>$value["cod_noveda"]));
                   $mHtml->Label($value["cod_noveda"]." - ".$value["nom_noveda"] , array("align"=>"left", "class"=>"cellInfo2" ) );
                   
                   $mHtml->Label(($novpar[0]?"Editar":" ") , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEditar", "onclick" => ($novpar[0]?"opciones(1, '". $value["cod_noveda"] ."')":"") ) );
@@ -237,7 +237,7 @@ class parameNoveda
                 if($value["ind_manala"]==0 && $value["ind_tiempo"]==0)
                 {
                   $saltoln++;
-                  $mHtml->CheckBox(array("name"=>$value["cod_noveda"], "id"=>$value["cod_noveda"], "class"=>"cellInfo2", "align"=>"right", "value"=>$value["cod_noveda"], "checked"=>($novpar[0]?"checked":null)));
+                  $mHtml->CheckBox(array("name"=>$value["cod_noveda"], "id"=>$value["cod_noveda"], "class"=>"cellInfo2", "align"=>"right", "value"=>$value["cod_noveda"]));
                   $mHtml->Label($value["cod_noveda"]." - ".$value["nom_noveda"] , array("align"=>"left", "class"=>"cellInfo2" ) );
                   $mHtml->Label(($novpar[0]?"Editar":" ")  , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEditar","onclick" => ($novpar[0]?"opciones(1, '". $value["cod_noveda"] ."')":"") ) );
                   $mHtml->Label(($novpar[0]?"Eliminar":" ") , array("align"=>"right", "class"=>"cellInfo2", "id" => "labelEliminar","onclick" => ($novpar[0]?"opciones(2, '". $value["cod_noveda"] ."')":"") ) );
@@ -477,7 +477,7 @@ class parameNoveda
         $novpar = self::getNovedadParame($valueNov, $_REQUEST["cod_perfil"]);
         if(sizeof($novpar)>0)
         {
-          $mQueryud = " UPDATE ". BASE_DATOS .".tab_genera_novpar SET ind_apsees=".$_REQUEST["ind_apsees"].", ind_tisees=".$_REQUEST["ind_tisees"].", num_minuto = ".$_REQUEST["num_minuto"].", usr_modifi='".self::$cUsuario["cod_usuari"]."', fec_modifi=NOW() WHERE cod_perfil=".$_REQUEST["cod_perfil"]." AND cod_noveda=".$valueNov;
+          $mQueryud = " UPDATE ". BASE_DATOS .".tab_genera_novpar SET ind_apsees='".$_REQUEST["ind_apsees"]."', ind_tisees='".$_REQUEST["ind_tisees"]."', num_minuto = '".$_REQUEST["num_minuto"]."', usr_modifi='".self::$cUsuario["cod_usuari"]."', fec_modifi=NOW() WHERE cod_perfil=".$_REQUEST["cod_perfil"]." AND cod_noveda=".$valueNov;
           $mConsultUpd = new Consulta($mQueryud, self::$cConexion, "BR");
         }
         else
