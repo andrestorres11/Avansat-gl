@@ -3314,7 +3314,7 @@ class Despac
 			$mHtml = new Formlib(2);
 			$mHtml->Hidden(array( "name" => "cod_novedaSol", "id"=>"cod_novedaSolID", "value"=>""));
 			$mHtml->Hidden(array( "name" => "ind_soltie", "id"=>"ind_soltieID", "value"=>"0"));
-			$mHtml->Hidden(array( "name" => "cod_transp", "id"=>"cod_transpID", "value"=>self::getTranspUsuari()[0][0]));
+			$mHtml->Hidden(array( "name" => "cod_transp", "id"=>"cod_transpID", "value"=>($_REQUEST['cod_transp']!=""?$_REQUEST['cod_transp']:self::getTranspUsuari()[0][0])));
 			$mHtml->OpenDiv("id:solNovedadesNem");
 				$mHtml->OpenDiv("id:getNoveda");
 					$mHtml->Table("tr",array("class"=>"displayDIV2"));
@@ -3921,6 +3921,9 @@ class Despac
 	{
 		try
 		{
+			//indicador solucion
+			$_REQUEST['ind_activo_'] = 'S';
+
 			//Genero la nueva novedad
      	 	@include_once( "../despac/InsertNovedad.inc" );
 			$mInsNoveda = new InsertNovedad($_REQUEST['cod_servic'], 3, $_SESSION['codigo'], self::$cConexion);

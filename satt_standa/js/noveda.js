@@ -1279,7 +1279,7 @@ function LoadPopupJQ3(opcion, titulo, alto, ancho, redimen, dragg, lockBack) {
 * \param: novedad
 * \return 
 */
-function ValidarProtoNoveda(cod_noveda)
+function ValidarProtoNoveda(cod_noveda, cod_transp)
 {
 	try
 	{
@@ -1287,7 +1287,7 @@ function ValidarProtoNoveda(cod_noveda)
 		var pop = $("#popID");
 		var Standa = $("#dir_aplicaID").val();
 		var despac = $("#num_despacID").val();
-        var attr_ = "Ajax=on&Option=getFormValidaProNove&cod_noveda="+cod_noveda+"&despac="+despac;
+        var attr_ = "Ajax=on&Option=getFormValidaProNove&cod_noveda="+cod_noveda+"&despac="+despac+"&cod_transp="+cod_transp;
         var attr = "&standa="+Standa;
         $.ajax({
             type: "POST",
@@ -1382,21 +1382,25 @@ function formNovedadGestion()
 	               $("#NovedaProtocolo").html(datos);
 	            }
 	        });
-			attr += "&option=ShowProtocNoveda";
-			attr += "&num_despac=" + $("#num_despacID").val();
-			attr += "&cod_noveda=" + new_noveda;
-			attr += "&cod_transp=" + $("#cod_transpID").val();;
+			attr2 = "&option=ShowProtocNoveda";
+			attr2 += "&num_despac=" + $("#num_despacID").val();
+			attr2 += "&cod_noveda=" + new_noveda;
+			attr2 += "&cod_transp=" + $("#cod_transpID").val();;
 
 			$.ajax({
 				type: "POST",
 				url: "../" + standa + "/desnew/ajax_despac_novpro.php",
-				data: attr,
+				data: attr2,
 				async: false,
 				beforeSend: function() {
 				},
 				success: function(datos) {
 					$("#contProtocolos").html(datos);
 					$("#contProtocolos").find("input[name^='Aceptar']").remove();
+					//$("#contProtocolos").find("input[id^='ind_activoID']").parent().parent().remove();
+					$("#contProtocolos").append('<input type="hidden" name="ind_protoc" id="ind_protocID" value="no"/>');
+					//ind_activo
+					$("#ind_protocID").val("yes");
 					cantidadTr = 0;
 					$("#contProtocolos").find("table > tbody > tr").each(function(i,v){
 						cantidadTr = i++;
@@ -1404,6 +1408,8 @@ function formNovedadGestion()
 					if(cantidadTr<3)
 					{
 						$("#contProtocolos").remove();
+						$("#ind_protocID").val("");
+						$("#ind_protocID").val("");
 					}
 				},
 				complete: function() {
@@ -1426,7 +1432,7 @@ function formNovedadGestion()
         
     } 
     catch (e) {
-        console.log("Error Fuction getNovedad: " + e.message + "\nLine: " + e.lineNumber);
+        console.log("Error Fuction formNovedadGestion: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
 }
@@ -1554,6 +1560,22 @@ function ValidarFormNen()
 		//otros datos
 		formData +="&cod_servic="+$("#cod_servicID").val();
 		formData +="&num_despac="+$("#despac").val();
+		//protocolos
+		if ($("#ind_protocID").val() == 'yes') {
+			var tot_protoc = $("#tot_protocID").val();
+
+			//$("#form_insID").append('<input type="hidden" name="tot_protoc_" id="tot_protoc_ID" value="' + tot_protoc + '"/>');
+			formData += "&tot_protoc_="+tot_protoc;
+			for (var k = 0; k < tot_protoc; k++) {
+				formData += "&protoc" + k + "_ ="+$("#protoc" + k + "ID").val();
+				//$("#form_insID").append('<input type="hidden" name="protoc' + k + '_" id="protoc' + k + '_ID" value="' + $("#protoc" + k + "ID").val() + '"/>');
+				formData += "&obs_protoc" + k + "_ ="+$("#des_protoc" + k + "ID").html();
+				//$("#form_insID").append('<input type="hidden" name="obs_protoc' + k + '_" id="obs_protoc' + k + '_ID" value="' + $("#obs_protoc" + k + "ID").val() + '"/>');
+			}
+			var ind_activo = $("input[name='ind_activo']:checked").val();
+			formData += "&ind_activo_" + k + "_ ="+ind_activo;
+			//$("#form_insID").append('<input type="hidden" name="ind_activo_" id="ind_activo_ID" value="' + ind_activo + '"/>');
+		}
 		//varifico que no contengan datos vacios
 		if(validacion == true)
 		{

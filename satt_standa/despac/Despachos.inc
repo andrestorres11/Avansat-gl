@@ -3161,7 +3161,7 @@ class Despachos
               	#verifico si la novedad es movil para pintar el radio de solucion de novedades NEM
               	if(self::getNovedadNEM($mNovedades[$i]['cod_noveda'])[0])
               	{
-	              $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "class"=>$mStyle, "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."')"));
+	              $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "class"=>$mStyle, "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."', '".$_DESPAC[0][cod_transp]."')"));
             	}
             	else
             	{
