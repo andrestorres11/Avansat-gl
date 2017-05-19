@@ -3218,11 +3218,22 @@ class Despachos
             $mHtml->OpenDiv("id:form_llegadaID; class:contentAccordionForm");
               $mHtml->SetBody('<table width="40%" cellspacing="0" cellpadding="3" border="0" align="left"><tbody>');
                 $mHtml->Row();
-
-                $mHtml->Label( '<b>Observacion de LLegada :</b>', array("align"=>"left", "class"=>"celda_info", "width"=>"100px") );
-                $mHtml->TextArea( '', array("width"=>"15%", "align"=>"left", "class"=>"celda_info", "cols"=>"50", "rows"=>"2", "id"=>"obs_llegadID", "name"=>"obs_llegad") );
-                $mHtml->Button( array("value"=>"Llegada", "onclick"=>"guarllegad()", "class"=>"crmButton small save", "align"=>"left") );
-
+                #verico que tenga llegada el despacho
+                $mDataLlegada = self::getDespLlegada($_REQUEST['despac']);
+                if($mDataLlegada == NULL)
+                {
+                    $mHtml->Label( '<b>Observacion de LLegada :</b>', array("align"=>"left", "class"=>"celda_info", "width"=>"100px") );
+                    $mHtml->TextArea( '', array("width"=>"15%", "align"=>"left", "class"=>"celda_info", "cols"=>"50", "rows"=>"2", "id"=>"obs_llegadID", "name"=>"obs_llegad") );
+                    $mHtml->Button( array("value"=>"Llegada", "onclick"=>"guarllegad()", "class"=>"crmButton small save", "align"=>"left") );
+                }
+                else
+                {
+                    $mHtml->Label( '<b>Fecha de llegada :</b> '.$mDataLlegada[0]['fec_llegad'], array("align"=>"left", "class"=>"celda_etiqueta", "width"=>"33%", "colspan"=>"2") );
+                    $mHtml->Label( '<b>Usuario Notificacion :</b> '.$mDataLlegada[0]['usr_modifi'], array("align"=>"left", "class"=>"celda_etiqueta", "width"=>"33%", "colspan"=>"2") );
+                    $mHtml->Label( '<b>Fecha de registro :</b> '.$mDataLlegada[0]['fec_modifi'], array("align"=>"left", "class"=>"celda_etiqueta", "width"=>"33%", "colspan"=>"2", "end"=>TRUE) );
+                    $mHtml->Label( '<b>Observacion de llegada :</b> '.$mDataLlegada[0]['obs_llegad'], array("align"=>"left", "class"=>"celda_etiqueta", "width"=>"100%", "colspan"=>"6") );
+                    
+                }
               $mHtml->CloseTable('tr');
             $mHtml->CloseDiv();
           $mHtml->CloseDiv();
@@ -8876,6 +8887,36 @@ class Despachos
                   WHERE num_despac = '{$mNumDespac}' 
                     AND (nom_destin IS NULL OR nom_destin = '') ";
         new Consulta( $mSql, $this -> conexion );
+    }
+
+    /*! \fn: updateDestin
+     *  \brief: Actualiza los destinatarios de un despachos que nombre sea NULL o Sctring Vacio '' reemplazandolo por -
+     *  \author: Ing. Fabian Salinas
+     *  \date: 12/05/2016
+     *  \date modified: dd/mm/aaaa
+     *  \param: mNumDespac  Integer  Numero del despacho
+     *  \return: 
+     */
+    private function getDespLlegada($mNumDespac){
+        $mSql = "SELECT a.fec_llegad, 
+                        a.obs_llegad,
+                        a.usr_modifi,
+                        a.fec_modifi
+                   FROM ".BASE_DATOS.".tab_despac_despac a
+                  WHERE a.num_despac = '{$mNumDespac}' 
+                  AND a.fec_llegad IS NOT NULL";
+
+        $consulta   = new Consulta($mSql, $this -> conexion);
+        $mResultLlegada = $consulta -> ret_matriz(); 
+        #valido que tenga informacion la conuslta
+        if(sizeof($mResultLlegada) > 0)
+        {
+            return $mResultLlegada;
+        }
+        else
+        {
+            return NULL;
+        }
     }
 }
 
