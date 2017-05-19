@@ -3158,7 +3158,15 @@ class Despachos
             $mHtml->SetBody( '<td align="right" class="'.$mStyle.'" width="30%" ><b>'.$mSolEfecti.'</b></td>' );
 
             if( $viewAlias->ind_novnem->ind_visibl == 1 ){
-              $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."')"));
+              	#verifico si la novedad es movil para pintar el radio de solucion de novedades NEM
+              	if(self::getNovedadNEM($mNovedades[$i]['cod_noveda'])[0])
+              	{
+	              $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "class"=>$mStyle, "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."')"));
+            	}
+            	else
+            	{
+            		$mHtml->Label( '', array("align"=>"right", "class"=>$mStyle) );
+            	}
             }
           $mHtml->CloseRow();
         }
@@ -8883,6 +8891,25 @@ class Despachos
                   WHERE num_despac = '{$mNumDespac}' 
                     AND (nom_destin IS NULL OR nom_destin = '') ";
         new Consulta( $mSql, $this -> conexion );
+    }
+
+    /*! \fn: getNovedadNEM
+     *  \brief: Verifico si la novedad es Movil
+     *  \author: Edward Serrano
+     *  \date: 16/05/2017
+     *  \date modified: dd/mm/aaaa
+     *  \param: mNumNovedad  Integer  Codigo de la novedad
+     *  \return: 
+     */
+    private function getNovedadNEM($mNumNovedad){
+        $mSql = "SELECT * FROM ".BASE_DATOS.".tab_genera_noveda a
+        			INNER JOIN ".BASE_DATOS.".tab_despac_novnem b ON
+        			a.cod_noveda = b.cod_noveda
+                  WHERE a.nom_noveda LIKE '%movil%' AND
+                  		b.ind_soluci = 0 AND 
+                        a.cod_noveda = ".$mNumNovedad;
+        $consulta = new Consulta( $mSql, $this -> conexion );
+        return $consulta -> ret_arreglo();
     }
 }
 

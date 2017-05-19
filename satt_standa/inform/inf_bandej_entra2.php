@@ -252,7 +252,9 @@ class infBandeja
 		#</FormularioPrecarge>
 
 
-
+		#Estilos bage
+		self::styleBandeja();
+		#si el contador del badge esta vacio se pinta sin la clase
 		#<Bandeja>
 		if( $mView->sec_inform->ind_visibl == 1 )
 		{
@@ -261,13 +263,17 @@ class infBandeja
 					if( $mView->sec_inform->sub->pes_genera == 1 )
 						$mBand .= '<li><a id="liGenera" href="#tabs-1">GENERAL</a></li>';
 					if( $mView->sec_inform->sub->pes_prcarg == 1 )
-						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPreCar" href="#tabs-6">PRECARGUE</a></li>';
+						$mbadge = self::$cDespac ->getConteoNem('1', $mArrayTransp);
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPreCar" href="#tabs-6">PRECARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					if( $mView->sec_inform->sub->pes_cargax == 1 )
-						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liCargue" href="#tabs-2">CARGUE</a></li>';
+						$mbadge = self::$cDespac ->getConteoNem('2', $mArrayTransp);
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liCargue" href="#tabs-2">CARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					if( $mView->sec_inform->sub->pes_transi == 1 )
-						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liTransi" href="#tabs-3">TRANSITO</a></li>';
+						$mbadge = self::$cDespac ->getConteoNem('3', $mArrayTransp);
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liTransi" href="#tabs-3">TRANSITO '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					if( $mView->sec_inform->sub->pes_descar == 1 )
-						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liDescar" href="#tabs-4">DESCARGUE</a></li>';
+						$mbadge = self::$cDespac ->getConteoNem('5', $mArrayTransp);
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liDescar" href="#tabs-4">DESCARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					if( $mView->sec_inform->sub->pes_pernoc == 1 )
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPernoc" href="#tabs-5">C. PERNOTACION</a></li>';
 				$mBand .= '</ul>';
@@ -286,7 +292,7 @@ class infBandeja
 		#</Bandeja>
 	}
 
-	/*! \fn: bandeja
+	/*! \fn: exportExcel
 	 *  \brief: Funcion para exportar a excel
 	 *  \author: Edward Serrano
 	 *	\date: 15/03/2017
@@ -303,6 +309,35 @@ class infBandeja
         ob_clean();
        	echo $_SESSION['precargue']['general'];
        	die;
+    }
+
+    /*! \fn: styleBandeja
+	 *  \brief: Estilos para bandeje de entrada
+	 *  \author: Edward Serrano
+	 *	\date: 15/05/2017
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return:
+	 */
+	function styleBandeja()
+    {
+    	 echo "<style>
+    	 			.badge {
+						  display: inline-block;
+						  min-width: 8px;
+						  padding: 2px 6px;
+						  font-size: 10px;
+						  font-weight: bold;
+						  line-height: 1;
+						  color: #fff;
+						  text-align: center;
+						  white-space: nowrap;
+						  vertical-align: middle;
+						  background-color: #285c00;
+						  border-radius: 8px;
+						}
+
+    	 	   </style>";
     }
 }
 

@@ -11,7 +11,7 @@
  *				Para cuando este bug se corriga en InsertNovedad.inc Descomentariar lineas de las querys que traen los despachos.
  *				Buscar #warning1 para ubicar las lineas afectadas
  *  \warning2:	InsertNovedad.inc no recalcula bien el tiempo de alarma, para disfrazar este bug se opto por validar si la fecha de la
- *				ultima novedad es mayor a la fecha de alarma, si esto es verdadero se recalcula el tiempo de alarma según el tipo de 
+ *				ultima novedad es mayor a la fecha de alarma, si esto es verdadero se recalcula el tiempo de alarma segÃºn el tipo de 
  *				novedad; si la novedad solicita tiempo se recalcula con el tiempo dado, si no se recalcula con el tiempo del array de 
  *				clase $cTime.
  *				Buscar #warning2 para ubicar las lineas afectadas
@@ -20,7 +20,7 @@
 date_default_timezone_get('America/Bogota');
 
 /*! \class: Despac
- *  \brief: Clase que realiza las consultas para retornar la información de los Despachos en Cargue, Transito o Descargue
+ *  \brief: Clase que realiza las consultas para retornar la informaciÃ³n de los Despachos en Cargue, Transito o Descargue
  */
 class Despac
 {
@@ -112,12 +112,20 @@ class Despac
 					self::getFormValidaProNove();
 					break;
 
-				case "getNovedad":
-					self::getNovedad();
+				case "getNovedadAutocomple":
+					self::getNovedadAutocomple();
 					break;
 					
 				case "formNovedadGestion":
 					self::formNovedadGestion();
+					break;
+
+				case 'getConteoNem':
+					self::getConteoNem($_REQUEST['etapa'], $_REQUEST['transp']);
+					break;
+
+				case 'AlmcenarSolucionNem':
+					self::AlmcenarSolucionNem();
 					break;
 
 				default:
@@ -131,7 +139,7 @@ class Despac
 	 *  \brief: Informe General
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 15/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -149,7 +157,7 @@ class Despac
 	 *  \brief: Informe Etapa Cargue
 	 *  \author: Edward Serrano
 	 *	\date: 07/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -174,7 +182,7 @@ class Despac
 	 *  \brief: Informe Etapa Cargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 18/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -195,7 +203,7 @@ class Despac
 	 *  \brief: Informe Etapa Transito
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 26/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -216,7 +224,7 @@ class Despac
 	 *  \brief: Informe Etapa Transito
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 26/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -256,7 +264,7 @@ class Despac
 	 *  \brief: Imprime la table segun etapa
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 07/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mIndEtapa  String  Etapa 
 	 *  \param: mTittle  Matriz  Titulos y Colores
 	 *  \return:
@@ -376,7 +384,7 @@ class Despac
 	 *  \brief: Trae los Tipos de Despacho
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 16/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return: 
 	 */
@@ -393,7 +401,7 @@ class Despac
 	 *  \brief: Trae las transportadoras
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 17/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -429,7 +437,7 @@ class Despac
 	 *  \brief: Trae los usuarios asignados a turno
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 16/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return: 
 	 */
@@ -456,7 +464,7 @@ class Despac
 	 *  \brief: Trae la informacion parametrizada para el turno del controlador
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 13/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mCodUsuari  String  Codigo del usuario
 	 *  \return: Array 
 	 */
@@ -489,7 +497,7 @@ class Despac
 	 *  \brief: Retorna el tipo de perfil del usuario
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 09/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return: array
 	 */
@@ -518,9 +526,9 @@ class Despac
 	 *  \brief: Trae los despachos en Etapa Cargue
 	 *  \author: Edward Serrano
 	 *	\date: 07/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: $mTransp  Array  Informacion transportadora
-	 *  \param: $mTipReturn  String   array = Retorna array con número de los despachos; list = Retorna lista con número de los despachos;
+	 *  \param: $mTipReturn  String   array = Retorna array con nÃºmero de los despachos; list = Retorna lista con nÃºmero de los despachos;
 	 *	\param: mSinFiltro  Boolean  true = No filtra por datos que llegas del formulario $_REQUEST
 	 *  \return: Matriz, Array o String (Segun parametro mTipReturn)
 	 */
@@ -709,9 +717,9 @@ class Despac
 	 *  \brief: Trae los despachos en Etapa Cargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 18/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: $mTransp  Array  Informacion transportadora
-	 *  \param: $mTipReturn  String   array = Retorna array con número de los despachos; list = Retorna lista con número de los despachos;
+	 *  \param: $mTipReturn  String   array = Retorna array con nÃºmero de los despachos; list = Retorna lista con nÃºmero de los despachos;
 	 *	\param: mSinFiltro  Boolean  true = No filtra por datos que llegas del formulario $_REQUEST
 	 *  \return: Matriz, Array o String (Segun parametro mTipReturn)
 	 */
@@ -868,9 +876,9 @@ class Despac
 	 *  \brief: Trae los despachos en Etapa Descargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 06/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: $mTransp  Array  Informacion transportadora
-	 *  \param: $mTipReturn  String   array = Retorna array con número de los despachos; list = Retorna lista con número de los despachos; list2 = Lista de Despachos Pertenecientes a etapas Cargue y Descargue;
+	 *  \param: $mTipReturn  String   array = Retorna array con nÃºmero de los despachos; list = Retorna lista con nÃºmero de los despachos; list2 = Lista de Despachos Pertenecientes a etapas Cargue y Descargue;
 	 *	\param: mSinFiltro  Boolean  true = No filtra por datos que llegas del formulario $_REQUEST
 	 *  \return: Matriz, Array o String (Segun parametro mTipReturn)
 	 */
@@ -1067,7 +1075,7 @@ class Despac
 	 *  \brief: Trae los despachos para las empresas que solo tienen parametrizado ind_transi
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 26/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mTransp  Array  Informacion transportadora
 	 *  \return: Matriz
 	 */
@@ -1169,7 +1177,7 @@ class Despac
 	 *  \brief: Trae los despachos para las empresas que tienen parametrizado Cargue, Transito y Descargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 07/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mTransp  Array  Informacion transportadora
 	 *  \return: Matriz
 	 */
@@ -1328,7 +1336,7 @@ class Despac
 	 *  \brief: Trae informacion adicional del despacho
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 02/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mDespac  Array  Data del Despacho
 	 *  \param: mTransp  Array  Informacion transportadora
 	 *  \param: mTipValida  String  Tipo de validacion
@@ -1406,7 +1414,7 @@ class Despac
 	 *  \brief: Verifica despachos en ruta por placa, a cargo faro y sin novedades en ultimo PC
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 29/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mNumPlacax  String  Placa
 	 *  \param: mNumDespac  String  Numero del despacho 
 	 *  \return: String
@@ -1482,10 +1490,10 @@ class Despac
 	}
 
 	/*! \fn: getTranspServic
-	 *  \brief: Traer las transportadoras según tipo de servicio
+	 *  \brief: Traer las transportadoras segÃºn tipo de servicio
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 19/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mTipEtapax  String   Tipo de Seguimiento ( ind_segcar, ind_segtra, ind_segdes )
 	 *  \param: mCodTransp  Integer  Codigo de la transportadora 
 	 *  \param: mAddWherex  String   Where adicional
@@ -1573,7 +1581,7 @@ class Despac
 	 *  \brief: Verifica el tipo de validacion que aplica por transportadora
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 22/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: Data Transportadora
 	 *  \return: 
 	 */
@@ -1593,7 +1601,7 @@ class Despac
 	 *  \brief: Retorna el tiempo parametrizado para iniciar seguimiento etapa Descargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 07/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mTransp  Array  Informacion de la Transportadora
 	 *  \param: mCodTipdes  String  Codigo Tipo de Despacho   
 	 *  \return: Integer
@@ -1636,7 +1644,7 @@ class Despac
 	 *  \brief: Calcula el tiempo por fecha de alarma
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 22/06/2016
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: $mDespac   Matriz	Datos Despachos
 	 *  \param: $mTransp   Array  	Informacion de la transportadora
 	 *  \param: $mIndCant  Integer  0:Retorna Despachos con Tiempos; 1:Retorna Cantidades
@@ -1649,7 +1657,7 @@ class Despac
 		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		if( $mIndCant == 1 )
-		{ #Define Cantidades según estado
+		{ #Define Cantidades segÃºn estado
 			$mResult[fin_rutaxx] = 0;
 			$mResult[ind_acargo] = 0;
 			$mResult[est_pernoc] = 0;
@@ -1688,7 +1696,7 @@ class Despac
 
 			# Arma la matriz resultante 
 			if( $mIndCant == 1 )
-			{# Cantidades según estado
+			{# Cantidades segÃºn estado
 				if( $mPernoc == true ) #Pernoctacion
 					$mResult[est_pernoc]++;
 				elseif( $mDespac[$i][ind_finrut] == '1' ) #Por Llegada
@@ -1709,7 +1717,7 @@ class Despac
 					continue;
 			}
 			else
-			{# Colores e información del despacho según estado
+			{# Colores e informaciÃ³n del despacho segÃºn estado
 
 				if( $mFiltro == 'sinF' )
 					$mBandera = true;
@@ -1718,7 +1726,7 @@ class Despac
 				else
 					$mBandera = false;
 
-				#Arma Matriz resultante seún fase
+				#Arma Matriz resultante seÃºn fase
 				if( ($mFiltro == 'est_pernoc' || $mFiltro == 'sinF') && $mPernoc == true && $mDespac[$i][ind_defini] != 'SI' && $mDespac[$i][ind_finrut] != '1' )
 				{ #Pernoctacion
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
@@ -1854,7 +1862,7 @@ class Despac
 	 *  \brief: Detalle de la bandeja, lista los despachos
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 25/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -1862,10 +1870,10 @@ class Despac
 	{
 		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 
-		$mTittle2 = array('NO.', 'DESPACHO', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
+		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
 
-		#Según Etapa
+		#SegÃºn Etapa
 		switch ( $_REQUEST['ind_etapax'] )
 		{
 			case 'ind_segprc':
@@ -1992,7 +2000,7 @@ class Despac
 	 *  \brief: Pinta la tabla del detalle de la bandeja
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 23/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mTittle  Array  Titulos para la cabecera de la tabla
 	 *  \param: mData   Matriz  Data para el contenido de la tabla
 	 *  \param: mOpcion	Integer Opcion para el link del despacho
@@ -2043,6 +2051,15 @@ class Despac
 				//$mTxt = substr($row[color], 3);
 				$mNovedades = getNovedadesDespac( self::$cConexion , $row[num_despac], 1 ); #Novedades del despacho
 
+				$gif = "";
+				if(isset($row['num_despac']))
+				{
+					if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']=="0")
+					{
+						$gif = "<img src='../".CENTRAL."/imagenes/Alert.gif' width='15px' height='15px'>";
+					}
+				}
+
 				$mColor =  '#000000;';
 				if($row["ind_anulad"]=="A" || $_REQUEST["ind_filtro"] == 'enx_planta'){
 					$mLink =$row[num_despac];
@@ -2053,6 +2070,7 @@ class Despac
 				}
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$n.'</th>';
+				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$gif.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mLink.'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[cod_manifi].'</td>';
 
@@ -2080,9 +2098,12 @@ class Despac
 			foreach ($mData as $row)
 			{
 				$gif = "";
-				if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']==1)
+				if(isset($row['num_despac']))
 				{
-					$gif = "<img src='../".CENTRAL."/imagenes/Alert.gif' width='15px' height='15px'>";
+					if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']=="0")
+					{
+						$gif = "<img src='../".CENTRAL."/imagenes/Alert.gif' width='15px' height='15px'>";
+					}
 				}
 				$mTxt = substr($row[color], 3);
 				$mColor = $mTxt > 2 ? '#FFFFFF;' : '#000000;';
@@ -2208,10 +2229,10 @@ class Despac
 	}
 
 	/*! \fn: detailSearch
-	 *  \brief: Imprime resultados de la busqueda según despacho en transito o finalizados
+	 *  \brief: Imprime resultados de la busqueda segÃºn despacho en transito o finalizados
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 08/09/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -2228,13 +2249,13 @@ class Despac
 	 *  \brief: Muestra el detallado de los despachos que conincidan con los parametros de busqueda
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 10/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mIndFinrut  Boolean  True = Indicador despacho finalizado
 	 *  \return:
 	 */
 	private function search( $mIndFinrut = false )
 	{
-		$mTittle = array('NO.', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 		$mColor = array('', 'bgT1', 'bgT2', 'bgT3', 'bgT4');
 		$mIndConsol = false;
 
@@ -2349,7 +2370,7 @@ class Despac
 	 *  \brief: Trae el despacho para para viajes consolidados
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 08/09/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mNumViajex  String   Numero de Viaje
 	 *  \return: Integer
 	 */
@@ -2368,10 +2389,10 @@ class Despac
 	}
 
 	/*! \fn: getDataSearch
-	 *  \brief: Trae la información del despacho para opción busqueda especifica
+	 *  \brief: Trae la informaciÃ³n del despacho para opciÃ³n busqueda especifica
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 08/09/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mIndFinrut  Boolean  True = Indicador despacho finalizado
 	 *  \param: mNumDespac  Integer  Numero de despacho
 	 *  \return: Matriz
@@ -2445,7 +2466,7 @@ class Despac
 	 *  \brief: Informe General
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 13/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -2570,7 +2591,7 @@ class Despac
 	 *  \brief: Crea una lista desplegable para el formulario
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 14/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mTitulo  String  Titulo del Campo
 	 *  \param: mNomSel  String  Nombre del Select
 	 *  \param: mMatriz  Matriz  Matriz con las opciones
@@ -2679,7 +2700,7 @@ class Despac
 	}
 
 	/*! \fn: getDataPernoc
-	 *  \brief: Trae la data para la pestaña C. PERNOCTACION
+	 *  \brief: Trae la data para la pestaÃ±a C. PERNOCTACION
 	 *  \author: Ing. Fabian Salinas
 	 *  \date: 18/03/2016
 	 *  \date modified: dd/mm/aaaa
@@ -2846,7 +2867,7 @@ class Despac
 	 *  \brief: Imprime la table para la etapa precargue
 	 *  \author: Edward Serrano
 	 *	\date: 10/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: mIndEtapa  String  Etapa 
 	 *  \param: mTittle  Matriz  Titulos y Colores
 	 *  \param: mStyleCel  Matriz  filas y colunmas
@@ -2883,7 +2904,7 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_paraco] == 0 ? '' : 'onclick="showDetailBand(\'con_paraco\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_paraco].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_anulad] == 0 ? '' : 'onclick="showDetailBand(\'con_anulad\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_anulad].'</td>';
 				
-				//En planta nuevo, es todo lo que está en pestaña de cargue
+				//En planta nuevo, es todo lo que estÃ¡ en pestaÃ±a de cargue
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[enx_planta] == 0 ? '' : 'onclick="showDetailBand(\'enx_planta\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[enx_planta].'</td>';
 				
 
@@ -2958,7 +2979,7 @@ class Despac
 	 *  \brief: Calcula el tiempo por fecha de alarma para precargue
 	 *  \author: Edward Serrano
 	 *	\date: 12/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: $mDespac   Matriz	Datos Despachos
 	 *  \param: $mTransp   Array  	Informacion de la transportadora
 	 *  \param: $mIndCant  Integer  0:Retorna Despachos con Tiempos; 1:Retorna Cantidades
@@ -2973,7 +2994,7 @@ class Despac
 		$fec_sisHoraIni = date("Y-m-d")." ".($_REQUEST['hor_inicio']?$_REQUEST['hor_inicio']:" 00:00:01");
 		$fec_sisHoraFin = date("Y-m-d")." ".($_REQUEST['hor_finxxx']?$_REQUEST['hor_finxxx']:" 23:59:59");
 		if( $mIndCant == 1 )
-		{ #Define Cantidades según estado
+		{ #Define Cantidades segÃºn estado
 			$mResult["con_paradi"] = 0;//para el dia
 			$mResult["con_paraco"] = 0;//para el corte
 			$mResult["con_anulad"] = 0;//anulados
@@ -3015,7 +3036,7 @@ class Despac
 				{
 					//$mResult["con_paradi"]++;
 				}
-				if( strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) >=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraIni ) )) && strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) <=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraFin ) )) && $mDespac[$i]["ind_anulad"] != "A" ) // del día actual
+				if( strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) >=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraIni ) )) && strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) <=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraFin ) )) && $mDespac[$i]["ind_anulad"] != "A" ) // del dÃ­a actual
 				{
 					$mResult["con_paraco"]++;
 				}
@@ -3219,7 +3240,7 @@ class Despac
 	 *  \brief: Calcula el tiempo por fecha de alarma para precargue
 	 *  \author: Edward Serrano
 	 *	\date: 12/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \param: $mDespac   Matriz	Datos Despachos
 	 *  \param: $mTransp   Array  	Informacion de la transportadora
 	 *  \param: $mIndCant  Integer  0:Retorna Despachos con Tiempos; 1:Retorna Cantidades
@@ -3275,7 +3296,7 @@ class Despac
 	 *  \brief: Genera formulario de validacion de novedades NEM
 	 *  \author: Edward Serrano
 	 *	\date: 11/05/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aÃ±o
 	 *  \return: 
 	 */
 	public function getFormValidaProNove()
@@ -3292,6 +3313,8 @@ class Despac
 			 );
 			$mHtml = new Formlib(2);
 			$mHtml->Hidden(array( "name" => "cod_novedaSol", "id"=>"cod_novedaSolID", "value"=>""));
+			$mHtml->Hidden(array( "name" => "ind_soltie", "id"=>"ind_soltieID", "value"=>"0"));
+			$mHtml->Hidden(array( "name" => "cod_transp", "id"=>"cod_transpID", "value"=>self::getTranspUsuari()[0][0]));
 			$mHtml->OpenDiv("id:solNovedadesNem");
 				$mHtml->OpenDiv("id:getNoveda");
 					$mHtml->Table("tr",array("class"=>"displayDIV2"));
@@ -3299,10 +3322,7 @@ class Despac
 						$mHtml->CloseRow();		
 						$mHtml->Row();
 							$mHtml->Label( "* NOVEDAD :",  array("align"=>"right", "class"=>"celda_titulo", "width" => "50%") );
-		                	$mHtml->Input(array("value"=>"","name" => "sol_mNoveda", "id" => "sol_mNovedaID", "width" => "50%", "onkeyup"=>"getNovedad()"));
-						$mHtml->CloseRow();
-						$mHtml->Row();
-							$mHtml->Button( array("value"=>"Continuar", "id"=>"btnContNoveID","name"=>"btnContNove", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2","onclick"=>"formNovedadGestion()") );
+		                	$mHtml->Input(array("value"=>"","name" => "sol_mNoveda", "id" => "sol_mNovedaID", "width" => "50%", "onkeyup"=>"getNovedadAutocomple()"));
 						$mHtml->CloseRow();
 					$mHtml->CloseTable('tr');
 				$mHtml->CloseDiv();
@@ -3317,7 +3337,25 @@ class Despac
 								$mHtml->Label( $kTituloNG,  array("align"=>"right", "class"=>"celda_titulo", "width" => $vTituloNG) );
 							}
 						$mHtml->CloseRow();
+							#Recorro las novedades que se encuentan sin solucion
+							$mNovedadesMen = self::getNovedadNem($_REQUEST['despac'], NULL, '1');
+							if(sizeof($mNovedadesMen)>0)
+							{
+								foreach ($mNovedadesMen as $kNovedaNEM => $vNovedaNEM) 
+								{	$mHtml->Row();
+									$valueNem = $vNovedaNEM['num_consec']."|".$vNovedaNEM['num_despac']."|".$vNovedaNEM['cod_noveda'];
+										$mHtml->CheckBox(array('name' => 'nov_nem'.$kNovedaNEM+1, 'value' => $valueNem, "class"=>"celda_info", "width" => "10%" ));
+										$mHtml->Label( $kNovedaNEM+1,  array("align"=>"right", "class"=>"celda_info", "width" => "10%") );
+										$mHtml->Label( self::getNomSitio($vNovedaNEM['cod_sitiox'])[0]['nom_sitiox'],  array("align"=>"right", "class"=>"celda_info", "width" => "20%") );
+										$mHtml->Label( $vNovedaNEM['nom_noveda'],  array("align"=>"right", "class"=>"celda_info", "width" => "40%") );
+										$mHtml->Label( "fecha",  array("align"=>"right", "class"=>"celda_info", "width" => "20%") );
+									$mHtml->CloseRow();
+								}
+							}
 					$mHtml->CloseTable('tr');
+				$mHtml->CloseDiv();
+				$mHtml->OpenDiv("id:TitulosNoveProto");
+					$mHtml->Label( "ASIGNACION DE NOVEDAD", array("align"=>"center", "width"=>"100%", "class"=>"CellHead") );
 				$mHtml->CloseDiv();
 				$mHtml->OpenDiv("id:NovedaProtocolo");
 				$mHtml->CloseDiv();
@@ -3329,15 +3367,15 @@ class Despac
 			echo "Error en la funcion getFormValidaProNove: ", $e->getMessage(), "\n";
 		}
 	}
-	/*! \fn: getNovedad
+	/*! \fn: getNovedadAutocomple
 	* \brief: Trae las novedades actuales
 	* \author: Edward Serrano
 	* \date: 17/04/2017
-	* \date modified: dia/mes/año
+	* \date modified: dia/mes/aÃ±o
 	* \param: paramatro
 	* \return valor que retorna
 	*/
-	public function getNovedad()
+	public function getNovedadAutocomple()
 	{
 		try
 		{
@@ -3410,7 +3448,7 @@ class Despac
 	* \brief: Trae las  informacion basica de las novedade
 	* \author: Edward Serrano
 	* \date: 12/05/2017
-	* \date modified: dia/mes/año
+	* \date modified: dia/mes/aÃ±o
 	* \param: paramatro
 	* \return valor que retorna
 	*/
@@ -3442,7 +3480,7 @@ class Despac
 	* \brief: consulta si la noveda tiene protocolo
 	* \author: Edward Serrano
 	* \date: 12/05/2017
-	* \date modified: dia/mes/año
+	* \date modified: dia/mes/aÃ±o
 	* \param: paramatro
 	* \return valor que retorna
 	*/
@@ -3469,7 +3507,7 @@ class Despac
 	* \brief: pinta complemento del formulario para la gestio de la nocedad
 	* \author: Edward Serrano
 	* \date: 12/05/2017
-	* \date modified: dia/mes/año
+	* \date modified: dia/mes/aÃ±o
 	* \param: paramatro
 	* \return valor que retorna
 	*/
@@ -3481,28 +3519,50 @@ class Despac
 			#protocolos de las novedades
 			$mProtocolosNove = self::getProtoNovedad($_REQUEST['cod_noveda']); 
 			$mHtml->OpenDiv("id:formGestionNovedad");
-				$mHtml->Table("tr",array("class"=>"displayDIV2"));
-					$mHtml->Label( "PROCOLO ASIFNADO A LA NOVEDAD", array("align"=>"center", "width"=>"100%", "class"=>"CellHead", "colspan"=>"2") );
-					$mHtml->CloseRow();		
-					$mHtml->Row();
-						$mHtml->Label( self::getInfNovedad($_REQUEST['cod_noveda'])[0]['label'].($mProtocolosNove[0]['des_protoc']?" - ".$mProtocolosNove[0]['des_protoc']:""),  array("align"=>"center", "class"=>"celda_titulo", "width" => "50%", "colspan"=>"2") );
-					$mHtml->CloseRow();
-					$mHtml->Row();
-						$mHtml->Label( "Accion",  array("align"=>"center", "class"=>"celda_titulo", "width" => "50%", "colspan"=>"2") );
-		               	//$mHtml->Input(array("value"=>"","name" => "sol_mNoveda", "id" => "sol_mNovedaID", "width" => "50%", "onkeyup"=>"getNovedad()"));
-					$mHtml->CloseRow();
-					$mHtml->Row();
-		               	if($mProtocolosNove[0]['des_protoc'])
-		               	{
-		               		$mHtml->Label( "Aca va el resto del formulario para protocolo",  array("align"=>"right", "class"=>"celda_titulo", "width" => "50%") );
-		               	}
-		               	else
-		               	{
-		               		$mHtml->Label( "* Obsevacion de la novedad :",  array("align"=>"right", "class"=>"celda_titulo", "width" => "50%") );
-		               		$mHtml->TextArea("", array("name" => "obs_noveda", "id" => "obs_novedaID", "width" => "100%"));
-		               	}
-					$mHtml->CloseRow();
-				$mHtml->CloseTable('tr');
+				$mHtml->OpenDiv("id:contProtocolos");
+		        $mHtml->CloseDiv();
+		        $mHtml->OpenDiv("id:contNovedaNem");
+					$mHtml->Table("tr",array("class"=>"displayDIV2"));
+			            	//$mHtml->SetBody('<tr style="display:none;" class="NovedadPerno">');
+							$mHtml->Label("* Fecha: ", array("class"=>"cellInfo1 fecha"));
+							$mHtml->Input( array("name"=>"fec", "id"=>"fecID", "readonly"=>"true", "class"=>"cellInfo1", "width"=>"50%", "value"=>(Date("Y-m-d"))) );
+							//$mHtml->SetBody('</tr>');
+						$mHtml->CloseRow();
+			            $mHtml->Row();
+			            	$mHtml->Label("* Hora: ", array("class"=>"cellInfo1 hora"));
+							$mHtml->Input( array("name"=>"hor", "id"=>"horID", "readonly"=>"true", "class"=>"cellInfo1", "width"=>"50%", "value"=>(Date("H:i"))) );
+			            $mHtml->CloseRow();
+			            $mHtml->Row();
+			            	$mHtml->Label("* Puesto de control: ", array("class"=>"cellInfo1", "width"=>"50%"));
+							$mHtml->Select2( array_merge(self::$cNull, self::getPCPendientes($_REQUEST['num_despac'])), array("name"=>"cod_contro", "id"=>"cod_controID", "class"=>"cellInfo1", "width"=>"50%", "obl"=>"1") );
+			            $mHtml->CloseRow();
+			            $mHtml->Row();
+			            	$mHtml->Label("* Antes/Sitio: ", array("class"=>"cellInfo1", "width"=>"50%"));
+							$mHtml->Select2( array(array("A","Antes"),array("S","Sitio")), array("name"=>"ind_valsit", "id"=>"ind_valsitID", "class"=>"cellInfo1", "width"=>"50%", "obl"=>"1") );
+			            $mHtml->CloseRow();
+			            if($_REQUEST['ind_soltie']==1)
+			            {
+				            $mHtml->Row();
+								$mHtml->Label("* Fecha de novedad: ", array("class"=>"cellInfo1 fecha"));
+								$mHtml->Input( array("name"=>"fec_noveda", "id"=>"fec_novedaID", "readonly"=>"true", "class"=>"cellInfo1", "width"=>"50%") );
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->Label("* Hora de novedad: ", array("class"=>"cellInfo1 fecha"));
+								$mHtml->Input( array("name"=>"hor_noveda", "id"=>"hor_novedaID", "readonly"=>"true", "class"=>"cellInfo1", "width"=>"50%") );
+							$mHtml->CloseRow();
+			            }
+			            $mHtml->Row();
+			            	$mHtml->Label( "OBSERVACION: ",  array("align"=>"right", "class"=>"cellInfo1", "width" => "10%", "colspan"=>"1") );
+			            $mHtml->SetBody("<td class='cellInfo1'>
+			            					<textarea name='obs' id='obsID' onkeyup='UpperText( $(this) )' cols='20' Rows='4'></textarea>
+			            					<div style='font-family:Arial,Helvetica,sans-serif; font-size: 11px;' id='counter'></div>
+			            				</td>");
+			            $mHtml->CloseRow();
+						$mHtml->Row();
+							$mHtml->Button( array("value"=>"Solucionar", "id"=>"btnContNoveID","name"=>"btnContNove", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2","onclick"=>"SolucionNovNem()") );
+						$mHtml->CloseRow();
+					$mHtml->CloseTable('tr');
+				$mHtml->CloseDiv();
 			$mHtml->CloseDiv();
 			echo $mHtml->MakeHtml();
 		}
@@ -3541,17 +3601,492 @@ class Despac
 	 *  \param: 
 	 *  \return: Array
 	 */
-	private function getNovedadNem($num_despac)
+	private function getNovedadNem($num_despac, $etapa=NULL)
 	{
 		$mSql = "SELECT 
 						a.num_consec,	a.num_despac,	a.cod_noveda,
 						a.ind_soluci,	a.fec_soluci,	a.usr_soluci,
 						a.nov_soluci,	a.obs_soluci,	a.ind_realiz,
-						a.usr_creaci,	a.fec_creaci 
+						a.usr_creaci,	a.fec_creaci, 	a.cod_contro,
+						a.cod_sitiox, 	b.cod_etapax,	b.nom_noveda 
 					FROM ".BASE_DATOS.".tab_despac_novnem a 
-				  WHERE a.num_despac = '".$num_despac."' ";
+						INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
+						ON a.cod_noveda = b.cod_noveda
+				  WHERE a.num_despac IN (".$num_despac.") AND a.ind_soluci=0 ";
+
+				  if($etapa != NULL)
+				  {
+				  		$mSql.= " AND b.cod_etapax = ".$etapa." GROUP BY (a.num_despac)"; 	
+				  }
 		$mConsult = new Consulta($mSql, self::$cConexion);
 		return $mData = $mConsult->ret_matrix('a');
+	}
+
+	/*! \fn: getNomSitio
+	 *  \brief: Busca el nombre del sitio
+	 *  \author: Edward Serrano
+	 *  \date:  19/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	private function getNomSitio($cod_sitiox)
+	{
+		$mSql = "SELECT a.nom_sitiox,	a.cod_sitiox
+					FROM ".BASE_DATOS.".tab_despac_sitio a 
+				  WHERE a.cod_sitiox = ".$cod_sitiox." ";
+
+		$mConsult = new Consulta($mSql, self::$cConexion);
+		return $mData = $mConsult->ret_matrix('a');
+	}
+
+	/*! \fn: getConteoNem
+	 *  \brief: Cantidad de novedades NEM (Novedades Enviadas Movil)
+	 *  \author: Edward Serrano
+	 *  \date:  10/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	public function getConteoNem($etapa, $mTransp)
+	{
+		try
+		{	
+			#identifico la transportadora
+			//echo "<pre>";print_r($mTransp);echo "</pre>";
+			if(!is_array($mTransp))
+			{	
+				#convierto la cadena en array
+				$mTransp = explode(',', $mTransp);
+				#limpio los campos del array vacio
+				$mTransp = array_filter($mTransp,'strlen');
+				#elimino la posicion 0 de array la caul llega vacia
+				unset($mTransp[0]);
+				#Combierto el array en cadena
+				$mTransp = join( ',', $mTransp);
+			}
+			else if(sizeof($mTransp)>1)
+			{
+				$mTransp = join( ',', GetColumnFromMatrix( $mTransp, '0' ) );
+			}
+			else
+			{
+				$mTransp = $mTransp[0][0];
+			}
+			#Filtro por las estas existentes
+			$mResult = NULL;
+			$mDespac = NULL;
+			switch ($etapa) {
+				case '0':
+					#General
+					break;
+
+				case '1':
+					#Precargue
+					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaPrecar($mTransp), 'num_despac' ) );
+					break;
+
+				case '2':
+					#Cargue
+					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaCargue($mTransp), 'num_despac' ) );
+					break;
+
+				case '3':
+					#Transito
+				
+					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaTransi($mTransp), 'num_despac' ) );
+					break;
+				
+				case '5':
+					#Descargue
+					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaDescar($mTransp), 'num_despac' ) );
+					break;
+				
+			}
+
+			if($mDespac != NULL)
+			{
+				$cantidad = self::getNovedadNem($mDespac, $etapa);
+				$mResult = (sizeof($cantidad)>0?sizeof($cantidad):0);
+			}
+			#Cuando se realiza el llamado desde ajax se realiza un echo para ver la informacion
+			#de lo contrario se retorna la cadena para ser concatenada.
+			if(isset($_REQUEST['Ajax']))
+			{
+				echo $mResult;
+			}
+			else
+			{
+				return $mResult;
+			}
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+			
+	}
+
+	/*! \fn: getDespacEtapaCargue
+	 *  \brief: Busca los despacho que se encuentran en la etapa de cargue
+	 *  \author: Edward Serrano
+	 *  \date:  15/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	private function getDespacEtapaCargue($mTrans)
+	{
+		try
+		{
+			$mSql = "	 SELECT xx.num_despac
+					   FROM ".BASE_DATOS.".tab_despac_despac xx 
+				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
+						 ON xx.num_despac = yy.num_despac
+				  LEFT JOIN ".BASE_DATOS.".tab_despac_corona zz 
+						 ON xx.num_despac = zz.num_dessat 
+					  WHERE xx.fec_salida IS NOT NULL 
+						AND xx.fec_salida <= NOW() 
+						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
+						AND xx.ind_planru = 'S' 
+						AND xx.ind_anulad = 'R'
+						AND yy.ind_activo = 'S' 
+						AND ( zz.fec_salida IS NOT NULL   )
+						".(strlen($mTrans)>0?"AND yy.cod_transp IN (".$mTrans.")":"");
+
+			$mConsult = new Consulta( $mSql, self::$cConexion );
+			return $mDespac = $mConsult -> ret_matrix('a');
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getDespacEtapaCargue
+	 *  \brief: Busca los despacho que se encuentran en la etapa de precargue
+	 *  \author: Edward Serrano
+	 *  \date:  15/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	private function getDespacEtapaPrecar($mTrans)
+	{
+		try
+		{
+			$mSql = "	 SELECT xx.num_despac
+					   FROM ".BASE_DATOS.".tab_despac_despac xx 
+				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
+						 ON xx.num_despac = yy.num_despac
+				  LEFT JOIN ".BASE_DATOS.".tab_despac_corona zz 
+						 ON xx.num_despac = zz.num_dessat 
+					  WHERE xx.fec_salida IS NOT NULL 
+						AND xx.fec_salida <= NOW() 
+						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
+						AND xx.ind_planru = 'S' 
+						AND xx.ind_anulad in ('R', 'A')
+						AND yy.ind_activo = 'S' 
+						".(strlen($mTrans)>0?"AND yy.cod_transp IN (".$mTrans.")":"");
+			$mConsult = new Consulta( $mSql, self::$cConexion );
+			return $mDespac = $mConsult -> ret_matrix('a');
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getDespacEtapaDescar
+	 *  \brief: Busca los despacho que se encuentran en la etapa de descargue
+	 *  \author: Edward Serrano
+	 *  \date:  15/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	private function getDespacEtapaDescar($mTrans)
+	{
+		try
+		{
+			$mDespacCargue = self::getDespacCargue( $mTrans, 'list', true );
+
+			$mDespacCargue = ($mDespacCargue == NULL ? '0' : $mDespacCargue );
+		
+			#Despachos en ruta que ya finalizaron etapa Cargue
+			$mSql = "	 SELECT xx.num_despac
+						   FROM ".BASE_DATOS.".tab_despac_despac xx 
+					 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
+							 ON xx.num_despac = yy.num_despac 
+							AND xx.fec_salida IS NOT NULL 
+							AND xx.fec_salida <= NOW() 
+							AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
+							AND xx.ind_planru = 'S' 
+							AND xx.ind_anulad = 'R'
+							AND yy.ind_activo = 'S' 
+							".(strlen($mTrans)>0?"AND yy.cod_transp IN (".$mTrans.")":"")."
+							AND xx.num_despac NOT IN ( {$mDespacCargue} ) ";
+			$mConsult = new Consulta( $mSql, self::$cConexion );
+			return $mDespac = $mConsult -> ret_matrix('a');
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getDespacEtapaTransi
+	 *  \brief: Busca los despacho que se encuentran en la etapa de transito
+	 *  \author: Edward Serrano
+	 *  \date:  15/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	private function getDespacEtapaTransi($mTrans)
+	{
+		try
+		{
+			$mSql = "	 SELECT xx.num_despac
+					   FROM ".BASE_DATOS.".tab_despac_despac xx 
+				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
+						 ON xx.num_despac = yy.num_despac
+				  LEFT JOIN ".BASE_DATOS.".tab_despac_corona zz 
+						 ON xx.num_despac = zz.num_dessat 
+					  WHERE xx.fec_salida IS NOT NULL 
+						AND xx.fec_salida <= NOW() 
+						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
+						AND xx.ind_planru = 'S' 
+						AND xx.ind_anulad = 'R'
+						AND yy.ind_activo = 'S' 
+						AND ( zz.fec_salida IS NOT NULL  )
+						".(strlen($mTrans)>0?"AND yy.cod_transp IN (".$mTrans.")":"");
+			$mConsult = new Consulta( $mSql, self::$cConexion );
+			return $mDespac = $mConsult -> ret_matrix('a');
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getPCPendientes
+	 *  \brief: Trae los puestos de control pendientes de un despacho
+	 *  \author: Ing. Fabian Salinas
+	 *  \date: 14/03/2016
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: mNumDes  Integer  Numero del despacho
+	 *  \return: Matriz
+	 */
+	private function getPCPendientes( $mNumDes, $contro= NULL ){
+		$mSigContro = getNextPC( self::$cConexion, $mNumDes );
+
+		$mSql = "SELECT a.cod_contro, b.nom_contro 
+				   FROM ".BASE_DATOS.".tab_despac_seguim a 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
+					 ON a.cod_contro = b.cod_contro 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_rutcon c 
+					 ON a.cod_rutasx = c.cod_rutasx 
+					AND a.cod_contro = c.cod_contro 
+				  WHERE a.num_despac = '$mNumDes' 
+					AND a.cod_rutasx = $mSigContro[cod_rutasx]
+					AND c.val_duraci >= ( 
+											SELECT x.val_duraci 
+											  FROM ".BASE_DATOS.".tab_genera_rutcon x 
+											 WHERE x.cod_contro = $mSigContro[cod_contro] 
+											   AND x.cod_rutasx = $mSigContro[cod_rutasx] 
+										)
+					".($contro != NULL ? "AND a.cod_contro = '".$contro."' " : "" )."
+			   ORDER BY c.val_duraci ASC ";
+		$mConsult = new Consulta($mSql, self::$cConexion );
+		return $mConsult -> ret_matrix('i');
+	}
+	
+	/*! \fn: AlmcenarSolucionNem
+	 *  \brief: Almacena las solucion de las novedades moviles (NEM)
+	 *  \author: Edward Serrano
+	 *  \date:  18/05/2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \modified by: 
+	 *  \param: 
+	 *  \return: Array
+	 */
+	private function AlmcenarSolucionNem()
+	{
+		try
+		{
+			//Genero la nueva novedad
+     	 	@include_once( "../despac/InsertNovedad.inc" );
+			$mInsNoveda = new InsertNovedad($_REQUEST['cod_servic'], 3, $_SESSION['codigo'], self::$cConexion);
+
+			$mFecAct = date("Y-m-d H:i:s");
+			$mData = array();
+			$mDespac = self::getDataAddDespac( $_REQUEST['num_despac'], $_REQUEST['cod_contro'] );
+			$validacion = true;
+
+			if(isset($_REQUEST['fec_noveda']) && isset($_REQUEST['hor_reinic']))
+			{
+				$mTieAdicio = self::calcularMinAdi($_REQUEST['fec_noveda']." ".$_REQUEST['hor_reinic'].":00", $mFecAct);
+			}
+			else
+			{
+				$mTieAdicio = 0;
+			}
+
+			if( $mDespac['fec_ultnov'] != '' ){
+				$mTieUltNov = abs( (strtotime($mFecAct) - strtotime($mDespac['fec_ultnov'])) ) / 60;
+				$mTieUltNov = round($mTieUltNov);
+			}else{
+				$mTieUltNov = 0;
+			}
+
+			$mData['email'] = $_SESSION['datos_usuario']['usr_emailx'];
+			$mData['virtua'] = $mDespac['ind_virtua'];
+			$mData['tip_servic'] = $mDespac['cod_tipser'];
+			$mData['celular'] = '';
+			$mData['despac'] = $_REQUEST['num_despac'];
+			$mData['contro'] = $_REQUEST['cod_contro'];
+			$mData['fecact'] = $mFecAct;
+			$mData['fecnov'] = $mFecAct;
+			$mData['usuari'] = $_SESSION['datos_usuario']['cod_usuari'];
+			$mData['nittra'] = $mDespac['cod_transp'];
+			$mData['indsit'] = '1';
+			$mData['sitio'] = $mDespac['nom_contro'];
+			$mData['tie_ultnov'] = $mTieUltNov;
+			$mData['tiem'] = '0';
+			$mData['rutax'] = $mDespac['cod_rutasx'];
+			 $mData['noveda'] = $_REQUEST["cod_noveda"];
+			$mData['tieadi'] = $mTieAdicio;
+			$mData['observ'] = $_REQUEST["obs"];
+			switch ($_REQUEST["ind_valsit"]) 
+			{
+				case 'S':
+						$mInsNoveda->InsertarNovedadPC( BASE_DATOS, $mData, 0 );
+					break;
+				default:
+					$mInsNoveda->InsertarNovedadNC( BASE_DATOS, $mData, 0 );
+					break;
+			}
+
+			//actualizo las novedades a solucionar cambiando el indicador a 1
+			$mNovedadNem = json_decode($_REQUEST['nov_soluci']);
+			# inicia transaccion
+     	 	$mConsultUpd = new Consulta("SELECT 1 ;", self::$cConexion, "BR"); // Inicia 
+     	 	foreach ($mNovedadNem as $ksNem => $vsNem) 
+     	 	{
+     	 		//la posicion 0 = num_consec, 1 = num_despac, 2 = cod_noveda
+     	 		$mDataSNem = explode("|", $vsNem);
+     	 		$mQueryud = " UPDATE ". BASE_DATOS .".tab_despac_novnem 
+     	 							SET ind_soluci = 1, 
+	     	 							fec_soluci = NOW(),
+	     	 							usr_soluci = '".$_SESSION['datos_usuario']['cod_usuari']."', 
+	     	 							nov_soluci = '".$_REQUEST["cod_noveda"]."', 
+	     	 							obs_soluci = '".$_REQUEST["obs"]."',
+	     	 							cod_solctr = '".$_REQUEST['cod_contro']."', 
+	     	 							cod_solstx = '".$mDespac['nom_contro']."', 
+	     	 							usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."', 
+	     	 							fec_modifi = NOW()
+     	 							WHERE num_consec = '".$mDataSNem[0]."' AND num_despac = '".$mDataSNem[1]."' AND cod_noveda = '".$mDataSNem[2]."'";
+          		$mConsultUpd = new Consulta($mQueryud, self::$cConexion, "BR");
+     	 	}
+
+			$mConsultUpd = new Consulta("SELECT 1;", self::$cConexion, "RC"); // Si no se  va nada por la excepcion hace commit de todo
+		    if($mConsultUpd)
+		    {
+		        echo "ok";
+		    }
+
+		}
+		catch(Exception $e)
+		{
+			echo "Error en la funcion getNovedad: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getDataAddDespac
+	 *  \brief: Trae la data adicional del despacho
+	 *  \author: Ing. Fabian Salinas
+	 *  \date: 15/03/2016
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: mNumDespac  Integer  Numero del Despacho
+	 *  \return: Matriz
+	 */
+	private function getDataAddDespac( $mNumDespac, $mCodContro ){
+		$mUltNoveda = getNovedadesDespac( self::$cConexion, $mNumDespac, 2 );
+
+		$mSql = "SELECT a.cod_transp, b.cod_rutasx, c.nom_contro, 
+						c.ind_virtua 
+				   FROM ".BASE_DATOS.".tab_despac_vehige a 
+			 INNER JOIN ".BASE_DATOS.".tab_despac_seguim b 
+					 ON a.num_despac = b.num_despac 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_contro c  
+					 ON b.cod_contro = c.cod_contro 
+				  WHERE a.num_despac = '$mNumDespac' 
+					AND b.cod_contro = '$mCodContro' 
+				";
+		$mConsult = new Consulta($mSql, self::$cConexion );
+		$mResult = $mConsult -> ret_matrix('a');
+
+		$mResult = $mResult[0];
+		$mResult['fec_ultnov'] = $mUltNoveda['fec_crenov'];
+
+		$mTransp = getTransTipser( self::$cConexion, " AND a.cod_transp = $mResult[cod_transp] ", array('cod_tipser') );
+		$mResult['cod_tipser'] = $mTransp[0]['cod_tipser'];
+
+		return $mResult;
+	}
+
+	/*! \fn: calcularMinAdi
+	 *  \brief: 
+	 *  \author: 
+	 *  \date: 
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: 
+	 *  \return: Matriz
+	 */
+	private function calcularMinAdi($fechaNoveda, $fechaActual)
+	{
+		try
+		{
+			$mTieAdicio = abs( (strtotime($fechaNoveda) - strtotime($fechaActual)) ) / 60;
+			$mTieAdicio = round($mTieAdicio);
+			return $mTieAdicio;
+		}
+		catch (Exception $e)
+		{
+			echo "Error en la funcion calcularMinAdi: ", $e->getMessage();
+		}
+	}
+
+	/*! \fn: getTranspUsuari
+	 *  \brief: 
+	 *  \author: 
+	 *  \date: 
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: 
+	 *  \return: Matriz
+	 */
+	private function getTranspUsuari()
+	{
+		try
+		{
+			$mSql = "SELECT a.clv_filtro
+						FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
+						WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." 
+					";
+			$mConsult = new Consulta( $mSql, self::$cConexion );
+			return $mConsult -> ret_matrix('a');
+		}
+		catch (Exception $e)
+		{
+			echo "Error en la funcion getTranspUsuari: ", $e->getMessage();
+		}
 	}
 }
 

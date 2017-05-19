@@ -309,7 +309,6 @@ class AjaxDespacNoveda
                    
     $consulta = new Consulta( $mSelect, $this -> conexion );
 		$_PROTOC = $consulta -> ret_matriz();
-
     $mHtml  = '<center><div class="StyleDIV" id="ResultID">';
     $i = 0;
     $mHtml .= '<br><table width="100%" cellspacing="2px" cellpadding="0">';
