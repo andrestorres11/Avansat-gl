@@ -325,16 +325,16 @@ class infBandeja
     	 			.badge {
 						  display: inline-block;
 						  min-width: 8px;
-						  padding: 2px 6px;
+						  padding: 2px 4px;
 						  font-size: 10px;
 						  font-weight: bold;
 						  line-height: 1;
-						  color: #fff;
+						  color: #A01C0F;
 						  text-align: center;
 						  white-space: nowrap;
 						  vertical-align: middle;
-						  background-color: #285c00;
-						  border-radius: 8px;
+						  background-color: #F3F70A;
+						  border-radius: 20px;
 						}
 
     	 	   </style>";

@@ -1505,7 +1505,6 @@ function ValidarFormNen()
     	if($("#ind_soltieID").val()==1)
     	{
     		var pop = $("#popID");
-        	SaveProtocols();
         	pop.parent().css( "display", "block" );
     	}
     	//Noveda con la que se soluciona
@@ -1562,6 +1561,7 @@ function ValidarFormNen()
 		formData +="&num_despac="+$("#despac").val();
 		//protocolos
 		if ($("#ind_protocID").val() == 'yes') {
+			SaveProtocols();
 			var tot_protoc = $("#tot_protocID").val();
 
 			//$("#form_insID").append('<input type="hidden" name="tot_protoc_" id="tot_protoc_ID" value="' + tot_protoc + '"/>');

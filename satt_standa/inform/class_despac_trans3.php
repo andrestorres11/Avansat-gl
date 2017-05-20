@@ -3345,10 +3345,10 @@ class Despac
 								{	$mHtml->Row();
 									$valueNem = $vNovedaNEM['num_consec']."|".$vNovedaNEM['num_despac']."|".$vNovedaNEM['cod_noveda'];
 										$mHtml->CheckBox(array('name' => 'nov_nem'.$kNovedaNEM+1, 'value' => $valueNem, "class"=>"celda_info", "width" => "10%" ));
-										$mHtml->Label( $kNovedaNEM+1,  array("align"=>"right", "class"=>"celda_info", "width" => "10%") );
-										$mHtml->Label( self::getNomSitio($vNovedaNEM['cod_sitiox'])[0]['nom_sitiox'],  array("align"=>"right", "class"=>"celda_info", "width" => "20%") );
-										$mHtml->Label( $vNovedaNEM['nom_noveda'],  array("align"=>"right", "class"=>"celda_info", "width" => "40%") );
-										$mHtml->Label( "fecha",  array("align"=>"right", "class"=>"celda_info", "width" => "20%") );
+										$mHtml->Label( $kNovedaNEM+1,  array("align"=>"left", "class"=>"celda_info", "width" => "10%") );
+										$mHtml->Label( self::getNomSitio($vNovedaNEM['cod_sitiox'])[0]['nom_sitiox'],  array("align"=>"left", "class"=>"celda_info", "width" => "20%") );
+										$mHtml->Label( $vNovedaNEM['nom_noveda'],  array("align"=>"left", "class"=>"celda_info", "width" => "40%") );
+										$mHtml->Label( $vNovedaNEM['fec_noveda'],  array("align"=>"left", "class"=>"celda_info", "width" => "20%") );
 									$mHtml->CloseRow();
 								}
 							}
@@ -3608,10 +3608,13 @@ class Despac
 						a.ind_soluci,	a.fec_soluci,	a.usr_soluci,
 						a.nov_soluci,	a.obs_soluci,	a.ind_realiz,
 						a.usr_creaci,	a.fec_creaci, 	a.cod_contro,
-						a.cod_sitiox, 	b.cod_etapax,	b.nom_noveda 
+						a.cod_sitiox, 	b.cod_etapax,	b.nom_noveda,
+						c.fec_contro AS fec_noveda
 					FROM ".BASE_DATOS.".tab_despac_novnem a 
 						INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
 						ON a.cod_noveda = b.cod_noveda
+						LEFT JOIN ".BASE_DATOS.".tab_despac_contro c
+						ON a.cod_noveda = c.cod_noveda
 				  WHERE a.num_despac IN (".$num_despac.") AND a.ind_soluci=0 ";
 
 				  if($etapa != NULL)
