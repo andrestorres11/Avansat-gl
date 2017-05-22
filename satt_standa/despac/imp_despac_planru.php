@@ -103,12 +103,14 @@ class ImprimirPlandeRuta
                   $("#tipoqrID").val(data); 
             $("#opcionID").val("1");
             $("#despacID").val( despac.text() );
+            $("#verqrxID").val("1");
             $("#formID").submit();
                 },
                 "Sin Codigo Qr":function(){
                   $("#tipoqrID").val(0); 
                   $("#opcionID").val("1");
                   $("#despacID").val( despac.text() );
+                  $("#verqrxID").val("0");
                   $("#formID").submit();
                 },
                 "Cancelar":function(){
@@ -405,6 +407,7 @@ SELECT a.num_despac,
     $formulario -> oculto("opcion\" id=\"opcionID",0,0);
     $formulario -> oculto("despac\" id=\"despacID",0,0);
     $formulario -> oculto("tipoqr\" id=\"tipoqrID",0,0);
+    $formulario -> oculto("verqrx\" id=\"verqrxID",0,0);
     $formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
     $formulario -> cerrar();     
   }
@@ -889,9 +892,9 @@ SELECT a.num_despac,
           
             if($_REQUEST['tipoqr'] != 0 && strlen($matriz1[$j][6]) > 1){
 
-              $d[$i] = $matriz1[$j][0]."<br><div name='qr' style='display:inline'></div><div align='justify'><small><br>".$matriz1[$j][1]."<br>".$matriz1[$j][2]."<br>".$matriz1[$j][5]." </small></div><input type='hidden' name='url_ubicac' value='".$matriz1[$j][6]."'>";
+              $d[$i] = $matriz1[$j][0]."<br><div name='qr' style='display:inline'></div><div align='justify'><small><br>".$matriz1[$j][1]."<br>".$matriz1[$j][2]."<br>".$matriz1[$j][5]." </small></div><input type='hidden' name='url_ubicac".$_REQUEST['verqrx']."' value='".$matriz1[$j][6]."'>";
             }else{
-              $d[$i] = $matriz1[$j][0]."<div align='justify'><small><br>".$matriz1[$j][1]."<br>".$matriz1[$j][2]."<br>".$matriz1[$j][5]." </small></div><input type='hidden' name='url_ubicac' value='".$matriz1[$j][6]."'>";
+              $d[$i] = $matriz1[$j][0]."<div align='justify'><small><br>".$matriz1[$j][1]."<br>".$matriz1[$j][2]."<br>".$matriz1[$j][5]." </small></div><input type='hidden' name='url_ubicac".$_REQUEST['verqrx']."' value='".$matriz1[$j][6]."'>";
             }
           $j++;
       }
