@@ -1,4 +1,5 @@
 <?php 
+
   define("URL_ARCHIV_STANDA", "/var/www/html/ap/");
 class AjaxInsertarAutorizacion
 {
@@ -21,6 +22,12 @@ class AjaxInsertarAutorizacion
 				break;
 			case 'guardarUsuario':
 				$this -> guardarUsuario();
+				break;			
+			case 'listaUsuariosMoviles':
+				$this -> listaUsuariosMoviles();
+				break;
+			case 'incativarUsuario':
+				$this -> incativarUsuario();
 				break;
 			
 			default:
@@ -80,10 +87,8 @@ class AjaxInsertarAutorizacion
 		$tercer = $tercer[0];
 
 		$aes = new Cypher();
-		$patron = array("(\¬)", "(\.)", "(\,)", "(\ )", "(ñ)", "(Ñ)", "(\°)", "(\º)", "(&)", "(Â)", "(\()", "(\))", "(\/)", "(\´)", "(\¤)", "(\Ã)", "(\‘)", "(\ƒ)", "(\â)", "(\€)", "(\˜)", "(\¥)", "(Ò)", "(Í)", "(\É)", "(\Ãƒâ€šÃ‚Â)", "(\·)", "(\ª)", "(\-)", "(\+)", "(\Ó)", "(\ü)", "(\Ü)", "(\é)", "(\;)", "(\¡)", "(\!)", "(\`)", "(\<)", "(\>)", "(\_)", "(\#)", "(\ö)", "(\À)", "(\¿)", "(\Ã±)", "(\±)", "(\*)", "(Ú)", "(\%)", "(\|)", "(\ò)", "(\Ì)", "(\:)", "(\Á)", "(\×)", "(\@)", "(\ )", "(\Ù)", "(\á)", "(\–)", "(\")", "(\È)", "(\])", "(\')", "(\í)", "(\Ç)","(\Nš)","(\‚)", "(\ó)", "(\ )", "(\ )", "(\ï½)", "(\?)" );
-  		$reemplazo = array("", "", "", "", "n", "N", "", "", "Y", "", "", "", "", "", "", "", "", "", "", "", "", "", "O", "I", "E", "", "", "a", "", "", "O","U","U", "e", "", "", "", "", "", "", "", "", "", "A", "", "", "", "", "", "", "", "", "I", "", "A", "", "", "", "U", "a", "", "", "E", "", "", "i", "", "N","", "", "", "", "" , "", ""  ); 
 
-		$tercer['cod_hashxx'] =preg_replace( $patron, $reemplazo, $aes -> cypher($tercer['cod_tercer'], $tercer['fec_creaci']) ) ;
+		$tercer['cod_hashxx'] = $aes -> cypher($tercer['cod_tercer'], $tercer['fec_creaci']);
   
 		echo json_encode($tercer);
 	}
@@ -141,7 +146,7 @@ class AjaxInsertarAutorizacion
 			"ind_admini" => $_REQUEST['ind_admini']
  
 		);	
-		
+	
 		if(	$consulta ){
 
 			include URL_ARCHIV_STANDA."interf/app/APIClienteApp/controlador/UsuarioControlador.php";
@@ -150,20 +155,20 @@ class AjaxInsertarAutorizacion
 			$respuesta = $cliente -> registrar($data); 
  
 			if($respuesta == "ok"){
- 
+
+	            $mCabece = 'MIME-Version: 1.0' . "\r\n";
+                $mCabece .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
+                $mCabece .= 'From: Aplicacion SAT ' . "\r\n";
+
 				$tmpl_file = "planti/planti_usuari_appsat.html"; 
                 $thefile = implode("", file($tmpl_file));
                 $thefile = addslashes($thefile);
                 $thefile = "\$r_file=\"" . $thefile . "\";";
                 eval($thefile);
                 $mHtmlxx = $r_file;
-    
-				$mCabece  = 'MIME-Version: 1.0' . "\r\n";
-				$mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n"; 
-				$mCabece .= 'From: Movil <movil@intrared.net>' . "\r\n";
-
-				mail($_REQUEST['mail'], "Codigo de activacion aplicacion AVANSAT ", $mHtmlxx, $mCabece);
-  				echo "ok";
+                mail($_REQUEST['mail'], "C�digo de activaci�n aplicaci�n AVANSAT ", $mHtmlxx, $mCabece); 
+ 
+				echo "ok";
 			}
 			else{
 				echo "no";
@@ -174,6 +179,75 @@ class AjaxInsertarAutorizacion
 			echo "no";
 		}
 
+	}
+
+	public function listaUsuariosMoviles()
+	{
+		$mQuery = "SELECT   a.cod_transp, a.cod_tercer, c.cod_usuari, b.nom_tercer, b.nom_apell1, b.nom_apell2, b.dir_emailx, c.clv_usuari, IF( b.fec_creaci IS NULL OR a.fec_creaci = '', 'N/A', b.fec_creaci) AS fec_creaci, c.cod_tercer AS cod_pendie, c.ind_activo AS ind_estado
+                   FROM  
+                          ".BASE_DATOS.".tab_transp_tercer a INNER JOIN 
+                          ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer INNER JOIN
+                          ".BASE_DATOS.".tab_usuari_movilx c ON b.cod_tercer = c.cod_tercer
+                  WHERE
+                          a.ind_estado = 1 AND
+                          a.cod_transp = '".$_REQUEST["cod_transp"]."'   ";  
+        
+		//----------------------------------------------------------------------------------------------------------------------------
+		$cList = new DinamicList( $this -> conexion, $mQuery , 4 );
+		$cList -> SetHeader( "Transportadora", "field:a.cod_transp" );
+		$cList -> SetHeader( "Doc.Conductor", "field:a.cod_tercer" );
+		$cList -> SetHeader( "Usuario APP", "field:c.cod_usuari" );
+		$cList -> SetHeader( "Nombre conductor", "field:b.nom_tercer" );
+		$cList -> SetHeader( "Primer apellido", "field:b.nom_apell1" );
+		$cList -> SetHeader( "Segundo apellido", "field:b.nom_apell2" );
+		$cList -> SetHeader( "Correo", "field:b.dir_emailx" );
+		$cList -> SetHeader( "Contrase�a", "field:c.clv_usuari" );
+		$cList -> SetOption(utf8_decode("Opciones"),"field:cod_option; width:1%; onclikDisable:editarUsuarioMovil( 2, this ); onclikEnable:editarUsuarioMovil( 1, this ); onclikEdit:editarUsuarioMovil( 99, this );" );
+		$cList -> SetHidden("cod_tercer", "1" ); 
+		$cList -> SetHidden("nom_tercer", "3" ); 
+		$cList -> SetClose( "no" );
+		$cList -> Display( $this -> conexion );
+		echo $cList -> GetHtml();
+		$_SESSION["DINAMIC_LIST"]   = $cList;
+	}
+
+	public function incativarUsuario()
+	{
+		try
+        {
+        	$ind_activo = null;
+			switch ($_REQUEST['action']) {
+				case 'activarUsuario':
+					$ind_activo = "1";
+					break;
+
+				case 'inactivarUsuario':
+					$ind_activo = "0";
+					break;
+			}
+			
+	        $mSql = "UPDATE ".BASE_DATOS.".tab_usuari_movilx 
+	                        SET 
+	                              ind_activo = '".$ind_activo."',
+	                              usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+	                              fec_modifi = NOW()
+	                        WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'";
+	        $consulta = new Consulta($mSql, $this -> conexion, "BR");
+	        if($consulta)
+	        {
+	          $consultaFinal = new Consulta("COMMIT", $this -> conexion);
+	          echo "ok";
+	        }
+	        else
+	        {
+	          $consultaFinal = new Consulta("ROLLBACK", $this -> conexion);
+	          echo "error";
+	        }
+       }
+      catch(Exception $e)
+      {
+        echo "Error en la funcion incativarUsuario:",  $e->getMessage(), "\n";
+      }
 	}
 }
 
