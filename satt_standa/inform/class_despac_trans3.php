@@ -3338,7 +3338,7 @@ class Despac
 							}
 						$mHtml->CloseRow();
 							#Recorro las novedades que se encuentan sin solucion
-							$mNovedadesMen = self::getNovedadNem($_REQUEST['despac'], NULL, '1');
+							$mNovedadesMen = self::getNovedadNem($_REQUEST['despac']);
 							if(sizeof($mNovedadesMen)>0)
 							{
 								foreach ($mNovedadesMen as $kNovedaNEM => $vNovedaNEM) 
@@ -3355,7 +3355,9 @@ class Despac
 					$mHtml->CloseTable('tr');
 				$mHtml->CloseDiv();
 				$mHtml->OpenDiv("id:TitulosNoveProto");
-					$mHtml->Label( "ASIGNACION DE NOVEDAD", array("align"=>"center", "width"=>"100%", "class"=>"CellHead") );
+					$mHtml->Table("tr");	
+						$mHtml->Label( "ASIGNACION DE NOVEDAD", array("align"=>"center", "width"=>"100%", "class"=>"CellHead") );
+					$mHtml->CloseTable('tr');
 				$mHtml->CloseDiv();
 				$mHtml->OpenDiv("id:NovedaProtocolo");
 				$mHtml->CloseDiv();
@@ -3522,6 +3524,9 @@ class Despac
 				$mHtml->OpenDiv("id:contProtocolos");
 		        $mHtml->CloseDiv();
 		        $mHtml->OpenDiv("id:contNovedaNem");
+		        	$mHtml->Table("tr");	
+						$mHtml->Label( "DATOS COMPLEMENTARIOS", array("align"=>"center", "width"=>"100%", "class"=>"CellHead") );
+					$mHtml->CloseTable('tr');
 					$mHtml->Table("tr",array("class"=>"displayDIV2"));
 			            	//$mHtml->SetBody('<tr style="display:none;" class="NovedadPerno">');
 							$mHtml->Label("* Fecha: ", array("class"=>"cellInfo1 fecha"));
@@ -3614,13 +3619,18 @@ class Despac
 						INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
 						ON a.cod_noveda = b.cod_noveda
 						LEFT JOIN ".BASE_DATOS.".tab_despac_contro c
-						ON a.cod_noveda = c.cod_noveda
+						ON a.cod_noveda = c.cod_noveda AND a.num_despac IN (".$num_despac.")
 				  WHERE a.num_despac IN (".$num_despac.") AND a.ind_soluci=0 ";
 
 				  if($etapa != NULL)
 				  {
 				  		$mSql.= " AND b.cod_etapax = ".$etapa." GROUP BY (a.num_despac)"; 	
 				  }
+				  else
+				  {
+				  		$mSql.= " GROUP BY (a.num_consec)"; 	
+				  }
+
 		$mConsult = new Consulta($mSql, self::$cConexion);
 		return $mData = $mConsult->ret_matrix('a');
 	}

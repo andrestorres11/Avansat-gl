@@ -1397,7 +1397,8 @@ function formNovedadGestion()
 				success: function(datos) {
 					$("#contProtocolos").html(datos);
 					$("#contProtocolos").find("input[name^='Aceptar']").remove();
-					//$("#contProtocolos").find("input[id^='ind_activoID']").parent().parent().remove();
+					$("#contProtocolos").find("hr").remove();
+					$("#ResultID").attr('style', 'padding: 2px !important');
 					$("#contProtocolos").append('<input type="hidden" name="ind_protoc" id="ind_protocID" value="no"/>');
 					//ind_activo
 					$("#ind_protocID").val("yes");
@@ -1448,35 +1449,20 @@ function SolucionNovNem()
 {
     try 
     {
-
+    	LoadPopupJQNoButton('close','', '', '', false, false, false, 'popAlertID1');
     	var mData = ValidarFormNen();
     	var standa = $("#dir_aplicaID").val();
     	if(mData != false)
     	{
-    		$.ajax({
-	            type: "POST",
-	            url: "../"+ standa +"/inform/class_despac_trans3.php",
-	            data: mData,
-	            async: false,
-	            success: function( datos )
-	            {
-	               console.log(datos);
-	               if(datos=='ok')
-	               {
-			            LoadPopupJQNoButton('open', 'Solucion de Novedades Especiales Moviles', 'auto', 'auto', false, false, false, 'popAlertID');
-				        var popup = $("#popAlertID");
-				        popup.parent().children().children('.ui-dialog-titlebar-close').hide();
-
-				        var msj = '<div style="text-align:center"> SE ALMACENO CORRECTAMENTE <br><br><br><br>';
-				        msj += '<input type="button" name="si" id="siID" value=" Cerrar " style="cursor:pointer" onclick="closePopUpAlert(); submitForm();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>';
-				        popup.append(msj);
-	               }
-	               else
-	               {
-			            alert("Error");
-	               }
-	            }
-	        });
+    		LoadPopupJQNoButton('open', 'Confirmar', 'auto', 'auto', false, false, false, 'popAlertID1');
+			var popup = $("#popAlertID1");
+			popup.parent().css( "display", "block" );
+			popup.parent().css( "z-index", "6001" );
+			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+			var msj = '<div style="text-align:center"> DESEA SOLUCIONAR LAS NOVEDADES MOVILES <br><br><br><br>';
+			msj += '<input type="button" name="no" id="siID" value=" CANCELAR " style="cursor:pointer" onclick="closePopUp(\'popAlertID1\');" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>';
+			msj += '<input type="button" name="si" id="siID" value=" SOLUCIONAR " style="cursor:pointer" onclick="AlmcenarSolucionNem();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>';
+			popup.html(msj);
     	}
         
     } 
@@ -1575,6 +1561,8 @@ function ValidarFormNen()
 			var ind_activo = $("input[name='ind_activo']:checked").val();
 			formData += "&ind_activo_" + k + "_ ="+ind_activo;
 			//$("#form_insID").append('<input type="hidden" name="ind_activo_" id="ind_activo_ID" value="' + ind_activo + '"/>');
+			var pop = $("#popID");
+        	pop.parent().css( "display", "block" );
 		}
 		//varifico que no contengan datos vacios
 		if(validacion == true)
@@ -1592,6 +1580,52 @@ function ValidarFormNen()
     }
 }
 
+/*! \fn: AlmcenarSolucionNem
+ *  \brief: Ejecuta ajax para almacenar las novedades moviles
+ *  \author: Edward Serrano
+ *  \date: 17/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function AlmcenarSolucionNem() 
+{
+    try 
+    {	
+    	var mData = ValidarFormNen();
+    	var standa = $("#dir_aplicaID").val();
+    	if(mData != false)
+    	{
+    		$.ajax({
+		        type: "POST",
+		        url: "../"+ standa +"/inform/class_despac_trans3.php",
+		        data: mData,
+		        async: false,
+		        success: function( datos )
+		        {
+		            //console.log(datos);
+		            if(datos=='ok')
+		            {
+		            	 LoadPopupJQNoButton('close','', '', '', false, false, false, 'popAlertID');
+				         LoadPopupJQNoButton('open', 'Solucion de Novedades Especiales Moviles', 'auto', 'auto', false, false, false, 'popAlertID');
+					     var popup = $("#popAlertID");
+					     popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+					     var msj = '<div style="text-align:center"> SE ALMACENO CORRECTAMENTE <br><br><br><br>';
+					     msj += '<input type="button" name="si" id="siID" value=" Cerrar " style="cursor:pointer" onclick="closePopUpAlert();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>';
+					     popup.append(msj);
+		            }
+		            else
+		            {
+				         alert("Error");
+		            }
+		        }
+		    });
+    	}
+    } 
+    catch (e) {
+        console.log("Error Fuction AlmcenarSolucionNem: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
 
 /*! \fn: closePopUpAlert
  *  \brief: Cierra los popup de las alertas
@@ -1603,9 +1637,9 @@ function ValidarFormNen()
 function closePopUpAlert() 
 {
     try 
-    {	closePopUpAlert('popAlertID');
+    {	closePopUp('popAlertID');
     	LoadPopupJQ3('close');
-		location.reload();
+		location.href = "index.php?cod_servic=3302&window=central&despac="+$("#despac").val()+"&opcion=1";
     } 
     catch (e) {
         console.log("Error Fuction ValidarFormNen: " + e.message + "\nLine: " + e.lineNumber);
