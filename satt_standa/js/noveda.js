@@ -1400,6 +1400,7 @@ function formNovedadGestion()
 					$("#contProtocolos").find("hr").remove();
 					$("#ResultID").attr('style', 'padding: 2px !important');
 					$("#contProtocolos").append('<input type="hidden" name="ind_protoc" id="ind_protocID" value="no"/>');
+					$("#contProtocolos table").append('<input type="button" style="cursor:pointer" class="crmButton small save" name="btnvalidarNoveEsp" id="validarNoveEspeciales" value="Continuar" colspan="2" onclick="validarNoveEspeciales()">');
 					//ind_activo
 					$("#ind_protocID").val("yes");
 					cantidadTr = 0;
@@ -1547,7 +1548,7 @@ function ValidarFormNen()
 		formData +="&num_despac="+$("#despac").val();
 		//protocolos
 		if ($("#ind_protocID").val() == 'yes') {
-			SaveProtocols();
+			
 			var tot_protoc = $("#tot_protocID").val();
 
 			//$("#form_insID").append('<input type="hidden" name="tot_protoc_" id="tot_protoc_ID" value="' + tot_protoc + '"/>');
@@ -1561,8 +1562,6 @@ function ValidarFormNen()
 			var ind_activo = $("input[name='ind_activo']:checked").val();
 			formData += "&ind_activo_" + k + "_ ="+ind_activo;
 			//$("#form_insID").append('<input type="hidden" name="ind_activo_" id="ind_activo_ID" value="' + ind_activo + '"/>');
-			var pop = $("#popID");
-        	pop.parent().css( "display", "block" );
 		}
 		//varifico que no contengan datos vacios
 		if(validacion == true)
@@ -1643,6 +1642,27 @@ function closePopUpAlert()
     } 
     catch (e) {
         console.log("Error Fuction ValidarFormNen: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: validarNoveEspeciales
+ *  \brief: Valida las novedades especiales
+ *  \author: Edward Serrano
+ *  \date: 24/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function validarNoveEspeciales() 
+{
+    try 
+    {	
+    	SaveProtocols();
+    	var pop = $("#popID");
+        pop.parent().css( "display", "block" );
+    } 
+    catch (e) {
+        console.log("Error Fuction validarNoveEspeciales: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
 }
