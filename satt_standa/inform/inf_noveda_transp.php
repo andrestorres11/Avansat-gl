@@ -72,38 +72,53 @@ class InfNovedadesUsuario{
         });
         </script>';
         //SQL AUTOCOMPLETE
-        $query = "SELECT a.cod_tercer, UPPER( a.abr_tercer ) as abr_tercer
-        FROM ".BASE_DATOS.".tab_tercer_tercer a,
-        ".BASE_DATOS.".tab_tercer_activi b
-        WHERE a.cod_tercer = b.cod_tercer AND
-        b.cod_activi = ".COD_FILTRO_EMPTRA."
-        ORDER BY 2";
 
-        $consulta = new Consulta( $query, $this -> conexion );
-        $transpor = $consulta -> ret_matriz();
-
-        echo '
-        <script>
-        $(function() {
-        var tranportadoras = 
-        [';
-
-        if( $transpor )
+        include_once("class_despac_trans3.php");
+        $cTransp = new Despac($this -> conexion);
+        $transp = $cTransp->getTransp();
+        $cod_transp = "";
+        $readonly = "";
+        if(count($transp)>1)
         {
-        echo "\"Ninguna\"";
-        foreach( $transpor as $row )
-        {
-        echo ", \"$row[cod_tercer] - $row[abr_tercer]\"";
+          $query = "SELECT a.cod_tercer, UPPER( a.abr_tercer ) as abr_tercer
+          FROM ".BASE_DATOS.".tab_tercer_tercer a,
+          ".BASE_DATOS.".tab_tercer_activi b
+          WHERE a.cod_tercer = b.cod_tercer AND
+          b.cod_activi = ".COD_FILTRO_EMPTRA."
+          ORDER BY 2";
+
+          $consulta = new Consulta( $query, $this -> conexion );
+          $transpor = $consulta -> ret_matriz();
+
+          echo '
+          <script>
+          $(function() {
+          var tranportadoras = 
+          [';
+
+          if( $transpor )
+          {
+          echo "\"Ninguna\"";
+          foreach( $transpor as $row )
+          {
+          echo ", \"$row[cod_tercer] - $row[abr_tercer]\"";
+          }
+          };
+          echo ']
+          $( "#busq_transpID" ).autocomplete({
+          source: tranportadoras,
+          delay: 100
+          }).bind( "autocompleteclose", function(event, ui){$("#form_insID").submit();} );
+          $( "#busq_transpID" ).bind( "autocompletechange", function(event, ui){$("#form_insID").submit();} ); 
+          });
+          </script>';
         }
-        };
-        echo ']
-        $( "#busq_transpID" ).autocomplete({
-        source: tranportadoras,
-        delay: 100
-        }).bind( "autocompleteclose", function(event, ui){$("#form_insID").submit();} );
-        $( "#busq_transpID" ).bind( "autocompletechange", function(event, ui){$("#form_insID").submit();} ); 
-        });
-        </script>';
+        else
+        {
+          $cod_transp = $transp[0][0]." - ".$transp[0][1];
+          $readonly = " readonly=\"readonly";
+        }
+        
 
 
         $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "Informe de Novedades por Transportadora", "formulario\" id=\"formularioID");
@@ -113,7 +128,7 @@ class InfNovedadesUsuario{
         $formulario -> texto ("Hora Inicial","text","horaini\" id=\"horainiID\" readonly=\"readonly\" ",1,7,7,"",$_POST['horaini'] );
         $formulario -> texto ("Fecha Final","text","fec_final\" id=\"fec_finalID\" readonly=\"readonly\" ",0,7,7,"",$_POST['fec_final'] );
         $formulario -> texto ("Hora Final","text","horafin\" id=\"horafinID\" readonly=\"readonly\" ",1,7,7,"",$_POST['horafin'] );
-        $formulario -> texto ("Nit / Nombre","text","busq_transp\" id=\"busq_transpID",1,30,30,"","" );
+        $formulario -> texto ("Nit / Nombre","text","busq_transp\" id=\"busq_transpID\" ".$readonly,1,30,30,"",$cod_transp );
 
         $formulario -> nueva_tabla();
         $formulario -> botoni("Buscar","ValidaInform()",0);
