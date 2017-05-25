@@ -285,7 +285,7 @@ class conduc{
           
           for($i=0;$i<=$conduc->cantidad;$i++){
              if($empresas[$i] != Null){
-             $query = "INSERT INTO ".BASE_DATOS.".tab_conduc_refere
+             $query = "REPLACE INTO ".BASE_DATOS.".tab_conduc_refere
                             (cod_conduc,cod_refere,nom_empre,tel_empre,num_viajes,
                              num_atigue,nom_mercan,usr_creaci,fec_creaci)
                     VALUES ('$conduc->cod_tercer','$i','$empresas[$i]','$telefonos[$i]','$viajes[$i]',
