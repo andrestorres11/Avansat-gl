@@ -240,7 +240,7 @@ class infBandeja
 
 				$mHtml3 .= '<tr>';
 				$mHtml3 .= '<td class="cellInfo1" align="right" colspan="4"><input type="button" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" value="GENERAR" id="generarprc"></td>';
-				$mHtml3 .= '<td class="cellInfo1" align="left" colspan="4"><input type="button" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" value="EXCEL" id="excelprcGeneral" onclick="exportExcel()"></td>';
+				$mHtml3 .= '<td class="cellInfo1" align="left" colspan="4"><input type="button" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" value="EXCEL" id="excelprcGeneral" onclick="exportExcel(1)"></td>';
 				$mHtml3 .= '</tr>';
 
 				$mHtml3 .= '</table>';
@@ -301,7 +301,14 @@ class infBandeja
   		header("Content-Disposition: attachment; filename=\"$filename\"");
   		header("Content-Type: application/vnd.ms-excel");
         ob_clean();
-       	echo $_SESSION['precargue']['general'];
+       	if($_REQUEST['ind_excel']==1)
+       	{
+       		echo $_SESSION['precargue']['general'];
+       	}
+       	else
+       	{
+       		echo $_SESSION['precargue']['detallado'];
+       	}
        	die;
     }
 }

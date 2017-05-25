@@ -557,7 +557,7 @@ class Despac
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin,
-						l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar
+						l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar, k.num_solici
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -1850,7 +1850,7 @@ class Despac
 	{
 		$mTittle = array('NO.', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 
-		$mTittle2 = array('NO.', 'DESPACHO', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
+		$mTittle2 = array('NO.', 'DESPACHO', 'N° SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
 
 		#Según Etapa
@@ -1998,6 +1998,7 @@ class Despac
 		$mHtml .= 	'<tr>';
 		foreach ($mTittle as $value){
 			$mHtml .= '<th class="classHead" align="center">'.$value.'</th>';
+			//if($value=="NO."){$mHtml .= '<th style="display:none;" align="center">N° SOLICITUD</th>';}
 		}
 		$mHtml .= 	'</tr>';
 
@@ -2042,6 +2043,7 @@ class Despac
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$n.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mLink.'</td>';
+				$mHtml .= 	'<td class="classHead" nowrap="" align="left">'.$row[num_solici].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[cod_manifi].'</td>';
 
 				if($row["ind_anulad"] == "A") {
@@ -2094,7 +2096,7 @@ class Despac
 
 		$mHtml .= '</table>';
 		$mHtml .= '<br/>';
-		$_SESSION['precargue']['general'] = $mHtml;
+		$_SESSION['precargue']['detallado'] = $mHtml;
 		return $mHtml;
 	}
 
