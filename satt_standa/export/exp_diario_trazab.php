@@ -68,13 +68,14 @@ class exp_diario_trazab {
 
         $html .= "<tr>";
 
-        $html .= "<td class=celda_titulo colspan=13 >Se Encontraron " . sizeof($informe) . " Manifiestos.</td>";
+        $html .= "<td class=celda_titulo colspan=15 >Se Encontraron " . sizeof($informe) . " Manifiestos.</td>";
         $html .= "</tr>";
         $html .= "<tr>";
         $html .= "<td class=celda_titulo rowspan=2 >#</td>";
         $html .= "<td class=celda_titulo rowspan=2 >N° Documento</td>";
         $html .= "<td class=celda_titulo rowspan=2 >N° Transportadora</td>";
         $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Salida</td>";
+        $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Cita Cargue</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Origen</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Destino</td>";
         $html .= "<td class=celda_titulo colspan=3 >Estimado de Llegada</td>";
@@ -83,6 +84,8 @@ class exp_diario_trazab {
         $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";
         $html .= "</tr>";
         $html .= "<tr>";
+        $html .= "<td class=cellHead >Fecha</td>";
+        $html .= "<td class=cellHead >Hora</td>";
         $html .= "<td class=cellHead >Fecha</td>";
         $html .= "<td class=cellHead >Hora</td>";
         $html .= "<td class=cellHead >Fecha</td>";
@@ -97,12 +100,36 @@ class exp_diario_trazab {
 
                 $fec_sal = $this->toFecha($row[1]);
                 $fec_lle = $this->toFecha($row[4]);
+                //valido que las fecha de cita de cargue no esta vacias o con formato 0000-00-00 00:00:00
+                $ValirFecha = true;
+                //valido fecha 0000-00-00
+                if( $row[13] == Null || $row[13] == "0000-00-00" )
+                {
+                  $ValirFecha = false;
+                }
+                //valido hora 00:00:00
+                if( $row[14] == Null || $row[14] == "00:00:00" )
+                {
+                  $ValirFecha = false;
+                }
+                //llamo la funcion toFecha
+                if($ValirFecha == true)
+                {
+                  $fec_cit  = $this -> toFecha( $row[13]." ".$row[14] );
+                }
+                else
+                {
+                  $fec_cit[0] = "";
+                  $fec_cit[1] = "";
+                }
                 $html .= "<tr>"; // celda_info
                 $html .= "<td class=cellHead nowrap>$i</td>";                                      // Consecutivo
                 $html .= "<td class=celda_info nowrap>$row[0]</td>";                               // Número despacho
                 $html .= "<td class=celda_info nowrap>$row[10]</td>";                              // nombre Transportadora
                 $html .= "<td class=celda_info nowrap>" . $fec_sal[0] . "</td>";                       // Fecha salida
                 $html .= "<td class=celda_info nowrap>" . $fec_sal[1] . "</td>";                       // Hora salida
+                $html .= "<td class=celda_info nowrap>".$fec_cit[0]."</td>";                       // Fecha cita cargue
+                $html .= "<td class=celda_info nowrap>".$fec_cit[1]."</td>";  
                 $html .= "<td class=celda_info nowrap>$row[2]</td>";                               // Origen
                 $html .= "<td class=celda_info nowrap>$row[3]</td>";                               // Destino
                 $html .= "<td class=celda_info nowrap>" . $fec_lle[0] . "</td>";                       // Fecha llegada 

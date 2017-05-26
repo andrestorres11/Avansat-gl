@@ -801,6 +801,24 @@ class Proc_anula
   }
  }
 
+  //---------------------------------------------
+  /*! \fn: getInterfParame
+  *  \brief:Verificar la interfaz con destino seguro esta activa
+  *  \author: Nelson Liberato
+  *  \date: 21/12/2015
+  *  \date modified: 21/12/2015
+  *  \return BOOL
+  */
+  function getInterfParame($mCodInterf = NULL, $nit = NULL) {
+    $mSql = "SELECT ind_estado
+                   FROM ".BASE_DATOS.".tab_interf_parame a
+                  WHERE a.cod_operad = '".$mCodInterf."'
+                    AND a.cod_transp = '".$nit."'";
+    $mMatriz = new Consulta($mSql, $this->conexion);
+    $mMatriz = $mMatriz->ret_matriz("a");
+    return $mMatriz[0]['ind_estado'] == '1'?true:false;
+  }
+
 }
 
 $proceso = new Proc_anula($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
