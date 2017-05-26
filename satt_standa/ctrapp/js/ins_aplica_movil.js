@@ -32,11 +32,11 @@ $(document).ready(function(){
 
 
 	//Autocompletables
-	var standa = $("#standaID").val();
-	var attributes = '&Ajax=on&standa=' + standa;
+	var Standa = $("#standaID").val();
+	var attributes = '&Ajax=on&standa=' + Standa;
 	var boton = "";
 	$("#nom_transpID").autocomplete({
-		source: "../" + standa + "/transp/ajax_transp_transp.php?Option=buscarTransportadora" + attributes,
+		source: "../" + Standa + "/transp/ajax_transp_transp.php?Option=buscarTransportadora" + attributes,
 		minLength: 3,
 		select: function(event, ui) {
 			boton = "<input type='button' id='nuevo' value='Listado' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='mostrar();'>";
@@ -172,7 +172,11 @@ function editarUsuarioMovil(tipo, objeto)
 
 function Guardar(action)
 {
-	if(action == "forward")
+	if(action == "reset")
+	{
+		RestablecerUsuario();
+	}
+	else if(action == "forward")
 	{
 		window.location.href ="index.php?window=central&cod_servic="+$("#cod_servicID").val()+"&menant="+$("#cod_servicID").val();
 	}
@@ -229,4 +233,61 @@ function CerrarPopuUS()
 {	
 	closePopUp();
 	mostrar();
+}
+
+function RestablecerUsuario()
+{
+	var standa = $("#standaID").val();
+	var formRest = getDataFormRest();
+	var parametros = "op=RestablecerUsuario&Ajax=on"+formRest;
+	$.ajax({
+		url: "../" + standa + "/ctrapp/ajax_insapl_movilx.php",
+		type: "POST",
+		data: parametros,
+		async: false,
+		success: function(data) {
+			console.log(data);
+			if(data=="ok")
+			{
+				msn = "Se ha re establecido correctamente la contraseña.";
+			}
+			else
+			{
+				msn = "ha ocurrido un error en el registro del usuario\npor favor intente mas tarde.";
+			}
+			LoadPopupJQNoButton('open', 'Usuario Movil', 'auto', 'auto', false, false, true);
+			var popup = $("#popID");
+			var msj = "<div style='text-align:center'>"+msn+"</b><br><br><br><br>";
+				msj += "<input type='button' name='no' id='noID' value='Cerrar' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";			
+			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+			popup.append(msj); // //lanza el popUp
+		}
+	});
+}
+
+function getDataFormRest()
+{
+	var mData = "";
+	var Validate = true;
+	//validacion del formato mail
+	var mail = $("#dir_emailxID");
+	mailregexp = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i 
+	if(mail.val() == '')
+	{
+		alert("Digite un correo para el conductor!");
+		mail.focus();
+		return false;
+	}
+	if( !mailregexp.test( mail.val() ) )
+	{
+		alert("Verificar el formato del correo del usuario!");
+		mail.focus();
+		return false;
+	}
+	mData +="&mail=" + $("#dir_emailxID").val();
+	$("#form1").find("input[type=hidden]").each(function(i, v){
+		mData +="&"+[$(this).attr("name")] + "=" + $(this).val();
+	});
+	//console.log(mData);
+	return mData;
 }

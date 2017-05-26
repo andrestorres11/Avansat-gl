@@ -29,6 +29,9 @@ class AjaxInsertarAutorizacion
 			case 'incativarUsuario':
 				$this -> incativarUsuario();
 				break;
+			case 'RestablecerUsuario':
+				$this -> RestablecerUsuario();
+				break;
 			
 			default:
 				echo "hola";
@@ -36,6 +39,15 @@ class AjaxInsertarAutorizacion
 		}
 	}
 
+	/*! \fn: buscarConductor
+     *  \brief: Busca el conductor
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
 	function buscarConductor(){
   
 		$query = "SELECT a.cod_tercer,
@@ -61,7 +73,16 @@ class AjaxInsertarAutorizacion
 
 	}
 
-	function datosConductor(){
+	/*! \fn: datosConductor
+     *  \brief: Obtiene los datos del conducto
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+	function datosConductor($estadoReturn = NULL){
 
 		include("../ctrapp/seguridad/AESClass.php");
 
@@ -89,10 +110,26 @@ class AjaxInsertarAutorizacion
 		$aes = new Cypher();
 
 		$tercer['cod_hashxx'] = $aes -> cypher($tercer['cod_tercer'], $tercer['fec_creaci']);
-  
-		echo json_encode($tercer);
+  		
+  		if($estadoReturn == NULL)
+  		{
+			echo json_encode($tercer);
+  		}
+  		else
+  		{
+  			return json_encode($tercer);
+  		}
 	}
 
+	/*! \fn: guardarUsuario
+     *  \brief: Realiza el registro y re establecimiento de las contraseñas de los usuarios
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
 	function guardarUsuario(){ 
     $pri_clave = "";
     for ($i=0; $i<6; $i++){
@@ -101,8 +138,21 @@ class AjaxInsertarAutorizacion
  
  	 	$pri_clave = base64_encode($pri_clave);
  	 	$decodedPass = base64_decode($pri_clave);
-
-		$query = "INSERT INTO ".BASE_DATOS.".tab_usuari_movilx ( 
+ 	 	if($_REQUEST['Restablecer'] == "Restablecer")
+ 	 	{
+ 	 		$query = "UPDATE ".BASE_DATOS.".tab_usuari_movilx SET 
+							  clv_usuari = '".$pri_clave."',
+							  cod_hashxx = '".$_REQUEST['cod_hashxx']."',
+							  ind_activo = '".$_REQUEST['ind_activo']."',
+							  usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+							  fec_modifi = NOW() 
+					  	WHERE 
+							  cod_tercer = '".$_REQUEST['cod_tercer']."' AND
+							  cod_usuari = '".$_REQUEST['cod_usuari']."';";
+ 	 	}
+ 	 	else
+ 	 	{
+ 	 		$query = "INSERT INTO ".BASE_DATOS.".tab_usuari_movilx ( 
 							  cod_tercer ,
 							  cod_usuari ,
 							  clv_usuari ,
@@ -121,8 +171,10 @@ class AjaxInsertarAutorizacion
 							  '".$_REQUEST['ind_admini']."',
 							  '".$_SESSION['datos_usuario']['cod_usuari']."',  
 							  NOW());";
+ 	 	}
+
 		$consulta = new Consulta($query, $this -> conexion);
- 
+
 		$nit = "SELECT a.clv_filtro 
 				  FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
 				 WHERE a.cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."'";
@@ -142,6 +194,7 @@ class AjaxInsertarAutorizacion
 			"nit_transp" => $nit,
 			"nom_databa" => BASE_DATOS,
 			"usr_creaci" => $_SESSION['datos_usuario']['cod_usuari'],
+			"usr_modifi" => $_SESSION['datos_usuario']['cod_usuari'],
 			"source" => "SAT",
 			"ind_admini" => $_REQUEST['ind_admini']
  
@@ -151,14 +204,20 @@ class AjaxInsertarAutorizacion
 
 			include URL_ARCHIV_STANDA."interf/app/APIClienteApp/controlador/UsuarioControlador.php";
 			$cliente = new UsuarioControlador();
- 
-			$respuesta = $cliente -> registrar($data); 
+			if($_REQUEST['Restablecer'] == "Restablecer")
+ 	 		{
+ 	 			$respuesta = $cliente -> actualizar($data);
+ 			}
+ 			else
+ 			{
+				$respuesta = $cliente -> registrar($data); 
+ 			}
  
 			if($respuesta == "ok"){
 
 	            $mCabece = 'MIME-Version: 1.0' . "\r\n";
-                $mCabece .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
-                $mCabece .= 'From: Aplicacion SAT ' . "\r\n";
+                $mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+                $mCabece .= 'From: Aplicacion SAT <avansat@intrared.net>' . "\r\n";
 
 				$tmpl_file = "planti/planti_usuari_appsat.html"; 
                 $thefile = implode("", file($tmpl_file));
@@ -167,7 +226,6 @@ class AjaxInsertarAutorizacion
                 eval($thefile);
                 $mHtmlxx = $r_file;
                 mail($_REQUEST['mail'], "Código de activación aplicación AVANSAT ", $mHtmlxx, $mCabece); 
- 
 				echo "ok";
 			}
 			else{
@@ -181,6 +239,15 @@ class AjaxInsertarAutorizacion
 
 	}
 
+	/*! \fn: listaUsuariosMoviles
+     *  \brief: Lista los usuarios regitrados para movil
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
 	public function listaUsuariosMoviles()
 	{
 		$mQuery = "SELECT   a.cod_transp, a.cod_tercer, c.cod_usuari, b.nom_tercer, b.nom_apell1, b.nom_apell2, b.dir_emailx, c.clv_usuari, IF( b.fec_creaci IS NULL OR a.fec_creaci = '', 'N/A', b.fec_creaci) AS fec_creaci, c.cod_tercer AS cod_pendie, c.ind_activo AS ind_estado
@@ -211,6 +278,15 @@ class AjaxInsertarAutorizacion
 		$_SESSION["DINAMIC_LIST"]   = $cList;
 	}
 
+	/*! \fn: incativarUsuario
+     *  \brief: Realiza la activacion e inactivacion de los usuarios moviles
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
 	public function incativarUsuario()
 	{
 		try
@@ -249,8 +325,32 @@ class AjaxInsertarAutorizacion
         echo "Error en la funcion incativarUsuario:",  $e->getMessage(), "\n";
       }
 	}
+
+	/*! \fn: RestablecerUsuario
+    * \brief: Restablece el usuario Movil
+    * \author: Edward Serrano
+    * \date: 24/05/2017
+    * \date modified: dia/mes/año
+    * \param: paramatro
+    * \return valor que retorna
+    */
+    public function RestablecerUsuario()
+    {
+      try
+      {
+        $cod_hashxx = json_decode($this->datosConductor(true));
+        $_REQUEST['cod_hashxx'] = $cod_hashxx->cod_hashxx;
+        //se declara para condicionar insert en la funcion guardarUsuario
+        $_REQUEST['Restablecer'] = "Restablecer";
+		$this->guardarUsuario();  
+
+      }
+      catch(Exception $e)
+      {
+        echo "Error en la funcion RestablecerUsuario:",  $e->getMessage(), "\n";
+      }
+    }
 }
 
 $ajax = new AjaxInsertarAutorizacion();
-
 ?>

@@ -125,6 +125,15 @@ class ListarusuariosMoviles {
         
     }
 
+     /*! \fn: Formulario
+     *  \brief: Formulario para re establecer y actualizar la informacion de los usuarios moviles 
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
     function Formulario() {
         
           # Nuevo frame ---------------------------------------------------------------
@@ -157,7 +166,6 @@ class ListarusuariosMoviles {
           $mHtml->Hidden(array( "name" => "Ajax",       "id" => "Ajax", 'value'=>"on"));
           
           $mData = self::getDataUsuario();
-           
           # Construye accordion
           $mHtml->Row("td");
           $mHtml->OpenDiv("id:contentID; class:contentAccordion");
@@ -169,22 +177,25 @@ class ListarusuariosMoviles {
                 $mHtml->Table("tr");
               
                   $mHtml->Label("Usuario APP:", "width:25%;"); 
-                  $mHtml->Info (array("name" => "usuarioapp[cod_usuari]" , "size"=>"50", "width" => "25%", "value"=>  $mData["cod_usuari"]) );
+                  $mHtml->Info (array("name" => "usuarioapp[cod_usuari]", "size"=>"50", "width" => "25%", "value"=>  $mData["cod_usuari"]) );
                   $mHtml->Label("Conductor:", "width:5%;");
                   $mHtml->Info (array("name" => "usuarioapp[nom_tercer]", "size"=>"50", "width" => "45%", "value"=>  $mData["nom_tercer"], "end"=> true) );
                   
 				          $mHtml->Label("Correo:", "width:25%; *:1;"); 
                   //$mHtml->Input (array("name" => "usuarioapp[nom_emailx]", "size"=>"30", "id" => "nom_emailxID",  "minlength" => "1", "maxlength" => "60", "width" => "25%", "value"=> $mData["dir_emailx"]) );
                   $mHtml->SetBody('<td><input type="text" name="usuarioapp[dir_emailx]" id="dir_emailxID" value="'.($mData["dir_emailx"]!=""?$mData["dir_emailx"]:"").'" /> </td>');
-                  $mHtml->StyleButton("name:reset; id:resetusr;   value:Re establecer; onclick:Guardar('reset'); align:center; colspan:2; end:yes; class:crmButton small save");
-
+                  $mHtml->Label("Doc.Conductor", "width:5%;");
+                  $mHtml->Info (array("name" => "usuarioapp[cod_tercer]", "size"=>"50", "width" => "45%", "value"=>  $mData["cod_tercer"], "end"=> true) );
                   $mHtml->StyleButton("name:send;  id:modificarID; value:Actualizar; onclick:Guardar('save'); align:center; colspan:2;  class:crmButton small save");
-                  $mHtml->StyleButton("name:clear; id:cancelarID; value:Cancelar; onclick:Guardar('forward'); align:center; colspan:2; class:crmButton small save");
+                  $mHtml->StyleButton("name:reset; id:resetusr;   value:Re establecer; onclick:Guardar('reset'); align:center; colspan:1; class:crmButton small save");
 
-                  $mHtml->Hidden(array( "name" => "usuarioapp[cod_tercer]", "id" => "cod_tercer", 'value'=>$mData["cod_tercer"]));
-                  $mHtml->Hidden(array( "name" => "usuarioapp[cod_transp]", "id" => "cod_transp", 'value'=>$mData["cod_transp"]));
+                  $mHtml->StyleButton("name:clear; id:cancelarID; value:Cancelar; onclick:Guardar('forward'); align:center; colspan:1; class:crmButton small save");
 
-                   
+                  $mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>$mData["cod_transp"]));
+                  $mHtml->Hidden(array( "name" => "cod_tercer", "id" => "cod_tercerID", 'value'=>$mData["cod_tercer"]));
+                  $mHtml->Hidden(array( "name" => "cod_usuari", "id" => "cod_usuariID", 'value'=>$mData["cod_usuari"]));
+                  $mHtml->Hidden(array( "name" => "ind_activo", "id" => "ind_activoID", 'value'=>$mData["ind_estado"]));
+
                 $mHtml->CloseTable("tr");
               $mHtml->CloseDiv();
             $mHtml->CloseDiv();
@@ -203,7 +214,15 @@ class ListarusuariosMoviles {
       echo $mHtml->MakeHtml();
     }
 
-
+	/*! \fn: getDataUsuario
+     *  \brief: Obtinene la informacion del usuario movil
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
     private function getDataUsuario()
     {
         $mQuery = "SELECT   a.cod_transp, a.cod_tercer, c.cod_usuari, b.nom_tercer, b.nom_apell1, b.nom_apell2, b.dir_emailx, c.clv_usuari, IF( b.fec_creaci IS NULL OR a.fec_creaci = '', 'N/A', b.fec_creaci) AS fec_creaci, c.cod_tercer AS cod_pendie, c.ind_activo AS ind_estado
@@ -220,33 +239,47 @@ class ListarusuariosMoviles {
         return $nit[0];
     }
 
-
+    /*! \fn: Transaccion
+     *  \brief: Realiza la actualizacio del usuario movil
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
     public function Transaccion()
     {
       switch ($_REQUEST['action']) {
         case 'save':
-          if($_REQUEST['usuarioapp']['cod_tercer'] != "")
+          if($_REQUEST['cod_tercer'] != "")
           {
             if(self::ActualizarUsuario($_REQUEST)=="ok")
             {
-              echo "Se actualizo correctamente el usuario";
+              $mensaje = "Se actualizo correctamente el usuario <b>".$_REQUEST['cod_usuari']."</b><br><br><button class='crmButton small save' onclick='$(this).parents().get( 6 ).remove();'>Cerrar</button> ";
+              $mens = new mensajes();
+              $mens->correcto("Actulizacion Usuario Movil", $mensaje);
               $_REQUEST["opcion"] = "1";
-              $_REQUEST["conductor"] = $_REQUEST["usuarioapp"]["cod_tercer"];
+              $_REQUEST["conductor"] = $_REQUEST["cod_tercer"];
               unset($_REQUEST["action"]);
               unset($_REQUEST["usuarioapp"]);
               self::Formulario();
             }
             else
             {
-              echo "No se pudo actualizar el usuario";
+              $mensaje = "No se pudo actualizar el usuario <b>".$_REQUEST['cod_usuari']."</b><br><br><button class='crmButton small save' onclick='window.location.href =\"index.php?window=central&cod_servic=\"+$(\"#cod_servicID\").val()+\"&menant=\"+$(\"#cod_servicID\").val()'>Cerrar</button> ";
+              $mens = new mensajes();
+              $mens->error("", $mensaje);
             }
           }
           else
           {
-            echo "no tiene codigo de tercero";
+            $mensaje = "No se pudo actualizar el usuario <b>".$_REQUEST['cod_usuari']."</b><br><br><button class='crmButton small save' onclick='window.location.href =\"index.php?window=central&cod_servic=\"+$(\"#cod_servicID\").val()+\"&menant=\"+$(\"#cod_servicID\").val()'>Cerrar</button> ";
+              $mens = new mensajes();
+              $mens->error("", $mensaje);
           }
           break;
-        
+
         default:
           echo "Sin opcion";
           break;
@@ -271,7 +304,7 @@ class ListarusuariosMoviles {
                               dir_emailx = '".$_REQUEST['usuarioapp']['dir_emailx']."',
                               usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                                 fec_modifi = NOW()
-                        WHERE cod_tercer = '".$_REQUEST['usuarioapp']['cod_tercer']."'";
+                        WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'";
         $consulta = new Consulta($mSql, self::$conexion, "BR");
         if($consulta)
         {
