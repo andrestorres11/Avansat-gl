@@ -443,6 +443,9 @@ class notifi
 					#nom_asuntoID{
 						text-transform: uppercase;
 					}
+					label, input[type=text], textarea{
+						text-transform: uppercase;
+					}
 					
 	              </style>";
 	    } catch (Exception $e) {
