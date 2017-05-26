@@ -2510,6 +2510,8 @@ class Despachos
                                     "nom_ciudes" => "Destino", 
                                     "num_desext" => "N&uacute;mero de Viaje", 
                                     "nom_rutasx" => "Ruta", 
+                                    "num_solici" => "No. Solicitud", 
+                                    "nom_produc" => "Mercancia", 
                                     "nom_conduc" => "Conductor", 
                                     "cod_conduc" => "C.C.", 
                                     "con_telmov" => "Celular", 
@@ -2517,7 +2519,6 @@ class Despachos
                                     "con_telef1" => "Telefono", 
                                     "tip_transp" => "Tipo Transportadora", 
                                     "num_placax" => "Placa", 
-                                    "nom_produc" => "Mercancia", 
                                     "tip_vehicu" => "Tipo Vehiculo", 
                                     "can_noveda" => "No. Novedades" 
                                     );
@@ -3217,11 +3218,22 @@ class Despachos
             $mHtml->OpenDiv("id:form_llegadaID; class:contentAccordionForm");
               $mHtml->SetBody('<table width="40%" cellspacing="0" cellpadding="3" border="0" align="left"><tbody>');
                 $mHtml->Row();
-
-                $mHtml->Label( '<b>Observacion de LLegada :</b>', array("align"=>"left", "class"=>"celda_info", "width"=>"100px") );
-                $mHtml->TextArea( '', array("width"=>"15%", "align"=>"left", "class"=>"celda_info", "cols"=>"50", "rows"=>"2", "id"=>"obs_llegadID", "name"=>"obs_llegad") );
-                $mHtml->Button( array("value"=>"Llegada", "onclick"=>"guarllegad()", "class"=>"crmButton small save", "align"=>"left") );
-
+                #verico que tenga llegada el despacho
+                $mDataLlegada = self::getDespLlegada($_REQUEST['despac']);
+                if($mDataLlegada == NULL)
+                {
+                    $mHtml->Label( '<b>Observacion de LLegada :</b>', array("align"=>"left", "class"=>"celda_info", "width"=>"100px") );
+                    $mHtml->TextArea( '', array("width"=>"15%", "align"=>"left", "class"=>"celda_info", "cols"=>"50", "rows"=>"2", "id"=>"obs_llegadID", "name"=>"obs_llegad") );
+                    $mHtml->Button( array("value"=>"Llegada", "onclick"=>"guarllegad()", "class"=>"crmButton small save", "align"=>"left") );
+                }
+                else
+                {
+                    $mHtml->Label( '<b>Fecha de llegada :</b> '.$mDataLlegada[0]['fec_llegad'], array("align"=>"left", "class"=>"celda_etiqueta", "width"=>"33%", "colspan"=>"2") );
+                    $mHtml->Label( '<b>Usuario Notificacion :</b> '.$mDataLlegada[0]['usr_modifi'], array("align"=>"left", "class"=>"celda_etiqueta", "width"=>"33%", "colspan"=>"2") );
+                    $mHtml->Label( '<b>Fecha de registro :</b> '.$mDataLlegada[0]['fec_modifi'], array("align"=>"left", "class"=>"celda_etiqueta", "width"=>"33%", "colspan"=>"2", "end"=>TRUE) );
+                    $mHtml->Label( '<b>Observacion de llegada :</b> '.$mDataLlegada[0]['obs_llegad'], array("align"=>"left", "class"=>"celda_etiqueta", "width"=>"100%", "colspan"=>"6") );
+                    
+                }
               $mHtml->CloseTable('tr');
             $mHtml->CloseDiv();
           $mHtml->CloseDiv();
@@ -3508,7 +3520,8 @@ class Despachos
                         IF( a.gps_usuari IS NULL OR a.gps_usuari = '', ( IF(x.nom_usrgps IS NULL OR x.nom_usrgps = '', '$mObs[0]', x.nom_usrgps) ), a.gps_usuari ) AS gps_usuari, 
                         IF( a.gps_paswor IS NULL OR a.gps_paswor = '', ( IF(x.clv_usrgps IS NULL OR x.clv_usrgps = '', '$mObs[0]', x.clv_usrgps) ), a.gps_paswor ) AS gps_paswor, 
                         IF( a.fec_citcar IS NULL OR a.fec_citcar = '0000-00-00', '$mObs[1]', DATE_FORMAT( CONCAT( a.fec_citcar, ' ', a.hor_citcar ), '%H:%i %d-%m-%Y') ) AS fec_citcar, 
-                        IF( a.gps_operad IS NULL OR a.gps_operad = '', ( IF(y.nom_operad IS NULL OR y.nom_operad = '', '$mObs[0]', UPPER(y.nom_operad)) ), UPPER(a.gps_operad) ) AS nom_opegps 
+                        IF( a.gps_operad IS NULL OR a.gps_operad = '', ( IF(y.nom_operad IS NULL OR y.nom_operad = '', '$mObs[0]', UPPER(y.nom_operad)) ), UPPER(a.gps_operad) ) AS nom_opegps,
+                        k.num_solici 
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
@@ -8874,6 +8887,36 @@ class Despachos
                   WHERE num_despac = '{$mNumDespac}' 
                     AND (nom_destin IS NULL OR nom_destin = '') ";
         new Consulta( $mSql, $this -> conexion );
+    }
+
+    /*! \fn: updateDestin
+     *  \brief: Actualiza los destinatarios de un despachos que nombre sea NULL o Sctring Vacio '' reemplazandolo por -
+     *  \author: Ing. Fabian Salinas
+     *  \date: 12/05/2016
+     *  \date modified: dd/mm/aaaa
+     *  \param: mNumDespac  Integer  Numero del despacho
+     *  \return: 
+     */
+    private function getDespLlegada($mNumDespac){
+        $mSql = "SELECT a.fec_llegad, 
+                        a.obs_llegad,
+                        a.usr_modifi,
+                        a.fec_modifi
+                   FROM ".BASE_DATOS.".tab_despac_despac a
+                  WHERE a.num_despac = '{$mNumDespac}' 
+                  AND a.fec_llegad IS NOT NULL";
+
+        $consulta   = new Consulta($mSql, $this -> conexion);
+        $mResultLlegada = $consulta -> ret_matriz(); 
+        #valido que tenga informacion la conuslta
+        if(sizeof($mResultLlegada) > 0)
+        {
+            return $mResultLlegada;
+        }
+        else
+        {
+            return NULL;
+        }
     }
 }
 

@@ -18,8 +18,40 @@ class Proc_ins_despac
     {
      $this -> formulario();
      $is_scv = substr($_REQUEST["archivo"],0,-3);
-     if($_REQUEST["archivo"])
-      $this -> insertar();
+     $validacion = true;
+     #valido informacion del acrhivo adjunto
+     if($_FILES["archivo"])
+     {
+        if($_FILES["archivo"]["error"] != "0")
+        {
+          $validacion = false;
+          echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El archivo Contiene error.</img>";
+          die();
+        }
+        if($_FILES["archivo"]["size"] >= $_REQUEST['MAX_FILE_SIZE'])
+        {
+          $validacion = false;
+          echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El tamaño del archivo supera el maximo permitido. tamaño maximo(".$_REQUEST['MAX_FILE_SIZE'].").</img>";
+          die();
+        }
+
+        if($_FILES["archivo"]["type"] != "text/csv" && $_FILES["archivo"]["type"] != "application/csv" && $_FILES["archivo"]["type"] != "application/vnd.ms-excel")
+        {
+          $validacion = false;
+          echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El formato del archivo no es permitido. formato requerido CSV.</img>";
+          die();
+        }
+     }
+     else
+     {
+        $validacion = false;      
+     }
+
+     if( $validacion == true  )
+     {
+        $this -> insertar();
+     }
+
     }
 
     function formulario()
@@ -52,14 +84,16 @@ class Proc_ins_despac
         $mensaje_cod = 0;
         $i = 1;
 
-        if(!$archivo = fopen($_REQUEST['_FILES']['archivo']['tmp_name'], "r"))
+        if(!$archivo = fopen($_FILES['archivo']['tmp_name'], "r"))
+        {
         	echo "<br>No se Pudo Abrir el Archivo";
-
+        }
+        else
+        {
             $e = 0;
-            while ($datos = fgetcsv ($archivo, 1000, ";"))
+            while ($datos = fgetcsv ($archivo, 1000, ","))
             {
-                $num_campos = count($datos);
-
+               $num_campos = count($datos);
                 $nitcle = $datos[3];
                 $indnit = 0;
 
@@ -71,37 +105,58 @@ class Proc_ins_despac
                                 $indnit = 1;
                         }
                 }
-
+                
                 if($indnit)
-                   echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El NIT ".$nitcle." Relacionado al manifiesto # ".$datos[0]." debe ir sin Puntos,Comas, Guiones u otro tipo de Caracteres.</img>";
+                {
+                   if($datos[0]!="Manifiesto")
+                   {
+                    echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El NIT ".$nitcle." Relacionado al manifiesto # ".$datos[0]." debe ir sin Puntos,Comas, Guiones u otro tipo de Caracteres.</img>";
+                   }
+                }
                 else if(strlen($nitcle) > 10)
+                {
                      echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El NIT ".$nitcle." Relacionado al manifiesto # ".$datos[0]." no debe Contener mas de 10 digitos.</img>";
+                }
                 else
                 {
                         $consulta = new Consulta("START TRANSACTION", $this -> conexion);
-                        if(!$mensaje_reg = $this -> validar_registro($datos))
+                        $query = "SELECT a.num_despac, a.cod_manifi, a.ind_anulad
+                                    FROM ".BASE_DATOS.".tab_despac_despac a
+                                      WHERE a.cod_manifi = '".$datos[0]."' ";
+                        $consulta = new Consulta($query, $this -> conexion);
+                        $mDespacho = $consulta -> ret_arreglo();
+                        if($mDespacho[0]['ind_anulad']=='A' || $mDespacho==FALSE)
                         {
-                                $this -> Subir($datos);
+                          if(!$mensaje_reg = $this -> validar_registro($datos))
+                          {
+                                  $this -> Subir($datos);
+                          }
+                          else
+                          {
+                                  if($e == 0)
+                                  {
+                                          $formulario = new Formulario ("index.php\" ","post","<b>RESULTADOS</b>","f");
+                                          $formulario -> linea("INFORMACION DE LA CARGA DEL ARCHIVO",1);
+                                          $formulario -> linea("Los Siguientes Datos No subieron al Sistema",0);
+                                          $formulario -> nueva_tabla();
+                                  }
+
+                                  echo "<br>Manifiesto ".$datos[0]." | ".$mensaje_reg;
+                                  echo "<hr>";
+                                  $e++;
+                          }
                         }
                         else
                         {
-                                if($e == 0)
-                                {
-                                        $formulario = new Formulario ("index.php\" ","post","<b>RESULTADOS</b>","f");
-                                        $formulario -> linea("INFORMACION DE LA CARGA DEL ARCHIVO",1);
-                                        $formulario -> linea("Los Siguientes Datos No subieron al Sistema",0);
-                                        $formulario -> nueva_tabla();
-                                }
-
-                                echo "<br>Manifiesto ".$datos[0]." | ".$mensaje_reg;
-                                echo "<hr>";
-                                $e++;
+                            echo "<br>Manifiesto ".$datos[0]." ya se encuenta registrado con el despacho: ".$mDespacho[0];
+                            echo "<hr>";
                         }
                 }
             }
 
             if($formulario)
             $formulario -> cerrar();
+        }
         fclose($archivo);
     }
 
@@ -127,7 +182,7 @@ class Proc_ins_despac
        if(!$existe = $consulta -> ret_arreglo())
        {
             $mensaje = "La ruta Origen " .$ciudades[0]." Destino ".$ciudades[1]." No esta creada o no esta Asignada a la transportadora " ;
-    	}
+    	 }
 
 
              //Valida la agencia
@@ -166,7 +221,7 @@ class Proc_ins_despac
                              if($_REQUEST[subir])
                              {
                                      $this -> ins_tercer($registro[3],$registro[4],"","N");
-                                     $this -> act_activi($registro[3],10);
+                                     $this -> act_activi($registro[3],3);//cambio el generado a 3 estaba en 10
                                      echo "<br>Crea el Generador";
                              }
                              else
@@ -179,12 +234,12 @@ class Proc_ins_despac
                      if($generador == 1)
                      {
                              //Codigo del Generador = 10
-                             $activi = $this -> is_activi($registro[3],10);
+                             $activi = $this -> is_activi($registro[3],3);//cambio el generado a 3 estaba en 10
                              if(!$activi)
                              {
                                      if($_REQUEST[subir])
                                      {
-                                             $this -> act_activi($registro[3],10);
+                                             $this -> act_activi($registro[3],3);//cambio el generado a 3 estaba en 10
                                              echo "<br>Actualiza la actividad del generador<br>";
                                      }
                                      else
@@ -193,7 +248,7 @@ class Proc_ins_despac
                                      }
                              }
                      }//fin activi
-             }
+              }
 
              //valida que el conductor exista en la BD
              //codigo conductor 16
@@ -219,13 +274,13 @@ class Proc_ins_despac
              {
                 $this -> act_celular($registro[12],$registro[16]);
                 //Codigo del Conductor = 16
-                $activi = $this -> is_activi($registro[12],16);
+                $activi = $this -> is_activi($registro[12],4);//cambio la actividad a 4 estaba en 16
 
                   if(!$activi)
                   {
                       if($_REQUEST[subir])
                       {
-                         $this -> act_activi($registro[12],16);
+                         $this -> act_activi($registro[12],4);//cambio la actividad a 4 estaba en 16
                          echo "<br>Actualiza la actividad del Conductor<br>";
                       }
                       else
@@ -244,7 +299,7 @@ class Proc_ins_despac
                   {
                     $nombre = $registro[19]." ".$registro[20]." ".$registro[21];
                     $this -> ins_conpos($registro[18],$nombre,$registro[14],$registro[15],$registro[22],"C",$registro[23]);
-                    $activi = $this -> is_activi($registro[18],18);
+                    $activi = $this -> is_activi($registro[18],6);//cambio la actividad a 4 estaba en 18
                      echo "<br>Crea el Poseedor";
                      $poseed=1;
                   }
@@ -258,13 +313,13 @@ class Proc_ins_despac
              if($poseed == 1)
              {
                 //Codigo del Poseedor = 18
-                $activi = $this -> is_activi($registro[18],18);
+                $activi = $this -> is_activi($registro[18],6);//cambio la actividad a 4 estaba en 18
 
                   if(!$activi)
                   {
                       if($_REQUEST[subir])
                      {
-                         $this -> act_activi($registro[18],18);
+                         $this -> act_activi($registro[18],6);//cambio la actividad a 4 estaba en 18
                          echo "<br>Actualiza la actividad del Poseedor<br>";
                       }
                       else
@@ -284,7 +339,7 @@ class Proc_ins_despac
                   {
                     $nombre = $registro[25]." ".$registro[26]." ".$registro[27];
                     $this -> ins_tercer($registro[24],$nombre, $registro[28], "C", $registro[29]);
-                    $this -> act_activi($registro[24],15);
+                    $this -> act_activi($registro[24],5);//cambio la actividad a 5 estaba en 15
                      echo "<br>Crea el Propietario";
                      $propie =1;
                   }
@@ -298,12 +353,12 @@ class Proc_ins_despac
              if($propie == 1)
              {
                 //Codigo del Propietario = 15
-                $activi = $this -> is_activi($registro[24],15);
+                $activi = $this -> is_activi($registro[24],5);//cambio la actividad a 5 estaba en 15
                   if(!$activi)
                   {
                       if($_REQUEST[subir])
                       {
-                         $this -> act_activi($registro[24],15);
+                         $this -> act_activi($registro[24],5);//cambio la actividad a 5 estaba en 15
                          echo "<br>Actualiza la actividad del Propietario<br>";
                       }
                       else
@@ -322,6 +377,7 @@ class Proc_ins_despac
 
               if(!$placa[0])
               {
+                /*se inabilita opcion ya que los codigos enviados son diferentes
                 if($_REQUEST[subir])
                 {
                      $this ->  ins_vehicu($registro[5],$registro[6], $registro[7],$registro[8],$registro[9],
@@ -332,9 +388,10 @@ class Proc_ins_despac
                 else
                 {
                  $mensaje .= "|Vehiculo ".$registro[5];
-                }
+                }*/
+                $mensaje .= "|Vehiculo ".$registro[5]." no se encuenta registrado, registre el vehiculo en la plataforma e intente nuevamente.";
              }
-
+/*
              if(!$this -> is_linea($registro[6], $registro[7]))
              {
                  $mensaje .= "| La Linea ".$registro[6].'-'.$registro[7]." No es Valida";
@@ -350,8 +407,8 @@ class Proc_ins_despac
              if(!$this -> is_config($registro[11]))
              {
                  $mensaje .= "| La Configuracion ".$registro[11]." No es Valida Segun el Estandar del Ministerio de                                    Transporte";
-             }
-
+             }*/
+             /*No existe tabla en gl por eso la omito es
              $query = "SELECT cod_mercan
                        FROM ".BASE_DATOS.".tab_genera_mercan
                        WHERE cod_mercan = '".$registro[30]."'";
@@ -370,7 +427,7 @@ class Proc_ins_despac
                     $mensaje .= "|Mercancia ".$registro[30];
                  }
              }
-
+              */
              //query ciuori
              $query = "SELECT cod_ciudad
                        FROM  ".BASE_DATOS.".tab_genera_ciudad
@@ -482,15 +539,39 @@ class Proc_ins_despac
       $consulta = new Consulta($query, $this -> conexion);
       $is_manifi= $consulta -> ret_arreglo();
 
+
+      /*pais de origen para gl es*/
+      $query = "SELECT a.cod_paisxx,a.cod_depart
+            FROM ".BASE_DATOS.".tab_genera_ciudad a
+          WHERE a.cod_ciudad = ".$registro[31]." ";
+    
+      $consulta = new Consulta($query, $this -> conexion);
+      $paidepori = $consulta -> ret_matriz();
+      
+      $query = "SELECT a.cod_paisxx,a.cod_depart
+            FROM ".BASE_DATOS.".tab_genera_ciudad a
+            WHERE a.cod_ciudad = ".$registro[32]." ";
+
+      $consulta = new Consulta($query, $this -> conexion);
+      $paidepdes = $consulta -> ret_matriz();
+
+      //Se obtiene la informacion del conductor
+      $query = "SELECT a.num_telef1, a.num_telmov, a.dir_domici
+            FROM ".BASE_DATOS.".tab_tercer_tercer a
+            WHERE a.cod_tercer = ".$registro[12]." ";
+
+      $consulta = new Consulta($query, $this -> conexion);
+      $conduc = $consulta -> ret_matriz();
+
       //Se trae la aseguradora y numero de poliza actual
-      $query = "SELECT a.cod_asegra,a.num_poliza
+      /*esta tabla no existe en gl es$query = "SELECT a.cod_asegra,a.num_poliza
                   FROM ".BASE_DATOS.".tab_poliza_tercer a
                  WHERE a.cod_tercer = '".NIT_TRANSPOR."' AND
                        a.fec_modifi = (select Max(b.fec_modifi) from tab_poliza_tercer b where b.cod_tercer = a.cod_tercer)
             ";
 
       $consulta = new Consulta($query, $this -> conexion);
-      $datospoli = $consulta -> ret_arreglo();
+      $datospoli = $consulta -> ret_arreglo();*/
 
       if(!$is_manifi)
       {
@@ -500,7 +581,7 @@ class Proc_ins_despac
         $registro[42] = "1";
 
        //query de insercion de despachos
-       $query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
+       /*$query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
                  (`num_despac`, `cod_manifi`, `fec_despac`, `cod_tipdes`,
                   `cod_ciuori`, `cod_ciudes`, `val_flecon`, `val_despac`,
                   `val_antici`, `val_retefu`, `nom_carpag`, `nom_despag`,
@@ -513,29 +594,82 @@ class Proc_ins_despac
                  '".$registro[31]."','".$registro[32]."','".$registro[35]."','".$registro[36]."',
                  '".$registro[37]."','$retefu','".$registro[38]."','".$registro[39]."','".$registro[1]."',
                  '".$registro[40]."','".$registro[41]."','".$registro[42]."','Insertado por Interfaz Web',
-                 '".$registro[34]."','N','R','".$datospoli[0]."','".$datospoli[1]."','$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual') ";
+                 '".$registro[34]."','N','R','".$datospoli[0]."','".$datospoli[1]."','$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual') ";*/
+      
+        //val_declara y val_pesoxx lo dejo en nulo porq no encuentro campo
+        //gps_operad, gps_usuari, gps_paswor, cod_asegur, num_poliza, num_carava los quito porque no estan en la tabla
+        $query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
+          (
+            num_despac, cod_manifi, fec_despac,
+
+            cod_client, cod_paiori, cod_depori,
+
+            cod_ciuori, cod_paides, cod_depdes,
+
+            cod_ciudes, val_flecon, val_despac,
+
+            val_antici, val_retefu, nom_carpag,
+
+            nom_despag, cod_agedes, fec_pagoxx,
+
+            obs_despac, val_declara, usr_creaci,
+
+            fec_creaci, val_pesoxx, con_telef1,
+
+            con_telmov, con_domici, cod_tipdes
+
+            
+          )
+          VALUES 
+          (
+            ".$nuevo_consec.", '".$registro[0]."', '$fec_actual', 
+
+            ".$registro[3].", ".$paidepori[0][0].", ".$paidepori[0][1].",
+
+            ".$registro[31].", ".$paidepdes[0][0].", ".$paidepdes[0][1].",
+
+            ".$registro[32].", NULL, NULL,
+
+            NULL, NULL, NULL,
+
+            NULL, '".$registro[1]."', NULL,
+
+            '".$registro[47]."', NULL, '".$_REQUEST[usuario]."',
+
+            '$fec_actual', NULL, '".$conduc[0][0]."',
+
+            '".$conduc[0][1]."', '".$conduc[0][2]."', '".$registro[33]."'
+          )";
 
        $consulta = new Consulta($query, $this -> conexion, "R");
 
+       $query = "SELECT a.clv_filtro
+            FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
+            WHERE a.cod_perfil = ".$datos_usuario['cod_perfil']." ";
+
+       $consulta = new Consulta($query, $this -> conexion);
+       $nit_trans = $consulta -> ret_matriz();      
+       $nit_trans = $nit_trans[0][clv_filtro];
        //query de insercion de despachos vehiculos
         $query = "INSERT INTO ".BASE_DATOS.".tab_despac_vehige
                  (num_despac, cod_transp, cod_agenci, cod_rutasx,
                   cod_conduc, num_placax, obs_medcom, fec_salipl,
                   fec_llegpl, ind_activo, usr_creaci,
                   fec_creaci, usr_modifi, fec_modifi)
-                 VALUES ('$nuevo_consec','".NIT_TRANSPOR."','".$registro[1]."','$ruta',
+                 VALUES ('$nuevo_consec','".$nit_trans."','".$registro[1]."','$ruta',
                  '".$registro[12]."','".$registro[5]."','".$registro[16]."',
                  '$fec_actual','$fec_actual','R','$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual') ";
 
-       $consulta = new Consulta($query, $this -> conexion, "R");
-       $this -> ins_remesa($nuevo_consec,$registro[0],$registro[46],$registro[43], $registro[44],$registro[45],$registro[30],$registro[3],$registro[38],$registro[39]);
+       //$consulta = new Consulta($query, $this -> conexion, "R");
+       $consulta = new Consulta($query, $this -> conexion, "RC");
+       //$this -> ins_remesa($nuevo_consec,$registro[0],$registro[46],$registro[43], $registro[44],$registro[45],$registro[30],$registro[3],$registro[38],$registro[39]);
 
           echo "<br><b>Se ha subido el Despacho $nuevo_consec con el Manifiesto ".$registro[0]." correctamente al Sistema al sistema </b><br>";
       }//fin manifi
       else
       {
                  //ins_remesa($despac,$manifi,$remesa,$peso, $volumen,$empaque,$mercan,$client,$remite,$destin)
-          $this -> ins_remesa($is_manifi[0],$registro[0],$registro[46],$registro[43], $registro[44],$registro[45],$registro[30],$registro[3],$registro[38],$registro[39]);
+          //$this -> ins_remesa($is_manifi[0],$registro[0],$registro[46],$registro[43], $registro[44],$registro[45],$registro[30],$registro[3],$registro[38],$registro[39]);
       }
     }//fin funcion
 
@@ -625,7 +759,7 @@ class Proc_ins_despac
                       VALUE ('$nit','$activi') ";
             $insert = new Consulta($query, $this -> conexion, "R");
 
-            if($activi == 16)
+            if($activi == 4)
             {
                      $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_conduc (cod_tercer, cod_tipsex, cod_grupsa,
                                           cod_califi, usr_creaci, fec_creaci,num_catlic)
@@ -633,7 +767,8 @@ class Proc_ins_despac
                     $insert = new Consulta($query, $this -> conexion, "R");
 
             }
-            if($activi == 10)
+            /*se comenta porque esa tabla no existe en gl
+            if($activi == 3)
             {
 
                     $query = "INSERT INTO tab_tercer_client (cod_tercer, cod_estper, cod_terreg,
@@ -641,7 +776,7 @@ class Proc_ins_despac
                              VALUES ('$nit','1','1','$_REQUEST[usuario]', NOW())";
                     $insert = new Consulta($query, $this -> conexion, "R");
 
-            }
+            }*/
     }
 
     //si los datos no cuadran debe ingresar datos no registrados
@@ -650,7 +785,7 @@ class Proc_ins_despac
 
     {
 
-               $query = "SELECT a.cod_asegra
+               /*$query = "SELECT a.cod_asegra
                  		   FROM ".BASE_DATOS.".tab_poliza_tercer a
                 		  WHERE a.cod_tercer = '".NIT_TRANSPOR."' AND
                       			a.fec_modifi = (select Max(b.fec_modifi) from tab_poliza_tercer b where b.cod_tercer = a.cod_tercer)
@@ -670,6 +805,18 @@ class Proc_ins_despac
                           cod_califi)
                          VALUE ('$placa','$marca','$linea','$modelo',
                                  '$cod_asesoa',
+                                 '$color','$carroc','$config',
+                                 '$cod_propie','$cod_poseed','$cod_conduc',
+                                 '$_REQUEST[usuario]', NOW(),1,1) ";
+               $insert = new Consulta($query, $this -> conexion, "R");*/
+
+              $query = "INSERT INTO ".BASE_DATOS.".tab_vehicu_vehicu
+                         (num_placax,cod_marcax,cod_lineax,ano_modelo,
+                          cod_colorx,cod_carroc,num_config,cod_propie,
+                          cod_tenedo,cod_conduc,
+                          usr_creaci,fec_creaci,cod_tipveh,
+                          cod_califi)
+                         VALUE ('$placa','$marca','$linea','$modelo',
                                  '$color','$carroc','$config',
                                  '$cod_propie','$cod_poseed','$cod_conduc',
                                  '$_REQUEST[usuario]', NOW(),1,1) ";
@@ -759,7 +906,7 @@ class Proc_ins_despac
     function ins_remesa($despac,$manifi,$remesa,$peso, $volumen,$empaque,$mercan,$client,$remite,$destin)
     {
 
-           $query = "SELECT cod_remesa
+           echo $query = "SELECT cod_remesa
                      FROM ".BASE_DATOS.".tab_despac_remesa
                      WHERE  cod_remesa = '".$remesa."' AND
                             cod_manifi = '".$manifi."'";

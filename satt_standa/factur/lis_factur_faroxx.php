@@ -140,19 +140,23 @@ class FacturFaro
             </script>';
         $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "Facturacion Faro", "formulario");
         $feactual = date("Y-m-d");
+        $mesActual= date("m");
+        $anoActual= date("Y");
+        $fecinicial=date("Y-m-d",strtotime((($mesActual=='01')?$anoActual-1:$anoActual)."-".(($mesActual=='01')?"12":$mesActual-1)."-21"));
+        $fecfinal=date("Y-m-d",strtotime($anoActual."-".($mesActual)."-20"));
         $formulario -> nueva_tabla();
 
         echo "<tr><td align='right'  class='celda_titulo'>";
         echo "Fecha Inicial de Salida: &nbsp;";
         echo "</td>";
         echo '<td class="celda_info">';
-        echo "<input type='text' class='campo' size='10' id='feciniID' name='fecini' value='".$fecactual."'> ";
+        echo "<input type='text' class='campo' size='10' id='feciniID' name='fecini' value='".$fecinicial."'> ";
         echo "</td>";
         echo "<td align='right' class='celda_titulo'>";
         echo "Fecha Final de Salida: &nbsp;";
         echo "</td>";
         echo '<td class="celda_info">';
-        echo "<input type='text' class='campo' size='10' id='fecfinID' name='fecfin' value='".fecactual."'> ";
+        echo "<input type='text' class='campo' size='10' id='fecfinID' name='fecfin' value='".$fecfinal."'> ";
         echo "</td></tr>";
 
         echo "<tr><td align='right' class='celda_titulo'>";
