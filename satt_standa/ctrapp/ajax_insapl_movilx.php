@@ -219,6 +219,8 @@ class AjaxInsertarAutorizacion
                 $mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
                 $mCabece .= 'From: Aplicacion SAT <avansat@intrared.net>' . "\r\n";
 
+                $mYear = date("Y");
+                $banner = "https://".$_SERVER['HTTP_HOST']."/ap/".BASE_DATOS."/images/banner.jpg";
 				$tmpl_file = "planti/planti_usuari_appsat.html"; 
                 $thefile = implode("", file($tmpl_file));
                 $thefile = addslashes($thefile);
