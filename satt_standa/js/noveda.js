@@ -9,7 +9,6 @@
  *  \warning: 
  */
 
-
 function UpperText(campo) {
 	var ant_text = campo.val();
 	campo.val(ant_text.toUpperCase());
@@ -1357,7 +1356,7 @@ function eliminarNove(row)
    		var ind_estado = objeto.find("input[id^=ind_estado]").val();
 	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=3&cod_noveda="+cod_noveda+"&ind_estado="+ind_estado;
 	 } catch (e) {
-		console.log("Error Function editarNove: " + e.message + "\nLine: " + e.lineNumber);
+		console.log("Error Function eliminarNove: " + e.message + "\nLine: " + e.lineNumber);
 		return false;
 	}
 }
@@ -1420,3 +1419,398 @@ function VolverNovedad()
 	}
  }
 
+/*! \fn: ValidarProtoNoveda
+* \brief: Validad si la novedad tiene protocolo
+* \author: Edward Serrano
+* \date: 10/05/2017
+* \date modified: dia/mes/año
+* \param: novedad
+* \return 
+*/
+function ValidarProtoNoveda(cod_noveda, cod_transp)
+{
+	try
+	{
+		LoadPopupJQ3('open', 'Solucion Novedades NEM ', 'auto', ($(window).width() - 400), false, false, true);
+		var pop = $("#popID");
+		var Standa = $("#dir_aplicaID").val();
+		var despac = $("#num_despacID").val();
+        var attr_ = "Ajax=on&Option=getFormValidaProNove&cod_noveda="+cod_noveda+"&despac="+despac+"&cod_transp="+cod_transp;
+        var attr = "&standa="+Standa;
+        $.ajax({
+            type: "POST",
+            url: "../"+ Standa +"/inform/class_despac_trans3.php",
+            data: attr_ + attr,
+            async: false,
+            beforeSend: function (obj)
+            {
+            	pop.parent().children().children('.ui-dialog-titlebar-close').hide();
+            },
+            success: function( datos )
+            {
+               pop.append(datos);
+            }
+        });
+	}
+	catch(e)
+	{
+		console.log("erro en la funcion ValidarProtoNoveda:" + e.message + "\nLine: " + e.lineNumber );
+	}
+}
+
+/*! \fn: getNovedad
+ *  \brief: array de novedades existenes
+ *  \author: Edward Serrano
+ *  \date: 12/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function getNovedadAutocomple() 
+{
+    try 
+    {
+        var standa = $("#dir_aplicaID").val();
+        var num_despac = $("#despac").val();
+        $("#sol_mNovedaID").autocomplete({
+            source: "../"+ standa +"/inform/class_despac_trans3.php?Ajax=on&Option=getNovedadAutocomple&num_despac="+num_despac,
+            minLength: 1,
+              select: function(event, ui) {
+                  $("#sol_mNovedaID").val(ui.item.id);
+                  $("#cod_novedaSolID").val(ui.item.id);
+	              if(ui.item.label.search("(ST)")!="-1")
+	              {
+	              	$("#ind_soltieID").val("1");
+	              }
+	              else
+	              {
+	                //$("#fec_novedaID").val("");
+	                //$("#hor_novedaID").val("");
+	                $("#ind_soltieID").val("0");
+	              }
+                  formNovedadGestion();
+              }
+        });
+        if($("#sol_mNovedaID").val()=="")
+        {
+        	$("#cod_novedaSolID").val("");
+        } 
+    } 
+    catch (e) {
+        console.log("Error Fuction getNovedadAutocomple: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: formNovedadGestion
+ *  \brief: pinta fromulario dependiendo de la novedad seleccionada
+ *  \author: Edward Serrano
+ *  \date: 12/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function formNovedadGestion() 
+{
+    try 
+    {
+        var new_noveda = $("#cod_novedaSolID").val();
+        if(new_noveda!="")
+        {
+        	var standa = $("#dir_aplicaID").val();
+	        var num_despac = $("#despac").val();
+	        var ind_soltie = $("#ind_soltieID").val();
+	        var attr_ = "Ajax=on&Option=formNovedadGestion&cod_noveda="+new_noveda+"&num_despac="+num_despac+"&ind_soltie="+ind_soltie;
+	        var attr = "&standa="+standa;
+	        $.ajax({
+	            type: "POST",
+	            url: "../"+ standa +"/inform/class_despac_trans3.php",
+	            data: attr_ + attr,
+	            async: false,
+	            success: function( datos )
+	            {
+	               $("#NovedaProtocolo").html(datos);
+	            }
+	        });
+			attr2 = "&option=ShowProtocNoveda";
+			attr2 += "&num_despac=" + $("#num_despacID").val();
+			attr2 += "&cod_noveda=" + new_noveda;
+			attr2 += "&cod_transp=" + $("#cod_transpID").val();;
+
+			$.ajax({
+				type: "POST",
+				url: "../" + standa + "/desnew/ajax_despac_novpro.php",
+				data: attr2,
+				async: false,
+				beforeSend: function() {
+				},
+				success: function(datos) {
+					$("#contProtocolos").html(datos);
+					$("#contProtocolos").find("input[name^='Aceptar']").remove();
+					$("#contProtocolos").find("hr").remove();
+					$("#ResultID").attr('style', 'padding: 2px !important');
+					$("#contProtocolos").append('<input type="hidden" name="ind_protoc" id="ind_protocID" value="no"/>');
+					$("#contProtocolos table").append('<input type="button" style="cursor:pointer" class="crmButton small save" name="btnvalidarNoveEsp" id="validarNoveEspeciales" value="Continuar" colspan="2" onclick="validarNoveEspeciales()">');
+					//ind_activo
+					$("#ind_protocID").val("yes");
+					cantidadTr = 0;
+					$("#contProtocolos").find("table > tbody > tr").each(function(i,v){
+						cantidadTr = i++;
+					});
+					if(cantidadTr<3)
+					{
+						$("#contProtocolos").remove();
+						$("#ind_protocID").val("");
+						$("#ind_protocID").val("");
+					}
+				},
+				complete: function() {
+	                $("#hor_novedaID").timepicker({
+	                    timeFormat: "hh:mm",
+	                    showSecond: false
+	                });
+
+	                $("#fec_novedaID").datepicker({
+	                    dateFormat: 'yy-mm-dd',
+	                    minDate: "0"
+	                });
+	            }
+			});
+        }
+        else
+        {
+        	inc_alerta('sol_mNovedaID', 'la novedad es requerida.');
+        }
+        
+    } 
+    catch (e) {
+        console.log("Error Fuction formNovedadGestion: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: SolucionNovNem
+ *  \brief: Realiza la solucion de las novedades moviles
+ *  \author: Edward Serrano
+ *  \date: 17/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function SolucionNovNem() 
+{
+    try 
+    {
+    	LoadPopupJQNoButton('close','', '', '', false, false, false, 'popAlertID1');
+    	var mData = ValidarFormNen();
+    	var standa = $("#dir_aplicaID").val();
+    	if(mData != false)
+    	{
+    		LoadPopupJQNoButton('open', 'Confirmar', 'auto', 'auto', false, false, false, 'popAlertID1');
+			var popup = $("#popAlertID1");
+			popup.parent().css( "display", "block" );
+			popup.parent().css( "z-index", "6001" );
+			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+			var msj = '<div style="text-align:center"> DESEA SOLUCIONAR LAS NOVEDADES MOVILES <br><br><br><br>';
+			msj += '<input type="button" name="no" id="siID" value=" CANCELAR " style="cursor:pointer" onclick="closePopUp(\'popAlertID1\');" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>';
+			msj += '<input type="button" name="si" id="siID" value=" SOLUCIONAR " style="cursor:pointer" onclick="AlmcenarSolucionNem();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>';
+			popup.html(msj);
+    	}
+        
+    } 
+    catch (e) {
+        console.log("Error Fuction SolucionNovNem: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: ValidarFormNen
+ *  \brief: valida el formulario de solucion moviles
+ *  \author: Edward Serrano
+ *  \date: 17/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function ValidarFormNen() 
+{
+    try 
+    {
+    	formData = "";
+    	validacion = true;
+    	//Observacion
+    	formData +="Ajax=on";
+    	formData +="&Option=AlmcenarSolucionNem";
+    	if($("#ind_soltieID").val()==1)
+    	{
+    		var pop = $("#popID");
+        	pop.parent().css( "display", "block" );
+    	}
+    	//Noveda con la que se soluciona
+    	if($("#cod_novedaSolID").val() != "")
+    	{
+    		formData +="&cod_noveda="+$("#cod_novedaSolID").val();
+    	}
+    	else
+    	{
+    		inc_alerta('sol_mNovedaID', 'la novedad es requerida.');
+    		return false;
+    	}
+        
+        //Novedades a solucionar
+        cod_noveda = [];
+        $("#NovedaGestion").find("input[type=checkbox]").each(function(i, v){
+        	if($(this).is(':checked'))
+        	{
+        		cod_noveda.push($(this).val());
+        	}
+        });
+        if(cod_noveda.length > 0)
+        {
+        	formData +="&nov_soluci="+JSON.stringify(cod_noveda);
+        }
+        else
+        {
+        	inc_alerta('NovedaGestion', 'Debe seleccionar al menos una novedad.');
+        	validacion = false;
+        }
+        //fecha
+		$("#contNovedaNem").find("input[type=text], select, textarea").each(function(i, v){
+			//console.log($(this).attr("type"));
+			if($(this).attr("type") == "textarea")
+			{
+				valor = v.value;
+			}
+			else
+			{
+				valor = $(this).val(); 
+			}
+			if(valor !="")
+			{
+				formData +="&"+$(this).attr("name")+"="+valor;
+			}
+			else
+			{
+				inc_alerta($(this).attr("id"), 'Campo es Requerido.');
+        		validacion = false;
+			}
+		});
+		//otros datos
+		formData +="&cod_servic="+$("#cod_servicID").val();
+		formData +="&num_despac="+$("#despac").val();
+		//protocolos
+		if ($("#ind_protocID").val() == 'yes') {
+			
+			var tot_protoc = $("#tot_protocID").val();
+
+			//$("#form_insID").append('<input type="hidden" name="tot_protoc_" id="tot_protoc_ID" value="' + tot_protoc + '"/>');
+			formData += "&tot_protoc_="+tot_protoc;
+			for (var k = 0; k < tot_protoc; k++) {
+				formData += "&protoc" + k + "_ ="+$("#protoc" + k + "ID").val();
+				//$("#form_insID").append('<input type="hidden" name="protoc' + k + '_" id="protoc' + k + '_ID" value="' + $("#protoc" + k + "ID").val() + '"/>');
+				formData += "&obs_protoc" + k + "_ ="+$("#des_protoc" + k + "ID").html();
+				//$("#form_insID").append('<input type="hidden" name="obs_protoc' + k + '_" id="obs_protoc' + k + '_ID" value="' + $("#obs_protoc" + k + "ID").val() + '"/>');
+			}
+			var ind_activo = $("input[name='ind_activo']:checked").val();
+			formData += "&ind_activo_" + k + "_ ="+ind_activo;
+			//$("#form_insID").append('<input type="hidden" name="ind_activo_" id="ind_activo_ID" value="' + ind_activo + '"/>');
+		}
+		//varifico que no contengan datos vacios
+		if(validacion == true)
+		{
+			return formData;
+		}
+		else
+		{
+			return false;
+		}
+    } 
+    catch (e) {
+        console.log("Error Fuction ValidarFormNen: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: AlmcenarSolucionNem
+ *  \brief: Ejecuta ajax para almacenar las novedades moviles
+ *  \author: Edward Serrano
+ *  \date: 17/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function AlmcenarSolucionNem() 
+{
+    try 
+    {	
+    	var mData = ValidarFormNen();
+    	var standa = $("#dir_aplicaID").val();
+    	if(mData != false)
+    	{
+    		$.ajax({
+		        type: "POST",
+		        url: "../"+ standa +"/inform/class_despac_trans3.php",
+		        data: mData,
+		        async: false,
+		        success: function( datos )
+		        {
+		            //console.log(datos);
+		            if(datos=='ok')
+		            {
+		            	 LoadPopupJQNoButton('close','', '', '', false, false, false, 'popAlertID');
+				         LoadPopupJQNoButton('open', 'Solucion de Novedades Especiales Moviles', 'auto', 'auto', false, false, false, 'popAlertID');
+					     var popup = $("#popAlertID");
+					     popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+					     var msj = '<div style="text-align:center"> SE ALMACENO CORRECTAMENTE <br><br><br><br>';
+					     msj += '<input type="button" name="si" id="siID" value=" Cerrar " style="cursor:pointer" onclick="closePopUpAlert();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>';
+					     popup.append(msj);
+		            }
+		            else
+		            {
+				         alert("Error");
+		            }
+		        }
+		    });
+    	}
+    } 
+    catch (e) {
+        console.log("Error Fuction AlmcenarSolucionNem: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: closePopUpAlert
+ *  \brief: Cierra los popup de las alertas
+ *  \author: Edward Serrano
+ *  \date: 17/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function closePopUpAlert() 
+{
+    try 
+    {	closePopUp('popAlertID');
+    	LoadPopupJQ3('close');
+		location.href = "index.php?cod_servic=3302&window=central&despac="+$("#despac").val()+"&opcion=1";
+    } 
+    catch (e) {
+        console.log("Error Fuction closePopUpAlert: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: validarNoveEspeciales
+ *  \brief: Valida las novedades especiales
+ *  \author: Edward Serrano
+ *  \date: 24/05/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function validarNoveEspeciales() 
+{
+    try 
+    {	
+    	SaveProtocols();
+    	var pop = $("#popID");
+        pop.parent().css( "display", "block" );
+    } 
+    catch (e) {
+        console.log("Error Fuction validarNoveEspeciales: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}

@@ -3072,7 +3072,12 @@ class Despachos
         if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
           $mHtml->Label( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         }
+        
         $mHtml->Label( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+        
+        if( $viewAlias->ind_novnem->ind_visibl == 1 ){
+          $mHtml->Label( 'Solucion a NEM', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+        }
         $mHtml->CloseRow();
 
       
@@ -3152,6 +3157,18 @@ class Despachos
               $mHtml->Label( $mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
 
             $mHtml->SetBody( '<td align="right" class="'.$mStyle.'" width="30%" ><b>'.$mSolEfecti.'</b></td>' );
+
+            if( $viewAlias->ind_novnem->ind_visibl == 1 ){
+              	#verifico si la novedad es movil para pintar el radio de solucion de novedades NEM
+              	if(self::getNovedadNEM($mNovedades[$i]['cod_noveda'])[0])
+              	{
+	              $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "class"=>$mStyle, "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."', '".$_DESPAC[0][cod_transp]."')"));
+            	}
+            	else
+            	{
+            		$mHtml->Label( '', array("align"=>"right", "class"=>$mStyle) );
+            	}
+            }
           $mHtml->CloseRow();
         }
       }
@@ -8889,9 +8906,28 @@ class Despachos
         new Consulta( $mSql, $this -> conexion );
     }
 
-    /*! \fn: updateDestin
-     *  \brief: Actualiza los destinatarios de un despachos que nombre sea NULL o Sctring Vacio '' reemplazandolo por -
-     *  \author: Ing. Fabian Salinas
+    /*! \fn: getNovedadNEM
+     *  \brief: Verifico si la novedad es Movil
+     *  \author: Edward Serrano
+     *  \date: 16/05/2017
+     *  \date modified: dd/mm/aaaa
+     *  \param: mNumNovedad  Integer  Codigo de la novedad
+     *  \return: 
+     */
+    private function getNovedadNEM($mNumNovedad){
+        $mSql = "SELECT * FROM ".BASE_DATOS.".tab_genera_noveda a
+        			INNER JOIN ".BASE_DATOS.".tab_despac_novnem b ON
+        			a.cod_noveda = b.cod_noveda
+                  WHERE a.nom_noveda LIKE '%movil%' AND
+                  		b.ind_soluci = 0 AND 
+                        a.cod_noveda = ".$mNumNovedad;
+        $consulta = new Consulta( $mSql, $this -> conexion );
+        return $consulta -> ret_arreglo();
+    }
+
+    /*! \fn: getDespLlegada
+     *  \brief: Verifica que el despacho tenga la observacion en llegada
+     *  \author: Edward Serrano
      *  \date: 12/05/2016
      *  \date modified: dd/mm/aaaa
      *  \param: mNumDespac  Integer  Numero del despacho
@@ -8917,6 +8953,7 @@ class Despachos
         {
             return NULL;
         }
+
     }
 }
 
