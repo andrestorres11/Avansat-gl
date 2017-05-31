@@ -221,7 +221,8 @@ class Informe
                      IF(DATEDIFF(d.fec_llegpl , a.fec_salida) IS NULL ,'N/A',DATEDIFF(d.fec_llegpl , a.fec_salida)),
                      IF(DATEDIFF( NOW(), d.fec_llegpl) IS NULL ,'N/A',DATEDIFF(NOW() , d.fec_llegpl)),
                      UPPER((SELECT nom_tercer FROM tab_tercer_tercer WHERE d.cod_transp = cod_tercer)) AS nom_tercer,
-										 o.num_solici, o.num_pedido 
+										 o.num_solici, o.num_pedido,
+                     a.fec_citcar, a.hor_citcar 
               FROM " . BASE_DATOS . ".tab_despac_seguim b,
                    " . BASE_DATOS . ".tab_despac_vehige d,
                    " . BASE_DATOS . ".tab_tercer_tercer e,
@@ -337,20 +338,21 @@ class Informe
     $Hoy = $this -> toFecha( date( "Y-m-d" ) );
     $html .= "<table cellpadding='0' cellspacing='0' width='100%' border='0' >";    
     $html .= "<tr>";
-    $html .= "<td class=celda_titulo colspan=15 style='text-align:left' >Fecha: ".$Hoy[0].".</td>"; 
+    $html .= "<td class=celda_titulo colspan=17 style='text-align:left' >Fecha: ".$Hoy[0].".</td>"; 
     $html .= "</tr>";
     $html .= "<tr>";
-    $html .= "<td class=celda_titulo colspan=15 style='text-align:left' >Hora: ".date( "h:i A" ).".</td>";  
+    $html .= "<td class=celda_titulo colspan=17 style='text-align:left' >Hora: ".date( "h:i A" ).".</td>";  
     $html .= "</tr>";
     $html .= "<tr>";
     
-    $html .= "<td class=celda_titulo colspan=15 >Se Encontraron ".sizeof( $informe )." Manifiestos.</td>";  
+    $html .= "<td class=celda_titulo colspan=17 >Se Encontraron ".sizeof( $informe )." Manifiestos.</td>";  
     $html .= "</tr>";
     $html .= "<tr>";
     $html .= "<td class=celda_titulo rowspan=2 >#</td>";
     $html .= "<td class=celda_titulo rowspan=2 >N° Documento</td>";
     $html .= "<td class=celda_titulo rowspan=2 >N° Transportadora</td>";
     $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Salida</td>";
+    $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Cita Cargue</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Origen</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Destino</td>";
     $html .= "<td class=celda_titulo rowspan=2 >No. Pedido</td>";
@@ -361,6 +363,8 @@ class Informe
     $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";    
     $html .= "</tr>";
     $html .= "<tr>";
+    $html .= "<td class=cellHead >Fecha</td>";    
+    $html .= "<td class=cellHead >Hora</td>"; 
     $html .= "<td class=cellHead >Fecha</td>";    
     $html .= "<td class=cellHead >Hora</td>"; 
     $html .= "<td class=cellHead >Fecha</td>";  
@@ -376,12 +380,37 @@ class Informe
       
       $fec_sal  = $this -> toFecha( $row[1]);
       $fec_lle  = $this -> toFecha( $row[4]);
+      //valido que las fecha de cita de cargue no esta vacias o con formato 0000-00-00 00:00:00
+      $ValirFecha = true;
+      //valido fecha 0000-00-00
+      if( $row[13] == Null || $row[13] == "0000-00-00" )
+      {
+        $ValirFecha = false;
+      }
+      //valido hora 00:00:00
+      if( $row[14] == Null || $row[14] == "00:00:00" )
+      {
+        $ValirFecha = false;
+      }
+      //llamo la funcion toFecha
+      if($ValirFecha == true)
+      {
+        $fec_cit  = $this -> toFecha( $row[13]." ".$row[14] );
+      }
+      else
+      {
+        $fec_cit[0] = "";
+        $fec_cit[1] = "";
+      }
+      
       $html .= "<tr>";// celda_info
       $html .= "<td class=cellHead nowrap>$i</td>";                                      // Consecutivo
       $html .= "<td class=celda_info nowrap>$row[0]</td>";                               // Número despacho
       $html .= "<td class=celda_info nowrap>$row[10]</td>";                              // nombre Transportadora
       $html .= "<td class=celda_info nowrap>".$fec_sal[0]."</td>";                       // Fecha salida
       $html .= "<td class=celda_info nowrap>".$fec_sal[1]."</td>";                       // Hora salida
+      $html .= "<td class=celda_info nowrap>".$fec_cit[0]."</td>";                       // Fecha cita cargue
+      $html .= "<td class=celda_info nowrap>".$fec_cit[1]."</td>";                       // Hora cita cargue
       $html .= "<td class=celda_info nowrap>$row[2]</td>";                               // Origen
       $html .= "<td class=celda_info nowrap>$row[3]</td>";                               // Destino
       $html .= "<td class=celda_info nowrap>$row[num_pedido]</td>";                      // Pedido

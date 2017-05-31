@@ -621,7 +621,7 @@ function Guarda() {
 
 function aceptar_act() {
 	validacion = true
-	formulario = document.form_act
+	formulario = document.form_act;
 	if (formulario.noveda.value == "") {
 		window.alert("Digite el Nombre de la Novedad")
 		formulario.noveda.focus()
@@ -632,17 +632,42 @@ function aceptar_act() {
 	}
 }
 
-function ins_tab_noveda(formulario) {
-	validacion = true
-	formulario = document.form_insert
-	if (formulario.nom.value == "") {
-		window.alert("El Nombre es Requerido")
-		validacion = false
-		formulario.nom.focus()
-	} else {
-		formulario.opcion.value = 2;
-		formulario.submit();
+function ins_tab_noveda() {
+	try
+	{
+		validacion = true
+		formulario = document.form_list;
+		if(formulario.cod_opegps.value !="--")
+		{
+			if(formulario.cod_evento.value =="")
+			{
+				window.alert("El Codigo de Evento es Requerido")
+				validacion = false
+				formulario.cod_evento.focus()
+			}
+			else if(formulario.nom_evento.value =="")
+			{
+				window.alert("El nombre de Evento es Requerido")
+				validacion = false
+				formulario.nom_evento.focus()
+			}
+		}
+		if (formulario.nom.value == "") {
+			window.alert("El Nombre es Requerido")
+			validacion = false
+			formulario.nom.focus()
+		}
+		else if(validacion==true)
+		{
+			formulario.opcion.value = 2;
+			formulario.submit();
+		}
 	}
+	catch(e)
+	{
+		alert("Error en:ins_tab_noveda\nLine:"+e.lineNumber+"\n"+e.message );
+	}
+
 }
 
 function aceptar_lis() {
@@ -1271,6 +1296,129 @@ function LoadPopupJQ3(opcion, titulo, alto, ancho, redimen, dragg, lockBack) {
 	}
 }
 
+/*! \fn: getFormNoveda
+* \brief: redirecciona formulario novedad
+* \author: Edward Serrano
+* \date: 31/03/2017
+* \date modified: dia/mes/año
+* \param: paramatro
+* \return valor que retorna
+*/
+
+function getFormNoveda(opcionForm)
+{
+	 try
+	 {
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=1&accion=1";
+	 } catch (e) {
+		console.log("Error Function getFormNoveda: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+/*! \fn: editarNove
+* \brief: redirecciona formulario editar noveda
+* \author: Edward Serrano
+* \date: 03/04/2017
+* \date modified: dia/mes/año
+* \param: paramatro
+* \return valor que retorna
+*/
+
+function editarNove(row)
+{
+	 try
+	 {
+	 	var objeto = $(row).parent().parent();
+   		var cod_noveda = objeto.find("input[id^=cod_noveda]").val();
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=1&accion=2&cod_noveda="+cod_noveda;
+	 } catch (e) {
+		console.log("Error Function editarNove: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+/*! \fn: eliminarNove
+* \brief: redirecciona formulario editar noveda
+* \author: Edward Serrano
+* \date: 03/04/2017
+* \date modified: dia/mes/año
+* \param: paramatro
+* \return valor que retorna
+*/
+
+function eliminarNove(row)
+{
+	 try
+	 {
+	 	var objeto = $(row).parent().parent();
+   		var cod_noveda = objeto.find("input[id^=cod_noveda]").val();
+   		var ind_estado = objeto.find("input[id^=ind_estado]").val();
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209&opcion=3&cod_noveda="+cod_noveda+"&ind_estado="+ind_estado;
+	 } catch (e) {
+		console.log("Error Function eliminarNove: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+/*! \fn: VolverNovedad
+* \brief: volver al menu principal
+* \author: Edward Serrano
+* \date: 04/04/2017
+* \date modified: dia/mes/año
+* \param: paramatro
+* \return valor que retorna
+*/
+
+function VolverNovedad()
+{
+	 try
+	 {
+	 	window.location = "index.php?window=central&cod_servic=3209&menant=3209";
+	 } catch (e) {
+		console.log("Error Function VolverNovedad: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+/*! \fn: checkAll
+ * \brief: chequea todos los input del tab
+ * \author: Edward Serrano
+ * \date: 06/04/2017
+ * \date modified: dia/mes/año
+ * \param: 
+ * \return valor que retorna
+ */
+ function checkAll()
+ {
+ 	try {
+ 		var estadoCheck = null;
+ 		if( $("#SeleccionM").is(":checked") )
+ 		{
+ 			estadoCheck = 1;
+ 		}
+ 		else
+ 		{
+ 			estadoCheck = 0;
+ 		}
+ 		$("#secPerfiles").find("input[type=checkbox]").each(function(key,value){
+ 			dato = $(this);
+ 			if(estadoCheck == 1)
+ 			{
+ 				dato.attr("checked", "checked");
+ 			}
+ 			else
+ 			{
+ 				dato.removeAttr("checked");
+ 			}
+ 		});
+ 	}
+	catch(err) 
+	{
+    	console.log("Error funcion checkAll:"+err.message);
+	}
+ }
+
 /*! \fn: ValidarProtoNoveda
 * \brief: Validad si la novedad tiene protocolo
 * \author: Edward Serrano
@@ -1641,7 +1789,7 @@ function closePopUpAlert()
 		location.href = "index.php?cod_servic=3302&window=central&despac="+$("#despac").val()+"&opcion=1";
     } 
     catch (e) {
-        console.log("Error Fuction ValidarFormNen: " + e.message + "\nLine: " + e.lineNumber);
+        console.log("Error Fuction closePopUpAlert: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
 }
