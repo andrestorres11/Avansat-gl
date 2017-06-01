@@ -30,7 +30,15 @@ $(document).ready(function(){
 		}
 	});
 
+	// validacion para saber si es un usuaraio administrador o de una transportadora y mostrar los datos de la misma
+	var total = $("#total").val();
 
+	if (total == 1) {
+		mostrar();
+	} else {
+		$("#datos").css("display", "none");
+	}
+	
 	//Autocompletables
 	var Standa = $("#standaID").val();
 	var attributes = '&Ajax=on&standa=' + Standa;

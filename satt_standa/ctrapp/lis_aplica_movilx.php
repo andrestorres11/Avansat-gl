@@ -83,28 +83,31 @@ class ListarusuariosMoviles {
         $mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>$_REQUEST['opcion']));
         $mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>$mCodTransp));
         $mHtml->Hidden(array( "name" => "conductor", "id" => "conductor", 'value'=>"")); 
-        
+        $mHtml->Hidden(array( "name" => "total", "id" => "total", 'value'=>$total));
 
       	# Construye accordion
         $mHtml->Row("td");
           $mHtml->OpenDiv("id:contentID; class:contentAccordion");
+            if( $total != 1 )
+            {
           	# Accordion1
-          	$mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
-	            $mHtml->SetBody("<h1 style='padding:6px'><b>Agregar Vehiculos</b></h1>");
-	            $mHtml->OpenDiv("id:sec1;");
-	              $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
-	                $mHtml->Table("tr");
-	                    $mHtml->Label("Transportadora:", "width:35%; :1;");
-	                    $mHtml->Input(array("name" => "trasp[nom_transp]", "id" => "nom_transpID", "value" => $mNomTransp, "width" => "35%"));
-	                    $mHtml->SetBody("<td><div id='boton'></div></td>");  
-	                $mHtml->CloseTable("tr");
-	              $mHtml->CloseDiv();
-	            $mHtml->CloseDiv();
-          	$mHtml->CloseDiv();
-          	# Fin accordion1    
+            	$mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
+  	            $mHtml->SetBody("<h1 style='padding:6px'><b>Agregar Usuario Movil</b></h1>");
+  	            $mHtml->OpenDiv("id:sec1;");
+  	              $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
+  	                $mHtml->Table("tr");
+  	                    $mHtml->Label("Transportadora:", "width:35%; :1;");
+  	                    $mHtml->Input(array("name" => "trasp[nom_transp]", "id" => "nom_transpID", "value" => $mNomTransp, "width" => "35%"));
+  	                    $mHtml->SetBody("<td><div id='boton'></div></td>");  
+  	                $mHtml->CloseTable("tr");
+  	              $mHtml->CloseDiv();
+  	            $mHtml->CloseDiv();
+            	$mHtml->CloseDiv();
+          	# Fin accordion1
+            }    
           	# Accordion2
 	          $mHtml->OpenDiv("id:datos; class:accordion");
-	            $mHtml->SetBody("<h1 style='padding:6px'><b>Listado de Vehiculos</b></h1>");
+	            $mHtml->SetBody("<h1 style='padding:6px'><b>Listado de Usuarios Moviles</b></h1>");
 	            $mHtml->OpenDiv("id:sec2");
 	              $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
 	                

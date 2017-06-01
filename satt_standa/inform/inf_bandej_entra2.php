@@ -261,21 +261,33 @@ class infBandeja
 			$mBand  = '</table><div id="tabs">';
 				$mBand .= '<ul>';
 					if( $mView->sec_inform->sub->pes_genera == 1 )
+					{
 						$mBand .= '<li><a id="liGenera" href="#tabs-1">GENERAL</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_prcarg == 1 )
+					{
 						$mbadge = self::$cDespac ->getConteoNem('1', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPreCar" href="#tabs-6">PRECARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_cargax == 1 )
+					{
 						$mbadge = self::$cDespac ->getConteoNem('2', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liCargue" href="#tabs-2">CARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_transi == 1 )
+					{
 						$mbadge = self::$cDespac ->getConteoNem('3', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liTransi" href="#tabs-3">TRANSITO '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_descar == 1 )
+					{
 						$mbadge = self::$cDespac ->getConteoNem('5', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liDescar" href="#tabs-4">DESCARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_pernoc == 1 )
+					{
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPernoc" href="#tabs-5">C. PERNOTACION</a></li>';
+					}
 				$mBand .= '</ul>';
 
 				$mBand .= $mView->sec_inform->sub->pes_genera == 1 ? '<div id="tabs-1"></div>' : ''; #DIV General
