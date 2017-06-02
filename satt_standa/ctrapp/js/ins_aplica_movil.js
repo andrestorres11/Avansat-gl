@@ -29,11 +29,36 @@ $(document).ready(function(){
 			});
 		}
 	});
+
+	// validacion para saber si es un usuaraio administrador o de una transportadora y mostrar los datos de la misma
+	var total = $("#total").val();
+
+	if (total == 1) {
+		mostrar();
+	} else {
+		$("#datos").css("display", "none");
+	}
+	
+	//Autocompletables
+	var Standa = $("#standaID").val();
+	var attributes = '&Ajax=on&standa=' + Standa;
+	var boton = "";
+	$("#nom_transpID").autocomplete({
+		source: "../" + Standa + "/transp/ajax_transp_transp.php?Option=buscarTransportadora" + attributes,
+		minLength: 3,
+		select: function(event, ui) {
+			boton = "<input type='button' id='nuevo' value='Listado' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='mostrar();'>";
+			$("#cod_tercerID").val(ui.item.id);
+			$("#boton").empty();
+			$("#boton").append(boton);
+			$("body").removeAttr("class");
+		}
+	});
       
 });
 
 
-function guardar(){ 
+function guardar(action){console.log(action);
 	var standa = $("[name=standa]").val(); 
 	var cod_tercer = $("[name=num_docume]").val();
 	var cod_usuari = $("[name=nom_usrapp]").val();
@@ -66,7 +91,7 @@ function guardar(){
 		message += "\n-Tipo de Usuario";
 		flag = false;
 	}
-
+	
 	if(flag == true){
 			$.ajax({
 				url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=guardarUsuario",
@@ -80,9 +105,7 @@ function guardar(){
 						"mail": mail
 					 },
 				success: function(result){
-					result=result.replace("\n","");
-					console.log("-"+result+"-");
-					if(result=="ok"){
+					if(result == "ok"){
 						alert("Se ha registrado el usuario Exitosamente");
 						document.forms[0].reset();
 					}
@@ -98,4 +121,181 @@ function guardar(){
 	}
 
 
+}
+
+
+function mostrar() {
+	$("#form3").empty();
+	var transp = $("#cod_tercerID").val();
+	var standa = $("#standaID").val();
+	var parametros = "op=listaUsuariosMoviles&Ajax=on&cod_transp=" + transp;
+	$.ajax({
+		url: "../" + standa + "/ctrapp/ajax_insapl_movilx.php",
+		type: "POST",
+		data: parametros,
+		async: false,
+
+		success: function(data) {
+			$("#sec2").css("height", "auto");
+			$("#form3").append(data); // pinta los datos de la consulta
+			var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9+/=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/rn/g,"n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
+			$(".DLTable").find("tr").each(function (i,v){
+				if($(this).children().attr("tagName").toLowerCase()=="td")
+				{
+					contra = $(this).children().eq(7).html();
+					contra = Base64.decode(contra);
+					$(this).children().eq(7).html(contra);
+				}
+			});			
+		}
+	});
+	$("#datos").fadeIn(3000); // visualza los datos despues de pintarlos
+}
+
+
+function editarUsuarioMovil(tipo, objeto)
+{
+	var DLRow = $(objeto).parent().parent();
+	var cod_tercer = DLRow.find("input[id^=cod_tercer]").val();
+	var nom_tercer = DLRow.find("input[id^=nom_tercer]").val();
+	$("#conductor").val(cod_tercer);
+
+	if (tipo == 1) {
+		confirmar('activarUsuario', DLRow);
+	} else if (tipo == 2) {
+		confirmar('inactivarUsuario', DLRow);
+	} else {
+		LoadPopupJQNoButton('open', 'Confirmar Operacion', 'auto', 'auto', false, false, true);
+		var popup = $("#popID");
+		var conductor = $("#nom_tercerID").val();
+		var msj = "<div style='text-align:center'>Esta seguro de <b>editar</b> el usuario: <b>" + nom_tercer + "?</b><br><br><br><br>";
+		msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
+		msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
+
+		popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+		popup.append(msj); // //lanza el popUp
+	}
+}
+
+
+function Guardar(action)
+{
+	if(action == "reset")
+	{
+		RestablecerUsuario();
+	}
+	else if(action == "forward")
+	{
+		window.location.href ="index.php?window=central&cod_servic="+$("#cod_servicID").val()+"&menant="+$("#cod_servicID").val();
+	}
+	else
+	{
+		var mail = $("#dir_emailxID");
+		mailregexp = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i 
+
+		if(mail.val() == '')
+		{
+			alert("Digite un correo para el conductor!");
+			mail.focus();
+			return false;
+		}
+
+		if( !mailregexp.test( mail.val() ) )
+		{
+			alert("Verificar el formato del correo del usuario!");
+			mail.focus();
+			return false;
+		}
+
+		$("#opcion").val( "2" );
+		$("#action").val( action );
+		$("form").submit();
+	}
+
+}
+
+function confirmar(action, obj)
+{
+	var cod_tercer = obj.find("input[id^=cod_tercer]").val();
+	var nom_tercer = obj.find("input[id^=nom_tercer]").val();
+	var standa = $("#standaID").val();
+	var parametros = "op=incativarUsuario&Ajax=on&cod_tercer=" + cod_tercer + "&action=" + action;
+	$.ajax({
+		url: "../" + standa + "/ctrapp/ajax_insapl_movilx.php",
+		type: "POST",
+		data: parametros,
+		async: false,
+
+		success: function(data) {
+			LoadPopupJQNoButton('open', 'Estado Usuario', 'auto', 'auto', false, false, true);
+			var popup = $("#popID");
+			var msj = "<div style='text-align:center'>El usuario: <b>" + nom_tercer + " ha sido "+(action=='activarUsuario'?"activado":"inactivado")+"</b><br><br><br><br>";
+				msj += "<input type='button' name='no' id='noID' value='Cerrar' style='cursor:pointer' onclick='CerrarPopuUS()' class='crmButton small save'/><div>";			
+			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+			popup.append(msj); // //lanza el popUp
+		}
+	});
+}
+
+function CerrarPopuUS()
+{	
+	closePopUp();
+	mostrar();
+}
+
+function RestablecerUsuario()
+{
+	var standa = $("#standaID").val();
+	var formRest = getDataFormRest();
+	var parametros = "op=RestablecerUsuario&Ajax=on"+formRest;
+	$.ajax({
+		url: "../" + standa + "/ctrapp/ajax_insapl_movilx.php",
+		type: "POST",
+		data: parametros,
+		async: false,
+		success: function(data) {
+			console.log(data);
+			if(data=="ok")
+			{
+				msn = "Se ha re establecido correctamente la contraseña.";
+			}
+			else
+			{
+				msn = "ha ocurrido un error en el registro del usuario\npor favor intente mas tarde.";
+			}
+			LoadPopupJQNoButton('open', 'Usuario Movil', 'auto', 'auto', false, false, true);
+			var popup = $("#popID");
+			var msj = "<div style='text-align:center'>"+msn+"</b><br><br><br><br>";
+				msj += "<input type='button' name='no' id='noID' value='Cerrar' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";			
+			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+			popup.append(msj); // //lanza el popUp
+		}
+	});
+}
+
+function getDataFormRest()
+{
+	var mData = "";
+	var Validate = true;
+	//validacion del formato mail
+	var mail = $("#dir_emailxID");
+	mailregexp = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i 
+	if(mail.val() == '')
+	{
+		alert("Digite un correo para el conductor!");
+		mail.focus();
+		return false;
+	}
+	if( !mailregexp.test( mail.val() ) )
+	{
+		alert("Verificar el formato del correo del usuario!");
+		mail.focus();
+		return false;
+	}
+	mData +="&mail=" + $("#dir_emailxID").val();
+	$("#form1").find("input[type=hidden]").each(function(i, v){
+		mData +="&"+[$(this).attr("name")] + "=" + $(this).val();
+	});
+	//console.log(mData);
+	return mData;
 }

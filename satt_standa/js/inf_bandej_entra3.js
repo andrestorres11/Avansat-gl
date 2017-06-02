@@ -40,14 +40,17 @@ $("body").ready(function() {
 
     $("#liCargue").click(function() {
         generalReport("infoCargue", "tabs-2");
+        Actualizarbadge("2", "liCargue");
     });
 
     $("#liTransi").click(function() {
         generalReport("infoTransito", "tabs-3");
+        Actualizarbadge("3", "liTransi");
     });
 
     $("#liDescar").click(function() {
         generalReport("infoDescargue", "tabs-4");
+        Actualizarbadge("5", "liDescar");
     });
 
     $("#liPernoc").click(function() {
@@ -56,6 +59,7 @@ $("body").ready(function() {
 
     $("#liPreCar").click(function() {
         getDataSelectPRC();
+        Actualizarbadge("1", "liPreCar");
     });
 
     $("#generarprc").click(function() {
@@ -453,4 +457,68 @@ function exportExcel(ind_excel = 0) {
         console.log("Error Fuction exportExcel: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
+}
+
+/*! \fn: Actualizarbadge
+ *  \brief: Actualiza badge de las novedades moviles
+ *  \author: Edward Serrano
+ *  \date: 15/05/2015
+ *  \date modified: dd/mm/aaaa
+ *  \param: etapa: etapa a cual se va a realizar la actualizacion del conteo
+ *  \param: etiqueta: idetificador donde se va a actualizar la informacion
+ *  \return: 
+ */
+function Actualizarbadge(etapa, etiqueta) {
+    try {
+        var standar = $("#standaID");
+        //Atributos del Ajax
+        var atributes = 'Ajax=on&Option=getConteoNem&etapa='+etapa+'&transp='+getTrans();
+        //Ajax
+        //result = null;
+        $.ajax({
+            url: "../" + standar.val() + "/inform/class_despac_trans3.php",
+            type: "POST",
+            data: atributes,
+            //async: false,
+            cache:false,
+            success: function(data) {
+                if(data>0)
+                {
+                    $("#"+etiqueta).children().addClass("badge");
+                    $("#"+etiqueta).children().html(data);
+                }
+                else
+                {
+                    $("#"+etiqueta).children().removeClass("badge");
+                    $("#"+etiqueta).children().html('');
+                }
+            },
+            complete: function() {
+            }
+        });
+    } catch (e) {
+        console.log("Error Fuction Actualizarbadge: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: getTrans
+ *  \brief: Obtengo las transportadoras seleccionadas
+ *  \author: Edward Serrano
+ *  \date: 15/05/2015
+ *  \date modified: dd/mm/aaaa
+ *  \param: 
+ *  \return: 
+ */
+function getTrans(etapa) {
+    var box_checke = $("input[type=checkbox]:checked");
+    var cod_transp = '""';
+    box_checke.each(function(i, o) {
+        if ($(this).attr("name") == 'multiselect_cod_transpID')
+        {
+            cod_transp += ',' + $(this).val();
+        }
+    });
+
+    return cod_transp;
 }
