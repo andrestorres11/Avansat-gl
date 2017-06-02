@@ -22,6 +22,10 @@ class ListarusuariosMoviles {
               self::Transaccion();
             break;
 
+            case 3:
+              self::FormularioIns();
+            break;
+
             default:
                 self::filtro();
             break;
@@ -325,6 +329,153 @@ class ListarusuariosMoviles {
         echo "Error en la funcion ActualizarUsuario:",  $e->getMessage(), "\n";
       }
     }
+
+     /*! \fn: FormularioIns
+     *  \brief: Formulario para crear usuario movil 
+     *  \author: Edward Serrano
+     *  \date: 26/05/2017
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    function FormularioIns() {
+        
+          # Nuevo frame ---------------------------------------------------------------
+          # Inicia clase del fromulario ----------------------------------------------------------------------------------
+          $mHtml = new FormLib(2);
+
+          # Datos varios
+          $tip_person = array(
+              0 => array( 0 => NULL, 1 => '--' ),
+              1 => array( 0 => 'N', 1 => 'Natural' ),
+              2 => array( 0 => 'J', 1 => 'Juridica' )
+              );    
+          $est_appxxx = array(
+                    0 => array( 0 => NULL, 1 => '--' ),
+                    1 => array( 0 => '1', 1 => 'Activo' ),
+                    2 => array( 0 => '0', 1 => 'Inactivo' )
+                    );    
+          $tip_usuari = array(
+                    0 => array( 0 => NULL, 1 => '--' ),
+                    1 => array( 0 => '0', 1 => 'Conductor' ),
+                    2 => array( 0 => '1', 1 => 'Administrador' )
+                    );
+
+          $query = "SELECT a.cod_tipdoc, a.nom_tipdoc FROM ".BASE_DATOS.".tab_genera_tipdoc a WHERE 1 = 1";
+
+          $consulta = new Consulta($query, self::$conexion);
+          $dat_tipdoc = $consulta -> ret_matriz("i");
+
+          # incluye JS
+          $mHtml->SetJs("min");
+          
+          $mHtml->SetJs("fecha");
+          $mHtml->SetJs("jquery");
+          $mHtml->SetJs("functions");
+          echo "<script language='JavaScript' src='../".DIR_APLICA_CENTRAL."/ctrapp/js/ins_aplica_movil.js'></script>";          
+          $mHtml->SetJs("new_ajax"); 
+          $mHtml->SetJs("dinamic_list");
+          $mHtml->SetCss("dinamic_list");
+          
+          $mHtml->CloseTable("tr");
+          # incluye Css
+          $mHtml->SetCssJq("jquery");
+          # Abre Form
+          $mHtml->Form(array("action" => "index.php", "method" => "post", "name" => "form_vehicu", "header" => "Transportadoras", "enctype" => "multipart/form-data"));
+
+      
+          $mHtml->Hidden(array( "name" => "standa",     "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
+          $mHtml->Hidden(array( "name" => "window",     "id" => "windowID", 'value'=>'central'));
+          $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
+          $mHtml->Hidden(array( "name" => "opcion",     "id" => "opcionID", 'value'=>'3'));     
+          $mHtml->Hidden(array( "name" => "action",     "id" => "action", 'value'=>"none"));
+          $mHtml->Hidden(array( "name" => "Ajax",       "id" => "Ajax", 'value'=>"on"));
+          
+          $mData = self::getDataUsuario();
+          # Construye accordion
+          $mHtml->Row("td");
+          $mHtml->OpenDiv("id:contentID; class:contentAccordion");
+            # Accordion1
+            $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
+              $mHtml->SetBody("<h3 style='padding:6px;'><center>Nuevo Usuario Movil</center></h3>");
+            $mHtml->OpenDiv("id:sec1;");
+              $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
+                $mHtml->Table("tr");
+                  $mHtml->Row();
+                    $mHtml->Label("Tipo de usuario:", array("width" => "50%", "colspan"=>"4"));
+                    $mHtml->Select2 ($tip_person,  array("name" => "tip_person", "width" => "50%","colspan"=>"4") );
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label( "Datos Basicos del Usuario",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"8") );
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label("Tipo de Documento", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Select2 ($dat_tipdoc,  array("name" => "tip_docume", "width" => "50%","colspan"=>"2") );
+                    $mHtml->Label("Numero de Documento", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "num_docume", "id" => "num_documeID", "width" => "25%", "colspan"=>"2", "onkeypress" => "return NumericInput(event)"));
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label("Nombres", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "nom_usuari", "id" => "nom_usuariID", "width" => "25%", "colspan"=>"2", "readonly"=>"readonly", "disabled"=>"disabled"));
+                    $mHtml->Label("Apellido 1", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "nom_appel1", "id" => "nom_appel1ID", "width" => "25%", "colspan"=>"2", "readonly"=>"readonly", "disabled"=>"disabled"));
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label("Apellido 2", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "nom_appel2", "id" => "nom_appel2ID", "width" => "25%", "colspan"=>"2", "readonly"=>"readonly", "disabled"=>"disabled"));
+                    $mHtml->Label("Direccion", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "num_direcc", "id" => "num_direccID", "width" => "25%", "colspan"=>"2", "readonly"=>"readonly", "disabled"=>"disabled"));
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label("Telefono 1", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "num_telef1", "id" => "num_telef1ID", "width" => "25%", "colspan"=>"2", "readonly"=>"readonly", "disabled"=>"disabled"));
+                    $mHtml->Label("Telefono 2", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "num_telef2", "id" => "num_telef2ID", "width" => "25%", "colspan"=>"2", "readonly"=>"readonly", "disabled"=>"disabled"));
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label("Celular", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "num_movilx", "id" => "num_movilxID", "width" => "25%", "colspan"=>"2", "readonly"=>"readonly", "disabled"=>"disabled"));
+                    $mHtml->Label("* E-mail", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "nom_emailx", "id" => "nom_emailxID", "width" => "25%", "colspan"=>"2"));
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label( "Datos Aplicacion APP",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"8") );
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label("* Usuario a Generar", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "nom_usrapp", "id" => "nom_usrappID", "width" => "25%", "colspan"=>"2"));
+                    $mHtml->Label("* Serie", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Input(array("name" => "cod_seriex", "id" => "cod_seriexID", "width" => "25%", "colspan"=>"2", "readonly"=>"readonly", "disabled"=>"disabled"));
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->Label("* Estado", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Select2 ($est_appxxx,  array("name" => "cod_estado", "id" => "cod_estadoID", "width" => "50%","colspan"=>"2") );
+                    $mHtml->Label("* Tipo de Usuario", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Select2 ($tip_usuari,  array("name" => "ind_admini", "id" => "ind_adminiID", "width" => "50%","colspan"=>"2") );
+                  $mHtml->CloseRow();
+                  $mHtml->Row();
+                    $mHtml->StyleButton("name:send;  id:guardarID; value:Guardar; onclick:guardar(); align:center; colspan:4;  class:crmButton small save");
+                    $mHtml->StyleButton("name:clear; id:cancelarID; value:Cancelar; onclick:Guardar('forward'); align:center; colspan:4; class:crmButton small save");
+                  $mHtml->CloseRow();                  
+                  $mHtml->Hidden(array( "name" => "nit_transpor", "id" => "nit_transporID", 'value'=>NIT_TRANSPOR));
+                  $mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>$_REQUEST["cod_tercer"]));
+                $mHtml->CloseTable("tr");
+              $mHtml->CloseDiv();
+            $mHtml->CloseDiv();
+          $mHtml->CloseDiv();
+          # Fin accordion1    
+
+        $mHtml->CloseDiv();
+        $mHtml->CloseRow("td");
+        # Cierra formulario
+      $mHtml->CloseForm();
+      # Cierra Body
+      $mHtml->CloseBody();
+
+      # Muestra Html
+      echo $mHtml->MakeHtml();
+    } 
 
 //FIN FUNCION INSERT_SEDE
 }

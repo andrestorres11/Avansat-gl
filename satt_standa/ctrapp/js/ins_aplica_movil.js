@@ -58,7 +58,7 @@ $(document).ready(function(){
 });
 
 
-function guardar(action){console.log(action);
+function guardar(action){
 	var standa = $("[name=standa]").val(); 
 	var cod_tercer = $("[name=num_docume]").val();
 	var cod_usuari = $("[name=nom_usrapp]").val();
@@ -67,7 +67,8 @@ function guardar(action){console.log(action);
 	var ind_admini = $("#ind_adminiID").val();
 	var nit_transpor = $("#nit_transpor").val();
 	var mail = $("[name=nom_emailx]").val();
-  
+	var cod_transp = $("[name=cod_transp]").val();
+  	var mailregexp = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i 
 	var message = "";
 	var flag = true;
 
@@ -90,8 +91,17 @@ function guardar(action){console.log(action);
 	if(ind_admini == ''){
 		message += "\n-Tipo de Usuario";
 		flag = false;
+	}	
+	if(mail == '')
+	{
+		message += "\n-E-mail";
+		flag = false;
 	}
-	
+	if( !mailregexp.test( mail ) )
+	{
+		message += "\n-Verificar el formato del E-mail";
+		flag = false;
+	}
 	if(flag == true){
 			$.ajax({
 				url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=guardarUsuario",
@@ -102,17 +112,23 @@ function guardar(action){console.log(action);
 						"ind_activo":ind_activo,
 						"ind_admini":ind_admini,
 						"nit_transpor": nit_transpor,
-						"mail": mail
+						"mail": mail,
+						"cod_transp": cod_transp
 					 },
 				success: function(result){
 					if(result == "ok"){
-						alert("Se ha registrado el usuario Exitosamente");
+						msn = "Se ha registrado el usuario Exitosamente";
 						document.forms[0].reset();
 					}
 					else{
-						alert("ha ocurrido un error en el registro del usuario\npor favor intente mas tarde");
+						msn = "ha ocurrido un error en el registro del usuario\npor favor intente mas tarde";
 					}
-
+					LoadPopupJQNoButton('open', 'Usuario Movil', 'auto', 'auto', false, false, true);
+					var popup = $("#popID");
+					var msj = "<div style='text-align:center'>"+msn+"</b><br><br><br><br>";
+						msj += "<input type='button' name='no' id='noID' value='Cerrar' style='cursor:pointer' onclick='Guardar(\"forward\")' class='crmButton small save'/><div>";			
+					popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+					popup.append(msj); // //lanza el popUp
 				}
 			});
 	}
@@ -298,4 +314,10 @@ function getDataFormRest()
 	});
 	//console.log(mData);
 	return mData;
+}
+
+function NuevoUsuario()
+{
+	$("#opcionID").val( "3" );
+	$("form").submit();
 }

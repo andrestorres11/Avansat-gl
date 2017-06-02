@@ -131,6 +131,7 @@ class AjaxInsertarAutorizacion
      *  \return 
      */
 	function guardarUsuario(){ 
+    
     $pri_clave = "";
     for ($i=0; $i<6; $i++){
         $pri_clave .=  dechex(rand(0,15));
@@ -152,6 +153,31 @@ class AjaxInsertarAutorizacion
  	 	}
  	 	else
  	 	{
+ 	 		$mQuery = "SELECT a.cod_transp, a.cod_tercer 
+				  			FROM ".BASE_DATOS.".tab_transp_tercer a
+				 			WHERE a.cod_transp = '".$_REQUEST['cod_transp']."' AND
+				 				  a.cod_tercer = '".$_REQUEST['cod_tercer']."'; ";
+
+			$mTransTercer = new Consulta($mQuery, $this -> conexion);
+			$mTransTercer = $mTransTercer -> ret_matriz("a");
+			if(count($mTransTercer) == 0)
+			{
+				$query2 = "INSERT INTO ".BASE_DATOS.".tab_transp_tercer (
+ 	 					      cod_transp,
+ 	 					      cod_tercer,
+ 	 					      ind_estado,
+ 	 					      usr_creaci,
+ 	 					      fec_creaci
+ 	 						  )
+ 	 				  VALUES (
+ 	 				  		  '".$_REQUEST['cod_transp']."',
+ 	 				  		  '".$_REQUEST['cod_tercer']."',
+ 	 				  		  1,
+ 	 				  		  '".$_SESSION['datos_usuario']['cod_usuari']."', 
+ 	 				  		  NOW());";
+ 	 			$consulta2 = new Consulta($query2, $this -> conexion);
+			}
+
  	 		$query = "INSERT INTO ".BASE_DATOS.".tab_usuari_movilx ( 
 							  cod_tercer ,
 							  cod_usuari ,
@@ -221,7 +247,7 @@ class AjaxInsertarAutorizacion
 
                 $mYear = date("Y");
                 $banner = "https://".$_SERVER['HTTP_HOST']."/ap/".BASE_DATOS."/images/banner.jpg";
-				$tmpl_file = "planti/planti_usuari_appsat.html"; 
+				$tmpl_file = "planti/planti_usuari_appsat2.html"; 
                 $thefile = implode("", file($tmpl_file));
                 $thefile = addslashes($thefile);
                 $thefile = "\$r_file=\"" . $thefile . "\";";
@@ -263,6 +289,8 @@ class AjaxInsertarAutorizacion
         
 		//----------------------------------------------------------------------------------------------------------------------------
 		$cList = new DinamicList( $this -> conexion, $mQuery , 4 );
+		$cList -> SetClose('no');
+		$cList -> SetCreate("Agregar Usuario", "onclick:NuevoUsuario()");
 		$cList -> SetHeader( "Transportadora", "field:a.cod_transp" );
 		$cList -> SetHeader( "Doc.Conductor", "field:a.cod_tercer" );
 		$cList -> SetHeader( "Usuario APP", "field:c.cod_usuari" );

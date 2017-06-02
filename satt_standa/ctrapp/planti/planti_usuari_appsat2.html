@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="iso 8859-1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        .page-header{
+          padding-bottom: 9px;
+          margin: 40px 0 20px;
+          border-bottom: 1px solid #eee;
+        }
+        .table-responsive{
+          min-height: .01%;
+          overflow-x: auto;
+        }
+        .jumbotron{
+          padding-top: 30px;
+          padding-bottom: 30px;
+          margin-bottom: 30px;
+          color: inherit;
+          background-color: #eee;
+        }
+
+        .col-md-12{
+          width: 100%;
+          float: left;
+          position: relative;
+          min-height: 1px;
+          padding-right: 15px;
+          padding-left: 15px;
+        }
+        .col-md-1{
+          width: 100%;
+          -webkit-column-count: 2; /* Chrome, Safari, Opera */
+          -moz-column-count: 2; /* Firefox */
+          column-count: 2;
+        }
+        .col-md-2{
+          width: 100%;
+          -webkit-column-count: 2; /* Chrome, Safari, Opera */
+          -moz-column-count: 2; /* Firefox */
+          column-count: 2;
+        }
+        .sombra{
+            -webkit-box-shadow:inset 5px 5px 5px #b9b7b7;
+            -moz-box-shadow:inset 5px 5px 5px #b9b7b7;
+            box-shadow:inset 5px 5px 5px #b9b7b7;
+
+        }
+    </style>
+  </head>
+  <body>
+
+    <div class="container" >
+      <div class="table-responsive" >
+        <div class="page-header">
+          <h2 style="text-align:center;font-family:Gotham, Helvetica, Arial, sans-serif; font-size:28px">Notificación Móvil</h2>
+        </div>
+        <div class="jumbotron sombra" style="border-radius: 10px; padding: 5px">
+          <table width="100%" style="padding:40px" cellpadding="0" cellspacing="0">
+            <thead>
+              <tr>
+                <td colspan="2" style="border: 1px solid #449ed5; font-family:Gotham, Helvetica, Arial, sans-serif; font-size:18px; background-color: #449ed5; color:#FFFFFF; padding: 4px;text-align: center">Datos B&aacute;sicos Usuario Móvil</td>
+              </tr>
+            <thead>
+            <tbody>
+              <tr>
+                <td style="border-left:  1px solid #449ed5; border-bottom: 1px solid #449ed5; font-family:Gotham, Helvetica, Arial, sans-serif; font-size:12px; background-color: #fff; padding: 2px;" width="50%" align="right">Usuario&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td style="border-right: 1px solid #449ed5; border-bottom: 1px solid #449ed5; font-family:Gotham, Helvetica, Arial, sans-serif; font-size:12px; background-color: #fff; padding: 2px;" width="50%" align="left" >$_REQUEST[cod_usuari]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+
+              <tr>
+                <td style="border-left:  1px solid #449ed5; border-bottom: 1px solid #449ed5; font-family:Gotham, Helvetica, Arial, sans-serif; font-size:12px; background-color: #fff; padding: 2px;" width="50%" align="right">Clave&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td style="border-right: 1px solid #449ed5; border-bottom: 1px solid #449ed5; font-family:Gotham, Helvetica, Arial, sans-serif; font-size:12px; background-color: #fff; padding: 2px;" width="50%" align="left" >$decodedPass&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+              </tr>
+            <tbody>
+          </table>
+            <img src="$banner"  style="padding:40px; width: 800px" alt="banner" usemap="#banner">
+            <table width="100%" style="padding:40px" cellpadding="0" cellspacing="0">
+              <tbody>
+                <tr>
+                  <td style=" font-family:Gotham, Helvetica, Arial, sans-serif; font-size:12px;  padding: 2px;" width="50%" ><a href="https://play.google.com/store/apps/details?id=com.ionicframework.glmobil133403&hl=es" ><img src="https://dev.intrared.net:8083/ap/amunoz/imagenes/playstore.png" class="img-responsive" style="width: 300px; display: block;margin: auto;" ></a>
+                  </td>
+                  <td style=" font-family:Gotham, Helvetica, Arial, sans-serif; font-size:12px; padding: 2px;" width="50%" ><a href="https://itunes.apple.com/ro/developer/grupo-oet-s-a-s/id1089224159" ><img src="https://dev.intrared.net:8083/ap/amunoz/imagenes/appstore.png" class="img-responsive" style="width: 300px; display: block;margin: auto;"></a>
+                  </td>
+                </tr>
+              <tbody>
+            </table>
+        </div>
+      </div>
+  </body>
+</html>
