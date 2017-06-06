@@ -3668,8 +3668,12 @@ class Despac
 		try
 		{	
 			#identifico la transportadora
-			//echo "<pre>";print_r($mTransp);echo "</pre>";
-			if(!is_array($mTransp))
+			#Consulto el tipo de usuario
+			if(self::getTranspCargaControlador() != NULL )
+			{
+				$mTransp = self::getTranspCargaControlador();
+			}
+			else if(!is_array($mTransp))
 			{	
 				#convierto la cadena en array
 				$mTransp = explode(',', $mTransp);
