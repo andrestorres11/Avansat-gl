@@ -175,6 +175,16 @@ class infBandeja
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="num_facturID" name="num_factur" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
 				$mHtml2 .= '	</td>';
+				$mHtml2 .= '	<td class="cellInfo1" align="right">No. Manifiesto:</td>';
+				$mHtml2 .= '	<td class="cellInfo1">';
+				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="cod_manifiID" name="cod_manifi" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
+				$mHtml2 .= '	</td>';
+				$mHtml2 .= '	<td class="cellInfo1" align="right">C.C. Conductor:</td>';
+				$mHtml2 .= '	<td class="cellInfo1">';
+				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="cod_tercerID" name="cod_tercer" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
+				$mHtml2 .= '	</td>';
+				$mHtml2 .= '</tr>';
+				$mHtml2 .= '<tr>';
 				$mHtml2 .= '	<td class="cellInfo1" align="right">En Tr&aacute;nsito:</td>';
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="checkbox" value="1" id="ind_entranID" name="ind_entran" checked >';
@@ -183,6 +193,8 @@ class infBandeja
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="checkbox" value="1" id="ind_fintraID" name="ind_fintra" >';
 				$mHtml2 .= '	</td>';
+				$mHtml2 .= '	<td class="cellInfo1"></td>';
+				$mHtml2 .= '	<td class="cellInfo1"></td>';
 				$mHtml2 .= '</tr>';
 
 				$mHtml2 .= '</table>';

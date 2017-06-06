@@ -2282,6 +2282,8 @@ class Despac
 			$mHtml .= $_REQUEST[num_solici] ? " N&uacute;mero de Solicitud = {$_REQUEST[num_solici]} " : "";
 			$mHtml .= $_REQUEST[num_pedido] ? " N&uacute;mero de Pedido = {$_REQUEST[num_pedido]} " : "";
 			$mHtml .= $_REQUEST[num_factur] ? " N&uacute;mero de Factura = {$_REQUEST[num_factur]} " : "";
+			$mHtml .= $_REQUEST[cod_manifi] ? " N&uacute;mero de Manifiesto = {$_REQUEST[cod_manifi]} " : "";
+			$mHtml .= $_REQUEST[cod_tercer] ? " C.C. del Conductor = {$_REQUEST[cod_tercer]} " : "";
 			$mHtml .= "</center>";
 
 			$mResult = $mHtml;
@@ -2451,6 +2453,8 @@ class Despac
 			$mSql .= $_REQUEST[num_solici] ? " AND x.num_solici = '{$_REQUEST[num_solici]}' " : "";
 			$mSql .= $_REQUEST[num_pedido] ? " AND x.num_pedido = '{$_REQUEST[num_pedido]}' " : "";
 			$mSql .= $_REQUEST[num_factur] ? " AND y.num_docume = '{$_REQUEST[num_factur]}' " : "";
+			$mSql .= $_REQUEST[cod_manifi] ? " AND a.cod_manifi = '{$_REQUEST[cod_manifi]}' " : "";
+			$mSql .= $_REQUEST[cod_tercer] ? " AND h.cod_tercer = '{$_REQUEST[cod_tercer]}' " : "";
 		}else
 			$mSql .= " AND a.num_despac = '{$mNumDespac}' ";
 
