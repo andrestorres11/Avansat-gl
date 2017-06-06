@@ -90,7 +90,7 @@ class InterfMct
         $error = curl_error($ch);
         $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
- 
+        
         # Asigna el mensaje del response y lo retorna ------------------------------------------------------------
         self::$cReturn = json_decode($raw_data);
 
@@ -149,7 +149,7 @@ class InterfMct
         $error = curl_error($ch);
         $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
- 
+        
         # Asigna el mensaje del response y lo retorna ------------------------------------------------------------
         self::$cReturn = json_decode($raw_data);
 

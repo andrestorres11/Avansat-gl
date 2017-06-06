@@ -247,6 +247,32 @@ class Proc_segui
         $update = new Consulta($query, $this->conexion, "BR");
         if ($update = new Consulta("COMMIT", $this->conexion))
         {
+
+            ini_set('display_errors', true);
+            error_reporting(E_ALL & ~E_NOTICE);
+            //Quita el despacho en la central
+            $consultaNit = "SELECT a.clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." ";
+            $nit = new Consulta($consultaNit, $this->conexion);
+            $nit = $nit->ret_matriz();
+            $nit = $nit[0]['clv_filtro'];
+            if ($this->getInterfParame('85', $nit) == true)
+            {
+               
+              require_once URL_ARCHIV_STANDA."/interf/app/APIClienteApp/controlador/DespachoControlador.php";
+              $controlador = new DespachoControlador(); 
+              $response = $controlador -> finalizar($this -> conexion ,  $_REQUEST["despac"], $nit);   
+              $message = $response -> msg_respon; 
+              $mensaje .= $message; 
+
+              
+              $mens = new mensajes();
+              if ($response->cod_respon == 1000) {
+                $mens->correcto("REGISTRO MOVIL", $mensaje);
+              } else {
+                $mens->advert("REGISTRO MOVIL", $mensaje);
+              }
+            }
+
             $mensaje .= "<b>Se dio Llegada con exito al Despacho " . $_REQUEST[despac] . "</b>";
             $mens = new mensajes();
             $mens->correcto("REGISTRO DE NOVEDADES", $mensaje);
@@ -2293,6 +2319,24 @@ class Proc_segui
         }
         echo '['.join(', ',$data).']';
     }
+
+      //---------------------------------------------
+  /*! \fn: getInterfParame
+   *  \brief:Verificar la interfaz con destino seguro esta activa
+   *  \author: Nelson Liberato
+   *  \date: 21/12/2015
+   *  \date modified: 21/12/2015
+   *  \return BOOL
+   */
+  function getInterfParame($mCodInterf = NULL, $nit = NULL) {
+    $mSql = "SELECT ind_estado
+                   FROM ".BASE_DATOS.".tab_interf_parame a
+                  WHERE a.cod_operad = '".$mCodInterf."'
+                    AND a.cod_transp = '".$nit."'";
+    $mMatriz = new Consulta($mSql, $this->conexion);
+    $mMatriz = $mMatriz->ret_matriz("a");
+    return $mMatriz[0]['ind_estado'] == '1'?true:false;
+  }
 
 }
 

@@ -737,7 +737,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NOT NULL   )
+						AND ( xx.fec_salida IS NOT NULL   )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 
 						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
@@ -1199,7 +1199,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NOT NULL  )
+						AND ( xx.fec_salida IS NOT NULL  )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -3767,7 +3767,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NOT NULL   )
+						AND ( xx.fec_salida IS NOT NULL   )
 						".(strlen($mTrans)>0?"AND yy.cod_transp IN (".$mTrans.")":"");
 
 			$mConsult = new Consulta( $mSql, self::$cConexion );
@@ -3878,7 +3878,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NOT NULL  )
+						AND ( xx.fec_salida IS NOT NULL  )
 						".(strlen($mTrans)>0?"AND yy.cod_transp IN (".$mTrans.")":"");
 			$mConsult = new Consulta( $mSql, self::$cConexion );
 			return $mDespac = $mConsult -> ret_matrix('a');

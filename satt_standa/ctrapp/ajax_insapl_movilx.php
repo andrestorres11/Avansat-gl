@@ -137,12 +137,12 @@ class AjaxInsertarAutorizacion
         $pri_clave .=  dechex(rand(0,15));
     }
  
- 	 	$pri_clave = base64_encode($pri_clave);
- 	 	$decodedPass = base64_decode($pri_clave);
+ 	 	$pri_clave2 = base64_encode($pri_clave);
+ 	 	$decodedPass = base64_decode($pri_clave2);
  	 	if($_REQUEST['Restablecer'] == "Restablecer")
  	 	{
  	 		$query = "UPDATE ".BASE_DATOS.".tab_usuari_movilx SET 
-							  clv_usuari = '".$pri_clave."',
+							  clv_usuari = '".$pri_clave2."',
 							  cod_hashxx = '".$_REQUEST['cod_hashxx']."',
 							  ind_activo = '".$_REQUEST['ind_activo']."',
 							  usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
@@ -191,7 +191,7 @@ class AjaxInsertarAutorizacion
 					  VALUES (
 							  '".$_REQUEST['cod_tercer']."',  
 							  '".$_REQUEST['cod_usuari']."',  
-							  '".$pri_clave."',  
+							  '".$pri_clave2."',  
 							  '".$_REQUEST['cod_hashxx']."',  
 							  '".$_REQUEST['ind_activo']."',  
 							  '".$_REQUEST['ind_admini']."',
@@ -214,7 +214,7 @@ class AjaxInsertarAutorizacion
 
 			"cod_tercer" => $_REQUEST['cod_tercer'],
 			"cod_usuari" => $_REQUEST['cod_usuari'],
-			"clv_usuari" => $pri_clave,
+			"clv_usuari" => $pri_clave2,
 			"cod_hashxx" => $_REQUEST['cod_hashxx'],
 			"ind_activo" => $_REQUEST['ind_activo'],
 			"nit_transp" => $nit,
@@ -253,7 +253,7 @@ class AjaxInsertarAutorizacion
                 $thefile = "\$r_file=\"" . $thefile . "\";";
                 eval($thefile);
                 $mHtmlxx = $r_file;
-                mail($_REQUEST['mail'], "Código de activación aplicación AVANSAT ", $mHtmlxx, $mCabece); 
+                mail($_REQUEST['mail'].", maribel.garcia@eltransporte.org", "Código de activación aplicación AVANSAT ", $mHtmlxx, $mCabece); 
 				echo "ok";
 			}
 			else{

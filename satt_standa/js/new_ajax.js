@@ -47,6 +47,10 @@ function AjaxGetData(fUrl, fData, fLayer, fMethod, fFunctions)//recibe la url, u
             fAjaxObject.open(fMethod, fUrl + "?", true);
             fAjaxObject.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=iso-8859-1");
 			fAjaxObject.send(fData);
+
+            //
+                   
+
         }
         else
 		{
@@ -66,7 +70,13 @@ function AjaxGetData(fUrl, fData, fLayer, fMethod, fFunctions)//recibe la url, u
 			try
 			{
 				fHtmlObject.innerHTML = unescape( fAjaxObject.responseText );
-        if (typeof(fFunctions) == 'string') 
+                // Si el servicio presente es de listar usuarios APP movil, se ejecuta el desifrado de base 64 ya que el dinamic list no permite hacer basse64_decode()
+                if($("#cod_servicID").val()    == '20151230')
+                {
+                   fFunctions = "unCyfre();";
+                }
+
+                if (typeof(fFunctions) == 'string') 
 				{
 					fFunctions = fFunctions.split(';');
 					if (fFunctions.length > 0) 
@@ -77,13 +87,15 @@ function AjaxGetData(fUrl, fData, fLayer, fMethod, fFunctions)//recibe la url, u
 							setTimeout(fFunc, 100);
 						}
 					}
+
+
 				}
 			}
 			catch( e )
 			{
 				alert( "Error al Llenar  DIV " + e.message );
 			}
-                  
+                
         }
     };
 }
