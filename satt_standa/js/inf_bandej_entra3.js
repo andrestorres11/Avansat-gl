@@ -50,7 +50,7 @@ $("body").ready(function() {
 
     $("#liDescar").click(function() {
         generalReport("infoDescargue", "tabs-4");
-        Actualizarbadge("5", "liDescar");
+        Actualizarbadge("4,5", "liDescar");
     });
 
     $("#liPernoc").click(function() {

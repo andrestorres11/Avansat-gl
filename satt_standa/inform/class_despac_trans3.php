@@ -3631,7 +3631,7 @@ class Despac
 
 				  if($etapa != NULL)
 				  {
-				  		$mSql.= " AND b.cod_etapax = ".$etapa." GROUP BY (a.num_despac)"; 	
+				  		$mSql.= " AND b.cod_etapax IN ( ".$etapa." ) GROUP BY (a.num_despac)"; 	
 				  }
 				  else
 				  {
@@ -3723,7 +3723,7 @@ class Despac
 					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaTransi($mTransp), 'num_despac' ) );
 					break;
 				
-				case '5':
+				case '4,5':
 					#Descargue
 					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaDescar($mTransp), 'num_despac' ) );
 					break;
@@ -3739,6 +3739,7 @@ class Despac
 			#de lo contrario se retorna la cadena para ser concatenada.
 			if(isset($_REQUEST['Ajax']))
 			{
+				ob_clean();
 				echo $mResult;
 			}
 			else

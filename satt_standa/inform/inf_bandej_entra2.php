@@ -293,7 +293,7 @@ class infBandeja
 					}
 					if( $mView->sec_inform->sub->pes_descar == 1 )
 					{
-						$mbadge = self::$cDespac ->getConteoNem('5', $mArrayTransp);
+						$mbadge = self::$cDespac ->getConteoNem('4,5', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liDescar" href="#tabs-4">DESCARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					}
 					if( $mView->sec_inform->sub->pes_pernoc == 1 )
