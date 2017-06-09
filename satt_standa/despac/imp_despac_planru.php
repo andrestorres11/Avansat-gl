@@ -159,6 +159,8 @@ class ImprimirPlandeRuta
                     d.cod_conduc = h.cod_tercer AND
                     a.ind_planru = 'S' AND  
                     a.ind_anulad = 'R' AND
+                    a.fec_llegad IS NULL AND
+                    d.ind_activo = 'S' AND 
                     a.fec_creaci >= '".$_REQUEST['fec_inicia']." 00:00:00' AND  a.fec_creaci <='".$_REQUEST['fec_finali']." 23:59:59'";
 
  if($datos_usuario["cod_perfil"] == "")
@@ -282,7 +284,9 @@ SELECT a.num_despac,
                     d.cod_transp = g.cod_tercer AND
                     d.cod_conduc = h.cod_tercer AND
                     a.ind_planru = 'S' AND    
-                    a.ind_anulad = 'R' AND                 
+                    a.ind_anulad = 'R' AND
+                    a.fec_llegad IS NULL AND
+                    d.ind_activo = 'S' AND                
                     a.fec_creaci >= '".$_REQUEST['fec_inicia']." 00:00:00' AND  a.fec_creaci <='".$_REQUEST['fec_finali']." 23:59:59' ";
 
     
