@@ -2687,7 +2687,7 @@ class Despachos
                                         "abr_ciudad" => "Ciudad", "dir_destin" => "Direccion", "num_destin" => "No. Contacto", 
                                         "fec_citdes2" => "Fecha y Hora" 
                                      );
-            $mTittleDestin[1] = array( "num_docume" => "No. Factura", "abr_tercer" => "Generador" );
+            $mTittleDestin[1] = array( "num_docume" => "No. Factura", "abr_tercer" => "Generador", "fec_findes" => "Fecha y Hora" );
 
 
             $mHtml = new Formlib(2);
@@ -2735,7 +2735,7 @@ class Despachos
                                             for( $j=0; $j<sizeof($mDataDestin); $j++ ){
                                                 $mHtml->Row();
                                                 foreach ($mTittleDestin[1] as $key => $tittle)
-                                                    $mHtml->Label( $mDataDestin[$j][$key],  array("align"=>"left", "class"=>"celda_info") );
+                                                    $mHtml->Label( $mDataDestin[$j][$key],  array("align"=>"left", "class"=>($mDataDestin[$j]['fec_findes']==""?"celda_info":"celda_backgr")) );
 
                                                 array_push($mArrayDestin, $mDataDestin[$i]['num_docume']);
                                                 $mHtml->CloseRow();
@@ -2768,6 +2768,13 @@ class Despachos
                     $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
             $mHtml->CloseDiv();
+            $mHtml->SetBody("<style>
+                                .celda_backgr{
+                                    background-color: #E0F8E0;
+                                    padding-left: 10px;
+                                    padding-right: 10px;
+                                }
+                            <style>");
 
             self::GridScript();
 
@@ -3780,7 +3787,8 @@ class Despachos
     {
         $mSql = "  SELECT a.nom_destin, c.abr_ciudad, a.dir_destin,
                           a.num_destin, CONCAT(a.fec_citdes,' ',a.hor_citdes) AS fec_citdes2,
-                          a.num_docume, a.num_docalt, a.cod_genera, UPPER(b.abr_tercer) AS abr_tercer 
+                          a.num_docume, a.num_docalt, a.cod_genera, UPPER(b.abr_tercer) AS abr_tercer,
+                          IF(a.fec_findes IS NULL,'',a.fec_findes) AS fec_findes 
                      FROM ".BASE_DATOS.".tab_despac_destin a 
                 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer b 
                        ON a.cod_genera = b.cod_tercer 
@@ -8659,7 +8667,7 @@ class Despachos
                                     $_HTML .= '<th class="cellth-lb">Fecha</th>';
                                     $_HTML .= '<th class="cellth-lb">Hora</th>';
                                     $_HTML .= '<th class="cellth-lb">Novedad</th>';
-                                    $_HTML .= '<th class="cellth-lb">Observación</th>';
+                                    $_HTML .= '<th class="cellth-lb">Observaci&otilde;n</th>';
                                     $_HTML .= '<th class="cellth-lb">'.(is_null($ind_cumcar)?'&nbsp;':'Usuario').'</th>';
                                 $_HTML .= '</tr>';
                                 $_HTML .= '<tr>';
@@ -8718,7 +8726,7 @@ class Despachos
                         if( $fec_complem['fec_llecli'] == '' )
                             $select .= '<option value="fec_llecli">Cumplido del Viaje</option>';
                         else
-                            $_HTML .= '<tr><th align="left" class="celltd-ltb" colspan="5" style="width: 150px;">CUMPLIDO DEL VIAJE:&nbsp;&nbsp;&nbsp;&nbsp;'.$fec_complem['fec_llecli'].'</th></tr>';
+                            $_HTML .= '<tr><th align="left" class="celltd-ltb" colspan="5" style="width: 150px;">CUMPLIDO AL DESTINATARIO:&nbsp;&nbsp;&nbsp;&nbsp;'.$fec_complem['fec_llecli'].'</th></tr>';
 
                         $select .= '</select>';
 
