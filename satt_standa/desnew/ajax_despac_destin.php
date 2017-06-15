@@ -434,6 +434,7 @@ class AjaxDespacDestin {
                                 . "a.num_destin = '" . $mDestin[nom_contac] . "' , "
                                 . "a.fec_citdes = '" . $mDestin[fec_citdes] . "' , "
                                 . "a.hor_citdes = '" . $mDestin[hor_citdes] . "' , "
+                                . "a.ind_modifi = 1  , "
                                 . "a.usr_modifi = '" . $_SESSION['datos_usuario']['cod_usuari'] . "' , "
                                 . "a.fec_modifi = NOW()"
                                 . "WHERE  a.`num_despac` = '" . $_AJAX[num_despac] . "' "
