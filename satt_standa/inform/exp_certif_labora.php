@@ -134,7 +134,7 @@ class CertifLaboral {
             "ind_retiro" => $_POST[opcion3],
             "ind_logosx" => $_POST[opcion4]
         );
-        $oSoapClient = new nusoap_client("https://dev.intrared.net:8083/ap/interf/app/consultor/wsdl/consultor.wsdl", true);
+        $oSoapClient = new nusoap_client("https://ut.intrared.net/ap/interf/app/consultor/wsdl/consultor.wsdl", true);
         $oSoapClient->soap_defencoding = 'ISO-8859-1';
         $mResult = $oSoapClient->call("getCertifLaboral", $parametros);
         if ($oSoapClient->fault) {
