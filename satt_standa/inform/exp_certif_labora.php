@@ -70,8 +70,7 @@ class CertifLaboral {
         $formulario->linea("Datos", 1, "t2");
         $mObliga = "<span style= \"color: green; font-size:15px;\">*</span> ";
         $formulario->nueva_tabla();
-        //$formulario->texto("$mObliga Identificación: ", "text", "cod_tercer\" size=\"15\" onkeypress=\"ClearNombre(event)\" readonly=\"readonly\" maxlength=\"12\" id=\"cod_tercerID", 0, 6, 6, "", $mData[0][0]); // return  Numeric(event)
-        $formulario->texto("$mObliga Identificación: ", "text", "cod_tercer\" size=\"15\" onkeypress=\"ClearNombre(event)\" maxlength=\"12\" id=\"cod_tercerID", 0, 6, 6, "", $mData[0][0]); // return  Numeric(event)
+        $formulario->texto("$mObliga Identificación: ", "text", "cod_tercer\" size=\"15\" onkeypress=\"ClearNombre(event)\" readonly=\"readonly\" maxlength=\"12\" id=\"cod_tercerID", 0, 6, 6, "", $mData[0][0]); // return  Numeric(event)
         $formulario->texto("$mObliga Nombre: ", "text", "nom_tercer\" size=\"40\" maxlength=\"40\" readonly=\"readonly\" class=\"celda_info\" id=\"nom_tercerID", 1, 10, 11, "", $mData[0][1]);
         $formulario->texto("$mObliga Dirigido A: ", "text", "nom_dirigi\" size=\"40\" maxlength=\"40\" id=\"nom_dirigiID", 0, 6, 6, "", "");
         $formulario->caja("Ingreso:", "opcion[0]\" id=\"opcion[0]ID", "1", "1", 1);
