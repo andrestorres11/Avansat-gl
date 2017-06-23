@@ -267,7 +267,7 @@ function primerLetraMayus(string) {
 function addOptionFormulCampos() {
     try {
         var val = $("#opcionID");
-        $("#formul_selectID").append('<option value="' + val.val() + '">' + val.val() + '</option>');
+        $("#formul_selectID").append('<option value="' + val.val() + '" dataAttr>' + val.val() + '</option>');
         val.val('');
     } catch (e) {
         console.log("Error Fuction addOptionFormulCampos: " + e.message + "\nLine: " + e.lineNumber);

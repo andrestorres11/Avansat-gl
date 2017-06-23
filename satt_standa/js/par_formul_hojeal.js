@@ -55,33 +55,57 @@ function registrarHojaDeVidaEAL() {
  *  \param: obj  object  objeto que activa la funcion
  *  \return: 
  */
-function cargarTablaEAL(obj) {
+function cargarTablaEAL() {
     try {
-        var cod_contro = $(obj).val();
-        var div = $("#DivDatosEALID");
+        var cod_contro = $("#cod_controID").val();
 
-        if (cod_contro == '') {
-            div.html("");
+        if (cod_contro == '' || cod_contro == '-') {
+            $("#infBasicaEal").css("display","none");
             return false;
         }
+        //limpio los contenidos
+        $("#Sec2MapEal").html("");
+        var contenedorQr = $("#Sec2QrEal").html("");
+        var contenedorWaze = $("#Sec2WazeEal").html("");
+        $("#infMapsID").html("");
 
         var standa = $("#standaID").val();
 
         $.ajax({
             url: "../" + standa + "/formul/par_formul_hojeal.php",
+            dataType:'json',
             type: "POST",
-            data: "Ajax=on&Option=tablaDatosBasicosEAL&cod_contro=" + cod_contro,
+            data: "Ajax=on&opcion=tablaDatosBasicosEAL&cod_contro=" + cod_contro,
             async: true,
-            beforeSend: function() {
-                BlocK('Cargando...', true);
-            },
             success: function(datos) {
-                div.html(datos);
-                $("#secDivDatosEALID").css("height", "auto");
-                cargarMapaEAL();
-            },
-            complete: function() {
-                BlocK();
+                console.log(datos);
+                if(datos.resp == "ok")
+                {
+                    $("#infBasicaEal").css("display","");
+                    cargarMapaEAL(datos.cord.val_longit ,datos.cord.val_latitu);
+                    initMap(datos);
+                    $("#infMapsID").html(datos.dirc.dir_contro);
+                    if(datos.coqr.url_google != "" || datos.coqr.url_google != "NULL")
+                    {
+                        cargarCodQr(datos.coqr.url_google, contenedorQr);
+                    }
+                    else
+                    {
+                        cargarCodQr("http://maps.google.com/?q="+datos.cord.val_latitu+","+datos.cord.val_longit, contenedorQr);
+                    }
+                    if(datos.coqr.url_wazexx != "" || datos.coqr.url_wazexx != "NULL")
+                    {
+                        cargarCodQr(datos.coqr.url_wazexx, contenedorWaze);
+                    }
+                    else
+                    {
+                        cargarCodQr("http://waze.to/?ll="+datos.cord.val_latitu+","+datos.cord.val_longit+"&navigate=yes", contenedorWaze);
+                    }
+                }
+                else if(datos.resp == "noCord")
+                {
+                    $("#infBasicaEal").css("display","none");
+                }
             }
         });
     } catch (e) {
@@ -98,19 +122,17 @@ function cargarTablaEAL(obj) {
  *  \param:     
  *  \return: 
  */
-function cargarMapaEAL() {
+function cargarMapaEAL(longitud, latitud) {
     try {
         var standa = $("#standaID").val();
-        var div = $("#Sec2infBasicaEal");
+        var div = document.getElementById('Sec2MapEal');
         var features = new Array();
 
-        div.css({
-            height: "370px",
-            width: "400px"
-        });
-
-        var pclon = parseFloat(div.attr('pclon'));
-        var pclat = parseFloat(div.attr('pclat'));
+        div.style.height = "380px";
+        div.style.width = "300px";
+   
+        var pclon = parseFloat(longitud);
+        var pclat = parseFloat(latitud);
         var pcIcono = '../' + standa + '/imagenes/point.png';
         var newCoord = ol.proj.transform([pclon, pclat], 'EPSG:4326', 'EPSG:3857');
 
@@ -127,8 +149,8 @@ function cargarMapaEAL() {
             }));
         });
 
-        var overlay = new ol.Overlay( /** @type {olx.OverlayOptions} */ ({
-            element: $("#pintar"),
+        var overlay = new ol.Overlay(  ({
+            element: document.getElementById('pinta'),
             autoPan: true,
             autoPanAnimation: {
                 duration: 250
@@ -155,10 +177,96 @@ function cargarMapaEAL() {
             overlays: [overlay],
             view: new ol.View({
                 center: newCoord,
-                zoom: 7
+                zoom: 10
             })
         });
 
+    } catch (e) {
+        console.log("Error Function cargarMapaEAL: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: initMap
+ *  \brief: Carga el Mapa de la asistencia
+ *  \author: Ing. Fabian Salinas
+ *  \date: 30/09/2016
+ *  \date modified: dd/mm/aaaa
+ *  \param:     
+ *  \return: 
+ */
+function initMap(datos) {
+    try 
+    {
+        var ubicacionEal = new google.maps.LatLng(datos.cord.val_longit, datos.cord.val_latitu);
+        $("#num_cobdesID").val(datos.cord.val_latitu+","+datos.cord.val_longit);
+        var directionsDisplay = new google.maps.DirectionsRenderer;
+        var directionsService = new google.maps.DirectionsService;
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 7,
+          center: {lat: 4.710989, lng: -74.072092}
+        });
+        directionsDisplay.setMap(map);
+
+        /*var control = document.getElementById('floating-panel');
+        control.style.display = 'block';
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);-*/
+
+        var onChangeHandler = function() {
+          calculateAndDisplayRoute(directionsService, directionsDisplay);
+        };
+        document.getElementById('num_cobdesID').addEventListener('change', onChangeHandler);
+        document.getElementById('num_cobhasID').addEventListener('change', onChangeHandler);
+    } 
+    catch (e) 
+    {
+        console.log("Error Function initMap: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+        var start = document.getElementById('num_cobdesID').value;
+        var end = document.getElementById('num_cobhasID').value;
+        directionsService.route({
+          origin: start,
+          destination: end,
+          travelMode: 'DRIVING'
+        }, function(response, status) {
+          if (status === 'OK') {
+            directionsDisplay.setDirections(response);
+            document.getElementById('num_cobhasID').value = response.routes[0].bounds.f.b+","+response.routes[0].bounds.b.b;
+            document.getElementById('num_cobdesID').value = response.routes[0].bounds.f.f+","+response.routes[0].bounds.b.f;
+          } 
+          else if(status === 'ZERO_RESULTS')
+          {
+          	document.getElementById('num_cobdesID').value = "";
+          	document.getElementById('num_cobhasID').value = "";
+          	console.log("Las Cordenadas no pueden ser procesadas")
+          }
+          else {
+            console.log('Directions request failed due to ' + status);
+          }
+        });
+      }
+
+      
+/*! \fn: cargarCodQr
+ *  \brief: Carga el Mapa de la EAL
+ *  \author: Ing. Fabian Salinas
+ *  \date: 30/09/2016
+ *  \date modified: dd/mm/aaaa
+ *  \param:     
+ *  \return: 
+ */
+function cargarCodQr(url, contenedor) {
+    try
+    {
+        $(contenedor).qrcode({
+            "size": 200,
+            "color": "#3a3",
+            "text": url
+        });
     } catch (e) {
         console.log("Error Function cargarMapaEAL: " + e.message + "\nLine: " + e.lineNumber);
         return false;
@@ -232,8 +340,17 @@ function newHojaEAL(accion, row = null) {
 	        async: false,
 
 	        success: function(data) {
-	            popup.html(data); // pinta los datos de la consulta      
-	        }
+	            popup.html(data); // pinta los datos de la consulta
+	            /*$(".fechapicker").datepicker({
+					changeMonth: true,
+					changeYear: true,
+					dateFormat: "yy-mm-dd"
+				});*/      
+	        },
+            complete: function() {
+                cargarTablaEAL();
+                
+            }
 	    });
 	} catch (e) {
         console.log("Error Function newHojaEAL: " + e.message + "\nLine: " + e.lineNumber);
@@ -554,19 +671,42 @@ function RemoveTabs(row)
  *  \date modified: dia/mes/año
  *  \return: 
  */
-function ConfirmAlmacerHvEal()
+function ConfirmAlmacerHvEal(accion)
 {
 	try
-	{
+	{	
 		var standa = $("#standaID").val();
 	    var tab_active = $("#tab_activeID").val();
 	    $("#popConfirmID").remove();
 	    closePopUp('popConfirmID');
 	    LoadPopupJQNoButton('open', 'Confirmacion ', '150', '300', false, false, true, 'popConfirmID');
 	    var popForuml = $("#popConfirmID");
-	    popForuml.html("</br><table width='100%'><tr><td colspan='2'><h3 align='center' style='color:white;'>Desea continuar?</h3></td></tr><tr><td style='text-align: end;'><button class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='AlmacerHvEal()'>Aceptar</button></td><td><button class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='closePopUp(\"popConfirmID\");$(\"#popConfirmID\").remove();'>Cancelar</button></td></tr></table>"); // pinta los datos de la consulta      
+	    popForuml.html("</br><table width='100%'><tr><td colspan='2'><h3 align='center' style='color:white;'>Desea continuar?</h3></td></tr><tr><td style='text-align: end;'><button class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='AlmacerHvEal("+accion+")'>Aceptar</button></td><td><button class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='closePopUp(\"popConfirmID\");$(\"#popConfirmID\").remove();'>Cancelar</button></td></tr></table>"); // pinta los datos de la consulta      
 	} catch (e) {
         console.log("Error Function ConfirmAlmacerHvEal: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: PopupRespueta
+ *  \brief: Genera popup para dar respuesta
+ *  \author: Edward Serrano
+ *  \date: 22/06/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function PopupRespueta(mensaje, reloadpage)
+{
+    try
+    {   
+        var standa = $("#standaID").val();
+        $("#popRespID").remove();
+        closePopUp('popRespID');
+        LoadPopupJQNoButton('open', 'Respuesta ', '150', '300', false, false, true, 'popRespID');
+        var popForuml = $("#popRespID");
+        popForuml.html("</br><table width='100%'><tr><td colspan='2'><h3 align='center' style='color:white;'>"+mensaje+"</h3></td></tr><tr><td align='center'><button class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='closePopUp(\"popRespID\");$(\"#popRespID\").remove();"+(reloadpage==true?"recargarPagina()":"")+"'>Cerrar</button></td></tr></table>"); // pinta los datos de la consulta      
+    } catch (e) {
+        console.log("Error Function PopupRespueta: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
 }
@@ -578,7 +718,7 @@ function ConfirmAlmacerHvEal()
  *  \date modified: dia/mes/año
  *  \return: 
  */
-function AlmacerHvEal()
+function AlmacerHvEal(accion)
 {
 	try
 	{
@@ -589,6 +729,7 @@ function AlmacerHvEal()
 		var mdata = new FormData();
 		mdata.append("opcion","insertar");
 		mdata.append("Ajax","on");
+		mdata.append("accion",accion);
 		if(ValidateForm(mdata)!=false)
 		{
 			$.ajax({
@@ -601,8 +742,14 @@ function AlmacerHvEal()
 		        processData:false,
 		        cache:false,
 		        success:function(data){
-		          //alert(data);
-		          console.log(data);
+		            if(data.resp == "ok")
+                    {
+                        PopupRespueta("Se "+(accion=="edit"?"edito":"almaceno")+" Correctamente la hoja de vida EAL.",false);
+                    }
+                    else
+                    {
+                        PopupRespueta("No se pudo realizar la solicitud, intente nuevamente.",false);
+                    }
 		        }
 		    }); 
 		}
@@ -784,6 +931,82 @@ function getInfForm(data, objecto, nivel = null)
 		return data;
 	} catch (e) {
         console.log("Error Function getInfForm: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: inactivarEal
+ *  \brief: Realiza la inactivacion e activacion de los hojas de vida Eal 
+ *  \author: Edward Serrano
+ *  \date: 22/06/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function inactivarEal(accion, row)
+{
+    try
+    {
+        var standa = $("#standaID").val();
+        var objeto = $(row).parent().parent();
+        var cod_contro = $(objeto).find("input[id^=cod_contro]").val();
+        var parametros = "opcion=inactivarEal&Ajax=on&cod_contro="+cod_contro+"&accion="+accion;
+        $.ajax({
+            url:"../" + standa + "/formul/par_formul_hojeal.php",
+            type:'POST',
+            dataType:'json',
+            data: parametros,
+            //async: false,
+            cache:false,
+            success:function(data){
+                if(data.resp == "ok")
+                {
+                    PopupRespueta("Se "+(accion=="0"?"Inactivo":"Activo")+" Correctamente la hoja de vida EAL.",true);
+                }
+                else
+                {
+                    PopupRespueta("No se pudo realizar la solicitud, intente nuevamente.",true);
+                }
+            }
+        }); 
+    } catch (e) {
+        console.log("Error Function getInfForm: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: recargarPagina
+ *  \brief: Realiza la inactivacion e activacion de los hojas de vida Eal 
+ *  \author: Edward Serrano
+ *  \date: 22/06/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function recargarPagina(accion, row)
+{
+    try
+    {
+        location.reload(true);
+    } catch (e) {
+        console.log("Error Function recargarPagina: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: verArchivos
+ *  \brief: Realiza la inactivacion e activacion de los hojas de vida Eal 
+ *  \author: Edward Serrano
+ *  \date: 22/06/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function verArchivos(idForm, cod_campo, cod_contro)
+{
+    try
+    {
+        cod_servic = $("#cod_servicID").val();
+        window.open("index.php?window=central&cod_servic="+cod_servic+"&menant="+cod_servic+"&opcion=download&form="+idForm+"&cod_campo="+cod_campo+"&cod_contro="+cod_contro, '_blank');
+    } catch (e) {
+        console.log("Error Function verArchivos: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
 }

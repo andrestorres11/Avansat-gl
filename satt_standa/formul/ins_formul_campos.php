@@ -268,26 +268,26 @@ class FormularioCampos
 
 		switch ($data['tipo']) {
             case 'number':
-                return '<input '.$name.' class="campo_texto" type="text" minlength="'.$data['min'].'" maxlength="'.$data['max'].'" validate="numero">';
+                return '<input '.$name.' class="campo_texto" type="text" minlength="'.$data['min'].'" maxlength="'.$data['max'].'" validate="numero" dataAttr>';
             case 'text':
-                return '<input '.$name.' class="campo_texto" type="text" minlength="'.$data['min'].'" maxlength="'.$data['max'].'" validate="texto">';
+                return '<input '.$name.' class="campo_texto" type="text" minlength="'.$data['min'].'" maxlength="'.$data['max'].'" validate="texto" dataAttr>';
             case 'alpha':
-                return '<input '.$name.' class="campo_texto" type="text" minlength="'.$data['min'].'" maxlength="'.$data['max'].'" validate="alpha">';
+                return '<input '.$name.' class="campo_texto" type="text" minlength="'.$data['min'].'" maxlength="'.$data['max'].'" validate="alpha" dataAttr>';
             case 'date':
-                return '<input '.$name.' class="campo_texto fechapicker" type="text" placeholder="aaaa-mm-dd" validate="date">';
+                return '<input '.$name.' class="campo_texto fechapicker" type="text" placeholder="aaaa-mm-dd" validate="date" dataAttr>';
             case 'hour':
-                return '<input '.$name.' class="campo_texto horapicker" type="text" placeholder="00:00:00" validate="hora">';
+                return '<input '.$name.' class="campo_texto horapicker" type="text" placeholder="00:00:00" validate="hora" dataAttr>';
             case 'radio':
             	$tab = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-                return '<input '.$name.' type="radio" value="Si"> Si '.$tab.'<input '.$name.' type="radio" value="No"> No';
+                return '<input '.$name.' type="radio" value="Si" dataAttr> Si '.$tab.'<input '.$name.' type="radio" value="No" dataAttr> No';
             case 'textarea':
-                return '<textarea '.$name.' class="campo_texto"></textarea>';
+                return '<textarea '.$name.' class="campo_texto" dataAttr></textarea>';
             case 'checkbox':
-                return '<input '.$name.' type="checkbox" value="'.$data['nombre'].'">';
+                return '<input '.$name.' type="checkbox" value="'.$data['nombre'].'" dataAttr>';
             case 'select':
-            	return '<select '.$name.'>'.$data['html'].'</select>';
+            	return '<select '.$name.' dataAttr>'.$data['html'].'</select>';
             case 'file':
-                return '<input '.$name.' type="file">';
+                return '<input '.$name.' type="file" dataAttr>';
             default:
                 return '';
         }
