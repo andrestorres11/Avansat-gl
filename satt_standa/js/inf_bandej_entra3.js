@@ -50,7 +50,7 @@ $("body").ready(function() {
 
     $("#liDescar").click(function() {
         generalReport("infoDescargue", "tabs-4");
-        Actualizarbadge("5", "liDescar");
+        Actualizarbadge("4,5", "liDescar");
     });
 
     $("#liPernoc").click(function() {
@@ -450,9 +450,9 @@ function getDataSelectPRC() {
  *  \param: 
  *  \return: 
  */
-function exportExcel() {
+function exportExcel(ind_excel = 0) {
     try {
-        location.href="?window=central&cod_servic=1366&menant=1366&opcion=10";
+        location.href="?window=central&cod_servic=1366&menant=1366&opcion=10"+"&ind_excel="+ind_excel;
     } catch (e) {
         console.log("Error Fuction exportExcel: " + e.message + "\nLine: " + e.lineNumber);
         return false;

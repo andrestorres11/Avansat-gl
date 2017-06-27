@@ -159,6 +159,8 @@ class ImprimirPlandeRuta
                     d.cod_conduc = h.cod_tercer AND
                     a.ind_planru = 'S' AND  
                     a.ind_anulad = 'R' AND
+                    a.fec_llegad IS NULL AND
+                    d.ind_activo = 'S' AND 
                     a.fec_creaci >= '".$_REQUEST['fec_inicia']." 00:00:00' AND  a.fec_creaci <='".$_REQUEST['fec_finali']." 23:59:59'";
 
  if($datos_usuario["cod_perfil"] == "")
@@ -282,7 +284,9 @@ SELECT a.num_despac,
                     d.cod_transp = g.cod_tercer AND
                     d.cod_conduc = h.cod_tercer AND
                     a.ind_planru = 'S' AND    
-                    a.ind_anulad = 'R' AND                 
+                    a.ind_anulad = 'R' AND
+                    a.fec_llegad IS NULL AND
+                    d.ind_activo = 'S' AND                
                     a.fec_creaci >= '".$_REQUEST['fec_inicia']." 00:00:00' AND  a.fec_creaci <='".$_REQUEST['fec_finali']." 23:59:59' ";
 
     
@@ -693,7 +697,7 @@ SELECT a.num_despac,
       $mSelect = "SELECT rut_format, rut_anexox, obs_adicio, 
                          ind_pdfxxx, rut_pdfxxx, dir_logoxx, 
                          ind_telage, ind_segpue, lim_anexox,
-                         cam_especi
+                         cam_especi, dir_imgpub
                     FROM ".BASE_DATOS.".tab_config_planru 
                    WHERE cod_transp = '".$transpor[0][0]."'
                      AND ind_activo = '1'";
@@ -724,6 +728,13 @@ SELECT a.num_despac,
       if( $_FORMAT['dir_logoxx'] != '' )
         $d1 = $_FORMAT['dir_logoxx'];
       /***********************************/
+
+      //Imagen banner de Corona
+      if($ind_forpro[0]['dir_imgpub'] != ''){
+        $d30 = $ind_forpro[0]['dir_imgpub'];
+      }else{
+      	echo "";
+      }
         
       // VALIDACION QRCODE ----------------------------------------------------------------
       $mSelect = "SELECT a.cod_tipser 

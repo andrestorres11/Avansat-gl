@@ -330,12 +330,12 @@ class AjaxDespacDestin {
         $mArrayDocAlt = $_AJAX['doc_altern'];
         $data_cliens = explode("|",$_AJAX['clientes']);
 
-        $mDelete = "DELETE FROM " . BASE_DATOS . ".tab_despac_destin
+        /*$mDelete = "DELETE FROM " . BASE_DATOS . ".tab_despac_destin
                       WHERE num_despac = '" . $num_despac . "'
                         AND ( fec_findes = '0000-00-00 00:00:00' 
                          OR fec_findes IS NULL )";
         //echo $mDelete."<hr>";                     
-        $consulta = new Consulta($mDelete, $this->conexion);
+        $consulta = new Consulta($mDelete, $this->conexion);*/
  
         foreach ($data_cliens as $cliente) {
             $cod_cliens[] = explode("/", $cliente); 
@@ -404,7 +404,7 @@ class AjaxDespacDestin {
                     if ($mResult == NULL || $mResult == '') {
 
 
-                        $mInsertF = "INSERT INTO " . BASE_DATOS . ".tab_despac_destin
+                        $mInsertF = "REPLACE INTO " . BASE_DATOS . ".tab_despac_destin
                         (
                           num_despac, num_docume, num_docalt, cod_genera,
                           nom_destin, cod_ciudad, dir_destin, num_destin, 
@@ -434,6 +434,7 @@ class AjaxDespacDestin {
                                 . "a.num_destin = '" . $mDestin[nom_contac] . "' , "
                                 . "a.fec_citdes = '" . $mDestin[fec_citdes] . "' , "
                                 . "a.hor_citdes = '" . $mDestin[hor_citdes] . "' , "
+                                . "a.ind_modifi = 1  , "
                                 . "a.usr_modifi = '" . $_SESSION['datos_usuario']['cod_usuari'] . "' , "
                                 . "a.fec_modifi = NOW()"
                                 . "WHERE  a.`num_despac` = '" . $_AJAX[num_despac] . "' "
@@ -556,9 +557,9 @@ class AjaxDespacDestin {
         $mHtml .= '<table width="100%" cellspacing="0" cellpadding="0" border="0">';
         $mHtml .= '<tr>';
         $mHtml .= '<td align="left" colspan="5" class="cellHead" width="10%">DESTINATARIO No. ' . ( $_AJAX['counter'] + 1 );
-        if ($readonly == '') {
+        /*if ($readonly == '') {
             $mHtml .= '&nbsp;&nbsp;&nbsp;<a style="color:#FFFFFF; text-decoration:none; cursor:pointer;" onclick="DropGrid(\'' . $_AJAX['counter'] . '\');">[Eliminar]</a>';
-        }
+        }*/
         $mHtml .= '</td>';
         $mHtml .= '</tr>';
 

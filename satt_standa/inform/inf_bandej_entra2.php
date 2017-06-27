@@ -175,6 +175,16 @@ class infBandeja
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="num_facturID" name="num_factur" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
 				$mHtml2 .= '	</td>';
+				$mHtml2 .= '	<td class="cellInfo1" align="right">No. Manifiesto:</td>';
+				$mHtml2 .= '	<td class="cellInfo1">';
+				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="cod_manifiID" name="cod_manifi" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
+				$mHtml2 .= '	</td>';
+				$mHtml2 .= '	<td class="cellInfo1" align="right">C.C. Conductor:</td>';
+				$mHtml2 .= '	<td class="cellInfo1">';
+				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" id="cod_tercerID" name="cod_tercer" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
+				$mHtml2 .= '	</td>';
+				$mHtml2 .= '</tr>';
+				$mHtml2 .= '<tr>';
 				$mHtml2 .= '	<td class="cellInfo1" align="right">En Tr&aacute;nsito:</td>';
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="checkbox" value="1" id="ind_entranID" name="ind_entran" checked >';
@@ -183,6 +193,8 @@ class infBandeja
 				$mHtml2 .= '	<td class="cellInfo1">';
 				$mHtml2 .= '		<input type="checkbox" value="1" id="ind_fintraID" name="ind_fintra" >';
 				$mHtml2 .= '	</td>';
+				$mHtml2 .= '	<td class="cellInfo1"></td>';
+				$mHtml2 .= '	<td class="cellInfo1"></td>';
 				$mHtml2 .= '</tr>';
 
 				$mHtml2 .= '</table>';
@@ -240,7 +252,7 @@ class infBandeja
 
 				$mHtml3 .= '<tr>';
 				$mHtml3 .= '<td class="cellInfo1" align="right" colspan="4"><input type="button" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" value="GENERAR" id="generarprc"></td>';
-				$mHtml3 .= '<td class="cellInfo1" align="left" colspan="4"><input type="button" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" value="EXCEL" id="excelprcGeneral" onclick="exportExcel()"></td>';
+				$mHtml3 .= '<td class="cellInfo1" align="left" colspan="4"><input type="button" class="crmButton small save ui-button ui-widget ui-state-default ui-corner-all" value="EXCEL" id="excelprcGeneral" onclick="exportExcel(1)"></td>';
 				$mHtml3 .= '</tr>';
 
 				$mHtml3 .= '</table>';
@@ -261,21 +273,33 @@ class infBandeja
 			$mBand  = '</table><div id="tabs">';
 				$mBand .= '<ul>';
 					if( $mView->sec_inform->sub->pes_genera == 1 )
+					{
 						$mBand .= '<li><a id="liGenera" href="#tabs-1">GENERAL</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_prcarg == 1 )
+					{
 						$mbadge = self::$cDespac ->getConteoNem('1', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPreCar" href="#tabs-6">PRECARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_cargax == 1 )
+					{
 						$mbadge = self::$cDespac ->getConteoNem('2', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liCargue" href="#tabs-2">CARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_transi == 1 )
+					{
 						$mbadge = self::$cDespac ->getConteoNem('3', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liTransi" href="#tabs-3">TRANSITO '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_descar == 1 )
-						$mbadge = self::$cDespac ->getConteoNem('5', $mArrayTransp);
+					{
+						$mbadge = self::$cDespac ->getConteoNem('4,5', $mArrayTransp);
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liDescar" href="#tabs-4">DESCARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 					if( $mView->sec_inform->sub->pes_pernoc == 1 )
+					{
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPernoc" href="#tabs-5">C. PERNOTACION</a></li>';
+					}
 				$mBand .= '</ul>';
 
 				$mBand .= $mView->sec_inform->sub->pes_genera == 1 ? '<div id="tabs-1"></div>' : ''; #DIV General
@@ -307,7 +331,14 @@ class infBandeja
   		header("Content-Disposition: attachment; filename=\"$filename\"");
   		header("Content-Type: application/vnd.ms-excel");
         ob_clean();
-       	echo $_SESSION['precargue']['general'];
+       	if($_REQUEST['ind_excel']==1)
+       	{
+       		echo $_SESSION['precargue']['general'];
+       	}
+       	else
+       	{
+       		echo $_SESSION['precargue']['detallado'];
+       	}
        	die;
     }
 

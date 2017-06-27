@@ -577,7 +577,7 @@ class Despac
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin,
-						l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar
+						l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar, k.num_solici
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -737,7 +737,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NOT NULL   )
+						AND ( xx.fec_salida IS NOT NULL   )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 
 						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
@@ -1199,7 +1199,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NOT NULL  )
+						AND ( xx.fec_salida IS NOT NULL  )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -1870,7 +1870,8 @@ class Despac
 	{
 		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 
-		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
+		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
+
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
 
 		#Según Etapa
@@ -2018,6 +2019,7 @@ class Despac
 		$mHtml .= 	'<tr>';
 		foreach ($mTittle as $value){
 			$mHtml .= '<th class="classHead" align="center">'.$value.'</th>';
+			//if($value=="NO."){$mHtml .= '<th style="display:none;" align="center">N? SOLICITUD</th>';}
 		}
 		$mHtml .= 	'</tr>';
 
@@ -2072,6 +2074,7 @@ class Despac
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$n.'</th>';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$gif.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mLink.'</td>';
+				$mHtml .= 	'<td class="classHead" nowrap="" align="left">'.$row[num_solici].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[cod_manifi].'</td>';
 
 				if($row["ind_anulad"] == "A") {
@@ -2133,7 +2136,7 @@ class Despac
 
 		$mHtml .= '</table>';
 		$mHtml .= '<br/>';
-		$_SESSION['precargue']['general'] = $mHtml;
+		$_SESSION['precargue']['detallado'] = $mHtml;
 		return $mHtml;
 	}
 
@@ -2282,6 +2285,8 @@ class Despac
 			$mHtml .= $_REQUEST[num_solici] ? " N&uacute;mero de Solicitud = {$_REQUEST[num_solici]} " : "";
 			$mHtml .= $_REQUEST[num_pedido] ? " N&uacute;mero de Pedido = {$_REQUEST[num_pedido]} " : "";
 			$mHtml .= $_REQUEST[num_factur] ? " N&uacute;mero de Factura = {$_REQUEST[num_factur]} " : "";
+			$mHtml .= $_REQUEST[cod_manifi] ? " N&uacute;mero de Manifiesto = {$_REQUEST[cod_manifi]} " : "";
+			$mHtml .= $_REQUEST[cod_tercer] ? " C.C. del Conductor = {$_REQUEST[cod_tercer]} " : "";
 			$mHtml .= "</center>";
 
 			$mResult = $mHtml;
@@ -2451,6 +2456,8 @@ class Despac
 			$mSql .= $_REQUEST[num_solici] ? " AND x.num_solici = '{$_REQUEST[num_solici]}' " : "";
 			$mSql .= $_REQUEST[num_pedido] ? " AND x.num_pedido = '{$_REQUEST[num_pedido]}' " : "";
 			$mSql .= $_REQUEST[num_factur] ? " AND y.num_docume = '{$_REQUEST[num_factur]}' " : "";
+			$mSql .= $_REQUEST[cod_manifi] ? " AND a.cod_manifi = '{$_REQUEST[cod_manifi]}' " : "";
+			$mSql .= $_REQUEST[cod_tercer] ? " AND h.cod_tercer = '{$_REQUEST[cod_tercer]}' " : "";
 		}else
 			$mSql .= " AND a.num_despac = '{$mNumDespac}' ";
 
@@ -3624,7 +3631,7 @@ class Despac
 
 				  if($etapa != NULL)
 				  {
-				  		$mSql.= " AND b.cod_etapax = ".$etapa." GROUP BY (a.num_despac)"; 	
+				  		$mSql.= " AND b.cod_etapax IN ( ".$etapa." ) GROUP BY (a.num_despac)"; 	
 				  }
 				  else
 				  {
@@ -3668,8 +3675,12 @@ class Despac
 		try
 		{	
 			#identifico la transportadora
-			//echo "<pre>";print_r($mTransp);echo "</pre>";
-			if(!is_array($mTransp))
+			#Consulto el tipo de usuario
+			if(self::getTranspCargaControlador() != NULL )
+			{
+				$mTransp = self::getTranspCargaControlador();
+			}
+			else if(!is_array($mTransp))
 			{	
 				#convierto la cadena en array
 				$mTransp = explode(',', $mTransp);
@@ -3712,7 +3723,7 @@ class Despac
 					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaTransi($mTransp), 'num_despac' ) );
 					break;
 				
-				case '5':
+				case '4,5':
 					#Descargue
 					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaDescar($mTransp), 'num_despac' ) );
 					break;
@@ -3728,6 +3739,7 @@ class Despac
 			#de lo contrario se retorna la cadena para ser concatenada.
 			if(isset($_REQUEST['Ajax']))
 			{
+				ob_clean();
 				echo $mResult;
 			}
 			else
@@ -3767,7 +3779,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NOT NULL   )
+						AND ( xx.fec_salida IS NOT NULL   )
 						".(strlen($mTrans)>0?"AND yy.cod_transp IN (".$mTrans.")":"");
 
 			$mConsult = new Consulta( $mSql, self::$cConexion );
@@ -3878,7 +3890,7 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND ( zz.fec_salida IS NOT NULL  )
+						AND ( xx.fec_salida IS NOT NULL  )
 						".(strlen($mTrans)>0?"AND yy.cod_transp IN (".$mTrans.")":"");
 			$mConsult = new Consulta( $mSql, self::$cConexion );
 			return $mDespac = $mConsult -> ret_matrix('a');
