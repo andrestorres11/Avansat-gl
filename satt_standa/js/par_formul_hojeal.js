@@ -78,14 +78,13 @@ function cargarTablaEAL() {
             data: "Ajax=on&opcion=tablaDatosBasicosEAL&cod_contro=" + cod_contro,
             async: true,
             success: function(datos) {
-                console.log(datos);
                 if(datos.resp == "ok")
                 {
                     $("#infBasicaEal").css("display","");
                     cargarMapaEAL(datos.cord.val_longit ,datos.cord.val_latitu);
                     initMap(datos);
                     $("#infMapsID").html(datos.dirc.dir_contro);
-                    if(datos.coqr.url_google != "" || datos.coqr.url_google != "NULL")
+                    if(datos.coqr.url_google != "" || datos.coqr.url_google != "NULL" || datos.coqr.url_google != "null")
                     {
                         cargarCodQr(datos.coqr.url_google, contenedorQr);
                     }
@@ -93,12 +92,15 @@ function cargarTablaEAL() {
                     {
                         cargarCodQr("http://maps.google.com/?q="+datos.cord.val_latitu+","+datos.cord.val_longit, contenedorQr);
                     }
-                    if(datos.coqr.url_wazexx != "" || datos.coqr.url_wazexx != "NULL")
+                    if(datos.coqr.url_wazexx != "" || datos.coqr.url_wazexx != "NULL" || datos.coqr.url_wazexx != "null")
                     {
+                        console.log(datos);
+                        console.log("wzae-ento:"+datos.coqr.url_wazexx);
                         cargarCodQr(datos.coqr.url_wazexx, contenedorWaze);
                     }
                     else
                     {
+                        console.log("wzae-noento:"+datos.coqr.url_wazexx);
                         cargarCodQr("http://waze.to/?ll="+datos.cord.val_latitu+","+datos.cord.val_longit+"&navigate=yes", contenedorWaze);
                     }
                 }
@@ -200,6 +202,7 @@ function initMap(datos) {
     {
         var ubicacionEal = new google.maps.LatLng(datos.cord.val_longit, datos.cord.val_latitu);
         $("#num_cobdesID").val(datos.cord.val_latitu+","+datos.cord.val_longit);
+        $("#num_cobhasID").val(datos.cord.val_latfin+","+datos.cord.val_lonfin);
         var directionsDisplay = new google.maps.DirectionsRenderer;
         var directionsService = new google.maps.DirectionsService;
         var map = new google.maps.Map(document.getElementById('map'), {
@@ -211,7 +214,10 @@ function initMap(datos) {
         /*var control = document.getElementById('floating-panel');
         control.style.display = 'block';
         map.controls[google.maps.ControlPosition.TOP_CENTER].push(control);-*/
-
+        /*if($("#num_cobdesID").val() != "" && $("#num_cobhasID").val() !=)
+        {
+            calculateAndDisplayRoute(directionsService, directionsDisplay);
+        }*/
         var onChangeHandler = function() {
           calculateAndDisplayRoute(directionsService, directionsDisplay);
         };
@@ -235,8 +241,8 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
         }, function(response, status) {
           if (status === 'OK') {
             directionsDisplay.setDirections(response);
-            document.getElementById('num_cobhasID').value = response.routes[0].bounds.f.b+","+response.routes[0].bounds.b.b;
-            document.getElementById('num_cobdesID').value = response.routes[0].bounds.f.f+","+response.routes[0].bounds.b.f;
+            document.getElementById('num_cobdesID').value = response.routes[0].bounds.f.b+","+response.routes[0].bounds.b.b;
+            document.getElementById('num_cobhasID').value = response.routes[0].bounds.f.f+","+response.routes[0].bounds.b.f;
           } 
           else if(status === 'ZERO_RESULTS')
           {
@@ -262,6 +268,7 @@ function calculateAndDisplayRoute(directionsService, directionsDisplay) {
 function cargarCodQr(url, contenedor) {
     try
     {
+        console.log(url);
         $(contenedor).qrcode({
             "size": 200,
             "color": "#3a3",
@@ -741,14 +748,14 @@ function AlmacerHvEal(accion)
 		        //async: false,
 		        processData:false,
 		        cache:false,
-		        success:function(data){
+		        success:function(data){console.log(data);
 		            if(data.resp == "ok")
                     {
-                        PopupRespueta("Se "+(accion=="edit"?"edito":"almaceno")+" Correctamente la hoja de vida EAL.",false);
+                        PopupRespueta("Se "+(accion=="edit"?"edito":"almaceno")+" Correctamente la hoja de vida EAL.",true);
                     }
                     else
                     {
-                        PopupRespueta("No se pudo realizar la solicitud, intente nuevamente.",false);
+                        PopupRespueta("No se pudo realizar la solicitud, intente nuevamente.",true);
                     }
 		        }
 		    }); 
@@ -1007,6 +1014,58 @@ function verArchivos(idForm, cod_campo, cod_contro)
         window.open("index.php?window=central&cod_servic="+cod_servic+"&menant="+cod_servic+"&opcion=download&form="+idForm+"&cod_campo="+cod_campo+"&cod_contro="+cod_contro, '_blank');
     } catch (e) {
         console.log("Error Function verArchivos: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+/*! \fn: saveCoberturaAsis
+ *  \brief: Almacena las cordenadas de la cobertura 
+ *  \author: Edward Serrano
+ *  \date: 27/06/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function saveCoberturaAsis()
+{
+    try
+    {
+        var standa = $("#standaID").val();
+        var num_cobdes = $("#num_cobdesID").val();
+        var num_cobhas = $("#num_cobhasID").val();
+        var cod_contro = $("#cod_controID").val();
+        var parametros = "opcion=saveCoberturaAsis&Ajax=on&num_cobdes="+num_cobdes+"&num_cobhas="+num_cobhas+"&cod_contro="+cod_contro;
+        if(num_cobdes == "")
+        {
+            inc_alerta("num_cobdesID", "Campo es requerido.");
+        }
+        else if(num_cobhas == "")
+        {
+            inc_alerta("num_cobhasID", "Campo es requerido.");
+        }
+        else
+        {
+            $.ajax({
+                url:"../" + standa + "/formul/par_formul_hojeal.php",
+                type:'POST',
+                dataType:'json',
+                data: parametros,
+                //async: false,
+                cache:false,
+                success:function(data){
+                    if(data.resp == "ok")
+                    {
+                        PopupRespueta("Se almaceno Correctamente la cobertura de asistencia.",false);
+                    }
+                    else
+                    {
+                        PopupRespueta("No se pudo realizar la solicitud, intente nuevamente.",false);
+                    }
+                }
+            }); 
+        }
+        
+    } catch (e) {
+        console.log("Error Function saveCoberturaAsis: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
 }

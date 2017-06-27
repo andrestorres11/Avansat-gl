@@ -61,6 +61,9 @@ class hojaVidaEal
             case 'download':
             	self::download();
             	break;
+            case 'saveCoberturaAsis':
+              self::saveCoberturaAsis();
+              break;
             default:  
                 self::listar(); 
             break;
@@ -245,7 +248,7 @@ class hojaVidaEal
     		}
 	    	$mHtml = new FormLib(2);
 	    	$mHtml->OpenDiv("id:PuntoEal; class:accordian");
-				$mHtml->SetBody("<h3 style='padding:6px;'><center>Crear Hoja de vida</center></h3>");
+				$mHtml->SetBody("<h3 style='padding:6px;'><center>CREAR HOJA DE VIDA</center></h3>");
 				$mHtml->OpenDiv("id:secNewNotifi");
 					$mHtml->Table("tr");
 						#Cuerpo de la notificacion
@@ -264,7 +267,7 @@ class hojaVidaEal
 			$mHtml->CloseDiv();
 			#informacion Representante Legal
 			$mHtml->OpenDiv("id:RepreLegal; class:accordian");
-				$mHtml->SetBody("<h3 style='padding:6px;'><center>Representante Legal</center></h3>");
+				$mHtml->SetBody("<h3 style='padding:6px;'><center>REPRESENTANTE LEGAL</center></h3>");
 				$mHtml->SetBody("<div id='Sec1RepreLegal' class='contentAccordionForm' style='width:95%;'>");
 					$mHtml->SetBody("<div id='Sec2RepreLegal' class='contentAccordionForm' style='width:60%;float: left;height:270px'>");
 						#Espacio para el formulario
@@ -275,35 +278,35 @@ class hojaVidaEal
 										$mHtml->line("","i",0,7);
 									$mHtml->CloseRow();
 									$mHtml->Row();
-										$mHtml->Label( "*Numero de Documento:",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+										$mHtml->Label( "*Numero de Documento:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 										$mHtml->Input(array("name" => "num_documeRl", "id" => "num_documeRlID", "colspan"=>"2", "type"=>"numeric", "obl"=>"obl", "minlength"=>"3", "maxlength"=>"10", "value"=>($mInfoRL[0]['num_docume']?$mInfoRL[0]['num_docume']:"")));
 									$mHtml->CloseRow();
 									$mHtml->Row();
-										$mHtml->Label( "*Primer Apellido:",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+										$mHtml->Label( "*Primer Apellido:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 										$mHtml->Input(array("name" => "nom_apell1Rl", "id" => "nom_apell1RlID", "colspan"=>"2", "obl"=>"obl", "minlength"=>"3", "maxlength"=>"15", "value"=>($mInfoRL[0]['nom_apell1']?$mInfoRL[0]['nom_apell1']:"")));
 									$mHtml->CloseRow();
 									$mHtml->Row();
-										$mHtml->Label( "Segundo Apellido:",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+										$mHtml->Label( "Segundo Apellido:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 										$mHtml->Input(array("name" => "nom_apell2Rl", "id" => "nom_apell2RlID", "colspan"=>"2", "minlength"=>"3", "maxlength"=>"10", "value"=>($mInfoRL[0]['nom_apell2']?$mInfoRL[0]['nom_apell2']:"")));
 									$mHtml->CloseRow();
 									$mHtml->Row();
-										$mHtml->Label( "*Nombres:",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+										$mHtml->Label( "*Nombres:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 										$mHtml->Input(array("name" => "nom_replegRl", "id" => "nom_replegRlID", "colspan"=>"2", "obl"=>"obl", "minlength"=>"3", "maxlength"=>"25", "value"=>($mInfoRL[0]['nom_funcio']?$mInfoRL[0]['nom_funcio']:"")));
 									$mHtml->CloseRow();
 									$mHtml->Row();
-										$mHtml->Label( "*N° de Celular",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+										$mHtml->Label( "*N° de Celular:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 										$mHtml->Input(array("name" => "num_celulaRl", "id" => "num_celulaRlID", "colspan"=>"2", "type"=>"numeric", "obl"=>"obl", "maxlength"=>"10", "value"=>($mInfoRL[0]['num_telmov']?$mInfoRL[0]['num_telmov']:"")));
 									$mHtml->CloseRow();
 									$mHtml->Row();
-										$mHtml->Label( "N° de Telefono",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+										$mHtml->Label( "N° de Telefono:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 										$mHtml->Input(array("name" => "num_telefoRl", "id" => "num_telefoRlID", "colspan"=>"2", "type"=>"numeric", "minlength"=>"7", "maxlength"=>"11", "value"=>($mInfoRL[0]['num_telef1']?$mInfoRL[0]['num_telef1']:"")));
 									$mHtml->CloseRow();
 									$mHtml->Row();
-										$mHtml->Label( "N° de Whatsapp",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+										$mHtml->Label( "N° de Whatsapp:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 										$mHtml->Input(array("name" => "num_WhatsaRl", "id" => "num_WhatsaRlID", "colspan"=>"2", "type"=>"numeric", "maxlength"=>"10", "value"=>($mInfoRL[0]['num_whatsa']?$mInfoRL[0]['num_whatsa']:"")));
 									$mHtml->CloseRow();
 									$mHtml->Row();
-										$mHtml->Label( "*E-Mail",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+										$mHtml->Label( "*E-Mail:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 										$mHtml->Input(array("name" => "dir_emailxRl", "id" => "dir_emailxRlID", "colspan"=>"2", "obl"=>"obl", "minlength"=>"7", "maxlength"=>"20", "format"=>"mail", "value"=>($mInfoRL[0]['dir_emailx']?$mInfoRL[0]['dir_emailx']:"")));
 									$mHtml->CloseRow();
 									$mHtml->Row();
@@ -343,7 +346,7 @@ class hojaVidaEal
 			$mHtml->CloseDiv();
 			#Informacion Funcionarios
 			$mHtml->OpenDiv("id:infoFunciona; class:accordian");
-				$mHtml->SetBody("<h3 style='padding:6px;'><center>Informacion Funcionarios</center></h3>");
+				$mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION FUNCIONARIOS</center></h3>");
 				$mHtml->SetBody("<div id='Sec1infoFunciona'>");
 					#Div que identifica formulario a clonar
 					$mHtml->SetBody("<div class='formInfo'>");
@@ -355,7 +358,9 @@ class hojaVidaEal
 					{
 							#Div que identifica seccion a clonar y genera conteo
 							$mHtml->SetBody("<div class='formcount ".($keyInf==0?"formPro":"")."'>");
-								$mHtml->SetBody("<h4 align='center'>Funcionario</h4>");
+                                $mHtml->SetBody("<div id='Sec2infoFunciona$keyInf' class='contentAccordionForm' style='width:96%;float: left;height:10px'>");
+								$mHtml->SetBody("<h4 align='center' style='color: black;''>FUNCIONARIO</h4>");
+                                $mHtml->SetBody("</div>");
 								$mHtml->SetBody("<div id='Sec2infoFunciona$keyInf' class='contentAccordionForm' style='width:60%;float: left;height:270px'>");
 									#Espacio para el formulario
 									$mHtml->Table("tr");
@@ -363,35 +368,35 @@ class hojaVidaEal
 											$mHtml->line("","i",0,7);
 										$mHtml->CloseRow();
 										$mHtml->Row();
-											$mHtml->Label( "*Numero de Documento:",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+											$mHtml->Label( "*Numero de Documento:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 											$mHtml->Input(array("name" => "num_docume", "id" => "num_documeID-{$keyInf}", "colspan"=>"2", "type"=>"numeric", "obl"=>"obl", "minlength"=>"3", "maxlength"=>"10", "value"=>($valueInf['num_docume']?$valueInf['num_docume']:"")));
 										$mHtml->CloseRow();
 										$mHtml->Row();
-											$mHtml->Label( "*Primer Apellido:",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+											$mHtml->Label( "*Primer Apellido:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 											$mHtml->Input(array("name" => "nom_apell1", "id" => "nom_apell1ID-{$keyInf}", "colspan"=>"2", "obl"=>"obl", "minlength"=>"3", "maxlength"=>"15", "value"=>($valueInf['nom_apell1']?$valueInf['nom_apell1']:"")));
 										$mHtml->CloseRow();
 										$mHtml->Row();
-											$mHtml->Label( "Segundo Apellido:",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+											$mHtml->Label( "Segundo Apellido:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 											$mHtml->Input(array("name" => "nom_apell2", "id" => "nom_apell2ID-{$keyInf}", "colspan"=>"2", "minlength"=>"3", "maxlength"=>"10", "value"=>($valueInf['nom_apell2']?$valueInf['nom_apell2']:"")));
 										$mHtml->CloseRow();
 										$mHtml->Row();
-											$mHtml->Label( "*Nombres:",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+											$mHtml->Label( "*Nombres:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 											$mHtml->Input(array("name" => "nom_repleg", "id" => "nom_replegID-{$keyInf}", "colspan"=>"2", "obl"=>"obl", "minlength"=>"3", "maxlength"=>"25", "value"=>($valueInf['nom_funcio']?$valueInf['nom_funcio']:"")));
 										$mHtml->CloseRow();
 										$mHtml->Row();
-											$mHtml->Label( "*N° de Celular",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+											$mHtml->Label( "*N° de Celular:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 											$mHtml->Input(array("name" => "num_celula", "id" => "num_celulaID-{$keyInf}", "colspan"=>"2", "type"=>"numeric", "obl"=>"obl", "maxlength"=>"10", "value"=>($valueInf['num_telmov']?$valueInf['num_telmov']:"")));
 										$mHtml->CloseRow();
 										$mHtml->Row();
-											$mHtml->Label( "N° de Telefono",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+											$mHtml->Label( "N° de Telefono:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 											$mHtml->Input(array("name" => "num_telefo", "id" => "num_telefoID-{$keyInf}", "colspan"=>"2", "type"=>"numeric", "minlength"=>"7", "maxlength"=>"11", "value"=>($valueInf['num_telef1']?$valueInf['num_telef1']:"")));
 										$mHtml->CloseRow();
 										$mHtml->Row();
-											$mHtml->Label( "N° de Whatsapp",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+											$mHtml->Label( "N° de Whatsapp:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 											$mHtml->Input(array("name" => "num_Whatsa", "id" => "num_WhatsaID-{$keyInf}", "colspan"=>"2", "type"=>"numeric", "maxlength"=>"10", "value"=>($valueInf['num_Whatsa']?$valueInf['num_Whatsa']:"")));
 										$mHtml->CloseRow();
 										$mHtml->Row();
-											$mHtml->Label( "*E-Mail",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+											$mHtml->Label( "*E-Mail:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"2") );
 											$mHtml->Input(array("name" => "dir_emailx", "id" => "dir_emailxID-{$keyInf}", "colspan"=>"2", "obl"=>"obl", "minlength"=>"7", "maxlength"=>"20", "value"=>($valueInf['dir_emailx']?$valueInf['dir_emailx']:"")));
 										$mHtml->CloseRow();
 										$mHtml->Row();
@@ -440,7 +445,7 @@ class hojaVidaEal
 			$mHtml->CloseDiv();
 			#Div Datos Basicos EAL
 			$mHtml->OpenDiv("id:infBasicaEal; class:accordian");
-				$mHtml->SetBody("<h3 style='padding:6px;'><center>Datos Basicos de la EAL</center></h3>");
+				$mHtml->SetBody("<h3 style='padding:6px;'><center>DATOS BASICOS DE LA EAL</center></h3>");
 				$mHtml->OpenDiv("id:secinfBasicaEal");
 					$mHtml->SetBody("<div id='Sec1infBasicaEal' class='contentAccordionForm' style='width:25%;float: left;height:500px'>");
 						$mHtml->Table("tr");
@@ -478,16 +483,22 @@ class hojaVidaEal
                 $mHtml->Label( "Cobertura de Asistencia",  array("align"=>"center", "class"=>"celda_titulo") );
               $mHtml->CloseRow();
             $mHtml->CloseTable("tr");
-            $mHtml->SetBody("<div id='map' style='width:98%;height:400px;'></div>");
+            $mHtml->SetBody("<div id='map' style='width:98%;height:390px;'></div>");
             $mHtml->Table("tr");
-              $mHtml->Row();
-                $mHtml->Label( "Cobertura Desde:",  array("align"=>"center", "class"=>"celda_titulo") );
-                $mHtml->Input(array("name" => "num_cobdes", "id" => "num_cobdesID", "maxlength"=>"50", "value"=>""));
-              $mHtml->CloseRow();
-              $mHtml->Row();
-                $mHtml->Label( "Cobertura Hasta:",  array("align"=>"center", "class"=>"celda_titulo") );
-                $mHtml->Input(array("name" => "num_cobhas", "id" => "num_cobhasID", "maxlength"=>"50", "value"=>""));
-              $mHtml->CloseRow();
+                $mHtml->Row();
+                    $mHtml->Label( "Nota: el valor de la cordenadas debe ir latitud,longitud",  array("align"=>"center", "colspan"=>"2") );
+                $mHtml->CloseRow();
+                $mHtml->Row();
+                    $mHtml->Label( "Cobertura Desde:",  array("align"=>"center", "class"=>"celda_titulo") );
+                    $mHtml->Input(array("name" => "num_cobdes", "id" => "num_cobdesID", "maxlength"=>"50", "value"=>""));
+                $mHtml->CloseRow();
+                $mHtml->Row();
+                    $mHtml->Label( "Cobertura Hasta:",  array("align"=>"center", "class"=>"celda_titulo") );
+                    $mHtml->Input(array("name" => "num_cobhas", "id" => "num_cobhasID", "maxlength"=>"50", "value"=>""));
+                $mHtml->CloseRow();
+                $mHtml->Row();
+                    $mHtml->Button( array("value"=>"Almacenar", "id"=>"btnNenviarID","name"=>"btnNenviar", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all", "align"=>"center", "colspan"=>"2","onclick"=>"saveCoberturaAsis()") );
+                $mHtml->CloseRow();
             $mHtml->CloseTable("tr");
           $mHtml->SetBody("</div>");
 				$mHtml->CloseDiv();
@@ -497,7 +508,7 @@ class hojaVidaEal
 			if(count($mDataInfComple)>0)
 			{
 				$mHtml->OpenDiv("id:infoComple; class:accordian");
-					$mHtml->SetBody("<h3 style='padding:6px;'><center>Informacion Complementaria de la EAL</center></h3>");
+					$mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION COMPLEMENTARIA DE LA EAL</center></h3>");
 					$mHtml->OpenDiv("id:secinfoComple");
 						$mHtml->OpenDiv("id:openFormul");
 							$mHtml->Table("tr");
@@ -508,20 +519,20 @@ class hojaVidaEal
 									$mHtml->line("","i",0,7);
 								$mHtml->CloseRow();
 								$mHtml->Row();
-									$mHtml->Button( array("value"=>"FORMULARIOS", "id"=>"btnNForumlID","name"=>"btnNForuml", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all", "align"=>"center","onclick"=>"getFormul()") );
+									$mHtml->Button( array("value"=>"FORMULARIOS", "id"=>"btnNForumlID","name"=>"btnNForuml", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all bigButton", "align"=>"center","onclick"=>"getFormul()") );
 								$mHtml->CloseRow();
 								$mHtml->Row();
 									$mHtml->line("","i",0,7);
 								$mHtml->CloseRow();
 							$mHtml->CloseTable('tr');
 						$mHtml->CloseDiv();
-						$mHtml->OpenDiv("id:tabs");
+						$mHtml->OpenDiv("id:tabs; class:accordian");
 							if(count($mactiveTabs)>0)
 							{
 								$mHtml->SetBody("<ul id='ulTab'>");
 									foreach ($mactiveTabs as $kTab => $vTab) 
 									{
-										$mHtml->SetBody("<li><a href='#tab".$vTab."' >".self::getFormulFormul($vTab)[0]['nom_formul']."<span class='ui-icon ui-icon-close' role='presentation' onclick='RemoveTabs(this);'>Remove Tab</span></a></li>");
+										$mHtml->SetBody("<li><a href='#tab".$vTab."' >".self::getFormulFormul($vTab,"1")[0]['nom_formul']."<span class='ui-icon ui-icon-close' role='presentation' onclick='RemoveTabs(this);'>Remove Tab</span></a></li>");
 									}
 								$mHtml->SetBody("</ul>");
 								$mHtml->SetBody(self::getDrawFormul(implode(',', $mactiveTabs),$_REQUEST['cod_contro']));
@@ -538,7 +549,7 @@ class hojaVidaEal
 			}
 			#Div botones
 			$mHtml->OpenDiv("id:Botonera; class:accordian");
-				$mHtml->SetBody("<h3 style='padding:6px;'><center>Crear Hoja de vida</center></h3>");
+				$mHtml->SetBody("<h3 style='padding:6px;'><center>CREAR HOJA DE VIDA</center></h3>");
 				$mHtml->OpenDiv("id:secBotones");
 					$mHtml->Table("tr");
 						$mHtml->Row();
@@ -577,45 +588,48 @@ class hojaVidaEal
 								    top: 4px;
 								    width: 0;
 								}
+                                .bigButton{
+                                    width:100px;
+                                }
 
-                /*estilos google maps*/
-                #right-panel {
-                  font-family: 'Roboto','sans-serif';
-                  line-height: 30px;
-                  padding-left: 10px;
-                }
+                                /*estilos google maps*/
+                                #right-panel {
+                                    font-family: 'Roboto','sans-serif';
+                                    line-height: 30px;
+                                    padding-left: 10px;
+                                }
 
-                #right-panel select, #right-panel input {
-                  font-size: 15px;
-                }
+                                #right-panel select, #right-panel input {
+                                    font-size: 15px;
+                                }
 
-                #right-panel select {
-                  width: 100%;
-                }
+                                #right-panel select {
+                                    width: 100%;
+                                }
 
-                #right-panel i {
-                  font-size: 12px;
-                }
-                html, body {
-                  height: 100%;
-                  margin: 0;
-                  padding: 0;
-                }
-                #map {
-                  height: 100%;
-                  float: left;
-                  width: 63%;
-                  height: 100%;
-                }
-                #right-panel {
-                  float: right;
-                  width: 34%;
-                  height: 100%;
-                }
-                .panel {
-                  height: 100%;
-                  overflow: auto;
-                }
+                                #right-panel i {
+                                    font-size: 12px;
+                                }
+                                html, body {
+                                    height: 100%;
+                                    margin: 0;
+                                    padding: 0;
+                                }
+                                #map {
+                                    height: 100%;
+                                    float: left;
+                                    width: 63%;
+                                    height: 100%;
+                                }
+                                #right-panel {
+                                    float: right;
+                                    width: 34%;
+                                    height: 100%;
+                                }
+                                .panel {
+                                    height: 100%;
+                                    overflow: auto;
+                                }
 							</style>");
 			$mHtml->SetBody('<script>
 		                        $( function() {
@@ -681,16 +695,27 @@ class hojaVidaEal
      *  \date modified: dia/mes/año
      *  \return Array
      */
-    private function getFormulFormul($cod_consec)
+    private function getFormulFormul($cod_consec, $opcion = NULL)
     {
     	try
     	{
 	    	//$cod_consec son los formularios que ya estan selecionados y los escluye
-	    	$sql = "SELECT a.cod_consec, a.nom_formul
-					  FROM ".BASE_DATOS.".tab_formul_formul a
-					  WHERE 1=1 
-					  ".($cod_consec!=""?"AND a.cod_consec NOT IN ({$cod_consec})":"")."
-				 ";
+            if($opcion == NULL)
+            {
+                $sql = "SELECT a.cod_consec, a.nom_formul
+                          FROM ".BASE_DATOS.".tab_formul_formul a
+                          WHERE 1=1 
+                          ".($cod_consec!=""?"AND a.cod_consec NOT IN ({$cod_consec})":"")."
+                ";
+            }
+            else
+            {
+                $sql = "SELECT a.cod_consec, a.nom_formul
+                          FROM ".BASE_DATOS.".tab_formul_formul a
+                          WHERE 1=1 
+                          ".($cod_consec!=""?"AND a.cod_consec IN ({$cod_consec})":"")."
+                     ";
+            }
 			$consult = new Consulta($sql, self::$cConexion );
 			$result = $consult->ret_matrix('a');
 
@@ -794,6 +819,11 @@ class hojaVidaEal
 		    				$mHtml->SetBody("<td class='celda_titulo'><label>".$mDatainfCampos[0]['nom_campox']."</label></td><td class='celda_info' ".($value['ind_obliga']==1?"obl='obl'":"").">".self::drawCampos($mDatainfCampos[0],$vForm, $value['cod_campox'], $cod_contro)."</td>");
 		    				$coutRow++;
 		    			}
+                        if($coutRow>0)
+                        {
+                                $mHtml->Label( " ",  array("align"=>"center", "class"=>"celda_titulo", "colspan"=>"2") );
+                            $mHtml->CloseRow();
+                        }
 		    		$mHtml->CloseTable("tr");
 		    	$mHtml->CloseDiv();
 	    	}
@@ -1018,7 +1048,7 @@ class hojaVidaEal
 					    		$Estados = self::moveImg($Estados, 'formulcampo'.$mIdCampo,$ruta);
 					    		if($miInfo['rut_docume'] != "")
 					    		{
-				   					$delImg['uploadFiles'][] = $miInfo['rut_docume'];
+				   					$delImg['uploadFiles']['formulcampo'.$mIdCampo] = $miInfo['rut_docume'];
 				   				}
 						    	$valueField = $_FILES['formulcampo'.$mIdCampo]['name'];
 							}
@@ -1027,6 +1057,7 @@ class hojaVidaEal
 						    	if($miInfo['rut_docume'] != "")
 						    	{
 						    		$Estados["uploadFiles"]['formulcampo'.$mIdCampo] = $miInfo['rut_docume'];
+                                    $valueField = $miInfo['val_campos'];
 						    	}
 						    }
 		   				}
@@ -1037,7 +1068,7 @@ class hojaVidaEal
 		   			if($_REQUEST['accion']=="2")
 			    	{
 					   	//obtengo los registros existentes
-			   			$mQueryDelTb = "DELETE FROM ".BASE_DATOS.".tab_respon_frmeal WHERE cod_contro =".$_REQUEST['cod_contro']." AND cod_formul=".$mIdForm;	
+			   			$mQueryDelTb = "DELETE FROM ".BASE_DATOS.".tab_respon_frmeal WHERE cod_contro =".$_REQUEST['cod_contro'];	
 			   			$consultaDelTb = new Consulta($mQueryDelTb, self::$cConexion, "R");
 			   			if($consultaDelTb)
 			   			{
@@ -1059,6 +1090,19 @@ class hojaVidaEal
 		   			$Estados["ERROR"]["consulta"][]="error en la consulta Tabs";
 		   		}
 		   	}
+            else
+            {
+                $mQueryDelTb = "DELETE FROM ".BASE_DATOS.".tab_respon_frmeal WHERE cod_contro =".$_REQUEST['cod_contro'];   
+                $consultaDelTb = new Consulta($mQueryDelTb, self::$cConexion, "R");
+                if($consultaDelTb)
+                {
+                    $Estados["OK"]["consulta"][]="Se Limpio los datos de los Tab";
+                }
+                else
+                {
+                    $Estados["ERROR"]["consulta"][]="error al limpir los datos de los Tab";
+                }
+            }
 		   	//Informacion a retornar
 		   	if(!$Estados["ERROR"]){
 				$Estados["resp"]="ok";
@@ -1067,7 +1111,7 @@ class hojaVidaEal
 		   		if(count($delImg)>0)
 		   		{
 		   			$delImg = self::removeImg($delImg,$ruta);
-		   			echo "<pre>";print_r($delImg);echo "</pre>";
+		   			//echo "<pre>";print_r($delImg);echo "</pre>";
 		   		}
 			}else
 			{
@@ -1355,7 +1399,7 @@ class hojaVidaEal
     	try
     	{
     		$Estado = array();
-	    	$sql = "SELECT  a.val_longit, a.val_latitu, a.url_google, a.url_wazexx, a.dir_contro
+	    	$sql = "SELECT  a.val_longit, a.val_latitu, a.val_latfin, a.val_lonfin, a.url_google, a.url_wazexx, a.dir_contro
 					  FROM ".BASE_DATOS.".tab_genera_contro a
 					  WHERE a.cod_contro = ".$_REQUEST['cod_contro']." 
 				 ";
@@ -1364,10 +1408,12 @@ class hojaVidaEal
 			if( $result[0]['val_longit'] != "" && $result[0]['val_latitu'] != "" )
 			{
 				$Estado['resp'] = "ok";
-				$Estado['cord']['val_longit'] = $result[0]['val_longit'];
-				$Estado['cord']['val_latitu'] = $result[0]['val_latitu'];
-				$Estado['coqr']['url_google'] = $result[0]['url_google'];
-				$Estado['coqr']['url_wazexx'] = $result[0]['url_wazexx'];
+                $Estado['cord']['val_longit'] = $result[0]['val_longit'];
+                $Estado['cord']['val_latitu'] = $result[0]['val_latitu'];
+				$Estado['cord']['val_latfin'] = $result[0]['val_latfin'];
+				$Estado['cord']['val_lonfin'] = $result[0]['val_lonfin'];
+				$Estado['coqr']['url_google'] = ($result[0]['url_google']==NULL?"":$result[0]['url_google']);
+				$Estado['coqr']['url_wazexx'] = ($result[0]['url_wazexx']==NULL?"":$result[0]['url_wazexx']);
 				$Estado['dirc']['dir_contro'] = utf8_encode($result[0]['dir_contro']);
 			}
 			else
@@ -1428,24 +1474,6 @@ class hojaVidaEal
     {
     	try
     	{
-    		/*$Estado = array();
-	    	$mQuery = "UPDATE ".BASE_DATOS.".tab_respon_funcio SET
-									ind_estado = '".$_REQUEST['accion']."',
-									usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
-									fec_modifi = NOW()
-							WHERE 	cod_contro = ".$_REQUEST['cod_contro']."
-		   							";
-		   	$consult = new Consulta($mQuery, self::$cConexion);
-			if( $consult )
-			{
-				$Estado['resp'] = "ok";
-			}
-			else
-			{
-				$Estado['resp'] = "Error";
-			}
-
-			echo json_encode($Estado) ;*/
 			$datos = (object) $_REQUEST;
 			$Refdocument=self::getInfCampos($datos->cod_campo, $datos->form, $datos->cod_contro);
 			$fileInfo = finfo_open(FILEINFO_MIME_TYPE);
@@ -1482,6 +1510,60 @@ class hojaVidaEal
 		{
 			echo "Error funcion download", $e->getMessage(), "\n";
 		}
+    }
+    
+    /*! \fn: saveCoberturaAsis
+     *  \brief: Almacena las cordenadas de cobertura
+     *  \author: Edward Serrano
+     *  \date: 27/06/2017
+     *  \date modified: dia/mes/año
+     *  \return Json
+     */
+    public function saveCoberturaAsis()
+    {
+        try
+        {
+            $Estado = array();
+            $mCordDestin = explode(",", $_REQUEST['num_cobdes'] );
+            $mCordHastaX = explode(",", $_REQUEST['num_cobhas'] );
+            if(count($mCordDestin)>1 && count($mCordHastaX)>1)
+            {
+                $mQuery = "UPDATE ".BASE_DATOS.".tab_genera_contro SET
+                                        val_latfin = '".$mCordHastaX[0]."',
+                                        val_lonfin = '".$mCordHastaX[1]."',
+                                        usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                                        fec_modifi = NOW()
+                                WHERE   cod_contro = ".$_REQUEST['cod_contro']."
+                                        ";
+                $consult = new Consulta($mQuery, self::$cConexion);
+                if( $consult )
+                {
+                    $Estado['OK'] = "ok";
+                }
+                else
+                {
+                    $Estado['ERROR'] = "Error conuslta";
+                }
+            }
+            else
+            {
+                $Estados["ERROR"] = "verififcar las cordenadas";
+            }
+            
+            if( !$Estado['ERROR'] )
+            {
+                $Estado['resp'] = "ok";
+            }
+            else
+            {
+                $Estado['resp'] = "Error";
+            }
+
+            echo json_encode($Estado) ;
+        }catch(Exception $e)
+        {
+            echo "Error funcion download", $e->getMessage(), "\n";
+        }
     }
 }
 if($_REQUEST["Ajax"] === 'on' )
