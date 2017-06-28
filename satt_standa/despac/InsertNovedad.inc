@@ -1633,6 +1633,7 @@ class InsertNovedad {
         $datos->usr_creaci = $mDatRegist['usuari'];
         $datos->asunto = "NOTIFICACION SUPERVISOR";
         $datos->mai_destin = MAIL_SUPERVISORES;
+        $datos->rutpla = $mDatRegist['rutpla'];
 
         return self::sendMail($datos);
     }
@@ -1686,6 +1687,7 @@ class InsertNovedad {
         $datos->asunto = "NOVEDAD ESPECIAL";
         $datos->mai_destin = $mMail;
         $datos->div_namexx = HOST_WEB."_faro_01";
+        $datos->rutpla = $mDatRegist['rutpla'];
 
         if (self::sendMail($datos)){
             return ". Se envió Correos a: ".$mMail . ". Tiempo Ultima Novedad: ".$mDatRegist['tie_ultnov']." Minutos <br>";
@@ -1733,6 +1735,7 @@ class InsertNovedad {
         $datos->asunto = $asunto;
         $datos->mai_destin = $mMail;
         $datos->div_namexx = HOST_WEB."_faro_01";
+        $datos->rutpla = $mDatRegist['rutpla'];
 
         if (self::sendMail($datos)){
             return ". Se envió Correos a: ".$mMail;
@@ -4167,7 +4170,14 @@ class InsertNovedad {
         $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $cabeceras .= 'From: ' . MAIL_SUPERVISORES;
 
-        $tmpl_file = '../' . DIR_APLICA_CENTRAL . '/planti/pla_noveda_especi.html';
+        if($datos->rutpla != "")
+        {
+            $tmpl_file = $datos->rutpla;
+        }
+        else
+        {
+            $tmpl_file = '../' . DIR_APLICA_CENTRAL . '/planti/pla_noveda_especi.html';
+        }
 
         $thefile = implode("", file($tmpl_file));
         $thefile = addslashes($thefile);

@@ -1307,6 +1307,7 @@ class Proc_segui
             $regist["sitio"] = $_REQUEST[sitio];
             $regist["rutax"] = $_REQUEST[rutax];
             $regist["tie_ultnov"] = $_REQUEST[tie_ultnov];//Jorge 120404
+            $regist['rutpla'] = '../' . DIR_APLICA_CENTRAL . '/planti/pla_noveda_especi.html';//ruta plantilla
             if ($_REQUEST[AsignMen])
                 $regist["AsignMen"] = $_REQUEST[AsignMen];
             if ($_REQUEST[AsignAdit])
@@ -1492,6 +1493,7 @@ class Proc_segui
                 $_REQUEST['tiempo'] = 0;
             $regist["tiem"] = $_REQUEST['tiempo'];
             $regist["rutax"] = $_REQUEST[rutax];
+            $regist['rutpla'] = '../' . DIR_APLICA_CENTRAL . '/planti/pla_noveda_especi.html';//ruta plantilla
             $consulta = new Consulta("SELECT NOW()", $this->conexion, "BR");
 
             // $transac_nov = new Despachos($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion);
