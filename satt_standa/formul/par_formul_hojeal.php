@@ -1172,7 +1172,7 @@ class hojaVidaEal
     	{
     		foreach ($Estados["uploadFiles"] as $key => $value) 
     		{
-    			echo "<pre>";print_r($value);echo "</pre>";
+    			//echo "<pre>";print_r($value);echo "</pre>";
     			$DocEliminar = unlink($value);
 				if($DocEliminar==TRUE)
 				{
