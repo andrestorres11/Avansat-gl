@@ -65,7 +65,7 @@ class AuditorViaje
   {
     
 
-    $mArrayTitData = array('No.', 'Viaje', 'Despacho', 'Manifiesto', 'Tipo Despacho', 'Ciudad Origen', 'Ciudad Destino', 'Fecha Despacho', 'Fecha Creaci&oacute;n', 'Fecha Salida de Planta');
+    $mArrayTitData = array('No.', 'Viaje', 'Despacho', 'Manifiesto', 'Tipo Despacho', 'Ciudad Origen', 'Ciudad Destino', 'Fecha Despacho', 'Fecha Creaci&oacute;n', 'Fecha Llegada Planta','Fecha Salida de Planta');
     $mArrayData = $this -> getDespacFiltro();
 
     $mHtml  = '<table width="100%" cellspacing="1" cellpadding="0">';
@@ -176,7 +176,8 @@ class AuditorViaje
   {
     $mSql = "SELECT a.num_despac, a.num_dessat, a.cod_manifi, 
                     d.nom_tipdes, b.nom_ciudad, c.nom_ciudad, 
-                    a.fec_despac, a.fec_creaci, a.fec_salida 
+                    a.fec_despac, a.fec_creaci, a.fec_plalle,
+                    a.fec_salida
                FROM ".BASE_DATOS.".tab_despac_corona a
          INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b
                  ON a.cod_paiori = b.cod_paisxx AND 
