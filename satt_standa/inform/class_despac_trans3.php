@@ -2009,6 +2009,8 @@ class Despac
 	 */
 	private function printTabDetail( $mTittle, $mData, $mSection, $mOpcion )
 	{
+		#verifico los permisos para las novedades nem registradas por responsable
+		$mViewPr = self::getView('jso_plarut');
 		#Dibuja Cabecera tabla 
 		$mHtml  = '<table class="classTable" width="100%" cellspacing="0" cellpadding="0" align="center">';
 
@@ -2056,7 +2058,7 @@ class Despac
 				$gif = "";
 				if(isset($row['num_despac']))
 				{
-					if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']=="0")
+					if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']=="0" && $mViewPr->ind_novnem->ind_visibl == 1)
 					{
 						$gif = "<img src='../".CENTRAL."/imagenes/Alert.gif' width='15px' height='15px'>";
 					}
@@ -2103,7 +2105,7 @@ class Despac
 				$gif = "";
 				if(isset($row['num_despac']))
 				{
-					if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']=="0")
+					if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']=="0" && $mViewPr->ind_novnem->ind_visibl == 1)
 					{
 						$gif = "<img src='../".CENTRAL."/imagenes/Alert.gif' width='15px' height='15px'>";
 					}
@@ -3673,70 +3675,73 @@ class Despac
 	public function getConteoNem($etapa, $mTransp)
 	{
 		try
-		{	
-			#identifico la transportadora
-			#Consulto el tipo de usuario
-			if(self::getTranspCargaControlador() != NULL )
-			{
-				$mTransp = self::getTranspCargaControlador();
-			}
-			else if(!is_array($mTransp))
-			{	
-				#convierto la cadena en array
-				$mTransp = explode(',', $mTransp);
-				#limpio los campos del array vacio
-				$mTransp = array_filter($mTransp,'strlen');
-				#elimino la posicion 0 de array la caul llega vacia
-				unset($mTransp[0]);
-				#Combierto el array en cadena
-				$mTransp = join( ',', $mTransp);
-			}
-			else if(sizeof($mTransp)>1)
-			{
-				$mTransp = join( ',', GetColumnFromMatrix( $mTransp, '0' ) );
-			}
-			else
-			{
-				$mTransp = $mTransp[0][0];
-			}
-			#Filtro por las estas existentes
+		{	$mViewPr = self::getView('jso_plarut');
 			$mResult = NULL;
-			$mDespac = NULL;
-			switch ($etapa) {
-				case '0':
-					#General
-					break;
-
-				case '1':
-					#Precargue
-					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaPrecar($mTransp), 'num_despac' ) );
-					break;
-
-				case '2':
-					#Cargue
-					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaCargue($mTransp), 'num_despac' ) );
-					break;
-
-				case '3':
-					#Transito
-				
-					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaTransi($mTransp), 'num_despac' ) );
-					break;
-				
-				case '4,5':
-					#Descargue
-					$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaDescar($mTransp), 'num_despac' ) );
-					break;
-				
-			}
-
-			if($mDespac != NULL)
+			if($mViewPr->ind_novnem->ind_visibl == 1)
 			{
-				$cantidad = self::getNovedadNem($mDespac, $etapa);
-				$mResult = (sizeof($cantidad)>0?sizeof($cantidad):0);
+				#identifico la transportadora
+				#Consulto el tipo de usuario
+				if(self::getTranspCargaControlador() != NULL )
+				{
+					$mTransp = self::getTranspCargaControlador();
+				}
+				else if(!is_array($mTransp))
+				{	
+					#convierto la cadena en array
+					$mTransp = explode(',', $mTransp);
+					#limpio los campos del array vacio
+					$mTransp = array_filter($mTransp,'strlen');
+					#elimino la posicion 0 de array la caul llega vacia
+					unset($mTransp[0]);
+					#Combierto el array en cadena
+					$mTransp = join( ',', $mTransp);
+				}
+				else if(sizeof($mTransp)>1)
+				{
+					$mTransp = join( ',', GetColumnFromMatrix( $mTransp, '0' ) );
+				}
+				else
+				{
+					$mTransp = $mTransp[0][0];
+				}
+				#Filtro por las estas existentes
+				$mDespac = NULL;
+				switch ($etapa) {
+					case '0':
+						#General
+						break;
+
+					case '1':
+						#Precargue
+						$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaPrecar($mTransp), 'num_despac' ) );
+						break;
+
+					case '2':
+						#Cargue
+						$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaCargue($mTransp), 'num_despac' ) );
+						break;
+
+					case '3':
+						#Transito
+					
+						$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaTransi($mTransp), 'num_despac' ) );
+						break;
+					
+					case '4,5':
+						#Descargue
+						$mDespac = join( ',', GetColumnFromMatrix( self::getDespacEtapaDescar($mTransp), 'num_despac' ) );
+						break;
+					
+				}
+
+				if($mDespac != NULL)
+				{
+					$cantidad = self::getNovedadNem($mDespac, $etapa);
+					$mResult = (sizeof($cantidad)>0?sizeof($cantidad):0);
+				}
+				#Cuando se realiza el llamado desde ajax se realiza un echo para ver la informacion
+				#de lo contrario se retorna la cadena para ser concatenada.
 			}
-			#Cuando se realiza el llamado desde ajax se realiza un echo para ver la informacion
-			#de lo contrario se retorna la cadena para ser concatenada.
 			if(isset($_REQUEST['Ajax']))
 			{
 				ob_clean();
@@ -3992,6 +3997,8 @@ class Despac
 			 $mData['noveda'] = $_REQUEST["cod_noveda"];
 			$mData['tieadi'] = $mTieAdicio;
 			$mData['observ'] = $_REQUEST["obs"];
+			//opcional para el envio del correo en novedades especiales
+			$mData['rutpla'] = '../../' . DIR_APLICA_CENTRAL . '/planti/pla_noveda_especi.html';
 			switch ($_REQUEST["ind_valsit"]) 
 			{
 				case 'S':

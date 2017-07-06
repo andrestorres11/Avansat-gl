@@ -66,6 +66,7 @@ class infBandeja
 		$mArrayUserAs = self::$cDespac -> getUserAsig();
 		$mUsrSinAsig = array( array('SIN', 'SIN ASIGNAR') );
 		$mView = self::$cDespac -> getView('jso_bandej');
+		$mViewPr = self::$cDespac -> getView('jso_plarut');
 
 		#<div FILTROS GENERALES>
 		if( $mView->fil_genera->ind_visibl == 1 )
@@ -263,9 +264,9 @@ class infBandeja
 
 		#</FormularioPrecarge>
 
-
 		#Estilos bage
 		self::styleBandeja();
+		$mbadge = "";
 		#si el contador del badge esta vacio se pinta sin la clase
 		#<Bandeja>
 		if( $mView->sec_inform->ind_visibl == 1 )
@@ -278,22 +279,34 @@ class infBandeja
 					}
 					if( $mView->sec_inform->sub->pes_prcarg == 1 )
 					{
-						$mbadge = self::$cDespac ->getConteoNem('1', $mArrayTransp);
+						if($mViewPr->ind_novnem->ind_visibl == 1)
+						{
+							$mbadge = self::$cDespac ->getConteoNem('1', $mArrayTransp);
+						}
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPreCar" href="#tabs-6">PRECARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					}
 					if( $mView->sec_inform->sub->pes_cargax == 1 )
 					{
-						$mbadge = self::$cDespac ->getConteoNem('2', $mArrayTransp);
+						if($mViewPr->ind_novnem->ind_visibl == 1)
+						{
+							$mbadge = self::$cDespac ->getConteoNem('2', $mArrayTransp);
+						}
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liCargue" href="#tabs-2">CARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					}
 					if( $mView->sec_inform->sub->pes_transi == 1 )
 					{
-						$mbadge = self::$cDespac ->getConteoNem('3', $mArrayTransp);
+						if($mViewPr->ind_novnem->ind_visibl == 1)
+						{
+							$mbadge = self::$cDespac ->getConteoNem('3', $mArrayTransp);
+						}
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liTransi" href="#tabs-3">TRANSITO '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					}
 					if( $mView->sec_inform->sub->pes_descar == 1 )
 					{
-						$mbadge = self::$cDespac ->getConteoNem('4,5', $mArrayTransp);
+						if($mViewPr->ind_novnem->ind_visibl == 1)
+						{
+							$mbadge = self::$cDespac ->getConteoNem('4,5', $mArrayTransp);
+						}
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liDescar" href="#tabs-4">DESCARGUE '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					}
 					if( $mView->sec_inform->sub->pes_pernoc == 1 )
