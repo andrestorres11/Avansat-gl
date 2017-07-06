@@ -3958,9 +3958,9 @@ class Despac
 			$mDespac = self::getDataAddDespac( $_REQUEST['num_despac'], $_REQUEST['cod_contro'] );
 			$validacion = true;
 
-			if(isset($_REQUEST['fec_noveda']) && isset($_REQUEST['hor_reinic']))
+			if(isset($_REQUEST['fec_noveda']) && isset($_REQUEST['hor_noveda']))
 			{
-				$mTieAdicio = self::calcularMinAdi($_REQUEST['fec_noveda']." ".$_REQUEST['hor_reinic'].":00", $mFecAct);
+				$mTieAdicio = self::calcularMinAdi($_REQUEST['fec_noveda']." ".$_REQUEST['hor_noveda'].":00", $mFecAct);
 			}
 			else
 			{
