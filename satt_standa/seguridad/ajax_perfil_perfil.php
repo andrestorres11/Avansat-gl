@@ -355,24 +355,37 @@ class seguri {
             $sqlAfp = "SELECT cod_aplica,cod_filtro,cod_perfil,clv_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil WHERE cod_aplica=1 AND cod_filtro = 1 AND cod_perfil=$datos->cod_perfil";
             $consultaAfp = new Consulta($sqlAfp, self::$cConexion);
             $AFP = $consultaAfp->ret_matrix("a");
-            if(!$AFP)
+            if($datos->cod_transp == NULL)
             {
-                $sqlAfpi ="INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil 
-                                        (cod_aplica,cod_filtro,cod_perfil        ,clv_filtro)
-                                VALUES  (1         ,1         ,$datos->cod_perfil,'$datos->cod_transp')" ;
-                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC");
-            }
-            else
-            {
-                $sqlAfpi="UPDATE " . BASE_DATOS . ".tab_aplica_filtro_perfil 
-                                SET
-                                        clv_filtro  =   '$datos->cod_transp'
+                $sqlAfpi="DELETE FROM " . BASE_DATOS . ".tab_aplica_filtro_perfil 
                                 WHERE
                                         cod_perfil  =   $datos->cod_perfil
                                 AND     cod_aplica  =   1
                                 AND     cod_filtro  =   1
-                                            ";
-                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC"); 
+                                                    ";
+                $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC");
+            }
+            else
+            {
+                if(!$AFP)
+                {
+                    $sqlAfpi ="INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                            (cod_aplica,cod_filtro,cod_perfil        ,clv_filtro)
+                                    VALUES  (1         ,1         ,$datos->cod_perfil,'$datos->cod_transp')" ;
+                    $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC");
+                }
+                else
+                {
+                        $sqlAfpi="UPDATE " . BASE_DATOS . ".tab_aplica_filtro_perfil 
+                                        SET
+                                                clv_filtro  =   '$datos->cod_transp'
+                                        WHERE
+                                                cod_perfil  =   $datos->cod_perfil
+                                        AND     cod_aplica  =   1
+                                        AND     cod_filtro  =   1
+                                                    ";
+                        $consultaAfpi = new Consulta($sqlAfpi, self::$cConexion, "RC"); 
+                }
             }
         }
         if ($mConsult) {
