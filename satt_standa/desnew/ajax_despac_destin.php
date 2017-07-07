@@ -41,7 +41,7 @@ class AjaxDespacDestin {
                        fec_findes
                   FROM " . BASE_DATOS . ".tab_despac_destin 
                  WHERE num_despac = '" . $_AJAX['num_despac'] . "' 
-                       GROUP BY nom_destin
+                       GROUP BY num_destin
                  ORDER BY fec_citdes ASC, hor_citdes ASC";
 
         $consulta = new Consulta($mSelect, $this->conexion);
@@ -60,7 +60,7 @@ class AjaxDespacDestin {
                        " . BASE_DATOS . ".tab_despac_despac b 
                  WHERE a.num_despac = b.cod_manifi AND
                        b.num_despac = '" . $_AJAX['num_despac'] . "' 
-                       GROUP BY a.nom_destin";
+                       GROUP BY a.num_destin";
 
         $consulta = new Consulta($mQuery, $this->conexion);
         $_DESTINDATA = $consulta->ret_matriz();
@@ -602,14 +602,14 @@ class AjaxDespacDestin {
                        " . BASE_DATOS . ".tab_despac_despac b 
                  WHERE a.num_despac = b.cod_manifi AND
                        b.num_despac = '" . $_AJAX['num_despac'] . "'
-                      AND a.nom_destin = '" . $mData['nom_destin'] . "')
+                      AND a.num_destin = '" . $mData['num_destin'] . "')
                       UNION(
                       SELECT a.num_docume, a.num_docalt
                   FROM " . BASE_DATOS . ".tab_despac_destin a, 
                        " . BASE_DATOS . ".tab_despac_despac b 
                  WHERE a.num_despac = b.num_despac AND
                        b.num_despac = '" . $_AJAX['num_despac'] . "'
-                       AND a.nom_destin = '" . $mData['nom_destin'] . "'
+                       AND a.num_destin = '" . $mData['num_destin'] . "'
                             )";
 
 
@@ -684,12 +684,12 @@ class AjaxDespacDestin {
                        AND a.fec_llegad IS NULL 
                        AND a.ind_anulad !=  'A'
                        AND a.fec_despac BETWEEN  '" . $_AJAX['fec_inicia'] . " 00:00:00' AND '" . $_AJAX['fec_finali'] . " 23:59:59'
-                      ORDER BY 1 , f.ind_modifi DESC
+                      ORDER BY   f.ind_modifi DESC
                       ) AS w WHERE 1 = 1
               GROUP BY w.num_despac";
 
             $_SESSION["queryXLS"] = $mSql;
-            $list = new DinamicList($this->conexion, $mSql, 1);
+            $list = new DinamicList($this->conexion, $mSql, 3, "no", "DESC");
             $list->SetClose('no');
             $list->SetHeader("Despacho", "field:num_despac; type:link; onclick:SetDestinatarios( $(this) )");
             $list->SetHeader("No. Viaje", "field:num_desext"); 
@@ -716,12 +716,12 @@ class AjaxDespacDestin {
                        AND a.fec_llegad IS NULL 
                        AND a.ind_anulad !=  'A'
                        AND a.fec_despac BETWEEN  '" . $_AJAX['fec_inicia'] . " 00:00:00' AND '" . $_AJAX['fec_finali'] . " 23:59:59'
-                      ORDER BY 1 , f.ind_modifi DESC
+                      ORDER BY  3 DESC
                       ) AS w WHERE 1 = 1
                   GROUP BY w.num_despac";
 
             $_SESSION["queryXLS"] = $mSql;
-            $list = new DinamicList($this->conexion, $mSql, 1);
+            $list = new DinamicList($this->conexion, $mSql, 3, "no", "DESC");
             $list->SetClose('no');
             $list->SetHeader("Despacho", "field:num_despac; type:link; onclick:SetDestinatarios( $(this) )");
             $list->SetHeader("No. Viaje", "field:num_desext");

@@ -2519,6 +2519,7 @@ class Despachos
                                     "con_telef1" => "Telefono", 
                                     "tip_transp" => "Tipo Transportadora", 
                                     "num_placax" => "Placa", 
+                                    "nom_produc" => "Mercancia", 
                                     "tip_vehicu" => "Tipo Vehiculo", 
                                     "can_noveda" => "No. Novedades" 
                                     );
@@ -2700,7 +2701,7 @@ class Despachos
                         $mEsp = '&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;';
                         for( $i=0; $i < sizeof($mTotDestin); $i++ )
                         {
-                            $mDataDestin = self::getDestin( $mNumDespac, $mTotDestin[$i]['nom_destin'] );
+                            $mDataDestin = self::getDestin( $mNumDespac, $mTotDestin[$i]['num_destin'] );
 
                             $mTxt = "CLIENTE: ".$mTotDestin[$i]['nom_destin']." {$mEsp} DIRECCION: ".$mTotDestin[$i]['dir_destin']." {$mEsp} FECHA Y HORA: ".$mTotDestin[$i]['fec_citdes2'];
                             $mHtml->OpenDiv("id:destin".$i."ID; class:accordion");
@@ -2755,6 +2756,7 @@ class Despachos
                                         $mHtml->CloseTable("tr");
 
                                         $mHtml->Hidden( array("name"=>"nom_destin".$i, "id"=>"nom_destin".$i, "value"=> base64_encode($mTotDestin[$i]['nom_destin'])));
+                                        $mHtml->Hidden( array("name"=>"num_destin".$i, "id"=>"num_destin".$i, "value"=> $mTotDestin[$i]['num_destin']));
                                         $mHtml->Hidden( array("name"=>"num_docume".$i, "id"=>"num_docume".$i, "value"=> $destinatarios));
                                         $mHtml->Hidden( array("name"=>"otr_destin".$i, "id"=>"otr_destin".$i, "value"=>"") );
                                         $mHtml->Hidden( array("name"=>"ind_finali".$i, "id"=>"ind_finali".$i, "value"=>"") );                                        
@@ -3798,13 +3800,13 @@ class Despachos
 
         if( $mNomDestin == NULL && $mIndGroupx == true ){
             self::updateDestin($mNumDespac);
-            $mSql .= " GROUP BY a.nom_destin ";
+            $mSql .= " GROUP BY a.num_destin ";
         }
         elseif( $mNomDestin == NULL && $mIndGroupx == false ){
             $mSql .= "";
         }
         else{
-            $mSql .= " AND a.nom_destin LIKE '{$mNomDestin}' ";
+            $mSql .= " AND a.num_destin LIKE '{$mNomDestin}' ";
         }
 
         $mSql .= " ORDER BY fec_citdes2, a.nom_destin, a.num_docume ";
@@ -8404,7 +8406,7 @@ class Despachos
                         DATE_FORMAT(a.fec_cumcar, '%Y-%m-%d') AS fec_cumcar,
                         DATE_FORMAT(a.fec_cumcar, '%H:%i:%s') AS hor_cumcar,
                         b.nom_noveda,
-                        a.obs_cumcar,
+                        UPPER(a.obs_cumcar) AS obs_cumcar,
                         a.usr_cumcar
                    FROM ".BASE_DATOS.".tab_despac_sisext a,
                         ".BASE_DATOS.".tab_genera_noveda b
