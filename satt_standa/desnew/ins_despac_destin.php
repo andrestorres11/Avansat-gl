@@ -10,7 +10,15 @@ class AsignaDestinatarios
     $this -> conexion = $co;
     $this -> usuario = $us;
     $this -> cod_aplica = $ca;
-    $this -> principal();
+    switch ($_REQUEST['opcion']) {
+      case 3:
+          $this->ExportExcel();
+        break;
+      
+      default:
+          $this -> principal();
+        break;
+    }
   }
   
   private function principal()
@@ -84,6 +92,54 @@ class AsignaDestinatarios
     
     echo '<script>mainList();</script>';
     
+  }
+  /*! \fn: ExportExcel
+  * \brief: Exportar a excel consuta
+  * \author: Edward Serrano
+  * \date: 31/03/2017
+  * \date modified: dia/mes/año
+  * \param: paramatro
+  * \return valor que retorna
+  */
+  private function ExportExcel()
+  {
+    session_start();
+    $date=date("Y_m_d_h_s");
+    $consulta = new Consulta($_SESSION["queryXLS"],  $this->conexion);
+    $mData = $consulta -> ret_matriz( "i" );
+    header('Content-type: application/vnd.ms-excel');
+    header("Content-Disposition: attachment; filename=Destinatarios".$date.".xls");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+    ob_clean();
+    echo "<table>";
+    echo "  <tr>";
+    echo "     <th>Despacho</th>";
+    echo "     <th>No. Viaje</th>";
+    echo "     <th>Estado</th>";
+    echo "     <th>Placa</th>";
+    echo "     <th>Manifiesto</th>";
+    echo "     <th>Fecha</th>";
+    echo "     <th>Tipo Despacho</th>";
+    echo "     <th>Origen</th>";
+    echo "     <th>Destino</th>";
+    echo "     <th>Cant. Clientes</th>";
+    echo "  </tr>";
+    foreach ($mData as $key => $value) 
+    {
+      echo "  <tr>";
+      echo "     <td>".$value["num_despac"]."</td>";
+      echo "     <td>".$value["num_desext"]."</td>";
+      echo "     <td>".$value["ind_modifi"]."</td>";
+      echo "     <td>".$value["num_placax"]."</td>";
+      echo "     <td>".$value["cod_manifi"]."</td>";
+      echo "     <td>".$value["fec_despac"]."</td>";
+      echo "     <td>".$value["nom_tipdes"]."</td>";
+      echo "     <td>".$value["nom_ciuori"]."</td>";
+      echo "     <td>".$value["nom_ciudes"]."</td>";
+      echo "     <td>".$value["num_client"]."</td>";
+      echo "  </tr>";
+    }
   }
   
 }
