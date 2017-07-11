@@ -142,13 +142,43 @@ class ImportNovedad
     $mConsult = new Consulta( $mSql, $this -> conexion );
     return $mResult = $mConsult -> ret_matriz();
   }
+
+  /*! \fn: getDataDespacCorona
+   *  \brief: Trae la Data del Despacho segun placa
+   *  \author: Ing. Fabian Salinas
+   *  \date:  23/11/2015
+   *  \date modified: dd/mm/aaaa
+   *  \modified by: 
+   *  \param: $mNumPlacax  String  Numero de la placa
+   *  \param: $mNumViaje  String  Numero del viaje
+   *  \return: Matriz
+   */
+  private function getDataDespacCorona( $mNumPlacax = null,  $mNumViaje = null)
+  {
+    $mSql = " SELECT a.num_despac, b.cod_rutasx, b.cod_transp
+                     FROM   ".BASE_DATOS.".tab_despac_vehige b 
+                            INNER JOIN  ".BASE_DATOS.".tab_despac_despac a ON b.num_despac = a.num_despac 
+                            INNER JOIN  ".BASE_DATOS.".tab_despac_corona c ON a.num_despac = c.num_dessat
+                    WHERE a.num_despac = b.num_despac
+                      AND a.fec_salida IS NOT NULL 
+                      AND a.fec_salida <= NOW() 
+                      AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
+                      AND a.ind_planru = 'S' 
+                      AND a.ind_anulad = 'R'
+                      AND b.ind_activo = 'S' 
+                      AND b.num_placax LIKE '". $mNumPlacax ."'
+                      AND c.num_despac = '". $mNumViaje ."'  
+                      AND b.cod_transp = '".$this -> cNitCorona."'";  
+    $mConsult = new Consulta( $mSql, $this -> conexion );
+    return $mResult = $mConsult -> ret_matriz();
+  }
   
   function insertNovedad( $row )
   {
     include_once("../".DIR_APLICA_CENTRAL."/despac/InsertNovedad.inc");
     include_once("../".DIR_APLICA_CENTRAL."/lib/general/functions.inc");
 
-    $mDataDespac = self::getDataDespac( $row[0] );
+    $mDataDespac = self::getDataDespacCorona( $row[1], $row[0] );
 
     $mDataContro = getNextPC($this->conexion, $mDataDespac[0]['num_despac']);
    
@@ -166,24 +196,24 @@ class ImportNovedad
     $mCodRutasx = $mDataDespac[0]['cod_rutasx'];
     $mCodConsec = $mNewConsec[0][0] + 1;
     $mCodContro = $mDataContro['cod_contro'];
-    $mObsContro = $row[4];
-    $mFecContro = $row[2];
-    $mCodNoveda = $row[1];
+    $mObsContro = $row[5];
+    $mFecContro = $row[3];
+    $mCodNoveda = $row[2];
     $mTiemDurac = 0;
-    $mCodSitiox = $this -> getCodSitiox( $row[3] );
-    $mNomSitiox = $row[3];
-    $mFecContro = $row[2];
+    $mCodSitiox = $this -> getCodSitiox( $row[4] );
+    $mNomSitiox = $row[4];
+    $mFecContro = $row[3];
     $mValRetras = 0;
     $mIndSitiox = 1;
     $mUsrCreaci = $_SESSION['datos_usuario']['cod_usuari'];
-    $mFecCreaci = $row[2];
+    $mFecCreaci = $row[3];
     /********************************************************/
     
     /**** INSERCION DE LA NOVEDAD DIRECTAMENTE AL METODO PARA QUE NOTIFIQUE A LA MATRIZ DE COMUNICACION */
     $mSelect = "SELECT cod_protoc
                   FROM ".BASE_DATOS.".tab_noveda_protoc
                  WHERE cod_transp = '".$mCodTransp."'
-            		   AND cod_noveda = '".$mCodNoveda."'";
+                   AND cod_noveda = '".$mCodNoveda."'";
 
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $_PROTOC = $consulta -> ret_matriz();
@@ -210,7 +240,7 @@ class ImportNovedad
     $regist["observ"] = $mObsContro;
     $regist["rutax"]  = $mCodRutasx;
     $regist["wsdl"]   = "NO";
-    
+
     $transac_nov = new InsertNovedad( $_REQUEST['cod_servic'], $_REQUEST['opcion'], $_SESSION['codigo'], $this -> conexion );
     $RESPON = $transac_nov -> InsertarNovedadNC( BASE_DATOS, $regist, 0 );
     /****************************************************************************************************/
@@ -291,6 +321,21 @@ class ImportNovedad
           
           case  0 :  //@Placa en Viaje
             if ( $item == NULL ) { 
+                $this -> SetError( $e, $c, $r, 'EL NUMERO DE VIAJE ES REQUERIDO' );
+                $e ++;
+            }
+            if( $item && @ereg( "^([/V/])([/J-S/])-([0-9]{6})", $item ) === FALSE ){
+              $this -> SetError( $e, $c, $r, 'VERIFIQUE EL FORMATO DEL VIAJE DEBE SER (VJ-123456) O (VS-123456)' );
+              $e ++;
+            }
+            if( $item && !$this -> VerifyViaje( $item ) ){
+              $this -> SetError( $e, $c, $r, 'EL NUMERO DE VIAJE NO SE ENCUENTRA EN RUTA' );
+              $e ++;
+            }
+          break;
+
+          case  1 :  //@Placa en Viaje
+            if ( $item == NULL ) { 
                 $this -> SetError( $e, $c, $r, 'LA PLACA DEL VEH&Iacute;CULO ES REQUERIDA' );
                 $e ++;
             }
@@ -300,7 +345,7 @@ class ImportNovedad
             }
           break;
 
-          case  1 :  //@Codigo de la novedad
+          case  2 :  //@Codigo de la novedad
             if ( $item == NULL ) { 
                 $this -> SetError( $e, $c, $r, 'EL C&Oacute;DIGO DE LA PNOVEDAD ES REQUERIDO' );
                 $e ++;
@@ -311,7 +356,7 @@ class ImportNovedad
             }
           break;  
           
-          case  2 :  //@Fecha de la novedad
+          case  3 :  //@Fecha de la novedad
             if ( $item == NULL ) { 
                 $this -> SetError( $e, $c, $r, 'LA FECHA DE LA PNOVEDAD ES REQUERIDA' );
                 $e ++;
@@ -326,14 +371,14 @@ class ImportNovedad
             }
           break;
           
-          case  3 :  //@Sitio de la novedad
+          case  4 :  //@Sitio de la novedad
             if ( $item == NULL ) { 
                 $this -> SetError( $e, $c, $r, 'EL SITIO DE LA NOVEDAD ES REQUERIDO' );
                 $e ++;
             }
           break;
           
-          case  4 :  //@Observaciones de la novedad
+          case  5 :  //@Observaciones de la novedad
             if ( $item == NULL ) { 
                 $this -> SetError( $e, $c, $r, 'LAS OBSERVACIONES DE LA NOVEDAD ES REQUERIDO' );
                 $e ++;
@@ -366,7 +411,7 @@ class ImportNovedad
                 AND a.fec_llegad IS NULL 
                 AND a.ind_planru = 'S' 
                 AND a.ind_anulad = 'R'
-                AND b.num_placax = '". $row[0] ."' 
+                AND b.num_placax = '". $row[1] ."' 
                 AND b.cod_transp = '".$this -> cNitCorona."'";   
     $consulta = new Consulta( $mSql, $this -> conexion );
     $mTItemx = $consulta -> ret_matriz();
@@ -387,7 +432,7 @@ class ImportNovedad
                 AND a.fec_llegad IS NULL 
                 AND a.ind_planru = 'S' 
                 AND a.ind_anulad = 'R'
-                AND b.num_placax = '". $row[0] ."' 
+                AND b.num_placax = '". $row[1] ."' 
                 AND b.cod_transp = '".$this -> cNitCorona."'";    
     $consulta = new Consulta( $mSql, $this -> conexion );
     $mDataDespac = $consulta -> ret_matriz();
@@ -486,7 +531,52 @@ class ImportNovedad
     else
      return FALSE;
   }
-  
+
+   /*! \fn: VerifyViaje
+   *  \brief: Verifica si el viaje se encuente en ruta
+   *  \author: 
+   *  \date: dd/mm/aaaa
+   *  \date modified: 30/06/2017
+   *  \modified by: Edward Serrano
+   *  \param: $mNumViaje  String  Numero del viaje 
+   *  \return: Boolean
+   */
+  function VerifyViaje( $mNumViaje )
+  {
+    $mTItemx = self::getDataDespViaje( $mNumViaje );
+    
+    if( sizeof($mTItemx) > 0 )
+     return TRUE;
+    else
+     return FALSE;
+  }
+
+  /*! \fn: getDataDespViaje
+   *  \brief: Trae la Data del Despacho segun el viaje
+   *  \author: Edward Serrano
+   *  \date:  30/06/2017
+   *  \date modified: dd/mm/aaaa
+   *  \modified by: 
+   *  \param: $mNumViaje  String   Numero del viaje 
+   *  \return: Matriz
+   */
+  function getDataDespViaje( $mNumViaje = null )
+  {
+    $mSql = " SELECT a.num_despac, b.cod_rutasx, b.cod_transp
+                     FROM ".BASE_DATOS.".tab_despac_vehige b 
+                          INNER JOIN ".BASE_DATOS.".tab_despac_despac a ON b.num_despac = a.num_despac
+                          LEFT  JOIN ".BASE_DATOS.".tab_despac_corona c ON a.num_despac = c.num_dessat
+                    WHERE a.fec_salida IS NOT NULL 
+                      AND a.fec_salida <= NOW() 
+                      AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
+                      AND a.ind_planru = 'S' 
+                      AND a.ind_anulad = 'R'
+                      AND b.ind_activo = 'S' 
+                      AND c.num_despac = '". $mNumViaje ."'";  
+    $mConsult = new Consulta( $mSql, $this -> conexion );
+    return $mResult = $mConsult -> ret_matriz();
+  }
+
   function GetFileData() 
   {
     if ( $_FILES['rut_archiv']['name'] != NULL ) {
@@ -558,7 +648,7 @@ class ImportNovedad
           </script>";
     
     $formulario = new Formulario ( "index.php", "post", "IMPORTAR NOVEDADES", "form\" enctype=\"multipart/form-data\" id=\"formID" );
-		
+    
     $mHtml = '</tr><tr><td><center>';
     $mHtml .= '<div class="StyleDIV" align="center">';
       $mHtml .= '<table width="98%" cellpadding="0" cellspacing="0">';
