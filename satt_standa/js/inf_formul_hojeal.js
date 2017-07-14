@@ -20,7 +20,7 @@ function getReporteGeneral()
     {   
         var standa = $("#standaID").val();
         var cod_contro = validateChekBox("nom_esferaID");
-        if(cod_contro !=",'-'")
+        if(cod_contro !=",'-'" && cod_contro !="")
         {
             var mdata = "Ajax=on&opcion=getReporteGeneral&standa=" + standa +"&cod_contro="+cod_contro;
             $.ajax({
@@ -29,20 +29,20 @@ function getReporteGeneral()
                 //dataType:'json',
                 data: mdata,
                 beforeSend: function() {
-                    $("#report").html("");
+                    $("#tabResult").html("");
                 },
                 success:function(data){
-                    console.log(data);
-                    $("#report").html(data);
+                    $("#tabResult").html(data);
                     $("#sec1").css({"height":"auto"});
-                    /*if(data.resp == "ok")
-                    {
-                        PopupRespueta("Se "+(accion=="edit"?"edito":"almaceno")+" Correctamente la hoja de vida EAL.",true);
-                    }
-                    else
-                    {
-                        PopupRespueta("No se pudo realizar la solicitud, intente nuevamente.",true);
-                    }*/
+                    $("#tabResult").find(".celda_info").each(function(i,v){
+                        $(v).removeClass("celda_info");
+                    });
+                    $("#tabResult").find("label").each(function(i,v){
+                        if($(v).attr("onclick"))
+                        {
+                            $(v).addClass("CellInfohref");
+                        }
+                    });
                 }
             }); 
         }
@@ -104,7 +104,7 @@ function detailForm(cod_contro, cod_formul)
         var standa = $("#standaID").val();
         $("#popForumlID").remove();
         closePopUp('popForumlID');
-        LoadPopupJQNoButton('open', 'Informacion Especifica ', '250', '500', false, false, true, 'popForumlID');
+        LoadPopupJQNoButton('open', 'Informacion Especifica ', ($(window).height() - 40), ($(window).width() - 40), false, false, true, 'popForumlID');
         var popForuml = $("#popForumlID");
 
         var parametros = "opcion=getDetailEal&Ajax=on&cod_contro="+cod_contro+"&cod_formul="+cod_formul;
@@ -113,14 +113,44 @@ function detailForm(cod_contro, cod_formul)
             type: "POST",
             data: parametros,
             async: false,
+            beforeSend: function(obj) {
+                popForuml.html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+            },
             success: function(data) {
-                popForuml.html(data); // pinta los datos de la consulta      
+                popForuml.html(data);
+                $("#popForumlID").find(".celda_info").each(function(i,v){
+                    $(v).removeClass("celda_info");
+                });     
             }
         });
     } 
     catch (e) 
     {
         console.log("Error Function detailForm: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    } 
+
+}
+
+/*! \fn: exprtExcel
+ *  \brief: exporta a excel
+ *  \author: Edward Serrano
+ *  \date: 17/01/2017
+ *  \date modified: dia/mes/año
+ *  \param: campoval tipo de multselect a procesar 
+ *  \return: 
+*/
+function exprtExcel(tipo)
+{
+    try
+    {
+        $("#opcionID").val("exprtExcel");
+        $("#tExporExcelID").val(tipo);
+        $("#form_searchID").submit();
+    } 
+    catch (e) 
+    {
+        console.log("Error Function exprtExcel: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     } 
 

@@ -19,7 +19,7 @@ class repHojaVidaEal
 					        $cUsuario;
 					
 	function __construct($co = null, $us = null, $ca = null)
-	{ 
+	{
 		if($_REQUEST['Ajax']=="on")
         {
             include_once( "../lib/ajax.inc" );
@@ -41,6 +41,9 @@ class repHojaVidaEal
               break;
             case 'getDetailEal':
                 self::getDetailEal();
+              break;
+            case 'exprtExcel':
+                self::exprtExcel();
               break;
             default:  
                 self::listar(); 
@@ -94,8 +97,7 @@ class repHojaVidaEal
             $mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
             $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
             $mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>$_REQUEST['opcion']));
-            $mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>$mCodTransp));
-            $mHtml->Hidden(array( "name" => "conductor", "id" => "conductor", 'value'=>"")); 
+            $mHtml->Hidden(array( "name" => "tExporExcel", "id" => "tExporExcelID")); 
 
             # Construye accordion
             $mHtml->Row("td");
@@ -106,35 +108,62 @@ class repHojaVidaEal
                   $mHtml->OpenDiv("id:sec1");
                     $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                       $mHtml->Table("tr");
-                          $mHtml->Label("Esferas:", "width:35%; :1;");
+                          $mHtml->Label("Esferas:", "width:15%; :1;");
                           $mHtml->Select2 (array_merge(array(array('0' =>  '-','1' =>  '-')),self::getListEal()),  array("name" => "eal[nom_esfera]", "id" => "nom_esferaID", "width" => "25%") );
-                          //$mHtml->Input(array("name" => "eal[nom_esfera]", "id" => "nom_esfera", "value" => $mNomTransp, "width" => "35%"));
-                          //$mHtml->SetBody("<td><div id='boton'></div></td>"); 
-                          $mHtml->Button( array("value"=>"Reporte", "id"=>"btnNForumlID","name"=>"btnNForuml", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all bigButton", "align"=>"left","onclick"=>"getReporteGeneral()") ); 
+                          //$mHtml->Button( array("value"=>"Reporte", "id"=>"btnNForumlID","name"=>"btnNForuml", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all bigButton", "align"=>"left","onclick"=>"getReporteGeneral()") ); 
                       $mHtml->CloseTable("tr");
                     $mHtml->CloseDiv();
-                    $mHtml->OpenDiv("id:report");
-                    $mHtml->CloseDiv();
                   $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
-                # Fin accordion1    
-                /*# Accordion2
-                $mHtml->OpenDiv("id:datos; class:accordion");
-                  $mHtml->SetBody("<h1 style='padding:6px'><b>Lista de hojas de vida EAL</b></h1>");
-                  $mHtml->OpenDiv("id:sec2");
-                    $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
-                      
+                # Fin accordion1
+                # Accordion2
+                $mHtml->OpenDiv("id:report; class:accordion");
+                  $mHtml->OpenDiv("id:DivGeneralReport");
+                    $mHtml->OpenDiv("id:tabs; class:contentAccordionForm");
+                      $mTabsActive = "<ul><li><a href='#tabResult' onclick='getReporteGeneral()'>REPORTE</a></li>";
+                      $mTabsActive .= "</ul>";
+                      $mHtml->SetBody($mTabsActive);
+                      $mHtml->OpenDiv("id:tabResult");
+                      $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
                   $mHtml->CloseDiv();
-                $mHtml->CloseDiv();
-              # Fin accordion2*/
+                $mHtml->CloseDiv();    
+                # Fin accordion2
               $mHtml->CloseDiv();
             $mHtml->CloseRow("td");
               # Cierra formulario
             $mHtml->CloseForm();
             # Cierra Body
             $mHtml->CloseBody();
+            $mHtml->SetBody('<script>
+                              $(function() {
+                                $("#tabs").tabs();
+                              } );
+                            </script>');
             $mHtml->SetBody('<script> $("div[id=datos]").hide() </script>');
+            $mHtml->SetBody('<style> 
+                                .celda_titulo {
+                                  border-bottom: 1px solid white;
+                                  /*border-bottom: 1px solid #35650F;*/
+                                  background-color: #35650F;
+                                  background-image: url("");
+                                  color: white;
+                                  font-weight: bold;
+                                  width: 25%;
+                                  padding: 3px 10px;
+                                  /*white-space: nowrap;*/
+                                }
+                                .celda_etiqueta{
+                                  border-left: 1px solid #cdcdcd;
+                                  /*background-color: #EBF8E2;*/
+                                }
+                                .CellInfohref{
+                                  cursor:pointer;
+                                }
+                                .celda_info{
+                                  background-color:rgb(240, 240, 240);  
+                                }
+                                 </style>');
 
             # Muestra Html
             echo $mHtml->MakeHtml();
@@ -190,7 +219,7 @@ class repHojaVidaEal
           #limpio el $cod_contro
           $cod_contro = substr($_REQUEST['cod_contro'],1);
           $cod_contro = explode(",",$cod_contro);
-          if($cod_contro[0] == "-")
+          if($cod_contro[0] == "'-'")
           {
             unset($cod_contro[0]);
           }
@@ -199,60 +228,52 @@ class repHojaVidaEal
           $mdata = self::getDataEal( $cod_contro);
           $mConteo = self::getCountGenera($cod_contro, $mdata);
 
-          $mHtml = new FormLib(2);
-            # Abre Form
-            $mHtml->Form(array("action" => "index.php", "method" => "post", "name" => "form_search", "header" => "EAL", "enctype" => "multipart/form-data"));
+          $mHtml1 = new FormLib(2);
             #Contenido
-            $mHtml->OpenDiv("id:DivGeneralReport");
-              $mHtml->OpenDiv("id:tabs");
-                $mTabsActive = "<ul><li><a href='#tabResult'>General</a></li>";
-                $mTitleGener = array("ESFERA","N° FUNCIONARIOS");
-                foreach ($mConteo['formActuales'] as $key => $value) {
-                  //$mTabsActive .="<li><a href='#tabResult'>".self::getDateForml($key)."</a></li>";
-                  $mTitleGener[]=strtoupper(self::getDateForml($key));
-                }
-                $mTabsActive .= "</ul>";
-                $mHtml->SetBody($mTabsActive);
-                $mHtml->OpenDiv("id:tabResult");
                   if(sizeof($mdata)>0)
                   {
-                    $mHtml->Table("tr");
-                      $mHtml->Row();
+                    $mHtml1->Table("tr");
+                      $mHtml1->Button( array("value"=>"EXCEL", "colspan"=>"5", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all bigButton", "align"=>"center","onclick"=>"exprtExcel('general')") ); 
+                      $mHtml1->CloseRow();
+                      $mHtml1->Row();
                       #Recorro los titulos a generar
-                      foreach ($mTitleGener as $key => $value) {
-                        $mHtml->Label( $value,  array("align"=>"left", "class"=>"celda_titulo") );
+                      $mTitleGener = array("ESFERA","N° FUNCIONARIOS");
+                      foreach ($mConteo['formActuales'] as $key => $value) {
+                        $mTitleGener[]=strtoupper(self::getDateForml($key));
                       }
-                      $mHtml->CloseRow();
+                      foreach ($mTitleGener as $key => $value) {
+                        $mHtml1->Label( $value,  array("align"=>"center", "class"=>"celda_titulo") );
+                      }
+                      $mHtml1->CloseRow();
+                      #Totales
+                      $mHtml1->Row();
+                        $mHtml1->Label( "TOTALES",  array("align"=>"left", "class"=>"celda_titulo") );
+                      foreach ($mConteo['totales'] as $key => $value) {
+                        $mHtml1->Label( $mConteo['totales'][$key],  array("align"=>"center", "class"=>"celda_titulo", "onclick"=>($mConteo['totales'][$key]?"detailForm('".str_replace("'","",$cod_contro)."',".($key=="funcionarios"?0:$key).")":"")) );
+                      }
+                       $mHtml1->CloseRow();
                       #Recorro los datos
                       foreach ($mConteo['data'] as $key => $value) {
-                        $mHtml->Row();
-                          $mHtml->Label( $value['name'],  array("align"=>"left") );
-                          $mHtml->Label( $value['funcionario'],  array("align"=>"left", "onclick"=>"detailForm({$key},0)") );
+                        $mHtml1->Row();
+                          $mHtml1->Label( $value['name'],  array("align"=>"left") );
+                          $mHtml1->Label( $value['funcionario'],  array("align"=>"center", "onclick"=>"detailForm({$key},0)") );
                           #Recorro los formularios
                           foreach ($mConteo['formActuales'] as $key1 => $value1) {
-                            $mHtml->Label( ($value['formulario'][$key1]?$value['formulario'][$key1]:0),  array("align"=>"left", "onclick"=>($value['formulario'][$key1]?"detailForm({$key},{$key1})":"")) );
+                            $mHtml1->Label( ($value['formulario'][$key1]?$value['formulario'][$key1]:0),  array("align"=>"center", "onclick"=>($value['formulario'][$key1]?"detailForm({$key},{$key1})":"")) );
                           }
-                        $mHtml->CloseRow();
+                        $mHtml1->CloseRow();
                       }
-                      $mHtml->Row();
-                        $mHtml->Label( "TOTALES",  array("align"=>"left", "class"=>"celda_titulo") );
+                      #Totales
+                      $mHtml1->Row();
+                        $mHtml1->Label( "TOTALES",  array("align"=>"left", "class"=>"celda_titulo") );
                       foreach ($mConteo['totales'] as $key => $value) {
-                        $mHtml->Label( $mConteo['totales'][$key],  array("align"=>"left", "class"=>"celda_titulo", "onclick"=>($mConteo['totales'][$key]?"detailForm('".str_replace("'","",$cod_contro)."',{$key})":"")) );
+                        $mHtml1->Label( $mConteo['totales'][$key],  array("align"=>"center", "class"=>"celda_titulo", "onclick"=>($mConteo['totales'][$key]?"detailForm('".str_replace("'","",$cod_contro)."',".($key=="funcionarios"?0:$key).")":"")) );
                       }
-                       $mHtml->CloseRow();
-                    $mHtml->CloseTable('tr');
+                       $mHtml1->CloseRow();
+                    $mHtml1->CloseTable('tr');
                   }
-                $mHtml->CloseDiv();
-              $mHtml->CloseDiv();
-            $mHtml->CloseDiv();
-            $mHtml->CloseForm();
-            $mHtml->SetBody('<script>
-                        $(function() {
-                          $("#tabs").tabs();
-                        } );
-                      </script>');
             # Muestra Html
-            echo $mHtml->MakeHtml();
+            echo $_SESSION['inf_GhvEal'] = $mHtml1->MakeHtml();
       }
       catch(Exception $e)
       {
@@ -396,16 +417,15 @@ class repHojaVidaEal
      *  \param: 
      *  \return 
      */
-    public function getCamposForml($cod_contro, $cod_formul)
+    public function getCamposForml($cod_contro=NULL, $cod_formul)
     {
       try
       {
-          $mQuery = "SELECT a.cod_contro, a.cod_campos, b.nom_campox, a.val_campos, a.rut_docume
+          $mQuery = "SELECT a.cod_campox AS cod_campos, b.nom_campox
                           FROM 
-                          tab_respon_frmeal a INNER JOIN 
-                          tab_formul_campos b ON a.cod_campos = b.cod_consec
+                          tab_formul_detail a INNER JOIN 
+                          tab_formul_campos b ON a.cod_campox = b.cod_consec
                       WHERE
-                          a.cod_contro IN ($cod_contro) AND
                           a.cod_formul = {$cod_formul}
 
                     "; 
@@ -520,19 +540,15 @@ class repHojaVidaEal
                               "9" =>array("cod_campos"=>"ind_serasi", "nom_campox"=>"Servicio Asistencia"),
                               "10"=>array("cod_campos"=>"ind_repleg", "nom_campox"=>"Cargo")
                             );
-            $mdata = self::getDataFuncionarios( $_REQUEST['cod_contro']);
           }
           else
           {
-            $mTitles = self::getCamposForml($_REQUEST['cod_contro'], $_REQUEST['cod_formul']);
-            $mdata = self::getDataEal( $_REQUEST['cod_contro'], NULL, "c.cod_formul=".$_REQUEST['cod_formul']);
+            $mTitles = self::getCamposForml( NULL, $_REQUEST['cod_formul']);
           }
           $mHtml = new FormLib(2);
-            # Abre Form
-            $mHtml->Form(array("action" => "index.php", "method" => "post", "name" => "form_search", "header" => "EAL", "enctype" => "multipart/form-data"));
-            #Contenido
-            $mHtml->OpenDiv("id:DivDetailReport");
               $mHtml->Table("tr");
+              $mHtml->Button( array("value"=>"EXCEL", "colspan"=>"5", "class"=>"crmButton small save ui-button ui-widget ui-state-default ui-corner-all bigButton", "align"=>"center","onclick"=>"exprtExcel('detail')") ); 
+                $mHtml->CloseRow();
                 //titulos
                 $mHtml->Row();
                   $mHtml->Label( "ESFERA",  array("align"=>"left", "class"=>"celda_titulo") );
@@ -541,32 +557,40 @@ class repHojaVidaEal
                   }
                 $mHtml->CloseRow();
                 //Contenido
-                if($_REQUEST['cod_formul']==0)
-                {
-                  foreach ($mdata as $key => $value) {
-                    $mHtml->Row();
-                    $mHtml->Label( self::getNameEal($_REQUEST['cod_contro']),  array("align"=>"left", "class"=>"celda_titulo") );
-                    foreach ($mTitles as $keyT => $valueT) {
-                      $mHtml->Label( $value[$valueT['cod_campos']],  array("align"=>"left", "class"=>"celda_titulo") );
+                foreach (explode(",", $_REQUEST['cod_contro']) as $kContro => $vContro) {
+                  if($_REQUEST['cod_formul']==0)
+                  {
+                    $mdata = self::getDataFuncionarios( $vContro );
+                    if(sizeof($mdata)>0)
+                    {
+                      foreach ($mdata as $key => $value) {
+                        $mHtml->Row();
+                        $mHtml->Label( self::getNameEal($vContro),  array("align"=>"left", "class"=>"celda_etiqueta") );
+                        foreach ($mTitles as $keyT => $valueT) {
+                          $mHtml->Label( $value[$valueT['cod_campos']],  array("align"=>"left", "class"=>"celda_etiqueta") );
+                        }
+                        $mHtml->CloseRow();
+                      }
                     }
-                    $mHtml->CloseRow();
                   }
-                }
-                else
-                {
-                  $mHtml->Row();
-                  $mHtml->Label( self::getNameEal($_REQUEST['cod_contro']),  array("align"=>"left", "class"=>"celda_titulo") );
-                  foreach ($mTitles as $key => $value) {
-                   $mCampo = self::procesarArray($mdata,'cod_campos',$value['cod_campos']);
-                    $mHtml->Label( $mCampo['val_campos'],  array("align"=>"left", "class"=>"celda_titulo") );
+                  else
+                  {
+                    $mdata = self::getDataEal( $vContro, NULL, "c.cod_formul=".$_REQUEST['cod_formul']);
+                    if(sizeof($mdata)>0)
+                    {
+                      $mHtml->Row();
+                      $mHtml->Label( self::getNameEal($vContro),  array("align"=>"left", "class"=>"celda_etiqueta") );
+                      foreach ($mTitles as $key => $value) {
+                       $mCampo = self::procesarArray($mdata,'cod_campos',$value['cod_campos']);
+                        $mHtml->Label( $mCampo['val_campos'],  array("align"=>"left", "class"=>"celda_etiqueta") );
+                      }
+                      $mHtml->CloseRow();
+                    }
                   }
-                  $mHtml->CloseRow();
                 }
               $mHtml->CloseTable('tr');
-            $mHtml->CloseDiv();
-            $mHtml->CloseForm();
           # Muestra Html
-          echo $mHtml->MakeHtml();
+          echo $_SESSION['inf_hvEal'] = $mHtml->MakeHtml();
       } catch (Exception $e) {
         echo "error getDetailEal :".$e;
       }
@@ -602,6 +626,41 @@ class repHojaVidaEal
       }
     }
 
+    /*! \fn: exprtExcel
+     *  \brief: Exportar a excel
+     *  \author: Edward Serrano
+     *  \date:  12/07/2017
+     *  \date modified: dia/mes/año
+     */
+    private function exprtExcel()
+    {
+      try
+      {
+        session_start();
+        $date=date("Y_m_d_h_s");
+        header('Content-type: application/vnd.ms-excel');
+        header('Content-type: application/x-msexcel');
+        header("Content-Disposition: attachment; filename=Reporte Hojas de vida".$date.".xls");
+        header("Pragma: nopreg_replace-cache");
+        header("Expires: 0");
+        ob_clean();
+        $buscar = array('border="0"','class="celda_etiqueta"','align="left"','valign=""','rowspan=""','colspan=""','width=""','height=""');
+        $reempl = array('','','','','','','','');
+        //ob_flush();
+        //ob_end_flush();
+        if($_REQUEST['tExporExcel']=="detail")
+        {
+          echo str_replace($buscar,$reempl,$_SESSION['inf_hvEal']);
+        }
+        else
+        {
+          echo str_replace($buscar,$reempl,$_SESSION['inf_GhvEal']);
+        }
+        die();
+      } catch (Exception $e) {
+        echo "error exprtExcel :".$e;
+      }
+    }
 }
 if($_REQUEST["Ajax"] === 'on' )
 {
