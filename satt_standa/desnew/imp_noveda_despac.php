@@ -289,7 +289,7 @@ class ImportNovedad
       //------------------------
       $this -> row = $_DATA[$r];
       //------------------------
-      
+      if($this -> row[0] == "" && $this -> row[1] == "" && $this -> row[2] == "" && $this -> row[3] == "" && $this -> row[4] == "" && $this -> row[5] == ""){continue;}
       for ( $c = 0; $c < sizeof( $this -> row ); $c++ ) 
       { 
         //------------------------
@@ -328,7 +328,7 @@ class ImportNovedad
               $this -> SetError( $e, $c, $r, 'VERIFIQUE EL FORMATO DEL VIAJE DEBE SER (VJ-123456) O (VS-123456)' );
               $e ++;
             }
-            if( $item && !$this -> VerifyViaje( $item ) ){
+            if( $item && !$this -> VerifyViaje($this -> row[1], $item ) ){
               $this -> SetError( $e, $c, $r, 'EL NUMERO DE VIAJE NO SE ENCUENTRA EN RUTA' );
               $e ++;
             }
@@ -541,9 +541,9 @@ class ImportNovedad
    *  \param: $mNumViaje  String  Numero del viaje 
    *  \return: Boolean
    */
-  function VerifyViaje( $mNumViaje )
+  function VerifyViaje( $mNumPlacax, $mNumViaje )
   {
-    $mTItemx = self::getDataDespViaje( $mNumViaje );
+    $mTItemx = self::getDataDespacCorona( $mNumPlacax, $mNumViaje );
     
     if( sizeof($mTItemx) > 0 )
      return TRUE;
