@@ -5461,7 +5461,7 @@ class Despachos
                                     {
                                         //Ruta Web Service Colocar e-com.
                                         $mEstado = '1';
-                                        $url_webser = "http://www.colombiasoftware.net/base/webservice/reportepuestocontrol.php?wsdl";
+                                        $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                                         $mFecha[0] = date('Y-m-d', strtotime($regist["fecnov"]));
                                         $mFecha[1] = date('H:i:s', strtotime($regist["fecnov"]));
                                         //echo "<pre>";print_r($interfaz);echo "</pre>";
@@ -5499,7 +5499,7 @@ class Despachos
                                         /*echo "InsertarNovedadPC <br> puestocontrol_humadea <pre>";
                                         print_r($parametros);
                                         echo "</pre>";*/
-                                        $respuesta = $oSoapClient -> __call( 'puestocontrol_humadea', $parametros );                                  
+                                        $respuesta = $oSoapClient -> __call( ' puestocontrol', $parametros );                                  
                                         
                                         if ( $respuesta != 'OK REPORTO' )
                                         {

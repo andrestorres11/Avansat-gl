@@ -21,7 +21,7 @@ class InterfMct
 {
   private static $cConection = NULL;
   #private static $cUrlMCT = "http://186.117.158.13/mctAPI/v1/ptoc";
-  private static $cUrlMCT = "http://190.144.233.197/mctAPI/v1/ptoc";
+  private static $cUrlMCT = "http://200.122.249.34:8088/mctAPI/v1/ptoc";
   private static $cExcept = NULL;
   private static $cNotMail = "soporte@intrared.net";
   private static $cLogDir  = "/var/www/html/ap/satt_faro/logs";
@@ -79,7 +79,7 @@ class InterfMct
 
         # Inicio de cURL para la API -----------------------------------------------------------------------------
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://190.144.233.197/mctAPI/v1/ptoc");
+        curl_setopt($ch, CURLOPT_URL, "http://200.122.249.34:8088/mctAPI/v1/ptoc");
         curl_setopt($ch, CURLOPT_HTTPHEADER, self::$cHeader);
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_POST, count(self::$cData));
@@ -95,7 +95,7 @@ class InterfMct
         self::$cReturn = json_decode($raw_data);
 
         # Notifica Correo cada vez que se hace uso de la clase MCT
-        # mail("nelson.liberato@intrared.net", "Uso MCT FARO PC InterfMct.inc ", "Parametros enviados Data: ".var_export(self::$cData, true)." \n Response API: ".$raw_data );
+        //mail("nelson.liberato@intrared.net, ricardo.gomez@mct.com.co", "Uso MCT FARO PC InterfMct.inc ", "Parametros enviados Data: ".var_export(self::$cData, true)." \n Response API: ".$raw_data );
 
         # Verificacion de reporte a email
         # echo "<pre>"; print_r(self::$cReturn); echo "</pre>";
@@ -138,7 +138,7 @@ class InterfMct
 
         # Inicio de cURL para la API -----------------------------------------------------------------------------
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://190.144.233.197/mctAPI/v1/nov"); 
+        curl_setopt($ch, CURLOPT_URL, "http://200.122.249.34:8088/mctAPI/v1/nov"); 
         curl_setopt($ch, CURLOPT_HTTPHEADER, self::$cHeader);
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_POST, count(self::$cData));
@@ -154,7 +154,7 @@ class InterfMct
         self::$cReturn = json_decode($raw_data);
 
         # Notifica Correo cada vez que se hace uso de la clase MCT
-        # mail("nelson.liberato@intrared.net", "Uso MCT FARO NC InterfMct.inc ", "Parametros enviados Data: ".var_export(self::$cData, true)." \n Response API: ".$raw_data );
+        //mail("nelson.liberato@intrared.net, ricardo.gomez@mct.com.co", "Uso MCT FARO NC InterfMct.inc ", "Parametros enviados Data: ".var_export(self::$cData, true)." \n Response API: ".$raw_data );
 
         # Verificacion de reporte a email
         # echo "<pre>"; print_r(self::$cReturn); echo "</pre>";
