@@ -225,7 +225,7 @@ class repHojaVidaEal
           }
           $cod_contro = implode(",",$cod_contro);
           #Informacion Basica
-          $mdata = self::getDataEal( $cod_contro);
+          $mdata = self::getDataEal( $cod_contro);echo "<pre>";
           $mConteo = self::getCountGenera($cod_contro, $mdata);
 
           $mHtml1 = new FormLib(2);
@@ -272,6 +272,12 @@ class repHojaVidaEal
                        $mHtml1->CloseRow();
                     $mHtml1->CloseTable('tr');
                   }
+                  else
+                  {
+                    $mHtml1->Table("tr");
+                      $mHtml1->Label( "No Se encuantra informacion Relacionada",  array("align"=>"left", "class"=>"celda_titulo") );
+                    $mHtml1->CloseTable('tr');
+                  }
             # Muestra Html
             echo $_SESSION['inf_GhvEal'] = $mHtml1->MakeHtml();
       }
@@ -294,7 +300,7 @@ class repHojaVidaEal
     {
       try
       {
-          $mQuery = "
+        $mQuery = "
                     SELECT    a.cod_contro, 
                               a.nom_contro,
                               b.num_docume, 
@@ -307,12 +313,14 @@ class repHojaVidaEal
                               d.rut_docume
                       FROM
                       (  /* CONSULTA LAS EAL QUE TENGAN FORMULARIO EJECUTADO*/
-                          SELECT a.cod_contro, a.cod_formul, b.nom_formul, c.nom_contro
+                          SELECT e.cod_contro, a.cod_formul, b.nom_formul, c.nom_contro
                           FROM 
-                          tab_respon_frmeal a INNER JOIN 
-                          tab_formul_formul b ON a.cod_formul = b.cod_consec  INNER JOIN
-                          tab_genera_contro c ON a.cod_contro = a.cod_contro AND a.cod_contro IN ($cod_contro)
-                          GROUP BY a.cod_contro, a.cod_formul
+                          tab_respon_funcio e LEFT JOIN 
+                          tab_respon_frmeal a ON e.cod_contro = a.cod_contro LEFT JOIN 
+                          tab_formul_formul b ON a.cod_formul = b.cod_consec  LEFT JOIN
+                          tab_genera_contro c ON e.cod_contro = a.cod_contro 
+                          WHERE e.cod_contro IN ($cod_contro)
+                          GROUP BY e.cod_contro, a.cod_formul
 
                       ) a
                       INNER JOIN /* CONSULTA DE FUNCIONARIOS A LA EAL*/
@@ -322,7 +330,7 @@ class repHojaVidaEal
                           FROM tab_respon_funcio f WHERE f.cod_contro IN ($cod_contro)   
                       ) b 
                       ON a.cod_contro = b.cod_contro
-                      INNER JOIN /* CONSULTA FORMULARIOS EJECUTADOS*/
+                      LEFT JOIN /* CONSULTA FORMULARIOS EJECUTADOS*/
                       (
                           SELECT a.cod_contro, a.cod_formul, b.nom_formul
                           FROM 
@@ -490,11 +498,14 @@ class repHojaVidaEal
           $mDataFunc = self::getDataEal( $value, "b.num_docume");
           $infoGeneral['data'][$value]['name'] = self::getNameEal($value);
           $infoGeneral['data'][$value]['funcionario'] = sizeof($mDataFunc);
-          #agrupo por formulario
-          $mDataForm = self::getDataEal( $value, "c.cod_formul");
-          foreach ($mDataForm as $kForm => $vForm) {
-            $infoGeneral['data'][$value]['formulario'][$vForm['cod_formul']] = 1;
-            $infoGeneral['formActuales'][$vForm['cod_formul']] = 1;
+          if($mDataFunc[0]['cod_formul'] != NULL)
+          {
+            #agrupo por formulario
+            $mDataForm = self::getDataEal( $value, "c.cod_formul");
+            foreach ($mDataForm as $kForm => $vForm) {
+              $infoGeneral['data'][$value]['formulario'][$vForm['cod_formul']] = 1;
+              $infoGeneral['formActuales'][$vForm['cod_formul']] = 1;
+            }
           }
         }
         #obtengo los totales
