@@ -702,9 +702,9 @@ class AjaxDespacDestin {
 
         } else {
 
-            $mSql = "SELECT w.num_despac, w.num_desext, w.ind_modifi, w.num_placax, w.cod_manifi, w.fec_despac, w.nom_tipdes, w.nom_ciuori, w.nom_ciudes, if(w.num_destin = 0, w.num_destin,COUNT(w.num_destin)) AS num_client 
+            $mSql = "SELECT w.num_despac, w.num_desext, w.ind_modifi, if(w.num_destin = 0, w.num_destin,COUNT(w.num_destin)) AS num_client, w.num_placax, w.cod_manifi, w.fec_despac, w.nom_tipdes, w.nom_ciuori, w.nom_ciudes 
                    FROM (
-                    SELECT a.num_despac, IF( z.num_desext IS NOT NULL , z.num_desext,  'N/A' ) as num_desext , IF( f.ind_modifi =  '1', 'ACTUALIZADO', 'PENDIENTE' ) as ind_modifi, b.num_placax, a.cod_manifi, a.fec_despac, c.nom_tipdes, d.nom_ciudad AS nom_ciuori, e.nom_ciudad AS nom_ciudes, count(f.num_destin) AS num_destin
+                    SELECT a.num_despac, IF( z.num_desext IS NOT NULL , z.num_desext,  'N/A' ) as num_desext , IF( f.ind_modifi =  '1', 'ACTUALIZADO', 'PENDIENTE' ) as ind_modifi, count(f.num_destin) AS num_destin, b.num_placax, a.cod_manifi, a.fec_despac, c.nom_tipdes, d.nom_ciudad AS nom_ciuori, e.nom_ciudad AS nom_ciudes
                       FROM satt_faro.tab_despac_despac a
                  LEFT JOIN satt_faro.tab_despac_sisext z ON a.num_despac = z.num_despac
                  LEFT JOIN satt_faro.tab_despac_destin f ON a.num_despac = f.num_despac, satt_faro.tab_despac_vehige b, satt_faro.tab_genera_tipdes c, satt_faro.tab_genera_ciudad d, satt_faro.tab_genera_ciudad e
@@ -728,13 +728,13 @@ class AjaxDespacDestin {
             $list->SetHeader("Despacho", "field:w.num_despac; type:link; onclick:SetDestinatarios( $(this) )");
             $list->SetHeader("No. Viaje", "field:w.num_desext");
             $list->SetHeader("Estado", "field:w.ind_modifi; width:1%", array_merge($this->ind_estado_, $this->ind_estado));
+            $list->SetHeader("Cant. Clientes", "field:w.num_client");
             $list->SetHeader("Placa", "field:w.num_placax");
             $list->SetHeader("Manifiesto", "field:w.cod_manifi");
             $list->SetHeader("Fecha", "field:w.fec_despac");
             $list->SetHeader("Tipo Despacho", "field:w.nom_tipdes");
             $list->SetHeader("Origen", "field:w.nom_ciuori");
             $list->SetHeader("Destino", "field:w.nom_ciudes");
-            $list->SetHeader("Cant. Clientes", "field:w.num_client");
             
         }
          
