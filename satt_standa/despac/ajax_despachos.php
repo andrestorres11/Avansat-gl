@@ -52,7 +52,7 @@ class AjaxDespachos{
 	   		if((int)$_REQUEST[ind_cumpli] == 1){
 	   			$mSql .= " AND cod_noveda IN(255) ";
 	   		}else{
-	   			$mSql .= " AND nom_noveda LIKE 'NICC%' ";
+	   			$mSql .= " AND nom_noveda LIKE 'NICC%'  AND cod_noveda != 170 ";
 	   		}
 	   	else
 	   		if((int)$_REQUEST[ind_cumpli] == 1){
@@ -61,8 +61,7 @@ class AjaxDespachos{
 	   			$mSql .= " AND nom_noveda LIKE 'NER%' ";
 	   		}
 
-   		$mSql .= " ORDER BY 2 ";
-
+   		$mSql .= " ORDER BY 2 "; 
 		$consulta  = new Consulta($mSql, $this -> conexion);
 		$novedadx  = $consulta -> ret_matriz();
 
