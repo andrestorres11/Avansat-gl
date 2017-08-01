@@ -311,14 +311,25 @@ class ajax_horari_monito {
 
         $sql = "SELECT x.*
         		  FROM (
-        		  				SELECT b.cod_tercer, b.abr_tercer, count(DISTINCT(c.num_despac)) despac, 
-				                       a.cod_grupox, a.cod_priori, e.nom_grupox, a.ind_segprc, a.ind_segcar, a.ind_segdes, a.ind_segtra
-						          FROM " . BASE_DATOS . ".tab_transp_tipser a 
+        		  		SELECT b.cod_tercer, b.abr_tercer, count(DISTINCT(c.num_despac)) despac, 
+				               a.cod_grupox, a.cod_priori, e.nom_grupox, a.ind_segprc, a.ind_segcar, a.ind_segdes, a.ind_segtra
+						    FROM (
+                                    SELECT
+                                        a.*
+                                    FROM 
+                                    ".BASE_DATOS.".tab_transp_tipser a INNER JOIN 
+                                    (
+                                        SELECT MAX(num_consec) AS num_consec, b.cod_transp 
+                                        FROM ".BASE_DATOS.".tab_transp_tipser b GROUP BY b.cod_transp 
+                                    ) b ON a.num_consec = b.num_consec AND a.cod_transp = b.cod_transp
+
+                                ) a 
 						    INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b ON b.cod_tercer = a.cod_transp 
-						     LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer 
+						     LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer AND c.num_despac NOT IN (  SELECT e.num_despac FROM satt_faro.tab_despac_noveda e WHERE e.cod_contro = 9999  )
 						     LEFT JOIN " . BASE_DATOS . ".tab_despac_despac d ON d.num_despac = c.num_despac 
-						    INNER JOIN " . BASE_DATOS . ".tab_callce_grupox e ON e.cod_grupox = a.cod_grupox 
+						    INNER JOIN " . BASE_DATOS . ".tab_callce_grupox e ON e.cod_grupox = a.cod_grupox
 						         WHERE a.fec_iniser <= '$datos->fec_inicio'  AND fec_finser >= '$datos->fec_finali'
+                                   AND a.ind_estado = 1  
 						           AND b.cod_estado = 1  
 						           AND d.fec_salida IS NOT NULL 
 						           AND d.fec_salida <= NOW() 
@@ -474,7 +485,7 @@ class ajax_horari_monito {
      */
     private function transpHorario($codTercer, $indHorario, $fecInicia, $horInicia, $fecFinali, $horFinali, $festivo) {
         $data = $this->traerHoraioLaboral($codTercer, $indHorario, $fecInicia, $fecFinali, $festivo);
-
+            
         if( !$data ) {
             return false;
         }
@@ -486,13 +497,13 @@ class ajax_horari_monito {
             $horFinali = strtotime($horFinali.":00");
             $data[1]['hor_salida'] = strtotime($data[1]['hor_salida']);
             $data[1]['hor_ingres'] = strtotime($data[1]['hor_ingres']);
-
+            
             if($fecInicia == $fecFinali) {
                 if( $data[0]['hor_ingres'] <= $horInicia && $horInicia <= $data[0]['hor_salida'] ) {
                     return true;
                 } elseif( $data[0]['hor_ingres'] >= $horInicia && $data[0]['hor_salida'] <= $horFinali ) {
                     return true;
-                } elseif( $data[0]['hor_ingres'] >= $horInicia && $data[0]['hor_salida'] >= $horFinali ) {
+                } elseif( $data[0]['hor_salida'] >= $horFinali && $horFinali >= $data[0]['hor_ingres'] ) {
                     return true;
                 } else {
                     return false;
@@ -1139,7 +1150,7 @@ class ajax_horari_monito {
         ?>
         <div class="col-md-12">&nbsp;</div>
         <div class="col-md-12 centrado CellHead">
-            <b>Transportadoras en Seguimiento</b>
+            <b>Transportadoras en Seguimiento {<?php echo sizeof($transp);?>} </b>
         </div>
         <div class="col-md-12"></div>
         <div class="col-md-12 centrado CellHead">
