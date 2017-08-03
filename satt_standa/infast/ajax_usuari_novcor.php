@@ -104,15 +104,15 @@ class AjaxDespacUsuari
       }
     }
 
-    if( $mData['typ'] == 'm' )
-    {
+    //if( $mData['typ'] == 'm' )
+    //{
       if( $mData['inf'] == 'p' ) {
       $mSelect .= " AND a.fec_noveda BETWEEN '".$mData["fec_ini"]."' AND '".$mData["fec_fin"]."' ";
       }
       else {
       $mSelect .= " AND a.fec_noved2 BETWEEN '".$mData["fec_ini"]."' AND '".$mData["fec_fin"]."' ";
       }
-    }
+    //}
     
       
     $mSelect .= " ORDER BY 1,2";
@@ -678,7 +678,7 @@ class AjaxDespacUsuari
       $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] .= $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] != '' ? ','.$row['num_despac'] : $row['num_despac'];
     }
     
-    $mSelect = "SELECT num_despac, num_consec, DATE(fec_noved2) AS fec_noveda, usr_asigna
+    $mSelect = "SELECT num_despac, num_consec, DATE(fec_noved2) AS fec_noveda, usr_ejecut AS usr_asigna
                   FROM ".BASE_DATOS.".tab_protoc_asigna 
                  WHERE ind_ejecuc = '1' 
                    AND fec_noved2 BETWEEN '".$date_ini."' AND '".$date_fin."' 
@@ -715,7 +715,7 @@ class AjaxDespacUsuari
       $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] .= $_DATA[$row['usr_asigna']]['p'][$row['fec_noveda']]['despac'] != '' ? ','.$row['num_despac'] : $row['num_despac'];
     }
     
-    $mSelect = "SELECT num_despac, num_consec, CONCAT( YEAR( fec_noved2 ), '-', WEEKOFYEAR(DATE( fec_noved2 )) )AS fec_noveda, usr_asigna
+    $mSelect = "SELECT num_despac, num_consec, CONCAT( YEAR( fec_noved2 ), '-', WEEKOFYEAR(DATE( fec_noved2 )) )AS fec_noveda, usr_ejecut AS usr_asigna
                   FROM ".BASE_DATOS.".tab_protoc_asigna 
                  WHERE ind_ejecuc = '1' 
                    AND fec_noved2 BETWEEN '".$date_ini."' AND '".$date_fin."' 

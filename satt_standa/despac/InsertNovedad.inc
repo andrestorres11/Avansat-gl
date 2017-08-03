@@ -3431,7 +3431,7 @@ class InsertNovedad {
                             try {
                                 //Ruta Web Service Colocar e-com.
                                 $mEstado = '1';
-                                $url_webser = "http://www.colombiasoftware.net/base/webservice/reportepuestocontrol.php?wsdl";
+                                $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                                 $mFecha[0] = date('Y-m-d', strtotime($regist['fecnov']));
                                 $mFecha[1] = date('H:i:s', strtotime($regist['fecnov']));
 
@@ -3464,7 +3464,7 @@ class InsertNovedad {
                                 $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
 
                                 //Métodos disponibles en el WS
-                                $respuesta = $oSoapClient->__call('puestocontrol_humadea', $parametros);
+                                $respuesta = $oSoapClient->__call('puestocontrol', $parametros);
 
                                 if ($respuesta != 'OK REPORTO') {
                                     $error_ = $respuesta;
@@ -3505,7 +3505,7 @@ class InsertNovedad {
                             try {
                                 $mEstado = '1';
                                 //Ruta Web Service Colocar e-com.
-                                $url_webser = "http://www.colombiasoftware.net/base/webservice/reportepuestocontrol.php?wsdl";
+                                $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                                 $mFecha[0] = date('Y-m-d', strtotime($regist['fecnov']));
                                 $mFecha[1] = date('H:i:s', strtotime($regist['fecnov']));
 
@@ -3532,7 +3532,7 @@ class InsertNovedad {
 
 
                                 //Métodos disponibles en el WS
-                                $respuesta = $oSoapClient->__soapCall('novedades_humadea', $parametros);
+                                $respuesta = $oSoapClient->__soapCall('novedades', $parametros);
 
                                 if ($respuesta != 'OK REPORTO.') {
                                     $error_ = $respuesta;

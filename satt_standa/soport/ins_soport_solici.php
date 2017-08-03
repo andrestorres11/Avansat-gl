@@ -17,9 +17,9 @@ class infBandeja
 									  );
 
 	private static $cTipErrorx = array( # son de soporte
-										array('132', 'Ajustes Sistema'), 
-										array('130', 'Cambios de Información'), 
-										array('8',	 'Error del Sistema') , 
+										//array('132', 'Ajustes Sistema'), 
+										//array('130', 'Cambios de Información'), 
+										//array('8',	 'Error del Sistema') , 
 										# Son de Faro
 										array('286',	 'Creación de usuarios') ,
 										array('287',	 'Actualización de Claves') ,
