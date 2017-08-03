@@ -304,7 +304,8 @@ class repHojaVidaEal
                     SELECT    a.cod_contro, 
                               a.nom_contro,
                               b.num_docume, 
-                              b.nom_funcio, 
+                              b.nom_funcio,
+                              b.ind_repleg, 
                               c.cod_formul, 
                               c.nom_formul,          
                               d.cod_campos, 
@@ -495,7 +496,7 @@ class repHojaVidaEal
         foreach (explode(",",$cod_contro) as $key => $value) 
         {
           #agrupo por cedula de funcionario
-          $mDataFunc = self::getDataEal( $value, "b.num_docume");
+          $mDataFunc = self::getDataEal( $value, "b.num_docume,b.ind_repleg");
           $infoGeneral['data'][$value]['name'] = self::getNameEal($value);
           $infoGeneral['data'][$value]['funcionario'] = sizeof($mDataFunc);
           if($mDataFunc[0]['cod_formul'] != NULL)
