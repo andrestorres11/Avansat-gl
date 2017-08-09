@@ -1702,13 +1702,13 @@ function ValidarFormNen()
 			//$("#form_insID").append('<input type="hidden" name="tot_protoc_" id="tot_protoc_ID" value="' + tot_protoc + '"/>');
 			formData += "&tot_protoc_="+tot_protoc;
 			for (var k = 0; k < tot_protoc; k++) {
-				formData += "&protoc" + k + "_ ="+$("#protoc" + k + "ID").val();
+				formData += "&protoc" + k + "_="+$("#protoc" + k + "ID").val();
 				//$("#form_insID").append('<input type="hidden" name="protoc' + k + '_" id="protoc' + k + '_ID" value="' + $("#protoc" + k + "ID").val() + '"/>');
-				formData += "&obs_protoc" + k + "_ ="+$("#des_protoc" + k + "ID").html();
+				formData += "&obs_protoc" + k + "_="+$("#des_protoc" + k + "ID").html();
 				//$("#form_insID").append('<input type="hidden" name="obs_protoc' + k + '_" id="obs_protoc' + k + '_ID" value="' + $("#obs_protoc" + k + "ID").val() + '"/>');
 			}
 			var ind_activo = $("input[name='ind_activo']:checked").val();
-			formData += "&ind_activo_" + k + "_ ="+ind_activo;
+			formData += "&ind_activo_" + k + "_="+ind_activo;
 			//$("#form_insID").append('<input type="hidden" name="ind_activo_" id="ind_activo_ID" value="' + ind_activo + '"/>');
 		}
 		//varifico que no contengan datos vacios
@@ -1760,9 +1760,13 @@ function AlmcenarSolucionNem()
 					     msj += '<input type="button" name="si" id="siID" value=" Cerrar " style="cursor:pointer" onclick="closePopUpAlert();" class="ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only"/>';
 					     popup.append(msj);
 		            }
+		            else if(datos=="Error1")
+		            {
+		            	alert("Error al generar la novedad.");
+		            }
 		            else
 		            {
-				         alert("Error");
+				        alert("Error");
 		            }
 		        }
 		    });
