@@ -3978,7 +3978,7 @@ class Despac
 			}else{
 				$mTieUltNov = 0;
 			}
-
+			
 			$mData['email'] = $_SESSION['datos_usuario']['usr_emailx'];
 			$mData['virtua'] = $mDespac['ind_virtua'];
 			$mData['tip_servic'] = $mDespac['cod_tipser'];
@@ -3999,43 +3999,54 @@ class Despac
 			$mData['observ'] = $_REQUEST["obs"];
 			//opcional para el envio del correo en novedades especiales
 			$mData['rutpla'] = '../../' . DIR_APLICA_CENTRAL . '/planti/pla_noveda_especi.html';
+			#verifico si la noveda genera correo y si genera lleno el $_REQUEST['ind_protoc'] = yes 
+			self::validateNovedad($mData['nittra'], $mData['noveda']);
+			
 			switch ($_REQUEST["ind_valsit"]) 
 			{
 				case 'S':
-						$mInsNoveda->InsertarNovedadPC( BASE_DATOS, $mData, 0 );
+					$RESPON = $mInsNoveda->InsertarNovedadPC( BASE_DATOS, $mData, 0 );
 					break;
 				default:
-					$mInsNoveda->InsertarNovedadNC( BASE_DATOS, $mData, 0 );
+					$RESPON = $mInsNoveda->InsertarNovedadNC( BASE_DATOS, $mData, 0 );
 					break;
 			}
+			
+			if($RESPON[0]['indica'] == "1")
+			{
+				//actualizo las novedades a solucionar cambiando el indicador a 1
+				$mNovedadNem = json_decode($_REQUEST['nov_soluci']);
+				# inicia transaccion
+	     	 	$mConsultUpd = new Consulta("SELECT 1 ;", self::$cConexion, "BR"); // Inicia 
+	     	 	foreach ($mNovedadNem as $ksNem => $vsNem) 
+	     	 	{
+	     	 		//la posicion 0 = num_consec, 1 = num_despac, 2 = cod_noveda
+	     	 		$mDataSNem = explode("|", $vsNem);
+	     	 		$mQueryud = " UPDATE ". BASE_DATOS .".tab_despac_novnem 
+	     	 							SET ind_soluci = 1, 
+		     	 							fec_soluci = NOW(),
+		     	 							usr_soluci = '".$_SESSION['datos_usuario']['cod_usuari']."', 
+		     	 							nov_soluci = '".$_REQUEST["cod_noveda"]."', 
+		     	 							obs_soluci = '".$_REQUEST["obs"]."',
+		     	 							cod_solctr = '".$_REQUEST['cod_contro']."', 
+		     	 							cod_solstx = '".$mDespac['nom_contro']."', 
+		     	 							usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."', 
+		     	 							fec_modifi = NOW()
+	     	 							WHERE num_consec = '".$mDataSNem[0]."' AND num_despac = '".$mDataSNem[1]."' AND cod_noveda = '".$mDataSNem[2]."'";
+	          		$mConsultUpd = new Consulta($mQueryud, self::$cConexion, "BR");
+	     	 	}
 
-			//actualizo las novedades a solucionar cambiando el indicador a 1
-			$mNovedadNem = json_decode($_REQUEST['nov_soluci']);
-			# inicia transaccion
-     	 	$mConsultUpd = new Consulta("SELECT 1 ;", self::$cConexion, "BR"); // Inicia 
-     	 	foreach ($mNovedadNem as $ksNem => $vsNem) 
-     	 	{
-     	 		//la posicion 0 = num_consec, 1 = num_despac, 2 = cod_noveda
-     	 		$mDataSNem = explode("|", $vsNem);
-     	 		$mQueryud = " UPDATE ". BASE_DATOS .".tab_despac_novnem 
-     	 							SET ind_soluci = 1, 
-	     	 							fec_soluci = NOW(),
-	     	 							usr_soluci = '".$_SESSION['datos_usuario']['cod_usuari']."', 
-	     	 							nov_soluci = '".$_REQUEST["cod_noveda"]."', 
-	     	 							obs_soluci = '".$_REQUEST["obs"]."',
-	     	 							cod_solctr = '".$_REQUEST['cod_contro']."', 
-	     	 							cod_solstx = '".$mDespac['nom_contro']."', 
-	     	 							usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."', 
-	     	 							fec_modifi = NOW()
-     	 							WHERE num_consec = '".$mDataSNem[0]."' AND num_despac = '".$mDataSNem[1]."' AND cod_noveda = '".$mDataSNem[2]."'";
-          		$mConsultUpd = new Consulta($mQueryud, self::$cConexion, "BR");
-     	 	}
-
-			$mConsultUpd = new Consulta("SELECT 1;", self::$cConexion, "RC"); // Si no se  va nada por la excepcion hace commit de todo
-		    if($mConsultUpd)
-		    {
-		        echo "ok";
-		    }
+				$mConsultUpd = new Consulta("SELECT 1;", self::$cConexion, "RC"); // Si no se  va nada por la excepcion hace commit de todo
+			    if($mConsultUpd)
+			    {
+			        echo "ok";
+			    }
+			}
+			else
+			{
+				#error al generar la novedad
+				echo "Error1";
+			}
 
 		}
 		catch(Exception $e)
@@ -4123,6 +4134,38 @@ class Despac
 			echo "Error en la funcion getTranspUsuari: ", $e->getMessage();
 		}
 	}
+
+	/*! \fn: validateNovedad
+	 *  \brief: 
+	 *  \author: Edward Serrano
+	 *  \date: 09-08-2017
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: 
+	 *  \return:
+	 */
+	private function validateNovedad($mCodTransp = null, $mCodNoveda = null)
+	{
+		try
+		{
+			$mSql = "SELECT a.ind_notema
+                   FROM " . BASE_DATOS . ".tab_noveda_protoc a 
+                  WHERE cod_noveda = '$mCodNoveda' 
+                    AND a.cod_transp = '$mCodTransp' ";
+
+	        $mConsult = new Consulta($mSql, self::$cConexion );
+	        $mResultMail = $mConsult -> ret_matrix('i');
+
+	        if ( $mResultMail[0][0] == 1)
+	        {
+	        	$_REQUEST['ind_protoc'] = 'yes';
+	        }
+		}
+		catch (Exception $e)
+		{
+			echo "Error en la funcion getTranspUsuari: ", $e->getMessage();
+		}
+	}
+	
 }
 
 if($_REQUEST['Ajax'] === 'on' )
