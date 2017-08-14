@@ -207,14 +207,14 @@ class Proc_despac
                             $mHtml->Label( "Configuracion",  array("align"=>"right", "class"=>"celda_titulo") );
                             $mHtml->Select2 ($this->getConfig(),  array("name" => "config", "width" => "25%") );
                         $mHtml->CloseRow();
-                         $mHtml->Row();
+                         /*$mHtml->Row();
                           $mHtml->Button( array("value"=>"Buscar", "id"=>"buscarID","name"=>"buscar", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2" ,"onclick"=>"Buscar()") );
-                        $mHtml->CloseRow();
+                        $mHtml->CloseRow();*/
                     $mHtml->CloseTable("tr");
                   $mHtml->SetBody('</form>');
                   $mHtml->OpenDiv("id:tabs");
                     $mHtml->SetBody("<ul>
-                                        <li><a href='#tabInform' onclick='getInform()'>INFORME</a></li>
+                                        <li><a href='#tabInform' onclick='Buscar()'>INFORME</a></li>
                                     </ul>");
                     $mHtml->OpenDiv("id:tabInform");
                       switch($_REQUEST['opcion'])
@@ -404,6 +404,12 @@ class Proc_despac
 
     $fechaadic = date("Y-m-d", strtotime("".$_REQUEST['fecbus']." +5 day"));
     $fechadism = date("Y-m-d", strtotime("".$_REQUEST['fecbus']." -5 day"));
+    $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $mTrans =" bb.cod_transp = '$datos_filtro[clv_filtro]' AND ";
+     }
 
     $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
                    CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
@@ -423,14 +429,13 @@ class Proc_despac
                                                       FROM 
                                                            ".BASE_DATOS.".tab_despac_despac aaa INNER JOIN
                                                            ".BASE_DATOS.".tab_despac_vehige bb ON aaa.num_despac = bb.num_despac AND 
-                                                                                             bb.cod_transp = '860068121' AND 
+                                                                                             ".$mTrans."
                                                                                              aaa.fec_salida IS NOT NULL AND 
                                                                                              aaa.fec_llegad IS NULL AND 
                                                                                              aaa.ind_planru = 'S' AND  
                                                                                              aaa.ind_anulad = 'R' AND 
                                                                                              bb.ind_activo = 'S' INNER JOIN
                                                            ".BASE_DATOS.".tab_despac_seguim ss ON bb.num_despac = ss.num_despac AND 
-                                                                                             ss.fec_planea BETWEEN '".$_REQUEST['fecbus']." 00:00:00' AND '".$fechaadic." 23:59:59' AND 
                                                                                              ss.ind_estado = 1
                                                       GROUP BY ss.num_despac
                                                       HAVING conteo <= 2
@@ -443,7 +448,7 @@ class Proc_despac
                                      aa.ind_anulad = 'R' AND 
                                      aa.ind_planru = 'S'
                               GROUP BY dd.num_placax 
-                      ) r ON r.num_placax = d.num_placax AND r.num_despac = a.num_despac
+                      ) r ON r.num_placax = d.num_placax AND a.num_despac = r.num_despac 
           INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
           INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu i ON i.num_placax = d.num_placax
           INNER JOIN ".BASE_DATOS.".tab_genera_ciudad j ON a.cod_ciuori = j.cod_ciudad
