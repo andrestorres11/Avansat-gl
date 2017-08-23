@@ -3063,6 +3063,9 @@ class InsertNovedad {
                 else
                     $tmpl_file = '../' . DIR_APLICA_CENTRAL . '/planti/' . $plantilla;
 
+                if(!file_exists($tmpl_file)){
+                    $tmpl_file = '/var/www/html/ap/'.DIR_APLICA_CENTRAL.'/planti/' . $plantilla;
+                }
                 $thefile = implode("", file($tmpl_file));
                 $thefile = addslashes($thefile);
                 $thefile = "\$r_file=\"" . $thefile . "\";";
