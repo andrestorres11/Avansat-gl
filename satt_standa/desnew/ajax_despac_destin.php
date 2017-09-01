@@ -57,9 +57,9 @@ class AjaxDespacDestin {
                        c.nom_destin, c.cod_ciudad, c.dir_destin, 
                        c.num_destin, c.fec_citdes, c.hor_citdes
                   FROM
-                       ".BASE_DATOS."tab_despac_despac a INNER JOIN 
-                       ".BASE_DATOS."tab_despac_corona b ON a.num_despac = b.num_dessat AND a.num_despac = '" . $_AJAX['num_despac'] . "' INNER JOIN 
-                       ".BASE_DATOS."tab_despac_cordes c ON b.num_despac = c.num_despac 
+                       ".BASE_DATOS.".tab_despac_despac a INNER JOIN 
+                       ".BASE_DATOS.".tab_despac_corona b ON a.num_despac = b.num_dessat AND a.num_despac = '" . $_AJAX['num_despac'] . "' INNER JOIN 
+                       ".BASE_DATOS.".tab_despac_cordes c ON b.num_despac = c.num_despac 
                  WHERE a.num_despac = '".$_AJAX['num_despac']."' ORDER BY c.fec_citdes ASC, c.hor_citdes ASC  ";
 
         $consulta = new Consulta($mQuery, $this->conexion);
