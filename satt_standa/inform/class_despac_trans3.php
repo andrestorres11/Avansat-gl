@@ -164,12 +164,12 @@ class Despac
 	private function infoPreCargue()
 	{
 		$mIndEtapa = 'ind_segprc';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'PROGRAMACION', 'REGISTRO', 'ESTADOS', 'PENDIENTES', 'PARA EL CORTE', 'ANULADOS', 'EN PLANTA', 'PORTERIA', 'SIN COMUNICACION', 'TRANSITO A PLANTA', 'CON NOVEDAD NO LLEGADA A PLANTA', 'CON NOVEDAD LLEGADA A PLANTA' );
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'PROGRAMACION', 'REGISTRO', 'ESTADOS', 'PENDIENTES', 'PARA EL CORTE', 'ANULADOS', 'EN PLANTA', 'PORTERIA', 'SIN COMUNICACION', 'TRANSITO A PLANTA', 'CON NOVEDAD NO LLEGADA A PLANTA', 'CON NOVEDAD LLEGADA A PLANTA', 'A CARGO EMPRESA');
 		$mTittle['style'] = array('', '', '', '', 'bgPC1', 'bgPC2', 'bgPC1', '', '', '', '');
 		$mStyleCel = array(
-							"COL" => array('1', '1', '1', '1', '2', '2', '5', '1', '1', '1', '1', '1', '1', '1', '1', '1'),
-					 		"ROW" => array('2', '2', '2', '2', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'),
-					 		"BR"  => array('0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0')
+							"COL" => array('1', '1', '1', '1', '2', '2', '6', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'),
+					 		"ROW" => array('2', '2', '2', '2', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'),
+					 		"BR"  => array('0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0')
 					 	  );
 		$mHtml .= '<div id=table2ID>';
 		$mHtml .= self::printInformPrc( $mIndEtapa, $mTittle, $mStyleCel );
@@ -1921,6 +1921,7 @@ class Despac
 		$con_tranpl = array(); #transito a planta
 		$con_cnnlap = array(); #con novedad no llegada a planta
 		$con_cnlapx = array(); #con novedad llegada a planta
+		$con_acargo = array(); #A cargo de empresa
 
 		#Trae Data por transportadoras
 		for ($i=0; $i < sizeof($mTransp); $i++)
@@ -1944,6 +1945,7 @@ class Despac
 				$con_tranpl = $mDespac['con_tranpl'] ? array_merge($con_tranpl, $mDespac['con_tranpl']) : $con_tranpl;
 				$con_cnnlap = $mDespac['con_cnnlap'] ? array_merge($con_cnnlap, $mDespac['con_cnnlap']) : $con_cnnlap;
 				$con_cnlapx = $mDespac['con_cnlapx'] ? array_merge($con_cnlapx, $mDespac['con_cnlapx']) : $con_cnlapx;
+				$con_acargo = $mDespac['con_acargo'] ? array_merge($con_acargo, $mDespac['con_acargo']) : $con_acargo;
 			}
 			else
 			{
@@ -1979,6 +1981,7 @@ class Despac
 			$mHtml .= $con_tranpl ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_tranpl), sizeof($con_tranpl).'DESPACHOS EN TRANSITO A PLANTA', '1' ) : '';
 			$mHtml .= $con_cnnlap ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_cnnlap), sizeof($con_cnnlap).'DESPACHOS CON NOVEDAD NO LLEGADA A PLANTA', '1' ) : '';
 			$mHtml .= $con_cnlapx ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_cnlapx), sizeof($con_cnlapx).'DESPACHOS CON NOVEDAD LLEGADA A PLANTA', '1' ) : '';
+			$mHtml .= $con_acargo ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_acargo), sizeof($con_acargo).'DESPACHOS A CARGO EMPRESA', '1' ) : '';
 
 
 		}
@@ -2924,8 +2927,8 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_tranpl] == 0 ? '' : 'onclick="showDetailBand(\'con_tranpl\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_tranpl].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_cnnlap] == 0 ? '' : 'onclick="showDetailBand(\'con_cnnlap\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_cnnlap].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_cnlapx] == 0 ? '' : 'onclick="showDetailBand(\'con_cnlapx\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_cnlapx].'</td>';
-
-	
+				#Nuevo campo a cargo de empresa
+				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_acargo] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_acargo].'</td>';
 
 				$mHtml .= '</tr>';
 
@@ -2939,6 +2942,7 @@ class Despac
 				$mTotal[7] += $mData[con_tranpl];
 				$mTotal[8] += $mData[con_cnnlap];
 				$mTotal[9] += $mData[con_cnlapx];
+				$mTotal[10] += $mData[con_acargo];
 
 				$j++;
 			}
@@ -2956,7 +2960,8 @@ class Despac
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[7] == 0 ? '' : 'onclick="showDetailBand(\'con_tranpl\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[7].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[8] == 0 ? '' : 'onclick="showDetailBand(\'con_cnnlap\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[8].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[9] == 0 ? '' : 'onclick="showDetailBand(\'con_cnlapx\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[9].'</th>';
-
+		#Nuevo campo a cargo de empresa
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[10] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[10].'</th>';
 		$mHtml1 .= '</tr>';
 
 		#Dibuja la Tabla Completa
@@ -3013,6 +3018,7 @@ class Despac
 			$mResult["con_tranpl"] = 0;//transito a planta
 			$mResult["con_cnnlap"] = 0;//con novedad no llegada a planta
 			$mResult["con_cnlapx"] = 0;//con novedad llegada a planta
+			$mResult["con_acargo"] = 0;//con novedad llegada a planta
 		}
 		else
 		{
@@ -3025,6 +3031,7 @@ class Despac
 			$con_tranpl = 0;
 			$con_cnnlap = 0;
 			$con_cnlapx = 0;
+			$con_acargo = 0;
 		}
 		for ($i=0; $i < sizeof($mDespac); $i++)
 		{
@@ -3039,6 +3046,12 @@ class Despac
 
 			if( $mIndCant == 1 )
 			{ 
+				#Valida si el deaspacho esta acargo de la empresa
+				if($mDespac[$i]["ind_defini"] == 'SI')
+				{
+					$mResult["con_acargo"]++;
+					continue;
+				}
 				//if( strtotime($mDespac[$i]['fec_citcar']) >= strtotime(date("d-m-Y ",time()))  )
 				 
 				if( $mDespac[$i]['fec_citcar'] <= $fec_sisact && $mDespac[$i]["ind_anulad"] != "A" ) // Hora actual
@@ -3121,6 +3134,15 @@ class Despac
 				}
 				elseif ($mDespac[$i]["tiempS"] > 90) {
 					$color2 = $mColor[3];
+				}
+				#Valida si el despacho esta a cargo de la empresa
+				if(($mFiltro == 'ind_acargo' || $mFiltro == 'sinF') && $mDespac[$i]["ind_defini"] == 'SI' )
+				{
+					$mResult["con_acargo"][$con_acargo] = $mDespac[$i];
+					$mResult["con_acargo"][$con_acargo]["color"] = $color;
+					$mResult["con_acargo"][$con_acargo]["color2"] = $color2;
+					$con_acargo++;
+					continue;
 				}
 				/*if(($mFiltro == "con_paradi" || $mFiltro == 'sinF') && $mDespac[$i]['fec_citcar'] <= $fec_sisact && $mDespac[$i]["ind_anulad"] != "A" )
 				{
