@@ -66,7 +66,7 @@ class AjaxDespacDestin {
         $_DESTINDATA = $consulta->ret_matriz();
 
         foreach ($_DESTINDATA as $fKey => $fData) {
-            $mDatDestin[] = "Destinatario: " . ($fKey + 1) . "\nNum Documento: " . $fData["num_docume"] . ", Documento Alt: " . $fData["num_docalt"] . " Destino: " . $fData["nom_destin"] . "\n" .
+            $mDatDestin[] = "Documento: " . ($fKey + 1) . "\nNum Documento: " . $fData["num_docume"] . ", Documento Alt: " . $fData["num_docalt"] . " Destino: " . $fData["nom_destin"] . "\n" .
                     "Direccion Destino: " . $fData["dir_destin"] . " Num Destinatario: " . $fData["num_destin"] . " Fecha: " . $fData["fec_citdes"] . " Hora: " . $fData["hor_citdes"];
         }
 
@@ -131,6 +131,20 @@ class AjaxDespacDestin {
         }
 
         #descripcion
+
+            # Datos Destinatari del webservice -------------------------------------------------
+        $mQuery = "SELECT a.num_docume, a.num_docalt, a.cod_genera,
+                       a.nom_destin, a.cod_ciudad, a.dir_destin, 
+                       a.num_destin, a.fec_citdes, a.hor_citdes
+                  FROM " . BASE_DATOS . ".tab_despac_cordes a, 
+                       " . BASE_DATOS . ".tab_despac_despac b 
+                 WHERE a.num_despac = b.cod_manifi AND
+                       b.num_despac = '" . $_AJAX['num_despac'] . "' 
+                       GROUP BY a.num_destin";
+
+        $consulta = new Consulta($mQuery, $this->conexion);
+        $_DESTINDATA = $consulta->ret_matriz();
+
         $countb = $count;
         foreach ($_DESTINDATA as $rowx) {
             $bandera = 0;
