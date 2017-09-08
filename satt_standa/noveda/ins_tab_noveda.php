@@ -320,7 +320,7 @@
       if($_REQUEST["ind_notsup"])
       {
         $ind_notsup = 1;
-        $ind_manala = 1;
+        //$ind_manala = 1;
       }
       else
         $ind_notsup = 0;   
