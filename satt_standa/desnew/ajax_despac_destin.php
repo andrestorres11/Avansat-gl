@@ -146,7 +146,7 @@ class AjaxDespacDestin {
         $_DESTINDATA = $consulta->ret_matriz();
 
         $countb = $count;
-        foreach ($_DESTINDATA as $rowx) {
+        /*foreach ($_DESTINDATA as $rowx) {
             $bandera = 0;
             for ($i = 0; $i < $count; $i++) {
                 $bandera = $rowx[0] == $numDocume[$i] ? $bandera + 1 : $bandera;
@@ -156,7 +156,7 @@ class AjaxDespacDestin {
                 $mHtml .= $this->ShowDestinNew($_AJAX, $rowx);
                 $countb++;
             }
-        }
+        }*/
 
         $_AJAX['counter'] = $countb;
         $mHtml .= $this->ShowDestinNew($_AJAX);
