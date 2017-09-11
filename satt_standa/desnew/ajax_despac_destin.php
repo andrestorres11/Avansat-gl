@@ -53,20 +53,20 @@ class AjaxDespacDestin {
 
 
         # Datos Destinatari del webservice -------------------------------------------------
-        $mQuery = "SELECT a.num_docume, a.num_docalt, a.cod_genera,
-                       a.nom_destin, a.cod_ciudad, a.dir_destin, 
-                       a.num_destin, a.fec_citdes, a.hor_citdes
-                  FROM " . BASE_DATOS . ".tab_despac_cordes a, 
-                       " . BASE_DATOS . ".tab_despac_despac b 
-                 WHERE a.num_despac = b.cod_manifi AND
-                       b.num_despac = '" . $_AJAX['num_despac'] . "' 
-                       GROUP BY a.num_destin";
+        $mQuery = "SELECT c.num_docume, c.num_docalt, c.cod_genera,
+                       c.nom_destin, c.cod_ciudad, c.dir_destin, 
+                       c.num_destin, c.fec_citdes, c.hor_citdes
+                  FROM
+                       ".BASE_DATOS.".tab_despac_despac a INNER JOIN 
+                       ".BASE_DATOS.".tab_despac_corona b ON a.num_despac = b.num_dessat AND a.num_despac = '" . $_AJAX['num_despac'] . "' INNER JOIN 
+                       ".BASE_DATOS.".tab_despac_cordes c ON b.num_despac = c.num_despac 
+                 WHERE a.num_despac = '".$_AJAX['num_despac']."' ORDER BY c.fec_citdes ASC, c.hor_citdes ASC  ";
 
         $consulta = new Consulta($mQuery, $this->conexion);
         $_DESTINDATA = $consulta->ret_matriz();
 
         foreach ($_DESTINDATA as $fKey => $fData) {
-            $mDatDestin[] = "Destinatario: " . ($fKey + 1) . "\nNum Documento: " . $fData["num_docume"] . ", Documento Alt: " . $fData["num_docalt"] . " Destino: " . $fData["nom_destin"] . "\n" .
+            $mDatDestin[] = "Documento: " . ($fKey + 1) . "\nNum Documento: " . $fData["num_docume"] . ", Documento Alt: " . $fData["num_docalt"] . " Destino: " . $fData["nom_destin"] . "\n" .
                     "Direccion Destino: " . $fData["dir_destin"] . " Num Destinatario: " . $fData["num_destin"] . " Fecha: " . $fData["fec_citdes"] . " Hora: " . $fData["hor_citdes"];
         }
 
@@ -131,8 +131,22 @@ class AjaxDespacDestin {
         }
 
         #descripcion
+
+            # Datos Destinatari del webservice -------------------------------------------------
+        $mQuery = "SELECT a.num_docume, a.num_docalt, a.cod_genera,
+                       a.nom_destin, a.cod_ciudad, a.dir_destin, 
+                       a.num_destin, a.fec_citdes, a.hor_citdes
+                  FROM " . BASE_DATOS . ".tab_despac_cordes a, 
+                       " . BASE_DATOS . ".tab_despac_despac b 
+                 WHERE a.num_despac = b.cod_manifi AND
+                       b.num_despac = '" . $_AJAX['num_despac'] . "' 
+                       GROUP BY a.num_destin";
+
+        $consulta = new Consulta($mQuery, $this->conexion);
+        $_DESTINDATA = $consulta->ret_matriz();
+
         $countb = $count;
-        foreach ($_DESTINDATA as $rowx) {
+        /*foreach ($_DESTINDATA as $rowx) {
             $bandera = 0;
             for ($i = 0; $i < $count; $i++) {
                 $bandera = $rowx[0] == $numDocume[$i] ? $bandera + 1 : $bandera;
@@ -142,7 +156,7 @@ class AjaxDespacDestin {
                 $mHtml .= $this->ShowDestinNew($_AJAX, $rowx);
                 $countb++;
             }
-        }
+        }*/
 
         $_AJAX['counter'] = $countb;
         $mHtml .= $this->ShowDestinNew($_AJAX);
@@ -669,78 +683,75 @@ class AjaxDespacDestin {
         echo "<script language=\"JavaScript\" src=\"../" . $_AJAX['Standa'] . "/js/new_ajax.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../" . $_AJAX['Standa'] . "/js/functions.js\"></script>\n";
 
-        if ($_SESSION['datos_usuario']['cod_perfil'] == '712') {
-            $mSql = "SELECT * 
-                   FROM (
-                    SELECT a.num_despac, IF( z.num_desext IS NOT NULL , z.num_desext,  'N/A' ) as num_desext , b.num_placax, a.cod_manifi, a.fec_despac, c.nom_tipdes, d.nom_ciudad AS nom_ciuori, e.nom_ciudad AS nom_ciudes
-                      FROM satt_faro.tab_despac_despac a
-                 LEFT JOIN satt_faro.tab_despac_sisext z ON a.num_despac = z.num_despac
-                 LEFT JOIN satt_faro.tab_despac_destin f ON a.num_despac = f.num_despac, satt_faro.tab_despac_vehige b, satt_faro.tab_genera_tipdes c, satt_faro.tab_genera_ciudad d, satt_faro.tab_genera_ciudad e
-                     WHERE a.cod_tipdes = c.cod_tipdes
-                       AND a.cod_ciuori = d.cod_ciudad
-                       AND a.cod_ciudes = e.cod_ciudad
-                       AND a.num_despac = b.num_despac
-                       AND b.cod_transp =  '860068121'
-                       AND a.fec_llegad IS NULL 
-                       AND a.ind_anulad !=  'A'
-                       AND a.fec_despac BETWEEN  '" . $_AJAX['fec_inicia'] . " 00:00:00' AND '" . $_AJAX['fec_finali'] . " 23:59:59'
-                      ORDER BY   f.ind_modifi DESC
-                      ) AS w WHERE 1 = 1
-              GROUP BY w.num_despac";
+        switch ($_SESSION['datos_usuario']['cod_perfil']) {
+            case '712': case '8': case '73':
+                        $mSql = "SELECT * 
+                               FROM (
+                                SELECT a.num_despac, IF( z.num_desext IS NOT NULL , z.num_desext,  'N/A' ) as num_desext , b.num_placax, a.cod_manifi, a.fec_despac, c.nom_tipdes, d.nom_ciudad AS nom_ciuori, e.nom_ciudad AS nom_ciudes
+                                  FROM satt_faro.tab_despac_despac a
+                             LEFT JOIN satt_faro.tab_despac_sisext z ON a.num_despac = z.num_despac
+                             LEFT JOIN satt_faro.tab_despac_destin f ON a.num_despac = f.num_despac, satt_faro.tab_despac_vehige b, satt_faro.tab_genera_tipdes c, satt_faro.tab_genera_ciudad d, satt_faro.tab_genera_ciudad e
+                                 WHERE a.cod_tipdes = c.cod_tipdes
+                                   AND a.cod_ciuori = d.cod_ciudad
+                                   AND a.cod_ciudes = e.cod_ciudad
+                                   AND a.num_despac = b.num_despac
+                                   AND b.cod_transp =  '860068121'
+                                   AND a.fec_llegad IS NULL 
+                                   AND a.ind_anulad !=  'A'
+                                   AND a.fec_despac BETWEEN  '" . $_AJAX['fec_inicia'] . " 00:00:00' AND '" . $_AJAX['fec_finali'] . " 23:59:59'
+                                  ORDER BY   f.ind_modifi DESC
+                                  ) AS w WHERE 1 = 1
+                          GROUP BY w.num_despac";
 
-            $_SESSION["queryXLS"] = $mSql;
-            $list = new DinamicList($this->conexion, $mSql, 3, "no", "DESC");
-            $list->SetClose('no');
-            $list->SetHeader("Despacho", "field:num_despac; type:link; onclick:SetDestinatarios( $(this) )");
-            $list->SetHeader("No. Viaje", "field:num_desext"); 
-            $list->SetHeader("Placa", "field:num_placax");
-            $list->SetHeader("Manifiesto", "field:cod_manifi");
-            $list->SetHeader("Fecha", "field:fec_despac");
-            $list->SetHeader("Tipo Despacho", "field:nom_tipdes");
-            $list->SetHeader("Origen", "field:nom_ciuori");
-            $list->SetHeader("Destino", "field:nom_ciudes");
-
-        } else {
-
-            $mSql = "SELECT w.num_despac, w.num_desext, w.ind_modifi, if(w.num_destin = 0, w.num_destin,COUNT(w.num_destin)) AS num_client, w.num_placax, w.cod_manifi, w.fec_despac, w.nom_tipdes, w.nom_ciuori, w.nom_ciudes 
-                   FROM (
-                    SELECT a.num_despac, IF( z.num_desext IS NOT NULL , z.num_desext,  'N/A' ) as num_desext , IF( f.ind_modifi =  '1', 'ACTUALIZADO', 'PENDIENTE' ) as ind_modifi, count(f.num_destin) AS num_destin, b.num_placax, a.cod_manifi, a.fec_despac, c.nom_tipdes, d.nom_ciudad AS nom_ciuori, e.nom_ciudad AS nom_ciudes
-                      FROM satt_faro.tab_despac_despac a
-                 LEFT JOIN satt_faro.tab_despac_sisext z ON a.num_despac = z.num_despac
-                 LEFT JOIN satt_faro.tab_despac_destin f ON a.num_despac = f.num_despac, satt_faro.tab_despac_vehige b, satt_faro.tab_genera_tipdes c, satt_faro.tab_genera_ciudad d, satt_faro.tab_genera_ciudad e
-                     WHERE a.cod_tipdes = c.cod_tipdes
-                       AND a.cod_ciuori = d.cod_ciudad
-                       AND a.cod_ciudes = e.cod_ciudad
-                       AND a.num_despac = b.num_despac
-                       AND b.cod_transp =  '860068121'
-                       AND a.fec_llegad IS NULL 
-                       AND a.ind_anulad !=  'A'
-                       AND a.fec_despac BETWEEN  '" . $_AJAX['fec_inicia'] . " 00:00:00' AND '" . $_AJAX['fec_finali'] . " 23:59:59'
-                      group by a.num_despac, f.num_destin
-                      ORDER BY  3 DESC
-                      ) AS w WHERE 1 = 1
-                  GROUP BY w.num_despac";
-
-            $_SESSION["queryXLS"] = $mSql;
-            $list = new DinamicList($this->conexion, $mSql, 3, "no", "DESC");
-            $list->SetClose('no');
-            $list->SetExcel("Excel", "onclick:exportExcel('opcion=3')");
-            $list->SetHeader("Despacho", "field:w.num_despac; type:link; onclick:SetDestinatarios( $(this) )");
-            $list->SetHeader("No. Viaje", "field:w.num_desext");
-            $list->SetHeader("Estado", "field:w.ind_modifi; width:1%", array_merge($this->ind_estado_, $this->ind_estado));
-            $list->SetHeader("Cant. Clientes", "field:w.num_client");
-            $list->SetHeader("Placa", "field:w.num_placax");
-            $list->SetHeader("Manifiesto", "field:w.cod_manifi");
-            $list->SetHeader("Fecha", "field:w.fec_despac");
-            $list->SetHeader("Tipo Despacho", "field:w.nom_tipdes");
-            $list->SetHeader("Origen", "field:w.nom_ciuori");
-            $list->SetHeader("Destino", "field:w.nom_ciudes");
+                        $_SESSION["queryXLS"] = $mSql;
+                        $list = new DinamicList($this->conexion, $mSql, 3, "no", "DESC");
+                        $list->SetClose('no');
+                        $list->SetHeader("Despacho", "field:num_despac; type:link; onclick:SetDestinatarios( $(this) )");
+                        $list->SetHeader("No. Viaje", "field:num_desext"); 
+                        $list->SetHeader("Placa", "field:num_placax");
+                        $list->SetHeader("Manifiesto", "field:cod_manifi");
+                        $list->SetHeader("Fecha", "field:fec_despac");
+                        $list->SetHeader("Tipo Despacho", "field:nom_tipdes");
+                        $list->SetHeader("Origen", "field:nom_ciuori");
+                        $list->SetHeader("Destino", "field:nom_ciudes");
+                break;
             
+            default:
+                        $mSql = "SELECT w.num_despac, w.num_desext, w.ind_modifi, if(w.num_destin = 0, w.num_destin,COUNT(w.num_destin)) AS num_client, w.num_placax, w.cod_manifi, w.fec_despac, w.nom_tipdes, w.nom_ciuori, w.nom_ciudes 
+                               FROM (
+                                SELECT a.num_despac, IF( z.num_desext IS NOT NULL , z.num_desext,  'N/A' ) as num_desext , IF( f.ind_modifi =  '1', 'ACTUALIZADO', 'PENDIENTE' ) as ind_modifi, count(f.num_destin) AS num_destin, b.num_placax, a.cod_manifi, a.fec_despac, c.nom_tipdes, d.nom_ciudad AS nom_ciuori, e.nom_ciudad AS nom_ciudes
+                                  FROM satt_faro.tab_despac_despac a
+                             LEFT JOIN satt_faro.tab_despac_sisext z ON a.num_despac = z.num_despac
+                             LEFT JOIN satt_faro.tab_despac_destin f ON a.num_despac = f.num_despac, satt_faro.tab_despac_vehige b, satt_faro.tab_genera_tipdes c, satt_faro.tab_genera_ciudad d, satt_faro.tab_genera_ciudad e
+                                 WHERE a.cod_tipdes = c.cod_tipdes
+                                   AND a.cod_ciuori = d.cod_ciudad
+                                   AND a.cod_ciudes = e.cod_ciudad
+                                   AND a.num_despac = b.num_despac
+                                   AND b.cod_transp =  '860068121'
+                                   AND a.fec_llegad IS NULL 
+                                   AND a.ind_anulad !=  'A'
+                                   AND a.fec_despac BETWEEN  '" . $_AJAX['fec_inicia'] . " 00:00:00' AND '" . $_AJAX['fec_finali'] . " 23:59:59'
+                                  group by a.num_despac, f.num_destin
+                                  ORDER BY  3 DESC
+                                  ) AS w WHERE 1 = 1
+                              GROUP BY w.num_despac";
+
+                        $_SESSION["queryXLS"] = $mSql;
+                        $list = new DinamicList($this->conexion, $mSql, 3, "no", "DESC");
+                        $list->SetClose('no');
+                        $list->SetExcel("Excel", "onclick:exportExcel('opcion=3')");
+                        $list->SetHeader("Despacho", "field:w.num_despac; type:link; onclick:SetDestinatarios( $(this) )");
+                        $list->SetHeader("No. Viaje", "field:w.num_desext");
+                        $list->SetHeader("Estado", "field:w.ind_modifi; width:1%", array_merge($this->ind_estado_, $this->ind_estado));
+                        $list->SetHeader("Cant. Clientes", "field:w.num_client");
+                        $list->SetHeader("Placa", "field:w.num_placax");
+                        $list->SetHeader("Manifiesto", "field:w.cod_manifi");
+                        $list->SetHeader("Fecha", "field:w.fec_despac");
+                        $list->SetHeader("Tipo Despacho", "field:w.nom_tipdes");
+                        $list->SetHeader("Origen", "field:w.nom_ciuori");
+                        $list->SetHeader("Destino", "field:w.nom_ciudes");
+                break;
         }
-         
- 
-
-
 
         $list->Display($this->conexion);
 

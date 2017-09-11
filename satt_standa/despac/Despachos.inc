@@ -2736,7 +2736,7 @@ class Despachos
                                             for( $j=0; $j<sizeof($mDataDestin); $j++ ){
                                                 $mHtml->Row();
                                                 foreach ($mTittleDestin[1] as $key => $tittle)
-                                                    $mHtml->Label( $mDataDestin[$j][$key],  array("align"=>"left", "class"=>($mDataDestin[$j]['fec_findes']==""?"celda_info":"celda_backgr")) );
+                                                    $mHtml->Label( $mDataDestin[$j][$key],  array("align"=>"left", "class"=>($mDataDestin[$j]['fec_findes']=="" && $mDataDestin[$j]['valida']=='0'?"celda_info":"celda_backgr")) );
 
                                                 array_push($mArrayDestin, $mDataDestin[$i]['num_docume']);
                                                 $mHtml->CloseRow();
@@ -3790,8 +3790,10 @@ class Despachos
         $mSql = "  SELECT a.nom_destin, c.abr_ciudad, a.dir_destin,
                           a.num_destin, CONCAT(a.fec_citdes,' ',a.hor_citdes) AS fec_citdes2,
                           a.num_docume, a.num_docalt, a.cod_genera, UPPER(b.abr_tercer) AS abr_tercer,
-                          IF(a.fec_findes IS NULL,'',a.fec_findes) AS fec_findes 
-                     FROM ".BASE_DATOS.".tab_despac_destin a 
+                          IF(a.fec_findes IS NULL,'',a.fec_findes) AS fec_findes, IF(e.num_consec IS NULL OR e.num_consec = '', 0, e.num_consec) AS valida  
+                     FROM ".BASE_DATOS.".tab_despac_destin a
+                LEFT JOIN ".BASE_DATOS.".tab_cumpli_despac e 
+                       ON a.num_despac = e.num_despac 
                 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer b 
                        ON a.cod_genera = b.cod_tercer 
                 LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad c 

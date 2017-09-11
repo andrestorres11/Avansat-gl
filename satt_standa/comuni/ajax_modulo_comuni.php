@@ -284,7 +284,7 @@ class AjaxModuloComunicaciones
     // --------------------------------------------------
     $mSelect = "SELECT cod_noveda, UPPER( nom_noveda ) AS nom_noveda 
             FROM ".BASE_DATOS.".tab_genera_noveda 
-           WHERE ind_visibl = '1' AND nom_noveda LIKE '%NER /%' 
+           WHERE ind_visibl = '1' AND ind_estado = '1' AND nom_noveda LIKE '%NER /%' 
            ORDER BY 2";
   
   $consulta = new Consulta( $mSelect, $this -> conexion );
@@ -292,7 +292,7 @@ class AjaxModuloComunicaciones
 
     $mSelect = "SELECT cod_noveda, UPPER( nom_noveda ) AS nom_noveda 
             FROM ".BASE_DATOS.".tab_genera_noveda 
-           WHERE ind_visibl = '1' AND 
+           WHERE ind_visibl = '1' AND ind_estado = '1' AND 
                ( nom_noveda LIKE '%NEC /%' OR 
                  nom_noveda LIKE '%NICC /%' )
          ORDER BY 2";
@@ -302,7 +302,7 @@ class AjaxModuloComunicaciones
 
     $mSelect = "SELECT cod_noveda, UPPER( nom_noveda ) AS nom_noveda 
             FROM ".BASE_DATOS.".tab_genera_noveda 
-           WHERE ind_visibl = '1' AND 
+           WHERE ind_visibl = '1' AND ind_estado = '1' AND
                ( nom_noveda LIKE '%NED /%' )
          ORDER BY 2";
   

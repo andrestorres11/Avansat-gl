@@ -1961,7 +1961,7 @@ class InsertNovedad {
 
     private function updateFecAlarma($mDatRegist = null, $mDatNoveda = null, $mDatTransp = null, $mIndEnSiti = false) {
         $mRutPendie = self::getRutaPendiente($mDatRegist['despac'], $mDatRegist['contro'], $mIndEnSiti);
-
+        $mDatDespac = self::getDataBasicDespac($mDatRegist['despac']); #Data basica del despacho
         if (sizeof($mRutPendie) < 1 && $mIndEnSiti == true)
             return '0';
         else {
@@ -1986,14 +1986,14 @@ class InsertNovedad {
                 $mTiempo = 150;
             } elseif (in_array($mDatRegist['noveda'], self::$cCodNoved['1'])) {
                 if ($mDatDespac['cod_tipdes'] == 4)
-                    $mTiempo = 330;
+                    $mTiempo = 220;
                 else
-                    $mTiempo = 460;
+                    $mTiempo = 340;
             }elseif (in_array($mDatRegist['noveda'], self::$cCodNoved['2'])) {
                 if ($mDatDespac['cod_tipdes'] == 4)
-                    $mTiempo = 340;
+                    $mTiempo = 220;
                 else
-                    $mTiempo = 460;
+                    $mTiempo = 340;
             }elseif (in_array($mDatRegist['noveda'], self::$cCodNoved['6'])) {
                 $mTiempo = 210;
             } else {
@@ -3063,6 +3063,9 @@ class InsertNovedad {
                 else
                     $tmpl_file = '../' . DIR_APLICA_CENTRAL . '/planti/' . $plantilla;
 
+                if(!file_exists($tmpl_file)){
+                    $tmpl_file = '/var/www/html/ap/'.DIR_APLICA_CENTRAL.'/planti/' . $plantilla;
+                }
                 $thefile = implode("", file($tmpl_file));
                 $thefile = addslashes($thefile);
                 $thefile = "\$r_file=\"" . $thefile . "\";";
