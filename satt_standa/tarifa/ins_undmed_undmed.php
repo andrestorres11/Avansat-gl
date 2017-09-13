@@ -162,11 +162,21 @@ class unidadMedida
       $list = new DinamicList(self::$cConexion, $sql, "1", "no", 'ASC');
       $list->SetClose('no');
       $list->SetCreate("Nueva Unidad de medida", "onclick:NewUnidadMedida( 0, null )");
-      $list->SetHeader("Codigo", "field:a.cod_empaqu; width:1%;type:link; onclick:NewUnidadMedida( 1, $(this) )");
+      //$list->SetHeader("Codigo", "field:a.cod_empaqu; width:1%;type:link; onclick:NewUnidadMedida( 1, $(this) )");
+      $list->SetHeader("Codigo", "field:a.cod_empaqu; width:1%");
       $list->SetHeader("Nombre", "field:a.nom_empaqu; width:1%");
       $list->SetHeader("Codigo ministerio", "field:a.cod_minemp; width:1%");
       $list->SetHeader("Estado", "field:a.ltr_estado; width:1%");
-      $list->SetOption("Opciones", "onclikEdit:NewUnidadMedida( 1, $(this) );onclikDisable:CambioEstado( $(this) );onclikEnable:CambioEstado( $(this) )");
+      #validacion para opcion de editar por perfiles.
+      switch ($_SESSION['datos_usuario']['cod_perfil']) {
+        case '1':
+          $list->SetOption("Opciones", "onclikEdit:NewUnidadMedida( 1, $(this) );onclikDisable:CambioEstado( $(this) );onclikEnable:CambioEstado( $(this) )");
+          break;
+        
+        default:
+          $list->SetOption("Opciones", "onclikDisable:CambioEstado( $(this) );onclikEnable:CambioEstado( $(this) )");
+          break;
+      }
       $list->SetHidden("cod_empaqu", "cod_empaqu");
       $list->SetHidden("ind_activa", "ind_activa");
       $list->Display(self::$cConexion);
