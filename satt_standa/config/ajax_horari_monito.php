@@ -309,39 +309,82 @@ class ajax_horari_monito {
             die;
         }
 
-        $sql = "SELECT x.*
-        		  FROM (
-        		  		SELECT b.cod_tercer, b.abr_tercer, count(DISTINCT(c.num_despac)) despac, 
-				               a.cod_grupox, a.cod_priori, e.nom_grupox, a.ind_segprc, a.ind_segcar, a.ind_segdes, a.ind_segtra
-						    FROM (
-                                    SELECT
-                                        a.*
-                                    FROM 
-                                    ".BASE_DATOS.".tab_transp_tipser a INNER JOIN 
-                                    (
-                                        SELECT MAX(num_consec) AS num_consec, b.cod_transp 
-                                        FROM ".BASE_DATOS.".tab_transp_tipser b GROUP BY b.cod_transp 
-                                    ) b ON a.num_consec = b.num_consec AND a.cod_transp = b.cod_transp
+        $sql = "SELECT * 
+                    FROM
+                    (
+                        (
+                            SELECT x.*
+                                  FROM (
+                                        SELECT b.cod_tercer, b.abr_tercer, count(DISTINCT(c.num_despac)) despac, 
+                                               a.cod_grupox, a.cod_priori, e.nom_grupox, a.ind_segprc, a.ind_segcar, a.ind_segdes, a.ind_segtra
+                                            FROM (
+                                                    SELECT
+                                                        a.*
+                                                    FROM 
+                                                    ".BASE_DATOS.".tab_transp_tipser a INNER JOIN 
+                                                    (
+                                                        SELECT MAX(num_consec) AS num_consec, b.cod_transp 
+                                                        FROM ".BASE_DATOS.".tab_transp_tipser b GROUP BY b.cod_transp 
+                                                    ) b ON a.num_consec = b.num_consec AND a.cod_transp = b.cod_transp
 
-                                ) a 
-						    INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b ON b.cod_tercer = a.cod_transp 
-						     LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer AND c.num_despac NOT IN (  SELECT e.num_despac FROM satt_faro.tab_despac_noveda e WHERE e.cod_contro = 9999  )
-						     LEFT JOIN " . BASE_DATOS . ".tab_despac_despac d ON d.num_despac = c.num_despac 
-						    INNER JOIN " . BASE_DATOS . ".tab_callce_grupox e ON e.cod_grupox = a.cod_grupox
-						         WHERE a.fec_iniser <= '$datos->fec_inicio'  AND fec_finser >= '$datos->fec_finali'
-                                   AND a.ind_estado = 1  
-						           AND b.cod_estado = 1  
-						           AND d.fec_salida IS NOT NULL 
-						           AND d.fec_salida <= NOW() 
-						           AND (d.fec_llegad IS NULL OR d.fec_llegad = '0000-00-00 00:00:00')
-						           AND d.ind_planru = 'S' 
-						           AND d.ind_anulad = 'R'
-						           AND c.ind_activo = 'S' 
-						           AND a.cod_grupox = $cod_grupox
-                                       ".( $listTransp == null ? "" : " AND a.cod_transp IN ($listTransp) " )."
-		      				  GROUP BY b.cod_tercer
-        		       ) x
-        	  ORDER BY x.cod_priori ASC, x.despac DESC";
+                                                ) a 
+                                            INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b ON b.cod_tercer = a.cod_transp 
+                                             LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer AND c.num_despac NOT IN (  SELECT e.num_despac FROM satt_faro.tab_despac_noveda e WHERE e.cod_contro = 9999  )
+                                             LEFT JOIN " . BASE_DATOS . ".tab_despac_despac d ON d.num_despac = c.num_despac 
+                                            INNER JOIN " . BASE_DATOS . ".tab_callce_grupox e ON e.cod_grupox = a.cod_grupox
+                                                 WHERE a.fec_iniser <= '$datos->fec_inicio'  AND fec_finser >= '$datos->fec_finali'
+                                                   AND a.ind_estado = 1  
+                                                   AND b.cod_estado = 1  
+                                                   AND d.fec_salida IS NOT NULL 
+                                                   AND d.fec_salida <= NOW() 
+                                                   AND (d.fec_llegad IS NULL OR d.fec_llegad = '0000-00-00 00:00:00')
+                                                   AND d.ind_planru = 'S' 
+                                                   AND d.ind_anulad = 'R'
+                                                   AND c.ind_activo = 'S' 
+                                                   AND a.cod_grupox = $cod_grupox
+                                                       ".( $listTransp == null ? "" : " AND a.cod_transp IN ($listTransp) " )."
+                                              GROUP BY b.cod_tercer
+                                       ) x
+                              ORDER BY x.cod_priori ASC, x.despac DESC
+                        )
+                        UNION ALL
+                        (
+                            SELECT x.*
+                                  FROM (
+                                        SELECT b.cod_tercer, b.abr_tercer, '0' AS despac, 
+                                               a.cod_grupox, a.cod_priori, e.nom_grupox, a.ind_segprc, a.ind_segcar, a.ind_segdes, a.ind_segtra
+                                            FROM (
+                                                    SELECT
+                                                        a.*
+                                                    FROM 
+                                                    ".BASE_DATOS.".tab_transp_tipser a INNER JOIN 
+                                                    (
+                                                        SELECT MAX(num_consec) AS num_consec, b.cod_transp 
+                                                        FROM ".BASE_DATOS.".tab_transp_tipser b GROUP BY b.cod_transp 
+                                                    ) b ON a.num_consec = b.num_consec AND a.cod_transp = b.cod_transp
+
+                                                ) a 
+                                            INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b ON b.cod_tercer = a.cod_transp 
+                                             LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer AND c.num_despac NOT IN (  SELECT e.num_despac FROM satt_faro.tab_despac_noveda e WHERE e.cod_contro = 9999  )
+                                             LEFT JOIN " . BASE_DATOS . ".tab_despac_despac d ON d.num_despac = c.num_despac 
+                                            INNER JOIN " . BASE_DATOS . ".tab_callce_grupox e ON e.cod_grupox = a.cod_grupox
+                                                 WHERE a.fec_iniser <= '$datos->fec_inicio'  AND fec_finser >= '$datos->fec_finali'
+                                                   AND a.ind_estado = 1  
+                                                   AND b.cod_estado = 1  
+                                                   AND d.fec_salida IS NOT NULL 
+                                                   AND d.fec_salida <= NOW() 
+                                                   AND d.ind_planru = 'S' 
+                                                   AND d.ind_anulad = 'R'
+                                                   AND c.ind_activo = 'S' 
+                                                   AND a.cod_grupox = $cod_grupox
+                                                       ".( $listTransp == null ? "" : " AND a.cod_transp IN ($listTransp) " )."
+                                              GROUP BY b.cod_tercer
+                                       ) x
+                              ORDER BY x.cod_priori ASC, x.despac DESC
+                        )
+                    ) xx GROUP BY xx.cod_tercer
+                ";
+
         $consulta = new Consulta($sql, self::$cConexion);
 
         return $consulta->ret_matrix('a');
