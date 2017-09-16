@@ -1,0 +1,271 @@
+@import url('//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css') screen;
+@import url('//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css') screen;
+body { padding-bottom: 70px; }
+.inf_solici_solici {
+	text-align: left;
+	text-align: -webkit-left;
+}
+.inf_solici_solici > div {
+	min-width: 779px; 
+	width: 100%;
+}
+#tabs {
+	width: 100%;
+	min-height: 30em;
+	height: calc(100% - 300px);
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+#tabs div form {
+	display: none;
+}
+.hide{
+	display: none;
+}
+.show{
+	display: block;
+}
+label.radio-inline span {
+	margin-left: 10px;
+}
+.form-group .actions input {
+    margin-right: 10px;
+}
+.form-inline label{
+	margin-right: 10px;
+}
+div.required,
+span.required,
+label.required{
+	color:red;
+}
+file.required,
+select.required,
+textarea.required,
+input.required{
+	border:1px solid red;
+	color:red;
+}
+
+table.indicador,
+table.indicador-detallado,
+table.indicador-detallado2
+{
+	text-align: center;
+	width:100%;
+	width:calc(100% + 60px);
+	border:1px solid black;
+}
+table.indicador-respuesta td,
+table.bitacora td{
+	width:25%;
+}
+table.indicador th,
+table.indicador-detallado th,
+table.indicador-detallado2 th,
+table.bitacora th
+{
+	text-align: center;
+	background:green;
+	color:white;
+	height: 32px;
+	padding: 3px;
+}
+table.indicador td,
+table.indicador-detallado td,
+table.indicador-detallado2 td,
+table.bitacora td
+{
+	text-align: center;
+	color:black;
+	height: 32px;
+	padding: 3px;
+}
+table.indicador-respuesta
+{
+	width:100%;
+	border:1px solid black;
+}
+table.indicador-respuesta td
+{
+	color:black;
+	height: 32px;
+	padding: 3px;
+}
+.link{
+	cursor: pointer;
+}
+a.ui-tabs-anchor{
+	cursor: pointer!important;
+}
+.inf_solici_solici td.title
+{
+	background:green;
+	color:white;
+	width:100%;
+}
+.inf_solici_solici tr.title1 th,
+.inf_solici_solici tr.title1 td
+{
+	background:darkgreen;
+	color:white;
+	width: 100%;
+}
+.inf_solici_solici tr.title2 th,
+.inf_solici_solici tr.title2 td
+{
+	background:green;
+	color:white;
+}
+.text-align-center{
+	text-align: center;
+}
+.text-align-left{
+	text-align: left;
+}
+.text-align-right{
+	text-align: right;
+}
+.solici_emergente{
+	position: fixed;
+    top: 0px;
+    left: 16px;
+    bottom: 0px;
+    z-index: 300;
+    background: green;
+    color: black;
+    border: 1px solid green;
+    padding: 30px;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.solici_emergente > table{
+	background: white;
+    color: black;
+}
+.solici_emergente_alert{
+	position: fixed;
+    top: 0px;
+    left: 14px;
+    right: 13px;
+    z-index: 401;
+    color: black;
+    padding: 30px;
+}
+
+
+/**********************************/
+/************* filtro *************/
+
+	.wrapFilter {
+		width:100%;
+		text-align: left;
+    }
+    .wrapFilter .filterform {
+		width:100%;
+		font-size:12px;
+		display:block;
+    }
+    .wrapFilter .filterinput{
+    	width: 100px;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .wrapFilter .list.level0{
+    	/*border-radius: 3px 3px 3px 3px;
+		-moz-border-radius: 3px 3px 3px 3px;
+		-webkit-border-radius: 3px 3px 3px 3px;
+    	border: 1px dashed silver;*/
+    	border: none;
+	    color: #002233;
+	    background: #fefefe;
+	    word-wrap: normal;
+	    /*width: 100%;
+	    width: calc(100% - 0px);*/
+	    min-height: 32px;
+    	max-height: 62px;
+    	overflow-x: hidden;
+    	overflow-y: auto;
+	    display: inline-block;
+	    padding: 0px;
+	    display: none;
+	    float: left;
+	}
+	.wrapFilter .list.level0.simple{
+		overflow-x: hidden;
+    	overflow-y: hidden;
+    	border: none;
+    	height: 32px;
+    	background: none;
+    	margin: 0px;
+    	padding: 0px;
+	}
+    .wrapFilter .list.level1{
+    	background: #fff;
+    	min-width: 150px;
+    	width: 200px;
+    	min-height: 50px;
+    	max-height: 150px;
+    	overflow-x: hidden;
+    	overflow-y: auto;
+    	display: inline;
+    	display: inline-block;
+    	margin-top: 34px;
+    	padding: 0px;
+    	border: 1px solid #ccc;
+    	display: none;
+    	position: absolute;
+    	z-index: 300;
+    }
+    .wrapFilter .list.level0 li{
+    	border-radius: 3px 3px 3px 3px;
+		-moz-border-radius: 3px 3px 3px 3px;
+		-webkit-border-radius: 3px 3px 3px 3px;
+		border: 0px solid #000000;
+    	margin-right: 20px;
+	    font-style: italic;
+	    cursor: pointer;
+    	display: inline;
+    	display: inline-block;
+    	list-style-type: none;
+    	margin-right: 3px;
+    	padding: 9px;
+    	border:1px solid #ccc;
+    	background: #fff;
+    	color: #000;
+    }
+    .wrapFilter .list.level0.simple li{
+    	padding: 5px;
+    }
+    .wrapFilter .list.level1 li{
+    	cursor: pointer;
+    	display: inline;
+    	display: inline-block;
+    	list-style-type: none;
+    	margin: 0px;
+    	padding: 3px;
+    	border:none;
+    	background: #fefefe;
+    	color: #000;
+    }
+    .wrapFilter .hide{
+    	display: none;
+    }
+    .wrapFilter .show{
+    	display: block;
+    } 
+
+/************* filtro *************/
+/**********************************/
+
+
+/*icono excel*/
+#tabs .excel{
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    background: url(https://dev.intrared.net:8083/ap/satt_standa/images/excel_logo.png);
+    z-index: 10;
+    float: right;
+    background-size: 30px;
+}

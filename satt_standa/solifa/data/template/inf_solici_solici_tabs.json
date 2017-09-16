@@ -1,0 +1,119 @@
+{
+    "tag": "div", 
+    "id": "tabs", 
+    "children": [
+        {
+            "tag": "ul", 
+            "children": [
+                {
+                    "tag": "li", 
+                    "children": [
+                        {
+                            "tag": "a", 
+                            "href": "#tabs-1", 
+                            "html": "General"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "li", 
+                    "children": [
+                        {
+                            "tag": "a", 
+                            "href": "#tabs-2", 
+                            "html": "Gestionadas"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "li", 
+                    "children": [
+                        {
+                            "tag": "a", 
+                            "href": "#tabs-3", 
+                            "html": "En Proceso"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "li", 
+                    "children": [
+                        {
+                            "tag": "a", 
+                            "href": "#tabs-4", 
+                            "html": "Por Gestionar"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "id": "tabs-1", 
+            "children": [
+                {
+                    "tag": "h4", 
+                    "class": "loading help-block", 
+                    "html": "Cargando..."
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs_1", 
+                    "html": "", 
+                    "source": "data/template/inf_solici_solici_tabs_1.json"
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "id": "tabs-2", 
+            "children": [
+                {
+                    "tag": "h4", 
+                    "class": "loading help-block", 
+                    "html": "Cargando..."
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs_2", 
+                    "html": "", 
+                    "source": "data/template/inf_solici_solici_tabs_2.json"
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "id": "tabs-3", 
+            "children": [
+                {
+                    "tag": "h4", 
+                    "class": "loading help-block", 
+                    "html": "Cargando..."
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs_3", 
+                    "html": "", 
+                    "source": "data/template/inf_solici_solici_tabs_3.json"
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "id": "tabs-4", 
+            "children": [
+                {
+                    "tag": "h4", 
+                    "class": "loading help-block", 
+                    "html": "Cargando..."
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs_4", 
+                    "html": "", 
+                    "source": "data/template/inf_solici_solici_tabs_4.json"
+                }
+            ]
+        }
+    ]
+}

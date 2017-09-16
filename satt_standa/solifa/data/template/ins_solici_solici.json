@@ -1,0 +1,32 @@
+{
+    "tag": "div", 
+    "class": "form-group col-xs-12 col-md-12", 
+    "children": [
+        {
+            "tag": "h4", 
+            "html": "Datos básicos"
+        }, 
+        {
+            "tag": "div", 
+            "class": "template_user", 
+            "html": "", 
+            "source": "data/template/ins_solici_solici_user.json"
+        }, 
+        {
+            "tag": "div", 
+            "class": "form-vertical", 
+            "children": [
+                {
+                    "tag": "h5", 
+                    "html": "Seleccione el tipo de solicitud que va a realizar:"
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs", 
+                    "html": "", 
+                    "source": "data/template/ins_solici_solici_tabs.json"
+                }
+            ]
+        }
+    ]
+}

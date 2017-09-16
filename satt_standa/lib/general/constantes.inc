@@ -122,6 +122,12 @@ define( 'USR_LOGSPG' , 'usr_seguim_empres' );
 define( 'PWD_LOGSPG' , '7f403c30fc28639297d4d7d63d3397ec' );
 define( 'URL_INTERF_SPG_MODULES' ,'https://avansatgl.intrared.net/ap/interf/app/ws_panel/ws_panel.php?wsdl');
 
+//Constante Interfaz con FARO
+#define("URL_INTERF_FAROXX", "https://web10.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl");
+#define("URL_INTERF_FAROXX", "https://54.215.8.158/ap/interf/app/faro/wsdl/faro.wsdl");
+define("URL_INTERF_FAROXX", "https://dev.intrared.net:8083/ap/interf/app/faro/wsdl/faro.wsdl");
+define("USR_INTERF_FAROXX", "SOPORTE");
+define("PWD_INTERF_FAROXX", "ifx2016");
 
 
 

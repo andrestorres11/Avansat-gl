@@ -1,0 +1,24 @@
+{
+    "tag": "div", 
+    "class": "form-group col-xs-12 col-md-12", 
+    "children": [
+        {
+            "tag": "div", 
+            "class": "template_filtro", 
+            "html": "", 
+            "source": "data/template/inf_solici_solici_filtro.json"
+        }, 
+        {
+            "tag": "div", 
+            "class": "form-vertical", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "template_tabs", 
+                    "html": "", 
+                    "source": "data/template/inf_solici_solici_tabs.json"
+                }
+            ]
+        }
+    ]
+}

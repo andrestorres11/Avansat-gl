@@ -1,0 +1,128 @@
+{
+    "tag": "form", 
+    "class": "form-horizontal", 
+    "children": [
+        {
+            "tag": "div", 
+            "class": "form-group hide alert alert-warning",
+            "html": ""
+        },
+        {
+            "tag": "div", 
+            "class": "form-group", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "form-group col-xs-12 col-md-12 reply", 
+                    "children": [
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-5 col-md-3", 
+                            "children": [
+                                {
+                                    "tag": "label", 
+                                    "html": "Origen"
+                                }, 
+                                {
+                                    "tag": "select", 
+                                    "name": "origen", 
+                                    "required": "required", 
+                                    "class": "form-control control-origen", 
+                                    "html": ""
+                                }
+                            ]
+                        }, 
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-5 col-md-3", 
+                            "children": [
+                                {
+                                    "tag": "label", 
+                                    "html": "Destino"
+                                }, 
+                                {
+                                    "tag": "select", 
+                                    "name": "destino", 
+                                    "required": "required", 
+                                    "class": "form-control control-destino", 
+                                    "html": ""
+                                }
+                            ]
+                        }, 
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-2 col-md-3", 
+                            "children": [
+                                {
+                                    "tag": "label", 
+                                    "html": "Via"
+                                }, 
+                                {
+                                    "tag": "input",
+                                    "type": "text",
+                                    "name": "via", 
+                                    "required": "required", 
+                                    "placeholder": "Digite la via", 
+                                    "class": "form-control control-via", 
+                                    "html": ""
+                                },
+
+                                {
+                                    "tag": "span", 
+                                    "class": "hide", 
+                                    "style": "position: absolute;right: 15px;top: 17px;",
+                                    "children": [
+                                        {
+                                            "tag": "a", 
+                                            "class": "btn btn-default remove", 
+                                            "href": "#", 
+                                            "role": "button", 
+                                            "html": "X"
+                                        }
+                                    ]
+                                }
+
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "class": "form-group col-xs-12 col-md-12 col-sm-12", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "actions center-block text-center m-x-auto", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "add", 
+                            "value": "Agregar otra", 
+                            "html": ""
+                        }, 
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "send", 
+                            "value": "Enviar", 
+                            "html": ""
+                        }, 
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "cancel", 
+                            "value": "Cancelar", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
