@@ -371,11 +371,11 @@ class ajax_horari_monito {
                                                  WHERE a.fec_iniser <= '$datos->fec_inicio'  AND fec_finser >= '$datos->fec_finali'
                                                    AND a.ind_estado = 1  
                                                    AND b.cod_estado = 1  
-                                                   AND d.fec_salida IS NOT NULL 
+                                                   /*AND d.fec_salida IS NOT NULL 
                                                    AND d.fec_salida <= NOW() 
                                                    AND d.ind_planru = 'S' 
                                                    AND d.ind_anulad = 'R'
-                                                   AND c.ind_activo = 'S' 
+                                                   AND c.ind_activo = 'S'*/ 
                                                    AND a.cod_grupox = $cod_grupox
                                                        ".( $listTransp == null ? "" : " AND a.cod_transp IN ($listTransp) " )."
                                               GROUP BY b.cod_tercer
