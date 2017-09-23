@@ -20,7 +20,7 @@ class InterfSolicitud {
 	function __load(){
 		//ob_start();
 		$this->getGlobalConfig();
-		$this->getNusoap();
+		//$this->getNusoap();
 		$this->getService();
 		//ob_clean();
 		//$this->getServiceTest($this->wsdl_url);
@@ -81,7 +81,7 @@ class InterfSolicitud {
 		//$consulta = new Consulta( $sql, $this->conexion );
 
 		$params=array("arr_datsol"=>$arr_datsol, "arr_rutsol"=>$arr_rutsol);
-		$this->setFnService("setSoliciRuta",$params);
+		$responseWS = $this->setFnService("setSoliciRuta",$params);
 	}
 	function setSoliciSegimientoEspecial($arr_datsol,$ind_segesp,$fec_iniseg,$fec_finseg,$lis_placax,$obs_solici){
 		/*echo "InterfSolicitud > setSoliciSegimientoEspecial > ";
@@ -184,12 +184,23 @@ class InterfSolicitud {
 	}
 
 	function getService(){
-		$this->client = new nusoap_client($this->wsdl_url,true);
+		try
+		{
+			#llamado SoapClient Nativo
+			$this->client = new SoapClient($this->wsdl_url, array( "encoding" => "utf8"));
+		}
+		catch(soapFault $fault)
+		{
+			echo "<h2>Constructor error</h2><pre>";print_r($fault);echo "</pre>";
+			//echo "<h2>Constructor error</h2><pre>" . $fault . "</pre>";
+		    exit;
+		}
+		/*$this->client = new nusoap_client($this->wsdl_url,true);
 		$error = $this->client->getError();
 		if ($error) {
 		    echo "<h2>Constructor error</h2><pre>" . $error . "</pre>";
 		    exit;
-		}
+		}*/
 	}
 
 	function getResult(){
@@ -197,38 +208,48 @@ class InterfSolicitud {
 	}
 
 	function setFnService($fn,$params){
-		if(isset($params)){
-			$this->result = $this->client->call($fn,$params);
-		}else{
-			$this->result = $this->client->call($fn);
-		}
-		$this->__request = htmlspecialchars($this->client->request, ENT_QUOTES);
-		$this->__response = htmlspecialchars($this->client->response, ENT_QUOTES);
-		$this->__debug = htmlspecialchars($this->client->getDebug(), ENT_QUOTES);
-		//$this->__cacheDebug = htmlspecialchars($this->cache->getDebug(), ENT_QUOTES);
-		
-		$this->__wsLastRqRp=array();
-		$this->__wsLastRqRp["response"]=$this->result;
-		$this->__wsLastRqRp["ws"]=array();
-		$this->__wsLastRqRp["ws"]["set"]=array();
-		$this->__wsLastRqRp["ws"]["get"]=array();
-		$this->__wsLastRqRp["ws"]["set"]["fn"]=$fn;
-		$this->__wsLastRqRp["ws"]["set"]["params"]=$params;
-		$this->__wsLastRqRp["ws"]["set"]["request"]=$this->__request;
-		$this->__wsLastRqRp["ws"]["get"]["response"]=$this->__response;
-		$this->__wsLastRqRp["ws"]["get"]["error"]=null;
-		$this->__wsLastRqRp["ws"]["get"]["fault"]=null;
-		$this->__wsLastRqRp["ws"]["status"]="success";
-		$this->__wsLastRqRp["ws"]["time"]=date("Y-m-d H:i:s",time());
-
-		if($this->getFnServiceException()){
-			array_push($this->__result,$this->__wsLastRqRp);
-		}else{
-			if($this->developer_mode==true){
+		try
+		{
+			if(isset($params)){
+				$this->result = $this->client->__soapCall($fn,$params);
+			}else{
+				$this->result = $this->client->__soapCall($fn);
+			}
+			$this->__request = htmlspecialchars($this->client->__getLastRequest(), ENT_QUOTES);
+			$this->__response = htmlspecialchars($this->client->__getLastResponse(), ENT_QUOTES);
+			//$this->__debug = htmlspecialchars($this->client->getDebug(), ENT_QUOTES);
+			//$this->__cacheDebug = htmlspecialchars($this->cache->getDebug(), ENT_QUOTES);
+			
+			$this->__wsLastRqRp=array();
+			$this->__wsLastRqRp["response"]=$this->result;
+			$this->__wsLastRqRp["ws"]=array();
+			$this->__wsLastRqRp["ws"]["set"]=array();
+			$this->__wsLastRqRp["ws"]["get"]=array();
+			$this->__wsLastRqRp["ws"]["set"]["fn"]=$fn;
+			$this->__wsLastRqRp["ws"]["set"]["params"]=$params;
+			$this->__wsLastRqRp["ws"]["set"]["request"]=$this->__request;
+			$this->__wsLastRqRp["ws"]["get"]["response"]=$this->__response;
+			$this->__wsLastRqRp["ws"]["get"]["error"]=null;
+			$this->__wsLastRqRp["ws"]["get"]["fault"]=null;
+			$this->__wsLastRqRp["ws"]["status"]="success";
+			$this->__wsLastRqRp["ws"]["time"]=date("Y-m-d H:i:s",time());
+			array_push($this->__result,array("response"=>$this->__wsLastRqRp["response"]));
+			/*if($this->getFnServiceException()){
 				array_push($this->__result,$this->__wsLastRqRp);
 			}else{
-				array_push($this->__result,array("response"=>$this->__wsLastRqRp["response"]));
-			}
+				if($this->developer_mode==true){
+					array_push($this->__result,$this->__wsLastRqRp);
+				}else{
+					array_push($this->__result,array("response"=>$this->__wsLastRqRp["response"]));
+				}
+			}*/
+		}
+		catch (soapFault $fault)
+		{
+			echo "<pre>";print_r($fault);echo "</pre>";
+			//array_push($this->__result,array("response"=>$fault->message()));
+			$this->__wsLastRqRp["ws"]["db"]=array();
+			$this->__wsLastRqRp["ws"]["db"]["tab_errorx_solici"]=true;
 		}
 	}
 

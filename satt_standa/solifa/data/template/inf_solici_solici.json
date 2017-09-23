@@ -4,7 +4,8 @@
     "children": [
         {
             "tag": "div", 
-            "class": "template_filtro", 
+            "class": "template_filtro ui-tabs ui-corner-all ui-widget ui-widget-content",
+            "style": "height: 250px;", 
             "html": "", 
             "source": "data/template/inf_solici_solici_filtro.json"
         }, 

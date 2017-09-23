@@ -95,6 +95,7 @@ function r(){
 				//$("#tabs ul li a").unbind("click");
 				$("#tabs ul li a").bind("click",tab_load_content);
 				$("#tabs ul li a")[0].click();
+				$("#ui-datepicker-div").css("display","none");
 			}catch(e){}
 		}
 		function setWsData(tabid,objToSend){
@@ -495,7 +496,7 @@ function r(){
 					currTab.find("table.indicador").find("tr").each(function(i,v){
 						if(i==0){
 							var str="Indicador de solicitudes del periodo "+filter1.fec_inifil+" al "+filter1.fec_finfil+"";
-							var td=$(this).find("th").html(str);
+							var td=$(this).find("th").html(str.toUpperCase());
 						}
 						if(data==null || typeof data == "string"){
 							data={"count":0,"estado1":0,"estado2":0,"estado3":0};
@@ -1314,7 +1315,7 @@ function r(){
 			if(typeof obj == "object" && obj.tag!=undefined){
 					var el = document.createElement(obj.tag);
 					el=$(el);
-					el.html(obj.html);
+					el.html(obj.html && obj.html != '&nbsp;'?obj.html.toUpperCase():obj.html);
 					addProperties(el,obj);
 					if(obj.children!=undefined){
 						for(var i=0; i<obj.children.length; i++){
@@ -1331,7 +1332,7 @@ function r(){
 						var obj2=obj[i];
 						var el = document.createElement(obj2.tag);
 						el=$(el);
-						el.html(obj2.html);
+						el.html(obj2.html && obj.html != '&nbsp;'?obj2.html.toUpperCase():obj2.html);
 						addProperties(el,obj2);
 						if(obj2.children!=undefined){
 							for(var i=0; i<obj2.children.length; i++){

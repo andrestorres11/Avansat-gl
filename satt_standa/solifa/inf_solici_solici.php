@@ -1023,10 +1023,10 @@ EOF;
 				$msg.="".utf8_encode($d["nom_subtip"]).", ";
 			}
 			if(!empty($d["cod_ciuori"])){
-				$msg.="Origen: ".$d["cod_ciuori"].", ";
+				$msg.="Origen: ".$this->getNombreCiudad($d["cod_ciuori"])[0]['nom_ciudad']." (".$d["cod_ciuori"]."), ";
 			}
 			if(!empty($d["cod_ciudes"])){
-				$msg.="Destino: ".$d["cod_ciudes"].", ";
+				$msg.="Destino: ".$this->getNombreCiudad($d["cod_ciudes"])[0]['nom_ciudad']." (".$d["cod_ciudes"]."), ";
 			}
 			if(!empty($d["nom_viaxxx"]) && !$isFull){
 				$msg.="V&iacute;a: ".$d["nom_viaxxx"].", ";
@@ -1267,6 +1267,12 @@ EOF;
 	    $msg = str_replace("ü","&uuml;",  $msg);
 	    $msg = str_replace("Ü","&Uuml;",  $msg);
 	    return $msg;
+	}
+
+	function getNombreCiudad($cod_ciudad){
+		$sql='SELECT a.nom_ciudad FROM tab_genera_ciudad a WHERE cod_ciudad="'.$cod_ciudad.'"';
+		$consulta = new Consulta( $sql, $this->conexion );
+		return $datos = $consulta->ret_matrix( 'a' );
 	}
 }
 

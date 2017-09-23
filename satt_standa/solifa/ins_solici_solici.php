@@ -43,7 +43,6 @@ class Solici_solici
 		if(defined("DIR_APLICA_CENTRAL")){
 			$file="../".DIR_APLICA_CENTRAL."/lib/general/constantes.inc";
 			$file2="../".DIR_APLICA_CENTRAL."/lib/ajax.inc";
-			echo '<script type="text/javascript" src="../'.DIR_APLICA_CENTRAL.'/js/jquery17.js"></script>';
 		}else{
 			$file="../lib/general/constantes.inc";
 			$file2="../lib/ajax.inc";
@@ -418,6 +417,7 @@ EOF;
 				'</script>';
 	      		echo '<link rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/estilos/mod_solici_solici.css">';
 				echo '<div class="ins_solici_solici">Cargando...'.$js.'</div>';
+				echo '<script type="text/javascript" src="../'.DIR_APLICA_CENTRAL.'/js/jquery17.js"></script>';
 				$formulario->cerrar();
 
 			}else{
@@ -441,6 +441,7 @@ EOF;
 					$this->arr_datsol["mai_solici"]=$this->raw->solici->mai_solici;
 					$this->arr_datsol["fij_solici"]=$this->raw->solici->fij_solici;
 					$this->arr_datsol["cel_solici"]=$this->raw->solici->cel_solici;
+					$this->arr_datsol["cod_usrsol"]=NULL;
 					foreach ($this->raw->rutaxx as $id => $obj) {
 						$this->InterfSolicitud->setSoliciRuta(
 							$this->arr_datsol,
@@ -469,6 +470,7 @@ EOF;
 				$this->arr_datsol["mai_solici"]=$this->raw->solici->mai_solici;
 				$this->arr_datsol["fij_solici"]=$this->raw->solici->fij_solici;
 				$this->arr_datsol["cel_solici"]=$this->raw->solici->cel_solici;
+				$this->arr_datsol["cod_usrsol"]=NULL;
 				settype($this->raw->ind_segesp,"integer");
 				$this->InterfSolicitud->setSoliciSegimientoEspecial(
 					$this->arr_datsol,
@@ -497,6 +499,7 @@ EOF;
 				$this->arr_datsol["mai_solici"]=$this->raw->solici->mai_solici;
 				$this->arr_datsol["fij_solici"]=$this->raw->solici->fij_solici;
 				$this->arr_datsol["cel_solici"]=$this->raw->solici->cel_solici;
+				$this->arr_datsol["cod_usrsol"]=NULL;
 				settype($this->raw->ind_pqrsxx,"integer");
 				$this->InterfSolicitud->setSoliciPQR(
 					$this->arr_datsol,
@@ -530,7 +533,8 @@ EOF;
 				$this->arr_datsol["nom_solici"]=$this->raw->solici->nom_solici;
 				$this->arr_datsol["mai_solici"]=$this->raw->solici->mai_solici;
 				$this->arr_datsol["fij_solici"]=$this->raw->solici->fij_solici;
-				$this->arr_datsol["cel_solici"]=$this->raw->solici->cel_solici;							
+				$this->arr_datsol["cel_solici"]=$this->raw->solici->cel_solici;
+				$this->arr_datsol["cod_usrsol"]=NULL;							
 				$this->InterfSolicitud->setSoliciOtros(
 					$this->arr_datsol,
 					$this->raw->nom_otroxx,	

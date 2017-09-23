@@ -49,7 +49,8 @@
         }, 
         {
             "tag": "div", 
-            "id": "tabs-1", 
+            "id": "tabs-1",
+            "style": "background-color: #EBF8E2;display: block;padding: 20px 20px 50px 50px;color: black;margin: 30px;", 
             "children": [
                 {
                     "tag": "h4", 
@@ -66,7 +67,8 @@
         }, 
         {
             "tag": "div", 
-            "id": "tabs-2", 
+            "id": "tabs-2",
+            "style": "background-color: #EBF8E2;display: block;padding: 20px 20px 50px 50px;color: black;margin: 30px;", 
             "children": [
                 {
                     "tag": "h4", 
@@ -83,7 +85,8 @@
         }, 
         {
             "tag": "div", 
-            "id": "tabs-3", 
+            "id": "tabs-3",
+            "style": "background-color: #EBF8E2;display: block;padding: 20px 20px 50px 50px;color: black;margin: 30px;", 
             "children": [
                 {
                     "tag": "h4", 
@@ -100,7 +103,8 @@
         }, 
         {
             "tag": "div", 
-            "id": "tabs-4", 
+            "id": "tabs-4",
+            "style": "background-color: #EBF8E2;display: block;padding: 20px 20px 50px 50px;color: black;margin: 30px;", 
             "children": [
                 {
                     "tag": "h4", 

@@ -1,61 +1,62 @@
-{
-    "tag": "form", 
-    "class": "form-vertical solici", 
+{   
+    "tag": "div", 
+    "class": "contNew", 
+    "style": "margin-right: 30px;height: 200px;margin-left: 30px;background-color: #EBF8E2;padding: 10px 30px 10px 30px;color: black;margin-top: 20px;margin-buttom: 20px;",
     "children": [
         {
-            "tag": "h5", 
-            "style": "background:green;color:white;width:100%;",
-            "html": "Filtros Generales"
-        }, 
-        {
-            "tag": "div", 
-            "class": "form-group col-xs-12 col-md-12", 
+            "tag": "form", 
+            "class": "form-vertical solici", 
             "children": [
                 {
+                    "tag": "h5", 
+                    "style": "background:#35650f;color:white;width:100%;",
+                    "html": "Filtros Generales"
+                }, 
+                {
                     "tag": "div", 
-                    "class": "form-inline col-xs-12 col-md-12 text-center", 
+                    "class": "form-group col-xs-12 col-md-12", 
                     "children": [
                         {
                             "tag": "div", 
-                            "class": "form-inline col-xs-3 col-md-3", 
+                            "class": "form-inline col-xs-12 col-md-12 text-center", 
                             "children": [
                                 {
-                                    "tag": "label", 
-                                    "for": "lis_transp:", 
-                                    "html": "",
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-5 col-md-5", 
                                     "children": [
                                         {
-                                            "tag": "span", 
-                                            "html": "Trasportadora: "
+                                            "tag": "label", 
+                                            "for": "lis_transp:", 
+                                            "html": "",
+                                            "children": [
+                                                {
+                                                    "tag": "span", 
+                                                    "html": "Trasportadora: "
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                },
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-7 col-md-7", 
+                                    "children": [
+                                        {
+                                            "tag": "select", 
+                                            "name": "lis_transp", 
+                                            "multiple": "multiple",
+                                            "class": "form-control control-lis_transp", 
+                                            "html": ""
                                         }
                                     ]
                                 }
                             ]
-                        },
-                        {
-                            "tag": "div", 
-                            "class": "form-inline col-xs-9 col-md-9", 
-                            "children": [
-                                {
-                                    "tag": "select", 
-                                    "name": "lis_transp", 
-                                    "multiple": "multiple",
-                                    "class": "form-control control-lis_transp", 
-                                    "html": ""
-                                }
-                            ]
                         }
                     ]
-                }
-            ]
-        },
-        {
-            "tag": "div", 
-            "class": "form-group col-xs-12 col-md-12", 
-            "children": [
+                },
                 {
                     "tag": "div", 
-                    "class": "form-group row", 
+                    "class": "form-group col-xs-12 col-md-12", 
                     "children": [
                         {
                             "tag": "div", 
@@ -63,79 +64,102 @@
                             "children": [
                                 {
                                     "tag": "div", 
-                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "class": "form-group row", 
                                     "children": [
                                         {
-                                            "tag": "label", 
-                                            "for": "fec_inifil", 
-                                            "html": "",
+                                            "tag": "div", 
+                                            "class": "form-inline col-xs-12 col-md-12 col-lg-12", 
                                             "children": [
                                                 {
-                                                    "tag": "span", 
-                                                    "html": "Fecha inicio: "
-                                                },
-                                                {
-                                                    "tag": "input", 
-                                                    "type": "date", 
-                                                    "class": "form-control", 
-                                                    "placeholder": "Fecha inicio", 
-                                                    "name": "fec_inifil",
-                                                    "data-value": "-8D",
-                                                    "required": "required", 
-                                                    "html": ""
+                                                    "tag": "h5", 
+                                                    "html": "",
+                                                    "style": "background:#35650f;color:white;width:100%;",
+                                                    "children": [
+                                                        {
+                                                            "tag": "span", 
+                                                            "html": "Filtros Especificos "
+                                                        }
+                                                    ]
                                                 }
                                             ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "tag": "div", 
-                                    "class": "form-inline col-xs-3 col-md-3", 
-                                    "children": [
+                                        },
                                         {
-                                            "tag": "label", 
-                                            "for": "fec_finfil", 
-                                            "html": "",
+                                            "tag": "div", 
+                                            "class": "form-inline col-xs-3 col-md-3 col-lg-4", 
                                             "children": [
                                                 {
-                                                    "tag": "span", 
-                                                    "html": "Fecha fin: "
-                                                },
-                                                {
-                                                    "tag": "input", 
-                                                    "type": "date", 
-                                                    "class": "form-control", 
-                                                    "placeholder": "Fecha fin", 
-                                                    "name": "fec_finfil",
-                                                    "data-value": "+0D",
-                                                    "required": "required", 
-                                                    "html": ""
+                                                    "tag": "label", 
+                                                    "for": "fec_inifil", 
+                                                    "html": "",
+                                                    "children": [
+                                                        {
+                                                            "tag": "span", 
+                                                            "html": "Fecha inicio: "
+                                                        },
+                                                        {
+                                                            "tag": "input", 
+                                                            "type": "date", 
+                                                            "class": "form-control", 
+                                                            "placeholder": "Fecha inicio", 
+                                                            "name": "fec_inifil",
+                                                            "data-value": "-8D",
+                                                            "required": "required", 
+                                                            "html": ""
+                                                        }
+                                                    ]
                                                 }
                                             ]
-                                        }
-                                    ]
-                                },
-                                {
-                                    "tag": "div", 
-                                    "class": "form-inline col-xs-3 col-md-3", 
-                                    "children": [
+                                        },
                                         {
-                                            "tag": "label", 
-                                            "for": "num_solici", 
-                                            "html": "",
+                                            "tag": "div", 
+                                            "class": "form-inline col-xs-3 col-md-3", 
                                             "children": [
                                                 {
-                                                    "tag": "span", 
-                                                    "html": "No. de Solicitud: "
-                                                },
+                                                    "tag": "label", 
+                                                    "for": "fec_finfil", 
+                                                    "html": "",
+                                                    "children": [
+                                                        {
+                                                            "tag": "span", 
+                                                            "html": "Fecha fin: "
+                                                        },
+                                                        {
+                                                            "tag": "input", 
+                                                            "type": "date", 
+                                                            "class": "form-control", 
+                                                            "placeholder": "Fecha fin", 
+                                                            "name": "fec_finfil",
+                                                            "data-value": "+0D",
+                                                            "required": "required", 
+                                                            "html": ""
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "div", 
+                                            "class": "form-inline col-xs-3 col-md-3 col-lg-4", 
+                                            "children": [
                                                 {
-                                                    "tag": "input", 
-                                                    "type": "text", 
-                                                    "class": "form-control", 
-                                                    "placeholder": "No. de Solicitud", 
-                                                    "name": "num_solici",
-                                                    "required": "required", 
-                                                    "html": ""
+                                                    "tag": "label", 
+                                                    "for": "num_solici", 
+                                                    "html": "",
+                                                    "children": [
+                                                        {
+                                                            "tag": "span", 
+                                                            "html": "No. de Solicitud: "
+                                                        },
+                                                        {
+                                                            "tag": "input", 
+                                                            "type": "text", 
+                                                            "class": "form-control", 
+                                                            "placeholder": "No. de Solicitud", 
+                                                            "name": "num_solici",
+                                                            "required": "required", 
+                                                            "html": ""
+                                                        }
+                                                    ]
                                                 }
                                             ]
                                         }

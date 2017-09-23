@@ -101,6 +101,7 @@ function r(){
 				}
 				$.ajax({
 					method: "POST",
+					type: 'POST',
 					url: ajax_url,
 					data: JSON.stringify(objToSend)
 				})
@@ -730,7 +731,7 @@ function r(){
 			if(typeof obj == "object" && obj.tag!=undefined){
 					var el = document.createElement(obj.tag);
 					el=$(el);
-					el.html(obj.html);
+					el.html(obj.html?obj.html.toUpperCase():obj.html);
 					addProperties(el,obj);
 					if(obj.children!=undefined){
 						for(var i=0; i<obj.children.length; i++){
@@ -747,7 +748,7 @@ function r(){
 						var obj2=obj[i];
 						var el = document.createElement(obj2.tag);
 						el=$(el);
-						el.html(obj2.html);
+						el.html(obj2.html?obj2.html.toUpperCase():obj2.html);
 						addProperties(el,obj2);
 						if(obj2.children!=undefined){
 							for(var i=0; i<obj2.children.length; i++){
