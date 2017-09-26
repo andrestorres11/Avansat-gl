@@ -128,7 +128,7 @@ class AjaxFacturCorona
           foreach (self::$mArrayEtapas AS $mKey => $mNomEtapax):
             if($mKey == '6')
             {
-              self::$cDataGener["tip_despac"][$mDatCampo["cod_tipdes"]][$mNomEtapax["cam_etapax"]] += sizeof( self::getNovedades($mDespac, false, $mKey, NULL, NULL, 1 ) );
+              self::$cDataGener["tip_despac"][$mDatCampo["cod_tipdes"]][$mNomEtapax["cam_etapax"]] += sizeof( self::getNovedades($mDespac, false, NULL, NULL, NULL, 1 ) );
               self::$cDataGener["tip_despac"][$mDatCampo["cod_tipdes"]][$mNomEtapax["cam_etapax"]."w"] += 0;
             }
             else
@@ -145,7 +145,7 @@ class AjaxFacturCorona
         endforeach;
 
         self::$cDataGener["tot_despac"]  = $mTotalDespa; # Total de novedades despachos
-        self::$cDataGener["tot_novreg"]  = $mTotalNoved; # Total de novedades registradas
+        self::$cDataGener["tot_novreg"]  = $mTotalNoved + $mTotalNoApp; # Total de novedades registradas
         self::$cDataGener["tot_novweb"]  = $mTotalNoWeb; # Total de novedades registradas
         self::$cDataGener["tot_novapp"]  = $mTotalNoApp; # Total de novedades registradas
         self::$cDataGener["val_totalx"]  = ($mTotalNoved * $mValor["val_regist"] ); # Total de novedades registradas
@@ -197,58 +197,26 @@ class AjaxFacturCorona
             $mHtml .= '<td class="CellHead" colspan="16" align="center">Tabla totales Vista General</td>';            
           $mHtml .= '</tr>';
           $mHtml .= '<tr>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2">Despachos Generados</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Nº de Novedades Registrados</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2">Valor A Facturar</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Cita De Cargue</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Cargue</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Transito</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Descargue</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Novedades En Entrega</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Generales Moviles</td>';
-          $mHtml .= '</tr>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">APP</td>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">APP</td>'; 
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">APP</td>'; 
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">APP</td>';            
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">APP</td>'; 
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">APP</td>'; 
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" colspan="1">APP</td>'; 
-          $mHtml .= '<tr>';           
-          $mHtml .= '</tr>';           
-          $mHtml .= '<tr>';
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="2"><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'\', \'\', \'despac\')" ><b>'.number_format( self::$cDataGener["tot_despac"], 0, ',', '.').'</b></spam></td>';  #Despachos Generados
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2">'.number_format( self::$cDataGener["tot_novreg"], 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="2">$ '.number_format( self::$cDataGener["val_totalx"], 0, ',', '.' ).'</td>';  #Valor A Facturar
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2">'.number_format( self::$cDataGener["tot_citcar"], 0, ',', '.').'</td>';  #Cita De Cargue
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2">'.number_format( self::$cDataGener["tot_cargue"], 0, ',', '.').'</td>';  #Cargue
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2">'.number_format( self::$cDataGener["tot_transi"], 0, ',', '.').'</td>';  #Transito
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2">'.number_format( self::$cDataGener["tot_descar"], 0, ',', '.').'</td>';  #Descargue
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2">'.number_format( self::$cDataGener["tot_novent"], 0, ',', '.').'</td>';  #Novedades En Entrega
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2">'.number_format( self::$cDataGener["tot_genera"], 0, ',', '.').'</td>';  #Novedades En Entrega
+            $mHtml .= '<td class="CellHead" align="center" >Despachos Generados</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Nº de Novedades Registrados</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Valor A Facturar</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Cita De Cargue</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Cargue</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Transito</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Descargue</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Novedades En Entrega</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Generales Moviles</td>';
           $mHtml .= '</tr>';
           $mHtml .= '<tr>';
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::$cDataGener["tot_novweb"], 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::$cDataGener["tot_novapp"], 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'cit_carguew'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'cit_carguea'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'car_carguew'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'car_carguea'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'tra_transiw'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'tra_transia'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'cit_descarw'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'cit_descara'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'nov_entregw'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'nov_entrega'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'nov_generaw'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
-            $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="1">'.number_format( self::getConteoEtapa(self::$cDataGener['tip_despac'], 'nov_generaa'), 0, ',', '.').'</td>';  #Nº de Novedades Registradas
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" ><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'\', \'\', \'despac\')" ><b>'.number_format( self::$cDataGener["tot_despac"], 0, ',', '.').'</b></spam></td>';  #Despachos Generados
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( self::$cDataGener["tot_novreg"], 0, ',', '.').'</td>';  #Nº de Novedades Registradas
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" >$ '.number_format( self::$cDataGener["val_totalx"], 0, ',', '.' ).'</td>';  #Valor A Facturar
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( self::$cDataGener["tot_citcar"], 0, ',', '.').'</td>';  #Cita De Cargue
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( self::$cDataGener["tot_cargue"], 0, ',', '.').'</td>';  #Cargue
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( self::$cDataGener["tot_transi"], 0, ',', '.').'</td>';  #Transito
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( self::$cDataGener["tot_descar"], 0, ',', '.').'</td>';  #Descargue
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( self::$cDataGener["tot_novent"], 0, ',', '.').'</td>';  #Novedades En Entrega
+            $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( self::$cDataGener["tot_genera"], 0, ',', '.').'</td>';  #Novedades En Entrega
           $mHtml .= '</tr>';
 
 
@@ -276,39 +244,23 @@ class AjaxFacturCorona
         $mHtml  = '<table width="100%" align="center">'; 
 
           $mHtml .= '<tr>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Modalidad</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Nº de Despachos Registrados</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Cita de Cargue</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Valor A Facturar</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Cargue</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Valor A Facturar</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Transito</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Valor A Facturar</td>';            
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Descargue</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Valor A Facturar</td>';            
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Novedades En Entrega</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Valor A Facturar</td>';            
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Generales Moviles</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Valor A Facturar</td>';            
-            $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Total Novedades</td>';
-            $mHtml .= '<td class="CellHead" align="center" rowspan="2" >Total Valor A Facturar</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Modalidad</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Nº de Despachos Registrados</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Cita de Cargue</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Valor A Facturar</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Cargue</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Valor A Facturar</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Transito</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Valor A Facturar</td>';            
+            $mHtml .= '<td class="CellHead" align="center" >Descargue</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Valor A Facturar</td>';            
+            $mHtml .= '<td class="CellHead" align="center" >Novedades En Entrega</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Valor A Facturar</td>';            
+            $mHtml .= '<td class="CellHead" align="center" >Generales Moviles</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Valor A Facturar</td>';            
+            $mHtml .= '<td class="CellHead" align="center" >Total Novedades</td>';
+            $mHtml .= '<td class="CellHead" align="center" >Total Valor A Facturar</td>';
           $mHtml .= '</tr>';
-          $mHtml .= '<tr>';
-            $mHtml .= '<td class="CellHead" align="center" >WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" >APP</td>';
-            $mHtml .= '<td class="CellHead" align="center" >WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" >APP</td>';
-            $mHtml .= '<td class="CellHead" align="center" >WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" >APP</td>';
-            $mHtml .= '<td class="CellHead" align="center" >WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" >APP</td>';
-            $mHtml .= '<td class="CellHead" align="center" >WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" >APP</td>';
-            $mHtml .= '<td class="CellHead" align="center" >WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" >APP</td>';
-            $mHtml .= '<td class="CellHead" align="center" >WEB</td>';
-            $mHtml .= '<td class="CellHead" align="center" >APP</td>';
-          $mHtml .= '</tr>';  
 
           # Recorre todos los tipos de despachos -------------------------- 
           foreach (self::$cDataGener["tip_despac"] AS $mConsec => $mData):  
@@ -328,41 +280,26 @@ class AjaxFacturCorona
 
 
             $mHtml .= '<tr>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="2" ><b>'.$mData["nom_tipdes"].'</b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="2" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'\', \'\', \'despac\')"> '.number_format($mData["num_despac"],0, ',', '.').'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2"><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'1\', \'\', \'\')"> '.number_format($mData["cit_cargue"], 0, ',', '.').'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="right"  rowspan="2" ><b>$ '.$mValCitcar.'</b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2"><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'2\', \'\', \'\')"> '.number_format($mData["car_cargue"], 0, ',', '.').'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="right"  rowspan="2" ><b>$ '.$mValCargue.'</b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2"><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'0.3\', \'\', \'\')"> '.number_format($mData["tra_transi"], 0, ',', '.').'</spam></b></td>';                   
-              $mHtml .= '<td class="cellInfo onlyCell" align="right"  rowspan="2" ><b>$ '.$mValTransi.'</b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2"><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'4\', \'\', \'\')"> '.number_format($mData["cit_descar"], 0, ',', '.').'</spam></b></td>';            
-              $mHtml .= '<td class="cellInfo onlyCell" align="right"  rowspan="2" ><b>$ '.$mValCitdes.'</b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2"><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'5\', \'\', \'\')"> '.number_format($mData["nov_entreg"], 0, ',', '.').'</spam></b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b>'.$mData["nom_tipdes"].'</b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'\', \'\', \'despac\')"> '.number_format($mData["num_despac"],0, ',', '.').'</spam></b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'1\', \'\', \'\')"> '.number_format($mData["cit_cargue"], 0, ',', '.').'</spam></b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="right"  ><b>$ '.$mValCitcar.'</b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'2\', \'\', \'\')"> '.number_format($mData["car_cargue"], 0, ',', '.').'</spam></b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="right"  ><b>$ '.$mValCargue.'</b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'0.3\', \'\', \'\')"> '.number_format($mData["tra_transi"], 0, ',', '.').'</spam></b></td>';                   
+              $mHtml .= '<td class="cellInfo onlyCell" align="right"  ><b>$ '.$mValTransi.'</b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'4\', \'\', \'\')"> '.number_format($mData["cit_descar"], 0, ',', '.').'</spam></b></td>';            
+              $mHtml .= '<td class="cellInfo onlyCell" align="right"  ><b>$ '.$mValCitdes.'</b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'5\', \'\', \'\')"> '.number_format($mData["nov_entreg"], 0, ',', '.').'</spam></b></td>';
 
-              $mHtml .= '<td class="cellInfo onlyCell" align="right"  rowspan="2" ><b>$ '.$mValnovent.'</b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2"><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'6\', \'\', \'\', \'1\')"> '.number_format($mData["nov_genera"], 0, ',', '.').'</spam></b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="right"  ><b>$ '.$mValnovent.'</b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'undefined\', \'\', \'\', \'1\')"> '.number_format($mData["nov_genera"], 0, ',', '.').'</spam></b></td>';
 
-              $mHtml .= '<td class="cellInfo onlyCell" align="right"  rowspan="2" ><b>$ '.$$mValgenera.'</b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="1" colspan="2"><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \''.$mEtapax.'\', \''.$row["cod_noveda"].'\')"> '. number_format( $mTotalNovedEtap, 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="2"><b>$ '.number_format( $mTotalNovedEtva, 0)  .'</b></td>';   
+              $mHtml .= '<td class="cellInfo onlyCell" align="right"  ><b>$ '.$mValgenera.'</b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \''.$mEtapax.'\', \''.$row["cod_noveda"].'\')"> '. number_format( $mTotalNovedEtap, 0 ).'</spam></b></td>';
+              $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b>$ '.number_format( $mTotalNovedEtva, 0)  .'</b></td>';   
             $mHtml .= '</tr>';
-            $mHtml .= '<tr>'; 
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'1\', \''.$row["cod_noveda"].'\', \'2\', \'2\')"> '. number_format( $mData['cit_carguew'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'1\', \''.$row["cod_noveda"].'\', \'1\', \'1\')"> '. number_format( $mData['cit_carguea'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'2\', \''.$row["cod_noveda"].'\', \'2\', \'2\')"> '. number_format( $mData['car_carguew'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'2\', \''.$row["cod_noveda"].'\', \'1\', \'1\')"> '. number_format( $mData['car_carguea'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'0.3\', \''.$row["cod_noveda"].'\', \'2\', \'2\')"> '. number_format( $mData['tra_transiw'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'0.3\', \''.$row["cod_noveda"].'\', \'1\', \'1\')"> '. number_format( $mData['tra_transia'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'4\', \''.$row["cod_noveda"].'\', \'2\', \'2\')"> '. number_format( $mData['cit_descarw'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'4\', \''.$row["cod_noveda"].'\', \'1\', \'1\')"> '. number_format( $mData['cit_descara'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'5\', \''.$row["cod_noveda"].'\', \'2\', \'2\')"> '. number_format( $mData['nov_entregw'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'5\', \''.$row["cod_noveda"].'\', \'1\', \'1\')"> '. number_format( $mData['nov_entrega'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'6\', \''.$row["cod_noveda"].'\', \'2\', \'2\')"> '. number_format( $mData['nov_generaw'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \'6\', \''.$row["cod_noveda"].'\', \'1\', \'1\')"> '. number_format( $mData['nov_generaa'], 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \''.$mEtapax.'\', \''.$row["cod_noveda"].'\', \'2\', \'2\')"> '. number_format( $mTotalNovedWebs, 0 ).'</spam></b></td>';
-              $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1" ><b><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$mConsec.'\', \''.$mEtapax.'\', \''.$row["cod_noveda"].'\', \'1\', \'1\')"> '. number_format( $mTotalNovedApps, 0 ).'</spam></b></td>';
-            $mHtml .= '</tr>';
+           
           endforeach;
 
         $mHtml .= '</table>';
@@ -399,58 +336,26 @@ class AjaxFacturCorona
 
       $mHtml  = '<div id="contenedor2" class="StyleDIV" ><table width="80%" align="center">';
         $mHtml .= '<tr>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="2" colspan="1">Despachos Generados</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Nº de Novedades Registrados</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="2" colspan="1">Valor A Facturar</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Cita De Cargue</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Cargue</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Transito</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Descargue</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Novedades En Entrega</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="2">Generales Moviles</td>';
-        $mHtml .= '<tr>';           
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">WEB</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">APP</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">WEB</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">APP</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">WEB</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">APP</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">WEB</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">APP</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">WEB</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">APP</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">WEB</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">APP</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">WEB</td>';
-          $mHtml .= '<td class="CellHead" align="center" rowspan="1" colspan="1">APP</td>';
-        $mHtml .= '</tr>';           
+          $mHtml .= '<td class="CellHead" align="center" >Despachos Generados</td>';
+          $mHtml .= '<td class="CellHead" align="center" >Nº de Novedades Registrados</td>';
+          $mHtml .= '<td class="CellHead" align="center" >Valor A Facturar</td>';
+          $mHtml .= '<td class="CellHead" align="center" >Cita De Cargue</td>';
+          $mHtml .= '<td class="CellHead" align="center" >Cargue</td>';
+          $mHtml .= '<td class="CellHead" align="center" >Transito</td>';
+          $mHtml .= '<td class="CellHead" align="center" >Descargue</td>';
+          $mHtml .= '<td class="CellHead" align="center" >Novedades En Entrega</td>';
+          $mHtml .= '<td class="CellHead" align="center" >Generales Moviles</td>';
         $mHtml .= '</tr>';           
         $mHtml .= '<tr>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="2"><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$_AJAX["cod_tipdes"].'\', \'\', \'\', \'despac\')"> '.number_format(sizeof($mData), 0, ',', '.').'</spam></td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="2">'.number_format($mCantNov, 0, ',', '.').'</td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" rowspan="2">$ '.number_format( ($mCantNov * $mValor[val_regist] ), 0, ',', '.').'</td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="2">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '1'   ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="2">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '2'   ) )  ) , 0, ',', '.').'</td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="2">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '0,3' ) )  ) , 0, ',', '.').'</td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="2">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '4'   ) )  ) , 0, ',', '.').'</td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="2">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '5'   ) )  ) , 0, ',', '.').'</td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="2">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '6', NULL, NULL, 1   ) )  ) , 0, ',', '.').'</td>';
-        $mHtml .= '</tr>'; 
-        $mHtml .= '<tr>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, NULL, NULL, NULL, '2'   ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, NULL, NULL, NULL, '1'   ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '1', NULL, NULL, '2'   ) )  ) , 0, ',', '.').'</td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '1', NULL, NULL, '1'   ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '2', NULL, NULL, '2'   ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '2', NULL, NULL, '1'   ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '0,3', NULL, NULL, '2'   ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '0,3', NULL, NULL, '1'   ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '4', NULL, NULL, '2' ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '4', NULL, NULL, '1' ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '5', NULL, NULL, '2' ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '5', NULL, NULL, '1' ) )  ) , 0, ',', '.').'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( 0).'</td>'; 
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" colspan="1">'.number_format( ( sizeof( self::getNovedades($mDespac, false, '6', NULL, NULL, '1' ) )  ) , 0, ',', '.').'</td>'; 
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" ><spam style="cursor: pointer; color:#35650F; " onclick="LoadDetail(\''.$_AJAX["cod_tipdes"].'\', \'\', \'\', \'despac\')"> '.number_format(sizeof($mData), 0, ',', '.').'</spam></td>';
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format($mCantNov, 0, ',', '.').'</td>';
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" >$ '.number_format( ($mCantNov * $mValor[val_regist] ), 0, ',', '.').'</td>';
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( ( sizeof( self::getNovedades($mDespac, false, '1'   ) )  ) , 0, ',', '.').'</td>'; 
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( ( sizeof( self::getNovedades($mDespac, false, '2'   ) )  ) , 0, ',', '.').'</td>';
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( ( sizeof( self::getNovedades($mDespac, false, '0,3' ) )  ) , 0, ',', '.').'</td>';
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( ( sizeof( self::getNovedades($mDespac, false, '4'   ) )  ) , 0, ',', '.').'</td>';
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( ( sizeof( self::getNovedades($mDespac, false, '5'   ) )  ) , 0, ',', '.').'</td>';
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" >'.number_format( ( sizeof( self::getNovedades($mDespac, false, NULL, NULL, NULL, 1   ) )  ) , 0, ',', '.').'</td>';
         $mHtml .= '</tr>'; 
       $mHtml .= '</table>';
 
@@ -533,7 +438,7 @@ class AjaxFacturCorona
     }
     if($mEtapax == '6')
     {
-      $mNovedades = self::getNovedades( $mDespac, true, $mEtapax, NULL, NULL, 1 );
+      $mNovedades = self::getNovedades( $mDespac, true, NULL, NULL, NULL, 1 );
     }
     else
     {
@@ -556,7 +461,7 @@ class AjaxFacturCorona
         $mVal = $row["cantidad"] * $mValor;
         $mHtml .= '<tr>';
           $mHtml .= '<td class="cellInfo onlyCell" align="left" >&ensp;<b>'.$row["nom_noveda"].'</b></td>';
-          $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F;" onclick="LoadDetail(\''.$mCodTipdes.'\', \''.$mEtapax.'\', \''.$row["cod_noveda"].'\', \'NULL\', '.($mEtapax==6?'\'1\'':'\'NULL\'').')"> '.  number_format($row["cantidad"], 0, ',', '.').' </spam></b></td>';
+          $mHtml .= '<td class="cellInfo onlyCell" align="center" ><b><spam style="cursor: pointer; color:#35650F;" onclick="LoadDetail(\''.$mCodTipdes.'\', '.($mEtapax==6?'\'undefined\'':'\''.$mEtapax.'\'').', \''.$row["cod_noveda"].'\', \'NULL\', '.($mEtapax==6?'\'1\'':'\'NULL\'').')"> '.  number_format($row["cantidad"], 0, ',', '.').' </spam></b></td>';
           $mHtml .= '<td class="cellInfo onlyCell" align="right" ><b>$ '.number_format($mVal, 0, ',', '.').'</b></td>';
         $mHtml .= '</tr>';
 
@@ -566,7 +471,7 @@ class AjaxFacturCorona
 
       $mHtml .= '<tr>';
         $mHtml .= '<td class="CellHead" align="center" >TOTAL:</td>';
-        $mHtml .= '<td class="CellHead" align="center" ><spam style="cursor: pointer;"   onclick="LoadDetail(\''.$mCodTipdes.'\', \''.$mEtapax.'\')"> '.number_format($mTotal[0], 0, ',', '.').' </spam></td>';
+        $mHtml .= '<td class="CellHead" align="center" ><spam style="cursor: pointer;"   onclick="LoadDetail(\''.$mCodTipdes.'\', '.($mEtapax==6?'\'undefined\'':'\''.$mEtapax.'\'').',\'undefined\',\'undefined\', '.($mEtapax==6?'\'1\'':'\'NULL\'').')"> '.number_format($mTotal[0], 0, ',', '.').' </spam></td>';
         $mHtml .= '<td class="CellHead" align="right" ><b>$ '.number_format($mTotal[1], 0, ',', '.').'</b></td>';
       $mHtml .= '</tr>';
 
@@ -1007,7 +912,7 @@ class AjaxFacturCorona
                                 ".( $mTipNoveda == 1 ?"" : " AND y.cod_perfil IN (".self::$cPerfiles.")" )."
                                 ".( $mCodEtapax != NULL && $mCodEtapax != 'undefined' ? " AND b.cod_etapax IN ( ".str_replace(".", ",", $mCodEtapax )." )" : ""  )."
                                 ".( $mCodNoveda != NULL && $mCodNoveda != 'undefined' ? " AND a.cod_noveda IN ( ".$mCodNoveda." )" : ""  )."
-                                ".( self::$cNitCorona == $_REQUEST['transp'] ? " AND y.cod_perfil NOT IN (".self::$cNotPerfi.") " : "" )."
+                                /*".( self::$cNitCorona == $_REQUEST['transp'] || $mTipNoveda == 1 ? " AND y.cod_perfil NOT IN (".self::$cNotPerfi.") " : "" )."*/
 
                         )
                         UNION 
@@ -1038,7 +943,7 @@ class AjaxFacturCorona
                                   ".( $mTipNoveda == 1 ?"" : " AND y.cod_perfil IN (".self::$cPerfiles.")" )."
                                   ".( $mCodEtapax != NULL && $mCodEtapax != 'undefined' ? " AND b.cod_etapax IN ( ".str_replace(".", ",", $mCodEtapax )." )" : ""  )."
                                   ".( $mCodNoveda != NULL && $mCodNoveda != 'undefined' ? " AND a.cod_noveda IN ( ".$mCodNoveda." )" : ""  )."
-                                  ".( self::$cNitCorona === '860068121' ? " AND y.cod_perfil NOT IN (".self::$cNotPerfi.") " : "" )."
+                                  /*".( self::$cNitCorona === '860068121'  ? " AND y.cod_perfil NOT IN (".self::$cNotPerfi.") " : "" )."*/
                         )
                         UNION
                         (
