@@ -287,10 +287,13 @@ class AjaxInsertarAutorizacion
                           a.ind_estado = 1 AND
                           a.cod_transp = '".$_REQUEST["cod_transp"]."'   ";  
         
+        $_SESSION["queryXLS"] = $mQuery;
+        
 		//----------------------------------------------------------------------------------------------------------------------------
 		$cList = new DinamicList( $this -> conexion, $mQuery , 4 );
 		$cList -> SetClose('no');
 		$cList -> SetCreate("Agregar Usuario", "onclick:NuevoUsuario()");
+		$cList -> SetExcel("Excel", "onclick:exportExcel('opcion=4')");
 		$cList -> SetHeader( "Transportadora", "field:a.cod_transp" );
 		$cList -> SetHeader( "Doc.Conductor", "field:a.cod_tercer" );
 		$cList -> SetHeader( "Usuario APP", "field:c.cod_usuari" );
