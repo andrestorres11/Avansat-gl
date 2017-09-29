@@ -182,7 +182,7 @@ function exportarExcel()
 *  \param:  cod_noveda  : novedad
 * 
 */
-function LoadDetail(tip_despac, tip_etapax, cod_noveda, type)
+function LoadDetail(tip_despac, tip_etapax, cod_noveda, type, tip_Noveda = null)
 {
   try
   {
@@ -198,7 +198,7 @@ function LoadDetail(tip_despac, tip_etapax, cod_noveda, type)
     var cod_agenci = $("#cod_agenciID").val() 
 
     var param =  'fec_ini='+fec_ini+'&fec_fin='+fec_fin+"&transp="+transp;
-        param += '&cod_agenci='+cod_agenci+"&cod_tipdes="+tip_despac+"&cod_etapax="+tip_etapax+"&cod_noveda="+cod_noveda+"&option="+option;
+        param += '&cod_agenci='+cod_agenci+"&cod_tipdes="+tip_despac+"&cod_etapax="+tip_etapax+"&cod_noveda="+cod_noveda+"&option="+option+"&tip_Noveda="+tip_Noveda;
        
 
     var Standa = $("#StandaID").val();
