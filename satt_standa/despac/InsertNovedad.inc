@@ -1850,6 +1850,17 @@ class InsertNovedad {
 
         $mConsult = new Consulta($mSql, $this->conexion, "R");
 
+        #Actualizo en la tabla tab_despac_seguin el indicador a 0 cuando es una novedad en sitio
+        if($mIndEnSiti == true)
+        {
+            $query = "UPDATE " . BASE_DATOS . ".tab_despac_seguim
+                SET ind_estado = '0'
+              WHERE num_despac = '" . $mDatRegist['despac'] . "' AND
+                    cod_rutasx = '" . $mDatRegist['rutax'] . "' AND
+                    cod_contro = '" . $mDatRegist['contro'] . "' ";
+            $consulta = new Consulta($query, $this->conexion, "R");
+        }
+
         if ($mConsult->id_resultado == 1) {
             $mResult[0] = true;
             $mResult[1] = $mMax;

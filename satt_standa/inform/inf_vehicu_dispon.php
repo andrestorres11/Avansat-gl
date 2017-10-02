@@ -201,20 +201,20 @@ class Proc_despac
                         $mHtml->CloseRow();
                         $mHtml->Row();
                           $mHtml->Label( "Fecha:", array("align"=>"right", "width"=>"25%") );
-                          $mHtml->Input( array("name"=>"fecbus", "id"=>"fecbusID", "width"=>"25%", "value"=>((isset($_REQUEST[fecbus]))?$_REQUEST[fecbus]:date('Y-m-j')) ) );
+                          $mHtml->Input( array("name"=>"fecbus", "id"=>"fecbusID", "width"=>"25%", "value"=>((isset($_REQUEST['fecbus']))?$_REQUEST['fecbus']:date('Y-m-j')) ) );
                         $mHtml->CloseRow();
                         $mHtml->Row();
                             $mHtml->Label( "Configuracion",  array("align"=>"right", "class"=>"celda_titulo") );
                             $mHtml->Select2 ($this->getConfig(),  array("name" => "config", "width" => "25%") );
                         $mHtml->CloseRow();
-                         $mHtml->Row();
+                         /*$mHtml->Row();
                           $mHtml->Button( array("value"=>"Buscar", "id"=>"buscarID","name"=>"buscar", "class"=>"crmButton small save", "align"=>"center", "colspan"=>"2" ,"onclick"=>"Buscar()") );
-                        $mHtml->CloseRow();
+                        $mHtml->CloseRow();*/
                     $mHtml->CloseTable("tr");
                   $mHtml->SetBody('</form>');
                   $mHtml->OpenDiv("id:tabs");
                     $mHtml->SetBody("<ul>
-                                        <li><a href='#tabInform' onclick='getInform()'>INFORME</a></li>
+                                        <li><a href='#tabInform' onclick='Buscar()'>INFORME</a></li>
                                     </ul>");
                     $mHtml->OpenDiv("id:tabInform");
                       switch($_REQUEST['opcion'])
@@ -302,12 +302,12 @@ class Proc_despac
   $query=$this->getDesllega();
   $consulta = new Consulta($query, $this -> conexion);
   $desllega = $consulta -> ret_matriz();
-  
+
 
   $mHtml = new Formlib(2, "yes",TRUE);
   $mHtml->OpenDiv("id:btnVehiculosPla");
     $mHtml->Table("tr");
-      $mHtml->Label( sizeof($desruta)." Vehiculo(s) en Ruta Con Llegada Planeada Desde ".$_REQUEST[fecbus]." Hasta ".$fechaadic."", array("colspan"=>"11", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+      $mHtml->Label( sizeof($desruta)." Vehiculo(s) en Ruta Con Llegada Planeada Desde ".$_REQUEST['fecbus']." Hasta ".$fechaadic."", array("colspan"=>"11", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
       $mHtml->CloseRow();
       $mHtml->Row();
         $mHtml->Label( "Exportar a excel",  array("align"=>"right", "class"=>"celda_titulo") );
@@ -348,7 +348,7 @@ class Proc_despac
   $mHtml->CloseDiv();
   $mHtml->OpenDiv("id:btnVehiculosLle");
     $mHtml->Table("tr");
-      $mHtml->Label( sizeof($desllega)." Vehiculo(s) Con Llegada Desde ".$fechadism." Hasta ".$_REQUEST[fecbus]."", array("colspan"=>"11", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+      $mHtml->Label( sizeof($desllega)." Vehiculo(s) Con Llegada Desde ".$fechadism." Hasta ".$_REQUEST['fecbus']."", array("colspan"=>"11", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
       $mHtml->CloseRow();
       $mHtml->Row();
         $mHtml->Label( "Exportar a excel",  array("align"=>"right", "class"=>"celda_titulo") );
@@ -400,10 +400,16 @@ class Proc_despac
  {
     $datos_usuario = $this -> usuario -> retornar();
 
-    $_REQUEST[fecbus] = str_replace("/","-",$_REQUEST[fecbus]);
+    $_REQUEST['fecbus'] = str_replace("/","-",$_REQUEST['fecbus']);
 
-    $fechaadic = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." +5 day"));
-    $fechadism = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." -5 day"));
+    $fechaadic = date("Y-m-d", strtotime("".$_REQUEST['fecbus']." +5 day"));
+    $fechadism = date("Y-m-d", strtotime("".$_REQUEST['fecbus']." -5 day"));
+    $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
+     if($filtro -> listar($this -> conexion))
+     {
+      $datos_filtro = $filtro -> retornar();
+      $mTrans =" bb.cod_transp = '$datos_filtro[clv_filtro]' AND ";
+     }
 
     $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
                    CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
@@ -411,6 +417,38 @@ class Proc_despac
                    (IF(q.tip_transp IS NUll OR q.tip_transp = '','N/A',IF(q.tip_transp='1','Flota Propia',IF(q.tip_transp='2','Terceros',IF(q.tip_transp='3','Empresa','N/A'))) ) ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
                 FROM ".BASE_DATOS.".tab_despac_despac a
           INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
+          INNER JOIN (
+                              SELECT dd.num_despac, dd.num_placax, MAX(dd.fec_llegpl)  
+                              FROM ".BASE_DATOS.".tab_despac_despac aa
+                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige dd ON dd.num_despac = aa.num_despac
+                        INNER  JOIN (
+                                      SELECT ccc.num_despac, ccc.cod_contro
+                                      FROM ".BASE_DATOS.".tab_despac_seguim ccc
+                                      INNER JOIN (
+                                                     SELECT  ss.num_despac, ss.cod_contro, ss.fec_planea, ss.fec_alarma, ss.ind_estado,  COUNT(ss.num_despac) AS conteo
+                                                      FROM 
+                                                           ".BASE_DATOS.".tab_despac_despac aaa INNER JOIN
+                                                           ".BASE_DATOS.".tab_despac_vehige bb ON aaa.num_despac = bb.num_despac AND 
+                                                                                             ".$mTrans."
+                                                                                             aaa.fec_salida IS NOT NULL AND 
+                                                                                             aaa.fec_llegad IS NULL AND 
+                                                                                             aaa.ind_planru = 'S' AND  
+                                                                                             aaa.ind_anulad = 'R' AND 
+                                                                                             bb.ind_activo = 'S' INNER JOIN
+                                                           ".BASE_DATOS.".tab_despac_seguim ss ON bb.num_despac = ss.num_despac AND 
+                                                                                             ss.ind_estado = 1
+                                                      GROUP BY ss.num_despac
+                                                      HAVING conteo <= 2
+                                        )s ON s.num_despac = ccc.num_despac 
+                                        AND ccc.fec_planea BETWEEN '".$_REQUEST['fecbus']." 00:00:00' AND '".$fechaadic." 23:59:59'
+                                    )cc ON cc.num_despac = aa.num_despac
+                              WHERE  aa.fec_salida IS NOT NULL AND 
+                                     aa.fec_llegad IS NULL AND 
+                                     aa.fec_salida <= NOW() AND
+                                     aa.ind_anulad = 'R' AND 
+                                     aa.ind_planru = 'S'
+                              GROUP BY dd.num_placax 
+                      ) r ON r.num_placax = d.num_placax AND a.num_despac = r.num_despac 
           INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
           INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu i ON i.num_placax = d.num_placax
           INNER JOIN ".BASE_DATOS.".tab_genera_ciudad j ON a.cod_ciuori = j.cod_ciudad
@@ -421,20 +459,22 @@ class Proc_despac
           INNER JOIN ".BASE_DATOS.".tab_genera_paises o ON  n.cod_paisxx = o.cod_paisxx
           INNER JOIN ".BASE_DATOS.".tab_tercer_tercer p ON i.cod_propie = p.cod_tercer 
            LEFT JOIN ".BASE_DATOS.".tab_despac_corona q ON a.num_despac = q.num_dessat
-               WHERE a.fec_salida Is Not Null 
-               AND a.fec_llegad Is Null 
+               WHERE a.fec_salida IS NOT NULL 
+               AND a.fec_llegad IS NULL 
                AND a.fec_salida <= NOW() 
                AND a.ind_anulad = 'R' 
-               AND a.ind_planru = 'S' ";
+               AND a.ind_planru = 'S' 
+               ";
 
-    if($_REQUEST[ciudes])
-     $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
-    if($_REQUEST[config])
-     {
+    if($_REQUEST['ciudes']){
+      $query .= " AND a.cod_ciudes = ".$_REQUEST['ciudes']."";
+    }
+    if($_REQUEST['config']){
       $query .= " AND q.tip_vehicu LIKE '$_REQUEST[config]' ";
-     }
-    if($_REQUEST[fecbus])
-     $query .= " AND d.fec_llegpl BETWEEN '".$_REQUEST[fecbus]." 00:00:00' AND '".$fechaadic." 23:59:59'";
+    }
+    if($_REQUEST['fecbus']){
+     $query .= " AND d.fec_llegpl BETWEEN '".$_REQUEST['fecbus']." 00:00:00' AND '".$fechaadic." 23:59:59'";
+    }
     if($datos_usuario["cod_perfil"] == "")
     {
      //PARA EL FILTRO DE CONDUCTOR
@@ -543,16 +583,26 @@ class Proc_despac
 
     $datos_usuario = $this -> usuario -> retornar();
 
-    $_REQUEST[fecbus] = str_replace("/","-",$_REQUEST[fecbus]);
+    $_REQUEST['fecbus'] = str_replace("/","-",$_REQUEST['fecbus']);
 
-    $fechaadic = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." +5 day"));
-    $fechadism = date("Y-m-d", strtotime("".$_REQUEST[fecbus]." -5 day"));
+    $fechaadic = date("Y-m-d", strtotime("".$_REQUEST['fecbus']." +5 day"));
+    $fechadism = date("Y-m-d", strtotime("".$_REQUEST['fecbus']." -5 day"));
      $query = "SELECT d.num_placax,CONCAT(j.nom_ciudad,' (',LEFT(k.nom_depart,4),') - ',LEFT(l.nom_paisxx,4)),
                    CONCAT(m.nom_ciudad,' (',LEFT(n.nom_depart,4),') - ',LEFT(o.nom_paisxx,4)),
                    e.abr_tercer,e.num_telmov,e.num_telef1,d.fec_llegpl,p.abr_tercer, 
                    (IF(q.tip_transp IS NUll OR q.tip_transp = '','N/A',IF(q.tip_transp='1','Flota Propia',IF(q.tip_transp='2','Terceros',IF(q.tip_transp='3','Empresa','N/A'))) ) ) tip_transp,  IF(q.tip_vehicu IS NUll OR q.tip_vehicu = '' ,'-',q.tip_vehicu) tip_vehicu
                 FROM ".BASE_DATOS.".tab_despac_despac a
           INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
+          INNER JOIN (
+                              SELECT dd.num_despac, dd.num_placax, MAX(dd.fec_llegpl)  
+                              FROM ".BASE_DATOS.".tab_despac_despac aa
+                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige dd ON dd.num_despac = aa.num_despac
+                              WHERE aa.fec_salida Is Not Null AND 
+                                    aa.fec_llegad Is not Null AND 
+                                    aa.ind_anulad = 'R' AND 
+                                    aa.ind_planru = 'S'
+                              GROUP BY dd.num_placax 
+                      ) r ON r.num_placax = d.num_placax AND r.num_despac = a.num_despac
           INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
           INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu i ON i.num_placax = d.num_placax
           INNER JOIN ".BASE_DATOS.".tab_genera_ciudad j ON a.cod_ciuori = j.cod_ciudad
@@ -570,14 +620,14 @@ class Proc_despac
        ";
 
 
-    if($_REQUEST[ciudes])
-     $query .= " AND a.cod_ciudes = ".$_REQUEST[ciudes]."";
-    if($_REQUEST[config])
+    if($_REQUEST['ciudes'])
+     $query .= " AND a.cod_ciudes = ".$_REQUEST['ciudes']."";
+    if($_REQUEST['config'])
      {
       $query .= " AND q.tip_vehicu LIKE '$_REQUEST[config]' ";
      }
-    if($_REQUEST[fecbus])
-     $query .= " AND a.fec_llegad BETWEEN '".$fechadism." 00:00:00' AND '".$_REQUEST[fecbus]." 23:59:59'";
+    if($_REQUEST['fecbus'])
+     $query .= " AND a.fec_llegad BETWEEN '".$fechadism." 00:00:00' AND '".$_REQUEST['fecbus']." 23:59:59'";
     if($datos_usuario["cod_perfil"] == "")
     {
      //PARA EL FILTRO DE CONDUCTOR
@@ -703,15 +753,15 @@ class Proc_despac
    $formulario = new Formulario ("index.php","post","Informacion del Despacho","form_item");
 
    $mRuta = array("link"=>0, "finali"=>0, "opcurban"=>0, "lleg"=>NULL, "tie_ultnov"=>NULL);#Fabian
-   $listado_prin = new Despachos($_REQUEST[cod_servic],2,$this -> aplica,$this -> conexion);
-   $listado_prin  -> Encabezado($_REQUEST[despac],$datos_usuario,0,$mRuta);
+   $listado_prin = new Despachos($_REQUEST['cod_servic'],2,$this -> aplica,$this -> conexion);
+   $listado_prin  -> Encabezado($_REQUEST['despac'],$datos_usuario,0,$mRuta);
    #$listado_prin  -> PlanDeRuta($_REQUEST[despac],$formulario,0);
 
    $formulario -> nueva_tabla();
-   $formulario -> oculto("despac",$_REQUEST[despac],0);
-   $formulario -> oculto("opcion",$_REQUEST[opcion],0);
+   $formulario -> oculto("despac",$_REQUEST['despac'],0);
+   $formulario -> oculto("opcion",$_REQUEST['opcion'],0);
    $formulario -> oculto("window","central",0);
-   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+   $formulario -> oculto("cod_servic",$_REQUEST['cod_servic'],0);
 
    $formulario -> cerrar();
  }
