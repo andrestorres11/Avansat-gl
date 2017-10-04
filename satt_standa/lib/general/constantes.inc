@@ -40,6 +40,7 @@ define("URL_CONDUC", "fotcon/");// constante para foto del conductor
 define("URL_VEHICU", "fotveh/");// constante para foto del conductor
 define("URL_PCTCON", "contro/");// constante para foto del P/C
 define("URL_REMOLQ", "remolq/");// constante para foto del Remolque
+define("URL_SOLICI", "/var/www/html/ap/satt_faro/files/solici");// constante para foto del Remolque
 
 define("COD_SERVIC_INICIO", "../".DIR_APLICA_CENTRAL."/despac/ins_despac_noveda.php");// codigo servicio que se carga al inicio
 define("CODIGO_INS_NOVEDA", "3302");// constante para el codigo de insercion de novedades en PC

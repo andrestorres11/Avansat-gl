@@ -1,6 +1,6 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set("display_errors", 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set("display_errors", 1);
 @session_start();
 class Solici_solici
 {
@@ -329,23 +329,15 @@ png, jpeg, zip, rar)
 		return $arrRes;
 	}
 	function setInterfParame(){
-		$rtbn=$this->existTable(BASE_DATOS,array("tab_interf_parame","tab_interf_parame_temp"));
-		if(sizeof($rtbn)>0){
-			foreach($rtbn as $c => $table){
-				$sql='SELECT cod_operad,cod_transp,nom_operad,nom_usuari,clv_usuari,val_timtra,ind_intind,ind_operad,ind_estado,url_webser '.
-						'FROM '.BASE_DATOS.'.'.$table.' '.
-						'WHERE '.
-						'cod_operad=50 and '.
-						'ind_estado=1 '.
-						'limit 1';
-				$consulta = new Consulta( $sql, $this->conexion );
-				$datos = $consulta->ret_matriz( 'a' );
-				if(sizeof($datos)>0){
-					$this->interfParame = $datos[0];
-					continue;
-				}
-			}
-		}
+		$cod_transp = $this->getTranspUsuari();
+		$datos = array(
+						"cod_transp" => $cod_transp,
+						"nom_operad" => "InterfSolicitud",
+						"nom_usuari" => "InterfSolicitud",
+						"clv_usuari" => "c09HeWcyMXEtYl9f",
+						"ind_estado" => "1"
+					);
+		$this->interfParame = $datos;
 	}
 
 	function getCiudad(){
@@ -576,6 +568,33 @@ EOF;
 		); 
 		return strtr($str,$arr); 
 	} 
+
+	
+	function getTranspUsuari()
+	{
+		try
+		{
+			$mSql = "SELECT a.clv_filtro
+						FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
+						WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." 
+					";
+			$mConsult = new Consulta( $mSql, $this->conexion );
+			$result = $mConsult -> ret_matriz('a');
+			if(sizeof($result)>0)
+			{
+				return $result[0]['clv_filtro'];
+			}
+			else
+			{
+				return 0;
+			}
+		}
+		catch (Exception $e)
+		{
+			echo "Error en la funcion getTranspUsuari: ", $e->getMessage();
+		}
+	}
+
 }
 
 $proceso = new Solici_solici();
