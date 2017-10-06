@@ -3047,7 +3047,7 @@ class Despac
 			if( $mIndCant == 1 )
 			{ 
 				#Valida si el deaspacho esta acargo de la empresa
-				if($mDespac[$i]["ind_defini"] == 'SI')
+				if($mDespac[$i]["ind_defini"] == 'SI' && $mDespac[$i]["ind_anulad"] != "A") 
 				{
 					$mResult["con_acargo"]++;
 					continue;
@@ -3136,7 +3136,7 @@ class Despac
 					$color2 = $mColor[3];
 				}
 				#Valida si el despacho esta a cargo de la empresa
-				if(($mFiltro == 'ind_acargo' || $mFiltro == 'sinF') && $mDespac[$i]["ind_defini"] == 'SI' )
+				if(($mFiltro == 'ind_acargo' || $mFiltro == 'sinF') && $mDespac[$i]["ind_defini"] == 'SI' && $mDespac[$i]["ind_anulad"] != "A" )
 				{
 					$mResult["con_acargo"][$con_acargo] = $mDespac[$i];
 					$mResult["con_acargo"][$con_acargo]["color"] = $color;
