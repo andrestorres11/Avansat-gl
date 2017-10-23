@@ -1,0 +1,153 @@
+/*@import url('//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css') screen;*/
+@import url('../estilos/jquery.css') screen;
+@import url('//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css') screen;
+body { padding-bottom: 70px; }
+.ins_solici_solici {
+	text-align: left;
+	text-align: -webkit-left;
+}
+.ins_solici_solici > div {
+	min-width: 779px; 
+	width: 100%;
+}
+#tabs {
+	width: 100%;
+	height: 30em;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+#tabs div form {
+	display: none;
+}
+.hide{
+	display: none;
+}
+.show{
+	display: block;
+}
+label.radio-inline span {
+	margin-left: 10px;
+}
+.form-group .actions input {
+    margin-right: 10px;
+}
+.form-inline label{
+	margin-right: 10px;
+}
+div.required,
+span.required,
+label.required{
+	color:red;
+}
+file.required,
+select.required,
+textarea.required,
+input.required{
+	border:1px solid red;
+	color:red;
+}
+
+
+/**********************************/
+/************* filtro *************/
+
+	.wrapFilter {
+		width:100%;
+		text-align: left;
+    }
+    .wrapFilter .filterform {
+		width:100%;
+		font-size:12px;
+		display:block;
+    }
+    .wrapFilter .filterinput{
+    	width: 100%;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .wrapFilter .list.level0{
+    	/*border-radius: 3px 3px 3px 3px;
+		-moz-border-radius: 3px 3px 3px 3px;
+		-webkit-border-radius: 3px 3px 3px 3px;
+    	border: 1px dashed silver;*/
+    	border: none;
+	    color: #002233;
+	    background: #fefefe;
+	    word-wrap: normal;
+	    /*width: 100%;
+	    width: calc(100% - 0px);*/
+	    min-height: 32px;
+    	max-height: 62px;
+    	overflow-x: hidden;
+    	overflow-y: auto;
+	    display: inline-block;
+	    padding: 0px;
+	    display: none;
+	    float: left;
+	}
+	.wrapFilter .list.level0.simple{
+		overflow-x: hidden;
+    	overflow-y: hidden;
+    	border: none;
+    	height: 32px;
+    	background: none;
+    	margin: 0px;
+    	padding: 0px;
+	}
+    .wrapFilter .list.level1{
+    	background: #fff;
+    	min-width: 150px;
+    	width: 200px;
+    	min-height: 50px;
+    	max-height: 150px;
+    	overflow-x: hidden;
+    	overflow-y: auto;
+    	display: inline;
+    	display: inline-block;
+    	margin-top: 34px;
+    	padding: 0px;
+    	border: 1px solid #ccc;
+    	display: none;
+    	position: absolute;
+    	z-index: 300;
+    }
+    .wrapFilter .list.level0 li{
+    	border-radius: 3px 3px 3px 3px;
+		-moz-border-radius: 3px 3px 3px 3px;
+		-webkit-border-radius: 3px 3px 3px 3px;
+		border: 0px solid #000000;
+    	margin-right: 20px;
+	    font-style: italic;
+	    cursor: pointer;
+    	display: inline;
+    	display: inline-block;
+    	list-style-type: none;
+    	margin-right: 3px;
+    	padding: 9px;
+    	border:1px solid #ccc;
+    	background: #fff;
+    	color: #000;
+    }
+    .wrapFilter .list.level0.simple li{
+    	padding: 5px;
+    }
+    .wrapFilter .list.level1 li{
+    	cursor: pointer;
+    	display: inline;
+    	display: inline-block;
+    	list-style-type: none;
+    	margin: 0px;
+    	padding: 3px;
+    	border:none;
+    	background: #fefefe;
+    	color: #000;
+    }
+    .wrapFilter .hide{
+    	display: none;
+    }
+    .wrapFilter .show{
+    	display: block;
+    } 
+
+/************* filtro *************/
+/**********************************/

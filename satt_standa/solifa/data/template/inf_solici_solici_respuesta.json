@@ -1,0 +1,471 @@
+{
+    "tag": "table", 
+    "border": "1",
+    "class": "indicador-respuesta",
+    "style": "width:100%;",
+    "border": "0",
+    "children": [
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"3", 
+                    "class": "title",
+                    "html": "&nbsp;"
+                },
+                {
+                    "tag": "td", 
+                    "class": "title",
+                    "children": [
+                        {
+                            "tag": "span", 
+                            "class":"title", 
+                            "html": "No. de Solicitud:: "
+                        },
+                        {
+                            "tag": "span", 
+                            "class":"data num_solici", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"3", 
+                    "class": "title",
+                    "html": "&nbsp;"
+                },
+                {
+                    "tag": "td", 
+                    "class": "title",
+                    "children": [
+                        {
+                            "tag": "span", 
+                            "class":"title", 
+                            "html": "Tipo de Solicitud: "
+                        },
+                        {
+                            "tag": "span", 
+                            "class":"data nom_tipsol", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"4", 
+                    "class": "title text-align-center data nom_transp",
+                    "html": "Cliente XXXXXX"
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for":"nom_usrsol", 
+                            "class":"title", 
+                            "html": "Nombre Completo: "
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class":"form-control data nom_usrsol", 
+                            "readonly": "true",
+                            "value": ""
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for":"dir_usrmai", 
+                            "class":"title", 
+                            "html": "Email: "
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class":"form-control data dir_usrmai", 
+                            "readonly": "true",
+                            "value": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for":"num_usrfij", 
+                            "class":"title", 
+                            "html": "Tel&eacute;fono fijo: "
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class":"form-control data num_usrfij", 
+                            "readonly": "true",
+                            "value": ""
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for":"num_usrcel", 
+                            "class":"title", 
+                            "html": "No. de Celular: "
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class":"form-control data num_usrcel", 
+                            "readonly": "true",
+                            "value": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for":"fec_creaci", 
+                            "class":"title", 
+                            "html": "Fecha y hora de Solicitud: "
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class":"form-control data fec_creaci", 
+                            "readonly": "true",
+                            "value": ""
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for":"nom_estado", 
+                            "class":"title", 
+                            "html": "Estado: "
+                        }
+                    ]
+                },
+                {
+                    "tag": "td", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class":"form-control data nom_estado", 
+                            "readonly": "true",
+                            "value": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"4", 
+                    "class": "title text-align-center",
+                    "html": "Datos de la Solicitud"
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"4", 
+                    "children": [
+                        {
+                            "tag": "textarea", 
+                            "style": "width: 100%;", 
+                            "class": "form-control data det_solici", 
+                            "readonly": "true",
+                            "placeholder": "Observaciones", 
+                            "html": ""
+                        },
+                        {
+                            "tag": "div", 
+                            "style": "width: 100%;", 
+                            "class": "form-control data dir_archiv", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"4", 
+                    "class": "title text-align-center",
+                    "html": "Respuesta a enviar"
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"4", 
+                    "children": [
+                        {
+                            "tag": "textarea", 
+                            "style": "width: 100%;", 
+                            "class": "form-control",
+                            "placeholder": "Observaciones", 
+                            "name": "obs_seguim", 
+                            "required": "required", 
+                            "html": ""
+                        },
+                        {
+                            "tag": "div",
+                            "style": "height:70px;",
+                            "children":[
+                                {
+                                    "tag": "div", 
+                                    "class": "form-group row", 
+                                    "children": [
+                                        {
+                                            "tag": "div", 
+                                            "class": "form-inline col-xs-3 col-md-3", 
+                                            "children": [
+                                                {
+                                                    "tag": "label", 
+                                                    "for": "dir_archiv", 
+                                                    "html": "Adjuntar archivo:"
+                                                }
+                                            ]
+                                        }, 
+                                        {
+                                            "tag": "div", 
+                                            "class": "form-inline col-xs-9 col-md-9", 
+                                            "children": [
+                                                {
+                                                    "tag": "input", 
+                                                    "type": "file", 
+                                                    "class": "form-control", 
+                                                    "placeholder": "Adjuntar archivo", 
+                                                    "name": "dir_archiv", 
+                                                    "html": ""
+                                                }, 
+                                                {
+                                                    "tag": "br", 
+                                                    "html": ""
+                                                }, 
+                                                {
+                                                    "tag": "span", 
+                                                    "class": "help-block", 
+                                                    "html": "Tamaño máximo de 2mb por archivo"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "tag": "div",
+                            "style": "height:40px;",
+                            "children":[
+                                {
+                                    "tag": "div", 
+                                    "class": "form-group row", 
+                                    "children": [
+                                        {
+                                            "tag": "div", 
+                                            "class": "form-inline col-xs-3 col-md-3", 
+                                            "children": [
+                                                {
+                                                    "tag": "label", 
+                                                    "for": "dir_archiv", 
+                                                    "html": "Cerrar petici&oacute;n:"
+                                                }
+                                            ]
+                                        }, 
+                                        {
+                                            "tag": "div", 
+                                            "class": "form-inline col-xs-9 col-md-9", 
+                                            "children": [
+                                                {
+                                                    "tag": "label", 
+                                                    "class": "checkbox-inline", 
+                                                    "children": [
+                                                        {
+                                                            "tag": "input", 
+                                                            "type": "checkbox", 
+                                                            "name": "cod_estado", 
+                                                            "id": "cod_estado_3", 
+                                                            "class": "data cod_estado cerrar",
+                                                            "value": "3", 
+                                                            "html": ""
+                                                        },
+                                                        {
+                                                            "tag": "span", 
+                                                            "html": "SI"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }                        
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"4", 
+                    "children": [
+                        {
+                            "tag": "table", 
+                            "colspan":"4", 
+                            "class": "bitacora",
+                            "style": "width:100%;",
+                            "children": [
+                                {
+                                    "tag": "tr", 
+                                    "class": "title1 text-align-center",
+                                    "children": [
+                                        {
+                                            "tag": "th", 
+                                            "colspan":"4", 
+                                            "class": "text-align-center",
+                                            "html": "Bitacora de respuesta"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "tag": "tr", 
+                                    "children": [
+                                        {
+                                            "tag": "th", 
+                                            "class": "title text-align-center",
+                                            "html": "Detalle"
+                                        },
+                                        {
+                                            "tag": "th", 
+                                            "class": "title text-align-center",
+                                            "html": "Estado"
+                                        },
+                                        {
+                                            "tag": "th", 
+                                            "class": "title text-align-center",
+                                            "html": "Fecha y Hora"
+                                        },
+                                        {
+                                            "tag": "th", 
+                                            "class": "title text-align-center",
+                                            "html": "Usuario"
+                                        }
+                                    ]
+                                }                                
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "td", 
+                    "colspan":"3", 
+                    "class":"title", 
+                    "html": "&nbsp;"
+                },
+                {
+                    "tag": "td", 
+                    "class": "title text-align-center",
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "send", 
+                            "value": "Enviar", 
+                            "html": ""
+                        }, 
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "cancel", 
+                            "value": "Cancelar", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

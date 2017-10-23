@@ -1,0 +1,233 @@
+{
+    "tag": "form", 
+    "class": "form-horizontal", 
+    "children": [
+        {
+            "tag": "div", 
+            "class": "form-group pqr", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "form-group col-xs-12 col-md-12", 
+                    "children": [
+                        {
+                            "tag": "div", 
+                            "class": "form-group row", 
+                            "children": [
+                                {
+                                    "tag": "label", 
+                                    "class": "radio-inline col-xs-3 col-md-3", 
+                                    "html": "Seleccione:"
+                                },
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-9 col-md-9", 
+                                    "children": [
+                                        {
+                                            "tag": "label", 
+                                            "class": "radio-inline", 
+                                            "children": [
+                                                {
+                                                    "tag": "input", 
+                                                    "type": "radio", 
+                                                    "name": "inlineRadioOptions", 
+                                                    "id": "inlineRadio3", 
+                                                    "value": "1", 
+                                                    "html": ""
+                                                },
+                                                {
+                                                    "tag": "span", 
+                                                    "html": "Petición"
+                                                }
+                                            ]
+                                        }, 
+                                        {
+                                            "tag": "label", 
+                                            "class": "radio-inline", 
+                                            "children": [
+                                                {
+                                                    "tag": "input", 
+                                                    "type": "radio", 
+                                                    "name": "inlineRadioOptions", 
+                                                    "id": "inlineRadio3", 
+                                                    "value": "2", 
+                                                    "html": ""
+                                                },
+                                                {
+                                                    "tag": "span", 
+                                                    "html": "Queja"
+                                                }
+                                            ]
+                                        }, 
+                                        {
+                                            "tag": "label", 
+                                            "class": "radio-inline", 
+                                            "children": [
+                                                {
+                                                    "tag": "input", 
+                                                    "type": "radio", 
+                                                    "name": "inlineRadioOptions", 
+                                                    "id": "inlineRadio3", 
+                                                    "value": "3", 
+                                                    "html": ""
+                                                },
+                                                {
+                                                    "tag": "span", 
+                                                    "html": "Sugerencia"
+                                                }
+                                            ]
+                                        }, 
+                                        {
+                                            "tag": "label", 
+                                            "class": "radio-inline", 
+                                            "children": [
+                                                {
+                                                    "tag": "input", 
+                                                    "type": "radio", 
+                                                    "name": "inlineRadioOptions", 
+                                                    "id": "inlineRadio3", 
+                                                    "value": "4", 
+                                                    "html": ""
+                                                },
+                                                {
+                                                    "tag": "span", 
+                                                    "html": "Felicitación"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }, 
+                        {
+                            "tag": "div", 
+                            "class": "form-group row", 
+                            "children": [
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "label", 
+                                            "for": "date", 
+                                            "html": "Asunto:"
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "input", 
+                                            "type": "text", 
+                                            "class": "form-control", 
+                                            "placeholder": "Asunto", 
+                                            "html": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        }, 
+                        {
+                            "tag": "div", 
+                            "class": "form-group row", 
+                            "children": [
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "label", 
+                                            "for": "inputName", 
+                                            "html": "Observaciones:"
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-9 col-md-9", 
+                                    "children": [
+                                        {
+                                            "tag": "textarea", 
+                                            "style": "width: 100%;", 
+                                            "placeholder": "Observaciones", 
+                                            "html": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        }, 
+                        {
+                            "tag": "div", 
+                            "class": "form-group row", 
+                            "children": [
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "label", 
+                                            "for": "inputName", 
+                                            "html": "Adjuntar archivo:"
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-9 col-md-9", 
+                                    "children": [
+                                        {
+                                            "tag": "input", 
+                                            "type": "file", 
+                                            "class": "form-control", 
+                                            "placeholder": "Adjuntar archivo", 
+                                            "html": ""
+                                        }, 
+                                        {
+                                            "tag": "br", 
+                                            "html": ""
+                                        }, 
+                                        {
+                                            "tag": "span", 
+                                            "class": "help-block", 
+                                            "html": "Tamaño máximo de 2mb por archivo"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "class": "form-group col-xs-12 col-md-12 col-sm-12", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "actions center-block text-center", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "send", 
+                            "value": "Enviar", 
+                            "html": ""
+                        }, 
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "cancel", 
+                            "value": "Cancelar", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

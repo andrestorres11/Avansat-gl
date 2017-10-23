@@ -1,0 +1,31 @@
+@import url('//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css') screen;
+@import url('//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css') screen;
+body { padding-bottom: 70px; }
+.ins_solici_solici > div {
+	min-width: 779px; 
+	width: 100%;
+}
+#tabs {
+	width: 100%;
+	height: 30em;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+#tabs div form {
+	display: none;
+}
+.hide{
+	display: none;
+}
+.show{
+	display: block;
+}
+label.radio-inline span {
+	margin-left: 10px;
+}
+.form-group .actions input {
+    margin-right: 10px;
+}
+.form-inline label{
+	margin-right: 10px;
+}

@@ -1,0 +1,118 @@
+{
+    "tag": "form", 
+    "class": "form-vertical", 
+    "children": [
+        {
+            "tag": "div", 
+            "class": "form-group col-xs-12 col-md-12", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for": "inputName", 
+                            "html": "Nombre completo:"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "type": "text", 
+                            "class": "form-control", 
+                            "id": "inputName", 
+                            "placeholder": "Ej. Nombre Apellido", 
+                            "html": ""
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for": "inputEmail", 
+                            "html": "Email:"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "type": "email", 
+                            "class": "form-control", 
+                            "id": "inputEmail", 
+                            "placeholder": "Ej. demo.demo@demo.co", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "class": "form-group col-xs-12 col-md-12", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for": "inputTel", 
+                            "html": "Telefono fijo:"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "type": "text", 
+                            "class": "form-control", 
+                            "id": "inputTel", 
+                            "placeholder": "Ej. 74688888", 
+                            "html": ""
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for": "inputCel", 
+                            "html": "No. de celular:"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "type": "text", 
+                            "class": "form-control", 
+                            "id": "inputCel", 
+                            "placeholder": "Ej. 3215555555", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,94 @@
+<?php
+$deploy=<<<EOF
+{
+	"APP":[
+		{"ID":"satp","NAME":"Paqueteo","PREFIX":"satp_","STANDA":""},
+		{"ID":"c","NAME":"Consultor","PREFIX":"c_","STANDA":"consultor"},
+		{"ID":"spyme","NAME":"Pyme","PREFIX":"spyme_","STANDA":"sate_standa"},
+		{"ID":"sate","NAME":"Empresarial","PREFIX":"sate_","STANDA":"sate_standa"},
+		{"ID":"sadc","NAME":"Empresarial","PREFIX":"sadc_","STANDA":"sate_standa"},
+		{"ID":"satc","NAME":"Carga","PREFIX":"satc_","STANDA":"satc_standa"},
+		{"ID":"satb","NAME":"Basico","PREFIX":"satb_","STANDA":"satb_sta155"},
+		{"ID":"satt","NAME":"Faro GL","PREFIX":"satt_","STANDA":"satt_standa"}
+	],
+	"DB":[{
+		"ID":"MYSQL5M0001",
+		"ENGINE":"MYSQL",
+		"VERSION":"5.5.53",
+		"ARCHITECTURE":"64bits",
+		"VERSION_COMPILE_MACHINE":"x86_64",
+		"VERSION_COMPILE_OS":"debian-linux-gnu",
+		"CONN":{
+			"HOST":"127.0.0.1",
+			"USER":"root",
+			"PWD":"intrared",
+			"DBNAME":"",
+			"PORT":"3306",
+			"SOCKET":""
+		}
+	}],
+	"SCRIPT":[{
+		"ID":"Apache2Php5M0001",
+		"SERVER_SOFTWARE":"Apache/2.4.18 (Unix) OpenSSL/1.0.2h PHP/5.6.21 mod_perl/2.0.8-dev Perl/v5.16.3",
+		"SERVER_NAME":"localhost",
+		"SERVER_ADDR":"127.0.0.1",
+		"SERVER_PORT":"80",
+		"DOCUMENT_ROOT":"/opt/lampp/htdocs",
+		"REQUEST_SCHEME":"http",
+		"SERVER_PROTOCOL":"HTTP/1.1",
+		"X-Powered-By":"PHP/5.6.21",
+		"OS":"Linux INTRARED-20 4.4.0-45-generic #66~14.04.1-Ubuntu SMP Wed Oct 19 15:05:38 UTC 2016 x86_64"
+	}],
+	"DEPLOY":[
+		{
+			"NAME":"local.frocuts",
+			"PROD":[],
+			"DEV":[
+				{
+					"REF_APP":"satt",
+					"REF_SCRIPT":"Apache2Php5M0001",
+					"REF_DB":"MYSQL5M0001",
+					"PATH":"/opt/lampp/htdocs/207123/demo/sat-gl-2015/",
+					"URL":"http://localhost/207123/demo/sat-gl-2015/"
+				},
+				{
+					"REF_APP":"satb",
+					"REF_SCRIPT":"Apache2Php5M0001",
+					"REF_DB":"MYSQL5M0001",
+					"PATH":"/opt/lampp/htdocs/207123/demo/satb/",
+					"URL":"http://localhost/207123/demo/satb/"
+				}
+			]
+		},
+		{
+			"NAME":"local.frocuts2",
+			"PROD":[],
+			"DEV":[
+				{
+					"REF_APP":"satt",
+					"REF_SCRIPT":"Apache2Php5M0001",
+					"REF_DB":"MYSQL5M0001",
+					"PATH":"/opt/lampp/htdocs/207123/demo/sat-gl-2015/",
+					"URL":"http://localhost/207123/demo/sat-gl-2015/"
+				},
+				{
+					"REF_APP":"satb",
+					"REF_SCRIPT":"Apache2Php5M0001",
+					"REF_DB":"MYSQL5M0001",
+					"PATH":"/opt/lampp/htdocs/207123/demo/satb/",
+					"URL":"http://localhost/207123/demo/satb/"
+				}
+			]
+		}
+	],
+	"TYPE_DEPLOY":"DEV"
+}
+EOF;
+
+$setting_file="config/deploy.dev.local.frocuts";
+$x=json_decode($deploy);
+$x=serialize($x);
+if(!file_exists($setting_file)){
+	@mkdir("config","700");
+	@file_put_contents($setting_file, $x);
+}

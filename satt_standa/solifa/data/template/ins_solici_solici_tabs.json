@@ -1,0 +1,123 @@
+{
+    "tag": "div", 
+    "id": "tabs", 
+    "children": [
+        {
+            "tag": "ul", 
+            "children": [
+                {
+                    "tag": "li", 
+                    "children": [
+                        {
+                            "tag": "a", 
+                            "href": "#tabs-1", 
+                            "html": "Creación de ruta"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "li", 
+                    "children": [
+                        {
+                            "tag": "a", 
+                            "href": "#tabs-2", 
+                            "html": "Seguimiento especial"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "li", 
+                    "children": [
+                        {
+                            "tag": "a", 
+                            "href": "#tabs-3", 
+                            "html": "PQR"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "li", 
+                    "children": [
+                        {
+                            "tag": "a", 
+                            "href": "#tabs-4", 
+                            "html": "Otras solicitudes"
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "id": "tabs-1",
+            "style": "background-color: #EBF8E2;display: block;padding: 20px 20px 50px 50px;color: black;margin: 30px;", 
+            "children": [
+                {
+                    "tag": "h4", 
+                    "class": "loading help-block", 
+                    "html": "Cargando..."
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs_1", 
+                    "html": "", 
+                    "source": "data/template/ins_solici_solici_tabs_1.json"
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "id": "tabs-2",
+            "style": "background-color: #EBF8E2;display: block;padding: 20px 20px 50px 50px;color: black;margin: 30px;", 
+            "children": [
+                {
+                    "tag": "h4", 
+                    "class": "loading help-block", 
+                    "html": "Cargando..."
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs_2", 
+                    "html": "", 
+                    "source": "data/template/ins_solici_solici_tabs_2.json"
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "id": "tabs-3",
+            "style": "background-color: #EBF8E2;display: block;padding: 20px 20px 50px 50px;color: black;margin: 30px;", 
+            "children": [
+                {
+                    "tag": "h4", 
+                    "class": "loading help-block", 
+                    "html": "Cargando..."
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs_3", 
+                    "html": "", 
+                    "source": "data/template/ins_solici_solici_tabs_3.json"
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "id": "tabs-4",
+            "style": "background-color: #EBF8E2;display: block;padding: 20px 20px 50px 50px;color: black;margin: 30px;", 
+            "children": [
+                {
+                    "tag": "h4", 
+                    "class": "loading help-block", 
+                    "html": "Cargando..."
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "template_tabs_4", 
+                    "html": "", 
+                    "source": "data/template/ins_solici_solici_tabs_4.json"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,190 @@
+{
+    "tag": "form", 
+    "class": "form-horizontal", 
+    "children": [
+        {
+            "tag": "div", 
+            "class": "form-group segespecial", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "form-group col-xs-12 col-md-12", 
+                    "children": [
+                        {
+                            "tag": "div", 
+                            "class": "form-group row", 
+                            "children": [
+                                {
+                                    "tag": "label", 
+                                    "class": "radio-inline col-xs-3 col-md-3", 
+                                    "html": "Seleccione:"
+                                },
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-9 col-md-9", 
+                                    "children": [
+                                        {
+                                            "tag": "label", 
+                                            "class": "radio-inline col-xs-3 col-md-3", 
+                                            "html": "", 
+                                            "children": [
+                                                {
+                                                    "tag": "input", 
+                                                    "type": "radio", 
+                                                    "name": "inlineRadioOptions", 
+                                                    "id": "inlineRadio3", 
+                                                    "value": "1", 
+                                                    "html": ""
+                                                },
+                                                {
+                                                    "tag": "span", 
+                                                    "html": "Toda la flota"
+                                                }
+                                            ]
+                                        }, 
+                                        {
+                                            "tag": "label", 
+                                            "class": "radio-inline col-xs-3 col-md-3", 
+                                            "html": "", 
+                                            "children": [
+                                                {
+                                                    "tag": "input", 
+                                                    "type": "radio", 
+                                                    "name": "inlineRadioOptions", 
+                                                    "id": "inlineRadio3", 
+                                                    "value": "2", 
+                                                    "html": ""
+                                                },
+                                                {
+                                                    "tag": "span", 
+                                                    "html": "Por vehiculo"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }, 
+                        {
+                            "tag": "div", 
+                            "class": "form-group row", 
+                            "children": [
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "label", 
+                                            "for": "inputName", 
+                                            "html": "Fecha y hora de inicio:"
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "input", 
+                                            "type": "datetime-local", 
+                                            "class": "form-control", 
+                                            "placeholder": "Fecha y hora de inicio", 
+                                            "html": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        }, 
+                        {
+                            "tag": "div", 
+                            "class": "form-group row", 
+                            "children": [
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "label", 
+                                            "for": "date", 
+                                            "html": "Fecha y hora de fin:"
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "input", 
+                                            "type": "datetime-local", 
+                                            "class": "form-control", 
+                                            "placeholder": "Fecha y hora de fin", 
+                                            "html": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        }, 
+                        {
+                            "tag": "div", 
+                            "class": "form-group row", 
+                            "children": [
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "children": [
+                                        {
+                                            "tag": "label", 
+                                            "for": "inputName", 
+                                            "html": "Observaciones:"
+                                        }
+                                    ]
+                                }, 
+                                {
+                                    "tag": "div", 
+                                    "class": "form-inline col-xs-9 col-md-9", 
+                                    "children": [
+                                        {
+                                            "tag": "textarea", 
+                                            "style": "width: 100%;", 
+                                            "placeholder": "Observaciones", 
+                                            "html": ""
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "class": "form-group col-xs-12 col-md-12 col-sm-12", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "actions center-block text-center", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "send", 
+                            "value": "Enviar", 
+                            "html": ""
+                        }, 
+                        {
+                            "tag": "input", 
+                            "class": "btn btn-default", 
+                            "type": "button", 
+                            "name": "cancel", 
+                            "value": "Cancelar", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
