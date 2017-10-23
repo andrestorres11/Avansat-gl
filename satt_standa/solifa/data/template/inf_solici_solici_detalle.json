@@ -1,0 +1,58 @@
+{
+    "tag": "table", 
+    "border": "1",
+    "class": "indicador-detallado2",
+    "children": [
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "th", 
+                    "colspan":"9", 
+                    "html": "zona enlace descarga archivo excel"
+                }
+            ]
+        },
+        {
+            "tag": "tr", 
+            "children": [
+                {
+                    "tag": "th", 
+                    "html": "No. de solicitud"
+                },
+                {
+                    "tag": "th", 
+                    "html": "Tipo de solicitud"
+                },
+                {
+                    "tag": "th", 
+                    "html": "Nombre del cliente"
+                },
+                {
+                    "tag": "th", 
+                    "html": "Detalle de la solicitud"
+                },
+                {
+                    "tag": "th", 
+                    "html": "Fecha y hora de la solicitud"
+                },
+                {
+                    "tag": "th", 
+                    "html": "Fecha y hora de la respuesta"
+                },
+                {
+                    "tag": "th", 
+                    "html": "Diferencia en tiempo"
+                },
+                {
+                    "tag": "th", 
+                    "html": "Estado"
+                },
+                {
+                    "tag": "th", 
+                    "html": "Usuario"
+                }
+            ]
+        }
+    ]
+}

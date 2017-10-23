@@ -1,0 +1,125 @@
+{
+    "tag": "form", 
+    "class": "form-vertical solici", 
+    "children": [
+        {
+            "tag": "div", 
+            "class": "form-group col-xs-12 col-md-12", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for": "nom_solici", 
+                            "html": "Nombre completo:"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "type": "text", 
+                            "class": "form-control", 
+                            "id": "nom_solici", 
+                            "name": "nom_solici", 
+                            "required": "required", 
+                            "placeholder": "Ej. Nombre Apellido", 
+                            "html": ""
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for": "mai_solici", 
+                            "html": "Email:"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "type": "email", 
+                            "class": "form-control", 
+                            "id": "mai_solici", 
+                            "name": "mai_solici", 
+                            "required": "required", 
+                            "placeholder": "Ej. demo.demo@demo.co", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        }, 
+        {
+            "tag": "div", 
+            "class": "form-group col-xs-12 col-md-12", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for": "fij_solici", 
+                            "html": "Telefono fijo:"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "type": "text", 
+                            "class": "form-control", 
+                            "id": "fij_solici", 
+                            "name": "fij_solici", 
+                            "placeholder": "Ej. 74688888", 
+                            "html": ""
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "label", 
+                            "for": "cel_solici", 
+                            "html": "No. de celular:"
+                        }
+                    ]
+                }, 
+                {
+                    "tag": "div", 
+                    "class": "col-xs-3 col-md-3", 
+                    "children": [
+                        {
+                            "tag": "input", 
+                            "type": "text", 
+                            "class": "form-control", 
+                            "id": "cel_solici", 
+                            "name": "cel_solici", 
+                            "required": "required", 
+                            "placeholder": "Ej. 3215555555", 
+                            "html": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

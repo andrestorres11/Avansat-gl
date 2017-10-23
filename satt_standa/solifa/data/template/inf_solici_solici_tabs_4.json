@@ -1,0 +1,219 @@
+{
+    "tag": "form", 
+    "class": "form-horizontal", 
+    "children": [
+        {
+            "tag": "div", 
+            "class": "form-group hide alert alert-warning",
+            "html": ""
+        },
+        {
+            "tag": "div", 
+            "class": "form-group", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "form-group col-xs-12 col-md-12", 
+                    "children": [
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12", 
+                            "children": [
+                                {
+                                    "tag": "table", 
+                                    "border": "1",
+                                    "class": "indicador",
+                                    "children": [
+                                        {
+                                            "tag": "tr", 
+                                            "class": "title1",
+                                            "children": [
+                                                {
+                                                    "tag": "th", 
+                                                    "colspan":"9", 
+                                                    "html": "Indicador de solicitudes del periodo XX al XX del 201x"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "tr", 
+                                            "class": "title2",
+                                            "children": [
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Total por Gestionar"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Creacion de Rutas"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Seguimiento Esp"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "PQRS"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Otras Solicitudes"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "tr", 
+                                            "children": [
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "..."
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12",
+                            "html": ""
+                        },
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12", 
+                            "children": [
+                                {
+                                    "tag": "table", 
+                                    "border": "1",
+                                    "class": "indicador-detallado",
+                                    "children": [
+                                        {
+                                            "tag": "tr", 
+                                            "class": "title1",
+                                            "children": [
+                                                {
+                                                    "tag": "th", 
+                                                    "colspan":"10", 
+                                                    "html": "Detallado de solicitudes por cliente"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "tr", 
+                                            "class": "title2",
+                                            "children": [
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Cliente"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "T. por Gestionar"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Creacion Rutas"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Seguimiento Esp"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "PQRS"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Otras Solicitudes"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12", 
+                            "style": "display: none;",
+                            "html": "", 
+                            "source": "data/template/inf_solici_solici_detalle.json"
+                        },
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12", 
+                            "style": "display: none;",
+                            "html": "", 
+                            "source": "data/template/inf_solici_solici_respuesta.json"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

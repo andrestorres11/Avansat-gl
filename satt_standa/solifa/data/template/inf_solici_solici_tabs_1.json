@@ -1,0 +1,195 @@
+{
+    "tag": "form", 
+    "class": "form-horizontal", 
+    "children": [
+        {
+            "tag": "div", 
+            "class": "form-group hide alert alert-warning",
+            "html": ""
+        },
+        {
+            "tag": "div", 
+            "class": "form-group", 
+            "children": [
+                {
+                    "tag": "div", 
+                    "class": "form-group col-xs-12 col-md-12", 
+                    "children": [
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12", 
+                            "children": [
+                                {
+                                    "tag": "table", 
+                                    "border": "1",
+                                    "class": "indicador",
+                                    "children": [
+                                        {
+                                            "tag": "tr", 
+                                            "class": "title1",
+                                            "children": [
+                                                {
+                                                    "tag": "th", 
+                                                    "colspan":"7", 
+                                                    "html": "Indicador de solicitudes del periodo XX al XX del 201x"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "tr", 
+                                            "class": "title2",
+                                            "children": [
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Total Generadas"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Gestionadas"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Porcentaje"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "En proceso"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Porcentaje"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Por Gestionar"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Porcentaje"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "tr", 
+                                            "children": [
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0%"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0%"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0%"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12",
+                            "html": ""
+                        },
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12", 
+                            "children": [
+                                {
+                                    "tag": "table", 
+                                    "border": "1",
+                                    "class": "indicador-detallado",
+                                    "children": [
+                                        {
+                                            "tag": "tr", 
+                                            "class": "title1",
+                                            "children": [
+                                                {
+                                                    "tag": "th", 
+                                                    "colspan":"8", 
+                                                    "html": "Detallado por dia"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "tr", 
+                                            "class": "title2",
+                                            "children": [
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Fecha de Solicitud"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Generadas"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Gestionadas"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "En Proceso"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "Por Gestionar"
+                                                },
+                                                {
+                                                    "tag": "th", 
+                                                    "html": "%"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12", 
+                            "style": "display: none;",
+                            "html": "", 
+                            "source": "data/template/inf_solici_solici_detalle.json"
+                        },
+                        {
+                            "tag": "div", 
+                            "class": "form-group col-xs-12 col-md-12", 
+                            "style": "display: none;",
+                            "html": "", 
+                            "source": "data/template/inf_solici_solici_respuesta.json"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
