@@ -114,7 +114,8 @@ define("DirCss", "../".DIR_APLICA_CENTRAL."/estilos");
 define("DirCssJq", "../".DIR_APLICA_CENTRAL."/estilos");
 
 #configuracion para SPG con Panel de Control
-define("URL_INTERF_PCONTROL","https://dev.intrared.net:8084/ap/dev/panel_control_rc1/web/app.php/spg/validate");
+//define("URL_INTERF_PCONTROL","https://dev.intrared.net:8084/ap/dev/panel_control_rc1/web/app.php/spg/validate");
+define( 'URL_INTERF_PCONTROL' , 'https://central.intrared.net/ap/dev/panel_control_rc1/web/app.php/spg/validate');
 define( 'URL_INTERF_SPG' , 'https://web6.intrared.net:8083/ap/interf/app/spg/wsdl/spg2.wsdl' );
 //define( 'URL_INTERF_SPG_PANEL' , 'https://dev.intrared.net:8083/ap/interf/app/spg_new/spg.php?wsdl' );
 define( 'URL_INTERF_SPG_PANEL' , 'https://interno.intrared.net:8083/ap/interf/app/spg_new/spg.php?wsdl' );
