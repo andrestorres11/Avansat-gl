@@ -1763,7 +1763,7 @@ function r(){
 				if($("#tabs #tabs-1 .loading.help-block").css("display")=="block"){
 					if(location.href.indexOf("reload=true")>-1){
 						if($(".alert.alert-warning.delay").length==0){
-							$(".inf_solici_solici").before('<h4 class="alert alert-warning delay">Su conexion presenta demoras, intente cargar de nuevo el servicio.</h4>');
+							$(".inf_solici_solici").before('<h4 class="alert alert-warning delay">'+('Su conexion presenta demoras, intente cargar de nuevo el servicio.').toUpperCase()+'</h4>');
 						}
 					}else{
 						location.href="?window="+server_req.window+"&cod_servic="+server_req.cod_servic+"&r="+Math.random()+"&reload=true";

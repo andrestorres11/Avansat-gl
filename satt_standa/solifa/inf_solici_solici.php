@@ -406,6 +406,19 @@ png, jpeg, zip, rar)
 				$consulta = new Consulta( $sql, $this->conexion );
 				print json_encode(array("message"=>"Registro con &eacute;xito el seguimiento","status"=>"success"));
 				//print json_encode(array("message"=>$sql,"status"=>"success"));
+				/**************** Envio mail *********************/
+		      	$dataMail = (object) array(
+		                              'nom_solici'  =>  'Gestion Solicitud',
+		                              'nom_cliente'  =>  $this->getTransSolici($this->raw->num_solici)[0]['abr_tercer'],
+		                              'date'  =>  date("Y-m-d H:i:s"),
+		                              'num_solici'  =>  $this->raw->num_solici,
+		                              'cod_usuari'  =>  str_replace("'"," ",$_SESSION["datos_usuario"]["nom_usuari"]),
+		                              'year'  =>  date("Y"),
+		                              'cod_estado'  =>  $this->getEstado($this->raw->cod_estado)[0]['nom_estado'],
+		                              'obs_solici'  =>  $this->raw->obs_seguim,
+		                              'mailTo'  =>  $_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR,
+		                          );
+		      	$this->sendMailSolifa($dataMail);
 				return false;
 			}
 		}catch(Exception $e){
@@ -429,7 +442,7 @@ png, jpeg, zip, rar)
 	}
 
 	function getTercerTransp(){
-		$sql='select t.cod_tercer as "key", t.nom_tercer as "value"  from tab_tercer_tercer t inner join (select distinct a.cod_transp from satt_faro.tab_solici_datosx a order by a.cod_transp) sd on sd.cod_transp=t.cod_tercer inner join tab_tercer_activi ta on ta.cod_tercer=t.cod_tercer and ta.cod_activi = 1';
+		$sql='select t.cod_tercer as "key", t.abr_tercer as "value"  from tab_tercer_tercer t inner join (select distinct a.cod_transp from satt_faro.tab_solici_datosx a order by a.cod_transp) sd on sd.cod_transp=t.cod_tercer inner join tab_tercer_activi ta on ta.cod_tercer=t.cod_tercer and ta.cod_activi = 1';
 		$consulta = new Consulta( $sql, $this->conexion );
 		$datos    = $consulta->ret_matrix( 'a' );
 		//$datosc   = $this->arrIso2ascii($datos);
@@ -1274,6 +1287,67 @@ EOF;
 		$consulta = new Consulta( $sql, $this->conexion );
 		return $datos = $consulta->ret_matrix( 'a' );
 	}
+
+	function sendMailSolifa($data = NULL)
+	{
+	    try
+	    {
+		    $mCabece = 'MIME-Version: 1.0' . "\r\n";
+		    $mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		    $mCabece .= 'From: Centro Logistico FARO <no-replay@grupooet.com>' . "\r\n";
+		    $tmpl_file = '/var/www/html/ap/satt_standa/planti/pla_solifa_solifa.html';
+		    $thefile = implode("", file($tmpl_file));
+		    $thefile = addslashes($thefile);
+		    $thefile = "\$r_file=\"" . $thefile . "\";";
+		    eval($thefile);
+		    $mHtmlxx = $r_file;
+		    if($_SERVER['HTTP_HOST'] == 'dev.intrared.net:8083')
+		    {
+		      	$mailToS = "edward.serrano@intrared.net, maribel.garcia@eltransporte.org";
+		    }
+		    else
+		    {
+		      	$mailToS = $data->mailTo;
+		    }
+		    mail( $mailToS, " Solicitudes a Faro ", '<div name="_faro_07">' . $mHtmlxx . '</div>', $mCabece );
+	    }
+	    catch(Exception $e)
+	    {
+	      return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
+	    }
+	}
+
+	function getTransSolici($num_solici)
+	{
+	    try{
+		    $sql =  "SELECT c.abr_tercer FROM ".BASE_DATOS.".tab_solici_solici a ".
+		              "INNER JOIN ".BASE_DATOS.".tab_solici_datosx b ON a.cod_solici = b.cod_solici ".
+		              "INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON b.cod_transp = c.cod_tercer ".
+		              "WHERE ".
+		              "a.num_solici=$num_solici";
+		    $consulta = new Consulta( $sql, $this->conexion );
+			return $consulta->ret_matrix( 'a' );
+	    }
+	    catch(Exception $e)
+	    {
+	    	return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
+	    }
+  	}
+
+  	function getEstado($cod_estado)
+	{
+	    try{
+		    $sql =  "SELECT * FROM ".BASE_DATOS.".tab_solici_estado ".
+		              "WHERE ".
+		              "cod_estado=$cod_estado";
+		    $consulta = new Consulta( $sql, $this->conexion );
+			return $consulta->ret_matrix( 'a' );
+	    }
+	    catch(Exception $e)
+	    {
+	    	return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
+	    }
+  	}
 }
 
 $proceso = new Solici_solici();

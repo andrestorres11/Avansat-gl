@@ -114,8 +114,9 @@ function r(){
 		function processResult1(msg){
 			try{
 				var divActive=$("#tabs form").find('.alert.active');
-				divActive.parent().find(".btn[name=send]").attr("disabled","disabled");
-				divActive.html("<h2>Respuesta</h2>");
+				//divActive.parent().find(".btn[name=send]").attr("disabled","disabled");
+				//divActive.html(("<h2>Respuesta</h2>").toUpperCase());
+				divActive.html((""));
 				divActive.append("<ul>");
 				var objResponse=JSON.parse(msg);
 				for(a in objResponse){
@@ -125,17 +126,17 @@ function r(){
 							try{
 								if(currObjResp.ws.get.error!=null){
 									//alert(currObjResp.ws.get.error);
-									divActive.append("<li>"+currObjResp.ws.get.error+"</li>");
+									divActive.append("<li>"+currObjResp.ws.get.error.toUpperCase()+"</li>");
 								}
 								if(currObjResp.ws.get.fault!=null){
 									//alert(currObjResp.ws.get.fault);
-									divActive.append("<li>"+currObjResp.ws.get.fault+"</li>");
+									divActive.append("<li>"+currObjResp.ws.get.fault.toUpperCase()+"</li>");
 								}
 							}catch(e){
 								//console.log("processResult1 >  > catch 3");
 								//console.log(e);
 								//alert("Error, The Web Service have any problem, contact your provider.");
-								divActive.append("<li>Error, The Web Service have any problem, contact your provider.</li>");
+								divActive.append(("<li>Error, The Web Service have any problem, contact your provider.</li>").toUpperCase());
 							}
 						}else{
 							
@@ -144,10 +145,11 @@ function r(){
 							if(typeof y == "object"){
 								//divActive.append("<li>"+currObjResp.response+"</li>");
 								for( a in y){
-									divActive.append("<ul>"+a+"<li>"+y[a]+"</li><ul>");
+									divActive.append("<ul>"+a.toUpperCase()+"<li>"+y[a].toUpperCase()+"</li><ul>");
 								}
 							}else{
-								divActive.append("<li>"+currObjResp.response+"</li>");
+								var srtResponse = currObjResp.response.split(";")[1].split(":")[1];
+								divActive.append("<li>"+srtResponse.toUpperCase()+"</li>");
 							}
 						}
 					}catch(e){
@@ -164,7 +166,7 @@ function r(){
 				//console.log(e);
 				var divActive=$("#tabs form").find('.alert.active');
 				if(divActive!=null)
-					divActive.html(msg);
+					divActive.html(msg.toUpperCase());
 			}
 		}
 		function getErrorForm(form){
@@ -638,7 +640,7 @@ function r(){
 				if(!error){
 					setWsData(tabid,objSend);
 				}else{
-					currForm.find('.alert').html("Informaci&oacute;n incompleta, verif&iacute;que e intente nuevamente")
+					currForm.find('.alert').html(("Informacion incompleta, verifique e intente nuevamente").toUpperCase());
 				}
 			}catch(e){
 				//console.log("onSend > error > ");
@@ -1114,7 +1116,7 @@ function r(){
 				if($("#tabs #tabs-1 .loading.help-block").css("display")=="block"){
 					if(location.href.indexOf("reload=true")>-1){
 						if($(".alert.alert-warning.delay").length==0){
-							$(".ins_solici_solici").before('<h4 class="alert alert-warning delay">Su conexion presenta demoras, intente cargar de nuevo el servicio.</h4>');
+							$(".ins_solici_solici").before('<h4 class="alert alert-warning delay">'+('Su conexion presenta demoras, intente cargar de nuevo el servicio.').toUpperCase()+'</h4>');
 						}
 					}else{
 						location.href="?window="+server_req.window+"&cod_servic="+server_req.cod_servic+"&r="+Math.random()+"&reload=true";
