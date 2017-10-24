@@ -1,7 +1,7 @@
 {   
     "tag": "div", 
     "class": "contNew", 
-    "style": "margin-right: 30px;height: 200px;margin-left: 30px;background-color: #EBF8E2;padding: 10px 30px 10px 30px;color: black;margin-top: 20px;margin-buttom: 20px;",
+    "style": "margin-right: 30px;height: 210px;margin-left: 30px;background-color: #EBF8E2;padding: 10px 30px 10px 30px;color: black;margin-top: 20px;margin-buttom: 20px;",
     "children": [
         {
             "tag": "form", 
@@ -9,7 +9,8 @@
             "children": [
                 {
                     "tag": "h5", 
-                    "style": "background:#35650f;color:white;width:100%;",
+                    "style": "background:#35650f;color:white;width:100%;height: 30px;padding-top: 7;",
+                    "align": "center",
                     "html": "Filtros Generales"
                 }, 
                 {
@@ -73,7 +74,8 @@
                                                 {
                                                     "tag": "h5", 
                                                     "html": "",
-                                                    "style": "background:#35650f;color:white;width:100%;",
+                                                    "style": "background:#35650f;color:white;width:100%;height: 30px;padding-top: 7;",
+                                                    "align": "center",
                                                     "children": [
                                                         {
                                                             "tag": "span", 

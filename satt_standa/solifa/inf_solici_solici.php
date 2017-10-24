@@ -1,6 +1,6 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set("display_errors", 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set("display_errors", 1);
 ini_set('memory_limit','1024M');
 @session_start();
 class Solici_solici
@@ -1073,7 +1073,7 @@ EOF;
 				//IncludeJS( "mod_solici_inform.js" );//No se incluye, porque se requiere enviar un dato
 				//IncludeCSS no aplica, la crearon seguramente para modificar estilos a traves de javascript
 				$jq='<script type = "text/javascript" src="'.$filejqjs.'"></script>';
-				$formulario = new Formulario ("index.php","post","<div>Solicutd a faro</div>","form_list");
+				$formulario = new Formulario ("index.php","post","<div>SOLICITUD A FARO</div>","form_list");
 				$js='<script id="_45462213DEf">'.
 			        'var ds="'.$dirsolifa.'",'.
 			        'dc="'.$dircentral.'",'.
@@ -1094,7 +1094,7 @@ EOF;
 				die("Not found required files to Solici_solici::onCreateForm");
 			}
 		}else{
-			$formulario = new Formulario ("","get","<div>Solicutd a faro</div>","void");
+			$formulario = new Formulario ("","get","<div>SOLICITUD A FARO</div>","void");
 			echo '<link rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/estilos/mod_solici_inform.css">';
 			echo '<div class="inf_solici_solici alert alert-warning"><strong>Requiere activar la interfaz con Faro, consulte con su proveedor.</strong></div>';
 			$formulario->cerrar();

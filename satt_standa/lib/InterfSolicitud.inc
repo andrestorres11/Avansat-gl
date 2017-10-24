@@ -1,9 +1,11 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set("display_errors", 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set("display_errors", 1);
+error_reporting(0);
 @session_start();
 class InterfSolicitud {
-	var $wsdl_url='https://dev.intrared.net:8083/ap/interf/app/faro/faro.php?wsdl';
+	#Servidor para web service	
+	var $wsdl_url = NULL;
 	var $client;
 	var $params;
 	var $result;
@@ -12,6 +14,7 @@ class InterfSolicitud {
 	var $developer_mode=true;
 
 	function InterfSolicitud(){
+		$this->wsdl_url = $_SERVER['HTTP_HOST'] == 'dev.intrared.net:8083' ? 'https://dev.intrared.net:8083/ap/interf/app/faro/faro.php?wsdl':'https://avansatgl.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl';
 		$this->__load();
 	}
 	//function __construct(){

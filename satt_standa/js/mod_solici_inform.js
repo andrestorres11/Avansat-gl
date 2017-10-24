@@ -780,8 +780,8 @@ function r(){
 
 					//ingresar info del tercero y su solicitud
 					currTable.find('.data.num_solici').html(data.solici.num_solici);
-					currTable.find('.data.nom_tipsol').html(data.solici.nom_tipsol);
-					currTable.find('.data.nom_transp').html("Cliente "+findTercer(data.solici.cod_transp));
+					currTable.find('.data.nom_tipsol').html((data.solici.nom_tipsol).toUpperCase());
+					currTable.find('.data.nom_transp').html(("<B>Cliente "+findTercer(data.solici.cod_transp)+"</B>").toUpperCase());
 					currTable.find('.data.nom_usrsol').val(data.solici.nom_usrsol);
 					currTable.find('.data.dir_usrmai').val(data.solici.dir_usrmai);
 					currTable.find('.data.num_usrfij').val(data.solici.num_usrfij);
