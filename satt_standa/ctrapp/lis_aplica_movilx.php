@@ -26,6 +26,10 @@ class ListarusuariosMoviles {
               self::FormularioIns();
             break;
 
+            case 4:
+              self::ExportExcel();
+            break;
+
             default:
                 self::filtro();
             break;
@@ -475,6 +479,52 @@ class ListarusuariosMoviles {
 
       # Muestra Html
       echo $mHtml->MakeHtml();
+    } 
+
+    /*! \fn: ExportExcel
+    * \brief: Exportar a excel consuta
+    * \author: Edward Serrano
+    * \date: 29/08/2017
+    * \date modified: dia/mes/año
+    * \param: paramatro
+    * \return valor que retorna
+    */
+    private function ExportExcel()
+    {
+      session_start();
+      $date=date("Y_m_d_h_s");
+      $consulta = new Consulta($_SESSION["queryXLS"],  self::$conexion);
+      $mData = $consulta -> ret_matriz( "i" );
+      header('Content-type: application/vnd.ms-excel');
+      header("Content-Disposition: attachment; filename=Usuarios_Moviles_".$date.".xls");
+      header("Pragma: no-cache");
+      header("Expires: 0");
+
+      ob_clean();
+      echo "<table>";
+      echo "  <tr>";
+      echo "     <th>Transportadora</th>";
+      echo "     <th>Doc.Conductor</th>";
+      echo "     <th>Usuario APP</th>";
+      echo "     <th>Nombre conductor</th>";
+      echo "     <th>Primer apellido</th>";
+      echo "     <th>Segundo apellido</th>";
+      echo "     <th>Correo</th>";
+      echo "     <th>Contraseña</th>";
+      echo "  </tr>";
+      foreach ($mData as $key => $value) 
+      {
+        echo "  <tr>";
+        echo "     <td>".$value["cod_transp"]."</td>";
+        echo "     <td>".$value["cod_tercer"]."</td>";
+        echo "     <td>".$value["cod_usuari"]."</td>";
+        echo "     <td>".$value["nom_tercer"]."</td>";
+        echo "     <td>".$value["nom_apell1"]."</td>";
+        echo "     <td>".$value["nom_apell2"]."</td>";
+        echo "     <td>".$value["dir_emailx"]."</td>";
+        echo "     <td>".base64_decode($value["clv_usuari"])."</td>";
+        echo "  </tr>";
+      }
     } 
 
 //FIN FUNCION INSERT_SEDE

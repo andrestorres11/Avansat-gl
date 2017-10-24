@@ -882,7 +882,7 @@ class inform {
             $and .= " AND f.num_desext = '$datos->num_viajex'";
         }
         if($datos->tip_despac){
-            $and .= " AND a.cod_tipdes IN ('$datos->tip_despac')";
+            $and .= " AND a.cod_tipdes IN ($datos->tip_despac)";
         }
         if($datos->tip_transp){
             $and .= " AND g.tip_transp = $datos->tip_transp";
@@ -1293,10 +1293,10 @@ class inform {
             $and .= " AND a.cod_manifi = '$datos->num_manifi'";
         }
         if($datos->num_viajex){
-            $and .= " AND f.num_desext = '$datos->num_viajex'";
+            $and .= " AND b.num_desext = '$datos->num_viajex'";
         }
         if($datos->tip_despac){
-            $and .= " AND a.cod_tipdes IN ('$datos->tip_despac')";
+            $and .= " AND a.cod_tipdes IN ($datos->tip_despac)";
         }
         if($datos->tip_transp){
             $and .= " AND n.tip_transp = '$datos->tip_transp'";

@@ -1290,7 +1290,7 @@ class InsertNovedad {
                         $_ERROR[] = 'Error envio correo A cargo Empersa o A cargo Faro.';
 
                     $regist['observ'] .= $mResult;
-                }
+                }   
                 #</Envio de Correos>
                 #Inserta la novedad
                 $mInsNoveda = self::insertNovedad($regist, $mDifTieAla, $mCodSitiox, $mIndEnSiti, $mDatUsuari);
@@ -1374,13 +1374,16 @@ class InsertNovedad {
                         d.abr_tercer AS nom_conduc, 
                         UPPER(e.nom_ciudad) AS nom_ciuori, 
                         UPPER(f.nom_ciudad) AS nom_ciudes, 
-                        IF(b.cod_tipdes = '2', '1', '0' ) AS ind_tipdes 
+                        IF(b.cod_tipdes = '2', '1', '0' ) AS ind_tipdes,
+                        h.nom_config 
                    FROM " . BASE_DATOS . ".tab_despac_vehige a 
              INNER JOIN " . BASE_DATOS . ".tab_despac_despac b ON a.num_despac = b.num_despac 
              INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer c ON a.cod_transp = c.cod_tercer 
              INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer d ON a.cod_conduc = d.cod_tercer 
              INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad e ON b.cod_ciuori = e.cod_ciudad 
-             INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad f ON b.cod_ciudes = f.cod_ciudad 
+             INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad f ON b.cod_ciudes = f.cod_ciudad
+             INNER JOIN " . BASE_DATOS . ".tab_vehicu_vehicu g ON a.num_placax = g.num_placax
+             LEFT  JOIN " . BASE_DATOS . ".tab_vehige_config h ON g.num_config = h.num_config 
                   WHERE a.num_despac = '$mNumDespac' ";
         $mConsult = new Consulta($mSql, $this->conexion);
         $mResult = $mConsult->ret_matrix('a');
@@ -1688,6 +1691,7 @@ class InsertNovedad {
         $datos->mai_destin = $mMail;
         $datos->div_namexx = HOST_WEB."_faro_01";
         $datos->rutpla = $mDatRegist['rutpla'];
+        $datos->nom_config = $mDatDespac['nom_config'];
 
         if (self::sendMail($datos)){
             return ". Se envió Correos a: ".$mMail . ". Tiempo Ultima Novedad: ".$mDatRegist['tie_ultnov']." Minutos <br>";
@@ -1845,6 +1849,17 @@ class InsertNovedad {
         }
 
         $mConsult = new Consulta($mSql, $this->conexion, "R");
+
+        #Actualizo en la tabla tab_despac_seguin el indicador a 0 cuando es una novedad en sitio
+        if($mIndEnSiti == true)
+        {
+            $query = "UPDATE " . BASE_DATOS . ".tab_despac_seguim
+                SET ind_estado = '0'
+              WHERE num_despac = '" . $mDatRegist['despac'] . "' AND
+                    cod_rutasx = '" . $mDatRegist['rutax'] . "' AND
+                    cod_contro = '" . $mDatRegist['contro'] . "' ";
+            $consulta = new Consulta($query, $this->conexion, "R");
+        }
 
         if ($mConsult->id_resultado == 1) {
             $mResult[0] = true;
@@ -4182,6 +4197,7 @@ class InsertNovedad {
             $tmpl_file = '../' . DIR_APLICA_CENTRAL . '/planti/pla_noveda_especi.html';
         }
 
+        $date = date("Y");
         $thefile = implode("", file($tmpl_file));
         $thefile = addslashes($thefile);
         $thefile = "\$r_file=\"" . $thefile . "\";";
