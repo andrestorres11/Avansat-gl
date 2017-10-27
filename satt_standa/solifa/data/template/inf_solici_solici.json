@@ -5,7 +5,7 @@
         {
             "tag": "div", 
             "class": "template_filtro ui-tabs ui-corner-all ui-widget ui-widget-content",
-            "style": "height: 250px;", 
+            "style": "height: 280px;", 
             "html": "", 
             "source": "data/template/inf_solici_solici_filtro.json"
         }, 

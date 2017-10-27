@@ -82,6 +82,7 @@ function r(){
 						updateSelect($("select[name=lis_transp]"),data,null);
 						listFilter({"title":"Transportadora", "class":"form-control", "store": data,"el":$("select[name=lis_transp]"),"multiple":true});
 						checkBasicLoad("tab1");
+
 					});
 
 					//se debe cargar fecha por defecto y se delega un calendario en caso de no soportarlo nativo
@@ -90,12 +91,14 @@ function r(){
 					});
 
 				}catch(e){}
-
-				$( "#tabs" ).tabs();
-				//$("#tabs ul li a").unbind("click");
-				$("#tabs ul li a").bind("click",tab_load_content);
-				$("#tabs ul li a")[0].click();
-				$("#ui-datepicker-div").css("display","none");
+				setTimeout(
+					function(){
+						$( "#tabs" ).tabs();
+						//$("#tabs ul li a").unbind("click");
+						$("#tabs ul li a").bind("click",tab_load_content);
+						$("#tabs ul li a")[0].click();
+						$("#ui-datepicker-div").css("display","none");
+				}, 200);
 			}catch(e){}
 		}
 		function setWsData(tabid,objToSend){
@@ -878,12 +881,13 @@ function r(){
 				currTab.find(".loading.help-block").hide();
 				
 				var url=server_req.standa+"inf_solici_solici.php?window="+server_req.window+"&cod_servic="+server_req.cod_servic+ "&r="+Math.random();
-				var lis_transp=$("form.solici").find("select[name=lis_transp]").val();
+				//var lis_transp=$("form.solici").find("select[name=lis_transp]").val();
+				var lis_transp=$("form.solici").find("input[name=back_lis_transp]").val();
 				var fec_inifil=$("form.solici").find("input[name=fec_inifil]").val();
 				var fec_finfil=$("form.solici").find("input[name=fec_finfil]").val();
 				var num_solici=$("form.solici").find("input[name=num_solici]").val();
 				var filter1={"lis_transp":lis_transp,"fec_inifil":fec_inifil,"fec_finfil":fec_finfil,"num_solici":num_solici};
-				
+				console.log(filter1.lis_transp);
 				//if(lis_transp.length>0){
 				if(filter1.lis_transp!=null){
 					url+="&lis_transp="+filter1.lis_transp;
@@ -1295,7 +1299,7 @@ function r(){
 				el.find("option").remove();
 				el.append("<option value=''>Seleccione</option>");
 				for(var i=0;i<data.length;i++){
-					var selected=data[i].key==id && id!=null? "selected='selected'" : "";
+					var selected=data[i].key==id && id!=null || data.length == 1? "selected='selected'" : "";
 					el.append("<option value='"+data[i].key+"' "+selected+">"+data[i].value+"</option>");
 				}
 			}catch(e){}
@@ -1555,17 +1559,25 @@ function r(){
 			div = $("<div>").attr({"class":"filterform"}),
 		    newEl = $("<input>").attr({"name":"back_"+jsonFilter.el.attr("name"),"type":"hidden"}),
 		    input = $("<input>").attr({"class":cn,"placeholder":jsonFilter.title,"required":required=="req1","type":"text"}),
-		    list0 = $("<ul>").attr({"class":"list filter level0 "+multiple}),
-		    list1 = $("<ul>").attr({"class":"list filter level1"});
+		    list1 = $("<ul>").attr({"class":"list filter level1", "id":"ContenedorULTranspID"});
+		    list0 = $("<ul>").attr({"class":"list filter level0 "+multiple, "id":"ContenedorLITranspID"});
 
 		$(div).append(newEl);
 		$(div).append(input);
 		$(div).append(list1);
 		$(div).append(list0);
+		
 		jsonFilter.el.attr("style","background:red;");
 		$(container).append(div).appendTo(jsonFilter.el.parent());
 		//jsonFilter.el.remove();
 		jsonFilter.el.hide();
+
+		if(jsonFilter.store.length == 1)
+		{
+			$("#ContenedorLITranspID").append('<li data-value="'+jsonFilter.store[0].key+'" >'+jsonFilter.store[0].value+'</li>').css("display:block");	 
+			$("#ContenedorLITranspID").css("display","block");	 
+			$("input[name=back_lis_transp]").val(jsonFilter.store[0].key);
+		}
 
 		$(input)
 		.keyup( function () {

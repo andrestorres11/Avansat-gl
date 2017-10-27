@@ -6,7 +6,7 @@ ini_set('memory_limit','1024M');
 class Solici_solici
 {
 	var $conexion, $cod_aplica,	$usuario, $usuario2, $cod_tercer, $arr_datsol, $interfParame, $InterfSolicitud, $_request,
-		$raw, $input_post, $input_globals, $input_get, $max_file_size=2000000, $tmp_dir_path="/tmp/",$unlink_file=false;
+		$raw, $input_post, $input_globals, $input_get, $max_file_size=2000000, $tmp_dir_path="/tmp/",$unlink_file=false,$cSession;
 
 	function Solici_solici()
 	{
@@ -54,6 +54,7 @@ class Solici_solici
 				include( $file2 );
 				ob_clean();
 			}
+			$this->cSession = $_SESSION["datos_usuario"];
 			$error=array();
 			/*if(!defined("URL_INTERF_FAROXX")){
 				array_push($error, "Solici_solici::Main > Const URL_INTERF_FAROXX does not exists");
@@ -88,7 +89,7 @@ class Solici_solici
 			$this->raw=isset($HTTP_RAW_POST_DATA) ? file_get_contents($HTTP_RAW_POST_DATA) : file_get_contents("php://input");
 			$this->raw=json_decode($this->raw);
 			$this->setInterfParame();
-			//$this->setArrDatSol();
+			//$this->setArrDatSol();	
 			
 			$file="../".DIR_APLICA_CENTRAL."/lib/InterfSolicitud.inc";
 			if(!file_exists($file)){
@@ -442,7 +443,8 @@ png, jpeg, zip, rar)
 	}
 
 	function getTercerTransp(){
-		$sql='select t.cod_tercer as "key", t.abr_tercer as "value"  from tab_tercer_tercer t inner join (select distinct a.cod_transp from satt_faro.tab_solici_datosx a order by a.cod_transp) sd on sd.cod_transp=t.cod_tercer inner join tab_tercer_activi ta on ta.cod_tercer=t.cod_tercer and ta.cod_activi = 1';
+		$trans = $this->getTransLogin();
+		$sql='select t.cod_tercer as "key", t.abr_tercer as "value"  from tab_tercer_tercer t inner join (select distinct a.cod_transp from satt_faro.tab_solici_datosx a order by a.cod_transp) sd on sd.cod_transp=t.cod_tercer inner join tab_tercer_activi ta on ta.cod_tercer=t.cod_tercer and ta.cod_activi = 1 '.($trans != NULL?' and t.cod_tercer='.$trans:'');
 		$consulta = new Consulta( $sql, $this->conexion );
 		$datos    = $consulta->ret_matrix( 'a' );
 		//$datosc   = $this->arrIso2ascii($datos);
@@ -1342,6 +1344,23 @@ EOF;
 		              "cod_estado=$cod_estado";
 		    $consulta = new Consulta( $sql, $this->conexion );
 			return $consulta->ret_matrix( 'a' );
+	    }
+	    catch(Exception $e)
+	    {
+	    	return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
+	    }
+  	}
+
+  	function getTransLogin()
+	{
+	    try{
+		    $mSql = "SELECT clv_filtro AS cod_transp
+					   				FROM ".BASE_DATOS.".tab_aplica_filtro_perfil 
+					   			WHERE cod_perfil= ".$this->cSession["cod_perfil"];
+			$mConsult = new Consulta( $mSql, $this->conexion );
+			$mTransp = $mConsult -> ret_matrix('a');
+			return $mTransp = $mTransp[0]['cod_transp'];
+			
 	    }
 	    catch(Exception $e)
 	    {
