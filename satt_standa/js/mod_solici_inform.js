@@ -507,7 +507,7 @@ function r(){
 						if(i==2){
 							var td=$(this).find("td");
 							var rlt=data.count!=undefined && data.count!=null ? data.count : 0;
-							td[0].innerHTML="<div data-ref=\"ui-id-1\" class=\"data link\">"+rlt+"</div>";
+							td[0].innerHTML="<div data-ref=\"ui-id-1\" class=\"data\">"+rlt+"</div>";
 							var rlt=data.estado3!=undefined && data.estado3!=null ? data.estado3 : 0;
 							td[1].innerHTML="<div data-ref=\"ui-id-2\" class=\"data link\">"+rlt+"</div>";
 							var rlt=data.estado3!=undefined && data.estado3!=null && parseInt(data.estado3)>0 ? Math.round((parseInt(data.estado3)*100)/parseInt(data.count))+"%" : "0%";
@@ -584,13 +584,13 @@ function r(){
 						if(i==2){
 							var td=$(this).find("td");
 							td[0].innerHTML=data.count!=undefined && data.count!=null ? '<div class="indicador-detallado-tercer-todos link">'+data.count+'</div>' : 0;
-							td[1].innerHTML=data.tipsol1!=undefined && data.tipsol1!=null ? data.tipsol1 : 0;
+							td[1].innerHTML=data.tipsol1!=undefined && data.tipsol1!=null ? '<div class="indicador-detallado-tercer-todos link" data-CodSolici="1" >'+data.tipsol1+'</div>' : 0;
 							td[2].innerHTML=(data.tipsol1!=undefined && data.tipsol1!=null && parseInt(data.tipsol1)>0 ? Math.round((parseInt(data.tipsol1)*100)/parseInt(data.count)) : 0)+"%";
-							td[3].innerHTML=data.tipsol2!=undefined && data.tipsol2!=null ? data.tipsol2 : 0;
+							td[3].innerHTML=data.tipsol2!=undefined && data.tipsol2!=null ? '<div class="indicador-detallado-tercer-todos link" data-CodSolici="2" >'+data.tipsol2+'</div>' : 0;
 							td[4].innerHTML=(data.tipsol2!=undefined && data.tipsol2!=null && parseInt(data.tipsol2)>0 ? Math.round((parseInt(data.tipsol2)*100)/parseInt(data.count)) : 0)+"%";
-							td[5].innerHTML=data.tipsol3!=undefined && data.tipsol3!=null ? data.tipsol3 : 0;
+							td[5].innerHTML=data.tipsol3!=undefined && data.tipsol3!=null ? '<div class="indicador-detallado-tercer-todos link" data-CodSolici="3" >'+data.tipsol3+'</div>' : 0;
 							td[6].innerHTML=(data.tipsol3!=undefined && data.tipsol3!=null && parseInt(data.tipsol3)>0 ? Math.round((parseInt(data.tipsol3)*100)/parseInt(data.count)) : 0)+"%";
-							td[7].innerHTML=data.tipsol4!=undefined && data.tipsol4!=null ? data.tipsol4 : 0;
+							td[7].innerHTML=data.tipsol4!=undefined && data.tipsol4!=null ? '<div class="indicador-detallado-tercer-todos link" data-CodSolici="4" >'+data.tipsol4+'</div>' : 0;
 							td[8].innerHTML=(data.tipsol4!=undefined && data.tipsol4!=null && parseInt(data.tipsol4)>0 ? Math.round((parseInt(data.tipsol4)*100)/parseInt(data.count)) : 0)+"%";
 						}
 					});
@@ -599,7 +599,7 @@ function r(){
 						currTab.find("table").parent().hide();
 						currTab.find("table.indicador-detallado2").find("td").parent().remove();
 						currTab.find("table.indicador-detallado2").parent().show();
-						updateStatusTipoxTableDetail2(currForm,currTab,id,filter1,filter1.lis_transp);
+						updateStatusTipoxTableDetail2(currForm,currTab,id,filter1,filter1.lis_transp,$(this).attr("data-CodSolici"));
 					});
 				})
 				.fail(function( jqxhr, textStatus, error ) {
@@ -649,13 +649,13 @@ function r(){
 							"<tr data-tercer=\""+data[i].cod_transp+"\">"+
 							"<td>"+ findTercer(data[i].cod_transp) +"</td>"+
 							"<td><div class=\"indicador-detallado-tercer link\">"+ data[i].count +"</div></td>"+
-							"<td>"+ ( data[i].tipsol1!=undefined && data[i].tipsol1!=null ? data[i].tipsol1 : 0 ) +"</td>"+
+							"<td>"+ ( data[i].tipsol1!=undefined && data[i].tipsol1!=null ? '<div class="indicador-detallado-tercer link" data-CodSolici="1" >'+data[i].tipsol1+'</div>' : 0 ) +"</td>"+
 							"<td>"+ ( data[i].tipsol1!=undefined && data[i].tipsol1!=null && parseInt(data[i].tipsol1)>0 ? Math.round((parseInt(data[i].tipsol1)*100)/parseInt(data[i].count))+"%" : "0%" ) + "</td>"+
-							"<td>"+ ( data[i].tipsol2!=undefined && data[i].tipsol2!=null ? data[i].tipsol2 : 0 ) +"</td>"+
+							"<td>"+ ( data[i].tipsol2!=undefined && data[i].tipsol2!=null ? '<div class="indicador-detallado-tercer link" data-CodSolici="2" >'+data[i].tipsol2+'</div>' : 0 ) +"</td>"+
 							"<td>"+ ( data[i].tipsol2!=undefined && data[i].tipsol2!=null && parseInt(data[i].tipsol2)>0 ? Math.round((parseInt(data[i].tipsol2)*100)/parseInt(data[i].count))+"%" : "0%" ) + "</td>"+
-							"<td>"+ ( data[i].tipsol3!=undefined && data[i].tipsol3!=null ? data[i].tipsol3 : 0 ) +"</td>"+
+							"<td>"+ ( data[i].tipsol3!=undefined && data[i].tipsol3!=null ? '<div class="indicador-detallado-tercer link" data-CodSolici="3" >'+data[i].tipsol3+'</div>' : 0 ) +"</td>"+
 							"<td>"+ ( data[i].tipsol3!=undefined && data[i].tipsol3!=null && parseInt(data[i].tipsol3)>0 ? Math.round((parseInt(data[i].tipsol3)*100)/parseInt(data[i].count))+"%" : "0%" ) + "</td>"+
-							"<td>"+ ( data[i].tipsol4!=undefined && data[i].tipsol4!=null ? data[i].tipsol4 : 0 ) +"</td>"+
+							"<td>"+ ( data[i].tipsol4!=undefined && data[i].tipsol4!=null ? '<div class="indicador-detallado-tercer link" data-CodSolici="4" >'+data[i].tipsol4+'</div>' : 0 ) +"</td>"+
 							"<td>"+ ( data[i].tipsol4!=undefined && data[i].tipsol4!=null && parseInt(data[i].tipsol4)>0 ? Math.round((parseInt(data[i].tipsol4)*100)/parseInt(data[i].count))+"%" : "0%" ) + "</td>"+
 							"</tr>"
 						);
@@ -665,7 +665,7 @@ function r(){
 						currTab.find("table").parent().hide();
 						currTab.find("table.indicador-detallado2").find("td").parent().remove();
 						currTab.find("table.indicador-detallado2").parent().show();
-						updateStatusTipoxTableDetail2(currForm,currTab,id,filter1,$(this).parent().parent().attr("data-tercer"));
+						updateStatusTipoxTableDetail2(currForm,currTab,id,filter1,$(this).parent().parent().attr("data-tercer"),$(this).attr("data-CodSolici"));
 					});
 
 				})
@@ -684,7 +684,7 @@ function r(){
 				});
 			}catch(e){}  
 		}
-		function updateStatusTipoxTableDetail2(currForm,currTab,id,filter1,tercer){
+		function updateStatusTipoxTableDetail2(currForm,currTab,id,filter1,tercer,other){
 			try{
 				/*if(tercer==undefined || tercer==null || tercer==""){
 					currForm.find('.alert').html("El dato transportadora es inv&aacute;lido");
@@ -698,15 +698,21 @@ function r(){
 				currForm.find('.alert').html("Consultando detalle 2...");
 				currForm.find('.alert').removeClass("hide");
 				currForm.find('.alert').addClass("active");
-
+				canTotal = 0;
 				$.getJSON( updateUrl(filter1.url3,"lis_transp",tercer), function( data ) {
 					//console.log(id + " Detalle ");
 					//console.log(data);
 					currForm.find('.alert').html("");
 					currForm.find('.alert').addClass("hide");
 					currForm.find('.alert').removeClass("active");
-					
+
 					for(var i=0 in data){
+						//filtro para validar el tipo de solicitud a mostar
+						if(data[i].cod_tipsol != other && other != null && other != undefined )
+						{
+							continue;
+						}
+						canTotal = canTotal+1; 
 						currTab.find("table.indicador-detallado2")
 						.append(
 							"<tr data-solici=\""+data[i].num_solici+"\">"+
@@ -722,7 +728,8 @@ function r(){
 							"</tr>"
 						);
 					}
-
+					//actulizacion de la cantidad de solicitudes
+					$(".indicador-detallado2").find("#badge").each(function(i,v){$(v).html("<b>"+canTotal+" REGISTROS</b>");});
 					currTab.find("div.indicador-detallado-solici").bind("click",function(){
 						currTab.find("table").parent().hide();
 						//currTab.find("table.indicador-respuesta").find("td").parent().remove();
@@ -740,6 +747,7 @@ function r(){
 						//currTab.find("table.indicador-respuesta").find("table").show();
 						updateStatusTipoxTableDetail3(currForm,currTab,id,filter1,$(this).parent().parent().attr("data-solici"));
 					});
+					
 				})
 				.fail(function( jqxhr, textStatus, error ) {
 				    var err = textStatus + ", " + error;
