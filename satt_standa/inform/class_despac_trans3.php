@@ -33,7 +33,8 @@ class Despac
 					$cTipDespac = '""',
 					$cTipDespacContro = '""', #Tipo de Despachos asignados al controlador, Aplica para cTypeUser[tip_perfil] == 'CONTROL'
 					$cNull = array( array('', '-----') ), 
-					$cTime = array( 'ind_desurb' => '30', 'ind_desnac' => '60' ); #warning2
+					$cTime = array( 'ind_desurb' => '30', 'ind_desnac' => '60' ),
+					$cSession; #warning2
 
 	function __construct($co = null, $us = null, $ca = null)
 	{
@@ -46,7 +47,7 @@ class Despac
 			self::$cUsuario = $us;
 			self::$cCodAplica = $ca;
 		}
-
+		self::$cSession = $_SESSION["datos_usuario"];
 		self::$cHoy = date("Y-m-d H:i:s");
 		self::$cTypeUser = self::typeUser();
 
@@ -2498,7 +2499,7 @@ class Despac
 			{
 				$mDespac = self::getDespacCargue( $mTransp[$i] );
 				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
-				$mReport[$i][can_cargue] = sizeof($mDespac);
+				$mReport[$i][can_cargue] = ($mDespac == false ? 0 : sizeof($mDespac));
 			}
 
 			if( $mTransp[$i][ind_segtra] == 1 )
@@ -2510,14 +2511,14 @@ class Despac
 
 				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 
-				$mReport[$i][can_transi] = sizeof($mDespac);
+				$mReport[$i][can_transi] = ($mDespac == false ? 0 : sizeof($mDespac));
 			}
 
 			if( $mTransp[$i][ind_segdes] == 1 )
 			{
 				$mDespac = self::getDespacDescar( $mTransp[$i] );
 				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
-				$mReport[$i][can_descar] = sizeof($mDespac);
+				$mReport[$i][can_descar] = ($mDespac == false ? 0 : sizeof($mDespac));
 			}
 
 			$mReport[$i][tot_despac] = $mReport[$i][can_cargue] + $mReport[$i][can_transi] + $mReport[$i][can_descar];
@@ -3725,6 +3726,18 @@ class Despac
 				else
 				{
 					$mTransp = $mTransp[0][0];
+				}
+
+				#Actulizacion 25-10-2017 para perfiles diferentes a supervisores, controladores y administradores 'Soporte'
+				#1=administrador, 7 = Controlador de trafico C.L. FARO, 8=Supervisor C L. FARO
+				if(self::$cSession["cod_perfil"] != 1 && self::$cSession["cod_perfil"] != 7 && self::$cSession["cod_perfil"] != 8)
+				{
+					$mSql = "SELECT clv_filtro AS cod_transp
+					   				FROM ".BASE_DATOS.".tab_aplica_filtro_perfil 
+					   			WHERE cod_perfil= ".self::$cSession["cod_perfil"];
+					$mConsult = new Consulta( $mSql, self::$cConexion );
+					$mTransp = $mConsult -> ret_matrix('a');
+					$mTransp = $mTransp[0]['cod_transp'];
 				}
 				#Filtro por las estas existentes
 				$mDespac = NULL;
