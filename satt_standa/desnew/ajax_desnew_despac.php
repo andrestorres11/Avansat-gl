@@ -1998,8 +1998,8 @@ class AjaxInsertDespacho
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">* No. Documento:&nbsp;&nbsp;&nbsp;</td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" onkeypress="return NumericInput( event );"  onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'"  minlength="5" maxlength="9" size="9" obl="1" validate="numero" name="cod_manifi" id="cod_manifiID" /></td>';
-      $mHtml .= '<td align="right" width="20%" class="label-tr">No. interno de la transportadora:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" minlength="5"  maxlength="15" size="20" name="cod_desext" id="cod_desextID" /></td>';
+      $mHtml .= '<td align="right" width="20%" class="label-tr"> * No. interno de la transportadora:&nbsp;&nbsp;&nbsp;</td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" obl="1" validate="numero" type="text" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" minlength="5"  maxlength="15" size="20" name="cod_desext" id="cod_desextID" /></td>';
     $mHtml .= '</tr>';
     
     $mHtml .= '<tr>';
