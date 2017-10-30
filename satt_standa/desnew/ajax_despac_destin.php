@@ -734,7 +734,7 @@ class AjaxDespacDestin {
                                   ORDER BY  3 DESC
                                   ) AS w WHERE 1 = 1
                               GROUP BY w.num_despac";
-
+    
                         $_SESSION["queryXLS"] = $mSql;
                         $list = new DinamicList($this->conexion, $mSql, 3, "no", "DESC");
                         $list->SetClose('no');
