@@ -101,7 +101,7 @@ class Informe
               }
             }
           </script>';
-    
+  
     $formulario = new Formulario ("index.php","post","Informe de trazabilidad diaria","form_item\" id=\"form_itemID");
     
     $formulario -> nueva_tabla();
@@ -338,14 +338,14 @@ class Informe
     $Hoy = $this -> toFecha( date( "Y-m-d" ) );
     $html .= "<table cellpadding='0' cellspacing='0' width='100%' border='0' >";    
     $html .= "<tr>";
-    $html .= "<td class=celda_titulo colspan=17 style='text-align:left' >Fecha: ".$Hoy[0].".</td>"; 
+    $html .= "<td class=celda_titulo colspan=19 style='text-align:left' >Fecha: ".$Hoy[0].".</td>"; 
     $html .= "</tr>";
     $html .= "<tr>";
-    $html .= "<td class=celda_titulo colspan=17 style='text-align:left' >Hora: ".date( "h:i A" ).".</td>";  
+    $html .= "<td class=celda_titulo colspan=19 style='text-align:left' >Hora: ".date( "h:i A" ).".</td>";  
     $html .= "</tr>";
     $html .= "<tr>";
     
-    $html .= "<td class=celda_titulo colspan=17 >Se Encontraron ".sizeof( $informe )." Manifiestos.</td>";  
+    $html .= "<td class=celda_titulo colspan=19 >Se Encontraron ".sizeof( $informe )." Manifiestos.</td>";  
     $html .= "</tr>";
     $html .= "<tr>";
     $html .= "<td class=celda_titulo rowspan=2 >#</td>";
@@ -361,6 +361,7 @@ class Informe
     $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";    
+    $html .= "<td class=celda_titulo rowspan=2 >Observaciones</td>";    
     $html .= "</tr>";
     $html .= "<tr>";
     $html .= "<td class=cellHead >Fecha</td>";    
@@ -371,13 +372,13 @@ class Informe
     $html .= "<td class=cellHead >Duraci&oacute;n</td>";    
     $html .= "<td class=cellHead >Días</td>";
     $html .= "</tr>";
-    
+    @include_once( "../".DIR_APLICA_CENTRAL."/lib/general/functions.inc" ); 
     $i = 0;
     if( $informe )
     foreach( $informe as $row )
     {
       $i++;
-      
+
       $fec_sal  = $this -> toFecha( $row[1]);
       $fec_lle  = $this -> toFecha( $row[4]);
       //valido que las fecha de cita de cargue no esta vacias o con formato 0000-00-00 00:00:00
@@ -427,6 +428,7 @@ class Informe
       $html .= "<td class=celda_info nowrap>".$this -> getUbicacion( $row[0] )."</td>";  //Ubicacion.
       $html .= "<td class=celda_info nowrap>$row[6]</td>";                               // Placas  
       $html .= "<td class=celda_info nowrap>$row[7]</td>";                               // Conductor
+      $html .= "<td class=celda_info nowrap>".getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda']."</td>";                               // Observacion
       $html .= "</tr>";
     }
     

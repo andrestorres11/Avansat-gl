@@ -82,6 +82,7 @@ class exp_diario_trazab {
         $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Observaciones</td>";
         $html .= "</tr>";
         $html .= "<tr>";
         $html .= "<td class=cellHead >Fecha</td>";
@@ -92,7 +93,7 @@ class exp_diario_trazab {
         $html .= "<td class=cellHead >Duraci&oacute;n</td>";
         $html .= "<td class=cellHead >Días</td>";
         $html .= "</tr>";
-
+        @include_once( "../lib/general/functions.inc" );
         $i = 0;
         if ($informe)
             foreach ($informe as $row) {
@@ -147,6 +148,7 @@ class exp_diario_trazab {
                 $html .= "<td class=celda_info nowrap>" . $this->getUbicacion($row[0]) . "</td>";  //Ubicacion.
                 $html .= "<td class=celda_info nowrap>$row[6]</td>";                               // Placas  
                 $html .= "<td class=celda_info nowrap>$row[7]</td>";                               // Conductor
+                $html .= "<td class=celda_info nowrap>".getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda']."</td>";                               // Observacion
                 $html .= "</tr>";
             }
 
