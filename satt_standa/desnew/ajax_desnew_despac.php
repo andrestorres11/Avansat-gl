@@ -1604,7 +1604,7 @@ class AjaxInsertDespacho
                             gps_idxxxx, gps_otroxx, cod_asegur, num_poliza 
                           ) 
                    VALUES ('$datos->num_despac','$datos->cod_manifi','$datos->fec_despac ".DATE('H:i:s')."','$datos->cod_tipdes',
-                            NULL,'$datos->cod_paiori','$datos->cod_depori','$datos->cod_ciuori',
+                           ".($datos->cod_client != '' ?"'$datos->cod_client'":"NULL").",'$datos->cod_paiori','$datos->cod_depori','$datos->cod_ciuori',
                            '$datos->cod_paides','$datos->cod_depdes','$datos->cod_ciudes','$datos->cod_cenope',
                            '$datos->cod_operad','$datos->fec_citcar','$datos->hor_citcar','$datos->sit_cargue',
                             NULL,NULL,NULL,NULL,
@@ -1992,6 +1992,7 @@ class AjaxInsertDespacho
     $agenci = $this->getAgencias( $_AJAX['cod_transp'] );
     $tipdes = $this->getTipDes();
     $ciuori = $this->GetCiuori( $_AJAX['cod_transp'] );
+    $geneCa = $this->GetGeneCarga( $_AJAX['cod_transp'] );
     
     $mHtml  = '<table width="100%" cellspacing="0" cellpadding="0" border="0">';
     
@@ -2028,6 +2029,13 @@ class AjaxInsertDespacho
       $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" style="width:100%" type="text" name="val_declar" onkeyup="puntos(this,this.value.charAt(this.value.length-1));" onkeypress="return NumericInput( event );" id="val_declarID" minlength="5" maxlength="11" size="35" validate="numero" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr"> * Peso(Tn):&nbsp;&nbsp;&nbsp;</td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" style="width:100%" type="text" name="val_pesoxx" onkeypress="return NumericInput( event );" id="val_pesoxxID" obl="1" minlength="1" maxlength="5" validate="numero" size="35" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
+    $mHtml .= '</tr>';
+    #Nuevo campo de generador de carga
+    $mHtml .= '<tr>';
+      $mHtml .= '<td align="right" width="20%" class="label-tr"> Generador de carga:&nbsp;&nbsp;&nbsp;</td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr2">'.$this->GenerateSelect( $geneCa, 'cod_client', NULL, NULL, NULL ).'</td>';
+      $mHtml .= '<td align="right" width="20%" class="label-tr"> &nbsp;&nbsp;&nbsp;</td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"> &nbsp;</td>';
     $mHtml .= '</tr>';
     
     $mHtml .= '</table>';
@@ -2210,6 +2218,30 @@ class AjaxInsertDespacho
       echo 'y';
     }else{
       echo 'n';
+    }
+  }
+
+  private function GetGeneCarga($transp)
+  {
+    try
+    {
+      $query = "SELECT a.cod_tercer,a.abr_tercer
+             FROM ".BASE_DATOS.".tab_tercer_tercer a,
+                  ".BASE_DATOS.".tab_tercer_activi b,
+                  ".BASE_DATOS.".tab_transp_tercer c
+            WHERE a.cod_tercer = b.cod_tercer AND
+                  a.cod_tercer = c.cod_tercer AND
+                  c.cod_transp = '".$transp."' AND
+                  b.cod_activi = ".COD_FILTRO_CLIENT."
+                  ORDER BY 2 ASC
+          ";
+
+      $consulta = new Consulta($query, $this->conexion);
+      return $listgene = $consulta -> ret_matriz();
+    }
+    catch(Exception $e)
+    {
+      echo "<pre> Error Funcion GetGeneCarga:";print_r($e);echo "</pre>";
     }
   }
 }
