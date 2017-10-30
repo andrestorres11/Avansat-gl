@@ -822,7 +822,7 @@ class Proc_salida {
                ".BASE_DATOS.".tab_interf_parame b
          WHERE a.num_despac = '".$_REQUEST[despac]."'
                AND a.cod_transp = b.cod_transp
-               AND b.cod_operad = '35' AND ind_estado = 1 ";
+               AND b.cod_operad = '35' AND b.ind_estado = 1 ";
 
     $consulta = new Consulta($query, $this->conexion);
     $datos_ds = $consulta->ret_matriz();
