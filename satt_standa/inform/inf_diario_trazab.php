@@ -222,7 +222,7 @@ class Informe
                      IF(DATEDIFF( NOW(), d.fec_llegpl) IS NULL ,'N/A',DATEDIFF(NOW() , d.fec_llegpl)),
                      UPPER((SELECT nom_tercer FROM tab_tercer_tercer WHERE d.cod_transp = cod_tercer)) AS nom_tercer,
 										 o.num_solici, o.num_pedido,
-                     a.fec_citcar, a.hor_citcar 
+                     a.fec_citcar, a.hor_citcar, r.abr_tercer As nom_genera 
               FROM " . BASE_DATOS . ".tab_despac_seguim b,
                    " . BASE_DATOS . ".tab_despac_vehige d,
                    " . BASE_DATOS . ".tab_tercer_tercer e,
@@ -234,6 +234,8 @@ class Informe
         				ON a.num_despac = o.num_despac 
       /*   LEFT JOIN " . BASE_DATOS . ".tab_despac_corona p 
                 ON a.num_despac = p.num_dessat */
+         LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer r
+                ON r.cod_tercer = a.cod_client
              WHERE a.num_despac = d.num_despac AND
                    a.num_despac = b.num_despac AND
                    d.cod_conduc = e.cod_tercer AND
@@ -338,19 +340,20 @@ class Informe
     $Hoy = $this -> toFecha( date( "Y-m-d" ) );
     $html .= "<table cellpadding='0' cellspacing='0' width='100%' border='0' >";    
     $html .= "<tr>";
-    $html .= "<td class=celda_titulo colspan=19 style='text-align:left' >Fecha: ".$Hoy[0].".</td>"; 
+    $html .= "<td class=celda_titulo colspan=21 style='text-align:left' >Fecha: ".$Hoy[0].".</td>"; 
     $html .= "</tr>";
     $html .= "<tr>";
-    $html .= "<td class=celda_titulo colspan=19 style='text-align:left' >Hora: ".date( "h:i A" ).".</td>";  
+    $html .= "<td class=celda_titulo colspan=21 style='text-align:left' >Hora: ".date( "h:i A" ).".</td>";  
     $html .= "</tr>";
     $html .= "<tr>";
     
-    $html .= "<td class=celda_titulo colspan=19 >Se Encontraron ".sizeof( $informe )." Manifiestos.</td>";  
+    $html .= "<td class=celda_titulo colspan=21 >Se Encontraron ".sizeof( $informe )." Manifiestos.</td>";  
     $html .= "</tr>";
     $html .= "<tr>";
     $html .= "<td class=celda_titulo rowspan=2 >#</td>";
-    $html .= "<td class=celda_titulo rowspan=2 >N° Documento</td>";
-    $html .= "<td class=celda_titulo rowspan=2 >N° Transportadora</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Despacho</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Transportadora</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Generador</td>";
     $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Salida</td>";
     $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Cita Cargue</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Origen</td>";
@@ -358,10 +361,10 @@ class Informe
     $html .= "<td class=celda_titulo rowspan=2 >No. Pedido</td>";
     $html .= "<td class=celda_titulo rowspan=2 >No. Solicitud</td>";
     $html .= "<td class=celda_titulo colspan=3 >Estimado de Llegada</td>";  
-    $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";    
-    $html .= "<td class=celda_titulo rowspan=2 >Observaciones</td>";    
+    $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Seguimiento Trafico</td>";    
     $html .= "</tr>";
     $html .= "<tr>";
     $html .= "<td class=cellHead >Fecha</td>";    
@@ -405,30 +408,31 @@ class Informe
       }
       
       $html .= "<tr>";// celda_info
-      $html .= "<td class=cellHead nowrap>$i</td>";                                      // Consecutivo
-      $html .= "<td class=celda_info nowrap>$row[0]</td>";                               // Número despacho
-      $html .= "<td class=celda_info nowrap>$row[10]</td>";                              // nombre Transportadora
-      $html .= "<td class=celda_info nowrap>".$fec_sal[0]."</td>";                       // Fecha salida
-      $html .= "<td class=celda_info nowrap>".$fec_sal[1]."</td>";                       // Hora salida
-      $html .= "<td class=celda_info nowrap>".$fec_cit[0]."</td>";                       // Fecha cita cargue
-      $html .= "<td class=celda_info nowrap>".$fec_cit[1]."</td>";                       // Hora cita cargue
-      $html .= "<td class=celda_info nowrap>$row[2]</td>";                               // Origen
-      $html .= "<td class=celda_info nowrap>$row[3]</td>";                               // Destino
-      $html .= "<td class=celda_info nowrap>$row[num_pedido]</td>";                      // Pedido
-      $html .= "<td class=celda_info nowrap>$row[num_solici]</td>";                      // Solicitud
-      $html .= "<td class=celda_info nowrap>".$fec_lle[0]."</td>";                       // Fecha llegada 
-      $html .= "<td class=celda_info nowrap>".$row[8]."</td>";                           // Duración Dias desde salida a llegada
+      $html .= "<td height='50px' class=cellHead nowrap>$i</td>";                                      // Consecutivo
+      $html .= "<td height='50px' class=celda_info nowrap>$row[0]</td>";                               // Número despacho
+      $html .= "<td height='50px' class=celda_info nowrap>$row[10]</td>";                              // nombre Transportadora
+      $html .= "<td height='50px' class=celda_info nowrap>".$row['nom_genera']."</td>";                // nombre Generador
+      $html .= "<td height='50px' class=celda_info nowrap>".$fec_sal[0]."</td>";                       // Fecha salida
+      $html .= "<td height='50px' class=celda_info nowrap>".$fec_sal[1]."</td>";                       // Hora salida
+      $html .= "<td height='50px' class=celda_info nowrap>".$fec_cit[0]."</td>";                       // Fecha cita cargue
+      $html .= "<td height='50px' class=celda_info nowrap>".$fec_cit[1]."</td>";                       // Hora cita cargue
+      $html .= "<td height='50px' class=celda_info nowrap>$row[2]</td>";                               // Origen
+      $html .= "<td height='50px' class=celda_info nowrap>$row[3]</td>";                               // Destino
+      $html .= "<td height='50px' class=celda_info nowrap>$row[num_pedido]</td>";                      // Pedido
+      $html .= "<td height='50px' class=celda_info nowrap>$row[num_solici]</td>";                      // Solicitud
+      $html .= "<td height='50px' class=celda_info nowrap>".$fec_lle[0]."</td>";                       // Fecha llegada 
+      $html .= "<td height='50px' class=celda_info nowrap>".$row[8]."</td>";                           // Duración Dias desde salida a llegada
       
       $bg_color = "";
       if( $row[9] <= 0 ) $bg_color = " style='background-color:#EAF1DD' "; 
       elseif( $row[9] == 1 ) $bg_color = " style='background-color:#FAC090' ";
       else $bg_color = " style='background-color:#FF3300' ";
       
-      $html .= "<td class=celda_info $bg_color nowrap>".$row[9]."</td>";                 // Días desde Fecha salida      
-      $html .= "<td class=celda_info nowrap>".$this -> getUbicacion( $row[0] )."</td>";  //Ubicacion.
-      $html .= "<td class=celda_info nowrap>$row[6]</td>";                               // Placas  
-      $html .= "<td class=celda_info nowrap>$row[7]</td>";                               // Conductor
-      $html .= "<td class=celda_info nowrap>".getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda']."</td>";                               // Observacion
+      $html .= "<td height='50px' class=celda_info $bg_color nowrap>".$row[9]."</td>";                 // Días desde Fecha salida      
+      $html .= "<td height='50px' class=celda_info nowrap>$row[6]</td>";                               // Placas  
+      $html .= "<td height='50px' class=celda_info nowrap>$row[7]</td>";                               // Conductor
+      $html .= "<td height='50px' class=celda_info nowrap>".$this -> getUbicacion( $row[0] )."</td>";  //Ubicacion.
+      $html .= "<td height='50px' class=celda_info nowrap><div style = 'overflow: auto;width: 900px;'>".strtoupper(getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda'])."</div></td>";                               // Observacion
       $html .= "</tr>";
     }
     
