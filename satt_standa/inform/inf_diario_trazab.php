@@ -222,7 +222,8 @@ class Informe
                      IF(DATEDIFF( NOW(), d.fec_llegpl) IS NULL ,'N/A',DATEDIFF(NOW() , d.fec_llegpl)),
                      UPPER((SELECT nom_tercer FROM tab_tercer_tercer WHERE d.cod_transp = cod_tercer)) AS nom_tercer,
 										 o.num_solici, o.num_pedido,
-                     a.fec_citcar, a.hor_citcar, r.abr_tercer As nom_genera 
+                     IF(p.fec_citcar IS NULL OR p.fec_citcar = '0000-00-00', a.fec_citcar, p.fec_citcar) AS fec_citcar, 
+                     IF(p.hor_citcar IS NULL OR p.hor_citcar = '00:00:00', a.hor_citcar, p.hor_citcar) AS hor_citcar, r.abr_tercer As nom_genera 
               FROM " . BASE_DATOS . ".tab_despac_seguim b,
                    " . BASE_DATOS . ".tab_despac_vehige d,
                    " . BASE_DATOS . ".tab_tercer_tercer e,
@@ -232,8 +233,8 @@ class Informe
                 ON n.cod_tercer = a.cod_asegur
          LEFT JOIN " . BASE_DATOS . ".tab_despac_sisext o 
         				ON a.num_despac = o.num_despac 
-      /*   LEFT JOIN " . BASE_DATOS . ".tab_despac_corona p 
-                ON a.num_despac = p.num_dessat */
+         LEFT JOIN " . BASE_DATOS . ".tab_despac_corona p 
+                ON a.num_despac = p.num_dessat
          LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer r
                 ON r.cod_tercer = a.cod_client
              WHERE a.num_despac = d.num_despac AND
@@ -243,7 +244,10 @@ class Informe
                    
                    a.fec_salida Is Not Null AND
                    a.fec_llegad IS NULL AND
-                   a.ind_anulad = 'R' ";
+                   a.ind_anulad = 'R' AND 
+                   a.ind_planru = 'S' AND
+                   d.ind_anudat = 'R' AND 
+                   d.ind_activo IN ('R', 'S' ) ";
     
     if( $_POST[cod_agenci] ) $query .= " AND d.cod_agenci = '$_POST[cod_agenci]' ";
     
