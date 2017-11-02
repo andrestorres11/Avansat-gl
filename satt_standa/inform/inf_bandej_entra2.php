@@ -63,6 +63,7 @@ class infBandeja
 		$mTypeUser = self::$cDespac -> typeUser();
 		$mTipoDespac = self::$cDespac -> getTipoDespac();
 		$mArrayTransp = self::$cDespac -> getTransp();
+		$mArrayGenera = self::$cDespac -> getGenerador();
 		$mArrayUserAs = self::$cDespac -> getUserAsig();
 		$mUsrSinAsig = array( array('SIN', 'SIN ASIGNAR') );
 		$mView = self::$cDespac -> getView('jso_bandej');
@@ -124,6 +125,14 @@ class infBandeja
 						if( $mTypeUser['tip_perfil'] != 'CONTROL' && $mTypeUser['tip_perfil'] != 'EAL' )
 							$mHtml1 .= self::$cDespac -> lista( 'Usuarios Asignados:', 'cod_usuari', array_merge( self::$cNull, $mUsrSinAsig, $mArrayUserAs), 'cellInfo1' );
 						$mHtml1 .= '</tr>';
+						if($mView->fil_genera->sub->fil_gencar == 1)
+						{
+							$mHtml1 .= '<tr>';
+							$mHtml1 .= self::$cDespac -> lista( 'Generadores de carga:', 'cod_client', array_merge( self::$cNull, $mArrayGenera), 'cellInfo1' );
+							$mHtml1 .= '<td class="cellInfo1"></td>';
+							$mHtml1 .= '<td class="cellInfo1"></td>';
+							$mHtml1 .= '</tr>';
+						}
 					}
 
 				$mHtml1 .= '</table>';
@@ -217,6 +226,7 @@ class infBandeja
 			$mHtml .= '<input id="standaID" type="hidden" value="'.DIR_APLICA_CENTRAL.'" name="standa">';
 			$mHtml .= '<input id="ind_filactID" type="hidden" value="" name="ind_filact">';
 			$mHtml .= '<input id="sel_transpID" type="hidden" value="'.$_REQUEST[cod_transp].'" name="sel_transp">';
+			$mHtml .= '<input id="sel_clientID" type="hidden" value="" name="sel_clientID">';
 			$mHtml .= '<input id="sel_usuariID" type="hidden" value="'.$_REQUEST[cod_usuari].'" name="sel_usuari">';
 
 			$mHtml .= '</div>';

@@ -563,7 +563,9 @@ class Despac
 						AND xx.ind_anulad in ('R', 'A')
 						AND yy.ind_activo = 'S' 
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' "; 
-		 
+		
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+		
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -741,6 +743,8 @@ class Despac
 						AND ( xx.fec_salida IS NOT NULL   )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+
 						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -902,6 +906,8 @@ class Despac
 						AND yy.ind_activo = 'S' 
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' 
 						AND xx.num_despac NOT IN ( {$mDespacCargue} ) ";
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1119,7 +1125,7 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
 					 ON a.cod_tipdes = i.cod_tipdes 
 				  WHERE 1=1 ";
-
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND a.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		#Filtros por Formulario
 		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
 		$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
@@ -1202,6 +1208,8 @@ class Despac
 						AND yy.ind_activo = 'S' 
 						AND ( xx.fec_salida IS NOT NULL  )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -4201,6 +4209,37 @@ class Despac
 		}
 	}
 	
+	/*! \fn: getGenerador
+	 *  \brief: Trae los generadores de carga que se encuenten en ruta
+	 *  \author: Edward Serrano
+	 *	\date: 02/11/2017
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return:
+	 */
+	public function getGenerador()
+	{
+		$mSql = "SELECT a.cod_client, UPPER(c.abr_tercer) AS nom_tercer 
+				   FROM ".BASE_DATOS.".tab_despac_despac a 
+			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+					 ON a.num_despac = b.num_despac
+					AND a.fec_salida IS NOT NULL 
+					AND a.fec_salida <= NOW()
+					AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
+					AND a.ind_anulad = 'R' AND b.ind_activo = 'S'
+					AND a.ind_planru = 'S' 
+			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
+					 ON a.cod_client = c.cod_tercer 
+				  
+					";
+		if( self::$cTypeUser[tip_perfil] == 'CLIENTE' ){
+			$mSql .= " WHERE a.cod_client = ".self::$cTypeUser[cod_transp];
+		}	
+		$mSql .= " GROUP BY a.cod_client ORDER BY c.abr_tercer ASC ";
+		$consulta = new Consulta( $mSql, self::$cConexion );
+		return $mResult = $consulta -> ret_matrix('i');
+	}
+
 }
 
 if($_REQUEST['Ajax'] === 'on' )
