@@ -68,21 +68,22 @@ class exp_diario_trazab {
 
         $html .= "<tr>";
 
-        $html .= "<td class=celda_titulo colspan=15 >Se Encontraron " . sizeof($informe) . " Manifiestos.</td>";
+        $html .= "<td class=celda_titulo colspan=21 >Se Encontraron " . sizeof($informe) . " Manifiestos.</td>";
         $html .= "</tr>";
         $html .= "<tr>";
         $html .= "<td class=celda_titulo rowspan=2 >#</td>";
-        $html .= "<td class=celda_titulo rowspan=2 >N° Documento</td>";
-        $html .= "<td class=celda_titulo rowspan=2 >N° Transportadora</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Despacho</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Transportadora</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Generador</td>";
         $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Salida</td>";
         $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Cita Cargue</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Origen</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Destino</td>";
         $html .= "<td class=celda_titulo colspan=3 >Estimado de Llegada</td>";
-        $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";
-        $html .= "<td class=celda_titulo rowspan=2 >Observaciones</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Seguimiento Trafico</td>";
         $html .= "</tr>";
         $html .= "<tr>";
         $html .= "<td class=cellHead >Fecha</td>";
@@ -127,6 +128,7 @@ class exp_diario_trazab {
                 $html .= "<td class=cellHead nowrap>$i</td>";                                      // Consecutivo
                 $html .= "<td class=celda_info nowrap>$row[0]</td>";                               // Número despacho
                 $html .= "<td class=celda_info nowrap>$row[10]</td>";                              // nombre Transportadora
+                $html .= "<td class=celda_info nowrap>".$row['nom_genera']."</td>";                // nombre Generador
                 $html .= "<td class=celda_info nowrap>" . $fec_sal[0] . "</td>";                       // Fecha salida
                 $html .= "<td class=celda_info nowrap>" . $fec_sal[1] . "</td>";                       // Hora salida
                 $html .= "<td class=celda_info nowrap>".$fec_cit[0]."</td>";                       // Fecha cita cargue
@@ -145,10 +147,10 @@ class exp_diario_trazab {
                     $bg_color = " style='background-color:#FF3300' ";
 
                 $html .= "<td class=celda_info $bg_color nowrap>" . $row[9] . "</td>";                 // Días desde Fecha salida      
-                $html .= "<td class=celda_info nowrap>" . $this->getUbicacion($row[0]) . "</td>";  //Ubicacion.
                 $html .= "<td class=celda_info nowrap>$row[6]</td>";                               // Placas  
                 $html .= "<td class=celda_info nowrap>$row[7]</td>";                               // Conductor
-                $html .= "<td class=celda_info nowrap>".getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda']."</td>";                               // Observacion
+                $html .= "<td class=celda_info nowrap>" . $this->getUbicacion($row[0]) . "</td>";  //Ubicacion.
+                $html .= "<td class=celda_info nowrap>".strtoupper(getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda'])."</td>";                               // Observacion
                 $html .= "</tr>";
             }
 
