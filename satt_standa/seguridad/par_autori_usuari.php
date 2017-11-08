@@ -214,10 +214,14 @@ class LisAutoriUsuari
 	{
 		$mArray[0] = array( "edi_noveda"=> array( "name"=>"Editar Novedad", 
 												  "sub"=>array()
+												),
+							"inf_tradia"=> array( "name"=>"Fecha y hora seguimiento trazabilidad Diaria", 
+												  "sub"=>array()
 												)
 						  );
 
-		$mArray[1] = array( "edi_noveda"=>array("ind_visibl"=>1, "sub"=>array() )
+		$mArray[1] = array( "edi_noveda"=>array("ind_visibl"=>1, "sub"=>array() ),
+							"inf_tradia"=>array("ind_visibl"=>1, "sub"=>array() )
 						  );
 
 		return $mArray;
