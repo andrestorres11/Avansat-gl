@@ -683,7 +683,7 @@ class AjaxDespacDestin {
         echo "<script language=\"JavaScript\" src=\"../" . $_AJAX['Standa'] . "/js/functions.js\"></script>\n";
 
         switch ($_SESSION['datos_usuario']['cod_perfil']) {
-            case '712': case '8': case '73':
+            case '712': //case '8': case '73': // se deja solo el perfil 712 Corona tipo a, para qùe vea solo otras columnas
                         $mSql = "SELECT * 
                                FROM (
                                 SELECT a.num_despac, IF( z.num_desext IS NOT NULL , z.num_desext,  'N/A' ) as num_desext , b.num_placax, a.cod_manifi, a.fec_despac, c.nom_tipdes, d.nom_ciudad AS nom_ciuori, e.nom_ciudad AS nom_ciudes
