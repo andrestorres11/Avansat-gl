@@ -563,7 +563,9 @@ class Despac
 						AND xx.ind_anulad in ('R', 'A')
 						AND yy.ind_activo = 'S' 
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' "; 
-		 
+		
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+		
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -578,7 +580,7 @@ class Despac
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin,
-						l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar, k.num_solici
+						l.cod_estado, a.ind_anulad, z.fec_plalle, a.fec_citcar, a.hor_citcar, k.num_solici, UPPER(o.abr_tercer) AS nom_genera
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -629,7 +631,9 @@ class Despac
                                 AND n.num_consec = m.num_consec
                                 GROUP BY m.num_despac
                         ) l
-                     ON a.num_despac = l.num_despac  
+                     ON a.num_despac = l.num_despac
+              LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer o 
+					 ON a.cod_client = o.cod_tercer  
 				  WHERE k.ind_cumcar IS NULL AND k.fec_cumcar IS NULL AND
 				  		a.fec_inicar IS NULL AND
 				  		a.fec_fincar IS NULL AND				  		 
@@ -741,6 +745,8 @@ class Despac
 						AND ( xx.fec_salida IS NOT NULL   )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+
 						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -755,7 +761,7 @@ class Despac
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
-						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin 
+						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -800,6 +806,8 @@ class Despac
 					 ON a.num_despac = z.num_dessat 
 			  LEFT JOIN ".BASE_DATOS.".tab_despac_sisext y
 			  		 ON a.num_despac = y.num_despac
+			  LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
+					 ON a.cod_client = k.cod_tercer
 				  WHERE 1=1  AND y.ind_cumcar IS NOT NULL AND y.fec_cumcar IS NOT NULL
 				  ";
 
@@ -902,6 +910,8 @@ class Despac
 						AND yy.ind_activo = 'S' 
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' 
 						AND xx.num_despac NOT IN ( {$mDespacCargue} ) ";
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -979,7 +989,7 @@ class Despac
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
-						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin 
+						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera 
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -1003,7 +1013,9 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer h 
 					 ON b.cod_conduc = h.cod_tercer 
 			 INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
-					 ON a.cod_tipdes = i.cod_tipdes 
+					 ON a.cod_tipdes = i.cod_tipdes
+			 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
+					 ON a.cod_client = k.cod_tercer 
 				  WHERE 1=1 ";
 
 		if( $mSinFiltro == false )
@@ -1087,7 +1099,7 @@ class Despac
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
-						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin 
+						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera 
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -1117,9 +1129,11 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer h 
 					 ON b.cod_conduc = h.cod_tercer 
 			 INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
-					 ON a.cod_tipdes = i.cod_tipdes 
+					 ON a.cod_tipdes = i.cod_tipdes
+			 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
+					 ON a.cod_client = k.cod_tercer 
 				  WHERE 1=1 ";
-
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND a.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		#Filtros por Formulario
 		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
 		$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
@@ -1202,6 +1216,8 @@ class Despac
 						AND yy.ind_activo = 'S' 
 						AND ( xx.fec_salida IS NOT NULL  )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1241,7 +1257,7 @@ class Despac
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
-						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin 
+						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera 
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -1276,6 +1292,8 @@ class Despac
 					 ON a.cod_tipdes = i.cod_tipdes 
 			 LEFT JOIN ".BASE_DATOS.".tab_despac_corona j
 			 	 	 ON a.num_despac = j.num_dessat
+			 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
+					 ON a.cod_client = k.cod_tercer
 				  WHERE 1=1     ";
 
 		#Filtros por Formulario
@@ -1869,7 +1887,7 @@ class Despac
 	 */
 	private function detailBand()
 	{
-		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 
 		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
 
@@ -1930,7 +1948,21 @@ class Despac
 			if( $_REQUEST['ind_etapax'] == 'ind_segtra' )
 				$mNameFunction = $mTransp[$i]['ind_segcar'] == '1' && $mTransp[$i]['ind_segdes'] == '1' ? 'getDespacTransi2' : 'getDespacTransi1';
  
-			$mDespac = self::$mNameFunction( $mTransp[$i] );
+			if($_REQUEST['ind_etapax'] == '')
+			{
+				$mNameFunction = $mTransp[$i]['ind_segcar'] == '1' && $mTransp[$i]['ind_segdes'] == '1' ? 'getDespacTransi2' : 'getDespacTransi1';
+				$mDespac1 = array(); 
+				$mDespac2 = array();
+				$mDespac3 = array();
+				$mDespac1 = self::getDespacCargue( $mTransp[$i] );
+				$mDespac2 = self::$mNameFunction( $mTransp[$i] );
+				$mDespac3 = self::getDespacDescar( $mTransp[$i] );
+				$mDespac  = array_merge($mDespac1,$mDespac2,$mDespac3);
+			}
+			else
+			{
+				$mDespac = self::$mNameFunction( $mTransp[$i] );
+			}
  
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
 
@@ -2128,6 +2160,7 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ciu_origen].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ciu_destin].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[nom_transp].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[nom_genera].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left" style="background: '.$row[color2].'" >'.$row[num_placax].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[nom_conduc].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[num_telmov].'</td>';
@@ -2536,13 +2569,13 @@ class Despac
 				if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 					$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.	$mEnSegi .'</td>';
 
-				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.$mReport[$i][tot_despac].'</td>';
-				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.( $mReport[$i][can_cargue] ? $mReport[$i][can_cargue] : '-' ).'</td>';
-				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.( $mReport[$i][can_transi] ? $mReport[$i][can_transi] : '-' ).'</td>';
-				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.( $mReport[$i][can_descar] ? $mReport[$i][can_descar] : '-' ).'</td>';
-				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.( $mData[est_pernoc] ? $mData[est_pernoc] : '-' ).'</td>';
-				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.( $mData[fin_rutaxx] ? $mData[fin_rutaxx] : '-' ).'</td>';
-				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center">'.( $mData[ind_acargo] ? $mData[ind_acargo] : '-' ).'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \'\', \''.$mTransp[$i]['cod_transp'].'\');">'.$mReport[$i][tot_despac].'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \'ind_segcar\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mReport[$i][can_cargue] ? $mReport[$i][can_cargue] : '-' ).'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \'ind_segtra\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mReport[$i][can_transi] ? $mReport[$i][can_transi] : '-' ).'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \'ind_segdes\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mReport[$i][can_descar] ? $mReport[$i][can_descar] : '-' ).'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'est_pernoc\', \'\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mData[est_pernoc] ? $mData[est_pernoc] : '-' ).'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'fin_rutaxx\', \'\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mData[fin_rutaxx] ? $mData[fin_rutaxx] : '-' ).'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'ind_acargo\', \'\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mData[ind_acargo] ? $mData[ind_acargo] : '-' ).'</td>';
 
 				if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 					$mHtml1 .= 	'<td class="classCell" nowrap="" align="left">'.  ( $mTransp[$i][usr_asigna] != '' ? $mTransp[$i][usr_asigna] : 'SIN ASIGNAR' ).'</td>';
@@ -4201,6 +4234,37 @@ class Despac
 		}
 	}
 	
+	/*! \fn: getGenerador
+	 *  \brief: Trae los generadores de carga que se encuenten en ruta
+	 *  \author: Edward Serrano
+	 *	\date: 02/11/2017
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return:
+	 */
+	public function getGenerador()
+	{
+		$mSql = "SELECT a.cod_client, UPPER(c.abr_tercer) AS nom_tercer 
+				   FROM ".BASE_DATOS.".tab_despac_despac a 
+			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+					 ON a.num_despac = b.num_despac
+					AND a.fec_salida IS NOT NULL 
+					AND a.fec_salida <= NOW()
+					AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
+					AND a.ind_anulad = 'R' AND b.ind_activo = 'S'
+					AND a.ind_planru = 'S' 
+			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
+					 ON a.cod_client = c.cod_tercer 
+				  
+					";
+		if( self::$cTypeUser[tip_perfil] == 'CLIENTE' ){
+			$mSql .= " WHERE a.cod_client = ".self::$cTypeUser[cod_transp];
+		}	
+		$mSql .= " GROUP BY a.cod_client ORDER BY c.abr_tercer ASC ";
+		$consulta = new Consulta( $mSql, self::$cConexion );
+		return $mResult = $consulta -> ret_matrix('i');
+	}
+
 }
 
 if($_REQUEST['Ajax'] === 'on' )

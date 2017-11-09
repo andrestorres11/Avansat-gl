@@ -31,6 +31,7 @@ $("body").ready(function() {
     $("#cod_transpID").multiselect().multiselectfilter();
     $("#pun_cargueID").multiselect().multiselectfilter();
     $("#tip_producID").multiselect().multiselectfilter();
+    $("#cod_clientID").multiselect().multiselectfilter();
 
     //Onclick Pestañas
     $("#liGenera").click(function() {
@@ -87,6 +88,7 @@ $("body").ready(function() {
     //
     $("#cod_transpID option[value=" + $("#sel_transpID").val() + "]").attr("selected", "selected");
     $("#cod_usuariID option[value=" + $("#sel_usuariID").val() + "]").attr("selected", "selected");
+    $("#cod_clientID option[value=" + $("#sel_clientID").val() + "]").attr("selected", "selected");
 
     //Ejecuta la busqueda por los filtros especificos
     $(".Style2DIV input[type=text]").each(function(i, o) {
@@ -144,6 +146,7 @@ function getParameFilter() {
         var box_checke = $("input[type=checkbox]:checked");
         var rad_checke = $("input[type=radio]:checked");
         var cod_transp = '""';
+        var cod_client = '""';
         var cod_usuari = '""';
         var pun_cargue = '""';
         var tip_produc = '""';
@@ -154,6 +157,8 @@ function getParameFilter() {
         box_checke.each(function(i, o) {
             if ($(this).attr("name") == 'multiselect_cod_transpID')
                 cod_transp += ',"' + $(this).val() + '"';
+            else if ($(this).attr("name") == 'multiselect_cod_clientID')
+                cod_client += ',"' + $(this).val() + '"';
             else if ($(this).attr("name") == 'multiselect_cod_usuariID')
                 cod_usuari += ',"' + $(this).val() + '"';
             else if ($(this).attr("name") == 'multiselect_pun_cargueID')
@@ -173,6 +178,10 @@ function getParameFilter() {
 
         if (cod_transp != '""' && cod_transp != '"",""') {
             attributes += '&cod_transp=' + cod_transp;
+        }
+
+        if (cod_client != '""' && cod_client != '"",""') {
+            attributes += '&cod_client=' + cod_client;
         }
 
         if (cod_usuari != '""' && cod_usuari != '"",""') {
@@ -379,6 +388,7 @@ function generalReport(ind_etapax, id_div) {
         atributes += '&standa=' + standar.val();
         atributes += '&ind_filact=' + $("#ind_filactID").val();
         atributes += '&sel_transp=' + $("#sel_transpID").val();
+        atributes += '&sel_client=' + $("#sel_clientID").val();
         atributes += '&sel_usuari=' + $("#sel_usuariID").val();
         atributes += getParameFilter();
 

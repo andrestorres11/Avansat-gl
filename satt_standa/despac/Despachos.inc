@@ -3528,7 +3528,7 @@ class Despachos
                         IF( a.num_poliza IS NULL OR a.num_poliza = '', '$mObs[0]', a.num_poliza ) AS num_poliza, 
                         IF( a.con_telmov IS NULL OR a.con_telmov = '', m.num_telmov, a.con_telmov ) AS con_telmov, 
                         IF( i.nom_agenci IS NULL OR i.nom_agenci = '', '$mObs[0]', UPPER(i.nom_agenci) ) AS nom_agenci, 
-                        IF( j.abr_tercer IS NULL OR j.abr_tercer = '', '$mObs[0]', UPPER(j.abr_tercer) ) AS nom_genera, 
+                        IF( jj.abr_tercer IS NULL OR jj.abr_tercer = '', '$mObs[0]', UPPER(jj.abr_tercer) ) AS nom_genera, 
                         IF( r.nom_poseed IS NULL OR r.nom_poseed = '', '$mObs[0]', UPPER(r.nom_poseed) ) AS nom_poseed, 
                         IF( z.abr_tercer IS NULL OR z.abr_tercer = '', '$mObs[0]', UPPER(z.abr_tercer) ) AS nom_asegur, 
                         IF( ab.nom_produc IS NULL OR ab.nom_produc = '', '$mObs[1]', UPPER(ab.nom_produc) ) AS nom_produc, 
@@ -3609,7 +3609,9 @@ class Despachos
              INNER JOIN ".BASE_DATOS.".tab_genera_tipdes aa 
                      ON a.cod_tipdes = aa.cod_tipdes 
               LEFT JOIN ".BASE_DATOS.".tab_genera_produc ab 
-                     ON k.cod_mercan = ab.cod_produc 
+                     ON k.cod_mercan = ab.cod_produc
+              LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer jj 
+                     ON a.cod_client = jj.cod_tercer 
                   WHERE a.num_despac = '{$mNumDesOri}' 
                 ";
         $mConsult = new Consulta( $mSql, $this -> conexion );
