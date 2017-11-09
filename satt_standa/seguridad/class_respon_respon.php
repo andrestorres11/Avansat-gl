@@ -239,7 +239,8 @@ class responsable
 														  "sub"=>array(
 																		"tip_despac"=>"Tipo de Despacho", 
 																		"tip_servic"=>"Tipo de Servicio", 
-																		"otr_filtro"=>"Otros Filtros" 
+																		"otr_filtro"=>"Otros Filtros",
+																		"fil_gencar"=>"Generadores de carga" 
 																	  )
 														),
 									"fil_especi"=> array( "name"=>"Filtros Especificos", 
@@ -262,7 +263,7 @@ class responsable
 														 )
 								  );
 				
-				$mArray[1] = array( "fil_genera"=>array("ind_visibl"=>1, "sub"=>array("tip_despac"=>1, "tip_servic"=>1, "otr_filtro"=>1) ),
+				$mArray[1] = array( "fil_genera"=>array("ind_visibl"=>1, "sub"=>array("tip_despac"=>1, "tip_servic"=>1, "otr_filtro"=>1, "fil_gencar"=>1) ),
 									"fil_especi"=>array("ind_visibl"=>1, "sub"=>array() ),
 									"sec_inform"=>array("ind_visibl"=>1, "sub"=>array("pes_genera"=>1, "pes_cargax"=>1, "pes_transi"=>1, "pes_descar"=>1, "pes_pernoc"=>1) ),
 									"sec_detail"=>array("ind_visibl"=>1, "sub"=>array("lla_cargue"=>1))
