@@ -122,17 +122,24 @@ class infBandeja
 
 						$mHtml1 .= '<tr>';
 						$mHtml1 .= self::$cDespac -> lista( 'Transportadora:', 'cod_transp', array_merge( self::$cNull, $mArrayTransp), 'cellInfo1' );
-						if( $mTypeUser['tip_perfil'] != 'CONTROL' && $mTypeUser['tip_perfil'] != 'EAL' )
+						if( $mTypeUser['tip_perfil'] != 'CONTROL' && $mTypeUser['tip_perfil'] != 'EAL' && $mTypeUser['tip_perfil'] != 'CLIENTE' ){
 							$mHtml1 .= self::$cDespac -> lista( 'Usuarios Asignados:', 'cod_usuari', array_merge( self::$cNull, $mUsrSinAsig, $mArrayUserAs), 'cellInfo1' );
-						$mHtml1 .= '</tr>';
-						if($mView->fil_genera->sub->fil_gencar == 1)
+						}
+						else
 						{
+							$mHtml1 .= '<td class="cellInfo1"></td>';
+							$mHtml1 .= '<td class="cellInfo1"></td>';
+						}
+						$mHtml1 .= '</tr>';
+					}
+					if($mView->fil_genera->sub->fil_gencar == 1)
+					{
+						$mHtml1 .= '</table>';
+						$mHtml1 .= '<table width="100%" cellspacing="0" cellpadding="0">';
+							$mHtml1 .= '<tr><th class="CellHead" colspan="2" style="text-align:left">Filtro Generador</th></tr>';
 							$mHtml1 .= '<tr>';
 							$mHtml1 .= self::$cDespac -> lista( 'Generadores de carga:', 'cod_client', array_merge( self::$cNull, $mArrayGenera), 'cellInfo1' );
-							$mHtml1 .= '<td class="cellInfo1"></td>';
-							$mHtml1 .= '<td class="cellInfo1"></td>';
 							$mHtml1 .= '</tr>';
-						}
 					}
 
 				$mHtml1 .= '</table>';
