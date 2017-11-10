@@ -4258,7 +4258,7 @@ class Despac
 				  
 					";
 		if( self::$cTypeUser[tip_perfil] == 'CLIENTE' ){
-			$mSql .= " WHERE a.cod_client = ".self::$cTypeUser[cod_transp];
+			$mSql .= " WHERE b.cod_transp = ".self::$cTypeUser[cod_transp];
 		}	
 		$mSql .= " GROUP BY a.cod_client ORDER BY c.abr_tercer ASC ";
 		$consulta = new Consulta( $mSql, self::$cConexion );
