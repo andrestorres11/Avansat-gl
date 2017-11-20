@@ -51,7 +51,7 @@ class LisAutoriUsuari
 	 *  \brief: Lista Usuarios Parametrizados
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 22/02/2016
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return:
 	 */
@@ -118,7 +118,7 @@ class LisAutoriUsuari
 	 *  \brief: Crea formulario para editar o guardar nuevas Autorizaciones por usuario
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 22/02/2016
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return: HTML
 	 */
@@ -142,13 +142,13 @@ class LisAutoriUsuari
 		$mHtml = new Formlib(2);
 		$mHtml->SetCss("jquery");
 		$mHtml->SetCss("informes");
-
+		$mHtml->OpenDiv("id:DatosBasicosID; class:contentAccordionForm");
 			$mHtml->Table("tr");
-				$mHtml->Label( "Datos Basicos de la AutorizaciÃ³n", array("colspan"=>"4", "align"=>"center", "class"=>"CellHead") );
+				$mHtml->Label( "Datos Basicos de la Autorización", array("colspan"=>"4", "align"=>"center", "class"=>"CellHead") );
 				$mHtml->CloseRow();
 
 				$mHtml->Row();
-				$mHtml->Label( "AutorizaciÃ³n:", array("align"=>"right", "width"=>"50%", "class"=>"cellInfo2") );
+				$mHtml->Label( "Autorización:", array("align"=>"right", "width"=>"50%", "class"=>"cellInfo2") );
 
 			if( sizeof($mData) < 1 )
 				$mHtml->Select2(array_merge(self::$cNull, $mUsuari), array("name"=>"cod_conusu", "id"=>"cod_conusuID", "class"=>"cellInfo2") );
@@ -166,7 +166,7 @@ class LisAutoriUsuari
 			$mHtml->SetBody('<table width="100%" cellspacing="0" cellpadding="3" border="0" align="center">');
 
 			foreach ($mArray[0] as $key => $value)
-			{#Recorre las AutorizaciÃ³n
+			{#Recorre las Autorización
 				$mHtml->Row();
 				$mHtml->Label( $mArray[0][$key]['name'], array("colspan"=>"2", "align"=>"right", "width"=>"25%", "class"=>"cellInfo2") );
 				$mHtml->CheckBox( array("colspan"=>"2", "name"=>"jso_autori[$key][ind_visibl]", "id"=>$key."ID", "value"=>"1", "checked"=>$mData['jso_autori']->$key->ind_visibl, "width"=>"25%", "class"=>"cellInfo2") );
@@ -197,7 +197,7 @@ class LisAutoriUsuari
 				$mHtml->Hidden( array("name"=>"standa", "id"=>"standaID", "value"=>DIR_APLICA_CENTRAL) );
 				$mHtml->Hidden( array("name"=>"cod_servic", "id"=>"cod_servicID", "value"=>$_REQUEST['cod_servic']) );
 			$mHtml->CloseTable('tr');
-
+		$mHtml->CloseDiv();
 		echo $mHtml->MakeHtml();
 	}
 
@@ -231,7 +231,7 @@ class LisAutoriUsuari
 	 *  \brief: actualiza o guarda las autorizaciones especificas por usuario
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 23/02/2016
-	 *	\date modified: dia/mes/aÃ±o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return: HTML
 	 */
@@ -258,12 +258,12 @@ class LisAutoriUsuari
 		}
 
 		if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-			$mensaje = "<font color='#000000'>Se Guardo la AutorizaciÃ³n Exitosamente.<br></font>";
+			$mensaje = "<font color='#000000'>Se Guardo la Autorización Exitosamente.<br></font>";
 			$mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
 			$mens = new mensajes();
 			echo $mens->correcto2("AUTORIZACIONES", $mensaje);
 		}else{
-			$mensaje = "<font color='#000000'>OcurriÃ³ un Error Inesperado al Guardar la AutorizaciÃ³n</font>";
+			$mensaje = "<font color='#000000'>Ocurrió un Error Inesperado al Guardar la Autorización</font>";
 			$mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
 			$mens = new mensajes();
 			echo $mens->error2("AUTORIZACIONES", $mensaje);
