@@ -22,7 +22,17 @@ class exp_diario_trazab {
     function expListadoExcel() {
         session_start();
         $informe = $_SESSION[html];
-
+        $autorizacion = self::getAutorizacionUsuario();
+        $validaPermis = false;
+        #seguimiento
+        if($autorizacion)
+        {
+          if($autorizacion->inf_tradia->ind_visibl)
+          {
+            $validaPermis = true;
+          }
+        }
+        #fin seguimiento
         $archivo = "Informe_trazabilidad_diaria_" . date('Y_m_d') . ".xls";
         header('Content-Type: application/octetstream');
         header('Expires: 0');
@@ -68,7 +78,7 @@ class exp_diario_trazab {
 
         $html .= "<tr>";
 
-        $html .= "<td class=celda_titulo colspan=23 >Se Encontraron " . sizeof($informe) . " Manifiestos.</td>";
+        $html .= "<td class=celda_titulo colspan=".($validaPermis ==true?"23":"21")." >Se Encontraron " . sizeof($informe) . " Manifiestos.</td>";
         $html .= "</tr>";
         $html .= "<tr>";
         $html .= "<td class=celda_titulo rowspan=2 >#</td>";
@@ -83,7 +93,10 @@ class exp_diario_trazab {
         $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
-        $html .= "<td class=celda_titulo colspan=2 >Ultimo Seguimiento</td>";
+        if($validaPermis ==true)
+        {
+            $html .= "<td class=celda_titulo colspan=2 >Ultimo Seguimiento</td>";
+        }
         $html .= "<td class=celda_titulo rowspan=2 >Seguimiento Trafico</td>";
         $html .= "</tr>";
         $html .= "<tr>";
@@ -94,10 +107,12 @@ class exp_diario_trazab {
         $html .= "<td class=cellHead >Fecha</td>";
         $html .= "<td class=cellHead >Duraci&oacute;n</td>";
         $html .= "<td class=cellHead >Días</td>";
-        $html .= "<td class=cellHead >Fecha</td>";    
-        $html .= "<td class=cellHead >Hora</td>"; 
+        if($validaPermis ==true)
+        {
+            $html .= "<td class=cellHead >Fecha</td>";    
+            $html .= "<td class=cellHead >Hora</td>"; 
+        }
         $html .= "</tr>";
-        $autorizacion = self::getAutorizacionUsuario();
         @include_once( "../lib/general/functions.inc" );
         $i = 0;
         if ($informe)
@@ -152,23 +167,20 @@ class exp_diario_trazab {
                 #seguimiento
                 $inf_despac = getNovedadesDespac($this->conexion, $row[0], '2');
                 $fec_noveda = array();          
-                if($autorizacion)
-                {
-                  if($autorizacion->inf_tradia->ind_visibl)
-                  {
-                    if($inf_despac['fec_noveda'] != '' && $inf_despac['fec_noveda'] != NULL)
-                    {
-                      $fec_noveda =  $this -> toFecha($inf_despac['fec_noveda']);
-                    }
-                  }
-                }
                 #fin seguimiento
                 $html .= "<td class=celda_info $bg_color nowrap>" . $row[9] . "</td>";                 // Días desde Fecha salida      
                 $html .= "<td class=celda_info nowrap>$row[6]</td>";                               // Placas  
                 $html .= "<td class=celda_info nowrap>$row[7]</td>";                               // Conductor
                 $html .= "<td class=celda_info nowrap>" . $this->getUbicacion($row[0]) . "</td>";  //Ubicacion.
-                $html .= "<td height='50px' class=celda_info nowrap>".$fec_noveda[0]."</td>";  //Fecha seguimineto trafico.
-                $html .= "<td height='50px' class=celda_info nowrap>".$fec_noveda[1]."</td>";  //Hora seguimiento trafico
+                if($validaPermis ==true)
+                {
+                    if($inf_despac['fec_noveda'] != '' && $inf_despac['fec_noveda'] != NULL)
+                    {
+                      $fec_noveda =  $this -> toFecha($inf_despac['fec_noveda']);
+                    }
+                    $html .= "<td height='50px' class=celda_info nowrap>".$fec_noveda[0]."</td>";  //Fecha seguimineto trafico.
+                    $html .= "<td height='50px' class=celda_info nowrap>".$fec_noveda[1]."</td>";  //Hora seguimiento trafico
+                }
                 $html .= "<td class=celda_info nowrap>".strtoupper(getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda'])."</td>";                               // Observacion
                 $html .= "</tr>";
             }
