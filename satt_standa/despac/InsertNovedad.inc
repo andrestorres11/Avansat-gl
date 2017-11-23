@@ -131,12 +131,15 @@ class InsertNovedad {
         # Datos del despacho (llaves) para buscar los correos que tengan esa configuracion -------
         $mSelect = "SELECT a.cod_ciuori, b.cod_mercan AS cod_produc, a.cod_ciudes,
                            a.cod_tipdes, b.cod_instal AS cod_zonaxx, c.cod_canalx,
-                           b.tip_transp AS cod_tiptra, '" . $cod_noveda . "' AS cod_noveda, a.num_despac, a.nom_sitcar AS cod_deposi
+                           b.tip_transp AS cod_tiptra, '" . $cod_noveda . "' AS cod_noveda, a.num_despac, 
+                           -- a.nom_sitcar AS cod_deposi
+                           d.des_sitcar AS cod_deposi
                       FROM " . $base_datos . ".tab_despac_despac a 
                  LEFT JOIN " . $base_datos . ".tab_despac_sisext b 
                         ON a.num_despac = b.num_despac 
                  LEFT JOIN " . $base_datos . ".tab_despac_destin c 
                         ON a.num_despac = c.num_despac 
+                 LEFT JOIN ". $base_datos .".tab_despac_corona d ON a.num_despac = d.num_dessat OR a.cod_manifi
                      WHERE a.num_despac = '" . $num_despac . "' GROUP BY a.num_despac ";
         $consulta = new Consulta($mSelect, $this->conexion);
         $aDespac = $consulta->ret_matrix('a');
@@ -553,7 +556,8 @@ class InsertNovedad {
                     $mListCr .= " \n AND z.ValCriter1 = '" . $mData["cod_ciuori"] . "' ";
                     $consulta = new Consulta($mListCr, $this->conexion);
                     $_Data[$key] = $consulta->ret_matrix('a');
-                    break;
+                    break;                
+                 
             }
         }
 
