@@ -158,7 +158,7 @@ class AjaxInsertDespacho
                 FROM ".CENTRAL.".tab_genera_opegps a
                WHERE a.ind_estado = '1'";
     
-    if( $cod_opegps != NULL )
+    if( $cod_opegps != NULL && $cod_opegps != '' )
     {
       $query .= " AND a.cod_operad = '".$cod_opegps."' ";
     }
@@ -1585,9 +1585,9 @@ class AjaxInsertDespacho
     $datos->cod_paides = $paidepdes[0][0];
     $datos->cod_depdes = $paidepdes[0][1];
     $datos->usr_creaci = $_SESSION['datos_usuario']['cod_usuari'];
-    
-    $nombre_opegps = $this->getOpegps( $datos->cod_opegps);
-    $datos->gps_operad = $nombre_opegps[0][1];
+
+    //$nombre_opegps = $this->getOpegps( $datos->cod_opegps);
+    //$datos->gps_operad = $nombre_opegps[0][0];
     
     $datos->val_declar = str_replace( '.', '', $datos->val_declar );
     
@@ -1610,7 +1610,7 @@ class AjaxInsertDespacho
                             NULL,NULL,NULL,NULL,
                             NULL,NULL, '$datos->cod_agenci',NULL,
                            '$datos->obs_genera','$datos->val_declar','$datos->usr_creaci', NOW(),
-                           '$datos->val_pesoxx','$datos->gps_operad','$datos->usr_gpsxxx','$datos->clv_gpsxxx',
+                           '$datos->val_pesoxx','$datos->cod_opegps','$datos->usr_gpsxxx','$datos->clv_gpsxxx',
                            '$datos->gps_idxxxx','$datos->gps_otroxx','$datos->nom_asegur','$datos->num_poliza')"; 
     $consulta = new Consulta($mInsert, $this->conexion, "R");
     
@@ -1757,8 +1757,17 @@ class AjaxInsertDespacho
     
     /**********************************************************************/
     
-    
-    
+    if($datos->cod_opegps != NULL && $datos->cod_opegps != '')
+    {
+      $mSql = "SELECT MAX(cod_consec) FROM ".BASE_DATOS.".tab_despac_gpsxxx";
+      $consulta = new Consulta($mSql, $this->conexion, "R");
+      $cod_consec = $consulta->ret_matriz();
+      $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_gpsxxx
+                              ( num_despac, cod_consec, idx_gpsxxx, cod_opegps, nom_usrgps, clv_usrgps, usr_creaci, fec_creaci )
+                        VALUES( '$datos->num_despac', '".$cod_consec[0][0]."', '$datos->gps_idxxxx', '$datos->cod_opegps', '$datos->usr_gpsxxx', '$datos->clv_gpsxxx', '$datos->usr_creaci' , NOW() )";
+      $consulta = new Consulta( $mInsert, $this->conexion, "R" );
+    }
+      
     if( $insercion = new Consulta( "COMMIT", $this->conexion ) ){
       $mHtml  .= '<center><table width="100%" cellspacing="2px" cellpadding="0">';
     
