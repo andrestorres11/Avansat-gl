@@ -41,6 +41,14 @@ class Proc_ins_despac
           echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El formato del archivo no es permitido. formato requerido CSV.</img>";
           die();
         }
+        
+        $InfoFile = pathinfo($_FILES['archivo']['name'];
+        if($InfoFile["extension"] != 'csv')
+        {
+          $validacion = false;
+          echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El formato del archivo no es permitido. formato requerido CSV.</img>";
+          die();
+        }
      }
      else
      {
