@@ -42,7 +42,7 @@ class Proc_ins_despac
           die();
         }
         
-        $InfoFile = pathinfo($_FILES['archivo']['name'];
+        $InfoFile = pathinfo($_FILES['archivo']['name']);
         if($InfoFile["extension"] != 'csv')
         {
           $validacion = false;
