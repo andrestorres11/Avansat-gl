@@ -1818,3 +1818,41 @@ function validarNoveEspeciales()
         return false;
     }
 }
+
+/*! \fn: getListDespac
+ *  \brief: Obtiene la lista de despachos generada
+ *  \author: Edward Serrano
+ *  \date: 28/11/2017
+ *  \date modified: dia/mes/año
+ *  \return: 
+ */
+function getListDespac(cod_despac, cod_manifi) 
+{
+    try 
+    {	
+    	var standa = $("#dir_aplicaID").val();
+    	if(cod_despac != '' && cod_manifi != '')
+    	{
+    		mData = "Ajax=on&Option=getListDespac&cod_despac="+cod_despac+"&cod_manifi="+cod_manifi;
+    		LoadPopupJQ3('open', 'Relacion de despachos', '500', '700', false, false, true);
+			var popup = $("#popID");
+			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+    		$.ajax({
+		        type: "POST",
+		        url: "../"+ standa +"/inform/class_despac_trans3.php",
+		        data: mData,
+		        beforeSend: function() {
+					popup.html("<center><img src=\"../" + standa + "/imagenes/ajax-loader.gif\"></center>");
+				},
+		        success: function( datos )
+		        {
+		            popup.html(datos);
+		        }
+		    });
+    	}
+    } 
+    catch (e) {
+        console.log("Error Fuction getListDespac: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}

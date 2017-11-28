@@ -3691,7 +3691,8 @@ class Despachos
                         FROM ".BASE_DATOS.".tab_despac_sisext a
                   INNER JOIN ".BASE_DATOS.".tab_despac_despac b 
                           ON a.num_despac = b.num_despac 
-                       WHERE a.num_despac != '{$mNumDesOri}' 
+                       WHERE a.num_despac != '{$mNumDesOri}'
+                         AND b.cod_manifi = '{$mResult[cod_manifi]}' 
                          AND a.num_desext = (
                                                 SELECT x.num_desext 
                                                   FROM ".BASE_DATOS.".tab_despac_sisext x 
@@ -3708,7 +3709,11 @@ class Despachos
                     $mTxt = '<a class="classLink" href="index.php?cod_servic='.$this -> servic.'&window=central&despac='.$row[0].'&opcion=1" style="color:green;">'.$row[0].'</a>';
                 }
                 $mResult['tit_desant'] = ( $mDespacAnterior[0][1] == 'A' || $mDespacAnterior[0][2] != '' ) ? "Despacho Anterior" : "Despacho Actual" ;
-                $mResult['num_desant'] = $mTxt; 
+                if(count($mDespacAnterior) > 2)
+                {
+                    $mTxt .= '  <a class="classLink" onclick="getListDespac(\''.$mNumDesOri.'\',\''.$mResult[cod_manifi].'\')" style="color:green;">[ Ver Mas ]</a>';
+                }
+                $mResult['num_desant'] = $mTxt;
             }else{
                 $mResult['tit_desant'] = '';
                 $mResult['num_desant'] = '';
