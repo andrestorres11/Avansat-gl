@@ -940,22 +940,47 @@ class InsertNovedad {
     function getNumViajexEmptra($mDataDespac = NULL) {
         try {
             # Valida relacion despacho-despacho viaje (empresas terceras con GL)
-            $mIndViaje = "SELECT num_viajex FROM " . BASE_DATOS . ".tab_despac_viajex WHERE num_despac = '{$mDataDespac[despac]}' ";
+            $mIndViaje = "SELECT num_viajex, num_placax FROM " . BASE_DATOS . ".tab_despac_viajex WHERE num_despac = '{$mDataDespac[despac]}' ";
             $mConsult = new Consulta($mIndViaje, $this->conexion);
             $mResult = $mConsult->ret_matrix('a');
 
 
+
+            // valida si es un viaje corona
             $mFindDessat = " SELECT num_dessat FROM " . BASE_DATOS . ".tab_despac_corona  WHERE num_despac = '" . $mResult[0]["num_viajex"] . "' ";
             $mConsult = new Consulta($mFindDessat, $this->conexion);
             $mExistVJ = $mConsult->ret_matrix('a');
             if (sizeof($mExistVJ) > 0) {
                 $fNumDespac = $mExistVJ[0]["num_dessat"];
             } else {
-                throw new Exception("No se encuentra numero de Viaje " . $mResult[0]["num_viajex"], "1999");
-                break;
+
+                // valida si es un viaje diferente a corona, caso FAGOVER, empresas terceras que le reportan a fagover desde Gl o desde externo, corona usa tablas propias
+                // para este caso busca un despacho que tenga ese "Viaje" -> manifiesto, con esa placa, para replicar la novedad
+                $mFindDessat = "SELECT a.num_despac AS num_dessat
+                                  FROM 
+                                        ".BASE_DATOS.".tab_despac_despac a INNER JOIN 
+                                        ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac AND 
+                                                                              a.fec_salida IS NOT NULL AND 
+                                                                              a.fec_salida <= NOW() AND
+                                                                              a.ind_planru = 'S' AND 
+                                                                              a.ind_anulad = 'R' AND 
+                                                                              b.ind_activo = 'S' AND
+                                                                              a.cod_manifi = '" . trim($mResult[0]["num_viajex"]) . "' AND 
+                                                                              b.num_placax = '" . trim($mResult[0]["num_placax"]) . "'
+                                 WHERE 1 = 1 LIMIT 1 ";
+                $mConsult = new Consulta($mFindDessat, $this->conexion);
+                $mExistVJ = $mConsult->ret_matrix('a');
+                if (sizeof($mExistVJ) > 0) {
+                    $fNumDespac = $mExistVJ[0]["num_dessat"];
+                }
+                else{
+                    throw new Exception("No se encuentra numero de Viaje " . $mResult[0]["num_viajex"], "1999");
+                    break;
+                }
             }
 
 
+            // Busca los datos complementarios del despacho, para poder hacer la replicacion de la novedad, validando que el despacho encontrado por el manifiesto esté en ruta y activo
             $mQuery = 'SELECT a.num_despac, 
                          b.cod_transp, 
                          a.cod_manifi,
