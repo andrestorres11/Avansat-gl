@@ -309,6 +309,17 @@ class Informe
     echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_diario_trazab.js\"></script>\n";
     $form = new Formulario ("index.php","post","Informacion del Despacho","form_item"); 
     $informe = $this -> getInforme(); 
+    $autorizacion = self::getAutorizacionUsuario();
+    $validaPermis = false;
+    #seguimiento
+    if($autorizacion)
+    {
+      if($autorizacion->inf_tradia->ind_visibl)
+      {
+        $validaPermis = true;
+      }
+    }
+    #fin seguimiento
     
     $html  = "<style type='text/css' >";
     $html .= "  
@@ -344,14 +355,14 @@ class Informe
     $Hoy = $this -> toFecha( date( "Y-m-d" ) );
     $html .= "<table cellpadding='0' cellspacing='0' width='100%' border='0' >";    
     $html .= "<tr>";
-    $html .= "<td class=celda_titulo colspan=21 style='text-align:left' >Fecha: ".$Hoy[0].".</td>"; 
+    $html .= "<td class=celda_titulo colspan=".($validaPermis ==true?"23":"21")." style='text-align:left' >Fecha: ".$Hoy[0].".</td>"; 
     $html .= "</tr>";
     $html .= "<tr>";
-    $html .= "<td class=celda_titulo colspan=21 style='text-align:left' >Hora: ".date( "h:i A" ).".</td>";  
+    $html .= "<td class=celda_titulo colspan=".($validaPermis ==true?"23":"21")." style='text-align:left' >Hora: ".date( "h:i A" ).".</td>";  
     $html .= "</tr>";
     $html .= "<tr>";
     
-    $html .= "<td class=celda_titulo colspan=21 >Se Encontraron ".sizeof( $informe )." Manifiestos.</td>";  
+    $html .= "<td class=celda_titulo colspan=".($validaPermis ==true?"23":"21")." >Se Encontraron ".sizeof( $informe )." Manifiestos.</td>";  
     $html .= "</tr>";
     $html .= "<tr>";
     $html .= "<td class=celda_titulo rowspan=2 >#</td>";
@@ -368,6 +379,10 @@ class Informe
     $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";    
     $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
+    if($validaPermis ==true)
+    {
+      $html .= "<td class=celda_titulo colspan=2 >Ultimo Seguimiento</td>";
+    }
     $html .= "<td class=celda_titulo rowspan=2 >Seguimiento Trafico</td>";    
     $html .= "</tr>";
     $html .= "<tr>";
@@ -378,6 +393,11 @@ class Informe
     $html .= "<td class=cellHead >Fecha</td>";  
     $html .= "<td class=cellHead >Duraci&oacute;n</td>";    
     $html .= "<td class=cellHead >Días</td>";
+    if($validaPermis ==true)
+    {
+      $html .= "<td class=cellHead >Fecha</td>";    
+      $html .= "<td class=cellHead >Hora</td>";
+    } 
     $html .= "</tr>";
     @include_once( "../".DIR_APLICA_CENTRAL."/lib/general/functions.inc" ); 
     $i = 0;
@@ -431,12 +451,24 @@ class Informe
       if( $row[9] <= 0 ) $bg_color = " style='background-color:#EAF1DD' "; 
       elseif( $row[9] == 1 ) $bg_color = " style='background-color:#FAC090' ";
       else $bg_color = " style='background-color:#FF3300' ";
-      
+      #seguimiento
+      $inf_despac = getNovedadesDespac($this->conexion, $row[0], '2');
+      $fec_noveda = array();          
+      #fin seguimiento
       $html .= "<td height='50px' class=celda_info $bg_color nowrap>".$row[9]."</td>";                 // Días desde Fecha salida      
       $html .= "<td height='50px' class=celda_info nowrap>$row[6]</td>";                               // Placas  
       $html .= "<td height='50px' class=celda_info nowrap>$row[7]</td>";                               // Conductor
       $html .= "<td height='50px' class=celda_info nowrap>".$this -> getUbicacion( $row[0] )."</td>";  //Ubicacion.
-      $html .= "<td height='50px' class=celda_info nowrap><div style = 'overflow: auto;width: 900px;'>".strtoupper(getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda'])."</div></td>";                               // Observacion
+      if($validaPermis ==true)
+      {
+        if($inf_despac['fec_noveda'] != '' && $inf_despac['fec_noveda'] != NULL)
+        {
+          $fec_noveda =  $this -> toFecha($inf_despac['fec_noveda']);
+        }
+        $html .= "<td height='50px' class=celda_info nowrap>".$fec_noveda[0]."</td>";  //Fecha seguimineto trafico.
+        $html .= "<td height='50px' class=celda_info nowrap>".$fec_noveda[1]."</td>";  //Hora seguimiento trafico
+      }
+      $html .= "<td height='50px' class=celda_info nowrap><div style = 'overflow: auto;width: 900px;'>".strtoupper($inf_despac['obs_noveda'])."</div></td>";                               // Observacion
       $html .= "</tr>";
     }
     
@@ -673,6 +705,24 @@ class Informe
     $select -> ret_matriz( "i" ) );
 
     return $select;
+  }
+
+  function getAutorizacionUsuario()
+  {
+    $sql = "SELECT a.jso_autori 
+                      FROM ".BASE_DATOS.".tab_autori_usuari a 
+                INNER JOIN ".BASE_DATOS.".tab_genera_usuari b 
+                    ON a.cod_conusu = b.cod_consec AND b.cod_usuari ='".$_SESSION['datos_usuario']['cod_usuari']."'";
+    $sql = new Consulta( $sql, $this -> conexion );
+    $aut = $sql -> ret_matriz( "i" );
+    if(sizeof($aut)>0)
+    {
+      return json_decode($aut[0][0]);
+    }
+    else
+    {
+      return false;
+    }
   }
   
 }

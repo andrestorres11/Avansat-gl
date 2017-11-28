@@ -22,7 +22,17 @@ class exp_diario_trazab {
     function expListadoExcel() {
         session_start();
         $informe = $_SESSION[html];
-
+        $autorizacion = self::getAutorizacionUsuario();
+        $validaPermis = false;
+        #seguimiento
+        if($autorizacion)
+        {
+          if($autorizacion->inf_tradia->ind_visibl)
+          {
+            $validaPermis = true;
+          }
+        }
+        #fin seguimiento
         $archivo = "Informe_trazabilidad_diaria_" . date('Y_m_d') . ".xls";
         header('Content-Type: application/octetstream');
         header('Expires: 0');
@@ -68,7 +78,7 @@ class exp_diario_trazab {
 
         $html .= "<tr>";
 
-        $html .= "<td class=celda_titulo colspan=21 >Se Encontraron " . sizeof($informe) . " Manifiestos.</td>";
+        $html .= "<td class=celda_titulo colspan=".($validaPermis ==true?"23":"21")." >Se Encontraron " . sizeof($informe) . " Manifiestos.</td>";
         $html .= "</tr>";
         $html .= "<tr>";
         $html .= "<td class=celda_titulo rowspan=2 >#</td>";
@@ -83,6 +93,10 @@ class exp_diario_trazab {
         $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Ubicación</td>";
+        if($validaPermis ==true)
+        {
+            $html .= "<td class=celda_titulo colspan=2 >Ultimo Seguimiento</td>";
+        }
         $html .= "<td class=celda_titulo rowspan=2 >Seguimiento Trafico</td>";
         $html .= "</tr>";
         $html .= "<tr>";
@@ -93,6 +107,11 @@ class exp_diario_trazab {
         $html .= "<td class=cellHead >Fecha</td>";
         $html .= "<td class=cellHead >Duraci&oacute;n</td>";
         $html .= "<td class=cellHead >Días</td>";
+        if($validaPermis ==true)
+        {
+            $html .= "<td class=cellHead >Fecha</td>";    
+            $html .= "<td class=cellHead >Hora</td>"; 
+        }
         $html .= "</tr>";
         @include_once( "../lib/general/functions.inc" );
         $i = 0;
@@ -145,11 +164,23 @@ class exp_diario_trazab {
                     $bg_color = " style='background-color:#FAC090' ";
                 else
                     $bg_color = " style='background-color:#FF3300' ";
-
+                #seguimiento
+                $inf_despac = getNovedadesDespac($this->conexion, $row[0], '2');
+                $fec_noveda = array();          
+                #fin seguimiento
                 $html .= "<td class=celda_info $bg_color nowrap>" . $row[9] . "</td>";                 // Días desde Fecha salida      
                 $html .= "<td class=celda_info nowrap>$row[6]</td>";                               // Placas  
                 $html .= "<td class=celda_info nowrap>$row[7]</td>";                               // Conductor
                 $html .= "<td class=celda_info nowrap>" . $this->getUbicacion($row[0]) . "</td>";  //Ubicacion.
+                if($validaPermis ==true)
+                {
+                    if($inf_despac['fec_noveda'] != '' && $inf_despac['fec_noveda'] != NULL)
+                    {
+                      $fec_noveda =  $this -> toFecha($inf_despac['fec_noveda']);
+                    }
+                    $html .= "<td height='50px' class=celda_info nowrap>".$fec_noveda[0]."</td>";  //Fecha seguimineto trafico.
+                    $html .= "<td height='50px' class=celda_info nowrap>".$fec_noveda[1]."</td>";  //Hora seguimiento trafico
+                }
                 $html .= "<td class=celda_info nowrap>".strtoupper(getNovedadesDespac($this->conexion, $row[0], '2')['obs_noveda'])."</td>";                               // Observacion
                 $html .= "</tr>";
             }
@@ -225,6 +256,24 @@ class exp_diario_trazab {
         $salida[1] = "$hora[1]";
 
         return $salida;
+    }
+
+    function getAutorizacionUsuario()
+    {
+      $sql = "SELECT a.jso_autori 
+                        FROM ".BASE_DATOS.".tab_autori_usuari a 
+                  INNER JOIN ".BASE_DATOS.".tab_genera_usuari b 
+                      ON a.cod_conusu = b.cod_consec AND b.cod_usuari ='".$_SESSION['datos_usuario']['cod_usuari']."'";
+      $sql = new Consulta( $sql, $this -> conexion );
+      $aut = $sql -> ret_matriz( "i" );
+      if(sizeof($aut)>0)
+      {
+        return json_decode($aut[0][0]);
+      }
+      else
+      {
+        return false;
+      }
     }
 
 }
