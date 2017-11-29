@@ -74,6 +74,15 @@ class IndicadorCitasCargueDescargue
     $mSelect = "SELECT cod_tiptra, nom_tiptra FROM ".BASE_DATOS.".tab_genera_tiptra WHERE ind_estado = '1' ORDER BY 2";
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $_TIPTRA = $consulta -> ret_matriz();
+
+    #filtro de perfil para deterninar las transportadora
+    $sql = "SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_perfil WHERE cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."'";
+    $consulta = new Consulta( $sql, $this -> conexion );
+    $aut = $consulta -> ret_matriz( "i" );
+
+    $mSelect = "SELECT a.cod_tercer AS cod_transp, a.abr_tercer FROM ".BASE_DATOS.".tab_tercer_tercer a INNER JOIN ".BASE_DATOS.".tab_tercer_activi b ON a.cod_tercer = b.cod_tercer WHERE a.cod_estado = '1' AND b.cod_activi = 1 ".($aut[0]['clv_filtro'] != NULL ? "AND a.cod_tercer = '".$aut[0]['clv_filtro']."'":"")." ORDER BY 2";
+    $consulta = new Consulta( $mSelect, $this -> conexion );
+    $_TRANSP = $consulta -> ret_matriz();
     /*******************************************************************************/
 
     include_once( "../".DIR_APLICA_CENTRAL."/lib/general/dinamic_list.inc" );
@@ -176,6 +185,13 @@ class IndicadorCitasCargueDescargue
       echo "<td class='celda_info' style='padding:4px;' width='50%' >".$this -> generateSelect( 'cod_tiptra', $_TIPTRA )."</td>";
       echo "<td class='celda_titulo' style='padding:4px;' width='50%' align='right' >Nombre Poseedor:</td>";
       echo "<td class='celda_info' style='padding:4px;' width='50%' ><input class='campo_texto' type='text' name='nom_poseed' id='nom_poseedID' size='40' maxlength='100'/></td>";
+    echo "</tr>";
+
+    echo "<tr>";    
+      echo "<td class='celda_titulo' style='padding:4px;' width='50%' align='right' >Transportadora:</td>";
+      echo "<td class='celda_info' style='padding:4px;' width='50%' >".$this -> generateSelect( 'cod_transp', $_TRANSP )."</td>";
+      echo "<td class='celda_titulo' style='padding:4px;' width='50%' align='right' > </td>";
+      echo "<td class='celda_info' style='padding:4px;' width='50%' ></td>";
     echo "</tr>";
 
     echo "<tr>";

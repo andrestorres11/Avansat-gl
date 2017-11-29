@@ -35,8 +35,14 @@ function Validate()
     attribs += '&cod_tiptra=' + cod_tiptra;
     var nom_poseed = $("#nom_poseedID").val();
     attribs += '&nom_poseed=' + nom_poseed;
+    var cod_transp = $("#cod_transpID").val();
+    attribs += '&cod_transp=' + cod_transp;
     
-    if( date_inicia > date_finali )
+    if(cod_transp == '')
+    {
+      Alerta( 'Atenci\xf3n', 'La transportadora es de caracter obligatorio', $("#cod_transpID") );
+    }
+    else if( date_inicia > date_finali )
     {
       Alerta( 'Atenci\xf3n', 'La fecha Inicial no puede ser mayor a la fecha Final', $("#fec_iniciaID") );
     }
@@ -112,7 +118,7 @@ function DetailsCumdes( ind_cumpli, cod_tipser, fec_subniv )
 
     $.ajax({
       url: "../" + Standa + "/infast/ajax_citasx_cardes.php",
-      data : 'standa=' + Standa +'&option=DetailsIndicador&fec_subniv=' + fec_subniv + '&cod_tipser=' + cod_tipser + '&ind_cumpli=' + ind_cumpli,
+      data : 'standa=' + Standa +'&option=DetailsIndicador&fec_subniv=' + fec_subniv + '&cod_tipser=' + cod_tipser + '&ind_cumpli=' + ind_cumpli+ '&cod_transp=' +$("#cod_transpID").val(),
       method : 'POST',
       beforeSend : 
         function () 
@@ -123,6 +129,11 @@ function DetailsCumdes( ind_cumpli, cod_tipser, fec_subniv )
         function ( data ) 
         { 
           $("#PopUpID").html( data );
+        },
+      complete :
+        function ()
+        {
+          $("#PopUpID").css( "height", "550" );
         }
     });
   }

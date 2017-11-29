@@ -85,7 +85,7 @@ class generaData
     $ind_cumplido = '0';
     if( stristr( strtolower( $_DESTIN[0]['nom_destin'] ), 'corona' ) || stristr( strtolower( $_DESTIN[0]['nom_destin'] ), 'sodimac' ) )
     {
-      echo "1";
+      //echo "1";
       if( $_DESTIN[0]['ind_cumdes'] == '1' )
         $ind_cumplido = '1';
       else
@@ -192,8 +192,13 @@ class generaData
                        b.tip_vehicu, 
                        b.nom_poseed, 
                        b.tip_transp,
-                       f.nom_produc
+                       f.nom_produc,
+                       a.fec_inicar,
+                       a.fec_fincar,
+                       g.fec_llegpl
                   FROM ".BASE_DATOS.".tab_despac_despac a
+            INNER JOIN ".BASE_DATOS.".tab_despac_vehige g 
+                    ON a.num_despac = g.num_despac
              LEFT JOIN ".BASE_DATOS.".tab_despac_corona b 
                     ON a.num_despac = b.num_dessat
              LEFT JOIN ".BASE_DATOS.".tab_genera_tipdes c
@@ -224,40 +229,127 @@ class generaData
         {
           $ult_noveda = $this -> getUltnov( $row['num_despac'] );
         }
+    
         $style = $i % 2 == 0 ? 'cellInfo' : 'cellInfo';
         $mHtml .= '<tr class="row">';
-          $mHtml .= '<td class="'.$style.'" align="center">
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">
                        <a style="text-decoration:none; color:#006F1A;" href="index.php?cod_servic=3302&window=central&despac='.$row['num_despac'].'&tie_ultnov=0&opcion=1" target="_blank">'.$row['num_despac'].'</a>
                      </td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['num_viajex'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['cod_manifi'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['fec_despac'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['nom_tipdes'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['nom_ciuori'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['nom_ciudes'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['fec_citcar'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.( $cum_citcar['ind_cumcar'] == '1' ? 'SI' : 'NO' ).'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['nom_sitcar'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['val_pesoxx'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['obs_despac'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.( $ult_noveda['nom_noveda'] != '' ? $ult_noveda['nom_noveda'] :'-' ).'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['cod_conduc'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['nom_conduc'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['con_telmov'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['num_solici'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.( $row['num_pedido'] != '' ? $row['num_pedido'] : 'N/A' ).'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['num_placax'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['tip_vehicu'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['nom_poseed'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$this -> tip_transp[ $row['tip_transp'] ].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$row['nom_produc'].'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.$nom_client.'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.($ind_adicio['ind_cumpli'] == '1' ? 'SI': 'NO' ).'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.($ind_adicio['nom_noveda'] != '' ? $ind_adicio['nom_noveda'] : 'N/A' ).'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.($ind_adicio['fec_cumdes'] != '' ? $ind_adicio['fec_cumdes'] : 'N/A' ).'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.($ind_adicio['fec_inides'] != '' ? $ind_adicio['fec_inides'] : 'N/A' ).'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.($ind_adicio['fec_findes'] != '' ? $ind_adicio['fec_findes'] : 'N/A' ).'</td>';
-          $mHtml .= '<td class="'.$style.'" align="center">'.($ind_adicio['fec_llecli'] != '' ? $ind_adicio['fec_llecli'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['num_viajex'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['cod_manifi'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['fec_despac'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_tipdes'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_ciuori'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_ciudes'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['fec_citcar'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.( $cum_citcar['ind_cumcar'] == '1' ? 'SI' : 'NO' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_sitcar'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['val_pesoxx'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center"><div style = "overflow: auto;width: 200px;height: 50px;">'.$row['obs_despac'].'</div></td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.( $ult_noveda['nom_noveda'] != '' ? $ult_noveda['nom_noveda'] :'-' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['cod_conduc'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_conduc'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['con_telmov'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['num_solici'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.( $row['num_pedido'] != '' ? $row['num_pedido'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['num_placax'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['tip_vehicu'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_poseed'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$this -> tip_transp[ $row['tip_transp'] ].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_produc'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$nom_client.'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($row['fec_llegpl'] != '' ? $row['fec_llegpl'] : 'N/A').'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($row['fec_inicar'] != '' ? $row['fec_inicar'] : 'N/A').'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($row['fec_fincar'] != '' ? $row['fec_fincar'] : 'N/A').'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$this->getDiffHora($row['fec_llegpl'],$row['fec_fincar']).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['ind_cumpli'] == '1' ? 'SI': 'NO' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['nom_noveda'] != '' ? $ind_adicio['nom_noveda'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['fec_cumdes'] != '' ? $ind_adicio['fec_cumdes'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['fec_inides'] != '' ? $ind_adicio['fec_inides'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['fec_findes'] != '' ? $ind_adicio['fec_findes'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$this->getDiffHora($ind_adicio['fec_inides'],$ind_adicio['fec_findes']).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['fec_llecli'] != '' ? $ind_adicio['fec_llecli'] : 'N/A' ).'</td>';
+        $mHtml .= '</tr>';
+      }
+    return utf8_encode( $mHtml );
+  }
+
+  public function getDataCitaDescargueOtros( $arr_despac )
+  {
+    $mSelect = "SELECT a.num_despac, 
+                       a.cod_manifi,
+                       a.fec_despac, 
+                UPPER( d.nom_ciudad ) AS nom_ciuori,
+                UPPER( e.nom_ciudad ) AS nom_ciudes, 
+               CONCAT( a.fec_citcar, ' ', a.hor_citcar ) AS fec_citcar,
+                       a.nom_sitcar, 
+                       a.val_pesoxx, 
+                       a.obs_despac,
+                       b.cod_conduc, 
+                       b.nom_conduc, 
+                       a.con_telmov, 
+                       b.num_placax,
+                       a.fec_inicar,
+                       a.fec_fincar,
+                       b.fec_llegpl
+                  FROM ".BASE_DATOS.".tab_despac_despac a
+             INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+                    ON a.num_despac = b.num_despac             
+            LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad d
+                    ON a.cod_ciuori = d.cod_ciudad 
+             LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad e
+                    ON a.cod_ciudes = e.cod_ciudad 
+                 WHERE a.num_despac = '".$arr_despac[0]."' "; 
+    
+    $consul = new Consulta( $mSelect, $this -> conexion );
+    $_DESPAC = $consul -> ret_matrix( 'a' );
+    
+      for( $i = 0, $lim = sizeof( $_DESPAC ); $i < $lim; $i++ )
+      {
+        $row = $_DESPAC[$i];
+        $cum_citcar = $this -> getCitcar( $row['num_despac'] );
+        $nom_client = $this -> getUniqueClient( $row['num_despac'], $arr_despac[1] );
+        $ind_adicio = $this -> getFechasCitasDescargue( $row['num_despac'], $arr_despac[1] );
+
+        if( $ind_soluci == '1' )
+        {
+          $ult_noveda = $this -> getUltNovSolucion( $row['num_despac'] );
+        }
+        else
+        {
+          $ult_noveda = $this -> getUltnov( $row['num_despac'] );
+        }
+        $style = $i % 2 == 0 ? 'cellInfo' : 'cellInfo';
+        $mHtml .= '<tr class="row">';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">
+                       <a style="text-decoration:none; color:#006F1A;" href="index.php?cod_servic=3302&window=central&despac='.$row['num_despac'].'&tie_ultnov=0&opcion=1" target="_blank">'.$row['num_despac'].'</a>
+                     </td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['cod_manifi'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['fec_despac'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_ciuori'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_ciudes'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['fec_citcar'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.( $cum_citcar['ind_cumcar'] == '1' ? 'SI' : 'NO' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_sitcar'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['val_pesoxx'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center"><div style = "overflow: auto;width: 200px;height: 50px;">'.$row['obs_despac'].'</div></td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.( $ult_noveda['nom_noveda'] != '' ? $ult_noveda['nom_noveda'] :'-' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['cod_conduc'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['nom_conduc'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['con_telmov'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$row['num_placax'].'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$nom_client.'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($row['fec_llegpl'] != '' ? $row['fec_llegpl'] : 'N/A').'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($row['fec_inicar'] != '' ? $row['fec_inicar'] : 'N/A').'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($row['fec_fincar'] != '' ? $row['fec_fincar'] : 'N/A').'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$this->getDiffHora($row['fec_llegpl'],$row['fec_fincar']).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['ind_cumpli'] == '1' ? 'SI': 'NO' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['nom_noveda'] != '' ? $ind_adicio['nom_noveda'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['fec_cumdes'] != '' ? $ind_adicio['fec_cumdes'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['fec_inides'] != '' ? $ind_adicio['fec_inides'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['fec_findes'] != '' ? $ind_adicio['fec_findes'] : 'N/A' ).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.$this->getDiffHora($ind_adicio['fec_inides'],$ind_adicio['fec_findes']).'</td>';
+          $mHtml .= '<td height="50px" class="'.$style.'" align="center">'.($ind_adicio['fec_llecli'] != '' ? $ind_adicio['fec_llecli'] : 'N/A' ).'</td>';
         $mHtml .= '</tr>';
       }
     return utf8_encode( $mHtml );
@@ -569,5 +661,21 @@ class generaData
 
     $consul = new Consulta( $mSql, $this -> conexion );
     return $mResult = $consul -> ret_matrix( 'a' );
+  }
+
+  function getDiffHora($inico, $fin)
+  {
+      $diferencia = '-';
+      if($inico != '' &&  $fin != '')
+      {
+        if(strtotime($fin) > strtotime($inico))
+        {
+          $difer1 = new DateTime($inico);
+          $difer2 = new DateTime($fin);
+          $fecha = $difer1->diff($difer2);
+          $diferencia = ($fecha->m * 43800) + ($fecha->d * 1440) + ($fecha->h * 60) + ($fecha->i);
+        }
+      }
+      return $diferencia;
   }
 }
