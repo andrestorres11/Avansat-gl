@@ -121,11 +121,11 @@
                                 }, 
                                 {
                                     "tag": "div", 
-                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "class": "form-inline col-xs-9 col-md-9", 
                                     "children": [
                                         {
                                             "tag": "input", 
-                                            "type": "datetime-local", 
+                                            "type": "date", 
                                             "class": "form-control", 
                                             "placeholder": "Fecha y hora de inicio", 
                                             "name": "fec_iniseg",
@@ -153,11 +153,11 @@
                                 }, 
                                 {
                                     "tag": "div", 
-                                    "class": "form-inline col-xs-3 col-md-3", 
+                                    "class": "form-inline col-xs-9 col-md-9", 
                                     "children": [
                                         {
                                             "tag": "input", 
-                                            "type": "datetime-local", 
+                                            "type": "date", 
                                             "class": "form-control", 
                                             "placeholder": "Fecha y hora de fin", 
                                             "name": "fec_finseg",

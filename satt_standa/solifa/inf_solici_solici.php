@@ -851,7 +851,7 @@ EOF;
 					inner join ".BASE_DATOS.".tab_solici_tiposx d on d.cod_tipsol=a.cod_tipsol 
 					left join ".BASE_DATOS.".tab_solici_subtip e on e.cod_subtip=a.cod_subtip and e.cod_tipsol=a.cod_tipsol 
 						WHERE $where
-						order by b.fec_creaci desc,b.cod_transp,a.cod_estado,a.cod_tipsol ";
+						order by a.num_solici,b.fec_creaci desc,b.cod_transp,a.cod_estado,a.cod_tipsol ";
 				break;
 				case 6:
 					$query = "SELECT 
@@ -866,7 +866,7 @@ EOF;
 					inner join ".BASE_DATOS.".tab_solici_tiposx d on d.cod_tipsol=a.cod_tipsol 
 					left join ".BASE_DATOS.".tab_solici_subtip e on e.cod_subtip=a.cod_subtip and e.cod_tipsol=a.cod_tipsol 
 						WHERE $where
-						order by b.fec_creaci desc,b.cod_transp,a.cod_estado,a.cod_tipsol ";
+						order by a.num_solici,b.fec_creaci desc,b.cod_transp,a.cod_estado,a.cod_tipsol ";
 				break;
 				case 7:
 					$query = "SELECT 
@@ -880,10 +880,10 @@ EOF;
 					inner join ".BASE_DATOS.".tab_solici_seguim f on f.num_solici=a.num_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado g on g.cod_estado=f.cod_estado 
 						WHERE $where
-						order by f.fec_creaci desc,f.num_seguim desc";
+						order by a.num_solici,f.fec_creaci desc,f.num_seguim desc";
 				break;
 			}
-			
+		
 			$consulta = new Consulta( $query, $this -> conexion );
 		    $result = $consulta -> ret_matrix( 'a' );
 

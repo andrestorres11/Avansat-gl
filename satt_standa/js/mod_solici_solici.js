@@ -65,12 +65,18 @@ function r(){
 						updateUser(data);
 						checkBasicLoad("tab1");
 					});
+					//se debe cargar fecha por defecto y se delega un calendario en caso de no soportarlo nativo
+					$('input[type="date"]').each(function(k,v){
+						//forceDateLocal(this);
+						forceDateTimeLocal(this);
+					});
 				}catch(e){}
 
 				$( "#tabs" ).tabs();
 				//$("#tabs ul li a").unbind("click");
 				$("#tabs ul li a").bind("click",tab_load_content);
 				$("#tabs ul li a")[0].click();
+				$("#ui-datepicker-div").css("display","none");
 
 			}catch(e){}
 		}
@@ -148,7 +154,7 @@ function r(){
 									divActive.append("<ul>"+a.toUpperCase()+"<li>"+y[a].toUpperCase()+"</li><ul>");
 								}
 							}else{
-								var srtResponse = currObjResp.response.split(";")[1].split(":")[1];
+								var srtResponse = currObjResp.response.split("; ")[1].split(":")[1];
 								divActive.append("<li>"+srtResponse.toUpperCase()+"</li>");
 							}
 						}
@@ -460,54 +466,99 @@ function r(){
 			}catch(e){}
 		}
 		//datetime-local
+		function forceDateLocal(obj){
+			try{
+				//if(navigator.userAgent.indexOf("WebKit")==-1){
+					var randomId="data-source-"+parseInt(new Date().getMilliseconds()+parseInt(Math.random()*1000))+1;
+					$(obj).attr("data-id",randomId);
+					var setDate = $(obj).attr("data-value")!=undefined ? $(obj).attr("data-value") : null;
+					try{
+						$(obj).attr("type","hidden");
+					}catch(e){
+						obj.type="hidden";
+					}
+					$(obj).val(toShortDateString());
+					$(obj).addClass("date-local");
+					$(obj).parent().append('<input data-parent="'+randomId+'" required="required" type="text" class="form-control setdate" value="'+toShortDateString()+'" placeholder="yyyy-mm-dd">');
+					
+					$(obj).parent().find('.form-control.setdate')
+					.datepicker(
+						{ 
+							monthNames: [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noveembre", "Diciember" ],
+							dateFormat: 'yy-mm-dd', 
+							maxDate: new Date()
+						}
+					)
+					.bind("change",function(v){
+						//console.log("change date > ");
+						var cv=tdtl(toShortDateString(),$(this).val(),null,null,"0000-00-00");
+						$(this).val(cv);
+						var parent=$(this).attr("data-parent");
+						var prevDate=$("input[data-id="+parent+"]").val();
+						$("input[data-id="+parent+"]").val(tdtl(prevDate,cv,null,null,"0000-00-00"));
+						//console.log($("input[data-id="+parent+"]").val());
+					});
+					if(setDate!=null)
+						$(obj).parent().find('.form-control.setdate').datepicker( "setDate", setDate);
+					$(obj).parent().find('.form-control.setdate').trigger("change");
+					
+				//}
+			}catch(e){}
+		}
+		//datetime-local
 		function forceDateTimeLocal(obj){
-			//if(navigator.userAgent.indexOf("WebKit")==-1){
+			try{
+				//if(navigator.userAgent.indexOf("WebKit")==-1){
+					var randomId="data-source-"+parseInt(new Date().getMilliseconds()+parseInt(Math.random()*1000))+1;
+					$(obj).attr("data-id",randomId);
+					try{
+						$(obj).attr("type","hidden");
+					}catch(e){
+						obj.type="hidden";
+					}
+					$(obj).val(toShortDateString()+" 00:00");
+					$(obj).addClass("datetime-local");
+					$(obj).parent().append('<input data-parent="'+randomId+'" required="required" type="text" class="form-control setdate" value="'+toShortDateString()+'" placeholder="yyyy-mm-dd">');
+					$(obj).parent().append('<input data-parent="'+randomId+'" style="width:60px;" required="required" type="number" class="form-control settime hour" min="0" max="23" step="1" value="0" />');
+					$(obj).parent().append(':<input data-parent="'+randomId+'" style="width:60px;" required="required" type="number" class="form-control settime minute" min="0" max="59" step="1" value="0" />');
 
-				var randomId="data-source-"+parseInt(new Date().getMilliseconds()+parseInt(Math.random()*1000))+1;
-				$(obj).attr("data-id",randomId);
-				$(obj).attr("type","hidden");
-				$(obj).val(toShortDateString()+" 00:00");
-				$(obj).addClass("datetime-local");
-				$(obj).parent().append('<input data-parent="'+randomId+'" required="required" type="text" class="form-control setdate" value="'+toShortDateString()+'" placeholder="yyyy-mm-dd">');
-				$(obj).parent().append('<input data-parent="'+randomId+'" style="width:60px;" required="required" type="number" class="form-control settime hour" min="0" max="23" step="1" value="0" />');
-				$(obj).parent().append(':<input data-parent="'+randomId+'" style="width:60px;" required="required" type="number" class="form-control settime minute" min="0" max="59" step="1" value="0" />');
-
-				$(obj).parent().find('.form-control.setdate').datepicker({ dateFormat: 'yy-mm-dd' }).bind("change",function(v){
-					//console.log("change date > ");
-					var cv=tdtl(toShortDateString(),$(this).val(),null,null,"0000-00-00");
-					$(this).val(cv);
-					var parent=$(this).attr("data-parent");
-					var prevDate=$("input[data-id="+parent+"]").val();
-					$("input[data-id="+parent+"]").val(tdtl(prevDate,cv,null,null,"0000-00-00 00:00"));
-					//console.log($("input[data-id="+parent+"]").val());
-				});
-
-				$(obj).parent().find('.form-control.settime.hour').bind("change",function(v){
-					//console.log("change hour > ");
-					var cv=$(this).val();
-					if(cv>=0 && cv<=23){
+					$(obj).parent().find('.form-control.setdate').datepicker({ dateFormat: 'yy-mm-dd' }).bind("change",function(v){
+						//console.log("change date > ");
+						var cv=tdtl(toShortDateString(),$(this).val(),null,null,"0000-00-00");
+						$(this).val(cv);
 						var parent=$(this).attr("data-parent");
 						var prevDate=$("input[data-id="+parent+"]").val();
-						$("input[data-id="+parent+"]").val(tdtl(prevDate,null,cv,null,"0000-00-00 00:00"));
+						$("input[data-id="+parent+"]").val(tdtl(prevDate,cv,null,null,"0000-00-00 00:00"));
 						//console.log($("input[data-id="+parent+"]").val());
-					}else{
-						$(this).val(0);
-					}
-				});
+					});
 
-				$(obj).parent().find('.form-control.settime.minute').bind("change",function(v){
-					//console.log("change minute > ");
-					var cv=$(this).val();
-					if(cv>=0 && cv<=59){
-						var parent=$(this).attr("data-parent");
-						var prevDate=$("input[data-id="+parent+"]").val();
-						$("input[data-id="+parent+"]").val(tdtl(prevDate,null,null,cv,"0000-00-00 00:00"));
-						//console.log($("input[data-id="+parent+"]").val());
-					}else{
-						$(this).val(0);
-					}
-				});
-			//}
+					$(obj).parent().find('.form-control.settime.hour').bind("change",function(v){
+						//console.log("change hour > ");
+						var cv=$(this).val();
+						if(cv>=0 && cv<=23){
+							var parent=$(this).attr("data-parent");
+							var prevDate=$("input[data-id="+parent+"]").val();
+							$("input[data-id="+parent+"]").val(tdtl(prevDate,null,cv,null,"0000-00-00 00:00"));
+							//console.log($("input[data-id="+parent+"]").val());
+						}else{
+							$(this).val(0);
+						}
+					});
+
+					$(obj).parent().find('.form-control.settime.minute').bind("change",function(v){
+						//console.log("change minute > ");
+						var cv=$(this).val();
+						if(cv>=0 && cv<=59){
+							var parent=$(this).attr("data-parent");
+							var prevDate=$("input[data-id="+parent+"]").val();
+							$("input[data-id="+parent+"]").val(tdtl(prevDate,null,null,cv,"0000-00-00 00:00"));
+							//console.log($("input[data-id="+parent+"]").val());
+						}else{
+							$(this).val(0);
+						}
+					});
+				//}
+			}catch(e){}
 		}
 
 		function toShortDateString(){
