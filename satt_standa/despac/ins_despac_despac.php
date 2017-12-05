@@ -290,7 +290,8 @@ class Proc_despac
     }
    
    	$formulario -> texto("Documento #/Despacho","text","manifi\" id=\"manifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}",0,9,9,"",$_REQUEST[manifi]);
-    $formulario -> texto("Viaje VJ-(00000000)","text","viaje\" maxlength=\"8\" size=\"8\" id=\"viaje\" onkeypress=\"return NumericInput(event)",1,9,9,"",$_REQUEST["viaje"]);
+    //$formulario -> texto("Viaje VS-000000","text","viaje\" maxlength=\"12\" size=\"12\" id=\"viaje\" onkeypress=\"return NumericInput(event)",1,9,9,"",$_REQUEST["viaje"]);
+    $formulario -> texto("Viaje (VS-000000)","text","viaje\" maxlength=\"12\" size=\"12\" id=\"viaje\" ",1,9,9,"",$_REQUEST["viaje"]);
     $query = "SELECT a.cod_tercer,a.abr_tercer
    			    FROM ".BASE_DATOS.".tab_tercer_tercer a,
    			         ".BASE_DATOS.".tab_tercer_activi b,
@@ -1378,12 +1379,12 @@ else
 
 
     # Agrega los datos de viaje en caso de que exista
-    if( $_POST["viaje"] )
+    if( $_REQUEST["viaje"] )
     {
       $mInsert = "INSERT INTO  ".BASE_DATOS.".tab_despac_viajex 
-                  ( num_despac, num_viajex, cod_transp, usr_creaci, fec_creaci ) 
+                  ( num_despac, num_placax, num_viajex, cod_transp, usr_creaci, fec_creaci ) 
                   VALUES 
-                  ('{$nuevo_consec}','VS-{$_POST[viaje]}', '{$_REQUEST[transp]}','{$_REQUEST['usuario']}', NOW() ) ";
+                  ('{$nuevo_consec}', '{$_REQUEST[placa]}', '{$_POST[viaje]}', '{$_REQUEST[transp]}','{$_REQUEST['usuario']}', NOW() ) ";
       $consulta = new Consulta($mInsert, $this -> conexion, "R");
     }
 
