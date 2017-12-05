@@ -4302,7 +4302,7 @@ class Despac
 		$mResult = $consulta -> ret_matrix('i');
 		$mHtml = new Formlib(2);
 		$mHtml->Table("tr");
-			$mHtml->Label( "Despachos", array("colspan"=>"3", "align"=>"center", "width"=>"100%", "class"=>"CellHead") );
+			$mHtml->Label( "DESPACHOS", array("colspan"=>"3", "align"=>"center", "width"=>"100%", "class"=>"CellHead", "color"=>"#FFFFFF") );
 			$mHtml->CloseRow();
 			$mHtml->Row();
 				//$mHtml->Label( "Despacho", array("colspan"=>"1", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
@@ -4312,7 +4312,7 @@ class Despac
 			foreach ($mResult as $key => $value) {
 
 				$mHtml->Row();
-					$mHtml->Label( '<a class="classLink" href="index.php?cod_servic=3302&window=central&despac='.$value[0].'&opcion=1" style="color:green;">'.$value[0].'</a>', array("align"=>"center", "width"=>"25%", "class"=>"cellInfo2") );
+					$mHtml->Label( '<a class="classLink" href="index.php?cod_servic=3302&window=central&despac='.$value[0].'&opcion=1" style="background-color:#FFFFFF; color:green;">'.$value[0].'</a>', array("align"=>"center", "width"=>"25%", "class"=>"cellInfo") );
 					//$mHtml->Label( $value[1], array("align"=>"left", "width"=>"50%", "class"=>"cellInfo2") );
 					//$mHtml->Label( $value[2], array("align"=>"left", "width"=>"25%", "class"=>"cellInfo2") );
 				$mHtml->CloseRow();
