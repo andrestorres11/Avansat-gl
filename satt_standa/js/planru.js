@@ -1,9 +1,14 @@
 function aceptar_insert(formulario)
 {
+    var texto = $("textarea[name=obs]").val();
+    texto = texto.replace(/\n/g, "<br>");
+    $("textarea[name=obs").val(texto);
+
     var fec_citcar = $('input[name=fec_citcar]').val();
     var fecprosal = $('input[name=fecprosal]').val();
     validacion = true;
     formulario = document.form_ins;
+
 
     $valid_pc = validar_pc(formulario.desurb.value);
 
