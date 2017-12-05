@@ -1284,7 +1284,7 @@ function LoadPopupJQ3(opcion, titulo, alto, ancho, redimen, dragg, lockBack) {
 				resizable: redimen,
 				draggable: dragg,
 				buttons: {
-					Cerrar: function() {
+					CERRAR: function() {
 						LoadPopupJQ3('close')
 					}
 				}
@@ -1834,7 +1834,7 @@ function getListDespac(cod_despac, cod_manifi)
     	if(cod_despac != '' && cod_manifi != '')
     	{
     		mData = "Ajax=on&Option=getListDespac&cod_despac="+cod_despac+"&cod_manifi="+cod_manifi;
-    		LoadPopupJQ3('open', 'Relacion de despachos', '500', '700', false, false, true);
+    		LoadPopupJQ3('open', 'RELACION DE DESPACHOS', '500', '700', false, false, true);
 			var popup = $("#popID");
 			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
     		$.ajax({
