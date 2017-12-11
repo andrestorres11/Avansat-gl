@@ -1527,7 +1527,7 @@ class AjaxInsertDespacho
     $mHtml .= '</tr>';
     
     $mHtml  .= '</table>';
-    $mHtml .= '<input type="hidden" id="counterID" value="0" />';
+    $mHtml .= '<input type="hidden" id="counterID" value="0" name="counter" />';
     $mHtml  .= $this->ShowDestin( $_AJAX );
 
     return $mHtml;
