@@ -133,14 +133,19 @@ class InsertNovedad {
                            a.cod_tipdes, b.cod_instal AS cod_zonaxx, c.cod_canalx,
                            b.tip_transp AS cod_tiptra, '" . $cod_noveda . "' AS cod_noveda, a.num_despac, 
                            -- a.nom_sitcar AS cod_deposi
-                           d.des_sitcar AS cod_deposi
+                           -- d.des_sitcar AS cod_deposi
+                           e.cod_deposi
                       FROM " . $base_datos . ".tab_despac_despac a 
                  LEFT JOIN " . $base_datos . ".tab_despac_sisext b 
                         ON a.num_despac = b.num_despac 
                  LEFT JOIN " . $base_datos . ".tab_despac_destin c 
                         ON a.num_despac = c.num_despac 
-                 LEFT JOIN ". $base_datos .".tab_despac_corona d ON a.num_despac = d.num_dessat OR a.cod_manifi
-                     WHERE a.num_despac = '" . $num_despac . "' GROUP BY a.num_despac ";
+                 LEFT JOIN ". $base_datos .".tab_despac_corona d 
+                        ON a.num_despac = d.num_dessat
+                 LEFT JOIN ".$base_datos.".tab_genera_deposi e 
+                        ON d.des_sitcar = e.nom_deposi
+                     WHERE a.num_despac = '" . $num_despac . "' 
+                     GROUP BY a.num_despac ";
         $consulta = new Consulta($mSelect, $this->conexion);
         $aDespac = $consulta->ret_matrix('a');
 
@@ -533,29 +538,38 @@ class InsertNovedad {
             switch ($key) {
                 case '7':
                     $mListCr .= " \n AND z.ValCriter7 = '" . $mData["cod_tiptra"] . "' ";
-                    $consulta = new Consulta($mListCr, $this->conexion);
-                    $_Data[$key] = $consulta->ret_matrix('a');
+                    //$consulta = new Consulta($mListCr, $this->conexion);
+                    //$_Data[$key] = $consulta->ret_matrix('a');
                     break;
                 case '4':
                     $mListCr .= " \n AND z.ValCriter7 = '" . $mData["cod_tiptra"] . "' ";
                     $mListCr .= " \n AND z.ValCriter4 = '" . $mData["cod_tipdes"] . "' ";
-                    $consulta = new Consulta($mListCr, $this->conexion);
-                    $_Data[$key] = $consulta->ret_matrix('a');
+                    //$consulta = new Consulta($mListCr, $this->conexion);
+                    //$_Data[$key] = $consulta->ret_matrix('a');
                     break;
                 case '2':
                     $mListCr .= " \n AND z.ValCriter7 = '" . $mData["cod_tiptra"] . "' ";
                     $mListCr .= " \n AND z.ValCriter4 = '" . $mData["cod_tipdes"] . "' ";
                     $mListCr .= " \n AND z.ValCriter2 = '" . $mData["cod_produc"] . "' ";
-                    $consulta = new Consulta($mListCr, $this->conexion);
-                    $_Data[$key] = $consulta->ret_matrix('a');
+                    //$consulta = new Consulta($mListCr, $this->conexion);
+                    //$_Data[$key] = $consulta->ret_matrix('a');
                     break;
                 case '1':
                     $mListCr .= " \n AND z.ValCriter7 = '" . $mData["cod_tiptra"] . "' ";
                     $mListCr .= " \n AND z.ValCriter4 = '" . $mData["cod_tipdes"] . "' ";
                     $mListCr .= " \n AND z.ValCriter2 = '" . $mData["cod_produc"] . "' ";
                     $mListCr .= " \n AND z.ValCriter1 = '" . $mData["cod_ciuori"] . "' ";
-                    $consulta = new Consulta($mListCr, $this->conexion);
-                    $_Data[$key] = $consulta->ret_matrix('a');
+                    //$consulta = new Consulta($mListCr, $this->conexion);
+                    //$_Data[$key] = $consulta->ret_matrix('a');
+                    break;                   
+                case '8':
+                    $mListCr .= " \n AND z.ValCriter7 = '" . $mData["cod_tiptra"] . "' ";
+                    $mListCr .= " \n AND z.ValCriter4 = '" . $mData["cod_tipdes"] . "' ";
+                    $mListCr .= " \n AND z.ValCriter2 = '" . $mData["cod_produc"] . "' ";
+                    $mListCr .= " \n AND z.ValCriter1 = '" . $mData["cod_ciuori"] . "' ";
+                    $mListCr .= $mData["cod_deposi"] != '' && count($mData["cod_deposi"]) >= 2 ? " \n AND z.ValCriter8 = '" . $mData["cod_deposi"] . "' ": "";
+                    //$consulta = new Consulta($mListCr, $this->conexion);
+                    //$_Data[$key] = $consulta->ret_matrix('a');
                     break;                
                  
             }
