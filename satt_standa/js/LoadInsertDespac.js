@@ -562,7 +562,7 @@ function PopupVehiculos() {
       draggable: false,
       title: " Selecci\xf3n del Veh\xedculo",
       width: $(document).width() - 200,
-      heigth: 500,
+      heigth: 200,
       position: ['middle', 25],
       bgiframe: true,
       closeOnEscape: false,
@@ -581,6 +581,7 @@ function PopupVehiculos() {
       method: 'POST',
       beforeSend: function() {
         $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader2.gif" /></td></tr><tr><td></td></tr></table>');
+        $("#PopUpID").css({ 'height':'500px' });
       },
       success: function(data) {
         $("#PopUpID").html(data);
@@ -594,7 +595,7 @@ function PopupVehiculos() {
 
 function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc, num_modelo, num_config, cod_tenedo, cod_conduc, nom_tenedo, nom_conduc, cod_propie, nom_propie) {
   try {
-    $("#num_placaxID").focus();
+    //$("#num_placaxID").focus();
     $("#num_placaxID").val(num_placax);
     var submit = $("#submitID").val();
     if (submit == 1) {
@@ -1364,4 +1365,61 @@ function otroSitioCargue() {
   $("#hor_citar" + cantidad).timepicker({
     showSecond: false
   });
+}
+
+/* ! \fn: getVehiculo
+ *  \brief: valida los vehiculos cuando se escriben
+ *  \author: Andres Torres Vega
+ *  \date: 18/12/2017
+ *  \date modified: dd/mm/aaaa
+ *  \param: obj input placa 
+ *  \param: cod_transp nit de la empresa
+ *  \return: type
+ */
+function getVehiculo(obj, cod_transp, flag) {
+    try{
+      if(flag == '1'){
+        var num_placax = $(obj).val();
+      }else{
+        var num_placax = $(obj).parent().parent().find("input[id^=num_placax]").val();
+      }
+      $("#loading").remove();
+      var cod_transp = $("#cod_transpID").val();
+      var standa = $("#standaID").val();
+      if (num_placax != '') {
+        $.ajax({
+          url: "../" + standa + "/desnew/ajax_desnew_despac.php",
+          data: 'standa=' + standa + '&option=getVehiculo&cod_transp=' + cod_transp + '&num_placax=' + num_placax + '&flag=' + flag,
+          method: 'POST',
+          beforeSend: function() {
+            $("#cod_conducID").focus().after("<span id='loading'> <img src=\'../" + standa + "/imagenes/ajax-loader3.gif\' /></span>");
+          },
+          success: function(data) {
+            $("#loading").remove();
+            if (data != '') {
+              var datos = $.parseJSON(data);
+              SetVehiculo(datos["0"]["0"],datos["0"]["5"],datos["0"]["6"],datos["0"]["7"],datos["0"]["8"],datos["0"]["9"],datos["0"]["12"],datos["0"]["13"],datos["0"]["14"],datos["0"]["1"],datos["0"]["3"],datos["0"]["15"],datos["0"]["16"]);
+            } else {
+              alert("EL VEHICULO " + num_placax + " NO EXISTE");
+              $("#num_placaxID").val('');
+              $("#nom_marcaxID").html('');
+              $("#nom_colorxID").html('');
+              $("#nom_carrocID").html('');
+              $("#nom_modeloID").html('');
+              $("#nom_configID").html('');
+              $("#nom_codproID").html('');
+              $("#nom_nomproID").html('');
+              $("#nom_codtenID").html('');
+              $("#nom_nomtenID").html('');
+              $("#cod_conducID").val('');
+              $("#nom_nomconID").html('');
+
+            }
+          }
+        });
+    }
+    } catch (e) {
+        console.log("Error Function getVehiculo: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
 }

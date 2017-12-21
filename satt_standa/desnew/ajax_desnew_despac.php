@@ -170,8 +170,8 @@ class AjaxInsertDespacho
   
   }
   
-  private function getInfoVehiculo( $cod_transp = NULL, $num_placax = NULL )
-  {
+  private function getInfoVehiculo( $cod_transp = NULL, $num_placax = NULL, $flag = NULL)
+  { 
     $mQuery = "SELECT  a.num_placax,g.abr_tercer,g.num_telef1,h.abr_tercer,
                        h.num_telmov,b.nom_marcax,c.nom_lineax,d.nom_colorx,
                        e.nom_carroc,a.ano_modelo,a.ind_estado,a.fec_creaci,
@@ -212,69 +212,105 @@ class AjaxInsertDespacho
     
     //echo $mQuery;
     $consulta = new Consulta( $mQuery, $this->conexion );
-    return $consulta->ret_matriz();
+    if($flag != NULL){
+      return $consulta->ret_matriz();
+    }else{
+      return $mQuery;
+    }
   }
   
-  protected function LoadVehiculos( $_AJAX )
+  public function LoadVehiculos( $_AJAX )
   {
-    echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
-    
-    $message = '<tr><td width="100%" colspan="10" style="padding-right:3px; padding-top:15px; font-family:Trebuchet MS, Verdana, Arial; font-size:12px;">Si desea un nuevo Veh&iacute;culo haga click <a onclick="newVehiculo();" style="text-decoration:none; cursor:pointer; color:#285C00;">aqu&iacute;</a><br>&nbsp;</td></tr>';
-    
-    $mHtml = '<div align="center" style="background-color: #f0f0f0; border: 1px solid #c9c9c9; padding: 5px; width: 98%; min-height: 50px; -moz-border-radius: 5px 5px 5px 5px; -webkit-border-radius: 5px 5px 5px 5px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; color:#000000;" >';
-      $mHtml .= '<table width="100%" cellspacing="2px" cellpadding="0">';
-    
-    $_VEHICU = $this->getInfoVehiculo( $_AJAX['cod_transp'] );
-    if( sizeof( $_VEHICU ) > 0 )
-    {
-      $mHtml .= '<tr>';
-      $mHtml .= '<td width="100%" style="border-bottom:1px solid #000000; font-family:Trebuchet MS, Verdana, Arial; font-size:15px; font-weight:bold; padding-bottom:5px; color: #285C00;" colspan="10" align="center">Veh&iacute;culos Diponibles</td>';
-      $mHtml .= '<tr>';
-      $mHtml .= $message;
-      
-      $mHtml .= '<tr>';
-      $mHtml .= '<td class="cellHead" align="center">PLACA</td>';
-      // $mHtml .= '<td class="cellHead" align="center">TENEDOR</td>';
-      //$mHtml .= '<td class="cellHead" align="center">TEL&Eacute;FONO</td>';
-      $mHtml .= '<td class="cellHead" align="center">CONDUCTOR</td>';
-      $mHtml .= '<td class="cellHead" align="center">CELULAR</td>';
-      $mHtml .= '<td class="cellHead" align="center">MARCA</td>';
-      $mHtml .= '<td class="cellHead" align="center">L&Iacute;NEA</td>';
-      $mHtml .= '<td class="cellHead" align="center">COLOR</td>';
-      $mHtml .= '<td class="cellHead" align="center">CARROCER&Iacute;A</td>';
-      $mHtml .= '<td class="cellHead" align="center">MODELO</td>';
-      $mHtml .= '</tr>';
-      $count = 0;
-      foreach( $_VEHICU as $row )
-      {
-        $style = $count % 2 == 0 ? 'cellInfo1' : 'cellInfo2' ;
-        $mHtml .= '<tr>';
-        $mHtml .= '<td class="'.$style.'" align="center"><a href="#" style="color:#285C00; text-decoration:none;" onclick="SetVehiculo(\''.$row[0].'\',\''.$row[5].'\',\''.$row[6].'\',\''.$row[7].'\',\''.$row[8].'\',\''.$row[9].'\',\''.$row[12].'\',\''.$row[13].'\',\''.$row[14].'\',\''.$row[1].'\',\''.$row[3].'\',\''.$row[15].'\',\''.$row[16].'\');">'.$row[0].'</a></td>';
-        // $mHtml .= '<td class="'.$style.'" align="left">'.$row[1].'</td>';
-        //$mHtml .= '<td class="'.$style.'" align="left">'.$row[2].'</td>';
-        $mHtml .= '<td class="'.$style.'" align="left">'.$row[3].'</td>';
-        $mHtml .= '<td class="'.$style.'" align="left">'.$row[4].'</td>';
-        $mHtml .= '<td class="'.$style.'" align="left">'.$row[5].'</td>';
-        $mHtml .= '<td class="'.$style.'" align="left">'.$row[6].'</td>';
-        $mHtml .= '<td class="'.$style.'" align="left">'.$row[7].'</td>';
-        $mHtml .= '<td class="'.$style.'" align="left">'.$row[8].'</td>';
-        $mHtml .= '<td class="'.$style.'" align="left">'.$row[9].'</td>';
-        $mHtml .= '</tr>';
-        $count++;
+    try{
+          $_VEHICU = $this->getInfoVehiculo( $_AJAX['cod_transp'],NULL, false);
+          $mHtml = new Formlib(2, "yes",TRUE);
+          $mHtml->OpenDiv("id:tab_vehicu");
+              $mHtml->Table("tr",array("class"=>"displayDIV2"));
+                $mHtml->Label( "LISATDO DE VEHICULOS", array("colspan"=>sizeof($titulos['Nivel1']), "align"=>"rigth", "width"=>"25%", "class"=>"CellHead") );
+              $mHtml->CloseTable('tr');
+            $mHtml->OpenDiv("id:tabvehicu1");
+              $mHtml->SetBody($this->getDinamiList($_VEHICU));
+            $mHtml->CloseDiv();
+          $mHtml->CloseDiv(); 
+
+                $mHtml->SetBody('<style>
+                        #tab_vehicu{
+                border: 1px solid rgb(201, 201, 201);
+                padding: 3px;
+                width: 200%;
+                min-height: 50px;
+                border-radius: 5px;
+                background-color: rgb(240, 240, 240);
+              }
+                      </style>');
+
+          echo $mHtml->MakeHtml();
+      } catch (Exception $e) {
+        echo "error LoadVehiculos :".$e;
       }
+  }
+
+  /*! \fn: getDinamiList
+   *  \brief: identifica el formulario correspondiete y lo pinta
+   *  \author: Edward Serrano
+   *  \date:  18/01/2017
+   *  \date modified: dia/mes/año
+  */
+  function getDinamiList($datos)
+  { 
+    try
+    {   
+      IncludeJS( '../js/dinamic_list.js' );
+      IncludeJS( '../js/new_ajax.js' );
+      echo "<link  href='../" . DIR_APLICA_CENTRAL . "/dinamic_list.php' type='script'>\n";
+      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/dinamic_list.css' type='text/css'>\n";
+      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
+      $_SESSION["queryXLS"] = $datos;
+
+      if (!class_exists(DinamicList)) 
+      {
+          include_once("../" . DIR_APLICA_CENTRAL . "/lib/general/dinamic_list.inc");
+      }
+      $list = new DinamicList($this->conexion, $datos);
+      $list->SetClose('no');
+      $list->SetCreate("Nuevo Vehiculo", "onclick:newVehiculo()");
+      $list->SetHeader("Placa", "field:a.num_placax; width:1%;type:link; onclick:getVehiculo($(this),".$_REQUEST['cod_transp'].",0)");
+      $list->SetHeader("Tenedor", "field:g.abr_tercer; width:1%");
+      $list->SetHeader("Telefono", "field:g.num_telef1; width:1%");
+      $list->SetHeader("Conductor", "field:h.abr_tercer");
+      $list->SetHeader("Celular", "field:h.num_telmov");
+      $list->SetHeader("marca", "field:b.nom_marcax");
+      $list->SetHeader("linea", "field:c.nom_lineax");
+      $list->SetHeader("color", "field:d.nom_colorx");
+      $list->SetHeader("carroceria", "field:e.nom_carroc");
+      $list->SetHeader("modelo", "field:a.ano_modelo");
+      $list->SetHidden("num_placax", "num_placax");
+      $list->SetHidden("abr_tercer", "abr_tercer");
+      $list->SetHidden("num_telef1", "num_telef1");
+      $list->SetHidden("abr_tercer", "abr_tercer");
+      $list->SetHidden("num_telmov", "num_telmov");
+      $list->SetHidden("nom_marcax", "nom_marcax");
+      $list->SetHidden("nom_lineax", "nom_lineax");
+      $list->SetHidden("nom_colorx", "nom_colorx");
+      $list->SetHidden("nom_carroc", "nom_carroc");
+      $list->SetHidden("ano_modelo", "ano_modelo");
+      $list->Display($this->conexion);
+
+      $_SESSION["DINAMIC_LIST"] = $list;
+
+      $Html = $list->GetHtml();
+
+      if($_REQUEST["Ajax"] === 'on' )
+      {
+        echo $Html;
+      }
+      else
+      {
+        return $Html;
+      }
+    } catch (Exception $e) {
+      echo "error getDinamiList :".$e;
     }
-    else
-    {
-      $mHtml .= '<tr>';
-      $mHtml .= '<td width="100%" style="border-bottom:1px solid #000000; font-family:Trebuchet MS, Verdana, Arial; font-size:15px; font-weight:bold; padding-bottom:5px; color: #285C00;" colspan="10" align="center">No Hay Veh&iacute;culos Diponibles</td>';
-      $mHtml .= '<tr>';
-      $mHtml .= $message;
-    }
-      $mHtml .= '</table>';
-    $mHtml .= '</div>';
-    
-    echo $mHtml;
-    
   }
   
   protected function MainForm( $_AJAX )
@@ -1115,7 +1151,7 @@ class AjaxInsertDespacho
   
   protected function FormAsignacionVehiculo( $_AJAX )
   {
-    $_VEHICU = $this->getInfoVehiculo( NULL, $_AJAX['num_placax'] );
+    $_VEHICU = $this->getInfoVehiculo( NULL, $_AJAX['num_placax'], true);
 
     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
     $mHtml  = '<div align="center" style="background-color: #f0f0f0; border: 1px solid #c9c9c9; padding: 5px; width: 99%; min-height: 100px; -moz-border-radius: 5px 5px 5px 5px; -webkit-border-radius: 5px 5px 5px 5px; border-top-left-radius: 5px; border-top-right-radius: 5px; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px; color:#000000;" >';
@@ -1232,7 +1268,7 @@ class AjaxInsertDespacho
     print_r( $_AJAX );
     echo "</pre>";
     
-    $_VEHICU = $this->getInfoVehiculo( NULL, $_AJAX['num_placax'] );
+    $_VEHICU = $this->getInfoVehiculo( NULL, $_AJAX['num_placax'], true);
     $cod_propie = $_VEHICU[0][15];
     $cod_tenedo = $_VEHICU[0][13];
     $cod_conduc = $_VEHICU[0][14];
@@ -1877,16 +1913,17 @@ class AjaxInsertDespacho
   }
   
   private function GetFormDatosVehicxx( $_AJAX )
-  {
+  { 
+
     $mHtml  = '<table width="100%" cellspacing="0" cellpadding="0" border="0">';
     
     $mHtml .= '<tr>';
-      $mHtml .= '<td align="left" width="100%" class="label-info" colspan="4"><b>Nota:</b> Al hacer click sobre el campo <b>Placa</b>, aparecer&aacute; una lista con todos los veh&iacute;culos asignados a la transportadora.</td>';
+      $mHtml .= '<td align="left" width="100%" class="label-info" colspan="4"><b>Nota:</b> Al hacer click sobre el icono <img height="18px" width="18px" src="../satt_standa/imagenes/find.png">, aparecer&aacute; una lista con todos los veh&iacute;culos asignados a la transportadora.</td>';
     $mHtml .= '</tr>';
     
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">* Placa:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr"><input readonly name="num_placax" id="num_placaxID" type="text" obl="1" validate="placa" minlength="6"  maxlength="6" size="9" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" onclick="PopupVehiculos();" /></td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"><input name="num_placax" id="num_placaxID" type="text" obl="1" validate="placa" minlength="6"  maxlength="6" size="9" onfocus="this.className=\'campo_texto_on\'" onblur="getVehiculo($(this), '.$_AJAX['cod_transp'].', 1)" /> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupVehiculos()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled"></td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr"><label id="des_marcaxID">&nbsp;</label></td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr"><label id="nom_marcaxID">&nbsp;</label></td>';
     $mHtml .= '</tr>';
@@ -2244,6 +2281,25 @@ class AjaxInsertDespacho
       echo "<pre> Error Funcion GetGeneCarga:";print_r($e);echo "</pre>";
     }
   }
+
+ /* ! \fn: getVehiculo
+   *  \brief: valida los vehiculos cuando se escriben
+   *  \author: Andres Torres Vega
+   *  \date: 20/12/2017
+   *  \date modified: dd/mm/aaaa
+   *  \param: obj input placa 
+   *  \param: cod_transp nit de la empresa
+   *  \return: type
+ */
+  private function getVehiculo($_AJAX){
+    $_VEHICU = $this->getInfoVehiculo( $_AJAX['cod_transp'], $_AJAX['num_placax'], true);
+    if (sizeof( $_VEHICU ) > 0 ) {
+      echo json_encode($_VEHICU);
+    }else{
+      echo false;
+    }
+  }
+
 }
 
 $proceso = new AjaxInsertDespacho();
