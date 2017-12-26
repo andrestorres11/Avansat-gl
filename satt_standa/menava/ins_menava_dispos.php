@@ -46,7 +46,6 @@ class Proc_contro
 
    $formulario -> nueva_tabla();
    $formulario -> linea("NOTA: EL CHECK DE ELIMINAR SI NO ESTA SELECCIONADO SE ELIMINARA EL DISPOSITIVO. <BR> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EL CHECK DE ESTADO SI NO ESTA SELECCIONADO SIGNIFICA QUE ESTA INACTIVO.",1,"e");
-   $formulario -> cerrar();
 
    $query = "SELECT a.cod_transp,b.abr_tercer
 	       	   FROM ".BD_STANDA.".tab_mensaj_bdsata a,
