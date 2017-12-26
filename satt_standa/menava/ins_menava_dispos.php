@@ -44,13 +44,16 @@ class Proc_contro
    echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/menava.js\"></script>\n";
    $formulario = new Formulario ("index.php","post","DISPOSITIVOS","form_item");
 
+   $formulario -> nueva_tabla();
+   $formulario -> linea("NOTA: EL CHECK DE ELIMINAR SI NO ESTA SELECCIONADO SE ELIMINARA EL DISPOSITIVO. <BR> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EL CHECK DE ESTADO SI NO ESTA SELECCIONADO SIGNIFICA QUE ESTA INACTIVO.",1,"e");
+   $formulario -> cerrar();
+
    $query = "SELECT a.cod_transp,b.abr_tercer
 	       	   FROM ".BD_STANDA.".tab_mensaj_bdsata a,
 	       	   		".BASE_DATOS.".tab_tercer_tercer b
 	          WHERE a.nom_bdsata = '".BASE_DATOS."' AND
 		    	    a.cod_transp = b.cod_tercer AND
-		    	    a.ind_estado = '1'
-	    ";
+		    	    a.ind_estado = '1'";
 
    if($datos_usuario["cod_perfil"] == "")
    {
@@ -136,13 +139,13 @@ class Proc_contro
 
      $formulario -> nueva_tabla();
      $formulario -> linea("",0,"t");
-     $formulario -> linea("",0,"t");
+     $formulario -> linea("Eliminar",0,"t");
      $formulario -> linea("",0,"t");
      $formulario -> linea("# Dispositivo",0,"t");
      $formulario -> linea("",0,"t");
      $formulario -> linea("Operador",0,"t");
      $formulario -> linea("",0,"t");
-     $formulario -> linea("Activo",1,"t");
+     $formulario -> linea("Estado",1,"t");
 
      for($i = 0; $i < $cont; $i++)
      {
