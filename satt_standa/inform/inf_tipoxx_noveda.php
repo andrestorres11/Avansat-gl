@@ -120,7 +120,7 @@
             $_GENER_ = $this -> getGeneraAlarma( $_REQUEST );
             $_TODOS_ = $this -> getTodos( $_REQUEST );
             $_TOTAL_ = array();
-            
+
             foreach($_USUARIOS AS $_USUARIO_){
                 
                 if((int)$_TODOS_[ $_USUARIO_[0] ] == 0) continue;
@@ -681,7 +681,7 @@
         
         
         function getUsuarios( $__REQUEST = null ){
-           $sql =" SELECT LOWER(cod_usuari), CONCAT( UPPER(nom_usuari ), ' - ', LOWER(cod_usuari) ) AS nom_usuari
+           $sql =" SELECT LOWER(TRIM(cod_usuari)), CONCAT( UPPER(nom_usuari ), ' - ', LOWER(cod_usuari) ) AS nom_usuari
                       FROM ".BASE_DATOS.".tab_genera_usuari
                      WHERE ind_estado = 1 
                        AND ( cod_perfil IN(1,7,8,73,70,77,669,713) OR cod_usuari LIKE '%eal%' OR nom_usuari LIKE '%eal%' OR cod_usuari LIKE '%ecl%' OR nom_usuari LIKE '%ecl%' )
