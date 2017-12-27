@@ -14,7 +14,8 @@ class Usuari
         $cod_perfil,
         $cod_inicio,
         $cod_grupox,
-        $ind_estado;
+        $ind_estado,
+        $cod_consec;
 
     //Metodos
     function __construct($co)
@@ -59,7 +60,8 @@ class Usuari
                          cod_perfil,
                          cod_inicio,
                          cod_grupox,
-                         ind_estado
+                         ind_estado,
+                         cod_consec
                     FROM ".BASE_DATOS.".tab_genera_usuari
                    WHERE cod_usuari = '" . $this -> cod_usuari . "'";
         $consulta = new Consulta($query, $conexion);
@@ -74,6 +76,7 @@ class Usuari
             $this -> cod_inicio = $datos["cod_inicio"];
             $this -> cod_grupox = $datos["cod_grupox"];
             $this -> ind_estado = $datos["ind_estado"];
+            $this -> cod_consec = $datos["cod_consec"];
         }
         return $num_filas;
     }
@@ -120,6 +123,7 @@ class Usuari
         $datos["cod_inicio"] = $this -> cod_inicio;
         $datos["cod_grupox"] = $this -> cod_grupox;
         $datos["ind_estado"] = $this -> ind_estado;
+        $datos["cod_consec"] = $this -> cod_consec;
         return $datos;
     }
 
