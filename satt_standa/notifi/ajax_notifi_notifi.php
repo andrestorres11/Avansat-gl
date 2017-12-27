@@ -429,7 +429,7 @@ class AjaxNotifiNotifi
              	$validaUsuario = "AND a.ind_notusr LIKE '%" .$_SESSION['datos_usuario']['cod_consec']. "%'";
             }
 
-			 echo $sql ="SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari,a.cod_tipnot,a.ind_notres,a.ind_notusr,a.ind_estado
+			$sql ="SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari,a.cod_tipnot,a.ind_notres,a.ind_notusr,a.ind_estado
 					 FROM ".BASE_DATOS.".tab_notifi_notifi a
 					 	INNER JOIN tab_genera_usuari b 
 					 		ON a.usr_creaci=b.cod_consec
