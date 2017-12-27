@@ -418,11 +418,6 @@ class AjaxNotifiNotifi
 	{	
 		try
 		{	
-			ini_set('display_errors', true);
-			error_reporting(E_ALL &~E_NOTICE);
-			/*echo "<pre>";
-				print_r($_SESSION);
-			echo "</pre>";*/
 			$sql = "SELECT a.cod_perfil
 					  FROM ".BASE_DATOS.".tab_genera_usuari a
 				     WHERE a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."'";
@@ -431,11 +426,10 @@ class AjaxNotifiNotifi
             $usuario = $consul->ret_matriz('a');
 
             if ($usuario[0]['cod_perfil'] != '1' AND $usuario[0]['cod_perfil'] != '73') {
-             	$validaUsuario = "AND a.ind_notusr ='" .$_SESSION['datos_usuario']['cod_consec']. "'";
-             } 
+             	$validaUsuario = "AND a.ind_notusr LIKE '%" .$_SESSION['datos_usuario']['cod_consec']. "%'";
+            }
 
-
-			  $sql ="SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari,a.cod_tipnot,a.ind_notres,a.ind_notusr,a.ind_estado
+			 echo $sql ="SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari,a.cod_tipnot,a.ind_notres,a.ind_notusr,a.ind_estado
 					 FROM ".BASE_DATOS.".tab_notifi_notifi a
 					 	INNER JOIN tab_genera_usuari b 
 					 		ON a.usr_creaci=b.cod_consec
