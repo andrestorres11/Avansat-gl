@@ -417,12 +417,24 @@ class AjaxNotifiNotifi
 	function getDinamiList($permisosActuales,$datos)
 	{	
 		try
-		{
+		{	
+			$sql = "SELECT a.cod_perfil
+					  FROM ".BASE_DATOS.".tab_genera_usuari a
+				     WHERE a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."'";
+
+            $consul = new Consulta($sql, self::$cConexion);
+            $usuario = $consul->ret_matriz('a');
+
+            if ($usuario[0]['cod_perfil'] != '1' AND $usuario[0]['cod_perfil'] != '73') {
+             	$validaUsuario = "AND a.ind_notusr LIKE '%" .$_SESSION['datos_usuario']['cod_consec']. "%'";
+            }
+
 			$sql ="SELECT a.cod_notifi,a.nom_asunto,a.fec_creaci,b.cod_usuari,a.cod_tipnot,a.ind_notres,a.ind_notusr,a.ind_estado
 					 FROM ".BASE_DATOS.".tab_notifi_notifi a
 					 	INNER JOIN tab_genera_usuari b 
 					 		ON a.usr_creaci=b.cod_consec
-					 			WHERE a.ind_estado=1 AND a.cod_tipnot=".$datos->cod_notifi." and a.fec_creaci>='".$datos->fec_iniID." 00:00:00' AND a.fec_creaci<='".$datos->fec_finID." 23:59:59'";
+					 			WHERE a.ind_estado=1 AND a.cod_tipnot=".$datos->cod_notifi." and a.fec_creaci>='".$datos->fec_iniID." 00:00:00' AND a.fec_creaci<='".$datos->fec_finID." 23:59:59' " .$validaUsuario. "";
+
 			$_SESSION["queryXLS"] = $sql;
 			$permActivado="field:cod_notifi; width:1%";
 			$permActivado.=($permisosActuales['idi']==1)?";onclikEdit:editarNotifi( this )":"";

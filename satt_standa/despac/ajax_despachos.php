@@ -67,7 +67,7 @@ class AjaxDespachos{
 
 		$novedades = array();
 		for($i=0; $i<count( $novedadx ); $i++){
-			$novedades[] = array('value' => $novedadx[$i][cod_noveda], 'label' => utf8_decode($novedadx[$i][nom_noveda]) );
+			$novedades[] = array('value' => $novedadx[$i][cod_noveda], 'label' => $novedadx[$i][cod_noveda]." - ".utf8_decode($novedadx[$i][nom_noveda]) );
 		}
 		echo json_encode( $novedades );
 	}
@@ -135,7 +135,7 @@ class AjaxDespachos{
 		$novedadx  = $consulta -> ret_matriz();
 		$novedades = array();
 		for($i=0; $i<count( $novedadx ); $i++){
-			$novedades[] = array('value' => $novedadx[$i][cod_noveda], 'label' => utf8_decode($novedadx[$i][nom_noveda]) );
+			$novedades[] = array('value' => $novedadx[$i][cod_noveda], 'label' => $novedadx[$i][cod_noveda]." - ".utf8_decode($novedadx[$i][nom_noveda]) );
 		}
 		echo json_encode( $novedades );
 	}

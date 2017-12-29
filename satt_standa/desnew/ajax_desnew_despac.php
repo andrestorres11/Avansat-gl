@@ -158,7 +158,7 @@ class AjaxInsertDespacho
                 FROM ".CENTRAL.".tab_genera_opegps a
                WHERE a.ind_estado = '1'";
     
-    if( $cod_opegps != NULL )
+    if( $cod_opegps != NULL && $cod_opegps != '' )
     {
       $query .= " AND a.cod_operad = '".$cod_opegps."' ";
     }
@@ -369,15 +369,15 @@ class AjaxInsertDespacho
     $DAT_VEHICU = $this->GetFormDatosVehicxx( $_AJAX );
     $DAT_DESTIN = $this->GetFormDatosDestinx( $_AJAX );
     $DAT_ADICIO = $this->GetFormDatosAdicion( $_AJAX );
-    $mHtml .= $this->GenerateDynamicDiv( 'Datos B&aacute;sicos del Despacho', $DAT_BASICO,100, 'datbasID', 'accbasID' );
+    $mHtml .= $this->GenerateDynamicDiv( 'Datos B&aacute;sicos del Despacho', $DAT_BASICO,180, 'datbasID', 'accbasID' );
     if($ind_segdeca == 1){
       $mHtml .= $this->GenerateDynamicDiv( 'Datos del Cargue', $DAT_CARGUE,100 , 'datcarID', 'acccarID' );
     }
     //$mHtml .= $this->GenerateDynamicDiv( 'Operaciones', $DAT_OPERAC,100 , 'datopeID', 'accopeID' );
-    $mHtml .= $this->GenerateDynamicDiv( 'GPS y Seguros del Despacho', $DAT_SEGURO, 100 , 'datsegID', 'accsegID');
+    $mHtml .= $this->GenerateDynamicDiv( 'GPS y Seguros del Despacho', $DAT_SEGURO, 160 , 'datsegID', 'accsegID');
     $mHtml .= $this->GenerateDynamicDiv( 'Recursos del Despacho', $DAT_VEHICU,190 , 'datvehID', 'accvehID');
     if($ind_segdeca == 1){
-      $mHtml .= $this->GenerateDynamicDiv( 'Datos de Descargue y Destinatarios', $DAT_DESTIN, 100  , 'datdesID', 'accdesID');
+      $mHtml .= $this->GenerateDynamicDiv( 'Datos de Descargue y Destinatarios', $DAT_DESTIN, 130  , 'datdesID', 'accdesID');
     }
     $mHtml .= $this->GenerateDynamicDiv( 'Informaci&oacute;n Adicional del Despcho', $DAT_ADICIO, 100  , 'AdidesID', 'accdesID');
 
@@ -1563,7 +1563,7 @@ class AjaxInsertDespacho
     $mHtml .= '</tr>';
     
     $mHtml  .= '</table>';
-    $mHtml .= '<input type="hidden" id="counterID" value="0" />';
+    $mHtml .= '<input type="hidden" id="counterID" value="0" name="counter" />';
     $mHtml  .= $this->ShowDestin( $_AJAX );
 
     return $mHtml;
@@ -1621,9 +1621,9 @@ class AjaxInsertDespacho
     $datos->cod_paides = $paidepdes[0][0];
     $datos->cod_depdes = $paidepdes[0][1];
     $datos->usr_creaci = $_SESSION['datos_usuario']['cod_usuari'];
-    
-    $nombre_opegps = $this->getOpegps( $datos->cod_opegps);
-    $datos->gps_operad = $nombre_opegps[0][1];
+
+    //$nombre_opegps = $this->getOpegps( $datos->cod_opegps);
+    //$datos->gps_operad = $nombre_opegps[0][0];
     
     $datos->val_declar = str_replace( '.', '', $datos->val_declar );
     
@@ -1646,7 +1646,7 @@ class AjaxInsertDespacho
                             NULL,NULL,NULL,NULL,
                             NULL,NULL, '$datos->cod_agenci',NULL,
                            '$datos->obs_genera','$datos->val_declar','$datos->usr_creaci', NOW(),
-                           '$datos->val_pesoxx','$datos->gps_operad','$datos->usr_gpsxxx','$datos->clv_gpsxxx',
+                           '$datos->val_pesoxx','$datos->cod_opegps','$datos->usr_gpsxxx','$datos->clv_gpsxxx',
                            '$datos->gps_idxxxx','$datos->gps_otroxx','$datos->nom_asegur','$datos->num_poliza')"; 
     $consulta = new Consulta($mInsert, $this->conexion, "R");
     
@@ -1759,6 +1759,20 @@ class AjaxInsertDespacho
         $consulta = new Consulta( $mInsert, $this->conexion, "R" );
       }
     }
+
+
+
+
+    # Agrega los datos de viaje en caso de que exista
+    if( $_REQUEST["cod_desext"] != '' )
+    {
+      $mInsert = "INSERT INTO  ".BASE_DATOS.".tab_despac_viajex 
+                  ( num_despac, num_placax, num_viajex, cod_transp, usr_creaci, fec_creaci ) 
+                  VALUES 
+                  ('$datos->num_despac', '$datos->num_placax', '$datos->cod_desext', '$datos->cod_transp', '$datos->usr_creaci', NOW() ) ";
+      $consulta = new Consulta($mInsert, $this -> conexion, "R");
+    }
+
     
     //die();
     
@@ -1793,8 +1807,17 @@ class AjaxInsertDespacho
     
     /**********************************************************************/
     
-    
-    
+    if($datos->cod_opegps != NULL && $datos->cod_opegps != '')
+    {
+      $mSql = "SELECT MAX(cod_consec) FROM ".BASE_DATOS.".tab_despac_gpsxxx";
+      $consulta = new Consulta($mSql, $this->conexion, "R");
+      $cod_consec = $consulta->ret_matriz();
+      $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_gpsxxx
+                              ( num_despac, cod_consec, idx_gpsxxx, cod_opegps, nom_usrgps, clv_usrgps, usr_creaci, fec_creaci )
+                        VALUES( '$datos->num_despac', '".$cod_consec[0][0]."', '$datos->gps_idxxxx', '$datos->cod_opegps', '$datos->usr_gpsxxx', '$datos->clv_gpsxxx', '$datos->usr_creaci' , NOW() )";
+      $consulta = new Consulta( $mInsert, $this->conexion, "R" );
+    }
+      
     if( $insercion = new Consulta( "COMMIT", $this->conexion ) ){
       $mHtml  .= '<center><table width="100%" cellspacing="2px" cellpadding="0">';
     
@@ -2035,9 +2058,9 @@ class AjaxInsertDespacho
     
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">* No. Documento:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" onkeypress="return NumericInput( event );"  onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'"  minlength="5" maxlength="9" size="9" obl="1" validate="numero" name="cod_manifi" id="cod_manifiID" /></td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" onkeypress="return NumericInput( event );"  onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'"  minlength="5" maxlength="14" size="14" obl="1" validate="numero" name="cod_manifi" id="cod_manifiID" /></td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr"> * No. interno de la transportadora:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" obl="1" validate="numero" type="text" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" minlength="5"  maxlength="15" size="20" name="cod_desext" id="cod_desextID" /></td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" obl="1" type="text" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" minlength="5"  maxlength="15" size="20" name="cod_desext" id="cod_desextID" /></td>';
     $mHtml .= '</tr>';
     
     $mHtml .= '<tr>';

@@ -129,6 +129,10 @@ class Despac
 					self::AlmcenarSolucionNem();
 					break;
 
+				case 'getListDespac':
+					self::getListDespac();
+					break;
+
 				default:
 					header('Location: index.php?window=central&cod_servic=1366&menant=1366');
 					break;
@@ -4263,6 +4267,58 @@ class Despac
 		$mSql .= " GROUP BY a.cod_client ORDER BY c.abr_tercer ASC ";
 		$consulta = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $consulta -> ret_matrix('i');
+	}
+
+	/*! \fn: getListDespac
+	 *  \brief: Obtiene la lista de despachos generada
+	 *  \author: Edward Serrano
+	 *	\date: 28/11/2017
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return:
+	 */
+	public function getListDespac()
+	{
+		#Query tomada del script despachos.inc y la caul pinta el despacho anterior
+		/*$mSql = " SELECT a.num_despac, b.obs_llegad, b.fec_llegad 
+                        FROM ".BASE_DATOS.".tab_despac_sisext a
+                  INNER JOIN ".BASE_DATOS.".tab_despac_despac b 
+                          ON a.num_despac = b.num_despac 
+                       WHERE a.num_despac != '{$_REQUEST[cod_despac]}'
+                         AND b.cod_manifi = '{$_REQUEST[cod_manifi]}' 
+                         AND a.num_desext = (
+                                                SELECT x.num_desext 
+                                                  FROM ".BASE_DATOS.".tab_despac_sisext x 
+                                                 WHERE x.num_despac = '{$_REQUEST[cod_despac]}'
+                                                   AND x.num_desext NOT IN ('VC', '')
+                                            ) ";*/
+        $mSql = " SELECT a.num_dessat, b.obs_llegad, b.fec_llegad FROM tab_bitaco_corona a
+                  INNER JOIN ".BASE_DATOS.".tab_despac_despac b
+                  		  ON a.num_dessat = b.num_despac 
+                  WHERE a.num_dessat != '{$_REQUEST[cod_despac]}'
+                    AND a.num_despac = '{$_REQUEST[cod_manifi]}'
+                    GROUP BY a.num_dessat ";                               
+		$consulta = new Consulta( $mSql, self::$cConexion );
+		$mResult = $consulta -> ret_matrix('i');
+		$mHtml = new Formlib(2);
+		$mHtml->Table("tr");
+			$mHtml->Label( "DESPACHOS", array("colspan"=>"3", "align"=>"center", "width"=>"100%", "class"=>"CellHead", "color"=>"#FFFFFF") );
+			$mHtml->CloseRow();
+			$mHtml->Row();
+				//$mHtml->Label( "Despacho", array("colspan"=>"1", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+				//$mHtml->Label( "Observacion", array("colspan"=>"1", "align"=>"center", "width"=>"50%", "class"=>"CellHead") );
+				//$mHtml->Label( "Fecha", array("colspan"=>"1", "align"=>"center", "width"=>"25%", "class"=>"CellHead") );
+			$mHtml->CloseRow();
+			foreach ($mResult as $key => $value) {
+
+				$mHtml->Row();
+					$mHtml->Label( '<a class="classLink" href="index.php?cod_servic=3302&window=central&despac='.$value[0].'&opcion=1" style="background-color:#FFFFFF; color:green;">'.$value[0].'</a>', array("align"=>"center", "width"=>"25%", "class"=>"cellInfo") );
+					//$mHtml->Label( $value[1], array("align"=>"left", "width"=>"50%", "class"=>"cellInfo2") );
+					//$mHtml->Label( $value[2], array("align"=>"left", "width"=>"25%", "class"=>"cellInfo2") );
+				$mHtml->CloseRow();
+			}
+		$mHtml->CloseTable('tr');
+		echo $mHtml->MakeHtml();
 	}
 
 }
