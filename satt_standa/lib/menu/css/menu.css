@@ -1,0 +1,342 @@
+.div_temporal {
+    color: #444444;
+    text-decoration: none;
+    background-color: #ffffff;
+    background-image: url( '../img/menu/background_menu.png' );
+}
+
+
+.menuLink {
+  color: #4ca20b;
+  cursor: pointer;
+  font-weight: normal;
+  font-family: Arial;
+  font-size: 11px;
+}
+
+
+body {
+  /*
+  background-repeat: repeat;
+  font-family: Arial;
+  padding: 0px;
+  margin: 0px;
+  background-color:  #303941;
+  */
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 8pt;
+    color: #000000;
+    background-color:  #FFFFFF; 
+ 
+}
+
+#logoDiv {
+  background-image: url( '../img/menu/logo_SAT_header.png' );
+  width: 140px;
+  height: 74px;
+  margin: 15px auto 15px auto;
+  cursor: pointer;
+}
+
+#userName {
+  font-size: 12px;
+  color: #ffffff;
+  font-weight: bolder;
+}
+
+#userDiv {
+  font-size: 12px;
+  color: #bbbbbb;
+  text-align: right;
+  margin: 0px 10px 3px 0px;
+}
+
+#infoDiv {
+  font-size: 12px;
+  color: #bbbbbb;
+  text-align: right;
+  margin: 3px 10px 5px 0px;
+}
+
+#upDiv {
+  background-image: url( '../img/menu/btn_top_active.png' );
+  width: 200px;
+  height: 15px;
+  cursor: pointer;
+}
+
+#upDiv:hover {
+  background-image: url( '../img/menu/btn_top_hover.png' );
+  width: 200px;
+  height: 15px;
+  cursor: pointer;
+}
+
+#downDiv {
+  background-image: url( '../img/menu/btn_down_active.png' );
+  width: 200px;
+  height: 15px;
+  cursor: pointer;
+}
+
+#downDiv:hover {
+  background-image: url( '../img/menu/btn_down_hover.png' );
+  width: 200px;
+  height: 15px;
+  cursor: pointer;
+}
+
+
+#containerDiv {
+  height: 300px;
+  border: 0px solid orange;
+  display: block;
+  overflow: hidden;
+}
+
+.webLink {
+  font-size: 12px;
+  color: #bbbbbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.webLink:hover {
+  font-size: 12px;
+  color: #eeeeee;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.nopaddingDiv {
+  padding: 0px;
+  margin: 0px;
+}
+
+.btnPadre {
+  font-size: 10px;
+  color: #eeeeee;
+  font-weight: normal;
+  text-align: right;
+  padding: 7px 10px 7px 0px;
+  border-top: #404950 1px solid;
+  border-bottom: #1c252b 1px solid;
+  background: #303941;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+
+.btnPadre:hover {
+  font-size: 10px;
+  color: #eeeeee;
+  font-weight: normal;
+  text-align: right;
+  padding: 7px 10px 7px 0px;
+  border-top: #516271 1px solid;
+  border-bottom: #1c252b 1px solid;
+  background: #3b515e;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+
+.btnPadreS {
+  font-size: 10px;
+  color: #eeeeee;
+  font-weight: normal;
+  text-align: right;
+  padding: 7px 10px 7px 0px;
+  border-top: #657d92 1px solid;
+  border-bottom: #1c252b 1px solid;
+  background: #376177;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.divPadre {
+  padding: 0px;
+  margin: 0px;
+  display: none;
+}
+
+.btnSlice {
+  font-size: 10px;
+  color: #ffffff;
+  font-weight: normal;
+  text-align: right;
+  padding: 3px 10px 3px 0px;
+  border-top: #444444 0px solid;
+  border-bottom: #222222 0px solid;
+  background: #666666;
+}
+
+
+.btnHijos1 {
+  font-size: 12px;
+  color: #bbbbbb;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 15px 4px 0px;
+  border-top: #de4235 1px solid;
+  border-bottom: #de4220 1px solid;
+  background: #de4229;
+  cursor: pointer;
+}
+
+
+.btnHijos1:hover {
+  font-size: 12px;
+  color: #eeeeee;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 17px 4px 0px;
+  border-top: #333333 1px solid;
+  border-bottom: #222222 1px solid;
+  background: #333333;
+  cursor: pointer;
+}
+
+
+.btnHijos1S {
+  font-size: 12px;
+  color: #eeeeee;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 17px 4px 0px;
+  border-top: #333333 1px solid;
+  border-bottom: #222222 1px solid;
+  background: #333333;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+
+.btnHijos2 {
+  font-size: 12px;
+  color: #bbbbbb;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 30px 4px 0px;
+  border-top: #444444 1px solid;
+  border-bottom: #111111 1px solid;
+  background: #242424;
+  cursor: pointer;
+}
+
+
+.btnHijos2:hover {
+  font-size: 12px;
+  color: #ffffff;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 30px 4px 0px;
+  border-top: #444444 1px solid;
+  border-bottom: #111111 1px solid;
+  background: #242424;
+  cursor: pointer;
+}
+
+
+.btnHijos2S {
+  font-size: 12px;
+  color: #ffffff;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 30px 4px 0px;
+  border-top: #444444 1px solid;
+  border-bottom: #111111 1px solid;
+  background: #242424;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+
+.btnHijos3 {
+  font-size: 12px;
+  color: #bbbbbb;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 35px 4px 0px;
+  border-top: #444444 0px solid;
+  border-bottom: #111111 0px solid;
+  background: transparent;
+  cursor: pointer;
+}
+
+
+.btnHijos3:hover {
+  font-size: 12px;
+  color: #ffffff;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 35px 4px 0px;
+  border-top: #444444 0px solid;
+  border-bottom: #111111 0px solid;
+  background: transparent;
+  cursor: pointer;
+}
+
+
+.btnHijos3S {
+  font-size: 12px;
+  color: #ffffff;
+  font-weight: normal;
+  text-align: right;
+  padding: 4px 35px 4px 0px;
+  border-top: #444444 0px solid;
+  border-bottom: #111111 0px solid;
+  background: #242424;
+  cursor: transparent;
+  font-weight: bold;
+}
+
+
+.linkHijos {
+  font-size: 12px;
+  color: #ffffff;
+  font-weight: normal;
+  text-align: right;
+  text-decoration: none;
+}
+
+
+.linkHijos:hover {
+  font-size: 12px;
+  color: #ffffff;
+  font-weight: normal;
+  text-align: right;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+
+#loaderDiv {
+  background-image: url( '../img/menu/ajax-loader.gif' );
+  position: absolute;
+  /*nos posicionamos en el centro del navegador*/
+  top:50%;
+  left:50%;
+  /*determinamos una anchura*/
+  width:16px;
+  /*indicamos que el margen izquierdo, es la mitad de la anchura*/
+  margin-left:-8px;
+  /*determinamos una altura*/
+  height:16px;
+  /*indicamos que el margen superior, es la mitad de la altura*/
+  margin-top:-8px;
+  border:0px solid #808080;
+  padding:0px;
+}
+
+
+
+.mm-menu li > a[title="Mesa de Apoyo"] {
+    color: #474545;
+    font-weight: 600;
+    text-transform: none;
+}
+
+.mm-menu li:first-child{
+  background-color: #E0E0E0;
+} 

@@ -10,6 +10,7 @@
 setlocale(LC_TIME, "es_ES");
 
 include ("constantes.inc");
+include ("guia_login.inc");
 include ("../" . DIR_APLICA_CENTRAL . "/lib/generales.inc");
 
 class session {
@@ -52,6 +53,21 @@ class session {
         $login[0] = ESAD . " - " . NOMSAD;
         $login[1] = NOMSAD;
         $login[2] = $mensaje;
+        $login[3] = DIR_APLICA_CENTRAL;
+        $login[4] = VERSION;
+        $login[5] = "2000 - " . date('Y');
+        $login[6] = BASE_DATOS;
+        if(!file_exists('guia_login.inc')) {
+            $login[9] = "../".BASE_DATOS."/imagenes/logo-sat-color.png";
+            $login[10] = "../".BASE_DATOS."/imagenes/11.jpg";
+            $login[11] = "#5A812A";
+            $login[12] = "#5A812A";
+        }else{
+            $login[9] = IMAGEN_LOGO;
+            $login[10] = IMAGEN_FONDO;
+            $login[11] = COLOR_FONDO;
+            $login[12] = COLOR_BOTON;
+        }
         $ano = date('Y');
         $tmpl_file = "login.html";
         $thefile = implode("", file($tmpl_file));
