@@ -58,8 +58,8 @@ class session {
         $login[5] = "2000 - " . date('Y');
         $login[6] = BASE_DATOS;
         if(!file_exists('guia_login.inc')) {
-            $login[9] = "../".BASE_DATOS."/imagenes/logo-sat-color.png";
-            $login[10] = "../".BASE_DATOS."/imagenes/11.jpg";
+            $login[9] = "../".BD_STANDA."/imagenes/logo-sat-color.png";
+            $login[10] = "../".BD_STANDA."/imagenes/11.jpg";
             $login[11] = "#5A812A";
             $login[12] = "#5A812A";
         }else{
