@@ -2550,7 +2550,7 @@ class Despachos
                                     "fec_llegpl" => "Fecha Planeada Llegada", 
                                     "fec_findes" => "Fecha Fin Descargue", 
                                     "fec_plalle" => "Fecha Llegada a Planta", 
-                                    "fec_salpla" => "Fecha Salida de Planta" 
+                                    "fec_salpla" => "Fecha Fin de Cargue" 
                                     );
 
         if( $mView->dat_telefo->ind_visibl != '1' )
