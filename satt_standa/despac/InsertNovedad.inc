@@ -533,7 +533,7 @@ class InsertNovedad {
         else
             $Order = array('7' => '7', '4' => '4', '2' => '2', '3' => '3', '1' => '1', '5' => '5', '6' => '6', '8' => '8');
 
-
+        /*
         foreach ($Order AS $key => $value) {
             switch ($key) {
                 case '7':
@@ -574,6 +574,15 @@ class InsertNovedad {
                  
             }
         }
+        */
+
+
+        // nueva forma de filtrar saltando las prioridades de los filtros $Order ----------------------------
+        $mListCr .= $mData["cod_tiptra"] != '' && count($mData["cod_tiptra"]) >= 1 ? " \n AND z.ValCriter7 = '" . $mData["cod_tiptra"] . "' " : "";
+        $mListCr .= $mData["cod_tipdes"] != '' && count($mData["cod_tipdes"]) >= 1 ? " \n AND z.ValCriter4 = '" . $mData["cod_tipdes"] . "' " : "";
+        $mListCr .= $mData["cod_produc"] != '' && count($mData["cod_produc"]) >= 1 ? " \n AND z.ValCriter2 = '" . $mData["cod_produc"] . "' " : "";
+        $mListCr .= $mData["cod_ciuori"] != '' && count($mData["cod_ciuori"]) >= 2 ? " \n AND z.ValCriter1 = '" . $mData["cod_ciuori"] . "' " : "";
+        $mListCr .= $mData["cod_deposi"] != '' && count($mData["cod_deposi"]) >= 2 ? " \n AND z.ValCriter8 = '" . $mData["cod_deposi"] . "' " : "";
 
         $mListCr .= " ORDER BY 1 ";
 
