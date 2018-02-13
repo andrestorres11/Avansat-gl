@@ -148,34 +148,37 @@ class Novedad {
 
 
                     ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
+                        $mFile = fopen("/var/www/html/ap/satt_faro/satt_movil/logs/error-".$parametros['empresa_codigocs'].$mFecha[0].".txt", "a+");
                     try {
                         //Ruta Web Service Colocar e-com.
-                        $url_webser = "http://www.colombiasoftware.net/base/webservice/reportepuestocontrol.php?wsdl";
+                        $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                         $mFecha[0] = date('Y-m-d');
                         $mFecha[1] = date('H:i:s');
                         $parametros = array();
-                        $parametros["empresa"] = $dataColSof["nom_operad"];
+                        $parametros["empresa_codigocs"] = $dataColSof["nom_operad"];
                         $parametros["usuario"] = $dataColSof["nom_usuari"];
                         $parametros["clave"] = $dataColSof["clv_usuari"];
-                        $parametros["sentido"] = "0";
-                        $parametros["direccion"] = $mNomPc['nom_contro'];
-                        $parametros["tipo_evento"] = "0";
-                        $parametros["kilometraje"] = "0";
-                        $parametros["velocidad"] = "0";
-                        $parametros["codigo_puestocontrol"] = $mControPadre['cod_contro'];
                         $parametros["novedad"] = $mNoveda["nom_noveda"] . ' ' . "Registrado desde <br>Dispositivo Movil " . $_POST[device] . ". <br>IP:" . $_SERVER["REMOTE_ADDR"];
-                        $parametros["longitud"] = $mGeo['val_longit'];
-                        $parametros["latitud"] = $mGeo['val_latitu'];
                         $parametros["hora"] = $mFecha[1];
                         $parametros["fecha"] = $mFecha[0];
                         $parametros["placa"] = $mSalida['num_placax'];
-                        $parametros["manifiesto_codigo"] = $mSalida['cod_manifi'];
+                        $parametros["ubicacion"] = $mNomPc['nom_contro']." lat ".$mGeo['val_longit']." long ".$mGeo['val_latitu'];
+                        //$parametros["codigo_puestocontrol"] = $mControPadre['cod_contro'];
+                        //$parametros["manifiesto_codigo"] = $mSalida['cod_manifi'];
 
-                        $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
+                        fwrite($mFile, "parametros enviados:------------------------------------------ \n");
+                        fwrite($mFile, var_export($parametros, true)." \n");
+
+
+                        $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
                         //Métodos disponibles en el WS
-                        $respuesta = $oSoapClient->__call('puestocontrol_humadea', $parametros);
+                        $respuesta = $oSoapClient->__soapCall('novedadConUbicacion', $parametros);
 
+                        fwrite($mFile, "Respuesta del WS de colombiasoftware:------------------------------------------ \n");
+                        fwrite($mFile, var_export($respuesta, true)." \n");  
+                        fwrite($mFile, "----------------------------------- Fin Log ----------------------------------\n");
+                        
                         if ($respuesta != 'OK REPORTO.') {
                             $mMessage = "******** Encabezado ******** \n";
                             $mMessage .= "Fecha y hora Sistema: " . date("Y-m-d H:i") . " \n";
@@ -193,6 +196,10 @@ class Novedad {
                             mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
                         }
                     } catch (SoapFault $e) {
+                        fwrite($mFile, "catch:------------------------------------------ \n");
+                        fwrite($mFile, var_export($e, true)." \n");
+                        fwrite($mFile, "finlog------------------------------------------ \n");
+                        fclose($mFile);
                         $error_ = $e->getMessage();
                     }
                 }
