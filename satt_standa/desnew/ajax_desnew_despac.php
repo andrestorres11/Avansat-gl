@@ -2408,7 +2408,7 @@ class AjaxInsertDespacho
       $list->SetHeader(("Color"), "field:a.nom_colorx" );
       $list->SetHeader(("Capacidad (TN)"), "field:a.tra_capaci" );
       $list->SetHeader(("Carroceria"), "field:a.nom_carroc" );
-      $list->SetHidden("num_trayle", "0" );
+      $list->SetHidden("num_remolq", "0" );
       $list->SetHidden("nom_propie", "1" );
       $list->Display($this->conexion);
 

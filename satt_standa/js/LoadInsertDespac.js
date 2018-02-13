@@ -1527,7 +1527,7 @@ function getRemolq(obj, cod_transp, flag) {
       if(flag == '1'){
         var num_remolq = $(obj).val();
       }else{
-        var num_remolq = $(obj).parent().parent().find("input[id^=num_remolq]").val();
+        var num_remolq = $(obj).parent().parent().find("input[id^=num_remolq1]").val();
       }
       $("#loading").remove();
       var cod_transp = $("#cod_transpID").val();
