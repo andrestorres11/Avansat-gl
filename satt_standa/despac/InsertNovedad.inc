@@ -3595,7 +3595,7 @@ class InsertNovedad {
                                 $parametros['hora'] = $mFecha[1];
                                 $parametros['fecha'] = $mFecha[0];
                                 $parametros['placa'] = $mDatDespac['num_placax'];
-                                $parametros['manifiesto_codigo'] = $mDatDespac['cod_manifi'];
+                                //$parametros['manifiesto_codigo'] = $mDatDespac['cod_manifi'];
                                 $parametros['lugar'] = $regist['sitio'];
 
                                 $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
