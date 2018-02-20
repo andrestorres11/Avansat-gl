@@ -73,6 +73,9 @@ class ajax_certra_certra {
                 case "CreateConfig";
                     $this->CreateConfig();
                     break;
+                case "CreateContac";
+                    $this->CreateContac();
+                    break;
                 case "getFestivos";
                     $this->getFestivos();
                     break;
@@ -85,11 +88,21 @@ class ajax_certra_certra {
                 case "NewParametrizacion";
                     $this->NewParametrizacion();
                     break;
+                case "NewContac";
+                    $this->NewContac();
+                    break;  
+                case "editContac";
+                    $this->editContac();
+                    break;  
                 case "registrarTipoServicio";
                     $this->registrarTipoServicio();
                     break;
                 case "deleteConfiguracion";
                     $this->deleteConfiguracion();
+                    break;
+
+                case "deleteContac";
+                    $this->deleteContac();
                     break;
 
                 default:
@@ -242,11 +255,13 @@ class ajax_certra_certra {
         $grupos = $this->getGrupos();
         $operaciones = $this->getOperaciones();
         $eals = $this->getEals();
+        $option = 0;
+        $standa = DIR_APLICA_CENTRAL;
         ?>
         <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuraci&oacute;n del Servicio</b></h3>
-            <div id="contenido_conf">
-                <div class="StyleDIV contenido" style="min-height: 165px !important;">
+            <div id="contenido_conf" style="height: 230px !important">
+                <div class="StyleDIV contenido" style="min-height: 185px !important;">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-10">
                         <div class="col-md-6">
@@ -365,6 +380,49 @@ class ajax_certra_certra {
                     <div class="col-md-1">&nbsp;</div>
                 </div>
             </div>
+        </div>
+        <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
+            <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion de contactos</b></h3>
+            <div id="contenido_serv">
+                <div class="StyleDIV contenido" style="min-height: 220px !important;" >
+                    <div class="col-md-12 CellHead"  style="text-align:center;"><strong>Agregar contacto </strong><input type="button" value="Nuevo Contacto" class="small save  ui-state-default ui-corner-all" onclick="CreateContac('<?= $datos->cod_transp ?>', 0, 0)"></div>
+                    <?php 
+                        $contactos = $this->getContact();
+                        /*echo "<pre>";
+                            print_r($contactos);
+                        echo "</pre>";*/
+                        $agencias = $this->getAgencias();
+                        if (!$contactos) {     
+                    ?>
+                        <div class="col-md-12" style="text-align:center;">Actualmente no tiene contactos parametrizados</div> 
+                    <?php } else { ?>
+                        <div class="col-md-12 contenido" id="mensaje"></div>
+                        <div class="col-md-12 CellHead centrado" id="mensaje"><b>Lista de Contactos</b></div>
+                        <div class="col-md-2 CellHead centrado"><b>Nombre</b></div>
+                        <div class="col-md-2 CellHead centrado"><b>Movil</b></div>
+                        <div class="col-md-2 CellHead centrado"><b>E-mail</b></div>
+                        <div class="col-md-1 CellHead centrado"><b>Cargo</b></div>
+                        <div class="col-md-1 CellHead centrado"><b>Agencia</b></div>
+                        <div class="col-md-2 CellHead centrado"><b>Observaciones</b></div>
+                        <div class="col-md-1 CellHead centrado"><b>Elininar</b></div>
+                        <div class="col-md-1 CellHead centrado"><b>Editar</b></div>
+                        <?php
+                        foreach ($contactos as $row => $value) {
+                            ?>
+                            <div class="col-md-2 contenido centrado" id="nom_contac<?=$row?>"><?= $value['nom_contac'] ?></div> 
+                            <div class="col-md-2 contenido centrado" id="tel_contac<?=$row?>"><?= $value['tel_contac'] ?></div> 
+                            <div class="col-md-2 contenido centrado" id="ema_contac<?=$row?>"><?= $value['ema_contac'] ?></div> 
+                            <div class="col-md-1 contenido centrado" id="car_contac<?=$row?>"><?= $value['car_contac'] ?></div>  
+                            <div class="col-md-1 contenido centrado" id="nom_agenci<?=$row?>"><?= $value['nom_agenci'] ?></div>  
+                            <div class="col-md-2 contenido centrado" id="obs_contac<?=$row?>"><?= $value['obs_contac'] ?></div>   
+                            <div class="col-md-1 contenido centrado"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>', 3)"></div>   
+                            <div class="col-md-1 contenido centrado"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>' , <?= $row ?> )"></div>                     
+                            <?php
+                        }
+                    }
+                    ?>
+                </div>
+            </div>  
         </div>
         <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Horario del Servicio Contratado</b></h3>
@@ -1342,6 +1400,35 @@ class ajax_certra_certra {
         return $consulta->ret_matrix("a");
     }
 
+    private function getAgencias() {
+        $datos = (object) $_POST;
+        $sql = "SELECT a.cod_agenci, a.nom_agenci 
+                  FROM " . BASE_DATOS . ".tab_genera_agenci a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_agenci b 
+                    ON a.cod_agenci = b.cod_agenci 
+            INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer c 
+                    ON b.cod_transp = c.cod_tercer
+                 WHERE c.cod_tercer = '$datos->cod_transp'
+                   AND a.cod_estado = 1 ";
+
+        $consulta = new Consulta($sql, self::$cConexion);
+        return $consulta->ret_matrix("a");
+    }
+    
+    private function getContact() {
+        $datos = (object) $_POST;
+        $sql = "SELECT a.nom_contac, a.car_contac, a.ema_contac, a.tel_contac, a.obs_contac, a.nom_agenci
+                  FROM " . BASE_DATOS . ".tab_contac_empres a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp 
+            WHERE b.cod_transp = '$datos->cod_transp'
+            GROUP BY 1, 3";
+        /*echo "<pre> sql";
+        print_r($sql);
+        echo "</pre>";*/
+        $consulta = new Consulta($sql, self::$cConexion);
+        return $consulta->ret_matrix("a");
+    }
+
     /* ! \fn: deleteConfiguracion
      *  \brief: elimina una configuracion laboral de una empresa
      *  \author: Ing. Alexander Correa
@@ -1362,6 +1449,216 @@ class ajax_certra_certra {
             die('1');
         } else {
             die('0');
+        }
+    }
+
+    /* ! \fn: deleteConfiguracion
+     *  \brief: elimina una configuracion laboral de una empresa
+     *  \author: Ing. Alexander Correa
+     *  \date: 16/05/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return boolean 
+     */
+
+    private function deleteContac() {
+        $datos = (object) $_POST;
+        $sql = "DELETE FROM " . BASE_DATOS . ".tab_contac_empres
+                      WHERE cod_transp = '$datos->cod_transp' 
+                      AND ema_contac = '$datos->ema_contac' ";
+        if ($consulta = new Consulta($sql, self::$cConexion)) {
+            die('1');
+        } else {
+            die('0');
+        }
+    }
+
+    /* ! \fn: CreateContac
+     *  \brief: inserta un nuevo contacto
+     *  \author: Ing. Andres Torres
+     *  \date: 12/02/2018
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function CreateContac() {
+        $datos = (object) $_POST;
+            if ($_POST['ind_edicio'] == '0') {
+                ?>
+                <div class="StyleDIV contenido" style="min-height: 145px !important;">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-10">
+                        <div class="col-md-6">  
+                            <div class="col-md-6 text-right">Nombre Contacto<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="nom_contac" id="nom_contacID" validate="text" obl="1" maxlength="250" minlength="3">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Movil:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="tel_contac" id="tel_contacID" validate="numero" obl="1" maxlength="10" minlength="3">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">E-mail:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="ema_contac" id="ema_contacID" validate="text" obl="1" maxlength="50" minlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Cargo:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="car_contac" id="car_contacID" validate="text" obl="1" maxlength="20" minlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-md-5 text-right">Observaciones:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="obs_contac" id="obs_contacID" validate="text" obl="1" maxlength="250" minlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-md-5 text-right">Agencia:<font style="color:red">*</font></div>
+                            <div class="col-md-5 text-left" style="width:170px !important">
+                                <select id="cod_agenciID" name="cod_agenci" class="ancho" obl="1" validate="select">
+                                    <option >Seleccione una Opci&oacute;n.</option>
+                                    <?php
+                                    $agencias = $this->getAgencias();
+                                    foreach ($agencias as $key => $value) {
+                                        $sel = "";
+                                        if ($value['cod_agenci'] == $agencias['cod_agenci']) {
+                                            $sel = "selected";
+                                        }   
+                                        ?>
+                                        <option <?= $sel ?> value="<?= $value['cod_agenci'] ?>"><?= $value['nom_agenci'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">&nbsp;</div>
+                    </div>
+            <?php
+            }else{
+            ?>
+            <div class="StyleDIV contenido" style="min-height: 145px !important;">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-10">
+                        <div class="col-md-6">  
+                            <div class="col-md-6 text-right">Nombre Contacto<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="nom_contac" id="nom_contacID" validate="text" obl="1" maxlength="250" minlength="3" value="<?= $_POST['nom_contac'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Movil:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="tel_contac" id="tel_contacID" validate="numero" obl="1" maxlength="10" minlength="3" value="<?= $_POST['tel_contac'] ?>" >
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">E-mail:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="ema_contac" id="ema_contacID" validate="text" obl="1" maxlength="50" minlength="10" value="<?= $_POST['ema_contac'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Cargo:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="car_contac" id="car_contacID" validate="text" obl="1" maxlength="20" minlength="10" value="<?= $_POST['car_contac'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-md-5 text-right">Observaciones:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="obs_contac" id="obs_contacID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $_POST['obs_contac'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-md-5 text-right">Agencia:<font style="color:red">*</font></div>
+                            <div class="col-md-5 text-left" style="width:170px !important">
+                                <select id="cod_agenciID" name="cod_agenci" class="ancho" obl="1" validate="select" value="<?= $_POST['cod_agenci'] ?>">
+                                    <option >Seleccione una Opci&oacute;n.</option>
+                                    <?php
+                                    $agencias = $this->getAgencias();
+                                    foreach ($agencias as $key => $value) {
+                                        $sel = "";
+                                        if ($value['cod_agenci'] == $agencias['cod_agenci']) {
+                                            $sel = "selected";
+                                        }
+                                        ?>
+                                        <option <?= $sel ?> value="<?= $value['cod_agenci'] ?>"><?= $value['nom_agenci'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">&nbsp;</div>
+                    </div>
+        <?php
+        }
+    }
+
+
+
+    /* ! \fn: NewContac
+     *  \brief: inserta un contacto de la transportado
+     *  \author: Ing. Andres Torres
+     *  \date: 08/02/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+
+    private function NewContac() {
+        $mData = $_POST;
+        $mInsert = "INSERT INTO " . BASE_DATOS . ".tab_contac_empres
+        ( cod_transp, nom_contac, car_contac, 
+        ema_contac, tel_contac, obs_contac, 
+        usr_creaci, fec_creaci
+        )VALUES( '" . $mData['cod_transp'] . "', '" . $mData['nom_contac'] . "', '" . $mData['car_contac'] . "', 
+        '" . $mData['ema_contac'] . "', '".$mData['tel_contac']."', '".$mData['obs_contac']."', '" . $_SESSION['datos_usuario']['cod_usuari'] . "', NOW() )";
+
+        if ($consulta = new Consulta($mInsert, self::$cConexion)) {
+            echo "1000";
+        } else {
+            echo "9999";
+        }
+    }
+
+        /* ! \fn: editContac
+     *  \brief: inserta un contacto de la transportado
+     *  \author: Ing. Andres Torres
+     *  \date: 08/02/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+
+    private function editContac() {
+        $mData = $_POST;
+        $mUpdate = "UPDATE " . BASE_DATOS . ".tab_contac_empres SET 
+                    nom_contac = '".$mData['nom_contac']."', 
+                    ema_contac = '".$mData['ema_contac']."', 
+                    tel_contac = '".$mData['tel_contac']."', 
+                    car_contac = '".$mData['car_contac']."', 
+                    obs_contac = '".$mData['obs_contac']."', 
+                    usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                    fec_modifi = NOW()
+                    WHERE 
+                    cod_transp = '".$mData['cod_transp']."'
+                    AND ema_contac = '".$mData['email']."'";
+
+        if ($consulta = new Consulta($mUpdate, self::$cConexion)) {
+            echo "1000";
+        } else {
+            echo "9999";
         }
     }
 

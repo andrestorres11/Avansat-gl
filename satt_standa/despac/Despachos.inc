@@ -2241,8 +2241,9 @@ class Despachos
                         }
 
                         #Plan de Ruta
-                        if( $mRuta )
-                            $mHtml->SetBody( self::PlanDeRuta( $mNumDesOri, $mRuta['link'], $mRuta['finali'], $mRuta['opcurban'], $mDataUsuar, $mRuta['lleg'], $mRuta['tie_ultnov']) );
+                        if( $mRuta ){
+                            $mHtml->SetBody( self::PlanDeRuta( $mNumDesOri, $mRuta['link'], $mRuta['finali'], $mRuta['opcurban'], $mDataUsuar, $mRuta['lleg'], $mRuta['tie_ultnov'], $mData['num_despac'], $mData['aux_placax']));
+                        }
 
                     $mHtml->CloseDiv();
                 $mHtml->CloseRow('td');
@@ -3903,7 +3904,7 @@ class Despachos
      *  \param: 
      *  \return: 
      */
-    function PlanDeRuta( $despac, $link = 0, $finali = 0, $opcurban = 0, $datos_usuario = NULL, $lleg = NULL, $tie_ultnov = NULL )
+    function PlanDeRuta( $despac, $link = 0, $finali = 0, $opcurban = 0, $datos_usuario = NULL, $lleg = NULL, $tie_ultnov = NULL, $despac, $placa)
     {
       #< 0. PRE >
         self::IncludeJsStyle();
@@ -3984,7 +3985,7 @@ class Despachos
 
         $mSelect = "SELECT a.obs_despac, b.obs_medcom, b.obs_proesp,
                            a.obs_llegad, a.fec_salida, b.cod_rutasx, 
-                           a.cod_tipdes, b.cod_transp, a.cod_tipdes 
+                           a.cod_tipdes, b.cod_transp, a.cod_tipdes,a.num_despac
                       FROM " . BASE_DATOS . ".tab_despac_despac a 
                 INNER JOIN " . BASE_DATOS . ".tab_despac_vehige b 
                         ON a.num_despac = b.num_despac 
@@ -4011,6 +4012,11 @@ class Despachos
       #< 1: INFORMACION DEL PLAN DE RUTA >
       if( $mView->inf_planru->ind_visibl == 1 )
         $mHtml->SetBody( self::divPlanRuta( $_RUTASX, $indConsol, $mView->inf_planru) );
+
+      #< 1: INFORMACION DE LOS CONTACTOS >
+      $mViewContac = self::getView('jso_contac');
+      if( $mViewContac->dat_contac->ind_visibl == 1 )
+        $mHtml->SetBody( self::divContacto( $_RUTASX, $placa, $_DESPAC[0][cod_transp], $_DESPAC[0][num_despac]));
 
       #< 2: LLEGADA >
       if ( $lleg == 1 &&  $mView->inf_llegad->ind_visibl == 1 ){
@@ -8345,7 +8351,7 @@ class Despachos
      */
     public function getView( $mCatego )
     {
-        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut 
+        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac
                    FROM ".BASE_DATOS.".tab_genera_respon a 
              INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
                      ON a.cod_respon = b.cod_respon 
@@ -8973,6 +8979,67 @@ class Despachos
             return NULL;
         }
 
+    }
+
+     /*! \fn: divContacto
+     *  \brief: Crea DIV de la seccion: CONTACTOS
+     *  \author: Ing. Andres Torres
+     *  \date: 14/09/2015
+     *  \date modified: dia/mes/año
+     *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
+     *  \param: mIndConsol  Boolean  Indicador viaje consolidado
+     *  \param: mView       Array    Permisos de visibilidad en la seccion plan de ruta
+     *  \return: HTML
+     */
+    private function divContacto( $_RUTASX, $placa, $transport, $despac)
+    {
+      $datos = $this->getContact($transport);
+      $mHtml = new Formlib(2);
+
+      $mHtml->OpenDiv("id:planRutaID; class:accordion");
+        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION DE CONTACTO</center></h3>");
+        $mHtml->OpenDiv("id:secID");
+          $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
+            $mHtml->Table("tr");
+                $mHtml->Label( 'Nombre Contacto', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->Label( 'cargo', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->Label( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->Label( 'telefono', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->Label( 'E-mail', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->Label( 'agencia', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+            $mHtml->CloseTable('tr');
+                if ($datos) {
+                    foreach ($datos as $row => $value) {
+            $mHtml->Table("tr");
+                        $mHtml->Label( $value['nom_contac'], array("align"=>"center", "class"=>"", "width"=>"15%") );
+                        $mHtml->Label( $value['car_contac'], array("align"=>"center", "class"=>"", "width"=>"15%") );
+                        $mHtml->Label( $value['obs_contac'], array("align"=>"center", "class"=>"", "width"=>"15%") );
+                        $mTxt = '<a style="color:green;" href="sip:'.$value['tel_contac'].'_'.$placa.'_'.$despac.'@pbx.intrared.net" target="blank">'.$value['tel_contac'].'</a>';
+                        $mHtml->Label( $mTxt, array("align"=>"center", "class"=>"", "width"=>"15%") );
+                        $mHtml->Label( $value['ema_contac'], array("align"=>"center", "class"=>"", "width"=>"15%") );
+                        $mHtml->Label( $value['nom_agenci'], array("align"=>"center", "class"=>"", "width"=>"15%") );
+
+            $mHtml->CloseTable('tr');
+                    }
+                }else{
+                        $mHtml->Label( "No cuenta con contactos parametrizados".$value['nom_contac'], array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                }
+          $mHtml->CloseDiv();
+        $mHtml->CloseDiv();
+      $mHtml->CloseDiv();
+
+      return $mHtml->MakeHtml();
+    }
+
+    private function getContact($transport) {
+        $sql = "SELECT a.nom_contac, a.car_contac, a.ema_contac, a.tel_contac, a.obs_contac, a.nom_agenci
+                  FROM " . BASE_DATOS . ".tab_contac_empres a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp 
+            WHERE b.cod_transp = '$transport'
+            GROUP BY 1, 3";
+
+        $consulta = new Consulta($sql, $this-> conexion);
+        return $consulta->ret_matrix("a");
     }
 }
 
