@@ -9032,9 +9032,10 @@ class Despachos
     }
 
     private function getContact($transport) {
-        $sql = "SELECT a.nom_contac, a.car_contac, a.ema_contac, a.tel_contac, a.obs_contac, a.nom_agenci
+        $sql = "SELECT a.nom_contac, a.car_contac, a.ema_contac, a.tel_contac, a.obs_contac, c.nom_agenci
                   FROM " . BASE_DATOS . ".tab_contac_empres a 
-            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp
+             LEFT JOIN " . BASE_DATOS . ".tab_genera_agenci c ON a.cod_agenci = c.cod_agenci
             WHERE b.cod_transp = '$transport'
             GROUP BY 1, 3";
 
