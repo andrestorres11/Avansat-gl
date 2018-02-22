@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', true);
+error_reporting(E_ALL &~E_NOTICE);
 /* ! \file: ajax_certra_certra.php
  *  \brief: archivo con multiples funciones para la configuracion de los tipos de servicio de una transportadora
  *  \author: Ing. Alexander Correa
@@ -385,7 +387,7 @@ class ajax_certra_certra {
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion de contactos</b></h3>
             <div id="contenido_serv">
                 <div class="StyleDIV contenido" style="min-height: 220px !important;" >
-                    <div class="col-md-12 CellHead"  style="text-align:center;"><strong>Agregar contacto </strong><input type="button" value="Nuevo Contacto" class="small save  ui-state-default ui-corner-all" onclick="CreateContac('<?= $datos->cod_transp ?>', 0, 0)"></div>
+                    <div class="col-md-13 CellHead"  style="text-align:center;"><strong>AGREGAR CONTACTO</strong><input type="button" value="NUEVO CONTACTO" class="small save  ui-state-default ui-corner-all" onclick="CreateContac('<?= $datos->cod_transp ?>', 0, 0)"></div>
                     <?php 
                         $contactos = $this->getContact();
                         /*echo "<pre>";
@@ -394,31 +396,46 @@ class ajax_certra_certra {
                         $agencias = $this->getAgencias();
                         if (!$contactos) {     
                     ?>
-                        <div class="col-md-12" style="text-align:center;">Actualmente no tiene contactos parametrizados</div> 
+                        <div class="col-md-12" style="text-align:center;">ACTUALMENTE NO TIENE CONTACTOS PARAMETRIZADOS</div> 
                     <?php } else { ?>
-                        <div class="col-md-12 contenido" id="mensaje"></div>
-                        <div class="col-md-12 CellHead centrado" id="mensaje"><b>Lista de Contactos</b></div>
-                        <div class="col-md-2 CellHead centrado"><b>Nombre</b></div>
-                        <div class="col-md-1 CellHead centrado"><b>Movil</b></div>
-                        <div class="col-md-2 CellHead centrado"><b>E-mail</b></div>
-                        <div class="col-md-1 CellHead centrado"><b>Cargo</b></div>
-                        <div class="col-md-2 CellHead centrado"><b>Agencia</b></div>
-                        <div class="col-md-2 CellHead centrado"><b>Observaciones</b></div>
-                        <div class="col-md-1 CellHead centrado"><b>Elininar</b></div>
-                        <div class="col-md-1 CellHead centrado"><b>Editar</b></div>
+                        <div class="contenido" id="mensaje"></div>
+                        <div class="CellHead centrado" id="mensaje"><b>LISTA DE CONTACTOS</b></div>
+                        <table class="classTable" align="center" width="100%" cellspacing="1" cellpadding="0" style="border:1px #35650F solid">
+                            <tr>
+                                <th width="10%" nowrap class="CellHead" align="center">NOMBRE</th>
+                                <th width="10%" nowrap class="CellHead" align="center">MOVIL</th>
+                                <th width="10%" nowrap class="CellHead" align="center">E-MAIL</th>
+                                <th width="10%" nowrap class="CellHead" align="center">CARGO</th>
+                                <th width="30%" nowrap class="CellHead" align="center">AGENCIAS</th>
+                                <th width="10%" nowrap class="CellHead" align="center">OBSERVACIONES</th>
+                                <th width="10%" nowrap class="CellHead" align="center">ELIMINAR</th>
+                                <th width="10%" nowrap class="CellHead" align="center">EDITAR</th>
+                            </tr>
                         <?php
                         foreach ($contactos as $row => $value) {
-                            ?>
-                            <div class="col-md-2 contenido centrado" id="nom_contac<?=$row?>"><?= $value['nom_contac'] ?></div> 
-                            <div class="col-md-1 contenido centrado" id="tel_contac<?=$row?>"><?= $value['tel_contac'] ?></div> 
-                            <div class="col-md-2 contenido centrado" id="ema_contac<?=$row?>"><?= $value['ema_contac'] ?></div> 
-                            <div class="col-md-1 contenido centrado" id="car_contac<?=$row?>"><?= $value['car_contac'] ?></div>  
-                            <div class="col-md-2 contenido centrado" id="nom_agenci<?=$row?>"><?= $value['nom_agenci'] ?></div>  
-                            <div class="col-md-2 contenido centrado" id="obs_contac<?=$row?>"><?= $value['obs_contac'] ?></div>   
-                            <div class="col-md-1 contenido centrado"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>', 3)"></div>   
-                            <div class="col-md-1 contenido centrado"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>' , <?= $row ?> )"></div>                     
+                        ?>
+                            <tr>
+                                <td align="center" width="10%" class="contenido" id="nom_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['nom_contac']) ?>&nbsp;</td>
+                                <td align="center" width="10%" class="contenido" id="tel_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['tel_contac']) ?>&nbsp;</td>
+                                <td align="center" width="10%" class="contenido" id="ema_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['ema_contac']) ?>&nbsp;</td>
+                                <td align="center" width="10%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['car_contac']) ?>&nbsp;</td>
                             <?php
+                                $agencias = $this->getAgenContac($value['ema_contac']);
+                                $value['nom_agenci'] = "";
+                                foreach ($agencias as $agencia) {
+                                    $value['nom_agenci'] .= $agencia['nom_agenci'].",";
+                                }
+                            ?>
+                            <td align="center" width="40%" class="contenido" id="nom_agenci<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['nom_agenci']) ?>&nbsp;</td>
+                            <td align="center" width="10%" class="contenido" id="obs_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['obs_contac']) ?>&nbsp;</td>
+                            <td align="center" width="5%" class="contenido" style="border:1px #35650F solid">&nbsp;<img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>', 3)">&nbsp;</td>
+                            <td align="center" width="5%" class="contenido" style="border:1px #35650F solid">&nbsp;<img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>' , <?= $row ?> )">&nbsp;</td>
+                            </tr>
+                        <?php
                         }
+                        ?>
+                        </table>
+                    <?php
                     }
                     ?>
                 </div>
@@ -1409,25 +1426,63 @@ class ajax_certra_certra {
             INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer c 
                     ON b.cod_transp = c.cod_tercer
                  WHERE c.cod_tercer = '$datos->cod_transp'
-                   AND a.cod_estado = 1 ";
+                   AND a.cod_estado = '1' 
+                   GROUP BY 1 ORDER BY 2";
 
         $consulta = new Consulta($sql, self::$cConexion);
-        return $consulta->ret_matrix("a");
+        //return $consulta->ret_matrix("a");
+        return $consulta -> ret_matrix('i');
     }
     
     private function getContact() {
         $datos = (object) $_POST;
-        $sql = "SELECT a.nom_contac, a.car_contac, a.ema_contac, a.tel_contac, a.obs_contac, c.nom_agenci
-                  FROM " . BASE_DATOS . ".tab_contac_empres a 
-            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp 
-             LEFT JOIN " . BASE_DATOS . ".tab_genera_agenci c ON a.cod_agenci = c.cod_agenci
-            WHERE b.cod_transp = '$datos->cod_transp'   
-            GROUP BY 1, 3";
-        /*echo "<pre> sql";
-        print_r($sql);
-        echo "</pre>";*/
+        $sql = "SELECT a.cod_agenci 
+                  FROM " . BASE_DATOS . ".tab_contac_empres a
+                WHERE a.cod_transp = '$datos->cod_transp'";
         $consulta = new Consulta($sql, self::$cConexion);
-        return $consulta->ret_matrix("a");
+        $agencias = $consulta->ret_matrix("a");
+        $temp = array();
+        foreach ($agencias as $agencia) {
+            $temp[] = $agencia['cod_agenci'];
+        }
+
+        $sql = "SELECT a.nom_contac, a.car_contac, a.ema_contac, a.tel_contac, a.obs_contac
+                  FROM " . BASE_DATOS . ".tab_contac_empres a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp
+            WHERE b.cod_transp = '$datos->cod_transp'
+            GROUP BY 1, 3";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $contactos = $consulta->ret_matrix("a");
+
+        return $contactos;
+    }
+
+    private function getAgenContac($ema_contac) {
+        $datos = (object) $_POST;
+        $sql = "SELECT a.cod_agenci 
+                  FROM " . BASE_DATOS . ".tab_contac_empres a
+                WHERE a.cod_transp = '$datos->cod_transp'
+                AND a.ema_contac = '$ema_contac'";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $agencias = $consulta->ret_matrix("a");
+
+        $temp = array();
+        foreach ($agencias as $agencia) {
+            $temp[] = $agencia['cod_agenci'];
+        }
+
+        $sql = "SELECT c.nom_agenci, a.nom_contac
+                  FROM " . BASE_DATOS . ".tab_contac_empres a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp,   
+                       " . BASE_DATOS . ".tab_genera_agenci c
+            WHERE b.cod_transp = '$datos->cod_transp'
+            AND a.ema_contac = '$ema_contac'
+            AND c.cod_agenci IN (".join(",", $temp) . ")
+            GROUP BY 2, 1";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $ageContac = $consulta->ret_matrix("a");
+
+        return $ageContac;
     }
 
     /* ! \fn: deleteConfiguracion
@@ -1499,7 +1554,7 @@ class ajax_certra_certra {
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Movil:<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
-                                <input type="text" class="text-center ancho" name="tel_contac" id="tel_contacID" validate="numero" obl="1" maxlength="10" minlength="3">
+                                <input type="text" class="text-center ancho"  onkeypress="return NumericInput(event)" name="tel_contac" id="tel_contacID" validate="numero" obl="1" maxlength="10" minlength="3">
                             </div>
                         </div>
 
@@ -1524,19 +1579,12 @@ class ajax_certra_certra {
                         <div class="col-md-7">
                             <div class="col-md-5 text-right">Agencia:<font style="color:red">*</font></div>
                             <div class="col-md-5 text-left" style="width:170px !important">
-                                <select id="cod_agenciID" name="cod_agenci" class="ancho" obl="1" validate="select">
-                                    <option >Seleccione una Opci&oacute;n.</option>
-                                    <?php
-                                    $agencias = $this->getAgencias();
-                                    foreach ($agencias as $key => $value) {
-                                        $sel = "";
-                                        if ($value['cod_agenci'] == $agencias['cod_agenci']) {
-                                            $sel = "selected";
-                                        }   
-                                        ?>
-                                        <option <?= $sel ?> value="<?= $value['cod_agenci'] ?>"><?= $value['nom_agenci'] ?></option>
-                                    <?php } ?>
-                                </select>
+                            <?php
+                                 $agencias = $this->getAgencias();
+                                 $cNull = array( array('25', '-----') );
+                                 $mHtml1 = lista( '','cod_agenci', array_merge(self::$cNull,$agencias), 'cellInfo1'   );
+                                 echo $mHtml1;
+                            ?>
                             </div>
                         </div>
                     </div>
@@ -1557,14 +1605,14 @@ class ajax_certra_certra {
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Movil:<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
-                                <input type="text" class="text-center ancho" name="tel_contac" id="tel_contacID" validate="numero" obl="1" maxlength="10" minlength="3" value="<?= $_POST['tel_contac'] ?>" >
+                                <input type="text"  onkeypress="return NumericInput(event)" class="text-center ancho" name="tel_contac" id="tel_contacID" validate="numero" obl="1" maxlength="10" minlength="3" value="<?= $_POST['tel_contac'] ?>" >
                             </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">E-mail:<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
-                                <input type="text" class="text-center ancho" name="ema_contac" id="ema_contacID" validate="text" obl="1" maxlength="50" minlength="10" value="<?= $_POST['ema_contac'] ?>" >
+                                <input type="mail" class="text-center ancho" name="ema_contac" id="ema_contacID" validate="text" obl="1" maxlength="50" minlength="10" value="<?= $_POST['ema_contac'] ?>" >
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1573,8 +1621,8 @@ class ajax_certra_certra {
                                 <input type="text" class="text-center ancho" name="car_contac" id="car_contacID" validate="text" obl="1" maxlength="20" minlength="10" value="<?= $_POST['car_contac'] ?>" >
                             </div>
                         </div>
-                        <div class="col-md-7">
-                            <div class="col-md-5 text-right">Observaciones:<font style="color:red">*</font></div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Observaciones:<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
                                 <input type="text" class="text-center ancho" name="obs_contac" id="obs_contacID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $_POST['obs_contac'] ?>" >
                             </div>
@@ -1582,20 +1630,14 @@ class ajax_certra_certra {
                         <div class="col-md-7">
                             <div class="col-md-5 text-right">Agencia:<font style="color:red">*</font></div>
                             <div class="col-md-5 text-left" style="width:170px !important">
-                                <select id="cod_agenciID" name="cod_agenci" class="ancho" obl="1" validate="select" value="<?= $_POST['cod_agenci'] ?>">
-                                    <option >Seleccione una Opci&oacute;n.</option>
-                                    <?php
-                                    $agencias = $this->getAgencias();
-                                    foreach ($agencias as $key => $value) {
-                                        $sel = "";
-                                        if ($_POST['cod_agenci'] == $agencias['cod_agenci']) {
-                                            $sel = "selected";
-                                        }
-                                        ?>
-                                        <option <?= $sel ?> value="<?= $value['cod_agenci'] ?>"><?= $value['nom_agenci'] ?></option>
-                                    <?php } ?>
-                                </select>
+                            <?php
+                                 $agencias = $this->getAgencias();
+                                 $cNull = array( array('25', '-----') );
+                                 $mHtml1 = lista( '','cod_agenci', array_merge(self::$cNull,$agencias), 'cellInfo1');
+                                 echo $mHtml1;
+                            ?>
                             </div>
+                            <input type="hidden" id="sel_agenciID" name="sel_agenci" value="">
                         </div>
                     </div>
                     <div class="col-md-1">&nbsp;</div>

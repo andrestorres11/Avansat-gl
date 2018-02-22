@@ -9001,26 +9001,36 @@ class Despachos
         $mHtml->OpenDiv("id:secID");
           $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
             $mHtml->Table("tr");
-                $mHtml->Label( 'Nombre Contacto', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->Label( 'cargo', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->Label( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->Label( 'telefono', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->Label( 'E-mail', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->Label( 'agencia', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-            $mHtml->CloseTable('tr');
+                
+                $mHtml->Label( 'NOMBRE CONTACTO', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->Label( 'CARGO', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->Label( 'OBSERVACI&Oacute;N', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->Label( 'TELEFONO', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->Label( 'E-MAIL', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->Label( 'AGENCIA', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->CloseRow();
+                
                 if ($datos) {
+          
                     foreach ($datos as $row => $value) {
-            $mHtml->Table("tr");
-                        $mHtml->Label( $value['nom_contac'], array("align"=>"center", "class"=>"", "width"=>"15%") );
-                        $mHtml->Label( $value['car_contac'], array("align"=>"center", "class"=>"", "width"=>"15%") );
-                        $mHtml->Label( $value['obs_contac'], array("align"=>"center", "class"=>"", "width"=>"15%") );
+                        $mHtml->Row();
+                        $mHtml->Label( strtoupper($value['nom_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['car_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['obs_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mTxt = '<a style="color:green;" href="sip:'.$value['tel_contac'].'_'.$placa.'_'.$despac.'@pbx.intrared.net" target="blank">'.$value['tel_contac'].'</a>';
-                        $mHtml->Label( $mTxt, array("align"=>"center", "class"=>"", "width"=>"15%") );
-                        $mHtml->Label( $value['ema_contac'], array("align"=>"center", "class"=>"", "width"=>"15%") );
-                        $mHtml->Label( $value['nom_agenci'], array("align"=>"center", "class"=>"", "width"=>"15%") );
+                        $mHtml->Label( $mTxt, array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['ema_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );  
 
-            $mHtml->CloseTable('tr');
+                        $agencias = $this->getAgenContac($value['ema_contac'], $transport);
+                        $value['nom_agenci'] = "";
+                        foreach ($agencias as $agencia) {
+                            $value['nom_agenci'] .= $agencia['nom_agenci'].",";
+                        }
+                        
+                        $mHtml->Label( strtoupper($value['nom_agenci']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->CloseRow();
                     }
+            $mHtml->CloseTable('tr');
                 }else{
                         $mHtml->Label( "No cuenta con contactos parametrizados".$value['nom_contac'], array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
                 }
@@ -9041,6 +9051,33 @@ class Despachos
 
         $consulta = new Consulta($sql, $this-> conexion);
         return $consulta->ret_matrix("a");
+    }
+
+    private function getAgenContac($ema_contac,$transport) {
+        $sql = "SELECT a.cod_agenci 
+                  FROM " . BASE_DATOS . ".tab_contac_empres a
+                WHERE a.cod_transp = '$transport'
+                AND a.ema_contac = '$ema_contac'";
+        $consulta = new Consulta($sql, $this->conexion);
+        $agencias = $consulta->ret_matrix("a");
+
+        $temp = array();
+        foreach ($agencias as $agencia) {
+            $temp[] = $agencia['cod_agenci'];
+        }
+
+        $sql = "SELECT c.nom_agenci, a.nom_contac
+                  FROM " . BASE_DATOS . ".tab_contac_empres a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp,   
+                       " . BASE_DATOS . ".tab_genera_agenci c
+            WHERE b.cod_transp = '$transport'
+            AND a.ema_contac = '$ema_contac'
+            AND c.cod_agenci IN (".join(",", $temp) . ")
+            GROUP BY 2, 1";
+        $consulta = new Consulta($sql, $this->conexion);
+        $ageContac = $consulta->ret_matrix("a");
+
+        return $ageContac;
     }
 }
 

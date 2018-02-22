@@ -7,7 +7,12 @@
  *  \bug:
  *  \warning:
  */
-
+ function autocomplete(){
+    $("#cod_agenciID").multiselect().multiselectfilter();
+ }
+$("body").ready(function() {
+ $("#cod_agenciID option[value=" + $("#sel_agenciID").val() + "]").attr("selected", "selected");
+});
 var parameters = "";
 $(function() {
     var standa = $("#standaID").val();
@@ -939,7 +944,7 @@ function CreateContac(cod_transp, ema_contac, id_contac) {
             var tel_contac = $("#tel_contacID").val();
             var car_contac = $("#car_contacID").val();
             var obs_contac = $("#obs_contacID").val();
-            var cod_agenci = $("#cod_agenciID").val();
+            var cod_agenci = "";
             $("#PopUpID").dialog({
                 modal: true,
                 resizable: false,
@@ -989,6 +994,7 @@ function CreateContac(cod_transp, ema_contac, id_contac) {
                         });
                     } else {
                         $("#PopUpID").html(datos);
+                        $("#cod_agenciID").multiselect().multiselectfilter();
                     }
 
                 }
@@ -1028,6 +1034,15 @@ function NewContac(ema_contac) {
         var car_contac = $("#car_contacID").val();
         var obs_contac = $("#obs_contacID").val();
         var cod_agenci = $("#cod_agenciID").val();
+        var cod_agenci = "";
+        var box_checke = $("input[id^=ui-multiselect-cod_agenciID-option-]:checked");
+
+         box_checke.each(function(i, o) {
+            cod_agenci += $(o).attr("defaultValue")+",";
+        });
+        var pos = cod_agenci.lastIndexOf(',');
+        var cambio ='';
+        var cod_agenci = cod_agenci.substring(0,pos) + cambio + cod_agenci.substring(pos+1);
 
         var errores = false;
         var nue_combin = "";
@@ -1156,6 +1171,7 @@ function EditaContac(cod_transp, email, id_contac) {
                     duration: 300
                 },
                 open: function(event, ui) {
+                    $("#cod_agenciID").multiselect().multiselectfilter();
                     $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
                 },
                 buttons: {
@@ -1186,6 +1202,7 @@ function EditaContac(cod_transp, email, id_contac) {
                         });
                     } else {
                         $("#PopUpID").html(datos);
+                        $("#cod_agenciID").multiselect().multiselectfilter();
                     }
 
                 }
@@ -1224,9 +1241,19 @@ function editContac(email) {
         var tel_contac = $("#tel_contacID").val();
         var car_contac = $("#car_contacID").val();
         var obs_contac = $("#obs_contacID").val();
-        var cod_agenci = $("#cod_agenciID").val();
+        var cod_agenci = "";
+        var box_checke = $("input[id^=ui-multiselect-cod_agenciID-option-]:checked");
 
+         box_checke.each(function(i, o) {
+            if ($(o).attr("defaultValue") != '') {
+                cod_agenci += $(o).attr("defaultValue")+",";
+            };
+        });
+        var pos = cod_agenci.lastIndexOf(',');
+        var cambio ='';
+        var cod_agenci = cod_agenci.substring(0,pos) + cambio + cod_agenci.substring(pos+1);
         var errores = false;
+
         var nue_combin = "";
         if (!nom_contac) {
             setTimeout(function() {
@@ -1264,7 +1291,6 @@ function editContac(email) {
             }, 511);
             errores = true;
         }
-        console.log(email);
         if (!errores) {
             parameters = getDataForm();
             $.ajax({
