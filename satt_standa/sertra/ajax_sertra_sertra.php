@@ -415,10 +415,10 @@ class ajax_certra_certra {
                         foreach ($contactos as $row => $value) {
                         ?>
                             <tr>
-                                <td align="center" width="10%" class="contenido" id="nom_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['nom_contac']) ?>&nbsp;</td>
-                                <td align="center" width="10%" class="contenido" id="tel_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['tel_contac']) ?>&nbsp;</td>
-                                <td align="center" width="10%" class="contenido" id="ema_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['ema_contac']) ?>&nbsp;</td>
-                                <td align="center" width="10%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['car_contac']) ?>&nbsp;</td>
+                                <td align="center" width="10%" class="contenido" id="nom_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['nom_contac']) ?></td>
+                                <td align="center" width="10%" class="contenido" id="tel_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['tel_contac']) ?></td>
+                                <td align="center" width="10%" class="contenido" id="ema_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['ema_contac']) ?></td>
+                                <td align="center" width="10%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['car_contac']) ?></td>
                             <?php
                                 $agencias = $this->getAgenContac($value['ema_contac']);
                                 $value['nom_agenci'] = "";
@@ -426,10 +426,10 @@ class ajax_certra_certra {
                                     $value['nom_agenci'] .= $agencia['nom_agenci'].",";
                                 }
                             ?>
-                            <td align="center" width="40%" class="contenido" id="nom_agenci<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['nom_agenci']) ?>&nbsp;</td>
-                            <td align="center" width="10%" class="contenido" id="obs_contac<?=$row?>" style="border:1px #35650F solid">&nbsp;<?= strtoupper($value['obs_contac']) ?>&nbsp;</td>
-                            <td align="center" width="5%" class="contenido" style="border:1px #35650F solid">&nbsp;<img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>', 3)">&nbsp;</td>
-                            <td align="center" width="5%" class="contenido" style="border:1px #35650F solid">&nbsp;<img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>' , <?= $row ?> )">&nbsp;</td>
+                            <td align="center" width="40%" class="contenido" id="nom_agenci<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['nom_agenci']) ?></td>
+                            <td align="center" width="10%" class="contenido" id="obs_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['obs_contac']) ?></td>
+                            <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>', 3)"></td>
+                            <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>' , <?= $row ?> )"></td>
                             </tr>
                         <?php
                         }

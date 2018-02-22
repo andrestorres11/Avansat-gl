@@ -1171,7 +1171,6 @@ function EditaContac(cod_transp, email, id_contac) {
                     duration: 300
                 },
                 open: function(event, ui) {
-                    $("#cod_agenciID").multiselect().multiselectfilter();
                     $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
                 },
                 buttons: {
