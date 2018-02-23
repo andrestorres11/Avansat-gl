@@ -422,10 +422,20 @@ class ajax_certra_certra {
                             <?php
                                 $agencias = $this->getAgenContac($value['ema_contac']);
                                 $value['nom_agenci'] = "";
+                                $cod_agencia = "";
+                                $esElPrimero = true;
                                 foreach ($agencias as $agencia) {
-                                    $value['nom_agenci'] .= $agencia['nom_agenci'].",";
+                                    if ($esElPrimero) {
+                                        $cod_agencia .= $agencia['cod_agenci'];
+                                        $value['nom_agenci'] .= $agencia['nom_agenci'];
+                                        $esElPrimero = !$esElPrimero;
+                                    } else {
+                                        $value['nom_agenci'] .= ", ".$agencia['nom_agenci'];
+                                        $cod_agencia .= "," . $agencia['cod_agenci'];
+                                    }
                                 }
                             ?>
+                            <input type="hidden" id="cod_agenci<?=$row?>" value="<?=$cod_agencia?>">
                             <td align="center" width="40%" class="contenido" id="nom_agenci<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['nom_agenci']) ?></td>
                             <td align="center" width="10%" class="contenido" id="obs_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['obs_contac']) ?></td>
                             <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>', 3)"></td>
@@ -1459,7 +1469,7 @@ class ajax_certra_certra {
 
     private function getAgenContac($ema_contac) {
         $datos = (object) $_POST;
-        $sql = "SELECT a.cod_agenci 
+        $sql = "SELECT a.cod_agenci
                   FROM " . BASE_DATOS . ".tab_contac_empres a
                 WHERE a.cod_transp = '$datos->cod_transp'
                 AND a.ema_contac = '$ema_contac'";
@@ -1471,7 +1481,7 @@ class ajax_certra_certra {
             $temp[] = $agencia['cod_agenci'];
         }
 
-        $sql = "SELECT c.nom_agenci, a.nom_contac
+        $sql = "SELECT c.nom_agenci, a.nom_contac, c.cod_agenci
                   FROM " . BASE_DATOS . ".tab_contac_empres a 
             INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp,   
                        " . BASE_DATOS . ".tab_genera_agenci c
@@ -1660,6 +1670,7 @@ class ajax_certra_certra {
 
     private function NewContac() {
         $mData = $_POST;
+
         $mInsert = "INSERT INTO " . BASE_DATOS . ".tab_contac_empres
         ( cod_transp, nom_contac, car_contac, 
         ema_contac, tel_contac, obs_contac, cod_agenci,

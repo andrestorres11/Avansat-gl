@@ -1038,7 +1038,9 @@ function NewContac(ema_contac) {
         var box_checke = $("input[id^=ui-multiselect-cod_agenciID-option-]:checked");
 
          box_checke.each(function(i, o) {
-            cod_agenci += $(o).attr("defaultValue")+",";
+            if ($(o).attr("defaultValue") != '') {
+                cod_agenci += $(o).attr("defaultValue")+",";
+            };
         });
         var pos = cod_agenci.lastIndexOf(',');
         var cambio ='';
@@ -1088,7 +1090,7 @@ function NewContac(ema_contac) {
             $.ajax({
                 type: "POST",
                 url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
-                data: "Ajax=on&Option=NewContac&standa=" + standa + "&cod_transp=" + transp + "&ema_contac=" + ema_contac + "&nom_contac=" + nom_contac + "&obs_contac=" + obs_contac + "&car_contac=" + car_contac + "&tel_contac=" + tel_contac + "&cod_agenci=" + cod_agenci + parameters,
+                data: "Ajax=on&Option=NewContac&standa=" + standa + "&cod_transp=" + transp + "&ema_contac=" + ema_contac + "&nom_contac=" + nom_contac + "&obs_contac=" + obs_contac + "&car_contac=" + car_contac + "&tel_contac=" + tel_contac + "&cod_agenci=" + cod_agenci,
                 async: true,
                 beforeSend: function() {
                     $.blockUI({
@@ -1202,8 +1204,22 @@ function EditaContac(cod_transp, email, id_contac) {
                     } else {
                         $("#PopUpID").html(datos);
                         $("#cod_agenciID").multiselect().multiselectfilter();
+                        
+                        var box_checke = $("input[id^=ui-multiselect-cod_agenciID-option-]");
+                        var agencias = $("#cod_agenci"+id_contac).val().split(",");
+                        box_checke.each(function(i, o) {
+                            for (var i = 0; i < agencias.length; i++ ) {
+                                if ($(o).attr("defaultValue") == agencias[i] ) {
+                                    $(o).attr("checked", "checked");
+                                }
+                            }
+                        });
+
                     }
 
+                },
+                complete: function(){
+                    $("#ui-multiselect-cod_agenciID-option-0").click();
                 }
             });
         } else {
