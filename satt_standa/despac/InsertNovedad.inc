@@ -994,7 +994,13 @@ class InsertNovedad {
                 $mConsult = new Consulta($mFindDessat, $this->conexion);
                 $mExistVJ = $mConsult->ret_matrix('a');
                 if (sizeof($mExistVJ) > 0) {
-                    $fNumDespac = $mExistVJ[0]["num_dessat"];
+                    if($mDataDespac['despac'] == $mExistVJ[0]["num_dessat"] )
+                    {
+                        throw new Exception("El cliente no se debe reportar a si mismo, No se encuentra numero de Viaje " . $mResult[0]["num_viajex"], "1999");
+                    }else{
+                        $fNumDespac = $mExistVJ[0]["num_dessat"];
+                    }
+                        
                 }
                 else{
                     throw new Exception("No se encuentra numero de Viaje " . $mResult[0]["num_viajex"], "1999");
