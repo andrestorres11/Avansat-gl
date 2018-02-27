@@ -596,7 +596,7 @@ function PopupVehiculos() {
 function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc, num_modelo, num_config, cod_tenedo, cod_conduc, nom_tenedo, nom_conduc, cod_propie, nom_propie) {
   try {
     //$("#num_placaxID").focus();
-    var cod_transp = $("#cod_transpID");
+    var cod_transp = $("#cod_transpID").val();
     $("#num_placaxID").val(num_placax);
     var submit = $("#submitID").val();
     if (submit == 1) {
@@ -629,7 +629,7 @@ function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc,
     var expr = /[a-zA-Z]/;
     if (num_config.match(expr)) {
       $("#des_numremID").html("<b>* Remolque:&nbsp;&nbsp;&nbsp;</b>");
-      $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" obl="1" minlength="4" validate="alpha" maxlength="7" size="10" onblur="$(this), '+cod_transp+';"> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupRemolques()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled">');
+      $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" obl="1" minlength="4" validate="alpha" maxlength="7" size="10" onfocus="this.className=\'campo_texto_on\'" onchange="getRemolq($(this), '+ cod_transp +',1);"> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupRemolques()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled">');
     } else {
       $("#des_numremID").html("&nbsp;&nbsp;&nbsp;");
       $("#nom_numremID").html('<input type="hidden" name="cod_remolq" id="cod_remolqID" value="not" maxlenght="7" size="10">');
@@ -1429,6 +1429,7 @@ function PopupRemolques() {
   try {
     var standa = $("#standaID").val();
     var cod_transp = $("#cod_transpID").val();
+    $("#Pnum_placaxID").focus();
     $("#PopUpID").dialog({
       modal: true,
       resizable: false,
@@ -1453,6 +1454,7 @@ function PopupRemolques() {
       data: 'standa=' + standa + '&option=LoadRemolques&cod_transp=' + cod_transp,
       method: 'POST',
       beforeSend: function() {
+        $("#Pnum_placaxID").focus();    
         $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader2.gif" /></td></tr><tr><td></td></tr></table>');
         $("#PopUpID").css({ 'height':'500px' });
       },
@@ -1501,7 +1503,7 @@ function SetRemolque(num_remolq, nom_marcax, nom_lineax, nom_colorx, nom_carroc,
     var expr = /[a-zA-Z]/;
     if (num_config.match(expr)) {
       $("#des_numremID").html("<b>* Remolque:&nbsp;&nbsp;&nbsp;</b>");
-      $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" obl="1" minlength="4" validate="alpha" maxlength="7" size="10"> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupRemolques()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled">');
+      $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" onfocus="this.className=\'campo_texto_on\'" obl="1" minlength="4" validate="alpha" maxlength="7" size="10" class="campo_texto_on"> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupRemolques()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled">');
     } else {
       $("#des_numremID").html("&nbsp;&nbsp;&nbsp;");
       $("#nom_numremID").html('<input type="hidden" name="cod_remolq" id="cod_remolqID" value="not" maxlenght="7" size="10">');
@@ -1514,7 +1516,7 @@ function SetRemolque(num_remolq, nom_marcax, nom_lineax, nom_colorx, nom_carroc,
 }
 
 /* ! \fn: getRemolq
- *  \brief: valida los vehiculos cuando se escriben
+ *  \brief: valida los remolques cuando se escriben
  *  \author: Andres Torres Vega
  *  \date: 18/12/2017
  *  \date modified: dd/mm/aaaa
@@ -1553,7 +1555,7 @@ function getRemolq(obj, cod_transp, flag) {
               $("#PopUpID").dialog('close');
             } else {
               alert("EL REMOLQUE " + num_remolq + " NO EXISTE");
-              $("#num_placaxID").val('');
+              $("#cod_remolqID").val('');
             }
           }
         });

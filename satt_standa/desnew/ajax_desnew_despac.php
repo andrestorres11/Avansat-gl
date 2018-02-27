@@ -2333,7 +2333,7 @@ class AjaxInsertDespacho
    *  \return: type
  */
   private function getRemolq($_AJAX){
-    $_REMOLQ = $this->getInfoRemolq( $_AJAX['cod_transp'], $_AJAX['num_trayle'], true);
+    $_REMOLQ = $this->getInfoRemolq( $_AJAX['cod_transp'], $_AJAX['num_remolq'], true);
     if (sizeof( $_REMOLQ ) > 0 ) {
       echo json_encode($_REMOLQ);
     }else{
@@ -2388,9 +2388,9 @@ class AjaxInsertDespacho
     {
       $mQuery .= " a.num_trayle = c.num_trayle AND a.ind_estado = '1' AND c.cod_transp = '".$cod_transp."'";
     }
-    if( $num_placax != NULL )
+    if( $num_remolq != NULL )
     {
-      $mQuery .= " AND a.num_placax = '".$num_placax."'";
+      $mQuery .= " AND a.num_trayle = '".$num_remolq."'";
     }
     
     //echo $mQuery;
