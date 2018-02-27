@@ -766,14 +766,14 @@ class extenc{
                                      c.idx_llamad, c.nom_estado, c.rut_audiox, 
                                      c.cod_extenc, c.idx_servic, c.fec_creaci, 
                                      'NOANSWER' AS estado , 
-                                     DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') AS fec_agrupa
+                                     DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') AS fec_agrupa
                                        
                               FROM ".BASE_DATOS.".tab_despac_callin c 
                               INNER JOIN ".BASE_DATOS.".tab_callce_extenc d  ON d.num_extenc = c.cod_extenc 
                               WHERE (c.nom_estado = 'NO ANSWER' OR c.nom_estado = 'NOANSWER' )  
                               AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') BETWEEN '$post->fec_inicia' AND '$post->fec_finali'                                         
                               AND d.cod_operac = '$post->cod_operac'
-                              AND c.num_telefo IN (
+                              AND c.num_telefo NOT IN (
                                                     SELECT DISTINCT(e.num_telefo)  
                                                     FROM ".BASE_DATOS.".tab_despac_callin e 
                                                     INNER JOIN ".BASE_DATOS.".tab_callce_extenc f ON f.num_extenc = e.cod_extenc 
@@ -785,7 +785,7 @@ class extenc{
 
                               AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') >= DATE_FORMAT( DATE_SUB(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i') 
                               AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') <= DATE_FORMAT( DATE_ADD(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i')                                  
-                             
+                              GROUP BY c.num_telefo, fec_agrupa , c.nom_estado
                           )
                        ) x 
                  WHERE 1=1 $and ORDER BY x.fec_creaci DESC ";  

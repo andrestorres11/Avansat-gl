@@ -125,43 +125,72 @@ class AjaxIndicadorCitasDescargue
 
     $mData['date_inicia'] = $mData['fec_inicia']." ".$mData['hor_inicia'];
     $mData['date_finali'] = $mData['fec_finali']." ".$mData['hor_finali'];
-    
-    $mSelect = "SELECT 
-                  a.num_despac, c.num_docume, a.cod_tipdes, 
-                  c.fec_citdes, c.hor_citdes, DATE( a.fec_salida ) AS fec_salida
-                FROM 
-                  ".BASE_DATOS.".tab_despac_despac a, 
-                       ".BASE_DATOS.".tab_despac_vehige b,
-                  ".BASE_DATOS.".tab_despac_destin c,
-                  ".BASE_DATOS.".tab_despac_sisext d,
-                  ".BASE_DATOS.".tab_despac_corona e
-                WHERE 
-                  a.num_despac = b.num_despac AND 
-                  a.num_despac = c.num_despac AND 
-                  a.num_despac = d.num_despac AND 
-                  a.num_despac = e.num_dessat AND 
-                  b.cod_transp = '". $this -> NIT_CORONA ."' AND 
-                  a.fec_salida IS NOT NULL AND 
-                  a.fec_llegad IS NOT NULL AND 
-                  a.ind_anulad != 'A' AND 
-                  b.ind_activo = 'S' AND 
-                  c.fec_citdes IS NOT NULL AND
-                  c.fec_citdes != '0000-00-00' AND 
-                  c.hor_citdes != '00:00:00' AND 
-                  a.fec_salida BETWEEN '".$mData['date_inicia']."' AND '".$mData['date_finali']."' ";
-    
-    /* FILTROS ******************************************************************************************/
-    $mSelect .= $mData['cod_ciuori'] != '' ? " AND a.cod_ciuori = '".$mData['cod_ciuori']."'" : "";
-    $mSelect .= $mData['cod_ciudes'] != '' ? " AND a.cod_ciudes = '".$mData['cod_ciudes']."'" : "";
-    $mSelect .= $mData['cod_tipdes'] != '' ? " AND a.cod_tipdes = '".$mData['cod_tipdes']."'" : "";
-    $mSelect .= $mData['cod_produc'] != '' ? " AND d.cod_mercan = '".$mData['cod_produc']."'" : "";
-    $mSelect .= $mData['num_viajex'] != '' ? " AND d.num_desext = '".$mData['num_viajex']."'" : "";
-    $mSelect .= $mData['cod_zonaxx'] != '' ? " AND e.cod_instal = '".$mData['cod_zonaxx']."'" : "";
-    $mSelect .= $mData['cod_canalx'] != '' ? " AND e.cod_canalx = '".$mData['cod_canalx']."'" : "";
-    $mSelect .= $mData['cod_tiptra'] != '' ? " AND e.tip_transp = '".$mData['cod_tiptra']."'" : "";
-    $mSelect .= $mData['num_pedido'] != '' ? " AND e.num_pedido = '".$mData['num_pedido']."'" : "";
-    $mSelect .= $mData['nom_poseed'] != '' ? " AND e.nom_poseed LIKE '%".$mData['nom_poseed']."%'" : "";    
-    /****************************************************************************************************/
+    if( $mData['cod_transp'] == $this->NIT_CORONA)
+    {
+	    $mSelect = "SELECT 
+	                  a.num_despac, c.num_docume, a.cod_tipdes, 
+	                  c.fec_citdes, c.hor_citdes, DATE( a.fec_salida ) AS fec_salida
+	                FROM 
+	                  ".BASE_DATOS.".tab_despac_despac a, 
+	                       ".BASE_DATOS.".tab_despac_vehige b,
+	                  ".BASE_DATOS.".tab_despac_destin c,
+	                  ".BASE_DATOS.".tab_despac_sisext d,
+	                  ".BASE_DATOS.".tab_despac_corona e
+	                WHERE 
+	                  a.num_despac = b.num_despac AND 
+	                  a.num_despac = c.num_despac AND 
+	                  a.num_despac = d.num_despac AND 
+	                  a.num_despac = e.num_dessat AND 
+	                  b.cod_transp = '". $this -> NIT_CORONA ."' AND 
+	                  a.fec_salida IS NOT NULL AND 
+	                  a.fec_llegad IS NOT NULL AND 
+	                  a.ind_anulad != 'A' AND 
+	                  b.ind_activo = 'S' AND 
+	                  c.fec_citdes IS NOT NULL AND
+	                  c.fec_citdes != '0000-00-00' AND 
+	                  c.hor_citdes != '00:00:00' AND 
+	                  a.fec_salida BETWEEN '".$mData['date_inicia']."' AND '".$mData['date_finali']."'"; 
+	    
+	    /* FILTROS ******************************************************************************************/
+	    $mSelect .= $mData['cod_ciuori'] != '' ? " AND a.cod_ciuori = '".$mData['cod_ciuori']."'" : "";
+	    $mSelect .= $mData['cod_ciudes'] != '' ? " AND a.cod_ciudes = '".$mData['cod_ciudes']."'" : "";
+	    $mSelect .= $mData['cod_tipdes'] != '' ? " AND a.cod_tipdes = '".$mData['cod_tipdes']."'" : "";
+	    $mSelect .= $mData['cod_produc'] != '' ? " AND d.cod_mercan = '".$mData['cod_produc']."'" : "";
+	    $mSelect .= $mData['num_viajex'] != '' ? " AND d.num_desext = '".$mData['num_viajex']."'" : "";
+	    $mSelect .= $mData['cod_zonaxx'] != '' ? " AND e.cod_instal = '".$mData['cod_zonaxx']."'" : "";
+	    $mSelect .= $mData['cod_canalx'] != '' ? " AND e.cod_canalx = '".$mData['cod_canalx']."'" : "";
+	    $mSelect .= $mData['cod_tiptra'] != '' ? " AND e.tip_transp = '".$mData['cod_tiptra']."'" : "";
+	    $mSelect .= $mData['num_pedido'] != '' ? " AND e.num_pedido = '".$mData['num_pedido']."'" : "";
+	    $mSelect .= $mData['nom_poseed'] != '' ? " AND e.nom_poseed LIKE '%".$mData['nom_poseed']."%'" : "";    
+	    /****************************************************************************************************/
+    }
+    else
+    {
+    	$mSelect = "SELECT 
+	                  a.num_despac, c.num_docume, a.cod_tipdes, 
+	                  c.fec_citdes, c.hor_citdes, DATE( a.fec_salida ) AS fec_salida
+	                FROM 
+	                  ".BASE_DATOS.".tab_despac_despac a INNER JOIN  
+	                  ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac INNER JOIN
+	                  ".BASE_DATOS.".tab_despac_destin c ON a.num_despac = c.num_despac
+	                WHERE 
+	                  b.cod_transp = '". $mData['cod_transp'] ."' AND 
+	                  a.fec_salida IS NOT NULL AND 
+	                  a.fec_llegad IS NOT NULL AND 
+	                  a.ind_anulad != 'A' AND 
+	                  b.ind_activo = 'S' AND 
+	                  c.fec_citdes IS NOT NULL AND
+	                  c.fec_citdes != '0000-00-00' AND 
+	                  c.hor_citdes != '00:00:00' AND 
+	                  a.fec_salida BETWEEN '".$mData['date_inicia']."' AND '".$mData['date_finali']."'"; 
+	    
+	    /* FILTROS ******************************************************************************************/
+	    $mSelect .= $mData['cod_ciuori'] != '' ? " AND a.cod_ciuori = '".$mData['cod_ciuori']."'" : "";
+	    $mSelect .= $mData['cod_ciudes'] != '' ? " AND a.cod_ciudes = '".$mData['cod_ciudes']."'" : "";
+	    $mSelect .= $mData['cod_tipdes'] != '' ? " AND a.cod_tipdes = '".$mData['cod_tipdes']."'" : "";
+	    //$mSelect .= $mData['cod_tiptra'] != '' ? " AND e.tip_transp = '".$mData['cod_tiptra']."'" : "";
+	    /****************************************************************************************************/
+    }
 
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $_DESPAC = $consulta -> ret_matriz();
@@ -235,39 +264,79 @@ class AjaxIndicadorCitasDescargue
     $mHtml .= '<tr>';
         $mHtml .= '<td class="CellHead99" style="font-size:12px; color:#FFFFFF;" colspan="24">Se Encontr&oacute; un Total de '.count( $mConsul ).' Despachos</td>';
       $mHtml .= '</tr>';
-    
-    $mHtml .= '<tr>';
-        $mHtml .= '<td class="CellHead">Despacho SAT</td>';
-        $mHtml .= '<td class="CellHead">Viaje</td>';
-        $mHtml .= '<td class="CellHead">Monifiesto</td>';
-        $mHtml .= '<td class="CellHead">Fecha Despacho</td>';
-        $mHtml .= '<td class="CellHead">Tipo Despacho</td>';
-        $mHtml .= '<td class="CellHead">Origen</td>';
-        $mHtml .= '<td class="CellHead">Destino</td>';
-        $mHtml .= '<td class="CellHead">Fecha Cita Cargue</td>';
-        $mHtml .= '<td class="CellHead">cumplimiento Cita Cargue</td>';
-        $mHtml .= '<td class="CellHead">Nombre Sitio Cargue</td>';
-        $mHtml .= '<td class="CellHead">Peso(Kg)</td>';
-        $mHtml .= '<td class="CellHead">Observaciones</td>';
-        $mHtml .= '<td class="CellHead">Ultima Novedad</td>';
-        $mHtml .= '<td class="CellHead">C.C. Conductor</td>';
-        $mHtml .= '<td class="CellHead">Nombre Conductor</td>';
-        $mHtml .= '<td class="CellHead">Celular Conductor</td>';
-        $mHtml .= '<td class="CellHead">Solicitud</td>';
-        $mHtml .= '<td class="CellHead">Pedido</td>';
-        $mHtml .= '<td class="CellHead">Placa</td>';
-        $mHtml .= '<td class="CellHead">Tipo Vehiculo</td>';
-        $mHtml .= '<td class="CellHead">Poseedor</td>';
-        $mHtml .= '<td class="CellHead">Tipo Transportadora</td>';
-        $mHtml .= '<td class="CellHead">Mercancia/Negocio</td>';
-        $mHtml .= '<td class="CellHead">Cliente(s)</td>';
-        $mHtml .= '<td class="CellHead">cumplimiento Cita Descargue</td>';
-        $mHtml .= '<td class="CellHead">Novedad Cita Descargue</td>';
-        $mHtml .= '<td class="CellHead">Fecha Llegada al Cliente</td>';
-        $mHtml .= '<td class="CellHead">Fecha Entrada a Descargue</td>';
-        $mHtml .= '<td class="CellHead">Fecha Salida del Descargue</td>';
-        $mHtml .= '<td class="CellHead">Fecha del Cumplido</td>';
-    $mHtml .= '</tr>';
+    if($_REQUEST['cod_transp'] == $this->NIT_CORONA)
+    {
+
+    	$mHtml .= '<tr>';
+    	    $mHtml .= '<td class="CellHead">Despacho SAT</td>';
+    	    $mHtml .= '<td class="CellHead">Viaje</td>';
+    	    $mHtml .= '<td class="CellHead">Manifiesto</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Despacho</td>';
+    	    $mHtml .= '<td class="CellHead">Tipo Despacho</td>';
+    	    $mHtml .= '<td class="CellHead">Origen</td>';
+    	    $mHtml .= '<td class="CellHead">Destino</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Cita Cargue</td>';
+    	    $mHtml .= '<td class="CellHead">cumplimiento Cita Cargue</td>';
+    	    $mHtml .= '<td class="CellHead">Nombre Sitio Cargue</td>';
+    	    $mHtml .= '<td class="CellHead">Peso(Kg)</td>';
+    	    $mHtml .= '<td class="CellHead">Observaciones</td>';
+    	    $mHtml .= '<td class="CellHead">Ultima Novedad</td>';
+    	    $mHtml .= '<td class="CellHead">C.C. Conductor</td>';
+    	    $mHtml .= '<td class="CellHead">Nombre Conductor</td>';
+    	    $mHtml .= '<td class="CellHead">Celular Conductor</td>';
+    	    $mHtml .= '<td class="CellHead">Solicitud</td>';
+    	    $mHtml .= '<td class="CellHead">Pedido</td>';
+    	    $mHtml .= '<td class="CellHead">Placa</td>';
+    	    $mHtml .= '<td class="CellHead">Tipo Vehiculo</td>';
+    	    $mHtml .= '<td class="CellHead">Poseedor</td>';
+    	    $mHtml .= '<td class="CellHead">Tipo Transportadora</td>';
+    	    $mHtml .= '<td class="CellHead">Mercancia/Negocio</td>';
+    	    $mHtml .= '<td class="CellHead">Cliente(s)</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha llegada planta</td>';//Campo nuevo llegada planta
+    	    $mHtml .= '<td class="CellHead">Inicio de Cargue</td>';//Campo nuevo inicio de cargue
+    	    $mHtml .= '<td class="CellHead">Fin de Cargue</td>';//Campo nuevo inicio de cargue
+    	    $mHtml .= '<td class="CellHead">Diferencia tiempos cargue</td>';//Diferencia entre inico y salida cargue
+    	    $mHtml .= '<td class="CellHead">cumplimiento Cita Descargue</td>';
+    	    $mHtml .= '<td class="CellHead">Novedad Cita Descargue</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Llegada al Cliente</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Entrada a Descargue</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Salida del Descargue</td>';
+    	    $mHtml .= '<td class="CellHead">Diferencia tiempos descargue</td>';//Diferencia entre inico y salida descargue
+    	    $mHtml .= '<td class="CellHead">Fecha del Cumplido</td>';
+    	$mHtml .= '</tr>';
+    }
+    else
+    {
+    	$mHtml .= '<tr>';
+    	    $mHtml .= '<td class="CellHead">Despacho</td>';
+    	    $mHtml .= '<td class="CellHead">Manifiesto</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Despacho</td>';
+    	    $mHtml .= '<td class="CellHead">Origen</td>';
+    	    $mHtml .= '<td class="CellHead">Destino</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Cita Cargue</td>';
+    	    $mHtml .= '<td class="CellHead">cumplimiento Cita Cargue</td>';
+    	    $mHtml .= '<td class="CellHead">Nombre Sitio Cargue</td>';
+    	    $mHtml .= '<td class="CellHead">Peso(Kg)</td>';
+    	    $mHtml .= '<td class="CellHead">Observaciones</td>';
+    	    $mHtml .= '<td class="CellHead">Ultima Novedad</td>';
+    	    $mHtml .= '<td class="CellHead">C.C. Conductor</td>';
+    	    $mHtml .= '<td class="CellHead">Nombre Conductor</td>';
+    	    $mHtml .= '<td class="CellHead">Celular Conductor</td>';
+    	    $mHtml .= '<td class="CellHead">Placa</td>';
+    	    $mHtml .= '<td class="CellHead">Cliente(s)</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha llegada planta</td>';//Campo nuevo llegada planta
+    	    $mHtml .= '<td class="CellHead">Inicio de Cargue</td>';//Campo nuevo inicio de cargue
+    	    $mHtml .= '<td class="CellHead">Fin de Cargue</td>';//Campo nuevo inicio de cargue
+    	    $mHtml .= '<td class="CellHead">Diferencia tiempos cargue</td>';//Diferencia entre inico y salida cargue
+    	    $mHtml .= '<td class="CellHead">cumplimiento Cita Descargue</td>';
+    	    $mHtml .= '<td class="CellHead">Novedad Cita Descargue</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Llegada al Cliente</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Entrada a Descargue</td>';
+    	    $mHtml .= '<td class="CellHead">Fecha Salida del Descargue</td>';
+    	    $mHtml .= '<td class="CellHead">Diferencia tiempos descargue</td>';//Diferencia entre inico y salida descargue
+    	    $mHtml .= '<td class="CellHead">Fecha del Cumplido</td>';
+    	$mHtml .= '</tr>';
+    }
     
       include_once('classData.php');
       $cData = new generaData( $this -> conexion );
@@ -275,7 +344,7 @@ class AjaxIndicadorCitasDescargue
       foreach( $mConsul as $row )
   {
         $mDataDespac = explode( '|', $row );
-        $mHtml .= $cData -> getDataCitaDescargue( $mDataDespac );
+        $mHtml .= ($_REQUEST['cod_transp'] == $this->NIT_CORONA ? $cData -> getDataCitaDescargue( $mDataDespac ):$cData -> getDataCitaDescargueOtros( $mDataDespac ));
     }
     
     $mHtml .= '</table>';

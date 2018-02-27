@@ -201,7 +201,7 @@ class Proc_despac
    $formulario -> radio("Despacho","fil",1,0,1);
    $formulario -> radio("Vehiculo","fil",4,0,1);
    $formulario -> radio("Activos","fil",2,0,0);
-   $formulario -> texto ("","text","despac",1,10,6,"","");
+   $formulario -> texto ("","text","despac",1,10,10,"","");
    $formulario -> radio("Anulados","fil",3,0,1);
    $formulario -> radio("Todos","fil",0,1,1);
 
