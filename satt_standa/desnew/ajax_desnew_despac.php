@@ -2323,6 +2323,135 @@ class AjaxInsertDespacho
     }
   }
 
+   /* ! \fn: getRemolq
+   *  \brief: valida los vehiculos cuando se escriben
+   *  \author: Andres Torres Vega
+   *  \date: 20/12/2017
+   *  \date modified: dd/mm/aaaa
+   *  \param: obj input placa 
+   *  \param: cod_transp nit de la empresa
+   *  \return: type
+ */
+  private function getRemolq($_AJAX){
+    $_REMOLQ = $this->getInfoRemolq( $_AJAX['cod_transp'], $_AJAX['num_trayle'], true);
+    if (sizeof( $_REMOLQ ) > 0 ) {
+      echo json_encode($_REMOLQ);
+    }else{
+      echo false;
+    }
+  }
+
+  public function LoadRemolques( $_AJAX )
+  {
+    try{
+          $_REMOLQ = $this->getInfoRemolq( $_AJAX['cod_transp'], NULL, false);
+          $mHtml = new Formlib(2, "yes",TRUE);
+          $mHtml->OpenDiv("id:tabremolq");
+              $mHtml->Table("tr",array("class"=>"displayDIV2"));
+                $mHtml->Label( "LISATDO DE REMOLQUES", array("colspan"=>sizeof($titulos['Nivel1']), "align"=>"rigth", "width"=>"25%", "class"=>"CellHead") );
+              $mHtml->CloseTable('tr');
+            $mHtml->OpenDiv("id:tabremolq1");
+              $mHtml->SetBody($this->getDinamiListRemolq($_REMOLQ));
+            $mHtml->CloseDiv();
+          $mHtml->CloseDiv(); 
+
+                $mHtml->SetBody('<style>
+                        #tabremolq{
+                border: 1px solid rgb(201, 201, 201);
+                padding: 3px;
+                width: 200%;
+                min-height: 50px;
+                border-radius: 5px;
+                background-color: rgb(240, 240, 240);
+              }
+                      </style>');
+
+          echo $mHtml->MakeHtml();
+      } catch (Exception $e) {
+        echo "error LoadRemolques :".$e;
+      }
+  }
+
+    private function getInfoRemolq( $cod_transp = NULL, $num_remolq = NULL, $flag = NULL)
+  { 
+    $mQuery = "SELECT a.num_trayle,a.nom_propie,b.nom_martra,d.nom_colorx,a.tra_capaci,e.nom_carroc,
+                        IF(a.ind_estado = '1','Activo', 'Inactivo') cod_estado,
+                        a.ind_estado cod_option
+              FROM ".BASE_DATOS.".tab_vehige_trayle a
+              INNER JOIN ".BASE_DATOS.".tab_vehige_martra b ON b.cod_martra = a.cod_marcax
+              INNER JOIN ".BASE_DATOS.".tab_transp_trayle c ON c.num_trayle = a.num_trayle
+              INNER JOIN ".BASE_DATOS.".tab_vehige_colore d ON d.cod_colorx = a.cod_colore
+              INNER JOIN ".BASE_DATOS.".tab_vehige_carroc e ON e.cod_carroc = a.cod_carroc
+              WHERE ";
+    
+    if( $cod_transp != NULL )
+    {
+      $mQuery .= " a.num_trayle = c.num_trayle AND a.ind_estado = '1' AND c.cod_transp = '".$cod_transp."'";
+    }
+    if( $num_placax != NULL )
+    {
+      $mQuery .= " AND a.num_placax = '".$num_placax."'";
+    }
+    
+    //echo $mQuery;
+    $consulta = new Consulta( $mQuery, $this->conexion );
+    if($flag != NULL){
+      return $consulta->ret_matriz();
+    }else{
+      return $mQuery;
+    }
+  }
+
+  /*! \fn: getDinamiListRemolq
+   *  \brief: identifica el formulario correspondiete y lo pinta
+   *  \author: Edward Serrano
+   *  \date:  18/01/2017
+   *  \date modified: dia/mes/año
+  */
+  function getDinamiListRemolq($datos)
+  { 
+    try
+    {   
+      IncludeJS( '../js/dinamic_list.js' );
+      IncludeJS( '../js/new_ajax.js' );
+      echo "<link  href='../" . DIR_APLICA_CENTRAL . "/dinamic_list.php' type='script'>\n";
+      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/dinamic_list.css' type='text/css'>\n";
+      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
+      $_SESSION["queryXLS"] = $datos;
+
+      if (!class_exists(DinamicList)) 
+      {
+          include_once("../" . DIR_APLICA_CENTRAL . "/lib/general/dinamic_list.inc");
+      }
+      $list = new DinamicList($this->conexion, $datos);
+      $list->SetClose('no');
+      $list->SetHeader(("Nro. de Remolque"), "field:a.num_trayle; width:1%; type:link; onclick:getRemolq($(this),".$_REQUEST['cod_transp'].",0) ");
+      $list->SetHeader(("Poseedor"), "field:a.nom_propie; width:1%");
+      $list->SetHeader(("Marca"), "field:a.nom_martra; width:1%");
+      $list->SetHeader(("Color"), "field:a.nom_colorx" );
+      $list->SetHeader(("Capacidad (TN)"), "field:a.tra_capaci" );
+      $list->SetHeader(("Carroceria"), "field:a.nom_carroc" );
+      $list->SetHidden("num_remolq", "0" );
+      $list->SetHidden("nom_propie", "1" );
+      $list->Display($this->conexion);
+
+      $_SESSION["DINAMIC_LIST"] = $list;
+
+      $Html = $list->GetHtml();
+
+      if($_REQUEST["Ajax"] === 'on' )
+      {
+        echo $Html;
+      }
+      else
+      {
+        return $Html;
+      }
+    } catch (Exception $e) {
+      echo "error getDinamiListRemolq :".$e;
+    }
+  }
+
 }
 
 $proceso = new AjaxInsertDespacho();
