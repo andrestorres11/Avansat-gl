@@ -1,6 +1,7 @@
 {
     "tag": "div", 
-    "id": "tabs", 
+    "id": "tabs",
+    "style": "height: auto;", 
     "children": [
         {
             "tag": "ul", 

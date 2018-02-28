@@ -1,12 +1,12 @@
 <?php
-ini_set('error_reporting', E_ALL);
-ini_set("display_errors", 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set("display_errors", 1);
 ini_set('memory_limit','1024M');
 @session_start();
 class Solici_solici
 {
 	var $conexion, $cod_aplica,	$usuario, $usuario2, $cod_tercer, $arr_datsol, $interfParame, $InterfSolicitud, $_request,
-		$raw, $input_post, $input_globals, $input_get, $max_file_size=2000000, $tmp_dir_path="/tmp/",$unlink_file=false;
+		$raw, $input_post, $input_globals, $input_get, $max_file_size=2000000, $tmp_dir_path="/tmp/",$unlink_file=false,$cSession;
 
 	function Solici_solici()
 	{
@@ -54,6 +54,7 @@ class Solici_solici
 				include( $file2 );
 				ob_clean();
 			}
+			$this->cSession = $_SESSION["datos_usuario"];
 			$error=array();
 			/*if(!defined("URL_INTERF_FAROXX")){
 				array_push($error, "Solici_solici::Main > Const URL_INTERF_FAROXX does not exists");
@@ -88,7 +89,7 @@ class Solici_solici
 			$this->raw=isset($HTTP_RAW_POST_DATA) ? file_get_contents($HTTP_RAW_POST_DATA) : file_get_contents("php://input");
 			$this->raw=json_decode($this->raw);
 			$this->setInterfParame();
-			//$this->setArrDatSol();
+			//$this->setArrDatSol();	
 			
 			$file="../".DIR_APLICA_CENTRAL."/lib/InterfSolicitud.inc";
 			if(!file_exists($file)){
@@ -406,6 +407,19 @@ png, jpeg, zip, rar)
 				$consulta = new Consulta( $sql, $this->conexion );
 				print json_encode(array("message"=>"Registro con &eacute;xito el seguimiento","status"=>"success"));
 				//print json_encode(array("message"=>$sql,"status"=>"success"));
+				/**************** Envio mail *********************/
+		      	$dataMail = (object) array(
+		                              'nom_solici'  =>  'Gestion Solicitud',
+		                              'nom_cliente'  =>  $this->getTransSolici($this->raw->num_solici)[0]['abr_tercer'],
+		                              'date'  =>  date("Y-m-d H:i:s"),
+		                              'num_solici'  =>  $this->raw->num_solici,
+		                              'cod_usuari'  =>  str_replace("'"," ",$_SESSION["datos_usuario"]["nom_usuari"]),
+		                              'year'  =>  date("Y"),
+		                              'cod_estado'  =>  $this->getEstado($this->raw->cod_estado)[0]['nom_estado'],
+		                              'obs_solici'  =>  $this->raw->obs_seguim,
+		                              'mailTo'  =>  $_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR,
+		                          );
+		      	$this->sendMailSolifa($dataMail);
 				return false;
 			}
 		}catch(Exception $e){
@@ -429,7 +443,8 @@ png, jpeg, zip, rar)
 	}
 
 	function getTercerTransp(){
-		$sql='select t.cod_tercer as "key", t.nom_tercer as "value"  from tab_tercer_tercer t inner join (select distinct a.cod_transp from satt_faro.tab_solici_datosx a order by a.cod_transp) sd on sd.cod_transp=t.cod_tercer inner join tab_tercer_activi ta on ta.cod_tercer=t.cod_tercer and ta.cod_activi = 1';
+		$trans = $this->getTransLogin();
+		$sql='select t.cod_tercer as "key", t.abr_tercer as "value"  from tab_tercer_tercer t inner join (select distinct a.cod_transp from satt_faro.tab_solici_datosx a order by a.cod_transp) sd on sd.cod_transp=t.cod_tercer inner join tab_tercer_activi ta on ta.cod_tercer=t.cod_tercer and ta.cod_activi = 1 '.($trans != NULL?' and t.cod_tercer='.$trans:'');
 		$consulta = new Consulta( $sql, $this->conexion );
 		$datos    = $consulta->ret_matrix( 'a' );
 		//$datosc   = $this->arrIso2ascii($datos);
@@ -836,7 +851,7 @@ EOF;
 					inner join ".BASE_DATOS.".tab_solici_tiposx d on d.cod_tipsol=a.cod_tipsol 
 					left join ".BASE_DATOS.".tab_solici_subtip e on e.cod_subtip=a.cod_subtip and e.cod_tipsol=a.cod_tipsol 
 						WHERE $where
-						order by b.fec_creaci desc,b.cod_transp,a.cod_estado,a.cod_tipsol ";
+						order by a.num_solici,b.fec_creaci desc,b.cod_transp,a.cod_estado,a.cod_tipsol ";
 				break;
 				case 6:
 					$query = "SELECT 
@@ -851,7 +866,7 @@ EOF;
 					inner join ".BASE_DATOS.".tab_solici_tiposx d on d.cod_tipsol=a.cod_tipsol 
 					left join ".BASE_DATOS.".tab_solici_subtip e on e.cod_subtip=a.cod_subtip and e.cod_tipsol=a.cod_tipsol 
 						WHERE $where
-						order by b.fec_creaci desc,b.cod_transp,a.cod_estado,a.cod_tipsol ";
+						order by a.num_solici,b.fec_creaci desc,b.cod_transp,a.cod_estado,a.cod_tipsol ";
 				break;
 				case 7:
 					$query = "SELECT 
@@ -865,10 +880,10 @@ EOF;
 					inner join ".BASE_DATOS.".tab_solici_seguim f on f.num_solici=a.num_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado g on g.cod_estado=f.cod_estado 
 						WHERE $where
-						order by f.fec_creaci desc,f.num_seguim desc";
+						order by a.num_solici,f.fec_creaci desc,f.num_seguim desc";
 				break;
 			}
-			
+		
 			$consulta = new Consulta( $query, $this -> conexion );
 		    $result = $consulta -> ret_matrix( 'a' );
 
@@ -1073,7 +1088,7 @@ EOF;
 				//IncludeJS( "mod_solici_inform.js" );//No se incluye, porque se requiere enviar un dato
 				//IncludeCSS no aplica, la crearon seguramente para modificar estilos a traves de javascript
 				$jq='<script type = "text/javascript" src="'.$filejqjs.'"></script>';
-				$formulario = new Formulario ("index.php","post","<div>Solicutd a faro</div>","form_list");
+				$formulario = new Formulario ("index.php","post","<div>SOLICITUD A FARO</div>","form_list");
 				$js='<script id="_45462213DEf">'.
 			        'var ds="'.$dirsolifa.'",'.
 			        'dc="'.$dircentral.'",'.
@@ -1094,7 +1109,7 @@ EOF;
 				die("Not found required files to Solici_solici::onCreateForm");
 			}
 		}else{
-			$formulario = new Formulario ("","get","<div>Solicutd a faro</div>","void");
+			$formulario = new Formulario ("","get","<div>SOLICITUD A FARO</div>","void");
 			echo '<link rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/estilos/mod_solici_inform.css">';
 			echo '<div class="inf_solici_solici alert alert-warning"><strong>Requiere activar la interfaz con Faro, consulte con su proveedor.</strong></div>';
 			$formulario->cerrar();
@@ -1274,6 +1289,84 @@ EOF;
 		$consulta = new Consulta( $sql, $this->conexion );
 		return $datos = $consulta->ret_matrix( 'a' );
 	}
+
+	function sendMailSolifa($data = NULL)
+	{
+	    try
+	    {
+		    $mCabece = 'MIME-Version: 1.0' . "\r\n";
+		    $mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+		    $mCabece .= 'From: Centro Logistico FARO <no-replay@grupooet.com>' . "\r\n";
+		    $tmpl_file = '/var/www/html/ap/satt_standa/planti/pla_solifa_solifa.html';
+		    $thefile = implode("", file($tmpl_file));
+		    $thefile = addslashes($thefile);
+		    $thefile = "\$r_file=\"" . $thefile . "\";";
+		    eval($thefile);
+		    $mHtmlxx = $r_file;
+		    if($_SERVER['HTTP_HOST'] == 'dev.intrared.net:8083')
+		    {
+		      	$mailToS = "edward.serrano@intrared.net, maribel.garcia@eltransporte.org";
+		    }
+		    else
+		    {
+		      	$mailToS = $data->mailTo;
+		    }
+		    mail( $mailToS, " Solicitudes a Faro ", '<div name="_faro_07">' . $mHtmlxx . '</div>', $mCabece );
+	    }
+	    catch(Exception $e)
+	    {
+	      return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
+	    }
+	}
+
+	function getTransSolici($num_solici)
+	{
+	    try{
+		    $sql =  "SELECT c.abr_tercer FROM ".BASE_DATOS.".tab_solici_solici a ".
+		              "INNER JOIN ".BASE_DATOS.".tab_solici_datosx b ON a.cod_solici = b.cod_solici ".
+		              "INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON b.cod_transp = c.cod_tercer ".
+		              "WHERE ".
+		              "a.num_solici=$num_solici";
+		    $consulta = new Consulta( $sql, $this->conexion );
+			return $consulta->ret_matrix( 'a' );
+	    }
+	    catch(Exception $e)
+	    {
+	    	return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
+	    }
+  	}
+
+  	function getEstado($cod_estado)
+	{
+	    try{
+		    $sql =  "SELECT * FROM ".BASE_DATOS.".tab_solici_estado ".
+		              "WHERE ".
+		              "cod_estado=$cod_estado";
+		    $consulta = new Consulta( $sql, $this->conexion );
+			return $consulta->ret_matrix( 'a' );
+	    }
+	    catch(Exception $e)
+	    {
+	    	return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
+	    }
+  	}
+
+  	function getTransLogin()
+	{
+	    try{
+		    $mSql = "SELECT clv_filtro AS cod_transp
+					   				FROM ".BASE_DATOS.".tab_aplica_filtro_perfil 
+					   			WHERE cod_perfil= ".$this->cSession["cod_perfil"];
+			$mConsult = new Consulta( $mSql, $this->conexion );
+			$mTransp = $mConsult -> ret_matrix('a');
+			return $mTransp = $mTransp[0]['cod_transp'];
+			
+	    }
+	    catch(Exception $e)
+	    {
+	    	return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
+	    }
+  	}
 }
 
 $proceso = new Solici_solici();
