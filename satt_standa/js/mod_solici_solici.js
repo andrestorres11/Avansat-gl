@@ -65,12 +65,18 @@ function r(){
 						updateUser(data);
 						checkBasicLoad("tab1");
 					});
+					//se debe cargar fecha por defecto y se delega un calendario en caso de no soportarlo nativo
+					$('input[type="date"]').each(function(k,v){
+						//forceDateLocal(this);
+						forceDateTimeLocal(this);
+					});
 				}catch(e){}
 
 				$( "#tabs" ).tabs();
 				//$("#tabs ul li a").unbind("click");
 				$("#tabs ul li a").bind("click",tab_load_content);
 				$("#tabs ul li a")[0].click();
+				$("#ui-datepicker-div").css("display","none");
 
 			}catch(e){}
 		}
@@ -114,8 +120,9 @@ function r(){
 		function processResult1(msg){
 			try{
 				var divActive=$("#tabs form").find('.alert.active');
-				divActive.parent().find(".btn[name=send]").attr("disabled","disabled");
-				divActive.html("<h2>Respuesta</h2>");
+				//divActive.parent().find(".btn[name=send]").attr("disabled","disabled");
+				//divActive.html(("<h2>Respuesta</h2>").toUpperCase());
+				divActive.html((""));
 				divActive.append("<ul>");
 				var objResponse=JSON.parse(msg);
 				for(a in objResponse){
@@ -125,17 +132,17 @@ function r(){
 							try{
 								if(currObjResp.ws.get.error!=null){
 									//alert(currObjResp.ws.get.error);
-									divActive.append("<li>"+currObjResp.ws.get.error+"</li>");
+									divActive.append("<li>"+currObjResp.ws.get.error.toUpperCase()+"</li>");
 								}
 								if(currObjResp.ws.get.fault!=null){
 									//alert(currObjResp.ws.get.fault);
-									divActive.append("<li>"+currObjResp.ws.get.fault+"</li>");
+									divActive.append("<li>"+currObjResp.ws.get.fault.toUpperCase()+"</li>");
 								}
 							}catch(e){
 								//console.log("processResult1 >  > catch 3");
 								//console.log(e);
 								//alert("Error, The Web Service have any problem, contact your provider.");
-								divActive.append("<li>Error, The Web Service have any problem, contact your provider.</li>");
+								divActive.append(("<li>Error, The Web Service have any problem, contact your provider.</li>").toUpperCase());
 							}
 						}else{
 							
@@ -144,10 +151,11 @@ function r(){
 							if(typeof y == "object"){
 								//divActive.append("<li>"+currObjResp.response+"</li>");
 								for( a in y){
-									divActive.append("<ul>"+a+"<li>"+y[a]+"</li><ul>");
+									divActive.append("<ul>"+a.toUpperCase()+"<li>"+y[a].toUpperCase()+"</li><ul>");
 								}
 							}else{
-								divActive.append("<li>"+currObjResp.response+"</li>");
+								var srtResponse = currObjResp.response.split("; ")[1].split(":")[1];
+								divActive.append("<li>"+srtResponse.toUpperCase()+"</li>");
 							}
 						}
 					}catch(e){
@@ -164,7 +172,7 @@ function r(){
 				//console.log(e);
 				var divActive=$("#tabs form").find('.alert.active');
 				if(divActive!=null)
-					divActive.html(msg);
+					divActive.html(msg.toUpperCase());
 			}
 		}
 		function getErrorForm(form){
@@ -458,54 +466,99 @@ function r(){
 			}catch(e){}
 		}
 		//datetime-local
+		function forceDateLocal(obj){
+			try{
+				//if(navigator.userAgent.indexOf("WebKit")==-1){
+					var randomId="data-source-"+parseInt(new Date().getMilliseconds()+parseInt(Math.random()*1000))+1;
+					$(obj).attr("data-id",randomId);
+					var setDate = $(obj).attr("data-value")!=undefined ? $(obj).attr("data-value") : null;
+					try{
+						$(obj).attr("type","hidden");
+					}catch(e){
+						obj.type="hidden";
+					}
+					$(obj).val(toShortDateString());
+					$(obj).addClass("date-local");
+					$(obj).parent().append('<input data-parent="'+randomId+'" required="required" type="text" class="form-control setdate" value="'+toShortDateString()+'" placeholder="yyyy-mm-dd">');
+					
+					$(obj).parent().find('.form-control.setdate')
+					.datepicker(
+						{ 
+							monthNames: [ "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noveembre", "Diciember" ],
+							dateFormat: 'yy-mm-dd', 
+							maxDate: new Date()
+						}
+					)
+					.bind("change",function(v){
+						//console.log("change date > ");
+						var cv=tdtl(toShortDateString(),$(this).val(),null,null,"0000-00-00");
+						$(this).val(cv);
+						var parent=$(this).attr("data-parent");
+						var prevDate=$("input[data-id="+parent+"]").val();
+						$("input[data-id="+parent+"]").val(tdtl(prevDate,cv,null,null,"0000-00-00"));
+						//console.log($("input[data-id="+parent+"]").val());
+					});
+					if(setDate!=null)
+						$(obj).parent().find('.form-control.setdate').datepicker( "setDate", setDate);
+					$(obj).parent().find('.form-control.setdate').trigger("change");
+					
+				//}
+			}catch(e){}
+		}
+		//datetime-local
 		function forceDateTimeLocal(obj){
-			//if(navigator.userAgent.indexOf("WebKit")==-1){
+			try{
+				//if(navigator.userAgent.indexOf("WebKit")==-1){
+					var randomId="data-source-"+parseInt(new Date().getMilliseconds()+parseInt(Math.random()*1000))+1;
+					$(obj).attr("data-id",randomId);
+					try{
+						$(obj).attr("type","hidden");
+					}catch(e){
+						obj.type="hidden";
+					}
+					$(obj).val(toShortDateString()+" 00:00");
+					$(obj).addClass("datetime-local");
+					$(obj).parent().append('<input data-parent="'+randomId+'" required="required" type="text" class="form-control setdate" value="'+toShortDateString()+'" placeholder="yyyy-mm-dd">');
+					$(obj).parent().append('<input data-parent="'+randomId+'" style="width:60px;" required="required" type="number" class="form-control settime hour" min="0" max="23" step="1" value="0" />');
+					$(obj).parent().append(':<input data-parent="'+randomId+'" style="width:60px;" required="required" type="number" class="form-control settime minute" min="0" max="59" step="1" value="0" />');
 
-				var randomId="data-source-"+parseInt(new Date().getMilliseconds()+parseInt(Math.random()*1000))+1;
-				$(obj).attr("data-id",randomId);
-				$(obj).attr("type","hidden");
-				$(obj).val(toShortDateString()+" 00:00");
-				$(obj).addClass("datetime-local");
-				$(obj).parent().append('<input data-parent="'+randomId+'" required="required" type="text" class="form-control setdate" value="'+toShortDateString()+'" placeholder="yyyy-mm-dd">');
-				$(obj).parent().append('<input data-parent="'+randomId+'" style="width:60px;" required="required" type="number" class="form-control settime hour" min="0" max="23" step="1" value="0" />');
-				$(obj).parent().append(':<input data-parent="'+randomId+'" style="width:60px;" required="required" type="number" class="form-control settime minute" min="0" max="59" step="1" value="0" />');
-
-				$(obj).parent().find('.form-control.setdate').datepicker({ dateFormat: 'yy-mm-dd' }).bind("change",function(v){
-					//console.log("change date > ");
-					var cv=tdtl(toShortDateString(),$(this).val(),null,null,"0000-00-00");
-					$(this).val(cv);
-					var parent=$(this).attr("data-parent");
-					var prevDate=$("input[data-id="+parent+"]").val();
-					$("input[data-id="+parent+"]").val(tdtl(prevDate,cv,null,null,"0000-00-00 00:00"));
-					//console.log($("input[data-id="+parent+"]").val());
-				});
-
-				$(obj).parent().find('.form-control.settime.hour').bind("change",function(v){
-					//console.log("change hour > ");
-					var cv=$(this).val();
-					if(cv>=0 && cv<=23){
+					$(obj).parent().find('.form-control.setdate').datepicker({ dateFormat: 'yy-mm-dd' }).bind("change",function(v){
+						//console.log("change date > ");
+						var cv=tdtl(toShortDateString(),$(this).val(),null,null,"0000-00-00");
+						$(this).val(cv);
 						var parent=$(this).attr("data-parent");
 						var prevDate=$("input[data-id="+parent+"]").val();
-						$("input[data-id="+parent+"]").val(tdtl(prevDate,null,cv,null,"0000-00-00 00:00"));
+						$("input[data-id="+parent+"]").val(tdtl(prevDate,cv,null,null,"0000-00-00 00:00"));
 						//console.log($("input[data-id="+parent+"]").val());
-					}else{
-						$(this).val(0);
-					}
-				});
+					});
 
-				$(obj).parent().find('.form-control.settime.minute').bind("change",function(v){
-					//console.log("change minute > ");
-					var cv=$(this).val();
-					if(cv>=0 && cv<=59){
-						var parent=$(this).attr("data-parent");
-						var prevDate=$("input[data-id="+parent+"]").val();
-						$("input[data-id="+parent+"]").val(tdtl(prevDate,null,null,cv,"0000-00-00 00:00"));
-						//console.log($("input[data-id="+parent+"]").val());
-					}else{
-						$(this).val(0);
-					}
-				});
-			//}
+					$(obj).parent().find('.form-control.settime.hour').bind("change",function(v){
+						//console.log("change hour > ");
+						var cv=$(this).val();
+						if(cv>=0 && cv<=23){
+							var parent=$(this).attr("data-parent");
+							var prevDate=$("input[data-id="+parent+"]").val();
+							$("input[data-id="+parent+"]").val(tdtl(prevDate,null,cv,null,"0000-00-00 00:00"));
+							//console.log($("input[data-id="+parent+"]").val());
+						}else{
+							$(this).val(0);
+						}
+					});
+
+					$(obj).parent().find('.form-control.settime.minute').bind("change",function(v){
+						//console.log("change minute > ");
+						var cv=$(this).val();
+						if(cv>=0 && cv<=59){
+							var parent=$(this).attr("data-parent");
+							var prevDate=$("input[data-id="+parent+"]").val();
+							$("input[data-id="+parent+"]").val(tdtl(prevDate,null,null,cv,"0000-00-00 00:00"));
+							//console.log($("input[data-id="+parent+"]").val());
+						}else{
+							$(this).val(0);
+						}
+					});
+				//}
+			}catch(e){}
 		}
 
 		function toShortDateString(){
@@ -638,7 +691,7 @@ function r(){
 				if(!error){
 					setWsData(tabid,objSend);
 				}else{
-					currForm.find('.alert').html("Informaci&oacute;n incompleta, verif&iacute;que e intente nuevamente")
+					currForm.find('.alert').html(("Informacion incompleta, verifique e intente nuevamente").toUpperCase());
 				}
 			}catch(e){
 				//console.log("onSend > error > ");
@@ -1114,7 +1167,7 @@ function r(){
 				if($("#tabs #tabs-1 .loading.help-block").css("display")=="block"){
 					if(location.href.indexOf("reload=true")>-1){
 						if($(".alert.alert-warning.delay").length==0){
-							$(".ins_solici_solici").before('<h4 class="alert alert-warning delay">Su conexion presenta demoras, intente cargar de nuevo el servicio.</h4>');
+							$(".ins_solici_solici").before('<h4 class="alert alert-warning delay">'+('Su conexion presenta demoras, intente cargar de nuevo el servicio.').toUpperCase()+'</h4>');
 						}
 					}else{
 						location.href="?window="+server_req.window+"&cod_servic="+server_req.cod_servic+"&r="+Math.random()+"&reload=true";

@@ -6,7 +6,7 @@
     "border": "0",
     "children": [
         {
-            "tag": "tr", 
+            "tag": "tr",
             "children": [
                 {
                     "tag": "td", 
@@ -20,11 +20,13 @@
                     "children": [
                         {
                             "tag": "span", 
-                            "class":"title", 
-                            "html": "No. de Solicitud:: "
+                            "class":"title",
+                            "style": "color: white;", 
+                            "html": "<B>No. de Solicitud::</B> "
                         },
                         {
-                            "tag": "span", 
+                            "tag": "span",
+                            "style": "color: white;", 
                             "class":"data num_solici", 
                             "html": ""
                         }
@@ -47,11 +49,13 @@
                     "children": [
                         {
                             "tag": "span", 
-                            "class":"title", 
-                            "html": "Tipo de Solicitud: "
+                            "class":"title",
+                            "style": "color: white;", 
+                            "html": "<B>Tipo de Solicitud:</B> "
                         },
                         {
-                            "tag": "span", 
+                            "tag": "span",
+                            "style": "color: white;", 
                             "class":"data nom_tipsol", 
                             "html": ""
                         }
@@ -66,6 +70,7 @@
                     "tag": "td", 
                     "colspan":"4", 
                     "class": "title text-align-center data nom_transp",
+                    "style": "color: white;",
                     "html": "Cliente XXXXXX"
                 }
             ]
@@ -129,7 +134,7 @@
                             "tag": "label", 
                             "for":"num_usrfij", 
                             "class":"title", 
-                            "html": "Tel&eacute;fono fijo: "
+                            "html": "Telefono fijo: "
                         }
                     ]
                 },
@@ -224,7 +229,8 @@
                     "tag": "td", 
                     "colspan":"4", 
                     "class": "title text-align-center",
-                    "html": "Datos de la Solicitud"
+                    "style": "color: white;",
+                    "html": "<B>Datos de la Solicitud</B>"
                 }
             ]
         },
@@ -260,7 +266,8 @@
                     "tag": "td", 
                     "colspan":"4", 
                     "class": "title text-align-center",
-                    "html": "Respuesta a enviar"
+                    "style": "color: white;",
+                    "html": "<B>Respuesta a enviar</B>"
                 }
             ]
         },
@@ -341,7 +348,7 @@
                                                 {
                                                     "tag": "label", 
                                                     "for": "dir_archiv", 
-                                                    "html": "Cerrar petici&oacute;n:"
+                                                    "html": "Cerrar peticion:"
                                                 }
                                             ]
                                         }, 

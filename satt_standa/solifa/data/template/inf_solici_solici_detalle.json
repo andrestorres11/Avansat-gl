@@ -9,7 +9,7 @@
                 {
                     "tag": "th", 
                     "colspan":"9", 
-                    "html": "zona enlace descarga archivo excel"
+                    "html": "Se han encontrado: <span id='badge'></span>"
                 }
             ]
         },
