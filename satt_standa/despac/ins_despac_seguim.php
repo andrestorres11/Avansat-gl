@@ -872,10 +872,16 @@ class Proc_segui
         $consulta = new Consulta($query, $this->conexion);
         $ultrep = $consulta->ret_matriz();
 
+
         $mArraySitio = array();
-        if (!$contro)
-            $mArraySitio[] = array('A', 'Antes');
-        $mArraySitio[] = array('S', 'Sitio');
+        if (!$contro){
+            if (in_array($_SESSION['datos_usuario']['cod_perfil'], array('708','709','710','711','712') ) ) {
+                $mArraySitio[] = array('A', 'Antes');
+            }else{
+                $mArraySitio[] = array('A', 'Antes');
+                $mArraySitio[] = array('S', 'Sitio');
+            }
+        }
 
         $mArrayTiempo = array();
         if( $tiem ){
