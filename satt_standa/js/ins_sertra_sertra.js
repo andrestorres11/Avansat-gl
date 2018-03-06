@@ -882,7 +882,7 @@ function deleteConfiguracion(cod_transp, dia, ind_config) {
 function deleteContac(cod_transp, ema_contac) {
     try {
         swal({
-            title: "Eliminar Configuración",
+            title: "Eliminar Contacto",
             text: "¿Realmente Deseas eliminar el Contacto seleccionado?",
             type: "warning",
             showCancelButton: true,
@@ -907,7 +907,7 @@ function deleteContac(cod_transp, ema_contac) {
                         });
                     } else {
                         swal({
-                            title: "Eliminar Configuración",
+                            title: "Eliminar Contacto",
                             text: "Error al eliminar los datos, intenta nuevamente. Si el error persiste por favor informar.",
                             type: "error"
                         });

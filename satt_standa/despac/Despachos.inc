@@ -2239,10 +2239,10 @@ class Despachos
                             if( $mFotos != false )
                                 $mHtml->SetBody( $mFotos );
                         }
-
+                        
                         #Plan de Ruta
                         if( $mRuta ){
-                            $mHtml->SetBody( self::PlanDeRuta( $mNumDesOri, $mRuta['link'], $mRuta['finali'], $mRuta['opcurban'], $mDataUsuar, $mRuta['lleg'], $mRuta['tie_ultnov'], $mData['num_despac'], $mData['aux_placax']));
+                            $mHtml->SetBody( self::PlanDeRuta( $mNumDesOri, $mRuta['link'], $mRuta['finali'], $mRuta['opcurban'], $mDataUsuar, $mRuta['lleg'], $mRuta['tie_ultnov'], $mData['num_despac'], $mData['aux_placax'], $mData['cod_agenci']));
                         }
 
                     $mHtml->CloseDiv();
@@ -3548,7 +3548,8 @@ class Despachos
                         IF( a.gps_paswor IS NULL OR a.gps_paswor = '', ( IF(x.clv_usrgps IS NULL OR x.clv_usrgps = '', '$mObs[0]', x.clv_usrgps) ), a.gps_paswor ) AS gps_paswor, 
                         IF( a.fec_citcar IS NULL OR a.fec_citcar = '0000-00-00', '$mObs[1]', DATE_FORMAT( CONCAT( a.fec_citcar, ' ', a.hor_citcar ), '%H:%i %d-%m-%Y') ) AS fec_citcar, 
                         IF( y.nom_operad IS NULL OR y.nom_operad = '', ( IF(a.gps_otroxx IS NULL OR a.gps_otroxx = '', '$mObs[0]', UPPER(a.gps_otroxx)) ),UPPER(y.nom_operad)) AS nom_opegps,
-                        k.num_solici 
+                        k.num_solici,
+                        IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
@@ -3904,7 +3905,7 @@ class Despachos
      *  \param: 
      *  \return: 
      */
-    function PlanDeRuta( $despac, $link = 0, $finali = 0, $opcurban = 0, $datos_usuario = NULL, $lleg = NULL, $tie_ultnov = NULL, $despac, $placa)
+    function PlanDeRuta( $despac, $link = 0, $finali = 0, $opcurban = 0, $datos_usuario = NULL, $lleg = NULL, $tie_ultnov = NULL, $despac, $placa, $cod_agenci)
     {
       #< 0. PRE >
         self::IncludeJsStyle();
@@ -4015,8 +4016,9 @@ class Despachos
 
       #< 1: INFORMACION DE LOS CONTACTOS >
       $mViewContac = self::getView('jso_contac');
-      if( $mViewContac->dat_contac->ind_visibl == 1 )
-        $mHtml->SetBody( self::divContacto( $_RUTASX, $placa, $_DESPAC[0][cod_transp], $_DESPAC[0][num_despac]));
+      if( $mViewContac->dat_contac->ind_visibl == 1 ){
+        $mHtml->SetBody( self::divContacto( $_RUTASX, $placa, $_DESPAC[0][cod_transp], $_DESPAC[0][num_despac], $cod_agenci));
+      }
 
       #< 2: LLEGADA >
       if ( $lleg == 1 &&  $mView->inf_llegad->ind_visibl == 1 ){
@@ -8991,9 +8993,9 @@ class Despachos
      *  \param: mView       Array    Permisos de visibilidad en la seccion plan de ruta
      *  \return: HTML
      */
-    private function divContacto( $_RUTASX, $placa, $transport, $despac)
-    {
-      $datos = $this->getContact($transport);
+    private function divContacto( $_RUTASX, $placa, $transport, $despac, $cod_agenci)
+    {  
+      $datos = $this->getContact($transport, $cod_agenci);
       $mHtml = new Formlib(2);
 
       $mHtml->OpenDiv("id:planRutaID; class:accordion");
@@ -9030,10 +9032,10 @@ class Despachos
                         $mHtml->Label( strtoupper($value['nom_agenci']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mHtml->CloseRow();
                     }
-            $mHtml->CloseTable('tr');
                 }else{
-                        $mHtml->Label( "No cuenta con contactos parametrizados".$value['nom_contac'], array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                        $mHtml->Label( "No cuenta con contactos parametrizados para la agencia del despacho".$value['nom_contac'], array("align"=>"center", "class"=>"cellTitu","colspan"=>"6", "width"=>"10%") );
                 }
+            $mHtml->CloseTable('tr');
           $mHtml->CloseDiv();
         $mHtml->CloseDiv();
       $mHtml->CloseDiv();
@@ -9041,12 +9043,13 @@ class Despachos
       return $mHtml->MakeHtml();
     }
 
-    private function getContact($transport) {
+    private function getContact($transport, $cod_agenci) {
         $sql = "SELECT a.nom_contac, a.car_contac, a.ema_contac, a.tel_contac, a.obs_contac, c.nom_agenci
                   FROM " . BASE_DATOS . ".tab_contac_empres a 
             INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp
              LEFT JOIN " . BASE_DATOS . ".tab_genera_agenci c ON a.cod_agenci = c.cod_agenci
-            WHERE b.cod_transp = '$transport'
+            WHERE b.cod_transp = '$transport'  
+            AND a.cod_agenci LIKE '%$cod_agenci%'   
             GROUP BY 1, 3";
 
         $consulta = new Consulta($sql, $this-> conexion);
