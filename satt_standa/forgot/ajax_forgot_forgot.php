@@ -60,13 +60,13 @@ class AjaxForgotPass
         $mHtml .= '</tr>';
         
         $mHtml .= '<tr>';
-        $mHtml .= '<td class="cellInfo1" width="35%" align="right"><b>* Usuario:</b>&nbsp;&nbsp;</td>';
-        $mHtml .= '<td class="cellInfo1" width="65%" align="left"><input type="text" name="cod_usuari" id="cod_usuariID" maxlength="25" size="20" /></td>';
+        $mHtml .= '<td class="cellInfo1" width="35%" align="right" style="color:black !important"><b>* Usuario:</b>&nbsp;&nbsp;</td>';
+        $mHtml .= '<td class="cellInfo1" width="65%" align="left" style="color:black !important"><input type="text" name="cod_usuari" id="cod_usuariID" maxlength="25" size="20" /></td>';
         $mHtml .= '</tr>';
       
         $mHtml .= '<tr>';
-        $mHtml .= '<td class="cellInfo1" width="35%" align="right"><b>* Correo Registrado:</b>&nbsp;&nbsp;</td>';
-        $mHtml .= '<td class="cellInfo1" width="65%" align="left"><input type="text" name="ema_usuari" id="ema_usuariID" size="35" /></td>';
+        $mHtml .= '<td class="cellInfo1" width="35%" align="right" style="color:black !important"><b>* Correo Registrado:</b>&nbsp;&nbsp;</td>';
+        $mHtml .= '<td class="cellInfo1" width="65%" align="left" style="color:black !important"><input type="text" name="ema_usuari" id="ema_usuariID" size="35" /></td>';
         $mHtml .= '</tr>';
       
       $mHtml .= '</table>';

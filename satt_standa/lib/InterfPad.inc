@@ -53,7 +53,7 @@
       $mMessage .= "Codigo de error: ".$mAditionalData['cod_errorx']." \n";
       $mMessage .= "Mensaje de error: ".$this -> getMsgError()." \n";
       $mMessage .= "Datos Array: ".var_export($mArraData, true)." \n";
-      mail( "nelson.liberato@intrared.net", "Web service Faro - PAD ERROR (ASISTR) FROM WEB10", $mMessage,'From: InterfazTraficoPad@intrared.net' );
+      //mail( "nelson.liberato@intrared.net", "Web service Faro - PAD ERROR (ASISTR) FROM WEB10", $mMessage,'From: InterfazTraficoPad@intrared.net' );
       
     }
 
@@ -69,7 +69,7 @@
       $mMessage .= "******** Detalle ******** \n";       
       $mMessage .= "Mensaje: ".$this -> getMsgError()." \n";
      
-      mail( "omar.olarte@eltransporte.org, nelson.liberato@intrared.net", "Web service Faro - PAD (ASISTR) OK FROM WEB10 ", $mMessage,'From: InterfazTraficoPad@intrared.net' );
+     // mail( "omar.olarte@eltransporte.org, nelson.liberato@intrared.net", "Web service Faro - PAD (ASISTR) OK FROM WEB10 ", $mMessage,'From: InterfazTraficoPad@intrared.net' );
       
     }
     

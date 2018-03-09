@@ -409,10 +409,10 @@ class extenc{
       }
  
 
-            $sql = "SELECT x.cantidad, x.estado, x.fecha 
+            $sql = "SELECT x.cantidad, x.estado, x.fec_agrupa 
                   FROM (
                           ( 
-                                SELECT COUNT(a.num_telefo) AS cantidad, 'ANSWERED' AS estado, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fecha 
+                                SELECT COUNT(a.num_telefo) AS cantidad, 'ANSWERED' AS estado, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fec_agrupa, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d %h:%i') AS fecha
                                   FROM ".BASE_DATOS.".tab_despac_callin a 
                                 INNER JOIN ".BASE_DATOS.".tab_callce_extenc b 
                                     ON b.num_extenc = a.cod_extenc 
@@ -420,11 +420,11 @@ class extenc{
                                    AND b.cod_operac = '$cod_operac'
                                    AND DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') BETWEEN '$fec_inicia' AND '$fec_finali' 
                                        $num_celula 
-                              GROUP BY fecha 
+                              GROUP BY fec_agrupa
                           )
                           UNION ALL
                           (
-                                SELECT COUNT(c.num_telefo) AS cantidad, 'NOANSWER' AS estado, DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') AS fecha 
+                                SELECT COUNT(c.num_telefo) AS cantidad, 'NOANSWER' AS estado, DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') AS fec_agrupa, DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') AS fecha
                                   FROM ".BASE_DATOS.".tab_despac_callin c 
                                   INNER JOIN ".BASE_DATOS.".tab_callce_extenc d 
                                     ON d.num_extenc = c.cod_extenc 
@@ -433,7 +433,7 @@ class extenc{
                                        $num_celula  
                                        AND d.cod_operac = '$cod_operac' 
                                    AND c.num_telefo IN (
-                                                              SELECT DISTINCT(e.num_telefo) AS num_telefo 
+                                                              SELECT DISTINCT(e.num_telefo) 
                                                                 FROM ".BASE_DATOS.".tab_despac_callin e 
                                                           INNER JOIN ".BASE_DATOS.".tab_callce_extenc f 
                                                                   ON f.num_extenc = e.cod_extenc 
@@ -442,9 +442,13 @@ class extenc{
                                                                  AND f.cod_operac = '$cod_operac' 
                                                                      $num_celula
                                                         )
-                              GROUP BY fecha
+
+                              AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') >= DATE_FORMAT( DATE_SUB(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i') 
+                              AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') <= DATE_FORMAT( DATE_ADD(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i')                                  
+                              GROUP BY fecha, c.num_telefo
                           )
-                       ) x"; 
+                       ) x 
+                 WHERE 1=1 $and ORDER BY x.fec_agrupa DESC "; 
 
 
           /*$sql = "SELECT x.cantidad, x.estado, x.fecha 
@@ -491,7 +495,7 @@ class extenc{
                           )
 
                        ) x"; */
-         
+                       
       $consulta = new Consulta($sql, self::$cConexion);
       return $consulta->ret_matrix("a");
     }
@@ -512,11 +516,14 @@ class extenc{
       $mdata = array();
       foreach ($datos as $key => $value) {
         if($value['estado'] == 'NOANSWER' ){
-          $nocontestadas += $value['cantidad'];
-          $mdata[$value['fecha']]['nocontestadas'] = $value['cantidad'];
+      /*echo "<pre>";
+      print_r($value['cantidad']);  
+      echo "</pre>";*/
+          $nocontestadas += 1;
+          $mdata[$value['fec_agrupa']]['nocontestadas'] += 1;
         }else{
           $contestadas += $value['cantidad'];
-          $mdata[$value['fecha']]['contestadas'] = $value['cantidad'];
+          $mdata[$value['fec_agrupa']]['contestadas'] = $value['cantidad'];
         }
       }
       $cod_operac = $post->cod_operac;
@@ -766,7 +773,7 @@ class extenc{
                                      c.idx_llamad, c.nom_estado, c.rut_audiox, 
                                      c.cod_extenc, c.idx_servic, c.fec_creaci, 
                                      'NOANSWER' AS estado , 
-                                     DATE_FORMAT(c.fec_creaci, '%Y-%m-%d') AS fec_agrupa
+                                     DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') AS fec_agrupa
                                        
                               FROM ".BASE_DATOS.".tab_despac_callin c 
                               INNER JOIN ".BASE_DATOS.".tab_callce_extenc d  ON d.num_extenc = c.cod_extenc 
@@ -785,11 +792,11 @@ class extenc{
 
                               AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') >= DATE_FORMAT( DATE_SUB(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i') 
                               AND DATE_FORMAT(c.fec_creaci, '%Y-%m-%d %h:%i') <= DATE_FORMAT( DATE_ADD(c.fec_creaci, INTERVAL 1 MINUTE) , '%Y-%m-%d %h:%i')                                  
-                             
+                              GROUP BY fec_agrupa, c.num_telefo
                           )
                        ) x 
                  WHERE 1=1 $and ORDER BY x.fec_creaci DESC ";  
- 
+             
       $consulta = new Consulta($sql, self::$cConexion);
       return $consulta->ret_matrix("a");
     }

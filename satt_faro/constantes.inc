@@ -1,7 +1,7 @@
 <?php
 
 define("DIR_APLICA_CENTRAL", "satt_standa");
-include("../" . DIR_APLICA_CENTRAL . "/lib/general/constantes.inc");
+@include("../" . DIR_APLICA_CENTRAL . "/lib/general/constantes.inc");
 
 define("NOM_URL_APLICA","satt_faro");//constante para el nombre del directorio - aplicación
 define("BASE_DATOS", "satt_faro");// constante para la base de datos de la aplicacion
