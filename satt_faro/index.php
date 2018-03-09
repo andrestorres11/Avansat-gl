@@ -1,7 +1,8 @@
 <?php
+//ini_set('display_errors', true);
+//error_reporting(E_ALL &~E_NOTICE); 
 
-
-#die("<center><fieldset><legend>URL Inactivada</legend>URL Inactivada, por favor ingrese a la siguiente URL <br><a href='https://avansatgl.intrared.net/ap/satt_faro/index.php?'>Aquí</a></fieldset></center>");
+#die("<center><fieldset><legend>URL Inactivada</legend>URL Inactivada, por favor ingrese a la siguiente URL <br><a href='https://avansatgl.intrared.net/ap/satt_demo/index.php?'>AquÃ­</a></fieldset></center>");
 
 include ("constantes.inc");
 include ("../".DIR_APLICA_CENTRAL."/lib/generales.inc");
@@ -120,7 +121,7 @@ class Aplicacion_Seguridad
                </head>
                <frameset id=\"framesetID\" cols=\"190,*\" rows=\"*\" frameborder=\"NO\" framespacing=\"0\">
                 <frame name=\"menuFrame\" src=\"index.php?window=menu\"  scrolling=\"yes\" noresize>
-                <frame name=\"centralFrame\" src=\"index.php?window=central&op=inicio\">
+                <frame name=\"centralFrame\" id=\"centralFrameID\" src=\"index.php?window=central&op=inicio\">
                </frameset>
               </html>";
     }
@@ -373,254 +374,31 @@ class Aplicacion_Seguridad
     //Con esta funcion se presenta el menor
 
     function menuFrame()
+    {    $datos_usuario = $this -> usuario_aplicacion -> retornar();
+
+    //se revisa si el usuario tiene perfil o es usuario independiente
+    if(!$datos_usuario["cod_perfil"])
     {
-
-        session_start();
-        $datos_usuario = $_SESSION["datos_usuario"];
-
-        //se revisa si el usuario tiene perfil o es usuario independiente
-        if($datos_usuario["cod_perfil"] == "")
-        {
-            $tabla_permisos = "tab_servic_usuari";
-            $tipo_permiso = "cod_usuari";
-            $cod_permiso = $datos_usuario["cod_usuari"];
-        }
-        else
-        {
-            $tabla_permisos = "tab_perfil_servic";
-            $tipo_permiso = "cod_perfil";
-            $cod_permiso = $datos_usuario["cod_perfil"];
-        }
-
-        $pagina_menu = new Pagina("".ESAD."","#EEEEEE", 0, 0, 0, 0, 0, "../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/css/estilos.css","");
-        //query para traer el nombre del perfil
-        
-        
-        /*$pagina = explode('?',$_SERVER['REQUEST_URI']);
-        $url =  $_SERVER['HTTP_HOST'].$pagina[0];
-        $url2 =  $_SERVER['HTTP_HOST'].substr($pagina[0],0,-9);
-        
-        $query = "SELECT TIMEDIFF( CONCAT( `fec_suspen` , ' ', `hor_suspen` ) , NOW( ) ) AS timer
-                    FROM ".BASE_DATOS.".tab_genera_suspen a
-                   WHERE a.cod_usuari = '".$datos_usuario["cod_usuari"]."' 
-                     AND a.ind_suspen = 1 ";
-
-        $consulta = new Consulta($query, $this -> conexion);
-        $usuari = $consulta -> ret_matriz();*/
-        
-        
-        //echo "<SCRIPT type=\"text/javascript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
-        
-         /*if(count($usuari)>0){
-          echo '<script type="text/javascript">   
-          function callTimeDown(){
-              $.ajax({
-                  method: "get",
-                  url : "https://'.$url.'?window=time",
-                  dataType : "text",
-                  success: function (text) { 
-                    var time = text.split(":"); 
-                    if(parseInt(time[0])==0 && parseInt(time[1])==0 &&  time[2]=="00"){
-                      parent.document.location = "https://'.$url2.'session.php?op=2&usuario='.$datos_usuario["cod_usuari"].'"; 
-                    }else{
-                      $("#supendID").html(text); 
-                    }
-                  }
-               });
-          }
-          setInterval(callTimeDown, 1000); 
-          
-          </script>';
-        }*/
-        
-        
-        $query = "SELECT a.nom_perfil
-                    FROM ".BASE_DATOS.".tab_genera_perfil a
-                   WHERE a.cod_perfil = '".$datos_usuario["cod_perfil"]."' ";
-
-        $consulta = new Consulta($query, $this -> conexion);
-        $fila= $consulta -> ret_arreglo();
-
-          echo "\n".'  <TABLE WIDTH="100%" CELLPADDING="0" CELLSPACING="0" BORDER="0">
-            <TBODY>
-              <TR>
-                <TD CLASS="celda_top" ALIGN="CENTER" COLSPAN="2" HEIGHT="80">&nbsp;</TD>
-              </TR>
-              <TR>';
-              
-             /*if(count($usuari)>0){
-                
-                echo '<!-- Suspension -->
-                
-                <tr>
-                  <td colspan="2" align="center" style="background: #fff; color: red; font-weight: bold;">Su servicio será suspendido en:</td>
-                </tr>
-                <tr>
-                  <td colspan="2" align="center" style="background: #fff; color: red; font-size: 20px; font-weight: bold;" id="supendID">'.$usuari[0]['timer'].'</td>
-                </tr>
-                
-                <!-- Suspension --> ';
-                
-              }*/ 
-              echo '<TD ALIGN="RIGHT" CLASS="celda_etiqueta">Usuario:</TD><TD ALIGN="LEFT" CLASS="celda_info">'.$datos_usuario[nom_usuari].'</TD>
-              </TR>
-              <TR>
-                <TD ALIGN="RIGHT" CLASS="celda_etiqueta">Perfil:</TD><TD ALIGN="LEFT" CLASS="celda_info">'.$fila[0].'</TD>
-              <TR>
-                <TD  height="17" COLSPAN="2" BGCOLOR="#FFFFFF" class=titulo_menu><CENTER>
-                    <A HREF="session.php?op=2&usuario='.$datos_usuario[cod_usuari].'" TARGET="_parent"><FONT COLOR="#333333"><B>Cerrar Sesi&oacute;n</B></FONT></A>
-                </CENTER></TD>
-              </TR>
-              <TR>
-                <TD  height="17" COLSPAN="2" BGCOLOR="#FFFFFF" BACKGROUND="../'.DIR_APLICA_CENTRAL.'/estilos/'.ESTILO.'/imagenes/backg_03.gif"></TD>
-              </TR>
-            </TBODY>
-          </TABLE>';
-
-        //se traen los servicios de primer nivel sobre los que tiene permiso el usuario
-        $query = "SELECT a.cod_servic
-                    FROM ".CENTRAL.".tab_genera_servic a,
-                         ".BASE_DATOS.".$tabla_permisos b LEFT JOIN
-                         ".CENTRAL.".tab_servic_servic c ON b.cod_servic = c.cod_serhij
-                   WHERE a.cod_servic = b.cod_servic AND
-                         a.cod_aplica = '" . $this -> codigo . "' AND
-                         c.cod_serhij IS NULL AND
-                         b.$tipo_permiso = '$cod_permiso'
-                         ORDER BY a.ind_ordenx, a.nom_servic ASC";
-
-        $consulta = new Consulta($query, $this -> conexion);
-        $servicios[1] = $consulta -> ret_matriz();
-
-        //Si ya se ha desplegado una opcion del meno se traen de la bd todos los niveles desplegados
-        if(isset($_REQUEST["desplegados"]))
-        {
-            $desplegados = $_REQUEST["desplegados"];
-            for($i = 1; $i <= sizeof($desplegados); $i++)
-            {
-                $query = "SELECT a.cod_servic
-                            FROM ".BASE_DATOS.".$tabla_permisos a,
-                                 ".CENTRAL.".tab_servic_servic b,
-                                 ".CENTRAL.".tab_genera_servic c
-                           WHERE a.cod_servic = b.cod_serhij AND
-                                 a.cod_servic = c.cod_servic AND
-                                 b.cod_serpad = '" . $desplegados[$i] . "' AND
-                                 a.$tipo_permiso = '$cod_permiso'
-                                 ORDER BY c.ind_ordenx, c.nom_servic ASC ";
-                $consulta = new Consulta($query, $this -> conexion);
-                $servicios[$i+1] = $consulta -> ret_matriz();
-            }
-        }
-        
-        // Se llama a la funcion recursiva que publica el meno
-
-        echo "\n".'  <TABLE cellspacing=0 cellpadding=2 BORDER="0" WIDTH="100%" onLoad="document.getElementById('.$_REQUEST[cod_servic].').focus()">';
-        
-
-        $this -> publicar_menu($servicios, 1, $desplegados, '');
-
-        echo "\n  </TABLE>";
-
-        // Usuarios en Linea
-
-        echo "\n  <script language=\"javascript\" src=\"../".DIR_APLICA_CENTRAL."/js/pagina_hija.js\"></script>";
-// Funciones para Boton Limpiar
-    
-	echo "\n".'  <script type="text/JavaScript">
-	<!--
-	function MM_swapImgRestore() { //v3.0
-	var i,x,a=document.MM_sr; for(i=0;a&&i<a.length&&(x=a[i])&&x.oSrc;i++) x.src=x.oSrc;
-	}
-
-	function MM_preloadImages() { //v3.0
-	var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
-	var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
-	if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
-	}
-
-	function MM_findObj(n, d) { //v4.01
-	var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
-	d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
-	if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
-	for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
-	if(!x && d.getElementById) x=d.getElementById(n); return x;
-	}
-
-	function MM_swapImage() { //v3.0
-	var i,j=0,x,a=MM_swapImage.arguments; document.MM_sr=new Array; for(i=0;i<(a.length-2);i+=3)
-	if ((x=MM_findObj(a[i]))!=null){document.MM_sr[j++]=x; if(!x.oSrc) x.oSrc=x.src; x.src=a[i+2];}
-	}
-	//-->
-  </script>';
-
-        echo "\n  <TABLE WIDTH=\"100%\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"1\" bgcolor=\"#FFFFFF\">
-            <TBODY>
-              <TR>
-                <TD ALIGN=\"CENTER\" bgcolor=\"#F0F0F0\" ><BR>
-                  
-                  <TABLE cellspacing=0 cellpadding=0>
-                    <TBODY>";
-
-                if($_REQUEST[vac])
-
-                {
-
-                   $query3 = "DELETE FROM ".BASE_DATOS.".tab_usuari_session
-                                WHERE cod_usuari <> '$datos_usuario[cod_usuari]'
-                                   OR (cod_usuari = '$datos_usuario[cod_usuari]'
-                                  AND host_addr <>  '".getenv("REMOTE_ADDR")."')";
-
- //                  $consulta3 = new Consulta($query3, $this -> conexion);
-
-                }
-
-            $query = "SELECT a.cod_usuari
-
-                      FROM ".BASE_DATOS.".tab_usuari_session a, ".BASE_DATOS.".tab_genera_usuari b
-
-                      WHERE a.cod_usuari = b.cod_usuari";
-
-            if($datos_usuario["cod_perfil"] != COD_PERFIL_SUPERUSR)
-
-               $query .= " AND b.cod_perfil <> '".COD_PERFIL_SUPERUSR."'";
-
-   //         $consulta = new Consulta($query, $this -> conexion);
-
-     //       $users = $consulta -> ret_resultado();
-            if(isset($users))
-            {
-              while($user = mysql_fetch_array($users))
-
-              {
-
-                    if($user[cod_usuari] != $datos_usuario["cod_usuari"])
-
-                       echo "\n<tr><TD><FONT size=\"1\" COLOR=\"#333333\"><a href=# onClick=\"hija('".$datos_usuario["cod_usuari"]."', '', '".COD_SERVIC_MESSENGER."', 'compose', '$user[cod_usuari]', '".$_REQUEST["nom_basdat"]."', 'a', '250')\"><IMG width=\"10\" height=\"10\" border=\"0\" SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/usuario.gif\" width=10 border=0><B>$user[cod_usuari]</B></a></FONT></TD></tr>";
-
-                    else
-
-                    {
-
-                       echo "\n<tr><TD><FONT size=\"1\" COLOR=\"#333333\"><IMG width=\"10\" height=\"10\" border=\"0\" SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/usuario.gif\" width=10 border=0><B>$user[cod_usuari]</B></FONT></TD></tr>";
-
-                    }
-
-              }
-            }
-
-            echo "\n        </TBODY>
-                  </table><br>
-                </td>
-              </tr>
-              <TR>
-                <TD ALIGN=\"CENTER\" bgcolor=\"#F0F0F0\">
-                  <IMG SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/powered_by_intrared_peq.gif\" border=0><BR>
-                  <FONT color=#333333 size=1>&#169; 1995 - ".date("Y")." Intrared.net Ltda. Todos los Derechos Reservados.</FONT></TD>
-              </TR>
-            </TBODY>
-          </TABLE>";
-
-        $pagina_menu -> cerrar();
+        $tabla_permisos = "tab_servic_usuari";
+        $tipo_permiso = "cod_usuari";
+        $cod_permiso = $datos_usuario["cod_usuari"];
     }
+    else
+    {
+        $tabla_permisos = "tab_perfil_servic";
+        $tipo_permiso = "cod_perfil";
+        $cod_permiso = $datos_usuario["cod_perfil"];
+        $query = "SELECT nom_perfil
+                  FROM  tab_genera_perfil
+                  WHERE cod_perfil = '".$datos_usuario[cod_perfil]."'";
+        $consulta = new Consulta($query, $this->conexion);
+        $nom = $consulta -> ret_arreglo();
+        $datos_usuario["nom_perfil"] = $nom[0];
+    }
+
+    include_once( "../".DIR_APLICA_CENTRAL."/lib/general/menu_new.inc" );  
+    $menu = new Menu($datos_usuario, $tabla_permisos, $tipo_permiso, $cod_permiso, $this -> codigo, $this -> conexion);
+}
 
 
 
@@ -629,77 +407,61 @@ class Aplicacion_Seguridad
     function publicar_menu($servicios, $act_nivel, $desplegados, $txt_desplegados)
 
     {
-      
-        //este truquillo intercala el bullet de acuerdo al nivel
-        $nivel_identacion = $act_nivel%5;
+          //este truquillo intercala el bullet de acuerdo al nivel
 
-        //La identacion es el nomero de espacios que se deja para dar la apariencia de cascada junto con el bullet
+    $nivel_identacion = $act_nivel % 5;
 
-        $identacion = "";
+    //La identaciï¿½n es el nï¿½mero de espacios que se deja para dar la apariencia de cascada junto con el bullet
 
-        for($i = 1; $i <= $act_nivel; $i++)
+    $identacion = "";
 
-            $identacion = "&nbsp;&nbsp;" . $identacion;
+    for ($i = 1; $i <= $act_nivel; $i++)
 
+      $identacion = "&nbsp;&nbsp;" . $identacion;
 
+    //Se generan los links de cada item del menu en el nivel actual
 
-        //Se generan los links de cada item del menu en el nivel actual
-          
-        for($i = 0; $i < sizeof($servicios[$act_nivel]); $i++)
+    for ($i = 0; $i < sizeof($servicios[$act_nivel]); $i++) {
 
-        {
+      $servic = new Servic($servicios[$act_nivel][$i]["cod_servic"]);
 
-            $servic = new Servic($servicios[$act_nivel][$i]["cod_servic"]);
+      $servic -> listar($this -> conexion);
 
-            $servic -> listar($this -> conexion);
+      $datos_servic = $servic -> retornar();
 
-            $datos_servic = $servic -> retornar();
+      //Si el servicio es sim,plemente el padre de un grupo no tendra un archivo para incluir
 
-            //Si el servicio es sim,plemente el padre de un grupo no tendra un archivo para incluir
+      if ($datos_servic["rut_archiv"] == "") {
 
-            if(!$datos_servic["rut_archiv"])
+        //los txt_desplegados_representan el vector que almacena la opcion seleccionada en cada nivel
 
-            {
+        $tmp_txt_desplegados = $txt_desplegados . "&desplegados[$act_nivel]=$datos_servic[cod_servic]";
 
-                //los txt_desplegados_representan el vector que almacena la opcion seleccionada en cada nivel
+        $href = "index.php?window=menu$tmp_txt_desplegados&menant=$datos_servic[cod_servic]";
 
-                $tmp_txt_desplegados = $txt_desplegados . "&desplegados[$act_nivel]=$datos_servic[cod_servic]";
-                
-                $href = "index.php?window=menu$tmp_txt_desplegados&menant=$datos_servic[cod_servic]&usuario=$datos_usuario[cod_usuari]";
+        $target = "menuFrame";
 
-                $target = "menuFrame";
+      }
 
-            }
+      //Si no lo es se hace el link pï¿½ra que apunte al servicio en el frame Central
 
+      else {
 
+        $href = "index.php?window=central&cod_servic=$datos_servic[cod_servic]&menant=$datos_servic[cod_servic]";
 
-            //Si no lo es se hace el link pora que apunte al servicio en el frame Central
+        $target = "centralFrame";
 
-            else
+      }
 
-            {
+      echo "\n<tr><td class=\"menu_niv_$nivel_identacion\">$identacion<a href=\"$href\" id=\"$datos_servic[cod_servic]\" target=\"$target\"><img width=\"10\" height=\"10\" border=\"0\" src=\"../" . DIR_APLICA_CENTRAL . "/imagenes/bullet_$nivel_identacion.gif\">&nbsp;$datos_servic[nom_servic]</a></td></tr>";
 
-                $href = "index.php?window=central&cod_servic=$datos_servic[cod_servic]&menant=$datos_servic[cod_servic]";
+      //Si el servicio ha sido desplegado se llama nuevamente a la funciï¿½n para que despliegue a partir de este item.
 
-                $target = "centralFrame";
+      if (isset($desplegados[$act_nivel]) && $desplegados[$act_nivel] == $datos_servic["cod_servic"])
 
-            }
+        $this -> publicar_menu($servicios, $act_nivel + 1, $desplegados, $tmp_txt_desplegados);
 
-            echo "\n       ".'<TR>
-                <TD class= "celda_menu_n'.$nivel_identacion.'" onMouseOver="this.className=\'celda_menu_n'.$nivel_identacion.'_Hover\'" onMouseOut="this.className=\'celda_menu_n'.$nivel_identacion.'\'">&nbsp;&nbsp;<A id="'.$datos_servic[cod_servic].'" href="'.$href.'" target="'.$target.'" CLASS="menu_n'.$nivel_identacion.'"><IMG SRC="../'.DIR_APLICA_CENTRAL.'/estilos/'.ESTILO.'/imagenes/bullet_01.gif" WIDTH="10" HEIGHT="10" BORDER="0">&nbsp;'.$datos_servic[nom_servic].'</A></TD>
-              </TR>';
-
-//echo "\n<tr><td class=\"menu_niv_$nivel_identacion\">$identacion<a href=\"$href\" target=\"$target\"><img width=\"10\" height=\"10\" border=\"0\" src=\"../".DIR_APLICA_CENTRAL."/imagenes/bullet_$nivel_identacion.gif\">&nbsp;$datos_servic[nom_servic]</a></td></tr>";
-
-
-
-            //Si el servicio ha sido desplegado se llama nuevamente a la funcion para que despliegue a partir de este item.
-
-            if(isset($desplegados[$act_nivel]) && $desplegados[$act_nivel] == $datos_servic["cod_servic"])
-
-                $this -> publicar_menu($servicios, $act_nivel + 1, $desplegados, $tmp_txt_desplegados);
-
-        }
+    }
     }
 
     function mGetCodigo(){

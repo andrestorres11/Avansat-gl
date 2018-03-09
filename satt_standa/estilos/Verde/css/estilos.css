@@ -26,7 +26,7 @@
 body,
 td,
 th {
-    font-family: Times New Roman;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     color: #000000;
 }
@@ -42,26 +42,26 @@ a:hover {
 }
 
 .small {
-    font-family: Times New Roman;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     color: #000000;
 }
 
 .texto1 {
-    font-family: Times New Roman;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     color: #FFFFFF;
     font-weight: bold;
 }
 
 .titulo1 {
-    font-family: Times New Roman;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: bold;
 }
 
 .titulo2 {
-    font-family: Times New Roman;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     color: #CC3333;
     font-weight: bold;
@@ -209,13 +209,13 @@ a:hover {
 /*FORMULARIOS*/
 
 .form_01 {
-    font-family: Times New Roman;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     color: #000000;
 }
 
 .campo_texto {
-    font-family: Times New Roman;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     color: #000000;
     border: 1px solid #bababa;
@@ -224,7 +224,7 @@ a:hover {
 }
 
 .campo_texto_on {
-    font-family: Times New Roman;
+    font-family: Arial, Helvetica, sans-serif;
     font-size: 11px;
     color: #000000;
     border: 1px solid #bababa;
@@ -524,4 +524,99 @@ a:hover {
     min-height: 50px;
     border-radius: 5px;
     background-color: rgb(240, 240, 240);
+}
+
+/*Estilos de showmessage*/
+.notify {
+    background: #fff none repeat scroll 0 0;
+    border-radius: 3px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 50%;
+    padding: 12px 18px;
+}
+
+.notify h1 {
+    color: #444;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 1.7em;
+    letter-spacing: -0.05em;
+    line-height: 1.5em;
+    margin-bottom: 20px;
+    overflow: hidden;
+    padding: 0.1em 0;
+    position: relative;
+    text-align: center;
+    white-space: nowrap;
+}
+.notify h1::before, .notify h1::after {
+    background: #f0f0f0 none repeat scroll 0 0;
+    content: "";
+    display: inline-block;
+    height: 1px;
+    position: relative;
+    vertical-align: middle;
+    width: 50%;
+}
+.notify h1::before {
+    left: -0.5em;
+    margin: 0 0 0 -50%;
+}
+.notify h1::after {
+    left: 0.5em;
+    margin: 0 -50% 0 0;
+}
+.notify h1 > span {
+    display: inline-block;
+    vertical-align: middle;
+    white-space: normal;
+}
+
+.notify h1 {
+    margin-bottom: 6px;
+}
+
+.successbox h1 {
+    color: #678361;
+}
+.errorbox h1 {
+    color: #6f423b;
+}
+.infobox h1 {
+    color: #7DCCFC;
+}
+.errobdbox h1{
+    color: #515151;
+}
+
+.warningbox h1{
+    color: #FFA500;
+}
+
+.successbox h1::before, .successbox h1::after {
+    background: #cad8a9 none repeat scroll 0 0;
+}
+.errorbox h1::before, .errorbox h1::after {
+    background: #d6b8b7 none repeat scroll 0 0;
+}
+
+.infobox h1::before, .infobox h1::after {
+    background: #b6c4d3 none repeat scroll 0 0;
+}
+
+
+.errobdbox h1::before, .errobdbox h1::after {
+    background: #515151 none repeat scroll 0 0;
+}
+
+.warningbox h1::before, .warningbox h1::after {
+    background: #FFA500 none repeat scroll 0 0;
+}
+
+.notify .alerticon {
+    display: block;
+    margin-bottom: 10px;
+    text-align: center !important;
 }
