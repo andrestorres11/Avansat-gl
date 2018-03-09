@@ -73,7 +73,7 @@
 !satt_standa/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/
 !satt_standa/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*/*
 
-
+satt_faro/guia_login.inc
 satt_faro/imagenes/*
 satt_faro/import/*
 satt_faro/images/*

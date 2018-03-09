@@ -26,9 +26,9 @@ $(document).ready(function($) {
 	var img_fon = $("#img_fonID").val();
 	var col_fon = $("#col_fonID").val();
 	var col_bot = $("#col_botID").val();
-	if (col_fon != '#285c00' && img_fon == "../satt_standa/imagenes/11.jpg") {
+	if (col_fon != '#b80404' && img_fon == "../sate_standa/imagenes/login/9.jpg") {
+		$("#wrapper").css("background-color", ""+ col_fon +"!important");
 		$("#wrapper").css("background-image", "none");
-		//$("#wrapper").css("background-color", ""+ col_fon +" !important");
 	}else{
 		$("#wrapper").css("background-image", "url("+img_fon+")");
 	}
@@ -165,15 +165,4 @@ function bloquear()
 function desbloquear()
 {
   $.unblockUI();
-}
-
-function validaIngresar(form)
-{
-        if(!form.usuario.value || !form.clave.value)
-        {
-                alert('Digite Usuario y Clave');
-                form.usuario.focus();
-                return(false)
-        }
-        else form.op.value = 1;
 }

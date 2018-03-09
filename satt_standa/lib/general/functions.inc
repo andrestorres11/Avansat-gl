@@ -181,6 +181,41 @@ function ShowError( $message )
     echo $html;
 }
 
+function ShowMessage($type, $title, $message, $die = false) {
+
+    switch ($type) {
+        case 'a':
+            $labeltype = 'warningbox';
+            $imagetype = 'warning.png';
+            break;
+        case 's':
+            $labeltype = 'successbox';
+            $imagetype = 'check2.png';
+            break;
+        case 'i':
+            $labeltype = 'infobox';
+            $imagetype = 'info.png';
+            break;
+        default:
+            $labeltype = 'errorbox';
+            $imagetype = 'error2.png';
+            break;
+    }
+
+
+    echo '<div class="notify ' . $labeltype . '">
+            <h1>' . $title . '!</h1>
+              <span class="alerticon">
+                <img src="../' . DIR_APLICA_CENTRAL . '/imagenes/' . $imagetype . '" style="width: 32px;">
+              </span>
+              <p>' . $message . '</p>
+          </div>';
+
+    if($die == true){
+        die();
+    }
+}
+
 
 function ArrayUnique( $mArray )
 {
