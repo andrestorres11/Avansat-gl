@@ -1425,7 +1425,8 @@ class InsertNovedad {
      */
 
     private function getDataBasicDespac($mNumDespac) {
-        $mSql = "SELECT a.cod_rutasx, a.cod_transp, b.con_telmov, 
+        $mSql = "SELECT a.cod_rutasx, a.cod_transp,
+                        IF( b.con_telmov IS NULL OR b.con_telmov = '', d.num_telmov, b.con_telmov ) AS con_telmov, 
                         b.cod_tipdes, a.num_placax, b.cod_manifi, 
                         b.ind_defini, a.fec_salipl, c.dir_emailx, 
                         c.abr_tercer AS nom_transp, 
