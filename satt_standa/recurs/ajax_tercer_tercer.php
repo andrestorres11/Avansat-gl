@@ -432,9 +432,9 @@ class tercer {
         $datos = new stdClass();
 
         $tipoTercero [0][0] = "";
-        $tipoTercero [0][1] = utf8_decode("Seleccione una Opción");
+        $tipoTercero [0][1] = "Seleccione una Opción";
         $tipoTercero [1][0] = 1;
-        $tipoTercero [1][1] = utf8_decode("Jurídica");
+        $tipoTercero [1][1] = "Jurídica";
         $tipoTercero [2][0] = 2;
         $tipoTercero [2][1] = "Natural";
         $datos->tipoTercero = $tipoTercero;

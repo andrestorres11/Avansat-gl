@@ -2457,8 +2457,9 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
 					AND a.fec_salida IS NOT NULL 
-					AND a.fec_salida <= NOW() 
-					".( $mNumDespac != NULL ? "" : ($mIndFinrut == true ? " AND a.fec_llegad IS NOT NULL AND a.fec_llegad != '0000-00-00 00:00:00' " : " AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00') ") )."
+					AND a.fec_salida <= NOW()  
+					-- ".( $mNumDespac != NULL ? "" : ($mIndFinrut == true ? " AND a.fec_llegad IS NOT NULL AND a.fec_llegad != '0000-00-00 00:00:00' " : " AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00') ") )."
+					".( $mIndFinrut == true ? " AND a.fec_llegad IS NOT NULL AND a.fec_llegad != '0000-00-00 00:00:00' " : " AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00') ")."
 					".( $mNumDespac == NULL ? " AND a.ind_anulad = 'R' AND b.ind_activo = 'S' " : "" )."
 					AND a.ind_planru = 'S' 
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
@@ -2502,12 +2503,13 @@ class Despac
 			$mSql .= $_REQUEST[cod_manifi] ? " AND a.cod_manifi = '{$_REQUEST[cod_manifi]}' " : "";
 			$mSql .= $_REQUEST[cod_tercer] ? " AND h.cod_tercer = '{$_REQUEST[cod_tercer]}' " : "";
 		}else
-			$mSql .= " AND a.num_despac = '{$mNumDespac}' ";
+			$mSql .= " AND a.num_despac = '{$mNumDespac}' -- msmsmsm ";
 
 		$mSql .= " GROUP BY a.num_despac ";
 		$mSql .= $mIndFinrut == false ? "" : " ORDER BY a.fec_llegad DESC ";
 		$mSql .= $mIndFinrut == false ? "" : " LIMIT 10 ";
 
+		// echo "<pre id='TorresAndres' $mNumDespac $mIndFinrut style='display:none' >"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $mConsult -> ret_matrix('a');
 	}
