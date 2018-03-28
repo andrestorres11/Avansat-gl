@@ -562,7 +562,7 @@ function PopupVehiculos() {
       draggable: false,
       title: " Selecci\xf3n del Veh\xedculo",
       width: $(document).width() - 200,
-      heigth: 500,
+      heigth: 200,
       position: ['middle', 25],
       bgiframe: true,
       closeOnEscape: false,
@@ -581,6 +581,7 @@ function PopupVehiculos() {
       method: 'POST',
       beforeSend: function() {
         $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader2.gif" /></td></tr><tr><td></td></tr></table>');
+        $("#PopUpID").css({ 'height':'500px' });
       },
       success: function(data) {
         $("#PopUpID").html(data);
@@ -594,7 +595,8 @@ function PopupVehiculos() {
 
 function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc, num_modelo, num_config, cod_tenedo, cod_conduc, nom_tenedo, nom_conduc, cod_propie, nom_propie) {
   try {
-    $("#num_placaxID").focus();
+    //$("#num_placaxID").focus();
+    var cod_transp = $("#cod_transpID").val();
     $("#num_placaxID").val(num_placax);
     var submit = $("#submitID").val();
     if (submit == 1) {
@@ -627,7 +629,7 @@ function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc,
     var expr = /[a-zA-Z]/;
     if (num_config.match(expr)) {
       $("#des_numremID").html("<b>* Remolque:&nbsp;&nbsp;&nbsp;</b>");
-      $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" obl="1" minlength="4" validate="alpha" maxlength="7" size="10">');
+      $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" obl="1" minlength="4" validate="alpha" maxlength="7" size="10" onfocus="this.className=\'campo_texto_on\'" onchange="getRemolq($(this), '+ cod_transp +',1);"> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupRemolques()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled">');
     } else {
       $("#des_numremID").html("&nbsp;&nbsp;&nbsp;");
       $("#nom_numremID").html('<input type="hidden" name="cod_remolq" id="cod_remolqID" value="not" maxlenght="7" size="10">');
@@ -1364,4 +1366,223 @@ function otroSitioCargue() {
   $("#hor_citar" + cantidad).timepicker({
     showSecond: false
   });
+}
+
+/* ! \fn: getVehiculo
+ *  \brief: valida los vehiculos cuando se escriben
+ *  \author: Andres Torres Vega
+ *  \date: 18/12/2017
+ *  \date modified: dd/mm/aaaa
+ *  \param: obj input placa 
+ *  \param: cod_transp nit de la empresa
+ *  \return: type
+ */
+function getVehiculo(obj, cod_transp, flag) {
+    try{
+      if(flag == '1'){
+        var num_placax = $(obj).val();
+      }else{
+        var num_placax = $(obj).parent().parent().find("input[id^=num_placax]").val();
+      }
+      $("#loading").remove();
+      var cod_transp = $("#cod_transpID").val();
+      var standa = $("#standaID").val();
+      if (num_placax != '') {
+        $.ajax({
+          url: "../" + standa + "/desnew/ajax_desnew_despac.php",
+          data: 'standa=' + standa + '&option=getVehiculo&cod_transp=' + cod_transp + '&num_placax=' + num_placax + '&flag=' + flag,
+          method: 'POST',
+          beforeSend: function() {
+            $("#cod_conducID").focus().after("<span id='loading'> <img src=\'../" + standa + "/imagenes/ajax-loader3.gif\' /></span>");
+          },
+          success: function(data) {
+            $("#loading").remove();
+            if (data != '') {
+              var datos = $.parseJSON(data);
+              SetVehiculo(datos["0"]["0"],datos["0"]["5"],datos["0"]["6"],datos["0"]["7"],datos["0"]["8"],datos["0"]["9"],datos["0"]["12"],datos["0"]["13"],datos["0"]["14"],datos["0"]["1"],datos["0"]["3"],datos["0"]["15"],datos["0"]["16"]);
+            } else {
+              alert("EL VEHICULO " + num_placax + " NO EXISTE");
+              $("#num_placaxID").val('');
+              $("#nom_marcaxID").html('');
+              $("#nom_colorxID").html('');
+              $("#nom_carrocID").html('');
+              $("#nom_modeloID").html('');
+              $("#nom_configID").html('');
+              $("#nom_codproID").html('');
+              $("#nom_nomproID").html('');
+              $("#nom_codtenID").html('');
+              $("#nom_nomtenID").html('');
+              $("#cod_conducID").val('');
+              $("#nom_nomconID").html('');
+
+            }
+          }
+        });
+    }
+    } catch (e) {
+        console.log("Error Function getVehiculo: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+function PopupRemolques() {
+  try {
+    var standa = $("#standaID").val();
+    var cod_transp = $("#cod_transpID").val();
+    $("#Pnum_placaxID").focus();
+    $("#PopUpID").dialog({
+      modal: true,
+      resizable: false,
+      draggable: false,
+      title: " Selecci\xf3n del Remolque",
+      width: $(document).width() - 200,
+      heigth: 200,
+      position: ['middle', 25],
+      bgiframe: true,
+      closeOnEscape: false,
+      show: {
+        effect: "drop",
+        duration: 300
+      },
+      hide: {
+        effect: "drop",
+        duration: 300
+      }
+    });
+    $.ajax({
+      url: "../" + standa + "/desnew/ajax_desnew_despac.php",
+      data: 'standa=' + standa + '&option=LoadRemolques&cod_transp=' + cod_transp,
+      method: 'POST',
+      beforeSend: function() {
+        $("#Pnum_placaxID").focus();    
+        $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader2.gif" /></td></tr><tr><td></td></tr></table>');
+        $("#PopUpID").css({ 'height':'500px' });
+      },
+      success: function(data) {
+        $("#PopUpID").html(data);
+      }
+    });
+  } catch (e) {
+    console.log(e.message);
+    return false;
+  }
+}
+
+function SetRemolque(num_remolq, nom_marcax, nom_lineax, nom_colorx, nom_carroc, num_modelo, num_config, cod_tenedo, cod_conduc, nom_tenedo, nom_conduc, cod_propie, nom_propie) {
+  try {
+    //$("#num_placaxID").focus();
+    $("#num_placaxID").val(num_placax);
+    var submit = $("#submitID").val();
+    if (submit == 1) {
+      document.form_insert.submit();
+    }
+    $("#des_marcaxID").html("<b>Marca:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_marcaxID").html("&nbsp;" + nom_marcax);
+    $("#des_colorxID").html("<b>Color:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_colorxID").html("&nbsp;" + nom_colorx);
+    $("#des_carrocID").html("<b>Carrocer&iacute;a:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_carrocID").html("&nbsp;" + nom_carroc);
+    $("#des_modeloID").html("<b>Modelo:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_modeloID").html("&nbsp;" + num_modelo);
+    $("#des_configID").html("<b>Configuraci&oacute;n:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_configID").html("&nbsp;" + num_config);
+    $("#des_codproID").html("<b>Documento Propietario:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_codproID").html("&nbsp;" + cod_propie);
+    $("#des_nomproID").html("<b>Nombre Propietario:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_nomproID").html("&nbsp;" + nom_propie);
+    $("#des_codtenID").html("<b>Documento Tenedor:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_codtenID").html("&nbsp;" + cod_tenedo);
+    $("#des_nomtenID").html("<b>Nombre Tenedor:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_nomtenID").html("&nbsp;" + nom_tenedo);
+    //$("#lab_conducID").html( "<b>Nota:</b> Si desea cambiar el conductor para el despacho por favor haga doble click sobre el campo." );
+
+    $("#des_codconID").html("<b>* Documento Conductor:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_codconID").html('<input type="text" value="' + cod_conduc + '" name="cod_conduc" id="cod_conducID" obl="1" minlength="6" maxlength="10" validate="numero" onchange="ValidateExistConduc( this.value );" size="15" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" />');
+    $("#des_nomconID").html("<b>Nombre Conductor:&nbsp;&nbsp;&nbsp;</b>");
+    $("#nom_nomconID").html("&nbsp;" + nom_conduc);
+    var expr = /[a-zA-Z]/;
+    if (num_config.match(expr)) {
+      $("#des_numremID").html("<b>* Remolque:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" onfocus="this.className=\'campo_texto_on\'" obl="1" minlength="4" validate="alpha" maxlength="7" size="10" class="campo_texto_on"> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupRemolques()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled">');
+    } else {
+      $("#des_numremID").html("&nbsp;&nbsp;&nbsp;");
+      $("#nom_numremID").html('<input type="hidden" name="cod_remolq" id="cod_remolqID" value="not" maxlenght="7" size="10">');
+    }
+    $("#PopUpID").dialog('close');
+  } catch (e) {
+    console.log(e.message);
+    return false;
+  }
+}
+
+/* ! \fn: getRemolq
+ *  \brief: valida los remolques cuando se escriben
+ *  \author: Andres Torres Vega
+ *  \date: 18/12/2017
+ *  \date modified: dd/mm/aaaa
+ *  \param: obj input placa 
+ *  \param: cod_transp nit de la empresa
+ *  \return: type
+ */
+function getRemolq(obj, cod_transp, flag) {
+    try{
+      if(flag == '1'){
+        var num_remolq = $(obj).val();
+      }else{
+        var num_remolq = $(obj).parent().parent().find("input[id^=num_remolq]").val();
+      }
+      $("#loading").remove();
+      var cod_transp = $("#cod_transpID").val();
+      var standa = $("#standaID").val();
+      if (num_remolq != '') {
+        $.ajax({
+          url: "../" + standa + "/desnew/ajax_desnew_despac.php",
+          data: 'standa=' + standa + '&option=getRemolq&cod_transp=' + cod_transp + '&num_remolq=' + num_remolq + '&flag=' + flag,
+          method: 'POST',
+          beforeSend: function() {
+            $("#cod_conducID").focus().after("<span id='loading'> <img src=\'../" + standa + "/imagenes/ajax-loader3.gif\' /></span>");
+          },
+          success: function(data) {
+            $("#loading").remove();
+            if (data != '') {
+              var datos = $.parseJSON(data);
+              $("#cod_remolqID").val(datos['0']['0']);
+              $("#cod_remolqID").val(num_remolq);
+              var submit = $("#submitID").val();
+              if (submit == 1) {
+                document.form_insert.submit();
+              }
+              $("#PopUpID").dialog('close');
+            } else {
+              alert("EL REMOLQUE " + num_remolq + " NO EXISTE");
+              $("#cod_remolqID").val('');
+            }
+          }
+        });
+    }
+    } catch (e) {
+        console.log("Error Function getRemolq: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+}
+
+function newRemolq() {
+  try {
+    var standa = $("#standaID").val();
+    var cod_transp = $("#cod_transpID").val();
+    $.ajax({
+      url: "../" + standa + "/desnew/ajax_desnew_despac.php",
+      data: 'standa=' + standa + '&option=FormnewVehiculo&cod_transp=' + cod_transp,
+      method: 'POST',
+      beforeSend: function() {
+        $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader2.gif" /></td></tr><tr><td></td></tr></table>');
+      },
+      success: function(data) {
+        $("#PopUpID").html(data);
+      }
+    });
+  } catch (e) {
+    console.log(e.message);
+    return false;
+  }
 }
