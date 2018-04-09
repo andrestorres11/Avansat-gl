@@ -852,5 +852,35 @@ function DataMethod()
   else
     return FALSE;
 }
+
+/*! \fn: lista
+   *  \brief: Crea una lista desplegable para el formulario
+   *  \author: Ing. Fabian Salinas
+   *  \date: 14/07/2015
+   *  \date modified: dia/mes/año
+   *  \param: mTitulo  String  Titulo del Campo
+   *  \param: mNomSel  String  Nombre del Select
+   *  \param: mMatriz  Matriz  Matriz con las opciones
+   *  \param: mClass  String  Nombre de la clase para el <td>
+   *  \param: mObliga  boolean  Si el campo es obligatorio agrega *
+   *  \return: 
+   */
+  function lista( $mTitulo, $mNomSel, $mMatriz, $mClass, $mObliga = 0 )
+  {
+    $mHtml = '<td class="'.$mClass.'" align="right">'.( $mObliga ? '*' : '' ).$mTitulo.'</td>';
+
+    $mHtml .= '<td class="'.$mClass.'">'; 
+    $mHtml .= '<select name="'.$mNomSel.'" id="'.$mNomSel.'ID" onKeypress=buscar_op(this)>';
+
+    $n = sizeof($mMatriz);
+    for($i = 0; $i < $n; $i++){
+      $mHtml .= '<option value="'.$mMatriz[$i][0].'">'.$mMatriz[$i][1].'</option>';
+    }
+
+    $mHtml .= '</select>';
+    $mHtml .= '</td>';
+
+    return $mHtml;
+  }
   
 ?>

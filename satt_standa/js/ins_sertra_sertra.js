@@ -7,7 +7,12 @@
  *  \bug:
  *  \warning:
  */
-
+ function autocomplete(){
+    $("#cod_agenciID").multiselect().multiselectfilter();
+ }
+$("body").ready(function() {
+ $("#cod_agenciID option[value=" + $("#sel_agenciID").val() + "]").attr("selected", "selected");
+});
 var parameters = "";
 $(function() {
     var standa = $("#standaID").val();
@@ -65,7 +70,7 @@ $(function() {
  *  \brief: mostrar los datos de la configuracion actual de la transportdora
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param:
  *  \return
  */
@@ -157,8 +162,8 @@ function mostrar() {
 
     } else {
         swal({
-            title: "Parametrizaci贸n",
-            text: "Por favor verifica tu conexi贸n a internet.",
+            title: "Parametrizaci髇",
+            text: "Por favor verifica tu conexi髇 a internet.",
             type: "warning"
         });
     }
@@ -167,7 +172,7 @@ function mostrar() {
  *  \brief: funcion para configurar el horario laboral de una empresa
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: cod_tercer     => string => codigo de la empresa   
  *  \param: cod_ciudad     => string => codigo de ciudad en la cual aplica el horario     
  *  \return return
@@ -220,8 +225,8 @@ function CreateConfig(cod_tercer, cod_ciudad) {
                     if (datos == '1') {
                         closePopUp("PopUpID");
                         swal({
-                            title: "Parametrizaci贸n",
-                            text: "Todos los d铆as ya parametrizados.",
+                            title: "Parametrizaci髇",
+                            text: "Todos los d韆s ya parametrizados.",
                             type: "warning"
                         });
                     } else {
@@ -232,8 +237,8 @@ function CreateConfig(cod_tercer, cod_ciudad) {
             });
         } else {
             swal({
-                title: "Parametrizaci贸n",
-                text: "Por favor verifica tu conexi贸n a internet.",
+                title: "Parametrizaci髇",
+                text: "Por favor verifica tu conexi髇 a internet.",
                 type: "warning"
             });
 
@@ -248,7 +253,7 @@ function CreateConfig(cod_tercer, cod_ciudad) {
  *  \brief: busca los festivos registrados
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: 
  *  \return 
  */
@@ -269,7 +274,7 @@ function setFestivos() {
                     modal: true,
                     resizable: false,
                     draggable: false,
-                    title: "Festivos del a帽o " + sel_yearxx,
+                    title: "Festivos del a駉 " + sel_yearxx,
                     width: 800,
                     heigth: 500,
                     position: ['middle', 25],
@@ -325,8 +330,8 @@ function setFestivos() {
             }
         } else {
             swal({
-                title: "Parametrizaci贸n",
-                text: "Por favor verifica tu conexi贸n a internet.",
+                title: "Parametrizaci髇",
+                text: "Por favor verifica tu conexi髇 a internet.",
                 type: "warning"
             });
         }
@@ -341,7 +346,7 @@ function setFestivos() {
  *  \brief: inserta un nuevo festivo para una empresa en una ciudad
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: cod_tercer     => string => nit de la empresa    
  *  \param: ind_config     => int => indicador de configuracion   
  *  \param: cod_ciudad     => string => codigo de ciudad en la cual aplica el festivo    
@@ -378,7 +383,7 @@ function InsertFestivo(cod_tercer, ind_config, cod_ciudad) {
                         if (datos == '9999') {
                             swal({
                                 title: "Registrar Festivo",
-                                text: "Atenci贸n esta fecha ya esta configurada como festivo.",
+                                text: "Atenci髇 esta fecha ya esta configurada como festivo.",
                                 type: "warning"
                             });
                         } else if (datos == '1991') {
@@ -401,7 +406,7 @@ function InsertFestivo(cod_tercer, ind_config, cod_ciudad) {
         } else {
             swal({
                 title: "Registrar Festivo",
-                text: "Por favor verifica tu conexi贸n a internet.",
+                text: "Por favor verifica tu conexi髇 a internet.",
                 type: "warning"
             });
         }
@@ -415,11 +420,11 @@ function InsertFestivo(cod_tercer, ind_config, cod_ciudad) {
  *  \brief: elimina un festivo para una empresa en una ciudad
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: cod_tercer     => string => nit de la empresa    
  *  \param: ind_config     => int => indicador de configuracion   
  *  \param: cod_ciudad     => string => codigo de ciudad en la cual aplica el festivo    
- *  \param: ano     => string => a帽o    
+ *  \param: ano     => string => a駉    
  *  \param: mes     => string => mes   
  *  \param: dia     => string => dia    
  *  \return return
@@ -431,7 +436,7 @@ function deleteFestivo(cod_transp, ind_config, cod_ciudad, ano, mes, dia) {
             var standa = $("#standaID").val();
             swal({
                 title: "Eliminar Festivo",
-                text: "驴Realmente Deseas Eliminar el festivo seleccionado?",
+                text: "縍ealmente Deseas Eliminar el festivo seleccionado?",
                 type: "warning",
                 showCancelButton: true,
                 closeOnConfirm: false,
@@ -483,7 +488,7 @@ function deleteFestivo(cod_transp, ind_config, cod_ciudad, ano, mes, dia) {
  *  \brief: habilita o deshabilita los campos de fecha y precio en las eal contratadas
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: key     => int => indicador de la eal seleccionada    
  *  \return 
  */
@@ -510,7 +515,7 @@ function habilitar(key) {
  *  \brief: inserta toda la configuracion de una transportadora
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: 
  *  \return 
  */
@@ -535,13 +540,13 @@ function registrarTipoServicio() {
         if (tie_trazab) {
             if (isNaN(tie_trazab)) {
                 setTimeout(function() {
-                    inc_alerta("tie_trazabID", "Solo se aceptan n煤meros");
+                    inc_alerta("tie_trazabID", "Solo se aceptan n鷐eros");
                 }, 510);
                 val = false;
             } else {
                 if (parseFloat(tie_trazab) > 12) {
                     setTimeout(function() {
-                        inc_alerta("tie_trazabID", "Rango m谩ximo de 12 horas");
+                        inc_alerta("tie_trazabID", "Rango m醲imo de 12 horas");
                     }, 510);
                     val = false;
                 }
@@ -550,7 +555,7 @@ function registrarTipoServicio() {
         if (val == true) {
             swal({
                 title: "Tipo de Servicio",
-                text: "驴Realmente Deseas Actualizar la configuraci贸n de la transportadora?",
+                text: "縍ealmente Deseas Actualizar la configuraci髇 de la transportadora?",
                 type: "warning",
                 showCancelButton: true,
                 closeOnConfirm: false,
@@ -589,8 +594,8 @@ function registrarTipoServicio() {
         }
     } else {
         swal({
-            title: "Parametrizaci贸n",
-            text: "Por favor verifica tu conexi贸n a internet.",
+            title: "Parametrizaci髇",
+            text: "Por favor verifica tu conexi髇 a internet.",
             type: "warning"
         });
     }
@@ -601,7 +606,7 @@ function registrarTipoServicio() {
  *  \brief: activa e inactiva varios input en el formulario
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/206    
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param:   indicador => int => indica cual check se ha seleccionado 
  *  \return return
  */
@@ -666,7 +671,7 @@ function enableDisable(indicador) {
  *  \brief: complementaria de la funcion EnableDisable
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: ind     => boolean => indice de los campos a habilirar o inabilitar    
  *  \param: campos     => array => arreglo con los campos a tratar    
  *  \return 
@@ -689,7 +694,7 @@ function activar(ind, campos) {
  *  \brief: registra un dia laboral de la semana
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
  *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
  *  \return 
@@ -730,8 +735,8 @@ function NewParametrizacion(cod_ciudad) {
         });
         if (contador > 1) {
             swal({
-                title: "Parametrizaci贸n",
-                text: "Solo se pueden seleccionar d铆as de una lista.",
+                title: "Parametrizaci髇",
+                text: "Solo se pueden seleccionar d韆s de una lista.",
                 type: "warning"
             });
             errores = true;
@@ -741,8 +746,8 @@ function NewParametrizacion(cod_ciudad) {
         }
         if (nue_combin == "") {
             swal({
-                title: "Parametrizaci贸n",
-                text: "Seleccione por lo menos un d铆a de la semana.",
+                title: "Parametrizaci髇",
+                text: "Seleccione por lo menos un d韆 de la semana.",
                 type: "warning"
             });
             errores = true;
@@ -757,7 +762,7 @@ function NewParametrizacion(cod_ciudad) {
                 beforeSend: function() {
                     $.blockUI({
                         theme: true,
-                        title: 'Registrando configuraci贸n',
+                        title: 'Registrando configuraci髇',
                         draggable: false,
                         message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Registrando...</p></center>'
                     });
@@ -766,16 +771,16 @@ function NewParametrizacion(cod_ciudad) {
                     $.unblockUI();
                     if (datos == '1000') {
                         swal({
-                            title: "Parametrizaci贸n",
-                            text: "Configuraci贸n registrada con 茅xito.",
+                            title: "Parametrizaci髇",
+                            text: "Configuraci髇 registrada con 閤ito.",
                             type: "success"
                         });
                         $("#PopUpID").dialog('close');
                         mostrar();
                     } else {
                         swal({
-                            title: "Parametrizaci贸n",
-                            text: "Error al registrar la configuraci贸n, por favor intenta nuevamente.",
+                            title: "Parametrizaci髇",
+                            text: "Error al registrar la configuraci髇, por favor intenta nuevamente.",
                             type: "warning"
                         });
                         swal("");
@@ -786,8 +791,8 @@ function NewParametrizacion(cod_ciudad) {
         }
     } else {
         swal({
-            title: "Parametrizaci贸n",
-            text: "Por favor verifica tu conexi贸n a internet.",
+            title: "Parametrizaci髇",
+            text: "Por favor verifica tu conexi髇 a internet.",
             type: "warning"
         });
     }
@@ -798,7 +803,7 @@ function NewParametrizacion(cod_ciudad) {
  *  \brief: funcion para confirmar que no se exeda el rango maximo de 12 horas y que solo se inserten numeros
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: 
  *  \return 
  */
@@ -806,10 +811,10 @@ function validaCampo() {
     var tie_trazab = $("#tie_trazabID").val();
     if (tie_trazab) {
         if (isNaN(tie_trazab)) {
-            inc_alerta("tie_trazabID", "Solo se aceptan n煤meros");
+            inc_alerta("tie_trazabID", "Solo se aceptan n鷐eros");
         } else {
             if (parseFloat(tie_trazab) > 12) {
-                inc_alerta("tie_trazabID", "Rango m谩ximo de 12 horas");
+                inc_alerta("tie_trazabID", "Rango m醲imo de 12 horas");
             }
         }
     }
@@ -819,7 +824,7 @@ function validaCampo() {
  *  \brief: elimina una parametrizacio laboral
  *  \author: Ing. Alexander Correa
  *  \date: 16/05/2016
- *  \date modified: dia/mes/a帽o
+ *  \date modified: dia/mes/a駉
  *  \param: cod_transp => int => codigo de la transportadora a la que se le eliminara el dia laboral    
  *  \param: dia => string => dia(s) a eliminar 
  *  \return 
@@ -827,8 +832,8 @@ function validaCampo() {
 function deleteConfiguracion(cod_transp, dia, ind_config) {
     try {
         swal({
-            title: "Eliminar Configuraci贸n",
-            text: "驴Realmente Deseas eliminar la configuraci贸n seleccionada?",
+            title: "Eliminar Configuraci髇",
+            text: "縍ealmente Deseas eliminar la configuraci髇 seleccionada?",
             type: "warning",
             showCancelButton: true,
             closeOnConfirm: false,
@@ -843,8 +848,8 @@ function deleteConfiguracion(cod_transp, dia, ind_config) {
                 success: function(datos) {
                     if (datos == 1) {
                         swal({
-                            title: "Eliminar Configuraci贸n",
-                            text: "Datos eliminados con 茅xito.",
+                            title: "Eliminar Configuraci髇",
+                            text: "Datos eliminados con 閤ito.",
                             type: "success"
                         }, function() {
                             parameters = getDataForm();
@@ -852,7 +857,7 @@ function deleteConfiguracion(cod_transp, dia, ind_config) {
                         });
                     } else {
                         swal({
-                            title: "Eliminar Configuraci贸n",
+                            title: "Eliminar Configuraci髇",
                             text: "Error al eliminar los datos, intenta nuevamente. Si el error persiste por favor informar.",
                             type: "error"
                         });
@@ -863,5 +868,486 @@ function deleteConfiguracion(cod_transp, dia, ind_config) {
         });
     } catch (e) {
         console.log(e.message);
+    }
+}
+/* ! \fn: deleteContac
+ *  \brief: elimina una contacto
+ *  \author: Ing. Andres Torres
+ *  \date: 08/02/2018
+ *  \date modified: dia/mes/a駉
+ *  \param: cod_transp => int => codigo de la transportadora a la que se le eliminara el contacto
+ *  \param: ema_contac => llave del contacto 
+ *  \return 
+ */
+function deleteContac(cod_transp, ema_contac) {
+    try {
+        swal({
+            title: "Eliminar Contacto",
+            text: "縍ealmente Deseas eliminar el Contacto seleccionado?",
+            type: "warning",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+        }, function() {
+            var standa = $("#standaID").val();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=deleteContac&cod_transp=" + cod_transp + "&ema_contac=" + ema_contac,
+                async: true,
+                success: function(datos) {
+                    if (datos == 1) {
+                        swal({
+                            title: "Eliminar Contacto",
+                            text: "Datos eliminados con 閤ito.",
+                            type: "success"
+                        }, function() {
+                            parameters = getDataForm();
+                            mostrar();
+                        });
+                    } else {
+                        swal({
+                            title: "Eliminar Contacto",
+                            text: "Error al eliminar los datos, intenta nuevamente. Si el error persiste por favor informar.",
+                            type: "error"
+                        });
+                    }
+                }
+
+            });
+        });
+    } catch (e) {
+        console.log(e.message);
+    }
+}
+
+/* ! \fn: CreateContac
+ *  \brief: funcion para insertar un contacto
+ *  \author: Ing. Andres torres
+ *  \date: 08/02/2018
+ *  \date modified: dia/mes/a駉
+ *  \param: cod_tercer     => string => codigo de la empresa   
+ *  \param: cod_ciudad     => string => email cliente     
+ *  \return return
+ */
+function CreateContac(cod_transp, ema_contac, id_contac) {
+    try {
+        var conn = checkConnection();
+        var standa = $("#standaID").val();
+        var transp = $("#cod_transpID").val();
+
+        if (conn) {
+            var standa = $("#standaID").val();
+            var transp = $("#cod_transpID").val();
+            var nom_contac = $("#nom_contacID").val();
+            var ema_contac = $("#ema_contacID").val();
+            var tel_contac = $("#tel_contacID").val();
+            var car_contac = $("#car_contacID").val();
+            var obs_contac = $("#obs_contacID").val();
+            var cod_agenci = "";
+            $("#PopUpID").dialog({
+                modal: true,
+                resizable: false,
+                draggable: false,
+                title: "Creaci髇 de Contacto",
+                width: 800,
+                heigth: 500,
+                position: ['middle', 25],
+                bgiframe: true,
+                closeOnEscape: false,
+                show: {
+                    effect: "drop",
+                    duration: 300
+                },
+                hide: {
+                    effect: "drop",
+                    duration: 300
+                },
+                open: function(event, ui) {
+                    $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                },
+                buttons: {
+                    Guardar: function() {
+                        NewContac(ema_contac);
+                    },
+                    Cerrar: function() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=CreateContac&standa=" + standa + "&cod_transp=" + transp + "&ema_contac=" + ema_contac + "&nom_contac=" + nom_contac + "&obs_contac=" + obs_contac + "&car_contac=" + car_contac + "&tel_contac=" + tel_contac + "&cod_agenci=" + cod_agenci + "&ind_edicio=0",
+                async: true,
+                beforeSend: function() {
+                    $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+                },
+                success: function(datos) {
+                    if (datos == '1') {
+                        closePopUp("PopUpID");
+                        swal({
+                            title: "Creaci髇 de Contacto",
+                            text: "Se creo el contacto correctamente.",
+                            type: "success"
+                        });
+                    } else {
+                        $("#PopUpID").html(datos);
+                        $("#cod_agenciID").multiselect().multiselectfilter();
+                    }
+
+                }
+            });
+        } else {
+            swal({
+                title: "Parametrizaci髇",
+                text: "Por favor verifica tu conexi髇 a internet.",
+                type: "warning"
+            });
+
+        }
+    } catch (e) {
+        console.log(e.message);
+        return false;
+    }
+}
+
+/* ! \fn: NewContac
+ *  \brief: registra un contacto en el sistema
+ *  \author: Ing. Torres
+ *  \date: 13/02/2018
+ *  \date modified: dia/mes/a駉
+ *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
+ *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
+ *  \return 
+ */
+function NewContac(ema_contac) {
+    var conn = checkConnection();
+    var ind_config = 0; contador = 0;
+    if (conn) {
+        var standa = $("#standaID").val();
+        var transp = $("#cod_transpID").val();
+        var nom_contac = $("#nom_contacID").val();
+        var ema_contac = $("#ema_contacID").val();
+        var tel_contac = $("#tel_contacID").val();
+        var car_contac = $("#car_contacID").val();
+        var obs_contac = $("#obs_contacID").val();
+        var cod_agenci = $("#cod_agenciID").val();
+        var cod_agenci = "";
+        var box_checke = $("input[id^=ui-multiselect-cod_agenciID-option-]:checked");
+
+         box_checke.each(function(i, o) {
+            if ($(o).attr("defaultValue") != '') {
+                cod_agenci += $(o).attr("defaultValue")+",";
+            };
+        });
+        var pos = cod_agenci.lastIndexOf(',');
+        var cambio ='';
+        var cod_agenci = cod_agenci.substring(0,pos) + cambio + cod_agenci.substring(pos+1);
+
+        var errores = false;
+        var nue_combin = "";
+        if (!nom_contac) {
+            setTimeout(function() {
+                inc_alerta("nom_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!ema_contac) {
+            setTimeout(function() {
+                inc_alerta("ema_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!tel_contac) {
+            setTimeout(function() {
+                inc_alerta("tel_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!car_contac) {
+            setTimeout(function() {
+                inc_alerta("car_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!obs_contac) {
+            setTimeout(function() {
+                inc_alerta("obs_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!cod_agenci) {
+            setTimeout(function() {
+                inc_alerta("cod_agenciID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+
+        if (!errores) {
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=NewContac&standa=" + standa + "&cod_transp=" + transp + "&ema_contac=" + ema_contac + "&nom_contac=" + nom_contac + "&obs_contac=" + obs_contac + "&car_contac=" + car_contac + "&tel_contac=" + tel_contac + "&cod_agenci=" + cod_agenci,
+                async: true,
+                beforeSend: function() {
+                    $.blockUI({
+                        theme: true,
+                        title: 'Registrando contacto',
+                        draggable: false,
+                        message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Registrando...</p></center>'
+                    });
+                },
+                success: function(datos) {
+                    $.unblockUI();
+                    if (datos == '1000') {
+                        swal({
+                            title: "Parametrizaci髇",
+                            text: "Contacto registrado con 閤ito.",
+                            type: "success"
+                        });
+                        $("#PopUpID").dialog('close');
+                        mostrar();
+                    } else {
+                        swal({
+                            title: "Contacto",
+                            text: "Error al registrar la configuraci髇, por favor intenta nuevamente.",
+                            type: "warning"
+                        });
+                        swal("");
+                    }
+                }
+
+            });
+        }
+    } else {
+        swal({
+            title: "Parametrizaci髇",
+            text: "Por favor verifica tu conexi髇 a internet.",
+            type: "warning"
+        });
+    }
+}
+
+/* ! \fn: EditaContac
+ *  \brief: funcion para insertar un contacto
+ *  \author: Ing. Andres torres
+ *  \date: 08/02/2018
+ *  \date modified: dia/mes/a駉
+ *  \param: cod_tercer     => string => codigo de la empresa   
+ *  \param: cod_ciudad     => string => email cliente     
+ *  \return return
+ */
+function EditaContac(cod_transp, email, id_contac) {
+    try {
+        var conn = checkConnection();
+        var standa = $("#standaID").val();
+        var transp = $("#cod_transpID").val();
+        var nom_contac = $("#nom_contac"+id_contac).html();
+        var ema_contac = $("#ema_contac"+id_contac).html();
+        var tel_contac = $("#tel_contac"+id_contac).html();
+        var car_contac = $("#car_contac"+id_contac).html();
+        var nom_agenci = $("#nom_agenci"+id_contac).html();
+        var obs_contac = $("#obs_contac"+id_contac).html();
+        var cod_agenci = $("#cod_agenci"+id_contac).html();
+        if (conn) {
+            var standa = $("#standaID").val();
+            $("#PopUpID").dialog({
+                modal: true,
+                resizable: false,
+                draggable: false,
+                title: "Creaci髇 de Contacto",
+                width: 800,
+                heigth: 500,
+                position: ['middle', 25],
+                bgiframe: true,
+                closeOnEscape: false,
+                show: {
+                    effect: "drop",
+                    duration: 300
+                },
+                hide: {
+                    effect: "drop",
+                    duration: 300
+                },
+                open: function(event, ui) {
+                    $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                },
+                buttons: {
+                    Editar: function() {
+                        editContac(email);
+                    },
+                    Cerrar: function() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=CreateContac&standa=" + standa + "&cod_transp=" + transp + "&ema_contac=" + ema_contac + "&nom_contac=" + nom_contac + "&obs_contac=" + obs_contac + "&car_contac=" + car_contac + "&tel_contac=" + tel_contac + "&nom_agenci=" + nom_agenci + "&ind_edicio=1",
+                async: true,
+                beforeSend: function() {
+                    $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+                },
+                success: function(datos) {
+                    if (datos == '1') {
+                        closePopUp("PopUpID");
+                        swal({
+                            title: "Creaci髇 de Contacto",
+                            text: "Se creo el contacto correctamente.",
+                            type: "success"
+                        });
+                    } else {
+                        $("#PopUpID").html(datos);
+                        $("#cod_agenciID").multiselect().multiselectfilter();
+                        
+                        var box_checke = $("input[id^=ui-multiselect-cod_agenciID-option-]");
+                        var agencias = $("#cod_agenci"+id_contac).val().split(",");
+                        box_checke.each(function(i, o) {
+                            for (var i = 0; i < agencias.length; i++ ) {
+                                if ($(o).attr("defaultValue") == agencias[i] ) {
+                                    $(o).attr("checked", "checked");
+                                }
+                            }
+                        });
+
+                    }
+
+                },
+                complete: function(){
+                    $("#ui-multiselect-cod_agenciID-option-0").click();
+                }
+            });
+        } else {
+            swal({
+                title: "Parametrizaci髇",
+                text: "Por favor verifica tu conexi髇 a internet.",
+                type: "warning"
+            });
+
+        }
+    } catch (e) {
+        console.log(e.message);
+        return false;
+    }
+}
+
+/* ! \fn: editContac
+ *  \brief: registra un contacto en el sistema
+ *  \author: Ing. Torres
+ *  \date: 13/02/2018
+ *  \date modified: dia/mes/a駉
+ *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
+ *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
+ *  \return 
+ */
+function editContac(email) {
+    var conn = checkConnection();
+    var ind_config = 0; contador = 0;
+    if (conn) {
+        var standa = $("#standaID").val();
+        var transp = $("#cod_transpID").val();
+        var nom_contac = $("#nom_contacID").val();
+        var ema_contac = $("#ema_contacID").val();
+        var tel_contac = $("#tel_contacID").val();
+        var car_contac = $("#car_contacID").val();
+        var obs_contac = $("#obs_contacID").val();
+        var cod_agenci = "";
+        var box_checke = $("input[id^=ui-multiselect-cod_agenciID-option-]:checked");
+
+         box_checke.each(function(i, o) {
+            if ($(o).attr("defaultValue") != '') {
+                cod_agenci += $(o).attr("defaultValue")+",";
+            };
+        });
+        var pos = cod_agenci.lastIndexOf(',');
+        var cambio ='';
+        var cod_agenci = cod_agenci.substring(0,pos) + cambio + cod_agenci.substring(pos+1);
+        var errores = false;
+
+        var nue_combin = "";
+        if (!nom_contac) {
+            setTimeout(function() {
+                inc_alerta("nom_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!ema_contac) {
+            setTimeout(function() {
+                inc_alerta("ema_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!tel_contac) {
+            setTimeout(function() {
+                inc_alerta("tel_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!car_contac) {
+            setTimeout(function() {
+                inc_alerta("car_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!obs_contac) {
+            setTimeout(function() {
+                inc_alerta("obs_contacID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!cod_agenci) {
+            setTimeout(function() {
+                inc_alerta("cod_agenciID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!errores) {
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=editContac&standa=" + standa + "&cod_transp=" + transp + "&ema_contac=" + ema_contac + "&nom_contac=" + nom_contac + "&obs_contac=" + obs_contac + "&car_contac=" + car_contac + "&tel_contac=" + tel_contac + "&cod_agenci=" + cod_agenci + "&email=" + email,
+                async: true,
+                beforeSend: function() {
+                    $.blockUI({
+                        theme: true,
+                        title: 'Actualizando contacto',
+                        draggable: false,
+                        message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Actualizando...</p></center>'
+                    });
+                },
+                success: function(datos) {
+                    $.unblockUI();
+                    if (datos == '1000') {
+                        swal({
+                            title: "Parametrizaci髇",
+                            text: "Contacto Actualizado con 閤ito.",
+                            type: "success"
+                        });
+                        $("#PopUpID").dialog('close');
+                        mostrar();
+                    } else {
+                        swal({
+                            title: "Contacto",
+                            text: "Error al registrar la configuraci髇, por favor intenta nuevamente.",
+                            type: "warning"
+                        });
+                        swal("");
+                    }
+                }
+
+            });
+        }
+    } else {
+        swal({
+            title: "Parametrizaci髇",
+            text: "Por favor verifica tu conexi髇 a internet.",
+            type: "warning"
+        });
     }
 }

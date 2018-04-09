@@ -1,4 +1,6 @@
 <?php
+ini_set('display_errors', true);
+error_reporting(E_ALL &~E_NOTICE);
 /* ! \file: ajax_certra_certra.php
  *  \brief: archivo con multiples funciones para la configuracion de los tipos de servicio de una transportadora
  *  \author: Ing. Alexander Correa
@@ -73,6 +75,9 @@ class ajax_certra_certra {
                 case "CreateConfig";
                     $this->CreateConfig();
                     break;
+                case "CreateContac";
+                    $this->CreateContac();
+                    break;
                 case "getFestivos";
                     $this->getFestivos();
                     break;
@@ -85,11 +90,21 @@ class ajax_certra_certra {
                 case "NewParametrizacion";
                     $this->NewParametrizacion();
                     break;
+                case "NewContac";
+                    $this->NewContac();
+                    break;  
+                case "editContac";
+                    $this->editContac();
+                    break;  
                 case "registrarTipoServicio";
                     $this->registrarTipoServicio();
                     break;
                 case "deleteConfiguracion";
                     $this->deleteConfiguracion();
+                    break;
+
+                case "deleteContac";
+                    $this->deleteContac();
                     break;
 
                 default:
@@ -242,11 +257,13 @@ class ajax_certra_certra {
         $grupos = $this->getGrupos();
         $operaciones = $this->getOperaciones();
         $eals = $this->getEals();
+        $option = 0;
+        $standa = DIR_APLICA_CENTRAL;
         ?>
         <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuraci&oacute;n del Servicio</b></h3>
-            <div id="contenido_conf">
-                <div class="StyleDIV contenido" style="min-height: 165px !important;">
+            <div id="contenido_conf" style="height: 230px !important">
+                <div class="StyleDIV contenido" style="min-height: 185px !important;">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-10">
                         <div class="col-md-6">
@@ -365,6 +382,74 @@ class ajax_certra_certra {
                     <div class="col-md-1">&nbsp;</div>
                 </div>
             </div>
+        </div>
+        <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
+            <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion de contactos</b></h3>
+            <div id="contenido_serv">
+                <div class="StyleDIV contenido" style="min-height: 220px !important;" >
+                    <div class="col-md-13 CellHead"  style="text-align:center;"><strong>AGREGAR CONTACTO</strong><input type="button" value="NUEVO CONTACTO" class="small save  ui-state-default ui-corner-all" onclick="CreateContac('<?= $datos->cod_transp ?>', 0, 0)"></div>
+                    <?php 
+                        $contactos = $this->getContact();
+                        /*echo "<pre>";
+                            print_r($contactos);
+                        echo "</pre>";*/
+                        $agencias = $this->getAgencias();
+                        if (!$contactos) {     
+                    ?>
+                        <div class="col-md-12" style="text-align:center;">ACTUALMENTE NO TIENE CONTACTOS PARAMETRIZADOS</div> 
+                    <?php } else { ?>
+                        <div class="contenido" id="mensaje"></div>
+                        <div class="CellHead centrado" id="mensaje"><b>LISTA DE CONTACTOS</b></div>
+                        <table class="classTable" align="center" width="100%" cellspacing="1" cellpadding="0" style="border:1px #35650F solid">
+                            <tr>
+                                <th width="10%" nowrap class="CellHead" align="center">NOMBRE</th>
+                                <th width="10%" nowrap class="CellHead" align="center">MOVIL</th>
+                                <th width="10%" nowrap class="CellHead" align="center">E-MAIL</th>
+                                <th width="10%" nowrap class="CellHead" align="center">CARGO</th>
+                                <th width="30%" nowrap class="CellHead" align="center">AGENCIAS</th>
+                                <th width="10%" nowrap class="CellHead" align="center">OBSERVACIONES</th>
+                                <th width="10%" nowrap class="CellHead" align="center">ELIMINAR</th>
+                                <th width="10%" nowrap class="CellHead" align="center">EDITAR</th>
+                            </tr>
+                        <?php
+                        foreach ($contactos as $row => $value) {
+                        ?>
+                            <tr>
+                                <td align="center" width="10%" class="contenido" id="nom_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['nom_contac']) ?></td>
+                                <td align="center" width="10%" class="contenido" id="tel_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['tel_contac']) ?></td>
+                                <td align="center" width="10%" class="contenido" id="ema_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['ema_contac']) ?></td>
+                                <td align="center" width="10%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['car_contac']) ?></td>
+                            <?php
+                                $agencias = $this->getAgenContac($value['ema_contac']);
+                                $value['nom_agenci'] = "";
+                                $cod_agencia = "";
+                                $esElPrimero = true;
+                                foreach ($agencias as $agencia) {
+                                    if ($esElPrimero) {
+                                        $cod_agencia .= $agencia['cod_agenci'];
+                                        $value['nom_agenci'] .= $agencia['nom_agenci'];
+                                        $esElPrimero = !$esElPrimero;
+                                    } else {
+                                        $value['nom_agenci'] .= ", ".$agencia['nom_agenci'];
+                                        $cod_agencia .= "," . $agencia['cod_agenci'];
+                                    }
+                                }
+                            ?>
+                            <input type="hidden" id="cod_agenci<?=$row?>" value="<?=$cod_agencia?>">
+                            <td align="center" width="40%" class="contenido" id="nom_agenci<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['nom_agenci']) ?></td>
+                            <td align="center" width="10%" class="contenido" id="obs_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['obs_contac']) ?></td>
+                            <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>', 3)"></td>
+                            <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaContac(<?= $datos->cod_transp ?>, '<?= $value['ema_contac'] ?>' , <?= $row ?> )"></td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                        </table>
+                    <?php
+                    }
+                    ?>
+                </div>
+            </div>  
         </div>
         <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Horario del Servicio Contratado</b></h3>
@@ -1342,6 +1427,74 @@ class ajax_certra_certra {
         return $consulta->ret_matrix("a");
     }
 
+    private function getAgencias() {
+        $datos = (object) $_POST;
+        $sql = "SELECT a.cod_agenci, a.nom_agenci 
+                  FROM " . BASE_DATOS . ".tab_genera_agenci a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_agenci b 
+                    ON a.cod_agenci = b.cod_agenci 
+            INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer c 
+                    ON b.cod_transp = c.cod_tercer
+                 WHERE c.cod_tercer = '$datos->cod_transp'
+                   AND a.cod_estado = '1' 
+                   GROUP BY 1 ORDER BY 2";
+
+        $consulta = new Consulta($sql, self::$cConexion);
+        //return $consulta->ret_matrix("a");
+        return $consulta -> ret_matrix('i');
+    }
+    
+    private function getContact() {
+        $datos = (object) $_POST;
+        $sql = "SELECT a.cod_agenci 
+                  FROM " . BASE_DATOS . ".tab_contac_empres a
+                WHERE a.cod_transp = '$datos->cod_transp'";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $agencias = $consulta->ret_matrix("a");
+        $temp = array();
+        foreach ($agencias as $agencia) {
+            $temp[] = $agencia['cod_agenci'];
+        }
+
+        $sql = "SELECT a.nom_contac, a.car_contac, a.ema_contac, a.tel_contac, a.obs_contac
+                  FROM " . BASE_DATOS . ".tab_contac_empres a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp
+            WHERE b.cod_transp = '$datos->cod_transp'
+            GROUP BY 1, 3";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $contactos = $consulta->ret_matrix("a");
+
+        return $contactos;
+    }
+
+    private function getAgenContac($ema_contac) {
+        $datos = (object) $_POST;
+        $sql = "SELECT a.cod_agenci
+                  FROM " . BASE_DATOS . ".tab_contac_empres a
+                WHERE a.cod_transp = '$datos->cod_transp'
+                AND a.ema_contac = '$ema_contac'";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $agencias = $consulta->ret_matrix("a");
+
+        $temp = array();
+        foreach ($agencias as $agencia) {
+            $temp[] = $agencia['cod_agenci'];
+        }
+
+        $sql = "SELECT c.nom_agenci, a.nom_contac, c.cod_agenci
+                  FROM " . BASE_DATOS . ".tab_contac_empres a 
+            INNER JOIN " . BASE_DATOS . ".tab_transp_tipser b ON a.cod_transp = b.cod_transp,   
+                       " . BASE_DATOS . ".tab_genera_agenci c
+            WHERE b.cod_transp = '$datos->cod_transp'
+            AND a.ema_contac = '$ema_contac'
+            AND c.cod_agenci IN (".join(",", $temp) . ")
+            GROUP BY 2, 1";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $ageContac = $consulta->ret_matrix("a");
+
+        return $ageContac;
+    }
+
     /* ! \fn: deleteConfiguracion
      *  \brief: elimina una configuracion laboral de una empresa
      *  \author: Ing. Alexander Correa
@@ -1362,6 +1515,205 @@ class ajax_certra_certra {
             die('1');
         } else {
             die('0');
+        }
+    }
+
+    /* ! \fn: deleteConfiguracion
+     *  \brief: elimina una configuracion laboral de una empresa
+     *  \author: Ing. Alexander Correa
+     *  \date: 16/05/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return boolean 
+     */
+
+    private function deleteContac() {
+        $datos = (object) $_POST;
+        $sql = "DELETE FROM " . BASE_DATOS . ".tab_contac_empres
+                      WHERE cod_transp = '$datos->cod_transp' 
+                      AND ema_contac = '$datos->ema_contac' ";
+        if ($consulta = new Consulta($sql, self::$cConexion)) {
+            die('1');
+        } else {
+            die('0');
+        }
+    }
+
+    /* ! \fn: CreateContac
+     *  \brief: inserta un nuevo contacto
+     *  \author: Ing. Andres Torres
+     *  \date: 12/02/2018
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function CreateContac() {
+        $datos = (object) $_POST;
+            if ($_POST['ind_edicio'] == '0') {
+                ?>
+                <div class="StyleDIV contenido" style="min-height: 145px !important;">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-10">
+                        <div class="col-md-6">  
+                            <div class="col-md-6 text-right">Nombre Contacto<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="nom_contac" id="nom_contacID" validate="text" obl="1" maxlength="250" minlength="3">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Movil:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho"  onkeypress="return NumericInput(event)" name="tel_contac" id="tel_contacID" validate="numero" obl="1" maxlength="10" minlength="3">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">E-mail:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="ema_contac" id="ema_contacID" validate="text" obl="1" maxlength="50" minlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Cargo:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="car_contac" id="car_contacID" validate="text" obl="1" maxlength="20" minlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-md-5 text-right">Observaciones:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="obs_contac" id="obs_contacID" validate="text" obl="1" maxlength="250" minlength="10">
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-md-5 text-right">Agencia:<font style="color:red">*</font></div>
+                            <div class="col-md-5 text-left" style="width:170px !important">
+                            <?php
+                                 $agencias = $this->getAgencias();
+                                 $cNull = array( array('25', '-----') );
+                                 $mHtml1 = lista( '','cod_agenci', array_merge(self::$cNull,$agencias), 'cellInfo1'   );
+                                 echo $mHtml1;
+                            ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-1">&nbsp;</div>
+                    </div>
+            <?php
+            }else{
+            ?>
+            <div class="StyleDIV contenido" style="min-height: 145px !important;">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-10">
+                        <div class="col-md-6">  
+                            <div class="col-md-6 text-right">Nombre Contacto<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="nom_contac" id="nom_contacID" validate="text" obl="1" maxlength="250" minlength="3" value="<?= $_POST['nom_contac'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Movil:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text"  onkeypress="return NumericInput(event)" class="text-center ancho" name="tel_contac" id="tel_contacID" validate="numero" obl="1" maxlength="10" minlength="3" value="<?= $_POST['tel_contac'] ?>" >
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">E-mail:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="mail" class="text-center ancho" name="ema_contac" id="ema_contacID" validate="text" obl="1" maxlength="50" minlength="10" value="<?= $_POST['ema_contac'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Cargo:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="car_contac" id="car_contacID" validate="text" obl="1" maxlength="20" minlength="10" value="<?= $_POST['car_contac'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Observaciones:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="obs_contac" id="obs_contacID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $_POST['obs_contac'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-7">
+                            <div class="col-md-5 text-right">Agencia:<font style="color:red">*</font></div>
+                            <div class="col-md-5 text-left" style="width:170px !important">
+                            <?php
+                                 $agencias = $this->getAgencias();
+                                 $cNull = array( array('25', '-----') );
+                                 $mHtml1 = lista( '','cod_agenci', array_merge(self::$cNull,$agencias), 'cellInfo1');
+                                 echo $mHtml1;
+                            ?>
+                            </div>
+                            <input type="hidden" id="sel_agenciID" name="sel_agenci" value="">
+                        </div>
+                    </div>
+                    <div class="col-md-1">&nbsp;</div>
+                    </div>
+        <?php
+        }
+    }
+
+
+
+    /* ! \fn: NewContac
+     *  \brief: inserta un contacto de la transportado
+     *  \author: Ing. Andres Torres
+     *  \date: 08/02/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+
+    private function NewContac() {
+        $mData = $_POST;
+
+        $mInsert = "INSERT INTO " . BASE_DATOS . ".tab_contac_empres
+        ( cod_transp, nom_contac, car_contac, 
+        ema_contac, tel_contac, obs_contac, cod_agenci,
+        usr_creaci, fec_creaci
+        )VALUES( '" . $mData['cod_transp'] . "', '" . $mData['nom_contac'] . "', '" . $mData['car_contac'] . "', 
+        '" . $mData['ema_contac'] . "', '".$mData['tel_contac']."', '".$mData['obs_contac']."', '".$mData['cod_agenci']."' ,'" . $_SESSION['datos_usuario']['cod_usuari'] . "', NOW() )";
+
+        if ($consulta = new Consulta($mInsert, self::$cConexion)) {
+            echo "1000";
+        } else {
+            echo "9999";
+        }
+    }
+
+        /* ! \fn: editContac
+     *  \brief: inserta un contacto de la transportado
+     *  \author: Ing. Andres Torres
+     *  \date: 08/02/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+
+    private function editContac() {
+        $mData = $_POST;
+        $mUpdate = "UPDATE " . BASE_DATOS . ".tab_contac_empres SET 
+                    nom_contac = '".$mData['nom_contac']."', 
+                    ema_contac = '".$mData['ema_contac']."', 
+                    tel_contac = '".$mData['tel_contac']."', 
+                    car_contac = '".$mData['car_contac']."', 
+                    obs_contac = '".$mData['obs_contac']."', 
+                    cod_agenci = '".$mData['cod_agenci']."', 
+                    usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                    fec_modifi = NOW()
+                    WHERE 
+                    cod_transp = '".$mData['cod_transp']."'
+                    AND ema_contac = '".$mData['email']."'";
+
+        if ($consulta = new Consulta($mUpdate, self::$cConexion)) {
+            echo "1000";
+        } else {
+            echo "9999";
         }
     }
 
