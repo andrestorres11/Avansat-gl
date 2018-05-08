@@ -228,20 +228,20 @@ class infBandeja
 	         *  \date: 28/03/2018
 	         */
 	        $mHtml .= '<table id="recommendgoogleID" width="100%">
-	                  	<tr>
-	                  	  	<td width="3%">
-	                          	<img align="left" src="../'.DIR_APLICA_CENTRAL.'/images/advice.png" />
+	                  	<tr style="background-color:#FFFFFF;">
+	                  	  	<td width="2%" style="text-align:center;">
+	                          	<img width="16px" height="16px" align="center" src="../'.DIR_APLICA_CENTRAL.'/images/advice.png" />
 	                      	</td>
-	                      	<td width="94%" valign="middle">
-	                          	<font size="+1">Se recomienda el uso de Google Chrome para una correcta Visualizaci&oacute;n. Para descargarlo haga clic <a target="_blank" href="https://www.google.com/chrome/index.html">aqu&iacute;</a></font>.
+	                      	<td width="96%" valign="middle">
+	                          	<font size="3rem" color="#000000">Se recomienda el uso de Google Chrome para una correcta Visualizaci&oacute;n. Para descargarlo haga clic <a target="_blank" href="https://www.google.com/chrome/index.html">aqu&iacute;</a></font>.
 	                      	</td>
-	                      	<td width="3%">
-	                          	<a href="#" onclick="javascript:document.getElementById(\'recommendgoogleID\').style.visibility=\'collapse\';"><img align="right" src="../'.DIR_APLICA_CENTRAL.'/images/error.png" /></a>
+	                      	<td width="2%" style="text-align:center;">
+	                          	<a href="#" onclick="javascript:document.getElementById(\'recommendgoogleID\').style.visibility=\'collapse\';"><img width="16px" height="16px" align="center" src="../'.DIR_APLICA_CENTRAL.'/images/error.png" /></a>
 	                      	</td>
 	              	</table>';
 	        $mHtml .= '<script>
 	                  	var nom_navega = String(navigator.userAgent).toLowerCase();
-	                  	if(nom_navega.indexOf("chrome") > 0)
+	                  	if(nom_navega.indexOf("chrome") >= 0)
 	                  	{
 	                      	document.getElementById("recommendgoogleID").style.visibility="collapse";
 	                  	}
