@@ -1294,10 +1294,10 @@ class InsertNovedad {
                 $RESPON[0]['indica'] = 0;
                 $RESPON[0]['mensaj'] = $mIndSalida;
             }                                                           #ID: 201924
-            //elseif (($regist['fecnov'] <= $mUltNoveda['fec_noveda'] ) && ($regist["ind_grides"] != "1" )) {
-            //    $RESPON[0]['indica'] = 0;
-            //    $RESPON[0]['mensaj'] = "La Fecha de la Novedad Debe ser Mayor a la Fecha de la Ultima Novedad.";
-            //} 
+            elseif (($regist['fecnov'] <= $mUltNoveda['fec_noveda'] ) && ($regist["ind_grides"] != "1" )) {
+                $RESPON[0]['indica'] = 0;
+                $RESPON[0]['mensaj'] = "La Fecha de la Novedad Debe ser Mayor a la Fecha de la Ultima Novedad.";
+            } 
             elseif ($mIndExists != false) {
                 $RESPON[0]['indica'] = 0;
                 $RESPON[0]['mensaj'] = $mIndExists;
@@ -1377,9 +1377,9 @@ class InsertNovedad {
                     self::soluciNovedad($regist, $mDatDespac, $mDatNoveda);#Solucion a novedad
                 #</Envio de Correos 2>
                 #Interfaces
-                //if (HOST_WEB == HOST_WEB_PRO) {
+                if (HOST_WEB == HOST_WEB_PRO) {
                     self::soaPs($regist, $ominter, $mDatDespac, $mDatNoveda, $mIndEnSiti);
-                //}
+                }
 
                 #Envio correo Novedad genera alarma
                 if ($mDatNoveda['ind_alarma'] == 'S')
