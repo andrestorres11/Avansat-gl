@@ -1507,8 +1507,7 @@ class InsertNovedad {
         $mResult = $mConsult->ret_matrix('a');
 
         if (sizeof($mResult) > 0)
-            //return 'La Novedad ya se Encuentra Registrada en el Puesto de Control Seleccionado con la misma fecha.';
-            return false;
+            return 'La Novedad ya se Encuentra Registrada en el Puesto de Control Seleccionado con la misma fecha.'; 
         else
             return false;
     }
