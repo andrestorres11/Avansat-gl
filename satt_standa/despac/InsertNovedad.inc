@@ -1297,7 +1297,8 @@ class InsertNovedad {
             elseif (($regist['fecnov'] <= $mUltNoveda['fec_noveda'] ) && ($regist["ind_grides"] != "1" )) {
                 $RESPON[0]['indica'] = 0;
                 $RESPON[0]['mensaj'] = "La Fecha de la Novedad Debe ser Mayor a la Fecha de la Ultima Novedad.";
-            } elseif ($mIndExists != false) {
+            } 
+            elseif ($mIndExists != false) {
                 $RESPON[0]['indica'] = 0;
                 $RESPON[0]['mensaj'] = $mIndExists;
             } else {
@@ -1506,7 +1507,7 @@ class InsertNovedad {
         $mResult = $mConsult->ret_matrix('a');
 
         if (sizeof($mResult) > 0)
-            return 'La Novedad ya se Encuentra Registrada en el Puesto de Control Seleccionado con la misma fecha.';
+            return 'La Novedad ya se Encuentra Registrada en el Puesto de Control Seleccionado con la misma fecha.'; 
         else
             return false;
     }
@@ -3388,7 +3389,7 @@ class InsertNovedad {
 
                 $nit_empres = $regist['nittra']; //NIT EMPRESA.
                 $mData = self::getDataSoap($regist);
-
+ 
                 #<FOR 5.1.1.1>
                 for ($i = 0; $i < $interfaz->totalact; $i++) {
                     #<IF 5.1.1.1.1>
@@ -4054,6 +4055,108 @@ class InsertNovedad {
                         }
                     }
                     #</IF 5.1.1.1.10>
+                    #</IF 5.1.1.1.11>
+                    if (26 == $interfaz->interfaz[$i]["operad"] ) { //Interfaz con Carga Antioquia
+                        try {
+                                // Xml String porque se manda en POST como API, no es un WSDL (SOAP)
+                                $mTextXML = '<?xml version="1.0" encoding="utf-8"?>
+                                                <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                    <SOAP-ENV:Header>
+                                                        <ns1:Credenciales>
+                                                            <ns1:Username>'.$interfaz->interfaz[$i]['usuari'].'</ns1:Username>
+                                                            <ns1:Password>'.$interfaz->interfaz[$i]['passwo'].'</ns1:Password>
+                                                        </ns1:Credenciales>
+                                                    </SOAP-ENV:Header>
+                                                    <SOAP-ENV:Body>
+                                                        <ns1:IngresarReporte>
+                                                            <ns1:reporte>
+                                                                <ns1:Manifiesto>'.$mDatDespac['cod_manifi'].'</ns1:Manifiesto>
+                                                                <ns1:Placa>'.( substr($mDatDespac["num_placax"], 0,3)."-".substr($mDatDespac["num_placax"],3, 6) ).'</ns1:Placa>
+                                                                <ns1:CodigoPuestoControlOET>'.$regist["contro"].'</ns1:CodigoPuestoControlOET>
+                                                                <ns1:FechaNovedad>'.$regist["fecnov"].'</ns1:FechaNovedad>
+                                                                <ns1:Observacion>'.$regist["observ"].'</ns1:Observacion>
+                                                                <ns1:Lugar>'.$regist['sitio'].'</ns1:Lugar>
+                                                                <ns1:Sitio>'.($mIndEnSiti == false ? '0' : '1' ).'</ns1:Sitio>
+                                                            </ns1:reporte>
+                                                        </ns1:IngresarReporte>
+                                                    </SOAP-ENV:Body>
+                                                </SOAP-ENV:Envelope>';
+                                
+                                $s = curl_init();
+                                curl_setopt($s,CURLOPT_URL, $interfaz->interfaz[$i]['diwsdl']);
+                                curl_setopt($s,CURLOPT_TIMEOUT,"4"); 
+                                curl_setopt($s,CURLOPT_HTTPHEADER,array('Content-Type: text/xml')); 
+                                curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
+                                curl_setopt($s,CURLOPT_POST,true);
+                                curl_setopt($s,CURLOPT_POSTFIELDS,$mTextXML);
+                                $mResponse   = curl_exec($s);
+                                $mHttpStatus = curl_getinfo($s,CURLINFO_HTTP_CODE);
+                                curl_close($s);
+
+
+                                // Quita el namespace de las variables porque el simpleXML no lo puede leer, debe quedar un XML sencillo
+                                $mResponse = str_replace(array('soap:'), array(''), $mResponse);
+                                // Se consbierte el XML de respuesta en objeto para poderlo usar
+                                $xmlObject = new SimpleXMLElement( $mResponse, 0, false);
+
+                                // cuando se ejecuta una excepcion del WS pero en el externo, lo tomo para que entre al fault de nosotros
+                                if($xmlObject -> Body -> Fault)
+                                {
+                                    throw new Exception($xmlObject -> Body -> Fault -> faultstring, 9999);
+                                }
+
+                                // se valida el codigo de retorno si la novedad fue registrada o no en el externo, -1 = error registrando la novedad en el externo y mando a catch
+                                if($xmlObject -> Body -> IngresarReporteResponse -> IngresarReporteResult -> Codigo == '-1')
+                                {
+                                    throw new Exception($xmlObject -> Body -> IngresarReporteResponse -> IngresarReporteResult -> Descripcion, $xmlObject -> Body -> IngresarReporteResponse -> IngresarReporteResult -> Codigo);
+                                }
+
+                                // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
+                                if(  $interfaz->interfaz[$i]['timtra'] == 1 ){
+                                    $mFile = fopen(getcwd()."/logs/".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                    fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
+                                    fwrite($mFile, "Type    : NORMAL  \n");
+                                    fwrite($mFile, "Request : ".$mTextXML."  \n");
+                                    fwrite($mFile, "Response: ".$mResponse." \n\n");
+                                    fclose($mFile);
+                                }
+                          
+                        } catch (Exception $e) {
+
+                            echo "<div align='center' style='color:#000000; padding:5px; font-size:14px; background-color:#FFAFAF; border:2px solid #000000;'>
+                                    <b>Error en API - Insertar novedad en " . $interfaz->interfaz[$i]['nombre'] . ':' . $e->getMessage(). "
+                                    </b>
+                                  </div>";
+                            if(  $interfaz->interfaz[$i]['timtra'] == 1 ){
+                                    $mFile = fopen(getcwd()."/logs/".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                    fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
+                                    fwrite($mFile, "Type    : throw new Exception  \n");
+                                    fwrite($mFile, "Request : ".$mTextXML."  \n");
+                                    fwrite($mFile, "Response: ".$mResponse." \n\n");
+                                    fclose($mFile);
+                                }
+
+
+                             
+                                $mMessage = "******** Encabezado ******** <br>";
+                                $mMessage .= "Fecha y hora de la novedad: " . date("Y-m-d H:i", strtotime($regist["fecnov"])) . " <br>";
+                                $mMessage .= "Empresa de transporte: " . $regist["nittra"] . " <br>";
+                                $mMessage .= "Numero de manifiesto: " . $mDatDespac["cod_manifi"] . " <br>";
+                                $mMessage .= "Placa del vehiculo: " . $mDatDespac["num_placax"] . " <br>";
+                                $mMessage .= "Codigo puesto de control: " . $regist["contro"] . " <br>";
+                                $mMessage .= "Nombre puesto de control: " . $mData['nom_contro'] . " <br>";
+                                $mMessage .= "Observacion.: " . $regist["observ"] . " <br>";
+                                $mMessage .= "******** Detalle ******** <br>";
+                                $mMessage .= "Cod Error: " . $e->getCode() . " <br>";
+                                $mMessage .= "Error: " . $e->getMessage() . " <br>";
+                                $mMessage .= "Error Detallado: " . $mResponse . " <br>";
+
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Carga Antioquia Notas controlador Error Catch", '<div name="'.HOST_WEB.'_faro_19">' . $mMessage . '</div>', $mCabeceSoporte);
+                             
+                        }
+                    }
+                    #</IF 5.1.1.1.11>
+
                 }
                 #</FOR 5.1.1.1>
             }
