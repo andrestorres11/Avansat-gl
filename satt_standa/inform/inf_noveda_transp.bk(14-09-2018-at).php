@@ -284,8 +284,7 @@ class InfNovedadesUsuario{
         
         $sql ="(SELECT b.num_despac as Despacho, a.nom_noveda as Novedad,b.fec_contro as Fecha,
                        b.obs_contro as Observacion, d.abr_tercer as Transportadora, c.num_placax as Placa,
-                       IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(z.abr_tercer) ) as Conductor, f.nom_agenci AS agencia, 
-                       b.usr_creaci AS usr_noveda, e.usr_creaci, e.fec_creaci
+                       IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(z.abr_tercer) ) as Conductor, f.nom_agenci AS agencia
                   FROM ".BASE_DATOS.".tab_genera_noveda a,
                        ".BASE_DATOS.".tab_despac_contro b,
                        ".BASE_DATOS.".tab_despac_vehige c,
@@ -307,8 +306,7 @@ class InfNovedadesUsuario{
                UNION ALL
               (SELECT b.num_despac, a.nom_noveda, b.fec_noveda ,
                       b.des_noveda, d.abr_tercer,c.num_placax,
-                       IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(z.abr_tercer) ) as Conductor, f.nom_agenci AS agencia, 
-                       b.usr_creaci AS usr_noveda, e.usr_creaci, e.fec_creaci
+                       IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(z.abr_tercer) ) as Conductor, f.nom_agenci AS agencia
                  FROM ".BASE_DATOS.".tab_genera_noveda a, 
                       ".BASE_DATOS.".tab_despac_noveda b,
                       ".BASE_DATOS.".tab_despac_vehige c,
@@ -329,7 +327,7 @@ class InfNovedadesUsuario{
                 UNION ALL
                 (SELECT b.num_repnov, a.nom_noveda, b.fec_repnov ,
                         b.obs_repnov, d.abr_tercer, b.num_placax,
-                        ' - ' as Conductor, '' AS agencia, '' AS usr_noveda, '' AS usr_creaci, '' AS fec_creaci
+                        ' - ' as Conductor, '' AS agencia
                         FROM ".BASE_DATOS.".tab_genera_noveda a, 
                         ".BASE_DATOS.".tab_report_noveda b,
                         ".BASE_DATOS.".tab_tercer_tercer d
@@ -419,9 +417,6 @@ class InfNovedadesUsuario{
             $mHtml .= "<th class=cellHead >Novedad</th>";
             $mHtml .= "<th class=cellHead >Fecha</th>";
             $mHtml .= "<th class=cellHead >Observacion</th>";
-            $mHtml .= "<th class=cellHead >Usuario Novedad</th>";
-            $mHtml .= "<th class=cellHead >Usuario creacion</th>";
-            $mHtml .= "<th class=cellHead >Fecha creacion</th>";
         $mHtml .= "</tr>";
         
         foreach($despachos AS $row){
@@ -434,9 +429,6 @@ class InfNovedadesUsuario{
                 $mHtml .= "<td class='cellInfo' >{$row[1]}</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[2]}</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[3]}&nbsp</td>";
-                $mHtml .= "<td class='cellInfo' >{$row[8]}&nbsp</td>";
-                $mHtml .= "<td class='cellInfo' >{$row[9]}&nbsp</td>";
-                $mHtml .= "<td class='cellInfo' >{$row[10]}&nbsp</td>";
              $mHtml .= "</tr>";
         }
         

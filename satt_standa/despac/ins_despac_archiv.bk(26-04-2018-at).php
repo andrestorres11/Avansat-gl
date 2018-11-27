@@ -101,7 +101,6 @@ class Proc_ins_despac
             $e = 0;
             while ($datos = fgetcsv ($archivo, 1000, ","))
             {
-               $datos = explode(";", $datos[0]);
                $num_campos = count($datos);
                 $nitcle = $datos[3];
                 $indnit = 0;

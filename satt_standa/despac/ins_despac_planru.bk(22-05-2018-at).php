@@ -211,7 +211,7 @@ class Proc_Plan_Ruta
 
    $query = "SELECT a.num_despac,a.cod_manifi,a.ind_anulad,a.cod_ciuori,
                     a.cod_ciudes,c.abr_tercer,b.num_placax,b.num_trayle,
-                    d.abr_tercer, a.usr_creaci, a.fec_creaci
+                    d.abr_tercer
                FROM ".BASE_DATOS.".tab_despac_despac a,
                     ".BASE_DATOS.".tab_despac_vehige b,
                     ".BASE_DATOS.".tab_tercer_tercer c,
@@ -300,9 +300,7 @@ class Proc_Plan_Ruta
   $formulario -> linea("Transportadora",0,"t");
   $formulario -> texto("Vehiculo","text","vehicu\" onChange=\"form_item.submit()",0,6,6,"",$_REQUEST[vehicu],"","",1);
   $formulario -> texto("Remolque","text","trayle\" onChange=\"form_item.submit()",0,6,6,"",$_REQUEST[trayle],"","",1);
-  $formulario -> linea("Conductor",0,"t");
-  $formulario -> linea("Usuario creador",0,"t");
-  $formulario -> linea("Fecha Creación",1,"t");
+  $formulario -> linea("Conductor",1,"t");
 
    for($i = 0; $i < sizeof($matriz); $i++)
    {
@@ -330,9 +328,7 @@ class Proc_Plan_Ruta
     $formulario -> linea($matriz[$i][5],0,$estilo);
     $formulario -> linea($matriz[$i][6],0,$estilo);
     $formulario -> linea($matriz[$i][7],0,$estilo);
-    $formulario -> linea($matriz[$i][8],0,$estilo);
-    $formulario -> linea($matriz[$i][9],0,$estilo);
-    $formulario -> linea($matriz[$i][10],1,$estilo);
+    $formulario -> linea($matriz[$i][8],1,$estilo);
 
    }
 

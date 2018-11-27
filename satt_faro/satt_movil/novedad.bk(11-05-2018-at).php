@@ -150,33 +150,19 @@ class Novedad {
                     ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
                         $mFile = fopen("/var/www/html/ap/satt_faro/satt_movil/logs/error-".$parametros['empresa_codigocs']."-".date('Y-m-d').".txt", "a+");
                     try {
-                        //parche para que cambien el nit de la transportadora cuando sea repremundo por andres torres
-                        if ($_POST[$i]["cod_transp"] == "830104929") {
-                            $cod_transp = "067";
-                        }else{
-                            $cod_transp = $_POST[$i]["cod_transp"];
-                        }
                         //Ruta Web Service Colocar e-com.
                         $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                         $mFecha[0] = date('Y-m-d');
                         $mFecha[1] = date('H:i:s');
                         $parametros = array();
-                        $parametros["empresa_codigocs"] = $cod_transp;
+                        $parametros["empresa_codigocs"] = $_POST[$i]["cod_transp"];
                         $parametros["usuario"] = $dataColSof["nom_usuari"];
                         $parametros["clave"] = $dataColSof["clv_usuari"];
-                        $parametros["sentido"] = "0";
-                        $parametros["direccion"] = $mNomPc["nom_contro"];
-                        $parametros["tipo_evento"] = "0";
-                        $parametros["kilometraje"] = "0";
-                        $parametros["velocidad"] = "0";
-                        $parametros["codigo_puestocontrol"] = $mControPadre['cod_contro'];
-                        $parametros["novedad"] = $mNoveda["nom_noveda"] . ' ' . "Registrado desde Dispositivo Movil " . $_POST[device] . ". IP:" . $_SERVER["REMOTE_ADDR"];
-                        $parametros["latitud"] = $mGeo["val_latitu"];
-                        $parametros["longitud"] = $mGeo["val_longit"];
+                        $parametros["novedad"] = $mNoveda["nom_noveda"] . ' ' . "Registrado desde <br>Dispositivo Movil " . $_POST[device] . ". <br>IP:" . $_SERVER["REMOTE_ADDR"];
                         $parametros["hora"] = $mFecha[1];
                         $parametros["fecha"] = $mFecha[0];
                         $parametros["placa"] = $mSalida['num_placax'];
-                        //$parametros["ubicacion"] = $mNomPc['nom_contro']." lat ".$mGeo['val_longit']." long ".$mGeo['val_latitu'];
+                        $parametros["ubicacion"] = $mNomPc['nom_contro']." lat ".$mGeo['val_longit']." long ".$mGeo['val_latitu'];
                         //$parametros["codigo_puestocontrol"] = $mControPadre['cod_contro'];
                         //$parametros["manifiesto_codigo"] = $mSalida['cod_manifi'];
 
@@ -187,7 +173,7 @@ class Novedad {
                         $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
                         //Métodos disponibles en el WS
-                        $respuesta = $oSoapClient->__soapCall('puestocontrol', $parametros);
+                        $respuesta = $oSoapClient->__soapCall('novedadConUbicacion', $parametros);
 
                         fwrite($mFile, "Respuesta del WS de colombiasoftware:------------------------------------------ \n");
                         fwrite($mFile, var_export($respuesta, true)." \n");  

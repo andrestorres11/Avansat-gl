@@ -193,7 +193,11 @@ class Actualizar
 		$formulario -> linea("Codigo Ruta",0,"t", "10%" );
 		$formulario -> linea("Ruta",0,"t", "30%" );
 		$formulario -> linea("Ciudad Origen",0,"t","20%");
-		$formulario -> linea("Ciudad Destino",1,"t","20%");
+		$formulario -> linea("Ciudad Destino",0,"t","20%");
+		$formulario -> linea("Usuario Creador",0,"t");
+        $formulario -> linea("Fecha Creacion",0,"t");
+        $formulario -> linea("Usuario Modificador",0,"t");
+        $formulario -> linea("Fecha Modificacion",1,"t");
 		
 		if( $rutas )
 		foreach( $rutas as $row )
@@ -203,7 +207,11 @@ class Actualizar
 			$formulario -> linea($link ,0,"i");
 			$formulario -> linea($row[1],0,"i");
 			$formulario -> linea($row[2],0,"i");
-			$formulario -> linea($row[3],1,"i");
+			$formulario -> linea($row[3],0,"i");
+			$formulario -> linea($row[4],0,"i");
+			$formulario -> linea($row[5],0,"i");
+			$formulario -> linea($row[6],0,"i");
+			$formulario -> linea($row[7],1,"i");
 		}
 
 		$formulario -> cerrar();
@@ -244,7 +252,8 @@ class Actualizar
 	{
 		$query = "SELECT a.cod_rutasx, UPPER( b.nom_rutasx ), 
 						 UPPER( c.nom_ciudad ), 
-						 UPPER( d.nom_ciudad )
+						 UPPER( d.nom_ciudad ),
+						 a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
 				  FROM ".BASE_DATOS.".tab_genera_ruttra a,
 					   ".BASE_DATOS.".tab_genera_rutasx b,
 					   ".BASE_DATOS.".tab_genera_ciudad c,

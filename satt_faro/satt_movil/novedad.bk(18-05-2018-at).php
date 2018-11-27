@@ -164,19 +164,11 @@ class Novedad {
                         $parametros["empresa_codigocs"] = $cod_transp;
                         $parametros["usuario"] = $dataColSof["nom_usuari"];
                         $parametros["clave"] = $dataColSof["clv_usuari"];
-                        $parametros["sentido"] = "0";
-                        $parametros["direccion"] = $mNomPc["nom_contro"];
-                        $parametros["tipo_evento"] = "0";
-                        $parametros["kilometraje"] = "0";
-                        $parametros["velocidad"] = "0";
-                        $parametros["codigo_puestocontrol"] = $mControPadre['cod_contro'];
                         $parametros["novedad"] = $mNoveda["nom_noveda"] . ' ' . "Registrado desde Dispositivo Movil " . $_POST[device] . ". IP:" . $_SERVER["REMOTE_ADDR"];
-                        $parametros["latitud"] = $mGeo["val_latitu"];
-                        $parametros["longitud"] = $mGeo["val_longit"];
                         $parametros["hora"] = $mFecha[1];
                         $parametros["fecha"] = $mFecha[0];
                         $parametros["placa"] = $mSalida['num_placax'];
-                        //$parametros["ubicacion"] = $mNomPc['nom_contro']." lat ".$mGeo['val_longit']." long ".$mGeo['val_latitu'];
+                        $parametros["ubicacion"] = $mNomPc['nom_contro']." lat ".$mGeo['val_longit']." long ".$mGeo['val_latitu'];
                         //$parametros["codigo_puestocontrol"] = $mControPadre['cod_contro'];
                         //$parametros["manifiesto_codigo"] = $mSalida['cod_manifi'];
 
@@ -187,7 +179,7 @@ class Novedad {
                         $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
                         //Métodos disponibles en el WS
-                        $respuesta = $oSoapClient->__soapCall('puestocontrol', $parametros);
+                        $respuesta = $oSoapClient->__soapCall('novedadConUbicacion', $parametros);
 
                         fwrite($mFile, "Respuesta del WS de colombiasoftware:------------------------------------------ \n");
                         fwrite($mFile, var_export($respuesta, true)." \n");  

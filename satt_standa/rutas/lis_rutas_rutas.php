@@ -103,7 +103,7 @@ class Proc_rutas
    $usuario=$datos_usuario["cod_usuari"];
 
    $query = "SELECT a.cod_rutasx,UPPER(a.nom_rutasx),Count(d.cod_contro),
-		    		a.ind_estado
+		    		a.ind_estado, a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
                FROM ".BASE_DATOS.".tab_genera_rutasx a LEFT JOIN
                     ".BASE_DATOS.".tab_genera_rutcon d ON
                     a.cod_rutasx = d.cod_rutasx
@@ -180,7 +180,11 @@ class Proc_rutas
    $formulario -> linea("C&oacute;digo",0,"t");
    $formulario -> linea("Nombre",0,"t");
    $formulario -> linea("Cant. P/C",0,"t");
-   $formulario -> linea("Estado",1,"t");
+   $formulario -> linea("Estado",0,"t");
+   $formulario -> linea("Usuario Creador",0,"t");
+   $formulario -> linea("Fecha Creacion",0,"t");
+   $formulario -> linea("Usuario Modificador",0,"t");
+   $formulario -> linea("Fecha Modificacion",1,"t");
 
    for($i = 0; $i < sizeof($matriz); $i++)
    {
@@ -197,7 +201,11 @@ class Proc_rutas
     $formulario -> linea($matriz[$i][0],0,$estilo);
     $formulario -> linea($matriz[$i][1],0,$estilo);
     $formulario -> linea($matriz[$i][2],0,$estilo);
-    $formulario -> linea($estado,1,$estilo);
+    $formulario -> linea($estado,0,$estilo);
+    $formulario -> linea($matriz[$i][4],0,$estilo);
+    $formulario -> linea($matriz[$i][5],0,$estilo);
+    $formulario -> linea($matriz[$i][6],0,$estilo);
+    $formulario -> linea($matriz[$i][7],1,$estilo);
    }
 
    $formulario -> nueva_tabla();
@@ -218,7 +226,7 @@ class Proc_rutas
                     if(e.ind_virtua = '1',CONCAT(e.nom_contro,' (Virtual)'),e.nom_contro),
 		   		    d.val_duraci,e.nom_encarg,e.dir_contro,e.tel_contro,
 		   		    if(a.ind_estado = '1','Activa','Inactiva'),e.ind_estado,d.ind_estado,
-        		    if(ind_urbano = '".COD_ESTADO_ACTIVO."',' - (Urbano)','')
+        		    if(ind_urbano = '".COD_ESTADO_ACTIVO."',' - (Urbano)',''), a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
                FROM ".BASE_DATOS.".tab_genera_rutasx a,
               	    ".BASE_DATOS.".tab_genera_rutcon d,
                     ".BASE_DATOS.".tab_genera_contro e
@@ -245,6 +253,14 @@ class Proc_rutas
    $formulario -> linea($origen[0][1],0,"i");
    $formulario -> linea("Destino",0,"t");
    $formulario -> linea($destino[0][1],1,"i");
+   $formulario -> linea("Usuario Creador",0,"t");
+   $formulario -> linea($matriz[0][14],0,"i");
+   $formulario -> linea("Fecha Creacion",0,"t");
+   $formulario -> linea($matriz[0][15],1,"i");
+   $formulario -> linea("Usuario Modificacion",0,"t");
+   $formulario -> linea($matriz[0][16],0,"i");
+   $formulario -> linea("Fecha Modificacion",0,"t");
+   $formulario -> linea($matriz[0][17],1,"i");
    $formulario -> linea("Estado",0,"t");
    $formulario -> linea($matriz[0][10],0,"i");
    $formulario -> linea("",0,"t");

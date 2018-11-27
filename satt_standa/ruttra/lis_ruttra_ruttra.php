@@ -138,7 +138,9 @@ class Proc_rutas
     $datos_usuario = $this -> usuario -> retornar();
     $usuario=$datos_usuario["cod_usuari"];
 
-    $query = "SELECT a.cod_rutasx,a.nom_rutasx,a.ind_estado
+    $query = "SELECT a.cod_rutasx,a.nom_rutasx,a.ind_estado,
+                     a.usr_creaci, a.fec_creaci, a.usr_modifi, 
+                     a.fec_modifi
                 FROM ".BASE_DATOS.".tab_genera_rutasx a,
                      ".BASE_DATOS.".tab_genera_ruttra b
                WHERE a.cod_rutasx = b.cod_rutasx ";
@@ -165,7 +167,11 @@ class Proc_rutas
     $formulario -> nueva_tabla();
     $formulario -> linea("C&oacute;digo",0,"t");
     $formulario -> linea("Nombre",0,"t");
-    $formulario -> linea("Estado",1,"t");
+    $formulario -> linea("Estado",0,"t");
+    $formulario -> linea("Usuario Creador",0,"t");
+    $formulario -> linea("Fecha Creacion",0,"t");
+    $formulario -> linea("Usuario Modificador",0,"t");
+    $formulario -> linea("Fecha Modificacion",1,"t");
 
     for($i = 0; $i < sizeof($matriz); $i++)
     {
@@ -176,7 +182,11 @@ class Proc_rutas
 
       $formulario -> linea($matriz[$i][0],0,$estilo);
       $formulario -> linea($matriz[$i][1],0,$estilo);
-      $formulario -> linea($estado,1,$estilo);
+      $formulario -> linea($estado,0,$estilo);
+      $formulario -> linea($matriz[$i][3],0,$estilo);
+      $formulario -> linea($matriz[$i][4],0,$estilo);
+      $formulario -> linea($matriz[$i][5],0,$estilo);
+      $formulario -> linea($matriz[$i][6],1,$estilo);
     }
 
     $formulario -> nueva_tabla();

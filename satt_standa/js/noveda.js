@@ -884,17 +884,17 @@ function showDespacRecome(num_despac) {
 		atributes += '&num_despac=' + num_despac;
 
 		//Carga PopUp
-		LoadPopupJQ3('open', '', 'auto', 'auto', false, false, true);
+		LoadPopupJQ3('open', '', '350', 'auto', false, false, true);
 		$.ajax({
 			url: "../" + fStandar.val() + "/despac/ajax_despac_recome.php",
 			type: "POST",
 			data: atributes,
 			async: false,
 			beforeSend: function() {
-				$("#FormContacID").html("<center>Cargando Formulario...</center>");
+				$("#popID").html("<center>Cargando Formulario...</center>");
 			},
 			success: function(data) {
-				$("#FormContacID").html(data);
+				$("#popID").html(data);
 			},
 			complete: function() {
 				CenterDIV1();

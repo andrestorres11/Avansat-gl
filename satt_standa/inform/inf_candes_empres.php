@@ -160,10 +160,10 @@ class CanDesTra
             $despachos = $this -> GetDespachos( $transpor['cod_tercer'], NULL, $fec_inici, $fec_final);
             $mHtml  = "<table width='100%'>";
                 $mHtml .= "<tr>";
-                    $mHtml .= "<th class=cellHead align='left' colspan=4 >NIT: ".$transpor['cod_tercer']." - Trasnportadora: ".$transpor['abr_tercer']."</th>";
+                    $mHtml .= "<th style='background-color:green' class=cellHead align='left' colspan=4 >NIT: ".$transpor['cod_tercer']." - Trasnportadora: ".$transpor['abr_tercer']."</th>";
                 $mHtml .= "</tr>";
                 
-                $mHtml .= "<tr>";
+                $mHtml .= "<tr style='background-color:#336600'>";
                     $mHtml .= "<th class=cellHead width='25%' >ORIGEN</th>";
                     $mHtml .= "<th class=cellHead width='25%' >CANTIDAD</th>";
                     $mHtml .= "<th class=cellHead width='25%' >%</th>";

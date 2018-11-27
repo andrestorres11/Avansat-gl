@@ -50,6 +50,12 @@ class Login {
             <form method="post" action="index.php">
                 <table align=center>
                     <tr>
+                        <td align="right" >&nbsp;</td>
+                        <td align="left" >
+                            <img src="imagenes/eal.png">
+                        </td>
+                    </tr>
+                    <tr>
                         <td align="right" ><label><b>Usuario:</b></label></td>
                         <td align="left" ><? echo "<input type='text' class='campo' name='user' value='$_POST[user]'  >"; ?></td>
                     </tr>
@@ -59,7 +65,7 @@ class Login {
                     </tr>
                     <tr>
                         <td align="center" colspan="2" >
-                            <input type="submit" value="Ingresar" >
+                            <input style="border-radius:10px; font-weight='bold' !important;" height="25px"  type="submit" value="Ingresar" >
                         </td>
                     </tr>
                 </table>

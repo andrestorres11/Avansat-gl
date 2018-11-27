@@ -335,7 +335,7 @@ class Ins_config_emptra {
 					        $mHtml->Label(utf8_decode("Fax:"), "width:25%; :1;");
 					        $mHtml->Input(array("type" => "numeric", "validate" => "numero",  "minlength" => "7", "maxlength" => "10", "name" => "transp[num_faxxxx]", "id" => "num_faxxxx", "width" => "25%",  "value" => $datos->principal->num_faxxxx));
 					        $mHtml->Label(utf8_decode("E-Mail:"), "width:25%; :1;");
-					        $mHtml->Input(array("type" => "email", "validate" => "email",  "minlength" => "10", "maxlength" => "100", "name" => "transp[dir_emailx]", "id" => "dir_emailx", "width" => "25%", "value" => $datos->principal->dir_emailx, "end" => true));
+					        $mHtml->Input(array("type" => "email", "validate" => "email",  "minlength" => "10", "maxlength" => "250", "name" => "transp[dir_emailx]", "id" => "dir_emailx", "width" => "25%", "value" => $datos->principal->dir_emailx, "end" => true));
 					        $mHtml->CloseTable("tr");
 	        		$mHtml->CloseDiv();
 	        	$mHtml->CloseDiv();

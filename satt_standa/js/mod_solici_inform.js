@@ -778,7 +778,7 @@ function r(){
 
 				$.getJSON( updateUrl(filter1.url4,"num_solici",num_solici), function( data ) {
 					//console.log(id + " Detalle Solicitud ");
-					//console.log(data);
+					console.log(data);
 					currForm.find('.alert').html("");
 					currForm.find('.alert').addClass("hide");
 					currForm.find('.alert').removeClass("active");
@@ -823,7 +823,7 @@ function r(){
 								"<tr class=\"new\"><td>"+data.seguim[uid_seguim].obs_seguim+
 								"</td><td>"+data.seguim[uid_seguim].nom_estado+
 								"</td><td>"+data.seguim[uid_seguim].fec_creaci+
-								"</td><td>"+data.seguim[uid_seguim].nom_estado+
+								"</td><td>"+data.seguim[uid_seguim].usr_creaci+
 								"</td></tr>");
 						}
 					}
@@ -1772,7 +1772,7 @@ function r(){
 
 
 		$.getJSON( server_req.standa+ "data/template/inf_solici_solici.json?_t="+Math.random(), function( data ) {
-			//console.log("load inf_solici_solici > ");
+			//console.log("Una Prueba");
 			renderJsonToHTML(data,target,1);
 			checkBasicLoad("source");
 		});

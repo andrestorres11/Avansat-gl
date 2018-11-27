@@ -15,7 +15,7 @@ var urlBase;
  */
 function verifyConfirPernoc(ind_origen, num_despac, cod_contro) {
     try {
-        urlBase = "../" + $("#central").val();
+        urlBase = "../satt_standa";
 
         var atr = "Ajax=on&Option=verifyConfirPernoc";
         atr += "&ind_origen=" + ind_origen;

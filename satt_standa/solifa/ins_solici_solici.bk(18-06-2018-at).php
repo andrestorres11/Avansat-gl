@@ -396,7 +396,7 @@ EOF;
 				//IncludeJS( "mod_solici_solici.js" );//No se incluye, porque se requiere enviar un dato
 				//IncludeCSS no aplica, la crearon seguramente para modificar estilos a traves de javascript
 
-				$formulario = new Formulario ("index.php","post","<div>SOL. A ASISTENCIA LOGISTICA</div>","form_list");
+				$formulario = new Formulario ("index.php","post","<div>SOLICITUD A FARO</div>","form_list");
 				$js='<script id="_45462213DEf">'.
 			        'var ds="'.$dirsolifa.'",'.
 			        'cs=parseInt("'.$cod_servic.'"),'.
@@ -440,28 +440,7 @@ EOF;
 							$obj
 						);
 					}
-					$r = json_encode($this->InterfSolicitud->getResult());
-					if (strpos($r,"code_resp:1000;") || strpos($r,"code_resp: 1000;")) {
-					/**************** Envio mail *********************/
-					$explode = explode(",", $r); 
-					$explode = explode(":", $explode[4]);
-					$num_solici = explode(".",$explode[1]);
-				
-			      	$dataMail = (object) array(
-			                              'nom_solici'  =>  'Creacion Ruta',
-			                              'nom_cliente'  =>  $this->getTransSolici($num_solici[0])[0]['abr_tercer'],
-			                              'date'  =>  date("Y-m-d H:i:s"),
-			                              'num_solici'  =>  $num_solici[0],
-			                              'cod_usuari'  =>  str_replace("'"," ",$_SESSION["datos_usuario"]["nom_usuari"]),
-										  'year'  =>  date("Y"),
-										  'asunto' => "Creacion Ruta: ".$this->getTransSolici($num_solici[0],"1")[0]['origen']." - ".$this->getTransSolici($num_solici[0], "1")[0]['destino']." Via ".$this->getTransSolici($num_solici[0])[0]['nom_viaxxx'],
-			                              'cod_estado'  =>  "Abierta",
-			                              'obs_solici'  =>  "Solicitud De Creacion Ruta: ".$this->getTransSolici($num_solici[0],"1")[0]['origen']." - ".$this->getTransSolici($num_solici[0], "1")[0]['destino']." Via ".$this->getTransSolici($num_solici[0])[0]['nom_viaxxx'],
-			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
-			                          );
-			      	$this->sendMailSolifa($dataMail);
-				}
-				echo $r;	
+					echo json_encode($this->InterfSolicitud->getResult());
 				}
 			}
 		}
@@ -493,28 +472,7 @@ EOF;
 					$this->raw->lis_placax,	
 					$this->raw->obs_solici
 				);
-				$r = json_encode($this->InterfSolicitud->getResult());
-				if (strpos($r,"code_resp:1000;") || strpos($r,"code_resp: 1000;")) {
-					/**************** Envio mail *********************/
-					$explode = explode(",", $r); 
-					$explode = explode(":", $explode[6]);
-					$num_solici = explode(".",$explode[1]);
-				
-			      	$dataMail = (object) array(
-			                              'nom_solici'  =>  'Seguimiento especial',
-			                              'nom_cliente'  =>  $this->getTransSolici($num_solici[0])[0]['abr_tercer'],
-			                              'date'  =>  date("Y-m-d H:i:s"),
-			                              'num_solici'  =>  $num_solici[0],
-			                              'cod_usuari'  =>  str_replace("'"," ",$_SESSION["datos_usuario"]["nom_usuari"]),
-										  'year'  =>  date("Y"),
-										  'asunto' => "Solicitud De Seguimiento especial a ".$this->getTransSolici($num_solici[0], "2")[0]['nom_subtip'],
-			                              'cod_estado'  =>  "Abierta",
-			                              'obs_solici'  =>  "Solicitud De Seguimiento especial a ".$this->getTransSolici($num_solici[0], "2")[0]['nom_subtip'],
-			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
-			                          );
-			      	$this->sendMailSolifa($dataMail);
-				}
-				echo $r;					
+				echo json_encode($this->InterfSolicitud->getResult());						
 			}
 		}
 	}
@@ -542,23 +500,6 @@ EOF;
 					$this->raw->obs_pqrsxx,	
 					$this->getFileComplex($this->decrypt($this->raw->fil_archiv))
 				);
-				switch ($this->raw->ind_pqrsxx) {
-					case '1':
-						$tipqr = 'peticion';
-						break;
-					case '2':
-						$tipqr = 'queja';
-						break;
-					case '3':
-						$tipqr = 'sugerencia';
-						break;
-					case '4':
-						$tipqr = 'felicitacion';
-						break;
-					default:
-						$tipqr = 'peticion';
-						break;
-				}
 				$r=json_encode($this->InterfSolicitud->getResult());
 				if(strpos($r,"code_resp:1000;") || strpos($r,"code_resp: 1000;")){
 					//cuando transmita con existo, limpiar del servidor del cliente el archivo
@@ -566,25 +507,6 @@ EOF;
 					ob_start();
 					$this->onRemoveFile();
 					ob_clean();
-				}
-				if (strpos($r,"code_resp:1000;") || strpos($r,"code_resp: 1000;")) {
-					/**************** Envio mail *********************/
-					$explode = explode(",", $r); 
-					$explode = explode(":", $explode[4]);
-					$num_solici = explode(".",$explode[1]);
-			      	$dataMail = (object) array(
-			                              'nom_solici'  =>  $tipqr,
-			                              'nom_cliente'  =>  $this->getTransSolici($num_solici[0])[0]['abr_tercer'],
-			                              'date'  =>  date("Y-m-d H:i:s"),
-			                              'num_solici'  =>  $num_solici[0],
-			                              'cod_usuari'  =>  str_replace("'"," ",$_SESSION["datos_usuario"]["nom_usuari"]),
-										  'year'  =>  date("Y"),
-										  'asunto' => $this->getTransSolici($num_solici[0])[0]['nom_asunto'],
-			                              'cod_estado'  =>  "Abierta",
-			                              'obs_solici'  =>  $this->getTransSolici($num_solici[0])[0]['obs_solici'],
-			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
-			                          );
-			      	$this->sendMailSolifa($dataMail);
 				}
 				echo $r;
 			}
@@ -618,26 +540,6 @@ EOF;
 					ob_start();
 					$this->onRemoveFile();
 					ob_clean();
-				}
-				if (strpos($r,"code_resp:1000;") || strpos($r,"code_resp: 1000;")) {
-					/**************** Envio mail *********************/
-					$explode = explode(",", $r); 
-					$explode = explode(":", $explode[4]);
-					$num_solici = explode(".",$explode[1]);
-				
-			      	$dataMail = (object) array(
-			                              'nom_solici'  =>  'Gestion Solicitud',
-			                              'nom_cliente'  =>  $this->getTransSolici($num_solici[0])[0]['abr_tercer'],
-			                              'date'  =>  date("Y-m-d H:i:s"),
-			                              'num_solici'  =>  $num_solici[0],
-			                              'cod_usuari'  =>  str_replace("'"," ",$_SESSION["datos_usuario"]["nom_usuari"]),
-										  'year'  =>  date("Y"),
-										  'asunto' => $this->getTransSolici($num_solici[0])[0]['nom_asunto'],
-			                              'cod_estado'  =>  "Abierta",
-			                              'obs_solici'  =>  $this->getTransSolici($num_solici[0])[0]['obs_solici'],
-			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
-			                          );
-			      	$this->sendMailSolifa($dataMail);
 				}
 				echo $r;
 			}
@@ -692,76 +594,6 @@ EOF;
 			echo "Error en la funcion getTranspUsuari: ", $e->getMessage();
 		}
 	}
-
-	function sendMailSolifa($data = NULL)
-	{
-	    try
-	    {	
-		    $mCabece = 'MIME-Version: 1.0' . "\r\n";
-		    $mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		    $mCabece .= 'From: Sol. Asistencia Logistica <webmaster@grupooet.com>' . "\r\n";
-		    $tmpl_file = '/var/www/html/ap/satt_standa/planti/pla_solifa_abierta.html';
-		    $thefile = implode("", file($tmpl_file));
-		    $thefile = addslashes($thefile);
-		    $thefile = "\$r_file=\"" . $thefile . "\";";
-		    eval($thefile);
-		    $mHtmlxx = $r_file;
-		    if($_SERVER['HTTP_HOST'] == 'dev.intrared.net:8083')
-		    {
-		      	$mailToS = "edward.serrano@intrared.net, maribel.garcia@eltransporte.org";
-		    }
-		    else
-		    {
-		      	$mailToS = $data->mailTo;
-		    }
-		    mail( $mailToS, "sol. ".$data->asunto, '<div name="_faro_07">' . $mHtmlxx . '</div>', $mCabece );
-	    }
-	    catch(Exception $e)
-	    {
-	      return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
-	    }
-	}
-
-	function getTransSolici($num_solici,$proceso)
-	{
-	    try{
-	    	if ($proceso == '1') {
-	    		$campos = ", d.nom_ciudad AS origen, e.nom_ciudad AS destino, a.nom_viaxxx ";
-	    		$joins = "INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d ON d.cod_ciudad = a.cod_ciuori
-		              INNER JOIN ".BASE_DATOS.".tab_genera_ciudad e ON e.cod_ciudad = a.cod_ciudes";
-	    	}elseif($proceso == '2'){
-    			$campos = ", f.nom_subtip ";
-    			$joins = "INNER JOIN ".BASE_DATOS.".tab_solici_subtip f ON f.cod_tipsol = a.cod_tipsol AND f.cod_subtip = a.cod_subtip";
-	    	}
-		    $sql =  "SELECT c.abr_tercer, b.dir_usrmai, a.obs_solici, a.nom_asunto $campos FROM ".BASE_DATOS.".tab_solici_solici a ".
-		              "INNER JOIN ".BASE_DATOS.".tab_solici_datosx b ON a.cod_solici = b.cod_solici ".
-		              "INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON b.cod_transp = c.cod_tercer ".
-		              "$joins WHERE ".
-					  "a.num_solici=$num_solici";
-			
-		    $consulta = new Consulta( $sql, $this->conexion );
-			return $consulta->ret_matrix( 'a' );
-	    }
-	    catch(Exception $e)
-	    {
-	    	return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
-	    }
-  	}
-
-  	function getEstado($cod_estado)
-	{
-	    try{
-		    $sql =  "SELECT * FROM ".BASE_DATOS.".tab_solici_estado ".
-		              "WHERE ".
-		              "cod_estado=$cod_estado";
-		    $consulta = new Consulta( $sql, $this->conexion );
-			return $consulta->ret_matrix( 'a' );
-	    }
-	    catch(Exception $e)
-	    {
-	    	return "code_resp:".$e->getCode()."; msg_resp:".$e->getMessage();
-	    }
-  	}
 
 }
 

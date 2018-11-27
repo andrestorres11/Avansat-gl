@@ -42,9 +42,9 @@ body
 #head, #footer
 {
     background-color:#090;
-	background: -webkit-gradient(linear, left top, left bottom, from( #009900 ), to( #006600 )); 
-	background: -moz-linear-gradient(top, #009900, #006600 ); 
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#009900', endColorstr='#006600');
+	background: -webkit-gradient(linear, left top, left bottom, from( #37799d ), to( #0a1e33 )); 
+	background: -moz-linear-gradient(top, #37799d, #0a1e33 ); 
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#37799d', endColorstr='#0a1e33');
     color:#fff;
     text-align:center;
     padding:10px;
@@ -74,6 +74,7 @@ a:visited {color:#fff; text-decoration:none}  /* visited link */
 a:hover {color:#900; text-decoration:none}  /* mouse over link */
 a:active {color:#fff; text-decoration:none}  /* selected link */
 </style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div id="head" >ESFERAS DE ASISTENCIA LOG&Iacute;STICA</div>

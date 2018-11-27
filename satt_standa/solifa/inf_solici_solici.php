@@ -402,22 +402,25 @@ png, jpeg, zip, rar)
 				}
 			
 				$formato =	"insert into tab_solici_seguim (num_solici,cod_estado,obs_seguim,dir_archiv,usr_creaci,fec_creaci) values(%d,%d,'%s','%s','%s',%s);";
-				$sql=sprintf($formato,$this->raw->num_solici,$this->raw->cod_estado,$this->raw->obs_seguim,$this->raw->dir_archiv,@$_SESSION["datos_usuario"]["nom_usuari"],"now()");
+				$sql=sprintf($formato,$this->raw->num_solici,$this->raw->cod_estado,$this->raw->obs_seguim,$this->raw->dir_archiv,@$_SESSION["datos_usuario"]["cod_usuari"],"now()");
 				
 				$consulta = new Consulta( $sql, $this->conexion );
 				print json_encode(array("message"=>"Registro con &eacute;xito el seguimiento","status"=>"success"));
 				//print json_encode(array("message"=>$sql,"status"=>"success"));
 				/**************** Envio mail *********************/
+
 		      	$dataMail = (object) array(
 		                              'nom_solici'  =>  'Gestion Solicitud',
 		                              'nom_cliente'  =>  $this->getTransSolici($this->raw->num_solici)[0]['abr_tercer'],
 		                              'date'  =>  date("Y-m-d H:i:s"),
 		                              'num_solici'  =>  $this->raw->num_solici,
 		                              'cod_usuari'  =>  str_replace("'"," ",$_SESSION["datos_usuario"]["nom_usuari"]),
-		                              'year'  =>  date("Y"),
+									  'year'  =>  date("Y"),
+									  'asunto' => "Gestion Solicitud",
+									  'inform'=> $this->getTransSolici($this->raw->num_solici)[0]['dir_usrmai'],
 		                              'cod_estado'  =>  $this->getEstado($this->raw->cod_estado)[0]['nom_estado'],
 		                              'obs_solici'  =>  $this->raw->obs_seguim,
-		                              'mailTo'  =>  $_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR,
+		                              'mailTo'  =>  $this->getTransSolici($this->raw->num_solici)[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
 		                          );
 		      	$this->sendMailSolifa($dataMail);
 				return false;
@@ -1077,7 +1080,7 @@ EOF;
 
 			$error=false;
 			$dircentral='../'.DIR_APLICA_CENTRAL.'/';
-			https://dev.intrared.net:8083/ap/satt_standa/images/excel_logo.png
+			https://avansatgl.intrared.net:8083/ap/satt_standa/images/excel_logo.png
 			$dirsolifa='../'.DIR_APLICA_CENTRAL.'/solifa/';
 			$imgexcel='../'.DIR_APLICA_CENTRAL.'/images/excel_logo.png';
 			$filejqjs='../'.DIR_APLICA_CENTRAL.'/js/jquery17.js';
@@ -1296,7 +1299,7 @@ EOF;
 	    {
 		    $mCabece = 'MIME-Version: 1.0' . "\r\n";
 		    $mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-		    $mCabece .= 'From: Centro Logistico FARO <no-replay@grupooet.com>' . "\r\n";
+		    $mCabece .= 'From: ASISTENCIA LOGISTICA <no-replay@grupooet.com>' . "\r\n";
 		    $tmpl_file = '/var/www/html/ap/satt_standa/planti/pla_solifa_solifa.html';
 		    $thefile = implode("", file($tmpl_file));
 		    $thefile = addslashes($thefile);
@@ -1311,7 +1314,7 @@ EOF;
 		    {
 		      	$mailToS = $data->mailTo;
 		    }
-		    mail( $mailToS, " Solicitudes a Faro ", '<div name="_faro_07">' . $mHtmlxx . '</div>', $mCabece );
+		    mail( $mailToS, "sol. ".$data->asunto , '<div name="_faro_07">' . $mHtmlxx . '</div>', $mCabece );
 	    }
 	    catch(Exception $e)
 	    {
@@ -1319,14 +1322,23 @@ EOF;
 	    }
 	}
 
-	function getTransSolici($num_solici)
+	function getTransSolici($num_solici,$proceso)
 	{
 	    try{
-		    $sql =  "SELECT c.abr_tercer FROM ".BASE_DATOS.".tab_solici_solici a ".
+	    	if ($proceso == '1') {
+	    		$campos = ", d.nom_ciudad AS origen, e.nom_ciudad AS destino, a.nom_viaxxx ";
+	    		$joins = "INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d ON d.cod_ciudad = a.cod_ciuori
+		              INNER JOIN ".BASE_DATOS.".tab_genera_ciudad e ON e.cod_ciudad = a.cod_ciudes";
+	    	}elseif($proceso == '2'){
+    			$campos = ", f.nom_subtip ";
+    			$joins = "INNER JOIN ".BASE_DATOS.".tab_solici_subtip f ON f.cod_tipsol = a.cod_tipsol AND f.cod_subtip = a.cod_subtip";
+	    	}
+		    $sql =  "SELECT c.abr_tercer, b.dir_usrmai, a.obs_solici, a.nom_asunto $campos FROM ".BASE_DATOS.".tab_solici_solici a ".
 		              "INNER JOIN ".BASE_DATOS.".tab_solici_datosx b ON a.cod_solici = b.cod_solici ".
 		              "INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON b.cod_transp = c.cod_tercer ".
-		              "WHERE ".
-		              "a.num_solici=$num_solici";
+		              "$joins WHERE ".
+					  "a.num_solici=$num_solici";
+					  
 		    $consulta = new Consulta( $sql, $this->conexion );
 			return $consulta->ret_matrix( 'a' );
 	    }

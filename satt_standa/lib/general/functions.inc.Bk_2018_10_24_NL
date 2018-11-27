@@ -434,8 +434,7 @@ function getControDespac(&$mConexion, $mDespac, $mTipReturn = NULL )
   $mConsult = new Consulta( $mSql, $mConexion );
   $mRutasDespac = $mConsult -> ret_matrix('i');
 
-  //$mOrder = sizeof($mRutasDespac) < 2 ? " c.val_duraci " : " b.num_consec ";
-  $mOrder = sizeof($mRutasDespac) < 2 ? " c.val_duraci " : " c.val_duraci ";
+  $mOrder = sizeof($mRutasDespac) < 2 ? " c.val_duraci " : " b.num_consec ";
   
   $mSql = " SELECT c.cod_contro, d.ind_urbano, d.ind_virtua, 
                    UPPER(d.nom_contro) AS nom_contro, 

@@ -893,7 +893,7 @@ function r(){
 		        	input.val(data.url);
 		        	span.html(data.message);
 		        	//span.append('<br><br><a class="cfile" href="#">If you wants change uploaded file, press your mouse in the current link</a>');
-		        	span.append('<br><br><a class="cfile" href="#">Si desea cambiar el archivo, presione este enlace</a>');
+		        	span.append('<br><br><a style="color:#040404;" class="cfile" href="#">Si desea cambiar el archivo, presione aqui</a>');
 		        	span.find(".cfile").bind("click",function(){
 		        		removeFile(input.val());
 		        		file.show();

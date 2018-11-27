@@ -63,7 +63,7 @@ body
     font-family:Verdana;
     font-size:14px;
     background-color:#fff;
-  width:100%;
+  width:auto;
 }
 
 #head, #footer

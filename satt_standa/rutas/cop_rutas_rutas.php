@@ -110,7 +110,8 @@ class Proc_rutas
     $usuario=$datos_usuario["cod_usuari"];
     $indwhere = 0;
 
-    $query = "SELECT a.cod_rutasx,a.nom_rutasx,Count(d.cod_contro)
+    $query = "SELECT a.cod_rutasx,a.nom_rutasx,Count(d.cod_contro),
+                     a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
                 FROM ".BASE_DATOS.".tab_genera_rutasx a 
            LEFT JOIN ".BASE_DATOS.".tab_genera_rutcon d 
                   ON a.cod_rutasx = d.cod_rutasx";
@@ -165,13 +166,21 @@ class Proc_rutas
     {
       $formulario -> linea("C&oacute;digo",0,"t");
       $formulario -> linea("Nombre",0,"t");
-      $formulario -> linea("Cant. P/C",1,"t");
+      $formulario -> linea("Cant. P/C",0,"t");
+      $formulario -> linea("Usuario Creador",0,"t");
+      $formulario -> linea("Fecha Creacion",0,"t");
+      $formulario -> linea("Usuario Modificador",0,"t");
+      $formulario -> linea("Fecha Modificacion",1,"t");
 
       for($i=0;$i<sizeof($matriz);$i++)
       {
         $formulario -> linea($matriz[$i][0],0,"i");
         $formulario -> linea($matriz[$i][1],0,"i");
-        $formulario -> linea($matriz[$i][2],1,"i");
+        $formulario -> linea($matriz[$i][2],0,"i");
+        $formulario -> linea($matriz[$i][3],0,"i");
+        $formulario -> linea($matriz[$i][4],0,"i");
+        $formulario -> linea($matriz[$i][5],0,"i");
+        $formulario -> linea($matriz[$i][6],1,"i");
       }//fin for
     }//fin if
 

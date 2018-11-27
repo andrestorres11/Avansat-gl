@@ -61,7 +61,6 @@
                                     "tag": "input",
                                     "type": "text",
                                     "name": "via", 
-                                    "required": "required", 
                                     "placeholder": "Digite la via", 
                                     "class": "form-control control-via", 
                                     "html": ""

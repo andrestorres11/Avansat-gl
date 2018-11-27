@@ -1250,7 +1250,6 @@ class Despac
 						   AND d.cod_etapax IN ( 3 )
 				) ";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
-		echo "<pre style='display:none;' id='mDespacTrasiandres'>"; print_r($mSql); echo "</pre>";
 		$mDespacTrasi = $mConsult -> ret_matrix('a');
 		$mDespacTrasi = join( ',', GetColumnFromMatrix( $mDespacTrasi, 'num_despac' ) );
 		$mDespacTrasi = $mDespacTrasi ? $mDespacTrasi : '0';
