@@ -1145,6 +1145,7 @@ class Despac
 		#Filtros por usuario
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
+		echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1169,6 +1170,8 @@ class Despac
 					$mResult[$j][fec_ultnov] = $mData[fec_ultnov];
 					$mResult[$j][ind_fuepla] = $mData[ind_fuepla];
 					$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
+					$mResult[$j][nov_especi] = $mData[nov_especi];
+					$mResult[$j][ind_alarma] = $mData[ind_alarma];
 					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 					$mResult[$j][fec_planea] = $mData[fec_planea];
 					$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
@@ -1181,6 +1184,8 @@ class Despac
 				$mResult[$j][can_noveda] = $mData[can_noveda];
 				$mResult[$j][fec_ultnov] = $mData[fec_ultnov];
 				$mResult[$j][ind_fuepla] = $mData[ind_fuepla];
+				$mResult[$j][nov_especi] = $mData[nov_especi];
+				$mResult[$j][ind_alarma] = $mData[ind_alarma];
 				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 				$mResult[$j][fec_planea] = $mData[fec_planea];
@@ -1376,6 +1381,8 @@ class Despac
 		$mResult[ind_fuepla] = $mNovDespac[$mPosN][ind_fuepla];
 		$mResult[ind_limpio] = $mNovDespac[$mPosN][ind_limpio];
 		$mResult[fec_ultnov] = $mNovDespac[$mPosN][fec_crenov];
+		$mResult[nov_especi] = $mNovDespac[$mPosN][nov_especi];
+		$mResult[ind_alarma] = $mNovDespac[$mPosN][ind_alarma];
 		$mResult[nom_ultnov] = $mNovDespac[$mPosN][nom_noveda] == '' ? '-' : $mNovDespac[$mPosN][nom_noveda];
 		$mResult[nom_sitiox] = $mNovDespac[$mPosN][nom_sitiox] == '' ? '-' : $mNovDespac[$mPosN][nom_sitiox];
 		$mResult[sig_pcontr] = getNextPC( self::$cConexion, $mDespac[num_despac] );
@@ -1430,7 +1437,6 @@ class Despac
 					$mResult[fec_planea] = $mResult[sig_pcontr][fec_progra]; #Fecha planeada del siguinete PC
 			}
 		}
-
 		return $mResult;
 	}
 
@@ -1878,7 +1884,6 @@ class Despac
 					continue;
 			}
 		}
-
 		return $mResult;
 	}
 
@@ -1965,10 +1970,11 @@ class Despac
 				$mDespac  = array_merge($mDespac1,$mDespac2,$mDespac3);
 			}
 			else
-			{
+			{	
 				$mDespac = self::$mNameFunction( $mTransp[$i] );
+
 			}
- 
+		
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
 
 				$mDespac = self::getTotalPrecargue( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
@@ -2027,12 +2033,22 @@ class Despac
 
 			$mData = self::orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
 			#Pinta tablas
+			for ($i=0; $i < sizeof($mData['tiempo']); $i++) { 
+				if ($mData['tiempo'][$i]['nov_especi'] == '1' && $mData['tiempo'][$i]['ind_alarma'] == 'S' ) {
+					$mData['novesp'][$i] = $mData['tiempo'][$i];
+					unset($mData['tiempo'][$i]);
+				}else{
+					continue;
+				}
+			}
+
 			$mHtml  = '';
 			$mHtml .= $mData['tieesp'] ? self::printTabDetail( $mTittle, $mData['tieesp'], sizeof($mData['tieesp']).' DESPACHOS CON TIEMPO MODIFICADO', '1' ) : '';
 			$mHtml .= $mData['tiemp0'] ? self::printTabDetail( $mTittle, $mData['tiemp0'], sizeof($mData['tiemp0']).' DESPACHOS EN SEGUIMIENTO SIN NOVEDADES', '1' ) : '';
+			$mHtml .= $mData['novesp'] ? self::printTabDetail( $mTittle, $mData['novesp'], sizeof($mData['novesp']).' VEHICULOS CON NOVEDADES ESPECIALES (MA)', '1' ) : '';
 			$mHtml .= $mData['tiempo'] ? self::printTabDetail( $mTittle, $mData['tiempo'], sizeof($mData['tiempo']).' DESPACHOS EN SEGUIMIENTO CON NOVEDADES', '1' ) : '';
-			$mHtml .= $mData['acargo'] ? self::printTabDetail( $mTittle, $mData['acargo'], sizeof($mData['acargo']).' DESPACHOS A CARGO EMPRESA', '1' ) : '';
 			$mHtml .= $mData['finrut'] ? self::printTabDetail( $mTittle, $mData['finrut'], sizeof($mData['finrut']).' DESPACHOS PENDIENTE LLEGADA', '1' ) : '';
+			
 		}
 
 		echo $mHtml;
