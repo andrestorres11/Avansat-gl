@@ -484,7 +484,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                   z.ind_ensiti, z.fec_planea, z.ind_fuepla, z.tiem_duraci, 
                   z.nom_noveda, z.nom_contro, z.ind_limpio, z.ind_manala, 
                   z.fec_progra, z.ind_virtua, z.cod_rutasx, 
-                  IF(z.nom_sitiox = '', z.nom_contro, z.nom_sitiox) AS nom_sitiox, z.obs_noveda, z.nov_especi, z.ind_alarma
+                  IF(z.nom_sitiox = '', z.nom_contro, z.nom_sitiox) AS nom_sitiox, z.obs_noveda
 
             FROM (
                          SELECT y.cod_contro, y.ind_urbano, y.ind_virtua, 
@@ -495,7 +495,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                 x.cod_noveda, x.tab_origen, x.cod_consec, 
                                 x.ind_ensiti, x.ind_fuepla, x.tiem_duraci, 
                                 x.cod_etapax, x.ind_limpio, x.ind_manala, 
-                                y.cod_rutasx, x.ind_alarma
+                                y.cod_rutasx
                            FROM (
                                   (
                                          SELECT a.fec_contro AS fec_noveda, 
@@ -508,7 +508,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                                 a.cod_contro, '0' AS ind_ensiti, 
                                                 b.ind_fuepla, a.tiem_duraci, 
                                                 b.cod_etapax, b.ind_limpio, 
-                                                b.ind_manala, b.ind_alarma
+                                                b.ind_manala 
                                            FROM ".BASE_DATOS.".tab_despac_contro a 
                                      INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                                              ON a.cod_noveda = b.cod_noveda 
@@ -529,7 +529,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                                 a.cod_contro, '1' AS ind_ensiti, 
                                                 b.ind_fuepla, a.tiem_duraci, 
                                                 b.cod_etapax, b.ind_limpio, 
-                                                b.ind_manala, b.ind_alarma
+                                                b.ind_manala
                                            FROM ".BASE_DATOS.".tab_despac_noveda a 
                                      INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                                              ON a.cod_noveda = b.cod_noveda 
@@ -548,7 +548,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                                 a.cod_contro, '0' AS ind_ensiti, 
                                                 c.ind_fuepla, '' AS tiem_duraci, 
                                                 c.cod_etapax, '0' AS ind_limpio, 
-                                                c.ind_manala, c.ind_alarma
+                                                c.ind_manala 
                                            FROM ".BASE_DATOS.".tab_recome_asigna a 
                                      INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                                              ON a.cod_contro = b.cod_contro 
@@ -572,7 +572,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                                 a.cod_contro, '1' AS ind_ensiti, 
                                                 c.ind_fuepla, '' AS tiem_duraci, 
                                                 c.cod_etapax, '1' AS ind_limpio, 
-                                                c.ind_manala, c.ind_alarma
+                                                c.ind_manala 
                                            FROM ".BASE_DATOS.".tab_recome_asigna a 
                                      INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                                              ON a.cod_contro = b.cod_contro 
