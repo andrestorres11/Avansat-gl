@@ -359,7 +359,7 @@ class AjaxDespacNoveda
     $mHtml .= '<tr>';
     $mHtml .= '<td class="cellInfo1"><input type="radio" name="ind_activo" id="ind_activoID" value="R" />Realizado</td>';
     
-    $perfiles = array(1,7,8,73,74,713);
+    $perfiles = array(1,7,8,73,74,713, 705);
 
     if( in_array( $_SESSION['datos_usuario']['cod_perfil'], $perfiles ) )
     $mHtml .= '<td class="cellInfo1"><input type="radio" name="ind_activo" id="ind_activoID" value="S" />Cliente</td>';
