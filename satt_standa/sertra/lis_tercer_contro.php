@@ -417,14 +417,17 @@ class Proc_alerta
  
  function getControsContratados( $cod_transp )
  {
-   //Trae los puestos de control que tiene contratados la transportadora
-   $query = "SELECT a.cod_contro, a.cod_operad, a.ind_estado
-               FROM ".BASE_DATOS.".tab_tercer_contro a,
-                    ".BASE_DATOS.".tab_genera_contro b
-              WHERE a.cod_contro = b.cod_contro
-                AND a.cod_tercer = '".$cod_transp."'
-           ORDER BY b.nom_contro ASC";
-   $consulta = new Consulta( $query, $this -> conexion );
+   $sql = "SELECT a.cod_ealxxx AS cod_contro, 
+                  '1' AS cod_operad,
+                  '1' AS ind_estado,
+                  a.val_ealxxx, a.fec_inieal, 
+                  a.fec_fineal 
+             FROM 
+                  " . BASE_DATOS . ".tab_ealxxx_transp a 
+       INNER JOIN " . BASE_DATOS . ".tab_genera_contro b ON a.cod_ealxxx = b.cod_contro
+            WHERE a.cod_transp = '$cod_transp' ";
+        
+   $consulta = new Consulta( $sql, $this -> conexion );
    $puestosContratados = $consulta -> ret_matriz();
    return $puestosContratados;
  }
