@@ -315,6 +315,9 @@ class InsertNovedad {
         $mMailTo = $mMailTo[0]["usr_emailx"] == '' ? $mUsuari[0]['usr_emailx'] : $mMailTo[0]["usr_emailx"];
         $mMailCC = $mMailCC[0]["usr_emailx"];
         #-------------------------------------------------------------------------------------
+        if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
+            mail('nelson.liberato@eltransporte.org', 'PROTOCOLO', var_export($mPrincipal, true)."\n".var_export($mSecundario, true)."\n".var_export($mMailTo, true)."\n".var_export($mMailCC, true) );
+        }
 
         $RESULTADO = array('ema_conpri' => $mPrincipal, 'ema_otrcon' => $mSecundario,
             'ema_conprX' => $mMailTo, 'ema_otrcoX' => $mMailCC);
@@ -657,7 +660,7 @@ class InsertNovedad {
      *  \return: 
      */
 
-    function InsertPuestoControlHumadea($mParametros, $mLog) {
+    function InsertPuestoControlHumadea($mParametros, $mLog, $mXML = NULL) {
         $mQueryInsertLog = "INSERT INTO " . $base_datos . ".tab_errorx_puecon 
                                     (
                                         cod_consec, empresa,  usuario, clave, 
@@ -665,7 +668,7 @@ class InsertNovedad {
                                         velocidad, codigo_puestocontrol,  novedad, longitud,
                                         latitud, hora,  fecha, placa, 
                                         manifiesto_codigo, num_despac, ind_estado, resultado, 
-                                        fec_creaci, usr_creaci
+                                        fec_creaci, usr_creaci, xml_reques
                                     ) 
                                     VALUES
                                     (
@@ -674,7 +677,7 @@ class InsertNovedad {
                                         '$mParametros[velocidad]', '$mParametros[codigo_puestocontrol]', '$mParametros[novedad]', '$mParametros[longitud]', 
                                         '$mParametros[latitud]', '$mParametros[hora]', '$mParametros[fecha]', '$mParametros[placa]', 
                                         '$mParametros[manifiesto_codigo]', '$mLog[mNumDes]', '$mLog[mEstado]', '" . str_replace("'", "", $mLog['mResult']) . "', 
-                                        NOW() ,'$mLog[mUsuari]'
+                                        NOW() ,'$mLog[mUsuari]', '".htmlspecialchars( $mXML )."'
                                     ) ";
         $consulta = new Consulta($mQueryInsertLog, $this->conexion, 'R');
         return $consulta;
@@ -2971,6 +2974,10 @@ class InsertNovedad {
             /*             * ****************************************************** */
 
             #<IF 3.2>
+            if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
+                mail('nelson.liberato@eltransporte.org', 'CENOPE 1', var_export( $_CENOPE, true));
+            }
+                
             if (sizeof($_CENOPE) > 0) {
                 $comp = "<br>ENVIADO A: " . ( $_CENOPE['ema_conprX'] != '' ? $_CENOPE['ema_conprX'] : 'N/A' ) . "<br>COPIADO A: " . ( $_CENOPE['ema_otrcoX'] != '' ? $_CENOPE['ema_otrcoX'] : 'N/A' ) . " ";
 
@@ -3009,6 +3016,10 @@ class InsertNovedad {
                     $consulta = new Consulta($mSelect, $this->conexion);
                     $mConsec = $consulta->ret_matriz();
 
+                    if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
+                        mail('nelson.liberato@eltransporte.org', 'CENOPE 2', "mAsigna: ".var_export( $mAsigna, true)."\n_REQUEST: ".var_export($_REQUEST, true) );
+                    }
+
                     if (sizeof($mAsigna) > 0 && $_REQUEST['ind_activo_'] == 'S') {
                         if ($mIndEnSiti == true) {
                             $mInsert = "INSERT INTO " . BASE_DATOS . ".tab_protoc_asigna
@@ -3036,6 +3047,11 @@ class InsertNovedad {
                                               '0'
                                             )";
                         }
+
+                        if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
+                            mail('nelson.liberato@eltransporte.org', 'CENOPE 3', $mInsert );
+                        }
+
                         $insercion = new Consulta($mInsert, $this->conexion, "R");
                     }
                 }
@@ -3499,9 +3515,20 @@ class InsertNovedad {
                     if (51 == $interfaz->interfaz[$i]['operad']) {
                         $error_ = NULL;
 
+                         if ($regist["nittra"] == "830104929") {
+                            $cod_transp = "067";
+                        }else{
+                            $cod_transp = $regist["nittra"];
+                        }
+
                         #<IF 5.1.1.1.3.1>
-                        if (strpos(strtolower($regist['sitio']), "eal") !== FALSE || strpos(strtolower($regist['sitio']), "ecl") !== FALSE ||
-                                strpos($mData['nom_contro'], "eal") !== FALSE || strpos($mData['nom_contro'], "ecl") !== FALSE) {
+                        if (strpos(strtolower($regist['sitio']), "eal") !== FALSE || 
+                            strpos(strtolower($regist['sitio']), "oal") !== FALSE || 
+                            strpos(strtolower($regist['sitio']), "ecl") !== FALSE ||
+                            strpos($mData['nom_contro'], "eal") !== FALSE || 
+                            strpos($mData['nom_contro'], "oal") !== FALSE || 
+                            strpos($mData['nom_contro'], "ecl") !== FALSE
+                           ) {
                             $mControPadre = self::getPCPadre($regist);
 
                             /*                             * ****************** TRATAMIENTO SOAP ******************** */
@@ -3514,7 +3541,7 @@ class InsertNovedad {
                                 $mFecha[1] = date('H:i:s', strtotime($regist['fecnov']));
 
                                 $parametros = array();
-                                $parametros['empresa'] = $interfaz->interfaz[$i]['nombre'];
+                                $parametros['empresa_codigocs'] = $cod_transp;
                                 $parametros['usuario'] = $interfaz->interfaz[$i]['usuari'];
                                 $parametros['clave'] = $interfaz->interfaz[$i]['passwo'];
                                 $parametros['sentido'] = "0";
@@ -3539,12 +3566,12 @@ class InsertNovedad {
                                 $parametros['placa'] = $mDatDespac['num_placax'];
                                 $parametros['manifiesto_codigo'] = $mDatDespac['cod_manifi'];
 
-                                $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
+                                $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
                                 //Métodos disponibles en el WS
-                                $respuesta = $oSoapClient->__call('puestocontrol', $parametros);
+                                $respuesta = $oSoapClient-> __soapCall( 'puestocontrol', $parametros );
 
-                                if ($respuesta != 'OK REPORTO') {
+                                if ($respuesta != 'OK REPORTO.') {
                                     $error_ = $respuesta;
                                 }
                             } catch (SoapFault $e) {
@@ -3567,7 +3594,9 @@ class InsertNovedad {
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Error Web service Humadea - Colombiasoftware", '<div name="'.HOST_WEB.'_faro_11">' . $mMessage . '</div>', $mCabeceSoporte);
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE.", nelson.liberato@eltransporte.org", 
+                                	"Error Web service Humadea - Colombiasoftware", 
+                                	'<div name="'.HOST_WEB.'_faro_11">' . $mMessage."\n". var_export($parametros, true ) . '</div>', $mCabeceSoporte);
                             }
                             //Insert de Bitácora 
                             $mLog = array();
@@ -3576,7 +3605,7 @@ class InsertNovedad {
                             $mLog['mUsuari'] = $regist['usuari'];
                             $mLog['mNumDes'] = $regist['despac'];
 
-                            $this->InsertPuestoControlHumadea($parametros, $mLog);
+                            $this->InsertPuestoControlHumadea($parametros, $mLog, $oSoapClient -> __getLastRequest() );
                         } else {
                             /*                             * ****************** TRATAMIENTO SOAP ******************** */
                             ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
@@ -3588,7 +3617,7 @@ class InsertNovedad {
                                 $mFecha[1] = date('H:i:s', strtotime($regist['fecnov']));
 
                                 $parametros = array();
-                                $parametros['empresa'] = $interfaz->interfaz[$i]['nombre'];
+                                $parametros['empresa_codigocs'] = $cod_transp;
                                 $parametros['usuario'] = $interfaz->interfaz[$i]['usuari'];
                                 $parametros['clave'] = $interfaz->interfaz[$i]['passwo'];
 
@@ -4058,6 +4087,26 @@ class InsertNovedad {
                     #</IF 5.1.1.1.11>
                     if (26 == $interfaz->interfaz[$i]["operad"] ) { //Interfaz con Carga Antioquia
                         try {
+
+                                # Consulta del puesto Padre de la homologacion
+                                $query = "SELECT  a.cod_contro
+                                          FROM ".BASE_DATOS.".tab_homolo_pcxeal a 
+                                         WHERE ( a.cod_homolo = '".$regist["contro"]."' OR a.cod_contro =  '".$regist["contro"]."' ) ";
+                                $mControPadre = new Consulta($query, $this->conexion);
+                                $mControPadre = $mControPadre->ret_matriz('a');
+
+
+                                # Consulta PC, puesto control si no encontró nada homologado arriba -----------------
+                                if( sizeof($mControPadre ) <= 0 )
+                                {
+                                    $mQuerySelNomPc = "SELECT cod_contro  
+                                                   FROM ".BASE_DATOS.".tab_genera_contro  
+                                                  WHERE cod_contro = '".$regist["contro"]."' ";
+
+                                    $mControPadre = new Consulta($mQuerySelNomPc, $this->conexion);
+                                    $mControPadre = $mControPadre->ret_matriz('a');
+                                }
+
                                 // Xml String porque se manda en POST como API, no es un WSDL (SOAP)
                                 $mTextXML = '<?xml version="1.0" encoding="utf-8"?>
                                                 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
@@ -4072,7 +4121,7 @@ class InsertNovedad {
                                                             <ns1:reporte>
                                                                 <ns1:Manifiesto>'.$mDatDespac['cod_manifi'].'</ns1:Manifiesto>
                                                                 <ns1:Placa>'.( substr($mDatDespac["num_placax"], 0,3)."-".substr($mDatDespac["num_placax"],3, 6) ).'</ns1:Placa>
-                                                                <ns1:CodigoPuestoControlOET>'.$regist["contro"].'</ns1:CodigoPuestoControlOET>
+                                                                <ns1:CodigoPuestoControlOET>'.$mControPadre[0]['cod_contro'].'</ns1:CodigoPuestoControlOET>
                                                                 <ns1:FechaNovedad>'.$regist["fecnov"].'</ns1:FechaNovedad>
                                                                 <ns1:Observacion>'.$regist["observ"].'</ns1:Observacion>
                                                                 <ns1:Lugar>'.$regist['sitio'].'</ns1:Lugar>
