@@ -672,7 +672,7 @@ class InsertNovedad {
                                     ) 
                                     VALUES
                                     (
-                                        '', '$mParametros[empresa]', '$mParametros[usuario]', '$mParametros[clave]', 
+                                        '', '$mParametros[empresa_codigocs]', '$mParametros[usuario]', '$mParametros[clave]', 
                                         '$mParametros[sentido]', '$mParametros[direccion]', '$mParametros[tipo_evento]', '$mParametros[kilometraje]', 
                                         '$mParametros[velocidad]', '$mParametros[codigo_puestocontrol]', '$mParametros[novedad]', '$mParametros[longitud]', 
                                         '$mParametros[latitud]', '$mParametros[hora]', '$mParametros[fecha]', '$mParametros[placa]', 
