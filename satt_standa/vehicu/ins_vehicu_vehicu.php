@@ -255,7 +255,7 @@ class Ins_vehicu_vehicu {
             $mHtml->OpenDiv("id:form2; class:contentAccordionForm");
               $mHtml->Table("tr");
                 $mHtml->Label(("SOAT:"), "width:25%; *:1;"); 
-                  $mHtml->Input (array("name" => "vehicu[num_poliza]", "validate" => "numero", "obl"=> "1", "id" => "num_polizaID",  "minlength" => "3", "maxlength" => "10", "width" => "25%", "value"=> $datos->principal->num_poliza) );
+                  $mHtml->Input (array("name" => "vehicu[num_poliza]", "validate" => "numero", "obl"=> "1", "id" => "num_polizaID",  "minlength" => "3", "maxlength" => "20", "width" => "25%", "value"=> $datos->principal->num_poliza) );
                 $mHtml->Label("Aseguradora:", "width:25%; *:1;"); 
                   $mHtml->Input (array("name" => "vehicu[nom_asesoa]", "validate" => "alpha", "obl"=> "1", "id" => "nom_asesoaID",  "minlength" => "3", "maxlength" => "20", "width" => "25%", "value"=> $datos->principal->nom_asesoa) );
                 $mHtml->Label("Fecha de Vencimiento:", "width:25%; *:1;"); 
