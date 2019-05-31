@@ -1199,20 +1199,44 @@ function CharsInput(fTag, fSize) {
 
 //---------------------------------------------------------------------------------------------------
 
-function LockAplication(action) {
-  var objCentral = document.getElementById("TransparencyDIV");
-  var objMenu = parent.menuFrame.document.getElementById("TransparencyDIV");
-  var objHeader = parent.headerFrame.document.getElementById("TransparencyDIV");
-  if (action == "lock") {
-    objCentral.style.height = "100%";
-    objCentral.style.visibility = "visible";
-    objMenu.style.visibility = "visible";
-    objHeader.style.visibility = "visible";
-  } else {
-    objCentral.style.visibility = "hidden";
-    objMenu.style.visibility = "hidden";
-    objHeader.style.visibility = "hidden";
+function LockAplication(action, message = "") {
+  try
+  {
+    var objCentral = parent.centralFrame.document.getElementById("TransparencyDIV");
+    if(objCentral == null){
+
+      var div = document.createElement("div");
+      div.setAttribute("id", "TransparencyDIV");
+      div.innerHTML = "<div style='position: absolute; transform: translate(-50%, -50%); top: 50%; left: 50%; border: 1px solid #45930b; background: #4ca20b; color: white; font-weight: bold; padding: 10px; border-radius: 15px; display: flex;'>" + message + "</div>";
+      parent.centralFrame.document.getElementsByTagName("body")[0].appendChild(div);
+
+      objCentral = parent.centralFrame.document.getElementById("TransparencyDIV");
+
+    }
+    //var objMenu    = parent.menuFrame.document.getElementById("TransparencyDIV");
+    //var objHeader = parent.headerFrame.document.getElementById("TransparencyDIV");
+    if (action == "lock") {
+      objCentral.style.left = "0";
+      objCentral.style.top = "0";
+      objCentral.style.width = "100%";
+      objCentral.style.height = "100%";
+      objCentral.style.display = "block";
+      objCentral.style.position = "fixed";
+      objCentral.style.backgroundColor = "#cccc";
+      objCentral.style.zIndex = "2000";
+      //objMenu.style.visibility = "visible";
+    //7  objHeader.style.visibility = "visible";
+    } else {
+      objCentral.style.display = "none";
+     // objMenu.style.visibility = "hidden";
+    //  objHeader.style.visibility = "hidden";
   }
+  }
+  catch(e)
+  {
+    console.log( e );
+  }
+  
 }
 
 
