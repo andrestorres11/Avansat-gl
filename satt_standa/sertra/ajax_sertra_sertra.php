@@ -1366,6 +1366,12 @@ class ajax_certra_certra {
             $fecini = $datos->fecini;
             $precio = $datos->precio;
             $fecfin = $datos->fecfin;
+
+            //se eliminan los puestos para quecuando actualice no queden los que ya no utilizan
+            $sql = "DELETE FROM " . BASE_DATOS . ".tab_ealxxx_transp 
+                          WHERE cod_transp = '$datos->cod_transp' ";
+            $consulta = new Consulta($sql, self::$cConexion);
+            
             foreach ($datos->eal as $key => $value) {
                 $sql1 = "SELECT con_ealtra FROM " . BASE_DATOS . ".tab_ealxxx_transp WHERE cod_transp = '$datos->cod_transp' AND cod_ealxxx = '$value'";
                 $consulta = new Consulta($sql1, self::$cConexion);
