@@ -701,17 +701,340 @@ function r(){
 				canTotal = 0;
 				$.getJSON( updateUrl(filter1.url3,"lis_transp",tercer), function( data ) {
 					//console.log(id + " Detalle ");
-					//console.log(data);
+					var url_option = filter1.url3 ; 
+					url_option = url_option.substr(-2);  
+
+					if(url_option == '13' || url_option == '16')
+					{
+						currForm.find("#cumplido").html('DIAS FALTANTES');
+					}
+					else
+					{
+						currForm.find("#cumplido").html('CUMPLIDO ANS');
+					}
+
 					currForm.find('.alert').html("");
 					currForm.find('.alert').addClass("hide");
 					currForm.find('.alert').removeClass("active");
 
 					for(var i=0 in data){
+						var fecha_soli = '';
 						//filtro para validar el tipo de solicitud a mostar
 						if(data[i].cod_tipsol != other && other != null && other != undefined )
 						{
 							continue;
 						}
+
+							var hora_inicia_respuesta = data[i].fec_inicia ;
+							var hora_finali_respuesta = data[i].fec_finali ;
+							var dia_calend = data[i].dia_calend ;
+							var tip_tiempo = data[i].tip_tiempo ;
+							var tie_respue = data[i].tie_respue ;
+							var fec_creaci = data[i].fec_creaci;
+							
+							if(tip_tiempo==2)
+							{
+								tie_respue = parseInt(tie_respue) * parseInt(60);
+							}
+							else if(tip_tiempo==3)
+							{
+								tie_respue = parseInt(tie_respue) * parseInt(60);
+								tie_respue = parseInt(tie_respue) * parseInt(24);								
+							}
+							
+							var fecha_soli = data[i].fec_creaci;
+							var fecha_hoy = new Date()
+
+							fecha_solicitud = new Date(fecha_soli)
+							var dias=["domingo", "lunes", "martes", "miercoles", "jueves", "viernes", "sabado"];
+							var dia_respuesta = dias[fecha_hoy.getDay()];
+							var dia_solicitud = dias[fecha_solicitud.getDay()];
+							//var diferencia_dias = fecha_solicitud.diff(fecha_hoy, 'days');
+							var timeDiff = Math.abs(fecha_solicitud.getTime() - fecha_hoy.getTime());
+							var diferencia_dias  = Math.ceil(timeDiff / (1000 * 3600 * 24));
+							diferencia_dias =parseInt(diferencia_dias)-parseInt(2);
+							var hora_solicitud =  fecha_solicitud.getHours()
+							hora_solicitud = ("0" + hora_solicitud).slice(-2);
+							hora_solicitud = hora_solicitud+":"+fecha_solicitud.getMinutes()+":"+fecha_solicitud.getSeconds(); 
+
+							if ( dia_calend.indexOf(dia_solicitud) !== -1 ){		
+								if(hora_inicia_respuesta < hora_solicitud && hora_finali_respuesta > hora_solicitud)
+								{
+									
+										/* HORA Y MIN INICIADA DE LA CONFIGURACION ANS */
+										hora_resp_inic = hora_inicia_respuesta.substr(0,2);
+										min_resp_inic = hora_inicia_respuesta.substr(3,2);
+										/* HORA Y MIN FINAL DE LA CONFIGURACION ANS */
+										hora_resp_fin = hora_finali_respuesta.substr(0,2);
+										min_resp_fin = hora_finali_respuesta.substr(3,2);
+
+										/* HORA Y MIN INICIADA DE LA CONFIGURACION ANS */
+										hora_soli_inic = hora_solicitud.substr(0,2);
+										min_soli_inic = hora_solicitud.substr(3,2);
+										/* HORA Y MIN FINAL DE LA CONFIGURACION ANS */
+										hora_soli_fin = hora_solicitud.substr(0,2);
+										min_soli_fin = hora_solicitud.substr(3,2);
+										
+										/* DIFERENCIA DE HORA Y MIN DEL DIA DE HOY AL INICIAR */
+										if(fecha_solicitud.getDate() == fecha_hoy.getDate() )
+										{
+											var diferencia_hora_dia_solici = Math.abs(fecha_solicitud.getHours() - fecha_hoy.getHours());
+										
+											if(diferencia_hora_dia_solici !=0)
+											{
+												diferencia_hora_dia_solici_hora = parseInt(diferencia_hora_dia_solici)*parseInt(60);
+											}
+											else
+											{
+												diferencia_hora_dia_solici_hora =0;
+											}
+											
+											diferencia_hora_dia_solici_min =  Math.abs(fecha_solicitud.getMinutes() - fecha_hoy.getMinutes());
+											diferencia_hora_dia_solici_min = parseInt(diferencia_hora_dia_solici_min)+parseInt(diferencia_hora_dia_solici_hora)
+										}
+										else
+										{
+											diferencia_hora_dia_solici_hora = parseInt(hora_resp_inic)-parseInt(fecha_hoy.getHours());
+											diferencia_hora_dia_solici_hora = parseInt(diferencia_hora_dia_solici_hora)*parseInt(60);
+											diferencia_hora_dia_solici_min =  parseInt(min_resp_inic) - parseInt(fecha_hoy.getMinutes());
+											diferencia_hora_dia_solici_min = parseInt(diferencia_hora_dia_solici_min)+parseInt(diferencia_hora_dia_solici_hora)
+										}
+									
+										/* DIAS PASADO DESPUES DE LA SOLICITUD A EL PRIMER DIA DE LA CONFIGURACION ANS/ SE LE RESTAN DOS DIAS EL DIA DE LA SOLICITUD Y EL DIA DE HOY */
+										/* SE PASAN DE DIAS A MIN */
+										if(diferencia_dias >= 1)
+										{
+											diferencia_dias_hora = parseInt(diferencia_dias)*parseInt(24); 
+											diferencia_dias_min = parseInt(diferencia_dias_hora)*parseInt(60);
+										}
+										else{
+											diferencia_dias_min=0;
+										}
+										/* DIFERENCIA DE HORA Y MIN DE LA FECHA DE SOLICTUD A LA HORA FINAL CONFIGURADA */
+										if(fecha_solicitud.getDate() != fecha_hoy.getDate() )
+										{
+											diferencia_hora_dia_hoy_hora = hora_resp_fin - hora_soli_inic;
+											if(diferencia_hora_dia_hoy_hora !=0)
+											{
+												diferencia_hora_dia_hoy_hora = parseInt(diferencia_hora_dia_hoy_hora)*parseInt(60);
+											}
+											else
+											{
+												diferencia_hora_dia_hoy_hora=0;
+											}
+											diferencia_hora_dia_hoy_min = parseInt(min_resp_fin)-parseInt(fecha_solicitud.getMinutes());
+											diferencia_hora_dia_hoy_min = parseInt(diferencia_hora_dia_hoy_min)+parseInt(diferencia_hora_dia_hoy_hora)
+										}
+										else
+										{
+											diferencia_hora_dia_hoy_min=0;
+										}
+
+										total_min = parseInt(Math.abs(diferencia_dias_min))+parseInt(Math.abs(diferencia_hora_dia_hoy_min))+parseInt(Math.abs(diferencia_hora_dia_solici_min))
+											
+										var cumplido = total_min+" Min";
+										
+										if(data[i].fec_modifi == "")
+										{
+											if(tie_respue > total_min)
+											{
+												
+												if(url_option == '10' )
+												{
+													var cumplido = "SI"
+													var semaforo = 2;
+												}	
+												else
+												{
+													var semaforo = 1;
+												}
+												
+											}
+											else
+											{
+												if(url_option == '10' )
+												{
+													var cumplido = "NO"
+													var semaforo = 2;
+												}
+												else
+												{
+													var semaforo = 3;
+												}
+											}
+										}
+										else
+										{
+											var fecha_respuesta = data[i].fec_modifi ;
+											fecha_respuesta = new Date(fecha_respuesta)
+											if(url_option == '10' )
+											{
+												var timeDiff = Math.abs(fecha_solicitud.getTime() - fecha_respuesta.getTime());
+												var diferencia_dias  = Math.ceil(timeDiff / (1000 * 3600 * 24));
+												diferencia_dias =parseInt(diferencia_dias)-parseInt(2);
+												if(diferencia_dias >= 1)
+												{
+													diferencia_dias_hora = parseInt(diferencia_dias)*parseInt(24); 
+													diferencia_dias_min = parseInt(diferencia_dias_hora)*parseInt(60);
+												}
+												else{
+													diferencia_dias_min=0;
+												}
+
+												var diferencia_hora_dia_solici = Math.abs(fecha_solicitud.getHours() - fecha_respuesta.getHours());
+												//var diferencia_hora_dia_solici  = Math.ceil(timeDiff1 / (100));
+												if(diferencia_hora_dia_solici !=0)
+												{
+													diferencia_hora_dia_solici_hora = parseInt(diferencia_hora_dia_solici)*parseInt(60);
+												}
+												else
+												{
+													diferencia_hora_dia_solici_hora =0;
+												}
+												
+												diferencia_hora_dia_solici_min =  Math.abs(fecha_solicitud.getMinutes() - fecha_respuesta.getMinutes());
+												total_min = parseInt(diferencia_hora_dia_solici_min)+parseInt(diferencia_hora_dia_solici_hora)+parseInt(diferencia_dias_min)
+
+												if(tie_respue > total_min)
+												{
+													var cumplido = "SI "
+												}
+												else
+												{
+													var cumplido = "NO"
+												}
+												var semaforo = 2;													
+											}
+											else
+											{
+												if(data[i].user_modifi != 1)
+												{
+													var cumplido = "0 Min";
+													var semaforo = 2;
+												}
+												else
+												{
+													var semaforo = 3;
+												}
+												
+											}
+											
+										}
+
+								}
+								
+							}
+							else
+							{
+								hora_resp_inic = hora_inicia_respuesta.substr(0,2);
+								min_resp_inic = hora_inicia_respuesta.substr(3,2);
+								/* HORA Y MIN FINAL DE LA CONFIGURACION ANS */
+								hora_resp_fin = hora_finali_respuesta.substr(0,2);
+								min_resp_fin = hora_finali_respuesta.substr(3,2);
+
+								/* HORA Y MIN INICIADA DE LA CONFIGURACION ANS */
+								hora_soli_inic = hora_solicitud.substr(0,2);
+								min_soli_inic = hora_solicitud.substr(3,2);
+								/* HORA Y MIN FINAL DE LA CONFIGURACION ANS */
+								hora_soli_fin = hora_solicitud.substr(0,2);
+								min_soli_fin = hora_solicitud.substr(3,2);
+								/* DIFERENCIA DE HORA Y MIN DEL DIA DE HOY AL INICIAR */
+								if(fecha_solicitud.getDate() == fecha_hoy.getDate() )
+								{
+									var timeDiff1 = Math.abs(fecha_solicitud.getHours() - fecha_hoy.getHours());								
+									if(diferencia_hora_dia_solici !=0)
+									{
+										diferencia_hora_dia_solici_hora = parseInt(diferencia_hora_dia_solici)*parseInt(60);
+									}
+									else
+									{
+										diferencia_hora_dia_solici_hora =0;
+									}
+									
+									diferencia_hora_dia_solici_min =  Math.abs(fecha_solicitud.getMinutes() - fecha_hoy.getMinutes());
+									diferencia_hora_dia_solici_min = parseInt(diferencia_hora_dia_solici_min)+parseInt(diferencia_hora_dia_solici_hora)
+								}
+								else
+								{
+									diferencia_hora_dia_solici_hora = parseInt(hora_resp_inic)-parseInt(fecha_hoy.getHours());
+									diferencia_hora_dia_solici_hora = parseInt(diferencia_hora_dia_solici_hora)*parseInt(60);
+									diferencia_hora_dia_solici_min =  parseInt(min_resp_inic) - parseInt(fecha_hoy.getMinutes());
+									diferencia_hora_dia_solici_min = parseInt(diferencia_hora_dia_solici_min)+parseInt(diferencia_hora_dia_solici_hora)
+								}
+
+								total_min = Math.abs(diferencia_hora_dia_solici_min);
+								if(fec_creaci != "")
+								{ 
+									if(data[i].fec_modifi == "")
+									{
+										var cumplido = total_min+" Min";
+										if(tie_respue > total_min)
+										{
+											if(url_option == '10')
+											{
+												var cumplido = "Si";
+												var semaforo = 2;
+											}
+											else
+											{
+												var semaforo = 1;
+											}
+										}
+										else
+										{
+											if(url_option == '10' )
+											{
+												var cumplido = "No";
+												var semaforo = 2;
+
+											}
+											else{
+												var semaforo = 3;
+											}
+										}
+									}
+									else
+									{
+										if(url_option == '10' )
+										{
+											var cumplido = "No";
+											var semaforo = 2;
+										}
+										else
+										{
+											var cumplido = "0 Min";
+											var semaforo = 2;
+										}
+										
+									}
+								}
+								else
+								{
+									if(url_option == '10' )
+									{
+										var cumplido = "No";
+										var semaforo = 2;
+									}
+									else
+									{
+										if(data[i].user_modifi != 1)
+										{
+											var cumplido = "0 Min";
+											var semaforo = 2;
+										}
+										else
+										{
+											var semaforo = 3;
+										}
+									}
+									
+								}
+
+							}
+							
+						
+						
+
 						canTotal = canTotal+1; 
 						currTab.find("table.indicador-detallado2")
 						.append(
@@ -723,10 +1046,20 @@ function r(){
 							"<td>"+ data[i].fec_creaci +"</td>"+
 							"<td>"+ data[i].fec_modifi +"</td>"+
 							"<td>"+ data[i].fec_difere +"</td>"+
+							"<td class='semaforo"+semaforo+"'>"+ cumplido +"</td>"+
 							"<td data-native-value=\""+data[i].cod_estado+"\">"+ data[i].nom_estado +"</td>"+
 							"<td>"+ data[i].usr_creaci+"</td>"+
 							"</tr>"
 						);
+						if(semaforo == 3)
+						{
+							$(".semaforo"+semaforo).css("background-color","#E0544B")
+						}
+						else if(semaforo == 1)
+						{
+							$(".semaforo"+semaforo).css("background-color","#8FC877")
+						}
+						
 					}
 					//actulizacion de la cantidad de solicitudes
 					$(".indicador-detallado2").find("#badge").each(function(i,v){$(v).html("<b>"+canTotal+" REGISTROS</b>");});
