@@ -89,7 +89,7 @@ class seguri {
      */
 
     public function listPerfiles() {
-        $sql = "SELECT cod_perfil, nom_perfil, nom_respon, can_usuari, can_servic, cod_respon FROM " . BASE_DATOS . ".vis_usuari_perfil WHERE 1 ";
+        $sql = "SELECT cod_perfil, nom_perfil, nom_respon, can_usuari, can_servic, cod_respon, tie_pronov FROM " . BASE_DATOS . ".vis_usuari_perfil WHERE 1 ";
         $_SESSION["queryXLS"] = $sql;
 
         if (!class_exists(DinamicList)) {
@@ -108,6 +108,7 @@ class seguri {
         $list->SetHidden("cod_perfil", "0");
         $list->SetHidden("nom_perfil", "1");
         $list->SetHidden("cod_respon", "5");
+        $list->SetHidden("tie_pronov", "6");
         $list->Display(self::$cConexion);
 
         $_SESSION["DINAMIC_LIST"] = $list;
@@ -236,8 +237,8 @@ class seguri {
     private function registrarPerfil($datos) {
         $usr_creaci = $_SESSION['datos_usuario']['cod_usuari'];
 
-        $sql = "INSERT INTO " . BASE_DATOS . ".tab_genera_perfil (cod_perfil, nom_perfil, cod_respon, usr_creaci, fec_creaci ) 
-                                VALUES  ('$datos->cod_perfil', '$datos->nom_perfil', '$datos->cod_respon', '$usr_creaci', NOW())";
+        $sql = "INSERT INTO " . BASE_DATOS . ".tab_genera_perfil (cod_perfil, nom_perfil, cod_respon, usr_creaci, fec_creaci, tie_pronov ) 
+                                VALUES  ('$datos->cod_perfil', '$datos->nom_perfil', '$datos->cod_respon', '$usr_creaci', NOW(), '$datos->tie_pronov' )";
 
         if ($mConsult = new Consulta($sql, self::$cConexion, "BR")) {
             $sql = "INSERT INTO " . BASE_DATOS . ".tab_perfil_servic (cod_perfil, cod_servic) VALUES ";
@@ -313,7 +314,8 @@ class seguri {
                                     nom_perfil = '$datos->nom_perfil',
                                     cod_respon = '$datos->cod_respon',
                                     usr_modifi = '$usr_modifi', 
-                                    fec_modifi = NOW()
+                                    fec_modifi = NOW(),
+                                    tie_pronov = '$datos->tie_pronov'
                                     WHERE cod_perfil = $datos->cod_perfil ";
 
         if ($mConsult = new Consulta($sql, self::$cConexion, "BR")) {

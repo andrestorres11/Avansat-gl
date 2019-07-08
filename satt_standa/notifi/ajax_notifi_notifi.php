@@ -44,6 +44,10 @@ class AjaxNotifiNotifi
 			       	self::getFormNuevaNotifi();
 			    break;
 
+			    case 'getFormNuevaNotifi2':
+			       	self::getFormNuevaNotifi2();
+			    break;
+
 			    case 'getNomUsuario':
 			       	self::getNomUsuario();
 			    break;
@@ -495,6 +499,32 @@ class AjaxNotifiNotifi
 		}
 	}
 
+
+	/*! \fn: getFormNuevaNotifi
+	 *  \brief: identifica el formulario correspondiete y lo pinta
+	 *  \author: Edward Serrano
+	 *	\date:  06/01/2017
+	 *	\date modified: dia/mes/año
+	 */
+	protected function getFormNuevaNotifi2()
+	{	
+		try
+		{
+			$datos = (object) $_REQUEST;
+			#identifico el tipo de formulario a pintar
+			if($datos->idForm=="3" || $datos->idForm=="4")
+			{
+				self::getFormNuevaNotifiSelect($datos);
+			}
+			else
+			{
+				self::getFormNuevaNotifiComun($datos);
+			}
+		} catch (Exception $e) {
+			echo "error getFormNuevaNotifi :".$e;
+		}
+	}
+
 	/*! \fn: getFormNuevaNotifiExt
 	 *  \brief: identifica el formulario correspondiete a supervisores y controladores y lo pinta
 	 *  \author: Edward Serrano
@@ -612,6 +642,7 @@ class AjaxNotifiNotifi
 			}
 			$date = new DateTime();
 			$mHtml = new Formlib(2, "yes",TRUE);
+		if ($ActionForm->idForm!=3) {
 			$mHtml->OpenDiv("id:Notificontainer1; class:accordian");
 				$mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION BASICA</center></h3>");
 				$mHtml->OpenDiv("id:newNotifi");
@@ -661,41 +692,41 @@ class AjaxNotifiNotifi
 					$mHtml->CloseTable('tr');
 				$mHtml->CloseDiv();
 			$mHtml->CloseDiv();
+		}
 			#Formulario de diligenciamiento
 			#si es supervisor pinta campos adicionales
 			if($ActionForm->idForm==3){
+				$datos = (object) $_POST;
+		        $cod_grupox = $_SESSION['datos_usuario']['cod_grupox'];
+
 				$mHtml->OpenDiv("id:Notificontainer2; class:accordian");
-					$mHtml->SetBody("<h3 style='padding:6px;'><center>SUPERVISORES</center></h3>");
+					$mHtml->SetBody("<h3 style='padding:6px;'><center>ESTADO DE VEHICULOS</center></h3>");
 					$mHtml->OpenDiv("id:jsonFormDigi");
 						$mHtml->Table("tr");
-							/*$mHtml->Row();
-								$mHtml->Label( "*FORMULARIO DE DILIGENCIAMIENTO:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-							$mHtml->CloseRow();
-							*/
 							$mHtml->Row();
-								$mHtml->line("","i",0,7);
-							$mHtml->CloseRow();
-							/*$mHtml->Row();
-								$mHtml->Label( "SUPERVISORES",  array("align"=>"center", "class"=>"celda_titulo infJson","colspan"=>"7") );
-							$mHtml->CloseRow();*/
-							$mHtml->Row();
-								$mHtml->Label( "Supervisor Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-								$mHtml->Label( "Controlador Master Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-								$mHtml->Label( "Supervisor Saliente",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
-							$mHtml->CloseRow();
-							$mHtml->Row();
-								$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($SUPERVISORES,"supe_entrante")!="")?self::JsonRecor($SUPERVISORES,"supe_entrante"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_entranteID')"));
-								$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($SUPERVISORES,"cont_Mentrant")!="")?self::JsonRecor($SUPERVISORES,"cont_Mentrant"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','cont_MentrantID')"));
-								$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3", "value"=>(self::JsonRecor($SUPERVISORES,"supe_saliente")!="")?self::JsonRecor($SUPERVISORES,"supe_saliente"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_salienteID')"));
-							$mHtml->CloseRow();
-							$mHtml->Row();
-								$mHtml->line("","i",0,7);
+							if(!$cod_grupox){
+					            $msj = "El usuario ".$_SESSION['datos_usuario']['cod_usuari']." No tiene grupo asociado";
+					            //$msj = $this->htmlMensajeSin($msj);
+								$mHtml->SetBody('<table width="100%" cellspacing="0" cellpadding="0">    
+           											<tr class="Style2DIV">
+                										<td class="contenido centrado">      
+                    										<h5>'.$msj.'</h5>
+										                </td>
+										            </tr>
+										        </table>');
+					        }else{
+					        	$usuariosEncargados = self::getUsuariosACargo($cod_grupox);
+					        	echo "<pre>";
+					        		print_r($usuariosEncargados);
+					        	echo "</pre>";
+					        }
+								
 							$mHtml->CloseRow();
 						$mHtml->CloseTable('tr');
 					$mHtml->CloseDiv();
 				$mHtml->CloseDiv();
 				$mHtml->OpenDiv("id:Notificontainer3; class:accordian");
-					$mHtml->SetBody("<h3 style='padding:6px;'><center>CONTROLADORES</center></h3>");
+					$mHtml->SetBody("<h3 style='padding:6px;'><center>ESTADO DE LA CARGA</center></h3>");
 					$mHtml->OpenDiv("id:jsonContro");
 						$mHtml->Table("tr");
 							$mHtml->Row();
@@ -2396,6 +2427,24 @@ class AjaxNotifiNotifi
 	function setmPermCli($mPermCli = NULL){
 		$_SESSION['subNotifi']['PermCli']=$mPermCli;
 	}
+
+	/*! \fn: getUsuariosACargo
+     *  \brief: Retorna usuarios que tiene a cargo que estan en la jornada laboral
+     *  \author: Ing. Andres Torres
+     *  \date: 05/07/2019
+     *  \date modified: dd/mm/aaaa
+     *  \param: $cod_grupox grupo a cargo del usuario
+     *  \return: 
+     */
+    public function getUsuariosACargo($cod_grupox) {
+    	//primero sacamos el listado de los usuarios a cargo del supervisor
+    	$mSql = "SELECT * FROM ".BASE_DATOS.".tab_genera_usuari WHERE cod_grupox = '{$cod_grupox}' AND cod_perfil = '7'";
+
+    	$mConsult = new Consulta($mSql, self::$cConexion );
+		$mResult = $mConsult -> ret_matrix('a');
+		return $mResult;
+    	//se valida cuales de esos usuarios estan en turno el la fecha actual
+    }
 	
 }
 $notifi = new AjaxNotifiNotifi( );

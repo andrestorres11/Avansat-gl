@@ -252,7 +252,12 @@ function btnGeneral()
              NomNotifi=" CLIENTES";
             break;
     } 
-    var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
+    if (id == '3') {
+      var formData = "option=getFormNuevaNotifi2&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
+
+    }else{
+      var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
+    }
     $("#popID").remove();
     closePopUp('popID');
     LoadPopupJQNoButton('open', 'NUEVA NOTIFICACION '+NomNotifi, ($(window).height() - 40), ($(window).width() - 40), false, false, true);
