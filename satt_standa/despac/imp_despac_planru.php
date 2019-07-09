@@ -784,8 +784,11 @@ SELECT a.num_despac,
       $d18 = $paramet[0][1] != '' ? $paramet[0][1]."<br>". $matriz[0][18].$_FORMAT['obs_adicio']: $matriz[0][18].$_FORMAT['obs_adicio'] ;
       
       if($_SESSION['datos_usuario']['cod_perfil'] == 741){
-        $d18 = "Se&ntilde;or Conductor es de su Responsabilidad contestar todas las llamadas realizadas del departamento de Seguridad TRANSFOREX S.A y del CL FARO, Repostarse en todos los Puestos de Control definidos en este Plan de Ruta ya que &eacute;l no Reporte tendr&aacute; una SANCION de $ 50.000 pesos por cada Uno. ";
+        // $d18 = "Se&ntilde;or Conductor es de su Responsabilidad contestar todas las llamadas realizadas del departamento de Seguridad TRANSFOREX S.A y del CL FARO, Repostarse en todos los Puestos de Control definidos en este Plan de Ruta ya que &eacute;l no Reporte tendr&aacute; una SANCION de $ 50.000 pesos por cada Uno. ";
+        
+        $d18 = "Se&ntilde;or conductor es de su responsabilidad contestar todas las llamadas realizadas del departamento de seguridad TRANSFOREX SA Y CL FARO, ya que el no responder tendr&aacute; una sanci&oacute;n de $10.000 pesos por cada una.";
       }
+      
       $d19 = $_REQUEST[despac]; //numero de despacho
       $d20 = $matriz[0]['nom_tipdes']; //numero de caravana
       $d21 = $matriz[0][17]; //Fecha de llegada planeada
