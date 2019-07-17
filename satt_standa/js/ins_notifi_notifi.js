@@ -394,6 +394,21 @@ function btnGeneral()
                   $("#Document").find("input[type=file]").each(function(){
                       mdata.append($(this).attr('name'),$(this)[0].files[0]);
                   });
+
+                   $("#estado_carga").find("input[type=hidden]").each(function(){
+                      estado_carga.append($(this).attr('name'),$(this)[0].files[0]);
+                  });
+
+                  $("#vehiculos_novedades").find("input[type=hidden]").each(function(){
+                      vehiculos_novedades.append($(this).attr('name'),$(this)[0].files[0]);
+                  });
+
+                  var estado_carga_JsonString = JSON.stringify(estado_carga);
+                  mdata.append("jso_carga",estado_carga_JsonString) 
+
+                  var vehiculos_novedades_JsonString = JSON.stringify(vehiculos_novedades);
+                  mdata.append("jso_vehiculo",vehiculos_novedades_JsonString) 
+
                   console.log(mdata);
                   returnJson = ValidateFormExt(cod_tipnot);
                   console.log(returnJson);
@@ -495,10 +510,10 @@ function btnGeneral()
                   });
 
                   var estado_carga_JsonString = JSON.stringify(estado_carga);
-                  mdata.append("jso_notifi",estado_carga_JsonString) 
+                  mdata.append("jso_carga",estado_carga_JsonString) 
 
                   var vehiculos_novedades_JsonString = JSON.stringify(vehiculos_novedades);
-                  mdata.append("jso_notifi",vehiculos_novedades_JsonString) 
+                  mdata.append("jso_vehiculo",vehiculos_novedades_JsonString) 
 
 
                   console.log(mdata);
