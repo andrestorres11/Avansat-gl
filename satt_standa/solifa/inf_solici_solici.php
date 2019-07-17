@@ -886,7 +886,16 @@ EOF;
 						order by a.num_solici,f.fec_creaci desc,f.num_seguim desc";
 				break;
 			}
-		
+				
+			/* CONSULTA PARA TRAER LAS CONFIGURACION A ANS */
+			$query_cumplidos = "SELECT b.*
+					FROM ".BASE_DATOS.".tab_solici_solici a 
+					inner join ".BASE_DATOS.".tab_solici_config b on b.cod_tipsol=a.cod_tipsol 
+					and b.cod_subtip=a.cod_subtip 
+					WHERE $where
+						order by a.num_solici";
+
+
 			$consulta = new Consulta( $query, $this -> conexion );
 		    $result = $consulta -> ret_matrix( 'a' );
 
@@ -961,6 +970,35 @@ EOF;
 							$d["nom_viaxxx"]=htmlentities($d["nom_viaxxx"],ENT_QUOTES);
 							$d["fec_creaci"]=!empty($d["fec_creaci"]) ? $d["fec_creaci"] : "";
 							$d["fec_modifi"]=!empty($d["fec_modifi"]) ? $d["fec_modifi"] : "";
+
+							/* CONSULTA PARA VERIFICAR EL TIPO DE PERFIL SEGUN SU USUARIO */			
+							$query_perfil = " SELECT t2.cod_perfil AS cod_perfil FROM tab_genera_usuari t1
+								JOIN tab_genera_perfil t2
+								ON (t1.cod_perfil = t2.cod_perfil) 
+								where t1.cod_usuari = '".$d["usr_modifi"]."'; ";
+							$consulta_pefil = new Consulta( $query_perfil, $this -> conexion );
+		    			$result_pefil = $consulta_pefil -> ret_matrix('a');
+		    			$verificar_perfil=	$result_pefil[0]['cod_perfil'];
+
+		    			if($verificar_perfil == 1 || $verificar_perfil == 7 || $verificar_perfil == 8 || $verificar_perfil ==73)
+		    			{
+		    				$d["user_modifi"]= 0;
+		    			}
+		    			else
+		    			{
+		    				$d["user_modifi"] = 1;
+		    			}
+		    			
+							$consulta_cumplidos = new Consulta( $query_cumplidos, $this -> conexion );
+		    			$result_cumplidos = $consulta_cumplidos -> ret_matrix( 'a' );
+		    			foreach ($result_cumplidos as $key => $cumplidos) {
+								$d["fec_inicia"] = $cumplidos["fec_inicia"];
+								$d["fec_finali"] = $cumplidos["fec_finali"];
+								$d["dia_calend"] = $cumplidos["dia_calend"];
+								$d["tip_tiempo"] = $cumplidos["tip_tiempo"];
+								$d["tie_respue"] = $cumplidos["tie_respue"];
+							}
+
 							$r[]=$d;
 						break;
 						case 6:
