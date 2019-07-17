@@ -888,10 +888,11 @@ EOF;
 			}
 				
 			/* CONSULTA PARA TRAER LAS CONFIGURACION A ANS */
-			$query_cumplidos = "SELECT b.*
+			$query_cumplidos = "SELECT x.*
 					FROM ".BASE_DATOS.".tab_solici_solici a 
-					inner join ".BASE_DATOS.".tab_solici_config b on b.cod_tipsol=a.cod_tipsol 
-					and b.cod_subtip=a.cod_subtip 
+					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
+					inner join ".BASE_DATOS.".tab_solici_config x on x.cod_tipsol=a.cod_tipsol 
+					and x.cod_subtip=a.cod_subtip 
 					WHERE $where
 						order by a.num_solici";
 

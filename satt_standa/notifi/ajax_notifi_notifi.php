@@ -18,7 +18,10 @@ class AjaxNotifiNotifi
 {
   	private static  $cConexion,
 	                $cCodAplica,
-	                $cUsuario;
+	                $cUsuario,
+	                $estado_carga,
+	                $estado_vehiculo,
+	                $productividadUsuarios;
 
 	public function __construct()
 	{
@@ -749,9 +752,9 @@ class AjaxNotifiNotifi
 				$datos = (object) $_POST;
 				$cod_grupox = $_SESSION['datos_usuario']['cod_grupox'];
 				$usuariosEncargados = self::getUsuariosACargo($cod_grupox);
-      	$estado_carga = self::getEstadoCarga($usuariosEncargados);
-     		$estado_vehiculo = self::getEstadoVehiculo($usuariosEncargados,$estado_carga);
-      	$productividadUsuarios = self::getProductividadUsuarios($usuariosEncargados);
+      			$this->estado_carga = self::getEstadoCarga($usuariosEncargados);
+     			$this->estado_vehiculo = self::getEstadoVehiculo($usuariosEncargados,$this->estado_carga);
+      			$this->productividadUsuarios = self::getProductividadUsuarios($usuariosEncargados);
 
 
 	      /* ESTADO DE VEHICULOS */
@@ -764,7 +767,7 @@ class AjaxNotifiNotifi
 	            	overflow:scroll-y;
 								height:300px;
 							}
-							#vehiculoa_novedades{
+							#vehiculos_novedades{
 	            	overflow:scroll-y;
 								height:300px;
 							}							
@@ -817,14 +820,14 @@ class AjaxNotifiNotifi
 								  			$mHtml->CloseRow();
 								  			$mHtml->Row();
 												$mHtml->Label( "EMPRESA",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
-												$mHtml->Label( "CANT. CARGA PLANEADA",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
+												//$mHtml->Label( "CANT. CARGA PLANEADA",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
 												$mHtml->Label( "CANT. CARGA ACTUAL",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
 												$mHtml->Label( "CANT. NOVEDADES REGISTRADAS",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
 												$mHtml->Label( "USUARIO",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );	
 											$mHtml->CloseRow();
-							  			for ($j=0; $j < sizeof($estado_carga[$i]); $j++) { 
+							  			for ($j=0; $j < sizeof($this->estado_carga[$i]); $j++) { 
 												
-												if ($estado_carga[$i][$j]['can_cargax']) {
+												if ($this->estado_carga[$i][$j]['can_cargax']) {
 													$mHtml->Row();
 
 													if($j%2==0)
@@ -836,17 +839,17 @@ class AjaxNotifiNotifi
 														$estilo_row = 'DLRow1';
 													}
 
-													$mHtml->Label( $estado_carga[$i][$j]['nom_tercer'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-													$mHtml->Label( $estado_carga[$i][$j]['can_despac'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-													$mHtml->Label( $estado_carga[$i][$j]['can_cargax'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-													$mHtml->Label( $estado_carga[$i][$j]['num_novedad'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+													$mHtml->Label( $this->estado_carga[$i][$j]['nom_tercer'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+													//$mHtml->Label( $this->estado_carga[$i][$j]['can_despac'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+													$mHtml->Label( $this->estado_carga[$i][$j]['can_cargax'] == NULL ? '0' : $this->estado_carga[$i][$j]['can_cargax'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+													$mHtml->Label( $this->estado_carga[$i][$j]['num_novedad'] == NULL ? '0' : $this->estado_carga[$i][$j]['num_novedad'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
 													$mHtml->Label(  $usuariosEncargados[$i]['cod_usuari'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
 
-													$mHtml->Hidden(array( "name" => "carga_nom_tercer".$i.$j, "id" => "carga_nom_tercer".$i.$j, "value"=>$estado_carga[$i][$j]['nom_tercer']));
-													$mHtml->Hidden(array( "name" => "carga_can_despac".$i.$j, "id" => "carga_can_despac".$i.$j, "value"=>$estado_carga[$i][$j]['can_despac']));
-													$mHtml->Hidden(array( "name" => "carga_can_cargax".$i.$j, "id" => "carga_can_cargax".$i.$j, "value"=>$estado_carga[$i][$j]['can_cargax']));
-													$mHtml->Hidden(array( "name" => "carga_num_novedad".$i.$j, "id" => "carga_num_novedad".$i.$j, "value"=>$estado_carga[$i][$j]['num_novedad']));
-													$mHtml->Hidden(array( "name" => "carga_cod_usuari".$i.$j, "id" => "carga_cod_usuari".$i.$j, "value"=>$estado_carga[$i][$j]['cod_usuari']));
+													$mHtml->Hidden(array( "name" => "carga_nom_tercer".$i.$j, "id" => "carga_nom_tercer".$i.$j, "value"=>$this->estado_carga[$i][$j]['nom_tercer']));
+													//$mHtml->Hidden(array( "name" => "carga_can_despac".$i.$j, "id" => "carga_can_despac".$i.$j, "value"=>$this->estado_carga[$i][$j]['can_despac']));
+													$mHtml->Hidden(array( "name" => "carga_can_cargax".$i.$j, "id" => "carga_can_cargax".$i.$j, "value"=>$this->estado_carga[$i][$j]['can_cargax']));
+													$mHtml->Hidden(array( "name" => "carga_num_novedad".$i.$j, "id" => "carga_num_novedad".$i.$j, "value"=>$this->estado_carga[$i][$j]['num_novedad']));
+													$mHtml->Hidden(array( "name" => "carga_cod_usuari".$i.$j, "id" => "carga_cod_usuari".$i.$j, "value"=>$this->estado_carga[$i][$j]['cod_usuari']));
 
 									  			$mHtml->CloseRow();
 												}
@@ -856,7 +859,7 @@ class AjaxNotifiNotifi
 												$mHtml->line("","i",0,7);
 										}
 										$mHtml->Hidden(array( "name" => "size_usuariosEncargados", "id" => "size_usuariosEncargados", "value"=>sizeof($usuariosEncargados) ));
-										$mHtml->Hidden(array( "name" => "size_estado_carga", "id" => "size_estado_carga", "value"=>sizeof($estado_carga) ));
+										$mHtml->Hidden(array( "name" => "size_estado_carga", "id" => "size_estado_carga", "value"=>sizeof($this->estado_carga) ));
 										
 									$mHtml->CloseRow();
 									$mHtml->Row();
@@ -879,7 +882,7 @@ class AjaxNotifiNotifi
 					$mHtml->CloseDiv();
 					$mHtml->OpenDiv("id:Notificontainer3; class:accordian");
 					$mHtml->SetBody("<h3 style='padding:6px;'><center>VEHICULOS CON NOVEDADES ESPECIALES</center></h3>");
-					$mHtml->OpenDiv("id:vehiculoa_novedades");
+					$mHtml->OpenDiv("id:vehiculos_novedades");
 					
 						$mHtml->Table("tr",array("id"=>"DLRow2"));
 							$mHtml->Row();
@@ -898,8 +901,15 @@ class AjaxNotifiNotifi
 								
 							$mHtml->CloseRow();
 							$mHtml->Row();
-
-								for ($a=0; $a <sizeof($estado_vehiculo[0]); $a++) {
+								if (!sizeof($this->estado_vehiculo[0])) {
+									$mHtml->Hidden(array( "name" => "vehiculo_nom_tercer0", "id" => "vehiculo_nom_tercer0", "value"=>"0") );
+										$mHtml->Hidden(array( "name" => "vehiculo_num_placax0", "id" => "vehiculo_num_placax0", "value"=>"0") );
+										$mHtml->Hidden(array( "name" => "vehiculo_num_despa0", "id" => "vehiculo_num_despac0", "value"=>"0") );
+										$mHtml->Hidden(array( "name" => "vehiculo_nom_conduc0", "id" => "vehiculo_nom_conduc0", "value"=>"0") );	
+										$mHtml->Hidden(array( "name" => "vehiculo_cod_noveda0", "id" => "vehiculo_cod_noveda0", "value"=>"0") );
+										$mHtml->Hidden(array( "name" => "vehiculo_obs_noveda0", "id" => "vehiculo_obs_noveda0", "value"=>"0") );
+								}
+								for ($a=0; $a <sizeof($this->estado_vehiculo[0]); $a++) {
 									$mHtml->Row();
 										
 										if($a%2==0)
@@ -910,18 +920,18 @@ class AjaxNotifiNotifi
 											$estilo_row = 'DLRow1';								
 										}
 										
-										$mHtml->Label( $estado_vehiculo[0][$a]['nom_tercer'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $estado_vehiculo[0][$a]['num_placax'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $estado_vehiculo[0][$a]['num_despac'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $estado_vehiculo[0][$a]['nom_conduc'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $estado_vehiculo[0][$a]['cod_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $estado_vehiculo[0][$a]['obs_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Hidden(array( "name" => "vehiculo_nom_tercer".$a, "id" => "vehiculo_nom_tercer".$i.$j, "value"=>$estado_carga[0][$a]['nom_tercer']) );
-										$mHtml->Hidden(array( "name" => "vehiculo_num_placax".$a, "id" => "vehiculo_num_placax".$i.$j, "value"=>$estado_carga[0][$a]['num_placax']));
-										$mHtml->Hidden(array( "name" => "vehiculo_num_despac".$a, "id" => "vehiculo_num_despac".$i.$j, "value"=>$estado_carga[0][$a]['num_despac']));
-										$mHtml->Hidden(array( "name" => "vehiculo_nom_conduc".$a, "id" => "vehiculo_nom_conduc".$i.$j, "value"=>$estado_carga[0][$a]['nom_conduc']));				
-										$mHtml->Hidden(array( "name" => "vehiculo_cod_noveda".$a, "id" => "vehiculo_cod_noveda".$i.$j, "value"=>$estado_carga[0][$a]['cod_noveda']));		
-										$mHtml->Hidden(array( "name" => "vehiculo_obs_noveda".$a, "id" => "vehiculo_obs_noveda".$i.$j, "value"=>$estado_carga[0][$a]['obs_noveda']));
+										$mHtml->Label( $this->estado_vehiculo[0][$a]['nom_tercer'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[0][$a]['num_placax'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[0][$a]['num_despac'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[0][$a]['nom_conduc'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[0][$a]['cod_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[0][$a]['obs_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Hidden(array( "name" => "vehiculo_nom_tercer".$a, "id" => "vehiculo_nom_tercer".$a, "value"=>$this->estado_carga[0][$a]['nom_tercer']) );
+										$mHtml->Hidden(array( "name" => "vehiculo_num_placax".$a, "id" => "vehiculo_num_placax".$a, "value"=>$this->estado_carga[0][$a]['num_placax']));
+										$mHtml->Hidden(array( "name" => "vehiculo_num_despac".$a, "id" => "vehiculo_num_despac".$a, "value"=>$this->estado_carga[0][$a]['num_despac']));
+										$mHtml->Hidden(array( "name" => "vehiculo_nom_conduc".$a, "id" => "vehiculo_nom_conduc".$a, "value"=>$this->estado_carga[0][$a]['nom_conduc']));				
+										$mHtml->Hidden(array( "name" => "vehiculo_cod_noveda".$a, "id" => "vehiculo_cod_noveda".$a, "value"=>$this->estado_carga[0][$a]['cod_noveda']));		
+										$mHtml->Hidden(array( "name" => "vehiculo_obs_noveda".$a, "id" => "vehiculo_obs_noveda".$a, "value"=>$this->estado_carga[0][$a]['obs_noveda']));
 									$mHtml->CloseRow();
 								}
 
@@ -969,8 +979,8 @@ class AjaxNotifiNotifi
 
 										$mHtml->Label( $usuariosEncargados[$y]['cod_usuari'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
 										$mHtml->Label( $usuariosEncargados[$y]['cod_usuari'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
-										$mHtml->Label( $productividadUsuarios[$y]['cod_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
-										$mHtml->Label( '%'.$productividadUsuarios[$y]['por_cumpli'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
+										$mHtml->Label( $this->productividadUsuarios[$y]['cod_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
+										$mHtml->Label( '%'.$this->productividadUsuarios[$y]['por_cumpli'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
 										$mHtml->Hidden(array( "name" => "indicador_usuario".$y, "id" => "indicador_usuario".$y, "value"=>$usuariosEncargados[$y]['cod_usuari'] ) );
 										$mHtml->Hidden(array( "name" => "indicador_nom_usuario".$y, "id" => "indicador_nom_usuario".$y, "value"=>$usuariosEncargados[$y]['cod_usuari'] ) );
 										$mHtml->Hidden(array( "name" => "indicador_nov_registro".$y, "id" => "indicador_nov_registro".$y, "value"=>$usuariosEncargados[$y]['cod_usuari'] ) );
@@ -1798,13 +1808,13 @@ class AjaxNotifiNotifi
 	                                        (cod_tipnot,	ind_notres,		ind_notusr,
 	                                         nom_asunto,	fec_vigenc,		ind_respue,	
 	                                         obs_notifi,	ind_estado,		usr_creaci,	
-	                                         fec_creaci,    ind_enttur
+	                                         fec_creaci,    ind_enttur,
 	                                         est_cargas, nov_vehicu, ind_regist)
 	                                VALUES  
 	                                		($datos->cod_tipnot,'".str_replace("'", "", substr($datos->cod_asires, 1))."','".str_replace("'", "", substr($datos->ind_notusr, 1))."',
 	                                		'$datos->nom_asunto', '$datos->fec_vigenc',$datos->ind_respue, 
 	                                		'$datos->obs_notifi', 1,$datos->usr_creaci, 
-	                                		NOW(), 2, '".$datos->jso_carga."', '".$datos->jso_vehiculo."'. '0')" ;
+	                                		NOW(), 2, '".$datos->jso_carga."', '".$datos->jso_vehiculo."', '0')" ;
 	            $consulta = new Consulta($sql, self::$cConexion, "BR");
 	            if($consulta)
 	            {
@@ -1905,7 +1915,7 @@ class AjaxNotifiNotifi
 	                                		'$datos->nom_asunto', '$datos->fec_vigenc',$datos->ind_respue, 
 	                                		'$datos->obs_notifi', 1,$datos->usr_creaci, 
 	                                		NOW(), $datos->ind_enttur ,'".str_replace("'", "", substr($datos->ind_notusr, 1))."',
-	                                		'".$datos->jso_carga."', '".$datos->jso_vehiculo."'. '0')";
+	                                		'".$datos->jso_carga."', '".$datos->jso_vehiculo."', '0')";
 	            $consulta = new Consulta($sql, self::$cConexion, "BR");
 	            if($consulta)
 	            {
@@ -2682,7 +2692,7 @@ class AjaxNotifiNotifi
 
     	$mConsult = new Consulta($mSql, self::$cConexion );
 		$mResult = $mConsult -> ret_matrix('a');
-		
+
 		$info_usuario[] = array();
 	   	$contador=0;
 		foreach ($mResult as $value) {	
@@ -2794,12 +2804,13 @@ class AjaxNotifiNotifi
 	   		// $nom_tercer_arreglo = $mResult[$contador]['nom_tercer'];
 	    
 	   		
-	   		$mResult[$contador]['usuario'] = $cod_usuari;
+	   		//$mResult[$contador]['usuario'] = $cod_usuari;
 	   		//$mResult[$contador]['cod_noveda'] = $cod_usuari;
 
 	   		for($i=0; $i < sizeof($despachos) ; $i++ )
 	   		{
 	   			$mResult[$i]['can_despac'] = $can_despac[$i];
+	   			$mResult[$i]['usuario'] = $cod_usuari;
 	   			//$suma_cantidades =	$can_despac[$i];
 	   			//$mResult[$contador]['can_despac'] = $suma_cantidades;
 	   		}
@@ -2812,7 +2823,6 @@ class AjaxNotifiNotifi
 	    	$contador = $contador+1;
 	   	}
 
-
 	   	for($i=0; $i < sizeof($info_estado_carga) ; $i++ )
 	   	{	
 	   		
@@ -2820,6 +2830,7 @@ class AjaxNotifiNotifi
 	   		{	
 		   		$num_despac = $info_estado_carga[$contador2][$j]['num_despac'];
 		   		$cod_transp = $info_estado_carga[$contador2][$j]['cod_transp'];
+		   		$cod_usuari = $info_estado_carga[$contador2][$j]['usuario'];
 
 		   		if($num_despac == NULL)
 		   		{
@@ -2846,6 +2857,7 @@ class AjaxNotifiNotifi
 											  ON b.num_despac = d.num_despac	   		 			
 						   		 			 WHERE d.num_despac IN (".$num_despac.") 
 							   		 		   and a.cod_transp  = '".$cod_transp."'
+							   		 		   and d.usr_creaci = '".$cod_usuari."'
 							   		 		   GROUP BY a.cod_transp
 			   		 		  )
 									union 
@@ -2860,6 +2872,7 @@ class AjaxNotifiNotifi
 										  ON b.num_despac = d.num_despac	   		 			
 						   		 		 WHERE d.num_despac IN (".$num_despac.") 
 						   		 		   and a.cod_transp  = '".$cod_transp."'
+						   		 		   and d.usr_creaci = '".$cod_usuari."'
 						   		 		   GROUP BY a.cod_transp
 						   		)
 						   	)	as x
@@ -2902,9 +2915,9 @@ class AjaxNotifiNotifi
    	 $contador=0;
    	 for ($i=0; $i <sizeof($usuariosEncargados); $i++) {
 
-				for ($j=0; $j < sizeof($estado_carga[$i]); $j++) { 
+				for ($j=0; $j < sizeof($this->estado_carga[$i]); $j++) { 
 
-					$cod_transp = $estado_carga[$i][$j]['cod_transp'];
+					$cod_transp = $this->estado_carga[$i][$j]['cod_transp'];
 
 					$sql = "					
 						SELECT a.num_despac, e.abr_tercer AS nom_tercer, f.abr_tercer AS nom_conduc, a.num_placax, d.cod_noveda , d.obs_noveda
@@ -2920,11 +2933,11 @@ class AjaxNotifiNotifi
 						LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer f
 						ON a.cod_conduc = f.cod_tercer
 						WHERE  d.ind_solnov = 0
-						and a.cod_transp= '860068121'
+						and a.cod_transp= '".$cod_transp."'
 						and a.ind_activo = 'S' 
 						group by a.num_despac ";
 
-					// //and a.cod_transp= '".$cod_transp."'
+					//and a.cod_transp= '860068121' nit corona para pruebas
 					$result = new Consulta($sql, self::$cConexion );
 	   		  $mResult = $result -> ret_matrix('a');
 	   		  $info_estado_vehiculo[$contador] = $mResult; 

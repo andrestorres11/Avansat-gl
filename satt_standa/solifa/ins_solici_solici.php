@@ -441,6 +441,7 @@ EOF;
 						);
 					}
 					$r = json_encode($this->InterfSolicitud->getResult());
+					
 					if (strpos($r,"code_resp:1000;") || strpos($r,"code_resp: 1000;")) {
 					/**************** Envio mail *********************/
 					$explode = explode(",", $r); 
@@ -460,8 +461,14 @@ EOF;
 			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
 			                          );
 			      	$this->sendMailSolifa($dataMail);
+					$obs_config = $this->getTransSolici($num_solici[0], "1")[0]['obs_config'];
 				}
-				echo $r;	
+				echo "<pre style='color:green'>";
+					echo $r;	
+				echo "</pre>";
+				echo "<pre style='color:red'>";
+					print_r($obs_config);
+				echo "</pre>";
 				}
 			}
 		}
@@ -494,6 +501,7 @@ EOF;
 					$this->raw->obs_solici
 				);
 				$r = json_encode($this->InterfSolicitud->getResult());
+
 				if (strpos($r,"code_resp:1000;") || strpos($r,"code_resp: 1000;")) {
 					/**************** Envio mail *********************/
 					$explode = explode(",", $r); 
@@ -513,8 +521,14 @@ EOF;
 			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
 			                          );
 			      	$this->sendMailSolifa($dataMail);
+					$obs_config = $this->getTransSolici($num_solici[0], "2")[0]['obs_config'];
 				}
-				echo $r;					
+				echo "<pre style='color:green'>";
+					echo $r;	
+				echo "</pre>";
+				echo "<pre style='color:red'>";
+					print_r($obs_config);
+				echo "</pre>";
 			}
 		}
 	}
@@ -585,8 +599,14 @@ EOF;
 			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
 			                          );
 			      	$this->sendMailSolifa($dataMail);
+			      	$obs_config = $this->getTransSolici($num_solici[0])[0]['obs_config'];
 				}
-				echo $r;
+				echo "<pre style='color:green'>";
+					echo $r;	
+				echo "</pre>";
+				echo "<pre style='color:red'>";
+					print_r($obs_config);
+				echo "</pre>";
 			}
 		}
 	}
@@ -638,8 +658,14 @@ EOF;
 			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
 			                          );
 			      	$this->sendMailSolifa($dataMail);
+			      	$obs_config = $this->getTransSolici($num_solici[0])[0]['obs_config'];
 				}
-				echo $r;
+				echo "<pre style='color:green'>";
+					echo $r;	
+				echo "</pre>";
+				echo "<pre style='color:red'>";
+					print_r($obs_config);
+				echo "</pre>";
 			}
 		}
 	}
@@ -733,9 +759,10 @@ EOF;
     			$campos = ", f.nom_subtip ";
     			$joins = "INNER JOIN ".BASE_DATOS.".tab_solici_subtip f ON f.cod_tipsol = a.cod_tipsol AND f.cod_subtip = a.cod_subtip";
 	    	}
-		    $sql =  "SELECT c.abr_tercer, b.dir_usrmai, a.obs_solici, a.nom_asunto $campos FROM ".BASE_DATOS.".tab_solici_solici a ".
+		    $sql =  "SELECT c.abr_tercer, b.dir_usrmai, a.obs_solici, a.nom_asunto, h.obs_config $campos FROM ".BASE_DATOS.".tab_solici_solici a ".
 		              "INNER JOIN ".BASE_DATOS.".tab_solici_datosx b ON a.cod_solici = b.cod_solici ".
 		              "INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON b.cod_transp = c.cod_tercer ".
+		              "INNER JOIN ".BASE_DATOS.".tab_solici_config h ON h.cod_tipsol = a.cod_tipsol AND h.cod_subtip = a.cod_subtip ".
 		              "$joins WHERE ".
 					  "a.num_solici=$num_solici";
 			

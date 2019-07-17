@@ -396,11 +396,19 @@ function btnGeneral()
                   });
 
                    $("#estado_carga").find("input[type=hidden]").each(function(){
-                      estado_carga.append($(this).attr('name'),$(this)[0].files[0]);
+                     
+                      estado_carga.append($(this).attr('name'),$(this)[0]);
                   });
 
                   $("#vehiculos_novedades").find("input[type=hidden]").each(function(){
-                      vehiculos_novedades.append($(this).attr('name'),$(this)[0].files[0]);
+                      vehiculos_novedades.append($(this).attr('name'),$(this)[0]);
+
+                      var a = $(this)[0];
+                      console.log("primero: "+a)
+                      var b = $(this).attr('id'); 
+                      console.log("segundo: "+b)
+                      var assdsa = $("#"+a).val();
+                      console.log(assdsa)
                   });
 
                   var estado_carga_JsonString = JSON.stringify(estado_carga);
@@ -502,11 +510,11 @@ function btnGeneral()
                   });
 
                   $("#estado_carga").find("input[type=hidden]").each(function(){
-                      estado_carga.append($(this).attr('name'),$(this)[0].files[0]);
+                      estado_carga.append($(this).attr('name'),$(this)[0]);
                   });
 
                   $("#vehiculos_novedades").find("input[type=hidden]").each(function(){
-                      vehiculos_novedades.append($(this).attr('name'),$(this)[0].files[0]);
+                      vehiculos_novedades.append($(this).attr('name'),$(this)[0]);
                   });
 
                   var estado_carga_JsonString = JSON.stringify(estado_carga);

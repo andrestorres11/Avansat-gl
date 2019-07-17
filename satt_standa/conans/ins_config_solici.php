@@ -86,7 +86,7 @@ class ins_config_solici
 
 							  	<div class='col-md-6'>
 										<div class='form-group'>
-				            	<label>Hora final: </label>
+				            	<label>Hora inicial: </label>
 				                <div class='input-group date' id='datetimepicker3'>
 				                    <input type='text' class='time form-control' id='hora_inicial' value='06:00'/>
 				                    <span class='input-group-addon'>
