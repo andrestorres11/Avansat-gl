@@ -752,9 +752,9 @@ class AjaxNotifiNotifi
 				$datos = (object) $_POST;
 				$cod_grupox = $_SESSION['datos_usuario']['cod_grupox'];
 				$usuariosEncargados = self::getUsuariosACargo($cod_grupox);
-      			$this->estado_carga = self::getEstadoCarga($usuariosEncargados);
-     			$this->estado_vehiculo = self::getEstadoVehiculo($usuariosEncargados,$this->estado_carga);
-      			$this->productividadUsuarios = self::getProductividadUsuarios($usuariosEncargados);
+      	$this->estado_carga = self::getEstadoCarga($usuariosEncargados);
+     		$this->estado_vehiculo = self::getEstadoVehiculo($usuariosEncargados,$this->estado_carga);
+      	$this->productividadUsuarios = self::getProductividadUsuarios($usuariosEncargados);
 
 
 	      /* ESTADO DE VEHICULOS */
@@ -1883,7 +1883,7 @@ class AjaxNotifiNotifi
 	                                		($datos->cod_tipnot,'".str_replace("'", "", substr($datos->cod_asires, 1))."','".str_replace("'", "", substr($datos->ind_notusr, 1))."',
 	                                		'$datos->nom_asunto', '$datos->fec_vigenc',$datos->ind_respue, 
 	                                		'$datos->obs_notifi', 1,$datos->usr_creaci, 
-	                                		NOW(), 2, '".json_encode($this->estado_carga)."', '".json_encode($this->estado_vehiculo)."', '".json_encode($this->productividadUsuarios)."'  ; " ;
+	                                		NOW(), 2, '".json_encode($this->estado_carga)."', '".json_encode($this->estado_vehiculo)."', '".json_encode($this->productividadUsuarios)."'  ); " ;
 	            $consulta = new Consulta($sql, self::$cConexion, "BR");
 	            if($consulta)
 	            {
@@ -1983,7 +1983,7 @@ class AjaxNotifiNotifi
 	                                		($datos->cod_tipnot,'".str_replace("'", "", substr($datos->cod_asires, 1))."',$datos->num_horlab,
 	                                		'$datos->nom_asunto', '$datos->fec_vigenc',$datos->ind_respue, 
 	                                		'$datos->obs_notifi', 1,$datos->usr_creaci, 
-	                                		NOW(), $datos->ind_enttur ,'".str_replace("'", "", substr($datos->ind_notusr, 1))."', '".json_encode($this->estado_carga)."', '".json_encode($this->estado_vehiculo)."', '".json_encode($this->productividadUsuarios)."'  ; " ;
+	                                		NOW(), $datos->ind_enttur ,'".str_replace("'", "", substr($datos->ind_notusr, 1))."', '".json_encode($this->estado_carga)."', '".json_encode($this->estado_vehiculo)."', '".json_encode($this->productividadUsuarios)."'  ); " ;
 	            $consulta = new Consulta($sql, self::$cConexion, "BR");
 	            if($consulta)
 	            {
@@ -2855,26 +2855,24 @@ class AjaxNotifiNotifi
 	   		 	INNER JOIN ".BASE_DATOS.".tab_despac_despac b 
 	   		 			ON a.num_despac = b.num_despac
 	   		 	INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c
-	   		 			ON a.cod_transp = c.cod_tercer   		 			
+	   		 			ON a.cod_transp = c.cod_tercer
+	   		 	INNER JOIN tab_despac_seguim d
+					ON b.num_despac = d.num_despac
+
 	   		 		 WHERE b.fec_salida <= NOW()
 	   		 		   AND (b.fec_llegad IS NULL OR b.fec_llegad = '0000-00-00 00:00:00' ) 
 	   		 		   AND b.ind_planru = 'S'
 	   		 		   AND b.ind_anulad = 'R'
 	   		 		   AND a.ind_activo = 'S'
+	   		 		   AND d.cod_contro = '9999' 
 	   		 		   AND ( b.fec_salida IS NOT NULL )
 	   		 		   AND a.cod_transp IN (".$cod_transp.") 
 	   		 		   GROUP BY a.cod_transp";
 
 	   		$result = new Consulta($sql, self::$cConexion );
 	   		$mResult = $result -> ret_matrix('a');
-
-	   		// $despachos_arreglo = $mResult[$contador]['num_despac'];
-	   		// $nom_tercer_arreglo = $mResult[$contador]['nom_tercer'];
-	    
+					
 	   		
-	   		//$mResult[$contador]['usuario'] = $cod_usuari;
-	   		//$mResult[$contador]['cod_noveda'] = $cod_usuari;
-
 	   		for($i=0; $i < sizeof($despachos) ; $i++ )
 	   		{
 	   			$mResult[$i]['can_despac'] = $can_despac[$i];
@@ -2883,6 +2881,7 @@ class AjaxNotifiNotifi
 	   			//$mResult[$contador]['can_despac'] = $suma_cantidades;
 	   		}
 	   		
+	   		
 	   		$info_estado_carga[$contador] = $mResult;
 	   		//$info_estado_carga2[$contador] = $mResult2;
 	   		//$info_estado_carga[$contador] = $mResult2;
@@ -2890,6 +2889,82 @@ class AjaxNotifiNotifi
 
 	    	$contador = $contador+1;
 	   	}
+
+	  
+
+	   	/*
+	   	for($i = 0; $i < sizeof($info_estado_carga); $i++)
+	   	{
+
+
+	   		for($j = 0; $j < sizeof($info_estado_carga[$i]); $j++)
+	   		{
+	   			$hola = getNextPC( self::$cConexion, $info_estado_carga[$i][$j]['num_despac'] );
+
+	   			echo "<pre>";
+						print_r($hola);
+					echo "</pre>";
+	   		}
+	   		
+	   	}
+	   	*/
+	  	/*
+	   	 $variable[] = array();
+	   	 $sumatoria=0;
+	   	for($i = 0; $i < sizeof($info_estado_carga); $i++)
+	   	{
+
+
+	   		for($j = 0; $j < sizeof($info_estado_carga[$i]); $j++)
+	   		{
+					
+					$array_despachos = explode(',',$info_estado_carga[$i][$j]['num_despac']);
+					$array_usuarios = $info_estado_carga[$i][$j]['usuario'];
+
+					$cuantos_despachos = count($array_despachos) ;
+
+					for($x =0 ;$x < $cuantos_despachos ; $x++)
+					{
+						$sql_quitar_despachos = "
+				   		SELECT ind_estado FROM tab_despac_seguim
+				   		WHERE  num_despac ='".$array_despachos[$x]."'  
+				   		ORDER BY fec_planea
+				   		DESC limit 2";
+				   	$result_quitar_despachos = new Consulta($sql_quitar_despachos, self::$cConexion );
+			   		$mResult_quitar_despachos = $result_quitar_despachos -> ret_matrix('a');
+
+						for($z = 0; $z < 2; $z++)
+						{
+
+							$variable[$z]  =  $mResult_quitar_despachos[$z]['ind_estado'];
+							
+							if($z == 1)
+							{
+							
+								if( ($variable[0] != 1 || $variable[1] != 1) )
+								{
+
+									if($info_estado_carga[$i][$j]['usuario'] == "andres.pinzon" && $info_estado_carga[$i][$j]['nom_tercer'] == "Gytrans")
+									{										
+										echo "<pre>";
+											print_r($array_despachos[$x]);
+										echo "</pre>";
+										$sumatoria = $sumatoria+1;
+									}
+
+									// unset($info_estado_carga[$i][$j]['num_despac']);
+									
+							  
+								}
+
+								unset($variable);
+							}
+						}
+					}
+				}
+
+	   	}
+	   	*/
 
 	   	for($i=0; $i < sizeof($info_estado_carga) ; $i++ )
 	   	{	
@@ -2922,7 +2997,7 @@ class AjaxNotifiNotifi
 							   		 	INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c
 							   		 		ON a.cod_transp = c.cod_tercer
 											INNER JOIN ".BASE_DATOS.".tab_despac_noveda d
-											  ON b.num_despac = d.num_despac	   		 			
+											  ON b.num_despac = d.num_despac	 
 						   		 			 WHERE d.num_despac IN (".$num_despac.") 
 							   		 		   and a.cod_transp  = '".$cod_transp."'
 							   		 		   and d.usr_creaci = '".$cod_usuari."'
@@ -2937,7 +3012,7 @@ class AjaxNotifiNotifi
 						   		 	INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c
 						   		 			ON a.cod_transp = c.cod_tercer
 										INNER JOIN ".BASE_DATOS.".tab_despac_contro d
-										  ON b.num_despac = d.num_despac	   		 			
+										  ON b.num_despac = d.num_despac	   		 	
 						   		 		 WHERE d.num_despac IN (".$num_despac.") 
 						   		 		   and a.cod_transp  = '".$cod_transp."'
 						   		 		   and d.usr_creaci = '".$cod_usuari."'
@@ -2946,7 +3021,7 @@ class AjaxNotifiNotifi
 						   	)	as x
 
 	   		 		   ";
- 		 		
+
 	   		 	$result2 = new Consulta($sql2, self::$cConexion );
 	   		  $mResult2 = $result2 -> ret_matrix('a');
 	   		  $info_estado_carga[$contador2][$j]['num_novedad'] = $mResult2[0]['cod_noveda'] ;
@@ -2957,7 +3032,7 @@ class AjaxNotifiNotifi
  		 		$contador2 = $contador2+1;
  		  }
 	   		
-				
+			 
 	   	for($i = 0; $i < count($info_estado_carga); $i++){
 	     if(empty($info_estado_carga[$i]) ){
 	         unset($info_estado_carga[$i]);
@@ -2987,6 +3062,8 @@ class AjaxNotifiNotifi
 
 					$cod_transp = $this->estado_carga[$i][$j]['cod_transp'];
 
+					/* SE DEBE REALIZAR LA CONFIGURACION DE MATRIZ PARA QUE QUEDE ASOCIADO EL USUARIO A LA TRANSPORTADPORA YA QUE SIN ESTO
+					NO SE PUEDE GENERAR EL INFORME */
 					$sql = "					
 						SELECT a.num_despac, e.abr_tercer AS nom_tercer, f.abr_tercer AS nom_conduc, a.num_placax, d.cod_noveda , d.obs_noveda
 						FROM ".BASE_DATOS.".tab_despac_vehige  a
@@ -3005,7 +3082,24 @@ class AjaxNotifiNotifi
 						and a.ind_activo = 'S' 
 						group by a.num_despac ";
 
+
 					//and a.cod_transp= '860068121' nit corona para pruebas
+						/*
+							SELECT a.num_despac, e.abr_tercer AS nom_tercer, f.abr_tercer AS nom_conduc, a.num_placax, c.cod_noveda
+							FROM tab_despac_vehige  a
+							JOIN tab_despac_noveda  b
+							on(a.num_despac = b.num_despac)
+							JOIN tab_genera_noveda c
+							on(b.cod_noveda = c.cod_noveda)
+
+							INNER JOIN tab_tercer_tercer e
+							ON a.cod_transp = e.cod_tercer
+							LEFT JOIN tab_tercer_tercer f
+							ON a.cod_conduc = f.cod_tercer
+							WHERE a.num_despac ='3816019'
+							and a.ind_activo = 'S' 
+							group by a.num_despac
+						*/
 					$result = new Consulta($sql, self::$cConexion );
 	   		  $mResult = $result -> ret_matrix('a');
 	   		  $info_estado_vehiculo[$contador] = $mResult; 
