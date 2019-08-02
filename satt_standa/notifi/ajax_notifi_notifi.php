@@ -3062,52 +3062,44 @@ class AjaxNotifiNotifi
 
 					$cod_transp = $this->estado_carga[$i][$j]['cod_transp'];
 						/* CONSULTAR LOS DESPACHOS DEPENDIENDO DE LA TRANSPORTADORA */
-		   		  $sql2 = " SELECT num_despac FROM ".BASE_DATOS.".tab_despac_vehige a
-							   		  INNER JOIN ".BASE_DATOS.".tab_despac_despac b
-											WHERE   b.ind_anulad = 'R'
-													AND b.fec_salida is not  null
-													AND b.fec_llegad is null
-													AND a.ind_activo ='S' 
-													AND a.cod_transp= '".$cod_transp."' 
-											group by num_despac;";
+		   		  $sql2 = " SELECT a.num_despac, d.abr_tercer AS nom_tercer, 
+												e.abr_tercer AS nom_conduc, c.num_placax, 
+												a.cod_ultnov as cod_noveda
+											FROM tab_despac_despac a
+											INNER JOIN tab_despac_vehige c
+												ON a.num_despac = c.num_despac
+											INNER JOIN tab_genera_noveda b
+												ON a.cod_ultnov = b.cod_noveda
+											INNER JOIN tab_tercer_tercer d
+												ON c.cod_transp = d.cod_tercer
+											INNER JOIN tab_tercer_tercer e
+												ON c.cod_conduc = e.cod_tercer
+											WHERE  b.ind_alarma = 'S'
+												AND b.nov_especi = '1' 
+												AND a.ind_anulad = 'R'
+												AND a.fec_salida is not  null
+												AND a.fec_llegad is null
+												AND c.ind_activo ='S' 
+												AND c.cod_transp= '".$cod_transp."' 
+												GROUP BY a.num_despac ORDER BY 2; 
+													
+											";
+
 		   		  $result2 = new Consulta($sql2, self::$cConexion );
-		   		  $numero_despachos_empresa = $result2 -> ret_matrix('a');
+		   		  $novedades_especiales_vehiculos = $result2 -> ret_matrix('a');
 
-		   		  for ($z=0; $z < sizeof($numero_despachos_empresa); $z++) { 
+		   		  if($novedades_especiales_vehiculos[0] != "")
+		   		  {
+			   		  
+		   		  	for ($z=0; $z < sizeof($novedades_especiales_vehiculos); $z++) { 
 
-		   		  	if($numero_despachos_empresa[$z]['num_despac'] != ""){
-								
-								$sql_utlima_noveda =  "SELECT a.num_despac, d.abr_tercer AS nom_tercer, 
-																							e.abr_tercer AS nom_conduc, c.num_placax, 
-																							a.cod_ultnov as cod_noveda
-																				 FROM ".BASE_DATOS.".tab_despac_despac a
-																	 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
-																					 ON a.cod_ultnov = b.cod_noveda
-																	 INNER JOIN ".BASE_DATOS.".tab_despac_vehige c
-																	 				 ON a.num_despac = c.num_despac
-																	 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer d
-																					 ON c.cod_transp = d.cod_tercer
-																	 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e
-																					 ON c.cod_conduc = e.cod_tercer
-																				WHERE a.num_despac = '".$numero_despachos_empresa[$z]['num_despac']."'
-																				  AND b.ind_alarma = 'S'
-       																		AND b.nov_especi = '1'
-       																		GROUP BY a.num_despac;";
-				   		 
-				   		  $result_utlima_noveda = new Consulta($sql_utlima_noveda, self::$cConexion );
-		   		  		$utlima_noveda_especial = $result_utlima_noveda -> ret_matrix('a');
-
-		   		  		if($utlima_noveda_especial[0] != "")
-		   		  		{
-		   		  			/* SE VERIFICA QUE NO ESTEN DATOS REPETIDOS EN el ARRAY*/
-		   		  			if (!in_array($utlima_noveda_especial[0], $info_estado_vehiculo)) {									
-			   						$info_estado_vehiculo[$contador] = $utlima_noveda_especial[0]; 	 
-			   						$contador = $contador+1;
-		   						}
-		   		  		}
-
-							}
-						}
+			   		  	$info_estado_vehiculo[$contador] = $novedades_especiales_vehiculos[$z]; 
+			   		  	$contador = $contador+1;
+			   		  }
+			   		 
+				   		
+			   		}
+		   		  
    	 		}
    	 			
    	 	}
