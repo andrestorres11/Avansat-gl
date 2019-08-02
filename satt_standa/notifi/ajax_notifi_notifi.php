@@ -755,8 +755,7 @@ class AjaxNotifiNotifi
       	$this->estado_carga = self::getEstadoCarga($usuariosEncargados);
      		$this->estado_vehiculo = self::getEstadoVehiculo($usuariosEncargados,$this->estado_carga);
       	$this->productividadUsuarios = self::getProductividadUsuarios($usuariosEncargados);
-
-
+      	
 	      /* ESTADO DE VEHICULOS */
 				$mHtml->OpenDiv("id:Notificontainer2; class:accordian");
 					$mHtml->SetBody("<h3 style='padding:2px;'><center>ESTADO DE LA CARGA</center></h3>");
@@ -895,7 +894,7 @@ class AjaxNotifiNotifi
 								$mHtml->line("","i",0,9);
 							$mHtml->CloseRow();
 
-						if(sizeof($this->estado_vehiculo[0]) != 0)
+						if(sizeof($this->estado_vehiculo) != 0)
 						{
 
 							$mHtml->Row();
@@ -906,11 +905,11 @@ class AjaxNotifiNotifi
 								//$mHtml->Label( "CEDULA CONDUCTOR",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
 								//$mHtml->Label( "TELEFONO",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 								$mHtml->Label( "NOVEDAD",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
-								$mHtml->Label( "OBSERVACION",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
+								//$mHtml->Label( "OBSERVACION",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
 								
 							$mHtml->CloseRow();
 
-								for ($a=0; $a <sizeof($this->estado_vehiculo[0]); $a++) {
+								for ($a=0; $a <sizeof($this->estado_vehiculo); $a++) {
 									$mHtml->Row();
 										
 										if($a%2==0)
@@ -921,18 +920,18 @@ class AjaxNotifiNotifi
 											$estilo_row = 'DLRow1';								
 										}
 										
-										$mHtml->Label( $this->estado_vehiculo[0][$a]['nom_tercer'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $this->estado_vehiculo[0][$a]['num_placax'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $this->estado_vehiculo[0][$a]['num_despac'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $this->estado_vehiculo[0][$a]['nom_conduc'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $this->estado_vehiculo[0][$a]['cod_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Label( $this->estado_vehiculo[0][$a]['obs_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-										$mHtml->Hidden(array( "name" => "vehiculo_nom_tercer".$a, "id" => "vehiculo_nom_tercer".$a, "value"=>$this->estado_carga[0][$a]['nom_tercer']) );
-										$mHtml->Hidden(array( "name" => "vehiculo_num_placax".$a, "id" => "vehiculo_num_placax".$a, "value"=>$this->estado_carga[0][$a]['num_placax']));
-										$mHtml->Hidden(array( "name" => "vehiculo_num_despac".$a, "id" => "vehiculo_num_despac".$a, "value"=>$this->estado_carga[0][$a]['num_despac']));
-										$mHtml->Hidden(array( "name" => "vehiculo_nom_conduc".$a, "id" => "vehiculo_nom_conduc".$a, "value"=>$this->estado_carga[0][$a]['nom_conduc']));				
-										$mHtml->Hidden(array( "name" => "vehiculo_cod_noveda".$a, "id" => "vehiculo_cod_noveda".$a, "value"=>$this->estado_carga[0][$a]['cod_noveda']));		
-										$mHtml->Hidden(array( "name" => "vehiculo_obs_noveda".$a, "id" => "vehiculo_obs_noveda".$a, "value"=>$this->estado_carga[0][$a]['obs_noveda']));
+										$mHtml->Label( $this->estado_vehiculo[$a]['nom_tercer'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[$a]['num_placax'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[$a]['num_despac'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[$a]['nom_conduc'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Label( $this->estado_vehiculo[$a]['cod_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										//$mHtml->Label( $this->estado_vehiculo[$a]['obs_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+										$mHtml->Hidden(array( "name" => "vehiculo_nom_tercer".$a, "id" => "vehiculo_nom_tercer".$a, "value"=>$this->estado_carga[$a]['nom_tercer']) );
+										$mHtml->Hidden(array( "name" => "vehiculo_num_placax".$a, "id" => "vehiculo_num_placax".$a, "value"=>$this->estado_carga[$a]['num_placax']));
+										$mHtml->Hidden(array( "name" => "vehiculo_num_despac".$a, "id" => "vehiculo_num_despac".$a, "value"=>$this->estado_carga[$a]['num_despac']));
+										$mHtml->Hidden(array( "name" => "vehiculo_nom_conduc".$a, "id" => "vehiculo_nom_conduc".$a, "value"=>$this->estado_carga[$a]['nom_conduc']));				
+										$mHtml->Hidden(array( "name" => "vehiculo_cod_noveda".$a, "id" => "vehiculo_cod_noveda".$a, "value"=>$this->estado_carga[$a]['cod_noveda']));		
+										//$mHtml->Hidden(array( "name" => "vehiculo_obs_noveda".$a, "id" => "vehiculo_obs_noveda".$a, "value"=>$this->estado_carga[$a]['obs_noveda']));
 									$mHtml->CloseRow();
 								}
 						}
@@ -2891,6 +2890,7 @@ class AjaxNotifiNotifi
 	   	}
 
 	  
+	   
 
 	   	/*
 	   	for($i = 0; $i < sizeof($info_estado_carga); $i++)
@@ -3048,7 +3048,7 @@ class AjaxNotifiNotifi
    /*! \fn: getEstadoCarga
      *  \brief: Retorna las novedades de dependiendo del estado de carga que esten
      *  \author: Ing. Leonardo Valderrama
-     *  \date: 11/07/2019
+     *  \date: 31/07/2019
      *  \date modified: dd/mm/aaaa
      *  \param: $usuariosEncargados grupo a cargo del usuario
      *  \return: 
@@ -3061,69 +3061,66 @@ class AjaxNotifiNotifi
 				for ($j=0; $j < sizeof($this->estado_carga[$i]); $j++) { 
 
 					$cod_transp = $this->estado_carga[$i][$j]['cod_transp'];
+						/* CONSULTAR LOS DESPACHOS DEPENDIENDO DE LA TRANSPORTADORA */
+		   		  $sql2 = " SELECT num_despac FROM ".BASE_DATOS.".tab_despac_vehige a
+							   		  INNER JOIN ".BASE_DATOS.".tab_despac_despac b
+											WHERE   b.ind_anulad = 'R'
+													AND b.fec_salida is not  null
+													AND b.fec_llegad is null
+													AND a.ind_activo ='S' 
+													AND a.cod_transp= '".$cod_transp."' 
+											group by num_despac;";
+		   		  $result2 = new Consulta($sql2, self::$cConexion );
+		   		  $numero_despachos_empresa = $result2 -> ret_matrix('a');
 
-					/* SE DEBE REALIZAR LA CONFIGURACION DE MATRIZ PARA QUE QUEDE ASOCIADO EL USUARIO A LA TRANSPORTADPORA YA QUE SIN ESTO
-					NO SE PUEDE GENERAR EL INFORME */
-					$sql = "					
-						SELECT a.num_despac, e.abr_tercer AS nom_tercer, f.abr_tercer AS nom_conduc, a.num_placax, d.cod_noveda , d.obs_noveda
-						FROM ".BASE_DATOS.".tab_despac_vehige  a
-						JOIN  ".BASE_DATOS.".tab_despac_noveda  b
-						on(a.num_despac = b.num_despac)
-						JOIN ".BASE_DATOS.".tab_genera_noveda c
-						on(b.cod_noveda = c.cod_noveda)
-						JOIN ".BASE_DATOS.".tab_protoc_asigna d
-						on(d.num_despac = b.num_despac)
-						INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e
-						ON a.cod_transp = e.cod_tercer
-						LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer f
-						ON a.cod_conduc = f.cod_tercer
-						WHERE  d.ind_solnov = 0
-						and a.cod_transp= '".$cod_transp."'
-						and a.ind_activo = 'S' 
-						group by a.num_despac ";
+		   		  for ($z=0; $z < sizeof($numero_despachos_empresa); $z++) { 
 
+		   		  	if($numero_despachos_empresa[$z]['num_despac'] != ""){
+								
+								$sql_utlima_noveda =  "SELECT a.num_despac, d.abr_tercer AS nom_tercer, 
+																							e.abr_tercer AS nom_conduc, c.num_placax, 
+																							a.cod_ultnov as cod_noveda
+																				 FROM ".BASE_DATOS.".tab_despac_despac a
+																	 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
+																					 ON a.cod_ultnov = b.cod_noveda
+																	 INNER JOIN ".BASE_DATOS.".tab_despac_vehige c
+																	 				 ON a.num_despac = c.num_despac
+																	 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer d
+																					 ON c.cod_transp = d.cod_tercer
+																	 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e
+																					 ON c.cod_conduc = e.cod_tercer
+																				WHERE a.num_despac = '".$numero_despachos_empresa[$z]['num_despac']."'
+																				  AND b.ind_alarma = 'S'
+       																		AND b.nov_especi = '1'
+       																		GROUP BY a.num_despac;";
+				   		 
+				   		  $result_utlima_noveda = new Consulta($sql_utlima_noveda, self::$cConexion );
+		   		  		$utlima_noveda_especial = $result_utlima_noveda -> ret_matrix('a');
 
-					//and a.cod_transp= '860068121' nit corona para pruebas
-						/*
-							SELECT a.num_despac, e.abr_tercer AS nom_tercer, f.abr_tercer AS nom_conduc, a.num_placax, c.cod_noveda
-							FROM tab_despac_vehige  a
-							JOIN tab_despac_noveda  b
-							on(a.num_despac = b.num_despac)
-							JOIN tab_genera_noveda c
-							on(b.cod_noveda = c.cod_noveda)
+		   		  		if($utlima_noveda_especial[0] != "")
+		   		  		{
+		   		  			/* SE VERIFICA QUE NO ESTEN DATOS REPETIDOS EN el ARRAY*/
+		   		  			if (!in_array($utlima_noveda_especial[0], $info_estado_vehiculo)) {									
+			   						$info_estado_vehiculo[$contador] = $utlima_noveda_especial[0]; 	 
+			   						$contador = $contador+1;
+		   						}
+		   		  		}
 
-							INNER JOIN tab_tercer_tercer e
-							ON a.cod_transp = e.cod_tercer
-							LEFT JOIN tab_tercer_tercer f
-							ON a.cod_conduc = f.cod_tercer
-							WHERE a.num_despac ='3816019'
-							and a.ind_activo = 'S' 
-							group by a.num_despac
-						*/
-					$result = new Consulta($sql, self::$cConexion );
-	   		  $mResult = $result -> ret_matrix('a');
-	   		  $info_estado_vehiculo[$contador] = $mResult; 
-
-	   		  $contador = $contador+1;
-
+							}
+						}
    	 		}
-   	 		 break;
+   	 			
    	 	}
-   	 		
+   	 	
+   	 	/* SE QUITA LOS ARRAYS QUE  ESTEN VACIOS */
    	 	for($i = 0; $i < count($info_estado_vehiculo); $i++){
 	     if(empty($info_estado_vehiculo[$i]) ){
 	         unset($info_estado_vehiculo[$i]);
      		}
 			}
 
-			/*
-			 echo "<pre>";
-				print_r($info_estado_vehiculo);
-			echo "</pre>";
-			*/
 			return $info_estado_vehiculo;
-	    	
-
+	    
    }
 
    /*! \fn: getEmpresasSuspendidas
