@@ -8,7 +8,7 @@
             "children": [
                 {
                     "tag": "th", 
-                    "colspan":"9", 
+                    "colspan":"10", 
                     "html": "Se han encontrado: <span id='badge'></span>"
                 }
             ]
@@ -43,6 +43,11 @@
                 {
                     "tag": "th", 
                     "html": "Diferencia en tiempo"
+                },
+                {
+                    "tag": "th",
+                    "id": "cumplido", 
+                    "html": "Cumplido ans"
                 },
                 {
                     "tag": "th", 

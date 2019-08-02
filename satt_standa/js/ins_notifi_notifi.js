@@ -252,7 +252,12 @@ function btnGeneral()
              NomNotifi=" CLIENTES";
             break;
     } 
-    var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
+    if (id == '3') {
+      var formData = "option=getFormNuevaNotifi2&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
+
+    }else{
+      var formData = "option=getFormNuevaNotifi&standa=" + standa +"&idForm="+id + "&ActionForm=ins";
+    }
     $("#popID").remove();
     closePopUp('popID');
     LoadPopupJQNoButton('open', 'NUEVA NOTIFICACION '+NomNotifi, ($(window).height() - 40), ($(window).width() - 40), false, false, true);
@@ -389,6 +394,9 @@ function btnGeneral()
                   $("#Document").find("input[type=file]").each(function(){
                       mdata.append($(this).attr('name'),$(this)[0].files[0]);
                   });
+
+                
+
                   console.log(mdata);
                   returnJson = ValidateFormExt(cod_tipnot);
                   console.log(returnJson);
@@ -465,6 +473,7 @@ function btnGeneral()
                     mdata.append("option","EditNotifiComun");
                     mdata.append("cod_notifi",cod_notifi);
                   }
+
                   mdata.append("ActionForm",accion);
                   mdata.append("nom_asunto",nom_asunto);
                   mdata.append("fec_creaci",fec_creaci);
@@ -479,6 +488,7 @@ function btnGeneral()
                   $("#Document").find("input[type=file]").each(function(){
                       mdata.append($(this).attr('name'),$(this)[0].files[0]);
                   });
+
                   console.log(mdata);
                   $.ajax({
                     url:"../" + standa + "/notifi/ajax_notifi_notifi.php",

@@ -64,6 +64,7 @@ function editarPerfil(row) {
     var cod_perfil = objeto.find("input[id^=cod_perfil]").val();
     var nom_perfil = objeto.find("input[id^=nom_perfil]").val();
     var cod_respon = objeto.find("input[id^=cod_respon]").val();
+    var tie_pronov = objeto.find("input[id^=tie_pronov]").val();
     swal({
         title: "Editar Perfil",
         text: "¿Realmente Deseas Editar el Perfil " + nom_perfil + "?",
@@ -75,6 +76,7 @@ function editarPerfil(row) {
         $("#opcion").val(2);
         $("#cod_perfil").val(cod_perfil);
         $("#nom_perfil").val(nom_perfil);
+        $("#tie_pronov").val(tie_pronov);
         $("#cod_respon").val(cod_respon);
         $("#form_searchID").submit();
     });

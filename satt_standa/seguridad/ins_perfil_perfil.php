@@ -85,6 +85,7 @@ class ins_perfil_perfil {
             <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>"></input>
             <input type="hidden" name="opcion" id="opcion" value="1"></input>
             <input type="hidden" name="cod_perfil" id="cod_perfil" value=""></input>
+            <input type="hidden" name="tie_pronov" id="tie_pronov" value=""></input>
             <input type="hidden" name="nom_perfil" id="nom_perfil" value=""></input>
             <input type="hidden" name="cod_respon" id="cod_respon" value=""></input>
         </form>
@@ -129,6 +130,7 @@ class ins_perfil_perfil {
         <input type="hidden" name="standa" value="<?= DIR_APLICA_CENTRAL ?>" id="standa">
         <input type="hidden" name="window" id="window" value="central">
         <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>">
+        <input type="hidden" name="tie_pronov" id="tie_pronov" value="<?= $_REQUEST['tie_pronov'] ?>">
         <input type="hidden" name="cod_noveda" id="cod_noveda" value="<?= $nov_perfil ?>">
         <input type="hidden" name="cod_transp" id="cod_transp" value="<?= $objTrans->clv_filtro  ?>">
     </form>
@@ -168,6 +170,10 @@ class ins_perfil_perfil {
                                 <div class="col-md-6 text-right">Transportadora:</div>
                                 <div class="col-md-6 text-left">
                                     <input class="text-center" type="text" name="trans_perfil" id="trans_perfil" maxlength="50" minlength="5" value="<?= $objTrans->nom_tercer  ?>"></input>
+                                </div>
+                                <div class="col-md-6 text-right">Numero De Novedades Por Hora:</div>
+                                <div class="col-md-6 text-left">
+                                    <input class="text-center" type="text" name="tie_pronov" id="tie_pronov" maxlength="2" minlength="2" value="<?= $_REQUEST['tie_pronov'] ?>"></input>
                                 </div>
                             </td>
                         </tr>
