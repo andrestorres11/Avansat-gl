@@ -18,14 +18,14 @@ class IndicadoresGestion
 		
         ini_set("memory_limit", "128M");
 		
-        switch ( $_POST[opcion] )
+        switch ( $_REQUEST['opcion'] )
         {
             case "1":
 											$this -> Informe();
 											break;
 														
             case "2":
-											$this -> inf_despac_servic( $_POST["servicio"] );
+											$this -> inf_despac_servic( $_REQUEST["servicio"] );
 											break;
 														
 						default:
@@ -90,7 +90,7 @@ class IndicadoresGestion
 
 		//---------------------------------------------
 		//VEHICULOS TOTALES MONITOREADOS POR SERVICIO
-		$vehicu_tomose = $this -> getVehiculosMonitoreados( $_POST['fec_inicio'], $_POST['fec_finalx'], $servicio );
+		//$vehicu_tomose = $this -> getVehiculosMonitoreados( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'], $servicio );
 		//---------------------------------------------
 
     $colspan = "20";
@@ -101,12 +101,12 @@ class IndicadoresGestion
 		//echo "<td class=cellHead colspan=" . $colspan . ">:: VEHICULOS MONITOREADOS [ " . $vehicu_tomose . " ] :: TIPO DE SERVICIO [ " . $this -> getDataServicio( $servicio ) . " ] :: </td>";
 		echo "</tr>";
 		echo "<tr>";
-		echo "<td class=cellHead colspan=" . $colspan . ">Desde ".$_POST['fec_inicio']." Hasta ".$_POST['fec_finalx']."</td>";
+		echo "<td class=cellHead colspan=" . $colspan . ">Desde ".$_REQUEST['fec_inicio']." Hasta ".$_REQUEST['fec_finalx']."</td>";
 		echo "</tr>";
 
 		//---------------------------------------------
 		//DATOS DE LOS DESPACHOS ENCONTRADOS DE LA TRANSPORTADORA POR SERVICIO
-		$despac_transp = $this -> getTransp_VehiculosMonitoreados( $_POST['fec_inicio'], $_POST['fec_finalx'], $servicio );
+		$despac_transp = $this -> getTransp_VehiculosMonitoreados( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'], $servicio );
 		//---------------------------------------------
 
 		$contad = 1;
@@ -114,7 +114,7 @@ class IndicadoresGestion
 		{
 			//---------------------------------------------
 			//DATOS DE LOS DESPACHOS ENCONTRADOS DE LA TRANSPORTADORA POR SERVICIO
-			$despac_dadese = $this -> getData_VehiculosMonitoreados( $_POST['fec_inicio'], $_POST['fec_finalx'], $servicio, $itemxx["cod_transp"] );
+			$despac_dadese = $this -> getData_VehiculosMonitoreados( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'], $servicio, $itemxx["cod_transp"] );
 			//---------------------------------------------
 
       echo 	"	<tr>
@@ -155,7 +155,7 @@ class IndicadoresGestion
 		$formulario -> nueva_tabla();
 		$btn_volver = "
 										<center>
-											<a href=\"index.php?cod_servic=" . $_REQUEST["cod_servic"] . "&window=central&servicio=" . $_POST["servicio"] . " \"target=\"centralFrame\"> 
+											<a href=\"index.php?cod_servic=" . $_REQUEST["cod_servic"] . "&window=central&servicio=" . $_REQUEST["servicio"] . " \"target=\"centralFrame\"> 
 												<div class='crmButton small save'>Volver</div>
 											</a>
 										</center>
@@ -199,7 +199,7 @@ class IndicadoresGestion
         $servicios = $consulta->ret_matriz('i');
 		
 		$formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", 
-									 "Indicadores de Gesti&Ooacute;n", 
+									 "Indicadores de Gestión", 
 									 "formulario\" id=\"formularioID");
 		
 		//---------------------------------------------
@@ -208,12 +208,12 @@ class IndicadoresGestion
 
 		echo "<table width='100%' >";
 		echo "<tr>";
-		echo "<td class=cellHead colspan=20 >Desde ".$_POST[fec_inicio]." Hasta ".$_POST[fec_finalx]."</td>";
+		echo "<td class=cellHead colspan=20 >Desde ".$_REQUEST['fec_inicio']." Hasta ".$_REQUEST['fec_finalx']."</td>";
 		echo "</tr>";
     
-		$c1 = $this -> getRutasCreadas( $_POST[fec_inicio], $_POST[fec_finalx] );
-		$c2 = $this -> getVehiculosMonitoreados( $_POST[fec_inicio], $_POST[fec_finalx] );
-		$c3 = $this -> getNovedades( $_POST[fec_inicio], $_POST[fec_finalx] );
+		$c1 = $this -> getRutasCreadas( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'] );
+		$c2 = $this -> getVehiculosMonitoreados( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'] );
+		$c3 = $this -> getNovedades( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'] );
     
 		echo "<tr>";
 		echo "<td class=cellHead rowspan=2 >RUTAS CREADAS</td>";
@@ -224,11 +224,11 @@ class IndicadoresGestion
 		
 		echo "<tr>";
 		if( $servicios ) 
-    foreach( $servicios as $servicio )
+		foreach( $servicios as $servicio )
 		{
 			echo "<td class=cellHead >".$servicio[1]."</td>";
 		} 
-    foreach( $servicios as $servicio )
+		foreach( $servicios as $servicio )
 		{
 			echo "<td class=cellHead >".$servicio[1]."</td>";
 		}
@@ -238,17 +238,17 @@ class IndicadoresGestion
 		echo "<tr>";
 		echo "<td class=cellInfo >".$c1."</td>";
     
-    if( $servicios )
-    {
-      foreach( $servicios as $servicio )
-      {
-        echo "<td class=cellInfo ><a href=\"#\" onclick=\"ChangeDespacServicio(" . $servicio[0] . ")\">".$this -> getVehiculosMonitoreados( $_POST[fec_inicio], $_POST[fec_finalx], $servicio[0] )."</a></td>";
-      }
-      foreach( $servicios as $servicio )
-      {
-        echo "<td class=cellInfo >".$this -> getNovedades( $_POST[fec_inicio], $_POST[fec_finalx], $servicio[0] )."</td>";
-      }
-    }
+	    if( $servicios )
+	    {
+	      foreach( $servicios as $servicio )
+	      {
+	        echo "<td class=cellInfo ><a href=\"#\" onclick=\"ChangeDespacServicio(" . $servicio[0] . ")\">".$this -> getVehiculosMonitoreados( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'], $servicio[0] )."</a></td>";
+	      }
+	      foreach( $servicios as $servicio )
+	      {
+	        echo "<td class=cellInfo >".$this -> getNovedades( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'], $servicio[0] )."</td>";
+	      }
+	    }
 		echo "</tr>";
 		
 		echo "</table>";
@@ -259,8 +259,8 @@ class IndicadoresGestion
 		
 		//---------------------------------------------
 		$formulario->oculto("servicio", "", 0);
-		$formulario->oculto("fec_inicio", $_POST["fec_inicio"], 0);
-		$formulario->oculto("fec_finalx", $_POST["fec_finalx"], 0);
+		$formulario->oculto("fec_inicio", $_REQUEST["fec_inicio"], 0);
+		$formulario->oculto("fec_finalx", $_REQUEST["fec_finalx"], 0);
 		//---------------------------------------------
 		
 		$formulario->cerrar();
@@ -268,14 +268,14 @@ class IndicadoresGestion
 	
 	function getRutasCreadas( $fec_inicio, $fec_finalx )
 	{
-		$sql = "SELECT COUNT( a.cod_rutasx )
+		$sql = "SELECT COUNT( a.cod_rutasx ) AS num_rutasx
 				    FROM ".BASE_DATOS.".tab_genera_rutasx a 
-				    WHERE DATE( a.fec_creaci ) between '".$fec_inicio."' AND '".$fec_finalx."' ";
+				    WHERE DATE( a.fec_creaci ) BETWEEN '".$fec_inicio."' AND '".$fec_finalx."' ";
 				
 		$consulta = new Consulta($sql, $this->conexion);
         $rutas = $consulta->ret_matriz('a');
 		
-		return number_format( $rutas[0][0], 0 );
+		return number_format( $rutas[0]['num_rutasx'], 0 );
 	}
 	
 
@@ -373,55 +373,58 @@ class IndicadoresGestion
 	//-------------------------------------------------------
 	function getTransp_VehiculosMonitoreados( $fec_inicio, $fec_finalx, $cod_tipser = NULL )
 	{
-    $sql = " SELECT a.cod_transp, c.abr_tercer
-           FROM ".BASE_DATOS.".tab_despac_vehige a, 
-                ".BASE_DATOS.".tab_transp_tipser b,
-                ".BASE_DATOS.".tab_tercer_tercer c
-           WHERE a.cod_transp = b.cod_transp AND
-                 b.num_consec = ( SELECT MAX( z.num_consec ) 
-                                  FROM ".BASE_DATOS.".tab_transp_tipser z
-                                  WHERE z.cod_transp = b.cod_transp )
-						AND  a.cod_transp = c.cod_tercer
-						";
-    if( $cod_tipser != NULL )
-      $sql .= " AND b.cod_tipser =  '". $cod_tipser ."'";
+	    $sql = " SELECT a.cod_transp, c.abr_tercer
+	           FROM ".BASE_DATOS.".tab_despac_vehige a, 
+	                ".BASE_DATOS.".tab_transp_tipser b,
+	                ".BASE_DATOS.".tab_tercer_tercer c
+	           WHERE a.cod_transp = b.cod_transp AND
+	                 b.num_consec = ( SELECT MAX( z.num_consec ) 
+	                                  FROM ".BASE_DATOS.".tab_transp_tipser z
+	                                  WHERE z.cod_transp = b.cod_transp 
+	                                )
+							AND  a.cod_transp = c.cod_tercer 
+							AND  b.ind_estado = 1
 
-    $sql .= " AND DATE( a.fec_creaci ) BETWEEN  '". $fec_inicio ."' AND  '". $fec_finalx ."'";
-    
-    $sql .= " GROUP BY 1";
+							";
+	    if( $cod_tipser != NULL )
+	      $sql .= " AND b.cod_tipser =  '". $cod_tipser ."'";
 
-		$consulta = new Consulta( $sql, $this -> conexion );
-    $dataxx = $consulta -> ret_matriz('a');
-		
-		return $dataxx;
+	    $sql .= " AND DATE( a.fec_creaci ) BETWEEN  '". $fec_inicio ."' AND  '". $fec_finalx ."'";
+	    
+	    $sql .= " GROUP BY 1";
+
+			$consulta = new Consulta( $sql, $this -> conexion );
+	    $dataxx = $consulta -> ret_matriz('a');
+			
+			return $dataxx;
 	}
 	//-------------------------------------------------------
 	
 
 	function getVehiculosMonitoreados( $fec_inicio, $fec_finalx, $cod_tipser=NULL )
 	{
-    $sql = " SELECT COUNT(a.num_despac)
-           FROM ".BASE_DATOS.".tab_despac_vehige a, 
-                ".BASE_DATOS.".tab_transp_tipser b
-           WHERE a.cod_transp = b.cod_transp AND
-                 b.num_consec = ( SELECT MAX( z.num_consec ) 
-                                  FROM ".BASE_DATOS.".tab_transp_tipser z
-                                  WHERE z.cod_transp = b.cod_transp )";
-    if( $cod_tipser != NULL )
-      $sql .= " AND b.cod_tipser =  '". $cod_tipser ."'";
+	    $sql = " SELECT COUNT(a.num_despac) AS num_despac
+	           FROM ".BASE_DATOS.".tab_despac_vehige a, 
+	                ".BASE_DATOS.".tab_transp_tipser b
+	           WHERE a.cod_transp = b.cod_transp AND
+	                 b.num_consec = ( SELECT MAX( z.num_consec ) 
+	                                  FROM ".BASE_DATOS.".tab_transp_tipser z
+	                                  WHERE z.cod_transp = b.cod_transp )";
+	    if( $cod_tipser != NULL )
+	      $sql .= " AND b.cod_tipser =  '". $cod_tipser ."'";
 
-    $sql .= " AND DATE( a.fec_creaci ) BETWEEN  '". $fec_inicio ."' AND  '". $fec_finalx ."'";
+	    $sql .= " AND DATE( a.fec_creaci ) BETWEEN  '". $fec_inicio ."' AND  '". $fec_finalx ."'";
 
 		$consulta = new Consulta($sql, $this->conexion);
-    $vehicu = $consulta->ret_matriz('a');
+	    $vehicu = $consulta->ret_matriz('a');
 		
-		return number_format( $vehicu[0][0], 0 );
+		return number_format( $vehicu[0]['num_despac'], 0 );
 	}
 	
 	function getNovedades( $fec_inicio, $fec_finalx,$cod_tipser = NULL )
 	{
     $suma = 0;
-    $sql = "SELECT COUNT(*) FROM
+    /*$sql = "SELECT COUNT(*) FROM
            (
               SELECT num_despac, usr_creaci
               FROM ".BASE_DATOS.".tab_despac_contro
@@ -466,16 +469,75 @@ class IndicadoresGestion
             ".BASE_DATOS.".tab_despac_vehige b 
              
              WHERE  x.cod_transp = b.cod_transp AND
-                    a.num_despac = b.num_despac";
+                    a.num_despac = b.num_despac";*/
 
     //echo "<br>-------> ".$sql;		
-
+			// $sql .= " AND a.cod_tipser = '". $cod_tipser ."'";
+ 
+		$sql = "(
+				  SELECT
+							COUNT(c.num_despac) AS num_despac
+					FROM 
+					(
+						SELECT
+								a.cod_transp, b.num_consec
+						FROM
+								".BASE_DATOS.".tab_transp_tipser a INNER JOIN 
+								(
+									SELECT 
+											cod_transp, MAX(num_consec) AS num_consec
+									  FROM 
+											".BASE_DATOS.".tab_transp_tipser a  
+									  WHERE 1 = 1
+									  		".( $cod_tipser != NULL ? ' AND a.cod_tipser = "'.$cod_tipser.'" ' : ''  )."
+									GROUP BY cod_transp
+								) b ON a.cod_transp = b.cod_transp AND a.num_consec = b.num_consec
+						WHERE
+								a.ind_estado = 1
+								".( $cod_tipser != NULL ? ' AND a.cod_tipser = "'.$cod_tipser.'" ' : ''  )."
+					) a 
+					INNER JOIN ".BASE_DATOS.".tab_despac_vehige b ON a.cod_transp = b.cod_transp
+					INNER JOIN ".BASE_DATOS.".tab_despac_contro c ON b.num_despac = c.num_despac 
+															 AND DATE(c.fec_creaci) BETWEEN '". $fec_inicio ."' AND '". $fec_finalx ."'
+															 AND c.usr_creaci NOT LIKE '%Interf%'
+					WHERE 1 = 1
+				)
+				UNION 
+				(
+				  SELECT
+							COUNT(c.num_despac) AS num_despac
+					FROM 
+					(
+						SELECT
+								a.cod_transp, b.num_consec
+						FROM
+								".BASE_DATOS.".tab_transp_tipser a INNER JOIN 
+								(
+									SELECT 
+											cod_transp, MAX(num_consec) AS num_consec
+									FROM 
+											".BASE_DATOS.".tab_transp_tipser a  
+									WHERE
+											1 = 1
+											".( $cod_tipser != NULL ? ' AND a.cod_tipser = "'.$cod_tipser.'" ' : ''  )."
+									GROUP BY cod_transp
+								) b ON a.cod_transp = b.cod_transp AND a.num_consec = b.num_consec
+						WHERE
+								a.ind_estado = 1
+								".( $cod_tipser != NULL ? ' AND a.cod_tipser = "'.$cod_tipser.'" ' : ''  )."
+					) a 
+					INNER JOIN ".BASE_DATOS.".tab_despac_vehige b ON a.cod_transp = b.cod_transp
+					INNER JOIN ".BASE_DATOS.".tab_despac_noveda c ON b.num_despac = c.num_despac 
+															 AND DATE(c.fec_creaci) BETWEEN '". $fec_inicio ."' AND '". $fec_finalx ."'
+															 AND c.usr_creaci NOT LIKE '%Interf%'
+					WHERE 1 = 1
+				)";
 		$consulta = new Consulta( $sql, $this->conexion);
-    $novedades = $consulta->ret_matriz('a');
+    	$novedades = $consulta->ret_matriz('a');
 		
-    /*echo "<pre>"; 
-    print_r($novedades);
-    echo "</pre>"; */
+	    /*echo "<pre>"; 
+	    print_r($novedades);
+	    echo "</pre>"; */
 		$suma = $novedades[0][0] + $novedades[1][0];
 		
 		return number_format( $suma, 0 );		

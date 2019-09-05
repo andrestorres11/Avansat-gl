@@ -931,10 +931,9 @@ class Proc_salida {
       $nit = new Consulta($consultaNit, $this->conexion);
       $nit = $nit->ret_matriz();
       $nit = $nit[0]['clv_filtro'];
+
       if ($this->getInterfParame('85', $nit) == true)
       {
-         
-
         require_once URL_ARCHIV_STANDA."/interf/app/APIClienteApp/controlador/DespachoControlador.php";
         $controlador = new DespachoControlador();
         $response    = $controlador->registrar($this->conexion, $_REQUEST[despac], $nit);

@@ -45,7 +45,7 @@ class Novedad {
     /* ! \fn: Registrar
      *  \brief: Guarda la novedad por medio de WebServic
      *  \author: 
-     *     \date: dia/mes/aÃ±o
+     *     \date: dia/mes/año
      *     \date modified: 25/05/2015
      *  \param: 
      *  \return:
@@ -93,8 +93,10 @@ class Novedad {
                                 '" . $_POST[$i][num_despac] . "',  '" . $_POST[$i][cod_contro] . "', '" . $consec . "',  '" . $_SESSION["satt_movil"]["cod_usuari"] . "',  
                                 NOW(), '" . $_REQUEST[img_foto01] . "', '" . $_REQUEST[img_foto02] . "'
                             )";
-
+                             
                 $insert = $this->conexion->Consultar($insert, "a");
+
+                            
 
                 $this->mensaje = "La Imagen se registro exitosamente.";
                 //--- NOVEDADES COLOMBIA SOFTWARE ---
@@ -169,7 +171,8 @@ class Novedad {
                         $parametros["tipo_evento"] = "0";
                         $parametros["kilometraje"] = "0";
                         $parametros["velocidad"] = "0";
-                        $parametros["codigo_puestocontrol"] = $mControPadre['cod_contro'];
+                        // $parametros["codigo_puestocontrol"] = $mControPadre['cod_contro'];
+                        $parametros["codigopuestocontrol"] = $mControPadre['cod_contro'];
                         $parametros["novedad"] = $mNoveda["nom_noveda"] . ' ' . "Registrado desde Dispositivo Movil " . $_POST[device] . ". IP:" . $_SERVER["REMOTE_ADDR"];
                         $parametros["latitud"] = $mGeo["val_latitu"];
                         $parametros["longitud"] = $mGeo["val_longit"];
@@ -186,10 +189,11 @@ class Novedad {
 
                         $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
-                        //MÃ©todos disponibles en el WS
+                        //Métodos disponibles en el WS
                         $respuesta = $oSoapClient->__soapCall('puestocontrol', $parametros);
 
                         fwrite($mFile, "Respuesta del WS de colombiasoftware:------------------------------------------ \n");
+                        fwrite($mFile, $oSoapClient -> __getLastRequest() ." \n");  
                         fwrite($mFile, var_export($respuesta, true)." \n");  
                         fwrite($mFile, "----------------------------------- Fin Log ----------------------------------\n");
                         
@@ -204,10 +208,10 @@ class Novedad {
                             $mMessage .= "Codigo puesto de control padre: " . $mControPadre['cod_contro'] . " \n";
                             $mMessage .= "Codigo novedad: 71 \n";
                             $mMessage .= "Nombre novedad: " . $mNoveda["nom_noveda"] . " \n";
-                            $mMessage .= "ObservaciÃ³n enviada: " . 'Interfaz - ' . $parametros["novedad"] . " \n";
+                            $mMessage .= "Observación enviada: " . 'Interfaz - ' . $parametros["novedad"] . " \n";
                             $mMessage .= "******** Detalle ******** \n";
                             $mMessage .= "Mensaje de error: " . $respuesta . " \n";
-                            mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                            mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net, nelson.liberato@eltransporte.org", "Error Web service Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
                         }
                     } catch (SoapFault $e) {
                         fwrite($mFile, "catch:------------------------------------------ \n");
@@ -281,7 +285,8 @@ class Novedad {
 
                 $mExecute = TRUE;
                 //Ruta Web Service.
-                if ($data) {
+                if ($data) 
+                {
                     //CONSULTAR URL WSDL.
                     $query = "SELECT a.url_webser    
                                 FROM satt_standa.tab_genera_server a
@@ -438,6 +443,292 @@ class Novedad {
                         echo "<div align='center' style='color:#000000; padding:5px; font-size:14px; background-color:#FFAFAF; border:2px solid #000000;'><b>Error en Webservice - Insertar novedad en " . $data['nom_operad'] . ':' . $error_ . "</b></div>";
                     }
                 }
+
+
+                // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                //     Se reporta la novedad a la aplicacion de carga antioquia
+                // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                //Interfaz con Carga Antioquia
+                $dataCargaAn = false;
+                $query = "SELECT nom_operad, nom_usuari, clv_usuari, url_webser, val_timtra
+                            FROM tab_interf_parame 
+                           WHERE cod_operad = '26'
+                             AND ind_estado = '1'
+                             AND cod_transp = '" . $_POST[$i]["cod_transp"] . "'";
+
+                $dataCargaAn = $this->conexion->Consultar($query, "a");
+                if ( $dataCargaAn ) 
+                { 
+                    try {
+
+                            
+                            # Consulta del puesto Padre de la homologacion
+                            $query = "SELECT  a.cod_contro
+                                      FROM tab_homolo_pcxeal a 
+                                     WHERE ( a.cod_homolo = '".$_POST[$i]["cod_contro"]."' OR a.cod_contro =  '".$_POST[$i]["cod_contro"]."' ) ";
+                            $mControPadre =  $this->conexion->Consultar($query, "a");
+                             
+                            # Consulta PC, puesto control si no encontró nada homologado arriba -----------------
+                            if( sizeof($mControPadre ) <= 0 )
+                            {
+                                $mQuerySelNomPc = "SELECT cod_contro  
+                                               FROM tab_genera_contro  
+                                              WHERE cod_contro = '".$_POST[$i]["cod_contro"]."' ";
+                                $mControPadre = $this->conexion->Consultar($mQuerySelNomPc, "a");
+                            }
+
+                            $mQuerySelNomPc = "SELECT nom_contro 
+                                                  FROM tab_genera_contro 
+                                                  WHERE cod_contro = '" . $mControPadre['cod_contro'] . "' ";
+                            $mNomPc = $this->conexion->Consultar($mQuerySelNomPc, "a");
+
+
+                            // Xml String porque se manda en POST como API, no es un WSDL (SOAP)
+                            $mTextXML = '<?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>'.$dataCargaAn['nom_usuari'].'</ns1:Username>
+                                                        <ns1:Password>'.$dataCargaAn['clv_usuari'].'</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>'.$_POST[$i]["num_manifi"].'</ns1:Manifiesto>
+                                                            <ns1:Placa>'.( substr($_POST["placa"], 0,3)."-".substr($_POST["placa"],3, 6) ).'</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>'.$mControPadre['cod_contro'].'</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>'.date('Y-m-d H:i:s').'</ns1:FechaNovedad>
+                                                            <ns1:Observacion>'.$mParams["des_noveda"].'</ns1:Observacion>
+                                                            <ns1:Lugar>'.substr($mNomPc['nom_contro'], 0, 50).'</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>';
+                               // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
+                            if(  $dataCargaAn['val_timtra'] == 1 ){
+                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
+                                fwrite($mFile, "Type      : NORMAL XML REQUEST \n"); 
+                                fwrite($mFile, "_POST     : ".json_encode($_POST)."  \n");
+                                fwrite($mFile, "datInterf : ".json_encode($dataCargaAn)."  \n");
+                                fwrite($mFile, "Request   : ".$mTextXML."  \n");
+                                fclose($mFile);
+                            }
+  
+                            $s = curl_init();
+                            curl_setopt($s,CURLOPT_URL, $dataCargaAn['url_webser']);
+                            curl_setopt($s,CURLOPT_TIMEOUT,"4"); 
+                            curl_setopt($s,CURLOPT_HTTPHEADER,array('Content-Type: text/xml')); 
+                            curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
+                            curl_setopt($s,CURLOPT_POST,true);
+                            curl_setopt($s,CURLOPT_POSTFIELDS,$mTextXML);
+                            $mResponse   = curl_exec($s);
+                            $mHttpStatus = curl_getinfo($s,CURLINFO_HTTP_CODE);
+                            curl_close($s);
+
+                            // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
+                            if(  $dataCargaAn['val_timtra'] == 1 ){
+                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
+                                fwrite($mFile, "Type        : NORMAL XML RESPONSE  \n");
+                                fwrite($mFile, "Http Status : ".$mHttpStatus."  \n");
+                                fwrite($mFile, "Response    : ".$mResponse."  \n");
+                                fclose($mFile);
+                            }
+
+
+                            // Quita el namespace de las variables porque el simpleXML no lo puede leer, debe quedar un XML sencillo
+                            $mResponse = str_replace(array('soap:'), array(''), $mResponse);
+                            // Se consbierte el XML de respuesta en objeto para poderlo usar
+                            $xmlObject = new SimpleXMLElement( $mResponse, 0, false);
+
+                            // cuando se ejecuta una excepcion del WS pero en el externo, lo tomo para que entre al fault de nosotros
+                            if($xmlObject -> Body -> Fault)
+                            {
+                                throw new Exception($xmlObject -> Body -> Fault -> faultstring, 9999);
+                            }
+
+                            // se valida el codigo de retorno si la novedad fue registrada o no en el externo, -1 = error registrando la novedad en el externo y mando a catch
+                            if($xmlObject -> Body -> IngresarReporteResponse -> IngresarReporteResult -> Codigo == '-1')
+                            {
+                                throw new Exception($xmlObject -> Body -> IngresarReporteResponse -> IngresarReporteResult -> Descripcion, $xmlObject -> Body -> IngresarReporteResponse -> IngresarReporteResult -> Codigo);
+                            }
+
+                            // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
+                            // if(  $dataCargaAn['val_timtra'] == 1 ){
+                            //     $mFile = fopen(getcwd()."/logs/Carga_antioquia_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                            //     fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
+                            //     fwrite($mFile, "Type    : NORMAL MOVIL  \n");
+                            //     fwrite($mFile, "Request : ".$mTextXML."  \n");
+                            //     fwrite($mFile, "Response: ".$mResponse." \n\n");
+                            //     fclose($mFile);
+                            // }
+                      
+                    } catch (Exception $e) {
+
+                        
+                        if(  $dataCargaAn['val_timtra'] == 1  )
+                        {
+                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
+                                fwrite($mFile, "Type    : throw new Exception movil  \n");
+                                fwrite($mFile, "Message : ".$e -> getMessage()."  \n");
+                                fwrite($mFile, "Request : ".$mTextXML."  \n");
+                                fwrite($mFile, "Response: ".$mResponse." \n\n");
+                                fclose($mFile);
+                        }
+                    }
+                }
+                #</IF 5.1.1.1.11>
+
+                // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                //     Se reporta la novedad a la aplicacion del CORONA
+                // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                $query = "SELECT nom_operad, nom_usuari, clv_usuari 
+                            FROM tab_interf_parame 
+                           WHERE cod_operad = '52'
+                             AND ind_estado = '1'
+                             AND cod_transp = '" . $_POST[$i]["cod_transp"] . "'";
+                $dataCoro = $this->conexion->Consultar($query, "a");
+
+                $mExecute = TRUE;
+                //Ruta Web Service.
+                if ($dataCoro) 
+                {
+                    try
+                    {
+                        $error_ = NULL;
+                        $oSoapClient = new soapclient('https://corona.intrared.net/ap/interf/app/externo/externo.php?wsdl', array('encoding' => 'ISO-8859-1'));
+                    
+ 
+                        $query = "SELECT a.cod_manifi, b.num_placax, a.cod_tipdes
+                                    FROM tab_despac_despac a
+                              INNER JOIN tab_despac_vehige b ON a.num_despac = b.num_despac
+                                   WHERE a.num_despac = '" . $_POST[$i]["num_despac"] . "' ";
+                        $mSalida = $this->conexion->Consultar($query, "a");
+
+                        $mQuerySelNomNov = "SELECT nom_noveda, ind_alarma, ind_tiempo, nov_especi, ind_manala  " .
+                                "FROM tab_genera_noveda " .
+                                "WHERE cod_noveda = '71' ";
+                        $mNomNov = $this->conexion->Consultar($mQuerySelNomNov, "a");
+
+                        $mQuerySelNomPc = "SELECT nom_contro " .
+                                "FROM tab_genera_contro " .
+                                "WHERE cod_contro = '" . $_POST[$i]["cod_contro"] . "' ";
+                        $mNomPc = $this->conexion->Consultar($mQuerySelNomPc, "a");
+
+                        $mQuerySelPcxbas = "SELECT cod_pcxbas 
+                                              FROM tab_homolo_trafico 
+                                             WHERE cod_transp = '" . $_POST[$i]['cod_transp'] . "'
+                                               AND cod_pcxfar = '$_POST[cod_contro]'
+                                               AND cod_rutfar = '" . $_POST[$i]['cod_rutasx'] . "'";
+                        $mCodPcxbas = $this->conexion->Consultar($mQuerySelPcxbas, "a", TRUE);
+
+                        if (!$mCodPcxbas) {
+                            $mQuerySelPcxbas = "SELECT a.cod_pcxbas 
+                                                  FROM tab_homolo_trafico a
+                                            INNER JOIN tab_genera_contro b ON a.cod_pcxfar = b.cod_contro
+                                                 WHERE a.cod_transp = '" . $_POST[$i]['cod_transp'] . "'
+                                                   AND b.nom_contro = '" . $mNomPc['nom_contro'] . "'
+                                                   AND a.cod_rutfar = '" . $_POST[$i]['cod_rutasx'] . "'";
+                            $mCodPcxbas = $this->conexion->Consultar($mQuerySelPcxbas, "a", TRUE);
+                        }
+
+                       
+                        $parametros = [ 
+                                            "nom_usuari" => $dataCoro['nom_usuari'],
+                                            "pwd_clavex" => $dataCoro['clv_usuari'],
+                                            "cod_transp" => $_POST[$i]["cod_transp"], //'860068121',
+                                            "num_manifi" => $_POST[$i]["num_manifi"],
+                                            "num_placax" => $_POST["placa"],
+                                            "cod_noveda" => $mParams['cod_noveda'],
+                                            "cod_contro" => $_POST[$i]["cod_contro"],
+                                            "tim_duraci" => $mParams["tim_duraci"],
+                                            "fec_noveda" => date('Y-m-d H:i', strtotime($mParams["fec_noveda"])),
+                                            "des_noveda" => $mParams["des_noveda"],
+                                            "nom_noveda" => $mNomNov['nom_noveda'],
+                                            "nom_contro" => $mNomPc['nom_contro'],
+                                            "nom_sitiox" => substr($mNomPc['nom_contro'], 0, 50),
+                                            "num_viajex" => NULL,
+                                            "fot_noveda" => NULL,
+                                            "cod_remdes" => NULL,
+                                            "tim_sigpun" => NULL,
+                                            "tim_ultpun" => NULL
+                                          ];
+                        $index1 = 0;
+                        // for ($index1 = 0; $index1 < count($mCodPcxbas); $index1++) 
+                        // {
+                                // $parametros['cod_conbas'] = $mCodPcxbas[$index1]['cod_pcxbas'];
+                                //Consumo Web Service.
+                                if( in_array($mSalida[0]['cod_tipdes'], ['2', '5'] ) ){ // Nacional y tramo 1 en sitio
+                                    $respuesta = $oSoapClient->__call("setNovedadPC", $parametros);
+                                }else{
+                                    $respuesta = $oSoapClient->__call("setNovedadNC", $parametros); // importacion y exportación antes de sitio
+                                }
+
+
+                                //echo "<pre>externo respuesta: "; print_r( $respuesta ); echo "</pre>";
+
+                                //Procesa el resultado del WS
+                                $mResult = explode("; ", $respuesta);
+                                $mCodResp = explode(":", $mResult[0]);
+                                $mMsgResp = explode(":", $mResult[1]);
+
+                                if ("1000" != $mCodResp[1]) {
+                                    $error_ = $mMsgResp[1];
+                                    //--------- Se reenvia la novedad con otro puesto de control en caso que Retorne Error de Puesto de control no existente
+                                } else {
+                                    $error_ = NULL;
+                                    break;
+                                }
+                        // }
+
+                    } 
+                    catch (Exception $e) 
+                    {
+                        $error = $e->faultstring;
+                        if ($error) {
+                            // Notifica errores
+                            $error_ = $error;
+                        } elseif ($e->fault) {
+                            //Notifica Fallos
+                            $error_ = $e->faultcode . ':' . $e->faultdetail . ':' . $e->faultstring;
+                        }
+                    }
+
+                    if ($error_ != NULL) {
+                        echo $error_;
+                        $mMessage = "******** Encabezado ******** \n";
+                        $mMessage .= "Fecha y hora: " . date("Y-m-d H:i") . " \n";
+                        $mMessage .= "Empresa de transporte: " . $_POST[$i]['cod_transp'] . " \n";
+                        $mMessage .= "Aplicacion: " . $data['nom_operad'] . " \n";
+                        $mMessage .= "Numero de despacho FARO: " . $_POST[$i]["num_despac"] . " \n";
+                        $mMessage .= "Placa del vehiculo: " . $_POST["placa"] . " \n";
+                        $mMessage .= "Codigo puesto de control: " . $_POST[$i]['cod_contro'] . " \n";
+                        $mMessage .= "Codigo novedad: " . $mParams['cod_noveda'] . " \n";
+                        $mMessage .= "Tipo despacho: " . $mSalida[0]['cod_tipdes'] . " \n";
+                        $mMessage .= "******** Detalle ******** \n";
+                        $mMessage .= "Codigo de error: " . $mCodResp[1] . " \n";
+                        $mMessage .= "Mesaje de error: " . $error_ . " \n";
+
+                        $novedaError['cod_respon'] = $mCodResp[1];
+                        $novedaError['msg_respon'] = $error_;
+                        $novedaError['det_respon'] = $mMessage;
+                        //Se registran errores de la interfaz en la BD
+                        $this->setNovedadError($parametros, $_POST[$i], $novedaError, $data, 'pc');
+                        mail("nelson.liberato@eltransporte.org, maribel.garcia@grupooet.com", "NOVEDAD OAL PARA CORONA DESDE FARO A GL", $mMessage."\n".var_export($parametros, true), 'From: soporte.ingenieros@intrared.net');
+                    }
+                   
+                } // FIN ENVIO A CORONA
+
+
+
             }
         } else {
             $this->mensaje = "La Placa No Se Encuentra Disponible";
@@ -448,8 +739,8 @@ class Novedad {
     /* ! \fn: setNovedadError
      *  \brief: Guarda los errores de las novedades
      *  \author: 
-     *     \date: dia/mes/aÃ±o
-     *     \date modified: dia/mes/aÃ±o
+     *     \date: dia/mes/año
+     *     \date modified: dia/mes/año
      *  \param: 
      *  \return:
      */
@@ -491,7 +782,7 @@ class Novedad {
      *             Si el o los despacho tienen recomendaciones muestra un PopUp para dar solucion
      *             Solicita foto de confirmacion en la EAL
      *  \author: 
-     *     \date: dia/mes/aÃ±o
+     *     \date: dia/mes/año
      *     \date modified: 25/05/2015
      *  \param: 
      *  \return:
@@ -625,7 +916,7 @@ class Novedad {
      *  \brief: trea el puesto de control de una esfera
      *  \author: Ing. Alexander Correa
      *  \date: 20/06/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return codigo del puesto de control
      */
@@ -648,7 +939,7 @@ class Novedad {
      *  \brief: trae los puesos de control hijos o padres aignados al Usuario
      *  \author: Ing. Alexander Correa
      *  \date: 20/06/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $pc => int => identificador del puesto de control    
      *  \return return
      */
@@ -679,7 +970,7 @@ class Novedad {
      *  \brief: trae los despachos en ruta que tengan habilitado el puesto de control actual
      *  \author: Ing. Alexander Correa
      *  \date: 20/06/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: num_placax => string => placa del vehiculo    
      *  \return array con los despachos
      */
@@ -752,7 +1043,7 @@ class Novedad {
      *  \brief: envia un email al cliente
      *  \author: Ing. Alexander Correa
      *  \date: 27/06/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $datos => array => datos necesarios para enviar el email   
      *  \param: $cod_tercer => string => para sacar la direccion de email de la transportadora   
      *  \return
@@ -800,12 +1091,12 @@ class Novedad {
                     </tr>                    
                     <tr>
                         <td style='background-color: #dedfde;font-family: Times New Roman;font-size: 11px;padding: 2px;'>Observaci&oacute;n:</td>
-                        <td style='background-color: #dedfde;font-family: Times New Roman;font-size: 11px;padding: 2px;'>Registrado desde la apliaciÃ³n Movil.</td>
+                        <td style='background-color: #dedfde;font-family: Times New Roman;font-size: 11px;padding: 2px;'>Registrado desde la apliación Movil.</td>
                     </tr>                   
                  </table>";        
         $cabeceras = 'MIME-Version: 1.0' . "\r\n";
         $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        $cabeceras .= 'From: supervisores@eltransporte.org';
+        $cabeceras .= 'From: faroavansat@eltransporte.com';
 
         if ($this->HOST_WEB == $this->HOST_WEB_PRO) {
             return mail($email, 'Reporte Novedad EAL Alto del Trigo', $html, $cabeceras);
@@ -818,7 +1109,7 @@ class Novedad {
      *  \brief: trae la informacion de un despacho para enviar un email
      *  \author: Ing. Alexander Correa
      *  \date: 28/06/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: num_despac => integer => numero de despacho     
      *  \return arreglo con la informacion del despacho
      */

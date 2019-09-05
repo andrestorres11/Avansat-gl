@@ -1341,12 +1341,12 @@ class inform {
             LEFT  JOIN ".BASE_DATOS.".tab_despac_corona n ON n.num_dessat = a.num_despac
                  WHERE a.ind_anulad = 'R'
                    AND a.fec_creaci BETWEEN '$datos->fec_inicia' AND '$datos->fec_finali' 
-                   AND n.tip_transp IS NOT NULL 
                    AND l.ind_virtua = 0
                    AND d.cod_transp = '$datos->cod_transp' 
                    AND k.ind_estado != 2
                        $and 
               GROUP BY a.num_despac";
+
         $consulta = new Consulta($sql, self::$cConexion);
         return $consulta->ret_matrix("a");
     }

@@ -115,7 +115,7 @@ class InterfSolicitud {
 			"fec_iniseg"=>$fec_iniseg,
 			"fec_finseg"=>$fec_finseg,
 			"lis_placax"=>$lis_placax,
-			"obs_solici"=>$obs_solici
+			"obs_solici"=>base64_encode($obs_solici)
 		);
 		$this->setFnService("setSoliciSegimientoEspecial",$params);
 	}
@@ -135,8 +135,8 @@ class InterfSolicitud {
 		$params=array(
 			"arr_datsol"=>$arr_datsol, 
 			"ind_pqrsxx"=>$ind_pqrsxx,
-			"nom_pqrsxx"=>$nom_pqrsxx,
-			"obs_pqrsxx"=>$obs_pqrsxx,
+			"nom_pqrsxx"=>base64_encode($nom_pqrsxx),
+			"obs_pqrsxx"=>base64_encode($obs_pqrsxx),
 			"fil_archiv"=>$fil_archiv
 		);
 		$this->setFnService("setSoliciPQR",$params);
@@ -154,8 +154,8 @@ class InterfSolicitud {
 		echo "<br>";*/
 		$params=array(
 			"arr_datsol"=>$arr_datsol, 
-			"nom_otroxx"=>$nom_otroxx,
-			"obs_otroxx"=>$obs_otroxx,
+			"nom_otroxx"=>base64_encode($nom_otroxx),
+			"obs_otroxx"=>base64_encode($obs_otroxx),
 			"fil_archiv"=>$fil_archiv
 		);
 		$this->setFnService("setSoliciOtros",$params);

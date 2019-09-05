@@ -37,9 +37,9 @@
                                                     "tag": "input", 
                                                     "type": "radio", 
                                                     "name": "ind_pqrsxx", 
-                                                    "id": "ind_pqrsxx_1", 
+                                                    "id": "ind_pqrsxx_3", 
                                                     "required": "required", 
-                                                    "value": "1", 
+                                                    "value": "3", 
                                                     "html": ""
                                                 },
                                                 {
@@ -56,9 +56,9 @@
                                                     "tag": "input", 
                                                     "type": "radio", 
                                                     "name": "ind_pqrsxx", 
-                                                    "id": "ind_pqrsxx_2", 
+                                                    "id": "ind_pqrsxx_4", 
                                                     "required": "required", 
-                                                    "value": "2", 
+                                                    "value": "4", 
                                                     "html": ""
                                                 },
                                                 {
@@ -75,9 +75,9 @@
                                                     "tag": "input", 
                                                     "type": "radio", 
                                                     "name": "ind_pqrsxx", 
-                                                    "id": "ind_pqrsxx_3", 
+                                                    "id": "ind_pqrsxx_5", 
                                                     "required": "required", 
-                                                    "value": "3", 
+                                                    "value": "5", 
                                                     "html": ""
                                                 },
                                                 {
@@ -94,9 +94,9 @@
                                                     "tag": "input", 
                                                     "type": "radio", 
                                                     "name": "ind_pqrsxx", 
-                                                    "id": "ind_pqrsxx_4", 
+                                                    "id": "ind_pqrsxx_6", 
                                                     "required": "required", 
-                                                    "value": "4", 
+                                                    "value": "6", 
                                                     "html": ""
                                                 },
                                                 {

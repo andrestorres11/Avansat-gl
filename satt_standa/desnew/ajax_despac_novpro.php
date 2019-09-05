@@ -169,12 +169,12 @@ class AjaxDespacNoveda
             
             $asunto = "PROTOCOLO ASIGNADO";
 
-            //mail( MAIL_SUPERVISORES, $asunto, $message, 'From: supervisores@eltransporte.org');
-            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: supervisores@eltransporte.org');
+            //mail( MAIL_SUPERVISORES, $asunto, $message, 'From: faroavansat@eltransporte.com');
+            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: faroavansat@eltransporte.com');
             
             $_CENOPE = $this -> getMailProtoc( $_AJAX[ 'cod_protoc'.$k ] );
-            //mail( $_CENOPE, $asunto, $message, 'From: supervisores@eltransporte.org');
-            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: supervisores@eltransporte.org');
+            //mail( $_CENOPE, $asunto, $message, 'From: faroavansat@eltransporte.com');
+            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: faroavansat@eltransporte.com');
           }
           else
           {
@@ -187,12 +187,12 @@ class AjaxDespacNoveda
             
             $asunto = "PROTOCOLO EJECUTADO";
 
-            //mail( MAIL_SUPERVISORES, $asunto, $message, 'From: supervisores@eltransporte.org');
-            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: supervisores@eltransporte.org');
+            //mail( MAIL_SUPERVISORES, $asunto, $message, 'From: faroavansat@eltransporte.com');
+            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: faroavansat@eltransporte.com');
             
             $_CENOPE = $this -> getMailProtoc( $_AJAX[ 'cod_protoc'.$k ] );
-            //mail( $_CENOPE, $asunto, $message, 'From: supervisores@eltransporte.org');
-            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: supervisores@eltransporte.org');
+            //mail( $_CENOPE, $asunto, $message, 'From: faroavansat@eltransporte.com');
+            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: faroavansat@eltransporte.com');
           }
         }
       break;
@@ -225,12 +225,12 @@ class AjaxDespacNoveda
             
             $asunto = "PROTOCOLO ASIGNADO";
 
-            //mail( MAIL_SUPERVISORES, $asunto, $message, 'From: supervisores@eltransporte.org');
-            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: supervisores@eltransporte.org');
+            //mail( MAIL_SUPERVISORES, $asunto, $message, 'From: faroavansat@eltransporte.com');
+            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: faroavansat@eltransporte.com');
             
             $_CENOPE = $this -> getMailProtoc( $_AJAX[ 'cod_protoc'.$k ] );
-            //mail( $_CENOPE, $asunto, $message, 'From: supervisores@eltransporte.org');
-            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: supervisores@eltransporte.org');
+            //mail( $_CENOPE, $asunto, $message, 'From: faroavansat@eltransporte.com');
+            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: faroavansat@eltransporte.com');
           }
           else
           {
@@ -243,14 +243,14 @@ class AjaxDespacNoveda
             
             $asunto = "PROTOCOLO EJECUTADO";
 
-            //mail( MAIL_SUPERVISORES, $asunto, $message, 'From: supervisores@eltransporte.org');
-            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: supervisores@eltransporte.org');
+            //mail( MAIL_SUPERVISORES, $asunto, $message, 'From: faroavansat@eltransporte.com');
+            mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: faroavansat@eltransporte.com');
             
             $_CENOPE = $this -> getMailProtoc( $_AJAX[ 'cod_protoc'.$k ] );
             if( $_CENOPE != '' && $_CENOPE != NULL )
             {
-              //mail( $_CENOPE, $asunto, $message, 'From: supervisores@eltransporte.org');
-              mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: supervisores@eltransporte.org');
+              //mail( $_CENOPE, $asunto, $message, 'From: faroavansat@eltransporte.com');
+              mail( "felipe.malaver@intrared.net", $asunto, $message, 'From: faroavansat@eltransporte.com');
             }
           }
         }

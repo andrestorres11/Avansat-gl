@@ -133,7 +133,7 @@ class ins_usuari_usuari {
                                     <div class="col-md-12 ancho">
                                         <div class="col-md-3 text-right">Usuario<font style="color:red">*</font>:</div>
                                         <div class="col-md-3 text-left">
-                                            <input class="text-center" type="text" <?= $read ?> name="cod_usuari" id="cod_usuari" value="<?= $datos->cod_usuari ?>" obl="1" maxlength="15" minlength="<?= $minUsuario ?>" validate="dir"></input>
+                                            <input class="text-center" type="text" <?= $read ?> name="cod_usuari" id="cod_usuari" value="<?= $datos->cod_usuari ?>" obl="1" maxlength="15" minlength="<?= $minUsuario ?>" validate="dir" onkeypress="return validarLetras(event)"></input>
                                             <input type="hidden" name="cod_consec" id="cod_consec" value="<?= $data->cod_consec ?>"></input>
                                         </div>
                                         <div class="col-md-3 text-right">C&eacute;dula:</div>

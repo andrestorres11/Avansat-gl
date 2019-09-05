@@ -8,6 +8,8 @@
  *  \bug: 
  *  \warning: 
  */
+
+
 var standa;
 $(function() {
     setTimeout(function() {
@@ -33,7 +35,7 @@ function editarUsuario(row) {
 
     swal({
         title: "Editar Usuario",
-        text: "Â¿Realmente Deseas Editar el Usuario " + nom_usuari + "?",
+        text: "¿Realmente Deseas Editar el Usuario " + nom_usuari + "?",
         type: "warning",
         showCancelButton: true,
         closeOnConfirm: true,
@@ -225,6 +227,26 @@ function mostrarOcultos() {
             //getOtherFilters();
         }
     });
+}
+
+/* ! \fn: validarLetras
+ *  \brief: controla los caracteres que se escriben en el campo de texto
+ *  \author: Ing. Andres Torres
+ *  \date: 04/03/2019
+ *  \date modified: dia/mes/año
+ *  \param: e => indica que evento es el que llega
+ *  \return 
+ */
+function validarLetras(e) { // 1
+    tecla = (document.all) ? e.keyCode : e.which; // 2
+    // alert(tecla);
+    if (tecla==8)return true; // 3
+    if(tecla == 241 || tecla == 209){
+        alert("La letra ñ/Ñ no es valida para el Nombre de Usuario");
+    }
+    patron =/[A-Za-z\s]/; // 4
+    te = String.fromCharCode(tecla); // 5
+    return patron.test(te); // 6
 }
 
 /* ! \fn: registrar

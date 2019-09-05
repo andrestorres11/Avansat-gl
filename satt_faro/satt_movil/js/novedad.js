@@ -176,16 +176,37 @@ function Inicam(obj)
 {
 	try
 	{
-		navigator.getUserMedia({
-			'audio': false,
-			'video': true
-		}, function(streamVideo) {
+		var constraints =   {
+							  audio: false,
+							  video: {
+							    width:320,
+							    height:240,
+							    frameRate:{ideal:60, min:10}
+							  }
+							};
+		
+		var video = document.getElementById('camara');
+		navigator.mediaDevices.getUserMedia(constraints).then(function success(stream) {
+			video.srcObject = stream;
+
+			video.StreamVideo = stream;
+			 
+		}).catch(function(err) {
+		 
+			console.log("Error generado: ",err);
+		});
+		
+
+		/*
+		navigator.mediaDevices.getUserMedia(constraints, function(streamVideo) {
 			datosVideo.StreamVideo = streamVideo;
 			datosVideo.url = window.URL.createObjectURL(streamVideo);
 			$('#camara').attr('src', datosVideo.url);
 		}, function() {
 			alert('No fue posible obtener acceso a la cámara.');
 		});
+		*/
+		
 	}
 	catch(e)
 	{
@@ -206,10 +227,18 @@ function Detcam()
 {
 	try
 	{
-		if (datosVideo.StreamVideo) {
-			datosVideo.StreamVideo.stop();
-			window.URL.revokeObjectURL(datosVideo.url);
-		}
+
+		// if (datosVideo.StreamVideo) {
+		// 	datosVideo.StreamVideo.stop();
+		// 	window.URL.revokeObjectURL(datosVideo.url);
+		// }
+
+		var video = document.getElementById('camara');
+		video.stop = function () {
+                this.getVideoTracks().forEach(function (track) { //in case... :)
+                    track.stop();
+                });
+            };
 	}
 	catch(e)
 	{

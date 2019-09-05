@@ -281,7 +281,6 @@ class ImportNovedad
     $_ERROR = array();
     
     $this -> field = $_DATA[0];
-
     $e = 0;
 
     for ( $r = 1; $r < sizeof( $_DATA ); $r++ ) 
@@ -318,7 +317,6 @@ class ImportNovedad
               $e ++;
             }   
           break;*/
-          
           case  0 :  //@Placa en Viaje
             if ( $item == NULL ) { 
                 $this -> SetError( $e, $c, $r, 'EL NUMERO DE VIAJE ES REQUERIDO' );

@@ -191,8 +191,10 @@ class AjaxFacturCorona
   private function DataTablaVistaGeneral($_AJAX)
   {
     try 
-    {
-        $mHtml  = '<table width="80%" align="center">';
+    { 
+        $mIdxTab = 'ExcelFacturCorona';
+        $mHtml = '<center><img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" onclick="LoadExcel( \''.$mIdxTab.'\' );" style="cursor:pointer"></center><br>';
+        $mHtml  .= '<table width="80%" align="center">';
           $mHtml .= '<tr>';
             $mHtml .= '<td class="CellHead" colspan="16" align="center">Tabla totales Vista General</td>';            
           $mHtml .= '</tr>';
@@ -221,7 +223,8 @@ class AjaxFacturCorona
 
 
         $mHtml .= '</table>';
-        return utf8_decode($mHtml);
+        return $_SESSION["ExcelFacturCorona"] = utf8_decode($mHtml);
+        //return utf8_decode($mHtml);
     } 
     catch (Exception $e) 
     {
@@ -241,7 +244,7 @@ class AjaxFacturCorona
     try 
     {
         #$mCodtipdes = self::getTiposDespachos();
-        $mHtml  = '<table width="100%" align="center">'; 
+        $mHtml  .= '<table width="100%" id="tabFacturCorona" align="center">'; 
 
           $mHtml .= '<tr>';
             $mHtml .= '<td class="CellHead" align="center" >Modalidad</td>';
@@ -304,9 +307,9 @@ class AjaxFacturCorona
 
         $mHtml .= '</table>';
 
-        
+        $_SESSION["ExcelFacturCorona"] .=  utf8_decode($mHtml);
 
-        return $_SESSION["ExcelFacturCorona"] = utf8_decode($mHtml);
+        return utf8_decode($mHtml);
 
 
          
@@ -987,8 +990,6 @@ class AjaxFacturCorona
     $mQuery .= $mGroupNov == true ? " GROUP BY x.cod_noveda ORDER BY x.nom_etapax ASC " : "" ;
     $mQuery .= $mGroupDes == true ? " GROUP BY x.num_despac ORDER BY x.num_despac ASC " : "" ;
 
-      //echo "<pre style='display:none;' >"; print_r( $mQuery ); echo "</pre>";
-    
     $mConsult = new Consulta($mQuery, self::$cConection);
     return $mResult = $mConsult -> ret_matrix("a"); 
   }

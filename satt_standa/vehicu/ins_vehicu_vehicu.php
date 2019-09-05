@@ -345,7 +345,7 @@ class Ins_vehicu_vehicu {
               $src3 = "../".DIR_APLICA_CENTRAL."/imagenes/lateral.png";
             }
             if($datos->principal->dir_fotpos != "NULL" && $datos->principal->dir_fotpos != "" && $datos->principal->dir_fotpos != null){
-              $src4 = '../'.NOM_URL_APLICA.'/'.URL_VEHICU.$datos->principal->dir_fotizq;
+              $src4 = '../'.NOM_URL_APLICA.'/'.URL_VEHICU.$datos->principal->dir_fotpos;
             }else{
               $src4 = "../".DIR_APLICA_CENTRAL."/imagenes/posterior.png";
             }

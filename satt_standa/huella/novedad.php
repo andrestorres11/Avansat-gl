@@ -588,7 +588,7 @@ class Novedad
                             $mMessage .= "******** Detalle ******** \n";
                             $mMessage .= "Mensaje de error: " . $respuesta . " \n";
                             //echo $mMessage;
-                            mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error: Esferas Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                            mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error: Esferas Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
                         }
                       }
                       catch( SoapFault $e )

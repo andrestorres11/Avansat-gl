@@ -1893,6 +1893,18 @@ class InsertNovedad {
             $mMax = $mConsult->ret_arreglo();
             $mMax = $mMax[0] + 1;
 
+
+            // Parche porque en algunos casos cod_rutasx de despac_vehige es diferente a cod_rutasx despac_seguim y al registrar la novedad, la llave compuesta no es la misma por el cod_rutasx
+            // Se actualiza la ruta de despac_vehige a despac_seguim
+            $query = "UPDATE  
+                             ".BASE_DATOS.".tab_despac_seguim a 
+                  INNER JOIN ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac 
+                         SET a.cod_rutasx = IF( b.cod_rutasx != a.cod_rutasx, b.cod_rutasx, a.cod_rutasx )
+                       WHERE a.num_despac = '" . $mDatRegist['despac'] . "' AND a.cod_rutasx != b.cod_rutasx ";
+            $consulta = new Consulta($query, $this->conexion);
+      
+
+
             $mSql = " INSERT INTO " . BASE_DATOS . ".tab_despac_contro 
                                 (
                                     num_despac,  cod_rutasx, cod_contro, 
@@ -3405,7 +3417,7 @@ class InsertNovedad {
 
                 $nit_empres = $regist['nittra']; //NIT EMPRESA.
                 $mData = self::getDataSoap($regist);
- 
+
                 #<FOR 5.1.1.1>
                 for ($i = 0; $i < $interfaz->totalact; $i++) {
                     #<IF 5.1.1.1.1>
@@ -3549,7 +3561,8 @@ class InsertNovedad {
                                 $parametros['tipo_evento'] = "0";
                                 $parametros['kilometraje'] = "0";
                                 $parametros['velocidad'] = "0";
-                                $parametros['codigo_puestocontrol'] = $mControPadre['cod_contro'];
+                                // $parametros['codigo_puestocontrol'] = $mControPadre['cod_contro'];
+                                $parametros['codigopuestocontrol'] = $mControPadre['cod_contro'];
 
                                 //Se envia la novedad sin los codigos internos faro de usuarios que registran la novedad
                                 $pos = strpos($regist['observ'], ">");
@@ -3564,7 +3577,7 @@ class InsertNovedad {
                                 $parametros['hora'] = $mFecha[1];
                                 $parametros['fecha'] = $mFecha[0];
                                 $parametros['placa'] = $mDatDespac['num_placax'];
-                                $parametros['manifiesto_codigo'] = $mDatDespac['cod_manifi'];
+                                // $parametros['manifiesto_codigo'] = $mDatDespac['cod_manifi'];
 
                                 $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
@@ -3881,7 +3894,99 @@ class InsertNovedad {
                             echo "<div align='center' style='color:#000000; padding:5px; font-size:14px; background-color:#FFAFAF; border:2px solid #000000;'><b>Error en Webservice - Insertar novedad en " . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . "</b></div>";
                         }
                     }
-                    #</IF 5.1.1.1.6>
+                    #</IF 5.1.1.1.6> 
+                    #<IF 5.1.1.1.66>
+                    if (52 == $interfaz->interfaz[$i]['operad'] ) //INTERFAZ CON CORONA NUEVA URL corona.intrared.net
+                    {
+                        $error_ = NULL;
+                        $mCodeException = '';
+
+                        try 
+                        {
+                            ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
+                            $oSoapClient = new soapclient('https://corona.intrared.net/ap/interf/app/externo/externo.php?wsdl', array('trace' => true, 'exception' => true, 'encoding' => 'ISO-8859-1'));
+
+                            $mIndViaje = "SELECT num_viajex, num_placax FROM " . BASE_DATOS . ".tab_despac_viajex WHERE num_despac = '".$regist['despac']."' ";
+                            $mConsult = new Consulta($mIndViaje, $this->conexion);
+                            $mViajexx = $mConsult->ret_matrix('a');
+
+                            $parametros = [ 
+                                            "nom_usuari" => $interfaz->interfaz[$i]['usuari'],
+                                            "pwd_clavex" => $interfaz->interfaz[$i]['passwo'],
+                                            "cod_transp" => '860068121',
+                                            "num_manifi" => ( $mViajexx[0]['num_viajex'] != '' ? $mViajexx[0]['num_viajex'] : $mDatDespac['cod_manifi'] ) ,
+                                            "num_placax" => ( $mViajexx[0]['num_placax'] != '' ? $mViajexx[0]['num_placax'] : $mDatDespac['num_placax'] ) ,
+                                            "cod_noveda" => $regist['noveda'],
+                                            "cod_contro" => $regist['contro'],
+                                            "tim_duraci" => $regist['tieadi'],
+                                            "fec_noveda" => date('Y-m-d H:i', strtotime($regist['fecnov'])),
+                                            "des_noveda" => $regist['observ'],
+                                            "nom_noveda" => $mDatNoveda['nom_noveda'],
+                                            "nom_contro" => $mData['nom_contro'],
+                                            "nom_sitiox" => substr($regist['sitio'], 0, 50),
+                                            "num_viajex" => NULL,
+                                            "fot_noveda" => NULL,
+                                            "cod_remdes" => NULL,
+                                            "tim_sigpun" => NULL,
+                                            "tim_ultpun" => NULL
+                                          ];
+
+                            if (!$error_) 
+                            {
+                                //Validacion de novedad OAL o tercera de corona
+                                if($mViajexx[0]['num_viajex'] != '' ){
+                                    $respuesta = $oSoapClient->__soapCall('setNovedadNC', $parametros); // si la novedad es de una tercera de corona
+                                }else{
+                                    $respuesta = $oSoapClient->__soapCall('setNovedadPC', $parametros); // Si la novedad es de una esfera
+                                }
+
+                                $mResult  = explode("; ", $respuesta);
+                                $mCodResp = explode(":", $mResult[0]);
+                                $mMsgResp = explode(":", $mResult[1]);
+
+                                if ("1000" != $mCodResp[1]) 
+                                {
+                                    $error_ = $mMsgResp[1];
+                                    $mCodeException = $mCodResp[1];
+                                } 
+                                else 
+                                {
+                                    $error_ = NULL;
+                                    break;
+                                }
+                            }
+                        } 
+                        catch (Exception $e) 
+                        {
+                            $error_ = $e->getMessage();
+                            $mCodeException = $e->getCode();
+                        }
+
+                        if ($error_ != NULL) 
+                        {
+                            echo "<div align='center' style='color:#000000; padding:5px; font-size:14px; background-color:#FFAFAF; border:2px solid #000000;'><b>Error en Webservice - Insertar " . $mOption[1] . " en " . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . "</b></div>";
+                            $mMessage = "******** Encabezado ******** <br>";
+                            $mMessage .= "Fecha y hora: " . date("Y-m-d H:i") . " <br>";
+                            $mMessage .= "Empresa de transporte: " . $regist['nittra'] . " <br>";
+                            $mMessage .= "Aplicacion: " . $interfaz->interfaz[$i]['nombre'] . " <br>";
+                            $mMessage .= "Numero de despacho SAT: " . $regist['despac'] . " <br>";
+                            $mMessage .= "Placa del vehiculo: " . $mDatDespac['num_placax'] . " <br>";
+                            $mMessage .= "Codigo puesto de control: " . $regist['contro'] . " <br>";
+                            $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
+                            $mMessage .= "Nombre novedad: " . $mDatNoveda['nom_noveda'] . " <br>";
+                            $mMessage .= "******** Detalle ******** <br>";
+                            $mMessage .= "Codigo de error: " . $mCodeException . " <br>";
+                            $mMessage .= "Mesaje de error: " . $error_ ." XML ".@$oSoapClient -> __getLastRequest() . " <br>";
+
+                            $novedaError['cod_respon'] = $mCodeException;
+                            $novedaError['msg_respon'] = $error_." XML ".@$oSoapClient -> __getLastRequest();
+                            $novedaError['det_respon'] = $mMessage;
+                            //Se registran errores de la interfaz en la BD
+                            $this->setNovedadError($parametros, $regist, $novedaError, $mOption[2]);
+                        }
+
+                    }
+                    #</IF 5.1.1.1.66>
                     #<IF 5.1.1.1.7>
                     if (56 == $interfaz->interfaz[$i]['operad']) {//transportadora referencia =  800081833 || Trasportadora FW 
                         $mControPadre = self::getPCPadre($regist);

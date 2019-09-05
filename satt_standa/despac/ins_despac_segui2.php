@@ -1219,7 +1219,7 @@ class Proc_segui
                             */
 
                             //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                            //mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service Server Intrared", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                            //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Server Intrared", $mMessage, 'From: soporte.ingenieros@intrared.net');
                             mail("engmiguelgarcia@gmail.com", "Web service Server Intrared", $mMessage, 'From: soporte.ingenieros@intrared.net');
                         }      
                     }

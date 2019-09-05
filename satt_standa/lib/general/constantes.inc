@@ -40,7 +40,7 @@ define("URL_CONDUC", "fotcon/");// constante para foto del conductor
 define("URL_VEHICU", "fotveh/");// constante para foto del conductor
 define("URL_PCTCON", "contro/");// constante para foto del P/C
 define("URL_REMOLQ", "remolq/");// constante para foto del Remolque
-define("URL_SOLICI", "/var/www/html/ap/satt_faro/files/solici");// constante para foto del Remolque
+define("URL_SOLICI", "files/solici/");// constante la carpeta de solicitudes a faro (solifa)
 
 define("COD_SERVIC_INICIO", "../".DIR_APLICA_CENTRAL."/despac/ins_despac_noveda.php");// codigo servicio que se carga al inicio
 define("CODIGO_INS_NOVEDA", "3302");// constante para el codigo de insercion de novedades en PC
@@ -67,7 +67,7 @@ define("URL_INTERF_WEBSER", "https://flired.intrared.net/ap/SAT/ejec/Interfaz_ws
 
 define("CENTRAL", "satt_standa");// constante para la base de datos de servicios centrales
 
-define("DIAS_VALID_NUEVOS", "30");// constante para validar el tiempo de creación de registros.
+define("DIAS_VALID_NUEVOS", "30");// constante para validar el tiempo de creaciï¿½n de registros.
 
 define("CAN_RESULT_PAGINA","1000");// Cantidad de registros por paginador
 /*
@@ -91,7 +91,7 @@ define("MAIL_SUPERVISORES", "supervisores@eltransporte.org");//Correo de supervi
 define("MAIL_SOPORTE", "soporte.ingenieros@intrared.net");//Correo de soporte intrared
 
 //---------------------------------------------------------------------------------------------------
-//	CONSTANTES PARA PROCESOS DE ESCOLTA ELECTRÓNICO CON PROTEKTO
+//	CONSTANTES PARA PROCESOS DE ESCOLTA ELECTRï¿½NICO CON PROTEKTO
 //---------------------------------------------------------------------------------------------------
 //Codigo Interfaz Protekto
 define("COD_INTERF_PROTEK", "17");
@@ -131,6 +131,9 @@ define("URL_INTERF_FAROXX", "https://dev.intrared.net:8083/ap/interf/app/faro/ws
 define("USR_INTERF_FAROXX", "SOPORTE");
 define("PWD_INTERF_FAROXX", "ifx2016");
 
+
+//Constante Interfaz para eventos GPS, debe apuntar al servidor central
+define("URL_INTERF_GPSEVE", "https://central.intrared.net/ap/interf/APIIntegradorGPS/v1/index.php");
 
 
 

@@ -11,7 +11,7 @@
  *				Para cuando este bug se corriga en InsertNovedad.inc Descomentariar lineas de las querys que traen los despachos.
  *				Buscar #warning1 para ubicar las lineas afectadas
  *  \warning2:	InsertNovedad.inc no recalcula bien el tiempo de alarma, para disfrazar este bug se opto por validar si la fecha de la
- *				ultima novedad es mayor a la fecha de alarma, si esto es verdadero se recalcula el tiempo de alarma seg�n el tipo de 
+ *				ultima novedad es mayor a la fecha de alarma, si esto es verdadero se recalcula el tiempo de alarma según el tipo de 
  *				novedad; si la novedad solicita tiempo se recalcula con el tiempo dado, si no se recalcula con el tiempo del array de 
  *				clase $cTime.
  *				Buscar #warning2 para ubicar las lineas afectadas
@@ -22,7 +22,7 @@ ini_set('display_errors', true);
 error_reporting(E_ALL & ~E_NOTICE);
 
 /*! \class: Despac
- *  \brief: Clase que realiza las consultas para retornar la informaci�n de los Despachos en Cargue, Transito o Descargue
+ *  \brief: Clase que realiza las consultas para retornar la información de los Despachos en Cargue, Transito o Descargue
  */
 class ImportarCitasEntrega
 {
@@ -66,7 +66,7 @@ class ImportarCitasEntrega
 									];	
 
 	private static  $cCodNegoci  = 	[
-										'BA�OS y COCINAS'	=> ['cod_negoci' => 'BC'  ],
+										'BAÑOS y COCINAS'	=> ['cod_negoci' => 'BC'  ],
 										'SUMICOl' 			=> ['cod_negoci' => 'SM'  ],
 										'REVESTIMIENTO' 	=> ['cod_negoci' => 'RT'  ],
 										'CORLANC' 			=> ['cod_negoci' => 'CN'  ]
@@ -107,7 +107,7 @@ class ImportarCitasEntrega
 	 *  \brief: Retorna el tipo de perfil del usuario
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 09/07/2015
-	 *	\date modified: dia/mes/a�o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return: array
 	 */
@@ -136,7 +136,7 @@ class ImportarCitasEntrega
 	 *  \brief: Formulario inicial
 	 *  \author: Ing. Nelson Liberato
 	 *	\date: 10/12/2018
-	 *	\date modified: dia/mes/a�o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return:
 	 */
@@ -220,7 +220,7 @@ class ImportarCitasEntrega
 	       	$mHtml->Form(array("action" => "index.php",
 	            "method" => "post",
 	            "name" => "form_areas",
-	            "header" => "Importaci�n de archivo",
+	            "header" => "Importación de archivo",
 	            "enctype" => "multipart/form-data")); 
 
 		        $mHtml->Row("td");
@@ -229,7 +229,7 @@ class ImportarCitasEntrega
 				        	$mHtml->SetBody("<h2 style='padding:6px;'><B>Importar archivo</B></h2>");
 								$mHtml->OpenDiv("id:sec2"); #Div3
 									$mHtml->Table('tr');
-										// $mHtml->Label("* Nombre clasificaci�n: ", array('for' =>'nom_clasifiID', 'width' => '15%', 'align' => 'right', 'maxlength'=>'50' ) );
+										// $mHtml->Label("* Nombre clasificación: ", array('for' =>'nom_clasifiID', 'width' => '15%', 'align' => 'right', 'maxlength'=>'50' ) );
 										// $mHtml->Input( array('name' =>'nom_clasifi', 'width' => '15%', 'align' => 'left', 'end'=>'yes','size' => 90) );
 
 										// $mHtml->StyleButton("colspan:3; name:send; id:registrarID; value:Guardar; onclick:registrar('registrar'); align:center;  class:crmButton small save");
@@ -277,7 +277,7 @@ class ImportarCitasEntrega
 	 *  \brief: recibe el archivo a importar
 	 *  \author: Ing. Nelson Liberato
 	 *	\date: 11/12/2018
-	 *	\date modified: dia/mes/a�o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return:
 	 */
@@ -296,19 +296,12 @@ class ImportarCitasEntrega
 			$mError = [];
 			if(!in_array($_FILES['fileCitas']['type'], self::$cFileTypes)) // valida el tipo de archivo
 			{
-				throw new Exception("Por favor valide el tipo de archivo a importar, debe ser un archivo EXCEL o CSV!", 3001);				
+				throw new Exception("Por favor valide el tipo de archivo a importar, debe ser un archivo CSV!", 3001);				
 			}
 
 			if( $_FILES['fileCitas']['size'] <= 0) // valida el peso del archivo
 			{
 				throw new Exception("Por favor valide el archivo a importar, puede ser que no contenga datos para importar!", 3002);				
-			}
-
-
-			// Inclucion de una librer�a que lee los XLS y me la pone facil
-			if(!include_once('../'.DIR_APLICA_CENTRAL.'/lib/general/spreadsheet_reader_master/SpreadsheetReader.php') )
-			{
-				throw new Exception("No se pudo cargar el archivo de la librer�a para leer archivos EXCEL ", 3003);
 			}
 			 
 			// se debe mover el archivo porque la libreria lee archivos con extencion XLS o XLSX
@@ -319,128 +312,149 @@ class ImportarCitasEntrega
 			{
 				$mLastError = error_get_last();
 				throw new Exception("No se pudo copiar el archivo al servidor: ".$mLastError['message'] , 3004);
-				
 			}
-
-			$mReader = new SpreadsheetReader($mFileTemp);  		 
-			$mReader->ChangeSheet(0); // Se selecciona la pesta�a de donde estan las solicitudes en el excel, este caso la pesta�a cero (DATA)
-
-		 
 
 			$mQueryDML = []; // Array de updates o inserts a ejecutar al final del ciclo	 
 
 			new Consulta( 'START TRANSACTION;', self::$cConexion );
-			$mMessage = [];
-			foreach ($mReader AS $mIndex => $Row)
-			{
-				//if($mIndex > 0 && $mIndex < 9)
-				//{
 
-					$Row = self::setDatos($Row); 
-					$mViaje = self::validaEstadoViaje($Row);
-					if($mViaje['num_viajex'] == '')
+			$mSearch  = array("(\¬)", "(\.)", "(\,)", "(\ )", "(ñ)", "(Ñ)", "(\°)", "(\º)", "(&)", "(Â)", "(\()", "(\))", "(\/)", "(\´)", "(\¤)", "(\Ã)", "(\‘)", "(\ƒ)", "(\â)", "(\€)", "(\˜)", "(\¥)", "(Ò)", 
+						    "(Í)", "(\É)", "(\Ãƒâ€šÃ‚Â)", "(\·)", "(\ª)", "(\-)", "(\+)", "(\Ó)", "(\ü)", "(\Ü)", "(\é)", "(\;)", "(\¡)", "(\!)", "(\`)", "(\<)", "(\>)", "(\_)", "(\#)", "(\ö)", "(\À)", "(\¿)", 
+						    "(\Ã±)", "(\±)", "(\*)", "(Ú)", "(\%)", "(\|)", "(\ò)", "(\Ì)", "(\:)", "(\Á)", "(\×)", "(\@)", "(\ )", "(\Ù)", "(\á)", "(\–)", "(\")", "(\È)", "(\])", "(\')", "(\í)", "(\Ç)",
+						    "(\Nš)","(\‚)", "(\ó)", "(\ )", "(\ )", "(\ï½)", "(\?)" );
+			$mReplace = array(" ", " ", " ", " ", "n", "N", " ", " ", "Y", "", "", "", "", "", "", "", "", "", "", "", "", "", "O", "I", "E", " ", "", "a", " ", " ", 
+							"O","U","U", "e", " ", "", "", "", "", "", "", "", "", "A", "", "", "", "", "", "", "", "", "I", "", "A", "", "", " ", "U", "a", " ", "", 
+							"E", " ", " ", "i", "", "N"," ", " ", " ", " ", " " , "", ""  );  
+
+
+			if (($handle = fopen($mFileTemp, "r")) !== FALSE) 
+			{	
+				$mCont = 0;
+				while (($data = fgetcsv($handle, 1000, ";")) !== FALSE) 
+				{
+					if( $mCont > 0 )
 					{
-						$mMessage['num_viajex'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'El Viaje: <b>'.$Row['num_viajex'].'</b> con solicitud: <b>'.$Row['num_solici'].'</b>, no se encuentra registrado en el sistema o no ha sido liberado.'];
-					}
-					else if($mViaje['ind_anulad'] == 'A')
-					{
-						$mMessage['ind_anulad'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'El Viaje: <b>'.$Row['num_viajex'].'</b>, se encuentra anulado'];
-					}
-					else if($mViaje['fec_llegad'] != '')
-					{
-						$mMessage['fec_llegad'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'El Viaje: <b>'.$Row['num_viajex'].'</b>, est� finalizado'];
-					}
-					else
-					{
-						$mNumConsec = self::validallaveCreada($Row, 'array');
-						if( sizeof($mNumConsec) >= 1  ) // Valida si ya existe en la BD, hace update
-						{ 
-							$mQuery = sprintf("UPDATE ".BASE_DATOS.".tab_citasx_entreg 
-															   SET 
-															num_solici = \"%s\",
-															est_solici = \"%s\",
-															fec_solici = \"%s\",
-															fec_carsol = \"%s\",
-															cod_tipdes = \"%s\",
-															ori_solici = \"%s\",
-															cod_orisol = \"%s\",						
-															des_solici = \"%s\",
-															cod_dessol = \"%s\",
-															obs_solici = \"%s\",
-															num_viajex = \"%s\",
-															num_placax = \"%s\",
-															fec_sinnom = \"%s\",
-															nom_client = \"%s\",
-															cod_client = \"%s\",						
-															nom_canalx = \"%s\",
-															nom_negoci = \"%s\",
-															cod_negoci = \"%s\",
-															ind_cumple = \"%s\",
-															ind_seguim = \"%s\",
-															cod_causax = \"%s\",
-															ind_asigna = \"%s\",
-															cod_abece  = \"%s\",						
-															cod_consxx = \"%s\",
-															num_mesxxx = \"%s\",
-															num_diaxxx = \"%s\",
-															cit_reprog = \"%s\",
-															cod_tipogl = \"%s\",
-															cod_propie = \"%s\",
-															nom_conduc = \"%s\",
-															cel_conduc = \"%s\",
-															nom_aquixx = \"%s\",
-															usr_modifi = \"%s\",
-															fec_modifi = NOW()
-															WHERE 
-															num_consec = \"%s\" ", 
-						 											$Row['num_solici'],$Row['est_solici'],$Row['fec_solici'],$Row['fec_carsol'],$Row['cod_tipdes'],$Row['ori_solici'],$Row['cod_orisol'],
+
+						$Row = self::setDatos($data); 
+
+						$mViaje = self::validaEstadoViaje($Row, $mCont);
+						//echo "<pre>"; print_r( $mViaje ); echo "</pre>";
+
+						if($mViaje['num_despac'] == '')
+						{
+							$mMessage['num_viajex'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'El Viaje: <b>'.$Row['num_viajex'].'</b> con solicitud: <b>'.$Row['num_solici'].'</b>, no se encuentra registrado en el sistema o no ha sido liberado.'];
+						}
+						else if($mViaje['ind_anulad'] == 'A')
+						{
+							$mMessage['ind_anulad'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'El Viaje: <b>'.$Row['num_viajex'].'</b>, se encuentra anulado'];
+						}
+						else if($mViaje['fec_llegad'] != '')
+						{
+							$mMessage['fec_llegad'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'El Viaje: <b>'.$Row['num_viajex'].'</b>, está finalizado'];
+						}
+						else
+						{
+							$mNumConsec = self::validallaveCreada($Row, 'array');
+
+							// Se limpia caracteres especiales que totean el código o el insert/update
+							$mRow['des_solici'] = preg_replace($mSearch, $mReplace, $Row['des_solici']);
+							$mRow['obs_solici'] = preg_replace($mSearch, $mReplace, $Row['obs_solici']);
+							$mRow['nom_client'] = preg_replace($mSearch, $mReplace, $Row['nom_client']);
+							$mRow['nom_negoci'] = preg_replace($mSearch, $mReplace, $Row['nom_negoci']);
+
+							if( sizeof($mNumConsec) >= 1  ) // Valida si ya existe en la BD, hace update
+							{ 
+								$mQuery = sprintf("UPDATE ".BASE_DATOS.".tab_citasx_entreg 
+																   SET 
+																num_solici = \"%s\",
+																est_solici = \"%s\",
+																fec_solici = \"%s\",
+																fec_carsol = \"%s\",
+																cod_tipdes = \"%s\",
+																ori_solici = \"%s\",
+																cod_orisol = \"%s\",						
+																des_solici = \"%s\",
+																cod_dessol = \"%s\",
+																obs_solici = \"%s\",
+																num_viajex = \"%s\",
+																num_placax = \"%s\",
+																fec_sinnom = \"%s\",
+																nom_client = \"%s\",
+																cod_client = \"%s\",						
+																nom_canalx = \"%s\",
+																nom_negoci = \"%s\",
+																cod_negoci = \"%s\",
+																ind_cumple = \"%s\",
+																ind_seguim = \"%s\",
+																cod_causax = \"%s\",
+																ind_asigna = \"%s\",
+																cod_abece  = \"%s\",						
+																cod_consxx = \"%s\",
+																num_mesxxx = \"%s\",
+																num_diaxxx = \"%s\",
+																cit_reprog = \"%s\",
+																cod_tipogl = \"%s\",
+																cod_propie = \"%s\",
+																nom_conduc = \"%s\",
+																cel_conduc = \"%s\",
+																nom_aquixx = \"%s\",
+																usr_modifi = \"%s\",
+																fec_modifi = NOW()
+																WHERE 
+																num_consec = \"%s\" ", 
+							 											$Row['num_solici'],$Row['est_solici'],$Row['fec_solici'],$Row['fec_carsol'],$Row['cod_tipdes'],$Row['ori_solici'],$Row['cod_orisol'],
+							 											$Row['des_solici'],$Row['cod_dessol'],preg_replace("/\n/", "", $Row['obs_solici']),$Row['num_viajex'],$Row['num_placax'],$Row['fec_sinnom'],$Row['nom_client'],$Row['cod_client'],
+							 											$Row['nom_canalx'],$Row['nom_negoci'],$Row['cod_negoci'],$Row['ind_cumple'],$Row['ind_seguim'],$Row['cod_causax'],$Row['ind_asigna'],$Row['cod_abece'],
+							 											$Row['cod_consxx'],$Row['num_mesxxx'],$Row['num_diaxxx'],$Row['cit_reprog'],$Row['cod_tipogl'],$Row['cod_propie'],$Row['nom_conduc'],$Row['cel_conduc'],
+							 											$Row['nom_aquixx'],self::$cSession['cod_usuari'],$mNumConsec['num_consec']
+							 										);
+								$mQueryDML['update'][] = $mQuery;
+								$mMessage['sql_update'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'Cita actualizada para el viaje: <b>'.$Row['num_viajex'].'</b>'];
+							}
+							else  // Inserta la solicitud nueva en la BD
+							{ 
+							 	$mQuery = sprintf("INSERT INTO ".BASE_DATOS.".tab_citasx_entreg 
+																(
+																	num_consec,num_solici,est_solici,fec_solici,fec_carsol,cod_tipdes,ori_solici,cod_orisol,
+																	des_solici,cod_dessol,obs_solici,num_viajex,num_placax,fec_sinnom,nom_client,cod_client,
+																	nom_canalx,nom_negoci,cod_negoci,ind_cumple,ind_seguim,cod_causax,ind_asigna,cod_abece ,
+																	cod_consxx,num_mesxxx,num_diaxxx,cit_reprog,cod_tipogl,cod_propie,nom_conduc,cel_conduc,
+																	nom_aquixx,usr_creaci,fec_creaci
+																) 
+																VALUES 
+																( 
+																	\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 
+																	\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 
+																	\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 
+																	\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 
+																	\"%s\", \"%s\", %s
+																) "
+																, 
+						 											$Row['num_consec'],$Row['num_solici'],$Row['est_solici'],$Row['fec_solici'],$Row['fec_carsol'],$Row['cod_tipdes'],$Row['ori_solici'],$Row['cod_orisol'],
 						 											$Row['des_solici'],$Row['cod_dessol'],preg_replace("/\n/", "", $Row['obs_solici']),$Row['num_viajex'],$Row['num_placax'],$Row['fec_sinnom'],$Row['nom_client'],$Row['cod_client'],
 						 											$Row['nom_canalx'],$Row['nom_negoci'],$Row['cod_negoci'],$Row['ind_cumple'],$Row['ind_seguim'],$Row['cod_causax'],$Row['ind_asigna'],$Row['cod_abece'],
 						 											$Row['cod_consxx'],$Row['num_mesxxx'],$Row['num_diaxxx'],$Row['cit_reprog'],$Row['cod_tipogl'],$Row['cod_propie'],$Row['nom_conduc'],$Row['cel_conduc'],
-						 											$Row['nom_aquixx'],self::$cSession['cod_usuari'],$mNumConsec['num_consec']
-						 										);
-							$mQueryDML['update'][] = $mQuery;
-							$mMessage['sql_update'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'Cita actualizada para el viaje: <b>'.$Row['num_viajex'].'</b>'];
-						}
-						else  // Inserta la solicitud nueva en la BD
-						{ 
-						 	$mQuery = sprintf("INSERT INTO ".BASE_DATOS.".tab_citasx_entreg 
-															(
-																num_consec,num_solici,est_solici,fec_solici,fec_carsol,cod_tipdes,ori_solici,cod_orisol,
-																des_solici,cod_dessol,obs_solici,num_viajex,num_placax,fec_sinnom,nom_client,cod_client,
-																nom_canalx,nom_negoci,cod_negoci,ind_cumple,ind_seguim,cod_causax,ind_asigna,cod_abece ,
-																cod_consxx,num_mesxxx,num_diaxxx,cit_reprog,cod_tipogl,cod_propie,nom_conduc,cel_conduc,
-																nom_aquixx,usr_creaci,fec_creaci
-															) 
-															VALUES 
-															( 
-																\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 
-																\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 
-																\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 
-																\"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", \"%s\", 
-																\"%s\", \"%s\", %s
-															) "
-															, 
-					 											$Row['num_consec'],$Row['num_solici'],$Row['est_solici'],$Row['fec_solici'],$Row['fec_carsol'],$Row['cod_tipdes'],$Row['ori_solici'],$Row['cod_orisol'],
-					 											$Row['des_solici'],$Row['cod_dessol'],preg_replace("/\n/", "", $Row['obs_solici']),$Row['num_viajex'],$Row['num_placax'],$Row['fec_sinnom'],$Row['nom_client'],$Row['cod_client'],
-					 											$Row['nom_canalx'],$Row['nom_negoci'],$Row['cod_negoci'],$Row['ind_cumple'],$Row['ind_seguim'],$Row['cod_causax'],$Row['ind_asigna'],$Row['cod_abece'],
-					 											$Row['cod_consxx'],$Row['num_mesxxx'],$Row['num_diaxxx'],$Row['cit_reprog'],$Row['cod_tipogl'],$Row['cod_propie'],$Row['nom_conduc'],$Row['cel_conduc'],
-					 											$Row['nom_aquixx'],self::$cSession['cod_usuari'],"NOW()"
-						 								 );
-						 	$mQueryDML['insert'][] = $mQuery;
-						 	$mMessage['sql_insert'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'Cita creada para el viaje: <b>'.$Row['num_viajex'].'</b>'];
-						}
+						 											$Row['nom_aquixx'],self::$cSession['cod_usuari'],"NOW()"
+							 								 );
+							 	$mQueryDML['insert'][] = $mQuery;
+							 	$mMessage['sql_insert'][] = ['num_viajex' => $Row['num_viajex'], 'obs_messag' => 'Cita creada para el viaje: <b>'.$Row['num_viajex'].'</b>'];
+							}
 
-						// Ejecuta la query
-						$mExecute = new Consulta( $mQuery, self::$cConexion );
-						if(!$mExecute){
-							throw new Exception("Error SQL importando los datos", '3001');						
-						}
+							// Ejecuta la query
+							$mExecute = new Consulta( $mQuery, self::$cConexion );
+							if(!$mExecute){
+								throw new Exception("Error SQL importando los datos", '3001');						
+							}
+						}					 
 					}
-				// } 
+					$mCont++;
+				}
+				fclose($handle);
+			}
+			else{
+				die('Imposible leer el archivo!');
 			}
 
- 
         	new Consulta( 'COMMIT;', self::$cConexion );
 
         	// Se ejecutan los inserts y updates generados
@@ -457,7 +471,7 @@ class ImportarCitasEntrega
 					    border-radius: 5px 5px 5px 5px !important;
 					}';*/
 
-			$mTitulo = ['num_viajex' => 'Validaci�n de viajes', 'ind_anulad' => 'Viajes Anulados', 'fec_llegad' => 'Viajes finalizados', 'sql_update' => 'Citas actualizadas', 'sql_insert' => 'Citas creadas'];
+			$mTitulo = ['num_viajex' => 'Validación de viajes', 'ind_anulad' => 'Viajes Anulados', 'fec_llegad' => 'Viajes finalizados', 'sql_update' => 'Citas actualizadas', 'sql_insert' => 'Citas creadas'];
 
 
         	echo "<script src='../" . DIR_APLICA_CENTRAL . "/js/min.js'></script>\n";
@@ -479,7 +493,7 @@ class ImportarCitasEntrega
 	       	$mHtml->Form(array("action" => "index.php",
 	            "method" => "post",
 	            "name" => "form_import",
-	            "header" => "Importaci�n de archivo",
+	            "header" => "Importación de archivo",
 	            "enctype" => "multipart/form-data")); 
 
 		        $mHtml->Row("td");
@@ -544,7 +558,7 @@ class ImportarCitasEntrega
 	 *  \brief: Hace vocado de datos cambiando la llave indexada por una asociativa
 	 *  \author: Ing. Nelson Liberato
 	 *	\date: 12/12/2018
-	 *	\date modified: dia/mes/a�o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return:
 	 */
@@ -584,7 +598,7 @@ class ImportarCitasEntrega
 	*  \brief: formatea la maldita fecha del maldito excel de microsoft
 	*  \author: Ing. Nelson Liberato
 	*	\date: 12/12/2018
-	*	\date modified: dia/mes/a�o
+	*	\date modified: dia/mes/año
 	*  \param: 
 	*  \return:
 	*/
@@ -608,7 +622,7 @@ class ImportarCitasEntrega
 	 *  \brief: Valida que el registro exista en la BD
 	 *  \author: Ing. Nelson Liberato
 	 *	\date: 12/12/2018
-	 *	\date modified: dia/mes/a�o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return:
 	 */
@@ -619,7 +633,7 @@ class ImportarCitasEntrega
 			$mSolici = [];
 			$mQuery = "
 				SELECT 
-						num_solici, fec_solici, cod_tipdes, num_viajex, num_placax,
+						/*validallaveCreada*/ num_solici, fec_solici, cod_tipdes, num_viajex, num_placax,
 						ind_cumple, ind_seguim, cod_causax, ind_asigna, num_consec
 				  FROM
 				  		".BASE_DATOS.".tab_citasx_entreg
@@ -651,17 +665,17 @@ class ImportarCitasEntrega
 	 *  \brief: Valida estado o creacion del viaje, para subir la informacion a esta
 	 *  \author: Ing. Nelson Liberato
 	 *	\date: 12/12/2018
-	 *	\date modified: dia/mes/a�o
+	 *	\date modified: dia/mes/año
 	 *  \param: 
 	 *  \return:
 	 */
-	public function validaEstadoViaje( $mData = [] )
+	public function validaEstadoViaje( $mData = [] , $mCont = 0)
 	{
 		try 
 		{
 			$mQuery = "
 						SELECT 
-								a.num_solici, a.num_despac, a.num_placax, 
+								/*validaEstadoViaje ".$mCont." */ a.num_solici, a.num_despac, a.num_placax, 
 								a.num_dessat, a.ind_anulad, b.fec_salida, 
 								b.fec_llegad
 						  FROM
@@ -670,9 +684,8 @@ class ImportarCitasEntrega
 				    INNER JOIN  ".BASE_DATOS.".tab_despac_vehige c ON b.num_despac = c.num_despac AND a.num_placax = c.num_placax
 
 						 WHERE  1 = 1
-						   AND  a.num_despac = '{$mData["num_viajex"]}'
-						   AND  a.num_solici = '{$mData["num_solici"]}'
-						   AND  a.num_placax = '{$mData["num_placax"]}' ";
+						   AND  ( a.num_despac = '{$mData["num_viajex"]}' OR  a.num_solici = '{$mData["num_solici"]}' )
+						   -- AND  a.num_placax = '{$mData["num_placax"]}' ";
 			$mConsult = new Consulta( $mQuery, self::$cConexion );
 			$mViajex = $mConsult -> ret_matrix('a');
 

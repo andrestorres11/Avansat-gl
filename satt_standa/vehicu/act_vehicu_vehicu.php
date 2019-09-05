@@ -1228,52 +1228,48 @@ function Buscar()
    $consulta = new Consulta($query, $this -> conexion);
    $matriz = $consulta -> ret_matriz();
 
- if($_REQUEST[f_frente])
-   {
+  if($_REQUEST[f_frente]){
     if(move_uploaded_file($_REQUEST[f_frente],URL_VEHICU."foto1_".$_REQUEST[placa].".jpg"))
-     $_REQUEST[f_frente] = "'foto1_".$_REQUEST[placa].".jpg'";
+      $_REQUEST[f_frente] = "'foto1_".$_REQUEST[placa].".jpg'";
     else
      $_REQUEST[f_frente] = "NULL";
-   }
-   else if($matriz[0][0])
+  }
+  else if($matriz[0][0])
     $_REQUEST[f_frente] = "'".$matriz[0][0]."'";
-   else
+  else
     $_REQUEST[f_frente] = "NULL";
 
-   if($_REQUEST[f_izqui])
-   {
+  if($_REQUEST[f_izqui]){
     if(move_uploaded_file($_REQUEST[f_izqui],URL_VEHICU."foto2_".$_REQUEST[placa].".jpg"))
-     $_REQUEST[f_izqui] = "'foto2_".$_REQUEST[placa].".jpg'";
+      $_REQUEST[f_izqui] = "'foto2_".$_REQUEST[placa].".jpg'";
     else
-     $_REQUEST[f_izqui] = "NULL";
-   }
-   else if($matriz[0][1])
+      $_REQUEST[f_izqui] = "NULL";
+  }
+  else if($matriz[0][1])
     $_REQUEST[f_izqui] = "'".$matriz[0][1]."'";
-   else
+  else
     $_REQUEST[f_izqui] = "NULL";
 
-   if($_REQUEST[f_derec])
-   {
+  if($_REQUEST[f_derec]){
     if(move_uploaded_file($_REQUEST[f_derec],URL_VEHICU."foto3_".$_REQUEST[placa].".jpg"))
-     $_REQUEST[f_derec] = "'foto3_".$_REQUEST[placa].".jpg'";
+      $_REQUEST[f_derec] = "'foto3_".$_REQUEST[placa].".jpg'";
     else
      $_REQUEST[f_derec] = "NULL";
-   }
-   else if($matriz[0][2])
+  }
+  else if($matriz[0][2])
     $_REQUEST[f_derec] = "'".$matriz[0][2]."'";
-   else
+  else
     $_REQUEST[f_derec] = "NULL";
 
-   if($_REQUEST[f_poster])
-   {
+  if($_REQUEST[f_poster]){
     if(move_uploaded_file($_REQUEST[f_poster],URL_VEHICU."foto4_".$_REQUEST[placa].".jpg"))
-     $_REQUEST[f_poster] = "'foto4_".$_REQUEST[placa].".jpg'";
+      $_REQUEST[f_poster] = "'foto4_".$_REQUEST[placa].".jpg'";
     else
-     $_REQUEST[f_poster] = "NULL";
-   }
-   else if($matriz[0][3])
+      $_REQUEST[f_poster] = "NULL";
+  }
+  else if($matriz[0][3])
     $_REQUEST[f_poster] = "'".$matriz[0][3]."'";
-   else
+  else
     $_REQUEST[f_poster] = "NULL";
 
   if(!$_REQUEST[califi])

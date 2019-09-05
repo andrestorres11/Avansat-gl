@@ -670,7 +670,7 @@ class Proc_alerta
    $mMessage .= "******** Detalle ******** \n";
    $mMessage .= "Codigo de error: ".$data['cod_errorx']." \n";
    $mMessage .= "Mensaje de error: ".$data['error']." \n";
-   mail( 'supervisores@eltransporte.org, soporte.ingenieros@intrared.net', $data['nom_proces'], $mMessage,'From: soporte.ingenieros@intrared.net' );
+   mail( 'faroavansat@eltransporte.com, soporte.ingenieros@intrared.net', $data['nom_proces'], $mMessage,'From: soporte.ingenieros@intrared.net' );
    //mail( 'hugo.malagon@intrared.net', $data['nom_proces'], $mMessage,'From: soporte.ingenieros@intrared.net' );
  }
  

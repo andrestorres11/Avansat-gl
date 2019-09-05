@@ -3718,8 +3718,8 @@ class Despachos
 
                     $asunto = "NOTIFICACION SUPERVISOR";
 
-                    mail(MAIL_SUPERVISORES, $asunto, $info, 'From: supervisores@eltransporte.org');
-                    //mail('jorge.preciado@intrared.net,leidy.acosta@intrared.net', $asunto, $info, 'From: supervisores@eltransporte.org');
+                    mail(MAIL_SUPERVISORES, $asunto, $info, 'From: faroavansat@eltransporte.com');
+                    //mail('jorge.preciado@intrared.net,leidy.acosta@intrared.net', $asunto, $info, 'From: faroavansat@eltransporte.com');
                 }
                 
                 // Notificaciones especiales
@@ -3756,7 +3756,7 @@ class Despachos
                     }   
   
                     if ( $NIT_TRANSPORTADORA != "900419270" ) 
-                      mail("$dir", $asunto, $info, 'From: supervisores@eltransporte.org ');
+                      mail("$dir", $asunto, $info, 'From: faroavansat@eltransporte.com ');
 						          
             
                     $no_correos = array('9996','9995','111',
@@ -3962,7 +3962,7 @@ class Despachos
                     $asunto = "NOVEDAD A Cargo de Faro";
 
                 //$dir_email .= ', engmiguelgarcia@gmail.com'; //COMENTARIAR THIS
-                mail("$dir_email", $asunto, $info, 'From: supervisores@eltransporte.org');
+                mail("$dir_email", $asunto, $info, 'From: faroavansat@eltransporte.com');
             }
             $query = "SELECT cod_contro
             FROM " . $base_datos . ".tab_despac_seguim
@@ -4157,7 +4157,7 @@ class Despachos
                                         $mMessage .= "Observaciones: " . $e -> detail . " \n";
                                         
                                         //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                        mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service Alianza", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Alianza", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }      
                                 }
                                 /********************* **************** *********************/
@@ -4253,7 +4253,7 @@ class Despachos
                                         $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                         //COMENTARIAR THIS
-                                        mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service Faro - EcomColocar", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomColocar", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                 }
                                 /********************* **************** *********************/
@@ -4395,7 +4395,7 @@ class Despachos
                                       $mMessage .= "******** Detalle ******** \n";
                                       $mMessage .= "Mensaje de error: " . $error_  . " \n";
                                       
-                                      mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                      mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                       //mail("nelson.liberato@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                      //Insert de Bitácora 
@@ -4504,7 +4504,7 @@ class Despachos
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $error_ . " \n";
                                         //echo $mMessage;
-                                        mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                         //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                      //Insert de Bitácora 
@@ -4606,7 +4606,7 @@ class Despachos
                                       $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                       //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                      mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service Faro - OnlineTools GMT", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                      mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - OnlineTools GMT", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                   }
 
                               }                           
@@ -4700,7 +4700,7 @@ class Despachos
                                         $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                         //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                        mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service Faro - EcomCoounidas", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomCoounidas", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
 
                                 }
@@ -4908,7 +4908,7 @@ class Despachos
 
                                         //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
                                         mail("hugo.malagon@intrared.net", "Web service TRAFICO - SAT - NOVEDAD PC", $mMessage, 'From: soporte.ingenieros@intrared.net');
-                                        //mail( "supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service TRAFICO - SAT", $mMessage,'From: soporte.ingenieros@intrared.net' );
+                                        //mail( "faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service TRAFICO - SAT", $mMessage,'From: soporte.ingenieros@intrared.net' );
                                     }
                                 }
                                 else
@@ -5040,7 +5040,7 @@ class Despachos
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $respuesta . " \n";
                                         //echo $mMessage;
-                                        mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error Web service Trans FW - SISTEMA ARGO", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Trans FW - SISTEMA ARGO", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                         //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                   }
@@ -5148,7 +5148,7 @@ class Despachos
                                         $mMessage .= "Error Detallado: " . $result . " \n";
 
                                         //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                        mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service Intracarga", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Intracarga", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
 
                                 }
@@ -5565,7 +5565,7 @@ class Despachos
 
                 $asunto = "NOTIFICACION SUPERVISOR";
 
-                mail(MAIL_SUPERVISORES, $asunto, $info, 'From: supervisores@eltransporte.org');
+                mail(MAIL_SUPERVISORES, $asunto, $info, 'From: faroavansat@eltransporte.com');
             }
             //CORREO NOVEDAD ESPECIAL.
             if ($especi == 1)
@@ -5602,7 +5602,7 @@ class Despachos
                       $dir = $mEmailAgenci;                  
                 }
                 if ( $NIT_TRANSPORTADORA != "900419270" ) 
-                  mail("$dir", $asunto, $info, 'From: supervisores@eltransporte.org'); 
+                  mail("$dir", $asunto, $info, 'From: faroavansat@eltransporte.com'); 
           
                 $no_correos = array('9996','9995','111',
                                       '68','50','53','70',
@@ -5773,7 +5773,7 @@ class Despachos
                 $asunto = "NOVEDAD A Cargo de Faro";
 
             //$dir_email .= ", engmiguelgarcia@gmail.com"; //COMENTARIAR THIS
-            mail("$dir_email", $asunto, $info, 'From: supervisores@eltransporte.org');
+            mail("$dir_email", $asunto, $info, 'From: faroavansat@eltransporte.com');
         }
 
         $query = "SELECT cod_contro
@@ -6088,7 +6088,7 @@ class Despachos
 
                                     //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
                                     mail("hugo.malagon@intrared.net", "Web service TRAFICO - SAT - NOVEDAD NC", $mMessage, 'From: soporte.ingenieros@intrared.net');
-                                    //mail( "supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service TRAFICO - SAT", $mMessage,'From: soporte.ingenieros@intrared.net' );
+                                    //mail( "faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service TRAFICO - SAT", $mMessage,'From: soporte.ingenieros@intrared.net' );
                                 }
                                 /********************* **************** *********************/
                             }
@@ -6200,7 +6200,7 @@ class Despachos
                                     $mMessage .= "******** Detalle ******** \n";
                                     $mMessage .= "Mensaje de error: " . $error_ . " \n";
                                     //echo $mMessage;
-                                    mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                    mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                 }
                                  //Insert de Bitácora 
@@ -6330,7 +6330,7 @@ class Despachos
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $respuesta . " \n";
                                         //echo $mMessage;
-                                        mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error Web service Trans FW - SISTEMA ARGO", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Trans FW - SISTEMA ARGO", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                         //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                   }
@@ -6431,7 +6431,7 @@ class Despachos
                                       $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                       //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                      mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service Faro - OnlineTools GMT", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                      mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - OnlineTools GMT", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                   }
 
                               }                                    
@@ -6525,7 +6525,7 @@ class Despachos
                                     $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                     //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                    mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Web service Faro - EcomCoounidas", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                    mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomCoounidas", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                 }
 
                             }

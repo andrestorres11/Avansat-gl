@@ -21,7 +21,7 @@ class InterfMct
 {
   private static $cConection = NULL;
   #private static $cUrlMCT = "http://186.117.158.13/mctAPI/v1/ptoc";
-  private static $cUrlMCT = "http://200.122.249.34:8088/mctAPI/v1/ptoc";
+  private static $cUrlMCT = "http://200.69.82.200:8081/mctAPI/v1/ptoc";
   private static $cExcept = NULL;
   private static $cNotMail = "soporte@intrared.net";
   private static $cLogDir  = "/var/www/html/ap/satt_faro/logs";
@@ -79,7 +79,7 @@ class InterfMct
 
         # Inicio de cURL para la API -----------------------------------------------------------------------------
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://200.122.249.34:8088/mctAPI/v1/ptoc");
+        curl_setopt($ch, CURLOPT_URL, "http://200.69.82.200:8081/mctAPI/v1/ptoc");
         curl_setopt($ch, CURLOPT_HTTPHEADER, self::$cHeader);
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_POST, count(self::$cData));
@@ -138,7 +138,7 @@ class InterfMct
 
         # Inicio de cURL para la API -----------------------------------------------------------------------------
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://200.122.249.34:8088/mctAPI/v1/nov"); 
+        curl_setopt($ch, CURLOPT_URL, "http://200.69.82.200:8081/mctAPI/v1/nov"); 
         curl_setopt($ch, CURLOPT_HTTPHEADER, self::$cHeader);
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_POST, count(self::$cData));

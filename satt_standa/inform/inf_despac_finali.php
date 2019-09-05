@@ -224,6 +224,15 @@ class infDespacFinali
 					$mClass = 'cellInfo2';
 				}
 
+				//list($color, $riesgo, $rangox, $bronce, $planxx, $descripcion) = $this->getColor($CALIFICACION,5);
+
+				list( $fec_novsit, $fec_novant, $nom_novsit, $nom_novant) = self::getUltimaNovedad($row['num_despac']);
+
+				$row['fec_novsit'] = $fec_novsit;
+				$row['fec_novant'] = $fec_novant;
+				$row['nom_novsit'] = $nom_novsit;
+				$row['nom_novant'] = $nom_novant;
+
 				$row['num_consec'] = $i;
 				$row['num_despac'] = '<a style="color:black" href="index.php?cod_servic=3302&window=central&despac='.$row['num_despac'].'&tie_ultnov=0&opcion=1">'.$row['num_despac'].'</a>';
 
@@ -242,6 +251,66 @@ class infDespacFinali
 		echo $mHtml->MakeHtml();
 	}
 
+	/*! \fn: getClient
+	 *  \brief: Trae los clientes
+	 *  \author: Ing. Fabian Salinas
+	 *  \date: 26/04/2016
+	 *  \date modified: dd/mm/aaaa
+	 *  \param:    
+	 *  \return: Matriz
+	 */
+	private function getUltimaNovedad( $mNumDespac = NULL)
+	{
+		$mSql = " SELECT 
+							a.num_despac, 
+							b.fec_noveda AS fec_novsit, b.nom_noveda AS nom_novsit,
+							c.fec_contro AS fec_novant, c.nom_noveda AS nom_novant
+				    FROM 
+				   			".BASE_DATOS.".tab_despac_despac a 
+			   INNER JOIN   (
+
+			   					SELECT
+			   							a.num_despac, b.nom_noveda, a.fec_noveda
+			   					FROM
+			   							".BASE_DATOS.".tab_despac_noveda a INNER JOIN 
+			   							".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda
+			   					WHERE
+			   							a.fec_noveda =  (
+														 SELECT 
+																MAX(fec_noveda)  
+														   FROM 
+																".BASE_DATOS.".tab_despac_noveda
+														   WHERE 
+																num_despac = '".$mNumDespac."'
+												   		)
+										AND a.num_despac = '".$mNumDespac."'
+			   				) b 
+			   					ON a.num_despac = b.num_despac 
+			   INNER JOIN 	(
+			   					SELECT
+			   							a.num_despac, b.nom_noveda, a.fec_contro
+			   					FROM
+			   							".BASE_DATOS.".tab_despac_contro a INNER JOIN 
+			   							".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda
+			   					WHERE
+			   							a.fec_contro =  (
+														 SELECT 
+																MAX(fec_contro)  
+														   FROM 
+																".BASE_DATOS.".tab_despac_contro
+														   WHERE 
+																num_despac = '".$mNumDespac."'
+												   		)
+										AND a.num_despac = '".$mNumDespac."'			   				
+							) c
+								ON a.num_despac = b.num_despac
+				  WHERE
+				  			a.num_despac = '".$mNumDespac."' ";
+				  			
+		$mConsult = new Consulta($mSql, self::$cConexion );
+		$mData = $mConsult -> ret_matrix('a');
+		return [$mData[0]['fec_novsit'], $mData[0]['fec_novant'], $mData[0]['nom_novsit'], $mData[0]['nom_novant'] ];
+	}
 	/*! \fn: getClient
 	 *  \brief: Trae los clientes
 	 *  \author: Ing. Fabian Salinas
@@ -366,34 +435,38 @@ class infDespacFinali
 						IF(d.nom_conduc IS NOT NULL, CONCAT(d.cod_conduc, ' - ', d.nom_conduc), CONCAT(d.cod_conduc, ' - ', e.abr_tercer)) AS nom_conduc, 
 						CONCAT(UPPER(g.nom_ciudad), ' (', LEFT(h.nom_depart, 4), ') - ', LEFT(i.nom_paisxx, 3)) AS nom_ciuori, 
 						CONCAT(UPPER(j.nom_ciudad), ' (', LEFT(k.nom_depart, 4), ') - ', LEFT(l.nom_paisxx, 3)) AS nom_ciudes, 
-						(	SELECT aa.fec_noveda 
-							  FROM ".BASE_DATOS.".tab_despac_noveda aa 
-							 WHERE aa.num_despac = a.num_despac 
-						  ORDER BY aa.fec_creaci DESC 
-							 LIMIT 1 
-						) AS fec_novsit, 
-						(	SELECT bb.fec_contro 
-							  FROM ".BASE_DATOS.".tab_despac_contro bb 
-							 WHERE bb.num_despac = a.num_despac 
-						  ORDER BY bb.fec_creaci DESC 
-							 LIMIT 1 
-						) AS fec_novant, 
-						(	  SELECT dd.nom_noveda 
-								FROM ".BASE_DATOS.".tab_despac_noveda cc 
-						  INNER JOIN ".BASE_DATOS.".tab_genera_noveda dd 
-								  ON cc.cod_noveda = dd.cod_noveda 
-							   WHERE cc.num_despac = a.num_despac 
-							ORDER BY cc.fec_creaci DESC 
-							   LIMIT 1 
-						) AS nom_novsit, 
-						(	  SELECT ff.nom_noveda 
-								FROM ".BASE_DATOS.".tab_despac_contro ee 
-						  INNER JOIN ".BASE_DATOS.".tab_genera_noveda ff 
-								  ON ee.cod_noveda = ff.cod_noveda 
-							   WHERE ee.num_despac = a.num_despac 
-							ORDER BY ee.fec_creaci DESC 
-							   LIMIT 1 
-						) AS nom_novant 
+						'' AS fec_novsit,
+						'' AS fec_novant,
+						'' AS nom_novsit,
+						'' AS nom_novant
+						-- (	SELECT aa.fec_noveda 
+						-- 	  FROM ".BASE_DATOS.".tab_despac_noveda aa 
+						-- 	 WHERE aa.num_despac = a.num_despac 
+						--   ORDER BY aa.fec_creaci DESC 
+						-- 	 LIMIT 1 
+						-- ) AS fec_novsit, 
+						-- (	SELECT bb.fec_contro 
+						-- 	  FROM ".BASE_DATOS.".tab_despac_contro bb 
+						-- 	 WHERE bb.num_despac = a.num_despac 
+						--   ORDER BY bb.fec_creaci DESC 
+						-- 	 LIMIT 1 
+						-- ) AS fec_novant, 
+						-- (	  SELECT dd.nom_noveda 
+						-- 		FROM ".BASE_DATOS.".tab_despac_noveda cc 
+						--   INNER JOIN ".BASE_DATOS.".tab_genera_noveda dd 
+						-- 		  ON cc.cod_noveda = dd.cod_noveda 
+						-- 	   WHERE cc.num_despac = a.num_despac 
+						-- 	ORDER BY cc.fec_creaci DESC 
+						-- 	   LIMIT 1 
+						-- ) AS nom_novsit, 
+						-- (	  SELECT ff.nom_noveda 
+						-- 		FROM ".BASE_DATOS.".tab_despac_contro ee 
+						--   INNER JOIN ".BASE_DATOS.".tab_genera_noveda ff 
+						-- 		  ON ee.cod_noveda = ff.cod_noveda 
+						-- 	   WHERE ee.num_despac = a.num_despac 
+						-- 	ORDER BY ee.fec_creaci DESC 
+						-- 	   LIMIT 1 
+						-- ) AS nom_novant 
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige d 
 					 ON a.num_despac = d.num_despac 
@@ -510,7 +583,7 @@ class infDespacFinali
 		}
 
 		$mSql .= " ORDER BY a.fec_llegad ASC ";
-
+		// echo "<pre>"; print_r($mSql); echo "</pre>"; die();
 		$mConsult = new Consulta($mSql, self::$cConexion );
 		return $mConsult -> ret_matrix('a');
 	}

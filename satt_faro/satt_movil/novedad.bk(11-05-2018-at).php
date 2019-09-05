@@ -193,7 +193,7 @@ class Novedad {
                             $mMessage .= "Observación enviada: " . 'Interfaz - ' . $parametros["novedad"] . " \n";
                             $mMessage .= "******** Detalle ******** \n";
                             $mMessage .= "Mensaje de error: " . $respuesta . " \n";
-                            mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                            mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
                         }
                     } catch (SoapFault $e) {
                         fwrite($mFile, "catch:------------------------------------------ \n");
@@ -791,7 +791,7 @@ class Novedad {
                  </table>";        
         $cabeceras = 'MIME-Version: 1.0' . "\r\n";
         $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        $cabeceras .= 'From: supervisores@eltransporte.org';
+        $cabeceras .= 'From: faroavansat@eltransporte.com';
 
         if ($this->HOST_WEB == $this->HOST_WEB_PRO) {
             return mail($email, 'Reporte Novedad EAL Alto del Trigo', $html, $cabeceras);
