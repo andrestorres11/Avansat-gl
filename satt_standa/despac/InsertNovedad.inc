@@ -3865,7 +3865,62 @@ class InsertNovedad {
 
 
                             if ($error_ != NULL) {
-                                echo "<div align='center' style='color:#000000; padding:5px; font-size:14px; background-color:#FFAFAF; border:2px solid #000000;'><b>Error en Webservice - Insertar " . $mOption[1] . " en " . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . "</b></div>";
+                                echo '<meta name="viewport" content="width=device-width, initial-scale=1">
+                                    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+                                    <style>
+                                        
+                                        .alert{
+                                            text-align: center;
+                                            background-color: #f44336;
+                                            color: white;
+                                            margin: auto;
+                                            width: 80%;
+                                            border-radius: 20px;
+                                            border: 5px #f44336 solid;
+                                        }
+                                        .contenedorAlert{
+                                            border-radius: 10px;
+                                            padding: 10px;
+                                            background-color: #f44336;
+                                        }
+                                        
+                                        .contenedorWarning{
+                                            font-size:20px;
+                                            padding: 10px;
+                                            background-color: #ffffff;
+                                            color: #000000;
+                                            border-radius: 0px 0px 20px 20px;
+                                        }
+                                        
+                                        .warning{
+                                            margin: 0 auto;
+                                            font-size:100px;
+                                            color: white;
+                                        }
+
+                                        @keyframes anim1 {  
+                                            from { transform: scaleX(1) rotate(0deg) ;-o-transform: scaleX(1) rotate(0deg) ; }
+                                            to { transform: scaleX(-1) rotate(0deg);  -o-transform: scaleX(-1) rotate(0deg);}
+                                         }
+                                         @-webkit-keyframes anim1 {  
+                                            from { -webkit-transform: scaleX(1) rotate(-15deg) ; }
+                                            to { -webkit-transform: scaleX(-1) rotate(15deg);  }
+                                         }
+
+                                         .contenedorAlert i{
+                                            animation: anim1 2s ease-in-out alternate infinite;
+                                            -webkit-animation: anim1 2s ease-in-out alternate infinite;
+                                       }
+                                    </style>
+                                    <div class="alert">
+                                        <div class="contenedorAlert">
+                                            <i class="material-icons warning" >warning</i><br>
+                                            <strong>Error!</strong> 
+                                        </div>
+                                        <div class="contenedorWarning">
+                                            Error en Webservice - Insertar ' . $mOption[1] . ' en ' . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . '</b>
+                                        </div>
+                                    </div>';
                                 $mMessage = "******** Encabezado ******** <br>";
                                 $mMessage .= "Fecha y hora: " . date("Y-m-d H:i") . " <br>";
                                 $mMessage .= "Empresa de transporte: " . $regist['nittra'] . " <br>";
@@ -3891,7 +3946,62 @@ class InsertNovedad {
                             $novedaError['det_respon'] = $error_;
 
                             $this->setNovedadError($parametros, $regist, $novedaError, $mOption[2]);
-                            echo "<div align='center' style='color:#000000; padding:5px; font-size:14px; background-color:#FFAFAF; border:2px solid #000000;'><b>Error en Webservice - Insertar novedad en " . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . "</b></div>";
+                            echo '<meta name="viewport" content="width=device-width, initial-scale=1">
+                                    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+                                    <style>
+                                        
+                                        .alert{
+                                            text-align: center;
+                                            background-color: #f44336;
+                                            color: white;
+                                            margin: auto;
+                                            width: 80%;
+                                            border-radius: 20px;
+                                            border: 5px #f44336 solid;
+                                        }
+                                        .contenedorAlert{
+                                            border-radius: 10px;
+                                            padding: 10px;
+                                            background-color: #f44336;
+                                        }
+                                        
+                                        .contenedorWarning{
+                                            font-size:20px;
+                                            padding: 10px;
+                                            background-color: #ffffff;
+                                            color: #000000;
+                                            border-radius: 0px 0px 20px 20px;
+                                        }
+                                        
+                                        .warning{
+                                            margin: 0 auto;
+                                            font-size:100px;
+                                            color: white;
+                                        }
+
+                                        @keyframes anim1 {  
+                                            from { transform: scaleX(1) rotate(0deg) ;-o-transform: scaleX(1) rotate(0deg) ; }
+                                            to { transform: scaleX(-1) rotate(0deg);  -o-transform: scaleX(-1) rotate(0deg);}
+                                         }
+                                         @-webkit-keyframes anim1 {  
+                                            from { -webkit-transform: scaleX(1) rotate(-15deg) ; }
+                                            to { -webkit-transform: scaleX(-1) rotate(15deg);  }
+                                         }
+
+                                         .contenedorAlert i{
+                                            animation: anim1 2s ease-in-out alternate infinite;
+                                            -webkit-animation: anim1 2s ease-in-out alternate infinite;
+                                       }
+                                    </style>
+                                    <div class="alert">
+                                        <div class="contenedorAlert">
+                                            <i class="material-icons warning" >warning</i><br>
+                                            <strong>Error!</strong> 
+                                        </div>
+                                        <div class="contenedorWarning">
+                                            Error en Webservice - Insertar novedad en ' . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . '</b>
+                                        </div>
+                                    </div>';
                         }
                     }
                     #</IF 5.1.1.1.6> 
