@@ -645,57 +645,57 @@ class AjaxNotifiNotifi
 			}
 			$date = new DateTime();
 			$mHtml = new Formlib(2, "yes",TRUE);
-			if ($ActionForm->idForm!=3) {
-				$mHtml->OpenDiv("id:Notificontainer1; class:accordian");
-					$mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION BASICA</center></h3>");
-					$mHtml->OpenDiv("id:newNotifi");
-						$mHtml->Hidden(array( "name" => "usr_creaci", "id" => "usr_creaciID", "value"=>self::getCodUsuario($_SESSION['datos_usuario']['cod_usuari'])['cod_consec']));
-						$mHtml->Hidden(array( "name" => "cod_tipnot", "id" => "cod_tipnotID", "value"=>$ActionForm->idForm));
-						$mHtml->Hidden(array( "name" => "cod_notifi", "id" => "cod_notifiID", "value"=>($ActionForm->cod_notifi!="")?$ActionForm->cod_notifi:""));
-						$mHtml->Table("tr");
-							#Cuerpo de la notificacion
-							$mHtml->Row();
-								$mHtml->line("","i",0,7);
-							$mHtml->CloseRow();
-							$mHtml->Row();
-								$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-								$mHtml->TextArea(($datosConsult[0][4]!="")?$datosConsult[0][4]:"", array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%", "value"=>($datosConsult[0][4]!="")?$datosConsult[0][4]:"" ,"colspan"=>"6", "readonly"=>$readonly, "disabled"=>$disabled));
-				                //$mHtml->Input(array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%", "value"=>($datosConsult[0][4]!="")?$datosConsult[0][4]:"" ,"colspan"=>"6", "readonly"=>$readonly, "disabled"=>$disabled));
-							$mHtml->CloseRow();
-							$mHtml->Row();
-								$mHtml->Label( "Fecha de Notificacion:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-			                	$mHtml->Input(array("value"=>$date->format('Y-m-d H:i:s'),"name" => "fec_creaci", "id" => "fec_creaciID", "width" => "100%", "readonly"=>"readonly", "disabled"=>"disabled","colspan"=>"6"));
-							$mHtml->CloseRow();
-							$mHtml->Row();
-								$mHtml->Label( "Notificado por:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-			                	$mHtml->Input(array("value"=>$_SESSION['datos_usuario']['cod_usuari'],"name" => "usr_creaci", "id" => "usr_creaciID", "width" => "100%", "readonly"=>"readonly", "disabled"=>"disabled", "colspan"=>"1"));
-			                	$mHtml->Label( "Horas laboradas:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
-			                	$mHtml->Input(array("name" => "num_horlab", "id" => "num_horlabID", "width" => "100%", "colspan"=>"4", "value"=>($datosConsult[0][5]!="")?$datosConsult[0][5]:"", "readonly"=>($datosConsult[0][5]!="")?"readonly":"", "disabled"=>($datosConsult[0][5]!="")?"disabled":"", "onkeyup"=>"validarKey(1,2,'num','num_horlabID')"));
-							$mHtml->CloseRow();
-							$mHtml->Row();
-								$mHtml->Label( "*Vigencia hasta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Input(array("name" => "fec_vigenc", "id" => "fec_vigencID", "width" => "100%", "colspan"=>"1", "value"=>($datosConsult[0][6]!="")?$datosConsult[0][6]:""/*,"onclick"=>"getFechaDatapick('fec_vigencID')"*/,"readonly"=>$readonly, "disabled"=>$disabled));
-								$mHtml->Label( "*Requiere Respuesta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "SI",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Radio(array("value"=>"1","name" => "ind_respue", "id" => "ind_respuesID", "width" => "100%", "colspan"=>"1","checked"=>($ActionForm->ActionForm=="ins")?"checked":($datosConsult[0][7]==1)?"checked":"","readonly"=>$readonly, "disabled"=>$disabled));
-								$mHtml->Label( "NO",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Radio(array("value"=>"0","name" => "ind_respue", "id" => "ind_respuenID", "width" => "100%", "colspan"=>"1","checked"=>($ActionForm->ActionForm!="ins")?($datosConsult[0][7]==0)?"checked":"":"","readonly"=>$readonly, "disabled"=>$disabled));
-							$mHtml->CloseRow();
-							$mHtml->Row();
-								$mHtml->Label( "*Publicar a:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Select2 (self::getLisRespon(),  array("name" => "cod_asires", "width" => "25%","colspan"=>"1") );
-								#si es supervisor pinta campos adicionales
-								$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
+			// if ($ActionForm->idForm!=3) {
+			// 	$mHtml->OpenDiv("id:Notificontainer1; class:accordian");
+			// 		$mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION BASICA</center></h3>");
+			// 		$mHtml->OpenDiv("id:newNotifi");
+			// 			$mHtml->Hidden(array( "name" => "usr_creaci", "id" => "usr_creaciID", "value"=>self::getCodUsuario($_SESSION['datos_usuario']['cod_usuari'])['cod_consec']));
+			// 			$mHtml->Hidden(array( "name" => "cod_tipnot", "id" => "cod_tipnotID", "value"=>$ActionForm->idForm));
+			// 			$mHtml->Hidden(array( "name" => "cod_notifi", "id" => "cod_notifiID", "value"=>($ActionForm->cod_notifi!="")?$ActionForm->cod_notifi:""));
+			// 			$mHtml->Table("tr");
+			// 				#Cuerpo de la notificacion
+			// 				$mHtml->Row();
+			// 					$mHtml->line("","i",0,7);
+			// 				$mHtml->CloseRow();
+			// 				$mHtml->Row();
+			// 					$mHtml->Label( "*Asunto:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+			// 					$mHtml->TextArea(($datosConsult[0][4]!="")?$datosConsult[0][4]:"", array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%", "value"=>($datosConsult[0][4]!="")?$datosConsult[0][4]:"" ,"colspan"=>"6", "readonly"=>$readonly, "disabled"=>$disabled));
+			// 	                //$mHtml->Input(array("name" => "nom_asunto", "id" => "nom_asuntoID", "width" => "100%", "value"=>($datosConsult[0][4]!="")?$datosConsult[0][4]:"" ,"colspan"=>"6", "readonly"=>$readonly, "disabled"=>$disabled));
+			// 				$mHtml->CloseRow();
+			// 				$mHtml->Row();
+			// 					$mHtml->Label( "Fecha de Notificacion:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+			//                 	$mHtml->Input(array("value"=>$date->format('Y-m-d H:i:s'),"name" => "fec_creaci", "id" => "fec_creaciID", "width" => "100%", "readonly"=>"readonly", "disabled"=>"disabled","colspan"=>"6"));
+			// 				$mHtml->CloseRow();
+			// 				$mHtml->Row();
+			// 					$mHtml->Label( "Notificado por:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+			//                 	$mHtml->Input(array("value"=>$_SESSION['datos_usuario']['cod_usuari'],"name" => "usr_creaci", "id" => "usr_creaciID", "width" => "100%", "readonly"=>"readonly", "disabled"=>"disabled", "colspan"=>"1"));
+			//                 	$mHtml->Label( "Horas laboradas:",  array("align"=>"right", "class"=>"celda_titulo", "colspan"=>"1") );
+			//                 	$mHtml->Input(array("name" => "num_horlab", "id" => "num_horlabID", "width" => "100%", "colspan"=>"4", "value"=>($datosConsult[0][5]!="")?$datosConsult[0][5]:"", "readonly"=>($datosConsult[0][5]!="")?"readonly":"", "disabled"=>($datosConsult[0][5]!="")?"disabled":"", "onkeyup"=>"validarKey(1,2,'num','num_horlabID')"));
+			// 				$mHtml->CloseRow();
+			// 				$mHtml->Row();
+			// 					$mHtml->Label( "*Vigencia hasta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+			// 					$mHtml->Input(array("name" => "fec_vigenc", "id" => "fec_vigencID", "width" => "100%", "colspan"=>"1", "value"=>($datosConsult[0][6]!="")?$datosConsult[0][6]:""/*,"onclick"=>"getFechaDatapick('fec_vigencID')"*/,"readonly"=>$readonly, "disabled"=>$disabled));
+			// 					$mHtml->Label( "*Requiere Respuesta:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+			// 					$mHtml->Label( "SI",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+			// 					$mHtml->Radio(array("value"=>"1","name" => "ind_respue", "id" => "ind_respuesID", "width" => "100%", "colspan"=>"1","checked"=>($ActionForm->ActionForm=="ins")?"checked":($datosConsult[0][7]==1)?"checked":"","readonly"=>$readonly, "disabled"=>$disabled));
+			// 					$mHtml->Label( "NO",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+			// 					$mHtml->Radio(array("value"=>"0","name" => "ind_respue", "id" => "ind_respuenID", "width" => "100%", "colspan"=>"1","checked"=>($ActionForm->ActionForm!="ins")?($datosConsult[0][7]==0)?"checked":"":"","readonly"=>$readonly, "disabled"=>$disabled));
+			// 				$mHtml->CloseRow();
+			// 				$mHtml->Row();
+			// 					$mHtml->Label( "*Publicar a:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+			// 					$mHtml->Select2 (self::getLisRespon(),  array("name" => "cod_asires", "width" => "25%","colspan"=>"1") );
+			// 					#si es supervisor pinta campos adicionales
+			// 					$mHtml->Label( "Usuarios:",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"1") );
+			// 					$mHtml->Select2 ("",  array("name" => "ind_notusr", "width" => "25%","colspan"=>"4") );
 								
-							$mHtml->CloseRow();
-							$mHtml->Row();
-								$mHtml->line("","i",0,7);
-							$mHtml->CloseRow();
-						$mHtml->CloseTable('tr');
-					$mHtml->CloseDiv();
-				$mHtml->CloseDiv();
-			}
+			// 				$mHtml->CloseRow();
+			// 				$mHtml->Row();
+			// 					$mHtml->line("","i",0,7);
+			// 				$mHtml->CloseRow();
+			// 			$mHtml->CloseTable('tr');
+			// 		$mHtml->CloseDiv();
+			// 	$mHtml->CloseDiv();
+			// }
 			#Formulario de diligenciamiento
 			#si es supervisor pinta campos adicionales
 			/* INFORMACION BASICA */
@@ -753,9 +753,6 @@ class AjaxNotifiNotifi
 				$cod_grupox = $_SESSION['datos_usuario']['cod_grupox'];
 				$usuariosEncargados = self::getUsuariosACargo($cod_grupox);
       			$estado_carga = self::getEstadoCarga($usuariosEncargados);
-      			
-      			
-
      			$estado_vehiculo = self::getEstadoVehiculo($usuariosEncargados,$estado_carga);
       			$productividadUsuarios = self::getProductividadUsuarios($usuariosEncargados);
 
@@ -825,7 +822,7 @@ class AjaxNotifiNotifi
 												$mHtml->Label( "EMPRESA",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
 												//$mHtml->Label( "CANT. CARGA PLANEADA",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
 												$mHtml->Label( "CANT. CARGA ACTUAL",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
-												$mHtml->Label( "CANT. NOVEDADES REGISTRADAS",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
+												//$mHtml->Label( "CANT. NOVEDADES REGISTRADAS",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );
 												$mHtml->Label( "USUARIO",  array("align"=>"left", "class"=>"celda_titulo DLRow_titulo","colspan"=>"1") );	
 											$mHtml->CloseRow();
 							  			for ($j=0; $j < sizeof($estado_carga[$i]); $j++) { 
@@ -845,13 +842,13 @@ class AjaxNotifiNotifi
 													$mHtml->Label( $estado_carga[$i][$j]['nom_tercer'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
 													//$mHtml->Label( $estado_carga[$i][$j]['can_despac'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
 													$mHtml->Label( $estado_carga[$i][$j]['can_cargax'] == NULL ? '0' : $estado_carga[$i][$j]['can_cargax'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
-													$mHtml->Label( $estado_carga[$i][$j]['num_novedad'] == NULL ? '0' : $estado_carga[$i][$j]['num_novedad'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
+													//$mHtml->Label( $estado_carga[$i][$j]['num_novedad'] == NULL ? '0' : $estado_carga[$i][$j]['num_novedad'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
 													$mHtml->Label(  $usuariosEncargados[$i]['cod_usuari'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row." ") );
 
 													$mHtml->Hidden(array( "name" => "carga_nom_tercer".$i.$j, "id" => "carga_nom_tercer".$i.$j, "value"=>$estado_carga[$i][$j]['nom_tercer']));
 													//$mHtml->Hidden(array( "name" => "carga_can_despac".$i.$j, "id" => "carga_can_despac".$i.$j, "value"=>$estado_carga[$i][$j]['can_despac']));
 													$mHtml->Hidden(array( "name" => "carga_can_cargax".$i.$j, "id" => "carga_can_cargax".$i.$j, "value"=>$estado_carga[$i][$j]['can_cargax']));
-													$mHtml->Hidden(array( "name" => "carga_num_novedad".$i.$j, "id" => "carga_num_novedad".$i.$j, "value"=>$estado_carga[$i][$j]['num_novedad']));
+													//$mHtml->Hidden(array( "name" => "carga_num_novedad".$i.$j, "id" => "carga_num_novedad".$i.$j, "value"=>$estado_carga[$i][$j]['num_novedad']));
 													$mHtml->Hidden(array( "name" => "carga_cod_usuari".$i.$j, "id" => "carga_cod_usuari".$i.$j, "value"=>$estado_carga[$i][$j]['cod_usuari']));
 
 									  			$mHtml->CloseRow();
@@ -992,7 +989,7 @@ class AjaxNotifiNotifi
 									$mHtml->Label( "USUARIO",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 									$mHtml->Label( "NOMBRE USUARIO",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 									$mHtml->Label( "TOT. NOV REGISTRADAS",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-									$mHtml->Label( "% CUMPLIMIENTO",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+									//$mHtml->Label( "% CUMPLIMIENTO",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 								$mHtml->CloseRow();
 								$mHtml->Row();							
 							
@@ -1009,11 +1006,11 @@ class AjaxNotifiNotifi
 										$mHtml->Label( $usuariosEncargados[$y]['cod_usuari'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
 										$mHtml->Label( $usuariosEncargados[$y]['cod_usuari'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
 										$mHtml->Label( $productividadUsuarios[$y]['cod_noveda'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
-										$mHtml->Label( '%'.$productividadUsuarios[$y]['por_cumpli'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
+										//$mHtml->Label( '%'.$productividadUsuarios[$y]['por_cumpli'],  array("align"=>"left", "class"=>"celda_titulo ".$estilo_row."") );
 										$mHtml->Hidden(array( "name" => "indicador_usuario".$y, "id" => "indicador_usuario".$y, "value"=>$usuariosEncargados[$y]['cod_usuari'] ) );
 										$mHtml->Hidden(array( "name" => "indicador_nom_usuario".$y, "id" => "indicador_nom_usuario".$y, "value"=>$usuariosEncargados[$y]['cod_usuari'] ) );
 										$mHtml->Hidden(array( "name" => "indicador_nov_registro".$y, "id" => "indicador_nov_registro".$y, "value"=>$usuariosEncargados[$y]['cod_noveda'] ) );
-										$mHtml->Hidden(array( "name" => "indicador_cumplimiento".$y, "id" => "indicador_cumplimiento".$y, "value"=>$usuariosEncargados[$y]['por_cumpli'] ) );
+										//$mHtml->Hidden(array( "name" => "indicador_cumplimiento".$y, "id" => "indicador_cumplimiento".$y, "value"=>$usuariosEncargados[$y]['por_cumpli'] ) );
 
 								  $mHtml->CloseRow();
 								}
@@ -2763,11 +2760,12 @@ class AjaxNotifiNotifi
     		ON (tgu.cod_usuari = tme.cod_usuari )
     		WHERE tgu.cod_grupox = '{$cod_grupox}' 
     		AND tgu.cod_perfil = '7'
-    		AND tme.fec_inicia >= '".$fecha_ayer."'
-    		AND tme.fec_finalx <= '".$fecha_hoy." 23:00:00'
+    		-- AND tme.fec_inicia > '".$fecha_hoy_total."'
+    		AND tme.fec_finalx >= '".$fecha_hoy_total."'
     		-- group by tgu.cod_usuari
     		order by tme.cod_consec desc
     	";
+    	mail("andres.torres@intrared.net", "hola", $mSql);
 
     	$mConsult = new Consulta($mSql, self::$cConexion );
 		$mResult = $mConsult -> ret_matrix('a');
@@ -2791,8 +2789,8 @@ class AjaxNotifiNotifi
 			$fec_inicia = substr($fec_inicia,0,10) ;	
 			$fec_finalx = substr($fec_finalx,0,10) ;	
 			
-		/*	echo "<pre>";
-				print_r("fecha_hoy: ".$fecha_hoy." fec_inicia: ".$fec_inicia." fec_finalx: ".$fec_finalx);
+			/*echo "<pre>";
+				print_r($cod_consec);
 			echo "</pre>";*/
 
 			$mSql = "
@@ -2801,6 +2799,7 @@ class AjaxNotifiNotifi
     		JOIN ".BASE_DATOS.".tab_monito_detall tmd
 			ON (tmd.cod_consec = tme.cod_consec )
     		WHERE tmd.cod_consec= ".$cod_consec."
+    		AND tmd.ind_estado = 1
     		GROUP BY tmd.cod_consec
     	";
 
@@ -2811,6 +2810,8 @@ class AjaxNotifiNotifi
 				$info_usuario[$contador]["cod_usuari"] = $cod_usuari;
 				$info_usuario[$contador]["cod_transp"] = $mResult_transportador[0]['cod_transp'];
 				$info_usuario[$contador]["can_despac"] = $mResult_transportador[0]['can_despac'];
+				$info_usuario[$contador]["fec_inicia"] = $value['fec_inicia'];
+				$info_usuario[$contador]["fec_finalx"] = $value['fec_finalx'];
 			}
 			else if ( ($fecha_hoy == $fec_inicia) &&  ($fecha_hoy == $fec_finalx) )
 			{
@@ -2820,6 +2821,8 @@ class AjaxNotifiNotifi
 				$info_usuario[$contador]["cod_usuari"] = $cod_usuari;
 				$info_usuario[$contador]["cod_transp"] = $mResult_transportador[0]['cod_transp'];
 				$info_usuario[$contador]["can_despac"] = $mResult_transportador[0]['can_despac'];
+				$info_usuario[$contador]["fec_inicia"] = $value['fec_inicia'];
+				$info_usuario[$contador]["fec_finalx"] = $value['fec_finalx'];
 			}
 		
 			//$usuario_copia = $cod_usuari;
@@ -2858,31 +2861,32 @@ class AjaxNotifiNotifi
 	   		$cod_transp = $value['cod_transp'] == '' ? 0 : $value['cod_transp'];
 	   		$despachos = explode(',', $cod_transp);
 	   		$can_despac = explode(',', $value['can_despac']);
-	   		 		
+
 	   		//ya teniendo los usuarios con las transportadoras procedemos a consultar los vehiculos con NEM
 
-	   		$sql = "SELECT COUNT(b.num_despac) AS can_cargax, GROUP_CONCAT(b.num_despac) as num_despac, a.cod_transp, a.num_placax, a.cod_conduc, c.abr_tercer AS nom_tercer
-	   				 FROM ".BASE_DATOS.".tab_despac_vehige a 
-	   		 	INNER JOIN ".BASE_DATOS.".tab_despac_despac b 
-	   		 			ON a.num_despac = b.num_despac
-	   		 	INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c
-	   		 			ON a.cod_transp = c.cod_tercer
-	   		 	INNER JOIN tab_despac_seguim d
-					ON b.num_despac = d.num_despac
-
-	   		 		 WHERE b.fec_salida <= NOW()
-	   		 		   AND (b.fec_llegad IS NULL OR b.fec_llegad = '0000-00-00 00:00:00' ) 
-	   		 		   AND b.ind_planru = 'S'
-	   		 		   AND b.ind_anulad = 'R'
-	   		 		   AND a.ind_activo = 'S'
-	   		 		   AND d.cod_contro = '9999' 
-	   		 		   AND ( b.fec_salida IS NOT NULL )
-	   		 		   AND a.cod_transp IN (".$cod_transp.") 
-	   		 		   GROUP BY a.cod_transp";
+	   		$sql = "SELECT COUNT(c.num_despac) AS can_cargax, GROUP_CONCAT(c.num_despac) as num_despac, b.cod_transp, b.num_placax, b.cod_conduc, d.abr_tercer AS nom_tercer
+	   				 FROM ".BASE_DATOS.".tab_despac_despac a 
+	   		   INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+	   		   		   ON a.num_despac = b.num_despac AND b.num_despac NOT IN (  SELECT e.num_despac FROM satt_faro.tab_despac_noveda e WHERE e.cod_contro = 9999  ) AND b.num_despac NOT IN (  SELECT g.num_despac FROM satt_faro.tab_despac_contro g WHERE g.cod_contro = 9999  ) 
+	   		   INNER JOIN ".BASE_DATOS.".tab_despac_despac c 
+	   		 		   ON b.num_despac = c.num_despac
+	   		 	INNER JOIN ".BASE_DATOS.".tab_tercer_tercer d
+	   		 			ON b.cod_transp = d.cod_tercer
+	   		 	INNER JOIN tab_despac_seguim f
+					ON c.num_despac = f.num_despac
+	   		 		 WHERE c.fec_salida <= NOW()
+	   		 		   AND c.fec_salida IS NOT NULL
+	   		 		   AND (c.fec_llegad IS NULL OR c.fec_llegad = '0000-00-00 00:00:00' ) 
+	   		 		   AND c.ind_planru = 'S'
+	   		 		   AND c.ind_anulad = 'R'
+	   		 		   AND b.ind_activo = 'S'
+	   		 		   AND f.cod_contro = '9999'
+	   		 		   AND f.ind_estado = 1
+	   		 		   AND b.cod_transp IN (".$cod_transp.") 
+	   		 		   GROUP BY b.cod_transp";
 
 	   		$result = new Consulta($sql, self::$cConexion );
 	   		$mResult = $result -> ret_matrix('a');
-					
 	   		
 	   		for($i=0; $i < sizeof($despachos) ; $i++ )
 	   		{
@@ -2997,7 +3001,7 @@ class AjaxNotifiNotifi
 		   		{
 		   			$num_despac.= 0;
 		   		}
-
+		   		$hoy = date("Y-m-d");
 		   		$sql2 = "SELECT sum(x.cod_noveda)  as cod_noveda, x.cod_transp
 								FROM
 								(
@@ -3010,9 +3014,11 @@ class AjaxNotifiNotifi
 							   		 		ON a.cod_transp = c.cod_tercer
 											INNER JOIN ".BASE_DATOS.".tab_despac_noveda d
 											  ON b.num_despac = d.num_despac	 
-						   		 			 WHERE d.num_despac IN (".$num_despac.") 
-							   		 		   and a.cod_transp  = '".$cod_transp."'
-							   		 		   and d.usr_creaci = '".$cod_usuari."'
+						   		 			 WHERE 
+						   		 			   -- d.num_despac IN (".$num_despac.") and 
+						   		 			   -- a.cod_transp  = '".$cod_transp."' and 
+						   		 			   d.usr_creaci = '".$cod_usuari."'
+							   		 		   and d.fec_creaci >= '".$hoy."'
 							   		 		   GROUP BY a.cod_transp
 			   		 		  )
 									union 
@@ -3025,9 +3031,11 @@ class AjaxNotifiNotifi
 						   		 			ON a.cod_transp = c.cod_tercer
 										INNER JOIN ".BASE_DATOS.".tab_despac_contro d
 										  ON b.num_despac = d.num_despac	   		 	
-						   		 		 WHERE d.num_despac IN (".$num_despac.") 
-						   		 		   and a.cod_transp  = '".$cod_transp."'
-						   		 		   and d.usr_creaci = '".$cod_usuari."'
+						   		 		 WHERE 
+						   		 		  -- d.num_despac IN (".$num_despac.") and 
+						   		 		  -- a.cod_transp  = '".$cod_transp."' and 
+						   		 		  d.usr_creaci = '".$cod_usuari."'
+						   		 		   and d.fec_creaci >= '".$hoy."'
 						   		 		   GROUP BY a.cod_transp
 						   		)
 						   	)	as x
@@ -3037,6 +3045,7 @@ class AjaxNotifiNotifi
 	   		 	$result2 = new Consulta($sql2, self::$cConexion );
 	   		  $mResult2 = $result2 -> ret_matrix('a');
 	   		  $info_estado_carga[$contador2][$j]['num_novedad'] = $mResult2[0]['cod_noveda'] ;
+	   		  $num_novedad +=  $mResult2[0]['cod_noveda'];
 	   		 	
 	   		 	
 	   		 	
@@ -3139,7 +3148,11 @@ class AjaxNotifiNotifi
 
    		$info_productividad_usuarios[] = array();
 	   	$contador=0;
+	   	$hoy = date("Y-m-d");
 	   	foreach ($usuariosEncargados as $value) {
+	   	// echo "<pre>";
+	   	// 	print_r($usuariosEncargados);
+	   	// echo "</pre>";
 	   		$cod_usuari = $value['cod_usuari'];
 
 	   		$cod_consec = $resultado_usuario['cod_consec'];
@@ -3148,32 +3161,32 @@ class AjaxNotifiNotifi
 								FROM
 								(
 									(
-				   					SELECT count(d.cod_noveda) as cod_noveda
+				   					SELECT count(d.usr_creaci) as cod_noveda
 				   				 	FROM ".BASE_DATOS.".tab_despac_vehige a 
 							   		 	INNER JOIN ".BASE_DATOS.".tab_despac_despac b 
 							   		 		ON a.num_despac = b.num_despac
 							   		 	INNER JOIN ".BASE_DATOS.".tab_genera_usuari c
 							   		 		ON a.usr_creaci = c.cod_usuari
-											INNER JOIN ".BASE_DATOS.".tab_despac_noveda d
-											  ON b.num_despac = d.num_despac	   		 			
-						   		 			 WHERE d.usr_creaci = '".$cod_usuari."'
-						   		 			   AND d.fec_creaci >= '2019-07-15 06:30:00'
-						   		 			   AND d.fec_creaci <= '2019-07-16 19:20:00'
-							   		 		   GROUP BY d.usr_creaci
+										INNER JOIN ".BASE_DATOS.".tab_despac_noveda d
+									    	ON b.num_despac = d.num_despac   		 			
+						   		 		WHERE d.usr_creaci = '".$cod_usuari."'
+						   		 		  AND d.fec_creaci >= '".$value['fec_inicia']."'
+					   		 		      -- AND d.fec_creaci <= '".$value['fec_finalx']."'
+						   		     GROUP BY d.usr_creaci
 			   		 		  )
 									union 
 									(
-										SELECT count(d.cod_noveda) as cod_noveda
+										SELECT count(d.usr_creaci) as cod_noveda
 						   				 FROM ".BASE_DATOS.".tab_despac_vehige a 
 						   		 	INNER JOIN ".BASE_DATOS.".tab_despac_despac b 
 						   		 			ON a.num_despac = b.num_despac
 						   		 	INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c
 						   		 			ON a.cod_transp = c.cod_tercer
-										INNER JOIN ".BASE_DATOS.".tab_despac_contro d
-										  ON b.num_despac = d.num_despac	   		 			
+									INNER JOIN ".BASE_DATOS.".tab_despac_contro d
+										  	ON b.num_despac = d.num_despac
 						   		 		 WHERE d.usr_creaci = '".$cod_usuari."'
-						   		 		   AND d.fec_creaci >= '2019-07-16 06:30:00'
-						   		 		   AND d.fec_creaci <= '2019-07-16 19:20:00'
+						   		 		   AND d.fec_creaci >= '".$value['fec_inicia']."'
+					   		 		       -- AND d.fec_creaci <= '".$value['fec_finalx']."'
 						   		 	  GROUP BY d.usr_creaci
 						   		)
 						   	)	as x

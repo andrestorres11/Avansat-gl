@@ -87,7 +87,7 @@ define("URL_INTERF_GPSXXX", "https://avansatgl.intrared.net/ap/interf/app/gps/ws
 
 
 
-define("MAIL_SUPERVISORES", "supervisores@eltransporte.org");//Correo de supervisores
+define("MAIL_SUPERVISORES", "faroavansat@eltransporte.com");//Correo de supervisores
 define("MAIL_SOPORTE", "soporte.ingenieros@intrared.net");//Correo de soporte intrared
 
 //---------------------------------------------------------------------------------------------------

@@ -263,7 +263,7 @@ class InterfSPG
       
 
       //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-      mail("supervisores@eltransporte.org, soporte.ingenieros@intrared.net", 
+      mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", 
            "Web service MCT Error Catch From WEBSERVICE DE EAL (ESFERAS)", 
            $mMessage, 
            'From: soporte.ingenieros@intrared.net');

@@ -421,7 +421,7 @@ class EnvMensaj {
             $subject = "Novedad Despacho en Ruta";
         }
 
-        $headers .= "From: " . $nomtipapl . " <supervisores@eltransporte.org>\n";
+        $headers .= "From: " . $nomtipapl . " <faroavansat@eltransporte.com>\n";
 
         //mail($datos_men["dirdis"]."@".$datos_men["dnsope"],$subject,$descripcion,"Content-type: text/html\n".$headers);
     }
