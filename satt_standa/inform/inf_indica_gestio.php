@@ -189,6 +189,15 @@ class IndicadoresGestion
 						text-align:center;
 						border:1px solid #ddd;
 					}
+
+					#exportExcel{
+	    				color: #ffffff;
+	    				cursor: pointer;
+	    			}
+
+	    			#exportExcel:hover{
+	    				color: #cbffd7;
+	    			}
 				</style>";
 		
 		$sql = "SELECT a.cod_tipser, a.nom_tipser
@@ -204,21 +213,27 @@ class IndicadoresGestion
 		
 		//---------------------------------------------
     echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/inf_indica_gestio.js\"></script>\n";
+    echo '<script type="text/javascript" language="JavaScript" src="../'. DIR_APLICA_CENTRAL .'/js/exportExcel/FileSaver.js"></script>';
+    echo '<script type="text/javascript" language="JavaScript" src="../'. DIR_APLICA_CENTRAL .'/js/exportExcel/xlsx.full.min.js"></script>';
 		//---------------------------------------------
-
-		echo "<table width='100%' >";
-		echo "<tr>";
-		echo "<td class=cellHead colspan=20 >Desde ".$_REQUEST['fec_inicio']." Hasta ".$_REQUEST['fec_finalx']."</td>";
-		echo "</tr>";
+    	echo "<table id='tableHead' width='100%'>";
+			echo "<tr>";
+				echo "<td class=cellHead>";
+					echo "Desde ".$_REQUEST['fec_inicio']." Hasta ".$_REQUEST['fec_finalx'];
+					echo " <a id='exportExcel' onclick='exporExcel( \"tableVehiNov\", \"exportExcel\", \"Vehiculos_Monitoreados_Novedades\" )'>[ Excel ]</a>";
+				echo "</td>";
+			echo "</tr>";
+		echo "</table>";
+		echo "<table id='tableVehiNov' width='100%' >";
     
 		$c1 = $this -> getRutasCreadas( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'] );
 		$c2 = $this -> getVehiculosMonitoreados( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'] );
 		$c3 = $this -> getNovedades( $_REQUEST['fec_inicio'], $_REQUEST['fec_finalx'] );
     
-		echo "<tr>";
-		echo "<td class=cellHead rowspan=2 >RUTAS CREADAS</td>";
-		echo "<td class=cellHead colspan='".sizeof( $servicios )."'>TOTAL VEH&Iacute;CULOS MONITOREADOS: ". $c2 ."</td>";
-		echo "<td class=cellHead colspan='".sizeof( $servicios )."'>TOTAL NOVEDADES: ". $c3 ."</td>";
+			echo "<tr>";
+			echo "<td class=cellHead rowspan=2 >RUTAS CREADAS</td>";
+			echo "<td class=cellHead colspan='".sizeof( $servicios )."'>TOTAL VEH&Iacute;CULOS MONITOREADOS: ". $c2 ."</td>";
+			echo "<td class=cellHead colspan='".sizeof( $servicios )."'>TOTAL NOVEDADES: ". $c3 ."</td>";
 
 		echo "</tr>";
 		

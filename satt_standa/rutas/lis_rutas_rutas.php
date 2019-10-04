@@ -28,7 +28,9 @@ class Proc_rutas
 
     IncludeJS("jquery.js");
     IncludeJS("rutas.js");
-    echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
+    IncludeJS("exportExcel/FileSaver.js");
+    IncludeJS("exportExcel/xlsx.full.min.js");
+
 
     $this -> conexion = $co;
     $this -> usuario = $us;
@@ -174,7 +176,7 @@ class Proc_rutas
    $formulario = new Formulario ("index.php","post","LISTADO DE RUTAS","form_item");
 
    $formulario -> nueva_tabla();
-   $formulario -> linea("Se Encontrar&oacute;n un Total de ".sizeof($matriz)." Rutas.",0,"t2");
+   $formulario -> linea("Se Encontrar&oacute;n un Total de ".sizeof($matriz)." Rutas. <a id='exportExcel' style='cursor: pointer;' onclick='exporExcel( \"exportExcel\", \"listado_de_rutas\" )'>[ Excel ]</a>",0,"t2");
 
    $formulario -> nueva_tabla();
    $formulario -> linea("C&oacute;digo",0,"t");
