@@ -23,3 +23,30 @@ function ChangeDespacServicio( servicio )
   }
 }
 //------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//@funct.  :  exporExcel()
+//@author  :  Ing. Luis Manrique
+//@brief   :  Funcion que permite exportar tabla a excel.
+//------------------------------------------------------------------
+function exporExcel( idTable, idBoton, name )
+{
+  try 
+  {
+    var wb = XLSX.utils.table_to_book(document.getElementById(idTable), {sheet:"Sheet JS"});
+    var wbout = XLSX.write(wb, {bookType:'xls', bookSST:true, type: 'binary'});
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+    //Asigna el evento
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), name+'.xls');
+  }
+  catch (e)
+  {
+    alert( "Error exporExcel(): " + e.message);
+  }
+}
+//------------------------------------------------------------------

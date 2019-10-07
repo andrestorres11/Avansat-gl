@@ -37,7 +37,6 @@ $("document").ready(function() {
 			}
 		});
 	});
-
 });
 
 function aceptar_insert(formulario) {
@@ -175,4 +174,25 @@ function aceptar_actuali(formulario) {
 			formulario.submit();
 		}
 	}
+}
+
+function exporExcel( idBoton, name )
+{	
+	//Se captura como objeto la tabla que contiene los registros
+	var tablaExport = $("#"+idBoton).parents("table").siblings()[3];
+  	//var tablaExport = document.getElementById(idBoton).parentNode.parentNode.parentNode.parentNode.parentNode.nextSibling.nextSibling;
+  	//Se Asigna un ID a la tabla
+	tablaExport.setAttribute('id', 'tableListRut');
+
+    var wb = XLSX.utils.table_to_book(document.getElementById('tableListRut'), {sheet:"Sheet JS"});
+    var wbout = XLSX.write(wb, {bookType:'xls', bookSST:true, type: 'binary'});
+    function s2ab(s) {
+        var buf = new ArrayBuffer(s.length);
+        var view = new Uint8Array(buf);
+        for (var i=0; i<s.length; i++) view[i] = s.charCodeAt(i) & 0xFF;
+        return buf;
+    }
+    //Asigna el evento
+    saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), name+'.xls');
+  
 }
