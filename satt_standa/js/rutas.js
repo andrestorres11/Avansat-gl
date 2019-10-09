@@ -27,6 +27,14 @@ $("document").ready(function() {
 		}
 	});
 
+	$("#userID").autocomplete({
+		source: "../" + standa + "/rutas/class_rutasx_rutasx.php?Option=getUser" + atributes,
+		minLength: 3,
+		select: function(event, ui) {
+			$("#userID").val(ui.item.id);
+		}
+	});
+
 	$("input[name^='contr']").each(function() {
 		$(this).autocomplete({
 			source: "../" + standa + "/rutas/class_rutasx_rutasx.php?Option=getPC" + atributes,
@@ -37,6 +45,10 @@ $("document").ready(function() {
 			}
 		});
 	});
+    
+    $("#fec_iniciaID, #fec_finaliID").datepicker({
+        dateFormat: "yy-mm-dd"
+    });
 });
 
 function aceptar_insert(formulario) {
