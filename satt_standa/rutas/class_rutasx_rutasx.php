@@ -59,6 +59,10 @@ class rutas
 					rutas::getTransp();
 					break;
 
+				case 'getUser':
+					rutas::getUser();
+					break;
+
 				default:
 					header('Location: index.php?window=central&cod_servic=1366&menant=1366');
 					break;
@@ -285,6 +289,35 @@ class rutas
 				$mTranps[] = array('value' => utf8_decode($mResult[$i][nom_tercer]), 'label' => $mTxt, 'id' => $mResult[$i][cod_tercer] );
 			}
 			echo json_encode( $mTranps );
+		}
+		else
+			return $mResult;
+	}
+
+	/*! \fn: getUser
+	 *  \brief: Trae los puestos de control
+	 *  \author: Ing. Luis Manrique
+	 *	\date: 09/10/2019
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return: Matriz
+	 */
+	public function getUser()
+	{
+		$mSql = " SELECT 	DISTINCT(a.usr_creaci) AS usr_creaci
+               		FROM	".BASE_DATOS.".tab_genera_rutasx a 
+                   WHERE 	a.usr_creaci LIKE '%".$_REQUEST[term]."%'";
+		$mConsult = new Consulta($mSql, rutas::$cConexion);
+		$mResult = $mConsult -> ret_matrix('a');
+
+		if( $_REQUEST[term] )
+		{
+			$mUser = array();
+			for($i=0; $i<sizeof( $mResult ); $i++){
+				$mTxt = utf8_encode($mResult[$i][usr_creaci]);
+				$mUser[] = array('value' => utf8_encode($mResult[$i][usr_creaci]), 'label' => $mTxt, 'id' => $mResult[$i][usr_creaci] );
+			}
+			echo json_encode( $mUser );
 		}
 		else
 			return $mResult;

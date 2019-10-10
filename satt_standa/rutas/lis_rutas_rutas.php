@@ -27,9 +27,11 @@ class Proc_rutas
     @include_once("../".DIR_APLICA_CENTRAL."/rutas/class_rutasx_rutasx.php");
 
     IncludeJS("jquery.js");
+    IncludeJS("time.js");
     IncludeJS("rutas.js");
     IncludeJS("exportExcel/FileSaver.js");
     IncludeJS("exportExcel/xlsx.full.min.js");
+    echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
 
 
     $this -> conexion = $co;
@@ -70,6 +72,8 @@ class Proc_rutas
     $formulario -> linea("Especifique las Condiciones de B&uacute;squeda",1,"t2");
 
     $formulario -> nueva_tabla();
+    $formulario -> texto( "Fecha Inicio:", "text", "fec_inicia\" id=\"fec_iniciaID", 0, 40, 40, "", $_REQUEST[fec_inicia], 0, 0, 0, 1 );
+    $formulario -> texto( "Fecha Fin:", "text", "fec_finali\" id=\"fec_finaliID", 1, 40, 40, "", $_REQUEST[fec_finali], 0, 0, 0, 1 );
     $formulario -> oculto("cod_ciuori\" id=\"cod_ciuoriID", $_REQUEST[cod_ciuori], 0);
     $formulario -> oculto("cod_ciudes\" id=\"cod_ciudesID", $_REQUEST[cod_ciudes], 0);
     $formulario -> texto( "Origen:", "text", "origen\" id=\"origenID", 0, 40, 40, "", $_REQUEST[origen], 0, 0, 0, 1 );
@@ -79,7 +83,8 @@ class Proc_rutas
     $formulario -> linea("Buscar por Nombre de Ruta",1,"t2");
 
     $formulario -> nueva_tabla();
-    $formulario -> texto ("Ruta","text","ruta\" id=\"rutaID",1,50,255, 0, $_REQUEST[ruta]);
+    $formulario -> texto ("Ruta","text","ruta\" id=\"rutaID",0,40,40, 0, $_REQUEST[ruta]);
+    $formulario -> texto ("Usuario","text","user\" id=\"userID",1,40,40, 0, $_REQUEST[user]);
 
     $formulario -> nueva_tabla();
     $formulario -> botoni("Buscar","form_list.submit()",0);
@@ -142,6 +147,28 @@ class Proc_rutas
     else
     {
      $query .= " WHERE a.cod_ciudes = '".$_REQUEST[cod_ciudes]."'";
+     $indwhere = 1;
+    }
+   }
+
+   if($_REQUEST[fec_inicia] && $_REQUEST[fec_finali])
+   {
+    if($indwhere)
+     $query .= " AND DATE(a.fec_creaci) BETWEEN '".$_REQUEST[fec_inicia]."' AND '".$_REQUEST[fec_finali]."'";
+    else
+    {
+     $query .= " WHERE DATE(a.fec_creaci) BETWEEN '".$_REQUEST[fec_inicia]."' AND '".$_REQUEST[fec_finali]."'";
+     $indwhere = 1;
+    }
+   }
+
+   if($_REQUEST[user])
+   {
+    if($indwhere)
+     $query .= " AND a.usr_creaci = '".$_REQUEST[user]."'";
+    else
+    {
+     $query .= " WHERE a.usr_creaci = '".$_REQUEST[user]."'";
      $indwhere = 1;
     }
    }
