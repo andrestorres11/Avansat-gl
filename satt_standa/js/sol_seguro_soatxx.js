@@ -121,13 +121,13 @@ function SubmitForm()
 			  		contentType: false,   // tell jQuery not to set contentType
 			  		beforeSend: function()
 				    {
-				      Swal.fire({
-							  title:'Cargando',
-						      text: 'Por favor espere...',
-						      imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
-  							  imageAlt: 'Custom image',
-  							  showConfirmButton: false,
-							})
+				      	Swal.fire({
+						  title:'Cargando',
+					      text: 'Por favor espere...',
+					      imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+							  imageAlt: 'Custom image',
+							  showConfirmButton: false,
+						})
 				    },
 					success: function(data) {
 						//console.log(data);
