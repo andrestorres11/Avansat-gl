@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Envio solicitud seguro SOAT</title>
+		<style>
+			
+			#contenedor{
+				width: 95%;
+				margin: 0 auto;
+				background: #9c9c9c;
+				border-radius: 5px;
+				padding: 10px;
+				font-size: 15pt;
+				font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+			}
+			
+			#head{
+				margin: auto;
+				width: 100%;
+				color: #fff;
+				font-weight: bold;
+			}
+			
+			#head #logo{
+				width: 20%;
+				float: left;
+			}
+			
+			#head #titulo{
+				width: 80%;
+				float: right;
+				text-align: right;
+			}
+
+			#head #titulo h3{
+				padding-top: 50px;
+				padding-right: 15px;
+			}
+			
+			#body{
+				background: #fff;
+				border-radius: 5px 5px 0 0;
+				padding: 15px;
+				font-size: 12pt;
+			}
+
+			#contenedorTabla{
+				border-collapse:collapse; 
+				background: #f9f9f9;
+    			border-radius: 5px;
+				width: 100%;
+			}
+
+			#contenedorTabla .tituloTabla{
+				background: #9c9c9c;
+				color: #ffffff;
+				padding: 5px;
+			}
+
+			#contenedorTabla .nombre{
+				text-align: right;
+				font-weight: bold;
+				padding: 5px;
+				width: 25%;
+			}
+
+			#contenedorTabla .valor{
+				text-align: left;
+				padding: 5px;
+				width: 25%;
+			}
+
+			#preFooter{
+				border-radius: 0 0 5px 5px;
+				padding: 2px;
+				font-size: 11pt;
+				background: #fff; 
+			}
+			
+			hr{
+				height: 2px;
+				background: #fff;
+				width: 100%;
+				border-radius: 5px;
+			}
+
+            .limpiar{
+                clear: both;
+            }
+			
+			#footer{
+				background: #9c9c9c;
+				color: #fff;
+				text-align: center;
+				font-size: 9pt;
+				padding-top: 5px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="contenedor">
+			<div id="head">
+				<div id="logo">
+					<img src="$http$serverName/ap/lmanrique/sat-gl-2015/$standar/imagenes/logo-soat.png" alt="Logo Soat" width="120">
+				</div>
+				<div id="titulo">
+					<h3>Solicitud de Servicio SOAT</h3>
+                </div>
+                <div class="limpiar">
+                </div>
+			</div>
+			<hr>
+			<div id="body">
+				Estimada linea de servicio Asistencia Logistica<br><br>
+				La empresa de Transporte <b>$nom_empres</b> se encuentra interezado por adquirir el servicio de <b>Seguro SOAT</b>. La información del vehiculo y propietario es la siguiente:<br><br> 
+				<table id="contenedorTabla" align="center">
+					<tr>
+						<th colspan="100" class="tituloTabla">Información del vehiculo</th>
+					</tr>
+					<tr>
+						<td class="nombre">*Placa:</td>
+						<td class="valor">$num_placax</td>
+						<td class="nombre">*Modelo:</td>
+						<td class="valor">$ano_modelo</td>
+					</tr>
+					<tr>
+						<td class="nombre">*Marca:</td>
+						<td class="valor">$nom_marcax</td>
+						<td class="nombre">*Linea vehiculo:</td>
+						<td class="valor">$nom_lineax</td>
+					</tr>
+					<tr>
+						<td class="nombre">*N° Motor:</td>
+						<td class="valor">$num_motorx</td>
+						<td class="nombre">*N° Chasis o N° Serie:</td>
+						<td class="valor">$num_seriex</td>
+					</tr>
+					<tr>
+						<th colspan="100" class="tituloTabla">Información del propietario</th>
+					</tr>
+					<tr>
+						<td class="nombre">*N° Cedula:</td>
+						<td class="valor">$cod_tercer</td>
+						<td class="nombre">*Nombre:</td>
+						<td class="valor">$nom_tercer</td>
+					</tr>
+					<tr>
+						<td class="nombre">*Primer Apellido:</td>
+						<td class="valor">$nom_apell1</td>
+						<td class="nombre">*Segundo Apellido:</td>
+						<td class="valor">$nom_apell2</td>
+					</tr>
+					<tr>
+						<td class="nombre">*Dirección Residencia:</td>
+						<td class="valor">$dir_domici</td>
+						<td class="nombre">*N° Celular:</td>
+						<td class="valor">$num_telmov</td>
+					</tr>
+					<tr>
+						<td class="nombre">*Correo electrónico:</td>
+						<td class="valor">$dir_emailx</td>
+						<td class="nombre"></td>
+						<td class="valor"></td>
+					</tr>
+				</table>
+			</div>
+			<div id="preFooter">
+					<b>Fecha y hora de la solicitud: </b> $fecha<br>
+					<b>Nota: </b>Generado desde la aplicación Avansat GL.
+			</div>
+			<div id="footer">
+				Copyright 2018. Todos los Derechos Reservados. Diseñado y Desarrollado por Grupo OET S.A.S.
+			</div>
+		</div>
+	</body>
+</html>
