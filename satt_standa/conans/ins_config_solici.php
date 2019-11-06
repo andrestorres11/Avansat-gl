@@ -226,7 +226,7 @@ class ins_config_solici
 
   function select_subtipo($_AJAX){
 
-	 	$query_tab_solici_subtip = "SELECT cod_tipsol,nom_subtip
+	 	$query_tab_solici_subtip = "SELECT cod_subtip,nom_subtip
 	           FROM ".BASE_DATOS.".tab_solici_subtip WHERE cod_tipsol='".$_AJAX['parametro']."' ";
 
 	  $consulta_subtipo = new Consulta($query_tab_solici_subtip, $this -> conexion);
@@ -235,7 +235,7 @@ class ins_config_solici
 	 	$subtipo2="";
 	 	for($i =0 ; $i <sizeof($subtipo) ;$i++)
 	 	{
-	 		$subtipo2.= "<option value=".$subtipo[$i]['cod_tipsol'].">".$subtipo[$i]['nom_subtip']."</option>";
+	 		$subtipo2.= "<option value=".$subtipo[$i]['cod_subtip'].">".$subtipo[$i]['nom_subtip']."</option>";
 	 	}
 	 	echo $subtipo2;
  	
@@ -248,45 +248,44 @@ class ins_config_solici
  		$consulta_existe = $consulta_existe_usuario -> ret_matriz();
 
     if( sizeof( $consulta_existe ) > 0 )
-		{
-			
-	  	$consulta_existe = "SELECT usr_creaci FROM ".BASE_DATOS.".tab_solici_config WHERE cod_tipsol='".$_AJAX['cod_tipsol']."' and cod_subtip='".$_AJAX['cod_subtip']."' and usr_creaci ='".$usuario."' ;" ;
-	 		$consulta_existe  = new Consulta( $consulta_existe, $this->conexion);
-	 		$existe = $consulta_existe -> ret_matriz();
-	    
+	{	
+		$condicionSubTipo = $_AJAX['cod_subtip'] == 'null' ? "" : "and cod_subtip='".$_AJAX['cod_subtip']."'";
+  		$consulta_existe = "SELECT usr_creaci FROM ".BASE_DATOS.".tab_solici_config WHERE cod_tipsol='".$_AJAX['cod_tipsol']."' ".$condicionSubTipo." and usr_creaci ='".$usuario."' ;" ;
+
+ 		$consulta_existe  = new Consulta( $consulta_existe, $this->conexion);
+ 		$existe = $consulta_existe -> ret_matriz();
+    
 	    if(sizeof($existe) > 0)
+		{
+			$consulta_existe_usuario = "SELECT * FROM ".BASE_DATOS.".tab_solici_config WHERE usr_creaci ='".$usuario."' ;" ;
+	  		$consulta_existe_usuario = new Consulta( $consulta_existe_usuario, $this->conexion);
+	 		$consulta_existe = $consulta_existe_usuario -> ret_matriz();
+	 		//$concateno = array();
+	 		$concateno = "";
+	 		foreach( $consulta_existe as $row )
 			{
-				$consulta_existe_usuario = "SELECT * FROM ".BASE_DATOS.".tab_solici_config WHERE usr_creaci ='".$usuario."' ;" ;
-		  	$consulta_existe_usuario = new Consulta( $consulta_existe_usuario, $this->conexion);
-		 		$consulta_existe = $consulta_existe_usuario -> ret_matriz();
-		 		//$concateno = array();
-		 		$concateno = "";
-		 		foreach( $consulta_existe as $row )
-     		{
-	        $concateno.= $row['fec_inicia'].';';
-	        $concateno.= $row['fec_finali'].';';
-	        $concateno.= $row['dia_calend'].';';
-	        $concateno.= $row['tip_tiempo'].';';
-	        $concateno.= $row['tie_respue'].';';
-	        $concateno.= $row['obs_config'].';';
-      	}
-      	
-      	echo $concateno;
-				die();
-			}
-			else
-			{
-				echo "0";
-				die();
-			}
+			    $concateno.= $row['fec_inicia'].';';
+			    $concateno.= $row['fec_finali'].';';
+			    $concateno.= $row['dia_calend'].';';
+			    $concateno.= $row['tip_tiempo'].';';
+			    $concateno.= $row['tie_respue'].';';
+			    $concateno.= $row['obs_config'].';';
+	  		}
+	  	
+		  	echo $concateno;
+			die();
 		}
 		else
 		{
-			echo "1";
+			echo "0";
 			die();
 		}
-
- 		
+	}
+	else
+	{
+		echo "1";
+		die();
+	}	
   }
 
  	function insertFormulCampos($_AJAX) {
@@ -294,16 +293,17 @@ class ins_config_solici
  		//echo $_AJAX['dia_calend'];
  		$usuario = $_SESSION["datos_usuario"]["cod_usuari"];
 
- 		$consulta_existe = "SELECT usr_creaci FROM ".BASE_DATOS.".tab_solici_config WHERE usr_creaci ='".$usuario."' ;" ;
+ 		$consulta_existe = "SELECT usr_creaci FROM ".BASE_DATOS.".tab_solici_config WHERE usr_creaci ='".$usuario."' AND cod_tipsol = '".$_AJAX['cod_tipsol']."' AND cod_subtip = '".$_AJAX['cod_subtip']."';" ;
 
  		$consulta  = new Consulta( $consulta_existe, $this->conexion);
  		$existe = $consulta -> ret_matriz();
     
-    if( sizeof( $existe ) > 0 )
+    	if( sizeof( $existe ) > 0 )
 		{
-			$mUpdate = "UPDATE ".BASE_DATOS.".tab_solici_config SET cod_tipsol='".$_AJAX['cod_tipsol']."' ,cod_subtip='".$_AJAX['cod_subtip']."', fec_inicia = '".$_AJAX['fec_inicia']."',fec_finali = '".$_AJAX['fec_finali']."',dia_calend = '".$_AJAX['dia_calend']."' ,tip_tiempo='".$_AJAX['tip_tiempo']."',tie_respue= '".$_AJAX['tie_respue']."',obs_config= '".$_AJAX['obs_config']."',usr_modifi ='".$usuario."' ,fec_modifi = NOW() ";
+			$mUpdate = "UPDATE ".BASE_DATOS.".tab_solici_config SET cod_tipsol='".$_AJAX['cod_tipsol']."' ,cod_subtip='".$_AJAX['cod_subtip']."', fec_inicia = '".$_AJAX['fec_inicia']."',fec_finali = '".$_AJAX['fec_finali']."',dia_calend = '".$_AJAX['dia_calend']."' ,tip_tiempo='".$_AJAX['tip_tiempo']."',tie_respue= '".$_AJAX['tie_respue']."',obs_config= '".$_AJAX['obs_config']."',usr_modifi ='".$usuario."' ,fec_modifi = NOW() 
+				WHERE usr_creaci ='".$usuario."' AND cod_tipsol = '".$_AJAX['cod_tipsol']."' AND cod_subtip = '".$_AJAX['cod_subtip']."'";
 			$consulta = new Consulta( $mUpdate, $this -> conexion );
-			echo "0";
+			echo 0;
 			die();
 		}
 		else
@@ -314,7 +314,7 @@ class ins_config_solici
 						(DEFAULT,'".$_AJAX['cod_tipsol']."','".$_AJAX['cod_subtip']."','".$_AJAX['fec_inicia']."','".$_AJAX['fec_finali']."','".$_AJAX['dia_calend']."','".$_AJAX['tip_tiempo']."','".$_AJAX['tie_respue']."','".$_AJAX['obs_config']."', '".$usuario."',NOW()) ";			
 			$consulta = new Consulta( $mInsert, $this->conexion, "R" );
 
-			echo "1";
+			echo 1;
 			die();
 		}
 	}
@@ -384,7 +384,7 @@ class ins_config_solici
 		}
 		else
 		{
-			$(".select_subtipo").css("display","none")
+			$(".select_subtipo").css("display","none").html("");
 		}
 	}
 
@@ -513,18 +513,10 @@ class ins_config_solici
   $('#btn-config').click(function(event){
 
 		var metodo ="verificar_configuracion";			
-		var cod_tipsol = $("#select_tipo").val();		
-		if($("#cambio_select_subtipo").css("display","none"))
-		{
-			cod_subtip ='0';	
-		}
-		else{
-			var cod_subtip = $("#cambio_select_subtipo").val();
-			if(cod_subtip == undefined)
-			{
-				cod_subtip ='0';	
-			}
-		}
+		var cod_tipsol = $("#select_tipo").val();
+		
+		var cod_subtip = $("#cambio_select_subtipo").val();
+		
 
 		var parametros = "&cod_tipsol="+cod_tipsol+"&cod_subtip="+cod_subtip;
 
@@ -540,6 +532,41 @@ class ins_config_solici
 				if(data == 0)
 				{
 					swal({
+					  title: "Esta seguro que quiere crear lo ANS de este tipo ?",
+					  text: "",
+					  type: "warning",
+					  showCancelButton: true,
+					  confirmButtonClass: "btn-danger",
+					  confirmButtonText: "Si",
+					  closeOnConfirm: true
+					},
+					function(){
+						$("#panel_config input, #panel_config textarea").each(function(){
+							if($(this).attr("type") == "radio" || $(this).attr("type") == "checkbox"){
+								if(($(this).attr("id") == 'min')){
+									$(this).prop('checked',true);
+								}else{
+									$(this).prop('checked',false);
+								}
+							}else{
+								if(($(this).attr("id") == 'hora_inicial') || ($(this).attr("id") == 'hora_final')){
+									$("#hora_inicial").val("06:00");
+									$("#hora_final").val("23:59");
+								}else{
+									$(this).val("");
+								}
+							}
+						});
+						$('#panel_config').css("display","block")
+					});
+				}
+				else if(data == 1)
+				{	
+					$('#panel_config').css("display","block")
+				}
+				else
+				{
+					swal({
 					  title: "Esta seguro que quiere modificar lo ANS de este tipo ?",
 					  text: "",
 					  type: "warning",
@@ -549,44 +576,36 @@ class ins_config_solici
 					  closeOnConfirm: true
 					},
 					function(){
-						$('#panel_config').css("display","block")
-					});
-				}
-				else if(data == 1)
-				{
-					$('#panel_config').css("display","block")
-				}
-				else
-				{
+						porciones  = data.split(';');
+						console.log(porciones);
+						$("#hora_inicial").val(porciones[0]);
+						$("#hora_final").val(porciones[1]);
+						dias = porciones[2];
+						dia_solo = dias.split(',');
 
-					porciones  = data.split(';');
-					$("#hora_inicial").val(porciones[0]);
-					$("#hora_final").val(porciones[1]);
-					dias = porciones[2];
-					dia_solo = dias.split(',');
-
-					for(i = 0 ; i<dia_solo.length; i++)
-					{						
-						if(document.getElementById(dia_solo[i]))
+						for(i = 0 ; i<dia_solo.length; i++)
+						{						
+							if(document.getElementById(dia_solo[i]))
+							{
+								$("#"+dia_solo[i]).prop('checked',true);
+							}	
+						}
+						
+						if(porciones[3] == 2)
+						{	
+							$("#tiempo_min").val(porciones[4]);
+							$("#horas").prop("checked",true)
+						}
+						else if(porciones[3] == 3)
 						{
-							$("#"+dia_solo[i]).prop('checked',true);
-						}	
-					}
-					
-					if(porciones[3] == 2)
-					{	
-						$("#tiempo_min").val(porciones[4]);
-						$("#horas").prop("checked",true)
-					}
-					else if(porciones[3] == 3)
-					{
-						$("#tiempo_min").val(porciones[4]);
-						$("#dias").prop("checked",true)
-					}
+							$("#tiempo_min").val(porciones[4]);
+							$("#dias").prop("checked",true)
+						}
 
-					
-					$("#observacion").val(porciones[5]);
-					$('#panel_config').css("display","block")
+						
+						$("#observacion").val(porciones[5]);
+						$('#panel_config').css("display","block")
+					});						
 				}
 
 			}
