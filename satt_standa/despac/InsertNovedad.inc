@@ -4610,9 +4610,10 @@ class InsertNovedad {
             }
         }
         
-        $cabeceras = 'MIME-Version: 1.0' . "\r\n";
+        /*$cabeceras = 'MIME-Version: 1.0' . "\r\n";
         $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-        $cabeceras .= 'From: ' . MAIL_SUPERVISORES;
+        $cabeceras .= 'From: ' . MAIL_SUPERVISORES;*/
+        $from = MAIL_SUPERVISORES;
 
         if($datos->rutpla != "")
         {
@@ -4630,7 +4631,7 @@ class InsertNovedad {
         eval($thefile);
         $mHtmlxx = $r_file;
 
-        return $this->mail($datos->mai_destin,  $datos->asunto . " - " . $datos->num_placax, '<html><head><title>AVANSAT GL</title></head><body><div name="' . $datos->div_namexx . '">' . $mHtmlxx . '</div></body></html>', $cabeceras);
+        return $this->mail($datos->mai_destin,  $datos->asunto . " - " . $datos->num_placax, '<html><head><title>AVANSAT GL</title></head><body><div name="' . $datos->div_namexx . '">' . $mHtmlxx . '</div></body></html>', MAIL_SUPERVISORES);
     }
 
     /*! \fn: sendMailNotHtml
@@ -4642,9 +4643,11 @@ class InsertNovedad {
      *  \return: boolean
      */
     private function sendMailNotHtml($datos) {
-        $cabeceras = 'MIME-Version: 1.0' . "\r\n";
+        /*$cabeceras = 'MIME-Version: 1.0' . "\r\n";
         $cabeceras .= 'Content-type: text/plain; charset=UTF-8"' . "\r\n";
-        $cabeceras .= 'From: ' . MAIL_SUPERVISORES . "\r\n";
+        $cabeceras .= 'From: ' . MAIL_SUPERVISORES . "\r\n";*/
+
+        $from = MAIL_SUPERVISORES;
 
         $msj  = "Novedad: $datos->nom_noveda\r\n";
         $msj .= "Placa: $datos->num_placax\r\n";
@@ -4664,7 +4667,7 @@ class InsertNovedad {
         $msj .= "Asignado a: $datos->ema_asigna\r\n";
         $msj .= "Asignado por: $datos->usr_creaci\r\n";
 
-        return $this->mail($datos->mai_destin,  $datos->asunto . " - " . $datos->num_placax, $msj, $cabeceras);
+        return $this->mail($datos->mai_destin,  $datos->asunto . " - " . $datos->num_placax, $msj, $from);
     }
 
     /*! \fn: mail
@@ -4675,11 +4678,30 @@ class InsertNovedad {
      *  \param: destin
      *  \return: boolean
      */
-    private function mail($destin, $asunto, $msj, $cabeceras) {
+    private function mail($destin, $asunto, $msj, $from) {
+        @require_once('../' . DIR_APLICA_CENTRAL . '/planti/class.phpmailer.php');
+
+        $mail = new PHPMailer();
+        $mail->Host = "localhost";
+        $mail->From = $from;
+        $mail->FromName = "Centro Logistico FARO";
+        $mail->Subject = $asunto;
+        $mail->Body = $msj;
+        $mail->IsHTML( true );
+
         if (HOST_WEB == HOST_WEB_PRO) {
-            return mail($destin, $asunto, $msj, $cabeceras);
+            $mail->AddAddress( $destin );
+            //return mail($destin, $asunto, $msj, $cabeceras);
         } else {
-            return mail("hector.leal@intrared.net", $asunto, $msj, $cabeceras);
+            $mail->AddAddress( "luis.manrique@eltransporte.org, maribel.garcia@eltransporte.org" );
+            //return mail("luis.manrique@eltransporte.org", $asunto, $msj, $cabeceras);
+        }
+
+        if($mail->Send()){
+          return true;
+        }else{
+          echo 'Error: ' . $mail->ErrorInfo;
+          return false;
         }
     }
 
