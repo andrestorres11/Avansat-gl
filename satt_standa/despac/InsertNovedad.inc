@@ -4631,7 +4631,7 @@ class InsertNovedad {
         eval($thefile);
         $mHtmlxx = $r_file;
 
-        return $this->mail($datos->mai_destin,  $datos->asunto . " - " . $datos->num_placax, '<html><head><title>AVANSAT GL</title></head><body><div name="' . $datos->div_namexx . '">' . $mHtmlxx . '</div></body></html>', MAIL_SUPERVISORES);
+        return $this->mail($datos->mai_destin,  $datos->asunto . " - " . $datos->num_placax, '<html><head><title>AVANSAT GL</title></head><body><div name="' . $datos->div_namexx . '">' . $mHtmlxx . '</div></body></html>', $from);
     }
 
     /*! \fn: sendMailNotHtml
