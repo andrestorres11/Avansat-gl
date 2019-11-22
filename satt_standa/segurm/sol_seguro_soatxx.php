@@ -85,7 +85,11 @@ class SolicitarSOAT
 
   function setFormNoneSOAT()
   {
-
+    $tipoDoc = array(
+                      "0" => array('', '--Seleccione--'), 
+                      "1" => array('Nit', 'Nit'), 
+                      "2" => array('Cedula', 'Cedula')
+                    );
     $this -> stylesJS();
 
     # Abre Form
@@ -135,26 +139,28 @@ class SolicitarSOAT
 
                 $mForm -> Table( "tr" ); 
 
-                    $mForm ->  Label( "*N° Cedula:", "for:cod_tercerID; width:25%;" );
-                    $mForm ->  Input( "name:cod_tercer; maxlength:60; size:60; width:25%;");
+                    $mForm ->  Label( "*Tipo Documento:", "for:tip_documID; width:25%;" );
+                    $mForm ->  Select2 ($tipoDoc,  array("name" => "tip_docum", "validate" => "select", "obl"=>"1", "id" => "tip_documID", "width" => "25%", "key"=> $tipoDoc) );
+                    $mForm ->  Label( "*Documento:", "for:cod_tercerID; width:25%;" );
+                    $mForm ->  Input( "name:cod_tercer; maxlength:60; size:60; end:yes; width:25%;");
+
                     $mForm ->  Label( "*Nombre:", "for:nom_tercerID; width:25%;" );
-                    $mForm ->  Input( "name:nom_tercer; maxlength:60; size:60; end:yes; width:25%;");
-
+                    $mForm ->  Input( "name:nom_tercer; maxlength:60; size:60; width:25%;");
                     $mForm ->  Label( "*Primer Apellido:", "for:nom_apell1ID; width:25%;" );
-                    $mForm ->  Input( "name:nom_apell1; maxlength:60; size:60; width:25%;");
+                    $mForm ->  Input( "name:nom_apell1; maxlength:60; size:60; end:yes; width:25%;");
+
                     $mForm ->  Label( "*Segundo Apellido:", "for:nom_apell2ID; width:25%;" );
-                    $mForm ->  Input( "name:nom_apell2; maxlength:60; size:60; end:yes; width:25%;");
-
+                    $mForm ->  Input( "name:nom_apell2; maxlength:60; size:60; width:25%;");
                     $mForm ->  Label( "*Dirección Residencia:", "for:dir_domiciID; width:25%;" );
-                    $mForm ->  Input( "name:dir_domici; maxlength:60; size:60; width:25%;");
+                    $mForm ->  Input( "name:dir_domici; maxlength:60; size:60; end:yes; width:25%;");
+
                     $mForm ->  Label( "*N° Celular:", "for:num_telmovID; width:25%;" );
-                    $mForm ->  Input( "name:num_telmov; maxlength:60; size:60; end:yes; width:25%;");
-
+                    $mForm ->  Input( "name:num_telmov; maxlength:60; size:60; width:25%;");
                     $mForm ->  Label( "*Correo electrónico:", "for:dir_emailxID; width:25%;" );
-                    $mForm ->  Input( "name:dir_emailx; maxlength:60; size:60; width:25%;");
-                    $mForm ->  Label( "Pago(Empresa):", "for:pag_empresID; width:25%;" );
-                    $mForm ->  CheckBox( "name:pag_empres; maxlength:60; size:60; end:yes; width:25%; type:checkbox;");
+                    $mForm ->  Input( "name:dir_emailx; maxlength:60; size:60; end:yes; width:25%;");
 
+                    $mForm ->  Label( "Pago(Empresa):", "for:pag_empresID; width:25%;" );
+                    $mForm ->  CheckBox( "name:pag_empres; maxlength:60; size:60; width:25%; type:checkbox;");
                     $mForm ->  Label( "Tarjeta Propiedad:", "for:tar_propieID; width:25%;" );
                     $mForm ->  File( "name:tar_propie; maxlength:60; size:60; end:yes; width:25%;");
                     
