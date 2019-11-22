@@ -724,11 +724,27 @@ class InsertNovedad {
      */
 
     function getEmailAgecni($num_despac) {
-        $mQuery = "SELECT b.dir_emailx 
+        $mQuery = 
+       "  SELECT 
+                    GROUP_CONCAT(CONCAT(c.dir_dispos,'@',b.dns_operad))   
+            FROM    " . BASE_DATOS . ".tab_despac_despac a   
+      INNER JOIN    " . BASE_DATOS . ".tab_despac_vehige e
+              ON    a.num_despac = e.num_despac AND
+                    a.num_despac = '" . $num_despac . "'
+      INNER JOIN    " . BD_STANDA . ".tab_mensaj_operad b 
+              ON    e.cod_transp = b.cod_transp AND 
+                    b.ind_emailx = 1 AND 
+                    b.nom_bdsata = '".BASE_DATOS."'
+      INNER JOIN    " . BD_STANDA . ".tab_mensaj_dispos c
+              ON    b.cod_operad = c.cod_operad 
+           WHERE    c.ind_novala = 1 AND 
+                    c.ind_estado = 1 ";
+                    
+        /*$mQuery = "SELECT b.dir_emailx 
                      FROM " . BASE_DATOS . ".tab_despac_despac a,
                           " . BASE_DATOS . ".tab_genera_agenci b
                      WHERE a.cod_agedes = b.cod_agenci AND
-                           a.num_despac = '" . $num_despac . "' ";
+                           a.num_despac = '" . $num_despac . "' ";*/
         $consulta = new Consulta($mQuery, $this->conexion);
         $mEmailAgenci = $consulta->ret_matriz();
 
