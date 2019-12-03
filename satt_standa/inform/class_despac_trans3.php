@@ -215,7 +215,7 @@ class Despac
 	private function infoTransito()
 	{
 		$mIndEtapa = 'ind_segtra';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'SEGUIMIENTO (0-30 MIN)', 'AVISO (31-60 MIN)', 'OPERATIVO (61-90 MIN)', 'A CARGO DE EMPRESA (91 MIN)', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solución', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
 		$mTittle['style'] = array('', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id=table3ID>';
