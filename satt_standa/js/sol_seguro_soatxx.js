@@ -65,7 +65,13 @@ function validateFields()
 {	
 	var ban = true;
 
-	$("#frm_solSoatID input:not([type='file']), #frm_solSoatID select, #frm_solSoatID textarea").each(function(){
+	if($("#tip_documID").val() == 'Nit'){
+		var input = "#frm_solSoatID input:not([type='file'], #nom_apell1ID, #nom_apell2ID)";
+	}else{
+		var input = "#frm_solSoatID input:not([type='file'])";
+	}
+
+	$(input+", #frm_solSoatID select, #frm_solSoatID textarea").each(function(){
 		if($(this).val() == ""){
 			var label = $('#frm_solSoatID label[for="'+$(this).attr("id")+'"]').text();
 			Swal.fire({

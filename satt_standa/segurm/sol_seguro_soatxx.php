@@ -85,7 +85,11 @@ class SolicitarSOAT
 
   function setFormNoneSOAT()
   {
-
+    $tipoDoc = array(
+                      "0" => array('', '--Seleccione--'), 
+                      "1" => array('Nit', 'Nit'), 
+                      "2" => array('Cedula', 'Cedula')
+                    );
     $this -> stylesJS();
 
     # Abre Form
@@ -112,19 +116,19 @@ class SolicitarSOAT
           
                 $mForm -> Table( "tr" ); 
                     
-                    $mForm ->  Label( "*Placa:", "for:num_placaxID; width:25%;" );
+                    $mForm ->  Label( "*Placa:", "for:num_placax; width:25%;" );
                     $mForm ->  Input( "name:num_placax; maxlength:60; size:6; width:25%;");
-                    $mForm ->  Label( "*Modelo:", "for:ano_modeloID; width:25%;" );
+                    $mForm ->  Label( "*Modelo:", "for:ano_modelo; width:25%;" );
                     $mForm ->  Input( "name:ano_modelo; maxlength:60; size:4; end:yes; width:25%;");
                     
-                    $mForm ->  Label( "*Marca:", "for:nom_marcaxID; width:25%;" );
+                    $mForm ->  Label( "*Marca:", "for:nom_marcax; width:25%;" );
                     $mForm ->  Input( "name:nom_marcax; maxlength:60; size:40; width:25%;");
-                    $mForm ->  Label( "*Linea vehiculo:", "for:nom_lineaxID; width:25%;" );
+                    $mForm ->  Label( "*Linea vehiculo:", "for:nom_lineax; width:25%;" );
                     $mForm ->  Input( "name:nom_lineax; maxlength:60; size:40; end:yes; width:25%;");
 
-                    $mForm ->  Label( "*N° Motor:", "for:num_motorxID; width:25%;" );
+                    $mForm ->  Label( "*N° Motor:", "for:num_motorx; width:25%;" );
                     $mForm ->  Input( "name:num_motorx; maxlength:60; size:40; width:25%;");
-                    $mForm ->  Label( "*N° Chasis o N° Serie:", "for:num_seriexID; width:25%;" );
+                    $mForm ->  Label( "*N° Chasis o N° Serie:", "for:num_seriex; width:25%;" );
                     $mForm ->  Input( "name:num_seriex; maxlength:60; size:40; end:yes; width:25%;");
                 $mForm -> CloseTable( "tr" ); 
 
@@ -135,27 +139,29 @@ class SolicitarSOAT
 
                 $mForm -> Table( "tr" ); 
 
-                    $mForm ->  Label( "*N° Cedula:", "for:cod_tercerID; width:25%;" );
-                    $mForm ->  Input( "name:cod_tercer; maxlength:60; size:60; width:25%;");
-                    $mForm ->  Label( "*Nombre:", "for:nom_tercerID; width:25%;" );
-                    $mForm ->  Input( "name:nom_tercer; maxlength:60; size:60; end:yes; width:25%;");
+                    $mForm ->  Label( "*Tipo Documento:", "for:tip_docum; width:25%;" );
+                    $mForm ->  Select2 ($tipoDoc,  array("name" => "tip_docum", "validate" => "select", "obl"=>"1", "id" => "tip_documID", "width" => "25%") );
+                    $mForm ->  Label( "*Documento:", "for:cod_tercer; width:25%;" );
+                    $mForm ->  Input( "name:cod_tercer; maxlength:60; size:60; end:yes; width:25%;");
 
-                    $mForm ->  Label( "*Primer Apellido:", "for:nom_apell1ID; width:25%;" );
-                    $mForm ->  Input( "name:nom_apell1; maxlength:60; size:60; width:25%;");
-                    $mForm ->  Label( "*Segundo Apellido:", "for:nom_apell2ID; width:25%;" );
-                    $mForm ->  Input( "name:nom_apell2; maxlength:60; size:60; end:yes; width:25%;");
+                    $mForm ->  Label( "*Nombre:", "for:nom_tercer; width:25%;" );
+                    $mForm ->  Input( "name:nom_tercer; maxlength:60; size:60; width:25%;");
+                    $mForm ->  Label( "Primer Apellido:", "for:nom_apell1; width:25%;" );
+                    $mForm ->  Input( "name:nom_apell1; maxlength:60; size:60; end:yes; width:25%;");
 
-                    $mForm ->  Label( "*Dirección Residencia:", "for:dir_domiciID; width:25%;" );
-                    $mForm ->  Input( "name:dir_domici; maxlength:60; size:60; width:25%;");
-                    $mForm ->  Label( "*N° Celular:", "for:num_telmovID; width:25%;" );
-                    $mForm ->  Input( "name:num_telmov; maxlength:60; size:60; end:yes; width:25%;");
+                    $mForm ->  Label( "Segundo Apellido:", "for:nom_apell2; width:25%;" );
+                    $mForm ->  Input( "name:nom_apell2; maxlength:60; size:60; width:25%;");
+                    $mForm ->  Label( "*Dirección Residencia:", "for:dir_domici; width:25%;" );
+                    $mForm ->  Input( "name:dir_domici; maxlength:60; size:60; end:yes; width:25%;");
 
-                    $mForm ->  Label( "*Correo electrónico:", "for:dir_emailxID; width:25%;" );
-                    $mForm ->  Input( "name:dir_emailx; maxlength:60; size:60; width:25%;");
-                    $mForm ->  Label( "Pago(Empresa):", "for:pag_empresID; width:25%;" );
-                    $mForm ->  CheckBox( "name:pag_empres; maxlength:60; size:60; end:yes; width:25%; type:checkbox;");
+                    $mForm ->  Label( "*N° Celular:", "for:num_telmov; width:25%;" );
+                    $mForm ->  Input( "name:num_telmov; maxlength:60; size:60; width:25%;");
+                    $mForm ->  Label( "*Correo electrónico:", "for:dir_emailx; width:25%;" );
+                    $mForm ->  Input( "name:dir_emailx; maxlength:60; size:60; end:yes; width:25%;");
 
-                    $mForm ->  Label( "Tarjeta Propiedad:", "for:tar_propieID; width:25%;" );
+                    $mForm ->  Label( "Pago(Empresa):", "for:pag_empres; width:25%;" );
+                    $mForm ->  CheckBox( "name:pag_empres; maxlength:60; size:60; width:25%; type:checkbox;");
+                    $mForm ->  Label( "Tarjeta Propiedad:", "for:tar_propie; width:25%;" );
                     $mForm ->  File( "name:tar_propie; maxlength:60; size:60; end:yes; width:25%;");
                     
                 $mForm -> CloseTable( "tr" ); 
@@ -321,7 +327,7 @@ class SolicitarSOAT
                 ON  a.cod_perfil = c.cod_perfil
         INNER JOIN  ".BASE_DATOS.".tab_tercer_tercer d
                 ON  c.clv_filtro = d.cod_tercer
-              WHERE  a.cod_usuari = 'LUIGUICARGA'
+             WHERE  a.cod_usuari = '".$_SESSION["datos_usuario"]["cod_usuari"]."'
                   ";
                   
     $consulta = new Consulta( $mSql, $this -> conexion );
