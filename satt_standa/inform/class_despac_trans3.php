@@ -1739,19 +1739,29 @@ class Despac
 					$mResult[ind_acargo]++;
 				elseif( $mDespac[$i][tiempo] < 0 ) #Sin Retraso
 					$mResult[sin_retras]++;
-				elseif( $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 ) # 0 a 30
+				elseif( $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 ){
+					 # 0 a 30
 					$mResult[con_00A30x]++;
-				elseif( $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 ) # 31 a 60
-					$mResult[con_31A60x]++;
-				elseif( $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 ) # 61 a 90
-					$mResult[con_61A90x]++;
-				elseif( $mDespac[$i][tiempo] > 90 ) # Mayor 90
-					$mResult[con_91Amas]++;
-
-				if( $mDespac[$i][tiempo] >= 0 AND $mDespac[$i][ind_defini] != 'SI' AND $mDespac[$i][ind_finrut] != '1' AND $mPernoc != true) #Con alarma
 					$mResult[con_alarma]++;
-				else
+				}
+				elseif( $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 ) {
+					# 31 a 60
+					$mResult[con_31A60x]++;
+					$mResult[con_alarma]++;
+				}
+				elseif( $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 ) {
+					# 61 a 90
+					$mResult[con_61A90x]++;
+					$mResult[con_alarma]++;
+				}
+				elseif( $mDespac[$i][tiempo] > 90 ){
+					# Mayor 90
+					$mResult[con_91Amas]++;
+					$mResult[con_alarma]++;
+				} 
+				else{
 					continue;
+				}
 			}
 			else
 			{# Colores e información del despacho según estado
