@@ -38,6 +38,8 @@ class Despac
 
 	function __construct($co = null, $us = null, $ca = null)
 	{
+
+		@include_once( "../lib/general/festivos.php" );
 		if($_REQUEST[Ajax] === 'on' ){
 			@include_once( "../lib/ajax.inc" );
 			@include_once( "../lib/general/constantes.inc" );
@@ -215,8 +217,8 @@ class Despac
 	private function infoTransito()
 	{
 		$mIndEtapa = 'ind_segtra';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solución', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle['style'] = array('', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solución', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id=table3ID>';
 		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
@@ -282,6 +284,10 @@ class Despac
 		$mHtml = '';
 		$j=1;
 
+		/*echo "<pre>";
+		print_r($mTransp);
+		echo "<pre>";*/
+
 		#Dibuja las Filas por Transportadora
 		for($i=0; $i<sizeof($mTransp); $i++)
 		{
@@ -306,12 +312,14 @@ class Despac
 
 			#Si la Transportadora tiene Despachos
 			if( $mDespac != false )
-			{
+			{	
+				$mTransp[$i][hor_seguim] = self::setHorSeguim($mTransp[$i][cod_transp]);
 				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 				
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_tipser].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][hor_seguim].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_transp].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer" >'.sizeof($mDespac).'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[sin_retras] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[sin_retras].'</td>';
@@ -351,7 +359,7 @@ class Despac
 
 		#Dibuja la Fila de los Totales
 		$mHtml1  = '<tr>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="3">TOTALES:</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="4">TOTALES:</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;" >'.$mTotal[0].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[1].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[2].'</th>';
@@ -4359,6 +4367,95 @@ class Despac
 			}
 		$mHtml->CloseTable('tr');
 		echo $mHtml->MakeHtml();
+	}
+
+
+	/*! \fn: setHorSeguim
+	 *  \brief: Obtiene el horario del dia de la transportadora
+	 *  \author: Ing. Luis Manrique
+	 *	\date: 05/03/2019
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return: string
+	 */
+	public function setHorSeguim($mTransp)
+	{
+		//Consulta que retorna los horarios de seguimiento a la empresa
+        $mSql = " SELECT 	a.com_diasxx, 
+        					a.hor_ingres,
+        					a.hor_salida
+        			FROM 	".BASE_DATOS.".tab_config_horlab a 
+                   WHERE 	a.cod_tercer = '{$mTransp}'";                               
+		$consulta = new Consulta( $mSql, self::$cConexion );
+		$mResult = $consulta -> ret_matrix();
+
+		//Variables necesarias
+		$dayTxNow = date('D', strtotime(time()));
+		$yeaNow = date("Y"); 
+		$monNow = date("m");
+		$dayNow = date("d");
+		$arrayDiasNec = [];
+		$arrayDiasFes = [];
+		$arrayValida = [];
+		$horaMostrar = "";
+		
+		//Si retornn horarios, recorre el resultado
+		if (count($mResult) > 0){
+			foreach ($mResult as $key => $value) {
+				//Genera division de los dias
+				$day =  explode("|",$value["com_diasxx"]);
+				//Recorre los dias
+				foreach ($day as $day ) {
+					//Valida los festivos en Colombia
+					$festivo = new Festivos($yeaNow);
+					//Valida si es festivo el dia actual y si el dia que retorna es F
+					if($day == "F" && $festivo->esFestivo($dayNow,$monNow) == true){
+						$arrayDiasFes[] = $value;
+					//Valida si hay horarios con el dia actual
+					}else if(self::setDiasSem($day) == $dayTxNow){
+						$arrayDiasNec[] = $value;
+					}
+				}
+			}
+
+			//Da prioridad al dia como festivo
+			if(count($arrayDiasFes) > 0){
+				$arrayValida = $arrayDiasFes;
+			}else{
+				$arrayValida = $arrayDiasNec;
+			}
+
+			//Recorre el nuevo arreglo de los dias que aplican
+			foreach ($arrayValida as $key => $value) {
+				//Si retornn horarios, valida que solo sea un registro
+				if (count($arrayValida) == 1){
+					$horaMostrar = $value['hor_ingres']."-".$value['hor_salida'];
+				}else{
+					//Valida si la llave es = a cero para identificar los horarios nocturnos
+					if($key == 0){
+						$horaMostrar = $value['hor_ingres'];
+					}else{
+						$horaMostrar .= "-".$value['hor_salida'];
+					}
+				}
+			}
+		}
+		return $horaMostrar;
+	}
+
+	/*! \fn: setDiasSem
+	 *  \brief: Obtiene el horario Homologado en ingles
+	 *  \author: Ing. Luis Manrique
+	 *	\date: 05/03/2019
+	 *	\date modified: dia/mes/ano
+	 *  \param: 
+	 *  \return: string
+	 */
+	public function setDiasSem($dia) {
+		$diasEsp= array ("L","M","X","J","V","S","D");
+		$diasEng= array ("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
+		$texto = str_replace($diasEsp, $diasEng ,$dia);
+		return $texto;
 	}
 
 }
