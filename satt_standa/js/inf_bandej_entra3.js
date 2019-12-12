@@ -49,6 +49,11 @@ $("body").ready(function() {
         Actualizarbadge("3", "liTransi");
     });
 
+    $("#liContrl").click(function() {
+        generalReport("infoControl", "tabs-7");
+        Actualizarbadge("7", "liContrl");
+    });
+
     $("#liDescar").click(function() {
         generalReport("infoDescargue", "tabs-4");
         Actualizarbadge("4,5", "liDescar");
@@ -98,7 +103,7 @@ $("body").ready(function() {
     });
 
     //Crea Acordion
-    $("#accordionID").accordion({
+    $(".accordionID").accordion({
         heightStyle: "content",
         collapsible: true
     });
@@ -531,4 +536,18 @@ function getTrans(etapa) {
     });
 
     return cod_transp;
+}
+
+/*! \fn: acordion
+ *  \brief: Genera evento para recoger filas
+ *  \author: Luis Manrique
+ *  \date: 10/12/2019
+ *  \date modified: dd/mm/aaaa
+ *  \param: 
+ *  \return: 
+ */
+function acordion(value) {
+    $("#table3ID ."+value).each(function(){
+        $(this).toggle();
+    });
 }
