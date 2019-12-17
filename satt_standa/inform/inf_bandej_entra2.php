@@ -247,7 +247,7 @@ class infBandeja
 	                  	}
 	              	</script>';
 
-			$mHtml .= '<div id="accordionID">';
+			$mHtml .= '<div class="accordionID">';
 
 			if( $mTypeUser[tip_perfil] == 'OTRO' )
 				$mHtml .= $mHtml1.$mHtml2;
@@ -355,6 +355,14 @@ class infBandeja
 					{
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liPernoc" href="#tabs-5">C. PERNOTACION</a></li>';
 					}
+					if( $mView->sec_inform->sub->pes_contro == 1 )
+					{
+						if($mViewPr->ind_novnem->ind_visibl == 1)
+						{
+							$mbadge = self::$cDespac ->getConteoNem('7', $mArrayTransp);
+						}
+						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liContrl" href="#tabs-7">CONTROL OP '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
+					}
 				$mBand .= '</ul>';
 
 				$mBand .= $mView->sec_inform->sub->pes_genera == 1 ? '<div id="tabs-1"></div>' : ''; #DIV General
@@ -363,6 +371,7 @@ class infBandeja
 				$mBand .= $mView->sec_inform->sub->pes_descar == 1 ? '<div id="tabs-4"></div>' : ''; #DIV Etapa Descargue
 				$mBand .= $mView->sec_inform->sub->pes_pernoc == 1 ? '<div id="tabs-5"></div>' : ''; #DIV c. Pernotacion
 				$mBand .= $mView->sec_inform->sub->pes_prcarg == 1 ? '<div id="tabs-6">'.$mHtml3.'</div>' : ''; #DIV Etapa PreCargue
+				$mBand .= $mView->sec_inform->sub->pes_contro == 1 ? '<div id="tabs-7"></div>' : ''; #DIV Etapa Control Operación
 
 			$mBand .= '</div>';
 
