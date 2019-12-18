@@ -38,8 +38,6 @@ class Despac
 
 	function __construct($co = null, $us = null, $ca = null)
 	{
-
-		@include_once( "../lib/general/festivos.php" );
 		if($_REQUEST[Ajax] === 'on' ){
 			@include_once( "../lib/ajax.inc" );
 			@include_once( "../lib/general/constantes.inc" );
@@ -217,8 +215,8 @@ class Despac
 	private function infoTransito()
 	{
 		$mIndEtapa = 'ind_segtra';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solución', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'SEGUIMIENTO (0-30 MIN)', 'AVISO (31-60 MIN)', 'OPERATIVO (61-90 MIN)', 'A CARGO DE EMPRESA (91 MIN)', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id=table3ID>';
 		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
@@ -284,10 +282,6 @@ class Despac
 		$mHtml = '';
 		$j=1;
 
-		/*echo "<pre>";
-		print_r($mTransp);
-		echo "<pre>";*/
-
 		#Dibuja las Filas por Transportadora
 		for($i=0; $i<sizeof($mTransp); $i++)
 		{
@@ -312,18 +306,15 @@ class Despac
 
 			#Si la Transportadora tiene Despachos
 			if( $mDespac != false )
-			{	
-				$mTransp[$i][hor_seguim] = self::setHorSeguim($mTransp[$i][cod_transp]);
+			{
 				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 				
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_tipser].'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][hor_seguim].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_transp].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer" >'.sizeof($mDespac).'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[sin_retras] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[sin_retras].'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_alarma] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_alarma].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_00A30x] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_00A30x].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_31A60x] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_31A60x].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_61A90x] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_61A90x].'</td>';
@@ -342,16 +333,15 @@ class Despac
 
 				$mTotal[0] += sizeof($mDespac);
 				$mTotal[1] += $mData[sin_retras];
-				$mTotal[2] += $mData[con_alarma];
-				$mTotal[3] += $mData[con_00A30x];
-				$mTotal[4] += $mData[con_31A60x];
-				$mTotal[5] += $mData[con_61A90x];
-				$mTotal[6] += $mData[con_91Amas];
-				$mTotal[7] += $mData[est_pernoc];
-				$mTotal[9] += $mData[ind_acargo];
+				$mTotal[2] += $mData[con_00A30x];
+				$mTotal[3] += $mData[con_31A60x];
+				$mTotal[4] += $mData[con_61A90x];
+				$mTotal[5] += $mData[con_91Amas];
+				$mTotal[6] += $mData[est_pernoc];
+				$mTotal[8] += $mData[ind_acargo];
 
 				if( $mIndEtapa != 'ind_segcar' )
-					$mTotal[8] += $mData[fin_rutaxx];
+					$mTotal[7] += $mData[fin_rutaxx];
 
 				$j++;
 			}
@@ -359,20 +349,19 @@ class Despac
 
 		#Dibuja la Fila de los Totales
 		$mHtml1  = '<tr>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="4">TOTALES:</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="3">TOTALES:</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;" >'.$mTotal[0].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[1].'</th>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[2].'</th>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[3] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[3].'</th>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[4] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[4].'</th>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[5] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[5].'</th>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[6].'</th>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[7].'</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[2] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[2].'</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[3] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[3].'</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[4] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[4].'</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[5] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[5].'</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[6] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[6].'</th>';
 
 		if( $mIndEtapa != 'ind_segcar' )
-			$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[8].'</th>';
+			$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[7] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[7].'</th>';
 
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[9].'</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[8] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[8].'</th>';
 
 		if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 			$mHtml1 .= '<th class="classTotal" nowrap="" align="center">&nbsp;</th>';
@@ -1156,7 +1145,6 @@ class Despac
 		#Filtros por usuario
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
-		echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1181,8 +1169,6 @@ class Despac
 					$mResult[$j][fec_ultnov] = $mData[fec_ultnov];
 					$mResult[$j][ind_fuepla] = $mData[ind_fuepla];
 					$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
-					$mResult[$j][nov_especi] = $mData[nov_especi];
-					$mResult[$j][ind_alarma] = $mData[ind_alarma];
 					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 					$mResult[$j][fec_planea] = $mData[fec_planea];
 					$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
@@ -1195,8 +1181,6 @@ class Despac
 				$mResult[$j][can_noveda] = $mData[can_noveda];
 				$mResult[$j][fec_ultnov] = $mData[fec_ultnov];
 				$mResult[$j][ind_fuepla] = $mData[ind_fuepla];
-				$mResult[$j][nov_especi] = $mData[nov_especi];
-				$mResult[$j][ind_alarma] = $mData[ind_alarma];
 				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 				$mResult[$j][fec_planea] = $mData[fec_planea];
@@ -1266,7 +1250,6 @@ class Despac
 						   AND d.cod_etapax IN ( 3 )
 				) ";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
-		echo "<pre style='display:none;' id='mDespacTrasiandres'>"; print_r($mSql); echo "</pre>";
 		$mDespacTrasi = $mConsult -> ret_matrix('a');
 		$mDespacTrasi = join( ',', GetColumnFromMatrix( $mDespacTrasi, 'num_despac' ) );
 		$mDespacTrasi = $mDespacTrasi ? $mDespacTrasi : '0';
@@ -1392,8 +1375,6 @@ class Despac
 		$mResult[ind_fuepla] = $mNovDespac[$mPosN][ind_fuepla];
 		$mResult[ind_limpio] = $mNovDespac[$mPosN][ind_limpio];
 		$mResult[fec_ultnov] = $mNovDespac[$mPosN][fec_crenov];
-		$mResult[nov_especi] = $mNovDespac[$mPosN][nov_especi];
-		$mResult[ind_alarma] = $mNovDespac[$mPosN][ind_alarma];
 		$mResult[nom_ultnov] = $mNovDespac[$mPosN][nom_noveda] == '' ? '-' : $mNovDespac[$mPosN][nom_noveda];
 		$mResult[nom_sitiox] = $mNovDespac[$mPosN][nom_sitiox] == '' ? '-' : $mNovDespac[$mPosN][nom_sitiox];
 		$mResult[sig_pcontr] = getNextPC( self::$cConexion, $mDespac[num_despac] );
@@ -1448,6 +1429,7 @@ class Despac
 					$mResult[fec_planea] = $mResult[sig_pcontr][fec_progra]; #Fecha planeada del siguinete PC
 			}
 		}
+
 		return $mResult;
 	}
 
@@ -1703,7 +1685,6 @@ class Despac
 			$mResult[ind_acargo] = 0;
 			$mResult[est_pernoc] = 0;
 			$mResult[sin_retras] = 0;
-			$mResult[con_alarma] = 0;
 			$mResult[con_00A30x] = 0;
 			$mResult[con_31A60x] = 0;
 			$mResult[con_61A90x] = 0;
@@ -1747,29 +1728,16 @@ class Despac
 					$mResult[ind_acargo]++;
 				elseif( $mDespac[$i][tiempo] < 0 ) #Sin Retraso
 					$mResult[sin_retras]++;
-				elseif( $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 ){
-					 # 0 a 30
+				elseif( $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 ) # 0 a 30
 					$mResult[con_00A30x]++;
-					$mResult[con_alarma]++;
-				}
-				elseif( $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 ) {
-					# 31 a 60
+				elseif( $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 ) # 31 a 60
 					$mResult[con_31A60x]++;
-					$mResult[con_alarma]++;
-				}
-				elseif( $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 ) {
-					# 61 a 90
+				elseif( $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 ) # 61 a 90
 					$mResult[con_61A90x]++;
-					$mResult[con_alarma]++;
-				}
-				elseif( $mDespac[$i][tiempo] > 90 ){
-					# Mayor 90
+				elseif( $mDespac[$i][tiempo] > 90 ) # Mayor 90
 					$mResult[con_91Amas]++;
-					$mResult[con_alarma]++;
-				} 
-				else{
+				else
 					continue;
-				}
 			}
 			else
 			{# Colores e información del despacho según estado
@@ -1842,7 +1810,7 @@ class Despac
 						$mNegTiempo++;
 					}
 				}
-				elseif( ($mFiltro == 'con_00A30x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma') && $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 && $mBandera == true )
+				elseif( ($mFiltro == 'con_00A30x' || $mFiltro == 'sinF') && $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 && $mBandera == true )
 				{ # 0 a 30
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
@@ -1858,7 +1826,7 @@ class Despac
 						$mPosTiempo++;
 					}
 				}
-				elseif( ($mFiltro == 'con_31A60x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma') && $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 && $mBandera == true )
+				elseif( ($mFiltro == 'con_31A60x' || $mFiltro == 'sinF') && $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 && $mBandera == true )
 				{ # 31 a 60
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
@@ -1874,7 +1842,7 @@ class Despac
 						$mPosTiempo++;
 					}
 				}
-				elseif( ($mFiltro == 'con_61A90x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma') && $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 && $mBandera == true )
+				elseif( ($mFiltro == 'con_61A90x' || $mFiltro == 'sinF') && $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 && $mBandera == true )
 				{ # 61 a 90
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
@@ -1890,7 +1858,7 @@ class Despac
 						$mPosTiempo++;
 					}
 				}
-				elseif( ($mFiltro == 'con_91Amas' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma') && $mDespac[$i][tiempo] > 90 && $mBandera == true )
+				elseif( ($mFiltro == 'con_91Amas' || $mFiltro == 'sinF') && $mDespac[$i][tiempo] > 90 && $mBandera == true )
 				{ # Mayor 90
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
@@ -1905,11 +1873,11 @@ class Despac
 						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_91Amas';
 						$mPosTiempo++;
 					}
-				}else{
+				}else
 					continue;
-				}
 			}
 		}
+
 		return $mResult;
 	}
 
@@ -1996,11 +1964,10 @@ class Despac
 				$mDespac  = array_merge($mDespac1,$mDespac2,$mDespac3);
 			}
 			else
-			{	
+			{
 				$mDespac = self::$mNameFunction( $mTransp[$i] );
-
 			}
-		
+ 
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
 
 				$mDespac = self::getTotalPrecargue( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
@@ -2059,23 +2026,12 @@ class Despac
 
 			$mData = self::orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
 			#Pinta tablas
-			for ($i=0; $i < sizeof($mData['tiempo']); $i++) { 
-				if ($mData['tiempo'][$i]['nov_especi'] == '1' && $mData['tiempo'][$i]['ind_alarma'] == 'S' ) {
-					$mData['novesp'][$i] = $mData['tiempo'][$i];
-					unset($mData['tiempo'][$i]);
-				}else{
-					continue;
-				}
-			}
-
 			$mHtml  = '';
 			$mHtml .= $mData['tieesp'] ? self::printTabDetail( $mTittle, $mData['tieesp'], sizeof($mData['tieesp']).' DESPACHOS CON TIEMPO MODIFICADO', '1' ) : '';
 			$mHtml .= $mData['tiemp0'] ? self::printTabDetail( $mTittle, $mData['tiemp0'], sizeof($mData['tiemp0']).' DESPACHOS EN SEGUIMIENTO SIN NOVEDADES', '1' ) : '';
-			$mHtml .= $mData['novesp'] ? self::printTabDetail( $mTittle, $mData['novesp'], sizeof($mData['novesp']).' VEHICULOS CON NOVEDADES ESPECIALES (MA)', '1' ) : '';
 			$mHtml .= $mData['tiempo'] ? self::printTabDetail( $mTittle, $mData['tiempo'], sizeof($mData['tiempo']).' DESPACHOS EN SEGUIMIENTO CON NOVEDADES', '1' ) : '';
 			$mHtml .= $mData['acargo'] ? self::printTabDetail( $mTittle, $mData['acargo'], sizeof($mData['acargo']).' DESPACHOS A CARGO EMPRESA', '1' ) : '';
 			$mHtml .= $mData['finrut'] ? self::printTabDetail( $mTittle, $mData['finrut'], sizeof($mData['finrut']).' DESPACHOS PENDIENTE LLEGADA', '1' ) : '';
-			
 		}
 
 		echo $mHtml;
@@ -4367,95 +4323,6 @@ class Despac
 			}
 		$mHtml->CloseTable('tr');
 		echo $mHtml->MakeHtml();
-	}
-
-
-	/*! \fn: setHorSeguim
-	 *  \brief: Obtiene el horario del dia de la transportadora
-	 *  \author: Ing. Luis Manrique
-	 *	\date: 05/03/2019
-	 *	\date modified: dia/mes/año
-	 *  \param: 
-	 *  \return: string
-	 */
-	public function setHorSeguim($mTransp)
-	{
-		//Consulta que retorna los horarios de seguimiento a la empresa
-        $mSql = " SELECT 	a.com_diasxx, 
-        					a.hor_ingres,
-        					a.hor_salida
-        			FROM 	".BASE_DATOS.".tab_config_horlab a 
-                   WHERE 	a.cod_tercer = '{$mTransp}'";                               
-		$consulta = new Consulta( $mSql, self::$cConexion );
-		$mResult = $consulta -> ret_matrix();
-
-		//Variables necesarias
-		$dayTxNow = date('D', strtotime(time()));
-		$yeaNow = date("Y"); 
-		$monNow = date("m");
-		$dayNow = date("d");
-		$arrayDiasNec = [];
-		$arrayDiasFes = [];
-		$arrayValida = [];
-		$horaMostrar = "";
-		
-		//Si retornn horarios, recorre el resultado
-		if (count($mResult) > 0){
-			foreach ($mResult as $key => $value) {
-				//Genera division de los dias
-				$day =  explode("|",$value["com_diasxx"]);
-				//Recorre los dias
-				foreach ($day as $day ) {
-					//Valida los festivos en Colombia
-					$festivo = new Festivos($yeaNow);
-					//Valida si es festivo el dia actual y si el dia que retorna es F
-					if($day == "F" && $festivo->esFestivo($dayNow,$monNow) == true){
-						$arrayDiasFes[] = $value;
-					//Valida si hay horarios con el dia actual
-					}else if(self::setDiasSem($day) == $dayTxNow){
-						$arrayDiasNec[] = $value;
-					}
-				}
-			}
-
-			//Da prioridad al dia como festivo
-			if(count($arrayDiasFes) > 0){
-				$arrayValida = $arrayDiasFes;
-			}else{
-				$arrayValida = $arrayDiasNec;
-			}
-
-			//Recorre el nuevo arreglo de los dias que aplican
-			foreach ($arrayValida as $key => $value) {
-				//Si retornn horarios, valida que solo sea un registro
-				if (count($arrayValida) == 1){
-					$horaMostrar = $value['hor_ingres']."-".$value['hor_salida'];
-				}else{
-					//Valida si la llave es = a cero para identificar los horarios nocturnos
-					if($key == 0){
-						$horaMostrar = $value['hor_ingres'];
-					}else{
-						$horaMostrar .= "-".$value['hor_salida'];
-					}
-				}
-			}
-		}
-		return $horaMostrar;
-	}
-
-	/*! \fn: setDiasSem
-	 *  \brief: Obtiene el horario Homologado en ingles
-	 *  \author: Ing. Luis Manrique
-	 *	\date: 05/03/2019
-	 *	\date modified: dia/mes/ano
-	 *  \param: 
-	 *  \return: string
-	 */
-	public function setDiasSem($dia) {
-		$diasEsp= array ("L","M","X","J","V","S","D");
-		$diasEng= array ("Mon","Tue","Wed","Thu","Fri","Sat","Sun");
-		$texto = str_replace($diasEsp, $diasEng ,$dia);
-		return $texto;
 	}
 
 }
