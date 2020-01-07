@@ -311,7 +311,7 @@ class Despac
 		$mCodTransp = "";
 
 		/*echo "<pre>";
-		print_r($mTransp);
+		print_r($mTransp);lmanrique
 		echo "<pre>";*/
 
 		#Dibuja las Filas por Transportadora
