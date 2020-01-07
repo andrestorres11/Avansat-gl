@@ -200,8 +200,8 @@ class Despac
 	private function infoCargue()
 	{
 		$mIndEtapa = 'ind_segcar';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'AVISO CONTROL CARGUE (0-30 MIN)', 'ALERTA CARGUE (31-60 MIN)', 'SIN CARGUE (61-90 MIN)', 'NOVEDAD EN CARGUE (91 MIN)', 'ESTADO PERNOCTACION', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle['style'] = array('', '', '', '', '', 'bgC1', 'bgC2', 'bgC3', 'bgC4', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AVISO CONTROL CARGUE (0-30 MIN)', 'ALERTA CARGUE (31-60 MIN)', 'SIN CARGUE (61-90 MIN)', 'NOVEDAD EN CARGUE (91 MIN)', 'ESTADO PERNOCTACION', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgC1', 'bgC2', 'bgC3', 'bgC4', '', '');
 
 		$mHtml  = '<div id=table2ID>';
 		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
@@ -311,7 +311,7 @@ class Despac
 		$mCodTransp = "";
 
 		/*echo "<pre>";
-		print_r($mTransp);
+		print_r($mTransp);lmanrique
 		echo "<pre>";*/
 
 		#Dibuja las Filas por Transportadora
