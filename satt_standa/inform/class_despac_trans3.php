@@ -200,8 +200,8 @@ class Despac
 	private function infoCargue()
 	{
 		$mIndEtapa = 'ind_segcar';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'AVISO CONTROL CARGUE (0-30 MIN)', 'ALERTA CARGUE (31-60 MIN)', 'SIN CARGUE (61-90 MIN)', 'NOVEDAD EN CARGUE (91 MIN)', 'ESTADO PERNOCTACION', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle['style'] = array('', '', '', '', '', 'bgC1', 'bgC2', 'bgC3', 'bgC4', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AVISO CONTROL CARGUE (0-30 MIN)', 'ALERTA CARGUE (31-60 MIN)', 'SIN CARGUE (61-90 MIN)', 'NOVEDAD EN CARGUE (91 MIN)', 'ESTADO PERNOCTACION', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgC1', 'bgC2', 'bgC3', 'bgC4', '', '');
 
 		$mHtml  = '<div id=table2ID>';
 		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
@@ -311,7 +311,7 @@ class Despac
 		$mCodTransp = "";
 
 		/*echo "<pre>";
-		print_r($mTransp);
+		print_r($mTransp);lmanrique
 		echo "<pre>";*/
 
 		#Dibuja las Filas por Transportadora
@@ -484,27 +484,27 @@ class Despac
 				if($mUsrAsignaAnt != $mUsrAsigna){
 
 					$mHtml .= '<tr>';
-					$mHtml .= '<th class="classTotal ui-state-default" colspan="4" style="font-weight: bold" align="left">TOTAL:</th>';
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;" >'.$mTotalUS[0].'</th>';
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[1].'</th>';
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[2].'</th>';
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[3] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[3].'</th>';
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[4] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[4].'</th>';
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[5] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[5].'</th>';
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[6].'</th>';
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[7].'</th>';
+					$mHtml .= '<th class="classTotal" colspan="4" style="font-weight: bold" align="left">TOTAL:</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;" >'.$mTotalUS[0].'</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[1].'</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[2].'</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[3] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[3].'</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[4] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[4].'</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[5] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[5].'</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[6].'</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[7].'</th>';
 
 					if( $mIndEtapa != 'ind_segcar' )
-						$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[8].'</th>';
+						$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[8].'</th>';
 
-					$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[9].'</th>';
+					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[9].'</th>';
 
 					if( self::$cTypeUser[tip_perfil] == 'OTRO' )
-						$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center">&nbsp;</th>';
+						$mHtml .= '<th class="classTotal" nowrap="" align="center">&nbsp;</th>';
 					$mHtml .= '</tr>';
 
 					$mHtml .= '<tr>';
-					$mHtml .= '<th class="classTotal ui-state-default ui-state-default" colspan="100"style="cursor: pointer; font-weight: bold; font-weight: bold" align="left" onclick="acordion(\''.$mClassEv.'\')">* '.strtoupper($mUsrAsigna).'</th>';
+					$mHtml .= '<th class="classTotal" colspan="100"style="cursor: pointer; font-weight: bold; font-weight: bold" align="left" onclick="acordion(\''.$mClassEv.'\')">* '.strtoupper($mUsrAsigna).'</th>';
 					$mHtml .= '</tr>';
 
 					//Reinicia las variables para el contreo por el usuario
@@ -589,23 +589,23 @@ class Despac
 
 		//Genera Ultima fila de subtotales
 		$mHtml .= '<tr>';
-		$mHtml .= '<th class="classTotal ui-state-default" colspan="4" style="font-weight: bold" align="left">TOTAL:</th>';
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;" >'.$mTotalUS[0].'</th>';
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[1].'</th>';
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[2].'</th>';
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[3] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[3].'</th>';
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[4] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[4].'</th>';
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[5] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[5].'</th>';
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[6].'</th>';
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[7].'</th>';
+		$mHtml .= '<th class="classTotal" colspan="4" style="font-weight: bold" align="left">TOTAL:</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;" >'.$mTotalUS[0].'</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[1].'</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[2].'</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[3] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[3].'</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[4] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[4].'</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[5] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[5].'</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[6].'</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[7].'</th>';
 
 		if( $mIndEtapa != 'ind_segcar' )
-			$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[8].'</th>';
+			$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[8].'</th>';
 
-		$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center" '. ( $mTotalUS[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[9].'</th>';
+		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[9].'</th>';
 
 		if( self::$cTypeUser[tip_perfil] == 'OTRO' )
-			$mHtml .= '<th class="classTotal ui-state-default" nowrap="" align="center">&nbsp;</th>';
+			$mHtml .= '<th class="classTotal" nowrap="" align="center">&nbsp;</th>';
 		$mHtml .= '</tr>';
 
 		#Dibuja la Fila de los Totales
