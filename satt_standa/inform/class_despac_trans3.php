@@ -311,7 +311,7 @@ class Despac
 		$mCodTransp = "";
 
 		/*echo "<pre>";
-		print_r($mTransp);lmanrique
+		print_r($mTransp);
 		echo "<pre>";*/
 
 		#Dibuja las Filas por Transportadora
@@ -504,7 +504,7 @@ class Despac
 					$mHtml .= '</tr>';
 
 					$mHtml .= '<tr>';
-					$mHtml .= '<th class="classTotal" colspan="100"style="cursor: pointer; font-weight: bold; font-weight: bold" align="left" onclick="acordion(\''.$mClassEv.'\')">* '.strtoupper($mUsrAsigna).'</th>';
+					$mHtml .= '<th class="classTotal ui-state-default" colspan="100"style="cursor: pointer; font-weight: bold; font-weight: bold" align="left" onclick="acordion(\''.$mClassEv.'\')">* '.strtoupper($mUsrAsigna).'</th>';
 					$mHtml .= '</tr>';
 
 					//Reinicia las variables para el contreo por el usuario
