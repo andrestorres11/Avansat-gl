@@ -2100,8 +2100,10 @@ class Despac
 			# Arma la matriz resultante 
 			if( $mIndCant == 1 )
 			{# Cantidades según estado
-				if( $mPernoc == true ) #Pernoctacion
+				if( $mPernoc == true ){
 					$mResult[est_pernoc]++;
+					$mResult[enx_seguim]++;
+				} #Pernoctacion
 				elseif( $mDespac[$i][ind_finrut] == '1' ) #Por Llegada
 					$mResult[fin_rutaxx]++;
 				elseif( $mDespac[$i][ind_defini] == 'SI' ) #A Cargo Empresa
@@ -2149,7 +2151,7 @@ class Despac
 					$mBandera = false;
 
 				#Arma Matriz resultante seún fase
-				if( ($mFiltro == 'est_pernoc' || $mFiltro == 'sinF') && $mPernoc == true && $mDespac[$i][ind_defini] != 'SI' && $mDespac[$i][ind_finrut] != '1' )
+				if( ($mFiltro == 'est_pernoc' || $mFiltro == 'sinF' || $mFiltro == 'enx_seguim') && $mPernoc == true && $mDespac[$i][ind_defini] != 'SI' && $mDespac[$i][ind_finrut] != '1' )
 				{ #Pernoctacion
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
