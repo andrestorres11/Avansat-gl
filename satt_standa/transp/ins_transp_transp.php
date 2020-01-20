@@ -85,7 +85,9 @@ class Ins_config_emptra {
 				        	$mHtml->SetBody("<h2 style='padding:6px;'><B>LISTADO DE TRANSPORTADORAS</B></h2>");
 				        		$mHtml->OpenDiv("id:sec2");
 				        			$mHtml->OpenDiv("id:form3; class:contentAccordionForm");
-				        				 $mSql = "SELECT a.cod_tercer, UPPER(a.abr_tercer), CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) abr_ciudad,
+				        				 $mSql = "SELECT a.cod_tercer, 
+				        				 				UPPER(IF(a.abr_tercer = '', a.nom_tercer, a.abr_tercer)) AS abr_tercer, 
+				        				 				CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) abr_ciudad,
 				        				 				 UPPER(a.dir_domici), a.num_telef1,  
 								                        
 								                         IF(a.cod_estado = '1','Activa', 'Inactiva') AS cod_estado,
@@ -110,7 +112,7 @@ class Ins_config_emptra {
 									      $list->SetClose('no');
 									      $list->SetCreate("Crear empresa", "onclick:formulario()");
 									      $list->SetHeader(utf8_decode("Código de la transportadora"), "field:a.cod_tercer; width:1%;  ");
-									      $list->SetHeader("Transportadora", "field:a.abr_tercer; width:1%");
+									      $list->SetHeader("Transportadora", "field:IF(a.abr_tercer = '', a.nom_tercer, a.abr_tercer); width:1%");
 									      $list->SetHeader("Ciudad", "field:CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) ; width:1%");
 									      $list->SetHeader(utf8_decode("Dirección"), "field:a.dir_domici; width:1%");
 									      $list->SetHeader(utf8_decode("Teléfono"), "field:a.dir_emailx; width:1%");

@@ -50,7 +50,7 @@ class FacturCorona
     */
     private function getTransp( $cod_transp )
     {
-      $mSql = "SELECT cod_tercer, UPPER(abr_tercer) AS nom_tercer FROM ".BASE_DATOS.".tab_tercer_tercer WHERE cod_tercer = '".$cod_transp."' LIMIT 1";
+      $mSql = "SELECT cod_tercer, UPPER(IF(abr_tercer = '', nom_tercer, abr_tercer)) AS nom_tercer FROM ".BASE_DATOS.".tab_tercer_tercer WHERE cod_tercer = '".$cod_transp."' LIMIT 1";
       $consulta = new Consulta( $mSql, self::$cConection );
       return $consulta -> ret_matriz();
     }
@@ -130,7 +130,7 @@ class FacturCorona
           }
 
 
-          $query = "SELECT a.cod_tercer,a.abr_tercer
+          $query = "SELECT a.cod_tercer,UPPER(IF(a.abr_tercer = '', a.nom_tercer, a.abr_tercer)) AS abr_tercer
                       FROM ".BASE_DATOS.".tab_tercer_tercer a,
                            ".BASE_DATOS.".tab_tercer_activi b
                      WHERE a.cod_tercer = b.cod_tercer 
