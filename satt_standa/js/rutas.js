@@ -191,7 +191,7 @@ function aceptar_actuali(formulario) {
 function exporExcel( idBoton, name )
 {	
 	//Se captura como objeto la tabla que contiene los registros
-	var tablaExport = $("#"+idBoton).parents("table").siblings()[3];
+	var tablaExport = $("#"+idBoton).parents("table").siblings()[4];
   	//var tablaExport = document.getElementById(idBoton).parentNode.parentNode.parentNode.parentNode.parentNode.nextSibling.nextSibling;
   	//Se Asigna un ID a la tabla
 	tablaExport.setAttribute('id', 'tableListRut');
