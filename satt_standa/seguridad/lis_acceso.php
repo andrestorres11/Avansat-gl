@@ -192,11 +192,11 @@ class Lis_Acceso
 
             //lista total
             $query = "SELECT a.cod_usuari, 
-                            b.nom_perfil, 
+                            IFNULL(b.nom_perfil, 'Sin Perfil') as nom_perfil, 
                             a.fec_ingres, 
                             a.url_acceso 
                         FROM ".BASE_DATOS.".tab_bitaco_acceso a 
-                            INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
+                            LEFT JOIN ".BASE_DATOS.".tab_genera_perfil b 
                                 ON a.cod_perfil = b.cod_perfil 
                         WHERE (1=1) 
                     ";

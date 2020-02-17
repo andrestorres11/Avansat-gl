@@ -920,6 +920,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
                     (cod_usuari, cod_perfil, fec_ingres, url_acceso) 
                 VALUES 
                     ('".$cod_usuari."', '".$cod_perfil."', NOW(), '".$direccionIP."')";
+    $query = str_replace("''", "NULL", $query);
     $consulta = new Consulta ($query, $conexion);
 }
 
