@@ -328,8 +328,26 @@ class Aplicacion_Seguridad
                       </TR>";
            }
 
-                include("../".DIR_APLICA_CENTRAL.'/'.$datos_servicio['rut_archiv']);
+           //Incluye la clase para validar 
+          include("../".DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php');
+          $sus_terceros = new suspensiones();
+          
 
+          if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 7, 8))){
+          	//Funcion Alerta de suspensión empresas
+          	$data = $sus_terceros->SetSuspensiones(null, null);
+          	$this->alertMensajeSuspenAdmin($data);
+          }else{
+          	$data = $sus_terceros->SetSuspensiones(null, $_SESSION['datos_usuario']['cod_usuari']);
+          	//Funcion bloqueo servicios
+	        $this->bloServSuspension($data);
+	        //Funcion Alerta de suspensión
+	        $this->alertMensajeSuspension($data);
+          }
+
+          
+
+          include("../".DIR_APLICA_CENTRAL.'/'.$datos_servicio['rut_archiv']);
 
            if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2')|| ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas')))
            	echo '';
@@ -374,7 +392,9 @@ class Aplicacion_Seguridad
     //Con esta funcion se presenta el menor
 
     function menuFrame()
-    {    $datos_usuario = $this -> usuario_aplicacion -> retornar();
+    {    
+
+      $datos_usuario = $this -> usuario_aplicacion -> retornar();
 
     //se revisa si el usuario tiene perfil o es usuario independiente
     if(!$datos_usuario["cod_perfil"])
@@ -474,6 +494,170 @@ class Aplicacion_Seguridad
 
     function mGetUsuarioAplicacion(){
       return$this -> usuario_aplicacion;
+    }
+
+    /*! \fn: bloServSuspension
+	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para bloquear modulos
+	 *  \author: Ing. Luis Manrique
+	 *  \date: 27-02-2020
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: $data = Array de los suspendidos
+	 *  \return: html
+	 */
+
+    function bloServSuspension($data){
+      if(in_array($_REQUEST["cod_servic"], array(20160426, 20151236, 526))){
+        $ban = 0;
+        $fact = []; 
+        //Si retorna información de suspendidos
+        if(!empty($data)){
+          foreach ($data['suspendido'] as $ident => $campos) {
+            $ban = 1;
+            $fact [$ident]['num_factur'] = $campos['num_factur'];
+            $fact [$ident]['val_totalx'] = "$".$campos['val_totalx'];
+          }
+
+          //Verifica que si exita suspensión
+          if ($ban == 1) {
+            echo '<script src="../'.DIR_APLICA_CENTRAL.'/js/lib/bootstrap/dist/js/bootstrap.min.js"></script>';
+            echo '<link href="../'.DIR_APLICA_CENTRAL.'/js/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>';
+
+            $tittle = 'Suspension!';
+            $type = 'info';
+            $viewButton = 'false';
+            $backdrop = 'false';
+            $colorBoton = null;
+
+            $body = 'Recuerde que se encuentra suspendido el servicio de seguimiento por mora en las siguientes facturas:<br><br>\'+
+                          \'<table class="table table-sm text-center">\'+
+                            \'<tr>\'+
+                              \'<th class="text-center">Factura</th>\'+
+                              \'<th class="text-center">Valor</th>\'+
+                            \'</tr>\'+'; 
+                          foreach ($fact as $key => $value) {
+                  $body .= '\'<tr>\'+
+                              \'<td>'.$value['num_factur'].'</td>\'+
+                              \'<td>'.$value['val_totalx'].'</td>\'+
+                            \'</tr>\'+';
+                          }
+
+                $body .= '\'</table>\'+
+                            \'Si ya realizo el pago correspondiente, por favor enviar soporte al correo: <strong>pagos@grupooet.com</strong>';
+
+            $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+            die();
+          }
+        } 
+      }
+    }
+
+    /*! \fn: alertMensajeSuspension
+	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensión
+	 *  \author: Ing. Luis Manrique
+	 *  \date: 27-02-2020
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: $data = Array de los suspendidos
+	 *  \return: html
+	 */
+
+    function alertMensajeSuspension($data){
+      if(!empty($data)){
+
+        if(!isset($_SESSION['datos_usuario']['ale_suspen'])){
+          $_SESSION['datos_usuario']['ale_suspen'] = 0;
+        }
+        
+        if($_SESSION['datos_usuario']['ale_suspen'] == 0){
+          $tittle = 'Aviso de suspensión!';
+          $viewButton = 'true';
+          $backdrop = 'true';
+
+          foreach ($data as $estado => $mData) {
+            foreach ($mData as $ident => $campos) {
+
+              If($estado == 'suspendido'){
+                $body = "Se ha suspendido el servicio de su cuenta, si ya realizó el pago, por favor enviar el soporte al correo: <b>pagos@grupooet.com.</b>";
+                $type = 'error';
+                $colorBoton = "#336600";
+              }else{
+                $body = "Su servicio será suspendido el día ".$campos['fec_vencin'].', por favor realice el pago antes de que sea suspendida la cuenta.';
+                $type = 'warning';
+                $colorBoton = "#f8bb86";
+              }
+
+              $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+
+            }
+          }
+        }
+         $_SESSION['datos_usuario']['ale_suspen'] = 1; 
+      }
+    }
+
+    /*! \fn: alertMensajeSuspension
+	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensión
+	 *  \author: Ing. Luis Manrique
+	 *  \date: 27-02-2020
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: $data = Array de los suspendidos
+	 *  \return: html
+	 */
+
+    function alertMensajeSuspenAdmin($data){
+      if(!empty($data)){
+        
+        if(in_array($_REQUEST["cod_servic"], array(1366))){
+          	$tittle = 'Aviso de suspensión!';
+          	$viewButton = 'true';
+          	$backdrop = 'true';
+          	$emp_suspen = [];
+          	$type = 'info';
+	        $colorBoton = "";
+
+          	foreach ($data['suspendido'] as $ident => $campos) {
+            	$emp_suspen[] = $campos['abr_tercer'];
+          	}
+
+          	$body = 'Las siguientes empresas se encuentran en estado de suspensión:<br><br>\'+';
+          		foreach (array_unique($emp_suspen) as $key => $value) {
+                 	 $body .= '\''.$value.'<br>\'+';
+                }
+            $body .= '\'';
+	        
+
+           $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+        }
+      }
+    }
+
+    /*! \fn: mensajeSuspensión
+	 *  \brief: Crea Alerta por JS dando información
+	 *  \author: Ing. Luis Manrique
+	 *  \date: 27-02-2020
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: $data = Array de los suspendidos
+	 *  \return: html
+	 */
+
+    function mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton = null){
+        $script .= '<!-- Toastr -->';
+        $script .='<script src="../' . DIR_APLICA_CENTRAL . '/js/sweetalert2.all.8.11.8.js"></script>';
+
+        $script .= "<script type='text/javascript'> 
+                      $(function(){
+                        Swal.fire({
+                          title:'".utf8_decode($tittle)."',
+                          html: '".utf8_decode($body)."',
+                          type: '".$type."',
+                          backdrop: $backdrop,
+                          showConfirmButton: $viewButton,
+                          confirmButtonColor: '".$colorBoton."',
+                          confirmButtonText: 'Listo'
+                        })
+                      });
+                            
+                    </script>";
+        echo $script;
     }
 
 }//fin clase

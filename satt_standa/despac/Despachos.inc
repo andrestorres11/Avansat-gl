@@ -2209,6 +2209,13 @@ class Despachos
                                 $mHtml->SetBody( $mRemesas );
                         }
 
+                        #Estado del servicio
+                        if( $mView->est_servic->ind_visibl == 1 ){
+                            $mEstadoServ = self::divEstadoServicio( $mNumDesOri );
+                            if( $mEstadoServ != false )
+                                $mHtml->SetBody( $mEstadoServ );
+                        }
+
                         #Grilla Descargue
                         if( $mView->gri_descar->ind_visibl == 1 ){
                             $mGrillaDescar = self::divGrillaDescar( $mNumDesOri );
@@ -2819,6 +2826,85 @@ class Despachos
                                 $mHtml->Label( $value,  array("align"=>"center", "class"=>"celda_info") );
 
                             $mHtml->SetBody('</tr>');
+                        }
+
+                        $mHtml->CloseTable("tr");
+                    $mHtml->CloseDiv();
+                $mHtml->CloseDiv();
+            $mHtml->CloseDiv();
+
+            return $mHtml->MakeHtml();
+        }else
+            return false;
+    }
+
+    /*! \fn: divEstadoServicio
+     *  \brief: Crea DIV de la seccion: Estado del servicio
+     *  \author: Ing. Luis Manrique
+     *  \date: 25/02/2020
+     *  \date modified: dia/mes/año
+     *  \param: mNumDespac  Integer  Numero del Despacho
+     *  \return: HTML
+     */
+    private function divEstadoServicio( $mNumDespac )
+    {
+        $nitTrans = self::getEstadoServicio( $mNumDespac );
+        $mTittleEstServ = array("Servicio Contratado", "Estado", "Fecha Suspensi&oacute;n", "Facturas Vencidas", "Valor");
+        $mCamposEstServ = array("nom_tipser", "est_servic", "fec_vencin", "num_factur", "val_totalx");
+
+        //Incluye el archivo para consultar las suspenciones
+        include("../".DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php');
+        $sus_terceros = new suspensiones();
+        //Consume el metodo
+        $data = $sus_terceros->SetSuspensiones($nitTrans[0]['cod_transp'], null);
+
+        //Recorre lo retornado 
+        if(count($data) > 0){
+        	foreach ($data as $estados => $mData) {
+	        	foreach ($mData as $ident => $campos) {
+	        		$mSelect = "SELECT 	GROUP_CONCAT(b.nom_tipser) AS nom_tipser
+	                			  FROM 	".BASE_DATOS.".tab_transp_tipser a
+	                		INNER JOIN 	".BASE_DATOS.".tab_genera_tipser b
+	                				ON 	a.cod_tipser = b.cod_tipser
+	                 			 WHERE 	a.cod_transp = '".$campos['cod_tercer']."' ";
+
+				    $consulta = new Consulta( $mSelect, $this -> conexion );
+				    $nom_tipser = $consulta->ret_matrix('a');
+
+				    $data[$estados][$ident]['nom_tipser'] = $nom_tipser[0]['nom_tipser'];
+				    $data[$estados][$ident]['est_servic'] = $estados == 'suspendido' ? 'SUSPENDIDO' : 'ACTIVO';
+	        	}
+	        }
+        } 
+
+        if ( sizeof($nitTrans) > 0 )
+        {
+            $mHtml = new Formlib(2);
+
+            $mHtml->OpenDiv("id:remesasID; class:accordion");
+                $mHtml->SetBody("<h3 style='padding:6px;'><center>ESTADO DEL SERVICIO</center></h3>");
+                $mHtml->OpenDiv("id:secID");
+                    $mHtml->OpenDiv("id:form_remesasID; class:contentAccordionForm");
+                        $mHtml->Table("tr");
+
+                        foreach ($mTittleEstServ as $tittle)
+                            $mHtml->Label( $tittle,  array("align"=>"center", "class"=>"celda_titulo") );
+
+                        //Si retorna información de suspendidos
+                        if(count($data) > 0){
+                            foreach ($data as $estados => $mData) {
+                            	foreach ($mData as $ident => $campos) {
+	                            	$mHtml->Row();
+	                            	foreach ($mCamposEstServ as $mCampos) {
+	                            		$mHtml->Label( $campos[$mCampos],  array("align"=>"center", "class"=>"celda_info") );
+	                            	}
+                            	}
+                            }
+                            $mHtml->SetBody('</tr>');
+                        }else{
+                            $mHtml->Row();
+                            $mHtml->Label( "No cuenta con servicios suspendidos o a punto de ser suspendidos.", array("align"=>"center", "class"=>"cellTitu","colspan"=>"5", "width"=>"10%") );
+                            
                         }
 
                         $mHtml->CloseTable("tr");
@@ -3782,6 +3868,23 @@ class Despachos
                         des_mercan,abr_client,abr_remite,
                         abr_destin 
                    FROM ".BASE_DATOS.".tab_despac_remesa 
+                  WHERE num_despac = '{$mNumDespac}' ";
+        $mConsult = new Consulta($mSql, $this->conexion);
+        return $mResult = $mConsult->ret_matrix('a');
+    }
+
+    /*! \fn: getEstadoServicio
+     *  \brief: Trae el estado del servicio de esa transportadora
+     *  \author: Ing. Luis Carlos Manrique Boada
+     *  \date: 25-02-2020
+     *  \date modified: 25-02-2020
+     *  \param: mNumDespac  Integer  Numero del despacho
+     *  \return:
+     */
+    private function getEstadoServicio( $mNumDespac )
+    {
+        $mSql = "SELECT cod_transp
+                   FROM ".BASE_DATOS.".tab_despac_vehige 
                   WHERE num_despac = '{$mNumDespac}' ";
         $mConsult = new Consulta($mSql, $this->conexion);
         return $mResult = $mConsult->ret_matrix('a');

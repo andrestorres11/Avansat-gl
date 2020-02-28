@@ -8,9 +8,14 @@
  *  \warning:   
  *  \ 
  */
+
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
+
 session_start();
 
 require "ajax_perfil_perfil.php";
+require_once '../'.DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php';
 
 class ins_servic_suspen {
 
@@ -20,22 +25,23 @@ class ins_servic_suspen {
     function __construct($co, $us, $ca) {
         #importa los  css y js necesarios
         ?>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/min.js" language="javascript"></script>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/jquery.js" language="javascript"></script>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/functions.js" language="javascript"></script>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/dinamic_list.js" language="javascript"></script>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/suspension.js" language="javascript"></script>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/validator.js" language="javascript"></script>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/new_ajax.js" language="javascript"></script>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/time.js" language="javascript"></script>
-        <script src="../<?= DIR_APLICA_CENTRAL ?>/js/mask.js" language="javascript"></script>
-        <script type="text/javascript" language="JavaScript" src="../<?= DIR_APLICA_CENTRAL ?>/js/sweetalert-dev.js"></script>
-        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/dinamic_list.css" rel="stylesheet">
-        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/validator.css" rel="stylesheet">
-        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/jquery.css" rel="stylesheet">
-        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/informes.css" rel="stylesheet">
-        <link type="text/css" href="../<?= DIR_APLICA_CENTRAL ?>/estilos/bootstrap.css" rel="stylesheet">
-        <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/sweetalert.css' type='text/css'>
+
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/jquery-3.3.1.js" language="javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/jquery.dataTables.min.js" language="javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/lib/datatables.net-bs/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/moment.min.js" type="text/javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/dataTables.buttons.min.js" language="javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/buttons.flash.min.js" language="javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/jszip.min.js" language="javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/pdfmake.min.js" language="javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/vfs_fonts.js" language="javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/buttons.html5.min.js" language="javascript"></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/js/daterangepicker.min.js" type="text/javascript" ></script>
+        <script src= "../<?= DIR_APLICA_CENTRAL ?>/js/suspension.js?rand=<?= rand(1500, 50000) ?>" language="javascript"></script>
+        <link href="../<?= DIR_APLICA_CENTRAL ?>/js/lib/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <link href="../<?= DIR_APLICA_CENTRAL ?>/js/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="../<?= DIR_APLICA_CENTRAL ?>/js/DataTables/css/daterangepicker.css" rel="stylesheet" type="text/css"/>
 
         <?php
         $this->conexion = $co;
@@ -66,28 +72,98 @@ class ins_servic_suspen {
 
         $datos_usuario = $this->usuario->retornar();
         $usuario = $datos_usuario["cod_usuari"];
-        ?>
-        </table>
-        <form action="index.php" method="post" name="form_search" id="form_searchID" enctype="multipart/form-data">        
-            <div class="accordion">
-                <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>LISTADO DE USUARIOS</b></h3>
-                <div class="" id="sec2">
-                    <div class="Style2DIV" id="form3">
-                    <?php
-                        echo self::$cFunciones->listaEmpresasParametrizadas();
-                    ?>
-                    </div>
-                </div>
-            </div>            
-            <input type="hidden" name="standa" id="standa" value="<?= DIR_APLICA_CENTRAL ?>"/>
-            <input type="hidden" name="window" id="window" value="central"/>
-            <input type="hidden" name="cod_servic" id="cod_servic" value="<?= $_REQUEST['cod_servic'] ?>"/>
-            <input type="hidden" name="opcion" id="opcion" value="1"/>            
-            <input type="hidden" name="cod_tercer" id="cod_tercer" value=""/>
-            <input type="hidden" name="nom_tercer" id="nom_tercer" value=""/>
-            <input type="hidden" name="dir_emailx" id="dir_emailx" value=""/>
-        </form>
-        <?php
+        $sus_terceros = new suspensiones();
+        $data = $sus_terceros->SetSuspensiones();
+
+        
+        $html = '</table>
+                    <div> 
+                        <div class="panel-group" id="accordion">
+                          <div class="panel panel-default">
+                            <div class="panel-heading">
+                              <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#filtro">
+                                    Filtros
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="filtro" class="panel-collapse collapse in">
+                              <div class="panel-body">
+                                  <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                      <label for="fec_rangox">Fechas</label>
+                                      <input type="text" class="form-control" id="fec_rangox">
+                                    </div> 
+                                  </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div class="panel panel-default">
+                            <div class="panel-heading">
+                              <h4 class="panel-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#tablaDatos">
+                                    Información de suspendidos
+                                </a>
+                              </h4>
+                            </div>
+                            <div id="tablaDatos" class="panel-collapse collapse in" style="overflow: auto;">
+                              <div class="panel-body">
+                                <table id="tablaSuspend" class="table table-striped table-bordered" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Documento Tercero</th>
+                                            <th>Nombre Tercero</th>
+                                            <th>Fecha Suspensión</th>
+                                            <th>Número de factura</th>
+                                            <th>Saldo Pendiente</th>
+                                            <th>Estado Suspensión</th>
+                                            <th>Detalle Suspensión</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ';
+
+                                        foreach ($data as $estadoSus => $estados) {
+                                            foreach ($estados as $campo => $datos) {
+                                                # code...
+                                            
+                                                $dateNow = new DateTime();
+                                                $dateSus = new DateTime($datos['fec_vencin']);
+                                                $interval = $dateNow->diff($dateSus);
+
+                                                if($datos['fec_vencin'] < date('Y-m-d')){
+                                                    $datos['est_suspen'] = 'Suspendido';
+                                                    $datos['det_suspen'] = $interval->format('Suspendido, %a día(s) de suspensión');
+                                                }else{
+                                                    $datos['det_suspen'] = $interval->format('Faltan %a día(s) para ser suspendido');
+                                                    $datos['est_suspen'] = 'Proximo a suspender';
+                                                }
+
+                                                 $html.= '<tr>
+                                                            <td>'.$datos['cod_tercer'].'</td>
+                                                            <td>'.$datos['abr_tercer'].'</td>
+                                                            <td>'.$datos['fec_vencin'].'</td>
+                                                            <td>'.$datos['num_factur'].'</td>
+                                                            <td>$'.$datos['val_totalx'].'</td>
+                                                            <td>'.$datos['est_suspen'].'</td>
+                                                            <td>'.$datos['det_suspen'].'</td>
+                                                          </tr>'
+                                                         ;
+                                            }
+                                        }
+                                        $html .='
+                                    </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                    </div>  ';
+
+        
+
+        echo $html;
+        
     }
 
     /* ! \fn: formulario
