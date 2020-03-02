@@ -2853,7 +2853,6 @@ class Despachos
         $mCamposEstServ = array("nom_tipser", "est_servic", "fec_vencin", "num_factur", "val_totalx");
 
         //Incluye el archivo para consultar las suspenciones
-        include("../".DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php');
         $sus_terceros = new suspensiones();
         //Consume el metodo
         $data = $sus_terceros->SetSuspensiones($nitTrans[0]['cod_transp'], null);
