@@ -22,11 +22,12 @@ class suspensiones {
     //Valida request para traer los documentos necesar
     if(isset($_REQUEST['cod_tercer'])){
       chdir(__DIR__."/../");
-      include '../lib/general/constantes.inc';
-      include '../lib/ajax.inc';
+      include_once '../lib/general/constantes.inc';
+      include_once '../lib/ajax.inc';
+      include_once '../lib/general/festivos.php';
     }else{
-      include 'constantes.inc';
       include '../'.DIR_APLICA_CENTRAL.'/lib/ajax.inc';
+      include_once '../'.DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
     }
       
     $this -> conexion = $AjaxConnection;
@@ -76,11 +77,25 @@ class suspensiones {
     }
 
     /*$dataTerceros[1000] = array(
-        'cod_tercer' => 830090031, 
-        'abr_tercer' => 'OTRANS HELTP LOGISTIC', 
-        'fec_vencin' => '2020-02-10',
-        'num_factur' => 564564564,
-        'saldo_factura' => 158000
+        'num_factur' => 11194,
+        'cod_tercer' => 800113622, 
+        'abr_tercer' => 'TRANSPORTADORA LAS MULAS S.A.S.', 
+        'fec_factur' => '2020-01-02',
+        'fec_vencin' => '2020-02-11',
+        'val_totalx' => 172500,
+        'nota_contable' => 72500,
+        'dias_prorro'=>1
+    );
+
+    $dataTerceros[1001] = array(
+        'num_factur' => 11154,
+        'cod_tercer' => 800113622, 
+        'abr_tercer' => 'TRANSPORTADORA LAS MULAS S.A.S.', 
+        'fec_factur' => '2020-02-15',
+        'fec_vencin' => '2020-03-30',
+        'val_totalx' => 1288232,
+        'nota_contable' => 25500,
+        'dias_prorro'=> 2
     );
 
     $dataTerceros[1001] = array(
@@ -112,11 +127,15 @@ class suspensiones {
 
       //Recorre los campos
       foreach ($value as $keyCampo => $valueCampo) {
+        
         if($keyCampo == 'fec_vencin'){
 
           //Asigna los dias que se asigna para hacer el pago
           $cReturn[$key]['fec_vencin'] = date("Y-m-d",strtotime($value['fec_vencin']."+ 10 days")); 
-          $cReturn[$key]['dia'] = date("D", strtotime($value['fec_vencin']."+ 10 days"));
+
+          //Valida dias festivos
+          $cReturn[$key]['fec_vencin'] = $this->valFest($cReturn[$key]['fec_vencin']);
+          $cReturn[$key]['dia'] = date("D", strtotime($cReturn[$key]['fec_vencin']));
 
           //Valida fines de semana para correr los dias
           if($cReturn[$key]['dia'] == 'Sun'){
@@ -124,6 +143,10 @@ class suspensiones {
           }elseif($cReturn[$key]['dia'] == 'Sat'){
             $cReturn[$key]['fec_vencin'] = date("Y-m-d",strtotime($cReturn[$key]['fec_vencin']."+ 2 days"));
           }
+
+          //Valida dias festivos
+          $cReturn[$key]['fec_vencin'] = $this->valFest($cReturn[$key]['fec_vencin']);
+
         }         
       }
     }
@@ -131,7 +154,7 @@ class suspensiones {
     //Identifica que caso aplica para ser suspendido o por suspender
     $segSusp = [];
     foreach ($cReturn as $key => $value) {
-      if($value['fec_vencin'] < date('Y-m-d')){
+      if($value['fec_vencin']." 15:00:00" < date('Y-m-d H:i:s')){
         $segSusp['suspendido'][] = $value;
       }else{
         $segSusp['porSuspender'][] = $value;
@@ -144,6 +167,18 @@ class suspensiones {
     }else{
       return $segSusp;
     }
+  }
+
+  function valFest($fecha){
+    $yea = date("Y", strtotime($fecha)); 
+    $mon = date("m", strtotime($fecha));
+    $day = date("d", strtotime($fecha));
+    $festivo = new Festivos($yea);
+    if($festivo->esFestivo($day,$mon)){ 
+      $fecha = date("Y-m-d",strtotime($fecha."+ 1 days"));
+      $fecha = $this->valFest($fecha);
+    }
+    return  $fecha;
   }
 
 }//fin clase
