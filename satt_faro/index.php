@@ -561,36 +561,48 @@ class Aplicacion_Seguridad
 	 */
 
     function alertMensajeSuspension($data){
+      //Valida si existen datos
       if(!empty($data)){
 
+        //Valida si existe la variable de sesion para crearla
         if(!isset($_SESSION['datos_usuario']['ale_suspen'])){
           $_SESSION['datos_usuario']['ale_suspen'] = 0;
         }
         
+        //Valida variable de sesión
         if($_SESSION['datos_usuario']['ale_suspen'] == 0){
+
+          //Variables necesarias para alerta
           $tittle = 'Aviso de suspensión!';
           $viewButton = 'true';
           $backdrop = 'true';
 
+          //Recorre la data para asignar información de las facturas
           foreach ($data as $estado => $mData) {
             foreach ($mData as $ident => $campos) {
 
+              //Valida estados
               If($estado == 'suspendido'){
+                //Variables necesarias para alerta
                 $body = "Se ha suspendido el servicio de su cuenta, si ya realizó el pago, por favor enviar el soporte al correo: <b>pagos@grupooet.com.</b>";
                 $type = 'error';
-                $colorBoton = "#336600";
+                $colorBoton = "#ff0000";
               }else{
+                 //Variables necesarias para alerta
                 $body = "Su servicio será suspendido el día ".$campos['fec_vencin'].', por favor realice el pago antes de que sea suspendida la cuenta.';
                 $type = 'warning';
                 $colorBoton = "#f8bb86";
               }
 
+              //Ejecuta función que crea alerta
               $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+              
+              $_SESSION['datos_usuario']['ale_suspen'] = 1; 
 
+              return false;
             }
           }
         }
-         $_SESSION['datos_usuario']['ale_suspen'] = 1; 
       }
     }
 
