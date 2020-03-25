@@ -45,7 +45,7 @@ class suspensiones {
    *          $cod_usuari = usuario de sesión
    *  \return: array u json
    */
-  function SetSuspensiones($cod_tercer = null, $cod_usuari = null)
+  function SetSuspensiones($cod_tercer = null, $cod_usuari = null, $eje_noveda = null)
   {
 
     //Captura el codigo del tercero por Request o por parametro.
@@ -161,16 +161,19 @@ class suspensiones {
       }
     }
 
-    //Retorna la data dependiendo de la solicitud
-    if(isset($_REQUEST['cod_tercer'])){
-      echo json_encode($segSusp, true);
-    }else{
+    //Valida Estado de la novedad para ejecutar
+    if ($eje_noveda == 1) {
       //Valida las novedades que reporta Aviso de suspensión y servicio suspendido
       $this->novDespachosAS_SS($segSusp);
 
       //Valida las novedades que Avivasión del servicio
       $this->novDespachosSA($segSusp);
-      
+    }
+
+    //Retorna la data dependiendo de la solicitud
+    if(isset($_REQUEST['cod_tercer'])){
+      echo json_encode($segSusp, true);
+    }else{
       return $segSusp;
     }
   }

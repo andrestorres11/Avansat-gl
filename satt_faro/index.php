@@ -335,7 +335,7 @@ class Aplicacion_Seguridad
 
           if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 7, 8))){
           	//Funcion Alerta de suspensión empresas
-          	$data = $sus_terceros->SetSuspensiones(null, null);
+          	$data = $sus_terceros->SetSuspensiones(null, null, 1);
           	$this->alertMensajeSuspenAdmin($data);
           }else{
           	$data = $sus_terceros->SetSuspensiones(null, $_SESSION['datos_usuario']['cod_usuari']);
