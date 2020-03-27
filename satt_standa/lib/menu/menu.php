@@ -1,21 +1,19 @@
 <?php
+    if ( isset( $_GET["Action"] ) ) $_AJAX = $_GET;
+    if ( isset( $_POST["Action"]  ) ) $_AJAX = $_POST;
 
+    include("../".DIR_APLICA_CENTRAL."/lib/general/functions.inc");
+    guardarInformacionAcceso($_SESSION["datos_usuario"]["cod_usuari"], $_SESSION["datos_usuario"]["cod_perfil"], $this->conexion);
 
-
-if ( isset( $_GET["Action"] ) ) $_AJAX = $_GET;
-if ( isset( $_POST["Action"]  ) ) $_AJAX = $_POST;
-
-
-if ( $_AJAX["Action"] == "load" )  {
-  
-    include_once( "lib/menu/dinamic_menu.inc" );
-    session_start();
-    $menu = $_SESSION["SATMenu"];
-    $tree = $_SESSION["tree"];
-    $menu->Display( $tree );
-}
-else  
-{
+    if ( $_AJAX["Action"] == "load" )  {
+        include_once( "lib/menu/dinamic_menu.inc" );
+        session_start();
+        $menu = $_SESSION["SATMenu"];
+        $tree = $_SESSION["tree"];
+        $menu->Display( $tree );
+    }
+    else  
+    {
         $data = $_SESSION["datos_usuario"];
 
         //@Menu:      
@@ -33,10 +31,10 @@ else
             $fathers .= "FROM ".BASE_DATOS.".tab_servic_usuari c, ".BD_STANDA.".tab_genera_servic a LEFT JOIN ".BD_STANDA.".tab_servic_servic b ON a.cod_servic = b.cod_serhij ";
             $fathers .= "WHERE a.cod_servic = c.cod_servic AND c.cod_usuari = '".$data["cod_usuari"]."' AND cod_serhij IS NULL ORDER BY a.ind_ordenx, a.nom_servic ASC";
         }
-        
+
         $request1 = new Consulta( $fathers, $this->conexion );
         $fathers = $request1->ret_matriz( "a" );    
-        
+
         //@Matriz de servicios hijos con sus respectivos padres.
         $sons = "SELECT a.cod_serhij as node, ";
         $sons .= "b.nom_servic as nnode, ";
@@ -50,30 +48,23 @@ else
         else    {
             $sons .= "FROM ".BD_STANDA.".tab_servic_servic a, ".BD_STANDA.".tab_genera_servic b, ".BD_STANDA.".tab_genera_servic c, ".BASE_DATOS.".tab_servic_usuari d ";
             $sons .= "WHERE a.cod_serhij = b.cod_servic AND a.cod_serpad = c.cod_servic AND a.cod_serhij = d.cod_servic AND d.cod_usuari = '".$data["cod_usuari"]."' ORDER BY node ASC";
-        
         }
 
         $request2 = new Consulta( $sons, $this->conexion );
         $sons = $request2->ret_matriz( "a" );
-        
-        //@Construcciï¿½n del ï¿½rbol ( nodos-padres ) al unir la matriz de padres con la de hijos.
+
+        //@Construcción del árbol ( nodos-padres ) al unir la matriz de padres con la de hijos.
         $tree = array_merge( $fathers, $sons );
 
-
-
-       
-      echo '
-        <link type="text/css" rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/lib/menu/css/bootstrap.min.css" />
-        <link type="text/css" rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/lib/menu/css/mmenu.css" />
-        <link type="text/css" rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/lib/menu/css/mmenu-theme-light.css" />
-        
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
-        <script type="text/javascript" src="../'.DIR_APLICA_CENTRAL.'/lib/menu/js/jquery.mmenu.js"></script>
-     ';
-
-     echo '<script language="javascript" src="../'.DIR_APLICA_CENTRAL.'/lib/menu/js/dinamic_menu2.js"></script>';
-
-
+        echo '
+            <link type="text/css" rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/lib/menu/css/bootstrap.min.css" />
+            <link type="text/css" rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/lib/menu/css/mmenu.css" />
+            <link type="text/css" rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/lib/menu/css/mmenu-theme-light.css" />
+            
+            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+            <script type="text/javascript" src="../'.DIR_APLICA_CENTRAL.'/lib/menu/js/jquery.mmenu.js"></script>
+        ';
+        echo '<script language="javascript" src="../'.DIR_APLICA_CENTRAL.'/lib/menu/js/dinamic_menu2.js"></script>';
     ?>
     <script type="text/javascript">
         $(function() {
@@ -100,17 +91,9 @@ else
                 'overflow-y' : 'scroll'
             } ).fadeIn("slow");
         });
-
-
-        
     </script>
-    
-  <div id="menu" style='display: none;'>
-          
+    <div id="menu" style='display: none;'>
     <?php
-
-         
-
         include( "../".DIR_APLICA_CENTRAL."/lib/menu/dinamic_menu.inc" );
         //------------------------------------------------------------------------------------------------
         $menu = new DinamicMenu;
@@ -129,10 +112,6 @@ else
         $_SESSION["APP_MENU"] = $menu;
         
         $menu->Display( $tree,  $this->conexion ); 
-        
 }//FIN ELSE GENERAL 
-
-?>
-        
-  </div>
-
+?>   
+</div>
