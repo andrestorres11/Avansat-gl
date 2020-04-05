@@ -26,7 +26,7 @@ function GetUniqueCol( $mCol, $mMatrix )
 }
 
 /*
- * FunciÃ³n que da formato de moneda a una cadena nÃºmerica. Exp. ->2000000, ->2.000.000
+ * Función que da formato de moneda a una cadena númerica. Exp. ->2000000, ->2.000.000
  */
 function MoneyFormat( $num )
 {
@@ -38,33 +38,33 @@ function ReturnDate( $date = NULL )
 {
   if ( !$date )
   {
-  	$date = date( "Y-m-d" );
+    $date = date( "Y-m-d" );
   }
   $time = explode( "-", $date );
   switch( $time[1] )
   {
-  	case '01' : $month = "Enero";      break;
-  	case '02' : $month = "Febrero";    break;
-  	case '03' : $month = "Marzo";      break;
-  	case '04' : $month = "Abril";      break;
-  	case '05' : $month = "Mayo";       break;
-  	case '06' : $month = "Junio";      break;
-  	case '07' : $month = "Julio";      break;
-  	case '08' : $month = "Agosto";     break;
-  	case '09' : $month = "Septiembre"; break;
-  	case '10' : $month = "Octubre";    break;
-  	case '11' : $month = "Noviembre";  break;
-  	case '12' : $month = "Diciembre";  break;
+    case '01' : $month = "Enero";      break;
+    case '02' : $month = "Febrero";    break;
+    case '03' : $month = "Marzo";      break;
+    case '04' : $month = "Abril";      break;
+    case '05' : $month = "Mayo";       break;
+    case '06' : $month = "Junio";      break;
+    case '07' : $month = "Julio";      break;
+    case '08' : $month = "Agosto";     break;
+    case '09' : $month = "Septiembre"; break;
+    case '10' : $month = "Octubre";    break;
+    case '11' : $month = "Noviembre";  break;
+    case '12' : $month = "Diciembre";  break;
   }
   switch ( date( "w", strtotime($date) ) )
   {
-  	case '0' : $day = "Domingo";    break;
-  	case '1' : $day = "Lunes";      break;
-  	case '2' : $day = "Martes";     break;
-  	case '3' : $day = "MiÃ©rcoles";  break;
-  	case '4' : $day = "Jueves";     break;
-  	case '5' : $day = "Viernes";    break;
-  	case '6' : $day = "SÃ¡bado";     break;
+    case '0' : $day = "Domingo";    break;
+    case '1' : $day = "Lunes";      break;
+    case '2' : $day = "Martes";     break;
+    case '3' : $day = "Miércoles";  break;
+    case '4' : $day = "Jueves";     break;
+    case '5' : $day = "Viernes";    break;
+    case '6' : $day = "Sábado";     break;
   }
   return $day.", ".$time[2]." de ".$month." de ".$time[0];
 }
@@ -232,31 +232,31 @@ function ArrayUnique( $mArray )
 
 //--------------------------------------------------------
 //@OBTIENE UNA COLUMNA EN ARREGLO DESDE UNA MATRIZ
-function GetColumnFromMatrix( $mMatrix, $mColumn )	
+function GetColumnFromMatrix( $mMatrix, $mColumn )  
 {
-	$mLength = sizeof( $mMatrix );
-	for ( $x = 0; $x < $mLength; $x++ )
-		$mAux[] = $mMatrix[$x][$mColumn];
-	return $mAux;
+    $mLength = sizeof( $mMatrix );
+    for ( $x = 0; $x < $mLength; $x++ )
+        $mAux[] = $mMatrix[$x][$mColumn];
+    return $mAux;
 }
 
 //--------------------------------------------------------
 //@RETORNA UNA MATRIZ ORDENADA POR LA COLUMNA ESPECIFICADA
-function SortMatrix( $mMatrix, $mColumn, $mOrder = "ASC" )	
+function SortMatrix( $mMatrix, $mColumn, $mOrder = "ASC" )  
 {
-	$mColumn = GetColumnFromMatrix( $mMatrix, $mColumn );
-	natsort( $mColumn );
-	reset( $mColumn );
-	while ( list ( $key ) = each( $mColumn ) )	
-		$mAux[] = $mMatrix[$key];
-	if ( strtoupper( $mOrder ) == "DESC" )
-		return array_reverse( $mAux );
-	else
-		return $mAux;
+    $mColumn = GetColumnFromMatrix( $mMatrix, $mColumn );
+    natsort( $mColumn );
+    reset( $mColumn );
+    while ( list ( $key ) = each( $mColumn ) )  
+        $mAux[] = $mMatrix[$key];
+    if ( strtoupper( $mOrder ) == "DESC" )
+        return array_reverse( $mAux );
+    else
+        return $mAux;
 }
 
 /*
-$a[] = array( 'cod_tercer' => '98765430', 'nom_tercer' => 'Mauricio CÃºbides', 'age_tercer' => '28' );
+$a[] = array( 'cod_tercer' => '98765430', 'nom_tercer' => 'Mauricio Cúbides', 'age_tercer' => '28' );
 $a[] = array( 'cod_tercer' => '56457567', 'nom_tercer' => 'Ricardo Delgado', 'age_tercer' => '22' );
 $a[] = array( 'cod_tercer' => '21343543', 'nom_tercer' => 'Yahira Soquer', 'age_tercer' => '28' );
 $a[] = array( 'cod_tercer' => '96775626', 'nom_tercer' => 'Christiam Barrera', 'age_tercer' => '25' );
@@ -345,13 +345,13 @@ function field_format( &$mKey, $mTrim = NULL, $mChars = NULL )
   {
     $mKey = $mTrim === NULL ? str_replace( ' ', NULL, $mKey ) : trim( $mKey );
   }
-	else
-	{
-		foreach ( $mChars as $mChar )
-		{
-			$mKey = str_replace( $mChar, NULL, $mKey );
-		}
-	}
+    else
+    {
+        foreach ( $mChars as $mChar )
+        {
+            $mKey = str_replace( $mChar, NULL, $mKey );
+        }
+    }
 }
 
 
@@ -401,7 +401,7 @@ function sumarMinutosFecha($FechaStr, $MinASumar) {
  *  \brief: Trae la diferencia en minutos de dos fechas
  *  \author: Ing. Fabian Salinas
  *  \date: 02/06/2015
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \param: $mFec1 date 
  *  \param: $mFec2 date
  *  \return: Diferencia en Minutos
@@ -418,9 +418,9 @@ function getDiffTime($mFec1, $mFec2)
  *  \brief: Trae los puestos de control del plan de ruta del despacho
  *  \author: Ing. Fabian Salinas
  *  \date: 01/06/2015
- *  \date modified: dia/mes/aÃ±o
- *  \param: $mConexion   ConexiÃ³n BD
- *  \param: $mDespac     Integer  NÃºmero Despacho
+ *  \date modified: dia/mes/año
+ *  \param: $mConexion   Conexión BD
+ *  \param: $mDespac     Integer  Número Despacho
  *  \param: $mTipReturn  String   sql: Retorna String Query; 1PC: Retorna primer PC
  *  \return: Sql o Matriz
  */
@@ -469,9 +469,9 @@ function getControDespac(&$mConexion, $mDespac, $mTipReturn = NULL )
  *  \brief: Trae los PC del despacho y las novedades correspondientes por PC 
  *  \author: Ing. Fabian Salinas
  *  \date: 23/06/2015
- *  \date modified: dia/mes/aÃ±o
- *  \param: $mConexion  ConexiÃ³n BD
- *  \param: $mNumDespac  Integer  NÃºmero del Despacho
+ *  \date modified: dia/mes/año
+ *  \param: $mConexion  Conexión BD
+ *  \param: $mNumDespac  Integer  Número del Despacho
  *  \param: $mIndReturn  Integer  (0:PC con/sin Novedades; 1:PC con Novedades; 2:Ultimo PC con Novedad)
  *  \param: $mFiltro  String  sql Where Inyectado Inicia con AND
  *  \return: Matriz
@@ -613,9 +613,9 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
  *  \brief: Trae el siguiente PC del plan de Ruta
  *  \author: Ing. Fabian Salinas
  *  \date: 03/07/2015
- *  \date modified: dia/mes/aÃ±o
- *  \param: $mConexion  ConexiÃ³n BD
- *  \param: $mNumDespac  Integer  NÃºmero del Despacho
+ *  \date modified: dia/mes/año
+ *  \param: $mConexion  Conexión BD
+ *  \param: $mNumDespac  Integer  Número del Despacho
  *  \return: Array
  */
 function getNextPC( &$mConexion, $mNumDespac )
@@ -648,8 +648,8 @@ function getNextPC( &$mConexion, $mNumDespac )
  *  \brief: Trae el ultimo registro por transportadora de tab_transp_tipser
  *  \author: Ing. Fabian Salinas
  *  \date: 17/07/2015
- *  \date modified: dia/mes/aÃ±o
- *  \param: mConexion  ConexiÃ³n BD
+ *  \date modified: dia/mes/año
+ *  \param: mConexion  Conexión BD
  *  \param: mSqlWhere   string   sql Where Inyectado Inicia con AND
  *  \param: mNomCampo   Array    Compos a retornar
  *  \return: Matriz
@@ -858,7 +858,7 @@ function DataMethod()
    *  \brief: Crea una lista desplegable para el formulario
    *  \author: Ing. Fabian Salinas
    *  \date: 14/07/2015
-   *  \date modified: dia/mes/aÃ±o
+   *  \date modified: dia/mes/año
    *  \param: mTitulo  String  Titulo del Campo
    *  \param: mNomSel  String  Nombre del Select
    *  \param: mMatriz  Matriz  Matriz con las opciones
@@ -883,5 +883,45 @@ function DataMethod()
 
     return $mHtml;
   }
-  
+
+/*! \fn: getRealIP
+ *  \brief: Develve la dirección real IP de la ubicación del computador cliente con el cual se accede a AVANSAT
+ *  \author: TERCEROS (https://ejemplocodigo.com/ejemplo-php-obtener-la-ip-real-de-una-visita/)
+ *  \date: 18/09/2014
+ *  \return Una cadena con la dirección IP (4 números separados por puntos)
+ */
+function getRealIP()
+{
+    if (isset($_SERVER["HTTP_CLIENT_IP"])) {
+        return $_SERVER["HTTP_CLIENT_IP"];
+    } elseif (isset($_SERVER["HTTP_X_FORWARDED_FOR"])) {
+        return $_SERVER["HTTP_X_FORWARDED_FOR"];
+    } elseif (isset($_SERVER["HTTP_X_FORWARDED"])) {
+        return $_SERVER["HTTP_X_FORWARDED"];
+    } elseif (isset($_SERVER["HTTP_FORWARDED_FOR"])) {
+        return $_SERVER["HTTP_FORWARDED_FOR"];
+    } elseif (isset($_SERVER["HTTP_FORWARDED"])) {
+        return $_SERVER["HTTP_FORWARDED"];
+    } else {
+        return $_SERVER["REMOTE_ADDR"];
+    }
+}
+
+/*! \fn: guardarInformacionAcceso
+ *  \brief: Permite guardar un registro en la tabla de accesos
+ *  \author: Ing. David Rincón
+ *  \date: 14/02/2020
+ *  \param: 
+ *  \return Una cadena con la dirección IP (4 números separados por puntos)
+ */
+function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
+    $direccionIP = getRealIP();
+    $query = "INSERT INTO ".BASE_DATOS.".tab_bitaco_acceso
+                    (cod_usuari, cod_perfil, fec_ingres, url_acceso) 
+                VALUES 
+                    ('".$cod_usuari."', '".$cod_perfil."', NOW(), '".$direccionIP."')";
+    $query = str_replace("''", "NULL", $query);
+    $consulta = new Consulta ($query, $conexion);
+}
+
 ?>
