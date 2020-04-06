@@ -11,6 +11,117 @@
 
 var standa;
 $(function() {
+
+    $('#tablaSuspend thead tr th').each( function (i) {
+        var title = $(this).text();
+        $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="Buscar '+title+'" />' );
+ 
+        $( 'input', this ).on( 'keyup change', function () {
+            if ( table.column(i).search() !== this.value ) {
+                table
+                    .column(i)
+                    .search( this.value )
+                    .draw();
+            }
+        } );
+    } );
+
+    minDateFilter = "";
+    maxDateFilter = "";
+    $.fn.dataTableExt.afnFiltering.push(
+      function(oSettings, aData, iDataIndex) {
+
+        if (typeof aData._date == 'undefined') {
+          aData._date = new Date(aData[2]).getTime();
+        }
+        var date = new Date(aData._date);
+        date.setDate(date.getDate() + 1);
+        if (minDateFilter && !isNaN(minDateFilter)) {
+          if (date < minDateFilter) {
+            return false;
+          }
+        }
+
+        if (maxDateFilter && !isNaN(maxDateFilter)) {
+          if (date > maxDateFilter) {
+            return false;
+          }
+        }
+
+        return true;
+      }
+    );
+    
+
+    var table = $("#tablaSuspend").DataTable({
+        deferRender:    true, 
+        "autoWidth": false,     
+        "search": {
+            "regex": true,
+            "caseInsensitive": false,
+        },
+        'paging': true,
+        'info': true,
+        'filter': true,
+        'orderCellsTop': true,
+        'fixedHeader': true,
+        'language' : {
+            "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+        },
+        dom: "<'row'<'col-md-4'B><'col-md-4'l><'col-md-4'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>",
+        buttons: [
+            'copyHtml5',
+            'excelHtml5',
+            'csvHtml5',
+            'pdfHtml5'
+        ],
+
+    });
+
+
+    $("#fec_rangox").daterangepicker({
+          "locale": {
+            "format": 'YYYY-MM-DD',
+            "separator": " - ",
+            "applyLabel": "Aplicar",
+            "cancelLabel": "Cancelar",
+            "fromLabel": "DE",
+            "toLabel": "HASTA",
+            "customRangeLabel": "Custom",
+            "daysOfWeek": [
+                "Dom",
+                "Lun",
+                "Mar",
+                "Mie",
+                "Jue",
+                "Vie",
+                "S&aacute;b"
+            ],
+            "monthNames": [
+                "Enero",
+                "Febrero",
+                "Marzo",
+                "Abril",
+                "Mayo",
+                "Junio",
+                "Julio",
+                "Agosto",
+                "Septiembre",
+                "Octubre",
+                "Noviembre",
+                "Diciembre"
+            ]
+          },
+          "opens": "center",
+        }, function(start, end, label) {
+          maxDateFilter = end;
+          minDateFilter = start;
+          table.draw();  
+        });
+
+    $("#fec_rangox").val("");
+
+
     setTimeout(function() {
         $("div").css({
             height: 'auto'
@@ -22,18 +133,18 @@ $(function() {
             overflow: 'scroll'
         });
 
-        $("#ui-timepicker-div-hor_inicia0").removeAttr('style');
+        //$("#ui-timepicker-div-hor_inicia0").removeAttr('style');
 
         standa = $("#standa").val();
 
-        $(".date").datepicker({
+        /*$(".date").datepicker({
             dateFormat: 'yy-mm-dd'
         });
 
         $(".time").timepicker({
             timeFormat: "hh:mm",
             showSecond: false
-        });
+        });*/
     }, 530);
     standa = $("#standa").val();
 
