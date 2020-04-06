@@ -10,30 +10,17 @@ MODIFICADO POR: Luis Carlos Manrique
 ****************************************************************************/
 /*ini_set('error_reporting', E_ALL);
 ini_set("display_errors", 1);*/
-
 class suspensiones {
-
   //Variables de clase
   var $AjaxConnection;   
 
   function __construct()
   {
-
-    //Valida request para traer los documentos necesar
     if(isset($_REQUEST['cod_tercer'])){
-      chdir(__DIR__."/../");
-      include_once '../lib/general/constantes.inc';
-      include_once '../lib/ajax.inc';
-      include_once '../lib/general/festivos.php';
-    }else{
-      include '../'.DIR_APLICA_CENTRAL.'/lib/ajax.inc';
-      include_once '../'.DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
+      $this->SetSuspensiones();
     }
-      
-    $this -> conexion = $AjaxConnection;
-    $this->SetSuspensiones();
+    
   }
-
 
 
   /*! \fn: SetSuspensiones
@@ -45,21 +32,34 @@ class suspensiones {
    *          $cod_usuari = usuario de sesión
    *  \return: array u json
    */
-  function SetSuspensiones($cod_tercer = null, $cod_usuari = null, $eje_noveda = null)
+  function SetSuspensiones($cod_tercer = null, $cod_usuari = null, $eje_noveda = null, $ajax = null)
   {
+  	if($_SERVER['SERVER_NAME'] == 'ut.intrared.net'){
+  		$urlWS = "https://ut.intrared.net/ap/consultor/app/client/fact_vencida_faro.php";
+  	}else{
+  		$urlWS = "https://dev.intrared.net:8083/ap/cmaya/ut/consultor/app/client/facturacionVencida/fact_vencida_faro.php";
+  	}
+	
 
     //Captura el codigo del tercero por Request o por parametro.
     $cod_tercer = isset($_REQUEST['cod_tercer']) ? $_REQUEST['cod_tercer'] : $cod_tercer;
-    
     //Valida codigo de tercero - Usuario de sesión.
     if(!is_null($cod_tercer)){
 
+      chdir(__DIR__."/../");
+      include_once '../lib/general/constantes.inc';
+      include_once '../lib/ajax.inc';
+      include_once '../lib/general/festivos.php';
+      $this -> conexion = $AjaxConnection;
+
       //Consume Api con parametros
-      $dataTerceros = json_decode(file_get_contents('https://dev.intrared.net:8083/ap/cmaya/ut/consultor/app/client/facturacionVencida/fact_vencida_faro.php?cod_tercero='.$cod_tercer), true);
-
+        $dataTerceros = json_decode(file_get_contents($urlWS.'?cod_tercero='.$cod_tercer), true);
     }else if(!is_null($cod_usuari)){
+      include '../'.DIR_APLICA_CENTRAL.'/lib/ajax.inc';
+      include_once '../'.DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
+      $this -> conexion = $AjaxConnection;
 
-      //Se crea la consulta para traer el NIT
+      //Se crea la consulta para traer el Nit
       $sql =  "SELECT   * 
                  FROM   ".BASE_DATOS.".tab_aplica_filtro_usuari ".
                "WHERE   cod_usuari = '".$cod_usuari."'";
@@ -69,42 +69,23 @@ class suspensiones {
       $cod_tercer = $consulta->ret_matrix( 'a' );
 
       //Consume Api con parametros
-      $dataTerceros = json_decode(file_get_contents('https://dev.intrared.net:8083/ap/cmaya/ut/consultor/app/client/facturacionVencida/fact_vencida_faro.php?cod_tercero='.$cod_tercer[0]['clv_filtro']), true);
+      $dataTerceros = json_decode(file_get_contents($urlWS.'?cod_tercero='.$cod_tercer[0]['clv_filtro']), true);
 
+    }else if(!is_null($ajax)){
+        chdir(__DIR__."/../");
+        include '../lib/ajax.inc';
+        include_once '../lib/general/festivos.php';
+
+        //Consume Api de toda la data
+        $dataTerceros = json_decode(file_get_contents($urlWS), true);
     }else{
+      include '../'.DIR_APLICA_CENTRAL.'/lib/ajax.inc';
+      include_once '../'.DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
+      $this -> conexion = $AjaxConnection;
+
       //Consume Api de toda la data
-      $dataTerceros = json_decode(file_get_contents('https://dev.intrared.net:8083/ap/cmaya/ut/consultor/app/client/facturacionVencida/fact_vencida_faro.php'), true);
+      $dataTerceros = json_decode(file_get_contents($urlWS), true);
     }
-
-   /* $dataTerceros[1000] = array(
-        'num_factur' => 11194,
-        'cod_tercer' => 800113622, 
-        'abr_tercer' => 'TRANSPORTADORA LAS MULAS S.A.S.', 
-        'fec_factur' => '2020-01-02',
-        'fec_vencin' => '2020-02-11',
-        'val_totalx' => 172500,
-        'nota_contable' => 72500,
-        'dias_prorro'=>1
-    );
-/*
-    $dataTerceros[1001] = array(
-        'num_factur' => 11154,
-        'cod_tercer' => 830141359, 
-        'abr_tercer' => 'TRANSPORTADORA LAS MULAS S.A.S.', 
-        'fec_factur' => '2020-02-15',
-        'fec_vencin' => '2020-03-30',
-        'val_totalx' => 1288232,
-        'nota_contable' => 25500,
-        'dias_prorro'=> 2
-    );
-
-    $dataTerceros[1001] = array(
-        'cod_tercer' => 830141359,
-        'abr_tercer' => 'TRANSBORDA S.A.S.', 
-        'fec_vencin' => '2020-02-11',
-        'num_factur' => 5645647544,
-        'saldo_factura' => 1580000
-    );*/
 
     //Codifica en Hson
     $raw_data = json_encode($dataTerceros);
@@ -131,7 +112,7 @@ class suspensiones {
         if($keyCampo == 'fec_vencin'){
 
           //Asigna los dias que se asigna para hacer el pago
-          $cReturn[$key]['fec_vencin'] = date("Y-m-d",strtotime($value['fec_vencin']."+ 10 days")); 
+          $cReturn[$key]['fec_vencin'] = date("Y-m-d",strtotime($value['fec_vencin']."+ 90 days")); 
 
           //Valida dias festivos
           $cReturn[$key]['fec_vencin'] = $this->valFest($cReturn[$key]['fec_vencin']);

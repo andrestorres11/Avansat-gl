@@ -340,9 +340,9 @@ class Aplicacion_Seguridad
           }else{
           	$data = $sus_terceros->SetSuspensiones(null, $_SESSION['datos_usuario']['cod_usuari']);
           	//Funcion bloqueo servicios
-	        $this->bloServSuspension($data);
-	        //Funcion Alerta de suspensión
-	        $this->alertMensajeSuspension($data);
+  	        $this->bloServSuspension($data);
+  	        //Funcion Alerta de suspensión
+  	        $this->alertMensajeSuspension($data);
           }
 
           
@@ -506,7 +506,7 @@ class Aplicacion_Seguridad
 	 */
 
     function bloServSuspension($data){
-      if(in_array($_REQUEST["cod_servic"], array(20160426, 20151236, 526))){
+      if(in_array($_REQUEST["cod_servic"], array(20160426, 20151236, 20151238))){
         $ban = 0;
         $fact = []; 
         //Si retorna información de suspendidos

@@ -9,6 +9,8 @@
  *  \bug: 
  *  \warning:
  */
+/*ini_set('error_reporting', E_ALL);
+ini_set("display_errors", 1);*/
 
 class ajax_horari_monito {
 
@@ -1171,7 +1173,7 @@ class ajax_horari_monito {
         $sus_terceros = new suspensiones();
         $emp_suspencion = [];
         //Trae los campos a suspender
-        $data = $sus_terceros->SetSuspensiones();
+        $data = $sus_terceros->SetSuspensiones(null, null, null, 'on');
 
         //Recorre las transportadoras
         foreach ($transp as $keyTrans => $transpValue) {
