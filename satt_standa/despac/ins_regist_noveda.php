@@ -14,7 +14,6 @@ class Proc_despac {
     }
 
     function principal() {
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/sweetalert2.all.8.11.8.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/regnov.js\"></script>\n";
         echo "<link type='text/css' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' rel='stylesheet'>\n";
         switch ($_REQUEST[opcion]) {
@@ -72,13 +71,13 @@ class Proc_despac {
                                 Placa Veh&iacute;culo: </td>
                             <td class='contenido' style='padding:4px;' >
                                 <input class='campo_texto' type='text' maxlength='6' value='$_REQUEST[placa]' 
-                                       size='6' name='placa' onChange='transporSusp(this.value, \"paca\")'/></td>
+                                       size='6' name='placa'/></td>
                             <td class='contenido' style='padding:4px;' align='right' >
                                 Nro. Manifiesto: 
                             </td>
         
                             <td class='contenido' style='padding:4px;' >
-                                <input class='campo_texto' type='text' value='$_REQUEST[cod_manifi]' name='cod_manifi' onChange='transporSusp(this.value, \"manifi\")' id='cod_manifiID' $disabled />
+                                <input class='campo_texto' type='text' value='$_REQUEST[cod_manifi]' name='cod_manifi' id='cod_manifiID' $disabled />
                             </td>
                         </tr>
                         <tr>
