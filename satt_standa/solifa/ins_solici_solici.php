@@ -102,11 +102,8 @@ class Solici_solici
 			if(strpos($_SERVER["PHP_SELF"],"ins_solici_solici.php") && !$this->validateInterfParame())
 				die("Requiere activar la interfaz con Faro, consulte con su proveedor.");
 
-			
-			
-			if($option>=1 and $option<=4){
+			if($option>=1 and $option<=4)
 				$this->InterfSolicitud = new InterfSolicitud();
-			}
 
 			switch($option)
 			{
