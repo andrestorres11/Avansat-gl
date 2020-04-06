@@ -34,7 +34,7 @@ class suspensiones {
    */
   function SetSuspensiones($cod_tercer = null, $cod_usuari = null, $eje_noveda = null, $ajax = null)
   {
-  	if($_SERVER['SERVER_NAME'] == 'avansatgl.intrared.net'){
+  	if($_SERVER['SERVER_NAME'] == 'ut.intrared.net'){
   		$urlWS = "https://ut.intrared.net/ap/consultor/app/client/fact_vencida_faro.php";
   	}else{
   		$urlWS = "https://dev.intrared.net:8083/ap/cmaya/ut/consultor/app/client/facturacionVencida/fact_vencida_faro.php";
