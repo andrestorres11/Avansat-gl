@@ -104,10 +104,10 @@ class suspensiones {
       $cod_estado = $consulta->ret_matrix( 'a' )[0]['cod_estado'];
 
       //Se valida el estado para ser eliminado si esta inactivo
-      if (empty($cod_estado) || $cod_estado == 0) {
+      if ($cod_estado != 1) {
         unset($cReturn[$key]);
       }
-    } 
+    }
 
     //Se recorre el arreglo
     foreach ($cReturn as $key => $value) {
