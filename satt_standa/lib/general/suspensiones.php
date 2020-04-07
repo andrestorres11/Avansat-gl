@@ -93,6 +93,22 @@ class suspensiones {
     //Codifica en Array
     $cReturn = json_decode($raw_data, true);
 
+    //Eliminan las empresas que estan inactivas o no están en la base terceros
+    foreach ($cReturn as $key => $value) {
+      //Se crea la consulta para traer el estado de la empresa
+      $sql =  "SELECT   cod_estado
+                 FROM   ".BASE_DATOS.".tab_tercer_tercer
+                WHERE   cod_tercer = ".$value['cod_tercer'];
+      //Ejecuta la consulta
+      $consulta = new Consulta( $sql, $this -> conexion );
+      $cod_estado = $consulta->ret_matrix( 'a' )[0]['cod_estado'];
+
+      //Se valida el estado para ser eliminado si esta inactivo
+      if (empty($cod_estado) || $cod_estado == 0) {
+        unset($cReturn[$key]);
+      }
+    }
+
     //Se recorre el arreglo
     foreach ($cReturn as $key => $value) {
 
