@@ -107,7 +107,7 @@ class suspensiones {
       if (empty($cod_estado) || $cod_estado == 0) {
         unset($cReturn[$key]);
       }
-    }
+    } 
 
     //Se recorre el arreglo
     foreach ($cReturn as $key => $value) {
@@ -160,11 +160,20 @@ class suspensiones {
 
     //Valida Estado de la novedad para ejecutar
     if ($eje_noveda == 1) {
-      //Valida las novedades que reporta Aviso de suspensión y servicio suspendido
-      $this->novDespachosAS_SS($segSusp);
 
-      //Valida las novedades que Avivasión del servicio
-      $this->novDespachosSA($segSusp);
+      if(!isset($_SESSION['datos_usuario']['ale_suspen'])){
+        $_SESSION['datos_usuario']['ale_suspen'] = 0;
+      }
+      
+      if($_SESSION['datos_usuario']['ale_suspen'] == 0){
+        //Valida las novedades que reporta Aviso de suspensión y servicio suspendido
+        $this->novDespachosAS_SS($segSusp);
+
+        //Valida las novedades que Avivasión del servicio
+        $this->novDespachosSA($segSusp);
+
+        $_SESSION['datos_usuario']['ale_suspen'] = 1;
+      }
     }
 
     //Retorna la data dependiendo de la solicitud
