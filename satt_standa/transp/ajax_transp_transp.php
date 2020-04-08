@@ -575,6 +575,15 @@ class trans {
                             WHERE cod_tercer = '$transp->cod_tercer' ";
         $insercion = new Consulta($query, self::$cConexion, "R");
 
+        #activa la transportadora
+        $query = "UPDATE " . BASE_DATOS . ".tab_transp_tipser 
+                        SET ind_estado = 1
+                            WHERE cod_transp = '$transp->cod_tercer'
+                            ORDER BY num_consec DESC
+                            LIMIT 1";
+        $act_trans = new Consulta($query, self::$cConexion, "R");
+
+
         #consulta las agencias de la transportadora
         $query = "SELECT cod_agenci FROM " . BASE_DATOS . ".tab_transp_agenci WHERE cod_transp = '$transp->cod_tercer'";
         $consulta = new Consulta($query, self::$cConexion);
@@ -619,6 +628,14 @@ class trans {
                             fec_modifi = '$transp->fec_modifi'
                             WHERE cod_tercer = '$transp->cod_tercer' ";
         $insercion = new Consulta($query, self::$cConexion, "R");
+
+        #activa la transportadora
+        $query = "UPDATE " . BASE_DATOS . ".tab_transp_tipser 
+                        SET ind_estado = 0
+                            WHERE cod_transp = '$transp->cod_tercer'
+                            ORDER BY num_consec DESC
+                            LIMIT 1";
+        $act_trans = new Consulta($query, self::$cConexion, "R");
 
         #consulta las agencias de la transportadora
         $query = "SELECT cod_agenci FROM " . BASE_DATOS . ".tab_transp_agenci WHERE cod_transp = '$transp->cod_tercer'";
