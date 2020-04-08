@@ -3177,13 +3177,35 @@ class Despachos
 
       
         $mNovedades = self::getNovedad( $mNumDespac );
+        $mEstServ = self::getView('jso_encabe');
+
+        //Crea Array
+        $dataNov = [];
+        //Se Recorre las novedades
+        foreach ($mNovedades as $key => $data) {
+            //Valida Permisos
+            if( $mEstServ->est_servic->ind_visibl != 1 ){
+                //Valida tipo de novedad y elimina posición
+                if(in_array($data['cod_noveda'], array(9271,9272,9273))){
+                    unset($mNovedades[$key]);
+                }
+            }
+        }
+
+        //Se recorre las novedades para calcular el key automaticamente
+        foreach ($mNovedades as $key => $data) {
+            $dataNov[] = $data;
+        }
+
+        //Reemplaza el arreglo de Novedades
+        $mNovedades = $dataNov;
+        
         $mCanNov = sizeof($mNovedades)-1;
 
         $j=0;
         for ($i = $mCanNov; $i >=0; $i--)
         {
           $mSolEfecti = "";
-
           if( $mViewUsu->edi_noveda->ind_visibl == 1 && ($mNovedades[$i][tab_origen] == 1 || $_RUTASX[$i][tab_origen] == 2) ){
             $mLinkUpd = '
               <spam style="color:#416F1E; cursor:pointer"
@@ -3395,22 +3417,32 @@ class Despachos
                 $mHtml->Label( $tittle, array("align"=>"left", "class"=>"celda_titulo") );
               $mHtml->CloseRow();
 
+
+              $mEstServ = self::getView('jso_encabe');
               foreach ( $_RUTASX as $row ) 
               {
-                $mHtml->Row();
-                $mHtml->Label( $row['sit_seguim'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                $mHtml->Label( $row['fec_progra'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                $mHtml->Label( $row['fec_planea'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                $mHtml->Label( $row['fec_creaci'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                $mHtml->Label( $row['cal_tiempo'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                $mHtml->Label( $row['nom_noveda'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                if($mView->sub->usr_creaci == 1) {
-                    $mHtml->Label( $row['cod_usuari'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                if( $mEstServ->est_servic->ind_visibl != 1 ){
+                    if(in_array($row['cod_noveda'], array(9271,9272,9273))){
+                        unset($row);
+                    }
                 }
-                if($watchAlias == 1) {
-                    $mHtml->Label( self::getAlias($row['cod_usuari']), array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+
+                if(!empty($row['fec_creaci'])){
+                    $mHtml->Row();
+                    $mHtml->Label( $row['sit_seguim'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                    $mHtml->Label( $row['fec_progra'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                    $mHtml->Label( $row['fec_planea'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                    $mHtml->Label( $row['fec_creaci'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                    $mHtml->Label( $row['cal_tiempo'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                    $mHtml->Label( $row['nom_noveda'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                    if($mView->sub->usr_creaci == 1) {
+                        $mHtml->Label( $row['cod_usuari'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                    }
+                    if($watchAlias == 1) {
+                        $mHtml->Label( self::getAlias($row['cod_usuari']), array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                    }
+                    $mHtml->CloseRow();
                 }
-                $mHtml->CloseRow();
               }
             }
             else
