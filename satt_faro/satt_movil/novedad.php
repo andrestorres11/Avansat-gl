@@ -211,7 +211,7 @@ class Novedad {
                             $mMessage .= "Observación enviada: " . 'Interfaz - ' . $parametros["novedad"] . " \n";
                             $mMessage .= "******** Detalle ******** \n";
                             $mMessage .= "Mensaje de error: " . $respuesta . " \n";
-                            mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net, nelson.liberato@eltransporte.org", "Error Web service Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                            mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware satt_movil", $mMessage, 'From: soporte.ingenieros@intrared.net');
                         }
                     } catch (SoapFault $e) {
                         fwrite($mFile, "catch:------------------------------------------ \n");
@@ -722,7 +722,7 @@ class Novedad {
                         $novedaError['det_respon'] = $mMessage;
                         //Se registran errores de la interfaz en la BD
                         $this->setNovedadError($parametros, $_POST[$i], $novedaError, $data, 'pc');
-                        mail("nelson.liberato@eltransporte.org, maribel.garcia@grupooet.com", "NOVEDAD OAL PARA CORONA DESDE FARO A GL", $mMessage."\n".var_export($parametros, true), 'From: soporte.ingenieros@intrared.net');
+                        /*mail("nelson.liberato@eltransporte.org, maribel.garcia@grupooet.com", "NOVEDAD OAL PARA CORONA DESDE FARO A GL", $mMessage."\n".var_export($parametros, true), 'From: soporte.ingenieros@intrared.net');*/
                     }
                    
                 } // FIN ENVIO A CORONA
