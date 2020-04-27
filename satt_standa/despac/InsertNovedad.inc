@@ -3552,7 +3552,7 @@ class InsertNovedad {
 
                         // parche 313726 para colombiasoftware, hay una URL de pruebas y otra de prod, la de prod es igual para todos y cada cliente tiene un codigo  
                         $cod_transp = $interfaz->interfaz[$i]['codigo']     != '' ? $interfaz->interfaz[$i]['codigo'] : $cod_transp; // cod de la transp, no es el nit, debe estar en BD
-                        $url_webser    =  $interfaz->interfaz[$i]['diwsdl'] != '' ? $interfaz->interfaz[$i]['diwsdl'] : $url_webser; // URL ws, debe estar en BD
+                        $url_webser    = $interfaz->interfaz[$i]['diwsdl']  != '' ? $interfaz->interfaz[$i]['diwsdl'] : $url_webser; // URL ws, debe estar en BD
 
                         #<IF 5.1.1.1.3.1>
                         if (strpos(strtolower($regist['sitio']), "eal") !== FALSE || 
