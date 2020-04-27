@@ -3542,12 +3542,17 @@ class InsertNovedad {
                     #< IF 5.1.1.1.3>
                     if (51 == $interfaz->interfaz[$i]['operad']) {
                         $error_ = NULL;
+                        $url_webser = 'http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl';
 
                          if ($regist["nittra"] == "830104929") {
                             $cod_transp = "067";
                         }else{
                             $cod_transp = $regist["nittra"];
                         }
+
+                        // parche 313726 para colombiasoftware, hay una URL de pruebas y otra de prod, la de prod es igual para todos y cada cliente tiene un codigo  
+                        $cod_transp = $interfaz->interfaz[$i]['codigo']     != '' ? $interfaz->interfaz[$i]['codigo'] : $cod_transp; // cod de la transp, no es el nit, debe estar en BD
+                        $url_webser    =  $interfaz->interfaz[$i]['diwsdl'] != '' ? $interfaz->interfaz[$i]['diwsdl'] : $url_webser; // URL ws, debe estar en BD
 
                         #<IF 5.1.1.1.3.1>
                         if (strpos(strtolower($regist['sitio']), "eal") !== FALSE || 
@@ -3564,7 +3569,7 @@ class InsertNovedad {
                             try {
                                 //Ruta Web Service Colocar e-com.
                                 $mEstado = '1';
-                                $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
+                                //$url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                                 $mFecha[0] = date('Y-m-d', strtotime($regist['fecnov']));
                                 $mFecha[1] = date('H:i:s', strtotime($regist['fecnov']));
 
@@ -3641,7 +3646,7 @@ class InsertNovedad {
                             try {
                                 $mEstado = '1';
                                 //Ruta Web Service Colocar e-com.
-                                $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
+                                //$url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                                 $mFecha[0] = date('Y-m-d', strtotime($regist['fecnov']));
                                 $mFecha[1] = date('H:i:s', strtotime($regist['fecnov']));
 
