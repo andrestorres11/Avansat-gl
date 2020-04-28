@@ -100,7 +100,7 @@ class Novedad {
 
                 $this->mensaje = "La Imagen se registro exitosamente.";
                 //--- NOVEDADES COLOMBIA SOFTWARE ---
-                $query = "SELECT nom_operad, nom_usuari, clv_usuari 
+                $query = "SELECT nom_operad, nom_usuari, clv_usuari, cod_intern, url_webser
                             FROM tab_interf_parame 
                            WHERE cod_operad = '51'
                              AND ind_estado = '1'
@@ -152,14 +152,19 @@ class Novedad {
                     ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
                         $mFile = fopen("/var/www/html/ap/satt_faro/satt_movil/logs/error-".$parametros['empresa_codigocs']."-".date('Y-m-d').".txt", "a+");
                     try {
+                        $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                         //parche para que cambien el nit de la transportadora cuando sea repremundo por andres torres
                         if ($_POST[$i]["cod_transp"] == "830104929") {
                             $cod_transp = "067";
                         }else{
                             $cod_transp = $_POST[$i]["cod_transp"];
                         }
+
+                        // parche 313726 para ws, hay una URL de pruebas y otra de prod, la de prod es igual para todos y cada cliente tiene un codigo  
+                        $cod_transp = $dataColSof['cod_intern'] != '' ? $dataColSof['cod_intern'] : $cod_transp; // cod de la transp, no es el nit, en BD
+                        $url_webser = $dataColSof['url_webser'] != '' ? $dataColSof['url_webser'] : $url_webser; // URL ws, debe estar en BD
+
                         //Ruta Web Service Colocar e-com.
-                        $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                         $mFecha[0] = date('Y-m-d');
                         $mFecha[1] = date('H:i:s');
                         $parametros = array();
