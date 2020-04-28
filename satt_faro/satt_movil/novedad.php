@@ -150,7 +150,6 @@ class Novedad {
 
 
                     ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
-                        $mFile = fopen("/var/www/html/ap/satt_faro/satt_movil/logs/error-".$parametros['empresa_codigocs']."-".date('Y-m-d').".txt", "a+");
                     try {
                         $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                         //parche para que cambien el nit de la transportadora cuando sea repremundo por andres torres
@@ -164,6 +163,7 @@ class Novedad {
                         $cod_transp = $dataColSof['cod_intern'] != '' ? $dataColSof['cod_intern'] : $cod_transp; // cod de la transp, no es el nit, en BD
                         $url_webser = $dataColSof['url_webser'] != '' ? $dataColSof['url_webser'] : $url_webser; // URL ws, debe estar en BD
 
+                        $mFile = fopen("/var/www/html/ap/satt_faro/satt_movil/logs/error-". $dataColSof['cod_intern']."-".date('Y-m-d').".txt", "a+");
                         //Ruta Web Service Colocar e-com.
                         $mFecha[0] = date('Y-m-d');
                         $mFecha[1] = date('H:i:s');
