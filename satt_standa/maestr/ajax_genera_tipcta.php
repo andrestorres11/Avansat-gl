@@ -3,7 +3,7 @@
 /*error_reporting(E_ALL);
 ini_set('display_errors', '1');*/
 
-class ajax_genera_bancox
+class ajax_genera_tipcta
 {
   var $AjaxConnection;
   
@@ -40,10 +40,10 @@ class ajax_genera_bancox
   *  \return BOOL
   */
   private function setRegistros() {
-    $mSql = " SELECT  a.cod_bancox,
-                      a.nom_bancox,
+    $mSql = " SELECT  a.cod_tipcta,
+                      a.nom_tipcta,
                       a.ind_estado
-                FROM  ".BASE_DATOS.".tab_genera_bancox a";
+                FROM  ".BASE_DATOS.".tab_genera_tipcta a";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
 
@@ -53,11 +53,11 @@ class ajax_genera_bancox
     	foreach ($datos as $campo => $valor) {
     		if($campo == "ind_estado"){
     			if($valor == 1){
-          			$html ='<button onclick="updEst(this)" value="'.$datos['cod_bancox'].'" data-estado="'.$datos['ind_estado'].'" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>&nbsp;';
+          			$html ='<button onclick="updEst(this)" value="'.$datos['cod_tipcta'].'" data-estado="'.$datos['ind_estado'].'" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>&nbsp;';
           		}else{
-          			$html ='<button onclick="updEst(this)" value="'.$datos['cod_bancox'].'" data-estado="'.$datos['ind_estado'].'" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></button>&nbsp;';
+          			$html ='<button onclick="updEst(this)" value="'.$datos['cod_tipcta'].'" data-estado="'.$datos['ind_estado'].'" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></button>&nbsp;';
           		}
-          			$html .='<button onclick="formRegistro(\'form\', \'xl\', this.value)" value="'.$datos['cod_bancox'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
+          			$html .='<button onclick="formRegistro(\'form\', \'xl\', this.value)" value="'.$datos['cod_tipcta'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
           		$data[$key][] = $html;	
     		}else{
     			$data[$key][] = $valor;	
@@ -71,7 +71,7 @@ class ajax_genera_bancox
   }
 
    /*! \fn: form
-   *  \brief: Crea el formulario de para registrar información del banco
+   *  \brief: Crea el formulario de para registrar información del Tipo Cuenta
    *  \author: Ing. Luis Manrique
    *  \date: 27/01/2020
    *  \date modified: dia/mes/año
@@ -80,21 +80,21 @@ class ajax_genera_bancox
    */
     function form(){
       try { 
-      	//Valida si existe codgi de bancos para consultarlos o crearlos en vacio
-        if($_REQUEST['cod_bancox'] == ''){
-          $mData = $arrayName = array('cod_bancox' => '', 'nom_bancox' => '');
+      	//Valida si existe codgi de tipo de cuenta para consultarlos o crearlos en vacio
+        if($_REQUEST['cod_tipcta'] == ''){
+          $mData = $arrayName = array('cod_tipcta' => '', 'nom_tipcta' => '');
         }else{
-          $mSql = " SELECT  a.cod_bancox,
-                            a.nom_bancox
-                      FROM  ".BASE_DATOS.".tab_genera_bancox a
-                     WHERE  a.cod_bancox = ".$_REQUEST['cod_bancox'];
+          $mSql = " SELECT  a.cod_tipcta,
+                            a.nom_tipcta
+                      FROM  ".BASE_DATOS.".tab_genera_tipcta a
+                     WHERE  a.cod_tipcta = ".$_REQUEST['cod_tipcta'];
           $mMatriz = new Consulta($mSql, $this->conexion);
           $mData = $mMatriz->ret_matrix("a")[0];
         }
 
         //arrays que contienen la información de los campos y los titulos del formulario
           $mTittle[0] = array( "id" => "dat_basico", "tittle" => "DATOS BASICOS");
-          $mTittle[0]['data'] = array("cod_bancox" => array(
+          $mTittle[0]['data'] = array("cod_tipcta" => array(
           													'name' => "Codigo", 
           													'type' => "hidden",
           													'class' => "", 
@@ -103,8 +103,8 @@ class ajax_genera_bancox
 																				'readonly' => "readonly"
 																				)
           													),
-          							  "nom_bancox" => array(
-          													'name' => "Nombre Banco", 
+          							  "nom_tipcta" => array(
+          													'name' => "Nombre Tipo Cuenta", 
           													'type' => "input",
           													'class' => "validate", 
           													'atribute' => array(
@@ -141,11 +141,11 @@ class ajax_genera_bancox
         $estado = $_REQUEST['estado'] == 1 ? 0 : 1;
 
         //Geera query
-        $mQuery = "UPDATE ".BASE_DATOS.".tab_genera_bancox 
+        $mQuery = "UPDATE ".BASE_DATOS.".tab_genera_tipcta 
                       SET ind_estado = $estado,
                           usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                           fec_modifi = NOW()
-                    WHERE cod_bancox = ".$_REQUEST['cod_bancox'];
+                    WHERE cod_tipcta = ".$_REQUEST['cod_tipcta'];
         $consulta = new Consulta($mQuery, $this -> conexion);   
         if($consulta == true){
           $return['status'] = 200;
@@ -163,7 +163,7 @@ class ajax_genera_bancox
     }
 
     /*! \fn: regForm
-   *  \brief: Actualzia o crea registros de bancos
+   *  \brief: Actualzia o crea registros de tipo de cuenta
    *  \author: Ing. Luis Manrique
    *  \date: 28/04/2020
    *  \date modified: dia/mes/año
@@ -174,15 +174,15 @@ class ajax_genera_bancox
       try {
         //Varibales Necesarias
         $return = [];
-        $codigo = empty($_REQUEST['cod_bancox']) ? '' : "cod_bancox = ".$_REQUEST['cod_bancox'].", ";
+        $codigo = empty($_REQUEST['cod_tipcta']) ? '' : "cod_tipcta = ".$_REQUEST['cod_tipcta'].", ";
         //Consulta
-	    $mQuery = "INSERT INTO  ".BASE_DATOS.".tab_genera_bancox 
+	    $mQuery = "INSERT INTO  ".BASE_DATOS.".tab_genera_tipcta 
 	                       SET  $codigo
-	                            nom_bancox = '".$_REQUEST['nom_bancox']."',
+	                            nom_tipcta = '".$_REQUEST['nom_tipcta']."',
 	                            ind_estado = 1,
 	                            usr_creaci = '".$_SESSION['datos_usuario']['cod_usuari']."',
 	                            fec_creaci = NOW()
-	   ON DUPLICATE KEY UPDATE 	nom_bancox = '".$_REQUEST['nom_bancox']."',
+	   ON DUPLICATE KEY UPDATE 	nom_tipcta = '".$_REQUEST['nom_tipcta']."',
 	                            usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
 	                            fec_modifi = NOW()";
 	    $consulta = new Consulta($mQuery, $this -> conexion);   
@@ -331,5 +331,5 @@ class ajax_genera_bancox
   
 }
 
-$proceso = new ajax_genera_bancox();
+$proceso = new ajax_genera_tipcta();
  ?>
