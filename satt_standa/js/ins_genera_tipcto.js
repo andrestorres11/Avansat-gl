@@ -26,7 +26,7 @@ $(function() {
 
     var table = $("#contenedor #tablaRegistros").DataTable({
         "ajax": {
-            "url": "../" + standa + "/maestr/ajax_genera_bancox.php",
+            "url": "../" + standa + "/maestr/ajax_genera_tipcto.php",
             "data": ({option:'setRegistros'}),
             "type": 'POST'
         },
@@ -68,9 +68,9 @@ $(function() {
   *  \return html
   */
 
-function formRegistro(modulo, tam, cod_bancox = null){
+function formRegistro(modulo, tam, cod_tipcto = null){
     try {
-        var boton = cod_bancox == null ? 'Crear' : 'Actualizar';
+        var boton = cod_tipcto == null ? 'Crear' : 'Actualizar';
         Swal.fire({
           title: decode_utf8('¿Estas seguro?'),
           text: decode_utf8("¿Estas seguro que desea "+boton+" este registro?"),
@@ -82,9 +82,9 @@ function formRegistro(modulo, tam, cod_bancox = null){
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url: "../" + standa + "/maestr/ajax_genera_bancox.php",
+                    url: "../" + standa + "/maestr/ajax_genera_tipcto.php",
                     type: "post",
-                    data: ({option: modulo, tam: tam, cod_bancox:cod_bancox}),
+                    data: ({option: modulo, tam: tam, cod_tipcto:cod_tipcto}),
                     success: function(data) {
                         Swal.fire({
                           html: data,
@@ -105,7 +105,7 @@ function formRegistro(modulo, tam, cod_bancox = null){
                             var form = $("#dat_basico").serialize();
                             form = form+"&option=regForm"
                             $.ajax({
-                                url: "../" + standa + "/maestr/ajax_genera_bancox.php",
+                                url: "../" + standa + "/maestr/ajax_genera_tipcto.php",
                                 type: "post",
                                 data: form,
                                 dataType: "json",
@@ -185,9 +185,9 @@ function updEst(objet){
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url: "../" + standa + "/maestr/ajax_genera_bancox.php",
+                    url: "../" + standa + "/maestr/ajax_genera_tipcto.php",
                     type: "post",
-                    data: ({option: 'updEst', estado: $(objet).attr('data-estado'), cod_bancox:$(objet).val()}),
+                    data: ({option: 'updEst', estado: $(objet).attr('data-estado'), cod_tipcto:$(objet).val()}),
                     dataType: "json",
                     beforeSend: function()
                     {
