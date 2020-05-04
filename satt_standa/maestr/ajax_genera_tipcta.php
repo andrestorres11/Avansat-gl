@@ -113,7 +113,7 @@ class ajax_genera_tipcta
           																		"validate"=>"texto",
           																		"minlength"=>3,
           																		"obl"=> 1,
-          																		"onkeyup" => "validateFields()"
+          																		"onkeyup" => "validateFields(this)"
           																		)
           													)
                                       );
