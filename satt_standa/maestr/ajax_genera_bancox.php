@@ -113,7 +113,7 @@ class AjaxDespacDestin
           																		"validate"=>"texto",
           																		"minlength"=>3,
           																		"obl"=> 1,
-          																		"onkeyup" => "validateFields()"
+          																		"onkeyup" => "validateFields(this)"
           																		)
           													)
                                       );
