@@ -1,4 +1,4 @@
-/* ! \file: ins_genera_bancox
+/* ! \file: ins_hojvid_ctxxxx
  *  \brief: permite visualizar correctamente las vistas en ins_genera_bancox.php ademas de realizar algunas funciones ajax
  *  \author: Ing. Luis Manrique
  *  \version: 1.0
@@ -26,10 +26,11 @@ $(function() {
 
     var table = $("#contenedor #tablaRegistros").DataTable({
         "ajax": {
-            "url": "../" + standa + "/maestr/ajax_genera_bancox.php",
+            "url": "../" + standa + "/recurs/ajax_hojvid_ctxxxx.php",
             "data": ({option:'setRegistros'}),
             "type": 'POST'
         },
+        "responsive": true,
         'processing': true,
         "deferRender": true, 
         "autoWidth": false,     
@@ -68,9 +69,9 @@ $(function() {
   *  \return html
   */
 
-function formRegistro(modulo, tam, cod_bancox = null){
+function formRegistro(modulo, tam, cod_docume = null){
     try {
-        var boton = cod_bancox == null ? 'Crear' : 'Actualizar';
+        var boton = cod_docume == null ? 'Crear' : 'Actualizar';
         Swal.fire({
           title: decode_utf8('¿Estas seguro?'),
           text: decode_utf8("¿Estas seguro que desea "+boton+" este registro?"),
@@ -82,19 +83,26 @@ function formRegistro(modulo, tam, cod_bancox = null){
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url: "../" + standa + "/maestr/ajax_genera_bancox.php",
+                    url: "../" + standa + "/recurs/ajax_hojvid_ctxxxx.php",
                     type: "post",
-                    data: ({option: modulo, tam: tam, cod_bancox:cod_bancox}),
+                    data: ({option: modulo, tam: tam, cod_docume:cod_docume}),
                     success: function(data) {
                         Swal.fire({
                           html: data,
-                          width: 500,
+                          width: 800,
                           padding: '0.2em',
                           showCancelButton: true,
                           confirmButtonColor: '#336600',
                           cancelButtonColor: '#aaa',
                           confirmButtonText: boton,
                           allowOutsideClick: false,
+                          onOpen: () => {
+                            inputDate("dat_basico");
+                            inputDate("tip_contra");
+                            inputList("dat_basico");
+                            inputList("tip_contra");
+                            $('.money').mask("#.##0", {reverse: true});
+                          },
                           preConfirm: () => {    
                             if(!validateFields()){
                               return false;
@@ -102,10 +110,10 @@ function formRegistro(modulo, tam, cod_bancox = null){
                           }
                         }).then((result) => {
                           if (result.value) {
-                            var form = $("#dat_basico").serialize();
+                            var form = $("#dat_basico").serialize()+"&"+$("#tip_contra").serialize();
                             form = form+"&option=regForm"
                             $.ajax({
-                                url: "../" + standa + "/maestr/ajax_genera_bancox.php",
+                                url: "../" + standa + "/recurs/ajax_hojvid_ctxxxx.php",
                                 type: "post",
                                 data: form,
                                 dataType: "json",
@@ -185,9 +193,9 @@ function updEst(objet){
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url: "../" + standa + "/maestr/ajax_genera_bancox.php",
+                    url: "../" + standa + "/recurs/ajax_hojvid_ctxxxx.php",
                     type: "post",
-                    data: ({option: 'updEst', estado: $(objet).attr('data-estado'), cod_bancox:$(objet).val()}),
+                    data: ({option: 'updEst', estado: $(objet).attr('data-estado'), cod_docume:$(objet).val()}),
                     dataType: "json",
                     beforeSend: function()
                     {
@@ -293,4 +301,48 @@ function validateFields(field = null)
 
 function decode_utf8(word) {
   return decodeURIComponent(escape(word));
+}
+
+
+ //---------------------------------------------
+  /*! \fn: inputDate
+  *  \brief: Asigna datepicker a los camopos con clase date
+  *  \author: Ing. Luis Manrique
+  *  \date: 28/04/2020
+  *  \date modified: 
+  *  \return 
+  */
+function inputDate(form){
+  $("#"+form+" .date").each(function(){
+    // Rango de fechas
+    $('#'+$(this).attr("id")).datetimepicker();
+    // Selector de rango de fechas con selector de tiempo
+  });
+
+  $('.date').datetimepicker({
+      format: 'YYYY-MM-DD',
+      locale: 'ES'
+    });
+}
+
+
+//---------------------------------------------
+  /*! \fn: inputList
+  *  \brief: Asigna listas a los campos select
+  *  \author: Ing. Luis Manrique
+  *  \date: 28/04/2020
+  *  \date modified: 
+  *  \return string
+  */
+function inputList(form){
+
+  $("#"+form+" .list").each(function(){
+    // Rango de fechas
+     $('#'+$(this).attr("id")).autocomplete({
+        serviceUrl: "../" + standa + "/recurs/ajax_hojvid_ctxxxx.php?option=dataList&file="+$(this).attr("id"),
+        onSelect: function (suggestion) {
+            $('#'+suggestion.campo).val(suggestion.data);
+        }
+    });
+  });
 }
