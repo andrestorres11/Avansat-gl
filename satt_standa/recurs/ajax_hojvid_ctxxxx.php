@@ -349,10 +349,10 @@ class ajax_hojvid_ctxxxx
                                        "usr_asigna" => array(
 	                                                            'name' => "Usuario asignado", 
 	                                                            'type' => "input",
-	                                                            'class' => "validate", 
+	                                                            'class' => "validate list", 
 	                                                            'atribute' => array(
-	                                                                "validate"=>"texto",
-	                                                                "minlength"=>3,
+	                                                                "validate"=>"textarea",
+	                                                                "minlength"=>1,
 	                                                                "obl"=> 1,
 	                                                                "onkeyup" => "validateFields(this)"
                                                                 )
@@ -374,7 +374,7 @@ class ajax_hojvid_ctxxxx
 	                                                            'type' => "input",
 	                                                            'class' => "validate list", 
 	                                                            'atribute' => array(
-	                                                                "validate"=>"texto",
+	                                                                "validate"=>"textarea",
 	                                                                "minlength"=>1,
 	                                                                "obl"=> 1,
 	                                                                "onkeyup" => "validateFields(this)"
@@ -691,6 +691,12 @@ class ajax_hojvid_ctxxxx
 
        case 'nom_tipsex':
         $table = 'tab_genera_tipsex';
+        $cod = "cod_".explode("_", $_REQUEST['file'])[1];
+        break;
+
+       case 'usr_asigna':
+        $_REQUEST['file'] = 'cod_usuari';
+        $table = 'tab_genera_usuari';
         $cod = "cod_".explode("_", $_REQUEST['file'])[1];
         break;
     }
