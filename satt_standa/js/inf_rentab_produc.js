@@ -10,13 +10,14 @@
 var standa = 'satt_standa';
 $(function() {
 
+  //ejecuta la función de cargar campos del filtro
   cargarCampos(); 
 
 });
 
  //---------------------------------------------
   /*! \fn: cargarCampos
-  *  \brief: Genera popup con el formulario a diligenciar 
+  *  \brief: Genera formulario con el formulario a diligenciar 
   *  \author: Ing. Luis Manrique
   *  \date: 29/04/2020
   *  \date modified: 
@@ -59,8 +60,21 @@ function createTable(objet){
             url: "../" + standa + "/sertra/ajax_rentab_produc.php",
             type: "post",
             data: (form),
-            success: function(data) {
-              if (data == '') {
+            dataType: 'json',
+            beforeSend: function()
+            {
+                Swal.fire({
+                  title:'Cargando',
+                  text: 'Por favor espere...',
+                  imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+                      imageAlt: 'Custom image',
+                      showConfirmButton: false,
+                      allowOutsideClick: false,
+                })
+            },
+            success: function(dataTable) {
+              Swal.close ();
+              if (dataTable['html'] == '') {
                     Swal.fire({
                       title: 'Oops...',
                       type: 'info',
@@ -72,12 +86,13 @@ function createTable(objet){
               }else{
                 //Varibales Necesarias 
                 var id = $(objet).attr("id").split("_")[1];
-
+                //Limpia la división
+                $("#div_"+id).empty();
                 //Asigna la tabla al tag referente
-                $("#div_"+id).html(data);
+                $("#div_"+id).html(dataTable['html']);
 
                 //Asigna los campos de buqueda
-                $('#contenedor .table_datatables thead tr .buscar').each( function (i) {
+                $('#contenedor .tab_'+id+' thead tr .buscar').each( function (i) {
                   var title = $(this).text();
                   $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="Buscar '+title+'" />' );
            
@@ -92,85 +107,17 @@ function createTable(objet){
                   });
                 }); 
 
-
+                //Titu
                 $("#div_"+id+" .tab_"+id).each(function(){
                   var id = "#"+$(this).attr("id");
                   var columnas = $(id+" tbody tr:nth-child(1) td");
-                  for (var i = 2; i < columnas.length; i++) {
+                  for (var i = dataTable['posicion']; i < columnas.length; i++) {
                     $(id).find("tfoot").children("tr").append("<th class='tituloFecha'></th>")
                   }
                 });
 
                 //Asigna las funciones dataTable
-                $("#contenedor .tab_"+id).DataTable({
-                  'processing': true,
-                  "deferRender": true, 
-                  "autoWidth": false,     
-                  "search": {
-                      "regex": true,
-                      "caseInsensitive": false,
-                  },
-                  'paging': true,
-                  'info': true,
-                  'filter': true,
-                  'orderCellsTop': true,
-                  'fixedHeader': true,
-                  'language' : {
-                      "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-                  },
-                  "dom": "<'row'<'col-md-4'B><'col-md-4'l><'col-md-4'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>", 
-                  "buttons": [
-                        'copyHtml5',
-                        {
-                          extend: 'excelHtml5',
-                          filename: 'Estado del servicio contratado'
-                        },
-                        {
-                          extend: 'csvHtml5',
-                          filename: 'Estado del servicio contratado'
-                        },
-                        {
-                          extend: 'pdfHtml5',
-                          orientation: 'landscape',
-                          pageSize: 'A2',
-                          filename: 'Estado del servicio contratado'
-                        }
-                    ],
-                    "footerCallback": function ( row, data, start, end, display ) {
-                        var api = this.api(), data;
-             
-                        // Remove the formatting to get integer data for summation
-                        var intVal = function ( i ) {
-                            return typeof i === 'string' ?
-                                i.replace(/[\$,]/g, '')*1 :
-                                typeof i === 'number' ?
-                                    i : 0;
-                        };
-
-                        for (var i = 2; i < api.columns(':visible').count(); i++) {
-                          // Total over all pages
-                          total = api
-                              .column( i )
-                              .data()
-                              .reduce( function (a, b) {
-                                  return intVal(a) + intVal(b);
-                              }, 0 );
-               
-                          // Total over this page
-                          pageTotal = api
-                              .column( i, { page: 'current'} )
-                              .data()
-                              .reduce( function (a, b) {
-                                  return intVal(a) + intVal(b);
-                              }, 0 );
-               
-                          // Update footer
-                          $( api.column( i ).footer() ).html(
-                              +pageTotal +' ( '+ total +' total)'
-                          );
-                        }
-                    }
-                });  
+                dataTableRegis("#contenedor .tab_"+id, "Informe "+$("#tag_"+id).html(), dataTable['posicion']);  
               }
             }
         });
@@ -182,8 +129,8 @@ function createTable(objet){
 }
 
  //---------------------------------------------
-  /*! \fn: validateFields
-  *  \brief: Toma la función validaciones y actualiza la visual y gestión de los datos
+  /*! \fn: detalle
+  *  \brief: Crea la tabla de la información al detalle
   *  \author: Ing. Luis Manrique
   *  \date: 28/04/2020
   *  \date modified: 
@@ -204,6 +151,7 @@ function detalle(fecha, hora, usuario, tipo){
               imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
                   imageAlt: 'Custom image',
                   showConfirmButton: false,
+                  allowOutsideClick: false,
             })
         },
         success: function(data) {
@@ -239,73 +187,7 @@ function detalle(fecha, hora, usuario, tipo){
             }
 
             //Asigna las funciones dataTable
-            $("#tab_"+usuario).DataTable({
-              'processing': true,
-              "deferRender": true, 
-              "autoWidth": false,     
-              "search": {
-                  "regex": true,
-                  "caseInsensitive": false,
-              },
-              'paging': true,
-              'info': true,
-              'filter': true,
-              'orderCellsTop': true,
-              'fixedHeader': true,
-              'language' : {
-                  "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-              },
-              "dom": "<'row'<'col-md-4'B><'col-md-4'l><'col-md-4'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>", 
-              "buttons": [
-                    'copyHtml5',
-                    {
-                      extend: 'excelHtml5',
-                      filename: 'Estado del servicio contratado'
-                    },
-                    {
-                      extend: 'csvHtml5',
-                      filename: 'Estado del servicio contratado'
-                    },
-                    {
-                      extend: 'pdfHtml5',
-                      filename: 'Estado del servicio contratado'
-                    }
-                ],
-                "footerCallback": function ( row, data, start, end, display ) {
-                    var api = this.api(), data;
-         
-                    // Remove the formatting to get integer data for summation
-                    var intVal = function ( i ) {
-                        return typeof i === 'string' ?
-                            i.replace(/[\$,]/g, '')*1 :
-                            typeof i === 'number' ?
-                                i : 0;
-                    };
-
-                    for (var i = 2; i < api.columns(':visible').count(); i++) {
-                      // Total over all pages
-                      total = api
-                          .column( i )
-                          .data()
-                          .reduce( function (a, b) {
-                              return intVal(a) + intVal(b);
-                          }, 0 );
-           
-                      // Total over this page
-                      pageTotal = api
-                          .column( i, { page: 'current'} )
-                          .data()
-                          .reduce( function (a, b) {
-                              return intVal(a) + intVal(b);
-                          }, 0 );
-           
-                      // Update footer
-                      $( api.column( i ).footer() ).html(
-                          +pageTotal +' ( '+ total +' total)'
-                      );
-                    }
-                }
-            }); 
+            dataTableRegis("#tab_"+usuario, "Informe al detalle", 2);            
         }
     });
   }
@@ -428,6 +310,90 @@ function inputDate(form){
       locale: 'ES'
     });
   }); 
+}
+
+//---------------------------------------------
+  /*! \fn: dataTableRegis
+  *  \brief: Asigna todas las propiedades de datatable
+  *  \author: Ing. Luis Manrique
+  *  \date: 18/65/2020
+  *  \date modified: 
+  *  \return string
+  */
+
+
+function dataTableRegis(objetAsig, nombre, IniColumTotal){
+  //Asigna las funciones dataTable
+  $(objetAsig).DataTable({
+    'processing': true,
+    "deferRender": true, 
+    "autoWidth": false,     
+    "search": {
+        "regex": true,
+        "caseInsensitive": false,
+    },
+    'paging': true,
+    'info': true,
+    'filter': true,
+    'orderCellsTop': true,
+    'fixedHeader': true,
+    'language' : {
+        "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+    },
+    "dom": "<'row'<'col-md-4'B><'col-md-4'l><'col-md-4'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>", 
+    "buttons": [
+          'copyHtml5',
+          {
+            extend: 'excelHtml5',
+            filename: nombre,
+            footer: true
+          },
+          {
+            extend: 'csvHtml5',
+            filename: nombre,
+            footer: true
+          },
+          {
+            extend: 'pdfHtml5',
+            filename: nombre,
+            footer: true
+          }
+      ],
+      "footerCallback": function ( row, data, start, end, display ) {
+          var api = this.api(), data;
+
+          // Remove the formatting to get integer data for summation
+          var intVal = function ( i ) {
+              return typeof i === 'string' ?
+                  i.replace(/[\$,]/g, '')*1 :
+                  typeof i === 'number' ?
+                      i : 0;
+          };
+
+          for (var i = IniColumTotal; i < api.columns(':visible').count(); i++) {
+            // Total over all pages
+            total = api
+                .column( i )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+ 
+            // Total over this page
+            pageTotal = api
+                .column( i, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+ 
+            // Update footer
+            $( api.column( i ).footer() ).html(
+                +pageTotal +' ( '+ total +' total)'
+            );
+          }
+      }
+  });
 }
 
 

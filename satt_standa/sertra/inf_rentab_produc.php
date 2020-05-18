@@ -1,5 +1,14 @@
 <?php
 
+/* ! \file: inf_rentab_produc
+ *  \brief: Permite visualizar los filtros y las pestañas para generar los informes
+ *  \author: Ing. Luis Manrique
+ *  \version: 1.0
+ *  \date: 27/04/2020
+ *  \bug: 
+ *  \warning: 
+ */
+
 class rentab_produc
 {
  var $conexion,
@@ -68,14 +77,14 @@ class rentab_produc
         ';
     }
 
-    /*! \fn: scripts
+  /*! \fn: scripts
    *  \brief: incluye todos los archivos necesarios para los eeventos js
    *  \author: Ing. Luis Manrique
    *  \date: 27-04-2020
    *  \date modified: dd/mm/aaaa
    *  \param: 
    *  \return: html
-*/
+  */
 
     private function scripts(){
       echo '
@@ -117,11 +126,11 @@ class rentab_produc
     }
 
   //---------------------------------------------
-  /*! \fn: getInterfParame
-  *  \brief:Verificar la interfaz con destino seguro esta activa
-  *  \author: Nelson Liberato
-  *  \date: 21/12/2015
-  *  \date modified: 21/12/2015
+  /*! \fn: registros
+  *  \brief:Crea el contenedor de las pestañas para los informes
+  *  \author: Ing. Luis Manrioque
+  *  \date: 28/04/2020
+  *  \date modified: 
   *  \return BOOL
   */
   function registros() {
@@ -154,20 +163,24 @@ class rentab_produc
                         <div class="panel-body">
                           <div style="padding-top: 1em;">
                             <ul class="nav nav-pills">
-                              <li class="active">
+                              <li>
                                   <a data-toggle="tab" id="tag_porNovedad" onclick="createTable(this)" href="#div_porNovedad">Por novedad</a>
                               </li>
                               <li>
                                   <a data-toggle="tab" id="tag_porTurno" onclick="createTable(this)" href="#div_porTurno">Por turno</a>
                               </li>
+                              <li>
+                                  <a data-toggle="tab" id="tag_diferencia" onclick="createTable(this)" href="#div_diferencia">Diferencia</a>
+                              </li>
                             </ul>
                             <div class="tab-content">
-                              <div id="div_porNovedad" class="tab-pane fade in active" style="padding-top: 1em;">
-
-                                
+                              <div id="div_porNovedad" class="tab-pane fade" style="padding-top: 1em;">
                                   
                               </div>
                               <div id="div_porTurno" class="tab-pane fade" style="padding-top: 1em;">
+                                      
+                              </div>
+                              <div id="div_diferencia" class="tab-pane fade" style="padding-top: 1em;">
                                       
                               </div>
                             </div>
