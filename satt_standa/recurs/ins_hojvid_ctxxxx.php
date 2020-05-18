@@ -99,9 +99,6 @@ class hojvid_ctxxxx
             <!-- AutoComplete -->
             <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/devbridge-autocomplete/src/jquery.autocomplete.js"></script>
 
-            <!-- Jquery Input Mask -->
-            <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery.inputmask/dist/jquery.mask.min.js"></script>
-
              <!-- Form validate -->
             <script src="../' . DIR_APLICA_CENTRAL . '/js/functions.js"></script>
             <script src="../' . DIR_APLICA_CENTRAL . '/js/validator.js"></script>
