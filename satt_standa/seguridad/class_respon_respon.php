@@ -281,7 +281,6 @@ class responsable
 									"gri_cargax"=>array("name"=>"Grilla Cargue", "sub"=>array() ),
 									"gri_descar"=>array("name"=>"Grilla Descargue", "sub"=>array() ),
 									"bit_cambio"=>array("name"=>"Bitacora de cambios", "sub"=>array() ),
-									"est_servic"=>array("name"=>"Estado del Servicio", "sub"=>array() ),
 									"sec_fotosx"=>array("name"=>"Fotos", "sub"=>array() ),
 									"sec_mapaxx"=>array("name"=>"Mapa", "sub"=>array()),
 									"dat_telefo"=>array("name"=>"Telefonos", "sub"=>array())
@@ -293,7 +292,6 @@ class responsable
 									"gri_cargax"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"gri_descar"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"bit_cambio"=>array("ind_visibl"=>1, "sub"=>array()), 
-									"est_servic"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"sec_fotosx"=>array("ind_visibl"=>1, "sub"=>array()),
 									"sec_mapaxx"=>array("ind_visibl"=>1, "sub"=>array()),
 									"dat_telefo"=>array("ind_visibl"=>1, "sub"=>array())

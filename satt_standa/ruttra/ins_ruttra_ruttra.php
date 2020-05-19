@@ -34,7 +34,7 @@ class Proc_rutas
 
     IncludeJS("jquery.js");
     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
-    IncludeJS( "sweetalert2.all.8.11.8.js");
+
     if(!isset($_REQUEST[opcion])){
       IncludeJS("rutas.js");
       $this -> Buscar();
@@ -298,7 +298,7 @@ class Proc_rutas
 
     if($transpors)
     {
-      $formulario -> lista("Transportadora:", "transpor\" onchange=\"transporSusp(this.value, this.options[this.selectedIndex].text)", $transpors, 0);
+      $formulario -> lista("Transportadora:", "transpor", $transpors, 0);
 
       $formulario -> nueva_tabla();
       $formulario -> linea("Puestos de Control",1,"t2");

@@ -9,8 +9,6 @@
  *  \bug: 
  *  \warning:
  */
-/*ini_set('error_reporting', E_ALL);
-ini_set("display_errors", 1);*/
 
 class ajax_horari_monito {
 
@@ -1167,42 +1165,13 @@ class ajax_horari_monito {
         $usuarios = $this->getUsuarios();
         $transp = $this->getTranspByHorario($_REQUEST['fec_inicio'], $_REQUEST['hor_inicio'], $_REQUEST['fec_finali'], $_REQUEST['hor_finali']);
 
-        //Incluye el consumo del API de suspenciones
-        require_once '../../'.DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php';
-        //Instancia la clase
-        $sus_terceros = new suspensiones();
-        $emp_suspencion = [];
-        //Trae los campos a suspender
-        $data = $sus_terceros->SetSuspensiones(null, null, null, 'on');
-
-        //Recorre las transportadoras
-        foreach ($transp as $keyTrans => $transpValue) {
-            //Recorre los registros suspendidos
-            foreach ($data['suspendido'] as $keySusp => $sus_terceros) {
-                //Valida si son iguales
-                if($transpValue['cod_tercer'] == $sus_terceros['cod_tercer']){
-                    //Genera la lista de empresas suspendidas a mostrar en pantalla.
-                    $emp_suspencion[] = $sus_terceros['cod_tercer']." - ".$sus_terceros['abr_tercer'];
-                    //Elimina la posición de la empresas suspendida
-                    unset($transp[$keyTrans]);
-                }
-            }
-        }
-        
-
         if (!$usuarios) {
             $this->htmlMensajeSin("No hay usuarios parametrizados para las fechas ingresadas");
         } else if (!$transp) {
             $this->htmlMensajeSin("No hay transportadoras parametrizados para las fechas ingresadas");
-            if(!empty($emp_suspencion)){
-                $this->htmlMensajeSin("Las siguientes empresas estan suspendidas:<br><br>".join(', <br>',$emp_suspencion));
-            }
         }  else {
             $this->pintarTablaUsuariosDisponibles($usuarios);
             $this->pintarTablaTransportadoras($transp);
-            if(!empty($emp_suspencion)){
-                $this->htmlMensajeSin("Las siguientes empresas estan suspendidas:<br><br>".join(', <br>',$emp_suspencion));
-            }
             ?>
 
             <div class="contenido centrado">
