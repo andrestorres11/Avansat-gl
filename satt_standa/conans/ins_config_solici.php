@@ -250,14 +250,14 @@ class ins_config_solici
     if( sizeof( $consulta_existe ) > 0 )
 	{	
 		$condicionSubTipo = $_AJAX['cod_subtip'] == 'null' ? "" : "and cod_subtip='".$_AJAX['cod_subtip']."'";
-  		$consulta_existe = "SELECT usr_creaci FROM ".BASE_DATOS.".tab_solici_config WHERE cod_tipsol='".$_AJAX['cod_tipsol']."' ".$condicionSubTipo." AND usr_creaci ='".$usuario."' ;" ;
+  		$consulta_existe = "SELECT usr_creaci FROM ".BASE_DATOS.".tab_solici_config WHERE cod_tipsol='".$_AJAX['cod_tipsol']."' ".$condicionSubTipo." and usr_creaci ='".$usuario."' ;" ;
 
  		$consulta_existe  = new Consulta( $consulta_existe, $this->conexion);
  		$existe = $consulta_existe -> ret_matriz();
     
 	    if(sizeof($existe) > 0)
 		{
-			$consulta_existe_usuario = "SELECT * FROM ".BASE_DATOS.".tab_solici_config WHERE cod_tipsol='".$_AJAX['cod_tipsol']."' ".$condicionSubTipo." AND usr_creaci ='".$usuario."' ;" ;
+			$consulta_existe_usuario = "SELECT * FROM ".BASE_DATOS.".tab_solici_config WHERE usr_creaci ='".$usuario."' ;" ;
 	  		$consulta_existe_usuario = new Consulta( $consulta_existe_usuario, $this->conexion);
 	 		$consulta_existe = $consulta_existe_usuario -> ret_matriz();
 	 		//$concateno = array();
@@ -576,13 +576,6 @@ class ins_config_solici
 					  closeOnConfirm: true
 					},
 					function(){
-
-						$("#panel_config input").each(function(){
-							if($(this).attr("type") == "radio" || $(this).attr("type") == "checkbox"){
-								$(this).prop('checked',false);
-							}
-						});
-
 						porciones  = data.split(';');
 						console.log(porciones);
 						$("#hora_inicial").val(porciones[0]);
@@ -600,19 +593,16 @@ class ins_config_solici
 						
 						if(porciones[3] == 2)
 						{	
+							$("#tiempo_min").val(porciones[4]);
 							$("#horas").prop("checked",true)
 						}
 						else if(porciones[3] == 3)
 						{
+							$("#tiempo_min").val(porciones[4]);
 							$("#dias").prop("checked",true)
-
-						}else if (porciones[3] == 1)
-						{
-							$("#min").prop("checked",true)
 						}
 
 						
-						$("#tiempo_min").val(porciones[4]);
 						$("#observacion").val(porciones[5]);
 						$('#panel_config').css("display","block")
 					});						

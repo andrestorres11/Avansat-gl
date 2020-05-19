@@ -1371,18 +1371,12 @@ class ajax_certra_certra {
         '$datos->tie_prcurb', '$datos->tie_prcnac', '$datos->tie_prcimp', '$datos->tie_prcexp', '$datos->tie_prctr1', '$datos->tie_prctr2'
         )";
 
-        $mSql = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
-                    SET cod_estado = $datos->ind_estado,
-                        usr_modifi = '$datos->usr_creaci',
-                        fec_modifi = NOW()
-                        WHERE cod_tercer = $datos->cod_transp";
-        $insercion = new Consulta($mSql, self::$cConexion, "C");
-
         if ($datos->eal != array()) {
             $consulta = new Consulta($query, self::$cConexion, "BR");
             $fecini = $datos->fecini;
             $precio = $datos->precio;
             $fecfin = $datos->fecfin;
+
             //se eliminan los puestos para quecuando actualice no queden los que ya no utilizan
             $sql = "DELETE FROM " . BASE_DATOS . ".tab_ealxxx_transp 
                           WHERE cod_transp = '$datos->cod_transp' ";
