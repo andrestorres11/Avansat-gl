@@ -138,6 +138,19 @@ function mostrar() {
                     }
                     x++;
                 });
+
+			    $("#val_registID, #val_despacID").keyup(function(){
+			    	switch ($(this).attr("id")) {
+					  case 'val_registID':
+					  	$("#val_despacID").removeAttr("validate").removeAttr("minlength").removeAttr("obl").val("0");
+					  	$("#val_registID").attr("validate", "numero").attr("minlength", "3").attr("obl", "1");
+					    break;
+					  case 'val_despacID':
+					  	$("#val_registID").removeAttr("validate").removeAttr("minlength").removeAttr("obl").val("0");
+					  	$("#val_despacID").attr("validate", "numero").attr("minlength", "3").attr("obl", "1");
+					    break;
+					}
+			    });
             },
             complete: function() {
                 enableDisable(1);
