@@ -34,137 +34,142 @@ class InformViajes {
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/informes.css' type='text/css'>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/homolo.css' type='text/css'>\n";
 
-        $mSelect1 = "SELECT a.num_despac, a.cod_manifi, a.fec_despac,
-                       b.nom_tipdes, c.nom_paisxx, d.nom_depart, 
-                       e.nom_ciudad, f.nom_paisxx, g.nom_depart, 
-                       h.nom_ciudad, a.cod_operad, a.fec_citcar, 
-                       a.hor_citcar, a.nom_sitcar, a.val_flecon, 
-                       a.val_despac, a.val_antici, a.val_retefu, 
-                       a.nom_carpag, a.nom_despag, a.cod_agedes, 
-                       a.val_pesoxx, a.obs_despac, t.fec_llegad, 
-                       a.obs_llegad, a.ind_planru, i.nom_rutasx, 
-                       a.ind_anulad, a.num_poliza, a.con_telef1, 
-                       a.con_telmov, a.con_domici, a.gps_operad, 
-                       a.gps_usuari, a.gps_paswor, a.gps_idxxxx, 
-                       a.ema_client, j.abr_tercer, a.num_consol, 
-                       a.num_solici, a.cod_conduc, a.num_placax,
-                       a.num_trayle, a.tip_vehicu, a.num_pedido, 
-                       a.ano_modelo, l.nom_marcax, m.nom_lineax, 
-                       n.nom_colorx, a.nom_conduc, o.nom_ciudad,
-                       a.cod_config, q.nom_carroc, a.num_chasis, 
-                       a.num_motorx, a.num_soatxx, a.dat_vigsoa, 
-                       a.nom_ciasoa, a.num_tarpro, a.cat_licenc, 
-                       a.cod_poseed, a.nom_poseed, r.nom_ciudad, 
-                       a.dir_poseed, a.cod_estado, a.nom_estado, 
-                       a.tip_transp, a.cod_instal, s.nom_produc, 
-                       a.ind_modifi, a.ind_anudes, a.num_dessat,
-                       a.cod_respon, a.msg_respon
-                  FROM ".BASE_DATOS.".tab_despac_corona a
-             LEFT JOIN ".BASE_DATOS.".tab_genera_tipdes b
-                    ON a.cod_tipdes = b.cod_tipdes
-             LEFT JOIN ".BASE_DATOS.".tab_genera_paises c
-                    ON a.cod_paiori = c.cod_paisxx
-             LEFT JOIN ".BASE_DATOS.".tab_genera_depart d
-                    ON a.cod_paiori = d.cod_paisxx
-                   AND a.cod_depori = d.cod_depart
-             LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad e
-                    ON a.cod_paiori = e.cod_paisxx
-                   AND a.cod_depori = e.cod_depart
-                   AND a.cod_ciuori = e.cod_ciudad
-             LEFT JOIN ".BASE_DATOS.".tab_genera_paises f
-                    ON a.cod_paides = f.cod_paisxx
-             LEFT JOIN ".BASE_DATOS.".tab_genera_depart g
-                    ON a.cod_paides = g.cod_paisxx
-                   AND a.cod_depdes = g.cod_depart
-             LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad h
-                    ON a.cod_paides = h.cod_paisxx
-                   AND a.cod_depdes = h.cod_depart
-                   AND a.cod_ciudes = h.cod_ciudad
-             LEFT JOIN ".BASE_DATOS.".tab_genera_rutasx i
-                    ON a.cod_rutasx = i.cod_rutasx
-             LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer j
-                    ON a.cod_asegur = j.cod_tercer
-             LEFT JOIN ".BASE_DATOS.".tab_genera_marcas l
-                    ON a.cod_marcax = l.cod_marcax
-             LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas m
-                    ON a.cod_marcax = m.cod_marcax
-                   AND a.cod_lineax = m.cod_lineax
-             LEFT JOIN ".BASE_DATOS.".tab_vehige_colore n
-                    ON a.cod_colorx = n.cod_colorx
-             LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad o
-                    ON a.ciu_conduc = o.cod_ciudad
-             LEFT JOIN ".BASE_DATOS.".tab_vehige_config p
-                    ON a.cod_config = p.num_config
-             LEFT JOIN ".BASE_DATOS.".tab_vehige_carroc q
-                    ON a.cod_carroc = q.cod_carroc
-             LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad r
-                    ON a.ciu_poseed = r.cod_ciudad
-             LEFT JOIN ".BASE_DATOS.".tab_genera_produc s
-                    ON a.cod_mercan = s.cod_produc ";
-
-        if( $_REQUEST['ind_finali'] == '1' ) {
-        	$mSelect1 .= "
-             LEFT JOIN ".BASE_DATOS.".tab_despac_despac t 
-                    ON a.num_dessat = t.num_despac ";
-        } else {
-        	$mSelect1 .= "
-        	 INNER JOIN ".BASE_DATOS.".tab_despac_despac t 
-                     ON a.num_dessat = t.num_despac
-			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige z ON t.num_despac = z.num_despac 
-					AND t.fec_salida IS NOT NULL 
-					AND t.fec_salida <= NOW() 
-					AND (t.fec_llegad IS NULL OR t.fec_llegad = '0000-00-00 00:00:00')
-					AND t.ind_planru = 'S' 
-					AND t.ind_anulad = 'R'
-					AND z.ind_activo = 'S' ";
-
-        }
-
-        $mSelect2 .="WHERE a.fec_despac BETWEEN '".$_REQUEST['fec_inicia']." 00:00:00' AND '".$_REQUEST['fec_finali']." 23:59:59' ";
+        $mSelect1 = "SELECT 
+                       t.num_despac as 'num_viajex',
+                       t.cod_manifi as 'cod_manifi',
+                       t.fec_despac as 'fec_despac',
+                       b.nom_tipdes as 'nom_tipdes', 
+                       c.nom_paisxx as 'nom_paiori', 
+                       d.nom_depart as 'nom_depori', 
+                       e.nom_ciudad as 'nom_ciuori', 
+                       f.nom_paisxx as 'nom_paides', 
+                       g.nom_depart as 'nom_depdes', 
+                       h.nom_ciudad as 'nom_ciudes', 
+                       t.cod_operad as 'cod_operad', 
+                       t.fec_citcar as 'fec_citcar', 
+                       t.hor_citcar as 'hor_citcar', 
+                       t.nom_sitcar as 'nom_sitcar', 
+                       t.val_flecon as 'val_flecon', 
+                       t.val_despac as 'val_despac', 
+                       t.val_antici as 'val_antici', 
+                       t.val_retefu as 'val_retefu', 
+                       t.nom_carpag as 'nom_carpag', 
+                       t.nom_despag as 'nom_despag', 
+                       t.cod_agedes as 'cod_agedes', 
+                       t.val_pesoxx as 'val_pesoxx', 
+                       t.obs_despac as 'obs_despac', 
+                       t.fec_llegad as 'fec_llegad', 
+                       t.obs_llegad as 'obs_llegad', 
+                       t.ind_planru as 'ind_planru', 
+                       i.nom_rutasx as 'nom_rutasx', 
+                       t.ind_anulad as 'ind_anulad', 
+                       l.nom_marcax as 'nom_marcax', 
+                       m.nom_lineax as 'nom_lineax', 
+                       z.cod_conduc as 'cod_conduc',
+                       n.nom_colorx as 'nom_colorx', 
+                       o.nom_ciudad as 'ciu_conduc', 
+                       s.des_mercan as 'nom_mercan',
+                       CONCAT(w.nom_apell1,' ',w.nom_apell2,' ',w.nom_tercer) as 'nom_conduc',
+                       CONCAT(W.num_telef1, ' ',w.num_telef1) as 'tel_conduc',
+                       w.num_telmov as 'cel_conduc',
+                       w.dir_domici as 'dir_conduc',
+                       x.num_catlic as 'cat_liccon',
+                       z.num_placax as 'num_placax',
+                       v.num_config as 'num_config',
+                       q.nom_carroc as 'nom_carroc',
+                       v.num_motorx as 'num_motorx',
+                       v.num_chasis as 'num_chasis',
+                       v.num_poliza as 'num_poliza',
+                       v.nom_asesoa as 'nom_soatxx',
+                       v.fec_vigfin as 'fec_finsoa',
+                       v.num_tarpro as 'num_tarpro',
+                       v.cod_tenedo as 'cod_poseed',
+                       CONCAT(k.nom_apell1,' ',k.nom_apell2,' ',k.nom_tercer) as 'nom_poseed',
+                       k.dir_domici as 'dir_poseed',
+                       r.nom_ciudad as 'ciu_poseed',
+                       z.num_trayle as 'num_remolq',
+                       t.num_poliza as 'num_poliza',
+                       y.nom_tipveh as 'nom_tipveh',
+                       t.ind_anulad as 'ind_anulad'
+                  FROM ".BASE_DATOS.".tab_despac_despac t 
+	              LEFT JOIN ".BASE_DATOS.".tab_genera_tipdes b ON t.cod_tipdes = b.cod_tipdes 
+	              LEFT JOIN ".BASE_DATOS.".tab_genera_paises c ON t.cod_paiori = c.cod_paisxx 
+	              LEFT JOIN ".BASE_DATOS.".tab_genera_depart d ON t.cod_paiori = d.cod_paisxx 
+	                    AND t.cod_depori = d.cod_depart 
+	              LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad e ON t.cod_paiori = e.cod_paisxx 
+	                    AND t.cod_depori = e.cod_depart 
+	                    AND t.cod_ciuori = e.cod_ciudad 
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_paises f ON t.cod_paides = f.cod_paisxx 
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_depart g ON t.cod_paides = g.cod_paisxx 
+	                AND t.cod_depdes = g.cod_depart 
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad h ON t.cod_paides = h.cod_paisxx 
+	                AND t.cod_depdes = h.cod_depart 
+	                AND t.cod_ciudes = h.cod_ciudad
+                LEFT JOIN ".BASE_DATOS.".tab_despac_seguim u ON u.num_despac = t.num_despac
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_rutasx i ON u.cod_rutasx = i.cod_rutasx 
+	            LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer j ON t.cod_asegur = j.cod_tercer
+                LEFT JOIN ".BASE_DATOS.".tab_despac_vehige z ON t.num_despac = z.num_despac 
+                LEFT JOIN ".BASE_DATOS.".tab_vehicu_vehicu v ON v.num_placax = z.num_placax
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_marcas l ON v.cod_marcax = l.cod_marcax 
+	            LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas m ON v.cod_marcax = m.cod_marcax 
+	                AND v.cod_lineax = m.cod_lineax 
+	            LEFT JOIN ".BASE_DATOS.".tab_vehige_colore n ON v.cod_colorx = n.cod_colorx
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer w ON z.cod_conduc = W.cod_tercer
+                LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad o ON w.cod_ciudad = o.cod_ciudad
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc x ON z.cod_conduc = x.cod_tercer
+	            LEFT JOIN ".BASE_DATOS.".tab_vehige_config p ON v.num_config = p.num_config
+	            LEFT JOIN ".BASE_DATOS.".tab_vehige_carroc q ON v.cod_carroc = q.cod_carroc
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k ON v.cod_tenedo = k.cod_tercer
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad r ON k.cod_ciudad  = r.cod_ciudad 
+                LEFT JOIN ".BASE_DATOS.".tab_despac_remesa s ON t.num_despac = s.num_despac
+                LEFT JOIN ".BASE_DATOS.".tab_genera_tipveh y ON v.cod_tipveh = y.cod_tipveh
+	                AND t.fec_salida IS NOT NULL 
+	                AND t.fec_salida <= NOW() 
+	                AND (
+		                t.fec_llegad IS NULL 
+		                OR t.fec_llegad = '0000-00-00 00:00:00'
+	                ) 
+	                AND t.ind_planru = 'S' 
+	                AND t.ind_anulad = 'R' 
+	                AND z.ind_activo = 'S' ";
+        $mSelect2 .="WHERE t.fec_despac BETWEEN '".$_REQUEST['fec_inicia']." 00:00:00' AND '".$_REQUEST['fec_finali']." 23:59:59' ";
 
         if( $_REQUEST['ind_finali'] == '1' ) {
         	$mSelect2 .= "AND t.fec_llegad IS NOT NULL ";
         }
 
-        if ($_REQUEST['num_dessat'] != '')
-            $mSelect2 .= " AND a.num_dessat = '".$_REQUEST['num_dessat']."'";
-
         if ($_REQUEST['num_viajex'] != '')
-            $mSelect2 .= " AND a.num_despac = '".$_REQUEST['num_viajex']."'";
-
-        if ($_REQUEST['num_solici'] != '')
-            $mSelect2 .= " AND a.num_solici = '".$_REQUEST['num_solici']."'";
-
-        if ($_REQUEST['num_pedido'] != '')
-            $mSelect2 .= " AND a.num_pedido = '".$_REQUEST['num_pedido']."'";
+            $mSelect2 .= " AND t.num_despac = '".$_REQUEST['num_viajex']."'";
 
         if ($_REQUEST['num_placax'] != '')
-            $mSelect2 .= " AND a.num_placax = '".$_REQUEST['num_placax']."'";
+            $mSelect2 .= " AND z.num_placax = '".$_REQUEST['num_placax']."'";
 
         if ($_REQUEST['cod_tipdes'] != '')
-            $mSelect2 .= " AND a.cod_tipdes = '".$_REQUEST['cod_tipdes']."'";
+            $mSelect2 .= " AND t.cod_tipdes = '".$_REQUEST['cod_tipdes']."'";
 
+        if ($_REQUEST['cod_transp'] != ''){
+            $mSelect2 .= " AND z.cod_transp = '".$_REQUEST['cod_transp']."'";  
+        }  
 
         if ($_REQUEST['cod_noveda'] != '') {
             $mSql1 = $mSelect1;
             $mSql1 .= "INNER JOIN ".BASE_DATOS.".tab_despac_noveda y
-                           ON a.num_dessat = y.num_despac ";
+                           ON a.num_despac = y.num_despac ";
             $mSql1 .= $mSelect2;
             $mSql1 .= " AND y.cod_noveda = '".$_REQUEST['cod_noveda']."'";
 
             $mSql2 = $mSelect1;
             $mSql2 .= "INNER JOIN ".BASE_DATOS.".tab_despac_contro y
-                           ON a.num_dessat = y.num_despac ";
+                           ON a.num_despac = y.num_despac ";
             $mSql2 .= $mSelect2;
             $mSql2 .= " AND y.cod_noveda = '".$_REQUEST['cod_noveda']."'";
 
-            $mSelect = "( ".$mSql1." GROUP BY a.num_despac ) 
+            $mSelect = "( ".$mSql1." GROUP BY t.num_despac ) 
                   UNION  
-                  ( ".$mSql2." GROUP BY a.num_despac ) ";
+                  ( ".$mSql2." GROUP BY t.num_despac ) ";
         } else {
-            $mSelect = $mSelect1 . $mSelect2 . " GROUP BY a.num_despac ";
+            $mSelect = $mSelect1 . $mSelect2 . " GROUP BY t.num_despac ";
         }
-
         $consulta = new Consulta($mSelect, $this->conexion);
         $_INFORM = $consulta->ret_matriz();
 
@@ -192,7 +197,7 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Pais Destino</th>";
             $mHtml .= "<th class=cellHead >Dpto Destino</th>";
             $mHtml .= "<th class=cellHead >Ciudad Destino</th>";
-            $mHtml .= "<th class=cellHead >Operador</th>";
+            $mHtml .= "<th class=cellHead >Oper ador</th>";
             $mHtml .= "<th class=cellHead >Fecha Cita Cargue</th>";
             $mHtml .= "<th class=cellHead >Nombre Sitio Cargue</th>";
             $mHtml .= "<th class=cellHead >Valor Flete Conductor</th>";
@@ -218,9 +223,6 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Categor&iacute;a Licencia</th>";
             $mHtml .= "<th class=cellHead >P&oacute;liza</th>";
             $mHtml .= "<th class=cellHead >Aseguradora</th>";
-            $mHtml .= "<th class=cellHead >Consolidado</th>";
-            $mHtml .= "<th class=cellHead >Solicitud</th>";
-            $mHtml .= "<th class=cellHead >Pedido</th>";
             $mHtml .= "<th class=cellHead >Placa</th>";
             $mHtml .= "<th class=cellHead >Remolque</th>";
             $mHtml .= "<th class=cellHead >Tipo Veh&iacute;culo</th>";
@@ -240,15 +242,8 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Nombre Poseedor</th>";
             $mHtml .= "<th class=cellHead >Direcci&oacute;n Poseedor</th>";
             $mHtml .= "<th class=cellHead >Ciudad Poseedor</th>";
-            $mHtml .= "<th class=cellHead >Estado Viaje</th>";
-            $mHtml .= "<th class=cellHead >Tipo Transportadora</th>";
-            $mHtml .= "<th class=cellHead >Lugar Instalaci&oacute;n</th>";
             $mHtml .= "<th class=cellHead >Mercanc&iacute;a</th>";
-            $mHtml .= "<th class=cellHead >Modificado</th>";
             $mHtml .= "<th class=cellHead >Anulado</th>";
-            $mHtml .= "<th class=cellHead >No. Despacho SATT</th>";
-            $mHtml .= "<th class=cellHead >Cod. Respuesta Astrans</th>";
-            $mHtml .= "<th class=cellHead >Mensaje Respuesta Astrans</th>";
             if ($_REQUEST['ind_noveda'] == '1') {
                 $mHtml .= "<th class=cellHead >Sitio de seguimiento</th>";
                 $mHtml .= "<th class=cellHead >Novedad</th>";
@@ -259,9 +254,13 @@ class InformViajes {
 
             $count = 1;
             foreach ($_INFORM as $row) {
-                $mArrayNove = array_merge(InformViajes::getDespacContro($row[71]), InformViajes::getDespacNoveda($row[71]));
-                $mSizeNoved = $_REQUEST['ind_noveda'] == '1' ? sizeof($mArrayNove) : '1';
-
+                $mArrayNove = array_merge(InformViajes::getDespacContro($row['num_viajex']), InformViajes::getDespacNoveda($row['num_viajex']));
+                if(sizeof($mArrayNove)==0){
+                    $sizeNovedad=1;
+                }else{
+                    $sizeNovedad=sizeof($mArrayNove);
+                }
+                $mSizeNoved = $_REQUEST['ind_noveda'] == '1' ? $sizeNovedad : '1';
                 if ($row['tip_transp'] == '1')
                     $tip_transp = 'FLOTA PROPIA';
                 elseif ($row['tip_transp'] == '2')
@@ -280,84 +279,74 @@ class InformViajes {
                 }
 
                 $mHtml .= "<tr class='row'>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$count."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$href1.$row[0].$href2."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row[1]."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$this->toFecha($row[2])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row[3])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row[4])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row[5])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row[6])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row[7])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row[8])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row[9])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row[10]."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$this->toFecha($row[11]." ".$row[12])."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[13] != '' ? $row[13] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row[14], 0, '.', '.')."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row[15], 0, '.', '.')."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row[16], 0, '.', '.')."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row[17], 0, '.', '.')."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row[18]."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row[19]."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row[20]."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row[21]."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[22] != '' ? $row[22] : '-' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[23] != '' ? $this->toFecha($row[23]) : '-' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[24] != ' ' && $row[24] != '' ? $row[24] : '-' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[26] != '' ? $row[26] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[25] == 'S' ? 'SI' : 'NO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[27] == 'A' ? 'SI' : 'NO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[40] != '' ? $row[40] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[49] != '' ? $row[49] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[29] != '' ? $row[29] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[30] != '' ? $row[30] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[31] != '' ? $row[31] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[50] != '' ? $row[50] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[59] != '' ? $row[59] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[28] != '' ? $row[28] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[37] != '' ? $row[37] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[38] != '' ? $row[38] : 'N/A' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[39] != '' ? $row[39] : 'N/A' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[44] != '' ? $row[44] : 'N/A' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[41] != '' ? $row[41] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[42] != '' ? $row[42] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[43] != '' ? $row[43] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[45] != '' ? $row[45] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[46] != '' ? $row[46] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[47] != '' ? $row[47] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[48] != '' ? $row[48] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[51] != '' ? $row[51] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[52] != '' ? $row[52] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[53] != '' ? $row[53] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[54] != '' ? $row[54] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[55] != '' ? $row[55] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[56] != '' ? $this->toFecha($row[56]) : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[57] != '' ? $row[57] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[58] != '' ? $row[58] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[60] != '' ? $row[60] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[61] != '' ? $row[61] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[63] != '' ? $row[63] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[62] != '' ? $row[62] : 'DESCONOCIDA' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[64] != '' ? $row[64]." - ".$row[65] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$tip_transp."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[67] != '' ? $row[67] : 'N/A' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[68] != '' ? $row[68] : 'DESCONOCIDO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[69] == '1' ? 'SI' : 'NO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[70] == '1' ? 'SI' : 'NO' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[71] != '' ? $row[71] : 'N/A' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[72] != '' ? $row[72] : 'N/A' )."</td>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row[73] != '' ? $row[73] : 'N/A' )."</td>";
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$count."</td>"; //No
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$href1.$row['num_viajex'].$href2."</td>"; //Viaje
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['cod_manifi']."</td>"; //Manifiesto
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$this->toFecha($row['fec_despac'])."</td>"; //Fecha Despacho
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_tipdes'])."</td>"; //Tipo Despacho
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_paiori'])."</td>"; //Pais Origen
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_depori'])."</td>"; //Dpto Origen
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_ciuori'])."</td>"; //Ciudad Origen
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_paides'])."</td>"; //Pais Destino
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_depdes'])."</td>"; //Dpto Destino
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_ciudes'])."</td>"; //Ciudad Destino
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['cod_operad']."</td>"; //Operador
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$this->toFecha($row['fec_citcar']." ".$row['hor_citcar'])."</td>"; //Fecha Cita de Cargue
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_sitcar'] != '' ? $row['nom_sitcar'] : 'DESCONOCIDO' )."</td>"; //Nombre Sitio de Cargue
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row['val_flecon'], 0, '.', '.')."</td>"; //Valor Flete Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row['val_despac'], 0, '.', '.')."</td>"; //Valor Despacho
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row['val_antici'], 0, '.', '.')."</td>"; //Valor Anticipo
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row['val_retefu'], 0, '.', '.')."</td>"; //Valor Retefuente
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['nom_carpag']."</td>"; //Encargado de Pagar Cargue
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['nom_despag']."</td>"; //Encargado de pagar Descargue
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['cod_agedes']."</td>"; //Agencia
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['val_pesoxx']."</td>"; //Peso Kg
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['obs_despac'] != '' ? $row['obs_despac'] : '-' )."</td>"; //Observaciones
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['fec_llegad'] != '' ? $this->toFecha($row['fec_llegad']) : '-' )."</td>"; //Fecha Cita de Descargue
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['obs_llegad'] != ' ' && $row['obs_llegad'] != '' ? $row['obs_llegad'] : '-' )."</td>"; //Observaciones Llegada
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_rutasx'] != '' ? $row['nom_rutasx'] : 'DESCONOCIDA' )."</td>"; //Ruta
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ind_planru'] == 'S' ? 'SI' : 'NO' )."</td>"; //Plan de Ruta
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['cod_conduc'] != '' ? $row['cod_conduc'] : 'DESCONOCIDO' )."</td>"; // CC. Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_conduc'] != '' ? $row['nom_conduc'] : 'DESCONOCIDO' )."</td>"; // Nombre Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['tel_conduc'] != '' ? $row['tel_conduc'] : 'DESCONOCIDO' )."</td>"; // Tel conductor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['cel_conduc'] != '' ? $row['cel_conduc'] : 'DESCONOCIDO' )."</td>"; // Cel conductor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['dir_conduc'] != '' ? $row['dir_conduc'] : 'DESCONOCIDA' )."</td>"; // Direccion Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ciu_conduc'] != '' ? $row['ciu_conduc'] : 'DESCONOCIDA' )."</td>"; // Ciudad Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['cat_liccon'] != '' ? $row['cat_liccon'] : 'DESCONOCIDA' )."</td>"; // Categoria Licencia
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_poliza'] != '' ? $row['num_poliza'] : 'DESCONOCIDA' )."</td>"; // Poliza
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( '' != '' ? '' : 'DESCONOCIDA' )."</td>"; //Aseguradora
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_placax'] != '' ? $row['num_placax'] : 'DESCONOCIDA' )."</td>"; //Placa
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_remolq'] != '' ? $row['num_remolq'] : 'DESCONOCIDO' )."</td>"; //Remolque
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_tipveh'] != '' ? $row['nom_tipveh'] : 'DESCONOCIDO' )."</td>"; //Tipo Vehiculo
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_marcax'] != '' ? $row['nom_marcax'] : 'DESCONOCIDO' )."</td>"; //Modelo
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_lineax'] != '' ? $row['nom_lineax'] : 'DESCONOCIDA' )."</td>"; //Marca
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_lineax'] != '' ? $row['nom_lineax'] : 'DESCONOCIDA' )."</td>"; //Linea
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_colorx'] != '' ? $row['nom_colorx'] : 'DESCONOCIDO' )."</td>"; //Color
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_config'] != '' ? $row['num_config'] : 'DESCONOCIDA' )."</td>"; //Confuguracion
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_carroc'] != '' ? $row['nom_carroc'] : 'DESCONOCIDA' )."</td>"; //Carroceria
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_chasis'] != '' ? $row['num_chasis'] : 'DESCONOCIDO' )."</td>"; //No Chasis
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_motorx'] != '' ? $row['num_motorx'] : 'DESCONOCIDO' )."</td>"; //No motor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_poliza'] != '' ? $row['num_poliza'] : 'DESCONOCIDO' )."</td>"; //SOAT
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['fec_finsoa'] != '' ? $this->toFecha($row['fec_finsoa']) : 'DESCONOCIDA' )."</td>"; //Vcto Soat
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_soatxx'] != '' ? $row['nom_soatxx'] : 'DESCONOCIDA' )."</td>"; //Aseguradora SOAT
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_tarpro'] != '' ? $row['num_tarpro'] : 'DESCONOCIDA' )."</td>"; //Tarjeta Propiedad
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['cod_poseed'] != '' ? $row['cod_poseed'] : 'DESCONOCIDA' )."</td>"; //CC Posedor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_poseed'] != '' ? $row['nom_poseed'] : 'DESCONOCIDO' )."</td>"; // Nombre Poseedor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['dir_poseed'] != '' ? $row['dir_poseed'] : 'DESCONOCIDA' )."</td>"; // Direccion Poseedor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ciu_poseed'] != '' ? $row['ciu_poseed'] : 'DESCONOCIDA' )."</td>"; // Ciudad Poseedor
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_mercan'] != '' ? $row['nom_mercan'] : 'DESCONOCIDO' )."</td>"; //Mercancia
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
 
                 if ($_REQUEST['ind_noveda'] == '1') {
-                    if ($mSizeNoved > 0) {
+                    if ($mSizeNoved > 1) {
                         for ($x = 0; $x < $mSizeNoved; $x++) {
                             $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
                             $mHtml .= $x == 0 ? '' : '<tr>';
-                            $mHtml .= '<td class="cellInfo" >'.$nomSitiox.'&nbsp;</td>';
-                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][1].'&nbsp;</td>';
-                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][2].'&nbsp;</td>';
-                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][3].'&nbsp;</td>';
+                            $mHtml .= '<td class="cellInfo" >'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
+                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
+                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
+                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
                             $mHtml .= $x == 0 ? '' : '</tr>';
                         }
                     } else {
@@ -477,21 +466,20 @@ class InformViajes {
         $_TIPDES = $consulta->ret_matriz();
 
         $_NOVEDA = InformViajes::getNovedades();
-
+        $_TRANSP = InformViajes::getTransport();
         /*         * *********************** FOMULARIO ************************ */
         $formulario = new Formulario("index.php", "post", "Informe de Operaciones", "form\" id=\"formID");
 
         $formulario->texto("Fecha Inicial:", "text", "fec_inicia\" readonly id=\"fec_iniciaID", 0, 10, 10, "", $_REQUEST['fec_inicia']);
         $formulario->texto("Fecha Final:", "text", "fec_finali\" readonly id=\"fec_finaliID", 1, 10, 10, "", $_REQUEST['fec_finali']);
 
-        $formulario->texto("No. Despacho( SATT ):", "text", "num_dessat\" id=\"num_dessatID", 0, 15, 15, "", $_REQUEST['num_dessat']);
         $formulario->texto("No. Viaje", "text", "num_viajex\" id=\"num_viajexID", 1, 15, 15, "", $_REQUEST['num_viajex']);
-
-        $formulario->texto("No. Solicitud:", "text", "num_solici\" id=\"num_soliciID", 0, 15, 15, "", $_REQUEST['num_solici']);
-        $formulario->texto("No. Pedido", "text", "num_pedido\" id=\"num_pedidoID", 1, 15, 15, "", $_REQUEST['num_pedido']);
 
         $formulario->texto("Placa:", "text", "num_placax\" id=\"num_placaxID", 0, 15, 15, "", $_REQUEST['num_placax']);
         $formulario->lista("Tipo Despachos:", "cod_tipdes\" id=\"cod_tipdesID", array_merge($this->cNull, $_TIPDES), 1);
+        
+        
+        $formulario->lista("Transportadora", "cod_transp\" id=\"cod_transpID", array_merge($this->cNull, $_TRANSP), 1);
 
         $formulario->lista("Novedad:", "cod_noveda\" id=\"cod_novedaID", array_merge($this->cNull, $_NOVEDA), 1);
 
@@ -591,6 +579,23 @@ class InformViajes {
         header('Pragma: public');
         ob_clean();
         echo $HTML = $_SESSION[xls_InformViajes];
+    }
+
+    //Metodo que obtiene las transportadora de la base de datos
+    private function getTransport(){
+        $mSql=" SELECT 
+                    b.cod_tercer, 
+                    b.nom_tercer 
+                FROM 
+                    ".BASE_DATOS.".tab_tercer_emptra a 
+                INNER JOIN tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer 
+                AND b.cod_estado = 1
+                ORDER BY b.nom_tercer ASC
+                ;
+        ";
+        $mConsult = new Consulta($mSql, $this->conexion);
+        $mResult = $mConsult->ret_matriz('a');
+        return $mResult;
     }
 }
 
