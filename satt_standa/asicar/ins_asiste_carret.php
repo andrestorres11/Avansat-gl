@@ -258,7 +258,7 @@ class ins_asiste_carret
     foreach($respuesta as $dato){
       $html.='<option value="'.$dato['id'].'">'.$dato['nom_asiste'].'</option>';
     }
-    return $html;
+    return utf8_encode($html);
   }
 
 }
