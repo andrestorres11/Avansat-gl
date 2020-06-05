@@ -22,6 +22,7 @@ $(document).ready(function() {
 
 function cargaFormulario(valor){
     $("#con-formul").empty();
+    $(".btn-sm").attr('disabled',true);
     if(valor.value==1){
        desbloqueaInputs();
         $("#con-formul").append(`<div class="card text-center" style="margin:15px;">
@@ -119,7 +120,6 @@ function desbloqueaInputs(){
   $(".form-control-sm").removeAttr("disabled");
   $(".btn-sm").removeAttr("disabled");
   $("#tip_soliciID").val($("#tipFormulID").val());
-  $("#tipFormulID").attr("disabled",true);
 }
 
 $("#FormularioSolici").validate({

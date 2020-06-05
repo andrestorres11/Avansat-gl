@@ -124,6 +124,7 @@ class ins_asiste_carret
   function filtro($mensaje = '') {
     self::styles();
     $datos_option = $this->darOpcionAsistencia();
+    $datos_usuari = $this->obtenerDatosUsuario();
     $html = '
             <td class="page" onload="loadAjax("finish")">
               <form id="FormularioSolici" method="post">
@@ -140,13 +141,13 @@ class ins_asiste_carret
                     </select>
                   </div>
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Nombre del Solicitante" id="nom_soliciID" name="nom_solici" required disabled>
+                    <input class="form-control form-control-sm" type="text" placeholder="Nombre del Solicitante" id="nom_soliciID" name="nom_solici" required disabled value="'.$datos_usuari['nom_usuari'].'">
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="email" placeholder="Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled>
+                    <input class="form-control form-control-sm" type="email" placeholder="Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
                   </div>
                   <div class="offset-1 col-4">
                   <input class="form-control form-control-sm" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
@@ -259,6 +260,13 @@ class ins_asiste_carret
       $html.='<option value="'.$dato['id'].'">'.$dato['nom_asiste'].'</option>';
     }
     return utf8_encode($html);
+  }
+
+  function obtenerDatosUsuario(){
+    $sql="SELECT a.nom_usuari, a.usr_emailx FROM tab_genera_usuari a WHERE a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."';";
+    $consulta = new Consulta($sql, $this->conexion);
+    $respuesta = $consulta->ret_matriz("a")[0];
+    return $respuesta;
   }
 
 }
