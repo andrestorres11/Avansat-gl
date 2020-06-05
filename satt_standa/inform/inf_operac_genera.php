@@ -595,8 +595,19 @@ class InformViajes {
         ";
         $mConsult = new Consulta($mSql, $this->conexion);
         $mResult = $mConsult->ret_matriz('a');
-        return $mResult;
+        return $this->utf8_converter($mResult);
     }
+
+    function utf8_converter($array)
+    {
+    array_walk_recursive($array, function(&$item, $key){
+        if(!mb_detect_encoding($item, 'utf-8', true)){
+                $item = utf8_encode($item);
+        }
+    });
+    return $array;
+    }
+
 }
 
 $_INFORM = new InformViajes($this->conexion, $this->usuario_aplicacion, $this->codigo);
