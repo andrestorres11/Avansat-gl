@@ -26,7 +26,7 @@ class ins_asiste_carret
 
  /*! \fn: styles
        *  \brief: incluye todos los archivos necesarios para los estilos
-       *  \author: Ing. Luis Manrique
+       *  \author: Ing. Cristian Andrés Torres
        *  \date: 27-04-2020
        *  \date modified: dd/mm/aaaa
        *  \param: 
