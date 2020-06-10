@@ -94,7 +94,7 @@ function createTable(objet){
                 //Asigna los campos de buqueda
                 $('#contenedor .tab_'+id+' thead tr .buscar').each( function (i) {
                   var title = $(this).text();
-                  $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="Buscar '+title+'" />' );
+                  $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="'+title+'" />' );
            
                   $( 'input', this ).on( 'keyup change', function () {
                       var table = $(this).parents("table").DataTable();
