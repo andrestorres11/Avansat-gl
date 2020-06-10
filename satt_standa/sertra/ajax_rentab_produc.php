@@ -723,12 +723,13 @@ class ajax_rentab_produc
 	                    <th class="buscar subtitbusq">Nit</th> 
 	                    <th class="buscar subtitbusq">Empresa</th>
 	                    <th class="buscar subtitbusq">Modalidad</th>
-	                    <th class="buscar subtitbusq">Valor Unitario</th>
-	                    <th class="buscar subtitbusq">Cantidad Despachos</th>
-	                    <th class="buscar subtitbusq">Cantidad Novedades</th>
-	                    <th class="buscar subtitbusq">Valor a facturar Despacho</th>
-	                    <th class="buscar subtitbusq">Valor a facturar Novedad</th>
-	                    <th class="buscar subtitbusq">Promedio de Novedades Por despacho</th>
+	                    <th class="buscar subtitbusq">Val Unit.</th>
+	                    <th class="buscar subtitbusq">Cant Despachos</th>
+	                    <th class="buscar subtitbusq">Cant Novedades</th>
+	                    <th class="buscar subtitbusq">Val fact Despacho</th>
+	                    <th class="buscar subtitbusq">Val fact Novedad</th>
+	                    <th class="buscar subtitbusq">Prom Nov x Desp</th>
+                      <th class="buscar subtitbusq">Valor Nov x Desp</th>
 	                  </tr>
 	              <tbody>';
 
@@ -737,6 +738,7 @@ class ajax_rentab_produc
 	      $data['val_facdes'] = $data['tip_modali'] == "Despacho" ? $data['val_unitar']*$data['can_despac'] : 0;
 	      $data['val_facnov'] = $data['tip_modali'] == "Novedad" ? $data['val_unitar']*$data['can_noveda'] : 0;
 	      $data['pro_novdes'] = ($data['can_noveda']/$data['can_despac']);
+        $data['val_novdes'] = ($data['val_unitar']*$data['can_despac'])/$data['can_noveda'];
 
 	      $html .= '<tr>
 	                  <td>'.$data['cod_transp'].'</td>
@@ -747,7 +749,8 @@ class ajax_rentab_produc
 	                  <td>'.$data['can_noveda'].'</td>
 	                  <td>$'.$data['val_facdes'].'</td>
 	                  <td>$'.$data['val_facnov'].'</td>
-	                  <td>'.round($data['pro_novdes'], 2).'</td>
+	                  <td>'.round($data['pro_novdes']).'</td>
+                    <td>$'.round($data['val_novdes']).'</td>
 	                </tr>';
 	    }
 	    $html .='</tbody>
