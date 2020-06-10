@@ -271,12 +271,12 @@ class ajax_rentab_produc
                             d.nom_tercer
                         ) AS nom_tercer,
                         IF(
-                            f.val_regist IS NULL,
+                            f.val_regist IS NULL OR f.val_regist = 0,
                             "Despacho",
                             "Novedad"
                         ) AS tip_modali,
                         IF(
-                            f.val_regist IS NULL,
+                            f.val_regist IS NULL OR f.val_regist = 0,
                             f.val_despac,
                             f.val_regist
                         ) AS val_unitar,
@@ -375,7 +375,7 @@ class ajax_rentab_produc
     		case 'Semanal':
     			$data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
       			$data['fec_regist'] = date('W', $data['fec_regist']) ;
-      			$titulo = "Semana ° ";
+      			$titulo = "Semana # ";
     		 break;   
     		case 'Mensual':
     			$data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
@@ -542,7 +542,7 @@ class ajax_rentab_produc
 			case 'Semanal':
 				$data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
 	  			$data['fec_regist'] = date('W', $data['fec_regist']) ;
-	  			$titulo = "Semana ° ";
+	  			$titulo = "Semana # ";
 			 break;   
 			case 'Mensual':
 				$data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
@@ -700,24 +700,6 @@ class ajax_rentab_produc
 
 	    //Recorre el arreglo
 	    foreach ($mMatriz as $identi => $data) {
-
-	      //Identifica el tipo de informe para asignar valores
-	      switch ($_REQUEST['tip_inform']) {
-	        case 'Diario':
-	          $data['fec_regist'] = explode(" ", $data['fec_regist'])[0];
-	          $titulo = "Dia ";
-	         break;       
-	        case 'Semanal':
-	          $data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
-	            $data['fec_regist'] = date('W', $data['fec_regist']) ;
-	            $titulo = "Semana ° ";
-	         break;   
-	        case 'Mensual':
-	          $data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
-	            $data['fec_regist'] = date('m', $data['fec_regist']) ;
-	            $titulo = "Mes de ";
-	         break;         
-	    }
 	      
 	    //Valida la existencia de la posición en el arreglo para sumar la cantidad de casos   
 	      if(isset($dataTable[$data['cod_transp']])){
@@ -727,7 +709,7 @@ class ajax_rentab_produc
 	        $dataTable[$data['cod_transp']]['cod_transp'] = $data['cod_transp'];
 	        $dataTable[$data['cod_transp']]['nom_tercer'] = $data['nom_tercer'];
 	        $dataTable[$data['cod_transp']]['tip_modali'] = $data['tip_modali'];
-	        $dataTable[$data['cod_transp']]['val_unitar'] = $data['val_unitar'] = $data['val_unitar'] == '' ? 0 :  $data['val_unitar'];
+	        $dataTable[$data['cod_transp']]['val_unitar'] = $data['val_unitar'];
 	        $dataTable[$data['cod_transp']]['can_noveda'] = intval($data['can_noveda']);
 	        $dataTable[$data['cod_transp']]['can_despac'] = 1;
 	      }
