@@ -40,7 +40,10 @@
 
                 <!-- Font Awesome -->
                 <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/fontawesome/css/font-awesome.min.css" rel="stylesheet">
-                   
+                
+                <!-- Jquery UI -->
+                <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery-ui-1.12.1/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
+                
                 <!-- Datatables -->
                 <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/datatables.net-bs/css/dataTables.bootstrap.min.css" rel="stylesheet">
                 <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/datatables.net-buttons/css/buttons.dataTables.min.css" rel="stylesheet">
@@ -56,7 +59,6 @@
                 <link href="../' . DIR_APLICA_CENTRAL . '/estilos/estilos_table.css" rel="stylesheet">
 
                 <!-- Export Excel -->
-                <link href="../' . DIR_APLICA_CENTRAL . '/css/tableexport.css" rel="stylesheet">
                 
             ';
         }
@@ -73,12 +75,13 @@
         private function scripts(){
 
             echo '
+                <!-- Moment -->
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/moment/moment.js"></script>
+
                 <!-- jQuery -->
                 <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery/dist/jquery.min.js"></script>
-                
-                <!-- jQuery FrameWork -->
-                <script src="../' . DIR_APLICA_CENTRAL . '/js/functions.js"></script>
-                <script src="../' . DIR_APLICA_CENTRAL . '/js/jquery.blockUI2019.js"></script>
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/jquery-ui-1.12.1/jquery.blockUI.js"></script>
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery-ui-1.12.1/jquery-ui-1.12.1/jquery-ui.min.js"></script>
 
                 <!-- Bootstrap -->
                 <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/bootstrap-4/js/bootstrap.min.js"></script>
@@ -86,6 +89,14 @@
                 <!-- bootstrap-progressbar -->
                 <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
 
+                <!-- Form validate -->
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/validation-scripts/jquery.validate.min.js"></script>
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/validation-scripts/jquery.form.js"></script>
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/validation-scripts/additional-methods.min.js"></script>
+
+                <!-- SweetAlert -->
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/sweetalert2.all.8.11.8.js"></script>
+                
                 <!-- Datatables -->
                 <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/datatables.net/js/jquery.dataTables.min.js"></script>
                 <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>
@@ -169,7 +180,7 @@
                                                 </div>
                                                 <div class="row mt-4">
                                                     <div class="col-12 text-center">
-                                                        <button type="button" class="btn btn-success btn-sm"><i class="fas fa-search"></i> Filtrar</button>
+                                                        <button type="button" onclick="executeFilter()" class="btn btn-success btn-sm">Filtrar</button>
                                                     </div>
                                                 </div>
                                                 </form>
@@ -190,35 +201,39 @@
                                         <div id="collapseTwo" class="collapse show m-3" aria-labelledby="headingTwo" data-parent="#accordion">
                                             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
                                                 <li class="nav-item m-2">
-                                                    <a class="btn btn-success active" style="background-color:#509334" id="pills-general-tab" data-toggle="pill" href="#pills-general" role="tab" aria-controls="pills-general" aria-selected="true">General</a>
+                                                    <a class="btn btn-success active" style="background-color:#509334" id="pills-general-tab" data-toggle="pill" href="#pills-general" role="tab" aria-controls="pills-general" aria-selected="true" onclick="executeFilter()">General</a>
                                                 </li>
                                                 <li class="nav-item m-2">
-                                                    <a class="btn btn-success" style="background-color:#509334" id="pills-porgestion-tab" data-toggle="pill" href="#pills-porgestion" role="tab" aria-controls="pills-porgestion" aria-selected="false">Por Gestionar</a>
+                                                    <a class="btn btn-success" style="background-color:#509334" id="pills-porgestion-tab" data-toggle="pill" href="#pills-porgestion" role="tab" aria-controls="pills-porgestion" aria-selected="false" onclick="executeFilter()">Por Gestionar</a>
                                                 </li>
                                                 <li class="nav-item m-2">
-                                                    <a class="btn btn-success" style="background-color:#509334" id="pills-PorAsiCliente-tab" data-toggle="pill" href="#pills-PorAsiCliente" role="tab" aria-controls="pills-PorAsiClientet" aria-selected="false">Por Asignar a Cliente</a>
+                                                    <a class="btn btn-success" style="background-color:#509334" id="pills-PorAsiCliente-tab" data-toggle="pill" href="#pills-PorAsiCliente" role="tab" aria-controls="pills-PorAsiClientet" aria-selected="false" onclick="executeFilter()">Por Aprobar Cliente</a>
                                                 </li>
                                                 <li class="nav-item m-2">
-                                                    <a class="btn btn-success" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Asignación a Pro</a>
+                                                    <a class="btn btn-success" style="background-color:#509334" id="pills-AsignacionAPro-tab" data-toggle="pill" href="#pills-AsignacionAPro" role="tab" aria-controls="pills-AsignacionAPro" aria-selected="false" onclick="executeFilter()">Por Asignar a Pro</a>
                                                 </li>
                                                 <li class="nav-item m-2">
-                                                    <a class="btn btn-success" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">En proceso</a>
+                                                    <a class="btn btn-success" style="background-color:#509334" id="pills-EnProceso-tab" data-toggle="pill" href="#pills-EnProceso" role="tab" aria-controls="pills-EnProceso" aria-selected="false" onclick="executeFilter()">En Proceso</a>
                                                 </li>
                                                 <li class="nav-item m-2">
-                                                    <a class="btn btn-success" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Finalizados</a>
+                                                    <a class="btn btn-success" style="background-color:#509334" id="pills-Finalizados-tab" data-toggle="pill" href="#pills-Finalizados" role="tab" aria-controls="pills-Finalizados" aria-selected="false" onclick="executeFilter()">Finalizados</a>
                                                 </li>
                                             </ul>
 
                                       <div class="tab-content" id="pills-tabContent">
                                         '.$this->vGeneral().'
                                         '.$this->vPorGestionar().'
-                                        '.$this->vPorAsiCliente().'
+                                        '.$this->vPorAproCliente().'
+                                        '.$this->vAsignacionAPro().'
+                                        '.$this->vEnProceso().'
+                                        '.$this->vFinalizados().'
                                         <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
                                       </div>
 
                                         </div>
                                     </div>
-                                </div> 
+                                </div>
+                                '.$this->formulPorGestioModal().'
                 </td>
             </tr>
                                                 ');
@@ -256,7 +271,7 @@
             <table class="table table-bordered" id="tabla_inf_general">
                 <thead>
                     <tr>
-                        <th colspan="10" style="background-color:#dff0d8; color: #000" id="text_general_fec"><center>INDICADOR DE SOLICITUDES DEL PERIODO AL <center></th> 
+                        <th colspan="11" style="background-color:#dff0d8; color: #000" id="text_general_fec"><center>INDICADOR DE SOLICITUDES DEL PERIODO AL <center></th> 
                     </tr>
                     <tr>
                         <th>TOTAL GENERADAS</th> 
@@ -269,18 +284,11 @@
                         <th>EN PROCESO</th>
                         <th>%</th>
                         <th>FINALIZADAS</th>
+                        <th>%</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr id="resultado_info_general">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
                     </tr>
                 </tbody>
             </table>
@@ -315,7 +323,27 @@
 
         private function vPorGestionar(){
             $html='<div class="tab-pane fade p-3" id="pills-porgestion" role="tabpanel" aria-labelledby="pills-profile-tab">
-            <table class="table table-bordered" id="tabla_inf_especifico">
+            <table class="table table-bordered" id="tabla_inf_porGestionar">
+                <thead>
+                    <tr>
+                        <th colspan="12" style="background-color:#dff0d8; color: #000"><center>SERVICIO SOLICITADO<center></th>
+                    </tr>
+                    <tr>
+                        <th><center>CLIENTE</center></th> 
+                        '.$this->darInfoFormulSol().'
+                    </tr>
+                </thead>
+                <tbody id="resultado_porGestionar">
+                </tbody>
+            </table>
+        </div>
+            ';
+        return $html;
+        }
+
+        private function vPorAproCliente(){
+            $html='<div class="tab-pane fade p-3" id="pills-PorAsiCliente" role="tabpanel" aria-labelledby="pills-PorAsiCliente-tab">
+            <table class="table table-bordered" id="tabla_inf_porAproCliente">
                 <thead>
                     <tr>
                         <th colspan="12" style="background-color:#dff0d8; color: #000"><center>SERVICIO SOLICITADO<center></th>
@@ -325,7 +353,7 @@
                         '.$this->darInfoFormulSol().'
                     </tr>
                 </thead>
-                <tbody id="resultado_info_especifico">
+                <tbody id="resultado_info_AproCliente">
         
                 </tbody>
             </table>
@@ -334,25 +362,232 @@
         return $html;
         }
 
-        private function vPorAsiCliente(){
-            $html='<div class="tab-pane fade p-3" id="pills-PorAsiCliente" role="tabpanel" aria-labelledby="pills-PorAsiCliente-tab">
-            <table class="table table-bordered" id="tabla_inf_especifico">
-                <thead>
-                    <tr>
-                        <th colspan="12" style="background-color:#dff0d8; color: #000"><center>SERVICIO SOLICITADO<center></th>
-                    </tr>
-                    <tr>
-                        <th>CLIENTE</th> 
-                        '.$this->darInfoFormulSol().'
-                    </tr>
-                </thead>
-                <tbody id="resultado_info_especifico">
-        
-                </tbody>
-            </table>
-        </div>
-            ';
-        return $html;
+        private function vAsignacionAPro(){
+          $html='<div class="tab-pane fade p-3" id="pills-AsignacionAPro" role="tabpanel" aria-labelledby="pills-AsignacionAPro-tab">
+          <table class="table table-bordered" id="tabla_inf_AsignacionAPro">
+              <thead>
+                  <tr>
+                      <th colspan="12" style="background-color:#dff0d8; color: #000"><center>SERVICIO SOLICITADO<center></th>
+                  </tr>
+                  <tr>
+                      <th>CLIENTE</th> 
+                      '.$this->darInfoFormulSol().'
+                  </tr>
+              </thead>
+              <tbody id="resultado_info_AsignacionAPro">
+      
+              </tbody>
+          </table>
+      </div>
+          ';
+      return $html;
+      }
+
+      private function vEnProceso(){
+        $html='<div class="tab-pane fade p-3" id="pills-EnProceso" role="tabpanel" aria-labelledby="pills-EnProceso-tab">
+        <table class="table table-bordered" id="tabla_inf_EnProceso">
+            <thead>
+                <tr>
+                    <th colspan="12" style="background-color:#dff0d8; color: #000"><center>SERVICIO SOLICITADO<center></th>
+                </tr>
+                <tr>
+                    <th>CLIENTE</th> 
+                    '.$this->darInfoFormulSol().'
+                </tr>
+            </thead>
+            <tbody id="resultado_info_EnProceso">
+    
+            </tbody>
+        </table>
+    </div>
+        ';
+    return $html;
+    }
+
+    private function vFinalizados(){
+      $html='<div class="tab-pane fade p-3" id="pills-Finalizados" role="tabpanel" aria-labelledby="pills-Finalizados-tab">
+      <table class="table table-bordered" id="tabla_inf_Finalizados">
+          <thead>
+              <tr>
+                  <th colspan="12" style="background-color:#dff0d8; color: #000"><center>SERVICIO SOLICITADO<center></th>
+              </tr>
+              <tr>
+                  <th>CLIENTE</th> 
+                  '.$this->darInfoFormulSol().'
+              </tr>
+          </thead>
+          <tbody id="resultado_info_Finalizados">
+  
+          </tbody>
+      </table>
+  </div>
+      ';
+  return $html;
+  }
+
+        private function formulPorGestioModal(){
+            $html = '<!-- Modal Por Gestionar-->
+            <div class="modal fade" id="PorGestioModal" role="dialog">
+              <div class="modal-dialog modal-lg">
+              
+                <!-- Modal content-->
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Modal Header</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                    '.$this->camposFormulPrincipal().'
+                  </div>
+                </div>
+                
+              </div>
+            </div>';
+            return $html;
+        }
+
+        private function camposFormulPrincipal(){
+            $html='<div class="card text-center" style="margin:5px;">
+            <div class="card-header color-heading">
+              Datos del Solicitante
+            </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="offset-1 col-4">
+                <input class="form-control form-control-sm" type="text" placeholder="Tipo de Solicitud" id="tip_soliciID" name="tip_solici" required disabled value="'.$datos_usuari['nom_usuari'].'">
+              </div>
+              <div class="offset-1 col-4">
+                <input class="form-control form-control-sm" type="text" placeholder="Nombre del Solicitante" id="nom_soliciID" name="nom_solici" required disabled value="'.$datos_usuari['nom_usuari'].'">
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="offset-1 col-4">
+                <input class="form-control form-control-sm" type="email" placeholder="Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
+              </div>
+              <div class="offset-1 col-4">
+              <input class="form-control form-control-sm" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="offset-1 col-4">
+                <input class="form-control form-control-sm" type="number" placeholder="Numero de Celular" id="cel_soliciID" name="cel_solici" required disabled>
+              </div>
+              <div class="offset-1 col-4">
+              <input class="form-control form-control-sm" type="text" placeholder="Aseguradora" id="nom_aseguraID" name="nom_asegura" disabled>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="offset-1 col-4">
+                <input class="form-control form-control-sm" type="text" placeholder="Poliza" id="nom_polizaID" name="nom_poliza" disabled>
+              </div>
+            </div>
+
+          </div>
+          </div>
+
+          <div class="card-header color-heading" style="margin:12px;">
+          </div>
+
+          <div class="card text-center" style="margin:15px;">
+            <div class="card-header color-heading">
+              Datos del Transportista
+            </div>
+          <div class="card-body">
+
+            <div class="row">
+              <div class="offset-1 col-3">
+                <input class="form-control form-control-sm" type="number" placeholder="Numero de documento" id="num_transpID" name="num_transp" required disabled>
+              </div>
+              <div class="col-4">
+                <input class="form-control form-control-sm" type="text" placeholder="Nombres del Transportista" id="nom_transpID" name="nom_transp" required disabled>
+              </div>
+              <div class="col-3">
+                <input class="form-control form-control-sm" type="text" placeholder="Primer Apellido" id="ap1_transpID" name="ap1_transp" required disabled>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="offset-1 col-3">
+                <input class="form-control form-control-sm" type="text" placeholder="Segundo Apellido" id="ap2_transpID" name="ap2_transp" disabled>
+              </div>
+              <div class="col-4">
+                <input class="form-control form-control-sm" type="number" placeholder="Numero Celular 1" id="ce1_transpID" name="ce1_transp" required disabled>
+              </div>
+              <div class="col-3">
+                <input class="form-control form-control-sm" type="text" placeholder="Numero Celular 2" id="ce2_transpID" name="ce2_transp" disabled>
+              </div>
+            </div>
+
+          </div>
+          </div>
+
+
+          <div class="card text-center" style="margin:15px;">
+            <div class="card-header color-heading">
+              Datos del Vehículo
+            </div>
+          <div class="card-body">
+
+            <div class="row">
+              <div class="offset-1 col-3">
+                <input class="form-control form-control-sm mayuscul-input" type="text" placeholder="Placa" id="num_placaID" name="num_placax" maxlength="6" required disabled>
+              </div>
+              <div class="col-4">
+                <input class="form-control form-control-sm" type="text" placeholder="Marca" id="nom_marcaxID" name="nom_marcax" required disabled>
+              </div>
+              <div class="col-3">
+                <input class="form-control form-control-sm" type="text" placeholder="Color" id="nom_colorxID" name="nom_colorx" required disabled>
+              </div>
+            </div>
+
+            <div class="row mt-3">
+              <div class="offset-1 col-3">
+                <input class="form-control form-control-sm" type="text" placeholder="Tipo" id="tip_transpID" name="tip_transp" disabled>
+              </div>
+              <div class="col-4">
+                <input class="form-control form-control-sm" type="text" placeholder="Remolque No" id="num_remolqID" name="num_remolq" disabled>
+              </div>
+            </div>
+
+          </div>
+          </div>
+          
+          <div id="con-formul">
+          </div>
+
+          <div id="formul-estado">
+          </div>
+          
+          '.$this->BitacoradeRespuestas().'
+          ';
+
+          return $html;
+        }
+
+        function BitacoradeRespuestas(){
+          $html='<div class="card border border-success" style="margin:15px;">
+                  <div class="card-header color-heading text-align">
+                    Bitacora de Respuestas
+                  </div>
+                  <div class="card-body">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr style="background-color:#80c166">
+                          <th scope="col">Detalle</th>
+                          <th scope="col">Estado</th>
+                          <th scope="col">Fecha y Hora</th>
+                          <th scope="col">Usuario</th>
+                        </tr>
+                      </thead>
+                      <tbody id="bitacoRespuesta">
+                      </tbody>
+                    </table>
+                  </div>
+                </div>';
+          return $html;
         }
     }
 

@@ -139,9 +139,15 @@ class ajax_asiste_carret
     if(isset($_REQUEST['ciu_origen'])){
       $ciu_destin=$this->separarCodigoCiudad($_REQUEST['ciu_destin']);
     }
+    $cod_cliente = $this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],2);
+    if(!$cod_cliente){
+      $cod_cliente="";
+    }
+
+    $cod_transpo = $this->darTransportadoraUser($_SESSION['datos_usuario']['cod_usuari']);
 
     $sql="INSERT INTO ".BASE_DATOS.".tab_asiste_carret(
-      id,
+      id,cod_client,cod_transp,
       tip_solici, nom_solici, cor_solici, 
       tel_solici, cel_solici, ase_solici, 
       num_poliza, num_transp, nom_transp, 
@@ -156,7 +162,7 @@ class ajax_asiste_carret
     ) 
     VALUES 
       (
-        '".$num_solici."',
+        '".$num_solici."','".$cod_cliente."','".$cod_transpo."',
         '".$_REQUEST['tip_solici']."', '".$_REQUEST['nom_solici']."', '".$_REQUEST['ema_solici']."', 
         '".$_REQUEST['tel_solici']."', '".$_REQUEST['cel_solici']."', '".$_REQUEST['nom_asegura']."', 
         '".$_REQUEST['nom_poliza']."', '".$_REQUEST['num_transp']."', '".$_REQUEST['nom_transp']."', 
@@ -170,7 +176,19 @@ class ajax_asiste_carret
         '".$_REQUEST['obs_acompa']."', '".$_SESSION['datos_usuario']['cod_usuari']."',NOW()
       )";
 
-      $consulta = new Consulta($sql, $this -> conexion);
+      $consulta = new Consulta($sql, $this -> conexion,"BR");
+
+      $sql="INSERT INTO tab_seguim_solasi(
+        cod_solasi, ind_estado, obs_detall,
+        usr_creaci, fec_creaci
+      ) 
+      VALUES 
+        (
+          '".$num_solici."', '1', 'Sin Novedad',
+          '".$_SESSION['datos_usuario']['cod_usuari']."', NOW()
+        )";
+      $consulta = new Consulta($sql, $this -> conexion,"RC");
+
       if($consulta==true){
         $this->enviarCorreo($num_solici,"",$_REQUEST['ema_solici'],$_REQUEST['tip_solici'],$_REQUEST['nom_solici']);
         $return['status'] = 200;
@@ -344,7 +362,7 @@ class ajax_asiste_carret
                                   <tr style="border-collapse:collapse;">
                                     <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
                                       <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
-                                        <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari']).'</strong>                                    <br> <br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
+                                        <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],1).'</strong>                                    <br> <br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
                                         '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la línea de servicio <strong>Asistencia Logística</strong>                                    del <strong>Grupo OET</strong>, le informa que su solicitud se creo exitosamente. <br> <br class="colortext">Estado:
                                         <strong class="colortext">En proceso de validación.</strong> <br> <br class="colortext">Le estaremos informando el
                                         estado de su solicitud, cabe aclarar que nuestro tiempo de respuesta es de aproximadamente 45 minutos o antes. <br>                                    <br> </p>
@@ -439,9 +457,16 @@ private function darCorreos($correodado){
   return $retorno;
 }
 
-private function darNombreCliente($usuario){
+private function darTransportadoraUser($usuario){
+  $sql="SELECT b.cod_tercer FROM ".BASE_DATOS.".tab_aplica_filtro_usuari a INNER JOIN ".BASE_DATOS.".tab_tercer_emptra b ON a.clv_filtro = b.cod_tercer WHERE a.cod_usuari = '$usuario';";
+  $consulta = new Consulta($sql, $this -> conexion);
+  $transporadora = $consulta->ret_matriz();
+  return $transporadora[0][0];
+}
+
+private function darNombreCliente($usuario,$ver){
   $sql="SELECT  
-	        c.nom_tercer
+	        c.cod_tercer,c.nom_tercer
         FROM 
 	      ".BASE_DATOS.".tab_genera_usuari a 
         INNER JOIN ".BASE_DATOS.".tab_aplica_filtro_perfil b 
@@ -452,13 +477,21 @@ private function darNombreCliente($usuario){
         ";
   $consulta = new Consulta($sql, $this -> conexion);
   $resultado = $consulta->ret_matriz('a');
+  if($ver==1){
   if($resultado[0]['nom_tercer']!=""){
     return "Cliente : ".$resultado[0]['nom_tercer'];
   }else{
     return "";
   }
-  
+  }else{
+    if($resultado[0]['cod_tercer']!=""){
+      return $cod_tercer;
+    }else{
+      return false;
+    }
+  }
 }
+
 
 
 

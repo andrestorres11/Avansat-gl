@@ -73,5 +73,10 @@ input.error{
     font-weight: bold;
 }
 
+.label-formcheck{
+    background-color: #FF7886;
+    padding: 10px;
+}
+
 
 
