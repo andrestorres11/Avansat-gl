@@ -433,7 +433,7 @@
                 <!-- Modal content-->
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title">Modal Header</h5>
+                    <h5 id="title-modal" class="modal-title"><center>Modal Header</center></h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                   </div>
                   <div class="modal-body">

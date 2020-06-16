@@ -78,5 +78,23 @@ input.error{
     padding: 10px;
 }
 
+.modal-header {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.modal-title { text-align: center; width: 100%; } 
+
+.enlace-form{
+    color:#1807A7;
+    font-weight: bold;
+    cursor:pointer;
+}
+
+.enlace-form:hover{
+    color:#0958D3
+}
+
 
 

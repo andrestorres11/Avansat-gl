@@ -82,6 +82,11 @@ function loadAjax(x){
     }
     
   }
+
+function changeTitleModal(title){
+    $("#title-modal").empty();
+    $("#title-modal").append(title);
+}
   
 //Create tr rowGeneral
 function rowGeneral(row){
@@ -325,6 +330,7 @@ function abrModalPorGestio(cod_solici,cod_estado){
             }
         });
         $("#PorGestioModal").modal("show");
+        changeTitleModal('Gestionar solicitud No. '+cod_solici);
     } catch (error) {
         console.log(error);
     }

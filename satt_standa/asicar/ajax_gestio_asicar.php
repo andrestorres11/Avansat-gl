@@ -299,7 +299,7 @@
                     }
                     $query = new Consulta($query, self::$conexion);
                     $total = $query -> ret_matrix('a');
-                    $html.="<td class='can_totalx' style='text-align: center;' onclick='resultaIndiviua(".$formul['id'].",".$empresa['cod_tercer'].",$est_solici)'>".$total[0]['total']."</td>";
+                    $html.="<td class='can_totalx enlace-form' style='text-align: center;' onclick='resultaIndiviua(".$formul['id'].",".$empresa['cod_tercer'].",$est_solici)'>".$total[0]['total']."</td>";
                 }
                 $html .="</tr></tbody>";
             }
@@ -359,7 +359,7 @@
             $datos = self::cleanArray($datos);
             foreach($datos as $dato){
                 $html.='<tr>
-                            <td style="text-align: center;" onclick="abrModalPorGestio('.$dato['id'].','.$cod_estado.')">'.$dato['id'].'</td>
+                            <td class="enlace-form" style="text-align: center;" onclick="abrModalPorGestio('.$dato['id'].','.$cod_estado.')">'.$dato['id'].'</td>
                             <td style="text-align: center;">'.$dato['nom_asiste'].'</td>
                             <td style="text-align: center;">'.$dato['abr_tercer'].'</td>
                             <td style="text-align: center;">'.$dato['nom_solici'].'</td>
@@ -457,7 +457,7 @@
 
                 <div class="row mt-4">
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="number" placeholder="Costo Aproximado Servicio" id="costAproxServicioID" name="costAproxServicio"  value="'.$information['val_cospro'].'" readonly disabled>
+                    <input class="form-control form-control-sm" type="number" placeholder="Costo Aproximado Servicio" id="costAproxServicioID" name="costAproxServicio"  value="'.$information['val_facges'].'" readonly disabled>
                   </div>
                 </div>
       
@@ -487,7 +487,53 @@
               </div>
               </div>';
             }else if($cod_estado == 3){
-              $html='<div class="card border border-success" style="margin:15px;">
+              $porcentaje=round(($information['val_cospro']/$information['val_facges'])*100);
+              $html='
+              <div class="card border border-success" style="margin:15px;">
+              <div class="card-header color-heading text-align">
+                <center>ASIGNACION A PROVEEDOR</center>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="offset-1 col-3">
+                    <input class="form-control form-control-sm" type="text" placeholder="Numero de documento" id="num_proveeID" name="num_provee" required>
+                  </div>
+                  <div class="col-4">
+                    <input class="form-control form-control-sm" type="text" placeholder="Nombre Proveedor" id="nom_proveeID" name="nom_provee" required>
+                  </div>
+                  <div class="col-3">
+                    <input class="form-control form-control-sm" type="text" placeholder="Primer Apellido" id="ape_prove1ID" name="ape_prove1" required>
+                  </div>
+                </div>
+
+                <div class="row mt-3">
+                  <div class="offset-1 col-3">
+                    <input class="form-control form-control-sm" type="text" placeholder="Segundo Apellido" id="ape_prove2ID" name="ape_prove2" required>
+                  </div>
+                  <div class="col-4">
+                    <input class="form-control form-control-sm" type="text" placeholder="Numero Celular 1" id="num_celul1ID" name="num_celul1" required>
+                  </div>
+                  <div class="col-3">
+                    <input class="form-control form-control-sm" type="text" placeholder="Numero Celular 2" id="num_celul2ID" name="num_celul2" required>
+                  </div>
+                </div>
+
+                <div class="row mt-4">
+                  <div class="offset-1 col-4">
+                    <input class="form-control form-control-sm" type="number" placeholder="Valor a Facturar" id="val_facturID" name="val_factur" value="'.$information['val_facges'].'" onchange="llenarRetabilidad()" required>
+                  </div>
+                  <div class="col-4">
+                    <input class="form-control form-control-sm" type="number" placeholder="Costo Servicio Proveedor" id="val_cosserID" name="val_cosser" value="'.$information['val_cospro'].'" onchange="llenarRetabilidad()" required>
+                  </div>
+                  <div class="col-2">
+                    <input class="form-control form-control-sm" type="text" placeholder="Rentabilidad" id="val_rentabID" name="val_rentab" disabled value="'.$porcentaje.'%">
+                  </div>
+                </div>
+
+              </div>
+              </div>
+              
+                      <div class="card border border-success" style="margin:15px;">
                         <div class="card-header color-heading text-align">
                           <center>ASIGNACION DE FORMULARIOS DE INSPECCIÓN</center>
                         </div>
