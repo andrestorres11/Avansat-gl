@@ -330,7 +330,7 @@ function abrModalPorGestio(cod_solici,cod_estado){
             }
         });
         $("#PorGestioModal").modal("show");
-        changeTitleModal('Gestionar solicitud No. '+cod_solici);
+        changeTitleModal('Gestion de solicitud No. '+cod_solici);
     } catch (error) {
         console.log(error);
     }
@@ -435,7 +435,7 @@ function llenarRetabilidad(){
     cos_servicio = $("#val_cosserID").val();
 
     if(val_facturar!="" && cos_servicio!=""){
-        total = (parseInt(cos_servicio)/parseInt(val_facturar))*100;
+        total = (parseInt(val_facturar)/parseInt(cos_servicio))*100;
         total = Math.round(total);
         if(total!=undefined){
             $("#val_rentabID").val(total+"%");

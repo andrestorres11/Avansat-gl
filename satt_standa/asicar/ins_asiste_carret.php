@@ -141,13 +141,13 @@ class ins_asiste_carret
                     </select>
                   </div>
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Nombre del Solicitante" id="nom_soliciID" name="nom_solici" required disabled value="'.$datos_usuari['nom_usuari'].'">
+                    <input class="form-control form-control-sm" type="text" placeholder="* Nombre del Solicitante" id="nom_soliciID" name="nom_solici" required disabled value="'.$datos_usuari['nom_usuari'].'">
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="email" placeholder="Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
+                    <input class="form-control form-control-sm" type="email" placeholder="* Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
                   </div>
                   <div class="offset-1 col-4">
                   <input class="form-control form-control-sm" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
@@ -156,7 +156,7 @@ class ins_asiste_carret
 
                 <div class="row mt-3">
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="number" placeholder="Numero de Celular" id="cel_soliciID" name="cel_solici" required disabled>
+                    <input class="form-control form-control-sm" type="number" placeholder="* Numero de Celular" id="cel_soliciID" name="cel_solici" required disabled>
                   </div>
                   <div class="offset-1 col-4">
                   <input class="form-control form-control-sm" type="text" placeholder="Aseguradora" id="nom_aseguraID" name="nom_asegura" disabled>
@@ -183,13 +183,13 @@ class ins_asiste_carret
 
                 <div class="row">
                   <div class="offset-1 col-3">
-                    <input class="form-control form-control-sm" type="number" placeholder="Numero de documento" id="num_transpID" name="num_transp" required disabled>
+                    <input class="form-control form-control-sm" type="number" placeholder="* Numero de documento" id="num_transpID" name="num_transp" required disabled>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Nombres del Transportista" id="nom_transpID" name="nom_transp" required disabled>
+                    <input class="form-control form-control-sm" type="text" placeholder="* Nombres del Transportista" id="nom_transpID" name="nom_transp" required disabled>
                   </div>
                   <div class="col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="Primer Apellido" id="ap1_transpID" name="ap1_transp" required disabled>
+                    <input class="form-control form-control-sm" type="text" placeholder="* Primer Apellido" id="ap1_transpID" name="ap1_transp" required disabled>
                   </div>
                 </div>
 
@@ -198,7 +198,7 @@ class ins_asiste_carret
                     <input class="form-control form-control-sm" type="text" placeholder="Segundo Apellido" id="ap2_transpID" name="ap2_transp" disabled>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="number" placeholder="Numero Celular 1" id="ce1_transpID" name="ce1_transp" required disabled>
+                    <input class="form-control form-control-sm" type="number" placeholder="* Numero Celular 1" id="ce1_transpID" name="ce1_transp" required disabled>
                   </div>
                   <div class="col-3">
                     <input class="form-control form-control-sm" type="text" placeholder="Numero Celular 2" id="ce2_transpID" name="ce2_transp" disabled>
@@ -217,19 +217,19 @@ class ins_asiste_carret
 
                 <div class="row">
                   <div class="offset-1 col-3">
-                    <input class="form-control form-control-sm mayuscul-input" type="text" placeholder="Placa" id="num_placaID" name="num_placax" maxlength="6" required disabled>
+                    <input class="form-control form-control-sm mayuscul-input" type="text" placeholder="* Placa" id="num_placaID" name="num_placax" maxlength="6" required disabled>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Marca" id="nom_marcaxID" name="nom_marcax" required disabled>
+                    <input class="form-control form-control-sm" type="text" placeholder="* Marca" id="nom_marcaxID" name="nom_marcax" required disabled>
                   </div>
                   <div class="col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="Color" id="nom_colorxID" name="nom_colorx" required disabled>
+                    <input class="form-control form-control-sm" type="text" placeholder="* Color" id="nom_colorxID" name="nom_colorx" required disabled>
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="offset-1 col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="Tipo" id="tip_transpID" name="tip_transp" disabled>
+                    <input class="form-control form-control-sm" type="text" placeholder="Tipo de Vehículo" id="tip_transpID" name="tip_transp" disabled>
                   </div>
                   <div class="col-4">
                     <input class="form-control form-control-sm" type="text" placeholder="Remolque No" id="num_remolqID" name="num_remolq" disabled>

@@ -27,7 +27,7 @@ function cargaFormulario(valor){
        desbloqueaInputs();
         $("#con-formul").append(`<div class="card text-center" style="margin:15px;">
         <div class="card-header color-heading">
-                      Ubicación del Vehículo
+                      Ubicación del Vehí­culo
                     </div>
         <div class="card-body">
           <div class="row">
@@ -54,7 +54,7 @@ function cargaFormulario(valor){
                       </div>
                       <div class="row mt-3">
                         <div class="offset-1 col-10">
-                          <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve Descripción de la Asistencia"></textarea>
+                          <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve descripción de la asistencia"></textarea>
                         </div>
                       </div>
                     </div>
@@ -63,7 +63,7 @@ function cargaFormulario(valor){
         desbloqueaInputs();
         $("#con-formul").append(`<div class="card text-center" style="margin:15px;">
         <div class="card-header color-heading">
-          Ubicación del Vehí­culo
+          Ubicación del Vehículo
         </div>
       <div class="card-body">
 

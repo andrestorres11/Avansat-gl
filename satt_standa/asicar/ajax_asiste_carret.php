@@ -100,6 +100,7 @@ class ajax_asiste_carret
   }
 
   public function busquedaVehiculo(){
+    $cod_transp = $this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],2);
     $placa = $_REQUEST['placa'];
     $retorno= [];
     $retorno['validacion']=false;
@@ -109,6 +110,8 @@ class ajax_asiste_carret
           INNER JOIN ".BASE_DATOS.".tab_genera_marcas b 
           ON a.cod_marcax = b.cod_marcax
           INNER JOIN ".BASE_DATOS.".tab_vehige_colore c ON a.cod_colorx = c.cod_colorx
+          INNER JOIN ".BASE_DATOS.".tab_transp_vehicu d ON d.cod_transp = ".$cod_transp."
+          AND d.num_placax = '$placa'
             WHERE a.num_placax = '$placa'";
     $resultado = new Consulta($sql, $this->conexion);
     $cantidad_registros = $resultado->ret_num_rows();
@@ -118,6 +121,7 @@ class ajax_asiste_carret
       $retorno['nom_marcax']=$datos['nom_marcax'];
       $retorno['nom_colorx']=$datos['nom_colorx'];
     }
+    
     echo json_encode($retorno);
   }
 
@@ -469,11 +473,11 @@ private function darNombreCliente($usuario,$ver){
 	        c.cod_tercer,c.nom_tercer
         FROM 
 	      ".BASE_DATOS.".tab_genera_usuari a 
-        INNER JOIN ".BASE_DATOS.".tab_aplica_filtro_perfil b 
-        ON a.cod_perfil = b.cod_perfil 
+        INNER JOIN ".BASE_DATOS.".tab_aplica_filtro_usuari b 
+        ON a.cod_usuari = b.cod_usuari
         INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
         ON b.clv_filtro = c.cod_tercer
-        WHERE a.cod_usuari = '$usuario';
+        WHERE a.cod_usuari = '$usuario' AND b.cod_filtro=".COD_FILTRO_EMPTRA.";
         ";
   $consulta = new Consulta($sql, $this -> conexion);
   $resultado = $consulta->ret_matriz('a');
@@ -485,7 +489,7 @@ private function darNombreCliente($usuario,$ver){
   }
   }else{
     if($resultado[0]['cod_tercer']!=""){
-      return $cod_tercer;
+      return $resultado[0]['cod_tercer'];
     }else{
       return false;
     }

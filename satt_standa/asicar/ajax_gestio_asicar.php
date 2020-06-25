@@ -376,10 +376,11 @@
         function FormulSegunEstado(){
             $cod_estado = $_REQUEST['cod_estado'];
             $information = $this->darInformacion($_REQUEST['cod_solici']);
+            $nom_solici = $this->tipSolicitud($_REQUEST['cod_solici']);
             if($cod_estado == 1){
                 $html='<div class="card border border-success" style="margin:15px;">
                 <div class="card-header color-heading text-align">
-                  Gestionar Solicitud
+                  Gestion de Solicitud
                 </div>
               <div class="card-body">
                 <form id="PorGestio" enctype="multipart/form-data" method="POST">
@@ -457,6 +458,7 @@
 
                 <div class="row mt-4">
                   <div class="offset-1 col-4">
+                  <label for="AproServicio"> Costo '.$nom_solici.':</label>
                     <input class="form-control form-control-sm" type="number" placeholder="Costo Aproximado Servicio" id="costAproxServicioID" name="costAproxServicio"  value="'.$information['val_facges'].'" readonly disabled>
                   </div>
                 </div>
@@ -998,6 +1000,7 @@
             $sql="SELECT b.nom_asiste FROM ".BASE_DATOS.".tab_asiste_carret a INNER JOIN ".BASE_DATOS.".tab_formul_asiste b ON a.tip_solici = b.id WHERE a.id = $num_solici";
             $consulta = new Consulta($sql, self::$conexion);
             $nom_asiste = $consulta->ret_matriz('a');
+            $nom_asiste = self::cleanArray($nom_asiste);
             return $nom_asiste[0]['nom_asiste'];
         }
 
