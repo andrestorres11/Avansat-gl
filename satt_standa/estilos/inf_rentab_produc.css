@@ -15,3 +15,12 @@
 .btn-link{
 	cursor: pointer;
 }
+
+.select_all{
+    left: 87%;
+    cursor: pointer;
+    position: absolute;
+    top: 5px;
+    z-index: 10;
+    display: none;
+ }

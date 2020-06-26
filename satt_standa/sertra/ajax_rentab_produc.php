@@ -54,8 +54,8 @@ class ajax_rentab_produc
     $response = [];
 
     switch ($idTable) {
-      case 'porNovedad':
-        $response['html'] = utf8_decode(self::porNovedad($idTable));
+      case 'facturContro':
+        $response['html'] = utf8_decode(self::facturContro($idTable));
         $response['posicion'] = 2;
       	break;
 
@@ -64,8 +64,8 @@ class ajax_rentab_produc
         $response['posicion'] = 2;
         break;
 
-      case 'diferencia':
-        $response['html'] = utf8_decode(self::diferencia($idTable));
+      case 'facturEmpre':
+        $response['html'] = utf8_decode(self::facturEmpre($idTable));
         $response['posicion'] = 3;
         break;
     }
@@ -74,7 +74,7 @@ class ajax_rentab_produc
   }
 
   //---------------------------------------------
-  /*! \fn: porNovedad
+  /*! \fn: facturContro
   *  \brief: Función que genera la consulta y retorna la información
   *  \author: Ing. Luis Manrique
   *  \date: 12/05/2020
@@ -82,7 +82,7 @@ class ajax_rentab_produc
   *  \return BOOL
   */
 
-  private function porNovedad($idTable){
+  private function facturContro($idTable){
     try {
       //Declarar variables necesarias
       $usuarios = '';
@@ -96,14 +96,10 @@ class ajax_rentab_produc
       	}
       }
 
-      //Asigna las fechas y horas a las variables
-      $fec_inicia = $_REQUEST['fec_inicia']." ".$_REQUEST['hor_inicia'];
-      $fec_finalx = $_REQUEST['fec_finalx']." ".$_REQUEST['hor_finalx'];
-     
       //Genera consulta
       $mSql = ' SELECT  d.cod_perfil,
                         d.cod_usuari,
-                        e.val_hordia AS cos_horaxx,
+                        REPLACE(e.val_hordia,",",".") AS cos_horaxx,
                         c.fec_noveda AS fec_regist
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
             INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
@@ -124,7 +120,7 @@ class ajax_rentab_produc
             							a.usr_creaci
             					 FROM 	'.BASE_DATOS.'.tab_despac_noveda a
             					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							AND a.fec_noveda BETWEEN "'.$fec_inicia.'" AND "'.$fec_finalx.'"
+            							AND a.fec_noveda BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
 
             				)UNION(
             					SELECT 	a.num_despac, 
@@ -133,7 +129,7 @@ class ajax_rentab_produc
             							a.usr_creaci
             					 FROM 	'.BASE_DATOS.'.tab_despac_contro a
             					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							AND a.fec_contro BETWEEN "'.$fec_inicia.'" AND "'.$fec_finalx.'"
+            							AND a.fec_contro BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
             				)
             			) c
             		ON 	a.num_despac = c.num_despac
@@ -143,12 +139,83 @@ class ajax_rentab_produc
            			ON 	d.cod_usuari = e.usr_asigna
             ';
 
+      /*$mSql = 'SELECT   b.cod_transp,
+                        IF( d.nom_tercer = "",
+                            d.abr_tercer,
+                            d.nom_tercer
+                        ) AS nom_tercer,
+                        IF(
+                            f.val_regist IS NULL OR f.val_regist = 0,
+                            "Despacho",
+                            "Novedad"
+                        ) AS tip_modali,
+                        IF(
+                            f.val_regist IS NULL OR f.val_regist = 0,
+                            f.val_despac,
+                            f.val_regist
+                        ) AS val_unitar,
+                        g.cod_perfil,
+                        g.cod_usuari,
+                        h.val_hordia AS cos_horaxx,
+                        c.fec_noveda AS fec_regist,
+                        a.num_despac
+                  FROM  '.BASE_DATOS.'.tab_despac_despac a
+            INNER JOIN  '.BASE_DATOS.'.tab_despac_vehige b
+                    ON  a.num_despac = b.num_despac
+                        AND a.fec_salida IS NOT NULL 
+                        AND (
+                            a.fec_llegad IS NOT NULL 
+                            OR a.fec_llegad != "0000-00-00 00:00:00"
+                        ) 
+                        AND a.ind_planru = "S" 
+                        AND a.ind_anulad in ("R") 
+                        AND b.ind_activo = "S"
+            INNER JOIN  (
+                            (
+                                SELECT  a.num_despac, 
+                                        a.cod_noveda, 
+                                        a.fec_noveda, 
+                                        a.usr_creaci
+                                 FROM   '.BASE_DATOS.'.tab_despac_noveda a
+                                WHERE   a.usr_creaci IN ('.$usuarios.')
+                                        AND a.fec_noveda BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
+
+                            )UNION(
+                                SELECT  a.num_despac, 
+                                        a.cod_noveda, 
+                                        a.fec_contro AS fec_noveda, 
+                                        a.usr_creaci
+                                 FROM   '.BASE_DATOS.'.tab_despac_contro a
+                                WHERE   a.usr_creaci IN ('.$usuarios.')
+                                        AND a.fec_contro BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
+                            )
+                        ) c
+                    ON  a.num_despac = c.num_despac
+            
+            INNER JOIN  '.BASE_DATOS.'.tab_tercer_tercer d
+                    ON  b.cod_transp = d.cod_tercer
+            INNER JOIN  (
+                            SELECT MAX(a.num_consec) AS num_consec, 
+                                   a.cod_transp
+                              FROM '.BASE_DATOS.'.tab_transp_tipser a
+                          GROUP BY a.cod_transp
+                         ) e
+                    ON  b.cod_transp = e.cod_transp
+            INNER JOIN  '.BASE_DATOS.'.tab_transp_tipser f
+                    ON  e.cod_transp = f.cod_transp 
+                        AND e.num_consec = f.num_consec
+            INNER JOIN  '.BASE_DATOS.'.tab_genera_usuari g
+                    ON  c.usr_creaci = g.cod_usuari 
+            INNER JOIN  '.BASE_DATOS.'.tab_hojvid_ctxxxx h
+                    ON  g.cod_usuari = h.usr_asigna
+              GROUP BY  b.cod_transp, a.num_despac, g.cod_usuari, c.fec_noveda';*/
+
       //Ejecuta la consulta
       $mMatriz = new Consulta($mSql, $this->conexion);
       $mMatriz = $mMatriz->ret_matrix("a");
 		
 	  //Retorna la respuesta de la función	
-	  return self::informeNovedad($mMatriz, $idTable);
+	  return self::informeFacturContro($mMatriz, $idTable);
 
     } catch (Exception $e) {
       echo 'Excepción capturada: ',  $e->getMessage(), "\n";
@@ -177,15 +244,11 @@ class ajax_rentab_produc
       		$usuarios .= ",'".$value."'";
       	}
       }
-
-      //Asigna las fechas y horas a las variables
-      $fec_inicia = $_REQUEST['fec_inicia']." ".$_REQUEST['hor_inicia'];
-      $fec_finalx = $_REQUEST['fec_finalx']." ".$_REQUEST['hor_finalx'];
      
       //Genera consulta
       $mSql = ' SELECT  d.cod_perfil,
                         d.cod_usuari,
-                        e.val_hordia AS cos_horaxx,
+                        REPLACE(e.val_hordia,",",".") AS cos_horaxx,
                         c.fec_noveda AS fec_regist
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
             INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
@@ -206,7 +269,7 @@ class ajax_rentab_produc
             							a.usr_creaci
             					 FROM 	'.BASE_DATOS.'.tab_despac_noveda a
             					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							AND a.fec_noveda BETWEEN "'.$fec_inicia.'" AND "'.$fec_finalx.'"
+            							AND a.fec_noveda BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
 
             				)UNION(
             					SELECT 	a.num_despac, 
@@ -215,7 +278,7 @@ class ajax_rentab_produc
             							a.usr_creaci
             					 FROM 	'.BASE_DATOS.'.tab_despac_contro a
             					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							AND a.fec_contro BETWEEN "'.$fec_inicia.'" AND "'.$fec_finalx.'"
+            							AND a.fec_contro BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
             				)
             			) c
             		ON 	a.num_despac = c.num_despac
@@ -238,7 +301,7 @@ class ajax_rentab_produc
 
 
   //---------------------------------------------
-  /*! \fn: diferencia
+  /*! \fn: facturEmpre
   *  \brief: Función que genera la consulta y retorna la información
   *  \author: Ing. Luis Manrique
   *  \date: 12/05/2020
@@ -246,7 +309,7 @@ class ajax_rentab_produc
   *  \return BOOL
   */
 
-  private function diferencia($idTable){
+  private function facturEmpre($idTable){
     try {
       //Declarar variables necesarias
       $usuarios = '';
@@ -301,7 +364,7 @@ class ajax_rentab_produc
                                         a.usr_creaci
                                  FROM   '.BASE_DATOS.'.tab_despac_noveda a
                                 WHERE   a.usr_creaci IN ('.$usuarios.') 
-                                        AND a.fec_noveda BETWEEN "'.$fec_inicia.'" AND "'.$fec_finalx.'"
+                                        AND a.fec_noveda BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
 
                             )UNION(
                                 SELECT  a.num_despac, 
@@ -310,7 +373,7 @@ class ajax_rentab_produc
                                         a.usr_creaci
                                  FROM   '.BASE_DATOS.'.tab_despac_contro a
                                 WHERE   a.usr_creaci IN ('.$usuarios.') 
-                                        AND a.fec_contro BETWEEN "'.$fec_inicia.'" AND "'.$fec_finalx.'"
+                                        AND a.fec_contro BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
                             )
                         ) c
                     ON  a.num_despac = c.num_despac
@@ -336,7 +399,7 @@ class ajax_rentab_produc
 
 
       if (count($mMatriz)>0) {
-      	return self::informeDiferencia($mMatriz, $idTable);
+      	return self::informeFacturEmpre($mMatriz, $idTable);
       }else{
       	return false;
       }
@@ -348,7 +411,7 @@ class ajax_rentab_produc
     }
   }
 
-  /*! \fn: informeNovedad
+  /*! \fn: informeFacturContro
    *  \brief: Crea la tabla para los informes por novedad
    *  \author: Ing. Luis Manrique
    *  \date: 12/05/2020
@@ -357,7 +420,7 @@ class ajax_rentab_produc
    *  \return: HTML 
    */
 
-  private function informeNovedad($mMatriz, $idTable){
+  private function informeFacturContro($mMatriz, $idTable){
   	//Declara variables necesarias
     $dataTable = [];
 
@@ -366,142 +429,72 @@ class ajax_rentab_produc
       $hora = explode(" ", $data['fec_regist'])[1];
       $hora = explode(":", $hora)[0];
 
-      //Identifica el tipo de informe para asignar valores
-      switch ($_REQUEST['tip_inform']) {
-    		case 'Diario':
-    			$data['fec_regist'] = explode(" ", $data['fec_regist'])[0];
-    			$titulo = "Dia ";
-    		 break;   		
-    		case 'Semanal':
-    			$data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
-      			$data['fec_regist'] = date('W', $data['fec_regist']) ;
-      			$titulo = "Semana # ";
-    		 break;   
-    		case 'Mensual':
-    			$data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
-      			$data['fec_regist'] = date('m', $data['fec_regist']) ;
-      			$titulo = "Mes de ";
-    		 break;   			
-		}
+      
+			$data['fec_regist'] = explode(" ", $data['fec_regist'])[0];
       
 	  //Valida la existencia de la posición en el arreglo para sumar la cantidad de casos		
-      if(isset($dataTable[$data['fec_regist']][$data['cod_usuari']][$hora]['hor_regist'])){
-        $dataTable[$data['fec_regist']][$data['cod_usuari']][$hora]['can_casosx']++;
+      if(isset($dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['hor_regist'])){
+        $dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['can_casosx']++;
       }
 
       //Crea las nuevas posiciones del arreglo solo la primer vez y no se dupliquen
-      if(!isset($dataTable[$data['fec_regist']][$data['cod_usuari']][$hora])){
-        $dataTable[$data['fec_regist']][$data['cod_usuari']][$hora]['cod_perfil'] = $data['cod_perfil'];
-        $dataTable[$data['fec_regist']][$data['cod_usuari']][$hora]['cod_usuari'] = $data['cod_usuari'];
-        $dataTable[$data['fec_regist']][$data['cod_usuari']][$hora]['cos_horaxx'] = $data['cos_horaxx'];
-        $dataTable[$data['fec_regist']][$data['cod_usuari']][$hora]['fec_regist'] = $data['fec_regist'];
-        $dataTable[$data['fec_regist']][$data['cod_usuari']][$hora]['hor_regist'] = $hora;
-        $dataTable[$data['fec_regist']][$data['cod_usuari']][$hora]['can_casosx'] = 1;
+      if(!isset($dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora])){
+        $dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['cod_perfil'] = $data['cod_perfil'];
+        $dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['cod_usuari'] = $data['cod_usuari'];
+        $dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['cos_horaxx'] = $data['cos_horaxx'];
+        $dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['fec_regist'] = $data['fec_regist'];
+        $dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['hor_regist'] = $hora;
+        $dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['can_casosx'] = 1;
       }
     }
 
-    
-
-    //Crea un arregle con las horas
-    $arrayFechaHora = [];
-    foreach ($dataTable as $fecha => $dataH) {
-    	foreach ($dataH as $cod_usuari => $dataC) {
-    		foreach ($dataC as $hora => $dataD) {
-    			if (!isset($arrayFechaHora[$fecha][$hora])) {
-    				$arrayFechaHora[$fecha][$hora] = $hora;
-    			}
-    		}
-    	}
-    }
-
-    //Valida si el usuario no tiene las horas para poder crearcelas en 0 y no genere errores al momento de mostrar la información
-    foreach ($dataTable as $fecha => $dataH) {
-    	foreach ($dataH as $cod_usuari => $dataC) {
-    		foreach ($dataC as $hora => $dataD) {
-    			foreach ($arrayFechaHora as $fechaHora => $arrayHora) {
-					foreach ($arrayHora as $keyHora => $valuehora) {
-						if(!isset($dataTable[$fechaHora][$cod_usuari][$valuehora])){
-							$dataTable[$fechaHora][$cod_usuari][$valuehora]['cod_perfil'] = $dataD['cod_perfil'];
-					        $dataTable[$fechaHora][$cod_usuari][$valuehora]['cod_usuari'] = $dataD['cod_usuari'];
-					        $dataTable[$fechaHora][$cod_usuari][$valuehora]['cos_horaxx'] = $dataD['cos_horaxx'];
-					        $dataTable[$fechaHora][$cod_usuari][$valuehora]['fec_regist'] = $fechaHora;
-					        $dataTable[$fechaHora][$cod_usuari][$valuehora]['hor_regist'] = $valuehora;
-					        $dataTable[$fechaHora][$cod_usuari][$valuehora]['can_casosx'] = 0;
-						}
-					}
-					//Organiza el arreglo
-					ksort($dataTable[$fechaHora][$cod_usuari]);
-				}
-    		}
-    	}
-    }
-
-    //Recoore la data para poder crear las tabals basados en las fechas
-    foreach ($dataTable as $fecha => $dataH) {
-      $html .= '<table id="'.$fecha.'" class="table table-bordered tab_'.$idTable.' table_datatables">
-                <thead>
-                    <tr>
-                      <th colspan="100" class="tituloFecha">'.$titulo.$fecha.'</th>
-                    </tr>
-                    <tr>
-                      <th rowspan="2" class="buscar subtitbusq">Cod. Perfil</th> 
-                      <th rowspan="2" class="buscar subtitbusq">Usuario</th>
-                      <th rowspan="2" class="buscar subtitbusq">Costo Hora</th>';
-      //Crea variables necesarias
-      $th1 = '';
-      $th2 = '';
-      $tbody = '';
-      $usr_anteri = '';
-      $ban = 0;
-      foreach ($dataH  as $cod_usuari => $dataC) {
-        foreach ($dataC as $hora => $dataD) {
-        	//Crea un estado para crear los titulos solo la primera vez
-        	if ($ban == 0) {
-        		$th1 .= '<th colspan="2" class="tutuloHora">'.$hora.'</th>';
-		        $th2 .= '<th class="buscar subtitbusq">Registros</th>';
-		        $th2 .= '<th class="buscar subtitbusq">Valor total</th>';
-        	}
-
-        	if (empty($usr_anteri)) {
-        		$tbody .= '<tr>
-	        				<td>'.$dataD['cod_perfil'].'</td>
-	        				<td>'.$dataD['cod_usuari'].'</td>
-	        				<td>$'.$dataD['cos_horaxx'].'</td>
-	        				<td class="btn-link" onclick="detalle(\''.$fecha.'\', \''.$hora.'\', \''.$dataD['cod_usuari'].'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataD['can_casosx'].'</td>
-	        				<td>$'.$dataD['cos_horaxx']*$dataD['can_casosx'].'</td>
-	        		  	 ';
-        	}else if ($usr_anteri != $cod_usuari) {
-        		$tbody .= '</tr><tr>
-	        				<td>'.$dataD['cod_perfil'].'</td>
-	        				<td>'.$dataD['cod_usuari'].'</td>
-	        				<td>$'.$dataD['cos_horaxx'].'</td>
-	        				<td class="btn-link" onclick="detalle(\''.$fecha.'\', \''.$hora.'\', \''.$dataD['cod_usuari'].'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataD['can_casosx'].'</td>
-	        				<td>$'.$dataD['cos_horaxx']*$dataD['can_casosx'].'</td>
-	        		  	 ';	  	 
-        	}else{
-        		$tbody .= '<td class="btn-link" onclick="detalle(\''.$fecha.'\', \''.$hora.'\', \''.$dataD['cod_usuari'].'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataD['can_casosx'].'</td>
-        				   <td>$'.$dataD['cos_horaxx']*$dataD['can_casosx'].'</td>';
-        		
-        	}
-        	$usr_anteri = $cod_usuari;
-        }
-        $tbody.'</tr>';
-        $ban++;
+    //Recorre la data para crear el cuerpo con los registro
+    foreach ($dataTable as $usuari => $dataU) {
+      //Valiables necesarias
+      $can_horasx = 0;
+      $can_regisx = 0;
+      //La subdata para crear sumar las variables de casos y horas
+      foreach ($dataU  as $fechora => $dataF) {
+        $can_horasx++;
+        $can_regisx += $dataF['can_casosx'];
       }
+      //Crea el cuerpo or Agente
+      $tbody .= '<tr>
+                  <td>'.$dataF['cod_perfil'].'</td>
+                  <td>'.$dataF['cod_usuari'].'</td>
+                  <td>$'.$dataF['cos_horaxx'].'</td>
+                  <td>'.$can_horasx.'</td>
+                  <td>'.$can_regisx.'</td>
+                  <td>$'.$dataF['cos_horaxx']*$can_horasx.'</td>
+                  <td>$'.($dataF['cos_horaxx']*$can_horasx)/$can_regisx.'</td>
+                </tr>';
+    }
 
-      $html .= $th1.'</tr><tr>'.$th2.'</tr>';
-
-      $html .=' 
-                
+    //Crea Tabla
+    $html = '<table id="'.$idTable.'" class="table table-bordered tab_'.$idTable.' table_datatables">
+              <thead>
+                <tr>
+                  <th colspan="100" class="tituloFecha">Dia '.$_REQUEST['fec_inicia'].' a '.$_REQUEST['fec_finalx'].'</th>
+                </tr>
+                <tr>
+                  <th class="buscar subtitbusq">Cod. Perfil</th> 
+                  <th class="buscar subtitbusq">Usuario</th>
+                  <th class="buscar subtitbusq">Costo Hora</th>
+                  <th class="buscar subtitbusq">Cant H. L.</th>
+                  <th class="buscar subtitbusq">Registros</th>
+                  <th class="buscar subtitbusq">Valor Total H.L.</th>
+                  <th class="buscar subtitbusq">Valor Novedad</th>
+                </tr>
               </thead>
-              <tbody>'.$tbody.'</tbody>
+              <tbody>
+                '.$tbody.'
+              </tbody>
               <tfoot>
-		            <tr>
-		                <th colspan="2" class="tituloFecha" style="text-align:right">Total:</th>
-		            </tr>
-		        </tfoot>
-          </table>';
-    }
+                <tr>
+                    <th colspan="2" class="tituloFecha" style="text-align:right">Total:</th>
+                </tr>
+              </tfoot>
+            </table>';
     
     return $html;
   }
@@ -684,8 +677,8 @@ class ajax_rentab_produc
     return $html;
   }
 
-  /*! \fn: informeDiferencia
-   *  \brief: Crea la tabla para el informe por diferencia
+  /*! \fn: informeFacturEmpre
+   *  \brief: Crea la tabla para el informe por facturEmpre
    *  \author: Ing. Luis Manrique
    *  \date: 12/05/2020
    *  \date modified: dia/mes/año
@@ -693,7 +686,7 @@ class ajax_rentab_produc
    *  \return: HTML 
    */
 
-  private function informeDiferencia($mMatriz, $idTable){
+  private function informeFacturEmpre($mMatriz, $idTable){
   	try {
   		//Declara variables necesarias
 	    $dataTable = [];
@@ -717,7 +710,7 @@ class ajax_rentab_produc
 
 
 	    //Crea la tabla en HTML
-	    $html = '<table id="diferencia" class="table table-bordered tab_'.$idTable.' table_datatables">
+	    $html = '<table id="facturEmpre" class="table table-bordered tab_'.$idTable.' table_datatables">
 	              <thead>
 	                  <tr>
 	                    <th class="buscar subtitbusq">Nit</th> 
@@ -738,7 +731,7 @@ class ajax_rentab_produc
 	      $data['val_facdes'] = $data['tip_modali'] == "Despacho" ? $data['val_unitar']*$data['can_despac'] : 0;
 	      $data['val_facnov'] = $data['tip_modali'] == "Novedad" ? $data['val_unitar']*$data['can_noveda'] : 0;
 	      $data['pro_novdes'] = ($data['can_noveda']/$data['can_despac']);
-        $data['val_novdes'] = ($data['val_unitar']*$data['can_despac'])/$data['can_noveda'];
+          $data['val_novdes'] = ($data['val_unitar']*$data['can_despac'])/$data['can_noveda'];
 
 	      $html .= '<tr>
 	                  <td>'.$data['cod_transp'].'</td>
@@ -817,8 +810,22 @@ class ajax_rentab_produc
 
       //Crea la consulta
       $mSql = ' SELECT  b.cod_transp,
+      					IF( f.nom_tercer IS NULL OR f.nom_tercer = "",
+      						f.abr_tercer,
+      						f.nom_tercer
+      					) AS nom_transp,
                         d.cod_usuari,
-                        e.val_hordia AS cos_horaxx,
+                        IF(
+                            h.val_regist IS NULL OR h.val_regist = 0,
+                            "Despacho",
+                            "Novedad"
+                        ) AS tip_modali,
+                        IF(
+                            h.val_regist IS NULL OR h.val_regist = 0,
+                            h.val_despac,
+                            h.val_regist
+                        ) AS val_unitar,
+                        REPLACE(e.val_hordia,",",".") AS cos_horaxx,
                         SUM(1) AS can_noveda
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
             INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
@@ -856,8 +863,21 @@ class ajax_rentab_produc
             		ON 	d.cod_usuari = c.usr_creaci
            	INNER JOIN 	'.BASE_DATOS.'.tab_hojvid_ctxxxx e
            			ON 	d.cod_usuari = e.usr_asigna
+           	INNER JOIN 	'.BASE_DATOS.'.tab_tercer_tercer f
+           			ON 	b.cod_transp = f.cod_tercer
+            INNER JOIN  (
+                            SELECT MAX(a.num_consec) AS num_consec, 
+                                   a.cod_transp
+                              FROM '.BASE_DATOS.'.tab_transp_tipser a
+                          GROUP BY a.cod_transp
+                         ) g
+                    ON  b.cod_transp = g.cod_transp
+            INNER JOIN  '.BASE_DATOS.'.tab_transp_tipser h
+                    ON  g.cod_transp = h.cod_transp 
+                        AND g.num_consec = h.num_consec
            	  GROUP BY 	b.cod_transp
             ';
+
       
       //Ejecuta la consulta
       $mMatriz = new Consulta($mSql, $this->conexion);
@@ -868,10 +888,11 @@ class ajax_rentab_produc
       				<div class="panel-heading">
                      <h4>'.$titulo.'</h4>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body" style="overflow: auto; width: 99%">
 	      				<table id="tab_'.$_REQUEST['usuario'].'" class="table table-bordered table_datadetalle">
 			                <thead>
 			                    <tr>
+			                      <th class="buscar subtitbusq">Nit</th> 
 			                      <th class="buscar subtitbusq">Transportadora</th> 
 			                      <th class="buscar subtitbusq">Usuario</th>
 			                      <th class="buscar subtitbusq">Costo Registro</th>
@@ -884,16 +905,17 @@ class ajax_rentab_produc
 			    foreach ($mMatriz as $key => $data) {
 			      	$html .= '<tr>
 			      				<td>'.$data['cod_transp'].'</td>
+			      				<td>'.$data['nom_transp'].'</td>
 			      				<td>'.$data['cod_usuari'].'</td>
-			      				<td>'.$data['cos_horaxx'].'</td>
+			      				<td>$'.$data['val_unitar'].'</td>
 			      				<td>'.$data['can_noveda'].'</td>
-			      				<td>'.$data['can_noveda']*$data['cos_horaxx'].'</td>
+			      				<td>$'.$data['can_noveda']*$data['val_unitar'].'</td>
 			      			  </tr>';
 			    }
 				   $html .='</tbody>
 				              <tfoot>
 						            <tr>
-						                <th colspan="2" class="tituloFecha" style="text-align:right">Total:</th>
+						                <th colspan="3" class="tituloFecha" style="text-align:right">Total:</th>
 						            </tr>
 						        </tfoot>
 				          </table>
@@ -933,7 +955,7 @@ class ajax_rentab_produc
           $mTittle[0]['data'] = array("fec_inicia" => array(
 	                                                            'name' => "Fecha Inicial", 
 	                                                            'type' => "input",
-	                                                            'class' => "validate date", 
+	                                                            'class' => "validate dateTime", 
 	                                                            'atribute' => array(
 	                                                                "validate"=>"date",
 	                                                                "minlength"=>3,
@@ -941,37 +963,15 @@ class ajax_rentab_produc
 	                                                                "onkeyup" => "validateFields(this)"
                                                                 )
                                                             ),
-                                       "hor_inicia" => array(
-                                                              'name' => "Hora Inicial", 
-                                                              'type' => "input",
-                                                              'class' => "validate hora", 
-                                                              'atribute' => array(
-                                                                  "validate"=>"hora",
-                                                                  "minlength"=>3,
-                                                                  "obl"=> 1,
-                                                                  "onkeyup" => "validateFields(this)"
-                                                                )
-                                                            ),
                                        "fec_finalx" => array(
 	                                                            'name' => "Fecha Final",
 	                                                            'type' => "input",
-	                                                            'class' => "validate date", 
+	                                                            'class' => "validate dateTime", 
 	                                                            'atribute' => array(
 	                                                                "validate"=>"date",
 	                                                                "minlength"=>1,
 	                                                                "obl"=> 1,
 	                                                                "onkeyup" => "validateFields(this)"
-                                                                )
-                                                            ),
-                                       "hor_finalx" => array(
-                                                              'name' => "Hora Final", 
-                                                              'type' => "input",
-                                                              'class' => "validate hora", 
-                                                              'atribute' => array(
-                                                                  "validate"=>"hora",
-                                                                  "minlength"=>1,
-                                                                  "obl"=> 1,
-                                                                  "onkeyup" => "validateFields(this)"
                                                                 )
                                                             ),
                                        "tip_inform" => array(
@@ -981,7 +981,8 @@ class ajax_rentab_produc
                                                               'atribute' => array(
                                                                   "validate"=>"select",
                                                                   "obl"=> 1,
-                                                                  "onkeyup" => "validateFields(this)"
+                                                                  "onkeyup" => "validateFields(this)",
+                                                                  "placeholder" => "Tipo de informe"
                                                                 )
                                                             ),
                                       "nom_perfil" => array(
@@ -990,9 +991,10 @@ class ajax_rentab_produc
 	                                                            'class' => "validate list", 
 	                                                            'atribute' => array(
 	                                                                "validate"=>"select",
-                                                                  "multiple"=>"multiple",
+                                                                  	"multiple"=>"multiple",
 	                                                                "obl"=> 1,
-	                                                                "onkeyup" => "validateFields(this)"
+	                                                                "onkeyup" => "validateFields(this)",
+	                                                                "placeholder" => "Perfl"
                                                                 )
                                                             ),
                                        "cod_usuari" => array(
@@ -1001,9 +1003,10 @@ class ajax_rentab_produc
 	                                                            'class' => "validate list", 
 	                                                            'atribute' => array(
 	                                                                "validate"=>"select",
-                                                                  "multiple"=>"multiple",
+                                                                  	"multiple"=>"multiple",
 	                                                                "obl"=> 1,
-	                                                                "onkeyup" => "validateFields(this)"
+	                                                                "onkeyup" => "validateFields(this)",
+	                                                                "placeholder" => "Usuario"
                                                                 )
                                                             )
                                       );
@@ -1029,7 +1032,7 @@ class ajax_rentab_produc
       //Variables necesarias
       $where = '';
       $arrayManual = [];
-      $return = [];
+      $return = [];      
 
       switch ($_REQUEST['file']) {
         case 'nom_perfil':
@@ -1078,8 +1081,7 @@ class ajax_rentab_produc
         $mMatriz = new Consulta($mSql, $this->conexion);
         $mMatriz = $mMatriz->ret_matrix("a");
       }
-
-
+       
       foreach ($mMatriz as $key => $datos) {
         $return[$key]['text'] = $datos[$_REQUEST['file']];  
         $return[$key]['id'] = $datos[$cod];  
@@ -1216,15 +1218,18 @@ class ajax_rentab_produc
         //Recorre la posicion de atributos para asignalos al campo
 
         $multiple = '';
+        $check = '';
         foreach ($info['atribute'] as $nameAttr => $valueAttr) {
           $attr .= $nameAttr.'="'.$valueAttr.'" ';
           if ($nameAttr == 'multiple') {
             $multiple = '[]';
+            $check= '<input class="select_all" id="check-'.$name.'" onclick="selectAll(this.id)" type="checkbox"/>';
           }
         }
 
         $field = '<div class="form-group '.$classCol.'">
               <select class="form-control form-control-sm '.$info['class'].'" '.$attr.' name="'.$name.$multiple.'" id="'.$name.'" value="'.$value.'" style="height: auto;"></select>
+              '.$check.'
             </div>';
         break;
 		}
