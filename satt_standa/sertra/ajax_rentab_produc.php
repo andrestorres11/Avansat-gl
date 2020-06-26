@@ -99,7 +99,7 @@ class ajax_rentab_produc
       //Genera consulta
       $mSql = ' SELECT  d.cod_perfil,
                         d.cod_usuari,
-                        REPLACE(e.val_hordia,",",".") AS cos_horaxx,
+                        REPLACE(REPLACE(e.val_hordia,",",""),".","") AS cos_horaxx,
                         c.fec_noveda AS fec_regist
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
             INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
@@ -248,7 +248,7 @@ class ajax_rentab_produc
       //Genera consulta
       $mSql = ' SELECT  d.cod_perfil,
                         d.cod_usuari,
-                        REPLACE(e.val_hordia,",",".") AS cos_horaxx,
+                        REPLACE(REPLACE(e.val_hordia,",",""),".","") AS cos_horaxx,
                         c.fec_noveda AS fec_regist
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
             INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
@@ -465,8 +465,8 @@ class ajax_rentab_produc
                   <td>$'.$dataF['cos_horaxx'].'</td>
                   <td>'.$can_horasx.'</td>
                   <td>'.$can_regisx.'</td>
-                  <td>$'.$dataF['cos_horaxx']*$can_horasx.'</td>
-                  <td>$'.($dataF['cos_horaxx']*$can_horasx)/$can_regisx.'</td>
+                  <td>$'.round($dataF['cos_horaxx']*$can_horasx).'</td>
+                  <td>$'.round(($dataF['cos_horaxx']*$can_horasx)/$can_regisx).'</td>
                 </tr>';
     }
 
@@ -825,7 +825,7 @@ class ajax_rentab_produc
                             h.val_despac,
                             h.val_regist
                         ) AS val_unitar,
-                        REPLACE(e.val_hordia,",",".") AS cos_horaxx,
+                        REPLACE(REPLACE(e.val_hordia,",",""),".","") AS cos_horaxx,
                         SUM(1) AS can_noveda
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
             INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
