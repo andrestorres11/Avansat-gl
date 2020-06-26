@@ -469,16 +469,16 @@ private function darTransportadoraUser($usuario){
 }
 
 private function darNombreCliente($usuario,$ver){
-  $sql="SELECT  
-	        c.cod_tercer,c.nom_tercer
+  $sql="SELECT 
+	        c.cod_tercer, 
+	        c.nom_tercer 
         FROM 
 	      ".BASE_DATOS.".tab_genera_usuari a 
-        INNER JOIN ".BASE_DATOS.".tab_aplica_filtro_usuari b 
-        ON a.cod_usuari = b.cod_usuari
-        INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
-        ON b.clv_filtro = c.cod_tercer
-        WHERE a.cod_usuari = '$usuario' AND b.cod_filtro=".COD_FILTRO_EMPTRA.";
-        ";
+	      INNER JOIN ".BASE_DATOS.".tab_aplica_filtro_perfil b ON a.cod_perfil = b.cod_perfil 
+	      INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON b.clv_filtro = c.cod_tercer 
+        WHERE 
+	        a.cod_usuari = '$usuario' 
+	        AND b.cod_filtro = ".COD_FILTRO_EMPTRA.";";
   $consulta = new Consulta($sql, $this -> conexion);
   $resultado = $consulta->ret_matriz('a');
   if($ver==1){
