@@ -464,8 +464,8 @@ class ajax_rentab_produc
                   <td>'.$dataF['cod_usuari'].'</td>
                   <td>$'.$dataF['cos_horaxx'].'</td>
                   <td>'.$can_horasx.'</td>
-                  <td>'.$can_regisx.'</td>
                   <td>$'.round($dataF['cos_horaxx']*$can_horasx).'</td>
+                  <td>'.$can_regisx.'</td>
                   <td>$'.round(($dataF['cos_horaxx']*$can_horasx)/$can_regisx).'</td>
                 </tr>';
     }
@@ -481,8 +481,8 @@ class ajax_rentab_produc
                   <th class="buscar subtitbusq">Usuario</th>
                   <th class="buscar subtitbusq">Costo Hora</th>
                   <th class="buscar subtitbusq">Cant H. L.</th>
-                  <th class="buscar subtitbusq">Registros</th>
                   <th class="buscar subtitbusq">Valor Total H.L.</th>
+                  <th class="buscar subtitbusq">Registros</th>
                   <th class="buscar subtitbusq">Valor Novedad</th>
                 </tr>
               </thead>
