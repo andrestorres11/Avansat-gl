@@ -296,7 +296,7 @@ class ajax_certra_certra {
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Valor del Despacho<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
-                                <input type="text" class="text-center ancho" name="val_despac" id="val_despacID" validate="numero" obl="1" maxlength="4" minlength="3" value="<?= $datos->principal['val_despac'] ?>" >
+                                <input type="text" class="text-center ancho" name="val_despac" id="val_despacID" validate="numero" obl="1" maxlength="5" minlength="3" value="<?= $datos->principal['val_despac'] ?>" >
                             </div>
                         </div>
                         <div class="col-md-6">
