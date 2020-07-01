@@ -591,7 +591,7 @@ class Aplicacion_Seguridad
                 $colorBoton = "#ff0000";
               }else{
                  //Variables necesarias para alerta
-                $body = "Su servicio será suspendido el día ".$campos['fec_vencin'].', por favor realice el pago antes de que sea suspendida la cuenta.';
+                $body = "Su servicio será suspendido el día ".$campos['fec_suspen'].', por favor realice el pago antes de que sea suspendida la cuenta.';
                 $type = 'warning';
                 $colorBoton = "#f8bb86";
               }

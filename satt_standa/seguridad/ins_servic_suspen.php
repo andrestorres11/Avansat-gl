@@ -128,10 +128,10 @@ class ins_servic_suspen {
                                                 # code...
                                             
                                                 $dateNow = new DateTime();
-                                                $dateSus = new DateTime($datos['fec_vencin']);
+                                                $dateSus = new DateTime($datos['fec_suspen']);
                                                 $interval = $dateNow->diff($dateSus);
 
-                                                if($datos['fec_vencin'] < date('Y-m-d')){
+                                                if($datos['fec_suspen'] < date('Y-m-d')){
                                                     $datos['est_suspen'] = 'Suspendido';
                                                     $datos['det_suspen'] = $interval->format('Suspendido, %a día(s) de suspensión');
                                                 }else{
@@ -142,7 +142,7 @@ class ins_servic_suspen {
                                                  $html.= '<tr>
                                                             <td>'.$datos['cod_tercer'].'</td>
                                                             <td>'.$datos['abr_tercer'].'</td>
-                                                            <td>'.$datos['fec_vencin'].'</td>
+                                                            <td>'.$datos['fec_suspen'].'</td>
                                                             <td>'.$datos['num_factur'].'</td>
                                                             <td>$'.$datos['val_totalx'].'</td>
                                                             <td>'.$datos['est_suspen'].'</td>

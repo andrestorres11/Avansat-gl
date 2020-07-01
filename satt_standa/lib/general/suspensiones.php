@@ -75,6 +75,7 @@ class suspensiones {
         chdir(__DIR__."/../");
         include '../lib/ajax.inc';
         include_once '../lib/general/festivos.php';
+        $this -> conexion = $AjaxConnection;
 
         //Consume Api de toda la data
         $dataTerceros = json_decode(file_get_contents($urlWS), true);
@@ -87,11 +88,23 @@ class suspensiones {
       $dataTerceros = json_decode(file_get_contents($urlWS), true);
     }
 
+    $dataTerceros[1000] = array(
+        'num_factur' => 11194,
+        'cod_tercer' => 830506874, 
+        'abr_tercer' => 'TRANSPORTADORA LAS MULAS S.A.S.', 
+        'fec_factur' => '2020-04-07',
+        'fec_vencin' => '2020-05-07',
+        'val_totalx' => 172500,
+        'nota_contable' => 72500,
+        'dias_prorro'=>1
+    );
+
     //Codifica en Hson
     $raw_data = json_encode($dataTerceros);
 
     //Codifica en Array
     $cReturn = json_decode($raw_data, true);
+
 
     //Eliminan las empresas que estan inactivas o no están en la base terceros
     foreach ($cReturn as $key => $value) {
@@ -107,6 +120,19 @@ class suspensiones {
       if ($cod_estado != 1) {
         unset($cReturn[$key]);
       }
+
+       $sql =  "SELECT   cod_transp, num_factur
+                 FROM   ".BASE_DATOS.".tab_client_suspen
+                WHERE   cod_transp = ".$value['cod_tercer']."
+                        AND num_factur = ".$value['num_factur'];
+      //Ejecuta la consulta
+      $consulta = new Consulta( $sql, $this -> conexion );
+      $cod_suspen = $consulta->ret_matrix( 'a' );
+
+      //Se valida si se encuentra en la tabla para poder publicarlo
+      if (count($cod_suspen) == 0) {
+        unset($cReturn[$key]);
+      }
     }
 
     //Se recorre el arreglo
@@ -114,7 +140,7 @@ class suspensiones {
 
       //Valida si la factura tiene dias en prologa, para asignarlos a la fehca vencimiento
       if(!is_null($value['dias_prorro'])){
-        $cReturn[$key]['fec_vencin'] = date("Y-m-d",strtotime($value['fec_vencin']."+ ".$value['dias_prorro']." days")); 
+        $cReturn[$key]['fec_suspen'] = date("Y-m-d",strtotime($value['fec_factur']."+ ".$value['dias_prorro']." days")); 
       }
 
       //Valida si tiene nota contable, si la tiene, le resta el valor y del recaudo al valor total
@@ -125,24 +151,24 @@ class suspensiones {
       //Recorre los campos
       foreach ($value as $keyCampo => $valueCampo) {
         
-        if($keyCampo == 'fec_vencin'){
+        if($keyCampo == 'fec_factur'){
 
           //Asigna los dias que se asigna para hacer el pago
-          $cReturn[$key]['fec_vencin'] = date("Y-m-d",strtotime($value['fec_vencin']."+ 90 days")); 
+          $cReturn[$key]['fec_suspen'] = date("Y-m-d",strtotime($value['fec_factur']."+ 85 days")); 
 
           //Valida dias festivos
-          $cReturn[$key]['fec_vencin'] = $this->valFest($cReturn[$key]['fec_vencin']);
-          $cReturn[$key]['dia'] = date("D", strtotime($cReturn[$key]['fec_vencin']));
+          $cReturn[$key]['fec_suspen'] = $this->valFest($cReturn[$key]['fec_suspen']);
+          $cReturn[$key]['dia'] = date("D", strtotime($cReturn[$key]['fec_suspen']));
 
           //Valida fines de semana para correr los dias
           if($cReturn[$key]['dia'] == 'Sun'){
-            $cReturn[$key]['fec_vencin'] = date("Y-m-d",strtotime($cReturn[$key]['fec_vencin']."+ 1 days"));
+            $cReturn[$key]['fec_suspen'] = date("Y-m-d",strtotime($cReturn[$key]['fec_suspen']."+ 1 days"));
           }elseif($cReturn[$key]['dia'] == 'Sat'){
-            $cReturn[$key]['fec_vencin'] = date("Y-m-d",strtotime($cReturn[$key]['fec_vencin']."+ 2 days"));
+            $cReturn[$key]['fec_suspen'] = date("Y-m-d",strtotime($cReturn[$key]['fec_suspen']."+ 2 days"));
           }
 
           //Valida dias festivos
-          $cReturn[$key]['fec_vencin'] = $this->valFest($cReturn[$key]['fec_vencin']);
+          $cReturn[$key]['fec_suspen'] = $this->valFest($cReturn[$key]['fec_suspen']);
 
         }         
       }
@@ -151,9 +177,9 @@ class suspensiones {
     //Identifica que caso aplica para ser suspendido o por suspender
     $segSusp = [];
     foreach ($cReturn as $key => $value) {
-      if($value['fec_vencin']." 15:00:00" < date('Y-m-d H:i:s')){
+      if($value['fec_suspen']." 15:00:00" < date('Y-m-d H:i:s')){
         $segSusp['suspendido'][] = $value;
-      }else{
+      }else if($value['fec_suspen'] >= date('Y-m-d') AND $value['fec_suspen'] <= date("Y-m-d",strtotime(date('Y-m-d')."+ 10 days"))){
         $segSusp['porSuspender'][] = $value;
       }
     }
