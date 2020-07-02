@@ -315,9 +315,9 @@ class InsertNovedad {
         $mMailTo = $mMailTo[0]["usr_emailx"] == '' ? $mUsuari[0]['usr_emailx'] : $mMailTo[0]["usr_emailx"];
         $mMailCC = $mMailCC[0]["usr_emailx"];
         #-------------------------------------------------------------------------------------
-        if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
+        /*if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
             mail('nelson.liberato@eltransporte.org', 'PROTOCOLO', var_export($mPrincipal, true)."\n".var_export($mSecundario, true)."\n".var_export($mMailTo, true)."\n".var_export($mMailCC, true) );
-        }
+        }*/
 
         $RESULTADO = array('ema_conpri' => $mPrincipal, 'ema_otrcon' => $mSecundario,
             'ema_conprX' => $mMailTo, 'ema_otrcoX' => $mMailCC);
@@ -3002,9 +3002,9 @@ class InsertNovedad {
             /*             * ****************************************************** */
 
             #<IF 3.2>
-            if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
+            /*if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
                 mail('nelson.liberato@eltransporte.org', 'CENOPE 1', var_export( $_CENOPE, true));
-            }
+            }*/
                 
             if (sizeof($_CENOPE) > 0) {
                 $comp = "<br>ENVIADO A: " . ( $_CENOPE['ema_conprX'] != '' ? $_CENOPE['ema_conprX'] : 'N/A' ) . "<br>COPIADO A: " . ( $_CENOPE['ema_otrcoX'] != '' ? $_CENOPE['ema_otrcoX'] : 'N/A' ) . " ";
@@ -3044,9 +3044,9 @@ class InsertNovedad {
                     $consulta = new Consulta($mSelect, $this->conexion);
                     $mConsec = $consulta->ret_matriz();
 
-                    if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
+                    /*if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
                         mail('nelson.liberato@eltransporte.org', 'CENOPE 2', "mAsigna: ".var_export( $mAsigna, true)."\n_REQUEST: ".var_export($_REQUEST, true) );
-                    }
+                    }*/
 
                     if (sizeof($mAsigna) > 0 && $_REQUEST['ind_activo_'] == 'S') {
                         if ($mIndEnSiti == true) {
@@ -3076,9 +3076,9 @@ class InsertNovedad {
                                             )";
                         }
 
-                        if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
+                        /*if($_SESSION['datos_usuario']['cod_usuari'] == 'Adriana.poveda'){
                             mail('nelson.liberato@eltransporte.org', 'CENOPE 3', $mInsert );
-                        }
+                        }*/
 
                         $insercion = new Consulta($mInsert, $this->conexion, "R");
                     }
@@ -3542,12 +3542,17 @@ class InsertNovedad {
                     #< IF 5.1.1.1.3>
                     if (51 == $interfaz->interfaz[$i]['operad']) {
                         $error_ = NULL;
+                        $url_webser = 'http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl';
 
                          if ($regist["nittra"] == "830104929") {
                             $cod_transp = "067";
                         }else{
                             $cod_transp = $regist["nittra"];
                         }
+
+                        // parche 313726 para colombiasoftware, hay una URL de pruebas y otra de prod, la de prod es igual para todos y cada cliente tiene un codigo  
+                        $cod_transp = $interfaz->interfaz[$i]['codigo']     != '' ? $interfaz->interfaz[$i]['codigo'] : $cod_transp; // cod de la transp, no es el nit, debe estar en BD
+                        $url_webser    = $interfaz->interfaz[$i]['diwsdl']  != '' ? $interfaz->interfaz[$i]['diwsdl'] : $url_webser; // URL ws, debe estar en BD
 
                         #<IF 5.1.1.1.3.1>
                         if (strpos(strtolower($regist['sitio']), "eal") !== FALSE || 
@@ -3564,7 +3569,7 @@ class InsertNovedad {
                             try {
                                 //Ruta Web Service Colocar e-com.
                                 $mEstado = '1';
-                                $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
+                                //$url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                                 $mFecha[0] = date('Y-m-d', strtotime($regist['fecnov']));
                                 $mFecha[1] = date('H:i:s', strtotime($regist['fecnov']));
 
@@ -3623,7 +3628,7 @@ class InsertNovedad {
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE.", nelson.liberato@eltransporte.org", 
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, 
                                 	"Error Web service Humadea - Colombiasoftware", 
                                 	'<div name="'.HOST_WEB.'_faro_11">' . $mMessage."\n". var_export($parametros, true ) . '</div>', $mCabeceSoporte);
                             }
@@ -3641,7 +3646,7 @@ class InsertNovedad {
                             try {
                                 $mEstado = '1';
                                 //Ruta Web Service Colocar e-com.
-                                $url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
+                                //$url_webser = "http://www.colombiasoftware.net/base/webservice/ReportePuestoControlCS.php?wsdl";
                                 $mFecha[0] = date('Y-m-d', strtotime($regist['fecnov']));
                                 $mFecha[1] = date('H:i:s', strtotime($regist['fecnov']));
 
@@ -4192,7 +4197,7 @@ class InsertNovedad {
                             //Métodos disponibles en el WS
                             $respuesta = $oSoapClient->__call('setPCIntracarga', $parametros);
 
-                            mail("maribel.garcia@eltransporte.org, nelson.liberato@intrared.net ", "Web service Intracarga Fault", '<div name="'.HOST_WEB.'_faro_16">' . var_export($respuesta, true) . '</div>', $mCabeceSoporte);
+                            //mail("maribel.garcia@eltransporte.org, nelson.liberato@intrared.net ", "Web service Intracarga Fault", '<div name="'.HOST_WEB.'_faro_16">' . var_export($respuesta, true) . '</div>', $mCabeceSoporte);
                         } catch (SoapFault $e) {
                             $error_ = $e->getMessage();
 
@@ -4210,10 +4215,7 @@ class InsertNovedad {
                                 $mMessage .= "Error: " . $e->faultstring . " <br>";
                                 $mMessage .= "Error Detallado: " . $result . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE . ", 
-                                        maribel.garcia@eltransporte.org,
-                                        nelson.liberato@intrared.net
-                                        ", "Web service Intracarga Fault", '<div name="'.HOST_WEB.'_faro_17">' . $mMessage . '</div>', $mCabeceSoporte
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Intracarga Fault", '<div name="'.HOST_WEB.'_faro_17">' . $mMessage . '</div>', $mCabeceSoporte
                                 );
                             }
                         }

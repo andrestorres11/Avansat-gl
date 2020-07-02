@@ -19,7 +19,7 @@ class Interfaz_SAT
     else
       $this -> conexion = $conexion;
 
-    $query = "SELECT a.cod_operad, a.nom_operad, a.nom_usuari, a.clv_usuari, a.val_timtra, a.url_webser ".
+    $query = "SELECT a.cod_operad, a.nom_operad, a.nom_usuari, a.clv_usuari, a.val_timtra, a.url_webser, a.cod_intern ".
                "FROM ".BASE_DATOS.".tab_interf_parame a ".
               "WHERE a.ind_operad = '0' ".
                 "AND a.ind_estado = '1' ";
@@ -41,6 +41,7 @@ class Interfaz_SAT
       $this -> interfaz[$i]["passwo"] = $interf[$i][3];
       $this -> interfaz[$i]["timtra"] = $interf[$i][4];
       $this -> interfaz[$i]["diwsdl"] = $interf[$i][5];
+      $this -> interfaz[$i]["codigo"] = $interf[$i][6];
     }
 
     /*

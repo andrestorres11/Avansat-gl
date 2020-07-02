@@ -377,7 +377,7 @@ function inc_date(obj, min, max, obl) {
     var tam = ele.length;
     if (obl == true) {
         if (tam > 0) {
-            if (tam == 10) {
+            if (tam == 10 || tam == 16) {
                 return 0;
             } else {
                 msg = "Ingrese una fecha valida";
@@ -393,7 +393,7 @@ function inc_date(obj, min, max, obl) {
         if (tam == 0) {
             return 0;
         } else if (tam > 0) {
-            if (tam == 10) {
+            if (tam == 10 || tam == 16) {
                 return 0;
             } else {
                 msg = "Ingrese una fecha valida";
