@@ -109,19 +109,6 @@ class suspensiones {
       if ($cod_estado != 1) {
         unset($cReturn[$key]);
       }
-
-       $sql =  "SELECT   cod_transp, num_factur
-                 FROM   ".BASE_DATOS.".tab_client_suspen
-                WHERE   cod_transp = ".$value['cod_tercer']."
-                        AND num_factur = ".$value['num_factur'];
-      //Ejecuta la consulta
-      $consulta = new Consulta( $sql, $this -> conexion );
-      $cod_suspen = $consulta->ret_matrix( 'a' );
-
-      //Se valida si se encuentra en la tabla para poder publicarlo
-      if (count($cod_suspen) == 0) {
-        unset($cReturn[$key]);
-      }
     }
 
     //Se recorre el arreglo
