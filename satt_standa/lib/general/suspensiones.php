@@ -88,17 +88,6 @@ class suspensiones {
       $dataTerceros = json_decode(file_get_contents($urlWS), true);
     }
 
-    $dataTerceros[1000] = array(
-        'num_factur' => 11194,
-        'cod_tercer' => 830506874, 
-        'abr_tercer' => 'TRANSPORTADORA LAS MULAS S.A.S.', 
-        'fec_factur' => '2020-04-07',
-        'fec_vencin' => '2020-05-07',
-        'val_totalx' => 172500,
-        'nota_contable' => 72500,
-        'dias_prorro'=>1
-    );
-
     //Codifica en Hson
     $raw_data = json_encode($dataTerceros);
 
