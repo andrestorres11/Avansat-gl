@@ -13,6 +13,8 @@
 /*! \class: Despachos
  *  \brief: Clase principal para los despachos
  */
+/*ini_set('error_reporting', E_ALL);
+ini_set("display_errors", 1);*/
 class Despachos
 {
     var $cod_aplica = NULL;
@@ -3415,34 +3417,35 @@ class Despachos
             {
               foreach( $mTittlePlanRut as $tittle )
                 $mHtml->Label( $tittle, array("align"=>"left", "class"=>"celda_titulo") );
-              $mHtml->CloseRow();
+                $mHtml->CloseRow();
 
 
               $mEstServ = self::getView('jso_encabe');
               foreach ( $_RUTASX as $row ) 
               {
+                 
                 if( $mEstServ->est_servic->ind_visibl != 1 ){
                     if(in_array($row['cod_noveda'], array(9271,9272,9273))){
                         unset($row);
                     }
                 }
-
-                if(!empty($row['fec_creaci'])){
-                    $mHtml->Row();
-                    $mHtml->Label( $row['sit_seguim'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                    $mHtml->Label( $row['fec_progra'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                    $mHtml->Label( $row['fec_planea'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                    $mHtml->Label( $row['fec_creaci'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                    $mHtml->Label( $row['cal_tiempo'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                    $mHtml->Label( $row['nom_noveda'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                    if($mView->sub->usr_creaci == 1) {
-                        $mHtml->Label( $row['cod_usuari'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                    }
-                    if($watchAlias == 1) {
-                        $mHtml->Label( self::getAlias($row['cod_usuari']), array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
-                    }
-                    $mHtml->CloseRow();
+                
+                //if(!empty($row['fec_creaci'])){
+                $mHtml->Row();
+                $mHtml->Label( $row['sit_seguim'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                $mHtml->Label( $row['fec_progra'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                $mHtml->Label( $row['fec_planea'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                $mHtml->Label( $row['fec_creaci'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                $mHtml->Label( $row['cal_tiempo'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                $mHtml->Label( $row['nom_noveda'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                if($mView->sub->usr_creaci == 1) {
+                    $mHtml->Label( $row['cod_usuari'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
                 }
+                if($watchAlias == 1) {
+                    $mHtml->Label( self::getAlias($row['cod_usuari']), array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
+                }
+                $mHtml->CloseRow();
+                //}
               }
             }
             else
