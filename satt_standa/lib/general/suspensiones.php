@@ -80,7 +80,7 @@ class suspensiones {
         //Consume Api de toda la data
         $dataTerceros = json_decode(file_get_contents($urlWS), true);
     }else{
-      include '../'.DIR_APLICA_CENTRAL.'/lib/ajax.inc';
+      include_once '../'.DIR_APLICA_CENTRAL.'/lib/ajax.inc';
       include_once '../'.DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
       $this -> conexion = $AjaxConnection;
 
@@ -159,9 +159,8 @@ class suspensiones {
         $segSusp['porSuspender'][] = $value;
       }
     }
-
     //Valida Estado de la novedad para ejecutar
-    if ($eje_noveda == 1) {
+    if ($eje_noveda == 1 && count($segSusp) > 0) {
 
       if(!isset($_SESSION['datos_usuario']['ale_suspen'])){
         $_SESSION['datos_usuario']['ale_suspen'] = 0;
