@@ -143,14 +143,14 @@ class ajax_certra_certra {
             tie_prctr1, tie_prctr2, tie_carurb, tie_carnac, tie_carimp, tie_carexp,
             tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ind_excala, 
             ind_calcon, ind_segcar, ind_segtra, ind_segdes, val_regist, tie_cartr1, 
-            tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, ind_biomet, 
-            can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, can_llatr2, 
-            fec_iniser, hor_iniser, fec_finser, hor_finser, nom_aplica, ind_segprc,
-            ind_planru, tie_traexp, tie_traimp, tie_tratr1, tie_tratr2, cod_grupox, 
-            cod_operac, cod_priori, ind_conper, hor_pe1urb, hor_pe2urb, hor_pe1nac, 
-            hor_pe2nac, hor_pe1imp, hor_pe2imp, hor_pe1exp, hor_pe2exp, hor_pe1tr1, 
-            hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, ind_solpol, cod_asegur, num_poliza, 
-            fec_valreg
+            val_despac, tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, 
+            ind_biomet, can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, 
+            can_llatr2, fec_iniser, hor_iniser, fec_finser, hor_finser, nom_aplica, 
+            ind_segprc, ind_planru, tie_traexp, tie_traimp, tie_tratr1, tie_tratr2, 
+            cod_grupox, cod_operac, cod_priori, ind_conper, hor_pe1urb, hor_pe2urb, 
+            hor_pe1nac, hor_pe2nac, hor_pe1imp, hor_pe2imp, hor_pe1exp, hor_pe2exp, 
+            hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, ind_solpol, cod_asegur, 
+            num_poliza, fec_valreg
             FROM " . BASE_DATOS . ".tab_transp_tipser 
             WHERE cod_transp = '$datos->cod_transp' 
             AND num_consec = $datos->num_consec";
@@ -202,6 +202,9 @@ class ajax_certra_certra {
         }
         if (!$datos->principal['cod_tipser'] || $_POST['cod_tipser']) {
             $datos->principal['cod_tipser'] = $_POST['cod_tipser'];
+        }
+        if (!$datos->principal['val_despac'] || $_POST['val_despac']) {
+            $datos->principal['val_despac'] = $_POST['val_despac'];
         }
         if (!$datos->principal['val_regist'] || $_POST['val_regist']) {
             $datos->principal['val_regist'] = $_POST['val_regist'];
@@ -288,6 +291,12 @@ class ajax_certra_certra {
                             <div class="col-md-6 text-right">Hora Fin del Servicio<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
                                 <input type="text" readonly="true" obl="1"  class="hora text-center ancho" name="hor_finser" validate="dir" id="hor_finserID" maxlength="5" minlength="5" obl="true" onclick="removeStyle('hor_finserID')" value="<?= $datos->principal['hor_finser'] ?>" >
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Valor del Despacho<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="text-center ancho" name="val_despac" id="val_despacID" validate="numero" obl="1" maxlength="5" minlength="3" value="<?= $datos->principal['val_despac'] ?>" >
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -1335,38 +1344,45 @@ class ajax_certra_certra {
         (   num_consec, cod_tipser, tie_contro, ind_estado, tie_conurb, ind_llegad,  
             ind_notage, tip_factur, tie_carurb, tie_carnac, tie_carimp, tie_carexp,
             tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ind_excala, 
-            ind_calcon, ind_segcar, ind_segtra, ind_segdes, val_regist, tie_cartr1, 
-            tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, ind_biomet, 
-            can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, can_llatr2, 
-            fec_iniser, hor_iniser, fec_finser, hor_finser, nom_aplica, ind_segctr,
-            ind_planru, tie_traexp, tie_traimp, tie_tratr1, tie_tratr2, cod_grupox, 
-            cod_operac, cod_server, cod_priori, cod_transp, usr_creaci, fec_creaci, 
-            hor_pe1nac, hor_pe2nac, hor_pe1urb, hor_pe2urb, hor_pe1exp, hor_pe2exp, 
-            hor_pe1imp, hor_pe2imp, hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, 
-            ind_conper, ind_solpol, cod_asegur, num_poliza, fec_valreg, ind_segprc,
-            tie_prcurb, tie_prcnac, tie_prcimp, tie_prcexp, tie_prctr1, tie_prctr2
+            ind_calcon, ind_segcar, ind_segtra, ind_segdes, val_regist, val_despac,
+            tie_cartr1, tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, 
+            ind_biomet, can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, 
+            can_llatr2, fec_iniser, hor_iniser, fec_finser, hor_finser, nom_aplica, 
+            ind_segctr, ind_planru, tie_traexp, tie_traimp, tie_tratr1, tie_tratr2, 
+            cod_grupox, cod_operac, cod_server, cod_priori, cod_transp, usr_creaci, 
+            fec_creaci, hor_pe1nac, hor_pe2nac, hor_pe1urb, hor_pe2urb, hor_pe1exp, 
+            hor_pe2exp, hor_pe1imp, hor_pe2imp, hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, 
+            hor_pe2tr2, ind_conper, ind_solpol, cod_asegur, num_poliza, fec_valreg, 
+            ind_segprc, tie_prcurb, tie_prcnac, tie_prcimp, tie_prcexp, tie_prctr1, 
+            tie_prctr2
         ) VALUES  ( 
         '$datos->num_consec', '$datos->cod_tipser', '$datos->tie_contro', '$datos->ind_estado', '$datos->tie_conurb', '$datos->ind_llegad', 
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
         '$datos->tie_desurb', '$datos->tie_desnac', '$datos->tie_desimp', '$datos->tie_desexp', '$datos->tie_trazab', '$datos->ind_excala', 
-        '$datos->ind_calcon', '$datos->ind_segcar', '$datos->ind_segtra', '$datos->ind_segdes', '$datos->val_regist', '$datos->tie_cartr1', 
-        '$datos->tie_cartr2', '$datos->tie_destr1', '$datos->tie_destr2', '$datos->ind_camrut', '$datos->dup_manifi', '$datos->ind_biomet', 
-        '$datos->can_llaurb', '$datos->can_llanac', '$datos->can_llaimp', '$datos->can_llaexp', '$datos->can_llatr1', '$datos->can_llatr2', 
-        '$datos->fec_iniser', '$datos->hor_iniser', '$datos->fec_finser', '$datos->hor_finser', '$datos->nom_aplica', '$datos->ind_segtra',
-        '$datos->ind_planru', '$datos->tie_traexp', '$datos->tie_traimp', '$datos->tie_tratr1', '$datos->tie_tratr2', '$datos->cod_grupox', 
-        '$datos->cod_operac', '$datos->cod_server', '$datos->cod_priori', '$datos->cod_transp', '$datos->usr_creaci', NOW(), 
+        '$datos->ind_calcon', '$datos->ind_segcar', '$datos->ind_segtra', '$datos->ind_segdes', '$datos->val_regist', '$datos->val_despac', 
+        '$datos->tie_cartr1', '$datos->tie_cartr2', '$datos->tie_destr1', '$datos->tie_destr2', '$datos->ind_camrut', '$datos->dup_manifi', 
+        '$datos->ind_biomet', '$datos->can_llaurb', '$datos->can_llanac', '$datos->can_llaimp', '$datos->can_llaexp', '$datos->can_llatr1', 
+        '$datos->can_llatr2', '$datos->fec_iniser', '$datos->hor_iniser', '$datos->fec_finser', '$datos->hor_finser', '$datos->nom_aplica', 
+        '$datos->ind_segtra', '$datos->ind_planru', '$datos->tie_traexp', '$datos->tie_traimp', '$datos->tie_tratr1', '$datos->tie_tratr2', 
+        '$datos->cod_grupox', '$datos->cod_operac', '$datos->cod_server', '$datos->cod_priori', '$datos->cod_transp', '$datos->usr_creaci', NOW(), 
         '$datos->hor_pe1nac', '$datos->hor_pe2nac', '$datos->hor_pe1urb', '$datos->hor_pe2urb', '$datos->hor_pe1exp', '$datos->hor_pe2exp', 
         '$datos->hor_pe1imp', '$datos->hor_pe2imp', '$datos->hor_pe1tr1', '$datos->hor_pe2tr1', '$datos->hor_pe1tr2', '$datos->hor_pe2tr2', 
         '$datos->ind_conper', '$datos->ind_solpol', '$datos->cod_asegur', '$datos->num_poliza', '$datos->fec_valreg', '$datos->ind_segprc',
         '$datos->tie_prcurb', '$datos->tie_prcnac', '$datos->tie_prcimp', '$datos->tie_prcexp', '$datos->tie_prctr1', '$datos->tie_prctr2'
         )";
 
+        $mSql = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
+                    SET cod_estado = $datos->ind_estado,
+                        usr_modifi = '$datos->usr_creaci',
+                        fec_modifi = NOW()
+                        WHERE cod_tercer = $datos->cod_transp";
+        $insercion = new Consulta($mSql, self::$cConexion, "C");
+
         if ($datos->eal != array()) {
             $consulta = new Consulta($query, self::$cConexion, "BR");
             $fecini = $datos->fecini;
             $precio = $datos->precio;
             $fecfin = $datos->fecfin;
-
             //se eliminan los puestos para quecuando actualice no queden los que ya no utilizan
             $sql = "DELETE FROM " . BASE_DATOS . ".tab_ealxxx_transp 
                           WHERE cod_transp = '$datos->cod_transp' ";

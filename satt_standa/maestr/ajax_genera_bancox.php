@@ -3,7 +3,7 @@
 /*error_reporting(E_ALL);
 ini_set('display_errors', '1');*/
 
-class AjaxDespacDestin
+class ajax_genera_bancox
 {
   var $AjaxConnection;
   
@@ -113,7 +113,7 @@ class AjaxDespacDestin
           																		"validate"=>"texto",
           																		"minlength"=>3,
           																		"obl"=> 1,
-          																		"onkeyup" => "validateFields()"
+          																		"onkeyup" => "validateFields(this)"
           																		)
           													)
                                       );
@@ -331,5 +331,5 @@ class AjaxDespacDestin
   
 }
 
-$proceso = new AjaxDespacDestin();
+$proceso = new ajax_genera_bancox();
  ?>

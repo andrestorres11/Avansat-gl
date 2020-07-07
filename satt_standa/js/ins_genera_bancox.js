@@ -30,7 +30,6 @@ $(function() {
             "data": ({option:'setRegistros'}),
             "type": 'POST'
         },
-        "ajax": "../" + standa + "/maestr/ajax_genera_bancox.php?option=setRegistros",
         'processing': true,
         "deferRender": true, 
         "autoWidth": false,     
@@ -240,17 +239,40 @@ function updEst(objet){
   *  \return boolean
   */
 
-function validateFields()
+function validateFields(field = null)
 {   
     var ban = true;
 
     if(!validaciones()){
-      $(".inc_alert").each(function(){
-        $(this).addClass("label label-danger");
-        $(this).text(decode_utf8($(this).text())).css({"cursor":"pointer"});
-        $(this).siblings().css({"border-color":"red"});
-      });
-      ban = false;
+      if(field == null){
+        $(".inc_alert").each(function(){
+          $(this).addClass("label label-danger");
+          $(this).text(decode_utf8($(this).text())).css({"cursor":"pointer", "position":"absolute", "transform":"translate(-70px, 0px)"});
+          $(this).siblings().css({"border-color":"red"});
+        });
+        ban = false;
+      }else{
+         $(".inc_alert").each(function(){
+          if($(this).siblings().attr("id") != $(field).attr("id")){
+            $(this).remove();
+            $(this).siblings().css({"border-color":"none"});
+          }else{
+            $(this).addClass("label label-danger");
+            $(this).text(decode_utf8($(this).text())).css({"cursor":"pointer", "position":"absolute", "transform":"translate(-70px, 0px)"});
+            $(this).siblings().css({"border-color":"red"});
+          }
+        });
+
+        $(".validate").each(function(){
+          if($(this).attr("id") == $(field).attr("id")){
+            if($(this).siblings().attr("id") == undefined){
+              $(this).css({"border-color":"green"});
+            }
+          }
+        });
+
+        ban = false;
+      }
     }else{
       $(".validate").each(function(){
         $(this).css({"border-color":"green"});
