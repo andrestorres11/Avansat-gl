@@ -11,11 +11,28 @@ MODIFICADO POR: Luis Carlos Manrique
 /*ini_set('error_reporting', E_ALL);
 ini_set("display_errors", 1);*/
 class suspensiones {
-  //Variables de clase
-  var $AjaxConnection;   
+  //Variables de clase 
 
-  function __construct()
+  var $AjaxConnection;
+
+  function __construct($co = null, $ajax = null)
   {
+    if ($_REQUEST['ajax'] == 'on') {
+      chdir(__DIR__."/../");
+      include_once 'ajax.inc';
+      include_once 'general/festivos.php';
+
+      $this -> conexion = $AjaxConnection;
+    }else{
+      $this -> conexion = $co;
+      if(!is_null($ajax)){
+        //Consume Api de toda la data
+        include_once '../lib/general/festivos.php';
+      }else{
+        include_once '../'.DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
+      }
+    }
+
     if(isset($_REQUEST['cod_tercer'])){
       $this->SetSuspensiones();
     }
@@ -39,25 +56,22 @@ class suspensiones {
   	}else{
   		$urlWS = "https://dev.intrared.net:8083/ap/cmaya/ut/consultor/app/client/facturacionVencida/fact_vencida_faro.php";
   	}
+
+    /*$ruta = explode('satt', $_SERVER['REQUEST_URI']);
+    include_once $_SERVER['DOCUMENT_ROOT'].$ruta[0].'satt_faro/constantes.inc';
+    include_once $_SERVER['DOCUMENT_ROOT'].$ruta[0].DIR_APLICA_CENTRAL.'/lib/general/conexion_lib.inc';
+    include_once $_SERVER['DOCUMENT_ROOT'].$ruta[0].DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
+
+    $this -> conexion = new Conexion( HOST, USUARIO, CLAVE, BASE_DATOS );*/
 	
 
     //Captura el codigo del tercero por Request o por parametro.
     $cod_tercer = isset($_REQUEST['cod_tercer']) ? $_REQUEST['cod_tercer'] : $cod_tercer;
     //Valida codigo de tercero - Usuario de sesión.
     if(!is_null($cod_tercer)){
-
-      chdir(__DIR__."/../");
-      include_once '../lib/general/constantes.inc';
-      include_once '../lib/ajax.inc';
-      include_once '../lib/general/festivos.php';
-      $this -> conexion = $AjaxConnection;
-
       //Consume Api con parametros
         $dataTerceros = json_decode(file_get_contents($urlWS.'?cod_tercero='.$cod_tercer), true);
     }else if(!is_null($cod_usuari)){
-      include '../'.DIR_APLICA_CENTRAL.'/lib/ajax.inc';
-      include_once '../'.DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
-      $this -> conexion = $AjaxConnection;
 
       //Se crea la consulta para traer el Nit
       $sql =  "SELECT   * 
@@ -72,18 +86,9 @@ class suspensiones {
       $dataTerceros = json_decode(file_get_contents($urlWS.'?cod_tercero='.$cod_tercer[0]['clv_filtro']), true);
 
     }else if(!is_null($ajax)){
-        chdir(__DIR__."/../");
-        include '../lib/ajax.inc';
-        include_once '../lib/general/festivos.php';
-        $this -> conexion = $AjaxConnection;
-
         //Consume Api de toda la data
         $dataTerceros = json_decode(file_get_contents($urlWS), true);
     }else{
-      include_once '../'.DIR_APLICA_CENTRAL.'/lib/ajax.inc';
-      include_once '../'.DIR_APLICA_CENTRAL.'/lib/general/festivos.php';
-      $this -> conexion = $AjaxConnection;
-
       //Consume Api de toda la data
       $dataTerceros = json_decode(file_get_contents($urlWS), true);
     }
@@ -808,7 +813,8 @@ class suspensiones {
 
 }//fin clase
 
-
-$_SUSP = new suspensiones();
+if ($_REQUEST['ajax'] == 'on') {
+  $_SUSP = new suspensiones();
+}
 
 ?>

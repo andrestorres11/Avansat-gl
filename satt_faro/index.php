@@ -330,7 +330,7 @@ class Aplicacion_Seguridad
 
            //Incluye la clase para validar 
           include("../".DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php');
-          $sus_terceros = new suspensiones();
+          $sus_terceros = new suspensiones($this -> conexion);
           
 
           if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 7, 8))){

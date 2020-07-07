@@ -72,7 +72,7 @@ class ins_servic_suspen {
 
         $datos_usuario = $this->usuario->retornar();
         $usuario = $datos_usuario["cod_usuari"];
-        $sus_terceros = new suspensiones();
+        $sus_terceros = new suspensiones($this->conexion);
         $data = $sus_terceros->SetSuspensiones();
 
         

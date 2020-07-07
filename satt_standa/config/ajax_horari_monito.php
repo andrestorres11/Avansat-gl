@@ -1168,9 +1168,10 @@ class ajax_horari_monito {
         $transp = $this->getTranspByHorario($_REQUEST['fec_inicio'], $_REQUEST['hor_inicio'], $_REQUEST['fec_finali'], $_REQUEST['hor_finali']);
 
         //Incluye el consumo del API de suspenciones
-        require_once '../../'.DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php';
+        require_once '../lib/general/suspensiones.php';
         //Instancia la clase
-        $sus_terceros = new suspensiones();
+        $sus_terceros = new suspensiones(self::$cConexion, 'on');
+
         $emp_suspencion = [];
         //Trae los campos a suspender
         $data = $sus_terceros->SetSuspensiones(null, null, null, 'on');

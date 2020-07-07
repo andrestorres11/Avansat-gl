@@ -128,11 +128,12 @@ function transporSusp(valor,text){
     try{
         var standa = 'satt_standa';
         var factu = '';
+        var ajax = 'on';
         $.ajax({
             url: "../" + standa + "/lib/general/suspensiones.php",
             type: "post",
             dataType: "json",
-            data: {cod_tercer: valor},
+            data: {cod_tercer: valor, ajax: ajax},
             success: function(data) {
                 $.each(data['suspendido'], function(estado, arrayDatos) {
                     if(valor == arrayDatos['cod_tercer']){

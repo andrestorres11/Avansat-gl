@@ -1004,7 +1004,7 @@ EOF;
 					        require_once '../../'.DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php';
 
 					        //Instancia la clase
-					        $sus_terceros = new suspensiones();
+					        $sus_terceros = new suspensiones($this -> conexion, 'on');
 					        $emp_suspencion = [];
 					        //Trae los campos a suspender
 					        $data = $sus_terceros->SetSuspensiones(null, null, null, 'on');
