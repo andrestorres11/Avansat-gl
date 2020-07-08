@@ -41,11 +41,11 @@ class ajax_genera_parcor
   */
   private function setRegistros() {
     $mSql = " SELECT  a.dir_emailx,
-                      IFNULL(b.nom_client,'GESTIÓN DE ASISTENCIA'),
+                       IF(((b.nom_tercer='') OR (b.nom_tercer IS NULL)),'GESTIÓN DE ASISTENCIA',b.nom_tercer),
                       a.id,
                       a.num_remdes
                 FROM  ".BASE_DATOS.".tab_genera_parcor a
-                LEFT JOIN tab_destin_client b ON a.num_remdes = b.cod_client";
+                LEFT JOIN tab_tercer_tercer b ON a.num_remdes = b.cod_tercer";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
 
@@ -158,16 +158,16 @@ class ajax_genera_parcor
    *  \return: HTML 
    */
     function darClientes($cod_cliente=""){
-      $mSql = "SELECT a.cod_client,a.nom_client FROM ".BASE_DATOS.".tab_destin_client a order by a.nom_client ASC";
+      $mSql = "SELECT a.cod_tercer, b.abr_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a INNER JOIN tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer ORDER BY b.abr_tercer ASC";
       $mMatriz = new Consulta($mSql, $this->conexion);
       $mData = $mMatriz->ret_matrix("a");
       $html="";
       foreach ($mData as $datos){
         $selected="";
-        if($datos['cod_client'] == $cod_cliente){
+        if($datos['cod_tercer'] == $cod_cliente){
           $selected ="selected";
         }
-        $html.='<option value="'.$datos['cod_client'].'" '.$selected.'>'.strtoupper($datos['nom_client']).'</option>';
+        $html.='<option value="'.$datos['cod_tercer'].'" '.$selected.'>'.strtoupper($datos['abr_tercer']).'</option>';
       }
       return $html;
 
@@ -217,6 +217,7 @@ class ajax_genera_parcor
       try {
 
         //Consulta
+      if($this->validaExitencia($_REQUEST['cliente'])){
       $codigo = empty($_REQUEST['correoID']) ? '' : "id = ".$_REQUEST['correoID'].", ";
 	    $mQuery = "INSERT INTO  ".BASE_DATOS.".tab_genera_parcor 
                          SET  $codigo
@@ -234,17 +235,29 @@ class ajax_genera_parcor
         
 	    if($consulta == true){
 	      $return['status'] = 200;
-	      $return['response'] = 'El registro ha sido registrado exitosamente.';
+	      $return['response'] = 'El registro ha sido creado exitosamente.';
 	    }else{
 	      $return['status'] = 500;
 	      $return['response'] = 'Error al realizar el registro.';
-	    }
-        
-
+      }
+      }else{
+        $return['status'] = 500;
+	      $return['response'] = 'La transportadora ya contiene correos asociados a ella.';
+      }
         echo json_encode($return);
       } catch (Exception $e) {
         echo 'Excepción regForm: ',  $e->getMessage(), "\n";
       }
+    }
+
+    function validaExitencia($num_remdes){
+      $mQuery = "SELECT COUNT(*) FROM ".BASE_DATOS.".tab_genera_parcor WHERE num_remdes = '$num_remdes'";
+      $consulta = new Consulta($mQuery, $this -> conexion); 
+      $cantidad= $consulta->ret_matrix()[0][0];
+      if($cantidad>0){
+        return false;
+      }
+      return true;
     }
 
   

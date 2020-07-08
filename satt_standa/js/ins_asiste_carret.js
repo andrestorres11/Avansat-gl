@@ -63,13 +63,13 @@ function cargaFormulario(valor){
         desbloqueaInputs();
         $("#con-formul").append(`<div class="card text-center" style="margin:15px;">
         <div class="card-header color-heading">
-          Ubicación del Vehículo
+        Trayecto del servicio
         </div>
       <div class="card-body">
 
         <div class="row">
           <div class="offset-1 col-3">
-            <input class="form-control form-control-sm" type="text" placeholder="Fecha Servicio" id="fec_servicID" name="fec_servic" required>
+            <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora del servicio" id="fec_servicID" name="fec_servic" required>
           </div>
           <div class="col-3">
             <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Origen" id="ciu_origen" name="ciu_origen" onkeyup="busquedaCiudad(this)" autocomplete="off" required>
@@ -99,12 +99,15 @@ function cargaFormulario(valor){
       </div>
       </div>`);
 
-      $('#fec_servicID').datepicker({
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'yy-mm-dd', //Se especifica como deseamos representarla
-        firstDay: 1
-    });
+      $('#fec_servicID').datetimepicker({
+        sideBySide: true,
+          icons: {
+        up: "fa fa-chevron-circle-up",
+        down: "fa fa-chevron-circle-down",
+        next: 'fa fa-chevron-circle-right',
+        previous: 'fa fa-chevron-circle-left'
+          }   
+      });
 
     $("#ciu_origen").on('click',function(){
       $("#ciu_origen").val("");

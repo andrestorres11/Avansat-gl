@@ -435,7 +435,8 @@ function llenarRetabilidad(){
     cos_servicio = $("#val_cosserID").val();
 
     if(val_facturar!="" && cos_servicio!=""){
-        total = (parseInt(val_facturar)/parseInt(cos_servicio))*100;
+        total1= parseInt(val_facturar)-parseInt(cos_servicio);
+        total = (parseInt(total1)/parseInt(val_facturar))*100;
         total = Math.round(total);
         if(total!=undefined){
             $("#val_rentabID").val(total+"%");

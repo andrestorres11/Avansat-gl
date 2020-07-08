@@ -665,7 +665,7 @@
             }
             if($tip_solici==2){
                 $html='<div class="card text-center" style="margin:15px;">
-                <div class="card-header color-heading">Ubicación del Vehículo</div>
+                <div class="card-header color-heading">Trayecto del servicio</div>
               <div class="card-body">
         
                 <div class="row">
@@ -840,7 +840,7 @@
                     )";
                   $consulta = new Consulta($sql, self::$conexion);
                     if($consulta){
-                        $this->enviarCorreo($num_solici,$estado_proximo);
+                        $this->enviarCorreo($num_solici,$estado_proximo,$_REQUEST['obs_gestio']);
                         $return['status'] = 200;
                         $return['response'] = "Realizado con exito";
                     }    
@@ -907,7 +907,7 @@
                     )";
                   $consulta = new Consulta($sql, self::$conexion);
                     if($consulta){
-                        $this->enviarCorreo($num_solici,$estado_proximo);
+                        $this->enviarCorreo($num_solici,$estado_proximo,$_REQUEST['obs_aprser']);
                         $return['status'] = 200;
                         $return['response'] = "Realizado con exito";
                     }    
@@ -1004,14 +1004,20 @@
             return $nom_asiste[0]['nom_asiste'];
         }
 
-        private function enviarCorreo($num_solici,$cod_estado) {
+        private function enviarCorreo($num_solici,$cod_estado,$observacion) {
             $logo = URL_STANDA.'imagenes/asistencia.png';
+            $informacion = $this->darInformacion($num_solici);
             //$logo = 'https://dev.intrared.net:8083/ap/ctorres/sat-gl-2015/satt_standa/imagenes/asistencia.png';
             $nom_asiste = $this->tipSolicitud($num_solici);
             $fec_actual = date("Y-m-d H:i:s");   
             $correos = $this->darCorreos($num_solici);
             $estado = $this->darNombreEstados($cod_estado);
             $to = $correo;
+            $complemento='';
+            if($cod_estado==2){
+              $complemento = '<br><br><strong style="color:#000">Valor a Facturar:</strong> $'.$informacion['val_facges'].'<br>
+                              <strong style="color:#000">Costo Servicio Proveedor:</strong> $'.$informacion['val_cospro'].' ';
+            }
             $subject = "NUEVO ESTADO DE SOLICITU ".strtoupper($nom_asiste);
             $headers = "MIME-Version: 1.0" . "\r\n";
             $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
@@ -1160,7 +1166,11 @@
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
                                                 <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],1).'</strong>                                    <br> <br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
                                                 '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la línea de servicio <strong>Asistencia Logística</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el. <br> <br class="colortext">Estado:
-                                                <strong class="colortext">'.$estado.'</strong> <br> <br class="colortext">Le estaremos informando el
+                                                <strong class="colortext">'.$estado.'</strong><br>
+                                                <br><strong style="color:#000">Observación:</strong> '.$observacion.'
+                                                '.$complemento.'
+                                                <br>
+                                                <br class="colortext">Le estaremos informando el
                                                 estado de su solicitud, cabe aclarar que nuestro tiempo de respuesta es de aproximadamente 45 minutos o antes. <br><br> </p>
                                             </td>
                                           </tr>
