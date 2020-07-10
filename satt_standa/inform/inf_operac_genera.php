@@ -33,7 +33,6 @@ class InformViajes {
     function getInform() {
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/informes.css' type='text/css'>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/homolo.css' type='text/css'>\n";
-
         $mSelect1 = "SELECT 
                        t.num_despac as 'num_viajex',
                        t.cod_manifi as 'cod_manifi',
