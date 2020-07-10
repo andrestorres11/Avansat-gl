@@ -33,7 +33,6 @@ class InformViajes {
     function getInform() {
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/informes.css' type='text/css'>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/homolo.css' type='text/css'>\n";
-
         $mSelect1 = "SELECT 
                        t.num_despac as 'num_viajex',
                        t.cod_manifi as 'cod_manifi',
@@ -70,7 +69,7 @@ class InformViajes {
                        o.nom_ciudad as 'ciu_conduc', 
                        s.des_mercan as 'nom_mercan',
                        CONCAT(w.nom_apell1,' ',w.nom_apell2,' ',w.nom_tercer) as 'nom_conduc',
-                       CONCAT(W.num_telef1, ' ',w.num_telef1) as 'tel_conduc',
+                       CONCAT(w.num_telef1, ' ',w.num_telef1) as 'tel_conduc',
                        w.num_telmov as 'cel_conduc',
                        w.dir_domici as 'dir_conduc',
                        x.num_catlic as 'cat_liccon',
@@ -114,7 +113,7 @@ class InformViajes {
 	            LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas m ON v.cod_marcax = m.cod_marcax 
 	                AND v.cod_lineax = m.cod_lineax 
 	            LEFT JOIN ".BASE_DATOS.".tab_vehige_colore n ON v.cod_colorx = n.cod_colorx
-                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer w ON z.cod_conduc = W.cod_tercer
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer w ON z.cod_conduc = w.cod_tercer
                 LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad o ON w.cod_ciudad = o.cod_ciudad
                 LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc x ON z.cod_conduc = x.cod_tercer
 	            LEFT JOIN ".BASE_DATOS.".tab_vehige_config p ON v.num_config = p.num_config
