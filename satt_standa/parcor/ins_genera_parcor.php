@@ -100,7 +100,7 @@ class parametrizacion_correos
   //---------------------------------------------
   /*! \fn: registros
   *  \brief: Imprime el html con el encabezado de la tabla
-  *  \author: Cristian Andrés Torres
+  *  \author: Cristian Andrés Torres Cardozo
   *  \date: 02/06/2020
   *  \date modified: 
   *  \return 

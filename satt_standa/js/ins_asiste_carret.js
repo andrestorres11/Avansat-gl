@@ -27,7 +27,7 @@ function cargaFormulario(valor){
        desbloqueaInputs();
         $("#con-formul").append(`<div class="card text-center" style="margin:15px;">
         <div class="card-header color-heading">
-                      Ubicaciï¿½n del Vehï¿½culo
+                      Ubicación del Vehí­culo
                     </div>
         <div class="card-body">
           <div class="row">
@@ -43,10 +43,10 @@ function cargaFormulario(valor){
                 </div>
                 <div class="row mt-3">
                   <div class="offset-1 col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="Contraseï¿½a" id="con_vehicuID" name="con_vehicu">
+                    <input class="form-control form-control-sm" type="text" placeholder="Contraseña" id="con_vehicuID" name="con_vehicu">
                     </div>
                     <div class="col-4">
-                      <input class="form-control form-control-sm" type="text" placeholder="Ubicaciï¿½n" id="ubi_vehicuID" name="ubi_vehicu">
+                      <input class="form-control form-control-sm" type="text" placeholder="Ubicación" id="ubi_vehicuID" name="ubi_vehicu">
                       </div>
                       <div class="col-3">
                         <input class="form-control form-control-sm" type="text" placeholder="Punto de Referencia" id="pun_refereID" name="pun_refere">
@@ -54,7 +54,7 @@ function cargaFormulario(valor){
                       </div>
                       <div class="row mt-3">
                         <div class="offset-1 col-10">
-                          <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve Descripciï¿½n de la Asistencia"></textarea>
+                          <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve descripción de la asistencia"></textarea>
                         </div>
                       </div>
                     </div>
@@ -63,20 +63,20 @@ function cargaFormulario(valor){
         desbloqueaInputs();
         $("#con-formul").append(`<div class="card text-center" style="margin:15px;">
         <div class="card-header color-heading">
-          Ubicaciï¿½n del Vehï¿½culo
+        Trayecto del servicio
         </div>
       <div class="card-body">
 
         <div class="row">
           <div class="offset-1 col-3">
-            <input class="form-control form-control-sm" type="text" placeholder="Fecha Servicio" id="fec_servicID" name="fec_servic" required>
+            <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora del servicio" id="fec_servicID" name="fec_servic" required>
           </div>
           <div class="col-3">
             <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Origen" id="ciu_origen" name="ciu_origen" onkeyup="busquedaCiudad(this)" autocomplete="off" required>
             <div id="ciu_origen-suggestions" class="suggestions"></div>
           </div>
           <div class="col-4">
-            <input class="form-control form-control-sm" type="text" placeholder="Direcciï¿½n" id="dir_ciuoriID" name="dir_ciuori" required>
+            <input class="form-control form-control-sm" type="text" placeholder="Dirección" id="dir_ciuoriID" name="dir_ciuori" required>
           </div>
         </div>
 
@@ -86,7 +86,7 @@ function cargaFormulario(valor){
             <div id="ciu_destin-suggestions" class="suggestions"></div>
           </div>
           <div class="col-4">
-            <input class="form-control form-control-sm" type="text" placeholder="Direcciï¿½n" id="dir_ciudesID" name="dir_ciudes" required>
+            <input class="form-control form-control-sm" type="text" placeholder="Dirección" id="dir_ciudesID" name="dir_ciudes" required>
           </div>
         </div>
 
@@ -99,12 +99,15 @@ function cargaFormulario(valor){
       </div>
       </div>`);
 
-      $('#fec_servicID').datepicker({
-        changeMonth: true,
-        changeYear: true,
-        dateFormat: 'yy-mm-dd', //Se especifica como deseamos representarla
-        firstDay: 1
-    });
+      $('#fec_servicID').datetimepicker({
+        sideBySide: true,
+          icons: {
+        up: "fa fa-chevron-circle-up",
+        down: "fa fa-chevron-circle-down",
+        next: 'fa fa-chevron-circle-right',
+        previous: 'fa fa-chevron-circle-left'
+          }   
+      });
 
     $("#ciu_origen").on('click',function(){
       $("#ciu_origen").val("");
