@@ -1,20 +1,20 @@
-
-.space-label{
+.space-label {
     margin-inline-end: 11px;
 }
 
-.color-heading{
+.color-heading {
     background-color: #dff0d8;
     border-color: #d6e9c6;
     font-size: 17px;
     font-weight: bold;
 }
-.centerRow{
+
+.centerRow {
     text-align: center;
 }
 
 .suggestions {
-    box-shadow: 2px 2px 8px 0 rgba(0,0,0,.2);
+    box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, .2);
     height: auto;
     position: absolute;
     top: 30px;
@@ -25,19 +25,19 @@
 .suggestions .suggest-element {
     background-color: #89d889;
     border-top: 1px solid #d6d4d4;
-    color:#fff;
+    color: #fff;
     cursor: pointer;
     padding: 8px;
     width: 100%;
     float: left;
 }
 
-.error-label{
+.error-label {
     border-color: #C00000;
     border-width: 2px;
 }
 
-.contenido{
+.contenido {
     margin-left: 10px !important;
     margin-right: 10px !important;
 }
@@ -46,16 +46,16 @@ label.error {
     color: #a94442;
     background-color: #f2dede;
     border-color: #ebccd1;
-    margin-top:2px;
-    padding:6px 20px 6px 20px;
+    margin-top: 2px;
+    padding: 6px 20px 6px 20px;
 }
 
-input.error{
+input.error {
     border-color: #a94442;
     border-width: 2px;
 }
 
-.mayuscul-input{
+.mayuscul-input {
     text-transform: uppercase;
 }
 
@@ -65,15 +65,15 @@ input.error{
 .card-header {
     padding: .1rem 1.25rem;
     background-color: #dff0d8;
-    border-bottom: 1px solid rgba(0,0,0,.125);
+    border-bottom: 1px solid rgba(0, 0, 0, .125);
 }
 
-.card-header .btn{
-    color:#000;
+.card-header .btn {
+    color: #000;
     font-weight: bold;
 }
 
-.label-formcheck{
+.label-formcheck {
     background-color: #FF7886;
     padding: 10px;
 }
@@ -84,18 +84,29 @@ input.error{
     border-color: #d6e9c6;
 }
 
-.modal-title { text-align: center; width: 100%; } 
-
-.enlace-form{
-    color:#1807A7;
-    font-weight: bold;
-    cursor:pointer;
+.modal-title {
+    text-align: center;
+    width: 100%;
 }
 
-.enlace-form:hover{
-    color:#0958D3;
+.enlace-form {
+    color: #1807A7;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.enlace-form:hover {
+    color: #0958D3;
     text-decoration-line: underline;
 }
 
+.text-label-big {
+    font-size: 15px;
+    text-align: right;
+}
 
-
+.text-right-service {
+    text-align: left;
+    font-size: 13px;
+    margin: auto;
+}

@@ -245,6 +245,17 @@ class ins_asiste_carret
               
               <div id="con-formul">
               </div>
+
+              <div class="card text-center" style="margin:15px;">
+                <div class="card-header color-heading">
+                  Tipo de Servicio
+                </div>
+                <div class="card-body">
+                  <div id="ser_asiten">
+                  </div>
+                </div>
+              </div>
+
               <input type="hidden" name="tip_solici" id="tip_soliciID">
               <center><input class="small-box-footer btn btn-success btn-sm" type="submit" disabled/></center>
               </form>

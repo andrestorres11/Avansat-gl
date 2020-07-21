@@ -30,6 +30,12 @@ class ajax_asiste_carret
       case 'registrar':
         $this -> registrar();
       break;
+      case 'busqueda_costoAcompa':
+        $this -> costoAcompa();
+      break;
+      case 'dar_serviciosAsistencia':
+        $this -> serviciosAsistencia();
+      break;
     }
     }
 
@@ -130,7 +136,8 @@ class ajax_asiste_carret
     $return = [];
     $ciu_origen="";
     $ciu_destin="";
-
+    $servicios = html_entity_decode($_REQUEST['services']);
+    $servicios = json_decode($servicios);
     //Revisa la base de datos y busca el numero de la solicitud.
     $sql = "SELECT IFNULL((MAX(a.id) + 1),1)
             FROM ".BASE_DATOS.".tab_asiste_carret a";
@@ -140,7 +147,7 @@ class ajax_asiste_carret
     if(isset($_REQUEST['ciu_origen'])){
       $ciu_origen=$this->separarCodigoCiudad($_REQUEST['ciu_origen']);
     }
-    if(isset($_REQUEST['ciu_origen'])){
+    if(isset($_REQUEST['ciu_destin'])){
       $ciu_destin=$this->separarCodigoCiudad($_REQUEST['ciu_destin']);
     }
     $cod_cliente = $this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],2);
@@ -182,6 +189,19 @@ class ajax_asiste_carret
 
       $consulta = new Consulta($sql, $this -> conexion,"BR");
 
+      foreach($servicios as $servicio){
+      $des_servic = $this->darDescripServicio($servicio->servicio);
+      $sql="INSERT INTO tab_servic_solasi(
+        cod_solasi,cod_servic,des_servic,
+        usr_creaci,fec_creaci
+      )
+      VALUES(
+        '".$num_solici."','".$servicio->servicio."','".$des_servic."',
+        '".$_SESSION['datos_usuario']['cod_usuari']."', NOW()
+      );";
+      $consulta = new Consulta($sql, $this -> conexion, "R");
+      }
+
       $sql="INSERT INTO tab_seguim_solasi(
         cod_solasi, ind_estado, obs_detall,
         usr_creaci, fec_creaci
@@ -191,7 +211,7 @@ class ajax_asiste_carret
           '".$num_solici."', '1', 'Sin Novedad',
           '".$_SESSION['datos_usuario']['cod_usuari']."', NOW()
         )";
-      $consulta = new Consulta($sql, $this -> conexion,"RC");
+      $consulta = new Consulta($sql, $this -> conexion, "RC");
 
       if($consulta==true){
         $this->enviarCorreo($num_solici,"",$_REQUEST['ema_solici'],$_REQUEST['tip_solici'],$_REQUEST['nom_solici']);
@@ -210,6 +230,14 @@ class ajax_asiste_carret
   function separarCodigoCiudad($dato){
     $cod_ciudad = explode(" ", $dato);
     return trim($cod_ciudad[0]);
+  }
+
+  function darDescripServicio($cod_servic){
+    $sql="SELECT a.abr_servic FROM ".BASE_DATOS.".tab_servic_asicar a
+          WHERE a.id = '".$cod_servic."'";
+    $consulta = new Consulta($sql, $this -> conexion);
+    $descrip = $consulta ->ret_matriz('a')[0]['abr_servic'];
+    return $descrip;
   }
 
   private function enviarCorreo($num_solici,$nombre_cliente,$correod,$solicitud,$nom_solici) {
@@ -494,6 +522,67 @@ private function darNombreCliente($usuario,$ver){
       return false;
     }
   }
+}
+
+private function costoAcompa(){
+  if(isset($_REQUEST['ciu_origen'])){
+    $ciu_origen=$this->separarCodigoCiudad($_REQUEST['ciu_origen']);
+  }
+  if(isset($_REQUEST['ciu_destin'])){
+    $ciu_destin=$this->separarCodigoCiudad($_REQUEST['ciu_destin']);
+  }
+  $retorno= [];
+  $retorno['validacion']=false;
+  $sql="SELECT a.val_tarifa
+        FROM ".BASE_DATOS.".tab_tarifa_acompa a
+       WHERE a.ciu_origen = '$ciu_origen'
+       AND a.ciu_destin = '$ciu_destin'";
+  $resultado = new Consulta($sql, $this->conexion);
+  $cantidad_registros = $resultado->ret_num_rows();
+  $retorno['sql']=$sql;
+  if($cantidad_registros>0){
+    $datos=$resultado->ret_arreglo();
+    $retorno['validacion']=true;
+    $retorno['val_tarifa']=$datos['val_tarifa'];
+    
+  }
+  echo json_encode($retorno);
+}
+
+private function serviciosAsistencia(){
+  $asistencia = $_REQUEST['cod_tipAsi'];
+  $sql="SELECT a.id, a.abr_servic 
+        FROM ".BASE_DATOS.".tab_servic_asicar a  
+        WHERE a.tip_asicar = '$asistencia';";
+  $resultado = new Consulta($sql, $this->conexion);
+  $resultados = $resultado->ret_matriz('a');
+  $total = $resultado->ret_num_rows();
+  $html='';
+  $conteo=1;
+  if($total>0){
+  foreach($resultados as $dato){
+    if($conteo==1){
+      $html.='<div class="row mt-3"><div class="col-1"></div>';
+      }
+    $html.='<div class="col-5 d-flex align-items-center">
+              <div class="col-1">
+                <input type="checkbox" id="ser_'.$dato['id'].'" value="'.$dato['id'].'">
+              </div>
+              <div class="col-11 align-items-center">
+                <p class="text-right-service">'.$dato['abr_servic'].'</p>
+              </div>
+            </div>';
+
+    $conteo++;
+    if($conteo>=3){
+      $html.='</div>';
+      $conteo=1;
+    }
+  }
+  }else{
+    $html.='<div class="row mt-3"><div class="col-12"><center><h5 style="color:red;">No hay registro de servicios asociados al tipo de solicitud.</h5></center></div></div>';
+  }
+  echo json_encode($html);
 }
 
 
