@@ -978,27 +978,47 @@ EOF;
 								ON (t1.cod_perfil = t2.cod_perfil) 
 								where t1.cod_usuari = '".$d["usr_modifi"]."'; ";
 							$consulta_pefil = new Consulta( $query_perfil, $this -> conexion );
-		    			$result_pefil = $consulta_pefil -> ret_matrix('a');
-		    			$verificar_perfil=	$result_pefil[0]['cod_perfil'];
+			    			$result_pefil = $consulta_pefil -> ret_matrix('a');
+			    			$verificar_perfil=	$result_pefil[0]['cod_perfil'];
 
-		    			if($verificar_perfil == 1 || $verificar_perfil == 7 || $verificar_perfil == 8 || $verificar_perfil ==73)
-		    			{
-		    				$d["user_modifi"]= 0;
-		    			}
-		    			else
-		    			{
-		    				$d["user_modifi"] = 1;
-		    			}
-		    			
-							$consulta_cumplidos = new Consulta( $query_cumplidos, $this -> conexion );
-		    			$result_cumplidos = $consulta_cumplidos -> ret_matrix( 'a' );
-		    			foreach ($result_cumplidos as $key => $cumplidos) {
+			    			if($verificar_perfil == 1 || $verificar_perfil == 7 || $verificar_perfil == 8 || $verificar_perfil ==73)
+			    			{
+			    				$d["user_modifi"]= 0;
+			    			}
+			    			else
+			    			{
+			    				$d["user_modifi"] = 1;
+			    			}
+			    			
+								$consulta_cumplidos = new Consulta( $query_cumplidos, $this -> conexion );
+			    			$result_cumplidos = $consulta_cumplidos -> ret_matrix( 'a' );
+			    			foreach ($result_cumplidos as $key => $cumplidos) {
 								$d["fec_inicia"] = $cumplidos["fec_inicia"];
 								$d["fec_finali"] = $cumplidos["fec_finali"];
 								$d["dia_calend"] = $cumplidos["dia_calend"];
 								$d["tip_tiempo"] = $cumplidos["tip_tiempo"];
 								$d["tie_respue"] = $cumplidos["tie_respue"];
 							}
+
+							//Incluye el consumo del API de suspenciones
+					        require_once '../../'.DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php';
+
+					        //Instancia la clase
+					        $sus_terceros = new suspensiones($this -> conexion, 'on');
+					        $emp_suspencion = [];
+					        //Trae los campos a suspender
+					        $data = $sus_terceros->SetSuspensiones(null, null, null, 'on');
+
+					        //Recorre las transportadoras
+				            foreach ($data['suspendido'] as $keySusp => $sus_terceros) {
+				                //Valida si son iguales
+				                if($d['cod_transp'] == $sus_terceros['cod_tercer']){
+				                    //Genera la lista de empresas suspendidas a mostrar en pantalla.
+				                    $emp_suspencion[] = $sus_terceros['cod_tercer']." - ".$sus_terceros['abr_tercer'];
+				                    //Elimina la posición de la empresas suspendida
+				                    unset($d);
+				                }
+				            }
 
 							$r[]=$d;
 						break;
