@@ -13,6 +13,15 @@ $(function() {
   //ejecuta la función de cargar campos del filtro
   cargarCampos(); 
 
+
+  var width = $("div #tablaDatos").width();
+
+  /*$(window).resize(function(){
+    $("div #tablaDatos").css("max-width", (width-30)+"px");
+  });*/
+
+  $("div #tablaDatos").css("max-width", (width-30)+"px");
+
 });
 
  //---------------------------------------------
@@ -94,7 +103,7 @@ function createTable(objet){
                 //Asigna los campos de buqueda
                 $('#contenedor .tab_'+id+' thead tr .buscar').each( function (i) {
                   var title = $(this).text();
-                  $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="Buscar '+title+'" />' );
+                  $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="'+title+'" />' );
            
                   $( 'input', this ).on( 'keyup change', function () {
                       var table = $(this).parents("table").DataTable();
@@ -166,7 +175,7 @@ function detalle(fecha, hora, usuario, tipo){
 
             $('.table_datadetalle thead tr th').each( function (i) {
               var title = $(this).text();
-              $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="Buscar '+title+'" />' );
+              $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="'+title+'" />' );
        
               $( 'input', this ).on( 'keyup change', function () {
                   var table = $(this).parents("table").DataTable();
@@ -182,12 +191,12 @@ function detalle(fecha, hora, usuario, tipo){
 
             var id = "#tab_"+usuario;
             var columnas = $(id+" tbody tr:nth-child(1) td");
-            for (var i = 2; i < columnas.length; i++) {
+            for (var i = 3; i < columnas.length; i++) {
               $(id).find("tfoot").children("tr").append("<th class='tituloFecha'></th>")
             }
 
             //Asigna las funciones dataTable
-            dataTableRegis("#tab_"+usuario, "Informe al detalle", 2);            
+            dataTableRegis("#tab_"+usuario, "Informe al detalle", 3);            
         }
     });
   }
@@ -246,13 +255,12 @@ function validateFields(field = null)
       }
     }else{
       //Capturar valor de las fechas y horas para realizar validaciones
-      var fec_inicia = moment($("#fec_inicia").val()+" "+$("#hor_inicia").val());
-      var fec_finalx = moment($("#fec_finalx").val()+" "+$("#hor_finalx").val());
+      var fec_inicia = moment($("#fec_inicia").val());
+      var fec_finalx = moment($("#fec_finalx").val());
 
       if(fec_inicia > fec_finalx){
         setTimeout(function() {
           inc_alerta("fec_inicia", "La fecha inicial no puede ser mayor a la final.");
-          inc_alerta("hor_inicia", "La hora inicial no puede ser mayor a la final.");
           spanDanger();
         }, 530);
         ban = false;
@@ -306,7 +314,15 @@ function inputDate(form){
   $("#"+form+" .hora").each(function(){
     // Rango de fechas
     $('#'+$(this).attr("id")).datetimepicker({
-      format: 'HH:00',
+      format: 'LT',
+      locale: 'ES'
+    });
+  }); 
+
+  $("#"+form+" .dateTime").each(function(){
+    // Rango de fechas
+    $('#'+$(this).attr("id")).datetimepicker({
+      format: 'YYYY-MM-DD HH:mm',
       locale: 'ES'
     });
   }); 
@@ -394,6 +410,11 @@ function dataTableRegis(objetAsig, nombre, IniColumTotal){
           }
       }
   });
+
+  var table = $(objetAsig).DataTable();
+  
+  $('#container').css( 'display', 'block' );
+  table.columns.adjust().draw();
 }
 
 
@@ -408,33 +429,55 @@ function dataTableRegis(objetAsig, nombre, IniColumTotal){
 function inputList(form){
 
   $("#"+form+" .list").each(function(){
-    dependencia("#nom_perfil", "#cod_usuari");
-     $('#'+$(this).attr("id")).select2({
+    dependencia("nom_perfil", "cod_usuari");
+    var idCampo = $(this).attr("id");
+    var dataArray = '';
+     $('#'+idCampo).select2({
+        language: "es",
+        placeholder: $('#'+idCampo).attr("placeholder"),
         ajax: {
           url: "../" + standa + "/sertra/ajax_rentab_produc.php?option=dataList&file="+$(this).attr("id"),
           dataType: 'json',
           type: "POST",
           processResults: function (data) {
-              return {
-                  results: $.map(data, function (item) {
-                      return {
-                          text: item.text,
-                          id: item.id
-                      }
-                  })
-              };
+            if ($('#'+idCampo).attr("multiple") == "multiple") {
+              $("#check-"+idCampo).css("display","block");
+              var newOption= [];
+              for (i = 0; i < data.length; i++){
+                if ($('#'+idCampo).find("option[value='" + data[i].id + "']").length) {
+                } else { 
+                    // Create a DOM Option and pre-select by default
+                    newOption[i] = new Option(data[i].text, data[i].id, false, false);
+                }                 
+              }
+              //Actualiza el campo las opciones
+              $('#'+idCampo).append(newOption).trigger('change');
+            }
+              
+            return {
+                results: $.map(data, function (item) {
+                  return {
+                      text: item.text,
+                      id: item.id
+                  }
+                })
+            };
           }
         }       
     });
   });
 
-    
-
-  $(".select2.select2-container").attr('style', 'max-width: 100%; width: 100% !important; min-height: 34px;');
+  $(".select2.select2-container").attr('style', 'max-width: 100%; width: 100% !important; min-height: 34px; max-height: 100px; overflow: auto;');
 
   $(".select2-selection").css({
     "max-width": "100%",
-    "min-height": "34px"
+    "min-height": "34px",
+    "max-height": "100px",
+    "overflow": "auto"
+  });
+
+  $(".select2-search__field").css({
+    "padding": "5px"
   });
 }
 
@@ -448,32 +491,56 @@ function inputList(form){
   */
 
 function dependencia(campoDependencia, campoDependiente){
-  $(campoDependencia).on("change", function (e) { 
-     var value = $(e.currentTarget).val();
-      $(campoDependiente).select2("destroy");
-      $(campoDependiente).select2({
+  $("#"+campoDependencia).on("change", function (e) {
+    var value = $(e.currentTarget).val();
+    $("#check-"+campoDependiente).prop("checked", false).css("display","none");
+    $("#"+campoDependiente).select2("destroy");
+    $("#"+campoDependiente).empty();
+    $("#"+campoDependiente).select2({
+      language: "es",
+      placeholder: $("#"+campoDependiente).attr("placeholder"),
       ajax: {
-        url: "../" + standa + "/sertra/ajax_rentab_produc.php?option=dataList&file="+campoDependiente.split("#")[1]+"&dependencia="+value,
+        url: "../" + standa + "/sertra/ajax_rentab_produc.php?option=dataList&file="+campoDependiente+"&dependencia="+value,
         dataType: 'json',
         type: "POST",
         processResults: function (data) {
-            return {
-                results: $.map(data, function (item) {
-                    return {
-                        text: item.text,
-                        id: item.id
-                    }
-                })
-            };
+          if ($("#"+campoDependiente).attr("multiple") == "multiple") {
+            $("#check-"+campoDependiente).css("display","block");
+            var newOption= [];
+            for (i = 0; i < data.length; i++){
+              if ($("#"+campoDependiente).find("option[value='" + data[i].id + "']").length) {
+              } else { 
+                  // Create a DOM Option and pre-select by default
+                  newOption[i] = new Option(data[i].text, data[i].id, false, false);
+              }                 
+            }
+            //Actualiza el campo las opciones
+            $("#"+campoDependiente).append(newOption).trigger('change');
+          }
+            
+          return {
+              results: $.map(data, function (item) {
+                return {
+                    text: item.text,
+                    id: item.id
+                }                
+              })
+          };
         }
       }       
     });
-
-    $(".select2.select2-container").attr('style', 'max-width: 100%; width: 100% !important; min-height: 34px;');
+    
+    $(".select2.select2-container").attr('style', 'max-width: 100%; width: 100% !important; min-height: 34px; max-height: 100px; overflow: auto;');
 
     $(".select2-selection").css({
       "max-width": "100%",
-      "min-height": "34px"
+      "min-height": "34px",
+      "max-height": "100px",
+      "overflow": "auto"
+    });
+
+    $(".select2-search__field").css({
+      "padding": "5px"
     });
   });
 }
@@ -501,4 +568,18 @@ function spanDanger(){
     $(this).siblings().css({"border-color":"red"});
     $(this).siblings('span').find('.select2-selection').css({"border-color":"red"});
   });
+}
+
+
+
+function selectAll(checkID){
+  var id = "#"+checkID.split("-")[1];
+  if ($("#"+checkID).is(':checked')) {
+    $(id+" > option").prop("selected","selected");
+    $(id).trigger("change");
+  }else{
+     //Deseleccionar Todo
+    $(id+" > option").prop("selected",false);
+    $(id).trigger("change");
+  }
 }

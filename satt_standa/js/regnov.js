@@ -476,3 +476,59 @@ function LoadPopupJQ( opcion, titulo, alto, ancho, redimen, dragg, lockBack )
 		return false;
 	}
 }
+
+
+
+
+function transporSusp(valor, tipo){
+    try{
+        var standa = 'satt_standa';
+        var factu = '';
+
+        $.ajax({
+            url: "../" + standa + "/despac/ajax_regist_noveda.php",
+            type: "post",
+            dataType: "json",
+            data: {valor: valor, tipo: tipo, opcion: 'nitEmpresa'},
+            success: function(codTercer) {
+            	if(codTercer == 'null' || codTercer['cod_transp'].length > 0){
+            		var text = codTercer['nom_tercer'];
+            		$.ajax({
+			            url: "../" + standa + "/lib/general/suspensiones.php",
+			            type: "post",
+			            dataType: "json",
+			            data: {cod_tercer: codTercer['cod_transp']},
+			            success: function(data) {
+			                $.each(data['suspendido'], function(estado, arrayDatos) {
+			                    if(valor == arrayDatos['cod_tercer']){
+			                    	if(factu == ''){
+			                    		factu = arrayDatos['num_factur'];
+			                    	}else{
+			                    		factu += ", "+arrayDatos['num_factur'];
+			                    	}
+			                        
+			                    }
+			                });
+			                Swal.fire({
+			                  title:'Suspension!',
+			                  html: 'La empresa <b>' +text+ '</b> con el nit <b>' +codTercer['cod_transp']+ '</b> no se le puede registrar el reporte ya se encuetra suspendida por cartera.',
+			                  type: 'info',
+			                  confirmButtonColor: '#336600',
+			                  confirmButtonText: 'Listo'
+			                }).then((result) => {
+			                    if (result.value) {
+			                        $('input[name ="placa"]').val("");
+			                        $('input[name ="cod_manifi"]').val("");
+			                    }
+			                });
+
+			                return false;
+			          	}
+			        });
+            	}
+          	}
+        });        
+    }catch(e){
+        alert( "Error " + e.message );
+    }
+}

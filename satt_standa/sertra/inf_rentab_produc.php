@@ -164,23 +164,23 @@ class rentab_produc
                           <div style="padding-top: 1em;">
                             <ul class="nav nav-pills">
                               <li>
-                                  <a data-toggle="tab" id="tag_porNovedad" onclick="createTable(this)" href="#div_porNovedad">Por novedad</a>
+                                  <a data-toggle="tab" id="tag_facturContro" onclick="createTable(this)" href="#div_facturContro">Facturación Controladores</a>
                               </li>
                               <li>
                                   <a data-toggle="tab" id="tag_porTurno" onclick="createTable(this)" href="#div_porTurno">Por turno</a>
                               </li>
                               <li>
-                                  <a data-toggle="tab" id="tag_diferencia" onclick="createTable(this)" href="#div_diferencia">Diferencia</a>
+                                  <a data-toggle="tab" id="tag_facturEmpre" onclick="createTable(this)" href="#div_facturEmpre">Facturación Empresas</a>
                               </li>
                             </ul>
                             <div class="tab-content">
-                              <div id="div_porNovedad" class="tab-pane fade" style="padding-top: 1em;">
+                              <div id="div_facturContro" class="tab-pane fade" style="padding-top: 1em;">
                                   
                               </div>
                               <div id="div_porTurno" class="tab-pane fade" style="padding-top: 1em;">
                                       
                               </div>
-                              <div id="div_diferencia" class="tab-pane fade" style="padding-top: 1em;">
+                              <div id="div_facturEmpre" class="tab-pane fade" style="padding-top: 1em;">
                                       
                               </div>
                             </div>

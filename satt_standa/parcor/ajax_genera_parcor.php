@@ -45,7 +45,13 @@ class ajax_genera_parcor
                       a.id,
                       a.num_remdes
                 FROM  ".BASE_DATOS.".tab_genera_parcor a
+<<<<<<< HEAD
                 LEFT JOIN tab_destin_client b ON a.num_remdes = b.cod_client";
+=======
+                LEFT JOIN tab_destin_client b ON a.num_remdes = b.cod_client
+                GROUP BY a.id
+                ";
+>>>>>>> 6e5f86cd9afae4a6c97ec10053d151fd54e3c48a
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
 
@@ -158,7 +164,7 @@ class ajax_genera_parcor
    *  \return: HTML 
    */
     function darClientes($cod_cliente=""){
-      $mSql = "SELECT a.cod_client,a.nom_client FROM ".BASE_DATOS.".tab_destin_client a order by a.nom_client ASC";
+      $mSql = "SELECT a.cod_client,a.nom_client FROM ".BASE_DATOS.".tab_destin_client a GROUP by a.cod_client order by a.nom_client ASC";
       $mMatriz = new Consulta($mSql, $this->conexion);
       $mData = $mMatriz->ret_matrix("a");
       $html="";

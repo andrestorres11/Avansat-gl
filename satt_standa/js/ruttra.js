@@ -123,3 +123,48 @@ function ActualizarRuta()
 		alert( "Error " + e.message );
 	}
 }
+
+function transporSusp(valor,text){
+    try{
+        var standa = 'satt_standa';
+        var factu = '';
+        var ajax = 'on';
+        $.ajax({
+            url: "../" + standa + "/lib/general/suspensiones.php",
+            type: "post",
+            dataType: "json",
+            data: {cod_tercer: valor, ajax: ajax},
+            success: function(data) {
+                $.each(data['suspendido'], function(estado, arrayDatos) {
+                    if(valor == arrayDatos['cod_tercer']){
+                    	if(factu == ''){
+                    		factu = arrayDatos['num_factur'];
+                    	}else{
+                    		factu += ", "+arrayDatos['num_factur'];
+                    	}
+                        
+                    }
+                });
+
+                Swal.fire({
+                  title:'Suspension!',
+                  html: 'La empresa <b>' +text+ '</b> con el nit <b>' +valor+ '</b> no se le puede asignar ruta ya se encuetra suspendida por cartera.',
+                  type: 'info',
+                  confirmButtonColor: '#336600',
+                  confirmButtonText: 'Listo'
+                }).then((result) => {
+                    if (result.value) {
+                        $('select[name ="transpor"]').val("");
+                    }
+                });
+
+                return false;
+          }
+        });
+
+        
+    }catch(e){
+        alert( "Error " + e.message );
+    }
+}
+

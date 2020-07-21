@@ -435,7 +435,7 @@ class ajax_hojvid_ctxxxx
                                        "sue_basexx" => array(
 	                                                            'name' => "Sueldo base", 
 	                                                            'type' => "input",
-	                                                            'class' => "validate money", 
+	                                                            'class' => "validate", 
 	                                                            'atribute' => array(
 	                                                                "validate"=>"textarea",
 	                                                                "minlength"=>3,
@@ -446,7 +446,7 @@ class ajax_hojvid_ctxxxx
                                        "val_hordia" => array(
 	                                                            'name' => "Valor hora dia", 
 	                                                            'type' => "input",
-	                                                            'class' => "validate money", 
+	                                                            'class' => "validate", 
 	                                                            'atribute' => array(
 	                                                                "validate"=>"textarea",
 	                                                                "minlength"=>3,
@@ -457,7 +457,7 @@ class ajax_hojvid_ctxxxx
                                        "val_hornoc" => array(
 	                                                            'name' => "Valor hora noche", 
 	                                                            'type' => "input",
-	                                                            'class' => "validate money", 
+	                                                            'class' => "validate", 
 	                                                            'atribute' => array(
 	                                                                "validate"=>"textarea",
 	                                                                "minlength"=>3,
@@ -468,7 +468,7 @@ class ajax_hojvid_ctxxxx
                                        "val_horfyd" => array(
 	                                                            'name' => "Valor hora festivos y dominicales", 
 	                                                            'type' => "input",
-	                                                            'class' => "validate money", 
+	                                                            'class' => "validate", 
 	                                                            'atribute' => array(
 	                                                                "validate"=>"textarea",
 	                                                                "minlength"=>3,
