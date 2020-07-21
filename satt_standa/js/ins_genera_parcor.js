@@ -186,7 +186,7 @@ function delReg(objet) {
                     success: function(data) {
                         if (data['status'] == 200) {
                             Swal.fire({
-                                title: 'Eliminado!',
+                                title: '¡Eliminado!',
                                 text: data['response'],
                                 type: 'success',
                                 confirmButtonColor: '#336600'
