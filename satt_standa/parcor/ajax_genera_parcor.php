@@ -45,9 +45,13 @@ class ajax_genera_parcor
                       a.id,
                       a.num_remdes
                 FROM  ".BASE_DATOS.".tab_genera_parcor a
+<<<<<<< HEAD
+                LEFT JOIN tab_destin_client b ON a.num_remdes = b.cod_client";
+=======
                 LEFT JOIN tab_destin_client b ON a.num_remdes = b.cod_client
                 GROUP BY a.id
                 ";
+>>>>>>> 6e5f86cd9afae4a6c97ec10053d151fd54e3c48a
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
 
