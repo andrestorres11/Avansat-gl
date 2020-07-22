@@ -129,6 +129,17 @@ class ins_asiste_carret
     self::styles();
     $datos_option = $this->darOpcionAsistencia();
     $datos_usuari = $this->obtenerDatosUsuario();
+    $transp = $this->obtenerTransportadoraPerfil(1);
+
+    if($transp){
+      $estado = "disabled";
+      $option_trans = $this->darTransportadoraUser(1);
+      $cod_transp = $this->darTransportadoraUser();
+    }else{
+      $estado = "";
+      $option_trans = $this->obtenerTransportadoraPerfil();
+    }
+
     $html = '
             <td class="page" onload="loadAjax("finish")">
               <form id="FormularioSolici" method="post">
@@ -145,35 +156,51 @@ class ins_asiste_carret
                     </select>
                   </div>
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="* Nombre del Solicitante" id="nom_soliciID" name="nom_solici" required disabled value="'.$datos_usuari['nom_usuari'].'">
+                    <select class="form-control form-control-sm " id="optionTransp" name="optionTransp" '.$estado.'>
+                      <option value="">Escoja Opción</option>
+                      '.$option_trans.'
+                    </select>
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="email" placeholder="* Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="* Nombre del Solicitante" id="nom_soliciID" name="nom_solici" required disabled value="'.$datos_usuari['nom_usuari'].'">
                   </div>
                   <div class="offset-1 col-4">
-                  <input class="form-control form-control-sm" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
-                  </div>
-                </div>
-
-                <div class="row mt-3">
-                  <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="number" placeholder="* Numero de Celular" id="cel_soliciID" name="cel_solici" required disabled>
-                  </div>
-                  <div class="offset-1 col-4">
-                  <input class="form-control form-control-sm" type="text" placeholder="Aseguradora" id="nom_aseguraID" name="nom_asegura" disabled>
+                    <input class="form-control form-control-sm formul-input" type="email" placeholder="* Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Poliza" id="nom_polizaID" name="nom_poliza" disabled>
+                    <input class="form-control form-control-sm formul-input" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
+                  </div>
+                  <div class="offset-1 col-4">
+                    <input class="form-control form-control-sm formul-input" type="number" placeholder="* Numero de Celular" id="cel_soliciID" name="cel_solici" required disabled>
+                  </div>
+                </div>
+
+                <div class="row mt-3">
+                  <div class="offset-1 col-4">
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="Aseguradora" id="nom_aseguraID" name="nom_asegura" disabled>
+                  </div>
+                  <div class="offset-1 col-4">
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="Poliza" id="nom_polizaID" name="nom_poliza" disabled>
                   </div>
                 </div>
 
               </div>
+              </div>
+
+              <div class="card text-center" style="margin:15px; display:none;" id="servicDiv">
+                <div class="card-header color-heading">
+                  Tipo de Servicio
+                </div>
+                <div class="card-body">
+                  <div id="ser_asiten">
+                  </div>
+                </div>
               </div>
 
               <div class="card-header color-heading" style="margin:12px;">
@@ -187,25 +214,25 @@ class ins_asiste_carret
 
                 <div class="row">
                   <div class="offset-1 col-3">
-                    <input class="form-control form-control-sm" type="number" placeholder="* Numero de documento" id="num_transpID" name="num_transp" required disabled>
+                    <input class="form-control form-control-sm formul-input" type="number" placeholder="* Numero de documento" id="num_transpID" name="num_transp" required disabled>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="* Nombres del Transportista" id="nom_transpID" name="nom_transp" required disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="* Nombres del Transportista" id="nom_transpID" name="nom_transp" required disabled>
                   </div>
                   <div class="col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="* Primer Apellido" id="ap1_transpID" name="ap1_transp" required disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="* Primer Apellido" id="ap1_transpID" name="ap1_transp" required disabled>
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="offset-1 col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="Segundo Apellido" id="ap2_transpID" name="ap2_transp" disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="Segundo Apellido" id="ap2_transpID" name="ap2_transp" disabled>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="number" placeholder="* Numero Celular 1" id="ce1_transpID" name="ce1_transp" required disabled>
+                    <input class="form-control form-control-sm formul-input" type="number" placeholder="* Numero Celular 1" id="ce1_transpID" name="ce1_transp" required disabled>
                   </div>
                   <div class="col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="Numero Celular 2" id="ce2_transpID" name="ce2_transp" disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="Numero Celular 2" id="ce2_transpID" name="ce2_transp" disabled>
                   </div>
                 </div>
 
@@ -221,22 +248,22 @@ class ins_asiste_carret
 
                 <div class="row">
                   <div class="offset-1 col-3">
-                    <input class="form-control form-control-sm mayuscul-input" type="text" placeholder="* Placa" id="num_placaID" name="num_placax" maxlength="6" required disabled>
+                    <input class="form-control form-control-sm mayuscul-input formul-input" type="text" placeholder="* Placa" id="num_placaID" name="num_placax" maxlength="6" required disabled>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="* Marca" id="nom_marcaxID" name="nom_marcax" required disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="* Marca" id="nom_marcaxID" name="nom_marcax" required disabled>
                   </div>
                   <div class="col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="* Color" id="nom_colorxID" name="nom_colorx" required disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="* Color" id="nom_colorxID" name="nom_colorx" required disabled>
                   </div>
                 </div>
 
                 <div class="row mt-3">
                   <div class="offset-1 col-3">
-                    <input class="form-control form-control-sm" type="text" placeholder="Tipo de Vehículo" id="tip_transpID" name="tip_transp" disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="Tipo de Vehículo" id="tip_transpID" name="tip_transp" disabled>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Remolque No" id="num_remolqID" name="num_remolq" disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="Remolque No" id="num_remolqID" name="num_remolq" disabled>
                   </div>
                 </div>
 
@@ -246,17 +273,8 @@ class ins_asiste_carret
               <div id="con-formul">
               </div>
 
-              <div class="card text-center" style="margin:15px;">
-                <div class="card-header color-heading">
-                  Tipo de Servicio
-                </div>
-                <div class="card-body">
-                  <div id="ser_asiten">
-                  </div>
-                </div>
-              </div>
-
               <input type="hidden" name="tip_solici" id="tip_soliciID">
+              <input type="hidden" name="cod_transp" id="cod_transpID" value="'.$cod_transp.'">
               <center><input class="small-box-footer btn btn-success btn-sm" type="submit" disabled/></center>
               </form>
             </td>';
@@ -284,6 +302,49 @@ class ins_asiste_carret
     return $respuesta;
   }
 
+  function obtenerTransportadoraPerfil($ver = null){
+    $sql = "SELECT a.cod_perfil FROM ".BASE_DATOS.".tab_genera_usuari a 
+              INNER JOIN ".BASE_DATOS.".tab_aplica_filtro_perfil b ON a.cod_perfil = b.cod_perfil
+            WHERE a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."'";
+    $consulta = new Consulta($sql, $this->conexion);
+    $total = $consulta->ret_num_rows();
+
+    if($ver==1){
+      if($total>0){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
+    $sql = "SELECT b.cod_tercer, b.abr_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a
+            INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b 
+            ON a.cod_tercer = b.cod_tercer
+            WHERE b.cod_estado = 1 ORDER BY b.abr_tercer ASC";
+    $consulta = new Consulta($sql, $this->conexion);
+    $respuesta = $consulta->ret_matriz("a");
+    $html='';
+    foreach($respuesta as $dato){
+      $html.='<option value="'.$dato['cod_tercer'].'">'.$dato['abr_tercer'].'</option>';
+    }
+    return utf8_encode($html);
+  }
+
+  private function darTransportadoraUser($ver){
+    $sql="SELECT c.cod_tercer,c.abr_tercer FROM ".BASE_DATOS.".tab_genera_usuari a 
+          INNER JOIN ".BASE_DATOS.".tab_aplica_filtro_perfil b ON a.cod_perfil = b.cod_perfil
+          INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON c.cod_tercer = b.clv_filtro
+          WHERE a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."'";
+    $consulta = new Consulta($sql, $this -> conexion);
+    $transportadora = $consulta->ret_matriz()[0];
+    if($ver==1){
+      $html='<option value="'.$transportadora['cod_tercer'].'" selected>'.$transportadora['abr_tercer'].'</option>';
+      return utf8_encode($html);
+    }else{
+      return utf8_encode($transportadora['cod_tercer']);
+    }
+    
+  }
 }
 
 $proceso = new ins_asiste_carret($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);

@@ -27,7 +27,7 @@ function cargaFormulario(valor) {
         desbloqueaInputs();
         $("#con-formul").append(`<div class="card text-center" style="margin:15px;">
         <div class="card-header color-heading">
-                      Ubicación del Vehí­culo
+                      Ubicación del Vehículo
                     </div>
         <div class="card-body">
           <div class="row">
@@ -125,6 +125,7 @@ function cargaFormulario(valor) {
 
     }
     traeServicios(valor.value);
+    $("#servicDiv").css("display", "block");
 }
 
 function traeServicios(cod_tipAsi) {
@@ -153,7 +154,7 @@ function traeServicios(cod_tipAsi) {
 }
 
 function desbloqueaInputs() {
-    $(".form-control-sm").removeAttr("disabled");
+    $(".formul-input").removeAttr("disabled");
     $(".btn-sm").removeAttr("disabled");
     $("#tip_soliciID").val($("#tipFormulID").val());
 }
@@ -162,6 +163,9 @@ function desbloqueaInputs() {
 $("#FormularioSolici").validate({
     rules: {
         tipFormul: {
+            required: true
+        },
+        optionTransp: {
             required: true
         },
         nom_solici: {
@@ -205,6 +209,9 @@ $("#FormularioSolici").validate({
     messages: {
         tipFormul: {
             required: "Por favor seleccione el tipo de solicitud"
+        },
+        optionTransp: {
+            required: "Por favor seleccione la transportadora"
         },
         nom_solici: {
             required: "Por favor digite el nombre del solicitante"
@@ -260,7 +267,11 @@ $("#num_transpID").on('focusout', function() {
 
 $("#num_placaID").on('focusout', function() {
     var placa = $("#num_placaID").val();
-    busquedaDatosVehiculo(placa);
+    var cod_transp = $("#optionTransp").val();
+    if (cod_transp == "") {
+        cod_transp = $("#cod_transpID").val();
+    }
+    busquedaDatosVehiculo(placa, cod_transp);
 });
 
 
@@ -293,11 +304,12 @@ function busquedaDatosTransportista(cod_conduc) {
     });
 }
 
-function busquedaDatosVehiculo(placa) {
+function busquedaDatosVehiculo(placa, cod_transp) {
     var parametros = "opcion=busqueda_vehiculo";
     var standa = 'satt_standa';
     data = {
-        placa
+        placa,
+        cod_transp
     }
     $.ajax({
         url: "../" + standa + "/asicar/ajax_asiste_carret.php?" + parametros,
