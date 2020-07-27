@@ -8,7 +8,7 @@
     ****************************************************************************/
     
     /*ini_set('error_reporting', E_ALL);
-    ini_set("display_errors", 1);*/
+    ini_set("display_errors", 1); */
 
     class AjaxGestioAsiscar
     {
@@ -32,7 +32,7 @@
             self::$cod_aplica = $ca;
 
             //Switch request options
-            switch($_REQUEST[opcion])
+            switch($_REQUEST['opcion'])
             {
                 case "1":
                     self::informes();
@@ -52,6 +52,24 @@
                 break;
                 case "6":
                     self::FormulSegunEstado();
+                break;
+                case "7":
+                  self::darServicioInformacion();
+                break;
+                case "8":
+                    self::updateCostoServicio();
+                break;
+                case "9":
+                  self::deleteServicioSolasi();
+                break;
+                case "10":
+                  self::addServiceSolasi();
+                break;
+                case "11":
+                  self::saveNewService();
+                break;
+                case "12":
+                  self::darServiciosPorSolicitud();
                 break;
             }
         }
@@ -377,8 +395,11 @@
             $cod_estado = $_REQUEST['cod_estado'];
             $information = $this->darInformacion($_REQUEST['cod_solici']);
             $nom_solici = $this->tipSolicitud($_REQUEST['cod_solici']);
+            $servicios = $this->serviciosSolicitados($_REQUEST['cod_solici']);
+            $html='';
             if($cod_estado == 1){
-                $html='<div class="card border border-success" style="margin:15px;">
+                $html.=$servicios;
+                $html.='<div class="card border border-success" style="margin:15px;">
                 <div class="card-header color-heading text-align">
                   Gestion de Solicitud
                 </div>
@@ -391,15 +412,7 @@
                 </div>
       
                 <div class="row mt-4">
-                  <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm" type="number" placeholder="Valor a Facturar" id="val_facturID" name="val_factur" onchange="llenarRetabilidad()" required>
-                  </div>
-                  <div class="col-4">
-                    <input class="form-control form-control-sm" type="number" placeholder="Costo Servicio Proveedor" id="val_cosserID" name="val_cosser" onchange="llenarRetabilidad()" required>
-                  </div>
-                  <div class="col-2">
-                    <input class="form-control form-control-sm" type="text" placeholder="Rentabilidad" id="val_rentabID" name="val_rentab" disabled>
-                  </div>
+                  
                 </div>
       
                 <div class="row mt-4">
@@ -537,7 +550,7 @@
               
                       <div class="card border border-success" style="margin:15px;">
                         <div class="card-header color-heading text-align">
-                          <center>ASIGNACION DE FORMULARIOS DE INSPECCI脫N</center>
+                          <center>ASIGNACION DE FORMULARIOS DE INSPECCI覰</center>
                         </div>
                         <div class="card-body">
                           <div class="row">
@@ -623,6 +636,13 @@
             echo $json;
         }
 
+        function darTipoSolicitudPorNumero($cod_solici){
+          $sql="SELECT b.id FROM ".BASE_DATOS.".tab_asiste_carret a LEFT JOIN ".BASE_DATOS.".tab_formul_asiste b ON a.tip_solici = b.id WHERE a.id = '$cod_solici'";
+          $query = new Consulta($sql, self::$conexion);
+          $informacion = $query -> ret_matrix('a')[0];
+          return $informacion['id'];
+        }
+
         function traerFormulSolici(){
             $tip_solici = $_REQUEST['tip_solici'];
             $cod_solici = $_REQUEST['cod_solici'];
@@ -631,7 +651,7 @@
             $informacion = $query -> ret_matrix('a')[0];
             if($tip_solici==1){
             $html ='<div class="card text-center" style="margin:15px;">
-            <div class="card-header color-heading">Ubicaci贸n del Veh铆culo</div>
+            <div class="card-header color-heading">Ubicaci髇 del Veh憝culo</div>
             <div class="card-body">
               <div class="row">
                 <div class="offset-1 col-3">
@@ -646,10 +666,10 @@
                     </div>
                     <div class="row mt-3">
                       <div class="offset-1 col-3">
-                        <input class="form-control form-control-sm" type="text" placeholder="Contrase帽a" id="con_vehicuID" name="con_vehicu" disabled value="'.$informacion['con_vehicu'].'">
+                        <input class="form-control form-control-sm" type="text" placeholder="Contrase馻" id="con_vehicuID" name="con_vehicu" disabled value="'.$informacion['con_vehicu'].'">
                         </div>
                         <div class="col-4">
-                          <input class="form-control form-control-sm" type="text" placeholder="Ubicaci贸n" id="ubi_vehicuID" name="ubi_vehicu" disabled value="'.$informacion['ubi_vehicu'].'">
+                          <input class="form-control form-control-sm" type="text" placeholder="Ubicaci髇" id="ubi_vehicuID" name="ubi_vehicu" disabled value="'.$informacion['ubi_vehicu'].'">
                           </div>
                           <div class="col-3">
                             <input class="form-control form-control-sm" type="text" placeholder="Punto de Referencia" id="pun_refereID" name="pun_refere" disabled value="'.$informacion['pun_refere'].'">
@@ -657,7 +677,7 @@
                           </div>
                           <div class="row mt-3">
                             <div class="offset-1 col-10">
-                              <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve Descripcin de la Asistencia" disabled>'.$informacion['des_asiste'].'</textarea>
+                              <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve Descripci髇 de la Asistencia" disabled>'.$informacion['des_asiste'].'</textarea>
                             </div>
                           </div>
                         </div>
@@ -676,7 +696,7 @@
                     <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Origen" id="ciu_origen" name="ciu_origen" disabled value="'.$this->darNombreCiudad($informacion['ciu_origen']).'">
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Direcci贸n" id="dir_ciuoriID" name="dir_ciuori" disabled value="'.$informacion['dir_ciuori'].'">
+                    <input class="form-control form-control-sm" type="text" placeholder="Direcci髇" id="dir_ciuoriID" name="dir_ciuori" disabled value="'.$informacion['dir_ciuori'].'">
                   </div>
                 </div>
         
@@ -686,7 +706,7 @@
                     <div id="ciu_destin-suggestions" class="suggestions"></div>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Direcci贸n" id="dir_ciudesID" name="dir_ciudes" disabled value="'.$informacion['dir_ciudes'].'">
+                    <input class="form-control form-control-sm" type="text" placeholder="Direcci髇" id="dir_ciudesID" name="dir_ciudes" disabled value="'.$informacion['dir_ciudes'].'">
                   </div>
                 </div>
                 <div class="row mt-3">
@@ -723,7 +743,211 @@
                         </tr>';
             }
             echo json_encode($html);
+        }
 
+        function serviciosSolicitados($num_solici){
+          $lis_servici = $this->tableServiceSolicitados($num_solici);
+          $total = $this->totalServiciosporSolicitud($num_solici);
+          $html='
+          <div class="card border border-success" style="margin:15px;" id="ServiciosSpace">
+            <div class="card-header color-heading text-align">
+                <center>Servicios Solicitados</center>
+            </div>
+            <div class="card-body">
+              <div class="row mb-2" class="serviciUn">
+                <div class="col-md-12">
+                  <table class="table table-hover">
+                    <thead>
+                    <tr>
+                      <th scope="col">Servicio</th>
+                      <th scope="col">Tipo Tarifa</th>
+                      <th scope="col">Costo</th>
+                      <th scope="col">Cantidad</th>
+                      <th scope="col">Total</th>
+                      <th scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody id="lisServicID">
+                      '.$lis_servici.'
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="row">
+                <div class="offset-1 col-3">
+                  <input class="form-control form-control-sm" type="text" placeholder="Rentabilidad" id="val_rentabID" name="val_rentab" disabled>
+                </div>
+                <div class="col-4">
+                  <input class="form-control form-control-sm" type="number" placeholder="Costo Servicio Proveedor" id="val_cosserID" name="val_cosser" onchange="llenarRetabilidad()" required>
+                </div>
+                <div class="col-4">
+                  <input class="form-control form-control-sm" type="text" placeholder="Valor Presupuestado" id="val_facturID" name="val_factur" required disabled value="$ '.$total.'">
+                </div>
+              </div>
+            </div>
+          </div>';
+          return utf8_decode($html);
+        }
+
+        function tableServiceSolicitados($num_solici){
+          $sql="SELECT a.id, a.des_servic, a.cod_servic,
+                       a.tip_tarifa, a.val_servic, a.can_servic,
+                       b.nom_campox,
+                       IF(a.tip_tarifa = 'diurna', b.tar_diurna,b.tar_noctur) as 'tar_indivi'
+                       FROM ".BASE_DATOS.".tab_servic_solasi a 
+                INNER JOIN ".BASE_DATOS.".tab_servic_asicar b ON a.cod_servic = b.id
+          WHERE a.cod_solasi = '$num_solici'";
+          $query = new Consulta($sql, self::$conexion);
+          $respuestas = $query -> ret_matrix('a');
+          $respuestas = self::cleanArray($respuestas);
+          $html='';
+          foreach($respuestas as $servicio){
+            //*Revisa que horario esta seleccionado en la tabla.
+            $sdiurn = '';
+            $snoctu = '';
+            if($servicio['tip_tarifa']=='diurna'){
+              $sdiurn = "selected";
+            }else{
+              $snoctu = "selected";
+            }
+            $total = ($servicio['can_servic'] * $servicio['tar_indivi']);
+            $html.='<tr>
+                          <th scope="row">'.$servicio['des_servic'].'</th>
+                          <td>
+                            <select name="tip_tarifa" class="valuechange" onchange="cargarTarifaIndividual(this)">
+                              <option value="diurna" '.$sdiurn.'>Diurna</option>
+                              <option value="nocturna" '.$snoctu.'>Nocturna</option>
+                            </select>
+                          </td>
+                          <td><input type="text" name="tar_servic" class="tar_servicClass valuechange" disabled value="$ '.$servicio['tar_indivi'].'" style="width:100px"></td>
+                          <td>
+                            <label style="margin-top: -12px; font-size: 10px; margin-bottom:0px;">'.$servicio['nom_campox'].'</label><br>
+                            <input type="number" name="can_servic" class="can_serviClass valuechange" min="0" style="width:40px;" value="'.$servicio['can_servic'].'" onchange="reCalculateTotal(this)">
+                          </td>
+                          <td><input type="text" name="tot_servic" class="totalServic" disabled value="$ '.$total.'" style="width:100px"></td>
+                          <td><a href="#" class="btn btn-xs btn-danger" style="padding: 0.06rem 0.5rem;" onclick="deleteService(this)"><span class="fa fa-trash"></span></a></td>
+                          <input type="hidden" class="cod_serviClass" value="'.$servicio['cod_servic'].'">
+                          <input type="hidden" class="cod_serviSolasiClass" value="'.$servicio['id'].'">
+                         </tr>';
+          }
+          $html.='<tr id="addService">
+                  </tr>
+                  <tr>
+                    <td colspan="6">
+                      <center><a href="#" class="btn btn-xs btn-success" style="background-color: #336600; padding: 0.06rem 0.5rem;" onclick="addService()"><span class="fa fa-plus-circle"></span></a></center>
+                    </td>
+                  </tr>';
+
+          return $html;
+        }
+
+        function totalServiciosporSolicitud($cod_solici){
+          $sql="SELECT SUM(a.val_servic) as 'total' FROM ".BASE_DATOS.".tab_servic_solasi a WHERE a.cod_solasi = '$cod_solici'";
+          $query = new Consulta($sql, self::$conexion);
+          $respuesta = $query -> ret_matrix('a')[0];
+          $respuesta = self::cleanArray($respuesta);
+          return $respuesta['total'];
+        }
+        function darServiciosPorSolicitud(){
+          $cod_solici = $_REQUEST['cod_solici'];
+          $table = utf8_decode($this->tableServiceSolicitados($cod_solici));
+          echo json_encode($table);
+        }
+
+        function darServicioInformacion(){
+          $cod_servic = $_REQUEST['cod_servic'];
+          $info=[];
+          $sql="SELECT * FROM ".BASE_DATOS.".tab_servic_asicar a WHERE a.id = '$cod_servic'";
+          $query = new Consulta($sql, self::$conexion);
+          if($query){
+            $respuesta = $query -> ret_matrix('a')[0];
+            $respuesta = self::cleanArray($respuesta);
+            $info['tar_diurna'] = $respuesta['tar_diurna'];
+            $info['tar_noctur'] = $respuesta['tar_noctur'];
+            $info['status']=200; 
+          }else{
+            $info['status']=100; 
+          } 
+          echo json_encode($info); 
+        }
+
+        function updateCostoServicio(){
+          $cod_sersol = $_REQUEST['cod_sersol'];
+          $tip_tarifa = $_REQUEST['tip_tarifa'];
+          $total = $_REQUEST['total'];
+          $can_servic = $_REQUEST['can_servic'];
+          $info=[];
+          $sql="UPDATE ".BASE_DATOS.".tab_servic_solasi SET 
+                tip_tarifa='$tip_tarifa',
+                val_servic='$total',
+                can_servic=$can_servic,
+                usr_modifi='".$_SESSION['datos_usuario']['cod_usuari']."',
+                fec_modifi=NOW() 
+                WHERE id=$cod_sersol";
+          $query = new Consulta($sql, self::$conexion);
+          if($query){
+            $info['status']=200; 
+          }else{
+            $info['status']=100; 
+          } 
+          echo json_encode($info); 
+        }
+
+        function deleteServicioSolasi(){
+          $cod_sersol = $_REQUEST['cod_sersol'];
+          $info=[];
+          $sql="DELETE FROM ".BASE_DATOS.".tab_servic_solasi WHERE id=$cod_sersol";
+          $query = new Consulta($sql, self::$conexion);
+          if($query){
+            $info['status']=200; 
+          }else{
+            $info['status']=100; 
+          } 
+          echo json_encode($info); 
+        }
+
+        function addServiceSolasi(){
+          $cod_solici= $_REQUEST['cod_solici'];
+          $cod_tipasi=$this->darTipoSolicitudPorNumero($cod_solici);
+          $servicios = $this->darServicios($cod_tipasi);
+          $html='<td colspan="5">
+                    <select name="cod_servicAdd" id="cod_servicAdd">';
+          foreach($servicios as $servicio){
+            $html.='<option value="'.$servicio['id'].'">'.utf8_decode($servicio['abr_servic']).'</option>';
+          }                   
+          $html.='</select>
+                </td>
+                <td>
+                  <center><a href="#" class="btn btn-xs btn-success" style="background-color: #336600; padding: 0.06rem 0.5rem;" onclick="saveNewService()">Agregar</a></center>
+                </td>';
+          echo json_encode($html);
+        }
+
+        function saveNewService(){
+          $cod_solici= $_REQUEST['cod_solici'];
+          $cod_servic= $_REQUEST['cod_servic'];
+          $info=[];
+          $des_servic = $this->darDescripServicio($cod_servic);
+          $cos_servic = $this->darCostoServicio($cod_servic);
+
+          $sql="INSERT INTO tab_servic_solasi(
+            cod_solasi,cod_servic,des_servic,
+            tip_tarifa,can_servic,val_servic,
+            usr_creaci,fec_creaci
+          )
+          VALUES(
+            '".$cod_solici."','".$cod_servic."','".$des_servic."',
+            'diurna',1,'".$cos_servic."',
+            '".$_SESSION['datos_usuario']['cod_usuari']."',NOW()
+          );";
+
+          $query = new Consulta($sql, self::$conexion);
+          if($query){
+            $info['status']=200; 
+          }else{
+            $info['status']=100; 
+          } 
+          echo json_encode($info);
         }
 
         function darNombreEstados($cod_estado){
@@ -747,6 +971,30 @@
                     return "SIN ESTADO";
                     break;
             }
+        }
+
+        function darServicios($cod_tipasi){
+          $sql="SELECT a.id,a.abr_servic FROM ".BASE_DATOS.".tab_servic_asicar a WHERE a.tip_asicar = '$cod_tipasi' AND a.ind_estado = 1";
+          $query = new Consulta($sql, self::$conexion);
+          $respuestas = $query -> ret_matrix('a');
+          $respuestas = self::cleanArray($respuestas);
+          return $respuestas;
+        }
+
+        function darDescripServicio($cod_servic){
+          $sql="SELECT a.abr_servic FROM ".BASE_DATOS.".tab_servic_asicar a
+                WHERE a.id = '".$cod_servic."'";
+          $consulta = new Consulta($sql, self::$conexion);
+          $descrip = $consulta ->ret_matriz('a')[0]['abr_servic'];
+          return $descrip;
+        }
+
+        function darCostoServicio($cod_servic){
+          $sql="SELECT a.tar_diurna FROM ".BASE_DATOS.".tab_servic_asicar a
+                WHERE a.id = '".$cod_servic."'";
+          $consulta = new Consulta($sql, self::$conexion);
+          $costo= $consulta ->ret_matriz('a')[0]['tar_diurna'];
+          return $costo;
         }
 
 

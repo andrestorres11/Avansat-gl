@@ -194,13 +194,16 @@ class ajax_asiste_carret
 
       foreach($servicios as $servicio){
       $des_servic = $this->darDescripServicio($servicio->servicio);
+      $cos_servic = $this->darCostoServicio($servicio->servicio);
       $sql="INSERT INTO tab_servic_solasi(
         cod_solasi,cod_servic,des_servic,
+        tip_tarifa,can_servic,val_servic,
         usr_creaci,fec_creaci
       )
       VALUES(
         '".$num_solici."','".$servicio->servicio."','".$des_servic."',
-        '".$_SESSION['datos_usuario']['cod_usuari']."', NOW()
+        'diurna',1,'".$cos_servic."',
+        '".$_SESSION['datos_usuario']['cod_usuari']."',NOW()
       );";
       $consulta = new Consulta($sql, $this -> conexion, "R");
       }
@@ -241,6 +244,14 @@ class ajax_asiste_carret
     $consulta = new Consulta($sql, $this -> conexion);
     $descrip = $consulta ->ret_matriz('a')[0]['abr_servic'];
     return $descrip;
+  }
+
+  function darCostoServicio($cod_servic){
+    $sql="SELECT a.tar_diurna FROM ".BASE_DATOS.".tab_servic_asicar a
+          WHERE a.id = '".$cod_servic."'";
+    $consulta = new Consulta($sql, $this -> conexion);
+    $costo= $consulta ->ret_matriz('a')[0]['tar_diurna'];
+    return $costo;
   }
 
   private function enviarCorreo($num_solici,$cod_cliente,$correod,$solicitud,$nom_solici) {
