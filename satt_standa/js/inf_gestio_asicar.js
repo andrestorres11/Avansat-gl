@@ -29,21 +29,15 @@ function PorGestioValidate() {
 }
 
 function PorAprobValidate() {
-    $("#PorAprobarCliente").validate({
+    $("#porAprobCliente").validate({
         rules: {
             AproServicio: {
-                required: true
-            },
-            costAproxServicio: {
                 required: true
             }
         },
         messages: {
             AproServicio: {
                 required: "Por favor Seleccione una opción"
-            },
-            costAproxServicio: {
-                required: "Por favor ingrese el costo aproximado del servicio"
             }
         },
         submitHandler: function(form) {
