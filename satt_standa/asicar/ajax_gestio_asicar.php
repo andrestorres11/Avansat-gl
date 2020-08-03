@@ -475,7 +475,7 @@
                 </div>
               <div class="row">
                 <div class="offset-1 col-10">
-                <textarea class="form-control" id="obs_gestioID" name="obs_gestio" rows="3" placeholder="Observaciones" required></textarea>
+                <textarea class="form-control" id="obs_aprserID" name="obs_aprser" rows="3" placeholder="Observaciones" required></textarea>
                 </div>
               </div>
               <div class="row mt-4">
