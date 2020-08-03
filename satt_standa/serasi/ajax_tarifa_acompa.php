@@ -158,6 +158,7 @@ class ajax_servic_asicar
         $codigo = empty($_REQUEST['cod_acompa']) ? '' : "id = ".$_REQUEST['cod_acompa'].", ";
         $val_tarifa = preg_replace("/[^0-9,.]/", "", $_REQUEST['val_tarifa']);
         //Consulta
+        if(!$this->validaRegistro($ciu_origen,$ciu_destin)){
 	    $mQuery = "INSERT INTO  ".BASE_DATOS.".tab_tarifa_acompa
 	                       SET  $codigo
                               ciu_origen= '".$ciu_origen."',
@@ -171,14 +172,19 @@ class ajax_servic_asicar
                               val_tarifa= '".$val_tarifa."',
 	                            usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
 	                            fec_modifi = NOW()";
-	    $consulta = new Consulta($mQuery, $this -> conexion);   
+      $consulta = new Consulta($mQuery, $this -> conexion);
+      
 	    if($consulta == true){
 	      $return['status'] = 200;
 	      $return['response'] = 'El registro ha sido almacenado correctamente.';
 	    }else{
 	      $return['status'] = 500;
 	      $return['response'] = 'Error al realizar el registro.';
-	    }
+      }
+      }else{
+        $return['status'] = 500;
+	      $return['response'] = 'La ciudades de Origen y Destino ya se encuentran registradas';
+      }
         echo json_encode($return);
       } catch (Exception $e) {
         echo 'Excepción updEst: ',  $e->getMessage(), "\n";
@@ -270,7 +276,18 @@ class ajax_servic_asicar
         echo 'Excepción updEst: ',  $e->getMessage(), "\n";
       }
     }
-  
+    
+    function validaRegistro($cod_ciuori,$cod_ciudes){
+      $mQuery = "SELECT  COUNT(*) FROM ".BASE_DATOS.".tab_tarifa_acompa a WHERE a.ciu_origen = '$cod_ciuori' AND a.ciu_destin = '$cod_ciudes'";
+      $consulta = new Consulta($mQuery, $this -> conexion);
+      $registros =  $consulta->ret_matrix()[0][0];
+      if($registros>0){
+        return true;
+      }else{
+        return false;
+      }
+    }
+
     function cleanArray($array){
 
       $arrayReturn = array();

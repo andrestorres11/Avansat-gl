@@ -145,7 +145,7 @@ class ajax_asiste_carret
             FROM ".BASE_DATOS.".tab_asiste_carret a";
     $num_solici = new Consulta($sql, $this->conexion);
     $num_solici = $num_solici->ret_matriz('a')[0][0];
-
+    $tip_solici = $_REQUEST['tip_solici'];  
     if(isset($_REQUEST['ciu_origen'])){
       $ciu_origen=$this->separarCodigoCiudad($_REQUEST['ciu_origen']);
     }
@@ -159,7 +159,12 @@ class ajax_asiste_carret
     }
 
     $cod_cliente = $this->darNombreCliente($cod_transp,2);
-
+    //formato fecha
+    $fec_servic = '';
+    if(isset($_REQUEST['fec_servic'])){
+      $fec_servic = $_REQUEST['fec_servic'];
+      $fec_servic  = date("Y-m-d H:i:s", strtotime($fec_servic));
+    }
     $sql="INSERT INTO ".BASE_DATOS.".tab_asiste_carret(
       id,cod_client,cod_transp,
       tip_solici, nom_solici, cor_solici, 
@@ -185,7 +190,7 @@ class ajax_asiste_carret
         '".$_REQUEST['nom_colorx']."', '".$_REQUEST['tip_transp']."', '".$_REQUEST['num_remolq']."', 
         '".$_REQUEST['url_opegps']."', '".$_REQUEST['nom_opegps']."', '".$_REQUEST['nom_usuari']."', 
         '".$_REQUEST['con_vehicu']."', '".$_REQUEST['ubi_vehicu']."', '".$_REQUEST['pun_refere']."', 
-        '".$_REQUEST['des_asiste']."', '".$_REQUEST['fec_servic']."', '".$ciu_origen."', 
+        '".$_REQUEST['des_asiste']."', '".$fec_servic."', '".$ciu_origen."', 
         '".$_REQUEST['dir_ciuori']."', '".$ciu_destin."', '".$_REQUEST['dir_ciudes']."', 
         '".$_REQUEST['obs_acompa']."', '".$_SESSION['datos_usuario']['cod_usuari']."',NOW()
       )";
@@ -207,14 +212,52 @@ class ajax_asiste_carret
       );";
       $consulta = new Consulta($sql, $this -> conexion, "R");
       }
+      //Novedad de la bitacora
+      $det_noveda = 'Sin Novedad';
+      // Registra Tarifa de acompañamiento como servicio
+      if($tip_solici == CON_SOLICI_ACOMPA){
+        $sql="SELECT a.val_tarifa
+        FROM ".BASE_DATOS.".tab_tarifa_acompa a
+        WHERE a.ciu_origen = '$ciu_origen'
+        AND a.ciu_destin = '$ciu_destin'";
+        $resultado = new Consulta($sql, $this->conexion);
+        $cantidad_registros = $resultado->ret_num_rows();
+        if($cantidad_registros>0){
+          $datos=$resultado->ret_arreglo();
+          $nom_ciuori = $this->getNombreCiudad($ciu_origen);
+          $nom_destin = $this->getNombreCiudad($ciu_destin);
+          $nom_servic = 'Serv. Acomp Ruta: '.$nom_ciuori.' - '.$nom_destin;
 
+          //Cambia el detalle de la novedad para la bitacora
+          $det_noveda.=' Ruta Sol -> '.$nom_ciuori.' - '.$nom_destin;
+
+          $sql="INSERT INTO tab_servic_solasi(
+            cod_solasi,cod_servic,des_servic,
+            tip_tarifa,can_servic,val_servic,
+            usr_creaci,fec_creaci
+          )
+          VALUES(
+            '".$num_solici."',0,'".$nom_servic."',
+            'unica',1,'".$datos['val_tarifa']."',
+            '".$_SESSION['datos_usuario']['cod_usuari']."',NOW()
+          );";
+          $consulta = new Consulta($sql, $this -> conexion);
+        }else{
+          $return['status'] = 500;
+          $return['response'] = 'No se encontro origen y destino';
+          echo json_encode($return);
+          exit;
+        }
+      }
+
+      //Registro de la bitacora de seguimiento de la asistencia
       $sql="INSERT INTO tab_seguim_solasi(
         cod_solasi, ind_estado, obs_detall,
         usr_creaci, fec_creaci
       ) 
       VALUES 
         (
-          '".$num_solici."', '1', 'Sin Novedad',
+          '".$num_solici."', '1', '$det_noveda',
           '".$_SESSION['datos_usuario']['cod_usuari']."', NOW()
         )";
       $consulta = new Consulta($sql, $this -> conexion, "RC");
@@ -231,6 +274,13 @@ class ajax_asiste_carret
     }catch (Exception $e) {
       echo 'Excepción registrar: ',  $e->getMessage(), "\n";
     }
+  }
+
+  function getNombreCiudad($cod_ciudad){
+    $sql="SELECT a.nom_ciudad FROM ".BASE_DATOS.".tab_genera_ciudad a WHERE a.ind_estado = 1 AND a.cod_ciudad = '$cod_ciudad' LIMIT 1";
+      $resultado = new Consulta($sql, $this->conexion);
+      $resultados = $resultado->ret_matriz()[0];
+      return $resultados['nom_ciudad'];
   }
 
   function separarCodigoCiudad($dato){
@@ -535,7 +585,8 @@ private function costoAcompa(){
   $sql="SELECT a.val_tarifa
         FROM ".BASE_DATOS.".tab_tarifa_acompa a
        WHERE a.ciu_origen = '$ciu_origen'
-       AND a.ciu_destin = '$ciu_destin'";
+       AND a.ciu_destin = '$ciu_destin'
+       AND a.ind_estado = 1";
   $resultado = new Consulta($sql, $this->conexion);
   $cantidad_registros = $resultado->ret_num_rows();
   $retorno['sql']=$sql;
@@ -552,7 +603,7 @@ private function serviciosAsistencia(){
   $asistencia = $_REQUEST['cod_tipAsi'];
   $sql="SELECT a.id, a.abr_servic 
         FROM ".BASE_DATOS.".tab_servic_asicar a  
-        WHERE a.tip_asicar = '$asistencia';";
+        WHERE a.tip_asicar = '$asistencia' AND a.ind_estado = 1;";
   $resultado = new Consulta($sql, $this->conexion);
   $resultados = $resultado->ret_matriz('a');
   $total = $resultado->ret_num_rows();

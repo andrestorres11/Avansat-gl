@@ -135,6 +135,7 @@ define("PWD_INTERF_FAROXX", "ifx2016");
 //Constante Interfaz para eventos GPS, debe apuntar al servidor central
 define("URL_INTERF_GPSEVE", "https://central.intrared.net/ap/interf/APIIntegradorGPS/v1/index.php");
 
-
-
+//Constante Solicitudes Asistencia en Carretera
+define("CON_SOLICI_ASISTE", 1);
+define("CON_SOLICI_ACOMPA", 2);
 ?>

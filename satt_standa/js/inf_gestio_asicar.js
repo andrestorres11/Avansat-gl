@@ -52,6 +52,29 @@ function PorAprobValidate() {
     });
 }
 
+function PorAsigProveedor() {
+    var cod_provee = $("#num_docproID").val();
+    if (validaProveedor(cod_provee)) {
+        $("#PorAsignProveedor").validate({
+            rules: {
+                num_docpro: {
+                    required: true
+                }
+            },
+            messages: {
+                num_docpro: {
+                    required: "Por favor seleccione el proveedor"
+                }
+            },
+            submitHandler: function(form) {
+                almacenarDatosPorAsigProveedor();
+            }
+        });
+    } else {
+        alert('No se ha encontrado un proveedor');
+    }
+}
+
 //Create tr
 function createTr(row, tipoInforme) {
     switch (tipoInforme) {
@@ -433,6 +456,7 @@ function calcularPorcentaje(total, cantidad) {
 function llenarRetabilidad() {
     val_facturar = $("#val_facturID").val().replace('$', '').replace(/(^\s+|\s+$)/g, '');
     cos_servicio = $("#val_cosserID").val().replace('$', '').replace(/(^\s+|\s+$)/g, '');
+    updateCostoProveedor(cos_servicio);
     if (val_facturar != "" && cos_servicio != "") {
         total1 = parseInt(val_facturar) - parseInt(cos_servicio);
         total = (parseInt(total1) / parseInt(val_facturar)) * 100;
@@ -454,6 +478,34 @@ function razonFinali() {
         </div>`);
     } else {
         $("#rzn-fin").empty();
+    }
+}
+
+function buscarProveedor() {
+    var doc_proove = $("#num_docproID").val();
+    try {
+        //Get data
+        data = {
+            doc_proove
+        }
+        $.ajax({
+            url: '../satt_standa/asicar/ajax_gestio_asicar.php?opcion=14',
+            dataType: 'json',
+            type: "post",
+            data,
+            async: false,
+            success: function(data) {
+                if (data['status'] == 200) {
+                    $("#nom_proveeID").val(data['nom_contra']);
+                    $("#ap1_proveeID").val(data['pri_apelli']);
+                    $("#ap2_proveeID").val(data['seg_apelli']);
+                    $("#num_proveeID").val(data['num_celula']);
+                    $("#cor_proveeID").val(data['dir_emailx']);
+                }
+            }
+        });
+    } catch (error) {
+        console.log(error);
     }
 }
 
@@ -564,4 +616,83 @@ function almacenarDatosPorAprobCliente() {
             loadAjax("end")
         },
     });
+}
+
+
+function almacenarDatosPorAsigProveedor() {
+    var standa = 'satt_standa';
+    var dataString = 'opcion=5';
+    var File = $('#adjuntoFileID')[0].files[0];
+    var data = new FormData();
+    data.append('file', File);
+    data.append('cod_provee', $('#num_docproID').val());
+    data.append('obs_asipro', $("#obs_asiproID").val());
+    data.append('cod_solici', $("#cod_soliciID").val());
+    data.append('tipoSol', "porAsignProveedor");
+    if ($("#raz_finaliID").length) {
+        data.append('raz_finali', $("#raz_finaliID").val());
+    }
+
+    $.ajax({
+        url: "../" + standa + "/asicar/ajax_gestio_asicar.php?" + dataString,
+        method: 'POST',
+        data,
+        async: false,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+            loadAjax("start")
+        },
+        success: function(data) {
+            if (data['status'] == 200) {
+                $('#PorGestioModal').modal('hide');
+                Swal.fire({
+                    title: 'Registrado!',
+                    text: data['response'],
+                    type: 'success',
+                    confirmButtonColor: '#336600'
+                }).then((result) => {
+                    if (result.value) {
+                        executeFilter();
+                    }
+                })
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data['response'],
+                    type: 'error',
+                    confirmButtonColor: '#336600'
+                })
+            }
+        },
+        complete: function() {
+            loadAjax("end")
+        },
+    });
+}
+
+function validaProveedor(cod_provee) {
+    var validator = false;
+    try {
+        //Get data
+        data = {
+            cod_provee
+        }
+        $.ajax({
+            url: '../satt_standa/asicar/ajax_gestio_asicar.php?opcion=16',
+            dataType: 'json',
+            type: "post",
+            data,
+            async: false,
+            success: function(data) {
+                if (data['status']) {
+                    validator = true;
+                }
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+    return validator;
 }
