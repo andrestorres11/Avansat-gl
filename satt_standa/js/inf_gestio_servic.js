@@ -100,8 +100,8 @@ function deleteService(elemento) {
     var trActual = $(elemento).parent('td').parent('tr');
     var cod_sersol = trActual.find('.cod_serviSolasiClass').first().val();
     Swal.fire({
-        title: '�Esta seguro que quiere eliminar el servicio?',
-        text: "Este proceso no se podr� revertir",
+        title: '¿Esta seguro que quiere eliminar el servicio?',
+        text: "Este proceso no se podrá revertir",
         type: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#336600',
@@ -181,7 +181,7 @@ function saveNewService() {
             success: function(data) {
                 if (data['status'] == 200) {
                     Swal.fire(
-                        'Nuevo Servicio A�adido',
+                        'Nuevo Servicio Añadido',
                         'El servicio ha sido registrado',
                         'success'
                     )

@@ -861,7 +861,7 @@
 
         function darServiciosPorSolicitud(){
           $cod_solici = $_REQUEST['cod_solici'];
-          $table = utf8_decode($this->tableServiceSolicitados($cod_solici));
+          $table = $this->tableServiceSolicitados($cod_solici);
           echo json_encode($table);
         }
 
@@ -1107,7 +1107,7 @@
                 FROM ".BASE_DATOS.".tab_tarifa_acompa a
                 WHERE a.ciu_origen = '$ciu_origen'
                 AND a.ciu_destin = '$ciu_destin'
-                WHERE a.ind_estado = 1";
+                AND a.ind_estado = 1";
           $resultado = new Consulta($sql, self::$conexion);
           $cantidad_registros = $resultado->ret_num_rows();
           if($cantidad_registros>0){
