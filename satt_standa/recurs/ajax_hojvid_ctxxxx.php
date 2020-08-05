@@ -54,6 +54,7 @@ class ajax_hojvid_ctxxxx
                       a.num_cuenta,
                       c.nom_bancox,
                       d.nom_tipcta,
+                      a.doc_duecue,
                       CONCAT(a.pri_apelli, ' ', a.seg_apelli, ' ', a.nom_contra) AS nom_comple,
                       a.ind_estado
                 FROM  ".BASE_DATOS.".tab_hojvid_ctxxxx a
@@ -120,6 +121,8 @@ class ajax_hojvid_ctxxxx
                                       'cod_perfil' => '',
                                       'nom_perfil' => '',
                                       'nom_cargox' => '',
+                                      'cod_activi' => '',
+                                      'nom_activi' => '',
                                       'cod_tipcto' => '',
                                       'nom_tipcto' => '',
                                       'fec_ingres' => '',      
@@ -132,7 +135,8 @@ class ajax_hojvid_ctxxxx
                                       'nom_tipcta' => '',
                                       'cod_bancox' => '',
                                       'nom_bancox' => '',
-                                      'due_cuenta' => ''
+                                      'due_cuenta' => '',
+                                      'doc_duecue' => ''
                                     );   
                                     
         }else{
@@ -154,6 +158,8 @@ class ajax_hojvid_ctxxxx
                             g.cod_perfil,
                             g.nom_perfil,
                             a.nom_cargox,
+                            i.cod_activi,
+                            i.nom_activi,
                             b.cod_tipcto,
                             b.nom_tipcto,
                             a.fec_ingres,
@@ -166,7 +172,8 @@ class ajax_hojvid_ctxxxx
                             d.nom_tipcta,
                             c.cod_bancox,
                             c.nom_bancox,
-                            a.due_cuenta
+                            a.due_cuenta,
+                            a.doc_duecue
                       FROM  ".BASE_DATOS.".tab_hojvid_ctxxxx a
                 INNER JOIN  ".BASE_DATOS.".tab_genera_tipcto b
                         ON  a.cod_tipcto = b.cod_tipcto
@@ -178,11 +185,13 @@ class ajax_hojvid_ctxxxx
                         ON  a.cod_tipdoc = e.cod_tipdoc
                 INNER JOIN  ".BASE_DATOS.".tab_genera_ciudad f
                         ON  a.cod_ciudad = f.cod_ciudad
-                INNER JOIN  ".BASE_DATOS.".tab_genera_perfil g
+                LEFT JOIN  ".BASE_DATOS.".tab_genera_perfil g
                         ON  a.cod_perfil = g.cod_perfil
                 INNER JOIN  ".BASE_DATOS.".tab_genera_tipsex h
                         ON  a.cod_tipsex = h.cod_tipsex
-                     WHERE  a.cod_docume = ".$_REQUEST['cod_docume'];
+                INNER JOIN  ".BASE_DATOS.".tab_genera_activi i
+                        ON  a.cod_activi = i.cod_activi
+                     WHERE  a.cod_docume = ".$_REQUEST['cod_docume']."";
           $mMatriz = new Consulta($mSql, $this->conexion);
           $mData = $mMatriz->ret_matrix("a")[0];
         }
@@ -390,7 +399,30 @@ class ajax_hojvid_ctxxxx
 	                                                                "obl"=> 1,
 	                                                                "onkeyup" => "validateFields(this)"
                                                                 )
-                                                            )
+                                                              ),
+                                        "cod_activi" => array(
+                                                                'name' => "Codigo de actividad", 
+                                                                'type' => "hidden",
+                                                                'class' => "validate", 
+                                                                'atribute' => array(
+                                                                    "validate"=>"numero",
+                                                                    "readonly"=>"readonly",
+                                                                    "min"=>1,
+                                                                    "obl"=> 1,
+                                                                    "onkeyup" => "validateFields(this)"
+                                                                  )
+                                                              ),                      
+                                        "nom_activi" => array(
+                                                                'name' => "Actividad", 
+                                                                'type' => "input",
+                                                                'class' => "validate list", 
+                                                                'atribute' => array(
+                                                                    "validate"=>"texto",
+                                                                    "minlength"=>1,
+                                                                    "obl"=> 1,
+                                                                    "onkeyup" => "validateFields(this)"
+                                                                  )
+                                                              )
                                        
                                       );
 
@@ -543,7 +575,18 @@ class ajax_hojvid_ctxxxx
 	                                                                "obl"=> 1,
 	                                                                "onkeyup" => "validateFields(this)"
                                                                 )
-                                                            )
+                                                              ),
+                                        "doc_duecue" => array(
+                                                                'name' => "Documento", 
+                                                                'type' => "input",
+                                                                'class' => "validate", 
+                                                                'atribute' => array(
+                                                                    "validate"=>"numero",
+                                                                    "minlength"=>3,
+                                                                    "obl"=> 1,
+                                                                    "onkeyup" => "validateFields(this)"
+                                                                  )
+                                                              )
                                       );
 
           //Imprime el retorno de información 
@@ -603,7 +646,7 @@ class ajax_hojvid_ctxxxx
         //Varibales Necesarias
         $return = [];
         $fields = '';
-        $excFields = ['option','nom_tipdoc','nom_ciudad','nom_perfil','nom_tipcto','nom_tipcta','nom_bancox','nom_tipsex'];
+        $excFields = ['option','nom_tipdoc','nom_ciudad','nom_perfil','nom_tipcto','nom_tipcta','nom_bancox','nom_tipsex','nom_activi'];
 
         foreach ($_REQUEST as $key => $value) {
         	if (!in_array($key, $excFields)) {
@@ -699,13 +742,19 @@ class ajax_hojvid_ctxxxx
         $table = 'tab_genera_usuari';
         $cod = "cod_".explode("_", $_REQUEST['file'])[1];
         break;
+
+        case 'nom_activi':
+          $table = 'tab_genera_activi';
+          $cod = "cod_".explode("_", $_REQUEST['file'])[1];
+          $cond = 'AND ind_acthjv = 1';
+          break;
     }
 
 
     $mSql = " SELECT  a.".$cod.",
                       a.".$_REQUEST['file']."
                 FROM  ".BASE_DATOS.".$table a
-               WHERE  a.".$_REQUEST['file']." LIKE '%".$_REQUEST['query']."%'";
+               WHERE  a.".$_REQUEST['file']." LIKE '%".$_REQUEST['query']."%' $cond";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
 

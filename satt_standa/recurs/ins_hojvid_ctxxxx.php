@@ -146,6 +146,7 @@ class hojvid_ctxxxx
                                 <th>N° Cuenta</th>
                                 <th>Banco</th>
                                 <th>Tipo de cuenta</th>
+                                <th>Documento Dueño de Cuenta</th>
                                 <th>Nombre completo</th>
                                 <th>Opciones</th>
                               </tr>
