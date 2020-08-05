@@ -19,6 +19,7 @@ define("COD_FILTRO_PROPIE", "5");//constante para filtro de propietarios
 define("COD_FILTRO_POSEED", "6");//constante para filtro de poseedores
 define("COD_FILTRO_CONTRO", "7");//constante para filtro de puestos de control
 define("COD_FILTRO_ASEGUR", "8");//constante para filtro de asegurador
+define("COD_FILTRO_PROVEE", "14");//constante para filtro de proveedor
 
 define("COD_ESTADO_PENDIE", "0");//constante para el estado Pendiente
 define("COD_ESTADO_ACTIVO", "1");//constante para el estado Activo
@@ -138,4 +139,6 @@ define("URL_INTERF_GPSEVE", "https://central.intrared.net/ap/interf/APIIntegrado
 //Constante Solicitudes Asistencia en Carretera
 define("CON_SOLICI_ASISTE", 1);
 define("CON_SOLICI_ACOMPA", 2);
+
+
 ?>

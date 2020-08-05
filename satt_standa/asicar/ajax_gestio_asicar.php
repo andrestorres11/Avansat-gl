@@ -83,6 +83,9 @@
                 case "16":
                   self::validaProveedor();
                 break;
+                case "17":
+                  self::traerProveedor();
+                break;
             }
         }
 
@@ -520,7 +523,8 @@
                     <div class="card-body">
                       <div class="row">
                         <div class="col-4">
-                          <input class="form-control form-control-sm" type="text" placeholder="No Documento" id="num_docproID" name="num_docpro" onkeyup="buscarProveedor()">
+                          <input class="form-control form-control-sm" type="text" placeholder="No Documento" id="num_docproID" name="num_docpro" onkeyup="busquedaProveedor(this)" onclick="vaciarInput(this)"autocomplete="off">
+                          <div id="num_docproID-suggestions" class="suggestions"></div>
                         </div>
                         <div class="col-4">
                           <input class="form-control form-control-sm" type="text" placeholder="Nombre" id="nom_proveeID" name="nom_provee" disabled>
@@ -922,27 +926,38 @@
         }
 
         function BuscarProveedor(){
-          $info=[];
-          $doc_proove= $_REQUEST['doc_proove'];
+          $busqueda = $_REQUEST['key'];
           $sql="SELECT a.cod_docume, a.pri_apelli, a.seg_apelli, 
                        a.nom_contra, a.num_celula, a.dir_emailx 
                FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
-               WHERE a.cod_docume LIKE '%".$doc_proove."%' 
-               AND a.ind_estado = 1";
-          $query = new Consulta($sql, self::$conexion);
-          $respuesta = $query -> ret_matrix('a')[0];
-          $respuesta = self::cleanArray($respuesta);
-          if($query){
-            $info['status']=200;
-            $info['cod_docume'] = $respuesta['cod_docume'];
-            $info['pri_apelli'] = $respuesta['pri_apelli'];
-            $info['seg_apelli'] = $respuesta['seg_apelli'];
-            $info['nom_contra'] = $respuesta['nom_contra'];
-            $info['num_celula'] = $respuesta['num_celula'];
-            $info['dir_emailx'] = $respuesta['dir_emailx'];
-          }else{
-            $info['status']=100; 
-          }
+               WHERE a.cod_docume LIKE '%".$busqueda."%' 
+               AND a.ind_estado = 1 AND a.cod_activi = ".COD_FILTRO_PROVEE."
+               ORDER BY a.pri_apelli,a.seg_apelli,a.nom_contra LIMIT 3
+               ";
+            $resultado = new Consulta($sql, self::$conexion);
+            $resultados = $resultado->ret_matriz();
+            $htmls='';
+            foreach($resultados as $valor){
+              $htmls.='<div><a class="suggest-element" data="'.$valor['cod_docume'].'" id="'.$valor['cod_docume'].'">'.$valor['cod_docume'].' - '.$valor['nom_contra'].' '.$valor['pri_apelli'].' '.$valor['seg_apelli'].'</a></div>';
+            }
+            echo utf8_decode($htmls);
+        }
+
+        function traerProveedor(){
+          $info=[];
+          $code = $_REQUEST['code'];
+          $sql="SELECT a.cod_docume, a.pri_apelli, a.seg_apelli, 
+                       a.nom_contra, a.num_celula, a.dir_emailx 
+               FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
+               WHERE a.cod_docume = '".$code."' 
+               AND a.ind_estado = 1 AND a.cod_activi = ".COD_FILTRO_PROVEE." ";
+            $resultado = new Consulta($sql, self::$conexion);
+            $resultado = $resultado->ret_matriz()[0];
+          $info['pri_apelli']=$resultado['pri_apelli'];
+          $info['seg_apelli']=$resultado['seg_apelli'];
+          $info['nom_contra']=$resultado['nom_contra'];
+          $info['num_celula']=$resultado['num_celula'];
+          $info['dir_emailx']=$resultado['dir_emailx'];
           echo json_encode($info);
         }
 
@@ -1163,7 +1178,7 @@
         function validaProveedor(){
           $return=[];
           $cod_provee  = $_REQUEST['cod_provee'];
-          $sql="SELECT COUNT(*) FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a WHERE a.ind_estado = 1 AND a.cod_docume = '$cod_provee' AND a.cod_activi = 14";
+          $sql="SELECT COUNT(*) FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a WHERE a.ind_estado = 1 AND a.cod_docume = '$cod_provee' AND a.cod_activi = ".COD_FILTRO_PROVEE.";";
           $resultado = new Consulta($sql, self::$conexion);
           $resultados = $resultado->ret_matriz()[0][0];
           if($resultados == 0 ){

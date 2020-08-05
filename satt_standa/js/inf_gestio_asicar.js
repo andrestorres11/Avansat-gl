@@ -690,3 +690,62 @@ function validaProveedor(cod_provee) {
     }
     return validator;
 }
+
+function busquedaProveedor(campo) {
+    var standa = 'satt_standa';
+    var key = $(campo).val();
+    var opcion = '14';
+    var dataString = 'key=' + key + '&opcion=' + opcion;
+    var nameid = $(campo).attr('id');
+    $.ajax({
+        url: "../" + standa + "/asicar/ajax_gestio_asicar.php",
+        method: 'POST',
+        data: dataString,
+        success: function(data) {
+            //Escribimos las sugerencias que nos manda la consulta
+            $('#' + nameid + '-suggestions').fadeIn(1000).html(data);
+            //Al hacer click en alguna de las sugerencias
+            $('.suggest-element').on('click', function() {
+                console.log('ejecutando...');
+                //Obtenemos la id unica de la sugerencia pulsada
+                var id = $(this).attr('id');
+                //Editamos el valor del input con data de la sugerencia pulsada
+                $(campo).val($('#' + id).attr('data'));
+                //Hacemos desaparecer el resto de sugerencias
+                $('#' + nameid + '-suggestions').fadeOut(1000);
+
+                traerProveedor(id);
+
+            });
+        }
+    });
+}
+
+function traerProveedor(id) {
+    var standa = 'satt_standa';
+    var dataString = 'code=' + id + '&opcion=17';
+    $.ajax({
+        url: "../" + standa + "/asicar/ajax_gestio_asicar.php",
+        method: 'POST',
+        data: dataString,
+        async: false,
+        dataType: 'json',
+        success: function(data) {
+            console.log(data['nom_contra']);
+            $("#nom_proveeID").val(data['nom_contra']);
+            $("#ap1_proveeID").val(data['pri_apelli']);
+            $("#ap2_proveeID").val(data['seg_apelli']);
+            $("#num_proveeID").val(data['num_celula']);
+            $("#cor_proveeID").val(data['dir_emailx']);
+        }
+    });
+}
+
+function vaciarInput(campo) {
+    $(campo).val('');
+    $("#nom_proveeID").val('');
+    $("#ap1_proveeID").val('');
+    $("#ap2_proveeID").val('');
+    $("#num_proveeID").val('');
+    $("#cor_proveeID").val('');
+}
