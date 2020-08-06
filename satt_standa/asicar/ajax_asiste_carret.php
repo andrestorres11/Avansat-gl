@@ -103,10 +103,12 @@ class ajax_asiste_carret
       $retorno['ce1_transp']=$datos['num_telmov'];
     }
     echo json_encode($retorno);
+
   }
 
   public function busquedaVehiculo(){
-    $cod_transp = $this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],2);
+    $cod_transp = $_REQUEST['cod_transp'];
+    $this->darNombreCliente($_REQUEST['cod_transp'],2);
     $placa = $_REQUEST['placa'];
     $retorno= [];
     $retorno['validacion']=false;
@@ -150,12 +152,13 @@ class ajax_asiste_carret
     if(isset($_REQUEST['ciu_destin'])){
       $ciu_destin=$this->separarCodigoCiudad($_REQUEST['ciu_destin']);
     }
-    $cod_cliente = $this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],2);
-    if(!$cod_cliente){
-      $cod_cliente="";
+    
+    $cod_transp = $_REQUEST['optionTransp'];
+    if($_REQUEST['optionTransp']==""){
+      $cod_transp = $_REQUEST['cod_transp'];
     }
 
-    $cod_transpo = $this->darTransportadoraUser($_SESSION['datos_usuario']['cod_usuari']);
+    $cod_cliente = $this->darNombreCliente($cod_transp,2);
 
     $sql="INSERT INTO ".BASE_DATOS.".tab_asiste_carret(
       id,cod_client,cod_transp,
@@ -173,7 +176,7 @@ class ajax_asiste_carret
     ) 
     VALUES 
       (
-        '".$num_solici."','".$cod_cliente."','".$cod_transpo."',
+        '".$num_solici."','".$cod_cliente."','".$cod_transp."',
         '".$_REQUEST['tip_solici']."', '".$_REQUEST['nom_solici']."', '".$_REQUEST['ema_solici']."', 
         '".$_REQUEST['tel_solici']."', '".$_REQUEST['cel_solici']."', '".$_REQUEST['nom_asegura']."', 
         '".$_REQUEST['nom_poliza']."', '".$_REQUEST['num_transp']."', '".$_REQUEST['nom_transp']."', 
@@ -214,7 +217,7 @@ class ajax_asiste_carret
       $consulta = new Consulta($sql, $this -> conexion, "RC");
 
       if($consulta==true){
-        $this->enviarCorreo($num_solici,"",$_REQUEST['ema_solici'],$_REQUEST['tip_solici'],$_REQUEST['nom_solici']);
+        $this->enviarCorreo($num_solici,$cod_cliente,$_REQUEST['ema_solici'],$_REQUEST['tip_solici'],$_REQUEST['nom_solici']);
         $return['status'] = 200;
         $return['response'] = 'El formulario se registro exitosamente con el numero: '.$num_solici;
       }else{
@@ -240,7 +243,7 @@ class ajax_asiste_carret
     return $descrip;
   }
 
-  private function enviarCorreo($num_solici,$nombre_cliente,$correod,$solicitud,$nom_solici) {
+  private function enviarCorreo($num_solici,$cod_cliente,$correod,$solicitud,$nom_solici) {
     $logo = URL_STANDA.'imagenes/asistencia.png';
     //$logo = 'https://dev.intrared.net:8083/ap/ctorres/sat-gl-2015/satt_standa/imagenes/asistencia.png';
     $nom_asiste = $this->tipSolicitud($solicitud);
@@ -394,7 +397,7 @@ class ajax_asiste_carret
                                   <tr style="border-collapse:collapse;">
                                     <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
                                       <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
-                                        <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],1).'</strong>                                    <br> <br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
+                                        <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$this->darNombreCliente($cod_cliente,1).'</strong>                                    <br> <br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
                                         '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la línea de servicio <strong>Asistencia Logística</strong>                                    del <strong>Grupo OET</strong>, le informa que su solicitud se creo exitosamente. <br> <br class="colortext">Estado:
                                         <strong class="colortext">En proceso de validación.</strong> <br> <br class="colortext">Le estaremos informando el
                                         estado de su solicitud, cabe aclarar que nuestro tiempo de respuesta es de aproximadamente 45 minutos o antes. <br>                                    <br> </p>
@@ -489,29 +492,14 @@ private function darCorreos($correodado){
   return $retorno;
 }
 
-private function darTransportadoraUser($usuario){
-  $sql="SELECT b.cod_tercer FROM ".BASE_DATOS.".tab_aplica_filtro_usuari a INNER JOIN ".BASE_DATOS.".tab_tercer_emptra b ON a.clv_filtro = b.cod_tercer WHERE a.cod_usuari = '$usuario';";
-  $consulta = new Consulta($sql, $this -> conexion);
-  $transporadora = $consulta->ret_matriz();
-  return $transporadora[0][0];
-}
-
-private function darNombreCliente($usuario,$ver){
-  $sql="SELECT 
-	        c.cod_tercer, 
-	        c.nom_tercer 
-        FROM 
-	      ".BASE_DATOS.".tab_genera_usuari a 
-	      INNER JOIN ".BASE_DATOS.".tab_aplica_filtro_perfil b ON a.cod_perfil = b.cod_perfil 
-	      INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON b.clv_filtro = c.cod_tercer 
-        WHERE 
-	        a.cod_usuari = '$usuario' 
-	        AND b.cod_filtro = ".COD_FILTRO_EMPTRA.";";
+private function darNombreCliente($cod_tercer,$ver){
+  $sql="SELECT a.cod_tercer,a.abr_tercer FROM ".BASE_DATOS.".tab_tercer_tercer a
+        WHERE a.cod_tercer = $cod_tercer";
   $consulta = new Consulta($sql, $this -> conexion);
   $resultado = $consulta->ret_matriz('a');
   if($ver==1){
-  if($resultado[0]['nom_tercer']!=""){
-    return "Cliente : ".$resultado[0]['nom_tercer'];
+  if($resultado[0]['abr_tercer']!=""){
+    return "Cliente : ".$resultado[0]['abr_tercer'];
   }else{
     return "";
   }
