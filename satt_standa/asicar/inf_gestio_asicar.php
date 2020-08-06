@@ -106,6 +106,7 @@
 
                 <!-- Custom Theme Scripts -->
                 <script src="../' . DIR_APLICA_CENTRAL . '/js/inf_gestio_asicar.js"></script>
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/inf_gestio_servic.js"></script>
             ';
         }
 

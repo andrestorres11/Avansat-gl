@@ -127,6 +127,7 @@ class inf_operad_gpsxxx
                                 <th>Nit</th>
                                 <th>Nombre</th>
                                 <th>Estado</th>
+                                <th>Integrado</th>
                               </tr>
                             </thead>
                           </table>

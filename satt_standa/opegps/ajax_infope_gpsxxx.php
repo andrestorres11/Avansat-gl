@@ -34,7 +34,8 @@ class ajax_infope_gpsxxx
     $mSql = " SELECT  
                 a.nit_operad,
                 a.nom_operad,
-                IF(a.ind_estado=1,'ACTIVO','INACTIVO') as 'ind_estado'
+                IF(a.ind_estado=1,'ACTIVO','INACTIVO') as 'ind_estado',
+                IF(a.ind_intgps=1,'SI','NO') as 'ind_intgps'
                 FROM  ".BD_STANDA.".tab_genera_opegps a ORDER BY a.nom_operad ASC";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz =  self::cleanArray($mMatriz->ret_matrix("a"));
