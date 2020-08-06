@@ -221,8 +221,8 @@ class tab_servic_asicar
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label class="col-12 control-label"><span class="redObl">*</span> Nombre del Campo</label>
-                            <input class="form-control form-control-sm" type="text" placeholder="Nombre del campo" id="nom_campoxID" name="nom_campox" required>
+                            <label class="col-12 control-label"><span class="redObl">*</span> Unidad de Calculo</label>
+                            <input class="form-control form-control-sm" type="text" placeholder="Unidad de calculo" id="nom_campoxID" name="nom_campox" required>
                         </div>
                     </div>
 

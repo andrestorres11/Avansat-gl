@@ -387,7 +387,7 @@ function consultaCostoTrayecto(ciu_origen, ciu_destin) {
             if (data['validacion']) {
                 $("#tar_acompa").val("$ " + data['val_tarifa']);
             } else {
-                alert("Tarifa no encontrada. Intente con otros valores");
+                alert("Tarifa no encontrada por favor comuníquese al 3143949474.");
                 $("#ciu_origen").val("");
                 $("#ciu_destin").val("");
             }
