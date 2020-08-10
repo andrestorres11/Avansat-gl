@@ -41,11 +41,11 @@ class ajax_genera_parcor
   */
   private function setRegistros() {
     $mSql = " SELECT  a.dir_emailx,
-                       IF(((b.nom_tercer='') OR (b.nom_tercer IS NULL)),'GESTIÓN DE ASISTENCIA',b.nom_tercer),
+                       IF(((b.nom_tercer='') OR (b.nom_tercer IS NULL) OR (b.cod_tercer = '')),'GESTIÓN DE ASISTENCIA',b.nom_tercer),
                       a.id,
                       a.num_remdes
                 FROM  ".BASE_DATOS.".tab_genera_parcor a
-                LEFT JOIN tab_tercer_tercer b ON a.num_remdes = b.cod_tercer";
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.num_remdes = b.cod_tercer";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
 
