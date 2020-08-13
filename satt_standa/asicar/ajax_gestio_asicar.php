@@ -723,7 +723,7 @@
             $respuestas = self::cleanArray($respuestas);
             foreach ($respuestas as $respuesta){
                 $html .= '<tr>
-                            <td>'.$respuesta['obs_detall'].'</td>
+                            <td>'.utf8_decode($respuesta['obs_detall']).'</td>
                             <td>'.$this->darNombreEstados($respuesta['ind_estado']).'</td>
                             <td>'.$respuesta['fec_creaci'].'</td>
                             <td>'.$respuesta['usr_creaci'].'</td>
@@ -1499,6 +1499,16 @@
             }
         }
 
+        private function getNombreTransportadora($cod_transp){
+          $sql="SELECT b.nom_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a 
+                INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b
+                ON a.cod_tercer = b.cod_tercer
+                WHERE a.cod_tercer = '$cod_transp';";
+          $consulta = new Consulta($sql, self::$conexion);
+          $nom_transp = $consulta->ret_arreglo();
+          return $nom_transp['nom_tercer'];
+        }
+
         private function tipSolicitud($num_solici,$ver = NULL){
             $sql="SELECT b.nom_asiste, b.id FROM ".BASE_DATOS.".tab_asiste_carret a INNER JOIN ".BASE_DATOS.".tab_formul_asiste b ON a.tip_solici = b.id WHERE a.id = $num_solici";
             $consulta = new Consulta($sql, self::$conexion);
@@ -1521,6 +1531,8 @@
             $correos = $this->darCorreos($num_solici);
             $estado = $this->darNombreEstados($cod_estado);
             $to = $correo;
+            $nom_solici = $informacion['nom_solici'];
+            $nom_client = $this->getNombreTransportadora($informacion['cod_client']);
             $complemento='';
             if($cod_estado==2){
               $total = $this->totalServiciosporSolicitud($num_solici);
@@ -1672,7 +1684,7 @@
                                           <tr style="border-collapse:collapse;">
                                             <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
-                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$this->darNombreCliente($_SESSION['datos_usuario']['cod_usuari'],1).'</strong>                                    <br> <br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
+                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
                                                 '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la línea de servicio <strong>Asistencia Logística</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el. <br> <br class="colortext">Estado:
                                                 <strong class="colortext">'.$estado.'</strong><br>
                                                 <br><strong style="color:#000">Observación:</strong> '.$observacion.'
