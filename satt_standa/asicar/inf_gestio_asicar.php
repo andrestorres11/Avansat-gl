@@ -219,6 +219,9 @@
                                                 <li class="nav-item m-2">
                                                     <a class="btn btn-success" style="background-color:#509334" id="pills-Finalizados-tab" data-toggle="pill" href="#pills-Finalizados" role="tab" aria-controls="pills-Finalizados" aria-selected="false" onclick="executeFilter()">Finalizados</a>
                                                 </li>
+                                                <li class="nav-item m-2">
+                                                    <a class="btn btn-success" style="background-color:#509334" id="pills-Canceladas-tab" data-toggle="pill" href="#pills-Canceladas" role="tab" aria-controls="pills-Canceladas" aria-selected="false" onclick="executeFilter()">Canceladas</a>
+                                                </li>
                                             </ul>
 
                                       <div class="tab-content" id="pills-tabContent">
@@ -228,7 +231,7 @@
                                         '.$this->vAsignacionAPro().'
                                         '.$this->vEnProceso().'
                                         '.$this->vFinalizados().'
-                                        <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+                                        '.$this->vCanceladas().'
                                       </div>
 
                                         </div>
@@ -272,7 +275,7 @@
             <table class="table table-bordered" id="tabla_inf_general">
                 <thead>
                     <tr>
-                        <th colspan="11" style="background-color:#dff0d8; color: #000" id="text_general_fec"><center>INDICADOR DE SOLICITUDES DEL PERIODO AL <center></th> 
+                        <th colspan="13" style="background-color:#dff0d8; color: #000" id="text_general_fec"><center>INDICADOR DE SOLICITUDES DEL PERIODO AL <center></th> 
                     </tr>
                     <tr>
                         <th>TOTAL GENERADAS</th> 
@@ -286,6 +289,8 @@
                         <th>%</th>
                         <th>FINALIZADAS</th>
                         <th>%</th>
+                        <th>CANCELADAS</th>
+                        <th>%</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -297,7 +302,7 @@
             <table class="table table-bordered " id="tabla_inf_especifico">
                 <thead>
                     <tr>
-                        <th colspan="12" style="background-color:#dff0d8; color: #000"><center>DETALLADO POR DIA<center></th>
+                        <th colspan="14" style="background-color:#dff0d8; color: #000"><center>DETALLADO POR DIA<center></th>
                     </tr>
                     <tr>
                         <th>CLIENTE</th> 
@@ -311,6 +316,8 @@
                         <th>EN PROCESO</th>
                         <th>%</th>
                         <th>FINALIZADAS</th>
+                        <th>%</th>
+                        <th>CANCELADAS</th>
                         <th>%</th>
                     </tr>
                 </thead>
@@ -425,6 +432,27 @@
       ';
   return $html;
   }
+
+  private function vCanceladas(){
+    $html='<div class="tab-pane fade p-3" id="pills-Canceladas" role="tabpanel" aria-labelledby="pills-Canceladas-tab">
+    <table class="table table-bordered" id="tabla_inf_Canceladas">
+        <thead>
+            <tr>
+                <th colspan="12" style="background-color:#dff0d8; color: #000"><center>SERVICIO SOLICITADO<center></th>
+            </tr>
+            <tr>
+                <th>CLIENTE</th> 
+                '.$this->darInfoFormulSol().'
+            </tr>
+        </thead>
+        <tbody id="resultado_info_Canceladas">
+
+        </tbody>
+    </table>
+</div>
+    ';
+return $html;
+}
 
         private function formulPorGestioModal(){
             $html = '<!-- Modal Por Gestionar-->
