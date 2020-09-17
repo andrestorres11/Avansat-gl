@@ -57,7 +57,7 @@ class ajax_rentab_produc
       case 'facturContro':
         $response['html'] = utf8_decode(self::facturContro($idTable));
         $response['posicion'] = 2;
-      	break;
+        break;
 
       case 'facturTurno':
         $response['html'] = utf8_decode(self::facturTurno($idTable));
@@ -87,13 +87,13 @@ class ajax_rentab_produc
       //Declarar variables necesarias
       $usuarios = '';
 
-   	  //Se recorre los usuarios para capturarlos y asignales la coma
+      //Se recorre los usuarios para capturarlos y asignales la coma
       foreach ($_REQUEST['cod_usuari'] as $key => $value) {
-      	if (empty($usuarios)) {
-      		$usuarios = "'".$value."'";
-      	}else{
-      		$usuarios .= ",'".$value."'";
-      	}
+        if (empty($usuarios)) {
+          $usuarios = "'".$value."'";
+        }else{
+          $usuarios .= ",'".$value."'";
+        }
       }
 
       //Genera consulta
@@ -102,9 +102,9 @@ class ajax_rentab_produc
                         REPLACE(REPLACE(e.val_hordia,",",""),".","") AS cos_horaxx,
                         c.fec_noveda AS fec_regist
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
-            INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
-            		ON 	a.num_despac = b.num_despac
-            			AND a.fec_salida IS NOT NULL 
+            INNER JOIN  '.BASE_DATOS.'.tab_despac_vehige b
+                ON  a.num_despac = b.num_despac
+                  AND a.fec_salida IS NOT NULL 
                         AND (
                             a.fec_llegad IS NOT NULL 
                             OR a.fec_llegad != "0000-00-00 00:00:00"
@@ -112,39 +112,39 @@ class ajax_rentab_produc
                         AND a.ind_planru = "S" 
                         AND a.ind_anulad in ("R") 
                         AND b.ind_activo = "S"
-            INNER JOIN 	(
-            				(
-            					SELECT 	a.num_despac, 
-            							a.cod_noveda, 
-            							a.fec_noveda, 
-            							a.usr_creaci
-            					 FROM 	'.BASE_DATOS.'.tab_despac_noveda a
-            					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							AND a.fec_noveda BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
+            INNER JOIN  (
+                    (
+                      SELECT  a.num_despac, 
+                          a.cod_noveda, 
+                          a.fec_noveda, 
+                          a.usr_creaci
+                       FROM   '.BASE_DATOS.'.tab_despac_noveda a
+                      WHERE   a.usr_creaci IN ('.$usuarios.')
+                          AND a.fec_noveda BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
 
-            				)UNION(
-            					SELECT 	a.num_despac, 
-            							a.cod_noveda, 
-            							a.fec_contro AS fec_noveda, 
-            							a.usr_creaci
-            					 FROM 	'.BASE_DATOS.'.tab_despac_contro a
-            					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							AND a.fec_contro BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
-            				)
-            			) c
-            		ON 	a.num_despac = c.num_despac
-            INNER JOIN 	'.BASE_DATOS.'.tab_genera_usuari d
-            		ON 	d.cod_usuari = c.usr_creaci
-           	INNER JOIN 	'.BASE_DATOS.'.tab_hojvid_ctxxxx e
-           			ON 	d.cod_usuari = e.usr_asigna
+                    )UNION(
+                      SELECT  a.num_despac, 
+                          a.cod_noveda, 
+                          a.fec_contro AS fec_noveda, 
+                          a.usr_creaci
+                       FROM   '.BASE_DATOS.'.tab_despac_contro a
+                      WHERE   a.usr_creaci IN ('.$usuarios.')
+                          AND a.fec_contro BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
+                    )
+                  ) c
+                ON  a.num_despac = c.num_despac
+            INNER JOIN  '.BASE_DATOS.'.tab_genera_usuari d
+                ON  d.cod_usuari = c.usr_creaci
+            INNER JOIN  '.BASE_DATOS.'.tab_hojvid_ctxxxx e
+                ON  d.cod_usuari = e.usr_asigna
             ';
 
       //Ejecuta la consulta
       $mMatriz = new Consulta($mSql, $this->conexion);
       $mMatriz = $mMatriz->ret_matrix("a");
-		
-	  //Retorna la respuesta de la función	
-	  return self::informeFacturContro($mMatriz, $idTable);
+    
+    //Retorna la respuesta de la función  
+    return self::informeFacturContro($mMatriz, $idTable);
 
     } catch (Exception $e) {
       echo 'Excepción capturada: ',  $e->getMessage(), "\n";
@@ -165,13 +165,13 @@ class ajax_rentab_produc
       //Declarar variables necesarias
       $usuarios = '';
 
-   	  //Se recorre los usuarios para capturarlos y asignales la coma
+      //Se recorre los usuarios para capturarlos y asignales la coma
       foreach ($_REQUEST['cod_usuari'] as $key => $value) {
-      	if (empty($usuarios)) {
-      		$usuarios = "'".$value."'";
-      	}else{
-      		$usuarios .= ",'".$value."'";
-      	}
+        if (empty($usuarios)) {
+          $usuarios = "'".$value."'";
+        }else{
+          $usuarios .= ",'".$value."'";
+        }
       }
      
       //Genera consulta
@@ -181,9 +181,9 @@ class ajax_rentab_produc
                         ('.$_REQUEST['val_proemp'].') AS cos_horaxx,
                         c.fec_noveda AS fec_regist
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
-            INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
-            		ON 	a.num_despac = b.num_despac
-            			AND a.fec_salida IS NOT NULL 
+            INNER JOIN  '.BASE_DATOS.'.tab_despac_vehige b
+                ON  a.num_despac = b.num_despac
+                  AND a.fec_salida IS NOT NULL 
                         AND (
                             a.fec_llegad IS NOT NULL 
                             OR a.fec_llegad != "0000-00-00 00:00:00"
@@ -191,31 +191,31 @@ class ajax_rentab_produc
                         AND a.ind_planru = "S" 
                         AND a.ind_anulad in ("R") 
                         AND b.ind_activo = "S"
-            INNER JOIN 	(
-            				(
-            					SELECT 	a.num_despac, 
-            							a.cod_noveda, 
-            							a.fec_noveda, 
-            							a.usr_creaci
-            					 FROM 	'.BASE_DATOS.'.tab_despac_noveda a
-            					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							AND a.fec_noveda BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
+            INNER JOIN  (
+                    (
+                      SELECT  a.num_despac, 
+                          a.cod_noveda, 
+                          a.fec_noveda, 
+                          a.usr_creaci
+                       FROM   '.BASE_DATOS.'.tab_despac_noveda a
+                      WHERE   a.usr_creaci IN ('.$usuarios.')
+                          AND a.fec_noveda BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
 
-            				)UNION(
-            					SELECT 	a.num_despac, 
-            							a.cod_noveda, 
-            							a.fec_contro AS fec_noveda, 
-            							a.usr_creaci
-            					 FROM 	'.BASE_DATOS.'.tab_despac_contro a
-            					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							AND a.fec_contro BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
-            				)
-            			) c
-            		ON 	a.num_despac = c.num_despac
-            INNER JOIN 	'.BASE_DATOS.'.tab_genera_usuari d
-            		ON 	d.cod_usuari = c.usr_creaci
-           	INNER JOIN 	'.BASE_DATOS.'.tab_hojvid_ctxxxx e
-           			ON 	d.cod_usuari = e.usr_asigna
+                    )UNION(
+                      SELECT  a.num_despac, 
+                          a.cod_noveda, 
+                          a.fec_contro AS fec_noveda, 
+                          a.usr_creaci
+                       FROM   '.BASE_DATOS.'.tab_despac_contro a
+                      WHERE   a.usr_creaci IN ('.$usuarios.')
+                          AND a.fec_contro BETWEEN "'.$_REQUEST['fec_inicia'].'" AND "'.$_REQUEST['fec_finalx'].'"
+                    )
+                  ) c
+                ON  a.num_despac = c.num_despac
+            INNER JOIN  '.BASE_DATOS.'.tab_genera_usuari d
+                ON  d.cod_usuari = c.usr_creaci
+            INNER JOIN  '.BASE_DATOS.'.tab_hojvid_ctxxxx e
+                ON  d.cod_usuari = e.usr_asigna
             ';
 
         
@@ -224,8 +224,8 @@ class ajax_rentab_produc
       $mMatriz = new Consulta($mSql, $this->conexion);
       $mMatriz = $mMatriz->ret_matrix("a");
 
-	  //Retorna la respuesta de la función	
-	  return self::informeTurno($mMatriz, $idTable);
+    //Retorna la respuesta de la función  
+    return self::informeTurno($mMatriz, $idTable);
 
     } catch (Exception $e) {
       echo 'Excepción capturada: ',  $e->getMessage(), "\n";
@@ -247,13 +247,13 @@ class ajax_rentab_produc
       //Declarar variables necesarias
       $usuarios = '';
 
-   	  //Se recorre los usuarios para capturarlos y asignales la coma
+      //Se recorre los usuarios para capturarlos y asignales la coma
       foreach ($_REQUEST['cod_usuari'] as $key => $value) {
-      	if (empty($usuarios)) {
-      		$usuarios = "'".$value."'";
-      	}else{
-      		$usuarios .= ",'".$value."'";
-      	}
+        if (empty($usuarios)) {
+          $usuarios = "'".$value."'";
+        }else{
+          $usuarios .= ",'".$value."'";
+        }
       }
 
       //Asigna las fechas y horas a las variables
@@ -332,12 +332,12 @@ class ajax_rentab_produc
 
 
       if (count($mMatriz)>0) {
-      	return self::informeFacturEmpre($mMatriz, $idTable);
+        return self::informeFacturEmpre($mMatriz, $idTable);
       }else{
-      	return false;
+        return false;
       }
-		  
-		  
+      
+      
 
     } catch (Exception $e) {
       echo 'Excepción capturada: ',  $e->getMessage(), "\n";
@@ -354,18 +354,18 @@ class ajax_rentab_produc
    */
 
   private function informeFacturContro($mMatriz, $idTable){
-  	//Declara variables necesarias
+    //Declara variables necesarias
     $dataTable = [];
 
-   	//Recorre el arreglo
+    //Recorre el arreglo
     foreach ($mMatriz as $identi => $data) {
       $hora = explode(" ", $data['fec_regist'])[1];
       $hora = explode(":", $hora)[0];
 
       
-			$data['fec_regist'] = explode(" ", $data['fec_regist'])[0];
+      $data['fec_regist'] = explode(" ", $data['fec_regist'])[0];
       
-	  //Valida la existencia de la posición en el arreglo para sumar la cantidad de casos		
+    //Valida la existencia de la posición en el arreglo para sumar la cantidad de casos   
       if(isset($dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['hor_regist'])){
         $dataTable[$data['cod_usuari']][$data['fec_regist']."_".$hora]['can_casosx']++;
       }
@@ -443,57 +443,57 @@ class ajax_rentab_produc
    */
 
   private function informeTurno($mMatriz, $idTable){
-  	//Declara variables necesarias
+    //Declara variables necesarias
     $dataTable = [];
 
 
     //Asigna franjas horarias.
     $franjaHoraria =[
-					0 => [0 => '06-00', 1 => '13-59'],
-					1 => [0 => '14-00', 1 => '21-59'],
-					2 => [0 => '22-00', 1 => '05-59']
-				];
+          0 => [0 => '06-00', 1 => '13-59'],
+          1 => [0 => '14-00', 1 => '21-59'],
+          2 => [0 => '22-00', 1 => '05-59']
+        ];
 
-   	//Recorre el arreglo
+    //Recorre el arreglo
     foreach ($mMatriz as $identi => $data) {
       $hora = explode(":", $data['fec_regist'])[0];
 
       //Identifica el tipo de informe para asignar valores
       switch ($_REQUEST['tip_inform']) {
-			case 'Diario':
-				$data['fec_regist'] = explode(" ", $data['fec_regist'])[0];
-				$titulo = "Dia ";
-			 break;   		
-			case 'Semanal':
-				$data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
-	  			$data['fec_regist'] = date('Y-W', $data['fec_regist']) ;
-	  			$titulo = "Semana # ";
-			 break;   
-			case 'Mensual':
-				$data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
-	  			$data['fec_regist'] = date('Y-m', $data['fec_regist']) ;
-	  			$titulo = "Mes de ";
-			 break;   			
-		}
+      case 'Diario':
+        $data['fec_regist'] = explode(" ", $data['fec_regist'])[0];
+        $titulo = "Dia ";
+       break;       
+      case 'Semanal':
+        $data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
+          $data['fec_regist'] = date('Y-W', $data['fec_regist']) ;
+          $titulo = "Semana # ";
+       break;   
+      case 'Mensual':
+        $data['fec_regist'] = strtotime(explode(" ", $data['fec_regist'])[0]);
+          $data['fec_regist'] = date('Y-m', $data['fec_regist']) ;
+          $titulo = "Mes de ";
+       break;         
+    }
 
-	  	foreach ($franjaHoraria as $idFranja => $franjas) {
-	   		if ((explode(" ", $hora)[1]) >= (explode("-", $franjas[0])[0]) && (explode(" ", $hora)[1] <= (explode("-", $franjas[1])[0]))) {
-	   			//Valida la existencia de la posición en el arreglo para sumar la cantidad de casos		
-		    	if(isset($dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['fec_regist'])){
-		      		$dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['can_casosx']++;
-		    	}
+      foreach ($franjaHoraria as $idFranja => $franjas) {
+        if ((explode(" ", $hora)[1]) >= (explode("-", $franjas[0])[0]) && (explode(" ", $hora)[1] <= (explode("-", $franjas[1])[0]))) {
+          //Valida la existencia de la posición en el arreglo para sumar la cantidad de casos   
+          if(isset($dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['fec_regist'])){
+              $dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['can_casosx']++;
+          }
 
-		    	//Crea las nuevas posiciones del arreglo solo la primer vez y no se dupliquen
-		    	if (!isset($dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora])) {
-		    		$dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['cod_perfil'] = $data['cod_perfil'];
-		      		$dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['cod_usuari'] = $data['cod_usuari'];
-		      		$dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['cos_horaxx'] = $data['cos_horaxx'];
-		      		$dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['fec_regist'] = $data['fec_regist'];
-		      		$dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['can_casosx'] = 1;
-		    	}
-	   		}
-	   	} 
-	   	
+          //Crea las nuevas posiciones del arreglo solo la primer vez y no se dupliquen
+          if (!isset($dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora])) {
+            $dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['cod_perfil'] = $data['cod_perfil'];
+              $dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['cod_usuari'] = $data['cod_usuari'];
+              $dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['cos_horaxx'] = $data['cos_horaxx'];
+              $dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['fec_regist'] = $data['fec_regist'];
+              $dataTable[$data['fec_regist']][$franjas[0]."_".$franjas[1]][$data['cod_usuari']][$hora]['can_casosx'] = 1;
+          }
+        }
+      } 
+      
     }
 
     ksort($dataTable);
@@ -503,86 +503,83 @@ class ajax_rentab_produc
     //Crea un arregle con las horas
     $dataRegis = [];
     foreach ($dataTable as $fecha => $dataH) {
-    	foreach ($dataH as $inter => $dataI) {
-    		foreach ($dataI as $cod_usuari => $dataC) {
-	    		foreach ($dataC as $hora => $dataD) {
-	    			if(isset($dataRegis[$fecha][$inter][$cod_usuari]['can_horaxx'])){
-		      			$dataRegis[$fecha][$inter][$cod_usuari]['can_horaxx']++;
-		      			$dataRegis[$fecha][$inter][$cod_usuari]['can_casosx'] += $dataD['can_casosx'];
-			    	}
+      foreach ($dataH as $inter => $dataI) {
+        foreach ($dataI as $cod_usuari => $dataC) {
+          foreach ($dataC as $hora => $dataD) {
+            if(isset($dataRegis[$fecha][$inter][$cod_usuari]['can_horaxx'])){
+                $dataRegis[$fecha][$inter][$cod_usuari]['can_horaxx']++;
+                $dataRegis[$fecha][$inter][$cod_usuari]['can_casosx'] += $dataD['can_casosx'];
+            }
 
-			    	if(!isset($dataRegis[$fecha][$inter][$cod_usuari])){
-		      			$dataRegis[$fecha][$inter][$cod_usuari]['cod_perfil'] = $dataD['cod_perfil'];
-		      			$dataRegis[$fecha][$inter][$cod_usuari]['cod_usuari'] = $dataD['cod_usuari'];
-		      			$dataRegis[$fecha][$inter][$cod_usuari]['cos_horaxx'] = $dataD['cos_horaxx'];
-		      			$dataRegis[$fecha][$inter][$cod_usuari]['fec_regist'] = $dataD['fec_regist'];
-		      			$dataRegis[$fecha][$inter][$cod_usuari]['can_casosx'] = $dataD['can_casosx'];
-		      			$dataRegis[$fecha][$inter][$cod_usuari]['can_horaxx'] = 1;
-			    	}
-	    		}
-	    	}
-    	}
+            if(!isset($dataRegis[$fecha][$inter][$cod_usuari])){
+                $dataRegis[$fecha][$inter][$cod_usuari]['cod_perfil'] = $dataD['cod_perfil'];
+                $dataRegis[$fecha][$inter][$cod_usuari]['cod_usuari'] = $dataD['cod_usuari'];
+                $dataRegis[$fecha][$inter][$cod_usuari]['cos_horaxx'] = $dataD['cos_horaxx'];
+                $dataRegis[$fecha][$inter][$cod_usuari]['fec_regist'] = $dataD['fec_regist'];
+                $dataRegis[$fecha][$inter][$cod_usuari]['can_casosx'] = $dataD['can_casosx'];
+                $dataRegis[$fecha][$inter][$cod_usuari]['can_horaxx'] = 1;
+            }
+          }
+        }
+      }
     } 
 
     //Recoore la data para poder crear las tabals basados en las fechas
     foreach ($dataRegis as $fecha => $dataH) {
-    	foreach ($dataH as $inter => $dataI) {
-    		$html .= '<table id="'.$fecha.'_'.$inter.'" class="table table-bordered tab_'.$idTable.' table_datatables">
-	                <thead>
-	                    <tr>
-	                      <th colspan="100" class="tituloFecha">'.$titulo.$fecha.' '.str_replace(["_", "-"],[" a ", ":"],$inter).'</th>
-	                    </tr>
-	                    <tr>
-	                      <th rowspan="2" class="buscar subtitbusq">Usuario</th>
-	                      <th rowspan="2" class="buscar subtitbusq">Costo Hora</th>
-	                      <th rowspan="2" class="buscar subtitbusq">Cant Horas</th>';
-	      //Crea variables necesarias
-	      $th2 = '';
-	      $tbody = '';
-	      $usr_anteri = '';
-	      foreach ($dataI  as $cod_usuari => $dataC) {
-		        $th2 .= '<th class="buscar subtitbusq">Registros</th>';
-		        $th2 .= '<th class="buscar subtitbusq">Valor total</th>';
-	        	if (empty($usr_anteri)) {
-	        		$tbody .= '<tr>
-		        				<td>'.$dataC['cod_usuari'].'</td>
-		        				<td>$'.$dataC['cos_horaxx'].'</td>
-		        				<td>'.$dataC['can_horaxx'].'</td>
-		        				<td class="btn-link" onclick="detalle(\''.$dataC['fec_regist'].'\', \''.str_replace(["-00", "-59"],["", ""],$inter).'\', \''.$dataC['cod_usuari'].'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataC['can_casosx'].'</td>
-		        				<td>$'.$dataC['cos_horaxx']*$dataC['can_casosx'].'</td>
-		        		  	 ';
-	        	}else if ($usr_anteri != $cod_usuari) {
-	        		$tbody .= '</tr><tr>
-		        				<td>'.$dataC['cod_usuari'].'</td>
-		        				<td>$'.$dataC['cos_horaxx'].'</td>
-		        				<td>'.$dataC['can_horaxx'].'</td>
-		        				<td>'.$dataC['can_casosx'].'</td>
-		        				<td class="btn-link" onclick="detalle(\''.$dataC['fec_regist'].'\', \''.str_replace(["-00", "-59"],["", ""],$inter).'\', \''.$dataC['cod_usuari'].'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataC['can_casosx'].'</td>
-		        				<td>$'.$dataC['cos_horaxx']*$dataC['can_casosx'].'</td>
-		        		  	 ';	  	 
-	        	}else{
-	        		$tbody .= '<td class="btn-link" onclick="detalle(\''.$dataC['fec_regist'].'\', \''.str_replace(["-00", "-59"],["", ""],$inter).'\', \''.$dataC['cod_usuari'].'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataC['can_casosx'].'</td>
-	        				   <td>$'.$dataC['cos_horaxx']*$dataC['can_casosx'].'</td>';
-	        		
-	        	}
-	        	$usr_anteri = $cod_usuari;
-	        
-	        $tbody.'</tr>';
-	      }
+      foreach ($dataH as $inter => $dataI) {
+        $html .= '<table id="'.$fecha.'_'.$inter.'" class="table table-bordered tab_'.$idTable.' table_datatables">
+                  <thead>
+                      <tr>
+                        <th colspan="100" class="tituloFecha">'.$titulo.$fecha.' '.str_replace(["_", "-"],[" a ", ":"],$inter).'</th>
+                      </tr>
+                      <tr>
+                        <th class="buscar subtitbusq">Usuario</th>
+                        <th class="buscar subtitbusq">Costo Hora</th>
+                        <th class="buscar subtitbusq">Cant Horas</th>
+                        <th class="buscar subtitbusq">Registros</th>
+                        <th class="buscar subtitbusq">Valor total</th>
+                      </tr>';
+        //Crea variables necesarias
+        $tbody = '';
+        $usr_anteri = '';
+        foreach ($dataI  as $cod_usuari => $dataC) {
+            if (empty($usr_anteri)) {
+              $tbody .= '<tr>
+                    <td>'.$dataC['cod_usuari'].'</td>
+                    <td>$'.$dataC['cos_horaxx'].'</td>
+                    <td>'.$dataC['can_horaxx'].'</td>
+                    <td class="btn-link" onclick="detalle(\''.$dataC['fec_regist'].'\', \''.str_replace(["-00", "-59"],["", ""],$inter).'\', \''.str_replace(".", "_", $dataC['cod_usuari']).'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataC['can_casosx'].'</td>
+                    <td>$'.$dataC['cos_horaxx']*$dataC['can_casosx'].'</td>
+                     ';
+            }else if ($usr_anteri != $cod_usuari) {
+              $tbody .= '</tr><tr>
+                    <td>'.$dataC['cod_usuari'].'</td>
+                    <td>$'.$dataC['cos_horaxx'].'</td>
+                    <td>'.$dataC['can_horaxx'].'</td>
+                    <td class="btn-link" onclick="detalle(\''.$dataC['fec_regist'].'\', \''.str_replace(["-00", "-59"],["", ""],$inter).'\', \''.str_replace(".", "_", $dataC['cod_usuari']).'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataC['can_casosx'].'</td>
+                    <td>$'.$dataC['cos_horaxx']*$dataC['can_casosx'].'</td>
+                     ';      
+            }else{
+              $tbody .= '<td class="btn-link" onclick="detalle(\''.$dataC['fec_regist'].'\', \''.str_replace(["-00", "-59"],["", ""],$inter).'\', \''.str_replace(".", "_", $dataC['cod_usuari']).'\', \''.$_REQUEST['tip_inform'].'\')">'.$dataC['can_casosx'].'</td>
+                     <td>$'.$dataC['cos_horaxx']*$dataC['can_casosx'].'</td>';
+              
+            }
+            $usr_anteri = $cod_usuari;
+          
+          $tbody.'</tr>';
+        }
 
-	      $html .= '<tr>'.$th2.'</tr>';
-
-	      $html .=' 
-	                
-	              </thead>
-	              <tbody>'.$tbody.'</tbody>
-	              <tfoot>
-			            <tr>
-			                <th colspan="2" class="tituloFecha" style="text-align:right">Total:</th>
-			            </tr>
-			        </tfoot>
-	          </table>';
-    	}
+        $html .=' 
+                  
+                </thead>
+                <tbody>'.$tbody.'</tbody>
+                <tfoot>
+                  <tr>
+                      <th colspan="2" class="tituloFecha" style="text-align:right">Total:</th>
+                  </tr>
+              </tfoot>
+            </table>';
+      }
     }
     
     return $html;
@@ -598,80 +595,80 @@ class ajax_rentab_produc
    */
 
   private function informeFacturEmpre($mMatriz, $idTable){
-  	try {
-  		//Declara variables necesarias
-	    $dataTable = [];
+    try {
+      //Declara variables necesarias
+      $dataTable = [];
 
-	    //Recorre el arreglo
-	    foreach ($mMatriz as $identi => $data) {
-	      
-	    //Valida la existencia de la posición en el arreglo para sumar la cantidad de casos   
-	      if(isset($dataTable[$data['cod_transp']])){
-	        $dataTable[$data['cod_transp']]['can_despac']++;
-	        $dataTable[$data['cod_transp']]['can_noveda'] += intval($data['can_noveda']);
-	      }else{
-	        $dataTable[$data['cod_transp']]['cod_transp'] = $data['cod_transp'];
-	        $dataTable[$data['cod_transp']]['nom_tercer'] = $data['nom_tercer'];
-	        $dataTable[$data['cod_transp']]['tip_modali'] = $data['tip_modali'];
-	        $dataTable[$data['cod_transp']]['val_unitar'] = $data['val_unitar'];
-	        $dataTable[$data['cod_transp']]['can_noveda'] = intval($data['can_noveda']);
-	        $dataTable[$data['cod_transp']]['can_despac'] = 1;
-	      }
-	    }
+      //Recorre el arreglo
+      foreach ($mMatriz as $identi => $data) {
+        
+      //Valida la existencia de la posición en el arreglo para sumar la cantidad de casos   
+        if(isset($dataTable[$data['cod_transp']])){
+          $dataTable[$data['cod_transp']]['can_despac']++;
+          $dataTable[$data['cod_transp']]['can_noveda'] += intval($data['can_noveda']);
+        }else{
+          $dataTable[$data['cod_transp']]['cod_transp'] = $data['cod_transp'];
+          $dataTable[$data['cod_transp']]['nom_tercer'] = $data['nom_tercer'];
+          $dataTable[$data['cod_transp']]['tip_modali'] = $data['tip_modali'];
+          $dataTable[$data['cod_transp']]['val_unitar'] = $data['val_unitar'];
+          $dataTable[$data['cod_transp']]['can_noveda'] = intval($data['can_noveda']);
+          $dataTable[$data['cod_transp']]['can_despac'] = 1;
+        }
+      }
 
 
-	    //Crea la tabla en HTML
-	    $html = '<table id="facturEmpre" class="table table-bordered tab_'.$idTable.' table_datatables">
-	              <thead>
-	                  <tr>
-	                    <th class="buscar subtitbusq">Nit</th> 
-	                    <th class="buscar subtitbusq">Empresa</th>
-	                    <th class="buscar subtitbusq">Modalidad</th>
-	                    <th class="buscar subtitbusq">Val Unit.</th>
-	                    <th class="buscar subtitbusq">Cant Despachos</th>
-	                    <th class="buscar subtitbusq">Cant Novedades</th>
-	                    <th class="buscar subtitbusq">Val fact Despacho</th>
-	                    <th class="buscar subtitbusq">Val fact Novedad</th>
-	                    <th class="buscar subtitbusq">Prom Nov x Desp</th>
+      //Crea la tabla en HTML
+      $html = '<table id="facturEmpre" class="table table-bordered tab_'.$idTable.' table_datatables">
+                <thead>
+                    <tr>
+                      <th class="buscar subtitbusq">Nit</th> 
+                      <th class="buscar subtitbusq">Empresa</th>
+                      <th class="buscar subtitbusq">Modalidad</th>
+                      <th class="buscar subtitbusq">Val Unit.</th>
+                      <th class="buscar subtitbusq">Cant Despachos</th>
+                      <th class="buscar subtitbusq">Cant Novedades</th>
+                      <th class="buscar subtitbusq">Val fact Despacho</th>
+                      <th class="buscar subtitbusq">Val fact Novedad</th>
+                      <th class="buscar subtitbusq">Prom Nov x Desp</th>
                       <th class="buscar subtitbusq">Valor Nov x Desp</th>
-	                  </tr>
-	              <tbody>';
+                    </tr>
+                <tbody>';
 
-	    foreach ($dataTable as $key => $data) {
-	      //Variables necesarias 
-	      $data['val_facdes'] = $data['tip_modali'] == "Despacho" ? $data['val_unitar']*$data['can_despac'] : 0;
-	      $data['val_facnov'] = $data['tip_modali'] == "Novedad" ? $data['val_unitar']*$data['can_noveda'] : 0;
-	      $data['pro_novdes'] = ($data['can_noveda']/$data['can_despac']);
+      foreach ($dataTable as $key => $data) {
+        //Variables necesarias 
+        $data['val_facdes'] = $data['tip_modali'] == "Despacho" ? $data['val_unitar']*$data['can_despac'] : 0;
+        $data['val_facnov'] = $data['tip_modali'] == "Novedad" ? $data['val_unitar']*$data['can_noveda'] : 0;
+        $data['pro_novdes'] = ($data['can_noveda']/$data['can_despac']);
           $data['val_novdes'] = ($data['val_unitar']*$data['can_despac'])/$data['can_noveda'];
 
-	      $html .= '<tr>
-	                  <td>'.$data['cod_transp'].'</td>
-	                  <td>'.$data['nom_tercer'].'</td>
-	                  <td>'.$data['tip_modali'].'</td>
-	                  <td>$'.$data['val_unitar'].'</td>
-	                  <td>'.$data['can_despac'].'</td>
-	                  <td>'.$data['can_noveda'].'</td>
-	                  <td>$'.$data['val_facdes'].'</td>
-	                  <td>$'.$data['val_facnov'].'</td>
-	                  <td>'.round($data['pro_novdes']).'</td>
+        $html .= '<tr>
+                    <td>'.$data['cod_transp'].'</td>
+                    <td>'.$data['nom_tercer'].'</td>
+                    <td>'.$data['tip_modali'].'</td>
+                    <td>$'.$data['val_unitar'].'</td>
+                    <td>'.$data['can_despac'].'</td>
+                    <td>'.$data['can_noveda'].'</td>
+                    <td>$'.$data['val_facdes'].'</td>
+                    <td>$'.$data['val_facnov'].'</td>
+                    <td>'.round($data['pro_novdes']).'</td>
                     <td>$'.round($data['val_novdes']).'</td>
-	                </tr>';
-	    }
-	    $html .='</tbody>
-	                <tfoot>
-	                  <tr>
-	                      <th colspan="3" class="tituloFecha" style="text-align:right">Total:</th>
-	                  </tr>
-	              </tfoot>
-	            </table>
-	          </div>
-	        </div>';
-	    
-	    return $html;
-  	} catch (Exception $e) {
-  		echo 'Excepción capturada: ',  $e->getMessage(), "\n";
-  	}
-	    
+                  </tr>';
+      }
+      $html .='</tbody>
+                  <tfoot>
+                    <tr>
+                        <th colspan="3" class="tituloFecha" style="text-align:right">Total:</th>
+                    </tr>
+                </tfoot>
+              </table>
+            </div>
+          </div>';
+      
+      return $html;
+    } catch (Exception $e) {
+      echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+    }
+      
   }
 
   /*! \fn: regDetalle
@@ -691,51 +688,51 @@ class ajax_rentab_produc
 
       $hora = explode("_", $_REQUEST['hora']);
       $fecha = explode("-", $_REQUEST['fecha']);
-   	  
-   	  //Se recorre los usuarios para capturarlos y asignales la coma
+      
+      //Se recorre los usuarios para capturarlos y asignales la coma
       foreach ($_REQUEST as $key => $value) {
-      	if ($key == 'usuario') {
-      		if (empty($usuarios)) {
-	      		$usuarios = "'".$value."'";
-	      	}else{
-	      		$usuarios .= ",'".$value."'";
-	      	}
-      	}
+        if ($key == 'usuario') {
+          if (empty($usuarios)) {
+            $usuarios = "'".str_replace("_", ".", $value)."'";
+          }else{
+            $usuarios .= ",'".str_replace("_", ".", $value)."'";
+          }
+        }
       }
 
       //Se asigna la condición a la consulta dependiendo del tipo de informe
       switch ($_REQUEST['tipo']) {
-      	case 'Diario':
-      		$noveda = "AND DATE(a.fec_noveda) = '".$_REQUEST['fecha']."' AND HOUR(a.fec_noveda)  BETWEEN '".$hora[0]."' AND '".$hora[1]."'";
-      		$contro = "AND DATE(a.fec_contro) = '".$_REQUEST['fecha']."' AND HOUR(a.fec_contro)  BETWEEN '".$hora[0]."' AND '".$hora[1]."'";
-      		$titulo = "Informe del dia ".$_REQUEST['fecha']." del usuario ".$_REQUEST['usuario'];
-      		break;
-      	case 'Semanal':
-    		$noveda = "AND YEAR(a.fec_noveda) = '".$fecha[0]."' 
+        case 'Diario':
+          $noveda = "AND DATE(a.fec_noveda) = '".$_REQUEST['fecha']."' AND HOUR(a.fec_noveda)  BETWEEN '".$hora[0]."' AND '".$hora[1]."'";
+          $contro = "AND DATE(a.fec_contro) = '".$_REQUEST['fecha']."' AND HOUR(a.fec_contro)  BETWEEN '".$hora[0]."' AND '".$hora[1]."'";
+          $titulo = "Informe del dia ".$_REQUEST['fecha']." del usuario ".str_replace("_", ".", $_REQUEST['usuario']);
+          break;
+        case 'Semanal':
+        $noveda = "AND YEAR(a.fec_noveda) = '".$fecha[0]."' 
                     AND WEEK(a.fec_noveda,3) = '".$fecha[1]."' 
                     AND HOUR(a.fec_noveda)  BETWEEN '".$hora[0]."' AND '".$hora[1]."'";
-      		$contro = "AND YEAR(a.fec_contro) = '".$fecha[0]."'
+          $contro = "AND YEAR(a.fec_contro) = '".$fecha[0]."'
                       AND WEEK(a.fec_contro,3) = '".$fecha[1]."' 
                       AND HOUR(a.fec_contro)  BETWEEN '".$hora[0]."' AND '".$hora[1]."'";
-      		$titulo = "Informe de la semana ".$_REQUEST['fecha']." del usuario ".$_REQUEST['usuario'];
-    		break;   
-		case 'Mensual':
-			$noveda = "AND YEAR(a.fec_noveda) = '".$fecha[0]."' 
+          $titulo = "Informe de la semana ".$_REQUEST['fecha']." del usuario ".str_replace("_", ".", $_REQUEST['usuario']);
+        break;   
+    case 'Mensual':
+      $noveda = "AND YEAR(a.fec_noveda) = '".$fecha[0]."' 
                   AND MONTH(a.fec_noveda) = '".$fecha[1]."' 
                   AND HOUR(a.fec_noveda)  BETWEEN '".$hora[0]."' AND '".$hora[1]."'";
-      		$contro = "AND YEAR(a.fec_contro) = '".$fecha[0]."'
+          $contro = "AND YEAR(a.fec_contro) = '".$fecha[0]."'
                       AND MONTH(a.fec_contro) = '".$fecha[1]."' 
                       AND HOUR(a.fec_contro)  BETWEEN '".$hora[0]."' AND '".$hora[1]."'";
-      		$titulo = "Informe del mes ".$_REQUEST['fecha']." del usuario ".$_REQUEST['usuario'];
-			break;  
+          $titulo = "Informe del mes ".$_REQUEST['fecha']." del usuario ".str_replace("_", ".", $_REQUEST['usuario']);
+      break;  
       }
 
       //Crea la consulta
       $mSql = ' SELECT  b.cod_transp,
-      					IF( f.nom_tercer IS NULL OR f.nom_tercer = "",
-      						f.abr_tercer,
-      						f.nom_tercer
-      					) AS nom_transp,
+                IF( f.nom_tercer IS NULL OR f.nom_tercer = "",
+                  f.abr_tercer,
+                  f.nom_tercer
+                ) AS nom_transp,
                         d.cod_usuari,
                         IF(
                             h.val_regist IS NULL OR h.val_regist = 0,
@@ -750,9 +747,9 @@ class ajax_rentab_produc
                         REPLACE(REPLACE(e.val_hordia,",",""),".","") AS cos_horaxx,
                         SUM(1) AS can_noveda
                   FROM  '.BASE_DATOS.'.tab_despac_despac a
-            INNER JOIN 	'.BASE_DATOS.'.tab_despac_vehige b
-            		ON 	a.num_despac = b.num_despac
-            			AND a.fec_salida IS NOT NULL 
+            INNER JOIN  '.BASE_DATOS.'.tab_despac_vehige b
+                ON  a.num_despac = b.num_despac
+                  AND a.fec_salida IS NOT NULL 
                         AND (
                             a.fec_llegad IS NOT NULL 
                             OR a.fec_llegad != "0000-00-00 00:00:00"
@@ -760,33 +757,33 @@ class ajax_rentab_produc
                         AND a.ind_planru = "S" 
                         AND a.ind_anulad in ("R") 
                         AND b.ind_activo = "S"
-            INNER JOIN 	(
-            				(
-            					SELECT 	a.num_despac, 
-            							a.cod_noveda, 
-            							a.fec_noveda, 
-            							a.usr_creaci
-            					 FROM 	'.BASE_DATOS.'.tab_despac_noveda a
-            					WHERE 	a.usr_creaci IN ('.$usuarios.')
-            							'.$noveda.'
+            INNER JOIN  (
+                    (
+                      SELECT  a.num_despac, 
+                          a.cod_noveda, 
+                          a.fec_noveda, 
+                          a.usr_creaci
+                       FROM   '.BASE_DATOS.'.tab_despac_noveda a
+                      WHERE   a.usr_creaci IN ('.$usuarios.')
+                          '.$noveda.'
 
-            				)UNION(
-            					SELECT 	a.num_despac, 
-            							a.cod_noveda, 
-            							a.fec_contro AS fec_noveda, 
-            							a.usr_creaci
-            					 FROM 	'.BASE_DATOS.'.tab_despac_contro a
-            					WHERE 	a.usr_creaci IN ('.$usuarios.') 
-            							'.$contro.'
-            				)
-            			) c
-            		ON 	a.num_despac = c.num_despac
-            INNER JOIN 	'.BASE_DATOS.'.tab_genera_usuari d
-            		ON 	d.cod_usuari = c.usr_creaci
-           	INNER JOIN 	'.BASE_DATOS.'.tab_hojvid_ctxxxx e
-           			ON 	d.cod_usuari = e.usr_asigna
-           	INNER JOIN 	'.BASE_DATOS.'.tab_tercer_tercer f
-           			ON 	b.cod_transp = f.cod_tercer
+                    )UNION(
+                      SELECT  a.num_despac, 
+                          a.cod_noveda, 
+                          a.fec_contro AS fec_noveda, 
+                          a.usr_creaci
+                       FROM   '.BASE_DATOS.'.tab_despac_contro a
+                      WHERE   a.usr_creaci IN ('.$usuarios.') 
+                          '.$contro.'
+                    )
+                  ) c
+                ON  a.num_despac = c.num_despac
+            INNER JOIN  '.BASE_DATOS.'.tab_genera_usuari d
+                ON  d.cod_usuari = c.usr_creaci
+            INNER JOIN  '.BASE_DATOS.'.tab_hojvid_ctxxxx e
+                ON  d.cod_usuari = e.usr_asigna
+            INNER JOIN  '.BASE_DATOS.'.tab_tercer_tercer f
+                ON  b.cod_transp = f.cod_tercer
             INNER JOIN  (
                             SELECT MAX(a.num_consec) AS num_consec, 
                                    a.cod_transp
@@ -797,7 +794,7 @@ class ajax_rentab_produc
             INNER JOIN  '.BASE_DATOS.'.tab_transp_tipser h
                     ON  g.cod_transp = h.cod_transp 
                         AND g.num_consec = h.num_consec
-           	  GROUP BY 	b.cod_transp
+              GROUP BY  b.cod_transp
             ';
       
       //Ejecuta la consulta
@@ -806,47 +803,47 @@ class ajax_rentab_produc
 
       //Crea la tabla en HTML
       $html .= '<div class="panel panel-default">
-      				<div class="panel-heading">
+              <div class="panel-heading">
                      <h4>'.$titulo.'</h4>
                     </div>
                     <div class="panel-body" style="overflow: auto; width: 99%">
-	      				<table id="tab_'.$_REQUEST['usuario'].'" class="table table-bordered table_datadetalle">
-			                <thead>
-			                    <tr>
-			                      <th class="buscar subtitbusq">Nit</th> 
-			                      <th class="buscar subtitbusq">Transportadora</th> 
-			                      <th class="buscar subtitbusq">Usuario</th>
-			                      <th class="buscar subtitbusq">Costo Registro</th>
-			                      <th class="buscar subtitbusq">Registro Generados</th>
-			                      <th class="buscar subtitbusq">Total</th>
+                <table id="tab_'.$_REQUEST['usuario'].'" class="table table-bordered table_datadetalle">
+                      <thead>
+                          <tr>
+                            <th class="buscar subtitbusq">Nit</th> 
+                            <th class="buscar subtitbusq">Transportadora</th> 
+                            <th class="buscar subtitbusq">Usuario</th>
+                            <th class="buscar subtitbusq">Costo Registro</th>
+                            <th class="buscar subtitbusq">Registro Generados</th>
+                            <th class="buscar subtitbusq">Total</th>
 
-			                    </tr>
-			                <tbody>';
+                          </tr>
+                      <tbody>';
 
-			    foreach ($mMatriz as $key => $data) {
-			      	$html .= '<tr>
-			      				<td>'.$data['cod_transp'].'</td>
-			      				<td>'.$data['nom_transp'].'</td>
-			      				<td>'.$data['cod_usuari'].'</td>
-			      				<td>$'.$data['val_unitar'].'</td>
-			      				<td>'.$data['can_noveda'].'</td>
-			      				<td>$'.$data['can_noveda']*$data['val_unitar'].'</td>
-			      			  </tr>';
-			    }
-				   $html .='</tbody>
-				              <tfoot>
-						            <tr>
-						                <th colspan="3" class="tituloFecha" style="text-align:right">Total:</th>
-						            </tr>
-						        </tfoot>
-				          </table>
-				        </div>
-			        </div>';
+          foreach ($mMatriz as $key => $data) {
+              $html .= '<tr>
+                    <td>'.$data['cod_transp'].'</td>
+                    <td>'.$data['nom_transp'].'</td>
+                    <td>'.$data['cod_usuari'].'</td>
+                    <td>$'.$data['val_unitar'].'</td>
+                    <td>'.$data['can_noveda'].'</td>
+                    <td>$'.$data['can_noveda']*$data['val_unitar'].'</td>
+                    </tr>';
+          }
+           $html .='</tbody>
+                      <tfoot>
+                        <tr>
+                            <th colspan="3" class="tituloFecha" style="text-align:right">Total:</th>
+                        </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>';
 
-	  //Devuelve el valor
+    //Devuelve el valor
       echo utf8_decode($html);
     } catch (Exception $e) {
-    	echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+      echo 'Excepción capturada: ',  $e->getMessage(), "\n";
     }
   }
 
@@ -860,7 +857,7 @@ class ajax_rentab_produc
    */
     function crearCampos(){
       try { 
-      	//Valida si existe codgi de tipo de cuenta para consultarlos o crearlos en vacio
+        //Valida si existe codgi de tipo de cuenta para consultarlos o crearlos en vacio
           $mData = $arrayName = array( 
                                       'fec_inicia' => '',
                                       'hor_inicia' => '',
@@ -875,25 +872,25 @@ class ajax_rentab_produc
         //arrays que contienen la información de los campos y los titulos del formulario
           $mTittle[0] = array( "id" => "dat_filtro", "tittle" => "Información");
           $mTittle[0]['data'] = array("fec_inicia" => array(
-	                                                            'name' => "Fecha Inicial", 
-	                                                            'type' => "input",
-	                                                            'class' => "validate dateTime", 
-	                                                            'atribute' => array(
-	                                                                "validate"=>"date",
-	                                                                "minlength"=>3,
-	                                                                "obl"=> 1,
-	                                                                "onkeyup" => "validateFields(this)"
+                                                              'name' => "Fecha Inicial", 
+                                                              'type' => "input",
+                                                              'class' => "validate dateTime", 
+                                                              'atribute' => array(
+                                                                  "validate"=>"date",
+                                                                  "minlength"=>3,
+                                                                  "obl"=> 1,
+                                                                  "onkeyup" => "validateFields(this)"
                                                                 )
                                                             ),
                                        "fec_finalx" => array(
-	                                                            'name' => "Fecha Final",
-	                                                            'type' => "input",
-	                                                            'class' => "validate dateTime", 
-	                                                            'atribute' => array(
-	                                                                "validate"=>"date",
-	                                                                "minlength"=>1,
-	                                                                "obl"=> 1,
-	                                                                "onkeyup" => "validateFields(this)"
+                                                              'name' => "Fecha Final",
+                                                              'type' => "input",
+                                                              'class' => "validate dateTime", 
+                                                              'atribute' => array(
+                                                                  "validate"=>"date",
+                                                                  "minlength"=>1,
+                                                                  "obl"=> 1,
+                                                                  "onkeyup" => "validateFields(this)"
                                                                 )
                                                             ),
                                        "tip_inform" => array(
@@ -908,38 +905,38 @@ class ajax_rentab_produc
                                                                 )
                                                             ),
                                       "nom_perfil" => array(
-	                                                            'name' => "Perfl", 
-	                                                            'type' => "select",
-	                                                            'class' => "validate list", 
-	                                                            'atribute' => array(
-	                                                                "validate"=>"select",
-                                                                  	"multiple"=>"multiple",
-	                                                                "obl"=> 1,
-	                                                                "onkeyup" => "validateFields(this)",
-	                                                                "placeholder" => "Perfl"
+                                                              'name' => "Perfl", 
+                                                              'type' => "select",
+                                                              'class' => "validate list", 
+                                                              'atribute' => array(
+                                                                  "validate"=>"select",
+                                                                    "multiple"=>"multiple",
+                                                                  "obl"=> 1,
+                                                                  "onkeyup" => "validateFields(this)",
+                                                                  "placeholder" => "Perfl"
                                                                 )
                                                             ),
                                        "cod_usuari" => array(
-	                                                            'name' => "Usuario", 
-	                                                            'type' => "select",
-	                                                            'class' => "validate list", 
-	                                                            'atribute' => array(
-	                                                                "validate"=>"select",
-                                                                  	"multiple"=>"multiple",
-	                                                                "obl"=> 1,
-	                                                                "onkeyup" => "validateFields(this)",
-	                                                                "placeholder" => "Usuario"
+                                                              'name' => "Usuario", 
+                                                              'type' => "select",
+                                                              'class' => "validate list", 
+                                                              'atribute' => array(
+                                                                  "validate"=>"select",
+                                                                    "multiple"=>"multiple",
+                                                                  "obl"=> 1,
+                                                                  "onkeyup" => "validateFields(this)",
+                                                                  "placeholder" => "Usuario"
                                                                 )
                                                             ),
                                        "val_proemp" => array(
-	                                                            'name' => "Valor promedio empresa", 
-	                                                            'type' => "input",
-	                                                            'class' => "validate", 
-	                                                            'atribute' => array(
-	                                                                "validate"=>"numero",
-	                                                                "obl"=> 1,
-	                                                                "onkeyup" => "validateFields(this)",
-	                                                                "placeholder" => "Valor promedio empresa"
+                                                              'name' => "Valor promedio empresa", 
+                                                              'type' => "input",
+                                                              'class' => "validate", 
+                                                              'atribute' => array(
+                                                                  "validate"=>"numero",
+                                                                  "obl"=> 1,
+                                                                  "onkeyup" => "validateFields(this)",
+                                                                  "placeholder" => "Valor promedio empresa"
                                                                 )
                                                             )
                                       );
@@ -1062,14 +1059,14 @@ class ajax_rentab_produc
             foreach ($data as $keyfields => $fields) {
               //Recorre la data
               foreach ($arrayData as $keyValues => $values) {
-            	//Captura la ultima posición del los tutulos de la data
-           		$ultPos = end($values);
+              //Captura la ultima posición del los tutulos de la data
+              $ultPos = end($values);
                 //Valida si es igual a la tabla
                 if ($keyfields == $keyValues) {
                   //Valida la posición para crear la tabla
                   if ($ban == 0) {
                     $html .= '<div class="row">
-                          	  ';
+                              ';
                      $html .= self::fields($keyfields, $values, $fields, $col);
                     //Cambia el estado de la bandera para la siguiente columna
                     $ban = 1;
@@ -1101,52 +1098,52 @@ class ajax_rentab_produc
     }
 
     /*! \fn: fields
-	   *  \brief: Crea los campos para el formulario
-	   *  \author: Ing. Luis Manrique
-	   *  \date: 28/04/2020
-	   *  \date modified: dia/mes/año
-	   *  \param: $name, $value, $info, $col
-	   *  \return: HTML 
+     *  \brief: Crea los campos para el formulario
+     *  \author: Ing. Luis Manrique
+     *  \date: 28/04/2020
+     *  \date modified: dia/mes/año
+     *  \param: $name, $value, $info, $col
+     *  \return: HTML 
     */
-    private function fields($name, $value, $info, $col){		
-    	//Variables necesarias
-    	$attr = '';
+    private function fields($name, $value, $info, $col){    
+      //Variables necesarias
+      $attr = '';
 
-    	//Crea las clases para las columnas
-    	switch ($col) {
-    		case 1:
-    			$classCol = 'col-xs-12 col-lg-2';
-    			break;
-    		case 2:
-    			$classCol = 'col-xs-12 col-md-6 col-lg-2';
-    			break;
-    		case 3:
-    			$classCol = 'col-xs-12 col-sm-6 col-md-4 col-lg-2';
-    			break;
-    	}
+      //Crea las clases para las columnas
+      switch ($col) {
+        case 1:
+          $classCol = 'col-xs-12 col-lg-2';
+          break;
+        case 2:
+          $classCol = 'col-xs-12 col-md-6 col-lg-2';
+          break;
+        case 3:
+          $classCol = 'col-xs-12 col-sm-6 col-md-4 col-lg-2';
+          break;
+      }
 
-    	//Crea los campos en el formulario
-		switch ($info['type']) {
-			case 'input':
-				//Recorre la posicion de atributos para asignalos al campo
-				foreach ($info['atribute'] as $nameAttr => $valueAttr) {
-					$attr .= $nameAttr.'="'.$valueAttr.'" ';
-				}
+      //Crea los campos en el formulario
+    switch ($info['type']) {
+      case 'input':
+        //Recorre la posicion de atributos para asignalos al campo
+        foreach ($info['atribute'] as $nameAttr => $valueAttr) {
+          $attr .= $nameAttr.'="'.$valueAttr.'" ';
+        }
 
-				$field = '<div class="form-group '.$classCol.'">
-							<input type="text" class="form-control form-control-sm '.$info['class'].'" '.$attr.' name="'.$name.'" id="'.$name.'" value="'.$value.'" placeholder="'.$info['name'].'" style="height: auto;"/>
-						</div>';
-				break;
-			case 'hidden':
-				//Recorre la posicion de atributos para asignalos al campo
-				foreach ($info['atribute'] as $nameAttr => $valueAttr) {
-					$attr .= $nameAttr.'="'.$valueAttr.'" ';
-				}
+        $field = '<div class="form-group '.$classCol.'">
+              <input type="text" class="form-control form-control-sm '.$info['class'].'" '.$attr.' name="'.$name.'" id="'.$name.'" value="'.$value.'" placeholder="'.$info['name'].'" style="height: auto;"/>
+            </div>';
+        break;
+      case 'hidden':
+        //Recorre la posicion de atributos para asignalos al campo
+        foreach ($info['atribute'] as $nameAttr => $valueAttr) {
+          $attr .= $nameAttr.'="'.$valueAttr.'" ';
+        }
 
-				$field = '<div class="form-group '.$classCol.'" style="display:none;">
-							<input type="hidden" class="form-control form-control-sm '.$info['class'].'" '.$attr.' name="'.$name.'" id="'.$name.'" value="'.$value.'" placeholder="'.$info['name'].'" style="height: auto;"/>
-						</div>';
-				break;
+        $field = '<div class="form-group '.$classCol.'" style="display:none;">
+              <input type="hidden" class="form-control form-control-sm '.$info['class'].'" '.$attr.' name="'.$name.'" id="'.$name.'" value="'.$value.'" placeholder="'.$info['name'].'" style="height: auto;"/>
+            </div>';
+        break;
       case 'select':
         //Recorre la posicion de atributos para asignalos al campo
 
@@ -1165,10 +1162,10 @@ class ajax_rentab_produc
               '.$check.'
             </div>';
         break;
-		}
+    }
 
-		//Se retorna el campo
-    	return $field;
+    //Se retorna el campo
+      return $field;
     }
   
   
