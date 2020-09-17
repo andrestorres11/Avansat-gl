@@ -167,7 +167,7 @@ class rentab_produc
                                   <a data-toggle="tab" id="tag_facturContro" onclick="createTable(this)" href="#div_facturContro">Facturación Controladores</a>
                               </li>
                               <li>
-                                  <a data-toggle="tab" id="tag_porTurno" onclick="createTable(this)" href="#div_porTurno">Por turno</a>
+                                  <a data-toggle="tab" id="tag_facturTurno" onclick="createTable(this)" href="#div_facturTurno">Facturación Turno</a>
                               </li>
                               <li>
                                   <a data-toggle="tab" id="tag_facturEmpre" onclick="createTable(this)" href="#div_facturEmpre">Facturación Empresas</a>
@@ -177,7 +177,7 @@ class rentab_produc
                               <div id="div_facturContro" class="tab-pane fade" style="padding-top: 1em;">
                                   
                               </div>
-                              <div id="div_porTurno" class="tab-pane fade" style="padding-top: 1em;">
+                              <div id="div_facturTurno" class="tab-pane fade" style="padding-top: 1em;">
                                       
                               </div>
                               <div id="div_facturEmpre" class="tab-pane fade" style="padding-top: 1em;">
