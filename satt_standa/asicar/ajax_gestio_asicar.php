@@ -174,7 +174,10 @@
             ) as 'enx_proces', 
             SUM(
                 IF(a.est_solici = '5', 1, 0)
-            ) as 'xxx_finali' 
+            ) as 'xxx_finali',
+            SUM(
+                IF(a.est_solici = '6', 1, 0)
+            ) as 'est_cancel'
         FROM 
             ".BASE_DATOS.".tab_asiste_carret a WHERE 1=1";
             
@@ -244,7 +247,10 @@
                 ) as 'enx_proces', 
                 SUM(
                     IF(a.est_solici = '5', 1, 0)
-                ) as 'xxx_finali' 
+                ) as 'xxx_finali',
+                SUM(
+                    IF(a.est_solici = '6', 1, 0)
+                ) as 'est_cancel' 
             FROM 
                 ".BASE_DATOS.".tab_asiste_carret a 
                 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_client = b.cod_tercer
@@ -314,7 +320,7 @@
             }
             $query.=" AND a.est_solici = $est_solici GROUP BY a.cod_client";
             $query = new Consulta($query, self::$conexion);
-            $empresas = $query -> ret_matrix('a');
+            $empresas = self::cleanArray($query -> ret_matrix('a'));
             $tip_formul = $this->darFormularios();
             foreach($empresas as $empresa){
                 $html.="<tr>";
@@ -339,7 +345,6 @@
                 }
                 $html .="</tr></tbody>";
             }
-            
            echo json_encode($html);
         }
 
@@ -414,6 +419,7 @@
             $information = $this->darInformacion($_REQUEST['cod_solici']);
             $nom_solici = $this->tipSolicitud($_REQUEST['cod_solici']);
             $servicios = $this->serviciosSolicitados($_REQUEST['cod_solici']);
+            $cancelado = $this->formCanceladoData($_REQUEST['cod_solici']);
             $html='';
             if($cod_estado == 1){
                 $html.=$servicios;
@@ -437,7 +443,7 @@
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" value="" id="verFinSolici" onchange="razonFinali()">
                             <label class="form-check-label" for="defaultCheck1" style="text-align:left !important;font-size: 15px;">
-                            Cerrar Solicitud
+                            Cancelar Solicitud
                             <input type="hidden" name="cod_solici" id="cod_soliciID" value="">
                             </label>
                         </div>
@@ -490,7 +496,7 @@
                       <div class="form-check">
                           <input class="form-check-input" type="checkbox" value="" id="verFinSolici" onchange="razonFinali()">
                           <label class="form-check-label" for="defaultCheck1" style="text-align:left !important;font-size: 15px;">
-                          Cerrar Solicitud
+                          Cancelar Solicitud
                           <input type="hidden" name="cod_solici" id="cod_soliciID" value="">
                           </label>
                       </div>
@@ -562,7 +568,7 @@
                       <div class="form-check">
                           <input class="form-check-input" type="checkbox" value="" id="verFinSolici" onchange="razonFinali()">
                           <label class="form-check-label" for="defaultCheck1" style="text-align:left !important;font-size: 15px;">
-                          Cerrar Solicitud
+                          Cancelar Solicitud
                           <input type="hidden" name="cod_solici" id="cod_soliciID" value="">
                           </label>
                       </div>
@@ -578,6 +584,9 @@
               </form>
             </div>
             </div>';
+            }
+            else if($cod_estado == 6){
+              $html.=$cancelado;
             }
             echo json_encode($html);
         }
@@ -787,6 +796,37 @@
             </div>
           </div>';
           return $html;
+        }
+
+        function formCanceladoData($num_solici){
+          $sql="SELECT a.obs_cancel, a.fec_cancel, a.usu_cancel FROM ".BASE_DATOS.".tab_asiste_carret a WHERE a.id=$num_solici";
+          $query = new Consulta($sql, self::$conexion);
+          $respuestas = $query -> ret_matrix('a')[0];
+          $respuestas = self::cleanArray($respuestas);
+          $html='<div class="card border border-danger style="margin:15px;">
+              <div class="card-header color-heading text-align" style="color:red;">
+                <center>Solicitud Cancelada</center>
+              </div>
+                    <div class="card-body">
+                      <div class="row">
+                        <div class="offset-1 col-10">
+                          <label for="obs_cancelID" style="font-size:14px;">Motivo de cancelación:</label>
+                          <textarea class="form-control" id="obs_cancelID" name="obs_cancel" rows="3" disabled>'.$respuestas['obs_cancel'].'</textarea>
+                        </div>
+                      </div>
+                      <div class="row mt-3">
+                        <div class="offset-1 col-5">
+                          <label for="fec_cancelID" style="font-size:14px;">Fecha y hora de cancelación:</label>
+                          <input class="form-control form-control-sm" id="fec_cancelID" name="fec_cancel" type="text" disabled value="'.$respuestas['fec_cancel'].'">
+                        </div>
+                        <div class="col-5">
+                          <label for="usu_cancelID" style="font-size:14px;">Usuario que cancelo:</label>
+                          <input class="form-control form-control-sm" id="usu_cancelID" name="usu_cancel" type="text" disabled value="'.$respuestas['usu_cancel'].'">
+                        </div>
+                      </div>
+                    </div>
+            </div>';
+            return $html;
         }
 
         function tableServiceSolicitados($num_solici){
@@ -1035,6 +1075,9 @@
                 case '5':
                     return "FINALIZADO";
                     break;
+                case '6':
+                    return "CANCELADA";
+                    break;
                 default:
                     return "SIN ESTADO";
                     break;
@@ -1255,8 +1298,10 @@
                 }
 
                 if(isset($_REQUEST['raz_finali'])){
-                    $estado_proximo = 5;
-                    $consultamas=" obs_finali = '".$_REQUEST['raz_finali']."', ";
+                    $estado_proximo = 6;
+                    $consultamas=" obs_cancel = '".$_REQUEST['raz_finali']."',
+                                   usu_cancel = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                                   fec_cancel = NOW(),";
                 }
                 $sql="UPDATE ".BASE_DATOS.".tab_asiste_carret SET 
                         est_solici = $estado_proximo,
@@ -1321,9 +1366,11 @@
                 }
 
                 if(isset($_REQUEST['raz_finali'])){
-                    $estado_proximo = 5;
-                    $consultamas=" obs_finali = '".$_REQUEST['raz_finali']."', ";
-                }
+                  $estado_proximo = 6;
+                  $consultamas=" obs_cancel = '".$_REQUEST['raz_finali']."',
+                                 usu_cancel = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                                 fec_cancel = NOW(),";
+              }
 
                 $sql="UPDATE ".BASE_DATOS.".tab_asiste_carret SET 
                         est_solici = $estado_proximo,
@@ -1387,9 +1434,11 @@
             }
 
             if(isset($_REQUEST['raz_finali'])){
-                $estado_proximo = 5;
-                $consultamas=" obs_finali = '".$_REQUEST['raz_finali']."', ";
-            }
+              $estado_proximo = 6;
+              $consultamas=" obs_cancel = '".$_REQUEST['raz_finali']."',
+                             usu_cancel = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                             fec_cancel = NOW(),";
+          }
 
             $sql="UPDATE ".BASE_DATOS.".tab_asiste_carret SET 
                     est_solici = $estado_proximo,
