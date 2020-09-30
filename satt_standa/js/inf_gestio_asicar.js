@@ -2,7 +2,6 @@ $(document).ready(function() {
     executeFilter();
 });
 
-
 //VALIDACIONES FORMULARIOS
 function PorGestioValidate() {
     $("#PorGestio").validate({
@@ -121,6 +120,8 @@ function rowGeneral(row) {
         <td class='can_totalx' style='text-align: center;'>` + calcularPorcentaje(row["total"], row["enx_proces"]) + `%</td>
         <td class='can_totalx' style='text-align: center;'>` + row["xxx_finali"] + `</td>
         <td class='can_totalx' style='text-align: center;'>` + calcularPorcentaje(row["total"], row["xxx_finali"]) + `%</td>
+        <td class='can_totalx' style='text-align: center;'>` + row["est_cancel"] + `</td>
+        <td class='can_totalx' style='text-align: center;'>` + calcularPorcentaje(row["total"], row["est_cancel"]) + `%</td>
     </tr>"`);
 
     return tr;
@@ -144,6 +145,8 @@ function rowEspecifico(row) {
         <td class='can_totalx' style='text-align: center;'>` + calcularPorcentaje(row["total"], row["enx_proces"]) + `%</td>
         <td class='can_totalx' style='text-align: center;'>` + row["xxx_finali"] + `</td>
         <td class='can_totalx' style='text-align: center;'>` + calcularPorcentaje(row["total"], row["xxx_finali"]) + `%</td>
+        <td class='can_totalx' style='text-align: center;'>` + row["est_cancel"] + `</td>
+        <td class='can_totalx' style='text-align: center;'>` + calcularPorcentaje(row["total"], row["est_cancel"]) + `%</td>
     </tr>"`);
 
     return tr;
@@ -204,6 +207,7 @@ function executeFilter() {
                 informePorGestionar(3);
                 informePorGestionar(4);
                 informePorGestionar(5);
+                informePorGestionar(6);
                 //Validate empty
                 /*if(objectLength(data) == 0){
                     personalizedAlert("danger", "No se encontraron registros.", "No se ha encontrado ning&uacute;n registro, con el filtro especificado, por favor val&iacute;delo.", true, $("#dashBoardTableTrans"));
@@ -262,6 +266,8 @@ function nomTablaSuperior(code) {
         return "tabla_inf_EnProceso";
     } else if (code == 5) {
         return "tabla_inf_Finalizados";
+    } else if (code == 6) {
+        return "tabla_inf_Canceladas";
     }
 }
 
@@ -276,6 +282,8 @@ function nomTablaInferior(code) {
         return "resultado_info_EnProceso";
     } else if (code == 5) {
         return "resultado_info_Finalizados";
+    } else if (code == 6) {
+        return "resultado_info_Canceladas";
     }
 }
 //Trae los datos del informe por gestionar
@@ -291,6 +299,7 @@ function informePorGestionar(code) {
             success: function(data) {
                 var nombre_tablaSup = nomTablaSuperior(code);
                 table_especifica = $("#" + nombre_tablaSup);
+                console.log(nombre_tablaSup);
                 table_especifica.empty();
                 table_especifica.append(data);
             },
