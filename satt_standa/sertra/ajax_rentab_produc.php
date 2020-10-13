@@ -105,12 +105,12 @@ class ajax_rentab_produc
             INNER JOIN  '.BASE_DATOS.'.tab_despac_vehige b
                 ON  a.num_despac = b.num_despac
                   AND a.fec_salida IS NOT NULL 
-                        AND (
+                        /*AND (
                             a.fec_llegad IS NOT NULL 
                             OR a.fec_llegad != "0000-00-00 00:00:00"
-                        ) 
+                        )*/
                         AND a.ind_planru = "S" 
-                        AND a.ind_anulad in ("R") 
+                       -- AND a.ind_anulad in ("R") 
                         AND b.ind_activo = "S"
             INNER JOIN  (
                     (
@@ -184,12 +184,12 @@ class ajax_rentab_produc
             INNER JOIN  '.BASE_DATOS.'.tab_despac_vehige b
                 ON  a.num_despac = b.num_despac
                   AND a.fec_salida IS NOT NULL 
-                        AND (
+                        /*AND (
                             a.fec_llegad IS NOT NULL 
                             OR a.fec_llegad != "0000-00-00 00:00:00"
-                        ) 
+                        )*/
                         AND a.ind_planru = "S" 
-                        AND a.ind_anulad in ("R") 
+                       -- AND a.ind_anulad in ("R") 
                         AND b.ind_activo = "S"
             INNER JOIN  (
                     (
@@ -282,12 +282,12 @@ class ajax_rentab_produc
             INNER JOIN  '.BASE_DATOS.'.tab_despac_vehige b
                     ON  a.num_despac = b.num_despac
                         AND a.fec_salida IS NOT NULL 
-                        AND (
+                       /*AND (
                             a.fec_llegad IS NOT NULL 
                             OR a.fec_llegad != "0000-00-00 00:00:00"
-                        ) 
+                        )*/
                         AND a.ind_planru = "S" 
-                        AND a.ind_anulad in ("R") 
+                       -- AND a.ind_anulad in ("R") 
                         AND b.ind_activo = "S"
             INNER JOIN  (
                             (
@@ -750,12 +750,12 @@ class ajax_rentab_produc
             INNER JOIN  '.BASE_DATOS.'.tab_despac_vehige b
                 ON  a.num_despac = b.num_despac
                   AND a.fec_salida IS NOT NULL 
-                        AND (
+                        /*AND (
                             a.fec_llegad IS NOT NULL 
                             OR a.fec_llegad != "0000-00-00 00:00:00"
-                        ) 
+                        )*/
                         AND a.ind_planru = "S" 
-                        AND a.ind_anulad in ("R") 
+                       -- AND a.ind_anulad in ("R") 
                         AND b.ind_activo = "S"
             INNER JOIN  (
                     (
