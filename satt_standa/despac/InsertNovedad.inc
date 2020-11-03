@@ -4245,6 +4245,7 @@ class InsertNovedad {
 
                             $mAditional['num_placax'] = $regist['placa'];
                             $mAditional['tip_noveda'] = "PC";
+                            $mAditional['url_webser'] = $interfaz->interfaz[$i]['diwsdl'];
                             # Incluye la clase encargada de la interfaz         
                             include_once("../" . DIR_APLICA_CENTRAL . "/lib/InterfMct.inc");
                             $mMctX = new InterfMct($this->conexion, $mDataMCT, $mAditional);
@@ -4287,6 +4288,7 @@ class InsertNovedad {
 
                             $mAditional["num_placax"] = $regist["placa"];
                             $mAditional["tip_noveda"] = "NC";
+                            $mAditional['url_webser'] = $interfaz->interfaz[$i]['diwsdl'];
                             # Incluye la clase encargada de la interfaz         
                             include_once("../" . DIR_APLICA_CENTRAL . "/lib/InterfMct.inc");
                             $mMct = new InterfMct($this->conexion, $mDataMCT, $mAditional);
