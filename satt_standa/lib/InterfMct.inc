@@ -20,8 +20,9 @@ error_reporting(E_ALL & ~E_NOTICE);
 class InterfMct
 {
   private static $cConection = NULL;
-  #private static $cUrlMCT = "http://186.117.158.13/mctAPI/v1/ptoc";
-  private static $cUrlMCT = "http://200.69.82.200:8081/mctAPI/v1/ptoc";
+  //private static $cUrlMCT = "http://186.117.158.13/mctAPI/v1/ptoc";
+  //private static $cUrlMCT = "http://200.69.82.200:8081/mctAPI/v1/ptoc";
+  private static $cUrlMCT = "";
   private static $cExcept = NULL;
   private static $cNotMail = "soporte@intrared.net";
   private static $cLogDir  = "/var/www/html/ap/satt_faro/logs";
@@ -45,6 +46,7 @@ class InterfMct
     #self::$cExcept = new Error( array( "dirlog" => self::$cLogDir, "notlog" => FALSE, "logmai" =>self::$cNotMail ) );
     #self::$cExcept -> SetUser( $_SESSION["datos_usuario"]["cod_usuari"] );
     #self::$cExcept -> SetParams( "faro", "Novedades_PC_MCT" );
+    self::$cUrlMCT = $mAditional['url_webser'];
 
     switch ($mAditional["tip_noveda"]) {
       case 'PC': self::setNovedadPC( $fParams , $mAditional ); break;
@@ -79,7 +81,8 @@ class InterfMct
 
         # Inicio de cURL para la API -----------------------------------------------------------------------------
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://200.69.82.200:8081/mctAPI/v1/ptoc");
+        //curl_setopt($ch, CURLOPT_URL, "http://200.69.82.200:8081/mctAPI/v1/ptoc");
+        curl_setopt($ch, CURLOPT_URL, self::$cUrlMCT."/ptoc");
         curl_setopt($ch, CURLOPT_HTTPHEADER, self::$cHeader);
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_POST, count(self::$cData));
@@ -138,7 +141,8 @@ class InterfMct
 
         # Inicio de cURL para la API -----------------------------------------------------------------------------
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://200.69.82.200:8081/mctAPI/v1/nov"); 
+        //curl_setopt($ch, CURLOPT_URL, "http://200.69.82.200:8081/mctAPI/v1/nov"); 
+        curl_setopt($ch, CURLOPT_URL, self::$cUrlMCT."/nov"); 
         curl_setopt($ch, CURLOPT_HTTPHEADER, self::$cHeader);
         curl_setopt($ch, CURLOPT_VERBOSE, 1);
         curl_setopt($ch, CURLOPT_POST, count(self::$cData));
