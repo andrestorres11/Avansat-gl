@@ -363,7 +363,9 @@ class ListarusuariosMoviles {
           $tip_usuari = array(
                     0 => array( 0 => NULL, 1 => '--' ),
                     1 => array( 0 => '0', 1 => 'Conductor' ),
-                    2 => array( 0 => '1', 1 => 'Administrador' )
+                    2 => array( 0 => '1', 1 => 'Administrador' ),
+                    3 => array( 0 => '2', 1 => 'Inspecciones' ),
+                    3 => array( 0 => '3', 1 => 'asistencia en carretera' )
                     );
 
           $query = "SELECT a.cod_tipdoc, a.nom_tipdoc FROM ".BASE_DATOS.".tab_genera_tipdoc a WHERE 1 = 1";
@@ -407,8 +409,10 @@ class ListarusuariosMoviles {
               $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                 $mHtml->Table("tr");
                   $mHtml->Row();
-                    $mHtml->Label("Tipo de usuario:", array("width" => "50%", "colspan"=>"4"));
-                    $mHtml->Select2 ($tip_person,  array("name" => "tip_person", "width" => "50%","colspan"=>"4") );
+                    // $mHtml->Label("Tipo de usuario:", array("width" => "50%", "colspan"=>"4"));
+                    // $mHtml->Select2 ($tip_person,  array("name" => "tip_person", "width" => "50%","colspan"=>"4") );
+                    $mHtml->Label("* Tipo de Usuario", array("width" => "25%", "colspan"=>"2"));
+                    $mHtml->Select2 ($tip_usuari,  array("name" => "ind_admini", "id" => "ind_adminiID", "width" => "50%","colspan"=>"4") );
                   $mHtml->CloseRow();
                   $mHtml->Row();
                     $mHtml->Label( "Datos Basicos del Usuario",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"8") );
@@ -455,8 +459,6 @@ class ListarusuariosMoviles {
                   $mHtml->Row();
                     $mHtml->Label("* Estado", array("width" => "25%", "colspan"=>"2"));
                     $mHtml->Select2 ($est_appxxx,  array("name" => "cod_estado", "id" => "cod_estadoID", "width" => "50%","colspan"=>"2") );
-                    $mHtml->Label("* Tipo de Usuario", array("width" => "25%", "colspan"=>"2"));
-                    $mHtml->Select2 ($tip_usuari,  array("name" => "ind_admini", "id" => "ind_adminiID", "width" => "50%","colspan"=>"2") );
                   $mHtml->CloseRow();
                   $mHtml->Row();
                     $mHtml->StyleButton("name:send;  id:guardarID; value:Guardar; onclick:guardar(); align:center; colspan:4;  class:crmButton small save");

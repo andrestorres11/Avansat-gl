@@ -1,37 +1,37 @@
 $(document).ready(function(){
 
 	var standa = $("[name=standa]").val(); 
-
-	$( "[name=num_docume]" ).autocomplete({
-		source: "../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=buscarConductor",
-		minLength: 3, 
-		delay: 100,
-		select: function(event, ui){ 
-
-			$.ajax({
-				url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=datosConductor",
-				data:{"cod_tercer":ui.item.value},
-				success: function(result){
-					data = JSON.parse(result);
-    				$("[name=tip_person]").val(data.cod_tipper);
-    				$("[name=tip_docume]").val(data.cod_tipdoc);
-					$("[name=nom_usuari]").val(data.nom_tercer);
-					$("[name=nom_appel1]").val(data.nom_apell1);
-					$("[name=nom_appel2]").val(data.nom_apell2); 
-					$("[name=num_telef1]").val(data.num_telef1);
-					$("[name=num_telef2]").val(data.num_telef2);
-					$("[name=num_movilx]").val(data.num_telmov);   
-					$("[name=num_direcc]").val(data.dir_domici); 
-					$("[name=nom_emailx]").val(data.dir_emailx); 
-					$("[name=cod_seriex]").val(data.cod_hashxx); 
-
-				}
-			});
-		}
+	$("#ind_adminiID").change(function() {
+		var id = $(this).children(":selected").val();
+		var transp = $('#cod_transpID').val();
+		$( "[name=num_docume]" ).autocomplete({
+			source: "../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=buscarConductor&activity="+id+"&nit_transp="+transp,
+			minLength: 3, 
+			delay: 100,
+			select: function(event, ui){ 
+				$.ajax({
+					url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=datosConductor",
+					data:{"cod_tercer":ui.item.value},
+					success: function(result){
+						data = JSON.parse(result);
+						$("[name=tip_person]").val(data.cod_tipper);
+						$("[name=tip_docume]").val(data.cod_tipdoc);
+						$("[name=nom_usuari]").val(data.nom_tercer);
+						$("[name=nom_appel1]").val(data.nom_apell1);
+						$("[name=nom_appel2]").val(data.nom_apell2); 
+						$("[name=num_telef1]").val(data.num_telef1);
+						$("[name=num_telef2]").val(data.num_telef2);
+						$("[name=num_movilx]").val(data.num_telmov);   
+						$("[name=num_direcc]").val(data.dir_domici); 
+						$("[name=nom_emailx]").val(data.dir_emailx); 
+						$("[name=cod_seriex]").val(data.cod_hashxx); 
+	
+					}
+				});
+			}
+		});
 	});
-
- 
-
+	
 	// validacion para saber si es un usuaraio administrador o de una transportadora y mostrar los datos de la misma
 	var total = $("#total").val();
 
@@ -280,7 +280,7 @@ function RestablecerUsuario()
 			console.log(data);
 			if(data=="ok")
 			{
-				msn = "Se ha re establecido correctamente la contraseña.";
+				msn = "Se ha re establecido correctamente la contraseï¿½a.";
 			}
 			else
 			{

@@ -43,25 +43,37 @@ class AjaxInsertarAutorizacion
      *  \brief: Busca el conductor
      *  \author: Edward Serrano
      *  \date: 26/05/2017
-     *  \date modified: dia/mes/a�o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
      */
 	function buscarConductor(){
-  
-		$query = "SELECT a.cod_tercer,
-						 a.abr_tercer
-					FROM ".BASE_DATOS.".tab_tercer_tercer a 
-			  INNER JOIN ".BASE_DATOS.".tab_tercer_conduc b 
-			  		  ON a.cod_tercer = b.cod_tercer
-				   WHERE a.cod_tercer LIKE '%".$_REQUEST['term']."%'
-				   	 AND a.cod_tercer NOT IN(
-				   	 							SELECT cod_tercer
-					   							FROM ".BASE_DATOS.".tab_usuari_movilx
-					  							WHERE 1=1
-					  						)";
-
+		switch ($_REQUEST['activity']) {
+			case '0':
+				$activity = 4;
+				break;
+			
+			case '3':
+				$activity = 14;
+				break;
+			
+			default:
+				$activity = 11;
+				break;
+		}
+		$query = "SELECT a.cod_tercer, a.abr_tercer 
+					FROM tab_tercer_tercer a 
+			  INNER JOIN tab_tercer_activi b 
+			          ON a.cod_tercer = b.cod_tercer
+    				 AND b.cod_activi = '".$activity."'
+			  -- INNER JOIN tab_transp_tercer c ON c.cod_tercer = a.cod_tercer 
+			  		 -- AND c.cod_transp = '".$_REQUEST['nit_transp']."'
+				   WHERE a.cod_tercer LIKE '%".$_REQUEST['term']."%' 
+					 AND a.cod_tercer NOT IN( SELECT cod_tercer 
+												FROM tab_usuari_movilx 
+											   WHERE 1 = 1)
+				";	
 		$consulta = new Consulta($query, $this -> conexion);
 		$tercer = $consulta -> ret_matriz("a");
   
@@ -77,7 +89,7 @@ class AjaxInsertarAutorizacion
      *  \brief: Obtiene los datos del conducto
      *  \author: Edward Serrano
      *  \date: 26/05/2017
-     *  \date modified: dia/mes/a�o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -99,7 +111,7 @@ class AjaxInsertarAutorizacion
 						 IF(a.cod_tipdoc = 'C' , 'N'   , 'J' ) AS cod_tipper,
 						 IF(ISNULL(a.cod_tipdoc) OR a.cod_tipdoc = '', 'C'   , a.cod_tipdoc ) AS cod_tipdoc 
 					FROM ".BASE_DATOS.".tab_tercer_tercer a 
-			  INNER JOIN ".BASE_DATOS.".tab_tercer_conduc b 
+			  LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc b 
 			  		  ON a.cod_tercer = b.cod_tercer
 				   WHERE a.cod_tercer = '".$_REQUEST['cod_tercer']."'";
 
@@ -113,7 +125,15 @@ class AjaxInsertarAutorizacion
   		
   		if($estadoReturn == NULL)
   		{
-			echo json_encode($tercer);
+			//echo json_encode($tercer);
+
+			//echo "<pre>"; print_r( $tercer ); echo "</pre>";
+			$data = array();
+			foreach ($tercer AS $mIndex => $conduc) {
+			
+			 	$data [] = '"'.$mIndex.'" : "'.$conduc.'"'; 
+			}
+			echo '{'.join(', ',$data).'}';
   		}
   		else
   		{
@@ -122,10 +142,10 @@ class AjaxInsertarAutorizacion
 	}
 
 	/*! \fn: guardarUsuario
-     *  \brief: Realiza el registro y re establecimiento de las contrase�as de los usuarios
+     *  \brief: Realiza el registro y re establecimiento de las contraseñas de los usuarios
      *  \author: Edward Serrano
      *  \date: 26/05/2017
-     *  \date modified: dia/mes/a�o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -201,14 +221,12 @@ class AjaxInsertarAutorizacion
 
 		$consulta = new Consulta($query, $this -> conexion);
 
-		$nit = "SELECT a.clv_filtro 
-				  FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
-				 WHERE a.cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."'";
-
-		$nit = new Consulta($nit, $this -> conexion);
-		$nit = $nit -> ret_matriz("a");
- 
-		$nit = $nit[0]['clv_filtro'];
+		$consultaNit = "SELECT a.cod_transp 
+						  FROM " . BASE_DATOS . ".tab_interf_parame a WHERE a.cod_operad = 85 AND cod_transp = '".$_REQUEST['cod_transp']."' ";
+		
+		$nit = new Consulta($consultaNit, $this->conexion);
+		$nit = $nit->ret_matriz();
+		$nit = $nit[0]['cod_transp'];
 
 		$data = array(
 
@@ -252,8 +270,14 @@ class AjaxInsertarAutorizacion
                 $thefile = addslashes($thefile);
                 $thefile = "\$r_file=\"" . $thefile . "\";";
                 eval($thefile);
-                $mHtmlxx = $r_file;
-                mail($_REQUEST['mail'].", maribel.garcia@eltransporte.org", "C�digo de activaci�n aplicaci�n AVANSAT ", $mHtmlxx, $mCabece); 
+				$mHtmlxx = $r_file;
+				$asunto="Código de activación aplicación AVANSAT ";
+
+				if($_REQUEST['ind_admini']==2){
+					$asunto="Código de activación aplicación de INSPECCIÓN VEHICULAR ";
+				}
+
+                mail($_REQUEST['mail'].", maribel.garcia@eltransporte.org", $asunto, $mHtmlxx, $mCabece); 
 				echo "ok";
 			}
 			else{
@@ -271,15 +295,20 @@ class AjaxInsertarAutorizacion
      *  \brief: Lista los usuarios regitrados para movil
      *  \author: Edward Serrano
      *  \date: 26/05/2017
-     *  \date modified: dia/mes/a�o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
      */
 	public function listaUsuariosMoviles()
 	{
-		$mQuery = "SELECT   a.cod_transp, a.cod_tercer, c.cod_usuari, b.nom_tercer, b.nom_apell1, b.nom_apell2, b.dir_emailx, c.clv_usuari, IF( b.fec_creaci IS NULL OR a.fec_creaci = '', 'N/A', b.fec_creaci) AS fec_creaci, c.cod_tercer AS cod_pendie, c.ind_activo AS ind_estado
-                   FROM  
+		$mQuery = "SELECT   a.cod_transp, a.cod_tercer, c.cod_usuari, b.nom_tercer, b.nom_apell1, b.nom_apell2, 
+		IFNULL((SELECT `num_placax` FROM `tab_vehicu_vehicu` WHERE `cod_conduc`=a.cod_tercer LIMIT 1),'-') as 'num_placax',
+		b.dir_emailx, c.clv_usuari,
+		IF(c.ind_admini=0,'CONDUCTOR',IF(c.ind_admini=1,'ADMINISTRADOR',IF(c.ind_admini = 2,'INSPECCIONES','-'))) as 'ind_admini', IF( b.fec_creaci IS NULL OR a.fec_creaci = '', 'N/A', b.fec_creaci) AS fec_creaci, c.cod_tercer AS cod_pendie, c.ind_activo AS ind_estado
+                   
+				   
+				   FROM  
                           ".BASE_DATOS.".tab_transp_tercer a INNER JOIN 
                           ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer INNER JOIN
                           ".BASE_DATOS.".tab_usuari_movilx c ON b.cod_tercer = c.cod_tercer
@@ -300,8 +329,12 @@ class AjaxInsertarAutorizacion
 		$cList -> SetHeader( "Nombre conductor", "field:b.nom_tercer" );
 		$cList -> SetHeader( "Primer apellido", "field:b.nom_apell1" );
 		$cList -> SetHeader( "Segundo apellido", "field:b.nom_apell2" );
+		$cList -> SetHeader( "Placa", "field:c.clv_usuari" );
 		$cList -> SetHeader( "Correo", "field:b.dir_emailx" );
-		$cList -> SetHeader( "Contrase�a", "field:c.clv_usuari" );
+
+		$cList -> SetHeader( "Contraseña", "field:c.clv_usuari" );
+		$cList -> SetHeader( "Tipo Usuario", "field:c.ind_admini" );
+
 		$cList -> SetOption(utf8_decode("Opciones"),"field:cod_option; width:1%; onclikDisable:editarUsuarioMovil( 2, this ); onclikEnable:editarUsuarioMovil( 1, this ); onclikEdit:editarUsuarioMovil( 99, this );" );
 		$cList -> SetHidden("cod_tercer", "1" ); 
 		$cList -> SetHidden("nom_tercer", "3" ); 
@@ -315,7 +348,7 @@ class AjaxInsertarAutorizacion
      *  \brief: Realiza la activacion e inactivacion de los usuarios moviles
      *  \author: Edward Serrano
      *  \date: 26/05/2017
-     *  \date modified: dia/mes/a�o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -363,7 +396,7 @@ class AjaxInsertarAutorizacion
     * \brief: Restablece el usuario Movil
     * \author: Edward Serrano
     * \date: 24/05/2017
-    * \date modified: dia/mes/a�o
+    * \date modified: dia/mes/año
     * \param: paramatro
     * \return valor que retorna
     */
