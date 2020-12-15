@@ -3597,7 +3597,7 @@ class InsertNovedad {
                                 $parametros['latitud'] = $mControPadre['val_latitu'];
                                 $parametros['hora'] = $mFecha[1];
                                 $parametros['fecha'] = $mFecha[0];
-                                $parametros['placa'] = $mDatDespac['num_placax'];
+                                $parametros['placa'] = trim($mDatDespac['num_placax']);
                                 // $parametros['manifiesto_codigo'] = $mDatDespac['cod_manifi'];
 
                                 $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
@@ -3665,7 +3665,7 @@ class InsertNovedad {
                                 $parametros['novedad'] = $mDatNoveda['nom_noveda'] . ' ' . $regist['observ'];
                                 $parametros['hora'] = $mFecha[1];
                                 $parametros['fecha'] = $mFecha[0];
-                                $parametros['placa'] = $mDatDespac['num_placax'];
+                                $parametros['placa'] = trim($mDatDespac['num_placax']);
                                 $parametros['manifiesto_codigo'] = $mDatDespac['cod_manifi'];
                                 $parametros['lugar'] = $regist['sitio'];
 
