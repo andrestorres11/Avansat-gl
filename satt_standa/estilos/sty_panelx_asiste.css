@@ -1,0 +1,119 @@
+    .textpanel {
+        font-size: 0.7rem !important;
+        margin-bottom: 0.4rem;
+    }
+    
+    .boldtext {
+        font-weight: bold;
+    }
+    
+    .align-left {
+        text-align: left;
+    }
+    
+    .align-right {
+        text-align: right;
+    }
+    
+    .map {
+        height: 400px;
+        width: 100%;
+    }
+    
+    .tablaval {
+        border: 1px solid black;
+        font-size: 10px;
+    }
+    
+    .tablatraza {
+        font-size: 12px !important;
+    }
+    
+    @media print {
+        .oculto-impresion,
+        .oculto-impresion * {
+            display: none !important;
+        }
+    }
+    /* Estilo del mapa */
+    
+    .ol-popup {
+        position: absolute;
+        background-color: white;
+        -webkit-filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+        filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+        min-width: 280px;
+    }
+    
+    .ol-popup:after,
+    .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+    
+    .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+    }
+    
+    .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+    }
+    
+    .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+    }
+    
+    .ol-popup-closer:after {
+        content: "x";
+        color: #000000
+    }
+    
+    .center-text {
+        text-align: center;
+    }
+    
+    @media (max-width: 700px) {
+        .row {
+            max-width: 100% !important;
+        }
+        .col-md-3 {
+            max-width: 25% !important;
+        }
+        .col-md-6 {
+            max-width: 50% !important;
+        }
+        .col-md-7 {
+            max-width: 70% !important;
+        }
+        .col-md-5 {
+            max-width: 30% !important;
+        }
+        .col-md-12 {
+            max-width: 100% !important;
+        }
+        .col-md-4 {
+            max-width: 33% !important;
+        }
+        .mw-100 {
+            max-width: 30%;
+        }
+    }

@@ -584,6 +584,20 @@
               </form>
             </div>
             </div>';
+            }else if($cod_estado==4){
+              $html.=$servicios;
+              $html.='<div class="card border border-success" style="margin:15px;">
+                        <div class="card-header color-heading text-align">
+                          Informe de la solicitud
+                        </div>
+                        <div class="card-body">
+                          <div class="row">
+                            <div class="col-md-12 text-center">
+                              <a href="../satt_standa/asicar/inf_dashbo_asicar.php?cod_solici='.$_REQUEST['cod_solici'].'"class="small-box-footer btn btn-success btn-sm">Ver</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>';
             }
             else if($cod_estado == 6){
               $html.=$cancelado;
