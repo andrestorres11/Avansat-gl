@@ -147,7 +147,15 @@
             //Informacion Básica de la asistencia
             $inf_basica = self::darInformacion($_REQUEST['cod_solici']);
             $rutas = self::getDataRutasServicios($_REQUEST['cod_solici']);
-            $html = '<div class="row m-3">
+
+            $title = mb_strtoupper($inf_basica['nom_asiste']);
+            $title = str_replace("ñ", "Ñ", $title);
+
+            $html = '
+            <div class="row m-3">
+              <div class="col-md-12 text-center"><h3>INFORME DE '. $title .'</h3></div>
+            </div>
+            <div class="row m-3">
             <div class="col-md-3">
               <div class="small-box bg-info">
                 <div class="inner">
@@ -160,7 +168,7 @@
                         </div>
                       </center>
                       <p class="textpanel boldtext">Fecha de solcitud: '.$inf_basica['fec_creaci'].'</p>
-                      <p class="textpanel boldtext">Tipo de solicitud: '.$inf_basica['tip_solici'].'</p>
+                      <p class="textpanel boldtext">Tipo de solicitud: '.$inf_basica['nom_asiste'].'</p>
                       <p class="textpanel boldtext">Cliente: '.$inf_basica['nom_client'].'</p>
                     </div>
                     <div class="icon">
@@ -228,7 +236,7 @@
                           <div class="row">
                             <div class="col-md-12">
                               <input type="hidden" value="'.base64_encode(json_encode($rutas)).'" name="dat_gpsxxx" id="dat_gpsxxx">
-                              <div id="map" class="map"></div>
+                              <div id="map" class="map border p-2"></div>
                                             <div id="popupContenedor" class="ol-popup">
                                                 <a href="#" id="popup-closer" class="ol-popup-closer"></a>
                                                 <div id="popupContent"></div>
@@ -502,7 +510,7 @@
 										<i class="fas fa-times"></i>
 									</button>
 								</div> </div>
-              <div class="card-body">';
+              <div class="card-body"><div class="row">';
 
                     $res_servic = self::getDataFormulario($servicio['id'],1);
                     $tot_servic = self::getDataFormulario($servicio['id'],2);
@@ -512,8 +520,7 @@
 											<div class=" m-3 alert alert-warning" role="alert">
 												No hay información registrada de este servicio.
 											</div>
-										</div>
-                      ';
+										</div>';
                     }else{
 										foreach($res_servic as $data1){
 											if($data1['cod_campox']==37){
@@ -526,7 +533,7 @@
                         }
                       }
                     }
-              $html.='</div>
+              $html.='</div></div>
 										  <hr>
                       <div class="row">';
                       
@@ -545,6 +552,7 @@
 							$html.='</div>
 						</div>
 						</div>
+            </div>
             </div>';
           }
 
