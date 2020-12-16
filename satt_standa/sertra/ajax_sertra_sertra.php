@@ -150,7 +150,7 @@ class ajax_certra_certra {
             cod_grupox, cod_operac, cod_priori, ind_conper, hor_pe1urb, hor_pe2urb, 
             hor_pe1nac, hor_pe2nac, hor_pe1imp, hor_pe2imp, hor_pe1exp, hor_pe2exp, 
             hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, ind_solpol, cod_asegur, 
-            num_poliza, fec_valreg
+            num_poliza, fec_valreg, hab_asicar, fec_asicar
             FROM " . BASE_DATOS . ".tab_transp_tipser 
             WHERE cod_transp = '$datos->cod_transp' 
             AND num_consec = $datos->num_consec";
@@ -265,10 +265,11 @@ class ajax_certra_certra {
         ?>
         <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuraci&oacute;n del Servicio</b></h3>
-            <div id="contenido_conf" style="height: 230px !important">
-                <div class="StyleDIV contenido" style="min-height: 185px !important;">
+            <div id="contenido_conf" style="height: 290px !important">
+                <div class="StyleDIV contenido" style="min-height: 200px !important;">
                     <div class="col-md-1">&nbsp;</div>
                     <div class="col-md-10">
+                        <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Fecha Inicio del Servicio<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
@@ -281,6 +282,8 @@ class ajax_certra_certra {
                                 <input type="text" readonly="true" class="hora text-center ancho" obl="1" name="hor_iniser" validate="dir" id="hor_iniserID" maxlength="5" minlength="5" obl="true" onclick="removeStyle('hor_iniserID')" value="<?= $datos->principal['hor_iniser'] ?>" >
                             </div>
                         </div>
+                        </div>
+                        <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Fecha Fin del Servicio<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
@@ -293,6 +296,8 @@ class ajax_certra_certra {
                                 <input type="text" readonly="true" obl="1"  class="hora text-center ancho" name="hor_finser" validate="dir" id="hor_finserID" maxlength="5" minlength="5" obl="true" onclick="removeStyle('hor_finserID')" value="<?= $datos->principal['hor_finser'] ?>" >
                             </div>
                         </div>
+                        </div>
+                        <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Valor del Despacho<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
@@ -305,6 +310,8 @@ class ajax_certra_certra {
                                 <input type="text" class="text-center ancho" name="val_regist" id="val_registID" validate="numero" obl="1" maxlength="4" minlength="3" value="<?= $datos->principal['val_regist'] ?>" >
                             </div>
                         </div>
+                        </div>
+                        <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Interfaz con Servidor<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
@@ -328,6 +335,8 @@ class ajax_certra_certra {
                                 <input type="text" class="fecha text-center ancho" name="fec_valreg" id="fec_valregID" validate="date" obl="1" maxlength="10" minlength="10" value="<?= $datos->principal['fec_valreg'] ?>" >
                             </div>
                         </div>
+                        </div>
+                        <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Nombre de la Aplicaci&oacute;n<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
@@ -346,6 +355,8 @@ class ajax_certra_certra {
                                 <input type="checkbox" name="ind_solpol" id="ind_solpol" value="1" <?= $ind_solpol ?> >
                             </div>
                         </div>
+                        </div>
+                        <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Aseguradora</div>
                             <div class="col-md-6 text-left">
@@ -370,6 +381,8 @@ class ajax_certra_certra {
                                 <input type="text" name="num_poliza" id="num_poliza" class="text-center ancho" validate="dir" maxlength="20" minlength="5" value="<?= $datos->principal['num_poliza'] ?>" >
                             </div>
                         </div>
+                        </div>
+                        <div class="row">
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Tipo de Servicio Contratado<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
@@ -387,9 +400,35 @@ class ajax_certra_certra {
                                 </select>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                        </div>
+                        </div>
+                        
+                        <div class="row">          
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">S. Asistencia en Carretera</div>
+                                <div class="col-md-6 text-left">
+                                    <?php
+                                        $hab_asicar = "";
+                                        if ($datos->principal['hab_asicar'] == 1) {
+                                        $hab_asicar = "checked='true'";
+                                        }
+                                    ?>
+                                    <input type="checkbox" name="hab_asicar" id="hab_asicar" value="1" <?= $hab_asicar ?> >
+                                </div>
+                            </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Fecha de aceptacion T.C.<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="text" class="fecha text-center ancho" obl="1" name="fec_asicar" validate="date" id="fec_asicarID" maxlength="10" minlength="10" obl="true" value="<?= $datos->principal['fec_asicar'] ?>" >
+                            </div>
+                        </div>
+                        </div>
+                        </div>
+                        
                     </div>
                     <div class="col-md-1">&nbsp;</div>
-                </div>
+                    
             </div>
         </div>
         <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
@@ -1337,6 +1376,7 @@ class ajax_certra_certra {
         $datos->ind_camrut = $datos->ind_camrut == '1' ? '1' : '0';
         $datos->dup_manifi = $datos->dup_manifi == '1' ? '1' : '0';
         $datos->ind_solpol = $datos->ind_solpol == '1' ? '1' : '0';
+        $datos->hab_asicar = $datos->hab_asicar == '1' ? '1' : '0';
         $datos->tie_trazab = str_replace('.', ',', $datos->tie_trazab);
         $datos->tie_trazab = $datos->tie_trazab * 60;
 
@@ -1354,7 +1394,7 @@ class ajax_certra_certra {
             hor_pe2exp, hor_pe1imp, hor_pe2imp, hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, 
             hor_pe2tr2, ind_conper, ind_solpol, cod_asegur, num_poliza, fec_valreg, 
             ind_segprc, tie_prcurb, tie_prcnac, tie_prcimp, tie_prcexp, tie_prctr1, 
-            tie_prctr2
+            tie_prctr2, hab_asicar, fec_asicar
         ) VALUES  ( 
         '$datos->num_consec', '$datos->cod_tipser', '$datos->tie_contro', '$datos->ind_estado', '$datos->tie_conurb', '$datos->ind_llegad', 
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
@@ -1368,7 +1408,8 @@ class ajax_certra_certra {
         '$datos->hor_pe1nac', '$datos->hor_pe2nac', '$datos->hor_pe1urb', '$datos->hor_pe2urb', '$datos->hor_pe1exp', '$datos->hor_pe2exp', 
         '$datos->hor_pe1imp', '$datos->hor_pe2imp', '$datos->hor_pe1tr1', '$datos->hor_pe2tr1', '$datos->hor_pe1tr2', '$datos->hor_pe2tr2', 
         '$datos->ind_conper', '$datos->ind_solpol', '$datos->cod_asegur', '$datos->num_poliza', '$datos->fec_valreg', '$datos->ind_segprc',
-        '$datos->tie_prcurb', '$datos->tie_prcnac', '$datos->tie_prcimp', '$datos->tie_prcexp', '$datos->tie_prctr1', '$datos->tie_prctr2'
+        '$datos->tie_prcurb', '$datos->tie_prcnac', '$datos->tie_prcimp', '$datos->tie_prcexp', '$datos->tie_prctr1', '$datos->tie_prctr2',
+        '$datos->hab_asicar', '$datos->fec_asicar'
         )";
 
         $mSql = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
