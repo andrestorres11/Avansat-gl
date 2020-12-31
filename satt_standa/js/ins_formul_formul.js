@@ -71,6 +71,8 @@ function buildHtml(type) {
                 return { min: '', max: '', lock: true, html: '<select id="formul_selectID"><option value="">Seleccione una Opción.</option></select>' };
             case 'file':
                 return { min: '', max: '', lock: true, html: '<input type="file">' };
+            case 'camera':
+                return { min: '', max: '', lock: true, html: '<div class="camera-input"><input type="file" accept="image/*" multiple ><div class="gallery"></div><p class="error"></p></div>' };
             default:
                 return { min: '', max: '', lock: false, html: '' };
         }

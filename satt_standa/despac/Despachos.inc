@@ -3897,13 +3897,15 @@ class Despachos
      */
     private function getRemesasDespac( $mNumDespac )
     {
-        $mSql = "SELECT IF(cod_remesa IS NULL OR cod_remesa = '', '-', cod_remesa) AS cod_remesa,
-                        IF(fec_estent IS NULL OR fec_estent = '', '-', fec_estent) AS fec_estent,
-                        val_pesoxx,val_volume,des_empaqu,
-                        des_mercan,abr_client,abr_remite,
-                        abr_destin 
-                   FROM ".BASE_DATOS.".tab_despac_remesa 
-                  WHERE num_despac = '{$mNumDespac}' ";
+        $mSql = "SELECT IF(a.cod_remesa IS NULL OR a.cod_remesa = '', '-', a.cod_remesa) AS cod_remesa,
+                        IF(a.fec_estent IS NULL OR a.fec_estent = '', '-', a.fec_estent) AS fec_estent,
+                        a.val_pesoxx, a.val_volume, a.des_empaqu,
+                        a.des_mercan, b.abr_tercer, a.abr_remite,
+                        a.abr_destin 
+                   FROM ".BASE_DATOS.".tab_despac_remesa a
+             INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b 
+                     ON a.num_docume = b.cod_tercer
+                  WHERE a.num_despac = '{$mNumDespac}' ";
         $mConsult = new Consulta($mSql, $this->conexion);
         return $mResult = $mConsult->ret_matrix('a');
     }

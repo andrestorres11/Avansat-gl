@@ -28,7 +28,8 @@ class FormularioCampos
 			array('textarea', 'Area de Texto'),
 			array('checkbox', 'Check'),
 			array('select', 'Lista'),
-			array('file', 'Adjunto')
+			array('file', 'Adjunto'),
+			array('camera', 'Camara')
 		);
 
 	private static $typeDataLength = array('number', 'text', 'alpha', 'textarea'); #Tipos de datos a los que aplica la min y max de caracteres

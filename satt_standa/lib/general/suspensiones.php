@@ -19,8 +19,9 @@ class suspensiones {
   {
     if ($_REQUEST['ajax'] == 'on') {
       chdir(__DIR__."/../");
-      include_once 'ajax.inc';
-      include_once 'general/festivos.php';
+      include_once '../lib/general/constantes.inc';
+      include_once '../lib/ajax.inc';
+      include_once '../lib/general/festivos.php';
 
       $this -> conexion = $AjaxConnection;
     }else{
@@ -118,12 +119,7 @@ class suspensiones {
 
     //Se recorre el arreglo
     foreach ($cReturn as $key => $value) {
-
-      //Valida si la factura tiene dias en prologa, para asignarlos a la fehca vencimiento
-      if(!is_null($value['dias_prorro'])){
-        $cReturn[$key]['fec_suspen'] = date("Y-m-d",strtotime($value['fec_factur']."+ ".$value['dias_prorro']." days")); 
-      }
-
+ 
       //Valida si tiene nota contable, si la tiene, le resta el valor y del recaudo al valor total
       if(!is_null($value['nota_contable'])){
         $cReturn[$key]['val_totalx'] = $value['val_totalx']-$value['val_recaud']-$value['nota_contable']; 
@@ -135,8 +131,14 @@ class suspensiones {
         if($keyCampo == 'fec_factur'){
 
           //Asigna los dias que se asigna para hacer el pago
-          $cReturn[$key]['fec_suspen'] = date("Y-m-d",strtotime($value['fec_factur']."+ 85 days")); 
-
+          //validar linea 165 que estan los dias adicionales para la suspension.
+          $cReturn[$key]['fec_suspen'] = date("Y-m-d",strtotime($value['fec_factur']."+ 55 days")); 
+          
+          //Valida si la factura tiene dias en prologa, para asignarlos a la fehca vencimiento
+          if(!is_null($value['dias_prorro'])){
+            $cReturn[$key]['fec_suspen'] = date("Y-m-d",strtotime($cReturn[$key]['fec_suspen']."+ ".$value['dias_prorro']." days")); 
+          }
+          
           //Valida dias festivos
           $cReturn[$key]['fec_suspen'] = $this->valFest($cReturn[$key]['fec_suspen']);
           $cReturn[$key]['dia'] = date("D", strtotime($cReturn[$key]['fec_suspen']));
@@ -160,7 +162,7 @@ class suspensiones {
     foreach ($cReturn as $key => $value) {
       if($value['fec_suspen']." 15:00:00" < date('Y-m-d H:i:s')){
         $segSusp['suspendido'][] = $value;
-      }else if($value['fec_suspen'] >= date('Y-m-d') AND $value['fec_suspen'] <= date("Y-m-d",strtotime(date('Y-m-d')."+ 10 days"))){
+      }else if($value['fec_suspen'] >= date('Y-m-d') AND $value['fec_suspen'] <= date("Y-m-d",strtotime(date('Y-m-d')."+ 5 days"))){
         $segSusp['porSuspender'][] = $value;
       }
     }
@@ -575,72 +577,75 @@ class suspensiones {
    */
 
   function insertNovedaS($values, $cod_tercer, $fNumDespac){
+    try{
+      //Valida si tiene enlace con faro
+      $interf = $this->getInterfParame(50, $cod_tercer);
+      if($interf['status']){
 
-    //Valida si tiene enlace con faro
-    $interf = $this->getInterfParame(50, $cod_tercer);
-    if($interf['status']){
+        //Datos Necesarios para el envio de WS
+        $dataInterf = $this->getDataInterf($cod_tercer, $values);
 
-      //Datos Necesarios para el envio de WS
-      $dataInterf = $this->getDataInterf($cod_tercer, $values);
+        //Instancia SOAPCL para poder consumir el WS
+        $client = new SoapClient($dataInterf['url'], array("trace" => 1,'encoding' => 'ISO-8859-1',"stream_context" => stream_context_create(array('ssl' => array('verify_peer' => false,'allow_self_signed' => true,),)),)); 
 
-      //Instancia SOAPCL para poder consumir el WS
-      $client = new SoapClient($dataInterf['url'], array("trace" => 1,'encoding' => 'ISO-8859-1',"stream_context" => stream_context_create(array('ssl' => array('verify_peer' => false,'allow_self_signed' => true,),)),)); 
+        //Se crea el arreglo para el envio del WS
+        $send = array("nom_usuari" => $interf['data']['nom_usuari'],
+                      "pwd_clavex" => $interf['data']['clv_usuari'],
+                      "nom_aplica" => $interf['data']['nom_operad'],
+                      "num_manifi" => $dataInterf['cod_manifi'],
+                      "num_placax" => $dataInterf['num_placax'], 
+                      "cod_novbas" => 0,
+                      "cod_conbas" => $dataInterf['cod_pcxbas'],
+                      "tim_duraci" => 0,
+                      "fec_noveda" => date('Y-m-d H:i'),
+                      "des_noveda" => $dataInterf["des_noveda"], 
+                      "nom_contro" => $dataInterf['nom_contro'],
+                      "nom_sitiox" => substr($dataInterf['nom_contro'], 0, 50),
+                      "cod_confar" => NULL,
+                      'cod_novfar' => $dataInterf['cod_noveda'], 
+                      'nom_noveda' => $dataInterf['nom_noveda'], 
+                      'ind_alarma' => $dataInterf['ind_alarma'], 
+                      'ind_tiempo' => $dataInterf['ind_tiempo'], 
+                      'nov_especi_' => $dataInterf['nov_especi'],
+                      'ind_manala' => $dataInterf['ind_manala']
+                      );
 
-      //Se crea el arreglo para el envio del WS
-      $send = array("nom_usuari" => $interf['data']['nom_usuari'],
-                    "pwd_clavex" => $interf['data']['clv_usuari'],
-                    "nom_aplica" => $interf['data']['nom_operad'],
-                    "num_manifi" => $dataInterf['cod_manifi'],
-                    "num_placax" => $dataInterf['num_placax'], 
-                    "cod_novbas" => 0,
-                    "cod_conbas" => $dataInterf['cod_pcxbas'],
-                    "tim_duraci" => 0,
-                    "fec_noveda" => date('Y-m-d H:i'),
-                    "des_noveda" => $dataInterf["des_noveda"], 
-                    "nom_contro" => $dataInterf['nom_contro'],
-                    "nom_sitiox" => substr($dataInterf['nom_contro'], 0, 50),
-                    "cod_confar" => NULL,
-                    'cod_novfar' => $dataInterf['cod_noveda'], 
-                    'nom_noveda' => $dataInterf['nom_noveda'], 
-                    'ind_alarma' => $dataInterf['ind_alarma'], 
-                    'ind_tiempo' => $dataInterf['ind_tiempo'], 
-                    'nov_especi_' => $dataInterf['nov_especi'],
-                    'ind_manala' => $dataInterf['ind_manala']
-                    );
+        //Se consume el WS
+        $result = $client -> __soapCall("setNovedadNC", $send );  
 
-      //Se consume el WS
-      $result = $client -> __soapCall("setNovedadNC", $send );  
+        //Divide el resultado para validar valores de respuesta
+        $resultArray = explode(";", $result);
+        $code_resp = explode(":", $resultArray[0]);
+        $msg_resp = explode(":", $resultArray[1]);
 
-      //Divide el resultado para validar valores de respuesta
-      $resultArray = explode(";", $result);
-      $code_resp = explode(":", $resultArray[0]);
-      $msg_resp = explode(":", $resultArray[1]);
+        //Valida si la respuesta fue satisfactoria
+        if ($code_resp[1] == '1000') {
+          //Consulta de inservción de la novedad
+          $mSql = "INSERT INTO ". BASE_DATOS . ".tab_despac_contro
+                              (num_despac, 
+                              cod_contro, 
+                              cod_rutasx, 
+                              cod_consec, 
+                              obs_contro, 
+                              cod_noveda, 
+                              tiem_duraci, 
+                              fec_contro,
+                              cod_sitiox, 
+                              usr_creaci,
+                              fec_creaci)
+                        VALUES ".join(",",$values);
 
-      //Valida si la respuesta fue satisfactoria
-      if ($code_resp[1] == '1000') {
-        //Consulta de inservción de la novedad
-        $mSql = "INSERT INTO ". BASE_DATOS . ".tab_despac_contro
-                             (num_despac, 
-                             cod_contro, 
-                             cod_rutasx, 
-                             cod_consec, 
-                             obs_contro, 
-                             cod_noveda, 
-                             tiem_duraci, 
-                             fec_contro,
-                             cod_sitiox, 
-                             usr_creaci,
-                             fec_creaci)
-                      VALUES ".join(",",$values);
-
-        if(new Consulta($mSql, $this->conexion, 'R') === FALSE ) {
-        	//Registro logs Novedades
-            $this->regLogs("Consulta", $cod_tercer, $fNumDespac, $mSql);
+          if(new Consulta($mSql, $this->conexion, 'R') === FALSE ) {
+            //Registro logs Novedades
+              $this->regLogs("Consulta", $cod_tercer, $fNumDespac, $mSql);
+          }
+        }else{
+          //Registro logs Novedades
+          $this->regLogs("Respuesta WS", $cod_tercer, $fNumDespac, $result);
         }
-      }else{
-      	//Registro logs Novedades
-        $this->regLogs("Respuesta WS", $cod_tercer, $fNumDespac, $result);
       }
+    }catch(Exception $e){
+      return "Se presento una novedad en el metodo insertNovedaS: ".$e->getMessage();
     }
   }
 
