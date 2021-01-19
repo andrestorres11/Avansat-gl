@@ -84,7 +84,7 @@ function validar_cass(desurb)
 function aceptar_remdes()
 {
   var formulario = document.forms[0];
-  var valida_cass = validar_cass(formulario.desurb.value);
+  var valida_cass = "";//validar_cass(formulario.desurb.value); 
 
   if(valida_cass != "")
   {
