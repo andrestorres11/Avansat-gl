@@ -4332,7 +4332,7 @@ class Despac
 	{
 		try
 		{
-			$mSql = $mTrans."	 SELECT xx.num_despac
+			$mSql = "	 SELECT xx.num_despac
 					   FROM ".BASE_DATOS.".tab_despac_despac xx 
 				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
 						 ON xx.num_despac = yy.num_despac
