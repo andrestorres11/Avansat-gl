@@ -1360,7 +1360,6 @@ class Despac
 	 */
 	private function getDespacTransi1( $mTransp )
 	{
-		
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
@@ -1399,20 +1398,8 @@ class Despac
 					 ON a.cod_tipdes = i.cod_tipdes
 			 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
 					 ON a.cod_client = k.cod_tercer 
-				  WHERE 1=1";
-
-
-		//Filtro Generador de Carga
-		$fil_gencar = self::getFiltroGeneradorCarga();
-			if($fil_gencar!='' || $fil_gencar!=NULL){
-			$mSql .= " AND a.cod_client =  $fil_gencar ";
-		}
-
+				  WHERE 1=1 ";
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND a.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
-		
-		
-		
-
 		#Filtros por Formulario
 		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
 		$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
@@ -1470,18 +1457,6 @@ class Despac
 		}
 
 		return $mResult;
-	}
-
-
-	public function getFiltroGeneradorCarga(){
-		$mSql = "	 SELECT a.clv_filtro
-					   FROM ".BASE_DATOS.".tab_aplica_filtro_usuari a
-					  WHERE 
-					  a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND
-					  a.cod_filtro = '".COD_FILTRO_CLIENT."';";
-		$mConsult = new Consulta( $mSql, self::$cConexion );
-		$mfiltroc = $mConsult -> ret_arreglo();
-		return $mfiltroc['clv_filtro'];			
 	}
 
 	/*! \fn: getDespacTransi2
@@ -4332,7 +4307,7 @@ class Despac
 	{
 		try
 		{
-			$mSql = $mTrans."	 SELECT xx.num_despac
+			$mSql = "	 SELECT xx.num_despac
 					   FROM ".BASE_DATOS.".tab_despac_despac xx 
 				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
 						 ON xx.num_despac = yy.num_despac
