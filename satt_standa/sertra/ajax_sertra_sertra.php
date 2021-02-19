@@ -186,7 +186,8 @@ class ajax_certra_certra {
         $esferas = $consulta->ret_matrix("a");
         $datos->esferas = $esferas;
 
-
+        $datos->principal['min_deshei']=3;
+        $datos->principal['min_reghei']=3;  
         #si no hay datos pueden venir por post algunos
         if (!$datos->principal['fec_iniser'] || $_POST['fec_iniser']) {
             $datos->principal['fec_iniser'] = $_POST['fec_iniser'];
@@ -205,9 +206,17 @@ class ajax_certra_certra {
         }
         if (!$datos->principal['val_despac'] || $_POST['val_despac']) {
             $datos->principal['val_despac'] = $_POST['val_despac'];
+            if($datos->principal['val_despac']==''){
+                $datos->principal['val_despac']=0;
+                $datos->principal['min_deshei']=1; 
+            }
         }
         if (!$datos->principal['val_regist'] || $_POST['val_regist']) {
             $datos->principal['val_regist'] = $_POST['val_regist'];
+            if($datos->principal['val_regist']==''){
+                $datos->principal['val_regist']=0;
+                $datos->principal['min_reghei']=1;  
+            }
         }
         if (!$datos->principal['cod_server'] || $_POST['cod_server']) {
             $datos->principal['cod_server'] = $_POST['cod_server'];
@@ -299,15 +308,15 @@ class ajax_certra_certra {
                         </div>
                         <div class="row">
                         <div class="col-md-6">
-                            <div class="col-md-6 text-right">Valor del Despacho<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-right">Valor del Despacho <font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
-                                <input type="text" class="text-center ancho" name="val_despac" id="val_despacID" validate="numero" obl="1" maxlength="5" minlength="3" value="<?= $datos->principal['val_despac'] ?>" >
+                                <input type="text" class="text-center ancho" name="val_despac" id="val_despacID" validate="numero" obl="1" maxlength="5" minlength="<?= $datos->principal['min_deshei'] ?>" value="<?= $datos->principal['val_despac'] ?>" >
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="col-md-6 text-right">Valor del Registro<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-right">Valor del Registro  <font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
-                                <input type="text" class="text-center ancho" name="val_regist" id="val_registID" validate="numero" obl="1" maxlength="4" minlength="3" value="<?= $datos->principal['val_regist'] ?>" >
+                                <input type="text" class="text-center ancho" name="val_regist" id="val_registID" validate="numero" obl="1" maxlength="4" minlength="<?= $datos->principal['min_reghei'] ?>" value="<?= $datos->principal['val_regist'] ?>" >
                             </div>
                         </div>
                         </div>
@@ -1418,17 +1427,17 @@ class ajax_certra_certra {
                         fec_modifi = NOW()
                         WHERE cod_tercer = $datos->cod_transp";
         $insercion = new Consulta($mSql, self::$cConexion, "C");
+        
+        //se eliminan los puestos para quecuando actualice no queden los que ya no utilizan
+        $sql = "DELETE FROM " . BASE_DATOS . ".tab_ealxxx_transp 
+        WHERE cod_transp = '$datos->cod_transp' ";
+        $consulta = new Consulta($sql, self::$cConexion);
 
         if ($datos->eal != array()) {
             $consulta = new Consulta($query, self::$cConexion, "BR");
             $fecini = $datos->fecini;
             $precio = $datos->precio;
             $fecfin = $datos->fecfin;
-            //se eliminan los puestos para quecuando actualice no queden los que ya no utilizan
-            $sql = "DELETE FROM " . BASE_DATOS . ".tab_ealxxx_transp 
-                          WHERE cod_transp = '$datos->cod_transp' ";
-            $consulta = new Consulta($sql, self::$cConexion);
-            
             foreach ($datos->eal as $key => $value) {
                 $sql1 = "SELECT con_ealtra FROM " . BASE_DATOS . ".tab_ealxxx_transp WHERE cod_transp = '$datos->cod_transp' AND cod_ealxxx = '$value'";
                 $consulta = new Consulta($sql1, self::$cConexion);
@@ -1459,7 +1468,7 @@ class ajax_certra_certra {
                     $consulta = new Consulta($sql2, self::$cConexion, "R");
                 }
             }
-        } else {
+        }else{
             if ($consulta = new Consulta($query, self::$cConexion, "C")) {
                 echo true;
             } else {
