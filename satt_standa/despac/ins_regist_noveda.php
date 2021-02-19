@@ -108,11 +108,15 @@ class Proc_despac {
             $_SESSION['ind_qrcode'] = 'yes';
         }
 
-        $query = "SELECT a.num_despac, a.cod_manifi, c.abr_tercer, d.num_placax, e.abr_tercer
+        $query = "SELECT a.num_despac, a.cod_manifi, c.abr_tercer, d.num_placax, e.abr_tercer, f.nom_ciudad, g.nom_ciudad
                     FROM " . BASE_DATOS . ".tab_despac_despac a
               INNER JOIN " . BASE_DATOS . ".tab_despac_vehige d ON a.num_despac = d.num_despac
               INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer c ON d.cod_transp = c.cod_tercer
               INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer e ON d.cod_conduc = e.cod_tercer
+              INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad f ON a.cod_ciuori = f.cod_ciudad
+                    AND a.cod_depori = f.cod_depart AND a.cod_paiori = f.cod_paisxx
+              INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad g ON a.cod_ciudes = g.cod_ciudad
+                    AND a.cod_depdes = g.cod_depart AND a.cod_paides = g.cod_paisxx      
                    WHERE a.fec_salida Is Not Null 
                      AND a.fec_salida <= NOW() 
                      AND a.fec_llegad Is Null 
@@ -179,7 +183,9 @@ class Proc_despac {
 
         $formulario->nueva_tabla();
         $formulario->linea("Despacho", 0, "t");
-        $formulario->linea("Número de Transporte", 0, "t");
+        $formulario->linea("Manifiesto", 0, "t");
+        $formulario->linea("Origen", 0, "t");
+        $formulario->linea("Destino", 0, "t");
         $formulario->linea("Transportadora", 0, "t");
         $formulario->linea("Vehiculo", 0, "t");
         $formulario->linea("Conductor", 1, "t");
@@ -191,9 +197,10 @@ class Proc_despac {
                                             placa=" . $VEHICULO[$i][3] . "&
                                             opcion=datos&buffpal=" . $VEHICULO[$i][0] . " \" 
                                    target=\"centralFrame\" >" . $VEHICULO[$i][0] . "</a>";
-
             $formulario->linea($VEHICULO[$i][0], 0, "i");
-            $formulario->linea($VEHICULO[$i][1], 0, "i");
+            $formulario->linea($VEHICULO[$i][1], 0, "i"); //Manifiesto
+            $formulario->linea($VEHICULO[$i][5], 0, "i"); //Ciudad Origen
+            $formulario->linea($VEHICULO[$i][6], 0, "i"); //Ciudad Destino
             $formulario->linea($VEHICULO[$i][2], 0, "i");
             $formulario->linea($VEHICULO[$i][3], 0, "i");
             $formulario->linea($VEHICULO[$i][4], 1, "i");
@@ -266,7 +273,8 @@ class Proc_despac {
             $query = "SELECT a.num_despac, a.cod_manifi, c.abr_tercer as nom_transp, 
                              d.abr_tercer as nom_conduc, e.abr_tercer as nom_client,
                              d.dir_ultfot as fot_conduc, f.nom_agenci, g.ano_modelo,
-                             h.nom_marcax, i.nom_colorx, b.cod_conduc, c.cod_tercer
+                             h.nom_marcax, i.nom_colorx, b.cod_conduc, c.cod_tercer,
+                             k.nom_ciudad as 'ciu_origen', l.nom_ciudad as 'ciu_destin', m.nom_rutasx as 'nom_rutasx'
                         FROM " . BASE_DATOS . ".tab_despac_despac a
                   INNER JOIN " . BASE_DATOS . ".tab_despac_vehige b ON a.num_despac = b.num_despac 
                   INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer c ON b.cod_transp = c.cod_tercer
@@ -276,6 +284,11 @@ class Proc_despac {
                   INNER JOIN " . BASE_DATOS . ".tab_genera_marcas h ON g.cod_marcax = h.cod_marcax                              
                    LEFT JOIN " . BASE_DATOS . ".tab_vehige_colore i ON i.cod_colorx = g.cod_colorx 
                    LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer e ON a.cod_client = e.cod_tercer
+                  INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad k ON a.cod_ciuori = k.cod_ciudad
+                   AND a.cod_depori = k.cod_depart AND a.cod_paiori = k.cod_paisxx
+                  INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad l ON a.cod_ciudes = l.cod_ciudad
+                   AND a.cod_depdes = l.cod_depart AND a.cod_paides = l.cod_paisxx
+                  INNER JOIN " . BASE_DATOS . ".tab_genera_rutasx m ON b.cod_rutasx = m.cod_rutasx
                        WHERE a.fec_salida IS NOT NULL 
                          AND a.fec_salida <= NOW() 
                          AND a.fec_llegad IS NULL 
@@ -324,6 +337,18 @@ class Proc_despac {
                 echo "<td class='celda_info' style='padding:4px;' width='25%'>$DATOS[num_despac]</td>";
                 echo "<td class='celda_titulo' style='padding:4px;' width='25%' align='right' >Transportadora</td>";
                 echo "<td class='celda_info' style='padding:4px;' width='25%'>$DATOS[nom_transp]<input type='hidden' name='cod_tercer' value='$DATOS[cod_tercer]'></td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<td class='celda_titulo' style='padding:4px;' width='25%' align='right' >Numero de Manifiesto: </td>";
+                echo "<td class='celda_info' style='padding:4px;' width='25%'>$DATOS[cod_manifi]</td>";
+                echo "<td class='celda_titulo' style='padding:4px;' width='25%' align='right' >Origen</td>";
+                echo "<td class='celda_info' style='padding:4px;' width='25%'>$DATOS[ciu_origen]<input type='hidden' name='nom_conduc' value='$DATOS[nom_conduc]'></td>";
+                echo "</tr>";
+                echo "<tr>";
+                echo "<td class='celda_titulo' style='padding:4px;' width='25%' align='right' >Destino: </td>";
+                echo "<td class='celda_info' style='padding:4px;' width='25%'>$DATOS[ciu_destin]</td>";
+                echo "<td class='celda_titulo' style='padding:4px;' width='25%' align='right' >Ruta</td>";
+                echo "<td class='celda_info' style='padding:4px;' width='25%'>$DATOS[nom_rutasx]<input type='hidden' name='nom_conduc' value='$DATOS[nom_conduc]'></td>";
                 echo "</tr>";
                 echo "<tr>";
                 echo "<td class='celda_titulo' style='padding:4px;' width='25%' align='right' >Cedula Conductor: </td>";
