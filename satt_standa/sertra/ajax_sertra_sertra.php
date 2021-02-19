@@ -886,7 +886,7 @@ class ajax_certra_certra {
             </div>
         </div>
         <div id="conf_ealID" class="col-md-12 accordion defecto ancho">
-            <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>EAL Contratadas</b></h3>
+            <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>OAL Contratadas</b></h3>
             <div id="contenido_serv">
                 <div class="StyleDIV contenido" style="min-height: <?= (count($eals) * 25 + 30) ?>px !important;" >
                     <div class="col-md-12">
@@ -894,7 +894,7 @@ class ajax_certra_certra {
                         <div class="col-md-6">
                             <table width="100%" cellpadding="1" cellspacing="1">
                                 <tr class="CellHead centrado">
-                                    <td width="50%" class="blanco">EAL</td>
+                                    <td width="50%" class="blanco">OAL</td>
                                     <td width="10%" class="blanco">Valor</td>
                                     <td width="20%"  class="blanco">Desde</td>
                                     <td width="20%" class="blanco">Hasta</td>
@@ -1427,7 +1427,7 @@ class ajax_certra_certra {
                         fec_modifi = NOW()
                         WHERE cod_tercer = $datos->cod_transp";
         $insercion = new Consulta($mSql, self::$cConexion, "C");
-        
+
         //se eliminan los puestos para quecuando actualice no queden los que ya no utilizan
         $sql = "DELETE FROM " . BASE_DATOS . ".tab_ealxxx_transp 
         WHERE cod_transp = '$datos->cod_transp' ";
