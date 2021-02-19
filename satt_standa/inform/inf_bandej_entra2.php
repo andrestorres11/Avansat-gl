@@ -97,11 +97,11 @@ class infBandeja
 					{
 						$mHtml1 .= '<tr><th class="CellHead" colspan="8" style="text-align:left">Tipo de Servicio</th></tr>';
 						$mHtml1 .= '<tr>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">EAL</td>';
+						$mHtml1 .= '	<td class="cellInfo1" align="right">OAL</td>';
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic1" '.($_REQUEST['tip_servic1'] == 1 ? 'checked' : '').' ></td>';
 						$mHtml1 .= '	<td class="cellInfo1" align="right">MA</td>';
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic2" '.($_REQUEST['tip_servic2'] == 1 ? 'checked' : '').' ></td>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">EAL/MA</td>';
+						$mHtml1 .= '	<td class="cellInfo1" align="right">OAL/MA</td>';
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic3" '.($_REQUEST['tip_servic3'] == 1 ? 'checked' : '').' ></td>';
 						$mHtml1 .= '	<td class="cellInfo1" colspan="2">&nbsp;</td>';
 						$mHtml1 .= '</tr>';
