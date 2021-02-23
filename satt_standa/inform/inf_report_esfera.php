@@ -208,7 +208,7 @@ class InfReportEspera
 					$mHtml->Label( "TOTAL", array("class"=>"CellHead", "rowspan"=>"2", "end"=>true) );
 
 					foreach ($mContro as $row) {
-						$mHtml->Label( utf8_encode($row[1]), array("class"=>"CellHead text-vertical") );
+						$mHtml->Label( utf8_encode($row[1]), array("class"=>"CellHead") );
 					}
 					$mHtml->CloseRow('tr');
 					#</titulos>
@@ -308,9 +308,10 @@ class InfReportEspera
 	private function getData( $mContro = null, $mReport = null ){
 		$mSql = "SELECT @x:=@x+1 AS num_consec, 
 						a.num_despac, c.cod_transp, a.fec_noveda, 
-						c.num_placax, a.usr_creaci, a.cod_verpcx, 
+						c.num_placax, a.usr_creaci, a.cod_verpcx,
+						n.nom_noveda, 
 						UPPER(f.abr_tercer) AS nom_transp, 
-						UPPER(e.nom_contro) AS nom_contro, 
+						UPPER(e.nom_contro) AS nom_contro,
 						IF(d.cod_contro IS NOT NULL, d.cod_contro, a.cod_contro) AS cod_contro, 
 						IF(c.nom_conduc IS NOT NULL, c.nom_conduc, m.abr_tercer) AS nom_conduc, 
 						CONCAT(UPPER(g.nom_ciudad), ' (', LEFT(h.nom_depart, 4), ') - ', LEFT(i.nom_paisxx, 3)) AS nom_ciuori, 
@@ -346,7 +347,9 @@ class InfReportEspera
 			 INNER JOIN ".BASE_DATOS.".tab_genera_paises l 
 					 ON b.cod_paides = l.cod_paisxx 
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer m 
-					 ON c.cod_conduc = m.cod_tercer 
+					 ON c.cod_conduc = m.cod_tercer
+			 INNER JOIN ".BASE_DATOS.".tab_genera_noveda n
+			 		ON a.cod_noveda = n.cod_noveda
 				  WHERE DATE(a.fec_creaci) BETWEEN '$_REQUEST[fec_inicia]' AND '$_REQUEST[fec_finali]' 
 					AND c.cod_transp IN ($_REQUEST[cod_transp])
 					AND a.cod_contro IN ($mContro) 
@@ -455,6 +458,7 @@ class InfReportEspera
 						 "nom_ciudes"=>"Destino",
 						 "num_placax"=>"Placa",
 						 "nom_conduc"=>"Conductor",
+						 "nom_noveda"=>"Novedad",
 						 "fec_noveda"=>"Fecha Novedad",
 						 "nom_transp"=>"Transportadora",
 						 "usr_creaci"=>"Usuario",
