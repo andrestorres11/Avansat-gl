@@ -1878,7 +1878,7 @@ class Despac
 	 *  \return: string
 	 */
 	private function getTranspCargaControlador() {
-		if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL' ) {
+		if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL'|| self::$cTypeUser[tip_perfil] == 'OAL' ) {
 			$mSql = "SELECT GROUP_CONCAT(a.cod_transp SEPARATOR ',') AS lis_transp
 					   FROM satt_faro.vis_monito_encdet a
 					  WHERE a.cod_usuari = '".$_SESSION[datos_usuario][cod_usuari]."' ";
@@ -1961,7 +1961,7 @@ class Despac
 		}
 
 		#Filtro Por Usuario Asignado
-		if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL' ){
+		if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL' || self::$cTypeUser[tip_perfil] == 'OAL' ){
 			$mSql .= " AND h.cod_usuari = '".$_SESSION[datos_usuario][cod_usuari]."' ";
 			$mSql .= $mLisTransp != '' && $mLisTransp != null ? " AND a.cod_transp IN ( $mLisTransp ) " : " AND a.cod_transp IN ( '' ) ";
 		} elseif( $mSinFiltro == true )
@@ -1990,7 +1990,7 @@ class Despac
 	{
 		$mBandera = $mTransp[tie_nacion] == 0 && $mTransp[tie_urbano] == 0 ? 0 : 1;
 
-		if( ($mTransp[nom_tipser] == 'MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'EAL/MA' && $mBandera == 1) )
+		if( ($mTransp[nom_tipser] == 'MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'EAL/MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'OAL/MA' && $mBandera == 1) )
 			$mResult = 'tie_parame';
 		else
 			$mResult = 'fec_alarma';
