@@ -628,7 +628,7 @@ SELECT a.num_despac,
                        IF(a.num_carava='0','Sin Caravana',a.num_carava),
                        DATE_FORMAT(b.fec_llegpl,'%Y-%m-%d %H:%i'),
                        a.obs_despac,m.nom_lineax,d.nom_apell1,d.nom_apell2, b.cod_agenci, b.nom_conduc, a.con_telmov, 
-                       z.nom_tipdes
+                       z.nom_tipdes,a.fec_despac
                   FROM ".BASE_DATOS.".tab_despac_despac a,
                        ".BASE_DATOS.".tab_despac_vehige b,
                        ".BASE_DATOS.".tab_tercer_tercer d,
@@ -735,7 +735,10 @@ SELECT a.num_despac,
       }else{
       	echo "";
       }
-        
+      
+      $e5 = $datos_usuario['nom_usuari']; //nombre de usuario
+      $e6 = date("Y-m-d"); //Fecha de impresion
+      $e7 = date("H:i:s"); //Hora de impresion
       // VALIDACION QRCODE ----------------------------------------------------------------
       $mSelect = "SELECT a.cod_tipser 
                     FROM ".BASE_DATOS.".tab_transp_tipser a
@@ -795,6 +798,7 @@ SELECT a.num_despac,
       $d22 = number_format($paramet[0][0]); //valor de la multa
       $d23 = $trayler[0][0]; //Nro de Trayler
       $d24 = $matriz[0][19]; //linea
+      $d25 = $matriz[0]['fec_despac']; //Fecha del despacho
 
       $query = "SELECT cod_perfil
                   FROM ".BASE_DATOS.".tab_autori_perfil
@@ -966,7 +970,7 @@ SELECT a.num_despac,
 
             ."<input type=\"hidden\" name=\"posi\" value=\"0\">\n"
 
-            ."<input type=\"button\" onClick=\"form.Imprimir.style.visibility='hidden';form.PDF.style.visibility='hidden';form.Volver.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.PDF.style.visibility='visible';form.Volver.style.visibility='visible';form.Siguiente.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">\n"
+            ."<input type=\"button\" onClick=\"form.Siguiente.style.visibility='hidden';form.Imprimir.style.visibility='hidden';form.PDF.style.visibility='hidden';form.Volver.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.PDF.style.visibility='visible';form.Volver.style.visibility='visible';form.Siguiente.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">\n"
             
             ."</td>\n"
             

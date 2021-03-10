@@ -1,0 +1,349 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+    <title>Plan de Viaje</title>
+    <script type="text/javascript" src="../satt_standa/js/min.js"></script>
+    <script type="text/javascript" src="../satt_standa/js/jquery.qrcode-0.7.0.min.js"></script>
+    <script>
+        (function($) {
+
+            updateQrCode = function() {
+                var options = {
+                    render: "div",
+                    fill: "#000000",
+                    background: "#FFFFFF",
+
+                    text: "$durl?window=central&cod_servic=526&menant=526&opcion=3&ind_despac=0&placa=$d88&cod_manifi=$d44&ind_qrcode=yes",
+                    size: parseInt(100, 10)
+                };
+
+                $("#container").empty().qrcode(options);
+            }
+
+            $(function() {
+                updateQrCode();
+            });
+
+        }(jQuery));
+
+        console.log("$durl?window=central&cod_servic=526&menant=526&opcion=3&ind_despac=0&placa=$d88&cod_manifi=$d44&ind_qrcode=yes");
+    </script>
+    <style type="text/css">
+        body,
+        td,
+        th {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        
+        .table-round {
+            border-collapse: collapse;
+            border-radius: 14px;
+            box-shadow: inset 0 0 0 1px;
+        }
+        
+        .table-round th,
+        .table-round td {
+            border: 1px solid black;
+        }
+        
+        .table-round tr:first-child th:first-child,
+        .table-round tr:first-child th:last-child,
+        .table-round tr:last-child td:first-child,
+        .table-round tr:last-child td:last-child {
+            border-top: 1px solid transparent;
+            border-left: 1px solid transparent;
+        }
+        
+        .table-round tr:last-child td:last-child,
+        .table-round tr:first-child th:last-child {
+            border-right: 1px solid transparent;
+        }
+        
+        .table-round tr:last-child td {
+            border-bottom: 1px solid transparent;
+        }
+        /* Redondo superior derecho  */
+        
+        .redondo_sd {
+            border-top: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+            border-right: 1px solid transparent;
+        }
+        /* Redondo superior izquierdo  */
+        
+        .redondo_si {
+            border-top: 1px solid transparent;
+            border-left: 1px solid transparent;
+        }
+        /* Redondo inferior izquierdo  */
+        
+        .redondo_ii {
+            border-bottom: 1px solid transparent;
+            border-left: 1px solid transparent;
+        }
+        
+        .centrado {
+            text-align: center;
+        }
+        
+        .borde_i {
+            border-bottom: 1px solid black i !important;
+        }
+        
+        .mt {
+            margin-top: 7px;
+        }
+        
+        .div-round-padre {
+            margin-top: 20px;
+            height: 100px;
+            width: 350px;
+            border: 1px solid black;
+            border-radius: 14px;
+        }
+        
+        .div-round-padrev {
+            margin-top: 20px;
+            height: 100px;
+            width: 270px;
+            border: 1px solid black;
+            border-radius: 14px;
+        }
+        
+        .div-round-padre h1 {
+            width: 140px;
+            font-size: 13px;
+            margin-top: -12px;
+            margin-left: 7px;
+            background: white;
+        }
+        
+        .div-round-padrev h1 {
+            width: 140px;
+            font-size: 13px;
+            margin-top: -12px;
+            margin-left: 7px;
+            margin-bottom: 0px;
+            background: white;
+        }
+        
+        .container-flex {
+            display: flex;
+            justify-content: space-between;
+            width: 960px;
+        }
+        
+        .div-inferior {
+            border-bottom: 1px solid rgb(14, 9, 9);
+        }
+        
+        .div-lvertical {
+            border-left: 1px solid rgb(14, 9, 9);
+        }
+        
+        .font-small {
+            font-size: 12px;
+            margin: 0px !important;
+        }
+        
+        .font-medium {
+            font-size: 14px;
+        }
+        
+        .padding-5l {
+            padding-left: 5px;
+            padding-bottom: 5px;
+        }
+        
+        .wcf {
+            width: 319px;
+            padding: 0px;
+        }
+        /*Imagen*/
+        
+        .imagen {
+            padding-top: 19px;
+            padding-bottom: 19px;
+            margin-left: 5px;
+            height: 100px;
+            width: 90px;
+        }
+        /*TEXTO CUADRO*/
+        
+        .wcf h5 {
+            margin-top: 10px;
+            margin-left: 10px;
+            font-size: 17px;
+            font-weight: 100;
+        }
+        
+        .textfoot {
+            font-size: 14px;
+            font-weight: 100;
+            margin-top: 0px;
+            margin-left: 0px;
+        }
+        /*Texto encabezado*/
+        
+        .textencabeza {
+            font-size: 18px;
+            font-weight: 100;
+        }
+        /*texto cuadro informacion*/
+        
+        .text-info {
+            font-size: 16px;
+            font-weight: 100;
+            margin-block-start: 0px;
+            margin-block-end: 0px;
+            margin-inline-start: 0px;
+            margin-inline-end: 0px;
+        }
+    </style>
+</head>
+
+<body>
+    <table width="960" class="table-round">
+        <tr>
+            <td rowspan="2" class="centrado redondo_si redondo_ii" style="border-top: 1px solid transparent; border-left: 1px solid transparent;  border-bottom: 1px solid transparent;">
+                <img width="200px" src="$d1">
+            </td>
+            <td class="centrado"><strong style="font-size:19px">PLAN Y CONDICIONES DE VIAJE</strong></td>
+            <td class="centrado textencabeza">F - LG - 004
+            </td>
+            <td class="centrado redondo_sd textencabeza" style="border-top: 1px solid transparent; border-right: 1px solid transparent;">VERSION: 01</td>
+        </tr>
+        <tr>
+            <td class="centrado textencabeza">$d5 <br> $d6</td>
+            <td class="centrado textencabeza" colspan="2">
+                <strong>MANIFIESTO DE CARGA</strong><br> N° $d4<br> Fecha: $d25
+            </td>
+        </tr>
+    </table>
+
+    <table width="960" class="mt table-round">
+        <div class="container-flex">
+            <div class="div-round-padre">
+                <h1>DATOS CONDUCTOR</h1>
+                <div width="100%" class="div-inferior">
+                    <div class="padding-5l">
+                        <h5 class="font-small">Cédula:</h5>
+                        <h6 class="text-info">$d14</h6>
+                    </div>
+                </div>
+                <div width="100%" style="margin-top: 6px;">
+                    <div class="padding-5l">
+                        <h5 class="font-small">Nombre:</h5>
+                        <h6 class="text-info">$d13</h6>
+                    </div>
+                </div>
+            </div>
+
+            <div class="imagen">
+                <img src="$d3" width="100%" height="100%">
+            </div>
+
+            <div class="div-round-padrev" style="margin-left: 100px;">
+                <h1> DATOS VEHICULO</h1>
+                <div style="display: flex; ">
+                    <div style="width: 50%; align-self:center" class="div-inferior">
+                        <div class="padding-5l" style="padding-top:7px; padding-bottom:7px">
+                            <h5 class="font-small">Placa:</h5>
+                            <h6 class="text-info">$d8</h6>
+                        </div>
+                    </div>
+                    <div style="width: 50%; align-self:center" class="div-inferior div-lvertical">
+                        <div class="padding-5l text-info" style="padding-top:7px; padding-bottom:7px">
+                            <h5 class="font-small">Modelo:</h5>
+                            <h6 class="text-info">$d10</h6>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex;  height: 50%;">
+                    <div style="width: 50%; height:51px; display: flex;" class="">
+                        <div class="padding-5l" style="align-self:center;padding-top: -4px;">
+                            <h5 class="font-small">Marca:</h5>
+                            <h6 class="text-info">$d9</h6>
+                        </div>
+                    </div>
+                    <div style="width: 50%; height:51px; display: flex;" class="div-lvertical">
+                        <div class="padding-5l" style="align-self:center">
+                            <h5 class="font-small">Color:</h5>
+                            <h6 class="text-info">$d11</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="imagen">
+                <img src="$d2" width="100%" height="100%">
+            </div>
+        </div>
+    </table>
+
+
+    <table width="960" class="table-round">
+        <tr style="height: 124px;">
+            <td valign="top" class="wcf" style="border-top: 1px solid transparent;border-left: 1px solid transparent;">
+                <h5>$d[15]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[16]</h5>
+            </td>
+            <td valign="top" class="wcf" style="border-top: 1px solid transparent;border-right: 1px solid transparent;">
+                <h5>$d[17]</h5>
+            </td>
+        </tr>
+        <tr style="height: 124px;">
+            <td valign="top" class="wcf">
+                <h5>$d[18]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[19]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[20]</h5>
+            </td>
+        </tr>
+        <tr style="height: 124px;">
+            <td valign="top" class="wcf">
+                <h5>$d[21]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[22]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[23]</h5>
+            </td>
+        </tr>
+        <tr style="height: 124px;">
+            <td valign="top" class="wcf">
+                <h5>$d[24]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[25]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[26]</h5>
+            </td>
+        </tr>
+        <tr style="height: 124px;">
+            <td valign="top" class="wcf">
+                <h5>$d[27]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[28]</h5>
+            </td>
+            <td valign="top" class="wcf">
+                <h5>$d[29]</h5>
+            </td>
+        </tr>
+    </table>
+
+
+    <h5 class="textfoot">$e5 &nbsp;&nbsp;Fecha: $e6 &nbsp;&nbsp;Hora: $e7</h5>
+
+</body>
+
+</html>
