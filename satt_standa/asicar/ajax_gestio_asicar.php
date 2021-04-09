@@ -1492,9 +1492,15 @@
        
         private function darCorreos($cod_solici){
             $retorno= array();
+
+            //Da el correo relacionado a la solicitud.
+            $sql="SELECT a.cor_solici, a.cod_client FROM ".BASE_DATOS.".tab_asiste_carret a WHERE a.id = '$cod_solici'";
+            $consulta = new Consulta($sql, self::$conexion);
+            $dcorreos = $consulta->ret_matriz('a')[0];
+            array_push($retorno, trim(strtolower($dcorreos['cor_solici'])));
             
             //Busca Correos registrados correspondientes a los gestores de asistencia
-            $sql="SELECT a.dir_emailx FROM ".BASE_DATOS.".tab_genera_parcor a WHERE a.num_remdes = '';";
+            $sql="SELECT a.dir_emailx FROM ".BASE_DATOS.".tab_genera_parcor a WHERE a.num_remdes = '' OR a.num_remdes = '".$dcorreos['cod_client']."';";
             $consulta = new Consulta($sql, self::$conexion);
             $dcorreos = $consulta->ret_matriz('a');
           
@@ -1526,11 +1532,9 @@
                 array_push($retorno, trim(strtolower($correou)));
               }
             }
-            
-            $sql="SELECT a.cor_solici FROM ".BASE_DATOS.".tab_asiste_carret a WHERE a.id = '$cod_solici'";
-            $consulta = new Consulta($sql, self::$conexion);
-            $dcorreos = $consulta->ret_matriz('a')[0];
-            array_push($retorno, trim(strtolower($dcorreos['cor_solici'])));
+
+            mail("cristian.torres@eltransporte.org", "Correos Solicitud", var_export($retorno, true));
+
             return $retorno;
           }
 
