@@ -1533,8 +1533,6 @@
               }
             }
 
-            mail("cristian.torres@eltransporte.org", "Correos Solicitud", var_export($retorno, true));
-
             return $retorno;
           }
 
