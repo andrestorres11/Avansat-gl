@@ -1588,9 +1588,8 @@
         }
 
         private function enviarCorreo($num_solici,$cod_estado,$observacion) {
-            $logo = URL_STANDA.'imagenes/asistencia.png';
+            $logo = "https://avansatgl.intrared.net/ap/satt_standa/imagenes/asistencia.png";
             $informacion = $this->darInformacion($num_solici);
-            //$logo = 'https://dev.intrared.net:8083/ap/ctorres/sat-gl-2015/satt_standa/imagenes/asistencia.png';
             $nom_asiste = $this->tipSolicitud($num_solici);
             $fec_actual = date("Y-m-d H:i:s");   
             $correos = $this->darCorreos($num_solici);
@@ -1599,6 +1598,7 @@
             $nom_solici = $informacion['nom_solici'];
             $nom_client = $this->getNombreTransportadora($informacion['cod_client']);
             $complemento='';
+
             if($cod_estado==2){
               $total = $this->totalServiciosporSolicitud($num_solici);
               $complemento = '<br><br><strong style="color:#000">Total Presupuestado: </strong> $'.$total.'<br>';
