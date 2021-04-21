@@ -89,7 +89,7 @@
       $formulario -> oculto("based\" id=\"basedID\"",BASE_DATOS,0);
       $formulario -> cerrar();
       $formulario -> nueva_tabla();
-      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
+      //echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
       $toHora = $this -> toHora ( $_REQUEST[pos_matrix] );
       $formulario -> linea("SE ENCONTR&Oacute; UN TOTAL DE ".sizeof($_DESPAC)." DESPACHOS PARA LA EMPRESA &laquo;".$this -> getNombre( $_REQUEST['cod_transp'] )."&raquo;" ,0,"t2","15%");
       
@@ -447,7 +447,7 @@
       }
       /***************************************************/
       
-      echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
+      //echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
       if( $_REQUEST['busq_transp'] && $_REQUEST['busq_transp'] != '' )
       {
         $dat_tercer = explode( "-" , $_REQUEST['busq_transp'] );
@@ -485,12 +485,13 @@
        die();
       }  
       $formulario -> linea($texto , 1, "t2"); 
+      $this -> Style();
       $mHtml  = "<table width='100%'>";
       $mHtml .= "<tr>";
-        $mHtml .= "<th class=cellHead width='32%' rowspan='2'>EMPRESA-SERVICIO</th>";
-        $mHtml .= "<th class=cellHead width='3%'  rowspan='2'>FRECUENCIA<br>(Mins.)</th>";
-        $mHtml .= "<th class=cellHead width='3%'  rowspan='2'>VEH&Iacute;CULOS</th>";
-        $mHtml .= "<th class=cellHead width='3%'  colspan='".$_CICLOX."'>RANGOS (12 HORAS)</th>";
+        $mHtml .= "<th class='cellHead' width='32%' rowspan='2'>EMPRESA-SERVICIO</th>";
+        $mHtml .= "<th class='cellHead' width='3%'  rowspan='2'>FRECUENCIA<br>(Mins.)</th>";
+        $mHtml .= "<th class='cellHead' width='3%'  rowspan='2'>VEH&Iacute;CULOS</th>";
+        $mHtml .= "<th class='cellHead' width='3%'  colspan='".$_CICLOX."'>RANGOS (12 HORAS)</th>";
         $mHtml .= "</tr>";
         $mHtml .= "<tr>";
         $hor_actual = date('G');
@@ -500,14 +501,14 @@
           {
             $hor_actual = '0'.$hor_actual; 
           }
-          $mHtml .= "<th class=cellHead width='4%'>". $hor_actual .":00 a ".$hor_actual.":59</th>";
+          $mHtml .= "<th class='cellHead' width='4%'>". $hor_actual .":00 a ".$hor_actual.":59</th>";
           $hor_actual++;
           if( $hor_actual > 23)
           {
             $hor_actual = 00;
           }
         }
-        $mHtml .= "<th class=cellHead width='4%'>TOTAL</th>";
+        $mHtml .= "<th class='cellHead' width='4%'>TOTAL</th>";
       $mHtml .= "</tr>";
       $cont = 0;
       foreach( $_REPORT as $key => $row )
@@ -740,6 +741,95 @@
       
       return $mReturn;
     }
+
+    function Style(){
+      echo "	<style>
+              .cellHead
+              {
+                padding:5px 10px;
+                background: -webkit-gradient(linear, left top, left bottom, from( #009617 ), to( #00661b )); 
+                background: -moz-linear-gradient(top, #009617, #00661b ); 
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#009617', endColorstr='#00661b');
+                color:#fff;
+                text-align:center;
+              }
+  
+              .cellHead2
+              {
+                padding:5px 10px;
+                background: -webkit-gradient(linear, left top, left bottom, from( #009617 ), to( #00661b )); 
+                background: -moz-linear-gradient(top, #009617, #00661b ); 
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#009617', endColorstr='#00661b');
+                color:#fff;
+                text-align:left;
+              }
+              
+              .footer
+              {
+                padding:5px 10px;
+                background: -webkit-gradient(linear, left top, left bottom, from( #009617 ), to( #00661b )); 
+                background: -moz-linear-gradient(top, #009617, #00661b ); 
+                background-image: -ms-linear-gradient(top, #00660f 0%,#00660f 100%); 
+                background-image: linear-gradient(to bottom, #00660f 0%,#00660f 100%); 
+                filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#03ad39', endColorstr='#00660f',GradientType=0 );
+                color:#fff;
+                text-align:right;
+              }
+  
+              .row:hover > td{
+                background-color: #9ad9ae;
+              }
+              .cellInfo
+              {
+                padding:5px 10px;
+                background-color:#fff;
+                border:1px solid #ccc;
+              }
+  
+              .cellInfo2
+              {
+                padding:5px 10px;
+                background-color:#9ad9ae;
+                border:1px solid #ccc;
+              }
+  
+  
+  
+              .label
+              {
+                font-size:12px;
+                font-weight:bold;
+              }
+  
+              .select
+              {
+                background-color:#fff;
+                border:1px solid #009617;
+              }
+  
+              .boton
+              {
+                background: -webkit-gradient(linear, left top, left bottom, from( #009617 ), to( #00661b )); 
+                background: -moz-linear-gradient(top, #009617, #00661b ); 
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#009617', endColorstr='#00661b');
+                color:#fff;
+                border:1px solid #fff;
+                padding:3px 15px;
+                -webkit-border-radius: 5px;
+                -moz-border-radius: 5px;
+                border-radius: 5px;
+              }
+  
+              .boton:hover
+              {
+                background:#fff;
+                color:#00661b;
+                border:1px solid #00661b;
+                cursor:pointer;
+              }
+      </style>";
+    }
+  
 
   }
   $proceso = new Informe_Proyeccion($_SESSION['conexion']);
