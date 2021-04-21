@@ -359,7 +359,9 @@
       echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
       echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
       echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
+      $this->Scripts();
       echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_report_esfera.js\"></script>\n";
+      
       echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
       echo '<style>
             .ui-autocomplete-loading 
@@ -371,33 +373,6 @@
               cursor:pointer;
             }
             </style>';
-      /******************************************************************************************************************************/  
-      
-      /*************************************************** AUTOCOMPLETAR ***************************************************/
-      $mTransp = $this -> getTransports();
-      echo '<script>
-            $(function() {
-            var tranportadoras = 
-            [';
-      if( $mTransp )
-      {
-        echo "\"Ninguna\"";
-        foreach( $mTransp as $row )
-        {
-          echo ", \"$row[cod_tercer] - $row[abr_tercer]\"";
-        }			
-      };
-      echo ']
-
-              $( "#busq_transp" ).autocomplete({
-              source: tranportadoras,
-              delay: 100
-              }).bind( "autocompleteclose", function(event, ui){$("#form_busquedaID").submit();} );
-              $( "#busq_transp" ).bind( "autocompletechange", function(event, ui){$("#form_busquedaID").submit();} ); 
-              });
-              </script>';
-      /*********************************************************************************************************************/
-      
       $formulario = new Formulario ( "index.php", "post", "Informe Proyección de Novedades", "form_busqueda" );
       $formulario -> linea( "-Filtros", 1, "t2" );
       $formulario -> nueva_tabla();
@@ -420,6 +395,7 @@
       $formulario -> oculto( "opcion", 1, 0 );
       $formulario -> oculto( "cod_servic", $_REQUEST[cod_servic], 0 );			
       $formulario -> cerrar();
+      
     }
     
     function Resultado()
@@ -639,7 +615,8 @@
               });
               </script>';
       echo '<div id="popupDIV" style=" left: 0px; top: 0px; z-index: 3; overflow: auto; border: 5px solid #333333;  "></div>';
-            
+      
+      
       /*-------------------------------------------------------------------------------------------------------------------*/       
     }
     
@@ -828,6 +805,40 @@
                 cursor:pointer;
               }
       </style>";
+    }
+
+
+    function Scripts(){
+      $mTransp = $this -> getTransports();
+      echo '<script>
+      $(document).ready(function() {
+            $(function() {
+            var tranportadoras = 
+            [';
+      if( $mTransp )
+      {
+        echo "\"Ninguna\"";
+        foreach( $mTransp as $row )
+        {
+          echo ", \"$row[cod_tercer] - $row[abr_tercer]\"";
+        }			
+      };
+      echo ']
+
+              $( "#busq_transp" ).autocomplete({
+              source: tranportadoras,
+              delay: 100
+              }).bind( "autocompleteclose", function(event, ui){$("#form_busquedaID").submit();
+              });
+
+                $( "#busq_transp" ).bind( "autocompletechange", function(event, ui){
+                  
+                  $("#form_busquedaID").submit();
+                  });
+
+              });
+            });
+              </script>';
     }
   
 
