@@ -34,7 +34,13 @@ class Califi
 			case 'formAuditarDespac':
 				self::formAuditarDespac();
 				break;
+			case 'CreateObserva':
+				self::CreateObserva();
+				break;
 
+			case "NewObserva";
+				$this->NewObserva();
+				break; 
 			case 'getListActivi':
 				self::getListActivi();
 				break;
@@ -98,6 +104,65 @@ class Califi
 
 		echo $mHtml->MakeHtml();
 	}
+
+	    /* ! \fn: CreateObserva
+     *  \brief: inserta un nuevo contacto
+     *  \author: Ing. Andres Martinez
+     *  \date: 12/02/2018
+     *  \date modified: dia/mes/aÃ±o
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function CreateObserva() {
+		$datos = (object) $_POST;
+		if ($_POST['ind_edicio'] == '0') {
+			?>
+			<div class="StyleDIV contenido" style="min-height: 145px !important;">
+				<div class="col-md-1">&nbsp;</div>
+				<div class="col-md-10">
+					
+					<div class="col-md-12">
+
+						<div class="col-md-3 text-right">Observacion:<font style="color:red">*</font></div>
+						<div class="col-md-9 text-left">
+							<textarea type="text" class="text-center ancho" name="des_observ" id="des_observID" validate="text" obl="1" maxlength="250" minlength="10"></textarea>
+						</div>
+					</div>
+					
+					
+				</div>
+				<div class="col-md-1">&nbsp;</div>
+				</div>
+		<?php
+		}
+            
+    }
+	/* ! \fn: NewObserva
+     *  \brief: inserta un contacto de la transportado
+     *  \author: Ing. Andres Martinez
+     *  \date: 28/04/2021
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function NewObserva() {
+        $mData = $_POST;
+
+        $mInsert = "INSERT INTO " . BASE_DATOS . ".tab_infdes_obsgen
+        ( cod_transp, num_despac, obs_obsgen, 
+        usr_creaci, fec_creaci
+        )VALUES( '" . $mData['cod_transp'] . "', '" . $mData['num_despac'] . "', 
+        '" . $mData['obs_obsgen'] . "','" . $_SESSION['datos_usuario']['cod_usuari'] . "', NOW() )";
+
+        if ($consulta = new Consulta($mInsert, self::$cConexion)) {
+            echo "1000";
+        } else {
+            echo "9999";
+        }
+    } 
+    
 
 	/*! \fn: getOperacion
 	 *  \brief: Trae las operaciones activas

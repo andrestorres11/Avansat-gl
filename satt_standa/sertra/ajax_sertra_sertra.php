@@ -75,6 +75,9 @@ class ajax_certra_certra {
                 case "CreateConfig";
                     $this->CreateConfig();
                     break;
+                case "CreatePartic";
+                    $this->CreatePartic();
+                    break;
                 case "CreateContac";
                     $this->CreateContac();
                     break;
@@ -92,10 +95,16 @@ class ajax_certra_certra {
                     break;
                 case "NewContac";
                     $this->NewContac();
-                    break;  
+                    break; 
+                    case "NewPartic";
+                    $this->NewPartic();
+                    break;     
                 case "editContac";
                     $this->editContac();
                     break;  
+                case "editPartic";
+                    $this->editPartic();
+                    break;    
                 case "registrarTipoServicio";
                     $this->registrarTipoServicio();
                     break;
@@ -106,7 +115,10 @@ class ajax_certra_certra {
                 case "deleteContac";
                     $this->deleteContac();
                     break;
-
+                
+                case "deletePartic";
+                    $this->deletePartic();
+                    break;
                 default:
                     header('Location: ../../' . BASE_DATOS . '/index.php?window=central&cod_servic=1366&menant=1366');
                     break;
@@ -114,11 +126,23 @@ class ajax_certra_certra {
         }
     }
 
+
+    private function getTipoServicios(){
+        
+        //consulto los tipos de servicios y los agrego al objeto principal
+        $query = "SELECT cod_tipser, nom_tipser
+        FROM " . BASE_DATOS . ".tab_genera_tipser
+        WHERE ind_estado = '1'";
+        $consulta = new Consulta($query, self::$cConexion);
+        $servicios = $consulta->ret_matrix("a");
+        return $servicios;
+    }
+
     /* ! \fn: getDataFomrmTipSer
      *  \brief: funcion para cargar los datos de la ultima configuracion de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 25/01/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -168,7 +192,6 @@ class ajax_certra_certra {
         $consulta = new Consulta($query, self::$cConexion);
         $servicios = $consulta->ret_matrix("a");
         $datos->servicios = $servicios;
-
         //consulto los servidores y los agrego al objeto principal
         $query = "SELECT cod_server, nom_server
         FROM " . CENTRAL . ".tab_genera_server
@@ -260,12 +283,13 @@ class ajax_certra_certra {
      *  \brief: funcion para pintar el formulario de insercion de la configuracion de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 25/01/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:
      *  \param: 
      *  \return 
      */
     private function pintarFormulario($datos) {
+        $servicios = self::getTipoServicios();
         $grupos = $this->getGrupos();
         $operaciones = $this->getOperaciones();
         $eals = $this->getEals();
@@ -505,6 +529,59 @@ class ajax_certra_certra {
                     <?php
                     }
                     ?>
+                </div>
+            </div>  
+        </div>
+        <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
+            <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion Particularidad</b></h3>
+            <div id="contenido_serv">
+                <div class="StyleDIV contenido" style="min-height: 220px !important;" >
+                    <div class="col-md-13 CellHead"  style="text-align:center;"><strong>AGREGAR PARTICULARIDAD</strong><input type="button" value="NUEVA PARTICULARIDAD" class="small save  ui-state-default ui-corner-all" onclick="CreatePartic('<?= $datos->cod_transp ?>', 0, 0)"></div>
+                    <?php 
+                        $tiserTrans= self::getTipSerTrans($_POST['cod_transp']);
+
+                        if (!$tiserTrans) { 
+                    ?>
+                        <div class="col-md-12" style="text-align:center;">ACTUALMENTE NO TIENE PARTICULARIDADES PARAMETRIZADOS</div> 
+                    <?php } else {  ?>
+                        
+                        <div class="contenido" id="mensaje"></div>
+                    <?php
+                        foreach ($tiserTrans as $tipser){
+                    ?>
+                        <table class="classTable" align="center" width="100%" cellspacing="1" cellpadding="0" style="border:1px #35650F solid">
+                            <tr>
+                                <th width="5%" nowrap class="CellHead" align="center">N?</th>
+                                <th width="40%" nowrap class="CellHead" align="center">ACUERDOS DE SERVICIO <?php echo($tipser['nom_tipser'])?></th>
+                                <th width="15%" nowrap class="CellHead" align="center">TIPO SERVICIO</th>  
+                                <th width="20%" nowrap class="CellHead" align="center">FECHA DEFINIDA</th>
+                                <th width="10%" nowrap class="CellHead" align="center">USUARIO</th>
+                                <th width="5%" nowrap class="CellHead" align="center">ELIMINAR</th>
+                                <th width="5%" nowrap class="CellHead" align="center">EDITAR</th>
+                            </tr>
+                        <?php
+                            $particularidades = self::getPartic(null, $_POST['cod_transp'], $tipser['cod_tipser']);
+                            $i = 1;
+                            foreach ($particularidades as $row => $value) {
+                        ?>
+                                    <tr>
+                                        <td align="center" width="5%" class="contenido" id="nom_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($row+1) ?></td>
+                                        <td align="center" width="40%" class="contenido" id="tel_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['des_partic']) ?></td>
+                                        <td align="center" width="15%" class="contenido" id="ema_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['nom_tipser']) ?></td>
+                                        <td align="center" width="20%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['fec_defini']) ?></td>
+                                        <td align="center" width="10%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['usr_creaci']) ?></td>
+                                        <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deletePartic(<?= $datos->cod_transp ?>, '<?= $value['cod_partic'] ?>', 3)"></td>
+                                        <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaPartic(<?= $datos->cod_transp ?>, '<?= $value['cod_partic'] ?>')"></td>
+                                    </tr>
+                                <?php
+                            }
+                            ?>
+                            </table>
+                            <?php
+                        }    
+                        }
+                        ?>
+                        
                 </div>
             </div>  
         </div>
@@ -942,7 +1019,7 @@ class ajax_certra_certra {
      *  \brief: funcion que trae los grupos de la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 28/01/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return arreglo con los grupos
@@ -958,7 +1035,7 @@ class ajax_certra_certra {
      *  \brief: funcion que trae los tipos de operaciones de la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 28/01/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return arreglo con los tipos de operaciones
@@ -973,7 +1050,7 @@ class ajax_certra_certra {
      *  \brief: configura el orario laboral de una empresa para el tipo de servico
      *  \author: Ing. Alexander Correa
      *  \date: 26/01/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -1056,7 +1133,7 @@ class ajax_certra_certra {
      *  \brief: Trae los festivos configurados para la empresa
      *  \author: Ing. Alexander Correa
      *  \date: 08/02 /2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return 
      */
@@ -1183,7 +1260,7 @@ class ajax_certra_certra {
      *  \brief: inserta un festivo para la transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -1217,12 +1294,12 @@ class ajax_certra_certra {
     }
 
     /* ! \fn: ValidateNumberofDays
-     *  \brief: devuelve el numero de dias de un mes de un aÃ±o 
+     *  \brief: devuelve el numero de dias de un mes de un año 
      *  \author: Ing. Alexander Correa
      *  \date: 23/02/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $mMes     => string => mes a consultar    
-     *  \param: $mAno     => string => aÃ±o a consultar    
+     *  \param: $mAno     => string => año a consultar    
      *  \return return
      */
 
@@ -1261,7 +1338,7 @@ class ajax_certra_certra {
      *  \brief: elimina un festivo de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 02/08/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -1291,7 +1368,7 @@ class ajax_certra_certra {
      *  \brief: trae todas las esferas de la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return arreglo con las esferas
@@ -1307,7 +1384,7 @@ class ajax_certra_certra {
      *  \brief: inserta una configuracion de horario para una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -1334,7 +1411,7 @@ class ajax_certra_certra {
      *  \brief: funcion que devuelve la hora en un formato legible
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $mHorax     => string => cadena con la hora a convertir    
      *  \return string con la hora legible
      */
@@ -1351,10 +1428,10 @@ class ajax_certra_certra {
     }
 
     /* ! \fn: registrarTipoServicio
-     *  \brief: guarda la configuraciÃ³n parametrizada de el tipo de servicio de una transportadora
+     *  \brief: guarda la configuración parametrizada de el tipo de servicio de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2015
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return
@@ -1481,7 +1558,7 @@ class ajax_certra_certra {
      *  \brief: trae la lista de las empresas con actividad aseguradora
      *  \author: Ing. Alexander Correa
      *  \date: 07/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return 
      */
@@ -1539,6 +1616,43 @@ class ajax_certra_certra {
         return $contactos;
     }
 
+    private function getPartic($cod_partic, $cod_transp, $cod_tipser) {
+        
+        $sql = "SELECT a.cod_partic, a.fec_defini, a.cod_tipser, a.des_partic, a.usr_creaci, b.nom_tipser   
+                  FROM " . BASE_DATOS . ".tab_partic_tipser a
+                  INNER JOIN " . BASE_DATOS . ".tab_genera_tipser b ON a.cod_tipser = b.cod_tipser
+                WHERE 1 = 1 ";
+        
+                if($cod_partic != NULL || $cod_partic != ""){
+                    $sql.="AND a.cod_partic='".$cod_partic."'";
+                }
+                if($cod_transp != NULL || $cod_transp != ""){
+                    $sql.="AND a.cod_transp='".$cod_transp."'";
+                }
+                if($cod_tipser != NULL || $cod_tipser != ""){
+                    $sql.="AND a.cod_tipser='".$cod_tipser."'";
+                }
+
+        $consulta = new Consulta($sql, self::$cConexion);
+        $particularidades = $consulta->ret_matriz();
+
+        
+
+        return $particularidades;
+    }
+    
+
+    private function getTipSerTrans($cod_transp){
+        $sql = "SELECT DISTINCT a.cod_tipser, b.nom_tipser FROM " . BASE_DATOS . ".tab_partic_tipser a 
+        INNER JOIN ". BASE_DATOS . ".tab_genera_tipser b ON a.cod_tipser = b.cod_tipser 
+        WHERE a.cod_transp ='".$cod_transp."'"; 
+
+        $consulta = new Consulta($sql, self::$cConexion);
+        $tipserTrans = $consulta->ret_matriz("a");
+
+        return $tipserTrans;
+    }
+
     private function getAgenContac($ema_contac) {
         $datos = (object) $_POST;
         $sql = "SELECT a.cod_agenci
@@ -1571,7 +1685,7 @@ class ajax_certra_certra {
      *  \brief: elimina una configuracion laboral de una empresa
      *  \author: Ing. Alexander Correa
      *  \date: 16/05/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return boolean 
      */
@@ -1594,7 +1708,7 @@ class ajax_certra_certra {
      *  \brief: elimina una configuracion laboral de una empresa
      *  \author: Ing. Alexander Correa
      *  \date: 16/05/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return boolean 
      */
@@ -1611,11 +1725,32 @@ class ajax_certra_certra {
         }
     }
 
+    /* ! \fn: deleteConfiguracion
+     *  \brief: elimina una configuracion laboral de una empresa
+     *  \author: Ing. Alexander Correa
+     *  \date: 16/05/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return boolean 
+     */
+
+    private function deletePartic() {
+        $datos = (object) $_POST;
+        $sql = "DELETE FROM " . BASE_DATOS . ".tab_partic_tipser
+                      WHERE cod_transp = '$datos->cod_transp' 
+                      AND cod_partic = '$datos->cod_partic' ";
+        if ($consulta = new Consulta($sql, self::$cConexion)) {
+            die('1');
+        } else {
+            die('0');
+        }
+    }
+
     /* ! \fn: CreateContac
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Torres
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -1727,6 +1862,113 @@ class ajax_certra_certra {
         <?php
         }
     }
+        /* ! \fn: CreatePartic
+     *  \brief: inserta un nuevo contacto
+     *  \author: Ing. Andres Martinez
+     *  \date: 12/02/2018
+     *  \date modified: dia/mes/aÃ±o
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function CreatePartic() {
+        $datos = (object) $_POST;
+        $servicios = self::getTipoServicios();
+            if ($_POST['ind_edicio'] == '0') {
+                ?>
+                <div class="StyleDIV contenido" style="min-height: 145px !important;">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-10">
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Servicio<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <select id="cod_tipserID" name="cod_tipser" class="ancho" obl="1" validate="select">
+                                    <option value="">Seleccione una Opci&oacute;n.</option>
+                                    <?php
+                                    foreach ($servicios as $key => $value) {
+                                        $sel = "";
+                                        if ($value['cod_tipser'] == $datos->principal['cod_tipser']) {
+                                            $sel = "selected";
+                                        }
+
+                                        ?>
+                                        <option <?= $sel ?> value="<?= $value['cod_tipser'] ?>"><?= $value['nom_tipser'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Fecha Particularidad:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="date" class="text-center ancho" name="fec_partic" id="fec_particID" validate="text" obl="1" maxlength="50" minlength="10" >
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+
+                            <div class="col-md-3 text-right">Descripcion:<font style="color:red">*</font></div>
+                            <div class="col-md-9 text-left">
+                                <textarea type="text" class="text-center ancho" name="des_partic" id="des_particID" validate="text" obl="1" maxlength="250" minlength="10"></textarea>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                    <div class="col-md-1">&nbsp;</div>
+                    </div>
+            <?php
+            }else{
+                
+                $informacion= self::getPartic($_POST['cod_partic'],$_POST['cod_transp'],null)[0];
+                $oldDate = strtotime($informacion['fec_defini']);
+
+                $newDate = date('Y-m-d',$oldDate);
+            ?>
+            <div class="StyleDIV contenido" style="min-height: 145px !important;">
+                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-10">
+                        
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Servicio<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <select id="cod_tipserEditID" name="cod_tipser" class="ancho" obl="1" validate="select">
+                                    <option value="">Seleccione una Opci&oacute;n.</option>
+                                    <?php
+                                    foreach ($servicios as $key => $value) {
+                                        $sel = "";
+                                        if ($value['cod_tipser'] == $informacion['cod_tipser']) {
+                                            $sel = "selected";
+                                        }
+
+                                        ?>
+                                        <option <?= $sel ?> value="<?= $value['cod_tipser'] ?>"><?= $value['nom_tipser'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Fecha Particularidad:<font style="color:red">*</font></div>
+                            <div class="col-md-6 text-left">
+                                <input type="date" class="text-center ancho" name="fec_partic" id="fec_particID" validate="text" obl="1" maxlength="50" minlength="10" value="<?= $newDate ?>">
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-12">
+                            <div class="col-md-3 text-right">Descripcion:<font style="color:red">*</font></div>
+                            <div class="col-md-9 text-left">
+                                <textarea type="text" class="text-center ancho" name="des_partic" id="des_particID" validate="text" obl="1" maxlength="250" minlength="10" ><?= $informacion['des_partic'] ?></textarea>
+                            </div>
+                        </div>
+                        
+                        
+                    </div>
+                    <div class="col-md-1">&nbsp;</div>
+                    </div>
+        <?php
+        }
+    }
 
 
 
@@ -1734,7 +1976,7 @@ class ajax_certra_certra {
      *  \brief: inserta un contacto de la transportado
      *  \author: Ing. Andres Torres
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -1757,11 +1999,37 @@ class ajax_certra_certra {
         }
     }
 
+    /* ! \fn: NewPartic
+     *  \brief: inserta un contacto de la transportado
+     *  \author: Ing. Andres Martinez
+     *  \date: 28/04/2021
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function NewPartic() {
+        $mData = $_POST;
+
+        $mInsert = "INSERT INTO " . BASE_DATOS . ".tab_partic_tipser
+        ( cod_transp, fec_defini, cod_tipser, 
+        des_partic,
+        usr_creaci, fec_creaci
+        )VALUES( '" . $mData['cod_transp'] . "', '" . $mData['fec_partic'] . "', '" . $mData['tip_servic'] . "', 
+        '" . $mData['des_partic'] . "','" . $_SESSION['datos_usuario']['cod_usuari'] . "', NOW() )";
+
+        if ($consulta = new Consulta($mInsert, self::$cConexion)) {
+            echo "1000";
+        } else {
+            echo "9999";
+        }
+    }    
+
         /* ! \fn: editContac
      *  \brief: inserta un contacto de la transportado
      *  \author: Ing. Andres Torres
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -1782,6 +2050,35 @@ class ajax_certra_certra {
                     cod_transp = '".$mData['cod_transp']."'
                     AND ema_contac = '".$mData['email']."'";
 
+        if ($consulta = new Consulta($mUpdate, self::$cConexion)) {
+            echo "1000";
+        } else {
+            echo "9999";
+        }
+    }
+
+       /* ! \fn: editPartic
+     *  \brief: inserta una Particularidad de la transportado
+     *  \author: Ing. Andres Martinez
+     *  \date: 08/02/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function editPartic() {
+        
+        
+        $mData = $_POST;
+        $mUpdate = "UPDATE " . BASE_DATOS . ".tab_partic_tipser SET 
+                    fec_defini = '".$mData['fec_partic']."',
+                    cod_tipser = '".$mData['tip_servic']."', 
+                    des_partic = '".$mData['des_partic']."',
+                    usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                    fec_modifi = NOW()
+                    WHERE 
+                    cod_transp = '".$mData['cod_transp']."'
+                    AND cod_partic = '".$mData['cod_partic']."'";
         if ($consulta = new Consulta($mUpdate, self::$cConexion)) {
             echo "1000";
         } else {
