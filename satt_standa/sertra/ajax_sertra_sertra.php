@@ -551,7 +551,7 @@ class ajax_certra_certra {
                     ?>
                         <table class="classTable" align="center" width="100%" cellspacing="1" cellpadding="0" style="border:1px #35650F solid">
                             <tr>
-                                <th width="5%" nowrap class="CellHead" align="center">N?</th>
+                                <th width="5%" nowrap class="CellHead" align="center">N°</th>
                                 <th width="40%" nowrap class="CellHead" align="center">ACUERDOS DE SERVICIO <?php echo($tipser['nom_tipser'])?></th>
                                 <th width="15%" nowrap class="CellHead" align="center">TIPO SERVICIO</th>  
                                 <th width="20%" nowrap class="CellHead" align="center">FECHA DEFINIDA</th>
@@ -1882,7 +1882,7 @@ class ajax_certra_certra {
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Servicio<font style="color:red">*</font></div>
                             <div class="col-md-6 text-left">
-                                <select id="cod_tipserID" name="cod_tipser" class="ancho" obl="1" validate="select">
+                                <select id="cod_tipserInserID" name="cod_tipser" class="ancho" obl="1" validate="select">
                                     <option value="">Seleccione una Opci&oacute;n.</option>
                                     <?php
                                     foreach ($servicios as $key => $value) {

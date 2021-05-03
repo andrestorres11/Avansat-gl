@@ -1003,7 +1003,7 @@ function CreatePartic(cod_transp, tip_servic) {
         if (conn) {
             var standa = $("#standaID").val();
             var transp = $("#cod_transpID").val();
-            var tip_servic = $("#cod_tipserID").val();
+            var tip_servic = $("#cod_tipserInserID").val();
             var fec_partic = $("#fec_particID").val();
             var des_partic = $("#des_particID").val();
             $("#PopUpID").dialog({
@@ -1080,7 +1080,7 @@ function NewPartic(tip_servic) {
     if (conn) {
         var standa = $("#standaID").val();
         var transp = $("#cod_transpID").val();
-        var tip_servic = $("#cod_tipserID").val();
+        var tip_servic = $("#cod_tipserInserID").val();
         var fec_partic = $("#fec_particID").val();
         var des_partic = $("#des_particID").val();
 

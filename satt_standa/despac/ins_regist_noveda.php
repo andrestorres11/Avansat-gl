@@ -672,11 +672,10 @@ class Proc_despac {
                         echo "<th width='10%' class='cellHead' >N°</th>";                        
                         echo "<th width='40%' class='cellHead'>Pareticularidad del servicio</th>";
                     echo"</tr>";
-                    $i = 1;
-                    foreach ($particularidades as $row => $value) {
-                        
+                    foreach ($particularidades as $row  => $value) {
+                        $i = $row +1;  
                      echo "<tr>";
-                         echo"<td align='center' width='10%' class='cellInfo' style='border: 1px #c3c3c3 solid'> $row </td>"; 
+                         echo"<td align='center' width='10%' class='cellInfo' style='border: 1px #c3c3c3 solid'> $i </td>"; 
                          echo "<td align='center' width='40%' class='celda_info'  style='border: 1px #c3c3c3 solid'> $value[des_partic] </td>";                                        
                      echo "</tr>";                                
                     }
