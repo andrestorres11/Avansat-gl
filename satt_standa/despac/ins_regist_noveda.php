@@ -707,13 +707,15 @@ class Proc_despac {
                     }
 
                     echo "</table>";
-                } else
+                } else{
                     $formulario->linea("&Uacute;litmas Novedades del Despacho", 0, "t2");
-
+                
                 echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0' >";
-                echo "<tr>";
-                echo "<td class='cellHead' width='100%' >El Despacho no Posee Novedades Anteriores </td>";
-                echo "</tr>";
+                    echo "<tr>";
+                        echo "<td class='cellHead' width='100%' >El Despacho no Posee Novedades Anteriores </td>";
+                    echo "</tr>";
+                echo "</table>";
+                }
                 
                 $formulario->nueva_tabla();
 
