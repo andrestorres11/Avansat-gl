@@ -670,7 +670,7 @@ class Proc_despac {
                 if ($particularidades) {
                 echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0' >";
                     echo "<tr>";
-                        echo "<th width='10%' class='cellHead' >N°</th>";                        
+                        echo "<th width='10%' class='cellHead' >Nï¿½</th>";                        
                         echo "<th width='40%' class='cellHead'>Particularidad del servicio</th>";
                     echo"</tr>";
                     foreach ($particularidades as $row  => $value) {
@@ -687,7 +687,6 @@ class Proc_despac {
                     echo "<tr>";
                         echo "<td class='cellHead' width='100%' >El Despacho no Posee Particularidades Anteriores </td>";
                     echo "</tr>";
-                echo "</table>";
                 }
                 if ($_ULTNOV && count($_ULTNOV) > 0) {
                     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
