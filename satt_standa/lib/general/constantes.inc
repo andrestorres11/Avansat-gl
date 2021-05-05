@@ -141,5 +141,8 @@ define("URL_INTERF_GPSEVE", "https://central.intrared.net/ap/interf/APIIntegrado
 define("CON_SOLICI_ASISTE", 1);
 define("CON_SOLICI_ACOMPA", 2);
 
+//Constante Tipo Servicio, llamado particularidad seguimiento control de trafico.
+define("CON_TIPSER_MA", 21);
+define("CON_TIPSER_OAL", 20);
 
 ?>

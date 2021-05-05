@@ -1,3 +1,5 @@
+// const { doDuring } = require("async");
+
 /* \file: ins_sertra_sertra.js
  *  \brief: archivo con mutltiples funciones ajax y css
  *  \author : Ing. Alexander Correa
@@ -933,6 +935,219 @@ function deleteContac(cod_transp, ema_contac) {
         console.log(e.message);
     }
 }
+/* ! \fn: deletePartic
+ *  \brief: elimina una particularidad
+ *  \author: Ing. Andres Martinez
+ *  \date: 08/02/2018
+ *  \date modified: dia/mes/año
+ *  \param: cod_transp => int => codigo de la transportadora a la que se le eliminara el contacto
+ *  \param: ema_contac => llave del contacto 
+ *  \return 
+ */
+function deletePartic(cod_transp, cod_partic) {
+    try {
+        swal({
+            title: "Eliminar Particularidad",
+            text: "¿Realmente Deseas eliminar la Particularidad seleccionada?",
+            type: "warning",
+            showCancelButton: true,
+            closeOnConfirm: false,
+            showLoaderOnConfirm: true,
+        }, function() {
+            var standa = $("#standaID").val();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=deletePartic&cod_transp=" + cod_transp + "&cod_partic=" + cod_partic,
+                async: true,
+                success: function(datos) {
+                    if (datos == 1) {
+                        swal({
+                            title: "Eliminar Particularidad",
+                            text: "Datos eliminados con éxito.",
+                            type: "success"
+                        }, function() {
+                            parameters = getDataForm();
+                            mostrar();
+                        });
+                    } else {
+                        swal({
+                            title: "Eliminar Particularidad",
+                            text: "Error al eliminar los datos, intenta nuevamente. Si el error persiste por favor informar.",
+                            type: "error"
+                        });
+                    }
+                }
+
+            });
+        });
+    } catch (e) {
+        console.log(e.message);
+    }
+}
+/* ! \fn: CreatePartic
+ *  \brief: funcion para insertar una particularidad
+ *  \author: Ing. Andres Martinez
+ *  \date: 08/02/2018
+ *  \date modified: dia/mes/año
+ *  \param: cod_tercer     => string => codigo de la empresa   
+ *  \param: cod_ciudad     => string => email cliente     
+ *  \return return
+ */
+function CreatePartic(cod_transp, tip_servic) {
+    try {
+        var conn = checkConnection();
+        var standa = $("#standaID").val();
+        var transp = $("#cod_transpID").val();
+
+        if (conn) {
+            var standa = $("#standaID").val();
+            var transp = $("#cod_transpID").val();
+            var tip_servic = $("#cod_tipserInserID").val();
+            var fec_partic = $("#fec_particID").val();
+            var des_partic = $("#des_particID").val();
+            $("#PopUpID").dialog({
+                modal: true,
+                resizable: false,
+                draggable: false,
+                title: "Creación de Particularidad",
+                width: 800,
+                heigth: 500,
+                position: ['middle', 25],
+                bgiframe: true,
+                closeOnEscape: false,
+                show: {
+                    effect: "drop",
+                    duration: 300
+                },
+                hide: {
+                    effect: "drop",
+                    duration: 300
+                },
+                open: function(event, ui) {
+                    $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                },
+                buttons: {
+                    Guardar: function() {
+                        NewPartic(tip_servic);
+                    },
+                    Cerrar: function() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=CreatePartic&standa=" + standa + "&cod_transp=" + transp + "&tip_servic=" + tip_servic + "&fec_partic=" + fec_partic + "&des_partic=" + des_partic +"&ind_edicio=0",
+                async: true,
+                beforeSend: function() {
+                    $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+                },
+                success: function(datos) {
+                    if (datos == '1') {
+                        closePopUp("PopUpID");
+                        swal({
+                            title: "Creación de Particularidad",
+                            text: "Se creo la particularidad correctamente.",
+                            type: "success"
+                        });
+                    } else {
+                        $("#PopUpID").html(datos);
+                    }
+
+                }
+            });
+        } else {
+            swal({
+                title: "Parametrización",
+                text: "Por favor verifica tu conexión a internet.",
+                type: "warning"
+            });
+
+        }
+    } catch (e) {
+        console.log(e.message);
+        return false;
+    }
+}
+
+function NewPartic(tip_servic) {
+    var conn = checkConnection();
+    var ind_config = 0; contador = 0;
+    
+    if (conn) {
+        var standa = $("#standaID").val();
+        var transp = $("#cod_transpID").val();
+        var tip_servic = $("#cod_tipserInserID").val();
+        var fec_partic = $("#fec_particID").val();
+        var des_partic = $("#des_particID").val();
+
+        var errores = false;
+        if (!tip_servic) {
+            setTimeout(function() {
+                inc_alerta("tip_servicID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!fec_partic) {
+            setTimeout(function() {
+                inc_alerta("fec_particID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!des_partic) {
+            setTimeout(function() {
+                inc_alerta("des_particID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!errores) {
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=NewPartic&standa=" + standa + "&cod_transp=" + transp + "&tip_servic=" + tip_servic + "&fec_partic=" + fec_partic + "&des_partic=" + des_partic,
+                async: true,
+                beforeSend: function() {
+                    $.blockUI({
+                        theme: true,
+                        title: 'Registrando particularidad',
+                        draggable: false,
+                        message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Registrando...</p></center>'
+                    });
+                },
+                success: function(datos) {
+                    $.unblockUI();
+                    if (datos == '1000') {
+                        swal({
+                            title: "Parametrización",
+                            text: "Particularidad registrada con éxito.",
+                            type: "success"
+                        });
+                        $("#PopUpID").dialog('close');
+                        mostrar();
+                    } else {
+                        swal({
+                            title: "Contacto",
+                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            type: "warning"
+                        });
+                        swal("");
+                    }
+                }
+
+            });
+        }
+    } else {
+        swal({
+            title: "Parametrización",
+            text: "Por favor verifica tu conexión a internet.",
+            type: "warning"
+        });
+    }
+}
 
 /* ! \fn: CreateContac
  *  \brief: funcion para insertar un contacto
@@ -1340,6 +1555,177 @@ function editContac(email) {
                         swal({
                             title: "Parametrización",
                             text: "Contacto Actualizado con éxito.",
+                            type: "success"
+                        });
+                        $("#PopUpID").dialog('close');
+                        mostrar();
+                    } else {
+                        swal({
+                            title: "Contacto",
+                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            type: "warning"
+                        });
+                        swal("");
+                    }
+                }
+
+            });
+        }
+    } else {
+        swal({
+            title: "Parametrización",
+            text: "Por favor verifica tu conexión a internet.",
+            type: "warning"
+        });
+    }
+}
+
+/* ! \fn: EditaPartic
+ *  \brief: funcion para insertar un contacto
+ *  \author: Ing. Andres Martinez
+ *  \date: 08/02/2018
+ *  \date modified: dia/mes/año
+ *  \param: cod_tercer     => string => codigo de la empresa   
+ *  \param: cod_ciudad     => string => email cliente     
+ *  \return return
+ */
+function EditaPartic(cod_transp, cod_partic) {
+    try {
+        var conn = checkConnection();
+        var standa = $("#standaID").val();
+        var transp = cod_transp;
+        if (conn) {
+            var standa = $("#standaID").val();
+            $("#PopUpID").dialog({
+                modal: true,
+                resizable: false,
+                draggable: false,
+                title: "Editar Particularidad",
+                width: 800,
+                heigth: 500,
+                position: ['middle', 25],
+                bgiframe: true,
+                closeOnEscape: false,
+                show: {
+                    effect: "drop",
+                    duration: 300
+                },
+                hide: {
+                    effect: "drop",
+                    duration: 300
+                },
+                open: function(event, ui) {
+                    $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                },
+                buttons: {
+                    Editar: function() {
+                        editPartic(cod_partic);
+                    },
+                    Cerrar: function() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=CreatePartic&standa=" + standa + "&cod_transp=" + transp +"&cod_partic=" + cod_partic + "&ind_edicio=1",
+                async: true,
+                beforeSend: function() {
+                    $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+                },
+                success: function(datos) {
+                    if (datos == '1') {
+                        closePopUp("PopUpID");
+                        swal({
+                            title: "Creación de Particularidad",
+                            text: "Se creo el contacto correctamente.",
+                            type: "success"
+                        });
+                    } else {
+                        $("#PopUpID").html(datos);
+                    }
+
+                },
+                complete: function(){
+                    $("#ui-multiselect-cod_agenciID-option-0").click();
+                }
+            });
+        } else {
+            swal({
+                title: "Parametrización",
+                text: "Por favor verifica tu conexión a internet.",
+                type: "warning"
+            });
+
+        }
+    } catch (e) {
+        console.log(e.message);
+        return false;
+    }
+}
+/* ! \fn: editPartic
+ *  \brief: registra un contacto en el sistema
+ *  \author: Ing. Torres
+ *  \date: 13/02/2018
+ *  \date modified: dia/mes/año
+ *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
+ *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
+ *  \return 
+ */
+function editPartic(cod_partic) {
+    
+    var conn = checkConnection();
+    var ind_config = 0; contador = 0;
+    
+    if (conn) {
+        var standa = $("#standaID").val();
+        var transp = $("#cod_transpID").val();
+        var tip_servic = $("#cod_tipserEditID").val();
+        var fec_partic = $("#fec_particID").val();
+        var des_partic = $("#des_particID").val();
+
+        var errores = false;
+        if (!tip_servic) {
+            setTimeout(function() {
+                inc_alerta("tip_servicID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!fec_partic) {
+            setTimeout(function() {
+                inc_alerta("fec_particID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!des_partic) {
+            setTimeout(function() {
+                inc_alerta("des_particID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!errores) {
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/sertra/ajax_sertra_sertra.php",
+                data: "Ajax=on&Option=editPartic&standa=" + standa + "&cod_transp=" + transp + "&tip_servic=" + tip_servic + "&fec_partic=" + fec_partic + "&des_partic=" + des_partic + "&cod_partic=" + cod_partic,
+                async: true,
+                beforeSend: function() {
+                    $.blockUI({
+                        theme: true,
+                        title: 'Actualizando Particularidad',
+                        draggable: false,
+                        message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Actualizando...</p></center>'
+                    });
+                },
+                success: function(datos) {
+                    $.unblockUI();
+                    if (datos == '1000') {
+                        swal({
+                            title: "Parametrización",
+                            text: "Particularidad Actualizada con éxito.",
                             type: "success"
                         });
                         $("#PopUpID").dialog('close');

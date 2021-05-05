@@ -106,7 +106,7 @@ class suspensiones {
       //Se crea la consulta para traer el estado de la empresa
       $sql =  "SELECT   cod_estado
                  FROM   ".BASE_DATOS.".tab_tercer_tercer
-                WHERE   cod_tercer = ".$value['cod_tercer'];
+                  WHERE   cod_tercer = '".$value['cod_tercer']."'" ;
       //Ejecuta la consulta
       $consulta = new Consulta( $sql, $this -> conexion );
       $cod_estado = $consulta->ret_matrix( 'a' )[0]['cod_estado'];
