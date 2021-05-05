@@ -142,7 +142,7 @@ define("CON_SOLICI_ASISTE", 1);
 define("CON_SOLICI_ACOMPA", 2);
 
 //Constante Tipo Servicio, llamado particularidad seguimiento control de trafico.
-define("CON_TIPSER_MA", 21);
-define("CON_TIPSER_OAL", 20);
+define("CON_TIPSER_MA", 2);
+define("CON_TIPSER_OAL", 1);
 
 ?>
