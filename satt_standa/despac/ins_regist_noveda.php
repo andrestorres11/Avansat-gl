@@ -667,10 +667,11 @@ class Proc_despac {
                 $particularidades = $consulta->ret_matrix("a");
                 $formulario->nueva_tabla();
                 $formulario->linea("Particularidades", 0, "t2");
+                if ($particularidades) {
                 echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0' >";
                     echo "<tr>";
                         echo "<th width='10%' class='cellHead' >N°</th>";                        
-                        echo "<th width='40%' class='cellHead'>Pareticularidad del servicio</th>";
+                        echo "<th width='40%' class='cellHead'>Particularidad del servicio</th>";
                     echo"</tr>";
                     foreach ($particularidades as $row  => $value) {
                         $i = $row +1;  
@@ -679,8 +680,15 @@ class Proc_despac {
                          echo "<td align='center' width='40%' class='celda_info'  style='border: 1px #c3c3c3 solid'> $value[des_partic] </td>";                                        
                      echo "</tr>";                                
                     }
-                            
-                echo"</table>";
+                    
+                } else{
+                    
+                echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0' >";
+                    echo "<tr>";
+                        echo "<td class='cellHead' width='100%' >El Despacho no Posee Particularidades Anteriores </td>";
+                    echo "</tr>";
+                echo "</table>";
+                }
                 if ($_ULTNOV && count($_ULTNOV) > 0) {
                     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
                     $formulario->nueva_tabla();

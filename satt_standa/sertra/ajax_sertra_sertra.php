@@ -560,15 +560,19 @@ class ajax_certra_certra {
                                 <th width="5%" nowrap class="CellHead" align="center">EDITAR</th>
                             </tr>
                         <?php
+
                             $particularidades = self::getPartic(null, $_POST['cod_transp'], $tipser['cod_tipser']);
+                                  
                             $i = 1;
                             foreach ($particularidades as $row => $value) {
+                                $oldDate = strtotime(($value['fec_defini']));
+                                $newDate = date('Y-m-d',$oldDate);
                         ?>
                                     <tr>
                                         <td align="center" width="5%" class="contenido" id="nom_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($row+1) ?></td>
                                         <td align="center" width="40%" class="contenido" id="tel_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['des_partic']) ?></td>
                                         <td align="center" width="15%" class="contenido" id="ema_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['nom_tipser']) ?></td>
-                                        <td align="center" width="20%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['fec_defini']) ?></td>
+                                        <td align="center" width="20%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($newDate) ?></td>
                                         <td align="center" width="10%" class="contenido" id="car_contac<?=$row?>" style="border:1px #35650F solid"><?= strtoupper($value['usr_creaci']) ?></td>
                                         <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deletePartic(<?= $datos->cod_transp ?>, '<?= $value['cod_partic'] ?>', 3)"></td>
                                         <td align="center" width="5%" class="contenido" style="border:1px #35650F solid"><img class="pointer" width="15px" height="15px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaPartic(<?= $datos->cod_transp ?>, '<?= $value['cod_partic'] ?>')"></td>
