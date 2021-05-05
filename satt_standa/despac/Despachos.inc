@@ -1834,10 +1834,12 @@ class Despachos
         IncludeJS( 'jquery.blockUI.js' );
         IncludeJS( 'validator.js' );
         IncludeJS( 'par_califi_califi.js' );
+        IncludeJS( '/dashboard/vendors/sweetAlert/sweetalert2.all.min.js' );
         IncludeJS( 'par_confir_pernoc.js' );
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>";
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>";
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/validator.css' type='text/css'>";
+        echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/js/dashboard/vendors/sweetAlert/sweetalert2.min.css' type='text/css'>";
     }//Fin Funcion IncludeJsStyle
 
     public function verifyConsolHijo( $despac )
@@ -3053,21 +3055,31 @@ class Despachos
     {
       $mHtml = new Formlib(2);
 
+      
+      
+
+
       $mHtml->OpenDiv("id:obsGeneralesID; class:accordion");
         $mHtml->SetBody("<h3 style='padding:6px;'><center>OBSERVACIONES GENERALES</center></h3>");
         $mHtml->OpenDiv("id:secID");
           $mHtml->OpenDiv("id:form_obsGeneralesID; class:contentAccordionForm");
-            $mHtml->Table("tr");
+          $mViewObsgen = self::getView('jso_obsgen');
+
+          if( $mViewObsgen->dat_obsgen->ind_visibl == 1 ){
+            $mHtml->SetBody('<img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="CreateObserva('.$_DESPAC[0][num_despac].', '.$_DESPAC[0][cod_transp].');" >');
+           }
+          $mHtml->Table("tr");
 
               $mHtml->Label( 'Observaciones', array("align"=>"left", "class"=>"celda_etiqueta") );
-              $mHtml->Label( 'Medios de Comunicacion', array("align"=>"left", "class"=>"celda_etiqueta") );
-              $mHtml->Label( 'Protecciones Especiales', array("align"=>"left", "class"=>"celda_etiqueta") );
+              $mHtml->Label( 'Fecha R', array("align"=>"left", "class"=>"celda_etiqueta") );
+              $mHtml->Label( 'Usuario', array("align"=>"left", "class"=>"celda_etiqueta") );
               $mHtml->CloseRow();
 
               if( $this -> verifyConsol( $mNumDespac ) )
               {
+                  
                 $mHijos = $this -> getViajesConsol( $mNumDespac );
-                $mSelect = "SELECT num_despac, obs_despac FROM ".BASE_DATOS.".tab_despac_despac WHERE num_despac IN(".$mHijos.")"; 
+                $mSelect = "SELECT num_despac, obs_despac, usr_creaci FROM ".BASE_DATOS.".tab_despac_despac WHERE num_despac IN(".$mHijos.")"; 
                 $consulta = new Consulta( $mSelect, $this -> conexion );
                 $mObserv = '';
                 $_DIFERE = $consulta->ret_matriz();
@@ -3076,7 +3088,7 @@ class Despachos
                   $mObserv .= $mObserv != '' ? '<br>'.$row['num_despac'].': '.$row['obs_despac'] : $row['num_despac'].': '.$row['obs_despac'];
                 }
                 $_DESPAC[0][obs_despac] = $mObserv;
-              }
+            }
               else if ( !$_DESPAC[0][obs_despac] )
                 $_DESPAC[0][obs_despac] = "- - -";
 
@@ -3085,12 +3097,32 @@ class Despachos
 
               if ( !$_DESPAC[0][obs_proesp] )
                 $_DESPAC[0][obs_proesp] = "- - -";
+            
+                $mHtml->Label( $_DESPAC[0][obs_despac], array("align"=>"left", "class"=>"cell") );
+                $mHtml->CloseRow();
 
-              $mHtml->Label( $_DESPAC[0][obs_despac], array("align"=>"left", "class"=>"cell") );
-              $mHtml->Label( $_DESPAC[0][obs_medcom], array("align"=>"left", "class"=>"cell") );
-              $mHtml->Label( $_DESPAC[0][obs_proesp], array("align"=>"left", "class"=>"cell") );
+                $mSelectObs= "SELECT num_despac, obs_obsgen,usr_creaci, fec_creaci FROM ".BASE_DATOS.".tab_infdes_obsgen WHERE num_despac ='".$_DESPAC[0][num_despac]."'";
+                $consultaObs = new Consulta( $mSelectObs, $this -> conexion );
+                $Observaciones = $consultaObs->ret_matriz();
+
+                foreach($Observaciones as $observacion){
+                    $mHtml->Label( $observacion[obs_obsgen], array("align"=>"left", "class"=>"cell") );
+                    $mHtml->Label( $observacion[fec_creaci], array("align"=>"left", "class"=>"cell") );
+                    $mHtml->Label( $observacion[usr_creaci], array("align"=>"left", "class"=>"cell") );
+                    $mHtml->CloseRow();
+                }
 
             $mHtml->CloseTable('tr');
+            $mHtml->Table("tr");
+                $mHtml->Label( 'Medios de Comunicacion', array("align"=>"left", "class"=>"celda_etiqueta") );
+                $mHtml->Label( 'Protecciones Especiales', array("align"=>"left", "class"=>"celda_etiqueta") );
+                $mHtml->CloseRow();
+              
+              $mHtml->Label( $_DESPAC[0][obs_medcom], array("align"=>"left", "class"=>"cell") );
+              $mHtml->Label( $_DESPAC[0][obs_proesp], array("align"=>"left", "class"=>"cell") );
+              $mHtml->CloseTable('tr');  
+              $mHtml->OpenDiv("id:popapObservacionID");
+              $mHtml->CloseDiv();
           $mHtml->CloseDiv();
         $mHtml->CloseDiv();
       $mHtml->CloseDiv();
@@ -4162,6 +4194,13 @@ class Despachos
       if( $mViewContac->dat_contac->ind_visibl == 1 ){
         $mHtml->SetBody( self::divContacto( $_RUTASX, $placa, $_DESPAC[0][cod_transp], $_DESPAC[0][num_despac], $cod_agenci));
       }
+
+       #< 1: INFORMACION PARTICULARIDAD >
+       $mViewPartic = self::getView('jso_partic');
+       if( $mViewPartic->dat_partic->ind_visibl == 1 ){
+         $mHtml->SetBody( self::divPartic( $_DESPAC[0][cod_transp]));
+       }
+
 
       #< 2: LLEGADA >
       if ( $lleg == 1 &&  $mView->inf_llegad->ind_visibl == 1 ){
@@ -8496,7 +8535,7 @@ class Despachos
      */
     public function getView( $mCatego )
     {
-        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac
+        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac, a.jso_partic, a.jso_obsgen
                    FROM ".BASE_DATOS.".tab_genera_respon a 
              INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
                      ON a.cod_respon = b.cod_respon 
@@ -9138,6 +9177,7 @@ class Despachos
      */
     private function divContacto( $_RUTASX, $placa, $transport, $despac, $cod_agenci)
     {  
+          
       $datos = $this->getContact($transport, $cod_agenci);
       $mHtml = new Formlib(2);
 
@@ -9197,6 +9237,65 @@ class Despachos
 
         $consulta = new Consulta($sql, $this-> conexion);
         return $consulta->ret_matrix("a");
+    }
+
+     /*! \fn: divPartic
+     *  \brief: Crea DIV de la seccion: PARTICULARIDADES
+     *  \author: Ing. Andres Martinez
+     *  \date: 14/09/2015
+     *  \date modified: dia/mes/aÃ±o
+     *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
+     *  \param: mIndConsol  Boolean  Indicador viaje consolidado
+     *  \param: mView       Array    Permisos de visibilidad en la seccion plan de ruta
+     *  \return: HTML
+     */
+    private function divPartic( $transport)
+    {  
+        
+      $datos = $this->getPartic($transport);
+      $mHtml = new Formlib(2);
+
+      $mHtml->OpenDiv("id:planRutaID; class:accordion");
+        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION PARICULARIDAD</center></h3>");
+        $mHtml->OpenDiv("id:secID");
+          $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
+            $mHtml->Table("tr");
+                
+                $mHtml->Label( 'N°', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"20%") );
+                $mHtml->Label( 'DESCRIPCION DE LA PARTICULARIDAD DEL ACUERDO DEL SERVICIO', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"70%") );
+                $mHtml->CloseRow();
+                
+                if ($datos) {
+          
+                    foreach ($datos as $row => $value) {
+                        $mHtml->Row();
+                        $mHtml->Label( strtoupper($row+1), array("align"=>"left", "class"=>"celda_info2", "width"=>"20%") );
+                        $mHtml->Label( strtoupper($value['des_partic']), array("align"=>"left", "class"=>"celda_info2", "width"=>"70%") );
+                         
+                        $mHtml->CloseRow();
+                    }
+                }else{
+                        $mHtml->Label( "No cuenta con particularidades parametrizadas para la agencia del despacho".$value['cod_partic'], array("align"=>"center", "class"=>"cellTitu","colspan"=>"6", "width"=>"10%") );
+                }
+            $mHtml->CloseTable('tr');
+          $mHtml->CloseDiv();
+        $mHtml->CloseDiv();
+      $mHtml->CloseDiv();
+
+      return $mHtml->MakeHtml();
+    }
+
+    private function getPartic($transport) {
+
+        
+        $sql = "SELECT a.cod_partic, a.fec_defini, a.cod_tipser, a.des_partic, a.usr_creaci, b.nom_tipser  
+        FROM " . BASE_DATOS . ".tab_partic_tipser a
+            INNER JOIN " . BASE_DATOS . ".tab_genera_tipser b ON a.cod_tipser = b.cod_tipser
+            WHERE cod_transp = '$transport' AND a.cod_tipser =" . CON_TIPSER_MA ."";
+
+        $consulta = new Consulta($sql, $this-> conexion);
+        return $consulta->ret_matrix("a");
+
     }
 
     private function getAgenContac($ema_contac,$transport) {

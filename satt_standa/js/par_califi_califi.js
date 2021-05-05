@@ -44,6 +44,155 @@ function formAuditarDespac() {
     }
 }
 
+/* ! \fn: CreatePartic
+ *  \brief: funcion para insertar una particularidad
+ *  \author: Ing. Andres Martinez
+ *  \date: 08/02/2018
+ *  \date modified: dia/mes/aÃ±o
+ *  \param: cod_tercer     => string => codigo de la empresa   
+ *  \param: cod_ciudad     => string => email cliente     
+ *  \return return
+ */
+function CreateObserva(num_despac, cod_transp) {
+    try {
+        var conn = checkConnection();
+        
+        if (conn) {
+            var standa = $("#central").val();
+            $("#popapObservacionID").dialog({
+                modal: true,
+                resizable: false,
+                draggable: false,
+                title: "Creación de Observacion",
+                width: 800,
+                heigth: 500,
+                position: ['middle', 25],
+                bgiframe: true,
+                closeOnEscape: false,
+                show: {
+                    effect: "drop",
+                    duration: 300
+                },
+                hide: {
+                    effect: "drop",
+                    duration: 300
+                },
+                open: function(event, ui) {
+                    $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                },
+                buttons: {
+                    Guardar: function() {
+                        NewObserva(num_despac, cod_transp);
+                    },
+                    Cerrar: function() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/califi/class_califi_califi.php",
+                data: "Ajax=on&Option=CreateObserva" + "&cod_transp=" + cod_transp + "&num_despac=" + num_despac +"&ind_edicio=0",
+                async: true,
+                beforeSend: function() {
+                    $("#popapObservacionID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+                },
+                success: function(datos) {
+                    if (datos == '1') {
+                        closePopUp("popapObservacionID");
+                        swal.fire({
+                            title: "Creación de Observacion",
+                            text: "Se creo la Observacion correctamente.",
+                            type: "success"
+                        });
+                    } else {
+                        $("#popapObservacionID").html(datos);
+                    }
+
+                }
+            });
+        } else {
+            swal.fire({
+                title: "Parametrización",
+                text: "Por favor verifica tu conexión a internet.",
+                type: "warning"
+            });
+
+        }
+    } catch (e) {
+        console.log(e.message);
+        return false;
+    }
+}
+function NewObserva(num_despac, cod_transp) {
+    var conn = checkConnection();
+    var ind_config = 0; contador = 0;
+    
+    if (conn) {
+        var standa  = $("#central").val();
+        var obs_obsgen = $("#des_observID").val();
+
+        var errores = false;
+        if (!obs_obsgen) {
+            setTimeout(function() {
+                inc_alerta("des_observID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!errores) {
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/califi/class_califi_califi.php",
+                data: "Ajax=on&Option=NewObserva" + "&cod_transp=" + cod_transp + "&num_despac=" + num_despac + "&obs_obsgen=" + obs_obsgen,
+                async: true,
+                beforeSend: function() {
+                    $.blockUI({
+                        theme: true,
+                        title: 'Registrando Observacion',
+                        draggable: false,
+                        message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Registrando...</p></center>'
+                    });
+                },
+                success: function(datos) {
+                    $.unblockUI();
+                    if (datos == '1000') {
+                        $("#popapObservacionID").dialog('close');
+                        swal.fire({
+                            title: "Parametrización",
+                            text: "Observacion registrada con éxito.",
+                            type: "success",
+                            icon: "success",
+                            showCancelButton: false,
+                            confirmButtonText: 'Ok'
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                          })
+                        $("#popapObservacionID").dialog('close');
+                    } else {
+                        swal.fire({
+                            title: "Observacion",
+                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            type: "warning"
+                        });
+                        swal.fire("");
+                    }
+                }
+
+            });
+        }
+    } else {
+        swal.fire({
+            title: "Parametrización",
+            text: "Por favor verifica tu conexión a internet.",
+            type: "warning"
+        });
+    }
+}
+
 /*! \fn: getListActivi
  *  \brief: Hace la Peticion Ajax para traer la lista de actividades y las agrega las opciones al select
  *  \author: Ing. Fabian Salinas
