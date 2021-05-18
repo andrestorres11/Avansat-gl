@@ -311,7 +311,9 @@ class Proc_despac {
             } else if ($VEHICULO) {
                 $DATOS = $VEHICULO[0];
                 $PLACA = strtoupper($_REQUEST[placa]);
-
+                
+                
+                
                 echo "<tr>";
                 echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0'>";
                 echo "<tr>";
@@ -460,6 +462,8 @@ class Proc_despac {
                         }
                     }
                 }
+
+
                 // ----------------------------------------------
 
                 $query = "SELECT b.cod_contro, IF( ( 
@@ -651,7 +655,39 @@ class Proc_despac {
 
                 $consulta = new Consulta($mSql, $this->conexion);
                 $_ULTNOV = $consulta->ret_matriz();
-
+                
+                $sql = "SELECT a.cod_partic, a.fec_defini, a.cod_tipser, a.des_partic, a.usr_creaci, b.nom_tipser  
+                FROM " . BASE_DATOS . ".tab_partic_tipser a
+                    INNER JOIN " . BASE_DATOS . ".tab_genera_tipser b ON a.cod_tipser = b.cod_tipser
+                    WHERE cod_transp = '$DATOS[cod_tercer]' AND a.cod_tipser =" . CON_TIPSER_OAL ."";
+    
+                    
+    
+                $consulta = new Consulta($sql, $this-> conexion);
+                $particularidades = $consulta->ret_matrix("a");
+                $formulario->nueva_tabla();
+                $formulario->linea("Particularidades", 0, "t2");
+                if ($particularidades) {
+                echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0' >";
+                    echo "<tr>";
+                        echo "<th width='10%' class='cellHead' >N�</th>";                        
+                        echo "<th width='40%' class='cellHead'>Particularidad del servicio</th>";
+                    echo"</tr>";
+                    foreach ($particularidades as $row  => $value) {
+                        $i = $row +1;  
+                     echo "<tr>";
+                         echo"<td align='center' width='10%' class='cellInfo' style='border: 1px #c3c3c3 solid'> $i </td>"; 
+                         echo "<td align='center' width='40%' class='celda_info'  style='border: 1px #c3c3c3 solid'> $value[des_partic] </td>";                                        
+                     echo "</tr>";                                
+                    }
+                    
+                } else{
+                    
+                echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0' >";
+                    echo "<tr>";
+                        echo "<td class='cellHead' width='100%' >El Despacho no Posee Particularidades Anteriores </td>";
+                    echo "</tr>";
+                }
                 if ($_ULTNOV && count($_ULTNOV) > 0) {
                     echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
                     $formulario->nueva_tabla();
@@ -678,13 +714,15 @@ class Proc_despac {
                     }
 
                     echo "</table>";
-                } else
+                } else{
                     $formulario->linea("&Uacute;litmas Novedades del Despacho", 0, "t2");
-
+                
                 echo "<table width='100%' border='0' class='tablaList' align='center' cellspacing='0' cellpadding='0' >";
-                echo "<tr>";
-                echo "<td class='cellHead' width='100%' >El Despacho no Posee Novedades Anteriores </td>";
-                echo "</tr>";
+                    echo "<tr>";
+                        echo "<td class='cellHead' width='100%' >El Despacho no Posee Novedades Anteriores </td>";
+                    echo "</tr>";
+                echo "</table>";
+                }
                 
                 $formulario->nueva_tabla();
 
@@ -901,6 +939,8 @@ class Proc_despac {
             return mail("leidy.acosta@intrared.net", 'Reporte Novedad EAL Alto del Trigo',$html, $cabeceras);
         }      
      }
+
+ 
 }
 
 $proceso = new Proc_despac($this->conexion, $this->usuario_aplicacion, $this->codigo);
