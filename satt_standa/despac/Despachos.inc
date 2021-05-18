@@ -2538,14 +2538,15 @@ class Despachos
         $mTittle[1]['data'] = array("nom_colorx" => "Color", 
                                     "nom_poseed" => "Poseedor", 
                                     "ano_modelo" => "Modelo", 
-                                    "nom_genera" => "Generador", 
+                                    "nom_genera" => "Generador",
                                     "nom_marcax" => "Marca", 
-                                    "nom_opegps" => "Operador Gps", 
+                                    "url_gpsxxx" => "Url Operador Gps", 
                                     "nom_carroc" => "Carroceria", 
-                                    "gps_usuari" => "Usuario Gps", 
+                                    "nom_opegps" => "Operador Gps",
                                     "num_config" => "Configuraci&oacute;n", 
-                                    "gps_paswor" => "Contrase&ntilde;a Gps", 
+                                    "gps_usuari" => "Usuario Gps", 
                                     "nom_asegur" => "Aseguradora", 
+                                    "gps_paswor" => "Contrase&ntilde;a Gps", 
                                     "num_poliza" => "Num Poliza", 
                                     "tie_contra" => "Tiempo Modificado para el Despacho", 
                                     "obs_tiemod" => "Observaciones de Modificaci&oacute;n", 
@@ -2592,7 +2593,13 @@ class Despachos
                                             $mTxt = '<a style="color:green;" href="sip:'.$mData[$key].'_'.$mData['aux_placax'].'_'.$mNumDespac.'@pbx.intrared.net" target="blank">'.$mData[$key].'</a>';
                                             $mTxt = array($tittle, $mData['nom_operad']." - ".$mTxt);
                                             break;
-
+                                        case 'url_gpsxxx':
+                                            
+                                            $mTxt = '<a style="color:green;" href="sip:'.$mData[$key].'" target="blank">'.$mData[$key].'</a>
+                                            <img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="EditGPS('.$mNumDespac.');" >'
+                                            ;
+                                            $mTxt = array($tittle,$mTxt);
+                                            break;
                                         case 'gps_paswor':
                                             $mTxt = $mData['ind_pasgps'] == 2 ? base64_decode($mData[$key]) : $mData[$key];
                                             $mTxt = array($tittle, $mTxt);
@@ -3670,7 +3677,8 @@ class Despachos
                         IF( a.fec_citcar IS NULL OR a.fec_citcar = '0000-00-00', '$mObs[1]', DATE_FORMAT( CONCAT( a.fec_citcar, ' ', a.hor_citcar ), '%H:%i %d-%m-%Y') ) AS fec_citcar, 
                         IF( y.nom_operad IS NULL OR y.nom_operad = '', ( IF(a.gps_otroxx IS NULL OR a.gps_otroxx = '', '$mObs[0]', UPPER(a.gps_otroxx)) ),UPPER(y.nom_operad)) AS nom_opegps,
                         k.num_solici,
-                        IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci
+                        IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci,
+                        y.url_gpsxxx
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
@@ -3725,7 +3733,7 @@ class Despachos
                      ON s.cod_carroc = w.cod_carroc 
               LEFT JOIN ".BASE_DATOS.".tab_despac_gpsxxx x 
                      ON a.num_despac = x.num_despac 
-              LEFT JOIN ".BD_STANDA .".tab_genera_opegps y 
+              LEFT JOIN ".BASE_DATOS .".tab_genera_opegps y 
                      ON x.cod_opegps = y.cod_operad 
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer z 
                      ON a.cod_asegur = z.cod_tercer 

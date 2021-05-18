@@ -155,7 +155,7 @@ class AjaxInsertDespacho
   {
     
     $query = "SELECT a.cod_operad, a.nom_operad
-                FROM ".CENTRAL.".tab_genera_opegps a
+                FROM ".BASE_DATOS.".tab_genera_opegps a
                WHERE a.ind_estado = '1'";
     
     if( $cod_opegps != NULL && $cod_opegps != '' )

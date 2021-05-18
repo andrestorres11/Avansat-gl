@@ -543,6 +543,7 @@ class trayle{
                        a.cod_colorx,a.num_tarpro,a.obs_vehicu,
                        a.usr_creaci,a.fec_creaci,a.usr_modifi,
                        a.fec_modifi,a.dir_fotfre,a.dir_fotizq,
+                        a.cod_opegps,a.usr_gpsxxx,a.clv_gpsxxx,a.idx_gpsxxx,
                        a.dir_fotder,a.dir_fotpos,b.abr_tercer nom_poseed,
                        c.abr_tercer nom_conduc, d.abr_tercer nom_propie,
                        a.ind_estado, MAX(e.num_noveda), e.num_trayle
@@ -593,6 +594,14 @@ class trayle{
       $colores = $consulta->ret_matriz("a");
       $colores = array_merge(self::$cNull,$colores);
       $datos->colores = $colores;
+      #los GPS
+      $query = "SELECT cod_operad,nom_operad
+               FROM ".BASE_DATOS.".tab_genera_opegps
+           ORDER BY 2 ";
+      $consulta = new Consulta($query, self::$cConexion);
+      $operadores = $consulta->ret_matriz("a");
+      $operadores = array_merge(self::$cNull,$operadores);
+      $datos->opegps = $operadores;
 
       #las configuraciones
       $query = "SELECT num_config,num_config
@@ -831,6 +840,7 @@ class trayle{
                            num_seriex,num_chasis,val_pesove,val_capaci,reg_nalcar,num_poliza,nom_asesoa,
                            fec_vigfin,ano_repote,num_config,cod_propie,cod_tenedo,cod_conduc,nom_vincul,
                            num_tarpro,cod_califi,fec_vigvin,num_polirc,fec_venprc,cod_aseprc,ind_estado,
+                           cod_opegps,usr_gpsxxx,clv_gpsxxx,idx_gpsxxx,
                            obs_vehicu,cod_tipveh,ind_chelis,fec_revmec,num_agases,fec_vengas,dir_fotfre,
                            dir_fotizq,dir_fotder,dir_fotpos,usr_creaci,fec_creaci,num_tarope)
                    VALUES
@@ -838,6 +848,7 @@ class trayle{
                            '$vehicu->num_seriex','$vehicu->num_chasis','$vehicu->val_pesove','$vehicu->val_capaci','$vehicu->reg_nalcar','$vehicu->num_poliza','$vehicu->nom_asesoa',
                            '$vehicu->fec_vigfin','$vehicu->ano_repote','$vehicu->num_config','$vehicu->cod_propie','$vehicu->cod_tenedo','$vehicu->cod_conduc','$vehicu->nom_vincul',
                            '$vehicu->num_tarpro','$vehicu->cod_califi','$vehicu->fec_vigvin','$vehicu->num_polirc','$vehicu->fec_venprc','$vehicu->cod_aseprc','$vehicu->ind_estado',
+                           '$vehicu->cod_opegps','$vehicu->usr_gpsxxx','$vehicu->clv_gpsxxx','$vehicu->idx_gpsxxx',
                            '$vehicu->obs_vehicu','$vehicu->cod_tipveh','$vehicu->ind_chelis','$vehicu->fec_revmec','$vehicu->num_agases','$vehicu->fec_vengas','$vehicu->dir_fotfre',
                            '$vehicu->dir_fotizq','$vehicu->dir_fotder','$vehicu->dir_fotpos','$vehicu->usr_creaci','$vehicu->fec_creaci','$vehicu->num_tarope')";
           $insercion = new Consulta($query,self::$cConexion,"R");
@@ -1006,6 +1017,10 @@ class trayle{
                         fec_venprc = '$vehicu->fec_venprc',
                         cod_aseprc = '$vehicu->cod_aseprc',
                         ind_estado = '$vehicu->ind_estado',
+                        cod_opegps = '$vehicu->cod_opegps',
+                        usr_gpsxxx = '$vehicu->usr_gpsxxx',
+                        clv_gpsxxx = '$vehicu->clv_gpsxxx',
+                        idx_gpsxxx = '$vehicu->idx_gpsxxx',
                         obs_vehicu = '$vehicu->obs_vehicu',
                         cod_tipveh = '$vehicu->cod_tipveh',
                         ind_chelis = '$vehicu->ind_chelis',

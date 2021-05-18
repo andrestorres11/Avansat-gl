@@ -62,7 +62,6 @@ class ajax_genera_bancox
     		}else{
     			$data[$key][] = $valor;	
     		}
-    		
     	}
     }
 
