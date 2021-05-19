@@ -610,8 +610,8 @@ function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc,
 
     $("#cod_opegpsID").val(cod_opegps);
     $("#usr_gpsxxxID").val(usr_gpsxxx);
-    $("#gps_idxxxxID").val(clv_gpsxxx);
-    $("#clv_gpsxxxID").val(idx_gpsxxx);
+    $("#clv_gpsxxxID").val(clv_gpsxxx);
+    $("#gps_idxxxxID").val(idx_gpsxxx);
 
     $("#des_marcaxID").html("<b>Marca:&nbsp;&nbsp;&nbsp;</b>");
     $("#nom_marcaxID").html("&nbsp;" + nom_marcax);
