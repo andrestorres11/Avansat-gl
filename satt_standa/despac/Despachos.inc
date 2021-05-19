@@ -2574,6 +2574,8 @@ class Despachos
 
         $mHtml = new Formlib(2);
 
+        $mHtml -> OpenDiv('id:popupGpsID');
+        $mHtml -> CloseDiv(); 
         for ($i=0; $i<3; $i++)
         {
             if( $mView->$mTittle[$i]['id']->ind_visibl == 1 )
@@ -2650,6 +2652,7 @@ class Despachos
                                 }
 
                             $mHtml->SetBody("</table>");
+                            
                         $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
@@ -3763,7 +3766,7 @@ class Despachos
                      ON s.cod_colorx = v.cod_colorx 
              INNER JOIN ".BASE_DATOS.".tab_vehige_carroc w 
                      ON s.cod_carroc = w.cod_carroc 
-              LEFT JOIN ".BASE_DATOS.".tab_despac_gpsxxx x 
+              LEFT JOIN ".BASE_DATOS.".tab_despac_gpsxxx x
                      ON a.num_despac = x.num_despac 
               LEFT JOIN ".BASE_DATOS .".tab_genera_opegps y 
                      ON x.cod_opegps = y.cod_operad 
@@ -3775,7 +3778,8 @@ class Despachos
                      ON k.cod_mercan = ab.cod_produc
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer jj 
                      ON a.cod_client = jj.cod_tercer 
-                  WHERE a.num_despac = '{$mNumDesOri}' 
+                  WHERE a.num_despac = '{$mNumDesOri}'
+                  ORDER BY x.cod_consec DESC 
                 ";
         $mConsult = new Consulta( $mSql, $this -> conexion );
         $mResult = $mConsult -> ret_matrix('a');

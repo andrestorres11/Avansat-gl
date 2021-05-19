@@ -176,7 +176,8 @@ class AjaxInsertDespacho
                        h.num_telmov,b.nom_marcax,c.nom_lineax,d.nom_colorx,
                        e.nom_carroc,a.ano_modelo,a.ind_estado,a.fec_creaci,
                        a.num_config,g.cod_tercer,h.cod_tercer,k.cod_tercer,
-                       k.abr_tercer
+                       k.abr_tercer,
+                       a.cod_opegps,a.usr_gpsxxx,a.clv_gpsxxx,a.idx_gpsxxx
                   FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
                        ".BASE_DATOS.".tab_genera_marcas b,
                        ".BASE_DATOS.".tab_vehige_carroc e,
