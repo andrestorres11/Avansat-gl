@@ -812,3 +812,7 @@ function LoadPopupCalifi(opcion, titulo, alto, ancho, redimen, dragg, lockBack) 
         return false;
     }
 }
+
+function redirectUrl(url) {
+    window.location.href = url;
+}

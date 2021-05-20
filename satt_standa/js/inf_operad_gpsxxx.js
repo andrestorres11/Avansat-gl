@@ -52,7 +52,7 @@ $(function() {
             'csvHtml5',
             'pdfHtml5',
         ],
-        "order": [[ 2, "asc" ]],
+        "order": [[ 0, "asc" ]],
         fnInitComplete: function(){
            $("#crear").html('<div><a tabindex="0" onclick="formRegistro(\'form\', \'xl\')" class="small-box-footer btn btn-success btn-sm" data-toggle="modal" data-target="#modal-xl" aria-controls="tablaRegistros"><span>Crear registro</span></a></div><br>');
         }

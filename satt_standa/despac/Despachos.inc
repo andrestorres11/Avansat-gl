@@ -2549,7 +2549,8 @@ class Despachos
                                     "gps_usuari" => "Usuario Gps", 
                                     "nom_asegur" => "Aseguradora", 
                                     "gps_paswor" => "Contrase&ntilde;a Gps", 
-                                    "num_poliza" => "Num Poliza", 
+                                    "num_poliza" => "Num Poliza",
+                                    "idx_gpsxxx" => "ID GPS",
                                     "tie_contra" => "Tiempo Modificado para el Despacho", 
                                     "obs_tiemod" => "Observaciones de Modificaci&oacute;n", 
                                     "num_desant" => "tit_desant"
@@ -2598,15 +2599,16 @@ class Despachos
                                             $mTxt = array($tittle, $mData['nom_operad']." - ".$mTxt);
                                             break;
                                         case 'url_gpsxxx':
+                                            $mViewEdt = self::getView('edt_gpsxxx');
+                                            print_r($mData[$key]);
+                                                if( $mViewEdt->dat_gpsxxx->ind_visibl == 1 ){
+                                                    $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>
+                                                    <img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="EditGPS('.$mNumDespac.');" >';
+                                                }else{
+                                                    $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>';
+                                                };
                                             
-                                            $mTxt = '<a style="color:green;" href="sip:'.$mData[$key].'" target="blank">'.$mData[$key].'</a>
-                                            <img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="EditGPS('.$mNumDespac.');" >'
-                                            ;
                                             $mTxt = array($tittle,$mTxt);
-                                            break;
-                                        case 'gps_paswor':
-                                            $mTxt = $mData['ind_pasgps'] == 2 ? base64_decode($mData[$key]) : $mData[$key];
-                                            $mTxt = array($tittle, $mTxt);
                                             break;
 
                                         case 'fec_llegpl':
@@ -3713,7 +3715,8 @@ class Despachos
                         IF( y.nom_operad IS NULL OR y.nom_operad = '', ( IF(a.gps_otroxx IS NULL OR a.gps_otroxx = '', '$mObs[0]', UPPER(a.gps_otroxx)) ),UPPER(y.nom_operad)) AS nom_opegps,
                         k.num_solici,
                         IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci,
-                        y.url_gpsxxx
+                        y.url_gpsxxx,
+                        x.idx_gpsxxx
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
@@ -8547,7 +8550,7 @@ class Despachos
      */
     public function getView( $mCatego )
     {
-        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac, a.jso_partic, a.jso_obsgen
+        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac, a.jso_partic, a.jso_obsgen, a.edt_gpsxxx
                    FROM ".BASE_DATOS.".tab_genera_respon a 
              INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
                      ON a.cod_respon = b.cod_respon 
