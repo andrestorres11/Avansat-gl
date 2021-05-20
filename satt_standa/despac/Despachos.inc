@@ -2600,7 +2600,6 @@ class Despachos
                                             break;
                                         case 'url_gpsxxx':
                                             $mViewEdt = self::getView('edt_gpsxxx');
-                                            print_r($mData[$key]);
                                                 if( $mViewEdt->dat_gpsxxx->ind_visibl == 1 ){
                                                     $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>
                                                     <img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="EditGPS('.$mNumDespac.');" >';
