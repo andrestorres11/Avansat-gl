@@ -290,7 +290,7 @@ class Ajax
                      a.cod_tenedo = g.cod_tercer AND
                      a.cod_conduc = h.cod_tercer AND
                      a.cod_asesoa = o.cod_tercer AND
-                     a.cod_tipveh = m.cod_tipveh ";   
+                     a.cod_tipveh = m.cod_tipveh";   
                     
       //echo $mSql;
       return $mSql;

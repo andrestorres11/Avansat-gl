@@ -597,6 +597,7 @@ class trayle{
       #los GPS
       $query = "SELECT cod_operad,nom_operad
                FROM ".BASE_DATOS.".tab_genera_opegps
+               WHERE ind_estado = '1' 
            ORDER BY 2 ";
       $consulta = new Consulta($query, self::$cConexion);
       $operadores = $consulta->ret_matriz("a");

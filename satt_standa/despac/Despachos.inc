@@ -2073,7 +2073,7 @@ class Despachos
                     " . BASE_DATOS . ".tab_genera_agenci g,
                     " . BASE_DATOS . ".tab_despac_despac a LEFT JOIN
                     " . BASE_DATOS . ".tab_despac_gpsxxx k ON a.num_despac = k.num_despac LEFT JOIN
-                    " . BD_STANDA  . ".tab_genera_opegps i ON k.cod_opegps = i.cod_operad
+                    " . BASE_DATOS . ".tab_genera_opegps i ON k.cod_opegps = i.cod_operad
                     LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer h ON a.cod_asegur = h.cod_tercer 
                     LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer j ON a.cod_client = j.cod_tercer 
                   WHERE 
