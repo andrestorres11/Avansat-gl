@@ -38,6 +38,12 @@ class Califi
 				self::CreateObserva();
 				break;
 
+			case 'EditGPS':
+				self::EditGPS();
+				break;	
+			case "editaGps";
+				$this->editaGps();
+				break;  
 			case "NewObserva";
 				$this->NewObserva();
 				break; 
@@ -104,6 +110,16 @@ class Califi
 
 		echo $mHtml->MakeHtml();
 	}
+	private function getOpeGps(){
+        
+        //consulto los tipos de servicios y los agrego al objeto principal
+        $query = "SELECT cod_operad, nom_operad
+        FROM " . BASE_DATOS . ".tab_genera_opegps
+        WHERE ind_estado = '1'";
+        $consulta = new Consulta($query, self::$cConexion);
+        $operadGps = $consulta->ret_matrix("a");
+        return $operadGps;
+    }
 
 	    /* ! \fn: CreateObserva
      *  \brief: inserta un nuevo contacto
@@ -114,7 +130,145 @@ class Califi
      *  \param: 
      *  \return 
      */
-    private function CreateObserva() {
+    private function EditGPS() {
+		
+		if ($_POST['ind_edicio'] == '0') {
+			?>
+		<?php
+		}else{
+			$informacion= self::getGPS($_POST['num_despac'])[0];
+			
+			$operadores = self::getOpeGps();
+		?>
+		<div class="StyleDIV contenido" style="min-height: 145px !important;">
+			<div class="col-md-1">&nbsp;</div>
+				<div class="col-md-10">
+					<div class="col-md-6">
+						<div class="col-md-6 text-right">Operador GPS<font style="color:red">*</font></div>
+						<div class="col-md-6 text-left">
+							<select id="cod_operadEditID" name="cod_operad" class="ancho" obl="1" validate="select">
+								<option value="">Seleccione una Opci&oacute;n.</option>
+								<?php
+								foreach ($operadores as $key => $value) {
+									$sel = "";
+									if ($value['cod_operad'] == $informacion['gps_operad']) {
+										$sel = "selected";
+									}
+
+									?>
+									<option <?= $sel ?> value="<?= $value['cod_operad'] ?>"><?= $value['nom_operad'] ?></option>
+								<?php } ?>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="col-md-3 text-right">Usuario:<font style="color:red">*</font></div>
+						<div class="col-md-9 text-left">
+							<input type="text" class="text-center ancho" name="gps_usuari" id="gps_usuariID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_usuari'] ?>"></input>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="col-md-3 text-right">Contraseña:<font style="color:red">*</font></div>
+						<div class="col-md-9 text-left">
+							<input type="text" class="text-center ancho" name="gps_paswor" id="gps_pasworID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_paswor'] ?>"></input>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="col-md-3 text-right">ID:<font style="color:red">*</font></div>
+						<div class="col-md-9 text-left">
+							<input type="text" class="text-center ancho" name="gps_idxxxx" id="gps_idxxxxID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_idxxxx'] ?>"></input>
+						</div>
+					</div>
+				</div>
+			<div class="col-md-1">&nbsp;</div>
+		</div>
+	<?php
+	}
+            
+    }
+
+	private function getGPS($num_despac) {
+        
+        $sql = "SELECT a.gps_operad, a.gps_usuari, a.gps_paswor, a.gps_idxxxx 
+                  FROM " . BASE_DATOS . ".tab_despac_despac a
+				  WHERE a.num_despac = '".$num_despac."'";
+
+        $consulta = new Consulta($sql, self::$cConexion);
+        $getGps = $consulta->ret_matriz();
+        
+        return $getGps;
+    }
+
+	private function getDespactGps($num_despac) {
+        
+        $sql = "SELECT MAX(a.cod_consec) as cod_consec 
+                  FROM " . BASE_DATOS . ".tab_despac_gpsxxx a
+				  WHERE a.num_despac = '".$num_despac."'";
+
+        $consulta = new Consulta($sql, self::$cConexion);
+        $codigoCon = $consulta->ret_matriz();
+		if(COUNT($codigoCon)>=1){
+			$valMax = $codigoCon[0]['cod_consec'];	
+		}else{
+			$valMax = 0;	
+		}
+        return $valMax;
+    }
+
+	   /* ! \fn: editaGps
+     *  \brief: inserta una Particularidad de la transportado
+     *  \author: Ing. Andres Martinez
+     *  \date: 08/02/2016
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function editaGps() {
+        
+        $mData = $_POST;
+        $mUpdate = "UPDATE " . BASE_DATOS . ".tab_despac_despac SET 
+					gps_operad = '".$mData['gps_operad']."',
+                    gps_usuari = '".$mData['gps_usuari']."', 
+                    gps_paswor = '".$mData['gps_paswor']."',
+					gps_idxxxx = '".$mData['gps_idxxxx']."',
+                    usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                    fec_modifi = NOW()
+                    WHERE num_despac = '".$mData['num_despac']."'";
+		new Consulta($mUpdate, self::$cConexion);
+					
+		$codConsecutivo = (self::getDespactGps($mData['num_despac'])+1);
+
+		$mInsert = "INSERT INTO " . BASE_DATOS . ".tab_despac_gpsxxx
+			(
+				num_despac,
+				cod_consec,
+				idx_gpsxxx,
+				cod_opegps,
+				nom_usrgps,
+				clv_usrgps,
+				usr_creaci,
+				fec_creaci
+				)
+			VALUES(
+				'".$mData['num_despac']."',
+				$codConsecutivo,
+				'".$mData['gps_idxxxx']."',
+				'".$mData['gps_operad']."',
+				'".$mData['gps_usuari']."',
+				'".$mData['gps_paswor']."',
+				'".$_SESSION['datos_usuario']['cod_usuari']."',
+				NOW()
+			)";	
+				
+        if ($consulta = new Consulta($mInsert, self::$cConexion)) {
+            echo "1000";
+        } else {
+            echo "9999";
+        }
+    }
+
+	private function CreateObserva() {
 		$datos = (object) $_POST;
 		if ($_POST['ind_edicio'] == '0') {
 			?>
@@ -207,6 +361,7 @@ class Califi
 
         echo $mHtml;
 	}
+	
 
 	/*! \fn: getActivi
 	 *  \brief: Trae las actividades de las operaciones

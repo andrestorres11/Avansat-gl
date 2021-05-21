@@ -193,6 +193,190 @@ function NewObserva(num_despac, cod_transp) {
     }
 }
 
+/* ! \fn: CreatePartic
+ *  \brief: funcion para insertar una particularidad
+ *  \author: Ing. Andres Martinez
+ *  \date: 08/02/2018
+ *  \date modified: dia/mes/aÃ±o
+ *  \param: cod_tercer     => string => codigo de la empresa   
+ *  \param: cod_ciudad     => string => email cliente     
+ *  \return return
+ */
+function EditGPS(num_despac) {
+    try {
+        var conn = checkConnection();
+        
+        if (conn) {
+            var standa  = $("#central").val();
+            $("#popupGpsID").dialog({
+                modal: true,
+                resizable: false,
+                draggable: false,
+                title: "Editar Operador GPS",
+                width: 800,
+                heigth: 500,
+                position: ['middle', 25],
+                bgiframe: true,
+                closeOnEscape: false,
+                show: {
+                    effect: "drop",
+                    duration: 300
+                },
+                hide: {
+                    effect: "drop",
+                    duration: 300
+                },
+                open: function(event, ui) {
+                    $(this).parent().children().children('.ui-dialog-titlebar-close').hide();
+                },
+                buttons: {
+                    Editar: function() {
+                        editaGps(num_despac);
+                    },
+                    Cerrar: function() {
+                        $(this).dialog('close');
+                    }
+                }
+            });
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/califi/class_califi_califi.php",
+                data: "Ajax=on&Option=EditGPS&standa=" + standa +"&num_despac=" + num_despac + "&ind_edicio=1",
+                async: true,
+                beforeSend: function() {
+                    $("#popupGpsID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
+                },
+                success: function(datos) {
+                    if (datos == '1') {
+                        closePopUp("popupGpsID");
+                        swal({
+                            title: "Actualizacion GPS",
+                            text: "Se Actualizo correctamente.",
+                            type: "success"
+                            
+                        });
+                    } else {
+                        $("#popupGpsID").html(datos);
+                    }
+
+                },
+                complete: function(){
+                    $("#ui-multiselect-cod_agenciID-option-0").click();
+                }
+            });
+        } else {
+            swal({
+                title: "Parametrización",
+                text: "Por favor verifica tu conexión a internet.",
+                type: "warning"
+            });
+
+        }
+    } catch (e) {
+        console.log(e.message);
+        return false;
+    }
+}
+
+
+/* ! \fn: editaGps
+ *  \brief: registra un contacto en el sistema
+ *  \author: Ing. Torres
+ *  \date: 13/02/2018
+ *  \date modified: dia/mes/año
+ *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
+ *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
+ *  \return 
+ */
+function editaGps(num_despac) {
+        
+    var conn = checkConnection();
+ 
+    if (conn) {
+        var standa  = $("#central").val();
+        var gps_operad = $("#cod_operadEditID").val();
+        var gps_usuari = $("#gps_usuariID").val();
+        var gps_paswor = $("#gps_pasworID").val();
+        var gps_idxxxx = $("#gps_idxxxxID").val();
+
+        var errores = false;
+        if (!gps_operad) {
+            setTimeout(function() {
+                inc_alerta("cod_operadEditID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!gps_usuari) {
+            setTimeout(function() {
+                inc_alerta("gps_usuariID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!gps_paswor) {
+            setTimeout(function() {
+                inc_alerta("gps_pasworID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!gps_idxxxx) {
+            setTimeout(function() {
+                inc_alerta("gps_idxxxxID", "Campo Obligatorio.");
+            }, 511);
+            errores = true;
+        }
+        if (!errores) {
+            parameters = getDataForm();
+            $.ajax({
+                type: "POST",
+                url: "../" + standa + "/califi/class_califi_califi.php",
+                data: "Ajax=on&Option=editaGps&standa=" + standa + "&gps_operad=" + gps_operad + "&gps_usuari=" + gps_usuari + "&gps_paswor=" + gps_paswor + "&gps_idxxxx=" + gps_idxxxx + "&num_despac=" + num_despac,
+                async: true,
+                beforeSend: function() {
+                    $.blockUI({
+                        theme: true,
+                        title: 'Actualizando Operador GPS',
+                        draggable: false,
+                        message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Actualizando...</p></center>'
+                    });
+                },
+                success: function(datos) {
+                    $.unblockUI();
+                    if (datos == '1000') {
+                        swal.fire({
+                            title: "Parametrización",
+                            text: "Operador GPS Actualizado con éxito.",
+                            type: "success",
+                            icon: "success",
+                            showCancelButton: false,
+                            confirmButtonText: 'Ok'
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.reload();
+                            }
+                          })
+                        $("#popupGpsID").dialog('close');
+                    } else {
+                        swal.fire({
+                            title: "Operador Gps",
+                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            type: "warning"
+                        });
+                        swal.fire("");
+                    }
+                }
+
+            });
+        }
+    } else {
+        swal.fire({
+            title: "Parametrización",
+            text: "Por favor verifica tu conexión a internet.",
+            type: "warning"
+        });
+    }
+}
+
 /*! \fn: getListActivi
  *  \brief: Hace la Peticion Ajax para traer la lista de actividades y las agrega las opciones al select
  *  \author: Ing. Fabian Salinas
@@ -627,4 +811,8 @@ function LoadPopupCalifi(opcion, titulo, alto, ancho, redimen, dragg, lockBack) 
         console.log("Error Function LoadPopupCalifi: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
+}
+
+function redirectUrl(url) {
+    window.location.href = url;
 }

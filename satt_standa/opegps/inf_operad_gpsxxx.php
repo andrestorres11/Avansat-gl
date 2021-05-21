@@ -26,7 +26,7 @@ class inf_operad_gpsxxx
 
  /*! \fn: styles
        *  \brief: incluye todos los archivos necesarios para los estilos
-       *  \author: Ing. Cristian AndrÃ©s Torres
+       *  \author: Ing. Cristian Andrés Torres
        *  \date: 02-06-2020
        *  \date modified: dd/mm/aaaa
        *  \param: 
@@ -58,7 +58,7 @@ class inf_operad_gpsxxx
 
     /*! \fn: scripts
    *  \brief: incluye todos los archivos necesarios para los eeventos js
-   *  \author: Ing. Cristian AndrÃ©s Torres
+   *  \author: Ing. Cristian Andrés Torres
    *  \date: 02-06-2020
    *  \date modified: dd/mm/aaaa
    *  \param: 
@@ -100,7 +100,7 @@ class inf_operad_gpsxxx
   //---------------------------------------------
   /*! \fn: registros
   *  \brief: Imprime el html con el encabezado de la tabla
-  *  \author: Cristian AndrÃ©s Torres
+  *  \author: Cristian Andrés Torres
   *  \date: 02/06/2020
   *  \date modified: 
   *  \return 
@@ -108,6 +108,7 @@ class inf_operad_gpsxxx
   function registros() {
     self::styles();
     $html = '
+    
             <td>
               <div id="contenedor"> 
                   <div class="panel-group" id="accordion">
@@ -119,15 +120,22 @@ class inf_operad_gpsxxx
                           </a>
                         </h4>
                       </div>
+                      
                       <div id="tablaDatos" class="panel-collapse collapse in" style="overflow: auto;">
                         <div class="panel-body">
                           <table id="tablaRegistros" class="table table-striped table-bordered" style="width: 100%;">
                             <thead>
                               <tr>
+                                <th>#</th>
                                 <th>Nit</th>
                                 <th>Nombre</th>
-                                <th>Estado</th>
+                                <th>URL</th>
+                                <th>Aplica ID</th>
+                                <th>Cron</th>
                                 <th>Integrado</th>
+                                <th>RNDC</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
                               </tr>
                             </thead>
                           </table>
