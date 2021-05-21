@@ -283,14 +283,14 @@ class Ajax
                      ON a.num_config = i.num_config
                      LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc z 
                      ON a.cod_conduc = z.cod_tercer
-                     LEFT JOIN ".BD_STANDA.".tab_genera_opegps n 
+                     LEFT JOIN ".BASE_DATOS.".tab_genera_opegps n 
                      ON a.cod_opegps = n.cod_operad
                 WHERE 
                      a.cod_propie = k.cod_tercer AND
                      a.cod_tenedo = g.cod_tercer AND
                      a.cod_conduc = h.cod_tercer AND
                      a.cod_asesoa = o.cod_tercer AND
-                     a.cod_tipveh = m.cod_tipveh ";   
+                     a.cod_tipveh = m.cod_tipveh";   
                     
       //echo $mSql;
       return $mSql;

@@ -593,7 +593,8 @@ function PopupVehiculos() {
   }
 }
 
-function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc, num_modelo, num_config, cod_tenedo, cod_conduc, nom_tenedo, nom_conduc, cod_propie, nom_propie) {
+function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc, num_modelo, num_config, cod_tenedo, cod_conduc, nom_tenedo,
+                     nom_conduc, cod_propie, nom_propie,cod_opegps,usr_gpsxxx,clv_gpsxxx,idx_gpsxxx) {
   try {
     //$("#num_placaxID").focus();
     var cod_transp = $("#cod_transpID").val();
@@ -602,6 +603,16 @@ function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc,
     if (submit == 1) {
       document.form_insert.submit();
     }
+    $("#cod_opegpsID").attr("disabled", true);
+    $("#usr_gpsxxxID").attr("readonly", "readonly");
+    $("#gps_idxxxxID").attr("readonly", "readonly");
+    $("#clv_gpsxxxID").attr("readonly", "readonly");
+
+    $("#cod_opegpsID").val(cod_opegps);
+    $("#usr_gpsxxxID").val(usr_gpsxxx);
+    $("#clv_gpsxxxID").val(clv_gpsxxx);
+    $("#gps_idxxxxID").val(idx_gpsxxx);
+
     $("#des_marcaxID").html("<b>Marca:&nbsp;&nbsp;&nbsp;</b>");
     $("#nom_marcaxID").html("&nbsp;" + nom_marcax);
     $("#des_colorxID").html("<b>Color:&nbsp;&nbsp;&nbsp;</b>");
@@ -1399,7 +1410,7 @@ function getVehiculo(obj, cod_transp, flag) {
             $("#loading").remove();
             if (data != '') {
               var datos = $.parseJSON(data);
-              SetVehiculo(datos["0"]["0"],datos["0"]["5"],datos["0"]["6"],datos["0"]["7"],datos["0"]["8"],datos["0"]["9"],datos["0"]["12"],datos["0"]["13"],datos["0"]["14"],datos["0"]["1"],datos["0"]["3"],datos["0"]["15"],datos["0"]["16"]);
+              SetVehiculo(datos["0"]["0"],datos["0"]["5"],datos["0"]["6"],datos["0"]["7"],datos["0"]["8"],datos["0"]["9"],datos["0"]["12"],datos["0"]["13"],datos["0"]["14"],datos["0"]["1"],datos["0"]["3"],datos["0"]["15"],datos["0"]["16"],datos["0"]["17"],datos["0"]["18"],datos["0"]["19"],datos["0"]["20"]);
             } else {
               alert("EL VEHICULO " + num_placax + " NO EXISTE");
               $("#num_placaxID").val('');

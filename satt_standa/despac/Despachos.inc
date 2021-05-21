@@ -2073,7 +2073,7 @@ class Despachos
                     " . BASE_DATOS . ".tab_genera_agenci g,
                     " . BASE_DATOS . ".tab_despac_despac a LEFT JOIN
                     " . BASE_DATOS . ".tab_despac_gpsxxx k ON a.num_despac = k.num_despac LEFT JOIN
-                    " . BD_STANDA  . ".tab_genera_opegps i ON k.cod_opegps = i.cod_operad
+                    " . BASE_DATOS . ".tab_genera_opegps i ON k.cod_opegps = i.cod_operad
                     LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer h ON a.cod_asegur = h.cod_tercer 
                     LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer j ON a.cod_client = j.cod_tercer 
                   WHERE 
@@ -2540,15 +2540,17 @@ class Despachos
         $mTittle[1]['data'] = array("nom_colorx" => "Color", 
                                     "nom_poseed" => "Poseedor", 
                                     "ano_modelo" => "Modelo", 
-                                    "nom_genera" => "Generador", 
+                                    "nom_genera" => "Generador",
                                     "nom_marcax" => "Marca", 
-                                    "nom_opegps" => "Operador Gps", 
+                                    "url_gpsxxx" => "Url Operador Gps", 
                                     "nom_carroc" => "Carroceria", 
-                                    "gps_usuari" => "Usuario Gps", 
+                                    "nom_opegps" => "Operador Gps",
                                     "num_config" => "Configuraci&oacute;n", 
-                                    "gps_paswor" => "Contrase&ntilde;a Gps", 
+                                    "gps_usuari" => "Usuario Gps", 
                                     "nom_asegur" => "Aseguradora", 
-                                    "num_poliza" => "Num Poliza", 
+                                    "gps_paswor" => "Contrase&ntilde;a Gps", 
+                                    "num_poliza" => "Num Poliza",
+                                    "idx_gpsxxx" => "ID GPS",
                                     "tie_contra" => "Tiempo Modificado para el Despacho", 
                                     "obs_tiemod" => "Observaciones de Modificaci&oacute;n", 
                                     "num_desant" => "tit_desant"
@@ -2573,6 +2575,8 @@ class Despachos
 
         $mHtml = new Formlib(2);
 
+        $mHtml -> OpenDiv('id:popupGpsID');
+        $mHtml -> CloseDiv(); 
         for ($i=0; $i<3; $i++)
         {
             if( $mView->$mTittle[$i]['id']->ind_visibl == 1 )
@@ -2594,10 +2598,16 @@ class Despachos
                                             $mTxt = '<a style="color:green;" href="sip:'.$mData[$key].'_'.$mData['aux_placax'].'_'.$mNumDespac.'@pbx.intrared.net" target="blank">'.$mData[$key].'</a>';
                                             $mTxt = array($tittle, $mData['nom_operad']." - ".$mTxt);
                                             break;
-
-                                        case 'gps_paswor':
-                                            $mTxt = $mData['ind_pasgps'] == 2 ? base64_decode($mData[$key]) : $mData[$key];
-                                            $mTxt = array($tittle, $mTxt);
+                                        case 'url_gpsxxx':
+                                            $mViewEdt = self::getView('edt_gpsxxx');
+                                                if( $mViewEdt->dat_gpsxxx->ind_visibl == 1 ){
+                                                    $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>
+                                                    <img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="EditGPS('.$mNumDespac.');" >';
+                                                }else{
+                                                    $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>';
+                                                };
+                                            
+                                            $mTxt = array($tittle,$mTxt);
                                             break;
 
                                         case 'fec_llegpl':
@@ -2643,6 +2653,7 @@ class Despachos
                                 }
 
                             $mHtml->SetBody("</table>");
+                            
                         $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
@@ -3702,7 +3713,9 @@ class Despachos
                         IF( a.fec_citcar IS NULL OR a.fec_citcar = '0000-00-00', '$mObs[1]', DATE_FORMAT( CONCAT( a.fec_citcar, ' ', a.hor_citcar ), '%H:%i %d-%m-%Y') ) AS fec_citcar, 
                         IF( y.nom_operad IS NULL OR y.nom_operad = '', ( IF(a.gps_otroxx IS NULL OR a.gps_otroxx = '', '$mObs[0]', UPPER(a.gps_otroxx)) ),UPPER(y.nom_operad)) AS nom_opegps,
                         k.num_solici,
-                        IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci
+                        IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci,
+                        y.url_gpsxxx,
+                        x.idx_gpsxxx
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
@@ -3755,9 +3768,9 @@ class Despachos
                      ON s.cod_colorx = v.cod_colorx 
              INNER JOIN ".BASE_DATOS.".tab_vehige_carroc w 
                      ON s.cod_carroc = w.cod_carroc 
-              LEFT JOIN ".BASE_DATOS.".tab_despac_gpsxxx x 
+              LEFT JOIN ".BASE_DATOS.".tab_despac_gpsxxx x
                      ON a.num_despac = x.num_despac 
-              LEFT JOIN ".BD_STANDA .".tab_genera_opegps y 
+              LEFT JOIN ".BASE_DATOS .".tab_genera_opegps y 
                      ON x.cod_opegps = y.cod_operad 
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer z 
                      ON a.cod_asegur = z.cod_tercer 
@@ -3767,7 +3780,8 @@ class Despachos
                      ON k.cod_mercan = ab.cod_produc
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer jj 
                      ON a.cod_client = jj.cod_tercer 
-                  WHERE a.num_despac = '{$mNumDesOri}' 
+                  WHERE a.num_despac = '{$mNumDesOri}'
+                  ORDER BY x.cod_consec DESC 
                 ";
         $mConsult = new Consulta( $mSql, $this -> conexion );
         $mResult = $mConsult -> ret_matrix('a');
@@ -8535,7 +8549,7 @@ class Despachos
      */
     public function getView( $mCatego )
     {
-        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac, a.jso_partic, a.jso_obsgen
+        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac, a.jso_partic, a.jso_obsgen, a.edt_gpsxxx
                    FROM ".BASE_DATOS.".tab_genera_respon a 
              INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
                      ON a.cod_respon = b.cod_respon 
