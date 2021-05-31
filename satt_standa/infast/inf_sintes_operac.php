@@ -87,11 +87,22 @@ class SintesisOperacion
         
         </script>';
     
+        $mSelect = "SELECT b.cod_tercer, b.nom_tercer 
+                    FROM ".BASE_DATOS.".tab_tercer_emptra a
+                    INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b
+                    ON a.cod_tercer = b.cod_tercer
+                    WHERE b.cod_estado = 1
+                    ORDER BY b.nom_tercer ASC";
+
+      $consulta = new Consulta( $mSelect, $this -> conexion );
+      $transportadoras = $consulta -> ret_matriz();
+    
     $mSelect = "SELECT cod_tipdes, nom_tipdes 
-                  FROM ".BASE_DATOS.".tab_genera_tipdes 
+                  FROM ".BASE_DATOS.".tab_genera_tipdes
+                  WHERE ind_estado = 1 
                  GROUP BY 1 
                  ORDER BY 2";
-    
+                 
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $_TIPDES = $consulta -> ret_matriz();
 
@@ -107,6 +118,8 @@ class SintesisOperacion
     /************************* FORMULARIO *************************/
     $formulario = new Formulario ("index.php","post","Sintesis de Operacion","form\" id=\"formID");
     
+    $formulario -> lista ( "Transporadora", "cod_transp\" id=\"cod_transpID", array_merge( $this -> cNull, $transportadoras ), 1 );
+
     $formulario -> texto( "* Fecha Inicial:", "text", "fec_inicia\" readonly id=\"fec_iniciaID", 0, 10, 10, "", $_REQUEST['fec_inicia'] );
     $formulario -> texto( "* Fecha Final:", "text", "fec_finali\" readonly id=\"fec_finaliID", 1, 10, 10, "", $_REQUEST['fec_finali'] );
 
