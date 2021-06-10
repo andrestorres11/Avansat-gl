@@ -1,6 +1,7 @@
 <?php
+/*
     ini_set('display_errors', true);
-    error_reporting(E_ALL & ~E_NOTICE);
+    error_reporting(E_ALL & ~E_NOTICE);*/
    
 
      require "ajax_trayle_trayle.php";
@@ -250,10 +251,10 @@ class Ins_vehicu_vehicu {
           # Fin accordion1
 
           # Accordion2
-          $mHtml->OpenDiv("id:SegurosID; class:accordion");
-          $mHtml->SetBody("<h3 style='padding:6px;'><center>InformaciÃ³n GPS</center></h3>");
-          $mHtml->OpenDiv("id:sec7");
-            $mHtml->OpenDiv("id:form7; class:contentAccordionForm");
+          $mHtml->OpenDiv("id:GPSinfoID; class:accordion");
+          $mHtml->SetBody("<h3 style='padding:6px;'><center>Información GPS</center></h3>");
+          $mHtml->OpenDiv("id:sec8");
+            $mHtml->OpenDiv("id:form8; class:contentAccordionForm");
               $mHtml->Table("tr");
 
                 $mHtml->Label(("Operador GPS:"), "width:25%; *:1;"); 
@@ -266,7 +267,8 @@ class Ins_vehicu_vehicu {
                 $mHtml->Input (array("name" => "vehicu[clv_gpsxxx]", "size"=>"10", "id" => "clv_gpsxxxID",  "width" => "25%", "value"=> $datos->principal->clv_gpsxxx) ); 
 
                 $mHtml->Label("ID:", "width:25%; *:1;"); 
-                $mHtml->Input (array("name" => "vehicu[idx_gpsxxx]", "size"=>"10", "id" => "idx_gpsxxxID",  "width" => "25%", "value"=> $datos->principal->idx_gpsxxx, "end" => true) );
+                $mHtml->Input (array("name" => "vehicu[idx_gpsxxx]", "validate" => "alpha","minlength" => "1", "maxlength" => "15", "size"=>"10", "id" => "idx_gpsxxxID",  "width" => "25%", "value"=> $datos->principal->idx_gpsxxx, "end" => true) );
+              
               $mHtml->CloseTable("tr");
             $mHtml->CloseDiv();
           $mHtml->CloseDiv();

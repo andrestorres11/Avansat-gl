@@ -56,7 +56,7 @@ function formAuditarDespac() {
 function CreateObserva(num_despac, cod_transp) {
     try {
         var conn = checkConnection();
-        
+
         if (conn) {
             var standa = $("#central").val();
             $("#popapObservacionID").dialog({
@@ -93,7 +93,7 @@ function CreateObserva(num_despac, cod_transp) {
             $.ajax({
                 type: "POST",
                 url: "../" + standa + "/califi/class_califi_califi.php",
-                data: "Ajax=on&Option=CreateObserva" + "&cod_transp=" + cod_transp + "&num_despac=" + num_despac +"&ind_edicio=0",
+                data: "Ajax=on&Option=CreateObserva" + "&cod_transp=" + cod_transp + "&num_despac=" + num_despac + "&ind_edicio=0",
                 async: true,
                 beforeSend: function() {
                     $("#popapObservacionID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
@@ -125,12 +125,14 @@ function CreateObserva(num_despac, cod_transp) {
         return false;
     }
 }
+
 function NewObserva(num_despac, cod_transp) {
     var conn = checkConnection();
-    var ind_config = 0; contador = 0;
-    
+    var ind_config = 0;
+    contador = 0;
+
     if (conn) {
-        var standa  = $("#central").val();
+        var standa = $("#central").val();
         var obs_obsgen = $("#des_observID").val();
 
         var errores = false;
@@ -166,11 +168,11 @@ function NewObserva(num_despac, cod_transp) {
                             icon: "success",
                             showCancelButton: false,
                             confirmButtonText: 'Ok'
-                          }).then((result) => {
+                        }).then((result) => {
                             if (result.isConfirmed) {
                                 location.reload();
                             }
-                          })
+                        })
                         $("#popapObservacionID").dialog('close');
                     } else {
                         swal.fire({
@@ -205,9 +207,9 @@ function NewObserva(num_despac, cod_transp) {
 function EditGPS(num_despac) {
     try {
         var conn = checkConnection();
-        
+
         if (conn) {
-            var standa  = $("#central").val();
+            var standa = $("#central").val();
             $("#popupGpsID").dialog({
                 modal: true,
                 resizable: false,
@@ -242,7 +244,7 @@ function EditGPS(num_despac) {
             $.ajax({
                 type: "POST",
                 url: "../" + standa + "/califi/class_califi_califi.php",
-                data: "Ajax=on&Option=EditGPS&standa=" + standa +"&num_despac=" + num_despac + "&ind_edicio=1",
+                data: "Ajax=on&Option=EditGPS&standa=" + standa + "&num_despac=" + num_despac + "&ind_edicio=1",
                 async: true,
                 beforeSend: function() {
                     $("#popupGpsID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
@@ -254,14 +256,14 @@ function EditGPS(num_despac) {
                             title: "Actualizacion GPS",
                             text: "Se Actualizo correctamente.",
                             type: "success"
-                            
+
                         });
                     } else {
                         $("#popupGpsID").html(datos);
                     }
 
                 },
-                complete: function(){
+                complete: function() {
                     $("#ui-multiselect-cod_agenciID-option-0").click();
                 }
             });
@@ -279,6 +281,33 @@ function EditGPS(num_despac) {
     }
 }
 
+function habIdOperaGps(elemento) {
+    var standa = $("#central").val();
+    var cod_opegps = $(elemento).val();
+    $.ajax({
+        type: "POST",
+        url: "../" + standa + "/califi/class_califi_califi.php",
+        data: "Ajax=on&Option=IndUsaIDGPS&standa=" + standa + "&cod_opegps=" + cod_opegps,
+        async: true,
+        success: function(data) {
+            if (data != '') {
+                var datos = $.parseJSON(data);
+                if (datos[0][0] == 'S') {
+                    $("#gps_idxxxxID").attr("validate", "text");
+                    $("#gps_idxxxxID").attr("obl", "1");
+                    $("#gps_idxxxxID").attr("minlength", "1");
+                    $("#gps_idxxxxID").attr("maxlength", "15");
+                } else {
+                    $("#gps_idxxxxID").removeAttr("validate");
+                    $("#gps_idxxxxID").removeAttr("obl");
+                    $("#gps_idxxxxID").removeAttr("minlength");
+                    $("#gps_idxxxxID").removeAttr("maxlength");
+                }
+            }
+        }
+    });
+}
+
 
 /* ! \fn: editaGps
  *  \brief: registra un contacto en el sistema
@@ -290,16 +319,17 @@ function EditGPS(num_despac) {
  *  \return 
  */
 function editaGps(num_despac) {
-        
+
     var conn = checkConnection();
- 
+
     if (conn) {
-        var standa  = $("#central").val();
+        var standa = $("#central").val();
         var gps_operad = $("#cod_operadEditID").val();
         var gps_usuari = $("#gps_usuariID").val();
         var gps_paswor = $("#gps_pasworID").val();
         var gps_idxxxx = $("#gps_idxxxxID").val();
 
+        var attrigpd = $("#gps_idxxxxID").attr('obl');
         var errores = false;
         if (!gps_operad) {
             setTimeout(function() {
@@ -319,11 +349,13 @@ function editaGps(num_despac) {
             }, 511);
             errores = true;
         }
-        if (!gps_idxxxx) {
-            setTimeout(function() {
-                inc_alerta("gps_idxxxxID", "Campo Obligatorio.");
-            }, 511);
-            errores = true;
+        if (attrigpd == 1) {
+            if (!gps_idxxxx) {
+                setTimeout(function() {
+                    inc_alerta("gps_idxxxxID", "Campo Obligatorio.");
+                }, 511);
+                errores = true;
+            }
         }
         if (!errores) {
             parameters = getDataForm();
@@ -350,11 +382,11 @@ function editaGps(num_despac) {
                             icon: "success",
                             showCancelButton: false,
                             confirmButtonText: 'Ok'
-                          }).then((result) => {
+                        }).then((result) => {
                             if (result.isConfirmed) {
                                 location.reload();
                             }
-                          })
+                        })
                         $("#popupGpsID").dialog('close');
                     } else {
                         swal.fire({
