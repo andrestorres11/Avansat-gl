@@ -72,7 +72,7 @@ $(function() {
  *  \brief: mostrar los datos de la configuracion actual de la transportdora
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param:
  *  \return
  */
@@ -170,6 +170,9 @@ function mostrar() {
                 });
                 $("#conf_ealID h3").trigger( "click" );
                 $("#conf_etapasID h3").trigger( "click" );
+                $("#conf_contacID h3").trigger( "click" );
+                $("#conf_particularidadID h3").trigger( "click" );
+                
             }
         });
 
@@ -177,8 +180,8 @@ function mostrar() {
 
     } else {
         swal({
-            title: "Parametrización",
-            text: "Por favor verifica tu conexión a internet.",
+            title: "Parametrizaciï¿½n",
+            text: "Por favor verifica tu conexiï¿½n a internet.",
             type: "warning"
         });
     }
@@ -187,7 +190,7 @@ function mostrar() {
  *  \brief: funcion para configurar el horario laboral de una empresa
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_tercer     => string => codigo de la empresa   
  *  \param: cod_ciudad     => string => codigo de ciudad en la cual aplica el horario     
  *  \return return
@@ -240,8 +243,8 @@ function CreateConfig(cod_tercer, cod_ciudad) {
                     if (datos == '1') {
                         closePopUp("PopUpID");
                         swal({
-                            title: "Parametrización",
-                            text: "Todos los días ya parametrizados.",
+                            title: "Parametrizaciï¿½n",
+                            text: "Todos los dï¿½as ya parametrizados.",
                             type: "warning"
                         });
                     } else {
@@ -252,8 +255,8 @@ function CreateConfig(cod_tercer, cod_ciudad) {
             });
         } else {
             swal({
-                title: "Parametrización",
-                text: "Por favor verifica tu conexión a internet.",
+                title: "Parametrizaciï¿½n",
+                text: "Por favor verifica tu conexiï¿½n a internet.",
                 type: "warning"
             });
 
@@ -268,7 +271,7 @@ function CreateConfig(cod_tercer, cod_ciudad) {
  *  \brief: busca los festivos registrados
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: 
  *  \return 
  */
@@ -289,7 +292,7 @@ function setFestivos() {
                     modal: true,
                     resizable: false,
                     draggable: false,
-                    title: "Festivos del año " + sel_yearxx,
+                    title: "Festivos del aï¿½o " + sel_yearxx,
                     width: 800,
                     heigth: 500,
                     position: ['middle', 25],
@@ -345,8 +348,8 @@ function setFestivos() {
             }
         } else {
             swal({
-                title: "Parametrización",
-                text: "Por favor verifica tu conexión a internet.",
+                title: "Parametrizaciï¿½n",
+                text: "Por favor verifica tu conexiï¿½n a internet.",
                 type: "warning"
             });
         }
@@ -361,7 +364,7 @@ function setFestivos() {
  *  \brief: inserta un nuevo festivo para una empresa en una ciudad
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_tercer     => string => nit de la empresa    
  *  \param: ind_config     => int => indicador de configuracion   
  *  \param: cod_ciudad     => string => codigo de ciudad en la cual aplica el festivo    
@@ -398,7 +401,7 @@ function InsertFestivo(cod_tercer, ind_config, cod_ciudad) {
                         if (datos == '9999') {
                             swal({
                                 title: "Registrar Festivo",
-                                text: "Atención esta fecha ya esta configurada como festivo.",
+                                text: "Atenciï¿½n esta fecha ya esta configurada como festivo.",
                                 type: "warning"
                             });
                         } else if (datos == '1991') {
@@ -421,7 +424,7 @@ function InsertFestivo(cod_tercer, ind_config, cod_ciudad) {
         } else {
             swal({
                 title: "Registrar Festivo",
-                text: "Por favor verifica tu conexión a internet.",
+                text: "Por favor verifica tu conexiï¿½n a internet.",
                 type: "warning"
             });
         }
@@ -435,11 +438,11 @@ function InsertFestivo(cod_tercer, ind_config, cod_ciudad) {
  *  \brief: elimina un festivo para una empresa en una ciudad
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_tercer     => string => nit de la empresa    
  *  \param: ind_config     => int => indicador de configuracion   
  *  \param: cod_ciudad     => string => codigo de ciudad en la cual aplica el festivo    
- *  \param: ano     => string => año    
+ *  \param: ano     => string => aï¿½o    
  *  \param: mes     => string => mes   
  *  \param: dia     => string => dia    
  *  \return return
@@ -451,7 +454,7 @@ function deleteFestivo(cod_transp, ind_config, cod_ciudad, ano, mes, dia) {
             var standa = $("#standaID").val();
             swal({
                 title: "Eliminar Festivo",
-                text: "¿Realmente Deseas Eliminar el festivo seleccionado?",
+                text: "ï¿½Realmente Deseas Eliminar el festivo seleccionado?",
                 type: "warning",
                 showCancelButton: true,
                 closeOnConfirm: false,
@@ -503,7 +506,7 @@ function deleteFestivo(cod_transp, ind_config, cod_ciudad, ano, mes, dia) {
  *  \brief: habilita o deshabilita los campos de fecha y precio en las eal contratadas
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: key     => int => indicador de la eal seleccionada    
  *  \return 
  */
@@ -530,7 +533,7 @@ function habilitar(key) {
  *  \brief: inserta toda la configuracion de una transportadora
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: 
  *  \return 
  */
@@ -555,13 +558,13 @@ function registrarTipoServicio() {
         if (tie_trazab) {
             if (isNaN(tie_trazab)) {
                 setTimeout(function() {
-                    inc_alerta("tie_trazabID", "Solo se aceptan números");
+                    inc_alerta("tie_trazabID", "Solo se aceptan nï¿½meros");
                 }, 510);
                 val = false;
             } else {
                 if (parseFloat(tie_trazab) > 12) {
                     setTimeout(function() {
-                        inc_alerta("tie_trazabID", "Rango máximo de 12 horas");
+                        inc_alerta("tie_trazabID", "Rango mï¿½ximo de 12 horas");
                     }, 510);
                     val = false;
                 }
@@ -570,7 +573,7 @@ function registrarTipoServicio() {
         if (val == true) {
             swal({
                 title: "Tipo de Servicio",
-                text: "¿Realmente Deseas Actualizar la configuración de la transportadora?",
+                text: "ï¿½Realmente Deseas Actualizar la configuraciï¿½n de la transportadora?",
                 type: "warning",
                 showCancelButton: true,
                 closeOnConfirm: false,
@@ -609,8 +612,8 @@ function registrarTipoServicio() {
         }
     } else {
         swal({
-            title: "Parametrización",
-            text: "Por favor verifica tu conexión a internet.",
+            title: "Parametrizaciï¿½n",
+            text: "Por favor verifica tu conexiï¿½n a internet.",
             type: "warning"
         });
     }
@@ -621,7 +624,7 @@ function registrarTipoServicio() {
  *  \brief: activa e inactiva varios input en el formulario
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/206    
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param:   indicador => int => indica cual check se ha seleccionado 
  *  \return return
  */
@@ -686,7 +689,7 @@ function enableDisable(indicador) {
  *  \brief: complementaria de la funcion EnableDisable
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: ind     => boolean => indice de los campos a habilirar o inabilitar    
  *  \param: campos     => array => arreglo con los campos a tratar    
  *  \return 
@@ -709,7 +712,7 @@ function activar(ind, campos) {
  *  \brief: registra un dia laboral de la semana
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
  *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
  *  \return 
@@ -750,8 +753,8 @@ function NewParametrizacion(cod_ciudad) {
         });
         if (contador > 1) {
             swal({
-                title: "Parametrización",
-                text: "Solo se pueden seleccionar días de una lista.",
+                title: "Parametrizaciï¿½n",
+                text: "Solo se pueden seleccionar dï¿½as de una lista.",
                 type: "warning"
             });
             errores = true;
@@ -761,8 +764,8 @@ function NewParametrizacion(cod_ciudad) {
         }
         if (nue_combin == "") {
             swal({
-                title: "Parametrización",
-                text: "Seleccione por lo menos un día de la semana.",
+                title: "Parametrizaciï¿½n",
+                text: "Seleccione por lo menos un dï¿½a de la semana.",
                 type: "warning"
             });
             errores = true;
@@ -777,7 +780,7 @@ function NewParametrizacion(cod_ciudad) {
                 beforeSend: function() {
                     $.blockUI({
                         theme: true,
-                        title: 'Registrando configuración',
+                        title: 'Registrando configuraciï¿½n',
                         draggable: false,
                         message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Registrando...</p></center>'
                     });
@@ -786,16 +789,16 @@ function NewParametrizacion(cod_ciudad) {
                     $.unblockUI();
                     if (datos == '1000') {
                         swal({
-                            title: "Parametrización",
-                            text: "Configuración registrada con éxito.",
+                            title: "Parametrizaciï¿½n",
+                            text: "Configuraciï¿½n registrada con ï¿½xito.",
                             type: "success"
                         });
                         $("#PopUpID").dialog('close');
                         mostrar();
                     } else {
                         swal({
-                            title: "Parametrización",
-                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            title: "Parametrizaciï¿½n",
+                            text: "Error al registrar la configuraciï¿½n, por favor intenta nuevamente.",
                             type: "warning"
                         });
                         swal("");
@@ -806,8 +809,8 @@ function NewParametrizacion(cod_ciudad) {
         }
     } else {
         swal({
-            title: "Parametrización",
-            text: "Por favor verifica tu conexión a internet.",
+            title: "Parametrizaciï¿½n",
+            text: "Por favor verifica tu conexiï¿½n a internet.",
             type: "warning"
         });
     }
@@ -818,7 +821,7 @@ function NewParametrizacion(cod_ciudad) {
  *  \brief: funcion para confirmar que no se exeda el rango maximo de 12 horas y que solo se inserten numeros
  *  \author: Ing. Alexander Correa
  *  \date: 08/02/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: 
  *  \return 
  */
@@ -826,10 +829,10 @@ function validaCampo() {
     var tie_trazab = $("#tie_trazabID").val();
     if (tie_trazab) {
         if (isNaN(tie_trazab)) {
-            inc_alerta("tie_trazabID", "Solo se aceptan números");
+            inc_alerta("tie_trazabID", "Solo se aceptan nï¿½meros");
         } else {
             if (parseFloat(tie_trazab) > 12) {
-                inc_alerta("tie_trazabID", "Rango máximo de 12 horas");
+                inc_alerta("tie_trazabID", "Rango mï¿½ximo de 12 horas");
             }
         }
     }
@@ -839,7 +842,7 @@ function validaCampo() {
  *  \brief: elimina una parametrizacio laboral
  *  \author: Ing. Alexander Correa
  *  \date: 16/05/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_transp => int => codigo de la transportadora a la que se le eliminara el dia laboral    
  *  \param: dia => string => dia(s) a eliminar 
  *  \return 
@@ -847,8 +850,8 @@ function validaCampo() {
 function deleteConfiguracion(cod_transp, dia, ind_config) {
     try {
         swal({
-            title: "Eliminar Configuración",
-            text: "¿Realmente Deseas eliminar la configuración seleccionada?",
+            title: "Eliminar Configuraciï¿½n",
+            text: "ï¿½Realmente Deseas eliminar la configuraciï¿½n seleccionada?",
             type: "warning",
             showCancelButton: true,
             closeOnConfirm: false,
@@ -863,8 +866,8 @@ function deleteConfiguracion(cod_transp, dia, ind_config) {
                 success: function(datos) {
                     if (datos == 1) {
                         swal({
-                            title: "Eliminar Configuración",
-                            text: "Datos eliminados con éxito.",
+                            title: "Eliminar Configuraciï¿½n",
+                            text: "Datos eliminados con ï¿½xito.",
                             type: "success"
                         }, function() {
                             parameters = getDataForm();
@@ -872,7 +875,7 @@ function deleteConfiguracion(cod_transp, dia, ind_config) {
                         });
                     } else {
                         swal({
-                            title: "Eliminar Configuración",
+                            title: "Eliminar Configuraciï¿½n",
                             text: "Error al eliminar los datos, intenta nuevamente. Si el error persiste por favor informar.",
                             type: "error"
                         });
@@ -889,7 +892,7 @@ function deleteConfiguracion(cod_transp, dia, ind_config) {
  *  \brief: elimina una contacto
  *  \author: Ing. Andres Torres
  *  \date: 08/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_transp => int => codigo de la transportadora a la que se le eliminara el contacto
  *  \param: ema_contac => llave del contacto 
  *  \return 
@@ -898,7 +901,7 @@ function deleteContac(cod_transp, ema_contac) {
     try {
         swal({
             title: "Eliminar Contacto",
-            text: "¿Realmente Deseas eliminar el Contacto seleccionado?",
+            text: "ï¿½Realmente Deseas eliminar el Contacto seleccionado?",
             type: "warning",
             showCancelButton: true,
             closeOnConfirm: false,
@@ -914,7 +917,7 @@ function deleteContac(cod_transp, ema_contac) {
                     if (datos == 1) {
                         swal({
                             title: "Eliminar Contacto",
-                            text: "Datos eliminados con éxito.",
+                            text: "Datos eliminados con ï¿½xito.",
                             type: "success"
                         }, function() {
                             parameters = getDataForm();
@@ -939,7 +942,7 @@ function deleteContac(cod_transp, ema_contac) {
  *  \brief: elimina una particularidad
  *  \author: Ing. Andres Martinez
  *  \date: 08/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_transp => int => codigo de la transportadora a la que se le eliminara el contacto
  *  \param: ema_contac => llave del contacto 
  *  \return 
@@ -948,7 +951,7 @@ function deletePartic(cod_transp, cod_partic) {
     try {
         swal({
             title: "Eliminar Particularidad",
-            text: "¿Realmente Deseas eliminar la Particularidad seleccionada?",
+            text: "ï¿½Realmente Deseas eliminar la Particularidad seleccionada?",
             type: "warning",
             showCancelButton: true,
             closeOnConfirm: false,
@@ -964,7 +967,7 @@ function deletePartic(cod_transp, cod_partic) {
                     if (datos == 1) {
                         swal({
                             title: "Eliminar Particularidad",
-                            text: "Datos eliminados con éxito.",
+                            text: "Datos eliminados con ï¿½xito.",
                             type: "success"
                         }, function() {
                             parameters = getDataForm();
@@ -989,7 +992,7 @@ function deletePartic(cod_transp, cod_partic) {
  *  \brief: funcion para insertar una particularidad
  *  \author: Ing. Andres Martinez
  *  \date: 08/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_tercer     => string => codigo de la empresa   
  *  \param: cod_ciudad     => string => email cliente     
  *  \return return
@@ -1010,7 +1013,7 @@ function CreatePartic(cod_transp, tip_servic) {
                 modal: true,
                 resizable: false,
                 draggable: false,
-                title: "Creación de Particularidad",
+                title: "Creaciï¿½n de Particularidad",
                 width: 800,
                 heigth: 500,
                 position: ['middle', 25],
@@ -1049,7 +1052,7 @@ function CreatePartic(cod_transp, tip_servic) {
                     if (datos == '1') {
                         closePopUp("PopUpID");
                         swal({
-                            title: "Creación de Particularidad",
+                            title: "Creaciï¿½n de Particularidad",
                             text: "Se creo la particularidad correctamente.",
                             type: "success"
                         });
@@ -1061,8 +1064,8 @@ function CreatePartic(cod_transp, tip_servic) {
             });
         } else {
             swal({
-                title: "Parametrización",
-                text: "Por favor verifica tu conexión a internet.",
+                title: "Parametrizaciï¿½n",
+                text: "Por favor verifica tu conexiï¿½n a internet.",
                 type: "warning"
             });
 
@@ -1122,8 +1125,8 @@ function NewPartic(tip_servic) {
                     $.unblockUI();
                     if (datos == '1000') {
                         swal({
-                            title: "Parametrización",
-                            text: "Particularidad registrada con éxito.",
+                            title: "Parametrizaciï¿½n",
+                            text: "Particularidad registrada con ï¿½xito.",
                             type: "success"
                         });
                         $("#PopUpID").dialog('close');
@@ -1131,7 +1134,7 @@ function NewPartic(tip_servic) {
                     } else {
                         swal({
                             title: "Contacto",
-                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            text: "Error al registrar la configuraciï¿½n, por favor intenta nuevamente.",
                             type: "warning"
                         });
                         swal("");
@@ -1142,8 +1145,8 @@ function NewPartic(tip_servic) {
         }
     } else {
         swal({
-            title: "Parametrización",
-            text: "Por favor verifica tu conexión a internet.",
+            title: "Parametrizaciï¿½n",
+            text: "Por favor verifica tu conexiï¿½n a internet.",
             type: "warning"
         });
     }
@@ -1153,7 +1156,7 @@ function NewPartic(tip_servic) {
  *  \brief: funcion para insertar un contacto
  *  \author: Ing. Andres torres
  *  \date: 08/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_tercer     => string => codigo de la empresa   
  *  \param: cod_ciudad     => string => email cliente     
  *  \return return
@@ -1177,7 +1180,7 @@ function CreateContac(cod_transp, ema_contac, id_contac) {
                 modal: true,
                 resizable: false,
                 draggable: false,
-                title: "Creación de Contacto",
+                title: "Creaciï¿½n de Contacto",
                 width: 800,
                 heigth: 500,
                 position: ['middle', 25],
@@ -1216,7 +1219,7 @@ function CreateContac(cod_transp, ema_contac, id_contac) {
                     if (datos == '1') {
                         closePopUp("PopUpID");
                         swal({
-                            title: "Creación de Contacto",
+                            title: "Creaciï¿½n de Contacto",
                             text: "Se creo el contacto correctamente.",
                             type: "success"
                         });
@@ -1229,8 +1232,8 @@ function CreateContac(cod_transp, ema_contac, id_contac) {
             });
         } else {
             swal({
-                title: "Parametrización",
-                text: "Por favor verifica tu conexión a internet.",
+                title: "Parametrizaciï¿½n",
+                text: "Por favor verifica tu conexiï¿½n a internet.",
                 type: "warning"
             });
 
@@ -1245,7 +1248,7 @@ function CreateContac(cod_transp, ema_contac, id_contac) {
  *  \brief: registra un contacto en el sistema
  *  \author: Ing. Torres
  *  \date: 13/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
  *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
  *  \return 
@@ -1332,8 +1335,8 @@ function NewContac(ema_contac) {
                     $.unblockUI();
                     if (datos == '1000') {
                         swal({
-                            title: "Parametrización",
-                            text: "Contacto registrado con éxito.",
+                            title: "Parametrizaciï¿½n",
+                            text: "Contacto registrado con ï¿½xito.",
                             type: "success"
                         });
                         $("#PopUpID").dialog('close');
@@ -1341,7 +1344,7 @@ function NewContac(ema_contac) {
                     } else {
                         swal({
                             title: "Contacto",
-                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            text: "Error al registrar la configuraciï¿½n, por favor intenta nuevamente.",
                             type: "warning"
                         });
                         swal("");
@@ -1352,8 +1355,8 @@ function NewContac(ema_contac) {
         }
     } else {
         swal({
-            title: "Parametrización",
-            text: "Por favor verifica tu conexión a internet.",
+            title: "Parametrizaciï¿½n",
+            text: "Por favor verifica tu conexiï¿½n a internet.",
             type: "warning"
         });
     }
@@ -1363,7 +1366,7 @@ function NewContac(ema_contac) {
  *  \brief: funcion para insertar un contacto
  *  \author: Ing. Andres torres
  *  \date: 08/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_tercer     => string => codigo de la empresa   
  *  \param: cod_ciudad     => string => email cliente     
  *  \return return
@@ -1386,7 +1389,7 @@ function EditaContac(cod_transp, email, id_contac) {
                 modal: true,
                 resizable: false,
                 draggable: false,
-                title: "Creación de Contacto",
+                title: "Creaciï¿½n de Contacto",
                 width: 800,
                 heigth: 500,
                 position: ['middle', 25],
@@ -1425,7 +1428,7 @@ function EditaContac(cod_transp, email, id_contac) {
                     if (datos == '1') {
                         closePopUp("PopUpID");
                         swal({
-                            title: "Creación de Contacto",
+                            title: "Creaciï¿½n de Contacto",
                             text: "Se creo el contacto correctamente.",
                             type: "success"
                         });
@@ -1452,8 +1455,8 @@ function EditaContac(cod_transp, email, id_contac) {
             });
         } else {
             swal({
-                title: "Parametrización",
-                text: "Por favor verifica tu conexión a internet.",
+                title: "Parametrizaciï¿½n",
+                text: "Por favor verifica tu conexiï¿½n a internet.",
                 type: "warning"
             });
 
@@ -1468,7 +1471,7 @@ function EditaContac(cod_transp, email, id_contac) {
  *  \brief: registra un contacto en el sistema
  *  \author: Ing. Torres
  *  \date: 13/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
  *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
  *  \return 
@@ -1553,8 +1556,8 @@ function editContac(email) {
                     $.unblockUI();
                     if (datos == '1000') {
                         swal({
-                            title: "Parametrización",
-                            text: "Contacto Actualizado con éxito.",
+                            title: "Parametrizaciï¿½n",
+                            text: "Contacto Actualizado con ï¿½xito.",
                             type: "success"
                         });
                         $("#PopUpID").dialog('close');
@@ -1562,7 +1565,7 @@ function editContac(email) {
                     } else {
                         swal({
                             title: "Contacto",
-                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            text: "Error al registrar la configuraciï¿½n, por favor intenta nuevamente.",
                             type: "warning"
                         });
                         swal("");
@@ -1573,8 +1576,8 @@ function editContac(email) {
         }
     } else {
         swal({
-            title: "Parametrización",
-            text: "Por favor verifica tu conexión a internet.",
+            title: "Parametrizaciï¿½n",
+            text: "Por favor verifica tu conexiï¿½n a internet.",
             type: "warning"
         });
     }
@@ -1584,7 +1587,7 @@ function editContac(email) {
  *  \brief: funcion para insertar un contacto
  *  \author: Ing. Andres Martinez
  *  \date: 08/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: cod_tercer     => string => codigo de la empresa   
  *  \param: cod_ciudad     => string => email cliente     
  *  \return return
@@ -1639,7 +1642,7 @@ function EditaPartic(cod_transp, cod_partic) {
                     if (datos == '1') {
                         closePopUp("PopUpID");
                         swal({
-                            title: "Creación de Particularidad",
+                            title: "Creaciï¿½n de Particularidad",
                             text: "Se creo el contacto correctamente.",
                             type: "success"
                         });
@@ -1654,8 +1657,8 @@ function EditaPartic(cod_transp, cod_partic) {
             });
         } else {
             swal({
-                title: "Parametrización",
-                text: "Por favor verifica tu conexión a internet.",
+                title: "Parametrizaciï¿½n",
+                text: "Por favor verifica tu conexiï¿½n a internet.",
                 type: "warning"
             });
 
@@ -1669,7 +1672,7 @@ function EditaPartic(cod_transp, cod_partic) {
  *  \brief: registra un contacto en el sistema
  *  \author: Ing. Torres
  *  \date: 13/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: ind_config     => int    => indicador de la configuracion que se quiere regstrar    
  *  \param: cod_ciudad     => string => indicador de la ciudad para la que aplica la configuracion  
  *  \return 
@@ -1724,8 +1727,8 @@ function editPartic(cod_partic) {
                     $.unblockUI();
                     if (datos == '1000') {
                         swal({
-                            title: "Parametrización",
-                            text: "Particularidad Actualizada con éxito.",
+                            title: "Parametrizaciï¿½n",
+                            text: "Particularidad Actualizada con ï¿½xito.",
                             type: "success"
                         });
                         $("#PopUpID").dialog('close');
@@ -1733,7 +1736,7 @@ function editPartic(cod_partic) {
                     } else {
                         swal({
                             title: "Contacto",
-                            text: "Error al registrar la configuración, por favor intenta nuevamente.",
+                            text: "Error al registrar la configuraciï¿½n, por favor intenta nuevamente.",
                             type: "warning"
                         });
                         swal("");
@@ -1744,8 +1747,8 @@ function editPartic(cod_partic) {
         }
     } else {
         swal({
-            title: "Parametrización",
-            text: "Por favor verifica tu conexión a internet.",
+            title: "Parametrizaciï¿½n",
+            text: "Por favor verifica tu conexiï¿½n a internet.",
             type: "warning"
         });
     }

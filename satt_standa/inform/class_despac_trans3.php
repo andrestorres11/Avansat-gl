@@ -941,7 +941,6 @@ class Despac
 		for( $i=0; $i<sizeof($mDespac); $i++ )
 		{
 			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
-
 			#Verifica que el siguiente PC sea el Primero o Segundo ( Parametro Despachos Etapa Cargue )
 			if( $mData[sig_pcontr][cod_contro] == $mData[pla_rutaxx][0][cod_contro] || $mData[sig_pcontr][cod_contro] == $mData[pla_rutaxx][1][cod_contro] )
 			{
@@ -959,6 +958,7 @@ class Despac
 						$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 						$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 						$mResult[$j][fec_planea] = ($mData[fec_planea] == "1969-12-31 19:00:00"?$mDespac[$i][fec_salida]:$mData[fec_planea]);
+						$mResult[$j][fec_plaprc] = ($mData[fec_plaprc] == "1969-12-31 19:00:00"?$mDespac[$i][fec_salida]:$mData[fec_plaprc]);
 						$j++;
 					}
 				}
@@ -971,6 +971,7 @@ class Despac
 					$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 					$mResult[$j][fec_planea] = ($mData[fec_planea] == "1969-12-31 19:00:00"?$mDespac[$i][fec_salida]:$mData[fec_planea]);
+					$mResult[$j][fec_plaprc] = ($mData[fec_plaprc] == "1969-12-31 19:00:00"?$mDespac[$i][fec_salida]:$mData[fec_plaprc]);
 					$j++;
 				}
 			}
@@ -1122,6 +1123,7 @@ class Despac
 						$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 						$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 						$mResult[$j][fec_planea] = $mData[fec_planea];
+						$mResult[$j][fec_planGl] = $mData[fec_planGl];
 						$j++;
 					}
 				}
@@ -1134,6 +1136,7 @@ class Despac
 					$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 					$mResult[$j][fec_planea] = $mData[fec_planea];
+					$mResult[$j][fec_planGl] = $mData[fec_planGl];
 					$j++;
 				}
 			}
@@ -1321,6 +1324,7 @@ class Despac
 					$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 					$mResult[$j][fec_planea] = $mData[fec_planea];
+					$mResult[$j][fec_planGl] = $mData[fec_planGl];
 					$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut];
 					$j++;
 				}
@@ -1334,6 +1338,7 @@ class Despac
 				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 				$mResult[$j][fec_planea] = $mData[fec_planea];
+				$mResult[$j][fec_planGl] = $mData[fec_planGl];
 				$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut];
 				$j++;
 			}
@@ -1436,6 +1441,7 @@ class Despac
 					$mResult[$j][ind_alarma] = $mData[ind_alarma];
 					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 					$mResult[$j][fec_planea] = $mData[fec_planea];
+					$mResult[$j][fec_planGl] = $mData[fec_planGl];
 					$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
 					$j++;
 				}
@@ -1451,6 +1457,7 @@ class Despac
 				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 				$mResult[$j][fec_planea] = $mData[fec_planea];
+				$mResult[$j][fec_planGl] = $mData[fec_planGl];
 				$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
 				$j++;
 			}
@@ -1589,7 +1596,6 @@ class Despac
 		for( $i=0; $i<sizeof($mDespac); $i++ )
 		{
 			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
-
 			#warning1
 			if( $_REQUEST[ind_limpio] === '1' || $_REQUEST[ind_limpio] === '0' )
 			{
@@ -1604,6 +1610,7 @@ class Despac
 					$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 					$mResult[$j][fec_planea] = $mData[fec_planea];
+					$mResult[$j][fec_planGl] = $mData[fec_planGl];
 					$j++;
 				}
 			}
@@ -1616,10 +1623,11 @@ class Despac
 				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 				$mResult[$j][fec_planea] = $mData[fec_planea];
+				$mResult[$j][fec_planGl] = $mData[fec_planGl];
 				$j++;
 			}
 		}
-
+		
 		return $mResult;
 	}
 
@@ -1692,7 +1700,6 @@ class Despac
 		for( $i=0; $i<sizeof($mDespac); $i++ )
 		{
 			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
-
 			#warning1
 			if( $_REQUEST[ind_limpio] === '1' || $_REQUEST[ind_limpio] === '0' )
 			{
@@ -1709,6 +1716,7 @@ class Despac
 					$mResult[$j][ind_alarma] = $mData[ind_alarma];
 					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 					$mResult[$j][fec_planea] = $mData[fec_planea];
+					$mResult[$j][fec_planGl] = $mData[fec_planGl];
 					$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
 					$j++;
 				}
@@ -1724,6 +1732,7 @@ class Despac
 				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
 				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
 				$mResult[$j][fec_planea] = $mData[fec_planea];
+				$mResult[$j][fec_planGl] = $mData[fec_planGl];
 				$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
 				$j++;
 			}
@@ -1759,15 +1768,24 @@ class Despac
 		$mResult[sig_pcontr] = getNextPC( self::$cConexion, $mDespac[num_despac] );
 		$mResult[pla_rutaxx] = getControDespac( self::$cConexion, $mDespac[num_despac] ); # Plan de Ruta del Despacho -- Script /lib/general/function.inc
 
+
 		if( $mTipValida == 'tie_parame' )
 		{
-			if( $mDespac[tie_contra] != '' ) #Tiempo parametrizado por Despacho
+			if( $mDespac[tie_contra] != '' ){ #Tiempo parametrizado por Despacho
 				$mTime = $mDespac[tie_contra];
-			elseif( $mDespac[cod_tipdes] == '1' ) #Despacho Urbano
-				$mTime = $mTransp[tie_urbano];
+			}
+			elseif( $mDespac[cod_tipdes] == '1' )#Despacho Urbano
+				{
+					$mTime = $mTransp[tie_urbano];
+					$mTimeGl = $mTransp[tgl_urbano];
+					$mTimeprc = $mTransp[tgl_urbprc];
+				}
 			else #Otros Tipos de despacho se toma el tiempo de Despachos Nacionales
-				$mTime = $mTransp[tie_nacion];
-			
+				{
+					$mTime = $mTransp[tie_nacion];
+					$mTimeGl = $mTransp[tgl_nacion];
+					$mTimeprc = $mTransp[tgl_nacprc];
+				}
 			$mFecUltReport = $mDespac[fec_salida];
 			#Verifica la ultima novedad que no mantienen alarma
 			for ($i=$mPosN; $i >= 0; $i--)
@@ -1775,14 +1793,24 @@ class Despac
 				if( $mNovDespac[$i][ind_manala] == '0' ){
 					$mFecUltReport = $mNovDespac[$i][fec_crenov];
 					$mTime = $mNovDespac[$i][tiem_duraci] > 0 ? $mNovDespac[$i][tiem_duraci] : $mTime;
+					$mTimeGl = $mNovDespac[$i][tiem_duraci] > 0 ? $mNovDespac[$i][tiem_duraci] : $mTimeGl;
+					
+					$mTimeprc = $mNovDespac[$i][tiem_duraci] > 0 ? $mNovDespac[$i][tiem_duraci] : $mTimeprc;
 					break;
 				}elseif( $i == 0 ){#Si el despacho no tiene ninguna novedad que no mantenga alarma toma fecha salida del sistema
 					$mFecUltReport = $mDespac[fec_salida];
 					$mTime = 0;
+					$mTimeGl = 0;
+					$mTimeprc = 0;
 				}
 			}
-
+			
 			$mTime = "+".$mTime." minute";
+			$mTimeGl = "+".$mTimeGl." minute";
+			$mTimeprc = "+".$mTimeprc." minute";
+
+			$mResult[fec_plaprc] = date ( 'Y-m-d H:i:s', ( strtotime( $mTimeprc, strtotime ( $mFecUltReport ) ) ) ); #Fecha Planeada para el Seguimiento
+			$mResult[fec_planGl] = date ( 'Y-m-d H:i:s', ( strtotime( $mTimeGl, strtotime ( $mFecUltReport ) ) ) ); #Fecha Planeada para el Seguimiento
 			$mResult[fec_planea] = date ( 'Y-m-d H:i:s', ( strtotime( $mTime, strtotime ( $mFecUltReport ) ) ) ); #Fecha Planeada para el Seguimiento
 		}
 		else
@@ -1791,23 +1819,39 @@ class Despac
 			{ #Si la ultima novedad solicita tiempo  	
 				$mTime = $mNovDespac[$mPosN][tiem_duraci];
 				$mTime = "+".$mTime." minute";
+				$mTimeGl = "+".$mTimeGl." minute";
+				$mTimeprc = "+".$mTimeprc." minute";
+				$mResult[fec_planGl] = date ( 'Y-m-d H:i:s', ( strtotime( $mTimeGl, strtotime ( $mResult[fec_ultnov] ) ) ) );
 				$mResult[fec_planea] = date ( 'Y-m-d H:i:s', ( strtotime( $mTime, strtotime ( $mResult[fec_ultnov] ) ) ) );
+				
+				$mResult[fec_plaprc] = date ( 'Y-m-d H:i:s', ( strtotime( $mTimeprc, strtotime ( $mResult[fec_ultnov] ) ) ) );
 			}
-			elseif( 	$mResult[fec_ultnov] < $mResult[sig_pcontr][fec_progra] # Fecha de la ultima novedad menor a la fecha planeada del siguiente PC
+			elseif( $mResult[fec_ultnov] < $mResult[sig_pcontr][fec_progra] # Fecha de la ultima novedad menor a la fecha planeada del siguiente PC
 				|| 	($mResult[pla_rutaxx][(sizeof($mResult[pla_rutaxx])-1)][cod_contro] == $mNovDespac[$mPosN][cod_contro] && $mNovDespac[$mPosN][ind_ensiti] == '1') # Ultimo PC con novedad en sitio es el ultimo PC del plan de ruta
-			  ){
+			  )
+			{
 			  	$mResult[fec_planea] = $mResult[sig_pcontr][fec_progra]; #Fecha planeada del siguinete PC
+				$mResult[fec_planGl] = $mResult[sig_pcontr][fec_progra];
+				$mResult[fec_plaprc] = $mResult[sig_pcontr][fec_progra];
 			}else{
 			  	if( $mNovDespac[$mPosN][ind_manala] == '0' )
 				{ #Si la ultima novedad no mantiene alarma
 					$mTime = $mDespac[cod_tipdes] == '1' ? self::$cTime[ind_desurb] : self::$cTime[ind_desnac];
+					$mTimeGl = $mDespac[cod_tipdes] == '1' ? self::$cTime[ind_desurb] : self::$cTime[ind_desnac];
 					$mTime = "+".$mTime." minute";
+					$mTimeGl = "+".$mTimeGl." minute";
+					$mTimeprc = "+".$mTimeprc." minute";
+					$mResult[fec_planGl] = date ( 'Y-m-d H:i:s', ( strtotime( $mTimeGl, strtotime ( $mResult[fec_ultnov] ) ) ) );
 					$mResult[fec_planea] = date ( 'Y-m-d H:i:s', ( strtotime( $mTime, strtotime ( $mResult[fec_ultnov] ) ) ) );
+					$mResult[fec_plaprc] = date ( 'Y-m-d H:i:s', ( strtotime( $mTimeprc, strtotime ( $mResult[fec_ultnov] ) ) ) );
 				}
 				else
+					$mResult[fec_planGl] = $mResult[sig_pcontr][fec_progra]; #Fecha planeada del siguinete PC
 					$mResult[fec_planea] = $mResult[sig_pcontr][fec_progra]; #Fecha planeada del siguinete PC
+					$mResult[fec_plaprc] = $mResult[sig_pcontr][fec_progra]; #Fecha planeada del siguinete PC
 			}
 		}
+
 		return $mResult;
 	}
 
@@ -1914,7 +1958,7 @@ class Despac
 										SELECT c.ind_segprc,c.ind_segcar, 
 										       c.ind_segctr,c.ind_segtra, c.ind_segdes, 
 											   c.cod_transp, c.num_consec, d.nom_tipser, 
-											   UPPER(e.abr_tercer) AS nom_transp, c.tie_contro AS tie_nacion, 
+											   UPPER(e.abr_tercer) AS nom_transp, c.tie_contro AS tie_nacion,
 											   c.tie_conurb AS tie_urbano, c.tie_desurb, 
 											   c.tie_desnac, c.tie_desimp, c.tie_desexp, 
 											   c.tie_destr1, c.tie_destr2, c.cod_tipser, 
@@ -1922,7 +1966,9 @@ class Despac
 											   c.hor_pe1nac, c.hor_pe2nac, c.hor_pe1imp, 
 											   c.hor_pe2imp, c.hor_pe1exp, c.hor_pe2exp, 
 											   c.hor_pe1tr1, c.hor_pe2tr1, c.hor_pe1tr2, 
-											   c.hor_pe2tr2 
+											   c.hor_pe2tr2, 
+											   c.tgl_contro AS tgl_nacion, c.tgl_contro AS tgl_urbano,
+											   c.tgl_prcnac AS tgl_nacprc, c.tgl_prcurb AS tgl_urbprc
 										  FROM ".BASE_DATOS.".tab_transp_tipser c 
 									INNER JOIN ".BASE_DATOS.".tab_genera_tipser d 
 											ON c.cod_tipser = d.cod_tipser 
@@ -1991,9 +2037,13 @@ class Despac
 		$mBandera = $mTransp[tie_nacion] == 0 && $mTransp[tie_urbano] == 0 ? 0 : 1;
 
 		if( ($mTransp[nom_tipser] == 'MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'EAL/MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'OAL/MA' && $mBandera == 1) )
+		{
 			$mResult = 'tie_parame';
-		else
+		}
+		else{
 			$mResult = 'fec_alarma';
+		}
+			
 
 		return $mResult;
 	}
@@ -2089,13 +2139,14 @@ class Despac
 			if( $mDespac[$i][can_noveda] > 0 )
 			{#Despacho con Novedades
 				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_planea], self::$cHoy ); #Script /lib/general/function.inc
+				$mDespac[$i][tiempoGl] = getDiffTime( $mDespac[$i][fec_planGl], self::$cHoy ); #Script /lib/general/function.inc
 
 				if( $mDespac[$i][ind_fuepla] == '1' && $mDespac[$i][tiempo] < 0 )
 					$mPernoc = true;
 			}
 			else #Despacho Sin Novedades
 				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
-
+				$mDespac[$i][tiempoGl] = getDiffTime( $mDespac[$i][fec_planGl], self::$cHoy ); #Script /lib/general/function.inc
 
 			# Arma la matriz resultante 
 			if( $mIndCant == 1 )
@@ -2112,25 +2163,25 @@ class Despac
 					$mResult[sin_retras]++;
 					$mResult[enx_seguim]++;
 				}
-				elseif( $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 ){
+				elseif( $mDespac[$i][tiempoGl] < 31 && $mDespac[$i][tiempoGl] >= 0 ){
 					 # 0 a 30
 					$mResult[con_00A30x]++;
 					$mResult[con_alarma]++;
 					$mResult[enx_seguim]++;
 				}
-				elseif( $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 ) {
+				elseif( $mDespac[$i][tiempoGl] < 61 && $mDespac[$i][tiempoGl] > 30 ) {
 					# 31 a 60
 					$mResult[con_31A60x]++;
 					$mResult[con_alarma]++;
 					$mResult[enx_seguim]++;
 				}
-				elseif( $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 ) {
+				elseif( $mDespac[$i][tiempoGl] < 91 && $mDespac[$i][tiempoGl] > 60 ) {
 					# 61 a 90
 					$mResult[con_61A90x]++;
 					$mResult[con_alarma]++;
 					$mResult[enx_seguim]++;
 				}
-				elseif( $mDespac[$i][tiempo] > 90 ){
+				elseif( $mDespac[$i][tiempoGl] > 90 ){
 					# Mayor 90
 					$mResult[con_91Amas]++;
 					$mResult[con_alarma]++;
@@ -2195,7 +2246,7 @@ class Despac
 						$mPosAcargo++;
 					}
 				}
-				elseif( ($mFiltro == 'sin_retras' || $mFiltro == 'sinF'|| $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] < 0 && $mBandera == true )
+				elseif( ($mFiltro == 'sin_retras' || $mFiltro == 'sinF'|| $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 0 && $mBandera == true )
 				{ #Sin Retraso
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
@@ -2211,7 +2262,7 @@ class Despac
 						$mNegTiempo++;
 					}
 				}
-				elseif( ($mFiltro == 'con_00A30x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 && $mBandera == true )
+				elseif( ($mFiltro == 'con_00A30x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 31 && $mDespac[$i][tiempoGl] >= 0 && $mBandera == true )
 				{ # 0 a 30
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
@@ -2227,7 +2278,7 @@ class Despac
 						$mPosTiempo++;
 					}
 				}
-				elseif( ($mFiltro == 'con_31A60x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 && $mBandera == true )
+				elseif( ($mFiltro == 'con_31A60x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 61 && $mDespac[$i][tiempoGl] > 30 && $mBandera == true )
 				{ # 31 a 60
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
@@ -2243,7 +2294,7 @@ class Despac
 						$mPosTiempo++;
 					}
 				}
-				elseif( ($mFiltro == 'con_61A90x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 && $mBandera == true )
+				elseif( ($mFiltro == 'con_61A90x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 91 && $mDespac[$i][tiempoGl] > 60 && $mBandera == true )
 				{ # 61 a 90
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
@@ -2259,7 +2310,7 @@ class Despac
 						$mPosTiempo++;
 					}
 				}
-				elseif( ($mFiltro == 'con_91Amas' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] > 90 && $mBandera == true )
+				elseif( ($mFiltro == 'con_91Amas' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] > 90 && $mBandera == true )
 				{ # Mayor 90
 					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
 						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
@@ -2292,10 +2343,10 @@ class Despac
 	 */
 	private function detailBand()
 	{
-		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO GL', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 
-		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
-
+		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO FARO', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
+		
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
 
 		#Según Etapa
@@ -2374,11 +2425,11 @@ class Despac
 				$mDespac = self::$mNameFunction( $mTransp[$i] );
 
 			}
-		
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
 
+				
 				$mDespac = self::getTotalPrecargue( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
-				 
+				
 				$con_paradi = $mDespac['con_paradi'] ? array_merge($con_paradi, $mDespac['con_paradi']) : $con_paradi;
 				$con_paraco = $mDespac['con_paraco'] ? array_merge($con_paraco, $mDespac['con_paraco']) : $con_paraco;
 				$con_anulad = $mDespac['con_anulad'] ? array_merge($con_anulad, $mDespac['con_anulad']) : $con_anulad;
@@ -2390,10 +2441,10 @@ class Despac
 				$con_cnnlap = $mDespac['con_cnnlap'] ? array_merge($con_cnnlap, $mDespac['con_cnnlap']) : $con_cnnlap;
 				$con_cnlapx = $mDespac['con_cnlapx'] ? array_merge($con_cnlapx, $mDespac['con_cnlapx']) : $con_cnlapx;
 				$con_acargo = $mDespac['con_acargo'] ? array_merge($con_acargo, $mDespac['con_acargo']) : $con_acargo;
+				
 			}
 			else
 			{
-
 				$mDespac = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
 
 				$mNegTieesp = $mDespac['neg_tieesp'] ? array_merge($mNegTieesp, $mDespac['neg_tieesp']) : $mNegTieesp;
@@ -2407,13 +2458,12 @@ class Despac
 			}
 			
 		}
-
+		
 
 		if($_REQUEST['ind_etapax']=='ind_segprc'){
 			#Pinta tablas
 			//$mData = self::orderMatrizDetailPrc( $con_paradi, $con_paraco, $con_anulad, $con_planta, $con_porter, $con_sinseg, $con_tranpl, $con_cnnlap, $con_cnlapx );
 			//$mComparadi = self::orderMatrizDetailPrc($con_paradi, 'ASC');
-		 
 			$mHtml  = '';
 			$mHtml .= $con_paradi ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paradi), sizeof($con_paradi).'DESPACHOS PENDIENTES', '1' ) : '';
 			$mHtml .= $con_paraco ? self::printTabDetail( $mTittle2, self::orderMatrizDetailPrc($con_paraco), sizeof($con_paraco).'DESPACHOS PARA EL CORTE', '1' ) : '';
@@ -2432,6 +2482,7 @@ class Despac
 		else{
 
 			$mData = self::orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
+
 			#Pinta tablas
 			for ($i=0; $i < sizeof($mData['tiempo']); $i++) { 
 				if ($mData['tiempo'][$i]['nov_especi'] == '1' && $mData['tiempo'][$i]['ind_alarma'] == 'S' ) {
@@ -2442,6 +2493,8 @@ class Despac
 				}
 			}
 
+			
+		
 			$mHtml  = '';
 			$mHtml .= $mData['tieesp'] ? self::printTabDetail( $mTittle, $mData['tieesp'], sizeof($mData['tieesp']).' DESPACHOS CON TIEMPO MODIFICADO', '1' ) : '';
 			$mHtml .= $mData['tiemp0'] ? self::printTabDetail( $mTittle, $mData['tiemp0'], sizeof($mData['tiemp0']).' DESPACHOS EN SEGUIMIENTO SIN NOVEDADES', '1' ) : '';
@@ -2536,14 +2589,13 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mLink.'</td>';
 				$mHtml .= 	'<td class="classHead" nowrap="" align="left">'.$row[num_solici].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[cod_manifi].'</td>';
-
+				$mHtml .= 	'<td class="classCell '.$row[color].' nowrap="" align="left" style="color:'.$mColor.'">'.$row[tiempSGl].'</td>';
 				if($row["ind_anulad"] == "A") {
 					$mHtml .= 	'<td class="classCell   nowrap="" align="left"  >N/A</td>';
 				}
 				else{
 					$mHtml .= 	'<td class="classCell '.$row[color2].' nowrap="" align="left" style="color:'.$mColor.'">'. $row[tiempS].'</td>';
 				}
-
 				$mHtml .= 	'<td class="classCell '.$row[color].' nowrap="" align="left" style="color:'.$mColor.'">'.$row[tiempo].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[can_noveda].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[num_placax].'</td>';
@@ -2575,6 +2627,7 @@ class Despac
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$n.'</th>';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$gif.'</th>';
 				$mHtml .= 	'<td class="classCell bt '.$row[color].'" nowrap="" align="left">'.$mLink.'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[tiempoGl].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[tiempo].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ind_defini].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[cod_manifi].'</td>';
@@ -2685,9 +2738,8 @@ class Despac
 		$mPosi = $con_paradiPos ? SortMatrix( $con_paradiPos, 'tiempo', "DESC" ) : array();  
 		$mNega = $con_paradiNeg ? SortMatrix( $con_paradiNeg, 'tiempo', "ASC" ) : array();  
 	 	
- 
+		
 	 	$mReturn = array_merge($mPosi,$mNega );
-
  
 		return $mReturn;
 	}
@@ -2789,6 +2841,7 @@ class Despac
 				$mDespac[$i][nom_ultnov] = $mData[nom_ultnov];
 				$mDespac[$i][nom_sitiox] = $mData[nom_sitiox];
 				$mDespac[$i][fec_planea] = $mData[fec_planea];
+				$mDespac[$i][fec_planGl] = $mData[fec_planGl];
 				$mDespac[$i][ind_finrut] = $mData[sig_pcontr][ind_finrut]; 
 
 				$mDespacho[0] = $mDespac[$i];
@@ -3463,6 +3516,7 @@ class Despac
 	 */
 	private function getTotalPrecargue( $mDespac, $mTransp, $mIndCant = 0, $mFiltro = NULL, $mColor = NULL )
 	{
+
 		$mTipValida = self::tipValidaTiempo( $mTransp );
 		$fec_sisact = date("Y-m-d");
 		$fec_sisHoraIni = date("Y-m-d")." ".($_REQUEST['hor_inicio']?$_REQUEST['hor_inicio']:" 00:00:01");
@@ -3498,6 +3552,7 @@ class Despac
 			if( $mDespac[$i]["fec_planea"] )
 			{	#Despacho con Novedades
 				$mDespac[$i]["tiempS"] = getDiffTime( $mDespac[$i]["fec_planea"], self::$cHoy ); #Script /lib/general/function.inc
+				$mDespac[$i]["tiempSGl"] = getDiffTime( $mDespac[$i]["fec_plaprc"], self::$cHoy ); #Script /lib/general/function.inc
 			}
 			if($mDespac[$i]["fec_citcar"])
 			{	#Despacho Sin Novedades
@@ -3593,6 +3648,25 @@ class Despac
 					$color2 = $mColor[3];
 				}
 				elseif ($mDespac[$i]["tiempS"] > 90) {
+					$color2 = $mColor[3];
+				}
+
+				if($mDespac[$i]["tiempSGl"] < -30 ){
+					$color2 = $mColor[0];
+				}
+				elseif($mDespac[$i]["tiempSGl"] < 0 && $mDespac[$i]["tiempSGl"] >= -30){
+					$color2 = $mColor[4];
+				}
+				elseif ($mDespac[$i]["tiempSGl"] < 31 && $mDespac[$i]["tiempSGl"] >= 0) {
+					$color2 = $mColor[5];
+				}
+				elseif ($mDespac[$i]["tiempSGl"] < 61 && $mDespac[$i]["tiempSGl"] > 30) {
+					$color2 = $mColor[3];
+				}
+				elseif ($mDespac[$i]["tiempSGl"] < 91 && $mDespac[$i]["tiempSGl"] > 60) {
+					$color2 = $mColor[3];
+				}
+				elseif ($mDespac[$i]["tiempSGl"] > 90) {
 					$color2 = $mColor[3];
 				}
 				#Valida si el despacho esta a cargo de la empresa

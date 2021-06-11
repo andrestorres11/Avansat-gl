@@ -174,7 +174,11 @@ class ajax_certra_certra {
             cod_grupox, cod_operac, cod_priori, ind_conper, hor_pe1urb, hor_pe2urb, 
             hor_pe1nac, hor_pe2nac, hor_pe1imp, hor_pe2imp, hor_pe1exp, hor_pe2exp, 
             hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, hor_pe2tr2, ind_solpol, cod_asegur, 
-            num_poliza, fec_valreg, hab_asicar, fec_asicar
+            num_poliza, fec_valreg, hab_asicar, fec_asicar,
+            tgl_prcnac, tgl_prcurb,tgl_prcexp, tgl_prcimp, tgl_prctr1,tgl_prctr2,
+            tgl_carnac,tgl_carurb,tgl_carexp,tgl_carimp,tgl_cartr1,tgl_cartr2,
+            tgl_contro,tgl_conurb,tgl_traexp,tgl_traimp,tgl_tratr1,tgl_tratr2,
+            tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2
             FROM " . BASE_DATOS . ".tab_transp_tipser 
             WHERE cod_transp = '$datos->cod_transp' 
             AND num_consec = $datos->num_consec";
@@ -464,7 +468,7 @@ class ajax_certra_certra {
                     
             </div>
         </div>
-        <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
+        <div id="conf_contacID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion de contactos</b></h3>
             <div id="contenido_serv">
                 <div class="StyleDIV contenido" style="min-height: 220px !important;" >
@@ -532,7 +536,7 @@ class ajax_certra_certra {
                 </div>
             </div>  
         </div>
-        <div id="conf_servicioID" class="col-md-12 accordion defecto ancho">
+        <div id="conf_particularidadID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion Particularidad</b></h3>
             <div id="contenido_serv">
                 <div class="StyleDIV contenido" style="min-height: 220px !important;" >
@@ -658,7 +662,7 @@ class ajax_certra_certra {
         <div id="conf_etapasID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Etapas y tipo de Seguimiento Contratado</b></h3>
             <div id="contenido_etap">
-                <div class="StyleDIV" style="min-height: 485px !important;">
+                <div class="StyleDIV" style="min-height: 745px !important;">
                     <div class="col-md-12 CellHead centrado">
                         PreCargue 
                         <?php
@@ -675,12 +679,23 @@ class ajax_certra_certra {
                     <div class="col-md-2 CellHead">Importaci&oacute;n</div>
                     <div class="col-md-2 CellHead">Tramo D1</div>
                     <div class="col-md-2 CellHead">Tramo D2</div>
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempo de llamada CL FARO</b></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_prcnac" id="tgl_prcnacID" value="<?= $datos->principal['tgl_prcnac'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_prcurb" id="tgl_prcurbID" value="<?= $datos->principal['tgl_prcurb'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_prcexp" id="tgl_prcexpID" value="<?= $datos->principal['tgl_prcexp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_prcimp" id="tgl_prcimpID" value="<?= $datos->principal['tgl_prcimp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_prctr1" id="tgl_prctr1ID" value="<?= $datos->principal['tgl_prctr1'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_prctr2" id="tgl_prctr2ID" value="<?= $datos->principal['tgl_prctr2'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempo de llamada Contratada</b></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_prcnac" id="tie_prcnacID" value="<?= $datos->principal['tie_prcnac'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_prcurb" id="tie_prcurbID" value="<?= $datos->principal['tie_prcurb'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_prcexp" id="tie_prcexpID" value="<?= $datos->principal['tie_prcexp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_prcimp" id="tie_prcimpID" value="<?= $datos->principal['tie_prcimp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_prctr1" id="tie_prctr1ID" value="<?= $datos->principal['tie_prctr1'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_prctr2" id="tie_prctr2ID" value="<?= $datos->principal['tie_prctr2'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <!-- Nuevos -->
+                    
                     <div class="col-md-12 CellHead centrado">
                         Cargue 
                         <?php
@@ -697,13 +712,23 @@ class ajax_certra_certra {
                     <div class="col-md-2 CellHead">Importaci&oacute;n</div>
                     <div class="col-md-2 CellHead">Tramo D1</div>
                     <div class="col-md-2 CellHead">Tramo D2</div>
-                    <div class="col-md-12 contenido text-center verde"><b>Tiempos</b></div>
+                    <!-- Nuevos -->
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempo de llamada CL FARO</b></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_carnac" id="tgl_carnacID" value="<?= $datos->principal['tgl_carnac'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_carurb" id="tgl_carurbID" value="<?= $datos->principal['tgl_carurb'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_carexp" id="tgl_carexpID" value="<?= $datos->principal['tgl_carexp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_carimp" id="tgl_carimpID" value="<?= $datos->principal['tgl_carimp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_cartr1" id="tgl_cartr1ID" value="<?= $datos->principal['tgl_cartr1'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" name="tgl_cartr2" id="tgl_cartr2ID" value="<?= $datos->principal['tgl_cartr2'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempo de llamada Contratada</b></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_carnac" id="tie_carnacID" value="<?= $datos->principal['tie_carnac'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_carurb" id="tie_carurbID" value="<?= $datos->principal['tie_carurb'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_carexp" id="tie_carexpID" value="<?= $datos->principal['tie_carexp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_carimp" id="tie_carimpID" value="<?= $datos->principal['tie_carimp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_cartr1" id="tie_cartr1ID" value="<?= $datos->principal['tie_cartr1'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="tie_cartr2" id="tie_cartr2ID" value="<?= $datos->principal['tie_cartr2'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    
                     <div class="col-md-12 contenido text-center verde"><b>Cantidad de Llamadas</b></div>
                     <div class="col-md-2 contenido"><input type="text" name="can_llaurb" id="can_llaurbID" value="<?= $datos->principal['can_llaurb'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="can_llanac" id="can_llanacID" value="<?= $datos->principal['can_llanac'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
@@ -711,6 +736,7 @@ class ajax_certra_certra {
                     <div class="col-md-2 contenido"><input type="text" name="can_llaimp" id="can_llaimpID" value="<?= $datos->principal['can_llaimp'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="can_llatr1" id="can_llatr1ID" value="<?= $datos->principal['can_llatr1'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" name="can_llatr2" id="can_llatr2ID" value="<?= $datos->principal['can_llatr2'] + 0 ?>" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                   
                     <div class="col-md-12 contenido">&nbsp;</div>
                     <div class="col-md-6 CellHead centrado" >
                         Tr&aacute;nsito
@@ -737,12 +763,23 @@ class ajax_certra_certra {
                     <div class="col-md-2 CellHead">Importaci&oacute;n</div>
                     <div class="col-md-2 CellHead">Tramo D1</div>
                     <div class="col-md-2 CellHead">Tramo D2</div>
+                    <!-- nuevo -->
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempo de llamada CL FARO</b></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_contro'] + 0 ?>" name="tgl_contro" id="tgl_controID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_conurb'] + 0 ?>" name="tgl_conurb" id="tgl_conurbID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_traexp'] + 0 ?>" name="tgl_traexp" id="tgl_traexpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_traimp'] + 0 ?>" name="tgl_traimp" id="tgl_traimpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_tratr1'] + 0 ?>" name="tgl_tratr1" id="tgl_tratr1ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_tratr2'] + 0 ?>" name="tgl_tratr2" id="tgl_tratr2ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempo de llamada Contratada</b></div>
                     <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_contro'] + 0 ?>" name="tie_contro" id="tie_controID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_conurb'] + 0 ?>" name="tie_conurb" id="tie_conurbID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_traexp'] + 0 ?>" name="tie_traexp" id="tie_traexpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_traimp'] + 0 ?>" name="tie_traimp" id="tie_traimpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_tratr1'] + 0 ?>" name="tie_tratr1" id="tie_tratr1ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
                     <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tie_tratr2'] + 0 ?>" name="tie_tratr2" id="tie_tratr2ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    
                     <div class="col-md-12 contenido">&nbsp;</div>
 
                     <div class="col-md-12 CellHead centrado">
@@ -761,6 +798,16 @@ class ajax_certra_certra {
                     <div class="col-md-2 CellHead">Importaci&oacute;n</div>
                     <div class="col-md-2 CellHead">Tramo D1</div>
                     <div class="col-md-2 CellHead">Tramo D2</div>
+                    <!-- Nuevo -->
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempo de llamada CL FARO</b></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_desnac'] + 0 ?>" name="tgl_desnac" id="tgl_desnacID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_desurb'] + 0 ?>" name="tgl_desurb" id="tgl_desurbID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_desexp'] + 0 ?>" name="tgl_desexp" id="tgl_desexpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_desimp'] + 0 ?>" name="tgl_desimp" id="tgl_desimpID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_destr1'] + 0 ?>" name="tgl_destr1" id="tgl_destr1ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-2 contenido"><input type="text" value="<?= $datos->principal['tgl_destr2'] + 0 ?>" name="tgl_destr2" id="tgl_destr2ID" validate="numero" maxlength="3" minlength="1" class="ancho centrado"></div>
+                    <div class="col-md-12 contenido text-center verde"><b>Tiempo de llamada Contratada</b></div>
+                    
                     <div class="col-md-2 contenido">
                         <input type="text" value="<?= $datos->principal['tie_desnac'] + 0 ?>" name="tie_desnac" id="tie_desnacID" validate="numero" maxlength="3" minlength="1" class="ancho centrado">
                     </div>
@@ -1484,7 +1531,11 @@ class ajax_certra_certra {
             hor_pe2exp, hor_pe1imp, hor_pe2imp, hor_pe1tr1, hor_pe2tr1, hor_pe1tr2, 
             hor_pe2tr2, ind_conper, ind_solpol, cod_asegur, num_poliza, fec_valreg, 
             ind_segprc, tie_prcurb, tie_prcnac, tie_prcimp, tie_prcexp, tie_prctr1, 
-            tie_prctr2, hab_asicar, fec_asicar
+            tie_prctr2, hab_asicar, fec_asicar,
+            tgl_prcnac, tgl_prcurb,tgl_prcexp, tgl_prcimp, tgl_prctr1,tgl_prctr2,
+            tgl_carnac,tgl_carurb,tgl_carexp,tgl_carimp,tgl_cartr1,tgl_cartr2,
+            tgl_contro,tgl_conurb,tgl_traexp,tgl_traimp,tgl_tratr1,tgl_tratr2,
+            tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2
         ) VALUES  ( 
         '$datos->num_consec', '$datos->cod_tipser', '$datos->tie_contro', '$datos->ind_estado', '$datos->tie_conurb', '$datos->ind_llegad', 
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
@@ -1499,7 +1550,11 @@ class ajax_certra_certra {
         '$datos->hor_pe1imp', '$datos->hor_pe2imp', '$datos->hor_pe1tr1', '$datos->hor_pe2tr1', '$datos->hor_pe1tr2', '$datos->hor_pe2tr2', 
         '$datos->ind_conper', '$datos->ind_solpol', '$datos->cod_asegur', '$datos->num_poliza', '$datos->fec_valreg', '$datos->ind_segprc',
         '$datos->tie_prcurb', '$datos->tie_prcnac', '$datos->tie_prcimp', '$datos->tie_prcexp', '$datos->tie_prctr1', '$datos->tie_prctr2',
-        '$datos->hab_asicar', '$datos->fec_asicar'
+        '$datos->hab_asicar', '$datos->fec_asicar',
+        '$datos->tgl_prcnac','$datos->tgl_prcurb','$datos->tgl_prcexp','$datos->tgl_prcimp','$datos->tgl_prctr1','$datos->tgl_prctr2',
+        '$datos->tgl_carnac','$datos->tgl_carurb','$datos->tgl_carexp','$datos->tgl_carimp','$datos->tgl_cartr1','$datos->tgl_cartr2',
+        '$datos->tgl_contro','$datos->tgl_conurb','$datos->tgl_traexp','$datos->tgl_traimp','$datos->tgl_tratr1','$datos->tgl_tratr2',
+        '$datos->tgl_desnac','$datos->tgl_desurb','$datos->tgl_desexp','$datos->tgl_desimp','$datos->tgl_destr1','$datos->tgl_destr2'
         )";
 
         $mSql = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
