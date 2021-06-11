@@ -99,6 +99,9 @@ class trayle{
         case 'activarVehiculo':
             self::activarVehiculo();
             break;
+        case 'getValidaIdGPS':
+            self::getValidaIdGPS();
+            break;
        
 
 
@@ -108,6 +111,28 @@ class trayle{
       }
     }
   }
+
+ /**********************************************************************************
+ *   \fn: getValidaIdGPS                                                            *
+ *  \brief: funcion para validar si el gps seleccionado tiene ID como obligatorio   *
+ *  \author: Ing. Nelson Liberato                                                   *
+ *  \date:  2019/05/21                                                              *
+ *  \date modified:                                                                 *
+ *  \param: $cod_opegps nit del operador GPS seleccionado en formulario             *     
+ *  \param:                                                                         * 
+ *  \return tabla con la lista de los terceros                                      *
+ ***********************************************************************************/
+
+private function getValidaIdGPS()
+{
+
+    $mSql = "SELECT a.nom_operad, IF(a.apl_idxxxx = '1', 'S', 'N') AS ind_usaidx
+          FROM ".BASE_DATOS.".tab_genera_opegps a
+         WHERE  a.cod_operad = '".mysql_real_escape_string($_REQUEST['cod_operad'])."' ";
+    $consulta = new Consulta($mSql, self::$cConexion);
+    $mGPS = $consulta->ret_matrix("a");
+    echo json_encode([ 'cod_operad' => $_REQUEST['cod_operad'], 'ind_usaidx' => $mGPS[0]['ind_usaidx']] );
+}
 
  /***********************************************************************************
  *   \fn: listaTrayles                                                             *

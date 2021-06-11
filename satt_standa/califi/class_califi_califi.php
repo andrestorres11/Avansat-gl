@@ -40,7 +40,12 @@ class Califi
 
 			case 'EditGPS':
 				self::EditGPS();
-				break;	
+				break;
+			
+			case 'IndUsaIDGPS':
+				self::IndUsaIDGPS();
+				break;
+
 			case "editaGps";
 				$this->editaGps();
 				break;  
@@ -131,7 +136,6 @@ class Califi
      *  \return 
      */
     private function EditGPS() {
-		
 		if ($_POST['ind_edicio'] == '0') {
 			?>
 		<?php
@@ -139,6 +143,21 @@ class Califi
 			$informacion= self::getGPS($_POST['num_despac'])[0];
 			
 			$operadores = self::getOpeGps();
+
+			$mSql = "SELECT
+                IF(a.apl_idxxxx = '1', 'S', 'N') AS ind_usaidx
+             FROM ".BASE_DATOS.".tab_genera_opegps a
+              WHERE (a.cod_operad='".$informacion['gps_operad']."' OR a.nit_operad='".$informacion['gps_operad']."')";
+
+			$consulta = new Consulta($mSql, self::$cConexion);
+			$usaid = $consulta->ret_matriz();
+
+			$ind_usaid = $usaid[0]['ind_usaidx'];
+			$attr = '';
+			if($ind_usaid=='S'){
+				$attr = 'validate="text" maxlength="15" minlength="1"';
+			}
+
 		?>
 		<div class="StyleDIV contenido" style="min-height: 145px !important;">
 			<div class="col-md-1">&nbsp;</div>
@@ -146,7 +165,7 @@ class Califi
 					<div class="col-md-6">
 						<div class="col-md-6 text-right">Operador GPS<font style="color:red">*</font></div>
 						<div class="col-md-6 text-left">
-							<select id="cod_operadEditID" name="cod_operad" class="ancho" obl="1" validate="select">
+							<select id="cod_operadEditID" name="cod_operad" class="ancho" obl="1" validate="select" onchange="habIdOperaGps(this)">
 								<option value="">Seleccione una Opci&oacute;n.</option>
 								<?php
 								foreach ($operadores as $key => $value) {
@@ -176,15 +195,36 @@ class Califi
 					<div class="col-md-6">
 						<div class="col-md-3 text-right">ID:<font style="color:red">*</font></div>
 						<div class="col-md-9 text-left">
-							<input type="text" class="text-center ancho" name="gps_idxxxx" id="gps_idxxxxID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_idxxxx'] ?>"></input>
+							<input type="text" class="text-center ancho" name="gps_idxxxx" id="gps_idxxxxID"  <?php echo $attr; ?> value="<?= $informacion['gps_idxxxx'] ?>"></input>
 						</div>
 					</div>
 				</div>
 			<div class="col-md-1">&nbsp;</div>
 		</div>
 	<?php
-	}
-            
+	}      
+    }
+
+	   /* ! \fn: CreateObserva
+     *  \brief: inserta un nuevo contacto
+     *  \author: Ing. Andres Martinez
+     *  \date: 12/02/2018
+     *  \date modified: dia/mes/aÃ±o
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    private function IndUsaIDGPS() {
+
+		$mSql = "SELECT
+                IF(a.apl_idxxxx = '1', 'S', 'N') AS ind_usaidx
+             FROM ".BASE_DATOS.".tab_genera_opegps a
+              WHERE (a.cod_operad='".$_POST['cod_opegps']."' OR a.nit_operad='".$_POST['cod_opegps']."')";
+
+		$consulta = new Consulta($mSql, self::$cConexion);
+		$getGps = $consulta->ret_matriz();
+
+		echo json_encode($getGps);
     }
 
 	private function getGPS($num_despac) {
@@ -215,6 +255,28 @@ class Califi
         return $valMax;
     }
 
+	  /* ! \fn: getUrlGps
+     *  \brief: busca la url del operador gps
+     *  \author: Ing. Cristian Torres
+     *  \date: 10/06/2021
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+	private function getUrlGps( $cod_opegps = NULL )
+	{
+	  $mSql = "SELECT url_gpsxxx
+				 FROM ".BASE_DATOS.".tab_genera_opegps
+				WHERE (cod_operad = '".$cod_opegps."' OR nit_operad = '".$cod_opegps."')";
+	  $consulta = new Consulta( $mSql,self::$cConexion);
+		  $respuesta = $consulta->ret_matriz();
+	  if(count($respuesta)>0){
+		return $respuesta[0]['url_gpsxxx'];
+	  }
+	  return null;
+	  
+	}
 	   /* ! \fn: editaGps
      *  \brief: inserta una Particularidad de la transportado
      *  \author: Ing. Andres Martinez
@@ -225,13 +287,15 @@ class Califi
      *  \return 
      */
     private function editaGps() {
-        
         $mData = $_POST;
+		
+		$urlGps = self::getUrlGps($mData['gps_operad']);
         $mUpdate = "UPDATE " . BASE_DATOS . ".tab_despac_despac SET 
 					gps_operad = '".$mData['gps_operad']."',
-                    gps_usuari = '".$mData['gps_usuari']."', 
-                    gps_paswor = '".$mData['gps_paswor']."',
+                    gps_usuari = '".utf8_decode($mData['gps_usuari'])."', 
+                    gps_paswor = '".utf8_decode($mData['gps_paswor'])."',
 					gps_idxxxx = '".$mData['gps_idxxxx']."',
+					gps_urlxxx = '".$urlGps."',
                     usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                     fec_modifi = NOW()
                     WHERE num_despac = '".$mData['num_despac']."'";
@@ -255,8 +319,8 @@ class Califi
 				$codConsecutivo,
 				'".$mData['gps_idxxxx']."',
 				'".$mData['gps_operad']."',
-				'".$mData['gps_usuari']."',
-				'".$mData['gps_paswor']."',
+				'".utf8_decode($mData['gps_usuari'])."',
+				'".utf8_decode($mData['gps_paswor'])."',
 				'".$_SESSION['datos_usuario']['cod_usuari']."',
 				NOW()
 			)";	

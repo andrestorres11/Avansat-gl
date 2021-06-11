@@ -2187,8 +2187,7 @@ class Despachos
 
         #mData información de despacho
         $mData = self::getDataEncabezado( $mNumDesOri, $mNumDespac, $mIndConsol, $mObs );
-        $mData['num_despac'] = $mStrDespac;
-
+        $mData['num_despac'] = $mStrDespac; 
         #<Arma HTML>
             $mHtml = new Formlib(2);
 
@@ -2542,7 +2541,7 @@ class Despachos
                                     "ano_modelo" => "Modelo", 
                                     "nom_genera" => "Generador",
                                     "nom_marcax" => "Marca", 
-                                    "url_gpsxxx" => "Url Operador Gps", 
+                                    "gps_urlxxx" => "Url Operador Gps", 
                                     "nom_carroc" => "Carroceria", 
                                     "nom_opegps" => "Operador Gps",
                                     "num_config" => "Configuraci&oacute;n", 
@@ -2598,7 +2597,7 @@ class Despachos
                                             $mTxt = '<a style="color:green;" href="sip:'.$mData[$key].'_'.$mData['aux_placax'].'_'.$mNumDespac.'@pbx.intrared.net" target="blank">'.$mData[$key].'</a>';
                                             $mTxt = array($tittle, $mData['nom_operad']." - ".$mTxt);
                                             break;
-                                        case 'url_gpsxxx':
+                                        case 'gps_urlxxx':
                                             $mViewEdt = self::getView('edt_gpsxxx');
                                                 if( $mViewEdt->dat_gpsxxx->ind_visibl == 1 ){
                                                     $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>
@@ -2646,7 +2645,7 @@ class Despachos
                                     if( $mBandera == true ){
                                         if( $j != 0 && ($j % 2) == false ) $mHtml->Row();
                                         $mHtml->Label( $mTxt[0].":",  array("width"=>"25%", "align"=>"right", "class"=>"celda_titulo") );
-                                        $mHtml->SetBody('<td width="25%" align="left" class="celda_info">'.$mTxt[1].'</td>');
+                                        $mHtml->SetBody('<td width="25%" align="left" class="celda_info">'.utf8_decode($mTxt[1]).'</td>');
                                         if( $j % 2 ) $mHtml->SetBody('</tr>');
                                         $j++;
                                     }
@@ -3715,7 +3714,8 @@ class Despachos
                         k.num_solici,
                         IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci,
                         y.url_gpsxxx,
-                        x.idx_gpsxxx
+                        x.idx_gpsxxx,
+                        a.gps_urlxxx
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
