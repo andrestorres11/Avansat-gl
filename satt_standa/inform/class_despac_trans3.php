@@ -1955,6 +1955,7 @@ class Despac
 		$mSql = " SELECT a.*,
 						 GROUP_CONCAT(h.cod_usuari ORDER BY h.cod_usuari ASC SEPARATOR ', ' ) AS usr_asigna
 					FROM (
+
 										SELECT c.ind_segprc,c.ind_segcar, 
 										       c.ind_segctr,c.ind_segtra, c.ind_segdes, 
 											   c.cod_transp, c.num_consec, d.nom_tipser, 
@@ -2151,44 +2152,86 @@ class Despac
 			# Arma la matriz resultante 
 			if( $mIndCant == 1 )
 			{# Cantidades según estado
-				if( $mPernoc == true ){
-					$mResult[est_pernoc]++;
-					$mResult[enx_seguim]++;
-				} #Pernoctacion
-				elseif( $mDespac[$i][ind_finrut] == '1' ) #Por Llegada
-					$mResult[fin_rutaxx]++;
-				elseif( $mDespac[$i][ind_defini] == 'SI' ) #A Cargo Empresa
-					$mResult[ind_acargo]++;
-				elseif( $mDespac[$i][tiempo] < 0 ){ #Sin Retraso
-					$mResult[sin_retras]++;
-					$mResult[enx_seguim]++;
-				}
-				elseif( $mDespac[$i][tiempoGl] < 31 && $mDespac[$i][tiempoGl] >= 0 ){
-					 # 0 a 30
-					$mResult[con_00A30x]++;
-					$mResult[con_alarma]++;
-					$mResult[enx_seguim]++;
-				}
-				elseif( $mDespac[$i][tiempoGl] < 61 && $mDespac[$i][tiempoGl] > 30 ) {
-					# 31 a 60
-					$mResult[con_31A60x]++;
-					$mResult[con_alarma]++;
-					$mResult[enx_seguim]++;
-				}
-				elseif( $mDespac[$i][tiempoGl] < 91 && $mDespac[$i][tiempoGl] > 60 ) {
-					# 61 a 90
-					$mResult[con_61A90x]++;
-					$mResult[con_alarma]++;
-					$mResult[enx_seguim]++;
-				}
-				elseif( $mDespac[$i][tiempoGl] > 90 ){
-					# Mayor 90
-					$mResult[con_91Amas]++;
-					$mResult[con_alarma]++;
-					$mResult[enx_seguim]++;
-				} 
-				else{
-					continue;
+				if($mDespac[$i][tiempoGl]){
+					if( $mPernoc == true ){
+						$mResult[est_pernoc]++;
+						$mResult[enx_seguim]++;
+					} #Pernoctacion
+					elseif( $mDespac[$i][ind_finrut] == '1' ) #Por Llegada
+						$mResult[fin_rutaxx]++;
+					elseif( $mDespac[$i][ind_defini] == 'SI' ) #A Cargo Empresa
+						$mResult[ind_acargo]++;
+					elseif( $mDespac[$i][tiempoGl] < 0 ){ #Sin Retraso
+						$mResult[sin_retras]++;
+						$mResult[enx_seguim]++;
+					}
+					elseif( $mDespac[$i][tiempoGl] < 31 && $mDespac[$i][tiempoGl] >= 0 ){
+						# 0 a 30
+						$mResult[con_00A30x]++;
+						$mResult[con_alarma]++;
+						$mResult[enx_seguim]++;
+					}
+					elseif( $mDespac[$i][tiempoGl] < 61 && $mDespac[$i][tiempoGl] > 30 ) {
+						# 31 a 60
+						$mResult[con_31A60x]++;
+						$mResult[con_alarma]++;
+						$mResult[enx_seguim]++;
+					}
+					elseif( $mDespac[$i][tiempoGl] < 91 && $mDespac[$i][tiempoGl] > 60 ) {
+						# 61 a 90
+						$mResult[con_61A90x]++;
+						$mResult[con_alarma]++;
+						$mResult[enx_seguim]++;
+					}
+					elseif( $mDespac[$i][tiempoGl] > 90 ){
+						# Mayor 90
+						$mResult[con_91Amas]++;
+						$mResult[con_alarma]++;
+						$mResult[enx_seguim]++;
+					} 
+					else{
+						continue;
+					}
+				}else{
+					if( $mPernoc == true ){
+						$mResult[est_pernoc]++;
+						$mResult[enx_seguim]++;
+					} #Pernoctacion
+					elseif( $mDespac[$i][ind_finrut] == '1' ) #Por Llegada
+						$mResult[fin_rutaxx]++;
+					elseif( $mDespac[$i][ind_defini] == 'SI' ) #A Cargo Empresa
+						$mResult[ind_acargo]++;
+					elseif( $mDespac[$i][tiempo] < 0 ){ #Sin Retraso
+						$mResult[sin_retras]++;
+						$mResult[enx_seguim]++;
+					}
+					elseif( $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 ){
+						 # 0 a 30
+						$mResult[con_00A30x]++;
+						$mResult[con_alarma]++;
+						$mResult[enx_seguim]++;
+					}
+					elseif( $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 ) {
+						# 31 a 60
+						$mResult[con_31A60x]++;
+						$mResult[con_alarma]++;
+						$mResult[enx_seguim]++;
+					}
+					elseif( $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 ) {
+						# 61 a 90
+						$mResult[con_61A90x]++;
+						$mResult[con_alarma]++;
+						$mResult[enx_seguim]++;
+					}
+					elseif( $mDespac[$i][tiempo] > 90 ){
+						# Mayor 90
+						$mResult[con_91Amas]++;
+						$mResult[con_alarma]++;
+						$mResult[enx_seguim]++;
+					} 
+					else{
+						continue;
+					}
 				}
 			}
 			else

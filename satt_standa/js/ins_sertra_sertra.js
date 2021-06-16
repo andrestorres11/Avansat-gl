@@ -631,7 +631,8 @@ function registrarTipoServicio() {
 function enableDisable(indicador) {
     switch (indicador) {
         case 1:
-            var campos = ["tie_carnacID", "tie_carurbID", "tie_carexpID", "tie_carimpID", "tie_cartr1ID", "tie_cartr2ID"];
+            var campos = ["tie_carnacID", "tie_carurbID", "tie_carexpID", "tie_carimpID", "tie_cartr1ID", "tie_cartr2ID",
+                        "tgl_carnacID", "tgl_carurbID", "tgl_carexpID", "tgl_carimpID", "tgl_cartr1ID", "tgl_cartr2ID"];
             if ($("#ind_segcarID").attr('checked')) {
                 activar(true, campos);
             } else {
@@ -639,7 +640,8 @@ function enableDisable(indicador) {
             }
             break;
         case 2:
-            var campos = ["tie_controID", "tie_conurbID", "tie_traexpID", "tie_traimpID", "tie_tratr1ID", "tie_tratr2ID"];
+            var campos = ["tie_controID", "tie_conurbID", "tie_traexpID", "tie_traimpID", "tie_tratr1ID", "tie_tratr2ID",
+                        "tgl_controID", "tgl_conurbID", "tgl_traexpID", "tgl_traimpID", "tgl_tratr1ID", "tgl_tratr2ID"];
 
             if ($("#ind_segtraID").attr('checked') && $("#ind_planruID").attr('checked') == false) {
                 activar(true, campos);
@@ -658,7 +660,8 @@ function enableDisable(indicador) {
             }
             break;
         case 4:
-            var campos = ["tie_desnacID", "tie_desurbID", "tie_desexpID", "tie_desimpID", "tie_destr1ID", "tie_destr2ID"];
+            var campos = ["tie_desnacID", "tie_desurbID", "tie_desexpID", "tie_desimpID", "tie_destr1ID", "tie_destr2ID",
+                        "tgl_desnacID", "tgl_desurbID", "tgl_desexpID", "tgl_desimpID", "tgl_destr1ID", "tgl_destr2ID"];
             if ($("#ind_segdesID").attr('checked')) {
                 activar(true, campos);
             } else {
@@ -676,7 +679,8 @@ function enableDisable(indicador) {
             }
             break;
         case 6:
-            var campos = ["tie_prcnacID", "tie_prcurbID", "tie_prcexpID", "tie_prcimpID", "tie_prctr1ID", "tie_prctr2ID"];
+            var campos = ["tie_prcnacID", "tie_prcurbID", "tie_prcexpID", "tie_prcimpID", "tie_prctr1ID", "tie_prctr2ID",
+            "tgl_prcnacID", "tgl_prcurbID", "tgl_prcexpID", "tgl_prcimpID", "tgl_prctr1ID", "tgl_prctr2ID"];
             if ($("#ind_segprcID").attr('checked')) {
                 activar(true, campos);
             } else {
