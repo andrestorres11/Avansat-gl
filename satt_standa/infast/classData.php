@@ -490,7 +490,8 @@ class generaData
                        IF(b.tip_vehicu IS NULL, 'No registrado', b.tip_vehicu) AS tip_vehicu, 
                        IF(b.nom_poseed IS NULL, k.abr_tercer, b.nom_poseed) AS nom_poseed, 
                        b.tip_transp,
-                       f.nom_produc
+                       f.nom_produc,
+                       o.nom_tercer
                   FROM ".BASE_DATOS.".tab_despac_despac a
              LEFT JOIN ".BASE_DATOS.".tab_despac_corona b 
                     ON a.num_despac = b.num_dessat
@@ -502,7 +503,7 @@ class generaData
                     ON b.cod_ciudes = e.cod_ciudad 
              LEFT JOIN ".BASE_DATOS.".tab_genera_produc f
                     ON b.cod_mercan = f.cod_produc 
-             LEFT JOIN ".BASE_DATOS.".tab_despac_vehige g 
+             LEFT JOIN ".BASE_DATOS.".tab_despac_vehige g
                     ON a.num_despac = g.num_despac 
              LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer h 
                     ON g.cod_conduc = h.cod_tercer 
@@ -517,7 +518,10 @@ class generaData
              LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad m
                     ON a.cod_ciuori = m.cod_ciudad 
              LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad n
+
                     ON a.cod_ciudes = n.cod_ciudad 
+             INNER JOIN ".BASE_DATOS.".tab_tercer_tercer o
+                    ON g.cod_transp = o.cod_tercer   
         				 WHERE a.num_despac IN(".$num_despac.")
               ORDER BY a.num_despac"; 
   	
@@ -531,7 +535,8 @@ class generaData
       $mHtml .= '</tr>';
       
       $mHtml .= '<tr>';
-        $mHtml .= '<td class="CellHead">Despacho SAT</td>';
+        $mHtml .= '<td class="CellHead">N° Despacho</td>';
+        $mHtml .= '<td class="CellHead">Transportadora</td>';
         $mHtml .= '<td class="CellHead">Viaje</td>';
         $mHtml .= '<td class="CellHead">Monifiesto</td>';
         $mHtml .= '<td class="CellHead">Fecha Despacho</td>';
@@ -562,6 +567,7 @@ class generaData
       for( $i = 0, $lim = sizeof( $_DESPAC ); $i < $lim; $i++ )
       {
         $row = $_DESPAC[$i];
+        mail("andres.martinez@eltransporte.org", "LO QUE ENVIA EN DESPACT", var_export($row, true));
         $cum_citcar = $this -> getCitcar( $row['num_despac'] );
         $nom_client = $this -> getClient( $row['num_despac'] );
         if ($ind_posici == 's') {
@@ -617,6 +623,8 @@ class generaData
                 $mHtml .= '<td class="'.$style.'" align="center">
                              <a style="text-decoration:none; color:#006F1A;" href="index.php?cod_servic=3302&window=central&despac='.$row['num_despac'].'&tie_ultnov=0&opcion=1" target="_blank">'.$row['num_despac'].'</a>
                            </td>';
+                           
+                $mHtml .= '<td class="'.$style.'" align="center">'.$row['nom_tercer'].'</td>';
                 $mHtml .= '<td class="'.$style.'" align="center">'.$row['num_viajex'].'</td>';
                 $mHtml .= '<td class="'.$style.'" align="center">'.$row['cod_manifi'].'</td>';
                 $mHtml .= '<td class="'.$style.'" align="center">'.$row['fec_despac'].'</td>';
