@@ -46,7 +46,9 @@ $(function() {
         'language': {
             "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
         },
-        "dom": "<'row'<'col-md-4'B><'col-md-4'l><'col-md-4'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>",
+        "dom": "<'row'<'col-sm-12 col-md-3'B><'col-sm-12 col-md-3'l><'col-sm-12 col-md-6'f>>" +
+            "<'row'<'col-sm-12'tr>>" +
+            "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
         "buttons": [
             'excelHtml5',
             'csvHtml5',
@@ -63,8 +65,7 @@ $(function() {
  *  \return html
  */
 
-function getNombre()
-{
+function getNombre() {
     this.nom_empre = '';
     var selectBox = document.getElementById("empresa");
     this.nom_empre = selectBox.options[selectBox.selectedIndex].text;
@@ -80,8 +81,7 @@ function getNombre()
 
 function generarReporte() {
     val = $("#busquedaFiltro").serializeArray()
-    if(val[0]['value'] != '' && val[1]['value'] != '' && val[2]['value'] != '')
-    {
+    if (val[0]['value'] != '' && val[1]['value'] != '' && val[2]['value'] != '') {
         var table = $("#contenedor #tablaRegistros").DataTable({
             "ajax": {
                 "url": "../" + standa + "/despac/ajax_depura_despac.php",
@@ -104,14 +104,16 @@ function generarReporte() {
             'language': {
                 "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
             },
-            "dom": "<'row'<'col-md-4'B><'col-md-4'l><'col-md-4'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>",
+            "dom": "<'row'<'col-sm-12 col-md-3'B><'col-sm-12 col-md-3'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
             "buttons": [
 
                 'excelHtml5',
                 'csvHtml5',
-                ]
+            ]
         });
-    }else{
+    } else {
         Swal.fire({
             title: 'Error!',
             text: 'Debes seleccionar al menos los campos de fechas',
@@ -124,7 +126,7 @@ function generarReporte() {
 
 //---------------------------------------------
 /*! \fn: delReg
- *  \brief: Genera popup con la confirmación para depurar los registros
+ *  \brief: Genera popup con la confirmaciï¿½n para depurar los registros
  *  \author: Ing. Carlos Nieto
  *  \date: 02/06/2021
  *  \date modified: 
@@ -135,66 +137,65 @@ function delReg() {
     try {
         val = $("#filter").serializeArray();
 
-        if(val[0]['value'] != '' && val[1]['value'] != '' && val[2]['value'] != ''  && val[3]['value'] != '')
-        {
-        Swal.fire({
-            title: '¿Estas seguro?',
-            text: "¿Esta seguro que desea realizar la depuracion de los despachos de la transportadora " + this.nom_empre + "?",
-            type: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#336600',
-            cancelButtonColor: '#aaa',
-            confirmButtonText: 'Si, confirmar'
-        }).then((result) => {
-            if (result.value) {        
-                $.ajax({
-                    url: "../" + standa + "/despac/ajax_depura_despac.php",
-                    type: "post",
-                    data: ({ option: 'delReg', cod_regist: $("#filter").serializeArray() }),
-                    dataType: "json",
-                    beforeSend: function() { 
-                        Swal.fire({
-                            title: 'Cargando',
-                            text: 'Por favor espere...',
-                            imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
-                            imageAlt: 'Custom image',
-                            showConfirmButton: false,
-                        })
-                    },
-                    success: function(data) {
-                        if (data['status'] == 200) {
+        if (val[0]['value'] != '' && val[1]['value'] != '' && val[2]['value'] != '' && val[3]['value'] != '') {
+            Swal.fire({
+                title: 'ï¿½Estas seguro?',
+                text: "ï¿½Esta seguro que desea realizar la depuracion de los despachos de la transportadora " + this.nom_empre + "?",
+                type: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#336600',
+                cancelButtonColor: '#aaa',
+                confirmButtonText: 'Si, confirmar'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: "../" + standa + "/despac/ajax_depura_despac.php",
+                        type: "post",
+                        data: ({ option: 'delReg', cod_regist: $("#filter").serializeArray() }),
+                        dataType: "json",
+                        beforeSend: function() {
                             Swal.fire({
-                                title: '¡Depuracion Exitosa!',
-                                text: data['response'],
-                                type: 'success',
-                                confirmButtonColor: '#336600'
-                            }).then((result) => {
-                                if (result.value) {
-                                    var table = $('#contenedor #tablaRegistros').DataTable();
-                                    table.ajax.reload();
-                                }
+                                title: 'Cargando',
+                                text: 'Por favor espere...',
+                                imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+                                imageAlt: 'Custom image',
+                                showConfirmButton: false,
                             })
-                            $('#MoDepuracion').modal('hide');
-                        } else {
-                            Swal.fire({
-                                title: 'Error!',
-                                text: data['response'],
-                                type: 'error',
-                                confirmButtonColor: '#336600'
-                            })
+                        },
+                        success: function(data) {
+                            if (data['status'] == 200) {
+                                Swal.fire({
+                                    title: 'ï¿½Depuracion Exitosa!',
+                                    text: data['response'],
+                                    type: 'success',
+                                    confirmButtonColor: '#336600'
+                                }).then((result) => {
+                                    if (result.value) {
+                                        var table = $('#contenedor #tablaRegistros').DataTable();
+                                        table.ajax.reload();
+                                    }
+                                })
+                                $('#MoDepuracion').modal('hide');
+                            } else {
+                                Swal.fire({
+                                    title: 'Error!',
+                                    text: data['response'],
+                                    type: 'error',
+                                    confirmButtonColor: '#336600'
+                                })
+                            }
                         }
-                    }
-                });
-            }
-        });
-    }else{
-        Swal.fire({
-            title: 'Error!',
-            text: 'Debes seleccionar los campos',
-            type: 'error',
-            confirmButtonColor: '#336600'
-        })
-    }
+                    });
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'Error!',
+                text: 'Debes seleccionar los campos',
+                type: 'error',
+                confirmButtonColor: '#336600'
+            })
+        }
     } catch (error) {
         console.error(error);
     }
@@ -209,12 +210,12 @@ function delReg() {
  *  \return html
  */
 
-function abrModalDetalles(cod_agrupa,cod_agrupa_num,nom_empre) {
+function abrModalDetalles(cod_agrupa, cod_agrupa_num, nom_empre) {
     try {
         $('#contenedor #tablaModal thead tr th').each(function(i) {
             var title = $(this).text();
             $(this).html('<label style="display:none;">' + title + '</label><input type="text" placeholder="Buscar ' + title + '" />');
-    
+
             $('input', this).on('keyup change', function() {
                 if (table.column(i).search() !== this.value) {
                     table
@@ -224,7 +225,7 @@ function abrModalDetalles(cod_agrupa,cod_agrupa_num,nom_empre) {
                 }
             });
         });
-    
+
         var table = $("#contenedor #tablaModal").DataTable({
             "ajax": {
                 url: "../" + standa + "/despac/ajax_depura_despac.php",
@@ -248,14 +249,16 @@ function abrModalDetalles(cod_agrupa,cod_agrupa_num,nom_empre) {
             'language': {
                 "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
             },
-            "dom": "<'row'<'col-md-4'B><'col-md-4'l><'col-md-4'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>",
+            "dom": "<'row'<'col-sm-12 col-md-3'B><'col-sm-12 col-md-3'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
             "buttons": [
 
                 'excelHtml5',
                 'csvHtml5',
-                ]
+            ]
         });
-        $("#modalInformeTitulo").html(cod_agrupa + " Despachos depurados empresa de transporte "+ nom_empre.toString().slice(1,-1));
+        $("#modalInformeTitulo").html(cod_agrupa + " Despachos depurados empresa de transporte " + nom_empre.toString().slice(1, -1));
         $("#detalles").modal("show");
     } catch (error) {
         console.log(error);
@@ -264,7 +267,7 @@ function abrModalDetalles(cod_agrupa,cod_agrupa_num,nom_empre) {
 
 //---------------------------------------------
 /*! \fn: validateFields
- *  \brief: Toma la función validaciones y actualiza la visual y gestión de los datos
+ *  \brief: Toma la funciï¿½n validaciones y actualiza la visual y gestiï¿½n de los datos
  *  \author: Ing. Luis Manrique
  *  \date: 28/04/2020
  *  \date modified: 
