@@ -1,11 +1,10 @@
 <?php
-ini_set('display_errors', false);
 session_start();
 
 class AjaxSintesisOperacion
 {
   var $conexion;
-  var $NIT_CORONA = '860068121';
+
   public function __construct()
   {
     $_AJAX = $_REQUEST;
@@ -13,6 +12,7 @@ class AjaxSintesisOperacion
     include_once('../lib/bd/seguridad/aplica_filtro_usuari_lib.inc');
     include_once('../lib/ajax.inc');
     include_once('../lib/general/constantes.inc');
+    include_once('../lib/general/functions.inc');
     $this -> conexion = $AjaxConnection;
     $this -> $_AJAX['option']( $_AJAX );
   }
@@ -36,7 +36,7 @@ class AjaxSintesisOperacion
         {
           font-family:Times New Roman;
           font-size:11px;
-          background-color: #35650F;
+          background-color: #285c00;
           color:#FFFFFF;
           padding: 4px;
         }
@@ -45,7 +45,7 @@ class AjaxSintesisOperacion
         {
           font-family:Times New Roman;
           font-size:11px;
-          background-color: #35650F;
+          background-color: #285c00;
           color:#FFFFFF;
           padding: 4px;
           text-align:left;
@@ -131,7 +131,7 @@ class AjaxSintesisOperacion
   {
     $mSelect = "SELECT cod_tipdes, UPPER( nom_tipdes ) AS nom_tipdes 
                   FROM ".BASE_DATOS.".tab_genera_tipdes 
-                 WHERE 1 = 1 ";
+                 WHERE ind_estado = 1 ";
     
     if( $cod_tipdes != '' )
       $mSelect .= " AND cod_tipdes = '".$cod_tipdes."' ";
@@ -149,18 +149,22 @@ class AjaxSintesisOperacion
     $_TIPDES = $this -> getTipDes( $mData['cod_tipdes'] );
     
     $mSelect = " SELECT a.num_despac, a.cod_tipdes, 
-                        a.fec_llegad, DATE( a.fec_salsis ) AS fec_salida,
-                        c.cod_mercan
-                   FROM ".BASE_DATOS.".tab_despac_despac a,
-                        ".BASE_DATOS.".tab_despac_vehige b
-              LEFT JOIN ".BASE_DATOS.".tab_despac_corona c
-              		 ON b.num_despac = c.num_dessat";
-    $mSelect .= " WHERE a.num_despac = b.num_despac 
-                    AND b.cod_transp = '". $this -> NIT_CORONA ."' 
-                    AND a.ind_anulad != 'A'
+                        a.fec_llegad, DATE( a.fec_despac ) AS fec_salida,
+                        c.des_mercan
+                   FROM ".BASE_DATOS.".tab_despac_despac a
+                  INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+                    ON a.num_despac = b.num_despac
+                  INNER JOIN ".BASE_DATOS.".tab_despac_remesa c
+              		  ON a.num_despac = c.num_despac";
+    $mSelect .= " WHERE a.ind_anulad != 'A'
                     AND b.ind_activo = 'S'
-                    AND a.fec_salsis BETWEEN '".$mData['fec_inicia']." 00:00:00' AND '".$mData['fec_finali']." 23:59:59' ";
+                    AND a.fec_despac BETWEEN '".$mData['fec_inicia']." 00:00:00' AND '".$mData['fec_finali']." 23:59:59' ";
     
+    
+                    if( $mData['cod_transp'] != '' ){
+                $mSelect .= " AND b.cod_transp = '".$mData['cod_transp']."'";
+    }
+
     if( $mData['cod_tipdes'] != '' )
     {
       $mSelect .= " AND a.cod_tipdes = '".$mData['cod_tipdes']."'";
@@ -170,7 +174,6 @@ class AjaxSintesisOperacion
     {
       $mSelect .= " AND c.cod_mercan = '".$mData['cod_produc']."'";
     }
-
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $arr_despac = $consulta -> ret_matriz();
 
@@ -363,9 +366,9 @@ class AjaxSintesisOperacion
           $mHtml .= '</tr>';
 
           $mHtml .= '<tr>';
-            $mHtml .= '<td class="CellHead" colspan="6">OPERACION CORONA</td>';
-            $mHtml .= '<td class="CellHead" colspan="2">RESPONSABILIDAD OET</td>';
-            $mHtml .= '<td class="CellHead" colspan="2">RESPONSABILIDAD L&T</td>';
+            $mHtml .= '<td class="CellHead" colspan="6">OPERACION</td>';
+            $mHtml .= '<td class="CellHead" colspan="2">RESPONSABILIDAD TRA</td>';
+            $mHtml .= '<td class="CellHead" colspan="2">RESPONSABILIDAD GENERADORES</td>';
           $mHtml .= '</tr>';
         
           $mHtml .= '<tr>';
@@ -567,7 +570,7 @@ class AjaxSintesisOperacion
 
     $_SESSION['LIST_TOTAL'] = $mHtml;
 
-    echo '<span id="excelID" onclick="Export();" style="color: #FFFFFF; cursor:pointer; font-family: Trebuchet MS,Verdana,Arial; font-size: 13px;">[Excel]</span><br><br>';
+    echo '<span id="excelID" onclick="Export();" style="color: #FFF; cursor:pointer; font-family: Trebuchet MS,Verdana,Arial; font-size: 13px;">[Excel]</span><br><br>';
     echo $mHtml;
   }
 
@@ -584,7 +587,7 @@ class AjaxSintesisOperacion
 
     $_SESSION['LIST_TOTAL'] = $mHtml;
 
-    echo '<span id="excelID" onclick="Export();" style="color: #FFFFFF; cursor:pointer; font-family: Trebuchet MS,Verdana,Arial; font-size: 13px;">[Excel]</span><br><br>';
+    echo '<span id="excelID" onclick="Export();" style="color: #FFF; cursor:pointer; font-family: Trebuchet MS,Verdana,Arial; font-size: 13px;">[Excel]</span><br><br>';
     echo $mHtml;
   }
 

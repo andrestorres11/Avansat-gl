@@ -1,6 +1,5 @@
 <?php
 error_reporting(0);
-
 class AjaxInsertDespacho
 {
   var $conexion;
@@ -213,8 +212,20 @@ class AjaxInsertDespacho
     
     //echo $mQuery;
     $consulta = new Consulta( $mQuery, $this->conexion );
+
+    $resultado = $consulta->ret_matriz();
+
+    //Indicador si el operador gps tiene indicador de id habilitado.
+    $mSql = "SELECT
+                IF(a.apl_idxxxx = '1', 'S', 'N') AS ind_usaidx
+             FROM ".BASE_DATOS.".tab_genera_opegps a
+              WHERE (a.cod_operad='".$resultado[0]['cod_opegps']."' OR a.nit_operad='".$resultado[0]['cod_opegps']."')";
+
+    $consulta = new Consulta( $mSql, $this->conexion );
+    $ind_usaid = $consulta->ret_matriz();
+    array_push($resultado[0], $ind_usaid[0]['ind_usaidx']);
     if($flag != NULL){
-      return $consulta->ret_matriz();
+      return $resultado;
     }else{
       return $mQuery;
     }
@@ -1527,7 +1538,7 @@ class AjaxInsertDespacho
     
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">Operador GPS:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr">'.$this->GenerateSelect( $opegps, 'cod_opegps', NULL, NULL, NULL ).'</td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr">'.$this->GenerateSelect( $opegps, 'cod_opegps', NULL, 'onchange="habIdOperaGps(this)"', NULL ).'</td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">Otro GPS:&nbsp;&nbsp;&nbsp;</td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" name="gps_otroxx" id="gps_otroxxID" size="30" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
     $mHtml .= '</tr>';
@@ -1628,6 +1639,7 @@ class AjaxInsertDespacho
     
     $datos->val_declar = str_replace( '.', '', $datos->val_declar );
     
+    $urlGps = $this->getUrlGps($datos->cod_opegps);
     $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
                           ( 
                             num_despac, cod_manifi, fec_despac, cod_tipdes,
@@ -1638,7 +1650,8 @@ class AjaxInsertDespacho
                             nom_carpag, nom_despag, cod_agedes, fec_pagoxx, 
                             obs_despac, val_declara,usr_creaci, fec_creaci, 
                             val_pesoxx, gps_operad, gps_usuari, gps_paswor,
-                            gps_idxxxx, gps_otroxx, cod_asegur, num_poliza 
+                            gps_idxxxx, gps_otroxx, cod_asegur, num_poliza,
+                            gps_urlxxx
                           ) 
                    VALUES ('$datos->num_despac','$datos->cod_manifi','$datos->fec_despac ".DATE('H:i:s')."','$datos->cod_tipdes',
                            ".($datos->cod_client != '' ?"'$datos->cod_client'":"NULL").",'$datos->cod_paiori','$datos->cod_depori','$datos->cod_ciuori',
@@ -1648,7 +1661,8 @@ class AjaxInsertDespacho
                             NULL,NULL, '$datos->cod_agenci',NULL,
                            '$datos->obs_genera','$datos->val_declar','$datos->usr_creaci', NOW(),
                            '$datos->val_pesoxx','$datos->cod_opegps','$datos->usr_gpsxxx','$datos->clv_gpsxxx',
-                           '$datos->gps_idxxxx','$datos->gps_otroxx','$datos->nom_asegur','$datos->num_poliza')"; 
+                           '$datos->gps_idxxxx','$datos->gps_otroxx','$datos->nom_asegur','$datos->num_poliza',
+                           '$urlGps')"; 
     $consulta = new Consulta($mInsert, $this->conexion, "R");
     
     if( $datos->cod_desext != '' ){
@@ -1835,6 +1849,21 @@ class AjaxInsertDespacho
       </div>
       <?php
     }
+    
+  }
+  
+
+  private function getUrlGps( $cod_opegps = NULL )
+  {
+    $mSql = "SELECT url_gpsxxx
+               FROM ".BASE_DATOS.".tab_genera_opegps
+              WHERE (cod_operad = '".$cod_opegps."' OR nit_operad = '".$cod_opegps."')";
+    $consulta = new Consulta( $mSql, $this->conexion );
+		$respuesta = $consulta->ret_matriz();
+    if(count($respuesta)>0){
+      return $respuesta[0]['url_gpsxxx'];
+    }
+    return null;
     
   }
   
