@@ -278,7 +278,6 @@ class ajax_genera_concor
       $mQuery = "SELECT COUNT(*) FROM ".BASE_DATOS.".tab_genera_concor WHERE num_remdes = '$num_remdes'";
       $consulta = new Consulta($mQuery, $this -> conexion); 
       $cantidad= $consulta->ret_matrix()[0][0];
-      mail("andres.martinez@eltransporte.org", "Gl demo origen", var_export($cantidad, true));
       
       if($cantidad>=1 && $action =0){
         return false;
