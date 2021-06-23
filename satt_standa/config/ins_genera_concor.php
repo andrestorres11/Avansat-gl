@@ -125,8 +125,8 @@ class parametrizacion_correos
                             <thead>
                               <tr>
                                 <th>Nit</th>
-                                <th>Correo</th>
                                 <th>Cliente</th>
+                                <th>Correo</th>
                                 <th>Seguimiento</th>
                                 <th>Inf. Mensual</th>
                                 <th>Opciones</th>

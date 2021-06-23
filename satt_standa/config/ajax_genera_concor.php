@@ -40,9 +40,9 @@ class ajax_genera_concor
   *  \return HTML
   */
   private function setRegistros() {
-    $mSql = " SELECT a.num_remdes,   
+    $mSql = " SELECT a.num_remdes, 
+                    IF(((b.nom_tercer='') OR (b.nom_tercer IS NULL) OR (b.cod_tercer = '')),'GESTIÓN DE ASISTENCIA',b.nom_tercer),  
                     a.dir_emailx,  
-                    IF(((b.nom_tercer='') OR (b.nom_tercer IS NULL) OR (b.cod_tercer = '')),'GESTIÓN DE ASISTENCIA',b.nom_tercer),
                     IF(a.ind_seguim=1,'SI','NO') as 'ind_seguim',
                     IF(a.ind_infmen=1,'SI','NO') as 'ind_infmen',
                     a.cod_concor
@@ -141,14 +141,6 @@ class ajax_genera_concor
                         <div class="row">
                           <div class="col-12">
                             <div class="form-group">
-                              <label for="correos"><span style="color:red">Puede registrar mas de un correo separado por (,)</span></label>
-                              <input type="text" class="form-control" id="correos" name="correos" placeholder="Correo(s)" value="'.$datos['dir_emailx'].'">
-                            </div>
-                          </div>
-                        </div>
-                        <div class="row">
-                          <div class="col-12">
-                            <div class="form-group">
                               <label for="cliente">Cliente:</label>
                               <select class="form-control" id="cliente" name="cliente">
                                 <option value="" style="background-color:#dff0d8; color:#3c763d">GESTIÓN DE ASISTENCIA</option>
@@ -157,7 +149,15 @@ class ajax_genera_concor
                             </div>
                           </div>
                         </div>
-                        <label>Informe de seguimientos mensual</label>
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="form-group">
+                              <label for="correos"><span style="color:red">Puede registrar mas de un correo separado por (,)</span></label>
+                              <input type="text" class="form-control" id="correos" name="correos" placeholder="Correo(s)" value="'.$datos['dir_emailx'].'">
+                            </div>
+                          </div>
+                        </div>
+                        <label>Informe Mensual</label>
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_infmen" id="ind_infmen" '.$checkedInform.' style="height: auto;"/>
                         <label> Informe de seguimientos diario</label>
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_seguim" id="ind_seguim" '.$checkedSeguim.' style="height: auto;"/>
@@ -255,13 +255,29 @@ class ajax_genera_concor
                                     fec_modifi = NOW()              
                                 ";
                 $consulta = new Consulta($mQuery, $this -> conexion); 
-                
-                if($consulta == true){
-                $return['status'] = 200;
-                $return['response'] = 'El registro ha sido creado exitosamente.';
+                /*if($consulta == true){
+            
+                  $return['status'] = 200;
+                  if(empty($_REQUEST['correoID'])){
+                    $return['response'] = 'El Operador GPS ha sido registrado exitosamente.';
+                  }else{
+                    $return['response'] = 'El Operador GPS ha sido Actualizado exitosamente.';
+                  }
                 }else{
-                $return['status'] = 500;
-                $return['response'] = 'Error al realizar el registro.';
+                  $return['status'] = 500;
+                  $return['response'] = 'Error al realizar el registro.';
+                }*/
+                if($consulta == true){
+                  $return['status'] = 200;
+                  
+                  if(empty($_REQUEST['correoID'])){
+                    $return['response'] = 'El registro ha sido creado exitosamente.';
+                  }else{
+                    $return['response'] = 'El registro ha sido Actualizado exitosamente.';
+                  }
+                }else{
+                  $return['status'] = 500;
+                  $return['response'] = 'Error al realizar el registro.';
                 }
             }else{
                 $return['status'] = 500;
