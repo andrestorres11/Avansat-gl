@@ -1302,7 +1302,7 @@ class AjaxNotifiNotifi
 							$mHtml->Label( "OTRAS OBSERVACIONES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 						$mHtml->CloseRow();*/
 						$mHtml->Row();
-		                	$mHtml->TextArea(($datosConsult[0][8]!="")?$datosConsult[0][8]:"", array("name" => "obs_notifi", "id" => "obs_notifiID", "colspan"=>"7", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,1000,'alfa','obs_notifiID')"));
+		                	$mHtml->TextArea(($datosConsult[0][8]!="")?$datosConsult[0][8]:"", array("name" => "obs_notifi", "id" => "obs_notifiID", "colspan"=>"7", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,100000,'alfa','obs_notifiID')"));
 						$mHtml->CloseRow();
 						$mHtml->Row();
 							$mHtml->line("","i",0,7);
