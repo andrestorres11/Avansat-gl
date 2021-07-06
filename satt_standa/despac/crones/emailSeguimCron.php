@@ -19,11 +19,11 @@ $conexion = new Conexion(HOST,USUARIO, CLAVE, BASE_DATOS);
 
 $transpor = "SELECT cod_tercer FROM ".BASE_DATOS.".tab_config_horlab
                         WHERE hor_ingres !='00:00:00' 
-                        AND hor_salida !='23:59:00'";
+                        AND hor_salida !='23:59:00'
+                        GROUP BY cod_tercer";
 
 $consulta = new Consulta($transpor, $conexion);
 $transpors = $consulta->ret_matriz('a'); 
-
 foreach ($transpors as $transport) {
    
    $despachos = "SELECT a.num_despac, l.abr_tercer, d.num_placax, 
@@ -81,10 +81,6 @@ foreach ($transpors as $transport) {
       $grupoNovedad[$novedad['cod_noveda']][] = $novedad;
 
    }
-
-   // echo"<pre>";
-   //    print_r($grupoNovedad);
-   // echo"</pre>";   
 
    $html='
    <!DOCTYPE html>
@@ -175,35 +171,8 @@ foreach ($transpors as $transport) {
                      text-align: center;
                }
             </style>
-            <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-            <script type="text/javascript">
-               google.charts.load("current", {"packages":["corechart"]});
-               google.charts.setOnLoadCallback(drawChart);
-
-            function drawChart() {
-
-            var data = google.visualization.arrayToDataTable([
-            ["Language", "Rating"],';
-            if(count($grupoNovedad) > 0){
-               foreach($grupoNovedad as $novedad){
-                  $html .= "['".$novedad[0]['nom_noveda']."', ".count($novedad)."],";
-               }
-                  
-            }
-            $html .='
-            ]);
-
-            var options = {
-               title: "Most Popular Programming Languages",
-               width: 900,
-               height: 500,
-            };
-
-            var chart = new google.visualization.PieChart(document.getElementById("piechart"));
-
-            chart.draw(data, options);
-            }
-            </script>
+            
+            
          </head>
 
          <body>
@@ -214,24 +183,48 @@ foreach ($transpors as $transport) {
                      <div class="imagen-logo" style="min-width:25%;margin-top:9px;">
                         <img width="180px" src="./Logo CL Faro.png">
                      </div>
-                     <div class="text-encabeza" style="min-width:75%;margin-top:9px;">
+                     <div class="text-encabeza" style="min-width:
+                     75%;margin-top:9px;">
                         <h4>INFORME DE ESTADO DE SEGUIMIENTO</h4>
                      </div>   
                </div>
                <div class="content">
-                     <h2>EMPRESA SAS</h2>
-                     <p>$FECHA</p>
+                     <h2>'.$transport['cod_tercer'].'</h2>
+                     <p>'.date("d.m.y").'</p>
                      <p>Centro logistico FARO informa que se recibe el estado de la plataforma del servicio del seguimiento de monitores activo contratado de <b>06:00 pm</b> a <b>06:00 am</b> de siguiente manera</p>
                </div>
-               <div class="container">
+               <div class="container" style="width:100%;">
                      <div class="item">
-                        <table style="width:100%; border: 1px solid black;">
+                        <table style="width:30%; border: 1px solid black;">
                            <tr>
-                                 <th>Company</th>
+                                 <th>ESTADO DE SEGUIMIENTO</th>
                            </tr>
                            <tr>
-                              <td>
-                                 <div id="piechart"></div>
+                              <td>';
+                              if(count($grupoNovedad) > 0){
+                                 foreach($grupoNovedad as $key => $novedad){
+                                    $labels[]=$novedad[0]['nom_noveda'];
+                                    $data[]=count($novedad);
+                                 }
+                                    
+                              }
+                  
+                              $chartConfigArr = array(
+                                 'type' => 'pie',
+                                 'data' => array(
+                                   'labels' => $labels,
+                                   'datasets' => array(
+                                     array(
+                                       'label' => 'Cantidad Novedades',
+                                       'data' => $data,
+                                     )
+                                   )
+                                 )
+                               );
+                               $chartConfig = json_encode($chartConfigArr);
+                                 $chartUrl = 'https://quickchart.io/chart?w=300&h=300&c=' . urlencode($chartConfig);
+                              $html .='
+                                 <img src="'.$chartUrl.'">
                               </td>
                            </tr>
                            </table>
@@ -240,7 +233,7 @@ foreach ($transpors as $transport) {
                         <h3>NOVEDADES</h3>';
                         foreach ($grupoNovedad as $key => $novedad) {
                         $html .=
-                        '<table style="width:100%; border: 1px solid black;">
+                        '<table style="width:70%; border: 1px solid black;">
                            <tr>
                                  <th><h5>'.$novedad[0]['nom_noveda'].'</h5></th>
                            </tr>
@@ -279,7 +272,7 @@ foreach ($transpors as $transport) {
                <img width="180px" src="./banner-torre+de+control-960w.jpg">
             </div>
          </body>
-
+                    
          </html>
    '; 
 
@@ -294,8 +287,8 @@ foreach ($transpors as $transport) {
 
     $mail->Host = "localhost";
     $mail->From = "servicioalcliente@fortecem.net";
-    $mail->FromName = "SERVICIO AL CLIENTE FORTECEM";
-    $mail->Subject = "ALERTA IMPORTACION DE PEDIDafdafadfasfasfsaOS";
+    $mail->FromName = "INFORME";
+    $mail->Subject = "Informes";
     /*foreach($correos as $correo){
       $mail->AddAddress( $correo['nom_emailx'] );
     }*/

@@ -3,9 +3,9 @@
 define("DIR_APLICA_CENTRAL", "satt_standa");
 @include("../" . DIR_APLICA_CENTRAL . "/lib/general/constantes.inc");
 
-define("NOM_URL_APLICA","satt_faro");//constante para el nombre del directorio - aplicación
+define("NOM_URL_APLICA","satt_faro");//constante para el nombre del directorio - aplicaciï¿½n
 define("BASE_DATOS", "satt_faro");// constante para la base de datos de la aplicacion
-define("BD_STANDA","satt_standa");// constante para la base de datos Estandar de SAT Básico.
+define("BD_STANDA","satt_standa");// constante para la base de datos Estandar de SAT Bï¿½sico.
 
 define("USUARIO", "satt_faro");// constante para la base de datos de la aplicacion
 define("CLAVE", "sattfaro");// constante para la base de datos de la aplicacion
@@ -29,7 +29,7 @@ switch ($mHost[0]) {
 	case 'web7': $mBD  = 'bd7.intrared.net:3306'; break;
 	case 'web13': $mBD = 'bd13.intrared.net:3306'; break;
 	case 'avansatgl': $mBD = 'aglbd.intrared.net'; break;
-	default: $mBD = 'aglbd.intrared.net'; break; #Esta URL No existe!
+	default: $mBD = 'devbd.intrared.net'; break; #Esta URL No existe!
 }
 
 
