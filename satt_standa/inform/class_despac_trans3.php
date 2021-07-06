@@ -2386,8 +2386,14 @@ class Despac
 	 */
 	private function detailBand()
 	{
-		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO GL', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
-
+		
+		$mViewBa = self::getView('jso_bandej');
+		
+		if($mViewBa->tie_alarma->ind_visibl==1){
+			$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO GL', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		}else{
+			$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		}
 		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO FARO', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
 		
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
@@ -2653,6 +2659,8 @@ class Despac
 		}
 		else
 		{
+			$mViewBa = self::getView('jso_bandej');
+			
 			foreach ($mData as $row)
 			{
 				$gif = "";
@@ -2670,7 +2678,10 @@ class Despac
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$n.'</th>';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$gif.'</th>';
 				$mHtml .= 	'<td class="classCell bt '.$row[color].'" nowrap="" align="left">'.$mLink.'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[tiempoGl].'</td>';
+				if($mViewBa->tie_alarma->ind_visibl==1){
+				
+					$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[tiempoGl].'</td>';
+				}	
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[tiempo].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ind_defini].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[cod_manifi].'</td>';
