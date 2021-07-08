@@ -270,13 +270,15 @@ class responsable
 														 "sub"=>array(
 														 				"lla_cargue"=>"Llamadas Cargue"
 														 				)
-														 )
+														 ),
+									"tie_alarma"=>array( "name"=>"Tiempo Alarma GL")
 								  );
 				
 				$mArray[1] = array( "fil_genera"=>array("ind_visibl"=>1, "sub"=>array("tip_despac"=>1, "tip_servic"=>1, "otr_filtro"=>1, "fil_gencar"=>1) ),
 									"fil_especi"=>array("ind_visibl"=>1, "sub"=>array() ),
 									"sec_inform"=>array("ind_visibl"=>1, "sub"=>array("pes_genera"=>1, "pes_cargax"=>1, "pes_transi"=>1, "pes_descar"=>1, "pes_pernoc"=>1, "pes_contro"=>1) ),
-									"sec_detail"=>array("ind_visibl"=>1, "sub"=>array("lla_cargue"=>1))
+									"sec_detail"=>array("ind_visibl"=>1, "sub"=>array("lla_cargue"=>1)),
+									"tie_alarma"=>array( "ind_visibl"=>1)
 								   );
 			break;
 
