@@ -90,7 +90,7 @@ foreach ($transpors as $transport) {
             <meta charset="UTF-8">
             <meta http-equiv="X-UA-Compatible" content="IE=edge">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Correo Notificación</title>
+            <title>Correo NotificaciÃ³n</title>
             <style>
                .divpadre {
                      width: 100%;
@@ -260,6 +260,7 @@ foreach ($transpors as $transport) {
                            }
                            $html .='
                         </table>';
+                        
                         }
                         $html .=
                      '</div>
@@ -279,20 +280,23 @@ foreach ($transpors as $transport) {
 
    echo($html);
    //////////////////////////////////////////////////////////////////////
+   $query = "SELECT a.dir_emailx FROM ".BASE_DATOS.".tab_genera_concor a 
+   WHERE a.num_remdes =".$transport['cod_tercer']."';";
 
+   $consulta = new Consulta($query, $conexion);
+   $correos = $consulta->ret_matriz('a'); 
 
     //require_once(URL_ARCHIV_STANDA."/generadores/satt_standa/planti/class.phpmailer.php"); //Produccion
    require_once("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/planti/class.phpmailer.php"); //Dev
     $mail = new PHPMailer();
 
     $mail->Host = "localhost";
-    $mail->From = "servicioalcliente@fortecem.net";
+    $mail->From = "supervisores@eltransporte.org";
     $mail->FromName = "INFORME";
     $mail->Subject = "Informes";
-    /*foreach($correos as $correo){
+    foreach($correos as $correo){
       $mail->AddAddress( $correo['nom_emailx'] );
-    }*/
-    $mail->AddAddress("anfemardel@gmail.com");
+    }
     $mail->Body = $html;
     $mail->IsHTML( true );
     $exito = $mail->Send();
@@ -321,11 +325,6 @@ foreach ($transpors as $transport) {
 // $fecha_anterior = date("Y-m-d",strtotime(date("Y-m-d")."- 15 days"))." 23:59:59";
 // $logo = URL_LOGOPNG;
 // $imgFooter = URL_IMGFOOTER;
-// $query = "SELECT a.dir_emailx FROM ".BASE_DATOS.".tab_genera_concor a ";
-//             //INNER JOIN ".BASE_DATOS.".tab_emailx_parame b ON b.cod_emailx = a.cod_emailx AND b.cod_parema = '".PAR_CRONES_ALERTA."';";
-// $consulta = new Consulta($query, $conexion);
-// $correos = $consulta->ret_matriz('a'); 
-    //Envio de Correo
   
     
     
