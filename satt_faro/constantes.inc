@@ -29,6 +29,7 @@ switch ($mHost[0]) {
 	case 'web7': $mBD  = 'bd7.intrared.net:3306'; break;
 	case 'web13': $mBD = 'bd13.intrared.net:3306'; break;
 	case 'avansatgl': $mBD = 'aglbd.intrared.net'; break;
+	case 'dev': $mBD = 'devbd.intrared.net:3306'; break;
 	default: $mBD = 'aglbd.intrared.net'; break; #Esta URL No existe!
 }
 
