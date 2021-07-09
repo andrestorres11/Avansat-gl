@@ -1,7 +1,7 @@
 <?php
 //define("URL_DIREC_APLICA", "190.143.80.47/ap");
-define("URL_DIREC_APLICA", "avansatgl.intrared.net/ap");	//ORIGINAL 
-define("DBSERVER", "aglbd.intrared.net:3306"); // nueva constante para el servidor de bd
+define("URL_DIREC_APLICA", "dev.intrared.net/ap/amartinez");	//ORIGINAL 
+define("DBSERVER", "devbd.intrared.net:3306"); // nueva constante para el servidor de bd
 
 //define("COD_PERFIL_SUPERUSR", "666");// constante para perfil administrador del sistema
 define("COD_PERFIL_SUPERUSR", "73");// constante para perfil administrador del sistema

@@ -3,10 +3,10 @@
  *@class: DespacRuta                                                                                   *
  *@company: Intrared.net                                                                               *
  *@author: Christiam Barrera                                                                           *
- *@modify: Felipe Malaver (Adecuado para el Informe 'Proyección de Novedades')                         *
+ *@modify: Felipe Malaver (Adecuado para el Informe 'Proyecciï¿½n de Novedades')                         *
  *@date: 2012-06-01                                                                                    *
- *@brief: Clase que realiza las consultas para retornar la información de los Despachos en Transito    *
- *        adecuada para el Informe 'Proyección de Novedades'                                           *
+ *@brief: Clase que realiza las consultas para retornar la informaciï¿½n de los Despachos en Transito    *
+ *        adecuada para el Informe 'Proyecciï¿½n de Novedades'                                           *
  *******************************************************************************************************/
 
 class DespacRuta { 
@@ -59,7 +59,7 @@ class DespacRuta {
   
   //-----------------------------------------------------------------------------------------------
   //@method: GetTranspData                                                                        |
-  //@brief : Retorna la información del Despacho en Transito determinado segun su transportadora  |
+  //@brief : Retorna la informaciï¿½n del Despacho en Transito determinado segun su transportadora  |
   //-----------------------------------------------------------------------------------------------
 	function GetTranspData( $cod_transp ) 
 	{
@@ -93,7 +93,7 @@ class DespacRuta {
   
   //-----------------------------------------------------------------------------------------------
   //@method: GetDespacData                                                                        |
-  //@brief : Retorna la información del Despacho en Transito determinado segun su transportadora  |
+  //@brief : Retorna la informaciï¿½n del Despacho en Transito determinado segun su transportadora  |
   //-----------------------------------------------------------------------------------------------
   function GetDespacData( $num_despac, $data = TRUE ) { 
     
@@ -112,7 +112,8 @@ class DespacRuta {
                        UPPER( TRIM( i.abr_tercer ) ) AS abr_conduc, 
                        UPPER( TRIM( i.nom_tercer ) ) AS nom_conduc, 
                        UPPER( TRIM( i.nom_apell1 ) ) AS ap1_conduc, 
-                       i.num_telmov AS cel_conduc 
+                       i.num_telmov AS cel_conduc, 
+                       i.cod_estado
                   FROM ".BASE_DATOS.".tab_despac_despac a, 
                        ".BASE_DATOS.".tab_despac_vehige b, 
                        ".BASE_DATOS.".tab_genera_ciudad c, 
@@ -188,7 +189,7 @@ class DespacRuta {
   
   //---------------------------------------------------------------------------------------------------
   //@method: GetDespacDespac                                                                          |
-  //@brief : Retorna la información de transportadoras y terceros de todos los despachos en transito  |
+  //@brief : Retorna la informaciï¿½n de transportadoras y terceros de todos los despachos en transito  |
   //---------------------------------------------------------------------------------------------------
   function GetDespacDespac( $cod_transp=NULL ) {
     if( $cod_transp && $cod_transp!= NULL)
@@ -217,7 +218,8 @@ class DespacRuta {
 					 a.tie_contra,
 					 a.ind_tiemod,
 					 a.obs_tiemod,
-           b.fec_llegpl
+           b.fec_llegpl,
+           c.cod_estado
                 FROM ".BASE_DATOS.".tab_despac_despac a, 
                      ".BASE_DATOS.".vis_despac_seguim d, 
                      ".BASE_DATOS.".tab_despac_vehige b, 
@@ -279,7 +281,7 @@ class DespacRuta {
   
   //-------------------------------------------------------------------------
   //@method: GetGeneraAlarma                                                |
-  //@brief : Retorna la Información de las Alarmas de Tiempo de retraso     |
+  //@brief : Retorna la Informaciï¿½n de las Alarmas de Tiempo de retraso     |
   //-------------------------------------------------------------------------
   function GetGeneraAlarma() {
     $mSql  = "SELECT a.cod_alarma, 
@@ -307,7 +309,7 @@ class DespacRuta {
   
   //------------------------------------------------------------------------------------
   //@method: GetTranspTipser                                                           |
-  //@brief : Retorna la Información de los tipos de servicio según la transportadora   |
+  //@brief : Retorna la Informaciï¿½n de los tipos de servicio segï¿½n la transportadora   |
   //------------------------------------------------------------------------------------
   function GetTranspTipser( $cod_transp ) {
     $mSql  = "SELECT e1.num_consec, 
@@ -331,7 +333,7 @@ class DespacRuta {
   
   //------------------------------------------------------------------------------------
   //@method: GetDespacPendidLlegad                                                     |
-  //@brief : Determina si un despacho está o no pendiente por llegar                   |
+  //@brief : Determina si un despacho estï¿½ o no pendiente por llegar                   |
   //------------------------------------------------------------------------------------
   function GetDespacPendidLlegad( $num_despac ) {
     $mSql  = "SELECT a.cod_contro 
@@ -352,7 +354,7 @@ class DespacRuta {
   
   //------------------------------------------------------------------------------------
   //@method: GetDespacTiempoPropio                                                     |
-  //@brief : Determina si un despacho está con novedad de tiempo propio                |
+  //@brief : Determina si un despacho estï¿½ con novedad de tiempo propio                |
   //------------------------------------------------------------------------------------
   function GetDespacTiempoPropio( $num_despac ) {
     $mSql  = "SELECT 1  
@@ -368,7 +370,7 @@ class DespacRuta {
   
   //------------------------------------------------------------------------------------
   //@method: GetDespacUltimaNoveda                                                     |
-  //@brief : Retorna los datos de la última novedad de un despacho determinado         |
+  //@brief : Retorna los datos de la ï¿½ltima novedad de un despacho determinado         |
   //------------------------------------------------------------------------------------
   function GetDespacUltimaNoveda( $num_despac ) {
     $mSql  = "SELECT a.fec_creaci, 
@@ -385,7 +387,7 @@ class DespacRuta {
   
   //---------------------------------------------------------------------------------------------
   //@method: GetDespacUltimaNovedaContro                                                        |
-  //@brief : Retorna los datos de la última novedad o último contro de un despacho determinado  |
+  //@brief : Retorna los datos de la ï¿½ltima novedad o ï¿½ltimo contro de un despacho determinado  |
   //---------------------------------------------------------------------------------------------
   function GetDespacUltimaNovedaContro( $num_despac ) {
     $mSql  = "SELECT a.fec_creaci, 
@@ -411,7 +413,7 @@ class DespacRuta {
   
   //---------------------------------------------------------------------------------------------
   //@method: GetDespacUltimaNovedaContro                                                        |
-  //@brief : Retorna los datos de la última novedad o último contro de un despacho determinado  |
+  //@brief : Retorna los datos de la ï¿½ltima novedad o ï¿½ltimo contro de un despacho determinado  |
   //---------------------------------------------------------------------------------------------
   function GetDespacUltimaNovedaSinManala( $num_despac ) {
     $mSql  = "SELECT a.fec_creaci, 
@@ -446,7 +448,7 @@ class DespacRuta {
   
   //-------------------------------------------------------------------------------
   //@method: GetDespacUltimoSitio                                                 |
-  //@brief : Retorna los datos del último sitio reportado para el despacho        |
+  //@brief : Retorna los datos del ï¿½ltimo sitio reportado para el despacho        |
   //-------------------------------------------------------------------------------
   function GetDespacUltimoSitio( $num_despac ) {
     $mSql  = "SELECT a.fec_creaci, 
@@ -524,7 +526,7 @@ class DespacRuta {
   
   //-------------------------------------------------------------------------------
   //@method: GetDespacAlarmaEAL                                                   |
-  //@brief : Determina si un despacho está o no en Alarma EAL                     |
+  //@brief : Determina si un despacho estï¿½ o no en Alarma EAL                     |
   //-------------------------------------------------------------------------------
   function GetDespacAlarmaEAL( $num_despac ) {
     $mSql  = "SELECT a.num_despac, a.cod_contro
@@ -556,7 +558,7 @@ class DespacRuta {
   
   //-----------------------------------------------------------------------------------
   //@method: GetSuperUsuario                                                          |
-  //@brief : Retorna los Superusuarios según una transportadora determinada           |
+  //@brief : Retorna los Superusuarios segï¿½n una transportadora determinada           |
   //-----------------------------------------------------------------------------------
   function GetSuperUsuario( $cod_transp ) { 
     $mSql  = "SELECT a.cod_usuari
@@ -604,7 +606,7 @@ class DespacRuta {
   
   //--------------------------------------------------------------------------------
   //@method: GetDespacTransp                                                       |
-  //@brief : Retorna la Matriz con la Información de Despachos por Transportadora  |
+  //@brief : Retorna la Matriz con la Informaciï¿½n de Despachos por Transportadora  |
   //--------------------------------------------------------------------------------
   function GetDespacTransp( $cod_transp=NULL ) { 
   
@@ -697,10 +699,10 @@ class DespacRuta {
         $m[$key]['all_despac']['can_tiepro'] .= $m[$key]['all_despac']['can_tiepro'] == NULL ? $_DESPAC['num_despac'] : ', ' . $_DESPAC['num_despac'];
       }
       //------------------------------------------------------------------------
-      //@Datos de última novedad / control
+      //@Datos de ï¿½ltima novedad / control
       $_ULTNOVCON = $this -> GetDespacUltimaNovedaContro( $_DESPAC['num_despac'] );
       //---------------------------------------------------------------------------
-      //@Datos de última novedad 
+      //@Datos de ï¿½ltima novedad 
       $_ULTNOV = $this -> GetDespacUltimaNoveda( $_DESPAC['num_despac'] );
       //---------------------------------------------------------------
       //@Novedades del Despacho
