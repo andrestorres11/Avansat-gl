@@ -1,4 +1,5 @@
 <?php
+
 //include ("/var/www/html/ap/generadores/satt_standa/lib/general/constantes.inc"); //Produccion
 include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/constantes.inc"); //Dev
 
@@ -11,60 +12,97 @@ include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/co
 //include (URL_ARCHIV_STANDA."/generadores/satt_standa/lib/general/functions.inc"); //Produccion
 include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/functions.inc"); //Dev
 
+//include (URL_ARCHIV_STANDA."/generadores/satt_standa/inform/class_despac_trans3.php"); //Produccion
+include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/inform/class_despac_trans3.php"); //Dev
+
 $ano = date("Y");
 
-/*ini_set('display_errors', true);
-error_reporting(E_ALL & ~E_NOTICE);*/
-$conexion = new Conexion(HOST,USUARIO, CLAVE, BASE_DATOS);
 
-$transpor = "SELECT cod_tercer FROM ".BASE_DATOS.".tab_config_horlab
-                        WHERE hor_ingres !='00:00:00' 
-                        AND hor_salida !='23:59:00'
-                        GROUP BY cod_tercer";
+
+ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);
+$conexion = new Conexion(HOST,USUARIO, CLAVE, BASE_DATOS);
+#Trasnportadora
+
+
+$transpor = "SELECT a.cod_tercer, b.tie_contro AS tie_nacion,
+                        b.tie_conurb AS tie_urbano
+                     FROM ".BASE_DATOS.".tab_config_horlab a
+                     INNER JOIN ".BASE_DATOS.".tab_transp_tipser b
+                        ON a.cod_tercer = b.cod_transp 
+                        WHERE a.hor_ingres !='00:00:00' 
+                        AND a.hor_salida !='23:59:00'
+                        GROUP BY cod_tercer
+                        LIMIT 1";
 
 $consulta = new Consulta($transpor, $conexion);
 $transpors = $consulta->ret_matriz('a'); 
+
+
 foreach ($transpors as $transport) {
+  
+            
+                           $despachos="SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
+                                 h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
+                                 a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+                                 IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
+                                 CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
+                                 CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera 
+                              FROM satt_faro.tab_despac_despac a 
+                        INNER JOIN satt_faro.tab_despac_vehige b 
+                              ON a.num_despac = b.num_despac 
+                              AND a.fec_salida IS NOT NULL 
+                              AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
+                              AND a.ind_planru = 'S' 
+                              AND a.ind_anulad = 'R'
+                              AND b.ind_activo = 'S' 
+                              AND b.cod_transp = '830002183' 
+                        AND a.num_despac NOT IN ( 0,1872435,1872439,1872479,1872481,1872482,1872490,1872492 ) 
+                              AND a.num_despac IN ( 1872439,18723184,1872415,1872435,1872479,1872481,1872482,1872490,1872492 )
+                        INNER JOIN satt_faro.tab_tercer_tercer c 
+                              ON b.cod_transp = c.cod_tercer 
+                        INNER JOIN satt_faro.tab_genera_ciudad d 
+                              ON a.cod_ciuori = d.cod_ciudad 
+                              AND a.cod_depori = d.cod_depart 
+                              AND a.cod_paiori = d.cod_paisxx 
+                        INNER JOIN satt_faro.tab_genera_ciudad e 
+                              ON a.cod_ciudes = e.cod_ciudad 
+                              AND a.cod_depdes = e.cod_depart 
+                              AND a.cod_paides = e.cod_paisxx 
+                        INNER JOIN satt_faro.tab_genera_depart f 
+                              ON a.cod_depori = f.cod_depart 
+                              AND a.cod_paiori = f.cod_paisxx 
+                        INNER JOIN satt_faro.tab_genera_depart g 
+                              ON a.cod_depdes = g.cod_depart 
+                              AND a.cod_paides = g.cod_paisxx 
+                        INNER JOIN satt_faro.tab_tercer_tercer h 
+                              ON b.cod_conduc = h.cod_tercer 
+                        INNER JOIN satt_faro.tab_genera_tipdes i 
+                              ON a.cod_tipdes = i.cod_tipdes 
+                        LEFT JOIN satt_faro.tab_despac_corona j
+                              ON a.num_despac = j.num_dessat
+                        LEFT JOIN satt_faro.tab_tercer_tercer k 
+                              ON a.cod_client = k.cod_tercer
+                           WHERE 1=1     
+                           ";
+              
+               $consulta = new Consulta($despachos, $conexion);
+               $despachos = $consulta->ret_matriz('a');
+               echo"<pre>";
+                  print_r($despachos);
+               echo"</pre>";
    
-   $despachos = "SELECT a.num_despac, l.abr_tercer, d.num_placax, 
-            CONCAT(f.abr_ciudad,' (',LEFT(j.abr_depart,4),') ') as nom_origen,
-            CONCAT(m.abr_ciudad,' (',LEFT(n.abr_depart,4),') ') as nom_destin
-            FROM " . BASE_DATOS . ".tab_despac_despac a
-            LEFT JOIN " . BASE_DATOS . ".tab_despac_sisext k
-            ON a.num_despac = k.num_despac,
-               " . BASE_DATOS . ".tab_despac_seguim b,
-               " . BASE_DATOS . ".tab_despac_vehige d,
-               " . BASE_DATOS . ".tab_genera_ciudad f,
-               " . BASE_DATOS . ".tab_genera_depart j,
-               " . BASE_DATOS . ".tab_tercer_tercer l,
-               " . BASE_DATOS . ".tab_genera_ciudad m,
-               " . BASE_DATOS . ".tab_genera_depart n
-            WHERE a.num_despac = d.num_despac AND
-                     a.num_despac = b.num_despac AND
-               a.cod_ciuori = f.cod_ciudad AND
-               f.cod_depart = j.cod_depart AND
-               f.cod_paisxx = j.cod_paisxx AND
 
-               a.cod_ciudes = m.cod_ciudad AND
-               m.cod_depart = n.cod_depart AND
-               m.cod_paisxx = n.cod_paisxx AND
-
-               a.fec_salida Is Not Null AND
-               a.ind_anulad = 'R' AND
-               a.ind_planru = 'S' 
-               AND a.fec_llegad Is Null
-               AND d.cod_transp =".$transport['cod_tercer']."
-               AND d.cod_conduc = l.cod_tercer
-               GROUP BY a.num_despac
-               LIMIT 10
-               ";
-   $consulta = new Consulta($despachos, $conexion);
-   $despachos = $consulta->ret_matriz('a');
+   
    $novedades= [];
 
+   #Se trae ultima novedad por despacho
    for ($i=0; $i < count($despachos); $i++) { 
       
       $novedad = getNovedadesDespac($conexion, $despachos[$i]['num_despac'],2);
+      // echo"<pre>";
+      //    print_r($novedad);
+      // echo"</pre>";
       if(!empty($novedad)){
          $novedades[$i] = $novedad; 
          $novedades[$i]['num_despac']=$despachos[$i]['num_despac'];
@@ -75,13 +113,17 @@ foreach ($transpors as $transport) {
       }
    }
 
+
+   #Se recorren las novedades y se agrupan por tipo de novedad
    $grupoNovedad= [];
    
    foreach ($novedades as $k => &$novedad) {
       $grupoNovedad[$novedad['cod_noveda']][] = $novedad;
 
+      $ultiReport =  $novedad['fec_crenov'];
+      //$mResult[fec_planea] = date ( 'Y-m-d H:i:s', ( strtotime( $mTime, strtotime ( $ultiReport ) ) ) ); #Fecha Planeada para el Seguimiento
+      
    }
-
    $html='
    <!DOCTYPE html>
          <html lang="en">
@@ -203,12 +245,20 @@ foreach ($transpors as $transport) {
                               <td>';
                               if(count($grupoNovedad) > 0){
                                  foreach($grupoNovedad as $key => $novedad){
+                                    
                                     $labels[]=$novedad[0]['nom_noveda'];
                                     $data[]=count($novedad);
                                  }
                                     
                               }
-                  
+                              
+                              $data=array(0=>1,1=>2,2=>1,3=>8);
+                              
+                              echo "<pre>";
+                                 print_r($data);
+                              echo "</pre>";
+                              
+                                    
                               $chartConfigArr = array(
                                  'type' => 'pie',
                                  'data' => array(
@@ -217,9 +267,12 @@ foreach ($transpors as $transport) {
                                      array(
                                        'label' => 'Cantidad Novedades',
                                        'data' => $data,
+                                       'backgroundColor'=> ['#FFFC33', '#9fb4f3', '#33FFE9', '#FF5833']
                                      )
-                                   )
+                                    )
+                                    
                                  )
+                                 
                                );
                                $chartConfig = json_encode($chartConfigArr);
                                  $chartUrl = 'https://quickchart.io/chart?w=300&h=300&c=' . urlencode($chartConfig);
@@ -294,9 +347,11 @@ foreach ($transpors as $transport) {
     $mail->From = "supervisores@eltransporte.org";
     $mail->FromName = "INFORME";
     $mail->Subject = "Informes";
-    foreach($correos as $correo){
-      $mail->AddAddress( $correo['nom_emailx'] );
-    }
+   //  foreach($correos as $correo){
+   //    $mail->AddAddress( $correo['nom_emailx'] );
+   //  }
+
+    $mail->AddAddress('anfemardel@gmail.com');
     $mail->Body = $html;
     $mail->IsHTML( true );
     $exito = $mail->Send();
@@ -314,11 +369,11 @@ foreach ($transpors as $transport) {
  
    if(!$exito)
    {
-	echo "<br/>".$mail->ErrorInfo;	
+	   echo "<br/>".$mail->ErrorInfo;	
    }
    else
    {
-	echo "Mensaje enviado correctamente";
+	   echo "Mensaje enviado correctamente";
    } 
 }
 
