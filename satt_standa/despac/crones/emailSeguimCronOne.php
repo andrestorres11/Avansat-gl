@@ -13,6 +13,8 @@ include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/fu
 
 //include (URL_ARCHIV_STANDA."/generadores/satt_standa/inform/class_despac_trans3.php"); //Produccion
 include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/inform/class_despac_trans3.php"); //Dev
+/*ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);*/
 class EmailSeguim
 {
     public $conexion;
@@ -53,205 +55,245 @@ class EmailSeguim
                 }
             }
 
-        #Se recorren las novedades y se agrupan por tipo de novedad
-        $grupoNovedad= [];
+            #Se recorren las novedades y se agrupan por tipo de novedad
+            $grupoNovedad= [];
 
-        foreach ($novedades as $k => &$novedad) {
-            $grupoNovedad[$novedad['cod_noveda']][] = $novedad;
-        
+            foreach ($novedades as $k => &$novedad) {
+                $grupoNovedad[$novedad['cod_noveda']][] = $novedad;
+            }
+            $html='
+                <!DOCTYPE html>
+                <html lang="en">
+
+                <head>
+                <meta charset="UTF-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Correo Notificación</title>
+                <style>
+                .divpadre {
+                    width: 100%;
+                    max-width: 920px;
+                    min-width: 920px;
+                    margin: 25px auto;
+                    overflow: hidden;
+                    padding-top: 0px;
+                    padding-bottom: 0px;
+                    margin-bottom: 0px;
+                    font-family: Arial;
+                }
+
+                .header {
+                    background-color: #f9f9f9;
+                    max-width: 100%;
+                    min-width: 100%;
+                    overflow: hidden;
+                    position: relative;
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                    justify-content: space-between;
+                    align-items: center;
+                    
+                }
+                .color-letra {
+                    color: #516CC6;
+                }
+                .content {
+
+                    overflow: hidden;
+                    position: relative;
+                    padding: 25px;
+                }
+                .container{
+                    overflow: hidden;
+                    position: relative;
+                    padding: 0px;
+                    margin-botton: 1px;
+
+                }
+
+                .item{
+
+                }
+
+                /*.content-body {
+                    border: 1px solid #696969;
+                }*/
+
+                .header-table {
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: nowrap;
+                    justify-content: space-between;
+                    align-items: center;
+                    background-color: #696969;
+                    color: #fff;
+                    font-family: sans-serif;
+                    padding: 10px;
+                }
+
+                .row-table {
+                    display: flex;
+                    font-family: sans-serif;
+                    padding: 5px;
+                    font-size: 14px;
+                }
+
+                .text-encabeza {
+                    margin-left: 25px;
+                }
+
+                .text-encabeza h4 {
+                    font: 170% sans-serif;
+                    color: #000;
+                }
+
+                .imagen-logo {
+                    padding-left:15px;
+                    margin-right: 25px;
+                }
+
+                .end-bottom {
+                    text-align: center;
+                }
+                .table {
+                    border: 1px solid #6b6b6b;
+                    font-family: arial, sans-serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                    height: 30%;
+                    }
+                    
+                td, th {
+                    border: 1px solid #6b6b6b;
+                    text-align: left;
+                    padding: 8px;
+                }
+                .tr{
+                    border: 1px solid #6b6b6b;
+                    text-align: left;
+                    padding: 8px;
+                    background-color: #f9f9f9;
+                    width: 100%;
+                }
+                .tr-title{
+                    border: 1px solid #6b6b6b;
+                    text-align: left;
+                    padding: 8px;
+                    background-color: #D2D3D4;
+                    margin-bottom: auto;
+                    width: 100%;
+                    font-size: small;
+                }
+                .tr-sub-title{
+                    border: 1px solid #6b6b6b;
+                    text-align: left;
+                    padding: 8px;
+                    background-color: #E4E5E8;
+                    margin-bottom: auto;
+                    width: 100%;
+                    margin-block: -1px;
+                    font-size: small;
+                }
+                .img-grafi{
+                    width: 35%;
+                }
+                </style>
 
 
-        }
-                        $html='
-                        <!DOCTYPE html>
-                        <html lang="en">
+                </head>
 
-                        <head>
-                        <meta charset="UTF-8">
-                        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                        <title>Correo Notificación</title>
-                        <style>
-                        .divpadre {
-                            width: 100%;
-                            max-width: 920px;
-                            min-width: 920px;
-                            margin: 25px auto;
-                            overflow: hidden;
-                            padding-top: 0px;
-                            padding-bottom: 0px;
-                            margin-bottom: 0px;
-                            /*border: 1px solid black;*/
-                        }
-
-                        .header {
-                            background-color: #f9f9f9;
-                            max-width: 100%;
-                            min-width: 100%;
-                            overflow: hidden;
-                            position: relative;
-                            display: flex;
-                            flex-direction: row;
-                            flex-wrap: nowrap;
-                            justify-content: space-between;
-                            align-items: center;
-                        }
-
-                        .content {
-                            overflow: hidden;
-                            position: relative;
-                            padding: 25px;
-                        }
-                        .container{
-                            display: flex;
-
-                        }
-
-                        .item{
-
-                        }
-
-                        /*.content-body {
-                            border: 1px solid #696969;
-                        }*/
-
-                        .header-table {
-                            display: flex;
-                            flex-direction: row;
-                            flex-wrap: nowrap;
-                            justify-content: space-between;
-                            align-items: center;
-                            background-color: #696969;
-                            color: #fff;
-                            font-family: sans-serif;
-                            padding: 10px;
-                        }
-
-                        .row-table {
-                            display: flex;
-                            font-family: sans-serif;
-                            padding: 5px;
-                            font-size: 14px;
-                        }
-
-                        .text-encabeza {
-                            margin-left: 25px;
-                        }
-
-                        .text-encabeza h4 {
-                            font: 170% sans-serif;
-                            color: #000;
-                        }
-
-                        .imagen-logo {
-                            margin-right: 25px;
-                        }
-
-                        .end-bottom {
-                            text-align: center;
-                        }
-                        </style>
-
-
-                        </head>
-
-                        <body>
-                            <div class="divpadre">
-                                <div class="header">
-                                    <div class="imagen-logo" style="min-width:25%;margin-top:9px;">
-                                        <img width="15%" src='.LOGOFARO.'>
-                                    </div>
-                                    <div class="text-encabeza" style="min-width:
-                                    75%;margin-top:9px;">
-                                        <h4>INFORME DE ESTADO DE SEGUIMIENTO</h4>
-                                    </div>   
-                                </div>
-                                <div class="content">
-                                    <h2>'.$transport['abr_tercer'].'</h2>
-                                    <p>'.self::$cHoy.'</p>
-                                    <p>Centro logistico FARO informa que se recibe el estado de la plataforma del servicio del seguimiento de monitores activo contratado de <b>06:00 pm</b> a <b>06:00 am</b> de siguiente manera</p>
-                                </div>
-                                <div class="container" style="width:90%;">
-                                    <div class="item">
-                                        <table style="width:133%; height: 30%; border: 1px solid black;">
-                                        <tr>
-                                                <th>ESTADO DE SEGUIMIENTO</th>
-                                        </tr>
-                                        <tr>
-                                            <td style="width:130%; height: 30%; border: 1px solid black;">';
-                                            $labels=array(
-                                                "SIN RETRASO",
-                                                "00 A 30",
-                                                "31 A 60",
-                                                "61 A 90",
-                                                "91 MAS",
-                                                "PERNOTACION"
-                                            );
-                                            
-                                            $data=array(
-                                                $mData[sin_retras],
-                                                $mData[con_00A30x],
-                                                $mData[con_31A60x],
-                                                $mData[con_61A90x],
-                                                $mData[con_91Amas],
-                                                $mData[est_pernoc]
-                                            );
-                                            $chartConfigArr = array(
-                                                'type' => 'pie',
-                                                'data' => array(
-                                                'labels' => $labels,
-                                                'datasets' => array(
-                                                    array(
-                                                    'label' => 'Cantidad Novedades',
-                                                    'data' => $data,
-                                                    'backgroundColor'=> [
-                                                                        '#F6F2F1', 
-                                                                        '#FFFF66', 
-                                                                        '#FF9900', 
-                                                                        '#FF0000', 
-                                                                        '#CC33FF',
-                                                                        '#951264'
-                                                                    ]
-                                                    )
-                                                    )
-                                                    
+                <body>
+                    <div class="divpadre">
+                        <div class="header">
+                            <div class="imagen-logo" style="min-width:25%;margin-top:9px;">
+                                <img width="100%" src='.LOGOFARO.'>
+                            </div>
+                            <div class="text-encabeza color-letra" style="min-width:
+                            75%;margin-top:9px;">
+                                <h4>INFORME DE ESTADO DE SEGUIMIENTO</h4>
+                            </div>   
+                        </div>
+                        <div class="content">
+                            <h4>'.strtoupper($transport['abr_tercer']).'</h4>
+                            <p>'.self::$cHoy.'</p>
+                            <p>Centro logistico FARO informa que se recibe el estado de la plataforma del servicio del seguimiento de monitores activo contratado de <b>06:00 pm</b> a <b>06:00 am</b> de siguiente manera</p>
+                        </div>
+                        <div class="container" ">
+                            <div class="item">
+                                <table class="table">
+                                    <tr class="tr-title">
+                                        <th class="tr-title" colspan="7">ESTADO DE SEGUIMIENTO</th>
+                                    </tr>
+                                    <tr>
+                                        <td style="width:100%; height: 30%;" colspan="7"> ';
+                                        $labels=array(
+                                            "SIN RETRASO",
+                                            "00 A 30",
+                                            "31 A 60",
+                                            "61 A 90",
+                                            "91 MAS",
+                                            "PERNOTACION"
+                                        );
+                                        
+                                        $data=array(
+                                            $mData[sin_retras],
+                                            $mData[con_00A30x],
+                                            $mData[con_31A60x],
+                                            $mData[con_61A90x],
+                                            $mData[con_91Amas],
+                                            $mData[est_pernoc]
+                                        );
+                                        $chartConfigArr = array(
+                                            'type' => 'pie',
+                                            'data' => array(
+                                            'labels' => $labels,
+                                            'datasets' => array(
+                                                array(
+                                                'label' => 'Cantidad Novedades',
+                                                'data' => $data,
+                                                'backgroundColor'=> [
+                                                                    '#F6F2F1', 
+                                                                    '#FFFF66', 
+                                                                    '#FF9900', 
+                                                                    '#FF0000', 
+                                                                    '#CC33FF',
+                                                                    '#951264'
+                                                                ]
+                                                )
                                                 )
                                                 
-                                            );
-                                            $chartConfig = json_encode($chartConfigArr);
-                                                $chartUrl = 'https://quickchart.io/chart?w=300&h=300&c=' . urlencode($chartConfig);
-                                            $html .='
-                                                <img src="'.$chartUrl.'">
-                                            </td>
-                                        </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <div class="container" style="width:100%;">
-                                    
-                                    <div class="item">
-                                        
-                                                <tr>
-                                                    <h4>NOVEDADES</h4>
-                                                </tr>    
-                                    ';
-                                        
-                                        foreach ($grupoNovedad as $key => $novedad) {
-                                        $html .=
-                                            '<table style="width:90%; border: 1px solid black;">
-                                                <tr>
-                                                        <th><h5>'.$novedad[0]['nom_noveda'].'</h5></th>
-                                                </tr>
-                                                
-                                                <tr>
-                                                        <th>Placa</th>
-                                                        <th>Origen</th>
-                                                        <th>Destino</th>
-                                                        <th>Condultor</th>
-                                                        <th>Fecha y  hora novedad</th>
-                                                        <th>Sitio de seguimiento</th>
-                                                        <th>Observacion</th>
-                                                </tr>';
+                                            )
+                                            
+                                        );
+                                        $chartConfig = json_encode($chartConfigArr);
+                                            $chartUrl = 'https://quickchart.io/chart?w=300&h=300&c=' . urlencode($chartConfig);
+                                        $html .='
+                                            <center> 
+                                                <img class="img-grafi" src="'.$chartUrl.'">
+                                            </center>
+                                        </td>
+                                    </tr>
+                                    <tr class="tr-title">
+                                        <th class="tr-title" colspan="7">NOVEDADES</th>
+                                    </tr>';
+                                
+                                    foreach ($grupoNovedad as $key => $novedad) {
+                                    $html .=
+                                        '
+                                            <tr>
+                                                <th class="tr-sub-title" colspan="7">'.$novedad[0]['nom_noveda'].'</th>
+                                            </tr>
+                                            <tr>
+                                                    <th>Placa</th>
+                                                    <th>Origen</th>
+                                                    <th>Destino</th>
+                                                    <th>Condultor</th>
+                                                    <th>Fecha y  hora novedad</th>
+                                                    <th>Sitio de seguimiento</th>
+                                                    <th>Observacion</th>
+                                            </tr>';
                                         foreach ($novedad as $key => $novedadAgrupada) {
                                             $html .='<tr>
                                                         <td>'.$novedadAgrupada['num_placax'].'</td>
@@ -263,68 +305,67 @@ class EmailSeguim
                                                         <td>'.$novedadAgrupada['obs_noveda'].'</td>
                                                     </tr>'; 
                                         }
-                                        $html .='
-                                            </table>';
-                                        
-                                        }
-                                        $html .=
-                                    '</div>
-                                </div>
-                                <div class="footer">
-                                    <img width="190px" src="'.FOOTERFARO.'">
-                                </div>
-                            </div>    
-                        </body>
-                            
-                        </html>
-                        '; 
+                                    
+                                    }
+                                    $html .=
+                                    '
+                                </table>
+                            </div>
+                        </div>
+                        <div class="footer">
+                            <img width="100%" src="'.FOOTERFARO.'">
+                        </div>
+                    </div>    
+                </body>
+                    
+                </html>
+            '; 
 
 
-                        echo($html);
+            echo($html);
 
-                        //////////////////////////////////////////////////////////////////////
-                        $query = "SELECT a.dir_emailx FROM ".BASE_DATOS.".tab_genera_concor a 
-                        WHERE a.num_remdes ='".$transport['cod_transp']."';";
-                        $consulta = new Consulta($query,$this->conexion);
-                        $correos = $consulta->ret_matriz('a'); 
+            $query = "SELECT a.dir_emailx FROM ".BASE_DATOS.".tab_genera_concor a 
+            WHERE a.num_remdes ='".$transport['cod_transp']."'
+            OR a.num_remdes ='';";
+            $consulta = new Consulta($query,$this->conexion);
+            $correos = $consulta->ret_matriz('a'); 
 
-                        //require_once(URL_ARCHIV_STANDA."/generadores/satt_standa/planti/class.phpmailer.php"); //Produccion
-                        require_once("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/planti/class.phpmailer.php"); //Dev
-                        $mail = new PHPMailer();
+            //require_once(URL_ARCHIV_STANDA."/generadores/satt_standa/planti/class.phpmailer.php"); //Produccion
+            require_once("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/planti/class.phpmailer.php"); //Dev
+            $mail = new PHPMailer();
 
-                        $mail->Host = "localhost";
-                        $mail->From = "supervisores@eltransporte.org";
-                        $mail->FromName = "INFORME";
-                        $mail->Subject = "Informes";
-                        //  foreach($correos as $correo){
-                        //    $mail->AddAddress( $correo['nom_emailx'] );
-                        //  }
+            $mail->Host = "localhost";
+            $mail->From = "supervisores@eltransporte.org";
+            $mail->FromName = "ESTADO DE SEGUIMIENTO";
+            $mail->Subject = "ESTADO DE SEGUIMIENTO";
+            foreach($correos as $correo){
+                $mail->AddAddress( $correo['dir_emailx'] );
+            }
+            //$mail->AddAddress('anfemardel@gmail.com');
+            $mail->Body = $html;
+            $mail->IsHTML( true );
+            $exito = $mail->Send();
 
-                        $mail->AddAddress('anfemardel@gmail.com');
-                        $mail->Body = $html;
-                        $mail->IsHTML( true );
-                        $exito = $mail->Send();
+            //Si el mensaje no ha podido ser enviado se realizaran 4 intentos mas como mucho 
+            //para intentar enviar el mensaje, cada intento se hara 5 segundos despues 
+            //del anterior, para ello se usa la funcion sleep	
+            $intentos=1; 
+            while ((!$exito) && ($intentos < 5)) {
+            sleep(5);
+            //echo $mail->ErrorInfo;
+            $exito = $mail->Send();
+            $intentos=$intentos+1;	
+            }
 
-                        //Si el mensaje no ha podido ser enviado se realizaran 4 intentos mas como mucho 
-                        //para intentar enviar el mensaje, cada intento se hara 5 segundos despues 
-                        //del anterior, para ello se usa la funcion sleep	
-                        $intentos=1; 
-                        while ((!$exito) && ($intentos < 5)) {
-                        sleep(5);
-                        //echo $mail->ErrorInfo;
-                        $exito = $mail->Send();
-                        $intentos=$intentos+1;	
-                        }
-
-                        if(!$exito)
-                        {
-                        echo "<br/>".$mail->ErrorInfo;	
-                        }
-                        else
-                        {
-                        echo "Mensaje enviado correctamente";
-                        } 
-                        }
+            if(!$exito)
+            {
+                echo "<br/>".$mail->ErrorInfo;	
+            }
+            else
+            {
+                echo "Mensaje enviado correctamente";
+            } 
+        }
                         
     }
 
