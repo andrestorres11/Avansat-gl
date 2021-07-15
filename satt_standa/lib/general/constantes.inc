@@ -145,4 +145,11 @@ define("CON_SOLICI_ACOMPA", 2);
 define("CON_TIPSER_MA", 2);
 define("CON_TIPSER_OAL", 1);
 
+#PRE-PRODUCCION
+define("URL_ARCHIV_EMAIL", "/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_faro/");
+#PRODUCCION
+#define("URL_ARCHIV_EMAIL", "/var/www/html/ap/satt_faro/");
+define("LOGOFARO","https://dev.intrared.net:8083/ap/amartinez/FARO/sat-gl-2015/satt_faro/logos/LogoCLFaro.png"); #LOGO FARO
+define("FOOTERFARO","https://dev.intrared.net:8083/ap/amartinez/FARO/sat-gl-2015/satt_faro/logos/banner-torre+de+control-960w.jpg"); #FOOTER EMAIL FARO
+
 ?>
