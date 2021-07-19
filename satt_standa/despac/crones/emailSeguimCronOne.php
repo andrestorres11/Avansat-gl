@@ -19,17 +19,20 @@ class EmailSeguim
 {
     public $conexion;
     private static $cHoy,
+					$hora,
                     $cTipDespac = '""',
                     $cTipDespacContro = '""'; #Tipo de Despachos asignados al controlador, Aplica para cTypeUser[tip_perfil] == 'CONTROL';
     function __construct()
 	{
         $this->conexion = new Conexion(HOST,USUARIO, CLAVE, BASE_DATOS);
         self::$cHoy = date("Y-m-d H:i:s");
+		self::$hora = date("H:00:00");
         $this->principal();
         
     }
 
     public function principal(){
+		echo(self::$hora);
         $transpors= self::getTransports();
         
         foreach ($transpors as $transport) {
@@ -372,7 +375,7 @@ class EmailSeguim
 
     #Trae Transportadoras
     public function getTransports(){
-
+		$hora=self::$hora;
         $transpor = "SELECT c.ind_segprc,c.ind_segcar, 
                         c.ind_segctr,c.ind_segtra, c.ind_segdes, 
                         c.cod_transp, c.num_consec, d.nom_tipser, 
@@ -401,6 +404,7 @@ class EmailSeguim
                         ON g.cod_tercer = c.cod_transp 
                         AND  g.hor_ingres !='00:00:00' 
                         AND g.hor_salida !='23:59:00' 
+						AND g.hor_ingres = '".$hora."' OR g.hor_salida = '".$hora."'
                     GROUP BY c.cod_transp
                     LIMIT 2";
 
