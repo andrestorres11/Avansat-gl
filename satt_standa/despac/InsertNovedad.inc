@@ -3554,6 +3554,7 @@ class InsertNovedad {
                         $cod_transp = $interfaz->interfaz[$i]['codigo']     != '' ? $interfaz->interfaz[$i]['codigo'] : $cod_transp; // cod de la transp, no es el nit, debe estar en BD
                         $url_webser    = $interfaz->interfaz[$i]['diwsdl']  != '' ? $interfaz->interfaz[$i]['diwsdl'] : $url_webser; // URL ws, debe estar en BD
 
+
                         #<IF 5.1.1.1.3.1>
                         if (strpos(strtolower($regist['sitio']), "eal") !== FALSE || 
                             strpos(strtolower($regist['sitio']), "oal") !== FALSE || 
@@ -3605,11 +3606,38 @@ class InsertNovedad {
                                 //Métodos disponibles en el WS
                                 $respuesta = $oSoapClient-> __soapCall( 'puestocontrol', $parametros );
 
+                                if($regist["nittra"] == "900138913") // la empresa es tevsa
+                                {
+
+                                    mail('nelson.liberato@eltransporte.org,lina.contreras@grupooet.com', 
+                                         'REPORTE SILOGTRANS NORMAL',
+                                          var_export(['parametros'   => $parametros, 
+                                                      'url_webser'   => $url_webser ,
+                                                      'respuesta'    => $respuesta 
+                                                     ], true)
+                                        );  
+                                }
+
                                 if ($respuesta != 'OK REPORTO.') {
                                     $error_ = $respuesta;
                                 }
                             } catch (SoapFault $e) {
                                 $error_ = $e->getMessage();
+
+                                if($regist["nittra"] == "900138913") // la empresa es tevsa
+                                {
+
+                                    mail('nelson.liberato@eltransporte.org,lina.contreras@grupooet.com', 
+                                         'REPORTE SILOGTRANS CATH', 
+                                         var_export(['parametros'       => $parametros, 
+                                                     'url_webser'       => $url_webser ,
+                                                     'respuesta'        => $respuesta ,
+                                                     'error_'           => $error_,
+                                                     '__getLastRequest' => htmlspecialchars($oSoapClient->__getLastRequest())
+                                                               
+                                                     ], true)
+                                        );
+                                }
                             }
 
                             if ($error_ != NULL) {
@@ -3628,7 +3656,7 @@ class InsertNovedad {
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, 
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE.", nelson.liberato@eltransporte.org", 
                                 	"Error Web service Humadea - Colombiasoftware", 
                                 	'<div name="'.HOST_WEB.'_faro_11">' . $mMessage."\n". var_export($parametros, true ) . '</div>', $mCabeceSoporte);
                             }

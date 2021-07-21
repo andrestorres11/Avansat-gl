@@ -970,7 +970,11 @@ SELECT a.num_despac,
 
             ."<input type=\"hidden\" name=\"posi\" value=\"0\">\n"
 
+<<<<<<< HEAD
             ."<input type=\"button\" onClick=\"form.Imprimir.style.visibility='hidden';form.PDF.style.visibility='hidden';form.Volver.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.PDF.style.visibility='visible';form.Volver.style.visibility='visible';form.Siguiente.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">\n"
+=======
+            ."<input type=\"button\" onClick=\"form.Imprimir.style.visibility='hidden';form.Volver.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.PDF.style.visibility='visible';form.Volver.style.visibility='visible';form.Siguiente.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">\n"
+>>>>>>> 96b01b6... [master] ajustes versionamiento
             
             ."</td>\n"
             
