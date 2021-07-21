@@ -2142,17 +2142,20 @@ class Despac
 				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_planea], self::$cHoy ); #Script /lib/general/function.inc
 				$mDespac[$i][tiempoGl] = getDiffTime( $mDespac[$i][fec_planGl], self::$cHoy ); #Script /lib/general/function.inc
 
-				if( $mDespac[$i][ind_fuepla] == '1' && $mDespac[$i][tiempo] < 0 )
+				if( $mDespac[$i][ind_fuepla] == '1' && $mDespac[$i][tiempo] < 0 ){
 					$mPernoc = true;
+				}
 			}
-			else #Despacho Sin Novedades
+			else{#Despacho Sin Novedades
 				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
 				$mDespac[$i][tiempoGl] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
+			} 
 
+			$mViewBa = self::getView('jso_bandej');
 			# Arma la matriz resultante 
 			if( $mIndCant == 1 )
 			{# Cantidades según estado
-				if($mDespac[$i][tiempoGl]){
+				if($mViewBa->tie_alarma->ind_visibl==1){
 					if( $mPernoc == true ){
 						$mResult[est_pernoc]++;
 						$mResult[enx_seguim]++;
@@ -2244,132 +2247,262 @@ class Despac
 				else
 					$mBandera = false;
 
-				#Arma Matriz resultante seún fase
-				if( ($mFiltro == 'est_pernoc' || $mFiltro == 'sinF' || $mFiltro == 'enx_seguim') && $mPernoc == true && $mDespac[$i][ind_defini] != 'SI' && $mDespac[$i][ind_finrut] != '1' )
-				{ #Pernoctacion
-					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
-						$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
-						$mResult[neg_tieesp][$mNegTieesp][color] = $mColor[0];
-						$mResult[neg_tieesp][$mNegTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[neg_tieesp][$mNegTieesp][fase] = 'est_pernoc';
-						$mNegTieesp++;
-					}else{
-						$mResult[neg_tiempo][$mNegTiempo] = $mDespac[$i];
-						$mResult[neg_tiempo][$mNegTiempo][color] = $mColor[0];
-						$mResult[neg_tiempo][$mNegTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[neg_tiempo][$mNegTiempo][fase] = 'est_pernoc';
-						$mNegTiempo++;
+				if ($mViewBa->tie_alarma->ind_visibl==1) {
+					#Arma Matriz resultante seún fase
+					if( ($mFiltro == 'est_pernoc' || $mFiltro == 'sinF' || $mFiltro == 'enx_seguim') && $mPernoc == true && $mDespac[$i][ind_defini] != 'SI' && $mDespac[$i][ind_finrut] != '1' )
+					{ #Pernoctacion
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
+							$mResult[neg_tieesp][$mNegTieesp][color] = $mColor[0];
+							$mResult[neg_tieesp][$mNegTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[neg_tieesp][$mNegTieesp][fase] = 'est_pernoc';
+							$mNegTieesp++;
+						}else{
+							$mResult[neg_tiempo][$mNegTiempo] = $mDespac[$i];
+							$mResult[neg_tiempo][$mNegTiempo][color] = $mColor[0];
+							$mResult[neg_tiempo][$mNegTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[neg_tiempo][$mNegTiempo][fase] = 'est_pernoc';
+							$mNegTiempo++;
+						}
 					}
-				}
-				elseif( ($mFiltro == 'fin_rutaxx' || $mFiltro == 'sinF') && $mDespac[$i][ind_finrut] == '1' && $mDespac[$i][ind_defini] != 'SI' )
-				{ #Por Llegada
-					if( $mDespac[$i][tiempo] < 0 ){
-						$mResult[neg_finrut][$mNegFinrut] = $mDespac[$i];
-						$mResult[neg_finrut][$mNegFinrut][color] = $mColor[0];
-						$mResult[neg_finrut][$mNegFinrut][fase] = 'fin_rutaxx';
-						$mNegFinrut++;
-					}else{
-						$mResult[pos_finrut][$mPosFinrut] = $mDespac[$i];
-						$mResult[pos_finrut][$mPosFinrut][color] = $mColor[0];
-						$mResult[pos_finrut][$mPosFinrut][fase] = 'fin_rutaxx';
-						$mPosFinrut++;
+					elseif( ($mFiltro == 'fin_rutaxx' || $mFiltro == 'sinF') && $mDespac[$i][ind_finrut] == '1' && $mDespac[$i][ind_defini] != 'SI' )
+					{ #Por Llegada
+						if( $mDespac[$i][tiempo] < 0 ){
+							$mResult[neg_finrut][$mNegFinrut] = $mDespac[$i];
+							$mResult[neg_finrut][$mNegFinrut][color] = $mColor[0];
+							$mResult[neg_finrut][$mNegFinrut][fase] = 'fin_rutaxx';
+							$mNegFinrut++;
+						}else{
+							$mResult[pos_finrut][$mPosFinrut] = $mDespac[$i];
+							$mResult[pos_finrut][$mPosFinrut][color] = $mColor[0];
+							$mResult[pos_finrut][$mPosFinrut][fase] = 'fin_rutaxx';
+							$mPosFinrut++;
+						}
 					}
-				}
-				elseif( ($mFiltro == 'ind_acargo' || $mFiltro == 'sinF') && $mDespac[$i][ind_defini] == 'SI' )
-				{ #A Cargo Empresa
-					if( $mDespac[$i][tiempo] < 0 ){
-						$mResult[neg_acargo][$mNegAcargo] = $mDespac[$i];
-						$mResult[neg_acargo][$mNegAcargo][color] = $mColor[0];
-						$mResult[neg_acargo][$mNegAcargo][fase] = 'ind_acargo';
-						$mNegAcargo++;
-					}else{
-						$mResult[pos_acargo][$mPosAcargo] = $mDespac[$i];
-						$mResult[pos_acargo][$mPosAcargo][color] = $mColor[0];
-						$mResult[pos_acargo][$mPosAcargo][fase] = 'ind_acargo';
-						$mPosAcargo++;
+					elseif( ($mFiltro == 'ind_acargo' || $mFiltro == 'sinF') && $mDespac[$i][ind_defini] == 'SI' )
+					{ #A Cargo Empresa
+						if( $mDespac[$i][tiempo] < 0 ){
+							$mResult[neg_acargo][$mNegAcargo] = $mDespac[$i];
+							$mResult[neg_acargo][$mNegAcargo][color] = $mColor[0];
+							$mResult[neg_acargo][$mNegAcargo][fase] = 'ind_acargo';
+							$mNegAcargo++;
+						}else{
+							$mResult[pos_acargo][$mPosAcargo] = $mDespac[$i];
+							$mResult[pos_acargo][$mPosAcargo][color] = $mColor[0];
+							$mResult[pos_acargo][$mPosAcargo][fase] = 'ind_acargo';
+							$mPosAcargo++;
+						}
 					}
-				}
-				elseif( ($mFiltro == 'sin_retras' || $mFiltro == 'sinF'|| $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 0 && $mBandera == true )
-				{ #Sin Retraso
-					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
-						$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
-						$mResult[neg_tieesp][$mNegTieesp][color] = $mColor[0];
-						$mResult[neg_tieesp][$mNegTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[neg_tieesp][$mNegTieesp][fase] = 'sin_retras';
-						$mNegTieesp++;
-					}else{
-						$mResult[neg_tiempo][$mNegTiempo] = $mDespac[$i];
-						$mResult[neg_tiempo][$mNegTiempo][color] = $mColor[0];
-						$mResult[neg_tiempo][$mNegTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[neg_tiempo][$mNegTiempo][fase] = 'sin_retras';
-						$mNegTiempo++;
+					elseif( ($mFiltro == 'sin_retras' || $mFiltro == 'sinF'|| $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 0 && $mBandera == true )
+					{ #Sin Retraso
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
+							$mResult[neg_tieesp][$mNegTieesp][color] = $mColor[0];
+							$mResult[neg_tieesp][$mNegTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[neg_tieesp][$mNegTieesp][fase] = 'sin_retras';
+							$mNegTieesp++;
+						}else{
+							$mResult[neg_tiempo][$mNegTiempo] = $mDespac[$i];
+							$mResult[neg_tiempo][$mNegTiempo][color] = $mColor[0];
+							$mResult[neg_tiempo][$mNegTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[neg_tiempo][$mNegTiempo][fase] = 'sin_retras';
+							$mNegTiempo++;
+						}
 					}
-				}
-				elseif( ($mFiltro == 'con_00A30x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 31 && $mDespac[$i][tiempoGl] >= 0 && $mBandera == true )
-				{ # 0 a 30
-					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
-						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
-						$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[1];
-						$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_00A30x';
-						$mPosTieesp++;
-					}else{
-						$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
-						$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[1];
-						$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_00A30x';
-						$mPosTiempo++;
+					elseif( ($mFiltro == 'con_00A30x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 31 && $mDespac[$i][tiempoGl] >= 0 && $mBandera == true )
+					{ # 0 a 30
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
+							$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[1];
+							$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_00A30x';
+							$mPosTieesp++;
+						}else{
+							$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
+							$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[1];
+							$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_00A30x';
+							$mPosTiempo++;
+						}
 					}
-				}
-				elseif( ($mFiltro == 'con_31A60x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 61 && $mDespac[$i][tiempoGl] > 30 && $mBandera == true )
-				{ # 31 a 60
-					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
-						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
-						$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[2];
-						$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_31A60x';
-						$mPosTieesp++;
-					}else{
-						$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
-						$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[2];
-						$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_31A60x';
-						$mPosTiempo++;
+					elseif( ($mFiltro == 'con_31A60x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 61 && $mDespac[$i][tiempoGl] > 30 && $mBandera == true )
+					{ # 31 a 60
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
+							$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[2];
+							$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_31A60x';
+							$mPosTieesp++;
+						}else{
+							$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
+							$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[2];
+							$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_31A60x';
+							$mPosTiempo++;
+						}
 					}
-				}
-				elseif( ($mFiltro == 'con_61A90x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 91 && $mDespac[$i][tiempoGl] > 60 && $mBandera == true )
-				{ # 61 a 90
-					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
-						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
-						$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[3];
-						$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_61A90x';
-						$mPosTieesp++;
-					}else{
-						$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
-						$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[3];
-						$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_61A90x';
-						$mPosTiempo++;
+					elseif( ($mFiltro == 'con_61A90x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] < 91 && $mDespac[$i][tiempoGl] > 60 && $mBandera == true )
+					{ # 61 a 90
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
+							$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[3];
+							$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_61A90x';
+							$mPosTieesp++;
+						}else{
+							$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
+							$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[3];
+							$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_61A90x';
+							$mPosTiempo++;
+						}
 					}
-				}
-				elseif( ($mFiltro == 'con_91Amas' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] > 90 && $mBandera == true )
-				{ # Mayor 90
-					if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
-						$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
-						$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[4];
-						$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_91Amas';
-						$mPosTieesp++;
+					elseif( ($mFiltro == 'con_91Amas' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempoGl] > 90 && $mBandera == true )
+					{ # Mayor 90
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
+							$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[4];
+							$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_91Amas';
+							$mPosTieesp++;
+						}else{
+							$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
+							$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[4];
+							$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_91Amas';
+							$mPosTiempo++;
+						}
 					}else{
-						$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
-						$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[4];
-						$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
-						$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_91Amas';
-						$mPosTiempo++;
+						continue;
 					}
 				}else{
-					continue;
+					#Arma Matriz resultante seún fase
+					if( ($mFiltro == 'est_pernoc' || $mFiltro == 'sinF' || $mFiltro == 'enx_seguim') && $mPernoc == true && $mDespac[$i][ind_defini] != 'SI' && $mDespac[$i][ind_finrut] != '1' )
+					{ #Pernoctacion
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
+							$mResult[neg_tieesp][$mNegTieesp][color] = $mColor[0];
+							$mResult[neg_tieesp][$mNegTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[neg_tieesp][$mNegTieesp][fase] = 'est_pernoc';
+							$mNegTieesp++;
+						}else{
+							$mResult[neg_tiempo][$mNegTiempo] = $mDespac[$i];
+							$mResult[neg_tiempo][$mNegTiempo][color] = $mColor[0];
+							$mResult[neg_tiempo][$mNegTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[neg_tiempo][$mNegTiempo][fase] = 'est_pernoc';
+							$mNegTiempo++;
+						}
+					}
+					elseif( ($mFiltro == 'fin_rutaxx' || $mFiltro == 'sinF') && $mDespac[$i][ind_finrut] == '1' && $mDespac[$i][ind_defini] != 'SI' )
+					{ #Por Llegada
+						if( $mDespac[$i][tiempo] < 0 ){
+							$mResult[neg_finrut][$mNegFinrut] = $mDespac[$i];
+							$mResult[neg_finrut][$mNegFinrut][color] = $mColor[0];
+							$mResult[neg_finrut][$mNegFinrut][fase] = 'fin_rutaxx';
+							$mNegFinrut++;
+						}else{
+							$mResult[pos_finrut][$mPosFinrut] = $mDespac[$i];
+							$mResult[pos_finrut][$mPosFinrut][color] = $mColor[0];
+							$mResult[pos_finrut][$mPosFinrut][fase] = 'fin_rutaxx';
+							$mPosFinrut++;
+						}
+					}
+					elseif( ($mFiltro == 'ind_acargo' || $mFiltro == 'sinF') && $mDespac[$i][ind_defini] == 'SI' )
+					{ #A Cargo Empresa
+						if( $mDespac[$i][tiempo] < 0 ){
+							$mResult[neg_acargo][$mNegAcargo] = $mDespac[$i];
+							$mResult[neg_acargo][$mNegAcargo][color] = $mColor[0];
+							$mResult[neg_acargo][$mNegAcargo][fase] = 'ind_acargo';
+							$mNegAcargo++;
+						}else{
+							$mResult[pos_acargo][$mPosAcargo] = $mDespac[$i];
+							$mResult[pos_acargo][$mPosAcargo][color] = $mColor[0];
+							$mResult[pos_acargo][$mPosAcargo][fase] = 'ind_acargo';
+							$mPosAcargo++;
+						}
+					}
+					elseif( ($mFiltro == 'sin_retras' || $mFiltro == 'sinF'|| $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] < 0 && $mBandera == true )
+					{ #Sin Retraso
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[neg_tieesp][$mNegTieesp] = $mDespac[$i];
+							$mResult[neg_tieesp][$mNegTieesp][color] = $mColor[0];
+							$mResult[neg_tieesp][$mNegTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[neg_tieesp][$mNegTieesp][fase] = 'sin_retras';
+							$mNegTieesp++;
+						}else{
+							$mResult[neg_tiempo][$mNegTiempo] = $mDespac[$i];
+							$mResult[neg_tiempo][$mNegTiempo][color] = $mColor[0];
+							$mResult[neg_tiempo][$mNegTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[neg_tiempo][$mNegTiempo][fase] = 'sin_retras';
+							$mNegTiempo++;
+						}
+					}
+					elseif( ($mFiltro == 'con_00A30x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] < 31 && $mDespac[$i][tiempo] >= 0 && $mBandera == true )
+					{ # 0 a 30
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
+							$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[1];
+							$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_00A30x';
+							$mPosTieesp++;
+						}else{
+							$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
+							$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[1];
+							$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_00A30x';
+							$mPosTiempo++;
+						}
+					}
+					elseif( ($mFiltro == 'con_31A60x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] < 61 && $mDespac[$i][tiempo] > 30 && $mBandera == true )
+					{ # 31 a 60
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
+							$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[2];
+							$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_31A60x';
+							$mPosTieesp++;
+						}else{
+							$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
+							$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[2];
+							$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_31A60x';
+							$mPosTiempo++;
+						}
+					}
+					elseif( ($mFiltro == 'con_61A90x' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] < 91 && $mDespac[$i][tiempo] > 60 && $mBandera == true )
+					{ # 61 a 90
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
+							$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[3];
+							$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_61A90x';
+							$mPosTieesp++;
+						}else{
+							$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
+							$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[3];
+							$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_61A90x';
+							$mPosTiempo++;
+						}
+					}
+					elseif( ($mFiltro == 'con_91Amas' || $mFiltro == 'sinF' || $mFiltro == 'con_alarma' || $mFiltro == 'enx_seguim') && $mDespac[$i][tiempo] > 90 && $mBandera == true )
+					{ # Mayor 90
+						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
+							$mResult[pos_tieesp][$mPosTieesp] = $mDespac[$i];
+							$mResult[pos_tieesp][$mPosTieesp][color] = $mColor[4];
+							$mResult[pos_tieesp][$mPosTieesp][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tieesp][$mPosTieesp][fase] = 'con_91Amas';
+							$mPosTieesp++;
+						}else{
+							$mResult[pos_tiempo][$mPosTiempo] = $mDespac[$i];
+							$mResult[pos_tiempo][$mPosTiempo][color] = $mColor[4];
+							$mResult[pos_tiempo][$mPosTiempo][color2] = self::despacRutaPlaca( $mTransp[cod_transp], $mDespac[$i][num_placax], $mDespac[$i][num_despac] );
+							$mResult[pos_tiempo][$mPosTiempo][fase] = 'con_91Amas';
+							$mPosTiempo++;
+						}
+					}else{
+						continue;
+					}
 				}
 			}
 		}
