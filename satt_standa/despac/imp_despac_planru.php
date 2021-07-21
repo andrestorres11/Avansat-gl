@@ -970,7 +970,7 @@ SELECT a.num_despac,
 
             ."<input type=\"hidden\" name=\"posi\" value=\"0\">\n"
 
-            ."<input type=\"button\" onClick=\"form.Imprimir.style.visibility='hidden';form.PDF.style.visibility='hidden';form.Volver.style.visibility='hidden';form.Siguiente.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.PDF.style.visibility='visible';form.Volver.style.visibility='visible';form.Siguiente.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">\n"
+            ."<input type=\"button\" onClick=\"form.Imprimir.style.visibility='hidden';form.PDF.style.visibility='hidden';form.Volver.style.visibility='hidden';print();form.Imprimir.style.visibility='visible';form.PDF.style.visibility='visible';form.Volver.style.visibility='visible';form.Siguiente.style.visibility='visible';\" name=\"Imprimir\" value=\"Imprimir\">\n"
             
             ."</td>\n"
             
