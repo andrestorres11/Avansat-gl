@@ -26,19 +26,19 @@ class EmailSeguim
 	{
         $this->conexion = new Conexion(HOST,USUARIO, CLAVE, BASE_DATOS);
         self::$cHoy = date("Y-m-d H:i:s");
-		self::$hora = date("H:00:00");
+		self::$hora = date("H");
         $this->principal();
         
     }
 
     public function principal(){
-		echo(self::$hora);
         $transpors= self::getTransports();
         
         foreach ($transpors as $transport) {
                                 
             $despachos= $this->getDespacTransi2($transport);
             $mData = self::calTimeAlarma( $despachos, $transport, 1 );
+
 
             
             $novedades= [];
@@ -402,12 +402,10 @@ class EmailSeguim
                         ) f ON c.cod_transp = f.cod_transp AND c.num_consec = f.num_consec
             INNER JOIN ".BASE_DATOS.".tab_config_horlab g
                         ON g.cod_tercer = c.cod_transp 
-                        AND  g.hor_ingres !='00:00:00' 
+                        AND g.hor_ingres !='00:00:00' 
                         AND g.hor_salida !='23:59:00' 
-						AND g.hor_ingres = '".$hora."' OR g.hor_salida = '".$hora."'
-                    GROUP BY c.cod_transp
-                    LIMIT 2";
-
+						AND ( DATE_FORMAT(g.hor_ingres,'%H') = '".$hora."' OR DATE_FORMAT(g.hor_salida,'%H') = '".$hora."')
+                    GROUP BY c.cod_transp";
 
         $consulta = new Consulta($transpor, $this->conexion);
         $transpors = $consulta->ret_matriz('a'); 
