@@ -243,14 +243,15 @@ class infDiferenciaDespachosTmsConFaroInterfaz
 				$mHtml .= "<tr>";
 					$mHtml .= "<th>No</th>";
 					$mHtml .= "<th>Nombre Transportadora</th>";
-					$mHtml .= "<th>Despachos GL</th>";
 					$mHtml .= "<th>Despachos TMS</th>";
+					$mHtml .= "<th>Despachos GL</th>";
 					$mHtml .= "<th>Diferencia</th>";
 				$mHtml .= "</tr>";
 				$mRow = 1;
 				foreach ($mContadorDespachosPorEmpresa AS $mEmpresa => $mCantidadDespachosTms) 
 				{
 						$mCantidadDespachosGL = self::getcantidadDespachosEnRutaGL( $mDataEmpresaTMS[$mEmpresa]  );
+			//echo "<pre class='cellInfo1' style='color: blue;'>ajustado".$mEmpresa; print_r( $mDataEmpresaTMS ); echo "</pre>";  
 					 
 						$mHtml .= "<tr>";
 							$mHtml .= "<td>".($mRow ++)."</td>";
@@ -326,13 +327,13 @@ class infDiferenciaDespachosTmsConFaroInterfaz
 			$s = curl_init();
 			curl_setopt($s,CURLOPT_URL, URL_INTERF_CENTRAL.'/ap/interf/DespachosActivosTms.php');
 			curl_setopt($s,CURLOPT_HTTPHEADER,array('Expect:'));
-			curl_setopt($s,CURLOPT_TIMEOUT,5); 
+			curl_setopt($s,CURLOPT_TIMEOUT,30); 
 			curl_setopt($s,CURLOPT_RETURNTRANSFER,true);  
 			curl_setopt($s,CURLOPT_POST,true);
 			curl_setopt($s,CURLOPT_POSTFIELDS, http_build_query($mData['PARAMS']));
 			$mResponse = curl_exec($s);
 			curl_close($s);
-			//echo "<pre class='cellInfo1' style='color: blue;'>MIerda: "; print_r( $mResponse ); echo "</pre>";  
+			//echo "<pre class='vainaRara' style='color: blue;'>MIerda: "; print_r( $mResponse ); echo "</pre>";  
 
 			return json_decode($mResponse, true);
 		} 
@@ -353,22 +354,27 @@ class infDiferenciaDespachosTmsConFaroInterfaz
 	{
 		try 
 		{
-			$sql = "SELECT COUNT(b.num_despac) AS can_despac 
-					  FROM ".BASE_DATOS.".tab_despac_vehige a
-			    INNER JOIN ".BASE_DATOS.".tab_despac_despac b ON a.num_despac = b.num_despac
-					  WHERE 1 = 1
-					  	AND a.cod_transp = '".$mData['cod_transp']."'
-					  	".($mData['cod_conduc'] != '' ? " AND a.cod_conduc = '".$mData['cod_conduc']."' " : '')." 
-					  	AND a.ind_activo = 'S'
-					  	".($mData['cod_manifi'] != '' ? " AND b.cod_manifi = '".$mData['cod_manifi']."' " : '')."   
-					  	".($mData['cod_ciuori'] != '' ? " AND b.cod_ciuori = '".$mData['cod_ciuori']."' " : '')."   
-					  	".($mData['cod_ciudes'] != '' ? " AND b.cod_ciudes = '".$mData['cod_ciudes']."' " : '')."   
-					  	AND b.ind_planru = 'S'
-					  	AND b.ind_anulad = 'R'
-					  	AND b.fec_salida IS NOT NULL
-					  	AND b.fec_llegad IS NULL
-				   GROUP BY b.num_despac ";
-				   //echo "<pre class='cellInfo1' style='color: blue;'>ajustado"; print_r($sql); echo "</pre>"; 
+			$sql = "
+			SELECT SUM(a.can_despac) AS can_despac
+			  FROM 
+				( 
+					SELECT COUNT(b.num_despac) AS can_despac 
+				 					  FROM ".BASE_DATOS.".tab_despac_vehige a
+				 			    INNER JOIN ".BASE_DATOS.".tab_despac_despac b ON a.num_despac = b.num_despac
+				 					  WHERE 1 = 1
+				 					  	AND a.cod_transp = '".$mData['cod_transp']."'
+				 					  	".($mData['cod_conduc'] != '' ? " AND a.cod_conduc = '".$mData['cod_conduc']."' " : '')." 
+				 					  	AND a.ind_activo = 'S'
+				 					  	".($mData['cod_manifi'] != '' ? " AND b.cod_manifi = '".$mData['cod_manifi']."' " : '')."   
+				 					  	".($mData['cod_ciuori'] != '' ? " AND b.cod_ciuori = '".$mData['cod_ciuori']."' " : '')."   
+				 					  	".($mData['cod_ciudes'] != '' ? " AND b.cod_ciudes = '".$mData['cod_ciudes']."' " : '')."   
+				 					  	AND b.ind_planru = 'S'
+				 					  	AND b.ind_anulad = 'R'
+				 					  	AND b.fec_salida IS NOT NULL
+				 					  	AND b.fec_llegad IS NULL
+				 				   GROUP BY b.num_despac
+				) a ";
+				//echo "<pre class='cellInfo1' style='color: blue;'>ajustado"; print_r($sql); echo "</pre>"; 
 			$consult = new Consulta($sql, self::$cConexion );
 			$mCantidad = $consult->ret_matrix('a');
 			return $mCantidad[0]['can_despac'];
