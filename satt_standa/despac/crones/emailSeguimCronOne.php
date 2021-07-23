@@ -1,18 +1,18 @@
 <?php
-//include ("/var/www/html/ap/generadores/satt_standa/lib/general/constantes.inc"); //Produccion
-include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/constantes.inc"); //Dev
+include ("/var/www/html/ap/generadores/satt_standa/lib/general/constantes.inc"); //Produccion
+//include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/constantes.inc"); //Dev
 
-//include (URL_ARCHIV_STANDA."/generadores/satt_faro/constantes.inc"); //Produccion
-include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_faro/constantes.inc"); //Dev
+include (URL_ARCHIV_STANDA."/generadores/satt_faro/constantes.inc"); //Produccion
+//include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_faro/constantes.inc"); //Dev
 
-//include (URL_ARCHIV_STANDA."/generadores/satt_standa/lib/general/conexion_lib.inc"); //Produccion
-include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/conexion_lib.inc"); //Dev
+include (URL_ARCHIV_STANDA."/generadores/satt_standa/lib/general/conexion_lib.inc"); //Produccion
+//include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/conexion_lib.inc"); //Dev
 
-//include (URL_ARCHIV_STANDA."/generadores/satt_standa/lib/general/functions.inc"); //Produccion
-include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/functions.inc"); //Dev
+include (URL_ARCHIV_STANDA."/generadores/satt_standa/lib/general/functions.inc"); //Produccion
+//include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/functions.inc"); //Dev
 
-//include (URL_ARCHIV_STANDA."/generadores/satt_standa/inform/class_despac_trans3.php"); //Produccion
-include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/inform/class_despac_trans3.php"); //Dev
+include (URL_ARCHIV_STANDA."/generadores/satt_standa/inform/class_despac_trans3.php"); //Produccion
+//include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/inform/class_despac_trans3.php"); //Dev
 /*ini_set('display_errors', true);
 error_reporting(E_ALL & ~E_NOTICE);*/
 class EmailSeguim
@@ -21,6 +21,7 @@ class EmailSeguim
     private static $cHoy,
 					$hora,
                     $cTipDespac = '""',
+					$cTime = array( 'ind_desurb' => '30', 'ind_desnac' => '60' ),
                     $cTipDespacContro = '""'; #Tipo de Despachos asignados al controlador, Aplica para cTypeUser[tip_perfil] == 'CONTROL';
     function __construct()
 	{
