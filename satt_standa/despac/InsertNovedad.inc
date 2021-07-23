@@ -740,11 +740,11 @@ class InsertNovedad {
            WHERE    c.ind_novala = 1 AND 
                     c.ind_estado = 1 ";
                     
-        $mQuery = "SELECT b.dir_emailx 
+        /*$mQuery = "SELECT b.dir_emailx 
                      FROM " . BASE_DATOS . ".tab_despac_despac a,
                           " . BASE_DATOS . ".tab_genera_agenci b
                      WHERE a.cod_agedes = b.cod_agenci AND
-                           a.num_despac = '" . $num_despac . "' ";
+                           a.num_despac = '" . $num_despac . "' ";*/
         $consulta = new Consulta($mQuery, $this->conexion);
         $mEmailAgenci = $consulta->ret_matriz();
 
