@@ -41,4 +41,8 @@ define("HOST_WEB_DEV", "web7");  #Host Desarrollo
 define("HOST_WEB_TES", "web13"); #Host Pruebas
 define("HOST_WEB_PRO", "avansatgl"); #Host Produccion
 
+//Constantes Para los Logos
+define("LOGOFARO", URL_APLICA."logos/LogoCLFaro.png");// URL LOGO FARO
+define("FOOTERFARO", URL_APLICA."logos/banner-torre+de+control-960w.jpg");// URL FOOTER EMAIL
+
 ?>
