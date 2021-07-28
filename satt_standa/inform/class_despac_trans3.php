@@ -11,7 +11,7 @@
  *				Para cuando este bug se corriga en InsertNovedad.inc Descomentariar lineas de las querys que traen los despachos.
  *				Buscar #warning1 para ubicar las lineas afectadas
  *  \warning2:	InsertNovedad.inc no recalcula bien el tiempo de alarma, para disfrazar este bug se opto por validar si la fecha de la
- *				ultima novedad es mayor a la fecha de alarma, si esto es verdadero se recalcula el tiempo de alarma según el tipo de 
+ *				ultima novedad es mayor a la fecha de alarma, si esto es verdadero se recalcula el tiempo de alarma seg�n el tipo de 
  *				novedad; si la novedad solicita tiempo se recalcula con el tiempo dado, si no se recalcula con el tiempo del array de 
  *				clase $cTime.
  *				Buscar #warning2 para ubicar las lineas afectadas
@@ -20,7 +20,7 @@
 date_default_timezone_get('America/Bogota');
 
 /*! \class: Despac
- *  \brief: Clase que realiza las consultas para retornar la información de los Despachos en Cargue, Transito o Descargue
+ *  \brief: Clase que realiza las consultas para retornar la informaci�n de los Despachos en Cargue, Transito o Descargue
  */
 class Despac
 {
@@ -150,7 +150,7 @@ class Despac
 	 *  \brief: Informe General
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 15/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -168,7 +168,7 @@ class Despac
 	 *  \brief: Informe Etapa Cargue
 	 *  \author: Edward Serrano
 	 *	\date: 07/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -193,7 +193,7 @@ class Despac
 	 *  \brief: Informe Etapa Cargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 18/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -214,14 +214,14 @@ class Despac
 	 *  \brief: Informe Etapa Transito
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 26/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
 	private function infoTransito()
 	{
 		$mIndEtapa = 'ind_segtra';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solución', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta soluci�n', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
 		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id=table3ID>';
@@ -232,17 +232,17 @@ class Despac
 	}
 
 	/*! \fn: infoControl
-	 *  \brief: Informe Etapa Operación Total
+	 *  \brief: Informe Etapa Operaci�n Total
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 26/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
 	private function infoControl()
 	{
 		$mIndEtapa = 'ind_segctr';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'EN SEGUIMIENTO', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solución', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'EN SEGUIMIENTO', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta soluci�n', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
 		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id="table3ID">';
@@ -256,7 +256,7 @@ class Despac
 	 *  \brief: Informe Etapa Transito
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 26/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -296,7 +296,7 @@ class Despac
 	 *  \brief: Imprime la table segun etapa
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 07/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mIndEtapa  String  Etapa 
 	 *  \param: mTittle  Matriz  Titulos y Colores
 	 *  \return:
@@ -309,11 +309,7 @@ class Despac
 		$mHtml = '';
 		$j=1;
 		$mCodTransp = "";
-
-		/*echo "<pre>";
-		print_r($mTransp);
-		echo "<pre>";*/
-
+		
 		#Dibuja las Filas por Transportadora
 		for($i=0; $i<sizeof($mTransp); $i++)
 		{
@@ -326,10 +322,12 @@ class Despac
 					$mDespac = self::getDespacCargue( $mTransp[$i] );
 					break;
 				case 'ind_segtra':
-					if( $mTransp[$i][ind_segcar] == '0' && $mTransp[$i][ind_segdes] == '0' )
+					if( $mTransp[$i][ind_segcar] == '0' && $mTransp[$i][ind_segdes] == '0' ){
 						$mDespac = self::getDespacTransi1( $mTransp[$i] );
-					else
+					}
+					else{
 						$mDespac = self::getDespacTransi2( $mTransp[$i] );
+					}
 					break;
 				case 'ind_segdes':
 					$mDespac = self::getDespacDescar( $mTransp[$i] );
@@ -338,13 +336,12 @@ class Despac
 
 			//Capturar las transportadoras
 			$mCodTransp .= $mCodTransp != '' ? ','.$mTransp[$i][cod_transp] : $mTransp[$i][cod_transp];
-
+			
 			#Si la Transportadora tiene Despachos
 			if( $mDespac != false )
 			{	
 				$mTransp[$i][hor_seguim] = self::setHorSeguim($mTransp[$i][cod_transp]);
 				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
-				
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_tipser].'</td>';
@@ -429,7 +426,7 @@ class Despac
 	 *  \brief: Imprime la table etapa de control
 	 *  \author: Ing. Luis Manrique
 	 *	\date: 09/12/2019
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mIndEtapa  String  Etapa 
 	 *  \param: mTittle  Matriz  Titulos y Colores
 	 *  \return:
@@ -441,10 +438,6 @@ class Despac
 		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
 		$mHtml = '';
 		$j=1;
-
-		/*echo "<pre>";
-		print_r($mTransp);
-		echo "<pre>";*/
 
 		//Variables necesarias
 		$mUsrAsignaAnt = "";
@@ -575,7 +568,7 @@ class Despac
 					$mTotalUS[8] += $mData[fin_rutaxx];
 				}
 
-				//Iguala las variables para la siguente comparación.
+				//Iguala las variables para la siguente comparaci�n.
 				$mUsrAsignaAnt = $mUsrAsigna;
 
 				//Captura los cod de transportadora para los subtotales
@@ -651,7 +644,7 @@ class Despac
 	 *  \brief: Trae los Tipos de Despacho
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 16/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return: 
 	 */
@@ -668,7 +661,7 @@ class Despac
 	 *  \brief: Trae las transportadoras
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 17/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -704,7 +697,7 @@ class Despac
 	 *  \brief: Trae los usuarios asignados a turno
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 16/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return: 
 	 */
@@ -731,7 +724,7 @@ class Despac
 	 *  \brief: Trae la informacion parametrizada para el turno del controlador
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 13/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mCodUsuari  String  Codigo del usuario
 	 *  \return: Array 
 	 */
@@ -764,7 +757,7 @@ class Despac
 	 *  \brief: Retorna el tipo de perfil del usuario
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 09/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return: array
 	 */
@@ -793,9 +786,9 @@ class Despac
 	 *  \brief: Trae los despachos en Etapa Cargue
 	 *  \author: Edward Serrano
 	 *	\date: 07/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: $mTransp  Array  Informacion transportadora
-	 *  \param: $mTipReturn  String   array = Retorna array con número de los despachos; list = Retorna lista con número de los despachos;
+	 *  \param: $mTipReturn  String   array = Retorna array con n�mero de los despachos; list = Retorna lista con n�mero de los despachos;
 	 *	\param: mSinFiltro  Boolean  true = No filtra por datos que llegas del formulario $_REQUEST
 	 *  \return: Matriz, Array o String (Segun parametro mTipReturn)
 	 */
@@ -989,9 +982,9 @@ class Despac
 	 *  \brief: Trae los despachos en Etapa Cargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 18/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: $mTransp  Array  Informacion transportadora
-	 *  \param: $mTipReturn  String   array = Retorna array con número de los despachos; list = Retorna lista con número de los despachos;
+	 *  \param: $mTipReturn  String   array = Retorna array con n�mero de los despachos; list = Retorna lista con n�mero de los despachos;
 	 *	\param: mSinFiltro  Boolean  true = No filtra por datos que llegas del formulario $_REQUEST
 	 *  \return: Matriz, Array o String (Segun parametro mTipReturn)
 	 */
@@ -1096,7 +1089,6 @@ class Despac
 		echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
-
 		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		# Verifica Novedades por despacho
@@ -1154,9 +1146,9 @@ class Despac
 	 *  \brief: Trae los despachos en Etapa Descargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 06/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: $mTransp  Array  Informacion transportadora
-	 *  \param: $mTipReturn  String   array = Retorna array con número de los despachos; list = Retorna lista con número de los despachos; list2 = Lista de Despachos Pertenecientes a etapas Cargue y Descargue;
+	 *  \param: $mTipReturn  String   array = Retorna array con n�mero de los despachos; list = Retorna lista con n�mero de los despachos; list2 = Lista de Despachos Pertenecientes a etapas Cargue y Descargue;
 	 *	\param: mSinFiltro  Boolean  true = No filtra por datos que llegas del formulario $_REQUEST
 	 *  \return: Matriz, Array o String (Segun parametro mTipReturn)
 	 */
@@ -1359,7 +1351,7 @@ class Despac
 	 *  \brief: Trae los despachos para las empresas que solo tienen parametrizado ind_transi
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 26/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mTransp  Array  Informacion transportadora
 	 *  \return: Matriz
 	 */
@@ -1470,7 +1462,7 @@ class Despac
 	 *  \brief: Trae los despachos para las empresas que tienen parametrizado Cargue, Transito y Descargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 07/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mTransp  Array  Informacion transportadora
 	 *  \return: Matriz
 	 */
@@ -1635,7 +1627,7 @@ class Despac
 	 *  \brief: Trae los despachos para las empresas que solo tienen parametrizado ind_segctrl
 	 *  \author: Ing. Luis Manrique
 	 *	\date: 09/12/2019
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mTransp  Array  Informacion transportadora
 	 *  \return: Matriz
 	 */
@@ -1745,7 +1737,7 @@ class Despac
 	 *  \brief: Trae informacion adicional del despacho
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 02/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mDespac  Array  Data del Despacho
 	 *  \param: mTransp  Array  Informacion transportadora
 	 *  \param: mTipValida  String  Tipo de validacion
@@ -1851,7 +1843,7 @@ class Despac
 					$mResult[fec_plaprc] = $mResult[sig_pcontr][fec_progra]; #Fecha planeada del siguinete PC
 			}
 		}
-
+		
 		return $mResult;
 	}
 
@@ -1859,7 +1851,7 @@ class Despac
 	 *  \brief: Verifica despachos en ruta por placa, a cargo faro y sin novedades en ultimo PC
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 29/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mNumPlacax  String  Placa
 	 *  \param: mNumDespac  String  Numero del despacho 
 	 *  \return: String
@@ -1935,10 +1927,10 @@ class Despac
 	}
 
 	/*! \fn: getTranspServic
-	 *  \brief: Traer las transportadoras según tipo de servicio
+	 *  \brief: Traer las transportadoras seg�n tipo de servicio
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 19/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mTipEtapax  String   Tipo de Seguimiento ( ind_segcar, ind_segtra, ind_segdes )
 	 *  \param: mCodTransp  Integer  Codigo de la transportadora 
 	 *  \param: mAddWherex  String   Where adicional
@@ -2029,7 +2021,7 @@ class Despac
 	 *  \brief: Verifica el tipo de validacion que aplica por transportadora
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 22/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: Data Transportadora
 	 *  \return: 
 	 */
@@ -2053,7 +2045,7 @@ class Despac
 	 *  \brief: Retorna el tiempo parametrizado para iniciar seguimiento etapa Descargue
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 07/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mTransp  Array  Informacion de la Transportadora
 	 *  \param: mCodTipdes  String  Codigo Tipo de Despacho   
 	 *  \return: Integer
@@ -2096,7 +2088,7 @@ class Despac
 	 *  \brief: Calcula el tiempo por fecha de alarma
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 22/06/2016
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: $mDespac   Matriz	Datos Despachos
 	 *  \param: $mTransp   Array  	Informacion de la transportadora
 	 *  \param: $mIndCant  Integer  0:Retorna Despachos con Tiempos; 1:Retorna Cantidades
@@ -2107,9 +2099,9 @@ class Despac
 	private function calTimeAlarma( $mDespac, $mTransp, $mIndCant = 0, $mFiltro = NULL, $mColor = NULL )
 	{
 		$mTipValida = self::tipValidaTiempo( $mTransp );
-
+	
 		if( $mIndCant == 1 )
-		{ #Define Cantidades según estado
+		{ #Define Cantidades seg�n estado
 			$mResult[fin_rutaxx] = 0;
 			$mResult[ind_acargo] = 0;
 			$mResult[est_pernoc] = 0;
@@ -2139,7 +2131,9 @@ class Despac
 
 			if( $mDespac[$i][can_noveda] > 0 )
 			{#Despacho con Novedades
+
 				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_planea], self::$cHoy ); #Script /lib/general/function.inc
+				
 				$mDespac[$i][tiempoGl] = getDiffTime( $mDespac[$i][fec_planGl], self::$cHoy ); #Script /lib/general/function.inc
 
 				if( $mDespac[$i][ind_fuepla] == '1' && $mDespac[$i][tiempo] < 0 ){
@@ -2154,8 +2148,8 @@ class Despac
 			$mViewBa = self::getView('jso_bandej');
 			# Arma la matriz resultante 
 			if( $mIndCant == 1 )
-			{# Cantidades según estado
-				if($mViewBa->tie_alarma->ind_visibl==1){
+			{# Cantidades seg�n estado
+				if($mDespac[$i][tiempoGl]){
 					if( $mPernoc == true ){
 						$mResult[est_pernoc]++;
 						$mResult[enx_seguim]++;
@@ -2238,7 +2232,7 @@ class Despac
 				}
 			}
 			else
-			{# Colores e información del despacho según estado
+			{# Colores e informaci�n del despacho seg�n estado
 
 				if( $mFiltro == 'sinF' )
 					$mBandera = true;
@@ -2248,7 +2242,7 @@ class Despac
 					$mBandera = false;
 
 				if ($mViewBa->tie_alarma->ind_visibl==1) {
-					#Arma Matriz resultante seún fase
+					#Arma Matriz resultante se�n fase
 					if( ($mFiltro == 'est_pernoc' || $mFiltro == 'sinF' || $mFiltro == 'enx_seguim') && $mPernoc == true && $mDespac[$i][ind_defini] != 'SI' && $mDespac[$i][ind_finrut] != '1' )
 					{ #Pernoctacion
 						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
@@ -2513,7 +2507,7 @@ class Despac
 	 *  \brief: Detalle de la bandeja, lista los despachos
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 25/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -2531,7 +2525,7 @@ class Despac
 		
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
 
-		#Según Etapa
+		#Seg�n Etapa
 		switch ( $_REQUEST['ind_etapax'] )
 		{
 			case 'ind_segprc':
@@ -2694,7 +2688,7 @@ class Despac
 	 *  \brief: Pinta la tabla del detalle de la bandeja
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 23/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mTittle  Array  Titulos para la cabecera de la tabla
 	 *  \param: mData   Matriz  Data para el contenido de la tabla
 	 *  \param: mOpcion	Integer Opcion para el link del despacho
@@ -2932,10 +2926,10 @@ class Despac
 	}
 
 	/*! \fn: detailSearch
-	 *  \brief: Imprime resultados de la busqueda según despacho en transito o finalizados
+	 *  \brief: Imprime resultados de la busqueda seg�n despacho en transito o finalizados
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 08/09/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -2954,7 +2948,7 @@ class Despac
 	 *  \brief: Muestra el detallado de los despachos que conincidan con los parametros de busqueda
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 10/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mIndFinrut  Boolean  True = Indicador despacho finalizado
 	 *  \return:
 	 */
@@ -3078,7 +3072,7 @@ class Despac
 	 *  \brief: Trae el despacho para para viajes consolidados
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 08/09/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mNumViajex  String   Numero de Viaje
 	 *  \return: Integer
 	 */
@@ -3097,10 +3091,10 @@ class Despac
 	}
 
 	/*! \fn: getDataSearch
-	 *  \brief: Trae la información del despacho para opción busqueda especifica
+	 *  \brief: Trae la informaci�n del despacho para opci�n busqueda especifica
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 08/09/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mIndFinrut  Boolean  True = Indicador despacho finalizado
 	 *  \param: mNumDespac  Integer  Numero de despacho
 	 *  \return: Matriz
@@ -3178,7 +3172,7 @@ class Despac
 	 *  \brief: Informe General
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 13/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -3303,7 +3297,7 @@ class Despac
 	 *  \brief: Crea una lista desplegable para el formulario
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 14/07/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mTitulo  String  Titulo del Campo
 	 *  \param: mNomSel  String  Nombre del Select
 	 *  \param: mMatriz  Matriz  Matriz con las opciones
@@ -3412,7 +3406,7 @@ class Despac
 	}
 
 	/*! \fn: getDataPernoc
-	 *  \brief: Trae la data para la pestaña C. PERNOCTACION
+	 *  \brief: Trae la data para la pesta�a C. PERNOCTACION
 	 *  \author: Ing. Fabian Salinas
 	 *  \date: 18/03/2016
 	 *  \date modified: dd/mm/aaaa
@@ -3579,7 +3573,7 @@ class Despac
 	 *  \brief: Imprime la table para la etapa precargue
 	 *  \author: Edward Serrano
 	 *	\date: 10/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mIndEtapa  String  Etapa 
 	 *  \param: mTittle  Matriz  Titulos y Colores
 	 *  \param: mStyleCel  Matriz  filas y colunmas
@@ -3616,7 +3610,7 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_paraco] == 0 ? '' : 'onclick="showDetailBand(\'con_paraco\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_paraco].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_anulad] == 0 ? '' : 'onclick="showDetailBand(\'con_anulad\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_anulad].'</td>';
 				
-				//En planta nuevo, es todo lo que está en pestaña de cargue
+				//En planta nuevo, es todo lo que est� en pesta�a de cargue
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[enx_planta] == 0 ? '' : 'onclick="showDetailBand(\'enx_planta\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[enx_planta].'</td>';
 				
 
@@ -3693,7 +3687,7 @@ class Despac
 	 *  \brief: Calcula el tiempo por fecha de alarma para precargue
 	 *  \author: Edward Serrano
 	 *	\date: 12/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: $mDespac   Matriz	Datos Despachos
 	 *  \param: $mTransp   Array  	Informacion de la transportadora
 	 *  \param: $mIndCant  Integer  0:Retorna Despachos con Tiempos; 1:Retorna Cantidades
@@ -3709,7 +3703,7 @@ class Despac
 		$fec_sisHoraIni = date("Y-m-d")." ".($_REQUEST['hor_inicio']?$_REQUEST['hor_inicio']:" 00:00:01");
 		$fec_sisHoraFin = date("Y-m-d")." ".($_REQUEST['hor_finxxx']?$_REQUEST['hor_finxxx']:" 23:59:59");
 		if( $mIndCant == 1 )
-		{ #Define Cantidades según estado
+		{ #Define Cantidades seg�n estado
 			$mResult["con_paradi"] = 0;//para el dia
 			$mResult["con_paraco"] = 0;//para el corte
 			$mResult["con_anulad"] = 0;//anulados
@@ -3760,7 +3754,7 @@ class Despac
 				{
 					//$mResult["con_paradi"]++;
 				}
-				if( strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) >=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraIni ) )) && strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) <=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraFin ) )) && $mDespac[$i]["ind_anulad"] != "A" ) // del día actual
+				if( strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) >=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraIni ) )) && strtotime(date( "Y-m-d H:i:s", strtotime($mDespac[$i]['fec_citcar']." ".$mDespac[$i]['hor_citcar'] ) )) <=  strtotime(date( "Y-m-d H:i:s", strtotime( $fec_sisHoraFin ) )) && $mDespac[$i]["ind_anulad"] != "A" ) // del d�a actual
 				{
 					$mResult["con_paraco"]++;
 				}
@@ -3992,7 +3986,7 @@ class Despac
 	 *  \brief: Calcula el tiempo por fecha de alarma para precargue
 	 *  \author: Edward Serrano
 	 *	\date: 12/03/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: $mDespac   Matriz	Datos Despachos
 	 *  \param: $mTransp   Array  	Informacion de la transportadora
 	 *  \param: $mIndCant  Integer  0:Retorna Despachos con Tiempos; 1:Retorna Cantidades
@@ -4048,7 +4042,7 @@ class Despac
 	 *  \brief: Genera formulario de validacion de novedades NEM
 	 *  \author: Edward Serrano
 	 *	\date: 11/05/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \return: 
 	 */
 	public function getFormValidaProNove()
@@ -4125,7 +4119,7 @@ class Despac
 	* \brief: Trae las novedades actuales
 	* \author: Edward Serrano
 	* \date: 17/04/2017
-	* \date modified: dia/mes/año
+	* \date modified: dia/mes/a�o
 	* \param: paramatro
 	* \return valor que retorna
 	*/
@@ -4202,7 +4196,7 @@ class Despac
 	* \brief: Trae las  informacion basica de las novedade
 	* \author: Edward Serrano
 	* \date: 12/05/2017
-	* \date modified: dia/mes/año
+	* \date modified: dia/mes/a�o
 	* \param: paramatro
 	* \return valor que retorna
 	*/
@@ -4234,7 +4228,7 @@ class Despac
 	* \brief: consulta si la noveda tiene protocolo
 	* \author: Edward Serrano
 	* \date: 12/05/2017
-	* \date modified: dia/mes/año
+	* \date modified: dia/mes/a�o
 	* \param: paramatro
 	* \return valor que retorna
 	*/
@@ -4261,7 +4255,7 @@ class Despac
 	* \brief: pinta complemento del formulario para la gestio de la nocedad
 	* \author: Edward Serrano
 	* \date: 12/05/2017
-	* \date modified: dia/mes/año
+	* \date modified: dia/mes/a�o
 	* \param: paramatro
 	* \return valor que retorna
 	*/
@@ -4666,7 +4660,7 @@ class Despac
 	}
 
 	/*! \fn: getDespacEtapaContro
-	 *  \brief: Busca los despacho que se encuentran en la etapa de Control Operación
+	 *  \brief: Busca los despacho que se encuentran en la etapa de Control Operaci�n
 	 *  \author: Luis Manrique
 	 *  \date:  9/12/2019
 	 *  \date modified: dd/mm/aaaa
@@ -4965,7 +4959,7 @@ class Despac
 	 *  \brief: Trae los generadores de carga que se encuenten en ruta
 	 *  \author: Edward Serrano
 	 *	\date: 02/11/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -4996,7 +4990,7 @@ class Despac
 	 *  \brief: Obtiene la lista de despachos generada
 	 *  \author: Edward Serrano
 	 *	\date: 28/11/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -5049,7 +5043,7 @@ class Despac
 	 *  \brief: Obtiene el horario del dia de la transportadora
 	 *  \author: Ing. Luis Manrique
 	 *	\date: 05/03/2019
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/a�o
 	 *  \param: 
 	 *  \return: string
 	 */
