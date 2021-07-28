@@ -738,8 +738,7 @@ class InsertNovedad {
       INNER JOIN    " . BD_STANDA . ".tab_mensaj_dispos c
               ON    b.cod_operad = c.cod_operad 
            WHERE    c.ind_novala = 1 AND 
-                    c.ind_estado = 1 ";*/
-                    
+                    c.ind_estado = 1 ";*/           
         $mQuery = "SELECT b.dir_emailx 
                      FROM " . BASE_DATOS . ".tab_despac_despac a,
                           " . BASE_DATOS . ".tab_genera_agenci b
