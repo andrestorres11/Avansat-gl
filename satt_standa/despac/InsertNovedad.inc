@@ -1074,7 +1074,6 @@ class InsertNovedad {
 
     function InsertarNovedadPC($base_datos, $regist, $ominter) {
         
-        mail("andres.martinez@eltransporte.org", "Gl demo origen", "AQUI ENTRA PC");
         $mIndEnSiti = true;
 
         if (in_array($regist['noveda'], self::$cCodNoved['4'])) { #Solucion a novedad Corona
