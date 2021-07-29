@@ -2854,30 +2854,56 @@ class Despac
 	private function orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo )
 	{
 		$mData = array();
-		#Ordena Matriz Por tiempo
-		$mNega = $mNegTieesp ? SortMatrix( $mNegTieesp, 'tiempo', 'ASC'  ) : array();
-		$mPosi = $mPosTieesp ? SortMatrix( $mPosTieesp, 'tiempo', 'DESC' ) : array();
-		$mData['tieesp'] = array_merge($mPosi, $mNega);
+		$mViewBa = self::getView('jso_bandej');
+		if($mViewBa->tie_alarma->ind_visibl==1){
+			#Ordena Matriz Por tiempo
+			$mNega = $mNegTieesp ? SortMatrix( $mNegTieesp, 'tiempoGl', 'ASC'  ) : array();
+			$mPosi = $mPosTieesp ? SortMatrix( $mPosTieesp, 'tiempoGl', 'DESC' ) : array();
+			$mData['tieesp'] = array_merge($mPosi, $mNega);
 
-		$mNegTiempo = self::separateMatrix($mNegTiempo);
-		$mPosTiempo = self::separateMatrix($mPosTiempo);
+			$mNegTiempo = self::separateMatrix($mNegTiempo);
+			$mPosTiempo = self::separateMatrix($mPosTiempo);
 
-		$mNega = $mNegTiempo[0] ? SortMatrix( $mNegTiempo[0], 'tiempo', 'ASC'  ) : array();
-		$mPosi = $mPosTiempo[0] ? SortMatrix( $mPosTiempo[0], 'tiempo', 'DESC' ) : array();
-		$mData['tiemp0'] = array_merge($mPosi, $mNega);
+			$mNega = $mNegTiempo[0] ? SortMatrix( $mNegTiempo[0], 'tiempoGl', 'ASC'  ) : array();
+			$mPosi = $mPosTiempo[0] ? SortMatrix( $mPosTiempo[0], 'tiempoGl', 'DESC' ) : array();
+			$mData['tiemp0'] = array_merge($mPosi, $mNega);
 
-		$mNega = $mNegTiempo[1] ? SortMatrix( $mNegTiempo[1], 'tiempo', 'ASC'  ) : array();
-		$mPosi = $mPosTiempo[1] ? SortMatrix( $mPosTiempo[1], 'tiempo', 'DESC' ) : array();
-		$mData['tiempo'] = array_merge($mPosi, $mNega);
+			$mNega = $mNegTiempo[1] ? SortMatrix( $mNegTiempo[1], 'tiempoGl', 'ASC'  ) : array();
+			$mPosi = $mPosTiempo[1] ? SortMatrix( $mPosTiempo[1], 'tiempoGl', 'DESC' ) : array();
+			$mData['tiempo'] = array_merge($mPosi, $mNega);
 
-		$mNega = $mNegFinrut ? SortMatrix( $mNegFinrut, 'tiempo', 'ASC'  ) : array();
-		$mPosi = $mPosFinrut ? SortMatrix( $mPosFinrut, 'tiempo', 'DESC' ) : array();
-		$mData['finrut'] = array_merge($mPosi, $mNega);
+			$mNega = $mNegFinrut ? SortMatrix( $mNegFinrut, 'tiempoGl', 'ASC'  ) : array();
+			$mPosi = $mPosFinrut ? SortMatrix( $mPosFinrut, 'tiempoGl', 'DESC' ) : array();
+			$mData['finrut'] = array_merge($mPosi, $mNega);
 
-		$mNega = $mNegAcargo ? SortMatrix( $mNegAcargo, 'tiempo', 'ASC'  ) : array();
-		$mPosi = $mPosAcargo ? SortMatrix( $mPosAcargo, 'tiempo', 'DESC' ) : array();
-		$mData['acargo'] = array_merge($mPosi, $mNega);
+			$mNega = $mNegAcargo ? SortMatrix( $mNegAcargo, 'tiempoGl', 'ASC'  ) : array();
+			$mPosi = $mPosAcargo ? SortMatrix( $mPosAcargo, 'tiempoGl', 'DESC' ) : array();
+			$mData['acargo'] = array_merge($mPosi, $mNega);
+		}else{
+			#Ordena Matriz Por tiempo
+			$mNega = $mNegTieesp ? SortMatrix( $mNegTieesp, 'tiempo', 'ASC'  ) : array();
+			$mPosi = $mPosTieesp ? SortMatrix( $mPosTieesp, 'tiempo', 'DESC' ) : array();
+			$mData['tieesp'] = array_merge($mPosi, $mNega);
 
+			$mNegTiempo = self::separateMatrix($mNegTiempo);
+			$mPosTiempo = self::separateMatrix($mPosTiempo);
+			
+			$mNega = $mNegTiempo[0] ? SortMatrix( $mNegTiempo[0], 'tiempo', 'ASC'  ) : array();
+			$mPosi = $mPosTiempo[0] ? SortMatrix( $mPosTiempo[0], 'tiempo', 'DESC' ) : array();
+			$mData['tiemp0'] = array_merge($mPosi, $mNega);
+
+			$mNega = $mNegTiempo[1] ? SortMatrix( $mNegTiempo[1], 'tiempo', 'ASC'  ) : array();
+			$mPosi = $mPosTiempo[1] ? SortMatrix( $mPosTiempo[1], 'tiempo', 'DESC' ) : array();
+			$mData['tiempo'] = array_merge($mPosi, $mNega);
+
+			$mNega = $mNegFinrut ? SortMatrix( $mNegFinrut, 'tiempo', 'ASC'  ) : array();
+			$mPosi = $mPosFinrut ? SortMatrix( $mPosFinrut, 'tiempo', 'DESC' ) : array();
+			$mData['finrut'] = array_merge($mPosi, $mNega);
+
+			$mNega = $mNegAcargo ? SortMatrix( $mNegAcargo, 'tiempo', 'ASC'  ) : array();
+			$mPosi = $mPosAcargo ? SortMatrix( $mPosAcargo, 'tiempo', 'DESC' ) : array();
+			$mData['acargo'] = array_merge($mPosi, $mNega);
+		}
 		return $mData;
 	}
 	
