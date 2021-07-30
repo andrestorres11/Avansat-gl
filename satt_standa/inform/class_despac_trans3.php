@@ -1765,6 +1765,7 @@ class Despac
 		{
 			if( $mDespac[tie_contra] != '' ){ #Tiempo parametrizado por Despacho
 				$mTime = $mDespac[tie_contra];
+				$mTimeGl = $mDespac[tie_contra];
 			}
 			elseif( $mDespac[cod_tipdes] == '1' )#Despacho Urbano
 				{
@@ -2668,8 +2669,6 @@ class Despac
 					continue;
 				}
 			}
-
-			
 		
 			$mHtml  = '';
 			$mHtml .= $mData['tieesp'] ? self::printTabDetail( $mTittle, $mData['tieesp'], sizeof($mData['tieesp']).' DESPACHOS CON TIEMPO MODIFICADO', '1' ) : '';
