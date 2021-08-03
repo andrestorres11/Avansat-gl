@@ -406,6 +406,7 @@ class EmailSeguim
                         AND g.hor_ingres !='00:00:00' 
                         AND g.hor_salida !='23:59:00' 
 						AND ( DATE_FORMAT(g.hor_ingres,'%H') = '".$hora."' OR DATE_FORMAT(g.hor_salida,'%H') = '".$hora."')
+						AND g.ind_config = '3'
                     GROUP BY c.cod_transp";
 
         $consulta = new Consulta($transpor, $this->conexion);
