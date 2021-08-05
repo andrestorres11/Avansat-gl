@@ -92,7 +92,7 @@ function formRegistro(modulo, tam, cod_regist = null) {
                     }
                 }).then((result) => {
                     if (result.value) {
-                        var form = $("#registCorreo").serialize();
+                        var form = $("#registHorari").serialize();
                         form = form + "&option=regForm"
                         $.ajax({
                             url: "../" + standa + "/config/ajax_genera_horari.php",

@@ -42,10 +42,10 @@ class ajax_genera_horari
   private function setRegistros() {
     $mSql = " SELECT  a.cod_horari AS codigo,
                       a.nom_horari,
-                      a.cod_colorx,  
                       a.com_diasxx,
                       a.hor_inicia,
                       a.hor_finalx,
+                      a.cod_colorx,
                       a.cod_horari
                 FROM  ".BASE_DATOS.".tab_config_horari a";
     $mMatriz = new Consulta($mSql, $this->conexion);
@@ -71,8 +71,8 @@ class ajax_genera_horari
   }
 
    /*! \fn: form
-   *  \brief: Crea el formulario de para registrar información del banco
-   *  \author: Ing. Cristian Andres Torres
+   *  \brief: Crea el formulario de para registrar informacion
+   *  \author: Ing. Andres Martinez
    *  \date: 02/06/2020
    *  \date modified: dia/mes/año
    *  \param: 
@@ -81,23 +81,22 @@ class ajax_genera_horari
 
     function form(){
       try { 
-      	//Valida si existe codgi de bancos para consultarlos o crearlos en vacio
+      	//Valida si existe  para consultarlos o crearlos en vacio
         if($_REQUEST['cod_regist'] == ''){
-          $mData = $arrayName = array('cod_horari' => '', 'dir_emailx' => '', 'num_remdes' => '', 'ind_infmen' => '', 'ind_seguim' => '');
-          $titlo = "Registrar Correos";
-          $action = 0;
+          $mData = $arrayName = array('cod_horari' => '', 'nom_horari' => '', 'cod_colorx' => '', 'com_diasxx' => '', 'hor_inicia' => '', 'hor_finalx' => '');
+          $titlo = "Registrar Horarios";
         }else{
-          $mSql = " SELECT  a.dir_emailx,
-                            a.num_remdes,
-                            ind_infmen,
-                            ind_seguim,
+          $mSql = " SELECT  a.nom_horari,
+                            a.cod_colorx,  
+                            a.com_diasxx,
+                            a.hor_inicia,
+                            a.hor_finalx,
                             a.cod_horari
                       FROM  ".BASE_DATOS.".tab_config_horari a
                      WHERE  a.cod_horari = ".$_REQUEST['cod_regist'];
           $mMatriz = new Consulta($mSql, $this->conexion);
           $mData = $mMatriz->ret_matrix("a")[0];
           $titlo = "Actualizar";
-          $action = 1;
         }
 
         $html .= '
@@ -106,95 +105,92 @@ class ajax_genera_horari
                       <h4>'.$titlo.'</h4>
                     </div>
                   <div class="panel-body">
-                    <form role="form" id="registCorreo">
+                    <form role="form" id="registHorari">
                       <div class="well">';
 
-        $html .= $this->darCampos($mData, $action).'</div>
+        $html .= $this->darCampos($mData).'</div>
                     </form>
                   </div>
                 </div>';
 
           echo utf8_decode($html);
       } catch (Exception $e) {
-        echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+        echo 'Excepcion capturada: ',  $e->getMessage(), "\n";
+      }
+    }
+
+
+    function ValidaDias($dias, $dia ){
+      if(in_array($dia, $dias)){
+          return "checked";
       }
     }
 
      /*! \fn: darCampos
    *  \brief: retorna la informacion del formulario para registro y actualización
-   *  \author: Ing. Cristian Andres Torres
+   *  \author: Ing. Andres Martinez
    *  \date: 02/06/2020
    *  \date modified: dia/mes/año
    *  \param: 
    *  \return: HTML 
    */
-    function darCampos($datos="", $action=0){
+    function darCampos($datos=""){
 
-        if($datos['ind_seguim'] ==1){
-            $checkedSeguim="checked";
-        }
-        if($datos['ind_infmen'] ==1){
-            $checkedInform="checked";
-        }
+    $dias = explode("|", $datos['com_diasxx']);
+
       $campos = '
                         <div class="row">
-                          <div class="col-12">
+                          <div class="col-lg-6">
                             <div class="form-group">
-                              <label for="cliente">Cliente:</label>
-                              <select class="form-control" id="cliente" name="cliente">
-                                <option value="" style="background-color:#dff0d8; color:#3c763d">GESTIÓN DE ASISTENCIA</option>
-                                '.$this->darClientes($datos['num_remdes']).'
-                              </select>
+                              <label for="name">Nombre Horario:</label>
+                              <input type="text" class="form-control" id="nom_horari" name="nom_horari" placeholder="Nombre" value="'.$datos['nom_horari'].'">
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="color">Color:</label>
+                              <input type="color" id="cod_colorx" name="cod_colorx" value="'.$datos['cod_colorx'].'">
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="horini">Hora Inicio:</label>
+                              <input type="time" class="form-control" id="hor_inicia" name="hor_inicia" placeholder="Hora Inicio" value="'.$datos['hor_inicia'].'">
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              <label for="horfin">Hora Fin:</label>
+                              <input type="time" class="form-control" id="hor_finalx" name="hor_finalx" placeholder="Hora Fin" value="'.$datos['hor_finalx'].'">
                             </div>
                           </div>
                         </div>
-                        <div class="row">
-                          <div class="col-12">
-                            <div class="form-group">
-                              <label for="correos"><span style="color:red">Puede registrar mas de un correo separado por (,)</span></label>
-                              <input type="text" class="form-control" id="correos" name="correos" placeholder="Correo(s)" value="'.$datos['dir_emailx'].'">
-                            </div>
-                          </div>
-                        </div>
-                        <label>Informe Mensual</label>
-                        <input type="checkbox" class="form-control form-control-sm"  name="ind_infmen" id="ind_infmen" '.$checkedInform.' style="height: auto;"/>
-                        <label> Informe de seguimientos diario</label>
-                        <input type="checkbox" class="form-control form-control-sm"  name="ind_seguim" id="ind_seguim" '.$checkedSeguim.' style="height: auto;"/>
-                        <input type="hidden" name="correoID" value="'.$datos['cod_horari'].'">
-                        <input type="hidden" name="actionID" id="action" value="'.$action.'">
+                        <label>Lunes</label>
+                          <input type="checkbox" class="form-control form-control-sm" value="L" name="checkL" id="checkL" '.self::ValidaDias($dias, "L").' style="height: auto;"/>
+                        <label>Martes</label>
+                          <input type="checkbox" class="form-control form-control-sm" value="M" name="checkM" id="checkM" '.self::ValidaDias($dias, "M").' style="height: auto;"/>
+                        <label>Miercoles</label>
+                          <input type="checkbox" class="form-control form-control-sm" value="X" name="checkX" id="checkX" '.self::ValidaDias($dias, "X").' style="height: auto;"/>
+                        <label>Jueves</label>
+                          <input type="checkbox" class="form-control form-control-sm" value="J" name="checkJ" id="checkJ" '.self::ValidaDias($dias, "J").' style="height: auto;"/>
+                        <label>Viernes</label>
+                          <input type="checkbox" class="form-control form-control-sm" value="V" name="checkV" id="checkV" '.self::ValidaDias($dias, "V").' style="height: auto;"/>
+                        <label>Sabado</label>
+                          <input type="checkbox" class="form-control form-control-sm" value="S" name="checkS" id="checkS" '.self::ValidaDias($dias, "S").' style="height: auto;"/>
+                        <label>Domingo</label>
+                          <input type="checkbox" class="form-control form-control-sm" value="D" name="checkD" id="checkD" '.self::ValidaDias($dias, "D").' style="height: auto;"/>
+                        <input type="hidden" name="horariID" value="'.$datos['cod_horari'].'">
         ';
       
         return $campos;
     }
 
-     /*! \fn: darClientes
-   *  \brief: retorna html con las opciones de los datos de los clientes
-   *  \author: Ing. Cristian Andres Torres
-   *  \date: 02/06/2020
-   *  \date modified: dia/mes/año
-   *  \param: 
-   *  \return: HTML 
-   */
-    function darClientes($cod_cliente=""){
-      $mSql = "SELECT a.cod_tercer, b.abr_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a INNER JOIN tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer ORDER BY b.abr_tercer ASC";
-      $mMatriz = new Consulta($mSql, $this->conexion);
-      $mData = $mMatriz->ret_matrix("a");
-      $html="";
-      foreach ($mData as $datos){
-        $selected="";
-        if($datos['cod_tercer'] == $cod_cliente){
-          $selected ="selected";
-        }
-        $html.='<option value="'.$datos['cod_tercer'].'" '.$selected.'>'.strtoupper($datos['abr_tercer']).'</option>';
-      }
-      return $html;
-
-    }
+    
 
 
   /*! \fn: delReg
    *  \brief: Elimina el registro
-   *  \author: Ing. Cristian Andrés Torres
+   *  \author: Ing. Andres Martinez
    *  \date: 02/06/2020
    *  \date modified: dia/mes/año
    *  \param: 
@@ -219,9 +215,10 @@ class ajax_genera_horari
         //Devuelve estatus de la consulta
         echo json_encode($return);
       } catch (Exception $e) {
-        echo 'Excepción delReg: ',  $e->getMessage(), "\n";
+        echo 'Excepcion delReg: ',  $e->getMessage(), "\n";
       }
     }
+
     function cleanArray($array){
 
       $arrayReturn = array();
@@ -249,9 +246,33 @@ class ajax_genera_horari
       return $arrayReturn;
   }
 
+  function StringDias($datos){
+    $diasLetra=array("L", "M", "X", "J", "V", "S", "D");
+    $dias=array();
+    $stringDias="";
+    foreach ($diasLetra as $dia) {
+      $inputletra = "check".$dia;
+      if($datos[$inputletra]== $dia){
+        $dias[]=$dia;
+      }
+      
+    }
+    
+    foreach ($dias as $key => $dia) {
+      $stringDias.=$dia;
+
+      if($key+1 < COUNT($dias)){
+        $stringDias.="|";
+      }
+
+    }
+    return $stringDias;
+  }
+
+
     /*! \fn: regForm
    *  \brief: Actualiza o crea nuevos registros de correos
-   *  \author: Ing. Cristian Andres Torres
+   *  \author: Ing. Andres Martinez
    *  \date: 02/06/2020
    *  \date modified: dia/mes/año
    *  \param: 
@@ -260,23 +281,23 @@ class ajax_genera_horari
   
     function regForm(){
         try {
-            //Consulta
-            if($this->validaExitencia($_REQUEST['cliente'],$_REQUEST['action'])){
-            
-                $codigo = empty($_REQUEST['correoID']) ? '' : "cod_horari = ".$_REQUEST['correoID'].", ";
+              
+                $codigo = empty($_REQUEST['horariID']) ? '' : "cod_horari = ".$_REQUEST['horariID'].", ";
                 $mQuery = "INSERT INTO  ".BASE_DATOS.".tab_config_horari 
                                 SET  $codigo
-                                    dir_emailx = '".$_REQUEST['correos']."',
-                                    num_remdes = '".$_REQUEST['cliente']."',
-                                    ind_infmen= '".($_REQUEST['ind_infmen'] == 'on'? 1 : 0)."',
-                                    ind_seguim= '".($_REQUEST['ind_seguim'] == 'on'? 1 : 0)."',
-                                    usr_creaci = '".$_SESSION['datos_usuario']['cod_usuari']."',
-                                    fec_creaci = NOW()
+                                    nom_horari = '".$_REQUEST['nom_horari']."',
+                                    cod_colorx = '".$_REQUEST['cod_colorx']."',
+                                    com_diasxx= '".self::StringDias($_REQUEST)."',
+                                    hor_inicia= '".$_REQUEST['hor_inicia']."',
+                                    hor_finalx= '".$_REQUEST['hor_finalx']."',
+                                    fec_creaci = NOW(),
+                                    usr_creaci = '".$_SESSION['datos_usuario']['cod_usuari']."'
                         ON DUPLICATE KEY UPDATE 	
-                                    dir_emailx  = '".$_REQUEST['correos']."',
-                                    num_remdes = '".$_REQUEST['cliente']."',
-                                    ind_infmen= '".($_REQUEST['ind_infmen'] == 'on'? 1 : 0)."',
-                                    ind_seguim= '".($_REQUEST['ind_seguim'] == 'on'? 1 : 0)."',
+                                  nom_horari = '".$_REQUEST['nom_horari']."',
+                                  cod_colorx = '".$_REQUEST['cod_colorx']."',
+                                  com_diasxx= '".self::StringDias($_REQUEST)."',
+                                  hor_inicia= '".$_REQUEST['hor_inicia']."',
+                                  hor_finalx= '".$_REQUEST['hor_finalx']."',
                                     usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                                     fec_modifi = NOW()              
                                 ";
@@ -284,7 +305,7 @@ class ajax_genera_horari
                 /*if($consulta == true){
             
                   $return['status'] = 200;
-                  if(empty($_REQUEST['correoID'])){
+                  if(empty($_REQUEST['horariID'])){
                     $return['response'] = 'El Operador GPS ha sido registrado exitosamente.';
                   }else{
                     $return['response'] = 'El Operador GPS ha sido Actualizado exitosamente.';
@@ -296,36 +317,21 @@ class ajax_genera_horari
                 if($consulta == true){
                   $return['status'] = 200;
                   
-                  if(empty($_REQUEST['correoID'])){
+                  if(empty($_REQUEST['horariID'])){
                     $return['response'] = 'El registro ha sido creado exitosamente.';
                   }else{
                     $return['response'] = 'El registro ha sido Actualizado exitosamente.';
                   }
-                }else{
-                  $return['status'] = 500;
-                  $return['response'] = 'Error al realizar el registro.';
-                }
             }else{
                 $return['status'] = 500;
                 $return['response'] = 'La transportadora ya contiene correos asociados a ella.';
             }
             echo json_encode($return);
         } catch (Exception $e) {
-            echo 'Excepción regForm: ',  $e->getMessage(), "\n";
+            echo 'Excepcinn regForm: ',  $e->getMessage(), "\n";
         }
     }
 
-    function validaExitencia($num_remdes, $action){
-        
-      $mQuery = "SELECT COUNT(*) FROM ".BASE_DATOS.".tab_config_horari WHERE num_remdes = '$num_remdes'";
-      $consulta = new Consulta($mQuery, $this -> conexion); 
-      $cantidad= $consulta->ret_matrix()[0][0];
-      
-      if($cantidad>=1 && $action =0){
-        return false;
-      }
-      return true;
-    }
 
 }
 
