@@ -130,6 +130,7 @@ class parametrizacion_horarios
                                 <th>Hora Inicio</th>
                                 <th>Hora Fin</th>
                                 <th>Color</th>
+                                <th>Estado</th>
                                 <th>Opciones</th>
                               </tr>
                             </thead>

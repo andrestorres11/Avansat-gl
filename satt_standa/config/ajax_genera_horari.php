@@ -46,6 +46,7 @@ class ajax_genera_horari
                       a.hor_inicia,
                       a.hor_finalx,
                       a.cod_colorx,
+                      IF(a.ind_estado=1,'ACTIVO','INACTIVO') as 'ind_estado',
                       a.cod_horari
                 FROM  ".BASE_DATOS.".tab_config_horari a";
     $mMatriz = new Consulta($mSql, $this->conexion);
@@ -55,11 +56,31 @@ class ajax_genera_horari
 
     foreach ($mMatriz as $key => $datos) {
     	foreach ($datos as $campo => $valor) {
+      /*if($campo == "ind_estado"){
+            if($ind_intgps== 'NO'){
+              if($valor == 'ACTIVO'){
+                  $html ='<button onclick="updEst(this)" value="'.$datos['cod_operad'].'" data-estado="1" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>&nbsp;';
+                }else{
+                  $html ='<button onclick="updEst(this)" value="'.$datos['cod_operad'].'" data-estado="0" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></button>&nbsp;';
+                }
+              $html .='<button onclick="formRegistro(\'form\', \'xl\', this.value)" value="'.$datos['cod_operad'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
+            }else{
+              $html= '<label for="Name">Operador Estandar</label>';
+            }    
+          $data[$key][] = $valor;
+          $data[$key][] = $html;	
+        }else{
+          $data[$key][] = $valor;	
+        }*/ 
+
     		if($campo == "cod_horari"){
                 $html = '<button onclick="delReg(this)" value="'.$datos['cod_horari'].'" data-estado="'.$datos['cod_horari'].'" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>&nbsp;';
           			$html .='<button onclick="formRegistro(\'form\', \'xl\', this.value)" value="'.$datos['cod_horari'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
           		$data[$key][] = $html;	
-    		}else{
+    		}elseif($campo == "cod_colorx"){
+          $html = '<div style="width:100% ; height: 28px; background-color:'.$datos['cod_colorx'].'" !important></div>';
+          $data[$key][] = $html;
+        }else{
     			$data[$key][] = $valor;	
     		}
     		
@@ -139,47 +160,75 @@ class ajax_genera_horari
     $dias = explode("|", $datos['com_diasxx']);
 
       $campos = '
-                        <div class="row">
-                          <div class="col-lg-6">
-                            <div class="form-group">
-                              <label for="name">Nombre Horario:</label>
-                              <input type="text" class="form-control" id="nom_horari" name="nom_horari" placeholder="Nombre" value="'.$datos['nom_horari'].'">
-                            </div>
-                          </div>
-                          <div class="col-lg-6">
-                            <div class="form-group">
-                              <label for="color">Color:</label>
-                              <input type="color" id="cod_colorx" name="cod_colorx" value="'.$datos['cod_colorx'].'">
-                            </div>
-                          </div>
-                          <div class="col-lg-6">
-                            <div class="form-group">
-                              <label for="horini">Hora Inicio:</label>
-                              <input type="time" class="form-control" id="hor_inicia" name="hor_inicia" placeholder="Hora Inicio" value="'.$datos['hor_inicia'].'">
-                            </div>
-                          </div>
-                          <div class="col-lg-6">
-                            <div class="form-group">
-                              <label for="horfin">Hora Fin:</label>
-                              <input type="time" class="form-control" id="hor_finalx" name="hor_finalx" placeholder="Hora Fin" value="'.$datos['hor_finalx'].'">
-                            </div>
-                          </div>
-                        </div>
-                        <label>Lunes</label>
-                          <input type="checkbox" class="form-control form-control-sm" value="L" name="checkL" id="checkL" '.self::ValidaDias($dias, "L").' style="height: auto;"/>
-                        <label>Martes</label>
-                          <input type="checkbox" class="form-control form-control-sm" value="M" name="checkM" id="checkM" '.self::ValidaDias($dias, "M").' style="height: auto;"/>
-                        <label>Miercoles</label>
-                          <input type="checkbox" class="form-control form-control-sm" value="X" name="checkX" id="checkX" '.self::ValidaDias($dias, "X").' style="height: auto;"/>
-                        <label>Jueves</label>
-                          <input type="checkbox" class="form-control form-control-sm" value="J" name="checkJ" id="checkJ" '.self::ValidaDias($dias, "J").' style="height: auto;"/>
-                        <label>Viernes</label>
-                          <input type="checkbox" class="form-control form-control-sm" value="V" name="checkV" id="checkV" '.self::ValidaDias($dias, "V").' style="height: auto;"/>
-                        <label>Sabado</label>
-                          <input type="checkbox" class="form-control form-control-sm" value="S" name="checkS" id="checkS" '.self::ValidaDias($dias, "S").' style="height: auto;"/>
-                        <label>Domingo</label>
-                          <input type="checkbox" class="form-control form-control-sm" value="D" name="checkD" id="checkD" '.self::ValidaDias($dias, "D").' style="height: auto;"/>
-                        <input type="hidden" name="horariID" value="'.$datos['cod_horari'].'">
+          <div class="row">
+            <div class="form-group col-md-8">
+              <label for="name">Nombre Horario:</label>
+              <input type="text" class="form-control" id="nom_horari" name="nom_horari" placeholder="Nombre" value="'.$datos['nom_horari'].'">
+            </div>
+          
+            <div class="form-group col-md-4">
+              <label for="color">Color:</label>
+              <input type="color" class="form-control" id="cod_colorx" name="cod_colorx" value="'.$datos['cod_colorx'].'">
+            </div>
+          </div>
+          <div class="row">
+            <div class="panel panel-success col-md-12">
+              <h5>Dias de la semana</h5>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label>Lunes</label>
+                <input type="checkbox" class="form-control form-control-sm" value="L" name="checkL" id="checkL" '.self::ValidaDias($dias, "L").' style="height: auto;"/>
+            </div>  
+            <div class="form-group col-md-6">
+              <label>Martes</label>
+                <input type="checkbox" class="form-control form-control-sm" value="M" name="checkM" id="checkM" '.self::ValidaDias($dias, "M").' style="height: auto;"/>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label>Miercoles</label>
+                <input type="checkbox" class="form-control form-control-sm" value="X" name="checkX" id="checkX" '.self::ValidaDias($dias, "X").' style="height: auto;"/>
+            </div>
+            <div class="form-group col-md-6">
+              <label>Jueves</label>
+                <input type="checkbox" class="form-control form-control-sm" value="J" name="checkJ" id="checkJ" '.self::ValidaDias($dias, "J").' style="height: auto;"/>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-md-6">  
+              <label>Viernes</label>
+                <input type="checkbox" class="form-control form-control-sm" value="V" name="checkV" id="checkV" '.self::ValidaDias($dias, "V").' style="height: auto;"/>
+            </div>
+            <div class="form-group col-md-6">
+              <label>Sabado</label>
+                <input type="checkbox" class="form-control form-control-sm" value="S" name="checkS" id="checkS" '.self::ValidaDias($dias, "S").' style="height: auto;"/>
+            </div>
+          </div> 
+          <div class="row">
+            <div class="form-group col-md-6">  
+              <label>Domingo</label>
+                <input type="checkbox" class="form-control form-control-sm" value="D" name="checkD" id="checkD" '.self::ValidaDias($dias, "D").' style="height: auto;"/>
+            </div>
+            <div class="form-group col-md-6">  
+              <label>Festivo</label>
+                <input type="checkbox" class="form-control form-control-sm" value="F" name="checkF" id="checkF" '.self::ValidaDias($dias, "F").' style="height: auto;"/>
+            </div>
+          </div> 
+          <div class="row">
+            <div class="form-group col-md-6">
+              <label for="horini">Hora Inicio:</label>
+              <input type="time" class="form-control" id="hor_inicia" name="hor_inicia" placeholder="Hora Inicio" value="'.$datos['hor_inicia'].'">
+            </div>
+            <div class="form-group col-md-6">
+              <label for="horfin">Hora Fin:</label>
+              <input type="time" class="form-control" id="hor_finalx" name="hor_finalx" placeholder="Hora Fin" value="'.$datos['hor_finalx'].'">
+            </div>
+          </div>
+           
+          <input type="hidden" name="horariID" value="'.$datos['cod_horari'].'">
         ';
       
         return $campos;
@@ -247,7 +296,7 @@ class ajax_genera_horari
   }
 
   function StringDias($datos){
-    $diasLetra=array("L", "M", "X", "J", "V", "S", "D");
+    $diasLetra=array("L", "M", "X", "J", "V", "S", "D", "F");
     $dias=array();
     $stringDias="";
     foreach ($diasLetra as $dia) {
@@ -328,7 +377,7 @@ class ajax_genera_horari
             }
             echo json_encode($return);
         } catch (Exception $e) {
-            echo 'Excepcinn regForm: ',  $e->getMessage(), "\n";
+            echo 'Excepcion regForm: ',  $e->getMessage(), "\n";
         }
     }
 
