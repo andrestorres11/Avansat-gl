@@ -161,7 +161,7 @@ function delReg(objet) {
     try {
         Swal.fire({
             title: decode_utf8('Estas seguro?'),
-            text: decode_utf8("Estas seguro que desea Eliminar este registro?"),
+            text: decode_utf8("Estas seguro que desea Actualizar el estado de este registro?"),
             type: 'question',
             showCancelButton: true,
             confirmButtonColor: '#336600',
@@ -186,7 +186,7 @@ function delReg(objet) {
                     success: function(data) {
                         if (data['status'] == 200) {
                             Swal.fire({
-                                title: '¡Eliminado!',
+                                title: 'Actualizado!',
                                 text: data['response'],
                                 type: 'success',
                                 confirmButtonColor: '#336600'
@@ -213,6 +213,64 @@ function delReg(objet) {
     }
 }
 
+function updEst(objet){
+    var estText = $(objet).attr('data-estado') == 1 ? 'desactivar':'activar';
+    try {
+        Swal.fire({
+          title: 'Estas seguro?',
+          text: "Estas seguro que desea "+estText+" este registro?",
+          type: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#336600',
+          cancelButtonColor: '#aaa',
+          confirmButtonText: 'Si, confirmar'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: "../" + standa + "/config/ajax_genera_horari.php",
+                    type: "post",
+                    data: ({option: 'updEst', estado: $(objet).attr('data-estado'), cod_regist:$(objet).val()}),
+                    dataType: "json",
+                    beforeSend: function()
+                    {
+                        Swal.fire({
+                          title:'Cargando',
+                          text: 'Por favor espere...',
+                          imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+                              imageAlt: 'Custom image',
+                              showConfirmButton: false,
+                        })
+                    },
+                    success: function(data) {
+                        if(data['status'] == 200){
+                            Swal.fire({
+                              title:'Registrado!',
+                              text:  data['response'],
+                              type: 'success',
+                              confirmButtonColor: '#336600'
+                            }).then((result) => {
+                                if (result.value) {
+                                    var table = $('#contenedor #tablaRegistros').DataTable();
+                                    table.ajax.reload();
+                                }
+                            })
+                        }else{
+                            Swal.fire({
+                              title:'Error!',
+                              text:  data['response'],
+                              type: 'error',
+                              confirmButtonColor: '#336600'
+                            })
+                        }
+                    }
+                });
+            }
+        });
+    }
+    catch(error) {
+      console.error(error);
+    }
+}
 //---------------------------------------------
 /*! \fn: validateFields
  *  \brief: Toma la función validaciones y actualiza la visual y gestión de los datos

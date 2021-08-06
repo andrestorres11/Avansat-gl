@@ -18,8 +18,8 @@ class ajax_genera_horari
       case 'form':
         $this->form();
         break;
-      case 'delReg':
-        $this->delReg();
+      case 'updEst':
+        $this->updEst();
         break;
       case 'regForm':
         $this->regForm();
@@ -47,6 +47,7 @@ class ajax_genera_horari
                       a.hor_finalx,
                       a.cod_colorx,
                       IF(a.ind_estado=1,'ACTIVO','INACTIVO') as 'ind_estado',
+                      IF(a.ind_estado=1,'ACTIVO','INACTIVO') as estado,
                       a.cod_horari
                 FROM  ".BASE_DATOS.".tab_config_horari a";
     $mMatriz = new Consulta($mSql, $this->conexion);
@@ -56,26 +57,14 @@ class ajax_genera_horari
 
     foreach ($mMatriz as $key => $datos) {
     	foreach ($datos as $campo => $valor) {
-      /*if($campo == "ind_estado"){
-            if($ind_intgps== 'NO'){
-              if($valor == 'ACTIVO'){
-                  $html ='<button onclick="updEst(this)" value="'.$datos['cod_operad'].'" data-estado="1" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>&nbsp;';
-                }else{
-                  $html ='<button onclick="updEst(this)" value="'.$datos['cod_operad'].'" data-estado="0" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></button>&nbsp;';
-                }
-              $html .='<button onclick="formRegistro(\'form\', \'xl\', this.value)" value="'.$datos['cod_operad'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
-            }else{
-              $html= '<label for="Name">Operador Estandar</label>';
-            }    
-          $data[$key][] = $valor;
-          $data[$key][] = $html;	
-        }else{
-          $data[$key][] = $valor;	
-        }*/ 
 
-    		if($campo == "cod_horari"){
-                $html = '<button onclick="delReg(this)" value="'.$datos['cod_horari'].'" data-estado="'.$datos['cod_horari'].'" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>&nbsp;';
-          			$html .='<button onclick="formRegistro(\'form\', \'xl\', this.value)" value="'.$datos['cod_horari'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
+    		if($campo == "estado"){
+          if($valor == 'ACTIVO'){
+                $html = '<button onclick="updEst(this)" value="'.$datos['cod_horari'].'" data-estado="1" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>&nbsp;';
+          }else{
+              $html = '<button onclick="updEst(this)" value="'.$datos['cod_horari'].'" data-estado="0" class="btn btn-success"><i class="fa fa-check" aria-hidden="true"></i></button>&nbsp;';
+          }
+              $html .='<button onclick="formRegistro(\'form\', \'xl\', this.value)" value="'.$datos['cod_horari'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
           		$data[$key][] = $html;	
     		}elseif($campo == "cod_colorx"){
           $html = '<div style="width:100% ; height: 28px; background-color:'.$datos['cod_colorx'].'" !important></div>';
@@ -245,27 +234,35 @@ class ajax_genera_horari
    *  \param: 
    *  \return: json
    */
-    function delReg(){
+    function updEst(){
       try {
-        //Varibales Necesarias
+      //Varibales Necesarias
         $return = [];
+        $estado = $_REQUEST['estado'] == 1 ? 0 : 1;
 
         //Geera query
-        $mQuery = "DELETE FROM ".BASE_DATOS.".tab_config_horari WHERE cod_horari = '".$_REQUEST['cod_regist']."';";
+
+        $mQuery = "UPDATE ".BASE_DATOS.".tab_config_horari 
+                      SET ind_estado = $estado,
+                          usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                          fec_modifi = NOW()
+                    WHERE cod_horari = ".$_REQUEST['cod_regist'];
+        
         $consulta = new Consulta($mQuery, $this -> conexion);   
         if($consulta == true){
           $return['status'] = 200;
-          $return['response'] = 'El registro se ha eliminado correctamente.';
+          $return['response'] = 'El registro ha sido actualizado exitosamente.';
         }else{
           $return['status'] = 500;
-          $return['response'] = 'Error al eliminar.';
+          $return['response'] = 'Error al realizar la actualzación.';
         }
 
         //Devuelve estatus de la consulta
         echo json_encode($return);
-      } catch (Exception $e) {
-        echo 'Excepcion delReg: ',  $e->getMessage(), "\n";
+      }catch (Exception $e){
+        echo 'Excepción updEst: ',  $e->getMessage(), "\n";
       }
+      
     }
 
     function cleanArray($array){
