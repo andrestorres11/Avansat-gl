@@ -141,12 +141,12 @@ public function getTransp()
                         
                         $list->SetClose('no');
                         $list->SetCreate("Crear agencia", "onclick:formulario()");
-                        $list->SetHeader(utf8_decode("C贸digo de la agencia"), "field:a.cod_agenci; width:1%;  ");
+                        $list->SetHeader(utf8_decode("C骴igo de la agencia"), "field:a.cod_agenci; width:1%;  ");
                         $list->SetHeader("Agencia", "field:a.nom_agenci; width:1%");
                         $list->SetHeader("Transportadora", "field:f.abr_tercer; width:1%");
                         $list->SetHeader("Ciudad", "field:CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) ; width:1%");
-                        $list->SetHeader(utf8_decode("Direcci贸n"), "field:a.dir_agenci; width:1%");
-                        $list->SetHeader(utf8_decode("Tel茅fono"), "field:a.tel_agenci; width:1%");
+                        $list->SetHeader(utf8_decode("Direcci髇"), "field:a.dir_agenci; width:1%");
+                        $list->SetHeader(utf8_decode("Tel閒ono"), "field:a.tel_agenci; width:1%");
                         $list->SetHeader("Estado", "field:if(a.cod_estado = 1, 'Activa', 'Inactiva')" );
                         $list->SetOption("Opciones","field:cod_option; width:1%; onclikDisable:editarAgencia( 2, this ); onclikEnable:editarAgencia( 1, this ); onclikEdit:editarAgencia( 99, this )" );
                         $list->SetHidden("cod_agenci", "0" );
@@ -242,7 +242,7 @@ public function getTransp()
                 $mHtml->Table("tr");
                   $mHtml->Label("Transportadora:", "width:25%; *:1;");
                     $mHtml->Input(array("type" => "alpha", "name" => "transp", "id" => "nom_transpID", "width" => "25%", "maxlength" => "100", "minlength"=>"5", "validate" => "dir", "obl" => "1", "value" => $datos->abr_tercer));
-                    $mHtml->Label(utf8_decode("C贸digo:"), "width:25%; :1;");
+                    $mHtml->Label(utf8_decode("C&oacute;digo:"), "width:25%; :1;");
                     $mHtml->Input(array("type" => "numeric", "name" => "agenci[cod_agenci]", "id" => "num_verifiID", "width" => "10%", "disabled"=>true, "value" =>  $datos->cod_agenci, "end" => true));
 
                     $mHtml->Label("Nombre De La Agencia:", "width:25%; *:1;");
@@ -251,16 +251,16 @@ public function getTransp()
                     $mHtml->Label(utf8_decode("Ciudad:"), "width:25%; *:1;");
                     $mHtml->Input(array("type" => "alpha", "name" => "ciudad", "id" => "ciudadID", "size"=>30, "validate" => "dir",  "obl" => "1", "minlength" => "5", "maxlength" => "100", "width" => "100px", "value" => $datos->abr_ciudad, "end" => true));
 
-                    $mHtml->Label(utf8_decode("Direcci贸n:"), "width:25%; *:1;");
+                    $mHtml->Label(utf8_decode("Direccion:"), "width:25%; *:1;");
                     $mHtml->Input(array("type" => "address", "name" => "agenci[dir_agenci]", "validate" => "dir", "minlength" => "5", "maxlength" => "100", "id" => "abr_tercer", "obl" => "1", "width" => "25%", "value" => $datos->dir_agenci));
                     
-                    $mHtml->Label(utf8_decode("Tel茅fono:"), "width:25%; *:1;");
+                    $mHtml->Label(utf8_decode("Tel&eacute;fono:"), "width:25%; *:1;");
                     $mHtml->Input(array("type" => "number", "name" => "agenci[tel_agenci]", "validate" => "numero",  "obl" => "1", "minlength" => "7", "maxlength" => "10", "id" => "tel_agenci", "width" => "25%", "value" => $datos->tel_agenci, "end" => true));
                     $mHtml->Label("Fax:", "width:25%; :1;");
                     $mHtml->Input(array("type" => "numeric", "name" => "agenci[num_faxxxx]", "validate" => "numero",  "minlength" => "7", "maxlength" => "10", "id" => "num_faxxxx", "width" => "25%", "value" => $datos->num_faxxxx));
 
                     $mHtml->Label("Email:", "width:25%; :1;"); 
-                    $mHtml->Input(array("type" => "number", "name" => "agenci[dir_emailx]", "validate" => "email",  "minlength" => "7", "maxlength" => "50", "id" => "dir_emailxID", "width" => "25%", "value" => $datos->dir_emailx, "end" => true));
+                    $mHtml->Input(array("type" => "number", "name" => "agenci[dir_emailx]", "validate" => "email",  "minlength" => "7", "maxlength" => "255", "id" => "dir_emailxID", "width" => "25%", "value" => $datos->dir_emailx, "end" => true));
                     $mHtml->Label("Contacto:", "width:25%; *:1;");
                     $mHtml->Input(array("type" => "text", "name" => "agenci[con_agenci]", "id" => "con_agenciID","minlength" => "8", "obl"=>"1", "maxlength" => "100", "width" => "25%", "value" => $datos->con_agenci));
                     if($oculto == false){
