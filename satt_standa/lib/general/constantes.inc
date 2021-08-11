@@ -87,10 +87,13 @@ define("URL_INTERF_SATCLO", "https://dev.intrared.net/ap/interf/app/sat/wsdl/sat
 
 define("URL_INTERF_GPSXXX", "https://avansatgl.intrared.net/ap/interf/app/gps/wsdl/gps.wsdl");
 
+define("URL_INTERF_CENTRAL", "https://central.intrared.net");
+
 
 
 define("MAIL_SUPERVISORES", "faroavansat@eltransporte.com");//Correo de supervisores
 define("MAIL_SOPORTE", "soporte.ingenieros@intrared.net");//Correo de soporte intrared
+define("MAIL_SUPERVISORES_ELTRANSPORTE", "supervisores@eltransporte.org");//Correo de supervisores el transporte
 
 //---------------------------------------------------------------------------------------------------
 //	CONSTANTES PARA PROCESOS DE ESCOLTA ELECTR�NICO CON PROTEKTO
