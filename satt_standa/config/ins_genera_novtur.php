@@ -124,7 +124,7 @@ class parametrizacion_novtur
                           <table id="tablaRegistros" class="table table-striped table-bordered" style="width: 100%;">
                             <thead>
                               <tr>
-                                <th>N°</th>
+                                <th>No</th>
                                 <th>Nombre</th>
                                 <th>Descripcion</th>
                                 <th>Estado</th>

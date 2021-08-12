@@ -124,7 +124,7 @@ class parametrizacion_horarios
                           <table id="tablaRegistros" class="table table-striped table-bordered" style="width: 100%;">
                             <thead>
                               <tr>
-                                <th>N°</th>
+                                <th>No</th>
                                 <th>Horario</th>
                                 <th>Dias</th>
                                 <th>Hora Inicio</th>
