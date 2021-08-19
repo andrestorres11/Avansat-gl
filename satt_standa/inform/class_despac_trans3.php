@@ -175,12 +175,12 @@ class Despac
 	private function infoPreCargue()
 	{
 		$mIndEtapa = 'ind_segprc';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'PROGRAMACION', 'REGISTRO', 'ESTADOS', 'PENDIENTES', 'PARA EL CORTE', 'ANULADOS', 'EN PLANTA', 'PORTERIA', 'SIN COMUNICACION', 'TRANSITO A PLANTA', 'CON NOVEDAD NO LLEGADA A PLANTA', 'CON NOVEDAD LLEGADA A PLANTA', 'A CARGO EMPRESA');
-		$mTittle['style'] = array('', '', '', '', 'bgPC1', 'bgPC2', 'bgPC1', '', '', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'No. DESPACHOS', 'PROGRAMACION', 'REGISTRO', 'ESTADOS', 'PENDIENTES', 'PARA EL CORTE', 'ANULADOS', 'EN PLANTA', 'PORTERIA', 'SIN COMUNICACION', 'TRANSITO A PLANTA', 'CON NOVEDAD NO LLEGADA A PLANTA', 'CON NOVEDAD LLEGADA A PLANTA', 'A CARGO EMPRESA');
+		$mTittle['style'] = array('', '', '', '','', '', 'bgPC1', 'bgPC2', 'bgPC1', '', '', '', '');
 		$mStyleCel = array(
-							"COL" => array('1', '1', '1', '1', '2', '2', '6', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'),
-					 		"ROW" => array('2', '2', '2', '2', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'),
-					 		"BR"  => array('0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0')
+							"COL" => array('1', '1', '1', '1','1', '1', '2', '2', '6', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'),
+					 		"ROW" => array('2', '2', '2', '2','2', '2', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1'),
+					 		"BR"  => array('0', '0', '0', '0', '0', '0', '0', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0')
 					 	  );
 		$mHtml .= '<div id=table2ID>';
 		$mHtml .= self::printInformPrc( $mIndEtapa, $mTittle, $mStyleCel );
@@ -200,8 +200,8 @@ class Despac
 	private function infoCargue()
 	{
 		$mIndEtapa = 'ind_segcar';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AVISO CONTROL CARGUE (0-30 MIN)', 'ALERTA CARGUE (31-60 MIN)', 'SIN CARGUE (61-90 MIN)', 'NOVEDAD EN CARGUE (91 MIN)', 'ESTADO PERNOCTACION', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgC1', 'bgC2', 'bgC3', 'bgC4', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'No. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AVISO CONTROL CARGUE (0-30 MIN)', 'ALERTA CARGUE (31-60 MIN)', 'SIN CARGUE (61-90 MIN)', 'NOVEDAD EN CARGUE (91 MIN)', 'ESTADO PERNOCTACION', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '', '', '', '', '', 'bgC1', 'bgC2', 'bgC3', 'bgC4', '', '');
 
 		$mHtml  = '<div id=table2ID>';
 		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
@@ -221,8 +221,8 @@ class Despac
 	private function infoTransito()
 	{
 		$mIndEtapa = 'ind_segtra';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta soluciï¿½n', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'No. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta soluciï¿½n', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '','', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id=table3ID>';
 		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
@@ -242,8 +242,8 @@ class Despac
 	private function infoControl()
 	{
 		$mIndEtapa = 'ind_segctr';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'EN SEGUIMIENTO', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta soluciï¿½n', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle['style'] = array('', '', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'EN SEGUIMIENTO', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta soluciï¿½n', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id="table3ID">';
 		$mHtml .= self::printInformContr( $mIndEtapa, $mTittle );
@@ -263,8 +263,8 @@ class Despac
 	private function infoDescargue()
 	{
 		$mIndEtapa = 'ind_segdes';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'SIN RETRASO', 'PROXIMO A DESCARGUE (0-30 MIN)', 'EN DESCARGUE (31-60 MIN)', 'SIN DESCARGUE (61-90 MIN)', 'NOVEDAD EN DESCARGUE (91 MIN)', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle['style'] = array('', '', '', '', '', 'bgD1', 'bgD2', 'bgD3', 'bgD4', '', '');
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'No. DESPACHOS', 'SIN RETRASO', 'PROXIMO A DESCARGUE (0-30 MIN)', 'EN DESCARGUE (31-60 MIN)', 'SIN DESCARGUE (61-90 MIN)', 'NOVEDAD EN DESCARGUE (91 MIN)', 'ESTADO PERNOCTACION', /* 'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['style'] = array('', '', '', '', '','','', 'bgD1', 'bgD2', 'bgD3', 'bgD4', '', '');
 
 		$mHtml  = '<div id=table4ID>';
 		$mHtml .= self::printInform( $mIndEtapa, $mTittle );
@@ -282,7 +282,7 @@ class Despac
 	 *  \return: 
 	 */
 	private function infoPernoctacion(){
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'NO. DESPACHOS', 'USUARIO ASIGNADO' );
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'No. DESPACHOS', 'USUARIO ASIGNADO' );
 		$mTittle['style'] = array('', '', '', '', '');
 
 		$mHtml  = '<div id=table5ID>';
@@ -320,6 +320,7 @@ class Despac
 					break;
 				case 'ind_segcar':
 					$mDespac = self::getDespacCargue( $mTransp[$i] );
+					
 					break;
 				case 'ind_segtra':
 					if( $mTransp[$i][ind_segcar] == '0' && $mTransp[$i][ind_segdes] == '0' ){
@@ -340,24 +341,34 @@ class Despac
 			#Si la Transportadora tiene Despachos
 			if( $mDespac != false )
 			{	
-				$mTransp[$i][hor_seguim] = self::setHorSeguim($mTransp[$i][cod_transp]);
+				$horario = self::setHorSeguim($mTransp[$i][cod_transp]);
+				$mTransp[$i][hor_seguim] = $horario['horaMostrar'];
+				$mTransp[$i][tip_servic] = $horario['tipServic'];
 				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_tipser].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][tip_servic].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][hor_seguim].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_transp].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer" >'.sizeof($mDespac).'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[sin_retras] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[sin_retras].'</td>';
+				if( $mIndEtapa != 'ind_segdes' ){
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_alarma] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_alarma].'</td>';
+				}
+				
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_00A30x] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_00A30x].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_31A60x] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_31A60x].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_61A90x] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_61A90x].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_91Amas] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_91Amas].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[est_pernoc] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[est_pernoc].'</td>';
 
-				if( $mIndEtapa != 'ind_segcar' )
-					$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[fin_rutaxx] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[fin_rutaxx].'</td>';
+				
+				if( $mIndEtapa != 'ind_segcar' ){
+					/* Estado por llegada
+						$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[fin_rutaxx] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[fin_rutaxx].'</td>';
+					*/
+				}
 
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[ind_acargo] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[ind_acargo].'</td>';
 
@@ -365,7 +376,7 @@ class Despac
 					$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.( $mTransp[$i][usr_asigna] != '' ? $mTransp[$i][usr_asigna] : 'SIN ASIGNAR' ).'</td>';
 
 				$mHtml .= '</tr>';
-
+			
 				$mTotal[0] += sizeof($mDespac);
 				$mTotal[1] += $mData[sin_retras];
 				$mTotal[2] += $mData[con_alarma];
@@ -385,18 +396,24 @@ class Despac
 
 		#Dibuja la Fila de los Totales
 		$mHtml1  = '<tr>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="4">TOTALES:</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="5">TOTALES:</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;" >'.$mTotal[0].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[1].'</th>';
+		
+		if( $mIndEtapa != 'ind_segdes' ){
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[2].'</th>';
+		}
+
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[3] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[3].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[4] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[4].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[5] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[5].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[6].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[7].'</th>';
 
+		/*
 		if( $mIndEtapa != 'ind_segcar' )
 			$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[8].'</th>';
+		*/
 
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[9].'</th>';
 
@@ -407,7 +424,7 @@ class Despac
 		
 		#Dibuja la Tabla Completa
 		$mHtml2  = '<table class="classTable" width="100%" cellspacing="0" cellpadding="0" align="center">';
-		$mHtml2 .= 	'<tr>';
+		$mHtml2 .= 	'<tr class="GridviewScrollHeader">';
 		for ($i=0; $i < $mLimitFor; $i++){
 			$mHtml2 .= '<th class="classHead bt '.$mTittle[style][$i].'" align="center">'.$mTittle[texto][$i].'</th>';
 		}
@@ -421,6 +438,7 @@ class Despac
 
 		return utf8_decode($mHtml2);
 	}
+
 
 	/*! \fn: printInformContr
 	 *  \brief: Imprime la table etapa de control
@@ -458,26 +476,20 @@ class Despac
 			#Si la Transportadora tiene Despachos
 			if( $mDespac != false )
 			{	
-				$mTransp[$i][hor_seguim] = self::setHorSeguim($mTransp[$i][cod_transp]);
+				//$mTransp[$i][hor_seguim] = self::setHorSeguim($mTransp[$i][cod_transp]);
+				$horario = self::setHorSeguim($mTransp[$i][cod_transp]);
+				$mTransp[$i][hor_seguim] = $horario['horaMostrar'];
+				$mTransp[$i][tip_servic] = $horario['tipServic'];
 				$mData = self::calTimeAlarma( $mDespac, $mTransp[$i], 1 );
 				//Reemplaza valores para reutilizarce como clase y generar evento acordeon
 				$mClassEv = str_replace(",", "_",str_replace(".", "_", str_replace(" ", "_", $mUsrAsigna)));
 
-
-					//Crea el titlo de los usuarios
-
-				if($titulos == 1){
-					$mHtml .= '<tr>';
-					$mHtml .= '<th class="classTotal ui-state-default" colspan="100"style="cursor: pointer; font-weight: bold" align="left" onclick="acordion(\''.$mClassEv.'\')">* '.strtoupper($mUsrAsignaAnt).'</th>';
-					$mHtml .= '</tr>';
-					$titulos = 0;
-				}
-
+	
 				//Si el usuario es diferente genera la columna de total por usuario
 				if($mUsrAsignaAnt != $mUsrAsigna){
 
 					$mHtml .= '<tr>';
-					$mHtml .= '<th class="classTotal" colspan="4" style="font-weight: bold" align="left">TOTAL:</th>';
+					$mHtml .= '<th class="classTotal" colspan="6" style="font-weight: bold" align="left">TOTAL:</th>';
 					$mHtml .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;" >'.$mTotalUS[0].'</th>';
 					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[1].'</th>';
 					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[2].'</th>';
@@ -487,8 +499,12 @@ class Despac
 					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[6].'</th>';
 					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[7].'</th>';
 
-					if( $mIndEtapa != 'ind_segcar' )
+					if( $mIndEtapa != 'ind_segcar' ){
+						/*
 						$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[8].'</th>';
+						*/
+					}
+						
 
 					$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[9].'</th>';
 
@@ -516,13 +532,15 @@ class Despac
 
 					$j=1;
 				}
-
-				$mHtml .= '<tr class="'.$mClassEv.'" onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';"><div>';
+				
+				$mHtml .= '<tr class="GridviewScrollItem rowData '.$mClassEv.'" onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';"><div>';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_tipser].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][tip_servic].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][hor_seguim].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_transp].'</td>';
-				$mHtml .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer" >'.$mData[enx_seguim].'</td>';
+				/* Suma muestra la suma de los despachos en seguimiento + a cargo */
+				$mHtml .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer" >'.($mData[enx_seguim] + $mData[ind_acargo]).'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[sin_retras] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[sin_retras].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_alarma] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_alarma].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_00A30x] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_00A30x].'</td>';
@@ -531,8 +549,12 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_91Amas] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_91Amas].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[est_pernoc] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[est_pernoc].'</td>';
 
-				if( $mIndEtapa != 'ind_segcar' )
+				if( $mIndEtapa != 'ind_segcar' ){
+					/*
 					$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[fin_rutaxx] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[fin_rutaxx].'</td>';
+					*/
+				}
+					
 
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[ind_acargo] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[ind_acargo].'</td>';
 
@@ -540,9 +562,8 @@ class Despac
 					$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.( $mTransp[$i][usr_asigna] != '' ? $mTransp[$i][usr_asigna] : 'SIN ASIGNAR' ).'</td>';
 
 				$mHtml .= '</tr>';
-
 				//Totates globales
-				$mTotal[0] += $mData[enx_seguim];
+				$mTotal[0] += $mData[enx_seguim] + $mData[ind_acargo];
 				$mTotal[1] += $mData[sin_retras];
 				$mTotal[2] += $mData[con_alarma];
 				$mTotal[3] += $mData[con_00A30x];
@@ -553,7 +574,7 @@ class Despac
 				$mTotal[9] += $mData[ind_acargo];
 
 				//Totales por usuario
-				$mTotalUS[0] += $mData[enx_seguim];
+				$mTotalUS[0] += $mData[enx_seguim] + $mData[ind_acargo];
 				$mTotalUS[1] += $mData[sin_retras];
 				$mTotalUS[2] += $mData[con_alarma];
 				$mTotalUS[3] += $mData[con_00A30x];
@@ -579,10 +600,41 @@ class Despac
 			}
 		}
 
+		//Crea el titlo de los usuarios
+		if($titulos == 1){
+			$mHtmlTUS .= '<tr class="GridviewScrollItem" >';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default" colspan="4" style="cursor: pointer; font-weight: bold;" align="left" onclick="acordion(\''.$mClassEv.'\')">* '.strtoupper($mUsrAsignaAnt).'</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default"   align="right">TOTAL:</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default"  	align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;" >'.$mTotalUS[0].'</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default" 	align="center" '. ( $mTotalUS[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[1].'</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default"  	align="center" '. ( $mTotalUS[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[2].'</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default" 	align="center" '. ( $mTotalUS[3] == 0 ? '' : 'onclick="showDetailBand(\'con_00A30x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[3].'</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default" 	align="center" '. ( $mTotalUS[4] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[4].'</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default"  	align="center" '. ( $mTotalUS[5] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[5].'</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default" 	align="center" '. ( $mTotalUS[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[6].'</th>';
+			$mHtmlTUS .= '<th class="classTotal ui-state-default"  	align="center" '. ( $mTotalUS[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[7].'</th>';
+			
+			if( $mIndEtapa != 'ind_segcar' ){
+				/*
+				$mHtmlTUS .= '<th class="classTotal ui-state-default" align="center" '. ( $mTotalUS[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[8].'</th>';
+				*/
+			}
 
+			$mHtmlTUS .= '<th class="classTotal ui-state-default"  align="center" '. ( $mTotalUS[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[9].'</th>';
+
+			if( self::$cTypeUser[tip_perfil] == 'OTRO' ){
+			$mHtmlTUS .= '<th class="classTotal ui-state-default" nowrap="" align="center">&nbsp;</th>';
+			}	
+			
+			$mHtmlTUS .= '</tr>';
+			$titulos = 0;
+		}
+
+		$mHtml = $mHtmlTUS.''.$mHtml;
+		/*
 		//Genera Ultima fila de subtotales
 		$mHtml .= '<tr>';
-		$mHtml .= '<th class="classTotal" colspan="4" style="font-weight: bold" align="left">TOTAL:</th>';
+		$mHtml .= '<th class="classTotal" colspan="5" style="font-weight: bold" align="left">TOTAL:</th>';
 		$mHtml .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;" >'.$mTotalUS[0].'</th>';
 		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[1].'</th>';
 		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[2].'</th>';
@@ -592,18 +644,24 @@ class Despac
 		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[6].'</th>';
 		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[7].'</th>';
 
-		if( $mIndEtapa != 'ind_segcar' )
+		
+		
+		if( $mIndEtapa != 'ind_segcar' ){
+			
 			$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[8].'</th>';
+			
+		}
+			
 
 		$mHtml .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotalUS[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTranspUS.'\');" style="cursor: pointer; font-weight: bold;"' ) .' >'.$mTotalUS[9].'</th>';
 
 		if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 			$mHtml .= '<th class="classTotal" nowrap="" align="center">&nbsp;</th>';
-		$mHtml .= '</tr>';
+		$mHtml .= '</tr>';*/
 
 		#Dibuja la Fila de los Totales
-		$mHtml1  = '<tr>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="4">GRAN TOTAL:</th>';
+		$mHtml1  = '<tr class="GridviewScrollItem" >';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="5">GRAN TOTAL:</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'enx_seguim\', \''.$mIndEtapa.'\', \''.$mCodTransp .'\');" style="cursor: pointer;" >'.$mTotal[0].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[1] == 0 ? '' : 'onclick="showDetailBand(\'sin_retras\', \''.$mIndEtapa.'\', \''.$mCodTransp .'\');" style="cursor: pointer;"' ) .' >'.$mTotal[1].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[2] == 0 ? '' : 'onclick="showDetailBand(\'con_alarma\', \''.$mIndEtapa.'\', \''.$mCodTransp .'\');" style="cursor: pointer;"' ) .' >'.$mTotal[2].'</th>';
@@ -613,8 +671,12 @@ class Despac
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTransp .'\');" style="cursor: pointer;"' ) .' >'.$mTotal[6].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTransp .'\');" style="cursor: pointer;"' ) .' >'.$mTotal[7].'</th>';
 
-		if( $mIndEtapa != 'ind_segcar' )
+		if( $mIndEtapa != 'ind_segcar' ){
+			/*
 			$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[8] == 0 ? '' : 'onclick="showDetailBand(\'fin_rutaxx\', \''.$mIndEtapa.'\', \''.$mCodTransp .'\');" style="cursor: pointer;"' ) .' >'.$mTotal[8].'</th>';
+			*/
+		}
+			
 
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[9] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$mCodTransp .'\');" style="cursor: pointer;"' ) .' >'.$mTotal[9].'</th>';
 
@@ -624,8 +686,8 @@ class Despac
 		$mHtml1 .= '</tr>';
 		
 		#Dibuja la Tabla Completa
-		$mHtml2  = '<table class="classTable" width="100%" cellspacing="0" cellpadding="0" align="center">';
-		$mHtml2 .= 	'<tr>';
+		$mHtml2  = '<table class="classTable" id="GridView11" width="100%" cellspacing="0" cellpadding="0" align="center">';
+		$mHtml2 .= 	'<tr class="GridviewScrollHeader">';
 		for ($i=0; $i < $mLimitFor; $i++){
 			$mHtml2 .= '<th class="classHead bt '.$mTittle[style][$i].'" align="center">'.$mTittle[texto][$i].'</th>';
 		}
@@ -1945,6 +2007,22 @@ class Despac
 		$mTipServic .= $_REQUEST[tip_servic3] == '1' ? ',"3"' : '';
 		$mLisTransp = $this->getTranspCargaControlador();
 
+		//Tipo de servicio Horario de gestión
+		$$mHorTipSer='';
+		$arrayHorTipSer = array();
+		$_REQUEST[tip_horlab1] == '1' ? $arrayHorTipSer[] = '1' : '';
+		$_REQUEST[tip_horlab2] == '1' ? $arrayHorTipSer[] = '2' : '';
+		$_REQUEST[tip_horlab3] == '1' ? $arrayHorTipSer[] = '3' : '';
+
+		foreach($arrayHorTipSer as $index=>$servicio){
+			$mHorTipSer .= $servicio;
+			if( $index+1 < count($arrayHorTipSer)){
+				$mHorTipSer .=', ';
+			}
+		}
+
+		$mFilHorasx = $_REQUEST[fil_horasx] == '1' ? 'AND i.hor_ingres = "'.$_REQUEST['hor_inicia'].'" AND i.hor_ingres = "'.$_REQUEST['hor_finalx'].'"': '';
+
 		$mSql = " SELECT a.*,
 						 GROUP_CONCAT(h.cod_usuari ORDER BY h.cod_usuari ASC SEPARATOR ', ' ) AS usr_asigna
 					FROM (
@@ -1976,6 +2054,8 @@ class Despac
 						 ) a 
 			   LEFT JOIN ".BASE_DATOS.".vis_monito_encdet h
 					  ON a.cod_transp = h.cod_transp
+			   LEFT JOIN ".BASE_DATOS.".tab_config_horlab i 
+			          ON a.cod_transp = i.cod_tercer
 					WHERE 1=1 ";
 
 		$mSql .= $mTipEtapax == NULL ? "" : " AND a.{$mTipEtapax} = 1 ";
@@ -2012,9 +2092,14 @@ class Despac
 		#Otros Filtros
 		$mSql .= $mTipServic != '""' ? " AND a.cod_tipser IN (".$mTipServic.") " : "";
 
+		$mSql .= $mHorTipSer != '' ? " AND i.tip_servic IN (".$mHorTipSer.") " : "";
+
+		$mSql .= $mFilHorasx;
+		
 		$mSql .= " GROUP BY a.cod_transp ORDER BY h.cod_usuari, a.nom_transp ASC ";
 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
+
 		return $mConsult -> ret_matrix('a');
 	}
 
@@ -2489,8 +2574,14 @@ class Despac
 			}
 			else
 			{
-				$mDespac = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
-
+				/*Condicional para sumar los despachos en seguimiento + los despachos a cargo en la etapa ind_segctr*/
+				if($_REQUEST['ind_filtro']=='enx_seguim' && $_REQUEST['ind_etapax']=='ind_segctr'){
+					$mDespac1 = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, 'enx_seguim', $mColor );
+					$mDespac2 = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, 'ind_acargo', $mColor );
+					$mDespac =  array_merge((array)$mDespac1, (array)$mDespac2);
+				}else{
+					$mDespac = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
+				}
 				$mNegTieesp = $mDespac['neg_tieesp'] ? array_merge($mNegTieesp, $mDespac['neg_tieesp']) : $mNegTieesp;
 				$mPosTieesp = $mDespac['pos_tieesp'] ? array_merge($mPosTieesp, $mDespac['pos_tieesp']) : $mPosTieesp;
 				$mNegTiempo = $mDespac['neg_tiempo'] ? array_merge($mNegTiempo, $mDespac['neg_tiempo']) : $mNegTiempo;
@@ -2526,7 +2617,7 @@ class Despac
 		else{
 
 			$mData = self::orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
-
+			
 			#Pinta tablas
 			for ($i=0; $i < sizeof($mData['tiempo']); $i++) { 
 				if ($mData['tiempo'][$i]['nov_especi'] == '1' && $mData['tiempo'][$i]['ind_alarma'] == 'S' ) {
@@ -3070,8 +3161,8 @@ class Despac
 	 */
 	private function printInformGeneral()
 	{
-		$mTittle[texto] = array('NO.', 'TIPO SERVICIO', 'EMPRESA', 'EN SEGUIMIENTO', 'NO. DESPACHOS', 'CARGUE', 'TRANSITO', 'DESCARGUE', 'ESTADO PERNOCTACION', 'POR LLEGADA', 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
-		$mTittle[style] = array('', '', '', 'bgAZ', '', 'bgC3', 'bgT1', 'bgD3', '', '', '', '');
+		$mTittle[texto] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO','EMPRESA', 'EN SEGUIMIENTO', 'No. DESPACHOS', 'CARGUE', 'TRANSITO', 'DESCARGUE', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle[style] = array('', '', '','','', 'bgAZ', '', 'bgC3', 'bgT1', 'bgD3', '', /*'',*/ '', '');
 		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
 		$mTransp = self::getTranspServic();
 		$mReport = array();
@@ -3107,7 +3198,9 @@ class Despac
 			}
 
 			$mReport[$i][tot_despac] = $mReport[$i][can_cargue] + $mReport[$i][can_transi] + $mReport[$i][can_descar];
-
+			$horario = self::setHorSeguim($mTransp[$i][cod_transp]);
+			$mTransp[$i][hor_seguim] = $horario['horaMostrar'];
+			$mTransp[$i][tip_servic] = $horario['tipServic'];
 			if( $mReport[$i][tot_despac] > 0 )
 			{
 				$mEnSegi = $mReport[$i][tot_despac] - $mData[fin_rutaxx];
@@ -3116,6 +3209,8 @@ class Despac
 				$mHtml1 .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml1 .= 	'<th class="classCell" nowrap="" align="left">'.  $n.'</th>';
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="left">'.  $mTransp[$i][nom_tipser].'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="left">'.  $mTransp[$i][tip_servic].'</td>';
+				$mHtml1 .= 	'<td class="classCell" nowrap="" align="left">'.  $mTransp[$i][hor_seguim].'</td>';
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="left">'.  $mTransp[$i][nom_transp].'</td>';
 
 				if( self::$cTypeUser[tip_perfil] == 'OTRO' )
@@ -3126,7 +3221,7 @@ class Despac
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \'ind_segtra\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mReport[$i][can_transi] ? $mReport[$i][can_transi] : '-' ).'</td>';
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \'ind_segdes\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mReport[$i][can_descar] ? $mReport[$i][can_descar] : '-' ).'</td>';
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'est_pernoc\', \'\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mData[est_pernoc] ? $mData[est_pernoc] : '-' ).'</td>';
-				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'fin_rutaxx\', \'\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mData[fin_rutaxx] ? $mData[fin_rutaxx] : '-' ).'</td>';
+				/*$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'fin_rutaxx\', \'\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mData[fin_rutaxx] ? $mData[fin_rutaxx] : '-' ).'</td>';*/
 				$mHtml1 .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'ind_acargo\', \'\', \''.$mTransp[$i]['cod_transp'].'\');">'.( $mData[ind_acargo] ? $mData[ind_acargo] : '-' ).'</td>';
 
 				if( self::$cTypeUser[tip_perfil] == 'OTRO' )
@@ -3149,7 +3244,7 @@ class Despac
 
 		#Dibuja la Fila de los Totales
 		$mHtml2  = '<tr>';
-		$mHtml2 .= '<th class="classTotal" nowrap="" align="right" colspan="3">TOTALES:</th>';
+		$mHtml2 .= '<th class="classTotal" nowrap="" align="right" colspan="5">TOTALES:</th>';
 
 		if( self::$cTypeUser[tip_perfil] == 'OTRO' )
 			$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[7].'</th>';
@@ -3159,7 +3254,7 @@ class Despac
 		$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[2].'</th>';
 		$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[3].'</th>';
 		$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[4].'</th>';
-		$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[5].'</th>';
+		//$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[5].'</th>';
 		$mHtml2 .= '<th class="classTotal" nowrap="" align="center">'.$mTotal[6].'</th>';
 
 		if( self::$cTypeUser[tip_perfil] == 'OTRO' )
@@ -3492,10 +3587,14 @@ class Despac
 			{
 				$mData = self::getTotalPrecargue( $mDespac, $mTransp[$i], 1 );
 				$mData["enx_planta"] = sizeof(self::getDespacCargue( $mTransp[$i] ) );
-			 
+				$horario = self::setHorSeguim($mTransp[$i][cod_transp]);
+				$mTransp[$i][hor_seguim] = $horario['horaMostrar'];
+				$mTransp[$i][tip_servic] = $horario['tipServic'];
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_tipser].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][tip_servic].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][hor_seguim].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$mTransp[$i][nom_transp].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer" >'.sizeof($mDespac).'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_paradi] == 0 ? '' : 'onclick="showDetailBand(\'con_paradi\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_paradi].'</td>';
@@ -3535,7 +3634,7 @@ class Despac
 		}
 		#Dibuja la Fila de los Totales
 		$mHtml1  = '<tr>';
-		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="3">TOTALES:</th>';
+		$mHtml1 .= '<th class="classTotal" nowrap="" align="right" colspan="5">TOTALES:</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" onclick="showDetailBand(\'sinF\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;" >'.$mTotal[0].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[1] == 0 ? '' : 'onclick="showDetailBand(\'con_paradi\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[1].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[2] == 0 ? '' : 'onclick="showDetailBand(\'con_paraco\', \''.$mIndEtapa.'\', \'TODAS\');" style="cursor: pointer;"' ) .' >'.$mTotal[2].'</th>';
@@ -4944,7 +5043,8 @@ class Despac
 		//Consulta que retorna los horarios de seguimiento a la empresa
         $mSql = " SELECT 	a.com_diasxx, 
         					a.hor_ingres,
-        					a.hor_salida
+        					a.hor_salida,
+							a.tip_servic
         			FROM 	".BASE_DATOS.".tab_config_horlab a 
                    WHERE 	a.cod_tercer = '{$mTransp}'";                               
 		$consulta = new Consulta( $mSql, self::$cConexion );
@@ -4958,7 +5058,7 @@ class Despac
 		$arrayDiasNec = [];
 		$arrayDiasFes = [];
 		$arrayValida = [];
-		$horaMostrar = "";
+		$datoMostrar = [];
 		
 		//Si retornn horarios, recorre el resultado
 		if (count($mResult) > 0){
@@ -4990,18 +5090,45 @@ class Despac
 			foreach ($arrayValida as $key => $value) {
 				//Si retornn horarios, valida que solo sea un registro
 				if (count($arrayValida) == 1){
-					$horaMostrar = $value['hor_ingres']."-".$value['hor_salida'];
+					$datoMostrar['horaMostrar'] = $value['hor_ingres']."-".$value['hor_salida'];
+					$datoMostrar['tipServic'] = self::getServicHorLab($value['tip_servic']);
 				}else{
 					//Valida si la llave es = a cero para identificar los horarios nocturnos
 					if($key == 0){
-						$horaMostrar = $value['hor_ingres'];
+						$datoMostrar['horaMostrar'] = $value['hor_ingres'];
+						$datoMostrar['tipServic'] = self::getServicHorLab($value['tip_servic']);
 					}else{
-						$horaMostrar .= "-".$value['hor_salida'];
+						$datoMostrar['horaMostrar'] .= "-".$value['hor_salida'];
 					}
 				}
 			}
 		}
-		return $horaMostrar;
+		return $datoMostrar;
+	}
+
+	/*! \fn: getServicHorLab
+	 *  \brief: Obtiene el horario del servicio
+	 *  \author: Ing. Cristian Andrés Torres
+	 *	\date: 13/08/2021
+	 *	\date modified: dia/mes/ano
+	 *  \param: 
+	 *  \return: string
+	 */
+	public function getServicHorLab($tip_servic){
+		switch ($tip_servic){
+			case '1':
+			return '24/7';
+			break;
+			case '2':
+				return '12/7';
+				break;
+			case '3':
+				return 'Fin de semana';
+				break;
+			default:
+				return 'NA - Servicio';
+				break;
+		}
 	}
 
 	/*! \fn: setDiasSem
