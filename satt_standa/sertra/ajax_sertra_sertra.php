@@ -274,7 +274,7 @@ class ajax_certra_certra {
      *  \return: 
      */
     private function getHorarioLaboralTransp($indConfig, $codTransp) {
-        $sql = "SELECT com_diasxx, hor_ingres, hor_salida 
+        $sql = "SELECT com_diasxx, hor_ingres, hor_salida, tip_servic
                   FROM " . BASE_DATOS . ".tab_config_horlab 
                 WHERE cod_tercer = '$codTransp' 
                   AND ind_config = $indConfig 
@@ -604,10 +604,11 @@ class ajax_certra_certra {
                         <div class="col-md-12 contenido" id="mensaje"></div>
                         <div class="col-md-12 CellHead centrado" id="mensaje"><b>DIAS DE LA SEMANA PARAMETRIZADOS</b></div>
                         <div class="col-md-12 contenido"></div>
-                        <div class="col-md-6 CellHead centrado"><b>D&iacute;a</b></div>
+                        <div class="col-md-5 CellHead centrado"><b>D&iacute;a</b></div>
                         <div class="col-md-2 CellHead centrado"><b>Hora de Ingreso</b></div>
                         <div class="col-md-2 CellHead centrado"><b>Hora de Salida</b></div>
-                        <div class="col-md-2 CellHead centrado"><b>Eliminar</b></div>
+                        <div class="col-md-2 CellHead centrado"><b>Servicio</b></div>
+                        <div class="col-md-1 CellHead centrado"><b>Eliminar</b></div>
                         <?php
                         foreach ($datos->configuracion as $row) {
                             $mDiasxx = '';
@@ -616,10 +617,11 @@ class ajax_certra_certra {
                             }
                             ?>
 
-                            <div class="col-md-6 contenido centrado" ><?= $mDiasxx ?></div> 
+                            <div class="col-md-5 contenido centrado" ><?= $mDiasxx ?></div> 
                             <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_ingres']) ?></div>  
-                            <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>   
-                            <div class="col-md-2 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteConfiguracion(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 3)"></div>   
+                            <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>
+                            <div class="col-md-2 contenido centrado"><?= $this->getServicHorLab($row['tip_servic']) ?></div>   
+                            <div class="col-md-1 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteConfiguracion(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 3)"></div>   
 
                             <?php
                         }
@@ -630,10 +632,11 @@ class ajax_certra_certra {
                             }
                             ?>
 
-                            <div class="col-md-6 contenido centrado" ><?= $mDiasxx ?></div> 
+                            <div class="col-md-5 contenido centrado" ><?= $mDiasxx ?></div> 
                             <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_ingres']) ?></div>  
-                            <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>   
-                            <div class="col-md-2 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteConfiguracion(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 4)"></div>   
+                            <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>
+                            <div class="col-md-2 contenido centrado"><?= $this->getServicHorLab($row['tip_servic']) ?></div>   
+                            <div class="col-md-1 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteConfiguracion(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 4)"></div>   
 
                             <?php
                         }
@@ -1163,12 +1166,20 @@ class ajax_certra_certra {
                     </div>
                     <div class="col-md-3 cellInfo1"></div>
                     <div class="col-md-12">
-                        <div class="col-md-6 CellHead centrado"><b>HORA INICIO</b></div>
-                        <div class="col-md-6 CellHead centrado"><b>HORA FINALIZACI&Oacute;N</b></div>
+                        <div class="col-md-4 CellHead centrado"><b>HORA INICIO</b></div>
+                        <div class="col-md-4 CellHead centrado"><b>HORA FINALIZACI&Oacute;N</b></div>
+                        <div class="col-md-4 CellHead centrado"><b>SERVICIO</b></div>
                     </div>
 
-                    <div class="col-md-6 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_ingres" id="hor_ingresID" value="00:00" /></div>                
-                    <div class="col-md-6 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_salida" id="hor_salidaID" value="23:59" /></div> 
+                    <div class="col-md-4 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_ingres" id="hor_ingresID" value="00:00" /></div>                
+                    <div class="col-md-4 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_salida" id="hor_salidaID" value="23:59" /></div> 
+                    <div class="col-md-4 cellInfo1 centrado negro">
+                        <select name="tip_servic" id="tip_servicID">
+                            <option value="1">24/7</option>
+                            <option value="2">12/7</option>
+                            <option value="3">Fin de semana</option>
+                        </select>
+                    </div>
                     <?php
                 } else {
                     die("1");
@@ -1446,10 +1457,10 @@ class ajax_certra_certra {
         $mInsert = "INSERT INTO " . BASE_DATOS . ".tab_config_horlab
         ( cod_tercer, com_diasxx, hor_ingres, 
         hor_salida, usr_creaci, fec_creaci, 
-        ind_config, cod_ciudad
+        ind_config, cod_ciudad, tip_servic
         )VALUES( '" . $mData['cod_transp'] . "', '" . $mData['nue_combin'] . "', '" . $mData['hor_ingedi'] . "', 
         '" . $mData['hor_saledi'] . "', '" . $_SESSION['datos_usuario']['cod_usuari'] . "', NOW(),
-        '" . $mData['ind_config'] . "', '" . $mData['cod_ciudad'] . "')";
+        '" . $mData['ind_config'] . "', '" . $mData['cod_ciudad'] . "', '" . $mData['tip_servic'] . "')";
 
         if ($consulta = new Consulta($mInsert, self::$cConexion)) {
             echo "1000";
@@ -2144,6 +2155,31 @@ class ajax_certra_certra {
             echo "9999";
         }
     }
+
+    /*! \fn: getServicHorLab
+	 *  \brief: Obtiene el horario del servicio
+	 *  \author: Ing. Cristian Andrés Torres
+	 *	\date: 13/08/2021
+	 *	\date modified: dia/mes/ano
+	 *  \param: 
+	 *  \return: string
+	 */
+	public function getServicHorLab($tip_servic){
+		switch ($tip_servic){
+			case '1':
+			return '24/7';
+			break;
+			case '2':
+				return '12/7';
+				break;
+			case '3':
+				return 'Fin de semana';
+				break;
+			default:
+				return 'Sin servicio param...';
+				break;
+		}
+	}
 
 }
 
