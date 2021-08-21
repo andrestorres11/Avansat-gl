@@ -108,11 +108,9 @@ $("body").ready(function() {
         collapsible: true
     });
 
-
     //
     $("#tableID").css('height', ($(window).height() - 166));
     $("#tableID").css('overflow', 'scroll');
-
 });
 
 /*! \fn: verifiData
@@ -159,11 +157,6 @@ function getParameFilter() {
         var tip_produc = '""';
         var hor_inicio = $("#hor_inicio").val();
         var hor_finxxx = $("#hor_finxxx").val();
-
-        //Horario de servicio
-        var hor_inicia = $("#hor_inicia").val();
-        var hor_finali = $("#hor_finalx").val();
-
         var attributes = '';
 
         box_checke.each(function(i, o) {
@@ -214,14 +207,6 @@ function getParameFilter() {
 
         if (hor_finxxx != '' ) {
             attributes += '&hor_finxxx=' + hor_finxxx;
-        }
-
-        if (hor_inicia != '' ) {
-            attributes += '&hor_inicia=' + hor_inicia;
-        }
-
-        if (hor_finali != '' ) {
-            attributes += '&hor_finalx=' + hor_finali;
         }
 
 
@@ -434,7 +419,6 @@ function generalReport(ind_etapax, id_div) {
             }
         });
 
-        
     } catch (e) {
         console.log("Error Fuction generalReport: " + e.message + "\nLine: " + e.lineNumber);
         return false;
@@ -525,12 +509,8 @@ function Actualizarbadge(etapa, etiqueta) {
                 }
             },
             complete: function() {
-                $(".classTable .rowData").each(function(){
-                    $(this).hide();
-                });
             }
         });
-        
     } catch (e) {
         console.log("Error Fuction Actualizarbadge: " + e.message + "\nLine: " + e.lineNumber);
         return false;
@@ -571,5 +551,3 @@ function acordion(value) {
         $(this).toggle();
     });
 }
-
-

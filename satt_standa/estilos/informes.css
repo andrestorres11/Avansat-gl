@@ -575,11 +575,3 @@ tr.row:hover td {
     position: absolute;
     cursor: pointer;
 }
-
-
-.GridviewScrollHeader { 
-    position: sticky;
-    top: -11;
-    z-index: 99;
-    background-color: #eeeeee;
-}
