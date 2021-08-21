@@ -34,7 +34,7 @@ class infBandeja
 		IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
 		IncludeJS( 'jquery.multiselect.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
 		IncludeJS( 'time.js', '../'.DIR_APLICA_CENTRAL.'/js/' );
-		
+
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
@@ -103,24 +103,6 @@ class infBandeja
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic2" '.($_REQUEST['tip_servic2'] == 1 ? 'checked' : '').' ></td>';
 						$mHtml1 .= '	<td class="cellInfo1" align="right">OAL/MA</td>';
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic3" '.($_REQUEST['tip_servic3'] == 1 ? 'checked' : '').' ></td>';
-						$mHtml1 .= '	<td class="cellInfo1" colspan="2">&nbsp;</td>';
-						$mHtml1 .= '</tr>';
-						$mHtml1 .= '<tr>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">24/7</td>';
-						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_horlab1" '.($_REQUEST['tip_horlab1'] == 1 ? 'checked' : '').' ></td>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">12/7</td>';
-						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_horlab2" '.($_REQUEST['tip_horlab2'] == 1 ? 'checked' : '').' ></td>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">Fin de semana</td>';
-						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_horlab3" '.($_REQUEST['tip_horlab3'] == 1 ? 'checked' : '').' ></td>';
-						$mHtml1 .= '	<td class="cellInfo1" colspan="2">&nbsp;</td>';
-						$mHtml1 .= '</tr>';
-						$mHtml1 .= '<tr>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">Filtro Horas</td>';
-						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="fil_horasx" '.($_REQUEST['fil_horasx'] == 1 ? 'checked' : '').' ></td>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">Hora inicial</td>';
-						$mHtml1 .= '	<td class="cellInfo1"><input type="time" value="00:00" name="hor_inicia" id="hor_inicia"></td>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">Hora Final</td>';
-						$mHtml1 .= '	<td class="cellInfo1"><input type="time" value="23:59" name="hor_finalx" id="hor_finalx"></td>';
 						$mHtml1 .= '	<td class="cellInfo1" colspan="2">&nbsp;</td>';
 						$mHtml1 .= '</tr>';
 					}
