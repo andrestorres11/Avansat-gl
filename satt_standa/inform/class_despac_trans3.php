@@ -221,7 +221,7 @@ class Despac
 	private function infoTransito()
 	{
 		$mIndEtapa = 'ind_segtra';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'No. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta soluciï¿½n', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'No. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solucion', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
 		$mTittle['style'] = array('', '', '', '','', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id=table3ID>';
@@ -242,7 +242,7 @@ class Despac
 	private function infoControl()
 	{
 		$mIndEtapa = 'ind_segctr';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'EN SEGUIMIENTO', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta soluciï¿½n', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'EN SEGUIMIENTO', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solucion', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
 		$mTittle['style'] = array('', '', '', '', '', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id="table3ID">';
@@ -5002,7 +5002,7 @@ class Despac
 
 	/*! \fn: getServicHorLab
 	 *  \brief: Obtiene el horario del servicio
-	 *  \author: Ing. Cristian Andrés Torres
+	 *  \author: Ing. Cristian Andr�s Torres
 	 *	\date: 13/08/2021
 	 *	\date modified: dia/mes/ano
 	 *  \param: 
