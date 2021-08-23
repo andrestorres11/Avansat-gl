@@ -1,6 +1,6 @@
 <?php
 
-class parametrizacion_horarios
+class parametrizacion_novtur
 {
  var $conexion,
      $cod_aplica,
@@ -58,7 +58,7 @@ class parametrizacion_horarios
 
     /*! \fn: scripts
    *  \brief: incluye todos los archivos necesarios para los eeventos js
-   *  \author: Ing. Cristian AndrÃ©s Torres
+   *  \author: Ing. Andres Martinez
    *  \date: 02-06-2020
    *  \date modified: dd/mm/aaaa
    *  \param: 
@@ -93,7 +93,7 @@ class parametrizacion_horarios
 
 
             <!-- Custom Theme Scripts -->
-            <script src="../' . DIR_APLICA_CENTRAL . '/js/ins_genera_horari.js?rand='.rand(150, 20000).'"></script>
+            <script src="../' . DIR_APLICA_CENTRAL . '/js/ins_genera_novtur.js?rand='.rand(150, 20000).'"></script>
         ';
     }
 
@@ -125,11 +125,8 @@ class parametrizacion_horarios
                             <thead>
                               <tr>
                                 <th>No</th>
-                                <th>Horario</th>
-                                <th>Dias</th>
-                                <th>Hora Inicio</th>
-                                <th>Hora Fin</th>
-                                <th>Color</th>
+                                <th>Nombre</th>
+                                <th>Descripcion</th>
                                 <th>Estado</th>
                                 <th>Opciones</th>
                               </tr>
@@ -150,6 +147,7 @@ class parametrizacion_horarios
 
 }
 
-$proceso = new parametrizacion_horarios($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
+
+$proceso = new parametrizacion_novtur($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
 
 ?>
