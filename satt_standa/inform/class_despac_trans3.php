@@ -444,8 +444,24 @@ class Despac
 		$array = array();
 		foreach($transp as $key=>$value){
 			$position = $value['usr_asigna'] != NULL ? $value['usr_asigna']: 'SIN ASIGNAR';
-			//$usuarios = explode(", ", $position);
-			$array[$position][] = $value;
+			$usuarios = explode(", ", $position);
+
+			//Array sin usuarios repetidos
+			$usuarios_unic = array_unique($usuarios);
+			$ind_varios = false;
+			
+			if(count($usuarios_unic)>1){
+				$key_users = '';
+				foreach($usuarios_unic as $key=>$usuario){
+					$key_users .= $usuario;
+					if(($key+1) < count($usuarios_unic)){
+						$key_users.=', ';
+					}
+				}
+				$array[$key_users][] = $value;
+			}else{
+				$array[$usuarios[0]][] = $value;
+			}
 			
 		}
 		
@@ -572,7 +588,7 @@ class Despac
 					$armado .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_91Amas] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$emptra[cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_91Amas].'</td>';
 					$armado .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[est_pernoc] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$emptra[cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[est_pernoc].'</td>';
 					$armado .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[ind_acargo] == 0 ? '' : 'onclick="showDetailBand(\'ind_acargo\', \''.$mIndEtapa.'\', \''.$emptra[cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[ind_acargo].'</td>';
-					$armado .= 	'<td class="classCell" nowrap="" align="center">'.$emptra[usr_asigna].'</td>';
+					$armado .= 	'<td class="classCell" nowrap="" align="center">'. $key.'</td>';
 					$armado .= 	'</tr>';
 					$j++;
 				}
