@@ -429,7 +429,7 @@ class seguri {
         } else {
             $onclickEdit = "onclikEdit:editarUsuario( this )";
         }
-        $sql = "SELECT a.cod_usuari, a.nom_usuari, b.nom_perfil, a.usr_emailx, IF(a.ind_estado = 1, 'ACTIVO', 'INACTIVO') estado, a.cod_consec, a.ind_estado
+        $sql = "SELECT a.cod_usuari, a.nom_usuari, b.nom_perfil, a.usr_emailx, IF(a.ind_estado = 1, 'ACTIVO', 'DESHABILITADO') estado, a.cod_consec, a.ind_estado
                       FROM " . BASE_DATOS . ".tab_genera_usuari a 
                 INNER JOIN " . BASE_DATOS . ".tab_genera_perfil b ON a.cod_perfil = b.cod_perfil WHERE 1 $and";
 
@@ -451,7 +451,7 @@ class seguri {
         $list->SetHeader("Nombre", "field:a.nom_usuari; width:1%");
         $list->SetHeader("Perfil", "field:b.nom_perfil; width:1%");
         $list->SetHeader("E-Mail", "field:a.usr_emailx; width:1%");
-        $list->SetHeader("Estado", "field:IF( a.ind_estado =1, 'ACTIVO', 'INACTIVO' ); width:1%");
+        $list->SetHeader("Estado", "field:IF( a.ind_estado =1, 'ACTIVO', 'DESHABILITADO' ); width:1%");
         $list->SetOption("Opciones", "field:ind_estado; width:1%; onclikDisable:inactivarUsuario( this ); onclikEnable:activarUsuario( this ); $onclickEdit");
         $list->SetHidden("cod_usuari", "0");
         $list->SetHidden("nom_usuari", "1");
