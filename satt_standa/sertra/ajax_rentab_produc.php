@@ -190,7 +190,7 @@ class ajax_rentab_produc
                         )*/
                         AND a.ind_planru = "S" 
                        -- AND a.ind_anulad in ("R") 
-                        AND b.ind_activo = "S"
+                       -- AND b.ind_activo = "S"
             INNER JOIN  (
                     (
                       SELECT  a.num_despac, 

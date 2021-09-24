@@ -231,7 +231,7 @@ class calendAgendamiento
                                   <label for="novedad">Novedad</label>
                                     <div class="input-group">
                                       <select class="form-control field" id="novedaID" name="cod_noveda" onChange="viewObserva(this)">
-                                      <option value="NOVEDAD">Novedad</option>
+                                      <option value="1">Novedad</option>
                                       ';
                             $novtur = $this->getNovtur();
 

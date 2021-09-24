@@ -164,7 +164,7 @@ function registrarCitacion() {
 
 function viewObserva(elemento){
     var valor = $(elemento).val();
-    if(valor != "NOVEDAD"){
+    if(valor != "1"){
         $('#observaID').css('display', 'block');
     }else{
         $('#observaID').css('display', 'none');
