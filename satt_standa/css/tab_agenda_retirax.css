@@ -1,0 +1,37 @@
+
+/*INICIO ESTILOS CALENDARIO JQUERY UI*/
+
+.ui-widget-content {
+    border: 1px solid #ddd;
+    background: #6B6B6B;
+    color: #333;
+}
+
+.ui-datepicker {
+    width: 17em;
+    padding: .2em .2em 0;
+    display: none;
+}
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default, .ui-button, html .ui-button.ui-state-disabled:hover, html .ui-button.ui-state-disabled:active {
+    border: 1px solid #000000;
+    background: #ffffff !important;
+    font-weight: normal;
+    text-align: center;
+    color: #000000;
+}
+
+.ui-widget-header {
+    border: 1px solid #000;
+    background: #ffffff !important;
+    color: #000;
+    font-weight: bold;
+}
+
+.ui-datepicker-calendar  td, th{
+	color:  #000;
+}
+
+.ui-datepicker-unselectable .ui-state-disabled .undefined{
+	background-color: #fff;
+}
