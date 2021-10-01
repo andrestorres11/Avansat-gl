@@ -246,3 +246,171 @@ function usuariosPerfil(elemento){
         }
     });
 }
+
+function buscarUsuario(){
+    
+    var usuario = $("#usuarioID").val();
+    
+    /* Inicializar los eventos externos
+     -----------------------------------------------------------------*/
+     function ini_events(ele) {
+        ele.each(function() {
+
+            // Crea un eneto como obejto 
+            // No necesita tener un comienzo o un final
+            var eventObject = {
+                title: $.trim($(this).text()) // Usa el texto del elemento como t�tulo del evento
+            }
+
+            // Almacenar el objeto de evento en el elemento DOM para que podamos acceder a �l m�s tarde
+            $(this).data('eventObject', eventObject)
+
+            // Hacer que el evento sea arrastrable usando jQuery UI
+            $(this).draggable({
+                zIndex: 1070,
+                revert: true, // Har� que el evento regrese a su contenedor
+                revertDuration: 0 // Posici�n original despu�s del arrastre
+            })
+
+        })
+    }
+
+    ini_events($('#external-events div.external-event'))
+
+    /* Inicializa el calendario
+     -----------------------------------------------------------------*/
+    //Declaraci�n de los agendamientos y generaci�n de las mismas
+    var Calendar = FullCalendar.Calendar;
+    var Draggable = FullCalendarInteraction.Draggable;
+
+    var containerEl = document.getElementById('external-events');
+    var checkbox = document.getElementById('drop-remove');
+    //$('#calendarPadre').getElementById();
+    document.getElementById('calendarPadre').innerHTML='<div id="calendar"></div>';
+    var calendarEl = document.getElementById('calendar');
+    //Parametros necesarios
+    var standa = "satt_standa";
+    var parametros = "Option=viewAgendaUsuari&usuario="+usuario;
+
+    var calendar = new Calendar(calendarEl, {
+        plugins: ['bootstrap', 'interaction', 'dayGrid', 'timeGrid'],
+        header: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+        },
+        events: "../" + standa + "/config/ajax_agenda_calend.php?" + parametros,
+        //droppable : true, // this allows things to be dropped onto the calendar !!!
+        //editable  : true,
+        eventLimit: true, // when too many events in a day, show the popover
+        locale: 'es',
+        eventResize: function(obj) { // Cambiar el tama�o para aumentar o disminuir el tiempo del agendamiento
+            updateAgendaDet(obj, standa);
+        },
+        eventDrop: function(obj) { // Evento para soltar y cambiar las fechas del agendamiento 
+            updateAgendaDet(obj, standa);
+        },
+        eventClick: function(info) { // Evento para ver la informaci�n al detalle del agendamiento
+            if (info.event.id == "Cliente Retira") {
+                mostrarInformacionFranjaRetira(info);
+            } else {
+                mostrarPedidosAgendados(info);
+            }
+        },
+        eventRender: function(info) {
+            /*console.log(info.event.title);
+            $(info.el).tooltip({ 
+                title: info.event.title 
+            });
+
+            var tooltip = new Tooltip(info.el, {
+              title: "Prueba",
+              placement: 'top',
+              trigger: 'hover',
+              container: 'body'
+            });*/
+
+        }
+    });
+
+    // Renderizar calendario
+    calendar.render();
+    // $('#calendar').fullCalendar()
+
+
+    //Evento para crear o modificar agendamientos
+    $("#add-new-event").on("click", function() {
+        addAgendPed(calendar);
+    });
+
+    //Evento para crear o modificar agendamientos Cliente retira
+    $("#add-new-event-cl").on("click", function() {
+        addAgendPedCl(calendar);
+
+    });
+
+    /* Eventos adicionales */
+    var colorChooser = $('#color-chooser-btn');
+    $('#color-chooser > li > a').click(function(e) {
+        e.preventDefault();
+        //Save color
+        currColor = $(this).css('color')
+            //Add color effect to button
+        $('#add-new-event').css({
+            'background-color': currColor,
+            'border-color': currColor
+        });
+    })
+
+    // Rango de fechas
+    $('#reservation').daterangepicker()
+    var date = new Date();
+    // Selector de rango de fechas con selector de tiempo
+    $('.rango').daterangepicker({
+        minDate: new Date(date.getFullYear(), date.getMonth(), date.getDate()),
+        timePicker: true,
+        language: 'es',
+        timePicker24Hour: true,
+        use24hours: true,
+        timePickerIncrement: 30,
+        drops: "up",
+        locale: {
+            format: 'YYYY-MM-DD HH:mm',
+            "separator": " - ",
+            "applyLabel": "Aplicar",
+            "cancelLabel": "Cancelar",
+            "fromLabel": "DE",
+            "toLabel": "HASTA",
+            "customRangeLabel": "Custom",
+            "daysOfWeek": [
+                "Dom",
+                "Lun",
+                "Mar",
+                "Mie",
+                "Jue",
+                "Vie",
+                "S&aacute;b"
+            ],
+            "monthNames": [
+                "Enero",
+                "Febrero",
+                "Marzo",
+                "Abril",
+                "Mayo",
+                "Junio",
+                "Julio",
+                "Agosto",
+                "Septiembre",
+                "Octubre",
+                "Noviembre",
+                "Diciembre"
+            ],
+        }
+    })
+
+    // Limpiar el campo de tango de fechas 
+    $('.rango').val("");
+
+    // Evento que trae los pedidos agendados y sin agendar para luego cargalos en el formulario y porderlos agendar
+    
+}

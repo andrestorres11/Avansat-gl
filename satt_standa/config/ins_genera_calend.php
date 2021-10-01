@@ -157,14 +157,14 @@ class calendAgendamiento
 
                               <div class="card-body">
                                 <div class="form-group">
-                                  <label for="usuarioID">Seleccione Usuario</label>
+                                  <label for="usuarioLID">Seleccione Usuario</label>
                                   <div class="input-group">
                                   <select class="form-control field" id="usuarioID" name="cod_usuari">
                                   <option value="">Usuario</option>
                                   ';
                                   $usuari = $this->getUsuari();
                                   foreach ($usuari as $key => $value) {
-                                    $html .= '<option value="'.$value['cod_usuari'].'">'.$value['nom_usuari'].'</option>';
+                                    $html .= '<option value="'.$value['cod_usuari'].'">'.$value['cod_usuari'].'</option>';
                                   }
                                 
 
@@ -174,7 +174,7 @@ class calendAgendamiento
                                   </div>
                                 </div>
                                 <div class="form-group">
-                                  <button id="add-new-event" type="button" class="btn btn-success" '.$disable_envio.' >Buscar</button>
+                                  <button id="add-new-event" type="button" class="btn btn-success" '.$disable_envio.' onclick="buscarUsuario()">Buscar</button>
                                 </div>
                               </div>
                             </div> ';
@@ -290,7 +290,7 @@ class calendAgendamiento
                     <!-- /.col -->
                     <div class="col-md-'.$tam.'">
                       <div class="card card-primary">
-                        <div class="card-body p-0">
+                        <div id="calendarPadre" class="card-body p-0">
                           <!-- THE CALENDAR -->
                           <div id="calendar"></div>
                         </div>
@@ -362,7 +362,7 @@ class calendAgendamiento
                   FROM ".BASE_DATOS.".tab_genera_usuari a
                   
                 WHERE a.ind_estado = '1'
-                AND a.cod_perfil IN (".COD_PERFIL_CONTROLA.",".COD_PERFIL_SUPEFARO.")
+                AND a.cod_perfil IN (".COD_PERFIL_CONTROLA.",".COD_PERFIL_SUPEFARO.",".COD_PERFIL_ADMINIST.")
                 ORDER BY a.nom_usuari ASC";
       
       

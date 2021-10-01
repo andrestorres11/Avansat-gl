@@ -189,14 +189,14 @@ $(function() {
 function mostrarPedidosAgendados(info) {
     Swal.fire({
         type: 'info',
-        title: 'Informaci&oacute;n del Pedido #' + info.event.id,
+        title: 'Informacion turno' + info.event.id,
         html: `<table class="table table-bordered">
               <tr>
-                <th>Codigo Pedido:</th>
+                <th>Codigo turno:</th>
                 <td>` + info.event.id + `</td>
               </tr>
               <tr>
-                <th>Titulo Pedido:</th>
+                <th>Usuario asignado:</th>
                 <td>` + info.event.title + `</td>
               </tr>
               <tr>
@@ -206,10 +206,6 @@ function mostrarPedidosAgendados(info) {
               <tr>
                 <th>Fecha Hora Fin:</th>
                 <td>` + moment(info.event.end).format("YYYY-MM-DD HH:mm") + `</td>
-              </tr>
-              <tr>
-                <th>Tiempo de Carpado:</th>
-                <td>15 Minutos</td>
               </tr>
              <table>`,
         showCloseButton: true,

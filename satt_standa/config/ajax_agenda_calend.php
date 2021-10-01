@@ -1,7 +1,7 @@
 <?php 
 
-ini_set('display_errors', true);
-error_reporting(E_ALL & ~E_NOTICE);
+/*ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);*/
 
 /*! \Class: ajaxCalendAgendamiento
 *  \brief: Clase encargada de hacer la conexion para hacer la solicitud de SOAT
@@ -433,9 +433,9 @@ class ajaxCalendAgendamiento
   *  \date: 23/12/2019    
   *  \return json
   */  
-  function viewAgendaUsuari($usuario = null){
+  function viewAgendaUsuari(){
 
-    $usuario = $_REQUEST['usuarioID'];
+    $usuario = $_REQUEST['usuario'];
     $filtro = new Aplica_Filtro_Usuari( $this -> cod_aplica, COD_FILTRO_REMDES, $this -> cod_usuari );
 
     $mSql="SELECT a.cod_protur,
@@ -791,11 +791,9 @@ class ajaxCalendAgendamiento
       $hor_inihor=$dataHorari[0]['hor_inicia'];
       $hor_finhor=$dataHorari[0]['hor_finalx'];
     }else{
-      $hor_inihor=date('H:i:s',strtotime ($horario[1]));
-      $hor_finhor=date('H:m:s',strtotime ($horario[2]));
+      $hor_inihor=date('H:i:s',strtotime ($horario[0]));
+      $hor_finhor=date('H:i:s',strtotime ($horario[1]));
     }
-
-    
 
     $respuesta['fec_inicio']=$fec_inicia;
     $respuesta['fec_final']=$fec_finalx;
@@ -851,15 +849,20 @@ class ajaxCalendAgendamiento
     $horario = explode(" - ", $_REQUEST['hor_apert_hor_cierre-cl']);
     $cod_horari= $_REQUEST['cod_horari'];
     $cod_noveda= $_REQUEST['cod_noveda'];
-    
-    
-    $observa= $_REQUEST['observatext'];
-    $dataHorari=$this->getHorari($cod_horari);
-    $hor_inihor=$dataHorari[0]['hor_inicia'];
-    $hor_finhor=$dataHorari[0]['hor_finalx'];
-
     $fec_inicia=date('Y-m-d',strtotime ($horario[0]));
-    $fec_finalx=date('Y-m-d',strtotime ($horario[1]));
+    $fec_finalx=date('Y-m-d',strtotime ($horario[1]));    
+    $observa= $_REQUEST['observatext'];
+
+    if($cod_noveda == 1){
+      $dataHorari=$this->getHorari($cod_horari);
+      $hor_inihor=$dataHorari[0]['hor_inicia'];
+      $hor_finhor=$dataHorari[0]['hor_finalx'];
+    }else{
+      $hor_inihor=date('H:i:s',strtotime ($horario[0]));
+      $hor_finhor=date('H:i:s',strtotime ($horario[1]));
+    }
+
+    
 
     $fec_aumenta = $fec_inicia;
 
