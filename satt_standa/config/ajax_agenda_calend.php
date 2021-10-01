@@ -66,7 +66,9 @@ class ajaxCalendAgendamiento
       case "EliminarFranja":
       	$this -> validarEliminacion();
       break;
-      
+      case "eliminarTurno":
+        $this -> eliminarTurno();
+      break;
       case "usuariosPerfil":
       	$this -> usuariosPerfil();
       break;
@@ -360,6 +362,8 @@ class ajaxCalendAgendamiento
   */  
   function viewAgenda(){
 
+      
+
       $filtro = new Aplica_Filtro_Usuari( $this -> cod_aplica, COD_FILTRO_REMDES, $this -> cod_usuari );
 
       $info_usuari= $this->infoUsuari($_SESSION['datos_usuario']['cod_usuari']);
@@ -370,7 +374,7 @@ class ajaxCalendAgendamiento
 
       $mSql="SELECT a.cod_protur,
                     a.cod_usuari,
-                    CONCAT ('(',UPPER (a.cod_usuari), ', ', UPPER (c.cod_usuari) ,')') AS dat_client,
+                    a.cod_usuari AS dat_client,
                     CONCAT(a.fec_inicia,' ', IF(a.hor_inicia IS NULL, b.hor_inicia,a.hor_inicia)) AS fec_inicia,
                     CONCAT(a.fec_finalx,' ', IF(a.hor_finalx IS NULL, b.hor_finalx,a.hor_finalx)) AS fec_finalx,
                     b.cod_colorx
@@ -387,6 +391,7 @@ class ajaxCalendAgendamiento
       $consulta = new Consulta( $mSql, $this -> conexion );
       $agendamientos = $consulta->ret_matrix('a');
 
+      $mPerms = $this->getView('jso_progra');
       $agenda = [];
       $cont = 0;
       foreach ($agendamientos as $key => $value) {
@@ -396,10 +401,12 @@ class ajaxCalendAgendamiento
               $agenda[$key]["title"] = $value["dat_client"];
               $agenda[$key]["backgroundColor"] = $value["cod_colorx"];
               $agenda[$key]["borderColor"] = $value["cod_colorx"];
+              $agenda[$key]["permiso"] = $mPerms->dat_progra->ind_visibl;
           }else{
               $agenda[$key]["title"] = "AGENDADA ";
               $agenda[$key]["backgroundColor"] = "rgb(0, 100, 255)";
               $agenda[$key]["borderColor"] = "rgb(0, 100, 255)";
+              $agenda[$key]["permiso"] = $mPerms->dat_progra->ind_visibl;
           }
 
           $agenda[$key]["cliente"] = $value["cod_usuari"];
@@ -407,6 +414,7 @@ class ajaxCalendAgendamiento
           $agenda[$key]["start"] = $value["fec_inicia"];
           $agenda[$key]["end"] = $value["fec_finalx"];
           $agenda[$key]["textColor"] = "#ffffff";
+          $agenda[$key]["permiso"] = $mPerms->dat_progra->ind_visibl;
           $cont++;
          
         }else{
@@ -418,6 +426,7 @@ class ajaxCalendAgendamiento
           $agenda[$key]["end"] = $value["fec_finalx"];
           $agenda[$key]["borderColor"] = $value["cod_colorx"];
           $agenda[$key]["textColor"] = "#ffffff";
+          $agenda[$key]["permiso"] = $mPerms->dat_progra->ind_visibl;
           $cont++;
         }  
       }
@@ -1142,6 +1151,36 @@ class ajaxCalendAgendamiento
 
       echo utf8_encode($html);
   }
+
+  function eliminarTurno(){
+    $respuesta=[];
+    $respuesta['status']=false;
+    $cod_turno = $_REQUEST['cod_turno'];
+
+    $sql = "DELETE FROM ".BASE_DATOS.".tab_progra_turnos 
+      WHERE cod_protur = '$cod_turno' ";
+    
+    $consulta = new Consulta( $sql, $this->conexion );
+
+      if($consulta){
+        $respuesta['status']=true;
+      }
+    
+    echo json_encode($respuesta);
+  }
+
+  function getView( $mCatego )
+    {
+        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac, a.jso_progra
+                   FROM ".BASE_DATOS.".tab_genera_respon a 
+             INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
+                     ON a.cod_respon = b.cod_respon 
+                  WHERE b.cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."' ";
+        $mConsult = new Consulta($mSql, $this -> conexion);
+        $mData = $mConsult->ret_matrix('a');
+
+        return json_decode($mData[0][$mCatego]);
+    }
 
 
 }

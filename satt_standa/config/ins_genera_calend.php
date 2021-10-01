@@ -174,7 +174,7 @@ class calendAgendamiento
                                   </div>
                                 </div>
                                 <div class="form-group">
-                                  <button id="add-new-event" type="button" class="btn btn-success" '.$disable_envio.' onclick="buscarUsuario()">Buscar</button>
+                                  <button id="buscar" type="button" class="btn btn-success" '.$disable_envio.' onclick="buscarUsuario()">Buscar</button>
                                 </div>
                               </div>
                             </div> ';

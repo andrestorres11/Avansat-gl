@@ -59,10 +59,11 @@ $(function() {
             updateAgendaDet(obj, standa);
         },
         eventClick: function(info) { // Evento para ver la informaci�n al detalle del agendamiento
+            console.log(info);
             if (info.event.id == "Cliente Retira") {
                 mostrarInformacionFranjaRetira(info);
             } else {
-                mostrarPedidosAgendados(info);
+                mostrarDatosTurno(info);
             }
         },
         eventRender: function(info) {
@@ -180,13 +181,13 @@ $(function() {
     });
 });
 
-/*! \fn: mostrarPedidosAgendados
+/*! \fn: mostrarDatosTurno
  *  \brief: Muestra la informacion del pedido agendado
  *  \author: Ing. Cristian Andr�s Torres
  *  \date: 16/06/2020
  *  \return n/a
  */
-function mostrarPedidosAgendados(info) {
+function mostrarDatosTurno(info) {
     Swal.fire({
         type: 'info',
         title: 'Informacion turno' + info.event.id,
@@ -209,9 +210,17 @@ function mostrarPedidosAgendados(info) {
               </tr>
              <table>`,
         showCloseButton: true,
-        confirmButtonText: 'Listo',
-        confirmButtonColor: info.event.backgroundColor
-    });
+        showCancelButton: true,
+        cancelButtonText: 'Listo',
+        cancelButtonColor: info.event.backgroundColor,
+        
+        confirmButtonText: 'Eliminar',
+        confirmButtonColor: '#dc3545',
+    }).then((result) => {
+        if (result.value) {
+            ajaxEliminarTurno(info);
+        }
+    });;
 
     $("table th").css({
         "background": info.event.backgroundColor,
@@ -533,4 +542,47 @@ function updateAgendaDet(obj, standa) {
     } catch (e) {
         console.error("Error updateAgendaDet " + e.message);
     }
+}
+
+function ajaxEliminarTurno(info) {
+    cod_turno = info.event.id;
+    var standa = "satt_standa"
+    var parametros = "Option=eliminarTurno&cod_turno=" + cod_turno;
+    $.ajax({
+        url: "../" + standa + "/config/ajax_agenda_calend.php?" + parametros,
+        data: { cod_turno: cod_turno },
+        type: "POST",
+        dataType: "json",
+        processData: false, // tell jQuery not to process the data
+        contentType: false, // tell jQuery not to set contentType
+        beforeSend: function() {
+            Swal.fire({
+                title: 'Cargando',
+                text: 'Por favor espere...',
+                imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+                imageAlt: 'Custom image',
+                showConfirmButton: false,
+            })
+        },
+        success: function(data) {
+            if (data['status']) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Operacion Exitosa',
+                    text: 'Se a eliminado turno',
+                }).then((result) => {
+                    if (result.value) {
+                        location.reload();
+                    }
+                });
+
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'No se ha podido eliminar el turno, verifique que exista.',
+                })
+            }
+        }
+    });
 }
