@@ -35,3 +35,11 @@
 .ui-datepicker-unselectable .ui-state-disabled .undefined{
 	background-color: #fff;
 }
+.multiselect-dropdown-arrow{
+    margin-top: -19px !important;
+    right: 10px !important;
+}
+
+.multiselect-list {
+    width: 100% !important;
+}

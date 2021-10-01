@@ -1,4 +1,5 @@
 $(function() {
+    
     $(".datetimepicker1").datepicker({
         dateFormat: "yy-mm-dd",
         minDate: '+0D',
@@ -24,6 +25,53 @@ $(".datetimepicker1").change(function() {
     reinicioValoresFranja();
     busquedaFranjas();
 });
+
+    /*! \fn: loadSelect
+    *  \brief: Funcion que Asignar las opciones por cada campo
+    *  \author: Luis Carlos Manrique Boada
+    *  \date: 2019-08-02
+    *  \param:  
+    */
+    function loadSelect() {
+    //Asignar las opciones por cada campo
+    $("select").each(function() {
+        var select = $(this).attr("id");
+        switch (select) {
+            case "usuariID":
+                var url = '../satt_standa/config/ins_genera_calend.php?Option=1';
+                break;
+            default:
+                var url = "";
+                break;
+        }
+        
+
+        //Ejecuta la opci?n dependendiendo del campo enviado
+        if (url != "") {
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                success: function(data) {
+                    $.each(data, function(key, value) {
+                        $("#" + select).append("<option value='" + value[0] + "'>" + value[1] + "</option>");
+                    });
+
+
+                    //Asigna el evento multiselecci?n al campo
+                    switch (select) {
+                        case "usuariID":
+                            $("#usuariID").multiselect();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            });
+        }
+
+    });
+}
 
 //FUNCION QUE BUSCA LAS FRANJAS DISPONIBLES PARA ESE DIA Y RELLENA EL CAMPO CORRESPONDIENTE
 function busquedaFranjas() {
@@ -84,7 +132,7 @@ function successSweet(titulo, mensaje) {
 function consultaHoraDisponible() {
     var form = new FormData(document.getElementById('form_addAgenPed'));
     var standa = "satt_standa";
-    var parametros = "Option=busquedaHora";
+    var parametros = "Option=afterInsert&process=search";
     $.ajax({
         url: "../" + standa + "/config/ajax_agenda_calend.php?" + parametros,
         async: false,
@@ -95,29 +143,32 @@ function consultaHoraDisponible() {
         contentType: false,
         beforeSend: function() { cargando(); },
         success: function(data) {
-        
+            let usuarios= "";
+            data.forEach(data1 => {
+                usuarios += data1['usuari']+", "
+            })
             Swal.fire({
                 title: 'La agenda de usuario',
                 html: `<table class="table table-bordered">
                             <tr>
-                                <th>Hora de Cargue:</th>
-                                <td>` + data['fec_inicio'] + `</td>
+                                <th>Fecha Inicio:</th>
+                                <td>` + data[0]['fec_inicio'] + `</td>
                             </tr>
                             <tr>
-                                <th>Hora de Cargue:</th>
-                                <td>` + data['fec_final'] + `</td>
+                                <th>Fecha Fin:</th>
+                                <td>` + data[0]['fec_final'] + `</td>
                             </tr>
                             <tr>
-                                <th>Hora de Cargue:</th>
-                                <td>` + data['inicio'] + `</td>
+                                <th>Hora Inicio:</th>
+                                <td>` + data[0]['inicio'] + `</td>
                             </tr>
                             <tr>
-                                <th>Hora fin de Cargue:</th>
-                                <td>` + data['final'] + `</td>
+                                <th>Hora Fin:</th>
+                                <td>` + data[0]['final'] + `</td>
                             </tr>
                             <tr>
                                 <th>Usuario:</th>
-                                <td>` + data['usuari'] + `</td>
+                                <td>` + usuarios + `</td>
                             </tr>
                         <table>`,
                 confirmButtonColor: '#3085d6',
@@ -134,13 +185,13 @@ function consultaHoraDisponible() {
             
         }
     });
+    
 }
 
 function registrarCitacion() {
     var form = new FormData(document.getElementById('form_addAgenPed'));
-    console.log(form);
     var standa = "satt_standa";
-    var parametros = "Option=registraCitacion";
+    var parametros = "Option=afterInsert&process=insert";
     $.ajax({
         url: "../" + standa + "/config/ajax_agenda_calend.php?" + parametros,
         async: false,
@@ -169,4 +220,29 @@ function viewObserva(elemento){
     }else{
         $('#observaID').css('display', 'none');
     }
+}
+
+function usuariosPerfil(elemento){
+    var valor = $(elemento).val();
+    var standa = "satt_standa";
+    var parametros = "Option=usuariosPerfil&cod_perfil="+valor;
+    $.ajax({
+        url: "../" + standa + "/config/ajax_agenda_calend.php?" + parametros,
+        async: false,
+        type: "POST",
+        dataType: "html",
+        beforeSend: function() { cargando(); },
+        success: function(data) {
+            $('#usuariDivID').empty();
+
+            $('#usuariDivID').html(data);
+            
+
+            $("#usuariID").multiselect();
+
+            $("#usuariID_input").addClass("form-control");
+            $("#usuariID_input").addClass("field");
+            Swal.close();
+        }
+    });
 }

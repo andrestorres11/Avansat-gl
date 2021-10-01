@@ -5,7 +5,7 @@ error_reporting(E_ALL & ~E_NOTICE);
 
 /*! \Class: ajaxCalendAgendamiento
 *  \brief: Clase encargada de hacer la conexion para hacer la solicitud de SOAT
-*  \author: Ing. Luis Manrique
+*  \author: Ing. Andres Martinez
 *  \date: 22/10/2019
 *  \param: $mConnection  -  Variable de clase que almacena la conexion de la Base de datosm biene desde el framework
 *  \return array
@@ -19,7 +19,7 @@ class ajaxCalendAgendamiento
   var $cod_aplica;
   /*! \fn: ajaxCalendAgendamiento
   *  \brief: constructor de php4 para la clase
-  *  \author: Ing. Luis Manrique
+  *  \author: Ing. Andres Martinez
   *  \date: 16/07/2015   
   *  \param: fConection  : Conexion de base de datos 
   *  \param: mParams     : Array con los datos a enviar 
@@ -35,6 +35,7 @@ class ajaxCalendAgendamiento
     @include_once( '../'.DIR_APLICA_CENTRAL.'/lib/general/functions.inc' );
     switch( $_REQUEST["Option"] )
     { 
+      
       case "creEditAgendPedi":
         $this -> creEditAgendPedi();
       break;
@@ -43,6 +44,9 @@ class ajaxCalendAgendamiento
       break;
       case "viewAgenda":
         $this -> viewAgenda();
+      break;
+      case "viewAgendaUsuari":
+        $this -> viewAgendaUsuari();
       break;
       case "updateAgenda":
         $this -> updateAgenda();
@@ -62,13 +66,20 @@ class ajaxCalendAgendamiento
       case "EliminarFranja":
       	$this -> validarEliminacion();
       break;
+      
+      case "usuariosPerfil":
+      	$this -> usuariosPerfil();
+      break;
+      case "afterInsert":
+      	$this -> afterInsert();
+      break;
     }
   }
 
 
   /*! \fn: creEditAgendPedi
   *  \brief: Metodo que consulta y genera la actualizaci�n o registro del agendamiento de un pedido
-  *  \author: Ing. Luis Manrique
+  *  \author: Ing. Andres Martinez
   *  \date: 20/12/2019    
   *  \return n/a
   */  
@@ -276,7 +287,7 @@ class ajaxCalendAgendamiento
 
   /*! \fn: creEditAgendPediCl
   *  \brief: Metodo que consulta y genera la actualizacion o registro del agendamiento de un pedido Cliente retira
-  *  \author: Ing. Luis Manrique
+  *  \author: Ing. Andres Martinez
   *  \date: 20/02/202                                                    
   *  \return n/a
   */  
@@ -343,7 +354,7 @@ class ajaxCalendAgendamiento
 
     /*! \fn: viewAgenda
   *  \brief: Metodo que consulta y genera la visualizaci�n de los agendamientos
-  *  \author: Ing. Luis Manrique
+  *  \author: Ing. Andres Martinez
   *  \date: 23/12/2019    
   *  \return json
   */  
@@ -353,10 +364,6 @@ class ajaxCalendAgendamiento
 
       $info_usuari= $this->infoUsuari($_SESSION['datos_usuario']['cod_usuari']);
       $cond = "";
-      // print_r($info_usuari[0]['cod_perfil']);
-      // print_r(COD_PERFIL_ADMINIST);
-      // print_r(COD_PERFIL_SUPEREAL);
-      // die;
       if($info_usuari[0]['cod_perfil'] != COD_PERFIL_ADMINIST && $info_usuari[0]['cod_perfil'] != COD_PERFIL_SUPEFARO ){
         $cond = " WHERE a.cod_usuari= '".$_SESSION['datos_usuario']['cod_usuari']."' ";
       }
@@ -420,9 +427,79 @@ class ajaxCalendAgendamiento
       echo json_encode($agenda);
   }
 
+    /*! \fn: viewAgendaUsuari
+  *  \brief: Metodo que consulta y genera la visualizaci�n de los agendamientos
+  *  \author: Ing. Andres Martinez
+  *  \date: 23/12/2019    
+  *  \return json
+  */  
+  function viewAgendaUsuari($usuario = null){
+
+    $usuario = $_REQUEST['usuarioID'];
+    $filtro = new Aplica_Filtro_Usuari( $this -> cod_aplica, COD_FILTRO_REMDES, $this -> cod_usuari );
+
+    $mSql="SELECT a.cod_protur,
+                  a.cod_usuari,
+                  CONCAT ('(',UPPER (a.cod_usuari), ', ', UPPER (c.cod_usuari) ,')') AS dat_client,
+                  CONCAT(a.fec_inicia,' ', IF(a.hor_inicia IS NULL, b.hor_inicia,a.hor_inicia)) AS fec_inicia,
+                  CONCAT(a.fec_finalx,' ', IF(a.hor_finalx IS NULL, b.hor_finalx,a.hor_finalx)) AS fec_finalx,
+                  b.cod_colorx
+            FROM  ".BASE_DATOS.". tab_progra_turnos a
+            INNER JOIN  ".BASE_DATOS.". tab_config_horari b
+                  ON  a.cod_horari = b.cod_horari
+            INNER JOIN  ".BASE_DATOS.". tab_genera_usuari c
+                  ON  a.cod_usuari = c.cod_usuari
+                  WHERE a.cod_usuari= '".$usuario."'
+
+    ";
+
+
+    $consulta = new Consulta( $mSql, $this -> conexion );
+    $agendamientos = $consulta->ret_matrix('a');
+
+    $agenda = [];
+    $cont = 0;
+    foreach ($agendamientos as $key => $value) {
+      if($filtro -> listar($this -> conexion)>0){
+        $datos_filtro = $filtro -> dar_filtro_multiple($this -> conexion);
+        if($this->busquedaArray($datos_filtro,$value["cod_usuari"])){
+            $agenda[$key]["title"] = $value["dat_client"];
+            $agenda[$key]["backgroundColor"] = $value["cod_colorx"];
+            $agenda[$key]["borderColor"] = $value["cod_colorx"];
+        }else{
+            $agenda[$key]["title"] = "AGENDADA ";
+            $agenda[$key]["backgroundColor"] = "rgb(0, 100, 255)";
+            $agenda[$key]["borderColor"] = "rgb(0, 100, 255)";
+        }
+
+        $agenda[$key]["cliente"] = $value["cod_usuari"];
+        $agenda[$key]["id"] = $value["cod_protur"];
+        $agenda[$key]["start"] = $value["fec_inicia"];
+        $agenda[$key]["end"] = $value["fec_finalx"];
+        $agenda[$key]["textColor"] = "#ffffff";
+        $cont++;
+       
+      }else{
+        $agenda[$key]["title"] = $value["dat_client"];
+        $agenda[$key]["backgroundColor"] = $value["cod_colorx"];
+        $agenda[$key]["cliente"] = $value["cod_usuari"];
+        $agenda[$key]["id"] = $value["cod_protur"];
+        $agenda[$key]["start"] = $value["fec_inicia"];
+        $agenda[$key]["end"] = $value["fec_finalx"];
+        $agenda[$key]["borderColor"] = $value["cod_colorx"];
+        $agenda[$key]["textColor"] = "#ffffff";
+        $cont++;
+      }  
+    }
+
+    
+
+    echo json_encode($agenda);
+}
+
   /*! \fn: busquedaArray
   *  \brief: Metodo que consulta un valor en un array dado
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 20/11/2020    
   *  \return boolean
   */  
@@ -495,7 +572,7 @@ class ajaxCalendAgendamiento
 
   /*! \fn: form_mail
   *  \brief: Metodo que genera la funcionalidad de crear correos
-  *  \author: Ing. Luis Manrique
+  *  \author: Ing. Andres Martinez
   *  \date: 23/10/2019
   *  \return n/a
   */ 
@@ -564,7 +641,7 @@ class ajaxCalendAgendamiento
 
   /*! \fn: sendMail
   *  \brief: Envia la solicitud correspondiente mediante el correo
-  *  \author: Ing. Luis Manrique
+  *  \author: Ing. Andres Martinez
   *  \date: 23/10/2019    
   *  \return boolean
   */  
@@ -627,7 +704,7 @@ class ajaxCalendAgendamiento
 
   /*! \fn: busquedaFranja
   *  \brief: Metodo que consulta y retorna el html con las franjas programadas en base al dia seleccionado
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 22/04/2020                                                    
   *  \return n/a
   */  
@@ -670,17 +747,36 @@ class ajaxCalendAgendamiento
 
   }
 
+  function afterInsert( ){
+  
+    if($_REQUEST['process']=="insert"){
+      foreach ($_REQUEST['cod_usuari'] as $usuario) {
+          
+        $this->registraCitacion($usuario);
+          
+      }
+      $response['estado']=1;
+    }elseif($_REQUEST['process']=="search"){
+      
+      foreach ($_REQUEST['cod_usuari'] as $usuario) {
+          
+        $response[] = $this->busquedaHora($usuario);
+      }
+    }
+
+    echo json_encode($response);
+  }
+
     /*! \fn: busquedaHora
   *  \brief: Metodo que consulta y retorna la confirmacion de las horas disponibles del agendamiento.
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 22/04/2020                                                    
   *  \return n/a
   */  
 
-  function busquedaHora(){
+  function busquedaHora($cod_usuari = null){
+    
     //Informacion enviada por ajax
-
-    $cod_usuari= $_REQUEST['cod_usuari'];
     $horario = explode(" - ", $_REQUEST['hor_apert_hor_cierre-cl']);
     $cod_horari= $_REQUEST['cod_horari'];
     $cod_noveda= $_REQUEST['cod_noveda'];
@@ -690,9 +786,15 @@ class ajaxCalendAgendamiento
     $fec_inicia=date('Y-m-d',strtotime ($horario[0]));
     $fec_finalx=date('Y-m-d',strtotime ($horario[1]));
 
-    $dataHorari=$this->getHorari($cod_horari);
-    $hor_inihor=$dataHorari[0]['hor_inicia'];
-    $hor_finhor=$dataHorari[0]['hor_finalx'];
+    if($cod_noveda == 1){
+      $dataHorari=$this->getHorari($cod_horari);
+      $hor_inihor=$dataHorari[0]['hor_inicia'];
+      $hor_finhor=$dataHorari[0]['hor_finalx'];
+    }else{
+      $hor_inihor=date('H:i:s',strtotime ($horario[1]));
+      $hor_finhor=date('H:m:s',strtotime ($horario[2]));
+    }
+
     
 
     $respuesta['fec_inicio']=$fec_inicia;
@@ -700,46 +802,11 @@ class ajaxCalendAgendamiento
     $respuesta['inicio']=$hor_inihor;
     $respuesta['final']=$hor_finhor;
     $respuesta['usuari']=$cod_usuari;
-    /*$num_pedido= $_REQUEST['cod_pedido'];
-    $num_lineax= $_REQUEST['num_lineax'];
-    $hor_franja= $_REQUEST['FranjasID'];
-    $horario = explode("_", $hor_franja);*/
-
-    //Horas de la franja
 
     $respuestas=[];
 
-    //Hora disponible para agendar
-    //$hora_inicia=$this->retornaHoraFinal($fec_inicia,$fec_finalx);
-    //Tiempo de cargue en minutos
-    //$tiempo_cargue=$this->darTiempoCargue($bahia,$num_pedido,$num_lineax);
-    //$hora_finalx = date ( 'H:i:s' , strtotime ( '+'.$tiempo_cargue.' minute' , strtotime ($hora_inicia)));
 
-    //validaciones de la hora
-    //$v1=$this->dentro_de_horario($hor_inicia,$hor_finalx,$hora_inicia);
-    //$v2=$this->dentro_de_horario($hor_inicia,$hor_finalx,$hora_finalx);
-
-
-    //hora de la bahia
-    //$hor_inibah = $this->darHorlabBah($bahia,$fec_inicia)[0]['hor_ingres'];
-    //$hor_finbah = $this->darHorlabBah($bahia,$fec_finalx)[0]['hor_salida'];
-
-    //validaciones del horario de la bahia
-    //$v3=$this->dentro_de_horario($hor_inibah,$hor_finbah,$hora_inicia);
-    //$v4=$this->dentro_de_horario($hor_inibah,$hor_finbah,$hora_finalx);
-
-    //$respuesta['estado']=2;
-    
-    //if($v3 AND $v4){
-      //$respuesta['estado']=0;
-      //$respuesta['comparacion_prueba']=$hora_finalx;
-      //if($v1 AND $v2){
-      
-        
-      //}
-    //}
-
-    echo json_encode($respuesta);
+    return $respuesta;
   }
 
   private function getHorari( $cod_horari )
@@ -775,13 +842,12 @@ class ajaxCalendAgendamiento
 
      /*! \fn: registraCitacion
   *  \brief: Metodo que registra las hora confirmada del agendamiento a la base de datos
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 22/04/2020                                                    
   *  \return n/a
   */  
-  function registraCitacion(){
+  function registraCitacion($cod_usuari = null){
 
-    $cod_usuari= $_REQUEST['cod_usuari'];
     $horario = explode(" - ", $_REQUEST['hor_apert_hor_cierre-cl']);
     $cod_horari= $_REQUEST['cod_horari'];
     $cod_noveda= $_REQUEST['cod_noveda'];
@@ -803,65 +869,16 @@ class ajaxCalendAgendamiento
     }
     
     $respuesta['estado']=1;
-    echo json_encode($respuesta);
+    return $respuesta;
 
   
     
   }
-    /*$num_pedido= $_REQUEST['usuariID'];
-    echo($num_pedido);
-    $num_lineax= $_REQUEST['num_lineax'];
-    $hor_franja= $_REQUEST['FranjasID'];
-    $horario = explode("_", $hor_franja);
-    */
-    //Horas de la franja
-    /*$fec_inicia=$horario[0];
-    $hor_inicia=date('H:i:s',strtotime ($fec_inicia));
-    $fec_finalx=$horario[1];
-    $hor_finalx=date('H:i:s',strtotime ($fec_finalx));
-    $fec_dia=date('Y-m-d',strtotime($horario[0]));
-    $bahia=$horario[2];
-    */
-    //$respuestas=[];
-    /*$hora_inicia=$this->retornaHoraFinal($fec_inicia,$fec_finalx);
-    $tiempo_cargue=$this->darTiempoCargue($bahia,$num_pedido,$num_lineax);
-    $hora_finalx = date ( 'H:i:s' , strtotime ( '+'.$tiempo_cargue.' minute' , strtotime ($hora_inicia)));
-    */
-    //validaciones de la hora
-    /*$v1=$this->dentro_de_horario($hor_inicia,$hor_finalx,$hora_inicia);
-    $v2=$this->dentro_de_horario($hor_inicia,$hor_finalx,$hora_finalx);
-*/
     
-    //hora de la bahia
-    /*$hor_inibah = $this->darHorlabBah($bahia,$fec_inicia)[0]['hor_ingres'];
-    $hor_finbah = $this->darHorlabBah($bahia,$fec_finalx)[0]['hor_salida'];
-*/
-    //validaciones del horario de la bahia
-    /*$v3=$this->dentro_de_horario($hor_inibah,$hor_finbah,$hora_inicia);
-    $v4=$this->dentro_de_horario($hor_inibah,$hor_finbah,$hora_finalx);
-*/
-    //$respuesta['estado']=2;
-    //if($v3 AND $v4){
-      //$respuesta['estado']=0;
-      //if($v1 AND $v2){
-      
-      //Validacion disponiblidad de vehiculo.
-      /*if($this->validarDisponibilidadVehiculo($num_pedido,$num_lineax,$fec_dia)){
-        $this->registraCita($fec_dia, $hora_inicia, $hora_finalx,$num_pedido,$num_lineax,$bahia);
-        $respuesta['estado']=1;
-      }else{
-        $respuesta['estado']=5;
-      }
-      */
-        
-      //}
-    //}
-    //echo json_encode($respuesta);*/
-  //}
 
       /*! \fn: registraCita
   *  \brief: Recibe los datos y hace la insercion y registro en las tablas de la base de datos con la informacion de la cita del agendamiento
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 22/04/2020                                                    
   *  \return n/a
   */  
@@ -873,41 +890,12 @@ class ajaxCalendAgendamiento
           VALUES  ('".$cod_usuari."', '".$cod_horari."','".$cod_noveda."', '".$fec_inicia."', '".$fec_finalx."',
           '".$hor_inihor."', '".$hor_finhor."', '".$observa."', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW())";
     new Consulta( $sql, $this->conexion, "R" );
-    
-    //$num_planea=$this->darPlaneacion($fecha);
 
-    //Revisa el status actual de la lista de planeacion devuelve true si esta activa y false si esta inactiva
-    //$status=$this->verStatusPlaneacion($num_planea);
-
-    //En caso del status ser false, reactiva la planeacion cambiando su status a 1 en la tabla
-    /*if(!$status){
-        $this->activarPlaneacion($num_planea);
-    }*/
-
-    /*$mSql = "INSERT INTO ".BASE_DATOS.".tab_agrupa_pedido 
-                                (num_pedido, num_lineax, cod_planea, ind_estado, usr_creaci, fec_creaci)
-                        VALUES  (".$num_pedido.",'".$num_lineax."' ,'".$num_planea."', 0, 
-                                '".$_SESSION['datos_usuario']['cod_usuari']."', NOW())";
-    new Consulta( $mSql, $this->conexion, "R" );
-
-    $mSql = "UPDATE ".BASE_DATOS.".tab_genera_pedido 
-                  SET ind_estado = 2,
-                      usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."', 
-                      fec_modifi = NOW(),
-                      bahia_cargue = '".$bahia."',
-                      fec_cargue = '".$fecha."',
-                      hor_cargue = '".$hora_inicial."',
-                      hor_fcargu = '".$hora_finalx."',
-                      aut_retira = '2'
-            WHERE  num_pedido = '".$num_pedido."' AND
-                    num_lineax = ".$num_lineax;
-    new Consulta($mSql, $this -> conexion,"R");
-    */
   }
 
     /*! \fn: darPlaneacion
   *  \brief: registra o consulta el codigo de la planeacion en base a la fecha que se le da a la funcion como parametro
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 22/04/2020                                                    
   *  \return codigo de planeacion
   */  
@@ -947,7 +935,7 @@ class ajaxCalendAgendamiento
 
   /*! \fn: verStatusPlaneacion
   *  \brief: Consulta el status actual de la planeacion devuelve true si esta activa = 1 o false si esta inactiva = 0
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 28/07/2020                                                    
   *  \return boolean
   */ 
@@ -965,7 +953,7 @@ class ajaxCalendAgendamiento
 
   /*! \fn: activarPlaneacion
   *  \brief: Cambia el status de la planeacion a 1
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 28/07/2020                                                    
   *  \return boolean
   */ 
@@ -981,7 +969,7 @@ class ajaxCalendAgendamiento
 
     /*! \fn: retornaHoraFinal
   *  \brief: Consulta en el registro de agendamiento la hora en que estara disponible el sitio de carga para el base a esa hora calcular el agedamiento.
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 22/04/2020                                                    
   *  \return hora libre
   */ 
@@ -1027,7 +1015,7 @@ class ajaxCalendAgendamiento
 
      /*! \fn: darTiempoCargue
   *  \brief: Consulta el tiempo de cargue en base al vehiculo asignado al pedido
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 22/04/2020                                                    
   *  \return tiempo de cargue
   */
@@ -1063,7 +1051,7 @@ class ajaxCalendAgendamiento
 
      /*! \fn: dentro_de_horario
   *  \brief: Retorna un boolean en base al analisis si una hora dada esta entre una franja de dos horas
-  *  \author: Ing. Cristian Torres
+  *  \author: Ing. Andres Martinez
   *  \date: 22/04/2020                                                    
   *  \return boolean
   */
@@ -1128,6 +1116,28 @@ class ajaxCalendAgendamiento
       return true;
     }
     return false;
+  }
+
+  function usuariosPerfil(){
+    $query = "SELECT a.cod_consec, a.cod_usuari, a.nom_usuari
+                  FROM ".BASE_DATOS.".tab_genera_usuari a
+                  
+                WHERE a.ind_estado = '1'
+                AND a.cod_perfil = '".$_REQUEST['cod_perfil']."'
+                ORDER BY a.nom_usuari ASC";
+      
+      $consulta = new Consulta( $query, $this->conexion );
+      $mUsuarios = $consulta->ret_matriz('a');
+      $html ='<label for="usuario">Seleccione Usuario</label>
+      <select id="usuariID" multiple name="cod_usuari[]" >';
+      foreach ($mUsuarios as $usuario) {
+        $html .= '
+        <option value="'.$usuario['cod_usuari'].'">'.$usuario['nom_usuari'].'</option>';  
+      }
+
+      $html .='</select>';
+
+      echo utf8_encode($html);
   }
 
 

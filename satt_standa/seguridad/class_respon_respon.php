@@ -435,11 +435,15 @@ class responsable
 								);
 				break;
 			case 'jso_progra':
-				$mArray[0] = array( "dat_progra"=>array("name"=>"Visualizar", "sub"=>array() )
+				$mArray[0] = array( "dat_progra"=>array("name"=>"Visualizar", "sub"=>array() ),
+									"dat_elimin"=>array("name"=>"Eliminar", "sub"=>array() )
 									);
-				$mArray[1] = array( "dat_progra"=>array("ind_visibl"=>1, "sub"=>array())
+				$mArray[1] = array( "dat_progra"=>array("ind_visibl"=>1, "sub"=>array()),
+									"dat_elimim"=>array("ind_visibl"=>1, "sub"=>array()),
 								);
 				break;
+
+				
 			case 'jso_partic':
 				$mArray[0] = array( "dat_partic"=>array("name"=>"Visualizar", "sub"=>array() )
 								  );

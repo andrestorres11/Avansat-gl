@@ -32,6 +32,10 @@ class calendAgendamiento
       	@include_once( '../'.DIR_APLICA_CENTRAL.'/lib/general/functions.inc' );
         switch( $_REQUEST["Option"] )
 	    { 
+
+        case "1":
+          self::getUsuari();
+        break;
 	      default:
 	        $this -> setCalendar();
 	      break;
@@ -64,6 +68,9 @@ class calendAgendamiento
       $style .= '<link rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/js/lib/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css" type="text/css">';
       $style .= '<!-- Estilos Pagina -->';
       $style .= '<link rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/css/tab_agenda_retirax.css" type="text/css">';
+      //Multiselect
+      $style .= '<link href="../' . DIR_APLICA_CENTRAL . '/js/lib/multiselect/styles/multiselect.css" rel="stylesheet">';
+
       echo $style;  
   }
 
@@ -102,7 +109,11 @@ class calendAgendamiento
         $script .= '<script type="text/javascript" language="JavaScript" src="../'.DIR_APLICA_CENTRAL.'/js/cal_agenda_pedido.js?rand='.rand(1000, 10000).'"></script>';  
       
         //$script .= '<script type="text/javascript" language="JavaScript" src="../'.DIR_APLICA_CENTRAL.'/js/cal_agenda_pedret.js?rand='.rand(1000, 10000).'"></script>';
-      
+        
+        $script .= '<script src="../' . DIR_APLICA_CENTRAL . '/js/jquery-ui-1.12.1/jquery.blockUI.js"></script>';
+        $script .= '<script src="../' . DIR_APLICA_CENTRAL . '/js/multiselect/jquery.multiselect.js"></script>';
+        //Multiselect
+        $script .= '<script src="../' . DIR_APLICA_CENTRAL . '/js/lib/multiselect/multiselect.min.js"></script>';
 
       $script .= '<script type="text/javascript" language="JavaScript" src="../'.DIR_APLICA_CENTRAL.'/js/cal_agenda_valida.js"></script>';
       echo $script;
@@ -146,9 +157,9 @@ class calendAgendamiento
 
                               <div class="card-body">
                                 <div class="form-group">
-                                  <label for="usuariID">Seleccione Usuario</label>
+                                  <label for="usuarioID">Seleccione Usuario</label>
                                   <div class="input-group">
-                                  <select class="form-control field" id="usuariID" name="cod_usuari">
+                                  <select class="form-control field" id="usuarioID" name="cod_usuari">
                                   <option value="">Usuario</option>
                                   ';
                                   $usuari = $this->getUsuari();
@@ -185,34 +196,41 @@ class calendAgendamiento
                             <!-- /btn-group -->
                             <div class="input-group">
                               <form role="form" id="form_addAgenPed">
+                                <div class="form-group">
+                                    <label for="perfil">Seleccione Perfil</label>
+                                    <div class="input-group">
+                                      <select class="form-control field" id="perfilID" name="cod_perfil" onchange="usuariosPerfil(this)">
+                                        <option value="">Seleccione Perfil</option>
+                                        ';
+                                        $perfil = $this->getPerfil();
+                                        foreach ($perfil as $key => $value) {
+                                          $html .= '<option value="'.$value['cod_perfil'].'">'.$value['nom_perfil'].'</option>';
+                                        }
+                    
+                                        $html .=  '
+                                      </select>
+                                    </div>
+                                </div>
                                 
                                 <div class="form-group">
-                                  <div class="input-group">
-                                    <input type="text" id="hor_apert_hor_cierre-cl" name="hor_apert_hor_cierre-cl" class="form-control float-right field rango" placeholder="Fecha y hora programada">
-                                  </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="usuario">Seleccione Usuario</label>
+                                    
                                     <div class="input-group">
-                                      <select class="form-control field" id="usuariID" name="cod_usuari">
-                                        <option value="">Usuario</option>
+                                      <div id="usuariDivID" style="width : 100%;">
+                                      
                                         ';
-                                        $usuari = $this->getUsuari();
+                                        /*$usuari = $this->getUsuari();
                                         foreach ($usuari as $key => $value) {
                                           $html .= '<option value="'.$value['cod_usuari'].'">'.$value['nom_usuari'].'</option>';
-                                        }
-                                      
-
+                                        }*/
                                         $html .=  '
-                            
-                                      </select>
+                                      </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                   <label for="horario">Seleccione Horario</label>
                                     <div class="input-group">
                                       <select class="form-control field" id="horariID" name="cod_horari">
-                                      <option value="">Horario</option>
+                                      <option value="">Seleccione Horario</option>
                                       ';
                             $horari = $this->getHorari();
 
@@ -230,23 +248,27 @@ class calendAgendamiento
                                 <div class="form-group">
                                   <label for="novedad">Novedad</label>
                                     <div class="input-group">
-                                      <select class="form-control field" id="novedaID" name="cod_noveda" onChange="viewObserva(this)">
-                                      <option value="1">Novedad</option>
+                                      <select class="form-control field" place id="novedaID" name="cod_noveda" onChange="viewObserva(this)">
+                                      <option value="1">Seleccione Novedad</option>
                                       ';
-                            $novtur = $this->getNovtur();
+                                        $novtur = $this->getNovtur();
 
-                            foreach ($novtur as $key => $value) {
-                              $html .= '<option value="'.$value['cod_novtur'].'">'.$value['nom_novtur'].'</option>';
-                            }
-                            
+                                        foreach ($novtur as $key => $value) {
+                                          $html .= '<option value="'.$value['cod_novtur'].'">'.$value['nom_novtur'].'</option>';
+                                        }
+                                        
 
-                            $html .=  '
-                            
-                            </select>
+                                        $html .=  '
+                                        </select>
                                     </div>
                                 </div>
+                                <div class="form-group">
+                                  <div class="input-group">
+                                    <input type="text" id="hor_apert_hor_cierre-cl" name="hor_apert_hor_cierre-cl" class="form-control float-right field rango" placeholder="Fecha y hora programada">
+                                  </div>
+                                </div>
                               <div class="form-group" id="observaID" style="display: none">
-                                <label for="usuariID">Observacion</label>
+                                <label for="observaID">Observacion</label>
                                 <textarea id="observatext" name="observatext" type="text" class="form-control field"></textarea>
                               </div>
 
@@ -342,6 +364,22 @@ class calendAgendamiento
                 WHERE a.ind_estado = '1'
                 AND a.cod_perfil IN (".COD_PERFIL_CONTROLA.",".COD_PERFIL_SUPEFARO.")
                 ORDER BY a.nom_usuari ASC";
+      
+      
+      $consulta = new Consulta( $query, $this->conexion );
+      $mUsiari = $consulta->ret_matriz('a');
+      return $mUsiari;
+    
+    }
+
+    private function getPerfil()
+    {
+      
+      $query = "SELECT a.cod_perfil, a.nom_perfil
+                  FROM ".BASE_DATOS.".tab_genera_perfil a
+                  
+                WHERE a.ind_estado = '1'
+               ORDER BY a.nom_perfil ASC";
       
       
       $consulta = new Consulta( $query, $this->conexion );
