@@ -1055,15 +1055,15 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "Supervisor Saliente",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
-							/*
+							
 								$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($SUPERVISORES,"supe_entrante")!="")?self::JsonRecor($SUPERVISORES,"supe_entrante"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_entranteID')"));
 								$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($SUPERVISORES,"cont_Mentrant")!="")?self::JsonRecor($SUPERVISORES,"cont_Mentrant"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','cont_MentrantID')"));
 								$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3", "value"=>(self::JsonRecor($SUPERVISORES,"supe_saliente")!="")?self::JsonRecor($SUPERVISORES,"supe_saliente"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_salienteID')"));
-							*/
+							/*
 								$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2", "value"=>" 00 ", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_entranteID')"));
 								$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2", "value"=>"00", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','cont_MentrantID')"));
 								$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3", "value"=>"00", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_salienteID')"));
-
+							*/
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1092,15 +1092,16 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "N° Incapacitados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
-							/*
+							
 								$mHtml->Input(array("name" => "cont_enturno", "id" => "cont_enturnoID", "width" => "100%", "colspan"=>"1", "value"=>(self::JsonRecor($CONTROLADORES,"cont_enturno")!="")?self::JsonRecor($CONTROLADORES,"cont_enturno"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','cont_enturnoID')"));
 								$mHtml->Input(array("name" => "cont_ausente", "id" => "cont_ausenteID", "width" => "100%", "colspan"=>"1", "value"=>(self::JsonRecor($CONTROLADORES,"cont_ausente")!="")?self::JsonRecor($CONTROLADORES,"cont_ausente"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','cont_ausenteID')"));
 								$mHtml->Input(array("name" => "supe_incapac", "id" => "supe_incapacID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($CONTROLADORES,"supe_incapac")!="")?self::JsonRecor($CONTROLADORES,"supe_incapac"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','supe_incapacID')"));
-								*/
+								
+								/*
 								$mHtml->Input(array("name" => "cont_enturno", "id" => "cont_enturnoID", "width" => "100%", "colspan"=>"1", "value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','cont_enturnoID')"));
 								$mHtml->Input(array("name" => "cont_ausente", "id" => "cont_ausenteID", "width" => "100%", "colspan"=>"1", "value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','cont_ausenteID')"));
 								$mHtml->Input(array("name" => "supe_incapac", "id" => "supe_incapacID", "width" => "100%", "colspan"=>"2", "value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','supe_incapacID')"));
-
+							*/
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1128,15 +1129,17 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "N° Por subir a SPG",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
-							/*
+							
 								$mHtml->Input(array("name" => "numb_enreali", "id" => "numb_enrealiID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ENCUESTAS,"numb_enreali")!="")?self::JsonRecor($ENCUESTAS,"numb_enreali"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_enrealiID')"));
 								$mHtml->Input(array("name" => "numb_registr", "id" => "numb_registrID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ENCUESTAS,"numb_registr")!="")?self::JsonRecor($ENCUESTAS,"numb_registr"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_registrID')"));
 								$mHtml->Input(array("name" => "numb_subaspg", "id" => "numb_subaspgID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ENCUESTAS,"numb_subaspg")!="")?self::JsonRecor($ENCUESTAS,"numb_subaspg"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_subaspgID')"));
-								*/
+								
+								/*
 								$mHtml->Input(array("name" => "numb_enreali", "id" => "numb_enrealiID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_enrealiID')"));
 								$mHtml->Input(array("name" => "numb_registr", "id" => "numb_registrID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_registrID')"));
 								$mHtml->Input(array("name" => "numb_subaspg", "id" => "numb_subaspgID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_subaspgID')"));
-							$mHtml->CloseRow();
+								*/
+								$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
 							$mHtml->CloseRow();
@@ -1164,17 +1167,18 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "N° Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
-							/*
+							
 								$mHtml->Input(array("name" => "numb_esreali", "id" => "numb_esrealiID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ESPECIFICAS,"numb_esreali")!="")?self::JsonRecor($ESPECIFICAS,"numb_esreali"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_esrealiID')"));								
 								$mHtml->Input(array("name" => "numb_esconsc", "id" => "numb_esconscID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ESPECIFICAS,"numb_esconsc")!="")?self::JsonRecor($ESPECIFICAS,"numb_esconsc"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,6,'num','numb_esconscID')"));
 								$mHtml->Input(array("name" => "numb_espende", "id" => "numb_espendeID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ESPECIFICAS,"numb_espende")!="")?self::JsonRecor($ESPECIFICAS,"numb_espende"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_espendeID')"));								
 								$mHtml->Input(array("name" => "numb_espenda", "id" => "numb_espendaID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ESPECIFICAS,"numb_espenda")!="")?self::JsonRecor($ESPECIFICAS,"numb_espenda"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_espendaID')"));
-								*/
+								
+								/*
 								$mHtml->Input(array("name" => "numb_esreali", "id" => "numb_esrealiID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_esrealiID')"));								
 								$mHtml->Input(array("name" => "numb_esconsc", "id" => "numb_esconscID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,6,'num','numb_esconscID')"));
 								$mHtml->Input(array("name" => "numb_espende", "id" => "numb_espendeID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_espendeID')"));								
 								$mHtml->Input(array("name" => "numb_espenda", "id" => "numb_espendaID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_espendaID')"));
-								
+								*/
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1203,17 +1207,17 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "N° Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
-							/*
+							
 								$mHtml->Input(array("name" => "numb_asreali", "id" => "numb_asrealiID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ASISTENCIAS,"numb_asreali")!="")?self::JsonRecor($ASISTENCIAS,"numb_asreali"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_asrealiID')"));
 								$mHtml->Input(array("name" => "numb_asconsc", "id" => "numb_asconscID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ASISTENCIAS,"numb_asconsc")!="")?self::JsonRecor($ASISTENCIAS,"numb_asconsc"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,6,'num','numb_asconscID')"));
 								$mHtml->Input(array("name" => "numb_aspende", "id" => "numb_aspendeID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ASISTENCIAS,"numb_aspende")!="")?self::JsonRecor($ASISTENCIAS,"numb_aspende"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_aspendeID')"));
 								$mHtml->Input(array("name" => "numb_aspenda", "id" => "numb_aspendaID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($ASISTENCIAS,"numb_aspenda")!="")?self::JsonRecor($ASISTENCIAS,"numb_aspenda"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_aspendaID')"));
-								*/
+								/*
 								$mHtml->Input(array("name" => "numb_asreali", "id" => "numb_asrealiID", "width" => "10%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_asrealiID')"));
 								$mHtml->Input(array("name" => "numb_asconsc", "id" => "numb_asconscID", "width" => "10%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,6,'num','numb_asconscID')"));
 								$mHtml->Input(array("name" => "numb_aspende", "id" => "numb_aspendeID", "width" => "10%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_aspendeID')"));
 								$mHtml->Input(array("name" => "numb_aspenda", "id" => "numb_aspendaID", "width" => "10%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_aspendaID')"));
-
+								*/
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1241,30 +1245,33 @@ class AjaxNotifiNotifi
 							$mHtml->Label( "Estado del mouse",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
 						$mHtml->CloseRow();
 						$mHtml->Row();
-						/*
+						
 							$mHtml->Input(array("name" => "reas_npuestoa", "id" => "reas_npuestoaID", "width" => "100%", "colspan"=>"2","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_npuestoa")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_npuestoa"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(1,2,'num','reas_npuestoaID')"));
 							$mHtml->Input(array("name" => "reas_ediadema", "id" => "reas_ediademaID", "width" => "100%", "colspan"=>"2","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_ediadema")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_ediadema"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_ediademaID')"));
 							$mHtml->Input(array("name" => "reas_estmouse", "id" => "reas_estmouseID", "width" => "100%", "colspan"=>"3","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_estmouse")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_estmouse"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_estmouseID')"));
-							*/
+						/*	
 							$mHtml->Input(array("name" => "reas_npuestoa", "id" => "reas_npuestoaID", "width" => "100%", "colspan"=>"2","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(1,2,'num','reas_npuestoaID')"));
 							$mHtml->Input(array("name" => "reas_ediadema", "id" => "reas_ediademaID", "width" => "100%", "colspan"=>"2","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_ediademaID')"));
 							$mHtml->Input(array("name" => "reas_estmouse", "id" => "reas_estmouseID", "width" => "100%", "colspan"=>"3","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_estmouseID')"));
-						$mHtml->CloseRow();
+						*/
+							$mHtml->CloseRow();
 						$mHtml->Row();
 							$mHtml->Label( "Estado del Equipo P/C",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Estado del teclado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Estado de la silla",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
 						$mHtml->CloseRow();
 						$mHtml->Row();
-						/*
+						
 							$mHtml->Input(array("name" => "reas_equipcx", "id" => "reas_equipcxID", "width" => "100%", "colspan"=>"2","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_equipcx")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_equipcx"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_equipcxID')"));
 							$mHtml->Input(array("name" => "reas_teclado", "id" => "reas_tecladoID", "width" => "100%", "colspan"=>"2","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_teclado")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_teclado"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_tecladoID')"));
 							$mHtml->Input(array("name" => "reas_essilla", "id" => "reas_essillaID", "width" => "100%", "colspan"=>"3","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_essilla")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_essilla"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_essillaID')"));
-							*/
+							
+						/*	
 							$mHtml->Input(array("name" => "reas_equipcx", "id" => "reas_equipcxID", "width" => "100%", "colspan"=>"2","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_equipcxID')"));
 							$mHtml->Input(array("name" => "reas_teclado", "id" => "reas_tecladoID", "width" => "100%", "colspan"=>"2","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_tecladoID')"));
 							$mHtml->Input(array("name" => "reas_essilla", "id" => "reas_essillaID", "width" => "100%", "colspan"=>"3","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_essillaID')"));
-						$mHtml->CloseRow();
+						*/
+							$mHtml->CloseRow();
 						$mHtml->Row();
 							$mHtml->Label( "Estado del Pad Mouse",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Aseo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
@@ -1272,17 +1279,19 @@ class AjaxNotifiNotifi
 							$mHtml->Label( "Registros realizados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 						$mHtml->CloseRow();
 						$mHtml->Row();
-						/*
+						
 							$mHtml->Input(array("name" => "reas_padmous", "id" => "reas_padmousID", "width" => "100%", "colspan"=>"2","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_padmous")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_padmous"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_padmousID')"));
 							$mHtml->Input(array("name" => "reas_estaseo", "id" => "reas_estaseoID", "width" => "100%", "colspan"=>"2","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_estaseo")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_estaseo"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_estaseoID')"));
 							$mHtml->Input(array("name" => "numb_regisre", "id" => "numb_regisreID", "width" => "100%", "colspan"=>"1","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"numb_regisre")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"numb_regisre"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(1,5,'num','numb_regisreID')"));
 							$mHtml->Input(array("name" => "reas_regisre", "id" => "reas_regisreID", "width" => "100%", "colspan"=>"2","value"=>(self::JsonRecor($RECURSOS_ASIGNADOS,"reas_regisre")!="")?self::JsonRecor($RECURSOS_ASIGNADOS,"reas_regisre"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(1,20,'alfa','reas_regisreID')"));
-							*/
+							
+							/*
 							$mHtml->Input(array("name" => "reas_padmous", "id" => "reas_padmousID", "width" => "100%", "colspan"=>"2","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_padmousID')"));
 							$mHtml->Input(array("name" => "reas_estaseo", "id" => "reas_estaseoID", "width" => "100%", "colspan"=>"2","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(4,20,'alfa','reas_estaseoID')"));
 							$mHtml->Input(array("name" => "numb_regisre", "id" => "numb_regisreID", "width" => "100%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(1,5,'num','numb_regisreID')"));
 							$mHtml->Input(array("name" => "reas_regisre", "id" => "reas_regisreID", "width" => "100%", "colspan"=>"2","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(1,20,'alfa','reas_regisreID')"));
-						$mHtml->CloseRow();
+						*/
+							$mHtml->CloseRow();
 						$mHtml->Row();
 							$mHtml->line("","i",0,7);
 						$mHtml->CloseRow();
