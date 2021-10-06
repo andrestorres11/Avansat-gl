@@ -179,7 +179,7 @@ class Proc_ins_despac {
 
             $mHtml .= '<table width="100%" cellpadding="0" cellspacing="1">';
             $mHtml .= '<tr>';
-            $mHtml .= '<td colspan="6s" style="padding:15px;font-family:Trebuchet MS, Verdana, Arial;font-size:13px;">Los siguientes pedidos no fueron insertados</td>';
+            $mHtml .= '<td colspan="6s" style="padding:15px;font-family:Trebuchet MS, Verdana, Arial;font-size:13px;">Los siguientes despachos no fueron insertados</td>';
             $mHtml .= '</tr>';
 
             $mHtml .= '<tr class="headtable">';
@@ -423,7 +423,7 @@ class Proc_ins_despac {
                         $e++;
                         $er++;
                     }
-                    if(!$this->verificaLinea($item)){
+                    if(!$this->verificaLinea($item, $this->row[8])){
                         $this->SetError($e, $this->row[0], $c, $r, 'LA LINEA NO EXISTE, O NO ESTA REGISTRADA.');
                         $e++;
                         $er++;
@@ -1280,10 +1280,10 @@ class Proc_ins_despac {
         return $this->retornarBoolean($consulta[0][0]);
     }
 
-    function verificaLinea($cod_lineax){
+    function verificaLinea($cod_lineax, $cod_marcax){
         $query = "SELECT COUNT(*)
                 FROM ".BASE_DATOS.".tab_vehige_lineas
-                WHERE cod_marcax = '".$cod_lineax."'";
+                WHERE cod_marcax = '".$cod_marcax."' AND cod_lineax = '".$cod_lineax."'";
         $consulta = new Consulta($query, $this -> conexion);
         $consulta = $consulta->ret_matriz();
         return $this->retornarBoolean($consulta[0][0]);
