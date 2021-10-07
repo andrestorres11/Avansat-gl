@@ -377,12 +377,18 @@ class ajaxCalendAgendamiento
                     a.cod_usuari AS dat_client,
                     CONCAT(a.fec_inicia,' ', IF(a.hor_inicia IS NULL, b.hor_inicia,a.hor_inicia)) AS fec_inicia,
                     CONCAT(a.fec_finalx,' ', IF(a.hor_finalx IS NULL, b.hor_finalx,a.hor_finalx)) AS fec_finalx,
-                    b.cod_colorx
+                    a.cod_novtur,
+                    a.obs_protur,
+                    b.cod_colorx,
+                    d.nom_novtur
               FROM  ".BASE_DATOS.". tab_progra_turnos a
               INNER JOIN  ".BASE_DATOS.". tab_config_horari b
                     ON  a.cod_horari = b.cod_horari
               INNER JOIN  ".BASE_DATOS.". tab_genera_usuari c
                     ON  a.cod_usuari = c.cod_usuari
+              INNER JOIN  ".BASE_DATOS.". tab_genera_novtur d
+                    ON  a.cod_novtur = d.cod_novtur
+
                     ".$cond."
 
       ";
@@ -391,22 +397,19 @@ class ajaxCalendAgendamiento
       $consulta = new Consulta( $mSql, $this -> conexion );
       $agendamientos = $consulta->ret_matrix('a');
 
-      $mPerms = $this->getView('jso_progra');
       $agenda = [];
       $cont = 0;
       foreach ($agendamientos as $key => $value) {
         if($filtro -> listar($this -> conexion)>0){
           $datos_filtro = $filtro -> dar_filtro_multiple($this -> conexion);
           if($this->busquedaArray($datos_filtro,$value["cod_usuari"])){
-              $agenda[$key]["title"] = $value["dat_client"];
+              //$agenda[$key]["title"] = $value["dat_client"];
               $agenda[$key]["backgroundColor"] = $value["cod_colorx"];
               $agenda[$key]["borderColor"] = $value["cod_colorx"];
-              $agenda[$key]["permiso"] = $mPerms->dat_progra->ind_visibl;
           }else{
               $agenda[$key]["title"] = "AGENDADA ";
               $agenda[$key]["backgroundColor"] = "rgb(0, 100, 255)";
               $agenda[$key]["borderColor"] = "rgb(0, 100, 255)";
-              $agenda[$key]["permiso"] = $mPerms->dat_progra->ind_visibl;
           }
 
           $agenda[$key]["cliente"] = $value["cod_usuari"];
@@ -414,7 +417,7 @@ class ajaxCalendAgendamiento
           $agenda[$key]["start"] = $value["fec_inicia"];
           $agenda[$key]["end"] = $value["fec_finalx"];
           $agenda[$key]["textColor"] = "#ffffff";
-          $agenda[$key]["permiso"] = $mPerms->dat_progra->ind_visibl;
+          $agenda[$key]["observacion"] = $value["obs_protur"];
           $cont++;
          
         }else{
@@ -426,12 +429,12 @@ class ajaxCalendAgendamiento
           $agenda[$key]["end"] = $value["fec_finalx"];
           $agenda[$key]["borderColor"] = $value["cod_colorx"];
           $agenda[$key]["textColor"] = "#ffffff";
-          $agenda[$key]["permiso"] = $mPerms->dat_progra->ind_visibl;
+          $agenda[$key]["cod_novedad"] = $value["cod_novtur"];
+          $agenda[$key]["nom_novedad"] = $value["nom_novtur"];
+          $agenda[$key]["observacion"] = $value["obs_protur"];
           $cont++;
         }  
       }
-
-      
 
       echo json_encode($agenda);
   }
@@ -449,16 +452,21 @@ class ajaxCalendAgendamiento
 
     $mSql="SELECT a.cod_protur,
                   a.cod_usuari,
-                  CONCAT ('(',UPPER (a.cod_usuari), ', ', UPPER (c.cod_usuari) ,')') AS dat_client,
+                  a.cod_usuari AS dat_client,
                   CONCAT(a.fec_inicia,' ', IF(a.hor_inicia IS NULL, b.hor_inicia,a.hor_inicia)) AS fec_inicia,
                   CONCAT(a.fec_finalx,' ', IF(a.hor_finalx IS NULL, b.hor_finalx,a.hor_finalx)) AS fec_finalx,
-                  b.cod_colorx
+                  a.cod_novtur,
+                  a.obs_protur,
+                  b.cod_colorx,
+                  d.nom_novtur
             FROM  ".BASE_DATOS.". tab_progra_turnos a
             INNER JOIN  ".BASE_DATOS.". tab_config_horari b
                   ON  a.cod_horari = b.cod_horari
             INNER JOIN  ".BASE_DATOS.". tab_genera_usuari c
                   ON  a.cod_usuari = c.cod_usuari
-                  WHERE a.cod_usuari= '".$usuario."'
+            INNER JOIN  ".BASE_DATOS.". tab_genera_novtur d
+                  ON  a.cod_novtur = d.cod_novtur
+            WHERE a.cod_usuari= '".$usuario."'
 
     ";
 
@@ -497,6 +505,9 @@ class ajaxCalendAgendamiento
         $agenda[$key]["end"] = $value["fec_finalx"];
         $agenda[$key]["borderColor"] = $value["cod_colorx"];
         $agenda[$key]["textColor"] = "#ffffff";
+        $agenda[$key]["cod_novedad"] = $value["cod_novtur"];
+        $agenda[$key]["nom_novedad"] = $value["nom_novtur"];
+        $agenda[$key]["observacion"] = $value["obs_protur"];
         $cont++;
       }  
     }
@@ -876,15 +887,39 @@ class ajaxCalendAgendamiento
     $fec_aumenta = $fec_inicia;
 
     while ($fec_aumenta <= $fec_finalx) {
-      $this->registraCita($cod_usuari,$fec_aumenta, $fec_aumenta, $hor_inihor,$hor_finhor,$cod_horari,$cod_noveda,$observa);
+      if($this->validaTurno($cod_usuari, $fec_aumenta, $cod_noveda)){
+        $this->registraCita($cod_usuari,$fec_aumenta, $fec_aumenta, $hor_inihor,$hor_finhor,$cod_horari,$cod_noveda,$observa);
+        $respuesta['estado']=1;
+      }
       $fec_aumenta=date("Y-m-d",strtotime($fec_aumenta."+ 1 days"));
     }
     
-    $respuesta['estado']=1;
+    
     return $respuesta;
 
   
     
+  }
+
+  function validaTurno($usuario, $fecha, $novedad){
+    $query = "SELECT a.cod_usuari, a.fec_inicia, a.fec_finalx
+    FROM ".BASE_DATOS.".tab_progra_turnos a
+    
+      WHERE  a.cod_usuari = '".$usuario."'
+      AND a.fec_inicia = '".$fecha."'
+      AND a.fec_finalx = '".$fecha."'
+      AND a.cod_novtur = '".$novedad."'
+      ";
+
+      $consulta = new Consulta( $query, $this->conexion );
+      $dataTurno = $consulta->ret_matriz('a');
+      
+      if(COUNT($dataTurno)>0){
+        return false;
+      }else{
+        return true;
+      }
+
   }
     
 
@@ -1025,69 +1060,7 @@ class ajaxCalendAgendamiento
    return $hor_inicio;
   }
 
-     /*! \fn: darTiempoCargue
-  *  \brief: Consulta el tiempo de cargue en base al vehiculo asignado al pedido
-  *  \author: Ing. Andres Martinez
-  *  \date: 22/04/2020                                                    
-  *  \return tiempo de cargue
-  */
-
-  function darTiempoCargue($bahia,$num_pedido,$num_linea){
-    $sql="SELECT 
-    d.ind_tiecar 
-  FROM 
-    tab_genera_pedido a, 
-    tab_vehicu_vehicu b, 
-    tab_combin_config c, 
-    tab_tiecar_vehicu d 
-  WHERE 
-    a.placa = b.num_placax 
-    AND b.num_config = c.nom_config 
-    AND c.id = d.cod_tipveh 
-    AND a.cod_articu = d.cod_produc
-    AND a.num_pedido = '$num_pedido' 
-    AND a.num_lineax = '$num_linea'";
-
-    if($bahia!='' || $bahia!=NULL){
-      $sql.="AND d.cod_bahiax = '$bahia'";
-    }
-    
-    $consulta = new Consulta( $sql, $this->conexion );
-    $registros = $consulta->ret_matriz();
-
-    if($registros[0]['ind_tiecar'] == NULL || $registros[0]['ind_tiecar']==''){
-      return 30;
-    }
-    return $registros[0]['ind_tiecar'];
-  }
-
-     /*! \fn: dentro_de_horario
-  *  \brief: Retorna un boolean en base al analisis si una hora dada esta entre una franja de dos horas
-  *  \author: Ing. Andres Martinez
-  *  \date: 22/04/2020                                                    
-  *  \return boolean
-  */
-  function dentro_de_horario($hms_inicio, $hms_fin, $hms_referencia=NULL){ // v2011-06-21
-    if( is_null($hms_referencia) ){
-        $hms_referencia = date('G:i:s');
-    }
-
-    list($h, $m, $s) = array_pad(preg_split('/[^\d]+/', $hms_inicio), 3, 0);
-    $s_inicio = 3600*$h + 60*$m + $s;
-
-    list($h, $m, $s) = array_pad(preg_split('/[^\d]+/', $hms_fin), 3, 0);
-    $s_fin = 3600*$h + 60*$m + $s;
-
-    list($h, $m, $s) = array_pad(preg_split('/[^\d]+/', $hms_referencia), 3, 0);
-    $s_referencia = 3600*$h + 60*$m + $s;
-
-    if($s_inicio<=$s_fin){
-        return $s_referencia>=$s_inicio && $s_referencia<=$s_fin;
-    }else{
-        return $s_referencia>=$s_inicio || $s_referencia<=$s_fin;
-    }
-  }
-
+   
 
   function validarEliminacion(){
     $respuesta=[];
@@ -1168,20 +1141,6 @@ class ajaxCalendAgendamiento
     
     echo json_encode($respuesta);
   }
-
-  function getView( $mCatego )
-    {
-        $mSql = "SELECT a.jso_bandej, a.jso_encabe, a.jso_plarut, a.jso_contac, a.jso_progra
-                   FROM ".BASE_DATOS.".tab_genera_respon a 
-             INNER JOIN ".BASE_DATOS.".tab_genera_perfil b 
-                     ON a.cod_respon = b.cod_respon 
-                  WHERE b.cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."' ";
-        $mConsult = new Consulta($mSql, $this -> conexion);
-        $mData = $mConsult->ret_matrix('a');
-
-        return json_decode($mData[0][$mCatego]);
-    }
-
 
 }
     $solicitud = new ajaxCalendAgendamiento( NULL, $_REQUEST,$_SESSION['usuario_aplicacion']->cod_usuari,  NULL );

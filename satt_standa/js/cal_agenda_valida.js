@@ -311,11 +311,7 @@ function buscarUsuario(){
             updateAgendaDet(obj, standa);
         },
         eventClick: function(info) { // Evento para ver la informaci�n al detalle del agendamiento
-            if (info.event.id == "Cliente Retira") {
-                mostrarInformacionFranjaRetira(info);
-            } else {
-                mostrarPedidosAgendados(info);
-            }
+            mostrarDatosTurno(info);
         },
         eventRender: function(info) {
             /*console.log(info.event.title);
@@ -413,4 +409,65 @@ function buscarUsuario(){
 
     // Evento que trae los pedidos agendados y sin agendar para luego cargalos en el formulario y porderlos agendar
     
+}
+/*! \fn: mostrarDatosTurno
+ *  \brief: Muestra la informacion del pedido agendado
+ *  \author: Ing. Cristian Andr�s Torres
+ *  \date: 16/06/2020
+ *  \return n/a
+ */
+function mostrarDatosTurno(info) {
+    let observa = "";
+    if(info.event._def.extendedProps.cod_novedad != 1){
+            observa = `<tr>
+                            <th>Novedad:</th>
+                            <td>` + info.event._def.extendedProps.nom_novedad + `</td>
+                        </tr>
+                        <tr>
+                            <th>Observacion:</th>
+                            <td>` + info.event._def.extendedProps.observacion + `</td>
+                        </tr>`;
+    }
+
+    Swal.fire({
+        type: 'info',
+        title: 'Informacion turno' + info.event.id,
+        html: `<table class="table table-bordered">
+              <tr>
+                <th>Codigo turno:</th>
+                <td>` + info.event.id + `</td>
+              </tr>
+              <tr>
+                <th>Usuario asignado:</th>
+                <td>` + info.event.title + `</td>
+              </tr>
+              <tr>
+                <th>Fecha Hora Inicio:</th>
+                <td>` + moment(info.event.start).format("YYYY-MM-DD HH:mm") + `</td>
+              </tr>
+              <tr>
+                <th>Fecha Hora Fin:</th>
+                <td>` + moment(info.event.end).format("YYYY-MM-DD HH:mm") + `</td>
+              </tr>
+              `+observa+`
+             <table>`,
+    
+
+        showConfirmButton: $("#btnEliminar").val() == 1 ? true: false ,
+        showCancelButton: true,
+        cancelButtonText: 'Listo',
+        cancelButtonColor: info.event.backgroundColor,
+        
+        confirmButtonText: 'Eliminar',
+        confirmButtonColor: '#dc3545',
+    }).then((result) => {
+        if (result.value) {
+            ajaxEliminarTurno(info);
+        }
+    });;
+
+    $("table th").css({
+        "background": info.event.backgroundColor,
+        "color": info.event.textColor
+    });
 }

@@ -59,14 +59,11 @@ $(function() {
             updateAgendaDet(obj, standa);
         },
         eventClick: function(info) { // Evento para ver la informaci�n al detalle del agendamiento
-            console.log(info);
-            if (info.event.id == "Cliente Retira") {
-                mostrarInformacionFranjaRetira(info);
-            } else {
-                mostrarDatosTurno(info);
-            }
+            mostrarDatosTurno(info);
+            
         },
         eventRender: function(info) {
+            
             /*console.log(info.event.title);
             $(info.el).tooltip({ 
                 title: info.event.title 
@@ -188,6 +185,18 @@ $(function() {
  *  \return n/a
  */
 function mostrarDatosTurno(info) {
+    let observa = "";
+    if(info.event._def.extendedProps.cod_novedad != 1){
+            observa = `<tr>
+                            <th>Novedad:</th>
+                            <td>` + info.event._def.extendedProps.nom_novedad + `</td>
+                        </tr>
+                        <tr>
+                            <th>Observacion:</th>
+                            <td>` + info.event._def.extendedProps.observacion + `</td>
+                        </tr>`;
+    }
+
     Swal.fire({
         type: 'info',
         title: 'Informacion turno' + info.event.id,
@@ -208,8 +217,11 @@ function mostrarDatosTurno(info) {
                 <th>Fecha Hora Fin:</th>
                 <td>` + moment(info.event.end).format("YYYY-MM-DD HH:mm") + `</td>
               </tr>
+              `+observa+`
              <table>`,
-        showCloseButton: true,
+    
+
+        showConfirmButton: $("#btnEliminar").val() == 1 ? true: false ,
         showCancelButton: true,
         cancelButtonText: 'Listo',
         cancelButtonColor: info.event.backgroundColor,
@@ -228,52 +240,7 @@ function mostrarDatosTurno(info) {
     });
 }
 
-/*! \fn: mostrarInformacionFranjaRetira
- *  \brief: Muestra la informacion de la franja del cliente retira
- *  \author: Ing. Cristian Andr�s Torres
- *  \date: 16/06/2020
- *  \return n/a
- */
-function mostrarInformacionFranjaRetira(info) {
-    Swal.fire({
-        type: 'info',
-        title: 'Informaci&oacute;n de la franja',
-        html: `<table class="table table-bordered">
-            <tr>
-              <th>Codigo Pedido:</th>
-              <td>` + info.event.id + `</td>
-            </tr>
-            <tr>
-              <th>Titulo Pedido:</th>
-              <td>` + info.event.title + `</td>
-            </tr>
-            <tr>
-              <th>Fecha Hora Inicio:</th>
-              <td>` + moment(info.event.start).format("YYYY-MM-DD HH:mm") + `</td>
-            </tr>
-            <tr>
-              <th>Fecha Hora Fin:</th>
-              <td>` + moment(info.event.end).format("YYYY-MM-DD HH:mm") + `</td>
-            </tr>
-            <tr>
-              <th>Tiempo de Carpado:</th>
-              <td>15 Minutos</td>
-            </tr>
-           <table>`,
-        showCloseButton: true,
-        confirmButtonText: 'Eliminar',
-        confirmButtonColor: '#dc3545',
-    }).then((result) => {
-        if (result.value) {
-            ajaxEliminarFranja(info);
-        }
-    });
 
-    $("table th").css({
-        "background": info.event.backgroundColor,
-        "color": info.event.textColor
-    });
-}
 
 function ajaxEliminarFranja(info) {
     cod_bahia = info.event.extendedProps.codBahia;
