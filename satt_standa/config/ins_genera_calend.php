@@ -290,12 +290,13 @@ class calendAgendamiento
                     <!-- /.col -->
                     <div class="col-md-'.$tam.'">
                       <div class="card card-primary">
+                        <div>
+                          <input id="btnEliminar" type="hidden" value="'.$mPerms->dat_elimin->ind_visibl.'">
+                        </div>
                         <div id="calendarPadre" class="card-body p-0">
                           <!-- THE CALENDAR -->
                           <div id="calendar"></div>
-                          <div>
-                            <input id="btnEliminar" type="hidden" value="'.$mPerms->dat_elimin->ind_visibl.'">
-                          </div>
+                          
                         </div>
                         <!-- /.card-body -->
                       </div>
