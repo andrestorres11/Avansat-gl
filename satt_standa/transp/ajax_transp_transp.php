@@ -221,7 +221,8 @@ class trans {
                        a.dir_emailx,c.cod_modali, CONCAT( UPPER(d.abr_ciudad), '(', LEFT(e.nom_depart, 4), ') - ', LEFT(f.nom_paisxx, 3) ) abr_ciudad,
                        g.cod_terreg,g.nom_terreg, h.cod_minins,i.cod_agenci, i.nom_agenci,
                        i.con_agenci,i.dir_emailx,i.cod_ciudad cod_ciudaa, CONCAT( UPPER(k.abr_ciudad), '(', LEFT(l.nom_depart, 4), ') - ', LEFT(m.nom_paisxx, 3) ) abr_ciudaa,
-                       i.dir_agenci,i.tel_agenci,i.num_faxxxx, a.cod_estado
+                       i.dir_agenci,i.tel_agenci,i.num_faxxxx, a.cod_estado,
+                       a.cod_region, n.cod_region
                   FROM " . BASE_DATOS . ".tab_tercer_tercer a
 
                        INNER JOIN " . BASE_DATOS . ".tab_tercer_emptra b ON  a.cod_tercer = b.cod_tercer
@@ -236,6 +237,7 @@ class trans {
                        INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad k ON k.cod_ciudad = i.cod_ciudad
                        INNER JOIN " . BASE_DATOS . ".tab_genera_depart l ON l.cod_depart = k.cod_depart
                        INNER JOIN " . BASE_DATOS . ".tab_genera_paises m ON m.cod_paisxx = k.cod_paisxx
+                       LEFT JOIN " . BASE_DATOS . ".tab_genera_region  n ON n.cod_region = a.cod_region
                  WHERE 
                        a.cod_tercer = '" . $cod_transp . "'
                ";
@@ -253,6 +255,14 @@ class trans {
         $consulta = new Consulta($query, self::$cConexion);
         $regimen = $consulta->ret_matrix("i");
         $regimen = array_merge(self::$cNull, $regimen);
+        
+        #consulta la lista de region para la lista
+        $query = "SELECT cod_region ,nom_region
+                   FROM " . BASE_DATOS . ".tab_genera_region
+                ";
+        $consulta = new Consulta($query, self::$cConexion);
+        $region = $consulta->ret_matrix("i");
+        $region = array_merge(self::$cNull, $region);
 
         // consulta la lista de modalidades para los check button
         $query = "SELECT cod_modali FROM " . BASE_DATOS . ".tab_emptra_modali WHERE cod_emptra = " . $cod_transp . " ORDER BY cod_modali ASC";
@@ -261,6 +271,9 @@ class trans {
 
         #agrega la lista de regimenes a la respuesta
         $datos->regimen = $regimen;
+
+        #agrega la lista de region a la respuesta
+        $datos->region = $region;
         #agrega la lista de modalidades a la respuesta
         $datos->modalidades = $modalidad;
 
@@ -324,14 +337,14 @@ class trans {
               dir_domici, num_telef1, cod_paisxx, 
               cod_depart, cod_ciudad, dir_emailx,
               num_faxxxx, obs_tercer, usr_creaci, 
-              fec_creaci, cod_estado)
+              fec_creaci, cod_estado, cod_region)
                   VALUES(
                     '$transp->cod_tercer','$transp->num_verifi','N',
                     '$transp->cod_terreg', '$transp->nom_tercer', '$transp->abr_tercer', 
                     '$transp->dir_domici', '$transp->num_telef1', '$transp->cod_paisxx',
                     '$transp->cod_depart', '$transp->cod_ciudad', '$transp->dir_emailx',
                     '$transp->num_faxxxx', '$transp->obs_tercer', '$transp->usr_creaci', 
-                    '$transp->fec_creaci', '1')";
+                    '$transp->fec_creaci', '1', '$transp->cod_region')";
 
 
             $insercion = new Consulta($query, self::$cConexion, "BR");
@@ -712,6 +725,7 @@ class trans {
         #modifica la base de datos
         $query = "UPDATE " . BASE_DATOS . ".tab_tercer_tercer
                    SET cod_terreg = '$transp->cod_terreg',
+                        cod_region = '$transp->cod_region',
                        nom_tercer = '$transp->nom_tercer',
                        abr_tercer = '$transp->abr_tercer',
                        dir_domici = '$transp->dir_domici',

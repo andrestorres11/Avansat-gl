@@ -219,28 +219,31 @@ class Ins_config_emptra {
 
 						        $mHtml->Label("Abreviatura:", "width:25%; *:1;");
 						        $mHtml->Input(array("type" => "alpha", "name" => "transp[abr_tercer]", "validate" => "alpha", "obl" => "1", "minlength" => "5", "maxlength" => "50", "id" => "abr_tercerID", "width" => "25%", "value" => $datos->principal->abr_tercer));
-
 						        $mHtml->Label(utf8_decode("Nombre o Razón Social:"), "width:25%; *:1;");
 						        $mHtml->Input(array("type" => "alpha", "name" => "transp[nom_tercer]", "id" => "nom_tercer", "size"=>30, "validate" => "alpha",  "obl" => "1", "minlength" => "5", "maxlength" => "100", "width" => "100px", "value" => $datos->principal->nom_tercer, "end" => true));
-
+								
+								$mHtml->Label("Regional:", "width:25%; *:1;"); 
+						        $mHtml->Select2	($datos->region,  array("name" => "transp[cod_region]", "validate" => "select",  "obl" => "1", "id" => "cod_regionID", "width" => "25%", "key"=> $datos->principal->cod_region) );						        
 						        $mHtml->Label(utf8_decode("Código de Empresa:"), "width:25%; :1;");
-						        $mHtml->Input(array("type" => "numeric", "name" => "emptra[cod_minins]", "validate" => "numero", "minlength" => "1", "maxlength" => "4", "id" => "abr_tercer", "width" => "25%", "value" => $datos->principal->cod_minins));
-						        $mHtml->Label("Ciudad:", "width:25%; *:1;");
-						        $mHtml->Input(array("type" => "text", "name" => "ciudad", "id" => "ciudadID", "validate" => "dir", "minlength" => "8", "maxlength" => "100",  "obl" => "1", "width" => "25%", "value" => $datos->principal->abr_ciudad, "end" => true));
-
+						        $mHtml->Input(array("type" => "numeric", "name" => "emptra[cod_minins]", "validate" => "numero", "minlength" => "1", "maxlength" => "4", "id" => "abr_tercer", "width" => "25%", "value" => $datos->principal->cod_minins, "end" => true));
+						        
+								$mHtml->Label("Ciudad:", "width:25%; *:1;");
+						        $mHtml->Input(array("type" => "text", "name" => "ciudad", "id" => "ciudadID", "validate" => "dir", "minlength" => "8", "maxlength" => "100",  "obl" => "1", "width" => "25%", "value" => $datos->principal->abr_ciudad));
 						        $mHtml->Label(utf8_decode("Dirección:"), "width:25%; *:1;");
-						        $mHtml->Input(array( "name" => "transp[dir_domici]", "validate" => "dir",  "obl" => "1", "minlength" => "5", "maxlength" => "100", "id" => "dir_domici", "width" => "25%", "value" => $datos->principal->dir_domici));
-						        $mHtml->Label("Telefono:", "width:25%; *:1;");
-						        $mHtml->Input(array("type" => "numeric", "name" => "transp[num_telef1]", "validate" => "numero",  "obl" => "1", "minlength" => "7", "maxlength" => "10", "id" => "num_telef1", "width" => "25%", "value" => $datos->principal->num_telef1, "end" => true));
-
+						        $mHtml->Input(array( "name" => "transp[dir_domici]", "validate" => "dir",  "obl" => "1", "minlength" => "5", "maxlength" => "100", "id" => "dir_domici", "width" => "25%", "value" => $datos->principal->dir_domici, "end" => true));
+						        
+								$mHtml->Label("Telefono:", "width:25%; *:1;");
+						        $mHtml->Input(array("type" => "numeric", "name" => "transp[num_telef1]", "validate" => "numero",  "obl" => "1", "minlength" => "7", "maxlength" => "10", "id" => "num_telef1", "width" => "25%", "value" => $datos->principal->num_telef1));
 						        $mHtml->Label("Regimen:", "width:25%; *:1;"); 
-						        $mHtml->Select2	($datos->regimen,  array("name" => "transp[cod_terreg]", "validate" => "select",  "obl" => "1", "id" => "cod_terregID", "width" => "25%", "key"=> $datos->principal->cod_terreg) );
-						        $mHtml->Label("Estado:", "width:25%; :1;");
+						        $mHtml->Select2	($datos->regimen,  array("name" => "transp[cod_terreg]", "validate" => "select",  "obl" => "1", "id" => "cod_terregID", "width" => "25%", "key"=> $datos->principal->cod_terreg, "end" => true) );
+						        
+								$mHtml->Label("Estado:", "width:25%; :1;");
 						        if($datos->principal->cod_estado == 1){						        	
 					        		$mHtml->Input(array("type" => "text", "name" => "estado", "id" => "estado","minlength" => "8", "maxlength" => "100", "width" => "25%", "value" => 'Activa', 'disabled'=>true, "end" => true));
 					    		}else{
 					    			$mHtml->Input(array("type" => "text", "name" => "estado", "id" => "estado","minlength" => "8", "maxlength" => "100", "width" => "25%", "value" => 'Inactiva', 'disabled'=>true, "end" => true));
 					    		}
+								
 						        $mHtml->Label("Observaciones:", "width:25%; :1;");
 						        $mHtml->TextArea($mString, array("cols" => 100, "rows" => 8, "colspan" => "3", "name" => "transp[obs_tercer]", "id" => "obs_tercer", "width" => "25%", "value" => $datos->principal->obs_tercer, "end" => true));
 	    					$mHtml->CloseTable("tr");
