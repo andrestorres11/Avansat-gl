@@ -142,8 +142,11 @@ class FacturFaro
         $feactual = date("Y-m-d");
         $mesActual= date("m");
         $anoActual= date("Y");
-        $fecinicial=date("Y-m-d",strtotime((($mesActual=='01')?$anoActual-1:$anoActual)."-".(($mesActual=='01')?"12":$mesActual-1)."-21"));
-        $fecfinal=date("Y-m-d",strtotime($anoActual."-".($mesActual)."-20"));
+        $fecinicial=date("Y-m-d",strtotime((($mesActual=='01')?$anoActual-1:$anoActual)."-".(($mesActual=='01')?"12":$mesActual)."-1"));
+        
+        //$fecfinal=date("Y-m-d",strtotime($anoActual."-".($mesActual)."-20"));
+
+        $fecfinal=date("Y-m-t",strtotime($feactual));
         $formulario -> nueva_tabla();
 
         echo "<tr><td align='right'  class='celda_titulo'>";
@@ -472,10 +475,10 @@ class FacturFaro
         $formulario -> linea("Despacho SATT",0,"t2");
         $formulario -> linea("Agencia",0,"t2");
         $formulario -> linea("Manifiesto",0,"t2");
-        $formulario -> linea("No. Viaje",0,"t2");
-        $formulario -> linea("Tipo Despacho",0,"t2");
-        $formulario -> linea("Tipo Transportadora",0,"t2");
-        $formulario -> linea("Poseedor",0,"t2");
+        //$formulario -> linea("No. Viaje",0,"t2");
+        //$formulario -> linea("Tipo Despacho",0,"t2");
+        //$formulario -> linea("Tipo Transportadora",0,"t2");
+        //$formulario -> linea("Poseedor",0,"t2");
         $formulario -> linea("Ciudad Origen",0,"t2");
         $formulario -> linea("Ciudad Destino",0,"t2");
         $formulario -> linea("Placa",0,"t2");
@@ -523,10 +526,10 @@ class FacturFaro
                 $formulario -> linea("Despacho SATT",0,"t2");
                 $formulario -> linea("Agencia",0,"t2");
                 $formulario -> linea("Manifiesto",0,"t2");
-                $formulario -> linea("No. Viaje",0,"t2");
-                $formulario -> linea("Tipo Despacho",0,"t2");
-                $formulario -> linea("Tipo Transportadora",0,"t2");
-                $formulario -> linea("Poseedor",0,"t2");
+                //$formulario -> linea("No. Viaje",0,"t2");
+                //$formulario -> linea("Tipo Despacho",0,"t2");
+                //$formulario -> linea("Tipo Transportadora",0,"t2");
+                //$formulario -> linea("Poseedor",0,"t2");
                 $formulario -> linea("Ciudad Origen",0,"t2");
                 $formulario -> linea("Ciudad Destino",0,"t2");
                 $formulario -> linea("Placa",0,"t2");
@@ -562,9 +565,9 @@ class FacturFaro
             $formulario -> linea($factur[$i]['agenci'],0,"t1");
             $formulario -> linea($factur[$i][4],0,"t1");
 
-            $formulario -> linea( $_DESCOR[0]['num_despac'] != '' ? '<a class="classLink" target="blanck" href="index.php?cod_servic=3302&window=central&despac='.$factur[$i][0].'&opcion=1" style="">'.$_DESCOR[0]['num_despac'].'</a>' : 'N/A', 0, "t1");
+            //$formulario -> linea( $_DESCOR[0]['num_despac'] != '' ? '<a class="classLink" target="blanck" href="index.php?cod_servic=3302&window=central&despac='.$factur[$i][0].'&opcion=1" style="">'.$_DESCOR[0]['num_despac'].'</a>' : 'N/A', 0, "t1");
             #$formulario -> linea( $_DESCOR[0]['num_despac'] != '' ? $_DESCOR[0]['num_despac'] : 'N/A', 0, "t1");
-            $formulario -> linea( $_DESCOR[0]['nom_tipdes'] != '' ? $_DESCOR[0]['nom_tipdes'] : 'N/A', 0, "t1");
+            //$formulario -> linea( $_DESCOR[0]['nom_tipdes'] != '' ? $_DESCOR[0]['nom_tipdes'] : 'N/A', 0, "t1");
             
             if( $_DESCOR[0]['tip_transp'] == '1' )
             $mTipdes = 'Flota Propia';
@@ -575,8 +578,8 @@ class FacturFaro
             else
             $mTipdes = 'N/A';
             
-            $formulario -> linea( $mTipdes, 0, "t1");
-            $formulario -> linea( $_DESCOR[0]['nom_poseed'] != '' ? $_DESCOR[0]['nom_poseed'] : 'N/A', 0, "t1");
+            //$formulario -> linea( $mTipdes, 0, "t1");
+            //$formulario -> linea( $_DESCOR[0]['nom_poseed'] != '' ? $_DESCOR[0]['nom_poseed'] : 'N/A', 0, "t1");
             $formulario -> linea($factur[$i][2],0,"t1");
             $formulario -> linea($factur[$i][3],0,"t1");
             $formulario -> linea($factur[$i][7],0,"t1");
@@ -824,7 +827,7 @@ class FacturFaro
         echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Marcaron Como Facturados los Despacho desde el ".$_REQUEST["fecini"]." hasta el ".$_REQUEST["fecfin"];
     }//FIN FUNCTION CAPTURA
 
-    //Inicio FunciÃ³n exportExcel
+    //Inicio Función exportExcel
     private function exportExcel()
     {
       $archivo = "informe_FacturacionFaro_".date( "Y_m_d_H_i" ).".xls";
