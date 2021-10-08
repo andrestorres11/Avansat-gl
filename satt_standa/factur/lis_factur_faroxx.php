@@ -142,11 +142,13 @@ class FacturFaro
         $feactual = date("Y-m-d");
         $mesActual= date("m");
         $anoActual= date("Y");
-        $fecinicial=date("Y-m-d",strtotime((($mesActual=='01')?$anoActual-1:$anoActual)."-".(($mesActual=='01')?"12":$mesActual)."-1"));
+        $diaActual= date("d");
+        $fecinicial=date("Y-m-d",strtotime((($mesActual=='01')?$anoActual-1:$anoActual)."-".(($mesActual=='01')?"12":$mesActual-1)."-1"));
         
-        //$fecfinal=date("Y-m-d",strtotime($anoActual."-".($mesActual)."-20"));
+        $fecfinal=date("Y-m-d",strtotime($anoActual."-".($mesActual-1)."-".($diaActual)));
 
-        $fecfinal=date("Y-m-t",strtotime($feactual));
+        $fecfinal=date("Y-m-t",strtotime($fecfinal));
+
         $formulario -> nueva_tabla();
 
         echo "<tr><td align='right'  class='celda_titulo'>";
@@ -827,7 +829,7 @@ class FacturFaro
         echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Marcaron Como Facturados los Despacho desde el ".$_REQUEST["fecini"]." hasta el ".$_REQUEST["fecfin"];
     }//FIN FUNCTION CAPTURA
 
-    //Inicio Función exportExcel
+    //Inicio Funciï¿½n exportExcel
     private function exportExcel()
     {
       $archivo = "informe_FacturacionFaro_".date( "Y_m_d_H_i" ).".xls";
