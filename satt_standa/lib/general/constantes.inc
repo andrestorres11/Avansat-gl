@@ -53,6 +53,7 @@ define("ESAD", "S.A.T. TRAFICO");// CONSTANTE ENCABEZADO SAD
 define("D_DESPACHO", "Detalle Despacho");// CONSTANTE CONTROL TRAFICO->DETALLE DESPACHOS
 
 define("CONS_CODIGO_PCLLEG", "9999");// constante para el codigo del puesto de control de llegada.
+define("CONS_CODIGO_PCINIC", "9997");// constante para el codigo del puesto de control de llegada.
 define("CONS_NOVEDA_PCLLEG", "1");// constante para el codigo de Novedad, para el Tiempo Llegad P/C.
 define("CONS_NOVEDA_CAMALA", "9999");// constante para el codigo de Novedad, Cambio de Alarma parametro de Responsabilidad Transportadora
 define("CONS_NOVEDA_CAMRUT", "9998");// constante para el codigo de Novedad Especial Cambio de Ruta
@@ -148,5 +149,7 @@ define("CON_SOLICI_ACOMPA", 2);
 //Constante Tipo Servicio, llamado particularidad seguimiento control de trafico.
 define("CON_TIPSER_MA", 2);
 define("CON_TIPSER_OAL", 1);
+
+define("COD_PERFIL_SUPEREAL", "7");// Controlador CLF
 
 ?>
