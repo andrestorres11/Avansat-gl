@@ -35,7 +35,7 @@ function GetDataFromTable() {
                     $("#tabla_inf_general resultado_info_general").remove();
                     table_general.empty();
                     for (var i = 0; i < data.length; i++) {
-                        table_general.append(rowTable(data[i]));
+                        table_general.append(rowTable(data[i],i+1));
                     } 
             },
             complete: function() {
@@ -52,11 +52,11 @@ function GetDataFromTable() {
 }
 
 //Create tr rowAdmin
-function rowTable(row) {
+function rowTable(row,i) {
     //Create Elements 
     //Tr
     var tr = $(`<tr>
-        <td class='can_totalx' style='text-align: center;'><a href="#" onclick="openEditModal('`+ row["cod_titulo"] +`')">` + row["cod_titulo"] + `</a></td>
+        <td class='can_totalx' style='text-align: center;'><a href="#" onclick="openEditModal('`+ row["cod_titulo"] +`')">` + i + `</a></td>
         <td class='can_totalx' style='text-align: center;'>` + row["des_titulo"] + `</td>
         <td class='can_totalx' style='text-align: center;'>` + row["est_titulo"] + `</td>
         <td class='can_totalx' style='text-align: center;'><a href="#" onclick="ChageStatus('`+ row["est_titulo"] +`','`+ row["cod_titulo"] +`')">Cambiar Estado</a></td>
