@@ -704,19 +704,19 @@ function validateNewActivytiForm(formData)
 
 function timerColor(endTime)
 {
-    if(endTime <= 59)
+    if(endTime <= 30)
     {
         val = 'FFFF66';
     }
-    if(endTime > 59 && endTime < 90)
+    if(endTime > 30 && endTime < 61)
     {
         val = 'FF9900';
     }
-    if(endTime > 89 && endTime < 120)
+    if(endTime > 60 && endTime < 91)
     {
         val = 'FF0000';
     }
-    if(endTime > 119)
+    if(endTime > 90)
     {
         val = 'CC33FF';
     }
