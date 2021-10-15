@@ -980,7 +980,7 @@
             self::registraBitacora($cod_estseg,7,'Fase 2 Completada');      
             self::cambiaEstado($_REQUEST['cod_estseg'],2,$_REQUEST['ind_estudi'],3,$_REQUEST['obs_estudi']);
             $array_generado = self::armaArrayInfo($_REQUEST['cod_estseg']);
-            self::createXML($array_generado,'SOL_'.$_REQUEST['cod_estseg'].'_'.time().'.xml');
+            self::createXML($array_generado,'SOL_'.self::darCodigoSolicitud($_REQUEST['cod_estseg']).'_'.$_REQUEST['cod_estseg'].'_'.time().'.xml');
             //$toJSON = json_encode($array_generado);
             
             $query = new Consulta($sql, self::$conexion);
@@ -1292,8 +1292,7 @@
               'vehicle' => self::armaArrayVehicu($infoGen['cod_vehicu']),
               'status_study' => $infoGen['ind_estudi'],
               'observation_study' => $infoGen['obs_estudi'],
-              'user_study' => $infoGen['usr_estudi'],
-              'binnacle' => ''
+              'user_study' => $infoGen['usr_estudi']
             );
 
             return $dataSol;
@@ -1379,9 +1378,9 @@
             $con_where = ' cod_segveh = '.$cod_vehicu.' ';
             $sql = "SELECT
                       a.num_placax, a.num_remolq, a.ano_modelo, a.cod_colorx, a.cod_marcax, e.nom_marcax, a.cod_lineax, f.nom_lineax,
-                      b.nom_colorx, a.cod_carroc, c.nom_carroc, a.num_config,
-                      d.nom_config, a.num_chasis, a.num_motorx, a.num_soatxx, a.fec_vigsoa, a.num_lictra, a.cod_opegps, a.usr_gpsxxx, a.clv_gpsxxx,
-                      a.url_gpsxxx, a.idx_gpsxxx, a.obs_opegps, a.fre_opegps
+                      b.nom_colorx, a.cod_carroc, c.nom_carroc, a.num_config, d.nom_config, a.num_chasis, a.num_motorx, a.num_soatxx,
+                      a.fec_vigsoa, a.num_lictra, a.cod_opegps, g.nit_operad, g.nom_operad, a.usr_gpsxxx, a.clv_gpsxxx, a.url_gpsxxx,
+                      a.idx_gpsxxx, a.obs_opegps, a.fre_opegps
                     FROM ".BASE_DATOS.".tab_estudi_vehicu a
               LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON 
                     a.cod_colorx = b.cod_colorx
@@ -1393,6 +1392,8 @@
                     a.cod_marcax = e.cod_marcax
               LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas f ON
                     a.cod_lineax = f.cod_lineax AND a.cod_marcax = f.cod_marcax
+              LEFT JOIN ".BASE_DATOS.".tab_genera_opegps g ON
+                    a.cod_opegps = g.cod_operad
                     WHERE a.cod_segveh = '".$cod_vehicu."'";
               $query = new Consulta($sql, self::$conexion);
               $resultados = $query -> ret_matrix('a')[0];
@@ -1427,6 +1428,8 @@
                 'licence_number' => $resultados['num_lictra'],
                 'gps' => array(
                   'code' => $resultados['cod_opegps'],
+                  'document_number' => $resultados['nit_operad'],
+                  'name' => $resultados['nom_operad'],
                   'username' => $resultados['usr_gpsxxx'],
                   'password' => $resultados['clv_gpsxxx'],
                   'url' => $resultados['url_gpsxxx'],
@@ -1628,7 +1631,7 @@
             eval( $thefile );
             $mHtml = $r_file;
 
-            require_once(URL_ARCHIV_STANDA."/satt_standa/planti/class.phpmailer.php");
+            require_once(URL_ARCHIV_STANDA."/ctorres/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
             $mail = new PHPMailer();
             $mail->Host = "localhost";
             $mail->From = 'supervisores@eltransporte.org';
@@ -1657,7 +1660,7 @@
 
           
           $emails = explode(",", $emailsTotal);
-          $tmpl_file = URL_ARCHIV_STANDA.'/satt_standa/estseg/planti/template-email.html';
+          $tmpl_file = URL_ARCHIV_STANDA.'/ctorres/sat-gl-2015/satt_standa/estseg/planti/template-email.html';
           $contenido = '<p>Centro Logístico FARO hace el envio del documento adjunto en este correo con el resultado del estudio de seguridad No.<strong>'.$cod_solici.'</strong>.</p>
                         <p>No responder -- Este correo ha sido creado automaticamente.</p>';
           $logo = LOGOFARO;
@@ -1668,7 +1671,7 @@
           eval( $thefile );
           $mHtml = $r_file;
 
-          require_once(URL_ARCHIV_STANDA."/satt_standa/planti/class.phpmailer.php");
+          require_once(URL_ARCHIV_STANDA."/ctorres/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
           $mail = new PHPMailer();
           $mail->Host = "localhost";
           $mail->From = 'supervisores@eltransporte.org';
