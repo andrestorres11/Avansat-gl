@@ -368,7 +368,7 @@ class ajaxCalendAgendamiento
 
       $info_usuari= $this->infoUsuari($_SESSION['datos_usuario']['cod_usuari']);
       $cond = "";
-      if($info_usuari[0]['cod_perfil'] != COD_PERFIL_ADMINIST && $info_usuari[0]['cod_perfil'] != COD_PERFIL_SUPEFARO ){
+      if($info_usuari[0]['cod_perfil'] != COD_PERFIL_ADMINIST && $info_usuari[0]['cod_perfil'] != COD_PERFIL_SUPEFARO && $info_usuari[0]['cod_perfil'] != COD_PERFIL_SUPERUSR ){
         $cond = " WHERE a.cod_usuari= '".$_SESSION['datos_usuario']['cod_usuari']."' ";
       }
 
