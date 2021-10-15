@@ -97,12 +97,12 @@ class responsable
 			$mSql = "INSERT INTO ".BASE_DATOS.".tab_genera_respon 
 						( cod_respon, nom_respon, ind_activo, 
 						  jso_bandej, jso_encabe, jso_plarut, 
-						  jso_infcal, jso_notifi, jso_contac, jso_partic, jso_obsgen, edt_gpsxxx, usr_creaci, fec_creaci ) 
+						  jso_infcal, jso_notifi, jso_contac, jso_partic, jso_obsgen, edt_gpsxxx, jso_estseg, usr_creaci, fec_creaci ) 
 					VALUES 
 						( '".($mCodRespon[0]+1)."', '".$_REQUEST['nom_respon']."', '".$_REQUEST['ind_activo']."', 
 						  '".json_encode($_REQUEST['jso_bandej'])."', '".json_encode($_REQUEST['jso_encabe'])."', '".json_encode($_REQUEST['jso_plarut'])."', 
 						  '".json_encode($_REQUEST['jso_infcal'])."', '".json_encode($_REQUEST['jso_notifi'])."', '".json_encode($_REQUEST['jso_contac'])."', '".json_encode($_REQUEST['jso_partic'])."','".json_encode($_REQUEST['jso_obsgen'])."','".json_encode($_REQUEST['edt_gpsxxx'])."' , 
-						  '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() ) 	
+						  '".json_encode($_REQUEST['jso_estseg'])."','".$_SESSION['datos_usuario']['cod_usuari']."', NOW() ) 	
 					";
 			$mConsult = new Consulta($mSql, self::$cConexion);
 		}
@@ -120,7 +120,8 @@ class responsable
 													jso_contac = '".json_encode($_REQUEST['jso_contac'])."',
 													jso_partic = '".json_encode($_REQUEST['jso_partic'])."',
 													edt_gpsxxx = '".json_encode($_REQUEST['edt_gpsxxx'])."',
-													jso_obsgen = '".json_encode($_REQUEST['jso_obsgen'])."',  " : NULL )."
+													jso_obsgen = '".json_encode($_REQUEST['jso_obsgen'])."',
+													jso_estseg = '".json_encode($_REQUEST['jso_estseg'])."'," : NULL )."
 						fec_modifi = NOW() 
 					WHERE cod_respon = '".$_REQUEST['cod_respon']."' ";
 			$mConsult = new Consulta($mSql, self::$cConexion);
@@ -149,7 +150,7 @@ class responsable
 	 */
 	private function edicionRespon()
 	{
-		$mSql = "SELECT jso_bandej, jso_encabe, jso_plarut, jso_infcal, jso_notifi, jso_contac, jso_partic, jso_obsgen, edt_gpsxxx
+		$mSql = "SELECT jso_bandej, jso_encabe, jso_plarut, jso_infcal, jso_notifi, jso_contac, jso_partic, jso_obsgen, edt_gpsxxx, jso_estseg
 				   FROM ".BASE_DATOS.".tab_genera_respon 
 				  WHERE cod_respon = '".$_REQUEST['cod_respon']."' ";
 		$mConsult = new Consulta($mSql, self::$cConexion);
@@ -165,10 +166,10 @@ class responsable
 		$mData['edt_gpsxxx'] = json_decode($mData['edt_gpsxxx']);
 		$mData['jso_partic'] = json_decode($mData['jso_partic']);
 		$mData['jso_obsgen'] = json_decode($mData['jso_obsgen']);
-
+		$mData['jso_estseg'] = json_decode($mData['jso_estseg']);
 
 		self::style();
-		$mCategoria = array("jso_bandej"=>'Bandeja', "jso_encabe"=>'Encabezado', "jso_plarut"=>'Plan de Ruta', "jso_infcal"=>'Informe Auditorias General', "jso_notifi"=>'de notificaciones', "jso_contac"=>'contactos', "jso_partic"=>'particularidades', "jso_obsgen"=>'Observacion general', "edt_gpsxxx"=>'Editar GPS');
+		$mCategoria = array("jso_bandej"=>'Bandeja', "jso_encabe"=>'Encabezado', "jso_plarut"=>'Plan de Ruta', "jso_infcal"=>'Informe Auditorias General', "jso_notifi"=>'de notificaciones', "jso_contac"=>'contactos', "jso_partic"=>'particularidades', "jso_obsgen"=>'Observacion general', "edt_gpsxxx"=>'Editar GPS', "jso_estseg"=>"Estudio de seguridad");
 		$mChecked = $_REQUEST['ind_activo'] == '1' ? 'true' : 'false';
 
 		$mHtml = new Formlib(2);
@@ -445,6 +446,13 @@ class responsable
 								  );
 
 				$mArray[1] = array( "dat_obsgen"=>array("ind_visibl"=>1, "sub"=>array())
+								   );
+			break;
+
+			case 'jso_estseg':
+				$mArray[0] = array( "dat_estseg"=>array("name"=>"Gestionar", "sub"=>array() )
+								  );
+				$mArray[1] = array( "dat_estseg"=>array("ind_gessol"=>1, "sub"=>array())
 								   );
 			break;
 
