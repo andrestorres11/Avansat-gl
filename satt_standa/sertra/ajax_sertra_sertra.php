@@ -93,6 +93,9 @@ class ajax_certra_certra {
                 case "NewParametrizacion";
                     $this->NewParametrizacion();
                     break;
+                case "editParametrizacion";
+                    $this->editParametrizacion();
+                    break;
                 case "NewContac";
                     $this->NewContac();
                     break; 
@@ -142,7 +145,7 @@ class ajax_certra_certra {
      *  \brief: funcion para cargar los datos de la ultima configuracion de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 25/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -287,7 +290,7 @@ class ajax_certra_certra {
      *  \brief: funcion para pintar el formulario de insercion de la configuracion de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 25/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param:
      *  \param: 
      *  \return 
@@ -555,7 +558,7 @@ class ajax_certra_certra {
                     ?>
                         <table class="classTable" align="center" width="100%" cellspacing="1" cellpadding="0" style="border:1px #35650F solid">
                             <tr>
-                                <th width="5%" nowrap class="CellHead" align="center">N°</th>
+                                <th width="5%" nowrap class="CellHead" align="center">N?</th>
                                 <th width="40%" nowrap class="CellHead" align="center">ACUERDOS DE SERVICIO <?php echo($tipser['nom_tipser'])?></th>
                                 <th width="15%" nowrap class="CellHead" align="center">TIPO SERVICIO</th>  
                                 <th width="20%" nowrap class="CellHead" align="center">FECHA DEFINIDA</th>
@@ -607,8 +610,9 @@ class ajax_certra_certra {
                         <div class="col-md-5 CellHead centrado"><b>D&iacute;a</b></div>
                         <div class="col-md-2 CellHead centrado"><b>Hora de Ingreso</b></div>
                         <div class="col-md-2 CellHead centrado"><b>Hora de Salida</b></div>
-                        <div class="col-md-2 CellHead centrado"><b>Servicio</b></div>
+                        <div class="col-md-1 CellHead centrado"><b>Servicio</b></div>
                         <div class="col-md-1 CellHead centrado"><b>Eliminar</b></div>
+                        <div class="col-md-1 CellHead centrado"><b>EDITAR</b></div>
                         <?php
                         foreach ($datos->configuracion as $row) {
                             $mDiasxx = '';
@@ -620,9 +624,10 @@ class ajax_certra_certra {
                             <div class="col-md-5 contenido centrado" ><?= $mDiasxx ?></div> 
                             <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_ingres']) ?></div>  
                             <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>
-                            <div class="col-md-2 contenido centrado"><?= $this->getServicHorLab($row['tip_servic']) ?></div>   
+                            <div class="col-md-1 contenido centrado"><?= $this->getServicHorLab($row['tip_servic']) ?></div>   
                             <div class="col-md-1 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteConfiguracion(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 3)"></div>   
-
+                            <div class="col-md-1 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaConfig(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 3)"></div>
+                            
                             <?php
                         }
                         foreach ($datos->configuracionAdicional as $row) {
@@ -635,9 +640,9 @@ class ajax_certra_certra {
                             <div class="col-md-5 contenido centrado" ><?= $mDiasxx ?></div> 
                             <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_ingres']) ?></div>  
                             <div class="col-md-2 contenido centrado"><?= $this->HoraLegible($row['hor_salida']) ?></div>
-                            <div class="col-md-2 contenido centrado"><?= $this->getServicHorLab($row['tip_servic']) ?></div>   
+                            <div class="col-md-1 contenido centrado"><?= $this->getServicHorLab($row['tip_servic']) ?></div>   
                             <div class="col-md-1 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/delete.png" onclick="deleteConfiguracion(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 4)"></div>   
-
+                            <div class="col-md-1 contenido centrado"><img class="pointer" width="12px" height="12px" src="../<?= DIR_APLICA_CENTRAL ?>/images/edit.png" onclick="EditaConfig(<?= $datos->cod_transp ?>, '<?= $row['com_diasxx'] ?>', 4)"></div>
                             <?php
                         }
                     }
@@ -1073,7 +1078,7 @@ class ajax_certra_certra {
      *  \brief: funcion que trae los grupos de la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 28/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return arreglo con los grupos
@@ -1089,7 +1094,7 @@ class ajax_certra_certra {
      *  \brief: funcion que trae los tipos de operaciones de la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 28/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return arreglo con los tipos de operaciones
@@ -1104,7 +1109,7 @@ class ajax_certra_certra {
      *  \brief: configura el orario laboral de una empresa para el tipo de servico
      *  \author: Ing. Alexander Correa
      *  \date: 26/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -1128,74 +1133,159 @@ class ajax_certra_certra {
             $mActual2 .= $mActual2 != '' ? '|' . $value['com_diasxx'] : $value['com_diasxx'];
         }
 
-        $mArrayActua2l = array();
+        $mArrayActual2 = array();
         foreach (explode('|', $mActual2) as $llave) {
             $mArrayActual2[] = $llave;
         }
-
-        if (count($mArrayActual) < count($this->Week) || count($mArrayActual2) < count($this->Week)) {
-            ?>
-            <div class="StyleDIV col-md-12">
-                <div class="col-md-12 CellHead centrado" id="mensaje"><b>DIAS DE LA SEMANA AUN NO PARAMETRIZADOS</b></div>
-                <div class="col-md-12">
-                    <div class="col-md-3 cellInfo1"></div>
-                    <div class="col-md-6 cellInfo1">
-                        <?php
-                        $count = 0;
-                        $contador = 0;
-                        foreach ($this->Week as $mDay => $mDia) {
-                            if (!in_array($mDay, $mArrayActual)) {
-                                ?>
-                                <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
-                                <div class="col-md-4 izquierda"><input type="checkbox" ind_config="3" name="nom_diasxx" value="<?= $mDay ?>" /></div>
-                                <?php
-                            }
-                        }
-                        ?>
-                        <div class="col-md-12 centrado CellHead"><b>Seguimineto Espacial</b></div>
-                        <?php
-                        foreach ($this->Week as $mDay => $mDia) {
-                            if (!in_array($mDay, $mArrayActual2)) {
-                                ?>
-                                <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
-                                <div class="col-md-4 izquierda"><input type="checkbox" ind_config="4" name="nom_diasxx" value="<?= $mDay ?>" /></div>
-                                <?php
-                            }
-                        }
-                        ?>
-                    </div>
-                    <div class="col-md-3 cellInfo1"></div>
+        if ($_POST['ind_edicio'] == '0') {
+            if (count($mArrayActual) < count($this->Week) || count($mArrayActual2) < count($this->Week)) {
+                ?>
+                <div class="StyleDIV col-md-12">
+                    <div class="col-md-12 CellHead centrado" id="mensaje"><b>DIAS DE LA SEMANA AUN NO PARAMETRIZADOS</b></div>
                     <div class="col-md-12">
-                        <div class="col-md-4 CellHead centrado"><b>HORA INICIO</b></div>
-                        <div class="col-md-4 CellHead centrado"><b>HORA FINALIZACI&Oacute;N</b></div>
-                        <div class="col-md-4 CellHead centrado"><b>SERVICIO</b></div>
-                    </div>
+                        <div class="col-md-3 cellInfo1"></div>
+                        <div class="col-md-6 cellInfo1">
+                            <?php
+                            $count = 0;
+                            $contador = 0;
+                            foreach ($this->Week as $mDay => $mDia) {
+                                if (!in_array($mDay, $mArrayActual)) {
+                                    ?>
+                                    <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
+                                    <div class="col-md-4 izquierda"><input type="checkbox" ind_config="3" name="nom_diasxx" value="<?= $mDay ?>" /></div>
+                                    <?php
+                                }
+                            }
+                            ?>
+                            <div class="col-md-12 centrado CellHead"><b>Seguimineto Espacial</b></div>
+                            <?php
+                            foreach ($this->Week as $mDay => $mDia) {
+                                if (!in_array($mDay, $mArrayActual2)) {
+                                    ?>
+                                    <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
+                                    <div class="col-md-4 izquierda"><input type="checkbox" ind_config="4" name="nom_diasxx" value="<?= $mDay ?>" /></div>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </div>
+                        <div class="col-md-3 cellInfo1"></div>
+                        <div class="col-md-12">
+                            <div class="col-md-4 CellHead centrado"><b>HORA INICIO</b></div>
+                            <div class="col-md-4 CellHead centrado"><b>HORA FINALIZACI&Oacute;N</b></div>
+                            <div class="col-md-4 CellHead centrado"><b>SERVICIO</b></div>
+                        </div>
 
-                    <div class="col-md-4 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_ingres" id="hor_ingresID" value="00:00" /></div>                
-                    <div class="col-md-4 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_salida" id="hor_salidaID" value="23:59" /></div> 
-                    <div class="col-md-4 cellInfo1 centrado negro">
-                        <select name="tip_servic" id="tip_servicID">
-                            <option value="1">24/7</option>
-                            <option value="2">12/7</option>
-                            <option value="3">Fin de semana</option>
-                        </select>
-                    </div>
-                    <?php
-                } else {
-                    die("1");
-                }
-                ?>      
+                        <div class="col-md-4 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_ingres" id="hor_ingresID" value="00:00" /></div>                
+                        <div class="col-md-4 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_salida" id="hor_salidaID" value="23:59" /></div> 
+                        <div class="col-md-4 cellInfo1 centrado negro">
+                            <select name="tip_servic" id="tip_servicID">
+                                <option value="1">24/7</option>
+                                <option value="2">12/7</option>
+                                <option value="3">Fin de semana</option>
+                            </select>
+                        </div>
+                        <?php
+                    } else {
+                        die("1");
+                    }
+                    ?>      
+                </div>
             </div>
-        </div>
 
         <?php
+        }else{
+            $informacion= self::getConfighorari($_POST['com_diasxx'],$_POST['cod_transp'],$_POST['ind_config'])[0];
+            $dias = explode("|", $informacion['com_diasxx']);
+            if (count($mArrayActual) < count($this->Week) || count($mArrayActual2) < count($this->Week)) {
+                ?>
+                <div class="StyleDIV col-md-12">
+                    <?php
+                        if($informacion['ind_config'] == 3 ){
+                    ?>
+                    <div class="col-md-12 CellHead centrado" id="mensaje"><b>DIAS DE LA SEMANA PARAMETRIZADOS</b></div>
+                    <div class="col-md-12">
+                        <div class="col-md-3 cellInfo1"></div>
+                        <div class="col-md-6 cellInfo1">
+                            <?php
+                            
+                                foreach ($this->Week as $mDay => $mDia) {
+                                    $checked="";
+                                    if (in_array($mDay, $dias)) {
+                                        $checked="checked";
+                                    }
+                                    ?>
+                                        <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
+                                        <div class="col-md-4 izquierda"><input type="checkbox" ind_config="3" name="nom_diasxx" value="<?= $mDay ?>" <?= $checked ?>/></div>
+                                    <?php
+                                }
+                            }else{
+
+                                ?>
+                                <div class="col-md-12 centrado CellHead"><b>Seguimineto Espacial</b></div>
+                                <div class="col-md-12">
+                                    <div class="col-md-3 cellInfo1"></div>
+                                    <div class="col-md-6 cellInfo1">
+                                
+                                <?php
+                                foreach ($this->Week as $mDay => $mDia) {
+                                    $checked="";
+                                    if (in_array($mDay, $dias)) {
+                                        $checked="checked";
+                                    }
+                                    ?>
+                                        <div class="col-md-2 centrado negro" ><?= $this->Week[$mDay] ?></div>
+                                        <div class="col-md-4 izquierda"><input type="checkbox" ind_config="4" name="nom_diasxx" value="<?= $mDay ?>" <?= $checked ?>/></div>
+                                    <?php
+                                }
+                            }
+                            ?>
+                        </div>
+                        <div class="col-md-3 cellInfo1"></div>
+                        <div class="col-md-12">
+                            <div class="col-md-4 CellHead centrado"><b>HORA INICIO</b></div>
+                            <div class="col-md-4 CellHead centrado"><b>HORA FINALIZACI&Oacute;N</b></div>
+                            <div class="col-md-4 CellHead centrado"><b>SERVICIO</b></div>
+                        </div>
+
+                        <div class="col-md-4 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_ingres" id="hor_ingresID" value="<?= $informacion['hor_ingres'] ?>"/></div>                
+                        <div class="col-md-4 cellInfo1 centrado negro"><input type="text" class="hora centrado" name="hor_salida" id="hor_salidaID" value="<?= $informacion['hor_salida'] ?>" /></div> 
+                        <div class="col-md-4 cellInfo1 centrado negro">
+                            <select name="tip_servic" id="tip_servicID">
+                                <?php
+                                    $option1="";
+                                    $option2="";
+                                    $option3="";
+                                    if ($informacion['tip_servic'] == 1) {
+                                        $option1= 'selected';
+                                    }elseif($informacion['tip_servic'] == 2){
+                                        $option2= 'selected';
+                                    }elseif($informacion['tip_servic'] == 3){
+                                        $option3= 'selected';
+                                    }
+                                    ?>
+                                <option value="1" <?php echo $option1;?>>24/7</option>
+                                <option value="2" <?php echo $option2;?>>12/7</option>
+                                <option value="3" <?php echo $option3;?>>Fin de semana</option>
+                            </select>
+                        </div>
+                        <?php
+                    } else {
+                        die("1");
+                    }
+                    ?>      
+                </div>
+            </div>
+
+        <?php
+        }
     }
 
     /* ! \fn: getFestivos
      *  \brief: Trae los festivos configurados para la empresa
      *  \author: Ing. Alexander Correa
      *  \date: 08/02 /2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return 
      */
@@ -1322,7 +1412,7 @@ class ajax_certra_certra {
      *  \brief: inserta un festivo para la transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -1356,12 +1446,12 @@ class ajax_certra_certra {
     }
 
     /* ! \fn: ValidateNumberofDays
-     *  \brief: devuelve el numero de dias de un mes de un año 
+     *  \brief: devuelve el numero de dias de un mes de un a?o 
      *  \author: Ing. Alexander Correa
      *  \date: 23/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: $mMes     => string => mes a consultar    
-     *  \param: $mAno     => string => año a consultar    
+     *  \param: $mAno     => string => a?o a consultar    
      *  \return return
      */
 
@@ -1400,7 +1490,7 @@ class ajax_certra_certra {
      *  \brief: elimina un festivo de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 02/08/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -1430,7 +1520,7 @@ class ajax_certra_certra {
      *  \brief: trae todas las esferas de la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return arreglo con las esferas
@@ -1446,7 +1536,7 @@ class ajax_certra_certra {
      *  \brief: inserta una configuracion de horario para una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -1473,7 +1563,7 @@ class ajax_certra_certra {
      *  \brief: funcion que devuelve la hora en un formato legible
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: $mHorax     => string => cadena con la hora a convertir    
      *  \return string con la hora legible
      */
@@ -1490,10 +1580,10 @@ class ajax_certra_certra {
     }
 
     /* ! \fn: registrarTipoServicio
-     *  \brief: guarda la configuración parametrizada de el tipo de servicio de una transportadora
+     *  \brief: guarda la configuraci?n parametrizada de el tipo de servicio de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 08/02/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return
@@ -1628,7 +1718,7 @@ class ajax_certra_certra {
      *  \brief: trae la lista de las empresas con actividad aseguradora
      *  \author: Ing. Alexander Correa
      *  \date: 07/04/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return 
      */
@@ -1710,6 +1800,24 @@ class ajax_certra_certra {
 
         return $particularidades;
     }
+
+    private function getConfighorari($com_diasxx, $cod_transp, $ind_config) {
+        
+        $sql = "SELECT a.com_diasxx, a.cod_tercer, a.cod_ciudad, a.ind_config, a.hor_ingres, a.hor_salida  , a.tip_servic
+                  FROM " . BASE_DATOS . ".tab_config_horlab a
+                 WHERE cod_tercer = '$cod_transp' 
+                 AND com_diasxx = '$com_diasxx' 
+                 AND ind_config = '$ind_config' 
+                 ";
+
+        $consulta = new Consulta($sql, self::$cConexion);
+        $configHor = $consulta->ret_matriz();
+
+        
+
+        return $configHor;
+    }
+    
     
 
     private function getTipSerTrans($cod_transp){
@@ -1755,7 +1863,7 @@ class ajax_certra_certra {
      *  \brief: elimina una configuracion laboral de una empresa
      *  \author: Ing. Alexander Correa
      *  \date: 16/05/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return boolean 
      */
@@ -1774,11 +1882,37 @@ class ajax_certra_certra {
         }
     }
 
+    private function editParametrizacion(){
+        $mData = $_POST;
+
+        $mUpdate = "UPDATE " . BASE_DATOS . ".tab_config_horlab SET 
+                    com_diasxx = '".$mData['nue_combin']."', 
+                    hor_ingres = '".$mData['hor_ingedi']."', 
+                    hor_salida = '".$mData['hor_saledi']."', 
+                    tip_servic = '".$mData['tip_servic']."', 
+                    usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                    fec_modifi = NOW()
+                    WHERE 
+                    cod_tercer = '".$mData['cod_transp']."'
+                    AND com_diasxx = '".$mData['dia']."'
+                    AND ind_config = '".$mData['ind_config']."'
+                    ";
+
+        $insercion = new Consulta($mUpdate, self::$cConexion, "C");
+        
+        if (new Consulta($mUpdate, self::$cConexion, "C")) {
+            echo "1000";
+        } else {
+            echo "9999";
+        }
+
+    }
+
     /* ! \fn: deleteConfiguracion
      *  \brief: elimina una configuracion laboral de una empresa
      *  \author: Ing. Alexander Correa
      *  \date: 16/05/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return boolean 
      */
@@ -1799,7 +1933,7 @@ class ajax_certra_certra {
      *  \brief: elimina una configuracion laboral de una empresa
      *  \author: Ing. Alexander Correa
      *  \date: 16/05/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return boolean 
      */
@@ -1820,7 +1954,7 @@ class ajax_certra_certra {
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Torres
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -1936,7 +2070,7 @@ class ajax_certra_certra {
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Martinez
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -2046,7 +2180,7 @@ class ajax_certra_certra {
      *  \brief: inserta un contacto de la transportado
      *  \author: Ing. Andres Torres
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -2073,7 +2207,7 @@ class ajax_certra_certra {
      *  \brief: inserta un contacto de la transportado
      *  \author: Ing. Andres Martinez
      *  \date: 28/04/2021
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -2099,7 +2233,7 @@ class ajax_certra_certra {
      *  \brief: inserta un contacto de la transportado
      *  \author: Ing. Andres Torres
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -2131,7 +2265,7 @@ class ajax_certra_certra {
      *  \brief: inserta una Particularidad de la transportado
      *  \author: Ing. Andres Martinez
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -2158,7 +2292,7 @@ class ajax_certra_certra {
 
     /*! \fn: getServicHorLab
 	 *  \brief: Obtiene el horario del servicio
-	 *  \author: Ing. Cristian Andrés Torres
+	 *  \author: Ing. Cristian Andr?s Torres
 	 *	\date: 13/08/2021
 	 *	\date modified: dia/mes/ano
 	 *  \param: 
