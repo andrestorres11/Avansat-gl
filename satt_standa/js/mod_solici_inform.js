@@ -788,7 +788,7 @@ function r(){
 											{
 												diferencia_hora_dia_solici_hora =0;
 											}
-											
+
 											diferencia_hora_dia_solici_min =  Math.abs(fecha_solicitud.getMinutes() - fecha_hoy.getMinutes());
 											diferencia_hora_dia_solici_min = parseInt(diferencia_hora_dia_solici_min)+parseInt(diferencia_hora_dia_solici_hora)
 										}
@@ -829,9 +829,13 @@ function r(){
 										{
 											diferencia_hora_dia_hoy_min=0;
 										}
+										//total_min = parseInt(Math.abs(diferencia_dias_min))+parseInt(Math.abs(diferencia_hora_dia_hoy_min))+parseInt(Math.abs(diferencia_hora_dia_solici_min))
+										
+										var fecha_soli = moment(data[i].fec_creaci);
+										var fecha_hoy = moment(new Date())
 
-										total_min = parseInt(Math.abs(diferencia_dias_min))+parseInt(Math.abs(diferencia_hora_dia_hoy_min))+parseInt(Math.abs(diferencia_hora_dia_solici_min))
-											
+										total_min = parseInt(Math.abs(diferencia_dias_min))+parseInt(Math.abs(diferencia_hora_dia_hoy_min))+fecha_hoy.diff(fecha_soli, 'minutes') // 44700
+
 										var cumplido = total_min+" Min";
 										
 										if(data[i].fec_modifi == "")
