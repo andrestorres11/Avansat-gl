@@ -1,3 +1,5 @@
+cargando("Cargando Pagina");
+
 $(document).ready(function() {
     //Inicializacion de indicadores
     cambioIndicadores($('input[name="pregu1con"]:checked'));
@@ -6,7 +8,8 @@ $(document).ready(function() {
     cambioIndicadores($('input[name="ind_preres"]:checked'));
     //executeFilter();
     inicializarTablas();
-    InsSoliciValidate(); 
+    InsSoliciValidate();
+    swal.close();
 });
 
 function loadAjax(x) {
@@ -128,7 +131,7 @@ function validateInicial(){
         $(this).rules("add", {
             email: true,
             messages: {
-                email: "El correo no es vï¿½lido"
+                email: "El correo no es válido"
             }
         })
       });
@@ -293,10 +296,7 @@ function traeLineas(elemento){
 }
 
 function validateEstudioSoliciFinal(){
-    $('#dataSolicitud').removeData('validator');
-    var validator = $("#dataSolicitud").validate({ignore: []
-       });
-   
+    
     if($('#check_conposeed').is(':checked')){
         removeReq('#pills-poseedor');
     }else{
@@ -316,6 +316,10 @@ function validateEstudioSoliciFinal(){
         addReq('#pills-propietario');
     }
 
+    $('#dataSolicitud').removeData('validator');
+    var validator = $("#dataSolicitud").validate({ignore: []
+       });
+
     $('#dataSolicitud .docreq').each(function () {
         $(this).rules("add", {
             required: true,
@@ -327,7 +331,7 @@ function validateEstudioSoliciFinal(){
         });
     });
 
-    $('.req').each(function () {
+    $('#dataSolicitud .req').each(function () {
         $(this).rules("add", {
             required: true,
             messages: {
@@ -335,7 +339,7 @@ function validateEstudioSoliciFinal(){
             }
         });
       });
-      $('.num').each(function () {
+      $('#dataSolicitud .num').each(function () {
         $(this).rules("add", {
             number: true,
             messages: {
@@ -343,7 +347,7 @@ function validateEstudioSoliciFinal(){
             }
         })
       });
-      $('.ema').each(function () {
+      $('#dataSolicitud .ema').each(function () {
         $(this).rules("add", {
             email: true,
             messages: {
@@ -454,6 +458,67 @@ function llenaParentesco(elemento,cod_person,tip_refere,cod_identi){
 
 }
 
+function guardarGPS(){
+    $('#regOpeGPS').removeData('validator');
+    var validator = $("#regOpeGPS").validate({ignore: []
+    });
+
+    $('#regOpeGPS .req').each(function () {
+        $(this).rules("add", {
+            required: true,
+            messages: {
+                required: "Este campo es requerido"
+            }
+        });
+    });
+
+    if($("#regOpeGPS").valid()){
+        registrarGPS(); 
+    }
+
+}
+
+function registrarGPS(){
+    var standa = 'satt_standa';
+    var dataString = 'opcion=guardarGPS';
+    var data = new FormData(document.getElementById('regOpeGPS'));
+    $.ajax({
+        url: "../" + standa + "/estseg/ajax_genera_estseg.php?" + dataString,
+        method: 'POST',
+        data,
+        async: false,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+            cargando("Guardando...")
+        },
+        success: function(data) {
+            if (data['status'] == 200) {
+                $("#nom_operadID").val('');
+                $("#url_gpsxxxID").val('');
+                $("#nit_operadID").val('');
+                $("#nit_verifiID").val('');
+                $("#ind_usaidxID").prop( "checked", false );
+                $("#ind_cronxxID").prop( "checked", false );
+                $("#ind_rndcxxID").prop( "checked", false );
+                $("#ind_intgpsID").prop( "checked", false );
+                $("#cod_opegpsID").empty();
+                $("#cod_opegpsID").append(data['info']);
+                $('#modalregOpeGps').modal('hide');
+                swal.close();
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data['response'],
+                    type: 'error',
+                    confirmButtonColor: '#336600'
+                })
+            }
+        },
+    });
+}
+
 function almacenarSolicitud() {
     var standa = 'satt_standa';
     var dataString = 'opcion=guardarSolicitud';
@@ -553,21 +618,16 @@ function almacenarEstudioFinal() {
             cargando("Guardando la información. Por favor espere.")
         },
         success: function(data) {
-            swal.close();
+            
             if (data['status'] == 200) {
-                Swal.fire({
-                    title: 'Registrado!',
-                    text: data['response'],
-                    type: 'success',
-                    confirmButtonColor: '#336600'
-                }).then((result) => {
-                    if(data['redire']==1){
-                        window.location.href = data['page'];
-                    }else{
-                        location.reload();
-                    }
-                });
+
+                envioArchivoFinSolici(data['cod_estseg'],data['emails'],data);
+                
+
+
+                
             } else {
+                swal.close();
                 Swal.fire({
                     title: 'Error!',
                     text: data['response'],
@@ -576,6 +636,49 @@ function almacenarEstudioFinal() {
                 });
             }
         },
+    });
+}
+
+
+function envioArchivoFinSolici(cod_estseg,emails,information){
+    var standa = 'satt_standa';
+    var dataString = 'cod_estseg='+cod_estseg;
+    $.ajax({
+        url:  "../" + standa + "/estseg/inf_estseg_pdfxxx.php?" + dataString,
+        xhrFields: { responseType: 'blob' },
+        success: function(data) {
+            var blob=new Blob([data]);
+            pdf = blob;
+            var data = new FormData();
+            data.append('file', pdf);
+            data.append('emails', emails);
+            data.append('cod_estseg', cod_estseg);
+            var infoenv = 'opcion=sendEmail';
+            $.ajax({
+                data: data,
+                type: "POST",
+                url: "../" + standa + "/estseg/ajax_genera_estseg.php?" + infoenv, 
+                cache: false,
+                contentType: false,
+                processData: false,
+                xhrFields: { responseType: 'blob' },
+                success: function (backParam) {
+                    swal.close();
+                    Swal.fire({
+                        title: 'Registrado!',
+                        text: information['response'],
+                        type: 'success',
+                        confirmButtonColor: '#336600'
+                    }).then((result) => {
+                        if(information['redire']==1){
+                            window.location.href = information['page'];
+                        }else{
+                            location.reload();
+                        }
+                    });
+                }
+            });
+        }
     });
 }
 
@@ -601,7 +704,7 @@ function almacenarReferencia(key){
     data.append('cod_personE', $("#cod_person_"+key).val());
     data.append('cod_refereE', $("#cod_refere_"+key).val());
     data.append('cod_identiE', $("#cod_identi_"+key).val());
-
+    data.append('obs_refereE', $("#obs_refereID_"+key).val());
     $.ajax({
         url: "../" + standa + "/estseg/ajax_genera_estseg.php?" + dataString,
         method: 'POST',
@@ -973,6 +1076,59 @@ function openModalViewPdf(elemento){
 function atrasModalViewPdf(elemento){
     $("#visualizarPDFModal").modal('toggle');
     consInfoSolicitud(elemento);
+}
+
+function openModalViewDocuments(elemento){
+    var standa = 'satt_standa';
+    var cod_solici = $(elemento).attr('data-dato');
+    var cod_estseg = $(elemento).attr('data-code');
+    $("#procesoSolicitudModal").modal('toggle');
+    $("#title-modal-viewDocuments").empty();
+    $("#title-modal-viewDocuments").append('Estudio de seguridad No. '+cod_estseg);
+    $("#btn-atrasDocuments").attr('data-dato',cod_solici);
+    $("#generaZip").attr('data-code',cod_estseg);
+    $("#generaZip").attr("href","index.php?cod_servic=20210915&window=central&opcion=downloadZip&cod_estseg="+cod_estseg);
+    $("#tbody_document").empty();
+    var dataString = 'opcion=getListDocuments&cod_estseg='+cod_estseg;
+    $.ajax({
+        url: "../" + standa + "/estseg/ajax_genera_estseg.php?" + dataString,
+        method: 'POST',
+        async: false,
+        dataType: 'html',
+        success: function(data) {
+            $("#tbody_document").append(data);
+        },
+    });
+    $("#visualizarDocumentos").modal('toggle');
+}
+
+function atrasModalViewDocuments(elemento){
+    $("#visualizarDocumentos").modal('toggle');
+    consInfoSolicitud(elemento);
+}
+
+function downloadZip(elemento){
+    var cod_estseg = $(elemento).attr('data-code');
+    var standa = 'satt_standa';
+    var dataString = 'cod_estseg='+cod_estseg;
+    var dataString = 'opcion=generaZip&cod_estseg='+cod_estseg;
+    $.ajax({
+        url:  "../" + standa + "/estseg/ajax_genera_estseg.php?" + dataString,
+        xhrFields: { responseType: 'blob' },
+        beforeSend: function() {
+            cargando('Estamos generando el documento. Por favor espere');
+        },
+        success: function(data) {
+          var blob=new Blob([data]);
+          var link=document.createElement('a');
+          link.href=window.URL.createObjectURL(blob);
+          link.download="Resultados_EstudioSeguridad_"+cod_estseg+".zip";
+          link.click();
+        },
+        complete: function() {
+            swal.close();
+        },
+      });
 }
 
 function viewPdf(elemento){

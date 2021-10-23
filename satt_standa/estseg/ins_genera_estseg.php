@@ -30,6 +30,9 @@
           case 'formEstSeguridad':
               self::mostrarFormularioEstSeguridad();
               break;
+          case 'downloadZip':
+                self::downloadZip();
+                break;
           default:
               self::principal();
           }
@@ -111,7 +114,40 @@
             ';
         }
 
+        private function downloadZip(){
+          $rut_general = dirname(dirname(__DIR__)).'/satt_faro/files/adj_estseg/';
+          $cod_estseg = $_REQUEST['cod_estseg'];
+          $con_wherex = ' a.cod_estseg = "'.$cod_estseg.'"';
+          $temp_name = $cod_estseg.'_'.time().'.zip';
+          $archive_file_name=$rut_general.''.$temp_name;
 
+          $zip = new ZipArchive();
+          $zip->open($archive_file_name,ZipArchive::CREATE);
+          $nom_documen = array('Licencia_del_vehiculo', 'Tarjeta_de_propiedad_del_trailer', 'Tecnomecanica', 'Soat', 'Licencia_de_transito_conductor', 'Documento_del_propietario', 'Documento_del_conductor', 'Licencia_del_conductor', 'Planilla_de_seguridad social', 'Registro_fotografico_vehiculo', 'Poliza_extracontractual');
+          $nom_campoxs = array('fil_licveh', 'fil_tartra', 'fil_tecmec', 'fil_soatxx', 'fil_litcon', 'fil_cedpro', 'fil_cedcon', 'fil_liccon', 'fil_plsegs', 'fil_regveh', 'fil_polext');
+          foreach($nom_campoxs as $key=>$campo){
+            $sql = "SELECT a.".$campo."
+                  FROM ".BASE_DATOS.".tab_estudi_docume a
+                WHERE ".$con_wherex." ";
+            $resultado = new Consulta($sql, $this->conexion);
+            $resultados = $resultado->ret_matriz('a');
+            if(count($resultados) > 0 && ($resultados[0][$campo] != NULL || $resultados[0][$campo] != '')){
+              $ext = explode(".", ($resultados[0][$campo]));
+              $zip->addFile($rut_general.''.$resultados[0][$campo],$cod_estseg.'_'.$nom_documen[$key].'.'.end($ext));
+            }
+          }
+          $zip->close();
+          header("Cache-Control: public");
+          header("Content-Description: File Transfer");
+          header("Content-Disposition: attachment; filename=$temp_name");
+          header("Content-Type: application/zip");
+          header("Content-Transfer-Encoding: binary");
+          
+          // Read the file
+          readfile($archive_file_name);
+          unlink($archive_file_name);
+          exit;
+        }
         
         /*! \fn: filtros
 		   *  \brief: Crea el html de las tablas filtros y segmentos del modulo
@@ -247,6 +283,7 @@
                                 '.$this->nuevaSolicitudModal().'
                                 '.$this->procesoSolicitudModal().'
                                 '.$this->modalVisualizarPDF().'
+                                '.$this->modalVisualizarDocuments().'
                 </td>
             </tr>
                                                 ');
@@ -403,6 +440,7 @@
                         '.$this->modalPreGuardadoF1().'
                         '.$this->modalPreGuardadoF2().'
                         '.$this-> modalInfoSolicitudPreview($info).'
+                        '.$this->modalRegistrarOperadoresGps().'
                         <div class="card style="margin:15px;">
                           <div class="card-header color-heading text-center">
                             Diligenciar estudio de seguridad
@@ -507,7 +545,7 @@
                                   <div class="col-3 form-group">
                                       <label for="nom_soliciID" class="labelinput">
                                         <div class="obl">*</div>
-                                        De:
+                                        Ciudad de expedición::
                                       </label>
                                       <input class="form-control form-control-sm" type="text" sol placeholder="De" id="lug_exppos" name="lug_exppos" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_exppos']).'" sol="true">
                                       <div id="lug_exppos-suggestions" class="suggestions" style="top: 50px !important;"></div>
@@ -706,7 +744,7 @@
                               <div class="col-3 form-group">
                                   <label for="nom_soliciID" class="labelinput">
                                     <div class="obl">*</div>
-                                    De:
+                                    Ciudad de expedición:
                                   </label>
                                   <input class="form-control form-control-sm" type="text" placeholder="De" id="lug_exppro" name="lug_exppro" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_exppro']).'" sol="true">
                                   <div id="lug_exppro-suggestions" class="suggestions" style="top: 50px !important;"></div>
@@ -995,8 +1033,8 @@
                               <div class="row">
                                   <div class="col-4 form-group">
                                     <label for="nom_soliciID" class="labelinput">
-                                      <div class="obl">*</div>
-                                      Operador GPS:
+                                      <div class="obl">*</div>Operador GPS:
+                                      <button type="button" class="btn btn-info btn-sm"  data-toggle="modal" data-target="#modalregOpeGps"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
                                     </label>
                                     <select class="form-control form-control-sm req" id="cod_opegpsID" name="cod_opegps">
                                     '.$this->getCodOpeGPS($info['cod_opegps']).'
@@ -1173,16 +1211,16 @@
 
                               <div class="row">
                                 <div class="col-3">
-                                  <label class="form-check-label labelinput" for="exampleCheck1">Estudio de seguridad aprobado </label>
+                                  <label class="form-check-label labelinput" for="exampleCheck1">Estudio de seguridad:</label>
                                 </div>
                                 <div class="col-9">
                                   <div class="form-check form-check-inline">
                                     <input class="form-check-input req" type="radio" name="ind_estudi" id="ind_estudi1" value="A">
-                                    <label class="form-check-label" for="inlineRadio1">Si</label>
+                                    <label class="form-check-label" for="inlineRadio1">Recomendado</label>
                                   </div>
                                   <div class="form-check form-check-inline">
                                     <input class="form-check-input req" type="radio" name="ind_estudi" id="ind_estudi2" value="R">
-                                    <label class="form-check-label" for="inlineRadio2">No</label>
+                                    <label class="form-check-label" for="inlineRadio2">No Recomendado</label>
                                   </div>
                                 </div>
                               </div>
@@ -1219,7 +1257,7 @@
           $llave = $cod_person.'_'.$tip_refere.'_'.$cod_identi;
           $referen = $this->getReferenciasFyP($cod_person, $tip_refere,$cod_identi);
           $html.='
-          <div class="row">
+          <div class="row" style="overflow: auto;">
              <div class="col-12">
                 <table class="table table-bordered">
                   <thead>
@@ -1228,6 +1266,7 @@
                       <th scope="col">Parentesco</th>
                       <th scope="col">Direccion</th>
                       <th scope="col">Teléfono</th>
+                      <th scope="col">Observación</th>
                       <th scope="col">Opciones</th>
                     </tr>
                   </thead>
@@ -1256,6 +1295,12 @@
           <div class="col-3">
             <label for="nom_soliciID" class="labelinput">Telefono:</label>
             <input class="form-control form-control-sm Req_ReferenceFyP" type="text" id="num_telefoID_'.$llave.'" name="num_telefo_'.$llave.'">
+          </div>
+        </div>
+        <div class="row mt-2">
+          <div class="col-7">
+            <label class="labelinput" for="obs_refereID">Observacion:</label>
+            <textarea class="form-control Req_ReferenceFyP" id="obs_refereID_'.$llave.'" name="obs_refere_'.$llave.'" rows="2"></textarea>
           </div>
         </div>
 
@@ -1576,7 +1621,7 @@
                 <input class="form-control form-control-sm req num" type="text" id="num_docconID" name="num_doccon" value="'.$info['num_doccon'].'">
               </div>
               <div class="col-3 form-group">
-                <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>De:</label>
+                <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedición:</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_expcon" name="lug_expcon" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_expcon']).'">
                 <div id="lug_expcon-suggestions" class="suggestions" style="top: 50px !important;"></div>
               </div>
@@ -2058,7 +2103,8 @@
                     b.cod_parent,
                     b.nom_parent,
                     b.dir_domici,
-                    b.num_telefo
+                    b.num_telefo,
+                    b.obs_refere
               FROM ".BASE_DATOS.".tab_person_refere a 
               INNER JOIN ".BASE_DATOS.".tab_estseg_refere b ON a.cod_refere = b.cod_refere
             WHERE a.cod_person = '".$cod_person."' AND a.tip_refere = '".$tip_refere."'";
@@ -2075,6 +2121,7 @@
                         <td>'.utf8_decode($resultado['nom_parent']).'</td>
                         <td>'.$resultado['dir_domici'].'</td>
                         <td>'.$resultado['num_telefo'].'</td>
+                        <td>'.$resultado['obs_refere'].'</td>
                         <td class="text-center"><button type="button" class="btn btn-danger btn-sm" onclick="borrarReferenciaFyP(`'.$resultado['cod_refere'].'`,`'.$cod_person.'`,this)"><i class="fa fa-trash" aria-hidden="true"></i></button></td>
                       </tr>';
           }
@@ -2361,11 +2408,9 @@
                     </div>
                   </div>
                   <div class="row" style="margin-bottom:40px;">
-
                     <div class="col-12 text-center">
                       <img src="../satt_standa/imagenes/pdf-icon.png" id="btn-pdf" width="40px" onclick="viewPdf(this)">
                     </div>
-
                   </div>
                   <div class="row mt-3 mb-3 color-heading">
                     <div class="col-12 text-center"><h6>Enviar archivo</h6></div>
@@ -2390,6 +2435,56 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary secondary-color btn-sm" id="btn-atrasPDF" onclick="atrasModalViewPdf(this)">Atras</button>
+                </div>
+            </div>
+            
+          </div>
+        </div>';
+        return $html;
+      }
+
+      private function modalVisualizarDocuments(){
+        $html = '<!-- Modal Visualizar Documentos-->
+        <div class="modal fade" id="visualizarDocumentos" role="dialog" style="overflow-y: auto;">
+          <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 id="title-modal-viewDocuments" class="modal-title text-center"></h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+              </div>
+                <div class="modal-body">
+                  <div class="row mt-3 mb-3 color-heading">
+                    <div class="col-12 text-center"><h6>Documentos cargados</h6></div>
+                  </div>
+                  <div class="row ml-2">
+                    <table class="table table-bordered" style="width:97%">
+                          <thead>
+                            <tr class="bk-green">
+                              <th scope="col">Documento</th>
+                              <th scope="col">Observación</th>
+                              <th scope="col">Descargar</th>
+                            </tr>
+                          </thead>
+                          <tbody id="tbody_document">
+                          </tbody>
+                    </table>
+                  </div>
+
+                  <div class="row">
+                    <div class="col-12 text-center">
+                      <p style="margin-bottom:2px; color: #525252;">Descargar Zip</p>
+                    </div>
+                  </div>
+                  <div class="row" style="margin-bottom:40px;">
+                    <div class="col-12 text-center">
+                      <a class="btn btn-warning btn-sm" id="generaZip"><i class="fa fa-download" aria-hidden="true"></i></a>
+                    </div>
+                  </div>
+
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary secondary-color btn-sm" id="btn-atrasDocuments" onclick="atrasModalViewDocuments(this)">Atras</button>
                 </div>
             </div>
             
@@ -2489,6 +2584,74 @@
       </div>';
       return $html;
   }
+
+  private function modalRegistrarOperadoresGps(){
+    $html = '<!-- Modal Registrar Operadores GPS-->
+    <div class="modal fade" id="modalregOpeGps" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 id="title-modal-preF1" class="modal-title text-center">Registrar Operador GPS</h5>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+            <form id="regOpeGPS">
+            <div class="modal-body">
+              <div class="container">
+                <div class="row">
+                  <div class="col-5 form-group">
+                    <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombre del Operador:</label>
+                    <input class="form-control form-control-sm req" type="text" placeholder="Nombre del Operador" id="nom_operadID" name="nom_operad" required>
+                  </div>
+                  <div class="col-7 form-group">
+                    <label for="url_gpsxxxID" class="labelinput"><div class="obl">*</div>Url del Operador:</label>
+                    <input class="form-control form-control-sm req" type="text" placeholder="Url del operador" id="url_gpsxxxID" name="url_gpsxxx" required>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-3 form-group">
+                    <label for="nit_operadID" class="labelinput"><div class="obl">*</div>Nit del Operador:</label>
+                    <input class="form-control form-control-sm req" type="text" placeholder="Nit" id="nit_operadID" name="nit_operad" required>
+                  </div>
+                  <div class="col-2 form-group">
+                    <label for="nit_verifiID" class="labelinput">DIV:</label>
+                    <input class="form-control form-control-sm" type="text" id="nit_verifiID" name="nit_verifi">
+                  </div>
+                </div>
+
+                <div class="row ml-3 mt-3">
+                  <div class="col-6">
+                    <input class="form-check-input" type="checkbox" id="ind_usaidxID" value="1" name="ind_usaidx">
+                    <label class="form-check-label pt-1" for="ind_usaidxID" style="font-size:14px;"> Aplica ID</label>
+                  </div>
+                  <div class="col-6">
+                    <input class="form-check-input" type="checkbox" id="ind_cronxxID" value="1" name="ind_cronxx">
+                    <label class="form-check-label pt-1" for="ind_cronxxID" style="font-size:14px;"> Intregrado con CRON</label>
+                  </div>
+                </div>
+                <div class="row ml-3 mt-3">
+                  <div class="col-6">
+                    <input class="form-check-input" type="checkbox" id="ind_rndcxxID" value="1" name="ind_rndcxx">
+                    <label class="form-check-label pt-1" for="ind_rndcxxID" style="font-size:14px;"> Reporta RNDC</label>
+                  </div>
+                  <div class="col-6">
+                    <input class="form-check-input" type="checkbox" id="ind_intgpsID" value="1" name="ind_intgps">
+                    <label class="form-check-label pt-1" for="ind_intgpsID" style="font-size:14px;"> Intregrado GPS</label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary secondary-color btn-sm" data-dismiss="modal">Cerrar</button>
+              <button type="button" onclick="guardarGPS()" class="btn btn-success btn-sm">Registrar</button>
+            </div>
+        </div>
+        </form>
+      </div>
+    </div>';
+    return $html;
+}
 
     private function modalInfoSolicitudPreview($info){
       $html = '<!-- Modal Proceso de Solicitud-->

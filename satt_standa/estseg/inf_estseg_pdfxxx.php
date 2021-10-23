@@ -146,6 +146,7 @@ class PDFInformeEstudioSeguridad extends PDF
   function pdfResultadosEstudio(){
     $info = $this -> getDataEstudio($_REQUEST['cod_estseg']);
     /* CREACION PDF */
+    
     ob_clean();
     $_IN_X = 10;
     $_IN_Y = 5;
@@ -154,7 +155,6 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf = new PDF();
     $pdf -> AddPage('P','Legal');
     
-
     $pdf -> SetFont('Arial','B',7);
     $pdf -> SetFillColor(180, 181, 179);
     $pdf -> Cell(39,6,utf8_decode('Motivo Apertura Hoja de Vida:'),1,0,'C',1);
@@ -411,7 +411,7 @@ class PDFInformeEstudioSeguridad extends PDF
     $txt="AUTORIZACION: Yo, ............................................................................, mayor de edad, identificado con la cédula de ciudadanía número ................................, de ......................................, en calidad de propietario del vehículo de placas XXX-000, AUTORIZO al conductor ya identificado,, para que CEVA FREIGH MANANGMENT SAS, entregue o consigne las sumas correspondientes a saldos y/o pagos de los servicios por concepto de prestación de servicios de transporte terrestre por carretera a esta sociedad.
     Autoriza,                                                            Acepta,";
     $pdf -> MultiCell(196,5,utf8_decode($txt) ,1, 'J',0);
-
+    
     $pdf -> AddPage('P','Legal');
     $img_estcon = $this->getImagenesPerson($info['cod_conduc']);
     $rut_general = URL_APLICA.'files/adj_estseg/';
@@ -570,7 +570,7 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estveh['fil_compar'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
     $pdf -> SetWidths(array(98,98));
     $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estveh['obs_runtxx']),utf8_decode('OBSERVACIÓN: '.$img_estveh['obs_compar'])));
-
+    
     
     $_PDF = 'Resultados_EstudioSeguridad_'.$mData['cod_estseg'].'.pdf';
     $pdf -> Close();
@@ -658,136 +658,6 @@ class PDFInformeEstudioSeguridad extends PDF
     $resultados = $query -> ret_matriz('a')[0];
     return $resultados;
     
-    /*
-    $mSelect = "SELECT '', b.nom_tercer, b.cod_tercer,
-                       b.num_verifi, b.dir_domici, b.num_telef1,
-                       c.nom_ciudad, b.num_telef1, b.num_telef2
-                  FROM ".BASE_DATOS.".tab_tercer_tercer b,
-                       ".BASE_DATOS.".tab_genera_ciudad c
-                 WHERE b.cod_tercer = '".$mCodTransp."' 
-                   AND b.cod_ciudad = c.cod_ciudad";
-
-    $consulta = new Consulta( $mSelect, $this -> conexion );
-    $obsplan = $consulta -> ret_arreglo();
-
-    $query = "SELECT a.cod_manifi, a.cod_ciuori, a.cod_ciudes,
-                     DATE_FORMAT(b.fec_salipl,'%Y-%m-%d %H:%i'),
-                     b.num_placax, h.nom_marcax, i.ano_modelo, j.nom_colorx,
-                     k.nom_carroc, d.nom_tercer, b.cod_conduc, c.num_licenc,
-                     e.nom_catlic, d.num_telmov, d.dir_ultfot, i.dir_fotfre,
-                     IF(a.num_carava='0','Sin Caravana',a.num_carava),
-                     DATE_FORMAT(b.fec_llegpl,'%Y-%m-%d %H:%i'),
-                     a.obs_despac, m.nom_lineax, d.nom_apell1, d.nom_apell2, 
-                     b.cod_agenci, b.nom_conduc, a.con_telmov, 
-                     z.nom_tipdes
-                FROM ".BASE_DATOS.".tab_despac_despac a,
-                     ".BASE_DATOS.".tab_despac_vehige b,
-                     ".BASE_DATOS.".tab_tercer_tercer d,
-                     ".BASE_DATOS.".tab_genera_marcas h,
-                     ".BASE_DATOS.".tab_vehicu_vehicu i,
-                     ".BASE_DATOS.".tab_vehige_colore j,
-                     ".BASE_DATOS.".tab_vehige_carroc k,
-                     ".BASE_DATOS.".tab_vehige_lineas m,
-                     ".BASE_DATOS.".tab_genera_tipdes z,
-                     ".BASE_DATOS.".tab_tercer_conduc c 
-           LEFT JOIN ".BASE_DATOS.".tab_genera_catlic e 
-                  ON c.num_catlic = e.cod_catlic 
-               WHERE b.cod_conduc = c.cod_tercer AND
-                     a.num_despac = b.num_despac AND
-                     a.cod_tipdes = z.cod_tipdes AND
-                     d.cod_tercer = c.cod_tercer AND
-                     b.num_placax = i.num_placax AND
-                     h.cod_marcax = i.cod_marcax AND
-                     i.cod_colorx = j.cod_colorx AND
-                     i.cod_carroc = k.cod_carroc AND
-                     i.cod_lineax = m.cod_lineax AND
-                     i.cod_marcax = m.cod_marcax AND
-                     a.num_despac = '".$num_despac."'";
-    
-    $consulta = new Consulta($query, $this -> conexion);
-    $matriz = $consulta -> ret_matriz();
-      
-
-    $query = "SELECT a.num_trayle
-                FROM ".BASE_DATOS.".tab_despac_vehige a
-               WHERE a.num_despac = ".$num_despac."";
-
-    $consec = new Consulta($query, $this -> conexion);
-    $trayler = $consec -> ret_matriz();
-
-    $query = "SELECT a.val_multpc,a.obs_planru
-              FROM ".BASE_DATOS.".tab_config_parame a";
-
-    $consec = new Consulta($query, $this -> conexion);
-    $paramet = $consec -> ret_matriz();
-    
-    $ciudad_o = $this -> getCiudad( $matriz[0][1] );
-    $ciudad_d = $this -> getCiudad( $matriz[0][2] );
-    
-    $mSelect = "SELECT rut_format, rut_anexox, obs_adicio, 
-                         ind_pdfxxx, rut_pdfxxx, dir_logoxx, 
-                         ind_telage, ind_segpue, lim_anexox,
-                         cam_especi
-                    FROM ".BASE_DATOS.".tab_config_planru 
-                   WHERE cod_transp = '".$mCodTransp."'
-                     AND ind_activo = '1'";
-    $consult = new Consulta( $mSelect, $this -> conexion );
-    $ind_forpro = $consult -> ret_matriz();
-    $_FORMAT = $ind_forpro[0];
-    
-    
-    
-    if( $_FORMAT['ind_telage'] == '0' )
-      $e4 = "Tel�fonos: ".$obsplan[7]." / ".$obsplan[8];
-    else
-    {
-      $query = "SELECT tel_agenci 
-                  FROM ".BASE_DATOS.".tab_genera_agenci
-                 WHERE cod_agenci = '".$matriz[0]['cod_agenci']."'";
-
-      $consec = new Consulta($query, $this -> conexion);
-      $telef = $consec -> ret_matriz();
-      $telef = $telef[0][0];
-      $e4 = "Tel�fono: ".$telef;
-    }
-    
-    // echo "<pre>";
-    // print_r( $matriz[0] );
-    // echo "</pre>";
-    
-    $_DATA = array();
-    $_DATA['nom_transp'] = $obsplan[1];
-    $_DATA['nit_transp'] = "NIT: ".$obsplan[2]."-".$obsplan[3];
-    $_DATA['dir_transp'] = "Direcci�n: ".$obsplan[4]." / ".$obsplan[6];
-    $_DATA['tel_transp'] = $e4;
-    $_DATA['dir_logoxx'] = file_exists( "../../".NOM_URL_APLICA."/". $_FORMAT['dir_logoxx'] ) && $_FORMAT['dir_logoxx'] != '' ? NOM_URL_APLICA."/". $_FORMAT['dir_logoxx'] :  NOM_URL_APLICA."imagenes/logo.gif";
-    $_DATA['img_conduc'] = file_exists( "../../".NOM_URL_APLICA."/". URL_CONDUC . $matriz[0][14] ) && $matriz[0][14] != '' ? NOM_URL_APLICA."/". URL_CONDUC . $matriz[0][14] :  DIR_APLICA_CENTRAL."/imagenes/conduc.jpg";
-    $_DATA['img_vehicu'] = file_exists( "../../".NOM_URL_APLICA."/". URL_VEHICU . $matriz[0][15] ) && $matriz[0][15] != '' ? NOM_URL_APLICA."/". URL_VEHICU . $matriz[0][15] :  DIR_APLICA_CENTRAL."/imagenes/vehicu.gif";
-    $_DATA['num_despac'] = $num_despac;
-    $_DATA['cod_manifi'] = $matriz[0][0];
-    $_DATA['nom_ciuori'] = $ciudad_o[0][1];
-    $_DATA['nom_ciudes'] = $ciudad_d[0][1];
-    $_DATA['fec_salpla'] = $matriz[0][3];
-    $_DATA['num_placax'] = $matriz[0][4];
-    $_DATA['nom_marcax'] = $matriz[0][5];
-    $_DATA['num_modelo'] = $matriz[0][6];
-    $_DATA['num_colorx'] = $matriz[0][7];
-    $_DATA['cod_carroc'] = $matriz[0][8];
-    $_DATA['nom_conduc'] = $matriz[0]['nom_conduc'] ? $matriz[0]['nom_conduc'] : $matriz[0][9]." ".$matriz[0][20]." ".$matriz[0][21];
-    $_DATA['num_conduc'] = $matriz[0][10];
-    $_DATA['lic_conduc'] = $matriz[0][11];
-    $_DATA['cat_liccon'] = $matriz[0][12];
-    $_DATA['con_telmov'] = $matriz[0]['con_telmov'] ? $matriz[0]['con_telmov'] : $matriz[0][13];
-    $_DATA['obs_despac'] = $paramet[0][1] != '' ? $paramet[0][1]."\n". $matriz[0][18].$_FORMAT['obs_adicio'] : $matriz[0][18].$_FORMAT['obs_adicio'];
-    $_DATA['nom_tipdes'] = $matriz[0]['nom_tipdes'];
-    $_DATA['fec_llegpl'] = $matriz[0][17];
-    $_DATA['val_multax'] = number_format($paramet[0][0]);
-    $_DATA['num_remolq'] = $trayler[0][0];
-    $_DATA['nom_lineax'] = $matriz[0][19];
-    $_DATA['pue_contro'] = $_SESSION['mat'];
-
-    return $_DATA;
-    */
   }
   
   function getCiudad( $ciudad )
