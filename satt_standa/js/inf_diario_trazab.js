@@ -21,9 +21,33 @@ function ShowSection( fIndex )
 function SelectTrasnp()
 {
   var transp = document.form_item.cod_transp.value;
-  document.form_item.option.value = '';
-  document.form_item.submit();
+  //document.form_item.option.value = '';
+  //document.form_item.submit();
   //alert(transp);
-  
+  var standa = "satt_standa";
+  var parametros = "option=getGenera&cod_transp="+transp+"&ajax=on";
+  $.ajax({
+      url: "../" + standa + "/inform/inf_diario_trazab.php?" + parametros,
+      async: false,
+      type: "POST",
+      dataType: "html",
+      
+      success: function(data) {
+        console.log(data);
+          $('#generadorDivID').empty();
+
+          $('#generadorDivID').html(data);
+          $('#generadorDivID').attr('style','height:20px');
+          
+          
+
+          $("#generadorID").multiselect();
+          $('#generadorID_input').attr('style','height:20px;width:70%');
+          $('#generadorID_input').attr("autocomplete","off");
+          $('.multiselect-dropdown-arrow').attr('style','margin-top:9px');
+        }
+    });
+
+
 }
 

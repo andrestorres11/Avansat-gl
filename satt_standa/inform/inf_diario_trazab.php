@@ -8,7 +8,8 @@
  *  \bug: 
  *  \warning: 
  */
-
+/*ini_set('display_errors', false);
+error_reporting(E_ALL & ~E_NOTICE);*/
 class Informe
 {
   var $conexion = NULL;
@@ -16,9 +17,22 @@ class Informe
  
   function __construct( $conexion, $cod_aplica )
   {
-    $this -> conexion = $conexion;
-    $this -> cod_aplica = $cod_aplica;
-    switch( $_REQUEST[option] )
+    if($_REQUEST['ajax']=="on"){
+      include '../lib/ajax.inc';
+      include '../lib/general/constantes.inc';
+      $this -> conexion = $AjaxConnection;
+      $this -> cod_aplica=COD_APLICACION;
+      @include_once( '../'.DIR_APLICA_CENTRAL.'/lib/general/functions.inc' );
+    }else{
+      $this -> conexion = $conexion;
+      $this -> cod_aplica = $cod_aplica;
+    }
+    if($_REQUEST['ajax']=="on"){
+      $option =$_REQUEST[option];
+    }else{
+      $option=$_POST[option];
+    }
+    switch( $option )
     {     
       case "buscar":
         $this -> Buscar();
@@ -27,7 +41,11 @@ class Informe
       case "xls":
         $this -> Excel();
       break;
-      
+
+      case "getGenera":
+        $this -> getGenera();
+      break;
+
       default:
         $this -> Filtros();
       break;
@@ -57,7 +75,14 @@ class Informe
     echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_diario_trazab.js\"></script>\n";
     
 		echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
+    
+    //Multiselect css
+    echo '<link href="../' . DIR_APLICA_CENTRAL . '/js/lib/multiselect/styles/multiselect.css" rel="stylesheet">';
 		
+    //Multiselect js
+    echo '<script src="../' . DIR_APLICA_CENTRAL . '/js/multiselect/jquery.multiselect.js"></script>';
+    echo '<script src="../' . DIR_APLICA_CENTRAL . '/js/lib/multiselect/multiselect.min.js"></script>';
+
 		echo '
           <script>
           $(function() 
@@ -115,9 +140,13 @@ class Informe
     $formulario -> lista ("Origen: ","cod_ciuori",$this -> getOrigen(),0,$_POST[cod_ciuori] );
     $formulario -> lista ("Destino: ","cod_ciudes",$this -> getDestino(),1,$_POST[cod_ciudes] );
     $formulario -> lista ("Tipo Despacho: ","cod_tipdes",$this -> getTipdes(),0,$_POST[cod_tipdes] );
-    $formulario -> lista ("Generador: ","cod_genera",$this -> getGenera($_POST[cod_transp]),1,$_POST[cod_genera] );
-    $formulario -> texto ( "Fecha Inicio:", "text", "fec_incial\" id=\"fec_incialID", 0, 10, 10, "", $_POST[fec_incial], "", "", NULL);
-		$formulario -> texto ( "Fecha Final:", "text", "fec_finali\" id=\"fec_finaliID", 0, 10, 10, "", $_POST[fec_finali], "", "", NULL);	
+    $formulario -> OpenDiv ("id:generadorDiv; height:20px; width:90%;", "Generador:");
+    $formulario -> CloseDiv (1);
+    //$formulario -> lista ("Generador: ","cod_genera",$this -> getGenera($_POST[cod_transp]),1,$_POST[cod_genera] );
+    $formulario -> lista ("Estado Despachos: ","est_despac",$this -> getEstado(),1,$_POST[est_despac] );
+    $formulario -> texto ("Fecha Inicio:", "text", "fec_incial\" id=\"fec_incialID", 0, 10, 10, "", $_POST[fec_incial], "", "", NULL);
+		$formulario -> texto ("Fecha Final:", "text", "fec_finali\" id=\"fec_finaliID", 0, 10, 10, "", $_POST[fec_finali], "", "", NULL);	
+    
     
    
     $formulario -> nueva_tabla();
@@ -205,6 +234,19 @@ class Informe
    */
   function getInforme()
   {
+    $generadores ="";
+    foreach ($_POST['cod_genera'] as  $generador) {
+      $generadores .=$generador.",";
+    }
+    $generadores= rtrim($generadores, ",");
+
+    $estado= "";
+    if($_POST['est_despac'] == 1){
+      $estado = 'AND (a.fec_llegad IS NULL OR a.fec_llegad = "0000-00-00 00:00:00" )';
+    }else{
+      $estado = 'AND (a.fec_llegad IS NOT NULL OR a.fec_llegad != "0000-00-00 00:00:00" )';
+    }
+
     $datos_usuario =  $_SESSION[datos_usuario];
     $anidado = "( SELECT MAX( aa.fec_alarma ) 
             FROM ".BASE_DATOS.".tab_despac_seguim aa
@@ -223,7 +265,13 @@ class Informe
                      UPPER((SELECT nom_tercer FROM tab_tercer_tercer WHERE d.cod_transp = cod_tercer)) AS nom_tercer,
 										 o.num_solici, o.num_pedido,
                      IF(p.fec_citcar IS NULL OR p.fec_citcar = '0000-00-00', a.fec_citcar, p.fec_citcar) AS fec_citcar, 
-                     IF(p.hor_citcar IS NULL OR p.hor_citcar = '00:00:00', a.hor_citcar, p.hor_citcar) AS hor_citcar, r.abr_tercer As nom_genera 
+                     IF(p.hor_citcar IS NULL OR p.hor_citcar = '00:00:00', a.hor_citcar, p.hor_citcar) AS hor_citcar, r.abr_tercer As nom_genera, 
+                     IF(m.abr_remite IS NULL, 'NO REGISTRA', m.abr_remite) AS abr_remite,
+                     IF(m.abr_destin IS NULL, 'NO REGISTRA', m.abr_destin) AS abr_destin,
+                     IF(m.val_pesoxx IS NULL, 'NO REGISTRA', m.val_pesoxx) AS val_pesoxx,
+                     IF(m.val_volume IS NULL, 'NO REGISTRA', m.val_volume) AS val_volume,
+                     m.des_mercan,
+                     m.cod_remesa
               FROM " . BASE_DATOS . ".tab_despac_seguim b,
                    " . BASE_DATOS . ".tab_despac_vehige d,
                    " . BASE_DATOS . ".tab_tercer_tercer e,
@@ -237,12 +285,15 @@ class Informe
                 ON a.num_despac = p.num_dessat
          LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer r
                 ON r.cod_tercer = a.cod_client
+          LEFT JOIN " . BASE_DATOS . ".tab_despac_remesa m
+                ON m.num_despac = a.num_despac
              WHERE a.num_despac = d.num_despac AND
                    a.num_despac = b.num_despac AND
                    d.cod_conduc = e.cod_tercer AND
                    d.cod_transp = f.cod_tercer AND
                    
-                   a.fec_salida Is Not Null AND
+                   a.fec_salida Is Not Null 
+                   ".$estado." AND
                    a.fec_llegad IS NULL AND
                    a.ind_anulad = 'R' AND 
                    a.ind_planru = 'S' AND
@@ -257,14 +308,14 @@ class Informe
     
     if( $_POST[cod_ciudes] ) $query .= " AND a.cod_ciudes = '$_POST[cod_ciudes]' ";
     
-    if( $_POST[cod_genera] ) $query .= " AND a.cod_client = '$_POST[cod_genera]' ";
+    if( count($_POST[cod_genera])>0 ) $query .= " AND a.cod_client IN ($generadores) ";
     
     if( $_POST[cod_tipdes] ) $query .= " AND a.cod_tipdes = '$_POST[cod_tipdes]' ";
     
     if( $_POST[fec_incial] != '' && $_POST[fec_finali] != ''  ) 
       $query .= " AND a.fec_despac BETWEEN '".$_POST[fec_incial]." 00:00:00' AND '".$_POST[fec_finali]." 23:59:59' ";
     
-    echo "<div style='display:none;'>$query</div>";
+    echo "<div name='query' style='display:none;'>$query</div>";
     
 	if ($datos_usuario["cod_perfil"] == "")
     {
@@ -369,11 +420,17 @@ class Informe
     $html .= "<td class=celda_titulo rowspan=2 >Despacho</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Transportadora</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Generador</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Remitente</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Destinatario</td>";
     $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Salida</td>";
     $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Cita Cargue</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Origen</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Destino</td>";
     $html .= "<td class=celda_titulo rowspan=2 >No. Pedido</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >No. Remesa</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Peso</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Volumen</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Productos</td>";
     $html .= "<td class=celda_titulo rowspan=2 >No. Solicitud</td>";
     $html .= "<td class=celda_titulo colspan=3 >Estimado de Llegada</td>";  
     $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
@@ -436,6 +493,8 @@ class Informe
       $html .= "<td height='50px' class=celda_info nowrap>$row[0]</td>";                               // Número despacho
       $html .= "<td height='50px' class=celda_info nowrap>$row[10]</td>";                              // nombre Transportadora
       $html .= "<td height='50px' class=celda_info nowrap>".$row['nom_genera']."</td>";                // nombre Generador
+      $html .= "<td height='50px' class=celda_info nowrap>".$row['abr_remite']."</td>";                // nombre Remitente
+      $html .= "<td height='50px' class=celda_info nowrap>".$row['abr_destin']."</td>";                // nombre Destinatario
       $html .= "<td height='50px' class=celda_info nowrap>".$fec_sal[0]."</td>";                       // Fecha salida
       $html .= "<td height='50px' class=celda_info nowrap>".$fec_sal[1]."</td>";                       // Hora salida
       $html .= "<td height='50px' class=celda_info nowrap>".$fec_cit[0]."</td>";                       // Fecha cita cargue
@@ -443,6 +502,10 @@ class Informe
       $html .= "<td height='50px' class=celda_info nowrap>$row[2]</td>";                               // Origen
       $html .= "<td height='50px' class=celda_info nowrap>$row[3]</td>";                               // Destino
       $html .= "<td height='50px' class=celda_info nowrap>$row[num_pedido]</td>";                      // Pedido
+      $html .= "<td height='50px' class=celda_info nowrap>$row[cod_remesa]</td>";                      // Solicitud
+      $html .= "<td height='50px' class=celda_info nowrap>$row[val_pesoxx]</td>";                      // Peso
+      $html .= "<td height='50px' class=celda_info nowrap>$row[val_volume]</td>";                      // Volumen
+      $html .= "<td height='50px' class=celda_info nowrap>$row[des_mercan]</td>";                      // Producto
       $html .= "<td height='50px' class=celda_info nowrap>$row[num_solici]</td>";                      // Solicitud
       $html .= "<td height='50px' class=celda_info nowrap>".$fec_lle[0]."</td>";                       // Fecha llegada 
       $html .= "<td height='50px' class=celda_info nowrap>".$row[8]."</td>";                           // Duración Dias desde salida a llegada
@@ -681,10 +744,17 @@ class Informe
     $select = array_merge( array( array( "", "---" ) ), 
               $select -> ret_matriz( "i" ) );
     
-    return $select;
+              return $select;
   }
   
-  function getGenera($cod_transp)
+  function getEstado(){
+    
+
+     $val =array( array( 0 => 1, 1 => 'Transito'), array( 0=>2, 1 => 'Finalizado') );
+     return $val; 
+  }
+
+  function getGenera()
   {
     $select = "SELECT b.cod_tercer,
                       b.abr_tercer
@@ -697,14 +767,26 @@ class Informe
                    a.num_despac = c.num_despac AND
                    a.fec_salida Is Not Null AND
                    a.fec_llegad IS NULL AND
-                   a.ind_anulad = 'R' AND                               
-                   c.cod_transp = '$cod_transp'
+                   a.ind_anulad = 'R'
+                   AND c.cod_transp = ".$_REQUEST['cod_transp']."
                    GROUP BY 1 ORDER BY 2";
-    $select = new Consulta( $select, $this -> conexion );
-    $select = array_merge( array( array( "", "---" ) ), 
-    $select -> ret_matriz( "i" ) );
+    //$select = new Consulta( $select, $this -> conexion );
+    //$select = array_merge( array( array( "", "---" ) ), 
+    //$select -> ret_matriz( "i" ) );
+    $consulta = new Consulta( $select, $this->conexion );
+    $mGeneradores = $consulta->ret_matriz('a');
+    $html ='
+    <select id="generadorID" multiple name="cod_genera[]" disable>';
+    foreach ($mGeneradores as $generador) {
+      $html .= '
+      <option value="'.$generador['cod_tercer'].'">'.$generador['abr_tercer'].'</option>';  
+    }
 
-    return $select;
+    $html .='</select>';
+
+    echo utf8_encode($html);
+
+    //return $select;
   }
 
   function getAutorizacionUsuario()
@@ -726,6 +808,10 @@ class Informe
   }
   
 }
+if($_REQUEST['ajax']=="on"){
+  $solicitud = new Informe( NULL, NULL );
+}else{
+  $pagina = new Informe( $this -> conexion , $this-> codigo);
+}
 
-$pagina = new Informe( $this -> conexion , $this-> codigo);
 ?>
