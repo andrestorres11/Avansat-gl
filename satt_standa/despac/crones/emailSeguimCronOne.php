@@ -1,17 +1,17 @@
 <?php
-include ("/var/www/html/ap/generadores/satt_standa/lib/general/constantes.inc"); //Produccion
+include ("/var/www/html/ap/satt_standa/lib/general/constantes.inc"); //Produccion
 //include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/constantes.inc"); //Dev
 
-include (URL_ARCHIV_STANDA."/generadores/satt_faro/constantes.inc"); //Produccion
+include ("/var/www/html/ap/satt_faro/constantes.inc"); //Produccion
 //include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_faro/constantes.inc"); //Dev
 
-include (URL_ARCHIV_STANDA."/generadores/satt_standa/lib/general/conexion_lib.inc"); //Produccion
+include ("/var/www/html/ap/satt_standa/lib/general/conexion_lib.inc"); //Produccion
 //include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/conexion_lib.inc"); //Dev
 
-include (URL_ARCHIV_STANDA."/generadores/satt_standa/lib/general/functions.inc"); //Produccion
+include ("/var/www/html/ap/satt_standa/lib/general/functions.inc"); //Produccion
 //include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/lib/general/functions.inc"); //Dev
 
-include (URL_ARCHIV_STANDA."/generadores/satt_standa/inform/class_despac_trans3.php"); //Produccion
+include ("/var/www/html/ap/satt_standa/inform/class_despac_trans3.php"); //Produccion
 //include ("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/inform/class_despac_trans3.php"); //Dev
 /*ini_set('display_errors', true);
 error_reporting(E_ALL & ~E_NOTICE);*/
@@ -25,7 +25,7 @@ class EmailSeguim
                     $cTipDespacContro = '""'; #Tipo de Despachos asignados al controlador, Aplica para cTypeUser[tip_perfil] == 'CONTROL';
     function __construct()
 	{
-        $this->conexion = new Conexion(HOST,USUARIO, CLAVE, BASE_DATOS);
+        $this->conexion = new Conexion(DBSERVER, USUARIO, CLAVE, BASE_DATOS);
         self::$cHoy = date("Y-m-d H:i:s");
 		self::$hora = date("H");
         $this->principal();
@@ -36,7 +36,8 @@ class EmailSeguim
         $transpors= self::getTransports();
         
         foreach ($transpors as $transport) {
-                                
+          
+			
             $despachos= $this->getDespacTransi2($transport);
             $mData = self::calTimeAlarma( $despachos, $transport, 1 );
 
@@ -222,7 +223,7 @@ class EmailSeguim
                         <div class="content">
                             <h4>'.strtoupper($transport['abr_tercer']).'</h4>
                             <p>'.self::$cHoy.'</p>
-                            <p>Centro logistico FARO informa que se recibe el estado de la plataforma del servicio del seguimiento de monitores activo contratado de <b>06:00 pm</b> a <b>06:00 am</b> de siguiente manera</p>
+                            <p>Centro logistico FARO informa que se recibe el estado de la plataforma del servicio del seguimiento de monitores activo contratado de <b>'.$transport['hor_ingres'].'</b> a <b>'.$transport['hor_salida'].'</b> de siguiente manera</p>
                         </div>
                         <div class="container" ">
                             <div class="item">
@@ -326,7 +327,7 @@ class EmailSeguim
             '; 
 
 
-            echo($html);
+            // echo($html);
 
             $query = "SELECT a.dir_emailx FROM ".BASE_DATOS.".tab_genera_concor a 
             WHERE a.num_remdes ='".$transport['cod_transp']."'
@@ -334,8 +335,8 @@ class EmailSeguim
             $consulta = new Consulta($query,$this->conexion);
             $correos = $consulta->ret_matriz('a'); 
 
-            //require_once(URL_ARCHIV_STANDA."/generadores/satt_standa/planti/class.phpmailer.php"); //Produccion
-            require_once("/var/www/html/ap/amartinez/FARO/sat-gl-2015/satt_standa/planti/class.phpmailer.php"); //Dev
+            //require_once(URL_ARCHIV_STANDA."/satt_standa/planti/class.phpmailer.php"); //Produccion
+            require_once("/var/www/html/ap/satt_standa/planti/class.phpmailer.php"); //Dev
             $mail = new PHPMailer();
 
             $mail->Host = "localhost";
@@ -345,7 +346,7 @@ class EmailSeguim
             foreach($correos as $correo){
                 $mail->AddAddress( $correo['dir_emailx'] );
             }
-            //$mail->AddAddress('anfemardel@gmail.com');
+            // $mail->AddAddress( "andres.torres@eltransporte.org" );
             $mail->Body = $html;
             $mail->IsHTML( true );
             $exito = $mail->Send();
@@ -391,7 +392,7 @@ class EmailSeguim
                         c.hor_pe2tr2, 
                         c.tgl_contro AS tgl_nacion, c.tgl_contro AS tgl_urbano,
                         c.tgl_prcnac AS tgl_nacprc, c.tgl_prcurb AS tgl_urbprc,
-                        e.abr_tercer
+                        e.abr_tercer, g.hor_ingres, g.hor_salida
                 FROM ".BASE_DATOS.".tab_transp_tipser c 
             INNER JOIN ".BASE_DATOS.".tab_genera_tipser d 
                      ON c.cod_tipser = d.cod_tipser 
@@ -406,11 +407,12 @@ class EmailSeguim
                         AND g.hor_ingres !='00:00:00' 
                         AND g.hor_salida !='23:59:00' 
 						AND ( DATE_FORMAT(g.hor_ingres,'%H') = '".$hora."' OR DATE_FORMAT(g.hor_salida,'%H') = '".$hora."')
-						AND g.ind_config = '3'
+						AND (g.ind_config = '3' OR g.ind_config = '4')
                     GROUP BY c.cod_transp";
 
         $consulta = new Consulta($transpor, $this->conexion);
         $transpors = $consulta->ret_matriz('a'); 
+
 
         return $transpors;                
     }

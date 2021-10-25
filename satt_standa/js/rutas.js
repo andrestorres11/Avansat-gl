@@ -54,9 +54,9 @@ $("document").ready(function() {
 function aceptar_insert(formulario) {
 	validacion = true
 	formulario = document.form_ins
-	if (formulario.nom.value == '') {
-		window.alert("El Nombre la Rutas es Requerido")
-		formulario.nom.focus()
+	if (formulario.cod_rutasxx.value == '' || formulario.cod_rutasxx.value == 0) {
+		window.alert("Seleccione una ruta")
+		formulario.cod_rutasxx.focus()
 		validacion = false
 	} else if (formulario.origen.value == "0") {
 		window.alert("Seleccione la ciudad de Origen")
@@ -66,7 +66,7 @@ function aceptar_insert(formulario) {
 		window.alert("Seleccione la cuidad de Destino")
 		formulario.destino.focus()
 		validacion = false
-	} else if (confirm("Desea Crear La ruta " + formulario.nom.value + " ?")) {
+	} else if (confirm("Desea Crear La ruta?")) {
 		formulario.opcion.value = 1;
 		formulario.submit();
 	}
@@ -164,11 +164,7 @@ function aceptar_actuali(formulario) {
 		}
 	}
 
-	if (formulario.nom.value == "") {
-		window.alert("La Descripcion de la Via es Requerida")
-		validacion = false
-		formulario.nom.focus();
-	} else if (formulario.timepcult.value == "") {
+	if (formulario.timepcult.value == "") {
 		window.alert("Debe Asignar los Minutos Desde el Origen Para Ultimo Puesto de Control")
 		validacion = false
 		formulario.timepcult.focus();

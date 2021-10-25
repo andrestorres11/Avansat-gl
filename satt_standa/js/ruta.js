@@ -37,8 +37,13 @@ function aceptar_insert(formulario)
 {
     validacion = true
     formulario = document.form_ins
+    console.log(formulario);
 
     var numerico = /^[0-9]+\.?[0-9]*$/
+
+    if (formulario.ind_doblevia && formulario.ind_doblevia.checked) {
+        formulario.ind_doblevia.value = "1";
+    }
 
     if(formulario.origen.value == "0")
     {
@@ -52,11 +57,11 @@ function aceptar_insert(formulario)
      validacion = false
      formulario.destino.focus();
     }
-    else if(formulario.nom.value == "")
+    else if(formulario.cod_viasxx && (formulario.cod_viasxx.value == "" || formulario.cod_viasxx.value == 0) )
     {
-     window.alert("La Descripcion de la Via es Requerida")
+     window.alert("Seleccione una via")
      validacion = false
-     formulario.nom.focus();
+     formulario.cod_viasxx.focus();
     }
     else if(validar() == false)
     {
@@ -109,11 +114,11 @@ function aceptar_actuali(formulario)
      validacion = false
      formulario.destino.focus();
     }
-    else if(formulario.nom.value == "")
+    else if(formulario.cod_viasxx.value == "")
     {
      window.alert("La Descripcion de la Via es Requerida")
      validacion = false
-     formulario.nom.focus();
+     formulario.cod_viasxx.focus();
     }
     else if(validarA() == false)
     {
@@ -154,6 +159,11 @@ function aceptar_copia(formulario)
 
     var numerico = /^[0-9]+\.?[0-9]*$/
 
+    if (formulario.ind_doblevia && formulario.ind_doblevia.checked) {
+        formulario.ind_doblevia.value = "1";
+    }
+
+
     if(formulario.origen.value == "0")
     {
      window.alert("La Ciudad de Origen es Requerida.")
@@ -166,11 +176,11 @@ function aceptar_copia(formulario)
      validacion = false
      formulario.destino.focus();
     }
-    else if(formulario.nom.value == "")
+    else if(formulario.ind_doblevia && (formulario.cod_viasxx.value == "" || formulario.cod_viasxx.value == 0))
     {
      window.alert("La Descripcion de la Via es Requerida")
      validacion = false
-     formulario.nom.focus();
+     formulario.cod_viasxx.focus();
     }
     else if(validarA() == false)
     {
@@ -188,7 +198,7 @@ function aceptar_copia(formulario)
      validacion = false
      formulario.timepcult.focus();
     }
-    else if(parseInt(formulario.timepcult.value) <= valorMayor())
+    else if(formulario.timepcult && parseInt(formulario.timepcult.value) <= valorMayor())
     {
      window.alert("Los Minutos Desde el Origen Para Ultimo Puesto de Control Debe ser Mayor que los Anteriores.")
      validacion = false

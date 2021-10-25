@@ -29,6 +29,7 @@ $("body").ready(function() {
     //Multi Select
     $("#cod_usuariID").multiselect().multiselectfilter();
     $("#cod_transpID").multiselect().multiselectfilter();
+    $("#cod_tiptraID").multiselect().multiselectfilter();
     $("#pun_cargueID").multiselect().multiselectfilter();
     $("#tip_producID").multiselect().multiselectfilter();
     $("#cod_clientID").multiselect().multiselectfilter();

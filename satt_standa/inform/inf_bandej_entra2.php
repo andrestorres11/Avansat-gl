@@ -63,6 +63,7 @@ class infBandeja
 		$mTypeUser = self::$cDespac -> typeUser();
 		$mTipoDespac = self::$cDespac -> getTipoDespac();
 		$mArrayTransp = self::$cDespac -> getTransp();
+		$mArrayTipTra = array( array('0', 'TERCEROS'), array('1', 'FLOTA PROPIA') );
 		$mArrayGenera = self::$cDespac -> getGenerador();
 		$mArrayUserAs = self::$cDespac -> getUserAsig();
 		$mUsrSinAsig = array( array('SIN', 'SIN ASIGNAR') );
@@ -140,8 +141,14 @@ class infBandeja
 
 						$mHtml1 .= '<tr>';
 						$mHtml1 .= self::$cDespac -> lista( 'Transportadora:', 'cod_transp', array_merge( self::$cNull, $mArrayTransp), 'cellInfo1' );
+						$mHtml1 .= self::$cDespac -> lista( 'Tipo de Transporte:', 'cod_tiptra', array_merge( self::$cNull, $mArrayTipTra), 'cellInfo1' );
+						$mHtml1 .= '</tr>';
+						$mHtml1 .= '<tr>';
 						if( $mTypeUser['tip_perfil'] != 'CONTROL' && $mTypeUser['tip_perfil'] != 'EAL' && $mTypeUser['tip_perfil'] != 'CLIENTE' ){
 							$mHtml1 .= self::$cDespac -> lista( 'Usuarios Asignados:', 'cod_usuari', array_merge( self::$cNull, $mUsrSinAsig, $mArrayUserAs), 'cellInfo1' );
+							$mHtml1 .= '<td class="cellInfo1"></td>';
+							$mHtml1 .= '<td class="cellInfo1"></td>';
+
 						}
 						else
 						{

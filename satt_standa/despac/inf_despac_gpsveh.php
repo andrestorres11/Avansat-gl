@@ -466,13 +466,13 @@ class Proc_despac
       
     $mError  = array();
     $mDatax[] = $mData;
+
     foreach($mDatax as $fVehiculo)
     {   
         unset( $novedaGPS );
         $novedaGPS = array();
-        
         //----------------------------------------------------Satrack------------------------------------------------------------------
-        if( $fVehiculo['cod_operad'] == '900040838' )
+        if( $fVehiculo['cod_operad'] == '8300596993' )
         {
           try 
           {
@@ -494,8 +494,6 @@ class Proc_despac
            
             $response = utf8_encode( $result -> getLastEventStringResult );       
             
-            
-            
             if( $response != NULL )
             { 
               $xmlObject = new SimpleXMLElement( $response );
@@ -512,6 +510,7 @@ class Proc_despac
                 $novedaGPS['all_infgps'] = "Ubicacion: ".$novedaGPS['det_ubicac'];
                 $novedaGPS['all_infgps'] .= ". Velocidad: ".$novedaGPS['val_veloci'];
                 $mError[error] = true;
+
               }
               else              
                 $mError[error] = "No hay reporte de ubicación.";

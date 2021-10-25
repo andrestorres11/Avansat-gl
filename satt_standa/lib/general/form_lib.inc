@@ -236,8 +236,16 @@ class Formulario
     function lista($et, $no, $va, $sl, $obliga = 0)
 
     {
-
+        
         $linea = new Form_lista($et, $no, $va, $sl, $obliga);
+
+    }
+
+    function lista_value($et, $no, $va, $sl, $obliga = 0, $valSelect='')
+
+    {
+        
+        $linea = new Form_lista_value($et, $no, $va, $sl, $obliga, $valSelect);
 
     }
 
@@ -314,7 +322,7 @@ class Form_archivo
 
         $ancho,//ancho del campo de bsqueda
 
-        $max_caracteres,//móimo nmero de caracteres de la ruta del archivo
+        $max_caracteres,//m?imo nmero de caracteres de la ruta del archivo
 
         $jscript,//llamadas a eventos y demas codigo javaScritp
 
@@ -371,7 +379,7 @@ class Form_texto
         $tipo,//puede ser text, password, textarea.
         $salto_linea,//si esta en 1 indica que se debe cerrar la fila y abrir una nueva
         $ancho,//ancho de un campo de texto
-        $alto,//alto de un textarea o móimo de caracteres de un text
+        $alto,//alto de un textarea o m?imo de caracteres de un text
         $wrap,//Solo se utiliza si $tipo es textarea y puede ser OFF, VIRTUAL, PHYSICAL
         $nombre,//nombre del campo
         $scrp,//busqueda
@@ -513,7 +521,7 @@ class Form_caja
 
         $valores,//valor que tomera la variable al checar esta caja
 
-        $estado_inicial,//estado inicial 1 seólado, 0 sin seólar
+        $estado_inicial,//estado inicial 1 se?lado, 0 sin se?lar
 
         $salto_linea;//si esta en 1 indica que se debe cerrar la fila y abrir una nueva
 
@@ -559,7 +567,7 @@ class Form_radio//cr4ea un conjunto de radio buttons
 
         $valores,//valor que tomera la variable al checar este radio button
 
-        $estado_inicial,//estado inicial 1 seólado, 0 sin seólar
+        $estado_inicial,//estado inicial 1 se?lado, 0 sin se?lar
 
         $salto_linea;//si esta en 1 indica que se debe cerrar la fila y abrir una nueva
 
@@ -613,7 +621,7 @@ class Form_lista
 
         $campo_obliga;//Campo Obligatorio
 
-
+        
 
     //Metodos
 
@@ -651,8 +659,83 @@ class Form_lista
         for($i = 0; $i < $n; $i++)
 
         {
+                printf("<option value=\"%s\">%s</option>\n", $va[$i][0], $va[$i][1]);
 
-            printf("<option value=\"%s\">%s</option>\n", $va[$i][0], $va[$i][1]);
+        }
+
+        printf("</select>\n</td>\n");
+
+        if($sl)
+
+            printf("</tr>\n<tr>\n");
+
+    }
+
+}
+
+class Form_lista_value
+
+{
+
+    //Atributos
+
+    var $etiqueta,//etiqueta que va a tener el menu
+
+        $nombre,//nombre que va a tomar al variable que representa este menu
+
+        $valores,//vector que contiene los valores que va a tomar la lista en el vector va[i][0] los value y en el va[i][1] los textos que se van a mostrar en la lista
+
+        $salto_linea,//si esta en 1 indica que se debe cerrar la fila y abrir una nueva
+
+        $campo_obliga,//Campo Obligatorio
+
+        $valor_selec; //valor que carga cuando se actualiza
+
+
+
+    //Metodos
+
+    function __construct($et, $no, $va, $sl, $obliga = 0, $valSelect = '')
+
+    {
+
+        $this -> etiqueta = $et;
+
+        $this -> nombre = $no;
+
+        $this -> valores = $va;
+
+        $this -> salto_linea = $sl;
+
+        $this -> campo_obliga = $obliga;
+
+        $this -> valor_selec = $valSelect;
+
+        $textobliga = NULL;
+
+        if($obliga)
+         $textobliga = "*";
+		 
+		if($et)
+        echo "<td align=\"right\" class=\"celda_titulo\">\n$textobliga $et\n</td>\n";
+		echo "<td class=\"celda_info\">\n<select class=\"form_01\" name=\"$no\"";
+
+        echo " onKeypress=buscar_op(this) onblur=borrar_buffer() onclick=borrar_buffer() ";
+
+        echo ">\n";
+
+        $n = sizeof($va);
+
+
+
+        for($i = 0; $i < $n; $i++)
+
+        {
+            if ($this->valor_selec == $va[$i][0]) {
+                printf("<option value=\"%s\" selected>%s</option>\n", $va[$i][0], $va[$i][1]);
+            }else{
+                printf("<option value=\"%s\">%s</option>\n", $va[$i][0], $va[$i][1]);
+            }
 
         }
 
@@ -989,7 +1072,7 @@ class Form_botoni
 
     var $etiqueta,//la etiqueta del boton
 
-        $onClick,//Inclusió de Javascript
+        $onClick,//Inclusi? de Javascript
 
         $mens,//Mensaje cuando pone el mouse encima del boton
 
