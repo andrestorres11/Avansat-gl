@@ -112,7 +112,7 @@ class Informe
               if( estado != 1 )
               {
                 if( fec_ini == "" || fec_fin == "" ){
-                  alert("Diligencia feche inicio y fecha fin");
+                  alert("Diligencie una fecha inicial y final");
                   $("#fec_incialID").focus();
                   return false;
                 }
