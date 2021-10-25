@@ -1,5 +1,5 @@
 /*******************************************************************************************************
- * @brief Archivo Javascript para los eventos dinámicos del módulo de Cumplidos                        *
+ * @brief Archivo Javascript para los eventos din?micos del m?dulo de Cumplidos                        *
  * @version 0.1                                                                                        *
  * @ultima_modificacion 04 de Febrero de 2010                                                          *
  * @author Christiam Barrera Arango                                                                    *
@@ -33,7 +33,6 @@ function SelectTrasnp()
       dataType: "html",
       
       success: function(data) {
-        console.log(data);
           $('#generadorDivID').empty();
 
           $('#generadorDivID').html(data);

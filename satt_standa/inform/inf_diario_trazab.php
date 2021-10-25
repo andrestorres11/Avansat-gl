@@ -105,8 +105,19 @@ class Informe
             
             function Validate()
             {
+              var estado = $("#est_despacID").val();
               var fec_ini = $("#fec_incialID").val();
               var fec_fin = $("#fec_finaliID").val();
+              
+              if( estado != 1 )
+              {
+                if( fec_ini == "" || fec_fin == "" ){
+                  alert("Diligencia feche inicio y fecha fin");
+                  $("#fec_incialID").focus();
+                  return false;
+                }
+              }
+
               if( fec_ini != "" && fec_fin != "" )
               {
                 if( fec_ini > fec_fin )
@@ -125,6 +136,22 @@ class Informe
                 $("#form_itemID").submit();
               }
             }
+
+            function Estado(ele)
+            {
+
+              var est_despac = $(ele).val();
+              if( est_despac != 1 )
+              {
+                $("#fec_incialID").focus();
+                $("#fec_incialID").attr("required", true);
+                $("#fec_finaliID").attr("required", true);
+              }else{
+                $("#fec_incialID").removeAttr("required");
+                $("#fec_finaliID").removeAttr("required");
+              }
+            }
+
           </script>';
   
     $formulario = new Formulario ("index.php","post","Informe de trazabilidad diaria","form_item\" id=\"form_itemID");
@@ -143,7 +170,7 @@ class Informe
     $formulario -> OpenDiv ("id:generadorDiv; height:20px; width:90%;", "Generador:");
     $formulario -> CloseDiv (1);
     //$formulario -> lista ("Generador: ","cod_genera",$this -> getGenera($_POST[cod_transp]),1,$_POST[cod_genera] );
-    $formulario -> lista ("Estado Despachos: ","est_despac",$this -> getEstado(),1,$_POST[est_despac] );
+    $formulario -> lista ("Estado Despachos: ","est_despac\" id =\"est_despacID\" onChange=\"Estado(this)\" ",$this -> getEstado(),1,$_POST[est_despac] );
     $formulario -> texto ("Fecha Inicio:", "text", "fec_incial\" id=\"fec_incialID", 0, 10, 10, "", $_POST[fec_incial], "", "", NULL);
 		$formulario -> texto ("Fecha Final:", "text", "fec_finali\" id=\"fec_finaliID", 0, 10, 10, "", $_POST[fec_finali], "", "", NULL);	
     
@@ -294,7 +321,7 @@ class Informe
                    
                    a.fec_salida Is Not Null 
                    ".$estado." AND
-                   a.fec_llegad IS NULL AND
+                   -- a.fec_llegad IS NULL AND
                    a.ind_anulad = 'R' AND 
                    a.ind_planru = 'S' AND
                    d.ind_anudat = 'R' AND 
@@ -336,8 +363,9 @@ class Informe
       }
     }
 	
-    $query .= " GROUP BY 1 ORDER BY b.fec_alarma,1 " ;
+    $query .= " GROUP BY m.cod_remesa ORDER BY b.fec_alarma,1 " ;
     
+    mail("andres.martinez@eltransporte.org", "Gl demo origen", $query);
     //$_SESSION[html] = $query;
     $select = new Consulta( $query, $this -> conexion );
     $select = $select -> ret_matriz();
