@@ -530,7 +530,7 @@ class Informe
       $html .= "<td height='50px' class=celda_info nowrap>$row[2]</td>";                               // Origen
       $html .= "<td height='50px' class=celda_info nowrap>$row[3]</td>";                               // Destino
       $html .= "<td height='50px' class=celda_info nowrap>$row[num_pedido]</td>";                      // Pedido
-      $html .= "<td height='50px' class=celda_info nowrap>$row[cod_remesa]</td>";                      // Solicitud
+      $html .= "<td height='50px' class=celda_info nowrap>$row[cod_remesa]</td>";                      // Remesa
       $html .= "<td height='50px' class=celda_info nowrap>$row[val_pesoxx]</td>";                      // Peso
       $html .= "<td height='50px' class=celda_info nowrap>$row[val_volume]</td>";                      // Volumen
       $html .= "<td height='50px' class=celda_info nowrap>$row[des_mercan]</td>";                      // Producto
