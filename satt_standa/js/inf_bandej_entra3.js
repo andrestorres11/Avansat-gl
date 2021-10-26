@@ -155,6 +155,7 @@ function getParameFilter() {
         var rad_checke = $("input[type=radio]:checked");
         var cod_transp = '""';
         var cod_client = '""';
+        var cod_tiptra = '""';
         var cod_usuari = '""';
         var pun_cargue = '""';
         var tip_produc = '""';
@@ -178,6 +179,8 @@ function getParameFilter() {
                 pun_cargue += ',"' + $(this).val() + '"';
             else if ($(this).attr("name") == 'multiselect_tip_producID')
                 tip_produc += ',"' + $(this).val() + '"';
+            else if ($(this).attr("name") == 'multiselect_cod_tiptraID')
+                cod_tiptra += ',"' + $(this).val() + '"';
             else {
                 attributes += '&' + $(this).attr("name");
                 attributes += '=' + $(this).val();
@@ -199,6 +202,10 @@ function getParameFilter() {
 
         if (cod_usuari != '""' && cod_usuari != '"",""') {
             attributes += '&cod_usuari=' + cod_usuari;
+        }
+
+        if (cod_tiptra != '""' && cod_tiptra != '"",""') {
+            attributes += '&cod_tiptra=' + cod_tiptra;
         }
 
         if (pun_cargue != '""' && pun_cargue != '"",""') {
