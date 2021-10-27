@@ -665,6 +665,26 @@ class Despac
 		return $mResult = $consulta -> ret_matrix('i');
 	}
 
+	/*! \fn: getTipTra
+	 *  \brief: Trae los tipos de vehiculos
+	 *  \author: Ing. Cristian Torres
+	 *	\date: 25/10/2021
+	 *	\date modified: dia/mes/a�o
+	 *  \param: 
+	 *  \return:
+	 */
+	public function getTipTra()
+	{
+		$mSql = "SELECT a.cod_tipveh, a.nom_tipveh
+				   FROM ".BASE_DATOS.".tab_genera_tipveh a 
+				  WHERE a.ind_estado = '1'
+					";
+		$consulta = new Consulta( $mSql, self::$cConexion );
+		return $mResult = $consulta -> ret_matrix('i');
+	}
+
+	
+
 	/*! \fn: getUserAsig
 	 *  \brief: Trae los usuarios asignados a turno
 	 *  \author: Ing. Fabian Salinas
@@ -786,7 +806,9 @@ class Despac
 				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
 						 ON xx.num_despac = yy.num_despac
 				  LEFT JOIN ".BASE_DATOS.".tab_despac_corona zz 
-						 ON xx.num_despac = zz.num_dessat 
+						 ON xx.num_despac = zz.num_dessat
+				 INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu aa
+						 ON yy.num_placax = aa.num_placax
 					  WHERE xx.fec_salida IS NOT NULL 
 						AND xx.fec_salida <= NOW() 
 						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
@@ -796,7 +818,8 @@ class Despac
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' "; 
 		
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
-		
+		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND aa.cod_tipveh IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
+
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -967,7 +990,9 @@ class Despac
 				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
 						 ON xx.num_despac = yy.num_despac
 				  LEFT JOIN ".BASE_DATOS.".tab_despac_corona zz 
-						 ON xx.num_despac = zz.num_dessat 
+						 ON xx.num_despac = zz.num_dessat
+				 INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu aa
+				 		 ON yy.num_placax = aa.num_placax
 					  WHERE xx.fec_salida IS NOT NULL 
 						AND xx.fec_salida <= NOW() 
 						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
@@ -978,7 +1003,7 @@ class Despac
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
-
+		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND aa.cod_tipveh IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -1134,8 +1159,11 @@ class Despac
 		$mSql = "	 SELECT xx.num_despac
 					   FROM ".BASE_DATOS.".tab_despac_despac xx 
 				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
-						 ON xx.num_despac = yy.num_despac 
-						AND xx.fec_salida IS NOT NULL 
+						 ON xx.num_despac = yy.num_despac
+				INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu aa
+						 ON yy.num_placax = aa.num_placax
+						 WHERE 
+						xx.fec_salida IS NOT NULL 
 						AND xx.fec_salida <= NOW() 
 						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
 						AND xx.ind_planru = 'S' 
@@ -1144,7 +1172,7 @@ class Despac
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' 
 						AND xx.num_despac NOT IN ( {$mDespacCargue} ) ";
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
-
+		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND aa.cod_tipveh IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1337,7 +1365,7 @@ class Despac
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera 
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
-					 ON a.num_despac = b.num_despac 
+					 ON a.num_despac = b.num_despac
 					AND a.fec_salida IS NOT NULL 
 					AND a.fec_salida <= NOW() 
 					AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
@@ -1366,9 +1394,12 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
 					 ON a.cod_tipdes = i.cod_tipdes
 			 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
-					 ON a.cod_client = k.cod_tercer 
+					 ON a.cod_client = k.cod_tercer
+			INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu l
+					 ON b.num_placax = l.num_placax
 				  WHERE 1=1 ";
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND a.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND l.cod_tipveh IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		#Filtros por Formulario
 		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
 		$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
@@ -1377,6 +1408,7 @@ class Despac
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
 		echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
+		
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1449,7 +1481,9 @@ class Despac
 				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
 						 ON xx.num_despac = yy.num_despac
 				  LEFT JOIN ".BASE_DATOS.".tab_despac_corona zz 
-						 ON xx.num_despac = zz.num_dessat 
+						 ON xx.num_despac = zz.num_dessat
+				INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu aa
+						 ON yy.num_placax = aa.num_placax 
 					  WHERE xx.fec_salida IS NOT NULL 
 						AND xx.fec_salida <= NOW() 
 						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
@@ -1459,7 +1493,8 @@ class Despac
 						AND ( xx.fec_salida IS NOT NULL  )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
-
+		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND aa.cod_tipveh IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
+		
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1900,10 +1935,10 @@ class Despac
 	}
 
 	/*! \fn: getTranspServic
-	 *  \brief: Traer las transportadoras segï¿½n tipo de servicio
+	 *  \brief: Traer las transportadoras seg�n tipo de servicio
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 19/06/2015
-	 *	\date modified: dia/mes/aï¿½o
+	 *	\date modified: dia/mes/a�o
 	 *  \param: mTipEtapax  String   Tipo de Seguimiento ( ind_segcar, ind_segtra, ind_segdes )
 	 *  \param: mCodTransp  Integer  Codigo de la transportadora 
 	 *  \param: mAddWherex  String   Where adicional

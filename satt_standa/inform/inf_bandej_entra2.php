@@ -63,7 +63,7 @@ class infBandeja
 		$mTypeUser = self::$cDespac -> typeUser();
 		$mTipoDespac = self::$cDespac -> getTipoDespac();
 		$mArrayTransp = self::$cDespac -> getTransp();
-		$mArrayTipTra = array( array('0', 'TERCEROS'), array('1', 'FLOTA PROPIA') );
+		$mArrayTipTra = self::$cDespac -> getTipTra();
 		$mArrayGenera = self::$cDespac -> getGenerador();
 		$mArrayUserAs = self::$cDespac -> getUserAsig();
 		$mUsrSinAsig = array( array('SIN', 'SIN ASIGNAR') );
