@@ -882,8 +882,6 @@ class ajaxCalendAgendamiento
       $hor_finhor=date('H:i:s',strtotime ($horario[1]));
     }
 
-    
-
     $fec_aumenta = $fec_inicia;
 
     while ($fec_aumenta <= $fec_finalx) {
