@@ -462,7 +462,7 @@ class Informe
     $html .= "<td class=celda_titulo colspan=3 >Estimado de Llegada</td>";  
     $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
     $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";    
-    $html .= "<td class=celda_titulo rowspan=2 >Ubicaci�n</td>";
+    $html .= "<td class=celda_titulo rowspan=2 >Ubicacion</td>";
     if($validaPermis ==true)
     {
       $html .= "<td class=celda_titulo colspan=2 >Ultimo Seguimiento</td>";
@@ -476,7 +476,7 @@ class Informe
     $html .= "<td class=cellHead >Hora</td>"; 
     $html .= "<td class=cellHead >Fecha</td>";  
     $html .= "<td class=cellHead >Duraci&oacute;n</td>";    
-    $html .= "<td class=cellHead >D�as</td>";
+    $html .= "<td class=cellHead >Dias</td>";
     if($validaPermis ==true)
     {
       $html .= "<td class=cellHead >Fecha</td>";    
@@ -517,7 +517,7 @@ class Informe
       
       $html .= "<tr>";// celda_info
       $html .= "<td height='50px' class=cellHead nowrap>$i</td>";                                      // Consecutivo
-      $html .= "<td height='50px' class=celda_info nowrap>$row[0]</td>";                               // N�mero despacho
+      $html .= "<td height='50px' class=celda_info nowrap>$row[0]</td>";                               // Numero despacho
       $html .= "<td height='50px' class=celda_info nowrap>$row[10]</td>";                              // nombre Transportadora
       $html .= "<td height='50px' class=celda_info nowrap>".$row['nom_genera']."</td>";                // nombre Generador
       $html .= "<td height='50px' class=celda_info nowrap>".$row['abr_remite']."</td>";                // nombre Remitente
@@ -535,7 +535,7 @@ class Informe
       $html .= "<td height='50px' class=celda_info nowrap>$row[des_mercan]</td>";                      // Producto
       $html .= "<td height='50px' class=celda_info nowrap>$row[num_solici]</td>";                      // Solicitud
       $html .= "<td height='50px' class=celda_info nowrap>".$fec_lle[0]."</td>";                       // Fecha llegada 
-      $html .= "<td height='50px' class=celda_info nowrap>".$row[8]."</td>";                           // Duraci�n Dias desde salida a llegada
+      $html .= "<td height='50px' class=celda_info nowrap>".$row[8]."</td>";                           // Duracion Dias desde salida a llegada
       
       $bg_color = "";
       if( $row[9] <= 0 ) $bg_color = " style='background-color:#EAF1DD' "; 
@@ -545,7 +545,7 @@ class Informe
       $inf_despac = getNovedadesDespac($this->conexion, $row[0], '2');
       $fec_noveda = array();          
       #fin seguimiento
-      $html .= "<td height='50px' class=celda_info $bg_color nowrap>".$row[9]."</td>";                 // D�as desde Fecha salida      
+      $html .= "<td height='50px' class=celda_info $bg_color nowrap>".$row[9]."</td>";                 // Dias desde Fecha salida      
       $html .= "<td height='50px' class=celda_info nowrap>$row[6]</td>";                               // Placas  
       $html .= "<td height='50px' class=celda_info nowrap>$row[7]</td>";                               // Conductor
       $html .= "<td height='50px' class=celda_info nowrap>".$this -> getUbicacion( $row[0] )."</td>";  //Ubicacion.
