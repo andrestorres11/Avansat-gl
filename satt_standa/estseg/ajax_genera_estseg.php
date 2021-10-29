@@ -443,7 +443,7 @@
           private function getPestana($cod_solici){
             $sql = "SELECT a.ind_fasexx, a.ind_estudi, a.ind_status
                     FROM ".BASE_DATOS.".tab_relaci_estseg a
-                    WHERE a.cod_solici = '".$cod_solici."'; ";
+                    WHERE a.cod_solici = '".$cod_solici."' ORDER BY a.ind_fasexx DESC LIMIT 1; ";
             $query = new Consulta($sql, self::$conexion);
             $mMatriz = $query -> ret_matrix('a');
 
@@ -1381,14 +1381,17 @@
           
 
           function combinaCondPoseePropie($nam_column, $valor, $cod_estseg){
-            $sql="UPDATE ".BASE_DATOS.".tab_relaci_estseg
-                  SET 
-                    ".$nam_column." = '".$valor."',
-                    usr_modifi = '".$usuari."', 
-                    fec_modifi = NOW() 
-                  WHERE 
-                    cod_estseg = '".$cod_estseg."'";
-            $query = new Consulta($sql, self::$conexion);
+            $usuari = $_SESSION['datos_usuario']['cod_usuari'];
+            if($valor != '' || $valor != NULL){
+              $sql="UPDATE ".BASE_DATOS.".tab_relaci_estseg
+                    SET 
+                      ".$nam_column." = '".$valor."',
+                      usr_modifi = '".$usuari."', 
+                      fec_modifi = NOW() 
+                    WHERE 
+                      cod_estseg = '".$cod_estseg."'";
+              $query = new Consulta($sql, self::$conexion);
+            }
           }
 
           function separarCodigoCiudad($dato){
@@ -1774,7 +1777,7 @@
             //Trae los correos segun el caso
             $emailsTotal = self::darCorreos($cod_solici,$ind_retorn);
             $emails = explode(",", $emailsTotal['dir_emailx']);
-            $tmpl_file = URL_ARCHIV_STANDA.'satt_standa/estseg/planti/template-email.html';
+            $tmpl_file = URL_ARCHIV_STANDA.'ctorres/sat-gl-2015/satt_standa/estseg/planti/template-email.html';
             $logo = LOGOFARO;
             $ano = date('Y');
             $thefile = implode("", file( $tmpl_file ) );
@@ -1783,7 +1786,7 @@
             eval( $thefile );
             $mHtml = $r_file;
 
-            require_once(URL_ARCHIV_STANDA."satt_standa/planti/class.phpmailer.php");
+            require_once(URL_ARCHIV_STANDA."ctorres/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
             $mail = new PHPMailer();
             $mail->CharSet = 'UTF-8';
             $mail->Host = "localhost";
@@ -1798,8 +1801,8 @@
             
             if($files != NULL){
               foreach($files as $key=>$file){
-                  if(is_readable(URL_ARCHIV_STANDA.'satt_faro/files/adj_estseg/'.$file['archivo'])){
-                    $mail->addAttachment(URL_ARCHIV_STANDA.'satt_faro/files/adj_estseg/'.$file['archivo'], $file['name']);
+                  if(is_readable(URL_ARCHIV_STANDA.'ctorres/sat-gl-2015/satt_faro/files/adj_estseg/'.$file['archivo'])){
+                    $mail->addAttachment(URL_ARCHIV_STANDA.'ctorres/sat-gl-2015/satt_faro/files/adj_estseg/'.$file['archivo'], $file['name']);
                   }
               }
             }
@@ -1819,7 +1822,8 @@
 
           
           $emails = explode(",", $emailsTotal);
-          $tmpl_file = URL_ARCHIV_STANDA.'satt_standa/estseg/planti/template-email.html';
+          $tmpl_file = URL_ARCHIV_STANDA.'ctorres/sat-gl-2015/satt_standa/estseg/planti/template-email.html';
+          
           $contenido = '<p>Centro Logístico FARO hace el envio del documento adjunto en este correo con el resultado del estudio de seguridad No.<strong>'.self::darCodigoSolicitud($cod_estseg).' - '.$cod_estseg.'</strong>.</p>
                         <p>No responder -- Este correo ha sido creado automaticamente.</p>';
           $logo = LOGOFARO;
@@ -1830,7 +1834,7 @@
           eval( $thefile );
           $mHtml = $r_file;
 
-          require_once(URL_ARCHIV_STANDA."satt_standa/planti/class.phpmailer.php");
+          require_once(URL_ARCHIV_STANDA."ctorres/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
           $mail = new PHPMailer();
           $mail->Host = "localhost";
           $mail->From = 'supervisores@eltransporte.org';

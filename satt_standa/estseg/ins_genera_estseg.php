@@ -1258,7 +1258,7 @@
           $referen = $this->getReferenciasFyP($cod_person, $tip_refere,$cod_identi);
           $html.='
           <div class="row" style="overflow: auto;">
-             <div class="col-12">
+             <div class="col-md-12 col-sm-12">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
@@ -1278,27 +1278,27 @@
             </div>
           <div id="InsReferenceFyP_'.$llave.'">
           <div class="row">
-          <div class="col-3">
+          <div class="col-md-3 col-sm-12 mb-3 ">
             <label for="nom_soliciID" class="labelinput">Nombre completo:</label>
             <input class="form-control form-control-sm Req_ReferenceFyP" type="text"id="nom_refereID_'.$llave.'" name="nom_refere_'.$llave.'">
           </div>
-          <div class="col-3">
+          <div class="col-md-3 col-sm-12 mb-3 ">
             <label for="nom_soliciID" class="labelinput">Parentesco:</label>
             <select class="form-control form-control-sm Req_ReferenceFyP" id="cod_parentID_'.$llave.'" name="cod_parent_'.$llave.'" onchange="llenaParentesco(this,`'.$cod_person.'`,`'.$tip_refere.'`,`'.$cod_identi.'`)">
             '.$this->getParentesco().'
             </select>
           </div>
-          <div class="col-3">
+          <div class="col-md-3 col-sm-12 mb-3 ">
             <label for="nom_soliciID" class="labelinput">Direccion:</label>
             <input class="form-control form-control-sm Req_ReferenceFyP" type="text" id="dir_domiciID_'.$llave.'" name="dir_domici_'.$llave.'">
           </div>
-          <div class="col-3">
+          <div class="col-md-3 col-sm-12 mb-3 ">
             <label for="nom_soliciID" class="labelinput">Telefono:</label>
             <input class="form-control form-control-sm Req_ReferenceFyP" type="text" id="num_telefoID_'.$llave.'" name="num_telefo_'.$llave.'">
           </div>
         </div>
         <div class="row mt-2">
-          <div class="col-7">
+          <div class="col-md-7 col-sm-12 mb-3 ">
             <label class="labelinput" for="obs_refereID">Observacion:</label>
             <textarea class="form-control Req_ReferenceFyP" id="obs_refereID_'.$llave.'" name="obs_refere_'.$llave.'" rows="2"></textarea>
           </div>
@@ -1306,17 +1306,17 @@
 
         <div id="div-cual-input_'.$llave.'" style="display:none">
           <div class="row mt-2">
-            <div class="col-3 pt-1 text-right align-self-center">
+            <div class="col-md-3 col-sm-12 pt-1 text-right align-self-center">
               ¿Cual?
             </div>
-            <div class="col-3">
+            <div class="col-md-3 col-sm-12">
               <input class="form-control form-control-sm" type="text" id="nom_parentID_'.$llave.'" name="nom_parent_'.$llave.'" value="Padre">
             </div>
           </div>
         </div>
 
         <div class="row mt-3 mb-3">
-          <div class="col-12 text-center">
+          <div class="col-md-12 col-sm-12 text-center">
             <input type="hidden" id="cod_person_'.$llave.'" value="'.$cod_person.'">
             <input type="hidden" id="cod_refere_'.$llave.'" value="'.$tip_refere.'">
             <input type="hidden" id="cod_identi_'.$llave.'" value="'.$cod_identi.'">
@@ -1334,7 +1334,7 @@
           $referen = $this->getReferenciasLaborales($cod_person, $tip_refere,$cod_identi);
           $html.='
           <div class="row">
-             <div class="col-12">
+             <div class="col-md-12">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
@@ -1353,26 +1353,26 @@
             </div>
           <div id="InsReferenceLaboral_'.$llave.'">
           <div class="row">
-          <div class="col-3">
+          <div class="col-md-3 col-sm-12 mb-3">
             <label for="nom_soliciID" class="labelinput">Transportadora:</label>
             <input class="form-control form-control-sm Req_ReferenceLaboral" type="text" id="nom_transpID_'.$llave.'" name="nom_transp_'.$llave.'">
           </div>
-          <div class="col-3">
+          <div class="col-md-3 col-sm-12 mb-3">
             <label for="nom_soliciID" class="labelinput">Telefono:</label>
             <input class="form-control form-control-sm Req_ReferenceLaboral" type="text" id="num_telefoID_'.$llave.'" name="num_telefo_'.$llave.'">
           </div>
-          <div class="col-3">
+          <div class="col-md-3 col-sm-12 mb-3">
             <label for="nom_soliciID" class="labelinput">Información dada por:</label>
             <input class="form-control form-control-sm Req_ReferenceLaboral" type="text" id="inf_suminiID_'.$llave.'" name="inf_sumini_'.$llave.'">
           </div>
-          <div class="col-3">
+          <div class="col-md-3 col-sm-12 mb-3">
             <label for="nom_soliciID" class="labelinput">No viajes:</label>
             <input class="form-control form-control-sm Req_ReferenceLaboral" type="text" id="num_viajesID_'.$llave.'" name="num_viajes_'.$llave.'">
           </div>
         </div>
 
         <div class="row mt-3 mb-3">
-          <div class="col-12 text-center">
+          <div class="col-md-12 col-sm-12 text-center">
             <input type="hidden" id="cod_person_'.$llave.'" value="'.$cod_person.'">
             <input type="hidden" id="cod_refere_'.$llave.'" value="'.$tip_refere.'">
             <input type="hidden" id="cod_identi_'.$llave.'" value="'.$cod_identi.'">
@@ -1399,162 +1399,224 @@
                       Documentos requeridos estudio de seguridad
                     </div>
                 </div>
-                <div class="row mt-3">
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
+
+                <div class="row mb-2">
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
                           Licencia de tránsito del vehículo
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 3).'" name="fil_licveh" id="fil_licveh">
-                      '.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 1).'
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 3).'" name="fil_licveh" id="fil_licveh">
+                        '.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_licveh" name="obs_licveh" rows="2" >'.$this->buscaDocumento('obs_licveh', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
                           Tarjeta de Propiedad del Tráiler
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 3).'" name="fil_tartra" id="fil_tartra">
-                      '.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 1).'
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 3).'" name="fil_tartra" id="fil_tartra">
+                        '.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_licveh" name="obs_licveh" rows="2" >'.$this->buscaDocumento('obs_licveh', $nom_tablax, $con_wherex, 2).'</textarea>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_tartra" name="obs_tartra" rows="2" >'.$this->buscaDocumento('obs_tartra', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
                     </div>
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_tartra" name="obs_tartra" rows="2" >'.$this->buscaDocumento('obs_tartra', $nom_tablax, $con_wherex, 2).'</textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
+                  </div>
+              </div>
+
+              <div class="row mb-2">
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
                           Tecno mecánica
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 3).'" name="fil_tecmec" id="fil_tecmec" >
-                      '.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 1).'
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 3).'" name="fil_tecmec" id="fil_tecmec" >
+                        '.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_tecmec" rows="2" name="obs_tecmec">'.$this->buscaDocumento('obs_tecmec', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          SOAT
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_soatxx', $nom_tablax, $con_wherex, 3).'" name="fil_soatxx" id="fil_soatxx" >
-                      '.$this->buscaDocumento('fil_soatxx', $nom_tablax, $con_wherex, 1).'
+                            SOAT
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_soatxx', $nom_tablax, $con_wherex, 3).'" name="fil_soatxx" id="fil_soatxx" >
+                        '.$this->buscaDocumento('fil_soatxx', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_tecmec" rows="2" name="obs_tecmec">'.$this->buscaDocumento('obs_tecmec', $nom_tablax, $con_wherex, 2).'</textarea>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_soatxx" rows="2" name="obs_soatxx">'.$this->buscaDocumento('obs_soatxx', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
                     </div>
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_soatxx" rows="2" name="obs_soatxx">'.$this->buscaDocumento('obs_soatxx', $nom_tablax, $con_wherex, 2).'</textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
+                  </div>
+              </div>
+
+              <div class="row mb-2">
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
                           Licencia de transito del Conductor
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_litcon', $nom_tablax, $con_wherex, 3).'" name="fil_litcon" id="fil_litcon" >
-                      '.$this->buscaDocumento('fil_litcon', $nom_tablax, $con_wherex, 1).'
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_litcon', $nom_tablax, $con_wherex, 3).'" name="fil_litcon" id="fil_litcon" >
+                        '.$this->buscaDocumento('fil_litcon', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
-                          <div class="obl">*</div>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_litcon" rows="2" name="obs_litcon">'.$this->buscaDocumento('obs_litcon', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
+                        <div class="obl">*</div>
                           Cedula de ciudadanía del propietario
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 3).'" name="fil_cedpro" id="fil_cedpro" >
-                      '.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 1).'
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 3).'" name="fil_cedpro" id="fil_cedpro" >
+                        '.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_litcon" rows="2" name="obs_litcon">'.$this->buscaDocumento('obs_litcon', $nom_tablax, $con_wherex, 2).'</textarea>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_cedpro" rows="2" name="obs_cedpro">'.$this->buscaDocumento('obs_cedpro', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
                     </div>
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_cedpro" rows="2" name="obs_cedpro">'.$this->buscaDocumento('obs_cedpro', $nom_tablax, $con_wherex, 2).'</textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
+                  </div>
+              </div>
+
+
+              <div class="row mb-2">
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Cédula de ciudadanía del conductor
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 3).'" name="fil_cedcon" id="fil_cedcon" >
-                      '.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 1).'
+                            Cédula de ciudadanía del conductor
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 3).'" name="fil_cedcon" id="fil_cedcon" >
+                        '.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
-                          <div class="obl">*</div>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_cedcon" rows="2" name="obs_cedcon">'.$this->buscaDocumento('obs_cedcon', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
+                        <div class="obl">*</div>
                           Licencia de conducción conductor
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 3).'" name="fil_liccon" id="fil_liccon" >
-                      '.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 1).'
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 3).'" name="fil_liccon" id="fil_liccon" >
+                        '.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_cedcon" rows="2" name="obs_cedcon">'.$this->buscaDocumento('obs_cedcon', $nom_tablax, $con_wherex, 2).'</textarea>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_liccon" rows="2" name="obs_liccon">'.$this->buscaDocumento('obs_liccon', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
                     </div>
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_liccon" rows="2" name="obs_liccon">'.$this->buscaDocumento('obs_liccon', $nom_tablax, $con_wherex, 2).'</textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
-                          <div class="obl">*</div>
+                  </div>
+              </div>
+
+              <div class="row mb-2">
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
+                        <div class="obl">*</div>
                           Copia de la planilla de Pago de Seguridad Social
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_plsegs', $nom_tablax, $con_wherex, 3).'" name="fil_plsegs" id="fil_plsegs" >
-                      '.$this->buscaDocumento('fil_plsegs', $nom_tablax, $con_wherex, 1).'
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_plsegs', $nom_tablax, $con_wherex, 3).'" name="fil_plsegs" id="fil_plsegs" >
+                        '.$this->buscaDocumento('fil_plsegs', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_plsegs" rows="2" name="obs_plsegs">'.$this->buscaDocumento('obs_plsegs', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
                           Registro Fotográfico del vehículo.
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 3).'" name="fil_regveh" id="fil_regveh" >
-                      '.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 1).'
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 3).'" name="fil_regveh" id="fil_regveh" >
+                        '.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_plsegs" rows="2" name="obs_plsegs">'.$this->buscaDocumento('obs_plsegs', $nom_tablax, $con_wherex, 2).'</textarea>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_regveh" rows="2" name="obs_regveh">'.$this->buscaDocumento('obs_regveh', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
                     </div>
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_regveh" rows="2" name="obs_regveh">'.$this->buscaDocumento('obs_regveh', $nom_tablax, $con_wherex, 2).'</textarea>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                      <label for="nom_soliciID" class="labelinput">
+                  </div>
+              </div>
+
+              <div class="row mb-2">
+                  <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-2">
+                        <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Póliza extracontractual
-                      </label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_polext', $nom_tablax, $con_wherex, 3).'" name="fil_polext" id="fil_polext" >
-                      '.$this->buscaDocumento('fil_polext', $nom_tablax, $con_wherex, 1).'
+                            Póliza extracontractual
+                        </label>
+                        <input type="file" class="'.$this->buscaDocumento('fil_polext', $nom_tablax, $con_wherex, 3).'" name="fil_polext" id="fil_polext" >
+                        '.$this->buscaDocumento('fil_polext', $nom_tablax, $con_wherex, 1).'
+                      </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-6 form-group">
-                      <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
-                      <textarea class="form-control" id="obs_polext" rows="2" name="obs_polext">'.$this->buscaDocumento('obs_polext', $nom_tablax, $con_wherex, 2).'</textarea>
+                    <div class="row">
+                      <div class="col-md-12 col-sm-12 mb-3">
+                        <label class="labelinput" for="exampleFormControlTextarea1">Comentario:</label>
+                        <textarea class="form-control" id="obs_polext" rows="2" name="obs_polext">'.$this->buscaDocumento('obs_polext', $nom_tablax, $con_wherex, 2).'</textarea>
+                      </div>
                     </div>
-                </div>
+                  </div>
+              </div>
+              
                 <div class="row mt-3 mb-3">
                     <div class="col-12 text-right">
                       <button type="button" class="btn btn-primary btn-sm"  data-toggle="modal" data-target="#modalPreGuardadoF1">Pre Guardar <i class="fa fa-floppy-o" aria-hidden="true"></i></button>
@@ -1604,101 +1666,101 @@
           $html='
           <div class="container border">
             <div class="row">
-              <div class="col-12 color-heading text-center p-2 mb-3">
+              <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
                   Datos Básicos del Conductor
               </div>
             </div>
             <div class="row">
-              <div class="col-3 form-group">
+              <div class="col-md-3 col-sm-12 form-group">
                 <input type="hidden" name="cod_conduc" value="'.$info['cod_conduc'].'">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Tipo de documento:</label>
                 <select class="form-control form-control-sm req" id="tip_docconID" name="tip_doccon">
                   '.$this->darTipoDocumento().'
                 </select>
               </div>
-              <div class="col-2 form-group">
+              <div class="col-md-2 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>No Documento:</label>
                 <input class="form-control form-control-sm req num" type="text" id="num_docconID" name="num_doccon" value="'.$info['num_doccon'].'">
               </div>
-              <div class="col-3 form-group">
+              <div class="col-md-3 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedición:</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_expcon" name="lug_expcon" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_expcon']).'">
                 <div id="lug_expcon-suggestions" class="suggestions" style="top: 50px !important;"></div>
               </div>
-              <div class="col-4 form-group">
+              <div class="col-md-4 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="Nombres" id="nom_nomconID" name="nom_nomcon" value="'.$info['nom_nomcon'].'">
               </div>
             </div>
 
             <div class="row">
-              <div class="col-3 form-group">
+              <div class="col-md-3 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Primer apellido:</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="Primer apellido" id="nom_ap1conID" name="nom_ap1con" value="'.$info['nom_ap1con'].'">
               </div>
-              <div class="col-3 form-group">
+              <div class="col-md-3 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput">Segundo apellido:</label>
                 <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_ap2conID" name="nom_ap2con" value="'.$info['nom_ap2con'].'">
               </div>
-              <div class="col-3 form-group">
+              <div class="col-md-3 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Numero de celular:</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="Numero de celular" id="num_mo1conID" name="num_mo1con" value="'.$info['num_mo1con'].'">
               </div>
-              <div class="col-3 form-group">
+              <div class="col-md-3 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Teléfono</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="Teléfono" id="num_telconID" name="num_telcon" value="'.$info['num_telcon'].'">
               </div>
             </div>
 
             <div class="row">
-              <div class="col-3 form-group">
+              <div class="col-md-3 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Licencia de conducción No.:</label>
                 <input class="form-control form-control-sm req num" type="text" id="num_licencID" name="num_licenc" value="'.$info['num_licenc'].'">
               </div>
-              <div class="col-2 form-group">
+              <div class="col-md-2 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Categoria:</label>
                 <select class="form-control form-control-sm req" id="tip_catlicID" name="tip_catlic">
                   '.$this->darCategoriasLicencia($info['cod_catlic']).'
                 </select>
               </div>
-              <div class="col-3 form-group">
+              <div class="col-md-3 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Fecha de vencimiento:</label>
                 <input class="form-control form-control-sm req" type="date" id="fec_venlicID" name="fec_venlic" value="'.$info['fec_venlic'].'">
               </div>
-              <div class="col-2 form-group">
+              <div class="col-md-2 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Arl:</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="Arl" id="nom_arlconID" name="nom_arlcon" value="'.$info['nom_arlcon'].'">
               </div>
-              <div class="col-2 form-group">
+              <div class="col-md-2 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Eps</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="Eps" id="nom_epsconID" name="nom_epscon" value="'.$info['nom_epscon'].'">
               </div>
             </div>
 
             <div class="row">
-              <div class="col-4 form-group">
+              <div class="col-md-4 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Dirección:</label>
                 <input class="form-control form-control-sm req" type="text" placeholder="Dirección" id="dir_domconID" name="dir_domcon" value="'.$info['dir_domcon'].'">
               </div>
-              <div class="col-4 form-group">
+              <div class="col-md-4 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad:</label>
                 <input class="form-control form-control-sm req" type="text" id="ciu_conduc" name="ciu_conduc" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_rescon']).'">
                 <div id="ciu_conduc-suggestions" class="suggestions" style="top: 50px !important;"></div>
               </div>
-              <div class="col-4 form-group">
+              <div class="col-md-4 col-sm-12 form-group">
                 <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email:</label>
                 <input class="form-control form-control-sm req ema" type="text" placeholder="Email" id="dir_emaconID" name="dir_emacon" value="'.$info['dir_emacon'].'">
               </div>
             </div>
 
             <div class="row mt-2 mb-3">
-              <div class="col-3">
+              <div class="col-md-3 col-sm-12 mb-3">
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="checkbox" id="check_conposeed" value="1" name="check_conposeed" '.$che_conpos.'>
                   <label class="form-check-label" for="check_conposeed">Es Poseedor/Tenedor</label>
                 </div>
               </div>
-              <div class="col-3">
+              <div class="col-md-3 col-sm-12">
                 <div class="form-check form-check-inline">
                   <input class="form-check-input" type="checkbox" id="check_conpropiet" value="1" name="check_conpropiet" '.$che_conpro.'>
                   <label class="form-check-label" for="check_conpropiet">Es Propietario</label>
@@ -1709,77 +1771,99 @@
 
             <div class="container border">
               <div class="row">
-                <div class="col-12 color-heading text-center p-2 mb-3">
+                <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
                     Estudio de seguridad del conductor
                 </div>
               </div>
 
-              <div class="row">
-                <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                  <label for="fil_ritcon" class="labelinput"><div class="obl">*</div>Consulta RIT</label>
-                  <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tablax, $con_wherex,4).'" name="fil_ritcon" id="fil_ritcon">
-                  '.$this->buscaDocumento('fil_conrit', $nom_tablax, $con_wherex,1).'
+              <div class="row mb-2">
+                <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-2">
+                      <label for="fil_ritcon" class="labelinput"><div class="obl">*</div>Consulta RIT</label>
+                      <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tablax, $con_wherex,4).'" name="fil_ritcon" id="fil_ritcon">
+                      '.$this->buscaDocumento('fil_conrit', $nom_tablax, $con_wherex,1).'
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-3">
+                      <label class="labelinput" for="obs_ritcon">Comentario:</label>
+                      <textarea class="form-control" id="obs_ritcon" rows="2" name="obs_ritcon">'.$this->buscaDocumento('obs_conrit', $nom_tablax, $con_wherex,2).'</textarea>
+                    </div>
+                  </div>
                 </div>
-                <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                  <label for="fil_simcon" class="labelinput"><div class="obl">*</div>Consulta SIMIT:</label>
-                  <input type="file" class="'.$this->buscaDocumento('fil_simitx', $nom_tablax, $con_wherex,4).'" name="fil_simcon" id="fil_simcon">
-                  '.$this->buscaDocumento('fil_simitx', $nom_tablax, $con_wherex,1).'
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6 form-group">
-                  <label class="labelinput" for="obs_ritcon">Comentario:</label>
-                  <textarea class="form-control" id="obs_ritcon" rows="2" name="obs_ritcon">'.$this->buscaDocumento('obs_conrit', $nom_tablax, $con_wherex,2).'</textarea>
-                </div>
-                <div class="col-6 form-group">
-                  <label class="labelinput" for="obs_simcon">Comentario:</label>
-                  <textarea class="form-control" id="obs_simcon" rows="2" name="obs_simcon">'.$this->buscaDocumento('obs_simitx', $nom_tablax, $con_wherex,2).'</textarea>
-                </div>
-              </div>
-
-              <div class="row mt-3">
-                <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                  <label for="fil_procon" class="labelinput"><div class="obl">*</div>Procuraduria</label>
-                  <input type="file" class="'.$this->buscaDocumento('fil_procur', $nom_tablax, $con_wherex,4).'" id="fil_procon" name="fil_procon">
-                  '.$this->buscaDocumento('fil_procur', $nom_tablax, $con_wherex,1).'
-                </div>
-                <div class="col-6 form-group" style="margin-bottom: 0 !important;">
-                  <label for="fil_runcon" class="labelinput"><div class="obl">*</div>Runt:</label>
-                  <input type="file" class="'.$this->buscaDocumento('fil_runtxx', $nom_tablax, $con_wherex,4).'" id="fil_runcon" name="fil_runcon">
-                  '.$this->buscaDocumento('fil_runtxx', $nom_tablax, $con_wherex,1).'
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-6 form-group">
-                  <label class="labelinput" for="obs_proconr">Comentario:</label>
-                  <textarea class="form-control" id="obs_proconr" rows="2" name="obs_proconr">'.$this->buscaDocumento('obs_procur', $nom_tablax, $con_wherex,2).'</textarea>
-                </div>
-                <div class="col-6 form-group">
-                  <label class="labelinput" for="obs_runcon">Comentario:</label>
-                  <textarea class="form-control" id="obs_runcon" rows="2" name="obs_runcon">'.$this->buscaDocumento('obs_runtxx', $nom_tablax, $con_wherex,2).'</textarea>
+                <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-2">
+                      <label for="fil_simcon" class="labelinput"><div class="obl">*</div>Consulta SIMIT:</label>
+                      <input type="file" class="'.$this->buscaDocumento('fil_simitx', $nom_tablax, $con_wherex,4).'" name="fil_simcon" id="fil_simcon">
+                      '.$this->buscaDocumento('fil_simitx', $nom_tablax, $con_wherex,1).'
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-3">
+                      <label class="labelinput" for="obs_simcon">Comentario:</label>
+                      <textarea class="form-control" id="obs_simcon" rows="2" name="obs_simcon">'.$this->buscaDocumento('obs_simitx', $nom_tablax, $con_wherex,2).'</textarea>
+                    </div>
+                  </div>
                 </div>
               </div>
 
+
+              <div class="row mb-2">
+                <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-2">
+                      <label for="fil_procon" class="labelinput"><div class="obl">*</div>Procuraduria</label>
+                      <input type="file" class="'.$this->buscaDocumento('fil_procur', $nom_tablax, $con_wherex,4).'" id="fil_procon" name="fil_procon">
+                      '.$this->buscaDocumento('fil_procur', $nom_tablax, $con_wherex,1).'
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-3">
+                      <label class="labelinput" for="obs_proconr">Comentario:</label>
+                      <textarea class="form-control" id="obs_proconr" rows="2" name="obs_proconr">'.$this->buscaDocumento('obs_procur', $nom_tablax, $con_wherex,2).'</textarea>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-2">
+                      <label for="fil_runcon" class="labelinput"><div class="obl">*</div>Runt:</label>
+                      <input type="file" class="'.$this->buscaDocumento('fil_runtxx', $nom_tablax, $con_wherex,4).'" id="fil_runcon" name="fil_runcon">
+                      '.$this->buscaDocumento('fil_runtxx', $nom_tablax, $con_wherex,1).'
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 mb-3">
+                      <label class="labelinput" for="obs_runcon">Comentario:</label>
+                      <textarea class="form-control" id="obs_runcon" rows="2" name="obs_runcon">'.$this->buscaDocumento('obs_runtxx', $nom_tablax, $con_wherex,2).'</textarea>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+
               <div class="row mt-3">
-                <div class="col-6 form-group" style="margin-bottom: 0 !important;">
+                <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
                   <label for="fil_antcon" class="labelinput"><div class="obl">*</div>A. Juiciales</label>
                   <input type="file" class="'.$this->buscaDocumento('fil_ajudic', $nom_tablax, $con_wherex,4).'" id="fil_antcon" name="fil_antcon">
                   '.$this->buscaDocumento('fil_ajudic', $nom_tablax, $con_wherex,1).'
                 </div>
-                <div class="col-6 form-group" style="margin-bottom: 0 !important;">
+                <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
                 </div>
               </div>
               <div class="row">
-                <div class="col-6 form-group">
+                <div class="col-md-6 col-sm-12 form-group">
                   <label class="labelinput" for="obs_antcon">Comentario:</label>
                   <textarea class="form-control" id="obs_antcon" rows="2" name="obs_antcon">'.$this->buscaDocumento('obs_ajudic', $nom_tablax, $con_wherex,2).'</textarea>
                 </div>
-                <div class="col-6 form-group">
+                <div class="col-md-6 col-sm-12 form-group">
                   <div class="row">
-                    <div class="col-8 text-right">
+                    <div class="col-md-8 col-sm-6 text-right">
                       <label class="form-check-label labelinput" for="exampleCheck1">¿El conductor presenta comparendos?</label>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-4 col-sm-6">
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="pregu1con" id="pregu1con" value="1" onchange="cambioIndicadores(this)" '.$ind_precomSi.'>
                         <label class="form-check-label" for="inlineRadio1">Si</label>
@@ -1792,19 +1876,19 @@
                   </div>
 
                   <div class="row mt-3 mb-3" id="com_pregu1con">
-                    <div class="col-8 text-right">
+                    <div class="col-md-8 col-sm-6 text-right">
                       <label class="form-check-label labelinput" for="exampleCheck1">Valor</label>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-4 col-sm-6">
                       <input class="form-control form-control-sm" type="text" id="val_comconID" name="val_comcon" value="'.$info['val_comcon'].'">
                     </div>
                   </div>
 
                   <div class="row">
-                    <div class="col-8 text-right">
+                    <div class="col-md-8 col-sm-6 text-right">
                       <label class="form-check-label labelinput" for="exampleCheck1">¿El conductor presenta resoluciones?</label>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-4 col-sm-6">
                       <div class="form-check form-check-inline">
                         <input class="form-check-input" type="radio" name="pregu2con" id="pregu2con" value="1" onchange="cambioIndicadores(this)" '.$ind_preresSi.'>
                         <label class="form-check-label" for="inlineRadio1">Si</label>
@@ -1817,10 +1901,10 @@
                   </div>
 
                   <div class="row mt-3 mb-3" id="com_pregu2con">
-                    <div class="col-8 text-right">
+                    <div class="col-md-8 col-sm-6 text-right">
                       <label class="form-check-label labelinput" for="exampleCheck1">Valor</label>
                     </div>
-                    <div class="col-4">
+                    <div class="col-md-4 col-sm-6">
                       <input class="form-control form-control-sm" type="text" id="val_resconID" name="val_rescon" value="'.$info['val_rescon'].'">
                     </div>
                   </div>
@@ -1830,7 +1914,7 @@
             </div>
             <div class="container border">
                 <div class="row">
-                  <div class="col-12 color-heading text-center p-2 mb-3">
+                  <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
                       Referencia familiar del conductor
                   </div>
                 </div>
@@ -1838,7 +1922,7 @@
 
               <div class="container border">
                 <div class="row">
-                  <div class="col-12 color-heading text-center p-2 mb-3">
+                  <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
                       Referencia personal del conductor
                   </div>
                 </div>
@@ -1847,7 +1931,7 @@
 
                 <div class="container border">
                 <div class="row">
-                  <div class="col-12 color-heading text-center p-2 mb-3">
+                  <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
                       Referencias laborales del conductor
                   </div>
                 </div>
@@ -1856,7 +1940,7 @@
 
 
               <div class="row mt-3 mb-3">
-                <div class="col-12 text-right">
+                <div class="col-md-12 col-sm-12 text-right">
                   <button type="button" class="btn btn-secondary btn-sm" onclick="changePestana(1)">Siguiente <i class="fa fa-caret-right" aria-hidden="true"></i></button>
                   <button type="button" class="btn btn-primary btn-sm"  data-toggle="modal" data-target="#modalPreGuardadoF2">Pre Guardar <i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                 </div>
