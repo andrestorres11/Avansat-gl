@@ -340,7 +340,7 @@ function OpenHistoryModal(event,FechaAejecutar,hora,done,codPer) {
                     $("#IdhistoryModal").empty();
                     $("#IdhistoryModal").append(data);
                     $("#buttonNewObj").empty();
-                    $("#buttonNewObj").append('<button type="button" class="btn btn-success" style="background-color:#509334" onclick="FormHistorical()">Nueva Observación</button>');
+                    $("#buttonNewObj").append('<button type="button" class="btn btn-success" style="background-color:#509334" onclick="FormHistorical()">Nueva Observaci?n</button>');
                     GetHistoricalData(event);
                     $("#historyModal").modal("show");          
                   },
@@ -368,7 +368,7 @@ function GetHistoricalData(event) {
               success: function(data) {  
                 if(data.length > 0)
                 {
-                    $("#title-modal-history").html("<center>DESCRIPCION DE LA ACTIVIDAD  N° " + event + "</center>");
+                    $("#title-modal-history").html("<center>DESCRIPCION DE LA ACTIVIDAD  N? " + event + "</center>");
                     $('#ActivityType').val(data[0].tip_actdes);  
                     $('#ActivityWork').val(data[0].tit_activi);    
                     $('#profile').val(data[0].nom_perfil);    
@@ -385,9 +385,9 @@ function GetHistoricalData(event) {
                         table_general.append(createTr(data[i],'Historical'));
                     }  
                 }else{
-                    $("#title-modal-history").html("<center>DESCRIPCION DE LA ACTIVIDAD  N° " + event + "</center>");
+                    $("#title-modal-history").html("<center>DESCRIPCION DE LA ACTIVIDAD  N? " + event + "</center>");
                     $("#IdhistoryModal").empty();
-                    $("#IdhistoryModal").append('<p>Lo sentimos no existe información relacionada a esta actividad aún.</p><div class="row  mt-3"><div class="col-12" id="formHistorial"></div></div>');
+                    $("#IdhistoryModal").append('<p>Lo sentimos no existe informaci?n relacionada a esta actividad a?n.</p><div class="row  mt-3"><div class="col-12" id="formHistorial"></div></div>');
                 }
               },
               error: function() {
@@ -433,7 +433,7 @@ function insertNewObj() {
                     $('#historyModal').modal('hide');
                     Swal.fire({
                         title: 'Registrado!',
-                        text: "Observación registrada con exito!",
+                        text: "Observaci?n registrada con exito!",
                         type: 'success',
                         confirmButtonColor: '#336600'
                     }).then((result) => {
@@ -496,7 +496,7 @@ function formatAMPM(hour) {
 }
 
 function formatDate(time) {
-    return time == null ? 'Sin información' : new Date(time).toLocaleString('es-CO', {hour12: true});
+    return time == null ? 'Sin informaci?n' : new Date(time).toLocaleString('es-CO', {hour12: true});
 }
 
 function loadAjax(x) {
@@ -628,6 +628,9 @@ function InsertNewActivity() {
 function validateNewActivytiForm(formData)
 {
     pass = true;
+    let today = new Date().toISOString().slice(0, 10)
+
+
     let m = formData.some(function(item) {
         return item.name == 'RadioOptions';
       });
@@ -681,6 +684,16 @@ function validateNewActivytiForm(formData)
                 Swal.fire({
                     title: 'Error!',
                     text: 'El campo fecha inicial debe ser menor al campo fecha final, por favor intente de nuevo',
+                    type: 'error',
+                    confirmButtonColor: '#336600'
+                });
+                pass =  false;
+            }
+            if(globalThis.intiDate < today || globalThis.lastDate < today)
+            {
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Los campos de fechas deben ser igual o mayores a la fecha actual, por favor intente de nuevo',
                     type: 'error',
                     confirmButtonColor: '#336600'
                 });
