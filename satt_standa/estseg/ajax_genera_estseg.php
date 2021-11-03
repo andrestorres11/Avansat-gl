@@ -1111,27 +1111,27 @@
           function guardado(){
             $cod_estseg = $_REQUEST['cod_estseg'];
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
-            self::procesaConductor($_REQUEST);
-            self::procesaVehiculo($_REQUEST);
+            self::procesaConductor($_REQUEST,1);
+            self::procesaVehiculo($_REQUEST,1);
 
             //Valida si el conductor es poseedor
             if($_REQUEST['check_conposeed']==1){
               self::combinaCondPoseePropie('cod_poseed', $_REQUEST['cod_conduc'], $_REQUEST['cod_estseg']);
             }else{
-              self::procesaPoseedor($_REQUEST);
+              self::procesaPoseedor($_REQUEST,1);
             }
             //Valida si el conductor es propietario
             if($_REQUEST['check_conpropiet']==1){
               self::combinaCondPoseePropie('cod_propie', $_REQUEST['cod_conduc'], $_REQUEST['cod_estseg']);
             }else{
-              self::procesaPropietario($_REQUEST);
+              self::procesaPropietario($_REQUEST,1);
             }
 
             //Valida si el poseedor es propietario
             if($_REQUEST['check_pospropiet']==1){
               self::combinaCondPoseePropie('cod_propie', $_REQUEST['cod_poseed'], $_REQUEST['cod_estseg']);
             }else{
-              self::procesaPropietario($_REQUEST);
+              self::procesaPropietario($_REQUEST,1);
             }
             $sql="UPDATE ".BASE_DATOS.".tab_relaci_estseg
                     SET 
@@ -1176,7 +1176,51 @@
             //self::uploadFTP($server, $port, 10000, $username, $username, $ruta_name, $remote_file);
           }
 
-          function procesaConductor($data){
+          function registraTercer($data, $pre, $com){
+              $usuari = $_SESSION['datos_usuario']['cod_usuari'];
+              $ciu_expcon = NULL;
+              $pai_reside = NULL;
+              $dep_reside = NULL;
+              $ciu_reside = NULL;
+              if($data['lug_exp'.$pre] != '' || $data['lug_exp'.$pre] != '0 - No Registrada'){
+                $ciu_expcon = self::separarCodigoCiudad($data['lug_exp'.$pre]);
+              }
+              if($data['ciu_'.$com] != '' || $data['ciu_'.$com] != '0 - No Registrada'){
+                $dat_rescon = self::darDatosCiudad(self::separarCodigoCiudad($data['ciu_'.$com]));
+                $pai_reside = $dat_rescon['cod_paisxx'];
+                $dep_reside = $dat_rescon['cod_depart'];
+                $ciu_reside = $dat_rescon['cod_ciudad'];
+              }
+            
+            $sql = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer(
+                    cod_tercer, num_verifi, cod_tipdoc, 
+                    nom_apell1, nom_apell2, nom_tercer,
+                    abr_tercer, dir_domici, num_telef1,
+                    num_telef2, num_telmov, num_faxxxx,
+                    cod_paisxx, cod_depart, cod_ciudad,
+                    dir_emailx, cod_contra, cod_estado,
+                    nom_epsxxx, nom_arpxxx, usr_creaci,
+                    fec_creaci
+                ) VALUES 
+                (
+                  '".$data['num_doc'.$pre]."', '0', '".$data['tip_doc'.$pre]."',
+                  '".$data['nom_ap1'.$pre]."', '".$data['nom_ap2'.$pre]."', '".$data['nom_nom'.$pre]."',
+                  '".$data['nom_ap1'.$pre]." ".$data['nom_ap2'.$pre]." ".$data['nom_nom'.$pre]."', '".$data['dir_dom'.$pre]."', '".$data['num_tel'.$pre]."',
+                  '', '".$data['num_mo1'.$pre]."', '',
+                  '".$pai_reside."', '".$dep_reside."', '".$ciu_reside."',
+                  '".$data['dir_ema'.$pre]."', 0, 1,
+                  '".$data['nom_eps'.$pre]."', '".$data['nom_arl'.$pre]."', '".$usuari."', NOW()
+                ) ON DUPLICATE KEY UPDATE 
+                  nom_apell1 = '".$data['nom_ap1'.$pre]."', nom_apell2 = '".$data['nom_ap2'.$pre]."', nom_tercer = '".$data['nom_nom'.$pre]."',
+                  abr_tercer = '".$data['nom_ap1'.$pre]." ".$data['nom_ap2'.$pre]." ".$data['nom_nom'.$pre]."', dir_domici = '".$data['dir_dom'.$pre]."', num_telef1 = '".$data['num_tel'.$pre]."',
+                  num_telmov = '".$data['num_mo1'.$pre]."', cod_paisxx = '".$pai_reside."', cod_depart = '".$dep_reside."', cod_ciudad = '".$ciu_reside."',
+                  dir_emailx = '".$data['dir_ema'.$pre]."', nom_epsxxx = '".$data['nom_eps'.$pre]."', nom_arpxxx = '".$data['nom_arl'.$pre]."',
+                  usr_modifi = '".$usuari."', fec_modifi = NOW()
+                  ";
+                  $query = new Consulta($sql, self::$conexion);
+          }
+
+          function procesaConductor($data, $guardado_final = 0){
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
             $ciu_expcon = NULL;
             $pai_reside = NULL;
@@ -1221,14 +1265,26 @@
                       cod_segper = '".$data['cod_conduc']."' ";
             $query = new Consulta($sql, self::$conexion);
 
+            if($guardado_final){
+            self::registraTercer($data, 'con', 'conduc');
+            $sql = "INSERT INTO tab_tercer_conduc(
+                        cod_tercer, cod_tipsex, num_licenc,
+                        num_catlic, fec_venlic, nom_epsxxx,
+                        nom_arpxxx, usr_creaci, fec_creaci ) VALUES (
+                        '".$data['num_doccon']."', 1, '".$data['num_licenc']."',
+                        '".$data['tip_catlic']."', '".date("Y-m-d", strtotime($data['fec_venlic']))."', '".$data['nom_epscon']."',
+                        '".$data['nom_arlcon']."', '".$usuari."', NOW()
+                ) ON DUPLICATE KEY UPDATE num_licenc = '".$data['num_licenc']."', num_catlic = '".$data['tip_catlic']."'";
+              $query = new Consulta($sql, self::$conexion);
+            }              
+
             $arc_conduc = array('fil_ritcon', 'fil_simcon', 'fil_procon', 'fil_runcon', 'fil_antcon');
             $nom_arcbdx = array('fil_conrit', 'fil_simitx', 'fil_procur', 'fil_runtxx', 'fil_ajudic');
             self::guardaArchivos($arc_conduc, $nom_arcbdx, $data['cod_conduc'], $data, 'tab_estudi_person', 'cod_segper');
             
           }
           
-          function procesaPoseedor($data){
-            
+          function procesaPoseedor($data, $guardado_final = 0){
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
             $ciu_expcon = NULL;
             $pai_reside = NULL;
@@ -1259,7 +1315,7 @@
                 (
                   '".$data['tip_docpos']."','".$data['num_docpos']."','".$data['nom_ap1pos']."',
                   '".$data['nom_ap2pos']."','".$data['nom_nompos']."','".$data['num_mo1pos']."',
-                  '".$data['num_mo2pos']."','".$data['num_telcon']."','".$data['dir_emapos']."',
+                  '".$data['num_mo2pos']."','".$data['num_telpos']."','".$data['dir_emapos']."',
                   '".$ciu_expcon."', '".$data['dir_dompos']."', '".$pai_reside."',
                   '".$dep_reside."', '".$ciu_reside."','".$usuari."',
                   NOW()
@@ -1289,6 +1345,9 @@
                   $cod_poseed  = $data['cod_poseed'];
             }
 
+            if($guardado_final){
+              self::registraTercer($data, 'pos', 'poseed');
+            }
             $arc_poseed = array('fil_ritpos', 'fil_simpos', 'fil_propos', 'fil_runpos', 'fil_antpos');
             $nom_arcbdx = array('fil_conrit', 'fil_simitx', 'fil_procur', 'fil_runtxx', 'fil_ajudic');
             self::guardaArchivos($arc_poseed, $nom_arcbdx, $cod_poseed, $data, 'tab_estudi_person', 'cod_segper');
@@ -1306,7 +1365,7 @@
           }
 
           
-          function procesaPropietario($data){
+          function procesaPropietario($data, $guardado_final = 0){
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
             $ciu_exppro = NULL;
             $pai_reside = NULL;
@@ -1368,6 +1427,10 @@
            
             $query = new Consulta($sql, self::$conexion);
 
+            if($guardado_final){
+              self::registraTercer($data, 'pro', 'propie');
+           }
+
             $arc_propie = array('fil_ritpro', 'fil_simpro', 'fil_propro', 'fil_runpro', 'fil_antpro');
             $nom_arcbdx = array('fil_conrit', 'fil_simitx', 'fil_procur', 'fil_runtxx', 'fil_ajudic');
             self::guardaArchivos($arc_propie, $nom_arcbdx, $cod_propie, $data, 'tab_estudi_person', 'cod_segper');
@@ -1383,7 +1446,7 @@
             
           }
           
-          function procesaVehiculo($data){
+          function procesaVehiculo($data, $guardado_final = 0){
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
             $sql="UPDATE ".BASE_DATOS.".tab_estudi_vehicu 
                     SET 
@@ -1416,6 +1479,49 @@
                     WHERE 
                       cod_segveh = '".$data['cod_vehicu']."' ";
             $query = new Consulta($sql, self::$conexion);
+
+            if($guardado_final){
+            $sql = "INSERT INTO ".BASE_DATOS.".tab_vehicu_vehicu(
+                        num_placax, cod_marcax, cod_lineax, 
+                        ano_modelo, cod_colorx, cod_carroc, 
+                        num_motorx, num_chasis, val_pesove,
+                        val_capaci, num_poliza, cod_ciusoa,
+                        num_config, cod_propie, cod_tenedo,
+                        cod_conduc, cod_tipveh, ind_chelis, 
+                        ind_estado, cod_paisxx, cod_opegps,
+                        usr_gpsxxx, clv_gpsxxx, idx_gpsxxx,
+                        usr_creaci, fec_creaci
+                    ) VALUES (
+                      '".$data['num_placax']."', '".$data['cod_marcax']."', '".$data['cod_lineax']."',
+                      '".$data['ano_modelo']."', '".$data['cod_colorx']."', '".$data['cod_carroc']."',
+                      '".$data['num_motorx']."', '".$data['num_chasis']."', 0,
+                      0, '".$data['num_soatxx']."', 1,
+                      '".$data['num_config']."', '".$data['num_docpro']."', '".$data['num_docpos']."',
+                      '".$data['num_doccon']."', '".$data['num_config']."', 0, 
+                      1, 0, '".$data['cod_opegps']."',
+                      '".$data['usr_gpsxxx']."', '".$data['clv_gpsxxx']."', '".$data['idx_gpsxxx']."',
+                      '".$usuari."', NOW()
+                    ) ON DUPLICATE KEY UPDATE 
+                    cod_marcax = '".$data['cod_marcax']."', cod_lineax = '".$data['cod_lineax']."', ano_modelo = '".$data['ano_modelo']."',
+                    cod_colorx = '".$data['cod_colorx']."', cod_carroc = '".$data['cod_carroc']."', num_motorx = '".$data['num_motorx']."',
+                    num_chasis = '".$data['num_chasis']."', num_poliza = '".$data['num_soatxx']."', num_config = '".$data['num_config']."',
+                    cod_propie = '".$data['num_docpro']."', cod_tenedo = '".$data['num_docpos']."', cod_conduc = '".$data['num_doccon']."',
+                    cod_tipveh = '".$data['num_config']."', usr_gpsxxx = '".$data['usr_gpsxxx']."', clv_gpsxxx = '".$data['clv_gpsxxx']."',
+                    idx_gpsxxx = '".$data['idx_gpsxxx']."',
+                    usr_modifi = '".$usuari."', fec_modifi = NOW()
+                    ";
+            $query = new Consulta($sql, self::$conexion);
+            $infoGen = self::darInfoSoliciGeneral($data['cod_estseg']);          
+            $sql = "INSERT INTO ".BASE_DATOS.".tab_transp_vehicu(
+                      cod_transp, num_placax, ind_estado, 
+                      usr_creaci, fec_creaci
+                    ) VALUES (
+                      '".$infoGen['cod_emptra']."', '".$data['num_placax']."', 1,
+                      '".$usuari."', NOW()
+                  ) ON DUPLICATE KEY UPDATE cod_transp = '".$infoGen['cod_emptra']."', num_placax = '".$data['num_placax']."'";
+            $query = new Consulta($sql, self::$conexion);
+            }          
+
             $arc_vehicu = array('fil_congps', 'fil_conrit', 'fil_runtxx', 'fil_compar');
             self::guardaArchivos($arc_vehicu, null, $data['cod_vehicu'], $data, 'tab_estudi_vehicu', 'cod_segveh');
             
@@ -1556,7 +1662,7 @@
             $sql = "SELECT
                       a.num_placax, a.num_remolq, a.ano_modelo, a.cod_colorx, a.cod_marcax, e.nom_marcax, a.cod_lineax, f.nom_lineax,
                       b.nom_colorx, a.cod_carroc, c.nom_carroc, a.num_config, d.nom_config, a.num_chasis, a.num_motorx, a.num_soatxx,
-                      a.fec_vigsoa, a.num_lictra, g.cod_opegps, g.nit_operad, g.nom_operad, a.usr_gpsxxx, a.clv_gpsxxx, a.url_gpsxxx,
+                      a.fec_vigsoa, a.num_lictra, g.cod_operad as 'cod_opegps', g.nit_operad, g.nom_operad, a.usr_gpsxxx, a.clv_gpsxxx, a.url_gpsxxx,
                       a.idx_gpsxxx, a.obs_opegps, a.fre_opegps
                     FROM ".BASE_DATOS.".tab_estudi_vehicu a
               LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON 
@@ -1570,7 +1676,7 @@
               LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas f ON
                     a.cod_lineax = f.cod_lineax AND a.cod_marcax = f.cod_marcax
               LEFT JOIN ".BD_STANDA.".tab_genera_opegps g ON
-                    a.cod_opegps = g.nit_operad
+              BINARY a.cod_opegps = BINARY g.nit_operad
                     WHERE a.cod_segveh = '".$cod_vehicu."'";
               $query = new Consulta($sql, self::$conexion);
               $resultados = $query -> ret_matrix('a')[0];
