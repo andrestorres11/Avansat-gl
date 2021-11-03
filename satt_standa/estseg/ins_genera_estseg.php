@@ -2150,20 +2150,33 @@
 
 
         private function getCodOpeGPS($cod_opegps = NULL){
-          $sql="SELECT a.cod_operad, a.nom_operad FROM ".BASE_DATOS.".tab_genera_opegps a WHERE a.ind_estado = 1";
+          $sql="SELECT a.nit_operad, a.nom_operad FROM ".BD_STANDA.".tab_genera_opegps a WHERE a.ind_estado = 1 ORDER BY a.nom_operad ASC";
           $resultado = new Consulta($sql, $this->conexion);
           $resultados = $resultado->ret_matriz('a');
           $html='';
+          $existe = false;
           foreach ($resultados as $registro){
               $selected = '';
               if($cod_opegps != '' || $cod_opegps != NULL){
-                if($registro['cod_operad'] == $cod_opegps){
+                if($registro['nit_operad'] == $cod_opegps){
                 $selected = 'selected';
+                $existe = true;
                 }
               }
-              $html .= '<option value="'.$registro['cod_operad'].'" '.$selected.'>'.$registro['nom_operad'].'</option>';
+              $html .= '<option value="'.$registro['nit_operad'].'" '.$selected.'>'.$registro['nom_operad'].'</option>';
           }
-          return utf8_encode($html);
+
+          if((!$existe) && ($cod_opegps != '' ||  $cod_opegps != NULL)){
+            $dv = substr($cod_opegps, -1);
+            $nit = substr($cod_opegps, 0, -1);
+            $sql = "SELECT a.nom_operad FROM ".BASE_DATOS.".tab_genera_opegps a WHERE a.nit_operad = '".$nit."' AND a.nit_verifi = '".$dv."'";
+            $resultado = new Consulta($sql, $this->conexion);
+            $resultados = $resultado->ret_matriz('a');
+            if(count($resultados) > 0){
+              $html .= '<option value="'.$cod_opegps.'" selected>'.$resultados[0]['nom_operad'].'</option>';
+            }
+          }
+          return $html;
         }
 
         private function getParentesco(){
@@ -2695,35 +2708,9 @@
                 <div class="row">
                   <div class="col-3 form-group">
                     <label for="nit_operadID" class="labelinput"><div class="obl">*</div>Nit del Operador:</label>
-                    <input class="form-control form-control-sm req" type="text" placeholder="Nit" id="nit_operadID" name="nit_operad" required>
-                  </div>
-                  <div class="col-2 form-group">
-                    <label for="nit_verifiID" class="labelinput">DIV:</label>
-                    <input class="form-control form-control-sm" type="text" id="nit_verifiID" name="nit_verifi">
+                    <input class="form-control form-control-sm req num" type="number" placeholder="Nit" id="nit_operadID" name="nit_operad" required>
                   </div>
                 </div>
-
-                <div class="row ml-3 mt-3">
-                  <div class="col-6">
-                    <input class="form-check-input" type="checkbox" id="ind_usaidxID" value="1" name="ind_usaidx">
-                    <label class="form-check-label pt-1" for="ind_usaidxID" style="font-size:14px;"> Aplica ID</label>
-                  </div>
-                  <div class="col-6">
-                    <input class="form-check-input" type="checkbox" id="ind_cronxxID" value="1" name="ind_cronxx">
-                    <label class="form-check-label pt-1" for="ind_cronxxID" style="font-size:14px;"> Intregrado con CRON</label>
-                  </div>
-                </div>
-                <div class="row ml-3 mt-3">
-                  <div class="col-6">
-                    <input class="form-check-input" type="checkbox" id="ind_rndcxxID" value="1" name="ind_rndcxx">
-                    <label class="form-check-label pt-1" for="ind_rndcxxID" style="font-size:14px;"> Reporta RNDC</label>
-                  </div>
-                  <div class="col-6">
-                    <input class="form-check-input" type="checkbox" id="ind_intgpsID" value="1" name="ind_intgps">
-                    <label class="form-check-label pt-1" for="ind_intgpsID" style="font-size:14px;"> Intregrado GPS</label>
-                  </div>
-                </div>
-
               </div>
             </div>
             <div class="modal-footer">

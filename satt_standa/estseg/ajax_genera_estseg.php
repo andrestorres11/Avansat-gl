@@ -266,40 +266,82 @@
           function guardarGPS(){
             $info=[];
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
-            $sql = "INSERT INTO ".BASE_DATOS.".tab_genera_opegps(
-                      nom_operad, ind_usaidx, nit_operad,
-                      nit_verifi, ind_estado, ind_cronxx,
-                      ind_rndcxx, ind_intgps, url_gpsxxx,
-                      apl_idxxxx, usr_creaci, fec_creaci
-                    ) VALUES (
-                      '".$_REQUEST['nom_operad']."', '".$_REQUEST['ind_usaidx']."', '".$_REQUEST['nit_operad']."',
-                      '".$_REQUEST['nit_verifi']."', '1', '".$_REQUEST['ind_cronxx']."',
-                      '".$_REQUEST['ind_rndcxx']."', '".$_REQUEST['ind_intgps']."', '".$_REQUEST['url_gpsxxx']."',
-                      '".$_REQUEST['ind_usaidx']."', '".$usuari."', NOW()
-              )";
-            $query = new Consulta($sql, self::$conexion);
-            if($query){
-              $info['status']=200;
-              $info['info']=self::getOpeGps();
+            if(!self::validaRegistroOperadorGPS($_REQUEST['nit_operad'])){
+              $sql = "INSERT INTO ".BASE_DATOS.".tab_genera_opegps(
+                        nom_operad, ind_usaidx, nit_operad,
+                        nit_verifi, ind_estado, ind_cronxx,
+                        ind_rndcxx, ind_intgps, url_gpsxxx,
+                        apl_idxxxx, usr_creaci, fec_creaci
+                      ) VALUES (
+                        '".$_REQUEST['nom_operad']."', '0', '".$_REQUEST['nit_operad']."',
+                        '".self::calcularDV($_REQUEST['nit_operad'])."', '1', '0',
+                        '0', '0', '".$_REQUEST['url_gpsxxx']."',
+                        '0', '".$usuari."', NOW()
+                )";
+              $query = new Consulta($sql, self::$conexion);
+              if($query){
+                $info['status']=200;
+                $info['info'] = self::getOpeGps();
+                $info['nuevoOpe'] = '<option value="'.$_REQUEST['nit_operad'].''.self::calcularDV($_REQUEST['nit_operad']).'" selected>'.$_REQUEST['nom_operad'].'</option>';
+              }else{
+                $info['status']=100;
+                $info['response'] = 'No fue posible registrar el operador.';
+              }
             }else{
-              $info['status']=100;
+                $info['status']=300;
+                $info['response'] = 'El operador gps ya se encuentra registrado. No es posible su registro.';
             }
             echo json_encode($info);
           }
 
+          function validaRegistroOperadorGPS($nit){
+            $sql = "SELECT * FROM ".BASE_DATOS.".tab_genera_opegps a WHERE a.nit_operad = '".$nit."' AND a.nit_verifi = '".self::calcularDV($_REQUEST['nit_operad'])."'";
+            $query = new Consulta($sql, self::$conexion);
+            $resultados = $query->ret_matriz('a');
+            if(count($resultados) > 0){
+              return true;
+            }
+            return false;
+          }
+
+          function calcularDV($nit) {
+            if (! is_numeric($nit)) {
+                return false;
+            }
+            $arr = array(1 => 3, 4 => 17, 7 => 29, 10 => 43, 13 => 59, 2 => 7, 5 => 19, 
+            8 => 37, 11 => 47, 14 => 67, 3 => 13, 6 => 23, 9 => 41, 12 => 53, 15 => 71);
+            $x = 0;
+            $y = 0;
+            $z = strlen($nit);
+            $dv = '';
+            for ($i=0; $i<$z; $i++) {
+                $y = substr($nit, $i, 1);
+                $x += ($y*$arr[$z-$i]);
+            }
+            $y = $x%11;
+            
+            if ($y > 1) {
+                $dv = 11-$y;
+                return $dv;
+            } else {
+                $dv = $y;
+                return $dv;
+            }
+          }
+
           function getOpeGps(){
-            $sql="SELECT a.cod_operad, a.nom_operad FROM ".BASE_DATOS.".tab_genera_opegps a WHERE a.ind_estado = 1";
+            $sql="SELECT a.nit_operad, a.nom_operad FROM ".BD_STANDA.".tab_genera_opegps a WHERE a.ind_estado = 1";
             $resultado = new Consulta($sql, self::$conexion);
             $resultados = $resultado->ret_matriz('a');
             $html='';
             foreach ($resultados as $registro){
                 $selected = '';
                 if($cod_opegps != '' || $cod_opegps != NULL){
-                  if($registro['cod_operad'] == $cod_opegps){
+                  if($registro['nit_operad'] == $cod_opegps){
                   $selected = 'selected';
                   }
                 }
-                $html .= '<option value="'.$registro['cod_operad'].'" '.$selected.'>'.$registro['nom_operad'].'</option>';
+                $html .= '<option value="'.$registro['nit_operad'].'" '.$selected.'>'.$registro['nom_operad'].'</option>';
             }
             return utf8_encode($html);
           }
@@ -1514,7 +1556,7 @@
             $sql = "SELECT
                       a.num_placax, a.num_remolq, a.ano_modelo, a.cod_colorx, a.cod_marcax, e.nom_marcax, a.cod_lineax, f.nom_lineax,
                       b.nom_colorx, a.cod_carroc, c.nom_carroc, a.num_config, d.nom_config, a.num_chasis, a.num_motorx, a.num_soatxx,
-                      a.fec_vigsoa, a.num_lictra, a.cod_opegps, g.nit_operad, g.nom_operad, a.usr_gpsxxx, a.clv_gpsxxx, a.url_gpsxxx,
+                      a.fec_vigsoa, a.num_lictra, g.cod_opegps, g.nit_operad, g.nom_operad, a.usr_gpsxxx, a.clv_gpsxxx, a.url_gpsxxx,
                       a.idx_gpsxxx, a.obs_opegps, a.fre_opegps
                     FROM ".BASE_DATOS.".tab_estudi_vehicu a
               LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON 
@@ -1527,8 +1569,8 @@
                     a.cod_marcax = e.cod_marcax
               LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas f ON
                     a.cod_lineax = f.cod_lineax AND a.cod_marcax = f.cod_marcax
-              LEFT JOIN ".BASE_DATOS.".tab_genera_opegps g ON
-                    a.cod_opegps = g.cod_operad
+              LEFT JOIN ".BD_STANDA.".tab_genera_opegps g ON
+                    a.cod_opegps = g.nit_operad
                     WHERE a.cod_segveh = '".$cod_vehicu."'";
               $query = new Consulta($sql, self::$conexion);
               $resultados = $query -> ret_matrix('a')[0];

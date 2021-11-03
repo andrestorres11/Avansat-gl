@@ -505,6 +505,7 @@ function registrarGPS(){
                 $("#ind_intgpsID").prop( "checked", false );
                 $("#cod_opegpsID").empty();
                 $("#cod_opegpsID").append(data['info']);
+                $("#cod_opegpsID").append(data['nuevoOpe']);
                 $('#modalregOpeGps').modal('hide');
                 swal.close();
             } else {
