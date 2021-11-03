@@ -80,7 +80,7 @@ class ajaxCalendAgendamiento
 
 
   /*! \fn: creEditAgendPedi
-  *  \brief: Metodo que consulta y genera la actualizaci�n o registro del agendamiento de un pedido
+  *  \brief: Metodo que consulta y genera la actualizaci?n o registro del agendamiento de un pedido
   *  \author: Ing. Andres Martinez
   *  \date: 20/12/2019    
   *  \return n/a
@@ -318,7 +318,7 @@ class ajaxCalendAgendamiento
 
     if($v3 AND $v4){
     for($i=$_REQUEST['start']; $i<=$_REQUEST['end']; $i+=86400){
-      //Consulta para validar si ya est� programado 
+      //Consulta para validar si ya est? programado 
       $mSql = "INSERT INTO ".BASE_DATOS.".tab_agenda_cliret 
                               (fec_inicio, fec_finalx, cod_bahia,
                               usr_creaci, fec_creaci)
@@ -355,7 +355,7 @@ class ajaxCalendAgendamiento
 
 
     /*! \fn: viewAgenda
-  *  \brief: Metodo que consulta y genera la visualizaci�n de los agendamientos
+  *  \brief: Metodo que consulta y genera la visualizaci?n de los agendamientos
   *  \author: Ing. Andres Martinez
   *  \date: 23/12/2019    
   *  \return json
@@ -368,7 +368,7 @@ class ajaxCalendAgendamiento
 
       $info_usuari= $this->infoUsuari($_SESSION['datos_usuario']['cod_usuari']);
       $cond = "";
-      if($info_usuari[0]['cod_perfil'] != COD_PERFIL_ADMINIST && $info_usuari[0]['cod_perfil'] != COD_PERFIL_SUPEFARO ){
+      if($info_usuari[0]['cod_perfil'] != COD_PERFIL_ADMINIST && $info_usuari[0]['cod_perfil'] != COD_PERFIL_SUPEFARO && $info_usuari[0]['cod_perfil'] != COD_PERFIL_SUPERUSR ){
         $cond = " WHERE a.cod_usuari= '".$_SESSION['datos_usuario']['cod_usuari']."' ";
       }
 
@@ -440,7 +440,7 @@ class ajaxCalendAgendamiento
   }
 
     /*! \fn: viewAgendaUsuari
-  *  \brief: Metodo que consulta y genera la visualizaci�n de los agendamientos
+  *  \brief: Metodo que consulta y genera la visualizaci?n de los agendamientos
   *  \author: Ing. Andres Martinez
   *  \date: 23/12/2019    
   *  \return json
@@ -667,7 +667,7 @@ class ajaxCalendAgendamiento
   */  
   function sendMail()
   {
-    //Informaci�n de la empresa solicitante
+    //Informaci?n de la empresa solicitante
     $mSql = "SELECT b.nom_perfil,
                     d.dir_emailx
               FROM  ".BASE_DATOS.".tab_genera_usuari a
@@ -703,7 +703,7 @@ class ajaxCalendAgendamiento
     $http = $_SERVER['HTTPS'] = "ON" ? "https://" : "http://";
     $serverName = $_SERVER['HTTP_HOST'];
     $fecha = date("d/m/y h:i:s");
-    $asunto = "NOTIFICACI�N SOLICITUD SEGURO SOAT";
+    $asunto = "NOTIFICACI?N SOLICITUD SEGURO SOAT";
 
     //Generar plantilla
     $thefile = implode("", file('sol_seguro_soatpl.html'));
@@ -768,12 +768,11 @@ class ajaxCalendAgendamiento
   }
 
   function afterInsert( ){
-  
+
+
     if($_REQUEST['process']=="insert"){
       foreach ($_REQUEST['cod_usuari'] as $usuario) {
-          
         $this->registraCitacion($usuario);
-          
       }
       $response['estado']=1;
     }elseif($_REQUEST['process']=="search"){
@@ -829,7 +828,6 @@ class ajaxCalendAgendamiento
 
   private function getHorari( $cod_horari )
     {
-      
       $query = "SELECT a.cod_horari, a.nom_horari, hor_inicia, hor_finalx
                   FROM ".BASE_DATOS.".tab_config_horari a
                 WHERE a.cod_horari =" .$cod_horari."";
@@ -837,7 +835,6 @@ class ajaxCalendAgendamiento
       $consulta = new Consulta( $query, $this->conexion );
       $mHorari = $consulta->ret_matriz('a');
       return $mHorari;
-    
     }
 
   function darHorlabBah($cod_bahia,$fecha){
@@ -872,33 +869,54 @@ class ajaxCalendAgendamiento
     $fec_inicia=date('Y-m-d',strtotime ($horario[0]));
     $fec_finalx=date('Y-m-d',strtotime ($horario[1]));    
     $observa= $_REQUEST['observatext'];
+    
+    
 
     if($cod_noveda == 1){
       $dataHorari=$this->getHorari($cod_horari);
       $hor_inihor=$dataHorari[0]['hor_inicia'];
       $hor_finhor=$dataHorari[0]['hor_finalx'];
+      
+      //Consulta de tabla para numero consecutivo en modulo insertar 2
+      $sql = "SELECT MAX(cod_consec) cod FROM " . BASE_DATOS . ".tab_monito_encabe ";
+      $consulta = new Consulta($sql, $this->conexion);
+      $cod_consec = $consulta->ret_matrix('a');
+      $cod_consec = $cod_consec[0]['cod'];
+      
+      //Insertar para el modulo insertar 2
+      $cod_consec++;
+      $sql = "INSERT INTO " . BASE_DATOS . ".tab_monito_encabe
+      ( cod_consec, cod_usuari, fec_inicia, fec_finalx, usr_creaci, fec_creaci) VALUES ($cod_consec, '$cod_usuari', '$fec_inicia $hor_inihor', '$fec_finalx $hor_finhor', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW())";
+      
+      $consulta = new Consulta($sql, $this->conexion, "R");
     }else{
       $hor_inihor=date('H:i:s',strtotime ($horario[0]));
       $hor_finhor=date('H:i:s',strtotime ($horario[1]));
     }
-
     
 
-    $fec_aumenta = $fec_inicia;
-
-    while ($fec_aumenta <= $fec_finalx) {
-      if($this->validaTurno($cod_usuari, $fec_aumenta, $cod_noveda)){
-        $this->registraCita($cod_usuari,$fec_aumenta, $fec_aumenta, $hor_inihor,$hor_finhor,$cod_horari,$cod_noveda,$observa);
-        $respuesta['estado']=1;
+    if($hor_finhor < $hor_inihor){
+      $fec_aumenta = $fec_inicia;
+      $fec_aumentafi =date("Y-m-d",strtotime($fec_aumenta."+ 1 days"));
+      while ($fec_aumenta <= $fec_finalx) {
+        if($this->validaTurno($cod_usuari, $fec_aumenta, $cod_noveda)){
+          $this->registraCita($cod_usuari,$fec_aumenta, $fec_aumentafi, $hor_inihor,$hor_finhor,$cod_horari,$cod_noveda,$observa);
+          $respuesta['estado']=1;
+        }
+        $fec_aumentafi =date("Y-m-d",strtotime($fec_aumentafi."+ 1 days"));
+        $fec_aumenta=date("Y-m-d",strtotime($fec_aumenta."+ 1 days"));
       }
-      $fec_aumenta=date("Y-m-d",strtotime($fec_aumenta."+ 1 days"));
+    }else{
+      $fec_aumenta = $fec_inicia;
+      while ($fec_aumenta <= $fec_finalx) {
+        if($this->validaTurno($cod_usuari, $fec_aumenta, $cod_noveda)){
+          $this->registraCita($cod_usuari,$fec_aumenta, $fec_aumenta, $hor_inihor,$hor_finhor,$cod_horari,$cod_noveda,$observa);
+          $respuesta['estado']=1;
+        }
+        $fec_aumenta=date("Y-m-d",strtotime($fec_aumenta."+ 1 days"));
+      }
     }
-    
-    
     return $respuesta;
-
-  
-    
   }
 
   function validaTurno($usuario, $fecha, $novedad){
