@@ -807,6 +807,52 @@ class Proc_segui
               var limit = 2000;
               var nueva_longitud = 0;
               var text;
+
+              const xhr = new XMLHttpRequest();
+              var formData = new FormData();
+              
+              function InsertInPAD(data,api_url,name) {
+
+                var checkBox = document.getElementById("habPAD2");
+                if (checkBox.checked == true){
+                    formData.append("use_id", data[0]["cod_tercer"]);
+                    formData.append("use_name", data[0]["nombres"]);
+                    formData.append("usu_cellph", data[0]["num_telmov"]);
+                    formData.append("lic_plate", data[0]["num_placax"]);
+                    formData.append("use_settin", data[0]["num_config"]);
+                    formData.append("lin_app", "Avansat GL");
+                    formData.append("lin_status", 1);
+                    formData.append("use_creaci", name);
+            
+
+                    xhr.open("POST", `${api_url}`);
+                    xhr.send(formData);
+
+                    xhr.onreadystatechange = function () {
+                        if (this.readyState === XMLHttpRequest.DONE) {
+                            if (this.status == 200)
+                            {
+                                Swal.fire(
+                                    "Proceso Exitoso",
+                                    "Se ha registrado la sugerencia del recurso de manera exitosa.",
+                                    "success"
+                                    )
+                            }
+                            if (this.status == 422)
+                            {
+                                Swal.fire(
+                                    "Error!",
+                                    "No es posible realizar la sugerencia del recurso ya que se encuentra registrado.",
+                                    "error"
+                                    )
+                            }
+
+                        }
+                    }
+                }    
+              }
+              
+
               $("#obsID").parent().find("#counter").html("Queda(n) <b>"+limit+"</b> Caracter(es) para Escribir");
               $("#obsID").keyup(function(){ 
                 nueva_longitud = limit - $("#obsID").val().length;
@@ -978,6 +1024,16 @@ class Proc_segui
                                array('4', 'CON NOVEDAD NO LLEGA A PLANTA'), 
                                array('5', 'CON NOVEDAD LLEGA A PLANTA')  
                                );
+        $queryDriver = "SELECT a.num_despac, a.cod_manifi, b.num_placax, c.num_config, d.cod_tercer,
+                        CONCAT(d.nom_tercer, ' ', d.nom_apell1, ' ', d.nom_apell2) as nombres, d.num_telmov
+                        FROM " . BASE_DATOS . ".tab_despac_despac a 
+                        LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige b ON a.num_despac = b.num_despac 
+                        LEFT JOIN " . BASE_DATOS . ".tab_vehicu_vehicu c ON b.num_placax = c.num_placax
+                        LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer d ON b.cod_conduc = d.cod_tercer
+
+                        WHERE a.num_despac = " . $_REQUEST['despac'] . "";    
+        $consultaDriver = new Consulta($queryDriver, $this->conexion);
+        $driverData = $consultaDriver->ret_matriz();    
 
         $query = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
                         UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
@@ -1139,8 +1195,8 @@ class Proc_segui
                                 $mHtml->SetBody("<textarea name='obs' id='obsID' onkeyup='UpperText( $(this) )' cols='20' Rows='4'></textarea>");
                                 $mHtml->SetBody("<div style='font-family:Arial,Helvetica,sans-serif; font-size: 11px;' id='counter'></div>");
                                 $mHtml->SetBody("</td>");
-
-                                $mHtml->CheckBox( array("class"=>'celda_info', "value"=>'1', "name"=>'habPAD') );
+                                $name = "'".$datos_usuario['nom_usuari']."'";
+                                $mHtml->CheckBox( array("class"=>'celda_info', "value"=>'1',"id"=>"habPAD2", "name"=>'habPAD2', "onclick"=>'InsertInPAD('.htmlspecialchars(json_encode($driverData)).','.API_PAD.','.htmlspecialchars($name).')') );
                                 
                                 $mHtml->Javascript( $mScript2 );
 

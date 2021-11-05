@@ -152,5 +152,7 @@ define("CON_TIPSER_MA", 2);
 define("CON_TIPSER_OAL", 1);
 
 define("COD_PERFIL_SUPEREAL", "7");// Controlador CLF
+define("API_PAD", "'http://localhost/pad-backend/public/api/linkages'");// Controlador CLF
+
 
 ?>
