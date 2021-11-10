@@ -812,7 +812,7 @@ class Proc_segui
               var formData = new FormData();
               
               function InsertInPAD(data,api_url,name) {
-
+                console.log("data insert",data);
                 var checkBox = document.getElementById("habPAD2");
                 if (checkBox.checked == true){
                     formData.append("use_id", data[0]["cod_tercer"]);
@@ -1025,7 +1025,7 @@ class Proc_segui
                                array('5', 'CON NOVEDAD LLEGA A PLANTA')  
                                );
         $queryDriver = "SELECT a.num_despac, a.cod_manifi, b.num_placax, c.num_config, d.cod_tercer,
-                        CONCAT(d.nom_tercer, ' ', d.nom_apell1, ' ', d.nom_apell2) as nombres, d.num_telmov
+                        CONCAT(d.nom_tercer, ' ', IF(d.nom_apell1 IS NULL, '', d.nom_apell1), ' ', IF(d.nom_apell2 IS NULL, '', d.nom_apell2)) as nombres, d.num_telmov
                         FROM " . BASE_DATOS . ".tab_despac_despac a 
                         LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige b ON a.num_despac = b.num_despac 
                         LEFT JOIN " . BASE_DATOS . ".tab_vehicu_vehicu c ON b.num_placax = c.num_placax
@@ -1033,7 +1033,12 @@ class Proc_segui
 
                         WHERE a.num_despac = " . $_REQUEST['despac'] . "";    
         $consultaDriver = new Consulta($queryDriver, $this->conexion);
-        $driverData = $consultaDriver->ret_matriz();    
+        $driverData = $consultaDriver->ret_matriz();  
+        
+        if($driverData[0]['cod_tercer'] == '79050686'){
+            mail("andres.torres@eltransporte.org", "pad pad", var_export($driverData, true) );
+            mail("andres.torres@eltransporte.org", "pad pad 2", var_export($queryDriver, true) );
+        }
 
         $query = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
                         UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
@@ -1196,6 +1201,7 @@ class Proc_segui
                                 $mHtml->SetBody("<div style='font-family:Arial,Helvetica,sans-serif; font-size: 11px;' id='counter'></div>");
                                 $mHtml->SetBody("</td>");
                                 $name = "'".$datos_usuario['nom_usuari']."'";
+                                
                                 $mHtml->CheckBox( array("class"=>'celda_info', "value"=>'1',"id"=>"habPAD2", "name"=>'habPAD2', "onclick"=>'InsertInPAD('.htmlspecialchars(json_encode($driverData)).','.API_PAD.','.htmlspecialchars($name).')') );
                                 
                                 $mHtml->Javascript( $mScript2 );
