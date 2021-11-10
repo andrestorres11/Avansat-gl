@@ -2171,6 +2171,7 @@ class Despac
 			}
 			else{#Despacho Sin Novedades
 				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
+				
 				$mDespac[$i][tiempoGl] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
 			} 
 
