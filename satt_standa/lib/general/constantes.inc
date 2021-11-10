@@ -12,6 +12,7 @@ define("COD_PERFIL_AUDITORX", "97");// Auditor CLF
 define("COD_PERFIL_DIRECTOR", "74");// Director CLF
 define("COD_PERFIL_SUPEREAL", "77");// Director CLF
 define("COD_PERFIL_CONTROLA", "7");// Controlador CLF
+define("COD_PERFIL_COORDINA", "73");// Controlador CLF
 
 define("COD_FILTRO_EMPTRA", "1");// constante para filtro de Transportadora
 define("COD_FILTRO_AGENCI", "2");// constante para filtro de Agencias de la transportadora

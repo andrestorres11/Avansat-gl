@@ -85,10 +85,19 @@ class exp_diario_trazab {
         $html .= "<td class=celda_titulo rowspan=2 >Despacho</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Transportadora</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Generador</td>";
+        
+        $html .= "<td class=celda_titulo rowspan=2 >Remitente</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Destinatario</td>";
         $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Salida</td>";
         $html .= "<td class=celda_titulo colspan=2 >Fecha y Hora de Cita Cargue</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Origen</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Destino</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >No. Pedido</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >No. Remesa</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Peso</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Volumen</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >Productos</td>";
+        $html .= "<td class=celda_titulo rowspan=2 >No. Solicitud</td>";
         $html .= "<td class=celda_titulo colspan=3 >Estimado de Llegada</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Placa</td>";
         $html .= "<td class=celda_titulo rowspan=2 >Conductor</td>";
@@ -148,12 +157,20 @@ class exp_diario_trazab {
                 $html .= "<td class=celda_info nowrap>$row[0]</td>";                               // Número despacho
                 $html .= "<td class=celda_info nowrap>$row[10]</td>";                              // nombre Transportadora
                 $html .= "<td class=celda_info nowrap>".$row['nom_genera']."</td>";                // nombre Generador
+                $html .= "<td class=celda_info nowrap>".$row['abr_remite']."</td>";                // nombre Remitente
+                $html .= "<td class=celda_info nowrap>".$row['abr_destin']."</td>";                // nombre Destinatario
                 $html .= "<td class=celda_info nowrap>" . $fec_sal[0] . "</td>";                       // Fecha salida
                 $html .= "<td class=celda_info nowrap>" . $fec_sal[1] . "</td>";                       // Hora salida
                 $html .= "<td class=celda_info nowrap>".$fec_cit[0]."</td>";                       // Fecha cita cargue
                 $html .= "<td class=celda_info nowrap>".$fec_cit[1]."</td>";  
                 $html .= "<td class=celda_info nowrap>$row[2]</td>";                               // Origen
                 $html .= "<td class=celda_info nowrap>$row[3]</td>";                               // Destino
+                $html .= "<td class=celda_info nowrap>$row[num_pedido]</td>";                      // Pedido
+                $html .= "<td class=celda_info nowrap>$row[cod_remesa]</td>";                      // Remesa
+                $html .= "<td class=celda_info nowrap>$row[val_pesoxx]</td>";                      // Peso
+                $html .= "<td class=celda_info nowrap>$row[val_volume]</td>";                      // Volumen
+                $html .= "<td class=celda_info nowrap>$row[des_mercan]</td>";                      // Producto
+                $html .= "<td class=celda_info nowrap>$row[num_solici]</td>";                      // Solicitud
                 $html .= "<td class=celda_info nowrap>" . $fec_lle[0] . "</td>";                       // Fecha llegada 
                 $html .= "<td class=celda_info nowrap>" . $row[8] . "</td>";                           // Duración Dias desde salida a llegada
 

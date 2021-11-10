@@ -3861,8 +3861,9 @@ class InsertNovedad {
                             $mResult = explode("; ", $mResult);
                             $mCodResp = explode(":", $mResult[0]);
                             $mMsgResp = explode(":", $mResult[1]);
+                            // mail("andres.torres@eltransporte.org", "avansatgl ws", var_export($mCodResp, true));
 
-                            if ("1000" != $mCodResp[1]) {
+                            if ("1000" != trim($mCodResp[1]) ) {
                                 $error_ = $mMsgResp[1];
                             }
                         } catch (SoapFault $e) {
@@ -4597,7 +4598,7 @@ class InsertNovedad {
 
         $mSql = "SELECT a.cod_fwxxxx
                    FROM " . BASE_DATOS . ".tab_noveda_tranfw a 
-                  WHERE a.cod_faroxx = " . $mDatRegist['noveda'];
+                  WHERE a.cod_faroxx = '" . $mDatRegist['noveda']."'";
         $mConsult = new Consulta($mSql, $this->conexion);
         $cod_fwxxxx = $mConsult->ret_matrix('i');
         $mResult['cod_fwxxxx'] = $cod_fwxxxx[0][0] == NULL ? '01' : $cod_fwxxxx[0][0];

@@ -366,7 +366,7 @@ class calendAgendamiento
                   FROM ".BASE_DATOS.".tab_genera_usuari a
                   
                 WHERE a.ind_estado = '1'
-                AND a.cod_perfil IN (".COD_PERFIL_CONTROLA.",".COD_PERFIL_SUPEFARO.",".COD_PERFIL_ADMINIST.")
+                AND a.cod_perfil IN (".COD_PERFIL_CONTROLA.",".COD_PERFIL_SUPEFARO.",".COD_PERFIL_ADMINIST.", ".COD_PERFIL_COORDINA.")
                 ORDER BY a.nom_usuari ASC";
       
       

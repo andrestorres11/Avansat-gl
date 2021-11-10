@@ -208,6 +208,24 @@ class rutas
 		return $mResult[0];
 	}
 
+	/*! \fn: getInicPC
+	 *  \brief: Trae el PC de Bodega cliente
+	 *  \author: Ing. Andres tores
+	 *	\date: 20/09/2021
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return: Array
+	 */
+	public function getInicPC()
+	{
+		$mSql = " SELECT a.cod_contro, TRIM(if(ind_virtua = '1',CONCAT(nom_contro,' (Virtual)'),nom_contro)) AS nom_contro
+					FROM ".BASE_DATOS.".tab_genera_contro a
+				   WHERE a.cod_contro = ".CONS_CODIGO_PCINIC;
+		$mConsult = new Consulta($mSql, rutas::$cConexion );
+		$mResult = $mConsult -> ret_matrix('a');
+		return $mResult[0];
+	}
+
 	/*! \fn: getNextCodRuta
 	 *  \brief: Trae el siguiente Codigo de Ruta (Para crear una ruta)
 	 *  \author: Ing. Fabian Salinas

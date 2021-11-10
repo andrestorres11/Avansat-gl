@@ -307,7 +307,7 @@ class Proc_salida {
     $formulario->texto("Remolque", "text", "trayle\" onChange=\"form_item.submit()", 0, 6, 6, "", $_REQUEST[trayle], "", "", 1);
     $formulario->linea("Conductor", 0, "t");
     $formulario->linea("Usuario Creador", 0, "t");
-    $formulario->linea("Fecha Creación", 1, "t");
+    $formulario->linea("Fecha Creaci�n", 1, "t");
     $formulario->oculto("opcion", 0, 0);
     $formulario->oculto("window", "central", 0);
     $formulario->oculto("cod_servic", $_REQUEST[cod_servic], 0);
@@ -927,16 +927,17 @@ class Proc_salida {
                 $mensaje_jlt="<br>Error Al Expidir la Poliza De Trayectos";
             }
         }
-      $consultaNit = "SELECT a.clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." ";
-      $nit = new Consulta($consultaNit, $this->conexion);
-      $nit = $nit->ret_matriz();
-      $nit = $nit[0]['clv_filtro'];
 
-      if ($this->getInterfParame('85', $nit) == true)
+      // $consultaNit = "SELECT a.clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a WHERE a.cod_perfil = ".$_SESSION['datos_usuario']['cod_perfil']." ";
+      // $nit = new Consulta($consultaNit, $this->conexion);
+      // $nit = $nit->ret_matriz();
+      // $nit = $nit[0]['clv_filtro'];
+
+      if ($this->getInterfParame('85', $data_despac[0]['cod_transp']) == true)
       {
         require_once URL_ARCHIV_STANDA."/interf/app/APIClienteApp/controlador/DespachoControlador.php";
         $controlador = new DespachoControlador();
-        $response    = $controlador->registrar($this->conexion, $_REQUEST[despac], $nit);
+        $response    = $controlador->registrar($this->conexion, $_REQUEST[despac], $data_despac[0]['cod_transp']);
         $mensaje     = $response->msg_respon;
 
         $mens = new mensajes();

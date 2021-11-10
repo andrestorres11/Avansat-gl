@@ -1143,6 +1143,7 @@ EOF;
 			$dirsolifa='../'.DIR_APLICA_CENTRAL.'/solifa/';
 			$imgexcel='../'.DIR_APLICA_CENTRAL.'/images/excel_logo.png';
 			$filejqjs='../'.DIR_APLICA_CENTRAL.'/js/jquery17.js';
+			$fileMomentjs='../'.DIR_APLICA_CENTRAL.'/js/moment.min.js';
 			$filejs='../'.DIR_APLICA_CENTRAL.'/js/mod_solici_inform.js';
 			$filecss='../'.DIR_APLICA_CENTRAL.'/estilos/mod_solici_inform.css';
 
@@ -1163,8 +1164,20 @@ EOF;
 			        'script.src = "'.$filejs.'?t='.rand(10,99).'";'.
 			        'document.getElementsByTagName("head")[0].appendChild(script);'.
 				'</script>';
+				$js2='<script id="_45462213DEf">'.
+			        'var ds="'.$dirsolifa.'",'.
+			        'dc="'.$dircentral.'",'.
+			        'xls="'.$imgexcel.'",'.
+			        'cs=parseInt("'.$cod_servic.'"),'.
+			        'wd="'.$window.'",'.
+			        'ot=parseInt("'.$option.'"),'.
+			        'script = document.createElement("script");'.
+			        'script.type = "text/javascript";'.
+			        'script.src = "'.$fileMomentjs.'?t='.rand(10,99).'";'.
+			        'document.getElementsByTagName("head")[0].appendChild(script);'.
+				'</script>';
 	      		echo '<link rel="stylesheet" href="../'.DIR_APLICA_CENTRAL.'/estilos/mod_solici_inform.css">';
-				echo '<div class="inf_solici_solici">Cargando...'.$jq.$js.'</div>';
+				echo '<div class="inf_solici_solici">Cargando...'.$jq.$js.$js2.'</div>';
 				$formulario->cerrar();
 
 			}else{
