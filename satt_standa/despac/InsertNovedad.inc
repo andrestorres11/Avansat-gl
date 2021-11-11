@@ -4366,6 +4366,17 @@ class InsertNovedad {
                                                     </SOAP-ENV:Body>
                                                 </SOAP-ENV:Envelope>';
                                 
+                                if(  $interfaz->interfaz[$i]['timtra'] == 1 ){
+                                    $mFile = fopen(getcwd()."/logs/Carga_antioquia_STANDA_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                    fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
+                                    fwrite($mFile, "Type      : NORMAL XML REQUEST \n"); 
+                                    fwrite($mFile, "_POST     : ".json_encode($_POST)."  \n");
+                                    fwrite($mFile, "datInterf : ".json_encode($interfaz->interfaz[$i])."  \n");
+                                    fwrite($mFile, "Request   : ".$mTextXML."  \n");
+                                    fclose($mFile);
+                                }
+
+
                                 $s = curl_init();
                                 curl_setopt($s,CURLOPT_URL, $interfaz->interfaz[$i]['diwsdl']);
                                 curl_setopt($s,CURLOPT_TIMEOUT,"4"); 
@@ -4373,10 +4384,22 @@ class InsertNovedad {
                                 curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
                                 curl_setopt($s,CURLOPT_POST,true);
                                 curl_setopt($s,CURLOPT_POSTFIELDS,$mTextXML);
+                                curl_setopt($s, CURLOPT_SSL_VERIFYHOST, 0);
+                                curl_setopt($s, CURLOPT_SSL_VERIFYPEER, 0);
                                 $mResponse   = curl_exec($s);
                                 $mHttpStatus = curl_getinfo($s,CURLINFO_HTTP_CODE);
                                 curl_close($s);
 
+
+                                // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
+                                if(  $interfaz->interfaz[$i]['timtra'] == 1 ){
+                                    $mFile = fopen(getcwd()."/logs/Carga_antioquia_STANDA_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                    fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
+                                    fwrite($mFile, "Type        : NORMAL XML RESPONSE  \n");
+                                    fwrite($mFile, "Http Status : ".$mHttpStatus."  \n");
+                                    fwrite($mFile, "Response    : ".$mResponse."  \n");
+                                    fclose($mFile);
+                                }
 
                                 // Quita el namespace de las variables porque el simpleXML no lo puede leer, debe quedar un XML sencillo
                                 $mResponse = str_replace(array('soap:'), array(''), $mResponse);
@@ -4394,7 +4417,7 @@ class InsertNovedad {
                                 {
                                     throw new Exception($xmlObject -> Body -> IngresarReporteResponse -> IngresarReporteResult -> Descripcion, $xmlObject -> Body -> IngresarReporteResponse -> IngresarReporteResult -> Codigo);
                                 }
-
+                                /*
                                 // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
                                 if(  $interfaz->interfaz[$i]['timtra'] == 1 ){
                                     $mFile = fopen(getcwd()."/logs/".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
@@ -4404,6 +4427,7 @@ class InsertNovedad {
                                     fwrite($mFile, "Response: ".$mResponse." \n\n");
                                     fclose($mFile);
                                 }
+                                */
                           
                         } catch (Exception $e) {
 
@@ -4412,11 +4436,12 @@ class InsertNovedad {
                                     </b>
                                   </div>";
                             if(  $interfaz->interfaz[$i]['timtra'] == 1 ){
-                                    $mFile = fopen(getcwd()."/logs/".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                    $mFile = fopen(getcwd()."/logs/Carga_antioquia_STANDA_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
                                     fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
-                                    fwrite($mFile, "Type    : throw new Exception  \n");
-                                    fwrite($mFile, "Request : ".$mTextXML."  \n");
-                                    fwrite($mFile, "Response: ".$mResponse." \n\n");
+                                    fwrite($mFile, "Type     : throw new Exception  \n");
+                                    fwrite($mFile, "Request  : ".$mTextXML."  \n");
+                                    fwrite($mFile, "Response : ".$mResponse." \n\n");
+                                    fwrite($mFile, "Exception: ".var_dump($e)." \n\n");
                                     fclose($mFile);
                                 }
 
