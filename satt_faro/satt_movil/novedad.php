@@ -515,7 +515,7 @@ class Novedad {
                                             </SOAP-ENV:Envelope>';
                                // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
                             if(  $dataCargaAn['val_timtra'] == 1 ){
-                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_MOVIL_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
                                 fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
                                 fwrite($mFile, "Type      : NORMAL XML REQUEST \n"); 
                                 fwrite($mFile, "_POST     : ".json_encode($_POST)."  \n");
@@ -531,13 +531,15 @@ class Novedad {
                             curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
                             curl_setopt($s,CURLOPT_POST,true);
                             curl_setopt($s,CURLOPT_POSTFIELDS,$mTextXML);
+                            curl_setopt($s, CURLOPT_SSL_VERIFYHOST, 0);
+                            curl_setopt($s, CURLOPT_SSL_VERIFYPEER, 0);
                             $mResponse   = curl_exec($s);
                             $mHttpStatus = curl_getinfo($s,CURLINFO_HTTP_CODE);
                             curl_close($s);
 
                             // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
                             if(  $dataCargaAn['val_timtra'] == 1 ){
-                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_MOVIL_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
                                 fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
                                 fwrite($mFile, "Type        : NORMAL XML RESPONSE  \n");
                                 fwrite($mFile, "Http Status : ".$mHttpStatus."  \n");
@@ -565,7 +567,7 @@ class Novedad {
 
                             // Si en la tabla interf_parame para ese cliente se tiene el parametro: val_timtra en 1, genera un log en satt_faro/logs/
                             // if(  $dataCargaAn['val_timtra'] == 1 ){
-                            //     $mFile = fopen(getcwd()."/logs/Carga_antioquia_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                            //     $mFile = fopen(getcwd()."/logs/Carga_antioquia_MOVIL_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
                             //     fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
                             //     fwrite($mFile, "Type    : NORMAL MOVIL  \n");
                             //     fwrite($mFile, "Request : ".$mTextXML."  \n");
@@ -578,7 +580,7 @@ class Novedad {
                         
                         if(  $dataCargaAn['val_timtra'] == 1  )
                         {
-                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
+                                $mFile = fopen(getcwd()."/logs/Carga_antioquia_MOVIL_".$regist["nittra"]."_".date("Y_m_d").".txt", 'a+');
                                 fwrite($mFile, "------------------------ DATE ".date("Y-m-d H:i:s")." ------------------------ \n");
                                 fwrite($mFile, "Type    : throw new Exception movil  \n");
                                 fwrite($mFile, "Message : ".$e -> getMessage()."  \n");
