@@ -4358,7 +4358,7 @@ class InsertNovedad {
                                                                 <ns1:Placa>'.( substr($mDatDespac["num_placax"], 0,3)."-".substr($mDatDespac["num_placax"],3, 6) ).'</ns1:Placa>
                                                                 <ns1:CodigoPuestoControlOET>'.$mControPadre[0]['cod_contro'].'</ns1:CodigoPuestoControlOET>
                                                                 <ns1:FechaNovedad>'.$regist["fecnov"].'</ns1:FechaNovedad>
-                                                                <ns1:Observacion>'.$regist["observ"].'</ns1:Observacion>
+                                                                <ns1:Observacion>'.strip_tags($regist["observ"]).'</ns1:Observacion>
                                                                 <ns1:Lugar>'.$regist['sitio'].'</ns1:Lugar>
                                                                 <ns1:Sitio>'.($mIndEnSiti == false ? '0' : '1' ).'</ns1:Sitio>
                                                             </ns1:reporte>
