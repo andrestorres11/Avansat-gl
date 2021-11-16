@@ -877,6 +877,7 @@ class ajaxCalendAgendamiento
       $hor_inihor=$dataHorari[0]['hor_inicia'];
       $hor_finhor=$dataHorari[0]['hor_finalx'];
       
+      /*
       //Consulta de tabla para numero consecutivo en modulo insertar 2
       $sql = "SELECT MAX(cod_consec) cod FROM " . BASE_DATOS . ".tab_monito_encabe ";
       $consulta = new Consulta($sql, $this->conexion);
@@ -889,6 +890,7 @@ class ajaxCalendAgendamiento
       ( cod_consec, cod_usuari, fec_inicia, fec_finalx, usr_creaci, fec_creaci) VALUES ($cod_consec, '$cod_usuari', '$fec_inicia $hor_inihor', '$fec_finalx $hor_finhor', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW())";
       
       $consulta = new Consulta($sql, $this->conexion, "R");
+      */
     }else{
       $hor_inihor=date('H:i:s',strtotime ($horario[0]));
       $hor_finhor=date('H:i:s',strtotime ($horario[1]));
@@ -956,6 +958,15 @@ class ajaxCalendAgendamiento
           '".$hor_inihor."', '".$hor_finhor."', '".$observa."', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW())";
     new Consulta( $sql, $this->conexion, "R" );
 
+    $sql = "SELECT MAX(cod_consec) cod FROM " . BASE_DATOS . ".tab_monito_encabe ";
+    $consulta = new Consulta($sql, $this->conexion);
+    $cod_consec = $consulta->ret_matrix('a');
+    $cod_consec = $cod_consec[0]['cod'];
+
+    $cod_consec++;
+    $sql = "INSERT INTO " . BASE_DATOS . ".tab_monito_encabe
+    ( cod_consec, cod_usuari, fec_inicia, fec_finalx, usr_creaci, fec_creaci) VALUES ($cod_consec, '$cod_usuari', '$fec_inicia $hor_inihor', '$fec_finalx $hor_finhor', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW())";
+    new Consulta($sql, $this->conexion, "R");
   }
 
     /*! \fn: darPlaneacion
