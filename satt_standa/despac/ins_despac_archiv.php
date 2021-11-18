@@ -1,4 +1,5 @@
 <?php
+
 class Proc_ins_despac {
     
     private $conexion;
@@ -360,10 +361,15 @@ class Proc_ins_despac {
                     }
                     if (!$this->verificaPlaca($item)) {
                         if(
-                            $item != '' && $this->row[8] != '' && $this->row[9] != '' &&
+                            ($item != '' && $this->row[8] != '' && $this->row[9] != '' &&
                             $this->row[10] != '' && $this->row[11] != '' && $this->row[12] != '' &&
                             $this->row[13] != '' && $this->row[31] != '' && $this->row[25] != '' &&
-                            $this->row[19] != ''
+                            $this->row[19] != '') && (
+                            $this->verificaMarca($this->row[8]) &&
+                            $this->verificaLinea($this->row[9], $this->row[8]) &&
+                            $this->verificaColor($this->row[11]) &&
+                            $this->verificaCarroc($this->row[12])
+                            )
                         ){
                             $a = Array();
                             $a[0] = Array(
@@ -380,7 +386,31 @@ class Proc_ins_despac {
                                 "cod_opegps" => $this->row[14], //Codigo operador gps
                                 "usr_gpsxxx" => $this->row[16], //Usuario gps
                                 "clv_gpsxxx" => $this->row[17], //Clave gps
-                                "idx_gpsxxx" => $this->row[18] //ID gps
+                                "idx_gpsxxx" => $this->row[18],//ID gps
+                                "inf_conduc" => Array(
+                                    "cod_tercer" => $this->row[19], //Codigo conductor
+                                    "nom_tercer" => $this->row[20], //Nombre del conductor
+                                    "nom_apell1" => $this->row[21], //Apellido 1
+                                    "nom_apell2" => $this->row[22], //Apellido 2
+                                    "num_telmov" => $this->row[23], //Telefono
+                                    "dir_domici" => $this->row[24], //Direccion
+                                ),
+                                "inf_poseed" => Array(
+                                    "cod_tercer" => $this->row[25], //Codigo poseedor
+                                    "nom_tercer" => $this->row[26], //Nombre del poseedor
+                                    "nom_apell1" => $this->row[27], //Apellido 1
+                                    "nom_apell2" => $this->row[28], //Apellido 2
+                                    "num_telmov" => $this->row[29], //Telefono
+                                    "dir_domici" => $this->row[30], //Direccion
+                                ),
+                                "inf_propie" => Array(
+                                    "cod_tercer" => $this->row[31], //Codigo propietario
+                                    "nom_tercer" => $this->row[32], //Nombre del propietario
+                                    "nom_apell1" => $this->row[33], //Apellido 1
+                                    "nom_apell2" => $this->row[34], //Apellido 2
+                                    "num_telmov" => $this->row[35], //Telefono
+                                    "dir_domici" => $this->row[36], //Direccion
+                                )
                             );
                             $this->ins_vehiculo($a);
                             $this->setInsertion($h, $r, $c, $item, 'NUEVO VEHICULO REGISTRADO');
@@ -388,16 +418,16 @@ class Proc_ins_despac {
                         }else {
                             $faltantes = '';
                             $faltantes .= ($item == NULL) ? " Numero de placa," : "";
-                            $faltantes .= ($this->row[8] == NULL) ? " codigo de la marca," : "";
-                            $faltantes .= ($this->row[9] == NULL) ? " codigo de la linea " : "";
+                            $faltantes .= ($this->row[8] == NULL ||  !$this->verificaMarca($this->row[8]) ) ? " codigo de la marca," : "";
+                            $faltantes .= ($this->row[9] == NULL ||  !$this->verificaLinea($this->row[9], $this->row[8])) ? " codigo de la linea " : "";
                             $faltantes .= ($this->row[10] == NULL) ? " modelo," : "";
-                            $faltantes .= ($this->row[11] == NULL) ? " codigo del color " : "";
-                            $faltantes .= ($this->row[12] == NULL) ? " codigo de la carroceria " : "";
-                            $faltantes .= ($this->row[13] == NULL) ? " numero de configuracion " : "";
-                            $faltantes .= ($this->row[36] == NULL) ? " codigo del propietario " : "";
-                            $faltantes .= ($this->row[31] == NULL) ? " codigo del poseedor " : "";
-                            $faltantes .= ($this->row[19] == NULL) ? " codigo del conductor " : "";
-                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL PROPIETARIO (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                            $faltantes .= ($this->row[11] == NULL || !$this->verificaColor($this->row[11]) ) ? " codigo del color " : "";
+                            $faltantes .= ($this->row[12] == NULL || !$this->verificaCarroc($this->row[12]) ) ? " codigo de la carroceria " : "";
+                            $faltantes .= ($this->row[13] == NULL || !$this->verificaCarroc($this->row[12]) ) ? " numero de configuracion " : "";
+                            $faltantes .= ($this->row[36] == NULL ) ? " codigo del propietario " : "";
+                            $faltantes .= ($this->row[31] == NULL ) ? " codigo del poseedor " : "";
+                            $faltantes .= ($this->row[19] == NULL ) ? " codigo del conductor " : "";
+                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL PROPIETARIO O HAY INFORMACIÓN ERRÓNEA (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
                             $e++;
                             $er++;
                         }
@@ -848,18 +878,8 @@ class Proc_ins_despac {
                 case 50: //@Longitud
                     break;
                 case 51: //@Correo del remitente
-                    if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'EL CORREO DEL REMITENTE ES REQUERIDO');
-                        $e++;
-                        $er++;
-                    }
                     break;
                 case 52: //@Telefono
-                    if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'EL TELEFONO DEL REMITENTE ES REQUERIDO');
-                        $e++;
-                        $er++;
-                    }
                     break;
                 case 53: //@Codigo del destinatario
                     if (empty($item) || $item == "") {
@@ -939,18 +959,8 @@ class Proc_ins_despac {
                 case 59: //@Longitud
                     break;
                 case 60: //@Correo del destinatario
-                    if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'EL CORREO DEL DESTINATARIO ES REQUERIDA');
-                        $e++;
-                        $er++;
-                    }
                     break;
                 case 61: //@Telefono
-                    if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'EL TELEFONO DEL DESTINATARIO ES REQUERIDA');
-                        $e++;
-                        $er++;
-                    }
                     break;
                 case 62: //@fecha de pago
                     break;
@@ -982,7 +992,7 @@ class Proc_ins_despac {
 
             //Insercion Si no hay errores
             if ($er == 0) {
-                $respuesta = $this->insertDespacho($this->row);
+                $respuesta = $this->insertDespacho($_DATA[$r-1]);
                 if ($respuesta[0] == 1) {
                     $totalImportados++;
                 } else {
@@ -1027,6 +1037,7 @@ class Proc_ins_despac {
 
   
     function insertDespacho($row) {
+        
         $est_import = 1;
         $respuesta = Array();
         $actualizados = Array();
@@ -1082,7 +1093,7 @@ class Proc_ins_despac {
             (
               ".$nuevo_consec.", '".$row[0]."', '$fec_actual', 
   
-              ".$row[5].", '".$dat_ciuori['cod_paisxx']."', '".$dat_ciuori['cod_depart']."',
+              '".$row[5]."', '".$dat_ciuori['cod_paisxx']."', '".$dat_ciuori['cod_depart']."',
   
               '".$dat_ciuori['cod_ciudad']."', '".$dat_ciudes['cod_paisxx']."', '".$dat_ciudes['cod_depart']."',
   
@@ -1220,11 +1231,11 @@ class Proc_ins_despac {
     /*ind = 1: si es conductor, otro para poseedor*/
     function verificarTercero($cod_tercer,$nom_tablex,$ind){
         if($ind==1){
-        $query = "SELECT COUNT(*)
-                  FROM " . BASE_DATOS . ".".$nom_tablex." a
-            INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b
-                ON a.cod_tercer = b.cod_tercer
-            WHERE a.cod_tercer = '".$cod_tercer."'";
+        $query = "SELECT COUNT(*) 
+                 FROM tab_tercer_tercer a 
+                 left JOIN " . BASE_DATOS . ".".$nom_tablex." b 
+                    ON a.cod_tercer = b.cod_tercer 
+                WHERE a.cod_tercer = '".$cod_tercer."'";
         }else{
             $query = "SELECT COUNT(*)
                 FROM " . BASE_DATOS . ".tab_tercer_tercer a
@@ -1418,13 +1429,13 @@ class Proc_ins_despac {
                 "' . $datos[0]['dir_domici'] . '", "' . $datos[0]['num_telmov'] . '", NULL, "' . $datos[0]['num_telmov'] . '", "", "3", "11", "11001000", 
                 "", NULL, "1", NULL, "", NULL, "' . $this->cod_usuari . '", 
                 "' . date("Y-m-d H:i:s") . '"
-                ) ';
+                ) ON DUPLICATE KEY UPDATE cod_tercer="'.$datos[0]['cod_tercer'].'";';
         new Consulta($sql, $this->conexion);
     }
 
     function ins_conductor($datos){
         $this->ins_tercer($datos);
-        $sql = 'INSERT INTO tab_tercer_conduc(
+        $sql = 'INSERT INTO '.BASE_DATOS.'.tab_tercer_conduc(
                     cod_tercer, cod_tipsex, cod_grupsa, 
                     num_licenc, num_catlic, fec_venlic, 
                     cod_califi, num_libtri, fec_ventri, 
@@ -1444,12 +1455,27 @@ class Proc_ins_despac {
                     "0000-00-00", NULL, NULL, 
                     NULL, NULL, "' . $this->cod_usuari . '", 
                     NOW()
-            )';
+            ) ON DUPLICATE KEY UPDATE cod_tercer="'.$datos[0]['cod_tercer'].'";';
         new Consulta($sql, $this->conexion);
+
     }
 
     function ins_vehiculo($datos){
-        $sql = "INSERT INTO tab_vehicu_vehicu(
+        $info_conduc[0] = $datos[0]['inf_conduc'];
+        $info_poseed[0] = $datos[0]['inf_poseed'];
+        $info_propie[0] = $datos[0]['inf_propie'];
+        if($this->verificarTercero($info_conduc['cod_tercer'],'tab_tercer_conduc',1)){
+            $this->ins_conductor($info_conduc);
+        }
+        if($this->verificarTercero($info_poseed['cod_tercer'],'',0)){
+            $this->ins_tercer($info_poseed);
+        }
+
+        if($this->verificarTercero($info_propie['cod_tercer'],'',0)){
+            $this->ins_tercer($info_propie);
+        }
+
+        $sql = "INSERT INTO ".BASE_DATOS.".tab_vehicu_vehicu(
                     num_placax, cod_marcax, cod_lineax, 
                     ano_modelo, cod_colorx, cod_carroc, 
                     num_motorx, num_seriex, num_chasis, 
@@ -1492,7 +1518,7 @@ class Proc_ins_despac {
     }
 
     function ins_remdes($datos){
-        $sql = "INSERT INTO tab_genera_remdes(
+        $sql = "INSERT INTO ".BASE_DATOS.".tab_genera_remdes(
             cod_remdes, num_remdes, nom_remdes, 
             obs_adicio, cod_transp, abr_destin, 
             abr_remite, num_docume, hor_apertu, 
