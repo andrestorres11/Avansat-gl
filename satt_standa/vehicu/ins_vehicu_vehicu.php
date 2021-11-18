@@ -168,9 +168,16 @@ class Ins_vehicu_vehicu {
             "header" => "Transportadoras",
             "enctype" => "multipart/form-data"));
 
+        $query = "SELECT cod_paisxx
+            FROM ".BASE_DATOS.".tab_tercer_tercer
+              WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'
+            LIMIT 1";
+        $consulta = new Consulta($query, $this->conexion);
+        $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
       #variables ocultas
       $mHtml->Hidden(array( "name" => "vehicu[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad
       $mHtml->Hidden(array( "name" => "vehicu[cod_transp]", "id" => "cod_transpID", "value"=>$_REQUEST['cod_tercer'])); //el codigo de la transportadora
+      $mHtml->Hidden(array( "name" => "vehicu[cod_paisxx]", "id" => "cod_paisxxID", "value"=>$cod_paisxx)); //el codigo de la transportadora
       $mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
       $mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
       $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));

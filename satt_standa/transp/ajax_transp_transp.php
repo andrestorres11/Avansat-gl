@@ -41,6 +41,14 @@ class trans {
                     self::buscarTransportadora();
                     break;
 
+                case 'buscarPaises':
+                    self::buscarPaises();
+                    break;
+                
+                case 'listaTransportadoras':
+                    self::listaTransportadoras();
+                    break;
+
                 case 'getCiudades':
                     self::getCiudades();
                     break;
@@ -131,6 +139,95 @@ class trans {
             return $mResult;
     }
 
+    /* ! \fn: buscarPaises
+     *  \brief: funcion para buscar y retornar el listado de paises
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 29/10/2021
+     *  \date modified: 
+     *  \param: 
+     *  \param: 
+     *  \return json o matriz
+     */
+
+    private function buscarPaises() {
+        $mSql = "SELECT a.cod_paisxx, UPPER(a.nom_paisxx) AS nom_paisxx
+                      FROM " . BASE_DATOS . ".tab_genera_paises a  
+                      WHERE 1 = 1";
+        $mSql .= $_REQUEST[term] ? " AND (a.nom_paisxx LIKE '%" . $_REQUEST[term] . "%' OR a.cod_paisxx LIKE '%" . $_REQUEST[term] . "%' )" : "";
+        $mSql .= " ORDER BY a.nom_paisxx ASC ";
+        $consulta = new Consulta($mSql, self::$cConexion);
+        $mResult = $consulta->ret_matrix('a');
+
+        if ($_REQUEST[term]) {
+            $paises = array();
+            for ($i = 0; $i < sizeof($mResult); $i++) {
+                $mTxt = $mResult[$i][cod_paisxx] . " - " . utf8_decode($mResult[$i][nom_paisxx]);
+                $paises[] = array('value' => utf8_decode($mResult[$i][nom_paisxx]), 'label' => $mTxt, 'id' => $mResult[$i][cod_paisxx]);
+            }
+            echo json_encode($paises);
+        } else
+            return $mResult;
+    }
+
+
+     /* *********************************************************************************
+     *   \fn: listaTerceros                                                             *
+     *  \brief: funcion para listar los terceros de una transportadoras                 *
+     *  \author: Ing. Alexander Correa                                                  *
+     *  \date:  4/09/2015                                                               *
+     *  \date modified:                                                                 *
+     *  \param: $cod_transp codigo de la Trasnportador                                  *     
+     *  \param:                                                                         * 
+     *  \return tabla con la lista de los terceros                                      *
+     * ********************************************************************************* */
+    private function listaTransportadoras(){
+        $mSql = "SELECT a.cod_tercer, 
+        UPPER(IF(a.abr_tercer = '', a.nom_tercer, a.abr_tercer)) AS abr_tercer, 
+       f.nom_region,
+        CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) abr_ciudad,
+        UPPER(a.dir_domici), a.num_telef1,  
+       
+        IF(a.cod_estado = '1','Activa', 'Inactiva') AS cod_estado,
+        a.dir_emailx, a.cod_estado AS cod_option
+         
+        FROM ".BASE_DATOS.".tab_tercer_tercer a 
+        INNER JOIN tab_genera_ciudad b ON b.cod_ciudad = a.cod_ciudad 
+        INNER JOIN tab_genera_depart c ON b.cod_depart = b.cod_depart 
+        INNER JOIN tab_genera_paises d ON b.cod_paisxx = c.cod_paisxx
+        INNER JOIN tab_tercer_activi e ON e.cod_tercer = a.cod_tercer
+        LEFT JOIN tab_genera_region f ON f.cod_region = a.cod_region
+        WHERE e.cod_activi = 1  AND a.cod_paisxx = '".$_REQUEST['cod_paisxx']."'
+         GROUP BY a.cod_tercer ";
+
+        $_SESSION["queryXLS"] = $mSql;
+
+        if(!class_exists(DinamicList)) {
+            include_once("../".DIR_APLICA_CENTRAL."/lib/general/dinamic_list.inc");									  	  	
+          }
+          $list = new DinamicList(self::$cConexion, $mSql, "6" , "no", 'ASC');
+        
+        $list->SetClose('no');
+        $list->SetCreate("Crear empresa", "onclick:formulario()");
+        $list->SetHeader(utf8_decode("Código de la transportadora"), "field:a.cod_tercer; width:1%;  ");
+        $list->SetHeader("Transportadora", "field:IF(a.abr_tercer = '', a.nom_tercer, a.abr_tercer); width:1%");
+        $list->SetHeader("Regional", "field:f.nom_region; width:1%");
+        $list->SetHeader("Ciudad", "field:CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) ; width:1%");
+        $list->SetHeader(utf8_decode("Dirección"), "field:a.dir_domici; width:1%");
+        $list->SetHeader(utf8_decode("Teléfono"), "field:a.dir_emailx; width:1%");
+        $list->SetHeader("Estado", "field:if(a.cod_estado = 1, 'Activa', 'Inactiva')" );
+        $list->SetHeader(utf8_decode("E-mail"), "field:a.num_telef1; width:1%");
+        $list->SetOption("Opciones","field:cod_option; width:1%; onclikDisable:editarDistribuidora( 2, this ); onclikEnable:editarDistribuidora( 1, this ); onclikEdit:editarDistribuidora( 99, this )" );
+        $list->SetHidden("cod_transp", "0" );
+        $list->SetHidden("abr_tercer", "1" );
+        $list->Display(self::$cConexion);
+
+        $_SESSION["DINAMIC_LIST"] = $list;
+
+        $Html = $list->GetHtml();
+
+        echo $Html;
+    }
+
     /* ! \fn: getCiudades
      *  \brief: Trae las ciudades
      *  \author: Ing. Fabian Salinas
@@ -153,7 +250,7 @@ class trans {
 
         $mSql .= $_REQUEST[term] ? " AND a.abr_ciudad LIKE '%" . $_REQUEST[term] . "%' " : "";
         $mSql .= $mCodCiudad != NULL ? " AND a.cod_ciudad = '{$mCodCiudad}' " : "";
-
+        $mSql .= $_REQUEST['cod_paisxx'] != NULL ||  $_REQUEST['cod_paisxx'] != '' ? " AND c.cod_paisxx = ".$_REQUEST['cod_paisxx']." " : "";
         $mSql .= " ORDER BY a.abr_ciudad ";
 
         $mConsult = new Consulta($mSql, self::$cConexion);
@@ -339,7 +436,7 @@ class trans {
               num_faxxxx, obs_tercer, usr_creaci, 
               fec_creaci, cod_estado, cod_region)
                   VALUES(
-                    '$transp->cod_tercer','$transp->num_verifi','N',
+                    '$transp->cod_tercer', '$transp->num_verifi', '$transp->cod_tipdoc',
                     '$transp->cod_terreg', '$transp->nom_tercer', '$transp->abr_tercer', 
                     '$transp->dir_domici', '$transp->num_telef1', '$transp->cod_paisxx',
                     '$transp->cod_depart', '$transp->cod_ciudad', '$transp->dir_emailx',
