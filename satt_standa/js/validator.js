@@ -349,22 +349,38 @@ function inc_mayor(obj, min) {
 function inc_placa(obj, min, max) {
     var placa = $("#" + obj).val();
     if (placa.length < 6 && placa.length > 0) {
-        msg = "La placa debe contener 6 caract√©res";
+        msg = "La placa debe contener 6 caracteres";
         inc_alerta(obj, msg);
         return 1;
     }
+    var expreg = /^[A-Za-z]/; //Solo caracteres alfabeticos
+    var expreg2 = /^[0-9]/; //Solo numeros
+
     if (min == true || placa.length == 6) {
         var placa = $.trim($('#' + obj).val());
-        var inicio = placa.substring(0, 3);
-        var fin = placa.substring(3, 6);
-        var expreg = /^[A-Za-z]/; //Solo caracteres alfabeticos
-        var expreg2 = /^[0-9]/; //Solo numeros
-        if (!expreg2.test(fin) || !expreg.test(inicio) || fin.length != 3) {
-            msg = "La placa introducida no es v√°lida";
-            inc_alerta(obj, msg);
-            return 1;
-        } else {
-            return 0;
+        var cod_paisxx = $('#cod_paisxxID').val();
+        if(cod_paisxx == 11 && cod_paisxx != undefined && cod_paisxx != ''){
+            console.log("entro aqui");
+            var inicio = placa.substring(0, 2);
+            var medio = placa.substring(2, 4);
+            var fin = placa.substring(4, 6);
+            if(!expreg.test(inicio) || (!expreg.test(medio) && !expreg2.test(medio)) || !expreg2.test(fin)){
+                msg = "La placa introducida no es v·lida";
+                inc_alerta(obj, msg);
+                return 1;
+            }else{
+                return 0;
+            }
+        }else{
+            var inicio = placa.substring(0, 3);
+            var fin = placa.substring(3, 6);
+            if (!expreg2.test(fin) || !expreg.test(inicio) || fin.length != 3) {
+                msg = "La placa introducida no es v·lida";
+                inc_alerta(obj, msg);
+                return 1;
+            } else {
+                return 0;
+            }
         }
     } else {
         return 0;
@@ -409,7 +425,7 @@ function inc_select(obj, obl) {
         var ele = $.trim($('#' + obj).val());
         if (obl == true) { // es obligatorio seleccionar una opcion
             if (ele == '') {
-                msg = "Debe seleccionar una opci√≥n";
+                msg = "Debe seleccionar una opciÛn";
                 inc_alerta(obj, msg);
                 return 1; //suma al error
             } else {
@@ -436,7 +452,7 @@ function inc_password(obj, min, max, com, oblc) {
                 if (com !== undefined) {
                     var ele2 = $.trim($('#' + com).val());
                     if (ele !== ele2) {
-                        msg = "Las contrase√±as no coinciden";
+                        msg = "Las contraseÒas no coinciden";
                         inc_alerta(com, msg);
                         return 1; //suma al error
                     } else {

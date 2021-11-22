@@ -168,9 +168,16 @@ class Ins_vehicu_vehicu {
             "header" => "Transportadoras",
             "enctype" => "multipart/form-data"));
 
+        $query = "SELECT cod_paisxx
+            FROM ".BASE_DATOS.".tab_tercer_tercer
+              WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'
+            LIMIT 1";
+        $consulta = new Consulta($query, $this->conexion);
+        $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
       #variables ocultas
       $mHtml->Hidden(array( "name" => "vehicu[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad
       $mHtml->Hidden(array( "name" => "vehicu[cod_transp]", "id" => "cod_transpID", "value"=>$_REQUEST['cod_tercer'])); //el codigo de la transportadora
+      $mHtml->Hidden(array( "name" => "vehicu[cod_paisxx]", "id" => "cod_paisxxID", "value"=>$cod_paisxx)); //el codigo de la transportadora
       $mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
       $mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
       $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
@@ -251,6 +258,7 @@ class Ins_vehicu_vehicu {
           # Fin accordion1
 
           # Accordion2
+          /*
           $mHtml->OpenDiv("id:GPSinfoID; class:accordion");
           $mHtml->SetBody("<h3 style='padding:6px;'><center>Información GPS</center></h3>");
           $mHtml->OpenDiv("id:sec8");
@@ -272,8 +280,59 @@ class Ins_vehicu_vehicu {
               $mHtml->CloseTable("tr");
             $mHtml->CloseDiv();
           $mHtml->CloseDiv();
-        $mHtml->CloseDiv();
+        $mHtml->CloseDiv();*/
         #Fin accordion2
+        # Accordion2
+       $mHtml->OpenDiv("id:GPSinfoID; class:accordion");
+       $mHtml->SetBody("<h3 style='padding:6px;'><center>Informaci&oacute;n GPS</center></h3>");
+       $mHtml->OpenDiv("id:sec8");
+       $cont = count($datos->principal->ope_vehicu);
+       foreach($datos->principal->ope_vehicu as $key => $operadores){
+         
+        $mHtml->OpenDiv("id:form8; class:contentAccordionForm");
+          $mHtml->Table("tr");
+
+            $mHtml->Label(("Operador GPS:"), "width:25%; *:1;"); 
+            $mHtml->Select2 ($datos->opegps,  array("class" => "opegps inputgps",  "validate" => "select", "width" => "25%", "key"=> $operadores['cod_operad'], "disabled" => true) );
+
+            $mHtml->Label("Usuario:", "width:25%; *:1;"); 
+            $mHtml->Input (array("class" => "inputgps", "validate" => "alpha", "minlength" => "3", "maxlength" => "50", "width" => "25%", "value"=> $operadores['usr_gpsxxx'], "disabled" => true, "end" => true) );
+        
+            $mHtml->Label("Clave:", "width:25%; *:1;"); 
+            $mHtml->Input (array("class" => "inputgps", "size"=>"10", "width" => "25%", "value"=> $operadores['clv_gpsxxx'], "disabled" => true) ); 
+
+            $mHtml->Label("ID:", "width:25%; *:1;"); 
+            $mHtml->Input (array("class" => "inputgps", "validate" => "alpha","minlength" => "1", "maxlength" => "15", "size"=>"10", "width" => "25%", "value"=> $operadores['idx_gpsxxx'], "disabled" => true) );
+
+            $mHtml->SetBody("<td align=center><img style='cursor:pointer;' width='25px' onclick='deleteOpeGps(".$operadores['cod_operad'].",this)' src='../".DIR_APLICA_CENTRAL."/images/delete.png'/></img></td>");
+
+          $mHtml->CloseTable("tr");
+        $mHtml->CloseDiv();
+       }
+        $mHtml->OpenDiv("id:formGps");
+        $mHtml->CloseDiv();
+         $mHtml->OpenDiv("id:form88; class:contentAccordionForm");
+           $mHtml->Table("tr");
+              $mHtml->Label(("Operador GPS:"), "width:25%; *:1;"); 
+              $mHtml->Select2 ($datos->opegps,  array("name" => "vehicu[cod_opegps][".$cont."]", "class" => "opegps inputgps",  "validate" => "select", "id" => "cod_opegpsID", "width" => "25%", "key"=> $datos->principal->cod_opegps, 'onchange' => 'validaIdGPS(this)',  "obl"=> "1") );
+              
+              $mHtml->Label("Usuario:", "width:25%; *:1;"); 
+              $mHtml->Input (array("name" => "vehicu[usr_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha",  "id" => "usr_gpsxxxID",  "minlength" => "3", "maxlength" => "50", "width" => "25%", "value"=>'',"end" => true,  "obl"=> "1") );
+              
+              $mHtml->Label("Clave:", "width:25%; *:1;"); 
+              $mHtml->Input (array("name" => "vehicu[clv_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha", "size"=>"10", "minlength" => "1", "maxlength" => "15", "id" => "clv_gpsxxxID",  "width" => "25%", "value"=> '',  "obl"=> "1") ); 
+
+              $mHtml->Label("ID:", "width:25%; :1;"); 
+              $mHtml->Input (array("name" => "vehicu[idx_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha", "size"=>"10", "minlength" => "0", "maxlength" => "15", "id" => "idx_gpsxxxID",  "width" => "25%", "value"=> '', "end" => true) );
+            $mHtml->CloseTable("tr");
+         $mHtml->CloseDiv();
+         
+         $mHtml->Table("tr");
+          $mHtml->StyleButton("name:send; value:A&ntilde;adir; onclick:addOpeGps(); align:center;  class:crmButton small save");
+         $mHtml->CloseTable("tr");   
+       $mHtml->CloseDiv();
+     $mHtml->CloseDiv();
+
 
           # Accordion2
           $mHtml->OpenDiv("id:SegurosID; class:accordion");

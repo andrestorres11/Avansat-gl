@@ -102,8 +102,12 @@ class trayle{
         case 'getValidaIdGPS':
             self::getValidaIdGPS();
             break;
-       
-
+        case 'saveOpeGps':
+              self::saveOpeGps();
+              break;
+        case 'deteleOpeGps':
+              self::deteleOpeGps();
+              break;
 
         default:
           header('Location: index.php?window=central&cod_servic=1366&menant=1366');
@@ -256,7 +260,6 @@ private function getValidaIdGPS()
      *  \return popUp con el resultado de la operacion                            *
     ******************************************************************************/
     private function registrar(){
-
       #arma los objetos para cada una de las tablas necesarias
       $trayle = (object) $_POST['trayle']; #datos principales del trayler
 
@@ -306,7 +309,6 @@ private function getValidaIdGPS()
             $mens = new mensajes();
             echo $mens->correcto2("INSERTAR TRAYLER", $mensaje);*/
 
-
         }else{
           header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1100&menant=1100&window=central&resultado=1&operacion=Registr&oacute;&opcion=123&conductor='.$trayle->nom_propie);
             /*
@@ -330,6 +332,7 @@ private function getValidaIdGPS()
         }
         $this->modificar("Registr&oacute;");
       }
+      
     }
 
     /******************************************************************************
@@ -538,6 +541,25 @@ private function getValidaIdGPS()
       $trayler= $consulta->ret_matrix("a");
       $datos->principal =(object) $trayler[0];
       $datos->principal->nom_propie = utf8_encode($datos->principal->nom_propie);
+
+      $query = "SELECT cod_operad,nom_operad
+               FROM ".BASE_DATOS.".tab_genera_opegps
+               WHERE ind_estado = '1' 
+           ORDER BY 2 ";
+      $consulta = new Consulta($query, self::$cConexion);
+      $operadores = $consulta->ret_matriz("a");
+      $operadores = array_merge(self::$cNull,$operadores);
+      $datos->opegps = $operadores;
+
+      $query = "SELECT a.cod_operad, b.nom_operad, a.usr_gpsxxx, 
+                       a.clv_gpsxxx, a.idx_gpsxxx
+               FROM ".BASE_DATOS.".tab_trayle_opegps a
+               INNER JOIN ".BASE_DATOS.".tab_genera_opegps b ON
+                a.cod_operad = b.cod_operad
+               WHERE a.num_trayle = '$num_trayle'";
+      $consulta = new Consulta($query, self::$cConexion);
+      $ope_remolq = $consulta->ret_matriz("a");
+      $datos->principal->ope_remolq = $ope_remolq;
       
       return $datos;
     }
@@ -628,6 +650,16 @@ private function getValidaIdGPS()
       $operadores = $consulta->ret_matriz("a");
       $operadores = array_merge(self::$cNull,$operadores);
       $datos->opegps = $operadores;
+
+      $query = "SELECT a.cod_operad, b.nom_operad, a.usr_gpsxxx, 
+                       a.clv_gpsxxx, a.idx_gpsxxx
+               FROM ".BASE_DATOS.".tab_vehicu_opegps a
+               INNER JOIN ".BASE_DATOS.".tab_genera_opegps b ON
+                a.cod_operad = b.cod_operad
+               WHERE a.num_placax = '$num_placax'";
+      $consulta = new Consulta($query, self::$cConexion);
+      $ope_vehicu = $consulta->ret_matriz("a");
+      $datos->principal->ope_vehicu = $ope_vehicu;
 
       #las configuraciones
       $query = "SELECT num_config,num_config
@@ -1179,6 +1211,62 @@ private function getValidaIdGPS()
 
       }
     }
+
+    public function saveOpeGps(){
+      $nom_tablax = 'tab_trayle_opegps';
+      $nom_campox = 'num_trayle';
+      if(isset($_REQUEST['ind_vehicu'])){
+        $nom_tablax = 'tab_vehicu_opegps';
+        $nom_campox = 'num_placax';
+      }
+      $info = [];
+      $usuario = $_SESSION['datos_usuario']['cod_usuari'];
+      $query = "SELECT cod_operad FROM ".BASE_DATOS.".".$nom_tablax." WHERE ".$nom_campox." = '".$_REQUEST[$nom_campox]."' AND cod_operad = '".$_REQUEST['cod_opegps']."' ";
+      $consulta = new Consulta($query, self::$cConexion);
+      $existe = $consulta->ret_matriz("a");
+      if(!$existe){
+        $query = "INSERT INTO ".BASE_DATOS.".".$nom_tablax." 
+                  (".$nom_campox.", cod_operad, usr_gpsxxx,
+                   clv_gpsxxx, idx_gpsxxx, usr_creaci,
+                   fec_creaci) VALUES 
+                  ('".$_REQUEST[$nom_campox]."','".$_REQUEST['cod_opegps']."','".$_REQUEST['usr_gpsxxx']."',
+                   '".$_REQUEST['clv_gpsxxx']."','".$_REQUEST['idx_gpsxxx']."','".$usuario."',
+                   NOW())";
+        $consulta = new Consulta($query, self::$cConexion, "R"); 
+        if($consulta = new Consulta("COMMIT", self::$cConexion)){
+          $info['status'] = 1000;
+          $info['msj'] = 'Se ha registrado el operador gps';
+        }else{
+          $info['status'] = 2000;
+          $info['msj'] = 'No fue posible registrar el operador gps. Por favor comuniquese con mesa de apoyo';
+        }
+      }else{
+        $info['status'] = 3000;
+        $info['msj'] = 'El operador gps ya se encuentra asignado al vehiculo';
+      }
+      echo json_encode($info);
+    }
+
+    public function deteleOpeGps(){
+      $nom_tablax = 'tab_trayle_opegps';
+      $nom_campox = 'num_trayle';
+      if(isset($_REQUEST['ind_vehicu'])){
+        $nom_tablax = 'tab_vehicu_opegps';
+        $nom_campox = 'num_placax';
+      }
+      $info = [];
+      $query = "DELETE FROM ".BASE_DATOS.".".$nom_tablax." WHERE ".$nom_campox." = '".$_REQUEST[$nom_campox]."' AND cod_operad = '".$_REQUEST['cod_opegps']."' ";
+      $consulta = new Consulta($query, self::$cConexion, "R");
+      if($consulta = new Consulta("COMMIT", self::$cConexion)){
+        $info['status'] = 1000;
+        $info['msj'] = 'Operador gps eliminado';
+      }else{
+        $info['status'] = 2000;
+        $info['msj'] = 'No fue posible eliminar el operador gps. Por favor comuniquese con mesa de apoyo';
+      }
+      echo json_encode($info);
+    }
+
   }
 if($_REQUEST[Ajax] === 'on' )
   $_INFORM = new trayle();

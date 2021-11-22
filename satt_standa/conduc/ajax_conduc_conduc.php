@@ -572,7 +572,7 @@ class conduc{
      *  \return $data => objeto con los datos de la consulta                      *
     ******************************************************************************/
 
-    public function getDatosConductor($cod_tercer = '0'){
+    public function getDatosConductor($cod_tercer = '0', $cod_transp = NULL){
       #objeto que contiene los datos a retornar 
       $datos = new stdClass();
 
@@ -581,6 +581,13 @@ class conduc{
       $genero [1][0]=2;
       $genero [1][1]="Femenino";
       $datos->genero = $genero;
+      
+      $query = "SELECT cod_paisxx
+            FROM ".BASE_DATOS.".tab_tercer_tercer
+              WHERE cod_tercer = '".$cod_transp."'
+            LIMIT 1";
+      $consulta = new Consulta($query, self::$cConexion);
+      $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
 
       #añade los grupos sianguineos
       $query = "SELECT nom_tiporh,nom_tiporh
@@ -593,11 +600,10 @@ class conduc{
       #añade los tipod de documento
       $query = "SELECT cod_tipdoc,nom_tipdoc
                  FROM ".BASE_DATOS.".tab_genera_tipdoc
-                 WHERE cod_tipdoc <> 'N' and
-                 cod_tipdoc <> 'T'";
+                 WHERE ind_person = 1 AND cod_paisxx = ".$cod_paisxx;
       $consulta = new Consulta($query, self::$cConexion);
       $tipoDocumento = $consulta -> ret_matriz("a");
-      $datos->tipoDocumento = $tipoDocumento;
+      $datos->tipoDocumento = self::cleanArray($tipoDocumento);
 
       #añade los operadores
       $query = "SELECT cod_operad,nom_operad
@@ -689,6 +695,41 @@ class conduc{
         }
 
     }
+
+    /*! \fn: cleanArray
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciÃ³n
+           *  \author: Ing. Luis Manrique
+           *  \date: 03-04-2020
+           *  \date modified: dd/mm/aaaa
+           *  \param: $arrau => Arreglo que serÃ¡ analizado por la funciÃ³n
+           *  \return: array
+        */
+        function cleanArray($array){
+
+          $arrayReturn = array();
+
+          //Convert function
+          $convert = function($value){
+              if(is_string($value)){
+                  return utf8_encode($value);
+              }
+              return $value;
+          };
+
+          //Go through data
+          foreach ($array as $key => $value) {
+              //Validate sub array
+              if(is_array($value)){
+                  //Clean sub array
+                  $arrayReturn[$convert($key)] = self::cleanArray($value);
+              }else{
+                  //Clean value
+                  $arrayReturn[$convert($key)] = $convert($value);
+              }
+          }
+          //Return array
+          return $arrayReturn;
+      }
 
     
 }

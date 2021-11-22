@@ -73,8 +73,9 @@ $(document).ready(function() {
 		}
 	});
 	// para buscar la ciudad del conductor
+	var paisxx = $("#cod_paisxxID").val();
 	$("#ciudadID").autocomplete({
-		source: "../" + standa + "/transp/ajax_transp_transp.php?Option=getCiudades" + attributes,
+		source: "../" + standa + "/transp/ajax_transp_transp.php?Option=getCiudades" + attributes + "&cod_paisxx=" + paisxx,
 		minLength: 3,
 		select: function(event, ui) {
 			$("#cod_ciudadID").val(ui.item.id);

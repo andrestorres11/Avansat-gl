@@ -1,5 +1,5 @@
 $(document).ready(function(){ 
-
+	$("#datos").css("display", "none");
 	$(".accordion").accordion({
 		collapsible : true,          
 		heightStyle : "content",
@@ -30,18 +30,33 @@ $(document).ready(function(){
 			$( "#boton").append(boton);	
 			$("body").removeAttr("class");
 		}
-	});	
+	});
+	// para buscar el pais para la transportadora
+	$("#nom_paisxxID").autocomplete({
+		source: "../" + standa + "/transp/ajax_transp_transp.php?Option=buscarPaises" + attributes,
+		minLength: 3,
+		select: function(event, ui) {
+			boton = "<input type='button' id='nuevo' value='Listado' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='mostrar();'>";
+			$("#cod_paisxxID").val(ui.item.id);
+			$("#boton").empty();
+			$("#boton").append(boton);
+			$("body").removeAttr("class");
+		}
+	});
+
+	var paisxx = $("#cod_paisxxID").val();
 	// para buscar la ciudad de la transportadora
 	$("#ciudadID").autocomplete({
-		source: "../"+ standa +"/transp/ajax_transp_transp.php?Option=getCiudades"+ attributes,
+		source: "../"+ standa +"/transp/ajax_transp_transp.php?Option=getCiudades"+ attributes +"&cod_paisxx="+paisxx,
 		minLength: 3,
 		select: function( event, ui ) {
 			$("#cod_ciudadID").val( ui.item.id );
 		}
 	});
 	// para buscar la ciudad de la agencia
+	
 	$("#abr_ciudadID").autocomplete({
-		source: "../"+ standa +"/transp/ajax_transp_transp.php?Option=getCiudades"+ attributes,
+		source: "../"+ standa +"/transp/ajax_transp_transp.php?Option=getCiudades"+ attributes +"&cod_paisxx="+paisxx,
 		minLength: 3,
 		select: function( event, ui ) {
 			$("#cod_ciudaaID").val( ui.item.id );
@@ -115,6 +130,27 @@ function registrar(operacion){
 		
 	}
 }
+
+//funcion para mostrar la lista de las transportadoras
+function mostrar() {
+	$("#form3").empty();
+	var paisxx = $("#cod_paisxxID").val();
+	var standa = $("#standaID").val();
+	var parametros = "Option=listaTransportadoras&Ajax=on&cod_paisxx=" + paisxx;
+	$.ajax({
+		url: "../" + standa + "/transp/ajax_transp_transp.php",
+		type: "POST",
+		data: parametros,
+		async: false,
+
+		success: function(data) {
+			$("#sec2").css("height", "auto");
+			$("#form3").append(data); // pinta los datos de la consulta					
+		}
+	});
+	$("#datos").fadeIn(3000); // visualza los datos despues de pintarlos
+}
+
 
 function confirmado(){
 	LoadPopupJQNoButton('close');
