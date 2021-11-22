@@ -651,6 +651,16 @@ private function getValidaIdGPS()
       $operadores = array_merge(self::$cNull,$operadores);
       $datos->opegps = $operadores;
 
+      $query = "SELECT a.cod_operad, b.nom_operad, a.usr_gpsxxx, 
+                       a.clv_gpsxxx, a.idx_gpsxxx
+               FROM ".BASE_DATOS.".tab_vehicu_opegps a
+               INNER JOIN ".BASE_DATOS.".tab_genera_opegps b ON
+                a.cod_operad = b.cod_operad
+               WHERE a.num_placax = '$num_placax'";
+      $consulta = new Consulta($query, self::$cConexion);
+      $ope_vehicu = $consulta->ret_matriz("a");
+      $datos->principal->ope_vehicu = $ope_vehicu;
+
       #las configuraciones
       $query = "SELECT num_config,num_config
                FROM ".BASE_DATOS.".tab_vehige_config
@@ -1203,17 +1213,23 @@ private function getValidaIdGPS()
     }
 
     public function saveOpeGps(){
+      $nom_tablax = 'tab_trayle_opegps';
+      $nom_campox = 'num_trayle';
+      if(isset($_REQUEST['ind_vehicu'])){
+        $nom_tablax = 'tab_vehicu_opegps';
+        $nom_campox = 'num_placax';
+      }
       $info = [];
       $usuario = $_SESSION['datos_usuario']['cod_usuari'];
-      $query = "SELECT cod_operad FROM ".BASE_DATOS.".tab_trayle_opegps WHERE num_trayle = '".$_REQUEST['num_trayle']."' AND cod_operad = '".$_REQUEST['cod_opegps']."' ";
+      $query = "SELECT cod_operad FROM ".BASE_DATOS.".".$nom_tablax." WHERE ".$nom_campox." = '".$_REQUEST[$nom_campox]."' AND cod_operad = '".$_REQUEST['cod_opegps']."' ";
       $consulta = new Consulta($query, self::$cConexion);
       $existe = $consulta->ret_matriz("a");
       if(!$existe){
-        $query = "INSERT INTO ".BASE_DATOS.".tab_trayle_opegps 
-                  (num_trayle, cod_operad, usr_gpsxxx,
+        $query = "INSERT INTO ".BASE_DATOS.".".$nom_tablax." 
+                  (".$nom_campox.", cod_operad, usr_gpsxxx,
                    clv_gpsxxx, idx_gpsxxx, usr_creaci,
                    fec_creaci) VALUES 
-                  ('".$_REQUEST['num_trayle']."','".$_REQUEST['cod_opegps']."','".$_REQUEST['usr_gpsxxx']."',
+                  ('".$_REQUEST[$nom_campox]."','".$_REQUEST['cod_opegps']."','".$_REQUEST['usr_gpsxxx']."',
                    '".$_REQUEST['clv_gpsxxx']."','".$_REQUEST['idx_gpsxxx']."','".$usuario."',
                    NOW())";
         $consulta = new Consulta($query, self::$cConexion, "R"); 
@@ -1226,14 +1242,20 @@ private function getValidaIdGPS()
         }
       }else{
         $info['status'] = 3000;
-        $info['msj'] = 'El operador gps ya se encuentra asignado al remolque';
+        $info['msj'] = 'El operador gps ya se encuentra asignado al vehiculo';
       }
       echo json_encode($info);
     }
 
     public function deteleOpeGps(){
+      $nom_tablax = 'tab_trayle_opegps';
+      $nom_campox = 'num_trayle';
+      if(isset($_REQUEST['ind_vehicu'])){
+        $nom_tablax = 'tab_vehicu_opegps';
+        $nom_campox = 'num_placax';
+      }
       $info = [];
-      $query = "DELETE FROM ".BASE_DATOS.".tab_trayle_opegps WHERE num_trayle = '".$_REQUEST['num_trayle']."' AND cod_operad = '".$_REQUEST['cod_opegps']."' ";
+      $query = "DELETE FROM ".BASE_DATOS.".".$nom_tablax." WHERE ".$nom_campox." = '".$_REQUEST[$nom_campox]."' AND cod_operad = '".$_REQUEST['cod_opegps']."' ";
       $consulta = new Consulta($query, self::$cConexion, "R");
       if($consulta = new Consulta("COMMIT", self::$cConexion)){
         $info['status'] = 1000;
