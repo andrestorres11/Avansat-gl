@@ -288,6 +288,7 @@ class Ins_vehicu_vehicu {
        $mHtml->OpenDiv("id:sec8");
        $cont = count($datos->principal->ope_vehicu);
        foreach($datos->principal->ope_vehicu as $key => $operadores){
+         
         $mHtml->OpenDiv("id:form8; class:contentAccordionForm");
           $mHtml->Table("tr");
 
@@ -313,16 +314,16 @@ class Ins_vehicu_vehicu {
          $mHtml->OpenDiv("id:form88; class:contentAccordionForm");
            $mHtml->Table("tr");
               $mHtml->Label(("Operador GPS:"), "width:25%; *:1;"); 
-              $mHtml->Select2 ($datos->opegps,  array("name" => "vehicu[cod_opegps][".$cont."]", "class" => "opegps inputgps",  "validate" => "select", "id" => "cod_opegpsID", "width" => "25%", "key"=> $datos->principal->cod_opegps, 'onchange' => 'validaIdGPS(this)') );
+              $mHtml->Select2 ($datos->opegps,  array("name" => "vehicu[cod_opegps][".$cont."]", "class" => "opegps inputgps",  "validate" => "select", "id" => "cod_opegpsID", "width" => "25%", "key"=> $datos->principal->cod_opegps, 'onchange' => 'validaIdGPS(this)',  "obl"=> "1") );
               
               $mHtml->Label("Usuario:", "width:25%; *:1;"); 
-              $mHtml->Input (array("name" => "vehicu[usr_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha",  "id" => "usr_gpsxxxID",  "minlength" => "3", "maxlength" => "50", "width" => "25%", "value"=> $datos->principal->usr_gpsxxx,"end" => true) );
+              $mHtml->Input (array("name" => "vehicu[usr_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha",  "id" => "usr_gpsxxxID",  "minlength" => "3", "maxlength" => "50", "width" => "25%", "value"=>'',"end" => true,  "obl"=> "1") );
               
               $mHtml->Label("Clave:", "width:25%; *:1;"); 
-              $mHtml->Input (array("name" => "vehicu[clv_gpsxxx][".$cont."]", "class" => "inputgps", "size"=>"10", "id" => "clv_gpsxxxID",  "width" => "25%", "value"=> $datos->principal->clv_gpsxxx) ); 
+              $mHtml->Input (array("name" => "vehicu[clv_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha", "size"=>"10", "minlength" => "1", "maxlength" => "15", "id" => "clv_gpsxxxID",  "width" => "25%", "value"=> '',  "obl"=> "1") ); 
 
-              $mHtml->Label("ID:", "width:25%; *:1;"); 
-              $mHtml->Input (array("name" => "vehicu[idx_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha","minlength" => "1", "maxlength" => "15", "size"=>"10", "id" => "idx_gpsxxxID",  "width" => "25%", "value"=> $datos->principal->idx_gpsxxx, "end" => true) );
+              $mHtml->Label("ID:", "width:25%; :1;"); 
+              $mHtml->Input (array("name" => "vehicu[idx_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha", "size"=>"10", "minlength" => "0", "maxlength" => "15", "id" => "idx_gpsxxxID",  "width" => "25%", "value"=> '', "end" => true) );
             $mHtml->CloseTable("tr");
          $mHtml->CloseDiv();
          

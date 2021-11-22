@@ -87,6 +87,10 @@ $(document).ready(function() {
 		$("#datos").css("display", "none");
 	}
 
+	$("#form88").css('padding', '0px');
+    $("#form88").css('padding-top', '3px');
+    $("#form88").css('padding-bottom', '3px');
+
 });
 
 
@@ -109,6 +113,14 @@ function mostrar() {
 		}
 	});
 	$("#datos").fadeIn(3000); // visualza los datos despues de pintarlos
+
+	$("#form88").css('padding', '0px');
+    $("#form88").css('padding-top', '3px');
+    $("#form88").css('padding-bottom', '3px');
+
+    $(".contentAccordionForm").css('padding', '0px');
+    $(".contentAccordionForm").css('padding-top', '3px');
+    $(".contentAccordionForm").css('padding-bottom', '3px');
 }
 
 
@@ -127,6 +139,7 @@ function registrar(operacion) {
 	//cierra popUp si hay inicialiado
 	LoadPopupJQNoButton('close');
 	//valido los datos generales del formulario
+	quitarValidacionesGps();
 	var val = validaciones();
 	var standa = $("#standaID").val();
 	if (val == true) {
@@ -257,13 +270,15 @@ function deleteOpeGps(cod_opegps, elemento){
 }
 
 function validaDataGps(){
-		var elemento = $('#sec88').find('.inputgps');
+		var elemento = $('#form88').find('.inputgps');
 		try {
 			var datos = [];
 			var i = 0;	
 		elemento.find('select,input').each(function() {
-			$(this).attr('obl','1');
-			console.log($(this).attr('name'));
+			var obl = $(this).attr('obl');
+            if(obl=='1'){
+                $(this).attr('obl','1');
+            }
 		})
         elemento.find('input[validate]').each(function(index) {
             var obj = ""; // id del campo; si es radio es el name
@@ -448,4 +463,11 @@ function comprobar() {
 		console.log("Error Fuction comprobar: " + e.message + "\nLine: " + e.lineNumber);
 		return false;
 	}
+}
+
+function quitarValidacionesGps(){
+    var elemento = $('#form88').find('.inputgps');
+    elemento.find('select,input').each(function() {
+        var obl = $(this).attr('obl','');
+    })
 }
