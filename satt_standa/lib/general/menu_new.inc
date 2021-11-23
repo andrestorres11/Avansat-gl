@@ -19,16 +19,16 @@ class Menu
     echo '<div id="MainID" class="div_temporal" align="center" style="overflow-y:scroll; font-size: 11px;">';
       echo '<div>';
         echo '<div>';
-          echo '<img style="height:60 !important" src="../satt_standa/estilos/Verde/imagenes/backg_menu_top.jpg">';
+          echo '<img style="height:60 !important" src="../satt_standa/estilos/'.ESTILO.'/imagenes/backg_menu_top.jpg">';
         echo '</div>';
         echo '<div>';
-          echo '<span style="color: green; font-weight: bold; font-size: 13px;">Bienvenido</span><br><b>'.substr(ucwords(strtolower($datos_usuario['nom_usuari'])),0,40).'...</b>';
+          echo '<span style="color: green; font-weight: bold; font-size: 13px;" class="color-menu-encabeza" >Bienvenido</span><br><b>'.substr(ucwords(strtolower($datos_usuario['nom_usuari'])),0,40).'...</b>';
         echo '</div>';
         echo '<div>';
           echo 'Perfil: <b>'.substr(ucwords(strtolower($datos_usuario['nom_perfil'])), 0, 25).'...</b>';
         echo '</div>';
         echo '<div>';
-          echo '<a class="menuLink" href="http://grupooet.com/" target="_blank">Visitar la Web</a> | <a class="menuLink" href="session.php?op=2&usuario='.$datos_usuario['cod_usuari'].'&app='.$_REQUEST['app'].'" target="_parent">Cerrar Sesi&oacute;n</a>';
+          echo '<a class="menuLink color-menu-encabeza" href="http://grupooet.com/" target="_blank">Visitar la Web</a> | <a class="menuLink color-menu-encabeza" href="session.php?op=2&usuario='.$datos_usuario['cod_usuari'].'&app='.$_REQUEST['app'].'" target="_parent">Cerrar Sesi&oacute;n</a>';
         echo '</div>';
       echo '</div><br>';
 
@@ -64,7 +64,8 @@ class Menu
       if($_REQUEST[menant])
       //-------------------------------------------------------------------------------------------------------------------------------------
       echo '<script language="javascript" src="../'.DIR_APLICA_CENTRAL.'/lib/menu/js/dinamic_menu.js"></script>';
-      echo '<link rel="stylesheet" type="text/css" href="../'.DIR_APLICA_CENTRAL.'/lib/menu/css/dinamic_menu.css" />'; 
+      echo '<link rel="stylesheet" type="text/css" href="../'.DIR_APLICA_CENTRAL.'/lib/menu/css/dinamic_menu.css" />';
+      echo '<link rel="stylesheet" type="text/css" href="../'.DIR_APLICA_CENTRAL.'/estilos/'.ESTILO.'/css/estilos.css" />';
       include( "../".DIR_APLICA_CENTRAL."/lib/menu/menu.php" );
      
       
