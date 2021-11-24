@@ -531,8 +531,8 @@ class Novedad {
                             curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
                             curl_setopt($s,CURLOPT_POST,true);
                             curl_setopt($s,CURLOPT_POSTFIELDS,$mTextXML);
-                            curl_setopt($s, CURLOPT_SSL_VERIFYHOST, 0);
-                            curl_setopt($s, CURLOPT_SSL_VERIFYPEER, 0);
+                            // curl_setopt($s, CURLOPT_SSL_VERIFYHOST, 0);
+                            // curl_setopt($s, CURLOPT_SSL_VERIFYPEER, 0);
                             $mResponse   = curl_exec($s);
                             $mHttpStatus = curl_getinfo($s,CURLINFO_HTTP_CODE);
                             curl_close($s);
