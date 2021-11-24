@@ -4379,7 +4379,7 @@ class InsertNovedad {
 
                                 $s = curl_init();
                                 curl_setopt($s,CURLOPT_URL, $interfaz->interfaz[$i]['diwsdl']);
-                                curl_setopt($s,CURLOPT_TIMEOUT,"4"); 
+                                curl_setopt($s,CURLOPT_TIMEOUT,"14"); 
                                 curl_setopt($s,CURLOPT_HTTPHEADER,array('Content-Type: text/xml')); 
                                 curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
                                 curl_setopt($s,CURLOPT_POST,true);

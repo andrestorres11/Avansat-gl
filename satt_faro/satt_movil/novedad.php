@@ -506,7 +506,7 @@ class Novedad {
                                                             <ns1:Placa>'.( substr($_POST["placa"], 0,3)."-".substr($_POST["placa"],3, 6) ).'</ns1:Placa>
                                                             <ns1:CodigoPuestoControlOET>'.$mControPadre['cod_contro'].'</ns1:CodigoPuestoControlOET>
                                                             <ns1:FechaNovedad>'.date('Y-m-d H:i:s').'</ns1:FechaNovedad>
-                                                            <ns1:Observacion>'.$mParams["des_noveda"].'</ns1:Observacion>
+                                                            <ns1:Observacion>'.strip_tags($mParams["des_noveda"]).'</ns1:Observacion>
                                                             <ns1:Lugar>'.substr($mNomPc['nom_contro'], 0, 50).'</ns1:Lugar>
                                                             <ns1:Sitio>1</ns1:Sitio>
                                                         </ns1:reporte>
@@ -526,7 +526,7 @@ class Novedad {
   
                             $s = curl_init();
                             curl_setopt($s,CURLOPT_URL, $dataCargaAn['url_webser']);
-                            curl_setopt($s,CURLOPT_TIMEOUT,"4"); 
+                            curl_setopt($s,CURLOPT_TIMEOUT,"14"); 
                             curl_setopt($s,CURLOPT_HTTPHEADER,array('Content-Type: text/xml')); 
                             curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
                             curl_setopt($s,CURLOPT_POST,true);
