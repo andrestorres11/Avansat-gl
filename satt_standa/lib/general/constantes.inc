@@ -1,7 +1,7 @@
 <?php
 //define("URL_DIREC_APLICA", "190.143.80.47/ap");
-define("URL_DIREC_APLICA", "dev.intrared.net/ap/amartinez");	//ORIGINAL 
-define("DBSERVER", "devbd.intrared.net:3306"); // nueva constante para el servidor de bd
+define("URL_DIREC_APLICA", "avansatgl.intrared.net/ap");	//ORIGINAL 
+define("DBSERVER", "aglbd.intrared.net:3306"); // nueva constante para el servidor de bd
 
 //define("COD_PERFIL_SUPERUSR", "666");// constante para perfil administrador del sistema
 define("COD_PERFIL_SUPERUSR", "73");// constante para perfil administrador del sistema
@@ -11,6 +11,8 @@ define("COD_PERFIL_SUPEGENE", "84");// supervisor General
 define("COD_PERFIL_AUDITORX", "97");// Auditor CLF
 define("COD_PERFIL_DIRECTOR", "74");// Director CLF
 define("COD_PERFIL_SUPEREAL", "77");// Director CLF
+define("COD_PERFIL_CONTROLA", "7");// Controlador CLF
+define("COD_PERFIL_COORDINA", "73");// Controlador CLF
 
 define("COD_FILTRO_EMPTRA", "1");// constante para filtro de Transportadora
 define("COD_FILTRO_AGENCI", "2");// constante para filtro de Agencias de la transportadora
@@ -52,6 +54,7 @@ define("ESAD", "S.A.T. TRAFICO");// CONSTANTE ENCABEZADO SAD
 define("D_DESPACHO", "Detalle Despacho");// CONSTANTE CONTROL TRAFICO->DETALLE DESPACHOS
 
 define("CONS_CODIGO_PCLLEG", "9999");// constante para el codigo del puesto de control de llegada.
+define("CONS_CODIGO_PCINIC", "9997");// constante para el codigo del puesto de control de llegada.
 define("CONS_NOVEDA_PCLLEG", "1");// constante para el codigo de Novedad, para el Tiempo Llegad P/C.
 define("CONS_NOVEDA_CAMALA", "9999");// constante para el codigo de Novedad, Cambio de Alarma parametro de Responsabilidad Transportadora
 define("CONS_NOVEDA_CAMRUT", "9998");// constante para el codigo de Novedad Especial Cambio de Ruta
@@ -87,10 +90,13 @@ define("URL_INTERF_SATCLO", "https://dev.intrared.net/ap/interf/app/sat/wsdl/sat
 
 define("URL_INTERF_GPSXXX", "https://avansatgl.intrared.net/ap/interf/app/gps/wsdl/gps.wsdl");
 
+define("URL_INTERF_CENTRAL", "https://central.intrared.net");
+
 
 
 define("MAIL_SUPERVISORES", "faroavansat@eltransporte.com");//Correo de supervisores
 define("MAIL_SOPORTE", "soporte.ingenieros@intrared.net");//Correo de soporte intrared
+define("MAIL_SUPERVISORES_ELTRANSPORTE", "supervisores@eltransporte.org");//Correo de supervisores el transporte
 
 //---------------------------------------------------------------------------------------------------
 //	CONSTANTES PARA PROCESOS DE ESCOLTA ELECTR�NICO CON PROTEKTO
@@ -144,5 +150,9 @@ define("CON_SOLICI_ACOMPA", 2);
 //Constante Tipo Servicio, llamado particularidad seguimiento control de trafico.
 define("CON_TIPSER_MA", 2);
 define("CON_TIPSER_OAL", 1);
+
+define("COD_PERFIL_SUPEREAL", "7");// Controlador CLF
+define("API_PAD", "'http://localhost/pad-backend/public/api/linkages'");// Controlador CLF
+
 
 ?>

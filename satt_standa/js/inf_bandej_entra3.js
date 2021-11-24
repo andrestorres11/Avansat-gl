@@ -29,6 +29,7 @@ $("body").ready(function() {
     //Multi Select
     $("#cod_usuariID").multiselect().multiselectfilter();
     $("#cod_transpID").multiselect().multiselectfilter();
+    $("#cod_tiptraID").multiselect().multiselectfilter();
     $("#pun_cargueID").multiselect().multiselectfilter();
     $("#tip_producID").multiselect().multiselectfilter();
     $("#cod_clientID").multiselect().multiselectfilter();
@@ -108,9 +109,11 @@ $("body").ready(function() {
         collapsible: true
     });
 
+
     //
     $("#tableID").css('height', ($(window).height() - 166));
     $("#tableID").css('overflow', 'scroll');
+
 });
 
 /*! \fn: verifiData
@@ -152,11 +155,17 @@ function getParameFilter() {
         var rad_checke = $("input[type=radio]:checked");
         var cod_transp = '""';
         var cod_client = '""';
+        var cod_tiptra = '""';
         var cod_usuari = '""';
         var pun_cargue = '""';
         var tip_produc = '""';
         var hor_inicio = $("#hor_inicio").val();
         var hor_finxxx = $("#hor_finxxx").val();
+
+        //Horario de servicio
+        var hor_inicia = $("#hor_inicia").val();
+        var hor_finali = $("#hor_finalx").val();
+
         var attributes = '';
 
         box_checke.each(function(i, o) {
@@ -170,6 +179,8 @@ function getParameFilter() {
                 pun_cargue += ',"' + $(this).val() + '"';
             else if ($(this).attr("name") == 'multiselect_tip_producID')
                 tip_produc += ',"' + $(this).val() + '"';
+            else if ($(this).attr("name") == 'multiselect_cod_tiptraID')
+                cod_tiptra += ',"' + $(this).val() + '"';
             else {
                 attributes += '&' + $(this).attr("name");
                 attributes += '=' + $(this).val();
@@ -193,6 +204,10 @@ function getParameFilter() {
             attributes += '&cod_usuari=' + cod_usuari;
         }
 
+        if (cod_tiptra != '""' && cod_tiptra != '"",""') {
+            attributes += '&cod_tiptra=' + cod_tiptra;
+        }
+
         if (pun_cargue != '""' && pun_cargue != '"",""') {
             attributes += '&pun_cargue=' + pun_cargue;
         }
@@ -207,6 +222,14 @@ function getParameFilter() {
 
         if (hor_finxxx != '' ) {
             attributes += '&hor_finxxx=' + hor_finxxx;
+        }
+
+        if (hor_inicia != '' ) {
+            attributes += '&hor_inicia=' + hor_inicia;
+        }
+
+        if (hor_finali != '' ) {
+            attributes += '&hor_finalx=' + hor_finali;
         }
 
 
@@ -419,6 +442,7 @@ function generalReport(ind_etapax, id_div) {
             }
         });
 
+        
     } catch (e) {
         console.log("Error Fuction generalReport: " + e.message + "\nLine: " + e.lineNumber);
         return false;
@@ -509,8 +533,12 @@ function Actualizarbadge(etapa, etiqueta) {
                 }
             },
             complete: function() {
+                $(".classTable .rowData").each(function(){
+                    $(this).hide();
+                });
             }
         });
+        
     } catch (e) {
         console.log("Error Fuction Actualizarbadge: " + e.message + "\nLine: " + e.lineNumber);
         return false;
@@ -551,3 +579,5 @@ function acordion(value) {
         $(this).toggle();
     });
 }
+
+

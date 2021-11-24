@@ -1,952 +1,1606 @@
 <?php
 
-class Proc_ins_despac
-{
-    var $usuario,
-        $conexion,
-        $cod_aplica;
+class Proc_ins_despac {
+    
+    private $conexion;
+    private $cod_usuari;
+    private $cod_transp;
+    var $field = array();
+    var $error = array();
+    var $row = array();
+    var $insertion = array();
+    var $cantidadest = array();
 
-    function __construct($us, $co, $ca)
-    {
-        $this -> usuario = $us;
-        $this -> conexion = $co;
-        $this -> cod_aplica = $ca;
-        $this -> principal();
+    public function __construct($conexion, $cod_usuari) {
+        @include_once('../'.DIR_APLICA_CENTRAL.'/lib/general/functions.inc');
+        $this->conexion = $conexion;
+        $this->cod_usuari = $cod_usuari;
+        $this->enrutarPeticion();
     }
 
-    function principal()
-    {
-     $this -> formulario();
-     $is_scv = substr($_REQUEST["archivo"],0,-3);
-     $validacion = true;
-     #valido informacion del acrhivo adjunto
-     if($_FILES["archivo"])
-     {
-        if($_FILES["archivo"]["error"] != "0")
-        {
-          $validacion = false;
-          echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El archivo Contiene error.</img>";
-          die();
+    private function enrutarPeticion() {
+        switch ($_REQUEST['opcion']) {
+        case 'subir':
+            $this->preValidator($_REQUEST);
+            break;
+
+        default:
+            $this->mostrarFormularioImportacion();
         }
-        if($_FILES["archivo"]["size"] >= $_REQUEST['MAX_FILE_SIZE'])
-        {
-          $validacion = false;
-          echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El tamaño del archivo supera el maximo permitido. tamaño maximo(".$_REQUEST['MAX_FILE_SIZE'].").</img>";
-          die();
+    }
+
+    private function agregarEncabezado() {
+        echo '
+				<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	        	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	        	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+	         	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+                 <link rel="stylesheet" href="../' . DIR_APLICA_CENTRAL . '/css/tab_genera_estilo.css">
+                 <link rel="stylesheet" type="text/css" href="../' . DIR_APLICA_CENTRAL . '/lib/menu/css/datatables.css">
+                 <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	        ';
+    }
+
+    private function agregarPiePagina($mensaje = '') {
+        $scripts = '
+                <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+				<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+				<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+                <script type="text/javascript" charset="utf8" src="../' . DIR_APLICA_CENTRAL . '/lib/menu/js/datatables.js"></script>
+                <script src="https://cdn.datatables.net/select/1.3.1/js/dataTables.select.min.js"></script>
+				<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/tab_regist_pedido.js"></script>
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/imp_pedido_dividi.js"></script>
+          	';
+        if (!empty($mensaje)) {
+            $scripts .= '
+          			<script>
+						mostrarMensaje("' . $mensaje . '");
+                	</script>
+          		';
+        }
+        echo $scripts;
+    }
+
+    private function generarFormulario() {
+        $titulo_tarjeta = "Importar Despachos";
+        $form_action = 'index.php?cod_servic=' . $_REQUEST['cod_servic'] . '&amp;window=central&amp;opcion=subir';
+        $formulario = '
+				<div class="container">
+					<div class="row">
+						<div class="col">
+							<div class="card">
+								<div class="card-header">
+									' . $titulo_tarjeta . '
+								</div>
+								<div class="card-body">
+									<div class="row">
+											<div class="col">
+												<a href="../' . DIR_APLICA_CENTRAL . '/planea/plantilla/FORMATO_IMP_PEDIDOS_DEMO.csv" target="_blank"><img src="../' . DIR_APLICA_CENTRAL . '/images/excel_logo.png" width="30" height="30" /> Descargar Plantilla Demo</a>
+											</div>
+                                            <div class="col">
+												<a href="../' . DIR_APLICA_CENTRAL . '/planea/plantilla/FORMATO_IMP_PEDIDOS__V1.csv" target="_blank"><img src="../' . DIR_APLICA_CENTRAL . '/images/excel_logo.png" width="30" height="30" /> Descargar Plantilla</a>
+											</div>
+											<div class="col">
+												<a href="../' . DIR_APLICA_CENTRAL . '/planea/instructivos/Instructivo_de_importacion_de_pedidos_Avansat_GL.pdf" target="_blank"><img src="../' . DIR_APLICA_CENTRAL . '/imagenes/pdf.jpg" width="30" height="30" /> Instructivo</a>
+											</div>
+									</div>
+									<form method="post" action="' . $form_action . '" enctype="multipart/form-data" id="formID">
+										<div class="row">
+											<div class="col">
+												<div class="label-input">Ruta de Archivo CSV:</div>
+												<input type="file" name="archivo" id="archivo" size="50" maxlength="255" onchange="ValidateIt( $(this) )"/>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col">
+												<div style="text-align: center; padding-top: 2em;">
+													<button type="button" class="btn btn-secondary btn-sm" onclick="Validator()">Importar</button>
+												</div>
+											</div>
+										</div>
+										<div class="row m-4">
+											<div class="col" id="errorID">
+											</div>
+										</div>
+									</form>
+								</div>
+							</dvi>
+						</div>
+					</div>
+				</div>
+			';
+        return $formulario;
+    }
+
+    private function mostrarFormularioImportacion() {
+        $this->agregarEncabezado();
+        $formulario = $this->generarFormulario();
+        echo "
+				<table style='width: 100%;'>
+					<tr>
+						<td>
+							<br>
+							$formulario
+						</td>
+					</tr>
+				</table>
+			";
+        $this->agregarPiePagina();
+    }
+    
+    public function fechaHoy() {
+        setlocale(LC_ALL, "es_ES");
+        return date("Y-m-d H:i:s");
+    }
+
+    private function GetFileData() {
+        $tipo = $_FILES['archivo']['type'];
+        $tamanio = $_FILES['archivo']['size'];
+        $archivotmp = $_FILES['archivo']['tmp_name'];
+
+        $filas = file($archivotmp);
+        //Calcula el total de las filas del archivo excel
+        $size_file = sizeof($filas);
+        $_DATA = array();
+
+        for ($f = 0; $f < $size_file; $f++) {
+            $datos = explode(';', $filas[$f]);
+            $tamanio_columna = sizeof($datos);
+            for ($c = 0; $c < $tamanio_columna; $c++) {
+                $_DATA[$f][$c] = trim($datos[$c]);
+            }
+
+        }
+        return $_DATA;
+    }
+
+    private function preValidator($mData) {
+        $_DATA = $this->GetFileData();
+        $_RESPUESTA = $this->VerifyData($mData, $_DATA);
+        $_INFO = $_RESPUESTA[0];
+        $_TOTALIMPORTACIONES = $_RESPUESTA[1];
+        $_TOTALACTUALIZACIONES = $_RESPUESTA[2];
+        $_ACTUALIZACIONES = $_RESPUESTA[3];
+        $size_info = sizeof($_INFO);
+
+        echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
+        $formulario = new Formulario("index.php", "post", "IMPORTAR DESPACHOS", "form\" enctype=\"multipart/form-data\" id=\"formID");
+        //MUESTRA LAS NUEVAS IMPORTACIONES
+        if ($_TOTALIMPORTACIONES > 0) {
+            $mensaje = "Se ha(n) Importado " . $_TOTALIMPORTACIONES . " Despacho(s) de manera exitosa";
+            $mens = new mensajes();
+            $mens->correcto("IMPORTAR NOVEDADES", $mensaje);
         }
 
-        if($_FILES["archivo"]["type"] != "text/csv" && $_FILES["archivo"]["type"] != "application/csv" && $_FILES["archivo"]["type"] != "application/vnd.ms-excel")
-        {
-          $validacion = false;
-          echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El formato del archivo no es permitido. formato requerido CSV.</img>";
-          die();
+        //MUESTRA LOS DIFERENTES ERRORES
+        $mHtml='';
+
+        if ($size_info > 0) {
+
+            $mHtml .= '<table width="100%" cellpadding="0" cellspacing="1">';
+            $mHtml .= '<tr>';
+            $mHtml .= '<td colspan="6s" style="padding:15px;font-family:Trebuchet MS, Verdana, Arial;font-size:13px;">Los siguientes despachos no fueron insertados</td>';
+            $mHtml .= '</tr>';
+
+            $mHtml .= '<tr class="headtable">';
+            $mHtml .= '<td class="CellHead headcolumn" align="center">No.</td>';
+            $mHtml .= '<td class="CellHead headcolumn" align="center">MANIFIESTO</td>';
+            $mHtml .= '<td class="CellHead headcolumn" align="center">LINEA</td>';
+            $mHtml .= '<td class="CellHead headcolumn" align="center">COLUMNA</td>';
+            $mHtml .= '<td class="CellHead headcolumn" align="center">VALOR</td>';
+            $mHtml .= '<td class="CellHead headcolumn" align="center">OBSERVACIÓN</td>';
+            $mHtml .= '</tr>';
+
+            for ($j = 0; $j < $size_info; $j++) {
+                $class = $j % 2 == 0 ? 'cellInfo1' : 'cellInfo2';
+                $mHtml .= '<tr>';
+                $mHtml .= '<td class="' . $class . ' bodycolumn" align="center"><b>' . ($j + 1) . '</b></td>';
+                $mHtml .= '<td class="' . $class . ' bodycolumn" align="center">' . $_INFO[$j][4] . '</td>';
+                $mHtml .= '<td class="' . $class . ' bodycolumn" align="center">' . $_INFO[$j][0] . '</td>';
+                $mHtml .= '<td class="' . $class . ' bodycolumn" align="center">' . $_INFO[$j][1] . '</td>';
+                $valor = $_INFO[$j][2] ? $_INFO[$j][2] : '( VACIO )';
+                $mHtml .= '<td class="' . $class . ' bodycolumn" align="center">' . $valor . '</td>';
+                $mHtml .= '<td class="' . $class . ' bodycolumn">' . $_INFO[$j][3] . '</td>';
+                $mHtml .= '</tr>';
+            }
+
+            $mHtml .= '</table>';
+            echo $mHtml;
         }
         
-        $InfoFile = pathinfo($_FILES['archivo']['name']);
-        if($InfoFile["extension"] != 'csv')
-        {
-          $validacion = false;
-          echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El formato del archivo no es permitido. formato requerido CSV.</img>";
-          die();
+        //INFORMACION DE REGISTROS NUEVOS
+        $registrosI = $this->retornarRegistroNuevosValidator();
+        $c_nuevos_registros = count($registrosI);
+        if ($c_nuevos_registros > 0) {
+
+            $tableRegister = '<table width="60%" cellpadding="0" cellspacing="1">';
+            $tableRegister .= '<tr>';
+            $tableRegister .= '<td colspan="5" style="padding:15px;font-family:Trebuchet MS, Verdana, Arial;font-size:13px;">Se han realizado ' . $c_nuevos_registros . ' nuevos registros.</td>';
+            $tableRegister .= '</tr>';
+            $tableRegister .= '<tr>';
+            $tableRegister .= '<td class="CellHead" align="center">No.</td>';
+            $tableRegister .= '<td class="CellHead" align="center">LINEA</td>';
+            $tableRegister .= '<td class="CellHead" align="center">COLUMNA</td>';
+            $tableRegister .= '<td class="CellHead" align="center">VALOR</td>';
+            $tableRegister .= '<td class="CellHead" align="center">OBSERVACIÓN</td>';
+            $tableRegister .= '</tr>';
+            for ($i = 0; $i < $c_nuevos_registros; $i++) {
+                $class = $i % 2 == 0 ? 'cellInfo1' : 'cellInfo2';
+                $tableRegister .= '<tr>';
+                $tableRegister .= '<td class="' . $class . '" align="center"><b>' . ($i + 1) . '</b></td>';
+                $tableRegister .= '<td class="' . $class . '" align="center">' . $registrosI[$i][0] . '</td>';
+                $tableRegister .= '<td class="' . $class . '" align="center">' . $registrosI[$i][1] . '</td>';
+                $tableRegister .= '<td class="' . $class . '">' . $registrosI[$i][2] . '</td>';
+                $tableRegister .= '<td class="' . $class . '">' . $registrosI[$i][3] . '</td>';
+                $tableRegister .= '</tr>';
+            }
+            $mHtml .= '</table></div>';
+            echo $tableRegister;
         }
-     }
-     else
-     {
-        $validacion = false;      
-     }
 
-     if( $validacion == true  )
-     {
-        $this -> insertar();
-     }
-
+        $formulario->nueva_tabla();
+        $formulario->nueva_tabla();
+        $formulario->oculto("Standa\" id=\"StandaID\"", DIR_APLICA_CENTRAL, 0);
+        $formulario->oculto("filter\" id=\"filterID\"", COD_FILTRO_EMPTRA, 0);
+        $formulario->oculto("window\" id=\"windowID\"", 'central', 0);
+        $formulario->oculto("cod_servic\" id=\"cod_servicID\"", $mData['cod_servic'], 0);
+        $formulario->cerrar();
     }
 
-    function formulario()
-    {
-        $datos_usuario = $this -> usuario -> retornar();
-        $usuario=$datos_usuario["cod_usuari"];
 
-        $formulario = new Formulario ("index.php","post\" enctype=\"multipart/form-data","IMPORTAR DESPACHOS","form_insert");
-        $formulario -> linea("Cargar Despachos al Sistema por Medio de un Archivo Plano",1,"t2");
-        $formulario -> nueva_tabla();
-        $formulario -> archivo("Archivo", "archivo", 15, 255, 0, 1);
-        $formulario -> caja ("Cargar Datos Nuevos","subir",1,1,1);
-        $formulario -> linea("<a href='../".DIR_APLICA_CENTRAL."/despac/archiv_plan.xls'>Descargue la plantilla del archivo</a>",1);
+    public function VerifyData($mData, $_DATA) {
+        $this->field = $_DATA[0];
+        $totalImportados = 0;
+        $totalActualizados = 0;
+        $datosActualizados = array();
 
-        $formulario -> nueva_tabla();
-        $formulario -> oculto("cod_servic", $_REQUEST["cod_servic"], 0, 0);
-        $formulario -> oculto("usuario","$usuario",0);
-        $formulario -> oculto("MAX_FILE_SIZE", "2000000", 0, 0);
-        $formulario -> oculto("window", $_REQUEST["window"], 0, 0);
-        $formulario -> boton("Aceptar","submit",0);
-        $formulario -> cerrar();
-    }
+        $_ERROR = array();
+        //$e = conteo de errores totales del archivo
+        $e = 0;
+        $h = 0;
+        for ($r = 1; $r < sizeof($_DATA); $r++) {
+            //$er = conteo de errores de la fila al importar pedidos
+            $er = 0;
+            $this->row = $_DATA[$r];
+            //------------------------
+            if ($this->row[0] == "" && $this->row[1] == "" && $this->row[2] == "" && $this->row[3] == "" && $this->row[4] == "" && $this->row[5] == "") {continue;}
+            for ($c = 0; $c < sizeof($this->row); $c++) {
 
-    //Funcion para la insercion del registro
-    function insertar()
-    {
-        $datos_usuario = $this -> usuario -> retornar();
-        $fec_creaci = new Fecha();
-        $mensaje_reg = 0;
-        $mensaje_cod = 0;
-        $i = 1;
+                //------------------------
+                $item = isset($this->row[$c]) ? $this->row[$c] : NULL;
+                //------------------------
+                switch ($c) {
 
-        if(!$archivo = fopen($_FILES['archivo']['tmp_name'], "r"))
-        {
-        	echo "<br>No se Pudo Abrir el Archivo";
-        }
-        else
-        {
-            $e = 0;
-            while ($datos = fgetcsv ($archivo, 1000, ","))
-            {
-               $datos = explode(";", $datos[0]);
-               $num_campos = count($datos);
-                $nitcle = $datos[3];
-                $indnit = 0;
+                case 0: //Manifiesto
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NUMERO DE MANIFIESTO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
 
-                $permitidos = "0123456789";
-                for ($i=0; $i<strlen($nitcle); $i++)
-                {
-                        if (strpos($permitidos, substr($nitcle,$i,1))===false)
-                        {
-                                $indnit = 1;
+                case 1: //@Nit Empresa
+                    if ($item != "" || $item == "") {
+                        if (!$this->verificarTransportadora($item)) {
+                            if ($this->row[1] != NULL && $this->row[2] != NULL) {
+                                $a = Array();
+                                $a[0] = Array(
+                                    "cod_tercer" => $item, //nit transportadora
+                                    "nom_tercer" => $this->row[2], //transportadora
+                                    "abr_tercer" => $this->row[2], //transportadora
+                                );
+                                $this->registrarTransportadora($a);
+                                $this->setInsertion($h, $r, $c, $item, 'NUEVA TRANSPORTADORA REGISTRADA');
+                                $h++;
+                            } else {
+                                $faltantes = '';
+                                $faltantes .= ($item == NULL) ? " Nit de la Transportadora," : ""; //nit transportadora
+                                $faltantes .= ($this->row[2] == NULL) ? " Nombre de la Transportadora," : ""; //transportadora
+                                $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DE LA TRANSPORTADORA (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                                $e++;
+                                $er++;
+                            }
                         }
-                }
-                
-                if($indnit)
-                {
-                   if($datos[0]!="Manifiesto")
-                   {
-                    echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El NIT ".$nitcle." Relacionado al manifiesto # ".$datos[0]." debe ir sin Puntos,Comas, Guiones u otro tipo de Caracteres.</img>";
-                   }
-                }
-                else if(strlen($nitcle) > 10)
-                {
-                     echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\"> El NIT ".$nitcle." Relacionado al manifiesto # ".$datos[0]." no debe Contener mas de 10 digitos.</img>";
-                }
-                else
-                {
-                        $consulta = new Consulta("START TRANSACTION", $this -> conexion);
-                        $query = "SELECT a.num_despac, a.cod_manifi, a.ind_anulad
-                                    FROM ".BASE_DATOS.".tab_despac_despac a
-                                      WHERE a.cod_manifi = '".$datos[0]."' ";
-                        $consulta = new Consulta($query, $this -> conexion);
-                        $mDespacho = $consulta -> ret_arreglo();
-                        if($mDespacho[0]['ind_anulad']=='A' || $mDespacho==FALSE)
-                        {
-                          if(!$mensaje_reg = $this -> validar_registro($datos))
-                          {
-                                  $this -> Subir($datos);
-                          }
-                          else
-                          {
-                                  if($e == 0)
-                                  {
-                                          $formulario = new Formulario ("index.php\" ","post","<b>RESULTADOS</b>","f");
-                                          $formulario -> linea("INFORMACION DE LA CARGA DEL ARCHIVO",1);
-                                          $formulario -> linea("Los Siguientes Datos No subieron al Sistema",0);
-                                          $formulario -> nueva_tabla();
-                                  }
+                    }
+                    break;
 
-                                  echo "<br>Manifiesto ".$datos[0]." | ".$mensaje_reg;
-                                  echo "<hr>";
-                                  $e++;
-                          }
+                case 2: //@Nombre empresa (Razon social)
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DE LA TRANSPORTADORA ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 3: //@Codigo Agencia
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CÓDIGO DE LA AGENCIA ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->verificarAgencia($item,$this->row[1])){
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA AGENCIA '.$this->row[4].' NO ESTA REGISTRADA');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 4: //@Nombre Agencia
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DE LA AGENCIA ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 5: //@Nit Cliente
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NIT DEL CLIENTE ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    $num_cliente = $item;
+                    if (!$this->verificarRegistroCliente($item,$num_cliente)) {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CLIENTE ' .  $this->row[6] . ' NO SE ENCUENTRA REGISTRADO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 6: //@Nombre Cliene
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DEL CLIENTE ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 7: //@Placa
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA PLACA DEL VEHICULO ES REQUERIDA');
+                        $e++;
+                        $er++;
+                    }
+                    if (!$this->verificaPlaca($item)) {
+                        if(
+                            ($item != '' && $this->row[8] != '' && $this->row[9] != '' &&
+                            $this->row[10] != '' && $this->row[11] != '' && $this->row[12] != '' &&
+                            $this->row[13] != '' && $this->row[31] != '' && $this->row[25] != '' &&
+                            $this->row[19] != '') && (
+                            $this->verificaMarca($this->row[8]) &&
+                            $this->verificaLinea($this->row[9], $this->row[8]) &&
+                            $this->verificaColor($this->row[11]) &&
+                            $this->verificaCarroc($this->row[12])
+                            )
+                        ){
+                            $a = Array();
+                            $a[0] = Array(
+                                "num_placax" => $item, //Numero de placa
+                                "cod_marcax" => $this->row[8], //Codigo de la marca
+                                "cod_lineax" => $this->row[9], //Codigo de la linea
+                                "ano_modelo" => $this->row[10], //Año modelo
+                                "cod_colorx" => $this->row[11], //Codigo del color
+                                "cod_carroc" => $this->row[12], //Codigo de la carroceria
+                                "num_config" => $this->row[13], //Numero de configuracion
+                                "cod_propie" => $this->row[31], //Codigo del propietario
+                                "cod_tenedo" => $this->row[25], //Codigo del tenedor
+                                "cod_conduc" => $this->row[19], //Codigo del conductor
+                                "cod_opegps" => $this->row[14], //Codigo operador gps
+                                "usr_gpsxxx" => $this->row[16], //Usuario gps
+                                "clv_gpsxxx" => $this->row[17], //Clave gps
+                                "idx_gpsxxx" => $this->row[18],//ID gps
+                                "inf_conduc" => Array(
+                                    "cod_tercer" => $this->row[19], //Codigo conductor
+                                    "nom_tercer" => $this->row[20], //Nombre del conductor
+                                    "nom_apell1" => $this->row[21], //Apellido 1
+                                    "nom_apell2" => $this->row[22], //Apellido 2
+                                    "num_telmov" => $this->row[23], //Telefono
+                                    "dir_domici" => $this->row[24], //Direccion
+                                ),
+                                "inf_poseed" => Array(
+                                    "cod_tercer" => $this->row[25], //Codigo poseedor
+                                    "nom_tercer" => $this->row[26], //Nombre del poseedor
+                                    "nom_apell1" => $this->row[27], //Apellido 1
+                                    "nom_apell2" => $this->row[28], //Apellido 2
+                                    "num_telmov" => $this->row[29], //Telefono
+                                    "dir_domici" => $this->row[30], //Direccion
+                                ),
+                                "inf_propie" => Array(
+                                    "cod_tercer" => $this->row[31], //Codigo propietario
+                                    "nom_tercer" => $this->row[32], //Nombre del propietario
+                                    "nom_apell1" => $this->row[33], //Apellido 1
+                                    "nom_apell2" => $this->row[34], //Apellido 2
+                                    "num_telmov" => $this->row[35], //Telefono
+                                    "dir_domici" => $this->row[36], //Direccion
+                                )
+                            );
+                            $this->ins_vehiculo($a);
+                            $this->setInsertion($h, $r, $c, $item, 'NUEVO VEHICULO REGISTRADO');
+                            $h++;
+                        }else {
+                            $faltantes = '';
+                            $faltantes .= ($item == NULL) ? " Numero de placa," : "";
+                            $faltantes .= ($this->row[8] == NULL ||  !$this->verificaMarca($this->row[8]) ) ? " codigo de la marca," : "";
+                            $faltantes .= ($this->row[9] == NULL ||  !$this->verificaLinea($this->row[9], $this->row[8])) ? " codigo de la linea " : "";
+                            $faltantes .= ($this->row[10] == NULL) ? " modelo," : "";
+                            $faltantes .= ($this->row[11] == NULL || !$this->verificaColor($this->row[11]) ) ? " codigo del color " : "";
+                            $faltantes .= ($this->row[12] == NULL || !$this->verificaCarroc($this->row[12]) ) ? " codigo de la carroceria " : "";
+                            $faltantes .= ($this->row[13] == NULL || !$this->verificaCarroc($this->row[12]) ) ? " numero de configuracion " : "";
+                            $faltantes .= ($this->row[36] == NULL ) ? " codigo del propietario " : "";
+                            $faltantes .= ($this->row[31] == NULL ) ? " codigo del poseedor " : "";
+                            $faltantes .= ($this->row[19] == NULL ) ? " codigo del conductor " : "";
+                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL PROPIETARIO O HAY INFORMACIÓN ERRÓNEA (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                            $e++;
+                            $er++;
                         }
-                        else
-                        {
-                            echo "<br>Manifiesto ".$datos[0]." ya se encuenta registrado con el despacho: ".$mDespacho[0];
-                            echo "<hr>";
+                    }
+                    break;
+
+                case 8: //@Marca
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA MARCA ES REQUERIDA');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->verificaMarca($item)){
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA MARCA NO EXISTE, O NO ESTA REGISTRADA.');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 9: //@Linea
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA LINEA ES REQUERIDA');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->verificaLinea($item, $this->row[8])){
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA LINEA NO EXISTE, O NO ESTA REGISTRADA.');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 10: //Modelo
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL MODELO DEL VEHICULO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 11: //@Color
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL COLOR DEL VEHICULO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->verificaColor($item)){
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL COLOR NO EXISTE, O NO ESTA REGISTRADA.');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 12: //@Carroceria
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA CARROCERIA DEL VEHICULO ES REQUERIDA');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->verificaCarroc($item)){
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA CARROCERIA NO EXISTE, O NO ESTA REGISTRADA.');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 13: //@Configuracion
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CODIGO DE CONFIGURACION DEL VEHICULO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 14: //@Nit Gps
+                    break;
+
+                case 15: //@Nombre GPS
+                    
+                    break;
+
+                case 16: //@Usuario
+
+                    break;
+
+                case 17: //@Contraseña
+                    
+                    break;
+
+                case 18: //@ID GPS
+                    
+                    break;
+
+                case 19: //@Codigo Conductor
+                    if (empty($item) || $item == "" ) {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CODIGO DEL CONDUCTOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->verificarTercero($item,'tab_tercer_conduc',1)){
+                        // Codigo Conductor, Nombre conductor, Primer apellido, Celular conductor, Direccion Conductor
+                        if($item != '' && $this->row[20] != '' && $this->row[21] != '' && $this->row[23] != '' && $this->row[24] != '' ){
+                            $a = Array();
+                            $a[0] = Array(
+                                "cod_tercer" => $item, //Codigo conductor
+                                "nom_tercer" => $this->row[20], //Nombre del conductor
+                                "nom_apell1" => $this->row[21], //Apellido 1
+                                "nom_apell2" => $this->row[22], //Apellido 2
+                                "num_telmov" => $this->row[23], //Telefono
+                                "dir_domici" => $this->row[24], //Direccion
+                            );
+                            $this->ins_conductor($a);
+                            $this->setInsertion($h, $r, $c, $item, 'NUEVO CONDUCTOR REGISTRADO');
+                            $h++;
+                        }else{
+                            $faltantes = '';
+                            $faltantes .= ($item == NULL) ? " Codigo conductor," : "";
+                            $faltantes .= ($this->row[20] == NULL) ? " Nombre del conductor," : "";
+                            $faltantes .= ($this->row[21] == NULL) ? " apellido del conductor, " : "";
+                            $faltantes .= ($this->row[23] == NULL) ? " telefono del conductor," : "";
+                            $faltantes .= ($this->row[24] == NULL) ? " direccion del conductor " : "";
+
+                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL CONDUCTOR (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                            $e++;
+                            $er++;
                         }
+                    }
+
+                    break;
+
+                case 20: //@Nombre conductor
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DEL CONDUCTOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    
+                    break;
+
+                case 21: //@primer apellido
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL PRIMER APELLIDO DEL CONDUCTOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 22: //@segundo apellido
+
+                    break;
+
+                case 23: //@celular conductor
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CELULAR DEL CONDUCTOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 24: //@Direccion Conductor
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA DIRECCION DEL CONDUCTOR ES REQUERIDA');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 25: //@Codigo Poseedor
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CODIGO DEL POSEEDOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->verificarTercero($item,'',0)){
+                        // Codigo Tercero, Nombre poseedor, Primer apellido, Celular poseedor, Direccion poseedor
+                        if($item != '' && $this->row[26] != '' && $this->row[27] != '' && $this->row[29] != '' && $this->row[30] != '' ){
+                            $a = Array();
+                            $a[0] = Array(
+                                "cod_tercer" => $item, //Codigo poseedor
+                                "nom_tercer" => $this->row[26], //Nombre del poseedor
+                                "nom_apell1" => $this->row[27], //Apellido 1
+                                "nom_apell2" => $this->row[28], //Apellido 2
+                                "num_telmov" => $this->row[29], //Telefono
+                                "dir_domici" => $this->row[30], //Direccion
+                            );
+                            $this->ins_tercer($a);
+                            $this->setInsertion($h, $r, $c, $item, 'NUEVO POSEEDOR REGISTRADO');
+                            $h++;
+                        }else{
+                            $faltantes = '';
+                            $faltantes .= ($item == NULL) ? " Codigo poseedor," : "";
+                            $faltantes .= ($this->row[26] == NULL) ? " Nombre del poseedor," : "";
+                            $faltantes .= ($this->row[27] == NULL) ? " apellido del poseedor " : "";
+                            $faltantes .= ($this->row[29] == NULL) ? " telefono del poseedor," : "";
+                            $faltantes .= ($this->row[30] == NULL) ? " direccion del poseedor " : "";
+
+                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL POSEEDOR (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    break;
+
+                case 26: //@Nombre poseedor
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DEL POSEEOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    
+                    break;
+
+                case 27: //@Apellido poseedor
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL APELLIDO DEL POSEEOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 28: //@Apellido poseedor
+                    break;
+
+                case 29: //@telefono poseedor
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL TELEFONO DEL POSEEOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 30: //@Direccion poseedor
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA DIRECCION DEL POSEEOR ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 31: //@Codigo Propietario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CODIGO DEL PROPIETARIO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->verificarTercero($item,'',0)){
+                        // Codigo Tercero, Nombre propietario, Primer apellido, Celular propietario, Direccion propietario
+                        if($item != '' && $this->row[32] != '' && $this->row[33] != '' && $this->row[35] != '' && $this->row[36] != '' ){
+                            $a = Array();
+                            $a[0] = Array(
+                                "cod_tercer" => $item, //Codigo propietario
+                                "nom_tercer" => $this->row[32], //Nombre del propietario
+                                "nom_apell1" => $this->row[33], //Apellido 1
+                                "nom_apell2" => $this->row[34], //Apellido 2
+                                "num_telmov" => $this->row[35], //Telefono
+                                "dir_domici" => $this->row[36], //Direccion
+                            );
+                            $this->ins_tercer($a);
+                            $this->setInsertion($h, $r, $c, $item, 'NUEVO PROPIETARIO REGISTRADO');
+                            $h++;
+                        }else {
+                            $faltantes = '';
+                            $faltantes .= ($item == NULL) ? " Codigo propietario," : "";
+                            $faltantes .= ($this->row[32] == NULL) ? " Nombre del propietario," : "";
+                            $faltantes .= ($this->row[33] == NULL) ? " apellido del propietario " : "";
+                            $faltantes .= ($this->row[35] == NULL) ? " telefono del propietario," : "";
+                            $faltantes .= ($this->row[36] == NULL) ? " direccion del propietario " : "";
+
+                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL PROPIETARIO (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    break;
+
+                case 32: //@Nombre propietario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DEL PROPIETARIO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 33: //@Apellido propietario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL APELLIDO DEL PROPIETARIO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 34: //@Apellido propietario
+                    break;
+
+                case 35: //@Telefono propietario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL TELEFONO DEL PROPIETARIO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 36: //@Direccion propietario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA DIRECCION DEL PROPIETARIO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+
+                case 37: //@Codigo mercancia
+                    if (empty($item) || $item == "") {
+                        if (!$this->verificarMercancia($item)) {
+                            $this->SetError($e, $this->row[0], $c, $r, 'NO HAY MERCANCIA REGISTRADA CON EL CODIGO '.$item);
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    break;
+
+                case 38: //Ciudad de origen
+                    if (empty($item) || $item == "") {
+                        if (!$this->verificaCiudad($item)) {
+                            $this->SetError($e, $this->row[0], $c, $r, 'NO EXISTE CIUDAD REGISTRADA CON EL CODIGO '.$item);
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    if($item != '' && $row[39] != ''){
+                        if(!$this->validaRuta($item, $row[39])){
+                            $ciu_origen = $this->getCiudad($item);
+                            $ciu_destin = $this->getCiudad($row[39]);
+                            $this->SetError($e, $this->row[0], $c, $r, 'NO EXISTE RUTA '.$ciu_origen['nom_ciudad'].' - '.$ciu_destin['nom_ciudad']);
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    break;
+                case 39: //@Ciudad destino
+                    if (empty($item) || $item == "") {
+                        if (!$this->verificaCiudad($item)) {
+                            $this->SetError($e, $this->row[0], $c, $r, 'NO EXISTE CIUDAD REGISTRADA CON EL CODIGO '.$item);
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    if($item != '' && $row[38] != ''){
+                        if(!$this->validaRuta($row[38], $item)){
+                            $ciu_origen = $this->getCiudad($row[38]);
+                            $ciu_destin = $this->getCiudad($item);
+                            $this->SetError($e, $this->row[0], $c, $r, 'NO EXISTE RUTA '.$ciu_origen['nom_ciudad'].' - '.$ciu_destin['nom_ciudad']);
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    break;
+                case 40: //@Tipo de despacho
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL TIPO DE DESPACHO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    if (!$this->verificaTipoDespacho($item)) {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL TIPO DE DESPACHO CON CODIGO '.$item.' NO EXISTE');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 41: //@Valor Flete
+                    break;
+                case 42: //@Valor Despacho
+                    break;
+                case 43: //@Valor Anticipo
+                    break;
+                case 44: //@Codigo del remitente
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CODIGO DEL REMITENTE ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->validaRemdes($item, $row[45], 1)){
+                        // Codigo Remdes, Nit, Nombre, Ciudad, Direccion, Correo, Telefono, transportadora
+                        if($item != '' && $this->row[45] != '' && $this->row[46] != '' && $this->row[47] != '' && $this->row[48] != '' && $this->row[51] != '' && $this->row[52] != '' && $this->row[1] != ''){
+                            $a = Array();
+                            $a[0] = Array(
+                                "cod_remdes" => $item, //Codigo remdes
+                                "num_remdes" => $this->row[45], //numero remdes
+                                "nom_remdes" => $this->row[46], //Nombre remdes
+                                "cod_transp" => $this->row[1], //Codigo transportadora
+                                "ind_remdes" => 1, //Indicador de remdes
+                                "cod_ciudad" => $this->row[47], //Codigo de ciudad
+                                "dir_remdes" => $this->row[48], //Direccion de remdes
+                                "dir_emailx" => $this->row[51], //Email de remitente
+                                "num_telefo" => $this->row[52], //Numero de telefono
+                                "cod_latitu" => $this->row[49], //Codigo de latitud
+                                "cod_longit" => $this->row[50], //Codigo de longitud
+                                "num_telefo" => $this->row[61], //Numero de telefono
+                            );
+                            $this->ins_remdes($a);
+                            $this->setInsertion($h, $r, $c, $item, 'NUEVO REMITENTE REGISTRADO');
+                            $h++;
+                        }else {
+                            $faltantes = '';
+                            $faltantes .= ($item == NULL) ? " Codigo del remitente," : "";
+                            $faltantes .= ($this->row[45] == NULL) ? " Numero del remitente," : "";
+                            $faltantes .= ($this->row[46] == NULL) ? " Nombre de remitente, " : "";
+                            $faltantes .= ($this->row[1] == NULL) ? " Codigo transportadora," : "";
+                            $faltantes .= ($this->row[47] == NULL) ? " Codigo de la ciudad del remitente," : "";
+                            $faltantes .= ($this->row[48] == NULL) ? " Direccion del remitente," : "";
+                            $faltantes .= ($this->row[51] == NULL) ? " Email remitente, " : "";
+                            $faltantes .= ($this->row[52] == NULL) ? " Numero de telefono remitente, " : "";
+                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL REMITENTE (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    break;
+                case 45: //@Nit remitente
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NIT DEL REMITENTE ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 46: //@Nombre del remitente
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DEL REMITENTE ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 47: //@Ciudad del remitente
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA CIUDAD DEL REMITENTE ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 48: //@Direccion del remitente
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA DIRECCION DEL REMITENTE ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 49: //@Latitud
+                    break;
+                case 50: //@Longitud
+                    break;
+                case 51: //@Correo del remitente
+                    break;
+                case 52: //@Telefono
+                    break;
+                case 53: //@Codigo del destinatario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL CODIGO DEL DESTINATARIO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    if(!$this->validaRemdes($item, $row[54], 2)){
+                        // Codigo Remdes, Nit, Nombre, Ciudad, Direccion, Correo, Telefono, transportadora
+                        if($item != '' && $this->row[54] != '' && $this->row[55] != '' && $this->row[56] != '' && $this->row[57] != '' && $this->row[60] != '' && $this->row[61] != '' && $this->row[1] != ''){
+                            $a = Array();
+                            $a[0] = Array(
+                                "cod_remdes" => $item, //Codigo remdes
+                                "num_remdes" => $this->row[54], //numero remdes
+                                "nom_remdes" => $this->row[55], //Nombre remdes
+                                "cod_transp" => $this->row[1], //Codigo transportadora
+                                "ind_remdes" => 2, //Indicador de remdes
+                                "cod_ciudad" => $this->row[56], //Codigo de ciudad
+                                "dir_remdes" => $this->row[57], //Direccion de remdes
+                                "dir_emailx" => $this->row[60], //Email de remitente
+                                "num_telefo" => $this->row[61], //Numero de telefono
+                                "cod_latitu" => $this->row[58], //Codigo de latitud
+                                "cod_longit" => $this->row[59], //Codigo de longitud
+                                "num_telefo" => $this->row[61], //Numero de telefono
+                            );
+                            $this->ins_remdes($a);
+                            $this->setInsertion($h, $r, $c, $item, 'NUEVO DESTINATARIO REGISTRADO');
+                            $h++;
+                        }else {
+                            $faltantes = '';
+                            $faltantes .= ($item == NULL) ? " Codigo del destinatario," : "";
+                            $faltantes .= ($this->row[45] == NULL) ? " Numero del destinatario," : "";
+                            $faltantes .= ($this->row[46] == NULL) ? " Nombre de destinatario, " : "";
+                            $faltantes .= ($this->row[1] == NULL) ? " Codigo transportadora," : "";
+                            $faltantes .= ($this->row[56] == NULL) ? " Codigo de la ciudad del destinatario," : "";
+                            $faltantes .= ($this->row[57] == NULL) ? " Direccion del destinatario," : "";
+                            $faltantes .= ($this->row[60] == NULL) ? " Email destinatario, " : "";
+                            $faltantes .= ($this->row[61] == NULL) ? " Numero de telefono destinatario, " : "";
+                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL REMITENTE (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                            $e++;
+                            $er++;
+                        }
+                    }
+                    break;
+
+
+                case 54: //@Nit destinatario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NIT DEL DESTINATARIO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 55: //@Nombre del destinatario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DEL DESTINATARIO ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 56: //@Ciudad del destinatario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA CIUDAD DEL DESTINATARIO ES REQUERIDA');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 57: //@Direccion del destinatario
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA DIRECCION DEL DESTINATARIO ES REQUERIDA');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 58: //@Latitud
+                    break;
+                case 59: //@Longitud
+                    break;
+                case 60: //@Correo del destinatario
+                    break;
+                case 61: //@Telefono
+                    break;
+                case 62: //@fecha de pago
+                    break;
+                case 63: //@Codigo de unidad de medida
+                    break;
+                case 64: //@Codigo Naturaleza Empaque
+                    break;
+                case 65: //@Peso Remesa
+                    break;
+                case 66: //@Volumen Remesa
+                    break;
+                case 67: //@Codigo de Empaque de la Remesa
+                    break;
+                case 68: //@Codigo de Empaque de la Remesa
+                    break;
+                case 69: //@Numero Remesa
+                    if (empty($item) || $item == "") {
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NUMERO DE REMESA ES REQUERIDO');
+                        $e++;
+                        $er++;
+                    }
+                    break;
+                case 70: //@Observaciones Generales
+                    break;
+
+                } //Cierre Case
+
+            } //Cierre For
+
+            //Insercion Si no hay errores
+            if ($er == 0) {
+                $respuesta = $this->insertDespacho($_DATA[$r-1]);
+                if ($respuesta[0] == 1) {
+                    $totalImportados++;
+                } else {
+                    $totalActualizados++;
+                    array_push($datosActualizados, $respuesta[1]);
                 }
+
             }
 
-            if($formulario)
-            $formulario -> cerrar();
-        }
-        fclose($archivo);
+        } //Cierre Segundo For
+
+        $respuesta = array();
+        array_push($respuesta, $this->error);
+        array_push($respuesta, $totalImportados);
+        array_push($respuesta, $totalActualizados);
+        array_push($respuesta, $datosActualizados);
+
+        return $respuesta;
+
+    } //Cierre Funcion
+
+    private function retornarRegistroNuevosValidator() {
+        return $this->insertion;
     }
 
-    function validar_registro($registro)
-    {
-        $query = "SELECT a.nom_ciudad, b.nom_ciudad
-                  FROM ".BASE_DATOS.".tab_genera_ciudad a,
-                         ".BASE_DATOS.".tab_genera_ciudad b
-                  WHERE a.cod_ciudad = '".$registro[31]."' AND
-                        b.cod_ciudad = '".$registro[32]."'";
-        $consulta = new Consulta($query, $this -> conexion);
-        $ciudades = $consulta -> ret_arreglo();
-
-      //valida la ruta
-      $query = "SELECT a.cod_rutasx
-                  FROM ".BASE_DATOS.".tab_genera_rutasx a
-                 WHERE a.cod_ciuori = '".$registro[31]."' AND
-                       a.cod_ciudes = '".$registro[32]."' AND
-		       a.ind_estado = '1'
-                       GROUP BY a.cod_rutasx  ";
-       $consulta = new Consulta($query, $this -> conexion);
-
-       if(!$existe = $consulta -> ret_arreglo())
-       {
-            $mensaje = "La ruta Origen " .$ciudades[0]." Destino ".$ciudades[1]." No esta creada o no esta Asignada a la transportadora " ;
-    	 }
-
-
-             //Valida la agencia
-             $query    = "SELECT cod_agenci FROM ".BASE_DATOS.".tab_genera_agenci WHERE cod_agenci = '".$registro[1]."'";
-             $consulta = new Consulta($query, $this -> conexion);
-             $agenci   = $consulta -> ret_arreglo();
-
-             if(!$agenci[0])
-             {
-                  if($_REQUEST[subir])
-                  {
-                  $this -> ins_agenci($registro[1],$registro[2]);
-                  echo "crea la agencia ";
-                  }
-                  else
-                  {
-                     $mensaje = "Agencia " . $registro[1];
-                  }
-             }
-
-             //valida que el NIT del Generador no sea mayor a 10
-             //digitos.
-
-             if(COUNT($registro[3]) > 10)
-             {
-                     $mensaje .= "|Generador ".$registro[3]." Nit con mas de 10 caracteres.";
-             }
-             else
-             {
-                     //valida que el generador exista en la BD
-                     //codigo del generador 10
-                     $generador =    $this -> is_tercer($registro[3]);
-
-                     if($generador == 0)
-                     {
-                             if($_REQUEST[subir])
-                             {
-                                     $this -> ins_tercer($registro[3],$registro[4],"","N");
-                                     $this -> act_activi($registro[3],3);//cambio el generado a 3 estaba en 10
-                                     echo "<br>Crea el Generador";
-                             }
-                             else
-                             {
-                                     $mensaje .= "|".$registro[4];
-                             }
-                     }
-
-                     //si el generador existe valida que tenga la actividad Generador
-                     if($generador == 1)
-                     {
-                             //Codigo del Generador = 10
-                             $activi = $this -> is_activi($registro[3],3);//cambio el generado a 3 estaba en 10
-                             if(!$activi)
-                             {
-                                     if($_REQUEST[subir])
-                                     {
-                                             $this -> act_activi($registro[3],3);//cambio el generado a 3 estaba en 10
-                                             echo "<br>Actualiza la actividad del generador<br>";
-                                     }
-                                     else
-                                     {
-                                             $mensaje .= "|Generador ".$registro[3]." sin Actividad";
-                                     }
-                             }
-                     }//fin activi
-              }
-
-             //valida que el conductor exista en la BD
-             //codigo conductor 16
-             $conduc =    $this -> is_tercer($registro[12]);
-             if($conduc == 0)
-             {
-                  if($_REQUEST[subir])
-                  {
-                    $nombre = $registro[13]." ".$registro[14]." ".$registro[15];
-                    $this -> ins_conpos($registro[12],$nombre,$registro[14],$registro[15],$registro[16],"C",$registro[17]);
-                    echo "<br>Crea el Conductor<br>";
-                    $conduc = 1;
-                  }
-                  else
-                  {
-                     $mensaje .= "|Conductor ".$registro[12]." ".$registro[13];
-                     $this -> act_celular($registro[12],$registro[16]);
-                  }
-             }
-
-             //si el Conductor existe valida que tenga la actividad
-             if($conduc == 1)
-             {
-                $this -> act_celular($registro[12],$registro[16]);
-                //Codigo del Conductor = 16
-                $activi = $this -> is_activi($registro[12],4);//cambio la actividad a 4 estaba en 16
-
-                  if(!$activi)
-                  {
-                      if($_REQUEST[subir])
-                      {
-                         $this -> act_activi($registro[12],4);//cambio la actividad a 4 estaba en 16
-                         echo "<br>Actualiza la actividad del Conductor<br>";
-                      }
-                      else
-                      {
-                         $mensaje .= "|Conductor ".$registro[12]." sin Actividad";
-                      }
-                  }
-             }//fin activi
-
-             //valida que el Poseedor exista en la BD
-             //codigo poseedor = 18
-             $poseed =  $this -> is_tercer($registro[18]);
-             if($poseed == 0)
-             {
-                  if($_REQUEST[subir])
-                  {
-                    $nombre = $registro[19]." ".$registro[20]." ".$registro[21];
-                    $this -> ins_conpos($registro[18],$nombre,$registro[14],$registro[15],$registro[22],"C",$registro[23]);
-                    $activi = $this -> is_activi($registro[18],6);//cambio la actividad a 4 estaba en 18
-                     echo "<br>Crea el Poseedor";
-                     $poseed=1;
-                  }
-                  else
-                  {
-                     $mensaje .= "|Poseedor ".$registro[18]." ".$registro[19];
-                  }
-             }
-
-             //si el Poseedor existe valida que tenga la actividad
-             if($poseed == 1)
-             {
-                //Codigo del Poseedor = 18
-                $activi = $this -> is_activi($registro[18],6);//cambio la actividad a 4 estaba en 18
-
-                  if(!$activi)
-                  {
-                      if($_REQUEST[subir])
-                     {
-                         $this -> act_activi($registro[18],6);//cambio la actividad a 4 estaba en 18
-                         echo "<br>Actualiza la actividad del Poseedor<br>";
-                      }
-                      else
-                      {
-                         $mensaje .= "|Poseedor ".$registro[18]." sin Actividad";
-                      }
-                  }
-
-             }//fin activi
-
-             //valida que el Propietario exista en la BD
-             //codigo propietario = 15
-             $propie =    $this -> is_tercer($registro[24]);
-             if($propie == 0)
-             {
-                  if($_REQUEST[subir])
-                  {
-                    $nombre = $registro[25]." ".$registro[26]." ".$registro[27];
-                    $this -> ins_tercer($registro[24],$nombre, $registro[28], "C", $registro[29]);
-                    $this -> act_activi($registro[24],5);//cambio la actividad a 5 estaba en 15
-                     echo "<br>Crea el Propietario";
-                     $propie =1;
-                  }
-                  else
-                  {
-                     $mensaje .= "|Propietario ".$registro[24]." ".$registro[25];
-                  }
-             }
-
-             //si el Propietario existe valida que tenga la actividad
-             if($propie == 1)
-             {
-                //Codigo del Propietario = 15
-                $activi = $this -> is_activi($registro[24],5);//cambio la actividad a 5 estaba en 15
-                  if(!$activi)
-                  {
-                      if($_REQUEST[subir])
-                      {
-                         $this -> act_activi($registro[24],5);//cambio la actividad a 5 estaba en 15
-                         echo "<br>Actualiza la actividad del Propietario<br>";
-                      }
-                      else
-                      {
-                         $mensaje .= "|Propietario ".$registro[24]." sin Actividad";
-                      }
-                  }
-
-             }//fin activi
-
-             $query = "SELECT num_placax
-                       FROM tab_vehicu_vehicu
-                       WHERE num_placax = '".$registro[5]."'";
-             $consulta = new Consulta($query, $this -> conexion);
-             $placa      = $consulta -> ret_arreglo();
-
-              if(!$placa[0])
-              {
-                /*se inabilita opcion ya que los codigos enviados son diferentes
-                if($_REQUEST[subir])
-                {
-                     $this ->  ins_vehicu($registro[5],$registro[6], $registro[7],$registro[8],$registro[9],
-                                          $registro[10],$registro[11],$registro[12],$registro[18],$registro[24]);
-                      echo "<br>Actualiza el vehiculo<br>";
-
-                }
-                else
-                {
-                 $mensaje .= "|Vehiculo ".$registro[5];
-                }*/
-                $mensaje .= "|Vehiculo ".$registro[5]." no se encuenta registrado, registre el vehiculo en la plataforma e intente nuevamente.";
-             }
-/*
-             if(!$this -> is_linea($registro[6], $registro[7]))
-             {
-                 $mensaje .= "| La Linea ".$registro[6].'-'.$registro[7]." No es Valida";
-             }
-             if(!$this -> is_color($registro[9]))
-             {
-                 $mensaje .= "| El Codigo de la Color ".$registro[9]." No es Valido";
-             }
-             if(!$this -> is_carroc($registro[10]))
-             {
-                 $mensaje .= "| El Codigo de la Carroceria ".$registro[10]." No es Valida";
-             }
-             if(!$this -> is_config($registro[11]))
-             {
-                 $mensaje .= "| La Configuracion ".$registro[11]." No es Valida Segun el Estandar del Ministerio de                                    Transporte";
-             }*/
-             /*No existe tabla en gl por eso la omito es
-             $query = "SELECT cod_mercan
-                       FROM ".BASE_DATOS.".tab_genera_mercan
-                       WHERE cod_mercan = '".$registro[30]."'";
-             $consulta = new Consulta($query, $this -> conexion);
-             $mercan   = $consulta -> ret_arreglo();
-
-             if(!$mercan[0])
-             {
-                 if($_REQUEST[subir])
-                 {
-                    $this ->  ins_mercan($registro[30]);
-                    echo "Actualiza la mercancia<br>";
-                 }
-                 else
-                 {
-                    $mensaje .= "|Mercancia ".$registro[30];
-                 }
-             }
-              */
-             //query ciuori
-             $query = "SELECT cod_ciudad
-                       FROM  ".BASE_DATOS.".tab_genera_ciudad
-                       WHERE cod_ciudad = '".$registro[31]."'";
-             $consulta = new Consulta($query, $this -> conexion);
-             $origen   = $consulta -> ret_arreglo();
-
-             if(!$origen[0])
-             {
-                 if($_REQUEST[subir])
-                 {
-                   echo "Actualiza la Ciudad<br>";
-                 }
-                 else
-                 {
-                   $mensaje .= "|Origen ".$registro[31];
-                 }
-
-             }
-
-             //query ciuori
-
-             $query = "SELECT cod_ciudad
-                       FROM  ".BASE_DATOS.".tab_genera_ciudad
-                       WHERE cod_ciudad = '".$registro[32]."'";
-             $consulta = new Consulta($query, $this -> conexion);
-             $origen   = $consulta -> ret_arreglo();
-
-             if(!$origen[0])
-             {
-                 if($_REQUEST[subir])
-                 {
-                   echo "Actualiza la Ciudad";
-                  }
-                 else
-                  {
-                   $mensaje .= "|Destino".$registro[32];
-                  }
-             }
-
-             //Valida tipo de despacho
-             $query = "SELECT cod_tipdes
-                       FROM ".BASE_DATOS.".tab_genera_tipdes
-                       WHERE cod_tipdes = '".$registro[33]."'";
-             $consulta = new Consulta($query, $this -> conexion);
-             $tip_des  = $consulta -> ret_arreglo();
-
-             if(!$tip_des[0])
-             {
-                     if($registro[33] != "0")
-                           $mensaje .= "|Tipo Despacho".$registro[33];
-             }
-              return $mensaje;
+    private function SetError($e, $p, $c, $r, $des) {
+        $this->error[$e][0] = $r;
+        $this->error[$e][1] = $c != NULL ? $c + 1 : 'REGISTRO';
+        $this->error[$e][2] = $c != NULL ? $this->row[$c] : '- - -';
+        $this->error[$e][3] = $des;
+        $this->error[$e][4] = $p;
     }
 
-    function Subir($registro)
-    {
-       $fec_actual = date("Y-m-d H:i:s");
-       //trae la aseguradora del despacho
-        $datos_usuario = $this -> usuario -> retornar();
-        $usuario=$datos_usuario["cod_usuari"];
-
-       $query = "SELECT a.cod_tercer
-                 FROM ".BASE_DATOS.".tab_tercer_tercer a,
-                      ".BASE_DATOS.".tab_tercer_activi b
-                 WHERE a.cod_tercer = b.cod_tercer AND
-                       b.cod_activi = '5' ";
-       $consulta = new Consulta($query, $this -> conexion, "R");
-       $asegra   = $consulta -> ret_arreglo();
-       $asegra   = $asegra[0];
 
 
-       //Trae la ruta del despacho
-      $query = "SELECT a.cod_rutasx
-                 FROM ".BASE_DATOS.".tab_genera_rutasx a
-                 WHERE a.cod_ciuori = '".$registro[31]."' AND
-                       a.cod_ciudes = '".$registro[32]."' AND
-		       a.ind_estado = '1'
-                       GROUP BY a.cod_rutasx  ";
-       $consulta = new Consulta($query, $this -> conexion);
-       if($ruta     = $consulta -> ret_arreglo())
-               $ruta     = $ruta[0];
+    private function setInsertion($e, $r, $c, $valor, $des) {
+        $this->insertion[$e][0] = $r; //fila
+        $this->insertion[$e][1] = $c;
+        $this->insertion[$e][2] = $valor != NULL ? $valor : '- - -';
+        $this->insertion[$e][3] = $des;
+    }
 
-       //trae el consecutivo de la tabla
-       $query = "SELECT Max(num_despac) AS maximo
-                 FROM ".BASE_DATOS.".tab_despac_despac ";
-       $consec = new Consulta($query, $this -> conexion);
-       $ultimo = $consec -> ret_matriz();
+  
+    function insertDespacho($row) {
+        
+        $est_import = 1;
+        $respuesta = Array();
+        $actualizados = Array();
+        
+        $fec_actual = date("Y-m-d H:i:s");
+        //Se formatea la fecha e pago
+        $row[62] = str_replace('/', '-', $row[62]);
+        $row[62] = date('Y-m-d', strtotime($row[62]));
 
-       $nuevo_consec =  $ultimo[0][0]+1;
+        //Condicional que revisa que el despacho este registrado
+        if (!$this->verificaRegistroDespacho($row[0])){
+            //trae el consecutivo de la tabla
+            $query = "SELECT Max(num_despac) AS maximo
+            FROM ".BASE_DATOS.".tab_despac_despac ";
+            $consec = new Consulta($query, $this -> conexion);
+            $ultimo = $consec -> ret_matriz();
+            $nuevo_consec =  $ultimo[0][0]+1;
 
-       if($registro[33] == "0")
-      {
-       $registro[33] = "2";
-      }
+            //Obtencion de datos
+            $dat_ciuori = $this->getCiudad($row[38]);
+            $dat_ciudes = $this->getCiudad($row[39]);
 
-      if($registro[36] == "0")
-      {
-       $retefu = $registro[36]*0.01;
-      }
-      else
-      {
-       $retefu = $registro[36];
-      }
+            $ruta  = $this->getRuta($dat_ciuori['cod_ciudad'], $dat_ciudes['cod_ciudad']);
 
-      $query = "SELECT num_despac
-                FROM ".BASE_DATOS.".tab_despac_despac
-                WHERE cod_manifi = '".$registro[0]."'";
-      $consulta = new Consulta($query, $this -> conexion);
-      $is_manifi= $consulta -> ret_arreglo();
+            $mercancia = $this->getMercancia($row[37]);
+            $query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
+            (
+              num_despac, cod_manifi, fec_despac,
+  
+              cod_client, cod_paiori, cod_depori,
+  
+              cod_ciuori, cod_paides, cod_depdes,
+  
+              cod_ciudes, val_flecon, val_despac,
+  
+              val_antici, val_retefu, nom_carpag,
+  
+              nom_despag, cod_agedes, fec_pagoxx,
+  
+              obs_despac, val_declara, usr_creaci,
+  
+              fec_creaci, val_pesoxx, con_telef1,
+  
+              con_telmov, con_domici, cod_tipdes,
+  
+              gps_operad, gps_usuari, gps_paswor,
+  
+              gps_idxxxx
+  
+              
+            )
+            VALUES 
+            (
+              ".$nuevo_consec.", '".$row[0]."', '$fec_actual', 
+  
+              '".$row[5]."', '".$dat_ciuori['cod_paisxx']."', '".$dat_ciuori['cod_depart']."',
+  
+              '".$dat_ciuori['cod_ciudad']."', '".$dat_ciudes['cod_paisxx']."', '".$dat_ciudes['cod_depart']."',
+  
+              '".$dat_ciudes['cod_ciudad']."', '".$row[41]."', '".$row[42]."',
+  
+              '".$row[43]."', NULL, NULL,
+  
+              NULL, '".$row[3]."', NULL,
+  
+              '".$row[70]."', NULL, '".$this->cod_usuari."',
+  
+              '$fec_actual', NULL, '".$row[23]."',
+  
+              '".$row[23]."', '".$row[24]."', '".$row[40]."',
+  
+              '".$row[15]."', '".$row[16]."', '".$row[17]."',
+  
+              '".$row[18]."'
+  
+            )";
+         $consulta = new Consulta($query, $this -> conexion, "BR");
 
-
-      /*pais de origen para gl es*/
-      $query = "SELECT a.cod_paisxx,a.cod_depart
-            FROM ".BASE_DATOS.".tab_genera_ciudad a
-          WHERE a.cod_ciudad = ".$registro[31]." ";
-    
-      $consulta = new Consulta($query, $this -> conexion);
-      $paidepori = $consulta -> ret_matriz();
-      
-      $query = "SELECT a.cod_paisxx,a.cod_depart
-            FROM ".BASE_DATOS.".tab_genera_ciudad a
-            WHERE a.cod_ciudad = ".$registro[32]." ";
-
-      $consulta = new Consulta($query, $this -> conexion);
-      $paidepdes = $consulta -> ret_matriz();
-
-      //Se obtiene la informacion del conductor
-      $query = "SELECT a.num_telef1, a.num_telmov, a.dir_domici
-            FROM ".BASE_DATOS.".tab_tercer_tercer a
-            WHERE a.cod_tercer = ".$registro[12]." ";
-
-      $consulta = new Consulta($query, $this -> conexion);
-      $conduc = $consulta -> ret_matriz();
-
-      //Se trae la aseguradora y numero de poliza actual
-      /*esta tabla no existe en gl es$query = "SELECT a.cod_asegra,a.num_poliza
-                  FROM ".BASE_DATOS.".tab_poliza_tercer a
-                 WHERE a.cod_tercer = '".NIT_TRANSPOR."' AND
-                       a.fec_modifi = (select Max(b.fec_modifi) from tab_poliza_tercer b where b.cod_tercer = a.cod_tercer)
-            ";
-
-      $consulta = new Consulta($query, $this -> conexion);
-      $datospoli = $consulta -> ret_arreglo();*/
-
-      if(!$is_manifi)
-      {
-       if(!$registro[41])
-        $registro[41] = "1";
-       if(!$registro[42])
-        $registro[42] = "1";
-
-       //query de insercion de despachos
-       /*$query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
-                 (`num_despac`, `cod_manifi`, `fec_despac`, `cod_tipdes`,
-                  `cod_ciuori`, `cod_ciudes`, `val_flecon`, `val_despac`,
-                  `val_antici`, `val_retefu`, `nom_carpag`, `nom_despag`,
-                  `cod_agedes`, `fec_pagoxx`, `cod_unimed`, `cod_natemp`,
-                  `obs_despac`, `num_carava`, `ind_planru`, `ind_anulad`,
-                   cod_asegra ,  num_poliza,
-                  `usr_creaci`, `fec_creaci`, `usr_modifi`,  `fec_modifi`)
-
-                 VALUES ('$nuevo_consec','".$registro[0]."','$fec_actual','".$registro[33]."',
-                 '".$registro[31]."','".$registro[32]."','".$registro[35]."','".$registro[36]."',
-                 '".$registro[37]."','$retefu','".$registro[38]."','".$registro[39]."','".$registro[1]."',
-                 '".$registro[40]."','".$registro[41]."','".$registro[42]."','Insertado por Interfaz Web',
-                 '".$registro[34]."','N','R','".$datospoli[0]."','".$datospoli[1]."','$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual') ";*/
-      
-        //val_declara y val_pesoxx lo dejo en nulo porq no encuentro campo
-        //gps_operad, gps_usuari, gps_paswor, cod_asegur, num_poliza, num_carava los quito porque no estan en la tabla
-        $query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
-          (
-            num_despac, cod_manifi, fec_despac,
-
-            cod_client, cod_paiori, cod_depori,
-
-            cod_ciuori, cod_paides, cod_depdes,
-
-            cod_ciudes, val_flecon, val_despac,
-
-            val_antici, val_retefu, nom_carpag,
-
-            nom_despag, cod_agedes, fec_pagoxx,
-
-            obs_despac, val_declara, usr_creaci,
-
-            fec_creaci, val_pesoxx, con_telef1,
-
-            con_telmov, con_domici, cod_tipdes
-
-            
-          )
-          VALUES 
-          (
-            ".$nuevo_consec.", '".$registro[0]."', '$fec_actual', 
-
-            ".$registro[3].", ".$paidepori[0][0].", ".$paidepori[0][1].",
-
-            ".$registro[31].", ".$paidepdes[0][0].", ".$paidepdes[0][1].",
-
-            ".$registro[32].", NULL, NULL,
-
-            NULL, NULL, NULL,
-
-            NULL, '".$registro[1]."', NULL,
-
-            '".$registro[47]."', NULL, '".$_REQUEST[usuario]."',
-
-            '$fec_actual', NULL, '".$conduc[0][0]."',
-
-            '".$conduc[0][1]."', '".$conduc[0][2]."', '".$registro[33]."'
-          )";
-
-       $consulta = new Consulta($query, $this -> conexion, "R");
-
-       $query = "SELECT a.clv_filtro
-            FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
-            WHERE a.cod_perfil = ".$datos_usuario['cod_perfil']." ";
-
-       $consulta = new Consulta($query, $this -> conexion);
-       $nit_trans = $consulta -> ret_matriz();      
-       $nit_trans = $nit_trans[0][clv_filtro];
-       //query de insercion de despachos vehiculos
+         //query de insercion de despachos vehiculos
         $query = "INSERT INTO ".BASE_DATOS.".tab_despac_vehige
-                 (num_despac, cod_transp, cod_agenci, cod_rutasx,
-                  cod_conduc, num_placax, obs_medcom, fec_salipl,
-                  fec_llegpl, ind_activo, usr_creaci,
-                  fec_creaci, usr_modifi, fec_modifi)
-                 VALUES ('$nuevo_consec','".$nit_trans."','".$registro[1]."','$ruta',
-                 '".$registro[12]."','".$registro[5]."','".$registro[16]."',
-                 '$fec_actual','$fec_actual','R','$_REQUEST[usuario]','$fec_actual','$_REQUEST[usuario]','$fec_actual') ";
+                        (num_despac, cod_transp, cod_agenci, cod_rutasx,
+                        cod_conduc, num_placax, obs_medcom, fec_salipl,
+                        fec_llegpl, ind_activo, usr_creaci,
+                        fec_creaci, usr_modifi, fec_modifi)
+                         VALUES 
+                        ('$nuevo_consec','".$row[1]."','".$row[3]."','$ruta',
+                        '".$row[19]."','".$row[7]."','".$row[23]."',
+                        '$fec_actual','$fec_actual','R','".$this->cod_usuari."',
+                        '$fec_actual','".$this->cod_usuari."','".$fec_actual."') ";
+        $consulta = new Consulta($query, $this -> conexion, "R");
+        
+        $query = 'INSERT INTO ' . BASE_DATOS . '.tab_despac_destin(
+                        num_despac, num_docume, ped_remisi,
+                        cod_remdes, cod_genera, nom_genera,
+                        nom_destin, cod_ciudad, dir_destin, 
+                        usr_modifi,fec_modifi,fec_citdes,
+                        hor_citdes
+                        ) VALUES (
+                        "' . $nuevo_consec . '", "' . $row[5] . '", "' . $row[69] . '",
+                        "' . $row[53] . '", "' . $row[1] . '", "' . $row[2] . '",
+                        "' . $row[54] . '", "' . $row[56] . '", "' . $row[57] . '",
+                        "' . $this->cod_usuari . '",NOW(), NULL, NULL
+                    )';
 
-       //$consulta = new Consulta($query, $this -> conexion, "R");
-       $consulta = new Consulta($query, $this -> conexion, "RC");
-       //$this -> ins_remesa($nuevo_consec,$registro[0],$registro[46],$registro[43], $registro[44],$registro[45],$registro[30],$registro[3],$registro[38],$registro[39]);
+        $consulta = new Consulta($query, $this -> conexion, "R");
 
-          echo "<br><b>Se ha subido el Despacho $nuevo_consec con el Manifiesto ".$registro[0]." correctamente al Sistema al sistema </b><br>";
-      }//fin manifi
-      else
-      {
-                 //ins_remesa($despac,$manifi,$remesa,$peso, $volumen,$empaque,$mercan,$client,$remite,$destin)
-          //$this -> ins_remesa($is_manifi[0],$registro[0],$registro[46],$registro[43], $registro[44],$registro[45],$registro[30],$registro[3],$registro[38],$registro[39]);
-      }
-    }//fin funcion
+        //query de insercion de remesas
+         $query = "INSERT INTO ".BASE_DATOS.".tab_despac_remesa
+                    (num_despac, cod_remesa, fec_estent,
+                     val_pesoxx, val_volume, des_mercan,
+                     abr_client, abr_remite, abr_destin,
+                     ema_client, num_docume, usr_creaci,
+                     fec_creaci)
+                        VALUES 
+                    ('$nuevo_consec','".$row[52]."', NULL,
+                     '".$row[65]."', '".$row[66]."', '".$mercancia['des_comerc']."',
+                     '".$row[6]."', '".$row[46]."', '".$row[56]."',
+                     NULL, '".$row[5]."', '".$this->cod_usuari."',
+                     '".$fec_actual."')
+                    ";
+         $consulta = new Consulta($query, $this -> conexion, "RC");
+         $est_import = 1;
+        } else {
+            $est_import = 2;
+        }
+
+        array_push($respuesta, $est_import);
+        array_push($respuesta, $actualizados);
+        return $respuesta;
+    }
+
+     /************************* FUNCIONES VARIAS **************************************/
+    public function retornarBoolean($dato) {
+        $var = false;
+        if ($dato > 0) {
+            $var = true;
+        }
+        return $var;
+    }
+
+    function registrarNull($dato) {
+        if ($dato != 0 or $dato != "") {
+            return $dato;
+        }
+        return NULL;
+    }
+
+    function retornaFechasVacias($dato) {
+        if ($fecha == NULL or $fecha == "") {
+            return "0000-00-00";
+        }
+        return $dato;
+    }
+
+    /************************* VERIFICACIONES **************************************/
+
+    function verificarTransportadora($cod) {
+        $sql = 'SELECT COUNT(*) FROM ' . BASE_DATOS . '.tab_tercer_emptra a, ' . BASE_DATOS . '.tab_tercer_tercer b WHERE a.cod_tercer = "' . $cod . '" AND b.cod_tercer = "' . $cod . '"';
+        $consulta = new Consulta($sql, $this->conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificarAgencia($cod_agenci,$cod_transp) {
+        $sql = 'SELECT COUNT(*) FROM ' . BASE_DATOS . '.tab_genera_agenci a
+                    INNER JOIN '.BASE_DATOS.'.tab_transp_agenci b ON
+                        a.cod_agenci = b.cod_agenci AND b.cod_transp = "'.$cod_transp.'"
+                WHERE a.cod_agenci = "'.$cod_agenci.'"';
+        $consulta = new Consulta($sql, $this->conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificarRegistroCliente($nit_cliente,$cod_cliente) {
+        $sql = 'SELECT COUNT(*) FROM ' . BASE_DATOS . '.tab_genera_remdes a 
+                    WHERE a.num_remdes = "' . $nit_cliente . '"';
+        $consulta = new Consulta($sql, $this->conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificaPlaca($placa){
+        $query = "SELECT COUNT(*)
+                       FROM " . BASE_DATOS . ".tab_vehicu_vehicu
+                       WHERE num_placax = '".$placa."'";
+        $consulta = new Consulta($query, $this->conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);              
+    }
+
+    /*ind = 1: si es conductor, otro para poseedor*/
+    function verificarTercero($cod_tercer,$nom_tablex,$ind){
+        if($ind==1){
+        $query = "SELECT COUNT(*) 
+                 FROM tab_tercer_tercer a 
+                 left JOIN " . BASE_DATOS . ".".$nom_tablex." b 
+                    ON a.cod_tercer = b.cod_tercer 
+                WHERE a.cod_tercer = '".$cod_tercer."'";
+        }else{
+            $query = "SELECT COUNT(*)
+                FROM " . BASE_DATOS . ".tab_tercer_tercer a
+            WHERE a.cod_tercer = '".$cod_tercer."'";
+        }
+        $consulta = new Consulta($query, $this->conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]); 
+    }
+
+    function verificarMercancia($cod){
+        $query = "SELECT COUNT(*)
+                     FROM ".BASE_DATOS.".tab_genera_produc
+                     WHERE  cod_produc = '".$cod."'";
+        $consulta = new Consulta($query, $this->conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificaCiudad($cod_ciudad){
+        $query = "SELECT COUNT(*)
+                    FROM  ".BASE_DATOS.".tab_genera_ciudad
+                    WHERE cod_ciudad = '".$cod_ciudad."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificaTipoDespacho($cod){
+        $query = "SELECT COUNT(*)
+                FROM ".BASE_DATOS.".tab_genera_tipdes
+                WHERE cod_tipdes = '".$cod."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificaRegistroDespacho($cod_manifi){
+        $query = "SELECT COUNT(*)
+                FROM ".BASE_DATOS.".tab_despac_despac
+                WHERE cod_manifi = '".$cod_manifi."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificaMarca($cod_marcax){
+        $query = "SELECT COUNT(*)
+                FROM ".BASE_DATOS.".tab_genera_marcas
+                WHERE cod_marcax = '".$cod_marcax."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificaLinea($cod_lineax, $cod_marcax){
+        $query = "SELECT COUNT(*)
+                FROM ".BASE_DATOS.".tab_vehige_lineas
+                WHERE cod_marcax = '".$cod_marcax."' AND cod_lineax = '".$cod_lineax."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificaColor($cod_colorx){
+        $query = "SELECT COUNT(*)
+                FROM ".BASE_DATOS.".tab_vehige_colore
+                WHERE cod_colorx = '".$cod_colorx."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function verificaCarroc($cod_carroc){
+        $query = "SELECT COUNT(*)
+                FROM ".BASE_DATOS.".tab_vehige_carroc
+                WHERE cod_carroc = '".$cod_carroc."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
+
+    function validaRuta($ciu_origen,$ciu_destin){
+        $ciu_origen = $this->getCiudad($cod_ciuori);
+        $ciu_destin = $this->getCiudad($cod_ciudes);  
+        $query = "SELECT COUNT(*)
+        FROM ".BASE_DATOS.".tab_genera_rutasx a
+        WHERE 
+                a.cod_paiori = '".$ciu_origen['cod_paisxx']."' AND
+                a.cod_depori = '".$ciu_origen['cod_depart']."' AND
+                a.cod_ciuori = '".$ciu_origen['cod_ciudad']."' AND
+                a.cod_paides = '".$ciu_destin['cod_paisxx']."' AND
+                a.cod_depdes = '".$ciu_destin['cod_depart']."' AND
+                a.cod_ciudes = '".$ciu_destin['cod_ciudad']."' AND
+                a.ind_estado = '1'
+        GROUP BY a.cod_rutasx  ";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);   
+    }
+
+    function validaRemdes($cod_remdes, $num_remdes, $indicador){
+        $query = "SELECT COUNT(*)
+        FROM ".BASE_DATOS.".tab_genera_remdes a
+        WHERE 
+                a.cod_remdes = '".$cod_remdes."' AND
+                a.ind_remdes = '".$indicador."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);  
+    }
 
 
-    function is_tercer($cod_tercer)
-    {
-             //verifica que el generador exista
-             $query = "SELECT a.cod_tercer
-                       FROM ".BASE_DATOS.".tab_tercer_tercer a
-                       WHERE a.cod_tercer = '".$cod_tercer."'";
-             $consulta = new Consulta($query, $this -> conexion);
+    /************************* INSERCIONES DB **************************************/
 
-             if($tercer   = $consulta -> ret_arreglo())
-                {
-                 return 1;
-                }
-             else
-                {
-                return 0;
-                }
+    function registrarTransportadora($a) {
+        $sql = 'INSERT INTO ' . BASE_DATOS . '.tab_tercer_tercer(cod_tercer,
+														num_verifi,
+														cod_tipdoc,
+														cod_terreg,
+														nom_apell1,
+														nom_apell2,
+														nom_tercer,
+														abr_tercer,
+														dir_domici,
+														num_telef1,
+														num_telef2,
+														num_telmov,
+														num_faxxxx,
+														cod_paisxx,
+														cod_depart,
+														cod_ciudad,
+														dir_emailx,
+														dir_urlweb,
+														cod_estado,
+														dir_ultfot,
+														obs_tercer,
+														obs_aproba,
+														usr_creaci,
+														fec_creaci) VALUES (
+														"' . $a[0]['cod_tercer'] . '",
+														"",
+														"N",
+														"0",
+														NULL,
+														NULL,
+														"' . $a[0]['nom_tercer'] . '",
+														"' . $a[0]['abr_tercer'] . '",
+														"",
+														"",
+														NULL,
+														NULL,
+														"",
+														"3",
+														"11",
+														"11001000",
+														"",
+														NULL,
+														"1",
+														NULL,
+														"",
+														NULL,
+														"' . $this->cod_usuari . '",
+                                                          "' . date("Y-m-d H:i:s") . '") 
+                                                          ';
+        new Consulta($sql, $this->conexion);
+        $sql = 'INSERT INTO ' . BASE_DATOS . '.tab_tercer_emptra(cod_tercer, cod_minins, num_resolu, fec_resolu, num_region, ran_iniman, ran_finman
+  									, ind_gracon, ind_ceriso, fec_ceriso, ind_cerbas, fec_cerbas, otr_certif, ind_cobnal, ind_cobint,
+  									nro_habnal, fec_resnal, nom_repleg, val_pctret, usr_creaci, fec_creaci) VALUES ("' . $a[0]['cod_tercer'] . '", "",
+  									 "", "0000-00-00", "0", "", "", "N", "N", "0000-00-00", "", "0000-00-00", "", "N", "N", "", "0000-00-00", "", "0.01", "' . $this->cod_usuari . '", "' . date("Y-m-d H:i:s") . '")';
+
+        new Consulta($sql, $this->conexion);
 
     }
 
-    function is_activi($cod_tercer,$cod_activi)
-    {
-             //verifica que el tercero tenga la actividad requerida
-             $query = "SELECT a.cod_tercer
-                       FROM ".BASE_DATOS.".tab_tercer_activi a
-                       WHERE a.cod_tercer = '".$cod_tercer."' AND
-                             a.cod_activi = '".$cod_activi."'";
-
-             $consulta = new Consulta($query, $this -> conexion);
-
-
-             if($activi   = $consulta -> ret_arreglo())
-                return true;
-             else
-                return false;
+    function ins_tercer($datos){
+        $abr_tercer = $datos[0]['nom_tercer']." ".$datos[0]['nom_apell1']." ".$datos[0]['nom_apell2'];
+        $sql = 'INSERT INTO ' . BASE_DATOS . '.tab_tercer_tercer(
+                    cod_tercer, num_verifi, cod_tipdoc, 
+                    cod_terreg, nom_apell1, nom_apell2, 
+                    nom_tercer, abr_tercer, dir_domici, 
+                    num_telef1, num_telef2, num_telmov, 
+                    num_faxxxx, cod_paisxx, cod_depart, 
+                    cod_ciudad, dir_emailx, dir_urlweb, 
+                    cod_estado, dir_ultfot, obs_tercer, 
+                    obs_aproba, usr_creaci, fec_creaci
+                )  VALUES  (
+                "'.$datos[0]['cod_tercer'].'", "", 
+                "C", "0", "' . $datos[0]['nom_apell1'] . '", "' . $datos[0]['nom_apell2'] . '", "' . $datos[0]['nom_tercer'] . '", 
+                "' . $abr_tercer . '", 
+                "' . $datos[0]['dir_domici'] . '", "' . $datos[0]['num_telmov'] . '", NULL, "' . $datos[0]['num_telmov'] . '", "", "3", "11", "11001000", 
+                "", NULL, "1", NULL, "", NULL, "' . $this->cod_usuari . '", 
+                "' . date("Y-m-d H:i:s") . '"
+                ) ON DUPLICATE KEY UPDATE cod_tercer="'.$datos[0]['cod_tercer'].'";';
+        new Consulta($sql, $this->conexion);
     }
 
-    function act_celular($cod_tercer,$celular)
-    {
-             //actualiza el numero del celular del tercero o conductor
-             $query = "UPDATE ".BASE_DATOS.".tab_tercer_tercer set num_telmov = '".$celular."'
-                            WHERE cod_tercer = '".$cod_tercer."' ";
-             $consulta = new Consulta($query, $this -> conexion,"R");
-
-    }
-
-   //crear la agencia si no existe
-   function ins_agenci($cod,$nombre)
-   {
-           $query = "INSERT INTO ".BASE_DATOS.".tab_genera_agenci (cod_agenci,
-                    nom_agenci,cod_ciudad,usr_creaci, fec_creaci)
-                     VALUES ('$cod','$nombre', '1','$_REQUEST[usuario]',NOW())";
-           $insert = new Consulta($query, $this -> conexion, "R");
-   }
-    // inserta el conductor o poseedor
-    function ins_conpos($nit,$nombre,$apell1,$apell2,$tel = "",$tipdoc=1,$direcc="")
-    {
-
-            $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer (cod_tercer,nom_apell1,nom_apell2,cod_tipdoc,nom_tercer,
-                      abr_tercer, num_telmov, dir_domici,cod_paisxx,cod_depart,cod_ciudad, usr_creaci, fec_creaci)
-                      VALUES ('$nit','$apell1','$apell2','$tipdoc','$nombre','$nombre','$tel', '$direcc' ,'3','1',
-                      '1', '$_REQUEST[usuario]', NOW())";
-            $insert = new Consulta($query, $this -> conexion,"R");
-
-           //conduc = 16, propiet = 15, genera = 10
-
-    }
-    function ins_tercer($nit,$nombre,$tel = "",$tipdoc=1,$direcc="")
-    {
-
-            $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_tercer (cod_tercer,cod_tipdoc,nom_tercer,
-                      abr_tercer, num_telmov, dir_domici,cod_paisxx,cod_depart,cod_ciudad, usr_creaci, fec_creaci)
-                      VALUES ('$nit','$tipdoc','$nombre','$nombre','$tel', '$direcc' ,'3','1',
-                      '1', '$_REQUEST[usuario]', NOW())";
-            $insert = new Consulta($query, $this -> conexion,"R");
-
-           //conduc = 16, propiet = 15, genera = 10
+    function ins_conductor($datos){
+        $this->ins_tercer($datos);
+        $sql = 'INSERT INTO '.BASE_DATOS.'.tab_tercer_conduc(
+                    cod_tercer, cod_tipsex, cod_grupsa, 
+                    num_licenc, num_catlic, fec_venlic, 
+                    cod_califi, num_libtri, fec_ventri, 
+                    obs_habili, nom_epsxxx, nom_arpxxx, 
+                    fec_venarl, nom_pensio, num_pasado, 
+                    fec_venpas, nom_refper, tel_refper, 
+                    obs_conduc, cod_operad, usr_creaci, 
+                    fec_creaci
+                ) 
+                    VALUES 
+                (
+                    "'.$datos[0]['cod_tercer'].'", "", NULL, 
+                    "'.$datos[0]['cod_tercer'].'", NULL, NULL, 
+                    NULL, NULL, NULL, 
+                    NULL, NULL, NULL, 
+                    "0000-00-00", NULL, NULL, 
+                    "0000-00-00", NULL, NULL, 
+                    NULL, NULL, "' . $this->cod_usuari . '", 
+                    NOW()
+            ) ON DUPLICATE KEY UPDATE cod_tercer="'.$datos[0]['cod_tercer'].'";';
+        new Consulta($sql, $this->conexion);
 
     }
 
-    function act_activi($nit,$activi)
-    {
-           $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_activi (cod_tercer,cod_activi)
-                      VALUE ('$nit','$activi') ";
-            $insert = new Consulta($query, $this -> conexion, "R");
+    function ins_vehiculo($datos){
+        $info_conduc[0] = $datos[0]['inf_conduc'];
+        $info_poseed[0] = $datos[0]['inf_poseed'];
+        $info_propie[0] = $datos[0]['inf_propie'];
+        if($this->verificarTercero($info_conduc['cod_tercer'],'tab_tercer_conduc',1)){
+            $this->ins_conductor($info_conduc);
+        }
+        if($this->verificarTercero($info_poseed['cod_tercer'],'',0)){
+            $this->ins_tercer($info_poseed);
+        }
 
-            if($activi == 4)
-            {
-                     $query = "INSERT INTO ".BASE_DATOS.".tab_tercer_conduc (cod_tercer, cod_tipsex, cod_grupsa,
-                                          cod_califi, usr_creaci, fec_creaci,num_catlic)
-                             VALUES ('$nit','1','O (+)','1','$_REQUEST[usuario]', NOW(),1)";
-                    $insert = new Consulta($query, $this -> conexion, "R");
+        if($this->verificarTercero($info_propie['cod_tercer'],'',0)){
+            $this->ins_tercer($info_propie);
+        }
 
-            }
-            /*se comenta porque esa tabla no existe en gl
-            if($activi == 3)
-            {
-
-                    $query = "INSERT INTO tab_tercer_client (cod_tercer, cod_estper, cod_terreg,
-                                          usr_creaci, fec_creaci)
-                             VALUES ('$nit','1','1','$_REQUEST[usuario]', NOW())";
-                    $insert = new Consulta($query, $this -> conexion, "R");
-
-            }*/
+        $sql = "INSERT INTO ".BASE_DATOS.".tab_vehicu_vehicu(
+                    num_placax, cod_marcax, cod_lineax, 
+                    ano_modelo, cod_colorx, cod_carroc, 
+                    num_motorx, num_seriex, num_chasis, 
+                    val_pesove, val_capaci, reg_nalcar, 
+                    num_poliza, nom_asesoa, cod_ciusoa, 
+                    fec_vigfin, ano_repote, num_config, 
+                    cod_propie, cod_tenedo, cod_conduc, 
+                    nom_vincul, num_tarpro, num_tarope, 
+                    cod_califi, fec_vigvin, num_polirc, 
+                    fec_venprc, cod_aseprc, dir_fotfre, 
+                    dir_fotizq, dir_fotder, dir_fotpos, 
+                    dir_dtecno, dir_dsoatx, cod_tipveh, 
+                    ind_chelis, fec_revmec, num_agases, 
+                    fec_vengas, obs_vehicu, ind_estado, 
+                    obs_estado, cod_paisxx, cod_opegps, 
+                    usr_gpsxxx, clv_gpsxxx, idx_gpsxxx, 
+                    ind_dispon, usr_creaci, fec_creaci
+                ) 
+                    VALUES 
+                (
+                    '".$datos[0]['num_placax']."', '".$datos[0]['cod_marcax']."', '".$datos[0]['cod_lineax']."',
+                    '".$datos[0]['ano_modelo']."', '".$datos[0]['cod_colorx']."', '".$datos[0]['cod_carroc']."', 
+                    NULL,NULL, NULL, 
+                    0, 0, 0, 
+                    NULL, NULL, 1, 
+                    NULL, NULL, '".$datos[0]['num_config']."', 
+                    '".$datos[0]['cod_propie']."', '".$datos[0]['cod_tenedo']."', '".$datos[0]['cod_conduc']."', 
+                    NULL,NULL, NULL, 
+                    NULL,NULL, NULL,  
+                    NULL,NULL, NULL, 
+                    NULL,NULL, NULL, 
+                    NULL,NULL, 0, 
+                    0, NULL, NULL, 
+                    NULL, '', 1, 
+                    '', 3, '".$datos[0]['cod_opegps']."', 
+                    '".$datos[0]['usr_gpsxxx']."', '".$datos[0]['clv_gpsxxx']."', '".$datos[0]['idx_gpsxxx']."', 
+                    1, '".$this->cod_usuari."', NOW() 
+                )";
+        new Consulta($sql, $this->conexion);
     }
 
-    //si los datos no cuadran debe ingresar datos no registrados
-             //ins_vehicu($registro[5],$registro[6], $registro[7],$registro[8],$registro[9],$registro[10],$registro[11],$registro[12],$registro[18],$registro[24]);
-    function ins_vehicu($placa,$marca, $linea,$modelo,$color,$carroc,$config,$cod_conduc,$cod_poseed,$cod_propie)
-
-    {
-
-               /*$query = "SELECT a.cod_asegra
-                 		   FROM ".BASE_DATOS.".tab_poliza_tercer a
-                		  WHERE a.cod_tercer = '".NIT_TRANSPOR."' AND
-                      			a.fec_modifi = (select Max(b.fec_modifi) from tab_poliza_tercer b where b.cod_tercer = a.cod_tercer)
-                         ";
-
-               $cod_asesoa = new Consulta($query, $this -> conexion);
-               $cod_asesoa = $cod_asesoa -> ret_arreglo();
-               $cod_asesoa = $cod_asesoa[0];
-
-
-              $query = "INSERT INTO ".BASE_DATOS.".tab_vehicu_vehicu
-                         (num_placax,cod_marcax,cod_lineax,ano_modelo,
-                          cod_asesoa,
-                          cod_colorx,cod_carroc,num_config,cod_propie,
-                          cod_tenedo,cod_conduc,
-                          usr_creaci,fec_creaci,cod_tipveh,
-                          cod_califi)
-                         VALUE ('$placa','$marca','$linea','$modelo',
-                                 '$cod_asesoa',
-                                 '$color','$carroc','$config',
-                                 '$cod_propie','$cod_poseed','$cod_conduc',
-                                 '$_REQUEST[usuario]', NOW(),1,1) ";
-               $insert = new Consulta($query, $this -> conexion, "R");*/
-
-              $query = "INSERT INTO ".BASE_DATOS.".tab_vehicu_vehicu
-                         (num_placax,cod_marcax,cod_lineax,ano_modelo,
-                          cod_colorx,cod_carroc,num_config,cod_propie,
-                          cod_tenedo,cod_conduc,
-                          usr_creaci,fec_creaci,cod_tipveh,
-                          cod_califi)
-                         VALUE ('$placa','$marca','$linea','$modelo',
-                                 '$color','$carroc','$config',
-                                 '$cod_propie','$cod_poseed','$cod_conduc',
-                                 '$_REQUEST[usuario]', NOW(),1,1) ";
-               $insert = new Consulta($query, $this -> conexion, "R");
-
-    }//fin ins_vehicu
-
-    //funcion que verifica si existe la linea del vehiculo
-    function is_linea($marca,$linea)
-    {
-           $query = "SELECT cod_lineax
-                     FROM ".BASE_DATOS.".tab_vehige_lineas
-                     WHERE  cod_marcax = '".$marca."' AND
-                            cod_lineax = '".$linea."' ";
-           $consulta = new Consulta($query, $this -> conexion);
-           if($consulta -> ret_arreglo())
-               return true;
-           else
-                return false;
-    }
-    //funcion que verifica si existe la configuracion del vehiculo
-    function is_config($config)
-    {
-
-                $query = "SELECT num_config
-                       FROM tab_vehige_config
-                       WHERE num_config = '".$config."'";
-                $consulta = new Consulta($query, $this -> conexion);
-                if($consulta -> ret_arreglo())
-                   return true;
-                else
-                   return false;
-
-
-    }
-    //funcion que verifica si existe el Color del vehiculo
-    function is_color($color)
-    {
-
-                $query = "SELECT cod_colorx
-                       FROM tab_vehige_colore
-                       WHERE cod_colorx = '".$color."'";
-                $consulta = new Consulta($query, $this -> conexion);
-                if($consulta -> ret_arreglo())
-                   return true;
-                else
-                   return false;
-
-
-    }
-    //funcion que verifica si existe la carroceria del vehiculo
-    function is_carroc($carroc)
-    {
-
-                $query = "SELECT cod_carroc
-                       FROM tab_vehige_carroc
-                       WHERE cod_carroc = '".$carroc."'";
-                $consulta = new Consulta($query, $this -> conexion);
-                if($consulta -> ret_arreglo())
-                   return true;
-                else
-                   return false;
-
-
-    }
-    function ins_mercan($cod)
-    {
-           $query = "SELECT cod_minmer
-                     FROM ".BASE_DATOS.".tab_minist_mercan
-                     WHERE  cod_minmer = '".$cod."'";
-           $is_merca = new Consulta($query, $this -> conexion);
-           if($is_merca->ret_num_rows())
-           {
-                      $query = "INSERT INTO ".BASE_DATOS.".tab_genera_mercan (cod_mercan,abr_mercan,
-                               nom_mercan,cod_minmer,ind_activa, usr_creaci, fec_creaci) SELECT cod_minmer, nom_minmer, nom_minmer, cod_minmer, '1', '$_REQUEST[usuario]', NOW()
-                                FROM ".BASE_DATOS.".tab_minist_mercan
-                                WHERE cod_minmer = '$cod'";
-                      $insert = new Consulta($query, $this -> conexion, "R");
-           }
-           else
-           {
-               echo "<br><font=\"RED\"><b>La Mercancia Codigo $cod no se encuentra registrada como mercancia del ministerio</b></font><br>";
-               exit;
-           }
+    function ins_remdes($datos){
+        $sql = "INSERT INTO ".BASE_DATOS.".tab_genera_remdes(
+            cod_remdes, num_remdes, nom_remdes, 
+            obs_adicio, cod_transp, abr_destin, 
+            abr_remite, num_docume, hor_apertu, 
+            hor_cierre, ind_remdes, ind_estado, 
+            cod_ciudad, dir_remdes, cor_remdes, 
+            cod_latitu, cod_longit, dir_emailx, 
+            num_telefo, usr_creaci, fec_creaci
+        ) 
+        VALUES 
+            (
+                '".$datos[0]['cod_remdes']."', '".$datos[0]['num_remdes']."', '".$datos[0]['nom_remdes']."', 
+                NULL, '".$datos[0]['cod_transp']."', '', 
+                '', '', '00:00:00', 
+                '00:00:00', '".$datos[0]['ind_remdes']."', 1, 
+                '".$datos[0]['cod_ciudad']."', '".$datos[0]['dir_remdes']."', '', 
+                '".$datos[0]['cod_latitu']."', '".$datos[0]['cod_longit']."', '".$datos[0]['dir_emailx']."', 
+                '".$datos[0]['num_telefo']."','".$this->cod_usuari."', NOW() 
+            )";
+        new Consulta($sql, $this->conexion);
     }
 
-    function ins_remesa($despac,$manifi,$remesa,$peso, $volumen,$empaque,$mercan,$client,$remite,$destin)
-    {
 
-           echo $query = "SELECT cod_remesa
-                     FROM ".BASE_DATOS.".tab_despac_remesa
-                     WHERE  cod_remesa = '".$remesa."' AND
-                            cod_manifi = '".$manifi."'";
-           $is_reme = new Consulta($query, $this -> conexion, "R");
+  
 
-           if($is_reme -> ret_arreglo())
-           {
-              echo $algo = "<br>La remesa $remesa ya esta Registrada con el manifiesto $manifi <br>";
-              $reme = new Consulta("ROLLBACK", $this -> conexion);
-           }
-           else
-           {
-           $query = "INSERT INTO ".BASE_DATOS.".tab_despac_remesa
-                     (cod_remesa, num_despac,cod_manifi,
-                      val_pesoxx, val_volume,cod_empaqu,
-                      cod_mercan, cod_client,nom_remite,
-                      nom_destin, usr_creaci,fec_creaci)
-                     VALUES ('$remesa','$despac','$manifi',
-                             '$peso','$volumen','$empaque',
-                             '$mercan','$client','$remite',
-                             '$destin','$_REQUEST[usuario]', NOW())";
-           $ins_reme = new Consulta($query, $this -> conexion, "RC");
-           }
-
+    /************************* OBTENER INFORMACION DB **************************************/
+    
+    function getCiudad($cod_ciudad){
+        $query = "SELECT cod_paisxx, cod_depart, cod_ciudad,
+                         nom_ciudad, abr_ciudad
+                    FROM  ".BASE_DATOS.".tab_genera_ciudad
+                    WHERE cod_ciudad = '".$cod_ciudad."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $consulta[0];
     }
 
-}//fin clase
+    function getRuta($cod_ciuori,$cod_ciudes){
+      $ciu_origen = $this->getCiudad($cod_ciuori);
+      $ciu_destin = $this->getCiudad($cod_ciudes);  
+        //Trae la ruta del despacho
+      $query = "SELECT a.cod_rutasx
+      FROM ".BASE_DATOS.".tab_genera_rutasx a
+      WHERE 
+            a.cod_paiori = '".$ciu_origen['cod_paisxx']."' AND
+            a.cod_depori = '".$ciu_origen['cod_depart']."' AND
+            a.cod_ciuori = '".$ciu_origen['cod_ciudad']."' AND
+            a.cod_paides = '".$ciu_destin['cod_paisxx']."' AND
+            a.cod_depdes = '".$ciu_destin['cod_depart']."' AND
+            a.cod_ciudes = '".$ciu_destin['cod_ciudad']."' AND
+            a.ind_estado = '1'
+     GROUP BY a.cod_rutasx  ";
+     $consulta = new Consulta($query, $this -> conexion);
+     if($ruta = $consulta -> ret_arreglo()){
+        $ruta = $ruta[0];
+     }
+     return $ruta;   
+    }
+
+    function getMercancia($cod_product){
+        $query = "SELECT nom_produc, des_comerc, pes_netoxx,
+                         uni_medida
+                    FROM  ".BASE_DATOS.".tab_genera_produc
+                    WHERE cod_produc = '".$cod_product."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        return $consulta[0];
+    }
+
+    function verificarUnidadMedida($cod) {
+        $sql = 'SELECT COUNT(*) FROM ' . BASE_DATOS . '.tab_genera_unimed WHERE cod_unimed = "' . $cod . '"';
+        $consulta = new Consulta($sql, $this->conexion);
+        $consulta = $consulta->ret_matriz();
+        return $this->retornarBoolean($consulta[0][0]);
+    }
 
 
-$proceso = new Proc_ins_despac($this -> usuario_aplicacion, $this -> conexion, $this -> codigo);
+    function castNumero($number){
+        $number = preg_replace("/[^0-9,.]/", "", $number);
+        $number = preg_replace('/[.]/', '', $number);
+        return $number;
+    }
 
+}
 
-
-?>
+new Proc_ins_despac($this->conexion, $_SESSION['usuario_aplicacion']->cod_usuari);

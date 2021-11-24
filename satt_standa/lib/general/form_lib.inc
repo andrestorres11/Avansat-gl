@@ -236,8 +236,16 @@ class Formulario
     function lista($et, $no, $va, $sl, $obliga = 0)
 
     {
-
+        
         $linea = new Form_lista($et, $no, $va, $sl, $obliga);
+
+    }
+
+    function lista_value($et, $no, $va, $sl, $obliga = 0, $valSelect='')
+
+    {
+        
+        $linea = new Form_lista_value($et, $no, $va, $sl, $obliga, $valSelect);
 
     }
 
@@ -298,6 +306,214 @@ class Formulario
     	$fecha_calendar = new Form_fecha_calendar($et, $no, $fo, $vi, $ti, $sl, $as, $ob);
     }
 
+    function OpenDiv( $properties="",$et =null)    {
+        $properties = $this->GetProperties( $properties );
+        echo "<td align=\"right\" class=\"celda_titulo\">\n $et\n</td>\n";
+        echo "\n          ";
+        echo '<td>
+        <div ';
+        $this->SetProperties( $properties, "", "" );
+        echo '>';
+    }
+
+    function CloseDiv( $sl = null)    {
+        echo "\n          ";
+        echo '</div>
+        </td>';
+        if($sl){
+            printf("</tr>\n<tr>\n");
+        }
+    }
+
+    function GetProperties( $string="" )  {
+        if ( !$string )
+           return Array();
+        if (is_array( $string ) )
+            return $string;
+        $properties = explode( ";", $string );
+        foreach( $properties as $item )    {
+            $row = explode( ":", $item );
+            $atribute = strtolower( trim( $row[0] ) );
+            $value = $row[1];
+            $array[$atribute] = $value;
+        }
+        return $array;
+    }
+    function SetProperties( $array, $onfocus="on", $onblur="on" )    {
+        if ( count( $array )==0 )
+           return "";
+        if ( isset( $array["name"] ) && !isset( $array["id"] ) )   {
+           $array["id"] = $array["name"]."ID";
+        }
+        elseif ( isset( $array["id"] ) && !isset( $array["name"] ) )   {
+           $array["name"] = $array["id"];
+           $array["id"] = $array["name"]."ID";
+        }
+
+        if ( $array["popup"] )  {
+            $array["ondblclick"] ? $array["ondblclick"] = $array["ondblclick"]."; ".$array["popup"] : $array["ondblclick"] = $array["popup"];
+        }
+
+        if ( $array["calendar"] )
+        {
+           $array["type"] = "date";
+           //$array["onblur"] .= $array["onblur"] ? '; BlurDate( this )' : 'BlurDate( this )';
+           $array["onblur"] .= $array["onblur"] ? '; BlurDate( this )' : 'BlurDate( this )';
+        }
+
+        if ( $array["numeric"] )
+        {
+          $array["onblur"] .= $array["onblur"] ? '; BlurMoney( this )' : 'BlurMoney( this )';
+        }
+
+        if ( $array["type"] )  {
+            if ( strtolower( $array["type"] ) == "decimal" )
+                $function = "return DecimalInput( event )";
+            elseif ( strtolower( $array["type"] ) == "alpha" )
+                $function = "return AlphaInput( event )";
+                
+                
+            elseif ( strtolower( $array["type"] ) == "time" )
+                $function = "return EvalTime( event, '00:00', this )";
+                
+                
+            elseif ( strtolower( $array["type"] ) == "numeric" || strtolower( $array["type"] ) == "date" )
+                $function = "return NumericInput( event )";
+            if ( $array["onkeypress"] )
+                $array["onkeypress"] = $array["onkeypress"]."; ".$function;
+            else
+                $array["onkeypress"] = $function;
+        }
+
+
+        if ( $onfocus=="on" )    {
+
+            if ( $array["calendar"] )
+                $calendar = "calendar";
+
+            echo ' onfocus="this.className=\'campo_texto_on '.$calendar.'\';';
+            if ( $array["onfocus"] )
+                echo ' '.$array["onfocus"].'"';
+            echo '"';
+        }
+        else
+            if ( $array["onfocus"] ) echo ' onfocus="'.$array["onfocus"].'"';
+
+        if ( strtolower( $array["type"] ) == "placa" )  {
+            $array["maxlength"] = "8";
+            $array["size"] = "8";
+        }
+        
+        if ( strtolower( $array["type"] ) == "time" )  {
+            $array["maxlength"] = "5";
+            $array["size"] = "4";
+        }
+        
+
+        if ( $array["type"] == "decimal" )
+            $array["onkeydown"] = "ValidateDecimalFormat( this ); ".$array["onkeydown"];
+        //    $array["onkeyup"] = "ValidateDecimalFormat( this ); ".$array["onkeyup"];
+
+        if ( $array["<"] )
+            $array["onkeyup"] = "LimitNumber( '<', ".$array["<"].", this ); ".$array["onkeyup"];
+
+        if ( $array["<="] )
+            $array["onkeyup"] = "LimitNumber( '<=', ".$array["<="].", this ); ".$array["onkeyup"];
+
+        if ( $array["type"] == "money" )
+        {
+            $array["onkeyup"] = "puntos( this,this.value.charAt( this.value.length-1 ) ); ".$array["onkeyup"];
+            $array["onblur"] .= $array["onblur"] ? '; BlurMoney( this )' : 'BlurMoney( this )';
+        }
+        
+        if ( strtolower( $array["type"] ) == "time" )
+        {
+            $array["onblur"] .= $array["onblur"] ? '; OnblurTime( this )' : 'OnblurTime( this )';
+        }
+        
+
+        if ( $array["limit"] )
+            $array["onkeyup"] = "LimitChars( this, ".$array["limit"]." ); ".$array["onkeyup"];
+
+        if ( strtolower( $array["type"] ) == "placa" )
+            $array["onkeyup"] = "ValidatePlacaFormat( this ); ".$array["onkeyup"];
+        elseif ( strtolower( $array["type"] ) == "date" )
+        {
+            $array["onkeyup"] = "CalendarFormat( this ); ".$array["onkeyup"];
+        }
+
+
+
+
+
+        $array["onblur"] = $array['type'] == 'numeric' || $array['type'] == 'decimal' ? 'BlurNumeric( this ); '.$array["onblur"] : $array["onblur"];
+
+
+        if ( $array["type"] == 'container' )
+        {
+          $array["onkeyup"] = $array["onkeyup"] ? 'OnkeyupContainer( this ); '.$array["onkeyup"] : 'OnkeyupContainer( this )';
+          $array["onblur"]  = $array["onblur"]  ? 'OnblurContainer( this );  '.$array["onblur"] : 'OnblurContainer( this )';
+          $array["size"]      = '18';
+          $array["maxlength"] = '17';
+        }
+
+        if ( $onblur=="on" )    {
+
+            if ( $array["calendar"] )
+                $calendar = "calendar";
+
+            echo ' onblur="this.className=\'campo_texto '.$calendar.'\';';
+            if ( $array["onblur"] )
+                echo ' '.$array["onblur"];
+            echo '"';
+        }
+        else
+            if ( $array["onblur"] ) echo ' onblur="'.$array["onblur"].'"';
+
+
+       if ( $array["onkeypress"] ) echo ' onkeypress="'.$array["onkeypress"].'"';
+
+
+        if ( $array["method"] ) echo ' method="'.$array["method"].'"';
+        if ( $array["action"] ) echo ' action="'.$array["action"].'"';
+        if ( $array["target"] ) echo ' target="'.$array["target"].'"';
+        if ( $array["enctype"] ) echo ' enctype="'.$array["enctype"].'"';
+        if ( $array["multipar"] ) echo ' multipar="yes"';
+        if ( $array["class"] ) echo ' class="'.$array["class"].'"';
+        if ( $array["name"] ) echo ' name="'.$array["name"].'"';
+        if ( $array["id"] ) echo ' id="'.$array["id"].'"';
+        if ( $array["value"] != '' ) echo ' value="'.$array["value"].'"';
+        //     if ( $array["width"] ) echo ' width="'.$array["width"].'"';
+        if ( $array["height"] ) echo ' height="'.$array["height"].'"';
+        if ( $array["size"] ) echo ' size="'.$array["size"].'"';
+        if ( $array["maxlength"] ) echo ' maxlength="'.$array["maxlength"].'"';
+        if ( $array["rowspan"] ) echo ' rowspan="'.$array["rowspan"].'"';
+        if ( $array["colspan"] ) echo ' colspan="'.$array["colspan"].'"';
+        if ( $array["cols"] ) echo ' cols="'.$array["cols"].'"';
+        if ( $array["rows"] ) echo ' rows="'.$array["rows"].'"';
+        if ( $array["wrap"] ) echo ' wrap="'.$array["wrap"].'"';
+        if ( $array["for"] ) echo ' for="'.$array["for"].'"';
+        if ( $array["title"] ) echo ' title="'.$array["title"].'"';
+        if ( $array["onclick"] ) echo ' onclick="'.$array["onclick"].'"';
+        if ( $array["ondblclick"] ) echo ' ondblclick="'.$array["ondblclick"].'"';
+        if ( $array["onchange"] ) echo ' onchange="'.$array["onchange"].'"';
+        if ( $array["href"] ) echo ' href="'.$array["href"].'"';
+        if ( $array["src"] ) echo ' src="'.$array["src"].'"';
+        if ( $array["style"] ) echo ' style="'.$array["style"].'"';
+
+
+        if ( $array["onkeyup"] ) echo ' onkeyup="'.$array["onkeyup"].'"';
+        if ( $array["onkeydown"] ) echo ' onkeydown="'.$array["onkeydown"].'"';
+
+        if ( $array["onmouseover"] ) echo ' onmouseover="'.$array["onmouseover"].'"';
+        if ( $array["onmouseout"] ) echo ' onmouseout="'.$array["onmouseout"].'"';
+        if ( $array["onmouseup"] ) echo ' onmouseup="'.$array["onmouseup"].'"';
+        if ( $array["selected"] ) echo ' selected="selected"';
+        if ( $array["checked"] ) echo ' checked="checked"';
+        if ( $array["disabled"] ) echo ' disabled="disabled"';
+        if ( $array["readonly"] ) echo ' readonly="readonly"';
+
+    }
 }
 
 
@@ -314,7 +530,7 @@ class Form_archivo
 
         $ancho,//ancho del campo de bsqueda
 
-        $max_caracteres,//móimo nmero de caracteres de la ruta del archivo
+        $max_caracteres,//m?imo nmero de caracteres de la ruta del archivo
 
         $jscript,//llamadas a eventos y demas codigo javaScritp
 
@@ -371,7 +587,7 @@ class Form_texto
         $tipo,//puede ser text, password, textarea.
         $salto_linea,//si esta en 1 indica que se debe cerrar la fila y abrir una nueva
         $ancho,//ancho de un campo de texto
-        $alto,//alto de un textarea o móimo de caracteres de un text
+        $alto,//alto de un textarea o m?imo de caracteres de un text
         $wrap,//Solo se utiliza si $tipo es textarea y puede ser OFF, VIRTUAL, PHYSICAL
         $nombre,//nombre del campo
         $scrp,//busqueda
@@ -513,7 +729,7 @@ class Form_caja
 
         $valores,//valor que tomera la variable al checar esta caja
 
-        $estado_inicial,//estado inicial 1 seólado, 0 sin seólar
+        $estado_inicial,//estado inicial 1 se?lado, 0 sin se?lar
 
         $salto_linea;//si esta en 1 indica que se debe cerrar la fila y abrir una nueva
 
@@ -559,7 +775,7 @@ class Form_radio//cr4ea un conjunto de radio buttons
 
         $valores,//valor que tomera la variable al checar este radio button
 
-        $estado_inicial,//estado inicial 1 seólado, 0 sin seólar
+        $estado_inicial,//estado inicial 1 se?lado, 0 sin se?lar
 
         $salto_linea;//si esta en 1 indica que se debe cerrar la fila y abrir una nueva
 
@@ -613,7 +829,7 @@ class Form_lista
 
         $campo_obliga;//Campo Obligatorio
 
-
+        
 
     //Metodos
 
@@ -651,8 +867,83 @@ class Form_lista
         for($i = 0; $i < $n; $i++)
 
         {
+                printf("<option value=\"%s\">%s</option>\n", $va[$i][0], $va[$i][1]);
 
-            printf("<option value=\"%s\">%s</option>\n", $va[$i][0], $va[$i][1]);
+        }
+
+        printf("</select>\n</td>\n");
+
+        if($sl)
+
+            printf("</tr>\n<tr>\n");
+
+    }
+
+}
+
+class Form_lista_value
+
+{
+
+    //Atributos
+
+    var $etiqueta,//etiqueta que va a tener el menu
+
+        $nombre,//nombre que va a tomar al variable que representa este menu
+
+        $valores,//vector que contiene los valores que va a tomar la lista en el vector va[i][0] los value y en el va[i][1] los textos que se van a mostrar en la lista
+
+        $salto_linea,//si esta en 1 indica que se debe cerrar la fila y abrir una nueva
+
+        $campo_obliga,//Campo Obligatorio
+
+        $valor_selec; //valor que carga cuando se actualiza
+
+
+
+    //Metodos
+
+    function __construct($et, $no, $va, $sl, $obliga = 0, $valSelect = '')
+
+    {
+
+        $this -> etiqueta = $et;
+
+        $this -> nombre = $no;
+
+        $this -> valores = $va;
+
+        $this -> salto_linea = $sl;
+
+        $this -> campo_obliga = $obliga;
+
+        $this -> valor_selec = $valSelect;
+
+        $textobliga = NULL;
+
+        if($obliga)
+         $textobliga = "*";
+		 
+		if($et)
+        echo "<td align=\"right\" class=\"celda_titulo\">\n$textobliga $et\n</td>\n";
+		echo "<td class=\"celda_info\">\n<select class=\"form_01\" name=\"$no\"";
+
+        echo " onKeypress=buscar_op(this) onblur=borrar_buffer() onclick=borrar_buffer() ";
+
+        echo ">\n";
+
+        $n = sizeof($va);
+
+
+
+        for($i = 0; $i < $n; $i++)
+
+        {
+            if ($this->valor_selec == $va[$i][0]) {
+                printf("<option value=\"%s\" selected>%s</option>\n", $va[$i][0], $va[$i][1]);
+            }else{
+                printf("<option value=\"%s\">%s</option>\n", $va[$i][0], $va[$i][1]);
+            }
 
         }
 
@@ -989,7 +1280,7 @@ class Form_botoni
 
     var $etiqueta,//la etiqueta del boton
 
-        $onClick,//Inclusió de Javascript
+        $onClick,//Inclusi? de Javascript
 
         $mens,//Mensaje cuando pone el mouse encima del boton
 

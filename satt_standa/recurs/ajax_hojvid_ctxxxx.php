@@ -56,6 +56,7 @@ class ajax_hojvid_ctxxxx
                       d.nom_tipcta,
                       a.doc_duecue,
                       CONCAT(a.pri_apelli, ' ', a.seg_apelli, ' ', a.nom_contra) AS nom_comple,
+                      e.nom_activi,
                       a.ind_estado
                 FROM  ".BASE_DATOS.".tab_hojvid_ctxxxx a
           INNER JOIN  ".BASE_DATOS.".tab_genera_tipcto b
@@ -63,7 +64,9 @@ class ajax_hojvid_ctxxxx
           INNER JOIN  ".BASE_DATOS.".tab_genera_bancox c
                   ON  a.cod_bancox = c.cod_bancox
           INNER JOIN  ".BASE_DATOS.".tab_genera_tipcta d
-                  ON  a.cod_tipcta = d.cod_tipcta";
+                  ON  a.cod_tipcta = d.cod_tipcta
+          INNER JOIN  ".BASE_DATOS.".tab_genera_activi e
+                  ON  a.cod_activi = e.cod_activi";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
 

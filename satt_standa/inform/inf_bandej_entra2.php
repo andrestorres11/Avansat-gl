@@ -34,7 +34,7 @@ class infBandeja
 		IncludeJS( 'jquery.multiselect.filter.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
 		IncludeJS( 'jquery.multiselect.min.js', '../'.DIR_APLICA_CENTRAL.'/js/multiselect/' );
 		IncludeJS( 'time.js', '../'.DIR_APLICA_CENTRAL.'/js/' );
-
+		
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
@@ -63,6 +63,7 @@ class infBandeja
 		$mTypeUser = self::$cDespac -> typeUser();
 		$mTipoDespac = self::$cDespac -> getTipoDespac();
 		$mArrayTransp = self::$cDespac -> getTransp();
+		$mArrayTipTra = self::$cDespac -> getTipTra();
 		$mArrayGenera = self::$cDespac -> getGenerador();
 		$mArrayUserAs = self::$cDespac -> getUserAsig();
 		$mUsrSinAsig = array( array('SIN', 'SIN ASIGNAR') );
@@ -105,6 +106,24 @@ class infBandeja
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic3" '.($_REQUEST['tip_servic3'] == 1 ? 'checked' : '').' ></td>';
 						$mHtml1 .= '	<td class="cellInfo1" colspan="2">&nbsp;</td>';
 						$mHtml1 .= '</tr>';
+						$mHtml1 .= '<tr>';
+						$mHtml1 .= '	<td class="cellInfo1" align="right">24/7</td>';
+						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_horlab1" '.($_REQUEST['tip_horlab1'] == 1 ? 'checked' : '').' ></td>';
+						$mHtml1 .= '	<td class="cellInfo1" align="right">12/7</td>';
+						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_horlab2" '.($_REQUEST['tip_horlab2'] == 1 ? 'checked' : '').' ></td>';
+						$mHtml1 .= '	<td class="cellInfo1" align="right">Fin de semana</td>';
+						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_horlab3" '.($_REQUEST['tip_horlab3'] == 1 ? 'checked' : '').' ></td>';
+						$mHtml1 .= '	<td class="cellInfo1" colspan="2">&nbsp;</td>';
+						$mHtml1 .= '</tr>';
+						$mHtml1 .= '<tr>';
+						$mHtml1 .= '	<td class="cellInfo1" align="right">Filtro Horas</td>';
+						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="fil_horasx" '.($_REQUEST['fil_horasx'] == 1 ? 'checked' : '').' ></td>';
+						$mHtml1 .= '	<td class="cellInfo1" align="right">Hora inicial</td>';
+						$mHtml1 .= '	<td class="cellInfo1"><input type="time" value="00:00" name="hor_inicia" id="hor_inicia"></td>';
+						$mHtml1 .= '	<td class="cellInfo1" align="right">Hora Final</td>';
+						$mHtml1 .= '	<td class="cellInfo1"><input type="time" value="23:59" name="hor_finalx" id="hor_finalx"></td>';
+						$mHtml1 .= '	<td class="cellInfo1" colspan="2">&nbsp;</td>';
+						$mHtml1 .= '</tr>';
 					}
 
 					if( $mView->fil_genera->sub->otr_filtro == 1 )
@@ -122,8 +141,14 @@ class infBandeja
 
 						$mHtml1 .= '<tr>';
 						$mHtml1 .= self::$cDespac -> lista( 'Transportadora:', 'cod_transp', array_merge( self::$cNull, $mArrayTransp), 'cellInfo1' );
+						$mHtml1 .= self::$cDespac -> lista( 'Tipo de Transporte:', 'cod_tiptra', array_merge( self::$cNull, $mArrayTipTra), 'cellInfo1' );
+						$mHtml1 .= '</tr>';
+						$mHtml1 .= '<tr>';
 						if( $mTypeUser['tip_perfil'] != 'CONTROL' && $mTypeUser['tip_perfil'] != 'EAL' && $mTypeUser['tip_perfil'] != 'CLIENTE' ){
 							$mHtml1 .= self::$cDespac -> lista( 'Usuarios Asignados:', 'cod_usuari', array_merge( self::$cNull, $mUsrSinAsig, $mArrayUserAs), 'cellInfo1' );
+							$mHtml1 .= '<td class="cellInfo1"></td>';
+							$mHtml1 .= '<td class="cellInfo1"></td>';
+
 						}
 						else
 						{

@@ -190,7 +190,7 @@ function ajaxOperacion(ind_estado, cod_consec) {
  */
 function mostrarOcultos() {
     var cod_perfil = $("#cod_perfil").val();
-    if (cod_perfil == 7 || cod_perfil == 8 || cod_perfil == 713 || cod_perfil == 669) {
+    if (cod_perfil == 7 || cod_perfil == 8 || cod_perfil == 713 || cod_perfil == 669 || cod_perfil == 728 || cod_perfil == 1 || cod_perfil == 73) {
         if (cod_perfil != 699) {
             $("#gru_pri").fadeIn(530);
             $("#cod_priori").attr("obl", 1);

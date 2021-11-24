@@ -1,0 +1,54 @@
+.header-modal {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    padding: 20px;
+    font-size: 18px;
+}
+
+.margin-top-row {
+    margin-top: 15px;
+}
+
+.datepicker table tr td.active.highlighted.active {
+    background-color: #5cb85c;
+}
+
+.bootstrap-datetimepicker-widget table td a[data-action="close"]>span:hover {
+    /* Set her your custom color */
+    background-color: #5cb85c;
+    color: #fff;
+}
+
+.redObl {
+    color: red;
+}
+
+.btn-color-on {
+    background-color: #3c763d
+}
+
+.btn-color-on:hover {
+    background-color: #336334;
+}
+
+.btn-color-off {
+    background-color: #aaa;
+}
+
+.btn-color-off:hover {
+    background-color: #aaa;
+}
+
+label.error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    margin-top: 2px;
+    padding: 6px 20px 6px 20px;
+}
+
+input.error {
+    border-color: #a94442;
+    border-width: 2px;
+}
