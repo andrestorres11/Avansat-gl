@@ -724,7 +724,7 @@ class InsertNovedad {
      */
 
     function getEmailAgecni($num_despac) {
-       /* $mQuery = 
+        $mQuery = 
        "  SELECT 
                     GROUP_CONCAT(CONCAT(c.dir_dispos,'@',b.dns_operad))   
             FROM    " . BASE_DATOS . ".tab_despac_despac a   
@@ -738,12 +738,13 @@ class InsertNovedad {
       INNER JOIN    " . BD_STANDA . ".tab_mensaj_dispos c
               ON    b.cod_operad = c.cod_operad 
            WHERE    c.ind_novala = 1 AND 
-                    c.ind_estado = 1 ";*/           
-        $mQuery = "SELECT b.dir_emailx 
+                    c.ind_estado = 1 ";
+                    
+        /*$mQuery = "SELECT b.dir_emailx 
                      FROM " . BASE_DATOS . ".tab_despac_despac a,
                           " . BASE_DATOS . ".tab_genera_agenci b
                      WHERE a.cod_agedes = b.cod_agenci AND
-                           a.num_despac = '" . $num_despac . "' ";
+                           a.num_despac = '" . $num_despac . "' ";*/
         $consulta = new Consulta($mQuery, $this->conexion);
         $mEmailAgenci = $consulta->ret_matriz();
 
@@ -1073,7 +1074,6 @@ class InsertNovedad {
      */
 
     function InsertarNovedadPC($base_datos, $regist, $ominter) {
-        
         $mIndEnSiti = true;
 
         if (in_array($regist['noveda'], self::$cCodNoved['4'])) { #Solucion a novedad Corona
@@ -1287,7 +1287,6 @@ class InsertNovedad {
      */
 
     function InsertarNovedadNC($base_datos, $regist, $ominter) {
-        
         $mIndEnSiti = false;
 
         if (in_array($regist['noveda'], self::$cCodNoved['4'])) { #Solucion a novedad Corona
@@ -1735,7 +1734,6 @@ class InsertNovedad {
 
     private function SendMailNovedadEspeci($mDatRegist = null, $mDatDespac = null, $mDatNoveda = null) {
         #<Carga la variable mMail>
-        
         $mSql = "SELECT ind_notage
                    FROM " . BASE_DATOS . ".tab_transp_tipser
                   WHERE cod_transp = '" . $mDatDespac['cod_transp'] . "' 
@@ -1747,7 +1745,6 @@ class InsertNovedad {
         $mIndNotage = $mConsult->ret_arreglo();
 
         $mEmailAgenci = self::getEmailAgecni($mDatRegist['despac']);
-
 
         if ($mIndNotage[0] == 1 && $mEmailAgenci)
             $mMail = $mEmailAgenci;
@@ -3557,7 +3554,6 @@ class InsertNovedad {
                         $cod_transp = $interfaz->interfaz[$i]['codigo']     != '' ? $interfaz->interfaz[$i]['codigo'] : $cod_transp; // cod de la transp, no es el nit, debe estar en BD
                         $url_webser    = $interfaz->interfaz[$i]['diwsdl']  != '' ? $interfaz->interfaz[$i]['diwsdl'] : $url_webser; // URL ws, debe estar en BD
 
-
                         #<IF 5.1.1.1.3.1>
                         if (strpos(strtolower($regist['sitio']), "eal") !== FALSE || 
                             strpos(strtolower($regist['sitio']), "oal") !== FALSE || 
@@ -3609,38 +3605,11 @@ class InsertNovedad {
                                 //Métodos disponibles en el WS
                                 $respuesta = $oSoapClient-> __soapCall( 'puestocontrol', $parametros );
 
-                                if($regist["nittra"] == "900138913") // la empresa es tevsa
-                                {
-
-                                    mail('nelson.liberato@eltransporte.org,lina.contreras@grupooet.com', 
-                                         'REPORTE SILOGTRANS NORMAL',
-                                          var_export(['parametros'   => $parametros, 
-                                                      'url_webser'   => $url_webser ,
-                                                      'respuesta'    => $respuesta 
-                                                     ], true)
-                                        );  
-                                }
-
                                 if ($respuesta != 'OK REPORTO.') {
                                     $error_ = $respuesta;
                                 }
                             } catch (SoapFault $e) {
                                 $error_ = $e->getMessage();
-
-                                if($regist["nittra"] == "900138913") // la empresa es tevsa
-                                {
-
-                                    mail('nelson.liberato@eltransporte.org,lina.contreras@grupooet.com', 
-                                         'REPORTE SILOGTRANS CATH', 
-                                         var_export(['parametros'       => $parametros, 
-                                                     'url_webser'       => $url_webser ,
-                                                     'respuesta'        => $respuesta ,
-                                                     'error_'           => $error_,
-                                                     '__getLastRequest' => htmlspecialchars($oSoapClient->__getLastRequest())
-                                                               
-                                                     ], true)
-                                        );
-                                }
                             }
 
                             if ($error_ != NULL) {
@@ -3659,7 +3628,7 @@ class InsertNovedad {
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE.", nelson.liberato@eltransporte.org", 
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, 
                                 	"Error Web service Humadea - Colombiasoftware", 
                                 	'<div name="'.HOST_WEB.'_faro_11">' . $mMessage."\n". var_export($parametros, true ) . '</div>', $mCabeceSoporte);
                             }
@@ -3861,9 +3830,8 @@ class InsertNovedad {
                             $mResult = explode("; ", $mResult);
                             $mCodResp = explode(":", $mResult[0]);
                             $mMsgResp = explode(":", $mResult[1]);
-                            // mail("andres.torres@eltransporte.org", "avansatgl ws", var_export($mCodResp, true));
 
-                            if ("1000" != trim($mCodResp[1]) ) {
+                            if ("1000" != $mCodResp[1]) {
                                 $error_ = $mMsgResp[1];
                             }
                         } catch (SoapFault $e) {
@@ -4411,13 +4379,13 @@ class InsertNovedad {
 
                                 $s = curl_init();
                                 curl_setopt($s,CURLOPT_URL, $interfaz->interfaz[$i]['diwsdl']);
-                                curl_setopt($s,CURLOPT_TIMEOUT,"4"); 
+                                curl_setopt($s,CURLOPT_TIMEOUT,"14"); 
                                 curl_setopt($s,CURLOPT_HTTPHEADER,array('Content-Type: text/xml')); 
                                 curl_setopt($s,CURLOPT_RETURNTRANSFER,true);
                                 curl_setopt($s,CURLOPT_POST,true);
                                 curl_setopt($s,CURLOPT_POSTFIELDS,$mTextXML);
-                                curl_setopt($s, CURLOPT_SSL_VERIFYHOST, 0);
-                                curl_setopt($s, CURLOPT_SSL_VERIFYPEER, 0);
+                                // curl_setopt($s, CURLOPT_SSL_VERIFYHOST, 0);
+                                // curl_setopt($s, CURLOPT_SSL_VERIFYPEER, 0);
                                 $mResponse   = curl_exec($s);
                                 $mHttpStatus = curl_getinfo($s,CURLINFO_HTTP_CODE);
                                 curl_close($s);
@@ -4623,7 +4591,7 @@ class InsertNovedad {
 
         $mSql = "SELECT a.cod_fwxxxx
                    FROM " . BASE_DATOS . ".tab_noveda_tranfw a 
-                  WHERE a.cod_faroxx = '" . $mDatRegist['noveda']."'";
+                  WHERE a.cod_faroxx = " . $mDatRegist['noveda'];
         $mConsult = new Consulta($mSql, $this->conexion);
         $cod_fwxxxx = $mConsult->ret_matrix('i');
         $mResult['cod_fwxxxx'] = $cod_fwxxxx[0][0] == NULL ? '01' : $cod_fwxxxx[0][0];
@@ -4770,7 +4738,7 @@ class InsertNovedad {
             $mail->AddAddress( $destin );
             //return mail($destin, $asunto, $msj, $cabeceras);
         } else {
-            $mail->AddAddress( "andres.martinez@eltransporte.org, maribel.garcia@eltransporte.org" );
+            $mail->AddAddress( "luis.manrique@eltransporte.org, maribel.garcia@eltransporte.org" );
             //return mail("luis.manrique@eltransporte.org", $asunto, $msj, $cabeceras);
         }
 
