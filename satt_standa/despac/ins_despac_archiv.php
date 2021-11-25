@@ -145,7 +145,8 @@ class Proc_ins_despac {
         $_DATA = array();
 
         for ($f = 0; $f < $size_file; $f++) {
-            $datos = explode(';', $filas[$f]);
+            $info = preg_replace("[\n|\r|\n\r]", "", $filas[$f]);
+            $datos = explode(';', $info);
             $tamanio_columna = sizeof($datos);
             for ($c = 0; $c < $tamanio_columna; $c++) {
                 $_DATA[$f][$c] = trim($datos[$c]);
@@ -265,8 +266,7 @@ class Proc_ins_despac {
             $this->row = $_DATA[$r];
             //------------------------
             if ($this->row[0] == "" && $this->row[1] == "" && $this->row[2] == "" && $this->row[3] == "" && $this->row[4] == "" && $this->row[5] == "") {continue;}
-            for ($c = 0; $c < sizeof($this->row); $c++) {
-
+            for ($c = 0; $c < sizeof($this->row); $c++) {   
                 //------------------------
                 $item = isset($this->row[$c]) ? $this->row[$c] : NULL;
                 //------------------------
@@ -1035,7 +1035,7 @@ class Proc_ins_despac {
         //Se formatea la fecha e pago
         $row[62] = str_replace('/', '-', $row[62]);
         $row[62] = date('Y-m-d', strtotime($row[62]));
-
+        
         //Condicional que revisa que el despacho este registrado
         if (!$this->verificaRegistroDespacho($row[0], $row[3])){
             //trae el consecutivo de la tabla
@@ -1052,6 +1052,7 @@ class Proc_ins_despac {
             $ruta  = $this->getRuta($dat_ciuori['cod_ciudad'], $dat_ciudes['cod_ciudad']);
 
             $mercancia = $this->getMercancia($row[37]);
+            
             $query = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
             (
               num_despac, cod_manifi, fec_despac,
@@ -1532,7 +1533,9 @@ class Proc_ins_despac {
                 '".$datos[0]['cod_ciudad']."', '".$datos[0]['dir_remdes']."', '', 
                 '".$datos[0]['cod_latitu']."', '".$datos[0]['cod_longit']."', '".$datos[0]['dir_emailx']."', 
                 '".$datos[0]['num_telefo']."','".$this->cod_usuari."', NOW() 
-            )";
+            ) ON DUPLICATE KEY UPDATE nom_remdes='".$datos[0]['nom_remdes']."', cod_ciudad = '".$datos[0]['cod_ciudad']."', dir_remdes = '".$datos[0]['dir_remdes']."',
+              dir_emailx = '".$datos[0]['dir_emailx']."', num_telefo = '".$datos[0]['num_telefo']."'
+            ";
         new Consulta($sql, $this->conexion);
     }
 
@@ -1599,7 +1602,7 @@ class Proc_ins_despac {
 
     function reemplazaCiudad($cod_ciudad, $nit_empres){
         //Ajusta el codigo de la ciudad si la empresa es orion.
-        if($nit_empres=='800047876'){
+        if($nit_empres=='800047876' || $nit_empres=='830076669'){
             $code = $cod_ciudad;
             $code = substr($code, 3);
             $fin = ltrim($code, 0);
