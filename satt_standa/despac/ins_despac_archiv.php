@@ -223,7 +223,7 @@ class Proc_ins_despac {
             $tableRegister .= '<td class="CellHead" align="center">LINEA</td>';
             $tableRegister .= '<td class="CellHead" align="center">COLUMNA</td>';
             $tableRegister .= '<td class="CellHead" align="center">VALOR</td>';
-            $tableRegister .= '<td class="CellHead" align="center">OBSERVACIÓN</td>';
+            $tableRegister .= '<td class="CellHead" align="center">OBSERVACIï¿½N</td>';
             $tableRegister .= '</tr>';
             for ($i = 0; $i < $c_nuevos_registros; $i++) {
                 $class = $i % 2 == 0 ? 'cellInfo1' : 'cellInfo2';
@@ -376,7 +376,7 @@ class Proc_ins_despac {
                                 "num_placax" => $item, //Numero de placa
                                 "cod_marcax" => $this->row[8], //Codigo de la marca
                                 "cod_lineax" => $this->row[9], //Codigo de la linea
-                                "ano_modelo" => $this->row[10], //Año modelo
+                                "ano_modelo" => $this->row[10], //Aï¿½o modelo
                                 "cod_colorx" => $this->row[11], //Codigo del color
                                 "cod_carroc" => $this->row[12], //Codigo de la carroceria
                                 "num_config" => $this->row[13], //Numero de configuracion
@@ -427,7 +427,7 @@ class Proc_ins_despac {
                             $faltantes .= ($this->row[36] == NULL ) ? " codigo del propietario " : "";
                             $faltantes .= ($this->row[31] == NULL ) ? " codigo del poseedor " : "";
                             $faltantes .= ($this->row[19] == NULL ) ? " codigo del conductor " : "";
-                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL PROPIETARIO O HAY INFORMACIÓN ERRÓNEA (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
+                            $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION O HAY INFORMACIÓN ERRÓNEA (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
                             $e++;
                             $er++;
                         }
@@ -482,8 +482,8 @@ class Proc_ins_despac {
                     break;
 
                 case 12: //@Carroceria
-                    if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'LA CARROCERIA DEL VEHICULO ES REQUERIDA');
+                    if ( $item == "" ) {
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA CARROCERIA DEL VEHICULO ES REQUERIDA ');
                         $e++;
                         $er++;
                     }
@@ -513,7 +513,7 @@ class Proc_ins_despac {
 
                     break;
 
-                case 17: //@Contraseña
+                case 17: //@Contraseï¿½a
                     
                     break;
 
@@ -603,7 +603,7 @@ class Proc_ins_despac {
                     }
                     if(!$this->verificarTercero($item,'',0)){
                         // Codigo Tercero, Nombre poseedor, Primer apellido, Celular poseedor, Direccion poseedor
-                        if($item != '' && $this->row[26] != '' && $this->row[27] != '' && $this->row[29] != '' && $this->row[30] != '' ){
+                        if($item != '' && $this->row[26] != ''  && $this->row[29] != '' && $this->row[30] != '' ){
                             $a = Array();
                             $a[0] = Array(
                                 "cod_tercer" => $item, //Codigo poseedor
@@ -620,7 +620,6 @@ class Proc_ins_despac {
                             $faltantes = '';
                             $faltantes .= ($item == NULL) ? " Codigo poseedor," : "";
                             $faltantes .= ($this->row[26] == NULL) ? " Nombre del poseedor," : "";
-                            $faltantes .= ($this->row[27] == NULL) ? " apellido del poseedor " : "";
                             $faltantes .= ($this->row[29] == NULL) ? " telefono del poseedor," : "";
                             $faltantes .= ($this->row[30] == NULL) ? " direccion del poseedor " : "";
 
@@ -633,7 +632,7 @@ class Proc_ins_despac {
 
                 case 26: //@Nombre poseedor
                     if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DEL POSEEOR ES REQUERIDO');
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL NOMBRE DEL POSEEDOR ES REQUERIDO');
                         $e++;
                         $er++;
                     }
@@ -641,11 +640,6 @@ class Proc_ins_despac {
                     break;
 
                 case 27: //@Apellido poseedor
-                    if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'EL APELLIDO DEL POSEEOR ES REQUERIDO');
-                        $e++;
-                        $er++;
-                    }
                     break;
 
                 case 28: //@Apellido poseedor
@@ -653,7 +647,7 @@ class Proc_ins_despac {
 
                 case 29: //@telefono poseedor
                     if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'EL TELEFONO DEL POSEEOR ES REQUERIDO');
+                        $this->SetError($e, $this->row[0], $c, $r, 'EL TELEFONO DEL POSEEDOR ES REQUERIDO');
                         $e++;
                         $er++;
                     }
@@ -661,7 +655,7 @@ class Proc_ins_despac {
 
                 case 30: //@Direccion poseedor
                     if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'LA DIRECCION DEL POSEEOR ES REQUERIDO');
+                        $this->SetError($e, $this->row[0], $c, $r, 'LA DIRECCION DEL POSEEDOR ES REQUERIDO');
                         $e++;
                         $er++;
                     }
@@ -675,7 +669,7 @@ class Proc_ins_despac {
                     }
                     if(!$this->verificarTercero($item,'',0)){
                         // Codigo Tercero, Nombre propietario, Primer apellido, Celular propietario, Direccion propietario
-                        if($item != '' && $this->row[32] != '' && $this->row[33] != '' && $this->row[35] != '' && $this->row[36] != '' ){
+                        if($item != '' && $this->row[32] != '' && $this->row[35] != '' && $this->row[36] != '' ){
                             $a = Array();
                             $a[0] = Array(
                                 "cod_tercer" => $item, //Codigo propietario
@@ -692,7 +686,6 @@ class Proc_ins_despac {
                             $faltantes = '';
                             $faltantes .= ($item == NULL) ? " Codigo propietario," : "";
                             $faltantes .= ($this->row[32] == NULL) ? " Nombre del propietario," : "";
-                            $faltantes .= ($this->row[33] == NULL) ? " apellido del propietario " : "";
                             $faltantes .= ($this->row[35] == NULL) ? " telefono del propietario," : "";
                             $faltantes .= ($this->row[36] == NULL) ? " direccion del propietario " : "";
 
@@ -712,11 +705,6 @@ class Proc_ins_despac {
                     break;
 
                 case 33: //@Apellido propietario
-                    if (empty($item) || $item == "") {
-                        $this->SetError($e, $this->row[0], $c, $r, 'EL APELLIDO DEL PROPIETARIO ES REQUERIDO');
-                        $e++;
-                        $er++;
-                    }
                     break;
 
                 case 34: //@Apellido propietario
@@ -750,16 +738,19 @@ class Proc_ins_despac {
 
                 case 38: //Ciudad de origen
                     if (empty($item) || $item == "") {
-                        if (!$this->verificaCiudad($item)) {
+                        $cod_ciudad = $this->reemplazaCiudad($item, $this->row[1]);
+                        if (!$this->verificaCiudad($cod_ciudad)) {
                             $this->SetError($e, $this->row[0], $c, $r, 'NO EXISTE CIUDAD REGISTRADA CON EL CODIGO '.$item);
                             $e++;
                             $er++;
                         }
                     }
                     if($item != '' && $row[39] != ''){
-                        if(!$this->validaRuta($item, $row[39])){
-                            $ciu_origen = $this->getCiudad($item);
-                            $ciu_destin = $this->getCiudad($row[39]);
+                        $cod_ciudad = $this->reemplazaCiudad($item, $this->row[1]);
+                        $cod_ciudes = $this->reemplazaCiudad($row[39], $this->row[1]);
+                        if(!$this->validaRuta($cod_ciudad)){
+                            $ciu_origen = $this->getCiudad($cod_ciudad);
+                            $ciu_destin = $this->getCiudad($cod_ciudes);
                             $this->SetError($e, $this->row[0], $c, $r, 'NO EXISTE RUTA '.$ciu_origen['nom_ciudad'].' - '.$ciu_destin['nom_ciudad']);
                             $e++;
                             $er++;
@@ -768,16 +759,19 @@ class Proc_ins_despac {
                     break;
                 case 39: //@Ciudad destino
                     if (empty($item) || $item == "") {
-                        if (!$this->verificaCiudad($item)) {
+                        $cod_ciudad = $this->reemplazaCiudad($item, $this->row[1]);
+                        if (!$this->verificaCiudad($cod_ciudad, $this->row[1])) {
                             $this->SetError($e, $this->row[0], $c, $r, 'NO EXISTE CIUDAD REGISTRADA CON EL CODIGO '.$item);
                             $e++;
                             $er++;
                         }
                     }
                     if($item != '' && $row[38] != ''){
-                        if(!$this->validaRuta($row[38], $item)){
-                            $ciu_origen = $this->getCiudad($row[38]);
-                            $ciu_destin = $this->getCiudad($item);
+                        $cod_ciudad = $this->reemplazaCiudad($item, $this->row[1]);
+                        $cod_ciuori = $this->reemplazaCiudad($row[38], $this->row[1]);
+                        if(!$this->validaRuta($cod_ciuori, $cod_ciudad)){
+                            $ciu_origen = $this->getCiudad($cod_ciuori);
+                            $ciu_destin = $this->getCiudad($cod_ciudad);
                             $this->SetError($e, $this->row[0], $c, $r, 'NO EXISTE RUTA '.$ciu_origen['nom_ciudad'].' - '.$ciu_destin['nom_ciudad']);
                             $e++;
                             $er++;
@@ -810,7 +804,7 @@ class Proc_ins_despac {
                     }
                     if(!$this->validaRemdes($item, $row[45], 1)){
                         // Codigo Remdes, Nit, Nombre, Ciudad, Direccion, Correo, Telefono, transportadora
-                        if($item != '' && $this->row[45] != '' && $this->row[46] != '' && $this->row[47] != '' && $this->row[48] != '' && $this->row[51] != '' && $this->row[52] != '' && $this->row[1] != ''){
+                        if($item != '' && $this->row[45] != '' && $this->row[46] != '' && $this->row[47] != '' && $this->row[48] != '' &&  $this->row[1] != ''){
                             $a = Array();
                             $a[0] = Array(
                                 "cod_remdes" => $item, //Codigo remdes
@@ -818,7 +812,7 @@ class Proc_ins_despac {
                                 "nom_remdes" => $this->row[46], //Nombre remdes
                                 "cod_transp" => $this->row[1], //Codigo transportadora
                                 "ind_remdes" => 1, //Indicador de remdes
-                                "cod_ciudad" => $this->row[47], //Codigo de ciudad
+                                "cod_ciudad" => $this->reemplazaCiudad($row[47], $row[1]), //Codigo de ciudad
                                 "dir_remdes" => $this->row[48], //Direccion de remdes
                                 "dir_emailx" => $this->row[51], //Email de remitente
                                 "num_telefo" => $this->row[52], //Numero de telefono
@@ -837,8 +831,6 @@ class Proc_ins_despac {
                             $faltantes .= ($this->row[1] == NULL) ? " Codigo transportadora," : "";
                             $faltantes .= ($this->row[47] == NULL) ? " Codigo de la ciudad del remitente," : "";
                             $faltantes .= ($this->row[48] == NULL) ? " Direccion del remitente," : "";
-                            $faltantes .= ($this->row[51] == NULL) ? " Email remitente, " : "";
-                            $faltantes .= ($this->row[52] == NULL) ? " Numero de telefono remitente, " : "";
                             $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL REMITENTE (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
                             $e++;
                             $er++;
@@ -889,7 +881,7 @@ class Proc_ins_despac {
                     }
                     if(!$this->validaRemdes($item, $row[54], 2)){
                         // Codigo Remdes, Nit, Nombre, Ciudad, Direccion, Correo, Telefono, transportadora
-                        if($item != '' && $this->row[54] != '' && $this->row[55] != '' && $this->row[56] != '' && $this->row[57] != '' && $this->row[60] != '' && $this->row[61] != '' && $this->row[1] != ''){
+                        if($item != '' && $this->row[54] != '' && $this->row[55] != '' && $this->row[56] != '' && $this->row[57] != '' &&  $this->row[1] != ''){
                             $a = Array();
                             $a[0] = Array(
                                 "cod_remdes" => $item, //Codigo remdes
@@ -897,13 +889,12 @@ class Proc_ins_despac {
                                 "nom_remdes" => $this->row[55], //Nombre remdes
                                 "cod_transp" => $this->row[1], //Codigo transportadora
                                 "ind_remdes" => 2, //Indicador de remdes
-                                "cod_ciudad" => $this->row[56], //Codigo de ciudad
+                                "cod_ciudad" => $this->reemplazaCiudad($row[56], $row[1]), //Codigo de ciudad
                                 "dir_remdes" => $this->row[57], //Direccion de remdes
                                 "dir_emailx" => $this->row[60], //Email de remitente
                                 "num_telefo" => $this->row[61], //Numero de telefono
                                 "cod_latitu" => $this->row[58], //Codigo de latitud
                                 "cod_longit" => $this->row[59], //Codigo de longitud
-                                "num_telefo" => $this->row[61], //Numero de telefono
                             );
                             $this->ins_remdes($a);
                             $this->setInsertion($h, $r, $c, $item, 'NUEVO DESTINATARIO REGISTRADO');
@@ -916,8 +907,6 @@ class Proc_ins_despac {
                             $faltantes .= ($this->row[1] == NULL) ? " Codigo transportadora," : "";
                             $faltantes .= ($this->row[56] == NULL) ? " Codigo de la ciudad del destinatario," : "";
                             $faltantes .= ($this->row[57] == NULL) ? " Direccion del destinatario," : "";
-                            $faltantes .= ($this->row[60] == NULL) ? " Email destinatario, " : "";
-                            $faltantes .= ($this->row[61] == NULL) ? " Numero de telefono destinatario, " : "";
                             $this->SetError($e, $this->row[0], $c, $r, 'HACE FALTA INFORMACION DEL REMITENTE (' . $faltantes . ') VERIFIQUE QUE LA INFORMACION ESTE COMPLETA, PARA REALIZAR SU REGISTRO');
                             $e++;
                             $er++;
@@ -992,7 +981,7 @@ class Proc_ins_despac {
 
             //Insercion Si no hay errores
             if ($er == 0) {
-                $respuesta = $this->insertDespacho($_DATA[$r-1]);
+                $respuesta = $this->insertDespacho($_DATA[$r]);
                 if ($respuesta[0] == 1) {
                     $totalImportados++;
                 } else {
@@ -1048,7 +1037,7 @@ class Proc_ins_despac {
         $row[62] = date('Y-m-d', strtotime($row[62]));
 
         //Condicional que revisa que el despacho este registrado
-        if (!$this->verificaRegistroDespacho($row[0])){
+        if (!$this->verificaRegistroDespacho($row[0], $row[3])){
             //trae el consecutivo de la tabla
             $query = "SELECT Max(num_despac) AS maximo
             FROM ".BASE_DATOS.".tab_despac_despac ";
@@ -1057,8 +1046,8 @@ class Proc_ins_despac {
             $nuevo_consec =  $ultimo[0][0]+1;
 
             //Obtencion de datos
-            $dat_ciuori = $this->getCiudad($row[38]);
-            $dat_ciudes = $this->getCiudad($row[39]);
+            $dat_ciuori = $this->getCiudad($this->reemplazaCiudad($row[38], $row[1]));
+            $dat_ciudes = $this->getCiudad($this->reemplazaCiudad($row[39], $row[1]));
 
             $ruta  = $this->getRuta($dat_ciuori['cod_ciudad'], $dat_ciudes['cod_ciudad']);
 
@@ -1138,7 +1127,7 @@ class Proc_ins_despac {
                         ) VALUES (
                         "' . $nuevo_consec . '", "' . $row[5] . '", "' . $row[69] . '",
                         "' . $row[53] . '", "' . $row[1] . '", "' . $row[2] . '",
-                        "' . $row[54] . '", "' . $row[56] . '", "' . $row[57] . '",
+                        "' . $row[54] . '", "' . $this->reemplazaCiudad($row[56], $row[1]) . '", "' . $row[57] . '",
                         "' . $this->cod_usuari . '",NOW(), NULL, NULL
                     )';
 
@@ -1273,10 +1262,10 @@ class Proc_ins_despac {
         return $this->retornarBoolean($consulta[0][0]);
     }
 
-    function verificaRegistroDespacho($cod_manifi){
+    function verificaRegistroDespacho($cod_manifi, $cod_agedes){
         $query = "SELECT COUNT(*)
                 FROM ".BASE_DATOS.".tab_despac_despac
-                WHERE cod_manifi = '".$cod_manifi."'";
+                WHERE cod_manifi = '".$cod_manifi."' AND cod_agedes = '".$cod_agedes."'";
         $consulta = new Consulta($query, $this -> conexion);
         $consulta = $consulta->ret_matriz();
         return $this->retornarBoolean($consulta[0][0]);
@@ -1284,16 +1273,23 @@ class Proc_ins_despac {
 
     function verificaMarca($cod_marcax){
         $query = "SELECT COUNT(*)
-                FROM ".BASE_DATOS.".tab_genera_marcas
-                WHERE cod_marcax = '".$cod_marcax."'";
+                FROM ".BASE_DATOS.".tab_genera_marcas_satb
+                WHERE cod_mintra = '".$cod_marcax."' AND ind_estado = 1";
         $consulta = new Consulta($query, $this -> conexion);
         $consulta = $consulta->ret_matriz();
         return $this->retornarBoolean($consulta[0][0]);
     }
 
     function verificaLinea($cod_lineax, $cod_marcax){
+        $query = "SELECT cod_marcax
+        FROM ".BASE_DATOS.".tab_genera_marcas_satb
+        WHERE cod_mintra = '".$cod_marcax."' AND ind_estado = 1";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz()[0];
+        $cod_marcax =  $consulta[0];
+
         $query = "SELECT COUNT(*)
-                FROM ".BASE_DATOS.".tab_vehige_lineas
+                FROM ".BASE_DATOS.".tab_vehige_lineas_satb
                 WHERE cod_marcax = '".$cod_marcax."' AND cod_lineax = '".$cod_lineax."'";
         $consulta = new Consulta($query, $this -> conexion);
         $consulta = $consulta->ret_matriz();
@@ -1496,7 +1492,7 @@ class Proc_ins_despac {
                 ) 
                     VALUES 
                 (
-                    '".$datos[0]['num_placax']."', '".$datos[0]['cod_marcax']."', '".$datos[0]['cod_lineax']."',
+                    '".$datos[0]['num_placax']."', '".$this->getMarca($datos[0]['cod_marcax'])."', '".$this->getLinea($datos[0]['cod_lineax'],$datos[0]['cod_marcax'])."',
                     '".$datos[0]['ano_modelo']."', '".$datos[0]['cod_colorx']."', '".$datos[0]['cod_carroc']."', 
                     NULL,NULL, NULL, 
                     0, 0, 0, 
@@ -1599,6 +1595,51 @@ class Proc_ins_despac {
         $number = preg_replace("/[^0-9,.]/", "", $number);
         $number = preg_replace('/[.]/', '', $number);
         return $number;
+    }
+
+    function reemplazaCiudad($cod_ciudad, $nit_empres){
+        //Ajusta el codigo de la ciudad si la empresa es orion.
+        if($nit_empres=='800047876' || $nit_empres=='830076669'){
+            $code = $cod_ciudad;
+            $code = substr($code, 3);
+            $fin = ltrim($code, 0);
+            $cod_ciudad = $fin.'000';
+        }
+        return $cod_ciudad;
+    }
+
+    function getMarca($cod_marcax){
+        $query = "SELECT cod_marcax
+                FROM ".BASE_DATOS.".tab_genera_marcas_satb
+                WHERE cod_mintra = '".$cod_marcax."' AND ind_estado = 1";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+        if($consulta[0][0]==''){
+            return NULL;
+        }
+        
+        return $consulta[0][0];
+    }
+
+    function getLinea($cod_lineax, $cod_marcax){
+        $query = "SELECT cod_marcax
+        FROM ".BASE_DATOS.".tab_genera_marcas_satb
+        WHERE cod_mintra = '".$cod_marcax."' AND ind_estado = 1";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz()[0];
+        $cod_marcax =  $consulta[0];
+
+        $query = "SELECT cod_lineax
+                FROM ".BASE_DATOS.".tab_vehige_lineas_satb
+                WHERE cod_marcax = '".$cod_marcax."' AND cod_lineax = '".$cod_lineax."'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $consulta = $consulta->ret_matriz();
+
+        if($consulta[0][0]==''){
+            return NULL;
+        }
+
+        return $consulta[0][0];
     }
 
 }
