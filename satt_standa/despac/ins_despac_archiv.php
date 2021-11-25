@@ -1599,7 +1599,7 @@ class Proc_ins_despac {
 
     function reemplazaCiudad($cod_ciudad, $nit_empres){
         //Ajusta el codigo de la ciudad si la empresa es orion.
-        if($nit_empres=='800047876' || $nit_empres=='830076669'){
+        if($nit_empres=='800047876'){
             $code = $cod_ciudad;
             $code = substr($code, 3);
             $fin = ltrim($code, 0);
