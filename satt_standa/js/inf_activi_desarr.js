@@ -699,7 +699,10 @@ function validateNewActivytiForm(formData)
                 });
                 pass =  false;
             }
-            if(globalThis.intiHour > globalThis.lastHour)
+
+            let initDateComplete = moment(globalThis.intiDate+ " " + globalThis.intiHour);
+            let finiDateComplete = moment(globalThis.lastDate+ " " + globalThis.lastHour);
+            if(initDateComplete > finiDateComplete)
             {
                 Swal.fire({
                     title: 'Error!',
