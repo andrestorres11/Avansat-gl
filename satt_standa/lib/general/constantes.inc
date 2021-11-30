@@ -30,7 +30,7 @@ define("COD_ESTADO_INACTI", "2");//constante para el estado Inactivo
 
 define("COD_APLICACION", "1");// constante para el codigo de la aplicacion
 
-define("ESTILO", "Verde");
+//define("ESTILO", "Verde");
 
 define("COD_SERVIC_MESSENGER", "735");// constante para el servicio de mensajes entre usuarios
 
