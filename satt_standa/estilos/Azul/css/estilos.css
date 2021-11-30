@@ -1,5 +1,12 @@
 /* CSS Document */
 
+:root {
+        --principal_color: #2c368d ;
+        --secondary_color: #2c368d ;
+        --sure_color: #d5edff;
+        --hover_color: #ff9f00;
+        --background: #f4f7fd;
+}
 
 
 /*GENERAL*/
@@ -1171,22 +1178,22 @@ center {
 
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
 	border: 1px solid #bdc5cc !important;
-    background: #2c368d !important;
+    background: var(--principal_color) !important;
 }
 
 .CellHead {
-	border: 1px solid #2c368d !important;
-    background: #2c368d !important;
+	border: 1px solid var(--principal_color) !important;
+    background: var(--principal_color) !important;
 }
 
 .ui-widget-header {
-	border: 1px solid #2c368d !important;
-    background: #2c368d !important;
+	border: 1px solid var(--principal_color) !important;
+    background: var(--principal_color) !important;
 }
 
 .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default { 
-	border: 1px solid #2c368d !important;
-    background: #2c368d !important;
+	border: 1px solid var(--principal_color) !important;
+    background: var(--principal_color) !important;
 }
 
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { 
@@ -1196,12 +1203,12 @@ center {
 
 .DLRowHeader {
 	border: 1px solid #797a7a !important;
-    background: #2c368d !important;
+    background: var(--principal_color) !important;
 }
 
 .ui-widget-content {
-        border: 1px solid #f4f7fd !important;
-        background: #f4f7fd url(images/ui-bg_inset-soft_10_285c00_1x100.png) 50% bottom repeat-x !important;
+        border: 1px solid var(--background) !important;
+        background: var(--background) url(images/ui-bg_inset-soft_10_285c00_1x100.png) 50% bottom repeat-x !important;
 }
 
 .ui-multiselect-checkboxes label {
@@ -1213,7 +1220,7 @@ center {
 }
 
 .DLRow1 {
-        background: #d5edff !important;
+        background: var(--sure_color) !important;
 }
 
 /* MENU */
@@ -1222,7 +1229,7 @@ center {
 }
 
 .ui-state-default .ui-corner-top .ui-state-focus .ui-tabs-selected .ui-state-hover{
-        background: #ff9f00 !important; 
+        background: var(--hover_color) !important; 
 }
 
 .ui-state-focus {
@@ -1231,7 +1238,63 @@ center {
     }
 
 .ui-menu .ui-menu-item a {
-        background: #2c368d !important;
+        background: var(--principal_color) !important;
+}
+
+
+.btn .btn-default .buttons-excel .buttons-html5{
+        background-color: var(--sure_color) !important;
+    
+}
+    
+.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+        background-color: var(--sure_color) !important;
+        border: 1px solid #4d4869 !important;
+}
+    
+.btn-group>.btn:first-child {
+        margin-left: 0 !important;
+        margin-bottom: 10px !important;
+}
+    
+.btn-group>.btn-group:not(:first-child)>.btn, .btn-group>.btn:not(:first-child) {
+        background-color: var(--sure_color) !important;
+        margin-left: 4px !important;
+        margin-bottom: 10px !important;
+        border: 1px solid #4d4869 !important;
+}
+
+.card-header{
+        background-color: var(--sure_color) !important;
+}
+
+.btn-success {
+        color: #fff;
+        background: var(--principal_color) !important;
+}
+
+.btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open>.dropdown-toggle.btn-primary {
+        color: #fff;
+        background-color: var(--hover_color) !important;
+        border-color: var(--sure_color) !important;
+}
+
+.modal-header {
+        color: var(--principal_color) !important;
+        background-color: var(--sure_color) !important;
+        border-color: #dfdfdf !important;
+}
+
+.color-heading {
+        color:var(--principal_color) !important;
+}
+
+.btn-success:not(:disabled):not(.disabled).active:focus, .btn-success:not(:disabled):not(.disabled):active:focus, .show>.btn-success.dropdown-toggle:focus {
+        box-shadow: 0 0 0 0.2rem rgb(99 115 251 / 50%) !important;
+}
+
+.btn-success.focus, .btn-success:focus {
+        box-shadow: 0 0 0 0.2rem rgb(99 115 251 / 50%) !important;
 }
     
     
