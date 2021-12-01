@@ -164,7 +164,7 @@
                                                         <label>Fecha Inicial:</label>
                                                     </div>
                                                     <div class="col-3">
-                                                        <input type="date" id="fec_inicio" name="fec_inicio" required value="'.$mDateYes.'">
+                                                        <input type="date" id="fec_inicio" name="fec_inicio" required value="'.$mDateNOW.'">
                                                     </div>
                                                     <div class="col-3 text-right">
                                                         <label>Fecha Final:</label>
