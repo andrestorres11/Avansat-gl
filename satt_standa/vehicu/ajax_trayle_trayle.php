@@ -593,12 +593,14 @@ private function getValidaIdGPS()
                         a.cod_opegps,a.usr_gpsxxx,a.clv_gpsxxx,a.idx_gpsxxx,
                        a.dir_fotder,a.dir_fotpos,b.abr_tercer nom_poseed,
                        c.abr_tercer nom_conduc, d.abr_tercer nom_propie,
-                       a.ind_estado, MAX(e.num_noveda), e.num_trayle
+                       a.ind_estado, MAX(e.num_noveda), e.num_trayle,
+                       f.nom_paisxx, a.cod_paisxx
                   FROM ".BASE_DATOS.".tab_vehicu_vehicu a
                   INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON b.cod_tercer = a.cod_tenedo
                   INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON c.cod_tercer = a.cod_conduc
                   INNER JOIN ".BASE_DATOS.".tab_tercer_tercer d ON d.cod_tercer = a.cod_propie
                   LEFT JOIN ".BASE_DATOS.".tab_trayle_placas e ON a.num_placax = e.num_placax
+                  INNER JOIN ".BASE_DATOS.".tab_genera_paises f ON a.cod_paisxx = f.cod_paisxx
                  WHERE a.num_placax = '$num_placax' GROUP BY e.num_noveda, a.num_placax";
 
       $consulta = new Consulta($query, self::$cConexion);
@@ -898,7 +900,7 @@ private function getValidaIdGPS()
                            num_seriex,num_chasis,val_pesove,val_capaci,reg_nalcar,num_poliza,nom_asesoa,
                            fec_vigfin,ano_repote,num_config,cod_propie,cod_tenedo,cod_conduc,nom_vincul,
                            num_tarpro,cod_califi,fec_vigvin,num_polirc,fec_venprc,cod_aseprc,ind_estado,
-                           cod_opegps,usr_gpsxxx,clv_gpsxxx,idx_gpsxxx,
+                           cod_opegps,usr_gpsxxx,clv_gpsxxx,idx_gpsxxx,cod_paisxx,
                            obs_vehicu,cod_tipveh,ind_chelis,fec_revmec,num_agases,fec_vengas,dir_fotfre,
                            dir_fotizq,dir_fotder,dir_fotpos,usr_creaci,fec_creaci,num_tarope)
                    VALUES
@@ -906,7 +908,7 @@ private function getValidaIdGPS()
                            '$vehicu->num_seriex','$vehicu->num_chasis','$vehicu->val_pesove','$vehicu->val_capaci','$vehicu->reg_nalcar','$vehicu->num_poliza','$vehicu->nom_asesoa',
                            '$vehicu->fec_vigfin','$vehicu->ano_repote','$vehicu->num_config','$vehicu->cod_propie','$vehicu->cod_tenedo','$vehicu->cod_conduc','$vehicu->nom_vincul',
                            '$vehicu->num_tarpro','$vehicu->cod_califi','$vehicu->fec_vigvin','$vehicu->num_polirc','$vehicu->fec_venprc','$vehicu->cod_aseprc','$vehicu->ind_estado',
-                           '$vehicu->cod_opegps','$vehicu->usr_gpsxxx','$vehicu->clv_gpsxxx','$vehicu->idx_gpsxxx',
+                           '$vehicu->cod_opegps','$vehicu->usr_gpsxxx','$vehicu->clv_gpsxxx','$vehicu->idx_gpsxxx','$vehicu->cod_paisxx',
                            '$vehicu->obs_vehicu','$vehicu->cod_tipveh','$vehicu->ind_chelis','$vehicu->fec_revmec','$vehicu->num_agases','$vehicu->fec_vengas','$vehicu->dir_fotfre',
                            '$vehicu->dir_fotizq','$vehicu->dir_fotder','$vehicu->dir_fotpos','$vehicu->usr_creaci','$vehicu->fec_creaci','$vehicu->num_tarope')";
           $insercion = new Consulta($query,self::$cConexion,"R");

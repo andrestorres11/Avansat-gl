@@ -126,16 +126,6 @@ class Ins_tercer_tercer {
 
     function Formulario() {
         $datos = self::$cFunciones->getDatosTerero($_REQUEST['cod_agenci'], $_REQUEST['cod_tercer']);
-
-        $query = "SELECT cod_paisxx
-        FROM ".BASE_DATOS.".tab_tercer_tercer
-          WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'
-        LIMIT 1";
-        $consulta = new Consulta($query, $this->conexion);
-        $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
-
-        $inputs = self::inputsByCountry()[$cod_paisxx];
-
         # Nuevo frame ---------------------------------------------------------------
         # Inicia clase del fromulario ----------------------------------------------------------------------------------
         $mHtml = new FormLib(2);
@@ -164,6 +154,18 @@ class Ins_tercer_tercer {
             "header" => "Transportadoras",
             "enctype" => "multipart/form-data"));
 
+      $query = "SELECT cod_paisxx
+            FROM ".BASE_DATOS.".tab_tercer_tercer
+              WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'
+            LIMIT 1";
+      $consulta = new Consulta($query, $this->conexion);
+      if($datos->principal->cod_paisxx=='' || $datos->principal->nom_paisxx==NULL){
+        $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
+      }else{
+        $cod_paisxx = $datos->principal->cod_paisxx;
+      }
+      
+
       #variables ocultas
       $mHtml->Hidden(array( "name" => "tercer[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad
       $mHtml->Hidden(array( "name" => "tercer[cod_transp]", "id" => "cod_transpID", "value"=>$_REQUEST['cod_tercer'])); //el codigo de la transportadora
@@ -175,7 +177,6 @@ class Ins_tercer_tercer {
       $mHtml->Hidden(array( "name" => "abr_tercer", "id" => "abr_tercer", 'value'=>$datos->principal->abr_tercer));
       $mHtml->Hidden(array( "name" => "", "id" => "cod_tipdoc", 'value'=>$datos->principal->cod_tipdoc));
       $disables = "";
-
 
       $query = "SELECT cod_tipdoc
         FROM ".BASE_DATOS.".tab_genera_tipdoc
@@ -225,11 +226,13 @@ class Ins_tercer_tercer {
 
             $mHtml->OpenDiv("id:juridico");
               $mHtml->OpenDiv("id:juridicaID; class:accordion");
-                $mHtml->SetBody("<h3 style='padding:6px;'><center>Persona Jurï¿½dica</center></h3>");
+                $mHtml->SetBody("<h3 style='padding:6px;'><center>Persona Jurídica</center></h3>");
                 $mHtml->OpenDiv("id:sec2");
                   $mHtml->OpenDiv("id:form2; class:contentAccordionForm");
                     $mHtml->Table("tr");
-                      $mHtml->Label(("Número de ".$inputs['tipdoc']['name'].":"), "width:25%; *:1;");
+                      $mHtml->Label("Pais:", "width:25%; *:1;");
+                      $mHtml->Input(array("obl" => "1", "name" => "pais", "validate"=>"dir", "id" => "paisID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => strtoupper($datos->principal->nom_paisxx), "end" => true));
+                      $mHtml->Label(("Número de :"), "width:25%; *:1; id:tip_docempID");
                       $mHtml->Input (array("name" => "tercer[cod_tercer]", "validate" => "numero",  "id" => "cod_tercerID",  "obl"=> "1", "minlength"=>"9", $disabled, "maxlength"=>"10", "onblur"=>"comprobar()", "width" => "25%", "value"=> $datos->principal->cod_tercer) );
                       $mHtml->Label("Digito de Verificación:", "width:25%; *:1;");
                       $mHtml->Input (array("name" => "tercer[num_verifi]", "validate" => "numero",  "id" => "num_verifiID", "size"=>1, "obl"=> "1", "minlength"=>"1","maxlength"=>"1", "width" => "25%", "value"=> $datos->principal->num_verifi, "end" => true) );
@@ -288,6 +291,8 @@ class Ins_tercer_tercer {
                 $mHtml->OpenDiv("id:sec3");
                   $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
                     $mHtml->Table("tr");
+                      $mHtml->Label("Pais:", "width:25%; *:1;");
+                      $mHtml->Input(array("obl" => "1", "name" => "pais", "validate"=>"dir", "id" => "paisID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => strtoupper($datos->principal->nom_paisxx), "end" => true));
                       $mHtml->Label(("Tipo de Doumento:"), "width:25%; *:1;");
                       $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "tercer[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "val"=> $datos->principal->cod_tipdoc) );
                       $mHtml->Label(("Número de Documento:"), "width:25%; *:1;");

@@ -508,11 +508,12 @@ class tercer {
                    a.num_faxxxx,a.num_telef2, a.cod_terreg,a.num_verifi,a.cod_paisxx,
                    a.cod_depart,a.usr_creaci, a.fec_creaci,a.usr_modifi, a.fec_modifi,
                    CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) abr_ciudad,
-                   a.num_faxxxx num_faxxx
+                   a.num_faxxxx num_faxxx, e.nom_paisxx
               FROM " . BASE_DATOS . ".tab_tercer_tercer a
               INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad b ON b.cod_ciudad = a.cod_ciudad
               INNER JOIN " . BASE_DATOS . ".tab_genera_depart c ON c.cod_depart = b.cod_depart
               INNER JOIN " . BASE_DATOS . ".tab_genera_paises d ON d.cod_paisxx = b.cod_paisxx
+              INNER JOIN ".BASE_DATOS.".tab_genera_paises e ON a.cod_paisxx = e.cod_paisxx
                    WHERE a.cod_tercer = '$cod_tercer' ";
 
         $consulta = new Consulta($query, self::$cConexion);

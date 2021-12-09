@@ -53,6 +53,18 @@ class trans {
                     self::getCiudades();
                     break;
 
+                case 'buscaTipDocumentosPersona':
+                    self::buscaTipDocumentosPersona();
+                    break;
+
+                case 'buscaTipDocumentosEmpresa':
+                    self::buscaTipDocumentosEmpresa();
+                    break;
+
+                case 'darValidacionesporPais':
+                    self::darValidacionesporPais();
+                    break;
+
                 case "registrar":
                     self::registrar();
                     break;
@@ -141,7 +153,7 @@ class trans {
 
     /* ! \fn: buscarPaises
      *  \brief: funcion para buscar y retornar el listado de paises
-     *  \author: Ing. Cristian Andrés Torres
+     *  \author: Ing. Cristian Andrï¿½s Torres
      *  \date: 29/10/2021
      *  \date modified: 
      *  \param: 
@@ -167,6 +179,97 @@ class trans {
             echo json_encode($paises);
         } else
             return $mResult;
+    }
+
+
+    /* ! \fn: buscaTipDocumentosPersona
+     *  \brief: funcion para buscar y retornar el listado de paises
+     *  \author: Ing. Cristian Andrï¿½s Torres
+     *  \date: 29/10/2021
+     *  \date modified: 
+     *  \param: 
+     *  \param: 
+     *  \return json o matriz
+     */
+
+    private function buscaTipDocumentosPersona() {
+        $mSql = "SELECT a.cod_tipdoc, UPPER(a.nom_tipdoc) AS nom_tipdoc
+                      FROM " . BASE_DATOS . ".tab_genera_tipdoc a  
+                      WHERE a.ind_person = 1 AND a.cod_paisxx = '".$_REQUEST['cod_paisxx']."'";
+        $consulta = new Consulta($mSql, self::$cConexion);
+        $mResult = $consulta->ret_matrix('a');
+        $documentos = array();
+            for ($i = 0; $i < sizeof($mResult); $i++) {
+                $mTxt = utf8_encode($mResult[$i][nom_tipdoc]);
+                $documentos[] = array('value' => utf8_decode($mResult[$i][cod_tipdoc]), 'label' => $mTxt, 'id' => $mResult[$i][cod_tipdoc]);
+            }
+        echo json_encode($documentos);
+        /*
+        if ($_REQUEST[term]) {
+            $paises = array();
+            for ($i = 0; $i < sizeof($mResult); $i++) {
+                $mTxt = $mResult[$i][cod_paisxx] . " - " . utf8_decode($mResult[$i][nom_paisxx]);
+                $paises[] = array('value' => utf8_decode($mResult[$i][nom_paisxx]), 'label' => $mTxt, 'id' => $mResult[$i][cod_paisxx]);
+            }
+            echo json_encode($paises);
+        } else
+            return $mResult;*/
+    }
+
+    /* ! \fn: buscaTipDocumentosEmpresa
+     *  \brief: funcion para buscar y retornar el listado de paises
+     *  \author: Ing. Cristian Andrï¿½s Torres
+     *  \date: 29/10/2021
+     *  \date modified: 
+     *  \param: 
+     *  \param: 
+     *  \return json o matriz
+     */
+
+    private function buscaTipDocumentosEmpresa() {
+        $mSql = "SELECT a.cod_tipdoc, UPPER(a.nom_tipdoc) AS nom_tipdoc
+                      FROM " . BASE_DATOS . ".tab_genera_tipdoc a  
+                      WHERE a.ind_person = 2 AND a.cod_paisxx = '".$_REQUEST['cod_paisxx']."'";
+        $consulta = new Consulta($mSql, self::$cConexion);
+        $mResult = $consulta->ret_matrix('a');
+        $documentos = array();
+            for ($i = 0; $i < sizeof($mResult); $i++) {
+                $mTxt = utf8_encode($mResult[$i][nom_tipdoc]);
+                $documentos[] = array('value' => utf8_decode($mResult[$i][cod_tipdoc]), 'label' => $mTxt, 'id' => $mResult[$i][cod_tipdoc]);
+            }
+        echo json_encode($documentos);
+        /*
+        if ($_REQUEST[term]) {
+            $paises = array();
+            for ($i = 0; $i < sizeof($mResult); $i++) {
+                $mTxt = $mResult[$i][cod_paisxx] . " - " . utf8_decode($mResult[$i][nom_paisxx]);
+                $paises[] = array('value' => utf8_decode($mResult[$i][nom_paisxx]), 'label' => $mTxt, 'id' => $mResult[$i][cod_paisxx]);
+            }
+            echo json_encode($paises);
+        } else
+            return $mResult;*/
+    }
+
+     /* ! \fn: darValidacionesporPais
+     *  \brief: funcion para buscar y retornar el listado de validaciones
+     *  \author: Ing. Cristian Andrï¿½s Torres
+     *  \date: 29/11/2021
+     *  \date modified: 
+     *  \param: 
+     *  \param: 
+     *  \return json o matriz
+     */
+
+    private function darValidacionesporPais() {
+        $cod_paisxx = $_REQUEST['cod_paisxx'];
+        $inputs = array();
+        $colombia = array('validation' => array('type' => 'number', 'validate' => 'numero'), 'tip_docemp' => array('name' => 'NIT', 'value' => 'N'));
+        $chile = array('validation' => array('type' => 'text', 'validate' => '') , 'tip_docemp' => array('name' => 'RUT', 'value' => 'RT'));
+
+        $inputs[3] = $colombia;
+        $inputs[11] = $chile;
+
+        echo json_encode($inputs[$cod_paisxx]);
     }
 
 
@@ -208,12 +311,12 @@ class trans {
         
         $list->SetClose('no');
         $list->SetCreate("Crear empresa", "onclick:formulario()");
-        $list->SetHeader(utf8_decode("Código de la transportadora"), "field:a.cod_tercer; width:1%;  ");
+        $list->SetHeader(utf8_decode("Cï¿½digo de la transportadora"), "field:a.cod_tercer; width:1%;  ");
         $list->SetHeader("Transportadora", "field:IF(a.abr_tercer = '', a.nom_tercer, a.abr_tercer); width:1%");
         $list->SetHeader("Regional", "field:f.nom_region; width:1%");
         $list->SetHeader("Ciudad", "field:CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) ; width:1%");
-        $list->SetHeader(utf8_decode("Dirección"), "field:a.dir_domici; width:1%");
-        $list->SetHeader(utf8_decode("Teléfono"), "field:a.dir_emailx; width:1%");
+        $list->SetHeader(utf8_decode("Direcciï¿½n"), "field:a.dir_domici; width:1%");
+        $list->SetHeader(utf8_decode("Telï¿½fono"), "field:a.dir_emailx; width:1%");
         $list->SetHeader("Estado", "field:if(a.cod_estado = 1, 'Activa', 'Inactiva')" );
         $list->SetHeader(utf8_decode("E-mail"), "field:a.num_telef1; width:1%");
         $list->SetOption("Opciones","field:cod_option; width:1%; onclikDisable:editarDistribuidora( 2, this ); onclikEnable:editarDistribuidora( 1, this ); onclikEdit:editarDistribuidora( 99, this )" );

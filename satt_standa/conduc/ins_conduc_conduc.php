@@ -419,7 +419,11 @@ class Ins_conduc_conduc {
             $mHtml->OpenDiv("id:sec1;");
               $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                 $mHtml->Table("tr");
-                  $mHtml->Label("Tipo de Documento:", "width:25%; *:1;");
+
+                    $mHtml->Label("Pais:", "width:25%; *:1;"); 
+                    $mHtml->Input (array("name" => "pais", "validate" => "dir",  "obl" => "1", "id" => "paisID",  "minlength" => "3", "maxlength" => "100", "width" => "25%", "value"=> $datos->principal->abr_ciudad, "end" => true) );
+
+                    $mHtml->Label("Tipo de Documento:", "width:25%; *:1;");
                     $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "conduc[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "key"=> $datos->principal->cod_tipdoc) );
                     $mHtml->Label("Número de Documento:", "width:25%; :1;");
                     $mHtml->Input(array("type" => $inputs['validation']['type'], "name" => "conduc[cod_tercer]", "id" => "cod_tercerID", "onblur"=>"comprobar()", "width" => "10%", "obl" => "1", "minlength" => "5", "maxlength" => "13", "validate" => $inputs['validation']['validate'], "value" =>  $datos->principal->cod_tercer, $disabled, "end" => true));

@@ -52,15 +52,7 @@
 				$("body").removeAttr("class");
 			}
 		});
-		// para buscar la ciudad del tercero
-		var paisxx = $("#cod_paisxxID").val();
-		$("#ciudadID").autocomplete({
-			source: "../" + standa + "/transp/ajax_transp_transp.php?Option=getCiudades" + attributes + "&cod_paisxx=" + paisxx,
-			minLength: 3,
-			select: function(event, ui) {
-				$("#cod_ciudadID").val(ui.item.id);
-			}
-		});
+
 		// validacion para saber si es un usuaraio administrador o de una transportadora y mostrar los datos de la misma
 		var total = $("#total").val();
 
@@ -223,11 +215,32 @@
 				$("body").removeAttr("class");
 			});
 			var paisxx = $("#cod_paisxxID").val();
+			var parametros = "Ajax=on&standa=" + standa + "&cod_paisxx=" + paisxx;
+			$.ajax({
+				url: "../" + standa + "/transp/ajax_transp_transp.php?",
+				type: "POST",
+				data: parametros + "&Option=darValidacionesporPais",
+				async: false,
+				success: function(data) {
+					var obj  = jQuery.parseJSON( data );
+					$("#tip_docempID").empty();
+					$("#tip_docempID").append('Número de ' + obj['tip_docemp']['name']);
+				}
+			});
+
 			$("#ciudadID").autocomplete({
 				source: "../" + standa + "/transp/ajax_transp_transp.php?Option=getCiudades" + attributes + "&cod_paisxx=" + paisxx,
 				minLength: 3,
 				select: function(event, ui) {
 					$("#cod_ciudadID").val(ui.item.id);
+				}
+			});
+			$("#paisID").autocomplete({
+				source: "../" + standa + "/transp/ajax_transp_transp.php?Option=buscarPaises" + attributes,
+				minLength: 3,
+				select: function(event, ui) {
+					$("#cod_paisxxID").val(ui.item.id);
+					procesaPais(ui.item.id);
 				}
 			});
 
@@ -318,4 +331,46 @@
 			console.log("Error Funcion comprobar: " + e.message + "\nLine: " + e.lineNumber);
 			return false;
 		}
+	}
+
+	function procesaPais(cod_paisxx){
+		var standa = $("#standaID").val();
+		var parametros = "Ajax=on&standa=" + standa + "&cod_paisxx=" + cod_paisxx;
+
+		$.ajax({
+			url: "../" + standa + "/transp/ajax_transp_transp.php?",
+			type: "POST",
+			data: parametros + "&Option=buscaTipDocumentosPersona",
+			async: false,
+			success: function(data) {
+				$("#cod_tipdocID").empty();
+				var obj  = jQuery.parseJSON( data );
+				for(var i = 0; i < obj.length; i++){
+					$("#cod_tipdocID").append('<option value="'+obj[i]['value']+'">'+obj[i]['label']+'</option>');
+				}			
+			}
+		});
+
+		$.ajax({
+			url: "../" + standa + "/transp/ajax_transp_transp.php?",
+			type: "POST",
+			data: parametros + "&Option=darValidacionesporPais",
+			async: false,
+			success: function(data) {
+				var obj  = jQuery.parseJSON( data );
+				$("#tip_docempID").empty();
+				$("#tip_docempID").append('Número de ' + obj['tip_docemp']['name']);
+			}
+		});
+	
+		$("#ciudadID").autocomplete({
+			source: "../" + standa + "/transp/ajax_transp_transp.php?" + parametros + "&Option=getCiudades",
+			minLength: 3,
+			select: function(event, ui) {
+				$("#cod_ciudadID").val(ui.item.id);
+			}
+		});
+	
+		
+	
 	}

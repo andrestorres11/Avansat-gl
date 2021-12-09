@@ -36,6 +36,15 @@ $(document).ready(function() {
         }
     });
 
+    $("#paisID").autocomplete({
+		source: "../" + standa + "/transp/ajax_transp_transp.php?Option=buscarPaises" + attributes,
+		minLength: 3,
+		select: function(event, ui) {
+			$("#cod_paisxxID").val(ui.item.id);
+			validacionesVehiculo(ui.item.id);
+		}
+	});
+
     $("#cod_marcaxID").change(function() {
         var marca = $("#cod_marcaxID").val();
         var standa = $("#standaID").val();
@@ -622,4 +631,50 @@ function quitarValidacionesGps(){
     elemento.find('select,input').each(function() {
         var obl = $(this).attr('obl','');
     })
+}
+
+
+function validacionesVehiculo(cod_paisxx){
+	var standa = $("#standaID").val();
+	var parametros = "Ajax=on&standa=" + standa + "&cod_paisxx=" + cod_paisxx;
+    /*
+    $("#ciudadID").autocomplete({
+		source: "../" + standa + "/transp/ajax_transp_transp.php?" + parametros + "&Option=getCiudades",
+		minLength: 3,
+		select: function(event, ui) {
+			$("#cod_ciudadID").val(ui.item.id);
+		}
+	});
+
+	$.ajax({
+		url: "../" + standa + "/transp/ajax_transp_transp.php?",
+		type: "POST",
+		data: parametros + "&Option=buscaTipDocumentosPersona",
+		async: false,
+		success: function(data) {
+			$("#cod_tipdocID").empty();
+			var obj  = jQuery.parseJSON( data );
+			for(var i = 0; i < obj.length; i++){
+				$("#cod_tipdocID").append('<option value="'+obj[i]['value']+'">'+obj[i]['label']+'</option>');
+			}			
+		}
+	});
+
+	$.ajax({
+		url: "../" + standa + "/transp/ajax_transp_transp.php?",
+		type: "POST",
+		data: parametros + "&Option=darValidacionesporPais",
+		async: false,
+		success: function(data) {
+			var obj  = jQuery.parseJSON( data );
+			$("#cod_tercerID").removeAttr('validate');
+			$("#cod_tercerID").attr('validate', obj['validation']['validate']);
+			$('#cod_tercerID').get(0).type = obj['validation']['type'];		
+		}
+	});
+
+	*/
+
+	
+
 }
