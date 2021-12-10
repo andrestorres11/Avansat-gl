@@ -1,0 +1,266 @@
+/*GLOBAL ++ GLOBAL ++ GLOBAL ++ GLOBAL ++ GLOBAL ++ GLOBAL ++ GLOBAL ++ GLOBAL */
+#finallyGraphics .row, #finallyGraphics.row{
+    margin: 0;
+}
+
+#finallyGraphics .col{
+    padding: 0;
+}
+
+#finallyGraphics .panel{
+    margin: 0;
+    font-weight: bold;
+    text-align: center;
+}
+
+#finallyGraphics .flexWrapRow{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-evenly;
+    align-content: center;
+}
+
+#finallyGraphics .stats > div{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-content: center;
+    box-shadow: 2px 2px 2px 0px #848383;
+    background-color: white;
+    height: 70px;
+    padding: 0 15px;
+}
+
+#finallyGraphics .stats > div div {
+    transform: translate(0, calc(100% - 40px));
+    height: 50px;
+    line-height: 50px;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #888;
+}
+
+#finallyGraphics .stats > div .statsCount {
+    width: 50px;
+    text-align: center;
+    background-color: black;
+    color: white;
+    border-radius: 30px;
+    box-shadow: 2px 2px 2px 0px #848383;
+}
+
+#finallyGraphics .stats > div .statsName {
+    margin-left: 10px;
+}
+
+#finallyGraphics .valid{
+    border-color: #3c763d;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    background: #b5deb6;
+}
+
+#finallyGraphics .invalid{
+    border-color: #a94442;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    background: #eac8c8;
+}
+
+#finallyGraphics .multiselect-input-div input{
+    height: 34px;
+}
+/*GLOBAL -- GLOBAL -- GLOBAL -- GLOBAL -- GLOBAL -- GLOBAL -- GLOBAL -- GLOBAL */
+
+/*DASHBOARD DIALOG DASHBOARD DIALOG DASHBOARD DIALOG DASHBOARD DIALOGDASHBOARD DIALOG*/
+
+#finallyGraphics .dialog{
+    position: fixed;
+    width: 100%;
+    min-width: 1100px;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: #000c;
+    padding: 2%;
+    overflow: scroll;
+    overflow-x: scroll;
+    z-index: 4; 
+}
+
+#finallyGraphics .primary{
+    font-weight: bold;
+    font-size: 11pt;
+}
+
+#finallyGraphics .secundary{
+    font-size: 11pt;
+    color: #999;
+}
+
+#finallyGraphics .dialog > div{
+    background-color: #ccc;
+    padding: 10px 0;
+    border-radius: 20px;
+}
+
+#finallyGraphics .dashBoardDialog > div{
+    background-color: #fff;
+}
+
+#finallyGraphics .dialog .closeWindow{
+    border-bottom: 1px solid #ccc;
+    padding: 0px 10px 5px 10px;
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    justify-content: space-between;
+    line-height: 29px;
+}
+
+#finallyGraphics .dialog .closeWindow i{
+    font-size: 20pt;
+    cursor: pointer;
+}
+
+#finallyGraphics .dialog .dialogTitle{
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+#finallyGraphics .dialog .dialogTitle div{
+    margin-right: 20px;
+}
+
+#finallyGraphics .dialog .dialogBody{
+    display: flex;
+    flex-flow: column nowrap;
+    border-radius: 11px;
+    border-top: 1px solid #ccc;
+}
+
+#finallyGraphics .dialog .dialogBody .row{
+    margin: 0;
+}
+
+#finallyGraphics .dialog .dialogBody > div{
+    border-top: 1px solid #ccc;
+    padding: 10px;
+}
+
+#finallyGraphics .dialog .tab-pane{
+    overflow: hidden;
+    overflow-x: scroll;
+}
+
+#conten-print .table th, #sendPrinEmail th{
+    white-space: nowrap;
+    text-align: center;
+    background: #ccc;
+    font-size: 12pt;
+}
+
+#conten-print .table td{
+    white-space: nowrap;
+}
+
+#conten-print .table .form-control{
+    background: none;
+    outline: none;
+    text-align: center;
+}
+
+#conten-print .table .glyphicon, #sendPrinEmail .glyphicon, #filter .fa{
+    padding: 6px;
+    border-radius: 20px;
+}
+
+#conten-print .table td .fa{
+    font-size: 15pt;
+}
+
+#conten-print .stats > div{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    box-shadow: 2px 2px 2px 0px #848383;
+    background-color: white;
+    height: 100px;
+}
+
+#conten-print .stats > div div {
+    transform: translate(0, calc(100% - 40px));
+    height: 60px;
+    line-height: 60px;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #888;
+}
+
+#conten-print .stats > div .statsCount {
+    width: 60px;
+    text-align: center;
+    background-color: black;
+    color: white;
+    border-radius: 30px;
+    box-shadow: 2px 2px 2px 0px #848383;
+}
+
+#conten-print .stats > div .statsName {
+    margin-left: 10px;
+}
+
+#conten-print td{
+    text-align: center;
+}
+
+#conten-print .table .values, #sendPrinEmail .values{
+    background: none;
+    outline: none;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 14px;
+    color: #555;
+    border: 1px solid #ccc;
+    border-radius: 0 4px 4px 0;
+}
+
+#conten-print .table .identification, #sendPrinEmail .values{
+    background: none;
+    outline: none;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+    float: left;
+    width: 100%;
+    font-size: 14px;
+    color: #337ab7;
+    padding: 0px 12px;
+}
+
+#estadoRemesas tbody > tr > td{
+    padding: 0;
+    vertical-align: middle;
+    font-size: 12px;
+}
+
+#contDialog .input-group{
+    width: 100%;
+}
+
+.thumbnails li{
+    margin: 10px;
+    list-style:none;
+}
+
+.thumbnails li img{
+    max-width: 100px;
+    min-width: 100px
+}
+
+
