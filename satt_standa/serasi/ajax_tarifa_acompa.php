@@ -159,32 +159,40 @@ class ajax_servic_asicar
         $val_tarifa = preg_replace("/[^0-9,.]/", "", $_REQUEST['val_tarifa']);
         //Consulta
         if(!$this->validaRegistro($ciu_origen,$ciu_destin)){
-	    $mQuery = "INSERT INTO  ".BASE_DATOS.".tab_tarifa_acompa
-	                       SET  $codigo
-                              ciu_origen= '".$ciu_origen."',
-                              ciu_destin= '".$ciu_destin."',
-                              val_tarifa= '".$val_tarifa."',
-	                            ind_estado = 1,
-	                            usr_creaci = '".$_SESSION['datos_usuario']['cod_usuari']."',
-	                            fec_creaci = NOW()
-	   ON DUPLICATE KEY UPDATE 	ciu_origen= '".$ciu_origen."',
-                              ciu_destin= '".$ciu_destin."',
-                              val_tarifa= '".$val_tarifa."',
-	                            usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
-	                            fec_modifi = NOW()";
-      $consulta = new Consulta($mQuery, $this -> conexion);
+            $mQuery = "INSERT INTO  ".BASE_DATOS.".tab_tarifa_acompa
+                              SET  $codigo
+                                    ciu_origen= '".$ciu_origen."',
+                                    ciu_destin= '".$ciu_destin."',
+                                    val_tarifa= '".$val_tarifa."',
+                                    ind_estado = 1,
+                                    usr_creaci = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                                    fec_creaci = NOW()
+          ON DUPLICATE KEY UPDATE 	ciu_origen= '".$ciu_origen."',
+                                    ciu_destin= '".$ciu_destin."',
+                                    val_tarifa= '".$val_tarifa."',
+                                    usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                                    fec_modifi = NOW()";
       
-	    if($consulta == true){
-	      $return['status'] = 200;
-	      $return['response'] = 'El registro ha sido almacenado correctamente.';
-	    }else{
-	      $return['status'] = 500;
-	      $return['response'] = 'Error al realizar el registro.';
-      }
-      }else{
-        $return['status'] = 500;
-	      $return['response'] = 'La ciudades de Origen y Destino ya se encuentran registradas';
-      }
+        }else{
+            $mQuery = "UPDATE 
+                        ".BASE_DATOS.".tab_tarifa_acompa
+                      SET 
+                          val_tarifa = '".$val_tarifa."',
+                          usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
+                          fec_modifi = NOW()
+                      WHERE 
+                          ciu_origen= '".$ciu_origen."' AND
+                          ciu_destin= '".$ciu_destin."'";
+        }
+
+        $consulta = new Consulta($mQuery, $this -> conexion);
+        if($consulta == true){
+          $return['status'] = 200;
+          $return['response'] = 'El registro ha sido almacenado correctamente.';
+        }else{
+          $return['status'] = 500;
+          $return['response'] = 'Error al realizar el registro.';
+        }
         echo json_encode($return);
       } catch (Exception $e) {
         echo 'Excepción updEst: ',  $e->getMessage(), "\n";
