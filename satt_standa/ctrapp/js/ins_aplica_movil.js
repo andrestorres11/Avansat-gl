@@ -4,13 +4,17 @@ $(document).ready(function(){
 	$("#ind_adminiID").change(function() {
 		var id = $(this).children(":selected").val();
 		var transp = $('#cod_transpID').val();
+		var op = 'datosConductor';
+		if(id==3){
+			op = 'datosHojadeVidaCT';
+		}
 		$( "[name=num_docume]" ).autocomplete({
 			source: "../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=buscarConductor&activity="+id+"&nit_transp="+transp,
 			minLength: 3, 
 			delay: 100,
 			select: function(event, ui){ 
 				$.ajax({
-					url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=datosConductor",
+					url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op="+op,
 					data:{"cod_tercer":ui.item.value},
 					success: function(result){
 						data = JSON.parse(result);
