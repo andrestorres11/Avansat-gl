@@ -31,7 +31,11 @@ class Ins_config_emptra {
                 break;
         }
     }
-    /*! \fn: filtro
+
+
+
+
+	/*! \fn: filtro
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *	\date: 31/09/2015
@@ -42,6 +46,102 @@ class Ins_config_emptra {
      */
     
     function filtro() {
+    	
+    	$datos_usuario = $this->usuario->retornar();
+        $usuario = $datos_usuario["cod_usuari"];
+        
+        $inicio[0][0] = 0;
+        $inicio[0][1] = "-";
+
+        $mHtml = new FormLib(2);
+
+        # incluye JS
+        $mHtml->SetJs("min");
+        $mHtml->SetJs("config");
+        $mHtml->SetJs("fecha");
+        $mHtml->SetJs("jquery");
+        $mHtml->SetJs("functions");
+        $mHtml->SetJs("ajax_transp_transp");
+        $mHtml->SetJs("InsertProtocolo");
+        $mHtml->SetJs("new_ajax"); 
+        $mHtml->SetJs("dinamic_list"); 
+        $mHtml->SetCss("dinamic_list");
+        $mHtml->CloseTable("tr");
+        # incluye Css
+        $mHtml->SetCssJq("jquery");
+        $mHtml->Body(array("menubar" => "no"));
+
+        # Abre Form
+		$mHtml->Form(array("action" => "index.php",
+		 "method" => "post",
+		 "name" => "form_search",
+		 "header" => "Terceros" ));
+
+			#variables ocultas
+			
+	    $mHtml->Hidden(array( "name" => "cod_tercer", "id" => "cod_tercerID", 'value'=>$mCodTransp));
+		$mHtml->Hidden(array( "name" => "cod_paisxx", "id" => "cod_paisxxID", 'value'=>''));
+		$mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
+		$mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
+		$mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
+		$mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>''));
+		$mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>$mCodTransp));
+		$mHtml->Hidden(array( "name" => "cod_agenci", "id" => "cod_agenciID", 'value'=>''));
+		$mHtml->Hidden(array( "name" => "nom_tercer", "id" => "nom_tercerID", 'value'=>''));
+		$mHtml->Hidden(array( "name" => "total", "id" => "total", 'value'=>$total));
+
+		# Construye accordion
+			$mHtml->Row("td");
+					$mHtml->OpenDiv("id:contentID; class:contentAccordion");
+					# Accordion1
+					$mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
+						$mHtml->SetBody("<h1 style='padding:6px'><b>INSERTAR TRANSPORTADORA</b></h1>");
+						$mHtml->OpenDiv("id:sec1;");
+						$mHtml->OpenDiv("id:form1; class:contentAccordionForm");
+							$mHtml->Table("tr");
+								$mHtml->Label("Pais:", "width:35%; *:1;");
+								$mHtml->Input(array("name" => "pais[nom_transp]", "id" => "nom_paisxxID", "width" => "35%"));
+								$mHtml->SetBody("<td><div id='boton'></div></td>");  
+							$mHtml->CloseTable("tr");
+						$mHtml->CloseDiv();
+						$mHtml->CloseDiv();
+					$mHtml->CloseDiv();
+					# Fin accordion1    
+					# Accordion2
+					$mHtml->OpenDiv("id:datos; class:accordion");
+						$mHtml->SetBody("<h1 style='padding:6px' ><b>LISTADO DE TRANSPORTADORAS</b></h1>");
+						$mHtml->OpenDiv("id:sec2");
+						$mHtml->OpenDiv("id:form3; class:contentAccordionForm");
+							
+						$mHtml->CloseDiv();
+						$mHtml->CloseDiv();
+					$mHtml->CloseDiv();
+					# Fin accordion2
+					$mHtml->CloseDiv();
+				$mHtml->CloseRow("td");
+				# Cierra formulario
+				$mHtml->CloseForm();
+				# Cierra Body
+				$mHtml->CloseBody();
+
+				# Muestra Html
+				echo $mHtml->MakeHtml();  
+    }
+
+
+
+
+    /*! \fn: filtro
+     *  \brief: funcion inicial para buscar una transportadora
+     *  \author: Ing. Alexander Correa
+     *	\date: 31/09/2015
+     *	\date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    
+    function filtro_ant() {
     	
     	$datos_usuario = $this->usuario->retornar();
         $usuario = $datos_usuario["cod_usuari"];
@@ -169,6 +269,7 @@ class Ins_config_emptra {
         # Inicia clase del fromulario ----------------------------------------------------------------------------------
         $mHtml = new FormLib(2);
 
+		$namesInputs = self::inputsByCountry()[$_REQUEST['cod_paisxx']];
         # incluye JS
         $mHtml->SetJs("min");
         $mHtml->SetJs("jquery");
@@ -195,9 +296,11 @@ class Ins_config_emptra {
             "enctype" => "multipart/form-data"));
 
     	#variables ocultas
+		$mHtml->Hidden(array( "name" => "transp[cod_paisxx]", "id" => "cod_paisxxID", "value" => $_REQUEST['cod_paisxx'])); //el codigo de la ciudad de la transportadora
     	$mHtml->Hidden(array( "name" => "transp[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad de la transportadora
     	$mHtml->Hidden(array( "name" => "agencia[cod_ciudad]", "id" => "cod_ciudaaID", "value"=>$datos->principal->cod_ciudaa)); //el codigo de la ciudad de la agencia
     	$mHtml->Hidden(array( "name" => "agencia[cod_agenci]", "id" => "cod_agenciID", "value"=>$datos->principal->cod_agenci)); //el codigo de la ciudad de la agencia
+		$mHtml->Hidden(array( "name" => "transp[cod_tipdoc]", "id" => "cod_tipdocID", "value" => $namesInputs['tipdoc']['value'])); //el codigo de la ciudad de la transportadora
     	$mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
 		$mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
 		$mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
@@ -212,7 +315,7 @@ class Ins_config_emptra {
 	   				$mHtml->OpenDiv("id:sec1;");
 	    				$mHtml->OpenDiv("id:form1; class:contentAccordionForm");
 	    					$mHtml->Table("tr");
-	    						$mHtml->Label("Nit:", "width:25%; *:1;");
+	    						$mHtml->Label($namesInputs['tipdoc']['name'], "width:25%; *:1;");
 						        $mHtml->Input(array("type" => "numeric", "name" => "transp[cod_tercer]", "id" => "cod_tercerID", "width" => "25%", "maxlength" => "12", "validate" => "numero", "obl" => "1", "value" => $datos->principal->cod_tercer));
 						        $mHtml->Label("DV:", "width:25%; :1;");
 						        $mHtml->Input(array("type" => "numeric", "name" => "transp[num_verifi]", "id" => "num_verifiID", "width" => "10%", "maxlength" => "1", "validate" => "numero", "value" =>  $datos->principal->num_verifi, "end" => true));
@@ -378,6 +481,19 @@ class Ins_config_emptra {
         # Muestra Html
         echo $mHtml->MakeHtml();
     }
+
+
+	function inputsByCountry(){
+		$inputs = array();
+		
+		$colombia = array('tipdoc' => array('name' => 'Nit', 'value' => 'N'));
+		$chile = array('tipdoc' => array('name' => 'Rut', 'value' => 'RT'));
+
+		$inputs[3] = $colombia;
+		$inputs[11] = $chile;
+
+		return $inputs;
+	}
 
 //FIN FUNCION INSERT_SEDE
 }

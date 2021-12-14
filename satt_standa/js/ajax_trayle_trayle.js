@@ -87,6 +87,10 @@ $(document).ready(function() {
 		$("#datos").css("display", "none");
 	}
 
+	$("#form88").css('padding', '0px');
+    $("#form88").css('padding-top', '3px');
+    $("#form88").css('padding-bottom', '3px');
+
 });
 
 
@@ -109,6 +113,14 @@ function mostrar() {
 		}
 	});
 	$("#datos").fadeIn(3000); // visualza los datos despues de pintarlos
+
+	$("#form88").css('padding', '0px');
+    $("#form88").css('padding-top', '3px');
+    $("#form88").css('padding-bottom', '3px');
+
+    $(".contentAccordionForm").css('padding', '0px');
+    $(".contentAccordionForm").css('padding-top', '3px');
+    $(".contentAccordionForm").css('padding-bottom', '3px');
 }
 
 
@@ -127,6 +139,7 @@ function registrar(operacion) {
 	//cierra popUp si hay inicialiado
 	LoadPopupJQNoButton('close');
 	//valido los datos generales del formulario
+	quitarValidacionesGps();
 	var val = validaciones();
 	var standa = $("#standaID").val();
 	if (val == true) {
@@ -168,6 +181,180 @@ function confirmado() {
 //funcion para resetear un formulario en el caso de registros nuevos
 function borrar() {
 	$("#form_transporID")[0].reset();
+}
+
+function addOpeGps(){
+	num_trayle = $("#num_trayleID").val();
+	if(validaDataGps() && num_trayle !=''){
+		var standa = $("#standaID").val();
+		var parametros = "Option=saveOpeGps&Ajax=on";
+		var cod_opegps = $('#cod_opegpsID').val();
+		var usr_gpsxxx = $('#usr_gpsxxxID').val();
+		var clv_gpsxxx = $('#clv_gpsxxxID').val();
+		var idx_gpsxxx = $('#idx_gpsxxxID').val();
+		data = {
+			num_trayle, cod_opegps,usr_gpsxxx,clv_gpsxxx,idx_gpsxxx
+		};
+		$.ajax({
+			url: "../" + standa + "/vehicu/ajax_trayle_trayle.php?"+parametros,
+			type: "POST",
+			data,
+			dataType: "json",
+			async: false,
+			success: function(data) {
+				alert(data['msj']);
+				if(data['status']==1000){
+					addInputOpsGps(cod_opegps);
+					$('#cod_opegpsID').val('');
+					$('#usr_gpsxxxID').val('');
+					$('#clv_gpsxxxID').val('');
+					$('#idx_gpsxxxID').val('');
+				}
+			}
+		});
+		
+	}else{
+		if(num_trayle == ''){
+			alert("Diligencie el numero de remolque.");
+		}
+	}
+}
+
+function addInputOpsGps(cod_opegps){
+	elementoClonado = $('#form88').clone().appendTo('#formGps');
+		var num_elementos = $(".opegps").length-1;
+		elementoClonado.find('.inputgps').find('select option').each(function() {
+			if($(this).val() == cod_opegps){
+				$(this).attr('selected',true);
+			}
+		});
+		elementoClonado.find('.inputgps').find('select,input').each(function() {
+			var name = $(this).attr('name');
+			var id_name = $(this).attr('id');
+			$(this).attr('name',name + '[' + num_elementos + ']');
+			$(this).attr('id',id_name + num_elementos );
+			$(this).attr('disabled',true);
+			if(id_name + num_elementos == 'idx_gpsxxxID' + num_elementos){
+				$(this).parent().parent().append(`<td align="center">
+													<img style="cursor:pointer;" width="25px" onclick="deleteOpeGps(`+cod_opegps+`,this)" src="../satt_standa/images/delete.png">
+												 </td>`);
+			}
+		});		
+
+}
+
+function deleteOpeGps(cod_opegps, elemento){
+	var num_trayle = $("#num_trayleID").val();
+	if(num_trayle !=''){
+		var standa = $("#standaID").val();
+		var parametros = "Option=deteleOpeGps&Ajax=on";
+		var cod_opegps = cod_opegps;
+		data = {
+			num_trayle, cod_opegps
+		};
+		$.ajax({
+			url: "../" + standa + "/vehicu/ajax_trayle_trayle.php?"+parametros,
+			type: "POST",
+			data,
+			dataType: "json",
+			async: false,
+			success: function(data) {
+			alert(data['msj']);
+				if(data['status']==1000){
+					var contenedor = $(elemento).closest('.contentAccordionForm');
+					contenedor.remove();
+				}
+			}
+		});
+	}
+}
+
+function validaDataGps(){
+		var elemento = $('#form88').find('.inputgps');
+		try {
+			var datos = [];
+			var i = 0;	
+		elemento.find('select,input').each(function() {
+			var obl = $(this).attr('obl');
+            if(obl=='1'){
+                $(this).attr('obl','1');
+            }
+		})
+        elemento.find('input[validate]').each(function(index) {
+            var obj = ""; // id del campo; si es radio es el name
+            var tipo = ""; // tipo de dato a validar. Consultar tipos en : validator.js
+            var min = ""; // cantidad minima de caracteres
+            var max = ""; // cantidad maxima de carcteres
+            var obl = ""; // obligatorio booleano
+
+            if ($(this).attr("type") == "radio") {
+                obj = $(this).attr("name");
+            } else {
+                obj = $(this).attr("id");
+            }
+
+            tipo = $(this).attr("validate");
+            if (tipo == "placa") {
+                if ($(this).attr("obl") === '1') {
+                    datos[i] = [obj, tipo, true];
+                } else {
+                    datos[i] = [obj, tipo];
+                }
+            } else {
+                if ($(this).attr("minlength")) {
+                    min = $(this).attr("minlength");
+                } else {
+                    min = 1;
+                }
+                if ($(this).attr("maxlength")) {
+                    max = $(this).attr("maxlength");
+                } else {
+                    max = 50;
+                }
+                if ($(this).attr("type") != "file") {
+                    if ($(this).attr("obl") === '1') {
+                        datos[i] = [obj, tipo, min, max, true];
+
+                    } else {
+                        datos[i] = [obj, tipo, min, max];
+                    }
+                } else {
+                    min = $(this).attr("format");
+                    arreglo = min.split(",");
+                    if ($(this).attr("obl") === '1') {
+                        obl = true;
+                    } else {
+                        obl = false;
+                    }
+                    datos[i] = [obj, tipo, arreglo, obl];
+                }
+            }
+            i++;
+        });
+
+        elemento.find('select[validate]').each(function(index) {
+            var obj = ""; // id del campo; si es radio es el name
+            var tipo = ""; // tipo de dato a validar. Consultar tipos en : validator.js
+            var obl = ""; // obligatorio booleano
+
+            obj = $(this).attr("id");
+            tipo = $(this).attr("validate");
+            if ($(this).attr("obl") == 1) {
+                datos[i] = [obj, tipo, true];
+            } else {
+                datos[i] = [obj, tipo];
+            }
+            i++;
+
+        });
+		var validacion = inc_validar(datos);
+
+        return validacion;
+    } catch (e) {
+        console.log("Error Fuction validaciones: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+		
 }
 
 //funcion de confirmacion para la edicion, activacion e inactivacion de traylers
@@ -276,4 +463,11 @@ function comprobar() {
 		console.log("Error Fuction comprobar: " + e.message + "\nLine: " + e.lineNumber);
 		return false;
 	}
+}
+
+function quitarValidacionesGps(){
+    var elemento = $('#form88').find('.inputgps');
+    elemento.find('select,input').each(function() {
+        var obl = $(this).attr('obl','');
+    })
 }

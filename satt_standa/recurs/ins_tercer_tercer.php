@@ -31,7 +31,7 @@ class Ins_tercer_tercer {
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 31/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
@@ -125,8 +125,7 @@ class Ins_tercer_tercer {
     }
 
     function Formulario() {
-        $datos = self::$cFunciones->getDatosTerero($_REQUEST['cod_agenci']);
-
+        $datos = self::$cFunciones->getDatosTerero($_REQUEST['cod_agenci'], $_REQUEST['cod_tercer']);
         # Nuevo frame ---------------------------------------------------------------
         # Inicia clase del fromulario ----------------------------------------------------------------------------------
         $mHtml = new FormLib(2);
@@ -155,9 +154,22 @@ class Ins_tercer_tercer {
             "header" => "Transportadoras",
             "enctype" => "multipart/form-data"));
 
+      $query = "SELECT cod_paisxx
+            FROM ".BASE_DATOS.".tab_tercer_tercer
+              WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'
+            LIMIT 1";
+      $consulta = new Consulta($query, $this->conexion);
+      if($datos->principal->cod_paisxx=='' || $datos->principal->nom_paisxx==NULL){
+        $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
+      }else{
+        $cod_paisxx = $datos->principal->cod_paisxx;
+      }
+      
+
       #variables ocultas
       $mHtml->Hidden(array( "name" => "tercer[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad
       $mHtml->Hidden(array( "name" => "tercer[cod_transp]", "id" => "cod_transpID", "value"=>$_REQUEST['cod_tercer'])); //el codigo de la transportadora
+      $mHtml->Hidden(array( "name" => "tercer[cod_paisxx]", "id" => "cod_paisxxID", "value"=>$cod_paisxx)); //el codigo de la transportadora
       $mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
       $mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
       $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
@@ -165,14 +177,29 @@ class Ins_tercer_tercer {
       $mHtml->Hidden(array( "name" => "abr_tercer", "id" => "abr_tercer", 'value'=>$datos->principal->abr_tercer));
       $mHtml->Hidden(array( "name" => "", "id" => "cod_tipdoc", 'value'=>$datos->principal->cod_tipdoc));
       $disables = "";
+
+      $query = "SELECT cod_tipdoc
+        FROM ".BASE_DATOS.".tab_genera_tipdoc
+          WHERE ind_person = 1";
+      $consulta = new Consulta($query, $this->conexion);
+      $tipdocs = $consulta->ret_matriz("a");
+
+      if(!in_array($datos->principal->cod_tipdoc, $tipdocs)){
+        $persona = 1;
+      }else{
+        $persona = 2;
+      }
+      /*
       if($datos->principal->cod_tipdoc == "N"){
           $persona = 1;
       }else if($datos->principal->cod_tipdoc == "C" || $datos->principal->cod_tipdoc == "E"){
           $persona = 2;
-      }
+      }*/
       if($datos->principal->cod_tercer){
         $disabled = "'disabled'=>true";
       }
+
+      
       /*echo "<pre>";
       echo $disabled;
       print_r($datos->principal->cod_tercer);die;*/
@@ -203,7 +230,9 @@ class Ins_tercer_tercer {
                 $mHtml->OpenDiv("id:sec2");
                   $mHtml->OpenDiv("id:form2; class:contentAccordionForm");
                     $mHtml->Table("tr");
-                      $mHtml->Label(("Número de NIT:"), "width:25%; *:1;");
+                      $mHtml->Label("Pais:", "width:25%; *:1;");
+                      $mHtml->Input(array("obl" => "1", "name" => "pais", "validate"=>"dir", "id" => "paisID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => strtoupper($datos->principal->nom_paisxx), "end" => true));
+                      $mHtml->Label(("Número de :"), "width:25%; *:1; id:tip_docempID");
                       $mHtml->Input (array("name" => "tercer[cod_tercer]", "validate" => "numero",  "id" => "cod_tercerID",  "obl"=> "1", "minlength"=>"9", $disabled, "maxlength"=>"10", "onblur"=>"comprobar()", "width" => "25%", "value"=> $datos->principal->cod_tercer) );
                       $mHtml->Label("Digito de Verificación:", "width:25%; *:1;");
                       $mHtml->Input (array("name" => "tercer[num_verifi]", "validate" => "numero",  "id" => "num_verifiID", "size"=>1, "obl"=> "1", "minlength"=>"1","maxlength"=>"1", "width" => "25%", "value"=> $datos->principal->num_verifi, "end" => true) );
@@ -262,6 +291,8 @@ class Ins_tercer_tercer {
                 $mHtml->OpenDiv("id:sec3");
                   $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
                     $mHtml->Table("tr");
+                      $mHtml->Label("Pais:", "width:25%; *:1;");
+                      $mHtml->Input(array("obl" => "1", "name" => "pais", "validate"=>"dir", "id" => "paisID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => strtoupper($datos->principal->nom_paisxx), "end" => true));
                       $mHtml->Label(("Tipo de Doumento:"), "width:25%; *:1;");
                       $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "tercer[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "val"=> $datos->principal->cod_tipdoc) );
                       $mHtml->Label(("Número de Documento:"), "width:25%; *:1;");
@@ -340,6 +371,20 @@ class Ins_tercer_tercer {
     }
 
 //FIN FUNCION INSERT_SEDE
+
+
+function inputsByCountry(){
+  $inputs = array();
+  
+  $colombia = array('tipdoc' => array('name' => 'Nit', 'value' => 'N'));
+  $chile = array('tipdoc' => array('name' => 'Rut', 'value' => 'RT'));
+
+  $inputs[3] = $colombia;
+  $inputs[11] = $chile;
+
+  return $inputs;
+}
+
 }
 
 //FIN CLASE
