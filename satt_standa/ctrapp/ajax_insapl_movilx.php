@@ -20,6 +20,11 @@ class AjaxInsertarAutorizacion
 			case 'datosConductor':
 				$this -> datosConductor();
 				break;
+
+			case 'datosHojadeVidaCT':
+				$this->datosHojadeVidaCT();
+				break;
+
 			case 'guardarUsuario':
 				$this -> guardarUsuario();
 				break;			
@@ -55,7 +60,7 @@ class AjaxInsertarAutorizacion
 				break;
 			
 			case '3':
-				$activity = 14;
+				$activity = COD_FILTRO_PROVEE;
 				break;
 			
 			default:
@@ -73,7 +78,18 @@ class AjaxInsertarAutorizacion
 					 AND a.cod_tercer NOT IN( SELECT cod_tercer 
 												FROM tab_usuari_movilx 
 											   WHERE 1 = 1)
-				";	
+				";
+		if($_REQUEST['activity'] == 3){
+			$query = "SELECT a.cod_docume as 'cod_tercer', CONCAT(a.pri_apelli, ' ', a.seg_apelli, ' ', a.nom_contra) as 'abr_tercer'
+			FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
+				WHERE a.cod_docume LIKE '%".$_REQUEST['term']."%' 
+					AND a.cod_docume NOT IN( SELECT cod_tercer 
+												FROM tab_usuari_movilx 
+											WHERE 1 = 1)
+					AND a.ind_estado = 1
+					AND a.cod_activi = '".$activity."'";
+		}
+
 		$consulta = new Consulta($query, $this -> conexion);
 		$tercer = $consulta -> ret_matriz("a");
   
@@ -114,6 +130,61 @@ class AjaxInsertarAutorizacion
 			  LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc b 
 			  		  ON a.cod_tercer = b.cod_tercer
 				   WHERE a.cod_tercer = '".$_REQUEST['cod_tercer']."'";
+
+		$consulta = new Consulta($query, $this -> conexion);
+		$tercer = $consulta -> ret_matriz("a");
+		$tercer = $tercer[0];
+
+		$aes = new Cypher();
+
+		$tercer['cod_hashxx'] = $aes -> cypher($tercer['cod_tercer'], $tercer['fec_creaci']);
+  		
+  		if($estadoReturn == NULL)
+  		{
+			//echo json_encode($tercer);
+
+			//echo "<pre>"; print_r( $tercer ); echo "</pre>";
+			$data = array();
+			foreach ($tercer AS $mIndex => $conduc) {
+			
+			 	$data [] = '"'.$mIndex.'" : "'.$conduc.'"'; 
+			}
+			echo '{'.join(', ',$data).'}';
+  		}
+  		else
+  		{
+  			return json_encode($tercer);
+  		}
+	}
+
+
+	/*! \fn: datosHojadeVidaCT
+     *  \brief: Obtiene los datos de la hoja de vida CT
+     *  \author: Cristian Andrés Torres
+     *  \date: 13/13/2021
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+	function datosHojadeVidaCT($estadoReturn = NULL){
+
+		include("../ctrapp/seguridad/AESClass.php");
+
+		$query = "SELECT IF(ISNULL(a.pri_apelli) OR a.pri_apelli = '', 'N/A' , a.pri_apelli) AS nom_tercer,
+						 IF(ISNULL(a.seg_apelli) OR a.seg_apelli = '', 'N/A' , a.seg_apelli) AS nom_apell1,
+						 IF(ISNULL(a.nom_contra) OR a.nom_contra = '', 'N/A' , a.nom_contra) AS nom_apell2,
+						 '' AS num_telef1,
+						 '' AS num_telef2,
+						 IF(ISNULL(a.num_celula) OR a.num_celula = '', 'N/A' , a.num_celula) AS num_telmov, 
+						 IF(ISNULL(a.dir_domici) OR a.dir_domici = '', 'N/A' , a.dir_domici) AS dir_domici,
+						 IF(ISNULL(a.dir_emailx) OR a.dir_emailx = '', 'N/A' , a.dir_emailx) AS dir_emailx,
+						 IF(ISNULL(a.fec_creaci) OR a.fec_creaci = '', 'N/A' , a.fec_creaci) AS fec_creaci,
+						 IF(ISNULL(a.cod_docume) OR a.cod_docume = '', 'N/A' , a.cod_docume) AS cod_tercer,
+						 IF(a.cod_tipdoc = 'C' , 'N'   , 'J' ) AS cod_tipper,
+						 IF(ISNULL(a.cod_tipdoc) OR a.cod_tipdoc = '', 'C'   , a.cod_tipdoc ) AS cod_tipdoc 
+					FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
+				   WHERE a.cod_docume = '".$_REQUEST['cod_tercer']."'";
 
 		$consulta = new Consulta($query, $this -> conexion);
 		$tercer = $consulta -> ret_matriz("a");
