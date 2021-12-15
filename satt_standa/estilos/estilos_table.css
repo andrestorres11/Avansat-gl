@@ -110,3 +110,27 @@ input.error {
     font-size: 13px;
     margin: auto;
 }
+
+.btn .btn-default .buttons-excel .buttons-html5{
+    background-color: #dff0d8 !important;
+
+}
+
+.btn-group>.btn-group:not(:last-child)>.btn, .btn-group>.btn:not(:last-child):not(.dropdown-toggle) {
+    background-color: #dff0d8;
+    border: 1px solid #c1c1c1;
+}
+
+.btn-group>.btn:first-child {
+    margin-left: 0;
+    margin-bottom: 10px;
+}
+
+.btn-group>.btn-group:not(:first-child)>.btn, .btn-group>.btn:not(:first-child) {
+    background-color: #dff0d8;
+    margin-left: 4px;
+    margin-bottom: 10px;
+    border: 1px solid #c1c1c1;
+}
+
+
