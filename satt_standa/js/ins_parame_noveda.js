@@ -9,390 +9,224 @@
  *  \warning: 
  */
 $(document).on("ready",function(){
+    
 });
- 
- /*! \fn: openTabs
- * \brief: Realiza peticion ajax para llenar los tab con el contenido especifico
- * \author: Edward Serrano
- * \date: 06/04/2017
- * \date modified: dia/mes/año
- * \param: tab: idenficador de tab
- * \return valor que retorna
- */
- function openTabs(tab)
- {
- 	try {
-	 	var standa = $("#standaID").val();
-	 	var perfil = $("#perfilesID").val();
-	 	var mdata="Ajax=on&opcion=getFormSoltie&tab="+tab+"&perfil="+perfil;
-	 	closePopUp('popID');
-	    LoadPopupJQNoButton('open', 'Cargando.. ',  150, 300, false, false, true);
-	    var popup = $("#popID");
-	 	$.ajax({
-	 		url:"../"+ standa +"/noveda/ins_parame_noveda.php",
-	 		type:"POST",
-	 		data:mdata,
-	 		cache:false,
-	 		beforeSend: function(){
-	 			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
-		     	popup.html("<center><img src='../"+standa+"/imagenes/ajax-loader.gif'></center>");
-		    },
-	 		success:function(data){
-	 			$("#resultDiv").html(data);
-	 			$("#sec1").css({"height":"auto"});
-	 		},
-	 		complete:function(){
-	 			closePopUp('popID');
-	 		}		
-	 	});
-	}
-	catch(err) 
-	{
-    	console.log("Error funcion openTabs:"+err.message);
-	}
- }
 
- /*! \fn: opciones
- * \brief: 
- * \author: Edward Serrano
- * \date: 06/04/2017
- * \date modified: dia/mes/año
- * \param: tab: idenficador de tab
- * \return valor que retorna
- */
- function opciones(indicador, cod_noveda)
- {
- 	try {
- 		
- 		if(indicador==1)
- 		{
- 			var standa = $("#standaID").val();
- 			var perfil = $("#perfilesID").val();
-	      	closePopUp('popID');
-	      	LoadPopupJQNoButton('open', 'EDITAR NOVEDAD ', ($(window).height() - 40), ($(window).width() - 40), false, false, true);
-	      	var popup = $("#popID");
-	      	var mdata = "Ajax=on&opcion=getFormIndi&indicador="+ indicador +"&cod_noveda="+cod_noveda+"&cod_perfil="+perfil;
-	      	$.ajax({
-	      		url: "../"+ standa + "/noveda/ins_parame_noveda.php",
-	      		type: "POST",
-	      		data: mdata,
-	      		success:function(data){
-	      			popup.html(data);
-	      		}
-	      	});
- 		}
- 		else if(indicador==2)
- 		{
- 			var standa = $("#standaID").val();
-	      	closePopUp('popID');
-	      	confirmGL("Desea Elimiar la parametrizacion del al noveda","inactivarNovedad("+cod_noveda+")");
- 		}
- 		
- 	}
-	catch(err) 
-	{
-    	console.log("Error funcion opciones:"+err.message);
-	}
- }
-
- /*! \fn: checkAll
- * \brief: chequea todos los input del tab
- * \author: Edward Serrano
- * \date: 06/04/2017
- * \date modified: dia/mes/año
- * \param: 
- * \return valor que retorna
- */
- function checkAll()
- {
- 	try {
- 		var estadoCheck = null;
- 		if( $("#SeleccionM").is(":checked") )
- 		{
- 			estadoCheck = 1;
- 		}
- 		else
- 		{
- 			estadoCheck = 0;
- 		}
- 		$("#secNovedadesP").find("input[type=checkbox]").each(function(key,value){
- 			dato = $(this);
- 			if(estadoCheck == 1)
- 			{
- 				dato.attr("checked", "checked");
- 			}
- 			else
- 			{
- 				dato.removeAttr("checked");
- 			}
- 		});
- 	}
-	catch(err) 
-	{
-    	console.log("Error funcion checkAll:"+err.message);
-	}
- }
-
- /*! \fn: cerrarPopup
- * \brief: Cierra popup de los novedades individuales
- * \author: Edward Serrano
- * \date: 07/04/2017
- * \date modified: dia/mes/año
- * \param: 
- * \return 
- */
- function cerrarPopup()
- {
- 	try
- 	{
- 		closePopUp('popID');
- 	}
- 	catch(err)
- 	{
- 		console.los("Error funcion cerrarPopup: "+ err.message);
- 	}
- }
-
- /*! \fn: almacenarNovedad
- * \brief: catura formulario y envia para almacenar
- * \author: Edward Serrano
- * \date: 07/03/2017
- * \date modified: dia/mes/año
- * \param: 
- * \return 
- */
- function almacenarNovedad(indicador)
- {
- 	try
- 	{
- 		var standa = $("#standaID").val();
- 		var mdata  = "";
- 		if(validarData(indicador)!=false)
- 		{
- 			
- 			mdata = "Ajax=on&opcion=almacenarNovedad&" + validarData(indicador);
- 			$.ajax({
- 				url: "../"+standa+"/noveda/ins_parame_noveda.php",
- 				type: "POST",
- 				data: mdata,
- 				success:function(data){
- 					if(data=="ok")
- 					{
- 						mensaje("Parametrizacion de Novedad","La parametrizacion novedad ha sido almacenada.");
- 						var tabActivo="";
- 						$(".ind_tab").each(function(key,value){
-					 		dato = $(this);
-					 		if(dato.hasClass("ui-state-active"))
-					 		{
-					 			tabActivo = dato.attr("id");
-					 		}
-					 	});
-					 	cerrarPopup();
- 						openTabs(tabActivo);
- 					}
- 					else
- 					{
- 						mensaje("Error","Error al almacernar la parametrizacion de novedad."+data);
- 					}
- 				}
- 			});
- 		}
- 	}
- 	catch(err)
- 	{
- 		console.los("Error funcion almacenarNovedad: "+err.message);
- 	}
- }
-
- /*! \fn: validarData
- * \brief: Validacion de formulario
- * \author: Edward Serrano
- * \date: 07/03/2017
- * \date modified: dia/mes/año
- * \param: 
- * \return datos a procesar
- */
- function validarData(indicador)
- {
- 	try
- 	{
- 		if(indicador==1)
- 		{
- 			var cod_perfil = $("#perfilesID").val();
- 			var ind_apsees = ($("#ind_apsees").is(":checked")?1:0);
- 			var ind_tisees = ($("#ind_tisees").is(":checked")?1:0);
- 			var num_minuto = ($("#num_minuto").val()!=""?$("#num_minuto").val():0);
- 			var cod_noveda = "";
- 			var atributos  = "";
- 			$("#secNovedadesP").find("input[type=checkbox]").each(function(key,value){
-		 		dato = $(this);
-		 		if(dato.is(":checked"))
-		 		{
-		 			cod_noveda += dato.val()+",";
-		 		}
-		 	});
- 		}
- 		else if(indicador==2)
- 		{
- 			var cod_perfil = $("#perfilesID").val();
-	 		var ind_apsees = ($("#ind_apseesIn").is(":checked")?1:0);
-	 		var ind_tisees = ($("#ind_tiseesIn").is(":checked")?1:0);
-	 		var num_minuto = $("#num_minutoIn").val();
-	 		var cod_noveda = $("#cod_novedaIn").val();
-	 	}
-
-	 	if(cod_noveda != "")
-		{
-	 		if((ind_tisees==1 && num_minuto>0) || (ind_tisees==0))
-	 		{
-		 		atributos = "cod_perfil="+cod_perfil+"&ind_apsees="+ind_apsees+"&ind_tisees="+ind_tisees+"&cod_noveda="+cod_noveda+"&num_minuto="+num_minuto;
-	 			return atributos;
-	 		}
-	 		else
-	 		{
-	 			mensaje("Parametrizacion de Novedad","los minutos deben ser mayor a 0");
-	 			return false;
-	 		}
-		}
-		else
-		{
-			mensaje("Parametrizacion de Novedad","debe seleccionar al menos una novedad");
-	 		return false;
-		}
- 	}
- 	catch(err)
- 	{
- 		console.los("Error funcion validarData: "+err.message);
- 	}
- }
-
-  /*! \fn: activarMinuto
- * \brief: Validacion de formulario
- * \author: Edward Serrano
- * \date: 10/03/2017
- * \date modified: dia/mes/año
- * \param: 
- * \return datos a procesar
- */
- function activarMinuto(indicador)
- {
- 	try
- 	{
- 		if(indicador==1)
- 		{
- 			if($("#ind_tisees").is(":checked"))
- 			{
- 				$("#num_minuto").attr('disabled', false);
- 			}
- 			else
- 			{
- 				$("#num_minuto").attr('disabled', 'disabled');
- 				$("#num_minuto").val('');
- 			}
- 			
- 			
- 		}
- 		else if(indicador==2)
- 		{
- 			if($("#ind_tiseesIn").is(":checked"))
- 			{
- 				$("#num_minutoIn").attr('disabled', false);
- 			}
- 			else
- 			{
- 				$("#num_minutoIn").attr('disabled', 'disabled');
- 				$("#num_minutoIn").val('');
-
- 			}
-	 	}
- 	}
- 	catch(err)
- 	{
- 		console.los("Error funcion validarData: "+err.message);
- 	}
- }
-
-  /*! \fn: activarMinuto
- * \brief: Validacion de formulario
- * \author: Edward Serrano
- * \date: 10/03/2017
- * \date modified: dia/mes/año
- * \param: 
- * \return datos a procesar
- */
- function cerrarTab()
- {
- 	try
- 	{
- 		$("#resultDiv").html("");
- 		$("#sec1").css({"height":"auto"});
- 	}
- 	catch(err)
- 	{
- 		console.los("Error funcion validarData: "+err.message);
- 	}
- }
-
-   /*! \fn: inactivarNovedad
- * \brief: Validacion de formulario
- * \author: Edward Serrano
- * \date: 10/03/2017
- * \date modified: dia/mes/año
- * \param: 
- * \return datos a procesar
- */
- function inactivarNovedad(cod_noveda)
- {
- 	try
- 	{
- 		var standa = $("#standaID").val();
- 		var cod_perfil = $("#perfilesID").val();
- 		var mdata = "Ajax=on&opcion=inactivarNovedad&cod_noveda="+cod_noveda+"&cod_perfil="+cod_perfil;
- 		$.ajax({
-	    	url: "../"+ standa + "/noveda/ins_parame_noveda.php",
-	    	type: "POST",
-	    	data: mdata,
-	    	success:function(data){
-	    		if(data=="ok")
-	    		{
-	    			mensaje("Eliminar Novedad","La parametrizacion novedad ha sido eliminada.");
-	    			var tabActivo="";
- 					$(".ind_tab").each(function(key,value){
-					 	dato = $(this);
-					 	if(dato.hasClass("ui-state-active"))
-					 	{
-					 		tabActivo = dato.attr("id");
-					 	}
-					});
-					cerrarPopup();
- 					openTabs(tabActivo);
-	    		}
-	    		else
-	    		{
-	    			mensaje("Error","Error al eliminar la parametrizacion de novedad.");	
-	    		}
-	    	}
-	    });
- 	}
- 	catch(err)
- 	{
- 		console.los("Error funcion validarData: "+err.message);
- 	}
- }
-
- function mensaje(titulo,txt) {
-  try {
-    closePopUp('popupMensajeID');
-    LoadPopupJQNoButton('open', titulo, 150, 300, false, false, false, 'popupMensajeID');
-    var popup = $("#popupMensajeID");
-    popup.parent().children().children('.ui-dialog-titlebar-close').hide();
-
-    var msj = '<div style="text-align:center">' + txt + '<br><br><br><br>';
-    msj += '<input type="button" name="no" id="noID" value="Cerrar" style="cursor:pointer" onclick="closePopUp(\'popupMensajeID\');" class="crmButton small save"/><div>';
-
-    popup.append(msj);
-  } catch (e) {
-    console.log("Error Function confirmGL: " + e.message + "\nLine: " + e.lineNumber);
-    return false;
-  }
+function autocompletable(campo) {
+    var standa = $("#standaID").val();
+    var key = $(campo).val();
+    var opcion = 'getTransportadoras';
+    var dataString = 'key=' + key + '&opcion=' + opcion;
+    var nameid = $(campo).attr('id');
+    $.ajax({
+        url: "../" + standa + "/novseg/ajax_parame_noveda.php",
+        method: 'POST',
+        data: dataString,
+        success: function(data) {
+            //Escribimos las sugerencias que nos manda la consulta
+            $('#' + nameid + '-suggestions').fadeIn(1000).html(data);
+            //Al hacer click en alguna de las sugerencias
+            $('.suggest-element').on('click', function() {
+                //Obtenemos la id unica de la sugerencia pulsada
+                var id = $(this).attr('id');
+                //Editamos el valor del input con data de la sugerencia pulsada
+                $(campo).val($('#' + id).attr('data'));
+                //Hacemos desaparecer el resto de sugerencias
+                $('#' + nameid + '-suggestions').fadeOut(1000);
+				//Desahinilita el bloqueo del boton
+				$('#btnBuscar').removeAttr('disabled');
+                return false;
+            });
+        }
+    });
 }
+
+//funcion que inicializa todas las tablas usando la libreria datatable
+function initTables(id_table){
+    $('#'+id_table+' thead tr th').each( function (i) {
+        var title = $(this).text();
+        if(i!=0){
+            $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="Buscar '+title+'" />' );
+            $( 'input', this ).on( 'keyup change', function () {
+                if ( table.column(i).search() !== this.value ) {
+                    table
+                        .column(i)
+                        .search( this.value )
+                        .draw();
+                }
+            } );
+        }
+    } );
+    var tabla = '#'+id_table;
+    var table = $(tabla).DataTable({
+            "bDestroy": true,
+            'processing': true,
+            "deferRender": true,
+            "autoWidth": false,
+            "search": {
+                "regex": true,
+                "caseInsensitive": false,
+            },
+            'paging': true,
+            'info': true,
+            'filter': true,
+            'orderCellsTop': true,
+            'fixedHeader': true,
+            'language': {
+                "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
+            },
+            "dom": "<'row'<'col-sm-12 col-md-3'B><'col-sm-12 col-md-3'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>",
+            "buttons": [
+                'excelHtml5',
+                'csvHtml5',
+            ]
+    });
+
+    $(".dt-buttons .btn-group").parent().parent().addClass('mb-2');
+}
+
+function vaciaInput(elemento){
+	$(elemento).val('');
+	$('#btnBuscar').attr('disabled',true);
+ }
+
+function consultaInformacion(){
+	var standa = $("#standaID").val();
+	var opcion = 'getInfo';
+	var transp = $("#emp_transp").val().split("-")[0];
+	var dataString = 'transp=' + transp + '&opcion=' + opcion;
+	$.ajax({
+        url: "../" + standa + "/novseg/ajax_parame_noveda.php",
+        method: 'POST',
+        data: dataString,
+		beforeSend: function(){
+			cargando("Buscando... Por favor espere.");
+	   	},
+        success: function(data) {
+          $("#cont").empty();
+		  $("#cont").append(data);
+          var busqueda = $('.conten-table');
+          busqueda.each(function() {
+                console.log($(this).attr('id'));
+                initTables($(this).attr('id'));
+          });
+        },
+		complete:function(){
+			swal.close();
+		}
+    });
+
+    
+}
+
+function cargando(texto){
+    var standa = $("#standaID").val();
+    Swal.fire({
+        title: 'Cargando',
+        text: texto,
+        imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+        imageAlt: 'Custom image',
+        showConfirmButton: false,
+        allowOutsideClick: false,
+    })
+}
+
+function saveInfo(){
+    var standa = $("#standaID").val();
+	var opcion = 'save';
+	var transp = $("#emp_transp").val().split("-")[0];
+	var dataString = 'transp=' + transp + '&opcion=' + opcion;
+    var data = new FormData(document.getElementById('FormParam'));
+    data.append('cod_transp',transp);
+	$.ajax({
+        url: "../" + standa + "/novseg/ajax_parame_noveda.php?"+dataString,
+        method: 'POST',
+        data,
+        async: false,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+		beforeSend: function(){
+			cargando("Guardando... Por favor espere.");
+	   	},
+        success: function(data) {
+            swal.close();
+            if(data['status']==100){
+                Swal.fire({
+                    title: 'Proceso Exitoso',
+                    text: data['msj'],
+                    type: 'success',
+                    confirmButtonColor: '#336600'
+                }).then((result) => {
+                    if (result.value) {
+                        location.reload();
+                    }
+                })
+            }else{
+                Swal.fire({
+                    title: 'Error!',
+                    text: data['msj'],
+                    type: 'error',
+                    confirmButtonColor: '#336600'
+                })
+            }
+        },
+    });
+}
+
+//selecciona todos los checkbox de una tabla
+function selectedAll(elemento){
+    var cod_etapax = $(elemento).attr('data');
+    var booleanval = false;
+    if( $(elemento).is(':checked') ) {
+        booleanval = true;
+    }
+    $('.chkb_'+cod_etapax).each(function() {
+        $(this).prop("checked", booleanval);
+        selectGemelo(this);
+    });
+    $('.colcheck_'+cod_etapax).each(function() {
+        $(this).prop("checked", booleanval);
+        selectGemelo(this);
+    });
+}
+
+//selecciona todos los checkbox de una fila
+function selectRow(elemento){
+    var cod_etapax = $(elemento).attr('data');
+    var booleanval = false;
+    if( $(elemento).is(':checked') ) {
+        booleanval = true;
+    }
+    var busqueda = $(elemento).parent().siblings('td').find('.chkb_'+cod_etapax);
+    busqueda.each(function() {
+        $(this).prop("checked", booleanval);
+        selectGemelo(this);
+    });
+}
+
+//duplica la informacion de una tabla para la pestaña de TODOS
+function selectGemelo(elemento){
+    var booleanval = false;
+    if( $(elemento).is(':checked') ) {
+        booleanval = true;
+    }
+    var clasegemela = $(elemento).attr('data');
+    var busqueda = $('.'+clasegemela);
+    busqueda.each(function() {
+        $(this).prop("checked", booleanval);
+    });
+}
+
+function insertGemelo(elemento){
+    var clasegemela = $(elemento).attr('class');
+    var busqueda = $('.'+clasegemela);
+    var valor = $(elemento).val();
+    busqueda.each(function() {
+        $(this).val(valor);
+    });
+}
+
+
