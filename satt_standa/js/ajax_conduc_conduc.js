@@ -73,15 +73,23 @@ $(document).ready(function() {
 		}
 	});
 	// para buscar la ciudad del conductor
+	
 	$("#ciudadID").autocomplete({
-		source: "../" + standa + "/transp/ajax_transp_transp.php?Option=getCiudades" + attributes,
+		source: "../" + standa + "/transp/ajax_transp_transp.php?Option=getCiudades" + attributes + "&cod_paisxx=" + $("#cod_paisxxID").val(),
 		minLength: 3,
 		select: function(event, ui) {
 			$("#cod_ciudadID").val(ui.item.id);
 		}
 	});
 
-
+	$("#paisID").autocomplete({
+		source: "../" + standa + "/transp/ajax_transp_transp.php?Option=buscarPaises" + attributes,
+		minLength: 3,
+		select: function(event, ui) {
+			$("#cod_paisxxID").val(ui.item.id);
+			traerTipDocumento(ui.item.id);
+		}
+	});
 });
 
 //funcion para mostrar la lista de los conductores de una transportadora
@@ -375,4 +383,46 @@ function comprobar() {
 		console.log("Error Fuction comprobar: " + e.message + "\nLine: " + e.lineNumber);
 		return false;
 	}
+}
+
+function traerTipDocumento(cod_paisxx){
+	var standa = $("#standaID").val();
+	var parametros = "Ajax=on&standa=" + standa + "&cod_paisxx=" + cod_paisxx;
+	$.ajax({
+		url: "../" + standa + "/transp/ajax_transp_transp.php?",
+		type: "POST",
+		data: parametros + "&Option=buscaTipDocumentosPersona",
+		async: false,
+		success: function(data) {
+			$("#cod_tipdocID").empty();
+			var obj  = jQuery.parseJSON( data );
+			for(var i = 0; i < obj.length; i++){
+				$("#cod_tipdocID").append('<option value="'+obj[i]['value']+'">'+obj[i]['label']+'</option>');
+			}			
+		}
+	});
+
+	$.ajax({
+		url: "../" + standa + "/transp/ajax_transp_transp.php?",
+		type: "POST",
+		data: parametros + "&Option=darValidacionesporPais",
+		async: false,
+		success: function(data) {
+			var obj  = jQuery.parseJSON( data );
+			$("#cod_tercerID").removeAttr('validate');
+			$("#cod_tercerID").attr('validate', obj['validation']['validate']);
+			$('#cod_tercerID').get(0).type = obj['validation']['type'];		
+		}
+	});
+
+	$("#ciudadID").autocomplete({
+		source: "../" + standa + "/transp/ajax_transp_transp.php?" + parametros + "&Option=getCiudades",
+		minLength: 3,
+		select: function(event, ui) {
+			$("#cod_ciudadID").val(ui.item.id);
+		}
+	});
+
+	
+
 }

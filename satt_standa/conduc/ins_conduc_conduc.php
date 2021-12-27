@@ -350,7 +350,7 @@ class Ins_conduc_conduc {
 
     function Formulario() {
         
-        $datos = self::$cFunciones->getDatosConductor($_REQUEST['cod_conduc']);
+        $datos = self::$cFunciones->getDatosConductor($_REQUEST['cod_conduc'], $_REQUEST['cod_transp']);
         # Nuevo frame ---------------------------------------------------------------
         # Inicia clase del fromulario ----------------------------------------------------------------------------------
         $mHtml = new FormLib(2);
@@ -379,9 +379,17 @@ class Ins_conduc_conduc {
             "header" => "Transportadoras",
             "enctype" => "multipart/form-data"));
 
+      $query = "SELECT cod_paisxx
+        FROM ".BASE_DATOS.".tab_tercer_tercer
+          WHERE cod_tercer = '".$_REQUEST['cod_transp']."'
+        LIMIT 1";
+      $consulta = new Consulta($query, $this->conexion);
+      $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
+
       #variables ocultas
       $mHtml->Hidden(array( "name" => "conduc[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad
       $mHtml->Hidden(array( "name" => "conduc[cod_transp]", "id" => "cod_transpID", "value"=>$_REQUEST['cod_transp'])); //el codigo de la transportadora
+      $mHtml->Hidden(array( "name" => "conduc[cod_paisxx]", "id" => "cod_paisxxID", "value"=>$cod_paisxx)); //el codigo de la transportadora
       $mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
       $mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
       $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
@@ -394,6 +402,10 @@ class Ins_conduc_conduc {
       $mHtml->Hidden(array( "name" => "operacion", "id" => "operacion", 'value'=>""));
       $mHtml->Hidden(array( "name" => "url", "id" => "url", 'value'=>"../".NOM_URL_APLICA."/".$datos->principal->dir_ultfot));
       
+      
+
+      $inputs = self::inputsByCountry()[$cod_paisxx];
+
       $disabled = "";
       if($datos->principal->cod_tercer){
         $disabled = "'disabled'=>true";
@@ -407,10 +419,14 @@ class Ins_conduc_conduc {
             $mHtml->OpenDiv("id:sec1;");
               $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                 $mHtml->Table("tr");
-                  $mHtml->Label("Tipo de Documento:", "width:25%; *:1;");
+
+                    $mHtml->Label("Pais:", "width:25%; *:1;"); 
+                    $mHtml->Input (array("name" => "pais", "validate" => "dir",  "obl" => "1", "id" => "paisID",  "minlength" => "3", "maxlength" => "100", "width" => "25%", "value"=> $datos->principal->abr_ciudad, "end" => true) );
+
+                    $mHtml->Label("Tipo de Documento:", "width:25%; *:1;");
                     $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "conduc[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "key"=> $datos->principal->cod_tipdoc) );
                     $mHtml->Label("Número de Documento:", "width:25%; :1;");
-                    $mHtml->Input(array("type" => "numeric", "name" => "conduc[cod_tercer]", "id" => "cod_tercerID", "onblur"=>"comprobar()", "width" => "10%", "obl" => "1", "minlength" => "5", "maxlength" => "10", "validate" => "numero", "value" =>  $datos->principal->cod_tercer, $disabled, "end" => true));
+                    $mHtml->Input(array("type" => $inputs['validation']['type'], "name" => "conduc[cod_tercer]", "id" => "cod_tercerID", "onblur"=>"comprobar()", "width" => "10%", "obl" => "1", "minlength" => "5", "maxlength" => "13", "validate" => $inputs['validation']['validate'], "value" =>  $datos->principal->cod_tercer, $disabled, "end" => true));
 
                     $mHtml->Label("Nombres:", "width:25%; *:1;");
                     $mHtml->Input(array("type" => "alpha", "name" => "conduc[nom_tercer]", "validate" => "alpha", "obl" => "1", "minlength" => "4", "maxlength" => "50", "id" => "nom_tercerID", "width" => "25%", "value" => $datos->principal->nom_tercer));
@@ -599,6 +615,19 @@ class Ins_conduc_conduc {
     }
 
 //FIN FUNCION INSERT_SEDE
+
+function inputsByCountry(){
+  $inputs = array();
+  
+  $colombia = array('validation' => array('type' => 'numeric', 'validate' => 'numero'));
+  $chile = array('validation' => array('type' => 'text', 'validate' => ''));
+
+  $inputs[3] = $colombia;
+  $inputs[11] = $chile;
+
+  return $inputs;
+}
+
 }
 
 //FIN CLASE

@@ -1,0 +1,26 @@
+/*GRAPHICS ++ GRAPHICS ++ GRAPHICS ++ GRAPHICS ++ GRAPHICS ++ GRAPHICS ++ GRAPHICS ++ GRAPHICS */
+.graphic{
+    overflow: hidden;
+}
+.graphic .stylized .head{
+    background: #3337;
+    border-radius: 4px 4px 0 0;
+}
+.graphic .stylized .body{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    align-content: center;
+    background-color: rgba(11, 57, 68, 0.7);
+    border-radius: 0 0 4px 4px;
+}
+.graphic .stylized .body > div{
+    padding: 4px 10px;
+    border-top: 1px solid #fffe;
+    margin-top: -1px;
+}
+.graphic .stylized .body .second{
+    margin-left: -1px;
+    border-left: 1px solid #fffe;
+}
+/*GRAPHICS -- GRAPHICS -- GRAPHICS -- GRAPHICS -- GRAPHICS -- GRAPHICS -- GRAPHICS -- GRAPHICS */

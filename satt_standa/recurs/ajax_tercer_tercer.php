@@ -151,7 +151,12 @@ class tercer {
                 if ($tercer->cod_tipter == 2) {
                     $tercer->abr_tercer = $tercer->nom_apell1 . " " . $tercer->nom_tercer;
                 } else {
-                    $tercer->cod_tipdoc = "N";
+                    $query = "SELECT cod_tipdoc
+                        FROM " . BASE_DATOS . ".tab_genera_tipdoc
+                        WHERE ind_person = 2 AND cod_paisxx = ".$tercer->cod_paisxx." LIMIT 1";
+                    $consulta = new Consulta($query, self::$cConexion);
+                    $tipoDocumento = $consulta->ret_matriz("a")[0]['cod_tipdoc'];
+                    $tercer->cod_tipdoc = $tipoDocumento;
                 }
 
                 # consulta el departamento y pais del tercero basado en su ciudad
@@ -332,14 +337,21 @@ class tercer {
         $tercer = (object) $_POST['tercer']; #datos principales del tercero
         $activi = $_POST['activi']; #datos de las actividades del tercero
 
+        $query = "SELECT cod_tipdoc
+        FROM " . BASE_DATOS . ".tab_genera_tipdoc
+        WHERE ind_person = 2 AND cod_paisxx = ".$tercer->cod_paisxx." LIMIT 1";
+        $consulta = new Consulta($query, self::$cConexion);
+        $tipoDocumento = $consulta->ret_matriz("a")[0]['cod_tipdoc'];
+
         if ($tercer->cod_tipter == 2) {
             $tercer->abr_tercer = $tercer->nom_apell1 . " " . $tercer->nom_tercer;
         } else {
-            $tercer->cod_tipdoc = "N";
+           
+            $tercer->cod_tipdoc = $tipoDocumento;
         }
         if ($activi) {
             if (!$tercer->cod_tipdoc) {
-                $tercer->cod_tipdoc = "N";
+                $tercer->cod_tipdoc = $tipoDocumento;
             }
             # consulta el departamento y pais del tercero basado en su ciudad
             $query = "SELECT cod_paisxx,cod_depart
@@ -427,7 +439,7 @@ class tercer {
      *  \return $data => objeto con los datos de la consulta                      *
      * **************************************************************************** */
 
-    public function getDatosTerero($cod_tercer = '0') {
+    public function getDatosTerero($cod_tercer = '0', $cod_transp = NULL) {
         #objeto que contiene los datos a retornar 
         $datos = new stdClass();
 
@@ -438,6 +450,13 @@ class tercer {
         $tipoTercero [2][0] = 2;
         $tipoTercero [2][1] = "Natural";
         $datos->tipoTercero = $tipoTercero;
+
+        $query = "SELECT cod_paisxx
+        FROM ".BASE_DATOS.".tab_tercer_tercer
+          WHERE cod_tercer = '".$cod_transp."'
+        LIMIT 1";
+        $consulta = new Consulta($query, self::$cConexion);
+        $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
 
         #añade los regimenes
         $query = "SELECT cod_terreg,nom_terreg
@@ -450,10 +469,10 @@ class tercer {
         #añade los tipos de documento
         $query = "SELECT cod_tipdoc,nom_tipdoc
                  FROM " . BASE_DATOS . ".tab_genera_tipdoc
-                 WHERE cod_tipdoc NOT IN  ('N','T')";
+                 WHERE ind_person = 1 AND cod_paisxx = ".$cod_paisxx;;
         $consulta = new Consulta($query, self::$cConexion);
         $tipoDocumento = $consulta->ret_matriz("a");
-        $datos->tipoDocumento = $tipoDocumento;
+        $datos->tipoDocumento = self::cleanArray($tipoDocumento);
 
         #añade las actividades
         $query = "SELECT a.cod_activi,a.nom_activi
@@ -489,11 +508,12 @@ class tercer {
                    a.num_faxxxx,a.num_telef2, a.cod_terreg,a.num_verifi,a.cod_paisxx,
                    a.cod_depart,a.usr_creaci, a.fec_creaci,a.usr_modifi, a.fec_modifi,
                    CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) abr_ciudad,
-                   a.num_faxxxx num_faxxx
+                   a.num_faxxxx num_faxxx, e.nom_paisxx
               FROM " . BASE_DATOS . ".tab_tercer_tercer a
               INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad b ON b.cod_ciudad = a.cod_ciudad
               INNER JOIN " . BASE_DATOS . ".tab_genera_depart c ON c.cod_depart = b.cod_depart
               INNER JOIN " . BASE_DATOS . ".tab_genera_paises d ON d.cod_paisxx = b.cod_paisxx
+              INNER JOIN ".BASE_DATOS.".tab_genera_paises e ON a.cod_paisxx = e.cod_paisxx
                    WHERE a.cod_tercer = '$cod_tercer' ";
 
         $consulta = new Consulta($query, self::$cConexion);
@@ -540,6 +560,41 @@ class tercer {
             echo $datos;
         }
     }
+
+    /*! \fn: cleanArray
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciÃ³n
+           *  \author: Ing. Luis Manrique
+           *  \date: 03-04-2020
+           *  \date modified: dd/mm/aaaa
+           *  \param: $arrau => Arreglo que serÃ¡ analizado por la funciÃ³n
+           *  \return: array
+        */
+        function cleanArray($array){
+
+            $arrayReturn = array();
+  
+            //Convert function
+            $convert = function($value){
+                if(is_string($value)){
+                    return utf8_encode($value);
+                }
+                return $value;
+            };
+  
+            //Go through data
+            foreach ($array as $key => $value) {
+                //Validate sub array
+                if(is_array($value)){
+                    //Clean sub array
+                    $arrayReturn[$convert($key)] = self::cleanArray($value);
+                }else{
+                    //Clean value
+                    $arrayReturn[$convert($key)] = $convert($value);
+                }
+            }
+            //Return array
+            return $arrayReturn;
+        }
 
 }
 

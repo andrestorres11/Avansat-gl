@@ -1,0 +1,394 @@
+/*Global*/
+#dashBoardTableTrans *{
+    font-size: 1.1rem;
+    vertical-align: middle;
+    text-transform: none;
+}
+
+/* width */
+#dashBoardTableTrans ::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+#dashBoardTableTrans ::-webkit-scrollbar-track {
+    margin-top: 2px;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    background: #f1f1f1; 
+}
+
+/* Handle */
+#dashBoardTableTrans ::-webkit-scrollbar-thumb {
+    background: #ccc; 
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+#dashBoardTableTrans ::-webkit-scrollbar-thumb:hover {
+    background: #999; 
+}
+
+#dashBoardTableTrans .progress-bar{
+    text-shadow: rgb(0, 0, 0) 1px 1px 2px;
+}
+
+#dashBoardTableTrans .menu{
+    background: none;
+    background-image: none;
+}
+
+#dashBoardTableTrans .notif{
+    right: 50px;
+}
+
+#dashBoardTableTrans #filtrosEspecificos tbody tr td:nth-child(odd){
+    text-align: right;
+    padding: 5px;
+}
+
+#dashBoardTableTrans #filtrosEspecificos tbody tr td:nth-child(even){
+    text-align: left;
+}
+
+#dashBoardTableTrans #filtrosEspecificos tbody tr td:nth-child(even) > *{
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    padding: 5px;
+    height: 26px;
+}
+
+#dashBoardTableTrans label{
+    font-weight: normal;
+}
+
+#dashBoardTableTrans .checkbox label{
+    line-height: 20px;
+}
+
+#dashBoardTableTrans .panel-heading{
+    padding: 3px 15px;
+}
+
+#dashBoardTableTrans .panel-body{
+    padding: 5px;
+}
+
+#dashBoardTableTrans .glyphicon, #filter .fa{
+    padding: 10px;
+    border-radius: 20px;
+    font-size: 10pt;
+}
+
+#dashBoardTableTrans .progress{
+    margin-bottom: 0px;
+}
+
+#dashBoardTableTrans .alerts{
+    position: fixed;
+    left: 5%;
+    width: 90%;
+    z-index: 10; /*Z index number 10*/
+    bottom: 0;
+}
+
+#dashBoardTableTrans span.btn{
+    cursor: auto;
+}
+
+#dashBoardTableTrans .elm-success{
+    color: #3c763d;
+    font-size: 1rem;
+    background-color: #d0e9c6;
+    border: 1px solid #ddd;
+}
+
+#dashBoardTableTrans .elm-alarm{
+    color: #8a4e3b;
+    font-size: 1rem;
+    background-color: #ffcbad;
+    border: 1px solid #ddd;
+}
+
+#dashBoardTableTrans .elm-warning{
+    color: #8a6d3b;
+    font-size: 1rem;
+    background-color: #faf2cc;
+    border: 1px solid #ddd;
+}
+
+#dashBoardTableTrans .elm-danger{
+    color: #a94442;
+    font-size: 1rem;
+    background-color: #ebcccc;
+    border: 1px solid #ddd;
+}
+
+#dashBoardTableTrans .btn-success{
+    font-size: 1rem;
+    border: 1px solid;
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+}
+
+#dashBoardTableTrans .btn-alarm{
+    font-size: 1rem;
+    border: 1px solid;
+    color: #fff;
+    background-color: #dd8532;
+    border-color: #c24911;
+}
+
+#dashBoardTableTrans .btn-warning{
+    font-size: 1rem;
+    border: 1px solid;
+    color: #fff;
+    background-color: #f0ad4e;
+    border-color: #eea236;
+}
+
+#dashBoardTableTrans .btn-danger{
+    font-size: 1rem;
+    border: 1px solid;
+    color: #fff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
+}
+
+#dashBoardTableTrans .btn-disabled{
+    font-size: 1rem;
+    border: 1px solid;
+    color: #fff;
+    background-color: #948282;
+    border-color: #5c5555;
+}
+
+#dashBoardTableTrans div[data-toggle]{
+    cursor: pointer;
+}
+
+#dashBoardTableTrans .checkbox{
+    font-weight: 700;
+    width: 90%;
+    margin: 0 auto;
+}
+
+#dashBoardTableTrans .x_content{
+    text-align: center;
+}
+
+/*Table Table Table Table Table Table Table Table Table Table Table Table */
+#dashBoardTableTrans #listadoDeMoviles{
+    overflow-x: scroll;
+}
+
+#dashBoardTableTrans #listadoDeMoviles th{
+    white-space: nowrap;
+    text-align: center;
+}
+
+#dashBoardTableTrans #listadoDeMoviles td{
+    text-align: center;
+}
+
+#dashBoardTableTrans .verticalTable{
+    display: flex;
+    flex-flow: row nowrap;
+    width: 100%;
+}
+
+#dashBoardTableTrans .verticalTable div{
+    flex-grow: 1;
+    padding: 3px 7px;
+    border: 1px solid #000;
+    margin-left: -1px;
+}
+
+/*DASHBOARD DIALOG DASHBOARD DIALOG DASHBOARD DIALOG DASHBOARD DIALOGDASHBOARD DIALOG*/
+
+#dashBoardTableTrans .dialog{
+    display: none;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: #000c;
+    padding: 2%;
+    overflow: hidden;
+    overflow-y: scroll;
+    z-index: 4;
+}
+
+#dashBoardTableTrans .primary{
+    font-weight: bold;
+    font-size: 11pt;
+}
+
+#dashBoardTableTrans .secundary{
+    font-size: 11pt;
+    color: #999;
+}
+
+#dashBoardTableTrans .dialog > div{
+    background-color: #ccc;
+    padding: 10px 0;
+    border-radius: 20px;
+}
+
+#dashBoardTableTrans .dashBoardDialog > div{
+    background-color: #fff;
+}
+
+#dashBoardTableTrans .dialog .closeWindow{
+    border-bottom: 1px solid #ccc;
+    padding: 0px 10px 5px 10px;
+    display: flex;
+    flex-flow: row-reverse nowrap;
+    justify-content: space-between;
+    line-height: 29px;
+}
+
+#dashBoardTableTrans .dialog .closeWindow i{
+    font-size: 20pt;
+    cursor: pointer;
+}
+
+#dashBoardTableTrans .dialog .dialogTitle{
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+#dashBoardTableTrans .dialog .dialogTitle div{
+    margin-right: 20px;
+}
+
+#dashBoardTableTrans .dialog .dialogBody{
+    display: flex;
+    flex-flow: column nowrap;
+    border-radius: 11px;
+    border-top: 1px solid #ccc;
+}
+
+#dashBoardTableTrans .dialog .dialogBody .row{
+    margin: 0;
+}
+
+#dashBoardTableTrans .dialog .dialogBody > div{
+    border-top: 1px solid #ccc;
+    padding: 10px;
+}
+
+#dashBoardTableTrans .dialog .tab-pane{
+    overflow: hidden;
+    overflow-x: scroll;
+}
+
+#dashBoardTableTrans .dialog .table th{
+    white-space: nowrap;
+    text-align: center;
+}
+
+#dashBoardTableTrans .dialog .table td{
+    white-space: nowrap;
+}
+
+#dashBoardTableTrans .dialog .table .glyphicon, #filter .fa{
+    padding: 6px;
+    border-radius: 20px;
+    font-size: 6pt;
+}
+
+#dashBoardTableTrans .dialog .stats > div{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: center;
+    box-shadow: 2px 2px 2px 0px #848383;
+    background-color: white;
+    height: 100px;
+}
+
+#dashBoardTableTrans .dialog .stats > div div {
+    transform: translate(0, calc(100% - 40px));
+    height: 60px;
+    line-height: 60px;
+    font-size: 11pt;
+    font-weight: bold;
+    color: #888;
+}
+
+#dashBoardTableTrans .dialog .stats > div .statsCount {
+    width: 60px;
+    text-align: center;
+    background-color: black;
+    color: white;
+    border-radius: 30px;
+    box-shadow: 2px 2px 2px 0px #848383;
+}
+
+#dashBoardTableTrans .dialog .stats > div .statsName {
+    margin-left: 10px;
+}
+
+#dashBoardTableTrans .dialog:not(.dashBoardDialog) .dialogBody{
+    background-color: #ddd;
+}
+
+#dashBoardTableTrans .dialog:not(.dashBoardDialog) .rowGraphics > div{
+    padding: 0 5px;
+}
+
+#dashBoardTableTrans .dialog:not(.dashBoardDialog) .rowGraphics .panel{
+    height: 350px;
+    box-shadow: 2px 2px 2px 0px #848383;
+    padding: 0;
+}
+
+#dashBoardTableTrans .dialog:not(.dashBoardDialog) .rowGraphics .panel-body{
+    overflow-y: scroll;
+    height: 313px;
+}
+
+/*FLOATING MENU FLOATING MENU FLOATING MENU FLOATING MENU FLOATING MENU*/
+#dashBoardTableTrans .btn.pmd-btn-fab{
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+}
+
+#dashBoardTableTrans .pmd-floating-action-btn:not(:last-child){
+    margin-left: 0;
+}
+
+/*SITE PROGRESS SITE PROGRESS SITE PROGRESS SITE PROGRESS SITE PROGRESS SITE PROGRESS*/
+#dashBoardTableTrans .siteProgressView .principalContainer,
+#dashBoardTableTrans .origenesFrecuentesPercentageView .principalContainer,
+#dashBoardTableTrans .destinosFrecuentesPercentageView .principalContainer{
+    padding: 10px 15px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+}
+
+#dashBoardTableTrans .siteProgressView .principalContainer .name,
+#dashBoardTableTrans .origenesFrecuentesPercentageView .principalContainer .name,
+#dashBoardTableTrans .destinosFrecuentesPercentageView .principalContainer .name{
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#dashBoardTableTrans .numberCircle {
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    padding: 8px;
+    background: #fff;
+    border: 2px solid black;
+    color: black;
+    text-align: center;
+    font: 32px Arial, sans-serif;
+    display: inline-block;
+}
