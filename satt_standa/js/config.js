@@ -1,103 +1,29 @@
-function validar_cass(desurb)
-{
- var frm = document.forms[0];
- var cont = 0;
- var tot = 0;
+$("document").ready(function() {
+	var standa = $("#standarID").val();
+	var atributes = '&Ajax=on&standa=' + standa;
 
- if(desurb == 0)
- {
-  while(frm.elements[cont])
-  {
-   if(frm.elements[cont].type == "checkbox" && frm.elements[cont].checked == true)
-   {
-    if(frm.elements[cont+1].value == "")
-    {
-     frm.elements[cont+1].focus();
-     return "Debe Especificar el Documento/Codigo";
-    }
-    else if(frm.elements[cont+2].value == "")
-    {
-     frm.elements[cont+2].focus();
-     return "Debe Especificar el Nombre";
-    }
-    else if(frm.elements[cont+4].value == "0")
-    {
-     frm.elements[cont+4].focus();
-     return "Debe Seleccionar el Tipo";
-    }
-    cont += 5;
-   }
+	$("#nom_ciudadID").autocomplete({
+		source: "../" + standa + "/transp/ins_remdes_remdes.php?opcion=7"+atributes,
+		minLength: 3,
+		select: function(event, ui) {
+			$("#cod_ciudadID").val(ui.item.id);
+			$("#nom_ciudadID").val(ui.item.ciu);
+		}
+	});
 
-   cont++;
-  }
- }
- else
- {
-  while(frm.elements[cont])
-  {
-   if(frm.elements[cont].type == "checkbox" && frm.elements[cont].checked == true)
-   {
-    if(frm.elements[cont+1].value == "")
-    {
-     frm.elements[cont+1].focus();
-     return "Debe Especificar el Documento/Codigo";
-    }
-    else if(frm.elements[cont+2].value == "")
-    {
-     frm.elements[cont+2].focus();
-     return "Debe Especificar el Nombre";
-    }
-    else if(frm.elements[cont+4].value == "0")
-    {
-     frm.elements[cont+4].focus();
-     return "Debe Seleccionar el Tipo";
-    }
-    else if(parseInt(frm.elements[cont+4].value) == 2)
-    {
-     if(frm.elements[cont+5].value == "")
-     {
-      frm.elements[cont+5].focus();
-      return "Debe Especificar la Direccion";
-     }
-     else if(frm.elements[cont+6].value == "0")
-     {
-      frm.elements[cont+6].focus();
-      return "Debe Seleccionar la Ciudad";
-     }
-     else if(frm.elements[cont+7].value == "")
-     {
-      frm.elements[cont+7].focus();
-      return "Debe Especificar el Telefono";
-     }
-    }
-
-    cont += 10;
-   }
-
-   cont++;
-  }
- }
-
- return "";
-}
+});
 
 function aceptar_remdes()
-{
-  var formulario = document.forms[0];
-  var valida_cass = "";//validar_cass(formulario.desurb.value); 
-
-  if(valida_cass != "")
-  {
-   window.alert(valida_cass);
-  }
-  else
-  {
-   if(confirm("Est Seguro de Actualizar la Informacion del Formulario.?"))
-   {
-    formulario.opcion.value = 4;
-    formulario.submit();
-   }
-  }
+{ 
+	var formulario = document.forms[0];
+	var val = validaciones();
+	  if(val){
+	  		if(confirm("¿Esta Seguro de la Informacion del Formulario?"))
+		   {
+		    formulario.opcion.value = 4;
+		    formulario.submit();
+		   }
+	  }
 }
 
 function genera_digito(nit, dig)
@@ -633,4 +559,32 @@ function acep_autori(formulario)
               }
 
        }
+}
+
+
+function crearEditarRemdes(accion, codRemdes = null)
+{
+  
+  var formulario = document.forms[0];
+  if(codRemdes == null){
+    var mensaje = "¿Esta Seguro de Crear un registro?";
+  }else{
+    var mensaje = "¿Esta Seguro de Actualizar la Informacion de este registro?";
+  }
+
+   if(confirm(mensaje))
+   {
+    formulario.opcion.value = accion;
+    if(codRemdes != null){
+      var indRemdes = codRemdes.parentNode.nextElementSibling.innerHTML;
+      if(indRemdes == "Remitente"){
+        indRemdes = 1;
+      }else{
+        indRemdes = 2;
+      }
+      var codRemdes = codRemdes.innerHTML;
+      formulario.cod_remdes.value = codRemdes+"_"+indRemdes;
+    }
+    formulario.submit();
+   }
 }
