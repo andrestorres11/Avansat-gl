@@ -321,7 +321,7 @@ class Proc_despac
         $mMessage .= "******** Detalle ******** \n";
         $mMessage .= "Codigo de error: ".$mReturn[1]." \n";
         $mMessage .= "Mesaje de error: ".$mReturn[2]." \n";
-        mail( "soporte.ingenieros@intrared.net", "Web service Trafico-Destino seguro", $mMessage,'From: soporte.ingenieros@intrared.net' );
+        //mail( "soporte.ingenieros@intrared.net", "Web service Trafico-Destino seguro", $mMessage,'From: soporte.ingenieros@intrared.net' );
       }
       //print_r($response);
     }
@@ -330,6 +330,30 @@ class Proc_despac
        *  Fin Interfaz Destino Seguro
        * 
        * *****/
+
+
+        //Quita el despacho en el integrador
+    $query = "SELECT cod_transp, num_placax
+             FROM ".BASE_DATOS.".tab_despac_vehige
+            WHERE num_despac = '".$_REQUEST['despac']."'";
+    $mDataDespac = new Consulta($query, $this->conexion);
+    $mDataDespac = $mDataDespac->ret_matriz(); 
+    if ($this->getInterfParame('53', $mDataDespac[0]['cod_transp']) == true)
+    {
+      include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
+      $mInterfGps = new InterfGPS( $this->conexion ); 
+      $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['despac'], ['ind_transa' => 'Q'] );  
+      $mens = new mensajes();
+      if($mResp['code_resp'] == '1000'){
+        $mens -> correcto("Envio despacho: ".$_REQUEST['despac']." con placa: ".$mDataDespac[0]['num_placax'],
+                          "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+      } else {
+        $mens -> error("Envio despacho: ".$_REQUEST['despac']." con placa: ".$mDataDespac[0]['num_placax'],
+                       "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+      }
+      unset($mResp);
+    }
+
     
   }
  }
