@@ -951,9 +951,29 @@ class Proc_salida {
       }
       $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Insertar Otra Salida</a></b>";
 
-      $mensaje = "El Vehiculo <b>".$_REQUEST[placa]."</b> Asignado al Despacho # <b>".$_REQUEST[despac]."</b> Salio Exitosamente.".$mensaje_sat.$mensaje_gps.$mensaje_jlt;
+      $mensaje = "El Vehiculo <b>".$_REQUEST['placa']."</b> Asignado al Despacho # <b>".$_REQUEST['despac']."</b> Salio Exitosamente.".$mensaje_sat.$mensaje_gps.$mensaje_jlt;
       $mens    = new mensajes();
       $mens->correcto("SALIDA DE DESPACHOS", $mensaje);
+
+
+      // validacion de interfaz con integrador GPS
+      if ($this->getInterfParame('53', $data_despac[0]['cod_transp']) == true)
+      {
+        include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
+        $mInterfGps = new InterfGPS( $this->conexion ); 
+        $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['despac'], ['ind_transa' => 'I'] );  
+        $mens = new mensajes();
+        if($mResp['code_resp'] == '1000'){
+          $mens -> correcto("Envio despacho: ".$_REQUEST['despac']." con placa: ".$_REQUEST['placa'],
+                            "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+        } else {
+          $mens -> error("Envio despacho: ".$_REQUEST['despac']." con placa: ".$_REQUEST['placa'],
+                         "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+        }
+        unset($mResp);
+      }
+
+
     }
      
 

@@ -534,54 +534,7 @@ class Proc_anula
             ";
 
    $update1 = new Consulta($query, $this -> conexion,"R");
-
-	//Manejo de la Interfaz Aplicaciones SAT
-/*  	$interfaz = new Interfaz_SAT(BASE_DATOS,$transdes[0][0],$usuario,$this -> conexion);
-
-  	if($interfaz -> totalact > 0)
-  	{
-   	 for($i = 0; $i < $interfaz -> totalact; $i++)
-   	 {
-      $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[despac]);
-
-      if($homolodespac["DespacHomolo"] > 0)
-      {
-       $despac_ws["despac"] = $_REQUEST[despac];
-       $despac_ws["fechax"] = $fec_actual;
-       $despac_ws["observ"] = $_REQUEST[obs];
-	   $despac_ws["tipoan"] = "1";
-
-       $resultado_ws = $interfaz -> insAnular($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$despac_ws);
-
-       if($resultado_ws["Confirmacion"] == "OK")
-        $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">La Anulacion del Despacho Fue Registrada Exitosamente en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"]."</b>.";
-       else
-        $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Se Presento un Error al Insertar la Anulacion del Despacho en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"]."</b>. :: ".$resultado_ws["Confirmacion"];
-      }
-   	 }
-  	}
-*/
-	//Manejo de Interfaz GPS
-/*  	$interf_gps = new Interfaz_GPS();
-  	$interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$usuario,$this -> conexion);
-
-  	for($i = 0; $i  < $interf_gps -> cant_interf; $i++)
-  	{
-	 if($interf_gps -> getVehiculo($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]))
-	 {
-	  $idgps = $interf_gps -> getIdGPS($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
-
-	  if($interf_gps -> setLlegadGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$_REQUEST[despac]))
-	  {
-	    $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Se Finalizo Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0]."</b> Correctamente.";
-	  }
-	  else
-	  {
-	    $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ocurrio un Error al Finalizar Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
-	  }
-	 }
-  	}
-*/
+ 
     if($consulta = new Consulta("COMMIT", $this -> conexion))
   	{
 
@@ -607,6 +560,26 @@ class Proc_anula
           $mens->advert("REGISTRO MOVIL", $mensaje);
         }
       }
+
+
+        $query = "SELECT cod_transp, num_placax FROM ".BASE_DATOS.".tab_despac_vehige WHERE num_despac = '".$_REQUEST['despac']."'";
+        $mDataDespac = new Consulta($query, $this->conexion);
+        $mDataDespac = $mDataDespac->ret_matriz(); 
+        if ($this->getInterfParame('53', $mDataDespac[0]['cod_transp']) == true)
+        {
+          include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
+          $mInterfGps = new InterfGPS( $this->conexion ); 
+          $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['despac'], ['ind_transa' => 'Q'] );  
+          $mens = new mensajes();
+          if($mResp['code_resp'] == '1000'){
+            $mens -> correcto("Envio despacho: ".$_REQUEST['despac']." con placa: ".$mDataDespac[0]['num_placax'],
+                              "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+          } else {
+            $mens -> error("Envio despacho: ".$_REQUEST['despac']." con placa: ".$mDataDespac[0]['num_placax'],
+                           "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+          }
+          unset($mResp);
+        }
 
 
   	 $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Anular Otro Despacho</a></b>";
@@ -637,50 +610,7 @@ class Proc_anula
             ";
 
    $update1 = new Consulta($query, $this -> conexion,"R");
-
-   //Manejo de la Interfaz Aplicaciones SAT
-/*   $interfaz = new Interfaz_SAT(BASE_DATOS,$transdes[0][0],$this -> usuario_aplicacion,$this -> conexion);
-
-   if($interfaz -> totalact > 0)
-   {
-    for($i = 0; $i < $interfaz -> totalact; $i++)
-   	{
-     $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[despac]);
-
-     if($homolodespac["DespacHomolo"] > 0)
-     {
-      $despac_ws["despac"] = $_REQUEST[despac];
-      $despac_ws["fechax"] = $fec_actual;
-      $despac_ws["observ"] = $_REQUEST[obs];
-	  $despac_ws["tipoan"] = "2";
-
-      $resultado_ws = $interfaz -> insAnular($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$despac_ws);
-
-      if($resultado_ws["Confirmacion"] == "OK")
-       $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">La Reversion de la Salida Para el Despacho Fue Registrada Exitosamente en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"]."</b>.";
-      else
-       $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Se Presento un Error al Insertar la Reversion de la Salida Para el Despacho en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"]."</b>. :: ".$resultado_ws["Confirmacion"];
-     }
-   	}
-   }
-*/
-   //Manejo de Interfaz GPS
-   /*$interf_gps = new Interfaz_GPS();
-   $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$_REQUEST[usuario],$this -> conexion);
-
-   for($i = 0; $i  < $interf_gps -> cant_interf; $i++)
-   {
-	if($interf_gps -> getVehiculo($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]))
-	{
-	 $idgps = $interf_gps -> getIdGPS($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
-
-	 if($interf_gps -> setLlegadGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$_REQUEST[despac]))
-	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Se Finalizo Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0]."</b> Correctamente.";
-	 else
-	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ocurrio un Error al Finalizar Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
-	}
-   }
-*/
+ 
    if($consulta = new Consulta("COMMIT", $this -> conexion))
    {
 
@@ -707,6 +637,26 @@ class Proc_anula
       }
     }
     
+
+    $query = "SELECT cod_transp, num_placax FROM ".BASE_DATOS.".tab_despac_vehige WHERE num_despac = '".$_REQUEST['despac']."'";
+    $mDataDespac = new Consulta($query, $this->conexion);
+    $mDataDespac = $mDataDespac->ret_matriz(); 
+    if ($this->getInterfParame('53', $mDataDespac[0]['cod_transp']) == true)
+    {
+      include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
+      $mInterfGps = new InterfGPS( $this->conexion ); 
+      $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['despac'], ['ind_transa' => 'Q'] );  
+      $mens = new mensajes();
+      if($mResp['code_resp'] == '1000'){
+        $mens -> correcto("Envio despacho: ".$_REQUEST['despac']." con placa: ".$mDataDespac[0]['num_placax'],
+                          "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+      } else {
+        $mens -> error("Envio despacho: ".$_REQUEST['despac']." con placa: ".$mDataDespac[0]['num_placax'],
+                       "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+      }
+      unset($mResp);
+    }
+
    	$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Reversar Otro Despacho</a></b>";
 
     $mensaje = "Se Reverso la Salida del Despacho <b>".$_REQUEST[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
@@ -718,61 +668,7 @@ class Proc_anula
   if($_REQUEST[fil] == 3)
   {
    $nodasalida = 0;
-
-   //Manejo de la Interfaz Aplicaciones SAT
-/*   $interfaz = new Interfaz_SAT(BASE_DATOS,$transdes[0][0],$usuario,$this -> conexion);
-
-   if($interfaz -> totalact > 0)
-   {
-    for($i = 0; $i < $interfaz -> totalact; $i++)
-   	{
-     $homolodespac = $interfaz -> getHomoloDespac($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[despac]);
-
-     if($homolodespac["DespacHomolo"] > 0)
-     {
-      $despac_ws["despac"] = $_REQUEST[despac];
-      $despac_ws["fechax"] = $fec_actual;
-      $despac_ws["observ"] = $_REQUEST[obs];
-	  $despac_ws["tipoan"] = "3";
-	  $despac_ws["placax"] = $placax[0];
-	  $despac_ws["rutasx"] = $placax[1];
-
-      $resultado_ws = $interfaz -> insAnular($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$despac_ws);
-
-      if($resultado_ws["Confirmacion"] == "OK")
-       $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">La Anulacion del Despacho Fue Registrada Exitosamente en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"]."</b>.";
-      else
-      {
-       $mensaje_sat .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Se Presento un Error al Insertar la Reversion de la Llegada Para el Despacho en la Interfaz <b>".$interfaz -> interfaz[$i]["nombre"]."</b>. :: ".$resultado_ws["Confirmacion"];
-	     $nodasalida = 1;
-      }
-     }
-   	}
-   }
-   */
-
-   //Manejo de Interfaz GPS
-   /*$interf_gps = new Interfaz_GPS();
-   $interf_gps -> Interfaz_GPS_envio($transdes[0][0],BASE_DATOS,$_REQUEST[usuario],$this -> conexion);
-
-   for($i = 0; $i  < $interf_gps -> cant_interf; $i++)
-   {
-	if($interf_gps -> getVehiculo($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]))
-	{
-	 $idgps = $interf_gps -> getIdGPS($placax[0],$interf_gps -> cod_operad[$i][0],$transdes[0][0]);
-
-	 if($interf_gps -> setSalidaGPS($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$_REQUEST[despac]))
-	 {
-	  if($interf_gps -> setAcTimeRepor($interf_gps -> cod_operad[$i][0],$transdes[0][0],$placax[0],$idgps,$_REQUEST[despac],$fec_actual,$interf_gps -> val_timtra[$i][0]))
-	   $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\">Activado Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
-	 }
-	 else
-	  $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/error.gif\">Ocurrio un Error al Activar Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].".</b>";
-	}
-	else
-	 $mensaje_gps .= "<br><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/advertencia.gif\">No se Activo Seguimiento GPS Operador <b>".$interf_gps -> nom_operad[$i][0].". El Vehiculo no se Ecuentra Relacionado con el Operador.</b>";
-   }
-*/
+ 
    if(!$nodasalida)
    {
     $query = "UPDATE ".BASE_DATOS.".tab_despac_despac
@@ -786,6 +682,26 @@ class Proc_anula
 
 	if($consulta = new Consulta("COMMIT", $this -> conexion))
     {
+
+        $query = "SELECT cod_transp, num_placax FROM ".BASE_DATOS.".tab_despac_vehige WHERE num_despac = '".$_REQUEST['despac']."'";
+        $mDataDespac = new Consulta($query, $this->conexion);
+        $mDataDespac = $mDataDespac->ret_matriz(); 
+        if ($this->getInterfParame('53', $mDataDespac[0]['cod_transp']) == true)
+        {
+          include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
+          $mInterfGps = new InterfGPS( $this->conexion ); 
+          $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['despac'], ['ind_transa' => 'I'] );  
+          $mens = new mensajes();
+          if($mResp['code_resp'] == '1000'){
+            $mens -> correcto("Envio despacho: ".$_REQUEST['despac']." con placa: ".$mDataDespac[0]['num_placax'],
+                              "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+          } else {
+            $mens -> error("Envio despacho: ".$_REQUEST['despac']." con placa: ".$mDataDespac[0]['num_placax'],
+                           "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
+          }
+          unset($mResp);
+        }
+
      $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=".$_REQUEST[cod_servic]." \"target=\"centralFrame\">Reversar Otro Despacho</a></b>";
 
      $mensaje = "Se Reverso la Llegada del Despacho <b>".$_REQUEST[despac]."</b> Exitosamente.".$mensaje_sat.$mensaje_gps;
