@@ -1,9 +1,9 @@
 <?php
     /****************************************************************************
     NOMBRE:   AjaxInsNovedaSeguim
-    FUNCION:  Retorna todos los datos necesarios para construir la informaciï¿½n
+    FUNCION:  Retorna todos los datos necesarios para construir la información
     FECHA DE MODIFICACION: 24/11/2021
-    CREADO POR: Ing. Cristian Andrï¿½s Torres
+    CREADO POR: Ing. Cristian Andrés Torres
     MODIFICADO 
     ****************************************************************************/
     
@@ -296,11 +296,11 @@
 
 
         /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciÃ³n
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que serÃ¡ analizado por la funciÃ³n
+           *  \param: $arrau => Arreglo que será analizado por la función
            *  \return: array
         */
         function cleanArray($array){
