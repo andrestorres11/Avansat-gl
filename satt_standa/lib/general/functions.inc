@@ -933,16 +933,6 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
 
 
 /*! \fn: getTranspPerfil
-<<<<<<< HEAD
-  *  \brief: Funcion que retorna la empresa transportadora segun el perfil
-  *  \author: Cristian Andrés Torres
-  *  \date: 2021-08-16
-  *  \param:  mConexion = conexion a bd;
-  *  \return: Array informacion de la empresa transportadora (consulta)
-  */
- function getTranspPerfil(&$mConexion, $cod_perfil){
-    $mSql = " SELECT b.cod_tercer, b.nom_tercer, b.dir_domici 
-=======
     *  \brief: Funcion que retorna la empresa transportadora segun el perfil
     *  \author: Cristian Andrés Torres
     *  \date: 2021-08-16
@@ -951,23 +941,15 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
     */
     function getTranspPerfil(&$mConexion, $cod_perfil){
       $mSql = " SELECT b.cod_tercer, b.nom_tercer, b.dir_domici 
->>>>>>> ab3304b0e90eb4b7721d9c0e6e77f0e96350d34b
                           FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
                     INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b
                       ON a.clv_filtro = b.cod_tercer
                 where a.cod_perfil = '".$cod_perfil."' AND 
                       a.cod_filtro = '".COD_FILTRO_EMPTRA."'";
-<<<<<<< HEAD
-    $mConsult = new Consulta( $mSql, $mConexion );
-    $mResult = $mConsult -> ret_arreglo();
-    return $mResult;
-  }
-=======
       $mConsult = new Consulta( $mSql, $mConexion );
       $mResult = $mConsult -> ret_arreglo();
       return $mResult;
     }
 
->>>>>>> ab3304b0e90eb4b7721d9c0e6e77f0e96350d34b
 
 ?>
