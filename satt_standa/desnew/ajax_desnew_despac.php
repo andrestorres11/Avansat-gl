@@ -1,5 +1,6 @@
 <?php
 error_reporting(0);
+
 class AjaxInsertDespacho
 {
   var $conexion;
@@ -34,8 +35,56 @@ class AjaxInsertDespacho
     echo '['.join(', ',$data).']';
     
   }
+  
+  protected function getNomDestin( $_AJAX ){
+    $mSql = "SELECT a.cod_remdes,  
+                    CONCAT ( UPPER (a.nom_remdes),'(',UPPER (b.nom_ciudad), ', ', UPPER (a.dir_remdes) ,')') AS nom_remdes,
+                    UPPER (a.dir_remdes),
+                    b.cod_ciudad
+              FROM ".BASE_DATOS.".tab_genera_remdes a
+        INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b
+                ON  a.cod_ciudad = b.cod_ciudad AND b.ind_estado = 1
+             WHERE  a.ind_remdes = 2
+                    AND a.ind_estado = 1 
+                    AND a.cod_remdes != 0 
+                    AND CONCAT( a.cod_remdes ,' - ', UPPER( a.nom_remdes ) ) LIKE '%". $_AJAX['term'] ."%'      
+          GROUP BY  1
+          ORDER BY  2";
 
- 
+		$consulta = new Consulta( $mSql, $this->conexion );
+		$nomDestin = $consulta->ret_matriz();
+    
+    $data = array();
+    for($i=0, $len = count($nomDestin); $i<$len; $i++){
+       $data [] = '{"label":"'.$nomDestin[$i][0].' - '.$nomDestin[$i][1].'","value":"'. $nomDestin[$i][0].' - '.$nomDestin[$i][1].'", "id":"'. $nomDestin[$i][0].'", "dir":"'. $nomDestin[$i][2].'", "ciu":"'. $nomDestin[$i][3].'"}'; 
+    }
+    echo '['.join(', ',$data).']';
+    
+  }
+
+  protected function getSitCar( $_AJAX ){
+    $mSql = "SELECT a.cod_remdes,  
+                    CONCAT( UPPER (replace(replace(a.nom_remdes,'\n',' '),'\r',' ')),'(',UPPER (replace(replace(b.nom_ciudad,'\n',' '),'\r',' ')), ', ', UPPER (replace(replace(a.dir_remdes,'\n',' '),'\r',' ')) ,')') AS nom_remdes
+              FROM ".BASE_DATOS.".tab_genera_remdes a
+        INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b
+                ON  a.cod_ciudad = b.cod_ciudad AND b.ind_estado = 1
+             WHERE  a.ind_remdes = 1 
+                    AND a.ind_estado = 1 
+                    AND a.cod_remdes != 0 
+                    AND CONCAT( a.cod_remdes ,' - ', UPPER( a.nom_remdes ) ) LIKE '%". $_AJAX['term'] ."%'   
+          GROUP BY  1
+          ORDER BY  2";
+
+		$consulta = new Consulta( $mSql, $this->conexion );
+		$sitCar = $consulta->ret_matriz();
+    
+    $data = array();
+    for($i=0, $len = count($sitCar); $i<$len; $i++){
+       $data [] = '{"label":"'.$sitCar[$i][0].' - '.$sitCar[$i][1].'","value":"'. $sitCar[$i][0].' - '.$sitCar[$i][1].'", "id":"'. $sitCar[$i][0].'"}'; 
+    }
+    echo '['.join(', ',$data).']';
+    
+  }
   
   private function getAgencias( $cod_transp, $cod_agenci = NULL )
   {
@@ -154,7 +203,7 @@ class AjaxInsertDespacho
   {
     
     $query = "SELECT a.cod_operad, a.nom_operad
-                FROM ".BASE_DATOS.".tab_genera_opegps a
+                FROM ".CENTRAL.".tab_genera_opegps a
                WHERE a.ind_estado = '1'";
     
     if( $cod_opegps != NULL && $cod_opegps != '' )
@@ -175,57 +224,45 @@ class AjaxInsertDespacho
                        h.num_telmov,b.nom_marcax,c.nom_lineax,d.nom_colorx,
                        e.nom_carroc,a.ano_modelo,a.ind_estado,a.fec_creaci,
                        a.num_config,g.cod_tercer,h.cod_tercer,k.cod_tercer,
-                       k.abr_tercer,
-                       a.cod_opegps,a.usr_gpsxxx,a.clv_gpsxxx,a.idx_gpsxxx
-                  FROM ".BASE_DATOS.".tab_vehicu_vehicu a,
-                       ".BASE_DATOS.".tab_genera_marcas b,
-                       ".BASE_DATOS.".tab_vehige_carroc e,
-                       ".BASE_DATOS.".tab_vehige_colore d,
-                       ".BASE_DATOS.".tab_vehige_lineas c,
-                       ".BASE_DATOS.".tab_vehige_config i,
-                       ".BASE_DATOS.".tab_tercer_tercer g,
-                       ".BASE_DATOS.".tab_tercer_tercer h,";
+                       k.abr_tercer,a.cod_opegps,a.usr_gpsxxx,a.clv_gpsxxx,
+                       a.idx_gpsxxx
+                  FROM ".BASE_DATOS.".tab_vehicu_vehicu a
+            LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b
+                    ON a.cod_marcax = b.cod_marcax
+            LEFT JOIN ".BASE_DATOS.".tab_vehige_carroc e
+                    ON a.cod_carroc = e.cod_carroc
+            LEFT JOIN ".BASE_DATOS.".tab_vehige_colore d
+                    ON a.cod_colorx = d.cod_colorx
+            LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c
+                    ON a.cod_marcax = c.cod_marcax 
+                   AND a.cod_lineax = c.cod_lineax
+            LEFT JOIN ".BASE_DATOS.".tab_vehige_config i
+                    ON a.num_config = i.num_config
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer g
+                    ON a.cod_tenedo = g.cod_tercer
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer h
+                    ON a.cod_conduc = h.cod_tercer";
                        if( $cod_transp != NULL )
                        {
-                         $mQuery .= " ".BASE_DATOS.".tab_transp_vehicu j,";
+                         $mQuery .= " INNER JOIN ".BASE_DATOS.".tab_transp_vehicu j 
+                         ON a.num_placax = j.num_placax AND j.cod_transp = '".$cod_transp."'";
                        }
                        
-           $mQuery .= " ".BASE_DATOS.".tab_tercer_tercer k
-                 WHERE a.cod_marcax = b.cod_marcax AND
-                       a.num_config = i.num_config AND
-                       a.cod_marcax = c.cod_marcax AND
-                       a.cod_lineax = c.cod_lineax AND
-                       a.cod_colorx = d.cod_colorx AND
-                       a.cod_carroc = e.cod_carroc AND
-                       a.cod_tenedo = g.cod_tercer AND
-                       a.cod_conduc = h.cod_tercer AND
-                       a.cod_propie = k.cod_tercer";
+           $mQuery .= " LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
+                       ON a.cod_propie = k.cod_tercer
+                 WHERE 1=1";
     
     if( $cod_transp != NULL )
     {
-      $mQuery .= " AND a.num_placax = j.num_placax AND a.ind_estado = '1' AND j.cod_transp = '".$cod_transp."'";
+      $mQuery .= " AND a.ind_estado = '1' ";
     }
     if( $num_placax != NULL )
     {
       $mQuery .= " AND a.num_placax = '".$num_placax."'";
     }
-    
-    //echo $mQuery;
     $consulta = new Consulta( $mQuery, $this->conexion );
-
-    $resultado = $consulta->ret_matriz();
-
-    //Indicador si el operador gps tiene indicador de id habilitado.
-    $mSql = "SELECT
-                IF(a.apl_idxxxx = '1', 'S', 'N') AS ind_usaidx
-             FROM ".BASE_DATOS.".tab_genera_opegps a
-              WHERE (a.cod_operad='".$resultado[0]['cod_opegps']."' OR a.nit_operad='".$resultado[0]['cod_opegps']."')";
-
-    $consulta = new Consulta( $mSql, $this->conexion );
-    $ind_usaid = $consulta->ret_matriz();
-    array_push($resultado[0], $ind_usaid[0]['ind_usaidx']);
     if($flag != NULL){
-      return $resultado;
+      return $consulta->ret_matriz();
     }else{
       return $mQuery;
     }
@@ -266,7 +303,7 @@ class AjaxInsertDespacho
    *  \brief: identifica el formulario correspondiete y lo pinta
    *  \author: Edward Serrano
    *  \date:  18/01/2017
-   *  \date modified: dia/mes/a�o
+   *  \date modified: dia/mes/aï¿½o
   */
   function getDinamiList($datos)
   { 
@@ -737,7 +774,7 @@ class AjaxInsertDespacho
                                 fec_creaci )
                         VALUES( '".$_AJAX['num_doccon']."', '".$_AJAX['num_divcon']."', '".$_AJAX['tip_doccon']."', '".$_AJAX['ape_tercon']."',
                                 '".$_AJAX['nom_tercon']."', '".( $_AJAX['ape_tercon'].' '.$_AJAX['nom_tercon'] )."', 'N/A', '".$_AJAX['cel_tercon']."', '".$_AJAX['ema_tercon']."',
-                                '1', 'Tercero creado por el m�dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
       // echo "<hr>".$mInsert;
       $consulta = new Consulta( $mInsert, $this->conexion, "R" );
     }
@@ -752,7 +789,7 @@ class AjaxInsertDespacho
                          num_telmov = '".$_AJAX['cel_tercon']."',
                          dir_emailx = '".$_AJAX['ema_tercon']."',
                          cod_estado = '1', 
-                         obs_aproba = 'Tercero activado por el m�dulo de despachos',
+                         obs_aproba = 'Tercero activado por el mï¿½dulo de despachos',
                          usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                          fec_modifi = NOW()
                    WHERE cod_tercer = '".$_AJAX['num_doccon']."'";
@@ -767,7 +804,7 @@ class AjaxInsertDespacho
                               ( cod_tercer,	cod_tipsex, num_licenc, fec_venlic,
                                 obs_conduc, usr_creaci, fec_creaci )
                         VALUES( '".$_AJAX['num_doccon']."', '1', '".$_AJAX['lic_conduc']."', '".$_AJAX['fec_venlic']."',
-                                'Conductor creado por el m�dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                'Conductor creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
       // echo "<hr>".$mInsert;
       $consulta = new Consulta( $mInsert, $this->conexion, "R" );
     }
@@ -827,7 +864,7 @@ class AjaxInsertDespacho
                                   cod_estado, obs_tercer, usr_creaci, fec_creaci )
                           VALUES( '".$_AJAX['num_docpro']."', '".$_AJAX['num_divpro']."', '".$_AJAX['tip_docpro']."', '".$_AJAX['nom_terpro']."',
                                   '".$_AJAX['nom_terpro']."', 'N/A', '".$_AJAX['cel_terpro']."', '".$_AJAX['ema_terpro']."',
-                                  '1', 'Tercero creado por el m�dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                  '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
         }
         else
         {
@@ -838,7 +875,7 @@ class AjaxInsertDespacho
                                   fec_creaci )
                           VALUES( '".$_AJAX['num_docpro']."', '".$_AJAX['num_divpro']."', '".$_AJAX['tip_docpro']."', '".$_AJAX['ape_terpro']."',
                                   '".$_AJAX['nom_terpro']."', '".( $_AJAX['ape_terpro'].' '.$_AJAX['nom_terpro'] )."', 'N/A', '".$_AJAX['cel_terpro']."', '".$_AJAX['ema_terpro']."',
-                                  '1', 'Tercero creado por el m�dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                  '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
         }
          // echo "<hr>".$mInsert;
         $consulta = new Consulta( $mInsert, $this->conexion, "R" );
@@ -847,7 +884,7 @@ class AjaxInsertDespacho
       {
         $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                        SET cod_estado = '1', 
-                           obs_aproba = 'Tercero activado por el m�dulo de despachos',
+                           obs_aproba = 'Tercero activado por el mï¿½dulo de despachos',
                            usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                            fec_modifi = NOW()
                      WHERE cod_tercer = '".$_AJAX['num_docpro']."'";
@@ -888,7 +925,7 @@ class AjaxInsertDespacho
                                   cod_estado, obs_tercer, usr_creaci, fec_creaci )
                           VALUES( '".$_AJAX['num_docten']."', '".$_AJAX['num_divten']."', '".$_AJAX['tip_docten']."', '".$_AJAX['nom_terten']."',
                                   '".$_AJAX['nom_terten']."', 'N/A', '".$_AJAX['cel_terten']."', '".$_AJAX['ema_terten']."',
-                                  '1', 'Tercero creado por el m�dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                  '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
         }
         else
         {
@@ -899,7 +936,7 @@ class AjaxInsertDespacho
                                   fec_creaci )
                           VALUES( '".$_AJAX['num_docten']."', '".$_AJAX['num_divten']."', '".$_AJAX['tip_docten']."', '".$_AJAX['ape_terten']."',
                                   '".$_AJAX['nom_terten']."', '".( $_AJAX['ape_terten'].' '.$_AJAX['nom_terten'] )."', 'N/A', '".$_AJAX['cel_terten']."', '".$_AJAX['ema_terten']."',
-                                  '1', 'Tercero creado por el m�dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                  '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
         }
          // echo "<hr>".$mInsert;
         $consulta = new Consulta( $mInsert, $this->conexion, "R" );
@@ -908,7 +945,7 @@ class AjaxInsertDespacho
       {
         $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                        SET cod_estado = '1', 
-                           obs_aproba = 'Tercero activado por el m�dulo de despachos',
+                           obs_aproba = 'Tercero activado por el mï¿½dulo de despachos',
                            usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                            fec_modifi = NOW()
                      WHERE cod_tercer = '".$_AJAX['num_docten']."'";
@@ -948,7 +985,7 @@ class AjaxInsertDespacho
                                 fec_creaci )
                         VALUES( '".$_AJAX['num_doccon']."', '".$_AJAX['num_divcon']."', '".$_AJAX['tip_doccon']."', '".$_AJAX['ape_tercon']."',
                                 '".$_AJAX['nom_tercon']."', '".( $_AJAX['ape_tercon'].' '.$_AJAX['nom_tercon'] )."', 'N/A', '".$_AJAX['cel_tercon']."', '".$_AJAX['ema_tercon']."',
-                                '1', 'Tercero creado por el m�dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
        // echo "<hr>".$mInsert;
       $consulta = new Consulta( $mInsert, $this->conexion, "R" );
     }
@@ -956,7 +993,7 @@ class AjaxInsertDespacho
     {
       $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                      SET cod_estado = '1', 
-                         obs_aproba = 'Tercero activado por el m�dulo de despachos',
+                         obs_aproba = 'Tercero activado por el mï¿½dulo de despachos',
                          usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                          fec_modifi = NOW()
                    WHERE cod_tercer = '".$_AJAX['num_doccon']."'";
@@ -971,7 +1008,7 @@ class AjaxInsertDespacho
                               ( cod_tercer,	cod_tipsex, num_licenc, fec_venlic,
                                 obs_conduc, usr_creaci, fec_creaci )
                         VALUES( '".$_AJAX['num_doccon']."', '1', '".$_AJAX['lic_conduc']."', '".$_AJAX['fec_venlic']."',
-                                'Conductor creado por el m�dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                'Conductor creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
        // echo "<hr>".$mInsert;
       $consulta = new Consulta( $mInsert, $this->conexion, "R" );
     }
@@ -1306,7 +1343,7 @@ class AjaxInsertDespacho
     }
     $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                    SET cod_estado = '1',
-                       obs_aproba = 'Activado autom�ticamente por el nuevo m�dulo de despachos',
+                       obs_aproba = 'Activado automï¿½ticamente por el nuevo mï¿½dulo de despachos',
                        usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                        fec_modifi = NOW()
                  WHERE cod_tercer = '".$cod_propie."'
@@ -1333,7 +1370,7 @@ class AjaxInsertDespacho
     }
     $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                    SET cod_estado = '1',
-                       obs_aproba = 'Activado autom�ticamente por el nuevo m�dulo de despachos',
+                       obs_aproba = 'Activado automï¿½ticamente por el nuevo mï¿½dulo de despachos',
                        usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                        fec_modifi = NOW()
                  WHERE cod_tercer = '".$cod_tenedo."'
@@ -1360,7 +1397,7 @@ class AjaxInsertDespacho
     }
     $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                    SET cod_estado = '1',
-                       obs_aproba = 'Activado autom�ticamente por el nuevo m�dulo de despachos',
+                       obs_aproba = 'Activado automï¿½ticamente por el nuevo mï¿½dulo de despachos',
                        usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                        fec_modifi = NOW()
                  WHERE cod_tercer = '".$cod_conduc."' ";
@@ -1377,7 +1414,7 @@ class AjaxInsertDespacho
       
     $mUpdate = "UPDATE ".BASE_DATOS.".tab_vehicu_vehicu 
                  SET ind_estado = '1',
-                     obs_estado = 'Activado autom�ticamente por el nuevo m�dulo de despachos',
+                     obs_estado = 'Activado automï¿½ticamente por el nuevo mï¿½dulo de despachos',
                      usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                      fec_modifi = NOW()
                WHERE num_placax = '".$_AJAX['num_placax']."' ";
@@ -1521,7 +1558,7 @@ class AjaxInsertDespacho
   {
     $query = "SELECT a.cod_tipdes, UPPER( a.nom_tipdes ) AS nom_tipdes
      		        FROM ".BASE_DATOS.".tab_genera_tipdes a
-               WHERE a.cod_tipdes != 5
+               WHERE 1
      		    GROUP BY 1
             ORDER BY 2";
 
@@ -1538,7 +1575,7 @@ class AjaxInsertDespacho
     
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">Operador GPS:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr">'.$this->GenerateSelect( $opegps, 'cod_opegps', NULL, 'onchange="habIdOperaGps(this)"', NULL ).'</td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr">'.$this->GenerateSelect( $opegps, 'cod_opegps', NULL, NULL, NULL ).'</td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">Otro GPS:&nbsp;&nbsp;&nbsp;</td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" name="gps_otroxx" id="gps_otroxxID" size="30" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
     $mHtml .= '</tr>';
@@ -1558,7 +1595,7 @@ class AjaxInsertDespacho
       $mHtml .= '<td align="right" width="20%" class="label-tr">Aseguradora:&nbsp;&nbsp;&nbsp;</td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr">'.$this->GenerateSelect( $asegur, 'nom_asegur', NULL, NULL, NULL ).'</td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">No. P&oacute;liza:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" name="num_poliza" id="num_polizaID" size="35" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" name="num_poliza" id="num_polizaID" size="19" maxlength="19" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
     $mHtml .= '</tr>';
        
     $mHtml .= '</table>';
@@ -1587,7 +1624,7 @@ class AjaxInsertDespacho
     
     $mHtml .= '<tr>';
       $mHtml .= '<td align="left" >Observaciones Generales:</td>';
-      $mHtml .= '<td align="left" ><textarea  name="obs_genera" id="obs_generaID" validate="dir" minlength="5" maxlength="200"></textarea></td>';
+      $mHtml .= '<td align="left" ><textarea  name="obs_genera" id="obs_generaID" validate="dir" minlength="1" maxlength="500"></textarea></td>';
       $mHtml .= '<td align="left" >Otros Medios de Comunicaci&oacute;n:</td>';
       $mHtml .= '<td align="left" ><textarea name="otr_comuni" id="otr_comuniID" validate="dir" minlength="5" maxlength="200"></textarea></td>';
     $mHtml .= '</tr>';
@@ -1639,7 +1676,6 @@ class AjaxInsertDespacho
     
     $datos->val_declar = str_replace( '.', '', $datos->val_declar );
     
-    $urlGps = $this->getUrlGps($datos->cod_opegps);
     $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
                           ( 
                             num_despac, cod_manifi, fec_despac, cod_tipdes,
@@ -1650,19 +1686,45 @@ class AjaxInsertDespacho
                             nom_carpag, nom_despag, cod_agedes, fec_pagoxx, 
                             obs_despac, val_declara,usr_creaci, fec_creaci, 
                             val_pesoxx, gps_operad, gps_usuari, gps_paswor,
-                            gps_idxxxx, gps_otroxx, cod_asegur, num_poliza,
-                            gps_urlxxx
+                            gps_idxxxx, gps_otroxx, cod_asegur, num_poliza 
                           ) 
                    VALUES ('$datos->num_despac','$datos->cod_manifi','$datos->fec_despac ".DATE('H:i:s')."','$datos->cod_tipdes',
-                           ".($datos->cod_client != '' ?"'$datos->cod_client'":"NULL").",'$datos->cod_paiori','$datos->cod_depori','$datos->cod_ciuori',
-                           '$datos->cod_paides','$datos->cod_depdes','$datos->cod_ciudes','$datos->cod_cenope',
-                           '$datos->cod_operad','$datos->fec_citcar','$datos->hor_citcar','$datos->sit_cargue',
-                            NULL,NULL,NULL,NULL,
-                            NULL,NULL, '$datos->cod_agenci',NULL,
-                           '$datos->obs_genera','$datos->val_declar','$datos->usr_creaci', NOW(),
-                           '$datos->val_pesoxx','$datos->cod_opegps','$datos->usr_gpsxxx','$datos->clv_gpsxxx',
-                           '$datos->gps_idxxxx','$datos->gps_otroxx','$datos->nom_asegur','$datos->num_poliza',
-                           '$urlGps')"; 
+                           ".($datos->cod_client != '' ?"'$datos->cod_client'":"NULL").",".($datos->cod_paiori != '' ?"'$datos->cod_paiori'":"NULL").",
+                           ".($datos->cod_depori != '' ?"'$datos->cod_depori'":"NULL").",".($datos->cod_ciuori != '' ?"'$datos->cod_ciuori'":"NULL").",
+                           ".($datos->cod_paides != '' ?"'$datos->cod_paides'":"NULL").",".($datos->cod_depdes != '' ?"'$datos->cod_depdes'":"NULL").",
+                           ".($datos->cod_ciudes != '' ?"'$datos->cod_ciudes'":"NULL").",
+                           ".($datos->cod_cenope != '' ? "'$datos->cod_cenope'":"NULL").",
+                           ".($datos->cod_operad != '' ? "'$datos->cod_operad'":"NULL").",'$datos->fec_citcar','$datos->hor_citcar','$datos->sit_cargue',
+                            NULL,NULL,NULL,NULL,NULL,NULL, '$datos->cod_agenci',NULL,
+                           '$datos->obs_genera',".($datos->val_declar != '' ? "'$datos->val_declar'":"NULL").",'$datos->usr_creaci', NOW(),
+                           ".($datos->val_pesoxx != '' ? "'$datos->val_pesoxx'":"NULL").",".($datos->cod_opegps != '' ? "'$datos->cod_opegps'":"NULL").",
+                           '$datos->usr_gpsxxx','$datos->clv_gpsxxx','$datos->gps_idxxxx','$datos->gps_otroxx','$datos->nom_asegur',
+                           '$datos->num_poliza')"; 
+    $consulta = new Consulta($mInsert, $this->conexion, "R");
+    
+    $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_corona
+                          ( 
+                            num_dessat, num_despac, cod_manifi, fec_despac, cod_tipdes,
+                            cod_paiori,	cod_depori,	cod_ciuori,
+                            cod_paides,	cod_depdes,	cod_ciudes,
+                            cod_operad, fec_citcar, hor_citcar, nom_sitcar,
+                            val_flecon, val_despac, val_antici, val_retefu, 
+                            nom_carpag, nom_despag, cod_agedes,  
+                            obs_despac,usr_creaci, fec_creaci, 
+                            val_pesoxx, gps_operad, gps_usuari, gps_paswor,
+                            gps_idxxxx, cod_asegur, num_poliza, num_placax, cod_mercan
+                          ) 
+                   VALUES ('$datos->num_despac','$datos->cod_manifi','$datos->cod_manifi','$datos->fec_despac ".DATE('H:i:s')."','$datos->cod_tipdes',
+                           ".($datos->cod_paiori != '' ?"'$datos->cod_paiori'":"NULL").",
+                           ".($datos->cod_depori != '' ?"'$datos->cod_depori'":"NULL").",".($datos->cod_ciuori != '' ?"'$datos->cod_ciuori'":"NULL").",
+                           ".($datos->cod_paides != '' ?"'$datos->cod_paides'":"NULL").",".($datos->cod_depdes != '' ?"'$datos->cod_depdes'":"NULL").",
+                           ".($datos->cod_ciudes != '' ?"'$datos->cod_ciudes'":"NULL").",
+                           ".($datos->cod_operad != '' ? "'$datos->cod_operad'":"NULL").",'$datos->fec_citcar','$datos->hor_citcar','$datos->sit_cargue',
+                            NULL,NULL,NULL,NULL,NULL,'', '$datos->cod_agenci',
+                           '$datos->obs_genera','$datos->usr_creaci', NOW(),
+                           ".($datos->val_pesoxx != '' ? "'$datos->val_pesoxx'":"NULL").",".($datos->cod_opegps != '' ? "'$datos->cod_opegps'":"NULL").",
+                           '$datos->usr_gpsxxx','$datos->clv_gpsxxx','$datos->gps_otroxx','$datos->nom_asegur',
+                           '$datos->num_poliza', '$datos->num_placax', '$datos->cod_mercan')"; 
     $consulta = new Consulta($mInsert, $this->conexion, "R");
     
     if( $datos->cod_desext != '' ){
@@ -1753,13 +1815,15 @@ class AjaxInsertDespacho
                               (
                                 num_despac, num_docume, num_docalt, cod_genera,
                                 nom_destin, cod_ciudad, dir_destin, num_destin, 
-                                fec_citdes, hor_citdes, usr_creaci, fec_creaci
+                                fec_citdes, hor_citdes, usr_creaci, fec_creaci,
+                                cod_remdes
                               )
                          VALUES
                               (
                                 '$datos->num_despac', '".$_AJAX[ 'cod_remesa'.$k ]."','".$_AJAX[ 'num_docalt'.$k ]."', ".$cod_genera.",  
                                 '".$_AJAX[ 'nom_destin'.$k ]."', ".$cod_ciudad.",'".$_AJAX[ 'dir_destin'.$k ]."', '".$_AJAX[ 'nom_contac'.$k ]."',  
-                                '".$_AJAX[ 'fec_citdes'.$k ]."', '".$_AJAX[ 'hor_citdes'.$k ]."','$datos->usr_creaci', NOW())";
+                                '".$_AJAX[ 'fec_citdes'.$k ]."', '".$_AJAX[ 'hor_citdes'.$k ]."','$datos->usr_creaci', NOW(), 
+                                '".$_AJAX[ 'nom_destin'.$k ]."')";
         $consulta = new Consulta( $mInsert, $this->conexion, "R" );
       
         #segun nuevas especificaciones debe insertar en la tabla  tab_despac_remesa
@@ -1850,20 +1914,11 @@ class AjaxInsertDespacho
       <?php
     }
     
-  }
-  
-
-  private function getUrlGps( $cod_opegps = NULL )
-  {
-    $mSql = "SELECT url_gpsxxx
-               FROM ".BASE_DATOS.".tab_genera_opegps
-              WHERE (cod_operad = '".$cod_opegps."' OR nit_operad = '".$cod_opegps."')";
-    $consulta = new Consulta( $mSql, $this->conexion );
-		$respuesta = $consulta->ret_matriz();
-    if(count($respuesta)>0){
-      return $respuesta[0]['url_gpsxxx'];
+    //Parche de estado a homologar a clientes diferentes a satt_faro
+    if(BASE_DATOS != 'satt_faro'){
+      //Inserta historial de Estados a homologar
+      setTrackingDespac($this->conexion, $datos->num_despac, 2, 1, null);
     }
-    return null;
     
   }
   
@@ -1928,7 +1983,7 @@ class AjaxInsertDespacho
         $mHtml .= '<td align="center" class="'.$style.'"><input type="text" style="width:100%" size="10" name="val_volume'.$_AJAX['counter'].'" id="val_volume'.$_AJAX['counter'].'ID" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
         $mHtml .= '<td align="center" class="'.$style.'">'.$this->GenerateSelect( $empaqu, 'cod_empaqu'.$_AJAX['counter'] ).'</td>';
         $mHtml .= '<td align="center" class="'.$style.'"><input type="text" style="width:100%" size="30" name="nom_mercan'.$_AJAX['counter'].'" id="nom_mercan'.$_AJAX['counter'].'ID" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
-        $mHtml .= '<td align="center" class="'.$style.'"><input type="text" style="width:100%" size="30" name="nom_destin'.$_AJAX['counter'].'" id="nom_destin'.$_AJAX['counter'].'ID" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
+        $mHtml .= '<td align="center" class="'.$style.'"><input type="hidden" name="nom_destin'.$_AJAX['counter'].'" id="nom_destin'.$_AJAX['counter'].'ID"><input type="text" style="width:100%" size="30" name="nom_destinVal'.$_AJAX['counter'].'" id="nom_destinVal'.$_AJAX['counter'].'ID" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
         
       $mHtml .= '</tr>';
       
@@ -1946,8 +2001,8 @@ class AjaxInsertDespacho
       
       $mHtml .= '<tr>';
         $mHtml .= '<td align="center" class="'.$style.'">'.$this->GenerateSelect( $ciudad, 'cod_ciudad'.$_AJAX['counter'] ).'</td>';
-        $mHtml .= '<td align="center" class="'.$style.'"><input validate="dir" style="width:100%" minlength="5" maxlength="40" type="text" size="40" name="dir_destin'.$_AJAX['counter'].'" id="dir_destin'.$_AJAX['counter'].'ID" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
-        $mHtml .= '<td align="center" class="'.$style.'"><input validate="texto" style="width:100%" minlength="5" maxlength="15" type="text" size="15" name="nom_contac'.$_AJAX['counter'].'" id="nom_contac'.$_AJAX['counter'].'ID" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
+        $mHtml .= '<td align="center" class="'.$style.'"><input style="width:100%" minlength="5" maxlength="40" type="text" size="40" name="dir_destin'.$_AJAX['counter'].'" id="dir_destin'.$_AJAX['counter'].'ID" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
+        $mHtml .= '<td align="center" class="'.$style.'"><input validate="numero" style="width:100%" minlength="5" maxlength="15" type="text" size="15" name="nom_contac'.$_AJAX['counter'].'" id="nom_contac'.$_AJAX['counter'].'ID" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
         $mHtml .= '<td align="center" class="'.$style.'"><input validate="fecha" style="width:100%" minlength="10" maxlength="10" type="text" name="fec_citdes'.$_AJAX['counter'].'" id="fec_citdes'.$_AJAX['counter'].'ID" class="date" size="20" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
         $mHtml .= '<td align="center" class="'.$style.'"><input validate="hora" style="width:100%" minlength="8" maxlength="8" type="text" name="hor_citdes'.$_AJAX['counter'].'" id="hor_citcar'.$_AJAX['counter'].'ID" class="time" size="15" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
       $mHtml .= '</tr>';
@@ -2083,21 +2138,22 @@ class AjaxInsertDespacho
     $tipdes = $this->getTipDes();
     $ciuori = $this->GetCiuori( $_AJAX['cod_transp'] );
     $geneCa = $this->GetGeneCarga( $_AJAX['cod_transp'] );
+    $geneMe = $this->GetGeneMerca();
     
     $mHtml  = '<table width="100%" cellspacing="0" cellpadding="0" border="0">';
     
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">* No. Documento:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" onkeypress="return NumericInput( event );"  onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'"  minlength="5" maxlength="14" size="14" obl="1" validate="numero" name="cod_manifi" id="cod_manifiID" /></td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'; validaDespacho(this)"  minlength="5" maxlength="14" size="14" obl="1" validate="dir" name="cod_manifi" id="cod_manifiID" /></td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr"> * No. interno de la transportadora:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" obl="1" type="text" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" minlength="5"  maxlength="15" size="20" name="cod_desext" id="cod_desextID" /></td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" obl="1" validate="dir" type="text" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" minlength="5"  maxlength="20" size="20" name="cod_desext" id="cod_desextID" /></td>';
     $mHtml .= '</tr>';
     
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr"> * Agencia:&nbsp;&nbsp;&nbsp;</td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr">'.$this->GenerateSelect( $agenci, 'cod_agenci', NULL, NULL, 1 ).'</td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr"> * Fecha:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" name="fec_despac" class="date" obl="1" validate="date" minlength="10" maxlength="10" id="fec_despacID" size="20" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" name="fec_despac" class="date" obl="1" validate="date" minlength="10" maxlength="10" value="'.date("Y-m-d").'" id="fec_despacID" size="20" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
     $mHtml .= '</tr>';
     
     $mHtml .= '<tr>';
@@ -2134,7 +2190,7 @@ class AjaxInsertDespacho
   }
 
   private function GetFormDatosCarguex($_AJAX){
-    
+
     $mHtml = '<div id="tableCargue">
                 <input type="hidden" name="cantidad" id="cantidadID" value="0">
                 <table width="100%"  cellspacing="0" cellpadding="0" border="0">
@@ -2146,7 +2202,10 @@ class AjaxInsertDespacho
                   </tr>
                   <tr>
                     <td align="right" width="20%" class="label-tr">* Sitio de Cargue</td>
-                    <td class="label-tr"><input type="text" style="width:100%" id="sit_cargue" name="sit_cargue" obl="1" validate="dir" maxlength="100" minlength="4"></td>
+                    <td class="label-tr">
+                      <input type="hidden" id="sit_cargue" name="sit_cargue" validate="numero" obl="1" minlength="1" maxlength="20">
+                      <input type="text" validate="textarea" style="width:100%" id="sit_cargueVal" name="sit_cargueVal" obl="1" minlength="5" maxlength="255">
+                    </td>
                     <td class="label-tr" colspan="2"></td>
                   </tr>
                 </table>
@@ -2336,6 +2395,25 @@ class AjaxInsertDespacho
     }
   }
 
+  private function GetGeneMerca()
+  {
+    try
+    {
+      $query = "SELECT  a.cod_produc, a.nom_produc
+                  FROM  ".BASE_DATOS.".tab_genera_produc a
+                 WHERE  a.ind_estado = '1'
+              ORDER BY  2 ASC
+          ";
+
+      $consulta = new Consulta($query, $this->conexion);
+      return $listMerc = $consulta -> ret_matriz();
+    }
+    catch(Exception $e)
+    {
+      echo "<pre> Error Funcion GetGeneMerca:";print_r($e);echo "</pre>";
+    }
+  }
+
  /* ! \fn: getVehiculo
    *  \brief: valida los vehiculos cuando se escriben
    *  \author: Andres Torres Vega
@@ -2348,7 +2426,13 @@ class AjaxInsertDespacho
   private function getVehiculo($_AJAX){
     $_VEHICU = $this->getInfoVehiculo( $_AJAX['cod_transp'], $_AJAX['num_placax'], true);
     if (sizeof( $_VEHICU ) > 0 ) {
-      echo json_encode($_VEHICU);
+      // echo json_encode($_VEHICU, JSON_UNESCAPED_UNICODE);
+      $mVehicu = [];
+      foreach ($_VEHICU[0] AS $mIndex => $mData) 
+      {
+        $mVehicu[0][$mIndex] = utf8_encode($mData);
+      }
+      echo json_encode($mVehicu);
     }else{
       echo false;
     }
@@ -2437,7 +2521,7 @@ class AjaxInsertDespacho
    *  \brief: identifica el formulario correspondiete y lo pinta
    *  \author: Edward Serrano
    *  \date:  18/01/2017
-   *  \date modified: dia/mes/a�o
+   *  \date modified: dia/mes/aï¿½o
   */
   function getDinamiListRemolq($datos)
   { 
@@ -2482,6 +2566,31 @@ class AjaxInsertDespacho
       echo "error getDinamiListRemolq :".$e;
     }
   }
+
+
+
+  private function validaViaje(  )
+  { 
+    $mQuery = "SELECT a.num_despac, a.fec_despac
+                 FROM ".BASE_DATOS.".tab_despac_despac a
+           INNER JOIN ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac
+                WHERE a.ind_anulad = 'R' AND
+                      b.ind_activo = 'S' AND 
+                      a.cod_manifi = '".trim( $_REQUEST['cod_manifi'] )."' AND 
+                      b.cod_transp = '".trim( $_REQUEST['cod_transp'] )."' 
+
+                  ";
+  
+    //echo $mQuery;
+    $consulta = new Consulta( $mQuery, $this->conexion );
+    $exists =  $consulta->ret_matriz('a');
+    
+    $m = sizeof($exists);
+    header('Content-Type: application/json');
+    echo json_encode(['status' => ($m <= 0 ? true : false), 'message' => ($m <= 0 ? 'ok' : 'Manifiesto ya esta registrado' ) ]);
+  }
+
+
 
 }
 
