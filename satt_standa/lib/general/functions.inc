@@ -932,6 +932,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
 }
 
 
+
 /*! \fn: getTranspPerfil
     *  \brief: Funcion que retorna la empresa transportadora segun el perfil
     *  \author: Cristian Andrés Torres
@@ -950,6 +951,5 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
       $mResult = $mConsult -> ret_arreglo();
       return $mResult;
     }
-
 
 ?>
