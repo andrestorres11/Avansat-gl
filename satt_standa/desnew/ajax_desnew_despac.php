@@ -1913,7 +1913,7 @@ class AjaxInsertDespacho
       </div>
       <?php
     }
-    
+
     //Parche de estado a homologar a clientes diferentes a satt_faro
     if(BASE_DATOS != 'satt_faro'){
       //Inserta historial de Estados a homologar
