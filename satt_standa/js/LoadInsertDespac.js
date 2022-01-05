@@ -110,7 +110,6 @@ function AddGrid() {
     }
 }
 
-
 function verifyTercero(cod_tercer, elemento, tip_tercer) {
     //alert( tip_tercer );
     try {
