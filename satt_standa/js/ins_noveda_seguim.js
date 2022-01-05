@@ -157,7 +157,7 @@ function logicDelete(code, option){
         palabra = 'habilitar';
         var number = 1;
     }
-    var titulo= '¿Esta seguro';
+    var titulo= 'ï¿½Esta seguro';
     var texto = 'Que desea '+palabra+' este registro?';
     Swal.fire({
         title: titulo,
@@ -223,6 +223,7 @@ function opeEdit(code, option){
     var nom_btn = 'Crear';
     $("#ind_updateID").val(option);
     if(option==1){
+        $('#cod_novedaSpace').show();
         opcion = 'Editar';
         nom_btn = 'Actualizar';
         var standa = $("#standaID").val();
@@ -252,6 +253,7 @@ function opeEdit(code, option){
         $('#rut_iconoxID').removeClass('req');
     }else{
         $('#rut_iconoxID').addClass('req');
+        $('#cod_novedaSpace').hide();
     }
 
     $("#title-modal").empty();
