@@ -2120,6 +2120,7 @@ class AjaxInsertDespacho
       $mHtml .= '<td align="right" width="20%" class="label-tr"> * Peso(Tn):&nbsp;&nbsp;&nbsp;</td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" style="width:100%" type="text" name="val_pesoxx" onkeypress="return NumericInput( event );" id="val_pesoxxID" obl="1" minlength="1" maxlength="5" validate="numero" size="35" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
     $mHtml .= '</tr>';
+    
     #Nuevo campo de generador de carga
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr"> Generador de carga:&nbsp;&nbsp;&nbsp;</td>';
