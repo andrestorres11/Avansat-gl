@@ -2,6 +2,46 @@
 var createdTables = [];
 
 //Functions
+function camelCaseFormat(string)
+{
+    string = string.replace(/ /g, "");
+    return string.charAt(0).toLowerCase() + string.slice(1);
+}
+
+function randomColor(type = "pastel")
+{
+    switch (type)
+    {
+        case "pastel":
+
+            return "hsl(" + 360 * Math.random() + ',' +
+            (25 + 70 * Math.random()) + '%,' + 
+            (85 + 10 * Math.random()) + '%)';
+        
+        case "opaque":
+
+            return "hsl(" + 360 * Math.random() + ',' +
+            20 + '%,' + 
+            30 + '%)';
+        
+        case "neutral":
+
+            return "hsl(" + 360 * Math.random() + ',' +
+            50 + '%,' + 
+            40 + '%)';
+
+        case "grandRange":
+
+            return "hsl(" + 360 * Math.random() + ',' +
+            (60 + 20 * Math.random()) + '%,' + 
+            (25 + 17 * Math.random()) + '%)';
+        
+        default:
+
+            return "hsl(0, 0%, 0%)";
+    }
+}
+
 function compareObjects(value, other, values = false) {
 
 	// Get the value type
@@ -73,33 +113,39 @@ function dashboardDialogEvent(object){
 
     if(element.prop("tagName") == "TD"){
         var row = element.parent();
+    }else if(element.prop("tagName") == "A")
+    {
+        var row = element.parent().parent();
     }else{
         var row = element;
     }
 
+    var despacho = row.find(".noDespacho a").html()
+
     //Add data
-    dashboardDialog.find("#viaje").html(row.find(".viaje").html());
+    dashboardDialog.find("#viaje").html("<a href='index.php?cod_servic=3302&window=central&despac=" + despacho + "&tie_ultnov=20511&opcion=1&etapa=prc' target='_blank'>" + row.find(".viaje a").html() + "</a>");
     dashboardDialog.find("#placa").html(row.find(".placa").html());
-    dashboardDialog.find("#noDespacho").html(row.find(".noDespacho").html());
+    dashboardDialog.find("#noDespacho").html("<a href='index.php?cod_servic=3302&window=central&despac=" + despacho + "&tie_ultnov=20511&opcion=1&etapa=prc' target='_blank'>" + despacho + "</a>");
     dashboardDialog.find("#ruta").html("<span class='primary'>Ruta</span>: <span class='secundary'>" + row.find(".origen").html() + " - " + row.find(".destino").html() + "</span>");
 
     //Get necessary graphic data
     $.ajax({
         url: '../satt_standa/despac/filterData.php?opcion=3',
-        data: {"num_despac": row.find(".noDespacho").html()},
+        data: {"num_despac": despacho},
         type: 'get',
         dataType: 'json',
         success: function(data){
 
             //Grid graphic
             grid = {
-                "left": 15,
+                "left": 70,
                 "right": 15,
-                "top": 80,
+                "top": 100,
+                "bottom": 100,
             }
 
-            if(!createGraphics(data["xAxis"], data["yAxis"], data["data"], "", $('#dashBoardTableTrans #echart_scatter'), grid)){
-                console.log("Ha ocurrido un error generando el gráfico");
+            if(!createGraphics(data["xAxis"], data["yAxis"], data["data"], $('#dashBoardTableTrans #echart_scatter'), grid)){
+                console.log("Ha ocurrido un error generando el gr&aacute;fico");
             }
         },
         beforeSend: function(){
@@ -109,18 +155,17 @@ function dashboardDialogEvent(object){
             loadAjax("end")
         },
         error: function(jqXHR, exception){
-            errorAjax(jqXHR, exception, "Error al cargar el gráfico.", $("#dashBoardTableTrans #echart_scatter"), "HTML")
+            errorAjax(jqXHR, exception, "Error al cargar el gr&aacute;fico.", $("#dashBoardTableTrans #echart_scatter"), "HTML")
         }
     });
 
     //Get Cargue table necessary data
     $.ajax({
         url: '../satt_standa/despac/filterData.php?opcion=4',
-        data: {"num_despac": row.find(".noDespacho").html()},
+        data: {"num_despac": despacho},
         type: 'get',
         dataType: 'json',
         success: function(data){
-
             createDialogTable(data, $("#cargue table"), "cargueTable");
         },
         beforeSend: function(){
@@ -137,11 +182,10 @@ function dashboardDialogEvent(object){
     //Get Cargue table necessary data
     $.ajax({
         url: '../satt_standa/despac/filterData.php?opcion=5',
-        data: {"num_despac": row.find(".noDespacho").html()},
+        data: {"num_despac": despacho},
         type: 'get',
         dataType: 'json',
         success: function(data){
-
             createDialogTable(data, $("#descargue table"), "descargueTable");
         },
         beforeSend: function(){
@@ -178,12 +222,17 @@ function formatlanguage(){
     return language;
 }
 
-function loadAjax(type){
-    if(type == "start"){
-        $.blockUI({ message: '<div class="bg-primary">Espere un momento</div>' });
-    }else{
-        $.unblockUI();
+function loadAjax(x){
+    try {
+        if(x == "start"){
+            $.blockUI({ message: '<div class="bg-primary">Espere un momento</div>' });
+        }else{
+            $.unblockUI();
+        }
+    } catch (error) {
+        console.log(error);
     }
+    
 }
 
 function personalizedAlert(type, title, message, automaticClosing, globalContainer){
@@ -222,11 +271,13 @@ function personalizedAlert(type, title, message, automaticClosing, globalContain
 }
 function errorAjax(jqXHR, exception, title, elementMessage, typeMessage){
 
+    console.log(jqXHR, exception);
+
     //Format error
     if (jqXHR.status === 0) {
-        message = 'Sin conexión.\n Verifique su red.';
+        message = 'Sin conexi&oacuten.\n Verifique su red.';
     } else if (jqXHR.status == 404) {
-        message = 'Página solicitada no encontrada. [404]';
+        message = 'P&aacute;gina solicitada no encontrada. [404]';
     } else if (jqXHR.status == 500) {
         message = 'Error del servidor [500].';
     } else if (exception === 'parsererror') {
@@ -270,24 +321,32 @@ function loadSelectableFields(){
         async: false,
         success: function(data){
             
-            //Necessary data
-            var necessaryData = data["cod_tipdes"];
+            for (const key in data)
+            {
+                if (data.hasOwnProperty(key))
+                {
+                    //Necessary data
+                    const necessaryData = data[key];
+                    let size = null;
 
-            //Calculate size
-            var size = 12 / necessaryData["rowMaxQuantity"];
+                    //Calculate size
+                    if(necessaryData["rowMaxQuantity"] > 12)
+                        size = 1
+                    else
+                        size = 12 / necessaryData["rowMaxQuantity"];
 
-            //Create selectable fields
-            createSelectableFields(
-                necessaryData["type"],
-                necessaryData["rowContainer"],
-                necessaryData["elementContainer"],
-                size,
-                necessaryData["rowMaxQuantity"],
-                necessaryData["data"],
-                "cod_tipdes",
-                necessaryData["name"],
-                $(necessaryData["container"]));
-            
+                    //Create selectable fields
+                    createSelectableFields(
+                        necessaryData["type"],
+                        necessaryData["rowContainer"],
+                        necessaryData["elementContainer"],
+                        size,
+                        necessaryData["data"],
+                        key,
+                        necessaryData["name"],
+                        $(necessaryData["container"]));
+                }
+            }
         },
         beforeSend: function(){
             loadAjax("start")
@@ -299,18 +358,22 @@ function loadSelectableFields(){
             errorAjax(jqXHR, exception, "Error al cargar el campo.", "", "alert")
         }
     });
-}
-function createSelectableFields(type, rowContainer, elementContainer, size, quantity, data, name, visualName, container){
 
+    
+}
+function createSelectableFields(type, rowContainer, elementContainer, size, data, name, visualName, container){
+    
     var cloneRowContainer = (rowContainer != null && rowContainer != "" && rowContainer != undefined) ? $("<" + rowContainer + ">") : null;
     var cloneElementContainer = (elementContainer != null && elementContainer != "" && elementContainer != undefined) ? $("<" + elementContainer + ">") : null;
-    var cloneElement;
-    var parentElement;
+    var cloneElement = null;
+    var parentElement = null;
+    let orderField = "second";
 
     //Select elemets to create
     switch (type) {
 
         case "checkbox":
+            orderField = "first";
             cloneElement = $("<input>").attr("type", "checkbox").attr("name", name + "[]");
 
             //Add Bootstrap styles
@@ -318,6 +381,7 @@ function createSelectableFields(type, rowContainer, elementContainer, size, quan
             break;
 
         case "radio":
+            orderField = "first";
             cloneElement = $("<input>").attr("type", "radio").attr("name", name);
             break;
 
@@ -335,137 +399,133 @@ function createSelectableFields(type, rowContainer, elementContainer, size, quan
             break;
         
         default:
-            parentElement = $("<select>").attr("name", name)
+            parentElement = $("<select>").attr("name", name).addClass("form-control");
             cloneElement = $("<option>");
             break;
     }
 
-    //Assign value and html to elements
-    if(parentElement != undefined){
+    //Validate no row container
+    if(rowContainer == elementContainer){
+        cloneRowContainer = container;
+    }
 
-        //Go through data
-        for (var index = 0; index < data.length; index++) {
-            
-            //Clone element
-            var element = cloneElement.clone();
-            element.val(data[index]["id"]);
-            element.html(data[index]["value"]);
-
-            //Assign element to parent
-            parentElement.append(element);
-        }
-
-        //Create visual name
-        var visualNameElement = $("<b>").addClass("fieldLabel");
-        visualNameElement.html(visualName);
-
-        //Assign parent to element container
-        if(cloneElementContainer != null){
-
-            //Assign container size
-            cloneElementContainer.addClass("col-sm-" + size);
-
-            cloneElementContainer.append(parentElement);
-        }else{
-            
-            cloneElementContainer = parentElement;
-
-            //Assign container size
-            cloneElementContainer.addClass("col-sm-" + size);
-        }
-
-        //Assign container elements
-        if(cloneRowContainer != null){
-
-            //Assign container size
-            cloneRowContainer.addClass("col-sm-12");
-            
-            cloneRowContainer.append(cloneElementContainer);
-        }else{
-            cloneRowContainer = cloneElementContainer;
-
-            //Assign container size
-            cloneRowContainer.addClass("col-sm-12");
-        }
-
-        //Assign container row to container
-        container.append(cloneRowContainer);
-
-        //Assing visual name
-        if(type == "checkbox" || type == "radio")
-            visualNameElement.insertAfter(parentElement);
-        else
-            visualNameElement.insertBefore(parentElement);
-
-    }else{
-
-        //Create necessary variables
-        var banValidateRow = 0;
-
-        //Go through data
-        for (var index = 0; index < data.length; index++) {
-            
-            //Clone element
-            var element = cloneElement.clone();
-            element.val(data[index]["id"]);
-
-            //Create visual name
-            var visualNameElement = $("<b>").addClass("fieldLabel");
-            visualNameElement.html(data[index]["value"]);
-
-            //Assign element to element container
-            if(cloneElementContainer != null){
-
-                //Clone element container
-                var elementContainer = cloneElementContainer.clone();
-
-                //Assign container size
-                elementContainer.addClass("col-sm-" + size);
-
-                elementContainer.append(element);
-            }else{
-                var elementContainer = element;
-
-                //Assign container size
-                elementContainer.addClass("col-sm-" + size);
-            }
-
-            //Validate new row
-            if((index + 1) % (quantity + 1) == 0 || index == 0){
-
-                //Validate first row
-                if(index != 0){
-
-                    //Assign old container row to container
-                    container.append(rowContainer);
-                }
-
-                //Clone row container
-                var rowContainer = (cloneRowContainer != null) ? cloneRowContainer.clone() : null;
-            }
-
-            //Assign container elements
-            if(rowContainer != null){
-
-                //Assign container size
-                rowContainer.addClass("col-sm-12");
+    //Validate subtype
+    if(parentElement != null)
+    {
+        //Fill parent element
+        for (const key in data)
+        {
+            if (data.hasOwnProperty(key))
+            {
+                const subitemData = data[key];
                 
-                rowContainer.append(elementContainer);
+                //Create subitem
+                let subitem = cloneElement.clone();
 
-                //Assing visual name
-                if(type == "checkbox" || type == "radio")
-                    visualNameElement.insertAfter(element);
-                else
-                    visualNameElement.insertBefore(element);
+                //Fill subitem
+                subitem.html(subitemData.value).val(subitemData.id)
 
-            }else{
-                console.log("Es necesario un contenedor de fila");
-                break;
+                //Assign subitem to parent
+                parentElement.append(subitem)
             }
         }
 
-        //Assign container row to container
-        container.append(rowContainer);
+        //Fill elementContainer
+        if(rowContainer == "tr" || rowContainer == "td")
+        {
+            visualNameContainer = cloneElementContainer.clone().addClass("col-sm-" + size).html(visualName);
+            parentElementContainer = cloneElementContainer.clone().addClass("col-sm-" + size).append(parentElement);
+            
+            //Fill rowContainer
+            if(orderField == "second")
+                cloneRowContainer.append(visualNameContainer, parentElementContainer);
+            else
+                loneRowContainer.append(parentElementContainer, visualNameContainer);
+        }
+        else
+        {
+            visualNameContainer = $("<span>").addClass("fieldLabel").html(visualName);
+            parentElementContainer = parentElement;
+
+            //Fill rowContainer
+            if(orderField == "second")
+                cloneRowContainer.append(cloneElementContainer
+                                            .clone()
+                                            .addClass("col-sm-" + size)
+                                            .append(
+                                                visualNameContainer,
+                                                parentElementContainer
+                                            )
+                )
+            else
+                cloneRowContainer.append(cloneElementContainer
+                                        .clone()
+                                        .addClass("col-sm-" + size)
+                                        .append(
+                                            parentElementContainer,
+                                            visualNameContainer
+                                        )
+                )
+        }
+
+
+        //Create element
+        container.append(cloneRowContainer);
+    }else{
+        
+        //Add Bootstrap styles
+        cloneRowContainer.addClass("row");
+
+        //Fill rowContainer
+        for (const key in data) {
+            if (data.hasOwnProperty(key)) {
+                const elementData = data[key];
+                
+                //Create and fill element
+                let element = cloneElement.clone().val(elementData.id)
+
+                //Fill elementContainer
+                if(rowContainer == "tr")
+                {
+                    visualNameContainer = cloneElementContainer.clone().addClass("col-sm-" + size).html(elementData.value);
+                    parentElementContainer = cloneElementContainer.clone().addClass("col-sm-" + size).append(element);
+                    
+                    //Fill rowContainer
+                    if(orderField == "second")
+                        cloneRowContainer.append(visualNameContainer, parentElementContainer);
+                    else
+                        loneRowContainer.append(parentElementContainer, visualNameContainer);
+                }
+                else
+                {
+                    visualNameContainer = $("<span>").addClass("fieldLabel").html(elementData.value);
+                    parentElementContainer = element;
+
+                    //Fill rowContainer
+                    if(orderField == "second")
+                        cloneRowContainer.append(cloneElementContainer
+                                                    .clone()
+                                                    .addClass("col-sm-" + size)
+                                                    .append(
+                                                        visualNameContainer,
+                                                        parentElementContainer
+                                                    )
+                        )
+                    else
+                        cloneRowContainer.append(cloneElementContainer
+                                                .clone()
+                                                .addClass("col-sm-" + size)
+                                                .append(
+                                                    parentElementContainer,
+                                                    visualNameContainer
+                                                )
+                        )
+                }
+            }
+        }
+
+        //Create element
+        container.append(cloneRowContainer);
     }
 }
 
@@ -475,48 +535,42 @@ function createTr(row){
 //Validate request
     //Itinerario
     var itinerario = "";
-    if(row["itinerario"] == "Iniciado"){
-        itinerario = "success";
-    }else{
+    if(row["itinerario"] == "Por Iniciar"){
         itinerario = "danger";
+    }else if(row["itinerario"] == "No Requiere"){
+        itinerario = "white";
+    }else{
+        itinerario = "success";
     }
     
     //Reporte
-    var reporte = "danger";
+    var reporte = "";
     if(row["reporte"] != ''){
         reporte = row["reporte"];
     }
 
-    //Estado de Cargue
+    //Estado de Cargue - Fecha Cargue
     var estadoDeCargue = "";
-    if(row["estadoDeCargue"] == "A tiempo"){
-        estadoDeCargue = "warning";
-    }else if(row["estadoDeCargue"] == "Adelantado"){
-        estadoDeCargue = "success";
-    }else{
+    var fechaDeCargue = "";
+    if(row["estadoDeCargue"] == "Atrasado" || row["estadoDeCargue"] == "No cumpli&oacute"){
         estadoDeCargue = "danger";
+        fechaDeCargue = "danger";
+    }else if(row["estadoDeCargue"] == "A tiempo" || row["estadoDeCargue"] == "Adelantado" || row["estadoDeCargue"] == "Cumpli&oacute"){
+        estadoDeCargue = "success";
+        fechaDeCargue = "success";
     }
     
-    //Fecha Cargue
-    var fechaDeCargue = "danger";
-    if(row["colorCargue"] != ''){
-        fechaDeCargue = row["colorCargue"];
-    }
-
-    //Estado de Descargue
+    //Estado de Descargue - Fecha de Descargue
     var estadoDeDescargue = "";
-    if(row["estadoDeDescargue"] == "A tiempo"){
-        estadoDeDescargue = "warning";
-    }else if(row["estadoDeDescargue"] == "Adelantado"){
-        estadoDeDescargue = "success";
-    }else{
+    var fechaDeDescargue = "";
+    if(row["estadoDeDescargue"] == "Atrasado" || row["estadoDeDescargue"] == "No cumpli&oacute"){
         estadoDeDescargue = "danger";
-    }
-
-    //Fecha Descargue
-    var fechaDeDescargue = "danger";
-    if(row["colorDescargue"] != ''){
-        fechaDeDescargue = row["colorDescargue"];
+        fechaDeDescargue = "danger";
+    }else if(row["estadoDeDescargue"] == "A tiempo" || row["estadoDeDescargue"] == "Adelantado" || row["estadoDeDescargue"] == "Cumpli&oacute"){
+        estadoDeDescargue = "success";
+        fechaDeDescargue = "success";
+    }else{
+        row["estadoDeDescargue"] = "Pendiente";
     }
 
     //Cumplimiento de Plan de Ruta
@@ -524,198 +578,159 @@ function createTr(row){
     if(row["cumplimientoDePlanDeRuta"] > 80){
         cumplimientoDePlanDeRuta = "success";
     }else if(row["cumplimientoDePlanDeRuta"] > 30 && row["cumplimientoDePlanDeRuta"] <= 80){
-        
         cumplimientoDePlanDeRuta = "warning";
     }else{
         cumplimientoDePlanDeRuta = "danger";
     }
 
+
+    //Clean null
+    if(row["estadoDeDescargue"] == null){
+        row["estadoDeDescargue"] = " ";
+    }
+    
+    if(row["fechaDeDescargue"] == null){
+        row["fechaDeDescargue"] = " ";
+    }
+    
+    if(row["localizacion"] == null){
+        row["localizacion"] = " ";
+    }
+
 //Create Elements
     //Tr
-    var tr = $("<tr>");
-
-    //Td
-    var tdNoDespacho = $("<td>").addClass('openDashBoardDialog').addClass('noDespacho').addClass("loadDashboars").css({"white-space": "nowrap"}).html(row["noDespacho"]);
-    var tdItinerario = $("<td>").addClass('itinerario');
-    var tdReporte = $("<td>").addClass('reporte');
-    var tdEtapa = $("<td>").addClass('etapa');
-    var tdPlaca = $("<td>").addClass('placa').css({"white-space": "nowrap"}).html(row["placa"]);
-    var tdViaje = $("<td>").addClass('openDashBoardDialog').addClass('viaje').css({"white-space": "nowrap"}).html(row["viaje"]);
-    var tdOrigen = $("<td>").addClass('origen').css({"white-space": "nowrap"}).html(row["origen"]);
-    var tdDestino = $("<td>").addClass('destino').css({"white-space": "nowrap"}).html(row["destino"]);
-    var tdEstadoDeCargue = $("<td>").addClass('estadoDeCargue');
-    var tdFechaDeCargue = $("<td>").addClass('fechaDeCargue');
-    var tdEstadoDeDescargue = $("<td>").addClass('estadoDeDescargue');
-    var tdFechaDeDescargue = $("<td>").addClass('fechaDeDescargue');
-    var tdProcesoDeEntrega = $("<td>").addClass('procesoDeEntrega');
-    var tdLocalizacion = $("<td>").addClass('tdLocalizacion').html(row["localizacion"]).css({"text-align": "initial"});
-    var tdCumplimientoDePlanDeRuta = $("<td>").addClass('cumplimientoDePlanDeRuta').addClass("project_progress");
-    var tdConductor = $("<td>").addClass('conductor').css({"white-space": "nowrap"}).html(row["conductor"]);
-    var tdNoConductor = $("<td>").addClass('noConductor').css({"white-space": "nowrap"}).html(row["noConductor"]);
-    var tdPoseedor = $("<td>").addClass('poseedor').css({"white-space": "nowrap"}).html(row["poseedor"]);
-
-    //I
-    var iReporte = $("<i>").addClass("glyphicon glyphicon-off btn-" + reporte);
-
-    //B
-    var bEtapa = $("<b>").html(row["etapa"]);
-
-    //Buttons
-    var spanItinerario = $("<span>").addClass("btn btn-" + itinerario + " btn-xs").html(row["itinerario"]);
-    var spanEstadoDeCargue = $("<span>").addClass("btn btn-" + estadoDeCargue).html(row["estadoDeCargue"]);
-    var spanFechaDeCargue = $("<span>").addClass("btn btn-" + fechaDeCargue).html(row["fechaDeCargue"]);
-    var spanEstadoDeDescargue = $("<span>").addClass("btn btn-" + estadoDeDescargue).html(row["estadoDeDescargue"]);
-    var spanFechaDeDescargue = $("<span>").addClass("btn btn-" + fechaDeDescargue).html(row["fechaDeDescargue"]);
-
-    //Div
-    var divProcesoDeEntrega1 = $("<div>").addClass("verticalTable");
-    var divProcesoDeEntrega11 = $("<div>").addClass("btn-warning").html("T");
-    var divProcesoDeEntrega12 = $("<div>").html(row["procesoDeEntrega"]["t"]);
-    var divProcesoDeEntrega13 = $("<div>").addClass("btn-success").html("D");
-    var divProcesoDeEntrega14 = $("<div>").html(row["procesoDeEntrega"]["d"]);
-    var divProcesoDeEntrega15 = $("<div>").addClass("btn-danger").html("P");
-    var divProcesoDeEntrega16 = $("<div>").html(row["procesoDeEntrega"]["p"]);
-    var divProcesoDeEntrega17 = $("<div>").addClass("btn-success").html("C");
-    var divProcesoDeEntrega18 = $("<div>").html(row["procesoDeEntrega"]["c"]);
-    var divProcesoDeEntrega19 = $("<div>").addClass("btn-danger").html("N");
-    var divProcesoDeEntrega20 = $("<div>").html(row["procesoDeEntrega"]["n"]);
-    var divCumplimientoDePlanDeRuta1 = $("<div>").addClass("progress progress_sm");
-    var divCumplimientoDePlanDeRuta11 = $("<div>").
-                                            addClass("progress-bar btn-" + cumplimientoDePlanDeRuta).
-                                            attr("role", "progressbar").
-                                            attr("data-transitiongoal", row["cumplimientoDePlanDeRuta"]).
-                                            html(row["cumplimientoDePlanDeRuta"] + "%").attr("title", row["cumplimientoDePlanDeRuta"] + "%");
-
-//Assign elements
-    //Itinerario
-    tdItinerario.append(spanItinerario);
-
-    //Reporte
-    tdReporte.append(iReporte);
-
-    //Etapa
-    tdEtapa.append(bEtapa);
-
-    //Estado de Cargue
-    tdEstadoDeCargue.append(spanEstadoDeCargue);
-
-    //Fecha Cargue
-    tdFechaDeCargue.append(spanFechaDeCargue);
-
-    //Estado de Descargue
-    tdEstadoDeDescargue.append(spanEstadoDeDescargue);
-
-    //Fecha Descargue
-    tdFechaDeDescargue.append(spanFechaDeDescargue);
-
-    //Proceso de entrega
-    divProcesoDeEntrega1.append(divProcesoDeEntrega11);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega12);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega13);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega14);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega15);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega16);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega17);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega18);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega19);
-    divProcesoDeEntrega1.append(divProcesoDeEntrega20);
-    tdProcesoDeEntrega.append(divProcesoDeEntrega1);
-
-    //Cumplimiento de Plan de Ruta
-    divCumplimientoDePlanDeRuta1.append(divCumplimientoDePlanDeRuta11);
-    tdCumplimientoDePlanDeRuta.append(divCumplimientoDePlanDeRuta1);
-
-    //Tr
-    tr.append(tdNoDespacho);
-    tr.append(tdItinerario);
-    tr.append(tdReporte);
-    tr.append(tdEtapa);
-    tr.append(tdPlaca);
-    tr.append(tdViaje);
-    tr.append(tdOrigen);
-    tr.append(tdDestino);
-    tr.append(tdEstadoDeCargue);
-    tr.append(tdFechaDeCargue);
-    tr.append(tdEstadoDeDescargue);
-    tr.append(tdFechaDeDescargue);
-    tr.append(tdProcesoDeEntrega);
-    tr.append(tdLocalizacion);
-    tr.append(tdCumplimientoDePlanDeRuta);
-    tr.append(tdConductor);
-    tr.append(tdNoConductor);
-    tr.append(tdPoseedor);
+    var tr = $(`<tr>
+        <td class='openDashBoardDialog viaje' style='white-space: nowrap;'><a href='#' onclick='dashboardDialogEvent(this); return false;'>`+row["viaje"]+`</a></td>
+        <td class='openDashBoardDialog noDespacho loadDashboars' id=`+row["noDespacho"]+`' style='white-space: nowrap;'><a href='index.php?cod_servic=3302&window=central&despac=` + row["noDespacho"] + `&tie_ultnov=20511&opcion=1&etapa=prc' target='_blank'>` + row["noDespacho"] + `</a></td>
+        <td class='itinerario'><span class='btn btn-` + itinerario + ` btn-xs'>`+row["itinerario"]+`</spam></td>
+        <td class='reporte'><i class='glyphicon glyphicon-off btn-` + reporte +`'</i></td>
+        <td class='etapa'><b>`+row["etapa"]+`</td>
+        <td class='tiempo `+row["colorAlarma"]+`' ><b>`+row["tiempoAlarma"]+`</td>
+        <td class='placa' style='white-space: nowrap;'>`+row["placa"]+`</td>
+        <td class='operadorGPS' style='white-space: nowrap;'>`+row["operadorGPS"]+`</td>
+        <td class='origen' style='white-space: nowrap;'>`+row["origen"]+`</td>
+        <td class='destino' style='white-space: nowrap;'>`+row["destino"]+`</td>
+        <td class='estadoDeCargue'><span class='btn btn-` + estadoDeCargue + `'>`+row["estadoDeCargue"]+`</spam></td>
+        <td class='fechaDeCargue'><span class='btn btn-` + fechaDeCargue + `'>`+row["fechaDeCargue"]+`</spam></td>
+        <td class='estadoDeDescargue'><span class='btn btn-` + estadoDeDescargue + `'>`+row["estadoDeDescargue"]+`</spam></td>
+        <td class='fechaDeDescargue'><span class='btn btn-` + fechaDeDescargue + `'>`+row["fechaDeDescargue"]+`</spam></td>
+        <td class='procesoDeEntrega'>
+            <div class='verticalTable'>
+                <div class='btn-warning'>T</div>
+                <div>` + row["procesoDeEntrega"]["t"] + `</div>
+                <div class='btn-success'>D</div>
+                <div>` + row["procesoDeEntrega"]["d"] + `</div>
+                <div class='btn-danger'>P</div>
+                <div>` + row["procesoDeEntrega"]["p"] + `</div>
+                <div class='btn-success'>C</div>
+                <div>` + row["procesoDeEntrega"]["c"] + `</div>
+                <div class='btn-danger'>N</div>
+                <div>` + row["procesoDeEntrega"]["n"] + `</div>
+            </div>
+        </td>
+        <td class='tdLocalizacion' style='text-align: initial;'>`+row["localizacion"]+`</td>"
+        <td class='fechaNovedad' style='white-space: nowrap;'>`+row["fechaNovedad"]+`</td>
+        <td class='usuarioNovedad' style='white-space: nowrap;'>`+row["usuarioNovedad"]+`</td>
+        <td class="cumplimientoDePlanDeRuta project_progress">
+            <div class="progress progress_sm">
+            <div class="progress-bar btn-` + cumplimientoDePlanDeRuta + `" role="progressbar" data-transitiongoal="` + row["cumplimientoDePlanDeRuta"] + `" title="` + row["cumplimientoDePlanDeRuta"] + `%"
+            style="
+                width: ` + row["cumplimientoDePlanDeRuta"] + `%;
+            ">` + row["cumplimientoDePlanDeRuta"] + `%</div>
+            </div>
+        </td>
+        <td class='conductor' style='white-space: nowrap;'>`+row["conductor"]+`</td>
+        <td class='celularConductor' style='white-space: nowrap;'>`+row["celularConductor"]+`</td>"
+        <td class='poseedor' style='white-space: nowrap;'>`+row["poseedor"]+`</td>
+        <td class='ultimaNovedad' style='white-space: nowrap;'>`+row["nom_noveda"]+`</td></tr>"`);
 
     return tr;
 }
 
 function executeFilter(){
 
-    //Get data
-    $.ajax({
-        url: '../satt_standa/despac/filterData.php?opcion=1',
-        dataType: 'json',
-        async: false,
-        type: "post",
-        data: $("#filter").serialize(),
-        beforeSend: function(){
-            loadAjax("start");
-        },
-        success: function(data){
+    try {
+        //Get data
+        $.ajax({
+            url: '../satt_standa/despac/filterData.php?opcion=1',
+            dataType: 'json',
+            type: "post",
+            data: $("#filter").serialize(),
+            beforeSend: function(){
+                loadAjax("start")
+            },
+            success: function(data){
 
-            //Validate empty
-            if(objectLength(data) == 0){
-                personalizedAlert("danger", "No se encontraron registros.", "No se ha encontrado ningún registro, con el filtro especificado, por favor valídelo.", true, $("#dashBoardTableTrans"));
-            }
+                console.log(data[0]);   
 
-            //Clean table body
-            table.clear();
-            counter = 1;
+                //Clean table body
+                table.rows().remove().draw();
+                counter = 1;
 
-            //Go through json data
-            for(var i=0; i < data.length; i++){
-
-                table.row.add(createTr(data[i])).draw( false );
-            }
-
-            // Progressbar
-            if ($(".progress .progress-bar")[0]) {
-                $('.progress .progress-bar').progressbar();
-            }
-
-            //Add table controllers event
-            $("#filter #dataTable_DashBoard").on("DOMSubtreeModified", function(){
-
-                // Progressbar
-                if ($(".progress .progress-bar")[0]) {
-                    $('.progress .progress-bar').progressbar();
+                //Validate empty
+                if(objectLength(data) == 0){
+                    personalizedAlert("danger", "No se encontraron registros.", "No se ha encontrado ning&uacute;n registro, con el filtro especificado, por favor val&iacute;delo.", true, $("#dashBoardTableTrans"));
+                    return false;
                 }
 
+                //Go through json data
+                for(var i=0; i < data.length; i++){
+                    //console.log(createTr(data[i]));         
+                    table.row.add(createTr(data[i])).draw( false );
+                }
+
+                //Count Data
+                $("#countRowsDataTable").html(" | DESPACHOS ENCONTRADOS: " + data.length);
+
+                // Progressbar
+                /*if ($(".progress .progress-bar")[0]) {
+                    $('.progress .progress-bar').progressbar();
+                }*/
+
+                //Add table controllers event
+                $("#filter #dataTable_DashBoard").on("DOMSubtreeModified", function(){
+
+                    // Progressbar
+                    /*if ($(".progress .progress-bar")[0]) {
+                        $('.progress .progress-bar').progressbar();
+                    }
+
+                    //Add event dasbhboard dialog
+                    $(".openDashBoardDialog a").unbind("click");
+                    $(".openDashBoardDialog a").on("click", function(){
+                        
+                        dashboardDialogEvent(this);
+                    });*/
+                });
+
                 //Add event dasbhboard dialog
-                $(".openDashBoardDialog").unbind("click");
-                $(".openDashBoardDialog").on("click", function(){
+                /*$(".openDashBoardDialog a").on("click", function(){
                     
                     dashboardDialogEvent(this);
-                });
-            });
+                });*/
+            },
+            complete: function(){
+                loadAjax("end")
+            },
+            error: function(jqXHR, exception){
+                errorAjax(jqXHR, exception, "Error al cargar el campo.", "", "alert")
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
 
-            //Add event dasbhboard dialog
-            $(".openDashBoardDialog").on("click", function(){
-                
-                dashboardDialogEvent(this);
-            });
-        },
-        complete: function(){
-
-            loadAjax("end");
-        },
-        error: function(jqXHR, exception){
-            errorAjax(jqXHR, exception, "Error al cargar la tabla.", $("#filter #dataTable_DashBoard tbody"), "table")
-        }
-    });
+    
 }
 
 //GRAPHICS FUNCTION
-function createGraphics(xLabels, yLabels, data, formatter, idGraphic, grid = {}) {
+function createGraphics(xLabels, yLabels, data, container, grid = {}, legend = true, tooltipData = true) {
+
+    //Validate empty data
+    if(objectLength(data) == 0 || objectLength(data["data"]) || objectLength(data["seires"])){
+        $(container).html("<div class='alert alert-warning' style='font-size: 10pt;'>Sin datos.<br>No se han encontrado registros para generar este gr&aacute;fico.</div>");
+        return false;
+    }
 
     function tooltip(params){
 
@@ -724,9 +739,19 @@ function createGraphics(xLabels, yLabels, data, formatter, idGraphic, grid = {})
 
             var formatterType = params.data.formatterType;
 
+            //Validate function format
+            if(typeof formatterType == "function"){
+                return formatterType(params.data);
+            }
+
             //Validate percentage format
             if(formatterType == "percentage"){
                 return params.name + ":<br> * " + params.value + "%";
+            }
+
+            //Validate none format
+            if(formatterType == "none"){
+                return "";
             }
 
         }
@@ -747,11 +772,6 @@ function createGraphics(xLabels, yLabels, data, formatter, idGraphic, grid = {})
     var banToGoThrough = 0;
     var zIndex = 100;
 
-    //Validate formatter
-    if(formatter == ""){
-        formatter = "{b0}: {c0}";
-    }
-
     //Segment necessary data
     var legendNames = [];
     var seriesObject = [];
@@ -771,25 +791,31 @@ function createGraphics(xLabels, yLabels, data, formatter, idGraphic, grid = {})
     $.each(dataToGoThrough, function(index, value){
         
         //Get legend names
-        if(banToGoThrough == 0){
-            if(index != "withoutAxes")
-                legendNames.push(index);
-        }else{
-            legendNames.push(value["name"]);
+        if(legend){
+            if(banToGoThrough == 0){
+                if(index != "withoutAxes")
+                    legendNames.push(index);
+            }else{
+                legendNames.push(value["name"]);
+            }
         }
+        
 
         //Get series
         if(banToGoThrough == 0){
 
             if(index != "withoutAxes"){
                 
-                //Assign tooltip
-                value["tooltip"] =  {
-                    trigger: 'item',
-                    formatter: function(params) {
-                        return tooltip(params);
-                    }
-                };
+                if(tooltipData == true){
+                    //Assign tooltip
+                    value["tooltip"] =  {
+                        trigger: 'item',
+                        formatter: function(params) {
+                            return tooltip(params);
+                        }
+                    };
+                }
+                
 
                 seriesObject.push(value);
             }else{
@@ -799,15 +825,17 @@ function createGraphics(xLabels, yLabels, data, formatter, idGraphic, grid = {})
 
                     value1["z"] = zIndex;
                     
-                    //Assign tooltip to each data
-                    $.each(value1["data"], function(index, value){
-                        value["tooltip"] =  {
-                            trigger: 'item',
-                            formatter: function(params) {
-                                return tooltip(params);
-                            }
-                        };
-                    });
+                    if(tooltipData == true){
+                        //Assign tooltip to each data
+                        $.each(value1["data"], function(index, value){
+                            value["tooltip"] =  {
+                                trigger: 'item',
+                                formatter: function(params) {
+                                    return tooltip(params);
+                                }
+                            };
+                        });
+                    }
 
                     
                     seriesObject.push(value1);
@@ -822,16 +850,18 @@ function createGraphics(xLabels, yLabels, data, formatter, idGraphic, grid = {})
     //Get series
     if(banToGoThrough == 1){
         
-        //Assign tooltip to each data
-        $.each(data[0]["data"], function(index, value){
-            
-            value["tooltip"] =  {
-                trigger: 'item',
-                formatter: function(params) {
-                    return tooltip(params);
-                }
-            };
-        });
+        if(tooltipData == true){
+            //Assign tooltip to each data
+            $.each(data[0]["data"], function(index, value){
+                
+                value["tooltip"] =  {
+                    trigger: 'item',
+                    formatter: function(params) {
+                        return tooltip(params);
+                    }
+                };
+            });
+        }
         
         seriesObject.push(data[0]);
     }
@@ -867,9 +897,9 @@ function createGraphics(xLabels, yLabels, data, formatter, idGraphic, grid = {})
     }
 
     //echart Scatter
-    if ( idGraphic.length ){ 
+    if ( container.length ){ 
         
-        var echartScatter = echarts.init(idGraphic[0]);
+        var echartScatter = echarts.init(container[0]);
 
         echartScatter.setOption({
             title: {
@@ -936,12 +966,44 @@ function createDialogTable(data, table, name){
     if(createdTables.find(function(element){ return element == name; })){
         var dataTableDialog = table.DataTable();
     }else{
-        var dataTableDialog = table.DataTable({language: formatlanguage()});
+        var dataTableDialog = table.DataTable({
+            language: formatlanguage(),
+            "initComplete": function () {
+
+                //Search inputs dataTable
+                $('thead th', table).each( function ()
+                {
+                    var title = $(this).text();
+                    if($('input', this).length == 0)
+                    {
+                        $(this).html( '<input type="text" placeholder=" '+title+'" />' );
+                        $("input", this).on("click", function(){
+                            return false;
+                        });
+                    }
+                } );
+
+                //Create search event
+                dataTableDialog.columns().every( function(){
+                    var that = this;
+                
+                    $('input', this.header()).on('keyup change', function(){
+                        if(that.search() !== this.value){
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    });
+                });
+            }
+        });
         createdTables.push(name);
     }
 
     //Clean table
-    dataTableDialog.clear();
+    dataTableDialog.rows().remove();
+
+    
 
     //Create rows
     $.each(data["rows"], function(index, value){
@@ -953,41 +1015,21 @@ function createDialogTable(data, table, name){
         $.each(value, function(index1, value1){
 
             //Create necessary variables
+            color = "btn-" + value["color"];
             if(index1 == "color"){
 
                 color = "btn-" + value1;
 
-            }else if(index1 == "Cumplió"){
+            }else if(index1 == "Cumpli&oacute;"){
 
                 //Create cell
-                var td = $("<td>").addClass("centerContent");
+                var td = $("<td>");
 
-                //Create div clone
-                var div = $("<div>");
+                //Create span
+                var span = $("<span>").addClass("btn " + color).html(value1);
 
-                //Create icons
-                var iAdelantado = $("<i>").addClass("glyphicon glyphicon-ok btn-disabled");
-                var iATiempo = $("<i>").addClass("glyphicon glyphicon-ok btn-disabled");
-                var iAtrasado = $("<i>").addClass("glyphicon glyphicon-ok btn-disabled");
-
-                //Validate active
-                if(value1 == "Adelantado"){
-                    iAdelantado.removeClass("btn-disabled");
-                    iAdelantado.addClass("btn-success");
-                }else if(value1 == "A tiempo"){
-                    iATiempo.removeClass("btn-disabled");
-                    iATiempo.addClass("btn-warning");
-                }else if(value1 == "Atrasado"){
-                    iAtrasado.removeClass("btn-disabled");
-                    iAtrasado.addClass("btn-danger");
-                }
-
-                //Assign icons
-                var divContainer = div.clone().css({"display": "flex", "flex-flow": "row nowrap", "justify-content": "space-around"});
-                divContainer.append(div.clone().append(iAdelantado));
-                divContainer.append(div.clone().append(iATiempo));
-                divContainer.append(div.clone().append(iAtrasado));
-                td.append(divContainer);
+                //Assign span
+                td.append(span);
 
             }else if(index1 == "Fecha y Hora Programada"){
 
@@ -1021,24 +1063,31 @@ function createDialogTable(data, table, name){
 
 function createViewSiteProgress(data, container, name, type, structure){
 
+    //Validate empty data
+    if(objectLength(data) == 0){
+        $(container).html("<div class='alert alert-warning' style='font-size: 10pt;'>Sin datos.<br>No se han encontrado registros para generar este gr&aacute;fico.</div>");
+        return false;
+    }
+
     //Create necessary functinons
     function createViewDependingOnType(name, localData){
 
         //Create elements
         var divContainer = $("<div>").addClass("principalContainer row").css({"line-height": "21.5px"});
-        var divName = $("<div>").addClass("col-md-5 col-sm-5 col-xs-5 name").html(name).attr("title", name);
-        var divSpacing = $("<div>").addClass("col-md-1 col-sm-1 col-xs-1");
+        var divName = $("<div>").addClass("col-md-5 col-sm-5 col-xs-5 name").html(name).attr("title", name).css({"padding-left": "3px"});
+        var divSpacing = $("<div>").addClass("col-md-1 col-sm-1 col-xs-1").css({"padding": 0});
         var divProgress =  $("<div>").addClass("progress progress_sm").addClass("col-md-6 col-sm-6 col-xs-6").css({"padding": 0});
 
         //Validate type
         if(type == "percentage"){
 
             //Create elements
-            var subDiv = $("<div>").
+            divProgress.attr("title", name + ": " + localData["Percentage"].toFixed(2) + "%\nCantidad: " + localData["Quantity"]);
+            var subDiv = $("<div>").css({"background": randomColor("grandRange")}).
                             addClass("progress-bar").
                             attr("role", "progressbar").
-                            attr("data-transitiongoal", localData["percentage"]).
-                            html(localData["percentage"] + "%").attr("title", localData["percentage"] + "%");
+                            attr("data-transitiongoal", localData["Percentage"]).
+                            html(localData["Percentage"].toFixed(2) + "%");
             
             
             //Assign elements
@@ -1048,15 +1097,15 @@ function createViewSiteProgress(data, container, name, type, structure){
             container.append(divContainer);
         } else if(type == "comparativePercentage"){
 
-            //Calculate total and quantity data
-            var quantity = 0;
+            //Calculate total data
             var total = 0;
             $.each(localData, function(index, value){
-
-                quantity++;
+    
                 total += value;
-
+    
             });
+
+            divName.attr("title", name + "\nCantidad: " + total);
 
 
             $.each(localData, function(index, value){
@@ -1064,15 +1113,18 @@ function createViewSiteProgress(data, container, name, type, structure){
                 //Calculate percentage
                 var percentage = ((value * 100) / total).toFixed(0);
 
-                //Create interface
-                var subDiv = $("<div>").
+                if(percentage != 0){
+                    //Create interface
+                    var subDiv = $("<div>").
                     addClass("progress-bar btn-success").
                     addClass(structure["addClass"][index]).
                     attr("role", "progressbar").
                     attr("data-transitiongoal", percentage).
-                    html(percentage + "%").attr("title", index + ": " + percentage + "%");
+                    html(percentage + "%").attr("title", index + ": " + percentage + "% \nCantidad: " + value);
 
-                divProgress.append(subDiv);
+                    divProgress.append(subDiv);
+                }
+                
             });
 
             
@@ -1106,7 +1158,7 @@ function createViewSiteProgress(data, container, name, type, structure){
 
             //Valdiate data
             if(!compareObjects(structure["model"], localData)){
-                personalizedAlert("danger", "Ha ocurrido un error.", "Ha ocurrido un error con la información solicitada y no se ha podido generar el Dashboard", true, container);
+                personalizedAlert("danger", "Ha ocurrido un error.", "Ha ocurrido un error con la informacin solicitada y no se ha podido generar el Dashboard", true, container);
                 return false;
             }
             
@@ -1137,7 +1189,7 @@ function createViewSiteProgress(data, container, name, type, structure){
 
             //Validate new subsegment
             if(objectLength(value) > 2){
-                countValidate++;
+                countValidate += " * ";
                 classChilds = validateClassToShow(value["subData"], classCollapse + count, firstClassCollapse, countValidate);
             }
 
@@ -1146,9 +1198,10 @@ function createViewSiteProgress(data, container, name, type, structure){
             $(value).attr({"data-toggle": "collapse", "data-target": classChilds});
             if(classCollapse != firstClassCollapse){
                 $(value).addClass("collapse");
-                $(value).css({"padding-left": (countValidate * 5) + "px"});
+                $(".name", value).html( countValidate + $(".name", value).html() );
             }else{
                 $(value).css({"padding-left": "0px"});
+                countValidate = " * ";
             }
 
             count++;
@@ -1166,5 +1219,158 @@ function createViewSiteProgress(data, container, name, type, structure){
     iteration(data, elements);
 
     //Validates collapse class
-    validateClassToShow(elements, classCollapse, classCollapse, 1);
+    validateClassToShow(elements, classCollapse, classCollapse, "");
+
+    //Return
+    return true;
 }
+
+function createPieGraphicFormat(size, position, data, labelType = "normal", formatterLabel){
+
+    //Validate empty data
+    if(objectLength(data) == 0){
+        $(container).html("<div class='alert alert-warning' style='font-size: 10pt;'>Sin datos.<br>No se han encontrado registros para generar este gr&aacute;fico.</div>");
+        return false;
+    }
+
+    var label = {};
+    var labelLine = {};
+
+    if(labelType == "normal"){
+        label = {
+            "textStyle": {
+                "color": 'rgba(0, 0, 0, 0.7)'
+            },
+            "formatter": formatterLabel
+        };
+        labelLine = {
+            "lineStyle": {
+                "color": 'rgba(0, 0, 0, 0.7)'
+            },
+            "smooth": 0.2,
+            "length": 10,
+            "length2": 20
+        };
+    }else if(labelType == "centerShow"){
+        label = {
+            "show": true,
+            "position": "center",
+            "textStyle": {
+                "fontSize": "10",
+                "fontWeight": 'bold',
+                "color": 'rgba(0, 0, 0, 0.7)'
+            },
+            "formatter": formatterLabel
+        };
+    }
+
+    return {
+        "type": "pie",
+        "radius": size,
+        "center": position,
+        "label": label,
+        "labelLine": labelLine,
+        "data": data
+    };
+
+}
+
+function createPieGraphicsTotal(container, data){
+
+    //Validate empty data
+    if(objectLength(data) == 0){
+        $(container).html("<div class='alert alert-warning' style='font-size: 10pt;'>Sin datos.<br>No se han encontrado registros para generar este gr&aacute;fico.</div>");
+        return false;
+    }
+
+    var labelBottom = {
+        normal : {
+            color: '#ccc',
+            label : {
+                show : true,
+                position : 'center'
+            },
+            labelLine : {
+                show : false
+            }
+        },
+        emphasis: {
+            color: 'rgba(0,0,0,0)'
+        }
+    };
+
+    //Create data
+    var pieData = [];
+    var count = 0;
+    var total = objectLength(data);
+
+    //Calcular posici&oacuten
+    var sizeAllGrapichs = total * 20;
+    var emptySpace = 100 - sizeAllGrapichs;
+    var gap = emptySpace / (total + 1);
+    var first = 0;
+
+    $.each(data, function(index, value){
+
+        //Create necessary variables
+        var color = "";
+
+        //Get increase
+        if(count == 0){
+            first += gap + 10;
+        }else{
+            first += gap + 20;
+        }
+
+        //Validate specific color
+        if(value["color"] != undefined && value["color"] != "" && value["color"] != null){
+            color = value["color"];
+        }
+
+        //Format pie data
+        var radius = [35, 40];
+        var center = [first + "%", "50%"];
+        var dataToSend = [
+            {name:'', value: 100 - value["Percentage"], itemStyle: labelBottom, formatterType: "none"},
+            {
+                name: index,
+                value: value["Percentage"],
+                formatterType: function(data){
+                    return data.name + ":<br> * " + data.value + "%";
+                },
+                itemStyle: {
+                    color: color
+                }
+            }
+        ];
+        var pieData1 = createPieGraphicFormat(radius, center, dataToSend, "centerShow", index + "\n" + value["Quantity"]);
+
+        //Add to pie array
+        pieData.push(pieData1);
+
+        //Increment variables
+        count++;
+
+    });
+
+    //Create pie graphic
+    createGraphics("", "", pieData, container);
+}
+
+/*! \fn: exportExcel
+ *  \brief: redireccion exportar dentro de la misma clase
+ *  \author: Luis Manrique
+ *  \date modified: 
+ *  \param: opcion: opcion de la clase donde se encuntra la funcion de exportar
+ *  \return No devuelve valores pero retorna un nÃƒÂºmero con el valor de Y
+ */
+  function exportExcel(name) 
+  {
+    try {
+      window.open("../satt_standa/despac/filterData.php?opcion=exportExcel&name="+name);
+      
+    } catch (e) {
+      console.log("Error Fuction pintar: " + e.message + "\nLine: " + e.lineNumber);
+      return false;
+    }
+  }
