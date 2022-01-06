@@ -618,11 +618,11 @@ function createTr(row){
             <div class='verticalTable'>
                 <div class='btn-warning'>T</div>
                 <div>` + row["procesoDeEntrega"]["t"] + `</div>
-                <div class='btn-success'>D</div>
+                <div class='btn-success' style="background-color:#67ab3d !important">D</div>
                 <div>` + row["procesoDeEntrega"]["d"] + `</div>
                 <div class='btn-danger'>P</div>
                 <div>` + row["procesoDeEntrega"]["p"] + `</div>
-                <div class='btn-success'>C</div>
+                <div class='btn-success' style="background-color:#67ab3d !important">C</div>
                 <div>` + row["procesoDeEntrega"]["c"] + `</div>
                 <div class='btn-danger'>N</div>
                 <div>` + row["procesoDeEntrega"]["n"] + `</div>
