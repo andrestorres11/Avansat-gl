@@ -1296,5 +1296,11 @@ center {
 .btn-success.focus, .btn-success:focus {
         box-shadow: 0 0 0 0.2rem rgb(99 115 251 / 50%) !important;
 }
+
+.table tr:hover {
+        background: var(--sure_color) !important;
+    }
+    
+    
     
     

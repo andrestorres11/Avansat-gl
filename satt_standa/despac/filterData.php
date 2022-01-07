@@ -328,7 +328,6 @@
 
             $query .= "
               GROUP BY a.num_despac ";
-
             $query = new Consulta($query, self::$conexion);
             $despachos = $query -> ret_matrix('a');
 
