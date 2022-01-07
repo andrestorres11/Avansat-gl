@@ -11,7 +11,7 @@ class ajax_servic_asicar
   {
     include('../lib/ajax.inc');
     include_once('../lib/general/constantes.inc');
-
+    setlocale(LC_MONETARY, 'es_CO');
     $this -> conexion = $AjaxConnection;
 
     switch ($_REQUEST['option']) {
@@ -71,7 +71,10 @@ class ajax_servic_asicar
           		}
           			$html .='<button onclick="edit('.$datos['id'].')" value="'.$datos['id'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
           		$data[$key][] = $html;	
-    		}else{
+    		}elseif($campo == "tar_diurna" || $campo == "tar_noctur"){
+          $data[$key][] = money_format('%n',$valor);
+	
+        }else{
     			$data[$key][] = $valor;	
     		}
     		
