@@ -1,12 +1,11 @@
 <?php
     /****************************************************************************
     NOMBRE:   AjaxInsNovedaSeguim
-    FUNCION:  Retorna todos los datos necesarios para construir la informaciï¿½n
+    FUNCION:  Retorna todos los datos necesarios para construir la información
     FECHA DE MODIFICACION: 24/11/2021
-    CREADO POR: Ing. Cristian Andrï¿½s Torres
+    CREADO POR: Ing. Cristian Andrés Torres
     MODIFICADO 
     ****************************************************************************/
-    
     
     /*error_reporting(E_ALL);
     ini_set('display_errors', '1');*/
@@ -154,42 +153,53 @@
             if($cod_etapax != 6){
                 $cond = 'AND a.cod_etapax = "'.$cod_etapax.'" ';
             }
-            $sql="SELECT a.cod_noveda, a.nom_noveda, b.ind_novesp,
-                         b.ind_manale, b.ind_fuepla, b.ind_soltie,
-                         b.inf_visins, b.ind_notsup, b.ind_limpio,
-                         b.num_tiempo
+
+            $Msql="SELECT a.cod_noveda, a.nom_noveda
                              FROM ".BASE_DATOS.".tab_genera_novseg a
-                      LEFT JOIN ".BASE_DATOS.".tab_parame_novseg b
-                                ON a.cod_noveda = b.cod_noveda
-                            WHERE a.ind_status = 1 ".$cond." AND
-                                  b.cod_transp = '".$cod_transp."'";
-            $resultado = new Consulta($sql, self::$conexion);
-            $resultados = $resultado->ret_matriz();
+                            WHERE a.ind_status = 1 ".$cond." ";
+            $resultado = new Consulta($Msql, self::$conexion);
+            $novedades = $resultado->ret_matriz();
             $html = '';
             $data = '';
-            foreach($resultados as $resultado){
-                if($resultado['num_tiempo'] == '' || $resultado['num_tiempo'] == NULL){
-                    $resultado['num_tiempo'] = 0;
+            foreach($novedades as $valor){
+                $cod_novedad = $valor['cod_noveda'];
+                $nom_novedad = $valor['nom_noveda'];
+                $name =  $valor['cod_noveda'];
+                $sqlNov = "SELECT b.ind_novesp, b.ind_manale, b.ind_fuepla,
+                                  b.ind_soltie, b.inf_visins, b.ind_notsup,
+                                  b.ind_limpio, b.num_tiempo
+                            FROM ".BASE_DATOS.".tab_parame_novseg b
+                            WHERE b.cod_transp = '".$cod_transp."' AND b.cod_noveda = '".$cod_novedad."'";
+                $resultado = new Consulta($sqlNov, self::$conexion);
+                $resultados = $resultado->ret_matriz();
+                if(count($resultados)==0){
+                    $resultados[0] = array('ind_novesp'=>NULL, 'ind_manale'=>NULL, 'ind_fuepla'=>NULL, 'ind_soltie'=>NULL, 'inf_visins'=>NULL, 'ind_notsup'=>NULL, 'ind_limpio'=>NULL, 'num_tiempo'=>NULL);
                 }
-                $name =  $resultado['cod_noveda'];
-                $onclick = "";
-                if($cod_etapax==6){
-                    $name =  $resultado['cod_noveda']."_T";
-                }
-                $data .= '<tr>
-                            <td><input type="checkbox" class="colcheck_'.$cod_etapax.'" onclick="selectRow(this)" data="'.$cod_etapax.'"></td>
-                            <td class="text-center">'.$resultado['cod_noveda'].'</td>
-                            <td>'.$resultado['nom_noveda'].'</td>
-                            <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' novesp_'.$resultado['cod_noveda'].'" data="novesp_'.$resultado['cod_noveda'].'" name="novesp_'.$name.'" '.self::validacheck($resultado['ind_novesp']).' onclick="selectGemelo(this)"></td>
-                            <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' manale_'.$resultado['cod_noveda'].'" data="manale_'.$resultado['cod_noveda'].'" name="manale_'.$name.'" '.self::validacheck($resultado['ind_manale']).' onclick="selectGemelo(this)"></td>
-                            <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' fuepla_'.$resultado['cod_noveda'].'" data="fuepla_'.$resultado['cod_noveda'].'" name="fuepla_'.$name.'" '.self::validacheck($resultado['ind_fuepla']).' onclick="selectGemelo(this)"></td>
-                            <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' soltie_'.$resultado['cod_noveda'].'" data="soltie_'.$resultado['cod_noveda'].'" name="soltie_'.$name.'" '.self::validacheck($resultado['ind_soltie']).' onclick="selectGemelo(this)"></td>
-                            <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' visins_'.$resultado['cod_noveda'].'" data="visins_'.$resultado['cod_noveda'].'" name="visins_'.$name.'" '.self::validacheck($resultado['inf_visins']).' onclick="selectGemelo(this)"></td>
-                            <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' notsup_'.$resultado['cod_noveda'].'" data="notsup_'.$resultado['cod_noveda'].'" name="notsup_'.$name.'" '.self::validacheck($resultado['ind_notsup']).' onclick="selectGemelo(this)"></td>
-                            <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' limpio_'.$resultado['cod_noveda'].'" data="limpio_'.$resultado['cod_noveda'].'" name="limpio_'.$name.'" '.self::validacheck($resultado['ind_limpio']).' onclick="selectGemelo(this)"></td>
-                            <td><input type="text" class="tiempo_'.$resultado['cod_noveda'].'" size="6" name="tiempo_'.$name.'" value="'.$resultado['num_tiempo'].'" onchange="insertGemelo(this)"></td>
-                         </tr>';
+                foreach($resultados as $resultado){
+                    if($resultado['num_tiempo'] == '' || $resultado['num_tiempo'] == NULL){
+                        $resultado['num_tiempo'] = 0;
+                    }
+                    $onclick = "";
+                    if($cod_etapax==6){
+                        $name = $cod_novedad."_T";
+                    }
+                    $data .= '<tr>
+                                <td><input type="checkbox" class="colcheck_'.$cod_etapax.'" onclick="selectRow(this)" data="'.$cod_etapax.'"></td>
+                                <td class="text-center">'.$cod_novedad.'</td>
+                                <td>'.$nom_novedad.'</td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' novesp_'.$cod_novedad.'" data="novesp_'.$cod_novedad.'" name="novesp_'.$name.'" '.self::validacheck($resultado['ind_novesp']).' onclick="selectGemelo(this)"></td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' manale_'.$cod_novedad.'" data="manale_'.$cod_novedad.'" name="manale_'.$name.'" '.self::validacheck($resultado['ind_manale']).' onclick="selectGemelo(this)"></td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' fuepla_'.$cod_novedad.'" data="fuepla_'.$cod_novedad.'" name="fuepla_'.$name.'" '.self::validacheck($resultado['ind_fuepla']).' onclick="selectGemelo(this)"></td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' soltie_'.$cod_novedad.'" data="soltie_'.$cod_novedad.'" name="soltie_'.$name.'" '.self::validacheck($resultado['ind_soltie']).' onclick="selectGemelo(this)"></td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' visins_'.$cod_novedad.'" data="visins_'.$cod_novedad.'" name="visins_'.$name.'" '.self::validacheck($resultado['inf_visins']).' onclick="selectGemelo(this)"></td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' notsup_'.$cod_novedad.'" data="notsup_'.$cod_novedad.'" name="notsup_'.$name.'" '.self::validacheck($resultado['ind_notsup']).' onclick="selectGemelo(this)"></td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' limpio_'.$cod_novedad.'" data="limpio_'.$cod_novedad.'" name="limpio_'.$name.'" '.self::validacheck($resultado['ind_limpio']).' onclick="selectGemelo(this)"></td>
+                                <td><input type="text" class="tiempo_'.$cod_novedad.'" size="6" name="tiempo_'.$name.'" value="'.$resultado['num_tiempo'].'" onchange="insertGemelo(this)"></td>
+                            </tr>';
+                    }
+
             }
+           
             $html .= '
                         <table class="table table-bordered conten-table" id="table_'.$cod_etapax.'">
                             <thead>
@@ -285,11 +295,11 @@
 
 
         /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciÃ³n
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que serÃ¡ analizado por la funciÃ³n
+           *  \param: $arrau => Arreglo que será analizado por la función
            *  \return: array
         */
         function cleanArray($array){
