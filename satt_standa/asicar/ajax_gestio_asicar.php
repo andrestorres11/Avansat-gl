@@ -1,9 +1,9 @@
 <?php
     /****************************************************************************
     NOMBRE:   AjaxGestioAsiscar
-    FUNCION:  Retorna todos los datos necesarios para construir la informaciÃ³n
+    FUNCION:  Retorna todos los datos necesarios para construir la información
     FECHA DE MODIFICACION: 13/04/2020
-    CREADO POR: Ing. Cristian AndrÃ©s Torres
+    CREADO POR: Ing. Cristian Andrés Torres
     MODIFICADO 
     ****************************************************************************/
     
@@ -144,7 +144,7 @@
 
 
         /*! \fn: informeGeneral
-           *  \brief: Genera la informaciÃ³n para las tabla del informe general
+           *  \brief: Genera la información para las tabla del informe general
            *  \author: Ing. Cristian Torres
            *  \date: 04-06-2020
            *  \date modified: dd/mm/aaaa
@@ -677,10 +677,10 @@
                     </div>
                     <div class="row mt-3">
                       <div class="offset-1 col-3">
-                        <input class="form-control form-control-sm" type="text" placeholder="Contraseï¿½a" id="con_vehicuID" name="con_vehicu" disabled value="'.$informacion['con_vehicu'].'">
+                        <input class="form-control form-control-sm" type="text" placeholder="Contrase?a" id="con_vehicuID" name="con_vehicu" disabled value="'.$informacion['con_vehicu'].'">
                         </div>
                         <div class="col-4">
-                          <input class="form-control form-control-sm" type="text" placeholder="Ubicaciï¿½n" id="ubi_vehicuID" name="ubi_vehicu" disabled value="'.$informacion['ubi_vehicu'].'">
+                          <input class="form-control form-control-sm" type="text" placeholder="Ubicaci?n" id="ubi_vehicuID" name="ubi_vehicu" disabled value="'.$informacion['ubi_vehicu'].'">
                           </div>
                           <div class="col-3">
                             <input class="form-control form-control-sm" type="text" placeholder="Punto de Referencia" id="pun_refereID" name="pun_refere" disabled value="'.$informacion['pun_refere'].'">
@@ -688,7 +688,7 @@
                           </div>
                           <div class="row mt-3">
                             <div class="offset-1 col-10">
-                              <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve Descripciï¿½n de la Asistencia" disabled>'.$informacion['des_asiste'].'</textarea>
+                              <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve Descripci?n de la Asistencia" disabled>'.$informacion['des_asiste'].'</textarea>
                             </div>
                           </div>
                         </div>
@@ -707,7 +707,7 @@
                     <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Origen" disabled value="'.$this->darNombreCiudad($informacion['ciu_origen']).'">
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Direcciï¿½n" id="dir_ciuoriID" name="dir_ciuori" disabled value="'.$informacion['dir_ciuori'].'">
+                    <input class="form-control form-control-sm" type="text" placeholder="Direcci?n" id="dir_ciuoriID" name="dir_ciuori" disabled value="'.$informacion['dir_ciuori'].'">
                   </div>
                 </div>
         
@@ -716,7 +716,7 @@
                     <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Destino" disabled value="'.$this->darNombreCiudad($informacion['ciu_destin']).'">
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm" type="text" placeholder="Direcciï¿½n" id="dir_ciudesID" name="dir_ciudes" disabled value="'.$informacion['dir_ciudes'].'">
+                    <input class="form-control form-control-sm" type="text" placeholder="Direcci?n" id="dir_ciudesID" name="dir_ciudes" disabled value="'.$informacion['dir_ciudes'].'">
                   </div>
                 </div>
                 <div class="row mt-3">
@@ -824,13 +824,13 @@
                     <div class="card-body">
                       <div class="row">
                         <div class="offset-1 col-10">
-                          <label for="obs_cancelID" style="font-size:14px;">Motivo de cancelaciÃ³n:</label>
+                          <label for="obs_cancelID" style="font-size:14px;">Motivo de cancelación:</label>
                           <textarea class="form-control" id="obs_cancelID" name="obs_cancel" rows="3" disabled>'.$respuestas['obs_cancel'].'</textarea>
                         </div>
                       </div>
                       <div class="row mt-3">
                         <div class="offset-1 col-5">
-                          <label for="fec_cancelID" style="font-size:14px;">Fecha y hora de cancelaciÃ³n:</label>
+                          <label for="fec_cancelID" style="font-size:14px;">Fecha y hora de cancelación:</label>
                           <input class="form-control form-control-sm" id="fec_cancelID" name="fec_cancel" type="text" disabled value="'.$respuestas['fec_cancel'].'">
                         </div>
                         <div class="col-5">
@@ -856,7 +856,7 @@
           $respuestas = self::cleanArray($respuestas);
           $html='';
 
-          //Si el tipo de asistencia es acompaÃ±amiento en carretera trae el servicio con los datos de este
+          //Si el tipo de asistencia es acompañamiento en carretera trae el servicio con los datos de este
           if($this->tipSolicitud($num_solici,1)==CON_SOLICI_ACOMPA){
             $html.=$this->getServicTrayect($num_solici);
           }
@@ -981,13 +981,22 @@
 
         function BuscarProveedor(){
           $busqueda = $_REQUEST['key'];
-          $sql="SELECT a.cod_docume, a.pri_apelli, a.seg_apelli, 
-                       a.nom_contra, a.num_celula, a.dir_emailx 
-               FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
-               WHERE a.cod_docume LIKE '%".$busqueda."%' 
-               AND a.ind_estado = 1 AND a.cod_activi = ".COD_FILTRO_PROVEE."
-               ORDER BY a.pri_apelli,a.seg_apelli,a.nom_contra LIMIT 3
-               ";
+            $sql = "SELECT a.cod_docume, a.pri_apelli, a.seg_apelli, 
+                           a.nom_contra, a.num_celula, a.dir_emailx 
+                    FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
+                    WHERE a.cod_docume LIKE '%".$busqueda."%' 
+                    AND a.ind_estado = 1 AND a.cod_activi = ".COD_FILTRO_PROVEE."
+                    
+                UNION
+
+                    SELECT b.cod_tercer as 'cod_docume', '' as 'pri_apelli', '' as 'seg_apelli',
+                            b.nom_tercer as 'nom_contra', b.num_telmov as 'num_celula', b.dir_emailx as 'dir_emailx'
+                    FROM ".BASE_DATOS.".tab_tercer_activi a 
+                    INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer
+                    WHERE b.cod_estado = 1 AND a.cod_activi = ".COD_FILTRO_PROVEE." AND b.cod_tercer LIKE '%".$busqueda."%'
+
+                  ORDER BY pri_apelli,seg_apelli,nom_contra LIMIT 3";
+
             $resultado = new Consulta($sql, self::$conexion);
             $resultados = $resultado->ret_matriz();
             $htmls='';
@@ -1000,11 +1009,19 @@
         function traerProveedor(){
           $info=[];
           $code = $_REQUEST['code'];
-          $sql="SELECT a.cod_docume, a.pri_apelli, a.seg_apelli, 
-                       a.nom_contra, a.num_celula, a.dir_emailx 
-               FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
-               WHERE a.cod_docume = '".$code."' 
-               AND a.ind_estado = 1 AND a.cod_activi = ".COD_FILTRO_PROVEE." ";
+          $sql = "SELECT a.cod_docume, a.pri_apelli, a.seg_apelli, 
+                         a.nom_contra, a.num_celula, a.dir_emailx 
+                  FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
+                  WHERE a.cod_docume LIKE '".$code."' 
+                AND a.ind_estado = 1
+        
+                UNION
+
+                  SELECT b.cod_tercer as 'cod_docume', '' as 'pri_apelli', '' as 'seg_apelli',
+                          b.nom_tercer as 'nom_contra', b.num_telmov as 'num_celula', b.dir_emailx as 'dir_emailx'
+                  FROM ".BASE_DATOS.".tab_tercer_activi a 
+                  INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer
+                  WHERE b.cod_estado = 1 AND b.cod_tercer = '".$code."'";
             $resultado = new Consulta($sql, self::$conexion);
             $resultado = $resultado->ret_matriz()[0];
           $info['pri_apelli']=$resultado['pri_apelli'];
@@ -1235,10 +1252,16 @@
         function validaProveedor(){
           $return=[];
           $cod_provee  = $_REQUEST['cod_provee'];
-          $sql="SELECT COUNT(*) FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a WHERE a.ind_estado = 1 AND a.cod_docume = '$cod_provee' AND a.cod_activi = ".COD_FILTRO_PROVEE.";";
+          $sql = "SELECT COUNT(*) FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
+                    WHERE a.ind_estado = 1 AND a.cod_docume = '$cod_provee' AND a.cod_activi = ".COD_FILTRO_PROVEE." 
+                  UNION
+                  SELECT COUNT(*) FROM ".BASE_DATOS.".tab_tercer_activi a 
+                    INNER JOIN tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer 
+                    WHERE b.cod_estado = 1 AND a.cod_activi = ".COD_FILTRO_PROVEE." AND b.cod_tercer = '$cod_provee'";
           $resultado = new Consulta($sql, self::$conexion);
-          $resultados = $resultado->ret_matriz()[0][0];
-          if($resultados == 0 ){
+          $resultados = $resultado->ret_matriz();
+          $total = $resultados[0][0] + $resultados[1][0];
+          if($resultados <= 0 ){
             $return['status'] = false;  
           }else{
             $return['status'] = true;  
@@ -1249,11 +1272,11 @@
 
 
         /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciÃ³n
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que serÃ¡ analizado por la funciÃ³n
+           *  \param: $arrau => Arreglo que será analizado por la función
            *  \return: array
         */
         function cleanArray($array){
@@ -1297,7 +1320,7 @@
                 $temporal = $fichero['tmp_name'];
                 $ext = explode(".", $nombre_archivo);
                 $nombre = $ruta.$num_solici.".".end($ext);
-                //Ojo Revisar la ubicaciÃ³n
+                //Ojo Revisar la ubicación
                 if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                     $return['status'] = 500;
                     $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1346,7 +1369,7 @@
                     }    
                 echo json_encode($return);
                 }catch (Exception $e) {
-                  echo 'ExcepciÃ³n registrar: ',  $e->getMessage(), "\n";
+                  echo 'Excepción registrar: ',  $e->getMessage(), "\n";
                 }
         }
 
@@ -1365,7 +1388,7 @@
                 $temporal = $fichero['tmp_name'];
                 $ext = explode(".", $nombre_archivo);
                 $nombre = $ruta.$num_solici.".".end($ext);
-                //Ojo Revisar la ubicaciÃ³n
+                //Ojo Revisar la ubicación
                 if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                     $return['status'] = 500;
                     $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1415,7 +1438,7 @@
                     }    
                 echo json_encode($return);
                 }catch (Exception $e) {
-                  echo 'ExcepciÃ³n registrar: ',  $e->getMessage(), "\n";
+                  echo 'Excepción registrar: ',  $e->getMessage(), "\n";
                 }
         }
 
@@ -1433,7 +1456,7 @@
             $temporal = $fichero['tmp_name'];
             $ext = explode(".", $nombre_archivo);
             $nombre = $ruta.$num_solici.".".end($ext);
-            //Ojo Revisar la ubicaciÃ³n
+            //Ojo Revisar la ubicación
             if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                 $return['status'] = 500;
                 $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1482,7 +1505,7 @@
                 }    
             echo json_encode($return);
             }catch (Exception $e) {
-              echo 'ExcepciÃ³n registrar: ',  $e->getMessage(), "\n";
+              echo 'Excepción registrar: ',  $e->getMessage(), "\n";
             }
         }
 
@@ -1615,7 +1638,7 @@
               <meta name="x-apple-disable-message-reformatting">
               <meta http-equiv="X-UA-Compatible" content="IE=edge">
               <meta content="telephone=no" name="format-detection">
-              <title>Nuevo correo electrÃ³nico 2</title>
+              <title>Nuevo correo electrónico 2</title>
               <!--[if (mso 16)]><style type="text/css"> a {text-decoration: none;} </style><![endif]-->
               <!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]-->
               <style type="text/css">
@@ -1699,7 +1722,7 @@
                                         <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
                                           <tr style="border-collapse:collapse;">
                                             <td align="left" style="text-align: center; padding:0;Margin:0;padding-top:40px;">
-                                              <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud NÂ°. '.$num_solici.' </b></p>
+                                              <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud N°. '.$num_solici.' </b></p>
                                             </td>
                                           </tr>
                                         </table>
@@ -1749,10 +1772,10 @@
                                           <tr style="border-collapse:collapse;">
                                             <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
-                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">SeÃ±or(a):
-                                                '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la lÃ­nea de servicio <strong>Asistencia LogÃ­stica</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el. <br> <br class="colortext">Estado:
+                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
+                                                '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la línea de servicio <strong>Asistencia Logística</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el. <br> <br class="colortext">Estado:
                                                 <strong class="colortext">'.$estado.'</strong><br>
-                                                <br><strong style="color:#000">ObservaciÃ³n:</strong> '.$observacion.'
+                                                <br><strong style="color:#000">Observación:</strong> '.$observacion.'
                                                 '.$complemento.'
                                                 <br>
                                                 <br class="colortext">Le estaremos informando el
@@ -1774,7 +1797,7 @@
                                           <tr style="border-collapse:collapse;">
                                             <td align="center" style="padding:0;Margin:0;padding-bottom:10px;">
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:10px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:10px;color:#333333;">
-                                                Copyright Â© '.date('Y').'. Todos Los Derechos Reservados. DiseÃ±ado y desarrollado por Grupo OET S.A.S.</p>
+                                                Copyright © '.date('Y').'. Todos Los Derechos Reservados. Diseñado y desarrollado por Grupo OET S.A.S.</p>
                                             </td>
                                           </tr>
                                         </table>

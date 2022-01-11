@@ -117,3 +117,8 @@
             max-width: 30%;
         }
     }
+
+    .small-box {
+        min-height: 210px !important;
+        max-height: 210px !important;
+    }
