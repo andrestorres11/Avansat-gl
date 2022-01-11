@@ -11,7 +11,7 @@ class ajax_servic_asicar
   {
     include('../lib/ajax.inc');
     include_once('../lib/general/constantes.inc');
-
+    setlocale(LC_MONETARY, 'es_CO');
     $this -> conexion = $AjaxConnection;
 
     switch ($_REQUEST['option']) {
@@ -35,7 +35,7 @@ class ajax_servic_asicar
   }
   
   /*! \fn: consultaCiudades
-  *  \brief:Consulta y retorna un html con las ciudades seg煤n los nombres ingresados
+  *  \brief:Consulta y retorna un html con las ciudades seg鷑 los nombres ingresados
   *  \author: Ing. Cristian Torres
   *  \date: 17/07/2020
   *  \date modified:
@@ -66,7 +66,7 @@ class ajax_servic_asicar
     $mSql = " SELECT  a.id,
                       b.nom_ciudad as 'ciu_origen',
                       c.nom_ciudad as 'ciu_destin',
-                      CONCAT('$ ',a.val_tarifa),
+                      a.val_tarifa,
                       a.ind_estado
                 FROM  ".BASE_DATOS.".tab_tarifa_acompa a
                 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b ON
@@ -89,7 +89,9 @@ class ajax_servic_asicar
           		}
           			$html .='<button onclick="edit('.$datos['id'].')" value="'.$datos['id'].'" class="btn btn-info"><i class="fa fa-edit" aria-hidden="true"></i></button>';
           		$data[$key][] = $html;	
-    		}else{
+    		}elseif($campo == "val_tarifa"){
+          $data[$key][] = money_format('%n',$valor);
+        }else{
     			$data[$key][] = $valor;	
     		}
     		
@@ -105,7 +107,7 @@ class ajax_servic_asicar
    *  \brief: Actualiza el estado del registro
    *  \author: Ing. Cristian Torres
    *  \date: 17/07/2020
-   *  \date modified: dia/mes/a帽o
+   *  \date modified: dia/mes/a駉
    *  \param: 
    *  \return:
    */
@@ -127,13 +129,13 @@ class ajax_servic_asicar
           $return['response'] = 'El registro ha sido actualizado exitosamente.';
         }else{
           $return['status'] = 500;
-          $return['response'] = 'Error al realizar la actualzaci贸n.';
+          $return['response'] = 'Error al realizar la actualzaci髇.';
         }
 
         //Devuelve estatus de la consulta
         echo json_encode($return);
       } catch (Exception $e) {
-        echo 'Excepci贸n updEst: ',  $e->getMessage(), "\n";
+        echo 'Excepci髇 updEst: ',  $e->getMessage(), "\n";
       }
     }
 
@@ -141,7 +143,7 @@ class ajax_servic_asicar
    *  \brief: Actualzia o crea registros de nuevas tarifas
    *  \author: Ing. Cristian Torres
    *  \date: 17/07/2020
-   *  \date modified: dia/mes/a帽o
+   *  \date modified: dia/mes/a駉
    *  \param: 
    *  \return: HTML 
    */
@@ -195,7 +197,7 @@ class ajax_servic_asicar
         }
         echo json_encode($return);
       } catch (Exception $e) {
-        echo 'Excepci贸n updEst: ',  $e->getMessage(), "\n";
+        echo 'Excepci髇 updEst: ',  $e->getMessage(), "\n";
       }
     }
     
@@ -203,7 +205,7 @@ class ajax_servic_asicar
    *  \brief: Separa el espacio el codigo y el nombre de la ciudad y retorna el codigo
    *  \author: Ing. Cristian Torres
    *  \date: 17/07/2020
-   *  \date modified: dia/mes/a帽o
+   *  \date modified: dia/mes/a駉
    *  \param: 
    *  \return: int cod_ciudad 
    */
@@ -216,7 +218,7 @@ class ajax_servic_asicar
    *  \brief: Retorna el html con los campos del registro a modificar
    *  \author: Ing. Cristian Torres
    *  \date: 17/07/2020
-   *  \date modified: dia/mes/a帽o
+   *  \date modified: dia/mes/a駉
    *  \param: 
    *  \return: html
    */
@@ -281,7 +283,7 @@ class ajax_servic_asicar
       </div>';
       echo json_encode($html);  
       } catch(Exception $e) {
-        echo 'Excepci贸n updEst: ',  $e->getMessage(), "\n";
+        echo 'Excepci髇 updEst: ',  $e->getMessage(), "\n";
       }
     }
     
