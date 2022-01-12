@@ -165,7 +165,7 @@
                 $cod_novedad = $valor['cod_noveda'];
                 $nom_novedad = $valor['nom_noveda'];
                 $name =  $valor['cod_noveda'];
-                $sqlNov = "SELECT b.ind_novesp, b.ind_manale, b.ind_fuepla,
+                $sqlNov = "SELECT b.ind_status, b.ind_novesp, b.ind_manale, b.ind_fuepla,
                                   b.ind_soltie, b.inf_visins, b.ind_notsup,
                                   b.ind_limpio, b.num_tiempo
                             FROM ".BASE_DATOS.".tab_parame_novseg b
@@ -173,7 +173,7 @@
                 $resultado = new Consulta($sqlNov, self::$conexion);
                 $resultados = $resultado->ret_matriz();
                 if(count($resultados)==0){
-                    $resultados[0] = array('ind_novesp'=>NULL, 'ind_manale'=>NULL, 'ind_fuepla'=>NULL, 'ind_soltie'=>NULL, 'inf_visins'=>NULL, 'ind_notsup'=>NULL, 'ind_limpio'=>NULL, 'num_tiempo'=>NULL);
+                    $resultados[0] = array('ind_status'=>NULL, 'ind_novesp'=>NULL, 'ind_manale'=>NULL, 'ind_fuepla'=>NULL, 'ind_soltie'=>NULL, 'inf_visins'=>NULL, 'ind_notsup'=>NULL, 'ind_limpio'=>NULL, 'num_tiempo'=>NULL);
                 }
                 foreach($resultados as $resultado){
                     if($resultado['num_tiempo'] == '' || $resultado['num_tiempo'] == NULL){
@@ -187,6 +187,7 @@
                                 <td><input type="checkbox" class="colcheck_'.$cod_etapax.'" onclick="selectRow(this)" data="'.$cod_etapax.'"></td>
                                 <td class="text-center">'.$cod_novedad.'</td>
                                 <td>'.$nom_novedad.'</td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' activo_'.$cod_novedad.'" data="activo_'.$cod_novedad.'" name="activo_'.$name.'" '.self::validacheck($resultado['ind_status']).' onclick="selectGemelo(this)"></td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' novesp_'.$cod_novedad.'" data="novesp_'.$cod_novedad.'" name="novesp_'.$name.'" '.self::validacheck($resultado['ind_novesp']).' onclick="selectGemelo(this)"></td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' manale_'.$cod_novedad.'" data="manale_'.$cod_novedad.'" name="manale_'.$name.'" '.self::validacheck($resultado['ind_manale']).' onclick="selectGemelo(this)"></td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' fuepla_'.$cod_novedad.'" data="fuepla_'.$cod_novedad.'" name="fuepla_'.$name.'" '.self::validacheck($resultado['ind_fuepla']).' onclick="selectGemelo(this)"></td>
@@ -207,6 +208,7 @@
                                     <th><input type="checkbox" id="SelecAll_'.$cod_etapax.'" data="'.$cod_etapax.'" onclick="selectedAll(this)"></th>
                                     <th>C&oacute;digo</th> 
                                     <th>Nombre de la novedad</th>
+                                    <th>Activo</th>
                                     <th>Novedad Especial</th>
                                     <th>Mantiene Alerta</th>
                                     <th>Fuera de Plataforma</th>
@@ -252,6 +254,7 @@
                 
                 foreach($novedades as $keyy => $novedad){
                     $cod_noveda = $novedad['cod_noveda'];
+                    $activo = $_POST['activo_'.$cod_noveda];
                     $novesp = $_POST['novesp_'.$cod_noveda];
                     $manale = $_POST['manale_'.$cod_noveda];
                     $fuepla = $_POST['fuepla_'.$cod_noveda];
@@ -263,17 +266,19 @@
                     if($tiempo==''){
                         $tiempo=0;
                     }
-                    $qInsReg = "INSERT INTO ".BASE_DATOS.".tab_parame_novseg (cod_transp, cod_noveda, ind_novesp,
-                                                                             ind_manale, ind_fuepla, ind_soltie,
-                                                                             inf_visins, ind_notsup, ind_limpio,
-                                                                             num_tiempo, usr_creaci, fec_creaci
+                    $qInsReg = "INSERT INTO ".BASE_DATOS.".tab_parame_novseg (cod_transp, cod_noveda, ind_status,
+                                                                              ind_novesp, ind_manale, ind_fuepla,
+                                                                              ind_soltie, inf_visins, ind_notsup,
+                                                                              ind_limpio, num_tiempo, usr_creaci,
+                                                                              fec_creaci
                                                                              ) VALUES (
-                                                                             '".$cod_transp."', '".$cod_noveda."', '".$novesp."',
-                                                                             '".$manale."', '".$fuepla."', '".$soltie."',
-                                                                             '".$visins."', '".$notsup."', '".$limpio."',
-                                                                             '".$tiempo."', '".$cod_usuari."', NOW()
+                                                                             '".$cod_transp."', '".$cod_noveda."', '".$activo."',
+                                                                             '".$novesp."', '".$manale."', '".$fuepla."',
+                                                                             '".$soltie."', '".$visins."', '".$notsup."',
+                                                                             '".$limpio."', '".$tiempo."', '".$cod_usuari."',
+                                                                             NOW()
                                                                              )
-                                ON DUPLICATE KEY UPDATE ind_novesp = '".$novesp."', ind_manale = '".$manale."', ind_fuepla = '".$fuepla."',
+                                ON DUPLICATE KEY UPDATE ind_status = '".$activo."', ind_novesp = '".$novesp."', ind_manale = '".$manale."', ind_fuepla = '".$fuepla."',
                                                         ind_soltie = '".$soltie."', inf_visins = '".$visins."', ind_notsup = '".$notsup."',
                                                         ind_limpio = '".$limpio."', num_tiempo = '".$tiempo."', usr_modifi = '".$cod_usuari."',
                                                         fec_modifi = NOW() ;";
