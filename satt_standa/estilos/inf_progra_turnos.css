@@ -1,0 +1,152 @@
+.space-label {
+    margin-inline-end: 11px;
+}
+
+.color-heading {
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.centerRow {
+    text-align: center;
+}
+
+.suggestions {
+    box-shadow: 2px 2px 8px 0 rgba(0, 0, 0, .2);
+    height: auto;
+    position: absolute;
+    top: 30px;
+    z-index: 9999;
+    width: 206px;
+}
+
+.suggestions .suggest-element {
+    background-color: #89d889;
+    border-top: 1px solid #d6d4d4;
+    color: #fff;
+    cursor: pointer;
+    padding: 8px;
+    width: 100%;
+    float: left;
+}
+
+.error-label {
+    border-color: #C00000;
+    border-width: 2px;
+}
+
+.contenido {
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+
+label.error {
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;
+    margin-top: 2px;
+    padding: 6px 20px 6px 20px;
+}
+
+input.error {
+    border-color: #a94442;
+    border-width: 2px;
+}
+
+.mayuscul-input {
+    text-transform: uppercase;
+}
+
+
+/*Modulo Informe General Asistencia en Carretera */
+
+.card-header {
+    padding: .1rem 1.25rem;
+    background-color: #dff0d8;
+    border-bottom: 1px solid rgba(0, 0, 0, .125);
+}
+.panel-heading {
+    
+    padding: .1rem 1.25rem !important;
+    background-color: #dff0d8 !important;
+    border-bottom: 1px solid rgba(0, 0, 0, .125) !important;
+}
+
+.card-header .btn {
+    color: #000;
+    font-weight: bold;
+}
+.card-body {
+    padding: .1rem 1.25rem;
+    
+}
+.label-formcheck {
+    background-color: #FF7886;
+    padding: 10px;
+}
+
+.modal-header {
+    color: #3c763d;
+    background-color: #dff0d8;
+    border-color: #d6e9c6;
+}
+
+.modal-title {
+    text-align: center;
+    width: 100%;
+}
+
+.enlace-form {
+    color: #1807A7;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.enlace-form:hover {
+    color: #0958D3;
+    text-decoration-line: underline;
+}
+
+.text-label-big {
+    font-size: 15px;
+    text-align: right;
+}
+
+.text-right-service {
+    text-align: left;
+    font-size: 13px;
+    margin: auto;
+}
+
+
+.btn .btn-default .buttons-excel .buttons-html5{
+    background-color: #ce690a !important;
+
+}
+
+.btnprocesodata {
+    background-color: #b5e2a4;
+    margin-left: 4px;
+    border: 1px solid #bdbcbc;
+    box-shadow: 0px 5px 5px 1px #222;
+}
+.btn-transp {
+    background-color: #b5e2a4 !important;
+}
+
+.multi_select_box {
+    width: 400px;
+}
+.multi_select .dropdown-menu{
+    max-width: 100%!important;
+    font-size: 10px !important;
+ }
+.multi_select_box button {
+    background-color: #3c763d !important;
+    color: #fffff9fd !important;
+    padding: 5px 5px;
+    font-size: 10px !important;
+}
+
