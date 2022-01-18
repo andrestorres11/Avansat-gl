@@ -1076,7 +1076,7 @@ class InsertNovedad {
     function InsertarNovedadPC($base_datos, $regist, $ominter) {
         $mIndEnSiti = true;
 
-        if (in_array($regist['noveda'], self::$cCodNoved['4'])) { #Solucion a novedad Corona
+        if (in_array($regist['noveda'], self::$cCodNoved['4']) && BASE_DATOS=='satt_faro') { #Solucion a novedad Corona
             return self::InsertarNovedadNC($base_datos, $regist, $ominter);
         } else {
             $mIndSalida = self::verifyNovSalida($regist['despac'], $regist['fecnov']); #Indicador fecha Novedad antes de salida del despacho
@@ -1116,7 +1116,7 @@ class InsertNovedad {
 
                 $mCodSitiox = self::getSitio($regist['sitio']); #Codigo del Sitio
                 $mDifTieAla = self::getDiffTimeFecnoveFecalar($regist); #Diferencia en minutos fecha de la novedad VS fecha de la alarma
-                $mDatNoveda = self::getNoveda($regist['noveda']); #Data de la Novedad tab_genera_noveda
+                $mDatNoveda = self::getNoveda($regist['noveda'], $regist['nittra']); #Data de la Novedad tab_genera_noveda
                 $mDatTransp = getTransTipser($this->conexion, " AND a.cod_transp = " . $mDatDespac['cod_transp']); # Parametros de la transportadora
                 $mDatTransp = $mDatTransp[0];
                 $mIndProtoc = self::indProtoc($regist['nittra'], $regist['noveda']);
@@ -1199,7 +1199,7 @@ class InsertNovedad {
                 }
 
                 #Envio correo Novedad genera alarma
-                if ($mDatNoveda['ind_alarma'] == 'S') {
+                if ($mDatNoveda['ind_alarma'] == 'S' OR $mDatNoveda['ind_alarma'] == 1) {
                     self::sendMailNovGeneraAlarma($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti);
                 }
 
@@ -1289,16 +1289,15 @@ class InsertNovedad {
     function InsertarNovedadNC($base_datos, $regist, $ominter) {
         $mIndEnSiti = false;
 
-        if (in_array($regist['noveda'], self::$cCodNoved['4'])) { #Solucion a novedad Corona
+        if (in_array($regist['noveda'], self::$cCodNoved['4']) && BASE_DATOS=='satt_faro') { #Solucion a novedad Corona
             $mNextPc = getNextPC($this->conexion, $regist['despac']);
 
             $regist['contro'] = $mNextPc['cod_contro'];
             $regist['sitio'] = 'NO REGISTRA';
         }
 
-        if (in_array($regist['noveda'], self::$cCodNoved['5'])) { #Guarda las recomendaciones por despacho
+        if (in_array($regist['noveda'], self::$cCodNoved['5']) && BASE_DATOS=='satt_faro') { #Guarda las recomendaciones por despacho
             self::insertRecome($regist);
-
             $RESPON[0]["indica"] = 1;
             $RESPON[0]["mensaj"] = "La recomendacion se Registro Exitosamente en el Sistema";
         } else {
@@ -1342,7 +1341,7 @@ class InsertNovedad {
 
                 $mCodSitiox = self::getSitio($regist['sitio']); #Codigo del Sitio
                 $mDifTieAla = self::getDiffTimeFecnoveFecalar($regist); #Diferencia en minutos fecha de la novedad VS fecha de la alarma
-                $mDatNoveda = self::getNoveda($regist['noveda']); #Data de la Novedad tab_genera_noveda
+                $mDatNoveda = self::getNoveda($regist['noveda'], $regist['nittra']); #Data de la Novedad tab_genera_noveda
                 $mDatTransp = getTransTipser($this->conexion, " AND a.cod_transp = " . $mDatDespac['cod_transp']); # Parametros de la transportadora
                 $mDatTransp = $mDatTransp[0];
                 $mIndProtoc = self::indProtoc($regist['nittra'], $regist['noveda']);
@@ -1401,7 +1400,7 @@ class InsertNovedad {
                 }
 
                 #Envio correo Novedad genera alarma
-                if ($mDatNoveda['ind_alarma'] == 'S')
+                if ($mDatNoveda['ind_alarma'] == 'S' OR $mDatNoveda['ind_alarma'] == 1)
                     self::sendMailNovGeneraAlarma($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti);
 
                 #Guarda el codigo de novedad en tab_despac_despac cod_ultnov
@@ -1649,11 +1648,30 @@ class InsertNovedad {
      *  \date modified: dd/mm/aaaa
      *  \modified by: 
      *  \param: mCodNoveda  Integer  Codigo de la Novedad
+     *  \param: mCodTransp  Integer  Codigo de la empresa transportadora
      *  \return: Array
      */
 
-    private function getNoveda($mCodNoveda) {
-        $mSql = "SELECT * FROM " . BASE_DATOS . ".tab_genera_noveda WHERE cod_noveda = '$mCodNoveda' ";
+    private function getNoveda($mCodNoveda, $mCodTransp = NULL) {
+        if(BASE_DATOS=='satt_faro'){
+            $mSql = "SELECT * FROM " . BASE_DATOS . ".tab_genera_noveda WHERE cod_noveda = '$mCodNoveda' ";
+        }else{
+            $mSql = " SELECT a.nom_noveda,
+                             
+                             IFNULL(b.ind_notsup, 0) as 'ind_notsup',
+                             IFNULL(b.ind_novesp, 0) as 'nov_especi',
+                             IFNULL(b.ind_manale, 0) as 'ind_manala',
+                             IFNULL(b.ind_manale, 0) as 'ind_alarma',
+                             0 as 'ind_insveh',
+                             IFNULL(b.ind_soltie, 0) as 'ind_tiempo'
+                        FROM " . BASE_DATOS . ".tab_genera_novseg a 
+                        LEFT JOIN " . BASE_DATOS . ".tab_parame_novseg b ON
+                        a.cod_noveda = b.cod_noveda AND
+                        b.cod_transp = '".$mCodTransp."' AND
+                        b.ind_status = 1 
+                      WHERE a.cod_noveda = '" . $mCodNoveda . "'";
+        }
+        
         $mConsult = new Consulta($mSql, $this->conexion);
         $mResult = $mConsult->ret_matrix('a');
 
