@@ -3,7 +3,7 @@
 	NOMBRE:   InfProgramTurnos
 	FUNCION:  Llama los datos que han si actualizado en las horas de servicios, etapas y tipo de seguimiento
             los demas son dinamicos de js y ajax 
-	FECHA DE MODIFICACION: 04/01/2022
+	FECHA DE MODIFICACION: 19/01/2022
 	CREADO POR: Ing. Oscar Bocanegra
 	CREADO 
 	****************************************************************************/
@@ -129,7 +129,7 @@
                                   <div class="card-header" id="headingOne">
                                       <h5 class="mb-0">
                                           <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                              Generar bitacora de modificaciones de tipo de servicio
+                                              Informe Programacion de Turnos y Novedades
                                             </button>
                                       </h5>
                                     </div>

@@ -65,7 +65,10 @@
         private function iniSelectDatosBD(){
             $sql = "SELECT a.cod_consec, a.cod_usuari, a.nom_usuari
             FROM ".BASE_DATOS.".tab_genera_usuari a
-          WHERE a.ind_estado = '1'
+           WHERE a.ind_estado = '1'
+           and a.`cod_perfil`=7
+           or   a.ind_estado = '1'
+           and a.`cod_perfil`=8
           ORDER BY a.nom_usuari ASC";
                 
             $query = new Consulta($sql, self::$conexion);
