@@ -103,7 +103,7 @@
             }
             $newdat = rtrim($newdat, "or");
             
-            $sql="SELECT '' as cont, `cod_tercer`, `nom_tercer`, `com_diasxx`, `hor_ingres`, `hor_salida`, `usr_modifi`, 
+            $sql="SELECT '' as cont, `cod_tercer`, `nom_tercer`, `com_diasxx`, `hor_ingres`, `hor_salida`, `usr_modifi`, tip_status, 
             DATE_FORMAT(`fec_modifi`,'%d/%m/%Y %h:%i %p') as fecha 
             FROM `tab_bitaco_tipser` 
             WHERE ".$newdat;
@@ -160,7 +160,31 @@
                 
                 echo json_encode(self::cleanArray($datos));
             }else{
-                echo 'Error no hay datos';
+                $htmldat ='';
+                $htmldat ='<thead><tr>';
+                $htmldat +='<th>No</th>';
+                $htmldat +='<th>Nit</th>';
+                $htmldat +='<th>Nombre Empresa</th>';
+                $htmldat +='<th>Dias</th>';
+                $htmldat +='<th>Hora Inicial</th>';
+                $htmldat +='<th>Hora Final</th>';
+                $htmldat +='<th>Usuario</th>';
+                $htmldat +='<th>Status</th>';
+                $htmldat +='<th>fecha de M</th>';
+                $htmldat +='</tr></thead>';
+                $htmldat +='<tbody><tr id="resultado_info_registradas">';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='<td>No hay Datos</td>';
+                $htmldat +='</tr>';
+                $htmldat +='</tbody>';
+                echo $htmldat;
                 //echo self::notDatos();
             }
             
@@ -201,7 +225,32 @@
                 
                 echo json_encode(self::cleanArray($datos));
             }else{
-                echo 'Error no hay datos';
+
+                $htmldat="";
+                $htmldat +='<td>No</td>';
+                $htmldat +='<td>Nit</td>';
+                $htmldat +='<td>Nombre Empresa</td>';
+                $htmldat +='<td>Nacional</td>';
+                $htmldat +='<td>Urbano</td>';
+                $htmldat +='<td>Nacional</td>';
+                $htmldat +='<td>Urbano</td>';
+                $htmldat +='<td>Nacional</td>';
+                $htmldat +='<td>Urbano</td>';
+                $htmldat +='<td>Nacional</td>';
+                $htmldat +='<td>Urbano</td>';
+                $htmldat +='<td>Urbano</td>';
+                $htmldat +='<td>Nacional</td>';
+                $htmldat +='<td>Urbano</td>';
+                $htmldat +='<td>Nacional</td>';
+                $htmldat +='<td>Urbano</td>';
+                $htmldat +='<td>Nacional</td>';
+                $htmldat +='<td>Urbano</td>';
+                $htmldat +='<td>Nacional</td>';
+        
+                $htmldat +='<td>Usuario</td>';
+                $htmldat +='<td>fecha de M</td>';
+                                
+                echo $htmldat;
                 //echo self::notDatos();
             }
             
