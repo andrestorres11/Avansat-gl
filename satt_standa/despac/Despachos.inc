@@ -4772,99 +4772,99 @@ class Despachos
     private function getNovedad( $mNumDespac , $mIndGPS = 'INNER')
     {
         if(BASE_DATOS == 'satt_faro'){
-      $mSql = " (      SELECT m_noveda) AS nom_noveda, 
-                              a.usr_creaci, a.fec_creaci, 
-                              UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox, 
-                              a.obs_contro AS obs_noveda, 
-                              b.nov_especi, a.cod_noveda, 
-                              '1' AS tab_origen, a.cod_consec, 
-                              a.cod_conta.fec_contro AS fec_noveda, 
-                              UPPER(b.noro, '0' AS ind_ensiti, 
-                              b.ind_fuepla, a.tiem_duraci, 
-                              b.cod_etapax, b.ind_limpio, 
-                              b.ind_manala, 
-                              a.val_longit, a.val_latitu
-                         FROM ".BASE_DATOS.".tab_despac_contro a 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
-                           ON a.cod_noveda = b.cod_noveda 
-                   $mIndGPS JOIN ".BASE_DATOS.".tab_despac_sitio c 
-                           ON a.cod_sitiox = c.cod_sitiox 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_contro d 
-                           ON a.cod_contro = d.cod_contro 
-                        WHERE a.num_despac = '{$mNumDespac}' 
+            $mSql = " (      SELECT a.fec_contro AS fec_noveda, 
+                            UPPER(b.nom_noveda) AS nom_noveda, 
+                            a.usr_creaci, a.fec_creaci, 
+                            UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox, 
+                            a.obs_contro AS obs_noveda, 
+                            b.nov_especi, a.cod_noveda, 
+                            '1' AS tab_origen, a.cod_consec, 
+                            a.cod_contro, '0' AS ind_ensiti, 
+                            b.ind_fuepla, a.tiem_duraci, 
+                            b.cod_etapax, b.ind_limpio, 
+                            b.ind_manala, 
+                            a.val_longit, a.val_latitu
+                    FROM ".BASE_DATOS.".tab_despac_contro a 
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
+                        ON a.cod_noveda = b.cod_noveda 
+                $mIndGPS JOIN ".BASE_DATOS.".tab_despac_sitio c 
+                        ON a.cod_sitiox = c.cod_sitiox 
+                INNER JOIN ".BASE_DATOS.".tab_genera_contro d 
+                        ON a.cod_contro = d.cod_contro 
+                    WHERE a.num_despac = '{$mNumDespac}' 
                 )
                 UNION 
                 (
-                       SELECT a.fec_noveda, 
-                              UPPER(b.nom_noveda) AS nom_noveda,
-                              a.usr_creaci, 
-                              a.fec_creaci,  
-                              UPPER(c.nom_contro) AS nom_sitiox, 
-                              a.des_noveda AS obs_noveda, 
-                              b.nov_especi, a.cod_noveda, 
-                              '2' AS tab_origen, '1' AS cod_consec, 
-                              a.cod_contro, '1' AS ind_ensiti, 
-                              b.ind_fuepla, a.tiem_duraci, 
-                              b.cod_etapax, b.ind_limpio, 
-                              b.ind_manala,
-                              '' AS val_longit, '' AS val_latitu
-                         FROM ".BASE_DATOS.".tab_despac_noveda a 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
-                           ON a.cod_noveda = b.cod_noveda 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_contro c 
-                           ON a.cod_contro = c.cod_contro 
-                        WHERE a.num_despac = '{$mNumDespac}' 
+                    SELECT a.fec_noveda, 
+                            UPPER(b.nom_noveda) AS nom_noveda,
+                            a.usr_creaci, 
+                            a.fec_creaci,  
+                            UPPER(c.nom_contro) AS nom_sitiox, 
+                            a.des_noveda AS obs_noveda, 
+                            b.nov_especi, a.cod_noveda, 
+                            '2' AS tab_origen, '1' AS cod_consec, 
+                            a.cod_contro, '1' AS ind_ensiti, 
+                            b.ind_fuepla, a.tiem_duraci, 
+                            b.cod_etapax, b.ind_limpio, 
+                            b.ind_manala,
+                            '' AS val_longit, '' AS val_latitu
+                    FROM ".BASE_DATOS.".tab_despac_noveda a 
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
+                        ON a.cod_noveda = b.cod_noveda 
+                INNER JOIN ".BASE_DATOS.".tab_genera_contro c 
+                        ON a.cod_contro = c.cod_contro 
+                    WHERE a.num_despac = '{$mNumDespac}' 
                 )
                 UNION
                 (
-                       SELECT a.fec_solici AS fec_noveda, 
-                              c.nom_noveda,
-                              a.usr_solici AS usr_creaci, 
-                              a.fec_solici AS fec_creaci, 
-                              UPPER(b.nom_contro) AS nom_sitiox, 
-                              GROUP_CONCAT( d.tex_encabe ) AS obs_noveda, 
-                              '0' AS nov_especi, a.cod_noveda, 
-                              '3' AS tab_origen, d.cod_consec, 
-                              a.cod_contro, '0' AS ind_ensiti, 
-                              c.ind_fuepla, '' AS tiem_duraci, 
-                              c.cod_etapax, '0' AS ind_limpio, 
-                              c.ind_manala,
-                              '' AS val_longit, '' AS val_latitu
-                         FROM ".BASE_DATOS.".tab_recome_asigna a 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
-                           ON a.cod_contro = b.cod_contro 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_noveda c 
-                           ON a.cod_noveda = c.cod_noveda 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
-                           ON a.cod_recome = d.cod_consec 
-                        WHERE a.num_despac = '{$mNumDespac}' 
-                     GROUP BY a.cod_contro 
+                    SELECT a.fec_solici AS fec_noveda, 
+                            c.nom_noveda,
+                            a.usr_solici AS usr_creaci, 
+                            a.fec_solici AS fec_creaci, 
+                            UPPER(b.nom_contro) AS nom_sitiox, 
+                            GROUP_CONCAT( d.tex_encabe ) AS obs_noveda, 
+                            '0' AS nov_especi, a.cod_noveda, 
+                            '3' AS tab_origen, d.cod_consec, 
+                            a.cod_contro, '0' AS ind_ensiti, 
+                            c.ind_fuepla, '' AS tiem_duraci, 
+                            c.cod_etapax, '0' AS ind_limpio, 
+                            c.ind_manala,
+                            '' AS val_longit, '' AS val_latitu
+                    FROM ".BASE_DATOS.".tab_recome_asigna a 
+                INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
+                        ON a.cod_contro = b.cod_contro 
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda c 
+                        ON a.cod_noveda = c.cod_noveda 
+                INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
+                        ON a.cod_recome = d.cod_consec 
+                    WHERE a.num_despac = '{$mNumDespac}' 
+                GROUP BY a.cod_contro 
                 )
                 UNION
                 (
-                       SELECT a.fec_ejecut AS fec_noveda, 
-                              'SOLUCION RECOMENDACION' AS nom_noveda, 
-                              a.usr_ejecut AS usr_creaci,
-                              a.fec_ejecut AS fec_creaci, 
-                              UPPER(b.nom_contro) AS nom_sitiox, 
-                              GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda, 
-                              '0' AS nov_especi, a.cod_noveda, 
-                              '4' AS tab_origen, d.cod_consec, 
-                              a.cod_contro, '1' AS ind_ensiti, 
-                              c.ind_fuepla, '' AS tiem_duraci, 
-                              c.cod_etapax, '1' AS ind_limpio, 
-                              c.ind_manala, 
-                              '' AS val_longit, '' AS val_latitu
-                         FROM ".BASE_DATOS.".tab_recome_asigna a 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
-                           ON a.cod_contro = b.cod_contro 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_noveda c 
-                           ON a.cod_noveda = c.cod_noveda 
-                   INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
-                           ON a.cod_recome = d.cod_consec 
-                        WHERE a.num_despac = '{$mNumDespac}' 
-                          AND a.obs_ejecuc IS NOT NULL 
-                     GROUP BY a.cod_contro 
+                    SELECT a.fec_ejecut AS fec_noveda, 
+                            'SOLUCION RECOMENDACION' AS nom_noveda, 
+                            a.usr_ejecut AS usr_creaci,
+                            a.fec_ejecut AS fec_creaci, 
+                            UPPER(b.nom_contro) AS nom_sitiox, 
+                            GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda, 
+                            '0' AS nov_especi, a.cod_noveda, 
+                            '4' AS tab_origen, d.cod_consec, 
+                            a.cod_contro, '1' AS ind_ensiti, 
+                            c.ind_fuepla, '' AS tiem_duraci, 
+                            c.cod_etapax, '1' AS ind_limpio, 
+                            c.ind_manala, 
+                            '' AS val_longit, '' AS val_latitu
+                    FROM ".BASE_DATOS.".tab_recome_asigna a 
+                INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
+                        ON a.cod_contro = b.cod_contro 
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda c 
+                        ON a.cod_noveda = c.cod_noveda 
+                INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
+                        ON a.cod_recome = d.cod_consec 
+                    WHERE a.num_despac = '{$mNumDespac}' 
+                        AND a.obs_ejecuc IS NOT NULL 
+                GROUP BY a.cod_contro 
                 ) 
                 ORDER BY fec_creaci ASC ";
             }else{
