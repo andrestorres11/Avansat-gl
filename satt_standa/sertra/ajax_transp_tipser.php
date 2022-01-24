@@ -98,9 +98,15 @@
             $fec_inicio=$_POST['fec_inicio'];
             $fec_finxxx=$_POST['fec_finxxx'];
             $newdat="";
-            foreach($cod_transp as $datcod_transp){
-                $newdat .= " `cod_tercer` LIKE ".$datcod_transp." AND date(`fec_modifi`) BETWEEN '$fec_inicio' and '$fec_finxxx' or" ;
+
+            if(empty($cod_transp)){
+                $newdat .= " date(`fec_modifi`) BETWEEN '$fec_inicio' and '$fec_finxxx' or" ;
+            }else{
+                foreach($cod_transp as $datcod_transp){
+                    $newdat .= " `cod_tercer` LIKE ".$datcod_transp." AND date(`fec_modifi`) BETWEEN '$fec_inicio' and '$fec_finxxx' or" ;
+                }
             }
+            
             $newdat = rtrim($newdat, "or");
             
             $sql="SELECT '' as cont, `cod_tercer`, `nom_tercer`, `com_diasxx`, `hor_ingres`, `hor_salida`, `usr_modifi`, 
@@ -160,8 +166,18 @@
                 
                 echo json_encode(self::cleanArray($datos));
             }else{
-                echo 'Error no hay datos';
-                //echo self::notDatos();
+                $html="<tr>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                </tr>
+                ";
+                echo json_encode(self::cleanArray($html));
             }
             
         }
@@ -179,9 +195,14 @@
             $fec_finxxx=$_POST['fec_finxxx'];
             
             $newdat="";
-            foreach($cod_transp as $datcod_transp){
-                $newdat .= " tprin.cod_tercer=subtbl.`cod_transp` and tprin.cod_tercer LIKE '".$datcod_transp."' AND date(subtbl.`fec_creaci`) BETWEEN '$fec_inicio' and '$fec_finxxx' or" ;
+            if(empty( $cod_transp)){
+                $newdat .= " tprin.cod_tercer=subtbl.`cod_transp` AND date(subtbl.`fec_creaci`) BETWEEN '$fec_inicio' and '$fec_finxxx' or" ;
+            }else{
+                foreach($cod_transp as $datcod_transp){
+                    $newdat .= " tprin.cod_tercer=subtbl.`cod_transp` and tprin.cod_tercer LIKE '".$datcod_transp."' AND date(subtbl.`fec_creaci`) BETWEEN '$fec_inicio' and '$fec_finxxx' or" ;
+                }
             }
+            
             $newdat = rtrim($newdat, "or");
             
             $sql="SELECT '' as contador, subtbl.`cod_transp`, tprin.nom_tercer as empresa, 
@@ -201,8 +222,31 @@
                 
                 echo json_encode(self::cleanArray($datos));
             }else{
-                echo 'Error no hay datos';
-                //echo self::notDatos();
+                $html="<tr>
+                <td>''</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>
+                <td>No hay Datos</td>                
+                </tr>
+                ";
+                echo json_encode(self::cleanArray($html));
             }
             
         }
