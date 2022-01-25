@@ -275,7 +275,7 @@ tr.row:hover td {
 }
 
 .table tr:hover {
-    background: #9AD9AE !important;
+    background: #9AD9AE;
 }
 
 .ancho {

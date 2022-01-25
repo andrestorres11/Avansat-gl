@@ -21,8 +21,10 @@
 
         function __construct($co = null, $us = null, $ca = null){
              //Include Connection class
-             @include( "../lib/ajax.inc" );
-             include_once('../lib/general/constantes.inc');
+             @include_once( "../lib/ajax.inc" );
+             @include_once( "../lib/general/constantes.inc" );
+             @include_once( "../lib/general/functions.inc" );
+             @include_once( "../../satt_faro/constantes.inc" );
  
              self::$conexion = $AjaxConnection;
              self::$usuario = $us;
@@ -149,7 +151,7 @@
             $rutas = self::getDataRutasServicios($_REQUEST['cod_solici']);
 
             $title = mb_strtoupper($inf_basica['nom_asiste']);
-            $title = str_replace("Ã±", "Ã‘", $title);
+            $title = str_replace("ñ", "Ñ", $title);
 
             $html = '
             <div class="row m-3">
@@ -164,7 +166,7 @@
                     <div class="border border-white" style="display:inline-block; padding:10px;margin:5px;margin-bottom:10px">
                       <h5>'.$_REQUEST['cod_solici'].'
                         <h5>
-                          <p class="textpanel" style="margin-top:-8px">NÂ° Solicitud</p>
+                          <p class="textpanel" style="margin-top:-8px">No. Solicitud</p>
                         </div>
                       </center>
                       <p class="textpanel boldtext">Fecha de solcitud: '.$inf_basica['fec_creaci'].'</p>
@@ -183,7 +185,7 @@
                       <p class="textpanel boldtext">Nombre: '.$inf_basica['nom_solici'].'</p>
                       <p class="textpanel boldtext">E-mail: '.$inf_basica['cor_solici'].'</p>
                       <p class="textpanel boldtext">Telefono: '.$inf_basica['tel_solici'].'</p>
-                      <p class="textpanel boldtext">NÃºmero de celular: '.$inf_basica['cel_solici'].'</p>
+                      <p class="textpanel boldtext">Número de celular: '.$inf_basica['cel_solici'].'</p>
                       <p class="textpanel boldtext">Aseguradora: '.$inf_basica['ase_solici'].'</p>
                       <p class="textpanel boldtext">Poliza: '.$inf_basica['num_poliza'].'</p>
                     </div>
@@ -196,7 +198,7 @@
                   <div class="small-box bg-warning">
                     <div class="inner">
                       <h6>Datos del transportista</h6>
-                      <p class="textpanel boldtext">NÂ° documento: '.$inf_basica['num_transp'].'</p>
+                      <p class="textpanel boldtext">No documento: '.$inf_basica['num_transp'].'</p>
                       <p class="textpanel boldtext">Nombres: '.$inf_basica['nom_transp'].'</p>
                       <p class="textpanel boldtext">Primer apellido: '.$inf_basica['ap1_transp'].'</p>
                       <p class="textpanel boldtext">Segundo apellido: '.$inf_basica['ap2_transp'].'</p>
@@ -288,7 +290,7 @@
                                   <div class="card">
                                     <div class="card-header bg-success">
                                       <center>
-                                        <h3 class="card-title">UbicaciÃ³n del vehÃ­culo</h3>
+                                        <h3 class="card-title">Ubicación del vehi­culo</h3>
                                       </center>
                                       <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -328,7 +330,7 @@
                         </div>
                         <div class="row">
                           <div class="col-md-6">
-                            <p class="align-right textpanel boldtext">ContraseÃ±a: </p>
+                            <p class="align-right textpanel boldtext">Contraseña: </p>
                           </div>
                           <div class="col-md-6">
                             <p class="align-left textpanel boldtext">'.$inf_basica['con_vehicu'].'</p>
@@ -336,7 +338,7 @@
                         </div>
                         <div class="row">
                           <div class="col-md-6">
-                            <p class="align-right textpanel boldtext">UbicaciÃ³n: </p>
+                            <p class="align-right textpanel boldtext">Ubicación: </p>
                           </div>
                           <div class="col-md-6">
                             <p class="align-left textpanel boldtext">'.$inf_basica['ubi_vehicu'].'</p>
@@ -394,7 +396,7 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6">
-                          <p class="align-right textpanel boldtext">UbicaciÃ³n: </p>
+                          <p class="align-right textpanel boldtext">Ubicación: </p>
                         </div>
                         <div class="col-md-6">
                           <p class="align-left textpanel boldtext">'.$inf_basica['ubi_vehicu'].'</p>
@@ -460,7 +462,7 @@
                       $total += $servicio['val_servic'];
 
                       $html.='<tr>
-                      <td class="tablaval ">'.utf8_decode($servicio['des_servic']).'</td>';
+                      <td class="tablaval ">'.self::reemplazar(utf8_decode($servicio['des_servic'])).'</td>';
 
                       if($servicio['tar_unitar']==0){
                       $html.='<td class="tablaval ">$ '.$servicio['val_servic'].'</td>';
@@ -511,19 +513,18 @@
 									</button>
 								</div> </div>
               <div class="card-body"><div class="row">';
-
                     $res_servic = self::getDataFormulario($servicio['id'],1);
                     $tot_servic = self::getDataFormulario($servicio['id'],2);
-                    $rut_imagen = "https://dev.intrared.net:8083/ap/ctorres/sat-gl-2015/satt_faro/gesdoc/tab_formul_respue/";
+                    $rut_imagen = DIREC_APLICA."gesdoc/tab_formul_respue/";
                     if($tot_servic<=0){
                       $html.='<div class="col-md-12">
 											<div class=" m-3 alert alert-warning" role="alert">
-												No hay informaciÃ³n registrada de este servicio.
+												No hay información registrada de este servicio.
 											</div>
 										</div>';
                     }else{
 										foreach($res_servic as $data1){
-											if($data1['cod_campox']==37){
+											if($data1['ind_tipoxx']=='camera'){
                         $datos=$data1['tex_respue'];
                         $arr=json_decode($datos,TRUE);
 												foreach($arr as $image){
@@ -538,7 +539,7 @@
                       <div class="row">';
                       
                     foreach($res_servic as $data1){
-											if($data1['cod_campox']!=37){
+											if($data1['ind_tipoxx']!='camera'){
 											$html.='<div class="col-md-4">
 												<div class="row">
 												<div class="col-md-6 text-right"><span style="font-weight:bold;">'.$data1['nom_campox'].':</span></div>
@@ -564,13 +565,13 @@
 				          </div>';
 
             //Body
-            echo utf8_decode('<table style="width: 100%;" id="dashBoardTableTrans">
+            echo '<table style="width: 100%;" id="dashBoardTableTrans">
             <tr>
                 <td>
                     <meta name="viewport" content= "width=device-width, initial-scale=1.0">
                     '.$html.'                     
                 </td>
-            </tr>');
+            </tr>';
             
             //Remote scripts
             self::scripts();
@@ -626,7 +627,7 @@
 
 
         function getDataFormulario($cod_servic,$val){
-          $sql="SELECT a.cod_campox,a.tex_respue,c.nom_campox 
+          $sql="SELECT a.cod_campox,a.tex_respue,c.nom_campox, c.ind_tipoxx 
           FROM ".BASE_DATOS.".tab_formul_respue a
           INNER JOIN ".BASE_DATOS.".tab_formul_detail b ON a.cod_campox = b.cod_campox AND
                                                            a.cod_formul = b.cod_formul
@@ -668,6 +669,12 @@
           $respuestas = $query -> ret_matrix('a');
           $respuestas = self::cleanArray($respuestas);
           return $respuestas;
+        }
+
+        private function reemplazar($cadena){
+          $falsos = array("Ã±");
+          $nuevac = str_replace($falsos, "ñ",$cadena);
+          return $nuevac;
         }
 
 

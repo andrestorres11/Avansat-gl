@@ -70,7 +70,7 @@
                 }
             }
 
-            $sql = "SELECT a.cod_noveda, a.nom_noveda, b.nom_etapax,
+            $sql = "SELECT a.cod_noveda, a.nom_noveda, CONCAT(UPPER(LEFT(b.nom_etapax, 1)), LOWER(SUBSTRING(b.nom_etapax, 2))) as 'nom_etapax',
                            c.nom_riesgo, a.rut_iconox, a.nom_observ,
                            a.ind_status
                           FROM ".BASE_DATOS.".tab_genera_novseg a

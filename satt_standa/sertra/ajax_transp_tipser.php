@@ -109,7 +109,7 @@
             
             $newdat = rtrim($newdat, "or");
             
-            $sql="SELECT '' as cont, `cod_tercer`, `nom_tercer`, `com_diasxx`, `hor_ingres`, `hor_salida`, `usr_modifi`, 
+            $sql="SELECT '' as cont, `cod_tercer`, `nom_tercer`, `com_diasxx`, `hor_ingres`, `hor_salida`, `usr_modifi`, tip_status, 
             DATE_FORMAT(`fec_modifi`,'%d/%m/%Y %h:%i %p') as fecha 
             FROM `tab_bitaco_tipser` 
             WHERE ".$newdat;

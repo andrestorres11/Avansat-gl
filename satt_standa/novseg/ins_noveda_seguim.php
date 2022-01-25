@@ -267,15 +267,15 @@
           <div class="card-body">
             <div class="row">
               <div class="col-md-2 col-sm-12">
-                <div class="form-group">
-                  <input type="hidden" name="ind_update" id="ind_updateID">
-                  <input type="hidden" name="cod_noveda" id="cod_novedaID">
+                <div class="form-group" id="cod_novedaSpace">
                   <label for="cod_novedaID" class="labelinput">Código:</label>
                   <input class="form-control form-control-sm" type="text" id="cod_novedaVID" name="cod_novedaV" disabled>
                 </div>
               </div>
-              <div class="col-md-4 col-sm-12">
+              <div class="col-md-4 col-sm-12" id="nom_novedadSpace">
                 <div class="form-group">
+                  <input type="hidden" name="ind_update" id="ind_updateID">
+                  <input type="hidden" name="cod_noveda" id="cod_novedaID">
                   <label for="nom_novedaID" class="labelinput">Nombre de la novedad:</label>
                   <input class="form-control form-control-sm req" type="text" placeholder="Nombre de la novedad" id="nom_novedaID" name="nom_noveda">
                 </div>
@@ -309,6 +309,7 @@
                         <div class="col-md-12">
                             <label for="rut_iconoxID">Icono</label>
                             <input type="file" class="form-control-file" id="rut_iconoxID" name="rut_iconox" accept="image/*" onchange="cargaImagen(this)">
+                            <label class="mt-2" for="rut_iconoxID"><strong>Se aceptan formatos jpg y png. tamaños (16x16, 24x24, 32x32, 64x64, 128x128, 256x256, 512x512 px)</strong></label>
                         </div>
                     </div>
                 </div>
@@ -324,7 +325,7 @@
         }
 
         private function getEtapax(){
-            $sql = "SELECT a.cod_etapax, a.nom_etapax
+            $sql = "SELECT a.cod_etapax, CONCAT(UPPER(LEFT(a.nom_etapax, 1)), LOWER(SUBSTRING(a.nom_etapax, 2))) as 'nom_etapax'
                           FROM ".BASE_DATOS.".tab_genera_etapax a
                         WHERE ind_estado = 1 AND a.cod_etapax != 0; ";
              $query = new Consulta($sql, $this->conexion);
