@@ -119,14 +119,23 @@
         
        
         $newdat="";
-        foreach($Cod_funcionario as $datcod_funcionario){
+        if (empty($$Cod_funcionario)){
             $newdat .= " u.cod_usuari = t.cod_usuari
             AND j.cod_horari= t.cod_horari
-            and u.cod_consec = $datcod_funcionario
             And t.obs_protur = ''
             and t.fec_inicia BETWEEN '$fec_inicio' and '$fec_finxxx'
             or" ;
+        }else{
+            foreach($Cod_funcionario as $datcod_funcionario){
+                $newdat .= " u.cod_usuari = t.cod_usuari
+                AND j.cod_horari= t.cod_horari
+                and u.cod_consec = $datcod_funcionario
+                And t.obs_protur = ''
+                and t.fec_inicia BETWEEN '$fec_inicio' and '$fec_finxxx'
+                or" ;
+            }
         }
+        
         $newdat = rtrim($newdat, "or");
         
         $sql="SELECT '' as cont, u.cod_consec, u.nom_usuari, j.nom_horari , j.cod_colorx ,t.fec_inicia 
@@ -294,21 +303,34 @@
             $fec_inicio=$_POST['fec_inicio'];
             $fec_finxxx=$_POST['fec_finxxx'];
             $newdat="";
-            foreach($Cod_funcionario as $datcod_funcionario){
+
+
+            if (empty($$Cod_funcionario)){
                 $newdat .= " tbluser.`cod_usuari`= tblmov.`cod_usuari` 
                             and tblnov.`cod_novtur`= tblmov.`cod_novtur`
                             And obs_protur != ''
                             and tblmov.`fec_inicia` BETWEEN '$fec_inicio' AND '$fec_finxxx'
-                            and tbluser.`cod_consec`=$datcod_funcionario
                             or";
 
+            }else{
 
-                //$newdat .= " `cod_tercer` LIKE ".$datcod_transp." AND date(`fec_modifi`) BETWEEN '$fec_inicio' and '$fec_finxxx' or" ;
+                foreach($Cod_funcionario as $datcod_funcionario){
+                    $newdat .= " tbluser.`cod_usuari`= tblmov.`cod_usuari` 
+                                and tblnov.`cod_novtur`= tblmov.`cod_novtur`
+                                And obs_protur != ''
+                                and tblmov.`fec_inicia` BETWEEN '$fec_inicio' AND '$fec_finxxx'
+                                and tbluser.`cod_consec`=$datcod_funcionario
+                                or";
+
+
+                    //$newdat .= " `cod_tercer` LIKE ".$datcod_transp." AND date(`fec_modifi`) BETWEEN '$fec_inicio' and '$fec_finxxx' or" ;
+                }
             }
+            
             $newdat = rtrim($newdat, "or");
 
             $sql="SELECT '' as contador, tbluser.`nom_usuari`, tblnov.`nom_novtur`, tblmov.`fec_inicia`, tblmov.`hor_inicia`, 
-                tblmov.`hor_finalx`, tblmov.`obs_protur`, tblmov.`usr_creaci`, tblmov.`fec_creaci`
+                tblmov.`hor_finalx`, tblmov.`obs_protur`, tblmov.`usr_creaci`,  DATE_FORMAT(tblmov.`fec_creaci`,'%d/%m/%Y %h:%i %p') as fecha 
                 FROM `tab_progra_turnos` tblmov, `tab_genera_usuari` tbluser, `tab_genera_novtur` tblnov
                 WHERE $newdat
                 ORDER BY `tblmov`.`fec_inicia`  ASC";
