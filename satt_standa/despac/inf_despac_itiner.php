@@ -27,7 +27,7 @@ class infDespacErrorItinerarios
       self::$cCodAplica = $_SESSION['codigo'];
     }else{
       @include_once( '../'.DIR_APLICA_CENTRAL.'/inform/class_despac_trans3.php' );
-      
+
       self::$cDespac = new Despac( $co, $us, $ca );
       self::$cConexion  = $co;
       self::$cUsuario   = $us;

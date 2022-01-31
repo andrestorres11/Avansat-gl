@@ -59,7 +59,7 @@ class InsertDespacho
             $mHtml->OpenDiv("id:sec1;");
               $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                 $mHtml->Table("tr");
-                    $mHtml->Label("Nit/Nombre Cliente:", "width:35%; :1;");
+                    $mHtml->Label("Nit/Nombre Cliente Faro:", "width:35%; :1;");
                     $mHtml->Input(array("name" => "trasp[nom_transp]", "id" => "nom_transpID", "width" => "35%"));
                     $mHtml->SetBody("<td><div id='boton'></div></td>");  
                 $mHtml->CloseTable("tr");

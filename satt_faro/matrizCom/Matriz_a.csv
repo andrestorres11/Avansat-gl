@@ -1,0 +1,184 @@
+Codigo Usuario;Nombre Usuario;Novedad;Tipo Correo;Origen;Producto;Destino;tipo Operacion;Zona; Canal;Tipo_Transporte;Desposito
+A.Hernandez;Adriana Isabel Hernandez Malagon;NER / INSPECCION ANTINARCOTICOS;Copia;BOGOTA;Baños y Cocinas;;Exportacion;;;FLOTA PROPIA;
+A.Restrepo;Alfredo de Jesus Restrepo;NER / INSPECCION ANTINARCOTICOS;Copia;BOGOTA;Baños y Cocinas;;Exportacion;;;FLOTA PROPIA;
+Aguas.Vicente;Vicente Carlos Aguas Melendez;NER / INSPECCION ANTINARCOTICOS;Para;CALDAS;Vajillas;UREÑA;Exportacion;BOGOTA;mayoristas;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / ACCIDENTE EN RUTA - CHOQUE BAJO IMPACTO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / COMPARENDO DOCUMENTOS;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / COMPARENDO SOBREPESO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / INFRACCIONES AL CODIGO NACIONAL DE TRANSITO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / VARADO BAJO IMPACTO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / VARADO ALTO IMPACTO;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / PROBLEMAS EN LA VIA BAJO IMPACTO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / PROBLEMAS EN LA VIA ALTO IMPACTO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / PROBLEMAS EN LA VIA - EXTERNA PARO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / CALAMIDAD DOMESTICA;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / INCUMPLIMIENTO PLAN DE VIAJE;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / PENDIENTE CONSIGNACION ANTICIPO;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / PUESTOS DE CONTROL POR ORGANISMOS DEL ESTADO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / VEHICULO EN OPERATIVO;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / HURTO-SAQUEO;Para;SABANETA;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NER / REPROGRAMACION DE CITA;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NEC / CANCELACION DE VIAJE;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NEC / DEMORA EN CARGUE;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / COMPARENDO ZONA AMARILLA;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / DEMORA EN RECIBO ;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / DEVOLUCION-INCONSISTENCIAS EN LAS FACTURAS VS  FISICO ;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / DEVOLUCION-INCUMPLIMIENTO FECHA Y/O HORA DE ENTREGA;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / DEVOLUCION-MERCANCIA POR IMPERFECTOS DE FABRICA;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / DEVOLUCION-MERCANCIA POR ROTURA;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / DEVOLUCION-NOVEDAD EN EMPAQUE Y/O EMBALAJE;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / DEVOLUCION-PEDIDO NO SOLICITADO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / DEVOLUCION-POR NOVEDAD EN RECIBO EN EL CLIENTE;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / FACTURA FUERA DE ALIANZA;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / MAYOR VALOR EN DESCARGUE;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / NO RECIBO-ORDEN DE COMPRA VENCIDAS;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / NOVEDAD EN DOCUMENTOS;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / VALIDAR DIRECCION DE ENTREGA ;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / ZONA DE DIFICIL ACCESO PARA EL DESCARGUE;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / RETORNO DE DEVOLUCION;Copia;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / PAQUETEO EN ESPERA DE AUTORIZACION DE DESPACHO;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED / MERCANCIA EN PLATAFORMA;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+Alejandra.Londo;Alejandra Maria Londono Bermudez;NED /  ENTREGA DE INFORMACION INCOMPLETA POR PARTE DEL TRANSPORTADOR;Para;RIONEGRO;Corlanc;;Nacional;;;FLOTA PROPIA;
+alex.r;Alexander Rubiano Henao;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Copia;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NER / COMPARENDO SOBREPESO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NER / VARADO ALTO IMPACTO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NER / PENDIENTE CONSIGNACION ANTICIPO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NER / HURTO-SAQUEO;Copia;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NER / NO COMUNICACION (GC);Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+alex.r;Alexander Rubiano Henao;NICC /  NEGLIGENCIA CONDUCTOR;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / VEHICULO BLOQUEADO EN PARQUEADERO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / CALAMIDAD DOMESTICA;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / COLISION;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / VEHICULO EN MANTENIMIENTO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / IMPREVISTOS EN LA VIA;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / DEMORA ENTREGA DE CONTENEDOR;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / DESCARGANDO VIAJE ANTERIOR;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / INCONSISTENCIAS EN LA CONTRATACION;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / SIN JUSTIFICACION DEL CONDUCTOR;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / PLANILLANDO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / TRANSPORTADOR SIN SEGURIDAD SOCIAL AL DIA;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / NO COMUNICACION;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+alex.r;Alexander Rubiano Henao;NEC / CANCELACION DE VIAJE;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NEC / DAÑO EN VEHICULO ;Copia;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NEC / DEMORA EN CARGUE;Copia;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NEC / NO COMUNICACION;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+alex.r;Alexander Rubiano Henao;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NEC / PENDIENTE CONSIGNACION ANTICIPO;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NICC / VEHICULO Y CONDUCTOR NO CUMPLEN CON LAS CONDICIONES PARA EL CARGUE;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+alex.r;Alexander Rubiano Henao;NEC / SOLICITUD PAGO STAND BY ;Para;CALI;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Alonso.C;Camilo Alonso;NEC / DAÑO EN VEHICULO ;Copia;MOSQUERA;Pisos y Paredes;;Urbano;;;FLOTA PROPIA;
+Alonso.C;Camilo Alonso;NEC / DEMORA EN CARGUE;Copia;MOSQUERA;Pisos y Paredes;;Urbano;;;FLOTA PROPIA;
+Alvarez.d;Daniel Alvarez Isaza;NEC / DAÑO EN VEHICULO ;Copia;RIONEGRO;Corlanc;;Urbano;;;FLOTA PROPIA;
+Alvarez.d;Daniel Alvarez Isaza;NEC / DEMORA EN CARGUE;Para;RIONEGRO;Corlanc;;Urbano;;;FLOTA PROPIA;
+Alvarez.d;Daniel Alvarez Isaza;NEC / NO COMUNICACION;Para;RIONEGRO;Corlanc;;Urbano;;;FLOTA PROPIA;
+amanda.r;Amanda Robayo Salamanca;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;FLOTA PROPIA;
+amanda.r;Amanda Robayo Salamanca;NER / HURTO-SAQUEO;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;FLOTA PROPIA;
+Angie.N;Angie Carolina Navarro Rodriguez ;NER / CALAMIDAD DOMESTICA;Para;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Angie.N;Angie Carolina Navarro Rodriguez ;NER / INCUMPLIMIENTO PLAN DE VIAJE;Para;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Angie.N;Angie Carolina Navarro Rodriguez ;NER / NO COMUNICACION (GC);Para;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Angie.N;Angie Carolina Navarro Rodriguez ;NICC / NO COMUNICACION;Para;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Angie.N;Angie Carolina Navarro Rodriguez ;NED / RETORNO DE DEVOLUCION;Para;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+arango.d;DIEGO ALEJANDRO ARANGO;NEC / CANCELACION DE VIAJE;Copia;CALDAS;Vajillas;;Urbano;;;FLOTA PROPIA;
+arango.d;DIEGO ALEJANDRO ARANGO;NEC / DAÑO EN VEHICULO ;Copia;CALDAS;Vajillas;;Urbano;;;FLOTA PROPIA;
+arango.d;DIEGO ALEJANDRO ARANGO;NEC / DEMORA EN CARGUE;Para;CALDAS;Vajillas;;Urbano;;;FLOTA PROPIA;
+arango.d;DIEGO ALEJANDRO ARANGO;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Copia;CALDAS;Vajillas;;Urbano;;;FLOTA PROPIA;
+arango.d;DIEGO ALEJANDRO ARANGO;NEC / NO COMUNICACION;Para;CALDAS;Vajillas;;Urbano;;;FLOTA PROPIA;
+arango.d;DIEGO ALEJANDRO ARANGO;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Copia;CALDAS;Vajillas;;Urbano;;;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / ACCIDENTE EN RUTA - CHOQUE BAJO IMPACTO;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Copia;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / COMPARENDO DOCUMENTOS;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / COMPARENDO SOBREPESO;Copia;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / INFRACCIONES AL CODIGO NACIONAL DE TRANSITO;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / VARADO BAJO IMPACTO;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / VARADO ALTO IMPACTO;Copia;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / PROBLEMAS EN LA VIA BAJO IMPACTO;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / PROBLEMAS EN LA VIA ALTO IMPACTO;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / PROBLEMAS EN LA VIA - EXTERNA PARO;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / PUESTOS DE CONTROL POR ORGANISMOS DEL ESTADO;Para;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NER / VEHICULO EN OPERATIVO;Copia;CARTAGENA;Baños y Cocinas;;Urbano;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NED / COMPARENDO ZONA AMARILLA;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / DEMORA EN RECIBO ;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / DEVOLUCION-INCONSISTENCIAS EN LAS FACTURAS VS  FISICO ;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / DEVOLUCION-INCUMPLIMIENTO FECHA Y/O HORA DE ENTREGA;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / DEVOLUCION-MERCANCIA POR IMPERFECTOS DE FABRICA;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / DEVOLUCION-MERCANCIA POR ROTURA;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / DEVOLUCION-NOVEDAD EN EMPAQUE Y/O EMBALAJE;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / DEVOLUCION-PEDIDO NO SOLICITADO;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / DEVOLUCION-POR NOVEDAD EN RECIBO EN EL CLIENTE;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / FACTURA FUERA DE ALIANZA;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / MAYOR VALOR EN DESCARGUE;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / NO RECIBO-ORDEN DE COMPRA VENCIDAS;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / NOVEDAD EN DOCUMENTOS;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / VALIDAR DIRECCION DE ENTREGA ;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / ZONA DE DIFICIL ACCESO PARA EL DESCARGUE;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / RETORNO DE DEVOLUCION;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / PAQUETEO EN ESPERA DE AUTORIZACION DE DESPACHO;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / MERCANCIA EN PLATAFORMA;Copia;CARTAGENA;Baños y Cocinas;MADRID;XD Tramo 1;;BC Construccion ;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NED /  ENTREGA DE INFORMACION INCOMPLETA POR PARTE DEL TRANSPORTADOR;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;BC Construccion ;FLOTA PROPIA;DEP ZM  CD TABLAZA DECORADOS
+arengifo;Alexander Rengifo Acevedo;NED / FALTA DE CORREO DE AUTORIZACION DE RECIBO DE MERCANCIA;Para;BOGOTA;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NED / DEVOLUCION POR ESTIBAS VACIAS;Para;BOGOTA;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;
+arengifo;Alexander Rengifo Acevedo;NED / PAGO STAND BY ( SOBRECOSTOS PENDIENTES );Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;FLOTA PROPIA;
+arevalo.l;LEIDY JOHANNA AREVALO;NER / CALAMIDAD DOMESTICA;Para;SOGAMOSO;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+arevalo.l;LEIDY JOHANNA AREVALO;NER / INCUMPLIMIENTO PLAN DE VIAJE;Para;SOGAMOSO;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+arevalo.l;LEIDY JOHANNA AREVALO;NER / NO COMUNICACION (GC);Para;SOGAMOSO;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+arevalo.l;LEIDY JOHANNA AREVALO;NICC / NO COMUNICACION;Para;SOGAMOSO;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+arevalo.l;LEIDY JOHANNA AREVALO;NEC / DAÑO EN VEHICULO ;Copia;SOGAMOSO;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Copia;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NER / COMPARENDO SOBREPESO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NER / VARADO ALTO IMPACTO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NER / PENDIENTE CONSIGNACION ANTICIPO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NER / NO COMUNICACION (GC);Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;EMPRESAS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / VEHICULO BLOQUEADO EN PARQUEADERO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / CALAMIDAD DOMESTICA;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / COLISION;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / VEHICULO EN MANTENIMIENTO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / IMPREVISTOS EN LA VIA;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / DEMORA ENTREGA DE CONTENEDOR;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / DESCARGANDO VIAJE ANTERIOR;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / INCONSISTENCIAS EN LA CONTRATACION;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / SIN JUSTIFICACION DEL CONDUCTOR;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / PLANILLANDO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / TRANSPORTADOR SIN SEGURIDAD SOCIAL AL DIA;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / NO COMUNICACION;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;EMPRESAS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NEC / CANCELACION DE VIAJE;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NEC / DAÑO EN VEHICULO ;Para;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;;FLOTA PROPIA;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NEC / DEMORA EN CARGUE;Para;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NEC / NO COMUNICACION;Para;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;;FLOTA PROPIA;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NEC / PENDIENTE CONSIGNACION ANTICIPO;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+argumedo.e;Emilio Fernando Ruiz Argumedo;NICC / VEHICULO Y CONDUCTOR NO CUMPLEN CON LAS CONDICIONES PARA EL CARGUE;Para;CARTAGENA;Almacenes Corona - Arcesa;;Importacion;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / INSPECCION ANTINARCOTICOS;Copia;BOGOTA;Almacenes Corona - Arcesa;BUENAVENTURA;Urbano;;;FLOTA PROPIA;
+Avallecilla;Arley Vallecilla ;NER / ACCIDENTE EN RUTA - CHOQUE BAJO IMPACTO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / COMPARENDO DOCUMENTOS;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / COMPARENDO SOBREPESO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / INFRACCIONES AL CODIGO NACIONAL DE TRANSITO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / VARADO ALTO IMPACTO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / PROBLEMAS EN LA VIA ALTO IMPACTO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / PROBLEMAS EN LA VIA - EXTERNA PARO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / PUESTOS DE CONTROL POR ORGANISMOS DEL ESTADO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / VEHICULO EN OPERATIVO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NER / HURTO-SAQUEO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+Avallecilla;Arley Vallecilla ;NEC / DAÑO EN VEHICULO ;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Urbano;;;TERCEROS;
+avenegas;Adriana Venegas;NER / INSPECCION ANTINARCOTICOS;Copia;BOGOTA;Almacenes Corona - Arcesa;CARTAGENA;Exportacion;;;FLOTA PROPIA;
+avila.o;OMAR HERNAN GALINDO AVILA;NER / REPROGRAMACION DE CITA;Para;SOPO;Pisos y Paredes;;Urbano;BOGOTA;;FLOTA PROPIA;
+avila.r;Ruben Dario Avila Quintero;NEC / CANCELACION DE VIAJE;Copia;SOACHA;Corlanc;;Urbano;;;FLOTA PROPIA;
+avila.r;Ruben Dario Avila Quintero;NEC / DAÑO EN VEHICULO ;Copia;SOACHA;Corlanc;;Urbano;;;FLOTA PROPIA;
+avila.r;Ruben Dario Avila Quintero;NEC / DEMORA EN CARGUE;Para;SOACHA;Corlanc;;Nacional;;;FLOTA PROPIA;
+avila.r;Ruben Dario Avila Quintero;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Copia;SOACHA;Corlanc;;Urbano;;;FLOTA PROPIA;
+avila.r;Ruben Dario Avila Quintero;NEC / NO COMUNICACION;Para;SOACHA;Corlanc;;Nacional;;;FLOTA PROPIA;
+avila.r;Ruben Dario Avila Quintero;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Copia;SOACHA;Corlanc;;Urbano;;;FLOTA PROPIA;
+avila.ra;RAFAEL AVILA;NER / INSPECCION ANTINARCOTICOS;Para;CARTAGENA;Almacenes Corona - Arcesa;CARTAGENA;Importacion;BOGOTA;mayoristas;FLOTA PROPIA;
+avila.ra;RAFAEL AVILA;NER / NO COMUNICACION (GC);Copia;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;CN Construccion ;EMPRESAS;
+avila.ra;RAFAEL AVILA;NICC / INCONSISTENCIAS EN LA CONTRATACION;Copia;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;CN Construccion ;FLOTA PROPIA;
+avila.ra;RAFAEL AVILA;NICC / NO COMUNICACION;Copia;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;CN Construccion ;EMPRESAS;
+avila.ra;RAFAEL AVILA;NEC / NO COMUNICACION;Copia;CARTAGENA;Almacenes Corona - Arcesa;;Urbano;;CN Construccion ;EMPRESAS;

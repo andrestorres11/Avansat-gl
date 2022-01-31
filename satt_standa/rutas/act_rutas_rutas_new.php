@@ -59,8 +59,8 @@ class Proc_rutas
    *  \brief: Formulario
    *  \author: 
    *  \date: dia/mes/año
-   *  \date modified:
-   *  \modified by:
+   *  \date modified: 05/08/2015
+   *  \modified by: Ing. Fabian Salinas
    *  \param: 
    *  \return:
    */
@@ -105,19 +105,10 @@ class Proc_rutas
   {
     $datos_usuario = $this -> usuario -> retornar();
     $usuario=$datos_usuario["cod_usuari"];
-    //Parche para concatenar salida vial, no disponible para satt_faro
-    if(BASE_DATOS != 'satt_faro'){
-      $cond1 = "CONCAT(a.nom_rutasx, IF(b.nom_salvia is not NULL, CONCAT(' - ', b.nom_salvia), ''))";
-      $cond2 = " LEFT JOIN ".BASE_DATOS.".tab_genera_salvia b ON a.cod_salvia = b.cod_salvia";
-    }else{
-      $cond1 = "CONCAT(a.nom_rutasx)";
-      $cond2 = "";
-    }
 
-    $query = "SELECT a.cod_rutasx,{$cond1},Count(d.cod_contro),
+    $query = "SELECT a.cod_rutasx,a.nom_rutasx,Count(d.cod_contro),
                      a.ind_estado, a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
-                FROM ".BASE_DATOS.".tab_genera_rutasx a
-                {$cond2} 
+                FROM ".BASE_DATOS.".tab_genera_rutasx a 
            LEFT JOIN ".BASE_DATOS.".tab_genera_rutcon d 
                   ON a.cod_rutasx = d.cod_rutasx ";
     $indwhere = 0;
@@ -213,7 +204,7 @@ class Proc_rutas
    *  \author: 
    *  \date: dia/mes/año
    *  \date modified: 06/08/2015
-   *  \modified by:
+   *  \modified by: Ing. Fabian Salinas
    *  \param: 
    *  \return:
    */
@@ -222,7 +213,6 @@ class Proc_rutas
     $datos_usuario = $this -> usuario -> retornar();
     $usuario=$datos_usuario["cod_usuari"];
     $vias = $this->getVias();
-    $salvia = $this->getSalidaVial();
 
     $inicio[0][0] = 0;
     $inicio[0][1] = '-';
@@ -233,7 +223,7 @@ class Proc_rutas
                       e.tel_contro, b.cod_ciudad, c.cod_ciudad, 
                       d.val_duraci, d.val_distan, d.ind_estado, 
                       a.ind_estado, if(ind_urbano = '".COD_ESTADO_ACTIVO."',' - (Urbano)','') AS ind_urbano,
-                      a.cod_viasxx, a.cod_salvia
+                      a.cod_viasxx
                  FROM ".BASE_DATOS.".tab_genera_rutasx a 
            INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b 
                    ON a.cod_ciuori = b.cod_ciudad
@@ -349,7 +339,6 @@ class Proc_rutas
       $_REQUEST[rutactiva] = $matriz[0][15];
 
       $formulario -> lista_value( "Via:", "cod_viasxx\" id=\"cod_viasxxID", $vias, 1, 40, $matriz[0]['cod_viasxx'] );
-      $formulario -> lista_value( "Salida Vial:", "cod_salvia\" id=\"cod_salviaID", $salvia, 1, 40, $matriz[0]['cod_salvia'] );
 
     if($_REQUEST[rutactiva] == COD_ESTADO_ACTIVO)
       $formulario -> caja ("Activa","rutactiva",1,1,1);
@@ -592,7 +581,7 @@ class Proc_rutas
    *  \author: 
    *  \date: dia/mes/año
    *  \date modified: 06/08/2015
-   *  \modified by:
+   *  \modified by: Ing. Fabian Salinas
    *  \param: 
    *  \return:
    */
@@ -632,12 +621,6 @@ class Proc_rutas
     else
       $_REQUEST[rutactiva] = COD_ESTADO_ACTIVO;
 
-    if ($_REQUEST[cod_salvia] != 0) {
-      $cod_salvia = ", cod_salvia = ".$_REQUEST[cod_salvia]."";
-    }else {
-      $cod_salvia = "";
-    }
-
     //query que actualiza
 
     $query = " UPDATE ".BASE_DATOS.".tab_genera_rutasx
@@ -652,7 +635,6 @@ class Proc_rutas
                       usr_modifi = '$_REQUEST[usuario]',
                       fec_modifi = '$fec_actual',
                       cod_viasxx = '".$_REQUEST[cod_viasxx]."'
-                      ".$cod_salvia."
                 WHERE cod_rutasx = '$_REQUEST[ruta]'";
     $insercion = new Consulta($query, $this -> conexion,"BR");
 
@@ -799,8 +781,8 @@ class Proc_rutas
    *  \brief: Trae el listado de vias
    *  \author: Andres Torres
    *  \date: 18/09/2021
-   *  \date modified:
-   *  \modified by:
+   *  \date modified: 05/08/2015
+   *  \modified by: Ing. Fabian Salinas
    *  \param: 
    *  \return:
   */
@@ -819,36 +801,12 @@ class Proc_rutas
 		return $mResult = $mResult;
   }
 
-   /*! \fn: getSalidaVial
-   *  \brief: Trae el listado de vias
-   *  \author: Andres Torres
-   *  \date: 18/09/2021
-   *  \date modified:
-   *  \modified by:
-   *  \param: 
-   *  \return:
-  */
-  public function getSalidaVial(){
-    $mResult1[] = [
-      0 => 0,
-      1 => 'seleccione una opcion'
-    ];
-    $mSql = " SELECT cod_salvia, nom_salvia
-					FROM ".BASE_DATOS.".tab_genera_salvia";
-		$mConsult = new Consulta($mSql, $this->conexion );
-		$mResult = $mConsult -> ret_matriz('a');
-
-    $mResult = array_merge($mResult1, $mResult);
-
-		return $mResult = $mResult;
-  }
-
   /*! \fn: Insert_Ruta
    *  \brief: Inserta la Nueva Ruta
    *  \author: 
    *  \date: dia/mes/aÃ±o
-   *  \date modified:
-   *  \modified by:
+   *  \date modified: 05/08/2015
+   *  \modified by: Ing. Fabian Salinas
    *  \param: 
    *  \return:
   */

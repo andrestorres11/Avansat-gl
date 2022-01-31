@@ -1,0 +1,138 @@
+Codigo Usuario;Nombre Usuario;Novedad;Tipo Correo;Origen;Producto;Destino;tipo Operacion;Zona; Canal;Tipo_Transporte;Desposito
+F.Lopez;Fredy Alexander Lopez Gutierrez ;NEC / CANCELACION DE VIAJE;Copia;MADRID;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;
+F.Lopez;Fredy Alexander Lopez Gutierrez ;NEC / DAÑO EN VEHICULO ;Para;MADRID;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;
+F.Lopez;Fredy Alexander Lopez Gutierrez ;NEC / DEMORA EN CARGUE;Para;MADRID;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;
+F.Lopez;Fredy Alexander Lopez Gutierrez ;NEC / NO COMUNICACION;Para;MADRID;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;
+F.Lopez;Fredy Alexander Lopez Gutierrez ;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Copia;MADRID;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / ACCIDENTE EN RUTA - CHOQUE BAJO IMPACTO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / COMPARENDO DOCUMENTOS;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / COMPARENDO SOBREPESO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / INFRACCIONES AL CODIGO NACIONAL DE TRANSITO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / VARADO BAJO IMPACTO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / VARADO ALTO IMPACTO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / PROBLEMAS EN LA VIA BAJO IMPACTO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / PROBLEMAS EN LA VIA ALTO IMPACTO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / PROBLEMAS EN LA VIA - EXTERNA PARO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / CALAMIDAD DOMESTICA;Copia;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / INCUMPLIMIENTO PLAN DE VIAJE;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / PENDIENTE CONSIGNACION ANTICIPO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / PUESTOS DE CONTROL POR ORGANISMOS DEL ESTADO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / VEHICULO EN OPERATIVO;Copia;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / HURTO-SAQUEO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / NO COMUNICACION (GC);Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NER / REPROGRAMACION DE CITA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / VEHICULO BLOQUEADO EN PARQUEADERO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / CALAMIDAD DOMESTICA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / COLISION;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / VEHICULO EN MANTENIMIENTO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / IMPREVISTOS EN LA VIA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / DEMORA ENTREGA DE CONTENEDOR;Para;BOGOTA;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / DESCARGANDO VIAJE ANTERIOR;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / INCONSISTENCIAS EN LA CONTRATACION;Para;BOGOTA;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / SIN JUSTIFICACION DEL CONDUCTOR;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / PLANILLANDO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / TRANSPORTADOR SIN SEGURIDAD SOCIAL AL DIA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / NO COMUNICACION;Para;TENJO;Sodimac;;Urbano;;;EMPRESAS;
+felipe.f;Andres Felipe Forero;NEC / CANCELACION DE VIAJE;Para;BOGOTA;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NEC / DAÑO EN VEHICULO ;Copia;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NEC / DEMORA EN CARGUE;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Para;BOGOTA;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NEC / NO COMUNICACION;Para;TENJO;Sodimac;;Urbano;;;EMPRESAS;
+felipe.f;Andres Felipe Forero;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Para;BOGOTA;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NEC / PENDIENTE CONSIGNACION ANTICIPO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NICC / VEHICULO Y CONDUCTOR NO CUMPLEN CON LAS CONDICIONES PARA EL CARGUE;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / COMPARENDO ZONA AMARILLA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / DEMORA EN RECIBO ;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / DEVOLUCION-INCONSISTENCIAS EN LAS FACTURAS VS  FISICO ;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / DEVOLUCION-INCUMPLIMIENTO FECHA Y/O HORA DE ENTREGA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / DEVOLUCION-MERCANCIA POR IMPERFECTOS DE FABRICA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / DEVOLUCION-MERCANCIA POR ROTURA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / DEVOLUCION-NOVEDAD EN EMPAQUE Y/O EMBALAJE;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / DEVOLUCION-PEDIDO NO SOLICITADO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / DEVOLUCION-POR NOVEDAD EN RECIBO EN EL CLIENTE;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / FACTURA FUERA DE ALIANZA;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / MAYOR VALOR EN DESCARGUE;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / NO RECIBO-ORDEN DE COMPRA VENCIDAS;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / NOVEDAD EN DOCUMENTOS;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / VALIDAR DIRECCION DE ENTREGA ;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / ZONA DE DIFICIL ACCESO PARA EL DESCARGUE;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / RETORNO DE DEVOLUCION;Copia;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED / PAQUETEO EN ESPERA DE AUTORIZACION DE DESPACHO;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.f;Andres Felipe Forero;NED /  ENTREGA DE INFORMACION INCOMPLETA POR PARTE DEL TRANSPORTADOR;Para;TENJO;Sodimac;;Urbano;;;FLOTA PROPIA;
+felipe.v;Andres Felipe Vidal;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Copia;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NER / COMPARENDO SOBREPESO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NER / VARADO ALTO IMPACTO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NER / PENDIENTE CONSIGNACION ANTICIPO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NER / HURTO-SAQUEO;Copia;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NER / NO COMUNICACION (GC);Para;CALDAS;Vajillas;;Urbano;;;EMPRESAS;
+felipe.v;Andres Felipe Vidal;NICC /  NEGLIGENCIA CONDUCTOR;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / VEHICULO BLOQUEADO EN PARQUEADERO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / CALAMIDAD DOMESTICA;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / COLISION;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / VEHICULO EN MANTENIMIENTO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / IMPREVISTOS EN LA VIA;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / DEMORA ENTREGA DE CONTENEDOR;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / DESCARGANDO VIAJE ANTERIOR;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / INCONSISTENCIAS EN LA CONTRATACION;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / SIN JUSTIFICACION DEL CONDUCTOR;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / PLANILLANDO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / TRANSPORTADOR SIN SEGURIDAD SOCIAL AL DIA;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / NO COMUNICACION;Para;CALDAS;Vajillas;;Urbano;;;EMPRESAS;
+felipe.v;Andres Felipe Vidal;NEC / CANCELACION DE VIAJE;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NEC / DAÑO EN VEHICULO ;Copia;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NEC / DEMORA EN CARGUE;Copia;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NEC / PENDIENTE CONSIGNACION ANTICIPO;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NICC / VEHICULO Y CONDUCTOR NO CUMPLEN CON LAS CONDICIONES PARA EL CARGUE;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+felipe.v;Andres Felipe Vidal;NEC / SOLICITUD PAGO STAND BY ;Para;CALDAS;Vajillas;;Urbano;;;TERCEROS;DEP ZD  CD TABLAZA DECORADOS
+Fernando.D;Fernando Devia Guerrero;NER / REPROGRAMACION DE CITA;Para;BOGOTA;Pisos y Paredes;;Urbano;SANTANDERES;;FLOTA PROPIA;
+Fernando.M;Juan Fernando Munoz Sarria;NED / MERCANCIA EN PLATAFORMA;Para;CALI;Baños y Cocinas;CALI;XD Tramo 1;;;FLOTA PROPIA;
+florez.j;JUAN CARLOS FLOREZ  ;NER / REPROGRAMACION DE CITA;Para;BOGOTA;Pisos y Paredes;;Urbano;BOGOTA;;FLOTA PROPIA;DEP ZP  DECORADOS BOD SABANETA
+florez.j;JUAN CARLOS FLOREZ  ;NED / MERCANCIA EN PLATAFORMA;Para;Manizales;Baños y Cocinas;MEDELLIN;XD Tramo 1;;;FLOTA PROPIA;
+Forero.F;Favian Guillermo Forero Martinez ;NICC /  NEGLIGENCIA CONDUCTOR;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / VEHICULO BLOQUEADO EN PARQUEADERO;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / CALAMIDAD DOMESTICA;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / COLISION;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / VEHICULO EN MANTENIMIENTO;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / IMPREVISTOS EN LA VIA;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / DEMORA ENTREGA DE CONTENEDOR;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / DESCARGANDO VIAJE ANTERIOR;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / INCONSISTENCIAS EN LA CONTRATACION;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / SIN JUSTIFICACION DEL CONDUCTOR;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / PLANILLANDO;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / TRANSPORTADOR SIN SEGURIDAD SOCIAL AL DIA;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / NO COMUNICACION;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+Forero.F;Favian Guillermo Forero Martinez ;NICC / VEHICULO Y CONDUCTOR NO CUMPLEN CON LAS CONDICIONES PARA EL CARGUE;Copia;BOGOTA;Almacenes Corona - Arcesa;;Urbano;;;EMPRESAS;
+franco.c;CAROL JULIETH FRANCO;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Copia;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NER / COMPARENDO SOBREPESO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NER / VARADO ALTO IMPACTO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NER / PENDIENTE CONSIGNACION ANTICIPO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NER / HURTO-SAQUEO;Copia;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NER / NO COMUNICACION (GC);Para;SOACHA;Corlanc;;Urbano;;;EMPRESAS;
+franco.c;CAROL JULIETH FRANCO;NICC /  NEGLIGENCIA CONDUCTOR;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / VEHICULO BLOQUEADO EN PARQUEADERO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / CALAMIDAD DOMESTICA;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / COLISION;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / VEHICULO EN MANTENIMIENTO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / IMPREVISTOS EN LA VIA;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / DEMORA ENTREGA DE CONTENEDOR;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / DESCARGANDO VIAJE ANTERIOR;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / INCONSISTENCIAS EN LA CONTRATACION;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / SIN JUSTIFICACION DEL CONDUCTOR;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / PLANILLANDO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / TRANSPORTADOR SIN SEGURIDAD SOCIAL AL DIA;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / NO COMUNICACION;Para;SOACHA;Corlanc;;Urbano;;;EMPRESAS;
+franco.c;CAROL JULIETH FRANCO;NEC / CANCELACION DE VIAJE;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NEC / DAÑO EN VEHICULO ;Copia;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NEC / DEMORA EN CARGUE;Copia;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NEC / PENDIENTE CONSIGNACION ANTICIPO;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NICC / VEHICULO Y CONDUCTOR NO CUMPLEN CON LAS CONDICIONES PARA EL CARGUE;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NEC / SOLICITUD PAGO STAND BY ;Para;SOACHA;Corlanc;;Urbano;;;TERCEROS;
+franco.c;CAROL JULIETH FRANCO;NED / FACTURA FUERA DE ALIANZA;Para;BOGOTA;Almacenes Corona - Arcesa;;Urbano;BOGOTA;;FLOTA PROPIA;
