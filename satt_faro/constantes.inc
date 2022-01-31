@@ -16,7 +16,7 @@ define("DIREC_APLICA", "http://".URL_DIREC_APLICA."/satt_faro/");// constante pa
 define("URL_APLICA", "http://".URL_DIREC_APLICA."/satt_faro/");// constante para direccion de la pagina
 define("URL_STANDA", "http://".URL_DIREC_APLICA."/satt_standa/");// constante para direccion de standa
 define("PAGINA", "http://".URL_DIREC_APLICA."/satt_faro/");// constante para direccion de la pagina
-define("URL_ARCHIV", URL_ARCHIV_STANDA."satt_faro/");// constante para foto del conductor
+define("URL_ARCHIV", URL_ARCHIV_STANDA."/satt_faro/");// constante para foto del conductor
 
 define("NIT_TRANSPOR", "999999999");// constante NIT DE LA EMPRESA
 define("NOMSAD", "CENTRO LOGISTICO FARO");// CONSTANTE PARA NOMBRE DE LA APLICACION
@@ -45,5 +45,5 @@ define("HOST_WEB_PRO", "avansatgl"); #Host Produccion
 //Constantes Para los Logos
 define("LOGOFARO", URL_APLICA."logos/LogoCLFaro.png");// URL LOGO FARO
 define("FOOTERFARO", URL_APLICA."logos/banner-torre+de+control-960w.jpg");// URL FOOTER EMAIL
-
+define("ESTILO", "Verde"); 
 ?>

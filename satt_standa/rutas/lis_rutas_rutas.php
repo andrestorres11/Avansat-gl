@@ -109,10 +109,20 @@ class Proc_rutas
    $datos_usuario = $this -> usuario -> retornar();
    $usuario=$datos_usuario["cod_usuari"];
 
-   $query = "SELECT a.cod_rutasx,UPPER(a.nom_rutasx),Count(d.cod_contro),
+   //Parche para concatenar salida vial, no disponible para satt_faro
+   if(BASE_DATOS != 'satt_faro'){
+    $cond1 = "CONCAT(a.nom_rutasx, IF(b.nom_salvia is not NULL, CONCAT(' - ', b.nom_salvia), ''))";
+    $cond2 = " LEFT JOIN ".BASE_DATOS.".tab_genera_salvia b ON a.cod_salvia = b.cod_salvia";
+  }else{
+    $cond1 = "CONCAT(a.nom_rutasx)";
+    $cond2 = "";
+  }
+
+   $query = "SELECT a.cod_rutasx, {$cond1},Count(d.cod_contro),
 		    		a.ind_estado, a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
-               FROM ".BASE_DATOS.".tab_genera_rutasx a LEFT JOIN
-                    ".BASE_DATOS.".tab_genera_rutcon d ON
+               FROM ".BASE_DATOS.".tab_genera_rutasx a 
+                    {$cond2}
+                LEFT JOIN ".BASE_DATOS.".tab_genera_rutcon d ON
                     a.cod_rutasx = d.cod_rutasx
                     ";
    $indwhere = 0;

@@ -1,0 +1,134 @@
+div{
+  /* border: #000000;
+  border-width: 1px;
+  border-style: solid; */
+}
+
+.form_01, .campo_texto, .campo_texto_on{
+  padding-left: 0px;
+  width: 100%;
+}
+
+.formulario > div{
+  margin: 8px;
+}
+
+.formulario input[type="radio"]{
+  margin: 1px;
+}
+
+.btn_formulario{
+  text-align: center;
+}
+
+.main-grid-container{
+
+  display: grid;
+  grid-template-columns: 18% 82%;
+  
+}
+
+.main-grid-container-collapse{
+
+  display: grid;
+  grid-template-columns: 0% 100%;
+  
+}
+
+
+.left-panel-grid-container{
+  margin-left: 8px;
+  
+}
+
+.right-panel-grid-container{
+  display: grid;
+  grid-template-columns: 2% 98%;
+  background-color: #aad3df;
+}
+
+.bar_collapse{
+  cursor: pointer;
+  position: relative;
+  background-image: linear-gradient(to left,white, #cbcbcb);
+  border: #a0a0a0;
+  border-width: 1px;
+  border-style: solid;
+  width:15px;
+}
+
+.bar_collapse i{
+  position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 30%;
+    width: 50%;
+    margin: -15% 0 0 -25%;
+}
+
+.container_radio_placa{
+  display: grid;
+  grid-template-columns: 90% 10%;
+}
+
+.container_radio_manifiesto{
+  display: grid;
+  grid-template-columns: 90% 10%;
+}
+
+.tabla_data{
+  overflow-x: auto !important;
+  border-top: #cbcbcb solid 1px;
+  margin: 4px;
+  padding-top: 10px;
+}
+
+.tabla_data table{
+  margin: auto;
+  width: 100%;
+}
+
+/* seccion para darle estilos al mapa */
+.ol-popup {
+    position: absolute;
+    background-color: white;
+    -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    bottom: 12px;
+    left: -50px;
+    min-width: 280px;
+  }
+  .ol-popup:after, .ol-popup:before {
+    top: 100%;
+    border: solid transparent;
+    content: ' ';
+    height: 0;
+    width: 0;
+    position: absolute;
+    pointer-events: none;
+  }
+  .ol-popup:after {
+    border-top-color: white;
+    border-width: 10px;
+    left: 48px;
+    margin-left: -10px;
+  }
+  .ol-popup:before {
+    border-top-color: #cccccc;
+    border-width: 11px;
+    left: 48px;
+    margin-left: -11px;
+  }
+  .ol-popup-closer {
+    text-decoration: none;
+    position: absolute;
+    top: 2px;
+    right: 8px;
+  }
+  .ol-popup-closer:after {
+    content: 'x';
+    color:#000000
+  }
