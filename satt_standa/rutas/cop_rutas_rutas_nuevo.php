@@ -110,19 +110,9 @@ class Proc_rutas
     $usuario=$datos_usuario["cod_usuari"];
     $indwhere = 0;
 
-    //Parche para concatenar salida vial, no disponible para satt_faro
-    if(BASE_DATOS != 'satt_faro'){
-      $cond1 = "CONCAT(a.nom_rutasx, IF(b.nom_salvia is not NULL, CONCAT(' - ', b.nom_salvia), ''))";
-      $cond2 = " LEFT JOIN ".BASE_DATOS.".tab_genera_salvia b ON a.cod_salvia = b.cod_salvia";
-    }else{
-      $cond1 = "CONCAT(a.nom_rutasx)";
-      $cond2 = "";
-    }
-
-    $query = "SELECT a.cod_rutasx,{$cond1},Count(d.cod_contro),
+    $query = "SELECT a.cod_rutasx,a.nom_rutasx,Count(d.cod_contro),
                      a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
-                FROM ".BASE_DATOS.".tab_genera_rutasx a
-           {$cond2}
+                FROM ".BASE_DATOS.".tab_genera_rutasx a 
            LEFT JOIN ".BASE_DATOS.".tab_genera_rutcon d 
                   ON a.cod_rutasx = d.cod_rutasx";
 
@@ -221,15 +211,12 @@ class Proc_rutas
     $datos_usuario = $this -> usuario -> retornar();
     $usuario=$datos_usuario["cod_usuari"];
     $vias = $this->getVias();
-    $salvia = $this->getSalidaVial();
-    if(BASE_DATOS != 'satt_faro'){
-      $add = ' , a.cod_salvia';
-    }
+
     $query = " SELECT a.cod_rutasx,a.nom_rutasx,a.cod_ciuori,a.cod_ciudes,d.cod_contro,
                       if(e.ind_virtua = '1',CONCAT(e.nom_contro,' (Virtual)'),e.nom_contro),
                       d.val_duraci,e.nom_encarg,e.dir_contro,e.tel_contro,
                       '','',d.val_duraci,d.val_distan,d.ind_estado,
-                      a.ind_estado, a.cod_viasxx {$add}
+                      a.ind_estado, a.cod_viasxx
                  FROM ".BASE_DATOS.".tab_genera_rutasx a,
                       ".BASE_DATOS.".tab_genera_rutcon d,
                       ".BASE_DATOS.".tab_genera_contro e
@@ -301,9 +288,6 @@ class Proc_rutas
     $formulario -> texto( "Destino:", "text", "destino\" id=\"destinoID", 1, 40, 40, "", $mCiuDes[0][abr_ciudad], 0, 0, 0, 1 );
 
     $formulario -> lista_value( "Via:", "cod_viasxx\" id=\"cod_viasxxID", $vias, 1, 40, $matriz[0]['cod_viasxx'] );
-    if(BASE_DATOS != 'satt_faro'){
-      $formulario -> lista_value( "Salida Vial:", "cod_salvia\" id=\"cod_salviaID", $salvia, 1, 40, $matriz[0]['cod_salvia'] );
-    }
     $formulario -> caja( "Crear via de retorno:", "ind_doblevia\" id=\"ind_dobleviaID", $_REQUEST['ind_doblevia'], 0, 1);
 
     $formulario -> nueva_tabla();
@@ -328,7 +312,7 @@ class Proc_rutas
                    ON a.cod_contro = b.cod_contro 
                   AND b.cod_rutasx = ".$_REQUEST[ruta]." 
                 WHERE a.cod_contro = ".CONS_CODIGO_PCINIC." ";
-    
+
     $consulta = new Consulta($query, $this -> conexion);
     $inicon = $consulta -> ret_matriz();
 
@@ -557,25 +541,17 @@ class Proc_rutas
 
     $ultimo_consec = $ultimo[0][0];
     $nuevo_consec = $ultimo_consec+1;
-    if(BASE_DATOS != 'satt_faro'){
-      if ($_REQUEST[cod_salvia] != 0) {
-        $cod_salvia = ", ".$_REQUEST[cod_salvia]."";
-        $nom_salvia = ", cod_salvia ";
-      }else {
-        $cod_salvia = "";
-        $nom_salvia = "";
-      }
-    }
+
     //query de insercion
     $query = "INSERT INTO ".BASE_DATOS.".tab_genera_rutasx
                       ( cod_rutasx, nom_rutasx, 
                         cod_paiori, cod_depori, cod_ciuori, 
                         cod_paides, cod_depdes, cod_ciudes, 
-                        usr_creaci, fec_creaci, cod_viasxx {$nom_salvia} )
+                        usr_creaci, fec_creaci, cod_viasxx )
                VALUES (  ".$nuevo_consec.", '".$_REQUEST[nom]."', 
                         ".$paidepori[0][0].", ".$paidepori[0][1].", ".$_REQUEST[cod_ciuori].", 
                         ".$paidepdes[0][0].", ".$paidepdes[0][1].",".$_REQUEST[cod_ciudes].", 
-                        '$_REQUEST[usuario]','$fec_actual', ".$_REQUEST[cod_viasxx]." ".$cod_salvia."
+                        '$_REQUEST[usuario]','$fec_actual', ".$_REQUEST[cod_viasxx]."
                       )";
     $consulta = new Consulta($query, $this -> conexion,"BR");
 
@@ -632,11 +608,11 @@ class Proc_rutas
                     ( cod_rutasx, nom_rutasx, 
                       cod_paiori, cod_depori, cod_ciuori, 
                       cod_paides, cod_depdes, cod_ciudes, 
-                      usr_creaci, fec_creaci, cod_viasxx {$nom_salvia})
+                      usr_creaci, fec_creaci, cod_viasxx )
                 VALUES (  ".$nuevo_consec2.", '".$_REQUEST[nomRev]."', 
                       ".$paidepdes[0][0].", ".$paidepdes[0][1].",".$_REQUEST[cod_ciudes].", 
                       ".$paidepori[0][0].", ".$paidepori[0][1].", ".$_REQUEST[cod_ciuori].", 
-                      '$_REQUEST[usuario]','$fec_actual', ".$_REQUEST[cod_viasxx]." {$cod_salvia}
+                      '$_REQUEST[usuario]','$fec_actual', ".$_REQUEST[cod_viasxx]."
                     )";
       $consulta = new Consulta($query, $this -> conexion,"BR");
 
@@ -743,30 +719,6 @@ class Proc_rutas
 
 
 		return $mResult[0]['nom_viasxx'];
-  }
-
-  /*! \fn: getalidaVial
-   *  \brief: Trae el listado de salidas viales
-   *  \author: Andres Torres
-   *  \date: 18/09/2021
-   *  \date modified:
-   *  \modified by:
-   *  \param: 
-   *  \return:
-  */
-  public function getSalidaVial(){
-    $mResult1[] = [
-      0 => 0,
-      1 => 'seleccione una opcion'
-    ];
-    $mSql = " SELECT cod_salvia, nom_salvia
-					FROM ".BASE_DATOS.".tab_genera_salvia";
-		$mConsult = new Consulta($mSql, $this->conexion );
-		$mResult = $mConsult -> ret_matriz('a');
-
-    $mResult = array_merge($mResult1, $mResult);
-
-		return $mResult = $mResult;
   }
 
 }//FIN CLASE PROC_RUTAS

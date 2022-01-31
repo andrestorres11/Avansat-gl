@@ -152,11 +152,7 @@ define("CON_TIPSER_MA", 2);
 define("CON_TIPSER_OAL", 1);
 
 define("COD_PERFIL_SUPEREAL", "7");// Controlador CLF
-define("API_PAD", "'https://logitech.intrared.net/ap/pad/v3/backend/api/linkages'");// Controlador CLF
-
-//define el codigo del servicio de estudio de seguridad.
-define("COD_SERVIC_ESTSEG", 202109152);
-define("URL_INTEGRACION_CEVA", "/var/www/html/ap/interf/app/integracion_ceva/");// Controlador CLF
+define("API_PAD", "'http://localhost/pad-backend/public/api/linkages'");// Controlador CLF
 
 
 ?>

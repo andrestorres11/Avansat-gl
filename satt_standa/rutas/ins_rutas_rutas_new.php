@@ -66,7 +66,6 @@ class Proc_rutas
     $mUltiPc = Proc_rutas::$cRutas -> getUltiPC();
     $mInicPc = Proc_rutas::$cRutas -> getInicPC();
     $vias = $this->getVias();
-    $salvia = $this->getSalidaVial();
     $formulario = new Formulario ("index.php","post","INSERTAR RUTAS","form_ins\" id=\"form_insID");
 
     $formulario -> nueva_tabla();
@@ -79,7 +78,6 @@ class Proc_rutas
     $formulario -> texto( "Destino:", "text", "destino\" id=\"destinoID", 1, 40, 40, "", $_REQUEST['destino'], 0, 0, 0, 1 );
 
     $formulario -> lista( "Via:", "cod_viasxx\" id=\"cod_viasxxID", $vias, 0, 40, 40, "", $_REQUEST['cod_viasxx'], 0, 0, 0, 1 );
-    $formulario -> lista( "Salida Vial:", "cod_salvia\" id=\"cod_salviaID", $salvia, 1, 0, 40, "", $_REQUEST['cod_salvia'], 0, 0, 0, 1 );
     $formulario -> caja( "Crear via de retorno:", "ind_doblevia\" id=\"ind_dobleviaID", $_REQUEST['ind_doblevia'], 0, 1);
 
     $formulario -> nueva_tabla();
@@ -149,14 +147,6 @@ class Proc_rutas
     $mPaiDepDes = Proc_rutas::$cRutas -> getPaisDepart( $_REQUEST[cod_ciudes] );
     $mUsuari = $_SESSION[datos_usuario][cod_usuari];
 
-    if ($_REQUEST[cod_salvia] != 0) {
-      $campo = ', cod_salvia';
-      $cod_salvia = ", ".$_REQUEST[cod_salvia];
-    }else {
-      $campo = '';
-      $cod_salvia = '';
-    }
-
     #Insertar Ruta
     $mSql = " INSERT INTO ".BASE_DATOS.".tab_genera_rutasx
                       (
@@ -164,13 +154,12 @@ class Proc_rutas
                         cod_paiori, cod_depori, cod_ciuori, 
                         cod_paides, cod_depdes, cod_ciudes, 
                         usr_creaci, fec_creaci, cod_viasxx
-                        {$campo}
                       )
               VALUES (
                         '{$mNewRuta}', '{$mNomRuta}', '".COD_ESTADO_ACTIVO."', 
                         '{$mPaiDepOri[cod_paisxx]}', '{$mPaiDepOri[cod_depart]}', '{$_REQUEST[cod_ciuori]}', 
                         '{$mPaiDepDes[cod_paisxx]}', '{$mPaiDepDes[cod_depart]}', '{$_REQUEST[cod_ciudes]}', 
-                        '{$mUsuari}', NOW(), '{$_REQUEST[cod_viasxx]}' {$cod_salvia}
+                        '{$mUsuari}', NOW(), '{$_REQUEST[cod_viasxx]}'
                      )";
     $mConsult = new Consulta($mSql, $this -> conexion, "R");
 
@@ -213,7 +202,7 @@ class Proc_rutas
                       ind_estado
                     )
              VALUES (
-                      '{$mNewRuta}', '".CONS_CODIGO_PCLLEG."', '{$_REQUEST[tiempcult]}', 
+                      '{$mNewRuta}', '{$_REQUEST[cod_ultipc]}', '{$_REQUEST[tiempcult]}', 
                       '{$_REQUEST[kilulti]}', '{$mUsuari}', NOW(), 
                       '".COD_ESTADO_ACTIVO."'
                     )";
@@ -229,13 +218,12 @@ class Proc_rutas
                       cod_paiori, cod_depori, cod_ciuori, 
                       cod_paides, cod_depdes, cod_ciudes, 
                       usr_creaci, fec_creaci, cod_viasxx
-                      {$campo}
                     )
                 VALUES (
                       '{$mNewRuta2}', '{$mNomRuta2}', '".COD_ESTADO_ACTIVO."', 
                       '{$mPaiDepOri['cod_paisxx']}', '{$mPaiDepDes['cod_depart']}', '{$_REQUEST['cod_ciudes']}',
                       '{$mPaiDepDes['cod_paisxx']}', '{$mPaiDepOri['cod_depart']}', '{$_REQUEST['cod_ciuori']}', 
-                      '{$mUsuari}', NOW(), '{$_REQUEST[cod_viasxx]}' {$cod_salvia}
+                      '{$mUsuari}', NOW(), '{$_REQUEST[cod_viasxx]}'
                   )";
       $mConsult = new Consulta($mSql, $this -> conexion, "R");
 
@@ -305,15 +293,15 @@ class Proc_rutas
    *  \brief: Trae el listado de vias
    *  \author: Andres Torres
    *  \date: 18/09/2021
-   *  \date modified:
-   *  \modified by: 
+   *  \date modified: 05/08/2015
+   *  \modified by: Ing. Fabian Salinas
    *  \param: 
    *  \return:
   */
   public function getVias(){
     $mResult1[] = [
       0 => 0,
-      1 => 'seleccione una opcion'
+      1 => 'seleccione una opci?n'
     ];
     $mSql = " SELECT cod_viasxx, nom_viasxx
 					FROM ".BASE_DATOS.".tab_genera_viasxx";
@@ -325,36 +313,12 @@ class Proc_rutas
 		return $mResult = $mResult;
   }
 
-  /*! \fn: getalidaVial
-   *  \brief: Trae el listado de salidas viales
-   *  \author: Andres Torres
-   *  \date: 18/09/2021
-   *  \date modified:
-   *  \modified by:
-   *  \param: 
-   *  \return:
-  */
-  public function getSalidaVial(){
-    $mResult1[] = [
-      0 => 0,
-      1 => 'seleccione una opcion'
-    ];
-    $mSql = " SELECT cod_salvia, nom_salvia
-					FROM ".BASE_DATOS.".tab_genera_salvia";
-		$mConsult = new Consulta($mSql, $this->conexion );
-		$mResult = $mConsult -> ret_matriz('a');
-
-    $mResult = array_merge($mResult1, $mResult);
-
-		return $mResult = $mResult;
-  }
-
-  /*! \fn: getNomVia
-   *  \brief: select de nombre de la via
+  /*! \fn: Insert_Ruta
+   *  \brief: Inserta la Nueva Ruta
    *  \author: 
    *  \date: dia/mes/año
-   *  \date modified:
-   *  \modified by:
+   *  \date modified: 05/08/2015
+   *  \modified by: Ing. Fabian Salinas
    *  \param: 
    *  \return:
   */

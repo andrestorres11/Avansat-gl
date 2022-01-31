@@ -355,8 +355,6 @@
             }
           }
         }
-
-
         if($value['cod_period'] == '6')
         {
           $hourSteep = preg_replace('/[^0-9]/', '', $value['con_frecue']);
@@ -373,46 +371,10 @@
             }
           }
         }
-    }
+      }
         usort($ArrayPush ,array($this, "sort_by_orden"));
         return $ArrayPush;
     }
-
-
-      /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
-           *  \author: Ing. Luis Manrique
-           *  \date: 03-04-2020
-           *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que será analizado por la función
-           *  \return: array
-        */
-        function cleanArray($array){
-
-          $arrayReturn = array();
-
-          //Convert function
-          $convert = function($value){
-              if(is_string($value)){
-                  return utf8_encode($value);
-              }
-              return $value;
-          };
-
-          //Go through data
-          foreach ($array as $key => $value) {
-              //Validate sub array
-              if(is_array($value)){
-                  //Clean sub array
-                  $arrayReturn[$convert($key)] = self::cleanArray($value);
-              }else{
-                  //Clean value
-                  $arrayReturn[$convert($key)] = $convert($value);
-              }
-          }
-          //Return array
-          return $arrayReturn;
-      }
 
     function validateHistorical($cod_acdes,$starTime){
       $query = "SELECT * FROM ".BASE_DATOS.".tab_actdes_histori WHERE cod_actdes = '".$cod_acdes."' 

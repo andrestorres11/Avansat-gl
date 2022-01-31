@@ -9,6 +9,7 @@
  *  \bug: 
  *  \warning: 
  */
+ 
 
 session_start();
 
@@ -1566,7 +1567,6 @@ class Proc_segui
             // $transac_nov = new Despachos($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion);
             $transac_nov = new InsertNovedad($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion);
             $RESPON = $transac_nov->InsertarNovedadNC(BASE_DATOS, $regist, 0);
-
 
             $formulario = new Formulario("index.php", "post", "INFORMACION DEL DESPACHO", "form_ins");
 

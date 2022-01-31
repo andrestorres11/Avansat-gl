@@ -1357,17 +1357,15 @@ class Despachos
                     $desenruta[$i]["tiempo"] = $tiemdif - $tiem;
 
                 //Generador del Manifiesto.
-                $generador = "SELECT IF(a.abr_tercer = NULL OR a.abr_tercer = '', c.nom_genera, a.abr_tercer) as abr_tercer
-				      		    FROM " . BASE_DATOS . ".tab_tercer_tercer a,
-						             " . BASE_DATOS . ".tab_despac_despac b
-                           LEFT JOIN " . BASE_DATOS . ".tab_despac_destin c ON c.num_despac = b.num_despac
+                $generador = "SELECT a.abr_tercer
+				      		  FROM " . BASE_DATOS . ".tab_tercer_tercer a,
+						        	   " . BASE_DATOS . ".tab_despac_despac b
 						       WHERE a.cod_tercer = b.cod_client AND
-							         b.num_despac = '" . $desenruta[$i][0] . "' ";
+							           b.num_despac = '" . $desenruta[$i][0] . "' ";
                 $consulta = new Consulta($generador, $this->conexion);
                 $generador = $consulta->ret_matriz();
 
                 $generador = $generador [0][0];
-
 
                 $nota = "SELECT LEFT( a.obs_contro, 50 ), a.fec_contro
 		 				  FROM " . BASE_DATOS . ".tab_despac_contro a
@@ -2151,8 +2149,6 @@ class Despachos
 
         $mObs = array('NA', 'DESCONOCIDA');
         $mView = self::getView('jso_encabe');
-        $mViewPartic = self::getView('jso_partic');
-
 
         #<Verifica Viaje Consolidado>
             $mNumDesOri = $mNumDespac; #Guarda el Despacho Original
@@ -2214,12 +2210,6 @@ class Despachos
                         $_DESPAC = $consulta -> ret_matrix('a');
                         
                         $mViewPlarut = self::getView('jso_plarut');
-                        #< 1: INFORMACION PARTICULARIDAD >
-                        // $mViewPartic = self::getView('jso_partic');
-                        // if( $mViewPartic->dat_partic->ind_visibl == 1 ){
-                        //     $mHtml->SetBody( self::divPartic( $_DESPAC[0][cod_transp]));
-                        // }
-
                         #< 4: OBSERVACIONES GENERALES >
                         if( $mViewPlarut->obs_genera->ind_visibl == 1 ){
                             $mHtml->SetBody( self::divObsGenerales( $mNumDesOri, $_DESPAC) );
@@ -2583,11 +2573,8 @@ class Despachos
                                     "num_desant" => "tit_desant"
                                     );
 
-        $mTittle[2] = array( "id" => "dat_partic", "tittle" => "INFORMACION PARTICULARIDADES");
-        
-
-        $mTittle[3] = array( "id" => "dat_fechas", "tittle" => "FECHAS DEL DESPACHO");
-        $mTittle[3]['data'] = array("fec_creaci" => "Hora/Fecha Sistema", 
+        $mTittle[2] = array( "id" => "dat_fechas", "tittle" => "FECHAS DEL DESPACHO");
+        $mTittle[2]['data'] = array("fec_creaci" => "Hora/Fecha Sistema", 
                                     "fec_salida" => "Fecha Salida del Despacho", 
                                     "fec_despac" => "Fecha de Creaci&oacute;n", 
                                     "fec_citcar" => "Fecha Cita de Cargue", 
@@ -2607,90 +2594,86 @@ class Despachos
 
         $mHtml -> OpenDiv('id:popupGpsID');
         $mHtml -> CloseDiv(); 
-        for ($i=0; $i<4; $i++)
+        for ($i=0; $i<3; $i++)
         {
             if( $mView->$mTittle[$i]['id']->ind_visibl == 1 )
             {#Pinta el DIV si el perfil tiene parametrizado su visualizacion
-                if ($mTittle[$i]['id'] == 'dat_partic') {
-                    $mHtml->SetBody(self::divPartic( $mData['cod_transp']) );
-                }else{
-                    $mHtml->OpenDiv("id:".$mTittle[$i][id]."ID; class:accordion");
-                        $mHtml->SetBody("<h3 style='padding:6px;'><center>".$mTittle[$i]['tittle']."</center></h3>");
-                        $mHtml->OpenDiv("id:sec".$i."ID");
-                            $mHtml->OpenDiv("id:form".$i."ID; class:contentAccordionForm");
-                                $mHtml->Table("tr");
-    
-                                    $j=0;
-                                    foreach ($mTittle[$i]["data"] as $key => $tittle)
+                $mHtml->OpenDiv("id:".$mTittle[$i][id]."ID; class:accordion");
+                    $mHtml->SetBody("<h3 style='padding:6px;'><center>".$mTittle[$i]['tittle']."</center></h3>");
+                    $mHtml->OpenDiv("id:sec".$i."ID");
+                        $mHtml->OpenDiv("id:form".$i."ID; class:contentAccordionForm");
+                            $mHtml->Table("tr");
+
+                                $j=0;
+                                foreach ($mTittle[$i]["data"] as $key => $tittle)
+                                {
+                                    $mBandera = true;
+
+                                    switch ($key)
                                     {
-                                        $mBandera = true;
-    
-                                        switch ($key)
-                                        {
-                                            case 'con_telmov':
-                                                $mTxt = '<a style="color:green;" href="sip:'.$mData[$key].'_'.$mData['aux_placax'].'_'.$mNumDespac.'@pbx.intrared.net" target="blank">'.$mData[$key].'</a>';
-                                                $mTxt = array($tittle, $mData['nom_operad']." - ".$mTxt);
-                                                break;
-                                            case 'gps_urlxxx':
-                                                $mViewEdt = self::getView('edt_gpsxxx');
-                                                    if( $mViewEdt->dat_gpsxxx->ind_visibl == 1 ){
-                                                        $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>
-                                                        <img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="EditGPS('.$mNumDespac.');" >';
-                                                    }else{
-                                                        $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>';
-                                                    };
-                                                
-                                                $mTxt = array($tittle,$mTxt);
-                                                break;
-    
-                                            case 'fec_llegpl':
-                                                if( $mData['fec_llegad'] == $mObs[1] )
-                                                    $mTxt = array($tittle, $mData[$key]);
-                                                else
-                                                    $mTxt = array($mTittle['dat_adicio']['fec_llegad'], $mData['fec_llegad']);
-                                                break;
-    
-                                            case 'tie_contra':
-                                                if( $mData[$key] == '' )
-                                                    $mBandera = false;
-                                                else
-                                                    $mTxt = array($tittle, $mData[$key]);
-                                                break;
-    
-                                            case 'obs_tiemod':
-                                                if( $mData['tie_contra'] == '' )
-                                                    $mBandera = false;
-                                                else
-                                                    $mTxt = array($tittle, $mData[$key]);
-                                                break;
-    
-                                            case 'num_desant':
-                                                if( $mData[$key] == '' )
-                                                    $mBandera = false;
-                                                else
-                                                    $mTxt = array($mData[$tittle], $mData[$key]);
-                                                break;
-    
-                                            default:
-                                                $mTxt = array($tittle, utf8_encode($mData[$key]));
-                                                break;
-                                        }
-    
-                                        if( $mBandera == true ){
-                                            if( $j != 0 && ($j % 2) == false ) $mHtml->Row();
-                                            $mHtml->Label( $mTxt[0].":",  array("width"=>"25%", "align"=>"right", "class"=>"celda_titulo") );
-                                            $mHtml->SetBody('<td width="25%" align="left" class="celda_info">'.utf8_decode($mTxt[1]).'</td>');
-                                            if( $j % 2 ) $mHtml->SetBody('</tr>');
-                                            $j++;
-                                        }
+                                        case 'con_telmov':
+                                            $mTxt = '<a style="color:green;" href="sip:'.$mData[$key].'_'.$mData['aux_placax'].'_'.$mNumDespac.'@pbx.intrared.net" target="blank">'.$mData[$key].'</a>';
+                                            $mTxt = array($tittle, $mData['nom_operad']." - ".$mTxt);
+                                            break;
+                                        case 'gps_urlxxx':
+                                            $mViewEdt = self::getView('edt_gpsxxx');
+                                                if( $mViewEdt->dat_gpsxxx->ind_visibl == 1 ){
+                                                    $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>
+                                                    <img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="EditGPS('.$mNumDespac.');" >';
+                                                }else{
+                                                    $mTxt = '<a style="color:green;" href="'.$mData[$key].'" target="blank">'.$mData[$key].'</a>';
+                                                };
+                                            
+                                            $mTxt = array($tittle,$mTxt);
+                                            break;
+
+                                        case 'fec_llegpl':
+                                            if( $mData['fec_llegad'] == $mObs[1] )
+                                                $mTxt = array($tittle, $mData[$key]);
+                                            else
+                                                $mTxt = array($mTittle['dat_adicio']['fec_llegad'], $mData['fec_llegad']);
+                                            break;
+
+                                        case 'tie_contra':
+                                            if( $mData[$key] == '' )
+                                                $mBandera = false;
+                                            else
+                                                $mTxt = array($tittle, $mData[$key]);
+                                            break;
+
+                                        case 'obs_tiemod':
+                                            if( $mData['tie_contra'] == '' )
+                                                $mBandera = false;
+                                            else
+                                                $mTxt = array($tittle, $mData[$key]);
+                                            break;
+
+                                        case 'num_desant':
+                                            if( $mData[$key] == '' )
+                                                $mBandera = false;
+                                            else
+                                                $mTxt = array($mData[$tittle], $mData[$key]);
+                                            break;
+                                        
+                                        default:
+                                            $mTxt = array($tittle, utf8_encode($mData[$key]));
+                                            break;
                                     }
-    
-                                $mHtml->SetBody("</table>");
-                                
-                            $mHtml->CloseDiv();
+
+                                    if( $mBandera == true ){
+                                        if( $j != 0 && ($j % 2) == false ) $mHtml->Row();
+                                        $mHtml->Label( $mTxt[0].":",  array("width"=>"25%", "align"=>"right", "class"=>"celda_titulo") );
+                                        $mHtml->SetBody('<td width="25%" align="left" class="celda_info">'.utf8_decode($mTxt[1]).'</td>');
+                                        if( $j % 2 ) $mHtml->SetBody('</tr>');
+                                        $j++;
+                                    }
+                                }
+
+                            $mHtml->SetBody("</table>");
+                            
                         $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
-                }
+                $mHtml->CloseDiv();
             }
         }
 
@@ -3727,7 +3710,7 @@ class Despachos
                         IF( a.num_poliza IS NULL OR a.num_poliza = '', '$mObs[0]', a.num_poliza ) AS num_poliza, 
                         IF( a.con_telmov IS NULL OR a.con_telmov = '', m.num_telmov, a.con_telmov ) AS con_telmov, 
                         IF( i.nom_agenci IS NULL OR i.nom_agenci = '', '$mObs[0]', UPPER(i.nom_agenci) ) AS nom_agenci, 
-                        IF( jj.abr_tercer IS NULL OR jj.abr_tercer = '', jk.nom_genera, UPPER(jj.abr_tercer) ) AS nom_genera, 
+                        IF( jj.abr_tercer IS NULL OR jj.abr_tercer = '', '$mObs[0]', UPPER(jj.abr_tercer) ) AS nom_genera, 
                         IF( r.nom_poseed IS NULL OR r.nom_poseed = '', '$mObs[0]', UPPER(r.nom_poseed) ) AS nom_poseed, 
                         IF( z.abr_tercer IS NULL OR z.abr_tercer = '', '$mObs[0]', UPPER(z.abr_tercer) ) AS nom_asegur, 
                         IF( ab.nom_produc IS NULL OR ab.nom_produc = '', '$mObs[1]', UPPER(ab.nom_produc) ) AS nom_produc, 
@@ -3815,8 +3798,6 @@ class Despachos
                      ON k.cod_mercan = ab.cod_produc
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer jj 
                      ON a.cod_client = jj.cod_tercer 
-              LEFT JOIN ".BASE_DATOS.".tab_despac_destin jk 
-                     ON a.num_despac = jk.num_despac                      
                   WHERE a.num_despac = '{$mNumDesOri}'
                   ORDER BY x.cod_consec DESC 
                 ";
@@ -4024,8 +4005,7 @@ class Despachos
     {
         $mSql = "  SELECT a.nom_destin, c.abr_ciudad, a.dir_destin,
                           a.num_destin, CONCAT(a.fec_citdes,' ',a.hor_citdes) AS fec_citdes2,
-                          a.num_docume, a.num_docalt, a.cod_genera, 
-                          IF( b.abr_tercer IS NULL OR b.abr_tercer = '', d.nom_genera, UPPER(b.abr_tercer) ) AS abr_tercer,
+                          a.num_docume, a.num_docalt, a.cod_genera, UPPER(b.abr_tercer) AS abr_tercer,
                           IF(a.fec_findes IS NULL,'',a.fec_findes) AS fec_findes, IF(e.num_consec IS NULL OR e.num_consec = '', 0, e.num_consec) AS valida  
                      FROM ".BASE_DATOS.".tab_despac_destin a
                 LEFT JOIN ".BASE_DATOS.".tab_cumpli_despac e 
@@ -4034,8 +4014,6 @@ class Despachos
                        ON a.cod_genera = b.cod_tercer 
                 LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad c 
                        ON a.cod_ciudad = c.cod_ciudad 
-                LEFT JOIN ".BASE_DATOS.".tab_despac_destin d
-                       ON a.num_despac = d.num_despac
                     WHERE a.num_despac = '{$mNumDespac}' ";
 
         if( $mNomDestin == NULL && $mIndGroupx == true ){
@@ -4187,9 +4165,6 @@ class Despachos
                   padding-right: 10px;
                   white-space: nowrap;
                 }
-                .particularidad {
-                    color: red !important
-                }
               </style>";
 
         $mView = self::getView('jso_plarut');
@@ -4252,7 +4227,11 @@ class Despachos
         $mHtml->SetBody( self::divContacto( $_RUTASX, $placa, $_DESPAC[0][cod_transp], $_DESPAC[0][num_despac], $cod_agenci));
       }
 
-       
+       #< 1: INFORMACION PARTICULARIDAD >
+       $mViewPartic = self::getView('jso_partic');
+       if( $mViewPartic->dat_partic->ind_visibl == 1 ){
+         $mHtml->SetBody( self::divPartic( $_DESPAC[0][cod_transp]));
+       }
 
 
        
@@ -9311,7 +9290,7 @@ class Despachos
           $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
             $mHtml->Table("tr");
                 
-                $mHtml->Label( 'N.', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"20%") );
+                $mHtml->Label( 'N?', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"20%") );
                 $mHtml->Label( 'DESCRIPCION DE LA PARTICULARIDAD DEL ACUERDO DEL SERVICIO', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"70%") );
                 $mHtml->CloseRow();
                 
@@ -9319,8 +9298,8 @@ class Despachos
           
                     foreach ($datos as $row => $value) {
                         $mHtml->Row();
-                        $mHtml->Label( strtoupper($row+1), array("align"=>"left", "class"=>"celda_info2 particularidad", "color"=>"red", "width"=>"20%") );
-                        $mHtml->Label( strtoupper($value['des_partic']), array("align"=>"left", "class"=>"celda_info2 particularidad", "color"=>"red", "width"=>"70%") );
+                        $mHtml->Label( strtoupper($row+1), array("align"=>"left", "class"=>"celda_info2", "width"=>"20%") );
+                        $mHtml->Label( strtoupper($value['des_partic']), array("align"=>"left", "class"=>"celda_info2", "width"=>"70%") );
                          
                         $mHtml->CloseRow();
                     }

@@ -1,0 +1,35 @@
+Codigo Usuario;Nombre Usuario;Novedad;Tipo Correo;Origen;Producto;Destino;tipo Operacion;Zona; Canal;Tipo_Transporte;Desposito
+quintero.s;SANDRA MILENA QUINTERO;NEC / CANCELACION DE VIAJE;Copia;GIRARDOTA;Pisos y Paredes;;Urbano;;;FLOTA PROPIA;DEP 41  GR-PLANTA GIRARDOTA RV
+quintero.s;SANDRA MILENA QUINTERO;NEC / DAÑO EN VEHICULO ;Copia;GIRARDOTA;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;DEP 41  GR-PLANTA GIRARDOTA RV
+quintero.s;SANDRA MILENA QUINTERO;NEC / DEMORA EN CARGUE;Para;GIRARDOTA;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;DEP 41  GR-PLANTA GIRARDOTA RV
+quintero.s;SANDRA MILENA QUINTERO;NEC / NO COMUNICACION;Para;GIRARDOTA;Baños y Cocinas;;Urbano;;;FLOTA PROPIA;DEP 41  GR-PLANTA GIRARDOTA RV
+quintero.s;SANDRA MILENA QUINTERO;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Copia;GIRARDOTA;Pisos y Paredes;;Urbano;;;FLOTA PROPIA;DEP 41  GR-PLANTA GIRARDOTA RV
+Quintero.w;Wilmer Alexander Quintero Castellano;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NER / ACCIDENTE EN RUTA - NOVEDAD ALTO IMPACTO FATAL;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NER / COMPARENDO SOBREPESO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NER / VARADO ALTO IMPACTO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NER / PENDIENTE CONSIGNACION ANTICIPO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NER / HURTO-SAQUEO;Copia;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NER / NO COMUNICACION (GC);Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Importacion;;;EMPRESAS;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC /  NEGLIGENCIA CONDUCTOR;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / VEHICULO BLOQUEADO EN PARQUEADERO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / CALAMIDAD DOMESTICA;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / COLISION;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / VEHICULO EN MANTENIMIENTO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / IMPREVISTOS EN LA VIA;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / DEMORA ENTREGA DE CONTENEDOR;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / DESCARGANDO VIAJE ANTERIOR;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / INCONSISTENCIAS EN LA CONTRATACION;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / SIN JUSTIFICACION DEL CONDUCTOR;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / PLANILLANDO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / TRANSPORTADOR SIN SEGURIDAD SOCIAL AL DIA;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / NO COMUNICACION;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Importacion;;;EMPRESAS;
+Quintero.w;Wilmer Alexander Quintero Castellano;NEC / CANCELACION DE VIAJE;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NEC / DAÑO EN VEHICULO ;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NEC / DEMORA EN CARGUE;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NEC / MAYOR CANTIDAD DE CLIENTES A LO CONTRATADO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NEC / NO COMUNICACION;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NEC / SIN AUTORIZACION DE INGRESO A PLANTA;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NEC / PENDIENTE CONSIGNACION ANTICIPO;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NICC / VEHICULO Y CONDUCTOR NO CUMPLEN CON LAS CONDICIONES PARA EL CARGUE;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;
+Quintero.w;Wilmer Alexander Quintero Castellano;NEC / SOLICITUD PAGO STAND BY ;Para;BUENAVENTURA;Almacenes Corona - Arcesa;;Nacional;;;FLOTA PROPIA;

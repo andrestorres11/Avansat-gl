@@ -1226,7 +1226,7 @@ class InsertNovedad {
                 $regist["contro"] = $mNextPC["cod_contro"];
 
 
-                //$mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
+                $mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
             }
 
             return $RESPON;
@@ -1308,7 +1308,7 @@ class InsertNovedad {
 
             $RESPON = array();
             $_ERROR = array();
- 
+
             if ($mIndSalida != false) {
                 $RESPON[0]['indica'] = 0;
                 $RESPON[0]['mensaj'] = $mIndSalida;
@@ -1414,12 +1414,10 @@ class InsertNovedad {
             }
         }
 
-
-
         #Inicia recursivo para replicar novedad a corona
         $mViaje = self::getNumViajexEmptra($regist);
 
-         
+
 
         if ($mViaje["cod_respon"] == '1000') {
 
@@ -1430,7 +1428,7 @@ class InsertNovedad {
             $regist["contro"] = $mNextPC["cod_contro"];
 
 
-            //$mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
+            $mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
         }
 
         return $RESPON;
