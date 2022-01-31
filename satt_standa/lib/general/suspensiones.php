@@ -95,10 +95,11 @@ class suspensiones {
     }
 
     //Codifica en Hson
-    $raw_data = json_encode($dataTerceros);
+    //$raw_data = json_encode($dataTerceros);
 
     //Codifica en Array
-    $cReturn = json_decode($raw_data, true);
+    //$cReturn = json_decode($raw_data, true);
+    $cReturn = [];
 
 
     //Eliminan las empresas que estan inactivas o no están en la base terceros
