@@ -2044,8 +2044,6 @@ class Proc_segui
     echo '['.join(', ',$data).']';
   }
 
-
-
 }
 
 //FIN CLASE PROC_DESPAC

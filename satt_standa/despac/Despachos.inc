@@ -8858,7 +8858,6 @@ class Despachos
         $_sisextx   = $consulta -> ret_matriz();
         $ind_cumcar = $_sisextx[0][ind_cumcar];
         #----------------------------------------------------------------------------------------
-        
         $_HTML  = '';
         
         

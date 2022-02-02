@@ -270,7 +270,7 @@
         private function getEtapax(){
             $sql = "SELECT a.cod_etapax, a.nom_etapax
                           FROM ".BASE_DATOS.".tab_genera_etapax a
-                        WHERE ind_estado = 1 AND a.cod_etapax != 0; ";
+                        WHERE ind_estado = 1 ";
              $query = new Consulta($sql, $this->conexion);
              $mMatriz = $query -> ret_matrix('i');
              return $this->armaSelect($mMatriz);

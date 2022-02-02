@@ -1027,7 +1027,6 @@ class InsertNovedad {
                 }
             }
 
-
             // Busca los datos complementarios del despacho, para poder hacer la replicacion de la novedad, validando que el despacho encontrado por el manifiesto esté en ruta y activo
             $mQuery = 'SELECT a.num_despac, 
                          b.cod_transp, 
@@ -1075,17 +1074,14 @@ class InsertNovedad {
 
     function InsertarNovedadPC($base_datos, $regist, $ominter) {
         $mIndEnSiti = true;
-
         if (in_array($regist['noveda'], self::$cCodNoved['4']) && BASE_DATOS=='satt_faro') { #Solucion a novedad Corona
             return self::InsertarNovedadNC($base_datos, $regist, $ominter);
         } else {
             $mIndSalida = self::verifyNovSalida($regist['despac'], $regist['fecnov']); #Indicador fecha Novedad antes de salida del despacho
             $mUltNoveda = getNovedadesDespac($this->conexion, $regist['despac'], '2'); #Data ultima novedad
             $mIndExists = self::verifyNovExists($regist, $mIndEnSiti); #Indicador Novedad del despacho existe
-
             $RESPON = array();
             $_ERROR = array();
-
             if ($mIndSalida != false) {
                 $RESPON[0]['indica'] = 0;
                 $RESPON[0]['mensaj'] = $mIndSalida;
@@ -1106,28 +1102,31 @@ class InsertNovedad {
                 if (!$regist['tieadi']) {
                     $regist['tieadi'] = 0;
                 }
-
                 $regist['observ'] .= self::updateCelConduc($regist, $mDatDespac['con_telmov']); #Actualiza el numero de celular del conductor
 
                 if ($regist['noveda'] == CONS_NOVEDA_ACAFAR) {
                     $regist['observ'] .= ". Vuelve el Vehiculo a Monitoreo Faro. ";
                 }
                 #</Depura el array $regist>
-
                 $mCodSitiox = self::getSitio($regist['sitio']); #Codigo del Sitio
                 $mDifTieAla = self::getDiffTimeFecnoveFecalar($regist); #Diferencia en minutos fecha de la novedad VS fecha de la alarma
                 $mDatNoveda = self::getNoveda($regist['noveda'], $regist['nittra']); #Data de la Novedad tab_genera_noveda
                 $mDatTransp = getTransTipser($this->conexion, " AND a.cod_transp = " . $mDatDespac['cod_transp']); # Parametros de la transportadora
                 $mDatTransp = $mDatTransp[0];
                 $mIndProtoc = self::indProtoc($regist['nittra'], $regist['noveda']);
-
+                //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
+                if(BASE_DATOS != 'satt_faro'){
+                    if($mDatNoveda['num_tiempo'] > 0){
+                        $regist['tieadi'] = $mDatNoveda['num_tiempo'];
+                    }
+                }
+                
                 #<Envio de Correos>                
                 if ($mDatNoveda['ind_notsup'] == 1 && $mIndProtoc == false) { #CORREO NOTIFICA SUPERVISOR.
                     if (!self::SendMailSupervisores($regist, $mDatDespac, $mDatNoveda)) {
                         $_ERROR[] = 'Error envio correo Notificacion Supervisores.';
                     }
                 }
-
                 if ($mDatNoveda['nov_especi'] == 1 && (!in_array($mDatDespac['cod_transp'], self::$cLisTrans['NoMailNovEsp'])) && $regist['noveda'] != CONS_NOVEDA_ACAEMP && $regist['noveda'] != CONS_NOVEDA_ACAFAR && $mIndProtoc == false
                 ) { #Novedad Especial diferente a (a cargo faro, a cargo empresa), Notificacion correo
                     $mResult = self::SendMailNovedadEspeci($regist, $mDatDespac, $mDatNoveda);
@@ -1136,7 +1135,6 @@ class InsertNovedad {
                     }
                     $regist['observ'] .= $mResult;
                 }
-
                 if ($regist['noveda'] == CONS_NOVEDA_ACAEMP || $regist['noveda'] == CONS_NOVEDA_ACAFAR) { #Envia correo a la empresa y al usuario en las novedades de acargo empresa y acargo faro
                     $mResult = self::sendMailACargo($regist, $mDatDespac, $mDatNoveda);
                     if (!$mResult) {
@@ -1147,28 +1145,23 @@ class InsertNovedad {
                     
                 }
                 #</Envio de Correos>
-
-
                 if ($_REQUEST['ind_solRec'] == '1') { #Guarda el indicador de solucion de la recomendacion
                     $mResult = self::updateSoluciRecome($regist);
                     if (!$mResult[0]) {
                         $_ERROR[] = $mResult[1];
                     }
                 }
-
                 #Inserta la novedad
                 $mInsNoveda = self::insertNovedad($regist, $mDifTieAla, $mCodSitiox, $mIndEnSiti, $mDatUsuari);
                 if (!$mInsNoveda[0]) {
                     $_ERROR[] = $mInsNoveda[1];
                 }
-
                 if ($mDatTransp['ind_llegad'] == 1 && $mDatDespac['ind_defini'] != '1') { #Despachos de llegado automatico
                     $mResult = self::updateLlegadAuto($regist);
                     if (!$mResult[0]) {
                         $_ERROR[] = $mResult[1];
                     }
                 }
-
                 if ($mDatNoveda['ind_manala'] == '0') { #Actualiza fec_alarma en tab_despac_seguim
                     $mTieAcumul = self::updateFecAlarma($regist, $mDatNoveda, $mDatTransp, $mIndEnSiti);
 
@@ -1176,19 +1169,15 @@ class InsertNovedad {
                         self::updateFinDespac($regist, $mTieAcumul);
                     }
                 }
-
                 #SOLUCION DE NOTIFICACIONES DEL APLICATIVO MOVIL
                 if (in_array($_SESSION['datos_usuario']['cod_perfil'], self::$cCodPerfi[0])) {
                     self::updateSoluciMovil();
                 }
-
                 #<Envio de Correos 2>
                 self::sendMailCitaEntrega($regist, $mDatDespac, $mDatNoveda, $mTieAcumul[1]); #Retraso fecha cita entrega
-
                 if ($mIndProtoc == true) {
                     self::validacionProtocolos($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti); #VALIDACION DE PROTOCOLOS
                 }
-
                 if (in_array($regist['noveda'], self::$cCodNoved['3'])) {
                     self::soluciNovedad($regist, $mDatDespac, $mDatNoveda); #Solucion a novedad
                 }
@@ -1197,38 +1186,30 @@ class InsertNovedad {
                 if (HOST_WEB == HOST_WEB_PRO) {
                     self::soaPs($regist, $ominter, $mDatDespac, $mDatNoveda, $mIndEnSiti);
                 }
-
                 #Envio correo Novedad genera alarma
                 if ($mDatNoveda['ind_alarma'] == 'S' OR $mDatNoveda['ind_alarma'] == 1) {
                     self::sendMailNovGeneraAlarma($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti);
                 }
-
                 #Guarda el codigo de novedad en tab_despac_despac cod_ultnov
                 $mUpdUltNov = self::updateUltNovedad($regist, $mFecManAla);
                 if (!$mUpdUltNov[0]) {
                     $_ERROR[] = $mUpdUltNov[1];
                 }
-
+                
                 $RESPON[0]['indica'] = 1;
                 $RESPON[0]['mensaj'] = "La Novedad se Registro Exitosamente en el Sistema";
             }
-
-            $mViaje = self::getNumViajexEmptra($regist);
-
-
-
+            /*$mViaje = self::getNumViajexEmptra($regist);
             if ($mViaje["cod_respon"] == '1000') {
 
-                $mNextPC = getNextPC($this->conexion, $mViaje["msg_respon"]["num_despac"]); // Busca PC habilitado del despacho a replicar la novedad         
+                //$mNextPC = getNextPC($this->conexion, $mViaje["msg_respon"]["num_despac"]); // Busca PC habilitado del despacho a replicar la novedad         
                 $regist["despac"] = $mViaje["msg_respon"]["num_despac"];
                 $regist["nittra"] = $mViaje["msg_respon"]["cod_transp"];
                 $regist["rutax"] = $mViaje["msg_respon"]["cod_rutasx"];
                 $regist["contro"] = $mNextPC["cod_contro"];
 
-
-                $mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
-            }
-
+                //$mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
+            }*/
             return $RESPON;
         }
     }
@@ -1345,7 +1326,12 @@ class InsertNovedad {
                 $mDatTransp = getTransTipser($this->conexion, " AND a.cod_transp = " . $mDatDespac['cod_transp']); # Parametros de la transportadora
                 $mDatTransp = $mDatTransp[0];
                 $mIndProtoc = self::indProtoc($regist['nittra'], $regist['noveda']);
-
+                //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
+                if(BASE_DATOS != 'satt_faro'){
+                    if($mDatNoveda['num_tiempo'] > 0){
+                        $regist['tieadi'] = $mDatNoveda['num_tiempo'];
+                    }
+                }
                 #<Envio de Correos>
                 if ($mDatNoveda['ind_notsup'] == 1 && $mIndProtoc == false) { #CORREO NOTIFICA SUPERVISOR.
                     if (!self::SendMailSupervisores($regist, $mDatDespac, $mDatNoveda))
@@ -1414,21 +1400,18 @@ class InsertNovedad {
         }
 
         #Inicia recursivo para replicar novedad a corona
-        $mViaje = self::getNumViajexEmptra($regist);
-
-
-
+        /*$mViaje = self::getNumViajexEmptra($regist);
         if ($mViaje["cod_respon"] == '1000') {
 
-            $mNextPC = getNextPC($this->conexion, $mViaje["msg_respon"]["num_despac"]); // Busca PC habilitado del despacho a replicar la novedad         
+            //$mNextPC = getNextPC($this->conexion, $mViaje["msg_respon"]["num_despac"]); // Busca PC habilitado del despacho a replicar la novedad         
             $regist["despac"] = $mViaje["msg_respon"]["num_despac"];
             $regist["nittra"] = $mViaje["msg_respon"]["cod_transp"];
             $regist["rutax"] = $mViaje["msg_respon"]["cod_rutasx"];
             $regist["contro"] = $mNextPC["cod_contro"];
 
 
-            $mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
-        }
+            //$mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
+        }*/
 
         return $RESPON;
     }
@@ -1663,7 +1646,8 @@ class InsertNovedad {
                              IFNULL(b.ind_manale, 0) as 'ind_manala',
                              IFNULL(b.ind_manale, 0) as 'ind_alarma',
                              0 as 'ind_insveh',
-                             IFNULL(b.ind_soltie, 0) as 'ind_tiempo'
+                             IFNULL(b.ind_soltie, 0) as 'ind_tiempo',
+                             IFNULL(b.num_tiempo, 0) as 'num_tiempo'
                         FROM " . BASE_DATOS . ".tab_genera_novseg a 
                         LEFT JOIN " . BASE_DATOS . ".tab_parame_novseg b ON
                         a.cod_noveda = b.cod_noveda AND

@@ -100,7 +100,7 @@
         function creaPestanas(){
             $sql="SELECT a.cod_etapax, a.nom_etapax FROM 
                                 ".BASE_DATOS.".tab_genera_etapax a 
-                            WHERE a.ind_estado = 1 AND a.cod_etapax != 0 ";
+                            WHERE a.ind_estado = 1";
             $resultado = new Consulta($sql, self::$conexion);
             $resultados = $resultado->ret_matriz();
             $html = '';
@@ -122,7 +122,7 @@
         function crearContenido(){
             $sql="SELECT a.cod_etapax, a.nom_etapax FROM 
                                 ".BASE_DATOS.".tab_genera_etapax a 
-                            WHERE a.ind_estado = 1 AND a.cod_etapax != 0 ";
+                            WHERE a.ind_estado = 1";
             $resultado = new Consulta($sql, self::$conexion);
             $resultados = $resultado->ret_matriz();
             $html = '';
@@ -150,7 +150,7 @@
             $cod_transp = trim($_POST['transp']);
             $cond = '';
             
-            if($cod_etapax != 6){
+            if($cod_etapax != 0){
                 $cond = 'AND a.cod_etapax = "'.$cod_etapax.'" ';
             }
 
@@ -180,7 +180,7 @@
                         $resultado['num_tiempo'] = 0;
                     }
                     $onclick = "";
-                    if($cod_etapax==6){
+                    if($cod_etapax==0){
                         $name = $cod_novedad."_T";
                     }
                     $data .= '<tr>
