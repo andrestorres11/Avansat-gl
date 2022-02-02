@@ -1213,7 +1213,7 @@ class InsertNovedad {
                 $RESPON[0]['mensaj'] = "La Novedad se Registro Exitosamente en el Sistema";
             }
 
-            $mViaje = self::getNumViajexEmptra($regist);
+            /*$mViaje = self::getNumViajexEmptra($regist);
 
 
 
@@ -1227,7 +1227,7 @@ class InsertNovedad {
 
 
                 $mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
-            }
+            }*/
 
             return $RESPON;
         }
@@ -1415,7 +1415,7 @@ class InsertNovedad {
         }
 
         #Inicia recursivo para replicar novedad a corona
-        $mViaje = self::getNumViajexEmptra($regist);
+        /*$mViaje = self::getNumViajexEmptra($regist);
 
 
 
@@ -1429,7 +1429,7 @@ class InsertNovedad {
 
 
             $mRecursive = self::InsertarNovedadNC($base_datos, $regist, $ominter);
-        }
+        }*/
 
         return $RESPON;
     }
