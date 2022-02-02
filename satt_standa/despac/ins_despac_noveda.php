@@ -264,7 +264,6 @@ class Proc_despac
 
  function Insertar()
  {
-  echo "<pre>"; print_r('dasdas'); echo "</pre>";  die();
   $fec_actual = date("Y-m-d H:i:s");
 
   $regist["habPAD"] = $_REQUEST[habPAD];
