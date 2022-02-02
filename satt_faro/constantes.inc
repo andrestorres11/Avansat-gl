@@ -3,9 +3,11 @@
 define("DIR_APLICA_CENTRAL", "satt_standa");
 @include("../" . DIR_APLICA_CENTRAL . "/lib/general/constantes.inc");
 
-define("NOM_URL_APLICA","satt_faro");//constante para el nombre del directorio - aplicaci�n
+define("NOM_URL_APLICA","satt_faro");//constante para el nombre del directorio - aplicacion
 define("BASE_DATOS", "satt_faro");// constante para la base de datos de la aplicacion
-define("BD_STANDA","satt_standa");// constante para la base de datos Estandar de SAT B�sico.
+define("BD_STANDA","satt_standa");// constante para la base de datos Estandar de SAT Basico.
+
+define("ESTILO","Verde");//constante para BD estandar de SAT Basico
 
 define("USUARIO", "satt_faro");// constante para la base de datos de la aplicacion
 define("CLAVE", "sattfaro");// constante para la base de datos de la aplicacion
