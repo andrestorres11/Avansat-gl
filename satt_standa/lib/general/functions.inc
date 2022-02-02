@@ -950,6 +950,63 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
       $mResult = $mConsult -> ret_arreglo();
       return $mResult;
     }
+/*! \fn: getTranspPerfil
+    *  \brief: Funcion que envia Email
+    *  \author: Cristian Andrés Torres
+    *  \date: 2022-01-28
+    *  \param:  mConexion = conexion a bd;
+    *  \
+    *  \return: null
+    */
+    function envioEmailsTemplate(&$mConexion,$nom_urlxxx,$subject,$title,$emails,$encabezamsj,$bodymsj,$adicional_html='',$file=NULL){
+     
+      
+      $tmpl_file = $nom_urlxxx;
+      @include_once '../../' . BASE_DATOS . '/constantes.inc';
+      //validaciones del logo.
+      $logo = LOGOFARO;
+      
+      
+      $titulo = $title;
+      $base_mensaje = $bodymsj;
+      
+      $year=date('Y');
 
+      $thefile = implode("", file( $tmpl_file ) );
+      $thefile = addslashes($thefile);
+      $thefile = "\$r_file=\"".$thefile."\";";
+      eval( $thefile );
+      $mHtml = $r_file;
+
+      switch ($_SERVER['SERVER_NAME']) {
+        case 'dev.intrared.net':
+            require_once(URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
+            break;
+        case 'avansatgl.intrared.net':
+          require_once(URL_ARCHIV_STANDA."satt_faro/planti/class.phpmailer.php");
+          break;
+    }
+      //require_once(URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
+      $mail = new PHPMailer();
+      $mail->Host = "localhost";
+      $mail->From = "faroavansat@eltransporte.com";
+
+      $mail->FromName = "Novedades Centro Logistico Faro";
+      $mail->Subject = $subject ;
+
+
+      foreach($emails as $email){
+        $mail->AddAddress( $email );
+      }
+      
+      $mail->Body = $mHtml;
+      $mail->IsHTML( true );
+      if($file!=NULL){
+        $mail->AddAttachment($file);
+      }
+      if(!$mail->Send()){
+        mail("oscar.bocanegra@intrared.net", "Error envio de correo", var_export($emails, true));
+      };
+    }
 
 ?>
