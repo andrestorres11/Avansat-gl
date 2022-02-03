@@ -277,7 +277,7 @@ class FormularioCampos
             case 'date':
                 return '<input '.$name.' class="campo_texto fechapicker" type="text" placeholder="aaaa-mm-dd" validate="date" dataAttr>';
             case 'hour':
-                return '<input '.$name.' class="campo_texto horapicker" type="text" placeholder="00:00:00" validate="hora" dataAttr>';
+                return '<input '.$name.' class="campo_texto horapicker" type="text" placeholder="00:00:00" validate="hora" minlength="0" maxlength="0" dataAttr>';
             case 'radio':
             	$tab = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
                 return '<input '.$name.' type="radio" value="Si" dataAttr> Si '.$tab.'<input '.$name.' type="radio" value="No" dataAttr> No';
