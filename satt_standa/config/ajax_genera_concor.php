@@ -45,6 +45,7 @@ class ajax_genera_concor
                     a.dir_emailx,  
                     IF(a.ind_seguim=1,'SI','NO') as 'ind_seguim',
                     IF(a.ind_infmen=1,'SI','NO') as 'ind_infmen',
+                    IF(a.ind_acargo=1,'SI','NO') as 'ind_acargo',
                     a.cod_concor
                     
                 FROM  ".BASE_DATOS.".tab_genera_concor a
@@ -84,7 +85,7 @@ class ajax_genera_concor
       try { 
       	//Valida si existe codgi de bancos para consultarlos o crearlos en vacio
         if($_REQUEST['cod_regist'] == ''){
-          $mData = $arrayName = array('cod_concor' => '', 'dir_emailx' => '', 'num_remdes' => '', 'ind_infmen' => '', 'ind_seguim' => '');
+          $mData = $arrayName = array('cod_concor' => '', 'dir_emailx' => '', 'num_remdes' => '', 'ind_infmen' => '', 'ind_seguim' => '', 'ind_acargo' => '');
           $titlo = "Registrar Correos";
           $action = 0;
         }else{
@@ -92,6 +93,7 @@ class ajax_genera_concor
                             a.num_remdes,
                             ind_infmen,
                             ind_seguim,
+                            ind_acargo,
                             a.cod_concor
                       FROM  ".BASE_DATOS.".tab_genera_concor a
                      WHERE  a.cod_concor = ".$_REQUEST['cod_regist'];
@@ -117,7 +119,7 @@ class ajax_genera_concor
 
           echo utf8_decode($html);
       } catch (Exception $e) {
-        echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+        echo 'Excepcion capturada: ',  $e->getMessage(), "\n";
       }
     }
 
@@ -137,13 +139,17 @@ class ajax_genera_concor
         if($datos['ind_infmen'] ==1){
             $checkedInform="checked";
         }
+        if($datos['ind_acargo'] ==1){
+          $checkedacargo="checked";
+        }
+        
       $campos = '
                         <div class="row">
                           <div class="col-12">
                             <div class="form-group">
                               <label for="cliente">Cliente:</label>
                               <select class="form-control" id="cliente" name="cliente">
-                                <option value="" style="background-color:#dff0d8; color:#3c763d">GESTIÓN DE ASISTENCIA</option>
+                                <option value="" style="background-color:#dff0d8; color:#3c763d">GESTION DE ASISTENCIA</option>
                                 '.$this->darClientes($datos['num_remdes']).'
                               </select>
                             </div>
@@ -161,6 +167,10 @@ class ajax_genera_concor
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_infmen" id="ind_infmen" '.$checkedInform.' style="height: auto;"/>
                         <label> Informe de seguimientos diario</label>
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_seguim" id="ind_seguim" '.$checkedSeguim.' style="height: auto;"/>
+                        <label> Informe de A cargo de empresa</label>
+                        <input type="checkbox" class="form-control form-control-sm"  name="ind_acargo" id="ind_acargo" '.$checkedacargo.' style="height: auto;"/>
+                        
+                        
                         <input type="hidden" name="correoID" value="'.$datos['cod_concor'].'">
                         <input type="hidden" name="actionID" id="action" value="'.$action.'">
         ';
@@ -244,6 +254,8 @@ class ajax_genera_concor
                                     num_remdes = '".$_REQUEST['cliente']."',
                                     ind_infmen= '".($_REQUEST['ind_infmen'] == 'on'? 1 : 0)."',
                                     ind_seguim= '".($_REQUEST['ind_seguim'] == 'on'? 1 : 0)."',
+                                    ind_acargo= '".($_REQUEST['ind_acargo'] == 'on'? 1 : 0)."',
+                                    
                                     usr_creaci = '".$_SESSION['datos_usuario']['cod_usuari']."',
                                     fec_creaci = NOW()
                         ON DUPLICATE KEY UPDATE 	
@@ -251,6 +263,8 @@ class ajax_genera_concor
                                     num_remdes = '".$_REQUEST['cliente']."',
                                     ind_infmen= '".($_REQUEST['ind_infmen'] == 'on'? 1 : 0)."',
                                     ind_seguim= '".($_REQUEST['ind_seguim'] == 'on'? 1 : 0)."',
+                                    ind_acargo= '".($_REQUEST['ind_acargo'] == 'on'? 1 : 0)."',
+                                    
                                     usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                                     fec_modifi = NOW()              
                                 ";
@@ -285,7 +299,7 @@ class ajax_genera_concor
             }
             echo json_encode($return);
         } catch (Exception $e) {
-            echo 'Excepción regForm: ',  $e->getMessage(), "\n";
+            echo 'Excepcion regForm: ',  $e->getMessage(), "\n";
         }
     }
 
