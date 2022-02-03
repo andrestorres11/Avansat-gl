@@ -1051,7 +1051,7 @@ class Proc_segui
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
                     AND a.num_despac =".$_REQUEST[despac]."
-                    /* AND a.num_despac NOT IN (  
+                    AND a.num_despac NOT IN (  
                                                     SELECT da.num_despac 
                                                       FROM ".BASE_DATOS.".tab_despac_noveda da 
                                                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda db 
@@ -1066,7 +1066,7 @@ class Proc_segui
                                                         ON ea.cod_noveda = eb.cod_noveda 
                                                      WHERE ea.num_despac =".$_REQUEST[despac]."
                                                        AND eb.cod_etapax NOT IN ( 0, 1, 2 )
-                                            ) */
+                                            ) 
              INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
                      ON b.cod_transp = c.cod_tercer 
              INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 

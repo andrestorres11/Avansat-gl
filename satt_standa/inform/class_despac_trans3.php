@@ -1748,7 +1748,7 @@ class Despac
 	 *  \param: mTipValida  String  Tipo de validacion
 	 *  \return: Array
 	 */
-	private function getInfoDespac( $mDespac, $mTransp, $mTipValida )
+	public function getInfoDespac( $mDespac, $mTransp, $mTipValida )
 	{
 		$mNovDespac = getNovedadesDespac( self::$cConexion, $mDespac[num_despac], 1 ); # Novedades del Despacho -- Script /lib/general/function.inc
 		$mCantNoved = sizeof($mNovDespac); # Cantidad de Novedades del Despacho
@@ -2125,7 +2125,7 @@ class Despac
 	 *  \param: $mColor	Array  	Colores por Etapa
 	 *  \return: Matriz
 	 */
-	private function calTimeAlarma( $mDespac, $mTransp, $mIndCant = 0, $mFiltro = NULL, $mColor = NULL )
+	public function calTimeAlarma( $mDespac, $mTransp, $mIndCant = 0, $mFiltro = NULL, $mColor = NULL )
 	{
 		$mTipValida = self::tipValidaTiempo( $mTransp );
 	

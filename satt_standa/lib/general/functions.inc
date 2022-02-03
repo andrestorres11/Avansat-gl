@@ -932,6 +932,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
 }
 
 
+
 /*! \fn: getTranspPerfil
     *  \brief: Funcion que retorna la empresa transportadora segun el perfil
     *  \author: Cristian Andrés Torres
@@ -1008,5 +1009,353 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
         mail("oscar.bocanegra@intrared.net", "Error envio de correo", var_export($emails, true));
       };
     }
+    /*! \fn: setTrackingDespac
+    *  \brief: Funcion que Inserta los estados o novedades Homologadas por el cliente
+    *  \author: Luis Carlos Manrique Boada
+    *  \date: 2019-08-15
+    *  \param:  mConexion = conexion a bd;
+                int num_despac: Numero del despacho.
+                int cod_estado: Estado - null
+                int tip_transa: Tipo de transacción - Estado = 1 / Novedad = 2
+                int cod_noveda: Novedad - null
+    */ 
+    function setTrackingDespac(&$mConexion, $num_despac, $cod_estado = null, $tip_transa, $cod_noveda = null ){
+      //Usuario creador
+   $usr_modif = $_SESSION["datos_usuario"]["cod_usuari"];
+   $homEstNov = "";
+   
+   if($tip_transa == 1){
+     //Consulta los datos del estado a Homologar
+     $mSql = "
+               SELECT  b.cod_homest,
+                       b.cod_estado, 
+                       b.cod_estcli,
+                       c.nom_estcli,
+                       b.obs_hompro
+                 FROM  ".BD_STANDA.".tab_estado_despac a
+           INNER JOIN  ".BASE_DATOS.".tab_homolo_estado b
+                   ON  a.cod_estado = b.cod_estado AND a.cod_estado = $cod_estado
+           INNER JOIN  ".BASE_DATOS.".tab_genest_tracki c
+                   ON  b.cod_estcli = c.cod_estcli
+               ";
+
+     //Ejecuta la consulta
+     $mConsult = new Consulta( $mSql, $mConexion );
+     $mResult = $mConsult -> ret_matrix('a');
+
+     //Valida esta de la consulta
+     if(count($mResult[0]) > 0){
+
+       //Captura Nombre de estado Homologado
+       $homEstNov = $mResult[0]['nom_estcli'];
+       //Inserta el estado Homologado
+       $mSql = "
+         INSERT INTO ".BASE_DATOS.".tab_despac_tracki 
+                     (num_despac, cod_homest, cod_estado, 
+                     cod_eclhoe, nom_eclhoe, obs_hompro, 
+                     usr_creaci, fec_creaci)
+
+             VALUES  ($num_despac, ".$mResult[0]['cod_homest'].", ".$mResult[0]['cod_estado'].", 
+                     ".$mResult[0]['cod_estcli'].", '".$mResult[0]['nom_estcli']."', '".$mResult[0]['obs_hompro']."', 
+                     '".$usr_modif."',NOW())
+           ";
+       $mConsult = new Consulta( $mSql, $mConexion, 'RC');
+     }
+   }else if($tip_transa == 2){
+     $mSql = "
+               SELECT  b.cod_homnov,
+                       b.cod_noveda, 
+                       b.cod_estcli,
+                       c.nom_estcli,
+                       b.obs_homnov
+                 FROM  ".BASE_DATOS.".tab_genera_noveda a
+           INNER JOIN  ".BASE_DATOS.".tab_homolo_estnov b
+                   ON  a.cod_noveda = b.cod_noveda AND 
+                       a.cod_noveda = $cod_noveda AND 
+                       a.ind_estado = 1
+           INNER JOIN  ".BASE_DATOS.".tab_genest_tracki c
+                   ON  b.cod_estcli = c.cod_estcli
+               ";
+     $mConsult = new Consulta( $mSql, $mConexion );
+     $mResult = $mConsult -> ret_matrix('a');
+
+     if(count($mResult[0]) > 0){
+
+       //Captura Nombre de la novedad Homologada
+       $homEstNov = $mResult[0]['nom_estcli'];
+
+       //Inserta la novedad Homologada
+       $mSql = "
+         INSERT INTO ".BASE_DATOS.".tab_despac_tracki 
+                     (num_despac, cod_homnov, cod_noveda, 
+                     cod_eclihon, nom_eclihon, obs_homnov, 
+                     usr_creaci, fec_creaci)
+
+             VALUES  ($num_despac, ".$mResult[0]['cod_homnov'].", ".$mResult[0]['cod_noveda'].", 
+                     ".$mResult[0]['cod_estcli'].", '".$mResult[0]['nom_estcli']."', '".$mResult[0]['obs_homnov']."', 
+                     '".$usr_modif."',NOW())
+           ";
+       $mConsult = new Consulta( $mSql, $mConexion, 'RC');
+     }
+   }
+   if(!empty($homEstNov)){
+     $mSql = "
+             SELECT  
+                     a.num_docume,
+                     b.nom_remdes,
+                     b.dir_emailx,
+                     a.ped_remisi
+               FROM  ".BASE_DATOS.".tab_despac_destin a 
+         INNER JOIN  ".BASE_DATOS.".tab_genera_remdes b
+                 ON  a.cod_remdes = b.cod_remdes AND num_despac = '".$num_despac."'
+     ";
+     //Ejecuta la consulta
+     $mConsult = new Consulta( $mSql, $mConexion );
+     $mResult = $mConsult -> ret_matrix('a');
+     $num_pedido = $mResult[0]['ped_remisi'];
+
+     $sql = "
+               SELECT
+                         a.num_despac,
+                         f.nom_ciudad AS ciudadO,
+                         g.nom_ciudad AS ciudadD,
+                         a.fec_despac AS fechaSolicitud,
+                         b.fec_llecli AS fechaRecibido,
+                         d.nom_remdes AS nombreContactoO,
+                         e.nom_remdes AS nombreContactoD,
+                         d.dir_remdes AS direccionO,
+                         e.dir_remdes AS direccionD,
+                         d.num_remdes AS nitO,
+                         e.num_remdes AS nitD,
+                         i.num_telef1 AS telO,
+                         b.num_destin AS telD,
+                         a.fec_salida AS fechaEnvio,
+                         (CONCAT(b.fec_citdes, ' ', b.hor_citdes)) AS fecEstEntre,
+                         b.fec_cumdes AS fecFinEntre,
+
+                         c.fec_pedido AS fecPedido,
+                         j.nom_vended AS nomVended,
+                         k.fec_estent AS fecEstEntreg
+                 FROM	".BASE_DATOS.".tab_despac_despac a
+           INNER JOIN	".BASE_DATOS.".tab_despac_destin b
+                   ON	a.num_despac = b.num_despac AND 
+                         (b.num_docume = '".$num_pedido."' OR b.ped_remisi = '".$num_pedido."')
+           INNER JOIN ".BASE_DATOS.".tab_genera_pedido c
+                   ON c.num_despac = a.num_despac
+           INNER JOIN	".BASE_DATOS.".tab_genera_remdes d
+                   ON	a.nom_sitcar = d.cod_remdes
+           INNER JOIN	".BASE_DATOS.".tab_genera_remdes e
+                   ON	b.cod_remdes = e.cod_remdes
+           INNER JOIN	".BASE_DATOS.".tab_genera_ciudad f
+                   ON	d.cod_ciudad = f.cod_ciudad
+           INNER JOIN	".BASE_DATOS.".tab_genera_ciudad g
+                   ON	a.cod_ciudes = g.cod_ciudad
+           INNER JOIN	".BASE_DATOS.".tab_despac_vehige h
+                   ON	a.num_despac = h.num_despac
+           INNER JOIN	".BASE_DATOS.".tab_tercer_tercer i
+                   ON	h.cod_transp = i.cod_tercer
+           LEFT JOIN   ".BASE_DATOS.".tab_genera_vended j
+                   ON  c.vendedor = j.cod_vend
+           INNER JOIN  ".BASE_DATOS.".tab_despac_remesa k
+                   ON  k.num_despac = a.num_despac
+               WHERE    h.ind_activo = 'S'";
+
+   $query = new Consulta($sql, $mConexion);
+   $resultado = $query -> ret_matrix('a');
+
+   $sqlHist = "
+                 (SELECT
+                           c.nom_eclhoe AS nombre, 
+                           c.obs_hompro AS observacion,
+                           c.fec_creaci AS fechaRegistro
+                   FROM	".BASE_DATOS.".tab_despac_destin b
+             INNER JOIN	".BASE_DATOS.".tab_despac_tracki c
+                     ON	b.num_despac = c.num_despac  
+             INNER JOIN    ".BASE_DATOS.".tab_despac_vehige d
+                           ON  d.num_despac = b.num_despac  
+                           AND (b.num_docume = '".$num_pedido."' OR b.ped_remisi = '".$num_pedido."')
+                           AND c.nom_eclhoe IS NOT NULL
+                 WHERE    d.ind_activo = 'S'
+                 )UNION(
+                 SELECT
+                           c.nom_eclihon AS nombre, 
+                           c.obs_homnov AS observacion,
+                           c.fec_creaci AS fechaRegistro
+                   FROM	".BASE_DATOS.".tab_despac_destin b
+             INNER JOIN	".BASE_DATOS.".tab_despac_tracki c
+                     ON	b.num_despac = c.num_despac  
+             INNER JOIN    ".BASE_DATOS.".tab_despac_vehige d
+                           ON  d.num_despac = b.num_despac  
+                           AND (b.num_docume = '".$num_pedido."' OR b.ped_remisi = '".$num_pedido."')
+                           AND c.nom_eclihon IS NOT NULL
+                 WHERE    d.ind_activo = 'S'
+                   )
+                   ORDER BY fechaRegistro ASC
+           ";
+
+   $queryHist = new Consulta($sqlHist, $mConexion);
+   $resulHist = $queryHist -> ret_matrix('a');
+
+   $ultimoEstado = end($resulHist);
+
+   $contenedor = '
+                     <div class="dashBoardDialog dialog" id="contDialog">
+                     <div>
+                         <div class="closeWindow">
+                             <i class="fa fa-times-circle"></i>
+                         </div>
+                         <div class="panel panel-default" id="conten-print">
+                             <table class="table info-table" style="width:98%">
+                                 <tr>
+                                     <th style="width:50%">Remitente/Origen</th>
+                                     <th style="width:50%">Destinatarios/Destino</th>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">Ciudad Origen:</span><br>
+                                         <span class="text-content">'.$resultado[0]["ciudadO"].'</span>
+                                     </td>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">Ciudad Destino:</span><br>
+                                         <span class="text-content">'.$resultado[0]["ciudadD"].'</span>
+                                     </td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">Fecha de pedido:</span><br>
+                                         <span class="text-content">'.$resultado[0]["fecPedido"].'</span>
+                                     </td>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">Fecha de Recibido:</span><br>
+                                         <span class="text-content">'.$resultado[0]["fechaRecibido"].'</span>
+                                     </td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">Nombre del vendedor:</span><br>
+                                         <span class="text-content">'.$resultado[0]["nomVended"].'</span>
+                                     </td>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">Nombre Cliente:</span><br>
+                                         <span class="text-content">'.$resultado[0]["nombreContactoD"].'</span>
+                                     </td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">Dirección:</span><br>
+                                         <span class="text-content">'.$resultado[0]["direccionO"].'</span>
+                                     </td>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">Dirección:</span><br>
+                                         <span class="text-content">'.$resultado[0]["direccionD"].'</span>
+                                     </td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:50%;padding:10px;">
+                                         <span class="text-label">NIT/C.C.:</span><br>
+                                         <span class="text-content">'.$resultado[0]["nitO"].'</span>
+                                     </td>
+                                     <td style="width:50%;padding:10px;">
+                                       <span class="text-label">NIT/C.C.:</span><br>
+                                       <span class="text-content">'.$resultado[0]["nitD"].'</span>
+                                     </td>
+                                 </tr>
+
+                                 <tr>
+                                     <td style="width:50%;padding:10px;">
+                                       <span class="text-label">Teléfono:</span><br>
+                                       <span class="text-content">018000180113</span>
+                                     </td>
+                                     <td style="width:50%;padding:10px;">
+                                         
+                                     </td>
+                                 </tr>
+                                 <tr style="width:100%">
+                                     <th colspan="2">Fecha de mi Remisión/Origen</th>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:50%;padding:10px; ">
+                                         <span class="text-label ">Fecha de despacho:</span><br>
+                                         <span class="text-content ">'.$resultado[0]["fechaSolicitud"].'</span>
+                                     </td>
+                                     <td style="width:50%;padding:10px; ">
+                                         <span class="text-label ">Fecha estimada Entrega</span><br>
+                                         <span class="text-content ">'.date("Y-m-d", strtotime($resultado[0]["fecEstEntreg"])).'</span>
+                                     </td>
+                                 </tr>
+                                 <tr>
+                                     <td style="width:50%;padding:10px; ">
+                                         <span class="text-label ">Fecha Final Entrega:</span><br>
+                                         <span class="text-content ">'.$resultado[0]["fecFinEntre"].'</span>
+                                     </td>
+                                     <td style="width:50%;padding:10px; ">
+                                         <span class="text-label ">Ultimo Status:</span><br>
+                                         <span class="text-content ">'.$ultimoEstado["nombre"].'</span>
+                                     </td>
+                                 </tr>
+                             </table>
+                             <table class="table info-table-estados" style="width:98%">
+                                 <tr>
+                                     <th colspan="3">Estado de la Remisión</th>
+                                 </tr>
+                                 <tr>
+                                    <td style="width:10%;text-align: center;">
+                                         <span class="encabeza-estados">Fila</span>
+                                    </td>
+                                    <td style="width:60%;text-align: center;">
+                                         <span class="encabeza-estados">Estado/Observación</span>
+                                    </td>
+                                    <td style="width:30%;text-align: center;">
+                                         <span class="encabeza-estados">Fecha Registro</span>
+                                     </td>
+                                 </tr>';
+                             $cont = 1;
+                             foreach ($resulHist as $key => $value) {
+                                 $contenedor.='
+                                 <tr style="padding: 5px;">
+                                     <td style="width:10%;text-align: center;padding: 5px;">
+                                         <span class="text-content">
+                                             <strong>'.$cont.'</strong>
+                                         </span>
+                                     </td>
+                                     <td style="width:60%;text-align: center;padding: 5px;">
+                                         <span class="text-content"><strong>'.$value['nombre'].': </strong>'.$value['observacion'].'
+                                     </td>
+                                     <td style="width:30%;text-align: center;padding: 5px;">
+                                         <span class="text-content">'.$value['fechaRegistro'].'</span>
+                                     </td>
+                                 </tr>';
+                                 $cont++;
+                             }
+             $contenedor.='</table>
+                         </div>
+                     </div>
+                 </div>';
+
+     //Valida esta de la consulta
+     if(count($mResult) > 0){
+       foreach ($mResult as $key => $value) {
+         $body_msj = $contenedor;
+         $remisionPedido = $value['num_docume'];
+         $nomClient = $value['nom_remdes'];
+         $http = $_SERVER['HTTPS'] = "ON" ? "https://" : "http://";
+         $serverName = $_SERVER['SERVER_NAME'];
+         $logo = URL_LOGOPNG;
+         $mailto = $value['dir_emailx'];
+         $num_pedido = $value['ped_remisi'];
+ 
+         $subject = 'Estado de su pedido no. '.$num_pedido;
+         $title = 'Estado de su pedido no. '.$num_pedido;
+         $encabezamsj = 'Señores: '.$nomClient;
+         $bodymsj = 'El estado de su pedido No '.$remisionPedido;
+         $html.='<p class="text-content"> Su pedido se encuentra en estado <strong>'.$homEstNov.'</strong>,
+         a continuación le mostraremos el resultado del mismo.</p>'.$contenedor;
+         $correos = explode (',',$mailto);
+         envioEmailsTemplate($mConexion,COR_PLANTI_ESTPED,$subject,$title,$correos,$encabezamsj,$bodymsj,$html,$filePath);
+       }
+     }
+   }
+ }
+
 
 ?>
