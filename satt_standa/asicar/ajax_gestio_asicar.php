@@ -1001,7 +1001,7 @@
             $resultados = $resultado->ret_matriz();
             $htmls='';
             foreach($resultados as $valor){
-              $htmls.='<div><a class="suggest-element" data="'.$valor['cod_docume'].'" id="'.$valor['cod_docume'].'">'.$valor['cod_docume'].' - '.$valor['nom_contra'].' '.$valor['pri_apelli'].' '.$valor['seg_apelli'].'</a></div>';
+              $htmls.='<div><a class="suggest-element" data="'.trim($valor['cod_docume']).'" id="'.trim($valor['cod_docume']).'">'.$valor['cod_docume'].' - '.$valor['nom_contra'].' '.$valor['pri_apelli'].' '.$valor['seg_apelli'].'</a></div>';
             }
             echo utf8_decode($htmls);
         }
