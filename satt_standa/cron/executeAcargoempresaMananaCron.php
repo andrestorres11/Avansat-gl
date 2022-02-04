@@ -8,16 +8,13 @@ switch ($_SERVER['SERVER_NAME']) {
         include (URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/lib/general/functions.inc"); 
         break;
     case 'avansatgl.intrared.net':
-        include ("/var/www/html/ap/satt_faro/lib/general/constantes.inc");
-        include (URL_ARCHIV_STANDA."satt_faro/constantes.inc");
-        include (URL_ARCHIV_STANDA."satt_faro/lib/general/conexion_lib.inc");
-        include (URL_ARCHIV_STANDA."satt_faro/lib/general/functions.inc"); 
+        include ("/var/www/html/ap/satt_faro/constantes.inc");
+        include ("/var/www/html/ap/satt_standa/lib/general/constantes.inc");
+        include (URL_ARCHIV_STANDA."satt_standa/lib/general/conexion_lib.inc");
+        include (URL_ARCHIV_STANDA."satt_standa/lib/general/functions.inc"); 
         break;
 }
 //Include Connection class
-
-
-
 
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
@@ -36,7 +33,7 @@ INNER JOIN tab_despac_vehige vehic
  ON despac.num_despac = vehic.num_despac 
  
 INNER JOIN tab_tercer_tercer tercer 
- ON vehic.cod_transp = tercer.cod_tercer 
+ ON vehic.cod_transp = tercer.cod_tercer AND tercer.cod_estado = 1
 
  INNER JOIN tab_despac_contro contro 
  ON contro.num_despac = despac.num_despac 
@@ -80,13 +77,13 @@ INNER JOIN tab_genera_paises paisdes
  
  where (despac.fec_llegad IS NULL OR despac.fec_llegad = '0000-00-00 00:00:00')
  AND despac.`ind_anulad`='R' 
- AND despac.`cod_ultnov`=$codigonovedad ";
+ AND despac.`cod_ultnov` = $codigonovedad ";
 
 
 $consulta = new Consulta($query, $conexion);
 $datos = $consulta->ret_matriz('a');
 
-$query2 = "SELECT `dir_emailx`  FROM `tab_genera_concor` WHERE `num_remdes` = ''";
+$query2 = "SELECT dir_emailx FROM ".BASE_DATOS.".tab_genera_concor WHERE num_remdes = ''";
 $consulta2 = new Consulta($query2, $conexion);
 $datosAddCc = $consulta2->ret_matriz('a');
 
@@ -97,7 +94,6 @@ if ($numdatos>0){
 echo "<pre>";
 print_r($datos);
 echo "</pre>";
-
 
 function crearexceltmp($datexcel, $addcc){
     
@@ -110,7 +106,7 @@ function crearexceltmp($datexcel, $addcc){
             $url_planti_html=URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/planti/pla_acargo_empresa.html";
             break;
         case 'avansatgl.intrared.net':
-            $url_planti_html=URL_ARCHIV_STANDA."satt_faro/planti/pla_acargo_empresa.html";
+            $url_planti_html=URL_ARCHIV_STANDA."satt_standa/planti/pla_acargo_empresa.html";
             break;
     }
 
@@ -288,7 +284,7 @@ switch ($_SERVER['SERVER_NAME']) {
         require_once URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/js/lib/plugins/PHPExcel-1.8/Classes/PHPExcel.php";
         break;
     case 'avansatgl.intrared.net':
-        require_once URL_ARCHIV_STANDA."satt_faro/js/lib/plugins/PHPExcel-1.8/Classes/PHPExcel.php";
+        require_once URL_ARCHIV_STANDA."satt_standa/js/lib/plugins/PHPExcel-1.8/Classes/PHPExcel.php";
         break;
 }
 
@@ -319,11 +315,9 @@ for($m=0;$m<$numdatos;$m++){
         'nom_transp'=>$datos[$m]['nom_transp'],
         'dir_emailx'=>$datos[$m]['dir_emailx'])
     );
-    
         $conarray++;
     }else{
     //enviar a excel y mail
-    
     crearexceltmp($exportexcel, $datosAddCc);
     $exportexcel=array();
     $conarray=0;
@@ -345,13 +339,12 @@ for($m=0;$m<$numdatos;$m++){
         'nom_transp'=>$datos[$m]['nom_transp'],
         'dir_emailx'=>$datos[$m]['dir_emailx'])
     );
-    if($m==($numdatos-1)){
-        crearexceltmp($exportexcel, $datosAddCc);
-        $exportexcel=array();
-        $conarray=0;
-        sleep(5);
-    }
-
+}
+if($m==($numdatos-1)){
+    crearexceltmp($exportexcel, $datosAddCc);
+    $exportexcel=array();
+    $conarray=0;
+    sleep(5);
 }
         
     
