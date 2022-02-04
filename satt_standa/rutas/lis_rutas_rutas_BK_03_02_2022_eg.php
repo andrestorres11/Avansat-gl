@@ -1,0 +1,396 @@
+<?php
+/*! \file: lis_rutas_rutas.php
+ *  \brief: Listar Rutas
+ *  \author: 
+ *  \author: 
+ *  \version: 1.0
+ *  \date: dia/mes/año
+ *  \bug: 
+ *  \warning: 
+ */
+
+#ini_set('display_errors', true);
+#error_reporting(E_ALL & ~E_NOTICE);
+
+/*! \class: Proc_rutas
+ *  \brief: Clase para listar rutas
+ */
+class Proc_rutas
+{
+  var $conexion,
+      $cod_aplica,
+      $usuario;
+
+  function __construct($co, $us, $ca)
+  {
+    @include_once("../".DIR_APLICA_CENTRAL."/lib/general/functions.inc");
+    @include_once("../".DIR_APLICA_CENTRAL."/rutas/class_rutasx_rutasx.php");
+
+    IncludeJS("jquery.js");
+    IncludeJS("time.js");
+    IncludeJS("rutas.js");
+    IncludeJS("exportExcel/FileSaver.js");
+    IncludeJS("exportExcel/xlsx.full.min.js");
+    echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
+
+
+    $this -> conexion = $co;
+    $this -> usuario = $us;
+    $this -> cod_aplica = $ca;
+
+    if(!isset($_REQUEST[opcion]))
+      $this -> Buscar();
+    else
+    {
+      switch($_REQUEST[opcion])
+      {
+        case "2":
+          $this -> Resultado();
+          break;
+
+        case "3":
+          $this -> Datos();
+          break;
+      }
+    }
+  }
+
+  /*! \fn: Buscar
+   *  \brief: Formulario
+   *  \author: 
+   *  \date: dia/mes/año
+   *  \date modified: 05/08/2015
+   *  \modified by: Ing. Fabian Salinas
+   *  \param: 
+   *  \return:
+   */
+  function Buscar()
+  {
+    $formulario = new Formulario ("index.php","post","RUTAS","form_list");
+
+    $formulario -> nueva_tabla();
+    $formulario -> linea("Especifique las Condiciones de B&uacute;squeda",1,"t2");
+
+    $formulario -> nueva_tabla();
+    $formulario -> texto( "Fecha Inicio:", "text", "fec_inicia\" id=\"fec_iniciaID", 0, 40, 40, "", $_REQUEST[fec_inicia], 0, 0, 0, 1 );
+    $formulario -> texto( "Fecha Fin:", "text", "fec_finali\" id=\"fec_finaliID", 1, 40, 40, "", $_REQUEST[fec_finali], 0, 0, 0, 1 );
+    $formulario -> oculto("cod_ciuori\" id=\"cod_ciuoriID", $_REQUEST[cod_ciuori], 0);
+    $formulario -> oculto("cod_ciudes\" id=\"cod_ciudesID", $_REQUEST[cod_ciudes], 0);
+    $formulario -> texto( "Origen:", "text", "origen\" id=\"origenID", 0, 40, 40, "", $_REQUEST[origen], 0, 0, 0, 1 );
+    $formulario -> texto( "Destino:", "text", "destino\" id=\"destinoID", 1, 40, 40, "", $_REQUEST[destino], 0, 0, 0, 1 );
+
+    $formulario -> nueva_tabla();
+    $formulario -> linea("Buscar por Nombre de Ruta",1,"t2");
+
+    $formulario -> nueva_tabla();
+    $formulario -> texto ("Ruta","text","ruta\" id=\"rutaID",0,40,40, 0, $_REQUEST[ruta]);
+    $formulario -> texto ("Usuario","text","user\" id=\"userID",1,40,40, 0, $_REQUEST[user]);
+
+    $formulario -> nueva_tabla();
+    $formulario -> botoni("Buscar","form_list.submit()",0);
+
+    $formulario -> oculto("window\" id=\"windowID", "central", 0);
+    $formulario -> oculto("standa\" id=\"standaID", DIR_APLICA_CENTRAL, 0);
+    $formulario -> oculto("opcion\" id=\"opcionID", 2, 0);
+    $formulario -> oculto("cod_servic\" id=\"cod_servicID", $_REQUEST['cod_servic'], 0);
+    $formulario -> cerrar();
+  }
+
+  /*! \fn: Resultado
+   *  \brief: Resultado de la busqueda
+   *  \author: 
+   *  \date: dia/mes/año
+   *  \date modified: dia/mes/año
+   *  \param: 
+   *  \return:
+   */
+ function Resultado()
+ {
+   $datos_usuario = $this -> usuario -> retornar();
+   $usuario=$datos_usuario["cod_usuari"];
+
+   //Parche para concatenar salida vial, no disponible para satt_faro
+   if(BASE_DATOS != 'satt_faro'){
+    $cond1 = "CONCAT(a.nom_rutasx, IF(b.nom_salvia is not NULL, CONCAT(' - ', b.nom_salvia), ''))";
+    $cond2 = " LEFT JOIN ".BASE_DATOS.".tab_genera_salvia b ON a.cod_salvia = b.cod_salvia";
+  }else{
+    $cond1 = "CONCAT(a.nom_rutasx)";
+    $cond2 = "";
+  }
+
+   $query = "SELECT a.cod_rutasx, {$cond1},Count(d.cod_contro),
+		    		a.ind_estado, a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
+               FROM ".BASE_DATOS.".tab_genera_rutasx a 
+                    {$cond2}
+                LEFT JOIN ".BASE_DATOS.".tab_genera_rutcon d ON
+                    a.cod_rutasx = d.cod_rutasx
+                    ";
+   $indwhere = 0;
+
+   if($_REQUEST[ruta] != "")
+   {
+    if($indwhere)
+     $query .= " AND a.nom_rutasx LIKE '%".$_REQUEST[ruta]."%'";
+
+    else
+    {
+     $query .= " WHERE a.nom_rutasx LIKE '%".$_REQUEST[ruta]."%'";
+     $indwhere = 1;
+    }
+   }
+
+   if($_REQUEST[cod_ciuori])
+   {
+    if($indwhere)
+     $query .= " AND a.cod_ciuori = '".$_REQUEST[cod_ciuori]."'";
+    else
+    {
+     $query .= " WHERE a.cod_ciuori = '".$_REQUEST[cod_ciuori]."'";
+     $indwhere = 1;
+    }
+   }
+
+   if($_REQUEST[cod_ciudes])
+   {
+    if($indwhere)
+     $query .= " AND a.cod_ciudes = '".$_REQUEST[cod_ciudes]."'";
+    else
+    {
+     $query .= " WHERE a.cod_ciudes = '".$_REQUEST[cod_ciudes]."'";
+     $indwhere = 1;
+    }
+   }
+
+   if($_REQUEST[fec_inicia] && $_REQUEST[fec_finali])
+   {
+    if($indwhere)
+     $query .= " AND DATE(a.fec_creaci) BETWEEN '".$_REQUEST[fec_inicia]."' AND '".$_REQUEST[fec_finali]."'";
+    else
+    {
+     $query .= " WHERE DATE(a.fec_creaci) BETWEEN '".$_REQUEST[fec_inicia]."' AND '".$_REQUEST[fec_finali]."'";
+     $indwhere = 1;
+    }
+   }
+
+   if($_REQUEST[user])
+   {
+    if($indwhere)
+     $query .= " AND a.usr_creaci = '".$_REQUEST[user]."'";
+    else
+    {
+     $query .= " WHERE a.usr_creaci = '".$_REQUEST[user]."'";
+     $indwhere = 1;
+    }
+   }
+
+   
+   //PARA EL FILTRO DE EMPRESA
+   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
+   if($filtro -> listar($this -> conexion))
+   {
+    $datos_filtro = $filtro -> retornar();
+    
+    if($indwhere)
+      $query = $query . " AND a.cod_rutasx IN( SELECT cod_rutasx FROM ".BASE_DATOS.".tab_genera_ruttra WHERE cod_transp =  '$datos_filtro[clv_filtro]' GROUP BY cod_rutasx ) ";
+    else
+    {
+      $query = $query . " WHERE a.cod_rutasx IN( SELECT cod_rutasx FROM ".BASE_DATOS.".tab_genera_ruttra WHERE cod_transp =  '$datos_filtro[clv_filtro]' GROUP BY cod_rutasx ) ";
+      $indwhere = 1;
+    }
+    
+   }
+   
+   
+  $query .= " GROUP BY 1 ORDER BY 2";
+ //echo $query;
+ 
+  $consec = new Consulta($query, $this -> conexion);
+  $matriz = $consec -> ret_matriz();
+
+  for($i=0;$i<sizeof($matriz);$i++)
+      $matriz[$i][0]= "<a href=\"index.php?cod_servic=$_REQUEST[cod_servic]&window=central&ruta=".$matriz[$i][0]."&opcion=3 \"target=\"centralFrame\">".$matriz[$i][0]."</a>";
+
+   $formulario = new Formulario ("index.php","post","LISTADO DE RUTAS","form_item");
+
+   $formulario -> nueva_tabla();
+   $formulario -> linea("Se Encontrar&oacute;n un Total de ".sizeof($matriz)." Rutas. <a id='exportExcel' style='cursor: pointer;' onclick='exporExcel( \"exportExcel\", \"listado_de_rutas\" )'>[ Excel ]</a>",0,"t2");
+
+   $formulario -> nueva_tabla();
+   $formulario -> linea("C&oacute;digo",0,"t");
+   $formulario -> linea("Nombre",0,"t");
+   $formulario -> linea("Cant. P/C",0,"t");
+   $formulario -> linea("Estado",0,"t");
+   $formulario -> linea("Usuario Creador",0,"t");
+   $formulario -> linea("Fecha Creacion",0,"t");
+   $formulario -> linea("Usuario Modificador",0,"t");
+   $formulario -> linea("Fecha Modificacion",1,"t");
+
+   for($i = 0; $i < sizeof($matriz); $i++)
+   {
+   	if($matriz[$i][3] != COD_ESTADO_ACTIVO)
+     $estilo = "ie";
+    else
+     $estilo = "i";
+
+    if($matriz[$i][3] == COD_ESTADO_ACTIVO)
+     $estado = "Activo";
+    else if($matriz[$i][3] == COD_ESTADO_INACTI)
+     $estado = "Inactivo";
+
+    $formulario -> linea($matriz[$i][0],0,$estilo);
+    $formulario -> linea($matriz[$i][1],0,$estilo);
+    $formulario -> linea($matriz[$i][2],0,$estilo);
+    $formulario -> linea($estado,0,$estilo);
+    $formulario -> linea($matriz[$i][4],0,$estilo);
+    $formulario -> linea($matriz[$i][5],0,$estilo);
+    $formulario -> linea($matriz[$i][6],0,$estilo);
+    $formulario -> linea($matriz[$i][7],1,$estilo);
+   }
+
+   $formulario -> nueva_tabla();
+   $formulario -> boton("Volver","button\" onClick=\"javascript:history.go(-1)",0);
+
+   $formulario -> nueva_tabla();
+   $formulario -> oculto("usuario","$usuario",0);
+   $formulario -> oculto("opcion",2,0);
+   $formulario -> oculto("valor",$valor,0);
+   $formulario -> oculto("window","central",0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+   $formulario -> cerrar();
+ }
+
+ function Datos()
+ {
+   $query = "SELECT a.cod_rutasx,UPPER(a.nom_rutasx),a.cod_ciuori,a.cod_ciudes,d.cod_contro,
+                    if(e.ind_virtua = '1',CONCAT(e.nom_contro,' (Virtual)'),e.nom_contro),
+		   		    d.val_duraci,e.nom_encarg,e.dir_contro,e.tel_contro,
+		   		    if(a.ind_estado = '1','Activa','Inactiva'),e.ind_estado,d.ind_estado,
+        		    if(ind_urbano = '".COD_ESTADO_ACTIVO."',' - (Urbano)',''), a.usr_creaci, a.fec_creaci, a.usr_modifi, a.fec_modifi
+               FROM ".BASE_DATOS.".tab_genera_rutasx a,
+              	    ".BASE_DATOS.".tab_genera_rutcon d,
+                    ".BASE_DATOS.".tab_genera_contro e
+              WHERE a.cod_rutasx = d.cod_rutasx AND
+                    d.cod_contro = e.cod_contro AND
+                    a.cod_rutasx = '$_REQUEST[ruta]'
+        		    ORDER BY 7 ";
+   $consec = new Consulta($query, $this -> conexion);
+   $matriz = $consec -> ret_matriz();
+
+   $objciud = new Despachos($_REQUEST[cod_servic],$_REQUEST[opcion],$this -> aplica,$this -> conexion);
+   $origen = $objciud -> getSeleccCiudad($matriz[0][2]);
+   $destino = $objciud -> getSeleccCiudad($matriz[0][3]);
+
+   $formulario = new Formulario ("index.php","post","DETALLE DE LA RUTA","form_item");
+   $formulario -> linea("Datos de la Ruta ",0,"t2");
+
+   $formulario -> nueva_tabla();
+   $formulario -> linea("C&oacute;digo",0,"t");
+   $formulario -> linea($matriz[0][0],0,"i");
+   $formulario -> linea("Ruta",0,"t");
+   $formulario -> linea($matriz[0][1],1,"i");
+   $formulario -> linea("Origen",0,"t");
+   $formulario -> linea($origen[0][1],0,"i");
+   $formulario -> linea("Destino",0,"t");
+   $formulario -> linea($destino[0][1],1,"i");
+   $formulario -> linea("Usuario Creador",0,"t");
+   $formulario -> linea($matriz[0][14],0,"i");
+   $formulario -> linea("Fecha Creacion",0,"t");
+   $formulario -> linea($matriz[0][15],1,"i");
+   $formulario -> linea("Usuario Modificacion",0,"t");
+   $formulario -> linea($matriz[0][16],0,"i");
+   $formulario -> linea("Fecha Modificacion",0,"t");
+   $formulario -> linea($matriz[0][17],1,"i");
+   $formulario -> linea("Estado",0,"t");
+   $formulario -> linea($matriz[0][10],0,"i");
+   $formulario -> linea("",0,"t");
+   $formulario -> linea("",1,"i");
+
+
+   $formulario -> nueva_tabla();
+   $formulario -> linea("Puestos de Control",0,"t2");
+
+   $formulario -> nueva_tabla();
+   $formulario -> linea("C&oacute;digo",0,"t");
+   $formulario -> linea("Puestos de Control",0,"t");
+   $formulario -> linea("Minutos al Origen",0,"t");
+   $formulario -> linea("Encargado",0,"t");
+   $formulario -> linea("Direcci&oacute;n",0,"t");
+   $formulario -> linea("Tel&eacute;fono",0,"t");
+   $formulario -> linea("Estado",1,"t");
+
+   for($i = 0; $i < sizeof($matriz); $i++)
+   {
+   	if($matriz[$i][11] != COD_ESTADO_ACTIVO || $matriz[$i][12] != COD_ESTADO_ACTIVO)
+     $estilo = "ie";
+    else
+     $estilo = "i";
+
+    $estado = "Activo";
+
+    if($matriz[$i][11] == COD_ESTADO_INACTI || $matriz[$i][12] == COD_ESTADO_INACTI)
+     $estado = "Inactivo";
+
+    if($matriz[$i][4] == CONS_CODIGO_PCLLEG)
+     $formulario -> linea("-",0,$estilo);
+    else
+     $formulario -> linea($matriz[$i][4],0,$estilo);
+    $formulario -> linea($matriz[$i][5].$matriz[$i][13],0,$estilo);
+    $formulario -> linea($matriz[$i][6],0,$estilo);
+    $formulario -> linea($matriz[$i][7],0,$estilo);
+    $formulario -> linea($matriz[$i][8],0,$estilo);
+    $formulario -> linea($matriz[$i][9],0,$estilo);
+    $formulario -> linea($estado,1,$estilo);
+   }
+
+   $formulario -> nueva_tabla();
+
+   //Manejo de la Interfaz Aplicaciones SAT
+/*   $interfaz = new Interfaz_SAT(BASE_DATOS,NIT_TRANSPOR,$this -> usuario_aplicacion,$this -> conexion);
+
+   if($interfaz -> totalact > 0)
+    $formulario -> linea("El Sistema Tiene Interfases Activas Debe Homologar este P/C",1,"t2");
+
+   for($i = 0; $i < $interfaz -> totalact; $i++)
+   {
+    $homolocon = $interfaz -> getHomoloTranspRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$_REQUEST[ruta]);
+
+    if($homolocon["RUTAHomolo"] > 0)
+    {
+     $query = "SELECT a.cod_ciuori,a.cod_ciudes
+		 FROM ".BASE_DATOS.".tab_genera_rutasx a
+		WHERE a.cod_rutasx = ".$_REQUEST[ruta]."
+	      ";
+
+     $consec = new Consulta($query, $this -> conexion);
+     $orides = $consec -> ret_matriz();
+
+     $ruta_ws = $interfaz -> getListadRutasx($interfaz -> interfaz[$i]["operad"],$interfaz -> interfaz[$i]["usuari"],$interfaz -> interfaz[$i]["passwo"],$orides[0][0],$orides[0][1]);
+
+     for($j = 0; $j < sizeof($ruta_ws); $j++)
+     {
+      if($homolocon["RUTAHomolo"] == $ruta_ws[$j]["rutasx"])
+       $nomruthom[$i] = $ruta_ws[$j]["nombre"];
+     }
+
+     $formulario -> linea("La Ruta se Encuentra Homologada en la Interfaz ".$interfaz -> interfaz[$i]["nombre"]." :: ".$nomruthom[$i].".",1,"i");
+    }
+    else
+     $formulario -> linea("La Ruta no se Encuentra Homologada en la Interfaz ".$interfaz -> interfaz[$i]["nombre"].".",1,"i");
+   }
+*/
+   $formulario -> nueva_tabla();
+   $formulario -> boton("Volver","button\" onClick=\"javascript:history.go(-1)",0);
+
+   $formulario -> nueva_tabla();
+   $formulario -> oculto("usuario","$usuario",0);
+   $formulario -> oculto("opcion",3,0);
+   $formulario -> oculto("window","central",0);
+   $formulario -> oculto("cod_servic",$_REQUEST[cod_servic],0);
+   $formulario -> cerrar();
+ }
+
+}//FIN CLASE PROC_RUTAS
+
+     $proceso = new Proc_rutas($this -> conexion, $this -> usuario_aplicacion, $this-> codigo);
+
+?>

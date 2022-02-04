@@ -960,12 +960,9 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
     *  \return: null
     */
     function envioEmailsTemplate(&$mConexion,$nom_urlxxx,$subject,$title,$emails,$encabezamsj,$bodymsj,$adicional_html='',$file=NULL){
-     
-      
-      $tmpl_file = $nom_urlxxx;
-      @include_once '../../' . BASE_DATOS . '/constantes.inc';
-      //validaciones del logo.
-      $logo = LOGOFARO;
+     $tmpl_file = $nom_urlxxx;
+      //logo
+      $logo = "http://".$_SERVER['SERVER_NAME']."/ap/".BASE_DATOS."/logos/LogoCLFaro.png";
       
       
       $titulo = $title;
@@ -984,9 +981,10 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
             require_once(URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
             break;
         case 'avansatgl.intrared.net':
-          require_once(URL_ARCHIV_STANDA."satt_faro/planti/class.phpmailer.php");
+          require_once(URL_ARCHIV_STANDA."satt_standa/planti/class.phpmailer.php");
           break;
     }
+
       //require_once(URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
       $mail = new PHPMailer();
       $mail->Host = "localhost";
