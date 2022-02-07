@@ -76,9 +76,9 @@ class AjaxDespachos{
 				}
 			}else{
 				if((int)$_REQUEST[ind_cumpli] == 1){
-					$mSql .= " AND cod_noveda IN(256) ";
+					$mSql .= " AND cod_noveda IN(11) ";
 				}else{
-					$mSql .= " AND nom_noveda LIKE 'NER%' ";
+					$mSql .= " AND nom_noveda LIKE 'NCD%' ";
 				}
 			}
 			$mSql .= " ORDER BY 2 "; 	  
@@ -137,7 +137,8 @@ class AjaxDespachos{
 	 *  \return: JSON
 	 */
 	function GetNovedadesDescargue(){
-		$mSql = "SELECT cod_noveda, nom_noveda
+		if(BASE_DATOS=="satt_faro"){
+			$mSql = "SELECT cod_noveda, nom_noveda
 				   FROM ".BASE_DATOS.".tab_genera_noveda
 				  WHERE 1=1 ";
 		if($_REQUEST[cita]=='C')
@@ -153,6 +154,27 @@ class AjaxDespachos{
 	   			$mSql .= " AND cod_noveda IN(326) ";
 	   		}
 			$mSql .= " ORDER BY 2 ";
+		}else{
+			$mSql = "SELECT cod_noveda, nom_noveda
+				   FROM ".BASE_DATOS.".tab_genera_novseg
+				  WHERE ind_status = 1 ";
+
+			if($_REQUEST[cita]=='C'){
+				if((int)$_REQUEST[ind_cumpli] == 1){
+					$mSql .= " AND cod_noveda IN(9) ";
+				}else{
+					$mSql .= " AND nom_noveda LIKE 'NICC%' ";
+				}
+			}else{
+				if((int)$_REQUEST[ind_cumpli] == 1){
+					$mSql .= " AND cod_noveda IN(11) ";
+				}else{
+					$mSql .= " AND nom_noveda LIKE 'NCD%' ";
+				}
+			}
+			$mSql .= " ORDER BY 2 "; 
+		}
+		
 		$consulta  = new Consulta($mSql, $this -> conexion);
 		$novedadx  = $consulta -> ret_matriz();
 		$novedades = array();

@@ -8843,6 +8843,11 @@ class Despachos
      */
     function GridCitaCargue( $despac, $desReal )
     {
+        //Parche para diferenciar las tablas de novedades de acuerdo al tipo de avansat
+        $nom_table = 'tab_genera_noveda';
+        if(BASE_DATOS!='satt_faro'){
+            $nom_table = 'tab_genera_novseg';
+        }
         $mSql = "SELECT a.ind_cumcar, 
                         DATE_FORMAT(a.fec_cumcar, '%Y-%m-%d') AS fec_cumcar,
                         DATE_FORMAT(a.fec_cumcar, '%H:%i:%s') AS hor_cumcar,
@@ -8850,7 +8855,7 @@ class Despachos
                         UPPER(a.obs_cumcar) AS obs_cumcar,
                         a.usr_cumcar
                    FROM ".BASE_DATOS.".tab_despac_sisext a,
-                        ".BASE_DATOS.".tab_genera_noveda b
+                        ".BASE_DATOS.".{$nom_table} b
                   WHERE a.num_despac IN (".$despac.")
                     AND b.cod_noveda = a.nov_cumcar ";
 
@@ -9051,7 +9056,11 @@ class Despachos
     function GridCitaDescargue($despac, $document, $index)
     {
         echo $this->GridStyle();
-
+        //Parche para diferenciar las tablas de novedades de acuerdo al tipo de avansat
+        $nom_table = 'tab_genera_noveda';
+        if(BASE_DATOS!='satt_faro'){
+            $nom_table = 'tab_genera_novseg';
+        }
         $mSql = "SELECT a.ind_cumdes, 
                         DATE_FORMAT(a.fec_cumdes, '%Y-%m-%d') AS fec_cumcar,
                         DATE_FORMAT(a.fec_cumdes, '%H:%i:%s') AS hor_cumcar,
@@ -9059,7 +9068,7 @@ class Despachos
                         UPPER(a.obs_cumdes),
                         a.usr_cumdes
                    FROM ".BASE_DATOS.".tab_despac_destin a,
-                        ".BASE_DATOS.".tab_genera_noveda b
+                        ".BASE_DATOS.".{$nom_table} b
                   WHERE a.num_despac = '{$despac}'
                     AND a.num_docume = '{$document}'
                     AND b.cod_noveda = a.nov_cumdes ";
