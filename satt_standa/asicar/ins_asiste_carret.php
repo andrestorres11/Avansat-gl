@@ -208,7 +208,7 @@ class ins_asiste_carret
 
               <div class="card text-center" style="margin:15px;">
                 <div class="card-header color-heading">
-                  Datos del Transportista
+                  Datos B&aacute;sicos del Conductor
                 </div>
               <div class="card-body">
 
@@ -242,7 +242,7 @@ class ins_asiste_carret
 
               <div class="card text-center" style="margin:15px;">
                 <div class="card-header color-heading">
-                  Datos del Vehículo
+                Datos B&aacute;sicos del Veh&iacute;culo
                 </div>
               <div class="card-body">
 
