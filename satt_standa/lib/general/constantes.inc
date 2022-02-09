@@ -155,4 +155,8 @@ define("COD_PERFIL_SUPEREAL", "7");// Controlador CLF
 define("API_PAD", "'http://localhost/pad-backend/public/api/linkages'");// Controlador CLF
 
 
+//Constante mapa widetech
+define("URL_MAPA_WIDETECH", "https://gps.widetech.co/site/OnLineMap.aspx");
+
+
 ?>
