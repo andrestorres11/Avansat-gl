@@ -2249,7 +2249,7 @@ class Despachos
                             $mValidaMapa = self::validaDivMapas($mNumDespac);
 
                             if( $mValidaMapa['ind_estado'] == 1){
-                                $mapasHtml = self::divMapas($mValidaMapa['data']);
+                                $mapasHtml = self::divMapas($mValidaMapa['data'], $mData);
                                 $mHtml->SetBody( $mapasHtml );
                             }
                         }
@@ -2403,7 +2403,7 @@ class Despachos
      */
     
 
-    private function divMapas( $mNovedades ){
+    private function divMapas( $mNovedades, $mData){
         $mHtml = new Formlib(2);
         $mHtml -> SetBody('    <style>
                               .ol-popup {
@@ -2474,7 +2474,7 @@ class Despachos
             $mHtml->OpenDiv("id:secID");
                 //----------------------
 
-                $mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
+                /*$mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
 
                     $mHtml->Hidden( array("name"=>"dat_gpsxxx".$i, "id"=>'dat_gpsxxx'.$i, "value"=> base64_encode(json_encode($mNovedades))) );
 
@@ -2487,7 +2487,28 @@ class Despachos
                     $mHtml -> SetBody('<a href="#" id="popup-closer" class="ol-popup-closer"></a>');
                     $mHtml -> OpenDiv('id:popupContent');
                     $mHtml -> CloseDiv(); 
+                $mHtml->CloseDiv();*/
+
+                //----------------------
+
+                //----------------------
+                $mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
+                if(!is_null($mData['cod_itiner']) && !is_null($mData['map_tokenx'])){
+                    $mHtml->SetBody("<div class='crmButton small save'><a href='".URL_MAPA_WIDETECH.$mData['map_tokenx']."' target='_blank' style='color: white !important; padding:2px;'>[Ver mapa]</a></div>");
+                }
+                $mHtml->Hidden( array("name"=>"dat_gpsxxx".$i, "id"=>'dat_gpsxxx'.$i, "value"=> base64_encode(json_encode($mNovedades))) );
+
                 $mHtml->CloseDiv();
+                //----------------------
+
+                //----------------------
+
+                $mHtml->OpenDiv("id:popupContenedor; class:ol-popup");
+                    $mHtml -> SetBody('<a href="#" id="popup-closer" class="ol-popup-closer"></a>');
+                    $mHtml -> OpenDiv('id:popupContent');
+                    $mHtml -> CloseDiv(); 
+                $mHtml->CloseDiv();
+                
 
                 //----------------------
 
@@ -3733,7 +3754,10 @@ class Despachos
                         IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci,
                         y.url_gpsxxx,
                         x.idx_gpsxxx,
-                        a.gps_urlxxx
+                        a.gps_urlxxx,
+                        IF(b.fec_itiner IS NULL OR b.fec_itiner = '' OR b.fec_itiner = '0000-00-00 00:00:00', '', b.cod_itiner) AS cod_itiner,
+                        b.msg_itiner,
+                        b.map_tokenx
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
