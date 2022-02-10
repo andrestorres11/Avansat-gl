@@ -31,7 +31,7 @@ class Ins_trayle_trayle {
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 31/09/2015
-     *  \date modified: dia/mes/aï¿½o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -106,7 +106,7 @@ class Ins_trayle_trayle {
               # Fin accordion1    
               # Accordion2
               $mHtml->OpenDiv("id:datos; class:accordion");
-                $mHtml->SetBody("<h1 style='padding:6px'><b>Listado de Remolques</b></h1>");
+                $mHtml->SetBody("<h1 style='padding:6px'><b>LISTADO DE REMOLQUES</b></h1>");
                 $mHtml->OpenDiv("id:sec2");
                   $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
                     
@@ -232,59 +232,7 @@ class Ins_trayle_trayle {
           $mHtml->CloseDiv();
         $mHtml->CloseDiv();
       $mHtml->CloseDiv();
-      # Fin accordion1
-
-       # Accordion2
-       $mHtml->OpenDiv("id:GPSinfoID; class:accordion");
-       $mHtml->SetBody("<h3 style='padding:6px;'><center>Informaci&oacute;n GPS</center></h3>");
-       $mHtml->OpenDiv("id:sec8");
-       $cont = count($datos->principal->ope_remolq);
-       foreach($datos->principal->ope_remolq as $key => $operadores){
-        $mHtml->OpenDiv("id:form8; class:contentAccordionForm");
-          $mHtml->Table("tr");
-
-            $mHtml->Label(("Operador GPS:"), "width:25%; *:1;"); 
-            $mHtml->Select2 ($datos->opegps,  array("class" => "opegps inputgps",  "validate" => "select", "width" => "25%", "key"=> $operadores['cod_operad'], "disabled" => true) );
-
-            $mHtml->Label("Usuario:", "width:25%; *:1;"); 
-            $mHtml->Input (array("class" => "inputgps", "validate" => "alpha", "minlength" => "3", "maxlength" => "50", "width" => "25%", "value"=> $operadores['usr_gpsxxx'], "disabled" => true, "end" => true) );
-        
-            $mHtml->Label("Clave:", "width:25%; *:1;"); 
-            $mHtml->Input (array("class" => "inputgps", "size"=>"10", "width" => "25%", "value"=> $operadores['clv_gpsxxx'], "disabled" => true) ); 
-
-            $mHtml->Label("ID:", "width:25%; *:1;"); 
-            $mHtml->Input (array("class" => "inputgps", "validate" => "alpha","minlength" => "1", "maxlength" => "15", "size"=>"10", "width" => "25%", "value"=> $operadores['idx_gpsxxx'], "disabled" => true) );
-
-            $mHtml->SetBody("<td align=center><img style='cursor:pointer;' width='25px' onclick='deleteOpeGps(".$operadores['cod_operad'].",this)' src='../".DIR_APLICA_CENTRAL."/images/delete.png'/></img></td>");
-
-          $mHtml->CloseTable("tr");
-        $mHtml->CloseDiv();
-       }
-        $mHtml->OpenDiv("id:formGps");
-        $mHtml->CloseDiv();
-         $mHtml->OpenDiv("id:form88; class:contentAccordionForm");
-           $mHtml->Table("tr");
-              $mHtml->Label(("Operador GPS:"), "width:25%; *:1;"); 
-              $mHtml->Select2 ($datos->opegps,  array("name" => "trayle[cod_opegps][".$cont."]", "class" => "opegps inputgps",  "validate" => "select", "id" => "cod_opegpsID", "width" => "25%", "key"=> $datos->principal->cod_opegps, 'onchange' => 'validaIdGPS(this)',  "obl"=> "1") );
-              
-              $mHtml->Label("Usuario:", "width:25%; *:1;"); 
-              $mHtml->Input (array("name" => "trayle[usr_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha",  "id" => "usr_gpsxxxID",  "minlength" => "3", "maxlength" => "50", "width" => "25%", "value"=> "","end" => true,  "obl"=> "1") );
-              
-              $mHtml->Label("Clave:", "width:25%; *:1;"); 
-              $mHtml->Input (array("name" => "trayle[clv_gpsxxx][".$cont."]", "class" => "inputgps", "size"=>"10", "id" => "clv_gpsxxxID",  "width" => "25%", "value"=> "", "obl"=> "1") ); 
-
-              $mHtml->Label("ID:", "width:25%; *:1;"); 
-              $mHtml->Input (array("name" => "trayle[idx_gpsxxx][".$cont."]", "class" => "inputgps", "validate" => "alpha","minlength" => "0", "maxlength" => "15", "size"=>"10", "id" => "idx_gpsxxxID",  "width" => "25%", "value"=> "", "end" => true) );
-            $mHtml->CloseTable("tr");
-         $mHtml->CloseDiv();
-         
-         $mHtml->Table("tr");
-          $mHtml->StyleButton("name:send; value:A&ntilde;adir; onclick:addOpeGps(); align:center;  class:crmButton small save");
-         $mHtml->CloseTable("tr");   
-       $mHtml->CloseDiv();
-     $mHtml->CloseDiv();
-      # Fin accordion2        
-
+      # Fin accordion1 
       if($datos->principal->dir_fottra != "NULL" && $datos->principal->dir_fottra != "" && $datos->principal->dir_fottra != null){
           #Acordeon 7 Para mostrar la foto del trayler
         $mHtml->OpenDiv("id:fotoID; class:accordion");
