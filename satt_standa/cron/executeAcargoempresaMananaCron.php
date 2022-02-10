@@ -1,24 +1,14 @@
 <?php
 
-switch ($_SERVER['SERVER_NAME']) {
-    case 'dev.intrared.net':
-        include ("/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_standa/lib/general/constantes.inc");
-        include (URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_faro/constantes.inc");
-        include (URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/lib/general/conexion_lib.inc");
-        include (URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/lib/general/functions.inc"); 
-        break;
-    case 'avansatgl.intrared.net':
-        include ("/var/www/html/ap/satt_faro/constantes.inc");
-        include ("/var/www/html/ap/satt_standa/lib/general/constantes.inc");
-        include (URL_ARCHIV_STANDA."satt_standa/lib/general/conexion_lib.inc");
-        include (URL_ARCHIV_STANDA."satt_standa/lib/general/functions.inc"); 
-        break;
-}
 //Include Connection class
+error_reporting(0);
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
-
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
+include ("/var/www/html/ap/satt_faro/constantes.inc");
+include ("/var/www/html/ap/satt_standa/lib/general/constantes.inc");
+include ("/var/www/html/ap/satt_standa/lib/general/conexion_lib.inc");
+include ("/var/www/html/ap/satt_standa/lib/general/functions.inc");
 
 $conexion = new Conexion(HOST,USUARIO, CLAVE, BASE_DATOS);
 $codigonovedad=9996;
@@ -90,16 +80,16 @@ $datosAddCc = $consulta2->ret_matriz('a');
 $numdatos=count($datos);
 if ($numdatos>0){
 
-
+/*
 echo "<pre>";
 print_r($datos);
-echo "</pre>";
+echo "</pre>";*/
 
 function crearexceltmp($datexcel, $addcc){
-    
+    /*
     echo "<pre>";
         print_r($datexcel);
-    echo "</pre>";
+    echo "</pre>";*/
 
     switch ($_SERVER['SERVER_NAME']) {
         case 'dev.intrared.net':
@@ -279,16 +269,7 @@ if(!$enviomail)
    */
 }
 
-switch ($_SERVER['SERVER_NAME']) {
-    case 'dev.intrared.net':
-        require_once URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/js/lib/plugins/PHPExcel-1.8/Classes/PHPExcel.php";
-        break;
-    case 'avansatgl.intrared.net':
-        require_once URL_ARCHIV_STANDA."satt_standa/js/lib/plugins/PHPExcel-1.8/Classes/PHPExcel.php";
-        break;
-}
-
-//require_once URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/js/lib/plugins/PHPExcel-1.8/Classes/PHPExcel.php";
+require_once URL_ARCHIV_STANDA."satt_standa/js/lib/plugins/PHPExcel-1.8/Classes/PHPExcel.php";
 $codtransptemp=null;
 $exportexcel=array();
 $conarray=0;
