@@ -89,7 +89,8 @@ class InformViajes {
                        z.num_trayle as 'num_remolq',
                        t.num_poliza as 'num_poliza',
                        y.nom_tipveh as 'nom_tipveh',
-                       t.ind_anulad as 'ind_anulad'
+                       t.ind_anulad as 'ind_anulad',
+                       aa.nom_tercer as 'nom_transp'
                   FROM ".BASE_DATOS.".tab_despac_despac t 
 	              LEFT JOIN ".BASE_DATOS.".tab_genera_tipdes b ON t.cod_tipdes = b.cod_tipdes 
 	              LEFT JOIN ".BASE_DATOS.".tab_genera_paises c ON t.cod_paiori = c.cod_paisxx 
@@ -108,6 +109,7 @@ class InformViajes {
 	            LEFT JOIN ".BASE_DATOS.".tab_genera_rutasx i ON u.cod_rutasx = i.cod_rutasx 
 	            LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer j ON t.cod_asegur = j.cod_tercer
                 LEFT JOIN ".BASE_DATOS.".tab_despac_vehige z ON t.num_despac = z.num_despac 
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer aa ON aa.cod_tercer = z.cod_transp
                 LEFT JOIN ".BASE_DATOS.".tab_vehicu_vehicu v ON v.num_placax = z.num_placax
 	            LEFT JOIN ".BASE_DATOS.".tab_genera_marcas l ON v.cod_marcax = l.cod_marcax 
 	            LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas m ON v.cod_marcax = m.cod_marcax 
@@ -186,6 +188,7 @@ class InformViajes {
 
             $mHtml .= "<tr>";
             $mHtml .= "<th class=cellHead >No.</th>";
+            $mHtml .= "<th class=cellHead >Transportadora</th>";
             $mHtml .= "<th class=cellHead >Viaje</th>";
             $mHtml .= "<th class=cellHead >Manifiesto</th>";
             $mHtml .= "<th class=cellHead >Fecha Despacho</th>";
@@ -279,6 +282,7 @@ class InformViajes {
 
                 $mHtml .= "<tr class='row'>";
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$count."</td>"; //No
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['nom_transp']."</td>"; //Nombr empresa de Transporte
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$href1.$row['num_viajex'].$href2."</td>"; //Viaje
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['cod_manifi']."</td>"; //Manifiesto
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$this->toFecha($row['fec_despac'])."</td>"; //Fecha Despacho
