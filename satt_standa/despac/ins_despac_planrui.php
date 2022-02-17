@@ -90,7 +90,7 @@ class Proc_Plan_Ruta
      $datos_filtro = $filtro -> retornar();
      $query = $query . " AND b.cod_agenci = '$datos_filtro[clv_filtro]' ";
     }
-	$filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_usuari"]);
+	$filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_usuari"]); 
     if($filtro -> listar($this -> conexion))
     {
      $datos_filtro = $filtro -> retornar();
@@ -411,21 +411,19 @@ class Proc_Plan_Ruta
    else
     $nomcampciudest = "'".$_REQUEST[ciudestr]."'";
 
-   $query = "SELECT c.cod_rutasx,c.nom_rutasx,a.obs_despac,a.cod_ciuori,a.cod_ciudes
+   $query = "SELECT c.cod_rutasx,CONCAT(c.nom_rutasx, IF((c.cod_salvia != NULL OR c.cod_salvia != ''), CONCAT(' - ',d.nom_salvia),'')),a.obs_despac,a.cod_ciuori,a.cod_ciudes
 	       	   FROM ".BASE_DATOS.".tab_despac_despac a,
 		    		".BASE_DATOS.".tab_despac_vehige b,
-		    		".BASE_DATOS.".tab_genera_rutasx c,
-		    		".BASE_DATOS.".tab_genera_ruttra d
+		    		".BASE_DATOS.".tab_genera_rutasx c
+            LEFT JOIN ".BASE_DATOS.".tab_genera_salvia d ON
+              c.cod_salvia = d.cod_salvia
 	      	  WHERE a.num_despac = ".$_REQUEST[despac]." AND
 		    		a.num_despac = b.num_despac AND
 		    		a.cod_ciuori = c.cod_ciuori AND
 		    		c.cod_ciudes = ".$nomcampciudest." AND
-		    		b.cod_transp = d.cod_transp AND
-		    		c.cod_rutasx = d.cod_rutasx AND
 		    		c.ind_estado = '1'
 		    		GROUP BY 1 ORDER BY 2
 	    ";
-
    $consulta = new Consulta($query, $this -> conexion);
    $rutasx = $consulta -> ret_matriz();
 
@@ -545,10 +543,17 @@ class Proc_Plan_Ruta
    else
     $fevalida = $_REQUEST['fec_citcar'];
    
+
+    if(!$_REQUEST[fecprosal]){
+      $feactual = date("Y-m-d H:i");
+    }else{
+      $feactual = $_REQUEST[fecprosal]; 
+    }
+    
    $formulario -> nueva_tabla();
    $formulario -> linea("Fecha Cita de Cargue",1,"h");
    $formulario -> nueva_tabla();
-   $formulario -> fecha_calendar("Fecha/Hora","fec_citcar","form_ins",$fevalida,"yyyy-mm-dd hh:ii",0,1);   
+   $formulario -> fecha_calendar("Fecha/Hora","fec_citcar","form_ins",$feactual,"yyyy-mm-dd hh:ii",0,1);   
    // $formulario -> linea($fec_valida,0,"i");
    /***********************************************/
    $formulario -> nueva_tabla();
@@ -558,10 +563,7 @@ class Proc_Plan_Ruta
        $formulario -> linea("Fecha Programada de Salida",1,"h");
     
    $formulario -> nueva_tabla();
-   if(!$_REQUEST[fecprosal])
-    $feactual = date("Y-m-d H:i");
-   else
-    $feactual = $_REQUEST[fecprosal];
+   
 
    $feccal = $feactual;
 
@@ -573,13 +575,9 @@ class Proc_Plan_Ruta
    $query = "SELECT a.cod_contro,a.nom_contro,c.val_duraci,
 		    		if(a.ind_virtua = '0','Fisico','Virtual')
 	       	   FROM ".BASE_DATOS.".tab_genera_contro a,
-		    		".BASE_DATOS.".tab_genera_ruttra b,
 		    		".BASE_DATOS.".tab_genera_rutcon c
 	      	  WHERE c.cod_rutasx = '".$_REQUEST[rutasx]."' AND
 		    		c.cod_contro = a.cod_contro AND
-		    		b.cod_rutasx = c.cod_rutasx AND
-		    		b.cod_transp = '".$transp[0][0]."' AND
-		    		b.cod_contro = c.cod_contro AND
 		    		c.ind_estado = '1' AND
 		    		a.ind_estado = '1'
 		    		ORDER BY 3
