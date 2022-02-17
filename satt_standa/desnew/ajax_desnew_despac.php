@@ -673,7 +673,7 @@ class AjaxInsertDespacho
     
     $query .= " WHERE cod_tipdoc != 'N'";
     
-    $consulta = new Consulta($query, $this->conexion);
+    $consulta = new Consulta($query, $this->conexion);  
     $tipdoc  = $consulta->ret_matriz();
     
     $mHtml .= '<tr>';

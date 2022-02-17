@@ -230,7 +230,7 @@ function ShowForm(cod_transp) {
   try {
 
     nom_transp = cod_transp.split('-')[1].trim();
-    cod_transp = cod_transp.split('-')[0].trim();
+    cod_transp = cod_transp.split('-')[0].trim(); 
     var standa = $("#standaID").val();
     $("#cod_transpID").val(cod_transp);
     $("#resultID").css({

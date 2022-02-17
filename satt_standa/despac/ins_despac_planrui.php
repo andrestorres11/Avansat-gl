@@ -90,7 +90,7 @@ class Proc_Plan_Ruta
      $datos_filtro = $filtro -> retornar();
      $query = $query . " AND b.cod_agenci = '$datos_filtro[clv_filtro]' ";
     }
-	$filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_usuari"]);
+	$filtro = new Aplica_Filtro_Usuari($this -> cod_aplica,COD_FILTRO_CLIENT,$datos_usuario["cod_usuari"]); 
     if($filtro -> listar($this -> conexion))
     {
      $datos_filtro = $filtro -> retornar();

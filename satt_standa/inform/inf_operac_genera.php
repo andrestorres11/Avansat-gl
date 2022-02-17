@@ -282,7 +282,7 @@ class InformViajes {
 
                 $mHtml .= "<tr class='row'>";
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$count."</td>"; //No
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['nom_transp']."</td>"; //Nombr empresa de Transporte
+                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['nom_transp']."</td>"; //Nombre empresa de Transporte
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$href1.$row['num_viajex'].$href2."</td>"; //Viaje
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['cod_manifi']."</td>"; //Manifiesto
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$this->toFecha($row['fec_despac'])."</td>"; //Fecha Despacho
