@@ -548,7 +548,7 @@ class Aplicacion_Seguridad
                 $body .= '\'</table>\'+
                             \'Si ya realizo el pago correspondiente, por favor enviar soporte al correo: <strong>pagos@grupooet.com</strong>';
 
-            $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+            $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
             die();
           }
         } 
@@ -599,7 +599,7 @@ class Aplicacion_Seguridad
               }
 
               //Ejecuta función que crea alerta
-              $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+              $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
               
               $_SESSION['datos_usuario']['ale_suspen'] = 1; 
 
@@ -620,6 +620,7 @@ class Aplicacion_Seguridad
 	 */
 
     function alertMensajeSuspenAdmin($data){
+      
       if(!empty($data)){
         
         if(in_array($_REQUEST["cod_servic"], array(1366))){
@@ -641,13 +642,13 @@ class Aplicacion_Seguridad
             $body .= '\'';
 	        
 
-           $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+           $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
         }
       }
     }
 
-    /*! \fn: mensajeSuspensión
-	 *  \brief: Crea Alerta por JS dando información
+    /*! \fn: mensajeSuspension
+	 *  \brief: Crea Alerta por JS dando informacion
 	 *  \author: Ing. Luis Manrique
 	 *  \date: 27-02-2020
 	 *  \date modified: dd/mm/aaaa
@@ -655,7 +656,7 @@ class Aplicacion_Seguridad
 	 *  \return: html
 	 */
 
-    function mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton = null){
+    function mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton = null){
         $script .= '<!-- Toastr -->';
         $script .='<script src="../' . DIR_APLICA_CENTRAL . '/js/sweetalert2.all.8.11.8.js"></script>';
 

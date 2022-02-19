@@ -53,7 +53,7 @@ class suspensiones {
   function SetSuspensiones($cod_tercer = null, $cod_usuari = null, $eje_noveda = null, $ajax = null)
   {
   	if($_SERVER['SERVER_NAME'] == 'avansatgl.intrared.net'){
-  		$urlWS = "https://ut.intrared.net/ap/consultor/app/client/fact_vencida_faro.php";
+  		$urlWS = "https://ut.intrared.net/ap/consultor/app/client/facturacionVencida/fact_vencida_faro.php";
   	}else{
   		$urlWS = "https://dev.intrared.net:8083/ap/cmaya/ut/consultor/app/client/facturacionVencida/fact_vencida_faro.php";
   	}
@@ -95,11 +95,12 @@ class suspensiones {
     }
 
     //Codifica en Hson
-    $raw_data = json_encode($dataTerceros);
+    //$raw_data = json_encode($dataTerceros);
 
     //Codifica en Array
-    $cReturn = json_decode($raw_data, true);
-
+    //$cReturn = json_decode($raw_data, true);
+    //Se agrega la variable $dataTerceros.
+    $cReturn = $dataTerceros;
 
     //Eliminan las empresas que estan inactivas o no están en la base terceros
     foreach ($cReturn as $key => $value) {

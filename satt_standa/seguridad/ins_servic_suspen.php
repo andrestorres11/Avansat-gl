@@ -4,7 +4,7 @@
  *  \author: Ing. Alexander Correa
  *  \author: aleander.correa@intrared.net
  *  \date: 15/04/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aÃ±o
  *  \warning:   
  *  \ 
  */
@@ -63,7 +63,7 @@ class ins_servic_suspen {
      *  \brief: funcion inicial que muestra una lista con las empresas y los servicios contratados
      *  \author: Ing. Alexander Correa
      *  \date: 15/04/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \return 
      */
@@ -102,7 +102,7 @@ class ins_servic_suspen {
                             <div class="panel-heading">
                               <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#tablaDatos">
-                                    Información de suspendidos
+                                    Informaciï¿½n de suspendidos
                                 </a>
                               </h4>
                             </div>
@@ -113,11 +113,11 @@ class ins_servic_suspen {
                                         <tr>
                                             <th>Documento Tercero</th>
                                             <th>Nombre Tercero</th>
-                                            <th>Fecha Suspensión</th>
-                                            <th>Número de factura</th>
+                                            <th>Fecha Suspensiï¿½n</th>
+                                            <th>Nï¿½mero de factura</th>
                                             <th>Saldo Pendiente</th>
-                                            <th>Estado Suspensión</th>
-                                            <th>Detalle Suspensión</th>
+                                            <th>Estado Suspensiï¿½n</th>
+                                            <th>Detalle Suspensiï¿½n</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -133,9 +133,9 @@ class ins_servic_suspen {
 
                                                 if($datos['fec_suspen'] < date('Y-m-d')){
                                                     $datos['est_suspen'] = 'Suspendido';
-                                                    $datos['det_suspen'] = $interval->format('Suspendido, %a día(s) de suspensión');
+                                                    $datos['det_suspen'] = $interval->format('Suspendido, %a dï¿½a(s) de suspensiï¿½n');
                                                 }else{
-                                                    $datos['det_suspen'] = $interval->format('Faltan %a día(s) para ser suspendido');
+                                                    $datos['det_suspen'] = $interval->format('Faltan %a dï¿½a(s) para ser suspendido');
                                                     $datos['est_suspen'] = 'Proximo a suspender';
                                                 }
 
@@ -170,7 +170,7 @@ class ins_servic_suspen {
      *  \brief: pinta el formulario para editar una configuracion de transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 15/04/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \return 
      */
