@@ -102,7 +102,7 @@ class ins_servic_suspen {
                             <div class="panel-heading">
                               <h4 class="panel-title">
                                 <a data-toggle="collapse" data-parent="#accordion" href="#tablaDatos">
-                                    Informaci�n de suspendidos
+                                    Informacion de suspendidos
                                 </a>
                               </h4>
                             </div>
@@ -113,11 +113,11 @@ class ins_servic_suspen {
                                         <tr>
                                             <th>Documento Tercero</th>
                                             <th>Nombre Tercero</th>
-                                            <th>Fecha Suspensi�n</th>
-                                            <th>N�mero de factura</th>
+                                            <th>Fecha Suspension</th>
+                                            <th>Numero de factura</th>
                                             <th>Saldo Pendiente</th>
-                                            <th>Estado Suspensi�n</th>
-                                            <th>Detalle Suspensi�n</th>
+                                            <th>Estado Suspension</th>
+                                            <th>Detalle Suspension</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -133,9 +133,9 @@ class ins_servic_suspen {
 
                                                 if($datos['fec_suspen'] < date('Y-m-d')){
                                                     $datos['est_suspen'] = 'Suspendido';
-                                                    $datos['det_suspen'] = $interval->format('Suspendido, %a d�a(s) de suspensi�n');
+                                                    $datos['det_suspen'] = $interval->format('Suspendido, %a dia(s) de suspension');
                                                 }else{
-                                                    $datos['det_suspen'] = $interval->format('Faltan %a d�a(s) para ser suspendido');
+                                                    $datos['det_suspen'] = $interval->format('Faltan %a dia(s) para ser suspendido');
                                                     $datos['est_suspen'] = 'Proximo a suspender';
                                                 }
 
