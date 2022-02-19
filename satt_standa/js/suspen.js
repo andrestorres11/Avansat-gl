@@ -1,7 +1,7 @@
 /* ! \file: suspension
  *  \brief: permite visualizar correctamente las vistas en ins_servic_suspen.php ademas de realizar algunas funciones ajax
  *  \author: Ing. Alexander Correa
- *  \author: alexander.correa@intrared.net
+ *  \author: alexander.correa@intrared.net   
  *  \version: 1.0
  *  \date: 08/04/2016
  *  \bug: 
@@ -54,7 +54,6 @@ $(function() {
     
 
     var table = $("#tablaSuspend").DataTable({
-        destroy: true,
         deferRender:    true, 
         "autoWidth": false,     
         "search": {
