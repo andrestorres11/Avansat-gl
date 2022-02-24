@@ -1,9 +1,9 @@
 <?php
     /****************************************************************************
     NOMBRE:   AjaxGestioAsiscar
-    FUNCION:  Retorna todos los datos necesarios para construir la información
+    FUNCION:  Retorna todos los datos necesarios para construir la informaciï¿½n
     FECHA DE MODIFICACION: 13/04/2020
-    CREADO POR: Ing. Cristian Andrés Torres
+    CREADO POR: Ing. Cristian Andrï¿½s Torres
     MODIFICADO 
     ****************************************************************************/
     
@@ -86,6 +86,16 @@
                 case "17":
                   self::traerProveedor();
                 break;
+                case "18":
+                  self::traerarchivos();
+                break;
+                case "19":
+                  self::almacenararchivos();
+                break;
+                case "20":
+                  self::datselect();
+                break;
+                
             }
         }
 
@@ -144,7 +154,7 @@
 
 
         /*! \fn: informeGeneral
-           *  \brief: Genera la información para las tabla del informe general
+           *  \brief: Genera la informaciï¿½n para las tabla del informe general
            *  \author: Ing. Cristian Torres
            *  \date: 04-06-2020
            *  \date modified: dd/mm/aaaa
@@ -559,6 +569,7 @@
                 <textarea class="form-control" id="obs_asiproID" name="obs_asipro" rows="3" placeholder="Observaciones" required></textarea>
                 </div>
               </div>
+              
               <div class="row mt-4">
                   <div class="offset-1 col-6">
                           <label for="exampleFormControlFile1" style="text-align:left !important;font-size: 15px;">Adjuntar Archivo</label>
@@ -586,6 +597,86 @@
             </div>';
             }else if($cod_estado==4){
               $html.=$servicios;
+              $html.='
+                    <div class="card border border-success" style="margin:15px;" id="ServiciosSpace">
+                      <div class="card-header color-heading text-align">
+                          <center>Gestion de Solicitud</center>
+                      </div>
+                      <div class="card-body">
+                        <div class="justify-content-center">
+                          <div class="offset">
+                            <form id="form_principal">
+                              <div class="row justify-content-center">  
+                                <div class="col-2 text-right">  
+                                <label for="id_estado" class="col-form-label">Estado</label>
+                                </div>
+                                
+                                <div class="col-4 text-left">
+                                  <select class="form-control" id="id_estado" name="id_estado" style="font-size: 12px; onclick="getIndex()">
+                                    <option value="0">Seleccion...</option>
+                                    <option value="4">En Proceso</option>
+                                    <option value="5">Finalizado</option>
+                                  </select>
+                                </div>
+                                
+                                <div class="col-2 text-right">
+                                  <label for="id_servicio" class="col-form-label">Servicios</label>
+                                </div>
+
+                                
+                                <div class="col-4 text-left">
+                                  <select class="form-control" id="id_servicio" name="id_servicio" style="font-size: 12px;">
+                                    <option value="0">Seleccion...</option>';
+                                    $html.= $this->darAllServicios($_REQUEST['cod_solici']);
+                                    $html.='
+                                  </select>
+                                </div>
+                              </div>
+
+                              <div class="row mt-2 justify-content-center">
+                                <div class="col-12">
+                                 <textarea id="txt_observaciones" style="font-size: 12px; width: 100%; height: 60px;" rows="2" placeholder="Observaciones"></textarea>
+                                </div>
+                              </div>
+
+                              
+                            </form>
+                            <form method="POST" enctype="multipart/form-data" id="filesForm">
+                              <div class="row mt-1 justify-content-center" >
+                                <div class="col-12" >
+                                
+                                  <input id="archivo[]" name="archivo[]" accept=".png, .jpg, .jpeg, .tiff, .tif, .gif, .raw" type="file" data-toggle="tooltip" data-placement="top" title="Imagen png jpg jpeg tiff tif gif raw" style="font-size: 12px;" multiple>
+                                  <button type="button" onclick="subirArchivostmp()" class="btn btn-success btn-sm" style="font-size: 12px;">Cargar</button>
+                                </div>
+                              </div>
+                              <div class="row mt-1">
+                                <div class="col-md-12">
+                                  <table id="listararchivos" class="table table-hover">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">Archivo</th>
+                                        <th scope="col">Detalle</th>
+                                        <th scope="col">Accion</th>
+                                        
+                                      </tr>
+                                    </thead>
+                                    <tbody id="tbodyid">
+                                      
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </div>
+
+                              <div class="row mt-1">
+                                <div class="col-md-12 text-center">
+                                  <a href="#" class="small-box-footer btn btn-success btn-sm" onclick="subirArchivos()">Enviar</a>
+                                </div>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>';
               $html.='<div class="card border border-success" style="margin:15px;">
                         <div class="card-header color-heading text-align">
                           Informe de la solicitud
@@ -596,6 +687,9 @@
                               <a href="../satt_standa/asicar/inf_dashbo_asicar.php?cod_solici='.$_REQUEST['cod_solici'].'"class="small-box-footer btn btn-success btn-sm">Ver</a>
                             </div>
                           </div>
+
+                          
+
                         </div>
                       </div>';
             }
@@ -824,13 +918,13 @@
                     <div class="card-body">
                       <div class="row">
                         <div class="offset-1 col-10">
-                          <label for="obs_cancelID" style="font-size:14px;">Motivo de cancelación:</label>
+                          <label for="obs_cancelID" style="font-size:14px;">Motivo de cancelaciï¿½n:</label>
                           <textarea class="form-control" id="obs_cancelID" name="obs_cancel" rows="3" disabled>'.$respuestas['obs_cancel'].'</textarea>
                         </div>
                       </div>
                       <div class="row mt-3">
                         <div class="offset-1 col-5">
-                          <label for="fec_cancelID" style="font-size:14px;">Fecha y hora de cancelación:</label>
+                          <label for="fec_cancelID" style="font-size:14px;">Fecha y hora de cancelaciï¿½n:</label>
                           <input class="form-control form-control-sm" id="fec_cancelID" name="fec_cancel" type="text" disabled value="'.$respuestas['fec_cancel'].'">
                         </div>
                         <div class="col-5">
@@ -856,7 +950,7 @@
           $respuestas = self::cleanArray($respuestas);
           $html='';
 
-          //Si el tipo de asistencia es acompañamiento en carretera trae el servicio con los datos de este
+          //Si el tipo de asistencia es acompaï¿½amiento en carretera trae el servicio con los datos de este
           if($this->tipSolicitud($num_solici,1)==CON_SOLICI_ACOMPA){
             $html.=$this->getServicTrayect($num_solici);
           }
@@ -1063,26 +1157,32 @@
         }
 
         function saveNewService(){
-          $cod_solici= $_REQUEST['cod_solici'];
+          $cod_solici = $_REQUEST['cod_solici'];;
           $cod_servic= $_REQUEST['cod_servic'];
+          $user=$_SESSION['datos_usuario']['cod_usuari'];
+          
           $info=[];
           $des_servic = $this->darDescripServicio($cod_servic);
           $cos_servic = $this->darCostoServicio($cod_servic);
+          
 
-          $sql="INSERT INTO tab_servic_solasi(
-            cod_solasi,cod_servic,des_servic,
-            tip_tarifa,can_servic,val_servic,
-            usr_creaci,fec_creaci
-          )
-          VALUES(
-            '".$cod_solici."','".$cod_servic."','".$des_servic."',
-            'diurna',1,'".$cos_servic."',
-            '".$_SESSION['datos_usuario']['cod_usuari']."',NOW()
-          );";
+          $sql="INSERT INTO `tab_servic_solasi`(`cod_solasi`, 
+                                                `cod_servic`, 
+                                                `des_servic`, 
+                                                `tip_tarifa`, 
+                                                `can_servic`,
+                                                `val_servic`, 
+                                                `usr_creaci`, 
+                                                `fec_creaci`)
+                                  VALUES ($cod_solici, $cod_servic, '$des_servic',
+                                         'diurna','1', '$cos_servic', '$user', NOW())";
+          
 
           $query = new Consulta($sql, self::$conexion);
           if($query){
             $info['status']=200; 
+            $info['solicitud']=$cod_solici;
+            //$info['selectmulti']=datselect($cod_solici);
           }else{
             $info['status']=100; 
           } 
@@ -1116,11 +1216,34 @@
         }
 
         function darServicios($cod_tipasi){
-          $sql="SELECT a.id,a.abr_servic FROM ".BASE_DATOS.".tab_servic_asicar a WHERE a.tip_asicar = '$cod_tipasi' AND a.ind_estado = 1";
+          $sql="SELECT a.id,a.abr_servic FROM ".BASE_DATOS.".tab_servic_asicar a WHERE a.ind_estado = 1";
           $query = new Consulta($sql, self::$conexion);
           $respuestas = $query -> ret_matrix('a');
           $respuestas = self::cleanArray($respuestas);
           return $respuestas;
+        }
+
+        function darAllServicios($num_solici){
+          $sql="SELECT a.id, a.des_servic, a.cod_servic,
+            a.tip_tarifa, a.val_servic, a.can_servic,
+            b.nom_campox,
+            IF(a.tip_tarifa = 'diurna', b.tar_diurna,b.tar_noctur) as 'tar_indivi'
+            FROM ".BASE_DATOS.".tab_servic_solasi a 
+            INNER JOIN ".BASE_DATOS.".tab_servic_asicar b ON a.cod_servic = b.id
+            WHERE a.cod_solasi = '$num_solici'";
+          
+          $query = new Consulta($sql, self::$conexion);
+          $respuestas = $query -> ret_matrix('a');
+          $respuestas = self::cleanArray($respuestas);
+          
+          $htmlservi='';
+          foreach ($respuestas as $respuesta){
+            $htmlservi .= ' <option value='.$respuesta['id'].'>'.utf8_decode($respuesta['des_servic']).'</option>';
+                        
+            }
+          $prueba=" <option value=1>aqui</option>";
+          return $htmlservi;
+          //echo json_encode($htmlservi);
         }
 
         function darDescripServicio($cod_servic){
@@ -1272,11 +1395,11 @@
 
 
         /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciï¿½n
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que será analizado por la función
+           *  \param: $arrau => Arreglo que serï¿½ analizado por la funciï¿½n
            *  \return: array
         */
         function cleanArray($array){
@@ -1320,7 +1443,7 @@
                 $temporal = $fichero['tmp_name'];
                 $ext = explode(".", $nombre_archivo);
                 $nombre = $ruta.$num_solici.".".end($ext);
-                //Ojo Revisar la ubicación
+                //Ojo Revisar la ubicaciï¿½n
                 if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                     $return['status'] = 500;
                     $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1369,7 +1492,7 @@
                     }    
                 echo json_encode($return);
                 }catch (Exception $e) {
-                  echo 'Excepción registrar: ',  $e->getMessage(), "\n";
+                  echo 'Excepciï¿½n registrar: ',  $e->getMessage(), "\n";
                 }
         }
 
@@ -1388,7 +1511,7 @@
                 $temporal = $fichero['tmp_name'];
                 $ext = explode(".", $nombre_archivo);
                 $nombre = $ruta.$num_solici.".".end($ext);
-                //Ojo Revisar la ubicación
+                //Ojo Revisar la ubicaciï¿½n
                 if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                     $return['status'] = 500;
                     $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1438,7 +1561,7 @@
                     }    
                 echo json_encode($return);
                 }catch (Exception $e) {
-                  echo 'Excepción registrar: ',  $e->getMessage(), "\n";
+                  echo 'Excepciï¿½n registrar: ',  $e->getMessage(), "\n";
                 }
         }
 
@@ -1456,7 +1579,7 @@
             $temporal = $fichero['tmp_name'];
             $ext = explode(".", $nombre_archivo);
             $nombre = $ruta.$num_solici.".".end($ext);
-            //Ojo Revisar la ubicación
+            //Ojo Revisar la ubicaciï¿½n
             if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                 $return['status'] = 500;
                 $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1505,7 +1628,7 @@
                 }    
             echo json_encode($return);
             }catch (Exception $e) {
-              echo 'Excepción registrar: ',  $e->getMessage(), "\n";
+              echo 'Excepciï¿½n registrar: ',  $e->getMessage(), "\n";
             }
         }
 
@@ -1638,7 +1761,7 @@
               <meta name="x-apple-disable-message-reformatting">
               <meta http-equiv="X-UA-Compatible" content="IE=edge">
               <meta content="telephone=no" name="format-detection">
-              <title>Nuevo correo electrónico 2</title>
+              <title>Nuevo correo electrï¿½nico 2</title>
               <!--[if (mso 16)]><style type="text/css"> a {text-decoration: none;} </style><![endif]-->
               <!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]-->
               <style type="text/css">
@@ -1722,7 +1845,7 @@
                                         <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
                                           <tr style="border-collapse:collapse;">
                                             <td align="left" style="text-align: center; padding:0;Margin:0;padding-top:40px;">
-                                              <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud N°. '.$num_solici.' </b></p>
+                                              <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud Nï¿½. '.$num_solici.' </b></p>
                                             </td>
                                           </tr>
                                         </table>
@@ -1772,10 +1895,10 @@
                                           <tr style="border-collapse:collapse;">
                                             <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
-                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
-                                                '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la línea de servicio <strong>Asistencia Logística</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el. <br> <br class="colortext">Estado:
+                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Seï¿½or(a):
+                                                '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la lï¿½nea de servicio <strong>Asistencia Logï¿½stica</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el. <br> <br class="colortext">Estado:
                                                 <strong class="colortext">'.$estado.'</strong><br>
-                                                <br><strong style="color:#000">Observación:</strong> '.$observacion.'
+                                                <br><strong style="color:#000">Observaciï¿½n:</strong> '.$observacion.'
                                                 '.$complemento.'
                                                 <br>
                                                 <br class="colortext">Le estaremos informando el
@@ -1797,7 +1920,7 @@
                                           <tr style="border-collapse:collapse;">
                                             <td align="center" style="padding:0;Margin:0;padding-bottom:10px;">
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:10px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:10px;color:#333333;">
-                                                Copyright © '.date('Y').'. Todos Los Derechos Reservados. Diseñado y desarrollado por Grupo OET S.A.S.</p>
+                                                Copyright ï¿½ '.date('Y').'. Todos Los Derechos Reservados. Diseï¿½ado y desarrollado por Grupo OET S.A.S.</p>
                                             </td>
                                           </tr>
                                         </table>
@@ -1822,8 +1945,442 @@
             }
         }
 
+
+    function traerarchivos(){
+      
+      $files_post = $_FILES['archivo'];
+
+      $files = array();
+      $file_count = count($files_post['name']);
+      
+      $file_keys = array_keys($files_post);
+      
+      for ($i=0; $i < $file_count; $i++) 
+      { 
+        foreach ($file_keys as $key) 
+        {
+		      if($key=='name' || $key=='tmp_name'){
+			      $files[$i][$key] = $files_post[$key][$i];
+		      }
+		    }
+      }
+      if($files[0]['name']==""){
+        $files=array();
+        echo json_encode($files);
+        
+      }else{
+        echo json_encode($files);
+      }
+      
+      
     }
 
+
+    function almacenararchivos(){
+      switch ($_SERVER['SERVER_NAME']) {
+        case 'dev.intrared.net':
+            $rutdirectorio="/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
+          break;
+        case 'avansatgl.intrared.net':
+          $rutdirectorio="/var/www/html/ap/satt_faro/files/asicar";
+          break;
+      }
+      if($_FILES["archivo"]['tmp_name']!=null || $_FILES["archivo"]['tmp_name']!=""){
+
+           
+      $return = [];
+      $num_solici=$_REQUEST['cod_solici'];
+      $idestado=$_REQUEST['id_estado'];
+      $idservicio=$_REQUEST['id_servicio'];
+      $textservicio=$_REQUEST['id_textservi'];
+      $observacion=$_REQUEST['txt_observaciones'];
+      
+      $inftabla= explode(",",$_REQUEST['array']);
+      $user=$_SESSION['datos_usuario']['cod_usuari'];
+      $newinftabla=[];
+      $i=0;
+      $j=0;
+      $arraytmp=[];
+      foreach($inftabla as $key=>$value){
+        array_push($arraytmp, $value);
+        $i++;
+        if($i==3){
+          $i=0;
+          $newinftabla[$j]=$arraytmp;
+          $j++;
+          $arraytmp=[];
+        }  
+      }
+      
+       
+      $finalizar=false;
+      $numfiles=0;
+      foreach($_FILES["archivo"]['tmp_name'] as $key => $tmp_name)
+      {
+        
+        $namefiletmp = $num_solici."-".$idservicio."-".trim(substr(microtime(), 2, 8));
+        
+        
+        //Validamos que el archivo exista
+        if($_FILES["archivo"]["name"][$key]) {
+          $finalizar=true;
+         
+          $filename = $_FILES["archivo"]["name"][$key]; //Obtenemos el nombre original del archivo
+          $filenameori = $_FILES["archivo"]["name"][$key]; //Obtenemos el nombre original del archivo
+          $ext = explode(".", $filename);
+          $source = $_FILES["archivo"]["tmp_name"][$key]; //Obtenemos un nombre temporal del archivo
+          
+          //$directorio = "../../".NOM_URL_APLICA."/files/asicar"; //Declaramos un  variable con la ruta donde guardaremos los archivos
+          $directorio = "/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
+          //Validamos si la ruta de destino existe, en caso de no existir la creamos
+          if(!file_exists($directorio)){
+              mkdir($directorio, 0777) or die("No se puede crear el directorio de extracci&oacute;n");	
+          }
+          
+          $filename=$namefiletmp.".".$ext[1];
+          $dir=opendir($directorio); //Abrimos el directorio de destino
+          $target_path = $directorio.'/'.$filename; //Indicamos la ruta de destino, asi como el nombre del archivo
+            
+         $copiararchivo=false;       
+          $totarchivos=count($newinftabla);
+          $descriparchi="";
+          for($t=0;$t<$totarchivos;$t++){
+            if($newinftabla[$t][0]==$filenameori){
+              $copiararchivo=true;
+              $descriparchi=$newinftabla[$t][1];
+            }
+          }
+                   
+          //Movemos y validamos que el archivo se haya cargado correctamente
+          //El primer campo es el origen y el segundo el destino
+          if($copiararchivo){
+
+            if(move_uploaded_file($source, $target_path)) {	
+              $sqlbit="INSERT INTO ".BASE_DATOS.".tab_seguim_solasi(
+                cod_solasi, ind_estado, obs_detall,
+                usr_creaci, fec_creaci
+              ) 
+              VALUES 
+                (
+                  '".$num_solici."', '$idestado', '".$observacion."',
+                  '".$user."', NOW()
+                )";
+              $query = new Consulta($sqlbit, self::$conexion);
+
+              $sqlmax="SELECT MAX(id) AS id FROM ".BASE_DATOS.".tab_seguim_solasi";
+            $sqlsqlmax = new Consulta($sqlmax, self::$conexion);
+            $datos = $sqlsqlmax->ret_matriz('a');
+            $datos = self::cleanArray($datos);
+            foreach($datos as $dato){
+                $id = $dato[0];
+            }
+            
+              $return['estado']="ok";
+              $return['bitacora']="ok";
+            
+
+            $sql="INSERT INTO ".BASE_DATOS.".`tab_asiste_eviden`(`cod_solici`, `cod_servic`, `nam_archi1`, `nam_archi2`, `des_archiv`,  `des_arcgen`, `cod_solasi`, `usu_creaci`)
+               VALUES ($num_solici, $idservicio, '$filename', '$filenameori', '$descriparchi', '$observacion', '$id', '$user')";
+            $query = new Consulta($sql, self::$conexion);
+            if($idestado=='5'){
+              $sql="UPDATE ".BASE_DATOS.".tab_asiste_carret SET 
+                est_solici='$idestado',
+                `usu_modifi`='$user',
+                `fec_modifi`=NOW()
+                WHERE id=$num_solici";
+              $query = new Consulta($sql, self::$conexion);  
+            }
+                      
+            $numfiles=$numfiles + 1;
+            $return['estado']="ok";
+            $return['archivos']="ok";
+            $return['solicitud']=$num_solici;
+            $return['proximo']=$idestado;
+            } else {	
+              $return['estado']="fallo";
+            }
+            
+            
+          }
+          
+          
+          
+
+			    closedir($dir); //Cerramos el directorio de destino
+		    }
+	    }
+      
+      
+      if($finalizar==false){
+        
+        if($idestado=='5'){
+          $sql="UPDATE ".BASE_DATOS.".tab_asiste_carret SET 
+            est_solici='$idestado',
+            `usu_modifi`='$user',
+            `fec_modifi`=NOW()
+            WHERE id=$num_solici";
+          $query = new Consulta($sql, self::$conexion);  
+        }
+
+        $return['estado']="ok";
+        $return['archivos']="ok";
+        $return['solicitud']=$num_solici;
+        $return['proximo']='5';
+
+      }
+
+      self::enviarCorreo2($num_solici,$idestado,$observacion, $numfiles, $textservicio);
+        $json = json_encode($return);
+      echo $json;
+      
+      
+      }
+    } 
+
+    function datselect(){
+      $num_solici=$_REQUEST['cod_solici'];
+      $sql="SELECT a.id, a.des_servic, a.cod_servic,
+            a.tip_tarifa, a.val_servic, a.can_servic,
+            b.nom_campox,
+            IF(a.tip_tarifa = 'diurna', b.tar_diurna,b.tar_noctur) as 'tar_indivi'
+            FROM ".BASE_DATOS.".tab_servic_solasi a 
+            INNER JOIN ".BASE_DATOS.".tab_servic_asicar b ON a.cod_servic = b.id
+            WHERE a.cod_solasi = '$num_solici'";
+          
+          $query = new Consulta($sql, self::$conexion);
+          $respuestas = $query -> ret_matrix('a');
+          
+          
+          echo  json_encode($respuestas);
+
+    }
+
+
+    private function enviarCorreo2($num_solici,$cod_estado,$observacion,$numfile,$textservicio) {
+      $logo = "https://avansatgl.intrared.net/ap/satt_standa/imagenes/asistencia.png";
+      $informacion = $this->darInformacion($num_solici);
+      $nom_asiste = $this->tipSolicitud($num_solici);
+      $fec_actual = date("Y-m-d H:i:s"); 
+
+      $correos = $this->darCorreos($num_solici);  
+      
+      
+      //$correos ="oscesteban@hotmail.com";
+  
+      $estado = $this->darNombreEstados($cod_estado);
+      //$to = $correo;
+      //$to = "oscesteban@gmail.com";
+      $nom_solici = $informacion['nom_solici'];
+      $nom_client = $this->getNombreTransportadora($informacion['cod_client']);
+      $complemento='';
+
+      $subject = "NUEVO ESTADO DE SOLICITU ".strtoupper($nom_asiste);
+      $headers = "MIME-Version: 1.0" . "\r\n";
+      $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+      $headers .= "From: asistencias@faro.com";
+      $message = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+      <html style="width:100%;font-family:arial, helvetica neue, helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;">
+      <head>
+        <meta charset="UTF-8">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <meta name="x-apple-disable-message-reformatting">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta content="telephone=no" name="format-detection">
+        <title>Nuevo correo electronico </title>
+        <!--[if (mso 16)]><style type="text/css"> a {text-decoration: none;} </style><![endif]-->
+        <!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]-->
+        <style type="text/css">
+          @media only screen and (max-width:600px) 
+          { p, ul li, ol li, a 
+          { font-size: 16px!important;
+           line-height: 150%!important 
+          } 
+          h1 { font-size: 30px!important; text-align: center; line-height: 120%!important } 
+          h2 { font-size: 26px!important; text-align: center; line-height: 120%!important } 
+          h3 { font-size: 20px!important; text-align: center; line-height: 120%!important } 
+          h1 a { font-size: 30px!important } h2 a { font-size: 26px!important } 
+          h3 a { font-size: 20px!important } 
+          .es-menu td a { font-size: 16px!important } 
+          .es-header-body p, .es-header-body ul li, .es-header-body ol li, .es-header-body a { font-size: 16px!important } 
+          .es-footer-body p, .es-footer-body ul li, .es-footer-body ol li, .es-footer-body a { font-size: 16px!important } 
+          .es-infoblock p, .es-infoblock ul li, .es-infoblock ol li, .es-infoblock a { font-size: 12px!important } 
+          *[class="gmail-fix"] { display: none!important }
+           .es-m-txt-c, .es-m-txt-c h1, .es-m-txt-c h2, .es-m-txt-c h3 { text-align: center!important } 
+           .es-m-txt-r, .es-m-txt-r h1, .es-m-txt-r h2, .es-m-txt-r h3 { text-align: right!important } 
+           .es-m-txt-l, .es-m-txt-l h1, .es-m-txt-l h2, .es-m-txt-l h3 { text-align: left!important } 
+           .es-m-txt-r img, .es-m-txt-c img, .es-m-txt-l img { display: inline!important } 
+           .es-button-border { display: block!important } 
+           a.es-button { font-size: 20px!important; display: block!important; border-left-width: 0px!important; border-right-width: 0px!important } 
+           .es-btn-fw { border-width: 10px 0px!important; text-align: center!important } 
+           .es-adaptive table, .es-btn-fw, .es-btn-fw-brdr, .es-left, .es-right { width: 100%!important } 
+           .es-content table, .es-header table, .es-footer table, .es-content, .es-footer, .es-header { width: 100%!important; max-width: 600px!important } 
+           .es-adapt-td { display: block!important; width: 100%!important }
+           .adapt-img { width: 100%!important; height: auto!important } 
+           .es-m-p0 { padding: 0px!important } 
+           .es-m-p0r { padding-right: 0px!important } 
+           .es-m-p0l { padding-left: 0px!important } 
+           .es-m-p0t { padding-top: 0px!important } 
+           .es-m-p0b { padding-bottom: 0!important } 
+           .es-m-p20b { padding-bottom: 20px!important } 
+           .es-mobile-hidden, .es-hidden { display: none!important } 
+           .es-desk-hidden { display: table-row!important; width: auto!important; overflow: visible!important; float: none!important; max-height: inherit!important; line-height: inherit!important } 
+           .es-desk-menu-hidden { display: table-cell!important } 
+           table.es-table-not-adapt, .esd-block-html table { width: auto!important } 
+           table.es-social { display: inline-block!important } 
+           table.es-social td { display: inline-block!important } } 
+           #outlook a { padding: 0; } 
+           .ExternalClass { width: 100%; } 
+           .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div { line-height: 100%; } 
+           .es-button { mso-style-priority: 100!important; text-decoration: none!important; } 
+           a[x-apple-data-detectors] { color: inherit!important; text-decoration: none!important; font-size: inherit!important; font-family: inherit!important; font-weight: inherit!important; line-height: inherit!important; } 
+           .es-desk-hidden { display: none; float: left; overflow: hidden; width: 0; max-height: 0; line-height: 0; mso-hide: all; } 
+           .colortext{ color:#000; }
+        </style>
+      </head>
+      
+      <body style="width:100%;font-family:arial, helvetica neue, helvetica, sans-serif;-webkit-text-size-adjust:100%;-ms-text-size-adjust:100%;padding:0;Margin:0;">
+        <div class="es-wrapper-color" style="background-color:#FFFFFF;">
+          <!--[if gte mso 9]><v:background xmlns:v="urn:schemas-microsoft-com:vml" fill="t"> <v:fill type="tile" color="#ffffff" origin="0.5, 0" position="0.5,0"></v:fill> </v:background><![endif]-->
+          <table class="es-wrapper" width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;padding:0;Margin:0;width:100%;height:100%;background-repeat:repeat;background-position:center top;">
+            <tr style="border-collapse:collapse;">
+              <td valign="top" style="padding:0;Margin:0;">
+                <table cellpadding="0" cellspacing="0" class="es-content" align="center" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;table-layout:fixed !important;width:100%;">
+                  <tr style="color:#ff9800; border-collapse:collapse;">
+                    <td align="center" style="padding:0;Margin:0;">
+                      <table bgcolor="#efefef" class="es-content-body" align="center" cellpadding="0" cellspacing="0" width="850" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;background-color:#FFFFFF;border-left:1px solid #808080;border-right:1px solid #808080;border-top:1px solid #808080;border-bottom:1px solid #808080;">
+                        <tr style="border-collapse:collapse;">
+                          <td align="left" style="Margin:0;padding-bottom:5px;padding-top:20px;padding-left:40px;padding-right:40px;">
+                            <!--[if mso]><table width="518" cellpadding="0" cellspacing="0"><tr><td width="154" valign="top"><![endif]-->
+                            <table cellpadding="0" cellspacing="0" class="es-left" align="left" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;float:left;">
+                              <tr style="border-collapse:collapse;">
+                                <td width="154" class="es-m-p0r es-m-p20b" valign="top" align="center" style="padding:0;Margin:0;">
+                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                                    <tr style="border-collapse:collapse;">
+                                      <td align="center" style="padding:0;Margin:0;font-size:0px;"><img class="adapt-img" src="'.$logo.'" alt style="display:block;border:0;outline:none;text-decoration:none;-ms-interpolation-mode:bicubic;"
+                                          width="250"></td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                            <!--[if mso]></td><td width="20"></td><td width="344" valign="top"><![endif]-->
+                            <table cellpadding="0" cellspacing="0" align="right" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                              <tr style="border-collapse:collapse;">
+                                <td width="344" align="left" style="padding:0;Margin:0;">
+                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                                    <tr style="border-collapse:collapse;">
+                                      <td align="left" style="text-align: center; padding:0;Margin:0;padding-top:40px;">
+                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud No. '.$num_solici.' </b></p>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                            <!--[if mso]></td></tr></table><![endif]-->
+                          </td>
+                        </tr>
+                        <tr style="border-collapse:collapse;">
+                          <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
+                            <table width="100%" cellspacing="0" cellpadding="0" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                              <tr style="border-collapse:collapse;">
+                                <td class="es-m-p0r" width="558" valign="top" align="center" style="padding:0;Margin:0;">
+                                  <table width="100%" cellspacing="0" cellpadding="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                                    <tr style="border-collapse:collapse;">
+                                      <td align="center" style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:20px;padding-right:20px;font-size:0;">
+                                        <table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                                          <tr style="border-collapse:collapse;">
+                                            <td style="padding:0;Margin:0px;border-bottom:6px solid #ff9800;background:none;height:1px;width:100%;margin:0px;"></td>
+                                          </tr>
+                                        </table>
+                                      </td>
+                                    </tr>
+                                    <tr style="border-collapse:collapse;">
+                                      <td align="center" style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:20px;padding-right:20px;font-size:0;">
+                                        <table border="0" width="100%" height="100%" cellpadding="0" cellspacing="0" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                                          <tr style="border-collapse:collapse;">
+                                            <td style="padding:0;Margin:0px;border-bottom:10px solid #ff9800;background:none;height:1px;width:100%;margin:0px;"></td>
+                                          </tr>
+                                        </table>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                        <tr style="border-collapse:collapse;">
+                          <td align="left" style="Margin:0;padding-top:5px;padding-bottom:5px;padding-left:40px;padding-right:40px;">
+                            <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                              <tr style="border-collapse:collapse;">
+                                <td width="518" align="center" valign="top" style="padding:0;Margin:0;">
+                                  <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;border:2px double #ff9800;"
+                                    role="presentation">
+                                    <tr style="border-collapse:collapse;">
+                                      <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
+                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
+                                          <br><strong class="colortext">Estado de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Se&ntildeor(a):
+                                          '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la linea de servicio <strong>Asistencia Logistica</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el. <br> <br class="colortext">Estado:
+                                          <strong class="colortext">'.$estado.'</strong><br>
+                                          <br><strong style="color:#000">Observacion:</strong> '.$observacion.'
+                                          '.$complemento.'
+                                          <br>
+                                          <br class="colortext">Le estaremos informando el
+                                          estado de su solicitud, cabe aclarar que nuestro tiempo de respuesta es de aproximadamente 45 minutos o antes. <br><br> </p>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                        <tr style="border-collapse:collapse;">
+                          <td align="left" style="padding:0;Margin:0;">
+                            <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                              <tr style="border-collapse:collapse;">
+                                <td width="598" align="center" valign="top" style="padding:0;Margin:0;">
+                                  <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
+                                    <tr style="border-collapse:collapse;">
+                                      <td align="center" style="padding:0;Margin:0;padding-bottom:10px;">
+                                        <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:10px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:10px;color:#333333;">
+                                          Copyright  '.date('Y').'. Todos Los Derechos Reservados. Dise&ntildeado y desarrollado por Grupo OET S.A.S.</p>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </body>
+      
+      </html>';
+      
+      $emailall="";
+      foreach($correos as $correo){                                      
+        $emailall .=$correo.",";
+      }
+      
+         mail($emailall, $subject, $message, $headers);
+      
+      
+  }
+
+
+
+
+  
+  }
     new AjaxGestioAsiscar();
     
 ?>
