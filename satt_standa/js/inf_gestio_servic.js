@@ -165,7 +165,8 @@ function addService() {
 
 function saveNewService() {
     var cod_servic = $("#cod_servicAdd").val();
-    var cod_solici = $("#cod_soliciID").val();
+    var cod_solici = $("#idnumservicio").val();
+    
     try {
         //Get data
         data = {
@@ -179,19 +180,48 @@ function saveNewService() {
             data,
             async: false,
             success: function(data) {
-                if (data['status'] == 200) {
-                    Swal.fire(
-                        'Nuevo Servicio Añadido',
-                        'El servicio ha sido registrado',
-                        'success'
-                    )
-                    darServiciosPorSolicitud();
-                }
+                
+                    if (data['status'] == 200){
+                        darselecthtml();
+                         
+                    }
+                    
+                
             }
         });
     } catch (error) {
         console.log(error);
     }
+}
+
+function darselecthtml(){
+    var cod_solici = $("#idnumservicio").val();
+    data = {
+        cod_solici
+    }
+    $.ajax({
+        url: '../satt_standa/asicar/ajax_gestio_asicar.php?opcion=20',
+        dataType: 'json',
+        type: "post",
+        data,
+        async: false,
+        success: function(data) {
+            $("#id_servicio").empty();
+            var tamaarray=data.length;
+            $('#id_servicio').append("<option value='0'>Seleccion...</option>");
+            for(i=0;i<tamaarray;i++){
+              $('#id_servicio').append("<option value='" + data[i]['id'] + "'>" + data[i]['des_servic'] + " </option>");
+            } 
+            Swal.fire(
+                'Nuevo Servicio Añadido',
+                'El servicio ha sido registrado',
+                'success'
+            )
+            darServiciosPorSolicitud();
+        }
+    });
+    
+
 }
 
 function darServiciosPorSolicitud() {
@@ -343,4 +373,6 @@ function saveEditTrayect() {
     } else {
         alert("complete los datos");
     }
+
 }
+
