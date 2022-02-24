@@ -3,7 +3,7 @@
 	NOMBRE:   DespacEstibas
 	FUNCION:  Muestra las estadisticas en control de seguiemiento de los diferentes tipos de asistencia 
 	FECHA DE MODIFICACION: 04/06/2020
-	CREADO POR: Ing. Cristian Andrés Torres
+	CREADO POR: Ing. Cristian Andres Torres
 	MODIFICADO 
 	****************************************************************************/
 	
@@ -26,9 +26,10 @@
 
         /*! \fn: styles
 		   *  \brief: incluye todos los archivos necesarios para los estilos
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andres Torres
 		   *  \date: 04-06-2020
-		   *  \date modified: dd/mm/aaaa
+       *  \Modified: Ing. Oscar Bocanegra O'.
+		   *  \date modified: 04/02/2021
 		   *  \param: 
 		   *  \return: html
 		*/
@@ -65,9 +66,10 @@
 
         /*! \fn: scripts
 		   *  \brief: incluye todos los archivos necesarios para los eeventos js
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andres Torres
 		   *  \date: 04-06-2020
-		   *  \date modified: dd/mm/aaaa
+		   *  \Modified: Ing. Oscar Bocanegra O'.
+		   *  \date modified: 04/02/2021
 		   *  \param: 
 		   *  \return: html
 		*/
@@ -114,9 +116,10 @@
         
         /*! \fn: filtros
 		   *  \brief: Crea el html de las tablas filtros y segmentos del modulo
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andres Torres
 		   *  \date: 04-06-2020
-		   *  \date modified: dd/mm/aaaa
+		   *  \Modified: Ing. Oscar Bocanegra O'.
+		   *  \date modified: 04/02/2021
 		   *  \param: 
 		   *  \return: html
 		*/
@@ -159,7 +162,7 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-3 text-right">
-                                                        <label>Número de Solicitud:</label>
+                                                        <label>Numero de Solicitud:</label>
                                                     </div>
                                                     <div class="col-3">
                                                         <input type="text" id="num_soliciID" name="num_solici">
@@ -268,7 +271,7 @@
             return utf8_encode($html);
         }
 
-        //* FUNCIONES QUE RETORNAN CADA UNA DE LAS VISTAS SEGUN LA PESTAÑA
+        //* FUNCIONES QUE RETORNAN CADA UNA DE LAS VISTAS SEGUN LA PESTA�A
 
         private function vGeneral(){
             $html='<div class="tab-pane fade show active p-3" id="pills-general" role="tabpanel" aria-labelledby="pills-general-tab">
@@ -283,7 +286,7 @@
                         <th>%</th>
                         <th>POR APROBAR CLIENTE</th>
                         <th>%</th>
-                        <th>ASIGNACIÓN A PRO</th>
+                        <th>ASIGNACI�N A PRO</th>
                         <th>%</th>
                         <th>EN PROCESO</th>
                         <th>%</th>
@@ -311,7 +314,7 @@
                         <th>%</th>
                         <th>POR APROBAR CL</th>
                         <th>%</th>
-                        <th>ASIGNACIÓN DE PRO</th>
+                        <th>ASIGNACI�N DE PRO</th>
                         <th>%</th>
                         <th>EN PROCESO</th>
                         <th>%</th>
@@ -463,6 +466,7 @@ return $html;
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 id="title-modal" class="modal-title"><center>Modal Header</center></h5>
+                    <input type="hidden" id="idnumservicio" value="">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                   </div>
                   <div class="modal-body">
@@ -495,7 +499,7 @@ return $html;
                 <input class="form-control form-control-sm" type="email" placeholder="Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
               </div>
               <div class="offset-1 col-4">
-              <input class="form-control form-control-sm" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
+              <input class="form-control form-control-sm" type="number" placeholder="Tel�fono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
               </div>
             </div>
 
@@ -556,7 +560,7 @@ return $html;
 
           <div class="card text-center" style="margin:15px;">
             <div class="card-header color-heading">
-              Datos del Vehículo
+              Datos del Vehiculo
             </div>
           <div class="card-body">
 
