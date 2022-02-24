@@ -230,7 +230,7 @@ function ShowForm(cod_transp) {
   try {
 
     nom_transp = cod_transp.split('-')[1].trim();
-    cod_transp = cod_transp.split('-')[0].trim();
+    cod_transp = cod_transp.split('-')[0].trim(); 
     var standa = $("#standaID").val();
     $("#cod_transpID").val(cod_transp);
     $("#resultID").css({
@@ -653,58 +653,103 @@ function PopupVehiculos() {
   }
 }
 
-function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc, num_modelo, num_config, cod_tenedo, cod_conduc, nom_tenedo, nom_conduc, cod_propie, nom_propie, cod_opegps, usr_gpsxxx, clv_gpsxxx, idx_gpsxxx) {
+function SetVehiculo(num_placax, nom_marcax, nom_lineax, nom_colorx, nom_carroc, num_modelo, num_config, cod_tenedo, cod_conduc, nom_tenedo,
+  nom_conduc, cod_propie, nom_propie, cod_opegps, usr_gpsxxx, clv_gpsxxx, idx_gpsxxx, ind_usaidx) {
   try {
-    //$("#num_placaxID").focus();
-    var cod_transp = $("#cod_transpID").val();
-    $("#num_placaxID").val(num_placax);
-    var submit = $("#submitID").val();
-    if (submit == 1) {
-      document.form_insert.submit();
-    }
+      //$("#num_placaxID").focus();
+      var cod_transp = $("#cod_transpID").val();
+      $("#num_placaxID").val(num_placax);
+      var submit = $("#submitID").val();
+      if (submit == 1) {
+          document.form_insert.submit();
+      }
+      //$("#cod_opegpsID").attr("disabled", true);
+      //$("#usr_gpsxxxID").attr("readonly", "readonly");
+      //$("#gps_idxxxxID").attr("readonly", "readonly");
+      //$("#clv_gpsxxxID").attr("readonly", "readonly");
 
-    $("#cod_opegpsID").val(cod_opegps);
-    $("#usr_gpsxxxID").val(usr_gpsxxx);
-    $("#clv_gpsxxxID").val(clv_gpsxxx);
-    $("#gps_idxxxxID").val(idx_gpsxxx);
+      $("#cod_opegpsID").val(cod_opegps);
+      $("#usr_gpsxxxID").val(usr_gpsxxx);
+      $("#clv_gpsxxxID").val(clv_gpsxxx);
+      $("#gps_idxxxxID").val(idx_gpsxxx);
 
-    $("#des_marcaxID").html("<b>Marca:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_marcaxID").html("&nbsp;" + nom_marcax);
-    $("#des_colorxID").html("<b>Color:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_colorxID").html("&nbsp;" + nom_colorx);
-    $("#des_carrocID").html("<b>Carrocer&iacute;a:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_carrocID").html("&nbsp;" + nom_carroc);
-    $("#des_modeloID").html("<b>Modelo:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_modeloID").html("&nbsp;" + num_modelo);
-    $("#des_configID").html("<b>Configuraci&oacute;n:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_configID").html("&nbsp;" + num_config);
-    $("#des_codproID").html("<b>Documento Propietario:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_codproID").html("&nbsp;" + cod_propie);
-    $("#des_nomproID").html("<b>Nombre Propietario:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_nomproID").html("&nbsp;" + nom_propie);
-    $("#des_codtenID").html("<b>Documento Tenedor:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_codtenID").html("&nbsp;" + cod_tenedo);
-    $("#des_nomtenID").html("<b>Nombre Tenedor:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_nomtenID").html("&nbsp;" + nom_tenedo);
-    //$("#lab_conducID").html( "<b>Nota:</b> Si desea cambiar el conductor para el despacho por favor haga doble click sobre el campo." );
+      if (ind_usaidx == 'S') {
+          $("#gps_idxxxxID").attr("validate", "alpha");
+          $("#gps_idxxxxID").attr("obl", "1");
+          $("#gps_idxxxxID").attr("minlength", "1");
+          $("#gps_idxxxxID").attr("maxlength", "15");
+      } else {
+          $("#gps_idxxxxID").removeAttr("validate");
+          $("#gps_idxxxxID").removeAttr("obl");
+          $("#gps_idxxxxID").removeAttr("minlength");
+          $("#gps_idxxxxID").removeAttr("maxlength");
+      }
 
-    $("#des_codconID").html("<b>* Documento Conductor:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_codconID").html('<input type="text" value="' + cod_conduc + '" name="cod_conduc" id="cod_conducID" obl="1" minlength="6" maxlength="10" validate="numero" onchange="ValidateExistConduc( this.value );" size="15" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" />');
-    $("#des_nomconID").html("<b>Nombre Conductor:&nbsp;&nbsp;&nbsp;</b>");
-    $("#nom_nomconID").html("&nbsp;" + nom_conduc);
-    var expr = /[a-zA-Z]/;
-    if (num_config.match(expr)) {
-      $("#des_numremID").html("<b>* Remolque:&nbsp;&nbsp;&nbsp;</b>");
-      $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" obl="1" minlength="4" validate="alpha" maxlength="7" size="10" onfocus="this.className=\'campo_texto_on\'" onchange="getRemolq($(this), '+ cod_transp +',1);"> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupRemolques()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled">');
-    } else {
-      $("#des_numremID").html("&nbsp;&nbsp;&nbsp;");
-      $("#nom_numremID").html('<input type="hidden" name="cod_remolq" id="cod_remolqID" value="not" maxlenght="7" size="10">');
-    }
-    $("#PopUpID").dialog('close');
+      $("#des_marcaxID").html("<b>Marca:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_marcaxID").html("&nbsp;" + nom_marcax);
+      $("#des_colorxID").html("<b>Color:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_colorxID").html("&nbsp;" + nom_colorx);
+      $("#des_carrocID").html("<b>Carrocer&iacute;a:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_carrocID").html("&nbsp;" + nom_carroc);
+      $("#des_modeloID").html("<b>Modelo:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_modeloID").html("&nbsp;" + num_modelo);
+      $("#des_configID").html("<b>Configuraci&oacute;n:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_configID").html("&nbsp;" + num_config);
+      $("#des_codproID").html("<b>Documento Propietario:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_codproID").html("&nbsp;" + cod_propie);
+      $("#des_nomproID").html("<b>Nombre Propietario:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_nomproID").html("&nbsp;" + nom_propie);
+      $("#des_codtenID").html("<b>Documento Tenedor:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_codtenID").html("&nbsp;" + cod_tenedo);
+      $("#des_nomtenID").html("<b>Nombre Tenedor:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_nomtenID").html("&nbsp;" + nom_tenedo);
+      //$("#lab_conducID").html( "<b>Nota:</b> Si desea cambiar el conductor para el despacho por favor haga doble click sobre el campo." );
+
+      $("#des_codconID").html("<b>* Documento Conductor:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_codconID").html('<input type="text" value="' + cod_conduc + '" name="cod_conduc" id="cod_conducID" obl="1" minlength="6" maxlength="10" validate="numero" onchange="ValidateExistConduc( this.value );" size="15" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" />');
+      $("#des_nomconID").html("<b>Nombre Conductor:&nbsp;&nbsp;&nbsp;</b>");
+      $("#nom_nomconID").html("&nbsp;" + nom_conduc);
+      var expr = /[a-zA-Z]/;
+      if (num_config.match(expr)) {
+          $("#des_numremID").html("<b>* Remolque:&nbsp;&nbsp;&nbsp;</b>");
+          $("#nom_numremID").html('<input type="text" name="cod_remolq" id="cod_remolqID" obl="1" minlength="4" validate="alpha" maxlength="7" size="10" onfocus="this.className=\'campo_texto_on\'" onchange="getRemolq($(this), ' + cod_transp + ',1);"> <img height="18px" width="18px" style="cursor:pointer" calss="popupButton2" id="Pnum_placaxID" onclick="PopupRemolques()" src="../satt_standa/imagenes/find.png" title="Buscar" disabled="disabled">');
+      } else {
+          $("#des_numremID").html("&nbsp;&nbsp;&nbsp;");
+          $("#nom_numremID").html('<input type="hidden" name="cod_remolq" id="cod_remolqID" value="not" maxlenght="7" size="10">');
+      }
+      $("#PopUpID").dialog('close');
   } catch (e) {
-    console.log(e.message);
-    return false;
+      console.log(e.message);
+      return false;
   }
+}
+
+
+function habIdOperaGps(elemento) {
+  var standa = $("#standaID").val();
+  var cod_opegps = $(elemento).val();
+  $.ajax({
+      type: "POST",
+      url: "../" + standa + "/califi/class_califi_califi.php",
+      data: "Ajax=on&Option=IndUsaIDGPS&standa=" + standa + "&cod_opegps=" + cod_opegps,
+      async: true,
+      success: function(data) {
+          if (data != '') {
+              var datos = $.parseJSON(data);
+              if (datos[0][0] == 'S') {
+                  $("#gps_idxxxxID").attr("validate", "text");
+                  $("#gps_idxxxxID").attr("obl", "1");
+                  $("#gps_idxxxxID").attr("minlength", "1");
+                  $("#gps_idxxxxID").attr("maxlength", "15");
+              } else {
+                  $("#gps_idxxxxID").removeAttr("validate");
+                  $("#gps_idxxxxID").removeAttr("obl");
+                  $("#gps_idxxxxID").removeAttr("minlength");
+                  $("#gps_idxxxxID").removeAttr("maxlength");
+              }
+          }
+      }
+  });
 }
 
 function ValidateExistConduc(num_conduc) {

@@ -118,6 +118,7 @@ function opciontabla(){
         htmldat +='<th>Hora Inicial</th>';
         htmldat +='<th>Hora Final</th>';
         htmldat +='<th>Usuario</th>';
+        htmldat +='<th>Status</th>';
         htmldat +='<th>fecha de M</th>';
         htmldat +='</tr></thead>';
         htmldat +='<tbody><tr id="resultado_info_registradas">';

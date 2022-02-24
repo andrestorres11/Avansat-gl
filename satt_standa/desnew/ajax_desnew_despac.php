@@ -203,7 +203,7 @@ class AjaxInsertDespacho
   {
     
     $query = "SELECT a.cod_operad, a.nom_operad
-                FROM ".CENTRAL.".tab_genera_opegps a
+                FROM ".BASE_DATOS.".tab_genera_opegps a
                WHERE a.ind_estado = '1'";
     
     if( $cod_opegps != NULL && $cod_opegps != '' )
@@ -673,7 +673,7 @@ class AjaxInsertDespacho
     
     $query .= " WHERE cod_tipdoc != 'N'";
     
-    $consulta = new Consulta($query, $this->conexion);
+    $consulta = new Consulta($query, $this->conexion);  
     $tipdoc  = $consulta->ret_matriz();
     
     $mHtml .= '<tr>';
@@ -1575,7 +1575,7 @@ class AjaxInsertDespacho
     
     $mHtml .= '<tr>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">Operador GPS:&nbsp;&nbsp;&nbsp;</td>';
-      $mHtml .= '<td align="left" width="30%" class="label-tr">'.$this->GenerateSelect( $opegps, 'cod_opegps', NULL, NULL, NULL ).'</td>';
+      $mHtml .= '<td align="left" width="30%" class="label-tr">'.$this->GenerateSelect( $opegps, 'cod_opegps', NULL, 'onchange="habIdOperaGps(this)"', NULL ).'</td>';
       $mHtml .= '<td align="right" width="20%" class="label-tr">Otro GPS:&nbsp;&nbsp;&nbsp;</td>';
       $mHtml .= '<td align="left" width="30%" class="label-tr"><input style="width:100%" type="text" name="gps_otroxx" id="gps_otroxxID" size="30" onfocus="this.className=\'campo_texto_on\'" onblur="this.className=\'campo_texto\'" /></td>';
     $mHtml .= '</tr>';
@@ -1676,6 +1676,7 @@ class AjaxInsertDespacho
     
     $datos->val_declar = str_replace( '.', '', $datos->val_declar );
     
+    $urlGps = $this->getUrlGps($datos->cod_opegps);
     $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
                           ( 
                             num_despac, cod_manifi, fec_despac, cod_tipdes,
@@ -1686,20 +1687,19 @@ class AjaxInsertDespacho
                             nom_carpag, nom_despag, cod_agedes, fec_pagoxx, 
                             obs_despac, val_declara,usr_creaci, fec_creaci, 
                             val_pesoxx, gps_operad, gps_usuari, gps_paswor,
-                            gps_idxxxx, gps_otroxx, cod_asegur, num_poliza 
+                            gps_idxxxx, gps_otroxx, cod_asegur, num_poliza,
+                            gps_urlxxx
                           ) 
                    VALUES ('$datos->num_despac','$datos->cod_manifi','$datos->fec_despac ".DATE('H:i:s')."','$datos->cod_tipdes',
-                           ".($datos->cod_client != '' ?"'$datos->cod_client'":"NULL").",".($datos->cod_paiori != '' ?"'$datos->cod_paiori'":"NULL").",
-                           ".($datos->cod_depori != '' ?"'$datos->cod_depori'":"NULL").",".($datos->cod_ciuori != '' ?"'$datos->cod_ciuori'":"NULL").",
-                           ".($datos->cod_paides != '' ?"'$datos->cod_paides'":"NULL").",".($datos->cod_depdes != '' ?"'$datos->cod_depdes'":"NULL").",
-                           ".($datos->cod_ciudes != '' ?"'$datos->cod_ciudes'":"NULL").",
-                           ".($datos->cod_cenope != '' ? "'$datos->cod_cenope'":"NULL").",
-                           ".($datos->cod_operad != '' ? "'$datos->cod_operad'":"NULL").",'$datos->fec_citcar','$datos->hor_citcar','$datos->sit_cargue',
-                            NULL,NULL,NULL,NULL,NULL,NULL, '$datos->cod_agenci',NULL,
-                           '$datos->obs_genera',".($datos->val_declar != '' ? "'$datos->val_declar'":"NULL").",'$datos->usr_creaci', NOW(),
-                           ".($datos->val_pesoxx != '' ? "'$datos->val_pesoxx'":"NULL").",".($datos->cod_opegps != '' ? "'$datos->cod_opegps'":"NULL").",
-                           '$datos->usr_gpsxxx','$datos->clv_gpsxxx','$datos->gps_idxxxx','$datos->gps_otroxx','$datos->nom_asegur',
-                           '$datos->num_poliza')"; 
+                           ".($datos->cod_client != '' ?"'$datos->cod_client'":"NULL").",'$datos->cod_paiori','$datos->cod_depori','$datos->cod_ciuori',
+                           '$datos->cod_paides','$datos->cod_depdes','$datos->cod_ciudes','$datos->cod_cenope',
+                           '$datos->cod_operad','$datos->fec_citcar','$datos->hor_citcar','$datos->sit_cargue',
+                            NULL,NULL,NULL,NULL,
+                            NULL,NULL, '$datos->cod_agenci',NULL,
+                           '$datos->obs_genera','$datos->val_declar','$datos->usr_creaci', NOW(),
+                           '$datos->val_pesoxx','$datos->cod_opegps','$datos->usr_gpsxxx','$datos->clv_gpsxxx',
+                           '$datos->gps_idxxxx','$datos->gps_otroxx','$datos->nom_asegur','$datos->num_poliza',
+                           '$urlGps')"; 
     $consulta = new Consulta($mInsert, $this->conexion, "R");
     
     $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_corona
@@ -1919,6 +1919,19 @@ class AjaxInsertDespacho
       //Inserta historial de Estados a homologar
       setTrackingDespac($this->conexion, $datos->num_despac, 2, 1, null);
     }
+    
+  }
+  private function getUrlGps( $cod_opegps = NULL )
+  {
+    $mSql = "SELECT url_gpsxxx
+               FROM ".BASE_DATOS.".tab_genera_opegps
+              WHERE (cod_operad = '".$cod_opegps."' OR nit_operad = '".$cod_opegps."')";
+    $consulta = new Consulta( $mSql, $this->conexion );
+		$respuesta = $consulta->ret_matriz();
+    if(count($respuesta)>0){
+      return $respuesta[0]['url_gpsxxx'];
+    }
+    return null;
     
   }
   

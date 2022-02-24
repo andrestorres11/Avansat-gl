@@ -54,6 +54,7 @@ $(function() {
     
 
     var table = $("#tablaSuspend").DataTable({
+        destroy: true,
         deferRender:    true, 
         "autoWidth": false,     
         "search": {

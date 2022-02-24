@@ -364,7 +364,7 @@ class SolicitarSOAT
     $sTexto = $r_file;
 
     //Cambiar aqui el email 
-    if ($this -> form_mail("asistencias@faro.com.co", "Asistencia Logistica", $asunto, $sTexto, $dir_emassr, $nom_empres)) 
+    if ($this -> form_mail("contactenos@eltransporte.org", "Solicitud seguro SOAT", $asunto, $sTexto, $dir_emassr, $nom_empres)) 
       echo 1;
     else
       echo 0;

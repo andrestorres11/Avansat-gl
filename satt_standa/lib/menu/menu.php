@@ -43,7 +43,7 @@
         $sons .= "b.rut_archiv AS url ";
         if ( $data["cod_perfil"] ){
         $sons .= "FROM ".BD_STANDA.".tab_servic_servic a, ".BD_STANDA.".tab_genera_servic b, ".BD_STANDA.".tab_genera_servic c, ".BASE_DATOS.".tab_perfil_servic d ";
-        $sons .= "WHERE a.cod_serhij = b.cod_servic AND a.cod_serpad = c.cod_servic AND a.cod_serhij = d.cod_servic AND d.cod_perfil = '".$data["cod_perfil"]."' ORDER BY node ASC";
+        $sons .= "WHERE a.cod_serhij = b.cod_servic AND a.cod_serpad = c.cod_servic AND a.cod_serhij = d.cod_servic AND d.cod_perfil = '".$data["cod_perfil"]."' ORDER BY b.ind_ordenx, node ASC";
         }
         else    {
             $sons .= "FROM ".BD_STANDA.".tab_servic_servic a, ".BD_STANDA.".tab_genera_servic b, ".BD_STANDA.".tab_genera_servic c, ".BASE_DATOS.".tab_servic_usuari d ";

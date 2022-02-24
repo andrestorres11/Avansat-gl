@@ -129,6 +129,7 @@ class parametrizacion_correos
                                 <th>Correo</th>
                                 <th>Seguimiento</th>
                                 <th>Inf. Mensual</th>
+                                <th>A cargo de empresa</th>
                                 <th>Opciones</th>
                               </tr>
                             </thead>

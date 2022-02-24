@@ -302,7 +302,7 @@ class Proc_Plan_Ruta
   $formulario -> texto("Remolque","text","trayle\" onChange=\"form_item.submit()",0,6,6,"",$_REQUEST[trayle],"","",1);
   $formulario -> linea("Conductor",0,"t");
   $formulario -> linea("Usuario creador",0,"t");
-  $formulario -> linea("Fecha Creación",1,"t");
+  $formulario -> linea("Fecha Creaciï¿½n",1,"t");
 
    for($i = 0; $i < sizeof($matriz); $i++)
    {
@@ -875,7 +875,7 @@ class Proc_Plan_Ruta
    /******************************************************************
     * @ Function ValidaIdGps                                         *
     * @ Brief    Consulta si la operadora seleccionada usa ID        *
-    * @ Param    int $ope_gpsxxx Código de la operadora              *
+    * @ Param    int $ope_gpsxxx Cï¿½digo de la operadora              *
     * @ Return   int $matrix[0][0] con el indicador de la operadora  *
     *****************************************************************/ 
    function ValidaIdGps ($ope_gpsxxx)
@@ -892,7 +892,7 @@ class Proc_Plan_Ruta
    /******************************************************************
     * @ Function getGps                                              *
     * @ Brief    Consulta las operadoras disponibles                 *
-    * @ Param    int $ope_gpsxxx Código de la operadora              *
+    * @ Param    int $ope_gpsxxx Cï¿½digo de la operadora              *
     * @ Return   array                                               *
     *****************************************************************/ 
    function getGps($ope_gpsxxx)
