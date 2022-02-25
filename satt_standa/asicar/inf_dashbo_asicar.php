@@ -512,29 +512,40 @@
 									</button>
 								</div> </div>
               <div class="card-body"><div class="row">';
-                    $res_servic = self::getDataFormulario($_REQUEST['cod_solici'], $servicio['id'],1);
-                    $tot_servic = self::getDataFormulario($_REQUEST['cod_solici'], $servicio['id'],2);
-                    $rut_imagen = "/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar/";
-                    if($tot_servic<=0){
-                      $html.='<div class="col-md-12">
-											<div class=" m-3 alert alert-warning" role="alert">
-												No hay información registrada de este servicio.
-											</div>
-										</div>';
-                    }else{
-                      switch ($_SERVER['SERVER_NAME']) {
-                        case 'dev.intrared.net':
-                            $rutdirectorio="/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
-                          break;
-                        case 'avansatgl.intrared.net':
-                          $rutdirectorio="/var/www/html/ap/satt_faro/files/asicar";
-                          break;
+              $res_servic = self::getDataFormulario($servicio['id'],1);
+              $tot_servic = self::getDataFormulario($servicio['id'],2);
+              $res_servic1 = self::getDataFormulariow($_REQUEST['cod_solici'], $servicio['id'],1);
+              $tot_servic1 = self::getDataFormulariow($_REQUEST['cod_solici'], $servicio['id'],2);
+              $rut_imagen = DIREC_APLICA."gesdoc/tab_formul_respue/";
+              $rut_imagen2 = "/ap/satt_faro/files/asicar/"; 
+              if($tot_servic<=0 && $tot_servic1 <=0){
+                $html.='<div class="col-md-12">
+                <div class=" m-3 alert alert-warning" role="alert">
+                  No hay información registrada de este servicio.
+                </div>
+              </div>';
+              }else{
+                if($tot_servic>0){
+                  foreach($res_servic as $data1){
+                    if($data1['ind_tipoxx']=='camera'){
+                      $datos=$data1['tex_respue'];
+                      $arr=json_decode($datos,TRUE);
+                      foreach($arr as $image){
+                        $html.='<div class="col-md-4 p-2 border border-dark">
+                          <a href="'.$rut_imagen.''.$image.'"><img src="'.$rut_imagen.''.$image.'" class="mw-100"></a>
+                        </div>';
                       }
-												foreach($res_servic as $image){
-													$html.='<div class="col-md-4 p-2 border border-dark">
-														<a href="'.$rut_imagen.''.$image['nam_archi1'].'" target="_blank"><img src="'.$rut_imagen.''.$image['nam_archi1'].'" class="mw-100"></a>
-                          </div>';
-                        }
+                    }
+                  }{
+                    if($tot_servic1>0){
+                      foreach($res_servic1 as $image){
+                        $html.='<div class="col-md-4 p-2 border border-dark">
+                          <a href="'.$rut_imagen2.''.$image['nam_archi1'].'" target="_blank"><img src="'.$rut_imagen2.''.$image['nam_archi1'].'" class="mw-100"></a>
+                        </div>';
+                      }
+                    }
+                  }
+                }
                       
               $html.='</div></div>
 										  <hr>
@@ -621,14 +632,32 @@
           return $respuestas;
         }
 
+        function getDataFormulario($cod_servic,$val){
+          $sql="SELECT a.cod_campox,a.tex_respue,c.nom_campox, c.ind_tipoxx 
+          FROM ".BASE_DATOS.".tab_formul_respue a
+          INNER JOIN ".BASE_DATOS.".tab_formul_detail b ON a.cod_campox = b.cod_campox AND
+                                                           a.cod_formul = b.cod_formul
+          INNER JOIN ".BASE_DATOS.".tab_formul_campos c ON b.cod_campox = c.cod_consec
+          WHERE a.cod_servsol = '".$cod_servic."'
+          ORDER BY b.num_ordenx ASC";
 
+          $query = new Consulta($sql, self::$conexion);
+          $respuestas = $query -> ret_matrix('a');
+          $total = $query -> ret_num_rows();
+          $respuestas = self::cleanArray($respuestas);
+          if($val==1){
+            return $respuestas;
+          }else{
+            return $total;
+          }
+        }
 
-        function getDataFormulario($num_solici, $cod_servic,$val){
-          $sql="SELECT `cod_solici`, `cod_servic`, `nam_archi1`
-          FROM `tab_asiste_eviden` 
-          WHERE `cod_solici`=$num_solici
-          AND `cod_servic`=$cod_servic";
-          
+        function getDataFormulariow($num_solici,$cod_servic,$val){
+          $sql="SELECT cod_solici, cod_servic, nam_archi1
+          FROM tab_asiste_eviden 
+          WHERE cod_solici=$num_solici
+          AND cod_servic=$cod_servic";
+
           $query = new Consulta($sql, self::$conexion);
           $respuestas = $query -> ret_matrix('a');
           $total = $query -> ret_num_rows();
