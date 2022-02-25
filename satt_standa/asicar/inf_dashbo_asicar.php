@@ -3,7 +3,7 @@
 	NOMBRE:   DespacEstibas
 	FUNCION:  Muestra las estadisticas en control de seguiemiento de los diferentes tipos de asistencia 
 	FECHA DE MODIFICACION: 04/06/2020
-	CREADO POR: Ing. Cristian AndrÃ©s Torres
+	CREADO POR: Ing. Cristian Andrés Torres
 	MODIFICADO 
 	****************************************************************************/
 	
@@ -34,7 +34,7 @@
 
         /*! \fn: styles
 		   *  \brief: incluye todos los archivos necesarios para los estilos
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -77,7 +77,7 @@
 
         /*! \fn: scripts
 		   *  \brief: incluye todos los archivos necesarios para los eeventos js
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -135,7 +135,7 @@
         
         /*! \fn: filtros
 		   *  \brief: Crea el html de las tablas filtros y segmentos del modulo
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -146,12 +146,12 @@
             //Links css
             self::styles();
 
-            //Informacion BÃ¡sica de la asistencia
+            //Informacion Básica de la asistencia
             $inf_basica = self::darInformacion($_REQUEST['cod_solici']);
             $rutas = self::getDataRutasServicios($_REQUEST['cod_solici']);
 
             $title = mb_strtoupper($inf_basica['nom_asiste']);
-            $title = str_replace("ñ", "Ñ", $title);
+            $title = str_replace("?", "?", $title);
 
             $html = '
             <div class="row m-3">
@@ -185,7 +185,7 @@
                       <p class="textpanel boldtext">Nombre: '.$inf_basica['nom_solici'].'</p>
                       <p class="textpanel boldtext">E-mail: '.$inf_basica['cor_solici'].'</p>
                       <p class="textpanel boldtext">Telefono: '.$inf_basica['tel_solici'].'</p>
-                      <p class="textpanel boldtext">Número de celular: '.$inf_basica['cel_solici'].'</p>
+                      <p class="textpanel boldtext">N?mero de celular: '.$inf_basica['cel_solici'].'</p>
                       <p class="textpanel boldtext">Aseguradora: '.$inf_basica['ase_solici'].'</p>
                       <p class="textpanel boldtext">Poliza: '.$inf_basica['num_poliza'].'</p>
                     </div>
@@ -290,7 +290,7 @@
                                   <div class="card">
                                     <div class="card-header bg-success">
                                       <center>
-                                        <h3 class="card-title">Ubicación del vehi­culo</h3>
+                                        <h3 class="card-title">Ubicación del vehículo</h3>
                                       </center>
                                       <div class="card-tools">
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -404,7 +404,7 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6">
-                          <p class="align-right textpanel boldtext">Direccion: </p>
+                          <p class="align-right textpanel boldtext">Direcci?n: </p>
                         </div>
                         <div class="col-md-6">
                           <p class="align-left textpanel boldtext">'.$inf_basica['dir_ciudes'].'</p>
@@ -512,41 +512,53 @@
 									</button>
 								</div> </div>
               <div class="card-body"><div class="row">';
-                    $res_servic = self::getDataFormulario($_REQUEST['cod_solici'], $servicio['id'],1);
-                    $tot_servic = self::getDataFormulario($_REQUEST['cod_solici'], $servicio['id'],2);
-                    $rut_imagen = "/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar/";
-                    if($tot_servic<=0){
+                    $res_servic = self::getDataFormulario($servicio['id'],1);
+                    $tot_servic = self::getDataFormulario($servicio['id'],2);
+                    $res_servic1 = self::getDataFormulariow($_REQUEST['cod_solici'], $servicio['id'],1);
+                    $tot_servic1 = self::getDataFormulariow($_REQUEST['cod_solici'], $servicio['id'],2);
+                    $rut_imagen = DIREC_APLICA."gesdoc/tab_formul_respue/";
+                    $rut_imagen2 = "/ap/satt_faro/files/asicar/"; 
+                    if($tot_servic<=0 && $tot_servic1 <=0){
                       $html.='<div class="col-md-12">
-											<div class=" m-3 alert alert-warning" role="alert">
-												No hay información registrada de este servicio.
-											</div>
-										</div>';
-                    }else{
-                      switch ($_SERVER['SERVER_NAME']) {
-                        case 'dev.intrared.net':
-                            $rutdirectorio="/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
-                          break;
-                        case 'avansatgl.intrared.net':
-                          $rutdirectorio="/var/www/html/ap/satt_faro/files/asicar";
-                          break;
-                      }
-												foreach($res_servic as $image){
-													$html.='<div class="col-md-4 p-2 border border-dark">
-														<a href="'.$rut_imagen.''.$image['nam_archi1'].'" target="_blank"><img src="'.$rut_imagen.''.$image['nam_archi1'].'" class="mw-100"></a>
-                          </div>';
+                      <div class=" m-3 alert alert-warning" role="alert">
+                        No hay información registrada de este servicio.
+                      </div>
+                    </div>';
+                    }               
+                      if($tot_servic>0){
+                        foreach($res_servic as $data1){
+                          if($data1['ind_tipoxx']=='camera'){
+                            $datos=$data1['tex_respue'];
+                            $arr=json_decode($datos,TRUE);
+                            foreach($arr as $image){
+                              $html.='<div class="col-md-4 p-2 border border-dark">
+                                <a href="'.$rut_imagen.''.$image.'"><img src="'.$rut_imagen.''.$image.'" class="mw-100"></a>
+                              </div>';
+                            }
+                          }
                         }
-                      
+                      }
+                      $count=0;
+                      if($tot_servic1>0){
+                        foreach($res_servic1 as $image){
+                          $html.='<div class="col-md-4 p-2 border border-dark">
+                            <a href="'.$rut_imagen2.''.$image['nam_archi1'].'" target="_blank"><img src="'.$rut_imagen2.''.$image['nam_archi1'].'" class="mw-100"></a>
+                          </div>';
+                          $count++;
+                        }
+                      }
+                      $restot = $tot_servic + $count;                      
               $html.='</div></div>
 										  <hr>
                       <div class="row">';
 											$html.='<div class="col-md-4">
 												<div class="row">
 												<div class="col-md-6 text-right"><span style="font-weight:bold;">Total:</span></div>
-												<div class="col-md-6 text-left">'.$tot_servic.'</div>
+												<div class="col-md-6 text-left">'.$restot.'</div>
 												</div>
 											</div>';
 							$html.='</div>';
-            }
+            
 							$html.='</div>
 						</div>
 						</div>
@@ -598,6 +610,7 @@
         }
 
 
+
         function darInformacionServicios($cod_solici){
           $sql="SELECT
           a.id,
@@ -620,15 +633,33 @@
           $respuestas = self::cleanArray($respuestas);
           return $respuestas;
         }
+        
+        function getDataFormulario($cod_servic,$val){
+          $sql="SELECT a.cod_campox,a.tex_respue,c.nom_campox, c.ind_tipoxx 
+          FROM ".BASE_DATOS.".tab_formul_respue a
+          INNER JOIN ".BASE_DATOS.".tab_formul_detail b ON a.cod_campox = b.cod_campox AND
+                                                           a.cod_formul = b.cod_formul
+          INNER JOIN ".BASE_DATOS.".tab_formul_campos c ON b.cod_campox = c.cod_consec
+          WHERE a.cod_servsol = '".$cod_servic."'
+          ORDER BY b.num_ordenx ASC";
 
+          $query = new Consulta($sql, self::$conexion);
+          $respuestas = $query -> ret_matrix('a');
+          $total = $query -> ret_num_rows();
+          $respuestas = self::cleanArray($respuestas);
+          if($val==1){
+            return $respuestas;
+          }else{
+            return $total;
+          }
+        }
 
+        function getDataFormulariow($num_solici,$cod_servic,$val){
+          $sql="SELECT cod_solici, cod_servic, nam_archi1
+          FROM tab_asiste_eviden 
+          WHERE cod_solici=$num_solici
+          AND cod_servic=$cod_servic";
 
-        function getDataFormulario($num_solici, $cod_servic,$val){
-          $sql="SELECT `cod_solici`, `cod_servic`, `nam_archi1`
-          FROM `tab_asiste_eviden` 
-          WHERE `cod_solici`=$num_solici
-          AND `cod_servic`=$cod_servic";
-          
           $query = new Consulta($sql, self::$conexion);
           $respuestas = $query -> ret_matrix('a');
           $total = $query -> ret_num_rows();
@@ -666,18 +697,18 @@
         }
 
         private function reemplazar($cadena){
-          $falsos = array("Ã±");
-          $nuevac = str_replace($falsos, "ñ",$cadena);
+          $falsos = array("ñ");
+          $nuevac = str_replace($falsos, "?",$cadena);
           return $nuevac;
         }
 
 
          /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciÃ³n
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que serÃ¡ analizado por la funciÃ³n
+           *  \param: $arrau => Arreglo que será analizado por la función
            *  \return: array
         */
         function cleanArray($array){
