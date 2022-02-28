@@ -45,7 +45,8 @@ class AjaxDespachos{
 	 *  \return: JSON
 	 */
 	function GetNovedades(){
-		$mSql = "SELECT cod_noveda, nom_noveda
+		if(BASE_DATOS=='satt_faro'){
+			$mSql = "SELECT cod_noveda, nom_noveda
 				   FROM ".BASE_DATOS.".tab_genera_noveda
 				  WHERE ind_visibl = 1 ";
 		if($_REQUEST[cita]=='C')
@@ -61,7 +62,28 @@ class AjaxDespachos{
 	   			$mSql .= " AND nom_noveda LIKE 'NER%' ";
 	   		}
 
-   		$mSql .= " ORDER BY 2 "; 
+   		$mSql .= " ORDER BY 2 "; 	
+		}else{
+			$mSql = "SELECT cod_noveda, nom_noveda
+				   FROM ".BASE_DATOS.".tab_genera_novseg
+				  WHERE ind_status = 1 ";
+
+			if($_REQUEST[cita]=='C'){
+				if((int)$_REQUEST[ind_cumpli] == 1){
+					$mSql .= " AND cod_noveda IN(9) ";
+				}else{
+					$mSql .= " AND nom_noveda LIKE 'NICC%' ";
+				}
+			}else{
+				if((int)$_REQUEST[ind_cumpli] == 1){
+					$mSql .= " AND cod_noveda IN(11) ";
+				}else{
+					$mSql .= " AND nom_noveda LIKE 'NCD%' ";
+				}
+			}
+			$mSql .= " ORDER BY 2 "; 	  
+		}
+		
 		$consulta  = new Consulta($mSql, $this -> conexion);
 		$novedadx  = $consulta -> ret_matriz();
 
@@ -115,7 +137,8 @@ class AjaxDespachos{
 	 *  \return: JSON
 	 */
 	function GetNovedadesDescargue(){
-		$mSql = "SELECT cod_noveda, nom_noveda
+		if(BASE_DATOS=="satt_faro"){
+			$mSql = "SELECT cod_noveda, nom_noveda
 				   FROM ".BASE_DATOS.".tab_genera_noveda
 				  WHERE 1=1 ";
 		if($_REQUEST[cita]=='C')
@@ -131,6 +154,27 @@ class AjaxDespachos{
 	   			$mSql .= " AND cod_noveda IN(326) ";
 	   		}
 			$mSql .= " ORDER BY 2 ";
+		}else{
+			$mSql = "SELECT cod_noveda, nom_noveda
+				   FROM ".BASE_DATOS.".tab_genera_novseg
+				  WHERE ind_status = 1 ";
+
+			if($_REQUEST[cita]=='C'){
+				if((int)$_REQUEST[ind_cumpli] == 1){
+					$mSql .= " AND cod_noveda IN(9) ";
+				}else{
+					$mSql .= " AND nom_noveda LIKE 'NICC%' ";
+				}
+			}else{
+				if((int)$_REQUEST[ind_cumpli] == 1){
+					$mSql .= " AND cod_noveda IN(11) ";
+				}else{
+					$mSql .= " AND nom_noveda LIKE 'NCD%' ";
+				}
+			}
+			$mSql .= " ORDER BY 2 "; 
+		}
+		
 		$consulta  = new Consulta($mSql, $this -> conexion);
 		$novedadx  = $consulta -> ret_matriz();
 		$novedades = array();
@@ -418,7 +462,6 @@ class AjaxDespachos{
 		}else{
 			$mTieadi = '0';
 		}
-
 	  	$mSql = "SELECT a.cod_contro, a.cod_rutasx, b.nom_contro, a.fec_planea
 	  			   FROM ".BASE_DATOS.".tab_despac_seguim a,
 	  			        ".BASE_DATOS.".tab_genera_contro b,
@@ -444,13 +487,11 @@ class AjaxDespachos{
 	  	$consulta  = new Consulta($mSql, $this -> conexion, 'R');
 		$valContro  = $consulta -> ret_matriz();
 
-
 		if(count($valContro)>0){
 		  	$_MESSAGE = array('cod_respon' => '500', 'msg_respon' => 'No se Puede Registrar la Cita de Cargue, Debido a que el Puesto de Control Fisico '.$valContro[0][nom_contro].', contiene una Novedad' );
 	  		echo json_encode($_MESSAGE); 
 			die();
 		}
-
 
 	  	$mSql = "SELECT c.cod_contro, a.cod_rutasx, b.nom_contro, c.val_duraci
 				   FROM ".BASE_DATOS.".tab_despac_seguim a
@@ -470,7 +511,6 @@ class AjaxDespachos{
 		 		   WHERE a.num_despac = '{$_REQUEST[num_despac]}'";
         $consulta = new Consulta($query, $this->conexion);
         $nitransp = $consulta->ret_matriz();
-
 
         $query = "SELECT cod_protoc
         			FROM ".BASE_DATOS.".tab_noveda_protoc
@@ -503,16 +543,12 @@ class AjaxDespachos{
         $_REQUEST['obs_protoc0_'] = $_REQUEST['obs_cumcar'];
         $_REQUEST['protoc0_'] = $protocol[0][0];
         #-----------------------------------------------------------
-
-
-
 		$transac_nov = new InsertNovedad($_REQUEST['cod_servic'], $_REQUEST['opcion'], $_SESSION['codigo'], $this->conexion);
 		if($_REQUEST['ind_cumpli'] == 0){
 			$RESPON = $transac_nov->InsertarNovedadNC(BASE_DATOS, $regist, 2);
 		}else{
         	$RESPON = $transac_nov->InsertarNovedadPC(BASE_DATOS, $regist, 0);
 		}
-
         if ($RESPON[0]["indica"] == 1){
 			$consulta = new Consulta("SELECT 1", $this->conexion, "BR");
 
@@ -526,9 +562,8 @@ class AjaxDespachos{
 		  	$consulta  = new Consulta($mSql, $this -> conexion);
             $consulta = new Consulta("COMMIT", $this->conexion);
         }
-
+		
        	$_MESSAGE = array('cod_respon' => ( (int)$RESPON[0]["indica"] == 1 ? '200' : '500'), 'msg_respon' => $RESPON[0][mensaj] );
-
        	#Lineas para enviar el cumplido de cita de cargue a Astrans, OMG!! ------------------------------------------------------------
        	if((int)$RESPON[0]["indica"] == 1)
        	{
@@ -554,7 +589,6 @@ class AjaxDespachos{
 			    # Envia el array de datos al metodo correspondiente de los cumplidos de cargue
 			    # El metodo retorna un array con codigo y mensaje de respuesta del ws de astras, de la transaccion    
                 $mCargue = $mSimplexity -> setRegistrarCargue( $mDataSimplexityCargue ); 
-                 
        		}
        		else {
        			mail("nelson.liberato@intrared.net", "No existe la clase InterfSimplexity ajax_despachos.php", 
@@ -562,7 +596,6 @@ class AjaxDespachos{
        		}
 
        	}   
-
        	echo json_encode($_MESSAGE); 
 	}
 

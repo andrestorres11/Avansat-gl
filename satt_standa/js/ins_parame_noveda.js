@@ -209,6 +209,26 @@ function selectRow(elemento){
 
 //duplica la informacion de una tabla para la pestaña de TODOS
 function selectGemelo(elemento){
+    var fila = $(elemento).parent().parent();
+    var condicionales = [ 'manale', 'fuepla', 'soltie'];
+    //Limpia segun los condicionales
+    $(fila).find('td input').each(function(){
+        if($(this).attr("data") != undefined){
+            const nameElemento = $(elemento).attr('data').split("_")[0];
+            const nameCam = $(this).attr('data').split("_")[0];
+            const EndCam = $(this).attr('data').split("_")[1];
+            if(condicionales.includes( nameCam )){
+                condicionales.forEach(function(valor) {
+                    nameattr = "." + valor + '_' + EndCam + "";
+                    if(valor != nameElemento){
+                        $(nameattr).prop("checked", false);
+                    }
+                });
+                
+            }
+        }
+    });
+
     var booleanval = false;
     if( $(elemento).is(':checked') ) {
         booleanval = true;
@@ -218,6 +238,7 @@ function selectGemelo(elemento){
     busqueda.each(function() {
         $(this).prop("checked", booleanval);
     });
+    
 }
 
 function insertGemelo(elemento){
