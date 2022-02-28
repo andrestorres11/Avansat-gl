@@ -2031,7 +2031,7 @@
           $source = $_FILES["archivo"]["tmp_name"][$key]; //Obtenemos un nombre temporal del archivo
           
           //$directorio = "../../".NOM_URL_APLICA."/files/asicar"; //Declaramos un  variable con la ruta donde guardaremos los archivos
-          $directorio = "/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
+          $directorio = "/var/www/html/ap/satt_faro/files/asicar";
           //Validamos si la ruta de destino existe, en caso de no existir la creamos
           if(!file_exists($directorio)){
               mkdir($directorio, 0777) or die("No se puede crear el directorio de extracci&oacute;n");	
