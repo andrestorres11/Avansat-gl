@@ -4,7 +4,7 @@
  *  \author: 
  *  \author: 
  *  \version: 
- *  \date: dia/mes/aÃ±o
+ *  \date: dia/mes/año
  *  \bug: 
  *  \bug: 
  *  \warning: 
@@ -42,8 +42,8 @@ class Proc_segui
     /*! \fn: principal
      *  \brief: 
      *  \author: 
-     *  \date: dia/mes/aÃ±o
-     *  \date modified: dia/mes/aÃ±o
+     *  \date: dia/mes/año
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return:
      */
@@ -448,8 +448,8 @@ class Proc_segui
     /*! \fn: verifyViajeConsol
      *  \brief: Verifica si el Viaje esta consolidado
      *  \author: 
-     *  \date: dia/mes/aÃ±o
-     *  \date modified: dia/mes/aÃ±o
+     *  \date: dia/mes/año
+     *  \date modified: dia/mes/año
      *  \param: NumDespac
      *  \return:
      */
@@ -567,7 +567,7 @@ class Proc_segui
     /*! \fn: Formulario1
      *  \brief: Formulario para ingresar las novedades
      *  \author:
-     *  \date: dia/mes/aÃ±o
+     *  \date: dia/mes/año
      *  \date modified: 17/09/2015
      *  \modified By: Ing. Fabian Salinas
      *  \param:
@@ -653,27 +653,44 @@ class Proc_segui
 		$select = new Consulta( $select, $this -> conexion );
         $select = $select -> ret_matriz( "a" );
 		
-        //lista las novedadesecho 
-        $query = " SELECT cod_noveda, UPPER( CONCAT( CONVERT( nom_noveda USING utf8), 
-						  '', if (nov_especi = '1', '(NE)', '' ), 
-						  if( ind_alarma = 'S', '(GA)', '' ), 
-						  if( ind_manala = '1', '(MA)', '' ),
-						  if( ind_tiempo = '1', '(ST)', '' ) )) , 
-						  ind_tiempo
-				   FROM " . BASE_DATOS . ".tab_genera_noveda 
-				   WHERE 1 = 1 AND ind_visibl = '1'";
-				   
-        if ($datos_usuario["cod_perfil"] != COD_PERFIL_SUPERUSR && $datos_usuario["cod_perfil"] != COD_PERFIL_ADMINIST && $datos_usuario["cod_perfil"] != COD_PERFIL_SUPEFARO)
-		{
-			if( $datos_usuario["cod_perfil"]  != '689' && $datos_usuario["cod_perfil"]  != '77' )
-                $query .=" AND cod_noveda !='" . CONS_NOVEDA_ACAEMP . "' ";
-		}
-        if ($transpor[0][2] == '1')
-            $query .=" AND cod_noveda !='" . CONS_NOVEDA_ACAFAR . "' ";
-        $query .=" ORDER BY 2 ASC";
+        //lista las novedadesecho
+        if(BASE_DATOS=='satt_faro'){
+            $query = " SELECT cod_noveda, UPPER( CONCAT( CONVERT( nom_noveda USING utf8), 
+                            '', if (nov_especi = '1', '(NE)', '' ), 
+                            if( ind_alarma = 'S', '(GA)', '' ), 
+                            if( ind_manala = '1', '(MA)', '' ),
+                            if( ind_tiempo = '1', '(ST)', '' ) )) , 
+                            ind_tiempo
+                    FROM " . BASE_DATOS . ".tab_genera_noveda 
+                    WHERE 1 = 1 AND ind_visibl = '1'";
+                    
+            if ($datos_usuario["cod_perfil"] != COD_PERFIL_SUPERUSR && $datos_usuario["cod_perfil"] != COD_PERFIL_ADMINIST && $datos_usuario["cod_perfil"] != COD_PERFIL_SUPEFARO)
+            {
+                if( $datos_usuario["cod_perfil"]  != '689' && $datos_usuario["cod_perfil"]  != '77' )
+                    $query .=" AND cod_noveda !='" . CONS_NOVEDA_ACAEMP . "' ";
+            }
+            if ($transpor[0][2] == '1')
+                $query .=" AND cod_noveda !='" . CONS_NOVEDA_ACAFAR . "' ";
+            $query .=" ORDER BY 2 ASC";
+        }else{
+            $query = " SELECT a.cod_noveda, UPPER(a.nom_noveda), 
+                       if(b.ind_novesp = '1', '(NE)', ''),
+                       if(b.ind_manale = '1', '(GA)', ''),
+                       if(b.ind_manale = '1', '(MA)', ''),
+                       if(b.ind_soltie = '1', '(ST)', ''),
+                       num_tiempo
+                 FROM " . BASE_DATOS . ".tab_genera_novseg a
+            INNER JOIN " . BASE_DATOS . ".tab_parame_novseg b
+                     ON a.cod_noveda = b.cod_noveda AND
+                     b.cod_transp = '".$_REQUEST[cod_transp]."' AND
+                     b.ind_status = 1 AND
+                     b.inf_visins = 1
+                WHERE a.ind_status = 1
+            ORDER BY 2 ASC";
+        }
         $consulta = new Consulta($query, $this->conexion);
         $novedades = $consulta->ret_matriz();
-		
+		$nota = "";
 		if( $select )
         {
 			$fil_noveda = array();
@@ -687,25 +704,43 @@ class Proc_segui
 			
 			$novedades = $fil_noveda;
 		}
-		
-		
         if ($_REQUEST[noved])
         {
             $nove = $_REQUEST[noved];
             $_REQUEST[noved] = explode("-", $_REQUEST[noved]);
             $_REQUEST[noved] = is_array($_REQUEST[noved]) ? $_REQUEST[noved][0] : $_REQUEST[noved];
-
-            $query = "SELECT cod_noveda,UPPER(CONCAT(CONVERT(nom_noveda USING utf8),'',if(nov_especi='1','(NE)',''),if(ind_alarma='S','(GA)',''),if(ind_manala='1','(MA)',''),if(ind_tiempo='1','(ST)','') )), 
+            if(BASE_DATOS=='satt_faro'){
+                $query = "SELECT cod_noveda,UPPER(CONCAT(CONVERT(nom_noveda USING utf8),'',if(nov_especi='1','(NE)',''),if(ind_alarma='S','(GA)',''),if(ind_manala='1','(MA)',''),if(ind_tiempo='1','(ST)','') )), 
                              obs_preted,ind_alarma,nov_especi,ind_tiempo
                FROM " . BASE_DATOS . ".tab_genera_noveda
                WHERE cod_noveda = '" . $_REQUEST[noved] . "' AND ind_visibl = '1' ";
+            }else{
+                $query = " SELECT a.cod_noveda, UPPER(CONCAT(CONVERT(a.nom_noveda USING utf8),' ', 
+                        if(b.ind_novesp = '1', '(NE)', ''), 
+                        if(b.ind_manale = '1', '(GA)', ''),
+                        if(b.ind_manale = '1', '(MA)', ''),
+                        if(b.ind_soltie = '1', '(ST)', '') )),
+                       num_tiempo,
+                       nom_observ
+                            FROM " . BASE_DATOS . ".tab_genera_novseg a
+                        INNER JOIN " . BASE_DATOS . ".tab_parame_novseg b
+                                ON a.cod_noveda = b.cod_noveda AND
+                                b.cod_transp = '".$_REQUEST[cod_transp]."' AND
+                                b.ind_status = 1 AND
+                                b.inf_visins = 1
+                     WHERE a.cod_noveda = '".$_REQUEST[noved]."' AND a.ind_status = 1
+            ORDER BY 2 ASC";
+            }
+            
             $consulta = new Consulta($query, $this->conexion);
             $novedades_a = $consulta->ret_matriz();
             
             $nove = !$novedades_a ? "" : $novedades_a[0][0] . "-" . $novedades_a[0][1];
+            if(BASE_DATOS != 'satt_faro'){
+                $nota = $novedades_a[0][3];
+            }
         }else
             $nove = "";
-
         //presenta por defecta la fecha actual
         if (!isset($_REQUEST[fecnov]))
             $_REQUEST[fecnov] = $fec_actual;
@@ -852,7 +887,10 @@ class Proc_segui
                 }    
               }
               
-
+              $("#obsID").val("'.$nota.'");
+              if($("#obsID").val().length > 0){
+                  limit = limit - $("#obsID").val().length;
+              }
               $("#obsID").parent().find("#counter").html("Queda(n) <b>"+limit+"</b> Caracter(es) para Escribir");
               $("#obsID").keyup(function(){ 
                 nueva_longitud = limit - $("#obsID").val().length;
@@ -902,9 +940,21 @@ class Proc_segui
         $inicio[0][1] = '-';
 
         //trae el indicador de solicitud tiempo en novedad
-        $query = "SELECT ind_tiempo
+        if(BASE_DATOS == 'satt_faro'){
+            $query = "SELECT ind_tiempo
                FROM " . BASE_DATOS . ".tab_genera_noveda
                WHERE cod_noveda = '" . $nove . "'";
+        }else{
+            $query = " SELECT b.ind_soltie as 'ind_tiempo'
+                            FROM " . BASE_DATOS . ".tab_genera_novseg a
+                        INNER JOIN " . BASE_DATOS . ".tab_parame_novseg b
+                        ON a.cod_noveda = b.cod_noveda AND
+                        b.cod_transp = '".$_REQUEST[cod_transp]."' AND
+                        b.ind_status = 1 AND
+                        b.inf_visins = 1
+                    WHERE a.cod_noveda = '".$nove."' AND a.ind_status = 1";
+        }
+        
         $consulta = new Consulta($query, $this->conexion);
         $ind_tiempo = $consulta->ret_arreglo();
 
@@ -1129,7 +1179,7 @@ class Proc_segui
 
         $mHtml->OpenDiv("id:contentID; class:contentAccordion");
 
-            #<AsignaciÃ³n de Novedad>
+            #<Asignación de Novedad>
                 $mHtml->OpenDiv("id:asigNovedaID; class:accordion");
                     $mHtml->SetBody("<h3 style='padding:6px;'><center>ASIGNACION DE NOVEDAD</center></h3>");
                     $mHtml->OpenDiv("id:secID");
@@ -1211,7 +1261,7 @@ class Proc_segui
                                 $mParamcCalifi = $this -> VerifyInterfRit( $_REQUEST['despac'] ) ;
                                 if( $_REQUEST['codpc'] == '9999' && $mParamcCalifi == '1' )
                                 {
-                                    $mNumCalifi = array(array("0"=>"", "1"=>"--"),      array("0"=>"1","1"=>"PÃ©simo"),  array("0"=>"2","1"=>"Malo"),
+                                    $mNumCalifi = array(array("0"=>"", "1"=>"--"),      array("0"=>"1","1"=>"Pésimo"),  array("0"=>"2","1"=>"Malo"),
                                                         array("0"=>"3","1"=>"Regular"), array("0"=>"4","1"=>"Bueno"),   array("0"=>"5","1"=>"Excelente"));
 
                                     $mHtml->CloseTable("tr");
@@ -1259,6 +1309,7 @@ class Proc_segui
                                     $mHtml->Hidden( array("name"=>"ind_protoc", "id"=>"ind_protocID",   "value"=>"no") );
                                     $mHtml->Hidden( array("name"=>"ind_resolu", "id"=>"ind_resoluID",   "value"=>"") );
                                     $mHtml->Hidden( array("name"=>"ind_segcar", "id"=>"ind_segcarID",   "value"=>"") );
+                                    $mHtml->Hidden( array("name"=>"not_obsnov", "id"=>"not_obsnovID",   "value"=>$nota) );
                                     if( $_REQUEST['noved'] != '' && $_REQUEST['noved'] != NULL ){
                                         $mHtml->Javascript( $mScript4 );
                                         $mHtml->Hidden( array("name"=>"ind_soluci", "id"=>"indShowSoluciID", "value"=>($mValidRecome != NULL ? '1' : '0') ) );
@@ -1288,7 +1339,7 @@ class Proc_segui
                         $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
-            #</AsignaciÃ³n de Novedad>
+            #</Asignación de Novedad>
 
         $mHtml->CloseDiv();
 
@@ -1470,7 +1521,7 @@ class Proc_segui
                  * 
                  * *** */
 
-                //Verificar Check de HabilitaciÃ³n en PAD                
+                //Verificar Check de Habilitación en PAD                
                 if ($regist["habPAD"] == 1)
                 {
                       
@@ -1705,7 +1756,7 @@ class Proc_segui
                 $consulta = new Consulta( $mSql, $this -> conexion );
                 $mMaxConsec = $consulta -> ret_matriz( 'i' );
                 
-                // Inserta los datos de la calificaciÃ³n a nivel Local -----------------------------------------------------------------------
+                // Inserta los datos de la calificación a nivel Local -----------------------------------------------------------------------
                 $mSql = "INSERT INTO ".BASE_DATOS.".tab_califi_conduc 
                          ( 
                                   cod_consec, num_despac, cod_manifi, cod_conduc, num_placax, num_califi,
@@ -1724,7 +1775,7 @@ class Proc_segui
                                  <tr><td>Despacho: ".$_REQUEST['despac']."</td></tr>
                                  <tr><td><a href='?cod_servic=".$_REQUEST["cod_servic"]."&window=central'>CALIFICAR OTRO CONDUCTOR</a></td></tr>
                           </table>";
-                $mens->correcto("REGISTRO CALIFICACIÃ“N CONDUCTOR RIT", $mensaje);
+                $mens->correcto("REGISTRO CALIFICACIÓN CONDUCTOR RIT", $mensaje);
               }
               else
               {
