@@ -36,7 +36,7 @@ function PorAprobValidate() {
         },
         messages: {
             AproServicio: {
-                required: "Por favor Seleccione una opci�n"
+                required: "Por favor Seleccione una opci?n"
             }
         },
         submitHandler: function(form) {
@@ -211,7 +211,7 @@ function executeFilter() {
                 informePorGestionar(6);
                 //Validate empty
                 /*if(objectLength(data) == 0){
-                    personalizedAlert("danger", "No se encontraron registros.", "No se ha encontrado ning&uacute;n registro, con el filtro especificado, por favor val&iacute;delo.", true, $("#dashBoardTableTrans"));
+                    personalizedAlert("danger", "No se encontraron registros.", "No se ha encontrado ningun registro, con el filtro especificado, por favor val&iacute;delo.", true, $("#dashBoardTableTrans"));
                     return false;
                 }*/
 
@@ -815,50 +815,22 @@ function subirArchivostmp()
 
     function subirArchivos()
     {
-        let filas = $('#listararchivos').find('tbody tr').length;
-        
         var standa = 'satt_standa';
         var dataString = 'opcion=19';
-        var campo1, campo2, campo3, cuepotbl, i;
-
-        var data = new FormData($('#filesForm')[0]);
-        
-        cuepotbl=new Array();
-        i=0;
-        $("#listararchivos tbody tr").each(function () {
-            campo1 = $(this).find('td').eq(0).text();
-            campo2 = $(this).find('#txtobserv').val();
-            campo3 = $(this).find('#archtemp').val();
-            cuepotbl[i]=[campo1, campo2, campo3];
-            i++;
-        });
-        arreglo=cuepotbl;
-        
-        data.append('array', arreglo);
-
-        data.append('cod_solici', $("#idnumservicio").val());
-        data.append('id_estado', $("#id_estado").val());
-        data.append('id_servicio', $("#id_servicio").val());
-        data.append('id_textservi', $("#id_servicio option:selected").text());
-        data.append('txt_observaciones', $("#txt_observaciones").val());
-        
-    if((($("#id_estado").val()!='0') && ($("#id_servicio").val()!='0') && (filas!=0)) || ($("#id_estado").val()=='5')){ 
+        var cod_solici= $("#idnumservicio").val();
+        var id_estado= $("#id_estado").val();
+        var txt_observaciones= $("#txt_observaciones").val();
+        var idinicio= $("#idinicio").val();
+    if((id_estado!='0') && ($("#txt_observaciones").val()!='') || id_estado =='5'){ 
     
-        
-       
         $.ajax({
             url: "../" + standa + "/asicar/ajax_gestio_asicar.php?" + dataString,
             method: 'POST',
-            data,
-            async: false,
+            data: {cod_solici : cod_solici, id_estado : id_estado, txt_observaciones : txt_observaciones, idinicio : idinicio},
             dataType: "json",
-            contentType: false,
-            processData: false,
-            async: false,
             success: function(data)
             {
                 console.log(data);
-                
                 llenarBitacora(data['solicitud'])
                 
 
@@ -892,9 +864,236 @@ function subirArchivostmp()
     }
 
     function deleterow(){
-        event.target.parentNode.parentNode.parentNode.remove();
-    }
-    function getIndex(){
-        alert("hola");
+        event.target.parentNode.parentNode.parentNode.parentNode.remove();
     }
     
+
+
+
+    function getIndex(){
+        if($("#id_estado").val()!='0'){
+            actdesactserv('mostrar');
+
+        }else{
+            actdesactserv('ocultar');
+            actdesacttxtobserv('ocultar');
+            actdesactbntinput('ocultar');
+            mostocultbtn('ocultar');
+            mostoculttbl('ocultar');
+        }
+        
+    }
+
+    function actdesactserv(paramserv){
+        if(paramserv=='mostrar'){
+            $('#id_servicio').show();
+            $('#label_servicio').show();
+        }else{
+            $('#id_servicio').hide();
+            $('#label_servicio').hide();
+        }
+    }
+
+    function getindexservi(){
+        if($("#id_servicio").val()!='0'){
+            actdesacttxtobserv('mostrar');
+            actdesactbntinput('mostrar');
+        }else{
+            actdesacttxtobserv('ocultar');
+            actdesactbntinput('ocultar');
+            mostocultbtn('ocultar');
+            mostoculttbl('ocultar');
+        }
+    
+    }
+
+    function actdesacttxtobserv(paramobserv){
+        if(paramobserv=='mostrar'){
+            $('#txt_observaciones').show();
+        }else{
+            $('#txt_observaciones').hide();
+        }
+
+    }
+
+    function actdesactbntinput(paraminputfile){
+        if(paraminputfile=='mostrar'){
+            $('#archivo').show();
+        }else{
+            $('#archivo').hide();
+        }
+    }
+
+
+    function getindexinput(){
+        var contfile=$('#archivo');
+        var imagen = document.getElementById("archivo").files;
+
+        if(imagen.length == 0)
+        {
+            mostocultbtn('ocultar')
+            
+        }else
+        {
+            mostocultbtn('mostrar')
+        }
+        
+    }
+
+    function mostocultbtn(parambtn){
+        if(parambtn=='ocultar'){
+            $("#cargafilebtn").hide();
+        }else{
+            $("#cargafilebtn").show();
+        }
+    }
+
+    function mostoculttbl(paramtbl){
+        if(paramtbl=='ocultar'){
+            $("#listararchivos").hide();
+        }else{
+            $("#listararchivos").show();
+        }
+        
+    }
+
+    function mostoculbtnenviar(paramtblbtnenv){
+        if(paramtblbtnenv=='ocultar'){
+            $("#btnenviar").hide();
+        }else{
+            $("#btnenviar").show();
+        }
+        
+    }
+
+    function subirArchivostmp2()
+    {
+        var standa = 'satt_standa';
+        var data = new FormData($('#filesForm')[0]);
+        data.append('cod_solici', $("#idnumservicio").val());
+        data.append('id_estado', $("#id_estado").val());
+        data.append('id_servicio', $("#id_servicio").val());
+        data.append('id_textservi', $("#id_servicio option:selected").text());
+        data.append('txt_observaciones', $("#txt_observaciones").val());
+        data.append('idinicio', $("#idinicio").val());
+
+        var imagen = document.getElementById("archivo").files;
+
+        if((($("#id_estado").val()!='0') && ($("#id_servicio").val()!='0')  && imagen.length != 0  )){
+
+            $.ajax({
+
+                url: "../" + standa + "/asicar/ajax_gestio_asicar.php?opcion=21",
+                type: "post",
+                data : data,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(data)
+                {
+                    console.log(data);
+                
+                    mostoculttbl('mostrar');
+                    mostoculbtnenviar('mostrar');
+                    $("#tbodyid").html(data['regtbl']);
+                    $("#idinicio").val(data['idinicio']);
+
+                    mostocultbtn('ocultar');
+                }
+
+            });
+
+        }else{
+            Swal.fire(
+                        'Error',
+                        'Seleccione datos necesarios (Estado, Servicio, Archivos)',
+                        'error');
+        }
+        
+
+
+    }
+
+    function datosold(id, value){
+        var regid = id.split('-');
+      var result=regid[1];
+        $('#vrold-'+ result).val(value);
+    }
+
+    function actobserv(numreg){
+    
+      var standa = 'satt_standa'; 
+      var regid = numreg.split('-');
+      var result=regid[1];
+      var oldvalue=$("#vrold-"+result).val();
+      var newvalue=$("#"+ numreg).val();
+
+      if(oldvalue != newvalue){
+
+        $.ajax({
+
+        url: "../" + standa + "/asicar/ajax_gestio_asicar.php?opcion=22",
+        type: "post",
+        data : {regid : result, datnew:newvalue},
+        success: function(data)
+        {
+          console.log(data);
+           
+        }
+    });
+
+      }
+    }
+
+    function eliminaregarchi(numdelreg){
+    
+        var standa = 'satt_standa'; 
+        var regid = numdelreg.split('-');
+        
+        var resultado=regid[1];
+        
+        var regeliminar=$('#txtfile-'+ resultado).val();
+        
+        Swal.fire({
+            title: 'Esta usted seguro?',
+            text: "El registro sera eliminado y No podr?s revertir esto!",
+            
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si, eliminarlo!'
+          }).then((result) => {
+            if (result['value']) {
+                $.ajax({
+                    url: "../" + standa + "/asicar/ajax_gestio_asicar.php?opcion=23",
+                    type: "post",
+                    data : {regid : resultado, regeliminar:regeliminar},
+                    dataType: 'json',
+                    success: function(data)
+                    {
+                    
+                    if(data['status'] == 200){
+                        $('#fila-' + resultado).remove();
+                        Swal.fire(
+                            'Eliminado!',
+                            'Archivo fue eliminado.',
+                            'success'
+                        )
+                        
+                    }else{
+                        Swal.fire(
+                            'Error!',
+                            'No se pudo completar la operacion.',
+                            'error'
+                        )
+                    }
+                    
+                    }
+                });      
+
+            }
+            
+          })
+        
+          
+    }

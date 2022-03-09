@@ -2178,7 +2178,7 @@
       function almacenararchivos(){
         switch ($_SERVER['SERVER_NAME']) {
           case 'dev.intrared.net':
-              $rutdirectorio="/var/www/html/ap/satt_faro/files/asicar";
+              $rutdirectorio="/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
             break;
           case 'avansatgl.intrared.net':
             $rutdirectorio="/var/www/html/ap/satt_faro/files/asicar";
@@ -2215,7 +2215,7 @@
               
         $sql="UPDATE `tab_asiste_eviden` SET `des_arcgen`='". $observacion . "', `cod_solasi`=".$id." WHERE `id`>=".$idinicio;
         $query = new Consulta($sql, self::$conexion);
-              
+        
         if($idestado=='5'){
           $sql="UPDATE ".BASE_DATOS.".tab_asiste_carret SET 
                   est_solici='$idestado',
@@ -2224,7 +2224,7 @@
                   WHERE id=$num_solici";
           $query = new Consulta($sql, self::$conexion);  
         }
-                        
+
         $return['estado']="ok";
         $return['solicitud']=$num_solici;
         $return['proximo']=$idestado;
@@ -2234,7 +2234,7 @@
           $json = json_encode($return);
         echo $json;    
         
-      }
+      } 
 
     function datselect(){
       $num_solici=$_REQUEST['cod_solici'];
