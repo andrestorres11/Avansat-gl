@@ -3813,7 +3813,8 @@ class Despachos
               LEFT JOIN ".BASE_DATOS.".tab_despac_gpsxxx x
                      ON a.num_despac = x.num_despac 
               LEFT JOIN ".BASE_DATOS .".tab_genera_opegps y 
-                     ON x.cod_opegps = y.cod_operad 
+                     ON x.cod_opegps = y.cod_operad
+                     OR x.cod_opegps = y.nit_operad
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer z 
                      ON a.cod_asegur = z.cod_tercer 
              INNER JOIN ".BASE_DATOS.".tab_genera_tipdes aa 
