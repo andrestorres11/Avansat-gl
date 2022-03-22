@@ -1823,7 +1823,7 @@ class InsertNovedad {
         $datos->rutpla = $mDatRegist['rutpla'];
 
         if (self::sendMail($datos)){
-            return ". Se envió Correos a: ".$mMail;
+            return ". Se envio Correos a: ".$mMail;
         }else{
             return false;
         }
@@ -1887,7 +1887,7 @@ class InsertNovedad {
      *  \return: Array
      */
 
-    private function insertNovedad($mDatRegist = null, $mDifTieAla = '0', $mCodSitiox = '94134', $mIndEnSiti = false, $mDatUsuari = null) {
+    private function insertNovedad($mDatRegist = null, $mDifTieAla = '0', $mCodSitiox = '94134', $mIndEnSiti = false, $mDatUsuari = null, $mCodSitioy ) {
         if ($mIndEnSiti == true) {
             $mSql = " INSERT INTO " . BASE_DATOS . ".tab_despac_noveda 
                                 (
@@ -1921,14 +1921,35 @@ class InsertNovedad {
                        WHERE a.num_despac = '" . $mDatRegist['despac'] . "' AND a.cod_rutasx != b.cod_rutasx ";
             $consulta = new Consulta($query, $this->conexion);
       
+            $queryseg="SELECT `num_consec`, `cod_transp`, `ubi_seguim`, `ind_estado` FROM `tab_transp_tipser` WHERE `cod_transp` LIKE '".$mDatRegist['nittra']."' ORDER BY `tab_transp_tipser`.`num_consec` DESC limit 1";
+            $mConsultseg = new Consulta($queryseg, $this->conexion);
+            $codseg = $mConsultseg->ret_arreglo();
+            $codseg = $codseg[2] ;
+            
 
+
+            $query ="SELECT `cod_sitiox` , `nom_sitiox` FROM `tab_despac_sitio` WHERE `nom_sitiox` LIKE '".$mDatRegist['cody']."' ORDER BY `cod_sitiox` ASC limit 1";
+            $mConsultq = new Consulta($query, $this->conexion);
+            $codx = $mConsultq->ret_arreglo();
+            $codx = $codx[0] ;
+            
+            $query2 ="SELECT `num_despac`, `cod_consec`, `cod_sitioy` FROM `tab_despac_contro` WHERE `num_despac`=".$mDatRegist['despac']." ORDER BY `tab_despac_contro`.`cod_consec` DESC limit 1";
+            $mConsultq2 = new Consulta($query2, $this->conexion);
+            $codx2 = $mConsultq2->ret_arreglo();
+            $codx2 = $codx2[2] ;
+            
+            if($codseg==1){
+                $codsitioy=$mCodSitiox;
+            }else{
+                $codsitioy=$codx;
+            }
 
             $mSql = " INSERT INTO " . BASE_DATOS . ".tab_despac_contro 
                                 (
                                     num_despac,  cod_rutasx, cod_contro, 
                                     cod_consec,  obs_contro, cod_noveda, 
                                     tiem_duraci, fec_contro, val_retras, 
-                                    cod_sitiox,  ind_sitiox, cod_usrcre, 
+                                    cod_sitiox,  cod_sitioy, ind_sitiox, cod_usrcre, 
                                     usr_creaci,  fec_creaci 
                                 )
                                 VALUES 
@@ -1936,13 +1957,14 @@ class InsertNovedad {
                                     '" . $mDatRegist['despac'] . "',  '" . $mDatRegist['rutax'] . "', '" . $mDatRegist['contro'] . "', 
                                     '" . $mMax . "',     '" . addslashes($mDatRegist['observ']) . "', '" . $mDatRegist['noveda'] . "', 
                                     '" . $mDatRegist['tieadi'] . "', '" . $mDatRegist['fecnov'] . "', '" . $mDifTieAla . "', 
-                                    '" . $mCodSitiox . "',           '" . $mDatRegist['indsit'] . "', '" . $mDatUsuari['cod_consec'] . "', 
+                                    '" . $codx . "', '" . $mCodSitiox . "', '" . $mDatRegist['indsit'] . "', '" . $mDatUsuari['cod_consec'] . "', 
                                     '" . $mDatRegist['usuari'] . "', '" . $mDatRegist['fecact'] . "'
                                 )";
         }
 
         $mConsult = new Consulta($mSql, $this->conexion, "R");
-
+        
+        
         #Actualizo en la tabla tab_despac_seguin el indicador a 0 cuando es una novedad en sitio
         if($mIndEnSiti == true)
         {
