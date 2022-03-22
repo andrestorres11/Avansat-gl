@@ -1214,10 +1214,10 @@ class Proc_segui
                                 $mHtml->SetBody("<td class='celda_info' width='50px'>");
                                 $mHtml->SetBody("<input type='text' class='campo' style='bacground:none; border:0;' size='10' id='horID' readonly='true' name='hor' value='" . date('G:i') . "'>");
                                 $mHtml->SetBody("</td>");
-                                if(sizeof($Tipo_etapa)>0)
-                                {
-                                    $mHtml->Select2( $mEstadoPrecar, array("class"=>'celda_info', 'width'=>'50px', "name"=>'cod_estprc', "id"=>'cod_estprc') );
-                                }
+                                // if(sizeof($Tipo_etapa)>0)
+                                // {
+                                //     $mHtml->Select2( $mEstadoPrecar, array("class"=>'celda_info', 'width'=>'50px', "name"=>'cod_estprc', "id"=>'cod_estprc') );
+                                // }
                                 $mHtml->Input( array("class"=>'celda_info', "width"=>'50px', "type"=>'text', "name"=>'noved', "id"=>'novedadID', "maxlength"=>'50',  "value"=>$nove,  "size"=>'50') );
 
                                 if ($ind_tiempo[0])
