@@ -41,20 +41,12 @@ function aceptar_ins() {
 		var noveda = document.getElementById('novedadID');
 		var cod_lastpc = document.getElementById('cod_lastpcID');
 		var cod_contro = document.getElementById('cod_controID');
-
-		var sitioy = document.getElementById("cod_sitioyID");
-        
-		//alert("sitio "+ sitio.value + " novedad "+ novedad + " cod_noveda " + cod_noveda + " cod contro " + cod_contro.value);
-		
-		
-		
 		//Convirtienedo a Date la fecha del sistema
 		var fecnov = document.getElementById('fecnovID');
 		var hornov = document.getElementById('hornovID');
 		var fecnovArray = fecnov.value.split("-");
 		var hornovArray = hornov.value.split(":");
 		var fecSistema = new Date(fecnovArray[2], Number(fecnovArray[1]) - 1, fecnovArray[0], hornovArray[0], hornovArray[1], hornovArray[2]);
-		
 		//precarge
 		if(document.getElementById('cod_estprc'))
 		{
@@ -96,15 +88,15 @@ function aceptar_ins() {
 			var num_califi = document.getElementById("num_califiID");
 			var obs_califi = document.getElementById("obs_califiID");
 			if (num_califi.value == '') {
-				alert("Debe seleccionar una calificacion para el conductor!");
+				alert("Debe seleccionar una calificación para el conductor!");
 				return false;
 			}
 			if (obs_califi.value == '') {
-				alert("Debe digitar una observacion para el conductor!");
+				alert("Debe digitar una observación para el conductor!");
 				return false;
 			}
 		}
-		
+
 		if (formulario.novedad.value == 0) {
 			window.alert("La Novedad es Requerida")
 			validacion = false
@@ -113,7 +105,6 @@ function aceptar_ins() {
 				validacion = false
 				return formulario.obsID.focus();
 			}
-			
 			return formulario.novedadID.focus();
 		} else {
 			if (nov_especi.value == "1" && obs.value == "") {
@@ -121,14 +112,10 @@ function aceptar_ins() {
 				validacion = false
 				formulario.obsID.focus();
 			}
-			
 			if (document.getElementById("date") && (date.value == "" || hora.value == "")) {
 				window.alert('Digite El tiempo de Duracion de La novedad');
-				
 				return date.focus();
-				
 			} else {
-				
 				if (validacion) {
 					if (parseInt(noveda.value) != '9998') {
 						if (fecAdic <= fecSistema) {
@@ -136,7 +123,6 @@ function aceptar_ins() {
 							return date.focus();
 						} else {
 							if ($("#cod_controID").val() == '9999' && $("#sitID option:selected").val() == 'S') {
-								
 								var standa = $("#dir_aplicaID").val();
 								var attributes = 'Ajax=on&option=pendienteDestin&standa=' + standa;
 								attributes += '&num_despac=' + $("#num_despacID").val();
@@ -153,7 +139,6 @@ function aceptar_ins() {
 										} else {
 											confirmAceptarIns();
 										}*/
-										
 											confirmAceptarIns();
 									}
 								});
@@ -189,11 +174,8 @@ function aceptar_ins() {
 }
 
 function confirmAceptarIns() {
-	
 	try {
-		
 		if (confirm('Esta Seguro que Desea Insertar La novedad?')) {
-			
 			var formulario = document.getElementById("form_insID");
 			formulario.opcion.value = 3;
 			formulario.submit();
