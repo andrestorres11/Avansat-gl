@@ -4868,7 +4868,7 @@ class Despachos
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                         ON a.cod_noveda = b.cod_noveda 
                 $mIndGPS JOIN ".BASE_DATOS.".tab_despac_sitio c 
-                        ON a.cod_sitiox = c.cod_sitiox 
+                        ON a.cod_sitioy = c.cod_sitiox 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro d 
                         ON a.cod_contro = d.cod_contro 
                     WHERE a.num_despac = '{$mNumDespac}' 
@@ -4964,7 +4964,7 @@ class Despachos
                     INNER JOIN ".BASE_DATOS.".tab_genera_novseg b
                             ON a.cod_noveda = b.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
-                            ON a.cod_sitiox = c.cod_sitiox
+                            ON a.cod_sitioy = c.cod_sitiox
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro d
                             ON a.cod_contro = d.cod_contro
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
