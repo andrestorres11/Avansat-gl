@@ -9,7 +9,6 @@
  *  \warning: 
  */
 
-//echo $_REQUEST['option'];
 
 global $HTTP_POST_FILES;
 session_start();

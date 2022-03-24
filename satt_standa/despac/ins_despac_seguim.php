@@ -1092,7 +1092,7 @@ class Proc_segui
 
         $query = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
                         UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
-                        a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+                        a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, c.cod_tercer, 
                         IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
                         CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
                         CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin,
@@ -1214,10 +1214,10 @@ class Proc_segui
                                 $mHtml->SetBody("<td class='celda_info' width='50px'>");
                                 $mHtml->SetBody("<input type='text' class='campo' style='bacground:none; border:0;' size='10' id='horID' readonly='true' name='hor' value='" . date('G:i') . "'>");
                                 $mHtml->SetBody("</td>");
-                                // if(sizeof($Tipo_etapa)>0)
-                                // {
-                                //     $mHtml->Select2( $mEstadoPrecar, array("class"=>'celda_info', 'width'=>'50px', "name"=>'cod_estprc', "id"=>'cod_estprc') );
-                                // }
+                                if(sizeof($Tipo_etapa)>0)
+                                {
+                                    $mHtml->Select2( $mEstadoPrecar, array("class"=>'celda_info', 'width'=>'50px', "name"=>'cod_estprc', "id"=>'cod_estprc') );
+                                }
                                 $mHtml->Input( array("class"=>'celda_info', "width"=>'50px', "type"=>'text', "name"=>'noved', "id"=>'novedadID', "maxlength"=>'50',  "value"=>$nove,  "size"=>'50') );
 
                                 if ($ind_tiempo[0])
@@ -1238,15 +1238,14 @@ class Proc_segui
 
                                 $mHtml->Select2( $mArraySitio, array("class"=>'celda_info', "id"=>'sitID', "name"=>'sit', "class"=>'form_01', "onblur"=>'valSit()') );
 
-                    
                                 if( $tiem )
                                     $mHtml->Select2( $mArrayTiempo, array("class"=>'celda_info', 'width'=>'50px', "name"=>'tiempo', "id"=>'tiemID') );
 
                                 if ($_REQUEST['ind_virtua'] == 0 && !$contro)
                                     $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20') );
                                 else
-                                    $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) );
-
+                                     $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) );
+                                $mHtml->hidden( array("name"=>"cod_sitioyID", "id"=>"cod_sitioyID",   "value"=>$_REQUEST[pc]) );   
                                 $mHtml->SetBody("<td class='celda_info' >");
                                 $mHtml->SetBody("<textarea name='obs' id='obsID' onkeyup='UpperText( $(this) )' cols='20' Rows='4'></textarea>");
                                 $mHtml->SetBody("<div style='font-family:Arial,Helvetica,sans-serif; font-size: 11px;' id='counter'></div>");
@@ -1279,6 +1278,7 @@ class Proc_segui
                                 $mParamcCalifi = $_REQUEST['codpc'] != '9999' ? '0' : $mParamcCalifi;
 
                                 $mHtml->Row();
+                                    
                                     $mHtml->Hidden( array("name"=>"ind_calcon", "id"=>"ind_calconID",   "value"=>$mParamcCalifi) );
                                     $mHtml->Hidden( array("name"=>"usuario",    "id"=>"usuarioID",      "value"=>$usuario) );
                                     $mHtml->Hidden( array("name"=>"tip_servic", "id"=>"tip_servicID",   "value"=>$transpor[0][2]) );
@@ -1393,6 +1393,8 @@ class Proc_segui
     
     function Insertar()
     {
+        
+        
         include( "InsertNovedad.inc" );
         ini_set('memory_limit', '64M');
         $datos_usuario = $this->usuario->retornar();
@@ -1413,6 +1415,7 @@ class Proc_segui
             //Se calcula cuantos minutos adicionar
             $tiemp_adicis = $TIME_DIFF[0] * 60 + $TIME_DIFF[1];
             $_REQUEST[fecpronov] = $_REQUEST[fec] . " " . $_REQUEST[hor] . ":00";
+            
             $regist["habPAD"] = $_REQUEST[habPAD];
             $regist["faro"] = '1';
             $regist["despac"] = $_REQUEST[despac];
@@ -1438,7 +1441,7 @@ class Proc_segui
             // $transac_nov = new Despachos($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion);
             $transac_nov = new InsertNovedad($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion);
             $RESPON = $transac_nov->InsertarNovedadPC(BASE_DATOS, $regist, 0);
-
+           
             if ($RESPON[0]["indica"])
             {
                 $consulta = new Consulta("COMMIT", $this->conexion);
@@ -1597,13 +1600,16 @@ class Proc_segui
             $consulta = new Consulta($query, $this->conexion);
             $nitransp = $consulta->ret_matriz();
             $regist["despac"] = $_REQUEST[despac];
+            $regist["cody"] = $_REQUEST[cod_sitioyID];
+            
+            $regist["tercero"] = $_REQUEST[tercero];
+
             $regist["contro"] = $_REQUEST[codpc];
             $regist["noveda"] = $_REQUEST[novedad];
             $regist["tieadi"] = $tiemp_adicis;
             $regist["observ"] = $tiemp_adicis ? $_REQUEST[obs]. '. Tiempo Generado: '.$tiemp_adicis. ' Minutos ' :  $_REQUEST[obs];
             $regist["fecact"] = $fec_actual;
             $regist["fecnov"] = $_REQUEST[fec] . " " . $_REQUEST[hor] . ":00";
-            ;
             $regist["usuari"] = $_REQUEST[usuario];
             $regist["nittra"] = $nitransp[0][0];
             $regist["indsit"] = "1";
@@ -1617,7 +1623,7 @@ class Proc_segui
             $consulta = new Consulta("SELECT NOW()", $this->conexion, "BR");
 
             // $transac_nov = new Despachos($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion);
-            $transac_nov = new InsertNovedad($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion);
+            $transac_nov = new InsertNovedad($_REQUEST[cod_servic], $_REQUEST[opcion], $this->cod_aplica, $this->conexion) ;
             $RESPON = $transac_nov->InsertarNovedadNC(BASE_DATOS, $regist, 0);
 
             $formulario = new Formulario("index.php", "post", "INFORMACION DEL DESPACHO", "form_ins");
