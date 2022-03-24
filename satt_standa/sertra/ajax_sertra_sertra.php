@@ -12,6 +12,7 @@ error_reporting(E_ALL &~E_NOTICE);
  *  \warning:
  */
 
+ 
 class ajax_certra_certra {
 
     private static $cConexion,

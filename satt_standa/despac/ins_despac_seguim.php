@@ -1238,6 +1238,7 @@ class Proc_segui
 
                                 $mHtml->Select2( $mArraySitio, array("class"=>'celda_info', "id"=>'sitID', "name"=>'sit', "class"=>'form_01', "onblur"=>'valSit()') );
 
+                    
                                 if( $tiem )
                                     $mHtml->Select2( $mArrayTiempo, array("class"=>'celda_info', 'width'=>'50px', "name"=>'tiempo', "id"=>'tiemID') );
 

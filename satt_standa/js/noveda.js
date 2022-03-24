@@ -15,6 +15,7 @@ function UpperText(campo) {
 }
 
 
+
 function aceptar_ins() {
 	try {
 		var form_ins = document.getElementById("form_insID");

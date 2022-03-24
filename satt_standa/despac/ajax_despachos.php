@@ -8,7 +8,8 @@
  *  \bug: 
  *  \warning: 
  */
-echo $_REQUEST['option'];
+
+//echo $_REQUEST['option'];
 
 global $HTTP_POST_FILES;
 session_start();
