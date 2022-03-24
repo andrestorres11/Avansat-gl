@@ -171,7 +171,7 @@ class ajax_certra_certra {
             tie_prctr1, tie_prctr2, tie_carurb, tie_carnac, tie_carimp, tie_carexp,
             tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ind_excala, 
             ind_calcon, ind_segcar, ind_segtra, ind_segdes, val_regist, tie_cartr1, 
-            val_despac, tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, ubi_seguim, 
+            val_despac, tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, 
             ind_biomet, can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, 
             can_llatr2, fec_iniser, hor_iniser, fec_finser, hor_finser, nom_aplica, 
             ind_segprc, ind_planru, tie_traexp, tie_traimp, tie_tratr1, tie_tratr2, 
@@ -895,7 +895,7 @@ class ajax_certra_certra {
         <div id="otra_parameID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Otras Parametrizaiones</b></h3>
             <div id="contenido_etap">
-                <div class="StyleDIV contenido" style="min-height: 210px !important;" >
+                <div class="StyleDIV contenido" style="min-height: 180px !important;" >
                     <div class="col-md-5 derecha">
                         Activa 
                         <?php
@@ -945,7 +945,6 @@ class ajax_certra_certra {
                         ?>
                         <input <?= $ind_camrut ?> type="checkbox" name="ind_camrut" id="ind_camrutID" value="1">
                     </div>
-
                     <div class="col-md-2">&nbsp;</div>
                     <div class="col-md-5 izquierda">
                         <?php
@@ -955,16 +954,6 @@ class ajax_certra_certra {
                         ?>
                         <input <?= $dup_manifi ?> type="checkbox" name="dup_manifi" id="dup_manifiID" value="1">
                         Permitir Duplicar Manifiesto
-                    </div>
-                    <div class="col-md-12">&nbsp;</div>
-                    <div class="col-md-5 derecha">
-                        Ubicación de seguimiento 
-                        <?php
-                        if ($datos->principal['ubi_seguim'] == 1) {
-                            $ubi_seguim = "checked='true'";
-                        }
-                        ?>
-                        <input <?= $ubi_seguim ?> type="checkbox" name="ubi_seguim" id="ubi_seguimID" value="1">
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
@@ -1625,7 +1614,6 @@ class ajax_certra_certra {
         $datos->ind_biomet = $datos->ind_biomet == '1' ? '1' : '0';
         $datos->ind_camrut = $datos->ind_camrut == '1' ? '1' : '0';
         $datos->dup_manifi = $datos->dup_manifi == '1' ? '1' : '0';
-        $datos->ubi_seguim = $datos->ubi_seguim == '1' ? '1' : '0';
         $datos->ind_solpol = $datos->ind_solpol == '1' ? '1' : '0';
         $datos->hab_asicar = $datos->hab_asicar == '1' ? '1' : '0';
         $datos->tie_trazab = str_replace('.', ',', $datos->tie_trazab);
@@ -1636,7 +1624,7 @@ class ajax_certra_certra {
             ind_notage, tip_factur, tie_carurb, tie_carnac, tie_carimp, tie_carexp,
             tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ind_excala, 
             ind_calcon, ind_segcar, ind_segtra, ind_segdes, val_regist, val_despac,
-            tie_cartr1, tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, ubi_seguim, 
+            tie_cartr1, tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, 
             ind_biomet, can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, 
             can_llatr2, fec_iniser, hor_iniser, fec_finser, hor_finser, nom_aplica, 
             ind_segctr, ind_planru, tie_traexp, tie_traimp, tie_tratr1, tie_tratr2, 
@@ -1655,7 +1643,7 @@ class ajax_certra_certra {
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
         '$datos->tie_desurb', '$datos->tie_desnac', '$datos->tie_desimp', '$datos->tie_desexp', '$datos->tie_trazab', '$datos->ind_excala', 
         '$datos->ind_calcon', '$datos->ind_segcar', '$datos->ind_segtra', '$datos->ind_segdes', '$datos->val_regist', '$datos->val_despac', 
-        '$datos->tie_cartr1', '$datos->tie_cartr2', '$datos->tie_destr1', '$datos->tie_destr2', '$datos->ind_camrut', '$datos->dup_manifi', '$datos->ubi_seguim',
+        '$datos->tie_cartr1', '$datos->tie_cartr2', '$datos->tie_destr1', '$datos->tie_destr2', '$datos->ind_camrut', '$datos->dup_manifi', 
         '$datos->ind_biomet', '$datos->can_llaurb', '$datos->can_llanac', '$datos->can_llaimp', '$datos->can_llaexp', '$datos->can_llatr1', 
         '$datos->can_llatr2', '$datos->fec_iniser', '$datos->hor_iniser', '$datos->fec_finser', '$datos->hor_finser', '$datos->nom_aplica', 
         '$datos->ind_segtra', '$datos->ind_planru', '$datos->tie_traexp', '$datos->tie_traimp', '$datos->tie_tratr1', '$datos->tie_tratr2', 

@@ -118,7 +118,7 @@ class Califi
 	private function getOpeGps(){
         
         //consulto los tipos de servicios y los agrego al objeto principal
-        $query = "SELECT cod_operad, nom_operad
+        $query = "SELECT cod_operad, nom_operad, nit_operad
         FROM " . BASE_DATOS . ".tab_genera_opegps
         WHERE ind_estado = '1'";
         $consulta = new Consulta($query, self::$cConexion);
@@ -170,7 +170,7 @@ class Califi
 								<?php
 								foreach ($operadores as $key => $value) {
 									$sel = "";
-									if ($value['cod_operad'] == $informacion['gps_operad']) {
+									if ($value['cod_operad'] == $informacion['gps_operad'] || $value['nit_operad'] == $informacion['gps_operad']) {
 										$sel = "selected";
 									}
 

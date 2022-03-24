@@ -1,9 +1,9 @@
 <?php
     /****************************************************************************
     NOMBRE:   AjaxGestioAsiscar
-    FUNCION:  Retorna todos los datos necesarios para construir la informaci�n
+    FUNCION:  Retorna todos los datos necesarios para construir la informaci?n
     FECHA DE MODIFICACION: 13/04/2020
-    CREADO POR: Ing. Cristian Andr�s Torres
+    CREADO POR: Ing. Cristian Andr?s Torres
     MODIFICADO 
     ****************************************************************************/
     
@@ -95,7 +95,15 @@
                 case "20":
                   self::datselect();
                 break;
-                
+                case "21":
+                  self::almacenararchivos2();
+                break;
+                case "22":
+                  self::actualizarregarchi();
+                break;
+                case "23":
+                  self::eliminaregarchi();
+                break; 
             }
         }
 
@@ -154,7 +162,7 @@
 
 
         /*! \fn: informeGeneral
-           *  \brief: Genera la informaci�n para las tabla del informe general
+           *  \brief: Genera la informaci?n para las tabla del informe general
            *  \author: Ing. Cristian Torres
            *  \date: 04-06-2020
            *  \date modified: dd/mm/aaaa
@@ -612,7 +620,7 @@
                                 </div>
                                 
                                 <div class="col-4 text-left">
-                                  <select class="form-control" id="id_estado" name="id_estado" style="font-size: 12px; onclick="getIndex()">
+                                  <select class="form-control" id="id_estado" name="id_estado" style="font-size: 12px;" onchange="getIndex()">
                                     <option value="0">Seleccion...</option>
                                     <option value="4">En Proceso</option>
                                     <option value="5">Finalizado</option>
@@ -620,12 +628,12 @@
                                 </div>
                                 
                                 <div class="col-2 text-right">
-                                  <label for="id_servicio" class="col-form-label">Servicios</label>
+                                  <label id="label_servicio" for="id_servicio" class="col-form-label" style=" display:none; ">Servicios</label>
                                 </div>
 
                                 
                                 <div class="col-4 text-left">
-                                  <select class="form-control" id="id_servicio" name="id_servicio" style="font-size: 12px;">
+                                  <select class="form-control" id="id_servicio" name="id_servicio" style="font-size: 12px; display:none;" onchange="getindexservi()">
                                     <option value="0">Seleccion...</option>';
                                     $html.= $this->darAllServicios($_REQUEST['cod_solici']);
                                     $html.='
@@ -634,27 +642,29 @@
                               </div>
 
                               <div class="row mt-2 justify-content-center">
-                                <div class="col-12">
-                                 <textarea id="txt_observaciones" style="font-size: 12px; width: 100%; height: 60px;" rows="2" placeholder="Observaciones"></textarea>
-                                </div>
+                              <div class="col-12">
+                               <textarea id="txt_observaciones" name="txt_observaciones" style="font-size: 12px; width: 100%; height: 60px; display:none;" rows="2" placeholder="Observaciones"></textarea>
                               </div>
-
-                              
+                            </div>
+                            
+                            
                             </form>
                             <form method="POST" enctype="multipart/form-data" id="filesForm">
                               <div class="row mt-1 justify-content-center" >
-                                <div class="col-12" >
-                                
-                                  <input id="archivo[]" name="archivo[]" accept=".png, .jpg, .jpeg, .tiff, .tif, .gif, .raw" type="file" data-toggle="tooltip" data-placement="top" title="Imagen png jpg jpeg tiff tif gif raw" style="font-size: 12px;" multiple>
-                                  <button type="button" onclick="subirArchivostmp()" class="btn btn-success btn-sm" style="font-size: 12px;">Cargar</button>
+                                <div class="col-6" >
+                                  <input id="archivo" name="archivo[]" accept=".png, .jpg, .jpeg, .tiff, .tif, .gif, .raw" type="file" data-toggle="tooltip" data-placement="top" title="Imagen png jpg jpeg tiff tif gif raw" style="font-size: 12px; display:none;" onchange="getindexinput()" multiple>
+                                </div>
+                                <div class="col-6" >
+                                  <button id="cargafilebtn" name="cargafilebtn" type="button" onclick="subirArchivostmp2()" class="btn btn-success btn-sm" style="font-size: 12px; display:none;">Cargar</button>
                                 </div>
                               </div>
                               <div class="row mt-1">
                                 <div class="col-md-12">
-                                  <table id="listararchivos" class="table table-hover">
+                                  <table id="listararchivos" class="table table-hover" style="display:none;">
                                     <thead>
                                       <tr>
                                         <th scope="col">Archivo</th>
+                                        <th scope="col">Servicio</th>
                                         <th scope="col">Detalle</th>
                                         <th scope="col">Accion</th>
                                         
@@ -669,7 +679,8 @@
 
                               <div class="row mt-1">
                                 <div class="col-md-12 text-center">
-                                  <a href="#" class="small-box-footer btn btn-success btn-sm" onclick="subirArchivos()">Enviar</a>
+                                  <a href="#" id="btnenviar" name="btnenviar" class="small-box-footer btn btn-success btn-sm" style=" display:none; "  onclick="subirArchivos()">Enviar</a>
+                                  <input id="idinicio" name="idinicio" type="hidden" value=""> 
                                 </div>
                               </div>
                             </form>
@@ -677,6 +688,7 @@
                         </div>
                       </div>
                     </div>';
+              
               $html.='<div class="card border border-success" style="margin:15px;">
                         <div class="card-header color-heading text-align">
                           Informe de la solicitud
@@ -686,12 +698,23 @@
                             <div class="col-md-12 text-center">
                               <a href="../satt_standa/asicar/inf_dashbo_asicar.php?cod_solici='.$_REQUEST['cod_solici'].'"class="small-box-footer btn btn-success btn-sm">Ver</a>
                             </div>
-                          </div>
-
-                          
-
+                          </div>                  
                         </div>
                       </div>';
+            }else if($cod_estado == 5){
+
+              $html.='<div class="card border border-success" style="margin:15px;">
+                <div class="card-header color-heading text-align">
+                  Informe de la solicitud
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12 text-center">
+                      <a href="../satt_standa/asicar/inf_dashbo_asicar.php?cod_solici='.$_REQUEST['cod_solici'].'"class="small-box-footer btn btn-success btn-sm">Ver</a>
+                    </div>
+                  </div>                  
+                </div>
+              </div>';
             }
             else if($cod_estado == 6){
               $html.=$cancelado;
@@ -821,6 +844,52 @@
               </div>
               </div>';
             }
+            if($tip_solici==3){
+              $html ='<div class="card text-center" style="margin:15px;">
+              <div class="card-header color-heading">
+              Datos Adicionales del Servicio
+              </div>
+            <div class="card-body">
+      
+              <div class="row">
+                  <div class="offset-1 col-3">
+                      <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Instalaci�n" id="ciu_origins" name="ciu_origins" disabled value="'.$this->darNombreCiudad($informacion['ciu_origins']).'">
+                  </div>
+                  <div class="col-4">
+                      <input class="form-control form-control-sm" type="text" placeholder="Direcci�n Instalaci�n" id="dir_ciuinsID" name="dir_ciuins"  disabled value="'.$informacion['dir_ciuins'].'">
+                  </div>
+                <div class="col-3">
+                  <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora Instalaci�n" id="fec_instID" name="fec_inst" disabled value="'.$informacion['fec_inst'].'">
+                </div>
+              </div>
+      
+              <div class="row mt-3">
+                  <div class="offset-1 col-3">
+                      <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Desinstalaci�n" id="ciu_desin" name="ciu_desin" disabled value="'.$this->darNombreCiudad($informacion['ciu_desin']).'">
+                  </div>
+                  <div class="col-4">
+                      <input class="form-control form-control-sm" type="text" placeholder="Direcci�n Desinstalaci�n" id="dir_ciudesiID" name="dir_ciudesi" disabled value="'.$informacion['dir_ciudesi'].'">
+                  </div>
+                  <div class="col-3">
+                      <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora Desinstalaci�n" id="fec_desinID" name="fec_desin" disabled value="'.$informacion['fec_desin'].'">
+                  </div>
+              </div>
+              <hr>
+              <div class="row mt-3">
+                  <label for="inputPassword" class="offset-5 col-3 col-form-label"><h5 class="text-label-big">No. Contenedor:</h5></label>
+                  <div class="col-3">
+                      <input type="text" class="form-control form-control-sm" id="num_conte" name="num_conte" disabled value="'.$informacion['num_conte'].'">
+                  </div>
+              </div>
+              <div class="row mt-3">
+                              <div class="offset-1 col-10">
+                                <textarea class="form-control" id="obs_candsID" name="obs_cands" rows="3" placeholder="Observaciones" disabled>'.$informacion['obs_cands'].'</textarea>
+                              </div>
+                            </div>
+      
+            </div>
+            </div>';
+              }
             echo json_encode(utf8_decode($html));
         }
 
@@ -918,13 +987,13 @@
                     <div class="card-body">
                       <div class="row">
                         <div class="offset-1 col-10">
-                          <label for="obs_cancelID" style="font-size:14px;">Motivo de cancelaci�n:</label>
+                          <label for="obs_cancelID" style="font-size:14px;">Motivo de cancelaci?n:</label>
                           <textarea class="form-control" id="obs_cancelID" name="obs_cancel" rows="3" disabled>'.$respuestas['obs_cancel'].'</textarea>
                         </div>
                       </div>
                       <div class="row mt-3">
                         <div class="offset-1 col-5">
-                          <label for="fec_cancelID" style="font-size:14px;">Fecha y hora de cancelaci�n:</label>
+                          <label for="fec_cancelID" style="font-size:14px;">Fecha y hora de cancelaci?n:</label>
                           <input class="form-control form-control-sm" id="fec_cancelID" name="fec_cancel" type="text" disabled value="'.$respuestas['fec_cancel'].'">
                         </div>
                         <div class="col-5">
@@ -950,7 +1019,7 @@
           $respuestas = self::cleanArray($respuestas);
           $html='';
 
-          //Si el tipo de asistencia es acompa�amiento en carretera trae el servicio con los datos de este
+          //Si el tipo de asistencia es acompa?amiento en carretera trae el servicio con los datos de este
           if($this->tipSolicitud($num_solici,1)==CON_SOLICI_ACOMPA){
             $html.=$this->getServicTrayect($num_solici);
           }
@@ -1395,11 +1464,11 @@
 
 
         /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaci�n
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaci?n
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que ser� analizado por la funci�n
+           *  \param: $arrau => Arreglo que ser? analizado por la funci?n
            *  \return: array
         */
         function cleanArray($array){
@@ -1443,7 +1512,7 @@
                 $temporal = $fichero['tmp_name'];
                 $ext = explode(".", $nombre_archivo);
                 $nombre = $ruta.$num_solici.".".end($ext);
-                //Ojo Revisar la ubicaci�n
+                //Ojo Revisar la ubicaci?n
                 if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                     $return['status'] = 500;
                     $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1492,7 +1561,7 @@
                     }    
                 echo json_encode($return);
                 }catch (Exception $e) {
-                  echo 'Excepci�n registrar: ',  $e->getMessage(), "\n";
+                  echo 'Excepci?n registrar: ',  $e->getMessage(), "\n";
                 }
         }
 
@@ -1511,7 +1580,7 @@
                 $temporal = $fichero['tmp_name'];
                 $ext = explode(".", $nombre_archivo);
                 $nombre = $ruta.$num_solici.".".end($ext);
-                //Ojo Revisar la ubicaci�n
+                //Ojo Revisar la ubicaci?n
                 if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                     $return['status'] = 500;
                     $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1561,7 +1630,7 @@
                     }    
                 echo json_encode($return);
                 }catch (Exception $e) {
-                  echo 'Excepci�n registrar: ',  $e->getMessage(), "\n";
+                  echo 'Excepci?n registrar: ',  $e->getMessage(), "\n";
                 }
         }
 
@@ -1579,7 +1648,7 @@
             $temporal = $fichero['tmp_name'];
             $ext = explode(".", $nombre_archivo);
             $nombre = $ruta.$num_solici.".".end($ext);
-            //Ojo Revisar la ubicaci�n
+            //Ojo Revisar la ubicaci?n
             if (move_uploaded_file($fichero['tmp_name'],$nombre)){
                 $return['status'] = 500;
                 $return['response'] = 'No se pudo manejar el archivo '.$temporal;
@@ -1628,7 +1697,7 @@
                 }    
             echo json_encode($return);
             }catch (Exception $e) {
-              echo 'Excepci�n registrar: ',  $e->getMessage(), "\n";
+              echo 'Excepci?n registrar: ',  $e->getMessage(), "\n";
             }
         }
 
@@ -1761,7 +1830,7 @@
               <meta name="x-apple-disable-message-reformatting">
               <meta http-equiv="X-UA-Compatible" content="IE=edge">
               <meta content="telephone=no" name="format-detection">
-              <title>Nuevo correo electr�nico 2</title>
+              <title>Nuevo correo electr?nico 2</title>
               <!--[if (mso 16)]><style type="text/css"> a {text-decoration: none;} </style><![endif]-->
               <!--[if gte mso 9]><style>sup { font-size: 100% !important; }</style><![endif]-->
               <style type="text/css">
@@ -1845,7 +1914,7 @@
                                         <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
                                           <tr style="border-collapse:collapse;">
                                             <td align="left" style="text-align: center; padding:0;Margin:0;padding-top:40px;">
-                                              <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud N�. '.$num_solici.' </b></p>
+                                              <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud No. '.$num_solici.' </b></p>
                                             </td>
                                           </tr>
                                         </table>
@@ -1920,7 +1989,7 @@
                                           <tr style="border-collapse:collapse;">
                                             <td align="center" style="padding:0;Margin:0;padding-bottom:10px;">
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:10px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:10px;color:#333333;">
-                                                Copyright � '.date('Y').'. Todos Los Derechos Reservados. Dise�ado y desarrollado por Grupo OET S.A.S.</p>
+                                                Copyright ? '.date('Y').'. Todos Los Derechos Reservados. Dise?ado y desarrollado por Grupo OET S.A.S.</p>
                                             </td>
                                           </tr>
                                         </table>
@@ -1944,198 +2013,228 @@
               mail($correo, $subject, $message, $headers);
             }
         }
-
-
-    function traerarchivos(){
+        function traerarchivos(){
       
-      $files_post = $_FILES['archivo'];
-
-      $files = array();
-      $file_count = count($files_post['name']);
-      
-      $file_keys = array_keys($files_post);
-      
-      for ($i=0; $i < $file_count; $i++) 
-      { 
-        foreach ($file_keys as $key) 
-        {
-		      if($key=='name' || $key=='tmp_name'){
-			      $files[$i][$key] = $files_post[$key][$i];
-		      }
-		    }
-      }
-      if($files[0]['name']==""){
-        $files=array();
-        echo json_encode($files);
-        
-      }else{
-        echo json_encode($files);
-      }
-      
-      
-    }
-
-
-    function almacenararchivos(){
-      switch ($_SERVER['SERVER_NAME']) {
-        case 'dev.intrared.net':
-            $rutdirectorio="/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
-          break;
-        case 'avansatgl.intrared.net':
-          $rutdirectorio="/var/www/html/ap/satt_faro/files/asicar";
-          break;
-      }
-      if($_FILES["archivo"]['tmp_name']!=null || $_FILES["archivo"]['tmp_name']!=""){
-
-           
-      $return = [];
-      $num_solici=$_REQUEST['cod_solici'];
-      $idestado=$_REQUEST['id_estado'];
-      $idservicio=$_REQUEST['id_servicio'];
-      $textservicio=$_REQUEST['id_textservi'];
-      $observacion=$_REQUEST['txt_observaciones'];
-      
-      $inftabla= explode(",",$_REQUEST['array']);
-      $user=$_SESSION['datos_usuario']['cod_usuari'];
-      $newinftabla=[];
-      $i=0;
-      $j=0;
-      $arraytmp=[];
-      foreach($inftabla as $key=>$value){
-        array_push($arraytmp, $value);
-        $i++;
-        if($i==3){
-          $i=0;
-          $newinftabla[$j]=$arraytmp;
-          $j++;
-          $arraytmp=[];
-        }  
-      }
-      
-       
-      $finalizar=false;
-      $numfiles=0;
-      foreach($_FILES["archivo"]['tmp_name'] as $key => $tmp_name)
-      {
-        
-        $namefiletmp = $num_solici."-".$idservicio."-".trim(substr(microtime(), 2, 8));
-        
-        
-        //Validamos que el archivo exista
-        if($_FILES["archivo"]["name"][$key]) {
-          $finalizar=true;
-         
-          $filename = $_FILES["archivo"]["name"][$key]; //Obtenemos el nombre original del archivo
-          $filenameori = $_FILES["archivo"]["name"][$key]; //Obtenemos el nombre original del archivo
-          $ext = explode(".", $filename);
-          $source = $_FILES["archivo"]["tmp_name"][$key]; //Obtenemos un nombre temporal del archivo
+          $files_post = $_FILES['archivo'];
+    
+          $files = array();
+          $file_count = count($files_post['name']);
+          $file_keys = array_keys($files_post);
           
-          //$directorio = "../../".NOM_URL_APLICA."/files/asicar"; //Declaramos un  variable con la ruta donde guardaremos los archivos
-          $directorio = "/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
-          //Validamos si la ruta de destino existe, en caso de no existir la creamos
-          if(!file_exists($directorio)){
-              mkdir($directorio, 0777) or die("No se puede crear el directorio de extracci&oacute;n");	
-          }
-          
-          $filename=$namefiletmp.".".$ext[1];
-          $dir=opendir($directorio); //Abrimos el directorio de destino
-          $target_path = $directorio.'/'.$filename; //Indicamos la ruta de destino, asi como el nombre del archivo
-            
-         $copiararchivo=false;       
-          $totarchivos=count($newinftabla);
-          $descriparchi="";
-          for($t=0;$t<$totarchivos;$t++){
-            if($newinftabla[$t][0]==$filenameori){
-              $copiararchivo=true;
-              $descriparchi=$newinftabla[$t][1];
+          for ($i=0; $i < $file_count; $i++) 
+          { 
+            foreach ($file_keys as $key) 
+            {
+              if($key=='name' || $key=='tmp_name'){
+                $files[$i][$key] = $files_post[$key][$i];
+              }
             }
           }
-                   
-          //Movemos y validamos que el archivo se haya cargado correctamente
-          //El primer campo es el origen y el segundo el destino
-          if($copiararchivo){
-
-            if(move_uploaded_file($source, $target_path)) {	
-              $sqlbit="INSERT INTO ".BASE_DATOS.".tab_seguim_solasi(
-                cod_solasi, ind_estado, obs_detall,
-                usr_creaci, fec_creaci
-              ) 
-              VALUES 
-                (
-                  '".$num_solici."', '$idestado', '".$observacion."',
-                  '".$user."', NOW()
-                )";
-              $query = new Consulta($sqlbit, self::$conexion);
-
-              $sqlmax="SELECT MAX(id) AS id FROM ".BASE_DATOS.".tab_seguim_solasi";
-            $sqlsqlmax = new Consulta($sqlmax, self::$conexion);
-            $datos = $sqlsqlmax->ret_matriz('a');
-            $datos = self::cleanArray($datos);
-            foreach($datos as $dato){
-                $id = $dato[0];
-            }
+          if($files[0]['name']==""){
+            $files=array();
+            echo json_encode($files);
             
-              $return['estado']="ok";
-              $return['bitacora']="ok";
-            
-
-            $sql="INSERT INTO ".BASE_DATOS.".`tab_asiste_eviden`(`cod_solici`, `cod_servic`, `nam_archi1`, `nam_archi2`, `des_archiv`,  `des_arcgen`, `cod_solasi`, `usu_creaci`)
-               VALUES ($num_solici, $idservicio, '$filename', '$filenameori', '$descriparchi', '$observacion', '$id', '$user')";
-            $query = new Consulta($sql, self::$conexion);
-            if($idestado=='5'){
-              $sql="UPDATE ".BASE_DATOS.".tab_asiste_carret SET 
-                est_solici='$idestado',
-                `usu_modifi`='$user',
-                `fec_modifi`=NOW()
-                WHERE id=$num_solici";
-              $query = new Consulta($sql, self::$conexion);  
-            }
-                      
-            $numfiles=$numfiles + 1;
-            $return['estado']="ok";
-            $return['archivos']="ok";
-            $return['solicitud']=$num_solici;
-            $return['proximo']=$idestado;
-            } else {	
-              $return['estado']="fallo";
-            }
-            
-            
+          }else{
+            echo json_encode($files);
           }
           
           
-          
+        }
 
-			    closedir($dir); //Cerramos el directorio de destino
-		    }
-	    }
-      
-      
-      if($finalizar==false){
+      //xxxxxxxxxxxxx  Nuevo copiado de archivo xxxxxxxxxxxxxxxxxxxx
+      function almacenararchivos2(){
+        if($_FILES["archivo"]['tmp_name']!=null || $_FILES["archivo"]['tmp_name']!=""){
+          $return = [];
+          $num_solici=$_REQUEST['cod_solici'];
+          $idestado=$_REQUEST['id_estado'];
+          $idservicio=$_REQUEST['id_servicio'];
+          $textservicio=$_REQUEST['id_textservi'];
+          $observacion=$_REQUEST['txt_observaciones'];
+          $user=$_SESSION['datos_usuario']['cod_usuari'];
+          $idinicio=$_REQUEST['idinicio'];
+          foreach($_FILES["archivo"]['tmp_name'] as $key => $tmp_name)
+          {
+  
+            $namefiletmp = $num_solici."-".$idservicio."-".trim(substr(microtime(), 2, 8));
+  
+                //Validamos que el archivo exista
+            if($_FILES["archivo"]["name"][$key]) {
+              $finalizar=true;
+            
+              $filename = $_FILES["archivo"]["name"][$key]; //Obtenemos el nombre original del archivo
+              $filenameori = $_FILES["archivo"]["name"][$key]; //Obtenemos el nombre original del archivo
+              $ext = explode(".", $filename);
+              $source = $_FILES["archivo"]["tmp_name"][$key]; //Obtenemos un nombre temporal del archivo
+              
+              //$directorio = "../../".NOM_URL_APLICA."/files/asicar"; //Declaramos un  variable con la ruta donde guardaremos los archivos
+              $directorio = "/var/www/html/ap/satt_faro/files/asicar";
+              //Validamos si la ruta de destino existe, en caso de no existir la creamos
+              if(!file_exists($directorio)){
+                  mkdir($directorio, 0777) or die("No se puede crear el directorio de extracci&oacute;n");	
+              }
+              $filename=$namefiletmp.".".$ext[1];
+              $dir=opendir($directorio); //Abrimos el directorio de destino
+             $target_path = $directorio.'/'.$filename; //Indicamos la ruta de destino, asi como el nombre del archivo
+             if(move_uploaded_file($source, $target_path)) {
+              $return['estadoarchivos']="Exito al Copiar los Archivos";
+              $sql="INSERT INTO ".BASE_DATOS.".`tab_asiste_eviden`(`cod_solici`, `cod_servic`, `nam_archi1`, `nam_archi2`, `usu_creaci`)
+               VALUES ($num_solici, $idservicio, '$filename', '$filenameori', '$user')";
+              $query = new Consulta($sql, self::$conexion);
+  
+              if($idinicio==""){
+                $sqlmaxidinicio="SELECT MAX(id) AS id FROM ".BASE_DATOS.".tab_asiste_eviden";
+                $sqlsqlmaxidinicio = new Consulta($sqlmaxidinicio, self::$conexion);
+                $datosidinicio = $sqlsqlmaxidinicio->ret_matriz('a');
+                $datosidinicio = self::cleanArray($datosidinicio);
+                foreach($datosidinicio as $dato){
+                  $idinicio = $dato[0];
+                }
+                $return['idinicio']=$idinicio;
+              }else{
+                $return['idinicio']=$idinicio;
+              }
+              $return['estadotblevidencia']="Exito al Copiar datos en tbl de evidencias";
+  
+              $htmltbl="";
+              $sqltbl="SELECT a.`id`, a.`cod_solici`, a.`cod_servic`, c.abr_servic, a.`nam_archi1`, a.`nam_archi2`, a.`des_archiv` 
+              FROM `tab_asiste_eviden` as a 
+              INNER JOIN `tab_servic_solasi` b ON b.`id`=a.cod_servic 
+              INNER JOIN tab_servic_asicar c ON b.cod_servic = c.id
+              where a.`id`>=$idinicio and a.`cod_solici`=$num_solici";
+              $sqltblreg = new Consulta($sqltbl, self::$conexion);
+              $datostbl = $sqltblreg->ret_matriz('a');
+              $datostbl = self::cleanArray($datostbl);
+  
+              $directorio='files/asicar/';
+              foreach($datostbl as $newdattbl){
+                $htmltbl .="<tr id='fila-".$newdattbl['id']."'>
+                           <td>".$newdattbl['nam_archi2']."</td>
+                           <td>".$newdattbl['abr_servic']."</td>
+                           <td><textarea id='txtobserv-".$newdattbl['id']."' name='txtobserv-".$newdattbl['id']."' onfocus='datosold(this.id, this.value)' onblur='actobserv(this.id)' style=font-size: 12px;' rows='1' placeholder='Observaciones'>".$newdattbl['des_archiv']."</textarea>
+                           <input id='vrold-".$newdattbl['id']."' type='hidden'>
+                           </td>
+                           <td>
+                           <a href='#' id='txtdel-".$newdattbl['id']."' name='txtdel-".$newdattbl['id']."' class='btn btn-xs btn-danger' style='padding: 0.06rem 0.5rem;' onclick='eliminaregarchi(this.id)'><span class='fa fa-trash'></span></a>
+                          | <a href='".$directorio.$newdattbl['nam_archi1']."' target='_blank' class='btn btn-xs btn-success' style='padding: 0.06rem 0.5rem;'><span class='fa fa-eye'></span></a>
+                          <input id='txtfile-".$newdattbl['id']."' name='txtfile-".$newdattbl['id']."' type='hidden' value='".$newdattbl['nam_archi1']."'>
+                           
+                           </td>
+                           </tr>
+                          ";
+              }
+              $return['regtbl']=$htmltbl;
+             }else{
+               $return['estadoarchivos']="Fallo al Copiar los Archivos";
+             }
+            
+            
+            }
+  
+          }
+          
+          $return['all']=$num_solici."-".$idestado."-".$idservicio."-".$textservicio;
+          $return['estado']="ok";
+          $json = json_encode($return);
+          echo $json;
+        }
+  
+      }
+  
+      function actualizarregarchi(){
+        $regid=$_REQUEST['regid'];
+        $datnew=$_REQUEST['datnew'];
+        
+        $sql="UPDATE `tab_asiste_eviden` SET `des_archiv`='$datnew' WHERE `id`=$regid";
+              new Consulta($sql, self::$conexion);
+  
+        echo "registro No $regid Actualizado";
+  
+      }
+  
+      function eliminaregarchi(){
+        $regid=$_REQUEST['regid'];
+        $regeliminar=$_REQUEST['regeliminar'];
+        $info=[];
+        $directorio = "/var/www/html/ap/satt_faro/files/asicar/";
+        
+        If (unlink($directorio.$regeliminar)) {
+          $sql="DELETE FROM tab_asiste_eviden WHERE id=$regid";
+                $query = new Consulta($sql, self::$conexion);
+                if($query){
+                  $info['status']=200; 
+                }else{
+                  $info['status']=100; 
+                } 
+  
+        } else {
+          $info['status']=100;
+        }
+  
+        
+        echo json_encode($info); 
+  
+      }
+  
+      function almacenararchivos(){
+        switch ($_SERVER['SERVER_NAME']) {
+          case 'dev.intrared.net':
+              $rutdirectorio="/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
+            break;
+          case 'avansatgl.intrared.net':
+            $rutdirectorio="/var/www/html/ap/satt_faro/files/asicar";
+            break;
+        }
+        $return=[];
+        
+        $num_solici=$_REQUEST['cod_solici'];
+        $idestado=$_REQUEST['id_estado'];
+        $observacion=$_REQUEST['txt_observaciones'];
+        $idinicio=$_REQUEST['idinicio'];
+        $user=$_SESSION['datos_usuario']['cod_usuari'];
+  
+        $sqlbit="INSERT INTO ".BASE_DATOS.".tab_seguim_solasi(
+                  cod_solasi, ind_estado, obs_detall,
+                  usr_creaci, fec_creaci
+                ) 
+                VALUES 
+                  (
+                    '".$num_solici."', '$idestado', '".$observacion."',
+                    '".$user."', NOW()
+                  )";
+        $query = new Consulta($sqlbit, self::$conexion);
+  
+        $sqlmax="SELECT MAX(id) AS id FROM ".BASE_DATOS.".tab_seguim_solasi";
+        $sqlsqlmax = new Consulta($sqlmax, self::$conexion);
+        $datos = $sqlsqlmax->ret_matriz('a');
+        $datos = self::cleanArray($datos);
+        foreach($datos as $dato){
+          $id = $dato[0];
+        }
+        $return['estado']="ok";
+        $return['bitacora']="ok";
+              
+        $sql="UPDATE `tab_asiste_eviden` SET `des_arcgen`='". $observacion . "', `cod_solasi`=".$id." WHERE `id`>=".$idinicio;
+        $query = new Consulta($sql, self::$conexion);
         
         if($idestado=='5'){
           $sql="UPDATE ".BASE_DATOS.".tab_asiste_carret SET 
-            est_solici='$idestado',
-            `usu_modifi`='$user',
-            `fec_modifi`=NOW()
-            WHERE id=$num_solici";
+                  est_solici='$idestado',
+                  `usu_modifi`='$user',
+                  `fec_modifi`=NOW()
+                  WHERE id=$num_solici";
           $query = new Consulta($sql, self::$conexion);  
         }
 
         $return['estado']="ok";
-        $return['archivos']="ok";
         $return['solicitud']=$num_solici;
-        $return['proximo']='5';
-
-      }
-
-      self::enviarCorreo2($num_solici,$idestado,$observacion, $numfiles, $textservicio);
-        $json = json_encode($return);
-      echo $json;
-      
-      
-      }
-    } 
+        $return['proximo']=$idestado;
+        $textservicio='Evidencia de Archivos';
+        $numfiles=0;
+        //self::enviarCorreo2($num_solici,$idestado,$observacion, $numfiles, $textservicio);
+          $json = json_encode($return);
+        echo $json;    
+        
+      } 
 
     function datselect(){
       $num_solici=$_REQUEST['cod_solici'];

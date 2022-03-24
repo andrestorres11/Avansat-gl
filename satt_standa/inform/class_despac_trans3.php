@@ -669,7 +669,7 @@ class Despac
 	 *  \brief: Trae los tipos de vehiculos
 	 *  \author: Ing. Cristian Torres
 	 *	\date: 25/10/2021
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 *  \param: 
 	 *  \return:
 	 */
@@ -774,6 +774,36 @@ class Despac
 		return $mResult;
 	}
 
+	public function filtroNovedades($mDespac, $etapax){
+		//Parche de la tabla de novedades
+		$tabNoved = 'tab_genera_noveda';
+		if(BASE_DATOS != 'satt_faro'){
+			$tabNoved = 'tab_genera_novseg';
+		}
+		$mSql = "( 
+			SELECT a.num_despac 
+			  FROM ".BASE_DATOS.".tab_despac_noveda a 
+		INNER JOIN ".BASE_DATOS.".".$tabNoved." b 
+				ON a.cod_noveda = b.cod_noveda 
+			 WHERE a.num_despac IN ( {$mDespac} ) 
+			   AND b.cod_etapax IN ( {$etapax} )
+		  GROUP BY a.num_despac
+		)
+		UNION 
+		( 
+				SELECT c.num_despac 
+				FROM ".BASE_DATOS.".tab_despac_contro c 
+			INNER JOIN ".BASE_DATOS.".".$tabNoved." d 
+					ON c.cod_noveda = d.cod_noveda 
+				WHERE c.num_despac IN ( {$mDespac} ) 
+				AND d.cod_etapax IN ( {$etapax} )
+		) ";
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+		$mDespacB = $mConsult -> ret_matrix('a');
+		$mDespacB = join( ',', GetColumnFromMatrix( $mDespacB, 'num_despac' ) );
+		return $mDespacB;
+	}
+	
 	/*! \fn: getDespacPrcCargue
 	 *  \brief: Trae los despachos en Etapa Cargue
 	 *  \author: Edward Serrano
@@ -816,7 +846,7 @@ class Despac
 						AND xx.ind_anulad in ('R', 'A')
 						AND yy.ind_activo = 'S' 
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' "; 
-		
+		$mSql .= ($mDespacCargue != NULL || $mDespacCargue != ''?" AND xx.num_despac NOT IN ( {$mDespacCargue} ) ":"");
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( aa.cod_propie = yy.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		$mConsult = new Consulta( $mSql, self::$cConexion );
@@ -826,13 +856,11 @@ class Despac
 			return false;
 
 		$mDespac = join( ',', GetColumnFromMatrix( $mDespac, 'num_despac' ) ); #Despachos en ruta Sin hora salida del sistema
-
 		//Parche de la tabla de novedades
 		$tabNoved = 'tab_genera_noveda';
 		if(BASE_DATOS != 'satt_faro'){
 			$tabNoved = 'tab_genera_novseg';
 		}
-
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
 						UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
@@ -843,23 +871,23 @@ class Despac
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
-					 AND a.num_despac IN ( {$mDespac} ) 
-					 AND a.num_despac NOT IN (  
-													SELECT da.num_despac 
-													  FROM ".BASE_DATOS.".tab_despac_noveda da 
-												INNER JOIN ".BASE_DATOS.".".$tabNoved." db 
-														ON da.cod_noveda = db.cod_noveda 
-													 WHERE da.num_despac IN ( {$mDespac} ) 
-													   AND db.cod_etapax  IN ( 3,4,5 )
-											)
-					AND a.num_despac NOT IN (  
-													SELECT ea.num_despac 
-													  FROM ".BASE_DATOS.".tab_despac_contro ea 
-												INNER JOIN ".BASE_DATOS.".".$tabNoved." eb 
-														ON ea.cod_noveda = eb.cod_noveda 
-													 WHERE ea.num_despac IN ( {$mDespac} ) 
-													   AND eb.cod_etapax  IN (  3,4,5 )
-											) 
+					 AND a.num_despac IN ( {$mDespac} )
+				AND a.num_despac NOT IN (  
+						SELECT da.num_despac 
+						  FROM ".BASE_DATOS.".tab_despac_noveda da 
+					INNER JOIN ".BASE_DATOS.".".$tabNoved." db 
+							ON da.cod_noveda = db.cod_noveda 
+						 WHERE da.num_despac IN ( {$mDespac} ) 
+						   AND db.cod_etapax  IN ( 2,3,4,5 )
+				)
+				AND a.num_despac NOT IN (  
+						SELECT ea.num_despac 
+						  FROM ".BASE_DATOS.".tab_despac_contro ea 
+					INNER JOIN ".BASE_DATOS.".".$tabNoved." eb 
+							ON ea.cod_noveda = eb.cod_noveda 
+						 WHERE ea.num_despac IN ( {$mDespac} ) 
+						   AND eb.cod_etapax  IN ( 2,3,4,5 )
+				)
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
 					 ON b.cod_transp = c.cod_tercer 
 			 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
@@ -896,11 +924,11 @@ class Despac
 				  WHERE k.ind_cumcar IS NULL AND k.fec_cumcar IS NULL AND
 				  		a.fec_inicar IS NULL AND
 				  		a.fec_fincar IS NULL AND				  		 
-				  		a.fec_citcar >= DATE_SUB( '".$sal_inicio."', INTERVAl 5 DAY ) AND a.fec_citcar <= '{$sal_finxxx}' 
+				  		a.fec_citcar >= DATE_SUB( '".$sal_inicio."', INTERVAl 5 DAY ) AND a.fec_citcar <= '{$sal_finxxx}'
 
 
 				  		";
-
+		
 		if( $mSinFiltro == false )
 		{
 			#Filtros por Formulario
@@ -922,7 +950,7 @@ class Despac
 		}
 		//$mSql .=" GROUP BY a.num_despac";
 
- 		 
+
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -967,6 +995,16 @@ class Despac
 					$mResult[$j][fec_plaprc] = ($mData[fec_plaprc] == "1969-12-31 19:00:00"?$mDespac[$i][fec_salida]:$mData[fec_plaprc]);
 					$j++;
 				}
+			}else{
+				$mResult[$j] = $mDespac[$i];
+				$mResult[$j][can_noveda] = $mData[can_noveda];
+				$mResult[$j][fec_ultnov] = $mData[fec_ultnov];
+				$mResult[$j][ind_fuepla] = $mData[ind_fuepla];
+				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
+				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
+				$mResult[$j][fec_planea] = ($mData[fec_planea] == "1969-12-31 19:00:00"?$mDespac[$i][fec_salida]:$mData[fec_planea]);
+				$mResult[$j][fec_plaprc] = ($mData[fec_plaprc] == "1969-12-31 19:00:00"?$mDespac[$i][fec_salida]:$mData[fec_plaprc]);
+				$j++;
 			}
 		}
 		
@@ -990,6 +1028,8 @@ class Despac
 	 */
 	public function getDespacCargue( $mTransp, $mTipReturn = NULL, $mSinFiltro = false )
 	{
+		$mDespacPrcCargue = self::getDespacPrcCargue( $mTransp, 'list', true );
+
 		$mSql = "	 SELECT xx.num_despac
 					   FROM ".BASE_DATOS.".tab_despac_despac xx 
 				 INNER JOIN ".BASE_DATOS.".tab_despac_vehige yy 
@@ -1007,6 +1047,7 @@ class Despac
 						AND ( xx.fec_salida IS NOT NULL   )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
 
+		$mSql .= ($mDespacPrcCargue != NULL || $mDespacPrcCargue != ''?" AND xx.num_despac NOT IN ( {$mDespacPrcCargue} ) ":"");
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( aa.cod_propie = yy.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
@@ -1017,13 +1058,7 @@ class Despac
 			return false;
 
 		$mDespac = join( ',', GetColumnFromMatrix( $mDespac, 'num_despac' ) ); #Despachos en ruta Sin hora salida del sistema
-
-		//Parche de la tabla de novedades
-		$tabNoved = 'tab_genera_noveda';
-		if(BASE_DATOS != 'satt_faro'){
-			$tabNoved = 'tab_genera_novseg';
-		}
-
+		$mFiltro1 = self::filtroNovedades($mDespac, '3,4,5,6');
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
 						UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
@@ -1034,22 +1069,7 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
 					AND a.num_despac IN ( {$mDespac} )
-					AND a.num_despac NOT IN ( /* Despachos con novedades etapa Transito y Descargue en Sitio */
-													SELECT da.num_despac 
-													  FROM ".BASE_DATOS.".tab_despac_noveda da 
-												INNER JOIN ".BASE_DATOS.".".$tabNoved." db 
-														ON da.cod_noveda = db.cod_noveda 
-													 WHERE da.num_despac IN ( {$mDespac} ) 
-													   AND db.cod_etapax NOT IN ( 0, 1, 2 )
-											)
-					AND a.num_despac NOT IN ( /* Despachos con novedades etapa Transito y Descargue antes de Sitio */
-													SELECT ea.num_despac 
-													  FROM ".BASE_DATOS.".tab_despac_contro ea 
-												INNER JOIN ".BASE_DATOS.".".$tabNoved." eb 
-														ON ea.cod_noveda = eb.cod_noveda 
-													 WHERE ea.num_despac IN ( {$mDespac} ) 
-													   AND eb.cod_etapax NOT IN ( 0, 1, 2 )
-											)
+					AND a.num_despac NOT IN ( {$mFiltro1} )
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
 					 ON b.cod_transp = c.cod_tercer 
 			 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
@@ -1076,7 +1096,7 @@ class Despac
 			  		 ON a.num_despac = y.num_despac
 			  LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
 					 ON a.cod_client = k.cod_tercer
-				  WHERE 1=1  AND y.ind_cumcar IS NOT NULL AND y.fec_cumcar IS NOT NULL
+				  WHERE 1=1
 				  ";
 
 		if( ($_REQUEST["Option"] == "infoPreCargue" || $_REQUEST["Option"]  == 'detailBand' ) && $_REQUEST["pun_cargue"] != '')
@@ -1095,7 +1115,6 @@ class Despac
 			$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		}
 		echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
-		mail("cristian.torres@eltransporte.org", "mSql", $mSql);
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 		$mTipValida = self::tipValidaTiempo( $mTransp );
@@ -1140,6 +1159,16 @@ class Despac
 					$mResult[$j][fec_planGl] = $mData[fec_planGl];
 					$j++;
 				}
+			} else {
+				$mResult[$j] = $mDespac[$i];
+				$mResult[$j][can_noveda] = $mData[can_noveda];
+				$mResult[$j][fec_ultnov] = $mData[fec_ultnov];
+				$mResult[$j][ind_fuepla] = $mData[ind_fuepla];
+				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
+				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
+				$mResult[$j][fec_planea] = $mData[fec_planea];
+				$mResult[$j][fec_planGl] = $mData[fec_planGl];
+				$j++;
 			}
 		}
 		
@@ -1164,8 +1193,6 @@ class Despac
 	public function getDespacDescar( $mTransp, $mTipReturn = NULL, $mSinFiltro = false )
 	{
 		$mDespacPrcCargue = self::getDespacPrcCargue( $mTransp, 'list', true );
-		$mDespacPrcCargue = ($mDespacPrcCargue == NULL ? '0' : $mDespacPrcCargue );
-
 		$mDespacCargue = self::getDespacCargue( $mTransp, 'list', true );
 		$mDespacCargue = ($mDespacCargue == NULL ? '0' : $mDespacCargue );
 
@@ -1183,14 +1210,13 @@ class Despac
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
 						AND yy.ind_activo = 'S' 
-						AND yy.cod_transp = '".$mTransp[cod_transp]."' 
-						AND xx.num_despac NOT IN ( {$mDespacCargue} )
-						AND xx.num_despac NOT IN ( {$mDespacPrcCargue} )";
+						AND yy.cod_transp = '".$mTransp[cod_transp]."'";
+		$mSql .= ($mDespacPrcCargue != NULL || $mDespacPrcCargue != ''?" AND xx.num_despac NOT IN ( {$mDespacPrcCargue} ) ":"");
+		$mSql .= ($mDespacCargue != NULL || $mDespacCargue != ''?" AND xx.num_despac NOT IN ( {$mDespacCargue} ) ":"");
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( aa.cod_propie = yy.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
-		
 
 		if( sizeof($mDespac) < 1 )
 			return false;
@@ -1220,7 +1246,7 @@ class Despac
 						 WHERE c.num_despac IN ( {$mDespac} ) 
 						   AND d.cod_etapax IN ( 4, 5 )
 				) ";
-		$mConsult = new Consulta( $mSql, self::$cConexion );		
+		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespacDes = $mConsult -> ret_matrix('a');
 		$mDespacDes = join( ',', GetColumnFromMatrix( $mDespacDes, 'num_despac' ) );
 
@@ -1233,8 +1259,8 @@ class Despac
 		$mDespac = $mConsult -> ret_matrix('i');
 
 		$mDespacDes = $mDespacDes == "" ? '""' : $mDespacDes;
-		
-		
+
+
 		#Recorre Despachos Para verificar Filtro 2
 		foreach ($mDespac as $row)
 		{
@@ -1491,6 +1517,7 @@ class Despac
 	 */
 	public function getDespacTransi2( $mTransp )
 	{
+		$mDespacPrcCargue = self::getDespacPrcCargue( $mTransp, 'list', true );
 		$mDespacCarDes = self::getDespacDescar( $mTransp, 'list2', true ); #Despachos en Etapas Cargue y Descargue
 		$mDespacCarDes = trim($mDespacCarDes, ',');
 		#Despachos en ruta  
@@ -1510,6 +1537,7 @@ class Despac
 						AND yy.ind_activo = 'S' 
 						AND ( xx.fec_salida IS NOT NULL  )
 						AND yy.cod_transp = '".$mTransp[cod_transp]."' ";
+		$mSql .= ($mDespacPrcCargue != NULL || $mDespacPrcCargue != ''?" AND xx.num_despac NOT IN ( {$mDespacPrcCargue} ) ":"");
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( aa.cod_propie = yy.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		$mConsult = new Consulta( $mSql, self::$cConexion );
@@ -1550,7 +1578,7 @@ class Despac
 		$mDespacTrasi = $mConsult -> ret_matrix('a');
 		$mDespacTrasi = join( ',', GetColumnFromMatrix( $mDespacTrasi, 'num_despac' ) );
 		$mDespacTrasi = $mDespacTrasi ? $mDespacTrasi : '0';
-		$mConsult = new Consulta( $mSql, self::$cConexion );		
+
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
@@ -1604,7 +1632,7 @@ class Despac
 		
 
 		echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
-			
+
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1614,8 +1642,8 @@ class Despac
 		$j=0;
 		$mResult = array();
 
-		
 
+		
 		for( $i=0; $i<sizeof($mDespac); $i++ )
 		{
 			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
@@ -1959,10 +1987,10 @@ class Despac
 	}
 
 	/*! \fn: getTranspServic
-	 *  \brief: Traer las transportadoras según tipo de servicio
+	 *  \brief: Traer las transportadoras segï¿½n tipo de servicio
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 19/06/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 *  \param: mTipEtapax  String   Tipo de Seguimiento ( ind_segcar, ind_segtra, ind_segdes )
 	 *  \param: mCodTransp  Integer  Codigo de la transportadora 
 	 *  \param: mAddWherex  String   Where adicional
@@ -2203,7 +2231,7 @@ class Despac
 			$mViewBa = self::getView('jso_bandej');
 			# Arma la matriz resultante 
 			if( $mIndCant == 1 )
-			{# Cantidades según estado
+			{# Cantidades segï¿½n estado
 				if($mDespac[$i][tiempoGl]){
 					if( $mPernoc == true ){
 						$mResult[est_pernoc]++;
@@ -2297,7 +2325,7 @@ class Despac
 					$mBandera = false;
 
 				if ($mViewBa->tie_alarma->ind_visibl==1) {
-					#Arma Matriz resultante seún fase
+					#Arma Matriz resultante seï¿½n fase
 					if( ($mFiltro == 'est_pernoc' || $mFiltro == 'sinF' || $mFiltro == 'enx_seguim') && $mPernoc == true && $mDespac[$i][ind_defini] != 'SI' && $mDespac[$i][ind_finrut] != '1' )
 					{ #Pernoctacion
 						if( $mDespac[$i][tie_contra] != '' ){ #Despacho con tiempo de seguimiento modificado
@@ -4237,7 +4265,7 @@ class Despac
 	        $consulta = new Consulta($query, self::$cConexion);
 	        $transpor = $consulta->ret_matriz();
 	        #Busco las novedades existentes que no esten inactivas
-
+			
 			if(BASE_DATOS=='satt_faro'){
 				$query = " SELECT a.cod_noveda, UPPER( CONCAT( CONVERT( a.nom_noveda USING utf8), 
 							'', if (a.nov_especi = '1', '(NE)', '' ), 
@@ -4267,8 +4295,8 @@ class Despac
                         c.cod_transp = '".$mData[0]["cod_transp"]."' 
 					WHERE 1 = 1 AND c.inf_visins = '1' ";
 			}
-				   
-	        
+
+
 	        if ($_SESSION["datos_usuario"]["cod_perfil"] != COD_PERFIL_SUPERUSR && $_SESSION["datos_usuario"]["cod_perfil"] != COD_PERFIL_ADMINIST && $_SESSION["datos_usuario"]["cod_perfil"] != COD_PERFIL_SUPEFARO)
 			{
 				if( $_SESSION["datos_usuario"]["cod_perfil"]  != '689' && $_SESSION["datos_usuario"]["cod_perfil"]  != '77' )
@@ -5230,7 +5258,7 @@ class Despac
 
 	/*! \fn: getServicHorLab
 	 *  \brief: Obtiene el horario del servicio
-	 *  \author: Ing. Cristian Andrés Torres
+	 *  \author: Ing. Cristian Andrï¿½s Torres
 	 *	\date: 13/08/2021
 	 *	\date modified: dia/mes/ano
 	 *  \param: 
