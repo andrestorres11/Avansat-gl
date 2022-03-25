@@ -91,7 +91,45 @@ class ajax_horari_monito {
      */
     private function getDataList() {
         $datos = (object) $_POST;
-        $hoy = Date("Y-m-d H:i:s");
+        /*/
+        echo "<pre>";
+        print_r($datos) ;
+        echo "</pre>";
+        
+        echo "ini ". $_POST['fechini']."<br>";
+        echo "fin ". $_POST['fechafin']."<br>";
+        echo "user ". $_POST['userprog']."<br>";
+        */
+        if($_POST['fechini']=='' || $_POST['fechini']==null){
+            $hoyini = Date("Y-m-d");
+        }else{
+            $hoyini =$_POST['fechini'];
+        }
+
+        if($_POST['fechafin']==''  || $_POST['fechafin']==null){
+            $hoyfin = Date("Y-m-d");
+        }else{
+            $hoyfin =$_POST['fechafin'];
+        }
+        if($_POST['fechini']=='' || $_POST['fechini']==null){
+            $userprog = "*";
+            $condfil="DATE_FORMAT(a.fec_inicia, '%Y-%m-%d') = '".$hoyini."'
+            or DATE_FORMAT(a.fec_finalx, '%Y-%m-%d') = '". $hoyfin."'";
+        }else{
+
+            if($_POST['userprog']=='' || $_POST['userprog']==null){
+                $userprog = "*";
+                $condfil="DATE_FORMAT(a.fec_inicia, '%Y-%m-%d') >= '".$hoyini."'
+            AND DATE_FORMAT(a.fec_finalx, '%Y-%m-%d') <= '". $hoyfin."'";
+            }else{
+            $userprog =$_POST['userprog'];
+            $condfil="DATE_FORMAT(a.fec_inicia, '%Y-%m-%d') >= '".$hoyini."'
+            AND DATE_FORMAT(a.fec_finalx, '%Y-%m-%d') <= '". $hoyfin."'
+            AND b.cod_consec=".$userprog ;
+            }
+            
+        }
+        
 
         $mHtml = new FormLib(2);
         $mHtml->Form(array("action" => "index.php", "method" => "post", "name" => "form_search", "header" => "TRANSPORTADORAS", "enctype" => "multipart/form-data"));
@@ -108,8 +146,12 @@ class ajax_horari_monito {
                    FROM " . BASE_DATOS . ".tab_monito_encabe a 
              INNER JOIN " . BASE_DATOS . ".tab_genera_usuari b ON a.cod_usuari = b.cod_usuari 
               LEFT JOIN " . BASE_DATOS . ".tab_callce_grupox c ON c.cod_grupox = b.cod_grupox 
-                  WHERE a.fec_finalx >= '$hoy'";
+              WHERE ". $condfil;
         
+         /*/echo "<pre>";
+        echo $mSql ;
+        echo "</pre>";
+        */
         $_SESSION["queryXLS"] = $mSql;
 
         if (!class_exists(DinamicList)) {
@@ -122,7 +164,7 @@ class ajax_horari_monito {
         $list->SetHeader("Grupo", "field:IF(c.nom_grupox IS NULL, 'Sin Grupo',c.nom_grupox); width:1%");
         $list->SetHeader("Prioridad", "field:cod_priori; width:1%");
         $list->SetHeader("Fecha y Hora de Inicio", "field:a.fec_inicia; width:1%");
-        $list->SetHeader("Fecha y Hora de Finalización", "field:a.fec_finalx; width:1%");
+        $list->SetHeader("Fecha y Hora de Finalizacion", "field:a.fec_finalx; width:1%");
         $list->SetOption("Opciones", "field:eliminar; width:1%; onclikDisable:EliminarConfiguracion(this)");
         $list->SetHidden("cod_consec", "0");
         $list->Display(self::$cConexion);
