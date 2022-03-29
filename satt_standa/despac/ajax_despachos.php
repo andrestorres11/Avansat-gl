@@ -9,6 +9,7 @@
  *  \warning: 
  */
 
+
 global $HTTP_POST_FILES;
 session_start();
 define ('DIR_APLICA_CENTRAL', $_SESSION['DIR_APLICA_CENTRAL']);
