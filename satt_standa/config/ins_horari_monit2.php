@@ -44,8 +44,8 @@ class ins_horari_monito{
     <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>
     <div id="acordeonID" class="col-md-12 accordion ancho">
       <h1 style="padding: 6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Pre-Planeaci&oacute;n carga laboral</b></h1>
-      <div id="contenido">
-        <div  class="Style2DIV">  
+      <div id="contenido" style="display: none">
+        <div  class="Style2DIV" >  
           <table width="100%" cellspacing="0" cellpadding="0">
             <tr>
               <th class="CellHead text-center" colspan="6" ><label id="notify"><b>Asignaci&oacute;n de controladores para Pre-Planeaci&oacute;n de la carga laboral</b></label>&nbsp;&nbsp;<input onclick="addUserForm()" type="button" name="agregar" id="agregar" class="small save  ui-widget ui-state-default ui-corner-all" value="Agregar Nuevo"></th>
@@ -86,7 +86,64 @@ class ins_horari_monito{
         </div>
       </div>
     </div>
-    <div class="col-md-12 ancho" id="lista"></div>
+
+    <div id="acordeonID" class="col-md-12 accordion ancho">
+    <h1 style="padding: 6px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Filtro carga laboral</b></h1>
+      <div id="contenido">
+        <div  class="Style2DIV">  
+          <table width="100%" cellspacing="0" cellpadding="0">
+            <tr>
+              <th class="CellHead text-center" colspan="6" ><label id="notify"><b>Filtrar por usuario</b></label>&nbsp;&nbsp;</th>
+            </tr>
+            <tr class="Style2DIV">
+              <td class="contenido" colspan="6" id="primero" style="text-align:center">
+                <div class="col-md-12" id="div0">
+
+                  <div class="col-xs-4 col-sm-4 col-md-4">
+                    <div class="col-xs-4 col-sm-4 col-md-4">
+                        <label for="fechinifiltro">Fecha Inicio<font style="color:red">*</font>:</label>
+                    </div>
+                    <div class="col-xs-7 col-sm-7 col-md-7 ">
+                      <input class="ancho date" validate="date" obl="1" maxlength="10" minlength="10" type="text" name="fechinifiltro" id="fechinifiltro">
+                    </div>
+                  </div>
+
+                  
+                  <div class="col-xs-4 col-sm-4 col-md-4">
+                    <div class="col-xs-4 col-sm-4 col-md-4">
+                        <label for="fechfinfiltro">Fecha Salida<font style="color:red">*</font>:</label>
+                    </div>
+                    <div class="col-xs-7 col-sm-7 col-md-7 ">
+                      <input class="ancho date" validate="date" obl="1" maxlength="10" minlength="10" type="text" name="fechfinfiltro" id="fechfinfiltro">
+                    </div>
+                  </div>
+
+                  <div class="col-xs-4 col-sm-4 col-md-4">
+                    <div class="col-xs-4 col-sm-4 col-md-4">
+                        <label for="user">Usuario<font style="color:red">*</font>:</label>
+                    </div>
+                    <div class="col-xs-7 col-sm-7 col-md-7 ">
+                    <input type="text" id="nom_usuari0IDfil" validate="dir" obl="1" maxlength="30" minlength="5" name="nom_usuarifil[]" class="ancho">
+                    <input type="hidden" name="cod_consecfil[]" id="cod_consecfil0ID" value="">
+                    </div>
+                  </div>
+
+                </div>
+
+              </td>
+            </tr>
+            <tr>
+              <td>  <div class="col-md-12 centrado"><input type="button" name="filtrar" id="filtrar" class="small save ui-widget ui-state-default ui-corner-all" value="Filtrar" onclick="valfiltro()"></div>
+              </td>
+            </tr>
+          </table>
+          <br>
+        </div>
+        
+      </div>
+    </div>
+
+    <div class="col-md-12 ancho" id="lista">oscar</div>
     <?php
   }
 
