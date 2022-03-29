@@ -49,6 +49,14 @@ $(function() {
             $("body").removeAttr("class");
         }
     });
+    $("#nom_usuari0IDfil").autocomplete({
+        source: "../" + standa + "/config/ajax_horari_monito.php?Option=buscarUsuario&Ajax=on",
+        minLength: 3,
+        select: function(event, ui) {
+            $("#cod_consecfil0ID").val(ui.item.id);
+            $("body").removeAttr("class");
+        }
+    });
     getDataList();
 });
 
@@ -247,13 +255,20 @@ function registrar() {
  */
 
 function getDataList() {
+
+    var fechini=$("#fechinifiltro").val();
+    var fechafin=$("#fechfinfiltro").val();
+    var userprog=$("#cod_consecfil0ID").val();
+
+       
     var conn = checkConnection();
     if (conn) {
         var standa = $("#standa").val();
+
         $.ajax({
             type: "POST",
             url: "../" + standa + "/config/ajax_horari_monito.php",
-            data: "&Ajax=on&Option=getDataList&standa=" + standa,
+            data: "&Ajax=on&Option=getDataList&standa=" + standa + "&fechini=" + fechini + "&fechafin=" + fechafin + "&userprog=" + userprog ,
             async: false,
             beforeSend: function() {
                 $("#PopUpID").html('<table align="center"><tr><td><img src="../' + standa + '/imagenes/ajax-loader.gif" /></td></tr><tr><td></td></tr></table>');
@@ -360,4 +375,16 @@ function limpiar() {
     $('input[type=text]').each(function() {
         $(this).val("");
     });
+}
+function valfiltro() {
+    var fechini=$("#fechinifiltro").val();
+    var fechafin=$("#fechfinfiltro").val();
+    var userprog=$("#cod_consecfil0ID").val();
+
+    if (fechini !='' && fechafin !='' ){
+        getDataList();
+    }else{
+        alert("llene todos los datos de fechas");
+    }
+    
 }
