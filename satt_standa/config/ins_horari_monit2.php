@@ -104,7 +104,7 @@ class ins_horari_monito{
                         <label for="fechinifiltro">Fecha Inicio<font style="color:red">*</font>:</label>
                     </div>
                     <div class="col-xs-7 col-sm-7 col-md-7 ">
-                      <input class="ancho date" validate="date" obl="1" maxlength="10" minlength="10" type="text" name="fechinifiltro" id="fechinifiltro">
+                      <input class="ancho date"  maxlength="10" minlength="10" type="text" name="fechinifiltro" id="fechinifiltro">
                     </div>
                   </div>
 
@@ -114,7 +114,7 @@ class ins_horari_monito{
                         <label for="fechfinfiltro">Fecha Salida<font style="color:red">*</font>:</label>
                     </div>
                     <div class="col-xs-7 col-sm-7 col-md-7 ">
-                      <input class="ancho date" validate="date" obl="1" maxlength="10" minlength="10" type="text" name="fechfinfiltro" id="fechfinfiltro">
+                      <input class="ancho date"  maxlength="10" minlength="10" type="text" name="fechfinfiltro" id="fechfinfiltro">
                     </div>
                   </div>
 
@@ -123,7 +123,7 @@ class ins_horari_monito{
                         <label for="user">Usuario<font style="color:red">*</font>:</label>
                     </div>
                     <div class="col-xs-7 col-sm-7 col-md-7 ">
-                    <input type="text" id="nom_usuari0IDfil" validate="dir" obl="1" maxlength="30" minlength="5" name="nom_usuarifil[]" class="ancho">
+                    <input type="text" id="nom_usuari0IDfil"  maxlength="30" minlength="5" name="nom_usuarifil[]" class="ancho">
                     <input type="hidden" name="cod_consecfil[]" id="cod_consecfil0ID" value="">
                     </div>
                   </div>

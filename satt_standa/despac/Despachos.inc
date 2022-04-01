@@ -4402,8 +4402,10 @@ class Despachos
               $mTime[1] = $row[fec_creaci];
               $mTime[2] = Despachos::getTime($mTime[0], $mTime[1]);
               $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
+              
                 if($codseg==0){
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitioy], $row[nom_sitioy], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );      
+                    
+                    $mResult[$j] = Despachos::arrayRuta($row[nom_sitioy], $row[nom_sitioy], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );      
                 }else{
                     $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], $row[nom_sitioy], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );      
                 }
@@ -4566,7 +4568,7 @@ class Despachos
                         INNER JOIN ".BASE_DATOS.".tab_despac_sitio c 
                                 ON a.cod_sitiox = c.cod_sitiox
                         INNER JOIN ".BASE_DATOS.".tab_despac_sitio d 
-                                ON a.cod_sitioy = d.cod_sitiox 
+                                ON if(a.`cod_sitioy` IS NULL, a.`cod_sitiox`, a.`cod_sitioy`) = d.cod_sitiox 
                             WHERE a.num_despac = '{$mNumDespac}' 
                                 AND a.cod_contro = '{$mCodContro}' 
                         )
@@ -4868,7 +4870,7 @@ class Despachos
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                         ON a.cod_noveda = b.cod_noveda 
                 $mIndGPS JOIN ".BASE_DATOS.".tab_despac_sitio c 
-                        ON a.cod_sitioy = c.cod_sitiox 
+                        ON if(a.`cod_sitioy` IS NULL, a.`cod_sitiox`, a.`cod_sitioy`) = c.cod_sitiox 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro d 
                         ON a.cod_contro = d.cod_contro 
                     WHERE a.num_despac = '{$mNumDespac}' 
