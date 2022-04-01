@@ -142,11 +142,13 @@ function addUserForm() {
 
 function registrar() {
     var conn = checkConnection();
+    
     if (conn) {
         var standa = $("#standa").val();
         val = validaciones();
         var usuarios = new Array();
         $('input[id^=fecini]').each(function(x, obj) {
+           
             var fecini = $("#fecini" + x).val();
             var fecsal = $("#fecsal" + x).val();
             var horini = $("#horini" + x).val();
@@ -156,13 +158,18 @@ function registrar() {
             var usuario = $("#nom_usuari" + x + "ID").val();
             if (!getUsuario(usuarios, usuario)) {
                 usuarios.push(usuario);
+                
                 $.ajax({
                     type: "POST",
                     url: "../" + standa + "/config/ajax_horari_monito.php",
                     data: "&Ajax=on&Option=comprobar&standa=" + standa + "&fec_inicio=" + fecini + "&fec_finali=" + fecsal + "&usuario=" + usuario,
                     async: false,
                     success: function(datos) {
+                        
                         if (datos == 1) {
+
+                            
+
                             setTimeout(function() {
                                 inc_alerta("fecsal" + x, "Cruce de horario.");
                             }, 510);
@@ -194,9 +201,11 @@ function registrar() {
                 val = false;
             }
         });
-        if (val) {
+        if (val) { 
+           
             var parametros = getDataForm();
             var standa = $("#standa").val();
+            
             swal({
                 title: "Registrar Pre-planeaci\u00F3n carga laboral",
                 text: "\u00BFRealmente Deseas registrar las configuraciones ingresadas?",
@@ -205,6 +214,7 @@ function registrar() {
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true,
             }, function() {
+
                 $.ajax({
                     type: "POST",
                     url: "../" + standa + "/config/ajax_horari_monito.php",
@@ -214,7 +224,7 @@ function registrar() {
                         if (datos == 1) {
                             swal({
                                 title: "Registrar Pre-planeaci\u00F3n carga laboral",
-                                text: "Datos Registrados con Éxito",
+                                text: "Datos Registrados con Exito",
                                 type: "info",
                                 showCancelButton: false,
                                 closeOnConfirm: true,
@@ -353,7 +363,7 @@ function EliminarConfiguracion(obj) {
                 if (datos == 1) {
                     swal({
                         title: "Registrar Pre-planeaci\u00F3n carga laboral",
-                        text: "Datos Eliminados con Éxito",
+                        text: "Datos Eliminados con Exito",
                         type: "info",
                         showCancelButton: false,
                         closeOnConfirm: true,
