@@ -3,7 +3,7 @@
 	NOMBRE:   DespacEstibas
 	FUNCION:  Muestra las estadisticas en control de seguiemiento de los diferentes tipos de asistencia 
 	FECHA DE MODIFICACION: 04/06/2020
-	CREADO POR: Ing. Cristian Andrés Torres
+	CREADO POR: Ing. Cristian Andr?s Torres
 	MODIFICADO 
 	****************************************************************************/
 	
@@ -34,7 +34,7 @@
 
         /*! \fn: styles
 		   *  \brief: incluye todos los archivos necesarios para los estilos
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andr?s Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -77,7 +77,7 @@
 
         /*! \fn: scripts
 		   *  \brief: incluye todos los archivos necesarios para los eeventos js
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andr?s Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -135,18 +135,17 @@
         
         /*! \fn: filtros
 		   *  \brief: Crea el html de las tablas filtros y segmentos del modulo
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andr?s Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
 		   *  \return: html
 		*/
-
         private function filtros(){
             //Links css
             self::styles();
 
-            //Informacion Básica de la asistencia
+            //Informacion B?sica de la asistencia
             $inf_basica = self::darInformacion($_REQUEST['cod_solici']);
             $rutas = self::getDataRutasServicios($_REQUEST['cod_solici']);
 
@@ -155,7 +154,7 @@
 
             $html = '
             <div class="row m-3">
-              <div class="col-md-12 text-center"><h3>INFORME DE '. $title .'</h3></div>
+              <div class="col-md-12 text-center card-header bg-info"><h5>INFORME DE '. $title .'</h5></div>
             </div>
             <div class="row m-3">
             <div class="col-md-3">
@@ -197,7 +196,7 @@
                 <div class="col-md-3">
                   <div class="small-box bg-warning">
                     <div class="inner">
-                      <h6>Datos del transportista</h6>
+                      <h6>Datos Basicos del Conductor</h6>
                       <p class="textpanel boldtext">No documento: '.$inf_basica['num_transp'].'</p>
                       <p class="textpanel boldtext">Nombres: '.$inf_basica['nom_transp'].'</p>
                       <p class="textpanel boldtext">Primer apellido: '.$inf_basica['ap1_transp'].'</p>
@@ -213,7 +212,7 @@
                 <div class="col-md-3">
                   <div class="small-box bg-danger">
                     <div class="inner">
-                      <h6>Dato del vehiculo</h6>
+                      <h6>Datos Basicos del vehiculo</h6>
                       <center>
                         <div class="border border-white" style="display:inline-block; padding:10px;margin:5px;margin-bottom:10px">
                           <h5> '.$inf_basica['num_placax'].'
@@ -224,7 +223,7 @@
                               </center>
                               <p class="textpanel boldtext">Marca: '.$inf_basica['mar_vehicu'].'</p>
                               <p class="textpanel boldtext">Color: '.$inf_basica['col_vehicu'].'</p>
-                              <p class="textpanel boldtext">Tipo vehiculo: '.$inf_basica['col_vehicu'].'</p>
+                              <p class="textpanel boldtext">Tipo vehiculo: '.$inf_basica['tip_vehicu'].'</p>
                               <p class="textpanel boldtext">Remolque: '.$inf_basica['num_remolq'].'</p>
                             </div>
                             <div class="icon">
@@ -338,7 +337,7 @@
                         </div>
                         <div class="row">
                           <div class="col-md-6">
-                            <p class="align-right textpanel boldtext">Ubicación: </p>
+                            <p class="align-right textpanel boldtext">Ubicaciín: </p>
                           </div>
                           <div class="col-md-6">
                             <p class="align-left textpanel boldtext">'.$inf_basica['ubi_vehicu'].'</p>
@@ -354,14 +353,15 @@
                         </div>
                         <div class="row">
                           <div class="col-md-6">
-                            <p class="align-right textpanel boldtext">Observaciones:</p>
+                            <p class="align-right textpanel boldtext">Observación:</p>
                           </div>
                           <div class="col-md-6">
                             <p class="align-left textpanel boldtext">'.$inf_basica['des_asiste'].'</p>
                           </div>
                         </div>
                       </div>';
-            }else{
+            }
+            if($inf_basica['tip_solici']==2){
               $html.='<div class="row mt-2">
                         <div class="col-md-6">
                           <p class="align-right textpanel boldtext">Fecha Servicio:</p>
@@ -380,7 +380,7 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6">
-                          <p class="align-right textpanel boldtext">Direccion: </p>
+                          <p class="align-right textpanel boldtext">Dirección: </p>
                         </div>
                         <div class="col-md-6">
                           <p class="align-left textpanel boldtext">'.$inf_basica['dir_ciuori'].'</p>
@@ -412,10 +412,77 @@
                       </div>
                       <div class="row">
                         <div class="col-md-6">
-                          <p class="align-right textpanel boldtext">Observaciones: </p>
+                          <p class="align-right textpanel boldtext">Observación: </p>
                         </div>
                         <div class="col-md-6">
                           <p class="align-left textpanel boldtext">'.$inf_basica['obs_acompa'].'</p>
+                        </div>
+                      </div>
+                  </div>';
+            }
+            if($inf_basica['tip_solici']==3){
+              $html.='<div class="row mt-2">
+                        <div class="col-md-6">
+                          <p class="align-right textpanel boldtext">Ciudad Instalación:</p>
+                        </div>
+                        <div class="col-md-6">
+                          <p class="align-left textpanel boldtext">'.$inf_basica['cod_ciuorin'].' - '.$inf_basica['nom_ciuorin'].'</p>
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-6">
+                          <p class="align-right textpanel boldtext">Dirección:</p>
+                        </div>
+                        <div class="col-md-6">
+                          <p class="align-left textpanel boldtext">'.$inf_basica['dir_ciuins'].'</p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <p class="align-right textpanel boldtext">Fecha y hora Instalación: </p>
+                        </div>
+                        <div class="col-md-6">
+                          <p class="align-left textpanel boldtext">'.$inf_basica['fec_inst'].'</p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <p class="align-right textpanel boldtext">Ciudad Desintalación: </p>
+                        </div>
+                        <div class="col-md-6">
+                          <p class="align-left textpanel boldtext">'.$inf_basica['cod_ciudesi'].' - '.$inf_basica['nom_ciudesi'].'</p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <p class="align-right textpanel boldtext">Dirección Desinstalación: </p>
+                        </div>
+                        <div class="col-md-6">
+                          <p class="align-left textpanel boldtext">'.$inf_basica['dir_ciudesi'].'</p>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <p class="align-right textpanel boldtext">Fecha y hora Desinstalación: </p>
+                        </div>
+                        <div class="col-md-6">
+                          <p class="align-left textpanel boldtext">'.$inf_basica['fec_desin'].'</p>
+                        </div>
+                      </div>
+                      <div class="row">
+                      <div class="col-md-6">
+                        <p class="align-right textpanel boldtext">No. Contenedor: </p>
+                      </div>
+                      <div class="col-md-6">
+                        <p class="align-left textpanel boldtext">'.$inf_basica['num_conte'].'</p>
+                      </div>
+                    </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <p class="align-right textpanel boldtext">Observación: </p>
+                        </div>
+                        <div class="col-md-6">
+                          <p class="align-left textpanel boldtext">'.$inf_basica['obs_cands'].'</p>
                         </div>
                       </div>
                   </div>';
@@ -521,7 +588,7 @@
                     if($tot_servic<=0 && $tot_servic1 <=0){
                       $html.='<div class="col-md-12">
                       <div class=" m-3 alert alert-warning" role="alert">
-                        No hay información registrada de este servicio.
+                        No hay informaci?n registrada de este servicio.
                       </div>
                     </div>';
                     }               
@@ -575,7 +642,7 @@
 
             //Body
             echo '<table style="width: 100%;" id="dashBoardTableTrans">
-            <tr>
+            <tr style="background: #f0f0f0;">
                 <td>
                     <meta name="viewport" content= "width=device-width, initial-scale=1.0">
                     '.$html.'                     
@@ -594,11 +661,18 @@
           c.cod_ciudad as 'cod_ciudes', 
           c.nom_ciudad as 'nom_ciudes',
           d.nom_asiste as 'nom_asiste',
-          e.nom_tercer as 'nom_client'
+          e.nom_tercer as 'nom_client',
+          f.cod_ciudad as 'cod_ciuorin',
+          f.nom_ciudad as 'nom_ciuorin',
+          g.cod_ciudad as 'cod_ciudesi',
+          g.nom_ciudad as 'nom_ciudesi'
+
         FROM 
           ".BASE_DATOS.".tab_asiste_carret a 
         LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad b ON a.ciu_origen = b.cod_ciudad 
         LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad c ON a.ciu_destin = c.cod_ciudad
+        LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad f ON a.ciu_origins = f.cod_ciudad
+        LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad g ON a.ciu_desin = g.cod_ciudad
         INNER JOIN ".BASE_DATOS.".tab_formul_asiste d ON a.tip_solici = d.id
         INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON a.cod_client = e.cod_tercer
         WHERE 
@@ -697,18 +771,18 @@
         }
 
         private function reemplazar($cadena){
-          $falsos = array("ñ");
+          $falsos = array("?");
           $nuevac = str_replace($falsos, "?",$cadena);
           return $nuevac;
         }
 
 
          /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaci?n
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que será analizado por la función
+           *  \param: $arrau => Arreglo que ser? analizado por la funci?n
            *  \return: array
         */
         function cleanArray($array){

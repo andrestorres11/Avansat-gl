@@ -36,7 +36,7 @@ function PorAprobValidate() {
         },
         messages: {
             AproServicio: {
-                required: "Por favor Seleccione una opci?n"
+                required: "Por favor Seleccione una opción"
             }
         },
         submitHandler: function(form) {
@@ -99,7 +99,7 @@ function loadAjax(x) {
 
 }
 
-function changeTitleModal(title, numsolicitud=null) {
+function changeTitleModal(title, numsolicitud = null) {
     $("#title-modal").empty();
     $("#idnumservicio").val(numsolicitud);
     $("#title-modal").append(title);

@@ -217,7 +217,7 @@ class ins_asiste_carret
                     <input class="form-control form-control-sm formul-input" type="number" placeholder="* Numero de documento" id="num_transpID" name="num_transp" required disabled>
                   </div>
                   <div class="col-4">
-                    <input class="form-control form-control-sm formul-input" type="text" placeholder="* Nombres del Transportista" id="nom_transpID" name="nom_transp" required disabled>
+                    <input class="form-control form-control-sm formul-input" type="text" placeholder="* Nombre(s) del Conductor" id="nom_transpID" name="nom_transp" required disabled>
                   </div>
                   <div class="col-3">
                     <input class="form-control form-control-sm formul-input" type="text" placeholder="* Primer Apellido" id="ap1_transpID" name="ap1_transp" required disabled>
