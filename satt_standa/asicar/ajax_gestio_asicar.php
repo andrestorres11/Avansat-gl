@@ -135,7 +135,7 @@
                     $json = self::informeModal();
                     break;
                 default:
-                    $json = self::informeGeneral();
+                    $json = self::informeGeneral(); 
                     break;
             }
             

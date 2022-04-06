@@ -5,7 +5,7 @@ $(function() {
             "sProcessing": "Procesando...",
             "sLengthMenu": "Mostrar _MENU_ registros",
             "sZeroRecords": "No se encontraron resultados",
-            "sEmptyTable": "Ningún dato disponible en esta tabla",
+            "sEmptyTable": "Ning�n dato disponible en esta tabla",
             "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
             "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
             "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
@@ -16,7 +16,7 @@ $(function() {
             "sLoadingRecords": "Cargando...",
             "oPaginate": {
                 "sFirst": "Primero",
-                "sLast": "Último",
+                "sLast": "Ultimo",
                 "sNext": "Siguiente",
                 "sPrevious": "Anterior"
             },
@@ -32,13 +32,21 @@ $(function() {
 
 
 
-
     ruta = $("#dat_gpsxxx").val();
     ruta = window.atob(ruta);
     ruta = $.parseJSON(ruta);
 
+    if(parseFloat(ruta[0]) != 0){
+
+        lat = 4.6619489;
+        lon = -74.0575325;
+
+    }else{
+
     lat = parseFloat(ruta[0].val_latitu);
     lon = parseFloat(ruta[0].val_longit);
+
+    }
 
     let descargue = 1;
 

@@ -138,6 +138,8 @@ class ajax_asiste_carret
     $return = [];
     $ciu_origen="";
     $ciu_destin="";
+    $ciu_origins="";
+    $ciu_desin="";
     $servicios = html_entity_decode($_REQUEST['services']);
     $servicios = json_decode($servicios);
     //Revisa la base de datos y busca el numero de la solicitud.
@@ -152,6 +154,12 @@ class ajax_asiste_carret
     if(isset($_REQUEST['ciu_destin'])){
       $ciu_destin=$this->separarCodigoCiudad($_REQUEST['ciu_destin']);
     }
+    if(isset($_REQUEST['ciu_origins'])){
+      $ciu_origins=$this->separarCodigoCiudad($_REQUEST['ciu_origins']);
+    }
+      if(isset($_REQUEST['ciu_desin'])){
+        $ciu_desin=$this->separarCodigoCiudad($_REQUEST['ciu_desin']);
+    }
     
     $cod_transp = $_REQUEST['optionTransp'];
     if($_REQUEST['optionTransp']==""){
@@ -161,9 +169,19 @@ class ajax_asiste_carret
     $cod_cliente = $this->darNombreCliente($cod_transp,2);
     //formato fecha
     $fec_servic = '';
+    $fec_inst = '';
+    $fec_desin = '';
     if(isset($_REQUEST['fec_servic'])){
       $fec_servic = $_REQUEST['fec_servic'];
       $fec_servic  = date("Y-m-d H:i:s", strtotime($fec_servic));
+    }
+    if(isset($_REQUEST['fec_inst'])){
+      $fec_inst = $_REQUEST['fec_inst'];
+      $fec_inst  = date("Y-m-d H:i:s", strtotime($fec_inst));
+    }
+    if(isset($_REQUEST['fec_desin'])){
+      $fec_desin = $_REQUEST['fec_desin'];
+      $fec_desin  = date("Y-m-d H:i:s", strtotime($fec_desin));
     }
     $sql="INSERT INTO ".BASE_DATOS.".tab_asiste_carret(
       id,cod_client,cod_transp,
@@ -177,7 +195,10 @@ class ajax_asiste_carret
       con_vehicu, ubi_vehicu, pun_refere, 
       des_asiste, fec_servic, ciu_origen, 
       dir_ciuori, ciu_destin, dir_ciudes, 
-      obs_acompa, usu_creaci, fec_creaci
+      obs_acompa, ciu_origins, dir_ciuins,
+      fec_inst, ciu_desin, dir_ciudesi,
+      fec_desin, num_conte, obs_cands, 
+      usu_creaci, fec_creaci
     ) 
     VALUES 
       (
@@ -192,7 +213,9 @@ class ajax_asiste_carret
         '".$_REQUEST['con_vehicu']."', '".$_REQUEST['ubi_vehicu']."', '".$_REQUEST['pun_refere']."', 
         '".$_REQUEST['des_asiste']."', '".$fec_servic."', '".$ciu_origen."', 
         '".$_REQUEST['dir_ciuori']."', '".$ciu_destin."', '".$_REQUEST['dir_ciudes']."', 
-        '".$_REQUEST['obs_acompa']."', '".$_SESSION['datos_usuario']['cod_usuari']."',NOW()
+        '".$_REQUEST['obs_acompa']."', '".$ciu_origins."', '".$_REQUEST['dir_ciuins']."', '".$fec_inst."',
+        '".$ciu_desin."', '".$_REQUEST['dir_ciudesi']."', '".$fec_desin."', '".$_REQUEST['num_conte']."', 
+        '".$_REQUEST['obs_cands']."', '".$_SESSION['datos_usuario']['cod_usuari']."',NOW()
       )";
 
       $consulta = new Consulta($sql, $this -> conexion,"BR");
@@ -408,7 +431,7 @@ class ajax_asiste_carret
                                 <table cellpadding="0" cellspacing="0" width="100%" role="presentation" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;">
                                   <tr style="border-collapse:collapse;">
                                     <td align="left" style="text-align: center; padding:0;Margin:0;padding-top:40px;">
-                                      <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud N°. '.$num_solici.' </b></p>
+                                      <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:20px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:60px;color:#333333;"><b>Solicitud No. '.$num_solici.' </b></p>
                                     </td>
                                   </tr>
                                 </table>
@@ -459,8 +482,8 @@ class ajax_asiste_carret
                                     <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
                                       <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
                                         <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$this->darNombreCliente($cod_cliente,1).'</strong>                                    <br> <br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
-                                        '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la línea de servicio <strong>Asistencia Logística</strong>                                    del <strong>Grupo OET</strong>, le informa que su solicitud se creo exitosamente. <br> <br class="colortext">Estado:
-                                        <strong class="colortext">En proceso de validación.</strong> <br> <br class="colortext">Le estaremos informando el
+                                        '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la línea de servicio <strong>Asistencia Log�stica</strong>                                    del <strong>Grupo OET</strong>, le informa que su solicitud se creo exitosamente. <br> <br class="colortext">Estado:
+                                        <strong class="colortext">En proceso de validaci�n.</strong> <br> <br class="colortext">Le estaremos informando el
                                         estado de su solicitud, cabe aclarar que nuestro tiempo de respuesta es de aproximadamente 45 minutos o antes. <br>                                    <br> </p>
                                     </td>
                                   </tr>
