@@ -286,7 +286,7 @@
                         <th>%</th>
                         <th>POR APROBAR CLIENTE</th>
                         <th>%</th>
-                        <th>ASIGNACIï¿½N A PRO</th>
+                        <th>ASIGNACIÓN A PRO</th>
                         <th>%</th>
                         <th>EN PROCESO</th>
                         <th>%</th>
@@ -314,7 +314,7 @@
                         <th>%</th>
                         <th>POR APROBAR CL</th>
                         <th>%</th>
-                        <th>ASIGNACIï¿½N DE PRO</th>
+                        <th>ASIGNACIÓN DE PRO</th>
                         <th>%</th>
                         <th>EN PROCESO</th>
                         <th>%</th>
@@ -499,7 +499,7 @@ return $html;
                 <input class="form-control form-control-sm" type="email" placeholder="Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
               </div>
               <div class="offset-1 col-4">
-              <input class="form-control form-control-sm" type="number" placeholder="Telï¿½fono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
+              <input class="form-control form-control-sm" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
               </div>
             </div>
 
@@ -526,7 +526,7 @@ return $html;
 
           <div class="card text-center" style="margin:15px;">
             <div class="card-header color-heading">
-              Datos del Transportista
+              Datos Basicos del Conductor
             </div>
           <div class="card-body">
 
@@ -535,7 +535,7 @@ return $html;
                 <input class="form-control form-control-sm" type="number" placeholder="Numero de documento" id="num_transpID" name="num_transp" required disabled>
               </div>
               <div class="col-4">
-                <input class="form-control form-control-sm" type="text" placeholder="Nombres del Transportista" id="nom_transpID" name="nom_transp" required disabled>
+                <input class="form-control form-control-sm" type="text" placeholder="Nombre(s) del Conductor" id="nom_transpID" name="nom_transp" required disabled>
               </div>
               <div class="col-3">
                 <input class="form-control form-control-sm" type="text" placeholder="Primer Apellido" id="ap1_transpID" name="ap1_transp" required disabled>
@@ -560,7 +560,7 @@ return $html;
 
           <div class="card text-center" style="margin:15px;">
             <div class="card-header color-heading">
-              Datos del Vehiculo
+            Datos Basicos del Vehiculo
             </div>
           <div class="card-body">
 

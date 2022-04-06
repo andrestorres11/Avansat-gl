@@ -123,7 +123,83 @@ function cargaFormulario(valor) {
             $("#ciu_destin").val("");
         });
 
+    }else if(valor.value == 3) {
+        desbloqueaInputs();
+        $("#con-formul").append(`<div class="card text-center" style="margin:15px;">
+        <div class="card-header color-heading">
+        Datos Adicionales del Servicio
+        </div>
+      <div class="card-body">
+
+        <div class="row">
+            <div class="offset-1 col-3">
+                <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Instalación" id="ciu_origins" name="ciu_origins" onkeyup="busquedaCiudad(this)" autocomplete="off" required>
+                <div id="ciu_origins-suggestions" class="suggestions"></div>
+            </div>
+            <div class="col-4">
+                <input class="form-control form-control-sm" type="text" placeholder="Dirección Instalación" id="dir_ciuinsID" name="dir_ciuins" required>
+            </div>
+          <div class="col-3">
+            <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora Instalación" id="fec_instID" name="fec_inst" required>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="offset-1 col-3">
+                <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Desinstalación" id="ciu_desin" name="ciu_desin" onkeyup="busquedaCiudad(this)" autocomplete="off" required>
+                <div id="ciu_desin-suggestions" class="suggestions"></div>
+            </div>
+            <div class="col-4">
+                <input class="form-control form-control-sm" type="text" placeholder="Dirección Desinstalación" id="dir_ciudesiID" name="dir_ciudesi" required>
+            </div>
+            <div class="col-3">
+                <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora Desinstalación" id="fec_desinID" name="fec_desin" required>
+            </div>
+        </div>
+        <hr>
+        <div class="row mt-3">
+            <label for="inputPassword" class="offset-6 col-2 col-form-label"><h5 class="text-label-big">N° Contenedor:</h5></label>
+            <div class="col-3">
+                <input type="text" class="form-control form-control-sm" id="num_conte" name="num_conte">
+            </div>
+        </div>
+        <div class="row mt-3">
+                        <div class="offset-1 col-10">
+                          <textarea class="form-control" id="obs_candsID" name="obs_cands" rows="3" placeholder="Observaciones" required></textarea>
+                        </div>
+                      </div>
+
+      </div>
+      </div>`);
+
+        $('#fec_instID').datetimepicker({
+            sideBySide: true,
+            icons: {
+                up: "fa fa-chevron-circle-up",
+                down: "fa fa-chevron-circle-down",
+                next: 'fa fa-chevron-circle-right',
+                previous: 'fa fa-chevron-circle-left'
+            }
+        });
+        $('#fec_desinID').datetimepicker({
+            sideBySide: true,
+            icons: {
+                up: "fa fa-chevron-circle-up",
+                down: "fa fa-chevron-circle-down",
+                next: 'fa fa-chevron-circle-right',
+                previous: 'fa fa-chevron-circle-left'
+            }
+        });
+
+        $("#ciu_origins").on('click', function() {
+            $("#ciu_origins").val("");
+        });
+        $("#ciu_desin").on('click', function() {
+            $("#ciu_desin").val("");
+        });
+
     }
+
     traeServicios(valor.value);
     $("#servicDiv").css("display", "block");
 }
