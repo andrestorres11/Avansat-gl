@@ -191,18 +191,20 @@ class Proc_rutas
     #Inserta Puestos de control de la nueva ruta
     for($i=0; $i<$_REQUEST[cont]; $i++)
     {
-      $mSql = "INSERT INTO ".BASE_DATOS.".tab_genera_rutcon
-                      (
-                        cod_rutasx, cod_contro, val_duraci, 
-                        val_distan, usr_creaci, fec_creaci, 
-                        ind_estado
-                      )
-               VALUES (
-                        '{$mNewRuta}', '{$_REQUEST[cod_contro][$i]}', '{$_REQUEST[val][$i]}', 
-                        '{$_REQUEST[kil][$i]}', '{$mUsuari}', NOW(), 
-                        '".COD_ESTADO_ACTIVO."'
-                      )";
-      $mConsult = new Consulta($mSql, $this -> conexion, "R");
+      if($_REQUEST[cod_contro][$i] != ''){
+        $mSql = "INSERT INTO ".BASE_DATOS.".tab_genera_rutcon
+                        (
+                          cod_rutasx, cod_contro, val_duraci, 
+                          val_distan, usr_creaci, fec_creaci, 
+                          ind_estado
+                        )
+                VALUES (
+                          '{$mNewRuta}', '{$_REQUEST[cod_contro][$i]}', '{$_REQUEST[val][$i]}', 
+                          '{$_REQUEST[kil][$i]}', '{$mUsuari}', NOW(), 
+                          '".COD_ESTADO_ACTIVO."'
+                        )";
+        $mConsult = new Consulta($mSql, $this -> conexion, "R");
+      }
     }
 
     #Inserta el ultimo PC de la nueva ruta (Lugar entrega)
