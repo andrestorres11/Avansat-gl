@@ -235,13 +235,12 @@ class Proc_rutas
                       ".BASE_DATOS.".tab_genera_contro e
                 WHERE a.cod_rutasx = d.cod_rutasx AND
                       d.cod_contro = e.cod_contro AND
-                      a.cod_rutasx = '$_REQUEST[ruta]' AND
+                      a.cod_rutasx = '".$_REQUEST['ruta']."' AND
                       d.cod_contro != ".CONS_CODIGO_PCLLEG." AND 
                       d.cod_contro != ".CONS_CODIGO_PCINIC."
              ORDER BY 7";
     $consec = new Consulta($query, $this -> conexion);
     $matriz = $consec -> ret_matriz();
-
     if(!$_REQUEST[nom])
       $_REQUEST[nom] = "";
 
