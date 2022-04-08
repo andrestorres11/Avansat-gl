@@ -83,7 +83,7 @@ class ajax_genera_contro
    *  \brief: Actualiza el estado del registro
    *  \author: Ing. Andres Torres
    *  \date: 28/04/2020
-   *  \date modified: dia/mes/año
+   *  \date modified: dia/mes/aï¿½o
    *  \param: 
    *  \return: HTML 
    */
@@ -105,7 +105,7 @@ class ajax_genera_contro
           $return['response'] = 'El registro ha sido actualizado exitosamente.';
         }else{
           $return['status'] = 500;
-          $return['response'] = 'Error al realizar la actualzación.';
+          $return['response'] = 'Error al realizar la actualzaciï¿½n.';
         }
 
         //Devuelve estatus de la consulta
@@ -119,7 +119,7 @@ class ajax_genera_contro
    *  \brief: Actualzia o crea registros de vias
    *  \author: Ing. Andres Torres
    *  \date: 28/04/2020
-   *  \date modified: dia/mes/año
+   *  \date modified: dia/mes/aï¿½o
    *  \param: 
    *  \return: HTML 
    */
@@ -226,7 +226,7 @@ class ajax_genera_contro
                             <div class="col-md-4">
                                 <label class="col-12 control-label"><span class="redObl">*</span>Tipo Puesto De control</label>
                                 <select class="form-control form-control-sm" id="tipFormulID" name="tipFormul" required>
-                                  <option value="">Escoja Opción</option>
+                                  <option value="">Escoja Opci&oacute;n</option>
                                   '.$TiposPc.'
                                 </select>
                             </div>

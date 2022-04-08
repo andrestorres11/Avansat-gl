@@ -120,7 +120,7 @@ class tab_genera_contro
 
   //---------------------------------------------
   /*! \fn: getInterfParame
-  *  \brief:Verificar la interfaz con destino seguro esta activa
+  *  \brief:Verificar la interfaz con destino seguro esta activa 
   *  \author: Nelson Liberato
   *  \date: 21/12/2015
   *  \date modified: 21/12/2015
