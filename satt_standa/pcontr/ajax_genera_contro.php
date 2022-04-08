@@ -134,6 +134,7 @@ class ajax_genera_contro
 	                       SET  $codigo
                               nom_contro= '".$_REQUEST['nom_contro']."',
                               cod_ciudad = '".$_REQUEST['cod_ciudad']."',
+                              cod_tpcont = '".$_REQUEST['tipFormul']."',
                               dir_contro = '".$_REQUEST['dir_contro']."',
                               tel_contro = '".$_REQUEST['tel_contro']."',
                               val_longit = '".$_REQUEST['val_longit']."',
@@ -145,6 +146,7 @@ class ajax_genera_contro
 	   ON DUPLICATE KEY UPDATE nom_contro= '".$_REQUEST['nom_contro']."',
                              cod_ciudad= '".$_REQUEST['cod_ciudad']."',
                              dir_contro= '".$_REQUEST['dir_contro']."',
+                             cod_tpcont = '".$_REQUEST['tipFormul']."',
                              tel_contro= '".$_REQUEST['tel_contro']."',
                              val_longit= '".$_REQUEST['val_longit']."',
                              val_latitu= '".$_REQUEST['val_latitu']."',
@@ -177,9 +179,9 @@ class ajax_genera_contro
         // echo "</pre>";
         // die();
         $datos_option = $this->darOpcionAsistencia();
-        $datosTiposPc = $this->tiposPc();
 
         $ciudades = $this->getListadoCiudades($dato['cod_ciudad']);
+        $TiposPc = $this->TiposPc($dato['cod_tpcont']);
     
 
         $html = '<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="editService">
@@ -224,7 +226,8 @@ class ajax_genera_contro
                             <div class="col-md-4">
                                 <label class="col-12 control-label"><span class="redObl">*</span>Tipo Puesto De control</label>
                                 <select class="form-control form-control-sm" id="tipFormulID" name="tipFormul" required>
-                                    '.$datosTiposPc.'
+                                  <option value="">Escoja Opción</option>
+                                  '.$TiposPc.'
                                 </select>
                             </div>
                         </div>
@@ -312,13 +315,17 @@ class ajax_genera_contro
     return utf8_encode($html);
   }
 
-  function tiposPc(){
-    $sql="SELECT a.cod_tpcont, a.nom_tpcont FROM ".BASE_DATOS.".tab_tipos_pcontr a WHERE a.ind_estado=1;";
+  function TiposPc($cod){
+    $sql="SELECT a.cod_tpcont,a.nom_tpcont FROM ".BASE_DATOS.".tab_tipos_pcontr a WHERE a.ind_estado=1;";
     $consulta = new Consulta($sql, $this->conexion);
-    $respuesta = $consulta->ret_matriz("a");
+    $respuestas = $consulta->ret_matriz("a");
     $html='';
-    foreach($respuesta as $dato){
-      $html.='<option value="'.$dato['cod_tpcont'].'">'.$dato['nom_tpcont'].'</option>';
+    foreach($respuestas as $tipopuesto){
+      if($tipopuesto['cod_tpcont']==$cod){
+        $html.='<option value="'.$tipopuesto['cod_tpcont'].'" selected>'.$tipopuesto['nom_tpcont'].'</option>';
+      }else{
+        $html.='<option value="'.$tipopuesto['cod_tpcont'].'">'.$tipopuesto['nom_tpcont'].'</option>';
+      }
     }
     return utf8_encode($html);
   }
