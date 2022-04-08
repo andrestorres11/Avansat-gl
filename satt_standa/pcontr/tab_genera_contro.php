@@ -120,7 +120,7 @@ class tab_genera_contro
 
   //---------------------------------------------
   /*! \fn: getInterfParame
-  *  \brief:Verificar la interfaz con destino seguro esta activa
+  *  \brief:Verificar la interfaz con destino seguro esta activa 
   *  \author: Nelson Liberato
   *  \date: 21/12/2015
   *  \date modified: 21/12/2015
@@ -148,7 +148,7 @@ class tab_genera_contro
                                 <th>Codigo</th>
                                 <th>Nombre</th>
                                 <th>Ciudad</th>
-                                <th>Dirección</th>
+                                <th>Direcci&oacute;n</th>
                                 <th>Telefono</th>
                                 <th>Longitud</th>
                                 <th>Latitud</th>
@@ -221,8 +221,8 @@ class tab_genera_contro
                         </div>
                         
                         <div class="col-md-8">
-                            <label class="col-12 control-label">Dirección</label>
-                            <input class="form-control form-control-sm" type="text" placeholder="Dirección" id="dir_controID" name="dir_contro">
+                            <label class="col-12 control-label">Direcci&oacute;n</label>
+                            <input class="form-control form-control-sm" type="text" placeholder="Direcci&oacute;n" id="dir_controID" name="dir_contro">
                         </div>
                     </div>
 
@@ -240,7 +240,7 @@ class tab_genera_contro
                         <div class="col-md-4">
                             <label class="col-12 control-label"><span class="redObl">*</span>Tipo Puesto De control</label>
                             <select class="form-control form-control-sm" id="tipFormulID" name="tipFormul" required>
-                                <option value="">Escoja OpciÃ³n</option>
+                              <option value="">Escoja una Opci&oacute;n</option>
                                 '.$datosTiposPc.'
                             </select>
                         </div>
