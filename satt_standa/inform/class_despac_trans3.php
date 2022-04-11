@@ -3275,7 +3275,7 @@ class Despac
 		$mSql .= " GROUP BY a.num_despac ";
 		$mSql .= $mIndFinrut == false ? "" : " ORDER BY a.fec_llegad DESC ";
 		$mSql .= $mIndFinrut == false ? "" : " LIMIT 10 ";
-
+		//echo $mSql;
 		echo "<pre id='TorresAndres' $mNumDespac $mIndFinrut style='display:none' >"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $mConsult -> ret_matrix('a');
