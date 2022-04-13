@@ -185,11 +185,11 @@ class infBandeja
 				$mHtml2 .= '<tr>';
 				$mHtml2 .= '	<td class="cellInfo1" align="right">No. Despacho:</td>';
 				$mHtml2 .= '	<td class="cellInfo1">';
-				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15" onkeypress="return justNumbers( event );" id="num_despacID" name="num_despac" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
+				$mHtml2 .= '		<input type="text" maxlength="15" value="" size="15"  id="num_despacID" name="num_despac" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
 				$mHtml2 .= '	</td>';
 				$mHtml2 .= '	<td class="cellInfo1" align="right">Placa:</td>';
 				$mHtml2 .= '	<td class="cellInfo1">';
-				$mHtml2 .= '		<input type="text" maxlength="6" value="" size="6" id="num_placaxID" name="num_placax" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
+				$mHtml2 .= '		<input type="text" maxlength="6" value="" size="6"  id="num_placaxID" name="num_placax" onblur="this.className=\'campo_texto\'" onfocus="this.className=\'campo_texto_on\'">';
 				$mHtml2 .= '	</td>';
 				$mHtml2 .= '	<td class="cellInfo1" align="right">Celular Conductor:</td>';
 				$mHtml2 .= '	<td class="cellInfo1">';
