@@ -756,7 +756,10 @@
 
         function loadFields(){
             $cod_solici = $_REQUEST['cod_solici'];
-            $sql="SELECT *,b.nom_asiste FROM ".BASE_DATOS.".tab_asiste_carret a LEFT JOIN ".BASE_DATOS.".tab_formul_asiste b ON a.tip_solici = b.id WHERE a.id = '$cod_solici'";
+            $sql="SELECT *,b.nom_asiste,c.abr_tercer AS 'nom_asegura' FROM ".BASE_DATOS.".tab_asiste_carret a
+            LEFT JOIN ".BASE_DATOS.".tab_formul_asiste b ON a.tip_solici = b.id 
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer c ON a.ase_solici = c.cod_tercer
+            WHERE a.id = '$cod_solici'";
             $query = new Consulta($sql, self::$conexion);
             $informacion = $query -> ret_matrix('a');
             $json = json_encode($informacion);
@@ -794,10 +797,10 @@
                     </div>
                     <div class="row mt-3">
                       <div class="offset-1 col-3">
-                        <input class="form-control form-control-sm" type="text" placeholder="Contrase?a" id="con_vehicuID" name="con_vehicu" disabled value="'.$informacion['con_vehicu'].'">
+                        <input class="form-control form-control-sm" type="text" placeholder="Contrase&ntilde;a" id="con_vehicuID" name="con_vehicu" disabled value="'.$informacion['con_vehicu'].'">
                         </div>
                         <div class="col-4">
-                          <input class="form-control form-control-sm" type="text" placeholder="Ubicaci?n" id="ubi_vehicuID" name="ubi_vehicu" disabled value="'.$informacion['ubi_vehicu'].'">
+                          <input class="form-control form-control-sm" type="text" placeholder="Ubicaci&oacute;n" id="ubi_vehicuID" name="ubi_vehicu" disabled value="'.$informacion['ubi_vehicu'].'">
                           </div>
                           <div class="col-3">
                             <input class="form-control form-control-sm" type="text" placeholder="Punto de Referencia" id="pun_refereID" name="pun_refere" disabled value="'.$informacion['pun_refere'].'">
@@ -805,7 +808,7 @@
                           </div>
                           <div class="row mt-3">
                             <div class="offset-1 col-10">
-                              <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve Descripci?n de la Asistencia" disabled>'.$informacion['des_asiste'].'</textarea>
+                              <textarea class="form-control" id="des_asisteID" name="des_asiste" rows="3" placeholder="Breve descripci&oacute;n de la asistencia" disabled>'.$informacion['des_asiste'].'</textarea>
                             </div>
                           </div>
                         </div>
