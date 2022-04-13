@@ -286,7 +286,7 @@
                         <th>%</th>
                         <th>POR APROBAR CLIENTE</th>
                         <th>%</th>
-                        <th>ASIGNACIÓN A PRO</th>
+                        <th>ASIGNACI&Oacute;N A PRO</th>
                         <th>%</th>
                         <th>EN PROCESO</th>
                         <th>%</th>
@@ -314,7 +314,7 @@
                         <th>%</th>
                         <th>POR APROBAR CL</th>
                         <th>%</th>
-                        <th>ASIGNACIÓN DE PRO</th>
+                        <th>ASIGNACI&Oacute;N DE PRO</th>
                         <th>%</th>
                         <th>EN PROCESO</th>
                         <th>%</th>
@@ -499,7 +499,7 @@ return $html;
                 <input class="form-control form-control-sm" type="email" placeholder="Email del Solicitante" id="ema_soliciID" name="ema_solici" required disabled value="'.$datos_usuari['usr_emailx'].'">
               </div>
               <div class="offset-1 col-4">
-              <input class="form-control form-control-sm" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
+              <input class="form-control form-control-sm" type="number" placeholder="Tel&eacute;fono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
               </div>
             </div>
 

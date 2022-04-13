@@ -130,6 +130,7 @@ class ins_asiste_carret
     $datos_option = $this->darOpcionAsistencia();
     $datos_usuari = $this->obtenerDatosUsuario();
     $transp = $this->obtenerTransportadoraPerfil(1);
+    $asegu = $this->getAsegur();
 
     if($transp){
       $estado = "disabled";
@@ -174,7 +175,7 @@ class ins_asiste_carret
 
                 <div class="row mt-3">
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm formul-input" type="number" placeholder="Teléfono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
+                    <input class="form-control form-control-sm formul-input" type="number" placeholder="Tel&eacute;fono del Solicitante" id="tel_soliciID" name="tel_solici" disabled>
                   </div>
                   <div class="offset-1 col-4">
                     <input class="form-control form-control-sm formul-input" type="number" placeholder="* Numero de Celular" id="cel_soliciID" name="cel_solici" required disabled>
@@ -183,7 +184,10 @@ class ins_asiste_carret
 
                 <div class="row mt-3">
                   <div class="offset-1 col-4">
-                    <input class="form-control form-control-sm formul-input" type="text" placeholder="Aseguradora" id="nom_aseguraID" name="nom_asegura" disabled>
+                    <select class="form-control form-control-sm " id="nom_aseguraID" name="nom_asegura">
+                      <option value="">Seleccione una Aseguradora</option>
+                      '.$asegu.'
+                    </select>
                   </div>
                   <div class="offset-1 col-4">
                     <input class="form-control form-control-sm formul-input" type="text" placeholder="Poliza" id="nom_polizaID" name="nom_poliza" disabled>
@@ -291,6 +295,21 @@ class ins_asiste_carret
     $html='';
     foreach($respuesta as $dato){
       $html.='<option value="'.$dato['id'].'">'.$dato['nom_asiste'].'</option>';
+    }
+    return utf8_encode($html);
+  }
+
+  function getAsegur(){
+    $sql="SELECT a.cod_tercer,a.abr_tercer
+    FROM ".BASE_DATOS.".tab_tercer_tercer a,
+         ".BASE_DATOS.".tab_tercer_activi b
+   WHERE a.cod_tercer = b.cod_tercer AND
+         b.cod_activi = 7";
+    $consulta = new Consulta($sql, $this->conexion);
+    $respuesta = $consulta->ret_matriz("a");
+    $html='';
+    foreach($respuesta as $dato){
+      $html.='<option value="'.$dato['cod_tercer'].'">'.$dato['abr_tercer'].'</option>';
     }
     return utf8_encode($html);
   }

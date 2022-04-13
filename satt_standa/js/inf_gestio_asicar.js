@@ -369,7 +369,7 @@ function llenarCamposModal(data) {
     $("#ema_soliciID").val(data['cor_solici']);
     $("#tel_soliciID").val(data['tel_solici']);
     $("#cel_soliciID").val(data['cel_solici']);
-    $("#nom_aseguraID").val(data['ase_solici']);
+    $("#nom_aseguraID").val(data['nom_asegura']);
     $("#nom_polizaID").val(data['num_poliza']);
 
     $("#num_transpID").val(data['num_transp']);
