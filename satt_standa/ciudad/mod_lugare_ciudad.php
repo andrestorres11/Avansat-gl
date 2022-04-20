@@ -50,13 +50,15 @@ class Proc_ciudad
         function Mostrar()
         {
                 $query = "SELECT a.cod_ciudad,a.nom_ciudad,a.abr_ciudad,
-                                 b.abr_depart,c.abr_paisxx, a.ind_estado
-                            FROM ".BASE_DATOS.".tab_genera_ciudad a, ".BASE_DATOS.".tab_genera_depart b,
-                                 ".BASE_DATOS.".tab_genera_paises c
-                           WHERE a.cod_depart = b.cod_depart AND
-                                 a.cod_paisxx = c.cod_paisxx AND
-                                 a.nom_ciudad LIKE '%$_REQUEST[ciudad]%'
-                        ORDER BY 5,2";
+                                 b.abr_depart,d.abr_paisxx, a.ind_estado,
+                                 c.nom_provin
+                            FROM ".BASE_DATOS.".tab_genera_ciudad a
+                      INNER JOIN ".BASE_DATOS.".tab_genera_depart b ON a.cod_depart = b.cod_depart AND a.cod_paisxx = b.cod_paisxx
+                      INNER JOIN ".BASE_DATOS.".tab_genera_provin c ON a.cod_provin = c.cod_provin AND a.cod_paisxx = c.cod_paisxx
+                      INNER JOIN ".BASE_DATOS.".tab_genera_paises d ON a.cod_paisxx = d.cod_paisxx 
+                           WHERE a.nom_ciudad LIKE '%$_REQUEST[ciudad]%'
+                           GROUP by a.cod_ciudad
+                           ORDER by 5,2";
                 $con_ciudad = new Consulta($query, $this -> conexion);
                 $ciudad = $con_ciudad -> ret_matriz();
                 $this -> form_ciudad();
@@ -68,6 +70,7 @@ class Proc_ciudad
                         $formulario -> linea("Ciudad",0,"t");
                         $formulario -> linea("Abreviatura Ciudad",0,"t");
                         $formulario -> linea("Departamento",0,"t");
+                        $formulario -> linea("Provincia",0,"t");
                         $formulario -> linea("Pa&iacute;s",0,"t");
                         $formulario -> linea("Opciones",1,"t");
                         for($i=0;$i<sizeof($ciudad);$i++)
@@ -82,6 +85,7 @@ class Proc_ciudad
                                         $formulario -> linea($ciudad[$i][1],0,"i");
                                         $formulario -> linea($ciudad[$i][2],0,"i");
                                         $formulario -> linea($ciudad[$i][3],0,"i");
+                                        $formulario -> linea($ciudad[$i][6],0,"i");
                                         $formulario -> linea($ciudad[$i][4],0,"i");
                                         $formulario -> linea($link,1,"i");
                         }//fin for
@@ -113,7 +117,7 @@ class Proc_ciudad
 // *********************************************************************************
 
 // *****************************************************
-//FUNCION CAMBIAR ESTADO DE LA OBSERVACiÖN
+//FUNCION CAMBIAR ESTADO DE LA OBSERVACiï¿½N
 // *****************************************************
 function Cambiar_Estado()
 {
