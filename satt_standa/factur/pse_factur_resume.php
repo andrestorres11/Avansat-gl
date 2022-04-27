@@ -170,7 +170,18 @@
                     </div>';
             }else{
                 $cod_transpd = self::obtenerTransportadora();
-                $html.='<input type="hidden" id="busdefect" value="'.$cod_transpd.'">';
+                if($cod_transpd != ''){
+                    $html.='<input type="hidden" id="busdefect" value="'.$cod_transpd.'">';
+                }else{
+                    $html.='<div class="row m-3 p-2">
+                                <div class="col-md-12">
+                                    <div class="alert alert-danger" role="alert">
+                                        <h6><i class="fa fa-times-circle m-2" aria-hidden="true"></i>  No hay información que mostrar, por favor contacte al administrador.</h6>
+                                    </div>
+                                </div>
+                            </div>';
+                }
+                
             }    
             $html.='<div class="mt-1" id="bodyViewInfo">
                     </div>';
@@ -208,8 +219,13 @@
             LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer c ON b.clv_filtro = c.cod_tercer AND c.cod_estado = 1
           WHERE a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."'";
             $consulta = new Consulta($sql, $this->conexion);
-            $registro = $consulta->ret_matriz()[0];
-            return $registro['clv_filtro'];
+            $registro = $consulta->ret_matriz();
+            if(count($registro)>0){
+                $cod_transp = $registro[0]['clv_filtro'];
+            }else{
+                $cod_transp = '';
+            }
+            return $cod_transp;
           }
 
     }
