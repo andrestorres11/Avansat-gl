@@ -121,7 +121,7 @@
                                         <div class="card-header headCard">
                                             <div class="row vcenter">
                                                 <div class="col-md-12">
-                                                    <h3 style="color:#fff !important;    margin-block-end: 0; display: inline; position: absolute; font-weight: 450;">Pagos GRUPO OET</h3>
+                                                    <h3 style="color:#fff !important;    margin-block-end: 0; display: inline; position: absolute; font-weight: 450;">Pagos Centro Logistico Faro</h3>
                                                     <i style="font-size: 75px; word-wrap: break-word;position: absolute; left: 0; top: 0; left: 260;width: 10px; height: 10px;color: #ffffff75;" class="fa fa-money" aria-hidden="true"></i>
                                                     <i style="font-size: 45px; word-wrap: break-word;position: absolute; left: 350; top: -8; width: 10px; height: 10px;color: #ffffff75;" class="fa fa-money" aria-hidden="true"></i>
                                                     <i style="font-size: 35px; word-wrap: break-word;position: absolute; left: 370; top: 35; width: 10px; height: 10px;color: #ffffff75;" class="fa fa-money" aria-hidden="true"></i>
@@ -129,21 +129,20 @@
                                             </div>
                                             <div class="row vcenter">
                                                 <div class="col-md-12">
-                                                    <h5 style="color:#fff !important;position: absolute;top: 36;">RESUMEN DE LA FACTURACIÓN: '.$inf_transp['nom_tercer'].'</h5>
+                                                    <h5 style="color:#fff !important;position: absolute;top: 36;">RESUMEN DE LA FACTURACIÓN: '.utf8_encode($inf_transp['nom_tercer']).'</h5>
                                                 </div>
                                             </div>
                                             
                                         </div>
                                         <div class="card-body">
                                             <div class="row">
-                                                <div class="col-md-12 p-1">
+                                                <div class="offset-md-1 col-md-10">
                                                     <table class="table table-bordered" id="inf_tabfac">
                                                         <thead class="theadc">
                                                             <tr>
                                                                 <th nowrap>Num. Factura</th>
-                                                                <th nowrap>Descripción</th>
-                                                                <th nowrap>Fec. Facturación</th>
-                                                                <th nowrap>Fec. Vencimiento</th>
+                                                                <th nowrap>Fecha de Facturación</th>
+                                                                <th nowrap>Fecha de Vencimiento</th>
                                                                 <th nowrap>Valor de la factura</th>
                                                                 <th nowrap>Saldo</th>
                                                                 <th nowrap>Ver</th>
@@ -179,7 +178,6 @@
                 }
                 $html.='<tr class="'.$clase.'">
                             <td class="text-center">'.$factura['num_factur'].'</td>
-                            <td>'.$factura['des_produc'].'</td>
                             <td>'.$factura['fec_factur'].'</td>
                             <td>'.$factura['fec_vencin'].'</td>
                             <td>$ ' . number_format($factura['val_totalx'], 2) .'</td>
@@ -194,7 +192,7 @@
                             <td class="text-center"><a href="' . $dir_pdf_bajar . '" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
                             <td class="text-center">';
                 if ($saldo > 0) {
-                    $html.='<a href="https://www.psepagos.co/PSEHostingUI/ShowTicketOffice.aspx?ID=11303" target="_blank" ><i class="fa fa-money mr-1"></i> Pagar</a>';
+                    $html.='<a href="https://www.psepagos.co/PSEHostingUI/ShowTicketOffice.aspx?ID=11303" target="_blank" ><i class="fa fa-money mr-1"></i> Cancelar</a>';
                             } else {
                     $html.='Cancelada';
                             }
