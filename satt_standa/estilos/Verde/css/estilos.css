@@ -1,5 +1,13 @@
 /* CSS Document */
 
+:root {
+    --principal_color: #336600 ;
+    --secondary_color: #008000 ;
+    --sure_color: #E6FCD8;
+    --hover_color: #234600;
+    --background: #efffe6;
+}
+
 .barra {
     background-color: #008000;
     cursor: pointer;
