@@ -1058,7 +1058,10 @@ class Despac
 			return false;
 
 		$mDespac = join( ',', GetColumnFromMatrix( $mDespac, 'num_despac' ) ); #Despachos en ruta Sin hora salida del sistema
-		$mFiltro1 = self::filtroNovedades($mDespac, '3,4,5,6');
+		$mFiltro = self::filtroNovedades($mDespac, '3,4,5,6');
+
+		$mFiltro1 = ($mFiltro  != NULL || $mFiltro  != ''?" AND a.num_despac NOT IN ( {$mFiltro} ) ":"");
+
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
 						UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
@@ -1069,7 +1072,7 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
 					AND a.num_despac IN ( {$mDespac} )
-					AND a.num_despac NOT IN ( {$mFiltro1} )
+					{$mFiltro1}
 			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
 					 ON b.cod_transp = c.cod_tercer 
 			 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
@@ -1098,7 +1101,6 @@ class Despac
 					 ON a.cod_client = k.cod_tercer
 				  WHERE 1=1
 				  ";
-
 		if( ($_REQUEST["Option"] == "infoPreCargue" || $_REQUEST["Option"]  == 'detailBand' ) && $_REQUEST["pun_cargue"] != '')
 		{
 		 
@@ -3275,7 +3277,7 @@ class Despac
 		$mSql .= " GROUP BY a.num_despac ";
 		$mSql .= $mIndFinrut == false ? "" : " ORDER BY a.fec_llegad DESC ";
 		$mSql .= $mIndFinrut == false ? "" : " LIMIT 10 ";
-
+		//echo $mSql;
 		echo "<pre id='TorresAndres' $mNumDespac $mIndFinrut style='display:none' >"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $mConsult -> ret_matrix('a');
