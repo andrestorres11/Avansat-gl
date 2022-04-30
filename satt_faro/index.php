@@ -333,7 +333,7 @@ class Aplicacion_Seguridad
           $sus_terceros = new suspensiones($this -> conexion);
           
 
-          if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 7, 8))){
+          if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 7, 8, 73))){
             if(in_array($_REQUEST["cod_servic"], array(1366))){
               //Funcion Alerta de suspensión empresas
               $data = $sus_terceros->SetSuspensiones(null, null, 1);
