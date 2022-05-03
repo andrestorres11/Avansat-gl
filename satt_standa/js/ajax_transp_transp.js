@@ -168,13 +168,13 @@ function borrar(){
 //funcion de confirmacion para la edicion, eliminacion e inactivacion de transportadoras
 function confirmar(operacion){
 
-	LoadPopupJQNoButton( 'open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true );
+	LoadPopupJQNoButton( 'open', 'Confirmar Operación', 'auto', 'auto', false, false, true );
 	var popup = $("#popID");
-	var transportadora = $("#abr_tercerID").val();
+	var transportadora = $("#nom_tercerID").val();
  	var onclick = "onclick='registrar(\"";
  		onclick+=operacion;
  		onclick+="\")'";
-	var msj = "<div style='text-align:center'>Â¿EstÃ¡ seguro de <b>"+operacion+"</b> la transportadora: <b>" +transportadora+ "?</b><br><br><br><br>";
+	var msj = "<div style='text-align:center'>¿Está seguro de <b>"+operacion+"</b> la transportadora: <b>" +transportadora+ "?</b><br><br><br><br>";
 	msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' "+onclick+" class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
 	msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 	
@@ -190,8 +190,8 @@ function editarDistribuidora(tipo, objeto){
 	var cod_tercer = DLRow.find("input[id^=cod_transp]").val();
 	var nom_transp = DLRow.find("input[id^=abr_tercer]").val();
 	$("#cod_tercerID").val(cod_tercer);
-	$("#abr_tercerID").val(nom_transp);
-	//alert(cod_tercer+" - "+nom_transp);
+	$("#nom_tercerID").val(nom_transp);
+	// alert(cod_tercer+" - "+nom_transp);
 
 
 	if(tipo == 1){
@@ -199,10 +199,10 @@ function editarDistribuidora(tipo, objeto){
 	}else if(tipo == 2){
 		confirmar('inactivar');
 	}else{
-		LoadPopupJQNoButton( 'open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true );
+		LoadPopupJQNoButton( 'open', 'Confirmar Operación', 'auto', 'auto', false, false, true );
 		var popup = $("#popID");
-		var transportadora = $("#abr_tercerID").val();
-		var msj = "<div style='text-align:center'>Â¿EstÃ¡ seguro de <b>editar</b> la transportadora: <b>" +transportadora+ "?</b><br><br><br><br>";
+		var transportadora = $("#nom_tercerID").val();
+		var msj = "<div style='text-align:center'>¿Está seguro de <b>editar</b> la transportadora: <b>" +transportadora+ "?</b><br><br><br><br>";
 			msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
 			msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 			
