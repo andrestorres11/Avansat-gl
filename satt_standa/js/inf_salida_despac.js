@@ -57,7 +57,14 @@ function inicializarTablasHoras(){
     var opciodatos = 3;
 
 if(Cod_tiposerv===null || Cod_tiposerv==""){
-    alert("Seleccione un tipo de servicio");
+
+    Swal.fire({
+        title: 'Error!',
+        text: 'Seleccione un tipo de servicio',
+        type: 'error',
+        confirmButtonColor: '#336600'
+    });
+
     return;
 }
 
@@ -67,7 +74,13 @@ var difference= Math.abs(day2-day1);
 var days = difference/(1000 * 3600 * 24)
 
 if(days>8){
-    alert("Seleccione solo un rango de fechas maximo de 8 dias");
+    Swal.fire({
+        title: 'Error!',
+        text: 'Seleccione solo un rango de fechas maximo de 8 dias',
+        type: 'error',
+        confirmButtonColor: '#336600'
+    });
+    
     return;
 }
 
@@ -82,7 +95,15 @@ if(days>8){
         {
             console.log(error);
             $("#conttablas").empty();
-            alert('No hay Datos');
+            document.getElementById('openModal').style.display = 'none';
+            Swal.fire({
+                title: 'Error!',
+                text: 'No hay Datos',
+                type: 'error',
+                confirmButtonColor: '#336600'
+            });
+            
+            
         },
         beforeSend : 
             function () 
