@@ -183,19 +183,26 @@
                     if($cod_etapax==0){
                         $name = $cod_novedad."_T";
                     }
+
+                    $input_disabled = '';
+                    if($resultado['ind_manale'] || $resultado['ind_soltie']){
+                        $input_disabled = 'disabled';
+                        $resultado['num_tiempo'] = 0;
+                    }
+
                     $data .= '<tr>
                                 <td><input type="checkbox" class="colcheck_'.$cod_etapax.'" onclick="selectRow(this)" data="'.$cod_etapax.'"></td>
                                 <td class="text-center">'.$cod_novedad.'</td>
                                 <td>'.$nom_novedad.'</td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' activo_'.$cod_novedad.'" data="activo_'.$cod_novedad.'" name="activo_'.$name.'" '.self::validacheck($resultado['ind_status']).' onclick="selectGemelo(this)"></td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' novesp_'.$cod_novedad.'" data="novesp_'.$cod_novedad.'" name="novesp_'.$name.'" '.self::validacheck($resultado['ind_novesp']).' onclick="selectGemelo(this)"></td>
-                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' manale_'.$cod_novedad.'" data="manale_'.$cod_novedad.'" name="manale_'.$name.'" '.self::validacheck($resultado['ind_manale']).' onclick="selectGemelo(this)"></td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' manale_'.$cod_novedad.'" data="manale_'.$cod_novedad.'" name="manale_'.$name.'" '.self::validacheck($resultado['ind_manale']).' onclick="selectGemelo(this);disableTime(this)" code="'.$cod_novedad.'"></td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' fuepla_'.$cod_novedad.'" data="fuepla_'.$cod_novedad.'" name="fuepla_'.$name.'" '.self::validacheck($resultado['ind_fuepla']).' onclick="selectGemelo(this)"></td>
-                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' soltie_'.$cod_novedad.'" data="soltie_'.$cod_novedad.'" name="soltie_'.$name.'" '.self::validacheck($resultado['ind_soltie']).' onclick="selectGemelo(this)"></td>
+                                <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' soltie_'.$cod_novedad.'" data="soltie_'.$cod_novedad.'" name="soltie_'.$name.'" '.self::validacheck($resultado['ind_soltie']).' onclick="selectGemelo(this);disableTime(this)" code="'.$cod_novedad.'"></td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' visins_'.$cod_novedad.'" data="visins_'.$cod_novedad.'" name="visins_'.$name.'" '.self::validacheck($resultado['inf_visins']).' onclick="selectGemelo(this)"></td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' notsup_'.$cod_novedad.'" data="notsup_'.$cod_novedad.'" name="notsup_'.$name.'" '.self::validacheck($resultado['ind_notsup']).' onclick="selectGemelo(this)"></td>
                                 <td class="text-center"><input type="checkbox" value="1" class="chkb_'.$cod_etapax.' limpio_'.$cod_novedad.'" data="limpio_'.$cod_novedad.'" name="limpio_'.$name.'" '.self::validacheck($resultado['ind_limpio']).' onclick="selectGemelo(this)"></td>
-                                <td><input type="text" class="tiempo_'.$cod_novedad.'" size="6" name="tiempo_'.$name.'" value="'.$resultado['num_tiempo'].'" onchange="insertGemelo(this)"></td>
+                                <td><input type="text" class="tiempo_'.$cod_novedad.'" size="6" name="tiempo_'.$name.'" value="'.$resultado['num_tiempo'].'" onchange="insertGemelo(this)" '.$input_disabled.'></td>
                             </tr>';
                     }
 

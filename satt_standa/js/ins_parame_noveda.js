@@ -250,4 +250,22 @@ function insertGemelo(elemento){
     });
 }
 
+function disableTime(elemento){
+    var Row = $(elemento).parent().parent();
+    var code = $(elemento).attr('code');
+    var manale = Row.find('.manale_'+code);
+    var soltie = Row.find('.soltie_'+code);
+
+    if( $(manale).is(':checked') || $(soltie).is(':checked') ) {
+        var tiempo = Row.find('.tiempo_'+code);
+        $(tiempo).val(0);
+        $(tiempo).attr('disabled',true);
+    }
+
+    if( $(manale).is(':not(:checked)') && $(soltie).is(':not(:checked)') ) {
+        var tiempo = Row.find('.tiempo_'+code);
+        $(tiempo).attr('disabled',false);
+    }
+}
+
 
