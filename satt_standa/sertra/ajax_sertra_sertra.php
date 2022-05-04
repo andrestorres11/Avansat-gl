@@ -543,7 +543,7 @@ class ajax_certra_certra {
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion Particularidad</b></h3>
             <div id="contenido_serv">
                 <div class="StyleDIV contenido" style="min-height: 220px !important;" >
-                    <div class="col-md-13 CellHead"  style="text-align:center;"><strong>AGREGAR PARTICULARIDAD</strong><input type="button" value="NUEVA PARTICULARIDAD" class="small save  ui-state-default ui-corner-all" onclick="CreatePartic('<?= $datos->cod_transp ?>', 0, 0)"></div>
+                    <div class="col-md-12 CellHead"  style="text-align:center;"><strong>AGREGAR PARTICULARIDAD</strong><input type="button" value="NUEVA PARTICULARIDAD" class="small save  ui-state-default ui-corner-all" onclick="CreatePartic('<?= $datos->cod_transp ?>', 0, 0)"></div>
                     <?php 
                         $tiserTrans= self::getTipSerTrans($_POST['cod_transp']);
 
@@ -957,7 +957,7 @@ class ajax_certra_certra {
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
-                        Ubicación de seguimiento 
+                        Ubicaciï¿½n de seguimiento 
                         <?php
                         if ($datos->principal['ubi_seguim'] == 1) {
                             $ubi_seguim = "checked='true'";
@@ -2082,7 +2082,7 @@ class ajax_certra_certra {
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Martinez
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
