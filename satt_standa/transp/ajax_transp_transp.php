@@ -307,16 +307,16 @@ class trans {
         if(!class_exists(DinamicList)) {
             include_once("../".DIR_APLICA_CENTRAL."/lib/general/dinamic_list.inc");									  	  	
           }
-          $list = new DinamicList(self::$cConexion, $mSql, "6" , "no", 'ASC');
+        $list = new DinamicList(self::$cConexion, $mSql, "6" , "no", 'ASC');
         
         $list->SetClose('no');
         $list->SetCreate("Crear empresa", "onclick:formulario()");
-        $list->SetHeader(utf8_decode("C�digo de la transportadora"), "field:a.cod_tercer; width:1%;  ");
+        $list->SetHeader(utf8_decode("Código de la transportadora"), "field:a.cod_tercer; width:1%;  ");
         $list->SetHeader("Transportadora", "field:IF(a.abr_tercer = '', a.nom_tercer, a.abr_tercer); width:1%");
         $list->SetHeader("Regional", "field:f.nom_region; width:1%");
         $list->SetHeader("Ciudad", "field:CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) ; width:1%");
-        $list->SetHeader(utf8_decode("Direcci�n"), "field:a.dir_domici; width:1%");
-        $list->SetHeader(utf8_decode("Tel�fono"), "field:a.dir_emailx; width:1%");
+        $list->SetHeader(utf8_decode("Dirección"), "field:a.dir_domici; width:1%");
+        $list->SetHeader(utf8_decode("Teléfono"), "field:a.dir_emailx; width:1%");
         $list->SetHeader("Estado", "field:if(a.cod_estado = 1, 'Activa', 'Inactiva')" );
         $list->SetHeader(utf8_decode("E-mail"), "field:a.num_telef1; width:1%");
         $list->SetOption("Opciones","field:cod_option; width:1%; onclikDisable:editarDistribuidora( 2, this ); onclikEnable:editarDistribuidora( 1, this ); onclikEdit:editarDistribuidora( 99, this )" );
@@ -390,7 +390,7 @@ class trans {
                          INNER JOIN tab_genera_paises d ON b.cod_paisxx = c.cod_paisxx
                          INNER JOIN tab_tercer_activi e ON e.cod_tercer = a.cod_tercer
                          WHERE e.cod_activi = 1
-                          GROUP BY a.cod_tercer ORDER BY abr_tercer ASC ";
+                          GROUP BY a.cod_tercer ORDER BY a.cod_estado DESC, abr_tercer ASC ";
         $consulta = new Consulta($query, self::$cConexion);
         $transpor = $consulta->ret_matrix("a");
     }
