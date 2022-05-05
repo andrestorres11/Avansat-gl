@@ -473,7 +473,7 @@ class ajax_certra_certra {
         </div>
         <div id="conf_contacID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion de contactos</b></h3>
-            <div id="contenido_serv">
+            <div id="contenido_serv" style="height:auto;">
                 <div class="StyleDIV contenido" style="min-height: 220px !important;" >
                     <div class="col-md-13 CellHead"  style="text-align:center;"><strong>AGREGAR CONTACTO</strong><input type="button" value="NUEVO CONTACTO" class="small save  ui-state-default ui-corner-all" onclick="CreateContac('<?= $datos->cod_transp ?>', 0, 0)"></div>
                     <?php 
@@ -541,7 +541,7 @@ class ajax_certra_certra {
         </div>
         <div id="conf_particularidadID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Configuracion Particularidad</b></h3>
-            <div id="contenido_serv">
+            <div id="contenido_serv" style="height:auto !important;">
                 <div class="StyleDIV contenido" style="min-height: 220px !important;" >
                     <div class="col-md-12 CellHead"  style="text-align:center;"><strong>AGREGAR PARTICULARIDAD</strong><input type="button" value="NUEVA PARTICULARIDAD" class="small save  ui-state-default ui-corner-all" onclick="CreatePartic('<?= $datos->cod_transp ?>', 0, 0)"></div>
                     <?php 
@@ -1034,7 +1034,7 @@ class ajax_certra_certra {
         </div>
         <div id="conf_ealID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>OAL Contratadas</b></h3>
-            <div id="contenido_serv">
+            <div id="contenido_serv" style="height:auto;">
                 <div class="StyleDIV contenido" style="min-height: <?= (count($eals) * 25 + 30) ?>px !important;" >
                     <div class="col-md-12">
                         <div class="col-md-3"></div>

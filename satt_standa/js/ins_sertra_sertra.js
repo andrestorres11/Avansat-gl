@@ -120,7 +120,9 @@ function mostrar() {
                 }, 800);
                 $("#form3").css("display", "none");
                 $("#form3").fadeIn(3000);
-
+                $("div").css({
+                    height: 'auto',
+                });
                 var x = 0;
                 $("input[name*='eal']").each(function() {
                     if ($(this).attr('checked')) {
@@ -292,7 +294,7 @@ function setFestivos() {
                     modal: true,
                     resizable: false,
                     draggable: false,
-                    title: "Festivos del año " + sel_yearxx,
+                    title: "Festivos del aï¿½o " + sel_yearxx,
                     width: 800,
                     heigth: 500,
                     position: ['middle', 25],
