@@ -90,7 +90,9 @@ class InformViajes {
                        t.num_poliza as 'num_poliza',
                        y.nom_tipveh as 'nom_tipveh',
                        t.ind_anulad as 'ind_anulad',
-                       aa.nom_tercer as 'nom_transp'
+                       aa.nom_tercer as 'nom_transp',
+                       b.cod_tipdes as 'cod_tipdes',
+                       aa.cod_tercer as 'cod_transp'
                   FROM ".BASE_DATOS.".tab_despac_despac t 
 	              LEFT JOIN ".BASE_DATOS.".tab_genera_tipdes b ON t.cod_tipdes = b.cod_tipdes 
 	              LEFT JOIN ".BASE_DATOS.".tab_genera_paises c ON t.cod_paiori = c.cod_paisxx 
@@ -251,6 +253,9 @@ class InformViajes {
                 $mHtml .= "<th class=cellHead >Novedad</th>";
                 $mHtml .= "<th class=cellHead >Observaci&oacute;n del Controlador</th>";
                 $mHtml .= "<th class=cellHead >Fecha y Hora</th>";
+                $mHtml .= "<th class=cellHead >Tiempo</th>";
+                $mHtml .= "<th class=cellHead >Cumplimiento Seguimiento</th>";
+                $mHtml .= "<th class=cellHead >Porcentaje de Cumplimiento</th>";
             }
             $mHtml .= "</tr>";
 
@@ -342,6 +347,45 @@ class InformViajes {
                 $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
 
                 if ($_REQUEST['ind_noveda'] == '1') {
+                       $horainicio="";
+                       $horafin="";
+                       $hours="";
+                       $resultsegui=0;
+                       $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
+                       $resprom=0;
+                    if($mSizeNoved > 1){
+                        for ($y = 0; $y < $mSizeNoved; $y++) {
+                            if($y == 0){
+
+                                $horainicio= strtotime($mArrayNove[$y][3]);
+                                $result=0;
+                            }else{
+                                $horafin=$horainicio;
+                                $horainicio= strtotime($mArrayNove[$y][3]);
+                                $diff = abs($horainicio - $horafin); 
+                                $years = floor($diff / (365*60*60*24));
+                                $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+                                $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+                                $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
+                                $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
+                                $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
+                                $result=($hours * 60) + $minutes;
+                                // printf("%d years, %d months, %d days, %d hours, " . "%d minutes, %d seconds", $years, $months, $days, $hours, $minutes, $seconds);  
+                                // sacar Promedio de efectividad del seguimiento
+                                $operacc=$resultsegui-$result;
+                                    if($operacc >=0){
+                                        $resprom++ ;
+                                    }
+                            }
+
+                            
+                        }
+
+                        $promediofin=($resprom * 100)/($mSizeNoved-1);
+
+                    }
+
+                        
                     if ($mSizeNoved > 1) {
                         for ($x = 0; $x < $mSizeNoved; $x++) {
                             $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
@@ -350,10 +394,46 @@ class InformViajes {
                             $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
                             $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
                             $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
+                            if($x == 0){
+
+                                $horainicio= strtotime($mArrayNove[$x][3]);
+                                $result="";
+                            }else{
+                                $horafin=$horainicio;
+                                $horainicio= strtotime($mArrayNove[$x][3]);
+                                $diff = abs($horainicio - $horafin); 
+                                $years = floor($diff / (365*60*60*24));
+                                $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+                                $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+                                $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
+                                $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
+                                $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
+                                $result=($hours * 60) + $minutes;
+                                // printf("%d years, %d months, %d days, %d hours, " . "%d minutes, %d seconds", $years, $months, $days, $hours, $minutes, $seconds);  
+                            }
+                            
+                            $mHtml .= '<td class="cellInfo" >'.$result.' &nbsp;</td>'; //Tiempo
+                            if($x == 0){
+                                $mHtml .= '<td class="cellInfo" > &nbsp;</td>'; //Cumplimiento Seguimiento
+                                $resseg="";
+                            }else{
+
+                                $opera=$resultsegui-$result;
+                                    if($opera >=0){
+                                        $resseg="Si";
+                                    }else{
+                                        $resseg="No";
+                                    }
+                                $mHtml .= '<td class="cellInfo" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
+                            }
+                           
+                            if($x == 0){
+                                $mHtml .= '<td class="cellInfo" align ="left" rowspan='.$mSizeNoved.'>'.round($promediofin,2).'% &nbsp;</td>'; //Porcentaje de Cumplimiento
+                            }
                             $mHtml .= $x == 0 ? '' : '</tr>';
                         }
                     } else {
-                        $mHtml .= '<td colspan="4" align="center"><b>SIN NOVEDAD</b></td>';
+                        $mHtml .= '<td colspan="7" align="center"><b>SIN NOVEDAD</b></td>';
                     }
                 }
 
@@ -600,6 +680,55 @@ class InformViajes {
         $mResult = $mConsult->ret_matriz('a');
         return $this->utf8_converter($mResult);
     }
+
+//Metodo que obtiene el tiempo contratado en transito de una transportadora de la base de datos
+function getTiempoTransport($transp, $tipserv){
+   
+    $campo="";
+    switch ($tipserv) {
+        case 1:// Urbano
+            $campo='`tie_conurb` as "Urbano"';
+            break;
+        case 2:// Nacional
+            $campo='`tie_contro` as "Nacional"';
+            break;
+        case 3://Importacion
+            $campo='`tie_traimp` as "Importacion"';
+            break;
+        case 4://Exportacion
+            $campo='`tie_traexp` as "Exportacion"';
+            break;
+        case 5://XD Tramo 1
+            $campo='`tie_tratr1` as "XD Tramo 1"';
+            break;
+        case 6://XD Tramo 2
+            $campo='`tie_tratr2` as "XD Tramo 2"';
+            break;
+        
+    }
+    $mSql="";
+    if($campo!=""){
+        $mSql=' SELECT `num_consec` , `cod_transp`, `cod_tipser`, '.$campo.' 
+    FROM `tab_transp_tipser` 
+    WHERE `cod_transp` LIKE '.$transp.' 
+    ORDER BY `tab_transp_tipser`.`num_consec` 
+    DESC limit 1
+    ';
+    
+    $mConsult = new Consulta($mSql, $this->conexion);
+    $mResult = $mConsult->ret_matriz('a');
+   
+    $resulttipseg=$mResult[0][3];
+    }else{
+        // Paqueteo o Reexpedicion
+        $resulttipseg=10;
+    }
+    
+
+    return $resulttipseg;
+}
+
+
 
     function utf8_converter($array)
     {
