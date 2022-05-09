@@ -109,7 +109,7 @@ function registrar(operacion){
 
 		if (validar){
 			//crea el popUp para el mensaje de  respuesta del guardado  
-			LoadPopupJQNoButton( 'open', 'Resultado de la OperaciÃ³n', 'auto', 'auto', false, false, true );
+			LoadPopupJQNoButton( 'open', 'Resultado de la Operación', 'auto', 'auto', false, false, true );
 			var popup = $("#popID");
 
 			var parametros = "Option="+operacion+"&Ajax=on&";
@@ -170,7 +170,7 @@ function confirmar(operacion){
 
 	LoadPopupJQNoButton( 'open', 'Confirmar Operación', 'auto', 'auto', false, false, true );
 	var popup = $("#popID");
-	var transportadora = $("#nom_tercerID").val();
+	var transportadora = $("#abr_tercerID").val();
  	var onclick = "onclick='registrar(\"";
  		onclick+=operacion;
  		onclick+="\")'";
@@ -190,7 +190,7 @@ function editarDistribuidora(tipo, objeto){
 	var cod_tercer = DLRow.find("input[id^=cod_transp]").val();
 	var nom_transp = DLRow.find("input[id^=abr_tercer]").val();
 	$("#cod_tercerID").val(cod_tercer);
-	$("#nom_tercerID").val(nom_transp);
+	$("#abr_tercerID").val(nom_transp);
 	// alert(cod_tercer+" - "+nom_transp);
 
 
@@ -201,7 +201,7 @@ function editarDistribuidora(tipo, objeto){
 	}else{
 		LoadPopupJQNoButton( 'open', 'Confirmar Operación', 'auto', 'auto', false, false, true );
 		var popup = $("#popID");
-		var transportadora = $("#nom_tercerID").val();
+		var transportadora = $("#abr_tercerID").val();
 		var msj = "<div style='text-align:center'>¿Está seguro de <b>editar</b> la transportadora: <b>" +transportadora+ "?</b><br><br><br><br>";
 			msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
 			msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";

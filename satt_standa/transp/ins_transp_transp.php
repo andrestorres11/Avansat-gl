@@ -87,7 +87,7 @@ class Ins_config_emptra {
 		$mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>''));
 		$mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>$mCodTransp));
 		$mHtml->Hidden(array( "name" => "cod_agenci", "id" => "cod_agenciID", 'value'=>''));
-		$mHtml->Hidden(array( "name" => "nom_tercer", "id" => "nom_tercerID", 'value'=>''));
+		$mHtml->Hidden(array( "name" => "abr_tercer", "id" => "abr_tercerID", 'value'=>''));
 		$mHtml->Hidden(array( "name" => "total", "id" => "total", 'value'=>$total));
 
 		# Construye accordion
@@ -300,7 +300,9 @@ class Ins_config_emptra {
     	$mHtml->Hidden(array( "name" => "transp[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad de la transportadora
     	$mHtml->Hidden(array( "name" => "agencia[cod_ciudad]", "id" => "cod_ciudaaID", "value"=>$datos->principal->cod_ciudaa)); //el codigo de la ciudad de la agencia
     	$mHtml->Hidden(array( "name" => "agencia[cod_agenci]", "id" => "cod_agenciID", "value"=>$datos->principal->cod_agenci)); //el codigo de la ciudad de la agencia
-		$mHtml->Hidden(array( "name" => "transp[cod_tipdoc]", "id" => "cod_tipdocID", "value" => $namesInputs['tipdoc']['value'])); //el codigo de la ciudad de la transportadora
+		$mHtml->Hidden(array( "name" => "transp[cod_tipdoc]", "id" => "cod_tipdocID", "value" => $namesInputs['tipdoc']['value'])); //el codigo de la ciudad de la 
+		$mHtml->Hidden(array( "name" => "cod_tercer", "id" => "cod_tercerID", "value" => $datos->principal->cod_tercer)); //el codigo de la transportadora
+		$mHtml->Hidden(array( "name" => "nom_tercer", "id" => "nom_tercerID", "value" => $datos->principal->nom_tercer)); //el codigo de la transportadora
     	$mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
 		$mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
 		$mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));

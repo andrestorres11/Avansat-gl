@@ -757,7 +757,7 @@ class trans {
                 $nuevo_consec = $ag[0]['cod_agenci'];
             }
 
-            $this->modificar("RegistrÃ³", $nuevo_consec);
+            $this->modificar("Registró", $nuevo_consec);
         }
     }
 
@@ -773,32 +773,32 @@ class trans {
      * **************************************************************************** */
 
     private function activar() {
-        $transp = (object) $_POST['transp']; //objeto para la tabla tab_tercer_tercer
+        $cod_transp = $_POST['cod_tercer'];
+        $nom_transp = $_POST['nom_tercer'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
-        $transp->usr_modifi = $usuario;
-        $transp->fec_modifi = $fec_actual;
+        $usr_modifi = $usuario;
 
 
         #activa la transportadora
         $query = "UPDATE " . BASE_DATOS . ".tab_tercer_tercer 
                         SET cod_estado = 1,
-                            usr_modifi = '$transp->usr_modifi',
-                            fec_modifi = '$transp->fec_modifi'
-                            WHERE cod_tercer = '$transp->cod_tercer' ";
+                            usr_modifi = '$usr_modifi',
+                            fec_modifi = NOW()
+                            WHERE cod_tercer = '$cod_transp' ";
         $insercion = new Consulta($query, self::$cConexion, "R");
 
         #activa la transportadora
         $query = "UPDATE " . BASE_DATOS . ".tab_transp_tipser 
                         SET ind_estado = 1
-                            WHERE cod_transp = '$transp->cod_tercer'
+                            WHERE cod_transp = '$cod_transp'
                             ORDER BY num_consec DESC
                             LIMIT 1";
         $act_trans = new Consulta($query, self::$cConexion, "R");
 
 
         #consulta las agencias de la transportadora
-        $query = "SELECT cod_agenci FROM " . BASE_DATOS . ".tab_transp_agenci WHERE cod_transp = '$transp->cod_tercer'";
+        $query = "SELECT cod_agenci FROM " . BASE_DATOS . ".tab_transp_agenci WHERE cod_transp = '$cod_transp'";
         $consulta = new Consulta($query, self::$cConexion);
         $agencias = $consulta->ret_matrix("a");
 
@@ -809,7 +809,7 @@ class trans {
         }
 
         if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-            $mensaje = "Se activÃ³ la Transportadora " . $transp->abr_tercer . " exitosamente.";
+            $mensaje = "Se activó la Transportadora " . $nom_transp . " exitosamente.";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             $mens->correcto2("ACTIVAR TRANSPORTADORA", $mensaje);
@@ -828,30 +828,29 @@ class trans {
      * **************************************************************************** */
 
     private function inactivar() {
-        $transp = (object) $_POST['transp']; //objeto para la tabla tab_tercer_tercer
+        $cod_transp = $_POST['cod_tercer'];
+        $nom_transp = $_POST['nom_tercer'];
         $fec_actual = date("Y-m-d H:i:s");
         $usuario = $_SESSION['datos_usuario']['cod_usuari'];
-        $transp->usr_modifi = $usuario;
-        $transp->fec_modifi = $fec_actual;
 
         #inactva la transportadora
         $query = "UPDATE " . BASE_DATOS . ".tab_tercer_tercer 
                         SET cod_estado = 0,
-                            usr_modifi = '$transp->usr_modifi',
-                            fec_modifi = '$transp->fec_modifi'
-                            WHERE cod_tercer = '$transp->cod_tercer' ";
+                            usr_modifi = '$usuario',
+                            fec_modifi = NOW()
+                            WHERE cod_tercer = '$cod_transp' ";
         $insercion = new Consulta($query, self::$cConexion, "R");
 
         #activa la transportadora
         $query = "UPDATE " . BASE_DATOS . ".tab_transp_tipser 
                         SET ind_estado = 0
-                            WHERE cod_transp = '$transp->cod_tercer'
+                            WHERE cod_transp = '$cod_transp'
                             ORDER BY num_consec DESC
                             LIMIT 1";
         $act_trans = new Consulta($query, self::$cConexion, "R");
 
         #consulta las agencias de la transportadora
-        $query = "SELECT cod_agenci FROM " . BASE_DATOS . ".tab_transp_agenci WHERE cod_transp = '$transp->cod_tercer'";
+        $query = "SELECT cod_agenci FROM " . BASE_DATOS . ".tab_transp_agenci WHERE cod_transp = '$cod_transp'";
         $consulta = new Consulta($query, self::$cConexion);
         $agencias = $consulta->ret_matrix("a");
 
@@ -863,7 +862,7 @@ class trans {
 
 
         if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-            $mensaje = "Se inactivÃ³ la Transportadora " . $transp->abr_tercer . " exitosamente.";
+            $mensaje = "Se inactivó la Transportadora " . $nom_transp . " exitosamente.";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             $mens->correcto2("INACTIVAR TRANSPORTADORA", $mensaje);
@@ -884,7 +883,7 @@ class trans {
     private function modificar($operacion = null, $cod_agenci = null) {
 
         if (!$operacion) {
-            $operacion = "ModificÃ³";
+            $operacion = "Modificó";
         }
 
         # lleno los objetos nesesarios para la correcta modificaciÃ³n en la base de datos.
@@ -1148,6 +1147,8 @@ class trans {
             echo 0;
         }
     }
+
+    
 
 }
 
