@@ -154,6 +154,8 @@
         //$horaini='00:01';
         //$horafin='23:59';
        
+       
+
         $fech1=$fec_inicio." ".$hor_inicio;
         $fech2=$fec_finxxx." ".$hor_finxxx;
         $newdat="";
@@ -168,6 +170,7 @@
         $qonlytipserv = new Consulta($sqlonlytipserv, self::$conexion);    
         $datosonlytipserv = $qonlytipserv -> ret_matrix('a');
 
+        
         //echo "tipos de Servicios ";
         //echo "<pre>";
         //print_r($datosonlytipserv);
@@ -179,7 +182,7 @@
         
         group by a.`cod_transp`
         order by a.`cod_transp` ";
-
+        
         $qcondiini = new Consulta($condiini, self::$conexion);    
         $datoscondiini = $qcondiini -> ret_matrix('a');
 
@@ -200,12 +203,7 @@
 
         }
         //echo "Todas las Empresas Que Cumplen el Critrio de tipo de Servicio";
-        //   echo "<pre>";
-        //    print_r($arrdatoscondiini);
-        //echo "</pre>";
         
-        
-
 
         if($Cod_transp==null){
             
@@ -222,26 +220,35 @@
 
         }else{
              
-            
 
-            foreach($arrdatoscondiini as $newdatostipserv){
-                //echo $newdatostipserv['cod_tercer']."<br>";
-                foreach($Cod_transp as $datCod_transp){
-                    //echo $datCod_transp."<br>";
+        //echo "<pre>";
+        //    print_r($arrdatoscondiini);
+        //echo "</pre><br>";
+
+        //echo "-----------------------------";
+
+        //echo "<br><pre>";
+        //    print_r($Cod_transp);
+        //echo "</pre><br>";
+
+       
+            $fechafinmanipulada=strtotime($fec_finxxx."+ 1 days");
+            $fechafinmanipulada=date("Y-m-d",$fechafinmanipulada);
+            foreach($Cod_transp as $datCod_transp){
+                foreach($arrdatoscondiini as $newdatostipserv){
+                    $validar=true;
                     if($newdatostipserv['cod_tercer']==$datCod_transp){
                         $newdat .= "desptercer.cod_tercer= ". $datCod_transp . " 
                         and despac.fec_despac >= '". $fec_inicio."' 
-                        and despac.fec_despac <= '". $fec_finxxx."' 
+                        and despac.fec_despac <= '". $fechafinmanipulada."' 
                         or " ;
-                        
+                    break ;    
                     }
                 }
             }
 
         }
 
-
-        
         
         $newdat = rtrim($newdat, "or ");
         
@@ -260,19 +267,23 @@
             on tipser.cod_tipser= tipsergen.cod_tipser
             where $newdat
             
-            group by DATE_FORMAT(despac.fec_despac, '%d-%m-%Y')
+            group by desptercer.cod_tercer, DATE_FORMAT(despac.fec_despac, '%d-%m-%Y')
             ORDER BY despac.fec_despac ASC";
-        
-        // echo $sql; 
+        // echo $sql;
+            
         $query = new Consulta($sql, self::$conexion);
         $datos = $query -> ret_num_rows();
+        
         
         
         if ($datos > 0) {
             $datos = $query -> ret_matrix('a');
             $datosnew=$datos;
            
-            
+            //echo "Todas las Empresas Que Cumplen el Critrio de tipo de Servicio";
+            //echo "<pre>";
+            //    print_r($datosnew);
+            //echo "</pre>";
           
 
           $ini=$hor_inicio;
@@ -289,44 +300,42 @@
             $arrayidtbl=array();
             $vartabla=0;
             $vartbl=0;
+            $fechdepur="";
             foreach ($datos as $newdatdatos) {
-                $tablasfila="<table style='width: 100%;'><tr style='background-color:#89d889'><td>";
-                
-                $tablasfila .="Dia ".$newdatdatos['fec_despac2']. " ". $hor_inicio." a ". $hor_finxxx;
+                if($fechdepur != $newdatdatos['fec_despac2']){
 
-                
-                $tablasfila .="</td></tr></table><br>";
-                
-                
-                array_push($arrayrowhead, $tablasfila);
-                $newdat2="";
-
-                
-                foreach($datosnew as $datCod_transp2){
+                    $tablasfila="<table style='width: 100%;'><tr style='background-color:#89d889'><td>";
+                    $tablasfila .="Dia ".$newdatdatos['fec_despac2']. " ". $hor_inicio." a ". $hor_finxxx;
+                    $tablasfila .="</td></tr></table><br>";
+                    array_push($arrayrowhead, $tablasfila);
+                    $fechdepur=$newdatdatos['fec_despac2'];
+                    $newdat2="";
+                    foreach($datosnew as $datCod_transp2){
                     $newdat2 .= "desptercer.cod_tercer=".$datCod_transp2['cod_tercer']."  
                                 AND DATE_FORMAT(despac.fec_despac, '%d-%m-%Y') ='".$newdatdatos['fec_despac2']."' or " ;
-                }
-                
-                $newdat2 = rtrim($newdat2, "or ");
+                    }
+                    $newdat2 = rtrim($newdat2, "or ");
+                    $sql2="
+                        SELECT despvehige.cod_transp, desptercer.abr_tercer,despac.fec_despac,$conpivot
+                        FROM `tab_despac_despac` despac 
+                        INNER JOIN `tab_despac_vehige` despvehige 
+                        ON despac.num_despac = despvehige.num_despac 
+                        INNER JOIN `tab_tercer_tercer` desptercer 
+                        ON despvehige.cod_transp = desptercer.cod_tercer 
+                        where  $newdat2
+                        group by despvehige.cod_transp
+                        ORDER BY `desptercer`.`abr_tercer` ASC, despac.fec_despac
+                        ";
+                    //echo $sql2;
+                    $query2 = new Consulta($sql2, self::$conexion);
+                    $datos2 = $query2 -> ret_matrix('a');
+                    //echo "<pre>";
+                    //    print_r($$datos2);
+                    //echo "</pre>";
 
-                $sql2="
-                SELECT despvehige.cod_transp, desptercer.abr_tercer,despac.fec_despac,$conpivot
-                FROM `tab_despac_despac` despac 
-                INNER JOIN `tab_despac_vehige` despvehige 
-                ON despac.num_despac = despvehige.num_despac 
-                INNER JOIN `tab_tercer_tercer` desptercer 
-                ON despvehige.cod_transp = desptercer.cod_tercer 
-                where  $newdat2
-                ORDER BY `desptercer`.`abr_tercer` ASC, despac.fec_despac
+                    $vartbl++;
 
-                ";
-
-                
-                $query2 = new Consulta($sql2, self::$conexion);
-                $datos2 = $query2 -> ret_matrix('a');
-                $vartbl++;
-                
-                $initabla =' <table class="table table-striped table-bordered elliminartbl" id="table_data'.$vartbl.'" name="table_data'.$vartbl.'" >';
+                    $initabla =' <table class="table table-striped table-bordered elliminartbl" id="table_data'.$vartbl.'" name="table_data'.$vartbl.'" >';
                     $fintabla='</table>';
                     $htmlhead ='<thead><tr>';
                     $htmlhead .='<th>No</th>';
@@ -339,14 +348,14 @@
                     $htmlhead .='<th>Total</th>';
                     $htmlhead .='</tr></thead>';
                     $inibody='<tbody>';
-
+                    $cuerpobody="";
+                    $contdor=1;
                     foreach($datos2 as $transp2){
-                        $cuerpobody='<tr>';
-                        $cuerpobody .='<td>1</td>';
+                        $cuerpobody .='<tr>';
+                        $cuerpobody .='<td>'. $contdor++.'</td>';
                         $cuerpobody .='<td>'.$transp2['cod_transp'].'</td>';
                         $cuerpobody .='<td>'.$transp2['abr_tercer'].'</td>';
-
-                        $sql3="SELECT nomtipserv.`nom_tipser` 
+                         $sql3="SELECT nomtipserv.`nom_tipser` 
                             FROM `tab_genera_tipser` nomtipserv, `tab_transp_tipser` tipserv, `tab_despac_vehige` transpvehi
                             where nomtipserv.`cod_tipser`= tipserv.`cod_tipser`
                             and transpvehi.cod_transp=tipserv.cod_transp
@@ -358,7 +367,6 @@
                             foreach($datos3 as $tiposervicio){
                                 $tiposerv=$tiposervicio['nom_tipser']; 
                             }
-
                         $cuerpobody .='<td>'.$tiposerv.'</td>';
                         $total=0;
                         $transphor=$transp2['cod_transp'];
@@ -376,12 +384,9 @@
                         }
                         $cuerpobody .='<td>'.$total.'</td>';
                         $cuerpobody .='</tr>';
-
                     }
-                    $finbody='</tbody>';
-
+                    $finbody='</tbody>'; 
                     
-
                     $tblcompleta=$initabla.$htmlhead.$inibody.$cuerpobody.$finbody.$fintabla ;
                     
                     //echo $tblcompleta,"$vartbl <br><br>";
@@ -389,15 +394,13 @@
                     array_push($arraytransport, $tblcompleta); 
                     $nametableid="table_data".$vartbl;
                     array_push($arrayidtbl, $nametableid);
-
-
-
-
-
-
-
+                }
             }
 
+
+            //echo "<pre>";
+            //    print_r($arrayrowhead);
+            //echo "</pre>";
             $arrayresult=["titulostbl"=>$arrayrowhead, "contentbl"=>$arraytransport, "idtable"=>$arrayidtbl];
             
             echo json_encode($arrayresult);
@@ -541,10 +544,10 @@ foreach ($datos as $datosvent) {
     $filasobody .='<td>'.$datosvent['cod_manifi'].'</td>';
     $filasobody .='<td>'.$datosvent['ciu_origen'].'</td>';
     $filasobody .='<td>'.$datosvent['ciu_destin'].'</td>';        
-    $filasobody .='<td>'.$datosvent['nom_transp'].'</td>';    
+    $filasobody .='<td>'.$datosvent['abr_tercer'].'</td>';    
     $filasobody .='<td>'.$datosvent['num_placax'].'</td>'; 
     $filasobody .='<td>'.$datosvent['cod_conduc'].'</td>'; 
-    $filasobody .='<td>'.$datosvent['abr_tercer'].'</td>';        
+    $filasobody .='<td>'.$datosvent['nom_transp'].'</td>';        
     $filasobody .='<td>'.$datosvent['telmov'].'</td>'; 
     $filasobody .='<td>'.$generador.'</td>';        
     $filasobody .='<td>'.$datosvent['fec_despac'].'</td>';        
