@@ -254,6 +254,7 @@ class InformViajes {
                 $mHtml .= "<th class=cellHead >Observaci&oacute;n del Controlador</th>";
                 $mHtml .= "<th class=cellHead >Fecha y Hora</th>";
                 $mHtml .= "<th class=cellHead >Tiempo</th>";
+                $mHtml .= "<th class=cellHead >Diferencia T</th>";
                 $mHtml .= "<th class=cellHead >Cumplimiento Seguimiento</th>";
                 $mHtml .= "<th class=cellHead >Porcentaje de Cumplimiento</th>";
             }
@@ -414,6 +415,13 @@ class InformViajes {
                             
                             $mHtml .= '<td class="cellInfo" >'.$result.' &nbsp;</td>'; //Tiempo
                             if($x == 0){
+                                $mHtml .= '<td class="cellInfo" > &nbsp;</td>'; //Diferencia T
+                            }else{
+                                $mHtml .= '<td class="cellInfo" >'.($resultsegui-$result).' &nbsp;</td>'; //Diferencia T
+
+                            }
+                            
+                            if($x == 0){
                                 $mHtml .= '<td class="cellInfo" > &nbsp;</td>'; //Cumplimiento Seguimiento
                                 $resseg="";
                             }else{
@@ -433,7 +441,7 @@ class InformViajes {
                             $mHtml .= $x == 0 ? '' : '</tr>';
                         }
                     } else {
-                        $mHtml .= '<td colspan="7" align="center"><b>SIN NOVEDAD</b></td>';
+                        $mHtml .= '<td colspan="8" align="center"><b>SIN NOVEDAD</b></td>';
                     }
                 }
 
