@@ -154,6 +154,8 @@
         //$horaini='00:01';
         //$horafin='23:59';
        
+       
+
         $fech1=$fec_inicio." ".$hor_inicio;
         $fech2=$fec_finxxx." ".$hor_finxxx;
         $newdat="";
@@ -201,9 +203,7 @@
 
         }
         //echo "Todas las Empresas Que Cumplen el Critrio de tipo de Servicio";
-        //   echo "<pre>";
-        //    print_r($arrdatoscondiini);
-        //echo "</pre>";
+        
 
         if($Cod_transp==null){
             
@@ -220,18 +220,29 @@
 
         }else{
              
-            
 
-            foreach($arrdatoscondiini as $newdatostipserv){
-                //echo $newdatostipserv['cod_tercer']."<br>";
-                foreach($Cod_transp as $datCod_transp){
-                    //echo $datCod_transp."<br>";
+        //echo "<pre>";
+        //    print_r($arrdatoscondiini);
+        //echo "</pre><br>";
+
+        //echo "-----------------------------";
+
+        //echo "<br><pre>";
+        //    print_r($Cod_transp);
+        //echo "</pre><br>";
+
+       
+            $fechafinmanipulada=strtotime($fec_finxxx."+ 1 days");
+            $fechafinmanipulada=date("Y-m-d",$fechafinmanipulada);
+            foreach($Cod_transp as $datCod_transp){
+                foreach($arrdatoscondiini as $newdatostipserv){
+                    $validar=true;
                     if($newdatostipserv['cod_tercer']==$datCod_transp){
                         $newdat .= "desptercer.cod_tercer= ". $datCod_transp . " 
                         and despac.fec_despac >= '". $fec_inicio."' 
-                        and despac.fec_despac <= '". $fec_finxxx."' 
+                        and despac.fec_despac <= '". $fechafinmanipulada."' 
                         or " ;
-                        
+                    break ;    
                     }
                 }
             }
@@ -258,7 +269,7 @@
             
             group by desptercer.cod_tercer, DATE_FORMAT(despac.fec_despac, '%d-%m-%Y')
             ORDER BY despac.fec_despac ASC";
-        
+        // echo $sql;
             
         $query = new Consulta($sql, self::$conexion);
         $datos = $query -> ret_num_rows();
@@ -338,9 +349,10 @@
                     $htmlhead .='</tr></thead>';
                     $inibody='<tbody>';
                     $cuerpobody="";
+                    $contdor=1;
                     foreach($datos2 as $transp2){
                         $cuerpobody .='<tr>';
-                        $cuerpobody .='<td>1</td>';
+                        $cuerpobody .='<td>'. $contdor++.'</td>';
                         $cuerpobody .='<td>'.$transp2['cod_transp'].'</td>';
                         $cuerpobody .='<td>'.$transp2['abr_tercer'].'</td>';
                          $sql3="SELECT nomtipserv.`nom_tipser` 
@@ -532,10 +544,10 @@ foreach ($datos as $datosvent) {
     $filasobody .='<td>'.$datosvent['cod_manifi'].'</td>';
     $filasobody .='<td>'.$datosvent['ciu_origen'].'</td>';
     $filasobody .='<td>'.$datosvent['ciu_destin'].'</td>';        
-    $filasobody .='<td>'.$datosvent['nom_transp'].'</td>';    
+    $filasobody .='<td>'.$datosvent['abr_tercer'].'</td>';    
     $filasobody .='<td>'.$datosvent['num_placax'].'</td>'; 
     $filasobody .='<td>'.$datosvent['cod_conduc'].'</td>'; 
-    $filasobody .='<td>'.$datosvent['abr_tercer'].'</td>';        
+    $filasobody .='<td>'.$datosvent['nom_transp'].'</td>';        
     $filasobody .='<td>'.$datosvent['telmov'].'</td>'; 
     $filasobody .='<td>'.$generador.'</td>';        
     $filasobody .='<td>'.$datosvent['fec_despac'].'</td>';        
