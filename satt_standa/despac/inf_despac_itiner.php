@@ -454,23 +454,40 @@ class infDespacErrorItinerarios
     $query = new Consulta($query, self::$cConexion );
     $result["GPS"] = $query -> ret_matrix('a');
 
-    //Get codes GPS to list
-    $query = "
-      SELECT
-        a.cod_operad,
-        a.nom_operad
-      FROM
-        ".BD_STANDA.".tab_genera_opegps a
-      WHERE
-        ind_intgps = '1'
-      GROUP BY
-        a.cod_operad
-      ORDER BY
-        a.nom_operad
-    ";
 
-    $query = new Consulta($query, self::$cConexion );
-    $result["cod_operad"] = $query -> ret_matrix('a');
+    $paramGPS = getParameOpeGPS(self::$cConexion);
+    $parOpeSt = $paramGPS[0];
+    $parOpePr = $paramGPS[1];
+    $opegpsPropio = NULL;
+    $opegpsStanda = NULL;
+
+    if( $cod_opegps != NULL && $cod_opegps != '' )
+    {
+      $condi .= " AND a.cod_operad = '".$cod_opegps."' ";
+    }
+
+    if($parOpeSt){
+      $query = "SELECT cod_operad, CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad' 
+             FROM ".BD_STANDA.".tab_genera_opegps
+             WHERE ind_estado = '1'
+             ".$condi."
+         ORDER BY nom_operad ASC ";
+      $consulta = new Consulta($query, self::$cConexion);
+      $opegpsStanda = $consulta->ret_matriz("a");
+      
+    }
+
+    if($parOpePr){
+      $query = "SELECT cod_operad,nom_operad
+             FROM ".BASE_DATOS.".tab_genera_opegps
+             WHERE ind_estado = '1'
+             ".$condi."
+         ORDER BY nom_operad ASC ";
+      $consulta = new Consulta($query, self::$cConexion);
+      $opegpsPropio = $consulta->ret_matriz("a");
+    }
+    $operadores = SortMatrix(arrayMergeIgnoringNull($opegpsStanda,$opegpsPropio), 'nom_operad', 'ASC') ;
+    $result["cod_operad"] = $operadores;
 
 
     //Clean data

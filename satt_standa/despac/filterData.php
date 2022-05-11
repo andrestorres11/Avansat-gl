@@ -769,9 +769,32 @@
               ORDER BY value
             ";
 
-            //Generate consult
-            $query = new Consulta($query, self::$conexion);
-            $mData = $query -> ret_matrix('a');
+            $paramGPS = getParameOpeGPS(self::$conexion);
+            $parOpeSt = $paramGPS[0];
+            $parOpePr = $paramGPS[1];
+            $opegpsPropio = NULL;
+            $opegpsStanda = NULL;
+
+            if($parOpeSt){
+            $query = "SELECT cod_operad as 'id', CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'value' 
+                    FROM ".BD_STANDA.".tab_genera_opegps
+                    WHERE ind_estado = '1'
+                ORDER BY nom_operad ASC ";
+            $consulta = new Consulta($query, self::$conexion);
+            $opegpsStanda = $consulta->ret_matriz("a");
+            
+            }
+
+            if($parOpePr){
+            $query = "SELECT cod_operad as 'id' ,nom_operad as 'value'
+                    FROM ".BASE_DATOS.".tab_genera_opegps
+                    WHERE ind_estado = '1'
+                ORDER BY nom_operad ASC ";
+            $consulta = new Consulta($query, self::$conexion);
+            $opegpsPropio = $consulta->ret_matriz("a");
+            }
+
+            $mData = SortMatrix(arrayMergeIgnoringNull($opegpsStanda,$opegpsPropio), 'value', 'ASC') ;
 
             $mData = array_merge( [0=>['id' => 'SIN' , 'value' => 'SIN GPS'], 1=> ['id' => 'CON', 'value' => 'CON GPS'] ]  , $mData );
 
