@@ -1,4 +1,5 @@
 <?php
+
 class Ins_emptra_parame
 {
  var $conexion,
@@ -10,6 +11,7 @@ class Ins_emptra_parame
   $this -> conexion = $co;
   $this -> usuario = $us;
   $this -> cod_aplica = $ca;
+  @include_once( '../' . DIR_APLICA_CENTRAL . '/lib/general/functions.inc' );
   $this -> principal();
  }
 
@@ -38,18 +40,25 @@ class Ins_emptra_parame
      $query = "SELECT  ind_estcli,ind_estcon,ind_estveh,ind_estter,
                        ind_califi,obs_planru,val_multpc,ind_fincal,
                        ind_remdes,ind_desurb,ind_restra,ind_inidet,
-                       ind_feplle
+                       ind_feplle,ind_opesta,ind_opepro
                  FROM ".BASE_DATOS.".tab_config_parame";
 
      $consulta = new Consulta($query, $this -> conexion);
      $matriz = $consulta -> ret_matriz();
 
      $query = "SELECT  cod_emptra,nom_razsoc,tel_ofipri,dir_ofupri,
-                 	   dir_emailx,nom_contac
+                 	   dir_emailx,nom_contac,cod_paisxx 
                  FROM ".BASE_DATOS.".tab_config_parame";
 
      $consulta = new Consulta($query, $this -> conexion);
      $infemptr = $consulta -> ret_matriz();
+
+     $query = "SELECT  cod_paisxx, nom_paisxx
+                 FROM ".BASE_DATOS.".tab_genera_paises";
+
+     $consulta = new Consulta($query, $this -> conexion);
+     $paisesxx = $consulta -> ret_matriz();
+
 
      //formulario de insercion
      echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/parame.js\"></script>\n";
@@ -64,8 +73,8 @@ class Ins_emptra_parame
      $formulario -> texto("Telefono Principal","text","telpri",0,15,30,"",$infemptr[0][2]);
      $formulario -> texto("Direcci&oacute;n Principal","text","dirpri",1,60,100,"",$infemptr[0][3]);
      $formulario -> texto("E-mail","text","dirmai",0,60,100,"",$infemptr[0][4]);
-     $formulario -> texto("Contacto","text","contac",0,30,55,"",$infemptr[0][5]);
-
+     $formulario -> texto("Contacto","text","contac",1,30,55,"",$infemptr[0][5]);
+     $formulario -> lista_value("País","cod_paisxx",$paisesxx,0,1,$infemptr[0][6]);
 	 $formulario -> nueva_tabla();
      $formulario -> linea("Restricciones",1,"t2");
 
@@ -81,12 +90,22 @@ class Ins_emptra_parame
      $formulario -> caja ("Activar Manejo de Alarmas con Responsabilidad de la Transportadora (S/N)","restra","1",$matriz[0][10],0);
      $formulario -> caja ("Cargar la Opci&oacute;n de Despachos en Transito al Entrar a la Aplicaci&oacute;n (S/N)","inidet","1",$matriz[0][11],1);
 	 $formulario -> caja ("Activar C&aacute;lculo de tiempos Fecha Planeada de Llegada (S/N)","feplle","1",$matriz[0][12],1);
-     
+
+     $formulario -> nueva_tabla();
+     $formulario -> linea("Visualizacion y gestión de operadores GPS",1,"t2");
+     $formulario -> nueva_tabla();
+     $formulario -> caja ("Operadores Estandar","opesta","1",$matriz[0][13],0);
+     $formulario -> caja ("Operadores Propios","opepro","1",$matriz[0][14],1);
+
      $formulario -> nueva_tabla();
      $formulario -> linea("Datos Adicionales",1,"t2");
      $formulario -> nueva_tabla();
      $formulario -> texto ("Valor de Multa por Puesto de Control \$","text","multa",1,10,10,"",$matriz[0][6]);
      $formulario -> texto ("Observaciones Plan de Ruta","textarea","obs_planru",1,50,3,"",$matriz[0][5]);
+     
+     
+
+
      $formulario -> nueva_tabla();
      $formulario -> oculto("usuario","$usuario",0);
      $formulario -> oculto("window","central",0);
@@ -139,6 +158,7 @@ class Ins_emptra_parame
                             dir_ofupri = '$_REQUEST[dirpri]',
                             dir_emailx = '$_REQUEST[dirmai]',
                             nom_contac = '$_REQUEST[contac]',
+                            cod_paisxx = '$_REQUEST[cod_paisxx]',
                             val_multpc = '$_REQUEST[multa]',
                             ind_estcli = '$_REQUEST[estper]',
                             ind_estcon = '$_REQUEST[estcon]',
@@ -152,6 +172,8 @@ class Ins_emptra_parame
                             ind_restra = '$_REQUEST[restra]',
                             ind_inidet = '$_REQUEST[inidet]',
                             ind_feplle = '$_REQUEST[feplle]',
+                            ind_opesta = '$_REQUEST[opesta]',
+                            ind_opepro = '$_REQUEST[opepro]',
                             usr_modifi = '$_REQUEST[usuario]',
                             fec_modifi = '$fec_actual'";
     }
@@ -163,12 +185,13 @@ class Ins_emptra_parame
                                    ind_estcon,ind_estveh,ind_estter,ind_califi,
                                    obs_planru,usr_creaci,fec_creaci,cod_aplica,
                                    ind_fincal,ind_remdes,ind_restra,ind_inidet,
-                                   ind_feplle)
+                                   ind_feplle,cod_paisxx)
                            VALUES ('$_REQUEST[nitemp]','$_REQUEST[razsoc]','$_REQUEST[telpri]','$_REQUEST[dirpri]',
                                    '$_REQUEST[dirmai]','$_REQUEST[contac]','$_REQUEST[multa]','$_REQUEST[estper]',
                                    '$_REQUEST[estcon]','$_REQUEST[estveh]','$_REQUEST[estter]','$_REQUEST[califi]',
                                    '$_REQUEST[obs_planru]','$_REQUEST[usuario]','$fec_actual',1,'$_REQUEST[fincal]',
-                                   '$_REQUEST[remdes]','$_REQUEST[restra]','$_REQUEST[inidet]','$_REQUEST[feplle]')
+                                   '$_REQUEST[remdes]','$_REQUEST[restra]','$_REQUEST[inidet]','$_REQUEST[feplle]',
+                                   '$_REQUEST[cod_paisxx]')
                      ";
     }
 

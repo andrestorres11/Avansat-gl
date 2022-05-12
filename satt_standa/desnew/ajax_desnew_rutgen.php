@@ -201,20 +201,39 @@ class AjaxInsertDespacho
   
   private function getOpegps( $cod_opegps = NULL )
   {
-    
-    $query = "SELECT a.cod_operad, a.nom_operad
-                FROM ".CENTRAL.".tab_genera_opegps a
-               WHERE a.ind_estado = '1'";
-    
+     $paramGPS = getParameOpeGPS($this->conexion);
+    $parOpeSt = $paramGPS[0];
+    $parOpePr = $paramGPS[1];
+    $opegpsPropio = NULL;
+    $opegpsStanda = NULL;
+
     if( $cod_opegps != NULL && $cod_opegps != '' )
     {
-      $query .= " AND a.cod_operad = '".$cod_opegps."' ";
+      $condi .= " AND a.cod_operad = '".$cod_opegps."' ";
     }
-    
-    $query .= " ORDER BY 2";
-    
-    $consulta = new Consulta( $query, $this->conexion );
-    return $consulta->ret_matriz();
+
+    if($parOpeSt){
+      $query = "SELECT cod_operad, CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad' 
+             FROM ".BD_STANDA.".tab_genera_opegps
+             WHERE ind_estado = '1'
+             ".$condi."
+         ORDER BY nom_operad ASC ";
+      $consulta = new Consulta($query, $this->conexion);
+      $opegpsStanda = $consulta->ret_matriz("a");
+      
+    }
+
+    if($parOpePr){
+      $query = "SELECT cod_operad,nom_operad
+             FROM ".BASE_DATOS.".tab_genera_opegps
+             WHERE ind_estado = '1'
+             ".$condi."
+         ORDER BY nom_operad ASC ";
+      $consulta = new Consulta($query, $this->conexion);
+      $opegpsPropio = $consulta->ret_matriz("a");
+    }
+    $operadores = SortMatrix(arrayMergeIgnoringNull($opegpsStanda,$opegpsPropio), 'nom_operad', 'ASC') ;
+    return $operadores;
   
   }
   
@@ -1520,7 +1539,7 @@ class AjaxInsertDespacho
       if( $row[0] == $key )
         $selected = 'selected="selected"';
       
-      $mHtml .= '<option value="'.$row[0].'" '.$selected.'>'.utf8_encode( $row[1] ).'</option>';
+      $mHtml .= '<option value="'.$row[0].'" '.$selected.'>'.$row[1].'</option>';
     }
     $mHtml .= '</select>';
     return $mHtml;

@@ -1476,6 +1476,69 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
      }
    }
  }
+  /*! \fn: arrayMergeIfNotNull
+    *  \brief: Funcion que fusiona dos array validando si son nulos
+    *  \author: Cristian Andrés Torres
+    *  \date: 2022-01-28
+    *  \param:  mConexion = conexion a bd;
+    *  \
+    *  \return: null
+  */
+  function arrayMergeIgnoringNull($arr1, $arr2) {
+    $array_new =(array)$arr1 + (array)$arr2;
+    return $array_new;
+}
+
+ /*! \fn: getParameOpeGPS
+    *  \brief: Funcion que consulta la parametrizacion de operadores estandar o propios
+    *  \author: Cristian Andrés Torres
+    *  \date: 2022-01-28
+    *  \param:  mConexion = conexion a bd;
+    *  \
+    *  \return: null
+  */
+ function getParameOpeGPS(&$mConexion){
+    $mSql = "SELECT  
+                a.ind_opesta,
+                a.ind_opepro
+            FROM  ".BASE_DATOS.".tab_config_parame a 
+            LIMIT 1";
+    $query = new Consulta($mSql, $mConexion);
+    $resultado = $query -> ret_arreglo();
+    return $resultado;      
+ }
+
+ /*! \fn: cleanArray
+  *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciÃ³n
+  *  \author: Ing. Luis Manrique
+  *  \date: 03-04-2020
+  *  \date modified: dd/mm/aaaa
+  *  \param: $arrau => Arreglo que serÃ¡ analizado por la funciÃ³n
+  *  \return: array
+ */
+  function cleanArray($array){
+    $arrayReturn = array();
+    //Convert function
+    $convert = function($value){
+      if(is_string($value)){
+          return utf8_encode($value);
+      }
+      return $value;
+    };
+    //Go through data
+    foreach ($array as $key => $value) {
+        //Validate sub array
+        if(is_array($value)){
+            //Clean sub array
+            $arrayReturn[$convert($key)] = cleanArray($value);
+        }else{
+            //Clean value
+            $arrayReturn[$convert($key)] = $convert($value);
+        }
+    }
+    //Return array
+    return $arrayReturn;
+  }
 
 
 ?>

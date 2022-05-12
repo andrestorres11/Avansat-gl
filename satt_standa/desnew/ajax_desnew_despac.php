@@ -201,20 +201,39 @@ class AjaxInsertDespacho
   
   private function getOpegps( $cod_opegps = NULL )
   {
-    
-    $query = "SELECT a.cod_operad, a.nom_operad
-                FROM ".BASE_DATOS.".tab_genera_opegps a
-               WHERE a.ind_estado = '1'";
-    
+    $paramGPS = getParameOpeGPS($this->conexion);
+    $parOpeSt = $paramGPS[0];
+    $parOpePr = $paramGPS[1];
+    $opegpsPropio = NULL;
+    $opegpsStanda = NULL;
+
     if( $cod_opegps != NULL && $cod_opegps != '' )
     {
-      $query .= " AND a.cod_operad = '".$cod_opegps."' ";
+      $condi .= " AND a.cod_operad = '".$cod_opegps."' ";
     }
-    
-    $query .= " ORDER BY 2";
-    
-    $consulta = new Consulta( $query, $this->conexion );
-    return $consulta->ret_matriz();
+
+    if($parOpeSt){
+      $query = "SELECT cod_operad, CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad' 
+             FROM ".BD_STANDA.".tab_genera_opegps
+             WHERE ind_estado = '1'
+             ".$condi."
+         ORDER BY nom_operad ASC ";
+      $consulta = new Consulta($query, $this->conexion);
+      $opegpsStanda = $consulta->ret_matriz("a");
+      
+    }
+
+    if($parOpePr){
+      $query = "SELECT cod_operad,nom_operad
+             FROM ".BASE_DATOS.".tab_genera_opegps
+             WHERE ind_estado = '1'
+             ".$condi."
+         ORDER BY nom_operad ASC ";
+      $consulta = new Consulta($query, $this->conexion);
+      $opegpsPropio = $consulta->ret_matriz("a");
+    }
+    $operadores = SortMatrix(arrayMergeIgnoringNull($opegpsStanda,$opegpsPropio), 'nom_operad', 'ASC') ;
+    return $operadores;
   
   }
   
@@ -774,7 +793,7 @@ class AjaxInsertDespacho
                                 fec_creaci )
                         VALUES( '".$_AJAX['num_doccon']."', '".$_AJAX['num_divcon']."', '".$_AJAX['tip_doccon']."', '".$_AJAX['ape_tercon']."',
                                 '".$_AJAX['nom_tercon']."', '".( $_AJAX['ape_tercon'].' '.$_AJAX['nom_tercon'] )."', 'N/A', '".$_AJAX['cel_tercon']."', '".$_AJAX['ema_tercon']."',
-                                '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                '1', 'Tercero creado por el módulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
       // echo "<hr>".$mInsert;
       $consulta = new Consulta( $mInsert, $this->conexion, "R" );
     }
@@ -789,7 +808,7 @@ class AjaxInsertDespacho
                          num_telmov = '".$_AJAX['cel_tercon']."',
                          dir_emailx = '".$_AJAX['ema_tercon']."',
                          cod_estado = '1', 
-                         obs_aproba = 'Tercero activado por el mï¿½dulo de despachos',
+                         obs_aproba = 'Tercero activado por el módulo de despachos',
                          usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                          fec_modifi = NOW()
                    WHERE cod_tercer = '".$_AJAX['num_doccon']."'";
@@ -804,7 +823,7 @@ class AjaxInsertDespacho
                               ( cod_tercer,	cod_tipsex, num_licenc, fec_venlic,
                                 obs_conduc, usr_creaci, fec_creaci )
                         VALUES( '".$_AJAX['num_doccon']."', '1', '".$_AJAX['lic_conduc']."', '".$_AJAX['fec_venlic']."',
-                                'Conductor creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                'Conductor creado por el módulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
       // echo "<hr>".$mInsert;
       $consulta = new Consulta( $mInsert, $this->conexion, "R" );
     }
@@ -864,7 +883,7 @@ class AjaxInsertDespacho
                                   cod_estado, obs_tercer, usr_creaci, fec_creaci )
                           VALUES( '".$_AJAX['num_docpro']."', '".$_AJAX['num_divpro']."', '".$_AJAX['tip_docpro']."', '".$_AJAX['nom_terpro']."',
                                   '".$_AJAX['nom_terpro']."', 'N/A', '".$_AJAX['cel_terpro']."', '".$_AJAX['ema_terpro']."',
-                                  '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                  '1', 'Tercero creado por el módulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
         }
         else
         {
@@ -875,7 +894,7 @@ class AjaxInsertDespacho
                                   fec_creaci )
                           VALUES( '".$_AJAX['num_docpro']."', '".$_AJAX['num_divpro']."', '".$_AJAX['tip_docpro']."', '".$_AJAX['ape_terpro']."',
                                   '".$_AJAX['nom_terpro']."', '".( $_AJAX['ape_terpro'].' '.$_AJAX['nom_terpro'] )."', 'N/A', '".$_AJAX['cel_terpro']."', '".$_AJAX['ema_terpro']."',
-                                  '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                  '1', 'Tercero creado por el módulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
         }
          // echo "<hr>".$mInsert;
         $consulta = new Consulta( $mInsert, $this->conexion, "R" );
@@ -884,7 +903,7 @@ class AjaxInsertDespacho
       {
         $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                        SET cod_estado = '1', 
-                           obs_aproba = 'Tercero activado por el mï¿½dulo de despachos',
+                           obs_aproba = 'Tercero activado por el módulo de despachos',
                            usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                            fec_modifi = NOW()
                      WHERE cod_tercer = '".$_AJAX['num_docpro']."'";
@@ -925,7 +944,7 @@ class AjaxInsertDespacho
                                   cod_estado, obs_tercer, usr_creaci, fec_creaci )
                           VALUES( '".$_AJAX['num_docten']."', '".$_AJAX['num_divten']."', '".$_AJAX['tip_docten']."', '".$_AJAX['nom_terten']."',
                                   '".$_AJAX['nom_terten']."', 'N/A', '".$_AJAX['cel_terten']."', '".$_AJAX['ema_terten']."',
-                                  '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                  '1', 'Tercero creado por el módulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
         }
         else
         {
@@ -936,7 +955,7 @@ class AjaxInsertDespacho
                                   fec_creaci )
                           VALUES( '".$_AJAX['num_docten']."', '".$_AJAX['num_divten']."', '".$_AJAX['tip_docten']."', '".$_AJAX['ape_terten']."',
                                   '".$_AJAX['nom_terten']."', '".( $_AJAX['ape_terten'].' '.$_AJAX['nom_terten'] )."', 'N/A', '".$_AJAX['cel_terten']."', '".$_AJAX['ema_terten']."',
-                                  '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                  '1', 'Tercero creado por el módulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
         }
          // echo "<hr>".$mInsert;
         $consulta = new Consulta( $mInsert, $this->conexion, "R" );
@@ -945,7 +964,7 @@ class AjaxInsertDespacho
       {
         $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                        SET cod_estado = '1', 
-                           obs_aproba = 'Tercero activado por el mï¿½dulo de despachos',
+                           obs_aproba = 'Tercero activado por el módulo de despachos',
                            usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                            fec_modifi = NOW()
                      WHERE cod_tercer = '".$_AJAX['num_docten']."'";
@@ -985,7 +1004,7 @@ class AjaxInsertDespacho
                                 fec_creaci )
                         VALUES( '".$_AJAX['num_doccon']."', '".$_AJAX['num_divcon']."', '".$_AJAX['tip_doccon']."', '".$_AJAX['ape_tercon']."',
                                 '".$_AJAX['nom_tercon']."', '".( $_AJAX['ape_tercon'].' '.$_AJAX['nom_tercon'] )."', 'N/A', '".$_AJAX['cel_tercon']."', '".$_AJAX['ema_tercon']."',
-                                '1', 'Tercero creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                '1', 'Tercero creado por el módulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
        // echo "<hr>".$mInsert;
       $consulta = new Consulta( $mInsert, $this->conexion, "R" );
     }
@@ -993,7 +1012,7 @@ class AjaxInsertDespacho
     {
       $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                      SET cod_estado = '1', 
-                         obs_aproba = 'Tercero activado por el mï¿½dulo de despachos',
+                         obs_aproba = 'Tercero activado por el módulo de despachos',
                          usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                          fec_modifi = NOW()
                    WHERE cod_tercer = '".$_AJAX['num_doccon']."'";
@@ -1008,7 +1027,7 @@ class AjaxInsertDespacho
                               ( cod_tercer,	cod_tipsex, num_licenc, fec_venlic,
                                 obs_conduc, usr_creaci, fec_creaci )
                         VALUES( '".$_AJAX['num_doccon']."', '1', '".$_AJAX['lic_conduc']."', '".$_AJAX['fec_venlic']."',
-                                'Conductor creado por el mï¿½dulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
+                                'Conductor creado por el módulo de despachos', '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
        // echo "<hr>".$mInsert;
       $consulta = new Consulta( $mInsert, $this->conexion, "R" );
     }
@@ -1343,7 +1362,7 @@ class AjaxInsertDespacho
     }
     $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                    SET cod_estado = '1',
-                       obs_aproba = 'Activado automï¿½ticamente por el nuevo mï¿½dulo de despachos',
+                       obs_aproba = 'Activado automáticamente por el nuevo módulo de despachos',
                        usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                        fec_modifi = NOW()
                  WHERE cod_tercer = '".$cod_propie."'
@@ -1370,7 +1389,7 @@ class AjaxInsertDespacho
     }
     $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                    SET cod_estado = '1',
-                       obs_aproba = 'Activado automï¿½ticamente por el nuevo mï¿½dulo de despachos',
+                       obs_aproba = 'Activado automáticamente por el nuevo módulo de despachos',
                        usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                        fec_modifi = NOW()
                  WHERE cod_tercer = '".$cod_tenedo."'
@@ -1397,7 +1416,7 @@ class AjaxInsertDespacho
     }
     $mUpdate = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 
                    SET cod_estado = '1',
-                       obs_aproba = 'Activado automï¿½ticamente por el nuevo mï¿½dulo de despachos',
+                       obs_aproba = 'Activado automáticamente por el nuevo módulo de despachos',
                        usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                        fec_modifi = NOW()
                  WHERE cod_tercer = '".$cod_conduc."' ";
@@ -1414,7 +1433,7 @@ class AjaxInsertDespacho
       
     $mUpdate = "UPDATE ".BASE_DATOS.".tab_vehicu_vehicu 
                  SET ind_estado = '1',
-                     obs_estado = 'Activado automï¿½ticamente por el nuevo mï¿½dulo de despachos',
+                     obs_estado = 'Activado automáticamente por el nuevo módulo de despachos',
                      usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                      fec_modifi = NOW()
                WHERE num_placax = '".$_AJAX['num_placax']."' ";
@@ -1526,7 +1545,7 @@ class AjaxInsertDespacho
       if( $row[0] == $key )
         $selected = 'selected="selected"';
       
-      $mHtml .= '<option value="'.$row[0].'" '.$selected.'>'.utf8_encode( $row[1] ).'</option>';
+      $mHtml .= '<option value="'.$row[0].'" '.$selected.'>'.$row[1].'</option>';
     }
     $mHtml .= '</select>';
     return $mHtml;

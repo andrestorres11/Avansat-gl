@@ -10,11 +10,13 @@
  *  \warning1: Si se requieren agregar mas columnas en las funciones listarConductor, listarPropietarios y listarPoseedor por favor agregarlas despues de la segunda ya que las primeras son utilizadas para pintar la informacion
  *             Buscar #warning1 para ubicar las lineas afectadas
  */
-
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
 setlocale(LC_ALL,"es_ES");
 
 /*! \class: trans
  *  \brief: Clase trasn que gestiona las diferentes peticiones ajax  */
+include_once( "../".DIR_APLICA_CENTRAL."/lib/general/functions.inc" );
 class trayle{
 
   private static  $cConexion,
@@ -28,6 +30,7 @@ class trayle{
     if($_REQUEST[Ajax] === 'on' ){
       @include_once( "../lib/ajax.inc" );
       @include_once( "../lib/general/constantes.inc" );
+      
       self::$cConexion = $AjaxConnection;
     }else{
       self::$cConexion = $co;
@@ -552,7 +555,7 @@ private function getValidaIdGPS()
      *  \return objeto con los datos de la consulta
      */
     public function getDatosVehiculo($num_placax = '0'){
-
+      
       $datos = new stdClass();
       #consulta los datos principales del vehiculo
       $query = "SELECT a.num_placax,a.cod_marcax,a.cod_lineax,
@@ -619,16 +622,40 @@ private function getValidaIdGPS()
       $colores = $consulta->ret_matriz("a");
       $colores = array_merge(self::$cNull,$colores);
       $datos->colores = $colores;
-      #los GPS
-      $query = "SELECT cod_operad,nom_operad
-               FROM ".BASE_DATOS.".tab_genera_opegps
-               WHERE ind_estado = '1' 
-           ORDER BY 2 ";
-      $consulta = new Consulta($query, self::$cConexion);
-      $operadores = $consulta->ret_matriz("a");
-      $operadores = array_merge(self::$cNull,$operadores);
-      $datos->opegps = $operadores;
 
+      $mSql = "SELECT  
+                a.ind_opesta,
+                a.ind_opepro
+            FROM  ".BASE_DATOS.".tab_config_parame a 
+            LIMIT 1";
+      $query = new Consulta($mSql, self::$cConexion);
+      $paramGps = $query -> ret_arreglo();
+
+      $parOpeSt = $paramGps[0];
+      $parOpePr = $paramGps[1];
+      $opegpsPropio = NULL;
+      $opegpsStanda = NULL;
+      //Validacion 
+      if($parOpeSt){
+        $query = "SELECT cod_operad, CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad' 
+               FROM ".BD_STANDA.".tab_genera_opegps
+               WHERE ind_estado = '1'
+           ORDER BY nom_operad ASC ";
+        $consulta = new Consulta($query, self::$cConexion);
+        $opegpsStanda = cleanArray($consulta->ret_matriz("a"));
+      }
+
+      if($parOpePr){
+        $query = "SELECT cod_operad,nom_operad
+               FROM ".BASE_DATOS.".tab_genera_opegps
+               WHERE ind_estado = '1'
+           ORDER BY nom_operad ASC ";
+        $consulta = new Consulta($query, self::$cConexion);
+        $opegpsPropio = cleanArray($consulta->ret_matriz("a"));
+      }
+
+      $operadores = SortMatrix(arrayMergeIgnoringNull($opegpsStanda,$opegpsPropio), 'nom_operad', 'ASC') ;
+      $datos->opegps = $operadores;
       #las configuraciones
       $query = "SELECT num_config,num_config
                FROM ".BASE_DATOS.".tab_vehige_config
