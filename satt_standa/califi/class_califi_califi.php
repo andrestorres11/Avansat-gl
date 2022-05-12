@@ -116,14 +116,32 @@ class Califi
 		echo $mHtml->MakeHtml();
 	}
 	private function getOpeGps(){
-        
-        //consulto los tipos de servicios y los agrego al objeto principal
-        $query = "SELECT cod_operad, nom_operad, nit_operad
-        FROM " . BASE_DATOS . ".tab_genera_opegps
-        WHERE ind_estado = '1'";
-        $consulta = new Consulta($query, self::$cConexion);
-        $operadGps = $consulta->ret_matrix("a");
-        return $operadGps;
+        $paramGPS = getParameOpeGPS(self::$cConexion);
+		$parOpeSt = $paramGPS[0];
+		$parOpePr = $paramGPS[1];
+		$opegpsPropio = NULL;
+		$opegpsStanda = NULL;
+
+		if($parOpeSt){
+		$query = "SELECT cod_operad, CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad', nit_operad 
+				FROM ".BD_STANDA.".tab_genera_opegps
+				WHERE ind_estado = '1'
+			ORDER BY nom_operad ASC ";
+		$consulta = new Consulta($query, self::$cConexion);
+		$opegpsStanda = $consulta->ret_matriz("a");
+		
+		}
+
+		if($parOpePr){
+		$query = "SELECT cod_operad,nom_operad,nit_operad
+				FROM ".BASE_DATOS.".tab_genera_opegps
+				WHERE ind_estado = '1'
+			ORDER BY nom_operad ASC ";
+		$consulta = new Consulta($query, self::$cConexion);
+		$opegpsPropio = $consulta->ret_matriz("a");
+		}
+		$operadores = SortMatrix(arrayMergeIgnoringNull($opegpsStanda,$opegpsPropio), 'nom_operad', 'ASC') ;
+		return $operadores;
     }
 
 	    /* ! \fn: CreateObserva
@@ -187,7 +205,7 @@ class Califi
 						</div>
 					</div>
 					<div class="col-md-6">
-						<div class="col-md-3 text-right">Contraseña:<font style="color:red">*</font></div>
+						<div class="col-md-3 text-right">Contraseï¿½a:<font style="color:red">*</font></div>
 						<div class="col-md-9 text-left">
 							<input type="text" class="text-center ancho" name="gps_paswor" id="gps_pasworID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_paswor'] ?>"></input>
 						</div>
@@ -259,7 +277,7 @@ class Califi
      *  \brief: busca la url del operador gps
      *  \author: Ing. Cristian Torres
      *  \date: 10/06/2021
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
@@ -281,7 +299,7 @@ class Califi
      *  \brief: inserta una Particularidad de la transportado
      *  \author: Ing. Andres Martinez
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
@@ -360,7 +378,7 @@ class Califi
      *  \brief: inserta un contacto de la transportado
      *  \author: Ing. Andres Martinez
      *  \date: 28/04/2021
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 

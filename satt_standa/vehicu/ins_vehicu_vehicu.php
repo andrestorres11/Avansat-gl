@@ -11,6 +11,7 @@ class Ins_vehicu_vehicu {
     private static $cFunciones, $cTransp;
 
     function __construct($co, $us, $ca) {
+        include_once( "../".DIR_APLICA_CENTRAL."lib/general/functions.inc" );
         include_once('../'.DIR_APLICA_CENTRAL.'/inform/class_despac_trans3.php');
         $this->conexion = $co;
         $this->usuario = $us;
@@ -252,7 +253,7 @@ class Ins_vehicu_vehicu {
 
           # Accordion2
           $mHtml->OpenDiv("id:GPSinfoID; class:accordion");
-          $mHtml->SetBody("<h3 style='padding:6px;'><center>Información GPS</center></h3>");
+          $mHtml->SetBody("<h3 style='padding:6px;'><center>Informaciï¿½n GPS</center></h3>");
           $mHtml->OpenDiv("id:sec8");
             $mHtml->OpenDiv("id:form8; class:contentAccordionForm");
               $mHtml->Table("tr");
