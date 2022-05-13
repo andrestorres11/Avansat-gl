@@ -192,9 +192,9 @@
                             <td class="text-center"><a href="' . $dir_pdf_bajar . '" target="_blank" rel="noopener noreferrer"><i class="fa fa-eye" aria-hidden="true"></i></a></td>
                             <td class="text-center">';
                 if ($saldo > 0) {
-                    $html.='<a href="https://www.psepagos.co/PSEHostingUI/ShowTicketOffice.aspx?ID=11303" target="_blank" ><i class="fa fa-money mr-1"></i> Cancelar</a>';
+                    $html.='<a href="https://www.psepagos.co/PSEHostingUI/ShowTicketOffice.aspx?ID=11303" target="_blank" ><i class="fa fa-money mr-1"></i> Pague aquí</a>';
                             } else {
-                    $html.='Cancelada';
+                    $html.='Pagada';
                             }
                $html .= '   </td>
                         </tr>';
