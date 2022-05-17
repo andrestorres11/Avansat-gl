@@ -155,8 +155,8 @@
             }
 
             $Msql="SELECT a.cod_noveda, a.nom_noveda
-                             FROM ".BASE_DATOS.".tab_genera_novseg a
-                            WHERE a.ind_status = 1 ".$cond." ";
+                             FROM ".BASE_DATOS.".tab_genera_noveda a
+                            WHERE a.ind_estado = 1 ".$cond." ";
             $resultado = new Consulta($Msql, self::$conexion);
             $novedades = $resultado->ret_matriz();
             $html = '';
@@ -254,8 +254,8 @@
             foreach($resultados as $key => $etapa){
                 $cod_etapax = $etapa['cod_etapax'];
                 $sql="SELECT a.cod_noveda FROM 
-                    ".BASE_DATOS.".tab_genera_novseg a 
-                    WHERE a.ind_status = 1 AND a.cod_etapax = '".$cod_etapax."'";
+                    ".BASE_DATOS.".tab_genera_noveda a 
+                    WHERE a.ind_estado = 1 AND a.cod_etapax = '".$cod_etapax."'";
                 $resultado = new Consulta($sql, self::$conexion);
                 $novedades = $resultado->ret_matriz();
                 

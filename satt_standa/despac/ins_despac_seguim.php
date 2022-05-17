@@ -679,13 +679,13 @@ class Proc_segui
                        if(b.ind_manale = '1', '(MA)', ''),
                        if(b.ind_soltie = '1', '(ST)', ''),
                        num_tiempo
-                 FROM " . BASE_DATOS . ".tab_genera_novseg a
+                 FROM " . BASE_DATOS . ".tab_genera_noveda a
             INNER JOIN " . BASE_DATOS . ".tab_parame_novseg b
                      ON a.cod_noveda = b.cod_noveda AND
                      b.cod_transp = '".$_REQUEST[cod_transp]."' AND
                      b.ind_status = 1 AND
                      b.inf_visins = 1
-                WHERE a.ind_status = 1
+                WHERE a.ind_estado = 1
             ORDER BY 2 ASC";
         }
         $consulta = new Consulta($query, $this->conexion);
@@ -722,13 +722,13 @@ class Proc_segui
                         if(b.ind_soltie = '1', '(ST)', '') )),
                        num_tiempo,
                        nom_observ
-                            FROM " . BASE_DATOS . ".tab_genera_novseg a
+                            FROM " . BASE_DATOS . ".tab_genera_noveda a
                         INNER JOIN " . BASE_DATOS . ".tab_parame_novseg b
                                 ON a.cod_noveda = b.cod_noveda AND
                                 b.cod_transp = '".$_REQUEST[cod_transp]."' AND
                                 b.ind_status = 1 AND
                                 b.inf_visins = 1
-                     WHERE a.cod_noveda = '".$_REQUEST[noved]."' AND a.ind_status = 1
+                     WHERE a.cod_noveda = '".$_REQUEST[noved]."' AND a.ind_estado = 1
             ORDER BY 2 ASC";
             }
             
@@ -946,13 +946,13 @@ class Proc_segui
                WHERE cod_noveda = '" . $nove . "'";
         }else{
             $query = " SELECT b.ind_soltie as 'ind_tiempo'
-                            FROM " . BASE_DATOS . ".tab_genera_novseg a
+                            FROM " . BASE_DATOS . ".tab_genera_noveda a
                         INNER JOIN " . BASE_DATOS . ".tab_parame_novseg b
                         ON a.cod_noveda = b.cod_noveda AND
                         b.cod_transp = '".$_REQUEST[cod_transp]."' AND
                         b.ind_status = 1 AND
                         b.inf_visins = 1
-                    WHERE a.cod_noveda = '".$nove."' AND a.ind_status = 1";
+                    WHERE a.cod_noveda = '".$nove."' AND a.ind_estado = 1";
         }
         
         $consulta = new Consulta($query, $this->conexion);

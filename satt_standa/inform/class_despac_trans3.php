@@ -775,15 +775,10 @@ class Despac
 	}
 
 	public function filtroNovedades($mDespac, $etapax){
-		//Parche de la tabla de novedades
-		$tabNoved = 'tab_genera_noveda';
-		if(BASE_DATOS != 'satt_faro'){
-			$tabNoved = 'tab_genera_novseg';
-		}
 		$mSql = "( 
 			SELECT a.num_despac 
 			  FROM ".BASE_DATOS.".tab_despac_noveda a 
-		INNER JOIN ".BASE_DATOS.".".$tabNoved." b 
+		INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
 				ON a.cod_noveda = b.cod_noveda 
 			 WHERE a.num_despac IN ( {$mDespac} ) 
 			   AND b.cod_etapax IN ( {$etapax} )
@@ -793,7 +788,7 @@ class Despac
 		( 
 				SELECT c.num_despac 
 				FROM ".BASE_DATOS.".tab_despac_contro c 
-			INNER JOIN ".BASE_DATOS.".".$tabNoved." d 
+			INNER JOIN ".BASE_DATOS.".tab_genera_noveda d 
 					ON c.cod_noveda = d.cod_noveda 
 				WHERE c.num_despac IN ( {$mDespac} ) 
 				AND d.cod_etapax IN ( {$etapax} )
@@ -856,11 +851,6 @@ class Despac
 			return false;
 
 		$mDespac = join( ',', GetColumnFromMatrix( $mDespac, 'num_despac' ) ); #Despachos en ruta Sin hora salida del sistema
-		//Parche de la tabla de novedades
-		$tabNoved = 'tab_genera_noveda';
-		if(BASE_DATOS != 'satt_faro'){
-			$tabNoved = 'tab_genera_novseg';
-		}
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
 						UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
@@ -875,7 +865,7 @@ class Despac
 				AND a.num_despac NOT IN (  
 						SELECT da.num_despac 
 						  FROM ".BASE_DATOS.".tab_despac_noveda da 
-					INNER JOIN ".BASE_DATOS.".".$tabNoved." db 
+					INNER JOIN ".BASE_DATOS.".tab_genera_noveda db 
 							ON da.cod_noveda = db.cod_noveda 
 						 WHERE da.num_despac IN ( {$mDespac} ) 
 						   AND db.cod_etapax  IN ( 2,3,4,5 )
@@ -883,7 +873,7 @@ class Despac
 				AND a.num_despac NOT IN (  
 						SELECT ea.num_despac 
 						  FROM ".BASE_DATOS.".tab_despac_contro ea 
-					INNER JOIN ".BASE_DATOS.".".$tabNoved." eb 
+					INNER JOIN ".BASE_DATOS.".tab_genera_noveda eb 
 							ON ea.cod_noveda = eb.cod_noveda 
 						 WHERE ea.num_despac IN ( {$mDespac} ) 
 						   AND eb.cod_etapax  IN ( 2,3,4,5 )
@@ -1224,16 +1214,12 @@ class Despac
 			return false;
 
 		$mDespac = join( ',', GetColumnFromMatrix( $mDespac, 'num_despac' ) );
-		//Parche de la tabla de novedades
-		$tabNoved = 'tab_genera_noveda';
-		if(BASE_DATOS != 'satt_faro'){
-			$tabNoved = 'tab_genera_novseg';
-		}
+
 		#Despachos en Etapa Descargue Filtro 1
 		$mSql = "( /* Despachos con novedades etapa Descargue en Sitio */
 						SELECT a.num_despac 
 						  FROM ".BASE_DATOS.".tab_despac_noveda a 
-					INNER JOIN ".BASE_DATOS.".".$tabNoved." b 
+					INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
 							ON a.cod_noveda = b.cod_noveda 
 						 WHERE a.num_despac IN ( {$mDespac} ) 
 						   AND b.cod_etapax IN ( 4, 5 )
@@ -1243,7 +1229,7 @@ class Despac
 				( /* Despachos con novedades etapa Descargue antes de Sitio */
 						SELECT c.num_despac 
 						  FROM ".BASE_DATOS.".tab_despac_contro c 
-					INNER JOIN ".BASE_DATOS.".".$tabNoved." d 
+					INNER JOIN ".BASE_DATOS.".tab_genera_noveda d 
 							ON c.cod_noveda = d.cod_noveda 
 						 WHERE c.num_despac IN ( {$mDespac} ) 
 						   AND d.cod_etapax IN ( 4, 5 )
@@ -1550,17 +1536,11 @@ class Despac
 
 		$mDespac = join( ',', GetColumnFromMatrix( $mDespac, 'num_despac' ) );
 
-		//Parche de la tabla de novedades
-		$tabNoved = 'tab_genera_noveda';
-		if(BASE_DATOS != 'satt_faro'){
-			$tabNoved = 'tab_genera_novseg';
-		}
-
 		#Despachos en Etapa Transito Filtro 3
 		$mSql = "( /* Despachos con novedades etapa Descargue en Sitio */
 						SELECT a.num_despac 
 						  FROM ".BASE_DATOS.".tab_despac_noveda a 
-					INNER JOIN ".BASE_DATOS.".".$tabNoved." b 
+					INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
 							ON a.cod_noveda = b.cod_noveda 
 						 WHERE a.num_despac IN ( {$mDespac} ) 
 						   AND b.cod_etapax IN ( 3 )
@@ -1570,7 +1550,7 @@ class Despac
 				( /* Despachos con novedades etapa Descargue antes de Sitio */
 						SELECT c.num_despac 
 						  FROM ".BASE_DATOS.".tab_despac_contro c 
-					INNER JOIN ".BASE_DATOS.".".$tabNoved." d 
+					INNER JOIN ".BASE_DATOS.".tab_genera_noveda d 
 							ON c.cod_noveda = d.cod_noveda 
 						 WHERE c.num_despac IN ( {$mDespac} ) 
 						   AND d.cod_etapax IN ( 3 )
@@ -4289,7 +4269,7 @@ class Despac
 							if( c.ind_manale = '1', '(MA)', '' ),
 							if( c.ind_soltie = '1', '(ST)', '' ) )) AS label , 
 							c.num_tiempo as 'ind_tiempo'
-					FROM " . BASE_DATOS . ".tab_genera_novseg a
+					FROM " . BASE_DATOS . ".tab_genera_noveda a
 					INNER JOIN ".BASE_DATOS.".tab_perfil_noveda b
 					ON a.cod_noveda = b.cod_noveda
 					LEFT JOIN " . BASE_DATOS . ".tab_parame_novseg c ON

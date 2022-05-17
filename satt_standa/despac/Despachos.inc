@@ -2552,7 +2552,7 @@ class Despachos
                                         );
 
         $mTittle[0] = array( "id" => "dat_basico", "tittle" => "DATOS BASICOS DEL DESPACHO");
-        $mTittle[0]['data'] = array("nom_transp" => "Transportadora aqui", 
+        $mTittle[0]['data'] = array("nom_transp" => "Transportadora", 
                                     "nom_agenci" => "Agencia", 
                                     "num_despac" => "Despacho", 
                                     "nom_ciuori" => "Origen", 
@@ -2572,7 +2572,7 @@ class Despachos
                                     "nom_produc" => "Mercancia", 
                                     "tip_vehicu" => "Tipo Vehiculo", 
                                     "can_noveda" => "No. Novedades",
-                                    "cod_transp" => "Nit Transportadora"
+                                    "cod_itiner" => "No. itinerario"
                                     );
 
         $mTittle[1] = array( "id" => "dat_comple", "tittle" => "DATOS COMPLEMENTARIOS DEL DESPACHO");
@@ -4548,7 +4548,6 @@ class Despachos
      */
     private function getNovAnSitio( $mNumDespac, $mCodContro )
     {
-        
         if(BASE_DATOS == 'satt_faro'){
             $mSql = " (
                             SELECT DATE_FORMAT( a.fec_contro, '%H:%i %d-%m-%Y' ) AS fec_contro, 
@@ -4627,7 +4626,7 @@ class Despachos
                             e.ind_novesp as 'nov_especi', a.cod_noveda, 
                             '1' AS tab_origen, a.cod_consec 
                         FROM ".BASE_DATOS.".tab_despac_contro a 
-                INNER JOIN ".BASE_DATOS.".tab_genera_novseg b 
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                         ON a.cod_noveda = b.cod_noveda 
                 INNER JOIN ".BASE_DATOS.".tab_despac_sitio c 
                         ON a.cod_sitiox = c.cod_sitiox
@@ -4655,7 +4654,7 @@ class Despachos
                         FROM ".BASE_DATOS.".tab_recome_asigna a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                         ON a.cod_contro = b.cod_contro 
-                INNER JOIN ".BASE_DATOS.".tab_genera_novseg c 
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda c 
                         ON a.cod_noveda = c.cod_noveda 
                 INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
                         ON a.cod_recome = d.cod_consec
@@ -4682,7 +4681,7 @@ class Despachos
                         FROM ".BASE_DATOS.".tab_recome_asigna a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                         ON a.cod_contro = b.cod_contro 
-                INNER JOIN ".BASE_DATOS.".tab_genera_novseg c 
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda c 
                         ON a.cod_noveda = c.cod_noveda 
                 INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
                         ON a.cod_recome = d.cod_consec 
@@ -4731,7 +4730,7 @@ class Despachos
                         a.cod_noveda, '2' AS tab_origen, 
                         '0' AS cod_consec
                 FROM ".BASE_DATOS.".tab_despac_noveda a 
-                INNER JOIN ".BASE_DATOS.".tab_genera_novseg b 
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                     ON a.cod_noveda = b.cod_noveda 
                 INNER JOIN ".BASE_DATOS.".tab_despac_vehige c
                     ON a.num_despac = c.num_despac
@@ -4965,7 +4964,7 @@ class Despachos
                                 f.ind_manale as 'ind_manala',
                                 a.val_longit, a.val_latitu
                         FROM ".BASE_DATOS.".tab_despac_contro a
-                    INNER JOIN ".BASE_DATOS.".tab_genera_novseg b
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
                             ON a.cod_sitioy = c.cod_sitiox
@@ -4994,7 +4993,7 @@ class Despachos
                                 e.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu
                         FROM ".BASE_DATOS.".tab_despac_noveda a
-                    INNER JOIN ".BASE_DATOS.".tab_genera_novseg b
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro c
                             ON a.cod_contro = c.cod_contro
@@ -5023,7 +5022,7 @@ class Despachos
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
-                    INNER JOIN ".BASE_DATOS.".tab_genera_novseg c
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
                             ON a.cod_noveda = c.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_genera_recome d
                             ON a.cod_recome = d.cod_consec
@@ -5053,7 +5052,7 @@ class Despachos
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
-                    INNER JOIN ".BASE_DATOS.".tab_genera_novseg c
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
                             ON a.cod_noveda = c.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_genera_recome d
                             ON a.cod_recome = d.cod_consec
@@ -8928,11 +8927,7 @@ class Despachos
      */
     function GridCitaCargue( $despac, $desReal )
     {
-        //Parche para diferenciar las tablas de novedades de acuerdo al tipo de avansat
-        $nom_table = 'tab_genera_noveda';
-        if(BASE_DATOS!='satt_faro'){
-            $nom_table = 'tab_genera_novseg';
-        }
+        
         $mSql = "SELECT a.ind_cumcar, 
                         DATE_FORMAT(a.fec_cumcar, '%Y-%m-%d') AS fec_cumcar,
                         DATE_FORMAT(a.fec_cumcar, '%H:%i:%s') AS hor_cumcar,
@@ -8940,7 +8935,7 @@ class Despachos
                         UPPER(a.obs_cumcar) AS obs_cumcar,
                         a.usr_cumcar
                    FROM ".BASE_DATOS.".tab_despac_sisext a,
-                        ".BASE_DATOS.".{$nom_table} b
+                        ".BASE_DATOS.".tab_genera_noveda b
                   WHERE a.num_despac IN (".$despac.")
                     AND b.cod_noveda = a.nov_cumcar ";
 
@@ -9141,11 +9136,6 @@ class Despachos
     function GridCitaDescargue($despac, $document, $index)
     {
         echo $this->GridStyle();
-        //Parche para diferenciar las tablas de novedades de acuerdo al tipo de avansat
-        $nom_table = 'tab_genera_noveda';
-        if(BASE_DATOS!='satt_faro'){
-            $nom_table = 'tab_genera_novseg';
-        }
         $mSql = "SELECT a.ind_cumdes, 
                         DATE_FORMAT(a.fec_cumdes, '%Y-%m-%d') AS fec_cumcar,
                         DATE_FORMAT(a.fec_cumdes, '%H:%i:%s') AS hor_cumcar,
@@ -9153,7 +9143,7 @@ class Despachos
                         UPPER(a.obs_cumdes),
                         a.usr_cumdes
                    FROM ".BASE_DATOS.".tab_despac_destin a,
-                        ".BASE_DATOS.".{$nom_table} b
+                        ".BASE_DATOS.".tab_genera_noveda b
                   WHERE a.num_despac = '{$despac}'
                     AND a.num_docume = '{$document}'
                     AND b.cod_noveda = a.nov_cumdes ";
