@@ -587,7 +587,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                 f.ind_manale as 'ind_alarma',
                                 a.num_despac
                         FROM ".BASE_DATOS.".tab_despac_contro a
-                    INNER JOIN ".BASE_DATOS.".tab_genera_novseg b
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
                             ON a.cod_sitiox = c.cod_sitiox
@@ -617,7 +617,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                 e.ind_manale as 'ind_alarma',
                                 a.num_despac
                         FROM ".BASE_DATOS.".tab_despac_noveda a
-                    INNER JOIN ".BASE_DATOS.".tab_genera_novseg b
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro c
                             ON a.cod_contro = c.cod_contro
@@ -647,7 +647,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
-                    INNER JOIN ".BASE_DATOS.".tab_genera_novseg c
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
                             ON a.cod_noveda = c.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_genera_recome d
                             ON a.cod_recome = d.cod_consec
@@ -678,7 +678,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
-                    INNER JOIN ".BASE_DATOS.".tab_genera_novseg c
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
                             ON a.cod_noveda = c.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_genera_recome d
                             ON a.cod_recome = d.cod_consec

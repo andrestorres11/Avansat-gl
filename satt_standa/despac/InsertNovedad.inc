@@ -1648,7 +1648,7 @@ class InsertNovedad {
                              0 as 'ind_insveh',
                              IFNULL(b.ind_soltie, 0) as 'ind_tiempo',
                              IFNULL(b.num_tiempo, 0) as 'num_tiempo'
-                        FROM " . BASE_DATOS . ".tab_genera_novseg a 
+                        FROM " . BASE_DATOS . ".tab_genera_noveda a 
                         LEFT JOIN " . BASE_DATOS . ".tab_parame_novseg b ON
                         a.cod_noveda = b.cod_noveda AND
                         b.cod_transp = '".$mCodTransp."' AND

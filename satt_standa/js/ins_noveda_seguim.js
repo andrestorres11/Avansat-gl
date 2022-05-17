@@ -157,7 +157,7 @@ function logicDelete(code, option){
         palabra = 'habilitar';
         var number = 1;
     }
-    var titulo= 'ï¿½Esta seguro';
+    var titulo= '¿Esta seguro';
     var texto = 'Que desea '+palabra+' este registro?';
     Swal.fire({
         title: titulo,
@@ -252,6 +252,11 @@ function opeEdit(code, option){
         });
         $('#rut_iconoxID').removeClass('req');
     }else{
+        $("#nom_novedaID").val('');
+        $("#nom_observaID").empty('');
+        $("#cod_etapaxID").val($("#cod_etapaxID option:first").val());
+        $("#cod_riesgoID").val($("#cod_riesgoID option:first").val());
+        $('#previewImagen + img').remove();
         $('#rut_iconoxID').addClass('req');
         $('#cod_novedaSpace').hide();
     }
