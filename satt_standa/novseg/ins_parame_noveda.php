@@ -3,7 +3,7 @@
 	NOMBRE:   InsNovedadParametrizacion
 	FUNCION:  Muestra las solicitudes del estudio de seguridad. 
 	FECHA DE MODIFICACION: 15/09/2020
-	CREADO POR: Ing. Cristian AndrÃ©s Torres
+	CREADO POR: Ing. Cristian Andrés Torres
 	MODIFICADO 
 	****************************************************************************/
 	
@@ -28,7 +28,7 @@
 
         /*! \fn: styles
 		   *  \brief: incluye todos los archivos necesarios para los estilos
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -63,7 +63,7 @@
 
         /*! \fn: scripts
 		   *  \brief: incluye todos los archivos necesarios para los eeventos js
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -107,7 +107,7 @@
         
         /*! \fn: filtros
 		   *  \brief: Crea el html de las tablas filtros y segmentos del modulo
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 

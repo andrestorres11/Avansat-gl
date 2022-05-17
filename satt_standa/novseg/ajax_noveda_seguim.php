@@ -72,8 +72,8 @@
 
             $sql = "SELECT a.cod_noveda, a.nom_noveda, CONCAT(UPPER(LEFT(b.nom_etapax, 1)), LOWER(SUBSTRING(b.nom_etapax, 2))) as 'nom_etapax',
                            c.nom_riesgo, a.rut_iconox, a.nom_observ,
-                           a.ind_status
-                          FROM ".BASE_DATOS.".tab_genera_novseg a
+                           a.ind_estado
+                          FROM ".BASE_DATOS.".tab_genera_noveda a
                           INNER JOIN ".BASE_DATOS.".tab_genera_etapax b
                             ON a.cod_etapax = b.cod_etapax
                           INNER JOIN ".BASE_DATOS.".tab_genera_riesgo c
@@ -83,7 +83,7 @@
              $mMatriz = $query -> ret_matrix('a');
              foreach ($mMatriz as $key => $datos) {
                 foreach ($datos as $campo => $valor) {
-                    if($campo=='ind_status'){
+                    if($campo=='ind_estado'){
                         $btn = '<button type="button" class="btn btn-info btn-sm" onclick="opeEdit('.$datos['cod_noveda'].',1)"><i class="fa fa-pencil" aria-hidden="true"></i></button>';
                         $btn_opcion = '';
                         if($valor==1){
@@ -123,21 +123,21 @@
                 }
             }
 
-            $sql = " INSERT INTO ".BASE_DATOS.".tab_genera_novseg(
-                nom_noveda, cod_etapax, cod_riesgo,
-                rut_iconox, nom_observ, ind_status,
+            $sql = " INSERT INTO ".BASE_DATOS.".tab_genera_noveda(
+                cod_noveda, nom_noveda, cod_etapax, cod_riesgo,
+                rut_iconox, nom_observ, ind_estado,
                 fec_creaci, usr_creaci
             ) 
                 VALUES 
             (
-                '".$_REQUEST['nom_noveda']."', '".$_REQUEST['cod_etapax']."', '".$_REQUEST['cod_riesgo']."',
+                '".self::getLastReg()."', '".$_REQUEST['nom_noveda']."', '".$_REQUEST['cod_etapax']."', '".$_REQUEST['cod_riesgo']."',
                 '".$nombre."', '".$_REQUEST['nom_observa']."', 1,
                 NOW(), '".self::$usuario."'
             )";
 
             if($_REQUEST['ind_update']){
                 $sql = "UPDATE 
-	                        ".BASE_DATOS.".tab_genera_novseg 
+	                        ".BASE_DATOS.".tab_genera_noveda 
                         SET 
                             nom_noveda = '".$_REQUEST['nom_noveda']."', 
                             cod_etapax = '".$_REQUEST['cod_etapax']."', 
@@ -163,8 +163,8 @@
         }
 
         function disaenable(){
-            $sql = "UPDATE ".BASE_DATOS.".tab_genera_novseg SET
-                        ind_status = '".$_REQUEST['ind_status']."',
+            $sql = "UPDATE ".BASE_DATOS.".tab_genera_noveda SET
+                        ind_estado = '".$_REQUEST['ind_status']."',
                         fec_modifi = NOW(),
                         usr_modifi = '".self::$usuario."'
                     WHERE 
@@ -183,12 +183,21 @@
         function getRegistro(){
             $sql = "SELECT a.cod_noveda, a.nom_noveda, a.cod_etapax,
                            a.cod_riesgo, a.rut_iconox, a.nom_observ,
-                           a.ind_status
-                          FROM ".BASE_DATOS.".tab_genera_novseg a
+                           a.ind_estado
+                          FROM ".BASE_DATOS.".tab_genera_noveda a
                         WHERE a.cod_noveda = '".$_REQUEST['cod_noveda']."'; ";
              $query = new Consulta($sql, self::$conexion);
              $mMatriz = $query -> ret_matrix('a')[0];
              echo json_encode(self::cleanArray($mMatriz));
+        }
+
+        function getLastReg(){
+            $sql = "SELECT cod_noveda FROM ".BASE_DATOS.".tab_genera_noveda 
+                        WHERE cod_noveda < 9000 
+                    ORDER BY cod_noveda DESC LIMIT 1";
+             $query = new Consulta($sql, self::$conexion);
+             $mMatriz = $query -> ret_arreglo();
+            return ($mMatriz['cod_noveda']+1);
         }
 
 
