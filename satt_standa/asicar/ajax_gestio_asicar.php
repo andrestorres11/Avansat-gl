@@ -856,25 +856,25 @@
       
               <div class="row">
                   <div class="offset-1 col-3">
-                      <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Instalaciï¿½n" id="ciu_origins" name="ciu_origins" disabled value="'.$this->darNombreCiudad($informacion['ciu_origins']).'">
+                      <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Instalaci?n" id="ciu_origins" name="ciu_origins" disabled value="'.$this->darNombreCiudad($informacion['ciu_origins']).'">
                   </div>
                   <div class="col-4">
-                      <input class="form-control form-control-sm" type="text" placeholder="Direcciï¿½n Instalaciï¿½n" id="dir_ciuinsID" name="dir_ciuins"  disabled value="'.$informacion['dir_ciuins'].'">
+                      <input class="form-control form-control-sm" type="text" placeholder="Direcci?n Instalaci?n" id="dir_ciuinsID" name="dir_ciuins"  disabled value="'.$informacion['dir_ciuins'].'">
                   </div>
                 <div class="col-3">
-                  <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora Instalaciï¿½n" id="fec_instID" name="fec_inst" disabled value="'.$informacion['fec_inst'].'">
+                  <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora Instalaci?n" id="fec_instID" name="fec_inst" disabled value="'.$informacion['fec_inst'].'">
                 </div>
               </div>
       
               <div class="row mt-3">
                   <div class="offset-1 col-3">
-                      <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Desinstalaciï¿½n" id="ciu_desin" name="ciu_desin" disabled value="'.$this->darNombreCiudad($informacion['ciu_desin']).'">
+                      <input class="form-control form-control-sm" type="text" placeholder="Ciudad de Desinstalaci?n" id="ciu_desin" name="ciu_desin" disabled value="'.$this->darNombreCiudad($informacion['ciu_desin']).'">
                   </div>
                   <div class="col-4">
-                      <input class="form-control form-control-sm" type="text" placeholder="Direcciï¿½n Desinstalaciï¿½n" id="dir_ciudesiID" name="dir_ciudesi" disabled value="'.$informacion['dir_ciudesi'].'">
+                      <input class="form-control form-control-sm" type="text" placeholder="Direcci?n Desinstalaci?n" id="dir_ciudesiID" name="dir_ciudesi" disabled value="'.$informacion['dir_ciudesi'].'">
                   </div>
                   <div class="col-3">
-                      <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora Desinstalaciï¿½n" id="fec_desinID" name="fec_desin" disabled value="'.$informacion['fec_desin'].'">
+                      <input class="form-control form-control-sm" type="text" placeholder="Fecha y hora Desinstalaci?n" id="fec_desinID" name="fec_desin" disabled value="'.$informacion['fec_desin'].'">
                   </div>
               </div>
               <hr>
@@ -1564,7 +1564,7 @@
                     }    
                 echo json_encode($return);
                 }catch (Exception $e) {
-                  echo 'Excepci?n registrar: ',  $e->getMessage(), "\n";
+                  echo 'Excepcion registrar: ',  $e->getMessage(), "\n";
                 }
         }
 
@@ -1639,6 +1639,9 @@
 
         function porAsignProveedor(){
           try {
+
+            
+
             $return = [];
             $num_solici=$_REQUEST['cod_solici'];
             $fichero = $_FILES["file"];
@@ -1658,7 +1661,7 @@
                 echo json_encode($return);
                 exit();
             }
-
+            
             if($nombre_archivo!=""){
                 $ubicacion="/files/adj_solici/".$num_solici.".".end($ext);
             }else{
@@ -1715,13 +1718,14 @@
             $sql="SELECT a.cor_solici, a.cod_client FROM ".BASE_DATOS.".tab_asiste_carret a WHERE a.id = '$cod_solici'";
             $consulta = new Consulta($sql, self::$conexion);
             $dcorreos = $consulta->ret_matriz('a')[0];
+            
             array_push($retorno, trim(strtolower($dcorreos['cor_solici'])));
             
             //Busca Correos registrados correspondientes a los gestores de asistencia
             $sql="SELECT a.dir_emailx FROM ".BASE_DATOS.".tab_genera_parcor a WHERE a.num_remdes = '' OR a.num_remdes = '".$dcorreos['cod_client']."';";
             $consulta = new Consulta($sql, self::$conexion);
             $dcorreos = $consulta->ret_matriz('a');
-          
+            
             foreach($dcorreos as $correos){
               $correo = explode(",", $correos['dir_emailx']);
               foreach($correo as $correou){
@@ -1729,6 +1733,7 @@
               }
             }
           
+            
             $sql="SELECT 
                       a.cod_usuari, 
                       c.nom_tercer, 
@@ -1741,16 +1746,20 @@
                   ON b.clv_filtro = c.cod_tercer
                   WHERE a.cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."';
                   ";
+             
+                 
             $consulta = new Consulta($sql, self::$conexion);
             $dcorreos = $consulta->ret_matriz('a');
                 
             foreach($dcorreos as $correos){
+              
               $correo = explode(",", $correos['dir_emailx']);
+              
               foreach($correo as $correou){
                 array_push($retorno, trim(strtolower($correou)));
               }
             }
-
+            
             return $retorno;
           }
 
@@ -1811,17 +1820,207 @@
             $nom_asiste = $this->tipSolicitud($num_solici);
             $fec_actual = date("Y-m-d H:i:s");   
             $correos = $this->darCorreos($num_solici);
+            //$correos=["oscar.bocanegra@intrared.net", "oscesteban@hotmail.com"];
+            
+            
+            
+            
+      
+
+
             $estado = $this->darNombreEstados($cod_estado);
             $to = $correo;
+            
             $nom_solici = $informacion['nom_solici'];
             $nom_client = $this->getNombreTransportadora($informacion['cod_client']);
             $complemento='';
-
+           
             if($cod_estado==2){
               $total = $this->totalServiciosporSolicitud($num_solici);
               $complemento = '<br><br><strong style="color:#000">Total Presupuestado: </strong> $'.$total.'<br>';
             }
-            $subject = "NUEVO ESTADO DE SOLICITU ".strtoupper($nom_asiste);
+
+            $prveedor='900396831';// se quema este segun solicitud proveedor logiseguridad ltda
+            
+            $msagebody='Por medio del presente correo la linea de servicio <strong>Asistencia Logistica</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el.
+            ';
+            if($prveedor==$_POST['cod_provee']){
+              require_once("../planti/class.phpmailer.php");
+              require_once('../lib/FPDF/fpdf184/fpdf.php');
+              
+                           
+              $sqlcc="
+              SELECT a.`id`, a.`num_transp`, a.`nom_transp`, a.`ap1_transp`, a.`ap2_transp`, a.`ce1_transp`, a.`num_placax`, 
+              a.`num_conte`, co.`nom_ciudad` ciud_origen, cd.`nom_ciudad` ciud_destin, cinst.`nom_ciudad` instal, a.`fec_inst`, 
+              a.`dir_ciuins`,
+              cdesinst.`nom_ciudad` desinst, a.`fec_desin`, a.`dir_ciudesi`
+              FROM `tab_asiste_carret` a, `tab_genera_ciudad` co , `tab_genera_ciudad` cd, `tab_genera_ciudad` cinst, `tab_genera_ciudad` cdesinst
+              WHERE a.`ciu_origen`= co.`cod_ciudad`
+              and a.`ciu_destin`= cd.`cod_ciudad`
+              and a.`ciu_origins`= cinst.`cod_ciudad`
+              and a.`ciu_desin`= cdesinst.`cod_ciudad`
+              And  a.`id`=".$num_solici;
+
+              $consultacc = new Consulta($sqlcc, self::$conexion);
+              $correoscc = $consultacc->ret_matriz('a');
+              
+
+              $fech_inst =date_create($correoscc[0]['fec_inst']);
+              $newfech_inst =date_format($fech_inst, 'd-m-Y H:i');
+              
+              $fech_desin =date_create($correoscc[0]['fec_desin']);
+              $newfech_desin =date_format($fech_desin, 'd-m-Y H:i');
+
+              $campo01=ucfirst(strtolower($correoscc[0]['instal']));// Ciudad de origen
+              $campo02=ucfirst(strtolower($correoscc[0]['desinst']));// Ciudad de destino
+              $campo03=ucfirst(strtolower($correoscc[0]['dir_ciuins']));// Direccion de instalacion
+              $campo04=$newfech_inst;// Fecha y Hora de instalacion
+              $campo05=ucfirst(strtolower($correoscc[0]['dir_ciudesi']));// Direccion de desinstalacion
+              $campo06=$newfech_desin;// Fecha y Hora de desinstalacion
+
+              $campo08=ucfirst(strtolower($correoscc[0]['nom_transp']." ".$correoscc[0]['ap1_transp']." ".$correoscc[0]['ap2_transp']));//Nombre Conductor
+              $Campo09=$correoscc[0]['num_transp'];// Cedula Transportador
+              $campo10=$correoscc[0]['ce1_transp'];//Celular Conductor
+              $campo11=$correoscc[0]['num_placax'];// Placa Vehiculo
+              $campo12=$correoscc[0]['num_conte'];// Numero del Contenedor
+
+                // Creaci?n del objeto de la clase heredada
+                $pdf = new FPDF('P','mm','Letter');
+                $pdf->AliasNbPages();
+                $pdf->AddPage();
+                $pdf->SetFont('Times','',12);
+  
+                $pdf->Cell(50, 15, '', 1, 0, 'L');
+                $pdf->SetFont('Times','B',12);
+                $pdf->Cell(65, 15, 'SOLICITUD DE SERVICIOS', 1, 0, 'C');
+                $pdf->SetFont('Times','',12);
+                $pdf->Cell(75, 5, 'CODIGO: O2-F01', 1, 1, 'L');
+                $pdf->Cell(115);
+                $pdf->Cell(75, 5, 'VERSION:0', 1, 1, 'L');
+                $pdf->Cell(115);
+                $pdf->Cell(75, 5, 'FECHA:', 1, 1, 'L');
+  
+                $pdf->SetFont('Times','B',12);
+                $pdf->Cell(190, 5, 'INFORMACION ASIGNACION SERVICIOS:', 1, 1, 'C');
+  
+                $pdf->Cell(190, 5, 'CARACTERISTICAS DEL SERVICIO', 1, 1, 'C');
+  
+                $pdf->SetFont('Times','',12);
+                $pdf->Cell(190, 5, 'Cliente: CENTRO LOGISTICO FARO SAS', 1, 1, 'L');
+  
+                $pdf->SetFillColor(216, 224, 252);
+                $pdf->Cell(47.5, 5, 'Origen: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo01", 1, 0, 'L',true);
+                $pdf->Cell(47.5, 5, 'Destino: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo02", 1, 1, 'L',true);
+  
+                $pdf->Cell(47.5, 5, 'Ruta Autorizada: ', 1, 0, 'L');
+                $pdf->Cell(142.5, 5, 'LA LINEA', 1, 1, 'L');
+  
+                $pdf->SetFillColor(255, 255, 255);
+                $pdf->SetFont('Times','B',12);
+                $pdf->MultiCell(47.5, 5,'Referencia del Servico o D.O.', 1);
+                $pdf->SetXY(57.5, 50);
+                $pdf->SetFont('Times','',12);
+                $pdf->Cell(47.5, 10,'', 1, 0, 'L');
+                $pdf->Cell(47.5, 10,'Numero BL:', 1, 0, 'L');
+                $pdf->Cell(47.5, 10,'', 1, 1, 'L');
+  
+                $pdf->SetFillColor(216, 224, 252);
+                $pdf->Cell(47.5, 5, 'Lugar de Instalaciin: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo03", 1, 0, 'L',true);
+                $pdf->Cell(47.5, 5, 'Fecha y Hora: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo04", 1, 1, 'L',true);
+  
+                $pdf->Cell(47.5, 5, 'Lugar de Desinstalacion: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo05", 1, 0, 'L',true);
+                $pdf->Cell(47.5, 5, 'Fecha y Hora: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo06", 1, 1, 'L',true);
+  
+                $pdf->SetFont('Times','B',12);
+                $pdf->Cell(51.5, 5, 'Instrucciones especiales: ', 1, 0, 'L');
+                $pdf->Cell(138.5, 5, '', 1, 1, 'L');
+  
+                $pdf->Cell(190, 5, '', 1, 1, 'C');
+                $pdf->Cell(190, 5, '', 1, 1, 'C');
+  
+                $pdf->Cell(190, 5, 'Nota: se debe dar el sitio exacto de la instalacion y desinstalacion', 1, 1, 'L');
+  
+                $pdf->Cell(190, 5, 'CARACTERISTICAS DEL VEHICULO', 1, 1, 'C');
+  
+                $pdf->SetFont('Times','',12);
+                $pdf->Cell(47.5, 5, 'Empresa Transporte:', 1, 0, 'L');
+                $pdf->Cell(142.5, 5, 'CENTRO LOGISTICO FARO SAS', 1, 1, 'L');
+  
+                $pdf->Cell(47.5, 5, 'Nombre Contacto: ', 1, 0, 'L');
+                $pdf->Cell(142.5, 5, 'JHON JAIRO BUITRAGO', 1, 1, 'L');
+  
+                $pdf->Cell(47.5, 5, 'Placa: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo11", 1, 0, 'L',true);
+                $pdf->Cell(47.5, 5, 'Celular Contacto: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, '3173709294 ', 1, 1, 'L');
+  
+                $pdf->Cell(47.5, 5, 'Nombre Conductor:  ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo08", 1, 0, 'L',true);
+                $pdf->Cell(47.5, 5, 'Cedula: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$Campo09", 1, 1, 'L', true);
+  
+                $pdf->Cell(47.5, 5, 'Celular conductor: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo10", 1, 0, 'L',true);
+                $pdf->Cell(47.5, 5, 'Placa: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "", 1, 1, 'L');
+  
+                $pdf->Cell(47.5, 5, 'Color: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, '', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, 'Precinto: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, ' ', 1, 1, 'L');
+  
+                $pdf->Cell(47.5, 5, 'Remolque: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, '', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, 'Nro. Contenedor: ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, "$campo12", 1, 1, 'L', true);
+  
+                $pdf->Cell(62, 5, 'Contacto seguridad transportador: ', 1, 0, 'L');
+                $pdf->Cell(128, 5, 'JHON JAIRO BUITRAGO', 1, 1, 'L');
+  
+                $pdf->SetFont('Times','B',12);
+                $pdf->Cell(190, 5, 'CONTACTO DE EMERGENCIA', 1, 1, 'C');
+  
+                $pdf->Cell(47.5, 5, 'Nombre: ', 1, 0, 'C');
+                $pdf->Cell(47.5, 5, 'Celular', 1, 0, 'C');
+                $pdf->Cell(95, 5, 'Correo Electronico', 1, 1, 'C');
+  
+                $pdf->SetFont('Times','',12);
+                $pdf->Cell(47.5, 5, 'Julian Martinez Saza ', 1, 0, 'L');
+                $pdf->Cell(47.5, 5, '3143949474', 1, 0, 'L');
+                $pdf->Cell(95, 5, 'supervisores@eltransporte.org', 1, 1, 'L');
+  
+                $pdf->Cell(47.5, 5, ' ', 1, 0, 'C');
+                $pdf->Cell(47.5, 5, '', 1, 0, 'C');
+                $pdf->Cell(95, 5, '', 1, 1, 'C');
+  
+                $pdf->Cell(47.5, 5, ' ', 1, 0, 'C');
+                $pdf->Cell(47.5, 5, '', 1, 0, 'C');
+                $pdf->Cell(95, 5, '', 1, 1, 'C');
+  
+                $pdf->SetFont('Times','B',12);
+                $pdf->SetTextColor(255, 12, 0);
+                $vrtext='Observaciones: con el fin de garantizar la seguridad del servicio, es necesario suministrar toda la informacion solicitada en el anterior formato "solicitud de servicio", es indispensable que el lugar y la hora de solicitud de la intalacion y desinstalacion de los dispositivos de seguridad satelital sea clara y presisa para evitar contratiempos a la operacion.
+                ';
+
+                $pdf->MultiCell(190, 5,utf8_decode($vrtext), 1);
+                $doc = $pdf->Output('S');
+                $mail = new PHPMailer();
+                $mail->Host = "localhost";
+  
+              $msagebody='
+              Por medio del presente correo <strong class="colortext">Centro Logistico Faro SAS</strong>, realiza la solicitud del servicio de candado satelital, adjunto se encuentran los respectivos datos de la solicitud.
+              ';
+              
+            }
+            
+          
+            $subject = "NUEVO ESTADO DE SOLICITUD ".strtoupper($nom_asiste);
             $headers = "MIME-Version: 1.0" . "\r\n";
             $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
             $headers .= "From: asistencias@faro.com";
@@ -1964,18 +2163,38 @@
                                       <td width="518" align="center" valign="top" style="padding:0;Margin:0;">
                                         <table cellpadding="0" cellspacing="0" width="100%" style="mso-table-lspace:0pt;mso-table-rspace:0pt;border-collapse:collapse;border-spacing:0px;border:2px double #ff9800;"
                                           role="presentation">
-                                          <tr style="border-collapse:collapse;">
+                                          <tr style="border-collapse:collapse;">';
+
+                                          if($prveedor==$_POST['cod_provee']){
+
+                                            $message .= '
+                                            <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
+                                            <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
+                                              <br><strong class="colortext">Solicitud de: </strong> Candado Satelital <br> <br><br class="colortext">Senores: Logiseguridad 
+                                              <br> <br class="colortext">'.$msagebody.' <br> <br
+                                          </td>
+                                            ';
+
+                                          }else{
+                                            $message .= '
                                             <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
-                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Seï¿½or(a):
-                                                '. $nom_solici .'. <br> <br class="colortext">Por medio del presente correo la lï¿½nea de servicio <strong>Asistencia Logï¿½stica</strong> del <strong>Grupo OET</strong>, le informa que su solicitud se encuentra en el. <br> <br class="colortext">Estado:
+                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
+                                                '. $nom_solici .'. <br> <br class="colortext">'.$msagebody.' <br> <br class="colortext">Estado:
                                                 <strong class="colortext">'.$estado.'</strong><br>
-                                                <br><strong style="color:#000">Observaciï¿½n:</strong> '.$observacion.'
+                                                <br><strong style="color:#000">Observacion:</strong> '.$observacion.'
                                                 '.$complemento.'
                                                 <br>
                                                 <br class="colortext">Le estaremos informando el
                                                 estado de su solicitud, cabe aclarar que nuestro tiempo de respuesta es de aproximadamente 45 minutos o antes. <br><br> </p>
                                             </td>
+                                            
+                                            ';
+
+                                          }
+
+                                          $message .= '
+                                            
                                           </tr>
                                         </table>
                                       </td>
@@ -2012,9 +2231,43 @@
             </body>
             
             </html>';
-            foreach($correos as $correo){
-              mail($correo, $subject, $message, $headers);
+
+
+            
+
+            
+           if($prveedor==$_POST['cod_provee']){
+
+              foreach($correos as $correosdat){
+                $mail->AddAddress( $correosdat);
+              }
+            
+
+            $porcionescc = explode(",", $mailcc);
+            foreach($porcionescc as $porcionesdat){
+              $mail->AddAddress( $porcionesdat);
             }
+            
+
+            $mail->From = "asistencias@faro.com";
+  
+              $mail->FromName = "Solicitud de: Candado Satelital";
+              $mail->Subject = "SOLICITUD DE CANDADO SATELITAL" ;
+              
+              
+              $mail->AddStringAttachment($doc, 'doc.pdf', 'base64', 'application/pdf');
+              $mail->Body = $message;
+              $mail->IsHTML( true );
+              if(!$mail->Send()){
+                  echo "error de email";
+                }
+            }else{
+
+              foreach($correos as $correo){
+              mail($correo, $subject, $message, $headers);
+              }
+            }
+
         }
         function traerarchivos(){
       
