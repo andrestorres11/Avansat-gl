@@ -2371,6 +2371,7 @@ class Despachos
     
     private function validaDivMapas($mNumDespac){
         $novedades = self::getNovedad($mNumDespac , 'LEFT');
+        $puntFis = self::getPuntFisDespac($mNumDespac);
  
         $flag = 0;
         $latLon = array( ); 
@@ -2383,13 +2384,26 @@ class Despachos
                         "val_latitu" => $value['val_latitu'],
                         "val_longit" => $value['val_longit'],
                         "fec_noveda" => $value['fec_noveda'],
-                        "obs_noveda" => $value['obs_noveda']
+                        "obs_noveda" => $value['obs_noveda'],
+                        "tip_pointx" => "N"
                     );
 
                 $flag = 1;
             }
         }
 
+        // FORAECH DE PUNTOS DE PLAN DE RUTA DEL DESPACHO
+        foreach ($puntFis as $key => $value) {
+            if($value['val_longit'] != '' && $value['val_latitu'] != ''){
+
+                //Go through data to clean it
+                foreach($value as $key1 => $value1){
+                    $value[$key1] = utf8_encode($value1);
+                } 
+                $latLon[] = $value;
+            }
+        }
+        //echo "<pre>"; print_r($latLon);echo "</pre>"; 
         return array('ind_estado' => $flag , 'data' => $latLon);
     }
 
@@ -2446,7 +2460,7 @@ class Despachos
                                 right: 8px;
                               }
                               .ol-popup-closer:after {
-                                content: "?";
+                                content: "a";
                                 color:#000000
                               }
                             </style>');
@@ -2474,7 +2488,7 @@ class Despachos
             $mHtml->OpenDiv("id:secID");
                 //----------------------
 
-                /*$mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
+               /* $mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
 
                     $mHtml->Hidden( array("name"=>"dat_gpsxxx".$i, "id"=>'dat_gpsxxx'.$i, "value"=> base64_encode(json_encode($mNovedades))) );
 
@@ -2526,7 +2540,6 @@ class Despachos
         return $mHtml->MakeHtml();
     }
 
-
     /*! \fn: divDatosDespac
      *  \brief: Crea los DIV de las secciones: "DATOS BASICOS DEL DESPACHO", "DATOS COMPLEMENTARIOS DEL DESPACHO", "FECHAS DEL DESPACHO"
      *  \author: Ing. Fabian Salinas
@@ -2572,6 +2585,7 @@ class Despachos
                                     "nom_produc" => "Mercancia", 
                                     "tip_vehicu" => "Tipo Vehiculo", 
                                     "can_noveda" => "No. Novedades",
+                                    "cod_transp" => "Nit Transportadora",
                                     "cod_itiner" => "No. itinerario"
                                     );
 
@@ -3268,7 +3282,7 @@ class Despachos
 
       
         $mNovedades = self::getNovedad( $mNumDespac );
-        $mEstServ = self::getView('jso_encabe');
+        $mEstServ = self::getView('jso_encabe'); 
 
         //Crea Array
         $dataNov = [];
@@ -3482,10 +3496,14 @@ class Despachos
     private function divPlanRuta( $_RUTASX, $mIndConsol = false, $mView )
     {
         $codtran=$this->cod_transp_tercero;
-        $queryseg="SELECT `num_consec`, `cod_transp`, `ubi_seguim`, `ind_estado` FROM `tab_transp_tipser` WHERE `cod_transp` LIKE '". $codtran."' ORDER BY `tab_transp_tipser`.`num_consec` DESC limit 1";
-            $mConsultseg = new Consulta($queryseg, $this->conexion);
-            $codseg = $mConsultseg->ret_arreglo();
-            $codseg = $codseg[2] ;
+        $queryseg="SELECT a.num_consec, a.cod_transp, a.ubi_seguim,
+                          a.ind_estado 
+                    FROM ".BASE_DATOS.".tab_transp_tipser a
+                    WHERE a.cod_transp LIKE '". $codtran."'
+                    ORDER BY a.num_consec DESC LIMIT 1";
+        $mConsultseg = new Consulta($queryseg, $this->conexion);
+        $codseg = $mConsultseg->ret_arreglo();
+        $codseg = $codseg[2] ;
 
         if(($codseg==1) && (BASE_DATOS=='satt_faro')){
             $mTittlePlanRut = array("Sitio de Seguimiento", "Ubicacion de Seguimiento", "Hora/Fecha Programada", "Hora/Fecha Planeada", "Hora/Fecha Sistema", "Tiempo", "Novedad");
@@ -4363,15 +4381,20 @@ class Despachos
       $mResult = array();
       $mRutax = getControDespac( $this -> conexion, $mDespac ); #Script = /satt_standa/lib/general/functions.inc
       $mTrans = Despachos::getTranspDespac($mDespac);
+
       $mUltPC = end($mRutax);
       $mNoR = 'NO REPORT&Oacute;';
+      $codtran=$mTrans['cod_transp'];
 
-      
-      $codtran=$this->cod_transp_tercero;
-        $queryseg="SELECT `num_consec`, `cod_transp`, `ubi_seguim`, `ind_estado` FROM `tab_transp_tipser` WHERE `cod_transp` LIKE '". $codtran."' ORDER BY `tab_transp_tipser`.`num_consec` DESC limit 1";
-            $mConsultseg = new Consulta($queryseg, $this->conexion);
-            $codseg = $mConsultseg->ret_arreglo();
-            $codseg = $codseg[2] ;
+      $queryseg="SELECT a.num_consec, a.cod_transp, a.ubi_seguim,
+                          a.ind_estado 
+                     FROM ".BASE_DATOS.".tab_transp_tipser a
+                     WHERE a.cod_transp LIKE '". $codtran."'
+                     ORDER BY a.num_consec DESC LIMIT 1";
+
+      $mConsultseg = new Consulta($queryseg, $this->conexion);
+      $codseg = $mConsultseg->ret_arreglo();
+      $codseg = $codseg[2] ;
 
       #Ultimo PC con novedad
       $mUlPCNov = getNovedadesDespac( $this -> conexion, $mDespac, 2 ); #Script = /satt_standa/lib/general/functions.inc
@@ -4404,12 +4427,13 @@ class Despachos
               $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
               if(BASE_DATOS=='satt_faro'){
                 if($codseg==0){
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitioy], $row[nom_sitioy], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );      
+                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );
                   }else{
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], $row[nom_sitioy], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );      
+                    $nom_control = strtoupper(Despachos::getSitioNom(Despachos::getSitioControlNum($row['cod_contro'])));
+                    $mResult[$j] = Despachos::arrayRuta( $nom_control, $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );      
                   }
               }else{
-                $mResult[$j] = Despachos::arrayRuta( $row[nom_sitioy], $row[nom_sitioy], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );
+                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );
               }
               
               $j++;
@@ -4553,18 +4577,17 @@ class Despachos
                             SELECT DATE_FORMAT( a.fec_contro, '%H:%i %d-%m-%Y' ) AS fec_contro, 
                                     UPPER(b.nom_noveda) AS nom_noveda, 
                                     a.usr_creaci, a.fec_creaci, 
-                                    UPPER(c.nom_sitiox) AS nom_sitiox, 
-                                    UPPER(d.nom_sitiox) AS nom_sitioy, 
+                                    UPPER(c.nom_sitiox) AS nom_sitiox,
                                     a.obs_contro AS obs_noveda, 
                                     b.nov_especi, a.cod_noveda, 
-                                    '1' AS tab_origen, a.cod_consec 
+                                    '1' AS tab_origen, a.cod_consec, a.cod_contro
                                 FROM ".BASE_DATOS.".tab_despac_contro a 
                         INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                                 ON a.cod_noveda = b.cod_noveda 
                         INNER JOIN ".BASE_DATOS.".tab_despac_sitio c 
                                 ON a.cod_sitiox = c.cod_sitiox
                         INNER JOIN ".BASE_DATOS.".tab_despac_sitio d 
-                                ON if(a.`cod_sitioy` IS NULL, a.`cod_sitiox`, a.`cod_sitioy`) = d.cod_sitiox 
+                                ON a.cod_sitiox = d.cod_sitiox 
                             WHERE a.num_despac = '{$mNumDespac}' 
                                 AND a.cod_contro = '{$mCodContro}' 
                         )
@@ -4575,10 +4598,9 @@ class Despachos
                                     a.usr_solici AS usr_creaci, 
                                     a.fec_solici AS fec_creaci, 
                                     UPPER(b.nom_contro) AS nom_sitiox,
-                                    UPPER(b.nom_contro) AS nom_sitioy, 
                                     GROUP_CONCAT( d.tex_encabe ) AS obs_noveda, 
                                     '0' AS nov_especi, a.cod_noveda, 
-                                    '3' AS tab_origen, d.cod_consec
+                                    '3' AS tab_origen, d.cod_consec, a.cod_contro
                                 FROM ".BASE_DATOS.".tab_recome_asigna a 
                         INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                                 ON a.cod_contro = b.cod_contro 
@@ -4596,11 +4618,10 @@ class Despachos
                                     'SOLUCION RECOMENDACION' AS nom_noveda, 
                                     a.usr_ejecut AS usr_creaci,
                                     a.fec_ejecut AS fec_creaci, 
-                                    UPPER(b.nom_contro) AS nom_sitiox,
-                                    UPPER(b.nom_contro) AS nom_sitioy, 
+                                    UPPER(b.nom_contro) AS nom_sitiox, 
                                     GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda, 
                                     '0' AS nov_especi, a.cod_noveda, 
-                                    '4' AS tab_origen, d.cod_consec 
+                                    '4' AS tab_origen, d.cod_consec, a.cod_contro 
                                 FROM ".BASE_DATOS.".tab_recome_asigna a 
                         INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                                 ON a.cod_contro = b.cod_contro 
@@ -4621,7 +4642,6 @@ class Despachos
                             UPPER(b.nom_noveda) AS nom_noveda, 
                             a.usr_creaci, a.fec_creaci, 
                             UPPER(c.nom_sitiox) AS nom_sitiox,
-                            UPPER(f.nom_sitiox) AS nom_sitioy, 
                             a.obs_contro AS obs_noveda, 
                             e.ind_novesp as 'nov_especi', a.cod_noveda, 
                             '1' AS tab_origen, a.cod_consec 
@@ -4636,7 +4656,7 @@ class Despachos
                     ON b.cod_noveda = e.cod_noveda AND
                         e.cod_transp = d.cod_transp
                 INNER JOIN ".BASE_DATOS.".tab_despac_sitio f 
-                    ON if(a.cod_sitioy IS NULL, a.cod_sitiox, a.cod_sitioy) = f.cod_sitiox 
+                    ON  a.cod_sitiox = f.cod_sitiox 
                     WHERE a.num_despac = '{$mNumDespac}' 
                         AND a.cod_contro = '{$mCodContro}' 
                 )
@@ -4646,8 +4666,7 @@ class Despachos
                             c.nom_noveda,
                             a.usr_solici AS usr_creaci, 
                             a.fec_solici AS fec_creaci, 
-                            UPPER(b.nom_contro) AS nom_sitiox, 
-                            UPPER(b.nom_contro) AS nom_sitioy,
+                            UPPER(b.nom_contro) AS nom_sitiox,
                             GROUP_CONCAT( d.tex_encabe ) AS obs_noveda, 
                             '0' AS nov_especi, a.cod_noveda, 
                             '3' AS tab_origen, d.cod_consec
@@ -4674,7 +4693,6 @@ class Despachos
                             a.usr_ejecut AS usr_creaci,
                             a.fec_ejecut AS fec_creaci, 
                             UPPER(b.nom_contro) AS nom_sitiox,
-                            UPPER(b.nom_contro) AS nom_sitioy,  
                             GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda, 
                             '0' AS nov_especi, a.cod_noveda, 
                             '4' AS tab_origen, d.cod_consec 
@@ -4871,7 +4889,7 @@ class Despachos
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                         ON a.cod_noveda = b.cod_noveda 
                 $mIndGPS JOIN ".BASE_DATOS.".tab_despac_sitio c 
-                        ON if(a.`cod_sitioy` IS NULL, a.`cod_sitiox`, a.`cod_sitioy`) = c.cod_sitiox 
+                        ON a.cod_sitiox = c.cod_sitiox 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro d 
                         ON a.cod_contro = d.cod_contro 
                     WHERE a.num_despac = '{$mNumDespac}' 
@@ -4967,12 +4985,12 @@ class Despachos
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
                     INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
-                            ON a.cod_sitioy = c.cod_sitiox
+                            ON a.cod_sitiox = c.cod_sitiox
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro d
                             ON a.cod_contro = d.cod_contro
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
                             ON a.num_despac = e.num_despac
-                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg f
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON b.cod_noveda = f.cod_noveda AND
                                 f.cod_transp = e.cod_transp
                         WHERE a.num_despac = '{$mNumDespac}'
@@ -4999,7 +5017,7 @@ class Despachos
                             ON a.cod_contro = c.cod_contro
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige d
                             ON a.num_despac = d.num_despac
-                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg e
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e
                             ON b.cod_noveda = e.cod_noveda AND
                                 e.cod_transp = d.cod_transp
                         WHERE a.num_despac = '{$mNumDespac}'
@@ -5028,7 +5046,7 @@ class Despachos
                             ON a.cod_recome = d.cod_consec
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
                             ON a.num_despac = e.num_despac
-                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg f
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON c.cod_noveda = f.cod_noveda AND
                                 e.cod_transp = e.cod_transp 
                         WHERE a.num_despac = '{$mNumDespac}'
@@ -5058,7 +5076,7 @@ class Despachos
                             ON a.cod_recome = d.cod_consec
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
                             ON a.num_despac = e.num_despac
-                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg f
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON c.cod_noveda = f.cod_noveda AND
                                 e.cod_transp = e.cod_transp 
                         WHERE a.num_despac = '{$mNumDespac}'
@@ -5071,6 +5089,38 @@ class Despachos
       return $mConsult -> ret_matrix('a');
     }
     
+
+    /*! \fn: getPuntFisDespac
+     *  \brief: Trae Informacion de los puntos fisicos respecto al despacho
+     *  \author: Ing. Luis Carlos Manrique Boada
+     *  \date: 16/07/2019
+     *  \date modified: dd/mm/aaaa
+     *  \param: mNumDespac   Integer   Numero de despacho
+     *  \return: Matriz
+     */
+    private function getPuntFisDespac( $mNumDespac)
+    {
+      $mSql = " 
+      SELECT
+            c.val_latitu,
+            c.val_longit,
+            (b.fec_alarma) AS `fec_noveda`,
+            c.nom_contro AS `obs_noveda`,
+            'O' AS `tip_pointx`
+        FROM
+            ".BASE_DATOS.".tab_despac_despac a
+            INNER JOIN ".BASE_DATOS.".tab_despac_seguim b ON b.num_despac = a.num_despac
+            INNER JOIN ".BASE_DATOS.".tab_genera_contro c ON c.cod_contro = b.cod_contro
+        WHERE
+            c.ind_virtua = '0' AND
+            a.num_despac = '" . $mNumDespac . "' 
+      ";
+
+      $mConsult = new Consulta( $mSql, $this -> conexion );
+      return $mConsult -> ret_matrix('a');
+    }
+
+
     /*! \fn: getNovedadesSitio
      *  \brief: Trae las novedades en sitio de un despacho en un PC
      *  \author: 
@@ -9655,6 +9705,52 @@ class Despachos
             $mConsultseg = new Consulta($queryseg, $this->conexion);
             $codseg = $mConsultseg->ret_arreglo();
             return $codseg[2] ;
+    }
+
+    function getSitioControlNum($cod_contro){
+        //Consulta el nombre de sitio de acuerdo al puesto de control
+        $query = "SELECT if(a.ind_virtua = '1',
+                    CONCAT(a.nom_contro,''),a.nom_contro)
+                    FROM ".BASE_DATOS.".tab_genera_contro a
+                    WHERE a.cod_contro = '$cod_contro'";
+        $consulta = new Consulta($query, $this -> conexion);
+        $est_serv = $consulta -> ret_arreglo();
+
+        //Consulta si el sitio esta registrado
+        $query = "SELECT cod_sitiox 
+                        FROM " . BASE_DATOS . ".tab_despac_sitio 
+                        WHERE nom_sitiox = '" . $est_serv[0] . "'";
+        $consulta = new Consulta($query, $this->conexion);
+        $sitio = $consulta->ret_matriz();
+        if(count($sitio)<=0){
+            //En caso de no estar registrado el sitio lo registra
+            $query = "INSERT INTO " . BASE_DATOS . ".tab_despac_sitio 
+                    (cod_sitiox,nom_sitiox) 
+                SELECT IFNULL(MAX(a.cod_sitiox) + 1, 1), '" . $est_serv[0] . "' 
+                    FROM " . BASE_DATOS . ".tab_despac_sitio a;";
+            $insercion = new Consulta($query, $this->conexion);
+
+            /* SE TOMA EL NUEVO CÓDIGO CON LO QUE YA SE INSERTÓ */
+            $query1 = "SELECT cod_sitiox 
+            FROM " . BASE_DATOS . ".tab_despac_sitio 
+            WHERE nom_sitiox = '" . $est_serv[0] . "'";
+            $consulta1 = new Consulta($query1, $this->conexion);
+            $sitio1 = $consulta1->ret_matriz();
+            $cod_sitio = $sitio1[0][0];
+        }else{
+            $cod_sitio = $sitio[0][0];
+        }
+
+        return $cod_sitio;
+    }
+
+    function getSitioNom($cod_sitio){
+        $query = "SELECT nom_sitiox 
+                        FROM " . BASE_DATOS . ".tab_despac_sitio 
+                        WHERE cod_sitiox = '" . $cod_sitio . "'";
+        $consulta = new Consulta($query, $this->conexion);
+        $sitio = $consulta->ret_arreglo();
+        return $sitio[0];
     }
 }
 
