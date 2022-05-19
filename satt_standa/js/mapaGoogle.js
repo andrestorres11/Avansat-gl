@@ -11,19 +11,29 @@
 
 
 $("body").ready(function(){
- 
+
+
     var contenedorMapa = document.getElementById("form_mapaID");
     var div = $(contenedorMapa).parent();
     contenedorMapa.style.height = "340px";
     div.css("height","370px") ;
+
+
+  var embed = $('#map_embed').val();
+  if (embed == 'yes') // si no es el mapa de OET no se ejecuta lo demas, de una vez el return
+    return true;
+ 
+ 
   
-  	ruta = $("#dat_gpsxxx").val(); 
-  	
-  	ruta = window.atob(ruta);
-  	ruta = $.parseJSON(ruta);
+    ruta = $("#dat_gpsxxx").val(); 
+    
+    ruta = window.atob(ruta);
+    ruta = $.parseJSON(ruta);
 
     lat = parseFloat(ruta[0].val_latitu);
     lon = parseFloat(ruta[0].val_longit);
+
+    let descargue = 1;
  
     var container = $("");
 
@@ -36,28 +46,49 @@ $("body").ready(function(){
         lat = parseFloat(ruta[i].val_latitu);
         lon = parseFloat(ruta[i].val_longit);
 
-        descripcion = "<b><label style='color:#000000'> Novedad " + ( i + 1 )+ " </label></p><br>";
-        descripcion += "<label style='color:#000000'> Fecha " + ruta[i].fec_noveda + " </label><br>";
-        descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
+        if( ruta[i].tip_pointx == "N" ){
+
+          descripcion = "<b><label style='color:#000000'> Novedad " + ( i + 1 )+ " </label></b><br>";
+          descripcion += "<label style='color:#000000'> <b>Fecha:</b> " + ruta[i].fec_noveda + " </label><br>";
+          descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
+          icono = '../satt_standa/imagenes/point.png'; //Verdes = N
+
+        } else if( ruta[i].tip_pointx == "C" ){
+
+          descripcion = "<b><label style='color:#000000'> Cargue </label></b><br>";
+          descripcion += "<label style='color:#000000'> <b>Fecha Cita de Cargue:</b> " + ruta[i].fec_noveda + " </label><br>";
+          descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
+          icono = '../satt_standa/imagenes/inicio.png'; //Cargue = C
+
+        } else if( ruta[i].tip_pointx == "O" ){
+
+          descripcion = "<b><label style='color:#000000'> Punto de Control </label></b><br>";
+          descripcion += "<label style='color:#000000'> <b>Fecha y hora Planeada:</b> " + ruta[i].fec_noveda + " </label><br>";
+          descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
+          icono = '../satt_standa/imagenes/puntosFisicos.png'; //Punto de Control = O
+          
+        } else if( ruta[i].tip_pointx == "D1" ){
+
+          descripcion = "<b><label style='color:#000000'> Descargue " + descargue + " </label></b><br>";
+          descripcion += "<label style='color:#000000'> <b>Fecha Cita de Descargue:</b> " + ruta[i].fec_noveda + " </label><br>";
+          descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
+          icono = '../satt_standa/imagenes/fin.png';//Descargues = D
+          descargue++;
+
+        } else if( ruta[i].tip_pointx == "D2" ){
+
+          descripcion = "<b><label style='color:#000000'> Descargue " + descargue + " </label></b><br>";
+          descripcion += "<label style='color:#000000'> <b>Fecha Cita de Descargue:</b> " + ruta[i].fec_noveda + " </label><br>";
+          descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
+          icono = '../satt_standa/imagenes/fin2.png';//Descargues = D
+          descargue++;
+
+        }
 
         features[i] = new ol.Feature({
           geometry: new ol.geom.Point(ol.proj.fromLonLat([lon, lat])),
           name: descripcion
         });
-
-        icono = '../satt_standa/imagenes/point.png';
-
-        if( i == 0 ){
-
-          icono = '../satt_standa/imagenes/inicio.png';
-
-        }
-
-        if( i == (ruta.length - 1 ) ){
-
-          icono = '../satt_standa/imagenes/fin.png';
-
-        }
 
         features[i].setStyle(new ol.style.Style({
           image: new ol.style.Icon(({
@@ -106,7 +137,7 @@ $("body").ready(function(){
     }); 
 
 
-      closer.onclick = function() {
+      closer.onclick = function() { 
         overlay.setPosition(undefined);
         closer.blur();
         return false;
@@ -130,6 +161,13 @@ $("body").ready(function(){
         closer.click();
       }
     });
+    
+    // inactiva el zoom del mouse porque se cola cuando está bajando y lo toma en el mapa
+    map.getInteractions().forEach(function(interaction) {
+      if (interaction instanceof ol.interaction.MouseWheelZoom) {
+        interaction.setActive(false);
+      }
+    }, this);
  
  
 });

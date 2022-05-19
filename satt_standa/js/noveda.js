@@ -42,8 +42,6 @@ function aceptar_ins() {
 		var cod_lastpc = document.getElementById('cod_lastpcID');
 		var cod_contro = document.getElementById('cod_controID');
 
-		var sitioy = document.getElementById("cod_sitioyID");
-        
 		//alert("sitio "+ sitio.value + " novedad "+ novedad + " cod_noveda " + cod_noveda + " cod contro " + cod_contro.value);
 		
 		
