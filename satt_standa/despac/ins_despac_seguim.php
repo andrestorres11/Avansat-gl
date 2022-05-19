@@ -1246,8 +1246,7 @@ class Proc_segui
                                 if ($_REQUEST['ind_virtua'] == 0 && !$contro)
                                     $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20') );
                                 else
-                                     $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) );
-                                $mHtml->hidden( array("name"=>"cod_sitioyID", "id"=>"cod_sitioyID",   "value"=>$_REQUEST[pc]) );   
+                                     $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) ); 
                                 $mHtml->SetBody("<td class='celda_info' >");
                                 $mHtml->SetBody("<textarea name='obs' id='obsID' onkeyup='UpperText( $(this) )' cols='20' Rows='4'></textarea>");
                                 $mHtml->SetBody("<div style='font-family:Arial,Helvetica,sans-serif; font-size: 11px;' id='counter'></div>");
@@ -1602,7 +1601,6 @@ class Proc_segui
             $consulta = new Consulta($query, $this->conexion);
             $nitransp = $consulta->ret_matriz();
             $regist["despac"] = $_REQUEST[despac];
-            $regist["cody"] = $_REQUEST[cod_sitioyID];
             
             $regist["tercero"] = $_REQUEST[tercero];
 
