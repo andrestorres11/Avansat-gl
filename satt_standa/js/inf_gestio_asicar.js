@@ -632,6 +632,14 @@ function almacenarDatosPorAsigProveedor() {
     data.append('cod_provee', $('#num_docproID').val());
     data.append('obs_asipro', $("#obs_asiproID").val());
     data.append('cod_solici', $("#cod_soliciID").val());
+    data.append('num_placa', $("#num_placaID").val());
+    data.append('nom_transp', $("#nom_transpID").val());
+    data.append('ap1_transp', $("#ap1_transpID").val());
+    data.append('ap2_transp', $("#ap2_transpID").val());
+
+
+
+
     data.append('tipoSol', "porAsignProveedor");
     if ($("#raz_finaliID").length) {
         data.append('raz_finali', $("#raz_finaliID").val());
