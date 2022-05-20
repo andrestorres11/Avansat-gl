@@ -2,7 +2,7 @@
 //ini_set('display_errors', true);
 //error_reporting(E_ALL &~E_NOTICE); 
 
-#die("<center><fieldset><legend>URL Inactivada</legend>URL Inactivada, por favor ingrese a la siguiente URL <br><a href='https://avansatgl.intrared.net/ap/satt_demo/index.php?'>AquÃ­</a></fieldset></center>");
+#die("<center><fieldset><legend>URL Inactivada</legend>URL Inactivada, por favor ingrese a la siguiente URL <br><a href='https://avansatgl.intrared.net/ap/satt_demo/index.php?'>Aquí</a></fieldset></center>");
 
 include ("constantes.inc");
 include ("../".DIR_APLICA_CENTRAL."/lib/generales.inc");
@@ -143,6 +143,54 @@ class Aplicacion_Seguridad
         
         echo "<SCRIPT type=\"text/javascript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
         
+        echo '
+          <script type="text/javascript">   
+                function SATMenuEvent()
+                {
+                    var hidden = document.getElementById( "MenuRowHiddenID" );
+                    if ( hidden.value == "left" ){
+                        hidden.value = "right";
+                    }else{
+                      hidden.value = "left";
+                    }
+                    var frameset = "framesetID";
+                    var image1 = document.getElementById( "MenuRow1ID" );
+                    var image2 = document.getElementById( "MenuRow2ID" );
+                    cols = "0, *";
+                    if( cols == parent.document.getElementById( frameset ).cols )
+                    {
+                         parent.document.getElementById( frameset ).cols = "190, *";
+                         image1.title = "Ocultar Men&uacute;";
+                         image2.title = "Ocultar Men&uacute;";
+                    }
+                    else
+                    {
+                         parent.document.getElementById( frameset ).cols = "0, *";
+                         image1.title = "Mostrar Men&uacute;";
+                         image2.title = "Mostrar Men&uacute;";
+                    }
+                    return true;
+                }
+
+
+                function OnMouseOverMenuRow( dir )   {
+                    var way = document.getElementById( "MenuRowHiddenID" ).value;
+                    var image1 = document.getElementById( "MenuRow1ID" );
+                    var image2 = document.getElementById( "MenuRow2ID" );
+                    image1.src = "../"+dir+"/imagenes/ryu_calendar/row_"+way+"_hover.gif";
+                    image2.src = "../"+dir+"/imagenes/ryu_calendar/row_"+way+"_hover.gif";
+                }
+
+
+                function OnMouseOutMenuRow( dir )   {
+                    var way = document.getElementById( "MenuRowHiddenID" ).value;
+                    var image1 = document.getElementById( "MenuRow1ID" );
+                    var image2 = document.getElementById( "MenuRow2ID" );
+                    image1.src = "../"+dir+"/imagenes/ryu_calendar/row_"+way+".gif";
+                    image2.src = "../"+dir+"/imagenes/ryu_calendar/row_"+way+".gif";
+                }
+ 
+          </script>';
         if(count($usuari)>0)
         {
           echo '
@@ -312,20 +360,35 @@ class Aplicacion_Seguridad
                         </div>';
             }            
                       
-                  echo " <TR>
-                         <TD><TABLE ALIGN=\"left\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\" WIDTH=\"100%\">
-                          <TR>
-                            <TD><IMG NAME=\"top_01\" SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/top_01.gif\" WIDTH=\"12\" HEIGHT=\"32\" BORDER=\"0\" ALT=\"\"></TD>
-                            <TD NOWRAP BACKGROUND=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/top_02.gif\"><TABLE WIDTH=\"300\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\">
+            echo " 
+                    <TR>
+                        <TD>
+                            <TABLE ALIGN=\"left\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\" WIDTH=\"100%\">
                                 <TR>
-                                  <TD HEIGHT=\"30\" VALIGN=\"MIDDLE\" NOWRAP CLASS=\"texto1\">" . $titulo." </TD>
-                                </TR>
-                            </TABLE></TD>
-                            <TD><IMG NAME=\"top_04\" SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/top_04.gif\" WIDTH=\"145\" HEIGHT=\"32\" BORDER=\"0\" ALT=\"\"></TD>
-                            <TD BACKGROUND=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/top_05.gif\"WIDTH=\"100%\"></TD>
-                          </TR>
-                        </TABLE></TD>
-                      </TR>";
+                                    <TD>
+                                        <IMG NAME=\"top_01\" SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/top_01.gif\" WIDTH=\"12\" HEIGHT=\"32\" BORDER=\"0\" ALT=\"\">
+                                    </TD>
+                                    <TD NOWRAP BACKGROUND=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/top_02.gif\">
+                                        <TABLE WIDTH=\"300\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\">
+                                        <TR>
+                                            <TD HEIGHT=\"30\" VALIGN=\"MIDDLE\" NOWRAP CLASS=\"texto1\">" . $titulo." </TD>
+                                        </TR>
+                                    </TABLE>
+                                </TD>
+                                <TD>
+                                    <IMG NAME=\"top_04\" SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/top_04.gif\" WIDTH=\"145\" HEIGHT=\"32\" BORDER=\"0\" ALT=\"\">
+                                </TD>
+                                <TD BACKGROUND=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/top_05.gif\"WIDTH=\"100%\"></TD>
+                            </TR>
+                            <TR>
+                                <td colspan='5'>
+                                    <img id=\"MenuRow1ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Menú\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
+                                    <input type=\"hidden\" id=\"MenuRowHiddenID\" value=\"left\">
+                                </td>
+                            </TR>
+                        </TABLE>
+                    </TD>
+                </TR>";
            }
 
            //Incluye la clase para validar 
@@ -333,9 +396,9 @@ class Aplicacion_Seguridad
           $sus_terceros = new suspensiones($this -> conexion);
           
 
-          if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 7, 8, 73))){
+          if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 7, 8))){
             if(in_array($_REQUEST["cod_servic"], array(1366))){
-              //Funcion Alerta de suspensiÃ³n empresas
+              //Funcion Alerta de suspensión empresas
               $data = $sus_terceros->SetSuspensiones(null, null, 1);
               if (count($data['suspendido']) > 0) {
                 $this->alertMensajeSuspenAdmin($data);
@@ -345,7 +408,7 @@ class Aplicacion_Seguridad
           	$data = $sus_terceros->SetSuspensiones(null, $_SESSION['datos_usuario']['cod_usuari']);
           	//Funcion bloqueo servicios
   	        $this->bloServSuspension($data);
-  	        //Funcion Alerta de suspensiÃ³n
+  	        //Funcion Alerta de suspensión
   	        $this->alertMensajeSuspension($data);
           }
 
@@ -356,21 +419,28 @@ class Aplicacion_Seguridad
            if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2')|| ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas')))
            	echo '';
            else
-                        	echo "\n      <TR>
-        <TD><TABLE ALIGN=\"center\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\" WIDTH=\"100%\">
-          <TR>
+           echo "\n    
+           <TR>
+            <td colspan='5'>
+            <img id=\"MenuRow2ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Menú\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
+            <input type=\"hidden\" id=\"MenuRowHiddenID\" value=\"left\">
+            </td>
+            </TR>
+            <TR>
+            <TD><TABLE ALIGN=\"center\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\" WIDTH=\"100%\">
+            <TR>
             <TD BACKGROUND=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/bottom_02.gif\"WIDTH=\"100%\"></TD>
             <TD><IMG NAME=\"bottom_03\" SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/bottom_03.gif\" WIDTH=\"145\" HEIGHT=\"32\" BORDER=\"0\" ALT=\"\"></TD>
             <TD NOWRAP BACKGROUND=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/bottom_05.gif\"><TABLE WIDTH=\"300\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\">
-              <TR>
-                <TD HEIGHT=\"30\" align=\"center\" VALIGN=\"MIDDLE\" NOWRAP CLASS=\"texto1\">&nbsp;" . $titulo." </TD>
-              </TR>
+            <TR>
+            <TD HEIGHT=\"30\" align=\"center\" VALIGN=\"MIDDLE\" NOWRAP CLASS=\"texto1\">&nbsp;" . $titulo." </TD>
+            </TR>
             </TABLE></TD>
             <TD><IMG NAME=\"bottom_06\" SRC=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/imagenes/bottom_06.gif\" WIDTH=\"12\" HEIGHT=\"32\" BORDER=\"0\" ALT=\"\"></TD>
-          </TR>
-        </TABLE></TD>
-      </TR>
-    </TABLE>";
+            </TR>
+            </TABLE></TD>
+            </TR>
+          </TABLE>";
 
         $pagina_central -> cerrar();
     }
@@ -435,7 +505,7 @@ class Aplicacion_Seguridad
 
     $nivel_identacion = $act_nivel % 5;
 
-    //La identaciï¿½n es el nï¿½mero de espacios que se deja para dar la apariencia de cascada junto con el bullet
+    //La identaci?n es el n?mero de espacios que se deja para dar la apariencia de cascada junto con el bullet
 
     $identacion = "";
 
@@ -467,7 +537,7 @@ class Aplicacion_Seguridad
 
       }
 
-      //Si no lo es se hace el link pï¿½ra que apunte al servicio en el frame Central
+      //Si no lo es se hace el link p?ra que apunte al servicio en el frame Central
 
       else {
 
@@ -479,7 +549,7 @@ class Aplicacion_Seguridad
 
       echo "\n<tr><td class=\"menu_niv_$nivel_identacion\">$identacion<a href=\"$href\" id=\"$datos_servic[cod_servic]\" target=\"$target\"><img width=\"10\" height=\"10\" border=\"0\" src=\"../" . DIR_APLICA_CENTRAL . "/imagenes/bullet_$nivel_identacion.gif\">&nbsp;$datos_servic[nom_servic]</a></td></tr>";
 
-      //Si el servicio ha sido desplegado se llama nuevamente a la funciï¿½n para que despliegue a partir de este item.
+      //Si el servicio ha sido desplegado se llama nuevamente a la funci?n para que despliegue a partir de este item.
 
       if (isset($desplegados[$act_nivel]) && $desplegados[$act_nivel] == $datos_servic["cod_servic"])
 
@@ -513,7 +583,7 @@ class Aplicacion_Seguridad
       if(in_array($_REQUEST["cod_servic"], array(20160426, 20151236, 20151238))){
         $ban = 0;
         $fact = []; 
-        //Si retorna informaciÃ³n de suspendidos
+        //Si retorna información de suspendidos
         if(!empty($data)){
           foreach ($data['suspendido'] as $ident => $campos) {
             $ban = 1;
@@ -521,7 +591,7 @@ class Aplicacion_Seguridad
             $fact [$ident]['val_totalx'] = "$".$campos['val_totalx'];
           }
 
-          //Verifica que si exita suspensiÃ³n
+          //Verifica que si exita suspensión
           if ($ban == 1) {
             echo '<script src="../'.DIR_APLICA_CENTRAL.'/js/lib/bootstrap/dist/js/bootstrap.min.js"></script>';
             echo '<link href="../'.DIR_APLICA_CENTRAL.'/js/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>';
@@ -548,7 +618,7 @@ class Aplicacion_Seguridad
                 $body .= '\'</table>\'+
                             \'Si ya realizo el pago correspondiente, por favor enviar soporte al correo: <strong>pagos@grupooet.com</strong>';
 
-            $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+            $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
             die();
           }
         } 
@@ -556,7 +626,7 @@ class Aplicacion_Seguridad
     }
 
     /*! \fn: alertMensajeSuspension
-	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensiÃ³n
+	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensión
 	 *  \author: Ing. Luis Manrique
 	 *  \date: 27-02-2020
 	 *  \date modified: dd/mm/aaaa
@@ -573,33 +643,33 @@ class Aplicacion_Seguridad
           $_SESSION['datos_usuario']['ale_suspen'] = 0;
         }
         
-        //Valida variable de sesiÃ³n
+        //Valida variable de sesión
         if($_SESSION['datos_usuario']['ale_suspen'] == 0){
 
           //Variables necesarias para alerta
-          $tittle = 'Aviso de suspensiÃ³n!';
+          $tittle = 'Aviso de suspensión!';
           $viewButton = 'true';
           $backdrop = 'true';
 
-          //Recorre la data para asignar informaciÃ³n de las facturas
+          //Recorre la data para asignar información de las facturas
           foreach ($data as $estado => $mData) {
             foreach ($mData as $ident => $campos) {
 
               //Valida estados
               If($estado == 'suspendido'){
                 //Variables necesarias para alerta
-                $body = "Se ha suspendido el servicio de su cuenta, si ya realizÃ³ el pago, por favor enviar el soporte al correo: <b>pagos@grupooet.com.</b>";
+                $body = "Se ha suspendido el servicio de su cuenta, si ya realizó el pago, por favor enviar el soporte al correo: <b>pagos@grupooet.com.</b>";
                 $type = 'error';
                 $colorBoton = "#ff0000";
               }else{
                  //Variables necesarias para alerta
-                $body = "Su servicio serÃ¡ suspendido el dÃ­a ".$campos['fec_suspen'].', por favor realice el pago antes de que sea suspendida la cuenta.';
+                $body = "Su servicio será suspendido el día ".$campos['fec_suspen'].', por favor realice el pago antes de que sea suspendida la cuenta.';
                 $type = 'warning';
                 $colorBoton = "#f8bb86";
               }
 
-              //Ejecuta funciÃ³n que crea alerta
-              $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+              //Ejecuta función que crea alerta
+              $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
               
               $_SESSION['datos_usuario']['ale_suspen'] = 1; 
 
@@ -611,7 +681,7 @@ class Aplicacion_Seguridad
     }
 
     /*! \fn: alertMensajeSuspension
-	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensiÃ³n
+	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensión
 	 *  \author: Ing. Luis Manrique
 	 *  \date: 27-02-2020
 	 *  \date modified: dd/mm/aaaa
@@ -620,11 +690,10 @@ class Aplicacion_Seguridad
 	 */
 
     function alertMensajeSuspenAdmin($data){
-      
       if(!empty($data)){
         
         if(in_array($_REQUEST["cod_servic"], array(1366))){
-          	$tittle = 'Aviso de suspensiÃ³n!';
+          	$tittle = 'Aviso de suspensión!';
           	$viewButton = 'true';
           	$backdrop = 'true';
           	$emp_suspen = [];
@@ -635,20 +704,20 @@ class Aplicacion_Seguridad
             	$emp_suspen[] = $campos['abr_tercer'];
           	}
 
-          	$body = 'Las siguientes empresas se encuentran en estado de suspensiÃ³n:<br><br>\'+';
+          	$body = 'Las siguientes empresas se encuentran en estado de suspensión:<br><br>\'+';
           		foreach (array_unique($emp_suspen) as $key => $value) {
                  	 $body .= '\''.$value.'<br>\'+';
                 }
             $body .= '\'';
 	        
 
-           $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+           $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
         }
       }
     }
 
-    /*! \fn: mensajeSuspension
-	 *  \brief: Crea Alerta por JS dando informacion
+    /*! \fn: mensajeSuspensión
+	 *  \brief: Crea Alerta por JS dando información
 	 *  \author: Ing. Luis Manrique
 	 *  \date: 27-02-2020
 	 *  \date modified: dd/mm/aaaa
@@ -656,7 +725,7 @@ class Aplicacion_Seguridad
 	 *  \return: html
 	 */
 
-    function mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton = null){
+    function mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton = null){
         $script .= '<!-- Toastr -->';
         $script .='<script src="../' . DIR_APLICA_CENTRAL . '/js/sweetalert2.all.8.11.8.js"></script>';
 
