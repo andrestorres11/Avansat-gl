@@ -655,6 +655,7 @@ class InformViajes {
           LEFT JOIN ".BASE_DATOS.".tab_genera_contro d 
                  ON a.cod_contro = d.cod_contro 
               WHERE a.num_despac = '$numDespac'
+              ORDER BY a.fec_contro ASC
             ";
         $mConsult = new Consulta($mSql, $this->conexion);
         return $mResult = $mConsult->ret_matrix('i');
