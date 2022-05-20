@@ -4427,13 +4427,13 @@ class Despachos
               $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
               if(BASE_DATOS=='satt_faro'){
                 if($codseg==0){
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );
+                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );
                   }else{
                     $nom_control = strtoupper(Despachos::getSitioNom(Despachos::getSitioControlNum($row['cod_contro'])));
                     $mResult[$j] = Despachos::arrayRuta( $nom_control, $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );      
                   }
               }else{
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );
+                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec] );
               }
               
               $j++;
@@ -4524,9 +4524,7 @@ class Despachos
     {
         
       $mResult[sit_seguim] = $sit_seguim;
-      
       $mResult[ubi_seguim] = $ubi_seguim;
-      
       $mResult[fec_progra] = $fec_progra;
       $mResult[fec_planea] = $fec_planea;
       $mResult[fec_noveda] = $fec_noveda;
