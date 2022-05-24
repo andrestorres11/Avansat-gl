@@ -89,7 +89,7 @@ class seguri {
      */
 
     public function listPerfiles() {
-        $sql = "SELECT cod_perfil, nom_perfil, nom_respon, can_usuari, can_servic, cod_respon, tie_pronov FROM " . BASE_DATOS . ".vis_usuari_perfil WHERE 1 ";
+        $sql = "SELECT cod_perfil, nom_perfil, nom_respon, can_usuari, can_servic, cod_respon, tie_pronov FROM " . BASE_DATOS . ".vis_usuari_perfil WHERE cod_perfil != '".COD_PERFIL_ADMINIST."' ";
         $_SESSION["queryXLS"] = $sql;
 
         if (!class_exists(DinamicList)) {
