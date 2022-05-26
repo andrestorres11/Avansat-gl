@@ -83,7 +83,7 @@ class seguri {
      *  \brief: trae la lista de los perfiles existentes en el sistema
      *  \author: Ing. Alexander Correa
      *  \date: 06/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:   
      *  \return html con los datos
      */
@@ -190,7 +190,7 @@ class seguri {
      *  \brief: consulta el ultimo conscutivo de la tabla de perfiles y devuelve el siguiente
      *  \author: Ing. Alexander Correa
      *  \date: 07/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:   
      *  \return $cod_perfil => int => nuevo consecutivo para el siguiente registro
      */
@@ -208,7 +208,7 @@ class seguri {
      *  \brief: esta funcion redirije segun sea el caso creacion, edicion y copiado de perfil
      *  \author: Ing. Alexander Correa
      *  \date: 08/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:   
      *  \return 
      */
@@ -229,7 +229,7 @@ class seguri {
      *  \brief: registra un perfil en la base de datos con todos los servicios que se asocien
      *  \author: Ing. Alexander Correa
      *  \date: 08/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $datos   => objeto => informacion del perfil que se desea crear  
      *  \return booleano con el resultado de la operacion
      */
@@ -303,7 +303,7 @@ class seguri {
      *  \brief: Edita un perfil y los servicios que se asocien
      *  \author: Ing. Alexander Correa
      *  \date: 08/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $datos   => objeto => informacion del perfil que se desea editar
      *  \return return
      */
@@ -401,7 +401,7 @@ class seguri {
      *  \brief: trae los responsables para crear los perfiles
      *  \author: Ing. Alexander Correa
      *  \date: 08/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return arreglo con los responsables
      */
@@ -415,8 +415,8 @@ class seguri {
     /* ! \fn: listaUsuarios
      *  \brief: trae la lista de todos los usuarios del sistema
      *  \author: Ing. Alexander Correa
-     *  \date: dia/mes/aÃ±o
-     *  \date modified: dia/mes/aÃ±o
+     *  \date: dia/mes/año
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return html con el listado ordenado
      */
@@ -429,6 +429,11 @@ class seguri {
         } else {
             $onclickEdit = "onclikEdit:editarUsuario( this )";
         }
+
+        if($_SESSION['datos_usuario']['cod_perfil']!=COD_PERFIL_ADMINIST){
+            $and = " AND a.cod_perfil != ".COD_PERFIL_ADMINIST."";
+        }
+
         $sql = "SELECT a.cod_usuari, a.nom_usuari, b.nom_perfil, a.usr_emailx, IF(a.ind_estado = 1, 'ACTIVO', 'DESHABILITADO') estado, a.cod_consec, a.ind_estado
                       FROM " . BASE_DATOS . ".tab_genera_usuari a 
                 INNER JOIN " . BASE_DATOS . ".tab_genera_perfil b ON a.cod_perfil = b.cod_perfil WHERE 1 $and";
@@ -441,7 +446,6 @@ class seguri {
         $estados[0] = array(0 => "", 1 => "Seleccione");
         $estados[1] = array(0 => "0", 1 => "INACTIVO");
         $estados[2] = array(0 => "1", 1 => "ACTIVO");
-
         $list = new DinamicList(self::$cConexion, $sql, "5", "no", 'ASC');
         $list->SetClose('no');
         if (!$datos->cod_perfil) {
@@ -478,7 +482,7 @@ class seguri {
      *  \brief: activa o inactiva un usuario en la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 11/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:     
      *  \return 
      */
@@ -517,7 +521,7 @@ class seguri {
      *  \brief: trae los datos del usuario almacenados en la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 11/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: cod_consec => int => id del usuario    
      *  \return $datos objeto con la informacion de lucuario
      */
@@ -537,13 +541,18 @@ class seguri {
      *  \brief: trae todos los perfiles activos en el sistema
      *  \author: Ing. Alexander Correa
      *  \date: 11/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return arreglo con los perfiles
      */
 
     public function getPerfiles() {
-        $sql = "SELECT cod_perfil, nom_perfil FROM " . BASE_DATOS . ".tab_genera_perfil ORDER BY nom_perfil ASC ";
+        $cod_perfil = $_SESSION['datos_usuario']['cod_perfil'];
+        //Condiciona la visibilidad de perfiles superadministrador = 1, solo pueden ser visibles por superadministrador.
+        if($cod_perfil != COD_PERFIL_ADMINIST){
+            $cond = " AND cod_perfil != ".COD_PERFIL_ADMINIST." ";
+        }
+        $sql = "SELECT cod_perfil, nom_perfil FROM " . BASE_DATOS . ".tab_genera_perfil WHERE 1 = 1 ".$cond." ORDER BY nom_perfil ASC ";
         $mConsult = new Consulta($sql, self::$cConexion);
         return $mConsult->ret_matrix('a');
     }
@@ -552,7 +561,7 @@ class seguri {
      *  \brief: trae los grupos de la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 11/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return 
      */
@@ -567,7 +576,7 @@ class seguri {
      *  \brief: muestra los diferentes filtros que aplique le perfil
      *  \author: Ing. Alexander Correa
      *  \date: 12/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:     
      *  \return html con los select
      */
@@ -599,7 +608,7 @@ class seguri {
      *  \brief: trae los filtros qeu tenga asignados un prfil
      *  \author: Ing. Alexander Correa
      *  \date: 12/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:     
      *  \return arreglo con los filtros que aplican
      */
@@ -624,7 +633,7 @@ class seguri {
      *  \brief: muestra select con los filtros para configurar a un usuario
      *  \author: Ing. Alexander Correa
      *  \date: 12/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $cod_usuari = String => codigo del usuario para el cual aplicaran los filtros
      *  \return html con los filtros
      */
@@ -669,7 +678,7 @@ class seguri {
      *  \brief: funcion para registrar los datos de usuario
      *  \author: Ing. Alexander Correa
      *  \date: 13/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return 1: operacion satisfactoria; 2: operacion fallida;
      */
@@ -687,7 +696,7 @@ class seguri {
      *  \brief: registra los datos de un usuario en la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 13/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $datos => object => objeto con los datos a registrar    
      *  \return boolean true: registro correcto, false: Error.
      */
@@ -752,7 +761,7 @@ class seguri {
      *  \brief: Edita los datos de usuario
      *  \author: Ing. Alexander Correa
      *  \date: 14/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $datos => object => objeto con los datos     
      *  \return resultado de la operacion
      */
@@ -765,7 +774,7 @@ class seguri {
         }
 
 
-        //pregunto por la cantidad de dias que tenia configurada el usuario, solo si cambia modifico la fecha de cambio de contraseÃ±a
+        //pregunto por la cantidad de dias que tenia configurada el usuario, solo si cambia modifico la fecha de cambio de contraseña
         $sql = "SELECT num_diasxx FROM " . BASE_DATOS . ".tab_genera_usuari WHERE cod_consec = $datos->cod_consec";
         $consulta = new Consulta($sql, self::$cConexion);
         $dias = $consulta->ret_matrix("a");
@@ -824,7 +833,7 @@ class seguri {
      *  \brief: trae los filtros asociados al usuario
      *  \author: Ing. Alexander Correa
      *  \date: 14/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $cod_usuari => String => Nombre de usuario    
      *  \return arreglo con la lista de filtros del usuario
      */
@@ -846,7 +855,7 @@ class seguri {
      *  \brief: lista las empresas con sus parametrizaciones
      *  \author: Ing. Alexander Correa
      *  \date: 18/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:     
      *  \return html con la lista de las empresas
      */
@@ -894,7 +903,7 @@ class seguri {
      *  \brief: trae el historico de suspenciones de una empresa
      *  \author: Ing. Alexander Correa
      *  \date: 20/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: cod_transp => string => nit de la empresa a consultar    
      *  \return arreglo con los datos
      */
@@ -909,7 +918,7 @@ class seguri {
      *  \brief: trae el historico de activaciones de una empresa
      *  \author: Ing. Alexander Correa
      *  \date: 20/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: cod_transp => string => nit de la empresa a consultar    
      *  \return arreglo con los datos
      */
@@ -924,7 +933,7 @@ class seguri {
      *  \brief: registra los datos de suspencion del servicio
      *  \author: Ing. Alexander Correa
      *  \date: 20/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:     
      *  \return 
      */
@@ -974,7 +983,7 @@ class seguri {
      *  \brief: muestra un html con la lista de novedades disponibles para asignar a un usuario
      *  \author: Ing. Alexander Correa
      *  \date: 28/06/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return 
      */
@@ -1025,7 +1034,7 @@ class seguri {
      *  \brief: trae la lista de novedades por asignar a un perfil
      *  \author: Ing. Alexander Correa
      *  \date: 28/06/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param:     
      *  \return array con las novedades
      */
@@ -1042,7 +1051,7 @@ class seguri {
      *  \brief: trae las novedades asignadas a un perfil
      *  \author: Ing. Alexander Correa
      *  \date: 28/06/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: cod_perfil => integer => cdigo del perfil a consultar     
      *  \return array con las novedades del perfil
      */
@@ -1061,7 +1070,7 @@ class seguri {
      *  \brief: trae las transportadoras activas
      *  \author: Edward Serrano
      *  \date: 04/01/2017
-     *  \date modified: dia/mes/aÃ±o    
+     *  \date modified: dia/mes/año    
      *  \return json con transportadoras
      */
 
@@ -1089,7 +1098,7 @@ class seguri {
      *  \brief: trae la transportadora asosiada al perfil
      *  \author: Edward Serrano
      *  \date: 05/01/2017
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: cod_perfil perfil actual   
      *  \return array con las novedades del perfil
      */
