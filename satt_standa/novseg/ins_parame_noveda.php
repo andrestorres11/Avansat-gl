@@ -257,7 +257,7 @@
                     </div>
                 </div>
                 <div class="col-md-6 col-sm-12">
-                    <label for="nom_observaID">Observaciï¿½n</label>
+                    <label for="nom_observaID">Observación</label>
                     <textarea class="form-control" id="nom_observaID" name="nom_observa" rows="3"></textarea>
                 </div>
             </div>
