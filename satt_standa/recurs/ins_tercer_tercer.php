@@ -126,6 +126,7 @@ class Ins_tercer_tercer {
 
     function Formulario() {
         $datos = self::$cFunciones->getDatosTerero($_REQUEST['cod_agenci'], $_REQUEST['cod_tercer']);
+        
         # Nuevo frame ---------------------------------------------------------------
         # Inicia clase del fromulario ----------------------------------------------------------------------------------
         $mHtml = new FormLib(2);
@@ -154,17 +155,29 @@ class Ins_tercer_tercer {
             "header" => "Transportadoras",
             "enctype" => "multipart/form-data"));
 
-      $query = "SELECT cod_paisxx
-            FROM ".BASE_DATOS.".tab_tercer_tercer
+      $query = "SELECT a.cod_paisxx, b.nom_paisxx
+            FROM ".BASE_DATOS.".tab_tercer_tercer a
+            LEFT JOIN ".BASE_DATOS.".tab_genera_paises b ON a.cod_paisxx = b.cod_paisxx 
               WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'
             LIMIT 1";
       $consulta = new Consulta($query, $this->conexion);
+
       if($datos->principal->cod_paisxx=='' || $datos->principal->nom_paisxx==NULL){
         $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
+        $nom_paisxx = $consulta->ret_matriz("a")[0]['nom_paisxx'];
       }else{
         $cod_paisxx = $datos->principal->cod_paisxx;
+        $nom_paisxx = $datos->principal->nom_paisxx;
       }
-      
+
+      $pai_config = self::$cFunciones->darPaisConfig();
+
+      if($cod_paisxx==''){
+        $cod_paisxx = ($pai_config['cod_paisxx'] != '' || $pai_config['cod_paisxx'] != NULL) ? $pai_config['cod_paisxx'] : '';
+      }
+      if($nom_paisxx==''){
+        $nom_paisxx = ($pai_config['nom_paisxx'] != '' || $pai_config['nom_paisxx'] != NULL || $datos->principal->nom_paisxx == NULL || $datos->principal->nom_paisxx == '') ? strtoupper($pai_config['nom_paisxx']) : '';
+      }
 
       #variables ocultas
       $mHtml->Hidden(array( "name" => "tercer[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad
@@ -231,7 +244,7 @@ class Ins_tercer_tercer {
                   $mHtml->OpenDiv("id:form2; class:contentAccordionForm");
                     $mHtml->Table("tr");
                       $mHtml->Label("Pais:", "width:25%; *:1;");
-                      $mHtml->Input(array("obl" => "1", "name" => "pais", "validate"=>"dir", "id" => "paisID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => strtoupper($datos->principal->nom_paisxx), "end" => true));
+                      $mHtml->Input(array("obl" => "1", "name" => "pais", "validate"=>"dir", "id" => "paisID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => $nom_paisxx, "end" => true, "onclick"=>"limpiarInput(this)" ));
                       $mHtml->Label(("Número de :"), "width:25%; *:1; id:tip_docempID");
                       $mHtml->Input (array("name" => "tercer[cod_tercer]", "validate" => "numero",  "id" => "cod_tercerID",  "obl"=> "1", "minlength"=>"9", $disabled, "maxlength"=>"10", "onblur"=>"comprobar()", "width" => "25%", "value"=> $datos->principal->cod_tercer) );
                       $mHtml->Label("Digito de Verificación:", "width:25%; *:1;");
@@ -292,7 +305,7 @@ class Ins_tercer_tercer {
                   $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
                     $mHtml->Table("tr");
                       $mHtml->Label("Pais:", "width:25%; *:1;");
-                      $mHtml->Input(array("obl" => "1", "name" => "pais", "validate"=>"dir", "id" => "paisID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => strtoupper($datos->principal->nom_paisxx), "end" => true));
+                      $mHtml->Input(array("obl" => "1", "name" => "pais", "validate"=>"dir", "id" => "paisID", "width" => "25%", "minlength"=>"7", "maxlength" => "40", "value" => $nom_paisxx, "end" => true,  "onclick"=>"limpiarInput(this)"));
                       $mHtml->Label(("Tipo de Doumento:"), "width:25%; *:1;");
                       $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "tercer[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "val"=> $datos->principal->cod_tipdoc) );
                       $mHtml->Label(("Número de Documento:"), "width:25%; *:1;");

@@ -93,7 +93,7 @@
 	/******************************************************************************
 	 *	\fn: registrar												  			  *
 	 *	\brief: funcion para registros nuevos y modificaciones de conductores     *
-	 *		  recibe un string con la operaciï¿½n a realizar registrar o modificar  *
+	 *		  recibe un string con la operaci?n a realizar registrar o modificar  *
 	 *  \author: Ing. Alexander Correa 											  *
 	 *  \date: 31/08/2015														  *
 	 *  \date modified: 														  *
@@ -151,7 +151,7 @@
 		var onclick = "onclick='registrar(\"";
 		onclick += operacion;
 		onclick += "\")'";
-		var msj = "<div style='text-align:center'Â¿Est\u00E1 seguro de <b>" + operacion + "</b> el Tercero: <b>" + tercero + "?</b><br><br><br><br>";
+		var msj = "<div style='text-align:center'¿Est\u00E1 seguro de <b>" + operacion + "</b> el Tercero: <b>" + tercero + "?</b><br><br><br><br>";
 		msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
 		msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
 
@@ -176,7 +176,7 @@
 			LoadPopupJQNoButton('open', 'Confirmar Operaci\u00F3n', 'auto', 'auto', false, false, true);
 			var popup = $("#popID");
 			var conductor = $("#nom_tercerID").val();
-			var msj = "<div style='text-align:center'>Â¿Est\u00E1 seguro de <b>editar</b> el tercero: <b>" + conductor + "?</b><br><br><br><br>";
+			var msj = "<div style='text-align:center'>¿Est\u00E1 seguro de <b>editar</b> el tercero: <b>" + conductor + "?</b><br><br><br><br>";
 			msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
 			msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 
@@ -224,7 +224,7 @@
 				success: function(data) {
 					var obj  = jQuery.parseJSON( data );
 					$("#tip_docempID").empty();
-					$("#tip_docempID").append('Número de ' + obj['tip_docemp']['name']);
+					$("#tip_docempID").append('N?mero de ' + obj['tip_docemp']['name']);
 				}
 			});
 
@@ -359,7 +359,7 @@
 			success: function(data) {
 				var obj  = jQuery.parseJSON( data );
 				$("#tip_docempID").empty();
-				$("#tip_docempID").append('Número de ' + obj['tip_docemp']['name']);
+				$("#tip_docempID").append('N?mero de ' + obj['tip_docemp']['name']);
 			}
 		});
 	
@@ -370,7 +370,9 @@
 				$("#cod_ciudadID").val(ui.item.id);
 			}
 		});
-	
-		
-	
+	}
+
+	function limpiarInput(elemento){
+		$(elemento).val('');
+		$('#cod_paisxxID').val('');
 	}

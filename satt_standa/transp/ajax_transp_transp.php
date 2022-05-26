@@ -335,7 +335,7 @@ class trans {
      *  \brief: Trae las ciudades
      *  \author: Ing. Fabian Salinas
      *  \date: 05/08/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a�o
      *  \param: 
      *  \return: Matriz
      */
@@ -374,7 +374,7 @@ class trans {
      *  \brief: funcion que devuelve la lista completa de las transportadoras consignadas en la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 07/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a�o
      *  \param: 
      *  \param: 
      *  \return $datos -> objeto con la informacion de las transportadoras
@@ -396,10 +396,10 @@ class trans {
     }
 
     /* ! \fn: funcion getDatosTrasnportadora()
-     *  \brief: funcion que extrae los datos de una transportadora de la base de datos para su visualización o edición
+     *  \brief: funcion que extrae los datos de una transportadora de la base de datos para su visualizaci�n o edici�n
      *  \author: Ing. Alexander Correa
      *  \date: 01/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a�o
      *  \param: $cod_transp -> id de la transportadora a consultar
      *  \param: 
      *  \return $datos -> objeto con la informacion de la transportadora
@@ -757,13 +757,13 @@ class trans {
                 $nuevo_consec = $ag[0]['cod_agenci'];
             }
 
-            $this->modificar("Registr�", $nuevo_consec);
+            $this->modificar("Registr�", $nuevo_consec);
         }
     }
 
     /*     * ****************************************************************************
      *  \fn: activar                                                              *
-     *  \brief: función para activar una transportadora                           *
+     *  \brief: funci�n para activar una transportadora                           *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 07/09/2015                                                         *
      *  \date modified:                                                           *
@@ -809,7 +809,7 @@ class trans {
         }
 
         if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-            $mensaje = "Se activ� la Transportadora " . $nom_transp . " exitosamente.";
+            $mensaje = "Se activ� la Transportadora " . $nom_transp . " exitosamente.";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             $mens->correcto2("ACTIVAR TRANSPORTADORA", $mensaje);
@@ -818,7 +818,7 @@ class trans {
 
     /*     * ****************************************************************************
      *  \fn: inactivar                                                              *
-     *  \brief: función para inactivar una transportadora                           *
+     *  \brief: funci�n para inactivar una transportadora                           *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 07/09/2015                                                         *
      *  \date modified:                                                           *
@@ -862,7 +862,7 @@ class trans {
 
 
         if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-            $mensaje = "Se inactiv� la Transportadora " . $nom_transp . " exitosamente.";
+            $mensaje = "Se inactiv� la Transportadora " . $nom_transp . " exitosamente.";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             $mens->correcto2("INACTIVAR TRANSPORTADORA", $mensaje);
@@ -871,7 +871,7 @@ class trans {
 
     /*     * ****************************************************************************
      *  \fn: modificar                                                            *
-     *  \brief: función para modificar una transportadoras                        *
+     *  \brief: funci�n para modificar una transportadoras                        *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 07/09/2015                                                         *
      *  \date modified:                                                           *
@@ -883,10 +883,10 @@ class trans {
     private function modificar($operacion = null, $cod_agenci = null) {
 
         if (!$operacion) {
-            $operacion = "Modific�";
+            $operacion = "Modific�";
         }
 
-        # lleno los objetos nesesarios para la correcta modificación en la base de datos.
+        # lleno los objetos nesesarios para la correcta modificaci�n en la base de datos.
         $transp = (object) $_POST['transp']; //objeto para llenar la tabla tab_tercer_tercer
         $emptra = (object) $_POST['emptra']; //objeto para llenar la tabla tab_tercer_emptra
         $agencia = (object) $_POST['agencia']; //objeto para llenar la tabla tab_genera_agenci
@@ -1028,7 +1028,7 @@ class trans {
      *  \brief: registra un seguimiento adicional a una transportadora en la base de datos 
      *  \author: Ing. Alexander Correa
      *  \date:  08/07/016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a�o
      *  \param:   
      *  \return 
      */
@@ -1080,7 +1080,7 @@ class trans {
      *  \brief: muestra a lista de configuraciones adicionales por empresa
      *  \author: Ing. Alexander Correa
      *  \date: 08/07/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a�o
      *  \param:     
      *  \return 
      */
@@ -1104,7 +1104,7 @@ class trans {
         }
         $list = new DinamicList(self::$cConexion, $mSql, "1", "no", 'ASC');
         $list->SetClose('no');
-        $list->SetHeader(utf8_decode("Código de la transportadora"), "field:a.cod_transp; width:1%;  ");
+        $list->SetHeader(utf8_decode("C�digo de la transportadora"), "field:a.cod_transp; width:1%;  ");
         $list->SetHeader("Transportadora", "field:b.abr_tercer; width:1%");
         $list->SetHeader("Fecha Inicial", "field:a.fec_inicia; width:1%");
         $list->SetHeader("Fecha Final", "field:a.fec_finali; width:1%");
@@ -1126,10 +1126,10 @@ class trans {
     }
 
     /* ! \fn: inactivarConfig
-     *  \brief: inactiva una configuracioón registrada de una empresa
+     *  \brief: inactiva una configuracio�n registrada de una empresa
      *  \author: Ing. Alexander Correa
      *  \date: 11/07/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a�o
      *  \param: 
      *  \return 
      */
@@ -1146,6 +1146,25 @@ class trans {
         } else {
             echo 0;
         }
+    }
+
+    /* ! \fn: darPaisConfig
+     *  \brief: dar el pais configurado en la parametrizaci�n del sistema.
+     *  \author: Ing. Cristian Andr�s Torres
+     *  \date: 26/05/2022
+     *  \date modified: dia/mes/a�o
+     *  \param: 
+     *  \return 
+     */
+
+    public function darPaisConfig() {
+        $sql = "SELECT a.cod_paisxx, b.nom_paisxx 
+                    FROM ".BASE_DATOS.".tab_config_parame a 
+                LEFT JOIN ".BASE_DATOS.".tab_genera_paises b ON a.cod_paisxx = b.cod_paisxx 
+                    LIMIT 1";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $informac = $consulta->ret_matriz("a")[0];
+        return $informac;
     }
 
     

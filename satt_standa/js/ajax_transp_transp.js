@@ -63,6 +63,11 @@ $(document).ready(function(){
 		}
 	});	
 
+	$("#nom_paisxxID").bind("click", function(){
+		$(this).val('');
+		$('#cod_paisxxID').val('');
+	});
+
 	
 });
 
@@ -70,7 +75,7 @@ $(document).ready(function(){
 /******************************************************************************
  *	\fn: registrar												  			  *
  *	\brief: funcion para registros nuevos y modificaciones de transportadoras *
- *		  recibe un string con la operaciÃ³n a realizar registrar o modificar  *
+ *		  recibe un string con la operación a realizar registrar o modificar  *
  *  \author: Ing. Alexander Correa 											  *
  *  \date: 31/08/2015														  *
  *  \date modified: 														  *
@@ -84,7 +89,7 @@ function registrar(operacion){
 	//valido los datos generales del formulario
 	var val = validaciones();
 	if(val == true){ 
-		//si pasa la validaciÃ³n general valido los datos condicionales
+		//si pasa la validación general valido los datos condicionales
 
 		//certificaciones iso y basc
 		var iso = $("#ind_cerisoID").attr("checked") ? true : false;
@@ -209,5 +214,9 @@ function editarDistribuidora(tipo, objeto){
 			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
 			popup.append(msj);// //lanza el popUp
 	}
+}
+
+function vaciaInput(elemento){
+	$(elemento).val('');
 }
 
