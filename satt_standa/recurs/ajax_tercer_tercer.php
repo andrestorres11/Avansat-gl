@@ -457,7 +457,7 @@ class tercer {
         LIMIT 1";
         $consulta = new Consulta($query, self::$cConexion);
         $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
-
+        
         #añade los regimenes
         $query = "SELECT cod_terreg,nom_terreg
               FROM " . BASE_DATOS . ".tab_genera_terreg
@@ -595,6 +595,25 @@ class tercer {
             //Return array
             return $arrayReturn;
         }
+
+        /* ! \fn: darPaisConfig
+     *  \brief: dar el pais configurado en la parametrización del sistema.
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 26/05/2022
+     *  \date modified: dia/mes/año
+     *  \param: 
+     *  \return 
+     */
+
+    public function darPaisConfig() {
+        $sql = "SELECT a.cod_paisxx, b.nom_paisxx 
+                    FROM ".BASE_DATOS.".tab_config_parame a 
+                LEFT JOIN ".BASE_DATOS.".tab_genera_paises b ON a.cod_paisxx = b.cod_paisxx 
+                    LIMIT 1";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $informac = $consulta->ret_matriz("a")[0];
+        return $informac;
+    }
 
 }
 
