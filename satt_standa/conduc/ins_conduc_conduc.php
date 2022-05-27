@@ -35,7 +35,7 @@ class Ins_conduc_conduc {
      *  \brief: funcion para imprimir los datos de un conductor
      *  \author: Ing. Alexander Correa
      *  \date: 17/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a�o
      *  \param: 
      *  \param: 
      *  \return 
@@ -75,19 +75,19 @@ class Ins_conduc_conduc {
             <td colspan="4" width="600px"><h2><?= $_REQUEST['trasp']['nom_transp']?></h2></td>
           </tr>
           <tr style="text-align:center; border: 2px solid  #8A8683;"><td colspan="6" width="1200px"><br><h2>HOJA DE VIDA DEL CONDUCTOR</h2><br></td></tr>
-          <tr style="text-align:left; border: 2px solid  #8A8683;"><td colspan="6" width="1200px"><br><b>Fecha de Impresión:</b> <?= date("Y-m-d")?><br></td></tr>
+          <tr style="text-align:left; border: 2px solid  #8A8683;"><td colspan="6" width="1200px"><br><b>Fecha de Impresi�n:</b> <?= date("Y-m-d")?><br></td></tr>
           <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683;">
             <tabla>
               <tr style="border-left: 2px solid  #8A8683; border-right:2px solid  #8A8683;">
-                <td  colspan="6" style="text-align:center"><b>INFORMACIÓN GENERAL</b><br></td>
+                <td  colspan="6" style="text-align:center"><b>INFORMACI�N GENERAL</b><br></td>
               </tr>
               <tr style="border-left: 2px solid  #8A8683; border-right:2px solid  #8A8683;">
                 <td  colspan="6" style="text-align:center">&nbsp;</td>
               </tr>
               <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683;" colspan="6" width="1200px">
                 <td width="200px" style="text-align:right"><b>Tipo de Documento:</b></td>
-                <td width="200px" style="text-align:left">&nbsp;&nbsp;<?php if($datos->principal->cod_tipdoc == 'C'){ Echo "CÉDULA DE CIUDADANIA";}else{echo "C.C EXTRANGERÍA";} ?></td>
-                <td width="200px" style="text-align:right"><b>Número de Documento:</b></td>
+                <td width="200px" style="text-align:left">&nbsp;&nbsp;<?php if($datos->principal->cod_tipdoc == 'C'){ Echo "C�DULA DE CIUDADANIA";}else{echo "C.C EXTRANGER�A";} ?></td>
+                <td width="200px" style="text-align:right"><b>N�mero de Documento:</b></td>
                 <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $datos->principal->cod_tercer ?></td>
                 <td width="200px" style="text-align:right">&nbsp;</td>
                 <td width="200px" style="text-align:right">&nbsp;</td>
@@ -109,7 +109,7 @@ class Ins_conduc_conduc {
                 <td width="200px" style="text-align:right">&nbsp;</td>
               </tr>
               <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683;" colspan="6" width="1200px">
-                <td width="200px" style="text-align:right"><b>Dirección de Residencia:</b></td>
+                <td width="200px" style="text-align:right"><b>Direcci�n de Residencia:</b></td>
                 <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= strtoupper($datos->principal->dir_domici) ?></td>
                 <td width="200px" style="text-align:right"><b>Ciudad de Resudencia:</b></td>
                 <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $datos->principal->abr_ciudad ?></td>
@@ -117,11 +117,11 @@ class Ins_conduc_conduc {
                 <td width="200px" style="text-align:right">&nbsp;</td>
               </tr>
               <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683;" colspan="6" width="1200px">
-                <td width="200px" style="text-align:right"><b>Teléfono 1:</b></td>
+                <td width="200px" style="text-align:right"><b>Tel�fono 1:</b></td>
                 <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $datos->principal->num_telef1  ?></td>
-                <td width="200px" style="text-align:right"><b>Teléfono 2:</b></td>
+                <td width="200px" style="text-align:right"><b>Tel�fono 2:</b></td>
                 <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $datos->principal->num_telef2 ?></td>
-                <td width="200px" style="text-align:right"><b>Teléfono Móvil:</b></td>
+                <td width="200px" style="text-align:right"><b>Tel�fono M�vil:</b></td>
                 <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $datos->principal->num_telmov ?></td>
               </tr>
             </tabla>
@@ -133,7 +133,7 @@ class Ins_conduc_conduc {
                 <td  colspan="6" style="text-align:center">&nbsp;</td>
           </tr>
           <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683; border-bottom: 2px solid  #8A8683;">
-            <td width="200px" style="text-align:right"><b>N° de Licencia:</b></td>
+            <td width="200px" style="text-align:right"><b>N� de Licencia:</b></td>
             <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $datos->principal->num_licenc  ?></td>
             <td width="200px" style="text-align:right"><b>Categoria:</b></td>
             <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $datos->principal->num_catlic ?></td>
@@ -164,7 +164,7 @@ class Ins_conduc_conduc {
           <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683; border-bottom: 2px solid  #8A8683;">
             <td width="200px" style="text-align:right"><b>Nombres:</b></td>
             <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= strtoupper($datos->principal->nom_refper)  ?></td>
-            <td width="200px" style="text-align:right"><b>Teléfono:</b></td>
+            <td width="200px" style="text-align:right"><b>Tel�fono:</b></td>
             <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $datos->principal->tel_refper ?></td>
             <td width="200px" style="text-align:right">&nbsp;</td>
             <td width="200px" style="text-align:left">&nbsp;</td>
@@ -180,7 +180,7 @@ class Ins_conduc_conduc {
              <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683;">
               <td width="200px" style="text-align:right"><b>Empresa:</b></td>
               <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= strtoupper($value->nom_empre) ?></td>
-              <td width="200px" style="text-align:right"><b>Teléfono:</b></td>
+              <td width="200px" style="text-align:right"><b>Tel�fono:</b></td>
               <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $value->tel_empre ?></td>
               <td width="200px" style="text-align:right">&nbsp;</td>
               <td width="200px" style="text-align:left">&nbsp;</td>
@@ -188,7 +188,7 @@ class Ins_conduc_conduc {
             <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683; border-bottom: 2px solid  #8A8683;">
               <td width="200px" style="text-align:right"><b>viajes:</b></td>
               <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= $value->num_viajes ?></td>
-              <td width="200px" style="text-align:right"><b>Antigüedad:</b></td>
+              <td width="200px" style="text-align:right"><b>Antig�edad:</b></td>
               <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= strtoupper($value->num_atigue) ?></td>
               <td width="200px" style="text-align:right"><b>Mercancia:</b></td>
               <td width="200px" style="text-align:left">&nbsp;&nbsp;<?= strtoupper($value->nom_mercan) ?></td>
@@ -216,7 +216,7 @@ class Ins_conduc_conduc {
                 <td  colspan="6" style="text-align:center">&nbsp;</td>
             </tr>
             <tr style=" border-left: 2px solid  #8A8683;border-right:2px solid  #8A8683; border-bottom: 2px solid  #8A8683;">
-              <td colspan="2" style="text-align:center"><br><br><br><br><br>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _<br>Firma y Cédula del Conductor</b></b></td>
+              <td colspan="2" style="text-align:center"><br><br><br><br><br>_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _<br>Firma y C�dula del Conductor</b></b></td>
               <td colspan="2" style="text-align:center"><?php if($datos->principal->dir_ultfot != "NULL" && $datos->principal->dir_ultfot != NULL && $datos->principal->dir_ultfot != ""){ ?><img  width="128px"; height="128px" src="<?= $datos->principal->dir_ultfot ?>"/> <?php }else { ?> <img src="imagenes/silueta.png"/> <?php } ?></td>
               <td colspan="2" style="text-align:center"><img src="../<?= DIR_APLICA_CENTRAL ?>/imagenes/huella.png"/><br><b>Huella</b></td>              
             </tr>
@@ -241,7 +241,7 @@ class Ins_conduc_conduc {
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 31/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a�o
      *  \param: 
      *  \param: 
      *  \return 
@@ -379,12 +379,31 @@ class Ins_conduc_conduc {
             "header" => "Transportadoras",
             "enctype" => "multipart/form-data"));
 
-      $query = "SELECT cod_paisxx
-        FROM ".BASE_DATOS.".tab_tercer_tercer
+      $query = "SELECT a.cod_paisxx, b.nom_paisxx
+        FROM ".BASE_DATOS.".tab_tercer_tercer a
+        LEFT JOIN ".BASE_DATOS.".tab_genera_paises b ON a.cod_paisxx = b.cod_paisxx 
           WHERE cod_tercer = '".$_REQUEST['cod_transp']."'
         LIMIT 1";
       $consulta = new Consulta($query, $this->conexion);
-      $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
+  
+      if($datos->principal->cod_paisxx=='' || $datos->principal->nom_paisxx==NULL){
+        $cod_paisxx = $consulta->ret_matriz("a")[0]['cod_paisxx'];
+        $nom_paisxx = $consulta->ret_matriz("a")[0]['nom_paisxx'];
+      }else{
+        $cod_paisxx = $datos->principal->cod_paisxx;
+        $nom_paisxx = $datos->principal->abr_ciudad;
+      }
+
+      $pai_config = self::$cFunciones->darPaisConfig();
+
+      if($cod_paisxx==''){
+        $cod_paisxx = ($pai_config['cod_paisxx'] != '' || $pai_config['cod_paisxx'] != NULL) ? $pai_config['cod_paisxx'] : '';
+      }
+      if($nom_paisxx==''){
+        $nom_paisxx = ($pai_config['nom_paisxx'] != '' || $pai_config['nom_paisxx'] != NULL || $datos->principal->nom_paisxx == NULL || $datos->principal->nom_paisxx == '') ? strtoupper($pai_config['nom_paisxx']) : '';
+      }
+
+
 
       #variables ocultas
       $mHtml->Hidden(array( "name" => "conduc[cod_ciudad]", "id" => "cod_ciudadID", "value"=>$datos->principal->cod_ciudad)); //el codigo de la ciudad
@@ -395,7 +414,7 @@ class Ins_conduc_conduc {
       $mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
       $mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>''));
       $mHtml->Hidden(array( "name" => "conduc[cantidad]", "id" => "cantidadID", 'value'=>count($datos->referencias)));
-      $mHtml->Hidden(array( "name" => "conduc[control]", "id" => "controlID", 'value'=>count($datos->referencias))); //variable para saber si añaden mas experiencias laborales
+      $mHtml->Hidden(array( "name" => "conduc[control]", "id" => "controlID", 'value'=>count($datos->referencias))); //variable para saber si a�aden mas experiencias laborales
       $mHtml->Hidden(array( "name" => "abr_terer", "id" => "abr_terer", 'value'=>$datos->principal->abr_tercer));
       $mHtml->Hidden(array( "name" => "imagen", "id" => "imagen", 'value'=>"1"));
       $mHtml->Hidden(array( "name" => "Ajax", "id" => "Ajax", 'value'=>"on"));
@@ -421,7 +440,7 @@ class Ins_conduc_conduc {
                 $mHtml->Table("tr");
 
                     $mHtml->Label("Pais:", "width:25%; *:1;"); 
-                    $mHtml->Input (array("name" => "pais", "validate" => "dir",  "obl" => "1", "id" => "paisID",  "minlength" => "3", "maxlength" => "100", "width" => "25%", "value"=> $datos->principal->abr_ciudad, "end" => true) );
+                    $mHtml->Input (array("name" => "pais", "validate" => "dir",  "obl" => "1", "id" => "paisID",  "minlength" => "3", "maxlength" => "100", "width" => "25%", "value"=> $nom_paisxx, "end" => true, "onclick"=>"limpiarInput(this)") );
 
                     $mHtml->Label("Tipo de Documento:", "width:25%; *:1;");
                     $mHtml->Select2 ($datos->tipoDocumento,  array("name" => "conduc[cod_tipdoc]", "validate" => "select",  "obl" => "1", "id" => "cod_tipdocID", "width" => "25%", "key"=> $datos->principal->cod_tipdoc) );

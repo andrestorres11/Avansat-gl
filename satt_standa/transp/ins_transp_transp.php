@@ -55,6 +55,13 @@ class Ins_config_emptra {
 
         $mHtml = new FormLib(2);
 
+		//Configuraci�n del pais configurado por defecto en los parametros de configuraci�n
+		$pai_config = self::$cFunciones->darPaisConfig();
+		$nom_paisxx = ($pai_config['nom_paisxx'] != '' || $pai_config['nom_paisxx'] != NULL) ? strtoupper($pai_config['nom_paisxx']) : '';
+		$cod_paisxx = ($pai_config['cod_paisxx'] != '' || $pai_config['cod_paisxx'] != NULL) ? $pai_config['cod_paisxx'] : '';
+		if($cod_paisxx != '' || $cod_paisxx != NULL){
+			$boton = "<input type='button' id='nuevo' value='Listado' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all' onclick='mostrar();'>";
+		}
         # incluye JS
         $mHtml->SetJs("min");
         $mHtml->SetJs("config");
@@ -80,7 +87,7 @@ class Ins_config_emptra {
 			#variables ocultas
 			
 	    $mHtml->Hidden(array( "name" => "cod_tercer", "id" => "cod_tercerID", 'value'=>$mCodTransp));
-		$mHtml->Hidden(array( "name" => "cod_paisxx", "id" => "cod_paisxxID", 'value'=>''));
+		$mHtml->Hidden(array( "name" => "cod_paisxx", "id" => "cod_paisxxID", 'value'=>$cod_paisxx));
 		$mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
 		$mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
 		$mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
@@ -100,8 +107,8 @@ class Ins_config_emptra {
 						$mHtml->OpenDiv("id:form1; class:contentAccordionForm");
 							$mHtml->Table("tr");
 								$mHtml->Label("Pais:", "width:35%; *:1;");
-								$mHtml->Input(array("name" => "pais[nom_transp]", "id" => "nom_paisxxID", "width" => "35%"));
-								$mHtml->SetBody("<td><div id='boton'></div></td>");  
+								$mHtml->Input(array("name" => "pais[nom_transp]", "id" => "nom_paisxxID", "width" => "35%", "value" => $nom_paisxx ));
+								$mHtml->SetBody("<td><div id='boton'>".$boton."</div></td>");  
 							$mHtml->CloseTable("tr");
 						$mHtml->CloseDiv();
 						$mHtml->CloseDiv();
@@ -213,12 +220,12 @@ class Ins_config_emptra {
 									      
 									      $list->SetClose('no');
 									      $list->SetCreate("Crear empresa", "onclick:formulario()");
-									      $list->SetHeader(utf8_decode("C�digo de la transportadora"), "field:a.cod_tercer; width:1%;  ");
+									      $list->SetHeader(utf8_decode("C&oacute;digo de la transportadora"), "field:a.cod_tercer; width:1%;  ");
 									      $list->SetHeader("Transportadora", "field:IF(a.abr_tercer = '', a.nom_tercer, a.abr_tercer); width:1%");
 										  $list->SetHeader("Regional", "field:f.nom_region; width:1%");
 									      $list->SetHeader("Ciudad", "field:CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) ; width:1%");
-									      $list->SetHeader(utf8_decode("Direcci�n"), "field:a.dir_domici; width:1%");
-									      $list->SetHeader(utf8_decode("Tel�fono"), "field:a.dir_emailx; width:1%");
+									      $list->SetHeader(utf8_decode("Dirección"), "field:a.dir_domici; width:1%");
+									      $list->SetHeader(utf8_decode("Teléfono"), "field:a.dir_emailx; width:1%");
 									      $list->SetHeader("Estado", "field:if(a.cod_estado = 1, 'Activa', 'Inactiva')" );
 									      $list->SetHeader(utf8_decode("E-mail"), "field:a.num_telef1; width:1%");
 									      $list->SetOption("Opciones","field:cod_option; width:1%; onclikDisable:editarDistribuidora( 2, this ); onclikEnable:editarDistribuidora( 1, this ); onclikEdit:editarDistribuidora( 99, this )" );
@@ -443,8 +450,7 @@ class Ins_config_emptra {
 					        $mHtml->Input(array("validate" => "dir", "obl" => "1", "minlength" => "5", "maxlength" => "100", "name" => "agencia[dir_agenci]", "id" => "dir_agenci", "width" => "25%", "value" => $datos->principal->dir_agenci, "end" => true));
 					        $mHtml->Label(utf8_decode("Contacto:"), "width:25%; *:1;");
 					        $mHtml->Input(array("type" => "text", "validate" => "texto", "obl" => "1", "minlength" => "5", "maxlength" => "50", "name" => "agencia[con_agenci]", "id" => "con_agenci", "width" => "25%",  "value" => $datos->principal->con_agenci));
-					        $mHtml->Label(utf8_decode(" Teléfono:"), "width:25%; *:1;");
-					        $mHtml->Input(array("type" => "numeric", "validate" => "numero", "obl" => "1", "minlength" => "7", "maxlength" => "10", "name" => "agencia[tel_agenci]", "id" => "tel_agenci", "width" => "25%", "value" => $datos->principal->tel_agenci, "end" => true));
+					        $mHtml->Label(utf8_decode(" Teléfono:"), "width:25%; *:1;");					        $mHtml->Input(array("type" => "numeric", "validate" => "numero", "obl" => "1", "minlength" => "7", "maxlength" => "10", "name" => "agencia[tel_agenci]", "id" => "tel_agenci", "width" => "25%", "value" => $datos->principal->tel_agenci, "end" => true));
 					        $mHtml->Label(utf8_decode("Fax:"), "width:25%; :1;");
 					        $mHtml->Input(array("type" => "numeric", "validate" => "numero",  "minlength" => "7", "maxlength" => "10", "name" => "transp[num_faxxxx]", "id" => "num_faxxxx", "width" => "25%",  "value" => $datos->principal->num_faxxxx));
 					        $mHtml->Label(utf8_decode("E-Mail:"), "width:25%; :1;");
@@ -496,6 +502,7 @@ class Ins_config_emptra {
 
 		return $inputs;
 	}
+
 
 //FIN FUNCION INSERT_SEDE
 }

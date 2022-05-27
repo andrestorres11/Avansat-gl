@@ -426,3 +426,8 @@ function traerTipDocumento(cod_paisxx){
 	
 
 }
+
+function limpiarInput(elemento){
+	$(elemento).val('');
+	$('#cod_paisxxID').val('');
+}
