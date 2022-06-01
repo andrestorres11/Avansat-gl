@@ -347,8 +347,8 @@ class ajax_homolo_noveda {
         $sql = "
               SELECT    a.cod_noveda,
                         a.nom_noveda
-                FROM    ". BASE_DATOS . ".tab_genera_novseg a  
-               WHERE    a.ind_status = '1'
+                FROM    ". BASE_DATOS . ".tab_genera_noveda a  
+               WHERE    a.ind_estado = '1'
             ORDER BY    a.cod_noveda";
         $consulta = new Consulta($sql, self::$cConexion);
         return $consulta->ret_matrix('a');
