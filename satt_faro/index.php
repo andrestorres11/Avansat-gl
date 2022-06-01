@@ -78,7 +78,7 @@ class Aplicacion_Seguridad
     {
                  //asignamos los datos de la sesion
                  session_start();
-
+                 //validateAuthToken($_SESSION['datos_usuario']['cod_usuari'], "2", session_id(), 30, $this -> conexion);
 
                 if (session_id() == $_SESSION["id"])
                 {
@@ -299,7 +299,7 @@ class Aplicacion_Seguridad
 
             }
 
-           if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2') || ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas')))
+           if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2') || ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas') ) || ($_REQUEST["cod_servic"] == 1))
            	echo '';
            else
            {
@@ -382,7 +382,7 @@ class Aplicacion_Seguridad
                             </TR>
                             <TR>
                                 <td colspan='5'>
-                                    <img id=\"MenuRow1ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Menú\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
+                                <img id=\"MenuRow1ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Menú\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
                                     <input type=\"hidden\" id=\"MenuRowHiddenID\" value=\"left\">
                                 </td>
                             </TR>
