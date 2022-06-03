@@ -323,7 +323,7 @@ class ajax_homolo_noveda {
                 FROM 
                         ". BASE_DATOS . ".tab_homolo_estnov a
            LEFT JOIN 
-                        ". BASE_DATOS . ".tab_genera_novseg b
+                        ". BASE_DATOS . ".tab_genera_noveda b
                   ON 
                         a.cod_noveda = b.cod_noveda
            LEFT JOIN
