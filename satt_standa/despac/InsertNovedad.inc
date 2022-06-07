@@ -1962,6 +1962,9 @@ class InsertNovedad {
             $mResult[1] = "Error Inserta los datos de la novedad en " . ( $mIndEnSiti == true ? "tab_despac_noveda." : "tab_despac_contro." );
         }
 
+         //Inserta historial de Novedades a homologar
+         setTrackingDespac($this->conexion, $mDatRegist['despac'], null , 2, $mDatRegist['noveda']);
+
         return $mResult;
     }
 

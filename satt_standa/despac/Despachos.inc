@@ -2630,6 +2630,10 @@ class Despachos
 
         $mHtml -> OpenDiv('id:popupGpsID');
         $mHtml -> CloseDiv(); 
+
+        $mHtml -> OpenDiv('id:popupReeItinerID');
+        $mHtml -> CloseDiv(); 
+
         for ($i=0; $i<3; $i++)
         {
             if( $mView->$mTittle[$i]['id']->ind_visibl == 1 )
@@ -2650,6 +2654,14 @@ class Despachos
                                         case 'con_telmov':
                                             $mTxt = '<a style="color:green;" href="sip:'.$mData[$key].'_'.$mData['aux_placax'].'_'.$mNumDespac.'@pbx.intrared.net" target="blank">'.$mData[$key].'</a>';
                                             $mTxt = array($tittle, $mData['nom_operad']." - ".$mTxt);
+                                            break;
+                                        case 'cod_itiner':
+                                            if($mData[$key]==''){
+                                                $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reeviar Itinerario]</a>';
+                                            }else{
+                                                $mTxt = $mData[$key];
+                                            }
+                                            $mTxt = array($tittle, $mTxt);
                                             break;
                                         case 'gps_urlxxx':
                                             $mViewEdt = self::getView('edt_gpsxxx');
