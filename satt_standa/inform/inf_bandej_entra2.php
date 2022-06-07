@@ -64,6 +64,7 @@ class infBandeja
 		$mTipoDespac = self::$cDespac -> getTipoDespac();
 		$mArrayTransp = self::$cDespac -> getTransp();
 		$mArrayTipTra = self::$cDespac -> getTipTra();
+		$mArrayTipSer = self::$cDespac -> getTipServ();
 		$mArrayGenera = self::$cDespac -> getGenerador();
 		$mArrayUserAs = self::$cDespac -> getUserAsig();
 		$mUsrSinAsig = array( array('SIN', 'SIN ASIGNAR') );
@@ -97,15 +98,32 @@ class infBandeja
 					if( $mView->fil_genera->sub->tip_servic == 1 )
 					{
 						$mHtml1 .= '<tr><th class="CellHead" colspan="8" style="text-align:left">Tipo de Servicio</th></tr>';
-						$mHtml1 .= '<tr>';
-						$mHtml1 .= '	<td class="cellInfo1" align="right">OAL</td>';
-						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic1" '.($_REQUEST['tip_servic1'] == 1 ? 'checked' : '').' ></td>';
+
+						$con=0;
+						foreach($mArrayTipSer as $servicio){
+							if($con==0){
+								$mHtml1 .= '<tr>';
+							}
+							$mHtml1 .= '	<td class="cellInfo1" align="right">'.$servicio[1].'</td>';
+							$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic'.$servicio[0].'" '.($_REQUEST['tip_servic'.$servicio[0]] == 1 ? 'checked' : '').' ></td>';
+							$con++;
+							if($con==4){
+								$mHtml1 .= '</tr>';
+								$con = 0;
+							}
+						}
+						
+
+						/*
 						$mHtml1 .= '	<td class="cellInfo1" align="right">MA</td>';
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic2" '.($_REQUEST['tip_servic2'] == 1 ? 'checked' : '').' ></td>';
 						$mHtml1 .= '	<td class="cellInfo1" align="right">OAL/MA</td>';
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_servic3" '.($_REQUEST['tip_servic3'] == 1 ? 'checked' : '').' ></td>';
 						$mHtml1 .= '	<td class="cellInfo1" colspan="2">&nbsp;</td>';
-						$mHtml1 .= '</tr>';
+						*/
+
+
+
 						$mHtml1 .= '<tr>';
 						$mHtml1 .= '	<td class="cellInfo1" align="right">24/7</td>';
 						$mHtml1 .= '	<td class="cellInfo1"><input type="checkbox" value="1" name="tip_horlab1" '.($_REQUEST['tip_horlab1'] == 1 ? 'checked' : '').' ></td>';
