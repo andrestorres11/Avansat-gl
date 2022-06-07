@@ -848,3 +848,74 @@ function LoadPopupCalifi(opcion, titulo, alto, ancho, redimen, dragg, lockBack) 
 function redirectUrl(url) {
     window.location.href = url;
 }
+
+/* ! \fn: ReeItiner
+ *  \brief: funcion para realizar el envio del itinerario
+ *  \author: Ing. Cristian Andrés Torres
+ *  \date: 02/06/2022
+ *  \date modified: dia/mes/aÃ±o
+ *  \param: cod_tercer     => string => codigo de la empresa   
+ *  \param: cod_ciudad     => string => email cliente     
+ *  \return return
+ */
+function ReeItiner(num_despac, num_placax) {
+    try {
+        var conn = checkConnection();
+
+        if (conn) {
+            var standa = $("#central").val();
+            swal.fire({
+                title: "Confirmación",
+                text: "¿Está seguro de reenviar el itinerario?",
+                type: "warning",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var attributes = 'Ajax=on&Option=reeItiner';
+                    attributes += '&num_despac=' + num_despac;
+                    attributes += '&num_placax=' + num_placax;
+                    $.ajax({
+                        url: "../" + standa + "/califi/class_califi_califi.php",
+                        type: "POST",
+                        data: attributes,
+                        async: true,
+                        beforeSend: function() {
+                            swal.close();
+                            Swal.fire({
+                                title: 'Cargando',
+                                text: 'Por favor espere...',
+                                imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+                                imageAlt: 'Custom image',
+                                showConfirmButton: false,
+                            });
+                        },
+                        success: function(resp) {
+                            swal.fire({
+                                title: resp['title'],
+                                text: resp['text'],
+                                type: resp['type'],
+                                icon: resp['type'],
+                                html: resp['info'],
+                                showCancelButton: false,
+                                confirmButtonText: 'Aceptar'
+                            })
+                        },
+                    });
+
+                }
+            })
+        } else {
+            swal({
+                title: "Parametrización",
+                text: "Por favor verifica tu conexión a internet.",
+                type: "warning"
+            });
+
+        }
+    } catch (e) {
+        console.log(e.message);
+        return false;
+    }
+}
