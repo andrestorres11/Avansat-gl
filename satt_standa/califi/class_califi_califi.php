@@ -79,6 +79,10 @@ class Califi
 			case 'informDetail':
 				self::informDetail();
 				break;
+			
+			case 'reeItiner':
+				self::reeItiner();
+				break;
 		}
 	}
 
@@ -148,7 +152,7 @@ class Califi
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Martinez
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -205,7 +209,7 @@ class Califi
 						</div>
 					</div>
 					<div class="col-md-6">
-						<div class="col-md-3 text-right">Contraseï¿½a:<font style="color:red">*</font></div>
+						<div class="col-md-3 text-right">Contraseña:<font style="color:red">*</font></div>
 						<div class="col-md-9 text-left">
 							<input type="text" class="text-center ancho" name="gps_paswor" id="gps_pasworID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_paswor'] ?>"></input>
 						</div>
@@ -227,7 +231,7 @@ class Califi
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Martinez
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -277,7 +281,7 @@ class Califi
      *  \brief: busca la url del operador gps
      *  \author: Ing. Cristian Torres
      *  \date: 10/06/2021
-     *  \date modified: dia/mes/aï¿½o
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -299,7 +303,7 @@ class Califi
      *  \brief: inserta una Particularidad de la transportado
      *  \author: Ing. Andres Martinez
      *  \date: 08/02/2016
-     *  \date modified: dia/mes/aï¿½o
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -378,7 +382,7 @@ class Califi
      *  \brief: inserta un contacto de la transportado
      *  \author: Ing. Andres Martinez
      *  \date: 28/04/2021
-     *  \date modified: dia/mes/aï¿½o
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -1111,6 +1115,36 @@ class Califi
 
         return json_decode($mData[0][$mCatego]);
     }
+
+	/*! \fn: reeItiner
+     *  \brief: Reevia Itinerario
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 02/06/2022
+     *  \date modified: dd/mm/aaaa
+     *  \modified by: 
+     */
+	private function reeItiner(){
+		include( '../lib/InterfGPS.inc' );
+		$mInterfGps = new InterfGPS( self::$cConexion ); 
+		
+		$mResp = $mInterfGps->setPlacaIntegradorGPS( $_REQUEST['num_despac'], ['ind_transa' => 'I'] );
+
+		$respuesta = [];
+		if($mResp['code_resp'] == '1000'){
+			$respuesta["status"] = 1000;
+            $respuesta["type"] = "success";
+            $respuesta["title"] = "Proceso Exitoso";
+			$respuesta["info"] = "<p>Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']."</p>";
+        }else{
+            $respuesta["status"] = 2000;
+            $respuesta["type"] = "error";
+            $respuesta["title"] = "Algo fallo";
+			$respuesta["info"] = "<p>Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']."</p>";
+        }
+		$respuesta["text"] = "Reenvio despacho: ".$_REQUEST['num_despac'].", Placa:".$_REQUEST['num_placax'];
+		
+		echo json_encode($respuesta);
+	}
 }
 
 if($_REQUEST['Ajax'] === 'on' )
