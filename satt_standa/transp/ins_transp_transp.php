@@ -1,6 +1,6 @@
 <?php
-	ini_set('display_errors', true);
-    error_reporting(E_ALL & ~E_NOTICE);
+	/*ini_set('display_errors', true);
+    error_reporting(E_ALL & ~E_NOTICE);*/
 
     require "ajax_transp_transp.php";
 
@@ -39,7 +39,7 @@ class Ins_config_emptra {
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *	\date: 31/09/2015
-     *	\date modified: dia/mes/a�o
+     *	\date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -55,7 +55,7 @@ class Ins_config_emptra {
 
         $mHtml = new FormLib(2);
 
-		//Configuraci�n del pais configurado por defecto en los parametros de configuraci�n
+		//Configuraci?n del pais configurado por defecto en los parametros de configuraci?n
 		$pai_config = self::$cFunciones->darPaisConfig();
 		$nom_paisxx = ($pai_config['nom_paisxx'] != '' || $pai_config['nom_paisxx'] != NULL) ? strtoupper($pai_config['nom_paisxx']) : '';
 		$cod_paisxx = ($pai_config['cod_paisxx'] != '' || $pai_config['cod_paisxx'] != NULL) ? $pai_config['cod_paisxx'] : '';
@@ -142,7 +142,7 @@ class Ins_config_emptra {
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *	\date: 31/09/2015
-     *	\date modified: dia/mes/a�o
+     *	\date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return 
@@ -308,7 +308,9 @@ class Ins_config_emptra {
     	$mHtml->Hidden(array( "name" => "agencia[cod_ciudad]", "id" => "cod_ciudaaID", "value"=>$datos->principal->cod_ciudaa)); //el codigo de la ciudad de la agencia
     	$mHtml->Hidden(array( "name" => "agencia[cod_agenci]", "id" => "cod_agenciID", "value"=>$datos->principal->cod_agenci)); //el codigo de la ciudad de la agencia
 		$mHtml->Hidden(array( "name" => "transp[cod_tipdoc]", "id" => "cod_tipdocID", "value" => $namesInputs['tipdoc']['value'])); //el codigo de la ciudad de la 
-		$mHtml->Hidden(array( "name" => "cod_tercer", "id" => "cod_tercerID", "value" => $datos->principal->cod_tercer)); //el codigo de la transportadora
+		if($datos->principal->cod_tercer!=''){
+			$mHtml->Hidden(array( "name" => "cod_tercer", "id" => "cod_tercerID", "value" => $datos->principal->cod_tercer)); //el codigo de la transportadora
+		}
 		$mHtml->Hidden(array( "name" => "nom_tercer", "id" => "nom_tercerID", "value" => $datos->principal->nom_tercer)); //el codigo de la transportadora
     	$mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
 		$mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
