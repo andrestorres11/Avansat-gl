@@ -4,7 +4,7 @@
  *  \author: Ing. Alexander Correa
  *  \author: aleander.correa@intrared.net
  *  \date: 08/04/206
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \warning:   
  *  \ 
  */
@@ -54,7 +54,7 @@ class ins_usuari_usuari {
      *  \brief: funcion inicial que muestra una lista con los perfiles creados
      *  \author: Ing. Alexander Correa
      *  \date: 06/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return 
      */
@@ -92,7 +92,7 @@ class ins_usuari_usuari {
      *  \brief: pinta el formulario para crear, editar y copiar un usuario
      *  \author: Ing. Alexander Correa
      *  \date: 08/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return 
      */
@@ -133,7 +133,7 @@ class ins_usuari_usuari {
                                     <div class="col-md-12 ancho">
                                         <div class="col-md-3 text-right">Usuario<font style="color:red">*</font>:</div>
                                         <div class="col-md-3 text-left">
-                                            <input class="text-center" type="text" <?= $read ?> name="cod_usuari" id="cod_usuari" value="<?= $datos->cod_usuari ?>" obl="1" maxlength="15" minlength="<?= $minUsuario ?>" validate="dir" onkeypress="return validarLetras(event)"></input>
+                                            <input class="text-center" type="text" <?= $read ?> name="cod_usuari" id="cod_usuari" value="<?= $datos->cod_usuari ?>" obl="1" maxlength="30" minlength="<?= $minUsuario ?>" validate="dir" onkeypress="return validarLetras(event)"></input>
                                             <input type="hidden" name="cod_consec" id="cod_consec" value="<?= $data->cod_consec ?>"></input>
                                         </div>
                                         <div class="col-md-3 text-right">C&eacute;dula:</div>
