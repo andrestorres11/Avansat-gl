@@ -134,7 +134,7 @@ class PDFInformeEstudioSeguridad extends PDF
     include('../lib/ajax.inc');
     include_once( "../lib/general/dinamic_list.inc" );
     include_once('../lib/general/constantes.inc');
-    include_once('../../satt_faro/constantes.inc');
+    include_once('../../'.BASE_DATOS.'/constantes.inc');
 
     $this -> conexion = $AjaxConnection;
     
