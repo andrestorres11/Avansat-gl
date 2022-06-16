@@ -1299,7 +1299,20 @@ center {
 
 .table tr:hover {
         background: var(--sure_color) !important;
-    }
+}
+
+.bk-sure{
+        background: var(--sure_color) !important;   
+}
+
+.bk-principal_color{
+        background: var(--principal_color) !important;    
+}
+
+.white-color{
+        color:#fff !important;
+}
+    
     
     
     

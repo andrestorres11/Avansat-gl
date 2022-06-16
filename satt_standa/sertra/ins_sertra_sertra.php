@@ -75,7 +75,7 @@
                        
                         <tr class="Style2DIV">
                           <td class="contenido" colspan="6" style="text-align:center">
-                            <?php if($total > 1){ ?>
+                            <?php if($total >= 1){ ?>
                             <div class="col-md-5" style="text-align:right">Transportadora<font style="color:red">*</font>: </div>
                             <div class="col-md-2" style="text-align:left"><input type="text" id="nom_transpID" name="nom_transp" style="width:100%"></div>
                             <div class="col-md-5" style="text-align:left" id="boton"></div>

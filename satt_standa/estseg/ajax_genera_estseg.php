@@ -1,9 +1,9 @@
 <?php
     /****************************************************************************
     NOMBRE:   AjaxGeneraEstSeg
-    FUNCION:  Retorna todos los datos necesarios para construir la informaciï¿½n
+    FUNCION:  Retorna todos los datos necesarios para construir la informaci?n
     FECHA DE MODIFICACION: 16/09/2021
-    CREADO POR: Ing. Cristian Andrï¿½s Torres
+    CREADO POR: Ing. Cristian Andr?s Torres
     MODIFICADO 
     ****************************************************************************/
     
@@ -55,7 +55,15 @@
                 case "consultaCiudades":
                     self::consultaCiudades();
                     break;
-
+                
+                case "consulta_transportadoras":
+                      self::consultaTransportadoras();
+                    break;
+  
+                case "getInfoTransportadora":
+                    self::getInfoTransportadora();
+                    break;
+                    
                 case "insReferenciaPyF":
                     self::insReferenciaPyF();
                     break;
@@ -116,6 +124,34 @@
           echo utf8_encode($html);
         }
 
+        public function consultaTransportadoras(){
+          $busqueda = $_REQUEST['key'];
+          $sql="SELECT a.cod_tercer,a.nom_tercer
+                  FROM ".BASE_DATOS.".tab_tercer_tercer a,
+                      ".BASE_DATOS.".tab_tercer_activi b
+                WHERE a.cod_tercer = b.cod_tercer AND
+                      b.cod_activi = '".COD_FILTRO_EMPTRA."'
+                      AND cod_estado = 1
+                      AND a.nom_tercer LIKE '%".$busqueda."%'";
+            $resultado = new Consulta($sql, self::$conexion);
+            $resultados = $resultado->ret_matriz();
+            $htmls='';
+            foreach($resultados as $valor){
+              $htmls.='<div><a class="suggest-element bk-principal_color white-color" data="'.$valor['cod_tercer'].' - '.$valor['nom_tercer'].'" id="'.$valor['cod_tercer'].'">'.$valor['cod_tercer'].' - '.$valor['nom_tercer'].'</a></div>';
+            }
+            echo utf8_decode($htmls);
+        }
+
+        public function getInfoTransportadora(){
+          $sql = "SELECT a.cod_tercer, a.nom_tercer, a.dir_emailx,
+                        CONCAT(a.num_telef1,' ', a.num_telef2) as 'num_telefo',
+                        a.num_telmov
+                  FROM ".BASE_DATOS.".tab_tercer_tercer a 
+                  WHERE a.cod_tercer = '".$_REQUEST['cod_transp']."'";
+          $consulta = new Consulta($sql, self::$conexion);
+          $resultados = $consulta->ret_matriz();
+          echo json_encode($resultados[0]);
+        }
 
         public function consultaCiudades(){
           $busqueda = $_REQUEST['key'];
@@ -145,7 +181,7 @@
           $consulta = new Consulta($sql, self::$conexion);
           $resultados = $consulta->ret_matriz();
           return $resultados[0];
-          }
+        }
 
         function darCodigoSolicitud($cod_estseg){
           $sql = "SELECT a.cod_solici
@@ -158,6 +194,13 @@
 
         function guardarSolicitud(){
             $emptra = $this->obtenerTransportadoraPerfil();
+
+            $cod_transp = $_REQUEST['cod_transp'];
+            $nom_solici = $_REQUEST['nom_solici'];
+            $cor_solici = $_REQUEST['cor_solici'];
+            $tel_solici = $_REQUEST['tel_solici'];
+            $cel_solici = $_REQUEST['cel_solici'];
+
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
             $info=[];
             $cod_solici = self::valAutoincrement('tab_solici_estseg');
@@ -167,8 +210,8 @@
                       fec_creaci
                     ) 
                     VALUES (
-                      '".$emptra['cod_tercer']."','".$emptra['nom_tercer']."','".$emptra['dir_emailx']."',
-                      '".$emptra['num_telefo']."','".$emptra['num_telmov']."', '".$usuari."',
+                      '".$cod_transp."','".$nom_solici."','".$cor_solici."',
+                      '".$tel_solici."','".$cel_solici."', '".$usuari."',
                       NOW()
                     )";
             $query = new Consulta($sql, self::$conexion);
@@ -183,8 +226,8 @@
             ) 
             VALUES 
               (
-                '".$_REQUEST['tip_docume'][$key]."','".$_REQUEST['num_docume'][$key]."','".$_REQUEST['nom_apell1'][$key]."',
-                '".$_REQUEST['nom_apell2'][$key]."','".$_REQUEST['nom_person'][$key]."','".$_REQUEST['num_telmov'][$key]."',
+                '".$_REQUEST['tip_docume'][$key]."','".$_REQUEST['num_docume'][$key]."','".utf8_decode($_REQUEST['nom_apell1'][$key])."',
+                '".utf8_decode($_REQUEST['nom_apell2'][$key])."','".utf8_decode($_REQUEST['nom_person'][$key])."','".$_REQUEST['num_telmov'][$key]."',
                 '".$_REQUEST['num_telmo2'][$key]."','','".$_REQUEST['dir_emailx'][$key]."',
                 '".$usuari."',NOW()
               )";
@@ -257,7 +300,7 @@
               $html.='<tr>
                       <td>'.$nom_docume.'</td>
                       <td>'.$resultados[0][$nom_camobs].'</td>
-                      <td><center><a href="'.$rut_general.''.$resultados[0][$nom_campox].'" class="btn btn-info info-color btn-sm"><i class="fa fa-download" aria-hidden="true"></i></a></center></td>
+                      <td><center><a href="'.$rut_general.''.$resultados[0][$nom_campox].'" target="_blank" class="btn btn-info info-color btn-sm"><i class="fa fa-download" aria-hidden="true"></i></a></center></td>
                     </tr>';
             }
             return $html;
@@ -433,7 +476,7 @@
               foreach ($mMatriz as $key => $datos) {
                 foreach ($datos as $campo => $valor) {
                   if($campo == "cod_solici"){
-                     $btn = '<center><h6><span class="badge badge-pill badge-success c_pointer" data-dato="'.$valor.'" onclick="consInfoSolicitud(this)">'.$valor.'</span></h6></center>';
+                     $btn = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" data-dato="'.$valor.'" onclick="consInfoSolicitud(this)">'.$valor.'</span></h6></center>';
                      //$btn = '<a href="index.php?cod_servic=20210915&amp;window=central&amp;opcion=formEstSeguridad&cod_estseg='.$valor.'">'.$valor.'</a>';
                      $data[$key][] = $btn;
                   }else if($campo == "tot_solici"){
@@ -598,7 +641,7 @@
             $resultados = $resultado->ret_matriz('a');
             $html='<table class="table table-bordered" style="width:100%">
                       <thead>
-                        <tr class="bk-green">
+                        <tr class="bk-sure">
                           <th scope="col">No. Estudio</th>
                           <th scope="col">Estado</th>
                           <th scope="col">Descargar/Ver estudio</th>
@@ -631,7 +674,7 @@
 
               $mPerms = self::getReponsability('jso_estseg');
               if($resultado['ind_estudi']=='P' && $mPerms->dat_estseg->ind_visibl==1){
-                $link = '<a href="index.php?cod_servic=20210915&amp;window=central&amp;opcion=formEstSeguridad&cod_estseg='.$resultado['cod_estseg'].'">'.$resultado['cod_estseg'].'</a>';
+                $link = '<a href="index.php?cod_servic=202109152&amp;window=central&amp;opcion=formEstSeguridad&cod_estseg='.$resultado['cod_estseg'].'">'.$resultado['cod_estseg'].'</a>';
               }else{
                 $link = $resultado['cod_estseg'];
               }
@@ -862,7 +905,7 @@
 
             
             $info['status']=200;
-            $info['response']='Información registrada';
+            $info['response']='Informaci?n registrada';
             echo json_encode($info);
 
           }
@@ -895,7 +938,7 @@
           }
 
           function cambiaEstado($cod_estseg, $ind_fase, $ind_estudi, $ind_status, $obs_estudi = ''){
-              $rut_general = dirname(dirname(__DIR__)).'/satt_faro/files/adj_estseg/';
+              $rut_general = dirname(dirname(__DIR__)).'/'.BASE_DATOS.'/files/adj_estseg/';
               $cod_solici = self::darCodigoSolicitud($cod_estseg);
               $usuari = $_SESSION['datos_usuario']['cod_usuari'];
               $sql="UPDATE ".BASE_DATOS.".tab_relaci_estseg
@@ -955,7 +998,7 @@
           
           function guardaArchivos($arr_archiv, $arr_nombdx = NULL, $cod_indent, $data, $nom_tablex, $nom_campox){
             $cod_estseg = $data['cod_estseg'];
-            $ruta = "../../satt_faro/files/adj_estseg/";
+            $ruta = "../../".BASE_DATOS."/files/adj_estseg/";
             $errores = false;
             foreach($arr_archiv as $key=>$archivo){
               if($_FILES[$archivo]['name'] != null || $_FILES[$archivo]['name'] != ''){
@@ -995,17 +1038,17 @@
            *
            * @param string $origin Imagen origen en el disco duro ($_FILES["image1"]["tmp_name"])
            * @param string $destino Imagen destino en el disco duro ($destino=tempnam("tmp/","tmp");)
-           * @param integer $newWidth Anchura mï¿½xima de la nueva imagen
-           * @param integer $newHeight Altura mï¿½xima de la nueva imagen
+           * @param integer $newWidth Anchura m?xima de la nueva imagen
+           * @param integer $newHeight Altura m?xima de la nueva imagen
            * @param integer $jpgQuality (opcional) Calidad para la imagen jpg
-           * @return boolean true = Se ha redimensionada|false = La imagen es mas pequeï¿½a que el nuevo tamaï¿½o
+           * @return boolean true = Se ha redimensionada|false = La imagen es mas peque?a que el nuevo tama?o
            */
           function redimensionarImagen($origin,$destino,$newWidth,$newHeight,$jpgQuality=100)
           {
               // getimagesize devuelve un array con: anchura,altura,tipo,cadena de 
               // texto con el valor correcto height="yyy" width="xxx"
               $datos=getimagesize($origin);
-              // comprobamos que la imagen sea superior a los tamaï¿½os de la nueva imagen
+              // comprobamos que la imagen sea superior a los tama?os de la nueva imagen
               if($datos[0]>$newWidth || $datos[1]>$newHeight)
               {
                   // creamos una nueva imagen desde el original dependiendo del tipo
@@ -1056,8 +1099,6 @@
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
             //Actualiza Informacion del conductor
             self::procesaConductor($_REQUEST);
-            //Actualiza Informacion del vehiculo
-            self::procesaVehiculo($_REQUEST);
 
             //Valida si el conductor es poseedor
             if($_REQUEST['check_conposeed']==1){
@@ -1077,6 +1118,10 @@
             }else{
               self::procesaPropietario($_REQUEST);
             }
+
+            //Actualiza Informacion del vehiculo
+            self::procesaVehiculo($_REQUEST);
+
             self::registraBitacora($cod_estseg, $cod_gestio,$_REQUEST['obs_gestio']);
 
             $sql="UPDATE ".BASE_DATOS.".tab_relaci_estseg
@@ -1111,8 +1156,8 @@
           function guardado(){
             $cod_estseg = $_REQUEST['cod_estseg'];
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
+           
             self::procesaConductor($_REQUEST,1);
-            self::procesaVehiculo($_REQUEST,1);
 
             //Valida si el conductor es poseedor
             if($_REQUEST['check_conposeed']==1){
@@ -1133,6 +1178,10 @@
             }else{
               self::procesaPropietario($_REQUEST,1);
             }
+
+            //Registra el vehiculo
+            self::procesaVehiculo($_REQUEST,1);
+
             $sql="UPDATE ".BASE_DATOS.".tab_relaci_estseg
                     SET 
                       cod_conduc = '".$_REQUEST['cod_conduc']."',
@@ -1145,7 +1194,7 @@
             self::registraBitacora($cod_estseg,7,'Fase 2 Completada');      
             self::cambiaEstado($_REQUEST['cod_estseg'],2,$_REQUEST['ind_estudi'],3,$_REQUEST['obs_estudi']);
             $array_generado = self::armaArrayInfo($_REQUEST['cod_estseg']);
-            self::createXML($array_generado,'SOL_'.self::darCodigoSolicitud($_REQUEST['cod_estseg']).'_'.$_REQUEST['cod_estseg'].'_'.time().'.xml');
+            self::createXML($array_generado,'SOL_'.$_REQUEST['num_doccon'].'_'.$_REQUEST['num_placax'].'.xml');
             //$toJSON = json_encode($array_generado);
             $emails = 
             $query = new Consulta($sql, self::$conexion);
@@ -1155,7 +1204,7 @@
                   $info['cod_estseg']=$_REQUEST['cod_estseg'];
                   $info['emails'] = implode(",", self::darCorreos(self::darCodigoSolicitud($_REQUEST['cod_estseg']),1));
                   $url = explode("?", $_SERVER['HTTP_REFERER']);
-                  $info['page'] = $url[0].'?cod_servic=20210915&window=central';
+                  $info['page'] = $url[0].'?cod_servic=202109152&window=central';
               }else{
                   $info['status']=100; 
               } 
@@ -1163,17 +1212,17 @@
           }
 
           function createXML($array,$name){
-            $ruta_name = "../../satt_faro/files/adj_estseg/xml/".$name;
+            $ruta_name = "/var/www/html/ap/interf/app/integracion_ceva/src/runtime/safety_study/".$name;
             $xml_data = new SimpleXMLElement('<?xml version="1.0"?><data></data>');
             self::array_to_xml($array,$xml_data);
             $result = $xml_data->asXML($ruta_name);
 
-            $server = 'sftpnatest.sterlingcommerce.com';
+            $server = 'na1p50.sftp.b2b.ibmcloud.com';
             $port = '22';
             $username = 'CEVA_CGCOLOMBIA';
-            $username = 'Sterling$01t!';
+            $password = 'Sterling$01p!';
             $remote_file = '/receive/'.$name;
-            //self::uploadFTP($server, $port, 10000, $username, $username, $ruta_name, $remote_file);
+            //self::uploadFTP($server, $port, 10000, $username, $password, $ruta_name, $remote_file);
           }
 
           function registraTercer($data, $pre, $com){
@@ -1204,8 +1253,8 @@
                 ) VALUES 
                 (
                   '".$data['num_doc'.$pre]."', '0', '".$data['tip_doc'.$pre]."',
-                  '".$data['nom_ap1'.$pre]."', '".$data['nom_ap2'.$pre]."', '".$data['nom_nom'.$pre]."',
-                  '".$data['nom_ap1'.$pre]." ".$data['nom_ap2'.$pre]." ".$data['nom_nom'.$pre]."', '".$data['dir_dom'.$pre]."', '".$data['num_tel'.$pre]."',
+                  '".utf8_decode($data['nom_ap1'.$pre])."', '".utf8_decode($data['nom_ap2'.$pre])."', '".utf8_decode($data['nom_nom'.$pre])."',
+                  '".utf8_decode($data['nom_ap1'.$pre])." ".utf8_decode($data['nom_ap2'.$pre])." ".utf8_decode($data['nom_nom'.$pre])."', '".$data['dir_dom'.$pre]."', '".$data['num_tel'.$pre]."',
                   '', '".$data['num_mo1'.$pre]."', '',
                   '".$pai_reside."', '".$dep_reside."', '".$ciu_reside."',
                   '".$data['dir_ema'.$pre]."', 0, 1,
@@ -1240,9 +1289,9 @@
                       cod_tipdoc = '".$data['tip_doccon']."', 
                       ciu_expdoc = '".$ciu_expcon."', 
                       num_docume = '".$data['num_doccon']."', 
-                      nom_apell1 = '".$data['nom_ap1con']."', 
-                      nom_apell2 = '".$data['nom_ap2con']."', 
-                      nom_person = '".$data['nom_nomcon']."', 
+                      nom_apell1 = '".utf8_decode($data['nom_ap1con'])."', 
+                      nom_apell2 = '".utf8_decode($data['nom_ap2con'])."', 
+                      nom_person = '".utf8_decode($data['nom_nomcon'])."', 
                       num_licenc = '".$data['num_licenc']."',
                       cod_catlic = '".$data['tip_catlic']."',
                       fec_venlic = '".date("Y-m-d", strtotime($data['fec_venlic']))."', 
@@ -1313,8 +1362,8 @@
                 ) 
                   VALUES 
                 (
-                  '".$data['tip_docpos']."','".$data['num_docpos']."','".$data['nom_ap1pos']."',
-                  '".$data['nom_ap2pos']."','".$data['nom_nompos']."','".$data['num_mo1pos']."',
+                  '".$data['tip_docpos']."','".$data['num_docpos']."','".utf8_decode($data['nom_ap1pos'])."',
+                  '".utf8_decode($data['nom_ap2pos'])."','".utf8_decode($data['nom_nompos'])."','".$data['num_mo1pos']."',
                   '".$data['num_mo2pos']."','".$data['num_telpos']."','".$data['dir_emapos']."',
                   '".$ciu_expcon."', '".$data['dir_dompos']."', '".$pai_reside."',
                   '".$dep_reside."', '".$ciu_reside."','".$usuari."',
@@ -1326,9 +1375,9 @@
                     SET 
                       cod_tipdoc = '".$data['tip_docpos']."',
                       num_docume = '".$data['num_docpos']."', 
-                      nom_apell1 = '".$data['nom_ap1pos']."',
-                      nom_apell2 = '".$data['nom_ap2pos']."', 
-                      nom_person = '".$data['nom_nompos']."', 
+                      nom_apell1 = '".utf8_decode($data['nom_ap1pos'])."',
+                      nom_apell2 = '".utf8_decode($data['nom_ap2pos'])."', 
+                      nom_person = '".utf8_decode($data['nom_nompos'])."', 
                       num_telmov = '".$data['num_mo1pos']."',
                       num_telefo = '".$data['num_telpos']."',
                       dir_emailx = '".$data['dir_emapos']."',
@@ -1394,8 +1443,8 @@
                 ) 
                   VALUES 
                 (
-                  '".$data['tip_docpro']."','".$data['num_docpro']."','".$data['nom_ap1pro']."',
-                  '".$data['nom_ap2pro']."','".$data['nom_nompro']."','".$data['num_mo1pro']."',
+                  '".$data['tip_docpro']."','".$data['num_docpro']."','".utf8_decode($data['nom_ap1pro'])."',
+                  '".utf8_decode($data['nom_ap2pro'])."','".utf8_decode($data['nom_nompro'])."','".$data['num_mo1pro']."',
                   '".$data['num_mo2pro']."','".$data['num_telpro']."','".$data['dir_emapro']."',
                   '".$ciu_exppro."', '".$data['dir_dompro']."', '".$pai_reside."',
                   '".$dep_reside."', '".$ciu_reside."','".$usuari."',
@@ -1406,9 +1455,9 @@
                     SET 
                       cod_tipdoc = '".$data['tip_docpro']."',
                       num_docume = '".$data['num_docpro']."', 
-                      nom_apell1 = '".$data['nom_ap1pro']."',
-                      nom_apell2 = '".$data['nom_ap2pro']."', 
-                      nom_person = '".$data['nom_nompro']."', 
+                      nom_apell1 = '".utf8_decode($data['nom_ap1pro'])."',
+                      nom_apell2 = '".utf8_decode($data['nom_ap2pro'])."', 
+                      nom_person = '".utf8_decode($data['nom_nompro'])."', 
                       num_telmov = '".$data['num_mo1pro']."',
                       num_telmo2 = '".$data['num_mo2pro']."',
                       num_telefo = '".$data['num_telpro']."',
@@ -1429,7 +1478,7 @@
 
             if($guardado_final){
               self::registraTercer($data, 'pro', 'propie');
-           }
+            }
 
             $arc_propie = array('fil_ritpro', 'fil_simpro', 'fil_propro', 'fil_runpro', 'fil_antpro');
             $nom_arcbdx = array('fil_conrit', 'fil_simitx', 'fil_procur', 'fil_runtxx', 'fil_ajudic');
@@ -1464,8 +1513,8 @@
                       fec_vigsoa = '".date("Y-m-d", strtotime($data['fec_vigsoa']))."',
                       num_lictra = '".$data['num_lictra']."',
                       cod_opegps = '".$data['cod_opegps']."', 
-                      usr_gpsxxx = '".$data['usr_gpsxxx']."', 
-                      clv_gpsxxx = '".$data['clv_gpsxxx']."', 
+                      usr_gpsxxx = '".utf8_decode($data['usr_gpsxxx'])."', 
+                      clv_gpsxxx = '".utf8_decode($data['clv_gpsxxx'])."', 
                       url_gpsxxx = '', 
                       idx_gpsxxx = '".$data['idx_gpsxxx']."',
                       obs_opegps = '".$data['obs_opegps']."',
@@ -1499,14 +1548,14 @@
                       '".$data['num_config']."', '".$data['num_docpro']."', '".$data['num_docpos']."',
                       '".$data['num_doccon']."', '".$data['num_config']."', 0, 
                       1, 0, '".$data['cod_opegps']."',
-                      '".$data['usr_gpsxxx']."', '".$data['clv_gpsxxx']."', '".$data['idx_gpsxxx']."',
+                      '".utf8_decode($data['usr_gpsxxx'])."', '".utf8_decode($data['clv_gpsxxx'])."', '".$data['idx_gpsxxx']."',
                       '".$usuari."', NOW()
                     ) ON DUPLICATE KEY UPDATE 
                     cod_marcax = '".$data['cod_marcax']."', cod_lineax = '".$data['cod_lineax']."', ano_modelo = '".$data['ano_modelo']."',
                     cod_colorx = '".$data['cod_colorx']."', cod_carroc = '".$data['cod_carroc']."', num_motorx = '".$data['num_motorx']."',
                     num_chasis = '".$data['num_chasis']."', num_poliza = '".$data['num_soatxx']."', num_config = '".$data['num_config']."',
                     cod_propie = '".$data['num_docpro']."', cod_tenedo = '".$data['num_docpos']."', cod_conduc = '".$data['num_doccon']."',
-                    cod_tipveh = '".$data['num_config']."', usr_gpsxxx = '".$data['usr_gpsxxx']."', clv_gpsxxx = '".$data['clv_gpsxxx']."',
+                    cod_tipveh = '".$data['num_config']."', usr_gpsxxx = '".utf8_decode($data['usr_gpsxxx'])."', clv_gpsxxx = '".utf8_decode($data['clv_gpsxxx'])."',
                     idx_gpsxxx = '".$data['idx_gpsxxx']."',
                     usr_modifi = '".$usuari."', fec_modifi = NOW()
                     ";
@@ -1850,31 +1899,40 @@
 
 
         function uploadFTP($server, $port, $timeout, $username, $password, $local_file, $remote_file){
-        $conn_id = ftp_connect($server);
+        try{
+            $conn_id = ftp_connect($server);
 
-        // login with username and password
-        $login_result = ftp_login($conn_id, $username, $password);
+            // login with username and password
+            $login_result = ftp_login($conn_id, $username, $password);
 
-        // upload a file
-        if (ftp_put($conn_id, $remote_file, $local_file, FTP_ASCII)) {
-            echo "successfully uploaded $local_file\n";
-            exit;
-        } else {
-            echo "There was a problem while uploading $local_file\n";
-            exit;
+            if(!$conn_id || !$login_result){
+              echo "No se pudo establecer conexion.";
             }
-        // close the connection
-        ftp_close($conn_id);
+            // upload a file
+            if (ftp_put($conn_id, $remote_file, $local_file, FTP_ASCII)) {
+                echo "successfully uploaded $local_file\n";
+                exit;
+            } else {
+                echo "There was a problem while uploading $local_file\n";
+                echo "<br>".$remote_file;
+                exit;
+            }
+            // close the connection
+            ftp_close($conn_id);
+        }catch(Exception $e){
+          echo "Failure: " . $e->getMessage();
+        }
+          
 
       }
 
 
         /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaciÃƒÂ³n
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaci?n
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que serÃƒÂ¡ analizado por la funciÃƒÂ³n
+           *  \param: $arrau => Arreglo que ser? analizado por la funci?n
            *  \return: array
         */
         function cleanArray($array){
@@ -1906,11 +1964,9 @@
 
         private function darCorreos($cod_solici,$ind_retorn){
           if($ind_retorn==1){
-            $sql = "SELECT b.dir_emailx
-                      FROM ".BASE_DATOS.".tab_solici_estseg a
-                      INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b
-                        ON a.cod_emptra = b.cod_tercer
-                    WHERE a.cod_solici = '".$cod_solici."'; ";
+            $sql = "SELECT a.cor_solici as 'dir_emailx'
+                   FROM ".BASE_DATOS.".tab_solici_estseg a
+                   WHERE a.cod_solici = '".$cod_solici."' ";
           }else{
             $sql = "SELECT a.dir_emailx
                       FROM ".BASE_DATOS.".tab_genera_concor a
@@ -1925,7 +1981,8 @@
             //Trae los correos segun el caso
             $emailsTotal = self::darCorreos($cod_solici,$ind_retorn);
             $emails = explode(",", $emailsTotal['dir_emailx']);
-            $tmpl_file = URL_ARCHIV_STANDA.'ctorres/sat-gl-2015/satt_standa/estseg/planti/template-email.html';
+            //$tmpl_file = URL_ARCHIV_STANDA.'satt_standa/estseg/planti/template-email.html';
+            $tmpl_file = 'planti/template-email.html';
             $logo = LOGOFARO;
             $ano = date('Y');
             $thefile = implode("", file( $tmpl_file ) );
@@ -1934,7 +1991,8 @@
             eval( $thefile );
             $mHtml = $r_file;
 
-            require_once(URL_ARCHIV_STANDA."ctorres/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
+            //require_once(URL_ARCHIV_STANDA."satt_standa/planti/class.phpmailer.php");
+            require_once('../planti/class.phpmailer.php');
             $mail = new PHPMailer();
             $mail->CharSet = 'UTF-8';
             $mail->Host = "localhost";
@@ -1949,8 +2007,8 @@
             
             if($files != NULL){
               foreach($files as $key=>$file){
-                  if(is_readable(URL_ARCHIV_STANDA.'ctorres/sat-gl-2015/satt_faro/files/adj_estseg/'.$file['archivo'])){
-                    $mail->addAttachment(URL_ARCHIV_STANDA.'ctorres/sat-gl-2015/satt_faro/files/adj_estseg/'.$file['archivo'], $file['name']);
+                  if(is_readable(URL_ARCHIV_STANDA.''.BASE_DATOS.'/files/adj_estseg/'.$file['archivo'])){
+                    $mail->addAttachment(URL_ARCHIV_STANDA.''.BASE_DATOS.'/files/adj_estseg/'.$file['archivo'], $file['name']);
                   }
               }
             }
@@ -1961,7 +2019,7 @@
        
         private function sendEmail(){
           $cod_estseg = $_REQUEST['cod_estseg'];
-          $ruta = "../../satt_faro/files/adj_estseg/";
+          $ruta = "../../".BASE_DATOS."/files/adj_estseg/";
           $path = $ruta.''.$cod_estseg.'_InformeFinal_'.time().".pdf";
           $emailsTotal = $_REQUEST['emails'];
           $subject = 'RESULTADO DE ESTUDIO DE SEGURIDAD No. '.self::darCodigoSolicitud($cod_estseg).' - '.$cod_estseg;
@@ -1970,9 +2028,9 @@
 
           
           $emails = explode(",", $emailsTotal);
-          $tmpl_file = URL_ARCHIV_STANDA.'ctorres/sat-gl-2015/satt_standa/estseg/planti/template-email.html';
+          $tmpl_file = URL_ARCHIV_STANDA.'satt_standa/estseg/planti/template-email.html';
           
-          $contenido = '<p>Centro Logístico FARO hace el envio del documento adjunto en este correo con el resultado del estudio de seguridad No.<strong>'.self::darCodigoSolicitud($cod_estseg).' - '.$cod_estseg.'</strong>.</p>
+          $contenido = '<p>Centro Log&iacute;stico FARO hace el envio del documento adjunto en este correo con el resultado del estudio de seguridad No.<strong>'.self::darCodigoSolicitud($cod_estseg).' - '.$cod_estseg.'</strong>.</p>
                         <p>No responder -- Este correo ha sido creado automaticamente.</p>';
           $logo = LOGOFARO;
           $ano = date('Y');
@@ -1982,7 +2040,7 @@
           eval( $thefile );
           $mHtml = $r_file;
 
-          require_once(URL_ARCHIV_STANDA."ctorres/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
+          require_once(URL_ARCHIV_STANDA."satt_standa/planti/class.phpmailer.php");
           $mail = new PHPMailer();
           $mail->Host = "localhost";
           $mail->From = 'supervisores@eltransporte.org';
@@ -2012,9 +2070,9 @@
 
           if($ind_enviox==1){
             $html.='<p>Estimado: <strong>'.$resultado['nom_tercer'].'</strong></p>
-                    <p>Centro Logístico FARO informa que su solicitud No.<strong>'.$cod_solici.'</strong> se ha creado exitosamente. Le estaremos informando los avances de esta solicitud.</p>';
+                    <p>Centro Log&iacute;stico FARO informa que su solicitud No.<strong>'.$cod_solici.'</strong> se ha creado exitosamente. Le estaremos informando los avances de esta solicitud.</p>';
           }else{
-            $html.='<p>Estimado: <strong>CENTRO LOGÍSTICO FARO SAS</strong></p>
+            $html.='<p>Estimado: <strong>CENTRO LOG&Iacute;STICO FARO SAS</strong></p>
                     <p>Se informa se ha creado la solicitud de estudio de seguridad No.<strong>'.$cod_solici.'</strong> solicitada por el cliente '.$resultado['nom_tercer'].' para realizar el proceso de consulta en las principales centrales de riesgo.</p>';
           }
           return $html;  
@@ -2062,7 +2120,7 @@
           }
 
           $html.='<p>Estimado: <strong>'.$resultado['nom_tercer'].'</strong></p>
-                  <p>Centro Logístico FARO informa que su solicitud No.<strong>'.$cod_solici.' - '.$cod_estseg.'</strong> ha cambiado a estado <strong>'.$estado.'</strong> '.$add.'</p>
+                  <p>Centro Log&iacute;stico FARO informa que su solicitud No.<strong>'.$cod_solici.' - '.$cod_estseg.'</strong> ha cambiado a estado <strong>'.$estado.'</strong> '.$add.'</p>
                   <p>Por medio de este correo hacemos llegar como archivo adjuntos los documentos relacionados al estudio de seguridad.</p>';
           
           return $html;  

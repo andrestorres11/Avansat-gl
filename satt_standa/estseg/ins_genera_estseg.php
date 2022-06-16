@@ -3,13 +3,11 @@
 	NOMBRE:   GeneraEstudioSeguridad
 	FUNCION:  Muestra las solicitudes del estudio de seguridad. 
 	FECHA DE MODIFICACION: 15/09/2020
-	CREADO POR: Ing. Cristian AndrÃ©s Torres
+	CREADO POR: Ing. Cristian Andrés Torres
 	MODIFICADO 
 	****************************************************************************/
-	
 	/*ini_set('error_reporting', E_ALL);
 	ini_set("display_errors", 1);*/
-
     class GeneraEstudioSeguridad
     {
         
@@ -40,7 +38,7 @@
 
         /*! \fn: styles
 		   *  \brief: incluye todos los archivos necesarios para los estilos
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -74,13 +72,12 @@
 
         /*! \fn: scripts
 		   *  \brief: incluye todos los archivos necesarios para los eeventos js
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
 		   *  \return: html
 		*/
-
         private function scripts(){
 
             echo '
@@ -115,43 +112,87 @@
         }
 
         private function downloadZip(){
-          $rut_general = dirname(dirname(__DIR__)).'/satt_faro/files/adj_estseg/';
-          $cod_estseg = $_REQUEST['cod_estseg'];
-          $con_wherex = ' a.cod_estseg = "'.$cod_estseg.'"';
-          $temp_name = $cod_estseg.'_'.time().'.zip';
-          $archive_file_name=$rut_general.''.$temp_name;
+          try{
+            $rut_general = dirname(dirname(__DIR__)).'/'.BASE_DATOS.'/files/adj_estseg/';
+            $cod_estseg = $_REQUEST['cod_estseg'];
+            $con_wherex = ' a.cod_estseg = "'.$cod_estseg.'"';
+            $temp_name = $cod_estseg.'_'.time().'.zip';
+            $archive_file_name=$rut_general.''.$temp_name;
 
-          $zip = new ZipArchive();
-          $zip->open($archive_file_name,ZipArchive::CREATE);
-          $nom_documen = array('Licencia_del_vehiculo', 'Tarjeta_de_propiedad_del_trailer', 'Tecnomecanica', 'Soat', 'Licencia_de_transito_conductor', 'Documento_del_propietario', 'Documento_del_conductor', 'Licencia_del_conductor', 'Planilla_de_seguridad social', 'Registro_fotografico_vehiculo', 'Poliza_extracontractual');
-          $nom_campoxs = array('fil_licveh', 'fil_tartra', 'fil_tecmec', 'fil_soatxx', 'fil_litcon', 'fil_cedpro', 'fil_cedcon', 'fil_liccon', 'fil_plsegs', 'fil_regveh', 'fil_polext');
-          foreach($nom_campoxs as $key=>$campo){
-            $sql = "SELECT a.".$campo."
-                  FROM ".BASE_DATOS.".tab_estudi_docume a
-                WHERE ".$con_wherex." ";
-            $resultado = new Consulta($sql, $this->conexion);
-            $resultados = $resultado->ret_matriz('a');
-            if(count($resultados) > 0 && ($resultados[0][$campo] != NULL || $resultados[0][$campo] != '')){
-              $ext = explode(".", ($resultados[0][$campo]));
-              $zip->addFile($rut_general.''.$resultados[0][$campo],$cod_estseg.'_'.$nom_documen[$key].'.'.end($ext));
+            $zip = new ZipArchive();
+            $zip->open($archive_file_name,ZipArchive::CREATE);
+            $nom_documen = array('Licencia_del_vehiculo', 'Tarjeta_de_propiedad_del_trailer', 'Tecnomecanica', 'Soat', 'Licencia_de_transito_conductor', 'Documento_del_propietario', 'Documento_del_conductor', 'Licencia_del_conductor', 'Planilla_de_seguridad social', 'Registro_fotografico_vehiculo', 'Poliza_extracontractual');
+            $nom_campoxs = array('fil_licveh', 'fil_tartra', 'fil_tecmec', 'fil_soatxx', 'fil_litcon', 'fil_cedpro', 'fil_cedcon', 'fil_liccon', 'fil_plsegs', 'fil_regveh', 'fil_polext');
+            foreach($nom_campoxs as $key=>$campo){
+              $sql = "SELECT a.".$campo."
+                    FROM ".BASE_DATOS.".tab_estudi_docume a
+                  WHERE ".$con_wherex." ";
+              $resultado = new Consulta($sql, $this->conexion);
+              $resultados = $resultado->ret_matriz('a');
+              if(count($resultados) > 0 && ($resultados[0][$campo] != NULL || $resultados[0][$campo] != '')){
+                $ext = explode(".", ($resultados[0][$campo]));
+                $zip->addFile($rut_general.''.$resultados[0][$campo],$cod_estseg.'_'.$nom_documen[$key].'.'.end($ext));
+              }
             }
-          }
-          $zip->close();
+            $zip->close();
+            if(file_exists($archive_file_name)){
+
+
+              header("Pragma: public");
+              header("Expires: 0");
+              header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+              header("Cache-Control: public");
+              header("Content-Description: File Transfer");
+              header("Content-type: application/octet-stream");
+              header("Content-Disposition: attachment; filename=\"".$temp_name."\"");
+              header("Content-Transfer-Encoding: binary");
+              header("Content-Length: ".filesize($archive_file_name));
+              ob_end_flush();
+              @readfile($archive_file_name);
+
+              /*
+              header("Content-type: application/zip"); 
+              header("Content-Disposition: attachment; filename={$temp_name}");
+              header("Content-length: " . filesize($archive_file_name));
+              header("Pragma: no-cache"); 
+              header("Expires: 0"); 
+              
+              header("Cache-Control: public");
+              header("Content-Description: File Transfer");
+              header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+              header("Content-type: application/zip");
+              header("Content-Transfer-Encoding: binary");
+              header("Content-disposition: attachment; filename=".$temp_name);
+              header('Content-Length: ' . filesize($temp_name));
+              ob_end_clean();
+              readfile($archive_file_name);
+              ob_end_flush();
+              unlink($archive_file_name);*/
+              exit();
+            }else{
+              echo " el archivo no existe";
+            }
+
+          /*
           header("Cache-Control: public");
           header("Content-Description: File Transfer");
           header("Content-Disposition: attachment; filename=$temp_name");
           header("Content-Type: application/zip");
           header("Content-Transfer-Encoding: binary");
-          
+
           // Read the file
           readfile($archive_file_name);
           unlink($archive_file_name);
-          exit;
+          exit();*/
+          }catch(Exception $e){
+            echo "Error funcion downloadZip", $e->getMessage(), "\n";
+          }
+
         }
         
         /*! \fn: filtros
 		   *  \brief: Crea el html de las tablas filtros y segmentos del modulo
-		   *  \author: Ing. Cristian AndrÃ©s Torres
+		   *  \author: Ing. Cristian Andrés Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -168,7 +209,7 @@
 
             $mPerms = $this->getReponsability('jso_estseg');
             $nueva_solicitudtbn = '';
-            if($mPerms->dat_estseg->ind_visibl != 1){
+            if($mPerms->dat_estseg->ind_visibl == 1){
               $nueva_solicitudtbn = '<div class="row mt-2 mb-2">
                                         <div class="col-md-4">
                                           <button type="button" onclick="" class="btn btn-success btn-sm"  data-toggle="modal" data-target="#NuevaSolicitudModal">Nueva Solicitud</button>
@@ -482,24 +523,24 @@
             
 
                         <div id="collapsethree" class="collapse show" aria-labelledby="headingThree" data-parent="#accordion">
-                          <ul class="nav nav-pills mb-3 bk-green" id="pills-tab" role="tablist">
+                          <ul class="nav nav-pills mb-3 bk-sure" id="pills-tab" role="tablist">
                             <li class="nav-item m-2 '.$disabledTabs1.'">
-                              <a class="btn btn-success btn-sm '.$activetab1.'" style="background-color:#509334" id="pills-documentos-tab" data-toggle="pill" href="#pills-documentos" role="tab" aria-controls="pills-documentos" aria-selected="true">Documentos</a>
+                              <a class="btn btn-success btn-sm btn-success '.$activetab1.'"  id="pills-documentos-tab" data-toggle="pill" href="#pills-documentos" role="tab" aria-controls="pills-documentos" aria-selected="true">Documentos</a>
                             </li>
                             <li class="nav-item m-2 '.$disabledTabs2.' '.$activetab2.'">
-                                <a class="btn btn-success btn-sm" style="background-color:#509334" id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="true">Conductor</a>
+                                <a class="btn btn-success btn-sm"  id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="true">Conductor</a>
                             </li>
                             <li class="nav-item m-2 '.$disabledTabs2.'">
-                                <a class="btn btn-success btn-sm" style="background-color:#509334" id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">Poseedor / Tenedor</a>
+                                <a class="btn btn-success btn-sm"  id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">Poseedor / Tenedor</a>
                             </li>
                             <li class="nav-item m-2 '.$disabledTabs2.'">
-                                <a class="btn btn-success btn-sm" style="background-color:#509334" id="pills-propietario-tab" data-toggle="pill" href="#pills-propietario" role="tab" aria-controls="pills-propietario" aria-selected="false">Propietario</a>
+                                <a class="btn btn-success btn-sm"  id="pills-propietario-tab" data-toggle="pill" href="#pills-propietario" role="tab" aria-controls="pills-propietario" aria-selected="false">Propietario</a>
                             </li>
                             <li class="nav-item m-2 '.$disabledTabs2.'">
-                                <a class="btn btn-success btn-sm" style="background-color:#509334" id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="false">Vehículo</a>
+                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="false">Vehículo</a>
                             </li>
                             <li class="nav-item m-2">
-                                <a class="btn btn-success btn-sm" style="background-color:#319D04" id="pills-bitacora-tab" data-toggle="pill" href="#pills-bitacora" role="tab" aria-controls="pills-bitacora" aria-selected="false">Bitacora</a>
+                                <a class="btn btn-success btn-sm" id="pills-bitacora-tab" data-toggle="pill" href="#pills-bitacora" role="tab" aria-controls="pills-bitacora" aria-selected="false">Bitacora</a>
                             </li>
                           </ul>
                         </div>
@@ -517,7 +558,7 @@
                           <div class="tab-pane fade show p-3" id="pills-poseedor" role="tabpanel" aria-labelledby="pills-poseedor-tab">
                                 <div class="container border">
                                 <div class="row">
-                                  <div class="col-12 color-heading text-center p-2 mb-3">
+                                  <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                                       Datos Básicos del Poseedor/Tenedor
                                   </div>
                                 </div>
@@ -625,7 +666,7 @@
                             
                             <div class="container border">
                                 <div class="row">
-                                  <div class="col-12 color-heading text-center p-2 mb-3">
+                                  <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                                       Estudio de seguridad del Poseedor/Tenedor
                                   </div>
                                 </div>
@@ -716,7 +757,7 @@
                           <div class="tab-pane fade show p-3" id="pills-propietario" role="tabpanel" aria-labelledby="pills-propietario-tab">
                             <div class="container border">
                             <div class="row">
-                              <div class="col-12 color-heading text-center p-2 mb-3">
+                              <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                                   Datos Básicos del propietario
                               </div>
                             </div>
@@ -814,7 +855,7 @@
                           </div>
                             <div class="container border">
                                 <div class="row">
-                                  <div class="col-12 color-heading text-center p-2 mb-3">
+                                  <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                                       Estudio de seguridad del propietario
                                   </div>
                                 </div>
@@ -905,7 +946,7 @@
                           <div class="tab-pane fade show p-3" id="pills-vehiculo" role="tabpanel" aria-labelledby="pills-vehiculo-tab">
                              <div class="container border">
                                <div class="row">
-                                <div class="col-12 color-heading text-center p-2 mb-3">
+                                <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                                     Datos Básicos del vehículo
                                 </div>
                               </div>
@@ -1026,7 +1067,7 @@
 
                             <div class="container border">
                               <div class="row">
-                                <div class="col-12 color-heading text-center p-2 mb-3">
+                                <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                                   Información del operador GPS
                                 </div>
                               </div>
@@ -1099,7 +1140,7 @@
                             </div>
                             <div class="container border">
                               <div class="row">
-                                <div class="col-12 color-heading text-center p-2 mb-3">
+                                <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                                   Estudio de seguridad del vehículo
                                 </div>
                               </div>
@@ -1204,7 +1245,7 @@
                             </div>   
                             <div class="container border">
                               <div class="row">
-                                <div class="col-12 color-heading text-center p-2 mb-3">
+                                <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                                   Estudio Aprobado
                                 </div>
                               </div>
@@ -1391,7 +1432,7 @@
           $con_wherex = ' cod_estseg = '.$info['cod_estseg'];
           $html = '
             <div class="container border">
-                <div class="row color-heading  p-2 mb-3">
+                <div class="row color-heading bk-sure p-2 mb-3">
                     <div class="col-1 text-center">
                       <button type="button" class="btn btn-info btn-sm"  data-toggle="modal" data-target="#modalInfoSolicitudPreview"><i class="fa fa-info-circle" aria-hidden="true"></i></button>
                     </div>
@@ -1666,7 +1707,7 @@
           $html='
           <div class="container border">
             <div class="row">
-              <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
+              <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
                   Datos Básicos del Conductor
               </div>
             </div>
@@ -1771,7 +1812,7 @@
 
             <div class="container border">
               <div class="row">
-                <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
+                <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
                     Estudio de seguridad del conductor
                 </div>
               </div>
@@ -1914,7 +1955,7 @@
             </div>
             <div class="container border">
                 <div class="row">
-                  <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
+                  <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
                       Referencia familiar del conductor
                   </div>
                 </div>
@@ -1922,7 +1963,7 @@
 
               <div class="container border">
                 <div class="row">
-                  <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
+                  <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
                       Referencia personal del conductor
                   </div>
                 </div>
@@ -1931,7 +1972,7 @@
 
                 <div class="container border">
                 <div class="row">
-                  <div class="col-md-12 col-sm-12 color-heading text-center p-2 mb-3">
+                  <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
                       Referencias laborales del conductor
                   </div>
                 </div>
@@ -1968,7 +2009,7 @@
                         <div class="col-12">
                           <table class="table table-bordered" style="width:100%">
                             <thead>
-                              <tr class="bk-green">
+                              <tr class="bk-sure">
                                 <th scope="col">Estado</th>
                                 <th scope="col">Observación</th>
                                 <th scope="col">Usuario</th>
@@ -2255,7 +2296,7 @@
          return $html;
        }
 
-        //* FUNCIONES QUE RETORNAN CADA UNA DE LAS VISTAS SEGUN LA PESTAÃ‘A
+        //* FUNCIONES QUE RETORNAN CADA UNA DE LAS VISTAS SEGUN LA PESTAÑA
 
         private function vRegistradas(){
             $html='<div class="tab-pane fade show active p-3" id="pills-registradas" role="tabpanel" aria-labelledby="pills-registradas-tab">
@@ -2355,11 +2396,24 @@
 
         private function camposFormulPrincipal(){
             $emptra = $this->obtenerTransportadoraPerfil();
+            $mPerms = $this->getReponsability('jso_estseg');
+            if($mPerms->dat_regtra->ind_visibl == 1){
+            $addTransp = '<div class="row">
+                            <div class="col-6">
+                              <div class="form-group">
+                              <label for="bus_transp" class="labelinput">Seleccione Transportadora:</label>
+                                <input class="form-control form-control-sm" type="text" placeholder="Transportadora" id="bus_transp" name="bus_transp" onkeyup="asignaTransportadora(this)" autocomplete="off">
+                                <div id="bus_transp-suggestions" class="suggestions" style="top:52px !important"></div>
+                              </div>
+                            </div>
+                          </div>';
+            }
             $html='<div class="card" style="margin:5px;">
-            <div class="card-header color-heading text-center">
+            <div class="card-header color-heading bk-sure text-center">
               Datos básicos del solicitante
             </div>
           <div class="card-body">
+            '.$addTransp.'
             <div class="row">
               <div class="col-6">
                 <div class="form-group">
@@ -2388,13 +2442,13 @@
                   <input class="form-control form-control-sm" type="text" placeholder="Número de celular" id="cel_soliciID" name="cel_solici" disabled value="'.$emptra['num_telmov'].'">
                 </div>
               </div>
-
+              <input type="hidden" name="cod_transp" id="cod_transp" value="'.$emptra['cod_tercer'].'">
             </div>
           </div>
           </div>
 
-          <div class="card sol_estseg" style="margin:15px;">
-            <div class="card-header text-center color-heading">
+          <div class="card sol_estseg" style="margin:5px;">
+            <div class="card-header text-center color-heading bk-sure">
               Estudio de Seguridad No. 1
             </div>
           <div class="card-body">
@@ -2509,7 +2563,7 @@
                       <img src="../satt_standa/imagenes/pdf-icon.png" id="btn-pdf" width="40px" onclick="viewPdf(this)">
                     </div>
                   </div>
-                  <div class="row mt-3 mb-3 color-heading">
+                  <div class="row mt-3 mb-3 color-heading bk-sure">
                     <div class="col-12 text-center"><h6>Enviar archivo</h6></div>
                   </div>
                   <div class="row">
@@ -2551,32 +2605,21 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
               </div>
                 <div class="modal-body">
-                  <div class="row mt-3 mb-3 color-heading">
+                  <div class="row mt-3 mb-3 color-heading bk-sure">
                     <div class="col-12 text-center"><h6>Documentos cargados</h6></div>
                   </div>
                   <div class="row ml-2">
                     <table class="table table-bordered" style="width:97%">
                           <thead>
-                            <tr class="bk-green">
+                            <tr class="bk-sure">
                               <th scope="col">Documento</th>
-                              <th scope="col">Observación</th>
+                              <th scope="col">Observaci&oacute;n</th>
                               <th scope="col">Descargar</th>
                             </tr>
                           </thead>
                           <tbody id="tbody_document">
                           </tbody>
                     </table>
-                  </div>
-
-                  <div class="row">
-                    <div class="col-12 text-center">
-                      <p style="margin-bottom:2px; color: #525252;">Descargar Zip</p>
-                    </div>
-                  </div>
-                  <div class="row" style="margin-bottom:40px;">
-                    <div class="col-12 text-center">
-                      <a class="btn btn-warning btn-sm" id="generaZip"><i class="fa fa-download" aria-hidden="true"></i></a>
-                    </div>
                   </div>
 
                 </div>
@@ -2808,7 +2851,7 @@
 
         function BitacoradeRespuestas(){
           $html='<div class="card border border-success" style="margin:15px;">
-                  <div class="card-header color-heading text-align">
+                  <div class="card-header color-heading bk-sure text-align">
                     Bitacora de Respuestas
                   </div>
                   <div class="card-body">

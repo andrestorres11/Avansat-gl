@@ -462,9 +462,11 @@ class responsable
 			break;
 
 			case 'jso_estseg':
-				$mArray[0] = array( "dat_estseg"=>array("name"=>"Gestionar", "sub"=>array() )
+				$mArray[0] = array( "dat_estseg"=>array("name"=>"Gestionar", "sub"=>array() ),
+									"dat_regtra"=>array("name"=>"Seleccionar transportadora", "sub"=>array() )
 								  );
-				$mArray[1] = array( "dat_estseg"=>array("ind_gessol"=>1, "sub"=>array())
+				$mArray[1] = array( "dat_estseg"=>array("ind_gessol"=>1, "sub"=>array()),
+									"dat_regtra"=>array("ind_visibl"=>1, "sub"=>array()),
 								   );
 			break;
 
