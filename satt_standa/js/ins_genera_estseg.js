@@ -123,8 +123,8 @@ function generaNuevoEstudio() {
         </select>
       </div>
       <div class="col-4 form-group">
-        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nï¿½ de documento Conductor:</label>
-        <input class="form-control form-control-sm req num" type="text" placeholder="Nï¿½ de documento" id="num_documeID` + incrme + `" name="num_docume[` + incrme + `]" required>
+        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nº de documento Conductor:</label>
+        <input class="form-control form-control-sm req num" type="text" placeholder="Nº de documento" id="num_documeID` + incrme + `" name="num_docume[` + incrme + `]" required>
       </div>
       <div class="col-4 form-group">
       <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Conductor:</label>
@@ -141,14 +141,14 @@ function generaNuevoEstudio() {
         <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_apell2ID` + cantid + `" name="nom_apell2[` + incrme + `]">
       </div>
       <div class="col-4 form-group">
-      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nï¿½ de celular del Conductor:</label>
-      <input class="form-control form-control-sm req" type="text" placeholder="Nï¿½ de celular" id="num_telmovID` + cantid + `" name="num_telmov[` + incrme + `]" required>
+      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nº de celular del Conductor:</label>
+      <input class="form-control form-control-sm req" type="text" placeholder="Nº de celular" id="num_telmovID` + cantid + `" name="num_telmov[` + incrme + `]" required>
       </div>
     </div>
     <div class="row">
       <div class="col-4 form-group">
-        <label for="nom_soliciID" class="labelinput">Nï¿½ de celular 2 del Conductor:</label>
-        <input class="form-control form-control-sm" type="text" placeholder="Nï¿½ de celular 2" id="num_telmo2ID` + cantid + `" name="num_telmo2[` + incrme + `]">
+        <label for="nom_soliciID" class="labelinput">Nº de celular 2 del Conductor:</label>
+        <input class="form-control form-control-sm" type="text" placeholder="Nº de celular 2" id="num_telmo2ID` + cantid + `" name="num_telmo2[` + incrme + `]">
       </div>
       <div class="col-5 form-group">
         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email del Conductor:</label>
@@ -200,7 +200,7 @@ function validateInicial() {
         $(this).rules("add", {
             email: true,
             messages: {
-                email: "El correo no es vï¿½lido"
+                email: "El correo no es válido"
             }
         })
     });
@@ -258,8 +258,8 @@ function InsSoliciValidate() {
                 required: "El tipo de documento es requerido"
             },
             num_docume: {
-                required: "El nï¿½mero de documento es requerido",
-                number: "Solo se aceptan nï¿½meros"
+                required: "El número de documento es requerido",
+                number: "Solo se aceptan números"
             },
             nom_person: {
                 required: "El nombre del conductor es requerido"
@@ -272,7 +272,7 @@ function InsSoliciValidate() {
             },
             dir_emailx: {
                 required: "La direccion de correo es requerido",
-                email: "El correo no es vï¿½lido"
+                email: "El correo no es válido"
             },
             num_placax: {
                 minlength: "Debe tener almenos 6 caracteres",
@@ -664,7 +664,7 @@ function almacenarFase1() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Guardando la informaciï¿½n. Por favor espere.");
+            cargando("Guardando la información. Por favor espere.");
         },
         success: function(data) {
             swal.close();
@@ -701,7 +701,7 @@ function almacenarEstudioFinal() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Guardando la informaciï¿½n. Por favor espere.")
+            cargando("Guardando la información. Por favor espere.")
         },
         success: function(data) {
 
@@ -1053,7 +1053,7 @@ function preguardadoF1() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Pre Guardando la informaciï¿½n. Por favor espere.")
+            cargando("Pre Guardando la información. Por favor espere.")
         },
         success: function(data) {
             swal.close();
@@ -1101,7 +1101,7 @@ function preguardado() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Pre Guardando la informaciï¿½n. Por favor espere.")
+            cargando("Pre Guardando la información. Por favor espere.")
         },
         success: function(data) {
             swal.close();
@@ -1137,7 +1137,7 @@ function PorAprobValidate() {
         },
         messages: {
             AproServicio: {
-                required: "Por favor Seleccione una opciï¿½n"
+                required: "Por favor Seleccione una opción"
             }
         },
         submitHandler: function(form) {
