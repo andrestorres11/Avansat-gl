@@ -30,7 +30,7 @@ class ins_asiste_asiscar
             <!-- Bootstrap 4.1.3 -->
             <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/bootstrap-4/css/bootstrap.css" rel="stylesheet">
             <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" rel="stylesheet">
-            
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/4.5.2/flatly/bootstrap.min.css">
             
 
             <!-- Font Awesome -->
@@ -42,7 +42,7 @@ class ins_asiste_asiscar
             <!-- Datatables all in one-->
             <link  rel="stylesheet" href="../' . DIR_APLICA_CENTRAL . '/js/lib/DataTablesb4/datatables.css" rel="stylesheet">
             <link  rel="stylesheet" href="../' . DIR_APLICA_CENTRAL . '/js/lib/DataTablesb4/Buttons-1.7.1/css/buttons.bootstrap4.min.css"  rel="stylesheet">
-
+            <link  rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.0.1/css/fixedColumns.dataTables.min.css"  rel="stylesheet"
             <!-- Float Menu -->
             <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/button.css" rel="stylesheet">
             <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/floatMenu.css" rel="stylesheet">
@@ -50,7 +50,16 @@ class ins_asiste_asiscar
             <!-- Custom Theme Style -->
             <link href="../' . DIR_APLICA_CENTRAL . '/estilos/estilos_table.css" rel="stylesheet">
             <link href="../' . DIR_APLICA_CENTRAL . '/estilos/inform_style.css" rel="stylesheet">
-            <link href="../' . DIR_APLICA_CENTRAL . '/estilos/inf_transp_tipser.css" rel="stylesheet">
+            <link href="../' . DIR_APLICA_CENTRAL . '/estilos/inf_progra_turnos.css" rel="stylesheet">
+            <style>
+            .bootstrap-select>.dropdown-toggle.bs-placeholder, .bootstrap-select>.dropdown-toggle.bs-placeholder:active, .bootstrap-select>.dropdown-toggle.bs-placeholder:focus, .bootstrap-select>.dropdown-toggle.bs-placeholder:hover {
+              color: #fff;
+              background: #73cd4e;
+            }    
+            .bootstrap-select>.btn dropdown-toggle{
+              background: #73cd4e;
+            }
+            </style>       
         ';
     }
 
@@ -67,6 +76,7 @@ class ins_asiste_asiscar
 
         echo '
             <!-- jQuery -->
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
             <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery/dist/jquery.min.js"></script>
             
 
@@ -92,6 +102,7 @@ class ins_asiste_asiscar
             <!-- Datatables ALL IN ONE-->
             <script type="text/javascript" src="../' . DIR_APLICA_CENTRAL . '/js/lib/DataTablesb4/datatables.js" ></script>
             <script type="text/javascript" src="../' . DIR_APLICA_CENTRAL . '/js/lib/DataTablesb4/Buttons-1.7.1/js/buttons.bootstrap.min.js" ></script>
+            <script type="text/javascript" src="https://cdn.datatables.net/fixedcolumns/4.0.1/js/dataTables.fixedColumns.min.js" ></script>
 
             <!-- Custom Theme Scripts -->
             <script src="../' . DIR_APLICA_CENTRAL . '/js/inf_asiste_asiscar.js"></script>
@@ -128,8 +139,8 @@ class ins_asiste_asiscar
                                 <div class="col-2 text-right">
                                   <label style="margin-top: 12px;">Transportadora:</label>
                                 </div>
-                                <div class="col-3">
-                                  <select class="form-control form-control-sm " multiple  id="optionTransp" name="optionTransp">
+                                <div class="col-3 ">
+                                  <select class="selectpicker" multiple data-live-search="true" id="optionTransp" name="optionTransp" title="Seleccione de la lista">
                                           <option value="">Seleccione opción</option>
                                           '.$option_trans.'
                                   </select>
@@ -138,18 +149,18 @@ class ins_asiste_asiscar
                                   <label style="margin-top: 12px;">Proveedor:</label>
                                 </div>
                                 <div class="col-3">
-                                  <select class="form-control form-control-sm " multiple id="optionProv" name="optionProv">
+                                  <select class="selectpicker" multiple data-live-search="true"  title="Seleccione de la lista" id="optionProv" name="optionProv">
                                     <option value="">Seleccione opción</option>
                                     '.$option_prove.'
                                     </select>
                                 </div>
                             </div>
-                            <div class="row mt-3">
-                                <div class="col-2 text-right">
+                            <div class="row mt-3 ">
+                                <div class="col-2 text-right >
                                   <label style="margin-top: 12px;">Regional:</label>
                                 </div>
                                 <div class="col-3">
-                                  <select class="form-control form-control-sm " multiple id="optionRegio" name="optionRegio">
+                                  <select class="selectpicker" multiple data-live-search="true"  title="Seleccione de la lista" id="optionRegio" name="optionRegio">
                                       <option value="">Seleccione opción</option>
                                       '.$option_regio.'
                                   </select>
@@ -158,7 +169,7 @@ class ins_asiste_asiscar
                                   <label style="margin-top: 12px;">Tipo Servicio:</label>
                                 </div>
                                 <div class="col-3">
-                                  <select class="form-control form-control-sm " multiple id="optionTipSer" name="optionTipSer">
+                                  <select class="selectpicker" multiple data-live-search="true"  title="Seleccione de la lista" id="optionTipSer" name="optionTipSer">
                                     <option value="">Seleccione opción</option>
                                     '.$option_tipser.'
                                     </select>
