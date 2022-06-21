@@ -78,7 +78,12 @@
                     $util=round($util,2);
                     $rent=(($util/floatval($value['valcli']))*100);
                     $rent=round($rent,2);
-
+                    $val_cli=number_format($value['valcli']);
+                    $val_cost=number_format($value['val_cospro']);
+                    $val_rteF=number_format($rteF);
+                    $val_rteI=number_format($rteI);
+                    $val_Rest=number_format($salRest);
+                    $val_util=number_format($util);
                     $data[] = [
                         "n"=>$u,
                         "id"=>$value['id'],
@@ -95,15 +100,15 @@
 	                    "num_placax"=>$value['num_placax'] ? $value['num_placax'] :'N/a',
                         "ciudorig"=>$value['ciudorig'] ? $value['ciudorig'] :'N/a',
                         "ciuddest"=>$value['ciuddest'] ? $value['ciuddest'] :'N/a',
-                        "valcli"=>$value['valcli'] ? $value['num_poliza'] :'N/a',
-                        "val_cospro"=>$value['val_cospro'] ? $value['val_cospro'] :'N/a',
+                        "valcli"=>$val_cli ? $val_cli :'N/a',
+                        "val_cospro"=>$val_cost ? $val_cost :'N/a',
                         "nomprovee"=>$value['nomprovee'] ? $value['nomprovee']:'No aplica',
                         "cod_provee"=>$value['cod_provee'] ? $value['cod_provee'] :'No aplica',
                         "sol_antic"=>'0',
-                        "rte_fnt"=>$rteF,
-                        "rte_Ica"=>$rteI,
-                        "salrest"=>$salRest,
-                        "utili"=>$util,
+                        "rte_fnt"=>$val_rteF,
+                        "rte_Ica"=>$val_rteI,
+                        "salrest"=>$val_Rest,
+                        "utili"=>$val_util,
                         "rent"=>$rent.'%',
                         "fec_creaci"=>$value['fec_creaci'] ? $value['fec_creaci'] :'No aplica',
                         "fec_modifi"=>$value['fec_modifi'] ? $value['fec_modifi'] :'No aplica',
