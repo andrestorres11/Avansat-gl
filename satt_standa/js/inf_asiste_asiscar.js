@@ -1,5 +1,6 @@
 $(document).ready(function() {
-
+    
+    $('select').selectpicker()
     init_table();
     $('#formSearch').validate({
         rules: {
@@ -146,6 +147,7 @@ function query(optionTransp,optionProv,optionRegio,optionTipSer,datInit,datEnd)
     }
 function init_table()
 {
+
     $('#tabla_results thead tr th').each( function (i) {
         var title = $(this).text();
         $(this).html( '<label style="display:none;">'+title+'</label><input type="text" placeholder="Buscar '+title+'" />' );
@@ -159,4 +161,5 @@ function init_table()
             }
         } );
     } );
+    
 }
