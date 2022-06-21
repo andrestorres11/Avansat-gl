@@ -205,6 +205,25 @@
             if($_REQUEST["cars"]!="Seleccione"){
               $query .= " AND a.cod_transp='".$_REQUEST["cars"]."'";
             }
+            if($_REQUEST["optionTipSer"]!="Seleccione"){
+              $query .= " AND a.tip_solici='".$_REQUEST["optionTipSer"]."'";
+            }
+            if($_REQUEST["optionRegio"]!="Seleccione"){
+              
+              $sql_ind = "SELECT cod_tercer  FROM ".BASE_DATOS.".tab_tercer_tercer WHERE cod_region ='".$_REQUEST["optionRegio"]."'";
+              $consulta_ind = new Consulta($sql_ind, self::$conexion);
+              $respuesta_ind = $consulta_ind->ret_matriz("a");
+              $cod_tercer='';
+              foreach($respuesta_ind as $dato){
+                  $cod_tercer=$cod_tercer.$dato['cod_tercer'].',';
+              }
+              $cod_tercer=substr($cod_tercer, 0, -1); // eliminar ultimo caracter
+              if($cod_tercer!='')
+              {
+                $query .= " AND a.cod_transp IN (".$cod_tercer.")";
+              }
+            }
+            
             if($_REQUEST["fec_finxxx"] != "" && $_REQUEST["fec_inicio"] != ""){
                 $query .= "
                    AND DATE(a.fec_creaci) BETWEEN '".$_REQUEST["fec_inicio"]."' AND '".$_REQUEST["fec_finxxx"]."'
@@ -282,6 +301,25 @@
                   $query .= " AND a.cod_transp='".$_REQUEST["cars"]."'";
                 }
 
+                if($_REQUEST["optionTipSer"]!="Seleccione"){
+                  $query .= " AND a.tip_solici='".$_REQUEST["optionTipSer"]."'";
+                }
+                if($_REQUEST["optionRegio"]!="Seleccione"){
+              
+                  $sql_ind = "SELECT cod_tercer  FROM ".BASE_DATOS.".tab_tercer_tercer WHERE cod_region ='".$_REQUEST["optionRegio"]."'";
+                  $consulta_ind = new Consulta($sql_ind, self::$conexion);
+                  $respuesta_ind = $consulta_ind->ret_matriz("a");
+                  $cod_tercer='';
+                  foreach($respuesta_ind as $dato){
+                      $cod_tercer=$cod_tercer.$dato['cod_tercer'].',';
+                  }
+                  $cod_tercer=substr($cod_tercer, 0, -1); // eliminar ultimo caracter
+                  if($cod_tercer!='')
+                  {
+                    $query .= " AND a.cod_transp IN (".$cod_tercer.")";
+                  }
+                }
+
                 if($_REQUEST["fec_finxxx"] != "" && $_REQUEST["fec_inicio"] != ""){
                     $query .= "
                        AND DATE(a.fec_creaci) BETWEEN '".$_REQUEST["fec_inicio"]."' AND '".$_REQUEST["fec_finxxx"]."'";
@@ -332,6 +370,24 @@
             }
             if($_REQUEST["cars"]!="Seleccione"){
               $query .= " AND a.cod_transp='".$_REQUEST["cars"]."'";
+            }
+            if($_REQUEST["optionTipSer"]!="Seleccione"){
+              $query .= " AND a.tip_solici='".$_REQUEST["optionTipSer"]."'";
+            }
+            if($_REQUEST["optionRegio"]!="Seleccione"){
+              
+              $sql_ind = "SELECT cod_tercer  FROM ".BASE_DATOS.".tab_tercer_tercer WHERE cod_region ='".$_REQUEST["optionRegio"]."'";
+              $consulta_ind = new Consulta($sql_ind, self::$conexion);
+              $respuesta_ind = $consulta_ind->ret_matriz("a");
+              $cod_tercer='';
+              foreach($respuesta_ind as $dato){
+                  $cod_tercer=$cod_tercer.$dato['cod_tercer'].',';
+              }
+              $cod_tercer=substr($cod_tercer, 0, -1); // eliminar ultimo caracter
+              if($cod_tercer!='')
+              {
+                $query .= " AND a.cod_transp IN (".$cod_tercer.")";
+              }
             }
             if($_REQUEST["fec_finxxx"] != "" && $_REQUEST["fec_inicio"] != ""){
                 $query .= " AND DATE(a.fec_creaci) BETWEEN '".$_REQUEST["fec_inicio"]."' AND '".$_REQUEST["fec_finxxx"]."'";
@@ -407,6 +463,24 @@
             }
             if($_REQUEST["cars"]!="Seleccione"){
               $query .= " AND a.cod_transp='".$_REQUEST["cars"]."'";
+            }
+            if($_REQUEST["optionTipSer"]!="Seleccione"){
+              $query .= " AND a.tip_solici='".$_REQUEST["optionTipSer"]."'";
+            }
+            if($_REQUEST["optionRegio"]!="Seleccione"){
+              
+              $sql_ind = "SELECT cod_tercer  FROM ".BASE_DATOS.".tab_tercer_tercer WHERE cod_region ='".$_REQUEST["optionRegio"]."'";
+              $consulta_ind = new Consulta($sql_ind, self::$conexion);
+              $respuesta_ind = $consulta_ind->ret_matriz("a");
+              $cod_tercer='';
+              foreach($respuesta_ind as $dato){
+                  $cod_tercer=$cod_tercer.$dato['cod_tercer'].',';
+              }
+              $cod_tercer=substr($cod_tercer, 0, -1); // eliminar ultimo caracter
+              if($cod_tercer!='')
+              {
+                $query .= " AND a.cod_transp IN (".$cod_tercer.")";
+              }
             }
             if($_REQUEST["fec_finxxx"] != "" && $_REQUEST["fec_inicio"] != ""){
                 $query .= " AND DATE(a.fec_creaci) BETWEEN '".$_REQUEST["fec_inicio"]."' AND '".$_REQUEST["fec_finxxx"]."'";
@@ -2179,7 +2253,7 @@
                                             $message .= '
                                             <td align="left" style="padding:0;Margin:0;padding-left:20px;padding-right:20px;">
                                               <p style="Margin:0;-webkit-text-size-adjust:none;-ms-text-size-adjust:none;mso-line-height-rule:exactly;font-size:14px;font-family:arial, helvetica neue, helvetica, sans-serif;line-height:21px;color:#655e5e;">
-                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Señor(a):
+                                                <br><strong class="colortext">Solicitud de: </strong> '. $nom_asiste .' <br> <br><strong class="colortext">'.$nom_client.'</strong><br><br><strong class="colortext">Fecha y hora de la solicitud: </strong> '. $fec_actual .' <br> <br class="colortext">Seï¿½or(a):
                                                 '. $nom_solici .'. <br> <br class="colortext">'.$msagebody.' <br> <br class="colortext">Estado:
                                                 <strong class="colortext">'.$estado.'</strong><br>
                                                 <br><strong style="color:#000">Observacion:</strong> '.$observacion.'
