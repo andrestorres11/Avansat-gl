@@ -36,7 +36,7 @@ function PorAprobValidate() {
         },
         messages: {
             AproServicio: {
-                required: "Por favor Seleccione una opción"
+                required: "Por favor Seleccione una opciï¿½n"
             }
         },
         submitHandler: function(form) {
