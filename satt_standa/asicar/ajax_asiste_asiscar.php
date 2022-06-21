@@ -33,10 +33,15 @@
                 WHERE cod_region IN (".$_POST['optionRegio'].")";
                 $consulta = new Consulta($sql, self::$conexion);
                 $respuesta = $consulta->ret_matriz("a");
-                foreach($respuesta as $dato){
-                    $cod_tercer[]=$dato;
+                $cod_tercer='';
+                foreach($respuesta_ind as $dato){
+                    $cod_tercer=$cod_tercer.$dato['cod_tercer'].',';
                 }
-                $Where=$Where." AND cod_transp IN (".$cod_tercer.")";
+                $cod_tercer=substr($cod_tercer, 0, -1); // eliminar ultimo caracter
+                if($cod_tercer!='')
+                {
+                    $Where=$Where." AND cod_transp IN (".$cod_tercer.")";
+                }
             }
             if($_POST['optionTipSer']!='')
             {

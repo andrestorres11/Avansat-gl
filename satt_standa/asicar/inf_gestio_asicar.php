@@ -38,6 +38,7 @@
             echo '
                 <!-- Bootstrap -->
                 <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/bootstrap-4/css/bootstrap.min.css" rel="stylesheet">
+                <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/css/bootstrap-select.min.css" rel="stylesheet">
 
                 <!-- Font Awesome -->
                 <link href="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/fontawesome/css/font-awesome.min.css" rel="stylesheet">
@@ -87,7 +88,9 @@
 
                 <!-- Bootstrap -->
                 <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/bootstrap-4/js/bootstrap.min.js"></script>
-
+                <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/bootstrap-4/js/bootstrap.bundle.js"></script>
+                <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.18/js/bootstrap-select.min.js"></script>
+                
                 <!-- bootstrap-progressbar -->
                 <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/bootstrap-progressbar/bootstrap-progressbar.min.js"></script>
 
@@ -127,6 +130,8 @@
         private function filtros(){
             //Links css
             self::styles();
+            $option_tipser = $this->obtenerTipoServicio();
+            $option_regio = $this->obtenerRegionales();
 
             $mDateNOW = date('Y-m-d');
             $mDateTem = date_sub(date_create($mDateNOW), date_interval_create_from_date_string("7 days") );
@@ -156,7 +161,7 @@
                                                         <label>Transportadora:</label>
                                                     </div>
                                                     <div class="col-3">
-                                                        <select id="cars" name="cars" style="width:150px;">
+                                                        <select id="cars" name="cars"  style="width:150px;">
                                                             <option>Seleccione</option>
                                                             '.$this->darTransportadora().'
                                                         </select>
@@ -166,6 +171,26 @@
                                                     </div>
                                                     <div class="col-3">
                                                         <input type="text" id="num_soliciID" name="num_solici">
+                                                    </div>
+                                                </div>
+                                                <div class="row mt-2">
+                                                    <div class="col-3 text-right">
+                                                        <label>Tipo Servicio:</label>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <select id="optionTipSer" name="optionTipSer"  style="width:150px;">
+                                                            <option>Seleccione</option>
+                                                            '.$option_tipser.'
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-3 text-right">
+                                                        <label>Regional:</label>
+                                                    </div>
+                                                    <div class="col-3">
+                                                        <select id="optionRegio" name="optionRegio"  style="width:150px;">
+                                                            <option>Seleccione</option>
+                                                            '.$option_regio.'
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="row mt-2">
@@ -621,6 +646,29 @@ return $html;
                   </div>
                 </div>';
           return $html;
+        }
+        function obtenerTipoServicio()
+        {
+          $sql = "SELECT id,nom_asiste FROM ".BASE_DATOS.".tab_formul_asiste  WHERE ind_estado='1'";
+          $consulta = new Consulta($sql, $this->conexion);
+          $respuesta = $consulta->ret_matriz("a");
+          $html='';
+            foreach($respuesta as $dato){
+            $html.='<option value="'.$dato['id'].'">'.$dato['nom_asiste'].'</option>';
+            }
+          return utf8_encode($html);
+            
+        }
+        function obtenerRegionales()
+        {
+          $sql = "SELECT cod_region,nom_region FROM ".BASE_DATOS.".tab_genera_region  WHERE ind_estado='1'";
+          $consulta = new Consulta($sql, $this->conexion);
+          $respuesta = $consulta->ret_matriz("a");
+          $html='';
+            foreach($respuesta as $dato){
+            $html.='<option value="'.$dato['cod_region'].'">'.$dato['nom_region'].'</option>';
+            }
+          return utf8_encode($html);
         }
     }
 
