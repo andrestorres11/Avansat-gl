@@ -3806,7 +3806,7 @@ class Despachos
                         IF( a.gps_usuari IS NULL OR a.gps_usuari = '', ( IF(x.nom_usrgps IS NULL OR x.nom_usrgps = '', '$mObs[0]', x.nom_usrgps) ), a.gps_usuari ) AS gps_usuari, 
                         IF( a.gps_paswor IS NULL OR a.gps_paswor = '', ( IF(x.clv_usrgps IS NULL OR x.clv_usrgps = '', '$mObs[0]', x.clv_usrgps) ), a.gps_paswor ) AS gps_paswor, 
                         IF( a.fec_citcar IS NULL OR a.fec_citcar = '0000-00-00', '$mObs[1]', DATE_FORMAT( CONCAT( a.fec_citcar, ' ', a.hor_citcar ), '%H:%i %d-%m-%Y') ) AS fec_citcar, 
-                        IF( y.nom_operad IS NULL OR y.nom_operad = '', ( IF(a.gps_otroxx IS NULL OR a.gps_otroxx = '', '$mObs[0]', UPPER(a.gps_otroxx)) ),UPPER(y.nom_operad)) AS nom_opegps,
+                        IF( y.nom_operad IS NULL OR y.nom_operad = '', ( IF(ac.nom_operad IS NULL OR ac.nom_operad = '' ,IF(a.gps_otroxx IS NULL OR a.gps_otroxx = '', '$mObs[0]', UPPER(a.gps_otroxx)), UPPER(ac.nom_operad)) ),UPPER(y.nom_operad)) AS nom_opegps,
                         k.num_solici,
                         IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci,
                         y.url_gpsxxx,
@@ -3878,7 +3878,9 @@ class Despachos
               LEFT JOIN ".BASE_DATOS.".tab_genera_produc ab 
                      ON k.cod_mercan = ab.cod_produc
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer jj 
-                     ON a.cod_client = jj.cod_tercer 
+                     ON a.cod_client = jj.cod_tercer
+              LEFT JOIN ".BD_STANDA .".tab_genera_opegps ac 
+                     ON x.cod_opegps = ac.cod_operad 
                   WHERE a.num_despac = '{$mNumDesOri}'
                   ORDER BY x.cod_consec DESC 
                 ";
