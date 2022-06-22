@@ -9,7 +9,7 @@
     class InfNovedadesUsuario{
         
         var $conexion;
-        var $cNull = array(array('cod_usuari'=>0, 'nom_usuari'=>'Seleccione una opción'));
+        var $cNull = array(array('cod_usuari'=>0, 'nom_usuari'=>'Seleccione una opcion'));
         
         function __construct($conexion){
             echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
@@ -35,7 +35,7 @@
         
         function showFilters()
         {
-            header('charset: ISO-8859-1');
+            // header('charset: ISO-8859-1');
             
             $_USUARIOS =  $this->getUsuarios();
            
@@ -62,6 +62,7 @@
             
 
             $hoy = date("Y-m-d H:i:s");
+            //$inicial = strtotime('-7500 day', strtotime($hoy));
             $inicial = strtotime('-7 day', strtotime($hoy));
             $inicial = date('Y-m-d', $inicial);
             $hinicial = date('H:00', strtotime($hoy));
@@ -111,7 +112,8 @@
                         <div class="col-md-6">
                             <select id="tipoID" name="tipo" style="width:100%">
                                 <option value="0">Seleccione una opci&oacute;n</option>
-                                <option value="1">Diario</option>
+                                <option value="1">Hora</option>
+                                <option value="4">Dia</option>
                                 <option value="2">Semanal</option>
                                 <option value="3">Mensual</option>
                             </select>
