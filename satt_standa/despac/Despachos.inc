@@ -2372,7 +2372,7 @@ class Despachos
     private function validaDivMapas($mNumDespac){
         $novedades = self::getNovedad($mNumDespac , 'LEFT');
         $puntFis = self::getPuntFisDespac($mNumDespac);
- 
+        $infOriDes = self::getOrigeDesti($mNumDespac);
         $flag = 0;
         $latLon = array( ); 
         foreach ($novedades as $key => $value) {
@@ -2403,6 +2403,28 @@ class Despachos
                 $latLon[] = $value;
             }
         }
+
+        if(BASE_DATOS != 'satt_faro'){
+            //Validación latitud y longitud de ciudad de origen y destino
+            //Origen
+            if($infOriDes['lat_origen'] != '' && $infOriDes['lon_origen'] != ''){
+                $latLon[] = array(
+                    "val_latitu" => $infOriDes['lat_origen'],
+                    "val_longit" => $infOriDes['lon_origen'],
+                    "obs_noveda" => 'Ciudad Origen: '.strtoupper($infOriDes['nom_ciuori']),
+                    "tip_pointx" => "ORI"
+                );
+            }
+            //Destino
+            if($infOriDes['lat_destin'] != '' && $infOriDes['lon_destin'] != ''){
+                $latLon[] = array(
+                    "val_latitu" => $infOriDes['lat_destin'],
+                    "val_longit" => $infOriDes['lon_destin'],
+                    "obs_noveda" => 'Ciudad Destino: '.strtoupper($infOriDes['nom_ciudes']),
+                    "tip_pointx" => "DES"
+                );
+            }
+        }    
         //echo "<pre>"; print_r($latLon);echo "</pre>"; 
         return array('ind_estado' => $flag , 'data' => $latLon);
     }
@@ -3806,7 +3828,7 @@ class Despachos
                         IF( a.gps_usuari IS NULL OR a.gps_usuari = '', ( IF(x.nom_usrgps IS NULL OR x.nom_usrgps = '', '$mObs[0]', x.nom_usrgps) ), a.gps_usuari ) AS gps_usuari, 
                         IF( a.gps_paswor IS NULL OR a.gps_paswor = '', ( IF(x.clv_usrgps IS NULL OR x.clv_usrgps = '', '$mObs[0]', x.clv_usrgps) ), a.gps_paswor ) AS gps_paswor, 
                         IF( a.fec_citcar IS NULL OR a.fec_citcar = '0000-00-00', '$mObs[1]', DATE_FORMAT( CONCAT( a.fec_citcar, ' ', a.hor_citcar ), '%H:%i %d-%m-%Y') ) AS fec_citcar, 
-                        IF( y.nom_operad IS NULL OR y.nom_operad = '', ( IF(a.gps_otroxx IS NULL OR a.gps_otroxx = '', '$mObs[0]', UPPER(a.gps_otroxx)) ),UPPER(y.nom_operad)) AS nom_opegps,
+                        IF( y.nom_operad IS NULL OR y.nom_operad = '', ( IF(ac.nom_operad IS NULL OR ac.nom_operad = '' ,IF(a.gps_otroxx IS NULL OR a.gps_otroxx = '', '$mObs[0]', UPPER(a.gps_otroxx)), UPPER(ac.nom_operad)) ),UPPER(y.nom_operad)) AS nom_opegps,
                         k.num_solici,
                         IF( i.cod_agenci IS NULL OR i.cod_agenci = '', '$mObs[0]', UPPER(i.cod_agenci) ) AS cod_agenci,
                         y.url_gpsxxx,
@@ -3878,7 +3900,9 @@ class Despachos
               LEFT JOIN ".BASE_DATOS.".tab_genera_produc ab 
                      ON k.cod_mercan = ab.cod_produc
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer jj 
-                     ON a.cod_client = jj.cod_tercer 
+                     ON a.cod_client = jj.cod_tercer
+              LEFT JOIN ".BD_STANDA .".tab_genera_opegps ac 
+                     ON x.cod_opegps = ac.cod_operad 
                   WHERE a.num_despac = '{$mNumDesOri}'
                   ORDER BY x.cod_consec DESC 
                 ";
@@ -5110,13 +5134,18 @@ class Despachos
      */
     private function getPuntFisDespac( $mNumDespac)
     {
+      if(BASE_DATOS=='satt_faro'){
+        $add = "'O'";
+      }else{
+        $add = "IF(c.cod_tpcont = 1,'P','O')";
+      }
       $mSql = " 
       SELECT
             c.val_latitu,
             c.val_longit,
             (b.fec_alarma) AS `fec_noveda`,
             c.nom_contro AS `obs_noveda`,
-            'O' AS `tip_pointx`
+            ".$add." AS `tip_pointx`
         FROM
             ".BASE_DATOS.".tab_despac_despac a
             INNER JOIN ".BASE_DATOS.".tab_despac_seguim b ON b.num_despac = a.num_despac
@@ -5128,6 +5157,36 @@ class Despachos
 
       $mConsult = new Consulta( $mSql, $this -> conexion );
       return $mConsult -> ret_matrix('a');
+    }
+
+    /*! \fn: getOrigeDesti
+     *  \brief: Trae Informacion de origen y destino
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 22/06/2022
+     *  \date modified: dd/mm/aaaa
+     *  \param: mNumDespac   Integer   Numero de despacho
+     *  \return: Matriz
+     */
+    private function getOrigeDesti( $mNumDespac)
+    {
+      $mSql = " 
+      SELECT
+            b.cod_latitu as 'lat_origen',
+            b.cod_longit as 'lon_origen',
+            b.nom_ciudad as 'nom_ciuori',
+            c.cod_latitu as 'lat_destin',
+            c.cod_longit as 'lon_destin',
+            c.nom_ciudad as 'nom_ciudes'
+        FROM
+            ".BASE_DATOS.".tab_despac_despac a
+            INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b ON b.cod_ciudad = a.cod_ciuori AND b.cod_depart = a.cod_depori AND b.cod_paisxx = a.cod_paiori
+            INNER JOIN ".BASE_DATOS.".tab_genera_ciudad c ON c.cod_ciudad = a.cod_ciudes AND c.cod_depart = a.cod_depdes AND c.cod_paisxx = a.cod_paides
+        WHERE
+            a.num_despac = '" . $mNumDespac . "' 
+      ";
+
+      $mConsult = new Consulta( $mSql, $this -> conexion );
+      return $mConsult -> ret_arreglo();
     }
 
 
