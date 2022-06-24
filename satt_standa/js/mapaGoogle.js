@@ -65,7 +65,14 @@ $("body").ready(function(){
           descripcion = "<b><label style='color:#000000'> Punto de Control </label></b><br>";
           descripcion += "<label style='color:#000000'> <b>Fecha y hora Planeada:</b> " + ruta[i].fec_noveda + " </label><br>";
           descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
-          icono = '../satt_standa/imagenes/puntosFisicos.png'; //Punto de Control = O
+          icono = '../satt_standa/imagenes/placeholder.png'; //Punto de Control = O
+          
+        } else if( ruta[i].tip_pointx == "P" ){
+
+          descripcion = "<b><label style='color:#000000'> Punto de Control </label></b><br>";
+          descripcion += "<label style='color:#000000'> <b>Fecha y hora Planeada:</b> " + ruta[i].fec_noveda + " </label><br>";
+          descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
+          icono = '../satt_standa/imagenes/placeholder.png'; //Punto de Control = O
           
         } else if( ruta[i].tip_pointx == "D1" ){
 
@@ -82,6 +89,16 @@ $("body").ready(function(){
           descripcion += "<label style='color:#000000'> " + ruta[i].obs_noveda + " </label>";
           icono = '../satt_standa/imagenes/fin2.png';//Descargues = D
           descargue++;
+
+        } else if( ruta[i].tip_pointx == "ORI" ){
+
+          descripcion = "<b><label style='color:#000000'> " + ruta[i].obs_noveda + " </label></b><br>";
+          icono = '../satt_standa/imagenes/packages.png';
+
+        } else if( ruta[i].tip_pointx == "DES" ){
+
+          descripcion = "<b><label style='color:#000000'> " + ruta[i].obs_noveda + " </label></b><br>";
+          icono = '../satt_standa/imagenes/location.png';
 
         }
 
