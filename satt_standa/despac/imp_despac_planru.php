@@ -829,8 +829,17 @@ SELECT a.num_despac,
 
       if($_REQUEST['tipoqr'] != 0){
         $tipoQr = ($_REQUEST['tipoqr'] == 1 ? 'url_wazexx' : 'url_google' );
-      $query = "SELECT if(b.ind_virtua = '1',CONCAT(b.nom_contro,' (Virtual)'),b.nom_contro),b.dir_contro,
-                         a.fec_planea,a.fec_alarma,b.cod_contro,if(b.ind_urbano = '1','Urbano',''), ".$tipoQr."
+      $query = "SELECT if(b.ind_virtua = '1',CONCAT(b.nom_contro,' (Virtual)'),b.nom_contro) nombcont, b.dir_contro,
+                         a.fec_planea,a.fec_alarma,b.cod_contro,if(b.ind_urbano = '1','Urbano',''), ".$tipoQr.", b.cod_contro, b.ind_virtua,
+                         (SELECT ctrl.nom_contro 
+                         FROM tab_genera_contro ctrl, `tab_ealxxx_transp` eals 
+                         WHERE eals.`cod_ealxxx`= ctrl.cod_contro
+                         and ctrl.ind_virtua = 0 
+                         AND ctrl.nom_contro NOT LIKE '%DEST%' 
+                         AND ctrl.ind_estado = 1 
+                         AND ctrl.ind_pcpadr = 1
+                         And eals.`cod_transp` = $obsplan[2]
+                         And ctrl.nom_contro= b.nom_contro limit 1) datos
                     FROM ".BASE_DATOS.".tab_despac_seguim a,
                          ".BASE_DATOS.".tab_genera_contro b,
                          ".BASE_DATOS.".tab_despac_vehige e
@@ -840,8 +849,17 @@ SELECT a.num_despac,
   
       }else{
     
-        $query = "SELECT if(b.ind_virtua = '1',CONCAT(b.nom_contro,' (Virtual)'),b.nom_contro),b.dir_contro,
-                       a.fec_planea,a.fec_alarma,b.cod_contro,if(b.ind_urbano = '1','Urbano','')
+        $query = "SELECT if(b.ind_virtua = '1',CONCAT(b.nom_contro,' (Virtual)'),b.nom_contro) nombcont, b.dir_contro,
+                       a.fec_planea,a.fec_alarma,b.cod_contro,if(b.ind_urbano = '1','Urbano',''), b.cod_contro, b.ind_virtua, 
+                       (SELECT ctrl.nom_contro 
+                         FROM tab_genera_contro ctrl, `tab_ealxxx_transp` eals 
+                         WHERE eals.`cod_ealxxx`= ctrl.cod_contro
+                         and ctrl.ind_virtua = 0 
+                         AND ctrl.nom_contro NOT LIKE '%DEST%' 
+                         AND ctrl.ind_estado = 1 
+                         AND ctrl.ind_pcpadr = 1
+                         And eals.`cod_transp` = $obsplan[2]
+                         And ctrl.nom_contro= b.nom_contro limit 1) datos
                   FROM ".BASE_DATOS.".tab_despac_seguim a,
                        ".BASE_DATOS.".tab_genera_contro b,
                        ".BASE_DATOS.".tab_despac_vehige e
@@ -868,6 +886,7 @@ SELECT a.num_despac,
         echo "<pre style='display:none'>";
         print_r( $query );
         echo "</pre>";
+        
       }
 
       $consulta = new Consulta($query, $this -> conexion);
@@ -897,7 +916,70 @@ SELECT a.num_despac,
       }
 
       $j = 0;
+
+      //echo "<pre>";
+      //  print_r($matriz1);
+     // echo "</pre>";
+      //echo "<br> aqui nit ".$obsplan[2]." Despac ".$d19;
+      //echo "--> ".$matriz1[2]['ind_virtua']." ---> ".count($matriz1)."<br>";
       
+      $sqlnew="SELECT ctrl.nom_contro  FROM tab_genera_contro ctrl, `tab_ealxxx_transp` eals 
+              WHERE eals.`cod_ealxxx`= ctrl.cod_contro and ctrl.ind_virtua = 0 AND ctrl.nom_contro NOT LIKE '%DEST%' 
+              AND ctrl.ind_estado = 1 AND ctrl.ind_pcpadr = 1 And eals.`cod_transp` =". $obsplan[2];
+      $eals = new Consulta($sqlnew, $this -> conexion);
+      $contrateals = $eals ->ret_matrix("a");
+      //echo "<pre>";
+      //  print_r($contrateals);
+      // echo "</pre>";
+      $matrizinddel=[];
+      foreach($matriz1 as $key => $valor){
+        $resultSet=false;
+        //echo $matriz1[$key]['nombcont']."<br>";
+        if( $matriz1[$key]['ind_virtua']==0){
+          foreach($contrateals as $key2=>$vrenc){
+            if($resultSet==false) {
+                if ($vrenc['nom_contro']==$matriz1[$key]['nombcont']){
+                  $resultSet=true;
+                }
+            }
+          } 
+        }
+        if($resultSet==true){
+          //echo "existe <br>";
+        }elseif($resultSet==false && $matriz1[$key]['ind_virtua']==0){
+          //echo "eliminar $key <br>";
+          array_push($matrizinddel, $key);
+        }
+      }
+
+      //echo "<pre>";
+      //  print_r($matrizinddel);
+      //echo "</pre>";
+
+
+      foreach($matrizinddel as $kedel=>$valuedel){
+
+        unset($matriz1[$valuedel]);
+        //echo $valuedel." - ";
+      }
+      $matriz1 = array_values($matriz1);
+      
+      //echo "<pre>";
+      //  print_r($matriz1);
+     // echo "</pre>";
+
+
+
+
+
+
+
+
+
+
+
+
+
       if( $_FORMAT['ind_segpue'] == '1' ) 
         $ini = 1;
       else
@@ -918,6 +1000,8 @@ SELECT a.num_despac,
       }
       
       $_SESSION['mat'] = $d;
+      
+
 
       if( $_REQUEST[posi] == 0 || !$_REQUEST[posi] )
       {  
