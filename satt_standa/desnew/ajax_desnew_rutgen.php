@@ -1815,25 +1815,33 @@ class AjaxInsertDespacho
     /*echo "<pre>";
     print_r( $_AJAX );
     echo "</pre>";*/
-    
+    $cod_genera = $_AJAX['cod_client'];
+    $nom_genera = strtoupper($this->getInfoTercer($cod_genera)['nom_tercer']);
     for( $k = 0; $k <= $_AJAX['counter']; $k++ ){
       if( $_AJAX[ 'cod_remesa'.$k ] != NULL ){
 
-        $cod_genera = $_AJAX[ 'cod_genera'.$k ] != "" && $_AJAX[ 'cod_genera'.$k ] != NULL ? "'".$_AJAX[ 'cod_genera'.$k ]."'" : "NULL" ;
-        $cod_ciudad = $_AJAX[ 'cod_ciudad'.$k ] != "" && $_AJAX[ 'cod_ciudad'.$k ] != NULL ? "'".$_AJAX[ 'cod_ciudad'.$k ]."'" : "NULL" ;
+        //$cod_genera = $_AJAX[ 'cod_genera'.$k ] != "" && $_AJAX[ 'cod_genera'.$k ] != NULL ? "'".$_AJAX[ 'cod_genera'.$k ]."'" : "NULL" ;
+        //$cod_ciudad = $_AJAX[ 'cod_ciudad'.$k ] != "" && $_AJAX[ 'cod_ciudad'.$k ] != NULL ? "'".$_AJAX[ 'cod_ciudad'.$k ]."'" : "NULL" ;
+
+        $cod_ciudes = $_AJAX['cod_ciudes'] != "" && $_AJAX['cod_ciudes'] != NULL ? "'".$_AJAX['cod_ciudes']."'" : "NULL" ;
+        //Extrae información del destinatario
+        $nom_destin = strtoupper($this->getInfoRemdes($_AJAX['nom_destin'.$k ])['nom_remdes']);
+        $nit_destin = strtoupper($this->getInfoRemdes($_AJAX['nom_destin'.$k ])['num_remdes']);
+        $num_destin = strtoupper($this->getInfoRemdes($_AJAX['nom_destin'.$k ])['num_telefo']);
+
         $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_destin
                               (
-                                num_despac, num_docume, num_docalt, cod_genera,
+                                num_despac, num_docume, num_docalt, cod_genera, nom_genera,
                                 nom_destin, cod_ciudad, dir_destin, num_destin, 
                                 fec_citdes, hor_citdes, usr_creaci, fec_creaci,
-                                cod_remdes
+                                cod_remdes, nit_destin
                               )
                          VALUES
                               (
-                                '$datos->num_despac', '".$_AJAX[ 'cod_remesa'.$k ]."','".$_AJAX[ 'num_docalt'.$k ]."', ".$cod_genera.",  
-                                '".$_AJAX[ 'nom_destin'.$k ]."', ".$cod_ciudad.",'".$_AJAX[ 'dir_destin'.$k ]."', '".$_AJAX[ 'nom_contac'.$k ]."',  
-                                '".$_AJAX[ 'fec_citdes'.$k ]."', '".$_AJAX[ 'hor_citdes'.$k ]."','$datos->usr_creaci', NOW(), 
-                                '".$_AJAX[ 'nom_destin'.$k ]."')";
+                                '$datos->num_despac', '".$_AJAX['cod_remesa'.$k ]."','".$_AJAX['num_docalt'.$k ]."', '".$cod_genera."', '".$nom_genera."', 
+                                '".$nom_destin."', ".$cod_ciudes.",'".$_AJAX['dir_destin'.$k ]."', '".$num_destin."',  
+                                '".$_AJAX['fec_citdes'.$k ]."', '".$_AJAX['hor_citdes'.$k ]."','$datos->usr_creaci', NOW(), 
+                                '".$_AJAX['nom_destin'.$k ]."', '".$nit_destin."')";
         $consulta = new Consulta( $mInsert, $this->conexion, "R" );
       
         #segun nuevas especificaciones debe insertar en la tabla  tab_despac_remesa
@@ -1930,6 +1938,33 @@ class AjaxInsertDespacho
       setTrackingDespac($this->conexion, $datos->num_despac, 2, 1, null);
     }
     
+  }
+
+  private function getInfoTercer($cod_tercer){
+    $mSql = "SELECT a.nom_tercer
+               FROM ".BASE_DATOS.".tab_tercer_tercer a
+              WHERE a.cod_tercer = '".$cod_tercer."'";
+    $consulta = new Consulta( $mSql, $this->conexion );
+		$respuesta = $consulta->ret_matriz();
+    if(count($respuesta)>0){
+      return $respuesta[0];
+    }else{
+      return '';
+    }
+  }
+
+  private function getInfoRemdes($cod_remdes){
+    $mSql = "SELECT a.nom_remdes, a.num_remdes, a.dir_remdes,
+                    a.num_telefo
+               FROM ".BASE_DATOS.".tab_genera_remdes a
+              WHERE a.cod_remdes = '".$cod_remdes."'";
+    $consulta = new Consulta( $mSql, $this->conexion );
+		$respuesta = $consulta->ret_matriz();
+    if(count($respuesta)>0){
+      return $respuesta[0];
+    }else{
+      return '';
+    }
   }
   
   protected function ShowDestin( $_AJAX )
