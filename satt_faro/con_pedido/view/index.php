@@ -43,19 +43,13 @@
                 if ($isValidCaptcha) {
                     //self::interfaz($request);
                     if($request["opttip"]!=''){
-                      if(self::consultaExiste($request["pedido"],$request["opttip"])){
-                        //self::prueba($request);
-                        if($request["opttip"]==3){
+                      if(self::consultaExiste($request["filtro"], $request["num_transp"], $request["opttip"], 0)){
+                        if($request["opttip"]==5){
                           self::interfaz($request);
                         }else{
-                          $data=self::dataPedRemisi($request["pedido"]);
-
-                          /* Separa los datos para la busqueda */
-                          $datos = explode("-", str_replace(' ', '', $data['ped_remisi']));
-                          $num_pedido = $datos[0];
-                          $num_lineax = $datos[1];
-                          $_SESSION['num_pedido']= $num_pedido;
-                          $_SESSION['num_linea']= $num_lineax;
+                          $data = self::consultaExiste($request["filtro"], $request["num_transp"], $request["opttip"], 1);
+                          $_SESSION['num_despac']= $data['num_despac'];
+                          $_SESSION['cod_transp']= $request["num_transp"];
                           $_SESSION['busqueda']= 1;
                           header("Location: dashboard.php");
                         }
@@ -82,20 +76,15 @@
          *  \date modified: dd/mm/aaaa
          *  \return: boolean
          */
-        protected function consultaExiste($val_consul,$opttip){
+        protected function consultaExiste($val_consul, $cod_transp, $opttip, $indicador_retorn){
           switch($opttip){
-			      case '1':
-            $resp = self::conPedido($val_consul);
-            return $resp;
-				    break;
-
 			      case '2':
-            $resp =  self::conRemisi($val_consul);
+            $resp =  self::conRemesa($val_consul, $cod_transp, $indicador_retorn);
             return $resp;
 				    break;
 
             case '3':
-            $resp = self::conViaje($val_consul);
+            $resp = self::conManifi($val_consul, $cod_transp, $indicador_retorn);
             return $resp;
 				    break;
 
@@ -106,82 +95,61 @@
 		      }
         }
 
-         /*! \fn: dataPedRemisi
-         *  \brief: Verifica si si existe un pedido o remision de la base de datos y retorna un boolean
+
+        /*! \fn: conManifi
+         *  \brief: Verifica si existe por manifiesto
          *  \author: Ing. Cristian Andres Torres
          *  \date: 29/10/2020
          *  \date modified: dd/mm/aaaa
          *  \return: boolean
          */
-        protected function dataPedRemisi($val_consul){
-          $mSql = "SELECT ped_remisi,num_docume FROM ".BASE_DATOS.".tab_despac_destin WHERE (ped_remisi = '".$val_consul."' OR num_docume='".$val_consul."');";
+        protected function conManifi($val_consul, $cod_transp, $ind_retorn = 0){
+          $mSql = "SELECT a.num_despac FROM ".BASE_DATOS.".tab_despac_despac a 
+                      INNER JOIN ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac
+                    WHERE 
+                        a.cod_manifi = '".$val_consul."' 
+                        AND b.cod_transp = '".$cod_transp."';";
           $mConsult = new Consulta($mSql, $this -> conexion);
-          $mData = $mConsult->ret_arreglo();
-          return $mData;
-        }
-
-
-        /*! \fn: conPedido
-         *  \brief: Verifica si si existe un pedido de la base de datos y retorna un boolean
-         *  \author: Ing. Cristian Andres Torres
-         *  \date: 29/10/2020
-         *  \date modified: dd/mm/aaaa
-         *  \return: boolean
-         */
-        protected function conPedido($val_consul){
-          $datos = explode("-", str_replace(' ', '', $val_consul));
-          $num_pedido = $datos[0];
-          $num_lineax = $datos[1];
-          $mSql = "SELECT COUNT(*) as 'can' FROM ".BASE_DATOS.".tab_genera_pedido WHERE 
-                        num_pedido = '".$num_pedido."' AND 
-                        num_lineax = '".$num_lineax."' ;";
-          $mConsult = new Consulta($mSql, $this -> conexion);
-          $mData = $mConsult->ret_arreglo()['can'];
+          $mData = $mConsult->ret_matrix();
           $resp = false;
-          if($mData>0){
+          if(count($mData) > 0){
             $resp = true;
           }
+
+          if($ind_retorn==1){
+            $resp = $mData[0];
+          }
+
+          return $resp;
+        }
+
+        /*! \fn: conRemesa
+         *  \brief: Verifica si existe por remesa
+         *  \author: Ing. Cristian Andres Torres
+         *  \date: 29/10/2020
+         *  \date modified: dd/mm/aaaa
+         *  \return: boolean
+         */
+        protected function conRemesa($val_consul, $cod_transp, $ind_retorn = 0){
+          $mSql = "SELECT a.num_despac FROM ".BASE_DATOS.".tab_despac_remesa a 
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac WHERE 
+                      a.cod_remesa = '".$val_consul."'
+                      AND b.cod_transp = '".$cod_transp."';";
+          $mConsult = new Consulta($mSql, $this -> conexion);
+          $mData = $mConsult->ret_matrix();
+          $resp = false;
+          if(count($mData)>0){
+            $resp = true;
+          }
+
+          if($ind_retorn==1){
+            $resp = $mData[0];
+          }
+
           return $resp;
         }
 
 
-        /*! \fn: conRemisi
-         *  \brief: Verifica si si existe una remision de la tabla tab_despac_destin de la base de datos y retorna un boolean
-         *  \author: Ing. Cristian Andres Torres
-         *  \date: 29/10/2020
-         *  \date modified: dd/mm/aaaa
-         *  \return: boolean
-         */
-        protected function conRemisi($val_consul){
-          $remision = str_replace(' ', '', $val_consul);
-          $mSql = "SELECT COUNT(*) as 'can' FROM ".BASE_DATOS.".tab_despac_destin WHERE 
-                      (ped_remisi = '".$remision."' OR num_docume = '".$remision."');";
-          $mConsult = new Consulta($mSql, $this -> conexion);
-          $mData = $mConsult->ret_arreglo()['can'];
-          $resp = false;
-          if($mData>0){
-            $resp = true;
-          }
-          return $resp;
-        }
-
-        /*! \fn: conViaje
-         *  \brief: Verifica si si existe un viaje con el valor como parametro enviado de la base de datos y retorna un boolean
-         *  \author: Ing. Cristian Andres Torres
-         *  \date: 29/10/2020
-         *  \date modified: dd/mm/aaaa
-         *  \return: boolean
-         */
-        protected function conViaje($val_consul){
-          $mSql = "SELECT COUNT(*) as 'can' FROM tab_despac_despac WHERE cod_manifi = '".$val_consul."';";
-          $mConsult = new Consulta($mSql, $this -> conexion);
-          $mData = $mConsult->ret_arreglo()['can'];
-          $resp = false;
-          if($mData>0){
-            $resp = true;
-          }
-          return $resp;
-        }
 
         /*! \fn: style
          *  \brief: Recopila los archivos necesarios de estilos
