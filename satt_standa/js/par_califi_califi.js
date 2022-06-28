@@ -880,6 +880,7 @@ function ReeItiner(num_despac, num_placax) {
                         url: "../" + standa + "/califi/class_califi_califi.php",
                         type: "POST",
                         data: attributes,
+                        dataType: "json",
                         async: true,
                         beforeSend: function() {
                             swal.close();
