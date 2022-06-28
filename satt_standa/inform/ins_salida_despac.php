@@ -161,65 +161,56 @@
                                   <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
                                       <div class="card-body mt-2">
                                           <form action="'.$_SERVER['PHP_SELF'].'" id="filter" name="filter" method="POST">
-                                              <div class="row">
+                                            <div class="row">
 
-                                                  <div class="col-2 text-left">
-                                                      <label>Transportadoras:</label>
-                                                      
-                                                  </div>
-                                                  <div class="col-4 multi_select_box">
-                                                      <select id="Cod_transp" name="Cod_transp" class="multi_select" data-live-search="true" data-size="10"  title="Seleccione de la lista" multiple>
-                                                          
-                                                          
-                                                      </select>
-                                                  </div>
-                                                  <div class="col-2 text-left">
+                                                <div class="col-2 text-left">
                                                     <label>Tipo de Servicio:</label>
-                                                  </div>
-                                                  <div class="col-4 multi_select_box">
-                                                    <select id="Cod_tiposerv" name="Cod_tiposerv" class="multi_select" data-live-search="true" data-size="10"  title="Seleccione de la lista" multiple>
-                                                      
-                                                      
-                                                    </select>
-                                                  </div>
-
                                                 </div>
-
-                                              <div class="row mt-2">
-                                                  <div class="col-2 text-left">
-                                                      <label>Fecha Inicial:</label>
-                                                  </div>
-                                                  <div class="col-4">
-                                                      <input type="date" id="fec_inicio" name="fec_inicio"  required value="'.$fechini.'" >
-                                                  </div>
-                                                  <div class="col-2 text-left">
-                                                      <label>Fecha Final:</label>
-                                                  </div>
-                                                  <div class="col-4">
-                                                      <input type="date" id="fec_finxxx" name="fec_finxxx" required value="'.$mDateNOW.'">
-                                                  </div>
+                                                <div class="col-4 multi_select_box">
+                                                    <select id="Cod_tiposerv" name="Cod_tiposerv" class="multi_select" data-live-search="true" data-size="10"  title="Seleccione de la lista" onchange="changeFunc()" multiple>
+                                                    </select>
+                                                </div>
+                                              
+                                                <div class="col-2 text-left">
+                                                    <label>Transportadoras:</label>
+                                                </div>
+                                                <div class="col-4 multi_select_box">
+                                                    <select id="Cod_transp" name="Cod_transp" class="multi_select" data-live-search="true" data-size="10"  title="Seleccione de la lista" multiple>
+                                                    </select>
+                                                </div>
                                                   
-                                                  
-                                              </div>
+                                            </div>
 
-                                              <div class="row mt-2">
+                                            <div class="row mt-2">
+                                                <div class="col-2 text-left">
+                                                    <label>Fecha Inicial:</label>
+                                                </div>
+                                                <div class="col-4">
+                                                    <input type="date" id="fec_inicio" name="fec_inicio"  required value="'.$fechini.'" >
+                                                </div>
+                                                <div class="col-2 text-left">
+                                                    <label>Fecha Final:</label>
+                                                </div>
+                                                <div class="col-4">
+                                                    <input type="date" id="fec_finxxx" name="fec_finxxx" required value="'.$mDateNOW.'">
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-2">
                                                 <div class="col-2 text-left">
                                                     <label>Hora Inicial:</label>
                                                 </div>
                                                 <div class="col-4">
-                                                <input type="number"  id="hor_inicia" name="hor_inicia" min="0" max="23" value=0>
-                                                    
+                                                    <input type="number"  id="hor_inicia" name="hor_inicia" min="0" max="23" value=0>
                                                 </div>
                                                 <div class="col-2 text-left">
                                                     <label>Hora Final:</label>
                                                 </div>
                                                 <div class="col-4">
-                                                <input type="number" size="6" id="hor_finxxx" name="hor_finxxx" min="0" max="23" value=23>
-                                                    
+                                                    <input type="number" size="6" id="hor_finxxx" name="hor_finxxx" min="0" max="23" value=23>
                                                 </div>
-                                              </div>
-                                              
-                                              </form>
+                                            </div>
+                                          </form>
                                           </div>
                                       </div>
                                   </div>
