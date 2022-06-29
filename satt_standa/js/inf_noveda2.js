@@ -282,9 +282,56 @@ function Alerta(title, message, focus){
         }
       });
 
+   
       $.ajax({
           url: "../" + Standa + "/inform/ajax_inform_inform.php",
           data: "Option=getDetalle&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali+"&tipo="+tipo+"&usuarios="+usuarios+"&standa="+Standa+"&tipInform="+tipInform+"&perfil="+cod_perfil,
+          type: "POST",
+          async: true,
+          beforeSend: function (obj){
+              $("#PopUpID").html('');
+              $.blockUI({
+                  theme: true,
+                  title: 'Detalle de novedades por usuario',
+                  draggable: false,
+                  message: '<center><img src="../' + Standa + '/imagenes/ajax-loader2.gif" /><p>Generando Informe</p></center>'
+              });
+          },
+          success: function (data){
+              $.unblockUI();
+            LoadPopupJQ('open', 'Detalle', ($(window).height() - 40), ($(window).width() - 40), false, false, true);
+            var popup = $("#popID");
+            popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+            popup.append(data);// //lanza el popUp
+            $(".scroll").css('overflow', 'scroll');
+            $(".scroll").css('height', ( $(window).height() - 195 ) );
+
+
+          }
+      });
+ }
+
+function detalle2(tipo,fec_inicia,fec_finali,usuarios, tipInform){
+      var Standa = $("#standaID").val();
+
+
+      var cod_perfil = 0;
+
+      $("input[type=checkbox]:checked").each(function(i,o){
+           
+        if($(this).attr("name") == 'multiselect_perfilID' ){
+          if( cod_perfil == 0 ){
+            cod_perfil =  $(this).val() ;
+          }else{
+            cod_perfil += ','+ $(this).val();
+          }
+        }
+      });
+      //alert(cod_perfil);
+      //alert("tipo " + tipo + " Fech ini " + fec_inicia + " Fech fin " + fec_finali + " usuarios " + usuarios + " tipInform " + tipInform )
+      $.ajax({
+          url: "../" + Standa + "/inform/ajax_inform_inform.php",
+          data: "Option=getDetalledias&Ajax=on&fec_inicia=" + fec_inicia + "&fec_finali=" + fec_finali+"&tipo="+tipo+"&usuarios="+usuarios+"&standa="+Standa+"&tipInform="+tipInform+"&perfil="+cod_perfil,
           type: "POST",
           async: true,
           beforeSend: function (obj){
