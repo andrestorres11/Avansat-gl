@@ -69,6 +69,9 @@ class inform {
                 case "getDetalleCargax";
                     $this->getDetalleCargax();
                     break;
+                case "getDetalledias";
+                    $this->getDetalledias();
+                    break;
                 default:
                     header('Location: ../../'.BASE_DATOS.'/index.php?window=central&cod_servic=1366&menant=1366');
                     break;
@@ -98,16 +101,22 @@ class inform {
             $intervalo = " 1 week"; // para las semanas
         }else if($datos->tipo == 3){
             $intervalo = " 1 month"; // para los meses
+        }else if($datos->tipo == 4){
+            $intervalo = " 1 days"; // para los meses
         }
 
         $data = $this->getDatosInform($datos->fec_inicia, $datos->fec_finali, $datos->usuario, $intervalo, $datos->perfil, $datos->tipInform);
-
+        //echo "<pre>";
+        //print_r($data);
+        //echo "</pre>";
         if( $datos->tipo == 1){
             $this->infoDia($data, $datos);
         }else if($datos->tipo == 2){
             $this->infoSemana($data, $datos);
         }else if($datos->tipo == 3){
             $this->infoMes($data, $datos);
+        }else if($datos->tipo == 4){
+            $this->infoDiax($data, $datos);
         }
     }
 
@@ -141,12 +150,20 @@ class inform {
             $and = ",  WEEK(a.fec_creaci) AS fec1";
             $fec1 = ", x.fec1";
             $group = "  GROUP BY fec1, a.num_despac, a.usr_creaci  ASC ";
+        }else if($intervalo == " 1 days"){
+            $and = ", DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') AS fec1";
+            $fec1 = ", x.fec1";
+            $group2 = " GROUP BY x.usr_creaci $fec1 ";
         }
 
         if($perfil){
             $p = "AND c.cod_perfil IN ($perfil) ";
         }
         if($usuario){
+
+            $search = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,Ã¡,Ã©,Ã­,Ã³,Ãº,Ã±,ÃÃ¡,ÃÃ©,ÃÃ­,ÃÃ³,ÃÃº,ÃÃ±,Ã?,Ã ,Ã?,Ã ,Ã?,â??,â? ,Â¿,ü");
+            $replace = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,Ó,Á,É,Í,Ú,\",\",¿,&uuml;");
+            $usuario= str_replace($search, $replace, $usuario);
             $u = " AND a.usr_creaci IN ($usuario)";
         }
 
@@ -187,6 +204,8 @@ class inform {
                        ) x 
               GROUP BY $datoGroup $fec1 
               ORDER BY $datoGroup $fec1";
+        
+        
         $consulta = new Consulta($sql, self::$cConexion);
         return $consulta->ret_matrix("a");
     }
@@ -717,6 +736,317 @@ class inform {
         <?php
     }
 
+    /*! \fn: infoMes
+     *  \brief: Funcion para pintar el general mensual del reporte No de Novedades por usuario
+     *  \author: Ing. Oscar Bocanegra
+     *  \date: dia/mes/aï¿½o
+     *  \date modified: dia/mes/aï¿½o
+     *  \param: $data -> arreglo con los datos a pintar
+     *  \param: $datos -> rreglo con los datos del post
+     *  \return 
+     */
+
+    private function infoday($data, $datos){
+        $mAux = array();  // variable auxiliar para alacenar los usuarios
+        $mAux2 = array(); // variable auxiliar para alacenar los perfiles
+        $mData = array(); // variable auxiliar para ordenar los datos de la consulta
+
+        foreach ($data as $key => $value) {
+            $mData[$value["usr_creaci"]][$value["fec1"]]['can_despac'] = $value["can_despac"];
+            $mData[$value["usr_creaci"]][$value["fec1"]]['can_regist'] = $value["can_regist"];
+            $mData[$value["usr_creaci"]][$value["fec1"]]['cod_perfil'] = $value["cod_perfil"];
+            $mData[$value["fec1"]]['can_despac'] += $value["can_despac"];
+            $mData[$value["fec1"]]['can_regist'] += $value["can_regist"];
+
+            if(!in_array($value["usr_creaci"], $mAux)){
+                $mAux[] = $value["usr_creaci"];
+                $mAux2[] = $value["cod_perfil"];
+            }
+        }
+        ?>
+
+        <div class="col-md-12 Style2DIV scroll">
+            <table width="100%" cellspacing="0" cellpadding="2" border="0" id="detalle" class="table hoverTable">
+                <?php
+                $fec_inicia = date ( 'Y-m-d' ,strtotime($datos->fec_inicia));
+                $fec_finali = date ( 'Y-m-d' ,strtotime($datos->fec_finali));
+                while($fec_inicia <= $fec_finali){
+                    ?>
+                    <tr>
+                        <th class='CellHead2' style='text-align:center' colspan="4">Registros del Dia <?= $fec_inicia ?></th>
+                    </tr>
+
+                    <?php
+                    if( $datos->tipInform == "nov"){ 
+                        ?>
+                        <tr>
+                            <th class='CellHead2' style='text-align:center'>C&oacute;digo de Novedad</th>
+                            <th class='CellHead2' style='text-align:center'>Novedad</th> 
+                            <th class='CellHead2' colspan='2' style='text-align:center'>Total de Registros</th>
+                        </tr> 
+                        <?php
+                    }else{
+                        ?>
+                        <tr>
+                            <th class='CellHead2' style='text-align:center'>C&oacute;digo de Perfil</th>
+                            <th class='CellHead2' style='text-align:center'>Usuario</th>
+                            <th class='CellHead2' style='text-align:center'>Total de Despachos En tr&aacute;nsito</th>
+                            <th class='CellHead2' style='text-align:center'>Total de Registros</th>
+                        </tr> 
+                        <?php
+                    }
+
+                    foreach ($mAux as $key => $value) {
+                        if( $datos->tipInform == "nov"){ 
+                            ?>
+                            <tr>
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= $mAux2[$key] ?></td>
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= $value ?></td> 
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$fec_inicia]['can_regist']+0) ?></td>
+                            </tr> 
+                            <?php
+                        }else{
+                            ?>     
+                            <tr>
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= $mAux2[$key] ?></td>
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= $value ?></td>
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$fec_inicia]['can_despac']+0) ?></td>
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= ($mData[$value][$fec_inicia]['can_regist']+0) ?></td>
+                            </tr> 
+                            <?php
+                        } 
+                    }
+
+                    if( $datos->tipInform == "nov"){
+                        ?>
+                        <tr>
+                            <th colspan="2" class='CellHead2' style='text-align:center'>Total</th> 
+                            <th class='CellHead2' style='text-align:center'><?= $mData[$fec_inicia]['can_regist'] ?></th>
+                        </tr>
+                        <?php
+                    }else{
+                        ?>
+                        <tr>
+                            <th colspan="2" class='CellHead2' style='text-align:center'>Total</th>
+                            <th class='CellHead2' style='text-align:center'><?= $mData[$fec_inicia]['can_despac'] ?></th>
+                            <th class='CellHead2' style='text-align:center'><?= $mData[$fec_inicia]['can_regist'] ?></th>
+                        </tr>
+                        <?php
+                    }
+                    ?>
+
+                    <tr>
+                        <th colspan="4">&nbsp;</th>
+                    </tr>
+
+                    <?php 
+                    $fec_inicia = strtotime ( '+1 day' , strtotime ( $fec_inicia ) ) ;
+                    $fec_inicia = date ( 'Y-m-d' , $fec_inicia );
+                } ?>
+            </table>
+        </div>
+        <?php
+    }
+
+    private function infoDiax($data, $datos){
+        $mAux = array();  // variable auxiliar para alacenar los usuarios
+        $mAux2 = array(); // variable auxiliar para alacenar los perfiles
+        $mData = array(); // variable auxiliar para ordenar los datos de la consulta
+
+        $fec_inicia_aux =date ( 'Y-m-d' , strtotime($datos->fec_inicia));
+        $fec_finali_aux = date ( 'Y-m-d' ,strtotime($datos->fec_finali));
+        $fec_inicia_aux2 =date ( 'Y-m-d' , strtotime($datos->fec_inicia));
+        $fec_finali_aux2 = date ( 'Y-m-d' ,strtotime($datos->fec_finali));
+        
+        
+        $datetime1 = date_create($fec_inicia_aux);
+        $datetime2 = date_create($fec_finali_aux);
+        $contador = date_diff($datetime1, $datetime2);
+        $differenceFormat = '%a';
+        $contador= $contador->format($differenceFormat) + 1;
+        $colspan=3 + ($contador * 2); 
+        
+        ?>
+        
+        
+        
+        <div class="col-md-12 Style2DIV scroll">
+            <? $excel= "../".$_SESSION['DIR_APLICA_CENTRAL']."/imagenes/excel.jpg" ; 
+            if($datos->tipInform == "nov"){
+            ?>
+                <label><img src='<?= $excel ?>'  style="cursor:pointer" onclick="pintarExcel()"/></label>
+                <table width="100%" cellspacing="0" cellpadding="2" border="0" id="TablaDetalle" class="table hoverTable">
+            <?
+            }else{
+            ?>
+                <label><img src='<?= $excel ?>'  style="cursor:pointer" onclick="exportTableExcel('detalle')"/></label>
+                <table width="100%" cellspacing="0" cellpadding="2" border="0" id="detalle" class="table hoverTable">
+            <?
+            }
+            ?>
+            
+            
+            
+        <?
+            if( $datos->tipInform == "nov"){ 
+
+                    ?>
+                        <tr>
+                            <th class='CellHead2' style='text-align:center' colspan="3"> <?= $fec_inicia_aux2 ?> </th>
+                        </tr>
+                        <tr>
+                            <th class='CellHead2' style='text-align:center'>C&oacute;digo de Novedad</th>
+                            <th class='CellHead2' style='text-align:center'>Novedad</th> 
+                            <th class='CellHead2' colspan='2' style='text-align:center'>Total de Registros</th>
+                        </tr> 
+                        <?php
+
+                            foreach ($data as $key => $value) {
+                        ?>
+                        <tr>
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= $value['cod_perfil'] ?></td>
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= $value['usr_creaci'] ?></td> 
+                                <td class='cellInfo onlyCell' style='text-align:center'><?= $value['can_regist'] ?></td>
+                            </tr> 
+                        <?php
+                        }
+                    }else{
+                        ?>
+                        <tr>
+                            <th class='CellHead2' style='text-align:center' colspan="<?= $colspan ?>"> <?= $fec_inicia_aux2 ?> a <?= $fec_finali_aux2 ?> </th>
+                        </tr>
+                        <tr>
+                            <th class='CellHead2' style='text-align:center' rowspan='2'>C&oacute;digo de Perfil</th>
+                            <th class='CellHead2' style='text-align:center'  rowspan='2'>Usuario</th>
+                        <?
+                            for($i=1;$i<=($contador); $i++ ){
+                        ?>
+                                <th class='CellHead2' style='text-align:center'>D. tr&aacute;nsito</th>
+                                <th class='CellHead2' style='text-align:center'>Registros</th>
+                        <?
+                            }
+                        ?> 
+                                <th class='CellHead2' style='text-align:center' rowspan='2'>Total</th>
+                        </tr>
+                        <tr>
+                        <?  
+                            $fec_variable=$fec_inicia_aux2;
+                            $total_fecharray=[];
+                            for($i=1;$i<=($contador); $i++ ){
+                        ?> 
+                                <th colspan='2' class='CellHead2' style='text-align:center'> <?= $fec_variable ?></th>
+                        <?
+                                
+                                
+                               $total_fecharray = array_merge($total_fecharray, array($fec_variable=>[0,0]));
+                               
+                               $fec_variable = strtotime ( '+1 day' , strtotime ( $fec_variable) ) ;
+                                $fec_variable = date ( 'Y-m-d' , $fec_variable );
+                            }
+                           
+                             
+                        ?>
+                        </tr>
+                        <?php
+                            $totcolumcantdespac=0;
+                            $totcolumcantreg=0;
+                            
+                            foreach ($data as $key => $value) {
+                                $totales=[];
+                        ?>
+                                <tr>
+                                    <td class='cellInfo onlyCell' style='text-align:center'><?= $value["cod_perfil"] ?></td>
+                                    <td class='cellInfo onlyCell' style='text-align:center'><?= $value["usr_creaci"] ?></td>
+                                    <?php
+                                        $fec_variable=$fec_inicia_aux2;
+                                        $totalrow=0;
+                                        $totcolumcantdespacrow=0;
+                                        $totcolumcantregrow = 0;
+                                        for($i=1;$i<=($contador); $i++ ){
+                                            if($fec_variable==$value["fec1"]){
+                                    ?>
+                                                
+    
+                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2('1','<?=$fec_inicia_aux;?>','<?=$fec_finali_aux;?>','<?=$value['usr_creaci'];?>','<? echo $datos->tipInform ;?>')"><?= $value["can_despac"] ?></a></td>
+                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2(2,1)"><?= $value["can_regist"] ?></a></td>
+                                    <?php
+                                                $conkey=0;
+                                                foreach ($total_fecharray as $key => $valuekey){
+                                                    
+                                                    if($key==$fec_variable){
+                                                        $vrcan_despac=$total_fecharray[$key][0];
+                                                        $vrcan_regist=$total_fecharray[$key][0];
+                                                        $total_fecharray[$key][0]=($vrcan_despac + $value["can_despac"]);
+                                                        $total_fecharray[$key][1]=($vrcan_despac + $value["can_regist"]);
+                                                    }
+
+                                                }
+                                                
+                                                $totalrow=$totalrow + ($value["can_despac"] + $value['can_regist']);
+                                                $totcolumcantdespacrow= $totcolumcantdespacrow + $value["can_despac"];
+                                                $totcolumcantregrow = $totcolumcantregrow + $value['can_regist'];
+                                    ?>
+                                    <?php
+                                            
+                                            }else{
+                                    ?>
+                                               <td class='cellInfo onlyCell' style='text-align:center'>0</td>
+                                               <td class='cellInfo onlyCell' style='text-align:center'>0</td> 
+                                    <?php
+                                            
+                                            }
+                                    
+                                            
+
+                                            $fec_variable = strtotime ( '+1 day' , strtotime ( $fec_variable) ) ;
+                                            $fec_variable = date ( 'Y-m-d' , $fec_variable );
+                                        }
+
+                                    ?>
+                                                <td class='cellInfo onlyCell' style='text-align:center'><?= $totalrow ?></td>
+                                    
+                                </tr>
+                                <tr style='text-align:center'>
+                                    <td colspan='2' class='CellHead2' style='text-align:center'>TOTAL</td>
+                                <?php
+                                   foreach($total_fecharray as $keytot => $valuekeytot){
+                                    $grantotal=$grantotal + ($total_fecharray[$keytot][0]+$total_fecharray[$keytot][1] );
+                                ?>
+                                    <td class='CellHead2 onlyCell' style='text-align:center'><?= $total_fecharray[$keytot][0] ?></td>
+                                    <td class='CellHead2 onlyCell' style='text-align:center'><?= $total_fecharray[$keytot][1] ?></td>
+                                <?
+                                    }
+                                ?>
+                                    <td class='CellHead2 onlyCell' style='text-align:center'><?= $grantotal ?></td>
+                                </tr>
+                        <?php
+
+                            }
+                            
+                            
+                                
+
+                            
+                            
+
+
+
+                        ?>
+                        
+
+                     <?   
+                    }
+                ?>
+
+            </table>
+        </div>
+        <?
+           
+
+        
+    }   
+
+
     /*! \fn: getDetalle
      *  \brief: Funcion para pintar el detallado del reporte No de Novedades por usuario
      *  \author: Ing. Alexander Correa
@@ -784,6 +1114,123 @@ class inform {
         $consulta = new Consulta($sql, self::$cConexion);
         $result= $consulta->ret_matrix("a");
 
+        $datos = $result;
+        ?>
+
+        <div class="col-md-12 Style2DIV scroll" id="tabla2">
+            <div class="col-md-12"><img src="../<?= $standa ?>/imagenes/excel.jpg"  style="cursor:pointer" onclick="exportTableExcel('detalle')"/></div>
+            <div class="col-md-12"><font style="color: #000000">Se encontr&oacute; un total de <?= count($datos) ?> registros </font></div>
+            <div class="col-md-12" id="registros">
+                <table width="100%" cellspacing="0" cellpadding="2" border="0" id="detalle" class="table hoverTable">
+                    <tr>
+                        <th class='CellHead2' style='text-align:center'>Despacho</th>
+                        <th class='CellHead2' style='text-align:center'>Usuario</th>
+                        <th class='CellHead2' style='text-align:center'>Transportadora</th>
+                        <th class='CellHead2' style='text-align:center'>Fecha</th>
+                        <th class='CellHead2' style='text-align:center'>Novedad</th>
+                        <th class='CellHead2' style='text-align:center'>Observaci&oacute;n</th>            
+                    </tr>
+
+                    <?php
+                    foreach ($datos as $key => $value) {
+                        $data = (object) $value;
+                        ?>
+                        <tr>
+                            <td class='cellInfo onlyCell' style='text-align:center'>
+                                <a href="index.php?cod_servic=3302&window=central&tie_ultnov=0&opcion=1&despac='<?= $data->num_despac ?>'">
+                                    <font style="color: #000000; cursor:pointer;"><?= $data->num_despac ?></font>
+                                </a>
+                            </td>
+                            <td  class='cellInfo onlyCell' style='text-align:center'><?= $data->usr_creaci ?></td>
+                            <td class='cellInfo onlyCell' style='text-align:center'><?= $data->abr_tercer ?></td>
+                            <td class='cellInfo onlyCell' style='text-align:center'><?= $data->fec_creaci ?></td>
+                            <td class='cellInfo onlyCell' style='text-align:center'><?= utf8_encode($data->nom_noveda) ?></td>
+                            <td class='cellInfo onlyCell' style='text-align:center'><?= utf8_encode($data->obs_noveda) ?></td>
+                        </tr>
+                        <?php
+                    } ?>
+                </table>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            var datos = $('#registros').html();
+            $('#hidden').empty();
+            $('#hidden').html(datos);
+        </script>
+        <?php
+    }
+
+
+
+    private function getDetalledias(){
+        $datos = (object) $_POST;
+        $datos->usuarios = str_replace(",", "','", $datos->usuarios);
+        $datos->fec_inicia = $datos->fec_inicia.":00:00";
+        $datos->fec_finali = $datos->fec_finali.":23:59";
+        //$datos->fec_finali = strtotime ( '-1 second' , strtotime ( $datos->fec_finali ) ) ;
+        //$datos->fec_finali = date ( 'Y-m-d H:i:s',$datos->fec_finali );
+        $standa = $datos->standa;
+
+        //---------------- filtros ----------------\\
+        $where = "a.usr_creaci"; 
+        $campo2 = "x.cod_perfil"; 
+        //------------ fin filtros ----------------\\ 
+
+        if($datos->tipInform == "nov"){
+            $where = "c.cod_noveda"; 
+            $campo2 = "x.cod_noveda AS cod_perfil";
+        }
+        
+        if($datos->usuarios){
+            $usuario=$datos->usuarios;
+            $search = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,Ã¡,Ã©,Ã­,Ã³,Ãº,Ã±,ÃÃ¡,ÃÃ©,ÃÃ­,ÃÃ³,ÃÃº,ÃÃ±,Ã?,Ã ,Ã?,Ã ,Ã?,â??,â? ,Â¿,ü");
+            $replace = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,Ó,Á,É,Í,Ú,\",\",¿,&uuml;");
+            $usuario= str_replace($search, $replace, $usuario);
+            
+        }
+
+        $sql = "SELECT x.num_despac, x.usr_creaci, $campo2, 
+                       e.abr_tercer, x.fec_creaci, c.nom_noveda, 
+                       x.fec1, x.obs_noveda
+                 FROM (
+                        (
+                                SELECT a.num_despac, a.fec_creaci, a.usr_creaci, 
+                                       a.obs_contro AS obs_noveda, b.cod_perfil, 
+                                       a.cod_noveda, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d %H') AS fec1
+                                  FROM ".BASE_DATOS.".tab_despac_contro a
+                            INNER JOIN ".BASE_DATOS.".tab_genera_usuari b ON b.cod_usuari = a.usr_creaci 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_noveda c ON a.cod_noveda = c.cod_noveda
+                                 WHERE $where IN ('$usuario') 
+                                   AND a.fec_creaci >= '$datos->fec_inicia' 
+                                   AND a.fec_creaci < '$datos->fec_finali'
+                                   AND b.cod_perfil IN ($datos->perfil)
+                        )
+                        UNION
+                        (
+                                SELECT a.num_despac, a.fec_creaci, a.usr_creaci, 
+                                       a.des_noveda AS obs_noveda, b.cod_perfil, 
+                                       a.cod_noveda, DATE_FORMAT(a.fec_creaci, '%Y-%m-%d %H') AS fec1
+                                  FROM ".BASE_DATOS.".tab_despac_noveda a 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_usuari b ON b.cod_usuari = a.usr_creaci 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_noveda c ON a.cod_noveda = c.cod_noveda
+                                 WHERE $where IN ('$usuario') 
+                                   AND a.fec_creaci >= '$datos->fec_inicia' 
+                                   AND a.fec_creaci < '$datos->fec_finali'
+                                   AND b.cod_perfil IN ($datos->perfil)
+                        )
+                      ) x  
+            LEFT JOIN ".BASE_DATOS.".tab_genera_noveda c ON x.cod_noveda = c.cod_noveda 
+            LEFT JOIN ".BASE_DATOS.".tab_despac_vehige d ON x.num_despac = d.num_despac 
+            LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer e ON d.cod_transp = e.cod_tercer ";
+
+        $sql .= $datos->tipo == '1' ? " GROUP BY x.usr_creaci,x.num_despac, x.fec1  " : "";
+        $sql .= " ORDER BY x.usr_creaci ";
+
+    
+        $consulta = new Consulta($sql, self::$cConexion);
+        $result= $consulta->ret_matrix("a");
+        
         $datos = $result;
         ?>
 
