@@ -32,22 +32,19 @@
                             <div class="card-body">
                                 <form name="frmContact" autocomplete="off" method="post" action="view/index.php">
                                     <div class="form-group row" style="margin-bottom:0px;">
-                                         <div class="col-md-6">
+                                         <div class="col-md-6 text-right">
                                             <label class="radio-inline mr-3">
-                                                <input type="radio" name="opttip" value="1" checked> Pedido
-                                            </label>
-                                            <label class="radio-inline mr-3">
-                                                <input type="radio" name="opttip" value="2"> Remesa
+                                                <input type="radio" name="opttip" value="2" checked> Remesa
                                             </label>
                                             <label class="radio-inline mr-2">
-                                                <input type="radio" name="opttip" value="3"> No Interno
+                                                <input type="radio" name="opttip" value="3"> No. Manifiesto
                                             </label>
                                             <div id="error-opcion" class="span demo-error">
                                             <?php if(isset($_REQUEST['message_par'])) { echo $_REQUEST['message_par']; } ?>
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" id="pedido" class="form-control" name="pedido" required autofocus>
+                                            <input type="text" id="filtro" class="form-control" name="filtro" required autofocus>
                                             <div id="error-busqueda" class="span demo-error">
                                                 <?php if(isset($_REQUEST['message_bus'])) { echo $_REQUEST['message_bus']; } ?>
                                             </div>
@@ -67,6 +64,13 @@
                                             </div>
                                             <input type="text" class="form-control" placeholder="Línea" id="linea" name="linea">
                                         </div> -->
+                                    </div>
+
+                                    <div class="form-group row mt-1" >
+                                        <label for="num_transp" class="col-md-6 col-form-label text-md-right">Nit Transportadora</label>
+                                        <div class="col-md-6">
+                                            <input name="num_transp" type="text" class="form-control" required>
+                                        </div>
                                     </div>
 
                                     <div class="form-group row">

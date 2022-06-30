@@ -1,7 +1,7 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
 
 /* ! \file: index.php
  *  \brief: Clase que genera la interfaz principal de consulta
@@ -30,7 +30,7 @@ ini_set('display_errors', '1');
         }
 
         protected function validate(){
-            if(!isset($_SESSION['num_pedido']) AND !isset($_SESSION['num_linea'])){
+            if( !isset($_SESSION['num_despac']) OR !isset($_SESSION['cod_transp']) ){
                 $error_message = "Vuelva a intentar la busqueda";
                 header("Location: ".explode("?", $_SERVER['HTTP_REFERER'])[0]."?message_bus=".$error_message);
             }else{
@@ -88,31 +88,30 @@ ini_set('display_errors', '1');
             echo $script;
         }
 
-        protected function darInformacionPedido($num_pedido,$num_linea){
+        protected function darInformacionPedido($num_despac, $cod_transp){
           @include_once('../../../'.DIR_APLICA_CENTRAL.'/lib/general/functions.inc');
-          $nit_transp = getInfoEmpresa($this->conexion)['cod_emptra'];
-          $mSql = "SELECT b.nom_ciudad as 'ciu_origen',
-                        a.fec_horaxx_pedido as 'fec_origen',
-                        c.nom_remdes as 'nom_origen',
-                        c.dir_remdes as 'dir_origen',
-                        c.num_telefo as 'tel_origen',
-                        c.num_remdes as 'doc_origen',
-                        d.nom_ciudad as 'ciu_destin',
-                        a.nombre_cliente as 'nom_destin',
-                        e.dir_remdes as 'dir_destin',
-                        e.num_telefo as 'num_destin',
-                        e.num_remdes as 'doc_destin',
-                        a.num_despac
-                        FROM ".BASE_DATOS.".tab_genera_pedido a
-                   INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b ON
-                                    a.mun_origen = b.cod_ciudad
-                   INNER JOIN ".BASE_DATOS.".tab_genera_remdes c
-                      ON c.cod_transp = '".$nit_transp."'
-                   INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d ON
-                   a.mun_enviox = d.cod_ciudad AND a.dep_enviox = d.cod_depart
-                   INNER JOIN ".BASE_DATOS.".tab_genera_remdes e
-                      ON e.cod_remdes = a.cliente
-                    WHERE a.num_pedido = '".$num_pedido."' AND a.num_lineax = '".$num_linea."' ;";
+          $mSql = "SELECT 
+                        b.nom_ciudad as 'ciu_origen', 
+                        a.fec_despac as 'fec_origen', 
+                        c.nom_genera as 'nom_origen', 
+                        h.dir_domici as 'dir_origen', 
+                        CONCAT(h.num_telef1, ' ',h.num_telef2, ' ', h.num_telmov) as 'tel_origen', 
+                        c.cod_genera as 'doc_origen',  
+                        f.nom_ciudad as 'ciu_destin', 
+                        d.nom_remdes as 'nom_destin', 
+                        d.dir_remdes as 'dir_destin', 
+                        d.num_telefo as 'num_destin', 
+                        c.nit_destin as 'doc_destin', 
+                        a.num_despac 
+                    FROM 
+                        ".BASE_DATOS.".tab_despac_despac a 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b ON a.cod_ciuori = b.cod_ciudad 
+                        INNER JOIN ".BASE_DATOS.".tab_despac_destin c ON c.num_despac = a.num_despac 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_remdes d ON d.cod_remdes = c.cod_remdes 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_ciudad f ON a.cod_ciudes = f.cod_ciudad 
+                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige g ON a.num_despac = g.num_despac
+                        INNER JOIN ".BASE_DATOS.".tab_tercer_tercer h ON c.cod_genera = h.cod_tercer 
+                    WHERE a.num_despac = '".$num_despac."' AND g.cod_transp = '".$cod_transp."' ;";
           $mConsult = new Consulta($mSql, $this -> conexion);
           $mData = $mConsult->ret_arreglo();
           return $mData;
@@ -440,7 +439,7 @@ ini_set('display_errors', '1');
     }
 
 
-    public function darNovedadRemisionTime($num_pedido,$num_linea){
+    public function darNovedadRemisionTime($num_despac){
         $mSql = "(
             SELECT 
                 c.cod_destra, 
@@ -452,7 +451,7 @@ ini_set('display_errors', '1');
                 tab_despac_destin b 
                 INNER JOIN tab_despac_tracki c ON b.num_despac = c.num_despac 
                 INNER JOIN tab_despac_vehige d ON d.num_despac = b.num_despac 
-                AND (b.ped_remisi = '".$num_pedido."-".$num_linea."') 
+                AND b.num_despac = '".$num_despac."' 
                 AND c.nom_eclhoe IS NOT NULL 
                 INNER JOIN tab_homolo_estnov e ON e.cod_noveda = c.cod_noveda 
             WHERE 
@@ -472,7 +471,7 @@ ini_set('display_errors', '1');
                     tab_despac_destin b 
                     INNER JOIN tab_despac_tracki c ON b.num_despac = c.num_despac 
                     INNER JOIN tab_despac_vehige d ON d.num_despac = b.num_despac 
-                    AND (b.ped_remisi = '".$num_pedido."-".$num_linea."') 
+                    AND b.num_despac = '".$num_despac."'
                     AND c.nom_eclihon IS NOT NULL 
                     INNER JOIN tab_homolo_estnov e ON e.cod_noveda = c.cod_noveda 
                 WHERE 
@@ -494,7 +493,7 @@ ini_set('display_errors', '1');
                             ON	b.num_despac = c.num_despac  
                         INNER JOIN    tab_despac_vehige d
                             ON  d.num_despac = b.num_despac  
-                        AND (b.ped_remisi = '".$num_pedido."-".$num_linea."')
+                        AND b.num_despac = '".$num_despac."'
                         AND c.nom_eclhoe IS NOT NULL
                         WHERE    d.ind_activo = 'S'
                         GROUP BY 
@@ -511,7 +510,7 @@ ini_set('display_errors', '1');
                             ON	b.num_despac = c.num_despac  
                         INNER JOIN    tab_despac_vehige d
                             ON  d.num_despac = b.num_despac  
-                        AND (b.ped_remisi = '".$num_pedido."-".$num_linea."')
+                        AND b.num_despac = '".$num_despac."'
                         AND c.nom_eclihon IS NOT NULL
                         WHERE    d.ind_activo = 'S'
                         GROUP BY 
@@ -587,11 +586,11 @@ ini_set('display_errors', '1');
          *  \return: HTML
          */
         protected function interfaz(){
-            $num_pedido = $_SESSION['num_pedido'];
-            $num_linea = $_SESSION['num_linea'];
-            $info = self::darInformacionPedido($num_pedido,$num_linea);
+            $num_despac = $_SESSION['num_despac'];
+            $cod_transp = $_SESSION['cod_transp'];
+            $info = self::darInformacionPedido($num_despac, $cod_transp);
 
-            $rut_img = '../../imagenes/logo_'.NOM_URL_APLICA.'.jpg';
+            $rut_img = '../../logos/LogoCLFaro.png';
 
             //Se declara la varible de tiempos logisticos
             $tie_logist = null;
@@ -659,8 +658,7 @@ ini_set('display_errors', '1');
                 </div>
                 <div class="row mt-2">
                     <div class="col-md-12 text-center">
-                        <h3 class="texth4">Pedido No. '.$num_pedido.'</h3>
-                        <h3 class="texth4">linea No. '.$num_linea.'</h3>
+                        <h3 class="texth4">Despacho No. '.$num_despac.'</h3>
                     </div>
                 </div>';
             if(!isset($_SESSION['msj'])){
@@ -726,7 +724,7 @@ ini_set('display_errors', '1');
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <input class="form-control form-control-sm" type="text" placeholder="Telefono" readonly value="Comuníquese con su asesor de confianza.">
+                                        <input class="form-control form-control-sm" type="text" placeholder="Telefono" readonly value="'.utf8_encode($info['tel_origen']).'">
                                     </div>
                                     <div class="col-md-6">
                                         <input class="form-control form-control-sm" type="text" placeholder="Nit / CC" readonly value="'.$info['doc_origen'].'">
@@ -844,7 +842,7 @@ ini_set('display_errors', '1');
                         </div>
                     <div class="box-body overflow-auto" style="height:620px;">
                         <ul class="cbp_tmtimeline">
-                            '.self::darNovedadRemisionTime($num_pedido,$num_linea).'
+                            '.self::darNovedadRemisionTime($num_despac).'
                         </ul>  
                     </div>
                 </div>
