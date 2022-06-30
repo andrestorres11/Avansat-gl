@@ -56,7 +56,12 @@
                 
                 case "5":
                     self::dat_horas_vent_modal();
-                    break; 
+                    break;
+                case "6":
+                   
+                    self::listtransp();
+                    break;    
+                
                 
                     
 
@@ -684,6 +689,48 @@ echo json_encode($arrayresultvent);
             return $newdat;
         }
     
+        private function listtransp(){
+            $Cod_tiposerv=$_POST['Cod_tiposerv'];
+
+            $sql = "SELECT a.`cod_transp`, b.`abr_tercer`, max(a.`num_consec`) as nummayor,(Select c.cod_tipser from tab_transp_tipser c where a.`cod_transp`=c.`cod_transp` and c.`num_consec`= max(a.`num_consec`)) as tipo 
+            FROM `tab_transp_tipser` a, `tab_tercer_tercer` b 
+                    WHERE a.`cod_transp`=b.`cod_tercer`
+                    AND b.`cod_estado`=1
+                    group by a.`cod_transp`
+                    order by b.`abr_tercer`";
+                
+            $query = new Consulta($sql, self::$conexion);
+            $datos = $query -> ret_num_rows();   
+            
+            if ($datos > 0) {
+                
+                $datos = $query -> ret_matrix();
+                $resultselectact="";
+                foreach($datos as $resultadodatos)
+                {
+                    foreach($Cod_tiposerv as $newtiposerv){
+
+                        if($resultadodatos['tipo']==$newtiposerv){
+                           
+                            $resultselectact = $resultselectact ."<option value='".$resultadodatos['cod_transp']."'>".$resultadodatos['abr_tercer']."</option>";
+                        }
+
+                    }
+                    
+                    
+                
+                }
+            }
+
+
+                echo $resultselectact;
+
+            
+
+
+        }
+
+           
     
     }
 

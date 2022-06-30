@@ -8,6 +8,40 @@ $(document).ready(function() {
 });
 
 
+function changeFunc()
+{
+    
+    var standa = $("#standaID").val();
+    var Cod_tiposerv = $("#Cod_tiposerv").val();
+    var opciodatos = 6;
+
+    $.ajax({
+        url: '../'+ standa +'/inform/ajax_salida_despac.php',
+        data: ({ opcion:opciodatos, Cod_tiposerv:Cod_tiposerv}),
+        type: "post",
+        async: false,
+        success: function(data) {
+            
+            $('#Cod_transp').empty();
+            
+             $('#Cod_transp').append(data);
+             $('#Cod_transp').selectpicker('refresh'); 
+             //console.log(data);
+            //alert(data);
+            //prop_btn_transp()
+            
+        },
+        error: function() {
+            console.log("error");
+        }
+    });
+     
+    
+}
+
+
+
+
 function ini_proceso()
 {
     
