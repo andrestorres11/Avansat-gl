@@ -2414,6 +2414,7 @@ class Despachos
                     "obs_noveda" => 'Ciudad Origen: '.strtoupper($infOriDes['nom_ciuori']),
                     "tip_pointx" => "ORI"
                 );
+                $flag = 1;
             }
             //Destino
             if($infOriDes['lat_destin'] != '' && $infOriDes['lon_destin'] != ''){
@@ -2423,6 +2424,7 @@ class Despachos
                     "obs_noveda" => 'Ciudad Destino: '.strtoupper($infOriDes['nom_ciudes']),
                     "tip_pointx" => "DES"
                 );
+                $flag = 1;
             }
         }    
         //echo "<pre>"; print_r($latLon);echo "</pre>"; 
