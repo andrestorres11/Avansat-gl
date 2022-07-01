@@ -57,7 +57,7 @@
 	        if(a.tip_solici = 3, (SELECT nom_ciudad FROM satt_faro.tab_genera_ciudad as g where g.cod_ciudad = a.ciu_desin), (SELECT nom_ciudad FROM satt_faro.tab_genera_ciudad as h where h.cod_ciudad = a.ciu_destin)) as ciuddest,
             (SELECT SUM(val_servic) FROM satt_faro.tab_servic_solasi WHERE cod_solasi = a.id GROUP by cod_solasi) as valcli, 
 	        a.val_cospro, 
-	        if(j.cod_docume is null,(SELECT concat(COALESCE(i.nom_tercer, ''), ' ',COALESCE(i.nom_apell1, ''), ' ', COALESCE(i.nom_apell2, '')) FROM satt_faro.tab_tercer_activi as k INNER JOIN satt_faro.tab_tercer_tercer as i ON k.cod_tercer = i.cod_tercer WHERE i.cod_tercer = a.cod_provee),(concat(COALESCE(j.nom_contra, ''), ' ', COALESCE(j.pri_apelli, ''),' ',COALESCE(j.seg_apelli, '')))) as nomprovee,
+	        if(j.cod_docume is null,(SELECT concat(COALESCE(i.nom_tercer, ''), ' ',COALESCE(i.nom_apell1, ''), ' ', COALESCE(i.nom_apell2, '')) FROM satt_faro.tab_tercer_activi as k INNER JOIN satt_faro.tab_tercer_tercer as i ON k.cod_tercer = i.cod_tercer WHERE i.cod_tercer = a.cod_provee limit 1),(concat(COALESCE(j.nom_contra, ''), ' ', COALESCE(j.pri_apelli, ''),' ',COALESCE(j.seg_apelli, '')))) as nomprovee,
             a.cod_provee, 
             a.fec_creaci, 
             a.fec_modifi 
