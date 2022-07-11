@@ -161,8 +161,8 @@ class inform {
         }
         if($usuario){
 
-            $search = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,Ã¡,Ã©,Ã­,Ã³,Ãº,Ã±,ÃÃ¡,ÃÃ©,ÃÃ­,ÃÃ³,ÃÃº,ÃÃ±,Ã?,Ã ,Ã?,Ã ,Ã?,â??,â? ,Â¿,ü");
-            $replace = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,Ó,Á,É,Í,Ú,\",\",¿,&uuml;");
+            $search = explode(",","ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,Ã¡,Ã©,Ã­,Ã³,Ãº,Ã±,ï¿½Ã¡,ï¿½Ã©,ï¿½Ã­,ï¿½Ã³,ï¿½Ãº,ï¿½Ã±,ï¿½?,ï¿½ ,ï¿½?,ï¿½ ,ï¿½?,ï¿½??,ï¿½? ,Â¿,ï¿½");
+            $replace = explode(",","ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,\",\",ï¿½,&uuml;");
             $usuario= str_replace($search, $replace, $usuario);
             $u = " AND a.usr_creaci IN ($usuario)";
         }
@@ -866,6 +866,8 @@ class inform {
         $contador= $contador->format($differenceFormat) + 1;
         $colspan=3 + ($contador * 2); 
         
+        //mail("cristian.torres@eltransporte.org", "Datos Nov Usuario", var_export($data, true));
+        $data = $this->formatDataArray($data);
         ?>
         
         
@@ -963,12 +965,12 @@ class inform {
                                         $totcolumcantdespacrow=0;
                                         $totcolumcantregrow = 0;
                                         for($i=1;$i<=($contador); $i++ ){
-                                            if($fec_variable==$value["fec1"]){
+                                            if($fec_variable==$value['registros'][$i-1]["fec1"]){
                                     ?>
                                                 
     
-                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2('1','<?=$fec_inicia_aux;?>','<?=$fec_finali_aux;?>','<?=$value['usr_creaci'];?>','<? echo $datos->tipInform ;?>')"><?= $value["can_despac"] ?></a></td>
-                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2(2,1)"><?= $value["can_regist"] ?></a></td>
+                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2('1','<?=$fec_inicia_aux;?>','<?=$fec_finali_aux;?>','<?=$value['usr_creaci'];?>','<? echo $datos->tipInform ;?>')"><?= $value['registros'][$i-1]["can_despac"] ?></a></td>
+                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2(2,1)"><?= $value['registros'][$i-1]["can_regist"] ?></a></td>
                                     <?php
                                                 $conkey=0;
                                                 foreach ($total_fecharray as $key => $valuekey){
@@ -976,15 +978,15 @@ class inform {
                                                     if($key==$fec_variable){
                                                         $vrcan_despac=$total_fecharray[$key][0];
                                                         $vrcan_regist=$total_fecharray[$key][0];
-                                                        $total_fecharray[$key][0]=($vrcan_despac + $value["can_despac"]);
-                                                        $total_fecharray[$key][1]=($vrcan_despac + $value["can_regist"]);
+                                                        $total_fecharray[$key][0]=($vrcan_despac + $value['registros'][$i-1]["can_despac"]);
+                                                        $total_fecharray[$key][1]=($vrcan_despac + $value['registros'][$i-1]["can_regist"]);
                                                     }
 
                                                 }
                                                 
-                                                $totalrow=$totalrow + ($value["can_despac"] + $value['can_regist']);
-                                                $totcolumcantdespacrow= $totcolumcantdespacrow + $value["can_despac"];
-                                                $totcolumcantregrow = $totcolumcantregrow + $value['can_regist'];
+                                                $totalrow=$totalrow + ($value['registros'][$i-1]["can_despac"] + $value['registros'][$i-1]['can_regist']);
+                                                $totcolumcantdespacrow= $totcolumcantdespacrow + $value['registros'][$i-1]["can_despac"];
+                                                $totcolumcantregrow = $totcolumcantregrow + $value['registros'][$i-1]['can_regist'];
                                     ?>
                                     <?php
                                             
@@ -1006,6 +1008,14 @@ class inform {
                                                 <td class='cellInfo onlyCell' style='text-align:center'><?= $totalrow ?></td>
                                     
                                 </tr>
+                                
+                        <?php
+
+                            }
+                            
+                            
+                        ?>
+
                                 <tr style='text-align:center'>
                                     <td colspan='2' class='CellHead2' style='text-align:center'>TOTAL</td>
                                 <?php
@@ -1019,19 +1029,6 @@ class inform {
                                 ?>
                                     <td class='CellHead2 onlyCell' style='text-align:center'><?= $grantotal ?></td>
                                 </tr>
-                        <?php
-
-                            }
-                            
-                            
-                                
-
-                            
-                            
-
-
-
-                        ?>
                         
 
                      <?   
@@ -1044,7 +1041,46 @@ class inform {
            
 
         
-    }   
+    }
+
+    private function formatDataArray($data){
+        $usuarios = array();
+        foreach($data as $key=>$registro){
+            if (!$this->existe_array($registro['usr_creaci'],$registro['cod_perfil'],$usuarios)) {
+                array_push($usuarios, array(
+                    'usr_creaci' => $registro['usr_creaci'],
+                    'cod_perfil' => $registro['cod_perfil'],
+                    'registros' => $this->arma_array($registro['usr_creaci'], $registro['cod_perfil'], $data)
+                ));
+            }
+        }
+        return $usuarios;
+    }
+
+    private function existe_array($val_buscado1, $val_buscado2, $array){
+        $flag = false;
+        foreach($array as $key=>$registro){
+           if(strtolower($registro['usr_creaci'])==strtolower($val_buscado1) && $registro['cod_perfil']==$val_buscado2){
+            $flag = true;
+           }
+        }
+        return $flag;
+    }
+
+    private function arma_array($val_buscado1, $val_buscado2, $array){
+        $dataNew = array();
+        foreach($array as $key=>$registro){
+            if(strtolower($registro['usr_creaci'])==strtolower($val_buscado1) && $registro['cod_perfil']==$val_buscado2){
+                array_push($dataNew, array(
+                    'can_despac' => $registro['can_despac'],
+                    'can_regist' => $registro['can_regist'],
+                    'fec1' => $registro['fec1'],
+                ));
+            }
+         }
+         return $dataNew;
+    }
+
 
 
     /*! \fn: getDetalle
@@ -1184,8 +1220,8 @@ class inform {
         
         if($datos->usuarios){
             $usuario=$datos->usuarios;
-            $search = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,Ã¡,Ã©,Ã­,Ã³,Ãº,Ã±,ÃÃ¡,ÃÃ©,ÃÃ­,ÃÃ³,ÃÃº,ÃÃ±,Ã?,Ã ,Ã?,Ã ,Ã?,â??,â? ,Â¿,ü");
-            $replace = explode(",","á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,á,é,í,ó,ú,ñ,Á,É,Í,Ó,Ú,Ñ,Ó,Á,É,Í,Ú,\",\",¿,&uuml;");
+            $search = explode(",","ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,Ã¡,Ã©,Ã­,Ã³,Ãº,Ã±,ï¿½Ã¡,ï¿½Ã©,ï¿½Ã­,ï¿½Ã³,ï¿½Ãº,ï¿½Ã±,ï¿½?,ï¿½ ,ï¿½?,ï¿½ ,ï¿½?,ï¿½??,ï¿½? ,Â¿,ï¿½");
+            $replace = explode(",","ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,\",\",ï¿½,&uuml;");
             $usuario= str_replace($search, $replace, $usuario);
             
         }
