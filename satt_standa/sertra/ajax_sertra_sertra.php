@@ -1047,6 +1047,8 @@ class ajax_certra_certra {
                                     <td width="20%" class="blanco">Hasta</td>
                                 </tr>
                                 <?php
+                                $contadorOAL=0;
+                                $vrcontratadoOAL=0;
                                 foreach ($eals as $key => $value) {
                                     foreach ($datos->esferas as $k => $val) {
                                         $checked = "";
@@ -1058,19 +1060,30 @@ class ajax_certra_certra {
                                             $precio = $val['val_ealxxx'];
                                             $inicio = $val['fec_inieal'];
                                             $fin = $val['fec_fineal'];
+                                            $contadorOAL=$contadorOAL + 1;
+                                            $vrcontratadoOAL=$vrcontratadoOAL + $precio;
                                             break;
                                         }
                                     }
                                     ?>
                                     <tr class="contenido centrado">
                                         <td width="50%" class="derecha"><?= utf8_encode($value['nom_contro']) ?> : <input value="<?= $value['cod_contro'] ?>" <?= $checked ?> type="checkbox" name="eal[]" id="eal<?= $key ?>" onclick="habilitar(<?= $key ?>)"></td>
-                                        <td width="10%"><input type="text" value="<?= $precio ?>" class="ancho centrado" validate="numero" minlength="4" maxlength="6" name="precio[]" id="precio<?= $key ?>"></td> 
-                                        <td width="20%"><input type="text" value="<?= $inicio ?>" class="fecha ancho centrado" readonly="true" validate="date" minlength="4" maxlength="6" name="fecini[]" id="fecini<?= $key ?>"></td>
-                                        <td width="20%"><input type="text" value="<?= $fin ?>" class="fecha ancho centrado" readonly="true" validate="date" minlength="4" maxlength="6" name="fecfin[]" id="fecfin<?= $key ?>"></td>
+                                        <td width="15%"><input type="text" value="<?= $precio ?>" class="ancho centrado" validate="numero" minlength="4" maxlength="6" name="precio[]" id="precio<?= $key ?>"></td> 
+                                        <td width="15%"><input type="text" value="<?= $inicio ?>" class="fecha ancho centrado" readonly="true" validate="date" minlength="4" maxlength="6" name="fecini[]" id="fecini<?= $key ?>" onchange="fechfinalupdate('fecini<?= $key ?>','<?= $key ?>')"></td>
+                                        <td width="15%"><input type="text" value="<?= $fin ?>" class="fecha ancho centrado" readonly="true" validate="date" minlength="4" maxlength="6" name="fecfin[]" id="fecfin<?= $key ?>"></td>
                                     </tr>
                                     <?php
                                 }
                                 ?>
+                                <tr class="CellHead centrado">
+                                    <td width="50%" class="blanco derecha">Total OAL Contratadas : <?= $contadorOAL." " ?></td>
+                                    <td width="15%" class="blanco">$<? $vrcontratadoOAL= number_format($vrcontratadoOAL, 0, ",", "."); echo $vrcontratadoOAL; ?></td>
+                                    <td width="15%" class="blanco"></td>
+                                    <td width="15%" class="blanco"></td>
+                                    
+                                    
+                                    
+                                </tr>
                             </table>
                         </div>
                         <div class="col-md-3"></div>
