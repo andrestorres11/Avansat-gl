@@ -1,5 +1,4 @@
 <?php
-
 //-----------------------------------
 //@modificado: Alejandro Ortegon
 //             Christiam Barrera
@@ -35,7 +34,7 @@ class FacturFaro
             case "2":
                 $this->facturar();
                 break;
-            case "3":
+            case "excel":
                 $this->exportExcel();
                 break;
             default:
@@ -829,7 +828,7 @@ class FacturFaro
         echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Marcaron Como Facturados los Despacho desde el ".$_REQUEST["fecini"]." hasta el ".$_REQUEST["fecfin"];
     }//FIN FUNCTION CAPTURA
 
-    //Inicio Funciï¿½n exportExcel
+    //Inicio Función exportExcel
     private function exportExcel()
     {
       $archivo = "informe_FacturacionFaro_".date( "Y_m_d_H_i" ).".xls";
@@ -840,7 +839,8 @@ class FacturFaro
       header("content-disposition: attachment; filename=".$archivo.".xls");
 
       ob_clean();
-      echo  $_REQUEST['exportExcel'];  
+      echo  $_REQUEST['exportExcel']; 
+
     }
 }
 //$service = new FacturFaro($this->conexion);

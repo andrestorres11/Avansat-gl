@@ -65,7 +65,7 @@ function exportarExcel()
   { 
     var datos = $("#tableExcelFacturasFaro").html();
     
-    $("#opcionID").val("3"); 
+    $("#opcionID").val("excel"); 
     $("#exportExcelID").val('');
     $("#exportExcelID").val(datos);
  
