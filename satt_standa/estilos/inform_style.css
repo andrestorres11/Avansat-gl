@@ -54,3 +54,7 @@ li.disabledTab > a[data-toggle="pill"] {
     box-shadow: none !important;
     opacity: .65 !important;
 }
+
+.btn-group>.btn:first-child {
+    background-color: #dff0d8 !important;
+}

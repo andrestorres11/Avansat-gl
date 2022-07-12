@@ -14,10 +14,17 @@ class ajax_estser_contra
 
     $this -> conexion = $AjaxConnection;
 
+    
     switch ($_REQUEST['option']) {
       case 'setRegistros':
         $this->setRegistros();
         break;
+
+    case 'get_modal':
+        
+        $this->get_modal();
+        break;
+
       default:
         $this->setRegistros();
         break;
@@ -33,7 +40,19 @@ class ajax_estser_contra
   *  \date modified: 21/12/2015
   *  \return BOOL
   */
-  private function setRegistros() {
+   function setRegistros() {
+    $condition = '';
+
+
+    $dias = isset($_REQUEST['diastxt']) ? $_REQUEST['diastxt'] : 0;
+    $fecha_actual = date("Y-m-d");
+    $fec_filtro = date("Y-m-d",strtotime($fecha_actual."+ ".$dias." days")); 
+
+
+    if($_REQUEST['tipser']!=''){
+        $condition.=' AND b.cod_tipser = "'.$_REQUEST['tipser'].'" ';
+    }
+    
     $mSql = " SELECT  a.cod_tercer,
                       IF(a.nom_tercer = '' OR a.nom_tercer IS NULL,
                           a.abr_tercer,
@@ -83,6 +102,8 @@ class ajax_estser_contra
                       b.tie_trazab,
                       b.cod_priori,
                       g.nom_operac,
+                      (SELECT count(`cod_transp`) FROM `tab_ealxxx_transp` WHERE `cod_transp`= a.cod_tercer) as oalcontratadas,
+                      (SELECT count(`cod_transp`) FROM `tab_ealxxx_transp` WHERE `cod_transp`=a.cod_tercer and `fec_fineal`< ".$fec_filtro.") as oalvencidas,
                       GROUP_CONCAT(DISTINCT(i.nom_contro)) AS nom_contro
                 FROM  ".BASE_DATOS.".tab_tercer_tercer a
           INNER JOIN  ".BASE_DATOS.".tab_transp_tipser b
@@ -108,21 +129,64 @@ class ajax_estser_contra
            LEFT JOIN  ".BASE_DATOS.".tab_genera_contro i
                   ON  h.cod_pcxfar = i.cod_contro
                       AND i.ind_estado
+            WHERE 1 = 1
+                    ".$condition."
             GROUP BY  a.cod_tercer";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
 
+    //echo "<pre>";
+    //print_r($mMatriz);
+    //echo "</pre>";
     $data = [];
 
     foreach ($mMatriz as $key => $datos) {
+        $transp='';
     	foreach ($datos as $campo => $valor) {
-    		$data[$key][] = $valor;	
+            if($campo=='cod_tercer'){
+                $transp = $valor;	
+            }
+            if($campo=='oalcontratadas'){
+                $data[$key][] = '<a href="#" onclick="mostrarmodal('.$transp.')">'.$valor.'</a>';	
+            }else{
+                $data[$key][] = $valor;	
+            }
+    		
     	}
     }
 
     $return = array("data" => $data);
     echo json_encode($return);
   }
+
+
+    /* ! \fn: getEalsempresa
+     *  \brief: trae todas las Ealscontratada que tenga configuradas la empresa
+     *  \author: Ing. Oscar Bocanegra
+     *  \date: 30/06/2022
+     *  \date modified: dia/mes/a?o
+     *  \param: 
+     *  \param: 
+     *  \return las OATS
+     */
+     function getEalsempresa($idtransp) {
+        $sql = "SELECT a.cod_ealxxx, a.val_ealxxx, a.fec_inieal,
+                       a.fec_fineal, b.nom_contro, NOW() as 'date' 
+                FROM " .BASE_DATOS. ".tab_ealxxx_transp a 
+                INNER JOIN " .BASE_DATOS. ".tab_genera_contro b ON a.cod_ealxxx = b.cod_contro
+        WHERE a.cod_transp = '$idtransp' AND b.ind_estado = 1 AND b.ind_virtua = 0";
+        $consulta = new Consulta($sql, $this->conexion);
+        $esferas = $consulta->ret_matrix("a");
+        return $esferas;
+    }
+
+    function get_modal(){
+        $transp=$_POST['vartransp'];
+        $alltransp= $this->getEalsempresa($transp);
+
+        echo json_encode($alltransp);
+    }
+
 }
 $proceso = new ajax_estser_contra();
 ?>
