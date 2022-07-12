@@ -530,6 +530,23 @@ function habilitar(key) {
     }
 }
 
+function fechfinalupdate(vrfech, key) {
+     f=$('#'+vrfech).val();// Acá la fecha leída del INPUT
+    vec = f.split('-'); // Parsea y pasa a un vector
+    var fecha = new Date(vec[0], vec[1], vec[2]); // crea el Date
+    fecha.setFullYear(fecha.getFullYear()+1); // Hace el cálculo
+    diatxt=fecha.getDate();
+    if((''+diatxt).length==1){
+        diatxt='0'+diatxt;
+    }
+    mestxt=fecha.getMonth();
+    if((''+mestxt).length==1){
+        mestxt='0'+mestxt;
+    }
+
+    res = fecha.getFullYear()+'-'+mestxt+'-'+ diatxt; // carga el resultado
+    $('#fecfin'+key).val(res);
+}
 
 /* ! \fn: registrarTipoServicio
  *  \brief: inserta toda la configuracion de una transportadora
@@ -1953,4 +1970,6 @@ function editConfig(cod_transp,com_diasxx,ind_config) {
             type: "warning"
         });
     }
+
+    
 }
