@@ -102,9 +102,8 @@ class ajax_estser_contra
                       b.tie_trazab,
                       b.cod_priori,
                       g.nom_operac,
-                      (SELECT count(`cod_transp`) FROM `tab_ealxxx_transp` WHERE `cod_transp`= a.cod_tercer) as oalcontratadas,
-                      (SELECT count(`cod_transp`) FROM `tab_ealxxx_transp` WHERE `cod_transp`=a.cod_tercer and `fec_fineal`< ".$fec_filtro.") as oalvencidas,
-                      GROUP_CONCAT(DISTINCT(i.nom_contro)) AS nom_contro
+                      (SELECT count(`cod_transp`) FROM ".BASE_DATOS.".tab_ealxxx_transp WHERE cod_transp= a.cod_tercer) as oalcontratadas,
+                      (SELECT count(`cod_transp`) FROM ".BASE_DATOS.".tab_ealxxx_transp WHERE cod_transp= a.cod_tercer and fec_fineal< '".$fec_filtro."') as oalvencidas
                 FROM  ".BASE_DATOS.".tab_tercer_tercer a
           INNER JOIN  ".BASE_DATOS.".tab_transp_tipser b
                   ON  a.cod_tercer = b.cod_transp
@@ -134,7 +133,6 @@ class ajax_estser_contra
             GROUP BY  a.cod_tercer";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz = $mMatriz->ret_matrix("a");
-
     //echo "<pre>";
     //print_r($mMatriz);
     //echo "</pre>";
@@ -155,7 +153,7 @@ class ajax_estser_contra
     	}
     }
 
-    $return = array("data" => $data);
+    $return = array("data" => $this->cleanArray($data));
     echo json_encode($return);
   }
 
@@ -185,6 +183,39 @@ class ajax_estser_contra
         $alltransp= $this->getEalsempresa($transp);
 
         echo json_encode($alltransp);
+    }
+
+    /*! \fn: cleanArray
+    *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
+    *  \author: Ing. Luis Manrique
+    *  \date: 03-04-2020
+    *  \date modified: dd/mm/aaaa
+    *  \param: $arrau => Arreglo que será analizado por la función
+    *  \return: array
+    */
+    function cleanArray($array){
+        $arrayReturn = array();
+        //Convert function
+        $convert = function($value){
+            if(is_string($value)){
+                return utf8_encode($value);
+            }
+            return $value;
+        };
+
+        //Go through data
+        foreach ($array as $key => $value) {
+            //Validate sub array
+            if(is_array($value)){
+                //Clean sub array
+                $arrayReturn[$convert($key)] = self::cleanArray($value);
+            }else{
+                //Clean value
+                $arrayReturn[$convert($key)] = $convert($value);
+            }
+        }
+        //Return array
+        return $arrayReturn;
     }
 
 }
