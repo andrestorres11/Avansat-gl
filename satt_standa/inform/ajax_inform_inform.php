@@ -102,6 +102,8 @@ class inform {
         }else if($datos->tipo == 3){
             $intervalo = " 1 month"; // para los meses
         }else if($datos->tipo == 4){
+            $datos->fec_inicia = $datos->fec_inicia." ".$datos->hor_inicia.":00";
+            $datos->fec_finali = $datos->fec_finali." ".$datos->hor_finali.":59";
             $intervalo = " 1 days"; // para los meses
         }
 
@@ -187,7 +189,7 @@ class inform {
                                 INNER JOIN ".BASE_DATOS.".tab_genera_usuari b ON b.cod_usuari = a.usr_creaci
                                 INNER JOIN ".BASE_DATOS.".tab_genera_perfil c ON c.cod_perfil = b.cod_perfil
                                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda d ON a.cod_noveda = d.cod_noveda
-                                     WHERE a.fec_creaci >= '$finicia' AND  a.fec_creaci < '$ffinali' $p $u
+                                     WHERE a.fec_creaci >= '$finicia' AND  a.fec_creaci <= '$ffinali' $p $u
                                            $group
                             )
                             UNION ALL
@@ -197,14 +199,12 @@ class inform {
                                 INNER JOIN ".BASE_DATOS.".tab_genera_usuari b ON b.cod_usuari = a.usr_creaci 
                                 INNER JOIN ".BASE_DATOS.".tab_genera_perfil c ON c.cod_perfil = b.cod_perfil
                                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda d ON a.cod_noveda = d.cod_noveda
-                                     WHERE a.fec_creaci >= '$finicia' AND  a.fec_creaci < '$ffinali' $p $u
+                                     WHERE a.fec_creaci >= '$finicia' AND  a.fec_creaci <= '$ffinali' $p $u
                                            $group
                             )
                        ) x 
               GROUP BY $datoGroup $fec1 
               ORDER BY $datoGroup $fec1";
-        
-        
         $consulta = new Consulta($sql, self::$cConexion);
         return $consulta->ret_matrix("a");
     }
@@ -864,8 +864,6 @@ class inform {
         $differenceFormat = '%a';
         $contador= $contador->format($differenceFormat) + 1;
         $colspan=3 + ($contador * 2); 
-        
-        //mail("cristian.torres@eltransporte.org", "Datos Nov Usuario", var_export($data, true));
         $data = $this->formatDataArray($data);
         ?>
         
@@ -964,12 +962,13 @@ class inform {
                                         $totcolumcantdespacrow=0;
                                         $totcolumcantregrow = 0;
                                         for($i=1;$i<=($contador); $i++ ){
-                                            if($fec_variable==$value['registros'][$i-1]["fec1"]){
+                                            $validate = $this->busqueda_dia($fec_variable, $value['registros']);
+                                            if( $validate['flag'] ){
+                                                $keyv = $validate['key'];
                                     ?>
-                                                
-    
-                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2('1','<?=$fec_inicia_aux;?>','<?=$fec_finali_aux;?>','<?=$value['usr_creaci'];?>','<? echo $datos->tipInform ;?>')"><?= $value['registros'][$i-1]["can_despac"] ?></a></td>
-                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2(2,1)"><?= $value['registros'][$i-1]["can_regist"] ?></a></td>
+                                            
+                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2('1','<?=$fec_inicia_aux;?>','<?=$fec_finali_aux;?>','<?=$value['usr_creaci'];?>','<? echo $datos->tipInform ;?>')"><?= $value['registros'][$keyv]["can_despac"] ?></a></td>
+                                                <td class='cellInfo onlyCell' style='text-align:center'><a style="cursor:pointer;color:#285C00 !important;" onclick = "detalle2(2,1)"><?= $value['registros'][$keyv]["can_regist"] ?></a></td>
                                     <?php
                                                 $conkey=0;
                                                 foreach ($total_fecharray as $key => $valuekey){
@@ -977,15 +976,15 @@ class inform {
                                                     if($key==$fec_variable){
                                                         $vrcan_despac=$total_fecharray[$key][0];
                                                         $vrcan_regist=$total_fecharray[$key][0];
-                                                        $total_fecharray[$key][0]=($vrcan_despac + $value['registros'][$i-1]["can_despac"]);
-                                                        $total_fecharray[$key][1]=($vrcan_despac + $value['registros'][$i-1]["can_regist"]);
+                                                        $total_fecharray[$key][0]=($vrcan_despac + $value['registros'][$keyv]["can_despac"]);
+                                                        $total_fecharray[$key][1]=($vrcan_despac + $value['registros'][$keyv]["can_regist"]);
                                                     }
 
                                                 }
                                                 
-                                                $totalrow=$totalrow + ($value['registros'][$i-1]["can_despac"] + $value['registros'][$i-1]['can_regist']);
-                                                $totcolumcantdespacrow= $totcolumcantdespacrow + $value['registros'][$i-1]["can_despac"];
-                                                $totcolumcantregrow = $totcolumcantregrow + $value['registros'][$i-1]['can_regist'];
+                                                $totalrow=$totalrow + ($value['registros'][$keyv]["can_despac"] + $value['registros'][$keyv]['can_regist']);
+                                                $totcolumcantdespacrow= $totcolumcantdespacrow + $value['registros'][$keyv]["can_despac"];
+                                                $totcolumcantregrow = $totcolumcantregrow + $value['registros'][$keyv]['can_regist'];
                                     ?>
                                     <?php
                                             
@@ -1078,6 +1077,18 @@ class inform {
             }
          }
          return $dataNew;
+    }
+
+    private function busqueda_dia($dia, $array){
+        $validate = array();
+        $validate['flag'] = false;
+        foreach($array as $key=>$registro){
+            if($registro['fec1']==$dia){
+                $validate['flag'] = true;
+                $validate['key'] = $key;
+            }
+         }
+         return $validate;
     }
 
 
