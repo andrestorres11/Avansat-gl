@@ -140,9 +140,6 @@ class Aplicacion_Seguridad
                      AND a.ind_suspen = 1 ";
         $consulta = new Consulta($query, $this -> conexion);
         $usuari = $consulta -> ret_matriz();
-        if($_REQUEST['Action']=='excel' || $_REQUEST['option']=='excel' || $_REQUEST['opcionnnn']=='excel'){
-          echo "";
-        }else{
         echo "<SCRIPT type=\"text/javascript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
         
         echo '
@@ -293,12 +290,10 @@ class Aplicacion_Seguridad
 
             }
 
-           if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2') || ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas') ) || ($_REQUEST["cod_servic"] == 1))
+           if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2') || ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas') ) || ($_REQUEST["cod_servic"] == 1) || ($_REQUEST["Action"]=='excel' || $_REQUEST["opcion"]=='excel' || $_REQUEST["option"]=='excel' || $_REQUEST["option"]=='generate_file' || $_REQUEST["opcion"]=='generate_file'))
            	echo '';
            else
            {
-            //Parche para que funcione la descarga de archivos sea excel u otro tipo para evitar errores de cabecera (headers)
-            if($_REQUEST["Action"]!='excel' || $_REQUEST["opcion"]!='excel' || $_REQUEST["option"]!='excel' || $_REQUEST["option"]!='generate_file' || $_REQUEST["opcion"]!='generate_file'){
             echo "<TABLE BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\" WIDTH=\"100%\">";
             if(count($usuari)>0)
             {
@@ -377,7 +372,7 @@ class Aplicacion_Seguridad
                         </TABLE>
                     </TD>
                 </TR>";
-              }
+            
            }
 
            //Incluye la clase para validar 
@@ -432,7 +427,7 @@ class Aplicacion_Seguridad
           </TABLE>";
 
         $pagina_central -> cerrar();
-      }
+      
     }
 
 
