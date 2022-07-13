@@ -140,7 +140,6 @@ class Aplicacion_Seguridad
                      AND a.ind_suspen = 1 ";
         $consulta = new Consulta($query, $this -> conexion);
         $usuari = $consulta -> ret_matriz();
-        
         echo "<SCRIPT type=\"text/javascript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
         
         echo '
@@ -171,8 +170,6 @@ class Aplicacion_Seguridad
                     }
                     return true;
                 }
-
-
                 function OnMouseOverMenuRow( dir )   {
                     var way = document.getElementById( "MenuRowHiddenID" ).value;
                     var image1 = document.getElementById( "MenuRow1ID" );
@@ -180,8 +177,6 @@ class Aplicacion_Seguridad
                     image1.src = "../"+dir+"/imagenes/ryu_calendar/row_"+way+"_hover.gif";
                     image2.src = "../"+dir+"/imagenes/ryu_calendar/row_"+way+"_hover.gif";
                 }
-
-
                 function OnMouseOutMenuRow( dir )   {
                     var way = document.getElementById( "MenuRowHiddenID" ).value;
                     var image1 = document.getElementById( "MenuRow1ID" );
@@ -189,7 +184,6 @@ class Aplicacion_Seguridad
                     image1.src = "../"+dir+"/imagenes/ryu_calendar/row_"+way+".gif";
                     image2.src = "../"+dir+"/imagenes/ryu_calendar/row_"+way+".gif";
                 }
- 
           </script>';
         if(count($usuari)>0)
         {
@@ -203,8 +197,7 @@ class Aplicacion_Seguridad
                         return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( "0" ) + number;
                     }
                     return number + ""; // always return a string
-                }
-                   
+                } 
                 function restarSegundo()
                 {
                     var time = $("#supendID").html();
@@ -226,9 +219,7 @@ class Aplicacion_Seguridad
                     {
                        $("#supendID").html(zeroFill( hour, 2 )+":"+zeroFill( newDate.getMinutes(), 2 )+":"+zeroFill( newDate.getSeconds(), 2 ));
                     }
-
                 }
-
                 setInterval("restarSegundo();", 1000);
           </script>';
         }
@@ -299,15 +290,11 @@ class Aplicacion_Seguridad
 
             }
 
-           if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2') || ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas') ) || ($_REQUEST["cod_servic"] == 1))
+           if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2') || ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas') ) || ($_REQUEST["cod_servic"] == 1) || ($_REQUEST["Action"]=='excel' || $_REQUEST["opcion"]=='excel' || $_REQUEST["option"]=='excel' || $_REQUEST["option"]=='generate_file' || $_REQUEST["opcion"]=='generate_file'))
            	echo '';
            else
            {
-           
-            echo "\n    <TABLE BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\" WIDTH=\"100%\">
-
-                      
-                      ";
+            echo "<TABLE BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\" WIDTH=\"100%\">";
             if(count($usuari)>0)
             {
                 //$usuari[0]['timer'] = '00:01:03';
@@ -322,7 +309,6 @@ class Aplicacion_Seguridad
                                 font-size: 14px;
                                 color:#990000
                               }
-
                               .inform
                               {
                                 border: 1px solid #cccccc;
@@ -330,10 +316,8 @@ class Aplicacion_Seguridad
                                 background-color: #ffffff;
                                 width: 550px;
                                 padding: 10px;
-
                                 margin: 0px auto;
                                 margin-bottom: 15px;
-
                                 /*-------------------------*/
                                 opacity: .90;
                                 -moz-opacity: .90;
@@ -360,8 +344,7 @@ class Aplicacion_Seguridad
                         </div>';
             }            
                       
-            echo " 
-                    <TR>
+            echo " <TR>
                         <TD>
                             <TABLE ALIGN=\"left\" BORDER=\"0\" CELLPADDING=\"0\" CELLSPACING=\"0\" WIDTH=\"100%\">
                                 <TR>
@@ -382,13 +365,14 @@ class Aplicacion_Seguridad
                             </TR>
                             <TR>
                                 <td colspan='5'>
-                                <img id=\"MenuRow1ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Menú\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
+                                    <img id=\"MenuRow1ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Menú\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
                                     <input type=\"hidden\" id=\"MenuRowHiddenID\" value=\"left\">
                                 </td>
                             </TR>
                         </TABLE>
                     </TD>
                 </TR>";
+            
            }
 
            //Incluye la clase para validar 
@@ -443,6 +427,7 @@ class Aplicacion_Seguridad
           </TABLE>";
 
         $pagina_central -> cerrar();
+      
     }
 
 
