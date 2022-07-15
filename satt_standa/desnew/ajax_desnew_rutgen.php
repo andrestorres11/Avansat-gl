@@ -1488,8 +1488,9 @@ class AjaxInsertDespacho
   private function SetRutas( $_AJAX )
   {
 
-    $query = "SELECT a.cod_rutasx,a.nom_rutasx
+    $query = "SELECT a.cod_rutasx,a.nom_rutasx, b.nom_salvia
                   FROM ".BASE_DATOS.".tab_genera_rutasx a
+             LEFT JOIN ".BASE_DATOS.".tab_genera_salvia b ON a.cod_salvia = b.cod_salvia
                  WHERE a.cod_ciuori = '".$_AJAX['cod_ciuori']."' AND
                        a.cod_ciudes = '".$_AJAX['cod_ciudes']."' AND
 		      		         a.ind_estado = '".COD_ESTADO_ACTIVO."'
@@ -1497,12 +1498,14 @@ class AjaxInsertDespacho
 
     $consulta = new Consulta($query, $this->conexion);
     $destino = $consulta->ret_matriz();
-
+    
     $mHtml = '';
     $mHtml .= '<option value="">- Seleccione -</option>'; 
     foreach( $destino as $row )
     {
-      $mHtml .= '<option value="'.$row[0].'">'.$row[1].'</option>'; 
+      $nom_salvia = ($row[2] != '' || $row[2] != NULL) ? ' - '.$row[2] : '';
+      $nom_rutasx = $row[1].''.$nom_salvia;
+      $mHtml .= '<option value="'.$row[0].'">'.$nom_rutasx.'</option>'; 
     }
     echo $mHtml;
   }
