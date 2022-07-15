@@ -676,7 +676,7 @@
                                         <div class="obl">*</div>
                                         Consulta RIT
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tabper, $con_whepos,4).'" id="fil_ritpos" name="fil_ritpos">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tabper, $con_whepos,4).'" id="fil_ritpos" name="fil_ritpos" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_conrit', $nom_tabper, $con_whepos,1).'
                                   </div>
                                   <div class="col-6 form-group" style="margin-bottom: 0 !important;">
@@ -684,7 +684,7 @@
                                         <div class="obl">*</div>
                                         Consulta SIMIT:
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_simitx', $nom_tabper, $con_whepos,4).'" id="fil_simpos" name="fil_simpos">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_simitx', $nom_tabper, $con_whepos,4).'" id="fil_simpos" name="fil_simpos" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_simitx', $nom_tabper, $con_whepos,1).'
                                   </div>
                                 </div>
@@ -704,7 +704,7 @@
                                         <div class="obl">*</div>
                                         Procuraduria
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_procur', $nom_tabper, $con_whepos,4).'" id="fil_propos" name="fil_propos">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_procur', $nom_tabper, $con_whepos,4).'" id="fil_propos" name="fil_propos" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_procur', $nom_tabper, $con_whepos,1).'
                                   </div>
                                   <div class="col-6 form-group" style="margin-bottom: 0 !important;">
@@ -712,7 +712,7 @@
                                         <div class="obl">*</div>
                                         Runt:
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_runtxx', $nom_tabper, $con_whepos,4).'" id="fil_runpos" name="fil_runpos">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_runtxx', $nom_tabper, $con_whepos,4).'" id="fil_runpos" name="fil_runpos" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_runtxx', $nom_tabper, $con_whepos,1).'
                                   </div>
                                 </div>
@@ -732,7 +732,7 @@
                                         <div class="obl">*</div>
                                         A. Juiciales
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_ajudic', $nom_tabper, $con_whepos,4).'" id="fil_antpos" name="fil_antpos">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_ajudic', $nom_tabper, $con_whepos,4).'" id="fil_antpos" name="fil_antpos" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_ajudic', $nom_tabper, $con_whepos,1).'
                                   </div>
                                   <div class="col-6 form-group" style="margin-bottom: 0 !important;">
@@ -865,7 +865,7 @@
                                         <div class="obl">*</div>
                                         Consulta RIT
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tabper, $con_whepro,4).'" id="fil_ritpro" name="fil_ritpro">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tabper, $con_whepro,4).'" id="fil_ritpro" name="fil_ritpro" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_conrit', $nom_tabper, $con_whepro,1).'
                                   </div>
                                   <div class="col-6 form-group" style="margin-bottom: 0 !important;">
@@ -873,7 +873,7 @@
                                         <div class="obl">*</div>
                                         Consulta SIMIT:
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_simitx', $nom_tabper, $con_whepro,4).'" id="fil_simpro" name="fil_simpro">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_simitx', $nom_tabper, $con_whepro,4).'" id="fil_simpro" name="fil_simpro" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_simitx', $nom_tabper, $con_whepro,1).'
                                   </div>
                                 </div>
@@ -893,7 +893,7 @@
                                         <div class="obl">*</div>
                                         Procuraduria
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_procur', $nom_tabper, $con_whepro,4).'" id="fil_propro" name="fil_propro">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_procur', $nom_tabper, $con_whepro,4).'" id="fil_propro" name="fil_propro" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_procur', $nom_tabper, $con_whepro,1).'
                                   </div>
                                   <div class="col-6 form-group" style="margin-bottom: 0 !important;">
@@ -901,7 +901,7 @@
                                         <div class="obl">*</div>
                                         Runt:
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_runtxx', $nom_tabper, $con_whepro,4).'" id="fil_runpro" name="fil_runpro">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_runtxx', $nom_tabper, $con_whepro,4).'" id="fil_runpro" name="fil_runpro" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_runtxx', $nom_tabper, $con_whepro,1).'
                                   </div>
                                 </div>
@@ -921,7 +921,7 @@
                                         <div class="obl">*</div>
                                         A. Juiciales
                                       </label>
-                                      <input type="file" class="'.$this->buscaDocumento('fil_ajudic', $nom_tabper, $con_whepro,4).'" id="fil_antpro" name="fil_antpro">
+                                      <input type="file" class="'.$this->buscaDocumento('fil_ajudic', $nom_tabper, $con_whepro,4).'" id="fil_antpro" name="fil_antpro" accept="image/png,image/jpeg, image/jpg">
                                       '.$this->buscaDocumento('fil_ajudic', $nom_tabper, $con_whepro,1).'
                                   </div>
                                   <div class="col-6 form-group" style="margin-bottom: 0 !important;">
@@ -1127,7 +1127,7 @@
                                       <div class="obl">*</div>
                                       Consulta Operador GPS
                                   </label>
-                                  <input type="file" class="'.$this->buscaDocumento('fil_congps', $nom_tabveh, $con_wheveh,4).'" id="fil_congps" name="fil_congps">
+                                  <input type="file" class="'.$this->buscaDocumento('fil_congps', $nom_tabveh, $con_wheveh,4).'" id="fil_congps" name="fil_congps" accept="image/png,image/jpeg, image/jpg">
                                   '.$this->buscaDocumento('fil_congps', $nom_tabveh, $con_wheveh,1).'
                                 </div>
                               </div>
@@ -1150,7 +1150,7 @@
                                       <div class="obl">*</div>
                                       Consulta RIT
                                   </label>
-                                  <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tabveh, $con_wheveh,4).'" id="fil_conrit" name="fil_conrit">
+                                  <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tabveh, $con_wheveh,4).'" id="fil_conrit" name="fil_conrit" accept="image/png,image/jpeg, image/jpg">
                                   '.$this->buscaDocumento('fil_conrit', $nom_tabveh, $con_wheveh,1).'
                                 </div>
                                 <div class="col-6 form-group" style="margin-bottom: 0 !important;">
@@ -1158,7 +1158,7 @@
                                       <div class="obl">*</div>
                                       Runt:
                                   </label>
-                                  <input type="file" class="'.$this->buscaDocumento('fil_runtxx', $nom_tabveh, $con_wheveh,4).'" id="fil_runtxx" name="fil_runtxx">
+                                  <input type="file" class="'.$this->buscaDocumento('fil_runtxx', $nom_tabveh, $con_wheveh,4).'" id="fil_runtxx" name="fil_runtxx" accept="image/png,image/jpeg, image/jpg">
                                   '.$this->buscaDocumento('fil_runtxx', $nom_tabveh, $con_wheveh,1).'
                                 </div>
                               </div>
@@ -1178,7 +1178,7 @@
                                       <div class="obl">*</div>
                                       Comparendos
                                   </label>
-                                  <input type="file" class="'.$this->buscaDocumento('fil_compar', $nom_tabveh, $con_wheveh,4).'" id="fil_compar" name="fil_compar">
+                                  <input type="file" class="'.$this->buscaDocumento('fil_compar', $nom_tabveh, $con_wheveh,4).'" id="fil_compar" name="fil_compar" accept="image/png,image/jpeg, image/jpg">
                                   '.$this->buscaDocumento('fil_compar', $nom_tabveh, $con_wheveh,1).'
                                 </div>
                               </div>
@@ -1449,7 +1449,7 @@
                           <div class="obl">*</div>
                           Licencia de tránsito del vehículo
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 3).'" name="fil_licveh" id="fil_licveh">
+                        <input type="file" class="'.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 3).'" name="fil_licveh" id="fil_licveh" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1467,7 +1467,7 @@
                           <div class="obl">*</div>
                           Tarjeta de Propiedad del Tráiler
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 3).'" name="fil_tartra" id="fil_tartra">
+                        <input type="file" class="'.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 3).'" name="fil_tartra" id="fil_tartra" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1488,7 +1488,7 @@
                           <div class="obl">*</div>
                           Tecno mecánica
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 3).'" name="fil_tecmec" id="fil_tecmec" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 3).'" name="fil_tecmec" id="fil_tecmec" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1506,7 +1506,7 @@
                           <div class="obl">*</div>
                             SOAT
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_soatxx', $nom_tablax, $con_wherex, 3).'" name="fil_soatxx" id="fil_soatxx" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_soatxx', $nom_tablax, $con_wherex, 3).'" name="fil_soatxx" id="fil_soatxx" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_soatxx', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1527,7 +1527,7 @@
                           <div class="obl">*</div>
                           Licencia de transito del Conductor
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_litcon', $nom_tablax, $con_wherex, 3).'" name="fil_litcon" id="fil_litcon" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_litcon', $nom_tablax, $con_wherex, 3).'" name="fil_litcon" id="fil_litcon" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_litcon', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1545,7 +1545,7 @@
                         <div class="obl">*</div>
                           Cedula de ciudadanía del propietario
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 3).'" name="fil_cedpro" id="fil_cedpro" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 3).'" name="fil_cedpro" id="fil_cedpro" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1567,7 +1567,7 @@
                           <div class="obl">*</div>
                             Cédula de ciudadanía del conductor
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 3).'" name="fil_cedcon" id="fil_cedcon" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 3).'" name="fil_cedcon" id="fil_cedcon" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1585,7 +1585,7 @@
                         <div class="obl">*</div>
                           Licencia de conducción conductor
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 3).'" name="fil_liccon" id="fil_liccon" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 3).'" name="fil_liccon" id="fil_liccon" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1606,7 +1606,7 @@
                         <div class="obl">*</div>
                           Copia de la planilla de Pago de Seguridad Social
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_plsegs', $nom_tablax, $con_wherex, 3).'" name="fil_plsegs" id="fil_plsegs" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_plsegs', $nom_tablax, $con_wherex, 3).'" name="fil_plsegs" id="fil_plsegs" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_plsegs', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1624,7 +1624,7 @@
                           <div class="obl">*</div>
                           Registro Fotográfico del vehículo.
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 3).'" name="fil_regveh" id="fil_regveh" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 3).'" name="fil_regveh" id="fil_regveh" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1645,7 +1645,7 @@
                           <div class="obl">*</div>
                             Póliza extracontractual
                         </label>
-                        <input type="file" class="'.$this->buscaDocumento('fil_polext', $nom_tablax, $con_wherex, 3).'" name="fil_polext" id="fil_polext" >
+                        <input type="file" class="'.$this->buscaDocumento('fil_polext', $nom_tablax, $con_wherex, 3).'" name="fil_polext" id="fil_polext" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_polext', $nom_tablax, $con_wherex, 1).'
                       </div>
                     </div>
@@ -1822,7 +1822,7 @@
                   <div class="row">
                     <div class="col-md-12 col-sm-12 mb-2">
                       <label for="fil_ritcon" class="labelinput"><div class="obl">*</div>Consulta RIT</label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tablax, $con_wherex,4).'" name="fil_ritcon" id="fil_ritcon">
+                      <input type="file" class="'.$this->buscaDocumento('fil_conrit', $nom_tablax, $con_wherex,4).'" name="fil_ritcon" id="fil_ritcon" accept="image/png,image/jpeg, image/jpg">
                       '.$this->buscaDocumento('fil_conrit', $nom_tablax, $con_wherex,1).'
                     </div>
                   </div>
@@ -1856,7 +1856,7 @@
                   <div class="row">
                     <div class="col-md-12 col-sm-12 mb-2">
                       <label for="fil_procon" class="labelinput"><div class="obl">*</div>Procuraduria</label>
-                      <input type="file" class="'.$this->buscaDocumento('fil_procur', $nom_tablax, $con_wherex,4).'" id="fil_procon" name="fil_procon">
+                      <input type="file" class="'.$this->buscaDocumento('fil_procur', $nom_tablax, $con_wherex,4).'" id="fil_procon" name="fil_procon" accept="image/png,image/jpeg, image/jpg">
                       '.$this->buscaDocumento('fil_procur', $nom_tablax, $con_wherex,1).'
                     </div>
                   </div>
@@ -1884,11 +1884,10 @@
                 </div>
               </div>
 
-
               <div class="row mt-3">
                 <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
                   <label for="fil_antcon" class="labelinput"><div class="obl">*</div>A. Juiciales</label>
-                  <input type="file" class="'.$this->buscaDocumento('fil_ajudic', $nom_tablax, $con_wherex,4).'" id="fil_antcon" name="fil_antcon">
+                  <input type="file" class="'.$this->buscaDocumento('fil_ajudic', $nom_tablax, $con_wherex,4).'" id="fil_antcon" name="fil_antcon" accept="image/png,image/jpeg, image/jpg">
                   '.$this->buscaDocumento('fil_ajudic', $nom_tablax, $con_wherex,1).'
                 </div>
                 <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
