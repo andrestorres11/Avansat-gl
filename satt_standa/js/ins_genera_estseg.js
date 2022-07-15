@@ -14,6 +14,20 @@ $(document).ready(function() {
     $("#bus_transp").click(function() {
         vaciaInputTransportadora(this)
     });
+
+    $("input[type=file]").on("change", (e) => {
+        const archivo = $(e.target)[0].files[0];
+        let nombArchivo = archivo.name;
+        var extension = nombArchivo.split(".").slice(-1);
+            extension = extension[0];
+        let extensiones = ["jpg", "png", "jpeg"];
+       
+        if(extensiones.indexOf(extension) === -1){
+          alert("Extensión NO permitida (Solo se aceptan jpg, png, jpeg)");
+          $(e.target).val('');
+        }
+        
+      });
 });
 
 function loadAjax(x) {
@@ -337,7 +351,7 @@ function validateFase1() {
     $('#dataSolicitud #pills-documentos .ncarg').each(function() {
         $(this).rules("add", {
             required: true,
-            extension: "pdf|jpg|png|docx",
+            extension: "jpg|png|jpeg",
             messages: {
                 extension: "Formato no aceptado",
                 required: "Debe adjuntar el documento"
@@ -422,7 +436,7 @@ function validateEstudioSoliciFinal() {
         $(this).rules("add", {
             email: true,
             messages: {
-                email: "El correo no es vï¿½lido"
+                email: "El correo no es válido"
             }
         })
     });
@@ -1093,6 +1107,7 @@ function preguardado() {
     } else {
         data.append('ind_cancel', 0);
     }
+
     $.ajax({
         url: "../" + standa + "/estseg/ajax_genera_estseg.php?" + dataString,
         method: 'POST',

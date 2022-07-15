@@ -1555,7 +1555,7 @@
                     cod_colorx = '".$data['cod_colorx']."', cod_carroc = '".$data['cod_carroc']."', num_motorx = '".$data['num_motorx']."',
                     num_chasis = '".$data['num_chasis']."', num_poliza = '".$data['num_soatxx']."', num_config = '".$data['num_config']."',
                     cod_propie = '".$data['num_docpro']."', cod_tenedo = '".$data['num_docpos']."', cod_conduc = '".$data['num_doccon']."',
-                    cod_tipveh = '".$data['num_config']."', usr_gpsxxx = '".utf8_decode($data['usr_gpsxxx'])."', clv_gpsxxx = '".utf8_decode($data['clv_gpsxxx'])."',
+                    cod_tipveh = '".$data['num_config']."', cod_opegps = '".$data['cod_opegps']."', usr_gpsxxx = '".utf8_decode($data['usr_gpsxxx'])."', clv_gpsxxx = '".utf8_decode($data['clv_gpsxxx'])."',
                     idx_gpsxxx = '".$data['idx_gpsxxx']."',
                     usr_modifi = '".$usuari."', fec_modifi = NOW()
                     ";
