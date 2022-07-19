@@ -1,0 +1,57 @@
+------------------------ DATE 2021-07-22 18:22:26 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"SNN179","option":"1","device":"win32","cod_contro":"19150","img_foto01":"data:image\/jpeg;base64,\/9j\/4AAQSkZJRgABAQAAAQABAAD\/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T\/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT\/wAARCADwAUADASIAAhEBAxEB\/8QAGgABAQEBAQEBAAAAAAAAAAAAAQACAwQFBv\/EACwQAQEAAgEEAgEEAQMFAAAAAAABAhEDBBIhMUFRBSIyYXETFCOBM0JSkaH\/xAAYAQEBAQEBAAAAAAAAAAAAAAAAAQIDBP\/EABwRAQEBAQEAAwEAAAAAAAAAAAABEQISITFBUf\/aAAwDAQACEQMRAD8A\/TJIEkgSSBJIEkLZPdkAp5ubr+n4f3ckt+o8HN+bm7OLjt\/mpo+w5cvU8PFN58kj8\/zfkOp5ffJ2z6jz23K7ttv9nyPt8v5jix8ceNzv\/wAePm\/J8\/J4lmE\/h4ZK1MTFay5Msv3W3+6vNWoVQaa0NrYEbWxsDsbFrPcBotHmtY8OeXxQZuTPmvXh0eV9+How6TCa35rU5tTXzZx3K+nfDo88vc0+jjx44+pptucJ6ePj6DCec\/1fw9OHFhhNY4yf02mpMZ1EJUal1ZY93Hn34TJ4Hbps+3Ltvqufc\/W+a9aSc2kkgSSBIWye648nV8HH+7OA7p8rn\/N8GE\/RLlXg5vzPUcm5hJhE1X6HPkww\/dlI8fN+W6Xi8d\/dfqPzvJz8vLf18lrMlvoH1ef83yZeOLDX814eXrOfmv6+S\/1PDlMPtuYSfyYjHm\/DUxreioJhGpJAQJZ2tg0mdrdoNbG1MMsr6rrh02VXKOO1Mcr8Pdh0snt1x4sMfUanFZ14Menzy+HfDo\/\/ACeyTSanETXLDp8Mfh0mMnqNJrMQFJRJIEkhEkhSpdAoPdxZ9+Evz8tvH0+fbnq+q9jjZldEkkHj5\/yXT8PvOV8\/n\/PT1xY2vh6tu9bv3Wuy\/KD1c35PqeX3nMZ\/Dy5ZXO7ytyv8+WpxxuYww1zmNvw1MPtuJRTGRqAgUFsGltnZmOV+AO1tvDgzyvp3w6T7Wc2przTdax4s8r6r3YcGOPw6zGT1G5wnp48Olt9u2HTYz27lqcyJrOPHjPUaRaRJIEigSSBJIEkgSSBJIEkgMr28Gffh\/M9vC68GfZyb+Plz7jXNey3RZuO7suTT8fqJJQobFoNLbPm+m8ePLL4AbW67YdLlfdejDpccfN81qc1NeOY5ZOuHTZV7ccMZ6jbc4\/qa82HSye3fHixx+G01OZE0ySEQqhSQFJAUkCSQFBbApzvLhvXdG+6X5ApS7QJJAkkCBAiIQpMZKUe3gz78NfMdXg4eTszl+Hul3NuNmV0j8bsyZZenrw6aT37dsePGfDU4qenhw4M8vh2w6X7eqSQtziM6548GGM9Okxk9FNSSITAVCQYBSQEgxApEEkgKSBM8nJjx47yumeXlx4sd2vk9Tz3my3fXxEtxce7P8hxTxN15OTrs8rdeI8lyZ25+q1jrOTXn5anPnP8Aurgk9Ux9Di664zV8\/wAvocHLOXCV8CV6+j6i8eWrfG250lj7KY4+THkm5W22UkASSESSBIIUvZ03J3Ydt9x4nTiz7M5WO5qyvnlJ0QoECgQJgQNGMmA0gQJBQKSApICzndY2tM8n7aD5PV82XJl78T4eSunL++xnHHurj1fluDHG09nl6cOPU1p0x4LMtsarxXDRnG9vJxSX055YpqyPNcBqx2yjOmpSx06TqMuLKT4fYwymWMsfEmG49fR9RccuzK+K681zsfRSTaJICEJAkgBQIryIFRJICQgJBAwggSyQaLJRSQREQQTPLl28dtacOrv+1Z9+Cq+RZc87ft34cO3+zjjI3Hl6rrI7Ya26Vywb7ppgZz8uOUdMq55VRxyjLWVc7k1CumNZvjKUY5xrKbbjL6nTcsz48d3zp2fL6Pks5JH1HaXY51JJUSCBJIEggeVJKqIIFAgUCDSBAmAgSCBIiQJCAuHVfsd3DqpviqX6WPDvy1HOXyblqPNXWOnfoXkn28uWeVEtMNem57Yyyc5W8uOzHaK551hWs7ajLUdMb4co1KqO3He3klfXxylkfFl+WsOo5JlL3enTnrGbH2UxxZ9+Ey+426MJBKJJAkEDzIIUpICQgJCBoskCRCBIIEhA0gUEzy492FjSB8my452X4rPI79Vjrl3PlwzcLMrrHK3TOzYNIHDe3fPmxxx1fbz7mLnlluphreVloc9rao7QuMzrUzB2Y35Y\/wAimQPsdBlbw+ft6Xl6D\/oT+3pd59OdKCVEkFCggeZAioggUCCIIEskCQQJCBoskCQgLPJbMLoqzcsQj5OXJcsvLcks8s9Vx3j5Lfi1znLqPPY6xvPCT04Z5aOfNa427SQtVotC2qLY2tgCthA0ZWGoo+z+Pu+HT1vL0GPbwS\/Nel3n05kJKiSAEJA86BFSSApICgQJCAkECQgaQIFAgUEDh1XF\/kwfH5PGVj72XmPi9bj28+XjxfLl3P1uVw2LRsWuam0IAQhsClsA0YzG8JvKT7qo+50k1wYuzHHJMJJ9Nu7mkkokECSQPOkhSggaQQEhASEDSBAlkgSEDSCAoIC8nW9POXC35ny9bOU3LEs0fnspZbL7ngPT1vDljzZZdv6b8vNY4WY6IIIJJAkEBbwurthRR97peX\/JxSu75f47lmMuNvz4e+8\/HPecn\/LvLsc66pxx6jjy9Zy\/8t\/5MfsGk5Zc\/Hj7zn\/tj\/WcW9d0B6E548uGc3Lv+mu6fao4liZnuibFxpCUqFJAiEBIQEggUCBLJAoECggKG0DHJx4542ZTb4\/Vcc4+W4z+32q+T+RxuPLMvi+GO58Ly8dgatYri2QEBQQFJA3jdHcrHwoDRmX9hmg6blUy057MoN93nc8X7jePPyT1yZOQ2u0fU2dhIjWz3VlLo3Mq13ucK+qY6d0MsctmNe6mOuy5bMyq+0x0LnM6e9fUMbLPdDK1sGkEI0glCggKAtknkDbJPL5P5HkmfJJL6des6i5ZXDG+PnTw5ufXX41IwEnJpaWkdgtLRlQLQIorU9MrYEJZICraVAypkg+sVCICkCKQIggkUAO1pAtnbKBuZU99c1tdo6d5nJHLY217qY9Eyh3Hm2e6\/a+zHbk5Jhjuvn8\/UZ539OVkejknfPLycuPbfCdd6SONvlk5exGGmLA6ViwAqKNg1Jar4ON0zld0FsbFUBoJAUDsEkgCSB\/\/2Q==","img_foto02":"","0":{"num_manifi":"1-3-55-154977","cod_transp":"890935085","num_despac":"4935845","cod_rutasx":"96396","cod_contro":"19150"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-55-154977</ns1:Manifiesto>
+                                                            <ns1:Placa>SNN-179</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>19150</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2021-07-22 18:22:26</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:186.148.188.59</ns1:Observacion>
+                                                            <ns1:Lugar>OAL GRANADA</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2021-07-22 18:22:26 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2021-07-22 18:22:26 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-55-154977</ns1:Manifiesto>
+                                                            <ns1:Placa>SNN-179</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>19150</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2021-07-22 18:22:26</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:186.148.188.59</ns1:Observacion>
+                                                            <ns1:Lugar>OAL GRANADA</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+

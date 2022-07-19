@@ -1,0 +1,188 @@
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '16:14:03',
+  'fecha' => '2020-03-11',
+  'placa' => 'GUQ995',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL LA LIZAMA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '10337',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:190.107.20.242',
+  'latitud' => '-73.57417',
+  'longitud' => '7.1272',
+  'hora' => '18:14:53',
+  'fecha' => '2020-03-11',
+  'placa' => 'SOQ882',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '18:18:12',
+  'fecha' => '2020-03-11',
+  'placa' => 'SPY099',
+) 
+catch:------------------------------------------ 
+SoapFault::__set_state(array(
+   'message' => 'looks like we got no XML document',
+   'string' => '',
+   'code' => 0,
+   'file' => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+   'line' => 193,
+   'trace' => 
+  array (
+    0 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+      'line' => 193,
+      'function' => '__soapCall',
+      'class' => 'SoapClient',
+      'type' => '->',
+      'args' => 
+      array (
+        0 => 'puestocontrol',
+        1 => 
+        array (
+          'empresa_codigocs' => '067',
+          'usuario' => 'ESFERAS',
+          'clave' => '12345Aa',
+          'sentido' => '0',
+          'direccion' => 'OAL GRANADA',
+          'tipo_evento' => '0',
+          'kilometraje' => '0',
+          'velocidad' => '0',
+          'codigopuestocontrol' => '19150',
+          'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+          'latitud' => '-74.34849',
+          'longitud' => '4.52699,',
+          'hora' => '18:18:12',
+          'fecha' => '2020-03-11',
+          'placa' => 'SPY099',
+        ),
+      ),
+    ),
+    1 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+      'line' => 36,
+      'function' => 'Registrar',
+      'class' => 'Novedad',
+      'type' => '->',
+      'args' => 
+      array (
+      ),
+    ),
+    2 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+      'line' => 1130,
+      'function' => '__construct',
+      'class' => 'Novedad',
+      'type' => '->',
+      'args' => 
+      array (
+        0 => 
+        Conexion::__set_state(array(
+           'link' => NULL,
+           'host' => 'aglbd.intrared.net',
+           'user' => 'satb_movil',
+           'pass' => 'satb_movil1',
+           'base' => 'satt_faro',
+           'cent' => '',
+           'result' => NULL,
+           'data' => 
+          array (
+            'val_latitu' => '-74.34849',
+            'val_longit' => '4.52699,',
+          ),
+        )),
+      ),
+    ),
+    3 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/index.php',
+      'line' => 26,
+      'args' => 
+      array (
+        0 => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+      ),
+      'function' => 'include',
+    ),
+    4 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/index.php',
+      'line' => 32,
+      'function' => '__construct',
+      'class' => 'Index',
+      'type' => '->',
+      'args' => 
+      array (
+      ),
+    ),
+  ),
+   'previous' => NULL,
+   'faultstring' => 'looks like we got no XML document',
+   'faultcode' => 'Client',
+   'faultcodens' => 'http://schemas.xmlsoap.org/soap/envelope/',
+)) 
+finlog------------------------------------------ 
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL LA LIZAMA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '10337',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:190.107.20.242',
+  'latitud' => '-73.57417',
+  'longitud' => '7.1272',
+  'hora' => '19:39:03',
+  'fecha' => '2020-03-11',
+  'placa' => 'WFR857',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------

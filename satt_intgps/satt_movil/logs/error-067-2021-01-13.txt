@@ -1,0 +1,22 @@
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '23:13:20',
+  'fecha' => '2021-01-13',
+  'placa' => 'SZZ937',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO CON LOS SIGUIENTES ERRORES:LA PLACA NO SE ENCUENTRA EN TRAFICO  O EL PUESTO DE CONTROL NO TIENE CODIGO TRANSMISION PARA LA RUTA DEL MANIFIESTO. ****' 
+----------------------------------- Fin Log ----------------------------------

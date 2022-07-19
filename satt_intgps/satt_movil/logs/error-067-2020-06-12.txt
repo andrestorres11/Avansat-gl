@@ -1,0 +1,66 @@
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '09:23:40',
+  'fecha' => '2020-06-12',
+  'placa' => 'WER334',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO CON LOS SIGUIENTES ERRORES:LA PLACA NO SE ENCUENTRA EN TRAFICO  O EL PUESTO DE CONTROL NO TIENE CODIGO TRANSMISION PARA LA RUTA DEL MANIFIESTO. ****' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL LA LIZAMA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '10337',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:190.107.20.242',
+  'latitud' => '-73.57417',
+  'longitud' => '7.1272',
+  'hora' => '18:35:39',
+  'fecha' => '2020-06-12',
+  'placa' => 'WHO054',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL LA LIZAMA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '10337',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:190.107.20.242',
+  'latitud' => '-73.57417',
+  'longitud' => '7.1272',
+  'hora' => '18:35:39',
+  'fecha' => '2020-06-12',
+  'placa' => 'WHO054',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------

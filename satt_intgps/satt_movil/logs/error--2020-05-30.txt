@@ -1,0 +1,122 @@
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '900138913',
+  'usuario' => 'OET',
+  'clave' => 'Tevsa123',
+  'sentido' => '0',
+  'direccion' => 'OAL LA LIZAMA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '10337',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:190.107.20.242',
+  'latitud' => '-73.57417',
+  'longitud' => '7.1272',
+  'hora' => '14:42:25',
+  'fecha' => '2020-05-30',
+  'placa' => 'SPR071',
+) 
+catch:------------------------------------------ 
+SoapFault::__set_state(array(
+   'message' => 'looks like we got no XML document',
+   'string' => '',
+   'code' => 0,
+   'file' => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+   'line' => 198,
+   'trace' => 
+  array (
+    0 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+      'line' => 198,
+      'function' => '__soapCall',
+      'class' => 'SoapClient',
+      'type' => '->',
+      'args' => 
+      array (
+        0 => 'puestocontrol',
+        1 => 
+        array (
+          'empresa_codigocs' => '900138913',
+          'usuario' => 'OET',
+          'clave' => 'Tevsa123',
+          'sentido' => '0',
+          'direccion' => 'OAL LA LIZAMA',
+          'tipo_evento' => '0',
+          'kilometraje' => '0',
+          'velocidad' => '0',
+          'codigopuestocontrol' => '10337',
+          'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:190.107.20.242',
+          'latitud' => '-73.57417',
+          'longitud' => '7.1272',
+          'hora' => '14:42:25',
+          'fecha' => '2020-05-30',
+          'placa' => 'SPR071',
+        ),
+      ),
+    ),
+    1 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+      'line' => 36,
+      'function' => 'Registrar',
+      'class' => 'Novedad',
+      'type' => '->',
+      'args' => 
+      array (
+      ),
+    ),
+    2 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+      'line' => 1135,
+      'function' => '__construct',
+      'class' => 'Novedad',
+      'type' => '->',
+      'args' => 
+      array (
+        0 => 
+        Conexion::__set_state(array(
+           'link' => NULL,
+           'host' => 'aglbd.intrared.net',
+           'user' => 'satb_movil',
+           'pass' => 'satb_movil1',
+           'base' => 'satt_faro',
+           'cent' => '',
+           'result' => NULL,
+           'data' => 
+          array (
+            'val_latitu' => '-73.57417',
+            'val_longit' => '7.1272',
+          ),
+        )),
+      ),
+    ),
+    3 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/index.php',
+      'line' => 26,
+      'args' => 
+      array (
+        0 => '/var/www/html/ap/satt_faro/satt_movil/novedad.php',
+      ),
+      'function' => 'include',
+    ),
+    4 => 
+    array (
+      'file' => '/var/www/html/ap/satt_faro/satt_movil/index.php',
+      'line' => 32,
+      'function' => '__construct',
+      'class' => 'Index',
+      'type' => '->',
+      'args' => 
+      array (
+      ),
+    ),
+  ),
+   'previous' => NULL,
+   'faultstring' => 'looks like we got no XML document',
+   'faultcode' => 'Client',
+   'faultcodens' => 'http://schemas.xmlsoap.org/soap/envelope/',
+)) 
+finlog------------------------------------------ 

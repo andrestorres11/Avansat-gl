@@ -1,0 +1,342 @@
+------------------------ DATE 2020-03-07 07:32:12 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"XJB037","option":"1","device":"win32","cod_contro":"20320","img_foto01":"","img_foto02":"","0":{"num_manifi":"1-3-13-9197","cod_transp":"890935085","num_despac":"4197385","cod_rutasx":"93514","cod_contro":"20320"},"1":{"num_manifi":"1-3-13-9170","cod_transp":"890935085","num_despac":"4176589","cod_rutasx":"93514","cod_contro":"20320"},"2":{"num_manifi":"1-3-86-13299","cod_transp":"890935085","num_despac":"4172668","cod_rutasx":"95196","cod_contro":"20320"},"3":{"num_manifi":"1-3-25-143097","cod_transp":"890935085","num_despac":"4129908","cod_rutasx":"95778","cod_contro":"20320"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-13-9197</ns1:Manifiesto>
+                                                            <ns1:Placa>XJB-037</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 07:32:12</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2020-03-07 07:32:12 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2020-03-07 07:32:12 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-13-9197</ns1:Manifiesto>
+                                                            <ns1:Placa>XJB-037</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 07:32:12</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+
+------------------------ DATE 2020-03-07 07:32:13 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"XJB037","option":"1","device":"win32","cod_contro":"20320","img_foto01":"","img_foto02":"","0":{"num_manifi":"1-3-13-9197","cod_transp":"890935085","num_despac":"4197385","cod_rutasx":"93514","cod_contro":"20320"},"1":{"num_manifi":"1-3-13-9170","cod_transp":"890935085","num_despac":"4176589","cod_rutasx":"93514","cod_contro":"20320"},"2":{"num_manifi":"1-3-86-13299","cod_transp":"890935085","num_despac":"4172668","cod_rutasx":"95196","cod_contro":"20320"},"3":{"num_manifi":"1-3-25-143097","cod_transp":"890935085","num_despac":"4129908","cod_rutasx":"95778","cod_contro":"20320"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-13-9170</ns1:Manifiesto>
+                                                            <ns1:Placa>XJB-037</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 07:32:13</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2020-03-07 07:32:13 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2020-03-07 07:32:13 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-13-9170</ns1:Manifiesto>
+                                                            <ns1:Placa>XJB-037</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 07:32:13</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+
+------------------------ DATE 2020-03-07 07:32:13 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"XJB037","option":"1","device":"win32","cod_contro":"20320","img_foto01":"","img_foto02":"","0":{"num_manifi":"1-3-13-9197","cod_transp":"890935085","num_despac":"4197385","cod_rutasx":"93514","cod_contro":"20320"},"1":{"num_manifi":"1-3-13-9170","cod_transp":"890935085","num_despac":"4176589","cod_rutasx":"93514","cod_contro":"20320"},"2":{"num_manifi":"1-3-86-13299","cod_transp":"890935085","num_despac":"4172668","cod_rutasx":"95196","cod_contro":"20320"},"3":{"num_manifi":"1-3-25-143097","cod_transp":"890935085","num_despac":"4129908","cod_rutasx":"95778","cod_contro":"20320"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-86-13299</ns1:Manifiesto>
+                                                            <ns1:Placa>XJB-037</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 07:32:13</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2020-03-07 07:32:14 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2020-03-07 07:32:14 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-86-13299</ns1:Manifiesto>
+                                                            <ns1:Placa>XJB-037</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 07:32:13</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+
+------------------------ DATE 2020-03-07 07:32:14 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"XJB037","option":"1","device":"win32","cod_contro":"20320","img_foto01":"","img_foto02":"","0":{"num_manifi":"1-3-13-9197","cod_transp":"890935085","num_despac":"4197385","cod_rutasx":"93514","cod_contro":"20320"},"1":{"num_manifi":"1-3-13-9170","cod_transp":"890935085","num_despac":"4176589","cod_rutasx":"93514","cod_contro":"20320"},"2":{"num_manifi":"1-3-86-13299","cod_transp":"890935085","num_despac":"4172668","cod_rutasx":"95196","cod_contro":"20320"},"3":{"num_manifi":"1-3-25-143097","cod_transp":"890935085","num_despac":"4129908","cod_rutasx":"95778","cod_contro":"20320"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-25-143097</ns1:Manifiesto>
+                                                            <ns1:Placa>XJB-037</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 07:32:14</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2020-03-07 07:32:14 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2020-03-07 07:32:14 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-25-143097</ns1:Manifiesto>
+                                                            <ns1:Placa>XJB-037</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 07:32:14</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+
+------------------------ DATE 2020-03-07 16:05:34 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"TAU659","option":"1","device":"win32","cod_contro":"20320","img_foto01":"","img_foto02":"","0":{"num_manifi":"1-3-86-13337","cod_transp":"890935085","num_despac":"4187188","cod_rutasx":"93514","cod_contro":"20320"},"1":{"num_manifi":"1-3-13-9177","cod_transp":"890935085","num_despac":"4181021","cod_rutasx":"93514","cod_contro":"20320"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-86-13337</ns1:Manifiesto>
+                                                            <ns1:Placa>TAU-659</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 16:05:34</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2020-03-07 16:05:35 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2020-03-07 16:05:35 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-86-13337</ns1:Manifiesto>
+                                                            <ns1:Placa>TAU-659</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 16:05:34</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+
+------------------------ DATE 2020-03-07 16:05:35 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"TAU659","option":"1","device":"win32","cod_contro":"20320","img_foto01":"","img_foto02":"","0":{"num_manifi":"1-3-86-13337","cod_transp":"890935085","num_despac":"4187188","cod_rutasx":"93514","cod_contro":"20320"},"1":{"num_manifi":"1-3-13-9177","cod_transp":"890935085","num_despac":"4181021","cod_rutasx":"93514","cod_contro":"20320"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-13-9177</ns1:Manifiesto>
+                                                            <ns1:Placa>TAU-659</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 16:05:35</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2020-03-07 16:05:35 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2020-03-07 16:05:35 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-13-9177</ns1:Manifiesto>
+                                                            <ns1:Placa>TAU-659</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>20320</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-03-07 16:05:35</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:201.184.105.146</ns1:Observacion>
+                                                            <ns1:Lugar>OAL ALTO DEL TRIGO</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+

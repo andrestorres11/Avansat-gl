@@ -1,0 +1,114 @@
+------------------------ DATE 2020-10-06 20:57:46 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"SSZ537","option":"1","device":"win32","cod_contro":"10037","img_foto01":"data:image\/jpeg;base64,\/9j\/4AAQSkZJRgABAQAAAQABAAD\/2wBDABsSFBcUERsXFhceHBsgKEIrKCUlKFE6PTBCYFVlZF9VXVtqeJmBanGQc1tdhbWGkJ6jq62rZ4C8ybqmx5moq6T\/2wBDARweHigjKE4rK06kbl1upKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKSkpKT\/wAARCADwAUADASIAAhEBAxEB\/8QAGgAAAwEBAQEAAAAAAAAAAAAAAAECAwQFBv\/EACkQAQEAAgEFAAEDAwUAAAAAAAABAhEDBBIhMUFRBRMiMmGRFCNxgeH\/xAAXAQEBAQEAAAAAAAAAAAAAAAAAAQID\/8QAGBEBAQEBAQAAAAAAAAAAAAAAAAEREjH\/2gAMAwEAAhEDEQA\/APnzAFOAoYAyAhkYAjAAACgAAAAACgAAAAIGAIwAIGQAtKICBgC0DApAyAAAC0NGAKjQAhiGAAAAwAABkAAACCgAAAAAAAAAAAAAMCAAAAAAehoCB6GgSNHoAQAFBGBCBkKCMgUAYhGAABlQAAAyMAQMAQMAQMARgAAAAAAAA5AKQ9K0JjsVOj01x41zjFxz6p9tdMwkPtiavLksTY6s+OVjlhcVZsxlSVYkQAAAVMqBAjBYPQ0BGAAIwAAAAAwIAAAYAgYAAAAAegIGAJeE2ltw47sFhzjq8eNv2DTOtyImOj0okaTRo7CVCTnhuLkXJ4Erg5MdVk6ubHzXPlNVphJHQIQAFLRHQI0IxQIAwAAAADQAHoAQMARnoAQMAQ0egBGIYJBgBPbs6XH65Mfb0OimxYrKaS25cdMblIjoNEO+UbRQm2QZVjlfIjTum2ku45plGmOSp6OXHccnJHd7jk5cf5aVmsAvLC4zdQIAAIVIwDSkdIADGgA0DAjAgAGNARgANAwBaBgCB6AAGQFoGAKe3odD5v8Aw4NO3oLf3NfkWOznxtx24OT29PmznZ2\/l5\/Jh4RtjMmmN2y7dKxsx9iry9Mcp5Xlyo7pRNTJ5aYwpYqWfkI0x9Ms5\/NV5JIyyz3kQpcs\/i53RyX+LCkZvpEZKgpGQjT6DGgIxoaAA9AADCgGjkCBAwAFMARgwSD0NAAej0CNDSrC0BSPQ6S4yTx5cGm3FnZ4Fj0+XG2TKOXOF\/qc5jrbDPlyy+mNdDOyMbdnbtIzaVGxSEPY3SIU90bICHldxnVWpAgABEZA21q6vi\/g3t8nBhyTWUlcfL+n63cL\/wBfAcAa58GfHdZT\/FZ68gWgogAMaAA9DQENK0NAUCtFoCM5D0CDVoaAtCqkFgIGlzE7AZnhf5Cl9BtnPDKtsL34avtnnNVRBU9FUEg0gCMAQFIBUnSAgZAVJVIH0o2abFBZMpqxhy9Fx57smq6IeweXy9HnhNzzHNce26vt7lRnxY5zVgPG0HocvQz3j4c2fT54e5\/hBiDPQFo9HIrQI0NL0NAmRWlY4nYDPQ0uwpALQk3TqsYA7dRGTS1nl7BFSvRaAYZdta54907oxs0148vlBnYmtc8dM6CKSqmgVAIAeM3Sb9Px7ygpc3D24d0YaehzTfHcXDryCNFZY0FEYhpcZUXHQPpSrLHnxvtpMsbPFUOGQAAAALJfZhRjydNhn7jmz6TLH+ny7zQeVeO4+4WnqZceOXuMs+lnzwYOHR6b5cGU+I7LPiCJDsXMRcQZWDTTsv4K4UGcirdHrSKCbS1tWhoC0LNK9IvkE1WGPnZzBr2agqcp3TTDLGz26N6pZyZQXHNU1reNNwEyshpp2jtDE44uzixmGG77rHjkl3T5eX5APlzc30ZZbRsFUqAIQoIHv9R0WPHnf289z5tz3Dkx\/wDBjcpfFraZWzyoynLnj7aY88vs7232zyxx+A6JnjfqnH25T1VY8mWJo6jYY8\/5a4540FaOQTVVIBaORUhzEC7ZfcRlwY5fG0xX2IOLLp9emd49e49C4ouEvsHn60Vjsz4Z8YZ8VgOXLBnY6bEZYQGGiVS1bdQErx4Ms\/7NuPhmOrfNdGGN96BGHDjhjPzGXJ5yrTn5eya+ubHl37FTl7G1Z6vpGqjRVNVYViKmlPaqm+AHJlr0xyp5XaK0wQAEAMgBGQPZlK5VVibBClpU9FQVMlSxkqehV9sp9lnqplXjkB43PFrhyfk+PG5XWnVj0fdPSjPCyt8Mdlj0ec8xvx8OePuIFjxW\/Gv7V00xmooHNlw+PTLLj1XcjLCUHBljYzykdfLhpzZQHPnxyubkwuLsyY8smgct45Rjx6v4PLL8RncrQdOOfHj7uyz6rGRx21GVBXLnc8rdswWwOZ2NcOSX2wEuhddVkrO46HHnutdSosrDVtZ8t14b8mcxjkzu7uqWppUyGSBkAIyoAAA9zRWO7Horvy1nRYz2I8vtv4L9vO3xjXrTpuPH4uYYz1BXk49NyZfG+HQZ329GST1D2I5uP9Ox1\/J0cfRcWHnti5lV47qCsOPDGeJFpxilAYAoAAAjAMOa4xyZ6vpv1eHnbl0CMmHN6bZOfm\/pBz5M7V5M6CMk1VRQTU06mgNlsUgVMtNsOW3w5l8d1Qac29MK6OfKXCac1AUhQBAEABGAIUA+8s8oyaW+UZwRlfZHU7FM9p35CC5V45MpVRRtjkqZbZ4qx1PoNDKXZgAAAAAOXrMvn9nHMpW\/XZazrjxy3sDzsrn5f6WuVY8t8A56zyq7UZUEVNPKpBNTVVNAiOkBGQA7UmQCkCAEZAKQoAAAH3m\/Pos8vBXLyz5d2eKIjLKT6jLlwnuseTjzvrJy8nFyb\/KDsvU8c+pvWY\/PLguGc9yqxwyvwV1Xq8r6isOfPK+ayw4cr8dPF0936VFY55flWOd37a49PqeSy4+0VrxZt3HjdV1z0gZJ5M5jPflljyb9KjoCMbubqu6A8z9Qv+9k5MK363LfLk5cKKvKseS+K0tZZ+gc9RkvJllQKpFoAqmnU0CBkBAwBUjICpHSAEABAUAKRkK\/\/9k=","img_foto02":"","0":{"num_manifi":"1154228","cod_transp":"830040809","num_despac":"4478139","cod_rutasx":"15600","cod_contro":"10037"},"1":{"num_manifi":"1-3-66-7984","cod_transp":"890935085","num_despac":"4372584","cod_rutasx":"97745","cod_contro":"19150"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-66-7984</ns1:Manifiesto>
+                                                            <ns1:Placa>SSZ-537</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>19150</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-10-06 20:57:46</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:186.148.188.59</ns1:Observacion>
+                                                            <ns1:Lugar>OAL GRANADA</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2020-10-06 20:57:47 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2020-10-06 20:57:47 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-66-7984</ns1:Manifiesto>
+                                                            <ns1:Placa>SSZ-537</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>19150</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-10-06 20:57:46</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:186.148.188.59</ns1:Observacion>
+                                                            <ns1:Lugar>OAL GRANADA</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+
+------------------------ DATE 2020-10-06 20:57:54 ------------------------ 
+Type      : NORMAL XML REQUEST 
+_POST     : {"placa":"SSZ537","option":"1","device":"win32","cod_contro":"22869","img_foto01":"","img_foto02":"","0":{"num_manifi":"VL-212458","cod_transp":"860068121","num_despac":"4463696","cod_rutasx":"34570","cod_contro":"22869"},"1":{"num_manifi":"1-3-66-7984","cod_transp":"890935085","num_despac":"4372584","cod_rutasx":"97745","cod_contro":"19150"}}  
+datInterf : {"nom_operad":"Carga Antioquia","nom_usuari":"OET_Int","clv_usuari":"Carg@OET_5A015WTWR","url_webser":"https:\/\/api.carga.com.co:44324\/Reportes\/ReportesWS.asmx?wsdl","val_timtra":"1"}  
+Request   : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-66-7984</ns1:Manifiesto>
+                                                            <ns1:Placa>SSZ-537</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>19150</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-10-06 20:57:54</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:186.148.188.59</ns1:Observacion>
+                                                            <ns1:Lugar>OAL GRANADA</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+------------------------ DATE 2020-10-06 20:57:54 ------------------------ 
+Type        : NORMAL XML RESPONSE  
+Http Status : 400  
+Response    :   
+------------------------ DATE 2020-10-06 20:57:54 ------------------------ 
+Type    : throw new Exception movil  
+Message : String could not be parsed as XML  
+Request : <?xml version="1.0" encoding="utf-8"?>
+                                            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ns1="http://carga.local/">
+                                                <SOAP-ENV:Header>
+                                                    <ns1:Credenciales>
+                                                        <ns1:Username>OET_Int</ns1:Username>
+                                                        <ns1:Password>Carg@OET_5A015WTWR</ns1:Password>
+                                                    </ns1:Credenciales>
+                                                </SOAP-ENV:Header>
+                                                <SOAP-ENV:Body>
+                                                    <ns1:IngresarReporte>
+                                                        <ns1:reporte>
+                                                            <ns1:Manifiesto>1-3-66-7984</ns1:Manifiesto>
+                                                            <ns1:Placa>SSZ-537</ns1:Placa>
+                                                            <ns1:CodigoPuestoControlOET>19150</ns1:CodigoPuestoControlOET>
+                                                            <ns1:FechaNovedad>2020-10-06 20:57:54</ns1:FechaNovedad>
+                                                            <ns1:Observacion>Registrado desde <br>Dispositivo Movil win32. <br>IP:186.148.188.59</ns1:Observacion>
+                                                            <ns1:Lugar>OAL GRANADA</ns1:Lugar>
+                                                            <ns1:Sitio>1</ns1:Sitio>
+                                                        </ns1:reporte>
+                                                    </ns1:IngresarReporte>
+                                                </SOAP-ENV:Body>
+                                            </SOAP-ENV:Envelope>  
+Response:  
+

@@ -1,0 +1,132 @@
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '00:52:07',
+  'fecha' => '2020-12-14',
+  'placa' => 'GES517',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '16:19:16',
+  'fecha' => '2020-12-14',
+  'placa' => 'SZW972',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '21:08:58',
+  'fecha' => '2020-12-14',
+  'placa' => 'WOY634',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '22:45:56',
+  'fecha' => '2020-12-14',
+  'placa' => 'SZO326',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '22:53:28',
+  'fecha' => '2020-12-14',
+  'placa' => 'GUV035',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO CON LOS SIGUIENTES ERRORES:LA PLACA NO SE ENCUENTRA EN TRAFICO  O EL PUESTO DE CONTROL NO TIENE CODIGO TRANSMISION PARA LA RUTA DEL MANIFIESTO. ****' 
+----------------------------------- Fin Log ----------------------------------
+parametros enviados:------------------------------------------ 
+array (
+  'empresa_codigocs' => '067',
+  'usuario' => 'ESFERAS',
+  'clave' => '12345Aa',
+  'sentido' => '0',
+  'direccion' => 'OAL GRANADA',
+  'tipo_evento' => '0',
+  'kilometraje' => '0',
+  'velocidad' => '0',
+  'codigopuestocontrol' => '19150',
+  'novedad' => 'OK > (OAL) Registrado desde Dispositivo Movil win32. IP:186.148.188.59',
+  'latitud' => '-74.34849',
+  'longitud' => '4.52699,',
+  'hora' => '22:53:41',
+  'fecha' => '2020-12-14',
+  'placa' => 'TSX075',
+) 
+Respuesta del WS de colombiasoftware:------------------------------------------ 
+ 
+'OK REPORTO.' 
+----------------------------------- Fin Log ----------------------------------
