@@ -144,6 +144,9 @@ class ajax_genera_concor
         if($datos['ind_acargo'] ==1){
           $checkedacargo="checked";
         }
+        if($datos['ind_novapp'] ==1){
+          $checkednovapp="checked";
+        }
         
       $campos = '
                         <div class="row">
@@ -171,8 +174,8 @@ class ajax_genera_concor
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_seguim" id="ind_seguim" '.$checkedSeguim.' style="height: auto;"/>
                         <label> Informe de A cargo de empresa</label>
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_acargo" id="ind_acargo" '.$checkedacargo.' style="height: auto;"/>
-                        <label> Envio Novedades API</label>
-                        <input type="checkbox" class="form-control form-control-sm"  name="ind_novapp" id="ind_novapp" '.$checkedacargo.' style="height: auto;"/>
+                        <label> Envio Novedades API (Notificacion despacho sin plan de ruta)</label>
+                        <input type="checkbox" class="form-control form-control-sm"  name="ind_novapp" id="ind_novapp" '.$checkednovapp.' style="height: auto;"/>
                         
                         <input type="hidden" name="correoID" value="'.$datos['cod_concor'].'">
                         <input type="hidden" name="actionID" id="action" value="'.$action.'">

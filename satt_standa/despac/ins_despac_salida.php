@@ -217,7 +217,8 @@ class Proc_salida {
 
     $query = "SELECT a.num_despac,a.cod_manifi,a.ind_anulad,a.cod_ciuori,
                     a.cod_ciudes,c.abr_tercer,b.num_placax,b.num_trayle,
-                    d.abr_tercer, a.usr_creaci, a.fec_creaci
+                    d.abr_tercer, a.usr_creaci, a.fec_creaci,
+                  IF(a.fec_salida = '' OR a.fec_salida IS NULL, 'SIN REGISTRAR', a.fec_salida ) as 'fec_salida'
                FROM ".BASE_DATOS.".tab_despac_despac a,
                     ".BASE_DATOS.".tab_despac_vehige b,
                     ".BASE_DATOS.".tab_tercer_tercer c,
@@ -227,7 +228,7 @@ class Proc_salida {
                     b.cod_conduc = d.cod_tercer AND
                     a.ind_anulad != 'A' AND
                     a.ind_planru = 'S' AND
-                    a.fec_salida IS NULL
+                    (a.fec_salida IS NULL OR a.fec_salida > NOW())
             ";
 
     if ($_REQUEST[ciuori]) {
@@ -306,8 +307,9 @@ class Proc_salida {
     $formulario->texto("Vehiculo", "text", "vehicu\" onChange=\"form_item.submit()", 0, 6, 6, "", $_REQUEST[vehicu], "", "", 1);
     $formulario->texto("Remolque", "text", "trayle\" onChange=\"form_item.submit()", 0, 6, 6, "", $_REQUEST[trayle], "", "", 1);
     $formulario->linea("Conductor", 0, "t");
+    $formulario->linea("Fecha de Salida", 0, "t");
     $formulario->linea("Usuario Creador", 0, "t");
-    $formulario->linea("Fecha Creaciï¿½n", 1, "t");
+    $formulario->linea("Fecha Creación", 1, "t");
     $formulario->oculto("opcion", 0, 0);
     $formulario->oculto("window", "central", 0);
     $formulario->oculto("cod_servic", $_REQUEST[cod_servic], 0);
@@ -340,6 +342,7 @@ class Proc_salida {
       $formulario->linea($matriz[$i][6], 0, $estilo);
       $formulario->linea($matriz[$i][7], 0, $estilo);
       $formulario->linea($matriz[$i][8], 0, $estilo);
+      $formulario->linea($matriz[$i][11], 0, $estilo);
       $formulario->linea($matriz[$i][9], 0, $estilo);
       $formulario->linea($matriz[$i][10], 1, $estilo);
 
