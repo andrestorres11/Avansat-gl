@@ -59,7 +59,7 @@ function initTables(id_table){
     } );
     var tabla = '#'+id_table;
     var table = $(tabla).DataTable({
-            "Destroy": true,
+            "bDestroy": true,
             'processing': true,
             "deferRender": true,
             "autoWidth": false,
@@ -139,7 +139,6 @@ function saveInfo(){
 	var transp = $("#emp_transp").val().split("-")[0];
 	var dataString = 'transp=' + transp + '&opcion=' + opcion;
     var data = new FormData(document.getElementById('FormParam'));
-    
     data.append('cod_transp',transp);
 	$.ajax({
         url: "../" + standa + "/novseg/ajax_parame_noveda.php?"+dataString,
@@ -249,16 +248,6 @@ function insertGemelo(elemento){
     busqueda.each(function() {
         $(this).val(valor);
     });
-}
-
-function Selector(elemento){
-    if( $(elemento).is(':checked') ) {
-        $(elemento).attr('checked','checked');
-    }
-    else{
-        $(elemento).removeAttr('checked');
-    }
-    
 }
 
 function disableTime(elemento){
