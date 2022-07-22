@@ -130,6 +130,7 @@ class parametrizacion_correos
                                 <th>Seguimiento</th>
                                 <th>Inf. Mensual</th>
                                 <th>A cargo de empresa</th>
+                                <th>Envio Notificación API</th>
                                 <th>Opciones</th>
                               </tr>
                             </thead>

@@ -46,6 +46,7 @@ class ajax_genera_concor
                     IF(a.ind_seguim=1,'SI','NO') as 'ind_seguim',
                     IF(a.ind_infmen=1,'SI','NO') as 'ind_infmen',
                     IF(a.ind_acargo=1,'SI','NO') as 'ind_acargo',
+                    IF(a.ind_novapp=1,'SI','NO') as 'ind_novapp',
                     a.cod_concor
                     
                 FROM  ".BASE_DATOS.".tab_genera_concor a
@@ -94,6 +95,7 @@ class ajax_genera_concor
                             ind_infmen,
                             ind_seguim,
                             ind_acargo,
+                            ind_novapp,
                             a.cod_concor
                       FROM  ".BASE_DATOS.".tab_genera_concor a
                      WHERE  a.cod_concor = ".$_REQUEST['cod_regist'];
@@ -142,6 +144,9 @@ class ajax_genera_concor
         if($datos['ind_acargo'] ==1){
           $checkedacargo="checked";
         }
+        if($datos['ind_novapp'] ==1){
+          $checkednovapp="checked";
+        }
         
       $campos = '
                         <div class="row">
@@ -169,7 +174,8 @@ class ajax_genera_concor
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_seguim" id="ind_seguim" '.$checkedSeguim.' style="height: auto;"/>
                         <label> Informe de A cargo de empresa</label>
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_acargo" id="ind_acargo" '.$checkedacargo.' style="height: auto;"/>
-                        
+                        <label> Envio Novedades API (Notificacion despacho sin plan de ruta)</label>
+                        <input type="checkbox" class="form-control form-control-sm"  name="ind_novapp" id="ind_novapp" '.$checkednovapp.' style="height: auto;"/>
                         
                         <input type="hidden" name="correoID" value="'.$datos['cod_concor'].'">
                         <input type="hidden" name="actionID" id="action" value="'.$action.'">
@@ -255,7 +261,7 @@ class ajax_genera_concor
                                     ind_infmen= '".($_REQUEST['ind_infmen'] == 'on'? 1 : 0)."',
                                     ind_seguim= '".($_REQUEST['ind_seguim'] == 'on'? 1 : 0)."',
                                     ind_acargo= '".($_REQUEST['ind_acargo'] == 'on'? 1 : 0)."',
-                                    
+                                    ind_novapp= '".($_REQUEST['ind_novapp'] == 'on'? 1 : 0)."',
                                     usr_creaci = '".$_SESSION['datos_usuario']['cod_usuari']."',
                                     fec_creaci = NOW()
                         ON DUPLICATE KEY UPDATE 	
@@ -264,7 +270,7 @@ class ajax_genera_concor
                                     ind_infmen= '".($_REQUEST['ind_infmen'] == 'on'? 1 : 0)."',
                                     ind_seguim= '".($_REQUEST['ind_seguim'] == 'on'? 1 : 0)."',
                                     ind_acargo= '".($_REQUEST['ind_acargo'] == 'on'? 1 : 0)."',
-                                    
+                                    ind_novapp= '".($_REQUEST['ind_novapp'] == 'on'? 1 : 0)."',
                                     usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                                     fec_modifi = NOW()              
                                 ";
