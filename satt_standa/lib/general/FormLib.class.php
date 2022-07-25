@@ -911,6 +911,33 @@ class FormLib
    * @brief retorna el identificador del resultado                     *
    * @return cIdResultel id del resultado                              *
    *********************************************************************/
+  public function RowProperties( $td="", $mReturn = FALSE,$properties = "")
+  {
+    $mForm = "\n  ";
+    $mForm .= '<tr '.$properties.'>';
+    if( $td )
+    {
+      $mForm .= "\n    ";
+      $mForm .= '<td>';
+    }
+
+    if( $mReturn )
+    {
+      return $mForm;
+    }
+    else
+    {
+      $this -> SetBody( $mForm );
+    }
+  }
+
+  /*********************************************************************
+   * Metodo Publico que retorna el arreglo de archivos js.             *
+   * HTML indentada a 2 espacios.                                      *
+   * @fn SetTab                                                        *
+   * @brief retorna el identificador del resultado                     *
+   * @return cIdResultel id del resultado                              *
+   *********************************************************************/
   public function CloseRow( $td = "", $mReturn = FALSE )
   {
     if( $td )

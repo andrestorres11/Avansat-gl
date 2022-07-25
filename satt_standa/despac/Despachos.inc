@@ -3537,6 +3537,7 @@ class Despachos
                     FROM ".BASE_DATOS.".tab_transp_tipser a
                     WHERE a.cod_transp LIKE '". $codtran."'
                     ORDER BY a.num_consec DESC LIMIT 1";
+                    
         $mConsultseg = new Consulta($queryseg, $this->conexion);
         $codseg = $mConsultseg->ret_arreglo();
         $codseg = $codseg[2] ;
@@ -3565,7 +3566,20 @@ class Despachos
         $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION DEL PLAN DE RUTA</center></h3>");
         $mHtml->OpenDiv("id:secID");
           $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
+            $mHtml->SetBody('<center><span style="color:#416F1E; cursor:pointer" onclick="planRuta(1);" >[Seguimiento]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="planRuta(2);" >[Operador GPS]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="planRuta(3);" >[Ver Todas]</span>&nbsp;&nbsp;</center>');
+
             $mHtml->Table("tr");
+            $novedadNotdefect=array(9997,9999); //titulos primarios control
+            for($i=9000;$i<=9999;$i++)
+            { 
+                iF(!in_array($i,$novedadNotdefect))
+                {
+                    $novedadDefect[]=$i;// codigo de novedad por defecto
+                }
+            }
+            
 
             if( !$mIndConsol && $_RUTASX )
             {
@@ -3581,16 +3595,20 @@ class Despachos
 
               foreach ( $_RUTASX as $row ) 
               {
-                 
                 if( $mEstServ->est_servic->ind_visibl != 1 ){
                     if(in_array($row['cod_noveda'], array(9271,9272,9273))){
                         unset($row);
                     }
                 }
-                
-                //if(!empty($row['fec_creaci'])){
-                $mHtml->Row();
-                
+                if((in_array($row['cod_noveda'], $novedadDefect) || in_array($row['nov_especi'], $novedadDefect)) && $row['nov_especi']!=''){ //añade class para ocultar o mostrar con js
+                    $mHtml->RowProperties("",FALSE,'class="nov_gps"'.$row['nov_especi'].'');
+                }
+                else if(!in_array($row['cod_noveda'], $novedadNotdefect) && !in_array($row['nov_especi'], $novedadNotdefect) && $row['nov_especi']!=''){ //añade class para ocultar o mostrar con js
+                    $mHtml->RowProperties("",FALSE,'class="nov_seguimiento"');
+                }
+                else{
+                    $mHtml->Row();
+                }
                 $mHtml->Label( $row['sit_seguim'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
                 if(($codseg==1) && (BASE_DATOS=='satt_faro')){
                     $mHtml->Label( $row['ubi_seguim'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
@@ -3607,6 +3625,7 @@ class Despachos
                     $mHtml->Label( self::getAlias($row['cod_usuari']), array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
                 }
                 $mHtml->CloseRow();
+                
                 //}
               }
             }
@@ -3627,8 +3646,13 @@ class Despachos
                 $mHtml->CloseRow();
 
                 $row = end($_RUTASX);
-                
-                $mHtml->Row();
+                if(in_array($row['cod_noveda'], $novedadDefect) || in_array($row['nov_especi'], $novedadDefect)){
+                    $mHtml->RowProperties("",FALSE,'class="nov_gps"');
+                }
+                else{
+                    $mHtml->RowProperties("",FALSE,'class="nov_seguimiento"');
+                }
+                //$mHtml->Row();
                 $mHtml->Label( $row['sit_seguim'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
                 $mHtml->Label( $row['fec_progra'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
                 $mHtml->Label( $row['fec_planea'], array("align"=>"left", "class"=>"celda_info ".$row[bg]) );
@@ -3648,7 +3672,35 @@ class Despachos
               $mHtml->Row();
               $mHtml->Label( $msg, array("align"=>"left", "class"=>"celda_titulo2", "colspan"=>sizeof($mTittlePlanRut)) );
             }
-
+            $mHtml->SetBody("<script>
+            function planRuta(option)
+            {
+                switch (option)
+                {
+                    case 1:
+                        $('.nov_seguimiento').fadeIn( 1000 );
+                        $('.nov_gps').fadeOut( 1000 );
+                        $('#form_planRutaID #secID').css({'height':'auto'});
+                        $('#planRutaID #secID').removeAttr('style');
+                        $('#planRutaID #secID').css({'height':'auto'});
+                    break;
+                    case 2:
+                        $('.nov_gps').fadeIn( 1000 );
+                        $('.nov_seguimiento').fadeOut( 1000 );
+                        $('#form_planRutaID #secID').css({'height':'auto'});
+                        $('#planRutaID #secID').removeAttr('style');
+                        $('#planRutaID #secID').css({'height':'auto'});
+                    break;
+                    default:
+                        $('.nov_seguimiento').fadeIn( 1000 );
+                        $('.nov_gps').fadeIn( 1000 );
+                        $('#form_planRutaID #secID').css({'height':'auto'});
+                        $('#planRutaID #secID').removeAttr('style');
+                        $('#planRutaID #secID').css({'height':'auto'});
+                    break;
+                }
+            } 
+            planRuta(1);</script>");
             $mHtml->CloseTable('tr');
           $mHtml->CloseDiv();
         $mHtml->CloseDiv();
@@ -4224,7 +4276,7 @@ class Despachos
       #< 0. PRE >
         self::IncludeJsStyle();
         echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/PDF.js\"></script>\n";
-
+        
         echo "<style>
                 .D8DFF9{
                   background: #D8DFF9;
@@ -4371,8 +4423,9 @@ class Despachos
       $mHtml->Hidden( array("name"=>"bd_aplica", "id"=>"bd_aplica", "value"=> BASE_DATOS));
       $mHtml->Hidden( array("name"=>"despac", "id"=>"despac", "value"=> $despac));
       $mHtml->Hidden( array("name"=>"cross_doking", "id"=>"cross_dokingID", "value"=> "0"));
-
+      
       return $mHtml->MakeHtml();
+      
     }
 
     /*! \fn: verifyNoveda
