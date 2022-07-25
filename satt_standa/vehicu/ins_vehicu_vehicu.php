@@ -253,7 +253,7 @@ class Ins_vehicu_vehicu {
 
           # Accordion2
           $mHtml->OpenDiv("id:GPSinfoID; class:accordion");
-          $mHtml->SetBody("<h3 style='padding:6px;'><center>Informaci�n GPS</center></h3>");
+          $mHtml->SetBody("<h3 style='padding:6px;'><center>Informaci&oacute;n GPS</center></h3>");
           $mHtml->OpenDiv("id:sec8");
             $mHtml->OpenDiv("id:form8; class:contentAccordionForm");
               $mHtml->Table("tr");
@@ -262,7 +262,7 @@ class Ins_vehicu_vehicu {
                 $mHtml->Select2 ($datos->opegps,  array("name" => "vehicu[cod_opegps]", "validate" => "select", "id" => "cod_opegpsID", "width" => "25%", "key"=> $datos->principal->cod_opegps, 'onchange' => 'validaIdGPS(this)') );
                 
                 $mHtml->Label("Usuario:", "width:25%; *:1;"); 
-                $mHtml->Input (array("name" => "vehicu[usr_gpsxxx]", "validate" => "alpha",  "id" => "usr_gpsxxxID",  "minlength" => "3", "maxlength" => "50", "width" => "25%", "value"=> $datos->principal->usr_gpsxxx,"end" => true) );
+                $mHtml->Input (array("name" => "vehicu[usr_gpsxxx]", "validate" => "alphaarroba",  "id" => "usr_gpsxxxID",  "minlength" => "3", "maxlength" => "50", "width" => "25%", "value"=> $datos->principal->usr_gpsxxx,"end" => true) );
                 
                 $mHtml->Label("Clave:", "width:25%; *:1;"); 
                 $mHtml->Input (array("name" => "vehicu[clv_gpsxxx]", "size"=>"10", "id" => "clv_gpsxxxID",  "width" => "25%", "value"=> $datos->principal->clv_gpsxxx) ); 

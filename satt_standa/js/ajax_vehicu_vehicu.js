@@ -73,7 +73,7 @@ $(document).ready(function() {
                 mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                 mensaje += "<label>Vehiculos</label>";
                 mensaje += "<div style='width:97%'>";
-                mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurrió un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
+                mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurri&oacute; un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
                 mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
             } else {
                 var src = "../" + DIR_APLICA_CENTRAL + "/imagenes/bad.png";
@@ -81,7 +81,7 @@ $(document).ready(function() {
                 mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
                 mensaje += "<label>Vehiculos</label>";
                 mensaje += "<div style='width:97%'>";
-                mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurrió un Error, la placa ingresada ya esta asociado a otro vehículo <br> verifique e intente nuevamente.<br></font><br><img src='" + src + "'>";
+                mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurri&oacute; un Error, la placa ingresada ya esta asociado a otro veh&iacute;culo <br> verifique e intente nuevamente.<br></font><br><img src='" + src + "'>";
                 mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
             }
         } else if (res == 2) {
@@ -90,10 +90,10 @@ $(document).ready(function() {
             mensaje += "<div style='background-color:#3A8104; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
             mensaje += "<label>Vehiculos</label>";
             mensaje += "<div style='width:97%'>";
-            mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Error, el conductor seleccionado para el vehículo esta marcado como tal,<br>pero no esta registrado en la tabla de conductores.<br>Realice el registro del conductor e intente nuevamente.<br></font><br><img src='" + src + "'>";
+            mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Error, el conductor seleccionado para el veh&iacute;culo esta marcado como tal,<br>pero no esta registrado en la tabla de conductores.<br>Realice el registro del conductor e intente nuevamente.<br></font><br><img src='" + src + "'>";
             mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
         }
-        LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
+        LoadPopupJQNoButton('open', 'Resultado de la Operaci&oacute;n', 'auto', 'auto', false, false, true);
         var popup = $("#popID");
         popup.parent().children().children('.ui-dialog-titlebar-close').hide();
         popup.append(mensaje); // //lanza el popU
@@ -156,7 +156,7 @@ function registrar(operacion) {
         var file = $("#imagen").val();
         if (!file) {
             //crea el popUp para el mensaje de  respuesta del guardado  
-            LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
+            LoadPopupJQNoButton('open', 'Resultado de la Operaci&oacute;n', 'auto', 'auto', false, false, true);
             var popup = $("#popID");
 
             var parametros = "Option=" + operacion + "&Ajax=on&";
@@ -210,7 +210,7 @@ function borrar() {
 //funcion de confirmacion para la edicion, activacion e inactivacion de vehiculos
 function confirmar(operacion) {
 
-    LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+    LoadPopupJQNoButton('open', 'Confirmar Operaci&oacute;n', 'auto', 'auto', false, false, true);
     var popup = $("#popID");
     var placa = $("#placa").val();
     if (!placa) {
@@ -228,7 +228,7 @@ function confirmar(operacion) {
     } else if (operacion == "activarVehiculo") {
         operacion = "activar";
     }
-    var msj = "<div style='text-align:center'>¿Está seguro de <b>" + operacion + "</b> el vehiculo con placa: <b>" + placa + "?</b><br><br><br><br>";
+    var msj = "<div style='text-align:center'>&#191;Est&aacute; seguro de <b>" + operacion + "</b> el vehiculo con placa: <b>" + placa + "?</b><br><br><br><br>";
     msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
     msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
 
@@ -247,10 +247,10 @@ function editarVehiculo(tipo, objeto) {
     } else if (tipo == 2) {
         confirmar('inactivarVehiculo');
     } else {
-        LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+        LoadPopupJQNoButton('open', 'Confirmar Operaci&oacute;n', 'auto', 'auto', false, false, true);
         var popup = $("#popID");
         var conductor = $("#nom_tercerID").val();
-        var msj = "<div style='text-align:center'>¿Está seguro de <b>editar</b> el vehiculo de placa: <b>" + num_placax + "?</b><br><br><br><br>";
+        var msj = "<div style='text-align:center'>&#191;Est&aacute; seguro de <b>editar</b> el vehiculo de placa: <b>" + num_placax + "?</b><br><br><br><br>";
         msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
         msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 
@@ -266,7 +266,7 @@ function imagen(url) {
     mensaje += "<div style='background-color:#FFFFFF'><br><img width='400px' height='400px' src='" + url + "'>";
     mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
 
-    LoadPopupJQNoButton('open', 'Foto del Vehículo', 'auto', 'auto', false, false, true);
+    LoadPopupJQNoButton('open', 'Foto del Veh&iacute;culo', 'auto', 'auto', false, false, true);
     var popup = $("#popID");
     popup.parent().children().children('.ui-dialog-titlebar-close').hide();
     popup.append(mensaje); // //lanza el popUp
@@ -286,9 +286,9 @@ function comprobar() {
             beforeSend: function(obj) {
                 $.blockUI({
                     theme: true,
-                    title: 'Agregar Vehículo',
+                    title: 'Agregar Veh&iacute;culo',
                     draggable: false,
-                    message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Buscando Vehículo</p></center>'
+                    message: '<center><img src="../' + standa + '/imagenes/ajax-loader2.gif" /><p>Buscando Veh&iacute;culo</p></center>'
                 });
             },
             success: function(data) {
