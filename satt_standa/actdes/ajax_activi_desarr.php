@@ -96,6 +96,10 @@
                   //select de titulo
                   self::selectTile();
                 break;
+                case "17":
+                  //crea la tabla operativa
+                  self::EmpresasTable();
+                break;
             }
         }
 
@@ -192,6 +196,67 @@
               </table>';
 
       echo $html;
+      }
+
+      function EmpresasTable(){
+        $html='<table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%" id="tabla_inf_general">
+                  <thead>
+                      <tr>
+                          <th colspan="15" style="background-color:#dff0d8; color: #000"><center id="text_general_fec">ACTIVIDADES PENDIENTES POR GESTIONAR DEL <center></th> 
+                      </tr>
+                      <tr>
+                          <th>ID Actividad</th> 
+                          <th>Tiempo</th>
+                          <th>Nombre Actividad</th>
+                          <th>Descripción Actividad</th>
+                          <th>Hora de Ejecucion</th>
+                          <th>Perfil(es)</th>
+                          <th>Usuario(s)</th>
+                          <th>Empresa de T</th>
+                          <th>Placa</th>
+                          <th>Novedad</th>
+                          <th>Fecha y hora Inicial</th>
+                          <th>Fecha y hora Final</th>
+                          <th>Frecuencia</th>
+                          <th>Fecha y Hora de Cumplimiento</th>
+                          <th>Fecha a Ejecutar</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr id="resultado_info_general">
+                      </tr>
+                  </tbody>
+              </table>
+  
+              <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%" id="tabla_inf_especifico">
+                  <thead>
+                      <tr>
+                          <th colspan="15" style="background-color:#dff0d8; color: #000"><center id="text_general_eje">ACTIVIDADES EJECUTADAS DEL<center></th>
+                      </tr>
+                      <tr>
+                      <th>ID Actividad</th> 
+                      <th>Tiempo</th>
+                      <th>Nombre Actividad</th>
+                      <th>Descripción Actividad</th>
+                      <th>Hora de Ejecucion</th>
+                      <th>Perfil(es)</th>
+                      <th>Usuario(s)</th>
+                      <th>Empresa de T</th>
+                      <th>Placa</th>
+                      <th>Novedad</th>
+                      <th>Fecha y hora Inicial</th>
+                      <th>Fecha y hora Final</th>
+                      <th>Frecuencia</th>
+                      <th>Cumplimineto</th>
+                      <th>Fecha y Hora de Cumplimiento</th>
+                  </tr>
+                  </thead>
+                  <tbody id="resultado_info_especifico">
+          
+                  </tbody>
+              </table>';
+
+          echo $html;
       }
 
       function administrativeTable(){

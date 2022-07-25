@@ -201,6 +201,9 @@
                                                 <li class="nav-item m-2">
                                                     <a class="btn btn-success active" style="background-color:#509334" id="pills-general-tab" data-toggle="pill" href="#pills-general" role="tab" aria-controls="pills-general" aria-selected="true" onclick="selectTable(2)">Operativas</a>  
                                                 </li>
+                                                <li class="nav-item m-2">
+                                                  <a class="btn btn-success active" style="background-color:#509334" id="pills-general-tab" data-toggle="pill" href="#pills-general" role="tab" aria-controls="pills-general" aria-selected="true" onclick="selectTable(3)">Por Asignar</a>  
+                                                </li>
                                             </ul>
 
                                       <div class="tab-content" id="pills-tabContent">
