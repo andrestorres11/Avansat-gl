@@ -31,7 +31,7 @@
  'max' es el maximo de caracteres permitidos para el campo, en caso de no ser requerido se envia vacio o nulo (null)
  
  'obl' true si el campo es obligatorio o false si no lo es, para contraseña parametro que verifica similitud de valores para una contraseña
- 
+ alphaarroba -> Valida solo caracteres entre la a-A y la z-Z con anexo @, (max,min), espacios y numeros. EJ: ['barrio','alpha',5,15,true]
  */
 
 //Variable auxiliar que permite el desplazamiento del scroll
@@ -60,6 +60,9 @@ function inc_validar(elementos) {
                         break;
                     case 'alpha':
                         errores += inc_alpha(obj, min, max, obl);
+                        break;
+                    case 'alphaarroba':
+                        errores += inc_alpha_arroba(obj, min, max, obl);
                         break;
                     case 'numero':
                         errores += inc_numero(obj, min, max, obl);
@@ -261,7 +264,38 @@ function inc_alpha(obj, min, max, obl) {
 
                 var expreg = /^[A-Za-z0-9\s\xF1\xD1\áÁéÉíÍóÓúÚ\.\,\-\_]+$/; //Solo letras y numeros espacios ñ y Ñ .,_-
                 if (!expreg.test(ele) && tam > 0) {
-                    msg = "Se requieren únicamente numeros y letras";
+                    msg = "Se requieren &uacute;nicamente numeros y letras";
+                    inc_alerta(obj, msg);
+                    return 1; //suma al error
+                } else {
+                    return 0;
+                }
+
+            } else {
+                return 1; //suma al error
+            }
+        } else {
+            console.warn("inc_validator: Debe definir correctamente los valores de maximo y minimo para " + obj)
+            return 1;
+        }
+    } else {
+        console.warn("inc_validator: No se ha encontrado el elemento: " + obj);
+        return 1;
+    }
+}
+
+function inc_alpha_arroba(obj, min, max, obl) {
+    if (document.getElementById(obj)) {
+        if (min >= 0 && max >= 0) {
+
+            var ele = $.trim($('#' + obj).val());
+            var tam = ele.length;
+            var cantidad = inc_cantidad(obj, tam, min, max, obl);
+            if (cantidad == true) {
+
+                var expreg = /^[A-Za-z0-9\s\xF1\xD1\áÁéÉíÍóÓúÚ\.\,\@\-\_]+$/; //Solo letras y numeros espacios ñ y Ñ .,_-
+                if (!expreg.test(ele) && tam > 0) {
+                    msg = "Se requieren &uacute;nicamente numeros,letras y @";
                     inc_alerta(obj, msg);
                     return 1; //suma al error
                 } else {
@@ -365,7 +399,7 @@ function inc_placa(obj, min, max) {
             var medio = placa.substring(2, 4);
             var fin = placa.substring(4, 6);
             if(!expreg.test(inicio) || (!expreg.test(medio) && !expreg2.test(medio)) || !expreg2.test(fin)){
-                msg = "La placa introducida no es v�lida";
+                msg = "La placa introducida no es v�lida";
                 inc_alerta(obj, msg);
                 return 1;
             }else{
@@ -375,7 +409,7 @@ function inc_placa(obj, min, max) {
             var inicio = placa.substring(0, 3);
             var fin = placa.substring(3, 6);
             if (!expreg2.test(fin) || !expreg.test(inicio) || fin.length != 3) {
-                msg = "La placa introducida no es v�lida";
+                msg = "La placa introducida no es v�lida";
                 inc_alerta(obj, msg);
                 return 1;
             } else {
@@ -425,7 +459,7 @@ function inc_select(obj, obl) {
         var ele = $.trim($('#' + obj).val());
         if (obl == true) { // es obligatorio seleccionar una opcion
             if (ele == '') {
-                msg = "Debe seleccionar una opci�n";
+                msg = "Debe seleccionar una opci�n";
                 inc_alerta(obj, msg);
                 return 1; //suma al error
             } else {
@@ -452,7 +486,7 @@ function inc_password(obj, min, max, com, oblc) {
                 if (com !== undefined) {
                     var ele2 = $.trim($('#' + com).val());
                     if (ele !== ele2) {
-                        msg = "Las contrase�as no coinciden";
+                        msg = "Las contrase�as no coinciden";
                         inc_alerta(com, msg);
                         return 1; //suma al error
                     } else {
