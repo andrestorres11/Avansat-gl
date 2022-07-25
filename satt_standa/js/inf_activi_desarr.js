@@ -260,29 +260,12 @@ function createTr(row, tipoInforme) {
     }
 }
 
-
 function selectTable(boolean) {
     var fecha_inicio = $("#fec_inicio").val();
     var fecha_finalx = $("#fec_finxxx").val();
-    if(boolean == 2)
-    {
-        globalThis.filterType = 2;
-        globalThis.showNotify = true;
-        $.ajax({
-            url: '../satt_standa/actdes/ajax_activi_desarr.php?opcion=2',
-            type: "post",
-            async: false,
-            data: {'initDate' : fecha_inicio, 'lastDate' :fecha_finalx, 'indi':2 },
-            success: function(data) {
-                $("#pills-general").empty();
-                $("#pills-general").append(data);
-                executeFilter();
-            },
-            error: function() {
-                console.log("error");
-            }
-        });
-    }else{
+
+    if(boolean == 1){
+
         globalThis.filterType = 1;
         globalThis.showNotify = true;
         $.ajax({
@@ -300,6 +283,49 @@ function selectTable(boolean) {
             }
         });
     }
+
+    if(boolean == 2 )
+    {
+        globalThis.filterType = 2;
+        globalThis.showNotify = true;
+        $.ajax({
+            url: '../satt_standa/actdes/ajax_activi_desarr.php?opcion=2',
+            type: "post",
+            async: false,
+            data: {'initDate' : fecha_inicio, 'lastDate' :fecha_finalx, 'indi':2 },
+            success: function(data) {
+                $("#pills-general").empty();
+                $("#pills-general").append(data);
+                executeFilter();
+            },
+            error: function() {
+                console.log("error");
+            }
+        });
+    }
+
+    if(boolean == 3 )
+    {
+        globalThis.filterType = 3;
+        globalThis.showNotify = true;
+        $.ajax({
+            url: '../satt_standa/actdes/ajax_activi_desarr.php?opcion=17',
+            type: "post",
+            async: false,
+            data: {'initDate' : fecha_inicio, 'lastDate' :fecha_finalx, 'indi':1 },
+            success: function(data) {
+                $("#pills-general").empty();
+                $("#pills-general").append(data);
+                executeFilter();
+            },
+            error: function() {
+                console.log("error");
+            }
+
+        });
+
+    }
+
 }
 
 function OpenHistoryModal(event,FechaAejecutar,hora,done,codPer) {    
@@ -368,7 +394,7 @@ function GetHistoricalData(event) {
               success: function(data) {  
                 if(data.length > 0)
                 {
-                    $("#title-modal-history").html("<center>DESCRIPCION DE LA ACTIVIDAD  N? " + event + "</center>");
+                    $("#title-modal-history").html("<center>DESCRIPCION DE LA ACTIVIDAD  No " + event + "</center>");
                     $('#ActivityType').val(data[0].tip_actdes);  
                     $('#ActivityWork').val(data[0].tit_activi);    
                     $('#profile').val(data[0].nom_perfil);    
@@ -385,9 +411,9 @@ function GetHistoricalData(event) {
                         table_general.append(createTr(data[i],'Historical'));
                     }  
                 }else{
-                    $("#title-modal-history").html("<center>DESCRIPCION DE LA ACTIVIDAD  N? " + event + "</center>");
+                    $("#title-modal-history").html("<center>DESCRIPCION DE LA ACTIVIDAD  No " + event + "</center>");
                     $("#IdhistoryModal").empty();
-                    $("#IdhistoryModal").append('<p>Lo sentimos no existe informaci?n relacionada a esta actividad a?n.</p><div class="row  mt-3"><div class="col-12" id="formHistorial"></div></div>');
+                    $("#IdhistoryModal").append('<p>Lo sentimos no existe informaci&oacute;n relacionada a esta actividad a&uacute;n.</p><div class="row  mt-3"><div class="col-12" id="formHistorial"></div></div>');
                 }
               },
               error: function() {
@@ -433,7 +459,7 @@ function insertNewObj() {
                     $('#historyModal').modal('hide');
                     Swal.fire({
                         title: 'Registrado!',
-                        text: "Observaci?n registrada con exito!",
+                        text: "Observaci&oacute;n registrada con exito!",
                         type: 'success',
                         confirmButtonColor: '#336600'
                     }).then((result) => {
@@ -496,7 +522,7 @@ function formatAMPM(hour) {
 }
 
 function formatDate(time) {
-    return time == null ? 'Sin informaci?n' : new Date(time).toLocaleString('es-CO', {hour12: true});
+    return time == null ? 'Sin informaci&oacute;n' : new Date(time).toLocaleString('es-CO', {hour12: true});
 }
 
 function loadAjax(x) {
