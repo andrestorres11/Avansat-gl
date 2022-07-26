@@ -935,7 +935,7 @@ class Proc_segui
               
               $("#obsID").bind("paste", function(e){
                 e.preventDefault();
-              alert("accion no permitida");
+              alert("Acción no permitida");
           } );
         ';
 
