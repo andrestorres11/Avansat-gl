@@ -933,10 +933,6 @@ class Proc_segui
                 }
               });
               
-              $("#obsID").bind("paste", function(e){
-                e.preventDefault();
-              alert("Acción no permitida");
-          } );
         ';
 
         $mScript3 = $_REQUEST[noved] ? "document.getElementById('sitID').focus()" : "document.getElementById('novedadID').focus()";

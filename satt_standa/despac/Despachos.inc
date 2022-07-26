@@ -3333,6 +3333,13 @@ class Despachos
             }
         }
 
+        //Permiso de no poder copiar las notas controlador
+        $RespPlaRut = self::getView('jso_plarut');
+        $cNocopy = '';
+        if(!$RespPlaRut->inf_notcon->sub->cop_notcon){
+            $cNocopy = 'noselect';
+        }
+
         //Se recorre las novedades para calcular el key automaticamente
         foreach ($mNovedades as $key => $data) {
             $dataNov[] = $data;
@@ -3399,8 +3406,7 @@ class Despachos
             }else{ 
                 $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
             }
-
-            $mHtml->Label( '<b>'.$mNovedades[$i][obs_noveda].'</b>', array("align"=>"left", "class"=>$mStyle) );
+            $mHtml->Label( '<b class="'.$cNocopy.'">'.$mNovedades[$i][obs_noveda].'</b>', array("align"=>"left", "class"=>$mStyle) );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
 
