@@ -931,7 +931,12 @@ class Proc_segui
                 {
                    $("#obsID").parent().find("#counter").html("Queda(n)<b> "+nueva_longitud+"</b> Caracter(es) para Escribir");
                 }
-              });  
+              });
+              
+              $("#obsID").bind("paste", function(e){
+                e.preventDefault();
+              alert("accion no permitida");
+          } );
         ';
 
         $mScript3 = $_REQUEST[noved] ? "document.getElementById('sitID').focus()" : "document.getElementById('novedadID').focus()";
@@ -1248,7 +1253,7 @@ class Proc_segui
                                 else
                                      $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) ); 
                                 $mHtml->SetBody("<td class='celda_info' >");
-                                $mHtml->SetBody("<textarea name='obs' id='obsID' onkeyup='UpperText( $(this) )' cols='20' Rows='4'></textarea>");
+                                $mHtml->SetBody("<textarea name='obs' id='obsID' onkeyup='UpperText( $(this) )'  ols='20' Rows='4'></textarea>");
                                 $mHtml->SetBody("<div style='font-family:Arial,Helvetica,sans-serif; font-size: 11px;' id='counter'></div>");
                                 $mHtml->SetBody("</td>");
                                 $name = "'".$datos_usuario['nom_usuari']."'";
