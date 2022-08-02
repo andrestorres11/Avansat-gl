@@ -583,3 +583,25 @@ tr.row:hover td {
     z-index: 99;
     background-color: #eeeeee;
 }
+
+/* Colores Itinerario Bandeja de Seguimiento*/
+
+.bgIt1 {
+    background: #5d5d5d;
+    color: #FFFFFF;
+}
+
+.bgIt2 {
+    background: #006910;
+    color: #FFFFFF;
+}
+
+.bgIt3 {
+    background: #e96a03;
+    color: #FFFFFF;
+}
+
+.bgIt4 {
+    background: #980d00;
+    color: #FFFFFF;
+}

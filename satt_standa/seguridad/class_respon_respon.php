@@ -274,7 +274,8 @@ class responsable
 														 				"lla_cargue"=>"Llamadas Cargue"
 														 				)
 														 ),
-									"tie_alarma"=>array( "name"=>"Tiempo Alarma GL")
+									"tie_alarma"=>array( "name"=>"Tiempo Alarma GL"),
+									"col_itiner"=>array( "name"=>"Columna itinerario")
 								  );
 				
 				$mArray[1] = array( "fil_genera"=>array("ind_visibl"=>1, "sub"=>array("tip_despac"=>1, "tip_servic"=>1, "otr_filtro"=>1, "fil_gencar"=>1) ),
