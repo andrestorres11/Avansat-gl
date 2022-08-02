@@ -134,7 +134,7 @@ class responsable
 			$mens = new mensajes();
 			echo $mens->correcto2("RESPONSABLES", $mensaje);
 		}else{
-			$mensaje = "<font color='#000000'>Ocurrió un Error Inesperado al Guardar el Responsable</font>";
+			$mensaje = "<font color='#000000'>Ocurrio un Error Inesperado al Guardar el Responsable</font>";
 			$mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
 			$mens = new mensajes();
 			echo $mens->error2("RESPONSABLES", $mensaje);
@@ -320,7 +320,8 @@ class responsable
 									"inf_llegad"=>array("name"=>"Llegada", "sub"=>array() ),
 									"inf_notcon"=>array("name"=>"Informacion de Notas de Controlador", "sub"=>array(
 																							"usr_creaci"=>"Usuario",
-																							"ali_usuari"=>"Alias de usuario"
+																							"ali_usuari"=>"Alias de usuario",
+																							"cop_notcon"=>"Copiar observaci&oacute;n"
 																						 ) 
 														),
 									"inf_crodok"=>array("name"=>"Trazabilidad Cross Doking", "sub"=>array() ),
@@ -335,7 +336,7 @@ class responsable
 
 				$mArray[1] = array( "inf_planru"=>array("ind_visibl"=>1, "sub"=>array("usr_creaci"=>1,"ali_usuari"=>1)), 
 									"inf_llegad"=>array("ind_visibl"=>1, "sub"=>array()), 
-									"inf_notcon"=>array("ind_visibl"=>1, "sub"=>array("usr_creaci"=>1,"ali_usuari"=>1)), 
+									"inf_notcon"=>array("ind_visibl"=>1, "sub"=>array("usr_creaci"=>1,"ali_usuari"=>1,"cop_notcon"=>1)), 
 									"inf_crodok"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"obs_genera"=>array("ind_visibl"=>1, "sub"=>array()), 
 									"img_adjunt"=>array("ind_visibl"=>1, "sub"=>array()), 
