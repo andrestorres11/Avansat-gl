@@ -89,11 +89,16 @@ class FacturFaro
           $add = " AND a.cod_tercer = '".$TRANSP[0][0]."' ";
         }
 
-        $query = "SELECT a.cod_tercer,a.abr_tercer
-                    FROM ".BASE_DATOS.".tab_tercer_tercer a,
-                         ".BASE_DATOS.".tab_tercer_activi b
-                   WHERE a.cod_tercer = b.cod_tercer 
-                     AND b.cod_activi = '1' ".$add."
+        $query = "SELECT a.cod_tercer, CONCAT(LTRIM(a.abr_tercer),' - ',a.cod_tercer)
+                    FROM ".BASE_DATOS.".tab_tercer_tercer a
+                    INNER JOIN ".BASE_DATOS.".tab_tercer_activi b ON a.cod_tercer = b.cod_tercer AND b.cod_activi = '1'
+                    INNER JOIN ".BASE_DATOS.".tab_transp_tipser c ON a.cod_tercer = c.cod_transp AND c.num_consec = (
+                      SELECT MAX(xx.num_consec) AS num_consec
+                        FROM ".BASE_DATOS.".tab_transp_tipser xx
+                       WHERE xx.cod_transp = a.cod_tercer
+                     )
+                   WHERE c.ind_estado = 1
+                     ".$add."
                 ORDER BY 2 ";
         $consulta = new Consulta($query, $this -> conexion);
         $transp = $consulta -> ret_matriz(); 
@@ -101,17 +106,29 @@ class FacturFaro
         
         include( "../".DIR_APLICA_CENTRAL."/lib/general/dinamic_list.inc" );
         echo "<link rel=\"stylesheet\" href=\"../".DIR_APLICA_CENTRAL."/estilos/dinamic_list.css\" type=\"text/css\">";
+
+        echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
+		    echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
+		    echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
+
+
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/dinamic_list.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/facfaro.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
+
+
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/multiselect/jquery.multiselect.filter.min.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/multiselect/jquery.multiselect.min.js\"></script>\n";
+
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
         echo '
             <script>
+
                 jQuery(function($) { 
                     $( "#feciniID,#fecfinID" ).datepicker();      
                     $.mask.definitions["A"]="[12]";
@@ -121,6 +138,7 @@ class FacturFaro
                     $( "#feciniID,#fecfinID" ).mask("Annn-Mn-Dn");
                 })
                 
+                /*
                 function SetAgencia( cod_empres )
                 {
                   var Standa = $("#StandaID").val();
@@ -134,7 +152,12 @@ class FacturFaro
                         $("#cod_agenciID").html( datos );
                       }
                   });
-                }
+                }*/
+
+                $( document ).ready(function() {
+                  $("#cod_transpID").multiselect().multiselectfilter();
+                });
+                
                 
             </script>';
         $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "Facturacion Faro", "formulario");
@@ -162,17 +185,22 @@ class FacturFaro
         echo '<td class="celda_info">';
         echo "<input type='text' class='campo' size='10' id='fecfinID' name='fecfin' value='".$fecfinal."'> ";
         echo "</td></tr>";
-
+        /*
         echo "<tr><td align='right' class='celda_titulo'>";
         echo "Nit. Transportadora: &nbsp; (Separar por ',')";
         echo "</td>";
         echo '<td class="celda_info">';
         echo "<input type='text' class='campo' size='24' id='nit_transportID' name='nit_transport' > ";
         echo "</td>";
-
+        
         $formulario -> lista("Transportadora:","transp\" onchange=\"SetAgencia( $(this).val() )\" id=\"transpID",$transpor,1);	
-        $formulario -> lista("Agencia:","cod_agenci\" id=\"cod_agenciID",$inicio,1);	
 
+
+        $formulario -> lista("Agencia:","cod_agenci\" id=\"cod_agenciID",$inicio,1);	
+        */
+        echo "<tr>";
+        echo $this->listaSelect('Transportadora busqueda:', 'cod_transp', $transpor, 'cellInfo1', 1 );
+        echo '<input type="hidden" name="transp" id="transp">';
         $formulario -> nueva_tabla();
         echo "<input type='button' value='Aceptar' name='Aceptar' onclick=\"aceptar_lis();\" class='bot'>";
 
@@ -193,66 +221,103 @@ class FacturFaro
         $inicio[0][0]= "";
         $inicio[0][1]= "-";
 
-        $query = "SELECT a.cod_tercer,a.abr_tercer
-                    FROM ".BASE_DATOS.".tab_tercer_tercer a,
-                         ".BASE_DATOS.".tab_tercer_activi b
-                   WHERE a.cod_tercer = b.cod_tercer 
-                     AND b.cod_activi = '1'
+        $query = "SELECT a.cod_tercer, CONCAT(LTRIM(a.abr_tercer),' - ',a.cod_tercer)
+                    FROM ".BASE_DATOS.".tab_tercer_tercer a
+                    INNER JOIN ".BASE_DATOS.".tab_tercer_activi b ON a.cod_tercer = b.cod_tercer AND b.cod_activi = '1'
+                    INNER JOIN ".BASE_DATOS.".tab_transp_tipser c ON a.cod_tercer = c.cod_transp AND c.num_consec = (
+                      SELECT MAX(xx.num_consec) AS num_consec
+                        FROM ".BASE_DATOS.".tab_transp_tipser xx
+                       WHERE xx.cod_transp = a.cod_tercer
+                     )
+                   WHERE c.ind_estado = 1
                 ORDER BY 2 ";
         $consulta = new Consulta($query, $this -> conexion);
         $transp = $consulta -> ret_matriz(); 
         $transpor = array_merge($inicio,$transp);
         
-        if( $_REQUEST['transp'] )
+        $cod_transp = array();
+        foreach(explode(',',$_REQUEST['transp']) as $row)
         {
-          $mSelect = "SELECT a.cod_agenci, b.nom_agenci
-                  FROM ".BASE_DATOS.".tab_transp_agenci a, 
-                       ".BASE_DATOS.".tab_genera_agenci b
-                 WHERE a.cod_agenci = b.cod_agenci
-                   AND a.cod_transp = '".$_REQUEST['transp']."'
-                 ORDER BY 2";
-                 
-          $consulta = new Consulta( $mSelect, $this -> conexion );
-          $agencias = $consulta -> ret_matriz();
-        }
+            $cod_transp[] = str_replace('"', '', $row);
+        } 
+
 
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.table2excel.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/multiselect/jquery.multiselect.filter.min.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/multiselect/jquery.multiselect.min.js\"></script>\n";
+
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/facfaro.js\"></script>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
+        echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
+		    echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
+		    echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
 
-        echo '
+        echo "
             <script>
                 jQuery(function($) { 
-                    $( "#feciniID,#fecfinID" ).datepicker();      
-                    $.mask.definitions["A"]="[12]";
-                    $.mask.definitions["M"]="[01]";
-                    $.mask.definitions["D"]="[0123]";
-                    $.mask.definitions["n"]="[0123456789]";
-                    $( "#feciniID,#fecfinID" ).mask("Annn-Mn-Dn");
+                    $( '#feciniID,#fecfinID' ).datepicker();      
+                    $.mask.definitions['A']='[12]';
+                    $.mask.definitions['M']='[01]';
+                    $.mask.definitions['D']='[0123]';
+                    $.mask.definitions['n']='[0123456789]';
+                    $( '#feciniID,#fecfinID' ).mask('Annn-Mn-Dn');
 
                 })
-                
+                /*
                 function SetAgencia( cod_empres )
                 {
-                  var Standa = $("#StandaID").val();
+                  var Standa = $('#StandaID').val();
                   $.ajax({
-                    type: "POST",
-                    url: "../" + Standa + "/factur/ajax_factur_faroxx.php",
-                    data: "standa="+Standa+"&option=SetAgencia&cod_empres="+cod_empres,
+                    type: 'POST',
+                    url: '../' + Standa + '/factur/ajax_factur_faroxx.php',
+                    data: 'standa='+Standa+'&option=SetAgencia&cod_empres='+cod_empres,
                     success: 
                       function( datos )
                       {
-                        $("#cod_agenciID").html( datos );
+                        $('#cod_agenciID').html( datos );
                       }
                   });
-                }
-            </script>';
+                }*/
 
+
+                $( document ).ready(function() {
+                  
+                  $('#cod_transpID').multiselect().multiselectfilter();
+                  var string = '". str_replace('"', '', $_REQUEST['transp'])."';
+                  var arrayFromPHP  =  string.split(',');
+
+                  $('#cod_transpID').multiselect('widget').find(':checkbox[value=`bing`]').each(function()          {
+                    this.click();
+                  });
+
+
+                  
+                  var box_checke = $('input[type=checkbox]');
+
+                  box_checke.each(function(i, o) {
+                    var elemento = $(this);
+                    i = 0, size = arrayFromPHP.length;
+                    for(i; i < size; i++){
+                      if($(elemento).attr('name') == 'multiselect_cod_transpID'){
+                        console.log($(elemento).attr('value')+' = '+arrayFromPHP[i]);
+                        if($(elemento).attr('value') == arrayFromPHP[i] && $(elemento).attr('value')!=''){
+                          $('#'+$(elemento).attr('id')).attr('checked',true);
+                        }
+                      }
+                    }
+                  });
+                  size = arrayFromPHP.length + 1;
+                  $('.ui-state-default span:last').empty();
+                  $('.ui-state-default span:last').append(size+' Seleccionado(s)');
+                  console.log('---------');
+                });
+            </script>";
+        
         $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "Facturacion Faro", "formulario\" id=\"formulario" );
         //$formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "LISTAR FACTURACION FARO", "formulario");
 
@@ -272,42 +337,33 @@ class FacturFaro
                 echo "<input type='text' class='campo' size='10' id='fecfinID' name='fecfin' value='".$_REQUEST[fecfin]."'> ";
         echo "</td></tr>";
 
+        /*
         echo "<tr><td align='right' class='celda_titulo'>";
                 echo "Nit. Transportadora: &nbsp; (Separar por ',')";
             echo "</td>";
             echo '<td class="celda_info">';
                 echo "<input type='text' class='campo' size='24' id='nit_transportID' name='nit_transport' value='".$_REQUEST[nit_transport]."' > ";
             echo "</td>";
-
-        // $formulario -> lista("Transportadora:","transp\" id=\"transpID",$transpor,1);
+                
+        
         $formulario -> lista("Transportadora:","transp\" onchange=\"SetAgencia( $(this).val() )\" id=\"transpID",$transpor,1);
         echo '<input type="hidden" id="nameFileID" name="nameFile" value="informe_FacturacionFaro">
               <input type="hidden" id="opcionID" name="opcion" value="">
               <input type="hidden" id="exportExcelID" name="exportExcel" value="">';
         $formulario -> lista("Agencia:","cod_agenci\" id=\"cod_agenciID",array_merge($inicio,$agencias),1);
+        */
+
+        echo "<tr>";
+        
+        echo $this->listaSelect('Transportadora busqueda:', 'cod_transp', $transpor, 'cellInfo1', 1);
+        echo '<input type="hidden" name="transp" id="transp">';
+        echo '<input type="hidden" name="opcion" id="opcion" value="1">';
         $formulario -> nueva_tabla();
  
 
         echo "<input type='button' value='Aceptar' name='Aceptar' onclick=\"aceptar_lis();\" class='bot'>";
         echo "<input type='button' value='Excel' name='excel' onclick=\"exportarExcel();\" class='bot'>"; 
- 
-
-        echo '<script>
-                document.getElementById("transpID").value='.$_REQUEST["transp"].';
-              </script>';
-        if($_REQUEST["cod_agenci"])
-        {
-          echo '<script>
-                document.getElementById("cod_agenciID").value='.$_REQUEST["cod_agenci"].';
-              </script>';
-        }
-
-        $cod_transp = array();
-        foreach(explode(',',$_REQUEST[nit_transport]) as $row)
-        {
-            $cod_transp[] = (int)trim($row);
-        }
-        $cod_transp = join(', ',$cod_transp);
+        
 
         //busqueda de los despachos de faro
         $query  = "SELECT a.num_despac AS 'DESPACHO',
@@ -360,15 +416,9 @@ class FacturFaro
         AND b.fec_creaci <= '".$_REQUEST["fecfin"]." 23:59:59' 
         */
 
-        if($_REQUEST["transp"])
-            $query.= " AND b.cod_transp = '".$_REQUEST["transp"]."'";
-            
-        if($_REQUEST["cod_agenci"])
-            $query.= " AND b.cod_agenci = '".$_REQUEST["cod_agenci"]."'";
-        
-        if(!empty($_REQUEST[nit_transport]))
-            $query.= " AND b.cod_transp IN(".$cod_transp.") ";
-
+        if(!empty($_REQUEST['transp'])){
+          $query.= " AND b.cod_transp IN(".$_REQUEST['transp'].") ";
+        }
         $query.= " GROUP BY 1 ORDER BY b.cod_transp ";
 
         $consulta = new Consulta($query, $this -> conexion);
@@ -389,7 +439,6 @@ class FacturFaro
                      WHERE b.num_despac = ".$facturas[$i][0]." 
                        AND a.cod_usuari = b.usr_creaci 
                        AND a.cod_perfil IN (".$perfiles.")
-                       ".( self::$cNitCorona == $_REQUEST['transp'] ? " AND a.cod_perfil NOT IN (".self::$cNotPerfil.") " : "" )."
                    ) 
                    UNION ALL
                    (SELECT b.usr_creaci, b.cod_noveda
@@ -401,7 +450,6 @@ class FacturFaro
                        AND b.cod_contro = c.cod_contro 
                        /* AND IF(c.nom_contro <> 'LUGAR ENTREGA',c.ind_virtua = '1',c.ind_virtua = '0') */
                        AND a.cod_perfil IN (".$perfiles.")
-                       ".( self::$cNitCorona == $_REQUEST['transp'] ? " AND a.cod_perfil NOT IN (".self::$cNotPerfil.") " : "" )."
                     )
                   ";
 
@@ -410,12 +458,15 @@ class FacturFaro
 
             $nov = sizeof($novedades);
             $empresa = $this->VerifyTranspor();
+            
+            /*
             if($empresa != "860068121" && $_REQUEST["transp"] != '860068121'){
               $no_com =array(52,70);
             }else{              
               $no_com =array(63,325,296,311);
-            }
-            
+            }*/
+
+            $no_com =array(52,70);
             $cuenta = 0;
             foreach ($novedades as $key => $value) {
               if(in_array($value['cod_noveda'], $no_com)){
@@ -640,11 +691,8 @@ class FacturFaro
                      FROM ".BASE_DATOS.".tab_transp_tarifa a 
                     WHERE ind_estado =1";
 
-            if($_REQUEST["transp"])
-                $sql.= " AND cod_tercer = '".$_REQUEST["transp"]."'";
-
-            if(!empty($_REQUEST[nit_transport]))
-                $sql.= " AND cod_tercer IN(".$cod_transp.") ";
+            if(!empty($_REQUEST['transp']))
+                $sql.= " AND cod_tercer IN (".$_REQUEST['transp'].") ";
 
             $consulta = new Consulta($sql, $this -> conexion);
             $tarifa = $consulta -> ret_matriz();
@@ -827,6 +875,22 @@ class FacturFaro
         $consulta = new Consulta("SELECT NOW()", $this -> conexion,"RC");
         echo "<img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ok.gif\"><b>Se Marcaron Como Facturados los Despacho desde el ".$_REQUEST["fecini"]." hasta el ".$_REQUEST["fecfin"];
     }//FIN FUNCTION CAPTURA
+
+    function listaSelect( $mTitulo, $mNomSel, $mMatriz, $mClass, $mObliga = 0){
+      $mHtml = '<td align="right" class="celda_titulo '.$mClass.'">'.( $mObliga ? '*' : '' ).$mTitulo.' &nbsp;</td>';
+
+      $mHtml .= '<td class="celda_info '.$mClass.'">'; 
+      $mHtml .= '<select name="'.$mNomSel.'" id="'.$mNomSel.'ID" onKeypress=buscar_op(this)>';
+
+      $n = sizeof($mMatriz);
+      for($i = 0; $i < $n; $i++){
+        $mHtml .= '<option value="'.$mMatriz[$i][0].'">'.$mMatriz[$i][1].'</option>';
+      }
+
+      $mHtml .= '</select>';
+      $mHtml .= '</td>';
+      return $mHtml;
+    }
 
     //Inicio Función exportExcel
     private function exportExcel()
