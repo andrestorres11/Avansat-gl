@@ -199,7 +199,7 @@ class FacturFaro
         $formulario -> lista("Agencia:","cod_agenci\" id=\"cod_agenciID",$inicio,1);	
         */
         echo "<tr>";
-        echo $this->listaSelect('Transportadora busqueda:', 'cod_transp', $transpor, 'cellInfo1', 1 );
+        echo $this->listaSelect('Transportadora:', 'cod_transp', $transpor, 'cellInfo1', 1 );
         echo '<input type="hidden" name="transp" id="transp">';
         $formulario -> nueva_tabla();
         echo "<input type='button' value='Aceptar' name='Aceptar' onclick=\"aceptar_lis();\" class='bot'>";
@@ -355,7 +355,7 @@ class FacturFaro
 
         echo "<tr>";
         
-        echo $this->listaSelect('Transportadora busqueda:', 'cod_transp', $transpor, 'cellInfo1', 1);
+        echo $this->listaSelect('Transportadora:', 'cod_transp', $transpor, 'cellInfo1', 1);
         echo '<input type="hidden" name="transp" id="transp">';
         echo '<input type="hidden" name="opcion" id="opcion" value="1">';
         $formulario -> nueva_tabla();
