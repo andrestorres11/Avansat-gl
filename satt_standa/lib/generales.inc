@@ -40,4 +40,7 @@ include ("../".DIR_APLICA_CENTRAL."/lib/interfaz_lib_sat.inc");
 #include ("../".DIR_APLICA_CENTRAL."/lib/general/DinamicHtml2.class.php");
 include ("../".DIR_APLICA_CENTRAL."/lib/general/FormLib.class.php");
 
+// CLase de proceoss de GPS: cron GPS e Integrador GPS
+include ("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
+
 ?>
