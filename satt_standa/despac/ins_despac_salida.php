@@ -1,6 +1,5 @@
 <?php
-ini_set('display_errors', true);
-error_reporting(E_ALL & ~E_NOTICE);
+ 
 class Proc_salida {
   var $conexion,
   $cod_aplica,
@@ -35,53 +34,6 @@ class Proc_salida {
   }
 
   function Listar() {
-
-    $data_despac[0]['cod_transp'] = '900284054';
-    $_REQUEST['placa'] = $data_despac[0]['num_placax'] = 'UPT949';
-    $_REQUEST['despac'] = $data_despac[0]['num_despac'] = '4';
-    $data_despac[0]['cod_manifi'] = '00005';
-     // validacion de interfaz con integrador GPS
-      $mIntegradorGPS = getValidaInterfaz($this->conexion, '53', $data_despac[0]['cod_transp'], true, 'data');
-      if( sizeof($mIntegradorGPS) > 0 )
-      {
-        if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
-        {   
-            $mHubGPS = new InterfHubIntegradorGPS($this->conexion, ['cod_transp' => $data_despac[0]['cod_transp']] );
-
-            // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
-            $mDesGPS = $mHubGPS -> setTrakingStart([
-                                                    'num_placax' => $data_despac[0]['num_placax'],
-                                                    'num_despac' => $data_despac[0]['num_despac'],
-                                                    'num_docume' => $data_despac[0]['cod_manifi'],
-                                                    'fec_inicio' => date("Y-m-d H:i:s"),
-                                                    'fec_finali' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")."+ 5 day ")),
-                                                    'ind_origen' => '3', // 3 = DESPACHO
-                                                    ]);
-            if($mDesGPS['code'] == '1000'){ 
-                ShowMessage("s", "REGISTRO HUB GPS", $mDesGPS['message']);
-            }
-            else if($mDesGPS['code'] != '1000' && isset($mDesGPS) ){
-                ShowMessage("e", "REGISTRO HUB GPS", $mDesGPS['message']);
-            }
-            // Fin proceso de generar itinerario HUB al despacho ---------------------------------------------------------------------------
-        }
-        else
-        {
-            $mInterfGps = new InterfGPS( $this->conexion ); 
-            $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['despac'], ['ind_transa' => 'I'] );  
-            $mens = new mensajes();
-            if($mResp['code_resp'] == '1000'){
-              $mens -> correcto("Envio despacho: ".$_REQUEST['despac']." con placa: ".$_REQUEST['placa'],
-                                "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
-            } else {
-              $mens -> error("Envio despacho: ".$_REQUEST['despac']." con placa: ".$_REQUEST['placa'],
-                             "Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']);
-            }
-            unset($mResp);
-          }
-      }
-
-      die('dasdas');
     $datos_usuario = $this->usuario->retornar();
 
     $fechaini = $_REQUEST[fecini]." 00:00:00";
@@ -1010,10 +962,10 @@ class Proc_salida {
 
       // validacion de interfaz con integrador GPS
       $mIntegradorGPS = getValidaInterfaz($this->conexion, '53', $data_despac[0]['cod_transp'], true, 'data');
-      if( sizeof($mIntegradorGPS) > 0 && $regist["ind_seggps"] == '1')
+      if( sizeof($mIntegradorGPS) > 0 )
       {
         if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
-        { 
+        {   
             $mHubGPS = new InterfHubIntegradorGPS($this->conexion, ['cod_transp' => $data_despac[0]['cod_transp']] );
 
             // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------

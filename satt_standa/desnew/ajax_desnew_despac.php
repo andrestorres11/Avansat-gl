@@ -1834,7 +1834,7 @@ class AjaxInsertDespacho
         //$cod_ciudad = $_AJAX[ 'cod_ciudad'.$k ] != "" && $_AJAX[ 'cod_ciudad'.$k ] != NULL ? "'".$_AJAX[ 'cod_ciudad'.$k ]."'" : "NULL" ;
 
         $cod_ciudes = $_AJAX['cod_ciudes'] != "" && $_AJAX['cod_ciudes'] != NULL ? "'".$_AJAX['cod_ciudes']."'" : "NULL" ;
-        //Extrae información del destinatario
+        //Extrae informaci? del destinatario
         $nom_destin = strtoupper($this->getInfoRemdes($_AJAX['nom_destin'.$k ])['nom_remdes']);
         $nit_destin = strtoupper($this->getInfoRemdes($_AJAX['nom_destin'.$k ])['num_remdes']);
         $num_destin = strtoupper($this->getInfoRemdes($_AJAX['nom_destin'.$k ])['num_telefo']);
