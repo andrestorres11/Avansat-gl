@@ -1,0 +1,150 @@
+<?php
+class Form
+{
+    function Form( $params = "" )
+    {
+        $enctype = ( $params["enctype"]  ? " enctype='".$params[enctype]."' ": "" );
+        echo "<form action='index.php' method='post' name='".$params['name']."' id='".$params['name']."' ".$enctype." >";
+        echo "<table align=center >";
+    }
+
+    function closeForm()
+    {
+        echo "</table>";
+        echo "</form>";
+    }
+
+    function Row()
+    {
+        echo "<tr>";
+    }
+
+    function closeRow()
+    {
+        echo "</tr>";
+    }
+
+    function Div()
+    {
+        echo "<div>";
+    }
+
+    function closeDiv()
+    {
+        echo "</div>";
+    }
+
+    function Label( $params = "" )
+    {
+        $for = ( $params["for"]  ? " for='".$params['for']."' ": "" );
+        $label = ( $params["label"]  ? "".$params['label']."": "" );
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        
+        echo "<td ".$colps." ".$rowspan."><label ".$for."><b>".$label."</b></label></td>";
+    }
+
+    function Text( $params = "" )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        echo "<td ".$colps." ".$rowspan."><input type='text' class='campo' name='$params[name]' maxlength='$params[maxlength]' id='$params[name]' value='$params[value]'  /></td>";
+    }
+
+    function Info( $params = "" )
+    {
+        $class = ( $params["class"]  ? " class='".$params['class']."' ": "" );
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        echo "<td ".$colps." ".$class." ".$rowspan.">".$params['value']."</td>";
+    }
+
+    function Pass( $params = "" )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        echo "<td ".$colps." ".$rowspan."><input type='password' class='campo' name='$params[name]' maxlength='$params[maxlength]' id='$params[name]' value='$params[value]'  /></td>";
+    }
+
+    function Boton( $params = "" )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        //echo "<td ".$colps." ".$rowspan."  align='center' ><a data-theme='b' href='#' data-icon='$params[icon]' onclick='$params[onclick]'  data-role='button' >$params[label]</a></td>";
+        echo "<td ".$colps." ".$rowspan."  align='center' ><input type='button' class='button' value='".$params['label']."' onclick='".$params['onclick']."'></td>";
+    }
+
+    function File( $params = "" )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        echo "<td ".$colps." ".$rowspan." ><input type='file' name='".$params['name']."' id='".$params['name']."'></td>";
+    }
+
+    function Back( $params = "" )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        echo "<td ".$colps." ".$rowspan."><a href='#' data-role='button' onclick='history.back()' >Volver</a></td>";
+    }
+
+    function Buscar( $params = "" )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        echo "<td ".$colps." ".$rowspan."><input type='search' name='$params[name]' maxlength='$params[maxlength]' id='$params[name]' value='$params[value]'  /></td>";
+    }
+
+    function Hidden( $params = "" )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        echo "<td ".$colps." ".$rowspan."><input type='hidden' value='$params[value]' name='$params[name]' id='$params[name]' ></td>";
+    }
+    
+    function Head( $title )
+    {
+        echo "<li role='heading' data-role='list-divider' >$title</li>";
+    }
+    
+    function Title( $params )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        echo "<td ".$colps." ".$rowspan." align='center'><h4>".$params['title']."</h4></td>";
+    }
+    
+    function JS( $data )
+    {
+        echo "<script>".$data."</script>";
+    }
+    
+    function msg( $data )
+    {
+        echo "<div align=center style='color:#900' ><h3>".$data."</h3></div>";
+    }
+
+    function Dato( $label, $dato )
+    {
+        echo "<li>";
+        echo "<b>$label</b> <span style='font-weight:normal;' >$dato</span>";
+        echo "</li>";
+    }
+
+    function Select( $params, $options, $value )
+    {
+        $colps = ( $params["colspan"]  ? " colspan='".$params['colspan']."' ": "" );
+        $rowspan = ( $params["rowspan"]  ? " rowspan='".$params['rowspan']."' ": "" );
+        $onchange = ( $params["onchange"]  ? " onchange='".$params['onchange']."' ": "" );
+        $HTML = "<td ".$colps." ".$rowspan." ><select name='".$params['name']."' id='".$params['name']."' ".$onchange.">";
+        foreach( $options as $row )
+        {
+            if( $row[0] == $value ) 
+                $selected = " selected ";
+            $HTML .= "<option value='".$row[0]."' ".$selected.">".( $row[1] )."</option>";
+            $selected = "";
+        }
+        echo $HTML .= "</select></td>";
+    }
+}
+?>
