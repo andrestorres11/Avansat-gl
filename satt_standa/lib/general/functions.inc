@@ -1284,4 +1284,70 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
   }
 
 
+/* ! \fn: getValidaParametros
+ *  \brief: verifica si existe el parametro a consultar
+ *  \author: Ing. Jose Rodriguez
+ *  \date: 29/03/2016
+ *  \date modified: 29/03/2016
+ *  \param: parametro 1
+ *  \param: parametro 2
+ *  \param: parametro 3 se utiliza para validar el estado del parametro (activo/inactivo) OPCIONAL
+ *  \return valor que retorna
+ */
+function getValidaParametros($conexion, $param = '', $validaEstado = FALSE, $val_parame = false)
+{
+    if ($param == NULL || $param == '') {
+        return 0;
+    }
+
+    $query = "SELECT val_parame FROM " . BASE_DATOS . ".tab_genera_parame WHERE nom_parame = '" . $param . "' ";
+
+    if ($validaEstado == TRUE)
+        $query .= " AND ind_estado = 1 ";
+
+    $consul = new Consulta($query, $conexion);
+    $matriz = $consul->ret_matriz("a");
+
+    if ($val_parame) {
+        return $matriz[0]["val_parame"];
+    } else {
+        return sizeof($matriz);
+    }
+}
+
+
+/* ! \fn: getValidaInterfaz
+ *  \brief: verifica si una interfaz esta registrada y activa
+ *  \author: Ing. Nelson Liberato
+ *  \date: 04/06/2021
+ *  \date modified: 
+ *  \param: conexion instacia de conexion a la bd
+ *  \param: cod_operad codigo interfaz a validar
+ *  \param: validaEstado 3 valida estado de interfaz
+ *  \return valor que retorna
+ */
+function getValidaInterfaz($conexion = NULL, $cod_operad = '50', $mCodTransp = NULL, $validaEstado = FALSE, $typeReturn = 'bool' )
+{
+    $query = "SELECT a.cod_transp, a.nom_operad, a.nom_usuari, a.clv_usuari, 
+                     a.val_timtra, a.ind_intind, a.ind_operad, a.ind_estado, 
+                     a.url_webser, a.cod_tokenx, a.ind_deseta, a.tie_report
+                FROM " . BASE_DATOS . ".tab_interf_parame a
+               WHERE a.cod_transp LIKE '".$mCodTransp."'
+                 AND a.cod_operad = '" . $cod_operad . "'
+                ";
+
+    if ($validaEstado == TRUE) {
+        $query .= " AND a.ind_estado = 1 ";
+    }
+
+    $consul = new Consulta($query, $conexion);
+    $matriz = $consul->ret_matrix("a");
+    if($typeReturn == 'bool'){
+        return sizeof($matriz) > 0 ? TRUE : FALSE;  // retorna la cantidad de rows encontrada
+    }else{
+        return $matriz[0];                          // retorna el array de datos encontrados
+    }
+}
+
+
 ?>
