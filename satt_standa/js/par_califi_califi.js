@@ -48,7 +48,7 @@ function formAuditarDespac() {
  *  \brief: funcion para insertar una particularidad
  *  \author: Ing. Andres Martinez
  *  \date: 08/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aÃ±o
  *  \param: cod_tercer     => string => codigo de la empresa   
  *  \param: cod_ciudad     => string => email cliente     
  *  \return return
@@ -199,7 +199,7 @@ function NewObserva(num_despac, cod_transp) {
  *  \brief: funcion para insertar una particularidad
  *  \author: Ing. Andres Martinez
  *  \date: 08/02/2018
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aÃ±o
  *  \param: cod_tercer     => string => codigo de la empresa   
  *  \param: cod_ciudad     => string => email cliente     
  *  \return return
@@ -807,7 +807,7 @@ function getUsuariSelect() {
  *  \brief: Crea o destruye PopUp
  *  \author: Ing. Fabian Salinas
  *  \date: 24/06/2016
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aÃ±o
  *  \param: opcion   String   open, close
  *  \param: titulo   String   Titulo del PopUp
  *  \param: alto     Integer  Altura PopUp
@@ -853,9 +853,9 @@ function redirectUrl(url) {
  *  \brief: funcion para realizar el envio del itinerario
  *  \author: Ing. Cristian Andrés Torres
  *  \date: 02/06/2022
- *  \date modified: dia/mes/año
- *  \param: num_despac   => string => número del despacho     
- *  \param: num_placax   => string => número de placa      
+ *  \date modified: dia/mes/aÃ±o
+ *  \param: cod_tercer     => string => codigo de la empresa   
+ *  \param: cod_ciudad     => string => email cliente     
  *  \return return
  */
 function ReeItiner(num_despac, num_placax) {
@@ -903,105 +903,6 @@ function ReeItiner(num_despac, num_placax) {
                                 confirmButtonText: 'Aceptar'
                             })
                         },
-                    });
-
-                }
-            })
-        } else {
-            swal({
-                title: "Parametrización",
-                text: "Por favor verifica tu conexión a internet.",
-                type: "warning"
-            });
-
-        }
-    } catch (e) {
-        console.log(e.message);
-        return false;
-    }
-}
-
-/* ! \fn: ReeItiner
- *  \brief: funcion para realizar el reenvio de novedades a tms
- *  \author: Ing. Cristian Andrés Torres
- *  \date: 02/08/2022
- *  \date modified: dia/mes/año
- *  \param: num_despac   => string => número del despacho   
- *  \return return
- */
-function ReeNovedades(num_despac) {
-    try {
-        var conn = checkConnection();
-
-        if (conn) {
-            var standa = $("#central").val();
-            var cod_servic = $("#cod_servic").val();
-            var cod_aplica = $("#cod_aplica").val();
-            swal.fire({
-                title: "Confirmación",
-                text: "¿Está seguro de reenviar las novedades?",
-                type: "warning",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: 'Aceptar'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    var attributes = 'Ajax=on&Option=reeNovedades&cod_servic='+cod_servic+'&cod_aplica='+cod_aplica;
-                    attributes += '&num_despac=' + num_despac;
-                    $.ajax({
-                        url: "../" + standa + "/califi/class_califi_califi.php",
-                        type: "POST",
-                        data: attributes,
-                        dataType: "json",
-                        async: true,
-                        beforeSend: function() {
-                            swal.close();
-                            Swal.fire({
-                                title: 'Cargando',
-                                text: 'Por favor espere...',
-                                imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
-                                imageAlt: 'Custom image',
-                                showConfirmButton: false,
-                            });
-                        },
-                        success: function(resp) {
-                            swal.fire({
-                                title: resp['title'],
-                                text: resp['msj'],
-                                type: resp['type'],
-                                icon: resp['type'],
-                                html: resp['info'],
-                                showCancelButton: false,
-                                confirmButtonText: 'Aceptar'
-                            })
-                        },
-                        error: function(jqXHR, textStatus, errorThrown){
-                            var msj = '';
-                            if (jqXHR.status === 0) {
-                                msj = 'No hay conexión: Verifique su red.';
-                              } else if (jqXHR.status == 404) {
-                                msj = 'La página a la que intenta acceder no existe [404]';
-                              } else if (jqXHR.status == 500) {
-                                msj = 'Error interno del servidor [500].';
-                              } else if (textStatus === 'parsererror') {
-                                msj = 'Requested JSON parse failed.';
-                              } else if (textStatus === 'timeout') {
-                                msj = 'Tiempo de espera excedido';
-                              } else if (textStatus === 'abort') {
-                                msj = 'Petición Cancelada';
-                              } else {
-                                msj = 'Uncaught Error: ' + jqXHR.responseText;
-                              }
-
-                            swal.fire({
-                                title: 'Error',
-                                text: msj,
-                                type: 'error',
-                                icon: 'error',
-                                showCancelButton: false,
-                                confirmButtonText: 'Aceptar'
-                            })
-                        }
                     });
 
                 }
