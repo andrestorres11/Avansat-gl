@@ -619,6 +619,7 @@
         $mDataDespac = $this -> getDataDespacIntegradorGPS( $numDespac );
 
         $parameRutfar = $this->verifyParameIntgps(53,$mDataDespac['cod_transp']);
+
         
         if( $mDataDespac["cod_opegps"] )
         {
@@ -631,6 +632,60 @@
           $this -> setMsgError( false );
 
           // Se parcha los malditos caracteres especiales ya que no se dejan hacer json_encode
+
+
+        // parametros de itinerario FULL O BASICO 1 O BASICO 2
+ 
+        
+        $mConfig = json_decode( $parameRutfar[0]["ind_deseta"], true ); 
+        if(!$mConfig){
+          return ['code_resp' => 2005, 'msg_resp' =>'NO HAY PARAMETRIZACION DE TIPO INTEGRADOR GPS EN LA INTERFAZ DEL CLIENTE' ];
+        }
+
+        /*
+         ________________________________________________________________________________________________________________________________                         
+        |TIPO     |  ETA    | TIEMPOS_LOGISTICOS  | PASO POR PUNTO INTERES (ORIGEN, DESTINO)  | DESTINATARIOS |    TIEMPO_REPORTE       |
+        |________________________________________________________________________________________________________________________________                         
+        |FULL     |  X      |   X                 |                 X                         |       X       |                         |   v1
+        |________________________________________________________________________________________________________________________________                         
+        |BASICO_1 |         |   X                 |                 X                         |       X       |          X              |   v1
+        |________________________________________________________________________________________________________________________________                         
+        |BASICO_2 |         |                     |                 X                         |               |          X              |   v1
+        |_______________________________________________________________________________________________________________________________                          
+        |HUB      |         |                     |                                           |               |          X              |   v2 class InterfHubIntegradorGPS  
+        |_______________________________________________________________________________________________________________________________  
+        */
+        
+
+          switch ($mConfig['TIPO']) 
+          {
+            case 'FULL':
+                $mEtaxxx = '1';
+                $mLstPoi = sizeof($mDataDespac["LstPoint"]) > 0 ? $mDataDespac["LstPoint"] : null;
+                $mTieRep = 0;
+                $mType = '1';
+            break;          
+            case 'BASICO_1':
+                $mEtaxxx = '0';
+                $mLstPoi = sizeof($mDataDespac["LstPoint"]) > 0 ? $mDataDespac["LstPoint"] : null;
+                $mTieRep = $parameRutfar[0]["tie_report"];
+                $mType = '2';
+            break;          
+            case 'BASICO_2':
+                $mEtaxxx = '0';
+                $mLstPoi = null;
+                $mTieRep = $parameRutfar[0]["tie_report"];
+                $mType = '3';
+            break;
+            case 'HUB':
+              return ['code_resp' => 2005, 'msg_resp' =>'EL TIPO DE CONFIGURACION HUB DEBE SER URL v2 e ind_operad = 3, POR FAVOR VALIDAR CON SU PROVEEDOR ESTE MENSAJE.' ];
+            break;
+            
+            default:
+               return ['code_resp' => 2005, 'msg_resp' =>'NO EXISTE LA CONFIGURACION TIPO '.$mConfig['TIPO'] ];
+            break;
+          }
+
 
 
           $sendData = array(
@@ -669,14 +724,15 @@
               "Description" => utf8_encode($mDataDespac["Description"]),
               "Origin"      => $mDataDespac["Origin"],
               "Destiny"     => $mDataDespac["Destiny"],
-              "LstPoint"    => sizeof($mDataDespac["LstPoint"]) > 0 ? $mDataDespac["LstPoint"] : null,
+              "LstPoint"    => $mLstPoi, //sizeof($mDataDespac["LstPoint"]) > 0 ? $mDataDespac["LstPoint"] : null,
               "TypeDispacth" => $mDataDespac["TypeDispacth"],
               "Owner"       => $mDataDespac["Owner"],
               "TokenCliente" => ($this -> cTokenCliente == NULL && $this -> cTokenCliente == '' ? $parameRutfar[0]["cod_tokenx"] : $this -> cTokenCliente ),
-              "SendETA"     => $parameRutfar[0]["ind_deseta"],
-              "timeReport"  => $parameRutfar[0]["tie_report"]
+              "SendETA" => $mEtaxxx ,
+              "timeReport" => $mTieRep, 
+              "tipoItinerario" => $mType
             );
-   
+
           $cHeader = array("Token: TkOET_EAL","Auth: $2dIMJMZQcHLY",
                            "Authorization: e14804819d57fc7497bb747204ce337b", 
                            "usuario: *WidetechInt3grador*", 
@@ -845,16 +901,561 @@
     ********************************************************************************/
     public function verifyParameIntgps( $mCodOperad = '53', $mCodTransp =NULL )
     {
-      //Se verifica si tiene activa interfaz con FARO 
-      $mSql = "SELECT nom_usuari, clv_usuari, cod_tokenx, url_webser, ind_deseta, cod_transp, tie_report
-              FROM ".BASE_DATOS.".tab_interf_parame
-              WHERE cod_operad = '".$mCodOperad."'
-                AND cod_transp = '".$mCodTransp."'
-                AND ind_estado = '1'";
+      $mSql = "SELECT a.cod_transp, c.nom_tercer, a.nom_usuari, a.clv_usuari, a.cod_tokenx, a.url_webser, a.ind_deseta, IFNULL( b.tie_repgps, 30) AS tie_report
+              FROM ".BASE_DATOS.".tab_interf_parame a
+              INNER JOIN (
+                            SELECT a.cod_transp, a.tie_repgps
+                            FROM
+                                  ".BASE_DATOS.".tab_transp_tipser a 
+                                  INNER JOIN 
+                                  (
+                                    SELECT MAX(x.num_consec) AS num_consec
+                                      FROM ".BASE_DATOS.".tab_transp_tipser x
+                                     WHERE x.cod_transp LIKE '".$mCodTransp."'
+                                  ) b ON a.num_consec = b.num_consec
+                         ) b ON a.cod_transp = b.cod_transp
+              INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON c.cod_tercer = b.cod_transp
+              WHERE a.cod_operad = '".$mCodOperad."'
+                AND a.cod_transp = '".$mCodTransp."'
+                AND a.ind_estado = '1'";
       $consulta = new Consulta( $mSql, $this -> cConexion ); 
       return $consulta -> ret_matrix( 'a' );
     }
-
-
   }
+
+
+
+  // ------------------------------------------------------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------------------------------
+  // -------------------------------------------------- [  CLASE HUB GPS  ] -------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------------------------------
+  // ------------------------------------------------------------------------------------------------------------------------------------------
+  
+
+  /**
+  * Clase para conexion de integrador GPS con HUB para solo reportes de ubicacion
+  * cod_operad = 53
+  * nom_operad = INTERFAZ HUB INTEGRADOR GPS
+  * ind_operad = 3
+  * clv_usuari = TOKEN CREADO Y ACTIVADO EN CENTRAL gps_apieve.t_client_token.
+  * @package default
+  * @author nelson.liberato
+  * brief para esta interfaz se requeire que en el cliente estÃ© el token de integrador y el ind_operad = 3 para solo HUB
+  * 
+  * ------------------------------------------------ INSERT EN EL CLIENTE -----------------------------------------------------------------
+  * INSERT INTO tab_interf_parame_temp 
+  * (
+  *   cod_operad, cod_transp, nom_operad, nom_usuari, clv_usuari,  
+  *   val_timtra, ind_intind, ind_operad, ind_progps, cod_asegur, ind_estado, 
+  *   url_webser, fec_inicio, fec_finali, cod_tokenx, ind_deseta, tie_report
+  * )
+  * VALUES 
+  * ('53', '900119170', 'INTERFAZ HUB INTEGRADOR GPS', 'InterfIntGpsCargam', 'c3348832e955386a24108508cf87f510',  
+  *   0, '1', '3', '0', NULL, '1',
+  *   'https://central.intrared.net/ap/interf/APIIntegradorGPS/v2/index.php', NULL, NULL, 'TOKEN DE WT', 0, 0
+  * );
+  * 
+  * --------------------------------------------------------------------------------------------------------------------------------------
+  * 
+  **/
+  class InterfHubIntegradorGPS  
+  {
+  
+    var $cConexion  = NULL;
+    var $cMsgError  = NULL;
+    var $BASE_DATOS  = NULL;
+    var $NOM_TRANSPOR  = NULL;
+    var $NIT_TRANSPOR  = NULL;
+    var $NOM_URL_APLICA  = NULL;
+    var $CONS_OPERAD_INTGPS  = NULL;
+    var $NOT_MAIL  = NULL;
+    var $URL_INTERF_INTGPS  = NULL;
+    var $URL_INTERF_FAJOBE  = NULL;
+    var $BD_STANDA  = NULL;
+    var $PERMISOS_INSERTS  = NULL;
+  
+    function __construct( $mConexion, $constantes = NULL )
+    {
+       
+        //Si la clase es instanciada desde el framework de los sat
+        $this -> BASE_DATOS = BASE_DATOS;
+        $this -> CONS_OPERAD_INTGPS = '53';
+        $this -> NIT_TRANSPOR = $constantes['cod_transp']; 
+        $this -> NOM_TRANSPOR = $constantes['nom_transp'];
+        $this -> NOM_URL_APLICA = NOM_URL_APLICA;
+        $this -> NOT_MAIL = MAIL_SUPERVISORES;
+        $this -> URL_INTERF_INTGPS = NULL;
+        $this -> URL_INTERF_FAJOBE = NULL;
+        $this -> BD_STANDA = BD_STANDA;
+       
+        $this -> cConexion = $mConexion;
+    }
+    
+    function setConexion( $mConexion )
+    {
+      $this -> cConexion = $mConexion;
+    }
+    
+    function getConexion()
+    {
+      return $this -> cConexion;
+    }
+    
+    private function setMsgError( $mMsgError )
+    {
+      $this -> cMsgError = $mMsgError;
+    }
+    
+    function getMsgError()
+    {
+      return $this -> cMsgError;
+    }
+   
+    /*! \fn: verifyParameIntgps    
+    *  \brief: Verifica los datos de interfaz con el intergador gps , cod_operad = 53
+    *  \author: Nelson Liberato
+    *  \date: 09/03/2016
+    *  \return array
+    */
+
+
+    public function verifyParameIntgps( $mCodOperad = '53' )
+    {
+      //Se verifica si tiene activa interfaz con FARO 
+      $mSql = "SELECT a.cod_transp, c.nom_tercer, a.nom_usuari, a.clv_usuari, a.cod_tokenx, a.url_webser, a.ind_deseta, IFNULL( b.tie_repgps, 30) AS tie_report
+              FROM ".BASE_DATOS.".tab_interf_parame a
+              INNER JOIN (
+                            SELECT a.cod_transp, a.tie_repgps
+                            FROM
+                                  ".BASE_DATOS.".tab_transp_tipser a 
+                                  INNER JOIN 
+                                  (
+                                    SELECT MAX(x.num_consec) AS num_consec
+                                      FROM ".BASE_DATOS.".tab_transp_tipser x
+                                     WHERE x.cod_transp LIKE '".$this -> NIT_TRANSPOR."'
+                                  ) b ON a.num_consec = b.num_consec
+                         ) b ON a.cod_transp = b.cod_transp
+              INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c ON c.cod_tercer = b.cod_transp
+              WHERE a.cod_operad = '".$mCodOperad."'
+                AND a.cod_transp = '".$this -> NIT_TRANSPOR."'
+                AND a.ind_estado = '1'";
+      $consulta = new Consulta( $mSql, $this -> cConexion ); 
+      return $consulta -> ret_matriz( 'a' );
+    }
+    
+    /*! \fn: sendError    
+    *  \brief: Envia correo con errores generados por el WS de la interfaz con faro
+    *  \author: Nelson Liberato
+    *  \date: 09/03/2016
+    *  \return array
+    */
+    private function sendError( $data )
+    {
+      $mMessage = "******** Encabezado ******** \n";
+      $mMessage .= "Operacion: ".$data['nom_proces']." \n";
+      $mMessage .= "Fecha y hora actual: ".date( "Y-m-d H:i" )." \n";
+      if( isset( $data["fec_salida"] ) && $data["fec_salida"] !== NULL )
+        $mMessage .= "Fecha Salida: ".$data["fec_salida"]." \n";
+      $mMessage .= "Empresa de transporte: ".$this -> NIT_TRANSPOR." - ".$this -> NOM_TRANSPOR." \n";
+      $mMessage .= "Aplicacion: ".$this -> NOM_URL_APLICA." \n";
+      if( isset( $data["num_despac"] ) && $data["num_despac"] !== NULL )
+        $mMessage .= "Despacho: ".$data["num_despac"]." \n";
+      if( isset( $data["num_manifi"] ) && $data["num_manifi"] !== NULL )
+        $mMessage .= "Manifiesto: ".$data["num_manifi"]." \n";
+      if( isset( $data["num_placax"] ) && $data["num_placax"] !== NULL )
+        $mMessage .= "Placa: ".$data["num_placax"]." \n";
+      if( isset( $data["nom_rutasx"] ) && $data["nom_rutasx"] !== NULL )
+        $mMessage .= "Ruta: ".$data["nom_rutasx"].' '.$data["cod_ciurut"]." \n";
+      if( isset( $data["fec_noveda"] ) && $data["fec_noveda"] !== NULL )
+        $mMessage .= "Fecha Novedad: ".$data["fec_noveda"]." \n";
+      if( isset( $data["cod_novbas"] ) && $data["cod_novbas"] !== NULL )
+        $mMessage .= "Novedad: ".$data["cod_novbas"].' - '.$data["nom_noveda"]." \n";
+      if( isset( $data["cod_pcxbas"] ) && $data["cod_pcxbas"] !== NULL )
+        $mMessage .= "Puesto de Control: ".$data["cod_pcxbas"].' - '.$data["nom_contro"]." \n";
+      if( isset( $data["obs_noveda"] ) && $data["obs_noveda"] !== NULL )
+        $mMessage .= "Observacion Novedad: ".$data["obs_noveda"]." \n";
+      $mMessage .= "******** Detalle ******** \n";
+      $mMessage .= "Codigo de error: ".$data['cod_errorx']." \n";
+      $mMessage .= "Mensaje de error: ".$data['error']." \n";
+      //mail( $this -> NOT_MAIL, $data['nom_proces'], $mMessage,'From: soporte.ingenieros@intrared.net' );
+      return $mMessage;
+    }
+
+    /*! \fn: setTrakingStart    
+    *  \brief: crea un itinerario en HUB, solo reportes de ubicaciÃ³n
+    *  \author: Nelson Liberato
+    *  \date: 11/05/2022
+    *  \return array
+    */
+    public function setTrakingStart( $mData = NULL )
+    {
+      try
+      {
+        $parameRutfar = self::verifyParameIntgps();
+        $mDataVehicu  = self::getDataVehicu($mData['num_despac']);
+        
+        $data['nom_proces'] = "Webservice - HUB Insertar Salida";
+        $data['fec_inicio'] = $mData['fec_inicio'];
+        $data['num_despac'] = $mData['num_despac'];
+        $data['nit_transp'] = $parameRutfar[0]['cod_transp'];
+        $data['nom_transp'] = $parameRutfar[0]['nom_tercer'];
+
+    
+        if( $mDataVehicu['nit_operad']  == '' || $mDataVehicu['usr_gpsxxx'] == '' || $mDataVehicu['clv_gpsxxx'] == '' ) { 
+          return ['code' => 2005, 
+                  'message' =>'NO se envia a HUB, porque el Vehículo '.$mData['num_placax'].' no tiene GPS asignado' ];
+        }
+
+
+        $mConfig = json_decode( $parameRutfar[0]["ind_deseta"], true ); 
+        if(!$mConfig){
+          return ['code' => 2005, 'message' =>'NO HAY PARAMETRIZACION DE TIPO INTEGRADOR GPS EN LA INTERFAZ DEL CLIENTE' ];
+        }
+
+        $sendData = [
+                      //informacion empresa
+                      "cod_client"                => $parameRutfar[0]['cod_transp'], // NIT DEL CLIENTE DEL DESPACHO PARA TRANSACCIONES CON CENTRAL (WS
+                      "nit_gligps"                => '830076669', // NIT DE FARO, PORQUE SE CREAN LOS ITINERARIO A NOMBRE DE FARO
+                      "nom_server"                => 'AVANSATGL',
+                      "nom_aplica"                => BASE_DATOS,
+                      "nom_client"                => $parameRutfa[0]['nom_tercer'],
+                      "tok_integr"                => $parameRutfar[0]["cod_tokenx"],
+                      "num_docume"                => $mData["num_docume"],
+                      "num_despac"                => $mData['num_despac'],
+                      // informacion viaje
+                      "asset"                     => $mDataVehicu["num_placax"],
+                      "begin_tracking"            => $mData["fec_inicio"],
+                      "finish_tracking"           => $mData["fec_finali"],
+                      "status"                    => "enable",
+                      /************* OBLIGATORIOS PARA HUB ********************/
+                      // informacion gps
+                      "gps_id"                    => $mDataVehicu['nit_operad'],
+                      "gps_user"                  => self::remove_utf8_bom($mDataVehicu['usr_gpsxxx']),
+                      "gps_password"              => self::remove_utf8_bom($mDataVehicu['clv_gpsxxx']),
+                      "gps_key"                   => null,
+                      /************* OBLIGATORIOS PARA HUB ********************/
+                      // informacion conductor
+                      "gps_driver_id"             => $mDataVehicu['cod_tercer'],
+                      "gps_driver_name"           => utf8_encode($mDataVehicu['nom_tercer']),
+                      "gps_driver_first_surname"  => utf8_encode($mDataVehicu['nom_apell1']),
+                      "gps_driver_secod_surname"  => utf8_encode($mDataVehicu['nom_apell2']),
+                      // Tiempo de reporte de ubicacion
+                      "ind_origen"                => $mData["ind_origen"],
+                      "timeReport"                => $parameRutfar[0]["tie_report"]
+                    ];
+
+        $cHeader = [                  
+                      "Authorization: 8606c7de060ec2d798ffdc1f29776fb2", 
+                      "Authorization-app: ".$parameRutfar[0]["clv_usuari"]
+                    ];
+        
+        // codifica en json el array para mandarlo por la api
+        $mParamsString = json_encode($sendData, JSON_PRETTY_PRINT);
+        //echo "<pre>cHeader"; print_r($cHeader); echo "</pre>"; 
+        //echo "<pre>mParamsString"; print_r($mParamsString); echo "</pre>";  die();
+
+        # Inicio de cURL para la API -----------------------------------------------------------------------------
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $parameRutfar[0]["url_webser"]."/trackingstart" );  
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $cHeader);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_POST, true );
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $mParamsString);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $raw_data = curl_exec($ch);
+        $error = curl_error($ch);
+        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+       
+        $cReturn = json_decode($raw_data, true);
+       
+
+        //---------------------------------
+        $ret = FALSE; //VARIABLE QUE CONTENDRÃ EL VALOR
+
+        //Procesa el resultado del WS
+         
+        $mStatus  = $cReturn['status'];
+        $mCodResp = $cReturn['code_resp'];
+        $mMsgResp = utf8_decode($cReturn['msg_resp']);
+        $data['cod_errorx'] = $mCodResp;
+  
+        if( false != $mStatus)
+        {
+          throw new Exception($mMsgResp, $mCodResp );
+        } 
+       
+        return ['status' => $mStatus, 'code' => $mCodResp, 'message' =>$mMsgResp ];
+      }
+      catch( Exception $e )
+      { 
+        //Se registran los erores en una tabla para poder hacer un mejor seguimiento
+        $data['det_respon'] = $e -> getMessage();
+        self::setDespacError( $data );
+        return ['status' => $mStatus, 'code' => $mCodResp, 'message' =>$mMsgResp ];
+        //----------
+      }
+    }
+ 
+    /*! \fn: getDataVehicu
+    *  \brief: Consulta datos del vehiculo
+    *  \author: Ing. Nelson Liberato
+    *  \date: 11/05/2022
+    *  \date modified: dd/mm/aaaa
+    *  \param: mNumDespac  Integer  Numero del despacho
+    *  \return: Integer
+    */
+    private function getDataVehicu($mNumDespac = NULL)
+    {
+      $mQueryVehicu = "SELECT 
+                              b.num_placax,
+                              d.nit_operad,
+                              x.gps_usuari AS usr_gpsxxx,
+                              x.gps_paswor AS clv_gpsxxx,
+                              '' AS idx_gpsxxx,
+                              c.cod_tercer,
+                              c.nom_tercer,
+                              c.nom_apell1,
+                              c.nom_apell2
+                         FROM ".BASE_DATOS .".tab_despac_vehige a
+                   INNER JOIN ".BASE_DATOS .".tab_vehicu_vehicu b ON a.num_placax = b.num_placax
+                   INNER JOIN ".BASE_DATOS .".tab_tercer_tercer c ON a.cod_conduc = c.cod_tercer
+                   INNER JOIN ".BASE_DATOS .".tab_despac_despac x ON x.num_despac = a.num_despac
+                   LEFT  JOIN ".BD_STANDA  .".tab_genera_opegps d ON d.cod_operad = x.gps_operad
+                        WHERE a.num_despac LIKE '".$mNumDespac."'  ";
+
+      $consulta = new Consulta( $mQueryVehicu, $this -> cConexion ); 
+      return $consulta -> ret_matriz( 'a' )[0];
+    }
+
+
+    /*! \fn: remove_utf8_bom
+    *  \brief: Elimina caracteres BOOM
+    *  \author: Ing. Nelson Liberato
+    *  \date: 2019-06-04
+    *  \param:   $numDespac Numero del despacho del cliente
+    *  \param:   $aditionalData array con datos adicionales que complementan la informacion del despacho
+    *  \return:  bool
+    */
+    private function remove_utf8_bom($str)
+    {
+        @mb_internal_encoding('UTF-8');
+
+        // pre filter
+        if (empty($str)) {
+            return $str;
+        }
+
+        // get charset
+        $charset = @mb_detect_encoding($str, array('ISO-8859-1', 'UTF-8', 'ASCII'));
+
+        if (stristr($charset, 'utf') || stristr($charset, 'iso')) {
+            $str = iconv('ISO-8859-1', 'UTF-8//TRANSLIT', utf8_decode($str));
+        } else {
+            $str = @mb_convert_encoding($str, 'UTF-8', 'UTF-8');
+        }
+
+        // remove BOM
+        $str = urldecode(str_replace(["%C2%81", "?"], '', urlencode($str)));
+
+        // prepare string
+        return $str; 
+ 
+
+    }
+
+    /*! \fn: getTrakingAsset 
+    *  \brief: Consulta los reportes de ubicaciÃ³n de una placa
+    *  \author: Nelson Liberato
+    *  \date: 11/05/2022
+    *  \return array
+    */
+    public function getTrakingAsset( $mData = NULL )
+    {
+      try
+      {
+        $parameRutfar = self::verifyParameIntgps(); 
+        
+        $data['nom_proces'] = "Webservice - HUB Cosultar Reportes";
+        $data['num_despac'] = $mData['num_placax'];
+    
+
+        $sendData = [
+                      // informacion viaje
+                      "asset"                     => $mData['num_placax'],
+                      "begin_tracking"            => $mData["fec_inicio"],
+                      "finish_tracking"           => $mData["fec_finali"]
+                    ];
+
+        //echo "<pre>"; print_r($sendData); echo "</pre>";  die();
+        $cHeader = [                  
+                      "Authorization: 8606c7de060ec2d798ffdc1f29776fb2", 
+                      "Authorization-app: ".$parameRutfar[0]["clv_usuari"]
+                    ];
+        
+        // codifica en json el array para mandarlo por la api
+        $mParamsString = json_encode($sendData);
+
+        # Inicio de cURL para la API -----------------------------------------------------------------------------
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $parameRutfar[0]["url_webser"]."/trackingasset" );  
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $cHeader);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_POST, true );
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $mParamsString);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $raw_data = curl_exec($ch);
+        $error = curl_error($ch);
+        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+       
+        $cReturn = json_decode($raw_data, true);
+ 
+
+        //---------------------------------
+        $ret = FALSE; //VARIABLE QUE CONTENDRÃ EL VALOR
+
+        //Procesa el resultado del WS
+         
+        $mStatus = $cReturn['status'];
+        $mCodResp = $cReturn['code_resp'];
+        $mMsgResp = $cReturn['msg_resp'];
+        $data['cod_errorx'] = $mCodResp;
+  
+        if( false != $mStatus)
+        {
+          throw new Exception($mMsgResp, $mCodResp );
+        } 
+       
+        return ['status' => $mStatus, 'code' => $mCodResp, 'message' =>$mMsgResp, 'data' => $cReturn['history'] ];
+      }
+      catch( Exception $e )
+      { 
+        //Se registran los erores en una tabla para poder hacer un mejor seguimiento
+        $data['det_respon'] = $e -> getMessage();
+        //self::setDespacError( $data );
+        return ['status' => $mStatus, 'code' => $mCodResp, 'message' =>$mMsgResp ];
+      }
+    }
+
+
+    /*! \fn: setTrakingEnd    
+    *  \brief: Cierra un itinerario en HUB, solo reportes de ubicaciÃ³n
+    *  \author: Nelson Liberato
+    *  \date: 11/05/2022
+    *  \return array
+    */
+    public function setTrakingEnd( $mData = NULL )
+    {
+      try
+      {
+
+        $parameRutfar = self::verifyParameIntgps();
+        $mDataVehicu  = self::getDataVehicu($mData['num_despac']);
+        
+        $data['nom_proces'] = "Webservice - HUB finalizar itinerario";
+        $data['num_placax'] = $mData['num_placax'];
+        $data['fec_inicio'] = $mData['fec_inicio'];
+        $data['num_despac'] = $mData['num_despac'];
+        $data['nit_transp'] = $parameRutfar[0]['cod_transp'];
+        $data['nom_transp'] = $parameRutfar[0]['nom_tercer'];
+    
+        if( $mDataVehicu['nit_operad']  == NULL ) { 
+          return ['code' => 2005, 'message' =>'NO se envia a HUB, porque el Vehículo  '.$mData['num_placax'].' no tiene GPS asignado' ];
+        }
+ 
+
+        $sendData = [
+                      "cod_client"                => $parameRutfar[0]['cod_transp'], // NIT DEL CLIENTE DEL DESPACHO PARA TRANSACCIONES CON CENTRAL (WS
+                      "nom_server"                => '830076669', // NIT DE FARO, PORQUE SE CREAN LOS ITINERARIO A NOMBRE DE FARO
+                      "nom_aplica"                => BASE_DATOS,
+                      "nom_client"                => $parameRutfa[0]['nom_tercer'],
+                      "tok_integr"                => $parameRutfar[0]["cod_tokenx"],
+                      "num_docume"                => $mData["num_docume"],
+                      // informacion viaje
+                      "asset"                     => $mData['num_placax'],
+                      "begin_tracking"            => $mData["fec_inicio"],
+                      "finish_tracking"           => $mData["fec_finali"],
+                      "cod_integr"                => $mData["cod_itiner"]
+                    ];
+
+        //echo "<pre>"; print_r($sendData); echo "</pre>";  die();
+        $cHeader = [                  
+                      "Authorization: 8606c7de060ec2d798ffdc1f29776fb2", 
+                      "Authorization-app: ".$parameRutfar[0]["clv_usuari"] 
+                    ];
+        
+        // codifica en json el array para mandarlo por la api
+        $mParamsString = json_encode($sendData);
+
+        # Inicio de cURL para la API -----------------------------------------------------------------------------
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $parameRutfar[0]["url_webser"]."/trackingend" );  
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $cHeader);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_POST, true );
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $mParamsString);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $raw_data = curl_exec($ch);
+        $error = curl_error($ch);
+        $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+       
+        $cReturn = json_decode($raw_data, true);
+ 
+
+        //---------------------------------
+        $ret = FALSE; //VARIABLE QUE CONTENDRÃ EL VALOR
+
+        //Procesa el resultado del WS
+         
+        $mStatus = $cReturn['status'];
+        $mCodResp = $cReturn['code_resp'];
+        $mMsgResp = $cReturn['msg_resp'];
+        $data['cod_errorx'] = $mCodResp;
+  
+        if( false != $mStatus)
+        {
+          throw new Exception($mMsgResp, $mCodResp );
+        } 
+       
+        return ['status' => $mStatus, 'code' => $mCodResp, 'message' =>$mMsgResp ];
+      }
+      catch( Exception $e )
+      { 
+        $data['det_respon'] = $e -> getMessage();
+        self::setDespacError( $data );
+        return ['status' => $mStatus, 'code' => $mCodResp, 'message' =>$mMsgResp ];
+      }
+    }
+ 
+
+
+    /*! \fn: setDespacError
+    *  \brief:    registra el error de crear itinerario en sate_standa.tab_errorx_despac
+    *  \author:   Ing. Nelson Liberato
+    *  \date:     2021-04-11
+    *  \param:    $data array de datos para la tabla de log de error de despacho 
+    *  \return:   bool
+    */
+    private function setDespacError( $data )
+    {
+      if( strpos( $data['error'], 'Numero de manifiesto repetido' ) === false )
+      {
+        $data['det_respon'] = str_replace("'", "", $data['det_respon']);
+        $query = "REPLACE INTO  ".BASE_DATOS.".tab_errorx_despac
+                  ( nom_bdsatx, num_despac, nit_transp, 
+                    nom_transp, nom_aplica, det_errorx, 
+                    fec_creaci, cod_operad  )
+                  VALUES( '".BASE_DATOS."', '".$data['num_despac']."', '".NIT_TRANSPOR."', 
+                          '".NOM_TRANSPOR."', '".BASE_DATOS."', '".$data['det_respon']."',
+                          NOW(), '53' )";
+        $insercion = new Consulta( $query, $this -> cConexion, "BRC" );
+      }
+    } 
+  }
+
+
 ?>
