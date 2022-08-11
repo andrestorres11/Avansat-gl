@@ -4767,8 +4767,10 @@ class InsertNovedad {
      */
     public function updateEstadoEnviadoTms($mData, $mIndEnSiti = false) {
         $tabla = 'tab_despac_contro';
+        $campo = 'fec_contro';
         if($mIndEnSiti){
             $tabla = 'tab_despac_noveda';
+            $campo = 'fec_noveda';
         }
         $mSql = "UPDATE 
                         ".BASE_DATOS.".".$tabla."
@@ -4779,7 +4781,7 @@ class InsertNovedad {
                     AND cod_contro = '".$mData['contro']."'
                     AND cod_rutasx = '".$mData['rutax']."' 
                     AND cod_noveda = '".$mData['noveda']."' 
-                    AND fec_noveda = '".$mData['fecnov']."'";
+                    AND ".$campo." = '".$mData['fecnov']."'";
         new Consulta($mSql, $this->conexion);     
     }
 
