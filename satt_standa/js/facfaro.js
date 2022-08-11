@@ -7,6 +7,7 @@ function aceptar_lis()
   
     var fecini = document.getElementById('feciniID');
     var fecfin = document.getElementById('fecfinID');
+    /*
     var transp = document.getElementById('transpID');
     var nit_transport = document.getElementById('nit_transportID');
     
@@ -27,7 +28,22 @@ function aceptar_lis()
         
     }
     
-    
+    */
+    var box_checke = $("input[type=checkbox]:checked");
+    var cod_transp = '';
+    box_checke.each(function(i, o) {
+      if ($(this).attr("name") == 'multiselect_cod_transpID'){
+        if(i>1){
+          cod_transp += ',';
+        }
+        if($(this).val()!=''){
+          cod_transp += '"' + $(this).val() + '"';
+        }
+      }  
+    })
+
+    $("#transp").val(cod_transp);
+    $("#cod_transpID").val('prueba');
     if(fecini.value=='' || fecfin.value=='')
       return alert('Las Fechas Son Obligatorias');
     var feciniArray = fecini.value.split("-");
