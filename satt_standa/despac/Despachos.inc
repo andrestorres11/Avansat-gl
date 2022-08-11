@@ -2687,22 +2687,6 @@ class Despachos
                                             }
                                             $mTxt = array($tittle, $mTxt);
                                             break;
-                                        case 'can_noveda':
-                                            $mSql = "SELECT a.nom_operad
-                                                        FROM ".BASE_DATOS.".tab_interf_parame a
-                                                        WHERE a.cod_transp = '".$mData['cod_transp']."'
-                                                          AND a.cod_operad = '50'
-                                                          AND a.ind_estado = 1
-                                                        ";
-                                            $consulta = new Consulta($mSql, $this->conexion);
-                                            $registros = $consulta -> ret_matriz();
-                                            if(($mData[$key]!=0) && (count($registros)>0) && ($mView->ree_noveda->ind_visibl)){
-                                                $mTxt = $mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reeviar Novedades]</a>';
-                                            }else{
-                                                $mTxt = $mData[$key];
-                                            }
-                                            $mTxt = array($tittle, $mTxt);
-                                            break;
                                         case 'gps_urlxxx':
                                             $mViewEdt = self::getView('edt_gpsxxx');
                                                 if( $mViewEdt->dat_gpsxxx->ind_visibl == 1 ){
@@ -4442,8 +4426,6 @@ class Despachos
       }
 
       $mHtml->Hidden( array("name"=>"central", "id"=>"central", "value"=> DIR_APLICA_CENTRAL));
-      $mHtml->Hidden( array("name"=>"cod_servic", "id"=>"cod_servic", "value"=> $this->servic));
-      $mHtml->Hidden( array("name"=>"cod_aplica", "id"=>"cod_aplica", "value"=> $this->cod_aplica));
       $mHtml->Hidden( array("name"=>"bd_aplica", "id"=>"bd_aplica", "value"=> BASE_DATOS));
       $mHtml->Hidden( array("name"=>"despac", "id"=>"despac", "value"=> $despac));
       $mHtml->Hidden( array("name"=>"cross_doking", "id"=>"cross_dokingID", "value"=> "0"));

@@ -83,10 +83,6 @@ class Califi
 			case 'reeItiner':
 				self::reeItiner();
 				break;
-
-			case 'reeNovedades':
-				self::reeNovedades();
-				break;
 		}
 	}
 
@@ -1149,22 +1145,6 @@ class Califi
 		
 		echo json_encode($respuesta);
 	}
-
-	/*! \fn: reeNovedades
-     *  \brief: Realiza el reenvio de novedades a avansat
-     *  \author: Ing. Cristian Andrés Torres
-     *  \date: 02/08/2022
-     *  \date modified: dd/mm/aaaa
-     *  \modified by: 
-     */
-	private function reeNovedades(){
-		include( '../despac/InsertNovedad.inc' );
-		$transac_nov = new InsertNovedad($_REQUEST['cod_servic'], $_REQUEST['Option'], $_SESSION['codigo'], self::$cConexion);
-		$RESPON = $transac_nov->reenviaNovedadesAvansat($_REQUEST['num_despac']); 
-		echo json_encode(cleanArray($RESPON));
-	}
-
-
 }
 
 if($_REQUEST['Ajax'] === 'on' )
