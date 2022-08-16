@@ -621,7 +621,7 @@ class PDFInformeEstudioSeguridad extends PDF
                        k.nom_ciudad as 'ciu_respro', i.num_telefo as 'num_telpro',
                        a.cod_conduc,
                        CONCAT(l.nom_apell1, ' ', l.nom_apell2) as 'nom_apecon',
-                       l.nom_person as 'nom_nomcon', i.num_docume as 'num_cedcon',
+                       l.nom_person as 'nom_nomcon', l.num_docume as 'num_cedcon',
                        m.nom_ciudad as 'ciu_expcon', l.num_licenc, l.fec_venlic,
                        l.nom_arlxxx, l.nom_epsxxx, l.dir_domici as 'dir_rescon',
                        n.nom_ciudad as 'ciu_rescon', l.num_telefo as 'num_telcon'
