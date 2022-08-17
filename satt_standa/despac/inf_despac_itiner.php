@@ -8,7 +8,8 @@
  *  \bug: 
  *  \warning: 
  */
-
+ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);
 class infDespacErrorItinerarios
 {
   private static  $cConexion,
@@ -250,9 +251,10 @@ class infDespacErrorItinerarios
         break;
     }
 
-    $mSql = "   SELECT
+    $mSql = "SELECT
                       c.num_despac AS num_viajex, 
                       a.num_despac,
+                      b.cod_transp,
                       a.cod_manifi,
                       b.num_placax,
                       g.nom_operad,
@@ -262,14 +264,14 @@ class infDespacErrorItinerarios
                       e.nom_ciudad AS nom_ciuori,
                       f.nom_ciudad AS nom_ciudes,
                       b.msg_itiner
-              FROM 
-                    ".BASE_DATOS.".tab_despac_despac a INNER JOIN 
-                    ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac AND a.fec_salida IS NOT NULL AND a.fec_llegad IS NULL AND a.ind_planru = 'S' AND a.ind_anulad = 'R' AND b.ind_activo = 'S' INNER JOIN 
-                    ".BASE_DATOS.".tab_despac_corona c ON a.num_despac = c.num_dessat INNER JOIN 
-                    ".BASE_DATOS.".tab_tercer_tercer d ON b.cod_conduc = d.cod_tercer INNER JOIN 
-                    ".BASE_DATOS.".tab_genera_ciudad e ON a.cod_ciuori = e.cod_ciudad INNER JOIN 
-                    ".BASE_DATOS.".tab_genera_ciudad f ON a.cod_ciudes = f.cod_ciudad LEFT JOIN
-                    ".BD_STANDA.".tab_genera_opegps g ON a.gps_operad = g.cod_operad
+               FROM 
+                    ".BASE_DATOS.".tab_despac_despac a 
+         INNER JOIN ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac AND a.fec_salida IS NOT NULL AND a.fec_llegad IS NULL AND a.ind_planru = 'S' AND a.ind_anulad = 'R' AND b.ind_activo = 'S' 
+         INNER JOIN ".BASE_DATOS.".tab_despac_corona c ON a.num_despac = c.num_dessat 
+         INNER JOIN ".BASE_DATOS.".tab_tercer_tercer d ON b.cod_conduc = d.cod_tercer 
+         INNER JOIN ".BASE_DATOS.".tab_genera_ciudad e ON a.cod_ciuori = e.cod_ciudad 
+         INNER JOIN ".BASE_DATOS.".tab_genera_ciudad f ON a.cod_ciudes = f.cod_ciudad 
+         LEFT  JOIN ".BD_STANDA.".tab_genera_opegps g ON a.gps_operad = g.cod_operad
               WHERE
                     1 = 1
                 AND ( b.cod_itiner IS NULL OR b.cod_itiner = '' )
@@ -595,8 +597,8 @@ class infDespacErrorItinerarios
     $mConsult = new Consulta($mSql, self::$cConexion );
     $mDespachos = $mConsult -> ret_matrix('a');
      
-    include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
-    $mInterfGps = new InterfGPS( self::$cConexion ); 
+    //include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
+    //$mInterfGps = new InterfGPS( self::$cConexion ); 
 
     IncludeJS( 'inf_despac_itiner.js' );
     $mHtml = new Formlib(2);
@@ -607,17 +609,45 @@ class infDespacErrorItinerarios
         $mens = new mensajes();      
         if( sizeof($mDespachos) > 0 )    
         {
+          //print_r($mDespacho);
           foreach ($mDespachos AS $mIndex => $mDespacho) 
           {
-            $mResp = $mInterfGps -> setPlacaIntegradorGPS( $mDespacho['num_despac'], ['ind_transa' => 'I'] );
-            //code_resp, msg_resp
-            if($mResp['code_resp'] == '1000')
+            $mIntegradorGPS = getValidaInterfaz(self::$cConexion, '53', $mDespacho['cod_transp'], true, 'data');
+            if( sizeof($mIntegradorGPS) > 0 )
             {
-              $mens -> correcto("Reenvio despacho: ".$mDespacho['num_despac'].", Placa:".$mDespacho['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['msg_resp']);
-            }
-            else
-            {
-              $mens -> error("Reenvio despacho: ".$mDespacho['num_despac'].", Placa:".$mDespacho['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['msg_resp']);
+              if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
+              {   
+                  $mHubGPS = new InterfHubIntegradorGPS(self::$cConexion, ['cod_transp' => $mDespacho['cod_transp']] );
+
+                  // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
+                  $mResp = $mHubGPS -> setTrakingStart([
+                                                          'num_placax' => $mDespacho['num_placax'],
+                                                          'num_despac' => $mDespacho['num_despac'],
+                                                          'num_docume' => $mDespacho['cod_manifi'],
+                                                          'fec_inicio' => date("Y-m-d H:i:s"),
+                                                          'fec_finali' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")."+ 5 day ")),
+                                                          'ind_origen' => '3', // 3 = DESPACHO
+                                                          ]);
+                  
+                  if($mResp['code'] == '1000') { 
+                    $mens -> correcto("Reenvio despacho HUB: ".$mDespacho['num_despac'].", Placa:".$mDespacho['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['message']);
+                  }
+                  else{
+                    $mens -> error("Reenvio despacho HUB: ".$mDespacho['num_despac'].", Placa:".$mDespacho['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['message']);
+                  }
+                  // Fin proceso de generar itinerario HUB al despacho ---------------------------------------------------------------------------
+              }
+              else
+              {
+                 $mInterfGps = new InterfGPS( self::$cConexion ); 
+                  $mResp = $mInterfGps -> setPlacaIntegradorGPS( $mDespacho['num_despac'], ['ind_transa' => 'I'] );
+                  if($mResp['code_resp'] == '1000') { 
+                    $mens -> correcto("Reenvio despacho: ".$mDespacho['num_despac'].", Placa:".$mDespacho['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['msg_resp']);
+                  }
+                  else{
+                    $mens -> error("Reenvio despacho: ".$mDespacho['num_despac'].", Placa:".$mDespacho['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['msg_resp']);
+                  }
+              }
             }
 
             unset($mResp);

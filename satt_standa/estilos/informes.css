@@ -576,10 +576,57 @@ tr.row:hover td {
     cursor: pointer;
 }
 
-
-.GridviewScrollHeader { 
+.GridviewScrollHeader {
     position: sticky;
     top: -11;
     z-index: 99;
     background-color: #eeeeee;
+}
+
+/* Colores Itinerario Bandeja de Seguimiento*/
+
+.bgIt1 {
+    background: #5d5d5d;
+    color: #FFFFFF;
+}
+
+.bgIt2 {
+    background: #006910;
+    color: #FFFFFF;
+}
+
+.bgIt3 {
+    background: #e96a03;
+    color: #FFFFFF;
+}
+
+.bgIt4 {
+    background: #980d00;
+    color: #FFFFFF;
+}
+
+.noselect {
+    -webkit-touch-callout: none;
+    /* iOS Safari */
+    -webkit-user-select: none;
+    /* Safari */
+    -khtml-user-select: none;
+    /* Konqueror HTML */
+    -moz-user-select: none;
+    /* Firefox */
+    -ms-user-select: none;
+    /* Internet Explorer/Edge */
+    user-select: none;
+    /* Versión sin prefijo, actualmente
+                                      compatible con Chrome y Opera */
+}
+
+.scroll2{
+    margin: 4px, 4px;
+    padding: 4px;
+    background-color: #08c708;
+    width: 300px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
 }

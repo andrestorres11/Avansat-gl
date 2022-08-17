@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	 
+	<title>Grupo OET - SAT GL</title>
+	 <link rel="stylesheet" type="text/css" href="css/loginNew.css">  
+	 <link rel="stylesheet" href="../satt_standa/estilos/jquery.css" type="text/css">
+	 
+	  
+
+	<script language="JavaScript" src="../satt_standa/js/forgot.js"></script>
+
+	<script language="JavaScript" src="../satt_standa/js/min.js"></script>
+	<script language="JavaScript" src="../satt_standa/js/jquery.js"></script>
+	<script language="JavaScript" src="../satt_standa/js/jquery.blockUI.js"></script>  
+
+
+	<script language="JavaScript" src="login.js"></script>
+
+ 
+
+	
+</head>
+
+
+
+
+<body>
+	<!-- -->
+	<div   class="wrapper" id="wrapper" style="background-color:$login[11]">
+	<div class="container"> 
+		<div class="nelson"> 
+			<br>
+		<h1><img  style="border-radius:15px; background-color: #ffffff;" border="1" src="$login[9]"  height="102" width="251"/></h1>
+		 
+		<form id="login" class="form" name="login" method="post" action="session.php">
+			<input type="text" placeholder="USUARIO" name="usuario" required >
+			<input type="password" placeholder="CLAVE" name="clave" required >
+			<button type="submit" id="login-button"><b>ENTRAR</b></button>
+			<div class="enlaces">
+					            <a onclick="setForgot();"  > &iquest; Olvid&oacute; su Contrase&ntilde;a?</a>
+			</div>	
+			<span id="visible" class="aviso"><p>$login[2]</p></span>
+		    <input name="op" type="hidden" id="op" value="1">
+		    <input name="standa" id="standaID" type="hidden" value="satt_standa">
+			<input name="img_log" id="img_logID" type="hidden" value="$login[9]">
+			<input name="img_fon" id="img_fonID" type="hidden" value="$login[10]">
+			<input name="col_fon" id="col_fonID" type="hidden" value="$login[11]">
+			<input name="col_bot" id="col_botID" type="hidden" value="$login[12]">
+		</form>
+	</div>
+	</div>
+	
+	<ul class="bg-bubbles">
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ul>
+			<style type="text/css">
+		#footer {
+			position: absolute;
+			width: 100%;
+			top:100%;
+			height:87px;
+			margin: -87px 0px 0px 0px;
+			padding:0px;
+		}
+		#gradient_color{
+			width:auto;
+			height:3px;
+			background-image: red; /* Old browsers */
+			background-image: linear-gradient(to bottom,  $login[12] 0%,$login[12] 50%,$login[12] 100%); /* W3C */
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a81c2', endColorstr='#13639d',GradientType=0 ); /* IE6-8 */
+			
+		}
+		footer{
+		  background:url("../satt_standa/imagenes/backgrond_footer.png") repeat-x;
+		  height:87px;
+		  margin:0px;
+		}
+		#footer_content {
+		    border: 0 solid #093;
+		    margin: 0 auto;
+		    overflow: hidden;
+		    width: 980px;
+		}
+		.logo_intrared {
+		    float: left;
+		    height: 45px;
+		    margin: 5px 0 0 200px;
+		    padding: 0;
+		    width: 76px;
+		}
+		.logo_OET {
+		    float: left;
+		    height: 50px;
+		    margin: 9px 0 0 200px;
+		    padding: 0;
+		    width: 76px;
+		}
+		#footer_content p {
+		    border: 0 solid #f00;
+		    color: #8d8d8d;
+		    float: left;
+		    font-family: Arial,Helvetica,sans-serif;
+		    font-size: 14px;
+		    height: 45px;
+		    margin: 15px 0 0;
+		    padding: 0;
+		    width: 400px;
+		}
+
+		</style>
+	 <footer id="footer">
+      <div id="gradient_color">
+      </div>
+      <div id="footer_content">
+        <p><strong><span style="font-size:16px;">$login[1]</span></strong><br>&copy; - Todos los derechos reservados Grupo OET - 2022</p>
+        <div class="logo_intrared">
+          <a href="http://www.intrared.net/" target="_blanck"><img src="../satt_standa/imagenes/avansat-empresarial_footer.png" width="170" height="70" alt="logo Intrared"></a>
+        </div>
+        <div class="logo_OET">
+          <a href="http://www.grupooet.com/" target="_blanck"><img src="../satt_standa/imagenes/logo_OET.png" width="76" height="50" alt="logo Grupo OET"></a>
+        </div>
+      </div>
+	</div>
+	<div id="getClave"></div>
+</div>
+	<!-- -->
+	 
+	<div id="forgotID" style="display:none;"></div>
+	
+</body>
+</html>
