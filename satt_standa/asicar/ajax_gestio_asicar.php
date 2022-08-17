@@ -2067,7 +2067,7 @@
                 $pdf->SetFont('Times','',12);
                 $pdf->Cell(47.5, 5, 'Julian Martinez Saza ', 1, 0, 'L');
                 $pdf->Cell(47.5, 5, '3143949474', 1, 0, 'L');
-                $pdf->Cell(95, 5, 'supervisores@eltransporte.org', 1, 1, 'L');
+                $pdf->Cell(95, 5, 'supervisores@faro.com.co', 1, 1, 'L');
   
                 $pdf->Cell(47.5, 5, ' ', 1, 0, 'C');
                 $pdf->Cell(47.5, 5, '', 1, 0, 'C');
