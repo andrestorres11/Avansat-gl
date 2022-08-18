@@ -3277,8 +3277,10 @@ class Despachos
         $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION DE NOTAS CONTROLADOR</center></h3>");
         $mHtml->OpenDiv("id:secID");
           $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
-            $mHtml->SetBody('<center><span style="color:#416F1E; cursor:pointer" onclick="todasNotas(1);" >[Ver Todas]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(2);" >[Ocultar]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<center><span style="color:#416F1E; cursor:pointer" onclick="todasNotas(1)" >[Seguimiento]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(2);" >[Operador GPS]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(3);" >[Ver Todas]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(4);" >[Ocultar]</span>&nbsp;&nbsp;');
 
             if( $mView == 1 ){
               $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="formAuditarDespac();" >[Auditar]</span></center>');
@@ -3369,6 +3371,15 @@ class Despachos
             }
           }
 
+            $novedadNotdefect=array(9997,9999); //titulos primarios control
+            for($p=9000;$p<=9999;$p++)
+            { 
+                if(!in_array($p,$novedadNotdefect))
+                {
+                    $novedadDefect[]=$p;// codigo de novedad por defecto
+                }
+            }
+
           if( $_RUTASX[$i][nov_especi] == 1 )
           {
             $mStyle = $j % 2 ? 'cellPar' : 'cellImpar';
@@ -3392,7 +3403,20 @@ class Despachos
           }
 
           $mHtml->Row();
-          $mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
+            if((in_array($_RUTASX[$i][cod_noveda], $novedadDefect) || in_array($_RUTASX[$i][nov_especi], $novedadDefect)) && $i!= $mCanNov )
+            { //a?ade class para ocultar o mostrar con js
+                $mHtml->SetBody( ('<tr class="nov_gps_notes">') );
+                //$mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
+            }
+            else if((!in_array($_RUTASX[$i][cod_noveda], $novedadNotdefect) && !in_array($_RUTASX[$i][nov_especi], $novedadNotdefect)) && $i!= $mCanNov)
+            { //a?ade class para ocultar o mostrar con js
+                $mHtml->SetBody( ('<tr class="nov_seguimiento_notes">') );
+                //$mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
+            }
+            else{
+                $mHtml->SetBody( ('<tr>') );
+            }
+            //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
             $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
 
             // if para las novedades actualizadas
@@ -3785,20 +3809,37 @@ class Despachos
 
                 function todasNotas( opt )
                 {
-                  try{
-                    if( opt == 1 ){
-                      $(".ocultarTR").fadeIn( 3000 );
-                      $("#planRutaID #secID").css({"height":"auto"});
-                    }else{
-                      $(".ocultarTR").fadeOut( 1000 );
-                      $("#planRutaID #secID").css({"height":"auto"});
+                    switch (opt)
+                    {
+                        case 1:
+                            $(".nov_seguimiento_notes").fadeIn( 1000 );
+                            $(".nov_gps_notes").fadeOut( 1000 );
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
+                        case 2:
+                            $(".nov_gps_notes").fadeIn( 1000 );
+                            $(".nov_seguimiento_notes").fadeOut( 1000 );                        
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
+                        case 3:
+                            $(".nov_gps_notes").fadeIn( 1000 );
+                            $(".nov_seguimiento_notes").fadeIn( 1000 );                        
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
+                        case 4:
+                            $(".nov_gps_notes").fadeOut( 1000 );
+                            $(".nov_seguimiento_notes").fadeOut( 1000 );                        
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
                     }
-                  }
-                  catch(e)
-                  {
-                    console.log( "Error Function todasNotas: "+e.message+"\nLine: "+e.lineNumber );
-                    return false;
-                  }
                 }
 
                 $("#crossDokingID h3").click(function(){
@@ -3831,7 +3872,7 @@ class Despachos
                 });
                 
                 verifyConfirPernoc( 1, $("#num_despacID").val() );
-                
+                todasNotas(4);
               </script>';
     }
 
