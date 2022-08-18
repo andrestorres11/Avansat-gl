@@ -340,7 +340,7 @@ class EmailSeguim
             $mail = new PHPMailer();
 
             $mail->Host = "localhost";
-            $mail->From = "supervisores@eltransporte.org";
+            $mail->From = "supervisores@faro.com.co";
             $mail->FromName = "ESTADO DE SEGUIMIENTO";
             $mail->Subject = "ESTADO DE SEGUIMIENTO";
             foreach($correos as $correo){
