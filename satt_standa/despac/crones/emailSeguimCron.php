@@ -344,7 +344,7 @@ foreach ($transpors as $transport) {
     $mail = new PHPMailer();
 
     $mail->Host = "localhost";
-    $mail->From = "supervisores@eltransporte.org";
+    $mail->From = "supervisores@faro.com.co";
     $mail->FromName = "INFORME";
     $mail->Subject = "Informes";
    //  foreach($correos as $correo){

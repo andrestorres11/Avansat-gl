@@ -15,7 +15,7 @@
 
   // URL de acceso al WebService
   define("ROOT_FOLDER", "/ap/interf/app/corona/");                              // Directorio donde se encuentra alojado el WebService
-  define("WSDL_FILE", "corona.php?wsdl");                                       // Archivo PHP que contiene la definición del WebService   
+  define("WSDL_FILE", "corona.php?wsdl");                                       // Archivo PHP que contiene la definiciï¿½n del WebService   
   define("WEB_PROTOCOL", ($_SERVER['HTTPS'] == 'on' ? 'https://' : 'http://')); // Protocolo web del servidor (http o https)
   define("WSDL_URL", WEB_PROTOCOL.$_SERVER['HTTP_HOST'].ROOT_FOLDER.WSDL_FILE); // URL de acceso al WebService
   define("WSDL_EXTERNO", WEB_PROTOCOL.$_SERVER['HTTP_HOST'].'/ap/interf/app/externo/externo.php?wsdl'); // URL de acceso al WebService
@@ -24,7 +24,7 @@
   define( "LogDir", "var/www/html/ap/integradorgps/satt_dingps/crones/logs/" );        //Constantes de la aplicacion cliente.
   //define( "DictDir", "/var/www/html/ap/interf/app/corona/dictionary/" ); //Directorio Diccionario de terminos.
   //define( "WsDirx", "/var/www/html/ap/interf/app/corona/wsdl/" );
-  //define( "FarMai", "supervisores@eltransporte.org" ); //Mail de notificacion de creacion de rutas
+  //define( "FarMai", "supervisores@faro.com.co" ); //Mail de notificacion de creacion de rutas
   define( "FarMai", "faroavansat@eltransporte.com" ); //Mail de notificacion de creacion de rutas
   define( "UrlApl", "https://server.intrared.net/ap/" );               //Url Aplicaciones
   define( "NovAcarFar", "9995" );                                      //Novedad a cargo FARO
@@ -32,11 +32,11 @@
 
   define( "Hostxx", "coronabd.intrared.net:3306" );                                                   //Servidor de base de datos ambiente 5.
   
-  define( "DirLogoTranspo", "/var/www/html/ap/satt_corona/logos/" );                                           //Dirección para el logo de la transportadora.
-  define( "DirImagTrafico", "/var/www/html/ap/satt_corona/imagenes/" );                                           //Dirección para el logo de la transportadora.
-  define( "DirStanTrafico", "/var/www/html/ap/satt_standa/imagenes/" );                                           //Dirección para el logo de la transportadora.
-  define( "DirPhotoConduc", "/var/www/html/ap/satt_corona/fotcon/" );                                           //Dirección para la foto de conductor.
-  define( "DirPhotoVehicu", "/var/www/html/ap/satt_corona/fotveh/" );                                           //Dirección para la foto del vehiculo
+  define( "DirLogoTranspo", "/var/www/html/ap/satt_corona/logos/" );                                           //Direcciï¿½n para el logo de la transportadora.
+  define( "DirImagTrafico", "/var/www/html/ap/satt_corona/imagenes/" );                                           //Direcciï¿½n para el logo de la transportadora.
+  define( "DirStanTrafico", "/var/www/html/ap/satt_standa/imagenes/" );                                           //Direcciï¿½n para el logo de la transportadora.
+  define( "DirPhotoConduc", "/var/www/html/ap/satt_corona/fotcon/" );                                           //Direcciï¿½n para la foto de conductor.
+  define( "DirPhotoVehicu", "/var/www/html/ap/satt_corona/fotveh/" );                                           //Direcciï¿½n para la foto del vehiculo
 
   define("URL_INTERF_GPSEVE", "https://central.intrared.net/ap/interf/APIIntegradorGPS/v1/index.php");
   // define("URL_INTERF_GPSEVE", "http://10.0.100.12/ap/interf/APIIntegradorGPS/v1/index.php/setItinerary");

@@ -94,9 +94,9 @@ define("URL_INTERF_CENTRAL", "https://central.intrared.net");
 
 
 
-define("MAIL_SUPERVISORES", "faroavansat@eltransporte.com");//Correo de supervisores
+define("MAIL_SUPERVISORES", "supervisores@faro.com.co");//Correo de supervisores
 define("MAIL_SOPORTE", "soporte.ingenieros@intrared.net");//Correo de soporte intrared
-define("MAIL_SUPERVISORES_ELTRANSPORTE", "supervisores@eltransporte.org");//Correo de supervisores el transporte
+define("MAIL_SUPERVISORES_ELTRANSPORTE", "supervisores@faro.com.co");//Correo de supervisores el transporte
 
 //---------------------------------------------------------------------------------------------------
 //	CONSTANTES PARA PROCESOS DE ESCOLTA ELECTR�NICO CON PROTEKTO
