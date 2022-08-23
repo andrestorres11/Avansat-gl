@@ -493,8 +493,8 @@ class Proc_Plan_Ruta
    $formulario -> linea("Ruta a Seguir",0,"t");
    $formulario -> linea("Origen",0,"t");
    $formulario -> linea("Destino",1,"t");
-
-   if($rutasx && $_REQUEST[rutasx])
+   
+   if($rutasx)
    {
     for($i = 0; $i < sizeof($rutasx); $i++)
     {
