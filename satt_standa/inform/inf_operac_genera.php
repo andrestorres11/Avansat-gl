@@ -20,10 +20,6 @@ class InformViajes {
                 $this->getInform();
                 break;
 
-            case 1:
-                $this->exportExcel();
-                break;
-
             default:
                 $this->Listar();
                 break;
@@ -31,8 +27,16 @@ class InformViajes {
     }
 
     function getInform() {
+        
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/informes.css' type='text/css'>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/homolo.css' type='text/css'>\n";
+        echo '<!-- jQuery -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery/dist/jquery.min.js"></script>';
+        echo "<script> function expTabExcelDesp() {
+                $('#exportExcelID').val('<table>'+$('#export').html()+'</table>');
+            }</script>";
+
         $mSelect1 = "SELECT 
                        t.num_despac as 'num_viajex',
                        t.cod_manifi as 'cod_manifi',
@@ -175,13 +179,14 @@ class InformViajes {
         }
         $consulta = new Consulta($mSelect, $this->conexion);
         $_INFORM = $consulta->ret_matriz();
-
-
-        $formulario = new Formulario("?", "post", "Informe de Trazabilidad ", "frm_trazab\" id=\"frm_trazabID");
-
-        echo '<a href="index.php?cod_servic='.$_REQUEST['cod_servic'].'&window=central&opcion=1 "target="centralFrame"><img src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" border="0"></a>';
-
-        $mHtml = "<table border='1'>";
+        
+      
+        $formulario = new Formulario("../".DIR_APLICA_CENTRAL."/lib/exportExcel.php", "post", "Informe de Trazabilidad ", "frm_trazab\" id=\"frm_trazabID");
+                echo '<center>
+                        <input type="image" name="botondeenvio" onclick="expTabExcelDesp()" src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" >
+				</center><br>';
+        
+        $mHtml = "<table border='1' id='export'>";
         if (sizeof($_INFORM) > 0) {
             $size = $_REQUEST['ind_noveda'] == '1' ? '72' : '68';
             $mHtml .= "<tr>";
@@ -455,10 +460,23 @@ class InformViajes {
         }
         $mHtml .= "</table>";
 
-        $_SESSION[xls_InformViajes] = $mHtml;
-        echo $mHtml;
 
+        //$_SESSION[xls_InformViajes] = $mHtml;
+        echo $mHtml;
+        $archivo = "informe_operaciones".date("Y_m_d_H_i").".xls";
+        $mHtml2 ='<input type="hidden" name="standa" id="standaID" value="'.DIR_APLICA_CENTRAL.'">';
+        $mHtml2 .='<input type="hidden" name="window" id="windowID" value="'.$_REQUEST['window'].'">';
+        $mHtml2 .='<input type="hidden" name="cod_servic" id="cod_servicID" value="'.$_REQUEST['cod_servic'].'">';
+        $mHtml2 .='<input type="hidden" name="cod_ciuori" id="cod_ciuoriID">';
+        $mHtml2 .='<input type="hidden" name="cod_ciudes" id="cod_ciudesID">';
+        $mHtml2 .='<input type="hidden" name="cod_conduc" id="cod_conducID">';
+        $mHtml2 .='<input type="hidden" name="nameFile" id="nameFileID" value="'.$archivo.'">';
+        $mHtml2 .='<input type="hidden" name="OptionExcel" id="OptionExcelID" value="_REQUEST">';
+        $mHtml2 .='<input type="hidden" name="exportExcel" id="exportExcelID" value="">';
+        echo $mHtml2;
         $formulario->cerrar();
+        
+        
     }
 
     function toFecha($date) {
@@ -661,17 +679,6 @@ class InformViajes {
         return $mResult = $mConsult->ret_matrix('i');
     }
 
-    private function exportExcel() {
-        session_start();
-        $archivo = "informe_operaciones".date("Y_m_d_H_i").".xls";
-        header('Content-Type: application/octetstream');
-        header('Expires: 0');
-        header('Content-Disposition: attachment; filename="'.$archivo.'"');
-        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-        header('Pragma: public');
-        ob_clean();
-        echo $HTML = $_SESSION[xls_InformViajes];
-    }
 
     //Metodo que obtiene las transportadora de la base de datos
     private function getTransport(){
