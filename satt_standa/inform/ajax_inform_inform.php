@@ -12,6 +12,8 @@
  */
 
 setlocale(LC_ALL, "es_ES");
+ini_set('display_errors', true);
+    error_reporting(E_ALL & ~E_NOTICE);
 
 class inform {
     private static $cConexion,
@@ -72,6 +74,9 @@ class inform {
                 case "getDetalledias";
                     $this->getDetalledias();
                     break;
+                case "getFilterusuarios";
+                    $this->getUsuarios();
+                    break;
                 default:
                     header('Location: ../../'.BASE_DATOS.'/index.php?window=central&cod_servic=1366&menant=1366');
                     break;
@@ -80,10 +85,39 @@ class inform {
     }
 
     /*! \fn: getInform
+     *  \brief: Funcion filtro de usuarios
+     *  \author: ing. Miguel angel rojas
+     *  \param: 
+     *  \param: 
+     *  \return 
+     */
+    function getUsuarios( $__REQUEST = null  ){
+        $datosFiltro = (object) $_POST;
+        $session = (object) $_SESSION['datos_usuario'];
+        $and = "";
+        if($session->cod_perfil == '7' || $session->cod_perfil == '713'){
+            $and = "AND cod_usuari = '$session->cod_usuari'";
+        }
+        $sql =" SELECT LOWER(cod_usuari) cod_usuari, CONCAT( UPPER(nom_usuari ), ' - ', LOWER(cod_usuari) ) AS nom_usuari
+                  FROM ".BASE_DATOS.".tab_genera_usuari
+                 WHERE ind_estado = '".$datosFiltro->estado_usuar."' 
+                   AND ( cod_perfil IN(1,7,8,73,70,77,669,713) OR cod_usuari LIKE '%eal%' OR nom_usuari LIKE '%eal%' OR cod_usuari LIKE '%ecl%' OR nom_usuari LIKE '%ecl%'  ) $and 
+                   ".(empty($__REQUEST[cod_usuari]) ? null : " AND cod_usuari =  '".$__REQUEST[cod_usuari]."' ")."
+                ORDER BY 2";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $usuarios=$consulta->ret_matrix("a");
+        $select='';
+        foreach ($usuarios as $key => $value) {
+            $select=$select.'<option value="'.$value['cod_usuari'].'">'.$value['nom_usuari'].'</option>';
+         } 
+         echo $select;
+    } 
+
+    /*! \fn: getInform
      *  \brief: Funcion de trancision para el reporte de No. de Novedades por usuario
      *  \author: Ing. Alexander Correa
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/aï¿½o
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
@@ -163,7 +197,7 @@ class inform {
             $p = "AND c.cod_perfil IN ($perfil) ";
         }
         if($usuario){
-            $search = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,á,é,í,ó,ú,ñ,?á,?é,?í,?ó,?ú,?ñ,??,? ,??,? ,??,???,?? ,¿,?");
+            $search = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,??,? ,??,? ,??,???,?? ,ï¿½,?");
             $replace = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,\",\",?,&uuml;");
             $usuario= str_replace($search, $replace, $usuario);
             $u = " AND a.usr_creaci IN ($usuario)";
@@ -214,7 +248,7 @@ class inform {
      *  \brief: pinta el informe por dia del reporte de Numero de novedades por usuario
      *  \author: Ing. Alexander Correa
      *  \date: 26/11/2015 
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $datos = datos del post
      *  \param: $data = datos de la consulta para pintar los datos
      *  \return html
@@ -512,8 +546,8 @@ class inform {
     /*! \fn: infoSemana
      *  \brief: Funcion para pintar el general semanal del reporte No de Novedades por usuario
      *  \author: Ing. Alexander Correa
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/aï¿½o
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $data -> arreglo con los datos a pintar
      *  \param: $datos -> rreglo con los datos del post
      *  \return 
@@ -628,8 +662,8 @@ class inform {
     /*! \fn: infoMes
      *  \brief: Funcion para pintar el general mensual del reporte No de Novedades por usuario
      *  \author: Ing. Alexander Correa
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/aï¿½o
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $data -> arreglo con los datos a pintar
      *  \param: $datos -> rreglo con los datos del post
      *  \return 
@@ -739,8 +773,8 @@ class inform {
     /*! \fn: infoMes
      *  \brief: Funcion para pintar el general mensual del reporte No de Novedades por usuario
      *  \author: Ing. Oscar Bocanegra
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/aï¿½o
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $data -> arreglo con los datos a pintar
      *  \param: $datos -> rreglo con los datos del post
      *  \return 
@@ -1115,8 +1149,8 @@ class inform {
     /*! \fn: getDetalle
      *  \brief: Funcion para pintar el detallado del reporte No de Novedades por usuario
      *  \author: Ing. Alexander Correa
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/aï¿½o
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $data -> arreglo con los datos a pintar
      *  \param: $datos -> rreglo con los datos del post
      *  \return 
@@ -1249,7 +1283,7 @@ class inform {
         
         if($datos->usuarios){
             $usuario=$datos->usuarios;
-            $search = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,á,é,í,ó,ú,ñ,?á,?é,?í,?ó,?ú,?ñ,??,? ,??,? ,??,???,?? ,¿,?");
+            $search = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,??,? ,??,? ,??,???,?? ,ï¿½,?");
             $replace = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,\",\",?,&uuml;");
             $usuario= str_replace($search, $replace, $usuario);
             
@@ -1363,7 +1397,7 @@ class inform {
         
         if($datos->usuarios){
             $usuario=$datos->usuarios;
-            $search = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,á,é,í,ó,ú,ñ,?á,?é,?í,?ó,?ú,?ñ,??,? ,??,? ,??,???,?? ,¿,?");
+            $search = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,?ï¿½,??,? ,??,? ,??,???,?? ,ï¿½,?");
             $replace = explode(",","?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,\",\",?,&uuml;");
             $usuario= str_replace($search, $replace, $usuario);
             
@@ -1462,7 +1496,7 @@ class inform {
      *  \brief: Funcion de transicion para pintar el general del infome de Eal
      *  \author: Ing. Alexander Correa
      *  \date: 13/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
@@ -1484,7 +1518,7 @@ class inform {
      *  \brief: esta funcion trae los datos generales de la eal
      *  \author: Ing. Alexander Correa
      *  \date: 13/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $datos -> Objeto con los datos del formulario
      *  \param: 
      *  \return objeto con los datos de la consulta
@@ -1579,7 +1613,7 @@ class inform {
      *  \brief: funcion para pintar el informe genera por dias  
      *  \author: Ing. Alexander Correa
      *  \date: 13/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $datos -> datos del formulario
      *  \param: $data -> resuntado de la consulta
      *  \return html con la informacion
@@ -1823,7 +1857,7 @@ class inform {
      *  \brief: pinta el detalle del infomre de eal cumplidas
      *  \author: Ing. Alexander Correa
      *  \date: 20/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return html con el resultado
@@ -1982,7 +2016,7 @@ class inform {
      *  \brief: muestra el general del informe de salida de despachos
      *  \author: Ing. Alexander Correa
      *  \date: 21/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return html com los datos ordemandos de la consulta
@@ -2083,7 +2117,7 @@ class inform {
      *  \brief: Funcion que estrae los datos para el informe general de indicador de salia de despachos
      *  \author: Ing. Alexander Correa
      *  \date: 21/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $datos -> objeto con los parametros de consulta
      *  \param: 
      *  \return array con el resultado de la consulta
@@ -2147,7 +2181,7 @@ class inform {
      *  \brief: Trae el detalle del informe del indicador de salida de despachos
      *  \author: Ing. Alexander Correa
      *  \date: 22/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return html con los datos de la consulta
@@ -2164,7 +2198,7 @@ class inform {
                     <table id="dataDetalle" width="100%" cellspacing="0" cellpadding="0">
                         <tr>
                             <th class="CellHead" colspan="18" style="text-align:center">
-                                <b>Se encontró un total de <?= count($data) ?> Registros</b>&nbsp;&nbsp;&nbsp;
+                                <b>Se encontrï¿½ un total de <?= count($data) ?> Registros</b>&nbsp;&nbsp;&nbsp;
                                 <a style="cursor:pointer">
                                     <img src="../<?= $_SESSION['DIR_APLICA_CENTRAL'] ?>/imagenes/excel.jpg" onclick="getExcelSalDes();" >
                                 </a>
@@ -2181,9 +2215,9 @@ class inform {
                             <th class="CellHead" style="text-align:center"> Ciudad Destino </th>
                             <th class="CellHead" style="text-align:center"> Placa </th>
                             <th class="CellHead" style="text-align:center"> Conductor </th>
-                            <th class="CellHead" style="text-align:center"> Cédula </th>
+                            <th class="CellHead" style="text-align:center"> Cï¿½dula </th>
                             <th class="CellHead" style="text-align:center"> Celular </th>
-                            <th class="CellHead" style="text-align:center"> Fecha de Creación del Despacho </th>
+                            <th class="CellHead" style="text-align:center"> Fecha de Creaciï¿½n del Despacho </th>
                             <th class="CellHead" style="text-align:center"> Fecha de Cita de Cargue </th>
                             <th class="CellHead" style="text-align:center"> Cumplimiento  </th>
                             <th class="CellHead" style="text-align:center"> Diferencia De Tiempo  </th>
@@ -2226,7 +2260,7 @@ class inform {
      *  \brief: funcion que extrae los datos para pintar en el detallado
      *  \author: Ing. Alexander Correa
      *  \date: 22/01/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: $datos -> objeto con los datos del post
      *  \param: 
      *  \return arreglo con los datos de la consulta
@@ -2283,7 +2317,7 @@ class inform {
                                                        when 6 then ".$tipSer[0]['tie_cartr2']."
                                                    END
                                                 )
-                                            ), 'Cumplió', 'Incumplió'
+                                            ), 'Cumpliï¿½', 'Incumpliï¿½'
                                        ) AS ind_cumpli
                                   FROM ".BASE_DATOS.".tab_despac_despac a 
                             INNER JOIN ".BASE_DATOS.".tab_despac_sisext b ON b.num_despac = a.num_despac 
@@ -2317,7 +2351,7 @@ class inform {
      *  \brief: extrae los tipos de transprte de la base de datos
      *  \author: Ing. Alexander Correa
      *  \date: 02/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \return arreglo con los tipos de transporte
      */
@@ -2331,7 +2365,7 @@ class inform {
      *  \brief: devuelve la lista de los poseedores de una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 02/02/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return multi select con los poseedores
@@ -2404,7 +2438,7 @@ class inform {
      *  \brief: funcion para pintar las mosalidades de los despachos
      *  \author: Ing. Alexander Correa
      *  \date: 03/03/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \return 
      */
@@ -2428,7 +2462,7 @@ class inform {
         ?>
 
         <div class="col-md-12 text-center Style2DIV">
-            <div class="col-md-12 CellHead">GENERAL OPERACIÓN GENERADORES DE CARGA</div>
+            <div class="col-md-12 CellHead">GENERAL OPERACIï¿½N GENERADORES DE CARGA</div>
             <div class="col-md-12"></div>
             <div class="col-md-12 CellHead">
                 <div class="col-md-6">
@@ -2437,7 +2471,7 @@ class inform {
                     <div class="col-md-4">PORCENTAJE</div>
                 </div>
                 <div class="col-md-6">
-                    <div class="col-md-3">EN TRÁNSITO</div>
+                    <div class="col-md-3">EN TRï¿½NSITO</div>
                     <div class="col-md-3">PORCENTAJE</div>
                     <div class="col-md-3">PENDIENTES POR LLEGADA</div>
                     <div class="col-md-3">PORCENTAJE</div>
@@ -2458,7 +2492,7 @@ class inform {
                 </div>
             </div>
             <div class="col-md-12"></div>
-            <div class="col-md-12 CellHead">DETALLADO POR DÍAS</div>
+            <div class="col-md-12 CellHead">DETALLADO POR Dï¿½AS</div>
             <div class="col-md-12"></div>
             <div class="col-md-6 CellHead">
                 <div class="col-md-3">FECHA</div>
@@ -2467,7 +2501,7 @@ class inform {
                 <div class="col-md-3">PORCENTAJE</div>
             </div>
             <div class="col-md-6 CellHead">
-                <div class="col-md-3">EN TRÁNSITO</div>
+                <div class="col-md-3">EN TRï¿½NSITO</div>
                 <div class="col-md-3">PORCENTAJE</div>
                 <div class="col-md-3">PENDIENTES POR LLEGADA</div>
                 <div class="col-md-3">PORCENTAJE</div>
@@ -2520,7 +2554,7 @@ class inform {
      *  \brief: trae los datos de la carga asignada a los usuarios para la funcion GetInformAsignaCargax
      *  \author: Ing. Alexander Correa
      *  \date: 03/03/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \return $datos->arreglo con los datos de la consulta
      */
@@ -2572,7 +2606,7 @@ class inform {
      *  \brief: funcion para mostrar el detallado del informe de de distribucion de carga laboral
      *  \author: Ing. Alexander Correa
      *  \date: 07/03/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \return 
      */
@@ -2604,7 +2638,7 @@ class inform {
                         <?php foreach ($this->cHoras as $k => $val) { ?>
                             <td height="30px" style="color: #FFFFFF; border: #FFFFFF 1px solid;">DESPACHOS EN TRANSITO</td>
                             <td height="30px" style="color: #FFFFFF; border: #FFFFFF 1px solid;">CONTROLADOR ASIGNADO</td>
-                            <td height="30px" style="color: #FFFFFF; border: #FFFFFF 1px solid;">SUPERVISOR QUE GENERÁ</td>
+                            <td height="30px" style="color: #FFFFFF; border: #FFFFFF 1px solid;">SUPERVISOR QUE GENERï¿½</td>
                         <?php } ?>
                     </tr>
 
@@ -2634,7 +2668,7 @@ class inform {
      *  \brief: extrae de la base de datos la informacion para getDetalleCargax     
      *  \author: Ing. Alexander Correa
      *  \date: 07/03/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param:    
      *  \return arreglo con los datos ordenados
      */
