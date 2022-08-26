@@ -43,6 +43,7 @@ class ajax_genera_contro
   private function setRegistros() {
     $mSql = " SELECT  a.cod_contro,
                       a.nom_contro,
+                      IF(a.cod_tpcont IS NULL, 'NO ASIGNADO', c.nom_tpcont) as 'nom_tpcont',
                       b.nom_ciudad,
                       a.dir_contro,
                       a.tel_contro,
@@ -51,7 +52,8 @@ class ajax_genera_contro
                       a.url_wazexx,
                       a.ind_estado
                 FROM  ".BASE_DATOS.".tab_genera_contro a
-                INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b ON a.cod_ciudad = b.cod_ciudad";
+                INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b ON a.cod_ciudad = b.cod_ciudad
+                LEFT JOIN ".BASE_DATOS.".tab_tipos_pcontr c ON a.cod_tpcont = c.cod_tpcont";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz =  $mMatriz->ret_matrix("a");
 

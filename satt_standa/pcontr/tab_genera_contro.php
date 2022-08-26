@@ -147,6 +147,7 @@ class tab_genera_contro
                               <tr>
                                 <th>Codigo</th>
                                 <th>Nombre</th>
+                                <th>Tipo</th>
                                 <th>Ciudad</th>
                                 <th>Direcci&oacute;n</th>
                                 <th>Telefono</th>
