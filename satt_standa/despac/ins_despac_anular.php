@@ -595,7 +595,7 @@ class Proc_anula
             }
             else
             {
-                include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
+                //include("../".DIR_APLICA_CENTRAL."/lib/InterfGPS.inc");
                 $mInterfGps = new InterfGPS( $this->conexion ); 
                 $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['despac'], ['ind_transa' => 'Q'] );  
                 $mens = new mensajes();
