@@ -79,14 +79,7 @@ function exportarExcel()
   
   try
   { 
-    var datos = $("#tableExcelFacturasFaro").html();
-    
-    $("#opcionID").val("excel"); 
-    $("#exportExcelID").val('');
-    $("#exportExcelID").val(datos);
- 
-    formulario.submit();
-
+    $('#exportExcelID').val('<table>'+$('#tableExcel').html()+'</table>');
   }
   catch(e)
   {

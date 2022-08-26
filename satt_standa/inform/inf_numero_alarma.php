@@ -128,6 +128,7 @@
                             <div class="col-md-6">
                                 <input type="radio" id="active" name="status" onclick="estado(1)" value="1"><label>Activos</label>
                                 &nbsp;
+                                &nbsp;
                                 <input type="radio" id="inactive" name="status" onclick="estado(0)" value="0"><label>Inactivos</label>
                             </div>
                         </div>
