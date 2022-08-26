@@ -124,17 +124,20 @@
                 <tr>
                     <td  class="CellHead contenido" colspan="6" style="text-align:center">
                         <div class="col-md-6">
+                            <div class="col-md-6">Estado Usuario:<font style="color:red">*</font>: </div>
+                            <div class="col-md-6">
+                                <input type="radio" id="active" name="status" onclick="estado(1)" value="1"><label>Activos</label>
+                                &nbsp;
+                                <input type="radio" id="inactive" name="status" onclick="estado(0)" value="0"><label>Inactivos</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
                             <div class="col-md-6">Usuario: </div>
                             <div class="col-md-6">
-                                <select id="usuarioID" <?= $disabled ?> name="usuario" style="width:100%">
-                                <?php
-                                    foreach ($_USUARIOS as $key => $value) {
-                                        ?>
-                                        <option value="<?= $value['cod_usuari'] ?>"><?= $value['nom_usuari'] ?></option>
-                                        <?php
-                                     } 
-                                ?>
-                                </select>
+                                <span id='divUser'>
+                                    <select id="usuarioID" <?= $disabled ?> name="usuario" style="width:60%">
+                                    </select>
+                                </span>
                             </div>
                         </div>
                     </td>
