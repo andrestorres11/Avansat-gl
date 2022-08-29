@@ -414,8 +414,8 @@ class PDFInformeEstudioSeguridad extends PDF
     
     $pdf -> AddPage('P','Legal');
     $img_estcon = $this->getImagenesPerson($info['cod_conduc']);
-    $rut_general = URL_APLICA.'files/adj_estseg/';
-
+    //$rut_general = URL_APLICA.'files/adj_estseg/';
+    
     $pdf -> SetFont('Arial','B',8);
     $pdf -> SetFillColor(1, 11, 64);
     $pdf -> SetTextColor(255,255,255);
@@ -424,8 +424,8 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> SetFillColor(180, 181, 179);
     $pdf -> SetTextColor(0,0,0);
     $pdf -> SetFont('Arial','B',8);
-    $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estcon['fil_conrit'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
-    $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estcon['fil_simitx'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+    $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estcon['fil_conrit']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
+    $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estcon['fil_simitx']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
     $pdf -> SetWidths(array(98,98));
     $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estcon['obs_conrit']),utf8_decode('OBSERVACIÓN: '.$img_estcon['obs_simitx'])));
     $pdf -> SetFont('Arial','B',8);
@@ -437,8 +437,8 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> SetTextColor(0,0,0);
     $pdf -> SetFont('Arial','B',8);
 
-    $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estcon['fil_procur'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
-    $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estcon['fil_runtxx'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+    $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estcon['fil_procur']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
+    $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estcon['fil_runtxx']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
     $pdf -> SetWidths(array(98,98));
     $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estcon['obs_procur']),utf8_decode('OBSERVACIÓN: '.$img_estcon['obs_runtxx'])));
     
@@ -450,7 +450,7 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> SetTextColor(0,0,0);
     $pdf -> SetFont('Arial','B',8);
 
-    $pdf -> Cell(196,50,$pdf->Image($rut_general.''.$img_estcon['fil_ajudic'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+    $pdf -> Cell(196,50,$pdf->Image($this->validaImagen($img_estcon['fil_ajudic']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
     $pdf -> SetWidths(array(196));
     $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estcon['obs_ajudic'])));
 
@@ -466,8 +466,8 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetTextColor(0,0,0);
       $pdf -> SetFont('Arial','B',8);
 
-      $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estpos['fil_conrit'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
-      $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estpos['fil_simitx'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+      $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estpos['fil_conrit']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
+      $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estpos['fil_simitx']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
       $pdf -> SetWidths(array(98,98));
       $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estpos['obs_conrit']),utf8_decode('OBSERVACIÓN: '.$img_estpos['obs_simitx'])));
 
@@ -480,8 +480,8 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetTextColor(0,0,0);
       $pdf -> SetFont('Arial','B',8);
 
-      $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estpos['fil_procur'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
-      $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estpos['fil_runtxx'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+      $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estpos['fil_procur']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
+      $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estpos['fil_runtxx']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
       $pdf -> SetWidths(array(98,98));
       $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estpos['obs_procur']),utf8_decode('OBSERVACIÓN: '.$img_estpos['obs_runtxx'])));
 
@@ -492,7 +492,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFillColor(180, 181, 179);
       $pdf -> SetTextColor(0,0,0);
       $pdf -> SetFont('Arial','B',8);
-      $pdf -> Cell(196,50,$pdf->Image($rut_general.''.$img_estpos['fil_ajudic'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+      $pdf -> Cell(196,50,$pdf->Image($this->validaImagen($img_estpos['fil_ajudic']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
       $pdf -> SetWidths(array(196));
       $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estpos['obs_ajudic'])));
     }
@@ -509,8 +509,8 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetTextColor(0,0,0);
       $pdf -> SetFont('Arial','B',8);
 
-      $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estpro['fil_conrit'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
-      $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estpro['fil_simitx'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+      $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estpro['fil_conrit']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
+      $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estpro['fil_simitx']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
       $pdf -> SetWidths(array(98,98));
       $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estpro['obs_conrit']),utf8_decode('OBSERVACIÓN: '.$img_estpro['obs_simitx'])));
 
@@ -523,8 +523,8 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetTextColor(0,0,0);
       $pdf -> SetFont('Arial','B',8);
 
-      $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estpro['fil_procur'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
-      $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estpro['fil_runtxx'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+      $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estpro['fil_procur']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
+      $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estpro['fil_runtxx']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
       $pdf -> SetWidths(array(98,98));
       $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estpro['obs_procur']),utf8_decode('OBSERVACIÓN: '.$img_estpro['obs_runtxx'])));
 
@@ -535,7 +535,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFillColor(180, 181, 179);
       $pdf -> SetTextColor(0,0,0);
       $pdf -> SetFont('Arial','B',8);
-      $pdf -> Cell(196,50,$pdf->Image($rut_general.''.$img_estpro['fil_ajudic'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+      $pdf -> Cell(196,50,$pdf->Image($this->validaImagen($img_estpro['fil_ajudic']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
       $pdf -> SetWidths(array(196));
       $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estpro['obs_ajudic'])));
     }
@@ -552,8 +552,8 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> SetTextColor(0,0,0);
     $pdf -> SetFont('Arial','B',8);
     
-    $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estveh['fil_congps'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
-    $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estveh['fil_conrit'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+    $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estveh['fil_congps']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
+    $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estveh['fil_conrit']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
     $pdf -> SetWidths(array(98,98));
     $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estveh['obs_congps']),utf8_decode('OBSERVACIÓN: '.$img_estveh['obs_conrit'])));
     
@@ -566,8 +566,8 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> SetTextColor(0,0,0);
     $pdf -> SetFont('Arial','B',8);
     
-    $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estveh['fil_runtxx'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
-    $pdf -> Cell(98,50, $pdf->Image($rut_general.''.$img_estveh['fil_compar'], $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
+    $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estveh['fil_runtxx']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,0,'C');
+    $pdf -> Cell(98,50, $pdf->Image($this->validaImagen($img_estveh['fil_compar']), $pdf->GetX(), $pdf->GetY()+2,97,46),1,1,'C');
     $pdf -> SetWidths(array(98,98));
     $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_estveh['obs_runtxx']),utf8_decode('OBSERVACIÓN: '.$img_estveh['obs_compar'])));
     
@@ -678,6 +678,23 @@ class PDFInformeEstudioSeguridad extends PDF
       $consulta = new Consulta($query, $this -> conexion );
       $ciudades = $consulta -> ret_matriz();
       return $ciudades;
+  }
+
+  function validaImagen($img_namexx){
+    $rut_general_arch = URL_ARCHIV_STANDA.''.BASE_DATOS;
+    $rut_general = URL_APLICA;
+    if($img_namexx!=''){
+      $ruta_prueba = $rut_general_arch.'/files/adj_estseg/'.$img_namexx;
+
+      if (file_exists($ruta_prueba)) {
+        $rut_imagen = $rut_general.'files/adj_estseg/'.$img_namexx;
+      } else {
+        $rut_imagen = $rut_general.'imagenes/noimg.png';
+      }
+    }else{
+      $rut_imagen = $rut_general.'imagenes/noimg.png';
+    }
+    return $rut_imagen;
   }
 
 }
