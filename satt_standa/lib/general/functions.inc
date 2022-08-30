@@ -1243,7 +1243,8 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
  function getParameOpeGPS(&$mConexion){
     $mSql = "SELECT  
                 a.ind_opesta,
-                a.ind_opepro
+                a.ind_opepro,
+                a.cod_paisxx
             FROM  ".BASE_DATOS.".tab_config_parame a 
             LIMIT 1";
     $query = new Consulta($mSql, $mConexion);
