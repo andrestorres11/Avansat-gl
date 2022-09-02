@@ -13,6 +13,7 @@
         
         function __construct($conexion){
             $this -> conexion = $conexion;
+            
             if(empty($_REQUEST[option]) && !isset($_REQUEST[option]))
                 $_REQUEST[option] = 'showFilters';
             
@@ -33,18 +34,24 @@
         
         function showFilters(){
             
+            
             $_USUARIOS = array_merge( $this->cNull, $this->getUsuarios() );
             
-            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_noveda2.js\"></script>\n";
-            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
-            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
-            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_tipxx_novedad.js\"></script>\n";
             echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
-            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.blockUI.js\"></script>\n";
             echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
             echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/multiselect/jquery.multiselect.filter.min.js\"></script>\n";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/multiselect/jquery.multiselect.min.js\"></script>\n";
+            echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>\n";
+            echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/bootstrap.css' type='text/css'>\n";
+            echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
+            echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
             echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
             echo $this -> getJqueryCalendar();
+            
             
             $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "Informe de Novedades", "formulario\" id=\"formularioID");
             $formulario -> nueva_tabla();
@@ -54,24 +61,30 @@
             $formulario -> texto ("Hora Final","text","horafin\" id=\"horafinID",1,7,7,"","" );
             $formulario -> lista ("Usuario","cod_usuari\" id=\"ind_estadoID",$_USUARIOS,1 );
             $formulario -> nueva_tabla();
+            echo "<BR>";
             $formulario -> botoni("Buscar","Listar()",0);
             $formulario -> nueva_tabla();
             echo "<BR><BR>";
             echo "<BR><BR>";
             echo "<BR><BR>";
             $formulario -> oculto("window","central",0);
+            $formulario -> oculto("standa\" id=\"standaID",DIR_APLICA_CENTRAL,0);
             $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
             $formulario -> oculto("option\" id=\"optionID",'',0);
             $formulario -> cerrar();
-            
+            //echo "<script>$.unblockUI();</script>";
         }
         
         
         function getInforme(){
-            
-            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_noveda2.js\"></script>\n";
-            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_tipxx_novedad.js\"></script>\n";
             echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.blockUI.js\"></script>\n";
+            echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
+            echo "<script> load('".DIR_APLICA_CENTRAL."');</script>";
+            echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
+            //echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
             $this -> Style();
             
             if(empty($_REQUEST[horaini]))
@@ -82,10 +95,7 @@
             
             
             $_USUARIOS = $this->getUsuarios( $_REQUEST );
-            
-        
-            
-            
+          
             $_REQUEST[fecha_ini] = $_REQUEST[fec_inicial].' '.$_REQUEST[horaini];
             $_REQUEST[fecha_fin] = $_REQUEST[fec_final].' '.$_REQUEST[horafin];
             
@@ -94,6 +104,7 @@
             $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);
             $formulario -> oculto("based\" id=\"basedID\"",BASE_DATOS,0);
             $formulario -> oculto("num_serie",0,0);
+            $formulario -> oculto("standa\" id=\"standaID",DIR_APLICA_CENTRAL,0);
             $formulario -> oculto("window","central",0);
             $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
             $formulario -> oculto("opcion",2,0);
@@ -153,7 +164,7 @@
             
             
             $mHtml .= "</table>";
-            
+            $mHtml .= "<script>$.unblockUI();</script>";
             echo $mHtml;
             
             $_SESSION['LIST_TOTAL']=$mHtml;
@@ -173,32 +184,30 @@
     		  </div>
 
     		  <div id="result" >
-
-
     		  </div>
      		  </div><div id="alg"> <table></table></div></td></tr>';
-			echo"";
-            
+			  echo "";
+           
         }
-        
+
         function getDetalles( $__REQUEST ){
-         
-            global $HTTP_POST_FILES;
-            session_start();
-            $BASE = $_SESSION[BASE_DATOS];
-            define ('DIR_APLICA_CENTRAL', $_SESSION['DIR_APLICA_CENTRAL']);
-            define ('ESTILO', $_SESSION['ESTILO']);
-            define ('BASE_DATOS', $_SESSION['BASE_DATOS']);
-            
-            include( "../lib/general/conexion_lib.inc" );
-            include( "../lib/general/form_lib.inc" );
-            include( "../lib/general/tabla_lib.inc" );
-            
-            $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
-            $_USUARIO_ = $this -> getUsuarios( array('cod_usuari' => $__REQUEST[cod_usuar]) );
-            
-            
-            $array = array();
+          echo "<style> #popID { background-color: white; }</style>";
+          global $HTTP_POST_FILES;
+          session_start();
+          $BASE = $_SESSION[BASE_DATOS];
+          define ('DIR_APLICA_CENTRAL', $_SESSION['DIR_APLICA_CENTRAL']);
+          define ('ESTILO', $_SESSION['ESTILO']);
+          define ('BASE_DATOS', $_SESSION['BASE_DATOS']);
+          
+          include( "../lib/general/conexion_lib.inc" );
+          include( "../lib/general/form_lib.inc" );
+          include( "../lib/general/tabla_lib.inc" );
+          
+          $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
+          $_USUARIO_ = $this -> getUsuarios( array('cod_usuari' => $__REQUEST[cod_usuar]) );
+          
+          
+          $array = array();
             
             if($__REQUEST['tipo']=='OT')
                 $aux="     a.nov_especi !='1'
@@ -257,53 +266,50 @@
                         AND LOWER(b.usr_creaci) = '".$__REQUEST[cod_usuar]."')
                    
                   ORDER BY 5,1,3";
-
-            $consulta  = new Consulta($sql, $this -> conexion);
-            $despachos = $consulta -> ret_matriz();
-
-      
-                
-            $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "INFORMACION DE NOVEDADES", "formulario");
-            $formulario -> nueva_tabla(); 
-            $formulario -> botoni("Excel","exportarXls()",0);//Jorge 2703-2012 
-            $formulario -> botoni("Cerrar","ClosePopup()",1);//validarCumplidos()
-            $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);//Jorge 2703-2012
-            $formulario -> oculto("based\" id=\"basedID\"",BASE_DATOS,0);//Jorge 2703-2012
-            $formulario -> cerrar();
-            $formulario -> nueva_tabla();
-            $formulario -> linea("Total de Novedades: ".sizeof($despachos)." - ".$_USUARIO_[0][1],0,"t2","15%");
-            
-            $this -> Style();
-            
-            $mHtml  = "<table width='100%'>";
-            $mHtml .= "<tr>";
-                $mHtml .= "<th class=cellHead >Transportadora</th>";
-                $mHtml .= "<th class=cellHead >Despacho</th>";
-                $mHtml .= "<th class=cellHead >Novedad</th>";
-                $mHtml .= "<th class=cellHead >Fecha</th>";
-                $mHtml .= "<th class=cellHead >Observacion</th>";
-            $mHtml .= "</tr>";
-            
-            foreach($despachos AS $row){
-                 $mHtml .= "<tr>";
-                    $mHtml .= "<td class='cellInfo' >{$row[4]}</td>";
-                    $mHtml .= "<td class='cellInfo' >{$row[0]}</td>";
-                    $mHtml .= "<td class='cellInfo' >{$row[1]}</td>";
-                    $mHtml .= "<td class='cellInfo' >{$row[2]}</td>";
-                    $mHtml .= "<td class='cellInfo' >{$row[3]}</td>";
-                 $mHtml .= "</tr>";
-            }
-            
-            $mHtml .= "</table>";
-            
-            echo $mHtml;
-            
-            $_SESSION['LIST_TOTAL']=$mHtml;
-            
-            $formulario -> nueva_tabla(); 
-            $formulario -> botoni("Excel","exportarXls()",0);
-            $formulario -> botoni("Cerrar","ClosePopup()",1);
-            $formulario -> cerrar();
+         
+     
+          
+          $consulta  = new Consulta($sql, $this -> conexion);
+          $despachos = $consulta -> ret_matriz();
+          //echo $despachos;
+          $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "INFORMACION DE NOVEDADES", "formulario");
+          $formulario -> nueva_tabla(); 
+          //$formulario -> botoni("Excel","exportarXls()",0);//Jorge 2703-2012 
+          //$formulario -> botoni("Cerrar","ClosePopup()",1);//validarCumplidos()
+          $formulario -> oculto("dir_aplica\" id=\"dir_aplicaID\"",DIR_APLICA_CENTRAL,0);//Jorge 2703-2012
+          $formulario -> oculto("based\" id=\"basedID\"",BASE_DATOS,0);//Jorge 2703-2012
+          //$formulario -> cerrar();
+          $formulario -> nueva_tabla();
+          $formulario -> linea("Total de Novedades: ".sizeof($despachos)." - ".$_USUARIO_[0][1],0,"t2","15%");
+          
+          $mHtml  = "<table width='100%'>";
+          $mHtml .= "<tr>";
+              $mHtml .= "<th class=cellHead >Transportadora</th>";
+              $mHtml .= "<th class=cellHead >Despacho</th>";
+              $mHtml .= "<th class=cellHead >Novedad</th>";
+              $mHtml .= "<th class=cellHead >Fecha</th>";
+              $mHtml .= "<th class=cellHead >Observacion</th>";
+          $mHtml .= "</tr>";
+          
+          foreach($despachos AS $row){
+               $mHtml .= "<tr>";
+                  $mHtml .= "<td class='cellInfo' >{$row[4]}</td>";
+                  $mHtml .= "<td class='cellInfo' >{$row[0]}</td>";
+                  $mHtml .= "<td class='cellInfo' >{$row[1]}</td>";
+                  $mHtml .= "<td class='cellInfo' >{$row[2]}</td>";
+                  $mHtml .= "<td class='cellInfo' >{$row[3]}</td>";
+               $mHtml .= "</tr>";
+          }
+          
+          $mHtml .= "</table>";
+          
+          echo $mHtml;
+          
+          $_SESSION['LIST_TOTAL']=$mHtml;
+          
+          $formulario -> nueva_tabla(); 
+          $formulario -> botoni("Excel","exportarXls()",0);
+          
         }
         
         function getTodos( $__REQUEST ){
@@ -675,6 +681,9 @@
                                     border:1px solid #00661b;
                                     cursor:pointer;
                             }
+                            #popID {
+                              background-color: white;
+                          }
                     </style>";
 	}
 
