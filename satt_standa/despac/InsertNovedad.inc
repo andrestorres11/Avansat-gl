@@ -3633,7 +3633,7 @@ class InsertNovedad {
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, 
+                                mail(MAIL_SOPORTE, 
                                 	"Error Web service Humadea - Colombiasoftware", 
                                 	'<div name="'.HOST_WEB.'_faro_11">' . $mMessage."\n". var_export($parametros, true ) . '</div>', $mCabeceSoporte);
                             }
