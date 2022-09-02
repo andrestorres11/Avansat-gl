@@ -2042,7 +2042,7 @@ function getDataForm() {
     var file = $("#imagen").val();
     if (!file) {
       $("input").each(function(index) {
-        if ($(this).attr("type") != 'checkbox') {
+        if ($(this).attr("type") != 'checkbox' && $(this).attr("type") != 'radio') {
           if ($(this).val() != "" && $(this).val() != null) {
             parametros += "&" + $(this).attr("name");
             parametros += "=" + $(this).val();
