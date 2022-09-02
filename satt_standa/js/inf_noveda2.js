@@ -102,8 +102,8 @@ function pintarExcel(){
   $('#datosPintarID').val(tabla);
   $("#formulario").submit();
 }
-$(function() { 
-   $("#usuarioID").multiselect().multiselectfilter();   
+$(function() {  
+  $("#usuarioID").multiselect().multiselectfilter();
   $("#perfilID").multiselect().multiselectfilter();   
   $( "#fec_iniciaID,#fec_finaliID" ).datepicker({
     dateFormat: "yy-mm-dd"
@@ -221,8 +221,25 @@ $(function() {
         console.log("Error en liGenera.click() "+e.message);
     }
   });
+
   
 });
+
+function estado(status){
+  var Standa = $("#standaID").val();
+  $.ajax({
+        url: "../" + Standa + "/inform/ajax_inform_inform.php",
+        data: "Option=getFilterusuarios&Ajax=on&estado_usuar=" + status,
+        type: "POST",
+        async: true,
+        success: function (data){
+          $("#divUser").empty();
+          $("#divUser").html('<select id="usuarioID" name="usuario" style="width:80%" <? $disabled ?> ></select>');
+          $("#usuarioID").html(data);
+          $("#usuarioID").multiselect().multiselectfilter();  
+        }
+    });
+}
 
 function Alerta(title, message, focus){
     try

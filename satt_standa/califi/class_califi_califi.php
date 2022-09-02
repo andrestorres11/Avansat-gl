@@ -123,14 +123,16 @@ class Califi
         $paramGPS = getParameOpeGPS(self::$cConexion);
 		$parOpeSt = $paramGPS[0];
 		$parOpePr = $paramGPS[1];
+		$parCodPais = $paramGPS[2];
 		$opegpsPropio = NULL;
 		$opegpsStanda = NULL;
 
 		if($parOpeSt){
-		$query = "SELECT cod_operad, CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad', nit_operad 
-				FROM ".BD_STANDA.".tab_genera_opegps
-				WHERE ind_estado = '1'
-			ORDER BY nom_operad ASC ";
+		$query = "SELECT a.cod_operad, CONCAT(a.nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad', a.nit_operad 
+				FROM ".BD_STANDA.".tab_genera_opegps a
+				INNER JOIN ".BD_STANDA.".tab_opegps_paisxx b ON a.cod_operad = b.cod_operad AND b.cod_paisgl = $parCodPais
+				WHERE a.ind_estado = '1'
+			ORDER BY a.nom_operad ASC ";
 		$consulta = new Consulta($query, self::$cConexion);
 		$opegpsStanda = $consulta->ret_matriz("a");
 		

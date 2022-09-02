@@ -34,9 +34,6 @@ class FacturFaro
             case "2":
                 $this->facturar();
                 break;
-            case "excel":
-                $this->exportExcel();
-                break;
             default:
                 $this->filtro();
                 break;
@@ -172,7 +169,6 @@ class FacturFaro
         $fecfinal=date("Y-m-t",strtotime($fecfinal));
 
         $formulario -> nueva_tabla();
-
         echo "<tr><td align='right'  class='celda_titulo'>";
         echo "Fecha Inicial de Salida: &nbsp;";
         echo "</td>";
@@ -202,15 +198,14 @@ class FacturFaro
         echo $this->listaSelect('Transportadora:', 'cod_transp', $transpor, 'cellInfo1', 1 );
         echo '<input type="hidden" name="transp" id="transp">';
         $formulario -> nueva_tabla();
-        echo "<input type='button' value='Aceptar' name='Aceptar' onclick=\"aceptar_lis();\" class='bot'>";
-
+        $formulario->botoni("Buscar", "aceptar_lis();", 0);
         $formulario -> nueva_tabla();
         $formulario -> oculto("num_despac",0,0);
         $formulario -> oculto("window","central",0);
         $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
         $formulario -> oculto("opcion\" id=\"opcion",1,0);
         $formulario -> oculto("Standa\" id=\"StandaID", DIR_APLICA_CENTRAL, 0);
-
+        echo "<hr>";
         $formulario -> cerrar();
     }
   
@@ -359,12 +354,13 @@ class FacturFaro
         echo '<input type="hidden" name="transp" id="transp">';
         echo '<input type="hidden" name="opcion" id="opcion" value="1">';
         $formulario -> nueva_tabla();
- 
-
-        echo "<input type='button' value='Aceptar' name='Aceptar' onclick=\"aceptar_lis();\" class='bot'>";
-        echo "<input type='button' value='Excel' name='excel' onclick=\"exportarExcel();\" class='bot'>"; 
-        
-
+        $formulario->botoni("Buscar", "aceptar_lis();", 0);
+        $formulario -> oculto("num_despac",0,0);
+        $formulario -> oculto("window","central",0);
+        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
+        //$formulario -> oculto("opcion\" id=\"opcion",1,0);
+        $formulario -> oculto("Standa\" id=\"StandaID", DIR_APLICA_CENTRAL, 0);
+        $formulario -> cerrar();
         //busqueda de los despachos de faro
         $query  = "SELECT a.num_despac AS 'DESPACHO',
                           a.fec_salida AS 'FECHA DE SALIDA',  
@@ -466,7 +462,7 @@ class FacturFaro
               $no_com =array(63,325,296,311);
             }*/
 
-            $no_com =array(52,70);
+            $no_com =array(52,70,156);
             $cuenta = 0;
             foreach ($novedades as $key => $value) {
               if(in_array($value['cod_noveda'], $no_com)){
@@ -513,7 +509,25 @@ class FacturFaro
         $tot[0][0]=$x;
         $tot[0][1]= $facturas[0]['EMPRESA'];
         $tot[0][2]=$totnov;
-        echo "</table><div id='mamafoko'>";
+        echo "</table><hr>";
+        $formulario -> nueva_tabla();
+        echo "<div id='excelbutton'>";
+        echo '<form action="../'.DIR_APLICA_CENTRAL.'/lib/exportExcel.php" "frm_factu_faro" id="frm_frm_factu_faroID" method="post">';
+        echo '<input type="image" name="botondeenvio" onclick="exportarExcel()"  src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" ><br>';
+        $archivo = "informe_factu_faro".date("Y_m_d_H_i").".xls";
+        $mHtml2 ='<input type="hidden" name="standa" id="standaID" value="'.DIR_APLICA_CENTRAL.'">';
+        $mHtml2 .='<input type="hidden" name="window" id="windowID" value="'.$_REQUEST['window'].'">';
+        $mHtml2 .='<input type="hidden" name="cod_servic" id="cod_servicID" value="'.$_REQUEST['cod_servic'].'">';
+        $mHtml2 .='<input type="hidden" name="cod_ciuori" id="cod_ciuoriID">';
+        $mHtml2 .='<input type="hidden" name="cod_ciudes" id="cod_ciudesID">';
+        $mHtml2 .='<input type="hidden" name="cod_conduc" id="cod_conducID">';
+        $mHtml2 .='<input type="hidden" name="nameFile" id="nameFileID" value="'.$archivo.'">';
+        $mHtml2 .='<input type="hidden" name="OptionExcel" id="OptionExcelID" value="_REQUEST">';
+        $mHtml2 .='<input type="hidden" name="exportExcel" id="exportExcelID" value="">';
+        echo $mHtml2;
+        echo "</form>";
+        echo "</div>";
+        echo "<div id='mamafoko'>";
         $formulario -> nueva_tabla();
         $formulario -> linea("Numero Total de Despachos entre ".$_REQUEST["fecini"]." hasta el ".$_REQUEST["fecfin"]."(".sizeof($factur).")",1,"t2");
         $formulario -> nueva_tabla();
@@ -521,7 +535,8 @@ class FacturFaro
         /*$formulario -> imagen("Exportar","../".DIR_APLICA_CENTRAL."/imagenes/excel.jpg","Exportar",30,30,0,"onClick=\"top.window.open('../".DIR_APLICA_CENTRAL."/export/exp_factur_faro.php?".$exp."')\"",0,0,"");
         *///$formulario -> botoni("Facturar","aceptar()",1);
  
-        echo '</table><div id="tableExcelFacturasFaro"> <table width="100%" cellspacing="0" cellpadding="4" id="tableExcel" class="formulario">';
+        echo '</table>';
+        echo '<div id="tableExcelFacturasFaro"> <table width="100%" cellspacing="0" cellpadding="4" id="tableExcel" class="formulario">';
         //$formulario -> nueva_tabla();
         $formulario -> linea("#",0,"t2");
         $formulario -> linea("Despacho SATT",0,"t2");
@@ -794,18 +809,11 @@ class FacturFaro
         $_SESSION[factur] = "";
         $_SESSION[factur] = $factur;
       
-        $formulario -> nueva_tabla();
-
+        
         /*$formulario -> oculto("fecfin",$_REQUEST["fecfin"],0);
         $formulario -> oculto("fecini",$_REQUEST["fecini"],0);*/
         //$formulario -> oculto("transp",$_REQUEST["transp"],0);
-        $formulario -> oculto("num_despac",0,0);
-        $formulario -> oculto("window","central",0);
-        $formulario -> oculto("cod_servic",$_REQUEST["cod_servic"],0);
-        //$formulario -> oculto("opcion\" id=\"opcion",1,0);
-        $formulario -> oculto("Standa\" id=\"StandaID", DIR_APLICA_CENTRAL, 0);
         
-        $formulario -> cerrar();
         echo '<script></script>';
 
  
@@ -892,20 +900,7 @@ class FacturFaro
       return $mHtml;
     }
 
-    //Inicio Función exportExcel
-    private function exportExcel()
-    {
-      $archivo = "informe_FacturacionFaro_".date( "Y_m_d_H_i" ).".xls";
-      #header('Content-Type: application/vnd.ms-excel'); // This should work for IE & Opera
-      header('Content-type: application/x-msexcel'); // This should work for the rest 
-      header("Expires: 0");
-      header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-      header("content-disposition: attachment; filename=".$archivo.".xls");
-
-      ob_clean();
-      echo  $_REQUEST['exportExcel']; 
-
-    }
+    
 }
 //$service = new FacturFaro($this->conexion);
 $service = new FacturFaro($_SESSION['conexion'], $_SESSION['usuario_aplicacion'], $_SESSION['codigo']);

@@ -625,7 +625,8 @@ private function getValidaIdGPS()
 
       $mSql = "SELECT  
                 a.ind_opesta,
-                a.ind_opepro
+                a.ind_opepro,
+                a.cod_paisxx
             FROM  ".BASE_DATOS.".tab_config_parame a 
             LIMIT 1";
       $query = new Consulta($mSql, self::$cConexion);
@@ -637,8 +638,10 @@ private function getValidaIdGPS()
       $opegpsStanda = NULL;
       //Validacion 
       if($parOpeSt){
-        $query = "SELECT cod_operad, CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad' 
-               FROM ".BD_STANDA.".tab_genera_opegps
+        $cod_paisxx = $paramGps[2];
+        $query = "SELECT a.cod_operad, CONCAT(a.nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad' 
+               FROM ".BD_STANDA.".tab_genera_opegps a
+               INNER JOIN ".BD_STANDA.".tab_opegps_paisxx b ON a.cod_operad = b.cod_operad AND b.cod_paisgl = $cod_paisxx
                WHERE ind_estado = '1'
            ORDER BY nom_operad ASC ";
         $consulta = new Consulta($query, self::$cConexion);
@@ -1203,7 +1206,7 @@ private function getValidaIdGPS()
           $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
           $mens = new mensajes();
           echo $mens->error2("ACTIVAR VEHÍCULO", $mensaje);
-
+_stan
       }
     }
   }
