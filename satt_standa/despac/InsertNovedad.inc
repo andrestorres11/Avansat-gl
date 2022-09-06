@@ -3871,7 +3871,7 @@ class InsertNovedad {
                                 //Consumo Web Service.
                                 /*                                 * ****************** TRATAMIENTO SOAP ******************** */
                                 try {
-                                    //MÃ©todos disponibles en el WS
+                                    //Métodos disponibles en el WS
                                     $respuesta = $oSoapClient->__call($mOption[0], $parametros);
                                     $mResult = explode("; ", $respuesta);
                                     $mCodResp = explode(":", $mResult[0]);
@@ -3881,6 +3881,8 @@ class InsertNovedad {
                                         $error_ = $mMsgResp[1];
                                     } else {
                                         $error_ = NULL;
+                                        //Hace la actualización del indicador estado de novedad enviada a tms
+                                        self::updateEstadoEnviadoTms($regist, $mIndEnSiti);
                                         break;
                                     }
                                 } catch (SoapFault $e) {
@@ -4753,6 +4755,215 @@ class InsertNovedad {
           echo 'Error: ' . $mail->ErrorInfo;
           return false;
         }
+    }
+
+     /*! \fn: updateEstadoEnviadoTms
+     *  \brief: actualiza el estado de la novedad enviada a tms
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 03/08/2022
+     *  \date modified: dd/mm/aaaa
+     *  \param: 
+     *  \return:
+     */
+    public function updateEstadoEnviadoTms($mData, $mIndEnSiti = false) {
+        $tabla = 'tab_despac_contro';
+        if($mIndEnSiti){
+            $tabla = 'tab_despac_noveda';
+        }
+        $mSql = "UPDATE 
+                        ".BASE_DATOS.".".$tabla."
+                SET 
+                    ind_enviad = 1 
+                WHERE 
+                    num_despac = '".$mData['despac']."' 
+                    AND cod_contro = '".$mData['contro']."'
+                    AND cod_rutasx = '".$mData['rutax']."' 
+                    AND cod_noveda = '".$mData['noveda']."' 
+                    AND fec_noveda = '".$mData['fecnov']."'";
+        new Consulta($mSql, $this->conexion);     
+    }
+
+     /*! \fn: reenviaNovedadesAvansat
+     *  \brief: reenvia las novedades de un cliente gl a avansat
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 03/08/2022
+     *  \date modified: dd/mm/aaaa
+     *  \param: 
+     *  \return: boolean
+     */
+    public function reenviaNovedadesAvansat($num_despac) {
+        try 
+		{ 
+            $cReportes = [];
+            $cRespuest = [];
+            $mQuery = "
+                                (
+                                    SELECT
+                                            'pc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
+                                            a.num_despac, aa.cod_manifi, bb.num_placax,
+                                            a.cod_contro, a.fec_noveda, a.des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala,  
+                                            '' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, a.fec_creaci
+                                    FROM
+                                            ".BASE_DATOS.".tab_despac_despac aa
+                                INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
+                                INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = (
+                                                                                                                                        SELECT MAX(xx.num_consec) AS num_consec
+                                                                                                                                        FROM ".BASE_DATOS.".tab_transp_tipser xx
+                                                                                                                                        WHERE xx.cod_transp = bb.cod_transp
+                                                                                                                                    )
+                                INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
+                                INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
+                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.ind_estado = 1 /*Debe estar activa*/
+
+
+                                INNER JOIN	".BASE_DATOS.".tab_despac_noveda a  ON bb.num_despac =  a.num_despac
+                                LEFT JOIN ".BASE_DATOS.".tab_errorx_noveda b  ON a.num_despac !=  b.num_despac 
+                                                                            AND a.cod_contro !=  b.cod_contro
+                                LEFT JOIN ".BASE_DATOS.".tab_despac_sitio  c  ON a.cod_sitiox  =  c.cod_sitiox
+                                LEFT JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+
+                                    WHERE a.num_despac = '".$num_despac."'
+                                        AND	a.ind_enviad = 0
+                                        AND aa.ind_anulad = 'R'
+                                        AND aa.ind_planru LIKE 'S'
+                                        AND aa.fec_salida IS NOT NULL
+                                        AND aa.fec_llegad IS NULL  
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                )
+                                UNION ALL
+                                (
+                                    SELECT
+                                            'nc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
+                                            a.num_despac, aa.cod_manifi, bb.num_placax, 
+                                            a.cod_contro, a.fec_contro AS fec_noveda, a.obs_contro AS des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala, 
+                                            a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, a.fec_creaci
+                                    FROM
+                                            ".BASE_DATOS.".tab_despac_despac aa
+                                INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
+                                INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = (
+                                                                                                                                        SELECT MAX(xx.num_consec) AS num_consec
+                                                                                                                                        FROM ".BASE_DATOS.".tab_transp_tipser xx
+                                                                                                                                        WHERE xx.cod_transp = bb.cod_transp
+                                                                                                                                    )
+                                INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
+                                INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
+                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.ind_estado = 1 /*Debe estar activa*/
+
+
+                                INNER JOIN ".BASE_DATOS.".tab_despac_contro a  ON bb.num_despac =  a.num_despac
+                                LEFT JOIN ".BASE_DATOS.".tab_errorx_noveda b  ON a.num_despac != b.num_despac 
+                                                                            AND a.cod_contro != b.cod_contro
+                                LEFT JOIN ".BASE_DATOS.".tab_despac_sitio  c  ON a.cod_sitiox = c.cod_sitiox
+                                LEFT JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+
+                                    WHERE
+                                            a.num_despac = '".$num_despac."'
+                                        AND	a.ind_enviad = 0
+                                        AND aa.ind_anulad = 'R'
+                                        AND aa.ind_planru LIKE 'S'
+                                        AND aa.fec_salida IS NOT NULL
+                                        AND aa.fec_llegad IS NULL  
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        GROUP BY aa.num_despac, a.fec_creaci
+                                )
+                                ORDER BY cod_server
+                        ";
+            $mConsult = new Consulta($mQuery, $this->conexion);
+            $cNovPendientes = $mConsult->ret_matrix('a');
+            $errores = '';
+            if(sizeof($cNovPendientes) > 0){
+                foreach ($cNovPendientes  AS $mIndex => $mReporte) 
+			    {
+                    $mDesNoveda = '';
+                    if( $mReporte['val_latitu']  != '' && $mReporte['val_longit']  != '')
+                    {
+                        $mDesNoveda  =  ' ^{"latitud":"'.$mReporte['val_latitu'].'", "longitud":"'.$mReporte['val_longit'].'"}';
+                    }
+                    else
+                    {
+                        $mDesNoveda  = 'Coordenadas: SIN COORDENADAS ';
+                    }
+                    $mParams =  [ 
+                      'nom_usuari'  => $mReporte['nom_usuari'],
+                      'pwd_clavex'  => $mReporte['clv_usuari'],
+                      'nom_aplica'  => $mReporte['nom_operad'],
+                      'num_manifi'  => $mReporte['cod_manifi'],
+                      'num_placax'  => $mReporte['num_placax'],
+                      'cod_novbas'  => $mReporte['cod_noveda'] >= 9000 ? $mReporte['cod_noveda'] : '0',//$mReporte['cod_noveda'], //9183,
+                      'cod_conbas'  => 0,
+                      'tim_duraci'  => $mReporte['tiem_duraci'], 
+                      'fec_noveda'  => $mReporte['fec_noveda'],
+                      'des_noveda'  => $mReporte['des_noveda']." ".$mDesNoveda,
+                      'nom_contro'  => NULL,
+                      'nom_sitiox'  => $mReporte['nom_sitiox'],
+                      'cod_confar'  => $mReporte['cod_contro'],
+                      'cod_novfar'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['cod_noveda'], 
+                      'nom_noveda'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['nom_noveda'], 
+                      'ind_alarma'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['ind_alarma'],
+                      'ind_tiempo'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['ind_tiempo'],
+                      'nov_especi_' => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['nov_especi'],
+                      'ind_manala'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['ind_manala'],
+                      'bin_fotcon'  => NULL,
+                      'bin_fotpre'  => NULL,
+                      'cod_remdes'  => NULL,
+                      'tim_sigpun'  => NULL,
+                      'tim_ultpun'  => NULL,
+                      'kms_vehicu'  => $mReporte['val_veloci'],
+                      'man_ordcar'  => NULL
+                  ];
+
+                    ini_set("soap.wsdl_cache_enabled", 0);
+                    //die('acaba proceso');
+                    $mSoap = new SoapClient( $mReporte['url_webser'], ['trace' => 1,'exception' => 1 ] );
+                    $mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams );
+
+                    $mResult  = explode( "; ", $mResponse );
+                    $mCodResp = explode( ":", $mResult[0] );  
+                    $mMsgResp = explode( ":", $mResult[1] );
+                    if( "1000" != $mCodResp[1] ){
+                        $errores .= "<p>Despacho: ".$mReporte['num_despac']." - Manifiesto: ".$mReporte['cod_manifi']." - Ws: ".$mReporte['url_webser']." --Error::".$mMsgResp[1]."-- </p>";
+                        $msj = 'El despacho esta presentando inconveniente al reenviar las novedades';
+				    }else{
+                        $msj = 'Se realizo el reenvio de novedades de manera exitosa';
+                    }
+
+                    //Actualiza el registro de la novedad indicando que ya fue enviado
+                    $mUpdate = "UPDATE ".BASE_DATOS.".".$mReporte['origen']." SET ind_enviad = 1 WHERE num_despac = ". $mReporte['num_despac']." AND  fec_creaci = '".$mReporte['fec_creaci']."' ";
+                    $transaccion = 'R';
+                    if($mIndex==0){
+                        $transaccion = 'BR';
+                    }
+                    if(count($cNovPendientes)-1 == $mIndex){
+                        $transaccion = 'RC';
+                    }
+                    new Consulta($mUpdate, $this->conexion, $transaccion);
+                }
+                
+                $cRespuest['info'] = $errores;
+                $cRespuest['noveda'] = $cReportes;
+                $cRespuest['status'] = true;
+                $cRespuest['msj'] = $msj;
+                $cRespuest['title'] = '¡Exito!';
+                $cRespuest['type'] = 'success';
+                
+            }else{
+                $cRespuest['status'] = true;
+                $cRespuest['msj'] = 'No se han encontrado novedades por enviar.';
+                $cRespuest['title'] = 'Alerta';
+                $cRespuest['type'] = 'warning';
+            }
+                return $cRespuest;
+        } catch (Exception $e) {
+                $cRespuest['status'] = false;
+                $cRespuest['msj'] = 'Error en el método reenviaNovedadesAvansat. Por favor contacte a mesa de apoyo.';
+                $cRespuest['title'] = 'Error';
+                $cRespuest['type'] = 'error';
+                return $cRespuest;
+        }                      
     }
 
 }
