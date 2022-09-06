@@ -1205,8 +1205,7 @@ private function getValidaIdGPS()
           $mensaje = "<font color='#000000'>Ocurri&oacute; un Error inesperado al actiar el vehiculo de placa: <b>$placa</b><br> por favor, intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font>";
           $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
           $mens = new mensajes();
-          echo $mens->error2("ACTIVAR VEHÍCULO", $mensaje);
-_stan
+          echo $mens->error2("ACTIVAR VEHICULO", $mensaje);
       }
     }
   }
