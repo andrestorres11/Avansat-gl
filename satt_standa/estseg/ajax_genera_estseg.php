@@ -549,7 +549,7 @@
             $str .= ($df->invert == 1) ? ' - ' : '';
             if ($df->y > 0) {
                 // years
-                $str .= ($df->y > 1) ? $df->y . ' Años ' : $df->y . ' Año ';
+                $str .= ($df->y > 1) ? $df->y . ' Aï¿½os ' : $df->y . ' Aï¿½o ';
             } if ($df->m > 0) {
                 // month
                 $str .= ($df->m > 1) ? $df->m . ' Meses ' : $df->m . ' Mes ';
@@ -645,13 +645,13 @@
                           <th scope="col">No. Estudio</th>
                           <th scope="col">Estado</th>
                           <th scope="col">Descargar/Ver estudio</th>
-                          <th scope="col">Documentación</th>
+                          <th scope="col">Documentaciï¿½n</th>
                           <th scope="col" style="min-width: 200px;">Conductor</th>
                           <th scope="col" style="min-width: 200px;">Poseedor</th>
                           <th scope="col" style="min-width: 200px;">Propietario</th>
                           <th scope="col">Vehiculo</th>
-                          <th scope="col" style="min-width: 130px;">Gestión</th>
-                          <th scope="col" style="min-width: 200px;">Observación</th>
+                          <th scope="col" style="min-width: 130px;">Gestiï¿½n</th>
+                          <th scope="col" style="min-width: 200px;">Observaciï¿½n</th>
                           
                         </tr>
                     </thead>
@@ -1964,22 +1964,32 @@
 
         private function darCorreos($cod_solici,$ind_retorn){
           if($ind_retorn==1){
+            //Extrae correo registrado al momento de realizar la solicitud de estudio de seguridad
             $sql = "SELECT a.cor_solici as 'dir_emailx'
                    FROM ".BASE_DATOS.".tab_solici_estseg a
                    WHERE a.cod_solici = '".$cod_solici."' ";
           }else{
+            //Extrae correos administrador del sistema NOTIFICACIÃ“N FARO
             $sql = "SELECT a.dir_emailx
                       FROM ".BASE_DATOS.".tab_genera_concor a
-                    WHERE a.num_remdes = ''; ";
+                    WHERE a.num_remdes = '' AND ind_estseg = 1; ";
           }
           $query = new Consulta($sql, self::$conexion);
-          $resultado = $query->ret_matriz('a')[0];
+          $correos = $query->ret_matriz('a');
+          $cantidad = count($correos);
+          foreach($correos as $key=> $value){
+            $resultado['dir_emailx'] .= $value['dir_emailx'];
+            if($key+1<$cantidad){
+              $resultado['dir_emailx'].=',';
+            }
+          }
           return $resultado;
         }
 
         private function enviarCorreo($cod_solici, $ind_retorn, $subject, $contenido, $files = NULL) {
             //Trae los correos segun el caso
             $emailsTotal = self::darCorreos($cod_solici,$ind_retorn);
+            
             $emails = explode(",", $emailsTotal['dir_emailx']);
             //$tmpl_file = URL_ARCHIV_STANDA.'satt_standa/estseg/planti/template-email.html';
             $tmpl_file = 'planti/template-email.html';
