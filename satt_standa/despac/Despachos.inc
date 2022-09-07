@@ -3386,14 +3386,9 @@ class Despachos
                 </spam>';
             }
           }
-
-            $novedadNotdefect=array(9997,9999); //titulos primarios control
             for($p=9000;$p<=9999;$p++)
             { 
-                if(!in_array($p,$novedadNotdefect))
-                {
-                    $novedadDefect[]=$p;// codigo de novedad por defecto
-                }
+                $novedadDefect[]=$p;// codigo de novedad por defecto 
             }
 
           if( $_RUTASX[$i][nov_especi] == 1 )
@@ -3419,14 +3414,14 @@ class Despachos
           }
 
           $mHtml->Row();
-            if((in_array($_RUTASX[$i][cod_noveda], $novedadDefect) || in_array($_RUTASX[$i][nov_especi], $novedadDefect)) && $i!= $mCanNov )
+            if(in_array($_RUTASX[$i][cod_contro], $novedadDefect) && $i!= $mCanNov )
             { //a?ade class para ocultar o mostrar con js
-                $mHtml->SetBody( ('<tr class="nov_gps_notes">') );
+                $mHtml->SetBody(('<tr class="nov_gps_notes">'));
                 //$mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
             }
-            else if((!in_array($_RUTASX[$i][cod_noveda], $novedadNotdefect) && !in_array($_RUTASX[$i][nov_especi], $novedadNotdefect)) && $i!= $mCanNov)
+            else if((!in_array($_RUTASX[$i][cod_contro], $novedadNotdefect)) && $i!= $mCanNov)
             { //a?ade class para ocultar o mostrar con js
-                $mHtml->SetBody( ('<tr class="nov_seguimiento_notes">') );
+                $mHtml->SetBody(('<tr class="nov_seguimiento_notes">'));
                 //$mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
             }
             else{
