@@ -134,8 +134,10 @@ class Califi
 		if($parOpeSt){
 		$query = "SELECT a.cod_operad, CONCAT(a.nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad', a.nit_operad 
 				FROM ".BD_STANDA.".tab_genera_opegps a
-				INNER JOIN ".BD_STANDA.".tab_opegps_paisxx b ON a.cod_operad = b.cod_operad AND b.cod_paisgl = $parCodPais
+				INNER JOIN ".BD_STANDA.".tab_genera_paises b ON b.cod_paisgl = $parCodPais
+				INNER JOIN ".BD_STANDA.".tab_opegps_paisxx c ON b.cod_paisxx = c.cod_paisxx
 				WHERE a.ind_estado = '1'
+			GROUP BY a.cod_operad
 			ORDER BY a.nom_operad ASC ";
 		$consulta = new Consulta($query, self::$cConexion);
 		$opegpsStanda = $consulta->ret_matriz("a");
