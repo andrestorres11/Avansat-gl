@@ -315,6 +315,7 @@ function addReq(elemento) {
 
     $(elemento + ' input[type="file"]').each(function() {
         $(this).addClass('ncarg');
+        $(this).addClass('docreq');
     });
 }
 
@@ -386,10 +387,10 @@ function validateEstudioSoliciFinal() {
     } else {
         addReq('#pills-poseedor');
     }
-
+    
     if ($('#check_conpropiet').is(':checked')) {
         removeReq('#pills-propietario');
-        $('#check_pospropiet').attr('checked', true);
+        //$('#check_pospropiet').attr('checked', true);
     } else {
         addReq('#pills-propietario');
     }
@@ -397,7 +398,9 @@ function validateEstudioSoliciFinal() {
     if ($('#check_pospropiet').is(':checked')) {
         removeReq('#pills-propietario');
     } else {
-        addReq('#pills-propietario');
+        if(!$('#check_conpropiet').is(':checked')){
+            addReq('#pills-propietario');
+        }
     }
 
     $('#dataSolicitud').removeData('validator');

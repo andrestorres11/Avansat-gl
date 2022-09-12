@@ -164,7 +164,7 @@
             $resultados = $resultado->ret_matriz();
             $htmls='';
             foreach($resultados as $valor){
-              $htmls.='<div><a class="suggest-element" data="'.$valor['cod_ciudad'].' - '.$valor['nom_ciudad'].'" id="'.$valor['cod_ciudad'].'">('.substr($valor['nom_paisxx'], 0, 3).') - '.substr($valor['nom_depart'], 0, 4).' - '.$valor['nom_ciudad'].'</a></div>';
+              $htmls.='<div><a class="suggest-element bk-principal_color white-color" data="'.$valor['cod_ciudad'].' - '.$valor['nom_ciudad'].'" id="'.$valor['cod_ciudad'].'">('.substr($valor['nom_paisxx'], 0, 3).') - '.substr($valor['nom_depart'], 0, 4).' - '.$valor['nom_ciudad'].'</a></div>';
             }
             echo utf8_decode($htmls);
       
@@ -549,7 +549,7 @@
             $str .= ($df->invert == 1) ? ' - ' : '';
             if ($df->y > 0) {
                 // years
-                $str .= ($df->y > 1) ? $df->y . ' Años ' : $df->y . ' Año ';
+                $str .= ($df->y > 1) ? $df->y . ' A?os ' : $df->y . ' A?o ';
             } if ($df->m > 0) {
                 // month
                 $str .= ($df->m > 1) ? $df->m . ' Meses ' : $df->m . ' Mes ';
@@ -645,13 +645,13 @@
                           <th scope="col">No. Estudio</th>
                           <th scope="col">Estado</th>
                           <th scope="col">Descargar/Ver estudio</th>
-                          <th scope="col">Documentación</th>
+                          <th scope="col">Documentaci?n</th>
                           <th scope="col" style="min-width: 200px;">Conductor</th>
                           <th scope="col" style="min-width: 200px;">Poseedor</th>
                           <th scope="col" style="min-width: 200px;">Propietario</th>
                           <th scope="col">Vehiculo</th>
-                          <th scope="col" style="min-width: 130px;">Gestión</th>
-                          <th scope="col" style="min-width: 200px;">Observación</th>
+                          <th scope="col" style="min-width: 130px;">Gesti?n</th>
+                          <th scope="col" style="min-width: 200px;">Observaci?n</th>
                           
                         </tr>
                     </thead>
@@ -905,7 +905,7 @@
 
             
             $info['status']=200;
-            $info['response']='Informaci?n registrada';
+            $info['response']='Información registrada';
             echo json_encode($info);
 
           }
@@ -1099,7 +1099,8 @@
             $usuari = $_SESSION['datos_usuario']['cod_usuari'];
             //Actualiza Informacion del conductor
             self::procesaConductor($_REQUEST);
-
+            $reg_propie = true;
+            
             //Valida si el conductor es poseedor
             if($_REQUEST['check_conposeed']==1){
               self::combinaCondPoseePropie('cod_poseed', $_REQUEST['cod_conduc'], $_REQUEST['cod_estseg']);
@@ -1111,12 +1112,16 @@
               self::combinaCondPoseePropie('cod_propie', $_REQUEST['cod_conduc'], $_REQUEST['cod_estseg']);
             }else{
               self::procesaPropietario($_REQUEST);
+              $reg_propie = false;
             }
             //Valida si el poseedor es propietario
             if($_REQUEST['check_pospropiet']==1){
+              $_REQUEST['cod_poseed'] = $_REQUEST['cod_poseed'] == '' ? $this->getCodePersona($_REQUEST['num_docpos']) : $_REQUEST['cod_poseed'];
               self::combinaCondPoseePropie('cod_propie', $_REQUEST['cod_poseed'], $_REQUEST['cod_estseg']);
             }else{
-              self::procesaPropietario($_REQUEST);
+              if(!$_REQUEST['check_conpropiet'] && $reg_propie){
+                self::procesaPropietario($_REQUEST,1);
+              } 
             }
 
             //Actualiza Informacion del vehiculo
@@ -1159,24 +1164,30 @@
            
             self::procesaConductor($_REQUEST,1);
 
+            $reg_propie = true;
             //Valida si el conductor es poseedor
             if($_REQUEST['check_conposeed']==1){
               self::combinaCondPoseePropie('cod_poseed', $_REQUEST['cod_conduc'], $_REQUEST['cod_estseg']);
             }else{
               self::procesaPoseedor($_REQUEST,1);
             }
+
             //Valida si el conductor es propietario
             if($_REQUEST['check_conpropiet']==1){
               self::combinaCondPoseePropie('cod_propie', $_REQUEST['cod_conduc'], $_REQUEST['cod_estseg']);
             }else{
               self::procesaPropietario($_REQUEST,1);
+              $reg_propie = false;
             }
 
             //Valida si el poseedor es propietario
             if($_REQUEST['check_pospropiet']==1){
+              $_REQUEST['cod_poseed'] = $_REQUEST['cod_poseed'] == '' ? $this->getCodePersona($_REQUEST['num_docpos']) : $_REQUEST['cod_poseed'];
               self::combinaCondPoseePropie('cod_propie', $_REQUEST['cod_poseed'], $_REQUEST['cod_estseg']);
             }else{
-              self::procesaPropietario($_REQUEST,1);
+              if(!$_REQUEST['check_conpropiet'] && $reg_propie){
+                self::procesaPropietario($_REQUEST,1);
+              } 
             }
 
             //Registra el vehiculo
@@ -1209,6 +1220,15 @@
                   $info['status']=100; 
               } 
               echo json_encode($info);
+          }
+
+          function getCodePersona($num_docume){
+            $sql="SELECT cod_segper FROM ".BASE_DATOS.".tab_estudi_person
+                    WHERE 
+                      num_docume = '".$num_docume."' ORDER BY cod_segper DESC";
+            $query = new Consulta($sql, self::$conexion);
+            $resultado = $query->ret_matriz('a')[0];
+            return  $resultado['cod_segper'];
           }
 
           function createXML($array,$name){
@@ -1606,6 +1626,8 @@
           }
 
 
+
+
           /* Arma Array Info */
 
           function armaArrayInfo($cod_estseg){
@@ -1964,22 +1986,32 @@
 
         private function darCorreos($cod_solici,$ind_retorn){
           if($ind_retorn==1){
+            //Extrae correo registrado al momento de realizar la solicitud de estudio de seguridad
             $sql = "SELECT a.cor_solici as 'dir_emailx'
                    FROM ".BASE_DATOS.".tab_solici_estseg a
                    WHERE a.cod_solici = '".$cod_solici."' ";
           }else{
+            //Extrae correos administrador del sistema NOTIFICACIÓN FARO
             $sql = "SELECT a.dir_emailx
                       FROM ".BASE_DATOS.".tab_genera_concor a
-                    WHERE a.num_remdes = ''; ";
+                    WHERE a.num_remdes = '' AND ind_estseg = 1; ";
           }
           $query = new Consulta($sql, self::$conexion);
-          $resultado = $query->ret_matriz('a')[0];
+          $correos = $query->ret_matriz('a');
+          $cantidad = count($correos);
+          foreach($correos as $key=> $value){
+            $resultado['dir_emailx'] .= $value['dir_emailx'];
+            if($key+1<$cantidad){
+              $resultado['dir_emailx'].=',';
+            }
+          }
           return $resultado;
         }
 
         private function enviarCorreo($cod_solici, $ind_retorn, $subject, $contenido, $files = NULL) {
             //Trae los correos segun el caso
             $emailsTotal = self::darCorreos($cod_solici,$ind_retorn);
+            
             $emails = explode(",", $emailsTotal['dir_emailx']);
             //$tmpl_file = URL_ARCHIV_STANDA.'satt_standa/estseg/planti/template-email.html';
             $tmpl_file = 'planti/template-email.html';
