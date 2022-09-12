@@ -288,6 +288,7 @@ class responsable
 
 			case 'jso_encabe':
 				$mArray[0] = array( "dat_basico"=>array("name"=>"Datos Basicos del Despacho", "sub"=>array() ),
+									"ree_noveda"=>array("name"=>"Opci&oacute;n Reenviar Novedades", "sub"=>array() ),
 									"dat_comple"=>array("name"=>"Datos Complementarios del Despacho", "sub"=>array() ),
 									"dat_fechas"=>array("name"=>"Fechas del Despacho", "sub"=>array() ),
 									"gri_cargax"=>array("name"=>"Grilla Cargue", "sub"=>array() ),

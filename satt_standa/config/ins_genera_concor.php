@@ -131,6 +131,7 @@ class parametrizacion_correos
                                 <th>Inf. Mensual</th>
                                 <th>A cargo de empresa</th>
                                 <th>Envio Notificación API</th>
+                                <th>Not. Estudio de seguridad</th>
                                 <th>Opciones</th>
                               </tr>
                             </thead>

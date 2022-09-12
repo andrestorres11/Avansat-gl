@@ -549,7 +549,7 @@
             $str .= ($df->invert == 1) ? ' - ' : '';
             if ($df->y > 0) {
                 // years
-                $str .= ($df->y > 1) ? $df->y . ' A?os ' : $df->y . ' A?o ';
+                $str .= ($df->y > 1) ? $df->y . ' Años ' : $df->y . ' Año ';
             } if ($df->m > 0) {
                 // month
                 $str .= ($df->m > 1) ? $df->m . ' Meses ' : $df->m . ' Mes ';
@@ -645,13 +645,15 @@
                           <th scope="col">No. Estudio</th>
                           <th scope="col">Estado</th>
                           <th scope="col">Descargar/Ver estudio</th>
-                          <th scope="col">Documentaci?n</th>
+                          <th scope="col">Documentación</th>
                           <th scope="col" style="min-width: 200px;">Conductor</th>
                           <th scope="col" style="min-width: 200px;">Poseedor</th>
                           <th scope="col" style="min-width: 200px;">Propietario</th>
                           <th scope="col">Vehiculo</th>
                           <th scope="col" style="min-width: 130px;">Gesti?n</th>
                           <th scope="col" style="min-width: 200px;">Observaci?n</th>
+                          <th scope="col" style="min-width: 130px;">Gestión</th>
+                          <th scope="col" style="min-width: 200px;">Observación</th>
                           
                         </tr>
                     </thead>

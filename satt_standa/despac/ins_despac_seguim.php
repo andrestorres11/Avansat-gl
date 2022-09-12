@@ -883,10 +883,16 @@ class Proc_segui
                 
                 $( "#novedadID" ).autocomplete({
                     source: novedades,
-                    delay: 100
-                }).bind( "autocompleteclose", function(event, ui){$("#form_insID").submit();} );
-          
-                $( "#novedadID" ).bind( "autocompletechange", function(event, ui){$("#form_insID").submit();} ); 
+                    delay: 80,
+                    change: function( event, ui ) {
+                        $.blockUI({ 
+                            theme: true,title: "Aplicando ajustes",
+                            draggable: false,
+                            message:"<center><img src=\"../satt_standa/imagenes/ajax-loader2.gif\" /><p>aplicando cambios</p></center>"  
+                        });
+                        $("#form_insID").submit();
+                    }
+                }) 
             }); 
         ';
 
@@ -938,7 +944,7 @@ class Proc_segui
                     }
                 }    
               }
-              
+              $("#obsID").attr("spellcheck", true);
               $("#obsID").val("'.$nota.'");
               if($("#obsID").val().length > 0){
                   limit = limit - $("#obsID").val().length;
@@ -1222,6 +1228,8 @@ class Proc_segui
         $mHtml->SetCssJq("dinamic_list");
         $mHtml->SetCssJq("jquery");
 
+        echo '<script>$.blockUI({ theme: true,title: "Aplicando ajustes",draggable: false,message:"<center><img src=\"../satt_standa/imagenes/ajax-loader2.gif\" /><p>aplicando cambios</p></center>"  });"</script>';
+        
         $mHtml->Javascript( $mScript1 );
 
         $mHtml->CloseTable('tr');
@@ -1301,7 +1309,7 @@ class Proc_segui
                                 else
                                      $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) ); 
                                 $mHtml->SetBody("<td class='celda_info' >");
-                                $mHtml->SetBody("<textarea name='obs' id='obsID' onkeyup='UpperText( $(this) )'  ols='20' Rows='4'></textarea>");
+                                $mHtml->SetBody("<textarea name='obs' id='obsID'  onkeyup='UpperText( $(this) )'  ols='20' Rows='4'></textarea>");
                                 $mHtml->SetBody("<div style='font-family:Arial,Helvetica,sans-serif; font-size: 11px;' id='counter'></div>");
                                 $mHtml->SetBody("</td>");
                                 $name = "'".$datos_usuario['nom_usuari']."'";

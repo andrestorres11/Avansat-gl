@@ -2687,6 +2687,22 @@ class Despachos
                                             }
                                             $mTxt = array($tittle, $mTxt);
                                             break;
+                                        case 'can_noveda':
+                                            $mSql = "SELECT a.nom_operad
+                                                        FROM ".BASE_DATOS.".tab_interf_parame a
+                                                        WHERE a.cod_transp = '".$mData['cod_transp']."'
+                                                          AND a.cod_operad = '50'
+                                                          AND a.ind_estado = 1
+                                                        ";
+                                            $consulta = new Consulta($mSql, $this->conexion);
+                                            $registros = $consulta -> ret_matriz();
+                                            if(($mData[$key]!=0) && (count($registros)>0) && ($mView->ree_noveda->ind_visibl)){
+                                                $mTxt = $mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reeviar Novedades]</a>';
+                                            }else{
+                                                $mTxt = $mData[$key];
+                                            }
+                                            $mTxt = array($tittle, $mTxt);
+                                            break;
                                         case 'gps_urlxxx':
                                             $mViewEdt = self::getView('edt_gpsxxx');
                                                 if( $mViewEdt->dat_gpsxxx->ind_visibl == 1 ){
@@ -3370,14 +3386,9 @@ class Despachos
                 </spam>';
             }
           }
-
-            $novedadNotdefect=array(9997,9999); //titulos primarios control
             for($p=9000;$p<=9999;$p++)
             { 
-                if(!in_array($p,$novedadNotdefect))
-                {
-                    $novedadDefect[]=$p;// codigo de novedad por defecto
-                }
+                $novedadDefect[]=$p;// codigo de novedad por defecto 
             }
 
           if( $_RUTASX[$i][nov_especi] == 1 )
@@ -3403,14 +3414,14 @@ class Despachos
           }
 
           $mHtml->Row();
-            if((in_array($_RUTASX[$i][cod_noveda], $novedadDefect) || in_array($_RUTASX[$i][nov_especi], $novedadDefect)) && $i!= $mCanNov )
+            if(in_array($_RUTASX[$i][cod_contro], $novedadDefect) && $i!= $mCanNov )
             { //a?ade class para ocultar o mostrar con js
-                $mHtml->SetBody( ('<tr class="nov_gps_notes">') );
+                $mHtml->SetBody(('<tr class="nov_gps_notes">'));
                 //$mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
             }
-            else if((!in_array($_RUTASX[$i][cod_noveda], $novedadNotdefect) && !in_array($_RUTASX[$i][nov_especi], $novedadNotdefect)) && $i!= $mCanNov)
+            else if((!in_array($_RUTASX[$i][cod_contro], $novedadNotdefect)) && $i!= $mCanNov)
             { //a?ade class para ocultar o mostrar con js
-                $mHtml->SetBody( ('<tr class="nov_seguimiento_notes">') );
+                $mHtml->SetBody(('<tr class="nov_seguimiento_notes">'));
                 //$mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
             }
             else{
@@ -4467,6 +4478,8 @@ class Despachos
       }
 
       $mHtml->Hidden( array("name"=>"central", "id"=>"central", "value"=> DIR_APLICA_CENTRAL));
+      $mHtml->Hidden( array("name"=>"cod_servic", "id"=>"cod_servic", "value"=> $this->servic));
+      $mHtml->Hidden( array("name"=>"cod_aplica", "id"=>"cod_aplica", "value"=> $this->cod_aplica));
       $mHtml->Hidden( array("name"=>"bd_aplica", "id"=>"bd_aplica", "value"=> BASE_DATOS));
       $mHtml->Hidden( array("name"=>"despac", "id"=>"despac", "value"=> $despac));
       $mHtml->Hidden( array("name"=>"cross_doking", "id"=>"cross_dokingID", "value"=> "0"));
