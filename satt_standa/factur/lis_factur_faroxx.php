@@ -94,7 +94,7 @@ class FacturFaro
                         FROM ".BASE_DATOS.".tab_transp_tipser xx
                        WHERE xx.cod_transp = a.cod_tercer
                      )
-                   WHERE c.ind_estado = 1
+                   WHERE c.ind_estado = 1 and a.cod_estado = 1
                      ".$add."
                 ORDER BY 2 ";
         $consulta = new Consulta($query, $this -> conexion);
