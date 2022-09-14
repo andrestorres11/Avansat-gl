@@ -434,9 +434,9 @@
             $disabledTabs1 = 'disabledTab';
             $activetab2='active';
           }
-
+          
           $che_pospro = '';
-          if($info['cod_poseed']==$info['cod_propie']){
+          if($info['cod_poseed']==$info['cod_propie'] && $info['cod_poseed']!=NULL && $info['cod_propie']!=NULL){
             $che_pospro = 'checked';
           }
 
