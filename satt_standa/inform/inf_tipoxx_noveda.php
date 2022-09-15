@@ -2,8 +2,8 @@
     
     session_start();
     
-    ini_set('display_errors', true);
-    error_reporting(E_ALL & ~E_NOTICE);
+    //ini_set('display_errors', true);
+    //error_reporting(E_ALL & ~E_NOTICE);
 
     
     class InfNovedadesUsuario{
@@ -95,9 +95,12 @@
             
             
             $_USUARIOS = $this->getUsuarios( $_REQUEST );
+            //var_dump($_USUARIOS);
           
-            $_REQUEST[fecha_ini] = $_REQUEST[fec_inicial].' '.$_REQUEST[horaini];
-            $_REQUEST[fecha_fin] = $_REQUEST[fec_final].' '.$_REQUEST[horafin];
+            $format_date_init=explode('/',$_REQUEST[fec_inicial]);
+            $format_date_end=explode('/',$_REQUEST[fec_final]);
+            $_REQUEST[fecha_ini] = $format_date_init[2].'-'.$format_date_init[0].'-'.$format_date_init[1].' '.$_REQUEST[horaini];
+            $_REQUEST[fecha_fin] = $format_date_end[2].'-'.$format_date_end[0].'-'.$format_date_end[1].' '.$_REQUEST[horafin];
             
             $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "INFORME DE NOVEDADES", "formulario\" id=\"formularioID");
             $formulario -> oculto("url_archiv\" id=\"url_archivID\"","inf_tipoxx_noveda.php",0);
@@ -124,18 +127,16 @@
             //$mHtml .= "<th class=cellHead >Novedad Especial</th>";
             //$mHtml .= "<th class=cellHead >Producto</th>";
             
-            $_OTROS_ = $this -> getOtros( $_REQUEST ); 
+            $_OTROS_ = $this -> getOtros( $_REQUEST); 
             $_ESPEC_ = $this -> getNovedadesEspeciales( $_REQUEST ); 
             $_TIEMP_ = $this -> getSolicitaTiempo( $_REQUEST ); 
             $_MANTI_ = $this -> getMantieneAlarma( $_REQUEST );
             $_GENER_ = $this -> getGeneraAlarma( $_REQUEST );
             $_TODOS_ = $this -> getTodos( $_REQUEST );
             $_TOTAL_ = array();
-
-            foreach($_USUARIOS AS $_USUARIO_){
-                
-                if((int)$_TODOS_[ $_USUARIO_[0] ] == 0) continue;
-                
+            foreach($_USUARIOS AS $key => $_USUARIO_){
+              
+                /*if((int)$_TODOS_[ $_USUARIO_[0] ] == 0) continue;*/
                 $_TOTAL_[0]+= (int)$_ESPEC_[ $_USUARIO_[0] ];
                 $_TOTAL_[1]+= (int)$_TIEMP_[ $_USUARIO_[0] ];
                 $_TOTAL_[2]+= (int)$_MANTI_[ $_USUARIO_[0] ];
@@ -144,6 +145,7 @@
                 $_TOTAL_[5]+= (int)$_TODOS_[ $_USUARIO_[0] ];
                 
                 $mHtml .= "<tr class='row'>";
+
                     $mHtml .= "<td class='cellInfo' >{$_USUARIO_[nom_usuari]}</td>";
                     $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_ESPEC_[ $_USUARIO_[0] ]) > 0 ? "  onclick=\"infoNoveda('NE',  '".$_USUARIO_[0]."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_ESPEC_[ $_USUARIO_[0] ])."</td>";
                     $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_TIEMP_[ $_USUARIO_[0] ]) > 0 ? "  onclick=\"infoNoveda('ST',  '".$_USUARIO_[0]."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_TIEMP_[ $_USUARIO_[0] ])."</td>";
@@ -157,8 +159,9 @@
             
             $mHtml .= "<tr>";
             $mHtml .= "<th class='cellHead' style='text-align: right;' >TOTAL:</th>";
-            foreach ($_TOTAL_ as $row){
-                $mHtml .= "<th class='cellHead' style='text-align: right;' >{$row}</th>";
+            $not=array(0=>'NE',1=>'ST',2=>'MA',3=>'GA',4=>'OT',5=>'All');
+            foreach ($_TOTAL_ as $key=> $row){
+                $mHtml .= "<th class='cellHead' align='right' style='width: 12%; cursor: pointer;' ".($row >0 ? "  onclick=\"infoNoveda('".$not[$key]."','','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" ": null )." >".$row."</th>";
             }
             $mHtml .= "</tr>";
             
@@ -204,9 +207,11 @@
           include( "../lib/general/tabla_lib.inc" );
           
           $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
-          $_USUARIO_ = $this -> getUsuarios( array('cod_usuari' => $__REQUEST[cod_usuar]) );
-          
-          
+          if($__REQUEST[cod_usuar]!=''){
+            $_USUARIO_ = $this -> getUsuarios( array('cod_usuari' => $__REQUEST[cod_usuar]) );
+          }
+
+          $aux2=($__REQUEST[cod_usuar] != '' ? "AND LOWER(b.usr_creaci) ='".$__REQUEST[cod_usuar]."' ":"" );
           $array = array();
             
             if($__REQUEST['tipo']=='OT')
@@ -237,7 +242,7 @@
                        AND c.cod_transp = d.cod_tercer
                        AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
                        AND b.fec_contro <= '".$__REQUEST[fecha_fin]."' 
-                       AND LOWER(b.usr_creaci) = '".$__REQUEST[cod_usuar]."') 
+                       $aux2 ) 
                    UNION ALL
                   (SELECT b.num_despac, a.nom_noveda, b.fec_noveda ,
                           b.des_noveda, d.abr_tercer
@@ -251,7 +256,7 @@
                       AND c.cod_transp = d.cod_tercer
                       AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
                       AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."' 
-                      AND LOWER(b.usr_creaci) = '".$__REQUEST[cod_usuar]."')
+                      $aux2 )
                     UNION ALL
                     (SELECT b.num_repnov, a.nom_noveda, b.fec_repnov ,
                             b.obs_repnov, d.abr_tercer
@@ -263,10 +268,10 @@
                         AND b.cod_tercer = d.cod_tercer
                         AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                         AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' 
-                        AND LOWER(b.usr_creaci) = '".$__REQUEST[cod_usuar]."')
+                        $aux2 )
                    
                   ORDER BY 5,1,3";
-         
+                  echo $sql;
      
           
           $consulta  = new Consulta($sql, $this -> conexion);
@@ -312,7 +317,7 @@
           
         }
         
-        function getTodos( $__REQUEST ){
+        function getTodos( $__REQUEST){
             
             $sql ="SELECT b.usr_creaci 
                      FROM ".BASE_DATOS.".tab_genera_noveda a, 
@@ -335,7 +340,7 @@
                       AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                       AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
           
-           $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci))
+           $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci)) as usr_creaci
                      FROM ( ".$sql." ) AS a, 
                           ".BASE_DATOS.".tab_genera_usuari b
                     WHERE LOWER(a.usr_creaci) = LOWER(b.cod_usuari)
@@ -347,13 +352,13 @@
           
             $MATRIZ = array(); 
             foreach ( $consul -> ret_matriz() as $row){
-                $MATRIZ[ $row[1] ] = $row[0];
+              $MATRIZ[$row[usr_creaci]] = $row[0];
             }
             return $MATRIZ;
           
         }
         
-        function getOtros( $__REQUEST ){
+        function getOtros( $__REQUEST){
             
             $sql ="SELECT b.usr_creaci 
                      FROM ".BASE_DATOS.".tab_genera_noveda a, 
@@ -388,25 +393,25 @@
                       AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                       AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
           
-           $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci))
+           $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci)) as usr_creaci
                      FROM ( ".$sql." ) AS a, 
                           ".BASE_DATOS.".tab_genera_usuari b
                     WHERE LOWER(a.usr_creaci) = LOWER(b.cod_usuari)
                       AND b.ind_estado = 1 
-                      AND ( b.cod_perfil IN(1,7,8,73,70,77,669,713) OR cod_usuari LIKE '%eal%' OR nom_usuari LIKE '%eal%' OR cod_usuari LIKE '%ecl%' OR nom_usuari LIKE '%ecl%' )
+                      AND ( cod_perfil IN(1,7,8,73,70,77,669,713) OR cod_usuari LIKE '%eal%' OR nom_usuari LIKE '%eal%' OR cod_usuari LIKE '%ecl%' OR nom_usuari LIKE '%ecl%' )
                    GROUP BY 2 ";  
 
           $consul = new Consulta($sql, $this -> conexion);
           
-          $MATRIZ = array(); 
+          $MATRIZ =array(); 
           foreach ( $consul -> ret_matriz() as $row){
-              $MATRIZ[ $row[1] ] = $row[0];
+              $MATRIZ[$row[usr_creaci]] = $row[0];
           }
           return $MATRIZ;
           
         }
         
-        function getNovedadesEspeciales( $__REQUEST ){
+        function getNovedadesEspeciales( $__REQUEST){
             
             $sql ="SELECT  b.usr_creaci 
                      FROM ".BASE_DATOS.".tab_genera_noveda a, 
@@ -432,7 +437,7 @@
                       AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                       AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
 
-            $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci))
+            $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci)) as usr_creaci
                       FROM ( ".$sql." ) AS a, 
                            ".BASE_DATOS.".tab_genera_usuari b
                      WHERE LOWER(a.usr_creaci) = LOWER(b.cod_usuari)
@@ -444,13 +449,13 @@
             
             $MATRIZ = array(); 
             foreach ( $consul -> ret_matriz() as $row){
-                $MATRIZ[ $row[1] ] = $row[0];
+              $MATRIZ[$row[usr_creaci]] = $row[0];
             }
             return $MATRIZ;
             
         }
         
-        function getSolicitaTiempo( $__REQUEST ){
+        function getSolicitaTiempo( $__REQUEST){
             
             $sql ="SELECT b.usr_creaci
                      FROM ".BASE_DATOS.".tab_genera_noveda a, 
@@ -476,7 +481,7 @@
                       AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                       AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
 
-            $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci))
+            $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci)) as usr_creaci
                       FROM ( ".$sql." ) AS a, 
                            ".BASE_DATOS.".tab_genera_usuari b
                      WHERE LOWER(a.usr_creaci) = LOWER(b.cod_usuari)
@@ -488,13 +493,13 @@
             
             $MATRIZ = array(); 
             foreach ( $consul -> ret_matriz() as $row){
-                $MATRIZ[ $row[1] ] = $row[0];
+              $MATRIZ[$row[usr_creaci]] = $row[0];
             }
             return $MATRIZ;
             
         }
         
-        function getMantieneAlarma( $__REQUEST ){
+        function getMantieneAlarma( $__REQUEST){
             
             $sql ="SELECT b.usr_creaci
                      FROM ".BASE_DATOS.".tab_genera_noveda a, 
@@ -520,7 +525,7 @@
                       AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                       AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
 
-            $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci))
+            $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci)) as usr_creaci
                       FROM ( ".$sql." ) AS a, 
                            ".BASE_DATOS.".tab_genera_usuari b
                      WHERE LOWER(a.usr_creaci) = LOWER(b.cod_usuari)
@@ -533,13 +538,13 @@
             
             $MATRIZ = array(); 
             foreach ( $consul -> ret_matriz() as $row){
-                $MATRIZ[ $row[1] ] = $row[0];
+              $MATRIZ[$row[usr_creaci]] = $row[0];
             }
             return $MATRIZ;
             
         }
         
-        function getGeneraAlarma( $__REQUEST ){
+        function getGeneraAlarma( $__REQUEST){
             
             $sql ="SELECT b.usr_creaci
                      FROM ".BASE_DATOS.".tab_genera_noveda a, 
@@ -565,7 +570,7 @@
                       AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                       AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
 
-            $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci))
+            $sql = "SELECT COUNT(*), LOWER(TRIM(a.usr_creaci)) as usr_creaci
                       FROM ( ".$sql." ) AS a, 
                            ".BASE_DATOS.".tab_genera_usuari b
                      WHERE LOWER(a.usr_creaci) = LOWER(b.cod_usuari)
@@ -576,9 +581,9 @@
             
             $consul = new Consulta($sql, $this -> conexion);
             
-            $MATRIZ = array(); 
+            $MATRIZ = 0; 
             foreach ( $consul -> ret_matriz() as $row){
-                $MATRIZ[ $row[1] ] = $row[0];
+                $MATRIZ = $row[0];
             }
             return $MATRIZ;
             
@@ -690,7 +695,7 @@
         
         
         function getUsuarios( $__REQUEST = null ){
-           $sql =" SELECT LOWER(TRIM(cod_usuari)), CONCAT( UPPER(nom_usuari ), ' - ', LOWER(cod_usuari) ) AS nom_usuari
+           $sql =" SELECT LOWER(TRIM(cod_usuari)), CONCAT( UPPER(nom_usuari ), ' - ', LOWER(cod_usuari) ) AS nom_usuari,LOWER(cod_usuari) as cod_usuari
                       FROM ".BASE_DATOS.".tab_genera_usuari
                      WHERE ind_estado = 1 
                        AND ( cod_perfil IN(1,7,8,73,70,77,669,713) OR cod_usuari LIKE '%eal%' OR nom_usuari LIKE '%eal%' OR cod_usuari LIKE '%ecl%' OR nom_usuari LIKE '%ecl%' )
