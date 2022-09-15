@@ -1,7 +1,8 @@
 <?php
-
+//error_reporting(E_ALL);
+//ini_set('display_errors', '1');
 header('Content-Type: text/html; charset=UTF-8');
-ini_set('memory_limit', '2048M');
+ini_set('memory_limit', '4096M');
 
 class InformViajes {
 
@@ -9,6 +10,7 @@ class InformViajes {
         $cod_aplica,
         $usuario;
     var $cNull = array(array('', '- Todos -'));
+    var $cNullt = array();
 
     function __construct($co, $us, $ca) {
         $this->conexion = $co;
@@ -28,12 +30,34 @@ class InformViajes {
 
     function getInform() {
         
+       
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/informes.css' type='text/css'>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/homolo.css' type='text/css'>\n";
-        echo '<!-- jQuery -->
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery/dist/jquery.min.js"></script>';
-        echo "<script> function expTabExcelDesp() {
+        echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/bootstrap.css' type='text/css'>\n";
+        echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
+       // echo '<!-- jQuery -->
+        //<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        //<script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery/dist/jquery.min.js"></script>';
+        echo "<script type='text/javascript' language='JavaScript' src='../".DIR_APLICA_CENTRAL."/js/jquery.js'></script>\n";
+        echo "<script type='text/javascript' language='JavaScript' src='../".DIR_APLICA_CENTRAL."/js/jquery.blockUI.js'></script>\n";
+        echo "<script type='text/javascript' language='JavaScript' src='../".DIR_APLICA_CENTRAL."/js/functions.js'></script>";
+        echo "<script>
+        $.blockUI({
+            theme: true,
+            title: 'Cargando informe',
+            draggable: false,
+            message: '<center><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ajax-loader2.gif\" /><p>Generando informe</p></center>'
+        });
+         function expTabExcelDesp() {
+                $.blockUI({
+                    theme: true,
+                    title: 'Generando  excel',
+                    draggable: false,
+                    message: '<center><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ajax-loader2.gif\" /><p>Generando Excel</p></center>'
+                });
+                setTimeout(function(){
+                    $.unblockUI();
+                }, 6000);
                 $('#exportExcelID').val('<table>'+$('#export').html()+'</table>');
             }</script>";
 
@@ -94,6 +118,7 @@ class InformViajes {
                        t.num_poliza as 'num_poliza',
                        y.nom_tipveh as 'nom_tipveh',
                        t.ind_anulad as 'ind_anulad',
+                       j.nom_tercer as 'nom_asegur',
                        aa.nom_tercer as 'nom_transp',
                        b.cod_tipdes as 'cod_tipdes',
                        aa.cod_tercer as 'cod_transp'
@@ -160,16 +185,16 @@ class InformViajes {
 
         if ($_REQUEST['cod_noveda'] != '') {
             $mSql1 = $mSelect1;
-            $mSql1 .= "INNER JOIN ".BASE_DATOS.".tab_despac_noveda y
-                           ON a.num_despac = y.num_despac ";
+            $mSql1 .= "INNER JOIN ".BASE_DATOS.".tab_despac_noveda as aaa
+                           ON t.num_despac = aaa.num_despac ";
             $mSql1 .= $mSelect2;
-            $mSql1 .= " AND y.cod_noveda = '".$_REQUEST['cod_noveda']."'";
+            $mSql1 .= " AND aaa.cod_noveda = '".$_REQUEST['cod_noveda']."'";
 
             $mSql2 = $mSelect1;
-            $mSql2 .= "INNER JOIN ".BASE_DATOS.".tab_despac_contro y
-                           ON a.num_despac = y.num_despac ";
+            $mSql2 .= "INNER JOIN ".BASE_DATOS.".tab_despac_contro aab
+                           ON t.num_despac = aab.num_despac ";
             $mSql2 .= $mSelect2;
-            $mSql2 .= " AND y.cod_noveda = '".$_REQUEST['cod_noveda']."'";
+            $mSql2 .= " AND aab.cod_noveda = '".$_REQUEST['cod_noveda']."'";
 
             $mSelect = "( ".$mSql1." GROUP BY t.num_despac ) 
                   UNION  
@@ -182,17 +207,15 @@ class InformViajes {
         
       
         $formulario = new Formulario("../".DIR_APLICA_CENTRAL."/lib/exportExcel.php", "post", "Informe de Trazabilidad ", "frm_trazab\" id=\"frm_trazabID");
-                echo '<center>
-                        <input type="image" name="botondeenvio" onclick="expTabExcelDesp()" src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" >
-				</center><br>';
-        
-        $mHtml = "<table border='1' id='export'>";
+                echo '<input type="image" align="left" style="margin-left:25px;" name="botondeenvio" onclick="expTabExcelDesp()" src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" >
+				<br>';
+        $mHtml = "<table border='1' id='export' class='table table-bordered'>";
         if (sizeof($_INFORM) > 0) {
             $size = $_REQUEST['ind_noveda'] == '1' ? '72' : '68';
-            $mHtml .= "<tr>";
-            $mHtml .= "<th class=cellHead colspan='$size' >SE ENCONTRARON ".sizeof($_INFORM)." REGISTROS</th>";
-            $mHtml .= "</tr>";
-
+            $mHtml .="<thead>";
+            $mHtml .="<tr>";
+            $mHtml .= "<th  colspan='$size' >SE ENCONTRARON ".sizeof($_INFORM)." REGISTROS</th>";
+            $mHtml .="</tr>";
             $mHtml .= "<tr>";
             $mHtml .= "<th class=cellHead >No.</th>";
             $mHtml .= "<th class=cellHead >Transportadora</th>";
@@ -206,7 +229,7 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Pais Destino</th>";
             $mHtml .= "<th class=cellHead >Dpto Destino</th>";
             $mHtml .= "<th class=cellHead >Ciudad Destino</th>";
-            $mHtml .= "<th class=cellHead >Oper ador</th>";
+            $mHtml .= "<th class=cellHead >Operador</th>";
             $mHtml .= "<th class=cellHead >Fecha Cita Cargue</th>";
             $mHtml .= "<th class=cellHead >Nombre Sitio Cargue</th>";
             $mHtml .= "<th class=cellHead >Valor Flete Conductor</th>";
@@ -254,19 +277,28 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Mercanc&iacute;a</th>";
             $mHtml .= "<th class=cellHead >Anulado</th>";
             if ($_REQUEST['ind_noveda'] == '1') {
-                $mHtml .= "<th class=cellHead >Sitio de seguimiento</th>";
-                $mHtml .= "<th class=cellHead >Novedad</th>";
-                $mHtml .= "<th class=cellHead >Observaci&oacute;n del Controlador</th>";
-                $mHtml .= "<th class=cellHead >Fecha y Hora</th>";
-                $mHtml .= "<th class=cellHead >Tiempo</th>";
-                $mHtml .= "<th class=cellHead >Diferencia T</th>";
-                $mHtml .= "<th class=cellHead >Cumplimiento Seguimiento</th>";
-                $mHtml .= "<th class=cellHead >Porcentaje de Cumplimiento</th>";
+                $mHtml .= "<th class=cellHead >
+                    <table border='1' id='export' class='table table-bordered'>
+                    <thead>
+                        <tr>
+                            <th class=cellHead style='font-size:9px;' width='12%' >Sitio de seguimiento</th>
+                            <th class=cellHead style='font-size:9px;' width='12%'>Novedad</th>
+                            <th class=cellHead style='font-size:9px;' width='12%'>Observaci&oacute;n del Controlador</th>
+                            <th class=cellHead style='font-size:9px;' width='12%'>Fecha y Hora</th>
+                            <th class=cellHead style='font-size:9px;' width='12%'>Tiempo</th>
+                            <th class=cellHead style='font-size:9px;' width='12%'>Diferencia T</th>
+                            <th class=cellHead style='font-size:9px;' width='12%'>Cumplimiento Seguimiento</th>
+                            <th class=cellHead style='font-size:9px;' width='12%'>Porcentaje de Cumplimiento</th>
+                        </tr>
+                    </thead>
+                    </table>
+                </th>";
             }
-            $mHtml .= "</tr>";
-
+            $mHtml .="</tr>";
+            $mHtml .="</thead>";
+            $mHtml .="<tbody>";
             $count = 1;
-            foreach ($_INFORM as $row) {
+            foreach ($_INFORM as $key => $row) {
                 $mArrayNove = array_merge(InformViajes::getDespacContro($row['num_viajex']), InformViajes::getDespacNoveda($row['num_viajex']));
                 if(sizeof($mArrayNove)==0){
                     $sizeNovedad=1;
@@ -274,15 +306,18 @@ class InformViajes {
                     $sizeNovedad=sizeof($mArrayNove);
                 }
                 $mSizeNoved = $_REQUEST['ind_noveda'] == '1' ? $sizeNovedad : '1';
-                if ($row['tip_transp'] == '1')
+                $tip_transp = 'DESCONOCIDA';
+                $tip_transp_number=(isset($row['tip_transp']) ? $row['tip_transp']:'0' );
+                if ($tip_transp_number == '1'){
                     $tip_transp = 'FLOTA PROPIA';
-                elseif ($row['tip_transp'] == '2')
+                }
+                elseif ($tip_transp_number == '2'){
                     $tip_transp = 'TERCEROS';
-                elseif ($row['tip_transp'] == '3')
+                }
+                elseif ($tip_transp_number == '3'){
                     $tip_transp = 'EMPRESAS';
-                else
-                    $tip_transp = 'DESCONOCIDA';
-
+                }
+                
                 if ($row[71]) {
                     $href1 = '<a href="?cod_servic=3302&window=central&despac='.$row[71].'&opcion=1" target="_blank">';
                     $href2 = '</a>';
@@ -290,79 +325,79 @@ class InformViajes {
                     $href1 = '';
                     $href2 = '';
                 }
-
-                $mHtml .= "<tr class='row'>";
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$count."</td>"; //No
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['nom_transp']."</td>"; //Nombre empresa de Transporte
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$href1.$row['num_viajex'].$href2."</td>"; //Viaje
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['cod_manifi']."</td>"; //Manifiesto
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$this->toFecha($row['fec_despac'])."</td>"; //Fecha Despacho
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_tipdes'])."</td>"; //Tipo Despacho
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_paiori'])."</td>"; //Pais Origen
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_depori'])."</td>"; //Dpto Origen
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_ciuori'])."</td>"; //Ciudad Origen
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_paides'])."</td>"; //Pais Destino
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_depdes'])."</td>"; //Dpto Destino
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".strtoupper($row['nom_ciudes'])."</td>"; //Ciudad Destino
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['cod_operad']."</td>"; //Operador
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$this->toFecha($row['fec_citcar']." ".$row['hor_citcar'])."</td>"; //Fecha Cita de Cargue
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_sitcar'] != '' ? $row['nom_sitcar'] : 'DESCONOCIDO' )."</td>"; //Nombre Sitio de Cargue
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row['val_flecon'], 0, '.', '.')."</td>"; //Valor Flete Conductor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row['val_despac'], 0, '.', '.')."</td>"; //Valor Despacho
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row['val_antici'], 0, '.', '.')."</td>"; //Valor Anticipo
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".number_format($row['val_retefu'], 0, '.', '.')."</td>"; //Valor Retefuente
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['nom_carpag']."</td>"; //Encargado de Pagar Cargue
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['nom_despag']."</td>"; //Encargado de pagar Descargue
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['cod_agedes']."</td>"; //Agencia
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".$row['val_pesoxx']."</td>"; //Peso Kg
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['obs_despac'] != '' ? $row['obs_despac'] : '-' )."</td>"; //Observaciones
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['fec_llegad'] != '' ? $this->toFecha($row['fec_llegad']) : '-' )."</td>"; //Fecha Cita de Descargue
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['obs_llegad'] != ' ' && $row['obs_llegad'] != '' ? $row['obs_llegad'] : '-' )."</td>"; //Observaciones Llegada
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_rutasx'] != '' ? $row['nom_rutasx'] : 'DESCONOCIDA' )."</td>"; //Ruta
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ind_planru'] == 'S' ? 'SI' : 'NO' )."</td>"; //Plan de Ruta
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['cod_conduc'] != '' ? $row['cod_conduc'] : 'DESCONOCIDO' )."</td>"; // CC. Conductor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_conduc'] != '' ? $row['nom_conduc'] : 'DESCONOCIDO' )."</td>"; // Nombre Conductor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['tel_conduc'] != '' ? $row['tel_conduc'] : 'DESCONOCIDO' )."</td>"; // Tel conductor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['cel_conduc'] != '' ? $row['cel_conduc'] : 'DESCONOCIDO' )."</td>"; // Cel conductor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['dir_conduc'] != '' ? $row['dir_conduc'] : 'DESCONOCIDA' )."</td>"; // Direccion Conductor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ciu_conduc'] != '' ? $row['ciu_conduc'] : 'DESCONOCIDA' )."</td>"; // Ciudad Conductor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['cat_liccon'] != '' ? $row['cat_liccon'] : 'DESCONOCIDA' )."</td>"; // Categoria Licencia
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_poliza'] != '' ? $row['num_poliza'] : 'DESCONOCIDA' )."</td>"; // Poliza
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( '' != '' ? '' : 'DESCONOCIDA' )."</td>"; //Aseguradora
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_placax'] != '' ? $row['num_placax'] : 'DESCONOCIDA' )."</td>"; //Placa
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_remolq'] != '' ? $row['num_remolq'] : 'DESCONOCIDO' )."</td>"; //Remolque
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_tipveh'] != '' ? $row['nom_tipveh'] : 'DESCONOCIDO' )."</td>"; //Tipo Vehiculo
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_marcax'] != '' ? $row['nom_marcax'] : 'DESCONOCIDO' )."</td>"; //Modelo
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_lineax'] != '' ? $row['nom_lineax'] : 'DESCONOCIDA' )."</td>"; //Marca
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_lineax'] != '' ? $row['nom_lineax'] : 'DESCONOCIDA' )."</td>"; //Linea
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_colorx'] != '' ? $row['nom_colorx'] : 'DESCONOCIDO' )."</td>"; //Color
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_config'] != '' ? $row['num_config'] : 'DESCONOCIDA' )."</td>"; //Confuguracion
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_carroc'] != '' ? $row['nom_carroc'] : 'DESCONOCIDA' )."</td>"; //Carroceria
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_chasis'] != '' ? $row['num_chasis'] : 'DESCONOCIDO' )."</td>"; //No Chasis
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_motorx'] != '' ? $row['num_motorx'] : 'DESCONOCIDO' )."</td>"; //No motor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_poliza'] != '' ? $row['num_poliza'] : 'DESCONOCIDO' )."</td>"; //SOAT
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['fec_finsoa'] != '' ? $this->toFecha($row['fec_finsoa']) : 'DESCONOCIDA' )."</td>"; //Vcto Soat
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_soatxx'] != '' ? $row['nom_soatxx'] : 'DESCONOCIDA' )."</td>"; //Aseguradora SOAT
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['num_tarpro'] != '' ? $row['num_tarpro'] : 'DESCONOCIDA' )."</td>"; //Tarjeta Propiedad
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['cod_poseed'] != '' ? $row['cod_poseed'] : 'DESCONOCIDA' )."</td>"; //CC Posedor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_poseed'] != '' ? $row['nom_poseed'] : 'DESCONOCIDO' )."</td>"; // Nombre Poseedor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['dir_poseed'] != '' ? $row['dir_poseed'] : 'DESCONOCIDA' )."</td>"; // Direccion Poseedor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ciu_poseed'] != '' ? $row['ciu_poseed'] : 'DESCONOCIDA' )."</td>"; // Ciudad Poseedor
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['nom_mercan'] != '' ? $row['nom_mercan'] : 'DESCONOCIDO' )."</td>"; //Mercancia
-                $mHtml .= "<td class='cellInfo' align ='left' rowspan='$mSizeNoved'>".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
-
+                $mHtml .= "<tr>";
+                $mHtml .= "<td class='cellInfo' align ='left'>".$count."</td>";
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['nom_transp'] !='' ? $row['nom_transp']:'')."</td>"; //Nombre empresa de Transporte
+                $mHtml .= "<td class='cellInfo' align ='left' >".$href1.$row['num_viajex'].$href2."</td>"; //Viaje
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['cod_manifi'] !='' ? $row['cod_manifi']:'')."</td>"; //Manifiesto
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['fec_despac'] !='' ? $this->toFecha($row['fec_despac']):'-')."</td>"; //Fecha Despacho
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['nom_tipdes'] !='' ? strtoupper($row['nom_tipdes']):'')."</td>"; //Tipo Despacho
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['nom_paiori'] !='' ? strtoupper($row['nom_paiori']):'')."</td>"; //Pais Origen
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['nom_depori'] !='' ? strtoupper($row['nom_depori']):'')."</td>"; //Dpto Origen
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['nom_ciuori'] !='' ? strtoupper($row['nom_ciuori']):'')."</td>"; //Ciudad Origen
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_paides'] !='' ? strtoupper($row['nom_paides']):'' )."</td>"; //Pais Destino
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_depdes'] != '' ? strtoupper($row['nom_depdes']):'' )."</td>"; //Dpto Destino
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_ciudes'] != '' ? strtoupper($row['nom_ciudes']):'' )."</td>"; //Ciudad Destino
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['cod_operad'] != '' ? $row['cod_operad']:'' )."</td>"; //Operador
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['fec_citcar'] != '' ? $this->toFecha($row['fec_citcar']." ".$row['hor_citcar']):'-')."</td>"; //Fecha Cita de Cargue
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_sitcar'] != '' ? $row['nom_sitcar'] : 'DESCONOCIDO' )."</td>"; //Nombre Sitio de Cargue
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['val_flecon'] !='' ? number_format($row['val_flecon'], 0, '.', '.'):'0')."</td>"; //Valor Flete Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['val_despac'] !='' ? number_format($row['val_despac'], 0, '.', '.'):'0')."</td>"; //Valor Despacho
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['val_antici'] !='' ? number_format($row['val_antici'], 0, '.', '.'):'0')."</td>"; //Valor Anticipo
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['val_retefu'] !='' ? number_format($row['val_retefu'], 0, '.', '.'):'0')."</td>"; //Valor Retefuente
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_carpag'] != '' ? $row['nom_carpag']:'' )."</td>"; //Encargado de Pagar Cargue
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_despag'] != '' ? $row['nom_despag']:'' )."</td>"; //Encargado de pagar Descargue
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['cod_agedes'] != '' ? $row['cod_agedes']:'' )."</td>"; //Agencia
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['val_pesoxx'] != '' ? $row['val_pesoxx']:'0' )."</td>"; //Peso Kg
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['obs_despac'] != '' ? $row['obs_despac'] : '-' )."</td>"; //Observaciones
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['fec_llegad'] != '' ? $this->toFecha($row['fec_llegad']) : '-' )."</td>"; //Fecha Cita de Descargue
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['obs_llegad'] != ' ' && $row['obs_llegad'] != '' ? $row['obs_llegad'] : '-' )."</td>"; //Observaciones Llegada
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_rutasx'] != '' ? $row['nom_rutasx'] : 'DESCONOCIDA' )."</td>"; //Ruta
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ind_planru'] == 'S' ? 'SI' : 'NO' )."</td>"; //Plan de Ruta
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['cod_conduc'] != '' ? $row['cod_conduc'] : 'DESCONOCIDO' )."</td>"; // CC. Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_conduc'] != '' ? $row['nom_conduc'] : 'DESCONOCIDO' )."</td>"; // Nombre Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['tel_conduc'] != '' ? $row['tel_conduc'] : 'DESCONOCIDO' )."</td>"; // Tel conductor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['cel_conduc'] != '' ? $row['cel_conduc'] : 'DESCONOCIDO' )."</td>"; // Cel conductor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['dir_conduc'] != '' ? $row['dir_conduc'] : 'DESCONOCIDA' )."</td>"; // Direccion Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ciu_conduc'] != '' ? $row['ciu_conduc'] : 'DESCONOCIDA' )."</td>"; // Ciudad Conductor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['cat_liccon'] != '' ? $row['cat_liccon'] : 'DESCONOCIDA' )."</td>"; // Categoria Licencia
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['num_poliza'] != '' ? $row['num_poliza'] : 'DESCONOCIDA' )."</td>"; // Poliza
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_asegur'] != '' ? $row['nom_asegur'] : 'DESCONOCIDA' )."</td>"; //Aseguradora
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['num_placax'] != '' ? $row['num_placax'] : 'DESCONOCIDA' )."</td>"; //Placa
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['num_remolq'] != '' ? $row['num_remolq'] : 'DESCONOCIDO' )."</td>"; //Remolque
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_tipveh'] != '' ? $row['nom_tipveh'] : 'DESCONOCIDO' )."</td>"; //Tipo Vehiculo
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_marcax'] != '' ? $row['nom_marcax'] : 'DESCONOCIDO' )."</td>"; //Modelo
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_lineax'] != '' ? $row['nom_lineax'] : 'DESCONOCIDA' )."</td>"; //Marca
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_lineax'] != '' ? $row['nom_lineax'] : 'DESCONOCIDA' )."</td>"; //Linea
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_colorx'] != '' ? $row['nom_colorx'] : 'DESCONOCIDO' )."</td>"; //Color
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['num_config'] != '' ? $row['num_config'] : 'DESCONOCIDA' )."</td>"; //Confuguracion
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_carroc'] != '' ? $row['nom_carroc'] : 'DESCONOCIDA' )."</td>"; //Carroceria
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['num_chasis'] != '' ? $row['num_chasis'] : 'DESCONOCIDO' )."</td>"; //No Chasis
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['num_motorx'] != '' ? $row['num_motorx'] : 'DESCONOCIDO' )."</td>"; //No motor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['num_poliza'] != '' ? $row['num_poliza'] : 'DESCONOCIDO' )."</td>"; //SOAT
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['fec_finsoa'] != '' ? $this->toFecha($row['fec_finsoa']) : 'DESCONOCIDA' )."</td>"; //Vcto Soat
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_soatxx'] != '' ? $row['nom_soatxx'] : 'DESCONOCIDA' )."</td>"; //Aseguradora SOAT
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['num_tarpro'] != '' ? $row['num_tarpro'] : 'DESCONOCIDA' )."</td>"; //Tarjeta Propiedad
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['cod_poseed'] != '' ? $row['cod_poseed'] : 'DESCONOCIDA' )."</td>"; //CC Posedor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['nom_poseed'] != '' ? $row['nom_poseed'] : 'DESCONOCIDO' )."</td>"; // Nombre Poseedor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['dir_poseed'] != '' ? $row['dir_poseed'] : 'DESCONOCIDA' )."</td>"; // Direccion Poseedor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ciu_poseed'] != '' ? $row['ciu_poseed'] : 'DESCONOCIDA' )."</td>"; // Ciudad Poseedor
+                $mHtml .= "<td class='cellInfo' align ='left' >".( isset($row['nom_mercan']) ? $row['nom_mercan'] : 'DESCONOCIDO' )."</td>"; //Mercancia
+                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
                 if ($_REQUEST['ind_noveda'] == '1') {
-                       $horainicio="";
-                       $horafin="";
-                       $hours="";
-                       $resultsegui=0;
-                       $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
-                       $resprom=0;
+                    $horainicio="";
+                    $horafin="";
+                    $hours="";
+                    $resultsegui=0;
+                    $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
+                    $resprom=0;
+                    
+                    $mHtml2 = "<table border='1' class='table table-bordered table-sm pt-0'>";
+                    $mHtml2 .="<tbody>";
                     if($mSizeNoved > 1){
                         for ($y = 0; $y < $mSizeNoved; $y++) {
                             if($y == 0){
-
                                 $horainicio= strtotime($mArrayNove[$y][3]);
                                 $result=0;
                             }else{
@@ -382,26 +417,18 @@ class InformViajes {
                                     if($operacc >=0){
                                         $resprom++ ;
                                     }
-                            }
-
-                            
+                            }                            
                         }
-
                         $promediofin=($resprom * 100)/($mSizeNoved-1);
-
-                    }
-
-                        
-                    if ($mSizeNoved > 1) {
                         for ($x = 0; $x < $mSizeNoved; $x++) {
                             $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
-                            $mHtml .= $x == 0 ? '' : '<tr>';
-                            $mHtml .= '<td class="cellInfo" >'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
-                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
-                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
-                            $mHtml .= '<td class="cellInfo" >'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
+                            $mHtml2 .= '<tr>';
+                            $mHtml2 .= '<td class="cellInfo"  width="12%">'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
+                            $mHtml2 .= '<td class="cellInfo" width="12%">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
+                            $mHtml2 .= '<td class="cellInfo"  width="12%">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
+                            $mHtml2 .= '<td class="cellInfo" width="12%">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
                             if($x == 0){
-
+   
                                 $horainicio= strtotime($mArrayNove[$x][3]);
                                 $result="";
                             }else{
@@ -418,49 +445,55 @@ class InformViajes {
                                 // printf("%d years, %d months, %d days, %d hours, " . "%d minutes, %d seconds", $years, $months, $days, $hours, $minutes, $seconds);  
                             }
                             
-                            $mHtml .= '<td class="cellInfo" >'.$result.' &nbsp;</td>'; //Tiempo
+                            $mHtml2 .= '<td class="cellInfo" width="12%">'.$result.' &nbsp;</td>'; //Tiempo
                             if($x == 0){
-                                $mHtml .= '<td class="cellInfo" > &nbsp;</td>'; //Diferencia T
+                                $mHtml2 .= '<td class="cellInfo" width="12%"> &nbsp;</td>'; //Diferencia T
                             }else{
-                                $mHtml .= '<td class="cellInfo" >'.($resultsegui-$result).' &nbsp;</td>'; //Diferencia T
-
+                                $mHtml2 .= '<td class="cellInfo" width="12%">'.($resultsegui-$result).' &nbsp;</td>'; //Diferencia T
+   
                             }
                             
                             if($x == 0){
-                                $mHtml .= '<td class="cellInfo" > &nbsp;</td>'; //Cumplimiento Seguimiento
+                                $mHtml2 .= '<td class="cellInfo" width="12%"> &nbsp;</td>'; //Cumplimiento Seguimiento
                                 $resseg="";
                             }else{
-
+   
                                 $opera=$resultsegui-$result;
                                     if($opera >=0){
                                         $resseg="Si";
                                     }else{
                                         $resseg="No";
                                     }
-                                $mHtml .= '<td class="cellInfo" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
+                                $mHtml2 .= '<td class="cellInfo" width="12%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
                             }
-                           
                             if($x == 0){
-                                $mHtml .= '<td class="cellInfo" align ="left" rowspan='.$mSizeNoved.'>'.round($promediofin,2).'% &nbsp;</td>'; //Porcentaje de Cumplimiento
+                                $mHtml2 .= '<td class="cellInfo" width="12%" >&nbsp;</td>';
+                            }else{
+                                $mHtml2 .= '<td class="cellInfo" align ="left" width="12%">'.round($promediofin,2).'% &nbsp;</td>'; //Porcentaje de Cumplimiento
                             }
-                            $mHtml .= $x == 0 ? '' : '</tr>';
+                            $mHtml2 .='</tr>';
                         }
-                    } else {
-                        $mHtml .= '<td colspan="8" align="center"><b>SIN NOVEDAD</b></td>';
+                    }else {
+                        $mHtml2 .= "<tr>";
+                        $mHtml2 .= "<td class='cellInfo' colspan='8' >NO SE ENCONTRARON REGISTROS</th>";
+                        $mHtml2 .= "</tr>";
                     }
+
+                    $mHtml2 .="</tbody>";
+                    $mHtml2 .= "</table>";
                 }
 
+                $mHtml .= "<td class='cellInfo' align ='left' >".$mHtml2; //seguimiento
+                $mHtml .= "</td>";
                 $mHtml .= "</tr>";
                 $count++;
+                $mHtml2='';
             }
-        } else {
-            $mHtml .= "<tr>";
-            $mHtml .= "<th class=cellHead width='3%' >NO SE ENCONTRARON REGISTROS</th>";
-            $mHtml .= "</tr>";
+            $mHtml .="</tbody>";
         }
-        $mHtml .= "</table>";
 
-
+        $mHtml .="</table>";
+        
         //$_SESSION[xls_InformViajes] = $mHtml;
         echo $mHtml;
         $archivo = "informe_operaciones".date("Y_m_d_H_i").".xls";
@@ -474,6 +507,7 @@ class InformViajes {
         $mHtml2 .='<input type="hidden" name="OptionExcel" id="OptionExcelID" value="_REQUEST">';
         $mHtml2 .='<input type="hidden" name="exportExcel" id="exportExcelID" value="">';
         echo $mHtml2;
+        echo "<script>$.unblockUI();</script>";
         $formulario->cerrar();
         
         
@@ -481,9 +515,8 @@ class InformViajes {
 
     function toFecha($date) {
         $fecha = explode(" ", $date);
-
+        $mes='';
         $fec1 = explode("-", $fecha[0]);
-
         switch ((int) $fec1[1]) {
             case 1:
             	$mes = 'ENERO';
@@ -588,7 +621,7 @@ class InformViajes {
         $formulario->lista("Tipo Despachos:", "cod_tipdes\" id=\"cod_tipdesID", array_merge($this->cNull, $_TIPDES), 1);
         
         
-        $formulario->lista("Transportadora", "cod_transp\" id=\"cod_transpID", array_merge($this->cNull, $_TRANSP), 1);
+        $formulario->lista("Transportadora", "cod_transp\" id=\"cod_transpID", array_merge($this->cNullt, $_TRANSP), 1);
 
         $formulario->lista("Novedad:", "cod_noveda\" id=\"cod_novedaID", array_merge($this->cNull, $_NOVEDA), 1);
 
@@ -703,31 +736,31 @@ function getTiempoTransport($transp, $tipserv){
     $campo="";
     switch ($tipserv) {
         case 1:// Urbano
-            $campo='`tie_conurb` as "Urbano"';
+            $campo='tie_conurb as "Urbano"';
             break;
         case 2:// Nacional
-            $campo='`tie_contro` as "Nacional"';
+            $campo='tie_contro as "Nacional"';
             break;
         case 3://Importacion
-            $campo='`tie_traimp` as "Importacion"';
+            $campo='tie_traimp as "Importacion"';
             break;
         case 4://Exportacion
-            $campo='`tie_traexp` as "Exportacion"';
+            $campo='tie_traexp as "Exportacion"';
             break;
         case 5://XD Tramo 1
-            $campo='`tie_tratr1` as "XD Tramo 1"';
+            $campo='tie_tratr1 as "XD Tramo 1"';
             break;
         case 6://XD Tramo 2
-            $campo='`tie_tratr2` as "XD Tramo 2"';
+            $campo='tie_tratr2 as "XD Tramo 2"';
             break;
         
     }
     $mSql="";
     if($campo!=""){
-        $mSql=' SELECT `num_consec` , `cod_transp`, `cod_tipser`, '.$campo.' 
-    FROM `tab_transp_tipser` 
-    WHERE `cod_transp` LIKE '.$transp.' 
-    ORDER BY `tab_transp_tipser`.`num_consec` 
+        $mSql=' SELECT num_consec , cod_transp,cod_tipser,'.$campo.' 
+    FROM tab_transp_tipser 
+    WHERE cod_transp LIKE "%'.$transp.'%" 
+    ORDER BY tab_transp_tipser.num_consec
     DESC limit 1
     ';
     
