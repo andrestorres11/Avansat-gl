@@ -2681,7 +2681,7 @@ class Despachos
                                             break;
                                         case 'cod_itiner':
                                             if($mData[$key]==''){
-                                                $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reeviar Itinerario]</a>';
+                                                $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reenviar Itinerario]</a>';
                                             }else{
                                                 $mTxt = $mData[$key];
                                             }
@@ -2696,8 +2696,11 @@ class Despachos
                                                         ";
                                             $consulta = new Consulta($mSql, $this->conexion);
                                             $registros = $consulta -> ret_matriz();
-                                            if(($mData[$key]!=0) && (count($registros)>0) && ($mView->ree_noveda->ind_visibl)){
-                                                $mTxt = $mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reeviar Novedades]</a>';
+                                            
+                                            //Novedades pendientes por reenviar
+                                            $cNovPendientes = $this->getNovedadesReenviar($mNumDespac);
+                                            if(($mData[$key]!=0) && (count($registros)>0) && ($mView->ree_noveda->ind_visibl) && (sizeof($cNovPendientes) > 0)){
+                                                $mTxt = $mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reenviar Novedades]</a>';
                                             }else{
                                                 $mTxt = $mData[$key];
                                             }
@@ -3293,8 +3296,10 @@ class Despachos
         $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION DE NOTAS CONTROLADOR</center></h3>");
         $mHtml->OpenDiv("id:secID");
           $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
-            $mHtml->SetBody('<center><span style="color:#416F1E; cursor:pointer" onclick="todasNotas(1);" >[Ver Todas]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(2);" >[Ocultar]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<center><span style="color:#416F1E; cursor:pointer" onclick="todasNotas(1)" >[Seguimiento]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(2);" >[Operador GPS]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(3);" >[Ver Todas]</span>&nbsp;&nbsp;');
+            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(4);" >[Ocultar]</span>&nbsp;&nbsp;');
 
             if( $mView == 1 ){
               $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="formAuditarDespac();" >[Auditar]</span></center>');
@@ -3384,6 +3389,10 @@ class Despachos
                 </spam>';
             }
           }
+            for($p=9000;$p<=9999;$p++)
+            { 
+                $novedadDefect[]=$p;// codigo de novedad por defecto 
+            }
 
           if( $_RUTASX[$i][nov_especi] == 1 )
           {
@@ -3408,7 +3417,20 @@ class Despachos
           }
 
           $mHtml->Row();
-          $mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
+            if(in_array($_RUTASX[$i][cod_contro], $novedadDefect) && $i!= $mCanNov )
+            { //a?ade class para ocultar o mostrar con js
+                $mHtml->SetBody(('<tr class="nov_gps_notes">'));
+                //$mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
+            }
+            else if((!in_array($_RUTASX[$i][cod_contro], $novedadNotdefect)) && $i!= $mCanNov)
+            { //a?ade class para ocultar o mostrar con js
+                $mHtml->SetBody(('<tr class="nov_seguimiento_notes">'));
+                //$mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
+            }
+            else{
+                $mHtml->SetBody( ('<tr>') );
+            }
+            //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
             $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
 
             // if para las novedades actualizadas
@@ -3801,20 +3823,37 @@ class Despachos
 
                 function todasNotas( opt )
                 {
-                  try{
-                    if( opt == 1 ){
-                      $(".ocultarTR").fadeIn( 3000 );
-                      $("#planRutaID #secID").css({"height":"auto"});
-                    }else{
-                      $(".ocultarTR").fadeOut( 1000 );
-                      $("#planRutaID #secID").css({"height":"auto"});
+                    switch (opt)
+                    {
+                        case 1:
+                            $(".nov_seguimiento_notes").fadeIn( 1000 );
+                            $(".nov_gps_notes").fadeOut( 1000 );
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
+                        case 2:
+                            $(".nov_gps_notes").fadeIn( 1000 );
+                            $(".nov_seguimiento_notes").fadeOut( 1000 );                        
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
+                        case 3:
+                            $(".nov_gps_notes").fadeIn( 1000 );
+                            $(".nov_seguimiento_notes").fadeIn( 1000 );                        
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
+                        case 4:
+                            $(".nov_gps_notes").fadeOut( 1000 );
+                            $(".nov_seguimiento_notes").fadeOut( 1000 );                        
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
                     }
-                  }
-                  catch(e)
-                  {
-                    console.log( "Error Function todasNotas: "+e.message+"\nLine: "+e.lineNumber );
-                    return false;
-                  }
                 }
 
                 $("#crossDokingID h3").click(function(){
@@ -3847,7 +3886,7 @@ class Despachos
                 });
                 
                 verifyConfirPernoc( 1, $("#num_despacID").val() );
-                
+                todasNotas(4);
               </script>';
     }
 
@@ -9899,6 +9938,93 @@ class Despachos
         $consulta = new Consulta($query, $this->conexion);
         $sitio = $consulta->ret_arreglo();
         return $sitio[0];
+    }
+
+    /*! \fn: getNovedadesReenviar
+     *  \brief: Retorna un arreglo de las novedades pendientes por reenviar
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 20/09/2022
+     *  \date modified: dia/mes/año
+     *  \param: $num_despac String Número de despacho
+     *  \return: array: respuesta con la cantidad de novedades pendientes por reenviar (indicador = 0)
+     */
+    function getNovedadesReenviar($num_despac){
+        $mQuery = "
+                                (
+                                    SELECT
+                                            'pc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
+                                            a.num_despac, aa.cod_manifi, bb.num_placax,
+                                            a.cod_contro, a.fec_noveda, a.des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala,  
+                                            '' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, a.fec_creaci
+                                    FROM
+                                            ".BASE_DATOS.".tab_despac_despac aa
+                                INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
+                                INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = (
+                                                                                                                                        SELECT MAX(xx.num_consec) AS num_consec
+                                                                                                                                        FROM ".BASE_DATOS.".tab_transp_tipser xx
+                                                                                                                                        WHERE xx.cod_transp = bb.cod_transp
+                                                                                                                                    )
+                                INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
+                                INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
+                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.ind_estado = 1 /*Debe estar activa*/
+
+
+                                INNER JOIN	".BASE_DATOS.".tab_despac_noveda a  ON bb.num_despac =  a.num_despac
+                                LEFT JOIN ".BASE_DATOS.".tab_errorx_noveda b  ON a.num_despac !=  b.num_despac 
+                                                                            AND a.cod_contro !=  b.cod_contro
+                                LEFT JOIN ".BASE_DATOS.".tab_despac_sitio  c  ON a.cod_sitiox  =  c.cod_sitiox
+                                LEFT JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+
+                                    WHERE a.num_despac = '".$num_despac."'
+                                        AND	a.ind_enviad = 0
+                                        AND aa.ind_anulad = 'R'
+                                        AND aa.ind_planru LIKE 'S'  
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                    GROUP BY aa.num_despac, a.fec_creaci
+                                )
+                                UNION ALL
+                                (
+                                    SELECT
+                                            'nc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
+                                            a.num_despac, aa.cod_manifi, bb.num_placax, 
+                                            a.cod_contro, a.fec_contro AS fec_noveda, a.obs_contro AS des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala, 
+                                            a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, a.fec_creaci
+                                    FROM
+                                            ".BASE_DATOS.".tab_despac_despac aa
+                                INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
+                                INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = (
+                                                                                                                                        SELECT MAX(xx.num_consec) AS num_consec
+                                                                                                                                        FROM ".BASE_DATOS.".tab_transp_tipser xx
+                                                                                                                                        WHERE xx.cod_transp = bb.cod_transp
+                                                                                                                                    )
+                                INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
+                                INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
+                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.ind_estado = 1 /*Debe estar activa*/
+
+
+                                INNER JOIN ".BASE_DATOS.".tab_despac_contro a  ON bb.num_despac =  a.num_despac
+                                LEFT JOIN ".BASE_DATOS.".tab_errorx_noveda b  ON a.num_despac != b.num_despac 
+                                                                            AND a.cod_contro != b.cod_contro
+                                LEFT JOIN ".BASE_DATOS.".tab_despac_sitio  c  ON a.cod_sitiox = c.cod_sitiox
+                                LEFT JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+
+                                    WHERE
+                                            a.num_despac = '".$num_despac."'
+                                        AND	a.ind_enviad = 0
+                                        AND aa.ind_anulad = 'R'
+                                        AND aa.ind_planru LIKE 'S' 
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        GROUP BY aa.num_despac, a.fec_creaci
+                                )
+                                ORDER BY cod_server
+                        ";
+            $mConsult = new Consulta($mQuery, $this->conexion);
+            $cNovPendientes = $mConsult->ret_matrix('a');
+            return $cNovPendientes;
     }
 }
 

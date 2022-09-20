@@ -9,7 +9,6 @@
  *  \warning: 
  */
 
-
 class Califi
 {
 	private static 	$cConexion,
@@ -127,14 +126,18 @@ class Califi
         $paramGPS = getParameOpeGPS(self::$cConexion);
 		$parOpeSt = $paramGPS[0];
 		$parOpePr = $paramGPS[1];
+		$parCodPais = $paramGPS[2];
 		$opegpsPropio = NULL;
 		$opegpsStanda = NULL;
 
 		if($parOpeSt){
-		$query = "SELECT cod_operad, CONCAT(nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad', nit_operad 
-				FROM ".BD_STANDA.".tab_genera_opegps
-				WHERE ind_estado = '1'
-			ORDER BY nom_operad ASC ";
+		$query = "SELECT a.cod_operad, CONCAT(a.nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad', a.nit_operad 
+				FROM ".BD_STANDA.".tab_genera_opegps a
+				INNER JOIN ".BD_STANDA.".tab_genera_paises b ON b.cod_paisgl = $parCodPais
+				INNER JOIN ".BD_STANDA.".tab_opegps_paisxx c ON b.cod_paisxx = c.cod_paisxx
+				WHERE a.ind_estado = '1'
+			GROUP BY a.cod_operad
+			ORDER BY a.nom_operad ASC ";
 		$consulta = new Consulta($query, self::$cConexion);
 		$opegpsStanda = $consulta->ret_matriz("a");
 		
@@ -156,7 +159,7 @@ class Califi
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Martinez
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
@@ -213,7 +216,7 @@ class Califi
 						</div>
 					</div>
 					<div class="col-md-6">
-						<div class="col-md-3 text-right">Contraseña:<font style="color:red">*</font></div>
+						<div class="col-md-3 text-right">Contraseï¿½a:<font style="color:red">*</font></div>
 						<div class="col-md-9 text-left">
 							<input type="text" class="text-center ancho" name="gps_paswor" id="gps_pasworID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_paswor'] ?>"></input>
 						</div>
@@ -235,7 +238,7 @@ class Califi
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Martinez
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
@@ -1122,7 +1125,7 @@ class Califi
 
 	/*! \fn: reeItiner
      *  \brief: Reevia Itinerario
-     *  \author: Ing. Cristian Andrés Torres
+     *  \author: Ing. Cristian Andrï¿½s Torres
      *  \date: 02/06/2022
      *  \date modified: dd/mm/aaaa
      *  \modified by: 
@@ -1160,7 +1163,7 @@ class Califi
 	private function reeNovedades(){
 		include( '../despac/InsertNovedad.inc' );
 		$transac_nov = new InsertNovedad($_REQUEST['cod_servic'], $_REQUEST['Option'], $_SESSION['codigo'], self::$cConexion);
-		$RESPON = $transac_nov->reenviaNovedadesAvansat($_REQUEST['num_despac']); 
+		$RESPON = $transac_nov->reenviaNovedadesAvansat($_REQUEST['num_despac']);
 		echo json_encode(cleanArray($RESPON));
 	}
 
