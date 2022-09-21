@@ -3852,7 +3852,7 @@ class InsertNovedad {
                             "cod_conbas" => $mData['cod_pcxbas'][0][0],
                             "tim_duraci" => $regist['tieadi'],
                             "fec_noveda" => date('Y-m-d H:i', strtotime($regist['fecnov'])),
-                            "des_noveda" => $regist['observ'],
+                            "des_noveda" => str_replace(["\"", "'"], ["", ""], $regist['observ']) ,
                             "nom_contro" => $mData['nom_contro'],
                             "nom_sitiox" => substr($regist['sitio'], 0, 50),
                             "cod_confar" => NULL,
@@ -3871,7 +3871,7 @@ class InsertNovedad {
                                 //Consumo Web Service.
                                 /*                                 * ****************** TRATAMIENTO SOAP ******************** */
                                 try {
-                                    //Métodos disponibles en el WS
+                                    //M?odos disponibles en el WS
                                     $respuesta = $oSoapClient->__call($mOption[0], $parametros);
                                     $mResult = explode("; ", $respuesta);
                                     $mCodResp = explode(":", $mResult[0]);
@@ -3881,7 +3881,7 @@ class InsertNovedad {
                                         $error_ = $mMsgResp[1];
                                     } else {
                                         $error_ = NULL;
-                                        //Hace la actualización del indicador estado de novedad enviada a tms
+                                        //Hace la actualizaci? del indicador estado de novedad enviada a tms
                                         self::updateEstadoEnviadoTms($regist, $mIndEnSiti);
                                         break;
                                     }
@@ -4759,7 +4759,7 @@ class InsertNovedad {
 
      /*! \fn: updateEstadoEnviadoTms
      *  \brief: actualiza el estado de la novedad enviada a tms
-     *  \author: Ing. Cristian Andrés Torres
+     *  \author: Ing. Cristian Andr? Torres
      *  \date: 03/08/2022
      *  \date modified: dd/mm/aaaa
      *  \param: 
@@ -4828,11 +4828,10 @@ class InsertNovedad {
                                     WHERE a.num_despac = '".$num_despac."'
                                         AND	a.ind_enviad = 0
                                         AND aa.ind_anulad = 'R'
-                                        AND aa.ind_planru LIKE 'S'
-                                        AND aa.fec_salida IS NOT NULL
-                                        AND aa.fec_llegad IS NULL  
+                                        AND aa.ind_planru LIKE 'S'  
                                         AND dd.cod_server IN (14,16,17,18,19,20,21)
                                         AND DATE(a.fec_creaci) = DATE(NOW())
+                                    GROUP BY aa.num_despac, a.fec_creaci
                                 )
                                 UNION ALL
                                 (
@@ -4865,9 +4864,7 @@ class InsertNovedad {
                                             a.num_despac = '".$num_despac."'
                                         AND	a.ind_enviad = 0
                                         AND aa.ind_anulad = 'R'
-                                        AND aa.ind_planru LIKE 'S'
-                                        AND aa.fec_salida IS NOT NULL
-                                        AND aa.fec_llegad IS NULL  
+                                        AND aa.ind_planru LIKE 'S' 
                                         AND dd.cod_server IN (14,16,17,18,19,20,21)
                                         AND DATE(a.fec_creaci) = DATE(NOW())
                                         GROUP BY aa.num_despac, a.fec_creaci
@@ -4919,13 +4916,13 @@ class InsertNovedad {
                   ];
 
                     ini_set("soap.wsdl_cache_enabled", 0);
-                    //die('acaba proceso');
                     $mSoap = new SoapClient( $mReporte['url_webser'], ['trace' => 1,'exception' => 1 ] );
                     $mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams );
 
                     $mResult  = explode( "; ", $mResponse );
                     $mCodResp = explode( ":", $mResult[0] );  
                     $mMsgResp = explode( ":", $mResult[1] );
+
                     if( "1000" != $mCodResp[1] ){
                         $errores .= "<p>Despacho: ".$mReporte['num_despac']." - Manifiesto: ".$mReporte['cod_manifi']." - Ws: ".$mReporte['url_webser']." --Error::".$mMsgResp[1]."-- </p>";
                         $msj = 'El despacho esta presentando inconveniente al reenviar las novedades';
