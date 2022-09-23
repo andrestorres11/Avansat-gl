@@ -6,11 +6,12 @@ class AjaxModuloComunicaciones
   var $conexion;
   public function __construct()
   {
-    $_AJAX = $_REQUEST;
     include_once('../lib/bd/seguridad/aplica_filtro_perfil_lib.inc');
     include_once('../lib/bd/seguridad/aplica_filtro_usuari_lib.inc'); 
     include_once('../lib/ajax.inc');
     include_once('../lib/general/constantes.inc');
+
+    $_AJAX = $_REQUEST;
     $this -> conexion = $AjaxConnection;
     $this -> $_AJAX['option']( $_AJAX );
   }
@@ -44,15 +45,15 @@ class AjaxModuloComunicaciones
     for($i=0, $len = count($transpor); $i<$len; $i++){
       $_FILTER = $this -> VerifyFilter( $transpor[$i]['cod_usuari'], $transpor[$i]['cod_perfil'] );
 
-      if( $_FILTER['clv_filtro'] == $_AJAX['cod_transp'] && !in_array( $transpor[$i][$citerio], $arr_existe ) )
-      {
+      //if( $_FILTER['clv_filtro'] == $_AJAX['cod_transp'] && !in_array( $transpor[$i][$citerio], $arr_existe ) )
+      //{
         $arr_existe[$transpor[$i][$citerio]] = $transpor[$i][$citerio];
         $data [] = '{"label":"'.utf8_encode($transpor[$i][$citerio]).'","value":"'. utf8_encode($transpor[$i][$citerio]).'"}'; 
         $dataList [$counter]["cod_usuari"] = utf8_encode($transpor[$i]['cod_usuari']); 
         $dataList [$counter]["nom_usuari"] = utf8_encode($transpor[$i]['nom_usuari']); 
         $dataList [$counter]["usr_emailx"] = utf8_encode($transpor[$i]['usr_emailx']); 
         $counter++;
-      }
+      //}
       if( $counter >= 10 && $mType == NULL )
         break;  
     }
@@ -85,17 +86,42 @@ class AjaxModuloComunicaciones
     
   }
 
+  protected function deleteEtapax( )
+  {
+
+    if($_REQUEST["tip_consul"] == "rCargue"){
+      $cod_etapax = "(1, 2)";
+    }else if($_REQUEST["tip_consul"] == "rTransi"){
+      $cod_etapax = "(3)";
+    }else if($_REQUEST["tip_consul"] == "rDescar"){
+      $cod_etapax = "(4, 5)";
+    }else if($_REQUEST["tip_consul"] == "rTodas"){
+      $cod_etapax = "(0, 6)";
+    }
+
+    $mSql = "
+        DELETE
+          a.*
+        FROM ".BASE_DATOS.".tab_detail_modcom a
+  INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda AND b.cod_etapax IN $cod_etapax
+        WHERE a.cod_usuari = '" . $_REQUEST["cod_usuari"] . "' ";
+    
+    new Consulta( $mSql, $this -> conexion );
+    
+    echo json_encode(array("Status" => "SI"));
+  }
+
   private function Style()
   {
     echo '
       <style>
       
       .link{
-          color:#35650F;
+          color:#002c59;
           cursor:pointer;
       }
       .linkOver{
-          color:#35650F;
+          color:#002c59;
           cursor:pointer;
           border-bottom:1px solid #000000;
       }
@@ -159,7 +185,7 @@ class AjaxModuloComunicaciones
         {
           font-family:Trebuchet MS, Verdana, Arial;
           font-size:13px;
-          background-color: #35650F;
+          background-color: #002c59;
           color:#FFFFFF;
           padding: 4px;
         }
@@ -265,7 +291,7 @@ class AjaxModuloComunicaciones
     // REVISION DE LA CONFIGURACION PARA LA PERSONA SELECCIONADA -------
     // Trae la posible parametrizacion que ya tenga la persona ---------
     $mSelect = "SELECT cod_consec, cod_noveda, cod_criter, 
-               val_criter, ind_tipres 
+               val_criter, ind_tipres , ind_reqsol, ind_nfarox
             FROM ".BASE_DATOS.".tab_detail_modcom 
            WHERE cod_usuari = '".$_AJAX['cod_usuari']."'";
 
@@ -275,39 +301,66 @@ class AjaxModuloComunicaciones
     $arr_actcon = array();
     foreach( $_ACTCON as $row )
     {
+      $arr_actcon[$row['cod_noveda']]['ind_reqsol'] = $row['ind_reqsol'];
       $arr_actcon[$row['cod_noveda']]['ind_tipres'] = $row['ind_tipres'];
+      $arr_actcon[$row['cod_noveda']]['ind_nfarox'] = $row['ind_nfarox'];
       $arr_actcon[$row['cod_noveda']][$row['cod_criter']][$row['val_criter']] = $row['val_criter'];
     }
 
     // PRIMERA ETAPA DEL FORMULARIO ---------------------
     // Etapas de los viajes -----------------------------
     // --------------------------------------------------
-    $mSelect = "SELECT cod_noveda, UPPER( nom_noveda ) AS nom_noveda 
-            FROM ".BASE_DATOS.".tab_genera_noveda 
-           WHERE ind_visibl = '1' AND ind_estado = '1' AND nom_noveda LIKE '%NER /%' 
+
+    //Novedades de Transito
+    $mSelect = "SELECT a.cod_noveda, UPPER( a.nom_noveda ) AS nom_noveda 
+            FROM ".BASE_DATOS.".tab_genera_noveda a
+            INNER JOIN ".BASE_DATOS.".tab_parame_novseg b ON a.cod_noveda = b.cod_noveda
+           WHERE b.inf_visins = '1' 
+             AND b.ind_status = '1'
+             AND b.cod_transp = '".$_REQUEST['cod_transp']."'
+             AND a.cod_etapax = '3'
+             AND a.cod_noveda BETWEEN 9000 AND 9996
            ORDER BY 2";
   
-  $consulta = new Consulta( $mSelect, $this -> conexion );
+    $consulta = new Consulta( $mSelect, $this -> conexion );
     $_TRANSI = $consulta -> ret_matriz();
 
-    $mSelect = "SELECT cod_noveda, UPPER( nom_noveda ) AS nom_noveda 
-            FROM ".BASE_DATOS.".tab_genera_noveda 
-           WHERE ind_visibl = '1' AND ind_estado = '1' AND 
-               ( nom_noveda LIKE '%NEC /%' OR 
-                 nom_noveda LIKE '%NICC /%' )
+    $mSelect = "SELECT a.cod_noveda, UPPER( a.nom_noveda ) AS nom_noveda 
+            FROM ".BASE_DATOS.".tab_genera_noveda a
+            INNER JOIN ".BASE_DATOS.".tab_parame_novseg b ON a.cod_noveda = b.cod_noveda
+           WHERE b.inf_visins = '1'
+             AND b.ind_status = '1' 
+             AND a.cod_etapax IN (1, 2)
+             AND a.cod_noveda BETWEEN 9000 AND 9996
          ORDER BY 2";
-  
-  $consulta = new Consulta( $mSelect, $this -> conexion );
+   
+   
+    $consulta = new Consulta( $mSelect, $this -> conexion );
     $_CARGUE = $consulta -> ret_matriz();
 
-    $mSelect = "SELECT cod_noveda, UPPER( nom_noveda ) AS nom_noveda 
-            FROM ".BASE_DATOS.".tab_genera_noveda 
-           WHERE ind_visibl = '1' AND ind_estado = '1' AND
-               ( nom_noveda LIKE '%NED /%' )
+    $mSelect = "SELECT a.cod_noveda, UPPER( a.nom_noveda ) AS nom_noveda 
+            FROM ".BASE_DATOS.".tab_genera_noveda a
+            INNER JOIN ".BASE_DATOS.".tab_parame_novseg b ON a.cod_noveda = b.cod_noveda
+           WHERE b.inf_visins = '1'
+             AND b.ind_status = '1' 
+             AND a.cod_etapax IN (4,5)
+             AND a.cod_noveda BETWEEN 9000 AND 9996
          ORDER BY 2";
   
   $consulta = new Consulta( $mSelect, $this -> conexion );
     $_DESCAR = $consulta -> ret_matriz();
+
+
+    $mSelect = "SELECT a.cod_noveda, UPPER( a.nom_noveda ) AS nom_noveda 
+            FROM ".BASE_DATOS.".tab_genera_noveda a
+          INNER JOIN ".BASE_DATOS.".tab_parame_novseg b ON a.cod_noveda = b.cod_noveda
+           WHERE b.inf_visins = '1'
+             AND b.ind_status = '1' 
+             AND a.cod_etapax IN (0, 6)
+             AND a.cod_noveda BETWEEN 9000 AND 9996
+         ORDER BY 2";
+  $consulta = new Consulta( $mSelect, $this -> conexion );
+    $_TODAS = $consulta -> ret_matriz();
 
     $mHtml  = '';
     $mHtml .= '<script> $(function() {$( "#EtapasID" ).tabs();});</script>';
@@ -315,6 +368,7 @@ class AjaxModuloComunicaciones
     $mHtml .= '<script> $(function() {$( "#cCargue" ).button();});</script>';
     $mHtml .= '<script> $(function() {$( "#cTransi" ).button();});</script>';
     $mHtml .= '<script> $(function() {$( "#cDescar" ).button();});</script>';
+    $mHtml .= '<script> $(function() {$( "#cTodas" ).button();});</script>';
     $mHtml .= '<script> $(function() {$( "#all_tipopeID" ).button();});</script>';
     $mHtml .= '<script> $(function() {$( "#all_producID" ).button();});</script>';
     $mHtml .= '<script> $(function() {$( "#all_tiptraID" ).button();});</script>';
@@ -322,6 +376,7 @@ class AjaxModuloComunicaciones
     $mHtml .= '<script> $(function() {$( "#all_canalxID" ).button();});</script>';
     $mHtml .= '<script> $(function() {$( "#all_origenID" ).button();});</script>';
     $mHtml .= '<script> $(function() {$( "#all_deposiID" ).button();});</script>';
+    $mHtml .= '<script> $(function() {$( "#all_bahiasID" ).button();});</script>';
     
     $mHtml .= '<script>
                $( "#cod_ciudesID" ).autocomplete({
@@ -367,20 +422,28 @@ class AjaxModuloComunicaciones
         $mHtml .= '<tr>';
           $mHtml .= '<td width="4%">Para</td>';
           $mHtml .= '<td width="4%">Copia</td>';
+          $mHtml .= '<td width="4%">Req. Soluci&oacute;n</td>';
+          $mHtml .= '<td width="4%">N. Faro</td>';
           $mHtml .= '<td width="52%"><b>&nbsp;</b></td>';
           $mHtml .= '<td width="40%"><b>&nbsp;</b></td>';
         $mHtml .= '</tr>';
 
-        $checkedP = $_CONFIG['ind_tipres'] == 'P' ? 'checked="checked"': '';
-        $checkedS = $_CONFIG['ind_tipres'] == 'S' ? 'checked="checked"': '';
+        $checkedP  = $_CONFIG['ind_tipres'] == 'P'  ? 'checked="checked"': '';
+        $checkedS  = $_CONFIG['ind_tipres'] == 'S'  ? 'checked="checked"': '';
+        $checkedSl = $_CONFIG['ind_reqsol'] == 'S'  ? 'checked="checked"': '';
+        $checkedNF = $_CONFIG['ind_nfarox'] == 'S'  ? 'checked="checked"': '';
 
-        $checkP = '<input class="cargueP" '.$checkedP.' type="radio" name="'.$_AJAX['cod_noveda'].'" id="'.$_AJAX['cod_noveda'].'ID" value="P" >';
-      $checkS = '<input class="cargueS" '.$checkedS.' type="radio" name="'.$_AJAX['cod_noveda'].'" id="'.$_AJAX['cod_noveda'].'ID" value="S" >';
+        $checkP  = '<input class="cargueP"  '.$checkedP.'  type="radio" name="'.$_AJAX['cod_noveda'].'" id="'.$_AJAX['cod_noveda'].'ID" value="P" >';
+        $checkS  = '<input class="cargueS"  '.$checkedS.'  type="radio" name="'.$_AJAX['cod_noveda'].'" id="'.$_AJAX['cod_noveda'].'ID" value="S" >';
+        $checkSl = '<input class="cargueSl" '.$checkedSl.' type="checkbox" name="'.$_AJAX['cod_noveda'].'" id="'.$_AJAX['cod_noveda'].'ID" value="S" >';
+        $checkNF = '<input class="cargueNF" '.$checkedNF.' type="checkbox" name="nf_'.$_AJAX['cod_noveda'].'" id="'.$_AJAX['cod_noveda'].'ID" value="S" >';
         $namexx = $this -> getNameNoveda( $_AJAX['cod_noveda'] );
 
       $mHtml .= '<tr>';
-          $mHtml .= '<td>'.$checkP.'</td>';
-          $mHtml .= '<td>'.$checkS.'</td>';
+          $mHtml .= '<td>'.$checkP.' </td>';
+          $mHtml .= '<td>'.$checkS.' </td>';
+          $mHtml .= '<td>'.$checkSl.'</td>';
+          $mHtml .= '<td>'.$checkNF.' </td>';
           $mHtml .= '<td>'.$namexx.'</td>';
           $mHtml .= '<td><button id="CancelarID" onclick="CancelEditForm();" ><small>CANCELAR</small></button></td>';
         $mHtml .= '</tr>';
@@ -391,11 +454,12 @@ class AjaxModuloComunicaciones
     else
     {
       $mHtml .= '<div id="EtapasID" width="100%">';
-      
+
       $mHtml .= '<ul>';
     $mHtml .= '<li><a href="#CargueID" onclick="$(function() {$( \'#rCargue\' ).buttonset();});">NOVEDADES EN CARGUE</a></li>';
     $mHtml .= '<li><a href="#TransitoID" onclick="$(function() {$( \'#rTransi\' ).buttonset();});">NOVEDADES EN TRANSITO</a></li>';
     $mHtml .= '<li><a href="#DescargueID" onclick="$(function() {$( \'#rDescar\' ).buttonset();});">NOVEDADES EN DESCARGUE</a></li>';
+    $mHtml .= '<li><a href="#TodasID" onclick="$(function() {$( \'#rTodas\' ).buttonset();});">NOVEDADES SIN ETAPA</a></li>';
     $mHtml .= '</ul>';
       
       $mHtml .= '<div id="CargueID">';
@@ -414,6 +478,7 @@ class AjaxModuloComunicaciones
 
           $mHtml .= '<td colspan="7">';
             $mHtml .= '<input type="button" id="cCargue" onclick="DeSelectAll(\'cargue\', $(this), \'rCargue\' );" name="des_cargue" value="ANULAR SELECCI&Oacute;N"/><br>';
+            $mHtml .= '<input type="button" id="cCargue" onclick="deleteEtapax(\'' . $_REQUEST["cod_usuari"] . '\', \'rCargue\' );" name="des_cargue" value="ELIMINAR" class="ui-button ui-widget ui-state-default ui-corner-all"/><br>';
           $mHtml .= '</td>'; 
 
           $mHtml .= '</tr>';
@@ -421,13 +486,22 @@ class AjaxModuloComunicaciones
           $mHtml .= '<tr>';
           $mHtml .= '<td><small>Para</small></td>';
           $mHtml .= '<td><small>Copia</small></td>';
+          $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+          $mHtml .= '<td><small>N. Faro</small></td>';
           $mHtml .= '<td><b>&nbsp;</b></td>';
+
           $mHtml .= '<td><small>Para</small></td>';
           $mHtml .= '<td><small>Copia</small></td>';
+          $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+          $mHtml .= '<td><small>N. Faro</small></td>';
           $mHtml .= '<td>&nbsp;</td>';
+
           $mHtml .= '<td><small>Para</small></td>';
           $mHtml .= '<td><small>Copia</small></td>';
+          $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+          $mHtml .= '<td><small>N. Faro</small></td>';
           $mHtml .= '<td>&nbsp;</td>';
+
           $mHtml .= '</tr>';
           $count = 0;
 
@@ -437,21 +511,27 @@ class AjaxModuloComunicaciones
             $mHtml .= '<tr>';
             
             $color = ''; 
-            $checkP = '<input class="cargueP" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="P" >';
-            $checkS = '<input class="cargueS" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+            $checkP  = '<input class="cargueP"  type="radio".   name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="P" >';
+            $checkS  = '<input class="cargueS"  type="radio"    name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+            $checkSl = '<input class="cargueSl" type="checkbox" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+            $checkNF = '<input class="cargueNF" type="checkbox" name="nf_'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
             $namexx = utf8_encode( $row['nom_noveda'] );
             
             if( $arr_actcon[$row['cod_noveda']]['ind_tipres'] != '' )
             {
               $color  = 'style="background-color:#CBEEFF;"';
-              $checkP = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'P' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
-              $checkS = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+              $checkP  = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'P' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+              $checkS  = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+              $checkSl = $arr_actcon[$row['cod_noveda']]['ind_reqsol'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+              $checkNF = $arr_actcon[$row['cod_noveda']]['ind_nfarox'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
               $namexx .= '<div style="float:right;"><a style="text-decoration:none;cursor:pointer;color:#336600;" onclick="EditConfig(\''.$row['cod_noveda'].'\', \''.$_AJAX['cod_usuari'].'\' );"><small>Editar</small></a><small>&nbsp;|&nbsp;</small><a style="text-decoration:none;cursor:pointer;color:#336600;" onclick="DeleteConfig(\''.$row['cod_noveda'].'\', \''.$_AJAX['cod_usuari'].'\');"><small>Eliminar</small></a></div>';
             }
 
             $mHtml .= '<td '.$color.'>'.$checkP.'</td>';
             $mHtml .= '<td '.$color.'>'.$checkS.'</td>';
-            $mHtml .= '<td '.$color.'>'.$namexx.'</td>';
+            $mHtml .= '<td '.$color.'>'.$checkSl.'</td>'; // Checkbox solucion novedad
+            $mHtml .= '<td '.$color.'>'.$checkNF.'</td>'; // Checkbox solucion novedad
+            $mHtml .= '<td '.$color.'>'.$namexx.'</td>'; //
 
             if( $count == 2 )
             {
@@ -479,18 +559,25 @@ class AjaxModuloComunicaciones
             $mHtml .= '</td>'; 
             $mHtml .= '<td colspan="7">';
             $mHtml .= '<input type="button" id="cTransi" onclick="DeSelectAll(\'transi\', $(this), \'rTransi\' );" name="des_transi" value="ANULAR SELECCI&Oacute;N"/><br>';
+            $mHtml .= '<input type="button" id="cTransi" onclick="deleteEtapax(\'' . $_REQUEST["cod_usuari"] . '\', \'rTransi\' );" name="des_cargue" value="ELIMINAR" class="ui-button ui-widget ui-state-default ui-corner-all"/><br>';
             $mHtml .= '</td>'; 
             $mHtml .= '</tr>';
 
             $mHtml .= '<tr>';
             $mHtml .= '<td><small>Para</small></td>';
             $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
             $mHtml .= '<td><b>&nbsp;</b></td>';
             $mHtml .= '<td><small>Para</small></td>';
             $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
             $mHtml .= '<td>&nbsp;</td>';
             $mHtml .= '<td><small>Para</small></td>';
             $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
             $mHtml .= '<td>&nbsp;</td>';
             $mHtml .= '</tr>';
             $count = 0;
@@ -500,20 +587,26 @@ class AjaxModuloComunicaciones
               $mHtml .= '<tr>';
               
               $color = ''; 
-              $checkP = '<input class="transiP" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="P" >';
-              $checkS = '<input class="transiS" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $checkP  = '<input class="transiP" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="P" >';
+              $checkS  = '<input class="transiS" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $checkSl = '<input class="transiSl" type="checkbox" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $checkNF = '<input class="transiNF" type="checkbox" name="nf_'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
               $namexx = utf8_encode( $row['nom_noveda'] );
               
               if( $arr_actcon[$row['cod_noveda']]['ind_tipres'] != '' )
               {
                 $color  = 'style="background-color:#CBEEFF;"';
-                $checkP = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'P' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
-                $checkS = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkP  = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'P' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkS  = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkSl = $arr_actcon[$row['cod_noveda']]['ind_reqsol'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkNF = $arr_actcon[$row['cod_noveda']]['ind_nfarox'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
                 $namexx .= '<div style="float:right;"><a style="text-decoration:none;cursor:pointer;color:#336600;" onclick="EditConfig(\''.$row['cod_noveda'].'\', \''.$_AJAX['cod_usuari'].'\' );"><small>Editar</small></a><small>&nbsp;|&nbsp;</small><a style="text-decoration:none;cursor:pointer;color:#336600;" onclick="DeleteConfig(\''.$row['cod_noveda'].'\', \''.$_AJAX['cod_usuari'].'\');"><small>Eliminar</small></a></div>';
               }
 
               $mHtml .= '<td '.$color.'>'.$checkP.'</td>';
               $mHtml .= '<td '.$color.'>'.$checkS.'</td>';
+              $mHtml .= '<td '.$color.'>'.$checkSl.'</td>';
+              $mHtml .= '<td '.$color.'>'.$checkNF.'</td>';
               $mHtml .= '<td '.$color.'>'.$namexx.'</td>';
 
               if( $count == 2 )
@@ -542,18 +635,25 @@ class AjaxModuloComunicaciones
             $mHtml .= '</td>'; 
             $mHtml .= '<td colspan="7">';
             $mHtml .= '<input type="button" id="cDescar" onclick="DeSelectAll(\'descar\', $(this), \'rDescar\' );" name="des_descar" value="ANULAR SELECCI&Oacute;N"/><br>';
+            $mHtml .= '<input type="button" id="cDescar" onclick="deleteEtapax(\'' . $_REQUEST["cod_usuari"] . '\', \'rDescar\' );" name="des_cargue" value="ELIMINAR" class="ui-button ui-widget ui-state-default ui-corner-all"/><br>';
             $mHtml .= '</td>'; 
             $mHtml .= '</tr>';
 
             $mHtml .= '<tr>';
             $mHtml .= '<td><small>Para</small></td>';
             $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
             $mHtml .= '<td><b>&nbsp;</b></td>';
             $mHtml .= '<td><small>Para</small></td>';
             $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
             $mHtml .= '<td>&nbsp;</td>';
             $mHtml .= '<td><small>Para</small></td>';
             $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
             $mHtml .= '<td>&nbsp;</td>';
             $mHtml .= '</tr>';
             $count = 0;
@@ -563,20 +663,104 @@ class AjaxModuloComunicaciones
               $mHtml .= '<tr>';
               
               $color = ''; 
-              $checkP = '<input class="descarP" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="P" >';
-              $checkS = '<input class="descarS" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $checkP  = '<input class="descarP" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="P" >';
+              $checkS  = '<input class="descarS" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $checkSl = '<input class="descarSl" type="checkbox" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $checkNF = '<input class="descarNF" type="checkbox" name="nf_'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
               $namexx = utf8_encode( $row['nom_noveda'] );
               
               if( $arr_actcon[$row['cod_noveda']]['ind_tipres'] != '' )
               {
                 $color  = 'style="background-color:#CBEEFF;"';
-                $checkP = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'P' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
-                $checkS = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkP  = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'P' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkS  = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkSl = $arr_actcon[$row['cod_noveda']]['ind_reqsol'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkNF = $arr_actcon[$row['cod_noveda']]['ind_nfarox'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
                 $namexx .= '<div style="float:right;"><a style="text-decoration:none;cursor:pointer;color:#336600;" onclick="EditConfig(\''.$row['cod_noveda'].'\', \''.$_AJAX['cod_usuari'].'\' );"><small>Editar</small></a><small>&nbsp;|&nbsp;</small><a style="text-decoration:none;cursor:pointer;color:#336600;" onclick="DeleteConfig(\''.$row['cod_noveda'].'\', \''.$_AJAX['cod_usuari'].'\');"><small>Eliminar</small></a></div>';
               }
 
               $mHtml .= '<td '.$color.'>'.$checkP.'</td>';
               $mHtml .= '<td '.$color.'>'.$checkS.'</td>';
+              $mHtml .= '<td '.$color.'>'.$checkSl.'</td>';
+              $mHtml .= '<td '.$color.'>'.$checkNF.'</td>';
+              $mHtml .= '<td '.$color.'>'.$namexx.'</td>';
+
+              if( $count == 2 )
+              {
+                $mHtml .= '</tr>';
+                $count = -1;
+              }
+
+              $count++;
+            }
+
+          $mHtml .= '</table>';       
+          $mHtml .= '</div>';
+        $mHtml .= '</div>';
+
+
+
+        $mHtml .= '<div id="TodasID">';
+          $mHtml .= '<div class="displayDIV">';
+          $mHtml .= '<table width="100%" border="0" cellspacing="1" cellpadding="0">';
+            
+            $mHtml .= '<tr>';
+            $mHtml .= '<td colspan="2">';
+              $mHtml .= '<div id="rTodas">';
+                $mHtml .= '<input type="radio" id="rTodasP" onclick="SelectAll(\'todasP\', $(this) );" name="all_todas" /><label for="rTodasP"><small>PARA</small></label>';
+                $mHtml .= '<input type="radio" id="rTodasS" onclick="SelectAll(\'todasS\', $(this) );" name="all_todas" /><label for="rTodasS"><small>COPIA</small></label>';
+              $mHtml .= '</div>';
+            $mHtml .= '</td>'; 
+            $mHtml .= '<td colspan="7">';
+            $mHtml .= '<input type="button" id="cTodas" onclick="DeSelectAll(\'todas\', $(this), \'rTodas\' );" name="des_todas" value="ANULAR SELECCI&Oacute;N"/><br>';
+            $mHtml .= '<input type="button" id="cTodas" onclick="deleteEtapax(\'' . $_REQUEST["cod_usuari"] . '\', \'rTodas\' );" name="des_cargue" value="ELIMINAR" class="ui-button ui-widget ui-state-default ui-corner-all"/><br>';
+            $mHtml .= '</td>'; 
+            $mHtml .= '</tr>';
+
+            $mHtml .= '<tr>';
+            $mHtml .= '<td><small>Para</small></td>';
+            $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
+            $mHtml .= '<td><b>&nbsp;</b></td>';
+            $mHtml .= '<td><small>Para</small></td>';
+            $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
+            $mHtml .= '<td>&nbsp;</td>';
+            $mHtml .= '<td><small>Para</small></td>';
+            $mHtml .= '<td><small>Copia</small></td>';
+            $mHtml .= '<td><small>Req. Soluci&oacute;n</small></td>';
+            $mHtml .= '<td><small>N. Faro</small></td>';
+            $mHtml .= '<td>&nbsp;</td>';
+            $mHtml .= '</tr>';
+            $count = 0;
+            foreach( $_TODAS as $row )
+            {
+              if( $count == 0 )
+              $mHtml .= '<tr>';
+              
+              $color = ''; 
+              $checkP  = '<input class="todasP" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="P" >';
+              $checkS  = '<input class="todasS" type="radio" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $checkSl = '<input class="todasSl" type="checkbox" name="'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $checkNF = '<input class="todasNF" type="checkbox" name="nf_'.$row['cod_noveda'].'" id="'.$row['cod_noveda'].'ID" value="S" >';
+              $namexx = utf8_encode( $row['nom_noveda'] );
+              
+              if( $arr_actcon[$row['cod_noveda']]['ind_tipres'] != '' )
+              {
+                $color  = 'style="background-color:#CBEEFF;"';
+                $checkP  = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'P' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkS  = $arr_actcon[$row['cod_noveda']]['ind_tipres'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkSl = $arr_actcon[$row['cod_noveda']]['ind_reqsol'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $checkNF = $arr_actcon[$row['cod_noveda']]['ind_nfarox'] == 'S' ? '<span style="text-align:left;">&nbsp;&nbsp;&nbsp;X</span>' : '&nbsp';
+                $namexx .= '<div style="float:right;"><a style="text-decoration:none;cursor:pointer;color:#336600;" onclick="EditConfig(\''.$row['cod_noveda'].'\', \''.$_AJAX['cod_usuari'].'\' );"><small>Editar</small></a><small>&nbsp;|&nbsp;</small><a style="text-decoration:none;cursor:pointer;color:#336600;" onclick="DeleteConfig(\''.$row['cod_noveda'].'\', \''.$_AJAX['cod_usuari'].'\');"><small>Eliminar</small></a></div>';
+              }
+
+              $mHtml .= '<td '.$color.'>'.$checkP.'</td>';
+              $mHtml .= '<td '.$color.'>'.$checkS.'</td>';
+              $mHtml .= '<td '.$color.'>'.$checkSl.'</td>';
+              $mHtml .= '<td '.$color.'>'.$checkNF.'</td>';
               $mHtml .= '<td '.$color.'>'.$namexx.'</td>';
 
               if( $count == 2 )
@@ -682,7 +866,7 @@ class AjaxModuloComunicaciones
         $mHtml .= '</table>';
       $mHtml .= '</div><div class="col-md-12">&nbsp;</div>';
 
-      // Zona
+      /* // Zona
       $mSelect = "SELECT cod_zonaxx, nom_zonaxx FROM ".BASE_DATOS.".tab_genera_zonasx WHERE ind_estado = '1' ORDER BY 2";
       $consulta = new Consulta( $mSelect, $this -> conexion );
       $_ZONASX = $consulta -> ret_matriz();
@@ -720,7 +904,7 @@ class AjaxModuloComunicaciones
         }
 
         $mHtml .= '</table>';
-      $mHtml .= '</div>';
+      $mHtml .= '</div>'; */
       
       // Tipo Transportadora
       $mSelect = "SELECT cod_tiptra, nom_tiptra FROM ".BASE_DATOS.".tab_genera_tiptra WHERE ind_estado = '1' ORDER BY 2";
@@ -760,51 +944,52 @@ class AjaxModuloComunicaciones
         }
 
         $mHtml .= '</table>';
-      $mHtml .= '</div><div class="col-md-12">&nbsp;</div>';
-      
-       // Depositos
-    $mSelect = "SELECT cod_deposi, nom_deposi FROM ".BASE_DATOS.".tab_genera_deposi WHERE ind_estado = '1' ORDER BY 2";
-
-      $consulta = new Consulta( $mSelect, $this -> conexion );
-      $_DEPOSI = $consulta -> ret_matriz();
-
-      $mHtml .= '<div  class="col-md-6">';
-        $mHtml .= '<table width="100%" border="0" cellspacing="1" cellpadding="0">';
-        $mHtml .= '<tr>';
-        $mHtml .= '<td class="CellHead" colspan="4"><b>DEPOSITOS</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>';
-        $mHtml .= '</tr>';
-        $mHtml .= '<tr>';
-          $mHtml .= '<td style="padding:5px;" width="35%"><input type="checkbox" name="all_deposi" id="all_deposiID" onclick="SelectAll(\'deposi\', $(this) );" /><label for="all_deposiID"><small>TODOS</small></label></td>';
-          $mHtml .= '<td style="padding:5px;" width="15%">&nbsp;</td>';
-          $mHtml .= '<td style="padding:5px;" width="35%">&nbsp;</td>';
-          $mHtml .= '<td style="padding:5px;" width="15%">&nbsp;</td>';
-        $mHtml .= '</tr>';
-        $count = 0;       
-        foreach( $_DEPOSI as $row )
-        {
-      $checked = '';
-
-      if( $count == 0 )
-          $mHtml .= '<tr>';
-
-        if( $_AJAX['ind_editar'] != '' && $_CONFIG[8][ $row[0] ] != '' )
-          $checked = 'checked="checked"';
-
-          $mHtml .= '<td width="35%">'.utf8_encode( $row[1] ).'</td>';
-          $mHtml .= '<td width="15%"><input '.$checked.' type="checkbox" class="deposi" name="deposi'.$row[0].'" id="deposi'.$row[0].'ID" value="'.$row[0].'" /></td>';
-          
-          if( $count == 1 )
-        {
-          $mHtml .= '</tr>';
-          $count = -1;
-        }
-        $count++;
-        }
-
-        $mHtml .= '</table>';
       $mHtml .= '</div>';
+      
+       // Bahias
+       /*
+    $mSelect = "SELECT cod_bahia, nom_bahia FROM ".BASE_DATOS.".tab_genera_bahias WHERE num_remdes = '".$_AJAX['cod_transp']."' ORDER BY 2";
 
-      // Canal
+    $consulta = new Consulta( $mSelect, $this -> conexion );
+    $_BAHIAS = $consulta -> ret_matriz();
+
+    $mHtml .= '<div  class="col-md-6">';
+      $mHtml .= '<table width="100%" border="0" cellspacing="1" cellpadding="0">';
+      $mHtml .= '<tr>';
+      $mHtml .= '<td class="CellHead" colspan="4"><b>BAHIAS</b>&nbsp;&nbsp;&nbsp;&nbsp;</td>';
+      $mHtml .= '</tr>';
+      $mHtml .= '<tr>';
+        $mHtml .= '<td style="padding:5px;" width="35%"><input type="checkbox" name="all_bahias" id="all_bahiasID" onclick="SelectAll(\'bahias\', $(this) );" /><label for="all_bahiasID"><small>TODOS</small></label></td>';
+        $mHtml .= '<td style="padding:5px;" width="15%">&nbsp;</td>';
+        $mHtml .= '<td style="padding:5px;" width="35%">&nbsp;</td>';
+        $mHtml .= '<td style="padding:5px;" width="15%">&nbsp;</td>';
+      $mHtml .= '</tr>';
+      $count = 0;       
+      foreach( $_BAHIAS as $row )
+      {
+    $checked = '';
+
+    if( $count == 0 )
+        $mHtml .= '<tr>';
+
+      if( $_AJAX['ind_editar'] != '' && $_CONFIG[8][ $row[0] ] != '' )
+        $checked = 'checked="checked"';
+
+        $mHtml .= '<td width="35%">'.utf8_encode( $row[1] ).'</td>';
+        $mHtml .= '<td width="15%"><input '.$checked.' type="checkbox" class="bahias" name="bahias'.$row[0].'" id="bahias'.$row[0].'ID" value="'.$row[0].'" /></td>';
+        
+        if( $count == 1 )
+      {
+        $mHtml .= '</tr>';
+        $count = -1;
+      }
+      $count++;
+      }
+
+      $mHtml .= '</table>';
+    $mHtml .= '</div><div class="col-md-12">&nbsp;</div>';
+      */
+      /* // Canal
       $mSelect = "SELECT con_consec, nom_canalx FROM ".BASE_DATOS.".tab_genera_canalx WHERE ind_estado = '1' ORDER BY 2";
       $consulta = new Consulta( $mSelect, $this -> conexion );
       $_CANALX = $consulta -> ret_matriz();
@@ -842,7 +1027,7 @@ class AjaxModuloComunicaciones
         }
 
         $mHtml .= '</table>';
-      $mHtml .= '</div>';
+      $mHtml .= '</div>'; */
 
       // ORIGENES
       $mSelect = "SELECT a.cod_ciudad, CONCAT(b.abr_ciudad,' (',LEFT(d.abr_depart,4),') - ',LEFT(e.nom_paisxx,3))
@@ -857,11 +1042,24 @@ class AjaxModuloComunicaciones
                        b.ind_estado = '1' AND
                        a.cod_transp = '".$_AJAX['cod_transp']."'
                    GROUP BY 1";
+      
+      $mSelect = "SELECT a.cod_ciudad, CONCAT(b.abr_ciudad,' (',LEFT(d.abr_depart,4),') - ',LEFT(e.nom_paisxx,3))
+                   FROM ".BASE_DATOS.".tab_transp_origen a,
+                        ".BASE_DATOS.".tab_genera_ciudad b, 
+                        ".BASE_DATOS.".tab_genera_depart d,
+                        ".BASE_DATOS.".tab_genera_paises e
+                    WHERE a.cod_ciudad = b.cod_ciudad AND
+                        b.cod_depart = d.cod_depart AND
+                        b.cod_paisxx = d.cod_paisxx AND
+                        d.cod_paisxx = e.cod_paisxx AND
+                        b.ind_estado = '1' AND
+                        a.cod_transp = '".$_AJAX['cod_transp']."'
+                    GROUP BY 1";
 
       $consulta = new Consulta( $mSelect, $this -> conexion );
       $_ORIGEN = $consulta -> ret_matriz();
 
-      $mHtml .= '<div class="col-md-6">';
+      $mHtml .= '<div class="col-md-6" style="margin-bottom:10px;">';
         $mHtml .= '<table width="100%" border="0" cellspacing="1" cellpadding="0">';
         $mHtml .= '<tr>';
         $mHtml .= '<td class="CellHead" colspan="4"><b>ORIGEN</b>&nbsp;&nbsp;&nbsp;&nbsp;Seleccione por lo menos un Campo:</td>';
@@ -992,14 +1190,21 @@ class AjaxModuloComunicaciones
       {
         foreach( $_AJAX[$nom_criter] as $val_criter )
         {
-            $mInsert = "INSERT INTO ".BASE_DATOS.".tab_detail_modcom
-                                  ( cod_usuari, cod_consec, cod_noveda, 
-                                    cod_criter, val_criter, ind_tipres, 
-                                    usr_creaci, fec_creaci )
-                            VALUES( '".$_AJAX['cod_usuari']."', '".$num_consec."', '".$_AJAX['cod_noveda']."',
-                                    '".$cod_criter."', '".$val_criter."', '".$_AJAX['cod_tipres']."', 
-                                    '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
-            $consulta = new Consulta( $mInsert, $this -> conexion, "R");
+            $_AJAX['ind_reqsol'] = $_AJAX['ind_reqsol'] != 'S' ? 'N' : $_AJAX['ind_reqsol'];
+            $_AJAX['ind_nfarox'] = $_AJAX['ind_nfarox'] != 'S' ? 'N' : $_AJAX['ind_nfarox'];
+            if($_AJAX['cod_noveda'] != '' || $_AJAX['cod_noveda'] != NULL){
+              $mInsert = "INSERT INTO ".BASE_DATOS.".tab_detail_modcom
+                                    ( cod_usuari, cod_consec, cod_noveda, 
+                                      cod_criter, val_criter, ind_tipres, 
+                                      usr_creaci, fec_creaci, ind_reqsol,
+                                      ind_nfarox )
+                              VALUES( '".$_AJAX['cod_usuari']."', '".$num_consec."', '".$_AJAX['cod_noveda']."',
+                                      '".$cod_criter."', '".$val_criter."', '".$_AJAX['cod_tipres']."', 
+                                      '".$_SESSION['datos_usuario']['cod_usuari']."', NOW(), '".$_AJAX['ind_reqsol']."',
+                                      '".$_AJAX['ind_nfarox']."'
+                                      )";
+              $consulta = new Consulta( $mInsert, $this -> conexion, "R");
+            }
         }
       }
     }
@@ -1317,9 +1522,7 @@ class AjaxModuloComunicaciones
   protected function InsertConfig( $_AJAX )
   {
     $mCriter = $this -> getCriterio();
-
     $consulta = new Consulta("SELECT 1", $this -> conexion, "BR");
-
     foreach( $_AJAX['inf_noveda'] as $des_noveda )
     {
       $mSelect = "SELECT MAX( cod_consec ) AS num_consec 
@@ -1343,14 +1546,20 @@ class AjaxModuloComunicaciones
         {
           foreach( $_AJAX[$nom_criter] as $val_criter )
           {
-              $mInsert = "INSERT INTO ".BASE_DATOS.".tab_detail_modcom
-                                  ( cod_usuari, cod_consec, cod_noveda, 
-                          cod_criter, val_criter, ind_tipres, 
-                          usr_creaci, fec_creaci )
-                    VALUES( '".$_AJAX['cod_usuari']."', '".$num_consec."', '".$des_noveda['cod_noveda']."',
-                            '".$cod_criter."', '".$val_criter."', '".$des_noveda['cod_tipres']."', 
-                            '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() )";
-          $consulta = new Consulta( $mInsert, $this -> conexion, "R");
+              $des_noveda['ind_reqsol'] = $des_noveda['ind_reqsol'] != 'S' ? 'N' : $des_noveda['ind_reqsol'];
+              $des_noveda['ind_nfarox'] = $des_noveda['ind_nfarox'] != 'S' ? 'N' : $des_noveda['ind_nfarox'];
+              if($des_noveda['cod_noveda']!='' || $des_noveda['cod_noveda']!=NULL){
+                $mInsert = "INSERT INTO ".BASE_DATOS.".tab_detail_modcom
+                                    ( cod_usuari, cod_consec, cod_noveda, 
+                            cod_criter, val_criter, ind_tipres, 
+                            usr_creaci, fec_creaci, ind_reqsol, ind_nfarox )
+                      VALUES( '".$_AJAX['cod_usuari']."', '".$num_consec."', '".$des_noveda['cod_noveda']."',
+                              '".$cod_criter."', '".$val_criter."', '".$des_noveda['cod_tipres']."', 
+                              '".$_SESSION['datos_usuario']['cod_usuari']."', NOW() ,  '".$des_noveda['ind_reqsol']."',
+                              '".$des_noveda['ind_nfarox']."'
+                              )";
+                $consulta = new Consulta( $mInsert, $this -> conexion, "R");
+              }
           }
         }
       }
@@ -1462,10 +1671,10 @@ class AjaxModuloComunicaciones
     {
       $_FILTER = $this -> VerifyFilter( $_USUARI[0]['cod_usuari'], $_USUARI[0]['cod_perfil'] );
       
-      if( $_FILTER['clv_filtro'] == $_AJAX['cod_transp'] )
+      //if( $_FILTER['clv_filtro'] == $_AJAX['cod_transp'] )
         echo $_USUARI[0]['cod_usuari'].'|'.$_USUARI[0]['nom_usuari'].'|'.$_USUARI[0]['usr_emailx']; 
-      else
-      echo "r";
+      //else
+      //echo "r";
     }
     else
       echo "n";
@@ -1858,14 +2067,14 @@ class AjaxModuloComunicaciones
 
               FROM (
                             SELECT  a.cod_usuari, a.cod_consec
-                              FROM   satt_faro.tab_genera_modcom a 
+                              FROM   satt_corona.tab_genera_modcom a 
                             WHERE  1 = 1 GROUP BY a.cod_usuari
                    ) xx
                     INNER JOIN 
                    (
                             SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, b.nom_ciudad AS nom_criter
-                             FROM satt_faro.tab_detail_modcom a ,
-                                  satt_faro.tab_genera_ciudad b
+                             FROM satt_corona.tab_detail_modcom a ,
+                                  satt_corona.tab_genera_ciudad b
                             WHERE a.cod_criter = "1" AND  
                                   a.val_criter = b.cod_ciudad AND                                                                         
                                   a.cod_noveda = "'.$mData["cod_noveda"].'" AND 
@@ -1875,8 +2084,8 @@ class AjaxModuloComunicaciones
                     LEFT JOIN
                    (
                             SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bc.nom_produc AS nom_criter
-                             FROM satt_faro.tab_detail_modcom a, 
-                                  satt_faro.tab_genera_produc bc 
+                             FROM satt_corona.tab_detail_modcom a, 
+                                  satt_corona.tab_genera_produc bc 
                             WHERE a.cod_criter = "2" AND       
                                   a.val_criter = bc.cod_produc AND                                                                    
                                   a.cod_noveda = "'.$mData["cod_noveda"].'" AND 
@@ -1886,8 +2095,8 @@ class AjaxModuloComunicaciones
                     LEFT JOIN 
                    (
                            SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bd.nom_ciudad AS nom_criter
-                             FROM satt_faro.tab_detail_modcom a,
-                                  satt_faro.tab_genera_ciudad bd
+                             FROM satt_corona.tab_detail_modcom a,
+                                  satt_corona.tab_genera_ciudad bd
                             WHERE a.cod_criter = "3" AND     
                                   a.val_criter = bd.cod_ciudad AND                                                                      
                                   a.cod_noveda = "'.$mData["cod_noveda"].'" AND 
@@ -1897,8 +2106,8 @@ class AjaxModuloComunicaciones
                    LEFT JOIN 
                    (
                            SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, be.nom_tipdes AS nom_criter
-                             FROM satt_faro.tab_detail_modcom a,
-                                  satt_faro.tab_genera_tipdes be
+                             FROM satt_corona.tab_detail_modcom a,
+                                  satt_corona.tab_genera_tipdes be
                             WHERE a.cod_criter = "4" AND  
                                   a.val_criter = be.cod_tipdes AND                                                                         
                                   a.cod_noveda = "'.$mData["cod_noveda"].'" AND 
@@ -1908,8 +2117,8 @@ class AjaxModuloComunicaciones
                    LEFT JOIN 
                    (
                            SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bf.nom_canalx AS nom_criter
-                             FROM satt_faro.tab_detail_modcom a,
-                                  satt_faro.tab_genera_canalx bf 
+                             FROM satt_corona.tab_detail_modcom a,
+                                  satt_corona.tab_genera_canalx bf 
                             WHERE a.cod_criter = "6" AND
                                   a.val_criter = bf.con_consec AND                                                                           
                                   a.cod_noveda = "'.$mData["cod_noveda"].'" AND 
@@ -1919,8 +2128,8 @@ class AjaxModuloComunicaciones
                    LEFT JOIN 
                    (
                            SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bg.nom_zonaxx AS nom_criter
-                             FROM satt_faro.tab_detail_modcom a,
-                                  satt_faro.tab_genera_zonasx bg 
+                             FROM satt_corona.tab_detail_modcom a,
+                                  satt_corona.tab_genera_zonasx bg 
                             WHERE a.cod_criter = "5" AND 
                                   a.val_criter = bg.cod_zonaxx AND                                                                          
                                   a.cod_noveda = "'.$mData["cod_noveda"].'" AND 
@@ -1930,8 +2139,8 @@ class AjaxModuloComunicaciones
                    LEFT JOIN 
                    (
                            SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bh.nom_tiptra AS nom_criter
-                             FROM satt_faro.tab_detail_modcom a,
-                                  satt_faro.tab_genera_tiptra bh
+                             FROM satt_corona.tab_detail_modcom a,
+                                  satt_corona.tab_genera_tiptra bh
                             WHERE a.cod_criter = "7" AND  
                                   a.val_criter = bh.cod_tiptra AND                                                                         
                                   a.cod_noveda = "'.$mData["cod_noveda"].'" AND 
@@ -1941,8 +2150,8 @@ class AjaxModuloComunicaciones
                    LEFT JOIN 
                    (
                            SELECT  a.cod_usuari, a.cod_noveda, a.cod_criter, a.val_criter, bi.nom_deposi AS nom_criter
-                             FROM satt_faro.tab_detail_modcom a,
-                                  satt_faro.tab_genera_deposi bi 
+                             FROM satt_corona.tab_detail_modcom a,
+                                  satt_corona.tab_genera_deposi bi 
                             WHERE a.cod_criter = "8" AND  
                                   a.val_criter = bi.cod_deposi AND                                                                         
                                   a.cod_noveda = "'.$mData["cod_noveda"].'" AND 
@@ -1952,7 +2161,7 @@ class AjaxModuloComunicaciones
         $mListCr .= ' GROUP BY aa.cod_usuari ';
 
 
-        $mListCr .= ' ) z, satt_faro.tab_genera_usuari y WHERE z.cod_usuari = y.cod_usuari ';
+        $mListCr .= ' ) z, satt_corona.tab_genera_usuari y WHERE z.cod_usuari = y.cod_usuari ';
 
         if($mData["cod_ciuori"]!= '' )
           $mListCr .= " AND z.ValCriter1 = '".$mData["cod_ciuori"]."' ";
@@ -2324,7 +2533,7 @@ class AjaxModuloComunicaciones
   public function getNomUsuario()
   {  
 
-        $mSql = "SELECT a.cod_usuari AS cod_tercer, UPPER(a.nom_usuari) AS nom_tercer FROM ".BASE_DATOS.".tab_genera_usuari a INNER JOIN ".BASE_DATOS.".tab_genera_modcom b ON a.cod_usuari=b.cod_usuari WHERE b.cod_usuari LIKE '%".$_REQUEST['term']."%' OR a.nom_usuari LIKE '%".$_REQUEST['term']."%'  GROUP BY a.cod_usuari LIMIT 15";
+        $mSql = "SELECT a.cod_usuari AS cod_tercer, UPPER(a.nom_usuari) AS nom_tercer FROM ".BASE_DATOS.".tab_genera_usuari a INNER JOIN ".BASE_DATOS.".tab_genera_modcom b ON a.cod_usuari=b.cod_usuari WHERE b.cod_consec = '".$_REQUEST['term']."' OR a.nom_usuari LIKE '%".$_REQUEST['term']."%' GROUP BY a.cod_usuari LIMIT 15";
 
         $consulta = new Consulta( $mSql, $this -> conexion );
         $mResult = $consulta -> ret_matrix('a');
