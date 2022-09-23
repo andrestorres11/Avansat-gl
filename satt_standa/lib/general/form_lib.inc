@@ -169,6 +169,42 @@ class Formulario
 
     }
 
+    function nueva_tabla2($lin = 0,$co=0,$size=0,$id="")
+
+    {
+
+       echo "\n                  </TR>
+
+                </TABLE>";
+
+
+
+        if($lin)
+
+        echo "\n                <hr ";
+
+        if($co)
+
+        echo "color='$co'";
+
+        if($size)
+
+        echo "size='$size'";
+
+        if($lin)
+
+        echo ">";
+
+
+
+        echo "\n                <TABLE WIDTH=\"100%\" id=\"".$id."\" cellpadding=4 cellspacing=0 CLASS=\"formulario\">
+
+                  <TR>";
+
+
+
+    }
+
 
 
     function espacio($alt = "10")
