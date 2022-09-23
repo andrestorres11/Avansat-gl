@@ -2681,7 +2681,7 @@ class Despachos
                                             break;
                                         case 'cod_itiner':
                                             if($mData[$key]==''){
-                                                $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reeviar Itinerario]</a>';
+                                                $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reenviar Itinerario]</a>';
                                             }else{
                                                 $mTxt = $mData[$key];
                                             }
@@ -2696,8 +2696,11 @@ class Despachos
                                                         ";
                                             $consulta = new Consulta($mSql, $this->conexion);
                                             $registros = $consulta -> ret_matriz();
-                                            if(($mData[$key]!=0) && (count($registros)>0) && ($mView->ree_noveda->ind_visibl)){
-                                                $mTxt = $mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reeviar Novedades]</a>';
+                                            
+                                            //Novedades pendientes por reenviar
+                                            $cNovPendientes = $this->getNovedadesReenviar($mNumDespac);
+                                            if(($mData[$key]!=0) && (count($registros)>0) && ($mView->ree_noveda->ind_visibl) && (sizeof($cNovPendientes) > 0)){
+                                                $mTxt = $mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reenviar Novedades]</a>';
                                             }else{
                                                 $mTxt = $mData[$key];
                                             }
@@ -9935,6 +9938,93 @@ class Despachos
         $consulta = new Consulta($query, $this->conexion);
         $sitio = $consulta->ret_arreglo();
         return $sitio[0];
+    }
+
+    /*! \fn: getNovedadesReenviar
+     *  \brief: Retorna un arreglo de las novedades pendientes por reenviar
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 20/09/2022
+     *  \date modified: dia/mes/año
+     *  \param: $num_despac String Número de despacho
+     *  \return: array: respuesta con la cantidad de novedades pendientes por reenviar (indicador = 0)
+     */
+    function getNovedadesReenviar($num_despac){
+        $mQuery = "
+                                (
+                                    SELECT
+                                            'pc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
+                                            a.num_despac, aa.cod_manifi, bb.num_placax,
+                                            a.cod_contro, a.fec_noveda, a.des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala,  
+                                            '' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, a.fec_creaci
+                                    FROM
+                                            ".BASE_DATOS.".tab_despac_despac aa
+                                INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
+                                INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = (
+                                                                                                                                        SELECT MAX(xx.num_consec) AS num_consec
+                                                                                                                                        FROM ".BASE_DATOS.".tab_transp_tipser xx
+                                                                                                                                        WHERE xx.cod_transp = bb.cod_transp
+                                                                                                                                    )
+                                INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
+                                INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
+                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.ind_estado = 1 /*Debe estar activa*/
+
+
+                                INNER JOIN	".BASE_DATOS.".tab_despac_noveda a  ON bb.num_despac =  a.num_despac
+                                LEFT JOIN ".BASE_DATOS.".tab_errorx_noveda b  ON a.num_despac !=  b.num_despac 
+                                                                            AND a.cod_contro !=  b.cod_contro
+                                LEFT JOIN ".BASE_DATOS.".tab_despac_sitio  c  ON a.cod_sitiox  =  c.cod_sitiox
+                                LEFT JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+
+                                    WHERE a.num_despac = '".$num_despac."'
+                                        AND	a.ind_enviad = 0
+                                        AND aa.ind_anulad = 'R'
+                                        AND aa.ind_planru LIKE 'S'  
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                    GROUP BY aa.num_despac, a.fec_creaci
+                                )
+                                UNION ALL
+                                (
+                                    SELECT
+                                            'nc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
+                                            a.num_despac, aa.cod_manifi, bb.num_placax, 
+                                            a.cod_contro, a.fec_contro AS fec_noveda, a.obs_contro AS des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala, 
+                                            a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, a.fec_creaci
+                                    FROM
+                                            ".BASE_DATOS.".tab_despac_despac aa
+                                INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
+                                INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = (
+                                                                                                                                        SELECT MAX(xx.num_consec) AS num_consec
+                                                                                                                                        FROM ".BASE_DATOS.".tab_transp_tipser xx
+                                                                                                                                        WHERE xx.cod_transp = bb.cod_transp
+                                                                                                                                    )
+                                INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
+                                INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
+                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.ind_estado = 1 /*Debe estar activa*/
+
+
+                                INNER JOIN ".BASE_DATOS.".tab_despac_contro a  ON bb.num_despac =  a.num_despac
+                                LEFT JOIN ".BASE_DATOS.".tab_errorx_noveda b  ON a.num_despac != b.num_despac 
+                                                                            AND a.cod_contro != b.cod_contro
+                                LEFT JOIN ".BASE_DATOS.".tab_despac_sitio  c  ON a.cod_sitiox = c.cod_sitiox
+                                LEFT JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+
+                                    WHERE
+                                            a.num_despac = '".$num_despac."'
+                                        AND	a.ind_enviad = 0
+                                        AND aa.ind_anulad = 'R'
+                                        AND aa.ind_planru LIKE 'S' 
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        GROUP BY aa.num_despac, a.fec_creaci
+                                )
+                                ORDER BY cod_server
+                        ";
+            $mConsult = new Consulta($mQuery, $this->conexion);
+            $cNovPendientes = $mConsult->ret_matrix('a');
+            return $cNovPendientes;
     }
 }
 
