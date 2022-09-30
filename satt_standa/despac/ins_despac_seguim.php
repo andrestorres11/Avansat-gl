@@ -4,7 +4,7 @@
  *  \author: 
  *  \author: 
  *  \version: 
- *  \date: dia/mes/a?o
+ *  \date: dia/mes/año
  *  \bug: 
  *  \bug: 
  *  \warning: 
@@ -42,8 +42,8 @@ class Proc_segui
     /*! \fn: principal
      *  \brief: 
      *  \author: 
-     *  \date: dia/mes/a?o
-     *  \date modified: dia/mes/a?o
+     *  \date: dia/mes/año
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \return:
      */
@@ -500,8 +500,8 @@ class Proc_segui
     /*! \fn: verifyViajeConsol
      *  \brief: Verifica si el Viaje esta consolidado
      *  \author: 
-     *  \date: dia/mes/a?o
-     *  \date modified: dia/mes/a?o
+     *  \date: dia/mes/año
+     *  \date modified: dia/mes/año
      *  \param: NumDespac
      *  \return:
      */
@@ -619,7 +619,7 @@ class Proc_segui
     /*! \fn: Formulario1
      *  \brief: Formulario para ingresar las novedades
      *  \author:
-     *  \date: dia/mes/a?o
+     *  \date: dia/mes/año
      *  \date modified: 17/09/2015
      *  \modified By: Ing. Fabian Salinas
      *  \param:
@@ -639,14 +639,6 @@ class Proc_segui
                     overflow: auto;
                     border: 5px solid #333333;
                     background: white;
-                }
-                .contentAccordionFormobs {
-                    border: 1px solid rgb(201, 201, 201);
-                    padding: 3px;
-                    width: fit-content;
-                    min-height: 50px;
-                    border-radius: 5px;
-                    background-color: rgb(240, 240, 240);
                 }
               </style>";
 
@@ -953,10 +945,6 @@ class Proc_segui
                 }    
               }
               $("#obsID").attr("spellcheck", true);
-              $("#obsID").bind("paste", function(e){
-                e.preventDefault();
-                alert("Esta accion esta prohibida");
-              });
               $("#obsID").val("'.$nota.'");
               if($("#obsID").val().length > 0){
                   limit = limit - $("#obsID").val().length;
@@ -1252,11 +1240,11 @@ class Proc_segui
 
         $mHtml->OpenDiv("id:contentID; class:contentAccordion");
 
-            #<Asignaci?n de Novedad>
+            #<Asignación de Novedad>
                 $mHtml->OpenDiv("id:asigNovedaID; class:accordion");
                     $mHtml->SetBody("<h3 style='padding:6px;'><center>ASIGNACION DE NOVEDAD</center></h3>");
                     $mHtml->OpenDiv("id:secID");
-                        $mHtml->OpenDiv("id:form_asigNovedaID; class:contentAccordionFormobs");
+                        $mHtml->OpenDiv("id:form_asigNovedaID; class:contentAccordionForm");
                             $mHtml->Table("tr");
 
                                 #Cabecera 
@@ -1336,7 +1324,7 @@ class Proc_segui
                                 $mParamcCalifi = $this -> VerifyInterfRit( $_REQUEST['despac'] ) ;
                                 if( $_REQUEST['codpc'] == '9999' && $mParamcCalifi == '1' )
                                 {
-                                    $mNumCalifi = array(array("0"=>"", "1"=>"--"),      array("0"=>"1","1"=>"P?simo"),  array("0"=>"2","1"=>"Malo"),
+                                    $mNumCalifi = array(array("0"=>"", "1"=>"--"),      array("0"=>"1","1"=>"Pésimo"),  array("0"=>"2","1"=>"Malo"),
                                                         array("0"=>"3","1"=>"Regular"), array("0"=>"4","1"=>"Bueno"),   array("0"=>"5","1"=>"Excelente"));
 
                                     $mHtml->CloseTable("tr");
@@ -1415,7 +1403,7 @@ class Proc_segui
                         $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
-            #</Asignaci?n de Novedad>
+            #</Asignación de Novedad>
 
         $mHtml->CloseDiv();
 
@@ -1600,7 +1588,7 @@ class Proc_segui
                  * 
                  * *** */
 
-                //Verificar Check de Habilitaci?n en PAD                
+                //Verificar Check de Habilitación en PAD                
                 if ($regist["habPAD"] == 1)
                 {
                       
@@ -1837,7 +1825,7 @@ class Proc_segui
                 $consulta = new Consulta( $mSql, $this -> conexion );
                 $mMaxConsec = $consulta -> ret_matriz( 'i' );
                 
-                // Inserta los datos de la calificaci?n a nivel Local -----------------------------------------------------------------------
+                // Inserta los datos de la calificación a nivel Local -----------------------------------------------------------------------
                 $mSql = "INSERT INTO ".BASE_DATOS.".tab_califi_conduc 
                          ( 
                                   cod_consec, num_despac, cod_manifi, cod_conduc, num_placax, num_califi,
@@ -1856,7 +1844,7 @@ class Proc_segui
                                  <tr><td>Despacho: ".$_REQUEST['despac']."</td></tr>
                                  <tr><td><a href='?cod_servic=".$_REQUEST["cod_servic"]."&window=central'>CALIFICAR OTRO CONDUCTOR</a></td></tr>
                           </table>";
-                $mens->correcto("REGISTRO CALIFICACI?N CONDUCTOR RIT", $mensaje);
+                $mens->correcto("REGISTRO CALIFICACIÓN CONDUCTOR RIT", $mensaje);
               }
               else
               {
