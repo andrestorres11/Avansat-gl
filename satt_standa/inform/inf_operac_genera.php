@@ -897,7 +897,7 @@ class InformViajes {
         $formulario->radio("No", "ind_noveda\" id=\"ind_novedaID", 2, 0, 1);
 
         $formulario->nueva_tabla();
-        $formulario->linea("Observaciones", 1, "t");
+        $formulario->linea("Estado", 1, "t");
         $formulario->nueva_tabla();
         $formulario->radio("Finalizados", "ind_finali\" id=\"ind_finaliID", 1, 1, 0);
         $formulario->radio("En Ruta", "ind_finali\" id=\"ind_finaliID", 2, 0, 1);
