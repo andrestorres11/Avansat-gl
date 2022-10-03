@@ -98,10 +98,8 @@ class ConfirPernoc
 			$mFecFin = date($mData['fec_actual']." ".$mHorFin.":00");
 			$mFecAct = date($mData['fec_actual']." ".$mData["hor_actual"]);
 
-			//mail('cristian.torres@grupooet.com','Pernoct ->'.$_REQUEST['num_despac'], 'mFecIni: '.$mFecIni.'\n mFecFin:'.$mFecFin.'\n mFecAct:'.$mFecAct);
 			if( $mFecFin <= $mFecIni )
 				$mFecFin = date( "Y-m-d H:i:s", strtotime('+1 day', strtotime($mFecFin)) );
-				//mail('cristian.torres@grupooet.com','DataEnvi ->'.$_REQUEST['num_despac'], 'mFecFinNew: '.$mFecFin);
 			$mIndVerify = self::getDespacPernoc( $_REQUEST['num_despac'], $mFecIni, $mFecFin );
  
 			if( $mFecAct <= $mFecFin && $mFecAct >= $mFecIni && sizeof($mIndVerify) < 1 && $mTransp["ind_conper"] == 1 ){
