@@ -26,7 +26,7 @@ class parametrizacion_correos
 
  /*! \fn: styles
        *  \brief: incluye todos los archivos necesarios para los estilos
-       *  \author: Ing. Cristian AndrÃ©s Torres
+       *  \author: Ing. Cristian Andrés Torres
        *  \date: 02-06-2020
        *  \date modified: dd/mm/aaaa
        *  \param: 
@@ -58,7 +58,7 @@ class parametrizacion_correos
 
     /*! \fn: scripts
    *  \brief: incluye todos los archivos necesarios para los eeventos js
-   *  \author: Ing. Cristian AndrÃ©s Torres
+   *  \author: Ing. Cristian Andrés Torres
    *  \date: 02-06-2020
    *  \date modified: dd/mm/aaaa
    *  \param: 
@@ -100,7 +100,7 @@ class parametrizacion_correos
   //---------------------------------------------
   /*! \fn: registros
   *  \brief: Imprime el html con el encabezado de la tabla
-  *  \author: Cristian AndrÃ©s Torres Cardozo
+  *  \author: Cristian Andrés Torres Cardozo
   *  \date: 02/06/2020
   *  \date modified: 
   *  \return 
@@ -130,8 +130,9 @@ class parametrizacion_correos
                                 <th>Seguimiento</th>
                                 <th>Inf. Mensual</th>
                                 <th>A cargo de empresa</th>
-                                <th>Envio NotificaciÃ³n API</th>
+                                <th>Envio Notificación API</th>
                                 <th>Not. Estudio de seguridad</th>
+                                <th>Not. Faro (Matriz de comunicaciones)</th>
                                 <th>Opciones</th>
                               </tr>
                             </thead>
