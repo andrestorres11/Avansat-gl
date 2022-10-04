@@ -277,20 +277,21 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Direcci&oacute;n Poseedor</th>";
             $mHtml .= "<th class=cellHead >Ciudad Poseedor</th>";
             $mHtml .= "<th class=cellHead >Mercanc&iacute;a</th>";
-            $mHtml .= "<th class=cellHead >Anulado</th>";
             if ($_REQUEST['ind_noveda'] == '1') {
                 $mHtml .= "<th class=cellHead >
                     <table border='1' id='export' class='table table-bordered'>
                     <thead>
                         <tr>
-                            <th class=cellHead style='font-size:9px;' width='12%' >Sitio de seguimiento</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Novedad</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Observaci&oacute;n del Controlador</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Fecha y Hora</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Tiempo</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Diferencia T</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Cumplimiento Seguimiento</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Porcentaje de Cumplimiento</th>
+                            <th class=cellHead style='font-size:9px;' width='10%' >Sitio de seguimiento</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Novedad</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Observaci&oacute;n del Controlador</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Usuario</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Fecha y Hora</th>
+                            <th class=cellHead style='font-size:9px;  width='10%'>Tiempo Contratado</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Tiempo</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Diferencia T</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Cumplimiento Seguimiento</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Porcentaje de Cumplimiento</th>
                         </tr>
                     </thead>
                     </table>
@@ -387,16 +388,10 @@ class InformViajes {
                 $mHtml .= "<td class='cellInfo' align ='left' >".( $row['dir_poseed'] != '' ? $row['dir_poseed'] : 'DESCONOCIDA' )."</td>"; // Direccion Poseedor
                 $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ciu_poseed'] != '' ? $row['ciu_poseed'] : 'DESCONOCIDA' )."</td>"; // Ciudad Poseedor
                 $mHtml .= "<td class='cellInfo' align ='left' >".( isset($row['nom_mercan']) ? $row['nom_mercan'] : 'DESCONOCIDO' )."</td>"; //Mercancia
-                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
                 if ($_REQUEST['ind_noveda'] == '1') {
-                    $horainicio="";
-                    $horafin="";
-                    $hours="";
-                    $resultsegui=0;
                     $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
-                    $resprom=0;
                     if($mSizeNoved > 1){
-                        for ($y = 0; $y < $mSizeNoved; $y++) {
+                        /*for ($y = 0; $y < $mSizeNoved; $y++) {
                             if($y == 0){
                                 $horainicio= strtotime($mArrayNove[$y][3]);
                                 $result=0;
@@ -419,16 +414,21 @@ class InformViajes {
                                     }
                             }                            
                         }
-                        $promediofin=($resprom * 100)/($mSizeNoved-1);
+                        //$promediofin=($resprom * 100)/($mSizeNoved-1);*/
                         $mHtml2 = "<table border='1' class='table table-bordered table-sm pt-0'>";
                         $mHtml2 .="<tbody>";
                         for ($x = 0; $x < $mSizeNoved; $x++) {
+                            $horafin=0;$horainicio=0;$years=0;$months=0; $days=0;$hours=0;$minutes=0;
+                            $seconds=0;$result=0;$cal=0;$porcent=0;$opera=0;$resseg='';
+
                             $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
                             $mHtml2 .= '<tr>';
-                            $mHtml2 .= '<td class="cellInfo"  width="12%">'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
-                            $mHtml2 .= '<td class="cellInfo" width="12%">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
-                            $mHtml2 .= '<td class="cellInfo"  width="12%">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
-                            $mHtml2 .= '<td class="cellInfo" width="12%">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
+                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
+                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
+                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.( $mArrayNove[$x][6] !='' ? $mArrayNove[$x][6]:'N/a' ).'&nbsp;</td>'; //Usuario
+                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.($row['cod_transp'] ).'&nbsp;</td>'; //cod_transp
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
                             
                             
                             $horafin=$horainicio;
@@ -441,18 +441,20 @@ class InformViajes {
                             $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
                             $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
                             $result=($hours * 60) + $minutes;
-                            
-                            $mHtml2 .= '<td class="cellInfo" width="12%">'.($result !='' ? $result:'&nbsp;').'</td>'; //Tiempo
                             $cal=($resultsegui-$result);
-                            $mHtml2 .= '<td class="cellInfo" width="12%">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
+                            $porcent=(($cal*100)/$resultsegui);
+
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($resultsegui !='' ? $resultsegui:'&nbsp;').'</td>'; //Tiempo contratado
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($result !='' ? $result:'0').'</td>'; //Tiempo
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
                             $opera=$resultsegui-$result;
                             if($opera >=0){
                                 $resseg="Si";
                             }else{
                                 $resseg="No";
                             }
-                            $mHtml2 .= '<td class="cellInfo" width="12%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
-                            $mHtml2 .= '<td class="cellInfo" align ="left" width="12%">'.($promediofin !=0 ? round($promediofin,2):0).'%</td>'; //Porcentaje de Cumplimiento
+                            $mHtml2 .= '<td class="cellInfo" width="10%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($porcent !=0 ? round($porcent,0, PHP_ROUND_HALF_UP):0).'%</td>'; //Porcentaje de Cumplimiento
                             $mHtml2 .='</tr>';
                         }
                         $mHtml2 .="</tbody>";
@@ -678,11 +680,13 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Sitio de seguimiento</th>";
             $mHtml .= "<th class=cellHead >Novedad</th>";
             $mHtml .= "<th class=cellHead >Observaci&oacute;n del Controlador</th>";
+            $mHtml .= "<th class=cellHead >Usuario</th>";
             $mHtml .= "<th class=cellHead >Fecha y Hora</th>";
+            $mHtml .= "<th class=cellHead >Tiempo Contratado</th>";
             $mHtml .= "<th class=cellHead >Tiempo</th>";
             $mHtml .= "<th class=cellHead >Diferencia T</th>";
             $mHtml .= "<th class=cellHead >Cumplimiento Seguimiento</th>";
-            $mHtml .= "<th class=cellHead >Porcentaje de Cumplimiento</th>";
+            $mHtml .= "<th class=cellHead >Porcentaje de Incumplimiento</th>";
             $mHtml .="</tr>";
             $mHtml .="</thead>";
             $mHtml .="<tbody>";
@@ -703,7 +707,7 @@ class InformViajes {
                 $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
                 $resprom=0;
                 if($mSizeNoved > 1){
-                    for ($y = 0; $y < $mSizeNoved; $y++) {
+                    /*for ($y = 0; $y < $mSizeNoved; $y++) {
                         if($y == 0){
                             $horainicio= strtotime($mArrayNove[$y][3]);
                             $result=0;
@@ -725,10 +729,13 @@ class InformViajes {
                                     $resprom++ ;
                                 }
                         }                            
-                    }
-                    $promediofin=($resprom * 100)/($mSizeNoved-1);
+                    }*/
+                    //$promediofin=($resprom * 100)/($mSizeNoved-1);
                     
                     for ($x = 0; $x < $mSizeNoved; $x++) {
+                        $horafin=0;$horainicio=0;$years=0;$months=0; $days=0;$hours=0;$minutes=0;
+                        $seconds=0;$result=0;$cal=0;$porcent=0;$opera=0;$resseg='';
+
                         $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
                         $mHtml .= '<tr>';
                         $mHtml .= "<td class='cellInfo' align ='left' >".($row['cod_transp'] !='' ? $row['cod_transp']:'')."</td>"; //Nit empresa de Transporte
@@ -736,6 +743,7 @@ class InformViajes {
                         $mHtml .= '<td class="cellInfo" align ="left" >'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
                         $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
                         $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
+                        $mHtml .= '<td class="cellInfo" align ="left">'.($mArrayNove[$x][6] !='' ? $mArrayNove[$x][6]:'N/a').'&nbsp;</td>'; //Usuario
                         $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
                         
                         
@@ -749,9 +757,11 @@ class InformViajes {
                         $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
                         $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
                         $result=($hours * 60) + $minutes;
-                        
-                        $mHtml .= '<td class="cellInfo" width="12%">'.($result !='' ? $result:'&nbsp;').'</td>'; //Tiempo
                         $cal=($resultsegui-$result);
+                        $porcent=(($cal*100)/$resultsegui);
+
+                        $mHtml .= '<td class="cellInfo" width="12%">'.($resultsegui !='' ? $resultsegui:'&nbsp;').'</td>'; //Tiempo contratado
+                        $mHtml .= '<td class="cellInfo" width="12%">'.($result !='' ? $result:'0').'</td>'; //Tiempo
                         $mHtml .= '<td class="cellInfo" width="12%">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
                         $opera=$resultsegui-$result;
                         if($opera >=0){
@@ -760,7 +770,7 @@ class InformViajes {
                             $resseg="No";
                         }
                         $mHtml .= '<td class="cellInfo" width="12%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
-                        $mHtml .= '<td class="cellInfo" align ="left" width="12%">'.($promediofin !=0 ? round($promediofin,2):0).'%</td>'; //Porcentaje de Cumplimiento
+                        $mHtml .= '<td class="cellInfo" align ="left" width="12%">'.($porcent !=0 ? round($porcent,2):0).'%</td>'; //Porcentaje de Cumplimiento
                         $mHtml .='</tr>';
                     }
                     
@@ -963,7 +973,8 @@ class InformViajes {
                     a.obs_contro AS 'Observaci&oacute;n del Controlador', 
                     a.fec_contro AS 'Fecha y Hora', 
                     d.nom_contro AS 'Sitio de seguimiento 2', 
-                    a.cod_sitiox
+                    a.cod_sitiox,
+                    a.usr_creaci as 'Usuario'
                FROM ".BASE_DATOS.".tab_despac_contro a 
          INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                  ON a.cod_noveda = b.cod_noveda 
@@ -1029,7 +1040,6 @@ function getTiempoTransport($transp, $tipserv){
     ORDER BY tab_transp_tipser.num_consec
     DESC limit 1
     ';
-    
     $mConsult = new Consulta($mSql, $this->conexion);
     $mResult = $mConsult->ret_matriz('a');
    
