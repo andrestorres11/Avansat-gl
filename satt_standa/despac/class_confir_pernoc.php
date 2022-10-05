@@ -49,7 +49,7 @@ class ConfirPernoc
 				break;
 
 			default:
-				die("Â¡Acceso Denegado!");
+				die("¡Acceso Denegado!");
 				break;
 		}
 	}
@@ -279,7 +279,8 @@ class ConfirPernoc
 	 *  \return: Matriz
 	 */
 	private function getDespacPernoc($mDespac, $mFecIni, $mFecFin){
-		$mSql = "SELECT a.cod_consec 
+		$mSql = "/* OPTIMIZADO cod_servic=".self::$cCodAplica."*/
+				 SELECT a.cod_consec 
 				   FROM ".BASE_DATOS.".tab_despac_perno2 a 
 				  WHERE a.num_despac = '$mDespac' 
 					AND DATE_FORMAT(a.fec_creaci, '%Y-%m-%d') BETWEEN '$mFecIni' AND '$mFecFin' ";
