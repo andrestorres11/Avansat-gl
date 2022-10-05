@@ -76,6 +76,7 @@ class ConfirPernoc
 		$mData = $mConsult -> ret_matrix('a');
 		$mData = $mData[0];
 
+		
 		switch ($mData['cod_tipdes']) {
 			case 1: $x = "urb"; break;
 			case 2: $x = "nac"; break;
@@ -91,13 +92,14 @@ class ConfirPernoc
 			$mTransp = getTransTipser( self::$cConexion, " AND a.cod_transp = '$mData[cod_transp]' ", array("ind_conper", "hor_pe1".$x, "hor_pe2".$x) );
 			$mTransp = $mTransp[0];
 
-			$mFecIni = date($mData['fec_actual']." ".$mTransp["hor_pe1".$x].":00");
-			$mFecFin = date($mData['fec_actual']." ".$mTransp["hor_pe2".$x].":00");
+			$mHorIni = $mTransp["hor_pe1".$x] != '' ? $mTransp["hor_pe1".$x] : '00:00';
+			$mHorFin = $mTransp["hor_pe2".$x] != '' ? $mTransp["hor_pe2".$x] : '00:00';
+			$mFecIni = date($mData['fec_actual']." ".$mHorIni.":00");
+			$mFecFin = date($mData['fec_actual']." ".$mHorFin.":00");
 			$mFecAct = date($mData['fec_actual']." ".$mData["hor_actual"]);
 
 			if( $mFecFin <= $mFecIni )
 				$mFecFin = date( "Y-m-d H:i:s", strtotime('+1 day', strtotime($mFecFin)) );
-
 			$mIndVerify = self::getDespacPernoc( $_REQUEST['num_despac'], $mFecIni, $mFecFin );
  
 			if( $mFecAct <= $mFecFin && $mFecAct >= $mFecIni && sizeof($mIndVerify) < 1 && $mTransp["ind_conper"] == 1 ){
