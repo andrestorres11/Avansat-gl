@@ -207,10 +207,20 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> Cell(66,5,utf8_decode($info['clv_gpsxxx']),1,1,'L');
 
     $pdf -> Cell(39,5,utf8_decode('Plataforma GPS (URL)'),1,0,'L',1);
-    $pdf -> Cell(52,5,utf8_decode($info['url_gpsxxx']),1,0,'L');
-    $pdf -> Cell(39,5,utf8_decode('Observaciones GPS'),1,0,'L',1);
-    $pdf -> Cell(66,5,utf8_decode($info['obs_opegps']),1,1,'L');
+    $pdf -> Cell(157,5,utf8_decode($info['url_gpsxxx']),1,1,'L');
+    
+    if($info['obs_opegps'] == ''){
+      $info['obs_opegps'] = '**SIN OBSERVACIÓN**';
+    }
 
+    $pdf -> setX(49);
+    $Y = $pdf -> GetY();
+    $pdf -> MultiCell(157,4,utf8_decode($info['obs_opegps']) ,1, 'J',0);
+    $H = $pdf->GetY();
+    $height= $H-$Y;
+    $pdf->SetXY(10,$Y);
+    $pdf->Cell(39,$height,utf8_decode('OBSERVACION GPS'),1,0,'L',1); 
+    $pdf -> setY($H);
     $pdf -> SetFont('Arial','B',8);
     $pdf -> Cell(196,6,utf8_decode('INFORMACIÓN DEL POSEEDOR TENEDOR'),1,1,'C',1);
     $pdf -> SetFont('Arial','B',8);

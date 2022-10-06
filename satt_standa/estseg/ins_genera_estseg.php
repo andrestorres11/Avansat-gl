@@ -2190,7 +2190,7 @@
 
 
         private function getCodOpeGPS($cod_opegps = NULL){
-          $sql="SELECT a.nit_operad, a.nom_operad FROM ".BD_STANDA.".tab_genera_opegps a WHERE a.ind_estado = 1 ORDER BY a.nom_operad ASC";
+          $sql="SELECT a.cod_operad, a.nom_operad FROM ".BD_STANDA.".tab_genera_opegps a WHERE a.ind_estado = 1 ORDER BY a.nom_operad ASC";
           $resultado = new Consulta($sql, $this->conexion);
           $resultados = $resultado->ret_matriz('a');
           $html='';
@@ -2198,12 +2198,12 @@
           foreach ($resultados as $registro){
               $selected = '';
               if($cod_opegps != '' || $cod_opegps != NULL){
-                if($registro['nit_operad'] == $cod_opegps){
+                if($registro['cod_operad'] == $cod_opegps){
                 $selected = 'selected';
                 $existe = true;
                 }
               }
-              $html .= '<option value="'.$registro['nit_operad'].'" '.$selected.'>'.$registro['nom_operad'].'</option>';
+              $html .= '<option value="'.$registro['cod_operad'].'" '.$selected.'>'.$registro['nom_operad'].'</option>';
           }
 
           if((!$existe) && ($cod_opegps != '' ||  $cod_opegps != NULL)){
@@ -2219,6 +2219,7 @@
           return $html;
         }
 
+        
         private function getParentesco(){
           $sql = "SELECT 
                     a.cod_parent,
