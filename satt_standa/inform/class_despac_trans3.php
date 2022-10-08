@@ -2093,7 +2093,8 @@ class Despac
 
 		$mFilHorasx = $_REQUEST[fil_horasx] == '1' ? 'AND i.hor_ingres = "'.$_REQUEST['hor_inicia'].'" AND i.hor_ingres = "'.$_REQUEST['hor_finalx'].'"': '';
 
-		$mSql = " SELECT a.*,
+		$mSql = "/*OPTIMIZADO cod_servic=".self::$cCodAplica." */ 
+					SELECT a.*,
 						 GROUP_CONCAT(h.cod_usuari ORDER BY h.cod_usuari ASC SEPARATOR ', ' ) AS usr_asigna
 					FROM (
 
@@ -2122,10 +2123,15 @@ class Despac
 											   ) f ON c.cod_transp = f.cod_transp AND c.num_consec = f.num_consec
 									  GROUP BY c.cod_transp
 						 ) a 
-			   LEFT JOIN ".BASE_DATOS.".vis_monito_encdet h
-					  ON a.cod_transp = h.cod_transp
-			   LEFT JOIN ".BASE_DATOS.".tab_config_horlab i 
-			          ON a.cod_transp = i.cod_tercer
+						 LEFT JOIN (
+							SELECT 
+								cod_usuari,cod_transp 
+							FROM 
+							".BASE_DATOS.".vis_monito_encdet 
+							GROUP BY 
+								cod_usuari, cod_transp
+						) h ON a.cod_transp = h.cod_transp 
+						LEFT JOIN ".BASE_DATOS.".tab_config_horlab i ON a.cod_transp = i.cod_tercer 
 					WHERE 1=1 ";
 
 		$mSql .= $mTipEtapax == NULL ? "" : " AND a.{$mTipEtapax} = 1 ";
@@ -2155,9 +2161,9 @@ class Despac
 			$mSql .= " AND h.cod_usuari = '".$_SESSION[datos_usuario][cod_usuari]."' ";
 			$mSql .= $mLisTransp != '' && $mLisTransp != null ? " AND a.cod_transp IN ( $mLisTransp ) " : " AND a.cod_transp IN ( '' ) ";
 		} elseif( $mSinFiltro == true )
-			$mSql .= " AND ( h.cod_transp IS NULL OR h.cod_usuari IN ({$_REQUEST[cod_usuari]}) )";
+			$mSql .= " AND ( h.cod_transp IS NULL OR UPPER(h.cod_usuari) IN ({$_REQUEST[cod_usuari]}) )";
 		else
-			$mSql .= $_REQUEST[cod_usuari] ? " AND h.cod_usuari IN ( {$_REQUEST[cod_usuari]} ) " : "";
+			$mSql .= $_REQUEST[cod_usuari] ? " AND UPPER(h.cod_usuari) IN ( {$_REQUEST[cod_usuari]} ) " : "";
 
 		#Otros Filtros
 		$mSql .= $mTipServic != '""' ? " AND a.cod_tipser IN (".$mTipServic.") " : "";
