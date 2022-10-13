@@ -181,7 +181,7 @@ class ajax_certra_certra {
             tgl_prcnac, tgl_prcurb,tgl_prcexp, tgl_prcimp, tgl_prctr1,tgl_prctr2,
             tgl_carnac,tgl_carurb,tgl_carexp,tgl_carimp,tgl_cartr1,tgl_cartr2,
             tgl_contro,tgl_conurb,tgl_traexp,tgl_traimp,tgl_tratr1,tgl_tratr2,
-            tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2,ind_bolrut
+            tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2,ind_bolrut,vig_estseg
             FROM " . BASE_DATOS . ".tab_transp_tipser 
             WHERE cod_transp = '$datos->cod_transp' 
             AND num_consec = $datos->num_consec";
@@ -464,12 +464,10 @@ class ajax_certra_certra {
                             </div>
                         </div>
                         </div>
-
-
-                        <div class="row">          
+                        <div class="row">        
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Rutas contratadas</div>
-                                <div class="col-md-6 text-left">
+                                <div class="col-md-4 text-left">
                                     <?php
                                         $ind_bolrut_bolsa = "";
                                         $ind_bolrut_propias = "";
@@ -490,11 +488,19 @@ class ajax_certra_certra {
                                     Propias <input type="radio" name="ind_bolrut" id="ind_bolrut_propias" value="0" <?= $ind_bolrut_propias ?> >
                                 </div>
                             </div>
+                            <div class="col-md-3 text-right">Vigencia estudio de seguridad</div>
+                            <div class="col-md-3 text-left">
+                                <input type="text" class="text-center ancho"  name="vig_estseg"  id="vig_estseg"  value="<?= $datos->principal['vig_estseg'] ?>" style="width: 156px;">
+                            </div>
                         </div>
-
+                        </div>
+                        <div class="row">
+                        <div class="col-md-12">
+                        &nbsp;
+                        </div>   
                         </div>
                     </div>
-                    <div class="col-md-1">&nbsp;</div>
+                    <div class="col-md-1 mt-3">&nbsp;</div>
                     
             </div>
         </div>
