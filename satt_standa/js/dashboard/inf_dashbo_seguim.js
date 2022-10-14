@@ -642,63 +642,68 @@ $(function() {
                   type: 'post',
                   dataType: 'json',
                   success: function(data) {
-                    var options13 = {
-                      series: [{
-                      name: '(SEGUIMIENTO) (0-30 MIN)',
-                      data: data.data1
-                    }, {
-                      name: 'ALARMA NARANJA (31-60 MIN)',
-                      data: data.data2
-                    }, {
-                      name: 'ALARMA ROJA (61-90 MIN)',
-                      data: data.data3
-                    }, {
-                      name: 'ALARMA VIOLETA (91 MIN) hasta solucion',
-                      data: data.data4
-                    }],
-                      chart: {
-                      type: 'bar',
-                      height: 300,
-                      stacked: true,
-                      toolbar: {
-                        show: false
-                      },
-                      zoom: {
-                        enabled: false
-                      }
-                    },
-                    colors: ['#FFFF66', '#FF9900','#FF0000','#CC33FF'],
-                    responsive: [{
-                      breakpoint: 200,
-                      options: {
-                        legend: {
-                          position: 'bottom',
-                          offsetX: -10,
-                          offsetY: 0
+                    if(Array.isArray(data.users) && (Array.isArray(data.data1) || Array.isArray(data.data2) || Array.isArray(data.data3) || Array.isArray(data.data4)))
+                    {
+                      var options13 = {
+                        series: [{
+                        name: '(SEGUIMIENTO) (0-30 MIN)',
+                        data: data.data1
+                      }, {
+                        name: 'ALARMA NARANJA (31-60 MIN)',
+                        data: data.data2
+                      }, {
+                        name: 'ALARMA ROJA (61-90 MIN)',
+                        data: data.data3
+                      }, {
+                        name: 'ALARMA VIOLETA (91 MIN) hasta solucion',
+                        data: data.data4
+                      }],
+                        chart: {
+                        type: 'bar',
+                        height: 300,
+                        stacked: true,
+                        toolbar: {
+                          show: false
+                        },
+                        zoom: {
+                          enabled: false
                         }
-                      }
-                    }],
-                    title: {
-                      text: 'ESTADOS DE ASIGNACION POR OPERADOR',
-                      align: 'left'
-                    },
-                    plotOptions: {
-                      bar: {
-                        horizontal: false,
-                        borderRadius: 10
                       },
-                    },
-                    xaxis: {
-                      categories: data.users,
-                    },
-                    legend: {
-                      position: 'right',
-                      offsetY: 40
-                    },
-                    };
-            
-                    var chart13 = new ApexCharts(document.querySelector("#Graphic13"), options13);
-                    chart13.render();
+                      colors: ['#FFFF66', '#FF9900','#FF0000','#CC33FF'],
+                      responsive: [{
+                        breakpoint: 200,
+                        options: {
+                          legend: {
+                            position: 'bottom',
+                            offsetX: -10,
+                            offsetY: 0
+                          }
+                        }
+                      }],
+                      title: {
+                        text: 'ESTADOS DE ASIGNACION POR OPERADOR',
+                        align: 'left'
+                      },
+                      plotOptions: {
+                        bar: {
+                          horizontal: false,
+                          borderRadius: 10
+                        },
+                      },
+                      xaxis: {
+                        categories: data.users,
+                      },
+                      legend: {
+                        position: 'right',
+                        offsetY: 40
+                      },
+                      };
+              
+                      var chart13 = new ApexCharts(document.querySelector("#Graphic13"), options13);
+                      chart13.render();
+                    }else{
+                      $("#Graphic13").append('<h1 class="grafic" style="text-align: center;color: #337ab7;">No hay datos</h1>');
+                    }
 
                   },
                   error: function(jqXHR, exception) {
@@ -711,6 +716,7 @@ $(function() {
                              
             }else if( obj.attr("tipo") == "invalid" )
             {
+              
               alert("Por favor actualize la pagina!");
               $("#GeneraID").hide();
               $("#NovID").hide();

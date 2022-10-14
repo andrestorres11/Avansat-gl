@@ -503,7 +503,7 @@ class AjaxDashBoard_Seguim
 		$sql =" SELECT LOWER(cod_usuari) cod_usuari, CONCAT( UPPER(nom_usuari ), ' - ', LOWER(cod_usuari) ) AS nom_usuari
                   FROM ".BASE_DATOS.".tab_genera_usuari
                  WHERE ind_estado = '1' 
-                   AND ( cod_perfil IN(1,7,8,73,70,77,669,713) OR cod_usuari LIKE '%eal%' OR nom_usuari LIKE '%eal%' OR cod_usuari LIKE '%ecl%' OR nom_usuari LIKE '%ecl%'  ) 
+                   AND ( cod_perfil IN(7,8,73,713,833) AND cod_usuari NOT LIKE '%eal%' OR nom_usuari NOT LIKE '%eal%' OR cod_usuari LIKE '%ecl%' OR nom_usuari LIKE '%ecl%' OR nom_usuari LIKE '%oal%' OR  cod_usuari LIKE '%oal%' ) 
                 ORDER BY 2";
         $consulta = new Consulta($sql, $this -> conexion);
         $usuarios=$consulta->ret_matrix("a");
@@ -821,25 +821,25 @@ class AjaxDashBoard_Seguim
 		$array = array();
 		foreach($transp as $key=>$value){
 			$position = $value['usr_asigna'] != NULL ? $value['usr_asigna']: 'SIN ASIGNAR';
-			$usuarios = explode(", ", $position);
-
-			//Array sin usuarios repetidos
-			$usuarios_unic = array_unique($usuarios);
-			$ind_varios = false;
-			
-			if(count($usuarios_unic)>1){
-				$key_users = '';
-				foreach($usuarios_unic as $key=>$usuario){
-					$key_users .= $usuario;
-					if(($key+1) < count($usuarios_unic)){
-						$key_users.=', ';
+			if($position != 'SIN ASIGNAR')
+			{
+				$usuarios = explode(", ", $position);
+				//Array sin usuarios repetidos
+				$usuarios_unic = array_unique($usuarios);
+				$ind_varios = false;
+				if(count($usuarios_unic)>1){
+					$key_users = '';
+					foreach($usuarios_unic as $key=>$usuario){
+						$key_users .= $usuario;
+						if(($key+1) < count($usuarios_unic)){
+							$key_users.=', ';
+						}
 					}
+					$array[$key_users][] = $value;
+				}else{
+					$array[$usuarios[0]][] = $value;
 				}
-				$array[$key_users][] = $value;
-			}else{
-				$array[$usuarios[0]][] = $value;
 			}
-			
 		}
 		
 		return $array;
