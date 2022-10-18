@@ -1269,6 +1269,33 @@ class DashBoard_Seguim_Table1 {
 		return $mResult;
 	}
 
+	public function getReportOpeGPS($num_despac) {
+		$queryReporte = "
+                    SELECT b.cod_contro, c.*, d.nom_etapax
+                        FROM ".BASE_DATOS.".tab_despac_despac a
+                    LEFT JOIN ".BASE_DATOS.".tab_despac_contro b
+                        ON a.num_despac = b.num_despac
+                    LEFT JOIN ".BASE_DATOS.".tab_genera_noveda c
+                        ON b.cod_noveda = c.cod_noveda
+                    LEFT JOIN ".BASE_DATOS.".tab_genera_etapax d
+                        ON c.cod_etapax = d.cod_etapax
+                        WHERE a.num_despac = '" . $num_despac . "'
+                          AND b.val_longit IS NOT NULL
+                          AND b.val_latitu IS NOT NULL
+                    ";
+                
+        //Execute query
+        $queryReporte = new Consulta($queryReporte, $this -> conexion );
+        $reporte = $queryReporte -> ret_matrix('a');
+		$resp = false;
+
+		//Assing "Etapa" value to total query
+		if(count($reporte) > 0){
+			return true;
+		}
+		return $resp;
+	}
+
     public function getDespacTransi2( $mTransp, $num_despac )
 	{
 		$mDespacPrcCargue = $this->getDespacPrcCargue( $mTransp, 'list', true, $num_despac );
