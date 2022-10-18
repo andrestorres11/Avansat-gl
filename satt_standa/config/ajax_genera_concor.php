@@ -34,7 +34,7 @@ class ajax_genera_concor
   //---------------------------------------------
   /*! \fn: setRegistros
   *  \brief:Retorna los registros para el dataTable
-  *  \author: Ing. Cristian Andrés Torres
+  *  \author: Ing. Cristian AndrÃ©s Torres
   *  \date: 02/06/2020
   *  \date modified: 
   *  \return HTML
@@ -48,7 +48,6 @@ class ajax_genera_concor
                     IF(a.ind_acargo=1,'SI','NO') as 'ind_acargo',
                     IF(a.ind_novapp=1,'SI','NO') as 'ind_novapp',
                     IF(a.ind_estseg=1,'SI','NO') as 'ind_estseg',
-                    IF(a.ind_nfarox=1,'SI','NO') as 'ind_nfarox',
                     a.cod_concor
                     
                 FROM  ".BASE_DATOS.".tab_genera_concor a
@@ -76,10 +75,10 @@ class ajax_genera_concor
   }
 
    /*! \fn: form
-   *  \brief: Crea el formulario de para registrar información del banco
+   *  \brief: Crea el formulario de para registrar informaciÃ³n del banco
    *  \author: Ing. Cristian Andres Torres
    *  \date: 02/06/2020
-   *  \date modified: dia/mes/año
+   *  \date modified: dia/mes/aÃ±o
    *  \param: 
    *  \return: HTML 
    */
@@ -99,7 +98,6 @@ class ajax_genera_concor
                             ind_acargo,
                             ind_novapp,
                             ind_estseg,
-                            ind_nfarox,
                             a.cod_concor
                       FROM  ".BASE_DATOS.".tab_genera_concor a
                      WHERE  a.cod_concor = ".$_REQUEST['cod_regist'];
@@ -130,10 +128,10 @@ class ajax_genera_concor
     }
 
      /*! \fn: darCampos
-   *  \brief: retorna la informacion del formulario para registro y actualización
+   *  \brief: retorna la informacion del formulario para registro y actualizaciÃ³n
    *  \author: Ing. Cristian Andres Torres
    *  \date: 02/06/2020
-   *  \date modified: dia/mes/año
+   *  \date modified: dia/mes/aÃ±o
    *  \param: 
    *  \return: HTML 
    */
@@ -153,9 +151,6 @@ class ajax_genera_concor
         }
         if($datos['ind_estseg'] ==1){
           $checkedestseg="checked";
-        }
-        if($datos['ind_nfarox'] ==1){
-          $checkednfarox="checked";
         }
 
         
@@ -189,8 +184,6 @@ class ajax_genera_concor
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_novapp" id="ind_novapp" '.$checkednovapp.' style="height: auto;"/>
                         <label> Notificaciones Estudio de seguridad</label>
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_estseg" id="ind_estseg" '.$checkedestseg.' style="height: auto;"/>
-                        <label> Not. Faro (Matriz de comunicaciones)</label>
-                        <input type="checkbox" class="form-control form-control-sm"  name="ind_nfarox" id="ind_nfarox" '.$checkednfarox.' style="height: auto;"/>
                         <input type="hidden" name="correoID" value="'.$datos['cod_concor'].'">
                         <input type="hidden" name="actionID" id="action" value="'.$action.'">
         ';
@@ -202,7 +195,7 @@ class ajax_genera_concor
    *  \brief: retorna html con las opciones de los datos de los clientes
    *  \author: Ing. Cristian Andres Torres
    *  \date: 02/06/2020
-   *  \date modified: dia/mes/año
+   *  \date modified: dia/mes/aÃ±o
    *  \param: 
    *  \return: HTML 
    */
@@ -225,7 +218,7 @@ class ajax_genera_concor
 
   /*! \fn: delReg
    *  \brief: Elimina el registro
-   *  \author: Ing. Cristian Andrés Torres
+   *  \author: Ing. Cristian AndrÃ©s Torres
    *  \date: 02/06/2020
    *  \date modified: dia/mes/aÃ±o
    *  \param: 
@@ -250,7 +243,7 @@ class ajax_genera_concor
         //Devuelve estatus de la consulta
         echo json_encode($return);
       } catch (Exception $e) {
-        echo 'Excepción delReg: ',  $e->getMessage(), "\n";
+        echo 'ExcepciÃ³n delReg: ',  $e->getMessage(), "\n";
       }
     }
 
@@ -277,7 +270,6 @@ class ajax_genera_concor
                                     ind_acargo= '".($_REQUEST['ind_acargo'] == 'on'? 1 : 0)."',
                                     ind_novapp= '".($_REQUEST['ind_novapp'] == 'on'? 1 : 0)."',
                                     ind_estseg= '".($_REQUEST['ind_estseg'] == 'on'? 1 : 0)."',
-                                    ind_nfarox= '".($_REQUEST['ind_nfarox'] == 'on'? 1 : 0)."',
                                     usr_creaci = '".$_SESSION['datos_usuario']['cod_usuari']."',
                                     fec_creaci = NOW()
                         ON DUPLICATE KEY UPDATE 	
@@ -288,7 +280,6 @@ class ajax_genera_concor
                                     ind_acargo= '".($_REQUEST['ind_acargo'] == 'on'? 1 : 0)."',
                                     ind_novapp= '".($_REQUEST['ind_novapp'] == 'on'? 1 : 0)."',
                                     ind_estseg= '".($_REQUEST['ind_estseg'] == 'on'? 1 : 0)."',
-                                    ind_nfarox= '".($_REQUEST['ind_nfarox'] == 'on'? 1 : 0)."',
                                     usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                                     fec_modifi = NOW()              
                                 ";
