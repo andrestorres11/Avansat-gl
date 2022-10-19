@@ -1082,10 +1082,9 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
     *  \return: null
     */
     function envioEmailsTemplate(&$mConexion,$nom_urlxxx,$subject,$title,$emails,$encabezamsj,$bodymsj,$adicional_html='',$file=NULL){
-     $tmpl_file = $nom_urlxxx;
+      $tmpl_file = $nom_urlxxx;
       //logo
       $logo = "http://".$_SERVER['SERVER_NAME']."/ap/".BASE_DATOS."/logos/LogoCLFaro.png";
-      
       
       $titulo = $title;
       $base_mensaje = $bodymsj;
@@ -1110,7 +1109,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
       //require_once(URL_ARCHIV_STANDA."obocanegra/gl/sat-gl-2015/satt_standa/planti/class.phpmailer.php");
       $mail = new PHPMailer();
       $mail->Host = "localhost";
-      $mail->From = "faroavansat@eltransporte.com";
+      $mail->From = MAIL_SUPERVISORES;
 
       $mail->FromName = "Novedades Centro Logistico Faro";
       $mail->Subject = $subject ;
@@ -1126,7 +1125,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
         $mail->AddAttachment($file);
       }
       if(!$mail->Send()){
-        mail("oscar.bocanegra@intrared.net", "Error envio de correo", var_export($emails, true));
+        mail("cristian.torres@grupooet.com", "Error envio de correo", var_export($emails, true));
       };
     }
     /*! \fn: setTrackingDespac

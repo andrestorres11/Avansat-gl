@@ -1,4 +1,4 @@
-<?php
+ <?php
 
 /* ! \file: InsertNovedad.inc
  *  \brief: Inserta las novedades de los despachos
@@ -171,6 +171,7 @@ class InsertNovedad {
             if ($mDespac[$nom_criter] != '')
                 $mCompar[$val_criter] = $mDespac[$nom_criter];
         }
+
         $mCiuori = $mCompar[1];
         $mMercan = $mCompar[2];
         $mCiudes = $mCompar[3];
@@ -179,16 +180,16 @@ class InsertNovedad {
         $mCanalx = $mCompar[6];
         $mTiptra = $mCompar[7];
         $mDeposi = $mCompar[8];
-
         //OBTENER EL RESPONSABLE DEFINIDO SEGUN CRITERIOS DE BUSQUEDA
         $mSelect = "SELECT cod_usuari, cod_consec 
                       FROM " . $base_datos . ".tab_detail_modcom 
                      WHERE cod_noveda = '" . $cod_noveda . "'
                        AND ind_tipres = 'P' 
                        AND cod_criter = '4' 
-                       AND val_criter = '" . $mTipdes . "' ";
+                       /* AND val_criter = '" . $mTipdes . "' */ ";
         $consulta = new Consulta($mSelect, $this->conexion);
         $mRespons = $consulta->ret_matriz();
+        
         $aDestin = array();
         foreach ($mRespons as $row) {
             $mSelect = "SELECT * 
@@ -203,7 +204,6 @@ class InsertNovedad {
             foreach ($mDetalle as $Detail)
                 $aDestin[$Detail['cod_usuari']][$Detail['cod_criter']][] = $Detail['val_criter'];
         }
-        
         if ($mTipdes != '4')
             $Order = array('7' => '7', '4' => '4', '2' => '2', '1' => '1', '5' => '5', '6' => '6', '8' => '8', '3' => '3');
         else
@@ -211,11 +211,13 @@ class InsertNovedad {
 
 
         $mPrincipal = '';
-
+        
         foreach ($Order as $Orden) {
             $rDestin = array();
             foreach ($aDestin as $Posible => $Responsable) {
                 if (in_array($mCompar[$Orden], $Responsable[$Orden])) {
+                    $rDestin[$Posible] = $Responsable;
+                }else{
                     $rDestin[$Posible] = $Responsable;
                 }
             }
@@ -276,6 +278,8 @@ class InsertNovedad {
             foreach ($aDestin as $Posible => $Responsable) {
                 if (in_array($mCompar[$Orden], $Responsable[$Orden])) {
                     $rDestin[$Posible] = $Responsable;
+                }else{
+                    $rDestin[$Posible] = $Responsable;
                 }
             }
             
@@ -334,6 +338,8 @@ class InsertNovedad {
             foreach ($aDestin as $Posible => $Responsable) {
                 if (in_array($mCompar[$Orden], $Responsable[$Orden])) {
                     $rDestin[$Posible] = $Responsable;
+                }else{
+                    $rDestin[$Posible] = $Responsable;
                 }
             }
             
@@ -364,7 +370,6 @@ class InsertNovedad {
 
         $emailFaro = $CemailFaro == '' ? NULL : $CemailFaro;
         
-
         /*         * *********************************************************************** */
         #Nelson Nuevo Matriz comunicacion ----------------------------------------------------
         $mMailTo = $this->getDataListCriter($aDespac[0], 'P', $base_datos);
@@ -387,9 +392,165 @@ class InsertNovedad {
 
         $RESULTADO = array('ema_conpri' => $mPrincipal, 'ema_otrcon' => $mSecundario,
             'ema_conprX' => $mMailTo, 'ema_otrcoX' => $mMailCC, 'ema_notFaro' => $emailFaro);
-
         return $RESULTADO;
     }
+
+
+    function getMailNotiNov($cod_transp, $cod_noveda, $base_datos){
+        $emailsSend = array();
+        $mQuery = "SELECT a.cod_noveda
+                      FROM " . $base_datos . ".tab_parame_novseg a
+                      WHERE a.cod_transp = '".$cod_transp."'
+                        AND a.cod_noveda = '".$cod_noveda."'
+                        AND a.ind_novesp = 1
+                    LIMIT 1 "; 
+        $consulta = new Consulta($mQuery, $this->conexion);
+        $aNovedad = $consulta->ret_arreglo();
+        if(!empty($aNovedad)){
+            $mQueryEmpTra = "SELECT a.dir_emailx
+                      FROM " . $base_datos . ".tab_genera_concor a
+                      WHERE a.num_remdes = '".$cod_transp."'
+                        AND a.ind_nfarox = 1";
+            $consulta = new Consulta($mQueryEmpTra, $this->conexion);
+            $mEmaEmpTra = $consulta->ret_matrix('a');
+
+            foreach($mEmaEmpTra as $emails){
+                $mEmails = explode(",", $emails['dir_emailx']);
+                foreach($mEmails as $key => $value){
+                    array_push($emailsSend, $value);
+                }
+            }
+
+            
+            $mQueryNotFar = "SELECT a.dir_emailx
+                      FROM " . $base_datos . ".tab_genera_concor a
+                      WHERE a.num_remdes = ''
+                        AND a.ind_nfarox = 1";
+            $consulta = new Consulta($mQueryNotFar, $this->conexion);
+            $mEmaNotFar = $consulta->ret_matrix('a');
+
+            foreach($mEmaNotFar as $emails){
+                $mEmails = explode(",", $emails['dir_emailx']);
+                foreach($mEmails as $key => $value){
+                    array_push($emailsSend, $value);
+                }
+            }
+        }
+        return $emailsSend;
+    }
+
+    function sendEmailNotNoveda($data, $base_datos){
+        $emails = $this->getMailNotiNov($data['nittra'], $data['noveda'], $base_datos);
+        $mQuery = "SELECT a.num_despac, c.nom_tercer as 'nom_conduc', c.nom_apell1 as 'ap11_conduc', c.nom_apell2 as 'ap12_conduc',
+                          d.nom_ciudad as 'nom_ciuori', e.nom_ciudad as 'nom_ciudes', c.num_telef1, c.num_telef2, c.num_telmov,
+                          b.num_placax, f.nom_noveda, g.abr_tercer
+                      FROM " . $base_datos . ".tab_despac_despac a
+                INNER JOIN " . $base_datos . ".tab_despac_vehige b ON a.num_despac = b.num_despac
+                INNER JOIN " . $base_datos . ".tab_tercer_tercer c ON b.cod_conduc = c.cod_tercer
+                INNER JOIN " . $base_datos . ".tab_genera_ciudad d ON a.cod_ciuori = d.cod_ciudad AND a.cod_depori = d.cod_depart AND a.cod_paiori = d.cod_paisxx
+                INNER JOIN " . $base_datos . ".tab_genera_ciudad e ON a.cod_ciudes = e.cod_ciudad AND a.cod_depdes = e.cod_depart AND a.cod_paides = e.cod_paisxx
+                INNER JOIN " . $base_datos . ".tab_genera_noveda f ON f.cod_noveda = '".$data['noveda']."'
+                INNER JOIN " . $base_datos . ".tab_tercer_tercer g ON b.cod_transp = g.cod_tercer
+                      WHERE a.num_despac = '".$data['despac']."'
+                    LIMIT 1 ";
+        $consulta = new Consulta($mQuery, $this->conexion);
+        $aDespac = $consulta->ret_arreglo();
+        $body_info=' 
+                    <div class="row-table">
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Transportadora:</strong>
+                        </div>
+                        <div style="text-align: left;  width:30%; ">
+                            '.$aDespac['abr_tercer'].'
+                        </div>
+                    </div>
+                    <div class="row-table">
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>N° Despacho:</strong>
+                        </div>
+                        <div style="text-align: left;  width:30%; ">
+                            '.$aDespac['num_despac'].'
+                        </div>
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Conductor:</strong>
+                        </div>
+                        <div style="text-align: left;  width:30%; ">
+                            '.$aDespac['nom_conduc'].' '.$aDespac['ap11_conduc'].' '.$aDespac['ap12_conduc'].'
+                        </div>
+                    </div>
+                    <div class="row-table">
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Origen:</strong>
+                        </div>
+                        <div style="text-align: left;  width:30%; ">
+                            '.$aDespac['nom_ciuori'].'
+                        </div>
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Celular:</strong>
+                        </div>
+                        <div style="text-align: left;  width:30%; ">
+                            '.$aDespac['num_telmov'].' - '.$aDespac['num_telef1'].' - '.$aDespac['num_telef2'].'
+                        </div>
+                    </div>
+                    <div class="row-table">
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Destino:</strong>
+                        </div>
+                        <div style="text-align: left;  width:30%; ">
+                            '.$aDespac['nom_ciudes'].'
+                        </div>
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Placa:</strong>
+                        </div>
+                        <div style="text-align: left;  width:30%; ">
+                            '.$aDespac['num_placax'].'
+                        </div>
+                    </div>
+
+                    <div class="header-table">
+                        <div style="text-align: center; width:100%; ">
+                            DATOS DE LA NOVEDAD
+                        </div>
+                    </div>
+                    <div class="row-table">
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Fecha y hora:</strong>
+                        </div>
+                        <div style="text-align: left;  width:80%; ">
+                            '.$data['fecnov'].'
+                        </div>
+                    </div>
+                    <div class="row-table">
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Novedad:</strong>
+                        </div>
+                        <div style="text-align: left;  width:80%; ">
+                            '.$aDespac['nom_noveda'].'
+                        </div>
+                    </div>
+                    <div class="row-table">
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Ubicación:</strong>
+                        </div>
+                        <div style="text-align: left;  width:80%; ">
+                            '.$data['sitio'].'
+                        </div>
+                    </div>
+                    <div class="row-table">
+                        <div style="text-align: right;  width:20%; margin-right:5px;">
+                            <strong>Observación:</strong>
+                        </div>
+                        <div style="text-align: left;  width:80%; ">
+                            '.$data['observ'].'
+                        </div>
+                    </div>';
+     if(!empty($emails)){
+        $plantilla_route = dirname(__DIR__).'/planti/pla_notifi_novgps.html';
+        envioEmailsTemplate($this->conexion, $plantilla_route,utf8_encode('Notificación Novedad Especial'),utf8_encode('Notificación Novedad Especial'),$emails,NULL,utf8_encode($body_info),NULL,NULL);
+     }  
+    }
+
+
 
     /* ! \fn: getMailImpact
      *  \brief: 
@@ -1180,11 +1341,13 @@ class InsertNovedad {
                 $mDatTransp = getTransTipser($this->conexion, " AND a.cod_transp = " . $mDatDespac['cod_transp']); # Parametros de la transportadora
                 $mDatTransp = $mDatTransp[0];
                 $mIndProtoc = self::indProtoc($regist['nittra'], $regist['noveda']);
-                //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
+                
                 if(BASE_DATOS != 'satt_faro'){
+                    //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
                     if($mDatNoveda['num_tiempo'] > 0){
                         $regist['tieadi'] = $mDatNoveda['num_tiempo'];
                     }
+                    $this->sendEmailNotNoveda($regist,BASE_DATOS);
                 }
                 
                 #<Envio de Correos>                
@@ -1241,9 +1404,15 @@ class InsertNovedad {
                 }
                 #<Envio de Correos 2>
                 self::sendMailCitaEntrega($regist, $mDatDespac, $mDatNoveda, $mTieAcumul[1]); #Retraso fecha cita entrega
+                
+                /*
+                //Se quita la validacion de la configuración de protocolos por novedad. ID: 410493
                 if ($mIndProtoc == true) {
                     self::validacionProtocolos($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti); #VALIDACION DE PROTOCOLOS
-                }
+                }*/
+
+                self::validacionProtocolos($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti);
+
                 if (in_array($regist['noveda'], self::$cCodNoved['3'])) {
                     self::soluciNovedad($regist, $mDatDespac, $mDatNoveda); #Solucion a novedad
                 }
@@ -1392,11 +1561,13 @@ class InsertNovedad {
                 $mDatTransp = getTransTipser($this->conexion, " AND a.cod_transp = " . $mDatDespac['cod_transp']); # Parametros de la transportadora
                 $mDatTransp = $mDatTransp[0];
                 $mIndProtoc = self::indProtoc($regist['nittra'], $regist['noveda']);
-                //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
+                
                 if(BASE_DATOS != 'satt_faro'){
+                    //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
                     if($mDatNoveda['num_tiempo'] > 0){
                         $regist['tieadi'] = $mDatNoveda['num_tiempo'];
                     }
+                    $this->sendEmailNotNoveda($regist,BASE_DATOS);
                 }
                 #<Envio de Correos>
                 if ($mDatNoveda['ind_notsup'] == 1 && $mIndProtoc == false) { #CORREO NOTIFICA SUPERVISOR.
@@ -1440,9 +1611,14 @@ class InsertNovedad {
                     self::updateSoluciMovil();
 
                 #<Envio de Correos 2>
+                 //Se quita la validacion de la configuración de protocolos por novedad. ID: 410493
+                 /*
                 if ($mIndProtoc == true)
                     self::validacionProtocolos($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti, $mNumConsec, $mCodSitiox);#VALIDACION DE PROTOCOLOS
+                */
 
+                self::validacionProtocolos($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti, $mNumConsec, $mCodSitiox);
+                
                 if (in_array($regist['noveda'], self::$cCodNoved['3']))
                     self::soluciNovedad($regist, $mDatDespac, $mDatNoveda);#Solucion a novedad
                 #</Envio de Correos 2>
@@ -2701,7 +2877,6 @@ class InsertNovedad {
     private function validacionProtocolos($mDatRegist = null, $mDatDespac = null, $mDatNoveda = null, $mIndEnSiti = false, $mNumConsec = null, $mCodSitiox = null) {
         $mCodDespac = $this->getVerifiConso($mDatRegist['despac']);
         $mDataDespac = $this->getDataDespac($mCodDespac, BASE_DATOS, $mDatRegist['despac']);
-
         $mSql = "SELECT a.num_despac, a.cod_manifi, 
                         IF( b.nom_conduc IS NOT NULL, b.nom_conduc, c.abr_tercer) AS abr_tercer, c.cod_tercer,
                         IF( a.con_telmov IS NULL OR a.con_telmov = '', c.num_telmov, a.con_telmov ) AS telmov,
@@ -2910,8 +3085,7 @@ class InsertNovedad {
         $info .= "<tr>";
         $info .= "<td style='font-family:Trebuchet MS, Verdana, Arial; font-size:11px; background-color: #DEDFDE; padding: 2px;' align='right' >Celular:&nbsp;&nbsp;&nbsp;</td>";
         $info .= "<td style='font-family:Trebuchet MS, Verdana, Arial; font-size:11px; background-color: #DEDFDE; padding: 2px;' align='left' >" . $_DATACON[0]['telmov'] . "</td>";
-        $info .= "</tr>";
-
+        $info .= "</tr>";  
         #<FOR 3.1>
         for ($m = 0; $m < $_REQUEST['tot_protoc_']; $m++) {
             if ($mIndEnSiti == true) {
@@ -2938,7 +3112,7 @@ class InsertNovedad {
                                       '" . $mDatRegist["fecact"] . "' ) ON DUPLICATE KEY UPDATE fec_creaci = DATE_ADD( VALUES(fec_creaci), INTERVAL 1 SECOND )";
             }
             $insercion = new Consulta($mInsert, $this->conexion, "R");
-
+            
             #<IF 3.1.1>
             if ($_REQUEST['ind_activo_'] == 'S') {
                 $message = $info;
@@ -3036,7 +3210,6 @@ class InsertNovedad {
             $cabeceras = 'MIME-Version: 1.0' . "\r\n";
             $cabeceras .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
             $cabeceras .= 'From: ' . MAIL_SUPERVISORES . "\r\n";
-
 
             $_CENOPE = $this->getMailProtoc($_REQUEST['protoc' . $m . '_'], $mDatRegist['despac'], $mDatRegist['noveda'], BASE_DATOS);
             

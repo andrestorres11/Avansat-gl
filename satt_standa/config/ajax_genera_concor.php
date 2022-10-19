@@ -189,7 +189,7 @@ class ajax_genera_concor
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_novapp" id="ind_novapp" '.$checkednovapp.' style="height: auto;"/>
                         <label> Notificaciones Estudio de seguridad</label>
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_estseg" id="ind_estseg" '.$checkedestseg.' style="height: auto;"/>
-                        <label> Not. Faro (Matriz de comunicaciones)</label>
+                        <label> Not. Faro (Novedades GPS)</label>
                         <input type="checkbox" class="form-control form-control-sm"  name="ind_nfarox" id="ind_nfarox" '.$checkednfarox.' style="height: auto;"/>
                         <input type="hidden" name="correoID" value="'.$datos['cod_concor'].'">
                         <input type="hidden" name="actionID" id="action" value="'.$action.'">
