@@ -21,7 +21,9 @@ class InformViajes {
             case 99:
                 $this->getInform();
                 break;
-
+            case 98:
+                $this->getInform2();
+                break;
             default:
                 $this->Listar();
                 break;
@@ -29,8 +31,7 @@ class InformViajes {
     }
 
     function getInform() {
-        
-       
+    
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/informes.css' type='text/css'>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/homolo.css' type='text/css'>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/bootstrap.css' type='text/css'>\n";
@@ -179,8 +180,8 @@ class InformViajes {
         if ($_REQUEST['cod_tipdes'] != '')
             $mSelect2 .= " AND t.cod_tipdes = '".$_REQUEST['cod_tipdes']."'";
 
-        if ($_REQUEST['cod_transp'] != ''){
-            $mSelect2 .= " AND z.cod_transp = '".$_REQUEST['cod_transp']."'";  
+        if ($_REQUEST['trans_'] != ''){
+            $mSelect2 .= " AND z.cod_transp IN (".$_REQUEST['trans_'].")";  
         }  
 
         if ($_REQUEST['cod_noveda'] != '') {
@@ -218,8 +219,9 @@ class InformViajes {
             $mHtml .="</tr>";
             $mHtml .= "<tr>";
             $mHtml .= "<th class=cellHead >No.</th>";
+            $mHtml .= "<th class=cellHead >Nit</th>";
             $mHtml .= "<th class=cellHead >Transportadora</th>";
-            $mHtml .= "<th class=cellHead >Viaje</th>";
+            $mHtml .= "<th class=cellHead >Despacho</th>";
             $mHtml .= "<th class=cellHead >Manifiesto</th>";
             $mHtml .= "<th class=cellHead >Fecha Despacho</th>";
             $mHtml .= "<th class=cellHead >Tipo Despacho</th>";
@@ -275,20 +277,21 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Direcci&oacute;n Poseedor</th>";
             $mHtml .= "<th class=cellHead >Ciudad Poseedor</th>";
             $mHtml .= "<th class=cellHead >Mercanc&iacute;a</th>";
-            $mHtml .= "<th class=cellHead >Anulado</th>";
             if ($_REQUEST['ind_noveda'] == '1') {
                 $mHtml .= "<th class=cellHead >
                     <table border='1' id='export' class='table table-bordered'>
                     <thead>
                         <tr>
-                            <th class=cellHead style='font-size:9px;' width='12%' >Sitio de seguimiento</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Novedad</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Observaci&oacute;n del Controlador</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Fecha y Hora</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Tiempo</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Diferencia T</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Cumplimiento Seguimiento</th>
-                            <th class=cellHead style='font-size:9px;' width='12%'>Porcentaje de Cumplimiento</th>
+                            <th class=cellHead style='font-size:9px;' width='10%' >Sitio de seguimiento</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Novedad</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Observaci&oacute;n del Controlador</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Usuario</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Fecha y Hora</th>
+                            <th class=cellHead style='font-size:9px;  width='10%'>Tiempo Contratado</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Tiempo</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Diferencia T</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Cumplimiento Seguimiento</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Porcentaje de Cumplimiento</th>
                         </tr>
                     </thead>
                     </table>
@@ -327,6 +330,7 @@ class InformViajes {
                 }
                 $mHtml .= "<tr>";
                 $mHtml .= "<td class='cellInfo' align ='left'>".$count."</td>";
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['cod_transp'] !='' ? $row['cod_transp']:'')."</td>"; //Nit empresa de Transporte
                 $mHtml .= "<td class='cellInfo' align ='left' >".($row['nom_transp'] !='' ? $row['nom_transp']:'')."</td>"; //Nombre empresa de Transporte
                 $mHtml .= "<td class='cellInfo' align ='left' >".$href1.$row['num_viajex'].$href2."</td>"; //Viaje
                 $mHtml .= "<td class='cellInfo' align ='left' >".($row['cod_manifi'] !='' ? $row['cod_manifi']:'')."</td>"; //Manifiesto
@@ -384,19 +388,10 @@ class InformViajes {
                 $mHtml .= "<td class='cellInfo' align ='left' >".( $row['dir_poseed'] != '' ? $row['dir_poseed'] : 'DESCONOCIDA' )."</td>"; // Direccion Poseedor
                 $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ciu_poseed'] != '' ? $row['ciu_poseed'] : 'DESCONOCIDA' )."</td>"; // Ciudad Poseedor
                 $mHtml .= "<td class='cellInfo' align ='left' >".( isset($row['nom_mercan']) ? $row['nom_mercan'] : 'DESCONOCIDO' )."</td>"; //Mercancia
-                $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ind_anulad'] == 'A' ? 'SI' : 'NO' )."</td>"; //Anulado
                 if ($_REQUEST['ind_noveda'] == '1') {
-                    $horainicio="";
-                    $horafin="";
-                    $hours="";
-                    $resultsegui=0;
                     $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
-                    $resprom=0;
-                    
-                    $mHtml2 = "<table border='1' class='table table-bordered table-sm pt-0'>";
-                    $mHtml2 .="<tbody>";
                     if($mSizeNoved > 1){
-                        for ($y = 0; $y < $mSizeNoved; $y++) {
+                        /*for ($y = 0; $y < $mSizeNoved; $y++) {
                             if($y == 0){
                                 $horainicio= strtotime($mArrayNove[$y][3]);
                                 $result=0;
@@ -419,68 +414,52 @@ class InformViajes {
                                     }
                             }                            
                         }
-                        $promediofin=($resprom * 100)/($mSizeNoved-1);
+                        //$promediofin=($resprom * 100)/($mSizeNoved-1);*/
+                        $mHtml2 = "<table border='1' class='table table-bordered table-sm pt-0'>";
+                        $mHtml2 .="<tbody>";
                         for ($x = 0; $x < $mSizeNoved; $x++) {
+                            $horafin=0;$horainicio=0;$years=0;$months=0; $days=0;$hours=0;$minutes=0;
+                            $seconds=0;$result=0;$cal=0;$porcent=0;$opera=0;$resseg='';
+
                             $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
                             $mHtml2 .= '<tr>';
-                            $mHtml2 .= '<td class="cellInfo"  width="12%">'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
-                            $mHtml2 .= '<td class="cellInfo" width="12%">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
-                            $mHtml2 .= '<td class="cellInfo"  width="12%">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
-                            $mHtml2 .= '<td class="cellInfo" width="12%">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
-                            if($x == 0){
-   
-                                $horainicio= strtotime($mArrayNove[$x][3]);
-                                $result="";
-                            }else{
-                                $horafin=$horainicio;
-                                $horainicio= strtotime($mArrayNove[$x][3]);
-                                $diff = abs($horainicio - $horafin); 
-                                $years = floor($diff / (365*60*60*24));
-                                $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
-                                $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-                                $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
-                                $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
-                                $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
-                                $result=($hours * 60) + $minutes;
-                                // printf("%d years, %d months, %d days, %d hours, " . "%d minutes, %d seconds", $years, $months, $days, $hours, $minutes, $seconds);  
-                            }
+                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
+                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
+                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.( $mArrayNove[$x][6] !='' ? $mArrayNove[$x][6]:'N/a' ).'&nbsp;</td>'; //Usuario
+                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.($row['cod_transp'] ).'&nbsp;</td>'; //cod_transp
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
                             
-                            $mHtml2 .= '<td class="cellInfo" width="12%">'.$result.' &nbsp;</td>'; //Tiempo
-                            if($x == 0){
-                                $mHtml2 .= '<td class="cellInfo" width="12%"> &nbsp;</td>'; //Diferencia T
-                            }else{
-                                $mHtml2 .= '<td class="cellInfo" width="12%">'.($resultsegui-$result).' &nbsp;</td>'; //Diferencia T
-   
-                            }
                             
-                            if($x == 0){
-                                $mHtml2 .= '<td class="cellInfo" width="12%"> &nbsp;</td>'; //Cumplimiento Seguimiento
-                                $resseg="";
+                            $horafin=$horainicio;
+                            $horainicio= strtotime($mArrayNove[$x][3]);
+                            $diff = abs($horainicio - $horafin); 
+                            $years = floor($diff / (365*60*60*24));
+                            $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+                            $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+                            $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
+                            $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
+                            $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
+                            $result=($hours * 60) + $minutes;
+                            $cal=($resultsegui-$result);
+                            $porcent=(($cal*100)/$resultsegui);
+
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($resultsegui !='' ? $resultsegui:'&nbsp;').'</td>'; //Tiempo contratado
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($result !='' ? $result:'0').'</td>'; //Tiempo
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
+                            $opera=$resultsegui-$result;
+                            if($opera >=0){
+                                $resseg="Si";
                             }else{
-   
-                                $opera=$resultsegui-$result;
-                                    if($opera >=0){
-                                        $resseg="Si";
-                                    }else{
-                                        $resseg="No";
-                                    }
-                                $mHtml2 .= '<td class="cellInfo" width="12%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
+                                $resseg="No";
                             }
-                            if($x == 0){
-                                $mHtml2 .= '<td class="cellInfo" width="12%" >&nbsp;</td>';
-                            }else{
-                                $mHtml2 .= '<td class="cellInfo" align ="left" width="12%">'.round($promediofin,2).'% &nbsp;</td>'; //Porcentaje de Cumplimiento
-                            }
+                            $mHtml2 .= '<td class="cellInfo" width="10%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
+                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($porcent !=0 ? round($porcent,0, PHP_ROUND_HALF_UP):0).'%</td>'; //Porcentaje de Cumplimiento
                             $mHtml2 .='</tr>';
                         }
-                    }else {
-                        $mHtml2 .= "<tr>";
-                        $mHtml2 .= "<td class='cellInfo' colspan='8' >NO SE ENCONTRARON REGISTROS</th>";
-                        $mHtml2 .= "</tr>";
+                        $mHtml2 .="</tbody>";
+                        $mHtml2 .= "</table>";
                     }
-
-                    $mHtml2 .="</tbody>";
-                    $mHtml2 .= "</table>";
                 }
 
                 $mHtml .= "<td class='cellInfo' align ='left' >".$mHtml2; //seguimiento
@@ -509,8 +488,316 @@ class InformViajes {
         echo $mHtml2;
         echo "<script>$.unblockUI();</script>";
         $formulario->cerrar();
+    }
+
+    function getInform2() {
+
+        echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/informes.css' type='text/css'>\n";
+        echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/homolo.css' type='text/css'>\n";
+        echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/bootstrap.css' type='text/css'>\n";
+        echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
+       // echo '<!-- jQuery -->
+        //<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        //<script src="../' . DIR_APLICA_CENTRAL . '/js/dashboard/vendors/jquery/dist/jquery.min.js"></script>';
+        echo "<script type='text/javascript' language='JavaScript' src='../".DIR_APLICA_CENTRAL."/js/jquery.js'></script>\n";
+        echo "<script type='text/javascript' language='JavaScript' src='../".DIR_APLICA_CENTRAL."/js/jquery.blockUI.js'></script>\n";
+        echo "<script type='text/javascript' language='JavaScript' src='../".DIR_APLICA_CENTRAL."/js/functions.js'></script>";
+        echo "<script>
+        $.blockUI({
+            theme: true,
+            title: 'Cargando informe',
+            draggable: false,
+            message: '<center><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ajax-loader2.gif\" /><p>Generando informe</p></center>'
+        });
+         function expTabExcelDesp() {
+                $.blockUI({
+                    theme: true,
+                    title: 'Generando  excel',
+                    draggable: false,
+                    message: '<center><img src=\"../".DIR_APLICA_CENTRAL."/imagenes/ajax-loader2.gif\" /><p>Generando Excel</p></center>'
+                });
+                setTimeout(function(){
+                    $.unblockUI();
+                }, 6000);
+                $('#exportExcelID').val('<table>'+$('#export').html()+'</table>');
+            }</script>";
+
+        $mSelect1 = "SELECT 
+                       t.num_despac as 'num_viajex',
+                       t.cod_manifi as 'cod_manifi',
+                       t.fec_despac as 'fec_despac',
+                       b.nom_tipdes as 'nom_tipdes', 
+                       c.nom_paisxx as 'nom_paiori', 
+                       d.nom_depart as 'nom_depori', 
+                       e.nom_ciudad as 'nom_ciuori', 
+                       f.nom_paisxx as 'nom_paides', 
+                       g.nom_depart as 'nom_depdes', 
+                       h.nom_ciudad as 'nom_ciudes', 
+                       t.cod_operad as 'cod_operad', 
+                       t.fec_citcar as 'fec_citcar', 
+                       t.hor_citcar as 'hor_citcar', 
+                       t.nom_sitcar as 'nom_sitcar', 
+                       t.val_flecon as 'val_flecon', 
+                       t.val_despac as 'val_despac', 
+                       t.val_antici as 'val_antici', 
+                       t.val_retefu as 'val_retefu', 
+                       t.nom_carpag as 'nom_carpag', 
+                       t.nom_despag as 'nom_despag', 
+                       t.cod_agedes as 'cod_agedes', 
+                       t.val_pesoxx as 'val_pesoxx', 
+                       t.obs_despac as 'obs_despac', 
+                       t.fec_llegad as 'fec_llegad', 
+                       t.obs_llegad as 'obs_llegad', 
+                       t.ind_planru as 'ind_planru', 
+                       i.nom_rutasx as 'nom_rutasx', 
+                       t.ind_anulad as 'ind_anulad', 
+                       l.nom_marcax as 'nom_marcax', 
+                       m.nom_lineax as 'nom_lineax', 
+                       z.cod_conduc as 'cod_conduc',
+                       n.nom_colorx as 'nom_colorx', 
+                       o.nom_ciudad as 'ciu_conduc', 
+                       s.des_mercan as 'nom_mercan',
+                       CONCAT(w.nom_apell1,' ',w.nom_apell2,' ',w.nom_tercer) as 'nom_conduc',
+                       CONCAT(w.num_telef1, ' ',w.num_telef1) as 'tel_conduc',
+                       w.num_telmov as 'cel_conduc',
+                       w.dir_domici as 'dir_conduc',
+                       x.num_catlic as 'cat_liccon',
+                       z.num_placax as 'num_placax',
+                       v.num_config as 'num_config',
+                       q.nom_carroc as 'nom_carroc',
+                       v.num_motorx as 'num_motorx',
+                       v.num_chasis as 'num_chasis',
+                       v.num_poliza as 'num_poliza',
+                       v.nom_asesoa as 'nom_soatxx',
+                       v.fec_vigfin as 'fec_finsoa',
+                       v.num_tarpro as 'num_tarpro',
+                       v.cod_tenedo as 'cod_poseed',
+                       CONCAT(k.nom_apell1,' ',k.nom_apell2,' ',k.nom_tercer) as 'nom_poseed',
+                       k.dir_domici as 'dir_poseed',
+                       r.nom_ciudad as 'ciu_poseed',
+                       z.num_trayle as 'num_remolq',
+                       t.num_poliza as 'num_poliza',
+                       y.nom_tipveh as 'nom_tipveh',
+                       t.ind_anulad as 'ind_anulad',
+                       j.nom_tercer as 'nom_asegur',
+                       aa.nom_tercer as 'nom_transp',
+                       b.cod_tipdes as 'cod_tipdes',
+                       aa.cod_tercer as 'cod_transp'
+                  FROM ".BASE_DATOS.".tab_despac_despac t 
+	              LEFT JOIN ".BASE_DATOS.".tab_genera_tipdes b ON t.cod_tipdes = b.cod_tipdes 
+	              LEFT JOIN ".BASE_DATOS.".tab_genera_paises c ON t.cod_paiori = c.cod_paisxx 
+	              LEFT JOIN ".BASE_DATOS.".tab_genera_depart d ON t.cod_paiori = d.cod_paisxx 
+	                    AND t.cod_depori = d.cod_depart 
+	              LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad e ON t.cod_paiori = e.cod_paisxx 
+	                    AND t.cod_depori = e.cod_depart 
+	                    AND t.cod_ciuori = e.cod_ciudad 
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_paises f ON t.cod_paides = f.cod_paisxx 
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_depart g ON t.cod_paides = g.cod_paisxx 
+	                AND t.cod_depdes = g.cod_depart 
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad h ON t.cod_paides = h.cod_paisxx 
+	                AND t.cod_depdes = h.cod_depart 
+	                AND t.cod_ciudes = h.cod_ciudad
+                LEFT JOIN ".BASE_DATOS.".tab_despac_seguim u ON u.num_despac = t.num_despac
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_rutasx i ON u.cod_rutasx = i.cod_rutasx 
+	            LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer j ON t.cod_asegur = j.cod_tercer
+                LEFT JOIN ".BASE_DATOS.".tab_despac_vehige z ON t.num_despac = z.num_despac 
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer aa ON aa.cod_tercer = z.cod_transp
+                LEFT JOIN ".BASE_DATOS.".tab_vehicu_vehicu v ON v.num_placax = z.num_placax
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_marcas l ON v.cod_marcax = l.cod_marcax 
+	            LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas m ON v.cod_marcax = m.cod_marcax 
+	                AND v.cod_lineax = m.cod_lineax 
+	            LEFT JOIN ".BASE_DATOS.".tab_vehige_colore n ON v.cod_colorx = n.cod_colorx
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer w ON z.cod_conduc = w.cod_tercer
+                LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad o ON w.cod_ciudad = o.cod_ciudad
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc x ON z.cod_conduc = x.cod_tercer
+	            LEFT JOIN ".BASE_DATOS.".tab_vehige_config p ON v.num_config = p.num_config
+	            LEFT JOIN ".BASE_DATOS.".tab_vehige_carroc q ON v.cod_carroc = q.cod_carroc
+                LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k ON v.cod_tenedo = k.cod_tercer
+	            LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad r ON k.cod_ciudad  = r.cod_ciudad 
+                LEFT JOIN ".BASE_DATOS.".tab_despac_remesa s ON t.num_despac = s.num_despac
+                LEFT JOIN ".BASE_DATOS.".tab_genera_tipveh y ON v.cod_tipveh = y.cod_tipveh
+	                AND t.fec_salida IS NOT NULL 
+	                AND t.fec_salida <= NOW() 
+	                AND (
+		                t.fec_llegad IS NULL 
+		                OR t.fec_llegad = '0000-00-00 00:00:00'
+	                ) 
+	                AND t.ind_planru = 'S' 
+	                AND t.ind_anulad = 'R' 
+	                AND z.ind_activo = 'S' ";
+        $mSelect2 .="WHERE t.fec_despac BETWEEN '".$_REQUEST['fec_inicia']." 00:00:00' AND '".$_REQUEST['fec_finali']." 23:59:59' ";
+
+        if( $_REQUEST['ind_finali'] == '1' ) {
+        	$mSelect2 .= "AND t.fec_llegad IS NOT NULL ";
+        }
+
+        if ($_REQUEST['num_viajex'] != '')
+            $mSelect2 .= " AND t.num_despac = '".$_REQUEST['num_viajex']."'";
+
+        if ($_REQUEST['num_placax'] != '')
+            $mSelect2 .= " AND z.num_placax = '".$_REQUEST['num_placax']."'";
+
+        if ($_REQUEST['cod_tipdes'] != '')
+            $mSelect2 .= " AND t.cod_tipdes = '".$_REQUEST['cod_tipdes']."'";
+
+        if ($_REQUEST['trans_'] != ''){
+            $mSelect2 .= " AND z.cod_transp IN (".$_REQUEST['trans_'].")";  
+        }  
+
+        if ($_REQUEST['cod_noveda'] != '') {
+            $mSql1 = $mSelect1;
+            $mSql1 .= "INNER JOIN ".BASE_DATOS.".tab_despac_noveda as aaa
+                           ON t.num_despac = aaa.num_despac ";
+            $mSql1 .= $mSelect2;
+            $mSql1 .= " AND aaa.cod_noveda = '".$_REQUEST['cod_noveda']."'";
+
+            $mSql2 = $mSelect1;
+            $mSql2 .= "INNER JOIN ".BASE_DATOS.".tab_despac_contro aab
+                           ON t.num_despac = aab.num_despac ";
+            $mSql2 .= $mSelect2;
+            $mSql2 .= " AND aab.cod_noveda = '".$_REQUEST['cod_noveda']."'";
+
+            $mSelect = "( ".$mSql1." GROUP BY t.num_despac ) 
+                  UNION  
+                  ( ".$mSql2." GROUP BY t.num_despac ) ";
+        } else {
+            $mSelect = $mSelect1 . $mSelect2 . " GROUP BY t.num_despac ";
+        }
+        $consulta = new Consulta($mSelect, $this->conexion);
+        $_INFORM = $consulta->ret_matriz();
         
+      
+        $formulario = new Formulario("../".DIR_APLICA_CENTRAL."/lib/exportExcel.php", "post", "Informe de Trazabilidad ", "frm_trazab\" id=\"frm_trazabID");
+                echo '<input type="image" align="left" style="margin-left:25px;" name="botondeenvio" onclick="expTabExcelDesp()" src="../'.DIR_APLICA_CENTRAL.'/imagenes/excel.jpg" >
+				<br>';
+        $mHtml = "<table border='1' id='export' class='table table-bordered'>";
+        if (sizeof($_INFORM) > 0) {
+            
+            $mHtml .="<thead>";
+            $mHtml .= "<tr>";
+            $mHtml .= "<th class=cellHead >Nit</th>";
+            $mHtml .= "<th class=cellHead >Despacho</th>";
+            $mHtml .= "<th class=cellHead >Sitio de seguimiento</th>";
+            $mHtml .= "<th class=cellHead >Novedad</th>";
+            $mHtml .= "<th class=cellHead >Observaci&oacute;n del Controlador</th>";
+            $mHtml .= "<th class=cellHead >Usuario</th>";
+            $mHtml .= "<th class=cellHead >Fecha y Hora</th>";
+            $mHtml .= "<th class=cellHead >Tiempo Contratado</th>";
+            $mHtml .= "<th class=cellHead >Tiempo</th>";
+            $mHtml .= "<th class=cellHead >Diferencia T</th>";
+            $mHtml .= "<th class=cellHead >Cumplimiento Seguimiento</th>";
+            $mHtml .= "<th class=cellHead >Porcentaje de Incumplimiento</th>";
+            $mHtml .="</tr>";
+            $mHtml .="</thead>";
+            $mHtml .="<tbody>";
+            $count = 1;
+            foreach ($_INFORM as $key => $row) {
+                $mArrayNove = array_merge(InformViajes::getDespacContro($row['num_viajex']), InformViajes::getDespacNoveda($row['num_viajex']));
+                if(sizeof($mArrayNove)==0){
+                    $sizeNovedad=1;
+                }else{
+                    $sizeNovedad=sizeof($mArrayNove);
+                }
+                $mSizeNoved =  $sizeNovedad;
+    
+                $horainicio="";
+                $horafin="";
+                $hours="";
+                $resultsegui=0;
+                $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
+                $resprom=0;
+                if($mSizeNoved > 1){
+                    /*for ($y = 0; $y < $mSizeNoved; $y++) {
+                        if($y == 0){
+                            $horainicio= strtotime($mArrayNove[$y][3]);
+                            $result=0;
+                        }else{
+                            $horafin=$horainicio;
+                            $horainicio= strtotime($mArrayNove[$y][3]);
+                            $diff = abs($horainicio - $horafin); 
+                            $years = floor($diff / (365*60*60*24));
+                            $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+                            $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+                            $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
+                            $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
+                            $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
+                            $result=($hours * 60) + $minutes;
+                            // printf("%d years, %d months, %d days, %d hours, " . "%d minutes, %d seconds", $years, $months, $days, $hours, $minutes, $seconds);  
+                            // sacar Promedio de efectividad del seguimiento
+                            $operacc=$resultsegui-$result;
+                                if($operacc >=0){
+                                    $resprom++ ;
+                                }
+                        }                            
+                    }*/
+                    //$promediofin=($resprom * 100)/($mSizeNoved-1);
+                    
+                    for ($x = 0; $x < $mSizeNoved; $x++) {
+                        $horafin=0;$horainicio=0;$years=0;$months=0; $days=0;$hours=0;$minutes=0;
+                        $seconds=0;$result=0;$cal=0;$porcent=0;$opera=0;$resseg='';
+
+                        $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
+                        $mHtml .= '<tr>';
+                        $mHtml .= "<td class='cellInfo' align ='left' >".($row['cod_transp'] !='' ? $row['cod_transp']:'')."</td>"; //Nit empresa de Transporte
+                        $mHtml .= "<td class='cellInfo' align ='left' >".$row['num_viajex']."</td>"; //Viaje
+                        $mHtml .= '<td class="cellInfo" align ="left" >'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
+                        $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
+                        $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
+                        $mHtml .= '<td class="cellInfo" align ="left">'.($mArrayNove[$x][6] !='' ? $mArrayNove[$x][6]:'N/a').'&nbsp;</td>'; //Usuario
+                        $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
+                        
+                        
+                        $horafin=$horainicio;
+                        $horainicio= strtotime($mArrayNove[$x][3]);
+                        $diff = abs($horainicio - $horafin); 
+                        $years = floor($diff / (365*60*60*24));
+                        $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+                        $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+                        $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
+                        $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
+                        $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
+                        $result=($hours * 60) + $minutes;
+                        $cal=($resultsegui-$result);
+                        $porcent=(($cal*100)/$resultsegui);
+
+                        $mHtml .= '<td class="cellInfo" width="12%">'.($resultsegui !='' ? $resultsegui:'&nbsp;').'</td>'; //Tiempo contratado
+                        $mHtml .= '<td class="cellInfo" width="12%">'.($result !='' ? $result:'0').'</td>'; //Tiempo
+                        $mHtml .= '<td class="cellInfo" width="12%">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
+                        $opera=$resultsegui-$result;
+                        if($opera >=0){
+                            $resseg="Si";
+                        }else{
+                            $resseg="No";
+                        }
+                        $mHtml .= '<td class="cellInfo" width="12%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
+                        $mHtml .= '<td class="cellInfo" align ="left" width="12%">'.($porcent !=0 ? round($porcent,2):0).'%</td>'; //Porcentaje de Cumplimiento
+                        $mHtml .='</tr>';
+                    }
+                    
+                }
+                $count++;
+                
+            }
+            $mHtml .="</tbody>";
+        }
+
+        $mHtml .="</table>";
         
+        //$_SESSION[xls_InformViajes] = $mHtml;
+        echo $mHtml;
+        $archivo = "informe_operaciones".date("Y_m_d_H_i").".xls";
+        $mHtml2 ='<input type="hidden" name="standa" id="standaID" value="'.DIR_APLICA_CENTRAL.'">';
+        $mHtml2 .='<input type="hidden" name="window" id="windowID" value="'.$_REQUEST['window'].'">';
+        $mHtml2 .='<input type="hidden" name="cod_servic" id="cod_servicID" value="'.$_REQUEST['cod_servic'].'">';
+        $mHtml2 .='<input type="hidden" name="cod_ciuori" id="cod_ciuoriID">';
+        $mHtml2 .='<input type="hidden" name="cod_ciudes" id="cod_ciudesID">';
+        $mHtml2 .='<input type="hidden" name="cod_conduc" id="cod_conducID">';
+        $mHtml2 .='<input type="hidden" name="nameFile" id="nameFileID" value="'.$archivo.'">';
+        $mHtml2 .='<input type="hidden" name="OptionExcel" id="OptionExcelID" value="_REQUEST">';
+        $mHtml2 .='<input type="hidden" name="exportExcel" id="exportExcelID" value="">';
+        echo $mHtml2;
+        echo "<script>$.unblockUI();</script>";
+        $formulario->cerrar();
     }
 
     function toFecha($date) {
@@ -579,26 +866,12 @@ class InformViajes {
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
         echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
-
-        echo '<script>
-	        jQuery(function($) 
-	        {
-				$( "#fec_iniciaID, #fec_finaliID" ).datepicker({
-					changeMonth: true,
-					changeYear: true
-				});
-
-				$.mask.definitions["A"]="[12]";
-				$.mask.definitions["M"]="[01]";
-				$.mask.definitions["D"]="[0123]";
-
-				$.mask.definitions["H"]="[012]";
-				$.mask.definitions["N"]="[012345]";
-				$.mask.definitions["n"]="[0123456789]";
-
-				$( "#fec_iniciaID, #fec_finaliID" ).mask("Annn-Mn-Dn");
-	        });
-        </script>';
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/multiselect/jquery.multiselect.filter.min.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/multiselect/jquery.multiselect.min.js\"></script>\n";
+        echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
+        echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_operac_genera.js\"></script>\n";
+        
 
         $mSelect = "SELECT cod_tipdes, nom_tipdes 
                       FROM ".BASE_DATOS.".tab_genera_tipdes 
@@ -609,6 +882,7 @@ class InformViajes {
 
         $_NOVEDA = InformViajes::getNovedades();
         $_TRANSP = InformViajes::getTransport();
+        $_TIPINF = array(array(1,'General'),array(2,'seguimiento'));
         /*         * *********************** FOMULARIO ************************ */
         $formulario = new Formulario("index.php", "post", "Informe de Operaciones", "form\" id=\"formID");
 
@@ -621,13 +895,14 @@ class InformViajes {
         $formulario->lista("Tipo Despachos:", "cod_tipdes\" id=\"cod_tipdesID", array_merge($this->cNull, $_TIPDES), 1);
         
         
-        $formulario->lista("Transportadora", "cod_transp\" id=\"cod_transpID", array_merge($this->cNullt, $_TRANSP), 1);
-
+        $formulario->lista("Transportadora", "cod_transp\" id=\"cod_transpID", array_merge($this->cNullt, $_TRANSP), 0);
+        $formulario->lista("Tipo informe", "tip_inform\" id=\"tip_informID", $_TIPINF, 1);
+        
         $formulario->lista("Novedad:", "cod_noveda\" id=\"cod_novedaID", array_merge($this->cNull, $_NOVEDA), 1);
 
-        $formulario->nueva_tabla();
+        $formulario->nueva_tabla2(0,0,0,'nov1');
         $formulario->linea("Novedades", 1, "t");
-        $formulario->nueva_tabla();
+        $formulario->nueva_tabla2(0,0,0,'nov2');
         $formulario->radio("Si", "ind_noveda\" id=\"ind_novedaID", 1, 1, 0);
         $formulario->radio("No", "ind_noveda\" id=\"ind_novedaID", 2, 0, 1);
 
@@ -638,12 +913,13 @@ class InformViajes {
         $formulario->radio("En Ruta", "ind_finali\" id=\"ind_finaliID", 2, 0, 1);
 
         $formulario->nueva_tabla();
-        $formulario->botoni("Buscar", "$('#formID').submit();", 0);
+        $formulario->botoni("Buscar", "", 0);
 
         $formulario->nueva_tabla();
         $formulario->oculto("window", "central", 0);
-        $formulario->oculto("opcion\" id=\"opcionID", 99, 0);
+        $formulario->oculto("opcion\" id=\"opcionID",'', 0);
         $formulario->oculto("cod_servic", $_REQUEST['cod_servic'], 0);
+        $formulario->oculto("trans_\" id=\"trans_", 0, 0);
         $formulario->cerrar();
     }
 
@@ -697,7 +973,8 @@ class InformViajes {
                     a.obs_contro AS 'Observaci&oacute;n del Controlador', 
                     a.fec_contro AS 'Fecha y Hora', 
                     d.nom_contro AS 'Sitio de seguimiento 2', 
-                    a.cod_sitiox
+                    a.cod_sitiox,
+                    a.usr_creaci as 'Usuario'
                FROM ".BASE_DATOS.".tab_despac_contro a 
          INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                  ON a.cod_noveda = b.cod_noveda 
@@ -763,7 +1040,6 @@ function getTiempoTransport($transp, $tipserv){
     ORDER BY tab_transp_tipser.num_consec
     DESC limit 1
     ';
-    
     $mConsult = new Consulta($mSql, $this->conexion);
     $mResult = $mConsult->ret_matriz('a');
    

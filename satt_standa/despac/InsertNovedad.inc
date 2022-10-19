@@ -37,7 +37,7 @@ class InsertNovedad {
     #cTipTrans  Array  Tipos de Transporte cod_tipdes = a la posicion del array
     private static $cTipTrans = array('DESCONOCIDO', 'FLOTA PROPIA', 'TERCEROS', 'EMPRESAS');
 
-    #cLisTrans  Matriz  Lista de transportadoras para no quemarlas en el codigo, por cada comparaciÃ³n necesaria agregar una posicion con la descripciÃ³n
+    #cLisTrans  Matriz  Lista de transportadoras para no quemarlas en el codigo, por cada comparación necesaria agregar una posicion con la descripción
     private static $cLisTrans = array('NoMailNovEsp' => array('900419270'),
         'Corona' => '860068121',
         'MailNotHtml' => array('830090031'),
@@ -148,6 +148,7 @@ class InsertNovedad {
                      GROUP BY a.num_despac ";
         $consulta = new Consulta($mSelect, $this->conexion);
         $aDespac = $consulta->ret_matrix('a');
+
         # ------------------------------------------------------------------------------------------
         # Consecutivo canal ya que no viaja por el wsdl de astrans ---------------------------------
         $mSelect = "SELECT con_consec 
@@ -180,16 +181,17 @@ class InsertNovedad {
         $mCanalx = $mCompar[6];
         $mTiptra = $mCompar[7];
         $mDeposi = $mCompar[8];
+
         //OBTENER EL RESPONSABLE DEFINIDO SEGUN CRITERIOS DE BUSQUEDA
         $mSelect = "SELECT cod_usuari, cod_consec 
                       FROM " . $base_datos . ".tab_detail_modcom 
                      WHERE cod_noveda = '" . $cod_noveda . "'
                        AND ind_tipres = 'P' 
                        AND cod_criter = '4' 
-                       /* AND val_criter = '" . $mTipdes . "' */ ";
+                       AND val_criter = '" . $mTipdes . "' ";
         $consulta = new Consulta($mSelect, $this->conexion);
         $mRespons = $consulta->ret_matriz();
-        
+
         $aDestin = array();
         foreach ($mRespons as $row) {
             $mSelect = "SELECT * 
@@ -204,6 +206,7 @@ class InsertNovedad {
             foreach ($mDetalle as $Detail)
                 $aDestin[$Detail['cod_usuari']][$Detail['cod_criter']][] = $Detail['val_criter'];
         }
+
         if ($mTipdes != '4')
             $Order = array('7' => '7', '4' => '4', '2' => '2', '1' => '1', '5' => '5', '6' => '6', '8' => '8', '3' => '3');
         else
@@ -211,28 +214,26 @@ class InsertNovedad {
 
 
         $mPrincipal = '';
-        
+
         foreach ($Order as $Orden) {
             $rDestin = array();
             foreach ($aDestin as $Posible => $Responsable) {
                 if (in_array($mCompar[$Orden], $Responsable[$Orden])) {
                     $rDestin[$Posible] = $Responsable;
-                }else{
-                    $rDestin[$Posible] = $Responsable;
                 }
             }
-            
-            $paDestin = $rDestin;
+            $aDestin = $rDestin;
 
-            if (sizeof($paDestin) == 1) {
-                foreach ($paDestin as $Main => $Por) {
+            if (sizeof($aDestin) == 1) {
+                foreach ($aDestin as $Main => $Por) {
                     $mPrincipal = $Main;
                 }
             }
         }
 
-        $mPrincipal = $mPrincipal == '' ? 'povedad.a' : $mPrincipal;
-            
+        if ($mPrincipal == '')
+            $mPrincipal = 'povedad.a';
+
         $mSelect = "SELECT usr_emailx
                       FROM " . $base_datos . ".tab_genera_usuari 
                      WHERE cod_usuari = '" . $mPrincipal . "' ";
@@ -275,101 +276,31 @@ class InsertNovedad {
 
         foreach ($Order as $Orden) {
             $rDestin = array();
+
             foreach ($aDestin as $Posible => $Responsable) {
-                if (in_array($mCompar[$Orden], $Responsable[$Orden])) {
+                if (in_array($mCompar[$Orden], $Responsable[$Orden]))
                     $rDestin[$Posible] = $Responsable;
-                }else{
-                    $rDestin[$Posible] = $Responsable;
-                }
             }
-            
-            $paDestin = $rDestin;
 
-            if (sizeof($paDestin) == 1) {
-                foreach ($paDestin as $Main => $Por) {
-                    $mSecundario = $Main;
-                }
+            if (sizeof($rDestin) <= 0) {
+                $final = $aDestin;
+                break;
             }
+
+            $aDestin = $rDestin;
         }
-        $mSecundario = $mSecundario == '' ? 'povedad.a' : $mSecundario;
-            
-        $mSelect = "SELECT usr_emailx
-                      FROM " . $base_datos . ".tab_genera_usuari 
-                     WHERE cod_usuari = '" . $mSecundario . "' ";
 
-        $consulta = new Consulta($mSelect, $this->conexion);
-        $mUsuari = $consulta->ret_matriz();
-        $mSecundario = $mUsuari[0]['usr_emailx'];
-
-
-        //OBTIENE LA INFORMACION PARA SER ENVIADA POR NOTIFICACION A FARO
-        $mSelect = "SELECT cod_usuari, cod_consec 
-                      FROM " . $base_datos . ".tab_detail_modcom 
-                     WHERE cod_noveda = '" . $cod_noveda . "'
-                       AND ind_nfarox = 'S' 
-                       AND cod_criter = '4' ";
-        $consulta = new Consulta($mSelect, $this->conexion);
-        $mRespons = $consulta->ret_matriz();
-
-        $aDestin = array();
-        foreach ($mRespons as $row) {
-            $mSelect = "SELECT * 
-                          FROM " . $base_datos . ".tab_detail_modcom 
-                         WHERE cod_noveda = '" . $cod_noveda . "'
-                           AND ind_nfarox = 'S'
-                           AND cod_usuari = '" . $row['cod_usuari'] . "'
-                           AND cod_consec = '" . $row['cod_consec'] . "'";
+        foreach ($final as $Main => $Por) {
+            $mSelect = "SELECT usr_emailx
+                          FROM " . $base_datos . ".tab_genera_usuari 
+                         WHERE cod_usuari = '" . $Main . "' ";
             $consulta = new Consulta($mSelect, $this->conexion);
-            $mDetalle = $consulta->ret_matriz();
+            $mUsuari = $consulta->ret_matriz();
 
-            foreach ($mDetalle as $Detail)
-                $aDestin[$Detail['cod_usuari']][$Detail['cod_criter']][] = $Detail['val_criter'];
+            $mSecundario .= $mSecundario != '' ? ', ' . $mUsuari[0]['usr_emailx'] : $mUsuari[0]['usr_emailx'];
         }
 
-        if ($mTipdes != '4')
-            $Order = array('7' => '7', '4' => '4', '2' => '2', '1' => '1', '5' => '5', '6' => '6', '8' => '8', '3' => '3');
-        else
-            $Order = array('7' => '7', '4' => '4', '2' => '2', '3' => '3', '1' => '1', '5' => '5', '6' => '6', '8' => '8');
 
-        $mEmailNotFaro = '';
-
-        foreach ($Order as $Orden) {
-            $rDestin = array();
-            foreach ($aDestin as $Posible => $Responsable) {
-                if (in_array($mCompar[$Orden], $Responsable[$Orden])) {
-                    $rDestin[$Posible] = $Responsable;
-                }else{
-                    $rDestin[$Posible] = $Responsable;
-                }
-            }
-            
-            $paDestin = $rDestin;
-
-            if (sizeof($paDestin) == 1) {
-                foreach ($paDestin as $Main => $Por) {
-                    $mEmailNotFaro = true;
-                }
-            }
-        }
-
-        $emailFaro = '';
-        if($mEmailNotFaro){
-            $mSelect = "SELECT dir_emailx
-                      FROM " . $base_datos . ".tab_genera_concor 
-                     WHERE ind_nfarox = '1'
-                        AND num_remdes = '' ";
-            $consulta = new Consulta($mSelect, $this->conexion);
-            $emaNotFaros = $consulta->ret_matriz();
-            foreach($emaNotFaros as $key=>$value){
-                $CemailFaro .= $value['dir_emailx'];
-                if((count($emaNotFaros)-1) > $key){
-                    $CemailFaro.=',';
-                }
-            }
-        }
-
-        $emailFaro = $CemailFaro == '' ? NULL : $CemailFaro;
-        
         /*         * *********************************************************************** */
         #Nelson Nuevo Matriz comunicacion ----------------------------------------------------
         $mMailTo = $this->getDataListCriter($aDespac[0], 'P', $base_datos);
@@ -388,10 +319,9 @@ class InsertNovedad {
             mail('nelson.liberato@eltransporte.org', 'PROTOCOLO', var_export($mPrincipal, true)."\n".var_export($mSecundario, true)."\n".var_export($mMailTo, true)."\n".var_export($mMailCC, true) );
         }*/
 
-        //Extra el correo de notificacion a faro
-
         $RESULTADO = array('ema_conpri' => $mPrincipal, 'ema_otrcon' => $mSecundario,
-            'ema_conprX' => $mMailTo, 'ema_otrcoX' => $mMailCC, 'ema_notFaro' => $emailFaro);
+            'ema_conprX' => $mMailTo, 'ema_otrcoX' => $mMailCC);
+
         return $RESULTADO;
     }
 
@@ -1254,7 +1184,7 @@ class InsertNovedad {
                 }
             }
 
-            // Busca los datos complementarios del despacho, para poder hacer la replicacion de la novedad, validando que el despacho encontrado por el manifiesto estÃ© en ruta y activo
+            // Busca los datos complementarios del despacho, para poder hacer la replicacion de la novedad, validando que el despacho encontrado por el manifiesto esté en ruta y activo
             $mQuery = 'SELECT a.num_despac, 
                          b.cod_transp, 
                          a.cod_manifi,
@@ -2017,7 +1947,7 @@ class InsertNovedad {
         $datos->nom_config = $mDatDespac['nom_config'];
 
         if (self::sendMail($datos)){
-            return ". Se enviÃ³ Correos a: ".$mMail . ". Tiempo Ultima Novedad: ".$mDatRegist['tie_ultnov']." Minutos <br>";
+            return ". Se envió Correos a: ".$mMail . ". Tiempo Ultima Novedad: ".$mDatRegist['tie_ultnov']." Minutos <br>";
         }else{
             return false;
         }
@@ -2072,7 +2002,7 @@ class InsertNovedad {
     }
 
     /* ! \fn: updateSoluciRecome
-     *  \brief: Actualiza la recomendaciÃ³n cuando se soluciona
+     *  \brief: Actualiza la recomendación cuando se soluciona
      *  \author: Ing. Fabian Salinas
      *  \date: 29/10/2015
      *  \date modified: dd/mm/aaaa
@@ -2853,6 +2783,7 @@ class InsertNovedad {
 
         $mConsult = new Consulta($mSql, $this->conexion);
         $mResultMail = $mConsult->ret_matrix('i');
+
         if ($_REQUEST['ind_protoc'] == 'yes' && $mResultMail[0][0] == 1)
             return true;
         else
@@ -3203,7 +3134,7 @@ class InsertNovedad {
             $mSelect = "SELECT nom_noveda FROM " . BASE_DATOS . ".tab_genera_noveda WHERE cod_noveda = '" . $mDatRegist['noveda'] . "'";
             $consulta = new Consulta($mSelect, $this->conexion);
             $nom_noveda = $consulta->ret_matriz();
-            $asunto = "Viaje - " . $num_viajex . " - " . $nom_noveda[0][0] . " â Placa " . $_DATACON[0]['num_placax'];
+            $asunto = "Viaje - " . $num_viajex . " - " . $nom_noveda[0][0] . " – Placa " . $_DATACON[0]['num_placax'];
             /*             * **************************************************** */
 
 
@@ -3212,7 +3143,7 @@ class InsertNovedad {
             $cabeceras .= 'From: ' . MAIL_SUPERVISORES . "\r\n";
 
             $_CENOPE = $this->getMailProtoc($_REQUEST['protoc' . $m . '_'], $mDatRegist['despac'], $mDatRegist['noveda'], BASE_DATOS);
-            
+
             /* NUEVO ASUNTO *************************************** */
             $mSelect = "SELECT nom_noveda 
                           FROM " . BASE_DATOS . ".tab_genera_noveda 
@@ -3221,7 +3152,7 @@ class InsertNovedad {
             $nom_noveda = $consulta->ret_matriz();
 
             $mDataDespac['nom_noveda'] = $nom_noveda[0][0];
-            $mAsunto = "Viaje - " . $mDataDespac['num_viajex'] . " - " . $mDataDespac['nom_noveda'] . " -  Placa:" . $mDataDespac['num_placax'];
+            $mAsunto = "Viaje - " . $mDataDespac['num_viajex'] . " - " . $mDataDespac['nom_noveda'] . " – Placa " . $mDataDespac['num_placax'];
             /*             * **************************************************** */
 
             $mSelect = "SELECT nom_usuari 
@@ -3351,7 +3282,7 @@ class InsertNovedad {
                                     num_consec = (SELECT MAX(num_consec) FROM tab_transp_tipser WHERE cod_transp = '" . $mDatRegist['nittra'] . "')";
                     $consulta = new Consulta($mSql, $this->conexion);
                     $ind_notage = $consulta->ret_matriz();
-                    
+
                     if ($ind_notage[0][0] == 1) {
                         $mSql = "SELECT a.cod_agenci 
                                    FROM " . BASE_DATOS . ".tab_despac_vehige a
@@ -3374,17 +3305,18 @@ class InsertNovedad {
                         $mResult = $consulta->ret_matrix("i");
                     }
 
-                    
                     $mCorreos = array();
 
                     foreach ($mResult as $row) {
-                        $mCorreos =  (array)$mCorreos + (array)$row;
+                        $mCorreos = array_merge($mCorreos, $row);
                     }
 
-                    $_CENOPE['ema_conprX'] = $_CENOPE['ema_conprX'].','.join(", ", $mCorreos);
-                    $_CENOPE['ema_otrcoX'] = $_CENOPE['ema_conprX'].','.join(", ", $mCorreos);
+                    $_CENOPE['ema_conprX'] = join(", ", $mCorreos);
+                    $_CENOPE['ema_otrcoX'] = join(", ", $mCorreos);
                 }
                 /* fin correos segun las empresas protocolos******************************************* */
+
+
                 /* VARIABLES ******************************************** */
                 $num_despac = $mDatRegist['despac'];
                 $nom_tipdes = $mDataDespac['nom_tipdes'];
@@ -3434,7 +3366,7 @@ class InsertNovedad {
                 $mHtmlxx = $r_file;
                 #if (HOST_WEB == HOST_WEB_PRO) {
                     mail($_CENOPE['ema_conprX'], $mAsunto, '<div name="'.HOST_WEB.'_faro_06">' . $mHtmlxx . '</div>', $mCabece . 'Cc: ' . $_CENOPE['ema_otrcoX'] . "\r\n");
-                    mail($_CENOPE['ema_notFaro'], $mAsunto . " - Validacion Correo PARA ", '<div name="'.HOST_WEB.'_faro_07">' . $mHtmlxx . '</div>' . "<br><br>ENVIADO A: " . $_CENOPE['ema_conprX'] . "<br>COPIADO A: " . $_CENOPE['ema_otrcoX'], $mCabece);
+                    mail(MAIL_SUPERVISORES.", maribel.garcia@eltransporte.org", $mAsunto . " - Validacion Correo PARA ", '<div name="'.HOST_WEB.'_faro_07">' . $mHtmlxx . '</div>' . "<br><br>ENVIADO A: " . $_CENOPE['ema_conprX'] . "<br>COPIADO A: " . $_CENOPE['ema_otrcoX'], $mCabece);
                 #}
             }
             #</IF 3.2>
@@ -3606,7 +3538,7 @@ class InsertNovedad {
             $mSelect = "SELECT nom_noveda FROM " . BASE_DATOS . ".tab_genera_noveda WHERE cod_noveda = '" . $mDatRegist['noveda'] . "'";
             $consulta = new Consulta($mSelect, $this->conexion);
             $nom_noveda = $consulta->ret_matriz();
-            $mAsunto = "Viaje - " . $num_viajex . " - " . $nom_noveda[0][0] . " â Placa " . $_DATACON[0]['num_placax'];
+            $mAsunto = "Viaje - " . $num_viajex . " - " . $nom_noveda[0][0] . " – Placa " . $_DATACON[0]['num_placax'];
             /*             * **************************************************** */
 
 
@@ -3703,7 +3635,7 @@ class InsertNovedad {
 
                             $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
 
-                            //MÃ©todos disponibles en el WS
+                            //Métodos disponibles en el WS
                             $respuesta = $oSoapClient->__call('getDespacho', $parametros);
                         } catch (SoapFault $e) {
                             $error_ = $e->getMessage();
@@ -3717,7 +3649,7 @@ class InsertNovedad {
                                 $mMessage .= "Placa del vehiculo: " . $mDatDespac['num_placax'] . " <br>";
                                 $mMessage .= "Codigo puesto de control: " . $regist['contro'] . " <br>";
                                 $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
-                                $mMessage .= "ObservaciÃ³n enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
+                                $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Codigo de error: " . $e->faultcode . " <br>";
                                 $mMessage .= "Actor del error: " . $e->faultactor . " <br>";
@@ -3755,7 +3687,7 @@ class InsertNovedad {
 
                             $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
 
-                            //MÃ©todos disponibles en el WS
+                            //Métodos disponibles en el WS
                             $respuesta = $oSoapClient->__call('getDespacho', $parametros);
                         } catch (SoapFault $e) {
                             $error_ = $e->getMessage();
@@ -3769,7 +3701,7 @@ class InsertNovedad {
                                 $mMessage .= "Placa del vehiculo: " . $mDatDespac['num_placax'] . " <br>";
                                 $mMessage .= "Codigo puesto de control: " . $regist['contro'] . " <br>";
                                 $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
-                                $mMessage .= "ObservaciÃ³n enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
+                                $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Codigo de error: " . $e->faultcode . " <br>";
                                 $mMessage .= "Actor del error: " . $e->faultactor . " <br>";
@@ -3844,7 +3776,7 @@ class InsertNovedad {
 
                                 $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
-                                //MÃ©todos disponibles en el WS
+                                //Métodos disponibles en el WS
                                 $respuesta = $oSoapClient-> __soapCall( 'puestocontrol', $parametros );
 
                                 if ($respuesta != 'OK REPORTO.') {
@@ -3866,7 +3798,7 @@ class InsertNovedad {
                                 $mMessage .= "Codigo puesto de control padre: " . $mControPadre['cod_contro'] . " <br>";
                                 $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
                                 $mMessage .= "Nombre novedad: " . $mDatNoveda['nom_noveda'] . " <br>";
-                                $mMessage .= "ObservaciÃ³n enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
+                                $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
@@ -3874,7 +3806,7 @@ class InsertNovedad {
                                 	"Error Web service Humadea - Colombiasoftware", 
                                 	'<div name="'.HOST_WEB.'_faro_11">' . $mMessage."\n". var_export($parametros, true ) . '</div>', $mCabeceSoporte);
                             }
-                            //Insert de BitÃ¡cora 
+                            //Insert de Bitácora 
                             $mLog = array();
                             $mLog['mEstado'] = $mEstado;
                             $mLog['mResult'] = $error_;
@@ -3914,7 +3846,7 @@ class InsertNovedad {
                                 $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
 
-                                //MÃ©todos disponibles en el WS
+                                //Métodos disponibles en el WS
                                 $respuesta = $oSoapClient->__soapCall('novedades', $parametros);
 
                                 if ($respuesta != 'OK REPORTO.') {
@@ -3934,13 +3866,13 @@ class InsertNovedad {
                                 $mMessage .= "Placa del vehiculo: " . $mDatDespac['num_placax'] . " <br>";
                                 $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
                                 $mMessage .= "Nombre novedad: " . $mDatNoveda['nom_noveda'] . " <br>";
-                                $mMessage .= "ObservaciÃ³n enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
+                                $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
                                 mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", '<div name="'.HOST_WEB.'_faro_12">' . $mMessage . '</div>', $mCabeceSoporte);
                             }
-                            //Insert de BitÃ¡cora 
+                            //Insert de Bitácora 
                             $mLog = array();
                             $mLog['mEstado'] = $mEstado;
                             $mLog['mResult'] = $respuesta;
@@ -3981,7 +3913,7 @@ class InsertNovedad {
                             $parametros['observacion'] = $regist['observ'];
 
                             $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
-                            //MÃ©todos disponibles en el WS
+                            //Métodos disponibles en el WS
                             $respuesta = $oSoapClient->__call('set_Novedad', $parametros);
                         } catch (SoapFault $e) {
                             $error_ = $e->getMessage();
@@ -3995,7 +3927,7 @@ class InsertNovedad {
                                 $mMessage .= "Placa del vehiculo: " . $mDatDespac['num_placax'] . " <br>";
                                 $mMessage .= "Codigo puesto de control: " . $regist['contro'] . " <br>";
                                 $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
-                                $mMessage .= "ObservaciÃ³n enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
+                                $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Codigo de error: " . $e->faultcode . " <br>";
                                 $mMessage .= "Actor del error: " . $e->faultactor . " <br>";
@@ -4033,7 +3965,7 @@ class InsertNovedad {
 
                             $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
 
-                            //MÃ©todos disponibles en el WS
+                            //Métodos disponibles en el WS
                             $respuesta = $oSoapClient->__call('getDespacho', $parametros);
                         } catch (SoapFault $e) {
                             $error_ = $e->getMessage();
@@ -4047,7 +3979,7 @@ class InsertNovedad {
                                 $mMessage .= "Placa del vehiculo: " . $mDatDespac['num_placax'] . " <br>";
                                 $mMessage .= "Codigo puesto de control: " . $regist['contro'] . " <br>";
                                 $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
-                                $mMessage .= "ObservaciÃ³n enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
+                                $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Codigo de error: " . $e->faultcode . " <br>";
                                 $mMessage .= "Actor del error: " . $e->faultactor . " <br>";
@@ -4067,7 +3999,7 @@ class InsertNovedad {
                         try {
                             $oSoapClient = new soapclient($mData['url_webser'], array('encoding' => 'ISO-8859-1'));
 
-                            //MÃ©todos disponibles en el WS
+                            //Métodos disponibles en el WS
                             $mResult = $oSoapClient->__call('aplicaExists', array("nom_aplica" => $interfaz->interfaz[$i]['nombre']));
                             $mResult = explode("; ", $mResult);
                             $mCodResp = explode(":", $mResult[0]);
@@ -4118,7 +4050,7 @@ class InsertNovedad {
                                         $error_ = $mMsgResp[1];
                                     } else {
                                         $error_ = NULL;
-                                        //Hace la actualizaci�n del indicador estado de novedad enviada a tms
+                                        //Hace la actualizaci? del indicador estado de novedad enviada a tms
                                         self::updateEstadoEnviadoTms($regist, $mIndEnSiti);
                                         break;
                                     }
@@ -4385,7 +4317,7 @@ class InsertNovedad {
 
                             $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
 
-                            //MÃ©todos disponibles en el WS
+                            //Métodos disponibles en el WS
                             $respuesta = $oSoapClient->__call('reporte', $parametros);
 
                             if ($respuesta != 'Ok') {
@@ -4399,7 +4331,7 @@ class InsertNovedad {
                                 $mMessage .= "Codigo puesto de control padre: " . $mControPadre['cod_contro'] . " <br>";
                                 $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
                                 $mMessage .= "Nombre novedad: " . $mNoveda[0]['nom_noveda'] . " <br>";
-                                $mMessage .= "ObservaciÃ³n enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
+                                $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $respuesta . " <br>";
 
@@ -4438,7 +4370,7 @@ class InsertNovedad {
 
                             $oSoapClient = new soapclient($url_webser, array('encoding' => 'ISO-8859-1'));
 
-                            //MÃ©todos disponibles en el WS
+                            //Métodos disponibles en el WS
                             $respuesta = $oSoapClient->__call('setPCIntracarga', $parametros);
 
                             //mail("maribel.garcia@eltransporte.org, nelson.liberato@intrared.net ", "Web service Intracarga Fault", '<div name="'.HOST_WEB.'_faro_16">' . var_export($respuesta, true) . '</div>', $mCabeceSoporte);
@@ -4575,7 +4507,7 @@ class InsertNovedad {
                                 $mControPadre = $mControPadre->ret_matriz('a');
 
 
-                                # Consulta PC, puesto control si no encontrÃ³ nada homologado arriba -----------------
+                                # Consulta PC, puesto control si no encontró nada homologado arriba -----------------
                                 if( sizeof($mControPadre ) <= 0 )
                                 {
                                     $mQuerySelNomPc = "SELECT cod_contro  
@@ -4887,7 +4819,7 @@ class InsertNovedad {
      *  \brief: funcion para enviar un email con una plantilla standar
      *  \author: Ing. Alexander Correa
      *  \date: 21/04/2016
-     *  \date modified: dia/mes/aÃ±o
+     *  \date modified: dia/mes/año
      *  \param: $datos  => object => objeto con la informacion necesaria para enviar el Correo   
      *  \return booleano con el resuntado de la operacion
      */
@@ -4940,19 +4872,19 @@ class InsertNovedad {
 
         $msj  = "Novedad: $datos->nom_noveda\r\n";
         $msj .= "Placa: $datos->num_placax\r\n";
-        $msj .= "\r\nDatos BÃ¡sicos del Despacho\r\n";
+        $msj .= "\r\nDatos Básicos del Despacho\r\n";
         $msj .= "No. Despacho AVANSAT GL: $datos->num_despac\r\n";
         $msj .= "Empresa: $datos->nom_transp\r\n";
-        $msj .= "NÃºmero de Manifiesto: $datos->cod_manifi\r\n";
+        $msj .= "Número de Manifiesto: $datos->cod_manifi\r\n";
         $msj .= "Origen: $datos->nom_ciuori\r\n";
         $msj .= "Destino: $datos->nom_ciudes\r\n";
-        $msj .= "\r\nDatos Del Conductor del VehÃ­culo\r\n";
+        $msj .= "\r\nDatos Del Conductor del Vehículo\r\n";
         $msj .= "Conductor: $datos->nom_conduc\r\n";
         $msj .= "Celular: $datos->con_telmov\r\n";
         $msj .= "\r\nDatos Novedad\r\n";
         $msj .= "Fecha y Hora: $datos->fec_noveda\r\n";
-        $msj .= "UbicaciÃ³n: $datos->nom_sitiox\r\n";
-        $msj .= "ObservaciÃ³n: $datos->obs_noveda\r\n";
+        $msj .= "Ubicación: $datos->nom_sitiox\r\n";
+        $msj .= "Observación: $datos->obs_noveda\r\n";
         $msj .= "Asignado a: $datos->ema_asigna\r\n";
         $msj .= "Asignado por: $datos->usr_creaci\r\n";
 
@@ -5020,23 +4952,6 @@ class InsertNovedad {
                     AND cod_noveda = '".$mData['noveda']."' 
                     AND ".$colum." = '".$mData['fecnov']."'";
         new Consulta($mSql, $this->conexion);     
-    }
-
-    /*! \fn: existElement
-     *  \brief: Busca si existe un elemento en un array asociativo
-     *  \author: Ing. Cristian Andr�s Torres
-     *  \date: 03/08/2022
-     *  \date modified: dd/mm/aaaa
-     *  \param: 
-     *  \return: boolean
-     */
-    public function existElement($mArray, $mvalBus){
-        foreach($mArray as $data){
-            if($data==$mvalBus){
-                return true;
-            }
-        }
-        return false;
     }
 
      /*! \fn: reenviaNovedadesAvansat
@@ -5200,7 +5115,7 @@ class InsertNovedad {
                 $cRespuest['noveda'] = $cReportes;
                 $cRespuest['status'] = true;
                 $cRespuest['msj'] = $msj;
-                $cRespuest['title'] = '¡Exito!';
+                $cRespuest['title'] = '�Exito!';
                 $cRespuest['type'] = 'success';
                 
             }else{
@@ -5212,14 +5127,12 @@ class InsertNovedad {
                 return $cRespuest;
         } catch (Exception $e) {
                 $cRespuest['status'] = false;
-                $cRespuest['msj'] = 'Error en el método reenviaNovedadesAvansat. Por favor contacte a mesa de apoyo.';
+                $cRespuest['msj'] = 'Error en el m�todo reenviaNovedadesAvansat. Por favor contacte a mesa de apoyo.';
                 $cRespuest['title'] = 'Error';
                 $cRespuest['type'] = 'error';
                 return $cRespuest;
         }                      
     }
-
-    
 
 }
 

@@ -76,10 +76,10 @@ class ajax_genera_concor
   }
 
    /*! \fn: form
-   *  \brief: Crea el formulario de para registrar informaci�n del banco
+   *  \brief: Crea el formulario de para registrar información del banco
    *  \author: Ing. Cristian Andres Torres
    *  \date: 02/06/2020
-   *  \date modified: dia/mes/a�o
+   *  \date modified: dia/mes/año
    *  \param: 
    *  \return: HTML 
    */
@@ -130,10 +130,10 @@ class ajax_genera_concor
     }
 
      /*! \fn: darCampos
-   *  \brief: retorna la informacion del formulario para registro y actualizaci�n
+   *  \brief: retorna la informacion del formulario para registro y actualización
    *  \author: Ing. Cristian Andres Torres
    *  \date: 02/06/2020
-   *  \date modified: dia/mes/a�o
+   *  \date modified: dia/mes/año
    *  \param: 
    *  \return: HTML 
    */
@@ -202,7 +202,7 @@ class ajax_genera_concor
    *  \brief: retorna html con las opciones de los datos de los clientes
    *  \author: Ing. Cristian Andres Torres
    *  \date: 02/06/2020
-   *  \date modified: dia/mes/a�o
+   *  \date modified: dia/mes/año
    *  \param: 
    *  \return: HTML 
    */
@@ -225,7 +225,7 @@ class ajax_genera_concor
 
   /*! \fn: delReg
    *  \brief: Elimina el registro
-   *  \author: Ing. Cristian Andr�s Torres
+   *  \author: Ing. Cristian Andrés Torres
    *  \date: 02/06/2020
    *  \date modified: dia/mes/año
    *  \param: 
@@ -250,7 +250,7 @@ class ajax_genera_concor
         //Devuelve estatus de la consulta
         echo json_encode($return);
       } catch (Exception $e) {
-        echo 'Excepci�n delReg: ',  $e->getMessage(), "\n";
+        echo 'Excepción delReg: ',  $e->getMessage(), "\n";
       }
     }
 

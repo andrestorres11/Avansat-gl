@@ -373,18 +373,18 @@
           }
 
           function getOpeGps(){
-            $sql="SELECT a.nit_operad, a.nom_operad FROM ".BD_STANDA.".tab_genera_opegps a WHERE a.ind_estado = 1";
+            $sql="SELECT a.cod_operad, a.nom_operad FROM ".BD_STANDA.".tab_genera_opegps a WHERE a.ind_estado = 1";
             $resultado = new Consulta($sql, self::$conexion);
             $resultados = $resultado->ret_matriz('a');
             $html='';
             foreach ($resultados as $registro){
                 $selected = '';
                 if($cod_opegps != '' || $cod_opegps != NULL){
-                  if($registro['nit_operad'] == $cod_opegps){
+                  if($registro['cod_operad'] == $cod_opegps){
                   $selected = 'selected';
                   }
                 }
-                $html .= '<option value="'.$registro['nit_operad'].'" '.$selected.'>'.$registro['nom_operad'].'</option>';
+                $html .= '<option value="'.$registro['cod_operad'].'" '.$selected.'>'.$registro['nom_operad'].'</option>';
             }
             return utf8_encode($html);
           }
@@ -1749,10 +1749,13 @@
               LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas f ON
                     a.cod_lineax = f.cod_lineax AND a.cod_marcax = f.cod_marcax
               LEFT JOIN ".BD_STANDA.".tab_genera_opegps g ON
-              BINARY a.cod_opegps = BINARY g.nit_operad
+              BINARY a.cod_opegps = BINARY g.cod_operad
                     WHERE a.cod_segveh = '".$cod_vehicu."'";
               $query = new Consulta($sql, self::$conexion);
               $resultados = $query -> ret_matrix('a')[0];
+              if($resultados['cod_opegps']==''){
+                mail('cristian.torres@grupooet.com','Alerta estudio de seguridad Operador GPS',$sql);
+              }
               $dataVehicu = array(
                 'placa' => $resultados['num_placax'],
                 'trailer_number' => $resultados['num_remolq'],

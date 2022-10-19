@@ -35,7 +35,7 @@ function editarUsuario(row) {
 
     swal({
         title: "Editar Usuario",
-        text: "¿Realmente Deseas Editar el Usuario " + nom_usuari + "?",
+        text: "Â¿Realmente Deseas Editar el Usuario " + nom_usuari + "?",
         type: "warning",
         showCancelButton: true,
         closeOnConfirm: true,
@@ -233,18 +233,18 @@ function mostrarOcultos() {
  *  \brief: controla los caracteres que se escriben en el campo de texto
  *  \author: Ing. Andres Torres
  *  \date: 04/03/2019
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/aï¿½o
  *  \param: e => indica que evento es el que llega
  *  \return 
  */
 function validarLetras(e) { // 1
     tecla = (document.all) ? e.keyCode : e.which; // 2
-    // alert(tecla);
+     //alert(tecla);
     if (tecla==8)return true; // 3
     if(tecla == 241 || tecla == 209){
-        alert("La letra ñ/Ñ no es valida para el Nombre de Usuario");
+        alert("La letra Ã±/Ã‘ no es valida para el Nombre de Usuario");
     }
-    patron =/[A-Za-z\s]/; // 4
+    patron =/[A-Za-z\s\.]/; // 4
     te = String.fromCharCode(tecla); // 5
     return patron.test(te); // 6
 }
@@ -262,6 +262,12 @@ function registrar(ind) {
     var pass1 = $("#clv_usuari").val();
     var pass2 = $("#con_passwo").val();
     var val = true;
+
+    if($("#cod_usuari").val().length < 7 || $("#cod_usuari").val().length > 30)
+    {
+        inc_alerta("cod_usuari", "El valor minimo es de 7 y max 30 caracteres");
+        return false;
+    }
 
     if ($("#ali_usuari").val().length < 1) { 
             setTimeout(function() { 
