@@ -3526,7 +3526,6 @@ class Despachos
                      AND cod_servic = '1335'";
       $consulta = new Consulta( $mSelect, $this -> conexion );
       $_PERMISO = $consulta -> ret_matriz();
-      
       if( sizeof( $_PERMISO ) > 0 && !$mIndConsol )
       {
         $mHtml = new Formlib(2);
@@ -4458,7 +4457,6 @@ class Despachos
        #< 3: INFORMACION DE NOTAS DE CONTROLADOR >
        if( $mView->inf_notcon->ind_visibl == 1 )
        $mHtml->SetBody( self::divNotasContro( $despac, $_DESPAC, $_RUTASX, $mView->pop_califi->ind_visibl, $mView->inf_notcon) );
-       
        #< 2: LLEGADA >
        if ( $lleg == 1 &&  $mView->inf_llegad->ind_visibl == 1 ){
          $mLlegada = self::divLlegada( $indConsol );
