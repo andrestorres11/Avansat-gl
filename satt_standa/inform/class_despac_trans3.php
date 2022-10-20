@@ -2175,7 +2175,7 @@ class Despac
 		$mSql .= " GROUP BY a.cod_transp ORDER BY h.cod_usuari, a.nom_transp ASC ";
 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
-
+		
 		return $mConsult -> ret_matrix('a');
 	}
 
