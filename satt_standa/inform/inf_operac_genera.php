@@ -286,7 +286,8 @@ class InformViajes {
                             <th class=cellHead style='font-size:9px;' width='10%'>Novedad</th>
                             <th class=cellHead style='font-size:9px;' width='10%'>Observaci&oacute;n del Controlador</th>
                             <th class=cellHead style='font-size:9px;' width='10%'>Usuario</th>
-                            <th class=cellHead style='font-size:9px;' width='10%'>Fecha y Hora</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Fecha y Hora anticipada</th>
+                            <th class=cellHead style='font-size:9px;' width='10%'>Fecha y Hora actual</th>
                             <th class=cellHead style='font-size:9px;  width='10%'>Tiempo Contratado</th>
                             <th class=cellHead style='font-size:9px;' width='10%'>Tiempo</th>
                             <th class=cellHead style='font-size:9px;' width='10%'>Diferencia T</th>
@@ -308,6 +309,8 @@ class InformViajes {
                 }else{
                     $sizeNovedad=sizeof($mArrayNove);
                 }
+                $array_result=array();
+                $array_result_=array();
                 $mSizeNoved = $_REQUEST['ind_noveda'] == '1' ? $sizeNovedad : '1';
                 $tip_transp = 'DESCONOCIDA';
                 $tip_transp_number=(isset($row['tip_transp']) ? $row['tip_transp']:'0' );
@@ -391,72 +394,73 @@ class InformViajes {
                 if ($_REQUEST['ind_noveda'] == '1') {
                     $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
                     if($mSizeNoved > 1){
-                        /*for ($y = 0; $y < $mSizeNoved; $y++) {
-                            if($y == 0){
-                                $horainicio= strtotime($mArrayNove[$y][3]);
-                                $result=0;
-                            }else{
-                                $horafin=$horainicio;
-                                $horainicio= strtotime($mArrayNove[$y][3]);
-                                $diff = abs($horainicio - $horafin); 
-                                $years = floor($diff / (365*60*60*24));
-                                $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
-                                $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-                                $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
-                                $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
-                                $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
-                                $result=($hours * 60) + $minutes;
-                                // printf("%d years, %d months, %d days, %d hours, " . "%d minutes, %d seconds", $years, $months, $days, $hours, $minutes, $seconds);  
-                                // sacar Promedio de efectividad del seguimiento
-                                $operacc=$resultsegui-$result;
-                                    if($operacc >=0){
-                                        $resprom++ ;
-                                    }
-                            }                            
+
+                        for ($p = 0; $p < $mSizeNoved; $p++) {
+                            array_push($array_result,array(
+                                "nomSitiox"=> ($mArrayNove[$p][0] == '' ? $mArrayNove[$p][4] : $mArrayNove[$p][0]),
+                                "novedad"=> $mArrayNove[$p][1],
+                                "obser_cont"=>$mArrayNove[$p][2], //Observacion del controlador
+                                "usuario"=>($mArrayNove[$p][6] !='' ? $mArrayNove[$p][6]:'N/a' ), //Usuario
+                                "cod_transp"=>$row['cod_transp'], //cod_transp
+                                "date_"=>$mArrayNove[$p][3],//Fecha y Hora
+                            )); 
                         }
-                        //$promediofin=($resprom * 100)/($mSizeNoved-1);*/
                         $mHtml2 = "<table border='1' class='table table-bordered table-sm pt-0'>";
                         $mHtml2 .="<tbody>";
-                        for ($x = 0; $x < $mSizeNoved; $x++) {
-                            $horafin=0;$horainicio=0;$years=0;$months=0; $days=0;$hours=0;$minutes=0;
-                            $seconds=0;$result=0;$cal=0;$porcent=0;$opera=0;$resseg='';
+                            $sorted = $this->array_orderby($array_result, 'date_', SORT_ASC);
+                            //var_dump($sorted);
+                            $uniques=array();
 
-                            $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
-                            $mHtml2 .= '<tr>';
-                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
-                            $mHtml2 .= '<td class="cellInfo" width="10%">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
-                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
-                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.( $mArrayNove[$x][6] !='' ? $mArrayNove[$x][6]:'N/a' ).'&nbsp;</td>'; //Usuario
-                            $mHtml2 .= '<td class="cellInfo"  width="10%">'.($row['cod_transp'] ).'&nbsp;</td>'; //cod_transp
-                            $mHtml2 .= '<td class="cellInfo" width="10%">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
-                            
-                            
-                            $horafin=$horainicio;
-                            $horainicio= strtotime($mArrayNove[$x][3]);
-                            $diff = abs($horainicio - $horafin); 
-                            $years = floor($diff / (365*60*60*24));
-                            $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
-                            $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-                            $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
-                            $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
-                            $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
-                            $result=($hours * 60) + $minutes;
-                            $cal=($resultsegui-$result);
-                            $porcent=(($cal*100)/$resultsegui);
+                            foreach($sorted as  $key_=>$val_){
+                                
+                                if(!in_array($uniques,$val_["nomSitiox"]) && !in_array($uniques,$val_["novedad"]) && !in_array($uniques,$val_["obser_cont"]) && !in_array($uniques,$val_["usuario"]) && !in_array($uniques,$val_["cod_transp"])  && !in_array($uniques,$val_["date_"]))
+                                {
+                                    if($key_==0){
+                                        $date_end=$row['fec_despac'];
+                                    }else{
+                                        $date_end=$sorted[$key_-1]['date_'];
+                                    }
+                                    $horafin=0;$years=0;$months=0; $days=0;$hours=0;$minutes=0;
+                                    $seconds=0;$result=0;$cal=0;$porcent=0;$opera=0;$resseg='';
+                                    $mHtml2 .= '<tr>';
+                                    $mHtml2 .= '<td class="cellInfo"  width="10%">'.$val_["nomSitiox"].'&nbsp;</td>'; //Sitio de Seguimiento
+                                    $mHtml2 .= '<td class="cellInfo" width="10%">'.$val_["novedad"].'&nbsp;</td>'; //Novedad
+                                    $mHtml2 .= '<td class="cellInfo"  width="10%">'.$val_["obser_cont"].'&nbsp;</td>'; //Observacion del controlador
+                                    $mHtml2 .= '<td class="cellInfo"  width="10%">'.$val_["usuario"].'&nbsp;</td>'; //Usuario
+                                    $mHtml2 .= '<td class="cellInfo"  width="10%">'.$val_["cod_transp"].'&nbsp;</td>'; //cod_transp
+                                    $mHtml2 .= '<td class="cellInfo" width="10%">'.$date_end.'&nbsp;</td>'; //Fecha y Hora
+                                    $mHtml2 .= '<td class="cellInfo" width="10%">'.$val_["date_"].'&nbsp;</td>'; //Fecha y Hora
+                                    $horainicio= strtotime($val_["date_"]);
+                                    $horafin=strtotime($date_end);
+                    
+                                    $diff = abs($horainicio - $horafin);
+                                    $years = floor($diff / (365*60*60*24));
+                                    $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
+                                    $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
+                                    $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
+                                    $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
+                                    $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
+                                    $result=($hours * 60) + $minutes;
+                                    $cal=($resultsegui-$result);
+                                    $porcent=(($cal*100)/$resultsegui);
 
-                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($resultsegui !='' ? $resultsegui:'&nbsp;').'</td>'; //Tiempo contratado
-                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($result !='' ? $result:'0').'</td>'; //Tiempo
-                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
-                            $opera=$resultsegui-$result;
-                            if($opera >=0){
-                                $resseg="Si";
-                            }else{
-                                $resseg="No";
+                                    $mHtml2 .= '<td class="cellInfo" width="10%">'.($resultsegui !='' ? $resultsegui:'&nbsp;').'</td>'; //Tiempo contratado
+                                    $mHtml2 .= '<td class="cellInfo" width="10%">'.($result !='' ? $result:'0').'</td>'; //Tiempo
+                                    $mHtml2 .= '<td class="cellInfo" width="10%">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
+                                    $opera=$resultsegui-$result;
+                                    if($opera >=0){
+                                        $resseg="Si";
+                                    }else{
+                                        $resseg="No";
+                                    }
+                                    $mHtml2 .= '<td class="cellInfo" width="10%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
+                                    $mHtml2 .= '<td class="cellInfo" width="10%">'.($porcent !=0 ? round($porcent,0, PHP_ROUND_HALF_UP):0).'%</td>'; //Porcentaje de Cumplimiento
+                                    $mHtml2 .='</tr>';
+                                    array_push($uniques,$val_["nomSitiox"],$val_["novedad"],$val_["obser_cont"],$val_["usuario"],$val_["cod_transp"],$val_["date_"],$val_["date_end"]);
+                                }
+                                
+                                //$array_result_
                             }
-                            $mHtml2 .= '<td class="cellInfo" width="10%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
-                            $mHtml2 .= '<td class="cellInfo" width="10%">'.($porcent !=0 ? round($porcent,0, PHP_ROUND_HALF_UP):0).'%</td>'; //Porcentaje de Cumplimiento
-                            $mHtml2 .='</tr>';
-                        }
                         $mHtml2 .="</tbody>";
                         $mHtml2 .= "</table>";
                     }
@@ -488,6 +492,23 @@ class InformViajes {
         echo $mHtml2;
         echo "<script>$.unblockUI();</script>";
         $formulario->cerrar();
+    }
+
+    private function array_orderby()
+    {
+        $args = func_get_args();
+        $data = array_shift($args);
+        foreach ($args as $n => $field) {
+            if (is_string($field)) {
+                $tmp = array();
+                foreach ($data as $key => $row)
+                    $tmp[$key] = $row[$field];
+                $args[$n] = $tmp;
+                }
+        }
+        $args[] = &$data;
+        call_user_func_array('array_multisort', $args);
+        return array_pop($args);
     }
 
     function getInform2() {
@@ -681,7 +702,8 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Novedad</th>";
             $mHtml .= "<th class=cellHead >Observaci&oacute;n del Controlador</th>";
             $mHtml .= "<th class=cellHead >Usuario</th>";
-            $mHtml .= "<th class=cellHead >Fecha y Hora</th>";
+            $mHtml .= "<th class=cellHead >Fecha y Hora anticipada</th>";            
+            $mHtml .= "<th class=cellHead >Fecha y Hora actual</th>";
             $mHtml .= "<th class=cellHead >Tiempo Contratado</th>";
             $mHtml .= "<th class=cellHead >Tiempo</th>";
             $mHtml .= "<th class=cellHead >Diferencia T</th>";
@@ -690,8 +712,9 @@ class InformViajes {
             $mHtml .="</tr>";
             $mHtml .="</thead>";
             $mHtml .="<tbody>";
-            $count = 1;
             foreach ($_INFORM as $key => $row) {
+                $array_result=array();
+                $array_result_=array();
                 $mArrayNove = array_merge(InformViajes::getDespacContro($row['num_viajex']), InformViajes::getDespacNoveda($row['num_viajex']));
                 if(sizeof($mArrayNove)==0){
                     $sizeNovedad=1;
@@ -707,14 +730,42 @@ class InformViajes {
                 $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
                 $resprom=0;
                 if($mSizeNoved > 1){
-                    /*for ($y = 0; $y < $mSizeNoved; $y++) {
-                        if($y == 0){
-                            $horainicio= strtotime($mArrayNove[$y][3]);
-                            $result=0;
-                        }else{
-                            $horafin=$horainicio;
-                            $horainicio= strtotime($mArrayNove[$y][3]);
-                            $diff = abs($horainicio - $horafin); 
+                    for ($p = 0; $p < $mSizeNoved; $p++){
+                        array_push($array_result,array(
+                            "nomSitiox"=> ($mArrayNove[$p][0] == '' ? $mArrayNove[$p][4] : $mArrayNove[$p][0]),
+                            "novedad"=> $mArrayNove[$p][1],
+                            "obser_cont"=>$mArrayNove[$p][2], //Observacion del controlador
+                            "usuario"=>($mArrayNove[$p][6] !='' ? $mArrayNove[$p][6]:'N/a' ), //Usuario
+                            "cod_transp"=>$row['cod_transp'], //cod_transp
+                            "date_"=>$mArrayNove[$p][3],//Fecha y Hora
+                        )); 
+                    }
+                    $sorted = $this->array_orderby($array_result, 'date_', SORT_ASC);
+                    $uniques=array();
+                    foreach($sorted as  $key_=>$val_){
+                                
+                        if(!in_array($uniques,$val_["nomSitiox"]) && !in_array($uniques,$val_["novedad"]) && !in_array($uniques,$val_["obser_cont"]) && !in_array($uniques,$val_["usuario"]) && !in_array($uniques,$val_["cod_transp"])  && !in_array($uniques,$val_["date_"]))
+                        {
+                            if($key_==0){
+                                $date_end=$row['fec_despac'];
+                            }else{
+                                $date_end=$sorted[$key_-1]['date_'];
+                            }
+                            $horafin=0;$years=0;$months=0; $days=0;$hours=0;$minutes=0;
+                            $seconds=0;$result=0;$cal=0;$porcent=0;$opera=0;$resseg='';
+                            $mHtml .= '<tr>';
+                            $mHtml .= "<td class='cellInfo' align ='left' >".$val_['cod_transp']."</td>"; //Nit empresa de Transporte
+                            $mHtml .= "<td class='cellInfo' align ='left' >".$row['num_viajex']."</td>"; //Viaje
+                            $mHtml .= '<td class="cellInfo" align ="left" >'.$val_['nomSitiox'].'&nbsp;</td>'; //Sitio de Seguimiento
+                            $mHtml .= '<td class="cellInfo" align ="left">'.$val_['novedad'].'&nbsp;</td>'; //Novedad
+                            $mHtml .= '<td class="cellInfo" align ="left">'.$val_['obser_cont'].'&nbsp;</td>'; //Observacion del controlador
+                            $mHtml .= '<td class="cellInfo" align ="left">'.$val_['usuario'].'&nbsp;</td>'; //Usuario
+                            $mHtml .= '<td class="cellInfo" align ="left">'.$date_end.'&nbsp;</td>'; //Fecha y Hora
+                            $mHtml .= '<td class="cellInfo" align ="left">'.$val_['date_'].'&nbsp;</td>'; //Fecha y Hora
+                            $horainicio= strtotime($val_["date_"]);
+                            $horafin=strtotime($date_end);
+                    
+                            $diff = abs($horainicio - $horafin);
                             $years = floor($diff / (365*60*60*24));
                             $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
                             $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
@@ -722,60 +773,25 @@ class InformViajes {
                             $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
                             $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
                             $result=($hours * 60) + $minutes;
-                            // printf("%d years, %d months, %d days, %d hours, " . "%d minutes, %d seconds", $years, $months, $days, $hours, $minutes, $seconds);  
-                            // sacar Promedio de efectividad del seguimiento
-                            $operacc=$resultsegui-$result;
-                                if($operacc >=0){
-                                    $resprom++ ;
-                                }
-                        }                            
-                    }*/
-                    //$promediofin=($resprom * 100)/($mSizeNoved-1);
-                    
-                    for ($x = 0; $x < $mSizeNoved; $x++) {
-                        $horafin=0;$horainicio=0;$years=0;$months=0; $days=0;$hours=0;$minutes=0;
-                        $seconds=0;$result=0;$cal=0;$porcent=0;$opera=0;$resseg='';
+                            $cal=($resultsegui-$result);
+                            $porcent=(($cal*100)/$resultsegui);
 
-                        $nomSitiox = $mArrayNove[$x][0] == '' ? $mArrayNove[$x][4] : $mArrayNove[$x][0];
-                        $mHtml .= '<tr>';
-                        $mHtml .= "<td class='cellInfo' align ='left' >".($row['cod_transp'] !='' ? $row['cod_transp']:'')."</td>"; //Nit empresa de Transporte
-                        $mHtml .= "<td class='cellInfo' align ='left' >".$row['num_viajex']."</td>"; //Viaje
-                        $mHtml .= '<td class="cellInfo" align ="left" >'.$nomSitiox.'&nbsp;</td>'; //Sitio de Seguimiento
-                        $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][1].'&nbsp;</td>'; //Novedad
-                        $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][2].'&nbsp;</td>'; //Observacion del controlador
-                        $mHtml .= '<td class="cellInfo" align ="left">'.($mArrayNove[$x][6] !='' ? $mArrayNove[$x][6]:'N/a').'&nbsp;</td>'; //Usuario
-                        $mHtml .= '<td class="cellInfo" align ="left">'.$mArrayNove[$x][3].'&nbsp;</td>'; //Fecha y Hora
-                        
-                        
-                        $horafin=$horainicio;
-                        $horainicio= strtotime($mArrayNove[$x][3]);
-                        $diff = abs($horainicio - $horafin); 
-                        $years = floor($diff / (365*60*60*24));
-                        $months = floor(($diff - $years * 365*60*60*24) / (30*60*60*24));
-                        $days = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24)/ (60*60*24));
-                        $hours = floor(($diff - $years * 365*60*60*24  - $months*30*60*60*24 - $days*60*60*24)/ (60*60)); 
-                        $minutes = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24- $hours*60*60)/ 60); 
-                        $seconds = floor(($diff - $years * 365*60*60*24 - $months*30*60*60*24 - $days*60*60*24 - $hours*60*60 - $minutes*60));
-                        $result=($hours * 60) + $minutes;
-                        $cal=($resultsegui-$result);
-                        $porcent=(($cal*100)/$resultsegui);
-
-                        $mHtml .= '<td class="cellInfo" width="12%">'.($resultsegui !='' ? $resultsegui:'&nbsp;').'</td>'; //Tiempo contratado
-                        $mHtml .= '<td class="cellInfo" width="12%">'.($result !='' ? $result:'0').'</td>'; //Tiempo
-                        $mHtml .= '<td class="cellInfo" width="12%">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
-                        $opera=$resultsegui-$result;
-                        if($opera >=0){
-                            $resseg="Si";
-                        }else{
-                            $resseg="No";
+                            $mHtml .= '<td class="cellInfo" align ="left">'.($resultsegui !='' ? $resultsegui:'&nbsp;').'</td>'; //Tiempo contratado
+                            $mHtml .= '<td class="cellInfo" align ="left">'.($result !='' ? $result:'0').'</td>'; //Tiempo
+                            $mHtml .= '<td class="cellInfo" align ="left">'.($cal !=0 ? $cal:'&nbsp;').'</td>'; //Diferencia T
+                            $opera=$resultsegui-$result;
+                            if($opera >=0){
+                                $resseg="Si";
+                            }else{
+                                $resseg="No";
+                            }
+                            $mHtml .= '<td class="cellInfo" align ="left" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
+                            $mHtml .= '<td class="cellInfo" align ="left" >'.($porcent !=0 ? round($porcent,2):0).'%</td>'; //Porcentaje de Cumplimiento
+                            $mHtml .='</tr>';
+                            array_push($uniques,$val_["nomSitiox"],$val_["novedad"],$val_["obser_cont"],$val_["usuario"],$val_["cod_transp"],$val_["date_"],$val_["date_end"]);
                         }
-                        $mHtml .= '<td class="cellInfo" width="12%" >'.$resseg.' &nbsp;</td>'; //Cumplimiento Seguimiento
-                        $mHtml .= '<td class="cellInfo" align ="left" width="12%">'.($porcent !=0 ? round($porcent,2):0).'%</td>'; //Porcentaje de Cumplimiento
-                        $mHtml .='</tr>';
                     }
-                    
                 }
-                $count++;
                 
             }
             $mHtml .="</tbody>";
