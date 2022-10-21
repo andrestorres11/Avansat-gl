@@ -66,6 +66,13 @@
             .ui-multiselect-filter{
                 color:black;
             }
+            hr {
+                
+                margin-left: 16px !important;
+                margin-right: 16px !important;
+                margin-bottom: 20px !important;
+                border-top: 3px solid #333333 !important;
+            }
             </style>
             ';
         }
@@ -152,26 +159,12 @@
                                         <div class="row">
                                             <tr>
                                                 <td class="col-sm-2 fieldForm">
-                                                </td>
-                                                <td class="col-sm-2 fieldForm">
-                                                    OAL
-                                                </td>
-                                                <td >
-                                                    <input type="checkbox" value="1" id="tip_servic20">
-                                                </td>
-                                                <td class="col-sm-2 fieldForm">
-                                                    MA
-                                                </td>
-                                                <td >
-                                                    <input type="checkbox" value="1" id="tip_servic21">
-                                                </td>
-                                                <td class="col-sm-2 fieldForm">
-                                                    OAL/MA
-                                                </td>
-                                                <td >
-                                                    <input type="checkbox" value="1" id="tip_servic22">
-                                                </td>
-                                                <td class="col-sm-2 fieldForm">
+                                                </td>';
+                                                foreach($this->getTipServ() as $value){
+                                                    echo '<td class="col-sm-2 fieldForm">'.$value[1].'</td>';
+                                                    echo '<td ><input type="checkbox" class="tipserv" value="1" id="tip_servic'.$value[0].'"></td>';
+                                                }
+                                           echo '<td class="col-sm-2 fieldForm">
                                                 </td>
                                             </tr>
                                         </div>
@@ -180,18 +173,17 @@
                                     <table class="panel-body collapse in" id="filtros2" aria-expanded="true">
                                             <tr>
                                                 <td class="col-sm-2 nameForm">
-                                                    <div id="tabs" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
-                                                        <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
-                                                            <li class="ui-state-default ui-corner-top">
-                                                                <a id="liGenera" href="#tabs-1" tipo="gen" >Informe General</a>
-                                                            </li>
-                                                            <li class="ui-state-default ui-corner-top">
-                                                                <a id="liNov" href="#tabs-2" tipo="nov">Informe Novedad</a>
-                                                            </li>
-                                                        </ul>
-                                                        <div class="col-md-12 ui-tabs-panel ui-widget-content ui-corner-bottom" style="background:white !important;" id="GeneraID" >
+                                                    <ul class="nav nav-pills">
+                                                        <li class="active">
+                                                            <a data-toggle="tab" id="liGenera" href="#tabs-1" tipo="gen">Informe general</a>
+                                                        </li>
+                                                        <li class="active">
+                                                            <a data-toggle="tab" id="liNov" href="#tabs-2" tipo="nov">Informe Novedad</a>
+                                                        </li>
+                                                    </ul>
+                                                    <div class="col-md-12 ui-tabs-panel ui-widget-content ui-corner-bottom" style="background:white !important;" id="GeneraID" >
                                                             <div class="row">
-                                                                <div class="col-md-6" style="padding:0">
+                                                                <div class="col-md-6" style="padding:0;">
                                                                     <div  style="position: relative; height:300px; width:400px">
                                                                         <div id="Graphic1" class="panel-body graphic"></div>
                                                                     </div>
@@ -204,7 +196,7 @@
                                                                 <div class="col-md-12">
                                                                 <hr>
                                                                 </div>
-                                                                <div class="col-md-6" style="padding:0">
+                                                                <div class="col-md-6" style="padding:0;">
                                                                     <div  style="position: relative; height:300px; width:300px">
                                                                         <div id="Graphic3" class="panel-body graphic"></div>
                                                                     </div>
@@ -217,12 +209,12 @@
                                                                 <div class="col-md-12" >
                                                                 <hr>
                                                                 </div>
-                                                                <div class="col-md-6" style="padding:0">
+                                                                <div class="col-md-6" style="padding:0;">
                                                                     <div  style="position: relative; height:350px; width:400px">
                                                                         <div id="Graphic5" class="panel-body graphic"></div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6" style="padding:0">
+                                                                <div class="col-md-6" style="padding:0;">
                                                                     <div  style="position: relative; height:350px; width:400px">
                                                                         <div id="Graphic6" class="panel-body graphic"></div>
                                                                     </div>
@@ -230,12 +222,12 @@
                                                                 <div class="col-md-12">
                                                                 <hr>
                                                                 </div>
-                                                                <div class="col-md-6" style="padding:0">
+                                                                <div class="col-md-6" style="padding:0;">
                                                                     <div  style="position: relative; height:350px; width:400px">
                                                                         <div id="Graphic7" class="panel-body graphic"></div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6" style="padding:0">
+                                                                <div class="col-md-6" style="padding:0;">
                                                                     <div  style="position: relative; height:350px; width:400px">
                                                                         <div id="Graphic8" class="panel-body graphic"></div>
                                                                     </div>
@@ -243,12 +235,12 @@
                                                                 <div class="col-md-12">
                                                                 <hr>
                                                                 </div>
-                                                                <div class="col-md-6" style="padding:0">
+                                                                <div class="col-md-6" style="padding:0;">
                                                                     <div  style="position: relative; height:300px; width:300px">
                                                                         <div id="Graphic9" class="panel-body graphic"></div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-6" style="padding:0">
+                                                                <div class="col-md-6" style="padding:0;">
                                                                     <div  style="position: relative; height:300px; width:300px">
                                                                         <div id="Graphic10" class="panel-body graphic"></div>
                                                                     </div>
@@ -262,8 +254,8 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </div>
-                                                        <div class="col-md-12 ui-tabs-panel ui-widget-content ui-corner-bottom" id="NovID" style="background:white !important;padding:0;" >
+                                                    </div>
+                                                    <div class="col-md-12 ui-tabs-panel ui-widget-content ui-corner-bottom" id="NovID" style="background:white !important;padding:0;" >
                                                             <div class="row">
                                                                 <div class="col-md-12" style="padding:0">
                                                                     <div  style="position: relative; height:300px; width:100%">
@@ -271,6 +263,14 @@
                                                                     </div>
                                                                 </div>
                                                                 <div class="col-md-12" style="padding:0">
+                                                                    <hr>
+                                                                </div>
+                                                                <div class="col-md-12" style="padding:0">
+                                                                    <div  style="position: relative; height:300px; width:100%">
+                                                                        <div id="Graphic13" class="panel-body graphic"></div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-md-12">
                                                                     <hr>
                                                                 </div>
                                                                 <div class="col-md-12" style="padding:0">
@@ -286,13 +286,7 @@
                                                                     <iframe src="" id="iframe2" style="width: 100%;height: 350px;margin-left: 40px;" frameborder="0" >
                                                                     </iframe>
                                                                 </div>
-                                                                <div class="col-md-12" style="padding:0">
-                                                                    <div  style="position: relative; height:300px; width:100%">
-                                                                        <div id="Graphic13" class="panel-body graphic"></div>
-                                                                    </div>
-                                                                </div>
                                                             </div>
-                                                        </div>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -334,6 +328,16 @@
                 }
             });
             return $array;
+        }
+
+        public function getTipServ()
+        {
+            $mSql = "SELECT a.cod_tipser, a.nom_tipser
+                       FROM ".BASE_DATOS.".tab_genera_tipser a 
+                      WHERE a.ind_estado = '1'
+                        ";
+            $consulta = new Consulta( $mSql, self::$conexion );
+            return $mResult = $consulta -> ret_matrix('i');
         }
         
 

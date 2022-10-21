@@ -27,9 +27,24 @@ $(function() {
                 }
               }
             });
-            let tip_servic20=$("#tip_servic20").is(":checked");
-            let tip_servic21=$("#tip_servic21").is(":checked");
-            let tip_servic22=$("#tip_servic22").is(":checked");
+            const collection = document.getElementsByClassName("tipserv");
+            let tip_servic20=false;let tip_servic21=false;let tip_servic22=false;
+            Array.from(collection).forEach((element,index)  => {
+              var obj1=$(element);
+              switch(index){
+                case 0:
+                  tip_servic20=$("#"+obj1.attr("id")).is(":checked");
+                break;
+                case 1:
+                  tip_servic21=$("#"+obj1.attr("id")).is(":checked");
+                break;
+                case 2:
+                  tip_servic22=$("#"+obj1.attr("id")).is(":checked");
+                break;
+              }
+            });
+            
+            
             
             if(cod_transp == 0 || cod_transp=='""'){
               alert('Atencion: Debe seleccionar la transportadora');
