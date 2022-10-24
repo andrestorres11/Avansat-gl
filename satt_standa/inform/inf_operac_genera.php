@@ -427,7 +427,6 @@ class InformViajes {
                                     $mHtml2 .= '<td class="cellInfo" width="10%">'.$val_["novedad"].'&nbsp;</td>'; //Novedad
                                     $mHtml2 .= '<td class="cellInfo"  width="10%">'.$val_["obser_cont"].'&nbsp;</td>'; //Observacion del controlador
                                     $mHtml2 .= '<td class="cellInfo"  width="10%">'.$val_["usuario"].'&nbsp;</td>'; //Usuario
-                                    $mHtml2 .= '<td class="cellInfo"  width="10%">'.$val_["cod_transp"].'&nbsp;</td>'; //cod_transp
                                     $mHtml2 .= '<td class="cellInfo" width="10%">'.$date_end.'&nbsp;</td>'; //Fecha y Hora
                                     $mHtml2 .= '<td class="cellInfo" width="10%">'.$val_["date_"].'&nbsp;</td>'; //Fecha y Hora
                                     $horainicio= strtotime($val_["date_"]);
