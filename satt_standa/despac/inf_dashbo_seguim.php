@@ -181,6 +181,8 @@
                                                             <a data-toggle="tab" id="liNov" href="#tabs-2" tipo="nov">Informe Novedad</a>
                                                         </li>
                                                     </ul>
+                                                    <br>
+                                                    <br>
                                                     <div class="col-md-12 ui-tabs-panel ui-widget-content ui-corner-bottom" style="background:white !important;" id="GeneraID" >
                                                             <div class="row">
                                                                 <div class="col-md-6" style="padding:0;">
@@ -282,7 +284,7 @@
                                                                     <hr>
                                                                 </div>
                                                                 <div class="col-md-12" style="padding:0">
-                                                                    <h6 style="color: black;text-align: center;font-size: medium;">DESPACHOS SIN GESTIÓN</h6>
+                                                                    <h6 style="color: black;text-align: center;font-size: medium;">DESPACHOS SIN GESTIï¿½N</h6>
                                                                     <iframe src="" id="iframe2" style="width: 100%;height: 350px;margin-left: 40px;" frameborder="0" >
                                                                     </iframe>
                                                                 </div>
