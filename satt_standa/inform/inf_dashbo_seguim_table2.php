@@ -163,7 +163,7 @@ class DashBoard_Seguim_Table2 {
                 INNER JOIN ".BASE_DATOS.".tab_despac_vehige as b on a.num_despac = b.num_despac
 				INNER JOIN ".BASE_DATOS.".tab_tercer_tercer as e ON b.cod_transp = e.cod_tercer
                 LEFT JOIN ".BASE_DATOS.".tab_despac_contro as d ON a.num_despac =d.num_despac
-                where a.num_despac in($despac_final)";
+                where a.num_despac in($despac_final) and d.cod_contro !='9999'";
 			
 			$consulta4  = new Consulta($mSql4, $this -> conexion);
             $despachos4 = $consulta4 -> ret_matriz();
