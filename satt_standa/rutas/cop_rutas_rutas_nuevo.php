@@ -520,7 +520,7 @@ class Proc_rutas
     $fec_actual = date("Y-m-d H:i:s");
 
     //reasigna los valores
-
+    
     $asigna=$_REQUEST[asigna];
     $contro=$_REQUEST[cod_contro];
     $val   =$_REQUEST[val];
@@ -566,16 +566,16 @@ class Proc_rutas
       }
     }
     //query de insercion
-    $query = "INSERT INTO ".BASE_DATOS.".tab_genera_rutasx
+    $query = 'INSERT INTO '.BASE_DATOS.'.tab_genera_rutasx
                       ( cod_rutasx, nom_rutasx, 
                         cod_paiori, cod_depori, cod_ciuori, 
                         cod_paides, cod_depdes, cod_ciudes, 
-                        usr_creaci, fec_creaci, cod_viasxx {$nom_salvia} )
-               VALUES (  ".$nuevo_consec.", '".$_REQUEST[nom]."', 
-                        ".$paidepori[0][0].", ".$paidepori[0][1].", ".$_REQUEST[cod_ciuori].", 
-                        ".$paidepdes[0][0].", ".$paidepdes[0][1].",".$_REQUEST[cod_ciudes].", 
-                        '$_REQUEST[usuario]','$fec_actual', ".$_REQUEST[cod_viasxx]." ".$cod_salvia."
-                      )";
+                        usr_creaci, fec_creaci, cod_viasxx '.$nom_salvia.' )
+               VALUES (  '.$nuevo_consec.', "'.$_REQUEST[nom].'", 
+                        '.$paidepori[0][0].', '.$paidepori[0][1].', '.$_REQUEST[cod_ciuori].', 
+                        '.$paidepdes[0][0].', '.$paidepdes[0][1].','.$_REQUEST[cod_ciudes].', 
+                        "'.$_REQUEST[usuario].'", "'.$fec_actual.'", '.$_REQUEST[cod_viasxx].' '.$cod_salvia.'
+                      )';
     $consulta = new Consulta($query, $this -> conexion,"BR");
 
     //query de insercion pc bodega cargue
@@ -586,7 +586,6 @@ class Proc_rutas
                         '".$_REQUEST[kilinic]."', '$_REQUEST[usuario]', '$fec_actual' 
                       )";
     $consulta = new Consulta($query, $this -> conexion,"R");
-
     for($i = 0; $i < $_REQUEST[cont]; $i++)
     {
       if($asigna[$i] == 1 AND $contro[$i] != 0)
@@ -627,16 +626,16 @@ class Proc_rutas
 
 
       //query de insercion
-      $query = "INSERT INTO ".BASE_DATOS.".tab_genera_rutasx
+      $query = 'INSERT INTO '.BASE_DATOS.'.tab_genera_rutasx
                     ( cod_rutasx, nom_rutasx, 
                       cod_paiori, cod_depori, cod_ciuori, 
                       cod_paides, cod_depdes, cod_ciudes, 
-                      usr_creaci, fec_creaci, cod_viasxx {$nom_salvia})
-                VALUES (  ".$nuevo_consec2.", '".$_REQUEST[nomRev]."', 
-                      ".$paidepdes[0][0].", ".$paidepdes[0][1].",".$_REQUEST[cod_ciudes].", 
-                      ".$paidepori[0][0].", ".$paidepori[0][1].", ".$_REQUEST[cod_ciuori].", 
-                      '$_REQUEST[usuario]','$fec_actual', ".$_REQUEST[cod_viasxx]." {$cod_salvia}
-                    )";
+                      usr_creaci, fec_creaci, cod_viasxx '.$nom_salvia.')
+                VALUES (  '.$nuevo_consec2.', "'.$_REQUEST[nomRev].'", 
+                        "'.$paidepdes[0][0].'", "'.$paidepdes[0][1].'", "'.$_REQUEST[cod_ciudes].'", 
+                        "'.$paidepori[0][0].'", "'.$paidepori[0][1].'", "'.$_REQUEST[cod_ciuori].'", 
+                        "'.$_REQUEST[usuario].'","'.$fec_actual.'", '.$_REQUEST[cod_viasxx].' '.$cod_salvia.'
+                    )';
       $consulta = new Consulta($query, $this -> conexion,"BR");
 
 
@@ -649,8 +648,15 @@ class Proc_rutas
                   )";
       $consulta = new Consulta($query, $this -> conexion,"R");
 
-
       $pcDevuelta = array_reverse($contro);
+
+      for($i = 0; $i < $_REQUEST[cont]; $i++){
+        if(!array_key_exists ($i,$asigna)){
+          $asigna[$i] = '0';
+        }
+      }
+      $asigna = array_reverse($asigna);
+
       for($i = 0; $i < $_REQUEST[cont]; $i++){
         if($asigna[$i] == 1 AND $contro[$i] != 0){
           //query de insercion
