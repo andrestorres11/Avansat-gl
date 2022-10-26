@@ -607,6 +607,7 @@ class Proc_rutas
     $val   =$_REQUEST[val];
     $kil   =$_REQUEST[kil];
     $activo=$_REQUEST[activo];
+    $cantidad_pc = $_REQUEST[cont];
 
     $query = "SELECT a.cod_paisxx,a.cod_depart
                 FROM ".BASE_DATOS.".tab_genera_ciudad a
@@ -638,22 +639,28 @@ class Proc_rutas
       $cod_salvia = "";
     }
 
+    //Añade ultimo puesto de control 9999 sino existe
+    if(!in_array('9999',$contro)){
+      array_push($contro, '9999');
+      $cantidad_pc++;
+    }
+    
     //query que actualiza
 
-    $query = " UPDATE ".BASE_DATOS.".tab_genera_rutasx
-                  SET nom_rutasx = '".$_REQUEST[nom]."',
-                      cod_paiori = ".$paidepori[0][0].",
-                      cod_depori = ".$paidepori[0][1].",
-                      cod_ciuori = ".$_REQUEST[cod_ciuori].",
-                      cod_paides = ".$paidepdes[0][0].",
-                      cod_depdes = ".$paidepdes[0][1].",
-                      cod_ciudes = ".$_REQUEST[cod_ciudes].",
-                      ind_estado = '".$_REQUEST[rutactiva]."',
-                      usr_modifi = '$_REQUEST[usuario]',
-                      fec_modifi = '$fec_actual',
-                      cod_viasxx = '".$_REQUEST[cod_viasxx]."'
-                      ".$cod_salvia."
-                WHERE cod_rutasx = '$_REQUEST[ruta]'";
+    $query = ' UPDATE '.BASE_DATOS.'.tab_genera_rutasx
+                  SET nom_rutasx = "'.$_REQUEST[nom].'",
+                      cod_paiori = "'.$paidepori[0][0].'",
+                      cod_depori = "'.$paidepori[0][1].'",
+                      cod_ciuori = "'.$_REQUEST[cod_ciuori].'",
+                      cod_paides = "'.$paidepdes[0][0].'",
+                      cod_depdes = "'.$paidepdes[0][1].'",
+                      cod_ciudes = "'.$_REQUEST[cod_ciudes].'",
+                      ind_estado = "'.$_REQUEST[rutactiva].'",
+                      usr_modifi = "'.$_REQUEST[usuario].'",
+                      fec_modifi = "'.$fec_actual.'",
+                      cod_viasxx = "'.$_REQUEST[cod_viasxx].'"
+                      '.$cod_salvia.'
+                WHERE cod_rutasx = '.$_REQUEST[ruta].'';
     $insercion = new Consulta($query, $this -> conexion,"BR");
 
     $query ="SELECT cod_contro
@@ -664,7 +671,7 @@ class Proc_rutas
     $pcontroold = $consulta -> ret_matriz();
 
     for ($j=0; $j < count($pcontroold); $j++) { 
-      if (!in_array($pcontroold[$j]['cod_contro'], $contro) && $pcontroold[$j]['cod_contro'] != '9999') {
+      if (!in_array($pcontroold[$j]['cod_contro'], $contro)) {
         $query = "DELETE FROM ".BASE_DATOS.".tab_genera_rutcon
                    WHERE cod_rutasx = '$_REQUEST[ruta]' AND
                          cod_contro = '".$pcontroold[$j]['cod_contro']."' ";
@@ -672,36 +679,36 @@ class Proc_rutas
       }
     }
 
-    for($i = 0; $i < $_REQUEST[cont]; $i++)
+    for($i = 0; $i < $cantidad_pc; $i++)
     {
-      if($asigna[$i] == 1 AND $contro[$i] != 0)
+      if(($asigna[$i] == 1 AND $contro[$i] != 0 AND $contro[$i] != '') || ($contro[$i] == '9999'))
       {
         //verificar si existe el puesto de control
-
         $query ="SELECT cod_contro
                    FROM ".BASE_DATOS.".tab_genera_rutcon
-                  WHERE cod_rutasx = '$_REQUEST[ruta]' AND
+                  WHERE cod_rutasx = '".$_REQUEST[ruta]."' AND
                         cod_contro = '".$contro[$i]."' ";
-        $consulta = new  Consulta($query, $this -> conexion,"R");
+        $consulta = new  Consulta($query, $this -> conexion);
         $pcontrol = $consulta -> ret_matriz();
 
+        
         //si no existe lo inserta
-        if ($contro[$i] != $pcontrol[0][0])
+        if (count($pcontrol) <= 0)
         {
           //query que inserta
-
+          
           //query de insercion
           $query = "INSERT INTO ".BASE_DATOS.".tab_genera_rutcon
                     (cod_rutasx,cod_contro,val_duraci,val_distan,
                     usr_creaci,fec_creaci)
                     VALUES ('$_REQUEST[ruta]','$contro[$i]','$val[$i]','".$kil[$i]."',
                     '$_REQUEST[usuario]','$fec_actual') ";
-          $insercion = new Consulta($query, $this -> conexion,"R");
+          $insercion = new Consulta($query, $this -> conexion);
         }
 
         //si existe lo actualiza
 
-        if($contro[$i] == $pcontrol[0][0])
+        if(count($pcontrol)>0)
         {
           //query que Actualiza
           if(!$activo[$i])
@@ -715,16 +722,14 @@ class Proc_rutas
                             fec_modifi = '$fec_actual'
                       WHERE cod_rutasx = '$_REQUEST[ruta]' AND
                             cod_contro = '".$contro[$i]."'";
-          $actualizar = new Consulta($query, $this -> conexion,"R");
+          $actualizar = new Consulta($query, $this -> conexion);
         }
       }
 
       //eliminar el puesto de control
-
-      if($asigna[$i] != 1 AND $contro[$i] != 0)
+      if($asigna[$i] != 1 AND $contro[$i] != 0 AND $contro[$i] != '9999')
       {
         //trae el nombre del puesto de control
-
         $query = "SELECT nom_contro FROM ".BASE_DATOS.".tab_genera_contro
                    WHERE cod_contro = ".$contro[$i];
 
