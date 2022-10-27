@@ -305,7 +305,7 @@ class InformViajes {
             foreach ($_INFORM as $key => $row) {
                 $mArrayNove = array_merge(InformViajes::getDespacContro($row['num_viajex']), InformViajes::getDespacNoveda($row['num_viajex']));
                 if(sizeof($mArrayNove)==0){
-                    $sizeNovedad=1;
+                    $sizeNovedad=0;
                 }else{
                     $sizeNovedad=sizeof($mArrayNove);
                 }
@@ -393,7 +393,7 @@ class InformViajes {
                 $mHtml .= "<td class='cellInfo' align ='left' >".( isset($row['nom_mercan']) ? $row['nom_mercan'] : 'DESCONOCIDO' )."</td>"; //Mercancia
                 if ($_REQUEST['ind_noveda'] == '1') {
                     $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
-                    if($mSizeNoved > 1){
+                    if($mSizeNoved > 0){
 
                         for ($p = 0; $p < $mSizeNoved; $p++) {
                             array_push($array_result,array(
@@ -716,7 +716,7 @@ class InformViajes {
                 $array_result_=array();
                 $mArrayNove = array_merge(InformViajes::getDespacContro($row['num_viajex']), InformViajes::getDespacNoveda($row['num_viajex']));
                 if(sizeof($mArrayNove)==0){
-                    $sizeNovedad=1;
+                    $sizeNovedad=0;
                 }else{
                     $sizeNovedad=sizeof($mArrayNove);
                 }
@@ -728,7 +728,7 @@ class InformViajes {
                 $resultsegui=0;
                 $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
                 $resprom=0;
-                if($mSizeNoved > 1){
+                if($mSizeNoved > 0){
                     for ($p = 0; $p < $mSizeNoved; $p++){
                         array_push($array_result,array(
                             "nomSitiox"=> ($mArrayNove[$p][0] == '' ? $mArrayNove[$p][4] : $mArrayNove[$p][0]),
@@ -978,6 +978,7 @@ class InformViajes {
                  ON a.cod_contro = d.cod_contro 
               WHERE a.num_despac = '$numDespac'
             ";
+            
         $mConsult = new Consulta($mSql, $this->conexion);
         return $mResult = $mConsult->ret_matrix('i');
     }
