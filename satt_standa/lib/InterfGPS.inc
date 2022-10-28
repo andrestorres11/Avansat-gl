@@ -1120,7 +1120,7 @@
                       "nit_gligps"                => '830076669', // NIT DE FARO, PORQUE SE CREAN LOS ITINERARIO A NOMBRE DE FARO
                       "nom_server"                => 'AVANSATGL',
                       "nom_aplica"                => BASE_DATOS,
-                      "nom_client"                => $parameRutfa[0]['nom_tercer'],
+                      "nom_client"                => $parameRutfar[0]['nom_tercer'],
                       "tok_integr"                => $parameRutfar[0]["cod_tokenx"],
                       "num_docume"                => $mData["num_docume"],
                       "num_despac"                => $mData['num_despac'],
@@ -1150,7 +1150,7 @@
                       "Authorization: 8606c7de060ec2d798ffdc1f29776fb2", 
                       "Authorization-app: ".$parameRutfar[0]["clv_usuari"]
                     ];
-        
+
         // codifica en json el array para mandarlo por la api
         $mParamsString = json_encode($sendData, JSON_PRETTY_PRINT);
         //echo "<pre>cHeader"; print_r($cHeader); echo "</pre>"; 
@@ -1176,12 +1176,11 @@
         $ret = FALSE; //VARIABLE QUE CONTENDRÃ EL VALOR
 
         //Procesa el resultado del WS
-         
         $mStatus  = $cReturn['status'];
         $mCodResp = $cReturn['code_resp'];
         $mMsgResp = utf8_decode($cReturn['msg_resp']);
         $data['cod_errorx'] = $mCodResp;
-  
+                    
         if( false != $mStatus)
         {
           throw new Exception($mMsgResp, $mCodResp );
