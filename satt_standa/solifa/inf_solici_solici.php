@@ -701,7 +701,7 @@ EOF;
 			die("La fecha no es v&aacute;lida (fin)");
 		}
 
-		$fec_mod_max=60 * 60 * 24 * 365 * 100;//diferencia maxima entre fecha 1 y fecha 2 (100 a√±os)
+		$fec_mod_max=60 * 60 * 24 * 365 * 100;//diferencia maxima entre fecha 1 y fecha 2 (100 aÒos)
 		$fec_inifil="$fec_inifil 00:00:00";
 		$fec_finfil="$fec_finfil 23:59:59";
 		$fec_finmax=date("Y-m-d")." 23:59:59";
@@ -786,7 +786,7 @@ EOF;
 			switch ($tipo) {
 				case 0:
 					$query = "SELECT 
-						c.nom_estado,c.cod_estado,count(c.cod_estado) as ces
+						c.nom_estado,c.cod_estado,count(c.cod_estado) as ces,b.nom_usrsol
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado c on c.cod_estado=a.cod_estado 
@@ -797,7 +797,8 @@ EOF;
 				case 1:
 					$query = "SELECT 
 						c.nom_estado,c.cod_estado,count(c.cod_estado) as ces, 
-						d.nom_tipsol,d.cod_tipsol, count(d.cod_tipsol) as cts 
+						d.nom_tipsol,d.cod_tipsol, count(d.cod_tipsol) as cts,
+						b.nom_usrsol 
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado c on c.cod_estado=a.cod_estado 
@@ -808,7 +809,8 @@ EOF;
 				case 2:
 					$query = "SELECT 
 						substr(a.fec_creaci,1,10) as fecha,
-						c.nom_estado,c.cod_estado,count(c.cod_estado) as ces
+						c.nom_estado,c.cod_estado,count(c.cod_estado) as ces,
+						b.nom_usrsol
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado c on c.cod_estado=a.cod_estado 
@@ -820,7 +822,8 @@ EOF;
 					$query = "SELECT 
 						b.cod_transp,
 						c.nom_estado,c.cod_estado,count(c.cod_estado) as ces, 
-						d.nom_tipsol,d.cod_tipsol, count(d.cod_tipsol) as cts 
+						d.nom_tipsol,d.cod_tipsol, count(d.cod_tipsol) as cts,
+						b.nom_usrsol 
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado c on c.cod_estado=a.cod_estado 
@@ -833,7 +836,8 @@ EOF;
 				case 4:
 					$query = "SELECT 
 						substr(a.fec_creaci,1,10) as fecha,
-						c.nom_estado,c.cod_estado,count(c.cod_estado) as ces
+						c.nom_estado,c.cod_estado,count(c.cod_estado) as ces,
+						b.nom_usrsol
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado c on c.cod_estado=a.cod_estado 
@@ -847,7 +851,7 @@ EOF;
 						b.cod_transp,
 						b.cod_transp as nom_transp, /*nom_tercer*/
 						c.nom_estado,d.nom_tipsol,
-						e.nom_subtip
+						e.nom_subtip,b.nom_usrsol
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado c on c.cod_estado=a.cod_estado 
@@ -862,7 +866,7 @@ EOF;
 						b.*,
 						b.cod_transp as nom_transp, /*este valor se saca filtrando el front con el listado de transportadoras nom_tercer*/
 						c.nom_estado,d.nom_tipsol,
-						e.nom_subtip
+						e.nom_subtip,b.nom_usrsol
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado c on c.cod_estado=a.cod_estado 
@@ -874,7 +878,7 @@ EOF;
 				case 7:
 					$query = "SELECT 
 						f.*,
-						g.nom_estado
+						g.nom_estado,b.nom_usrsol
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_estado c on c.cod_estado=a.cod_estado 
@@ -888,7 +892,7 @@ EOF;
 			}
 				
 			/* CONSULTA PARA TRAER LAS CONFIGURACION A ANS */
-			$query_cumplidos = "SELECT x.*
+			$query_cumplidos = "SELECT x.*,b.nom_usrsol
 					FROM ".BASE_DATOS.".tab_solici_solici a 
 					inner join ".BASE_DATOS.".tab_solici_datosx b on b.cod_solici=a.cod_solici 
 					inner join ".BASE_DATOS.".tab_solici_config x on x.cod_tipsol=a.cod_tipsol 
@@ -1015,7 +1019,7 @@ EOF;
 				                if($d['cod_transp'] == $sus_terceros['cod_tercer']){
 				                    //Genera la lista de empresas suspendidas a mostrar en pantalla.
 				                    $emp_suspencion[] = $sus_terceros['cod_tercer']." - ".$sus_terceros['abr_tercer'];
-				                    //Elimina la posici√≥n de la empresas suspendida
+				                    //Elimina la posiciÛn de la empresas suspendida
 				                    unset($d);
 				                }
 				            }
@@ -1108,7 +1112,7 @@ EOF;
 			if(!empty($d["nom_viaxxx"]) && !$isFull){
 				$msg.="V&iacute;a: ".$d["nom_viaxxx"].", ";
 			}elseif(!empty($d["nom_viaxxx"]) && $isFull){
-				$msg.="V√≠a: ".$d["nom_viaxxx"].", ";
+				$msg.="VÌa: ".$d["nom_viaxxx"].", ";
 			}
 			if(!empty($d["lis_placas"])){
 				$msg.="Placa(s): ".$d["lis_placas"].", ";
@@ -1119,7 +1123,7 @@ EOF;
 			if(!empty($d["obs_solici"]) && !$isFull){
 				$msg.="Observaci&oacute;n: ".$d["obs_solici"].", ";
 			}elseif(!empty($d["obs_solici"]) && $isFull){
-				$msg.="Observaci√≥n: ".$d["obs_solici"].", ";
+				$msg.="ObservaciÛn: ".$d["obs_solici"].", ";
 			}
 			if(!empty($d["dir_archiv"])){
 				$msg.="(con archivo adjunto)";
@@ -1334,28 +1338,28 @@ EOF;
 	} 
 
 	function encode2($msg){
-	    $msg = str_replace("√°","&aacute;", $msg);
-	    $msg = str_replace("√©","&eacute;", $msg);
-	    $msg = str_replace("√≠","&iacute;", $msg);
-	    $msg = str_replace("√≥","&oacute;", $msg);
-	    $msg = str_replace("√∫","&uacute;", $msg);
-	    $msg = str_replace("√Å","&Aacute;", $msg);
-	    $msg = str_replace("√â","&Eacute;", $msg);
-	    $msg = str_replace("√ç","&Iacute;", $msg);
-	    $msg = str_replace("√ì","&Oacute;", $msg);
-	    $msg = str_replace("√ö","&Uacute;", $msg);
-	    $msg = str_replace("√±","&ntilde;", $msg);
-	    $msg = str_replace("√ë","&Ntilde;", $msg);
-	    $msg = str_replace("√†","&agrave;", $msg);
-	    $msg = str_replace("√Ä","&Agrave;", $msg);
-	    $msg = str_replace("√á","&Ccedil;", $msg);
-	    $msg = str_replace("√ß","&ccedil;", $msg);
-	    $msg = str_replace("√Ø","&iuml;", $msg);
-	    $msg = str_replace("√è","&Iuml;", $msg);
-	    $msg = str_replace("√≤","&ograve;", $msg);
-	    $msg = str_replace("√í","&Ograve;",  $msg);
-	    $msg = str_replace("√º","&uuml;",  $msg);
-	    $msg = str_replace("√ú","&Uuml;",  $msg);
+	    $msg = str_replace("·","&aacute;", $msg);
+	    $msg = str_replace("È","&eacute;", $msg);
+	    $msg = str_replace("Ì","&iacute;", $msg);
+	    $msg = str_replace("Û","&oacute;", $msg);
+	    $msg = str_replace("˙","&uacute;", $msg);
+	    $msg = str_replace("¡","&Aacute;", $msg);
+	    $msg = str_replace("…","&Eacute;", $msg);
+	    $msg = str_replace("Õ","&Iacute;", $msg);
+	    $msg = str_replace("”","&Oacute;", $msg);
+	    $msg = str_replace("⁄","&Uacute;", $msg);
+	    $msg = str_replace("Ò","&ntilde;", $msg);
+	    $msg = str_replace("—","&Ntilde;", $msg);
+	    $msg = str_replace("‡","&agrave;", $msg);
+	    $msg = str_replace("¿","&Agrave;", $msg);
+	    $msg = str_replace("«","&Ccedil;", $msg);
+	    $msg = str_replace("Á","&ccedil;", $msg);
+	    $msg = str_replace("Ô","&iuml;", $msg);
+	    $msg = str_replace("œ","&Iuml;", $msg);
+	    $msg = str_replace("Ú","&ograve;", $msg);
+	    $msg = str_replace("“","&Ograve;",  $msg);
+	    $msg = str_replace("¸","&uuml;",  $msg);
+	    $msg = str_replace("‹","&Uuml;",  $msg);
 	    return $msg;
 	}
 

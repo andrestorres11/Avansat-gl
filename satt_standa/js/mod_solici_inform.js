@@ -1052,9 +1052,11 @@ function r(){
 							"<td>"+ data[i].fec_difere +"</td>"+
 							"<td class='semaforo"+semaforo+"'>"+ cumplido +"</td>"+
 							"<td data-native-value=\""+data[i].cod_estado+"\">"+ data[i].nom_estado +"</td>"+
-							"<td>"+ data[i].usr_creaci+"</td>"+
+							"<td>"+ data[i].nom_usrsol+"</td>"+
+							"<td>"+ data[i].usr_modifi+"</td>"+
 							"</tr>"
 						);
+						console.log("resulta detalle",data);
 						if(semaforo == 3)
 						{
 							$(".semaforo"+semaforo).css("background-color","#E0544B")
@@ -2106,6 +2108,7 @@ function r(){
 		/***************************** excel ******************************/
 		/******************************************************************/
 
+		
 
 
 		$.getJSON( server_req.standa+ "data/template/inf_solici_solici.json?_t="+Math.random(), function( data ) {
@@ -2130,3 +2133,15 @@ function r(){
 		}catch(e){}
 }
 prevRequireLibJs();
+
+function expTabExcel(table){
+	$('#button_'+table).hide();
+	let tab_add_exp='<table>'+$('#'+table).html()+'</table>';
+	 const d = new Date();
+	 year=d.getFullYear();
+	 montch=d.getMonth();
+	 day=d.getDay();
+	 const nameFile='Solicitudfaro_'+year+'_'+montch+'_'+day;
+	 location.href="../satt_standa/lib/exportExcel.php?nameFile="+nameFile+"&OptionExcel=_REQUEST&exportExcel="+tab_add_exp;
+	$('#button_'+table).show();
+}
