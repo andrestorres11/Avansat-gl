@@ -716,7 +716,7 @@ function r(){
 					currForm.find('.alert').html("");
 					currForm.find('.alert').addClass("hide");
 					currForm.find('.alert').removeClass("active");
-
+					let data_detalles='';
 					for(var i=0 in data){
 						var fecha_soli = '';
 						//filtro para validar el tipo de solicitud a mostar
@@ -1050,13 +1050,27 @@ function r(){
 							"<td>"+ data[i].fec_creaci +"</td>"+
 							"<td>"+ data[i].fec_modifi +"</td>"+
 							"<td>"+ data[i].fec_difere +"</td>"+
-							"<td class='semaforo"+semaforo+"'>"+ cumplido +"</td>"+
+							"<td class=\"semaforo"+semaforo+"\">"+ cumplido +"</td>"+
 							"<td data-native-value=\""+data[i].cod_estado+"\">"+ data[i].nom_estado +"</td>"+
 							"<td>"+ data[i].nom_usrsol+"</td>"+
 							"<td>"+ data[i].usr_modifi+"</td>"+
 							"</tr>"
 						);
-						console.log("resulta detalle",data);
+						data_detalles = data_detalles+"<tr>"+
+						"<td>"+ data[i].num_solici +"</td>"+
+						"<td>"+ data[i].nom_tipsol +"</td>"+
+						"<td>"+ findTercer(data[i].cod_transp) +"</td>"+
+						"<td>"+ delete_codif_espec(data[i].det_solici) +"</td>"+
+						"<td>"+ data[i].fec_creaci +"</td>"+
+						"<td>"+ data[i].fec_modifi +"</td>"+
+						"<td>"+ data[i].fec_difere +"</td>"+
+						"<td>"+ cumplido +"</td>"+
+						"<td>"+ data[i].nom_estado +"</td>"+
+						"<td>"+ data[i].nom_usrsol+"</td>"+
+						"<td>"+ data[i].usr_modifi+"</td>"+
+						"</tr>";
+						
+
 						if(semaforo == 3)
 						{
 							$(".semaforo"+semaforo).css("background-color","#E0544B")
@@ -1068,7 +1082,9 @@ function r(){
 						
 					}
 					//actulizacion de la cantidad de solicitudes
+					localStorage.setItem("tbody_detalles",data_detalles);
 					$(".indicador-detallado2").find("#badge").each(function(i,v){$(v).html("<b>"+canTotal+" REGISTROS</b>");});
+
 					currTab.find("div.indicador-detallado-solici").bind("click",function(){
 						currTab.find("table").parent().hide();
 						//currTab.find("table.indicador-respuesta").find("td").parent().remove();
@@ -1102,6 +1118,10 @@ function r(){
 					//console.log( "complete" );
 				});
 			}catch(e){}  
+		}
+		function delete_codif_espec(text){
+			text=text.replace("&iacute;", "i");
+			return text;
 		}
 
 		//en este punto, la idea es actualizar el registro, y permitir, volver a ejecutar updateStatusTipoxTableDetail2 para actualizar
@@ -2135,8 +2155,16 @@ function r(){
 prevRequireLibJs();
 
 function expTabExcel(table){
+
 	$('#button_'+table).hide();
-	let tab_add_exp='<table>'+$('#'+table).html()+'</table>';
+	let tab_add_exp='';
+	if(table=='table_detalle'){	
+		var tbody = '<tbody>'+localStorage.getItem("tbody_detalles")+'</tbody>';
+		tab_add_exp='<table>'+$('#'+table).html()+tbody+'</table>';
+	}else{
+		tab_add_exp='<table>'+$('#'+table).html()+'</table>';
+	}
+	console.log(tab_add_exp);
 	 const d = new Date();
 	 year=d.getFullYear();
 	 montch=d.getMonth();
