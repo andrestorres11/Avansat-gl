@@ -20,85 +20,139 @@
                             "class": "form-group col-xs-12 col-md-12", 
                             "children": [
                                 {
-                                    "tag": "table", 
+                                    "tag": "table",
+                                    "id": "table1", 
                                     "border": "1",
                                     "class": "indicador",
                                     "children": [
                                         {
+                                            "tag": "thead",
+                                            "children": [
+                                                {
+                                            
+                                                    "tag": "tr", 
+                                                    "class": "title1",
+                                                    "children": [
+                                                        {
+                                                            "tag": "th", 
+                                                            "colspan":"7", 
+                                                            "html": "Indicador de solicitudes del periodo XX al XX del 201x"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "tag": "tr", 
+                                                    "class": "title2",
+                                                    "children": [
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Total Generadas"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Gestionadas"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Porcentaje"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "En proceso"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Porcentaje"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Por Gestionar"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Porcentaje"
+                                                        }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "tbody",
+                                            "children": [
+                                                {
                                             "tag": "tr", 
-                                            "class": "title1",
+                                            "children": [
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0%"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0%"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0"
+                                                },
+                                                {
+                                                    "tag": "td", 
+                                                    "html": "0%"
+                                                }
+                                            ]
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "tag": "tfoot",
+                                            "children": [
+                                                {
+                                            "tag": "tr", 
+                                            "class": "",
+                                            "id" : "button_table1",
                                             "children": [
                                                 {
                                                     "tag": "th", 
                                                     "colspan":"7", 
-                                                    "html": "Indicador de solicitudes del periodo XX al XX del 201x"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "tag": "tr", 
-                                            "class": "title2",
-                                            "children": [
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Total Generadas"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Gestionadas"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Porcentaje"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "En proceso"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Porcentaje"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Por Gestionar"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Porcentaje"
-                                                }
-                                            ]
-                                        },
-                                        {
-                                            "tag": "tr", 
-                                            "children": [
-                                                {
-                                                    "tag": "td", 
-                                                    "html": "0"
-                                                },
-                                                {
-                                                    "tag": "td", 
-                                                    "html": "0"
-                                                },
-                                                {
-                                                    "tag": "td", 
-                                                    "html": "0%"
-                                                },
-                                                {
-                                                    "tag": "td", 
-                                                    "html": "0"
-                                                },
-                                                {
-                                                    "tag": "td", 
-                                                    "html": "0%"
-                                                },
-                                                {
-                                                    "tag": "td", 
-                                                    "html": "0"
-                                                },
-                                                {
-                                                    "tag": "td", 
-                                                    "html": "0%"
+                                                    "html": "",
+                                                    "children": [
+                                                        {
+                                                            "tag": "button",
+                                                            "onclick" : "expTabExcel('table1')",
+                                                            "children": [
+                                                                {
+                                                                    "tag": "img", 
+                                                                    "src": "../satt_standa/imagenes/excel.jpg",
+                                                                    "style": "width: 27px;height: 22px;"
+                                                                    
+                                                                },
+                                                                {
+                                                                    "tag": "span",
+                                                                    "html": " "
+                                                                },
+                                                                {
+                                                                    "tag": "span",
+                                                                    "html": "Exportar excel"
+                                                                }
+                                                            ]
+                                                            
+
+                                                        }
+                                                        
+                                                            ]
+                                                        }
+                                                    ]
                                                 }
                                             ]
                                         }
@@ -116,56 +170,106 @@
                             "class": "form-group col-xs-12 col-md-12", 
                             "children": [
                                 {
-                                    "tag": "table", 
+                                    "tag": "table",
+                                    "id": "table1_1", 
                                     "border": "1",
                                     "class": "indicador-detallado",
                                     "children": [
                                         {
-                                            "tag": "tr", 
-                                            "class": "title1",
-                                            "children": [
+                                            "tag": "thead",
+                                            "children": 
+                                            [
                                                 {
-                                                    "tag": "th", 
-                                                    "colspan":"8", 
-                                                    "html": "Detallado por dia"
+                                                    "tag": "tr", 
+                                                    "class": "title1",
+                                                    "children": [
+                                                        {
+                                                            "tag": "th", 
+                                                            "colspan":"8", 
+                                                            "html": "Detallado por dia"
+                                                        }
+                                                    ]
+                                                },
+                                                {
+                                                    "tag": "tr", 
+                                                    "class": "title2",
+                                                    "children": [
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Fecha de Solicitud"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Generadas"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Gestionadas"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "%"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "En Proceso"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "%"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "Por Gestionar"
+                                                        },
+                                                        {
+                                                            "tag": "th", 
+                                                            "html": "%"
+                                                        }
+                                                    ]
                                                 }
                                             ]
                                         },
                                         {
-                                            "tag": "tr", 
-                                            "class": "title2",
-                                            "children": [
+                                            "tag": "tfoot",
+                                            "children": 
+                                            [
                                                 {
-                                                    "tag": "th", 
-                                                    "html": "Fecha de Solicitud"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Generadas"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Gestionadas"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "%"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "En Proceso"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "%"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "Por Gestionar"
-                                                },
-                                                {
-                                                    "tag": "th", 
-                                                    "html": "%"
+                                                    "tag": "tr", 
+                                                    "class": "",
+                                                    "id" : "button_table1_1",
+                                                    "children": [
+                                                        {
+                                                            "tag": "th", 
+                                                            "colspan":"8", 
+                                                            "html": "",
+                                                            "children": [
+                                                                {
+                                                                    "tag": "button",
+                                                                    "onclick" : "expTabExcel('table1_1')",
+                                                                    "children": [
+                                                                        {
+                                                                            "tag": "img", 
+                                                                            "src": "../satt_standa/imagenes/excel.jpg",
+                                                                            "style": "width: 27px;height: 22px;"
+                                                                            
+                                                                        },
+                                                                        {
+                                                                            "tag": "span",
+                                                                            "html": " "
+                                                                        },
+                                                                        {
+                                                                            "tag": "span",
+                                                                            "html": "Exportar excel"
+                                                                        }
+                                                                    ]
+                                                                    
+        
+                                                                }
+                                                                
+                                                            ]
+                                                        }
+                                                    ]
                                                 }
                                             ]
                                         }
