@@ -2164,12 +2164,51 @@ function expTabExcel(table){
 	}else{
 		tab_add_exp='<table>'+$('#'+table).html()+'</table>';
 	}
-	console.log(tab_add_exp);
-	 const d = new Date();
+	var target=$(".inf_solici_solici");
+	if(typeof ds == "undefined")
+			ds = "";
+
+		if(typeof dc == "undefined")
+			dc = "";
+
+		if(typeof cs == "undefined")
+			cs = "";
+
+		if(typeof wd == "undefined")
+			wd = "";
+
+		if(typeof ot == "undefined")
+			ot = "";
+
+	var server_req={"standa":ds,"central":dc,"cod_servic":cs,"window":wd,"option":ot};
+	const d = new Date();
 	 year=d.getFullYear();
 	 montch=d.getMonth();
 	 day=d.getDay();
 	 const nameFile='Solicitudfaro_'+year+'_'+montch+'_'+day;
-	 location.href="../satt_standa/lib/exportExcel.php?nameFile="+nameFile+"&OptionExcel=_REQUEST&exportExcel="+tab_add_exp;
+
+	$('#'+table).append(
+		"<form name='form_"+table+"' id='form_"+table+"' method='post' action='"+server_req.central+"lib/exportExcel.php' target='_self'>"+
+			"<input type='hidden' name='standa' id='standaID' value='satt_standa'>"+
+			"<input type='hidden' name='window' id='windowID' value='central'>"+
+			"<input type='hidden' name='cod_servic' id='cod_servicID' value='"+server_req.cod_servic+"'>"+
+			"<input type='hidden' name='nameFile' id='nameFileID' value='"+nameFile+"'>"+
+			"<input type='hidden' name='OptionExcel' id='OptionExcelID' value='_REQUEST'>"+
+			"<input type='hidden' name='exportExcel' id='exportExcelID' value=''>"+
+		"<form>"
+	);
+	$('#exportExcelID').val(tab_add_exp);
+	$('#form_'+table).submit();
+	$('#exportExcelID').val('');
+	$('#nameFileID').val('');
+	/*var form=$("").attr({"style":"display:none;width:0;height:0px;",
+					"target":"_blank",
+					"method":"GET",
+					"action":server_req.central+"lib/exportExcel.php"
+	});*/
+
+	/*console.log(tab_add_exp);
+	 
+	 location.href="../satt_standa/lib/exportExcel.php?nameFile="+nameFile+"&OptionExcel=_REQUEST&exportExcel="+encodeURI(tab_add_exp);*/
 	$('#button_'+table).show();
 }
