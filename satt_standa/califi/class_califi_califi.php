@@ -8,7 +8,6 @@
  *  \bug: 
  *  \warning: 
  */
-
 class Califi
 {
 	private static 	$cConexion,
@@ -1125,28 +1124,70 @@ class Califi
 
 	/*! \fn: reeItiner
      *  \brief: Reevia Itinerario
-     *  \author: Ing. Cristian Andrï¿½s Torres
+     *  \author: Ing. Cristian Andrés Torres
      *  \date: 02/06/2022
      *  \date modified: dd/mm/aaaa
      *  \modified by: 
      */
 	private function reeItiner(){
-		include( '../lib/InterfGPS.inc' );
-		$mInterfGps = new InterfGPS( self::$cConexion ); 
 		
-		$mResp = $mInterfGps->setPlacaIntegradorGPS( $_REQUEST['num_despac'], ['ind_transa' => 'I'] );
+		include( '../lib/InterfGPS.inc' );
+		//$mInterfGps = new InterfGPS( self::$cConexion ); 		
+		//$mResp = $mInterfGps->setPlacaIntegradorGPS( $_REQUEST['num_despac'], ['ind_transa' => 'I'] );
 
+		$mDataDesp = self::getDatadespac( $_REQUEST['num_despac'] );
+
+		$mIntegradorGPS = getValidaInterfaz(self::$cConexion, '53', $mDataDesp['cod_transp'], true, 'data');
+
+		if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
+		{   
+		  $mHubGPS = new InterfHubIntegradorGPS(self::$cConexion, ['cod_transp' => $mDataDesp['cod_transp']] );
+		  
+		  // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
+		  $mResp = $mHubGPS -> setTrakingStart([
+		                                          'num_placax' => $mDataDesp['num_placax'],
+		                                          'num_despac' => $_REQUEST['num_despac'],
+		                                          'num_docume' => $mDataDesp['cod_manifi'],
+		                                          'fec_inicio' => date("Y-m-d H:i:s"),
+		                                          'fec_finali' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")."+ 5 day ")),
+		                                          'ind_origen' => '3', // 3 = DESPACHO
+		                                          ]);
+		  if($mResp['code'] == '1000') { 
+		    $mCode = $mResp['code'];
+		    $mSage = $mResp['message'];
+		  }
+		  else{
+		    $mCode = $mResp['code'];
+		    $mSage = $mResp['message'];
+		  }
+		  // Fin proceso de generar itinerario HUB al despacho ---------------------------------------------------------------------------
+		}
+		else
+		{
+		 $mInterfGps = new InterfGPS( self::$cConexion ); 
+		  $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['num_despac'], ['ind_transa' => 'I'] );
+		  if($mResp['code_resp'] == '1000') { 
+		    //$mens -> correcto("Reenvio despacho: ".$_REQUEST['num_despac'].", Placa:".$mDataDesp['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['msg_resp']);
+		    $mCode = $mResp['code_resp'];
+		    $mSage = $mResp['msg_resp'];
+		  }
+		  else{
+		    //$mens -> error("Reenvio despacho: ".$_REQUEST['num_despac'].", Placa:".$mDataDesp['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['msg_resp']);
+		    $mCode = $mResp['code_resp'];
+		    $mSage = "Code:".$mResp['code_resp'].":".$mResp['msg_resp'];
+		  }
+		}
 		$respuesta = [];
-		if($mResp['code_resp'] == '1000'){
+		if($mCode  == '1000'){
 			$respuesta["status"] = 1000;
             $respuesta["type"] = "success";
             $respuesta["title"] = "Proceso Exitoso";
-			$respuesta["info"] = "<p>Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']."</p>";
+			$respuesta["info"] =  $mSage;
         }else{
             $respuesta["status"] = 2000;
             $respuesta["type"] = "error";
             $respuesta["title"] = "Algo fallo";
-			$respuesta["info"] = "<p>Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp']."</p>";
+			$respuesta["info"] =  $mSage;
         }
 		$respuesta["text"] = "Reenvio despacho: ".$_REQUEST['num_despac'].", Placa:".$_REQUEST['num_placax'];
 		
@@ -1156,6 +1197,26 @@ class Califi
 	/*! \fn: reeNovedades
      *  \brief: Realiza el reenvio de novedades a avansat
      *  \author: Ing. Cristian Andrés Torres
+     *  \date: 02/08/2022
+     *  \date modified: dd/mm/aaaa
+     *  \modified by: 
+     */
+	private function getDatadespac($mNumDespac)
+	{
+ 		$mSql = "SELECT a.num_despac, a.cod_manifi, b.num_placax, b.cod_transp
+                   FROM ".BASE_DATOS.".tab_despac_despac a 
+             INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+                     ON a.num_despac = b.num_despac 
+                  WHERE a.num_despac = '".$mNumDespac."' ";
+        $mConsult = new Consulta($mSql, self::$cConexion );
+        $mData = $mConsult->ret_matrix('a');
+
+        return  $mData[0];
+
+	}
+	/*! \fn: reeNovedades
+     *  \brief: Realiza el reenvio de novedades a avansat
+     *  \author: Ing. Cristian Andr? Torres
      *  \date: 02/08/2022
      *  \date modified: dd/mm/aaaa
      *  \modified by: 
