@@ -905,45 +905,69 @@ class Proc_segui
               var formData = new FormData();
               
               function InsertInPAD(data,api_url,name) {
-                console.log("data insert",data);
-                var checkBox = document.getElementById("habPAD2");
-                if (checkBox.checked == true){
-                    formData.append("use_id", data[0]["cod_tercer"]);
-                    formData.append("use_name", data[0]["nombres"]);
-                    formData.append("usu_cellph", data[0]["num_telmov"]);
-                    formData.append("lic_plate", data[0]["num_placax"]);
-                    formData.append("use_settin", data[0]["num_config"]);
-                    formData.append("lin_app", "Avansat GL");
-                    formData.append("lin_status", 1);
-                    formData.append("use_creaci", name);
-            
-
-                    xhr.open("POST", `${api_url}`);
-                    xhr.send(formData);
-
-                    xhr.onreadystatechange = function () {
-                        if (this.readyState === XMLHttpRequest.DONE) {
-                            if (this.status == 200)
-                            {
-                                Swal.fire(
-                                    "Proceso Exitoso",
-                                    "Se ha registrado la sugerencia del recurso de manera exitosa.",
-                                    "success"
-                                    )
+                    Swal.fire({
+                            title: "Estas seguro?",
+                            text: "Habilitación de disponibilidad del recurso a Pad.",
+                            icon: "warning",
+                            html: "<p><b>1.</b> El conductor autoriza habilitar su datos para recibir información de central pad?</p><input type=\'checkbox\' id=\'inf_pad\' /><label>Si</label><br>" +
+                            "<p><b>2.</b> El conductor autoriza recibir informacion del transporte.com?</p><input type=\'checkbox\' id=\'inf_transp\' /><label>Si</label>",
+                            showCancelButton: true,
+                            confirmButtonColor: "#285c00",
+                            cancelButtonColor: "#d33",
+                            confirmButtonText: "Si,Confirmar",
+                            preConfirm: () => {
+                                var inf_pad = Swal.getPopup().querySelector("#inf_pad").checked
+                                var inf_transp = Swal.getPopup().querySelector("#inf_transp").checked
+                                return {inf_pad: inf_pad, inf_transp: inf_transp}
                             }
-                            if (this.status == 422)
-                            {
-                                Swal.fire(
-                                    "Error!",
-                                    "No es posible realizar la sugerencia del recurso ya que se encuentra registrado.",
-                                    "error"
-                                    )
-                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                var checkBox = document.getElementById("habPAD2");
+                                if (checkBox.checked == true){
+                                    formData.append("use_id", data[0]["cod_tercer"]);
+                                    formData.append("use_name", data[0]["nombres"]);
+                                    formData.append("usu_cellph", data[0]["num_telmov"]);
+                                    formData.append("lic_plate", data[0]["num_placax"]);
+                                    formData.append("use_settin", data[0]["num_config"]);
+                                    formData.append("lin_app", "Avansat GL");
+                                    formData.append("lin_status", 1);
+                                    formData.append("use_creaci", name);
+                                    formData.append("num_despac", data[0]["num_despac"]);
+                                    formData.append("inf_pad", result.value.inf_pad);
+                                    formData.append("inf_transp", result.value.inf_transp);
 
-                        }
-                    }
-                }    
+                                    xhr.open("POST", `${api_url}`);
+                                    xhr.send(formData);
+                
+                                    xhr.onreadystatechange = function () {
+                                        if (this.readyState === XMLHttpRequest.DONE) {
+                                            if (this.status == 200)
+                                            {
+                                                Swal.fire(
+                                                    "Proceso Exitoso",
+                                                    "Se ha registrado la sugerencia del recurso de manera exitosa.",
+                                                    "success"
+                                                    )
+                                            }
+                                            if (this.status == 422)
+                                            {
+                                                Swal.fire(
+                                                    "Error!",
+                                                    "No es posible realizar la sugerencia del recurso ya que se encuentra registrado.",
+                                                    "error"
+                                                    )
+                                            }
+                
+                                        }
+                                    }
+                                }
+                            }
+                            else{
+                                $("#habPAD2").attr("checked", false);
+                            }
+                        })
               }
+
               $("#obsID").attr("spellcheck", true);
               $("#obsID").val("'.$nota.'");
               if($("#obsID").val().length > 0){
@@ -1229,7 +1253,7 @@ class Proc_segui
         $mHtml->SetCssJq("jquery");
 
         echo '<script>$.blockUI({ theme: true,title: "Aplicando ajustes",draggable: false,message:"<center><img src=\"../satt_standa/imagenes/ajax-loader2.gif\" /><p>aplicando cambios</p></center>"  });"</script>';
-        
+        echo '<style type="text/css"> #form_asigNovedaID{ width: fit-content;}</style>';
         $mHtml->Javascript( $mScript1 );
 
         $mHtml->CloseTable('tr');
@@ -1271,10 +1295,10 @@ class Proc_segui
                                 #Cuerpo
                                 $mHtml->Row();
                                 $mHtml->SetBody("<td class='celda_info' >");
-                                $mHtml->SetBody("<input type='text' class='campo' style='bacground:none; border:0;' size='10' id='fecID' readonly='true' name='fec' value='" . date('Y-m-d') . "'>");
+                                $mHtml->SetBody("<input type='text' class='campo' style='bacground:none; border:0;width:72px;' size='10' id='fecID' readonly='true' name='fec' value='" . date('Y-m-d') . "'>");
                                 $mHtml->SetBody("</td>");
                                 $mHtml->SetBody("<td class='celda_info' width='50px'>");
-                                $mHtml->SetBody("<input type='text' class='campo' style='bacground:none; border:0;' size='10' id='horID' readonly='true' name='hor' value='" . date('G:i') . "'>");
+                                $mHtml->SetBody("<input type='text' class='campo' style='bacground:none; border:0;width:43px;' size='10' id='horID' readonly='true' name='hor' value='" . date('G:i') . "'>");
                                 $mHtml->SetBody("</td>");
                                 /*
                                 if(sizeof($Tipo_etapa)>0)
@@ -1291,8 +1315,8 @@ class Proc_segui
                                     if($m <= 9) $m = "0" . $m;
 
                                     $mHtml->SetBody("<td class='celda_info' >");
-                                    $mHtml->SetBody("<input type='text' class='campo' size='10' id='date' name='date' value='" . date('Y-m-d') . "'> ");
-                                    $mHtml->SetBody("<input type='text' class='campo' size='10' id='hora' name='hora' value='" . $h . ":" . $m . "'>");
+                                    $mHtml->SetBody("<input type='text' class='campo' style='width:76px;' size='10' id='date' name='date' value='" . date('Y-m-d') . "'> ");
+                                    $mHtml->SetBody("<input type='text' class='campo' size='10' style='width:46px;' id='hora' name='hora' value='" . $h . ":" . $m . "'>");
                                     $mHtml->SetBody("</td>");
                                 }
 
@@ -1310,7 +1334,7 @@ class Proc_segui
                                      $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) ); 
                                 $mHtml->SetBody("<td class='celda_info' >");
                                // $mHtml->SetBody("<textarea name='obs' id='obsID'  onkeyup='UpperText( $(this) )'  ols='20' Rows='4'></textarea>");
-                                $mHtml->SetBody("<textarea name='obs' id='obsID'  ols='20' Rows='4'></textarea>");
+                                $mHtml->SetBody("<textarea name='obs' id='obsID'  ols='20' Rows='4' style='width: 205px;'></textarea>");
                                 $mHtml->SetBody("<div style='font-family:Arial,Helvetica,sans-serif; font-size: 11px;' id='counter'></div>");
                                 $mHtml->SetBody("</td>");
                                 $name = "'".$datos_usuario['nom_usuari']."'";
