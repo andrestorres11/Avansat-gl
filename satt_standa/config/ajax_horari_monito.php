@@ -373,7 +373,7 @@ class ajax_horari_monito {
 
                                                 ) a 
                                             INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b ON b.cod_tercer = a.cod_transp 
-                                             LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer AND c.num_despac NOT IN (  SELECT e.num_despac FROM satt_faro.tab_despac_noveda e WHERE e.cod_contro = 9999  )
+                                             LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer AND c.num_despac NOT IN (  SELECT e.num_despac FROM " . BASE_DATOS . ".tab_despac_noveda e WHERE e.cod_contro = 9999  )
                                              LEFT JOIN " . BASE_DATOS . ".tab_despac_despac d ON d.num_despac = c.num_despac 
                                             INNER JOIN " . BASE_DATOS . ".tab_callce_grupox e ON e.cod_grupox = a.cod_grupox
                                                  WHERE a.fec_iniser <= '$datos->fec_inicio'  AND fec_finser >= '$datos->fec_finali'
@@ -409,7 +409,7 @@ class ajax_horari_monito {
 
                                                 ) a 
                                             INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer b ON b.cod_tercer = a.cod_transp 
-                                             LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer AND c.num_despac NOT IN (  SELECT e.num_despac FROM satt_faro.tab_despac_noveda e WHERE e.cod_contro = 9999  )
+                                             LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige c ON c.cod_transp = b.cod_tercer AND c.num_despac NOT IN (  SELECT e.num_despac FROM " . BASE_DATOS . ".tab_despac_noveda e WHERE e.cod_contro = 9999  )
                                              LEFT JOIN " . BASE_DATOS . ".tab_despac_despac d ON d.num_despac = c.num_despac 
                                             INNER JOIN " . BASE_DATOS . ".tab_callce_grupox e ON e.cod_grupox = a.cod_grupox
                                                  WHERE a.fec_iniser <= '$datos->fec_inicio'  AND fec_finser >= '$datos->fec_finali'

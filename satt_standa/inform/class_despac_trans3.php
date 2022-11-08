@@ -2032,6 +2032,7 @@ class Despac
 			return $mColor[2];
 	}
 
+
 	/*! \fn: getTranspCargaControlador
 	 *  \brief: trae las transportadoras asignadas como carga laboral de un controlador o eal
 	 *  \author: Ing. Fabian Salinas
@@ -2043,7 +2044,7 @@ class Despac
 	private function getTranspCargaControlador() {
 		if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL'|| self::$cTypeUser[tip_perfil] == 'OAL' ) {
 			$mSql = "SELECT GROUP_CONCAT(a.cod_transp SEPARATOR ',') AS lis_transp
-					   FROM satt_faro.vis_monito_encdet a
+					   FROM ".BASE_DATOS.".vis_monito_encdet a
 					  WHERE a.cod_usuari = '".$_SESSION[datos_usuario][cod_usuari]."' ";
 			$mConsult = new Consulta( $mSql, self::$cConexion );
 			$mResult = $mConsult -> ret_arreglo();
