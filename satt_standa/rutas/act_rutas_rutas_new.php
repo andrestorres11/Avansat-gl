@@ -625,8 +625,9 @@ class Proc_rutas
     $ciuori = $objciud -> getSeleccCiudad($_REQUEST[cod_ciuori]);
     $ciudes = $objciud -> getSeleccCiudad($_REQUEST[cod_ciudes]);
     $nomVias = $this->getNomVia($_REQUEST['cod_viasxx']);
-
-    $_REQUEST[nom] = $ciuori[0][1]." - ".$ciudes[0][1]." VIA ".$nomVias;
+    $nomSalVia = $this->getSalVia($_REQUEST['cod_salvia']);
+  
+    $_REQUEST[nom] = $ciuori[0][1]." - ".$ciudes[0][1]." VIA ".$nomVias." - ".$nomSalVia;
 
     if(!$_REQUEST[rutactiva])
       $_REQUEST[rutactiva] = COD_ESTADO_INACTI;
@@ -866,6 +867,28 @@ class Proc_rutas
 
 
 		return $mResult[0]['nom_viasxx'];
+  }
+
+    /*! \fn: Insert_Ruta
+   *  \brief: Inserta la Nueva Ruta
+   *  \author: 
+   *  \date: dia/mes/aÃ±o
+   *  \date modified:
+   *  \modified by:
+   *  \param: 
+   *  \return:
+  */
+
+  public function getSalVia($cod_salvia){
+    $mSql = " SELECT nom_salvia
+					FROM ".BASE_DATOS.".tab_genera_salvia
+          WHERE cod_salvia = '".$cod_salvia."'";
+		$mConsult = new Consulta($mSql, $this->conexion );
+
+		$mResult = $mConsult -> ret_matriz('a');
+
+		return $mResult[0]['nom_salvia'];
+
   }
 
 }//FIN CLASE PROC_RUTAS
