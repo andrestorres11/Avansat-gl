@@ -234,9 +234,15 @@ class cronAvansatTmsReportesUbicacion
 				ini_set("soap.wsdl_cache_enabled", 0);
 				//die('acaba proceso');
 				$mSoap = new SoapClient( $mReporte['url_webser'], ['trace' => 1,'exception' => 1 ] );
-				$mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams ); 
+				
+				// 9260 llegada a cargue, 9173 salida de cargue,  9266 -> paso por OAL ====> en SITIO
+				if( in_array( $mReporte['cod_noveda'] , ['9260', '9173', '9266'] ) ) { // 9261 -> entrada cargue anstes de sitio
+					$mResponse = $mSoap -> __soapCall("setNovedadPC", $mParams); // Se coloca la novedad en SITIO
+				}else{
+					$mResponse = $mSoap -> __soapCall("setNovedadNC", $mParams); // Se coloca la novedad en ANTES DE SITIO
+				}
 
-				 
+				//$mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams ); 
 
 				$mResult  = explode( "; ", $mResponse );
 				$mCodResp = explode( ":", $mResult[0] );  
@@ -269,11 +275,11 @@ class cronAvansatTmsReportesUbicacion
 			}
 			//echo "<pre>"; print_r(self::$cReportes); echo "</pre>"; die();   
 
-			mail(
-				 'nelson.liberato@grupooet.com, maribel.garcia@grupooet.com', 
-				 'CRON GL INTEGRADOR REPLICA A TMS',
-			   	 'CANTIDAD DE REPORTES A ENVIAR:'.sizeof(self::$cPendientes)."\nResultado:\n".var_export( $mMailData, true)
-			   	);
+			//mail(
+			//	 'nelson.liberato@grupooet.com, maribel.garcia@grupooet.com', 
+			//	 'CRON GL INTEGRADOR REPLICA A TMS',
+			//   	 'CANTIDAD DE REPORTES A ENVIAR:'.sizeof(self::$cPendientes)."\nResultado:\n".var_export( $mMailData, true)
+			//   	);
 			
 
 		}

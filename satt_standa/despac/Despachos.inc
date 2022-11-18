@@ -2688,17 +2688,23 @@ class Despachos
                                             $mTxt = array($tittle, $mTxt);
                                             break;
                                         case 'can_noveda':
+                                            $cod_operad = '50';
+                                            if(BASE_DATOS == 'satt_intgps'){
+                                                $cod_operad = '53';
+                                            }
+
                                             $mSql = "SELECT a.nom_operad
                                                         FROM ".BASE_DATOS.".tab_interf_parame a
                                                         WHERE a.cod_transp = '".$mData['cod_transp']."'
-                                                          AND a.cod_operad = '50'
+                                                          AND a.cod_operad = '".$cod_operad."'
                                                           AND a.ind_estado = 1
                                                         ";
                                             $consulta = new Consulta($mSql, $this->conexion);
                                             $registros = $consulta -> ret_matriz();
                                             
                                             //Novedades pendientes por reenviar
-                                            $cNovPendientes = $this->getNovedadesReenviar($mNumDespac);
+                                            $cNovPendientes = $this->getNovedadesReenviar($mNumDespac, $cod_operad);
+                                            //mail('cristian.torres@grupooet.com','DataNovedades',var_export($cNovPendientes,true));
                                             if(($mData[$key]!=0) && (count($registros)>0) && ($mView->ree_noveda->ind_visibl) && (sizeof($cNovPendientes) > 0)){
                                                 $mTxt = $mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reenviar Novedades]</a>';
                                             }else{
@@ -9946,7 +9952,7 @@ class Despachos
      *  \param: $num_despac String Número de despacho
      *  \return: array: respuesta con la cantidad de novedades pendientes por reenviar (indicador = 0)
      */
-    function getNovedadesReenviar($num_despac){
+    function getNovedadesReenviar($num_despac, $cod_operad){
         $mQuery = "
                                 (
                                     SELECT
@@ -9964,7 +9970,7 @@ class Despachos
                                                                                                                                     )
                                 INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
                                 INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
-                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.cod_operad = ".$cod_operad." /*Debe tener interfaz con TMS */
                                                                                 AND ee.ind_estado = 1 /*Debe estar activa*/
 
 
@@ -9979,7 +9985,7 @@ class Despachos
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S'  
                                         AND dd.cod_server IN (14,16,17,18,19,20,21)
-                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                     GROUP BY aa.num_despac, a.fec_creaci
                                 )
                                 UNION ALL
@@ -9999,7 +10005,7 @@ class Despachos
                                                                                                                                     )
                                 INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
                                 INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
-                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.cod_operad = ".$cod_operad." /*Debe tener interfaz con TMS */
                                                                                 AND ee.ind_estado = 1 /*Debe estar activa*/
 
 
@@ -10015,7 +10021,7 @@ class Despachos
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S' 
                                         AND dd.cod_server IN (14,16,17,18,19,20,21)
-                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                         GROUP BY aa.num_despac, a.fec_creaci
                                 )
                                 ORDER BY cod_server
