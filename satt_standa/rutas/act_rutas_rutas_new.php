@@ -627,7 +627,7 @@ class Proc_rutas
     $nomVias = $this->getNomVia($_REQUEST['cod_viasxx']);
     $nomSalVia = $this->getSalVia($_REQUEST['cod_salvia']);
   
-    $_REQUEST[nom] = $ciuori[0][1]." - ".$ciudes[0][1]." VIA ".$nomVias." - ".$nomSalVia;
+    $_REQUEST[nom] = $ciuori[0][1]." - ".$ciudes[0][1]." VIA ".$nomVias;
 
     if(!$_REQUEST[rutactiva])
       $_REQUEST[rutactiva] = COD_ESTADO_INACTI;
