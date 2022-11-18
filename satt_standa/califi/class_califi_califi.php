@@ -1142,7 +1142,6 @@ class Califi
 		if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
 		{   
 		  $mHubGPS = new InterfHubIntegradorGPS(self::$cConexion, ['cod_transp' => $mDataDesp['cod_transp']] );
-		  
 		  // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
 		  $mResp = $mHubGPS -> setTrakingStart([
 		                                          'num_placax' => $mDataDesp['num_placax'],
@@ -1164,18 +1163,18 @@ class Califi
 		}
 		else
 		{
-		 $mInterfGps = new InterfGPS( self::$cConexion ); 
+	      $mInterfGps = new InterfGPS( self::$cConexion ); 
 		  $mResp = $mInterfGps -> setPlacaIntegradorGPS( $_REQUEST['num_despac'], ['ind_transa' => 'I'] );
 		  if($mResp['code_resp'] == '1000') { 
 		    //$mens -> correcto("Reenvio despacho: ".$_REQUEST['num_despac'].", Placa:".$mDataDesp['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['msg_resp']);
 		    $mCode = $mResp['code_resp'];
 		    $mSage = $mResp['msg_resp'];
-		  }
-		  else{
+		  }else{
 		    //$mens -> error("Reenvio despacho: ".$_REQUEST['num_despac'].", Placa:".$mDataDesp['num_placax'],'Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> '.$mResp['msg_resp']);
 		    $mCode = $mResp['code_resp'];
 		    $mSage = "Code:".$mResp['code_resp'].":".$mResp['msg_resp'];
 		  }
+
 		}
 		$respuesta = [];
 		if($mCode  == '1000'){
@@ -1189,7 +1188,7 @@ class Califi
             $respuesta["title"] = "Algo fallo";
 			$respuesta["info"] =  $mSage;
         }
-		$respuesta["text"] = "Reenvio despacho: ".$_REQUEST['num_despac'].", Placa:".$_REQUEST['num_placax'];
+		$respuesta["text"] = "Reenvio despacho: ".$_REQUEST['num_despac'].", Placa:".$_REQUEST['num_placax']."\n Msj: ".utf8_encode($mSage);
 		
 		echo json_encode($respuesta);
 	}
