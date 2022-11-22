@@ -2633,6 +2633,7 @@ class Despachos
                                     "num_desant" => "tit_desant"
                                     );
 
+
         $mTittle[2] = array( "id" => "dat_fechas", "tittle" => "FECHAS DEL DESPACHO");
         $mTittle[2]['data'] = array("fec_creaci" => "Hora/Fecha Sistema", 
                                     "fec_salida" => "Fecha Salida del Despacho", 
@@ -2751,6 +2752,13 @@ class Despachos
                                             else
                                                 $mTxt = array($mData[$tittle], $mData[$key]);
                                             break;
+                                            
+                                        case 'num_desant':
+                                                if( $mData[$key] == '' )
+                                                    $mBandera = false;
+                                                else
+                                                    $mTxt = array($mData[$tittle], $mData[$key]);
+                                                break;
                                         
                                         default:
                                             $mTxt = array($tittle, utf8_encode($mData[$key]));
@@ -2991,21 +2999,21 @@ class Despachos
         $sus_terceros = new suspensiones($this -> conexion);
         //Consume el metodo
         $data = $sus_terceros->SetSuspensiones($nitTrans[0]['cod_transp'], null);
-
+        
         //Recorre lo retornado 
         if(count($data) > 0){
         	foreach ($data as $estados => $mData) {
 	        	foreach ($mData as $ident => $campos) {
-	        		$mSelect = "SELECT 	GROUP_CONCAT(b.nom_tipser) AS nom_tipser
+	        		$mSelect = "SELECT 	b.nom_tipser AS nom_tipser
 	                			  FROM 	".BASE_DATOS.".tab_transp_tipser a
 	                		INNER JOIN 	".BASE_DATOS.".tab_genera_tipser b
 	                				ON 	a.cod_tipser = b.cod_tipser
-	                 			 WHERE 	a.cod_transp = '".$campos['cod_tercer']."' ";
+	                 			 WHERE 	a.cod_transp = '".$campos['cod_tercer']."'";
 
 				    $consulta = new Consulta( $mSelect, $this -> conexion );
 				    $nom_tipser = $consulta->ret_matrix('a');
 
-				    $data[$estados][$ident]['nom_tipser'] = $nom_tipser[0]['nom_tipser'];
+				    $data[$estados][$ident]['nom_tipser'] = $nom_tipser[count($nom_tipser)-1]['nom_tipser'];
 				    $data[$estados][$ident]['est_servic'] = $estados == 'suspendido' ? 'SUSPENDIDO' : 'ACTIVO';
 	        	}
 	        }
@@ -3934,7 +3942,7 @@ class Despachos
                         IF( r.nom_poseed IS NULL OR r.nom_poseed = '', '$mObs[0]', UPPER(r.nom_poseed) ) AS nom_poseed, 
                         IF( z.abr_tercer IS NULL OR z.abr_tercer = '', '$mObs[0]', UPPER(z.abr_tercer) ) AS nom_asegur, 
                         IF( ab.nom_produc IS NULL OR ab.nom_produc = '', '$mObs[1]', UPPER(ab.nom_produc) ) AS nom_produc, 
-                        IF( b.nom_conduc IS NULL OR b.nom_conduc = '', UPPER(m.abr_tercer), UPPER(b.nom_conduc) ) AS nom_conduc, 
+                        IF( m.cod_tipdoc = 'C', UPPER(COALESCE(m.nom_tercer, ' ',m.nom_apell1, ' ',m.nom_apell2)), m.abr_tercer) AS nom_conduc, 
                         IF( a.gps_paswor IS NULL OR a.gps_paswor = '', ( IF(x.clv_usrgps IS NULL OR x.clv_usrgps = '', 0, 2) ), 1 ) AS ind_pasgps, 
                         CONCAT( UPPER(c.abr_ciudad), ' (', LEFT(d.abr_depart,4), ') - ', LEFT(e.nom_paisxx,3), ' - ', c.cod_ciudad ) AS nom_ciuori, 
                         CONCAT( UPPER(f.abr_ciudad), ' (', LEFT(g.abr_depart,4), ') - ', LEFT(h.nom_paisxx,3), ' - ', f.cod_ciudad ) AS nom_ciudes, 
