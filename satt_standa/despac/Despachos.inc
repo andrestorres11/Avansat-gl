@@ -4,7 +4,7 @@
  *  \author: 
  *  \author: 
  *  \version: 
- *  \date: dia/mes/año
+ *  \date: dia/mes/a?o
  *  \bug: 
  *  \bug: 
  *  \warning: 
@@ -1914,10 +1914,10 @@ class Despachos
     {
         //$this -> IMPMAT( $array );
 
-        //Obteniendo el tamaño del array
+        //Obteniendo el tama?o del array
         $size = sizeof( $array );
 
-        //Obteniendo el tamaño de los arreglos internos
+        //Obteniendo el tama?o de los arreglos internos
         $sizeInterno = ((sizeof($array[0])/2)-1);
 
         //-----------------------------------------------
@@ -2129,7 +2129,7 @@ class Despachos
      *  \brief: Encabezado del despacho
      *  \author: Ing. Fabian Salinas
      *  \date: 03/09/2010
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac
      *  \param: mDataUsuar
      *  \param: mIndFinali
@@ -2185,7 +2185,7 @@ class Despachos
             }
         #</Verifica Viaje Consolidado>
 
-        #mData información de despacho
+        #mData informaci?n de despacho
         $mData = self::getDataEncabezado( $mNumDesOri, $mNumDespac, $mIndConsol, $mObs );
         $mData['num_despac'] = $mStrDespac; 
         #<Arma HTML>
@@ -2299,7 +2299,7 @@ class Despachos
      *  \brief: quita acentos del string enviado
      *  \author: Ing. Miguel Romero
      *    \date: 04/03/2015
-     *    \date modified: dia/mes/aÃ±o
+     *    \date modified: dia/mes/año
      *  \param: string  = string a sanear
      *  \return string sin acentos
      */
@@ -2308,54 +2308,54 @@ class Despachos
         $string = (string)trim(utf8_encode($string));
      
         $string = str_replace(
-            array('Ã¡', 'Ã ', 'Ã¤', 'Ã¢', 'Âª', 'Ã?', 'Ã?', 'Ã?', 'Ã?'),
+            array('á', 'à', 'ä', 'â', 'ª', '??', '??', '??', '??'),
             array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
             $string
         );
      
         $string = str_replace(
-            array('Ã©', 'Ã¨', 'Ã«', 'Ãª', 'Ã?', 'Ã?', 'Ã?', 'Ã?'),
+            array('é', 'è', 'ë', 'ê', '??', '??', '??', '??'),
             array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
             $string
         );
      
         $string = str_replace(
-            array('Ã­', 'Ã¬', 'Ã¯', 'Ã®', 'Ã?', 'Ã?', 'Ã?', 'Ã?'),
+            array('í', 'ì', 'ï', 'î', '??', '??', '??', '??'),
             array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
             $string
         );
      
         $string = str_replace(
-            array('Ã³', 'Ã²', 'Ã¶', 'Ã´', 'Ã?', 'Ã?', 'Ã?', 'Ã?'),
+            array('ó', 'ò', 'ö', 'ô', '??', '??', '??', '??'),
             array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
             $string
         );
      
         $string = str_replace(
-            array('Ãº', 'Ã¹', 'Ã¼', 'Ã»', 'Ã?', 'Ã?', 'Ã?', 'Ã?'),
+            array('ú', 'ù', 'ü', 'û', '??', '??', '??', '??'),
             array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
             $string
         );
      
         $string = str_replace(
-            array('Ã±', 'Ã?', 'Ã§', 'Ã?'),
+            array('ñ', '??', 'ç', '??'),
             array('n', 'N', 'c', 'C',),
             $string
         );
      
-        //Esta parte se encarga de eliminar cualquier caracter extraÃ±o
+        //Esta parte se encarga de eliminar cualquier caracter extraño
         $string = str_replace(
-            array("Â·", "$", "%", "&", "/",
-                 "(", ")", "?", "'", "Â¡",
-                 "Â¿", "[", "^", "<code>", "]",
-                 "+", "}", "{", "Â¨", "Â´",
+            array("·", "$", "%", "&", "/",
+                 "(", ")", "?", "'", "¡",
+                 "¿", "[", "^", "<code>", "]",
+                 "+", "}", "{", "¨", "´",
                  ">", "< ", ";", ",", ":",
                  "."),
             '',
             $string
         );
 
-        $string = str_replace( array('VÃ­a'), array('via'), $string);
+        $string = str_replace( array('Vía'), array('via'), $string);
      
         return $string;
     }
@@ -2364,7 +2364,7 @@ class Despachos
      *  \brief:  valida si el despacho tiene novedades de GPS 4999
      *  \author: Ing. Miguel Romero
      *    \date: 04/03/2016
-     *    \date modified: dia/mes/aÃ±o
+     *    \date modified: dia/mes/año
      *  \param: mNumDespac
      *  \return arreglo con las novedades y el estado de la novedad
      */
@@ -2405,7 +2405,7 @@ class Despachos
         }
 
         if(BASE_DATOS != 'satt_faro'){
-            //Validación latitud y longitud de ciudad de origen y destino
+            //Validaci?n latitud y longitud de ciudad de origen y destino
             //Origen
             if($infOriDes['lat_origen'] != '' && $infOriDes['lon_origen'] != ''){
                 $latLon[] = array(
@@ -2435,7 +2435,7 @@ class Despachos
      *  \brief: funcion que retorna el html del div donde se va a pintar el mapa
      *  \author: Ing. Miguel Romero
      *    \date: 04/03/2016
-     *    \date modified: dia/mes/aÃ±o
+     *    \date modified: dia/mes/año
      *  \param: mNovedades 
      *  \return retorna el html del div donde se va a pintar el mapa
      */
@@ -2568,9 +2568,9 @@ class Despachos
      *  \brief: Crea los DIV de las secciones: "DATOS BASICOS DEL DESPACHO", "DATOS COMPLEMENTARIOS DEL DESPACHO", "FECHAS DEL DESPACHO"
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
-     *  \param: mData       Matriz   Información de despacho
+     *  \param: mData       Matriz   Informaci?n de despacho
      *  \return: HTML
      */
     private function divDatosDespac( $mNumDespac, $mData,  $mView )
@@ -2632,6 +2632,7 @@ class Despachos
                                     "obs_tiemod" => "Observaciones de Modificaci&oacute;n", 
                                     "num_desant" => "tit_desant"
                                     );
+
 
         $mTittle[2] = array( "id" => "dat_fechas", "tittle" => "FECHAS DEL DESPACHO");
         $mTittle[2]['data'] = array("fec_creaci" => "Hora/Fecha Sistema", 
@@ -2751,6 +2752,13 @@ class Despachos
                                             else
                                                 $mTxt = array($mData[$tittle], $mData[$key]);
                                             break;
+                                            
+                                        case 'num_desant':
+                                                if( $mData[$key] == '' )
+                                                    $mBandera = false;
+                                                else
+                                                    $mTxt = array($mData[$tittle], $mData[$key]);
+                                                break;
                                         
                                         default:
                                             $mTxt = array($tittle, utf8_encode($mData[$key]));
@@ -2787,7 +2795,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: GRILLA CARGUE
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
      *  \return: HTML
      */
@@ -2816,7 +2824,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: GRILLA DESCARGUE
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
      *  \return: HTML
      */
@@ -2852,7 +2860,7 @@ class Despachos
                                 $mHtml->OpenDiv("id:secID");
                                     $mHtml->OpenDiv("id:form_destin".$i."ID; class:contentAccordionForm");
 
-                                    #<Pinta la información del destinatario>
+                                    #<Pinta la informaci?n del destinatario>
                                         $mHtml->Table("tr");
                                             #Imprime titulos
                                             foreach ($mTittleDestin[0] as $key => $tittle)
@@ -2865,9 +2873,9 @@ class Despachos
                                                 $mHtml->Label( $mTotDestin[$i][$key],  array("align"=>"left", "class"=>"celda_info") );
 
                                         $mHtml->CloseTable("tr");
-                                    #</Pinta la información del destinatario>
+                                    #</Pinta la informaci?n del destinatario>
 
-                                    #<Pinta la información de las facturas>
+                                    #<Pinta la informaci?n de las facturas>
                                         $mHtml->Table("tr");
                                             #Imprime titulos
                                             foreach ($mTittleDestin[1] as $key => $tittle)
@@ -2890,7 +2898,7 @@ class Despachos
                                             $destinatarios = join("|",$mArrayDestin);
 
                                         $mHtml->CloseTable("tr");
-                                    #</Pinta la información de las facturas>
+                                    #</Pinta la informaci?n de las facturas>
 
                                         $mHtml->Table("tr");
                                             $mHtml->SetBody("<td>");
@@ -2932,7 +2940,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: INFORMACION DE REMESAS
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
      *  \return: HTML
      */
@@ -2977,7 +2985,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: Estado del servicio
      *  \author: Ing. Luis Manrique
      *  \date: 25/02/2020
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
      *  \return: HTML
      */
@@ -2991,21 +2999,21 @@ class Despachos
         $sus_terceros = new suspensiones($this -> conexion);
         //Consume el metodo
         $data = $sus_terceros->SetSuspensiones($nitTrans[0]['cod_transp'], null);
-
+        
         //Recorre lo retornado 
         if(count($data) > 0){
         	foreach ($data as $estados => $mData) {
 	        	foreach ($mData as $ident => $campos) {
-	        		$mSelect = "SELECT 	GROUP_CONCAT(b.nom_tipser) AS nom_tipser
+	        		$mSelect = "SELECT 	b.nom_tipser AS nom_tipser
 	                			  FROM 	".BASE_DATOS.".tab_transp_tipser a
 	                		INNER JOIN 	".BASE_DATOS.".tab_genera_tipser b
 	                				ON 	a.cod_tipser = b.cod_tipser
-	                 			 WHERE 	a.cod_transp = '".$campos['cod_tercer']."' ";
+	                 			 WHERE 	a.cod_transp = '".$campos['cod_tercer']."'";
 
 				    $consulta = new Consulta( $mSelect, $this -> conexion );
 				    $nom_tipser = $consulta->ret_matrix('a');
 
-				    $data[$estados][$ident]['nom_tipser'] = $nom_tipser[0]['nom_tipser'];
+				    $data[$estados][$ident]['nom_tipser'] = $nom_tipser[count($nom_tipser)-1]['nom_tipser'];
 				    $data[$estados][$ident]['est_servic'] = $estados == 'suspendido' ? 'SUSPENDIDO' : 'ACTIVO';
 	        	}
 	        }
@@ -3024,7 +3032,7 @@ class Despachos
                         foreach ($mTittleEstServ as $tittle)
                             $mHtml->Label( $tittle,  array("align"=>"center", "class"=>"celda_titulo") );
 
-                        //Si retorna información de suspendidos
+                        //Si retorna informaci?n de suspendidos
                         if(count($data) > 0){
                             foreach ($data as $estados => $mData) {
                             	foreach ($mData as $ident => $campos) {
@@ -3056,7 +3064,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: BITACORA DE CAMBIOS REALIZADOS POR WEB SERVICES
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return: HTML
      */
@@ -3090,7 +3098,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: FOTOS
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
      *  \return: HTML
      */
@@ -3120,7 +3128,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: IMAGENES DEL CUMPLIDO
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
      *  \return: HTML
      */
@@ -3177,7 +3185,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: OBSERVACIONES GENERALES
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
      *  \param: _DESPAC     Matriz   Informacion del Despacho
      *  \return: HTML
@@ -3284,7 +3292,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: Informacion de Notas Controlador
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del Despacho
      *  \param: _DESPAC     Matriz   Informacion del Despacho
      *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
@@ -3353,7 +3361,7 @@ class Despachos
         foreach ($mNovedades as $key => $data) {
             //Valida Permisos
             if( $mEstServ->est_servic->ind_visibl != 1 ){
-                //Valida tipo de novedad y elimina posición
+                //Valida tipo de novedad y elimina posici?n
                 if(in_array($data['cod_noveda'], array(9271,9272,9273))){
                     unset($mNovedades[$key]);
                 }
@@ -3520,7 +3528,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: LLEGADA
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mIndConsol  Boolean  Indicador viaje consolidado
      *  \return: HTML
      */
@@ -3572,7 +3580,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: INFORMACION DEL PLAN DE RUTA
      *  \author: Ing. Fabian Salinas
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
      *  \param: mIndConsol  Boolean  Indicador viaje consolidado
      *  \param: mView       Array    Permisos de visibilidad en la seccion plan de ruta
@@ -3649,10 +3657,10 @@ class Despachos
                         unset($row);
                     }
                 }
-                if((in_array($row['cod_noveda'], $novedadDefect) || in_array($row['nov_especi'], $novedadDefect)) && $row['nov_especi']!=''){ //añade class para ocultar o mostrar con js
+                if((in_array($row['cod_noveda'], $novedadDefect) || in_array($row['nov_especi'], $novedadDefect)) && $row['nov_especi']!=''){ //a?ade class para ocultar o mostrar con js
                     $mHtml->RowProperties("",FALSE,'class="nov_gps"'.$row['nov_especi'].'');
                 }
-                else if(!in_array($row['cod_noveda'], $novedadNotdefect) && !in_array($row['nov_especi'], $novedadNotdefect) && $row['nov_especi']!=''){ //añade class para ocultar o mostrar con js
+                else if(!in_array($row['cod_noveda'], $novedadNotdefect) && !in_array($row['nov_especi'], $novedadNotdefect) && $row['nov_especi']!=''){ //a?ade class para ocultar o mostrar con js
                     $mHtml->RowProperties("",FALSE,'class="nov_seguimiento"');
                 }
                 else{
@@ -3797,7 +3805,7 @@ class Despachos
      *  \brief: script para el encabezado
      *  \author: Ing. Fabian Salinas
      *  \date: 07/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return:
      */
@@ -3896,10 +3904,10 @@ class Despachos
     }
 
     /*! \fn: getDataEncabezado
-     *  \brief: Trae toda la información necesaria para el encabezado
+     *  \brief: Trae toda la informaci?n necesaria para el encabezado
      *  \author: Ing. Fabian Salinas
      *  \date: 07/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDesOri  Integer Despacho Original
      *  \param: mNumDespac  String  Despacho original o despachos consolidados separados por comas 
      *  \param: mIndConsol  Integer 1 = despacho consolidado;
@@ -3934,7 +3942,7 @@ class Despachos
                         IF( r.nom_poseed IS NULL OR r.nom_poseed = '', '$mObs[0]', UPPER(r.nom_poseed) ) AS nom_poseed, 
                         IF( z.abr_tercer IS NULL OR z.abr_tercer = '', '$mObs[0]', UPPER(z.abr_tercer) ) AS nom_asegur, 
                         IF( ab.nom_produc IS NULL OR ab.nom_produc = '', '$mObs[1]', UPPER(ab.nom_produc) ) AS nom_produc, 
-                        IF( b.nom_conduc IS NULL OR b.nom_conduc = '', UPPER(m.abr_tercer), UPPER(b.nom_conduc) ) AS nom_conduc, 
+                        IF( m.cod_tipdoc = 'C', UPPER(CONCAT(IFNULL(m.nom_tercer,''),' ',IFNULL(m.nom_apell1,''),' ',IFNULL(m.nom_apell2,''))), m.abr_tercer) AS nom_conduc, 
                         IF( a.gps_paswor IS NULL OR a.gps_paswor = '', ( IF(x.clv_usrgps IS NULL OR x.clv_usrgps = '', 0, 2) ), 1 ) AS ind_pasgps, 
                         CONCAT( UPPER(c.abr_ciudad), ' (', LEFT(d.abr_depart,4), ') - ', LEFT(e.nom_paisxx,3), ' - ', c.cod_ciudad ) AS nom_ciuori, 
                         CONCAT( UPPER(f.abr_ciudad), ' (', LEFT(g.abr_depart,4), ') - ', LEFT(h.nom_paisxx,3), ' - ', f.cod_ciudad ) AS nom_ciudes, 
@@ -4029,6 +4037,7 @@ class Despachos
         $mConsult = new Consulta( $mSql, $this -> conexion );
         $mResult = $mConsult -> ret_matrix('a');
         $mResult = $mResult[0];
+
 
         #<Datos Despacho Consolidado>
             if( $mIndConsol == 1 )
@@ -4132,7 +4141,7 @@ class Despachos
             }
         #</Despachos Anteriores>
 
-        #<Verifica Cambios de datos según tab_bitaco_corona>
+        #<Verifica Cambios de datos seg?n tab_bitaco_corona>
             if( $mIndConsol != 1 && $mResult['num_desext'] != $mObs[0] )
             {
                 $mBitaco = self::getBitacoCorona( $mResult['num_desext'], $mObs );
@@ -4157,7 +4166,7 @@ class Despachos
                                         "ano_modelo" => "Modelo", 
                                         "nom_opegps" => "Operador Gps", 
                                         "gps_usuari" => "Usuario Gps", 
-                                        "gps_paswor" => "Contraseña Gps", 
+                                        "gps_paswor" => "Contrase?a Gps", 
                                         "nom_asegur" => "Aseguradora", 
                                         "num_poliza" => "Num Poliza", 
                                         "nom_produc" => "Mercancia", 
@@ -4171,7 +4180,7 @@ class Despachos
                         $mResult[$key] = self::verifiCambio( $mBitaco[$key], $mResult[$key], $tittle );
                 }
             }
-        #</Verifica Cambios de datos según tab_bitaco_corona>
+        #</Verifica Cambios de datos seg?n tab_bitaco_corona>
 
         return $mResult;
     }
@@ -4179,8 +4188,8 @@ class Despachos
     /*! \fn: getRemesasDespac
      *  \brief: Trae las remesas del despacho
      *  \author: 
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/a?o
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del despacho
      *  \return:
      */
@@ -4219,8 +4228,8 @@ class Despachos
     /*! \fn: getDataDestin
      *  \brief: Trae la Data para los destinatarios
      *  \author: 
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/a?o
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del despacho
      *  \param: mNomDestin  String   Nombre del destinatario
      *  \param: mIndGroupx  Boolean  Indicador de agrupacion
@@ -4261,7 +4270,7 @@ class Despachos
      *  \brief: Muestra las fotos registradas para el despacho
      *  \author: Ing. Fabian Salinas
      *  \date: 11/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: mNumDespac  Integer  Numero del despacho
      *  \return: HTML
      */
@@ -4332,7 +4341,7 @@ class Despachos
      *  \brief: Plan de ruta
      *  \author: Ing. Fabian Salinas
      *  \date: 29/05/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \param: 
      *  \return: 
@@ -4414,6 +4423,7 @@ class Despachos
             $aux = "name";
           }
         }
+
         /*********************************/
 
         $mSelect = "SELECT a.obs_despac, b.obs_medcom, b.obs_proesp,
@@ -4499,7 +4509,7 @@ class Despachos
      *  \brief: verifica su una novedad de un despacho tiene protocolos asignados
      *  \author: Ing. Miguel Romero "mamafoka" 
      *  \date: 07/07/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: noveda novedad a evaluar 
      *  \param: despac despacho el cual contiene la novedad anterior
      *  \return: Matriz
@@ -4528,7 +4538,7 @@ class Despachos
      *  \brief: Trae la ruta y las novedades del despacho 
      *  \author: Ing. Fabian Salinas
      *  \date: 29/05/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: NumDespac, 
      *  \param: 
      *  \return: Matriz
@@ -4671,7 +4681,7 @@ class Despachos
      *  \brief: Crea el array de la ruta
      *  \author: Ing. Fabian Salinas
      *  \date: 02/06/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: sitio_seguimiento, fecha_programada, fecha_planeada, fecha_novedad, 
      *          tiempo, noveda, usuario, color background, fecha_creacion_novedad, 
      *          Observacion de la novedad, Ind_Notas Controlador, Ind_Novedad Especial,
@@ -4706,7 +4716,7 @@ class Despachos
      *  \brief: Trae la diferencia en minutos de dos fechas
      *  \author: Ing. Fabian Salinas
      *  \date: 02/06/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: Fecha Inicial, Fecha Final
      *  \return: String
      */
@@ -4722,7 +4732,7 @@ class Despachos
      *  \brief: Novedades antes de sitio
      *  \author: Ing. Fabian Salinas
      *  \date: 01/06/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: NumDespac, Puesto Control
      *  \return: Matriz Novedades
      */
@@ -4877,7 +4887,7 @@ class Despachos
      *  \brief: Novedades en sitio
      *  \author: Ing. Fabian Salinas
      *  \date: 01/06/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: NumDespac, Puesto Control
      *  \return: Matriz
      */
@@ -4925,7 +4935,7 @@ class Despachos
      *  \brief: Crea el link del sitio de seguimiento
      *  \author: Ing. Fabian Salinas
      *  \date: 01/06/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: Num Despacho, Nombre PC, codigo PC, color, codigo transportadora, ind Virtual, 
      *  \param: tie_ultnov, opcurban, Auxiliar defini si lleva link o no, Tipo de servicio
      *  \return: html
@@ -4936,22 +4946,20 @@ class Despachos
         $mColor = '336600';
       elseif( $mColor == '' && $mIndVirtua == '0' )
         $mColor = '0026FF';
-    
-      $aux = ( strtolower( $_SESSION[datos_usuario][cod_usuari] ) == 'alogistica' || ( $mIndVirtua == 1 && $mTipSer == 1 && $_SESSION[datos_usuario][cod_perfil] == '7' ) ) ? "name" : $aux ;
+      $aux = ( strtolower( $_SESSION[datos_usuario][cod_usuari] ) == 'alogistica' || ( $mIndVirtua == 1 && $mTipSer == '' && $_SESSION[datos_usuario][cod_perfil] == '7' ) ) ? "name" : $aux ;
       $mSpam  = '<span style="color:#'.$mColor.'">'.$mNomSitio.'</span>';
       $mLink  = '<a target="centralFrame" ';
       $mLink .= $aux.'="index.php?cod_servic='.$this -> servic.'&window=central&tie_ultnov='.$tie_ultnov;
       $mLink .= '&despac='.$mNumDespac.'&opcion=2&codpc='.$mCodContro.'&pc='.$mNomSitio;
       $mLink .= '&ind_virtua='.$mIndVirtua.'&cod_transp='.$mCodTransp.'&opcurban='.$opcurban.'" >';
       $mLink  = $mLink.$mSpam.'</a>';
-
       #Verifica que el Puesto de Control sea Padre o este Homologado como Hijo, para mostrar el PopUp con los detalles del Puesto de Control Padre
       $mDetallePc = Despachos::getVerifyPcPadre( $mCodContro );
       if( $mDetallePc != NULL && $mIndVirtua != '1' )
         $mLupa = '<span onclick="showDetallePc('.$mDetallePc[0].')"><img border="0" src="../satt_standa/imagenes/icon_buscar.png"></span>&nbsp;&nbsp;';
       else
         $mLupa = '';
-
+      
       return $mResult = $mLupa.$mLink;
     }
 
@@ -4959,7 +4967,7 @@ class Despachos
      *  \brief: Trae la transportadora del despacho
      *  \author: Ing. Fabian Salinas
      *  \date: 01/06/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: NumDespac
      *  \return: Array
      */
@@ -4990,7 +4998,7 @@ class Despachos
      *  \brief: Verifica si el puesto de control es padre o si esta homologado
      *  \author: Ing. Fabian Salinas
      *	\date: 25/05/2015
-     *	\date modified: dia/mes/año
+     *	\date modified: dia/mes/a?o
      *  \param: codContro
      *  \param: 
      *  \return: Array
@@ -5283,7 +5291,7 @@ class Despachos
 
     /*! \fn: getOrigeDesti
      *  \brief: Trae Informacion de origen y destino
-     *  \author: Ing. Cristian Andrés Torres
+     *  \author: Ing. Cristian Andr?s Torres
      *  \date: 22/06/2022
      *  \date modified: dd/mm/aaaa
      *  \param: mNumDespac   Integer   Numero de despacho
@@ -6033,7 +6041,7 @@ class Despachos
 
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
 
-                                    //Métodos disponibles en el WS
+                                    //M?todos disponibles en el WS
                                     $respuesta = $oSoapClient -> __call( 'getDespacho', $parametros );
                                 }
                                 catch( SoapFault $e )
@@ -6050,7 +6058,7 @@ class Despachos
                                         $mMessage .= "Placa del vehiculo: " . $mSalida[0][0] . " \n";
                                         $mMessage .= "Codigo puesto de control: " . $regist["contro"] . " \n";
                                         $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
-                                        $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                        $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Codigo de error: " . $e -> faultcode . " \n";
                                         $mMessage .= "Actor del error: " . $e -> faultactor . " \n";
@@ -6127,7 +6135,7 @@ class Despachos
 
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                     
-                                    //Métodos disponibles en el WS
+                                    //M?todos disponibles en el WS
                                     $respuesta = $oSoapClient -> __call( 'getDespacho', $parametros );
                                 }
                                 catch( SoapFault $e )
@@ -6144,7 +6152,7 @@ class Despachos
                                         $mMessage .= "Placa del vehiculo: " . $mSalida[0][0] . " \n";
                                         $mMessage .= "Codigo puesto de control: " . $regist["contro"] . " \n";
                                         $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
-                                        $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                        $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Codigo de error: " . $e -> faultcode . " \n";
                                         $mMessage .= "Actor del error: " . $e -> faultactor . " \n";
@@ -6261,7 +6269,7 @@ class Despachos
                                       
                                         $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                  
-                                        //Métodos disponibles en el WS
+                                        //M?todos disponibles en el WS
                                         /*echo "InsertarNovedadPC <br> puestocontrol_humadea <pre>";
                                         print_r($parametros);
                                         echo "</pre>";*/
@@ -6290,14 +6298,14 @@ class Despachos
                                       $mMessage .= "Codigo puesto de control padre: " . $mControPadre[0][0] . " \n";
                                       $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
                                       $mMessage .= "Nombre novedad: " . $mNoveda[0]["nom_noveda"] . " \n";
-                                      $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                      $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                       $mMessage .= "******** Detalle ******** \n";
                                       $mMessage .= "Mensaje de error: " . $error_  . " \n";
                                       
                                       mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                       //mail("nelson.liberato@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
-                                     //Insert de Bitácora 
+                                     //Insert de Bit?cora 
                                      $mLog = array();
                                      $mLog['mEstado'] = $mEstado;
                                      $mLog['mResult'] = $error_;
@@ -6371,7 +6379,7 @@ class Despachos
 
                                         $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                         
-                                        //Métodos disponibles en el WS
+                                        //M?todos disponibles en el WS
                                         /*echo "InsertarNovedadPC <br> novedades_humadea <pre>";
                                         print_r($parametros);
                                         echo "</pre>";*/
@@ -6399,14 +6407,14 @@ class Despachos
                                         $mMessage .= "Placa del vehiculo: " . $mSalida[0][0] . " \n";
                                         $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
                                         $mMessage .= "Nombre novedad: " . $mNoveda[0]["nom_noveda"] . " \n";
-                                        $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                        $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $error_ . " \n";
                                         //echo $mMessage;
                                         mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                         //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
-                                     //Insert de Bitácora 
+                                     //Insert de Bit?cora 
                                      $mLog = array();
                                      $mLog['mEstado'] = $mEstado;
                                      $mLog['mResult'] = $respuesta;
@@ -6479,7 +6487,7 @@ class Despachos
                                 $parametros["observacion"] = $regist["observ"];
                                 //echo "<pre>"; print_r( $parametros ); echo "</pre>";
                                 $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
-                                //Métodos disponibles en el WS
+                                //M?todos disponibles en el WS
                                 $respuesta = $oSoapClient -> __call( 'set_Novedad', $parametros );
                                 echo "<pre>"; print_r( $respuesta ); echo "</pre>";
                               }
@@ -6497,7 +6505,7 @@ class Despachos
                                       $mMessage .= "Placa del vehiculo: " . $mSalida[0][0] . " \n";
                                       $mMessage .= "Codigo puesto de control: " . $regist["contro"] . " \n";
                                       $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
-                                      $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                      $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                       $mMessage .= "******** Detalle ******** \n";
                                       $mMessage .= "Codigo de error: " . $e -> faultcode . " \n";
                                       $mMessage .= "Actor del error: " . $e -> faultactor . " \n";
@@ -6571,7 +6579,7 @@ class Despachos
 
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                     
-                                    //Métodos disponibles en el WS
+                                    //M?todos disponibles en el WS
                                     $respuesta = $oSoapClient -> __call( 'getDespacho', $parametros );
                                 }
                                 catch( SoapFault $e )
@@ -6588,7 +6596,7 @@ class Despachos
                                         $mMessage .= "Placa del vehiculo: " . $mSalida[0][0] . " \n";
                                         $mMessage .= "Codigo puesto de control: " . $regist["contro"] . " \n";
                                         $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
-                                        $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                        $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Codigo de error: " . $e -> faultcode . " \n";
                                         $mMessage .= "Actor del error: " . $e -> faultactor . " \n";
@@ -6635,7 +6643,7 @@ class Despachos
                                     //echo $url_webser;
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
 
-                                    //Métodos disponibles en el WS
+                                    //M?todos disponibles en el WS
                                     $mResult = $oSoapClient -> __call( 'aplicaExists', array( "nom_aplica" => $interfaz -> interfaz[$i]["nombre"] ) );
                                     $mResult = explode("; ", $mResult);
                                     $mCodResp = explode(":", $mResult[0]);
@@ -6861,7 +6869,7 @@ class Despachos
                                 //$consulta = new Consulta($query, $this->conexion);
                                 //$mControSitiox = $consulta->ret_matriz();
                                 
-                                // -------------------------------**** Calcula los kilómetros desde el último puesto de control reportado y antes del sitio
+                                // -------------------------------**** Calcula los kil?metros desde el ?ltimo puesto de control reportado y antes del sitio
                                 // Trae la ultima hora de PC Reportada
                                 
                                 $query = "SELECT MAX(DATE_FORMAT(fec_noveda,'%H:%i')) FROM ".$base_datos.".tab_despac_noveda WHERE num_despac = '".$regist["despac"]."'";
@@ -6913,7 +6921,7 @@ class Despachos
                                     
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                     
-                                    //Métodos disponibles en el WS
+                                    //M?todos disponibles en el WS
                                     
                                     $respuesta = $oSoapClient -> __call( 'reporte', $parametros );
 
@@ -6932,7 +6940,7 @@ class Despachos
                                         $mMessage .= "Codigo puesto de control padre: " . $mControPadre[0][0] . " \n";
                                         $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
                                         $mMessage .= "Nombre novedad: " . $mNoveda[0]["nom_noveda"] . " \n";
-                                        $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                        $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $respuesta . " \n";
                                         //echo $mMessage;
@@ -7017,7 +7025,7 @@ class Despachos
 
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                     
-                                    //MÃ©todos disponibles en el WS
+                                    //Métodos disponibles en el WS
                                     $respuesta = $oSoapClient -> __call( 'setPCIntracarga', $parametros );
                                     echo "<pre>";
                                     print_r($respuesta);
@@ -7816,7 +7824,7 @@ class Despachos
                             {
                                 $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
 
-                                //Métodos disponibles en el WS
+                                //M?todos disponibles en el WS
                                 $mResult = $oSoapClient -> __call( 'aplicaExists', array( "nom_aplica" => $interfaz -> interfaz[$i]["nombre"] ) );
 
                                 $mResult = explode("; ", $mResult);
@@ -7930,7 +7938,7 @@ class Despachos
                                   /********************* TRATAMIENTO SOAP *********************/
                                   try
                                   {
-                                      //Métodos disponibles en el WS
+                                      //M?todos disponibles en el WS
                                       $respuesta = $oSoapClient -> __call( 'setNovedadNC', $parametros );
 
                                       $mResult = explode("; ", $respuesta);
@@ -8056,7 +8064,7 @@ class Despachos
                     
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                     
-                                    //Métodos disponibles en el WS
+                                    //M?todos disponibles en el WS
                                     /*echo "InsertarNovedadNC <br> novedades_humadea <pre>";
                                     print_r($parametros);
                                     echo "</pre>";*/
@@ -8084,14 +8092,14 @@ class Despachos
                                     $mMessage .= "Placa del vehiculo: " . $mSalida[0][0] . " \n";
                                     $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
                                     $mMessage .= "Nombre novedad: " . $mNoveda[0]["nom_noveda"] . " \n";
-                                    $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                    $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                     $mMessage .= "******** Detalle ******** \n";
                                     $mMessage .= "Mensaje de error: " . $error_ . " \n";
                                     //echo $mMessage;
                                     mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                 }
-                                 //Insert de Bitácora 
+                                 //Insert de Bit?cora 
                                  $mLog = array();
                                  $mLog['mEstado'] = $mEstado;
                                  $mLog['mResult'] = $respuesta;
@@ -8146,7 +8154,7 @@ class Despachos
                                 //$consulta = new Consulta($query, $this->conexion);
                                 //$mControSitiox = $consulta->ret_matriz();
                                 
-                                // -------------------------------**** Calcula los kilómetros desde el último puesto de control reportado y antes del sitio
+                                // -------------------------------**** Calcula los kil?metros desde el ?ltimo puesto de control reportado y antes del sitio
                                 // Trae la ultima hora de PC Reportada
                                 
                                 $query = "SELECT MAX(DATE_FORMAT(fec_noveda,'%H:%i')) FROM ".$base_datos.".tab_despac_noveda WHERE num_despac = '".$regist["despac"]."'";
@@ -8197,7 +8205,7 @@ class Despachos
                                     echo "<pre>";print_r( $parametros ); echo "</pre>";
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                     
-                                    //Métodos disponibles en el WS
+                                    //M?todos disponibles en el WS
                                     $respuesta = $oSoapClient -> __call( 'reporte', $parametros );
 
                                     echo "<pre>"; print_r( $respuesta ); echo "</pre>";
@@ -8214,7 +8222,7 @@ class Despachos
                                         $mMessage .= "Codigo puesto de control padre: " . $mControPadre[0][0] . " \n";
                                         $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
                                         $mMessage .= "Nombre novedad: " . $mNoveda[0]["nom_noveda"] . " \n";
-                                        $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                        $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $respuesta . " \n";
                                         //echo $mMessage;
@@ -8293,7 +8301,7 @@ class Despachos
                                 //echo "<pre>"; print_r( $parametros ); echo "</pre>";
                                 
                                 $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
-                                //Métodos disponibles en el WS
+                                //M?todos disponibles en el WS
                                 $respuesta = $oSoapClient -> __call( 'set_Novedad', $parametros );
                                 echo "<pre>"; print_r( $respuesta ); echo "</pre>";
                               }
@@ -8311,7 +8319,7 @@ class Despachos
                                       $mMessage .= "Placa del vehiculo: " . $mSalida[0][0] . " \n";
                                       $mMessage .= "Codigo puesto de control: " . $regist["contro"] . " \n";
                                       $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
-                                      $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                      $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                       $mMessage .= "******** Detalle ******** \n";
                                       $mMessage .= "Codigo de error: " . $e -> faultcode . " \n";
                                       $mMessage .= "Actor del error: " . $e -> faultactor . " \n";
@@ -8386,7 +8394,7 @@ class Despachos
 
                                 $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                 
-                                //Métodos disponibles en el WS
+                                //M?todos disponibles en el WS
                                 $respuesta = $oSoapClient -> __call( 'getDespacho', $parametros );
                             }
                             catch( SoapFault $e )
@@ -8403,7 +8411,7 @@ class Despachos
                                     $mMessage .= "Placa del vehiculo: " . $mSalida[0][0] . " \n";
                                     $mMessage .= "Codigo puesto de control: " . $regist["contro"] . " \n";
                                     $mMessage .= "Codigo novedad: " . $regist["noveda"] . " \n";
-                                    $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
+                                    $mMessage .= "Observaci?n enviada: " . 'Interfaz - ' . $regist["observ"] . " \n";
                                     $mMessage .= "******** Detalle ******** \n";
                                     $mMessage .= "Codigo de error: " . $e -> faultcode . " \n";
                                     $mMessage .= "Actor del error: " . $e -> faultactor . " \n";
@@ -8867,7 +8875,7 @@ class Despachos
     }
 
     /*! \fn: getBitacoCorona
-     *  \brief: Trae la información del despacho si existe en bitaco_corona
+     *  \brief: Trae la informaci?n del despacho si existe en bitaco_corona
      *  \author: Ing. Fabian Salinas
      *  \date: 25/05/2015
      *  \date modified: 08/09/2015
@@ -8947,7 +8955,7 @@ class Despachos
     }
 
     /*! \fn: verifiCambio
-     *  \brief: Verifica si el dato tiene cambios de información; sin cambio retorna texto sin color de lo contrario retorna el texto con color rojo
+     *  \brief: Verifica si el dato tiene cambios de informaci?n; sin cambio retorna texto sin color de lo contrario retorna el texto con color rojo
      *  \author: Ing. Fabian Salinas
      *  \date: 25/05/2015
      *  \date modified: 08/09/2015
@@ -8970,7 +8978,7 @@ class Despachos
      *  \brief: Muestra el primer registro cuando hay diferencias de datos en el despacho
      *  \author: Ing. Fabian Salinas
      *  \date: 25/05/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return: html con los primeros datos.
      */
@@ -9008,7 +9016,7 @@ class Despachos
      *  \brief: Trae el nombre de la ciudad concadenando departamento y pais
      *  \author: Ing. Fabian Salinas
      *  \date: 25/05/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: codCiudad
      *  \return: NomCiudad
      */
@@ -9031,7 +9039,7 @@ class Despachos
      *  \brief: Trae l nombre de la ruta
      *  \author: Ing. Fabian Salinas
      *  \date: 25/05/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: codRuta
      *  \return: NomRuta
      */
@@ -9049,7 +9057,7 @@ class Despachos
      *  \brief: trae el nombre del producto
      *  \author: Ing. Fabian Salinas
      *  \date: 25/05/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: codProducto
      *  \return: NonProduc
      */
@@ -9064,16 +9072,16 @@ class Despachos
     }
 
     /*! \fn: linkLlamada
-     *  \brief: Crea el link para generar las llamadas y limpia el Número de celular
+     *  \brief: Crea el link para generar las llamadas y limpia el N?mero de celular
      *  \author: Ing. Fabian Salinas
      *  \date: 25/05/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: NumCelular, Placa, NumDespac
      *  \return: link llamada con celular, placa, NumDespac
      */
     private function linkLlamada($mNumCel, $mPlacax, $mDespac)
     {
-      $tofind1 = array( "(\.)", "(\,)", "(\ )", "(ñ)", "(Ñ)", "(\°)", "(\º)", "(&)", "(Â)", "(\()", "(\))", "(\/)", "(\´)", "(\¤)", "(\Ã)", "(\?)", "(\?)", "(\â)", "(\?)", "(\?)", "(\¥)", "(Ò)", "(Í)", "(\É)", "(\Ã?â??Ã?Â)", "(\·)", "(\ª)", "(\-)", "(\+)", "(\Ó)", "(\é)", "(\;)", "(\¡)", "(\!)", "(\`)", "(\<)", "(\>)", "(\_)", "(\%20)", "(\?)", "(\?)", "(\?)", "(\?)", "(\")", "(\#)", "(\?)", "(\?)", "(\:)", "(\?)", "(\?)", "(\?)", "(\])", "(\')", "(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)", "(i)", "(j)", "(k)", "(l)", "(m)", "(n)", "(o)", "(p)", "(q)", "(r)", "(s)", "(t)", "(u)", "(v)", "(w)", "(x)", "(y)", "(z)", "(A)", "(B)", "(C)", "(D)", "(E)", "(F)", "(G)", "(H)", "(I)", "(J)", "(K)", "(L)", "(M)", "(N)", "(O)", "(P)", "(Q)", "(R)", "(S)", "(T)", "(U)", "(V)", "(W)", "(X)", "(Y)", "(Z)" );
+      $tofind1 = array( "(\.)", "(\,)", "(\ )", "(?)", "(?)", "(\?)", "(\?)", "(&)", "(?)", "(\()", "(\))", "(\/)", "(\?)", "(\?)", "(\?)", "(\?)", "(\?)", "(\?)", "(\?)", "(\?)", "(\?)", "(?)", "(?)", "(\?)", "(\????????)", "(\?)", "(\?)", "(\-)", "(\+)", "(\?)", "(\?)", "(\;)", "(\?)", "(\!)", "(\`)", "(\<)", "(\>)", "(\_)", "(\%20)", "(\?)", "(\?)", "(\?)", "(\?)", "(\")", "(\#)", "(\?)", "(\?)", "(\:)", "(\?)", "(\?)", "(\?)", "(\])", "(\')", "(a)", "(b)", "(c)", "(d)", "(e)", "(f)", "(g)", "(h)", "(i)", "(j)", "(k)", "(l)", "(m)", "(n)", "(o)", "(p)", "(q)", "(r)", "(s)", "(t)", "(u)", "(v)", "(w)", "(x)", "(y)", "(z)", "(A)", "(B)", "(C)", "(D)", "(E)", "(F)", "(G)", "(H)", "(I)", "(J)", "(K)", "(L)", "(M)", "(N)", "(O)", "(P)", "(Q)", "(R)", "(S)", "(T)", "(U)", "(V)", "(W)", "(X)", "(Y)", "(Z)" );
       $replac1 = array( "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" , "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" );
 
       $mNumero = str_replace(" ", "", ( preg_replace($tofind1, $replac1, $mNumCel) ) );
@@ -9141,7 +9149,7 @@ class Despachos
      *  \brief: Trae las rutas del despacho
      *  \author: Ing. Fabian Salinas
      *  \date: 11/06/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: NumDespac
      *  \return: matriz
      */
@@ -9580,7 +9588,7 @@ class Despachos
                                 $_HTML .= '<th class="cellth-lb">Fecha</th>';
                                 $_HTML .= '<th class="cellth-lb">Hora</th>';
                                 $_HTML .= '<th class="cellth-lb">Novedad</th>';
-                                $_HTML .= '<th class="cellth-lb">Observación</th>';
+                                $_HTML .= '<th class="cellth-lb">Observaci?n</th>';
                                 $_HTML .= '<th class="cellth-lb">'.((int)$ind_cumcar==0?'&nbsp;':'Usuario').'</th>';
                             $_HTML .= '</tr>';
                         $_HTML .= '</thead>';
@@ -9735,7 +9743,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: CONTACTOS
      *  \author: Ing. Andres Torres
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
      *  \param: mIndConsol  Boolean  Indicador viaje consolidado
      *  \param: mView       Array    Permisos de visibilidad en la seccion plan de ruta
@@ -9809,7 +9817,7 @@ class Despachos
      *  \brief: Crea DIV de la seccion: PARTICULARIDADES
      *  \author: Ing. Andres Martinez
      *  \date: 14/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
      *  \param: mIndConsol  Boolean  Indicador viaje consolidado
      *  \param: mView       Array    Permisos de visibilidad en la seccion plan de ruta
@@ -9921,7 +9929,7 @@ class Despachos
                     FROM " . BASE_DATOS . ".tab_despac_sitio a;";
             $insercion = new Consulta($query, $this->conexion);
 
-            /* SE TOMA EL NUEVO CÓDIGO CON LO QUE YA SE INSERTÓ */
+            /* SE TOMA EL NUEVO C?DIGO CON LO QUE YA SE INSERT? */
             $query1 = "SELECT cod_sitiox 
             FROM " . BASE_DATOS . ".tab_despac_sitio 
             WHERE nom_sitiox = '" . $est_serv[0] . "'";
@@ -9946,10 +9954,10 @@ class Despachos
 
     /*! \fn: getNovedadesReenviar
      *  \brief: Retorna un arreglo de las novedades pendientes por reenviar
-     *  \author: Ing. Cristian Andrés Torres
+     *  \author: Ing. Cristian Andr?s Torres
      *  \date: 20/09/2022
-     *  \date modified: dia/mes/año
-     *  \param: $num_despac String Número de despacho
+     *  \date modified: dia/mes/a?o
+     *  \param: $num_despac String N?mero de despacho
      *  \return: array: respuesta con la cantidad de novedades pendientes por reenviar (indicador = 0)
      */
     function getNovedadesReenviar($num_despac, $cod_operad){
