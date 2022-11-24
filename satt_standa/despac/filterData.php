@@ -1,4 +1,6 @@
 <?php
+/*ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);*/
     class FilterData
     {
 
@@ -6,23 +8,22 @@
         static private $conexion = null;
         static private $cod_aplica = null;
         static private $usuario = null;
+        private static $cDespac,$cTypeUser;
+
 
         function __construct($co = null, $us = null, $ca = null)
         {
 
             //Include Connection class
-
-
             @include( "../lib/ajax.inc" );
             @include_once('../lib/general/functions.inc');
             //Show errors
-            /*ini_set('display_errors', true);
-            error_reporting(E_ALL & ~E_NOTICE);*/
-
+            
             //Assign values 
             self::$conexion = $AjaxConnection;
             self::$usuario = $us;
             self::$cod_aplica = $ca;
+            //self::$cTypeUser = $this->typeUser();
 
             //Switch request options
             switch($_REQUEST[opcion])
@@ -68,396 +69,384 @@
         }
 
         function mobileList(){
-            $transp = getTranspPerfil(self::$conexion,$_SESSION[datos_usuario][cod_perfil]);
-            $filtransp = "";
-            if(!empty($transp)){
-                $filtransp = " AND b.cod_transp = '".$transp['cod_tercer']."' ";
-            }
-            //Create total query 
-            $query = "
-                SELECT a.num_despac AS noDespacho, b.num_placax AS placa, n.num_despac AS viaje, 
-                       IF(
-                           b.cod_itiner IS NOT NULL AND b.cod_itiner != 0,
-                           b.cod_itiner,
-                           IF(
-                               o.nom_operad IS NULL OR o.nom_operad = '',
-                               'No Requiere',
-                               'Por Iniciar'
-                            )
-                        ) AS itinerario,
-                       '' AS reporte, '' AS etapa,
-                       c.nom_ciudad AS origen, d.nom_ciudad AS destino,
-                       '' AS cumplimientoDePlanDeRuta, '' AS localizacion,
-                       @fechaCargue := DATE_FORMAT(CONCAT(a.fec_citcar, ' ', a.hor_citcar), '%Y-%m-%d %H:%i:%s') AS fechaDeCargue,
-                       IF(
-                            g.fec_cumcar IS NOT NULL,
-                            IF(
-                               g.fec_cumcar <= @fechaCargue,
-                               'success',
-                               'danger'
-                            ),
-                            'white'
-                        ) AS colorCargue,
-                        '' AS estadoDeCargue,
-                       '' AS fechaDeDescargue, '' AS procesoDeEntrega, a.num_despac AS despacho,
-                       if(e.abr_tercer = '',
-                            CONCAT(e.nom_tercer, ' ', e.nom_apell1, ' ', e.nom_apell2),
-                            e.abr_tercer)
-                       AS conductor,
-                       e.num_telmov  AS celularConductor,
-                       if(i.abr_tercer = '',
-                            CONCAT(i.nom_tercer, ' ', i.nom_apell1, ' ', i.nom_apell2),
-                            i.abr_tercer)
-                       AS poseedor,
-                       IF(
-                           o.nom_operad IS NULL OR o.nom_operad = '',
-                           'SIN GPS',
-                           o.nom_operad
-                        ) AS `operadorGPS`,
-                        IF(
-                            a.usr_ultnov IS NULL,
-                            '',
-                            a.usr_ultnov
-                        ) AS usuarioNovedad,
-                        IF(
-                            a.fec_ultnov IS NULL,
-                            '',
-                            a.fec_ultnov
-                        ) AS fechaNovedad,
-                        '' AS tiempoAlarma,
-                        '' AS colorAlarma,
-                        b.num_placax,
-                        a.num_despac,
-                        a.cod_tipdes,
-                        IF(
-                            p.nom_noveda IS NULL,
-                            'Sin novedad',
-                            p.nom_noveda
-                        ) AS nom_noveda
-                  FROM ".BASE_DATOS.".tab_despac_despac a 
-		    INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
-                    ON a.num_despac = b.num_despac
-            INNER JOIN ".BASE_DATOS.".tab_genera_ciudad c
-                    ON a.cod_ciuori = c.cod_ciudad
-            INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d
-                    ON a.cod_ciudes = d.cod_ciudad
-            INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e
-                    ON b.cod_conduc = e.cod_tercer
-            INNER JOIN ".BASE_DATOS.".tab_despac_sisext g
-                    ON a.num_despac = g.num_despac
-            INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu h
-                    ON b.num_placax = h.num_placax
-            INNER JOIN ".BASE_DATOS.".tab_tercer_tercer i
-                    ON h.cod_propie = i.cod_tercer";
+            $data=array();
+            @include_once('../lib/general/constantes.inc');
+            @include_once('../inform/class_despac_trans3.php');
+            $mClassDespac = new Despac(self::$conexion, self::$usuario, self::$cod_aplica );   //$co = null, $us = null, $ca = null
+            $mIndEtapa = 'ind_segtra';
+            $mTransp = $mClassDespac -> getTranspServic($mIndEtapa);
+            $mCodTransp = "";
+            $mColor = array('', 'bgT1', 'bgT2', 'bgT3', 'bgT4');
+            $mNegTieesp = array(); #neg_tieesp
+            $mPosTieesp = array(); #pos_tieesp
+            $mNegTiempo = array(); #neg_tiempo
+            $mPosTiempo = array(); #pos_tiempo
+            $mNegFinrut = array(); #neg_finrut
+            $mPosFinrut = array(); #pos_finrut
+            $mNegAcargo = array(); #neg_acargo
+            $mPosAcargo = array(); #pos_acargo
+            
+            #array datos precarga
+            $con_paradi = array(); #para el dia
+            $con_paraco = array(); #para el corte
+            $con_anulad = array(); #anuladas
+            $con_planta = array(); #llegada en planta
+            $enx_planta = array(); #en planta de etapa de cargue
+            $con_porter = array(); #en porteria
+            $con_sinseg = array(); #sin seguimineto
+            $con_tranpl = array(); #transito a planta
+            $con_cnnlap = array(); #con novedad no llegada a planta
+            $con_cnlapx = array(); #con novedad llegada a planta
+            $con_acargo = array(); #A cargo de empresa
 
-            if($_REQUEST["cod_noveda"] != ""){
-                $query .= "
-            INNER JOIN (
-                        (
-                              SELECT a.num_despac, d.cod_noveda
-                                FROM ".BASE_DATOS.".tab_despac_despac a
-                          INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
-                                  ON a.num_despac = b.num_despac
-                          INNER JOIN ".BASE_DATOS.".tab_despac_noveda d
-                                  ON a.num_despac = d.num_despac
-                                 AND d.cod_noveda = '".$_REQUEST["cod_noveda"]."'
-                           LEFT JOIN ".BASE_DATOS.".tab_despac_corona c 
-                                  ON a.num_despac = c.num_dessat
-                               WHERE a.fec_salida IS NOT NULL 
-                                     AND a.fec_salida <= NOW() 
-                                     AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
-                                     AND a.ind_planru = 'S' 
-                                     AND a.ind_anulad in ('R')
-                                     AND b.ind_activo = 'S' 
-                                     ".$filtransp."
-                                     AND c.num_despac IS NOT NULL
-                        )UNION(
-                              SELECT a.num_despac, d.cod_noveda
-                                FROM ".BASE_DATOS.".tab_despac_despac a
-                          INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
-                                  ON a.num_despac = b.num_despac
-                          INNER JOIN ".BASE_DATOS.".tab_despac_contro d
-                                  ON a.num_despac = d.num_despac
-                                 AND d.cod_noveda = '".$_REQUEST["cod_noveda"]."'
-                           LEFT JOIN ".BASE_DATOS.".tab_despac_corona c 
-                                  ON a.num_despac = c.num_dessat
-                               WHERE a.fec_salida IS NOT NULL 
-                                     AND a.fec_salida <= NOW() 
-                                     AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
-                                     AND a.ind_planru = 'S' 
-                                     AND a.ind_anulad in ('R')
-                                     AND b.ind_activo = 'S' 
-                                     ".$filtransp."
-                                     AND c.num_despac IS NOT NULL
-                        )
-                      ) j
-                    ON a.num_despac = j.num_despac";
-            }
-
-            $query .= "
-             LEFT JOIN ".BASE_DATOS.".tab_despac_destin f
-                    ON a.num_despac = f.num_despac
-             LEFT JOIN ".BASE_DATOS.".tab_genera_noveda p
-                    ON a.cod_ultnov = p.cod_noveda
-			 LEFT JOIN ".BASE_DATOS.".tab_despac_corona n 
-                    ON a.num_despac = n.num_dessat
-             LEFT JOIN ".BD_STANDA.".tab_genera_opegps o
-                    ON n.gps_operad = o.cod_operad
-
-				 WHERE a.fec_salida IS NOT NULL 
-				   AND a.fec_salida <= NOW() 
-				   AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
-				   AND a.ind_planru = 'S' 
-			       AND a.ind_anulad in ('R')
-				   AND b.ind_activo = 'S' 
-                   ".$filtransp."
-                   AND n.num_despac IS NOT NULL
-                   AND a.num_despac NOT IN (
-                                                SELECT a.num_despac
-                                                FROM ".BASE_DATOS.".tab_despac_despac a
-                                            INNER JOIN ".BASE_DATOS.".tab_despac_vehige b
-                                                    ON  a.num_despac = b.num_despac
-                                            INNER JOIN ".BASE_DATOS.".tab_despac_noveda c
-                                                    ON b.num_despac = c.num_despac
-                                        
-                                                WHERE a.fec_salida IS NOT NULL 
-                                                AND a.fec_salida <= NOW() 
-                                                AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
-                                                AND a.ind_planru = 'S' 
-                                                AND a.ind_anulad in ('R')
-                                                AND b.ind_activo = 'S' 
-                                                ".$filtransp."
-                                                AND c.cod_contro = 9999
-                                            ) ";
-
-            if($_REQUEST["num_despac"] != ""){
-                $query .= "
-                   AND a.num_despac = '".$_REQUEST["num_despac"]."'";
-            }
-
-            if($_REQUEST["num_placax"] != ""){
-                $query .= "
-                   AND b.num_placax = '".$_REQUEST["num_placax"]."'";
-            }
-
-            if($_REQUEST["num_telmov"] != ""){
-                $query .= "
-                   AND e.num_telmov = '".$_REQUEST["num_telmov"]."'";
-            }
-
-            if($_REQUEST["num_viajex"] != ""){
-                $query .= "
-                   AND n.num_despac = '".$_REQUEST["num_viajex"]."'";
-            }
-
-            if($_REQUEST["num_solici"] != ""){
-                $query .= "
-                   AND n.num_solici = '".$_REQUEST["num_solici"]."'";
-            }
-
-            if($_REQUEST["num_remesi"] != ""){
-                $query .= "
-                   AND (f.num_docume = '".$_REQUEST["num_remesi"]."' OR f.num_docalt = '".$_REQUEST["num_remesi"]."') ";
-            }
-
-            if($_REQUEST["cod_manifi"] != ""){
-                $query .= "
-                   AND a.cod_manifi = '".$_REQUEST["cod_manifi"]."'";
-            }
-
-            if($_REQUEST["cod_conduc"] != ""){
-                $query .= "
-                   AND b.cod_conduc = '".$_REQUEST["cod_conduc"]."'";
-            }
-
-            if($_REQUEST["gps_operad"] != ""){
-                if($_REQUEST["gps_operad"] == "SIN"){
-                    $query .= "
-                        AND a.gps_operad IS NULL";
-                }else if($_REQUEST["gps_operad"] == "CON"){
-                    $query .= "
-                        AND a.gps_operad IS NOT NULL";
-                }else{
-                    $query .= "
-                        AND n.gps_operad = '".$_REQUEST["gps_operad"]."'";
-                }
-            }
-
-            if($_REQUEST["ind_itiner"] != ""){
-                if($_REQUEST["ind_itiner"] == 1){
-                    $query .= "
-                        AND b.cod_itiner IS NOT NULL";
-                }else{
-                    $query .= "
-                        AND b.cod_itiner IS NULL";
-                }
-            }
-
-            if($_REQUEST["tip_transp1"] != "" || $_REQUEST["tip_transp2"] != "" || $_REQUEST["tip_transp3"] != ""){
-                $mTipTransp = '""';
-                $mTipTransp .= $_REQUEST["tip_transp1"] != "" ? ', "'.$_REQUEST["tip_transp1"].'"' : "";
-                $mTipTransp .= $_REQUEST["tip_transp2"] != "" ? ', "'.$_REQUEST["tip_transp2"].'"' : "";
-                $mTipTransp .= $_REQUEST["tip_transp3"] != "" ? ', "'.$_REQUEST["tip_transp3"].'"' : "";
-
-                if($mTipTransp != ""){
-                    $query .= "
-                        AND n.tip_transp IN (".$mTipTransp.")";
-                }
-            }
-
-            if($_REQUEST["fec_finxxx"] != "" && $_REQUEST["fec_inicio"] != ""){
-                $query .= "
-                   AND n.fec_citcar BETWEEN '".$_REQUEST["fec_inicio"]."' AND '".$_REQUEST["fec_finxxx"]."'";
-            }
-
-            if($_REQUEST["cod_tipdes"] != "" && count($_REQUEST["cod_tipdes"]) > 0){
+            for($i=0; $i<sizeof($mTransp); $i++)
+		    {
+                $data_r=array();
+                $mNameFunction = $mTransp[$i]['ind_segcar'] == '1' && $mTransp[$i]['ind_segdes'] == '1' ? 'getDespacTransiReport2' : 'getDespacTransiReport1';
                 
-                for ($i=0; $i < count($_REQUEST["cod_tipdes"]); $i++) { 
-                    
-                    if($i == 0){
-                        $cod_tipdes = "'" . $_REQUEST["cod_tipdes"][$i] . "'";
+                $mDespac = $mClassDespac ->$mNameFunction( $mTransp[$i] );
+                $mDespac = $mClassDespac -> calTimeAlarma( $mDespac, $mTransp[$i], 0,'sinF', $mColor );
+                $mNegTieesp = $mDespac['neg_tieesp'] ? array_merge($mNegTieesp, $mDespac['neg_tieesp']) : $mNegTieesp;
+                $mPosTieesp = $mDespac['pos_tieesp'] ? array_merge($mPosTieesp, $mDespac['pos_tieesp']) : $mPosTieesp;
+                $mNegTiempo = $mDespac['neg_tiempo'] ? array_merge($mNegTiempo, $mDespac['neg_tiempo']) : $mNegTiempo;
+                $mPosTiempo = $mDespac['pos_tiempo'] ? array_merge($mPosTiempo, $mDespac['pos_tiempo']) : $mPosTiempo;
+                $mNegFinrut = $mDespac['neg_finrut'] ? array_merge($mNegFinrut, $mDespac['neg_finrut']) : $mNegFinrut;
+                $mPosFinrut = $mDespac['pos_finrut'] ? array_merge($mPosFinrut, $mDespac['pos_finrut']) : $mPosFinrut;
+                $mNegAcargo = $mDespac['neg_acargo'] ? array_merge($mNegAcargo, $mDespac['neg_acargo']) : $mNegAcargo;
+                $mPosAcargo = $mDespac['pos_acargo'] ? array_merge($mPosAcargo, $mDespac['pos_acargo']) : $mPosAcargo;
+
+                $mData = $mClassDespac -> orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
+        
+                #Pinta tablas
+                for ($u=0; $u < sizeof($mData['tiempo']); $u++) { 
+                    if ($mData['tiempo'][$u]['nov_especi'] == '1' && $mData['tiempo'][$u]['ind_alarma'] == 'S' ) {
+                        $mData['novesp'][$u] = $mData['tiempo'][$u];
+                        unset($mData['tiempo'][$u]);
                     }else{
-                        $cod_tipdes .= ", '" . $_REQUEST["cod_tipdes"][$i] . "'";
+                        continue;
+                    }
+                }
+                
+                $data=$this->dataDespa($mData['tieesp'],$mData['novesp'],$mData['tiempo'],$mData['acargo'],null);
+            }
+                $data_filter=array();
+                $query='';
+                if($_REQUEST["num_despac"] != ""){
+                    $query .= "
+                    AND a.num_despac = '".$_REQUEST["num_despac"]."'";
+                }
+
+                if($_REQUEST["num_placax"] != ""){
+                    $query .= "
+                    AND b.num_placax = '".$_REQUEST["num_placax"]."'";
+                }
+
+                if($_REQUEST["num_telmov"] != ""){
+                    $query .= "
+                    AND e.num_telmov = '".$_REQUEST["num_telmov"]."'";
+                }
+
+                if($_REQUEST["num_viajex"] != ""){
+                    $query .= "
+                    AND n.num_despac = '".$_REQUEST["num_viajex"]."'";
+                }
+
+                if($_REQUEST["num_solici"] != ""){
+                    $query .= "
+                    AND n.num_solici = '".$_REQUEST["num_solici"]."'";
+                }
+
+                if($_REQUEST["num_remesi"] != ""){
+                    $query .= "
+                    AND (f.num_docume = '".$_REQUEST["num_remesi"]."' OR f.num_docalt = '".$_REQUEST["num_remesi"]."') ";
+                }
+
+                if($_REQUEST["cod_manifi"] != ""){
+                    $query .= "
+                    AND a.cod_manifi = '".$_REQUEST["cod_manifi"]."'";
+                }
+
+                if($_REQUEST["cod_conduc"] != ""){
+                    $query .= "
+                    AND b.cod_conduc = '".$_REQUEST["cod_conduc"]."'";
+                }
+
+                if($_REQUEST["gps_operad"] != ""){
+                    if($_REQUEST["gps_operad"] == "SIN"){
+                        $query .= "
+                            AND a.gps_operad IS NULL";
+                    }else if($_REQUEST["gps_operad"] == "CON"){
+                        $query .= "
+                            AND a.gps_operad IS NOT NULL";
+                    }else{
+                        $query .= "
+                            AND n.gps_operad = '".$_REQUEST["gps_operad"]."'";
+                    }
+                }
+
+                if($_REQUEST["ind_itiner"] != ""){
+                    if($_REQUEST["ind_itiner"] == 1){
+                        $query .= "
+                            AND b.cod_itiner IS NOT NULL";
+                    }else{
+                        $query .= "
+                            AND b.cod_itiner IS NULL";
+                    }
+                }
+
+                if($_REQUEST["tip_transp1"] != "" || $_REQUEST["tip_transp2"] != "" || $_REQUEST["tip_transp3"] != ""){
+                    $mTipTransp = '""';
+                    $mTipTransp .= $_REQUEST["tip_transp1"] != "" ? ', "'.$_REQUEST["tip_transp1"].'"' : "";
+                    $mTipTransp .= $_REQUEST["tip_transp2"] != "" ? ', "'.$_REQUEST["tip_transp2"].'"' : "";
+                    $mTipTransp .= $_REQUEST["tip_transp3"] != "" ? ', "'.$_REQUEST["tip_transp3"].'"' : "";
+
+                    if($mTipTransp != ""){
+                        $query .= "
+                            AND n.tip_transp IN (".$mTipTransp.")";
+                    }
+                }
+
+                if($_REQUEST["fec_finxxx"] != "" && $_REQUEST["fec_inicio"] != ""){
+                    $query .= "
+                    AND n.fec_citcar BETWEEN '".$_REQUEST["fec_inicio"]."' AND '".$_REQUEST["fec_finxxx"]."'";
+                }
+
+                if($_REQUEST["cod_tipdes"] != "" && count($_REQUEST["cod_tipdes"]) > 0){
+                    
+                    for ($i=0; $i < count($_REQUEST["cod_tipdes"]); $i++) { 
+                        
+                        if($i == 0){
+                            $cod_tipdes = "'" . $_REQUEST["cod_tipdes"][$i] . "'";
+                        }else{
+                            $cod_tipdes .= ", '" . $_REQUEST["cod_tipdes"][$i] . "'";
+                        }
+
                     }
 
+                    $query .= "
+                    AND a.cod_tipdes IN ($cod_tipdes)";
+                }
+                $sqlF="SELECT a.num_despac FROM ".BASE_DATOS.".tab_despac_despac a 
+                INNER JOIN ".BASE_DATOS.".tab_despac_vehige b ON a.num_despac = b.num_despac
+                INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e ON b.cod_conduc = e.cod_tercer
+                LEFT JOIN ".BASE_DATOS.".tab_despac_corona n ON a.num_despac = n.num_dessat
+                LEFT JOIN ".BASE_DATOS.".tab_despac_destin f ON a.num_despac = f.num_despac
+                WHERE 1=1 ".$query." GROUP BY a.num_despac";
+                $query = new Consulta($sqlF, self::$conexion);
+                $results = $query -> ret_matrix('a');
+                foreach ($results as $key => $value) {
+                    $filter1=$this->searcharray($value[num_despac],'noDespacho',$data);
+                    foreach($filter1 as $l1)
+                    {
+                            array_push($data_filter,$data[$l1]);
+                    }   
                 }
 
-                $query .= "
-                   AND a.cod_tipdes IN ($cod_tipdes)";
+            
+            $po=0;
+            $despachos = self::cleanArray($data_filter);
+            $json = json_encode($despachos);
+            $_SESSION["dashboard"][1]["table"] = $json;
+            $_SESSION["dashboard"][1]["filter"] = json_encode(self::cleanArray($_REQUEST));
+            echo $json;
+            
+        }
+
+        function searcharray($value, $key, $array) {
+            $keys=array();
+            foreach ($array as $k => $val) {
+                if ($val[$key] == $value) {
+                    array_push($keys,$k);
+                }
             }
+            if(count($keys)>0)
+            return $keys;
+            else
+            return null;
+         }
 
-            $query .= "
-              GROUP BY a.num_despac ";
-            $query = new Consulta($query, self::$conexion);
-            $despachos = $query -> ret_matrix('a');
+        function getDataOut($num_desp)
+        {
+            $sql="SELECT if(d.abr_tercer = '',
+            CONCAT(d.nom_tercer, ' ', d.nom_apell1, ' ', d.nom_apell2),
+            d.abr_tercer) AS poseedor, if(
+                f.nom_operad IS NULL OR f.nom_operad = '',
+                'SIN GPS',
+                f.nom_operad
+             ) AS operadorGPS,if(
+                a.usr_ultnov IS NULL,
+                '',
+                a.usr_ultnov
+            ) AS usuarioNovedad,
+            a.cod_tipdes
+             FROM ".BASE_DATOS.".tab_despac_despac a 
+             INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+                     ON a.num_despac = b.num_despac
+             INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu c
+                     ON b.num_placax = c.num_placax
+             INNER JOIN ".BASE_DATOS.".tab_tercer_tercer d
+                     ON c.cod_propie = d.cod_tercer
+            LEFT JOIN ".BASE_DATOS.".tab_despac_corona e 
+                    ON a.num_despac = e.num_dessat
+             LEFT JOIN ".BD_STANDA.".tab_genera_opegps f
+                     ON e.gps_operad = f.cod_operad
+             WHERE a.num_despac = '" . $num_desp . "'";
+            $consulta = new Consulta($sql, self::$conexion);
+            $result = $consulta -> ret_matrix('a');
+            //Assing "fechaDeDescargue" value to total query
+            return $results=array(
+                0=>$result[0]["poseedor"],
+                1=>$result[0]["operadorGPS"],
+                2=>$result[0]["usuarioNovedad"],
+                3=>$result[0]["cod_tipdes"],
+            );
+        }
 
-            // trato de reutilizar la funcionalidad de tiempo despacho alarmas
-            include_once('../lib/general/constantes.inc');
-            include_once('../inform/class_despac_trans3.php');
-            $mClassDespac = new Despac(self::$conexion, self::$usuario, self::$cod_aplica );   //$co = null, $us = null, $ca = null
-            $mTrnaspServi = $mClassDespac -> getTranspServic();
+        function getProcesoEntrega($num_desp)
+        {
+            //Select "procesoDeEntrega"
+            $queryProcesoDeEntrega = "
+            SELECT COUNT(b.num_despac) AS t,
+                COUNT(IF(b.fec_cumdes IS NOT NULL, 1, NULL)) AS d,
+                COUNT(IF(b.fec_cumdes IS NULL, 1, NULL)) AS p,
+                COUNT(IF(b.fec_cumdes <= DATE_FORMAT(CONCAT(b.fec_citdes, ' ', b.hor_citdes), '%Y-%m-%d %H:%i:%s'), 1, NULL)) AS c,
+                COUNT(IF(b.fec_cumdes > DATE_FORMAT(CONCAT(b.fec_citdes, ' ', b.hor_citdes), '%Y-%m-%d %H:%i:%s'), 1, NULL)) AS n
+            FROM ".BASE_DATOS.".tab_despac_despac a
+            INNER JOIN ".BASE_DATOS.".tab_despac_destin b
+                ON a.num_despac = b.num_despac
+            WHERE a.num_despac = '" . $num_desp . "'
+            ";
 
-            //echo "<pre>calTimeAlarma: "; print_r( $mClassDespac -> calTimeAlarma ( $despachos , $mTrnaspServi[0], 0, 'sinF' , ['', 'bgT1', 'bgT2', 'bgT3', 'bgT4'] )   ); echo "</pre>";
-            //die();
-            //Create sub queries
-            foreach ($despachos as $key => $despacho) 
-            {   
+            //Execute query
+            $queryProcesoDeEntrega = new Consulta($queryProcesoDeEntrega, self::$conexion);
+            $procesoDeEntrega = $queryProcesoDeEntrega -> ret_matrix('a');
+            //Assing "fechaDeDescargue" value to total query
+            return $results=array('t'=>$procesoDeEntrega[0]["t"],'d'=>$procesoDeEntrega[0]["d"],'p'=>$procesoDeEntrega[0]["p"],'c'=>$procesoDeEntrega[0]["c"],'n'=>$procesoDeEntrega[0]["n"]);
+        }
 
-                // Cálculo de alarma(tiempo) y color
-                $mAlarma = $mClassDespac -> calTimeAlarma ( [$mClassDespac ->  getInfoDespac(  $despacho, $mTransp, 'xxxxxxx' )], $mTrnaspServi[0], 0, 'sinF' , ['', 'bgT1', 'bgT2', 'bgT3', 'bgT4'] ) ;
-        
-                $despachos[$key]['tiempoAlarma'] = isset($mAlarma['pos_tiempo']) ? (int)$mAlarma['pos_tiempo'][0]['tiempo'] : (int)$mAlarma['neg_tiempo'][0]['tiempo'];
-                $despachos[$key]['colorAlarma'] = isset($mAlarma['pos_tiempo']) ? (string)$mAlarma['pos_tiempo'][0]['color'] : (string)$mAlarma['neg_tiempo'][0]['color'];
-
-                //Select "cumplimientoDePlanDeRuta"
-                $queryRuta = "
-                SELECT a.num_despac, COUNT(b.cod_contro) AS a,  COUNT(c.cod_contro) AS b,
-                       ROUND(( (COUNT(c.cod_contro) * 100) / COUNT(b.cod_contro) ), 1) AS porcentaje
-                  FROM ".BASE_DATOS.".tab_despac_despac a 
-            INNER JOIN ".BASE_DATOS.".tab_despac_seguim b
-                    ON a.num_despac = b.num_despac
-             LEFT JOIN (
-                                SELECT b.cod_contro
-                                  FROM ".BASE_DATOS.".tab_despac_despac a
-                            INNER JOIN ".BASE_DATOS.".tab_despac_noveda b
-                                    ON a.num_despac = b.num_despac
-                                 WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                            UNION
-                                SELECT b.cod_contro
-                                  FROM ".BASE_DATOS.".tab_despac_despac a
-                            INNER JOIN ".BASE_DATOS.".tab_despac_contro b
-                                    ON a.num_despac = b.num_despac
-                                 WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                        ) c
-                    ON b.cod_contro = c.cod_contro
-                 WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                    ";
-
-                //Execute query
-                $queryRuta = new Consulta($queryRuta, self::$conexion);
-                $planRuta = $queryRuta -> ret_matrix('a');
-
-                //Assing "cumplimientoDePlanDeRuta" value to total query
-                $despachos[$key]["cumplimientoDePlanDeRuta"] = $planRuta[0]["porcentaje"];
-
-                //Select "localizacion"
-                $queryLocalizacion = "
-                    SELECT a.*
-                      FROM (
-                                SELECT a.num_despac, b.cod_contro, b.fec_creaci,
-                                       b.des_noveda AS localizacion
-                                  FROM ".BASE_DATOS.".tab_despac_despac a
-                            INNER JOIN ".BASE_DATOS.".tab_despac_noveda b
-                                    ON a.num_despac = b.num_despac
-                                 WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                            UNION
-                                SELECT a.num_despac, b.cod_contro, b.fec_creaci,
-                                       b.obs_contro AS localizacion
-                                  FROM ".BASE_DATOS.".tab_despac_despac a
-                            INNER JOIN ".BASE_DATOS.".tab_despac_contro b
-                                    ON a.num_despac = b.num_despac
-                                 WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                         ) a
-                     WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                     ORDER BY a.fec_creaci DESC
-                     LIMIT 1
-                    ";
-                
-                //Execute query
-                $queryLocalizacion = new Consulta($queryLocalizacion, self::$conexion);
-                $planLocalizacion = $queryLocalizacion -> ret_matrix('a');
-                
-                //Assing "localizacion" value to total query
-                $despachos[$key]["localizacion"] = $planLocalizacion[0]["localizacion"];
-                
-
-                //Select "estadoCargue"
-                $queryEstadoCargue = "
-                SELECT     
-                    CASE
-                        WHEN a.cod_noveda = '9261' THEN IF( TIMESTAMPDIFF(MINUTE, a.fec_noveda, a.fec_citcar ) > 0, 'Cumpli&oacute', 'No cumpli&oacute' )
-                        WHEN a.cod_noveda IN ('9172', '9260', '9270') THEN 
-                        IF(
-                            TIMESTAMPDIFF(MINUTE, a.fec_noveda, a.fec_citcar ) > 5,
+        function getFechaDeDescargue($num_desp)
+        {
+            //Select "fechaDeDescargue"
+            $queryFechaDeDescargue = "
+            SELECT @fechaDescargue := DATE_FORMAT(CONCAT(b.fec_citdes, ' ', b.hor_citdes), '%Y-%m-%d %H:%i:%s') AS fechaDeDescargue,
+                    IF(
+                        b.fec_cumdes IS NOT NULL,
                             IF(
-                                TIMESTAMPDIFF(MINUTE, a.fec_noveda, a.fec_citcar ) <= 40,
-                                'A tiempo',
-                                'Adelantado'
+                            b.fec_cumdes <= @fechaDescargue,
+                            'success',
+                            'danger'
                             ),
-                            'Atrasado'
-                        )
-                        END AS estadoDeCargue
-                    FROM
-                    (
-                        (
-                        SELECT 
-                                a.num_despac, b.cod_noveda, b.fec_noveda, DATE_FORMAT( CONCAT(a.fec_citcar, ' ', a.hor_citcar) , '%Y-%m-%d %H:%i:%s' ) AS fec_citcar
-                            FROM
-                                ".BASE_DATOS.".tab_despac_despac a
-                                LEFT JOIN 
-                                    ".BASE_DATOS.".tab_despac_noveda b ON a.num_despac = b.num_despac
-                            WHERE
-                                a.num_despac = '".$despacho["despacho"]."'
-                            AND b.cod_noveda IN ('9261')
-                        )
-                        UNION
-                        (
-                
-                            SELECT  
-                                    a.num_despac, b.cod_noveda, b.fec_contro AS fec_noveda, DATE_FORMAT( CONCAT(a.fec_citcar, ' ', a.hor_citcar) , '%Y-%m-%d %H:%i:%s' ) AS fec_citcar
-                            FROM
-                                ".BASE_DATOS.".tab_despac_despac a
-                                LEFT JOIN 
-                                    ".BASE_DATOS.".tab_despac_contro b ON a.num_despac = b.num_despac
-                            WHERE
-                                    a.num_despac = '".$despacho["despacho"]."'
-                                AND b.cod_noveda IN ('9172', '9260', '9270')
-                        )
-                        ORDER BY fec_noveda DESC LIMIT 1
-                    ) a
-                ";
+                        'white'
+                    ) AS colorDescargue,
+                IF(
+                        b.fec_cumdes IS NOT NULL,
+                        IF(
+                            b.fec_cumdes <= @fechaDescargue,
+                            'Cumpli&oacute;',
+                            'No Cumpli&oacute;'
+                        ),
+                        'Pendiente'
+                    ) AS estadoDeDescargue
+            FROM ".BASE_DATOS.".tab_despac_despac a
+            INNER JOIN ".BASE_DATOS.".tab_despac_destin b
+                ON a.num_despac = b.num_despac
+            WHERE a.num_despac = '" . $num_desp . "'
+            ORDER BY `fechaDeDescargue` ASC
+            LIMIT 1
+            ";
 
-                $queryEstadoCargue = "
+            $queryFechaDeDescargue = "
+            SELECT     
+            CASE
+                WHEN a.cod_noveda = '9264' THEN @colorFechaDescargue := IF( TIMESTAMPDIFF(MINUTE, a.fec_noveda, IF( b.fec_citdes IS NULL, c.fec_citdes, b.fec_citdes  ) ) > 0, 'Cumpli&oacute', 'No cumpli&oacute' )
+                WHEN a.cod_noveda IN ('9265', '9263', '9269') THEN
+                @colorFechaDescargue := IF(
+                    TIMESTAMPDIFF(MINUTE, a.fec_noveda, IF( b.fec_citdes IS NULL, c.fec_citdes, b.fec_citdes  )  ) > 5,
+                    IF(
+                        TIMESTAMPDIFF(MINUTE, a.fec_noveda, IF( b.fec_citdes IS NULL, c.fec_citdes, b.fec_citdes  )  ) <= 40,
+                        'A tiempo',
+                        'Adelantado'
+                    ),
+                    'Atrasado'
+                )
+                END AS estadoDeDescargue ,
+                    IF(b.fec_citdes IS NULL, c.fec_citdes, b.fec_citdes) AS fechaDeDescargue,
+                    IF(
+                        @colorFechaDescargue = 'Adelantado' OR @colorFechaDescargue = 'A tiempo',
+                        'success',
+                        IF(
+                            @colorFechaDescargue = 'Atrasado',
+                            'danger',
+                            'white'
+                        )
+                    ) AS colorDescargue
+            FROM  (
+
+                SELECT  
+                        a.num_despac, NULL AS cod_noveda , NULL AS cod_remdes , a.fec_alarma AS fec_citdes
+                FROM
+                        ".BASE_DATOS.".tab_despac_seguim a
+                WHERE
+                        a.num_despac = '" . $num_desp . "'
+                    AND a.cod_contro = '9999'
+
+            ) c LEFT JOIN
+
+
+            (
+                (
+                SELECT  
+                        a.num_despac, b.cod_noveda, DATE_ADD( b.fec_noveda , INTERVAL b.tiem_duraci MINUTE  ) AS fec_noveda
+                    FROM
+                        ".BASE_DATOS.".tab_despac_despac a
+                        LEFT JOIN
+                            tab_despac_noveda b ON a.num_despac = b.num_despac
+                    WHERE
+                        a.num_despac = '" . $num_desp . "'
+                    AND b.cod_noveda IN ('9264')
+                )
+                UNION
+                (
+
+                    SELECT  
+                            a.num_despac, b.cod_noveda, DATE_ADD( b.fec_contro , INTERVAL b.tiem_duraci MINUTE  ) AS fec_noveda 
+                    FROM
+                        ".BASE_DATOS.".tab_despac_despac a
+                        LEFT JOIN
+                            tab_despac_contro b ON a.num_despac = b.num_despac
+                    WHERE
+                            a.num_despac = '" . $num_desp . "'
+                        AND b.cod_noveda IN ('9265', '9263', '9269')
+                )
+                ORDER BY fec_noveda DESC LIMIT 1
+            ) a ON a.num_despac = c.num_despac  
+
+            LEFT JOIN (
+                        SELECT  
+                            a.num_despac, NULL AS cod_noveda , a.cod_remdes, DATE_FORMAT( CONCAT(a.fec_citdes, ' ', a.hor_citdes) , '%Y-%m-%d %H:%i:%s' ) AS fec_citdes
+                    FROM
+                        ".BASE_DATOS.".tab_despac_destin a
+                        
+                    WHERE
+                            a.num_despac = '" . $num_desp . "'
+                    AND     a.fec_cumdes IS NULL
+                    ORDER BY DATE_FORMAT( CONCAT(a.fec_citdes, ' ', a.hor_citdes) , '%Y-%m-%d %H:%i:%s' ) ASC LIMIT 1
+
+                    ) b ON c.num_despac = b.num_despac
+            ";
+
+            //Execute query
+            $queryFechaDeDescargue = new Consulta($queryFechaDeDescargue, self::$conexion);
+            $planFechaDeDescargue = $queryFechaDeDescargue -> ret_matrix('a');
+            $results=array(0=>$planFechaDeDescargue[0]["fechaDeDescargue"],1=>$planFechaDeDescargue[0]["colorDescargue"],2=>$planFechaDeDescargue[0]["estadoDeDescargue"]);
+            //Assing "fechaDeDescargue" value to total query
+            return $results;
+        }
+
+        function getEstadoCarge($num_desp)
+        {
+            $estadocargue='';
+            $queryEstadoCargue = "
 
                     SELECT a.num_despac,
                             CASE
@@ -482,9 +471,9 @@
                             END AS estadoDeCargue
                     FROM 
                             tab_despac_despac a 
-                INNER JOIN  tab_despac_sisext b ON a.num_despac = b.num_despac AND a.num_despac = '".$despacho["despacho"]."'
+                INNER JOIN  tab_despac_sisext b ON a.num_despac = b.num_despac AND a.num_despac = '".$num_desp."'
                 WHERE 
-                        a.num_despac = '".$despacho["despacho"]."' ";
+                        a.num_despac = '".$num_desp."' ";
 
                 //Execute query
                 $queryEstadoCargue = new Consulta($queryEstadoCargue, self::$conexion);
@@ -493,242 +482,400 @@
                 
                 //Assing "estadoCargue" value to total query
                 if(count($planEstadoCargue) > 0){
-                    $despachos[$key]["estadoDeCargue"] = $planEstadoCargue[0]["estadoDeCargue"];
+                    $estadocargue = $planEstadoCargue[0]["estadoDeCargue"];
                 }else{
-                    $despachos[$key]["estadoDeCargue"] = "Pendiente";
+                    $estadocargue = "Pendiente";
                 }
+                return $estadocargue;
+        }
 
-                //Select "fechaDeDescargue"
-                /*$queryFechaDeDescargue = "
-                    SELECT @fechaDescargue := DATE_FORMAT(CONCAT(b.fec_citdes, ' ', b.hor_citdes), '%Y-%m-%d %H:%i:%s') AS fechaDeDescargue,
-                            IF(
-                                b.fec_cumdes IS NOT NULL,
-                                    IF(
-                                    b.fec_cumdes <= @fechaDescargue,
-                                    'success',
-                                    'danger'
-                                    ),
-                                'white'
-                            ) AS colorDescargue,
-                           IF(
-                                b.fec_cumdes IS NOT NULL,
-                                IF(
-                                    b.fec_cumdes <= @fechaDescargue,
-                                    'Cumpli&oacute;',
-                                    'No Cumpli&oacute;'
-                                ),
-                                'Pendiente'
-                            ) AS estadoDeDescargue
-                      FROM ".BASE_DATOS.".tab_despac_despac a
-                INNER JOIN ".BASE_DATOS.".tab_despac_destin b
-                        ON a.num_despac = b.num_despac
-                     WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                     ORDER BY `fechaDeDescargue` ASC
-                     LIMIT 1
-                    ";*/
+        function getFechaCarg($num_desp)
+        {
+            $sql="SELECT @fechaCargue := DATE_FORMAT(CONCAT(a.fec_citcar, ' ', a.hor_citcar), '%Y-%m-%d %H:%i:%s') AS fechaDeCargue,
+            IF(
+                b.fec_cumcar IS NOT NULL,
+                IF(
+                   b.fec_cumcar <= @fechaCargue,
+                   'success',
+                   'danger'
+                ),
+                'white'
+            ) AS colorCargue
+            FROM ".BASE_DATOS.".tab_despac_despac a
+            INNER JOIN ".BASE_DATOS.".tab_despac_sisext b ON a.num_despac = b.num_despac
+            WHERE a.num_despac = '" . $num_desp . "'";
+            $consulta = new Consulta($sql, self::$conexion);
+            $result = $consulta -> ret_matrix('a');
 
-                $queryFechaDeDescargue = "
-                SELECT     
-                    CASE
-                        WHEN a.cod_noveda = '9264' THEN @colorFechaDescargue := IF( TIMESTAMPDIFF(MINUTE, a.fec_noveda, IF( b.fec_citdes IS NULL, c.fec_citdes, b.fec_citdes  ) ) > 0, 'Cumpli&oacute', 'No cumpli&oacute' )
-                        WHEN a.cod_noveda IN ('9265', '9263', '9269') THEN
-                        @colorFechaDescargue := IF(
-                            TIMESTAMPDIFF(MINUTE, a.fec_noveda, IF( b.fec_citdes IS NULL, c.fec_citdes, b.fec_citdes  )  ) > 5,
-                            IF(
-                                TIMESTAMPDIFF(MINUTE, a.fec_noveda, IF( b.fec_citdes IS NULL, c.fec_citdes, b.fec_citdes  )  ) <= 40,
-                                'A tiempo',
-                                'Adelantado'
-                            ),
-                            'Atrasado'
-                        )
-                        END AS estadoDeDescargue ,
-                            IF(b.fec_citdes IS NULL, c.fec_citdes, b.fec_citdes) AS fechaDeDescargue,
-                            IF(
-                                @colorFechaDescargue = 'Adelantado' OR @colorFechaDescargue = 'A tiempo',
-                                'success',
-                                IF(
-                                    @colorFechaDescargue = 'Atrasado',
-                                    'danger',
-                                    'white'
-                                )
-                            ) AS colorDescargue
-                    FROM  (
+            //Assing "localizacion" value to total query
+            $results=array(0=>$result[0]["fechaDeCargue"],1=>$result[0]["colorCargue"]);
+            return $results;
+        }
 
-                        SELECT  
-                                a.num_despac, NULL AS cod_noveda , NULL AS cod_remdes , a.fec_alarma AS fec_citdes
-                        FROM
-                                ".BASE_DATOS.".tab_despac_seguim a
-                        WHERE
-                                a.num_despac = '" . $despacho["despacho"] . "'
-                            AND a.cod_contro = '9999'
-
-                ) c LEFT JOIN
-
-
-                    (
-                        (
-                        SELECT  
-                                a.num_despac, b.cod_noveda, DATE_ADD( b.fec_noveda , INTERVAL b.tiem_duraci MINUTE  ) AS fec_noveda
-                            FROM
-                                ".BASE_DATOS.".tab_despac_despac a
-                                LEFT JOIN
-                                    tab_despac_noveda b ON a.num_despac = b.num_despac
-                            WHERE
-                                a.num_despac = '" . $despacho["despacho"] . "'
-                            AND b.cod_noveda IN ('9264')
-                        )
-                        UNION
-                        (
-                
-                            SELECT  
-                                    a.num_despac, b.cod_noveda, DATE_ADD( b.fec_contro , INTERVAL b.tiem_duraci MINUTE  ) AS fec_noveda 
-                            FROM
-                                ".BASE_DATOS.".tab_despac_despac a
-                                LEFT JOIN
-                                    tab_despac_contro b ON a.num_despac = b.num_despac
-                            WHERE
-                                    a.num_despac = '" . $despacho["despacho"] . "'
-                                AND b.cod_noveda IN ('9265', '9263', '9269')
-                        )
-                        ORDER BY fec_noveda DESC LIMIT 1
-                    ) a ON a.num_despac = c.num_despac  
-
-                    LEFT JOIN (
-                                SELECT  
-                                    a.num_despac, NULL AS cod_noveda , a.cod_remdes, DATE_FORMAT( CONCAT(a.fec_citdes, ' ', a.hor_citdes) , '%Y-%m-%d %H:%i:%s' ) AS fec_citdes
-                            FROM
-                                ".BASE_DATOS.".tab_despac_destin a
-                                
-                            WHERE
-                                    a.num_despac = '" . $despacho["despacho"] . "'
-                            AND     a.fec_cumdes IS NULL
-                            ORDER BY DATE_FORMAT( CONCAT(a.fec_citdes, ' ', a.hor_citdes) , '%Y-%m-%d %H:%i:%s' ) ASC LIMIT 1
-
-                            ) b ON c.num_despac = b.num_despac
-
-                   
-                    ";
-                
-                //Execute query
-                $queryFechaDeDescargue = new Consulta($queryFechaDeDescargue, self::$conexion);
-                $planFechaDeDescargue = $queryFechaDeDescargue -> ret_matrix('a');
-                
-                //Assing "fechaDeDescargue" value to total query
-                $despachos[$key]["fechaDeDescargue"] = $planFechaDeDescargue[0]["fechaDeDescargue"];
-                $despachos[$key]["colorDescargue"] = $planFechaDeDescargue[0]["colorDescargue"];
-                $despachos[$key]["estadoDeDescargue"] = $planFechaDeDescargue[0]["estadoDeDescargue"];
-                
-                
-                //Select "procesoDeEntrega"
-                $queryProcesoDeEntrega = "
-                    SELECT COUNT(b.num_despac) AS t,
-                           COUNT(IF(b.fec_cumdes IS NOT NULL, 1, NULL)) AS d,
-                           COUNT(IF(b.fec_cumdes IS NULL, 1, NULL)) AS p,
-                           COUNT(IF(b.fec_cumdes <= DATE_FORMAT(CONCAT(b.fec_citdes, ' ', b.hor_citdes), '%Y-%m-%d %H:%i:%s'), 1, NULL)) AS c,
-                           COUNT(IF(b.fec_cumdes > DATE_FORMAT(CONCAT(b.fec_citdes, ' ', b.hor_citdes), '%Y-%m-%d %H:%i:%s'), 1, NULL)) AS n
-                      FROM ".BASE_DATOS.".tab_despac_despac a
-                INNER JOIN ".BASE_DATOS.".tab_despac_destin b
-                        ON a.num_despac = b.num_despac
-                     WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                    ";
-                
-                //Execute query
-                $queryProcesoDeEntrega = new Consulta($queryProcesoDeEntrega, self::$conexion);
-                $procesoDeEntrega = $queryProcesoDeEntrega -> ret_matrix('a');
-                
-                //Assing "fechaDeDescargue" value to total query
-                $despachos[$key]["procesoDeEntrega"]["t"] = $procesoDeEntrega[0]["t"];
-                $despachos[$key]["procesoDeEntrega"]["d"] = $procesoDeEntrega[0]["d"];
-                $despachos[$key]["procesoDeEntrega"]["p"] = $procesoDeEntrega[0]["p"];
-                $despachos[$key]["procesoDeEntrega"]["c"] = $procesoDeEntrega[0]["c"];
-                $despachos[$key]["procesoDeEntrega"]["n"] = $procesoDeEntrega[0]["n"];
-
-                //Select "Etapa"
-                $queryEtapa = "
-                SELECT a.num_despac,
-                        a.cod_manifi,
-                        aa.fec_cumcar,
-                        c.fec_noveda,
-                        c.cod_contro,
-                        c.nom_noveda,
-                        c.cod_etapax,
-                        IF( c.nom_etapax IS NULL OR c.nom_etapax = '', 'PRECARGE', c.nom_etapax ) AS `Nombre Etapa`,
-                        c.nom_etapax,
-                        '' AS `etapa`
-                    FROM ".BASE_DATOS.".tab_despac_despac a  
-                INNER JOIN ".BASE_DATOS.".tab_despac_sisext aa
-                        ON a.num_despac = aa.num_despac
-                
-                LEFT JOIN (   
-                        ( SELECT a.num_despac, b.cod_contro, c.nom_noveda, d.cod_etapax, d.nom_etapax, b.fec_creaci, b.fec_noveda
-                            FROM ".BASE_DATOS.".tab_despac_despac a
-                        LEFT JOIN ".BASE_DATOS.".tab_despac_noveda b
-                                ON a.num_despac = b.num_despac
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_noveda c
-                                ON b.cod_noveda = c.cod_noveda
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_etapax d
-                                ON c.cod_etapax = d.cod_etapax
-                            WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                        ) UNION (
-                            SELECT a.num_despac, b.cod_contro, c.nom_noveda, d.cod_etapax, d.nom_etapax, b.fec_creaci, b.fec_contro  AS fec_noveda
-                            FROM ".BASE_DATOS.".tab_despac_despac a
-                        LEFT JOIN ".BASE_DATOS.".tab_despac_contro b 
-                                ON a.num_despac = b.num_despac
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_noveda c
-                                ON b.cod_noveda = c.cod_noveda
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_etapax d
-                                ON c.cod_etapax = d.cod_etapax
-                            WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                            )  ORDER BY fec_creaci
-                    ) c ON a.num_despac = c.num_despac
-                        
-                    WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                ORDER BY c.fec_noveda DESC LIMIT 1
-                ";
-                    
-                
-                //Execute query
-                $queryEtapa = new Consulta($queryEtapa, self::$conexion);
-                $etapa = $queryEtapa -> ret_matrix('a');
-                
-                //Assing "Reporte" value to total query
-                $despachos[$key]["etapa"] = $etapa[0]["Nombre Etapa"];
-                //$despachos[$key]["etapa"] = $etapa[0]["Nombre Etapa"];
-
-                //Select "Reporte"
-                $queryReporte = "
-                    SELECT b.cod_contro, c.*, d.nom_etapax
+        function getLocalizacion($num_desp)
+        {
+            //Select "localizacion"
+            $queryLocalizacion = "
+            SELECT a.*
+            FROM (
+                        SELECT a.num_despac, b.cod_contro, b.fec_creaci,
+                            b.des_noveda AS localizacion
                         FROM ".BASE_DATOS.".tab_despac_despac a
-                    LEFT JOIN ".BASE_DATOS.".tab_despac_contro b
-                        ON a.num_despac = b.num_despac
+                    INNER JOIN ".BASE_DATOS.".tab_despac_noveda b
+                            ON a.num_despac = b.num_despac
+                        WHERE a.num_despac = '" . $num_desp . "'
+                    UNION
+                        SELECT a.num_despac, b.cod_contro, b.fec_creaci,
+                            b.obs_contro AS localizacion
+                        FROM ".BASE_DATOS.".tab_despac_despac a
+                    INNER JOIN ".BASE_DATOS.".tab_despac_contro b
+                            ON a.num_despac = b.num_despac
+                        WHERE a.num_despac = '" . $num_desp . "'
+                ) a
+            WHERE a.num_despac = '" . $num_desp . "'
+            ORDER BY a.fec_creaci DESC
+            LIMIT 1
+            ";
+
+            //Execute query
+            $queryLocalizacion = new Consulta($queryLocalizacion, self::$conexion);
+            $planLocalizacion = $queryLocalizacion -> ret_matrix('a');
+
+            //Assing "localizacion" value to total query
+            return $planLocalizacion[0]["localizacion"];
+        }
+
+        function getCumplimientoDePlanDeRuta($num_desp){
+            //Select "cumplimientoDePlanDeRuta"
+            $queryRuta = "
+            SELECT a.num_despac, COUNT(b.cod_contro) AS a,  COUNT(c.cod_contro) AS b,
+                   ROUND(( (COUNT(c.cod_contro) * 100) / COUNT(b.cod_contro) ), 1) AS porcentaje
+              FROM ".BASE_DATOS.".tab_despac_despac a 
+        INNER JOIN ".BASE_DATOS.".tab_despac_seguim b
+                ON a.num_despac = b.num_despac
+         LEFT JOIN (
+                            SELECT b.cod_contro
+                              FROM ".BASE_DATOS.".tab_despac_despac a
+                        INNER JOIN ".BASE_DATOS.".tab_despac_noveda b
+                                ON a.num_despac = b.num_despac
+                             WHERE a.num_despac = '" . $num_desp . "'
+                        UNION
+                            SELECT b.cod_contro
+                              FROM ".BASE_DATOS.".tab_despac_despac a
+                        INNER JOIN ".BASE_DATOS.".tab_despac_contro b
+                                ON a.num_despac = b.num_despac
+                             WHERE a.num_despac = '" . $num_desp . "'
+                    ) c
+                ON b.cod_contro = c.cod_contro
+             WHERE a.num_despac = '" . $num_desp . "'
+                ";
+
+            //Execute query
+            $queryRuta = new Consulta($queryRuta, self::$conexion);
+            $planRuta = $queryRuta -> ret_matrix('a');
+
+            //Assing "cumplimientoDePlanDeRuta" value to total query
+            return $planRuta[0]["porcentaje"];
+        }
+
+        function getEtapa($num_desp)
+        {
+            $queryEtapa = "
+            SELECT a.num_despac,
+                    a.cod_manifi,
+                    aa.fec_cumcar,
+                    c.fec_noveda,
+                    c.cod_contro,
+                    c.nom_noveda,
+                    c.cod_etapax,
+                    IF( c.nom_etapax IS NULL OR c.nom_etapax = '', 'PRECARGE', c.nom_etapax ) AS `Nombre Etapa`,
+                    c.nom_etapax,
+                    '' AS `etapa`
+                FROM ".BASE_DATOS.".tab_despac_despac a  
+            INNER JOIN ".BASE_DATOS.".tab_despac_sisext aa
+                    ON a.num_despac = aa.num_despac
+            
+            LEFT JOIN (   
+                    ( SELECT a.num_despac, b.cod_contro, c.nom_noveda, d.cod_etapax, d.nom_etapax, b.fec_creaci, b.fec_noveda
+                        FROM ".BASE_DATOS.".tab_despac_despac a
+                    LEFT JOIN ".BASE_DATOS.".tab_despac_noveda b
+                            ON a.num_despac = b.num_despac
                     LEFT JOIN ".BASE_DATOS.".tab_genera_noveda c
-                        ON b.cod_noveda = c.cod_noveda
+                            ON b.cod_noveda = c.cod_noveda
                     LEFT JOIN ".BASE_DATOS.".tab_genera_etapax d
-                        ON c.cod_etapax = d.cod_etapax
-                        WHERE a.num_despac = '" . $despacho["despacho"] . "'
-                          AND b.val_longit IS NOT NULL
-                          AND b.val_latitu IS NOT NULL
-                    ";
+                            ON c.cod_etapax = d.cod_etapax
+                        WHERE a.num_despac = '" . $num_desp . "'
+                    ) UNION (
+                        SELECT a.num_despac, b.cod_contro, c.nom_noveda, d.cod_etapax, d.nom_etapax, b.fec_creaci, b.fec_contro  AS fec_noveda
+                        FROM ".BASE_DATOS.".tab_despac_despac a
+                    LEFT JOIN ".BASE_DATOS.".tab_despac_contro b 
+                            ON a.num_despac = b.num_despac
+                    LEFT JOIN ".BASE_DATOS.".tab_genera_noveda c
+                            ON b.cod_noveda = c.cod_noveda
+                    LEFT JOIN ".BASE_DATOS.".tab_genera_etapax d
+                            ON c.cod_etapax = d.cod_etapax
+                        WHERE a.num_despac = '" . $num_desp . "'
+                        )  ORDER BY fec_creaci
+                ) c ON a.num_despac = c.num_despac
+                    
+                WHERE a.num_despac = '" . $num_desp . "'
+            ORDER BY c.fec_noveda DESC LIMIT 1
+            ";
                 
-                //Execute query
-                $queryReporte = new Consulta($queryReporte, self::$conexion);
-                $reporte = $queryReporte -> ret_matrix('a');
-                
-                //Assing "Etapa" value to total query
-                if(count($reporte) > 0){
-                    $despachos[$key]["reporte"] = "success";
-                }else{
-                    $despachos[$key]["reporte"] = "danger";
-                }
+            
+            //Execute query
+            $queryEtapa = new Consulta($queryEtapa, self::$conexion);
+            $etapa = $queryEtapa -> ret_matrix('a');
+            
+            //Assing "Reporte" value to total query
+            return $etapa[0]["Nombre Etapa"];
+            //$despachos[$key]["etapa"] = $etapa[0]["Nombre Etapa"];
+        }
+
+        function getReport($num_desp)
+        {
+            $report='';
+            $queryReporte = "
+            SELECT b.cod_contro, c.*, d.nom_etapax
+                FROM ".BASE_DATOS.".tab_despac_despac a
+            LEFT JOIN ".BASE_DATOS.".tab_despac_contro b
+                ON a.num_despac = b.num_despac
+            LEFT JOIN ".BASE_DATOS.".tab_genera_noveda c
+                ON b.cod_noveda = c.cod_noveda
+            LEFT JOIN ".BASE_DATOS.".tab_genera_etapax d
+                ON c.cod_etapax = d.cod_etapax
+                WHERE a.num_despac = '" . $num_desp . "'
+                  AND b.val_longit IS NOT NULL
+                  AND b.val_latitu IS NOT NULL
+            ";
+        
+            //Execute query
+            $queryReporte = new Consulta($queryReporte, self::$conexion);
+            $reporte = $queryReporte -> ret_matrix('a');
+            
+            //Assing "Etapa" value to total query
+            if(count($reporte) > 0){
+                $report= "success";
+            }else{
+                $report = "danger";
             }
+            return $report;
 
-            $despachos = self::cleanArray($despachos);
-            $json = json_encode($despachos);
+        }
 
-            $_SESSION["dashboard"][1]["table"] = $json;
-            $_SESSION["dashboard"][1]["filter"] = json_encode(self::cleanArray($_REQUEST));
-            // header('Content-Type: application/json');
-            echo $json;
+        function getViaje($num_desp)
+        {
+            $viaje='';
+            $sql ="SELECT num_despac AS viaje FROM ".BASE_DATOS.".tab_despac_corona
+            WHERE num_dessat='".$num_desp."'";
+            $consulta = new Consulta($sql, self::$conexion);
+            $result = $consulta -> ret_matrix('a');
+            foreach($result as $value){
+                $viaje=$value[viaje];
+            }
+            return $viaje;
+        }
+
+        function dataDespa($data1,$data2,$data3,$data4,$data5)
+        {
+            $dat=array();
+            foreach ($data1 as $row1)
+            {    
+                if(!in_array($row1[num_despac],$dat['noDespacho']))
+                $arrFecCarg=$this->getFechaCarg($row1[num_despac]);
+                $arrFecDesc=$this->getFechaDeDescargue($row1[num_despac]);
+                $dataOut=$this->getDataOut($row1[num_despac]);
+                array_push($dat,
+                array(
+                    'noDespacho'=>$row1[num_despac],
+                    'placa'=>$row1[num_placax],
+                    'viaje'=>$this->getViaje($row1[num_despac]),
+                    'itinerario'=>$row1[itinerario],
+                    'reporte'=>$this->getReport($row1[num_despac]),
+                    'etapa'=>$this->getEtapa($row1[num_despac]),
+                    'origen'=>$row1[ciu_origen],
+                    'destino'=>$row1[ciu_destin],
+                    'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row1[num_despac]),
+                    'localizacion'=>$this->getLocalizacion($row1[num_despac]),
+                    'fechaDeCargue'=>$arrFecCarg[0],
+                    'colorCargue'=>$arrFecCarg[1],
+                    'estadoDeCargue'=>$this->getEstadoCarge($row1[num_despac]),
+                    'fechaDeDescargue'=>$arrFecDesc[0],
+                    'procesoDeEntrega'=>$this->getProcesoEntrega($row1[num_despac]),
+                    'despacho'=>$row1[num_despac],
+                    'conductor'=>$row1[nom_conduc],
+                    'celularConductor'=>$row1[num_telmov],
+                    'poseedor'=>$dataOut[0],
+                    'operadorGPS'=>$dataOut[1],
+                    'usuarioNovedad'=>$dataOut[2],
+                    'fechaNovedad'=>$row1[fec_ultnov],
+                    'tiempoAlarma'=>$row1[tiempoGl],
+                    'colorAlarma'=>$row1[color],
+                    'num_placax'=>$row1[num_placax],
+                    'num_despac'=>$row1[num_despac],
+                    'cod_tipdes'=>$dataOut[3],
+                    'nom_noveda'=>($row1[nom_ultnov] ? $row1[nom_ultnov]:'Sin novedad'),
+                    'transportadora'=>$row1[nom_transp],
+
+                ));
+            }
+            foreach ($data2 as $row2)
+            {
+                if(!in_array($row2[num_despac],$dat['noDespacho']))
+                $arrFecCarg=$this->getFechaCarg($row2[num_despac]);
+                $arrFecDesc=$this->getFechaDeDescargue($row2[num_despac]);
+                $dataOut=$this->getDataOut($row2[num_despac]);
+                array_push($dat,
+                array(
+                    'noDespacho'=>$row2[num_despac],
+                    'placa'=>$row2[num_placax],
+                    'viaje'=>$this->getViaje($row2[num_despac]),
+                    'itinerario'=>$row2[itinerario],
+                    'reporte'=>$this->getReport($row2[num_despac]),
+                    'etapa'=>$this->getEtapa($row2[num_despac]),
+                    'origen'=>$row2[ciu_origen],
+                    'destino'=>$row2[ciu_destin],
+                    'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row2[num_despac]),
+                    'localizacion'=>$this->getLocalizacion($row2[num_despac]),
+                    'fechaDeCargue'=>$arrFecCarg[0],
+                    'colorCargue'=>$arrFecCarg[1],
+                    'estadoDeCargue'=>$this->getEstadoCarge($row2[num_despac]),
+                    'fechaDeDescargue'=>$arrFecDesc[0],
+                    'procesoDeEntrega'=>$this->getProcesoEntrega($row2[num_despac]),
+                    'despacho'=>$row2[num_despac],
+                    'conductor'=>$row2[nom_conduc],
+                    'celularConductor'=>$row2[num_telmov],
+                    'poseedor'=>$dataOut[0],
+                    'operadorGPS'=>$dataOut[1],
+                    'usuarioNovedad'=>$dataOut[2],
+                    'fechaNovedad'=>$row2[fec_ultnov],
+                    'tiempoAlarma'=>$row2[tiempoGl],
+                    'colorAlarma'=>$row2[color],
+                    'num_placax'=>$row2[num_placax],
+                    'num_despac'=>$row2[num_despac],
+                    'cod_tipdes'=>$dataOut[3],
+                    'nom_noveda'=>($row2[nom_ultnov] ? $row2[nom_ultnov]:'Sin novedad'),
+                    'transportadora'=>$row2[nom_transp],
+                ));
+            }
+            foreach ($data3 as $row3)
+            {
+                if(!in_array($row3[num_despac],$dat['noDespacho']))
+                $arrFecCarg=$this->getFechaCarg($row3[num_despac]);
+                $arrFecDesc=$this->getFechaDeDescargue($row3[num_despac]);
+                $dataOut=$this->getDataOut($row3[num_despac]);
+                array_push($dat,
+                array(
+                    'noDespacho'=>$row3[num_despac],
+                    'placa'=>$row3[num_placax],
+                    'viaje'=>$this->getViaje($row3[num_despac]),
+                    'itinerario'=>$row3[itinerario],
+                    'reporte'=>$this->getReport($row3[num_despac]),
+                    'etapa'=>$this->getEtapa($row3[num_despac]),
+                    'origen'=>$row3[ciu_origen],
+                    'destino'=>$row3[ciu_destin],
+                    'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row3[num_despac]),
+                    'localizacion'=>$this->getLocalizacion($row3[num_despac]),
+                    'fechaDeCargue'=>$arrFecCarg[0],
+                    'colorCargue'=>$arrFecCarg[1],
+                    'estadoDeCargue'=>$this->getEstadoCarge($row3[num_despac]),
+                    'fechaDeDescargue'=>$arrFecDesc[0],
+                    'procesoDeEntrega'=>$this->getProcesoEntrega($row3[num_despac]),
+                    'despacho'=>$row3[num_despac],
+                    'conductor'=>$row3[nom_conduc],
+                    'celularConductor'=>$row3[num_telmov],
+                    'poseedor'=>$dataOut[0],
+                    'operadorGPS'=>$dataOut[1],
+                    'usuarioNovedad'=>$dataOut[2],
+                    'fechaNovedad'=>$row3[fec_ultnov],
+                    'tiempoAlarma'=>$row3[tiempoGl],
+                    'colorAlarma'=>$row3[color],
+                    'num_placax'=>$row3[num_placax],
+                    'num_despac'=>$row3[num_despac],
+                    'cod_tipdes'=>$dataOut[3],
+                    'nom_noveda'=>($row3[nom_ultnov] ? $row3[nom_ultnov]:'Sin novedad'),
+                    'transportadora'=>$row3[nom_transp],
+                ));
+            }
+            foreach ($data4 as $row4)
+            {
+                if(!in_array($row4[num_despac],$dat['noDespacho']))
+                $arrFecCarg=$this->getFechaCarg($row4[num_despac]);
+                $arrFecDesc=$this->getFechaDeDescargue($row4[num_despac]);
+                $dataOut=$this->getDataOut($row4[num_despac]);
+                array_push($dat,
+                array(
+                    'noDespacho'=>$row4[num_despac],
+                    'placa'=>$row4[num_placax],
+                    'viaje'=>$this->getViaje($row4[num_despac]),
+                    'itinerario'=>$row4[itinerario],
+                    'reporte'=>$this->getReport($row4[num_despac]),
+                    'etapa'=>$this->getEtapa($row4[num_despac]),
+                    'origen'=>$row4[ciu_origen],
+                    'destino'=>$row4[ciu_destin],
+                    'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row4[num_despac]),
+                    'localizacion'=>$this->getLocalizacion($row4[num_despac]),
+                    'fechaDeCargue'=>$arrFecCarg[0],
+                    'colorCargue'=>$arrFecCarg[1],
+                    'estadoDeCargue'=>$this->getEstadoCarge($row4[num_despac]),
+                    'fechaDeDescargue'=>$arrFecDesc[0],
+                    'procesoDeEntrega'=>$this->getProcesoEntrega($row4[num_despac]),
+                    'despacho'=>$row4[num_despac],
+                    'conductor'=>$row4[nom_conduc],
+                    'celularConductor'=>$row4[num_telmov],
+                    'poseedor'=>$dataOut[0],
+                    'operadorGPS'=>$dataOut[1],
+                    'usuarioNovedad'=>$dataOut[2],
+                    'fechaNovedad'=>$row4[fec_ultnov],
+                    'tiempoAlarma'=>$row4[tiempoGl],
+                    'colorAlarma'=>$row4[color],
+                    'num_placax'=>$row4[num_placax],
+                    'num_despac'=>$row4[num_despac],
+                    'cod_tipdes'=>$dataOut[3],
+                    'nom_noveda'=>($row4[nom_ultnov] ? $row4[nom_ultnov]:'Sin novedad'),
+                    'transportadora'=>$row4[nom_transp],
+                ));
+            }
+            foreach ($data5 as $row5)
+            {
+                if(!in_array($row5[num_despac],$dat['noDespacho']))
+                $arrFecCarg=$this->getFechaCarg($row5[num_despac]);
+                $arrFecDesc=$this->getFechaDeDescargue($row5[num_despac]);
+                $dataOut=$this->getDataOut($row5[num_despac]);
+                array_push($dat,
+                array(
+                    'noDespacho'=>$row5[num_despac],
+                    'placa'=>$row5[num_placax],
+                    'viaje'=>$this->getViaje($row5[num_despac]),
+                    'itinerario'=>$row5[itinerario],
+                    'reporte'=>$this->getReport($row5[num_despac]),
+                    'etapa'=>$this->getEtapa($row5[num_despac]),
+                    'origen'=>$row5[ciu_origen],
+                    'destino'=>$row5[ciu_destin],
+                    'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row5[num_despac]),
+                    'localizacion'=>$this->getLocalizacion($row5[num_despac]),
+                    'fechaDeCargue'=>$arrFecCarg[0],
+                    'colorCargue'=>$arrFecCarg[1],
+                    'estadoDeCargue'=>$this->getEstadoCarge($row5[num_despac]),
+                    'fechaDeDescargue'=>$arrFecDesc[0],
+                    'procesoDeEntrega'=>$this->getProcesoEntrega($row5[num_despac]),
+                    'despacho'=>$row5[num_despac],
+                    'conductor'=>$row5[nom_conduc],
+                    'celularConductor'=>$row5[num_telmov],
+                    'poseedor'=>$dataOut[0],
+                    'operadorGPS'=>$dataOut[1],
+                    'usuarioNovedad'=>$dataOut[2],
+                    'fechaNovedad'=>$row5[fec_ultnov],
+                    'tiempoAlarma'=>$row5[tiempoGl],
+                    'colorAlarma'=>$row5[color],
+                    'num_placax'=>$row5[num_placax],
+                    'num_despac'=>$row5[num_despac],
+                    'cod_tipdes'=>$dataOut[3],
+                    'nom_noveda'=>($row5[nom_ultnov] ? $row5[nom_ultnov]:'Sin novedad'),
+                    'transportadora'=>$row5[nom_transp],
+                ));
+            }
+            return $dat;
         }
 
         function loadFields(){
@@ -1028,14 +1175,121 @@
                 }
                 
             }
-
+            
             echo json_encode($json);
 
         }
 
+        public function getTranspServic( $mTipEtapax = NULL, $mCodTransp = NULL, $mAddWherex = NULL )
+        {
+            
+            $mTipServic = '""';
+            $mLisTransp = $this->getTranspCargaControlador();
+    
+            //Tipo de servicio Horario de gesti�n
+            $$mHorTipSer='';
+            $arrayHorTipSer = array();
+            $_REQUEST[tip_horlab1] == '1' ? $arrayHorTipSer[] = '1' : '';
+            $_REQUEST[tip_horlab2] == '1' ? $arrayHorTipSer[] = '2' : '';
+            $_REQUEST[tip_horlab3] == '1' ? $arrayHorTipSer[] = '3' : '';
+    
+            foreach($arrayHorTipSer as $index=>$servicio){
+                $mHorTipSer .= $servicio;
+                if( $index+1 < count($arrayHorTipSer)){
+                    $mHorTipSer .=', ';
+                }
+            }
+    
+            $mFilHorasx = $_REQUEST[fil_horasx] == '1' ? 'AND i.hor_ingres = "'.$_REQUEST['hor_inicia'].'" AND i.hor_ingres = "'.$_REQUEST['hor_finalx'].'"': '';
+    
+            $mSql = "/*OPTIMIZADO  */ 
+                        SELECT a.*,
+                             GROUP_CONCAT(h.cod_usuari ORDER BY h.cod_usuari ASC SEPARATOR ', ' ) AS usr_asigna
+                        FROM (
+    
+                                            SELECT c.ind_segprc,c.ind_segcar, 
+                                                   c.ind_segctr,c.ind_segtra, c.ind_segdes, 
+                                                   c.cod_transp, c.num_consec, d.nom_tipser, 
+                                                   UPPER(e.abr_tercer) AS nom_transp, c.tie_contro AS tie_nacion,
+                                                   c.tie_conurb AS tie_urbano, c.tie_desurb, 
+                                                   c.tie_desnac, c.tie_desimp, c.tie_desexp, 
+                                                   c.tie_destr1, c.tie_destr2, c.cod_tipser, 
+                                                   c.ind_conper, c.hor_pe1urb, c.hor_pe2urb, 
+                                                   c.hor_pe1nac, c.hor_pe2nac, c.hor_pe1imp, 
+                                                   c.hor_pe2imp, c.hor_pe1exp, c.hor_pe2exp, 
+                                                   c.hor_pe1tr1, c.hor_pe2tr1, c.hor_pe1tr2, 
+                                                   c.hor_pe2tr2, 
+                                                   c.tgl_contro AS tgl_nacion, c.tgl_contro AS tgl_urbano,
+                                                   c.tgl_prcnac AS tgl_nacprc, c.tgl_prcurb AS tgl_urbprc
+                                              FROM ".BASE_DATOS.".tab_transp_tipser c 
+                                        INNER JOIN ".BASE_DATOS.".tab_genera_tipser d 
+                                                ON c.cod_tipser = d.cod_tipser 
+                                        INNER JOIN ".BASE_DATOS.".tab_tercer_tercer e 
+                                                ON c.cod_transp = e.cod_tercer 
+                                        INNER JOIN (	  SELECT cod_transp , MAX(num_consec) AS num_consec 
+                                                            FROM ".BASE_DATOS.".tab_transp_tipser  
+                                                        GROUP BY cod_transp 
+                                                   ) f ON c.cod_transp = f.cod_transp AND c.num_consec = f.num_consec
+                                          GROUP BY c.cod_transp
+                             ) a 
+                             LEFT JOIN (
+                                SELECT 
+                                    cod_usuari,cod_transp 
+                                FROM 
+                                ".BASE_DATOS.".vis_monito_encdet 
+                                GROUP BY 
+                                    cod_usuari, cod_transp
+                            ) h ON a.cod_transp = h.cod_transp 
+                            LEFT JOIN ".BASE_DATOS.".tab_config_horlab i ON a.cod_transp = i.cod_tercer 
+                        WHERE 1=1 ";
+    
+            $mSql .= $mTipEtapax == NULL ? "" : " AND a.{$mTipEtapax} = 1 ";
+            $mSql .= $mAddWherex == NULL ? "" : $mAddWherex;
+    
+            #Filtro por codigo de Transportadora
+            if( self::$cTypeUser[tip_perfil] == 'CLIENTE' )
+                $mSql .= " AND a.cod_transp = '". self::$cTypeUser[cod_transp] ."' ";
+            else{
+                if( $mCodTransp != NULL )
+                    $mSql .= $mCodTransp != 'TODAS' ? " AND a.cod_transp IN ( {$mCodTransp} ) " : "";
+                else
+                    $mSql .= $_REQUEST[cod_transp] ? " AND a.cod_transp IN ( {$_REQUEST[cod_transp]} ) " : "";
+            }
+    
+            $mCodUsuari = explode(',', $_REQUEST[cod_usuari]);
+            $mSinFiltro = false;
+            foreach ($mCodUsuari as $key => $value) {
+                if( $value == '"SIN"' ){
+                    $mSinFiltro = true;
+                    break;
+                }
+            }
+    
+            #Filtro Por Usuario Asignado
+            if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL' || self::$cTypeUser[tip_perfil] == 'OAL' ){
+                $mSql .= " AND h.cod_usuari = '".$_SESSION[datos_usuario][cod_usuari]."' ";
+                $mSql .= $mLisTransp != '' && $mLisTransp != null ? " AND a.cod_transp IN ( $mLisTransp ) " : " AND a.cod_transp IN ( '' ) ";
+            } elseif( $mSinFiltro == true )
+                $mSql .= " AND ( h.cod_transp IS NULL OR UPPER(h.cod_usuari) IN ({$_REQUEST[cod_usuari]}) )";
+            else
+                $mSql .= $_REQUEST[cod_usuari] ? " AND UPPER(h.cod_usuari) IN ( {$_REQUEST[cod_usuari]} ) " : "";
+    
+            #Otros Filtros
+            $mSql .= $mTipServic != '""' ? " AND a.cod_tipser IN (".$mTipServic.") " : "";
+    
+            $mSql .= $mHorTipSer != '' ? " AND i.tip_servic IN (".$mHorTipSer.") " : "";
+    
+            $mSql .= $mFilHorasx;
+            
+            $mSql .= " GROUP BY a.cod_transp ORDER BY h.cod_usuari, a.nom_transp ASC ";
+    
+            $mConsult = new Consulta( $mSql, self::$conexion );
+            
+            return $mConsult -> ret_matrix('a');
+        }
+        
+
         function loadCargueTableData(){
-
-
 
             //Select "Cargue"
             $queryCargue = "
@@ -1761,6 +2015,43 @@
             return $arrayReturn;
 
         }
+        /*! \fn: getTranspCargaControlador
+        *  \brief: trae las transportadoras asignadas como carga laboral de un controlador o eal
+        *  \author: Ing. Fabian Salinas
+        *  \date: 21/09/2016
+        *  \date modified: dd/mm/aaaa
+        *  \param: 
+        *  \return: string
+        */
+        private function getTranspCargaControlador() {
+            if( self::$cTypeUser[tip_perfil] == 'CONTROL' || self::$cTypeUser[tip_perfil] == 'EAL'|| self::$cTypeUser[tip_perfil] == 'OAL' ) {
+                $mSql = "SELECT GROUP_CONCAT(a.cod_transp SEPARATOR ',') AS lis_transp
+                           FROM ".BASE_DATOS.".vis_monito_encdet a
+                          WHERE a.cod_usuari = '".$_SESSION[datos_usuario][cod_usuari]."' ";
+                $mConsult = new Consulta( $mSql, self::$conexion );
+                $mResult = $mConsult -> ret_arreglo();
+                return $mResult[0];
+            } else {
+                return null;
+            }
+        }
+
+        public function typeUser()
+        {
+            $mPerfil = $_SESSION[datos_usuario][cod_perfil];
+            $mResult = array();
+
+            if( $mPerfil == '7' || $mPerfil == '713' )
+                $mResult[tip_perfil] = 'CONTROL'; #Perfil Controlador
+            elseif( $mPerfil == '70' || $mPerfil == '80' || $mPerfil == '669' )
+                $mResult[tip_perfil] = 'EAL'; #Perfil EAL
+            else{
+                    $mResult[tip_perfil] = 'OTRO'; 
+            }
+
+            return $mResult;
+        }
+
     }
 
     new FilterData();

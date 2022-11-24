@@ -284,7 +284,7 @@
                                                                     <hr>
                                                                 </div>
                                                                 <div class="col-md-12" style="padding:0">
-                                                                    <h6 style="color: black;text-align: center;font-size: medium;">DESPACHOS SIN GESTIï¿½N</h6>
+                                                                    <h6 style="color: black;text-align: center;font-size: medium;">DESPACHOS SIN GESTIÓN</h6>
                                                                     <iframe src="" id="iframe2" style="width: 100%;height: 350px;margin-left: 40px;" frameborder="0" >
                                                                     </iframe>
                                                                 </div>

@@ -608,6 +608,7 @@ function createTr(row){
         <td class='tiempo `+row["colorAlarma"]+`' ><b>`+row["tiempoAlarma"]+`</td>
         <td class='placa' style='white-space: nowrap;'>`+row["placa"]+`</td>
         <td class='operadorGPS' style='white-space: nowrap;'>`+row["operadorGPS"]+`</td>
+        <td class='transportadora' style='white-space: nowrap;'>`+row["transportadora"]+`</td>
         <td class='origen' style='white-space: nowrap;'>`+row["origen"]+`</td>
         <td class='destino' style='white-space: nowrap;'>`+row["destino"]+`</td>
         <td class='estadoDeCargue'><span class='btn btn-` + estadoDeCargue + `'>`+row["estadoDeCargue"]+`</spam></td>
@@ -640,7 +641,7 @@ function createTr(row){
             </div>
         </td>
         <td class='conductor' style='white-space: nowrap;'>`+row["conductor"]+`</td>
-        <td class='celularConductor' style='white-space: nowrap;'>`+row["celularConductor"]+`</td>"
+        <td class='celularConductor' style='white-space: nowrap;'>`+(row["celularConductor"] ? row["celularConductor"]:'N/a')+`</td>"
         <td class='poseedor' style='white-space: nowrap;'>`+row["poseedor"]+`</td>
         <td class='ultimaNovedad' style='white-space: nowrap;'>`+row["nom_noveda"]+`</td></tr>"`);
 
