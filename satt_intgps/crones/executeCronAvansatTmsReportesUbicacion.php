@@ -10,7 +10,8 @@
 
 /*! Incluye script de constantes de conexion a la BD */
 //echo getcwd();
-@include_once("../constantes.inc");   
+
+@include_once(dirname(__DIR__)."/constantes.inc");   
 
 
 // CONSULTA LAS NOVEDADES DE INTEGRADOR GPS REGISTRADAS EN EL GL INTEGRADOR PARA REENVIARLAS AL TMS (Empresrial, Pyme) DEL CLIENTE
@@ -38,26 +39,25 @@ class cronAvansatTmsReportesUbicacion
 	*/
 	function __construct()
 	{
-
 		self::setConection();
 		self::getReportesPendientes();
  	  	echo date("Y.m.d H:i:s");
 
- 	  	mail(
-			 'nelson.liberato@grupooet.com, maribel.garcia@grupooet.com', 
-			 'CRON ENVIO NOVEDAD GL INTEGRADOR A TMS EJECUTADO',
-		   	 'CRON DE REPLICA DE NOVEDAD DE GL INTEGRADOR A TMS CLIENTE SE EStS SATURANDO '.sizeof(self::$cPendientes)
-		   	);
+ 	  	//mail(
+		//	 'nelson.liberato@grupooet.com, maribel.garcia@grupooet.com', 
+		//	 'CRON ENVIO NOVEDAD GL INTEGRADOR A TMS EJECUTADO',
+		//   	 'CRON DE REPLICA DE NOVEDAD DE GL INTEGRADOR A TMS CLIENTE SE EStS SATURANDO '.sizeof(self::$cPendientes)
+		//   	);
 
 
 		if (sizeof(self::$cPendientes) > 0) {
-			if( sizeof(self::$cPendientes) > 300){
-				mail(
-					 'nelson.liberato@grupooet.com, maribel.garcia@grupooet.com', 
-					 'CRON GL INTEGRADIOR - TMS SATURADO',
-				   	 'CRON DE REPLICA DE NOVEDAD DE GL INTEGRADOR A TMS CLIENTE SE EStS SATURANDO '.sizeof(self::$cPendientes)
-				   	);
-			}
+			// if( sizeof(self::$cPendientes) > 300){
+			//	mail(
+			//		 'nelson.liberato@grupooet.com, maribel.garcia@grupooet.com', 
+			//		 'CRON GL INTEGRADIOR - TMS SATURADO',
+			//	   	 'CRON DE REPLICA DE NOVEDAD DE GL INTEGRADOR A TMS CLIENTE SE EStS SATURANDO '.sizeof(self::$cPendientes)
+			//	   	);
+			//}
 			self::envioReportes();
 			if (sizeof(self::$cReportes) > 0) {
 				self::actualizarEnviados(); // actualiza como enviado los que si pasaron al TMS despues de acabar el foreach de los pendientes
@@ -188,6 +188,7 @@ class cronAvansatTmsReportesUbicacion
 		try 
 		{
 			echo "<pre>CANTIDAD DE REPORTES A ENVIAR: "; print_r(sizeof( self::$cPendientes ) ); echo "</pre>";
+			$mMailData = [];
 			foreach (self::$cPendientes AS $mIndex => $mReporte) 
 			{ 
 
@@ -233,9 +234,20 @@ class cronAvansatTmsReportesUbicacion
 				ini_set("soap.wsdl_cache_enabled", 0);
 				//die('acaba proceso');
 				$mSoap = new SoapClient( $mReporte['url_webser'], ['trace' => 1,'exception' => 1 ] );
-				$mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams ); 
+				
+				// 9260 llegada a cargue, 9173 salida de cargue,  9266 -> paso por OAL ====> en SITIO
+				if( in_array( $mReporte['cod_noveda'] , ['9260', '9173', '9266'] ) ) { // 9261 -> entrada cargue anstes de sitio
+					$mResponse = $mSoap -> __soapCall("setNovedadPC", $mParams); // Se coloca la novedad en SITIO
+				}else{
+					if($mReporte['metodo']=='pc'){
+						$mResponse = $mSoap -> __soapCall("setNovedadPC", $mParams); // Se coloca la novedad en SITIO
+					}else{
+						$mResponse = $mSoap -> __soapCall("setNovedadNC", $mParams); // Se coloca la novedad en ANTES DE SITIO
+					}
+				}
+				
 
-				 
+				//$mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams ); 
 
 				$mResult  = explode( "; ", $mResponse );
 				$mCodResp = explode( ":", $mResult[0] );  
@@ -243,6 +255,10 @@ class cronAvansatTmsReportesUbicacion
 
 				if( "1000" != $mCodResp[1] ){ 
 					//throw new Exception( $mMsgResp[1], $mCodResp[1] );
+
+					$mMailData[$mIndex][$mReporte['nom_operad']] = ['params' => $mParams];
+					$mMailData[$mIndex][$mReporte['nom_operad']] = ['resonse' => $mResponse];
+
 					echo "<pre>Aplicacion: ".$mReporte['nom_operad']."  Despacho: ".$mReporte['num_despac']." ->  Manifiesto: ".$mReporte['cod_manifi']."- Url Ws: ".$mReporte['url_webser']." -> "; print_r( var_dump("Error: ".$mMsgResp[1]) ); echo "</pre>"; 
  
 
@@ -263,6 +279,13 @@ class cronAvansatTmsReportesUbicacion
 
 			}
 			//echo "<pre>"; print_r(self::$cReportes); echo "</pre>"; die();   
+
+			//mail(
+			//	 'nelson.liberato@grupooet.com, maribel.garcia@grupooet.com', 
+			//	 'CRON GL INTEGRADOR REPLICA A TMS',
+			//   	 'CANTIDAD DE REPORTES A ENVIAR:'.sizeof(self::$cPendientes)."\nResultado:\n".var_export( $mMailData, true)
+			//   	);
+			
 
 		}
 		catch (Exception $e) 
@@ -508,6 +531,10 @@ class cronAvansatTmsReportesUbicacion
 	}
 
 }
+
+
+
+
 $_CRON = new cronAvansatTmsReportesUbicacion();
 
 ?>
