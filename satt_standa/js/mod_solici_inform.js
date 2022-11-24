@@ -716,7 +716,7 @@ function r(){
 					currForm.find('.alert').html("");
 					currForm.find('.alert').addClass("hide");
 					currForm.find('.alert').removeClass("active");
-
+					let data_detalles='';
 					for(var i=0 in data){
 						var fecha_soli = '';
 						//filtro para validar el tipo de solicitud a mostar
@@ -1050,11 +1050,27 @@ function r(){
 							"<td>"+ data[i].fec_creaci +"</td>"+
 							"<td>"+ data[i].fec_modifi +"</td>"+
 							"<td>"+ data[i].fec_difere +"</td>"+
-							"<td class='semaforo"+semaforo+"'>"+ cumplido +"</td>"+
+							"<td class=\"semaforo"+semaforo+"\">"+ cumplido +"</td>"+
 							"<td data-native-value=\""+data[i].cod_estado+"\">"+ data[i].nom_estado +"</td>"+
-							"<td>"+ data[i].usr_creaci+"</td>"+
+							"<td>"+ data[i].nom_usrsol+"</td>"+
+							"<td>"+ data[i].usr_modifi+"</td>"+
 							"</tr>"
 						);
+						data_detalles = data_detalles+"<tr>"+
+						"<td>"+ data[i].num_solici +"</td>"+
+						"<td>"+ data[i].nom_tipsol +"</td>"+
+						"<td>"+ findTercer(data[i].cod_transp) +"</td>"+
+						"<td>"+ delete_codif_espec(data[i].det_solici) +"</td>"+
+						"<td>"+ data[i].fec_creaci +"</td>"+
+						"<td>"+ data[i].fec_modifi +"</td>"+
+						"<td>"+ data[i].fec_difere +"</td>"+
+						"<td>"+ cumplido +"</td>"+
+						"<td>"+ data[i].nom_estado +"</td>"+
+						"<td>"+ data[i].nom_usrsol+"</td>"+
+						"<td>"+ data[i].usr_modifi+"</td>"+
+						"</tr>";
+						
+
 						if(semaforo == 3)
 						{
 							$(".semaforo"+semaforo).css("background-color","#E0544B")
@@ -1066,7 +1082,9 @@ function r(){
 						
 					}
 					//actulizacion de la cantidad de solicitudes
+					localStorage.setItem("tbody_detalles",data_detalles);
 					$(".indicador-detallado2").find("#badge").each(function(i,v){$(v).html("<b>"+canTotal+" REGISTROS</b>");});
+
 					currTab.find("div.indicador-detallado-solici").bind("click",function(){
 						currTab.find("table").parent().hide();
 						//currTab.find("table.indicador-respuesta").find("td").parent().remove();
@@ -1100,6 +1118,10 @@ function r(){
 					//console.log( "complete" );
 				});
 			}catch(e){}  
+		}
+		function delete_codif_espec(text){
+			text=text.replace("&iacute;", "i");
+			return text;
 		}
 
 		//en este punto, la idea es actualizar el registro, y permitir, volver a ejecutar updateStatusTipoxTableDetail2 para actualizar
@@ -2106,6 +2128,7 @@ function r(){
 		/***************************** excel ******************************/
 		/******************************************************************/
 
+		
 
 
 		$.getJSON( server_req.standa+ "data/template/inf_solici_solici.json?_t="+Math.random(), function( data ) {
@@ -2130,3 +2153,62 @@ function r(){
 		}catch(e){}
 }
 prevRequireLibJs();
+
+function expTabExcel(table){
+
+	$('#button_'+table).hide();
+	let tab_add_exp='';
+	if(table=='table_detalle'){	
+		var tbody = '<tbody>'+localStorage.getItem("tbody_detalles")+'</tbody>';
+		tab_add_exp='<table>'+$('#'+table).html()+tbody+'</table>';
+	}else{
+		tab_add_exp='<table>'+$('#'+table).html()+'</table>';
+	}
+	var target=$(".inf_solici_solici");
+	if(typeof ds == "undefined")
+			ds = "";
+
+		if(typeof dc == "undefined")
+			dc = "";
+
+		if(typeof cs == "undefined")
+			cs = "";
+
+		if(typeof wd == "undefined")
+			wd = "";
+
+		if(typeof ot == "undefined")
+			ot = "";
+
+	var server_req={"standa":ds,"central":dc,"cod_servic":cs,"window":wd,"option":ot};
+	const d = new Date();
+	 year=d.getFullYear();
+	 montch=d.getMonth();
+	 day=d.getDay();
+	 const nameFile='Solicitudfaro_'+year+'_'+montch+'_'+day;
+
+	$('#'+table).append(
+		"<form name='form_"+table+"' id='form_"+table+"' method='post' action='"+server_req.central+"lib/exportExcel.php' target='_self'>"+
+			"<input type='hidden' name='standa' id='standaID' value='satt_standa'>"+
+			"<input type='hidden' name='window' id='windowID' value='central'>"+
+			"<input type='hidden' name='cod_servic' id='cod_servicID' value='"+server_req.cod_servic+"'>"+
+			"<input type='hidden' name='nameFile' id='nameFileID' value='"+nameFile+"'>"+
+			"<input type='hidden' name='OptionExcel' id='OptionExcelID' value='_REQUEST'>"+
+			"<input type='hidden' name='exportExcel' id='exportExcelID' value=''>"+
+		"<form>"
+	);
+	$('#exportExcelID').val(tab_add_exp);
+	$('#form_'+table).submit();
+	$('#exportExcelID').val('');
+	$('#nameFileID').val('');
+	/*var form=$("").attr({"style":"display:none;width:0;height:0px;",
+					"target":"_blank",
+					"method":"GET",
+					"action":server_req.central+"lib/exportExcel.php"
+	});*/
+
+	/*console.log(tab_add_exp);
+	 
+	 location.href="../satt_standa/lib/exportExcel.php?nameFile="+nameFile+"&OptionExcel=_REQUEST&exportExcel="+encodeURI(tab_add_exp);*/
+	$('#button_'+table).show();
+}

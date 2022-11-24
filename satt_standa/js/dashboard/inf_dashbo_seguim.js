@@ -27,9 +27,28 @@ $(function() {
                 }
               }
             });
-            let tip_servic20=$("#tip_servic20").is(":checked");
-            let tip_servic21=$("#tip_servic21").is(":checked");
-            let tip_servic22=$("#tip_servic22").is(":checked");
+            const collection = document.getElementsByClassName("tipserv");
+            let tip_servic20=false;let tip_servic21=false;let tip_servic22=false;
+            let name_servic1='';let name_servic2='';let name_servic3='';
+            Array.from(collection).forEach((element,index)  => {
+              var obj1=$(element);
+              switch(index){
+                case 0:
+                  tip_servic20=$("#"+obj1.attr("id")).is(":checked");
+                  name_servic1=''+obj1.attr("id");
+                break;
+                case 1:
+                  tip_servic21=$("#"+obj1.attr("id")).is(":checked");
+                  name_servic2=''+obj1.attr("id");
+                break;
+                case 2:
+                  tip_servic22=$("#"+obj1.attr("id")).is(":checked");
+                  name_servic3=''+obj1.attr("id");
+                break;
+              }
+            });
+            
+            
             
             if(cod_transp == 0 || cod_transp=='""'){
               alert('Atencion: Debe seleccionar la transportadora');
@@ -45,7 +64,7 @@ $(function() {
                     $("#liGenera").attr("tipo","invalid");
                     $.ajax({
                         url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic1&Ajax=on',
-                        data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                        data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                         type: 'post',
                         dataType: 'json',
                         success: function(data) {
@@ -90,7 +109,7 @@ $(function() {
         
                     $.ajax({
                       url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic2_3_4&Ajax=on',
-                      data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                      data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                       type: 'post',
                       dataType: 'json',
                       success: function(data) {
@@ -248,7 +267,7 @@ $(function() {
         
                     $.ajax({
                     url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic6&Ajax=on',
-                    data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                    data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                     type: 'post',
                     dataType: 'json',
                     success: function(data) {
@@ -327,7 +346,7 @@ $(function() {
         
                     $.ajax({
                     url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic7&Ajax=on',
-                    data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                    data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                     type: 'post',
                     dataType: 'json',
                     success: function(data) {
@@ -372,7 +391,7 @@ $(function() {
         
                     $.ajax({
                     url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic8&Ajax=on',
-                    data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                    data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                     type: 'post',
                     dataType: 'json',
                     success: function(data) {
@@ -418,7 +437,7 @@ $(function() {
         
                     $.ajax({
                       url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic9&Ajax=on',
-                      data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                      data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                       type: 'post',
                       dataType: 'json',
                       success: function(data) {
@@ -461,7 +480,7 @@ $(function() {
         
                     $.ajax({
                       url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic10&Ajax=on',
-                      data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                      data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                       type: 'post',
                       dataType: 'json',
                       success: function(data) {
@@ -505,7 +524,7 @@ $(function() {
         
                     $.ajax({
                       url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic11&Ajax=on',
-                      data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                      data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                       type: 'post',
                       dataType: 'json',
                       success: function(data) {
@@ -559,7 +578,7 @@ $(function() {
               $("#liNov").attr("tipo","invalid");
               $.ajax({
                 url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic12&Ajax=on',
-                data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                 type: 'post',
                 dataType: 'json',
                 success: function(data) {
@@ -638,7 +657,7 @@ $(function() {
 
                 $.ajax({
                   url: '../satt_standa/despac/ajax_inf_dashbo_seguim.php?Option=getGrafic13&Ajax=on',
-                  data: {cod_transp,tip_servic20,tip_servic21,tip_servic22},
+                  data: {cod_transp:cod_transp,name_servic1:tip_servic20,name_servic2:tip_servic21,name_servic3:tip_servic22},
                   type: 'post',
                   dataType: 'json',
                   success: function(data) {

@@ -503,7 +503,7 @@ class AjaxDashBoard_Seguim
 		$sql =" SELECT LOWER(cod_usuari) cod_usuari, CONCAT( UPPER(nom_usuari ), ' - ', LOWER(cod_usuari) ) AS nom_usuari
                   FROM ".BASE_DATOS.".tab_genera_usuari
                  WHERE ind_estado = '1' 
-                   AND ( cod_perfil IN(7,8,73,713,833) AND cod_usuari NOT LIKE '%eal%' OR nom_usuari NOT LIKE '%eal%' OR cod_usuari LIKE '%ecl%' OR nom_usuari LIKE '%ecl%' OR nom_usuari LIKE '%oal%' OR  cod_usuari LIKE '%oal%' ) 
+                   AND ( cod_perfil IN(7,8,73,713,833) AND cod_usuari NOT LIKE '%eal%'  AND nom_usuari NOT LIKE '%eal%' AND cod_usuari NOT LIKE '%ecl%' AND nom_usuari NOT LIKE '%ecl%' OR nom_usuari LIKE '%oal%' OR  cod_usuari LIKE '%oal%' ) 
                 ORDER BY 2";
         $consulta = new Consulta($sql, $this -> conexion);
         $usuarios=$consulta->ret_matrix("a");

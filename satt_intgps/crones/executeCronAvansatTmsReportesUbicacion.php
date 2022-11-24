@@ -245,7 +245,6 @@ class cronAvansatTmsReportesUbicacion
 						$mResponse = $mSoap -> __soapCall("setNovedadNC", $mParams); // Se coloca la novedad en ANTES DE SITIO
 					}
 				}
-				
 
 				//$mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams ); 
 

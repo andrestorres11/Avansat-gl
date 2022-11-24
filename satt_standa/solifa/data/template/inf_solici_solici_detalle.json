@@ -1,63 +1,164 @@
 {
     "tag": "table", 
     "border": "1",
+    "id": "table_detalle",
     "class": "indicador-detallado2",
     "children": [
         {
-            "tag": "tr", 
-            "children": [
+            "tag": "thead",
+            "children": 
+            [
                 {
-                    "tag": "th", 
-                    "colspan":"10", 
-                    "html": "Se han encontrado: <span id='badge'></span>"
+                    "tag": "tr", 
+                    "children": [
+                        {
+                            "tag": "th", 
+                            "colspan":"11", 
+                            "html": "Se han encontrado: <span id='badge'></span>"
+                        }
+                    ]
+                },
+                {
+                    "tag": "tr", 
+                    "children": [
+                        {
+                            "tag": "th", 
+                            "html": "No. de solicitud"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Tipo de solicitud"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Nombre del cliente"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Detalle de la solicitud"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Fecha y hora de la solicitud"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Fecha y hora de la respuesta"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Diferencia en tiempo"
+                        },
+                        {
+                            "tag": "th",
+                            "id": "cumplido", 
+                            "html": "Cumplido ans"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Estado"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Usuario Solicitante"
+                        },
+                        {
+                            "tag": "th", 
+                            "html": "Usuario que Atendio"
+                        }
+                    ]
                 }
             ]
         },
         {
-            "tag": "tr", 
+            "tag": "tbody",
             "children": [
                 {
-                    "tag": "th", 
-                    "html": "No. de solicitud"
+                    "tag": "td", 
+                    "html": "..."
                 },
                 {
-                    "tag": "th", 
-                    "html": "Tipo de solicitud"
+                    "tag": "td", 
+                    "html": "..."
                 },
                 {
-                    "tag": "th", 
-                    "html": "Nombre del cliente"
+                    "tag": "td", 
+                    "html": "..."
                 },
                 {
-                    "tag": "th", 
-                    "html": "Detalle de la solicitud"
+                    "tag": "td", 
+                    "html": ".."
                 },
                 {
-                    "tag": "th", 
-                    "html": "Fecha y hora de la solicitud"
+                    "tag": "td", 
+                    "html": ".."
                 },
                 {
-                    "tag": "th", 
-                    "html": "Fecha y hora de la respuesta"
+                    "tag": "td", 
+                    "html": ".."
                 },
                 {
-                    "tag": "th", 
-                    "html": "Diferencia en tiempo"
+                    "tag": "td", 
+                    "html": ".."
                 },
                 {
-                    "tag": "th",
-                    "id": "cumplido", 
-                    "html": "Cumplido ans"
+                    "tag": "td", 
+                    "html": ".."
                 },
                 {
-                    "tag": "th", 
-                    "html": "Estado"
+                    "tag": "td", 
+                    "html": ".."
                 },
                 {
-                    "tag": "th", 
-                    "html": "Usuario"
+                    "tag": "td", 
+                    "html": ".."
+                },
+                {
+                    "tag": "td", 
+                    "html": ".."
+                }
+            ]
+        },
+        {
+            "tag": "tfoot",
+            "children": [
+                {
+                    "tag": "tr", 
+                    "class": "",
+                    "id" : "button_table_detalle",
+                    "children": [
+                        {
+                            "tag": "th", 
+                            "colspan":"11", 
+                            "html": "",
+                            "children": [
+                                    {
+                                        "tag": "button",
+                                        "onclick" : "expTabExcel('table_detalle')",
+                                        "children": [
+                                            {
+                                                "tag": "img", 
+                                                "src": "../satt_standa/imagenes/excel.jpg",
+                                                "style": "width: 27px;height: 22px;"
+                                                
+                                            },
+                                            {
+                                                "tag": "span",
+                                                "html": " "
+                                            },
+                                            {
+                                                "tag": "span",
+                                                "html": "Exportar excel"
+                                            }
+                                        ]
+                                    }
+                                ]
+                        }
+                    ]
                 }
             ]
         }
+        
+        
     ]
 }

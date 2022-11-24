@@ -163,7 +163,7 @@ class DashBoard_Seguim_Table2 {
                 INNER JOIN ".BASE_DATOS.".tab_despac_vehige as b on a.num_despac = b.num_despac
 				INNER JOIN ".BASE_DATOS.".tab_tercer_tercer as e ON b.cod_transp = e.cod_tercer
                 LEFT JOIN ".BASE_DATOS.".tab_despac_contro as d ON a.num_despac =d.num_despac
-                where a.num_despac in($despac_final)";
+                where a.num_despac in($despac_final) and d.cod_contro !='9999'";
 			
 			$consulta4  = new Consulta($mSql4, $this -> conexion);
             $despachos4 = $consulta4 -> ret_matriz();
@@ -221,11 +221,13 @@ class DashBoard_Seguim_Table2 {
                     $mColor =  '#000000;';
                     $color='';
                     $timeGl=0;
+					$text_novedad='';
 					$mLink='<a href="../../'.BASE_DATOS.'/index.php?cod_servic=3302&window=central&despac='.$value['num_despac'].'&tie_ultnov=0&opcion=1"  target="centralFrameID">'.$value['num_despac'].'</a>';
                     foreach ($mData as $key=> $row)
 			        {
                         foreach($row as $val)
                         {
+							$text_novedad=strtolower($val['nom_ultnov']);
                             $timeGl=intval($val['tiempoGl'] !='' ? $val['tiempoGl']:0);
                             $color=$val['color'];
                             if($val['num_despac']!='' && $val['tiempo']){
@@ -236,17 +238,20 @@ class DashBoard_Seguim_Table2 {
 					
                     $mTxt = substr($color, 3);
                     $mColor = $mTxt > 2 ? '#FFFFFF;' : '#000000;';
-                    
-                    array_push($results,array(
-						'time'=>$timeGl,
-						'link'=>($mLink !='' ? $mLink:$value['num_despac']),
-						'color'=>$color,
-						'cod_manifi'=>$value['cod_manifi'],
-						'num_despac'=>$value['num_despac'],
-						'num_placax'=>$value['num_placax'],
-						'nom_tercer'=>$value['nom_tercer'],
-						'usr_creaci'=>($value['usr_creaci'] !='' ? $value['usr_creaci']:'N/a'),
-					));
+                    $pattern = "/a cargo empresa/i";
+					if(!preg_match($pattern, $text_novedad))
+					{
+						array_push($results,array(
+							'time'=>$timeGl,
+							'link'=>($mLink !='' ? $mLink:$value['num_despac']),
+							'color'=>$color,
+							'cod_manifi'=>$value['cod_manifi'],
+							'num_despac'=>$value['num_despac'],
+							'num_placax'=>$value['num_placax'],
+							'nom_tercer'=>$value['nom_tercer'],
+							'usr_creaci'=>($value['usr_creaci'] !='' ? $value['usr_creaci']:'N/a'),
+						));
+					}
                 }
 				//var_dump($results);
 				$uniques=array();

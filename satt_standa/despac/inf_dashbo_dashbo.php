@@ -276,6 +276,7 @@
                                                                 <th>Tiempo</th>
                                                                 <th>Placa</th>
                                                                 <th>Operador GPS</th>
+                                                                <th>Transportadora</th>
                                                                 <th>Origen</th>
                                                                 <th>Destino</th>
                                                                 <th>Estado de Cargue</th>

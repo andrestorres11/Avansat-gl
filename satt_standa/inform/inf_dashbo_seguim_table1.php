@@ -135,7 +135,7 @@ class DashBoard_Seguim_Table1 {
                 INNER JOIN ".BASE_DATOS."$table as c on a.cod_ultnov = c.$column AND $whereColum
                 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer as d ON b.cod_transp = d.cod_tercer
                 LEFT JOIN ".BASE_DATOS.".tab_despac_contro as e ON a.num_despac =e.num_despac
-                where b.cod_transp in(".$cad_cod_transp.") and  a.fec_salida is NOT null and a.fec_llegad is null and a.ind_planru = 'S' and a.ind_anulad = 'R'
+                where b.cod_transp in(".$cad_cod_transp.") and  a.fec_salida is NOT null and a.fec_llegad is null and a.ind_planru = 'S' and a.ind_anulad = 'R' and e.cod_contro !='9999'
                 GROUP BY a.num_despac,a.cod_manifi, b.num_placax
                 ";
 
@@ -199,16 +199,21 @@ class DashBoard_Seguim_Table1 {
                     $color='';
                     $timeGl=0;
 					$mLink='<a href="../../'.BASE_DATOS.'/index.php?cod_servic=3302&window=central&despac='.$value['num_despac'].'&tie_ultnov=0&opcion=1"  target="centralFrameID">'.$value['num_despac'].'</a>';
-                    foreach ($mData as $key=> $row)
+                    $text_novedad='';
+					foreach ($mData as $key=> $row)
 			        {
                         foreach($row as $val)
                         {
+							$text_novedad=strtolower($val['nom_ultnov']);
                             $timeGl=intval($val['tiempoGl']);
                             $color=$val['color'];
 				            $mLink = '<a href="../../'.BASE_DATOS.'/index.php?cod_servic=3302&window=central&despac='.$val['num_despac'].'&tie_ultnov='.$val['tiempo'].'&opcion=1" style="color:'.$mColor.'" target="centralFrameID">'.$val['num_despac'].'</a>';
                         }
                     }
-                    	$p++;
+					$pattern = "/a cargo empresa/i";
+					if(!preg_match($pattern, $text_novedad))
+					{
+						$p++;
                         $mTxt = substr($color, 3);
                         $mColor = $mTxt > 2 ? '#FFFFFF;' : '#000000;';
 
@@ -224,6 +229,8 @@ class DashBoard_Seguim_Table1 {
 						));
 						if($p==100)
 						break;
+					}
+					
                 }
                 $sorted = $this->array_orderby($results, 'time', SORT_DESC);
                 $uniques=array();

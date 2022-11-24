@@ -4004,13 +4004,14 @@ class InsertNovedad {
                             $mResult = explode("; ", $mResult);
                             $mCodResp = explode(":", $mResult[0]);
                             $mMsgResp = explode(":", $mResult[1]);
-
                             if ("1000" != $mCodResp[1]) {
                                 $error_ = $mMsgResp[1];
                             }
                         } catch (SoapFault $e) {
                             $error_ = $e->getMessage();
                         }
+
+                        
 
                         $parametros = array("nom_usuari" => $interfaz->interfaz[$i]['usuari'],
                             "pwd_clavex" => $interfaz->interfaz[$i]['passwo'],
@@ -4045,7 +4046,7 @@ class InsertNovedad {
                                     $mResult = explode("; ", $respuesta);
                                     $mCodResp = explode(":", $mResult[0]);
                                     $mMsgResp = explode(":", $mResult[1]);
-
+                                    
                                     if ("1000" != $mCodResp[1]) {
                                         $error_ = $mMsgResp[1];
                                     } else {
@@ -4115,7 +4116,7 @@ class InsertNovedad {
                                             <strong>Error!</strong> 
                                         </div>
                                         <div class="contenedorWarning">
-                                            Error en Webservice - Insertar ' . $mOption[1] . ' en ' . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . '</b>
+                                            Error en WebserviceA - Insertar ' . $mOption[1] . ' en ' . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . '</b>
                                         </div>
                                     </div>';
                                 $mMessage = "******** Encabezado ******** <br>";
@@ -4965,6 +4966,10 @@ class InsertNovedad {
     public function reenviaNovedadesAvansat($num_despac) {
         try 
 		{ 
+            $cod_operad = '50';
+            if(BASE_DATOS == 'satt_intgps'){
+                $cod_operad = '53';
+            }
             $cReportes = [];
             $cRespuest = [];
             $mQuery = "
@@ -4984,7 +4989,7 @@ class InsertNovedad {
                                                                                                                                     )
                                 INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
                                 INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
-                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.cod_operad = ".$cod_operad." /*Debe tener interfaz con TMS */
                                                                                 AND ee.ind_estado = 1 /*Debe estar activa*/
 
 
@@ -4999,7 +5004,7 @@ class InsertNovedad {
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S'  
                                         AND dd.cod_server IN (14,16,17,18,19,20,21)
-                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                     GROUP BY aa.num_despac, a.fec_creaci
                                 )
                                 UNION ALL
@@ -5019,7 +5024,7 @@ class InsertNovedad {
                                                                                                                                     )
                                 INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
                                 INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
-                                                                                AND ee.cod_operad = 50 /*Debe tener interfaz con TMS */
+                                                                                AND ee.cod_operad = ".$cod_operad." /*Debe tener interfaz con TMS */
                                                                                 AND ee.ind_estado = 1 /*Debe estar activa*/
 
 
@@ -5035,15 +5040,17 @@ class InsertNovedad {
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S' 
                                         AND dd.cod_server IN (14,16,17,18,19,20,21)
-                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                         GROUP BY aa.num_despac, a.fec_creaci
                                 )
                                 ORDER BY cod_server
                         ";
             $mConsult = new Consulta($mQuery, $this->conexion);
             $cNovPendientes = $mConsult->ret_matrix('a');
+            
             $errores = '';
             if(sizeof($cNovPendientes) > 0){
+
                 foreach ($cNovPendientes  AS $mIndex => $mReporte) 
 			    {
                     $mDesNoveda = '';
@@ -5065,9 +5072,9 @@ class InsertNovedad {
                       'cod_conbas'  => 0,
                       'tim_duraci'  => $mReporte['tiem_duraci'], 
                       'fec_noveda'  => $mReporte['fec_noveda'],
-                      'des_noveda'  => $mReporte['des_noveda']." ".$mDesNoveda,
+                      'des_noveda'  => utf8_encode($mReporte['des_noveda']." ".$mDesNoveda),
                       'nom_contro'  => NULL,
-                      'nom_sitiox'  => $mReporte['nom_sitiox'],
+                      'nom_sitiox'  => utf8_encode($mReporte['nom_sitiox']),
                       'cod_confar'  => $mReporte['cod_contro'],
                       'cod_novfar'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['cod_noveda'], 
                       'nom_noveda'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['nom_noveda'], 
@@ -5083,15 +5090,13 @@ class InsertNovedad {
                       'kms_vehicu'  => $mReporte['val_veloci'],
                       'man_ordcar'  => NULL
                   ];
-
                     ini_set("soap.wsdl_cache_enabled", 0);
                     $mSoap = new SoapClient( $mReporte['url_webser'], ['trace' => 1,'exception' => 1 ] );
                     $mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams );
-
                     $mResult  = explode( "; ", $mResponse );
                     $mCodResp = explode( ":", $mResult[0] );  
                     $mMsgResp = explode( ":", $mResult[1] );
-
+                    
                     if( "1000" != $mCodResp[1] ){
                         $errores .= "<p>Despacho: ".$mReporte['num_despac']." - Manifiesto: ".$mReporte['cod_manifi']." - Ws: ".$mReporte['url_webser']." --Error::".$mMsgResp[1]."-- </p>";
                         $msj = 'El despacho esta presentando inconveniente al reenviar las novedades';
@@ -5110,7 +5115,6 @@ class InsertNovedad {
                     }
                     new Consulta($mUpdate, $this->conexion, $transaccion);
                 }
-                
                 $cRespuest['info'] = $errores;
                 $cRespuest['noveda'] = $cReportes;
                 $cRespuest['status'] = true;
@@ -5127,7 +5131,7 @@ class InsertNovedad {
                 return $cRespuest;
         } catch (Exception $e) {
                 $cRespuest['status'] = false;
-                $cRespuest['msj'] = 'Error en el método reenviaNovedadesAvansat. Por favor contacte a mesa de apoyo.';
+                $cRespuest['msj'] = 'Error en el método reenviaNovedadesAvansat. Por favor contacte a mesa de apoyo.'.$e->getMessage();
                 $cRespuest['title'] = 'Error';
                 $cRespuest['type'] = 'error';
                 return $cRespuest;
