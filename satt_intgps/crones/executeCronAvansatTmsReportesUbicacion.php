@@ -239,7 +239,11 @@ class cronAvansatTmsReportesUbicacion
 				if( in_array( $mReporte['cod_noveda'] , ['9260', '9173', '9266'] ) ) { // 9261 -> entrada cargue anstes de sitio
 					$mResponse = $mSoap -> __soapCall("setNovedadPC", $mParams); // Se coloca la novedad en SITIO
 				}else{
-					$mResponse = $mSoap -> __soapCall("setNovedadNC", $mParams); // Se coloca la novedad en ANTES DE SITIO
+					if($mReporte['metodo']=='pc'){
+						$mResponse = $mSoap -> __soapCall("setNovedadPC", $mParams); // Se coloca la novedad en SITIO
+					}else{
+						$mResponse = $mSoap -> __soapCall("setNovedadNC", $mParams); // Se coloca la novedad en ANTES DE SITIO
+					}
 				}
 
 				//$mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams ); 
