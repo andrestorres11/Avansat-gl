@@ -90,7 +90,7 @@
                          IF( d.num_despac IS NOT NULL, e.nom_operad, c.nom_operad ) AS nom_operad, 
                          DATE_FORMAT( b.fec_salida, '%Y-%m-%d %h:%i' ) AS fec_salida,
                          IF( d.num_despac IS NOT NULL, e.ind_usaidx, c.ind_usaidx ) AS ind_usaidx, 
-                         IF( d.num_despac IS NOT NULL, e.nit_operad  /*d.gps_operad*/, b.gps_operad ) AS cod_opegps,
+                         IF( d.num_despac IS NOT NULL, IF(e.nit_operad IS NOT NULL, e.nit_operad, c.nit_operad)   /*d.gps_operad*/, b.gps_operad ) AS cod_opegps,
                          IF( d.num_despac IS NOT NULL, d.gps_usuari, b.gps_usuari ) AS gps_usuari,
                          IF( d.num_despac IS NOT NULL, d.gps_paswor, b.gps_paswor ) AS gps_paswor,
                          IF( d.num_despac IS NOT NULL, IF(d.gps_idxxxx = 'n/a' , NULL, d.gps_idxxxx), b.gps_otroxx ) AS gps_otroxx,
