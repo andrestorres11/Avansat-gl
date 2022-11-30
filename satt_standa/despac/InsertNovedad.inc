@@ -1556,7 +1556,6 @@ class InsertNovedad {
                 if (HOST_WEB == HOST_WEB_PRO) {
                     self::soaPs($regist, $ominter, $mDatDespac, $mDatNoveda, $mIndEnSiti);
                 }
-
                 #Envio correo Novedad genera alarma
                 if ($mDatNoveda['ind_alarma'] == 'S' OR $mDatNoveda['ind_alarma'] == 1)
                     self::sendMailNovGeneraAlarma($regist, $mDatDespac, $mDatNoveda, $mIndEnSiti);
@@ -1608,7 +1607,8 @@ class InsertNovedad {
                         UPPER(e.nom_ciudad) AS nom_ciuori, 
                         UPPER(f.nom_ciudad) AS nom_ciudes, 
                         IF(b.cod_tipdes = '2', '1', '0' ) AS ind_tipdes,
-                        h.nom_config 
+                        h.nom_config,
+                        a.cod_itiner
                    FROM " . BASE_DATOS . ".tab_despac_vehige a 
              INNER JOIN " . BASE_DATOS . ".tab_despac_despac b ON a.num_despac = b.num_despac 
              INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer c ON a.cod_transp = c.cod_tercer 
@@ -3592,7 +3592,6 @@ class InsertNovedad {
         $mCabeceSoporte = 'MIME-Version: 1.0' . "\r\n";
         $mCabeceSoporte .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $mCabeceSoporte .= 'From: ' . MAIL_SOPORTE;
-
         #<IF 5>
         if ($ominter != 2 && $regist['wsdl'] != "NO") {
             //Manejo de la Interfaz Aplicaciones SAT
@@ -3611,6 +3610,63 @@ class InsertNovedad {
                 #<FOR 5.1.1.1>
                 for ($i = 0; $i < $interfaz->totalact; $i++) {
                     #<IF 5.1.1.1.1>
+                    if (53 == $interfaz->interfaz[$i]['operad'] && $mIndEnSiti == true && $regist['contro']==9999) {
+                        try{
+                            if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
+                            {   
+                                $mHubGPS = new InterfHubIntegradorGPS($this->conexion, ['cod_transp' => $mDatDespac['cod_transp']] );
+                                // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
+                                $mDesGPS = $mHubGPS -> setTrakingEnd([
+                                                                    'num_placax' => $mDatDespac['num_placax'],
+                                                                    'num_docume' => $mDatDespac['cod_manifi'],
+                                                                    'num_despac' => $regist['despac'],
+                                                                    'fec_inicio' => date("Y-m-d H:i:s"),
+                                                                    'fec_finali' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")."+ 5 day ")),
+                                                                    'cod_itiner' => $mDatDespac['cod_itiner']
+                                                                    ]);
+                                if($mDesGPS['code'] == '1000'){ 
+                                    $respuesta = "REGISTRO HUB GPS ::: ".$mDesGPS['message'];
+                                }
+                                else if($mDesGPS['code'] != '1000' && isset($mDesGPS) ){
+                                    $respuesta = "REGISTRO HUB GPS ::: Code:".$mDesGPS['code']." - ".$mDesGPS['message'];
+                                }
+                            }
+                            else
+                            {
+                                $mInterfGps = new InterfGPS( $this->conexion );
+                                $mResp = $mInterfGps -> setPlacaIntegradorGPS( $regist['despac'] );  
+                                if($mResp['code_resp'] == '1000'){
+                                $respuesta = "Envio despacho: ".$regist['despac']." con placa: ".$mDatDespac['num_placax'].
+                                                    " Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp'];
+                                } else {
+                                $respuesta = "Envio despacho: ".$regist['despac']." con placa: ".$mDatDespac['num_placax'].
+                                                " Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp'];
+                                }
+                                unset($mResp);
+                            }
+                        } catch (SoapFault $e) {
+                            $error_ = $e->getMessage();
+
+                            if ($e->faultcode != '2' && $e->faultcode != '1' && $e->faultstring != 'NINGUNO') {
+                                $mMessage = "******** Encabezado ******** <br>";
+                                $mMessage .= "Fecha y hora: " . date("Y-m-d H:i") . " <br>";
+                                $mMessage .= "Empresa de transporte: " . $regist['nittra'] . " <br>";
+                                $mMessage .= "Codigo alianza: " . $mData['cod_alianz'] . " <br>";
+                                $mMessage .= "Numero de manifiesto: " . $mDatDespac['cod_manifi'] . " <br>";
+                                $mMessage .= "Placa del vehiculo: " . $mDatDespac['num_placax'] . " <br>";
+                                $mMessage .= "Codigo puesto de control: " . $regist['contro'] . " <br>";
+                                $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
+                                $mMessage .= "Observación enviada: " . 'Interfaz - ' . $regist['observ'] . " <br>";
+                                $mMessage .= "******** Detalle ******** <br>";
+                                $mMessage .= "Codigo de error: " . $e->faultcode . " <br>";
+                                $mMessage .= "Actor del error: " . $e->faultactor . " <br>";
+                                $mMessage .= "Mesaje de error: " . $e->faultstring . " <br>";
+                                $mMessage .= "Observaciones: " . $e->detail . " <br>";
+
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Alianza", '<div name="'.HOST_WEB.'_faro_09">' . $mMessage . '</div>', $mCabeceSoporte);
+                            }
+                        }
+                    }
                     if (10 == $interfaz->interfaz[$i]['operad'] && $mIndEnSiti == true) {
                         /*                         * ******************* TRATAMIENTO SOAP ******************** */
                         ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
