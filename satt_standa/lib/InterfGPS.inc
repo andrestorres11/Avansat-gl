@@ -83,7 +83,6 @@
     function getDataDespacIntegradorGPS( $num_despac )
     {
 
-      
       // https://currentmillis.com/
       $query = "  SELECT a.num_placax, 
                          a.cod_transp,
@@ -91,8 +90,8 @@
                          DATE_FORMAT( b.fec_salida, '%Y-%m-%d %h:%i' ) AS fec_salida,
                          IF( d.num_despac IS NOT NULL, e.ind_usaidx, c.ind_usaidx ) AS ind_usaidx, 
                          IF( d.num_despac IS NOT NULL, IF(e.nit_operad IS NOT NULL, e.nit_operad, c.nit_operad)   /*d.gps_operad*/, b.gps_operad ) AS cod_opegps,
-                         IF( d.num_despac IS NOT NULL, d.gps_usuari, b.gps_usuari ) AS gps_usuari,
-                         IF( d.num_despac IS NOT NULL, d.gps_paswor, b.gps_paswor ) AS gps_paswor,
+                         IF( d.num_despac IS NOT NULL, IF(d.gps_usuari IS NOT NULL, d.gps_usuari, b.gps_usuari), b.gps_usuari ) AS gps_usuari,
+                         IF( d.num_despac IS NOT NULL, IF(d.gps_paswor IS NOT NULL, d.gps_paswor, b.gps_paswor), b.gps_paswor ) AS gps_paswor,
                          IF( d.num_despac IS NOT NULL, IF(d.gps_idxxxx = 'n/a' , NULL, d.gps_idxxxx), b.gps_otroxx ) AS gps_otroxx,
                          IF( d.num_despac IS NOT NULL, d.cod_manifi, b.cod_manifi ) AS cod_manifi,
                          IF( d.num_despac IS NOT NULL, 'corona', 'normal' ) AS ind_tiptra, /* Tipo de despacho, corona o normal*/
@@ -189,12 +188,12 @@
         
         case 'corona':
                   $query = "SELECT 
-                                      e.dir_remdes AS dir_ciuori,
+                                      IFNULL(e.dir_remdes, b.nom_ciudad ) AS dir_ciuori,
                                       b.nom_ciudad AS nom_ciuori, 
-                                      e.cod_remdes AS cod_origen,
-                                      e.nom_remdes AS nom_origen,
-                                      e.cod_latitu AS lat_origen, 
-                                      e.cod_longit AS lon_origen,
+                                      IFNULL(e.cod_remdes, b.cod_ciudad ) AS cod_origen,
+                                      IFNULL(e.nom_remdes, b.nom_ciudad )  AS nom_origen,
+                                      IFNULL(e.cod_latitu, b.cod_latitu ) AS lat_origen,
+                                      IFNULL(e.cod_longit, b.cod_longit ) AS lon_origen,
                                       '' AS Geometry_origen,
                                       
                                       c.nom_ciudad AS dir_ciudes,
@@ -209,7 +208,7 @@
                       INNER JOIN  ".BASE_DATOS.".tab_genera_ciudad b ON a.cod_ciuori = b.cod_ciudad 
                       INNER JOIN  ".BASE_DATOS.".tab_genera_ciudad c ON a.cod_ciudes = c.cod_ciudad 
                       INNER JOIN  ".BASE_DATOS.".tab_despac_corona d ON a.num_despac = d.num_dessat 
-                      INNER JOIN  ".BASE_DATOS.".tab_genera_remdes e ON d.nom_sitcar = e.cod_remdes 
+                       LEFT JOIN  ".BASE_DATOS.".tab_genera_remdes e ON d.nom_sitcar = e.cod_remdes 
                            WHERE a.num_despac = '".$mNumDespac."'";
           break;
       }
@@ -617,10 +616,8 @@
       try 
       { 
         $mDataDespac = $this -> getDataDespacIntegradorGPS( $numDespac );
-
         $parameRutfar = $this->verifyParameIntgps(53,$mDataDespac['cod_transp']);
 
-        
         if( $mDataDespac["cod_opegps"] )
         {
 
@@ -699,6 +696,7 @@
               "num_placax" => $mDataDespac["num_placax"],    
               "nit_despac" => $mDataDespac['cod_transp'], // nit de la mepresa que lleva el despacho
               "num_manifi" => $mDataDespac['cod_manifi'], 
+              "num_ordenx" => $mDataDespac['cod_manifi'], //num_ordenx
               "num_despac" => $numDespac, 
               "ind_segfar" => $mDataDespac['ind_segfar'],
               "nit_opegps" => '9001387267', // Nit del operador GPS del despacho
@@ -738,11 +736,10 @@
                            "usuario: *WidetechInt3grador*", 
                            "clave: lxdG-+gJX:oYju+b5n"
                           );
-          
+
           # Recorre las variables para concatenarlas en un solo string como si fuera un GET para enviarla por cUrl------------------------
           //$mParamsString = "inputAvansat=".json_encode($sendData);
           $mParamsString = json_encode($sendData);
-           
           # Inicio de cURL para la API -----------------------------------------------------------------------------
           $ch = curl_init();
           curl_setopt($ch, CURLOPT_URL, URL_INTERF_GPSEVE."/setItinerary" ); /*"https://dev.intrared.net:8083/ap/interf/app/APIEventosGPS/"*/
@@ -755,7 +752,6 @@
           $error = curl_error($ch);
           $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
           curl_close($ch);
-
            
           //echo "<pre>mParamsString: "; print_r(URL_INTERF_GPSEVE."/setItinerary  " ); echo "</pre>";
          // echo "<pre>mParamsString: "; print_r($mParamsString); echo "</pre>";
@@ -1105,7 +1101,7 @@
     
         if( $mDataVehicu['nit_operad']  == '' || $mDataVehicu['usr_gpsxxx'] == '' || $mDataVehicu['clv_gpsxxx'] == '' ) { 
           return ['code' => 2005, 
-                  'message' =>'NO se envia a HUB, porque el Vehículo '.$mData['num_placax'].' no tiene GPS asignado' ];
+                  'message' =>'NO se envia a HUB, porque el Vehï¿½culo '.$mData['num_placax'].' no tiene GPS asignado' ];
         }
 
 
@@ -1173,7 +1169,7 @@
        
 
         //---------------------------------
-        $ret = FALSE; //VARIABLE QUE CONTENDRÃ EL VALOR
+        $ret = FALSE; //VARIABLE QUE CONTENDRï¿½ EL VALOR
 
         //Procesa el resultado del WS
         $mStatus  = $cReturn['status'];
@@ -1314,7 +1310,7 @@
  
 
         //---------------------------------
-        $ret = FALSE; //VARIABLE QUE CONTENDRÃ EL VALOR
+        $ret = FALSE; //VARIABLE QUE CONTENDRï¿½ EL VALOR
 
         //Procesa el resultado del WS
          
@@ -1362,7 +1358,7 @@
         $data['nom_transp'] = $parameRutfar[0]['nom_tercer'];
     
         if( $mDataVehicu['nit_operad']  == NULL ) { 
-          return ['code' => 2005, 'message' =>'NO se envia a HUB, porque el Vehículo  '.$mData['num_placax'].' no tiene GPS asignado' ];
+          return ['code' => 2005, 'message' =>'NO se envia a HUB, porque el Vehï¿½culo  '.$mData['num_placax'].' no tiene GPS asignado' ];
         }
  
 
@@ -1406,7 +1402,7 @@
  
 
         //---------------------------------
-        $ret = FALSE; //VARIABLE QUE CONTENDRÃ EL VALOR
+        $ret = FALSE; //VARIABLE QUE CONTENDRï¿½ EL VALOR
 
         //Procesa el resultado del WS
          

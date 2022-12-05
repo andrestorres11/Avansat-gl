@@ -3634,7 +3634,7 @@ class InsertNovedad {
                             else
                             {
                                 $mInterfGps = new InterfGPS( $this->conexion );
-                                $mResp = $mInterfGps -> setPlacaIntegradorGPS( $regist['despac'] );  
+                                $mResp = $mInterfGps -> setPlacaIntegradorGPS( $regist['despac'],  ['ind_transa' => 'Q'] );  
                                 if($mResp['code_resp'] == '1000'){
                                 $respuesta = "Envio despacho: ".$regist['despac']." con placa: ".$mDatDespac['num_placax'].
                                                     " Este es un envio asincrono al integrador GPS<br><b>Respuesta:</b> ".$mResp['msg_resp'];
