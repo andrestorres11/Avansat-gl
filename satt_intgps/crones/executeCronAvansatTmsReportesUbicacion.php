@@ -201,6 +201,7 @@ class cronAvansatTmsReportesUbicacion
 				{
 					$mDesNoveda  = 'Coordenadas: SIN COORDENADAS ';
 				}
+				
 				// UPDATE `sate_solopl`.`tab_genera_noveda` SET `nom_noveda` = 'INT GPS - REPORTE DE UBICACIÓN' WHERE `tab_genera_noveda`.`cod_noveda` = 9183;
 				$mParams =  [ 
 							  	'nom_usuari'  => $mReporte['nom_usuari'],
@@ -211,7 +212,8 @@ class cronAvansatTmsReportesUbicacion
 								'cod_novbas'  => $mReporte['cod_noveda'] >= 9000 ? $mReporte['cod_noveda'] : '0',//$mReporte['cod_noveda'], //9183,
 								'cod_conbas'  => 0,
 								'tim_duraci'  => $mReporte['tiem_duraci'], 
-								'fec_noveda'  => $mReporte['fec_noveda'],
+								//'fec_noveda'  => $mReporte['fec_noveda'],
+								'fec_noveda'  => $mReporte['fec_creaci'],
 								'des_noveda'  => $mReporte['des_noveda']." ".$mDesNoveda,
 								'nom_contro'  => NULL,
 								'nom_sitiox'  => $mReporte['nom_sitiox'],
