@@ -210,6 +210,7 @@
                                                             <th>Nombre de la novedad</th>
                                                             <th>Etapa</th>
                                                             <th>Riesgo</th>
+                                                            <th>Tipo</th>
                                                             <th>Icono</th>
                                                             <th>Observaci&oacute;n</th>
                                                             <th>Opciones</th>
@@ -266,13 +267,13 @@
             </div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-2 col-sm-12">
+              <div class="col-md-0 col-sm-12">
                 <div class="form-group" id="cod_novedaSpace">
                   <label for="cod_novedaID" class="labelinput">Código:</label>
                   <input class="form-control form-control-sm" type="text" id="cod_novedaVID" name="cod_novedaV" disabled>
                 </div>
               </div>
-              <div class="col-md-4 col-sm-12" id="nom_novedadSpace">
+              <div class="col-md-3 col-sm-12" id="nom_novedadSpace">
                 <div class="form-group">
                   <input type="hidden" name="ind_update" id="ind_updateID">
                   <input type="hidden" name="cod_noveda" id="cod_novedaID">
@@ -293,6 +294,14 @@
                   <label for="cod_riesgoID" class="labelinput">Riesgo</label>
                   <select class="form-control form-control-sm req" id="cod_riesgoID" name="cod_riesgo" style="width:150px;">
                     '.$this->getRiesgo().'
+                  </select>
+                </div>
+              </div>
+              <div class="col-md-3 col-sm-12">
+                <div class="form-group">
+                  <label for="cod_riesgoID" class="labelinput">Tipo Novedad</label>
+                  <select class="form-control form-control-sm req" id="cod_tipoxxID" name="cod_tipoxx" style="width:150px;">
+                    '.$this->getNovTip().'
                   </select>
                 </div>
               </div>
@@ -342,8 +351,18 @@
              return $this->armaSelect($mMatriz);
         }
 
+        private function getNovTip()
+        {
+            $sql = "SELECT a.cod_tipoxx, a.nom_tipoxx
+                        FROM ".BASE_DATOS.".tab_noveda_tipoxx a
+                    WHERE ind_estado = 1; ";
+            $query = new Consulta($sql, $this->conexion);
+            $mMatriz = $query -> ret_matrix('i');
+            return $this->armaSelect($mMatriz);
+        }
+
         private function armaSelect($array){
-            $html = '';
+            $html = '<option value="">--Selecione--</option>';
             foreach ($array as $dato){
                 $html .= '<option value="'.$dato[0].'">'.$dato[1].'</option>';
             }

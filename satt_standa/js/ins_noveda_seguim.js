@@ -23,12 +23,13 @@ function inicializarTablas(ind_aplfil){
     cod_noveda = $("#cod_noveda").val();
     cod_etapax = $("#cod_etapax").val();
     cod_riesgo = $("#cod_riesgo").val();
+    nom_tipoxx = $("#nom_tipoxx").val();
     apl_filtro = ind_aplfil;
     var table = $(tabla).DataTable({
         "ajax": {
             "url": "../" + standa + "/novseg/ajax_noveda_seguim.php",
             "data": ({ opcion: 'getRegistros', nom_noveda: nom_noveda, cod_noveda: cod_noveda, cod_etapax: cod_etapax,
-                       cod_riesgo: cod_riesgo, apl_filtro: apl_filtro}),
+                       cod_riesgo: cod_riesgo,nom_tipoxx: nom_tipoxx, apl_filtro: apl_filtro}),
             "type": 'POST',
             'dataSrc':'',
         },
@@ -157,7 +158,7 @@ function logicDelete(code, option){
         palabra = 'habilitar';
         var number = 1;
     }
-    var titulo= '¿Esta seguro';
+    var titulo= 'Esta seguro';
     var texto = 'Que desea '+palabra+' este registro?';
     Swal.fire({
         title: titulo,
