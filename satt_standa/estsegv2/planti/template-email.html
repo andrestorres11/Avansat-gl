@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Template Email</title>
+    <style>
+        .divpadre {
+            width: 100%;
+            max-width: 950px;
+            margin: 25px auto;
+            overflow: hidden;
+            padding-top: 0px;
+            padding-bottom: 0px;
+            margin-bottom: 0px;
+            border: 1px solid black;
+        }
+        
+        .header {
+            background-color: #696969;
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .content {
+            overflow: hidden;
+            position: relative;
+            padding:25px;
+        }
+
+        .content-body{
+            font-family: Arial, Helvetica, sans-serif;
+            padding: 20px;
+        }
+
+        .header-table{
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #696969;
+            color:#fff;
+            font-family: sans-serif;
+            padding:10px;
+        }
+
+        .row-table{
+            display: flex;
+            font-family: sans-serif;
+            padding:5px;
+            font-size: 14px;
+        }
+        
+        .text-encabeza {
+            margin-left: 25px;
+        }
+        
+        .text-encabeza h4 {
+            font: 170% sans-serif;
+            color: #fff;
+            padding-top: 20px;
+        }
+        
+        .imagen-logo {
+            margin-right: 25px;
+            padding-bottom: 12px;
+        }
+
+        .end-bottom{
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="divpadre">
+        <div class="header">
+            <div class="text-encabeza" style="min-width:75%;margin-top:9px;">
+                <h4>$subject</h4>
+            </div>
+            <div class="imagen-logo" style="min-width:25%;margin-top:20px;">
+                <img width="180px" src="$logo">
+            </div>
+        </div>
+        <div class="content">
+
+            <div class="content-body">
+                $contenido
+            </div>
+
+            <div class="content-end"></div>
+        </div>
+    </div>
+    <div class="end-bottom">Copyright © $ano. Todos los derechos reservados. Diseñado y desarrollado por Grupo OET S.A.S.</div>
+</body>
+
+</html>
