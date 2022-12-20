@@ -2180,8 +2180,7 @@ class Despac
 		$mResult[nom_sitiox] = $mNovDespac[$mPosN][nom_sitiox] == '' ? '-' : $mNovDespac[$mPosN][nom_sitiox];
 		$mResult[sig_pcontr] = getNextPC( self::$cConexion, $mDespac[num_despac] );
 		$mResult[pla_rutaxx] = getControDespac( self::$cConexion, $mDespac[num_despac] ); # Plan de Ruta del Despacho -- Script /lib/general/function.inc
-
-
+	
 		if( $mTipValida == 'tie_parame' )
 		{
 			if( $mDespac[tie_contra] != '' ){ #Tiempo parametrizado por Despacho
@@ -2204,6 +2203,7 @@ class Despac
 			#Verifica la ultima novedad que no mantienen alarma
 			for ($i=$mPosN; $i >= 0; $i--)
 			{
+				
 				if( $mNovDespac[$i][ind_manala] == '0' ){
 					$mFecUltReport = $mNovDespac[$i][fec_crenov];
 					$mTime = $mNovDespac[$i][tiem_duraci] > 0 ? $mNovDespac[$i][tiem_duraci] : $mTime;
@@ -2242,6 +2242,7 @@ class Despac
 				
 				$mResult[fec_plaprc] = date ( 'Y-m-d H:i:s', ( strtotime( $mTimeprc, strtotime ( $mResult[fec_ultnov] ) ) ) );
 			}
+			//2022-12-15 15:00:03 < 
 			elseif( $mResult[fec_ultnov] < $mResult[sig_pcontr][fec_progra] # Fecha de la ultima novedad menor a la fecha planeada del siguiente PC
 				|| 	($mResult[pla_rutaxx][(sizeof($mResult[pla_rutaxx])-1)][cod_contro] == $mNovDespac[$mPosN][cod_contro] && $mNovDespac[$mPosN][ind_ensiti] == '1') # Ultimo PC con novedad en sitio es el ultimo PC del plan de ruta
 			  )
@@ -2249,7 +2250,9 @@ class Despac
 			  	$mResult[fec_planea] = $mResult[sig_pcontr][fec_progra]; #Fecha planeada del siguinete PC
 				$mResult[fec_planGl] = $mResult[sig_pcontr][fec_progra];
 				$mResult[fec_plaprc] = $mResult[sig_pcontr][fec_progra];
+				
 			}else{
+				
 			  	if( $mNovDespac[$mPosN][ind_manala] == '0' )
 				{ #Si la ultima novedad no mantiene alarma
 					$mTime = $mDespac[cod_tipdes] == '1' ? self::$cTime[ind_desurb] : self::$cTime[ind_desnac];
@@ -2489,7 +2492,7 @@ class Despac
 	{
 		$mBandera = $mTransp[tie_nacion] == 0 && $mTransp[tie_urbano] == 0 ? 0 : 1;
 
-		if( ($mTransp[nom_tipser] == 'MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'EAL/MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'OAL/MA' && $mBandera == 1) )
+		if( ($mTransp[nom_tipser] == 'MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'EAL/MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'OAL/MA' && $mBandera == 1) || ($mTransp[nom_tipser] == 'INT_BASICO' && $mBandera == 1))
 		{
 			$mResult = 'tie_parame';
 		}
