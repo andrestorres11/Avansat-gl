@@ -1,9 +1,9 @@
 <?php
     /****************************************************************************
     NOMBRE:   AjaxInsNovedaSeguim
-    FUNCION:  Retorna todos los datos necesarios para construir la información
+    FUNCION:  Retorna todos los datos necesarios para construir la informaciï¿½n
     FECHA DE MODIFICACION: 24/11/2021
-    CREADO POR: Ing. Cristian Andrés Torres
+    CREADO POR: Ing. Cristian Andrï¿½s Torres
     MODIFICADO 
     ****************************************************************************/
     
@@ -30,7 +30,7 @@
             @include_once '../../' . BASE_DATOS . '/constantes.inc';
             //Assign values 
             self::$conexion = $AjaxConnection;
-            self::$usuario =  $_SESSION['datos_usuario']['cod_usuari'];;
+            self::$usuario =  $_SESSION['datos_usuario']['cod_usuari'];
             self::$cod_aplica = $ca;
 
             //Switch request options
@@ -68,6 +68,9 @@
                 if($_REQUEST['cod_riesgo'] != NULL || $_REQUEST['cod_riesgo'] != ''){
                     $cond .= " AND a.cod_riesgo = '".$_REQUEST['cod_riesgo']."' ";
                 }
+                if($_REQUEST['nom_tipoxx'] != NULL || $_REQUEST['nom_tipoxx'] != ''){
+                    $cond .= " AND d.nom_tipoxx = '".$_REQUEST['nom_tipoxx']."' ";
+                }
             }
             if($_SESSION['datos_usuario']['cod_perfil']!=COD_PERFIL_ADMINIST){
                 $cond .= " AND a.cod_noveda BETWEEN 1 And 8999 ";
@@ -75,15 +78,19 @@
 
             $sql = "SELECT a.cod_noveda, a.nom_noveda, CONCAT(UPPER(LEFT(b.nom_etapax, 1)), LOWER(SUBSTRING(b.nom_etapax, 2))) as 'nom_etapax',
                            c.nom_riesgo, a.rut_iconox, a.nom_observ,
-                           a.ind_estado
-                          FROM ".BASE_DATOS.".tab_genera_noveda a
-                          INNER JOIN ".BASE_DATOS.".tab_genera_etapax b
-                            ON a.cod_etapax = b.cod_etapax
-                          INNER JOIN ".BASE_DATOS.".tab_genera_riesgo c
-                            ON a.cod_riesgo = c.cod_riesgo
-                        WHERE 1=1 ".$cond."; ";
-             $query = new Consulta($sql, self::$conexion);
-             $mMatriz = $query -> ret_matrix('a');
+                           c.nom_riesgo,IFNULL(d.nom_tipoxx,'N/a') as nom_tipoxx, a.rut_iconox, a.nom_observ,
+                            a.ind_estado
+                           FROM ".BASE_DATOS.".tab_genera_noveda a
+                           INNER JOIN ".BASE_DATOS.".tab_genera_etapax b
+                             ON a.cod_etapax = b.cod_etapax
+                           INNER JOIN ".BASE_DATOS.".tab_genera_riesgo c
+                             ON a.cod_riesgo = c.cod_riesgo
+                          LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx d
+                            ON a.cod_tipoxx = d.cod_tipoxx
+                         WHERE 1=1 ".$cond."; ";
+              $query = new Consulta($sql, self::$conexion);
+              $mMatriz = $query -> ret_matrix('a');
+            
              foreach ($mMatriz as $key => $datos) {
                 foreach ($datos as $campo => $valor) {
                     if($campo=='ind_estado'){
@@ -186,7 +193,7 @@
         function getRegistro(){
             $sql = "SELECT a.cod_noveda, a.nom_noveda, a.cod_etapax,
                            a.cod_riesgo, a.rut_iconox, a.nom_observ,
-                           a.ind_estado
+                           a.ind_estado,a.cod_tipoxx
                           FROM ".BASE_DATOS.".tab_genera_noveda a
                         WHERE a.cod_noveda = '".$_REQUEST['cod_noveda']."'; ";
              $query = new Consulta($sql, self::$conexion);
