@@ -135,13 +135,13 @@
 
             $sql = " INSERT INTO ".BASE_DATOS.".tab_genera_noveda(
                 cod_noveda, nom_noveda, cod_etapax, cod_riesgo,
-                rut_iconox, nom_observ, ind_estado,
+                rut_iconox, nom_observ, ind_estado,cod_tipoxx,
                 fec_creaci, usr_creaci
             ) 
                 VALUES 
             (
                 '".self::getLastReg()."', '".$_REQUEST['nom_noveda']."', '".$_REQUEST['cod_etapax']."', '".$_REQUEST['cod_riesgo']."',
-                '".$nombre."', '".$_REQUEST['nom_observa']."', 1,
+                '".$nombre."', '".$_REQUEST['nom_observa']."', 1,'".$_REQUEST['cod_tipoxx']."',
                 NOW(), '".self::$usuario."'
             )";
 
@@ -154,6 +154,7 @@
                             cod_riesgo = '".$_REQUEST['cod_riesgo']."', 
                             ".$act_imagen."
                             nom_observ = '".$_REQUEST['nom_observa']."', 
+                            cod_tipoxx = '".$_REQUEST['cod_tipoxx']."',
                             fec_modifi = NOW(), 
                             usr_modifi = '".self::$usuario."' 
                         WHERE 
@@ -192,8 +193,8 @@
 
         function getRegistro(){
             $sql = "SELECT a.cod_noveda, a.nom_noveda, a.cod_etapax,
-                           a.cod_riesgo, a.rut_iconox, a.nom_observ,
-                           a.ind_estado,a.cod_tipoxx
+                           a.cod_riesgo,a.cod_tipoxx, a.rut_iconox, a.nom_observ,
+                           a.ind_estado
                           FROM ".BASE_DATOS.".tab_genera_noveda a
                         WHERE a.cod_noveda = '".$_REQUEST['cod_noveda']."'; ";
              $query = new Consulta($sql, self::$conexion);
