@@ -2270,7 +2270,7 @@ class Despachos
                         
                         #Plan de Ruta
                         if( $mRuta ){
-                            $mHtml->SetBody( self::PlanDeRuta( $mNumDesOri, $mRuta['link'], $mRuta['finali'], $mRuta['opcurban'], $mDataUsuar, $mRuta['lleg'], $mRuta['tie_ultnov'], $mData['num_despac'], $mData['aux_placax'], $mData['cod_agenci']));
+                            $mHtml->SetBody( self::PlanDeRuta( $mNumDesOri, $mRuta['link'], $mRuta['finali'], $mRuta['opcurban'], $mDataUsuar, $mRuta['lleg'], $mRuta['tie_ultnov'], $mData['aux_placax'], $mData['cod_agenci']));
                         }
 
                     $mHtml->CloseDiv();
@@ -3389,6 +3389,7 @@ class Despachos
         $j=0;
         $pattern = "/trafic/i"; $pattern2 = "/tráfic/i";
         $pattern3 = "/gps/i"; $pattern4 = "/movil/i";  $pattern5 = "/movíl/i";
+        $u=0;
         for ($i = $mCanNov; $i >=0; $i--)
         {
           $mSolEfecti = "";
@@ -3430,23 +3431,31 @@ class Despachos
 
           $mHtml->Row();
 
-            if(preg_match($pattern3, $row['nom_tipoxx']) && $i!= $mCanNov )
+            $comp='';
+            
+            if(preg_match($pattern3, $_RUTASX[$i][nom_tipoxx]))
             { //a?ade class para ocultar o mostrar con js
+                
                 $mHtml->SetBody(('<tr class="nov_gps_notes">'));
                 //$mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
             }
-            else if((preg_match($pattern, $row['nom_tipoxx']) || preg_match($pattern2, $row['nom_tipoxx'])) && $i!= $mCanNov)
+            else if((preg_match($pattern, $_RUTASX[$i][nom_tipoxx]) || preg_match($pattern2, $_RUTASX[$i][nom_tipoxx])))
             { //a?ade class para ocultar o mostrar con js
-                $mHtml->SetBody(('<tr class="nov_seguimiento_notes">'));
+                if($u== 0){
+                    $comp=' one';
+                    $u++;
+                }
+                $mHtml->SetBody(('<tr class="nov_seguimiento_notes'.$comp.'">'));
                 //$mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
             }
-            elseif(preg_match($pattern4, $row['nom_tipoxx']) || preg_match($pattern5, $row['nom_tipoxx']) )
+            elseif(preg_match($pattern4, $_RUTASX[$i][nom_tipoxx]) || preg_match($pattern5, $_RUTASX[$i][nom_tipoxx]) )
             {
                 $mHtml->RowProperties("",FALSE,'class="nov_movil_notes"');
             }
             else{
                 $mHtml->SetBody( ('<tr>') );
             }
+            
             //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
             $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
 
@@ -3896,6 +3905,16 @@ class Despachos
                             $("#planRutaID #secID").removeAttr("style");
                             $("#planRutaID #secID").css({"height":"auto"});
                         break;
+                        case 6:
+                            $(".nov_gps_notes").fadeOut( 1000 );
+                            $(".nov_seguimiento_notes").fadeOut( 1000 );
+                            $(".nov_movil_notes").fadeOut( 1000 ); 
+                            $(".one").fadeIn( 1000 );
+                            $("#form_planRutaID #secID").css({"height":"auto"});
+                            $("#planRutaID #secID").removeAttr("style");
+                            $("#planRutaID #secID").css({"height":"auto"});
+                        break;
+
                     }
                 }
 
@@ -3929,7 +3948,7 @@ class Despachos
                 });
                 
                 verifyConfirPernoc( 1, $("#num_despacID").val() );
-                todasNotas(4);
+                todasNotas(6);
               </script>';
     }
 
@@ -4376,7 +4395,7 @@ class Despachos
      *  \param: 
      *  \return: 
      */
-    function PlanDeRuta( $despac, $link = 0, $finali = 0, $opcurban = 0, $datos_usuario = NULL, $lleg = NULL, $tie_ultnov = NULL, $despac, $placa, $cod_agenci)
+    function PlanDeRuta( $despac, $link = 0, $finali = 0, $opcurban = 0, $datos_usuario = NULL, $lleg = NULL, $tie_ultnov = NULL, $placa, $cod_agenci)
     {
       #< 0. PRE >
         self::IncludeJsStyle();
