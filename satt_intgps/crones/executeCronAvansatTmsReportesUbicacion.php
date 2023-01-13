@@ -191,7 +191,7 @@ class cronAvansatTmsReportesUbicacion
 			$mMailData = [];
 			foreach (self::$cPendientes AS $mIndex => $mReporte) 
 			{ 
-
+				
 				$mDesNoveda = '';
 				if( $mReporte['val_latitu']  != '' && $mReporte['val_longit']  != '')
 				{
@@ -201,7 +201,7 @@ class cronAvansatTmsReportesUbicacion
 				{
 					$mDesNoveda  = 'Coordenadas: SIN COORDENADAS ';
 				}
-				
+
 				// UPDATE `sate_solopl`.`tab_genera_noveda` SET `nom_noveda` = 'INT GPS - REPORTE DE UBICACIÓN' WHERE `tab_genera_noveda`.`cod_noveda` = 9183;
 				$mParams =  [ 
 							  	'nom_usuari'  => $mReporte['nom_usuari'],
@@ -238,7 +238,7 @@ class cronAvansatTmsReportesUbicacion
 				$mSoap = new SoapClient( $mReporte['url_webser'], ['trace' => 1,'exception' => 1 ] );
 				
 				// 9260 llegada a cargue, 9173 salida de cargue,  9266 -> paso por OAL ====> en SITIO
-				if( in_array( $mReporte['cod_noveda'] , ['9260', '9173', '9266'] ) ) { // 9261 -> entrada cargue anstes de sitio
+				if( in_array( $mReporte['cod_noveda'] , ['9260', '9271', '9266'] ) ) { // 9261 -> entrada cargue anstes de sitio
 					$mResponse = $mSoap -> __soapCall("setNovedadPC", $mParams); // Se coloca la novedad en SITIO
 				}else{
 					if($mReporte['metodo']=='pc'){
