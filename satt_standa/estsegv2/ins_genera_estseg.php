@@ -483,7 +483,7 @@
                                     </div>';
                               if ($info['num_docpos'] != $info['num_docpro']) {
                                 echo '<div class="tab-pane fade p-3" id="pills-propietario" role="tabpanel" aria-labelledby="pills-propietario-tab">
-                                          ' . $this->viewPillsPropietario($info) . '
+                                       ' . $this->viewPillsPropietario($info) . '
                                       </div>';
                               }
                       }else{
@@ -517,7 +517,8 @@
           $llave = $cod_person.'_'.$tip_refere.'_'.$cod_identi;
           $referen = $this->getReferenciasFyP($cod_person, $tip_refere,$cod_identi);
           $html.='
-          <div class="row" style="overflow: auto;">
+          <div class="container">
+          <div class="row">
              <div class="col-md-12 col-sm-12">
                 <table class="table table-bordered">
                   <thead>
@@ -583,6 +584,7 @@
             <button type="button" class="btn btn-primary btn-sm" onclick="registFormDinamic(`'.$cod_person.'`,`'.$tip_refere.'`,`'.$cod_identi.'`)"><i class="fa fa-plus-circle" aria-hidden="true"></i></button>
           </div>
         </div>
+        
       </div>
       </div>';
           return $html;
@@ -593,6 +595,7 @@
           $llave = $cod_person.'_'.$tip_refere.'_'.$cod_identi;
           $referen = $this->getReferenciasLaborales($cod_person, $tip_refere,$cod_identi);
           $html.='
+          <div class="container">
           <div class="row">
              <div class="col-md-12">
                 <table class="table table-bordered">
@@ -1001,80 +1004,84 @@
                       Estudio de seguridad del conductor
                   </div>
               </div>
-                  '.$this->getFormulDocume(2, $info['cod_solici']).'
+              '.$this->getFormulDocume(2, $info['cod_solici']).'
           </div>
-          <div class="row">
-              <div class="col-md-6 col-sm-12 form-group">
-                  <div class="row mt-2">
-                      <div class="col-md-6 col-sm-6 text-left">
-                          <label class="form-check-label labelinput" for="exampleCheck1">¿El conductor presenta comparendos?</label>
-                      </div>
-                      <div class="col-md-4 col-sm-6">
-                          <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="pregu1con" id="pregu1con" value="1" onchange="cambioIndicadores(this)" '.$ind_precomSi.'>
-                              <label class="form-check-label" for="inlineRadio1">Si</label>
-                          </div>
-                          <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="pregu1con" id="pregu1con" value="0" onchange="cambioIndicadores(this)" '.$ind_precomNo.'>
-                              <label class="form-check-label" for="inlineRadio2">No</label>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="row mt-3 mb-3" id="com_pregu1con">
-                      <div class="col-md-8 col-sm-6 text-right">
-                          <label class="form-check-label labelinput" for="exampleCheck1">Valor</label>
-                      </div>
-                      <div class="col-md-4 col-sm-6">
-                          <input class="form-control form-control-sm" type="text" id="val_comconID" name="val_comcon" value="'.$info['val_comcon'].'">
-                      </div>
-                  </div>
-                  <div class="row mt-2">
-                      <div class="col-md-6 col-sm-6 text-left">
-                          <label class="form-check-label labelinput" for="exampleCheck1">ï¿½El conductor presenta resoluciones?</label>
-                      </div>
-                      <div class="col-md-4 col-sm-6">
-                          <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="pregu2con" id="pregu2con" value="1" onchange="cambioIndicadores(this)" '.$ind_preresSi.'>
-                              <label class="form-check-label" for="inlineRadio1">Si</label>
-                          </div>
-                          <div class="form-check form-check-inline">
-                              <input class="form-check-input" type="radio" name="pregu2con" id="pregu2con" value="0" onchange="cambioIndicadores(this)" '.$ind_preresNo.'>
-                              <label class="form-check-label" for="inlineRadio2">No</label>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="row mt-3 mb-3" id="com_pregu2con">
-                      <div class="col-md-8 col-sm-6 text-right">
-                          <label class="form-check-label labelinput" for="exampleCheck1">Valor</label>
-                      </div>
-                      <div class="col-md-4 col-sm-6">
-                          <input class="form-control form-control-sm" type="text" id="val_resconID" name="val_rescon" value="'.$info['val_rescon'].'">
-                      </div>
-                  </div>
+
+          <div class="container border">
+            <div class="row">
+                <div class="col-md-6 col-sm-12 form-group">
+                    <div class="row mt-2">
+                        <div class="col-md-6 col-sm-6 text-left">
+                            <label class="form-check-label labelinput" for="exampleCheck1">¿El conductor presenta comparendos?</label>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="pregu1con" id="pregu1con" value="1" onchange="cambioIndicadores(this)" '.$ind_precomSi.'>
+                                <label class="form-check-label" for="inlineRadio1">Si</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="pregu1con" id="pregu1con" value="0" onchange="cambioIndicadores(this)" '.$ind_precomNo.'>
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3 mb-3" id="com_pregu1con">
+                        <div class="col-md-8 col-sm-6 text-right">
+                            <label class="form-check-label labelinput" for="exampleCheck1">Valor</label>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <input class="form-control form-control-sm" type="text" id="val_comconID" name="val_comcon" value="'.$info['val_comcon'].'">
+                        </div>
+                    </div>
+                    <div class="row mt-2">
+                        <div class="col-md-6 col-sm-6 text-left">
+                            <label class="form-check-label labelinput" for="exampleCheck1">¿El conductor presenta resoluciones?</label>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="pregu2con" id="pregu2con" value="1" onchange="cambioIndicadores(this)" '.$ind_preresSi.'>
+                                <label class="form-check-label" for="inlineRadio1">Si</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="pregu2con" id="pregu2con" value="0" onchange="cambioIndicadores(this)" '.$ind_preresNo.'>
+                                <label class="form-check-label" for="inlineRadio2">No</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-3 mb-3" id="com_pregu2con">
+                        <div class="col-md-8 col-sm-6 text-right">
+                            <label class="form-check-label labelinput" for="exampleCheck1">Valor</label>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <input class="form-control form-control-sm" type="text" id="val_resconID" name="val_rescon" value="'.$info['val_rescon'].'">
+                        </div>
+                    </div>
+                    </div>
+                </div>
               </div>
+
               <div class="container border">
                   <div class="row">
                       <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
                           Referencia familiar del conductor
                       </div>
-                  </div>
                       '.$this->generaReferenceFyP($info['num_doccon'],'F','1').'
-                  <div class="container border">
-                      <div class="row">
-                          <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
-                              Referencia personal del conductor
-                          </div>
+                  </div>
+                      
+                  <div class="row">
+                      <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
+                            Referencia personal del conductor
                       </div>
-                          '.$this->generaReferenceFyP($info['num_doccon'],'P','2').'
-                      <div class="container border">
-                          <div class="row">
-                            <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
-                                Referencias laborales del conductor
-                            </div>
-                          </div>
-                          '.$this->generaReferenceLaborales($info['num_doccon'],'L','3').'
-                      </div>
-                  </div>';
+                      '.$this->generaReferenceFyP($info['num_doccon'],'P','2').'
+                  </div>
+
+                  <div class="row">
+                        <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
+                              Referencias laborales del conductor
+                        </div>
+                        '.$this->generaReferenceLaborales($info['num_doccon'],'L','3').'
+                  </div>
+                </div>';
             return $html;
         }
 
@@ -1234,7 +1241,7 @@
                         <div class="col-4 form-group">
                           <label for="nom_soliciID" class="labelinput">
                             <div class="obl">*</div>
-                              Contraseï¿½a:
+                              Contraseña:
                           </label>
                           <input class="form-control form-control-sm req" type="text" id="clv_gpsxxxID" name="clv_gpsxxx" value="'.$info['clv_gpsxxx'].'" validate>
                         </div>
@@ -1304,6 +1311,7 @@
 
         private function viewPillsPoseedor($info){
           $html='
+          <div>
             <div class="container border">
               <div class="row">
                   <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
@@ -1371,7 +1379,7 @@
                       Estudio de seguridad del Poseedor
                   </div>
               </div>
-                  '.$this->getFormulDocume(3,  $info['cod_solici']).'
+              '.$this->getFormulDocume(4,  $info['cod_solici']).'    
           </div>
         </div>';
             return $html;
@@ -1379,6 +1387,7 @@
 
         private function viewPillsPropietario($info){
           $html='
+          <div>
             <div class="container border">
               <div class="row">
                   <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
@@ -1516,7 +1525,7 @@
             
             $indice = 0;
             $max = 2;
-            foreach ($resultados as $registro){
+            foreach ($resultados as $index=>$registro){
               $mSql="SELECT a.nom_archiv, a.obs_archiv, a.nom_rutfil FROM ".BASE_DATOS.".tab_estseg_docume a
                         WHERE a.cod_solici = '".$cod_solici."' AND
                               a.cod_fordoc = '".$registro['cod_fordoc']."'";
@@ -1564,7 +1573,7 @@
                             </div>
                           ';
                 $indice++;
-                if($indice==$max){
+                if($indice==$max || ($index+1)==count($resultados)){
                   $html .= '</div>';
                   $indice = 0;
                 }
@@ -2040,7 +2049,7 @@
                 <div id="formPropiet">
                   <div class="row">
                     <div class="col-12">
-                      <div class="header-row">Asignaciï¿½n de Propietario</div>
+                      <div class="header-row">Asignación de Propietario</div>
                     </div>
                   </div>
                   <div class="row">
