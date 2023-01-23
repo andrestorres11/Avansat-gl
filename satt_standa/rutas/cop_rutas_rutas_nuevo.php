@@ -657,16 +657,18 @@ class Proc_rutas
       }
       $asigna = array_reverse($asigna);
 
+      $j = 0;
       for($i = 0; $i < $_REQUEST[cont]; $i++){
         if($asigna[$i] == 1 AND $contro[$i] != 0){
           //query de insercion
           $query = "INSERT INTO ".BASE_DATOS.".tab_genera_rutcon
                       ( cod_rutasx, cod_contro, val_duraci, 
                         val_distan, usr_creaci, fec_creaci )
-               VALUES ( '$nuevo_consec2', '$pcDevuelta[$i]', '$val[$i]',
-                      '".$kil[$i]."', '$_REQUEST[usuario]', '$fec_actual'
+               VALUES ( '$nuevo_consec2', '$pcDevuelta[$i]', '$val[$j]',
+                      '".$kil[$j]."', '$_REQUEST[usuario]', '$fec_actual'
                       ) ";
           $insercion = new Consulta($query, $this -> conexion,"R");
+          $j++;
         }
       }
 
