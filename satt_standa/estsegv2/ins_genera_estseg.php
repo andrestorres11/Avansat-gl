@@ -1379,7 +1379,7 @@
                       Estudio de seguridad del Poseedor
                   </div>
               </div>
-              '.$this->getFormulDocume(4,  $info['cod_solici']).'    
+              '.$this->getFormulDocume(3,  $info['cod_solici']).'    
           </div>
         </div>';
             return $html;
