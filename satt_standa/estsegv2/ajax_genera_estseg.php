@@ -71,6 +71,10 @@
                 case "getTercer":
                       self::getTercer();
                       break;
+
+                case "getVehicu":
+                      self::getVehicu();
+                      break;
                     
                 case "insReferenciaPyF":
                     self::insReferenciaPyF();
@@ -363,17 +367,55 @@
           if(count($resultado)>0){
             //Valida si el tercero tiene un estudio pendiente o finalizado con la fecha de vencimiento vigente.
             $mSql = "SELECT 
-                            ind_estseg, fec_venest
+                            cod_solici, ind_estseg, fec_venest
                          FROM ".BASE_DATOS.".tab_estseg_solici 
                             WHERE cod_conduc = '".$cod_tercer."'
-                            AND ((ind_estseg = 'P') OR (ind_estseg = 'A' AND fec_venest >= '".date('Y-m-d')."'))";
+                            AND ((ind_estseg = 'P') OR (ind_estseg = 'A' AND fec_venest >= '".date('Y-m-d')."'))
+                            ORDER BY cod_solici DESC";
             $consulta = new Consulta($mSql, self::$conexion);
             $resultados = $consulta->ret_matriz();
 
             if(count($resultados)>0){
               $info['regi'] = false;
+              self::notifiRecurExiste($cod_tercer, $resultados[0]['cod_solici']);
             }
 
+            $info['resp'] = true;
+            $info['data'] = self::cleanArray($resultado[0]);
+          }
+          echo json_encode($info);
+        }
+
+        function getVehicu(){
+          $info = [];
+          $info['resp'] = false;
+          //indicador si permite crear un nuevo estudio con el tercero
+          $info['regi'] = true;
+          $num_placax = $_REQUEST['num_placax'];
+          $mSql = "SELECT num_placax, cod_poseed, cod_propie,
+                          num_remolq, cod_marcax, cod_lineax,
+                          ano_modelo, cod_colorx, cod_carroc,
+                          num_config, num_chasis, num_motorx,
+                          num_soatxx, fec_vigsoa, num_lictra
+                         FROM ".BASE_DATOS.".tab_estseg_vehicu 
+                            WHERE num_placax = '".$num_placax."'";
+          $consulta = new Consulta($mSql, self::$conexion);
+          $resultado = $consulta->ret_matriz();
+          if(count($resultado)>0){
+            //Valida si el tercero tiene un estudio pendiente o finalizado con la fecha de vencimiento vigente.
+            $mSql = "SELECT 
+                            cod_solici, ind_estseg, fec_venest
+                         FROM ".BASE_DATOS.".tab_estseg_solici 
+                            WHERE cod_vehicu = '".$num_placax."'
+                            AND ((ind_estseg = 'P') OR (ind_estseg = 'A' AND fec_venest >= '".date('Y-m-d')."'))
+                            ORDER BY cod_solici DESC";
+            $consulta = new Consulta($mSql, self::$conexion);
+            $resultados = $consulta->ret_matriz();
+
+            if(count($resultados)>0){
+              $info['regi'] = false;
+              self::notifiRecurExiste($num_placax, $resultados[0]['cod_solici']);
+            }
             $info['resp'] = true;
             $info['data'] = self::cleanArray($resultado[0]);
           }
@@ -1496,7 +1538,7 @@
               $process = self::procesaConductor($_REQUEST, $inf_solici);
             }else{
               //Actualiza Informacion del vehiculo
-              $process = self::procesaVehiculo($_REQUEST);
+              $process = self::procesaVehiculo($_REQUEST, $inf_solici);
             }
             //Consulta los dias habilitados
             $mSql=' SELECT vig_estseg
@@ -2283,7 +2325,9 @@
                 $rutaad = URL_ARCHIV."files/adj_estseg/adjs/";
                 $name = $cod_solici.'_InformeFinal_'.time()."_Temp.pdf";
                 $path = $ruta.''.$name;
-                move_uploaded_file($_FILES['file']['tmp_name'], $path);
+                if(!move_uploaded_file($_FILES['file']['tmp_name'], $path)){
+                  mail('cristian.torres@grupooet.com', 'Prueba', 'No se pudo guardar el archivo -> ' . $path);
+                }
                 $fileArray= array($path);
                 if($info['cod_tipest']=='V'){
                   $pdf_vehicu = self::getPDFEstSeg(1,$cod_solici);
@@ -2592,7 +2636,7 @@
                   'file_url' => URL_APLICA.'files/adj_estseg/pdfs/'.$docume['fil_result'],
                   'file_name' => $docume['fil_result']
                 ),
-                'message' => utf8_encode('PDF Abierto en una nueva pestaï¿½a')
+                'message' => utf8_encode('PDF Abierto en una nueva pestaña')
               ));
             }else{
               throw new Exception("No hay archivo PDF Generado", "2001");
@@ -2605,6 +2649,40 @@
                   'message' => $e->getMessage()
               )
             ));
+          }
+        }
+
+        private function notifiRecurExiste($cod_recurs, $cod_solici){
+            try {
+              $subject = 'Existencia de recurso';
+              $emailsTotal = self::darCorreos(NULL,2);
+              $emails = explode(",", $emailsTotal['dir_emailx']);
+              $tmp_file = dirname(dirname(__FILE__)).'/estsegv2/planti/template-email.html';
+              $contenido = '<p>Centro Log&iacute;stico FARO notifica que el recurso: <strong>' . $cod_recurs . '</strong> tiene un estudio de seguridad vigente por finalizar o uno finalizado no vencido Codigo::('.$cod_solici.'). Agradecemos validar en nuestros registros.</p>';
+              $logo = LOGOFARO;
+              $ano = date('Y');
+              $thefile = implode("", file($tmp_file));
+              $thefile = addslashes($thefile);
+              $thefile = "\$r_file=\"" . $thefile . "\";";
+              eval($thefile);
+              $mHtml = $r_file;
+              require_once("../planti/class.phpmailer.php");
+              $mail = new PHPMailer();
+              $mail->Host = "localhost";
+              $mail->From = 'supervisores@faro.com.co';
+              $mail->FromName = 'EST. SEGURIDAD';
+              $mail->Subject = $subject;
+              foreach ($emails as $email) {
+                $mail->AddAddress($email);
+              }
+              $mail->Body = $mHtml;
+              $mail->IsHTML(true);
+              if (!$mail->Send()) {
+                throw new Exception("No se pudo enviar el correo.", "2001");
+              }
+            }
+          catch (Exception $e) {
+            self::generateLog("Correo no enviado:::::::::SOLICITUD INICIAL VALIDACION DE RECURSO || ".$e->getMessage(), $e->getCode());
           }
         }
 

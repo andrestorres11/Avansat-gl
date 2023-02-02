@@ -89,6 +89,9 @@ function initFormulRegist() {
     $('#num_documeProID').blur(function() {
         setTercerFormulPoseed($(this).val());
     });
+    $('#num_placaxID').blur(function() {
+        setTercerFormulVehicu($(this).val());
+    });
 }
 
 function setTercerFormulConduc(cod_tercer) {
@@ -189,6 +192,29 @@ function setTercerFormulPropie(cod_tercer) {
                     type: 'warning',
                     confirmButtonColor: '#336600'
                 });
+            }
+        }
+    });
+}
+
+function setTercerFormulVehicu(num_placax) {
+    var standa = 'satt_standa';
+    var dataString = 'num_placax=' + num_placax + '&opcion=getVehicu';
+    $.ajax({
+        url: "../" + standa + "/estsegv2/ajax_genera_estseg.php",
+        method: 'POST',
+        data: dataString,
+        dataType: "json",
+        success: function(data) {
+            if (!data['regi']) {
+                Swal.fire({
+                    title: 'Advertencia',
+                    text: 'El vehiculo (' + data['data']['num_placax'] + ') tiene un estudio vigente por finalizar o uno finalizado no vencido',
+                    type: 'warning',
+                    confirmButtonColor: '#336600'
+                });
+                $("#num_placaxID").val('');
+                return false;
             }
         }
     });
@@ -1453,7 +1479,7 @@ function viewPdf(elemento) {
             if (data.status) {
                 window.open(data.resp.file_url, '_blank');
                 Swal.fire({
-                    title: 'ï¿½Exito!',
+                    title: '¡Exito!',
                     text: data.message,
                     type: 'success',
                     confirmButtonColor: '#336600'
