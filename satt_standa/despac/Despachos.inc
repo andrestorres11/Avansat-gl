@@ -1392,11 +1392,12 @@ class Despachos
                 $llamadas2 = $consulta->ret_matriz();
                 $llamadas2 = $llamadas2[0][0];
             }
-          
+            //mail('cristian.torres@grupooet.com', 'despac', var_export($despac, true));
             if ($desfut)
                 $desenruta = $this->orderMultiDimensionalArray($desenruta, 'tiempo', 0);
-          
+            
             for ($i = 0; $i < sizeof($desenruta); $i++) {
+                
                 if ($datos_usuario["bandeja"]) {
                     if ($valimp && $color_a[0] == "FFFF66") {
                         if ($indicad_mostrar_condic) {
@@ -1431,7 +1432,7 @@ class Despachos
                             $formulario->linea($desenruta[$i][6], 0, "i");
                             $formulario->linea($desenruta[$i][7], 0, "i");
                             $formulario->linea($despac[0][3], 0, "i");
-                            $formulario->linea($noveda[0][1], 0, "i");
+                            $formulario->linea("--> ".$noveda[0][1], 0, "i");
                             $formulario->linea($noveda[0][0], 0, "i");
 
                             $formulario->linea($generador, 0, "i");
@@ -1461,6 +1462,39 @@ class Despachos
                         $vlix1017 = $desenruta[$i][0];
                         $ciudad_o = $this->getSeleccCiudad($desenruta[$i][2], 1);
                         $ciudad_d = $this->getSeleccCiudad($desenruta[$i][3], 1);
+
+                        //Obtiene la información
+                            $query = "SELECT a.usr_ultnov, a.cod_conult, a.cod_ultnov, " .
+                                    "IF( a.fec_ultnov IS NULL, DATE_FORMAT( a.fec_salida, '%Y-%m-%d %H:%i' ), DATE_FORMAT( a.fec_ultnov, '%Y-%m-%d %H:%i' )  ), " .
+                                    "a.fec_salida, a.fec_manala ,if(a.ind_defini = '1','SI','NO') as defini " .
+                                    "FROM " . BASE_DATOS . ".tab_despac_despac a " .
+                                    "WHERE a.num_despac='" . $desenruta[$i][0] . "'";
+                            $consulta = new Consulta($query, $this->conexion);
+                            $despac = $consulta->ret_matriz();
+
+                            $query = "SELECT nom_noveda, ind_fuepla
+                                FROM " . BASE_DATOS . ".tab_genera_noveda 
+                            WHERE cod_noveda = '" . $despac[0][2] . "'";
+                            $consulta = new Consulta($query, $this->conexion);
+                            $noveda = $consulta->ret_matriz();
+
+                            $query = "SELECT nom_contro, cod_colorx
+                            FROM " . BASE_DATOS . ".tab_genera_contro  
+                            WHERE cod_contro = '" . $despac[0][1] . "'";
+                            $consulta = new Consulta($query, $this->conexion);
+                            $contro_actual = $consulta->ret_arreglo();
+            
+                            $noveda[0][1] = $contro_actual[0];
+
+                            $nota = "SELECT LEFT( a.obs_contro, 50 ), a.fec_contro
+                                    FROM " . BASE_DATOS . ".tab_despac_contro a
+                                    WHERE a.num_despac = '" . $desenruta[$i][0] . "' 
+                            ORDER BY a.cod_consec DESC ";
+                            $consulta = new Consulta($nota, $this->conexion);
+                            $nota = $consulta->ret_matriz();
+                            $nota = $nota[0];
+                            
+
                         $desenruta[$i][0] = "<a href=\"index.php?cod_servic=" . $this->servic . "&window=central&tie_ultnov=" . $desenruta[$i]["tiempo"] . "&despac=" . $desenruta[$i][0] . "&opcion=" . $this->opcion . " \"target=\"centralFrame\">" . $desenruta[$i][0] . "</a>";
                         //Jorge 120404
                         $formulario->linea($desenruta[$i][0], 0, "i", 0, 0, "left", $color_a[0]);
