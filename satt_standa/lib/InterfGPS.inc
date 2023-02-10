@@ -1092,6 +1092,7 @@
         $parameRutfar = self::verifyParameIntgps();
         $mDataVehicu  = self::getDataVehicu($mData['num_despac']);
         
+
         $data['nom_proces'] = "Webservice - HUB Insertar Salida";
         $data['fec_inicio'] = $mData['fec_inicio'];
         $data['num_despac'] = $mData['num_despac'];
@@ -1145,8 +1146,7 @@
         $cHeader = [                  
                       "Authorization: 8606c7de060ec2d798ffdc1f29776fb2", 
                       "Authorization-app: ".$parameRutfar[0]["clv_usuari"]
-                    ];
-
+                    ];         
         // codifica en json el array para mandarlo por la api
         $mParamsString = json_encode($sendData, JSON_PRETTY_PRINT);
         //echo "<pre>cHeader"; print_r($cHeader); echo "</pre>"; 
@@ -1165,9 +1165,7 @@
         $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
        
-        $cReturn = json_decode($raw_data, true);
-       
-
+        $cReturn = json_decode($raw_data, true);         
         //---------------------------------
         $ret = FALSE; //VARIABLE QUE CONTENDR� EL VALOR
 
