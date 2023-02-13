@@ -8,12 +8,9 @@ session_start();
 
 // setup the autoload function
 
-use \setasign\Fpdi\Fpdi;
-use \setasign\Fpdi\PdfReader;
-require_once('../lib/FPDI/src/autoload.php');
 require_once('../lib/FPDF/fpdf.php');
 
-class PDF extends FPDI{
+class PDF extends FPDF{
   
 	var $widths;
 	var $aligns;
@@ -135,7 +132,7 @@ class PDF extends FPDI{
 }
 
 
-class PDFInformeEstudioSeguridad extends FPDI
+class PDFInformeEstudioSeguridad extends PDF
 {
   var $conexion;
   
@@ -447,6 +444,25 @@ class PDFInformeEstudioSeguridad extends FPDI
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
       $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEHÍCULO'),1,1,'C',1);
+
+      for($i = 0; $i < count($img_vehicu); $i++){
+        if($pdf->GetY()>=155){
+          $pdf -> AddPage('P','Letter');
+        }
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> SetFillColor(1, 11, 64);
+        $pdf -> SetTextColor(255,255,255);
+        $pdf -> Cell(196,5,$img_vehicu[$i]['nom_fordoc'],1,1,'C',1);
+        $pdf -> SetFillColor(180, 181, 179);
+        $pdf -> SetTextColor(0,0,0);
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_vehicu[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
+        $pdf -> SetWidths(array(196));
+        $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_vehicu[$i]['obs_archiv'])));
+
+      }
+
+      /*
       for($i = 0; $i < count($img_vehicu); $i+=2){
         if(array_key_exists($i, $img_vehicu) AND array_key_exists($i+1, $img_vehicu)){
           $pdf -> SetFont('Arial','B',8);
@@ -473,13 +489,32 @@ class PDFInformeEstudioSeguridad extends FPDI
           $pdf -> SetWidths(array(98,98));
           $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_vehicu[$i]['obs_archiv'])));
         }
-      }
+      }*/
 
       $pdf -> AddPage('P','Letter');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
       $pdf -> Cell(196,5,utf8_decode('ADJUNTOS POSEEDOR'),1,1,'C',1);
+
+      for($i = 0; $i < count($img_poseed); $i++){
+        if($pdf->GetY()>=155){
+          $pdf -> AddPage('P','Letter');
+        }
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> SetFillColor(1, 11, 64);
+        $pdf -> SetTextColor(255,255,255);
+        $pdf -> Cell(196,5,$img_poseed[$i]['nom_fordoc'],1,1,'C',1);
+        $pdf -> SetFillColor(180, 181, 179);
+        $pdf -> SetTextColor(0,0,0);
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_poseed[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
+        $pdf -> SetWidths(array(196));
+        $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_poseed[$i]['obs_archiv'])));
+
+      }
+
+      /*
       for($i = 0; $i < count($img_poseed); $i+=2){
         if(array_key_exists($i, $img_poseed) AND array_key_exists($i+1, $img_poseed)){
           $pdf -> SetFont('Arial','B',8);
@@ -507,12 +542,32 @@ class PDFInformeEstudioSeguridad extends FPDI
           $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_poseed[$i]['obs_archiv'])));
         }
       }
+      */
       $pdf -> AddPage('P','Letter');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
       $pdf -> Cell(196,5,utf8_decode('ADJUNTOS PROPIETARIO'),1,1,'C',1);
-      for($i = 0; $i < count($img_propie); $i+=2){
+
+      for($i = 0; $i < count($img_propie); $i++){
+        if($pdf->GetY()>=155){
+          $pdf -> AddPage('P','Letter');
+        }
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> SetFillColor(1, 11, 64);
+        $pdf -> SetTextColor(255,255,255);
+        $pdf -> Cell(196,5,$img_propie[$i]['nom_fordoc'],1,1,'C',1);
+        $pdf -> SetFillColor(180, 181, 179);
+        $pdf -> SetTextColor(0,0,0);
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_propie[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
+        $pdf -> SetWidths(array(196));
+        $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_propie[$i]['obs_archiv'])));
+
+      }
+
+      
+      /* for($i = 0; $i < count($img_propie); $i+=2){
         if(array_key_exists($i, $img_propie) AND array_key_exists($i+1, $img_propie)){
           $pdf -> SetFont('Arial','B',8);
           $pdf -> SetFillColor(1, 11, 64);
@@ -538,7 +593,7 @@ class PDFInformeEstudioSeguridad extends FPDI
           $pdf -> SetWidths(array(98,98));
           $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_propie[$i]['obs_archiv'])));
         }
-      }
+      } */
     }else{
       $pdf -> AddPage('P','Letter');
       $img_conduc = $this->getImagenesEstSeg(2, $_REQUEST['cod_solici']);
@@ -547,7 +602,25 @@ class PDFInformeEstudioSeguridad extends FPDI
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
       $pdf -> Cell(196,5,utf8_decode('ADJUNTOS CONDUCTOR'),1,1,'C',1);
-      for($i = 0; $i < count($img_conduc); $i+=2){
+
+      for($i = 0; $i < count($img_conduc); $i++){
+        if($pdf->GetY()>=155){
+          $pdf -> AddPage('P','Letter');
+        }
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> SetFillColor(1, 11, 64);
+        $pdf -> SetTextColor(255,255,255);
+        $pdf -> Cell(196,5,$img_conduc[$i]['nom_fordoc'],1,1,'C',1);
+        $pdf -> SetFillColor(180, 181, 179);
+        $pdf -> SetTextColor(0,0,0);
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_conduc[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
+        $pdf -> SetWidths(array(196));
+        $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_conduc[$i]['obs_archiv'])));
+
+      }
+
+      /* for($i = 0; $i < count($img_conduc); $i+=2){
         if(array_key_exists($i, $img_conduc) AND array_key_exists($i+1, $img_conduc)){
           $pdf -> SetFont('Arial','B',8);
           $pdf -> SetFillColor(1, 11, 64);
@@ -573,7 +646,7 @@ class PDFInformeEstudioSeguridad extends FPDI
           $pdf -> SetWidths(array(98,98));
           $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_conduc[$i]['obs_archiv'])));
         }
-      }
+      } */
     }  
     $_PDF = 'Resultados_EstudioSeguridad_'.$info['cod_solici'].'.pdf';
 
