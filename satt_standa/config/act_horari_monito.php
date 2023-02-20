@@ -38,7 +38,7 @@ class HoraMoni {
         $inicio[0][0] = 0;
         $inicio[0][1] = '-';
         //codigo de ruta
-        $query = "SELECT cod_usuari,TRIM( UPPER( nom_usuari ) ) AS nom_usuari FROM " . BASE_DATOS . ".tab_genera_usuari ORDER BY 2 ASC";
+        $query = "SELECT cod_usuari,TRIM( UPPER( nom_usuari ) ) AS nom_usuari FROM " . BASE_DATOS . ".tab_genera_usuari WHERE cod_perfil IN (7,713) AND ind_estado = '1' ORDER BY 2 ASC";
         $consulta = new Consulta($query, $this->conexion);
         $usuar = $consulta->ret_matriz();
         $usuari = array_merge($inicio, $usuar);
