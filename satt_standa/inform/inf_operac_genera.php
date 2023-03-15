@@ -83,7 +83,8 @@ class InformViajes {
                        t.val_retefu as 'val_retefu', 
                        t.nom_carpag as 'nom_carpag', 
                        t.nom_despag as 'nom_despag', 
-                       t.cod_agedes as 'cod_agedes', 
+                       t.cod_agedes as 'cod_agedes',
+                       ag.nom_agenci as 'nom_agenci', 
                        t.val_pesoxx as 'val_pesoxx', 
                        t.obs_despac as 'obs_despac', 
                        t.fec_llegad as 'fec_llegad', 
@@ -155,6 +156,7 @@ class InformViajes {
                 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k ON v.cod_tenedo = k.cod_tercer
 	            LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad r ON k.cod_ciudad  = r.cod_ciudad 
                 LEFT JOIN ".BASE_DATOS.".tab_despac_remesa s ON t.num_despac = s.num_despac
+                LEFT JOIN satt_faro.tab_genera_agenci ag ON t.cod_agedes = ag.cod_agenci
                 LEFT JOIN ".BASE_DATOS.".tab_genera_tipveh y ON v.cod_tipveh = y.cod_tipveh
 	                AND t.fec_salida IS NOT NULL 
 	                AND t.fec_salida <= NOW() 
@@ -165,6 +167,7 @@ class InformViajes {
 	                AND t.ind_planru = 'S' 
 	                AND t.ind_anulad = 'R' 
 	                AND z.ind_activo = 'S' ";
+
         $mSelect2 .="WHERE t.fec_despac BETWEEN '".$_REQUEST['fec_inicia']." 00:00:00' AND '".$_REQUEST['fec_finali']." 23:59:59' ";
 
         if( $_REQUEST['ind_finali'] == '1' ) {
@@ -277,6 +280,7 @@ class InformViajes {
             $mHtml .= "<th class=cellHead >Direcci&oacute;n Poseedor</th>";
             $mHtml .= "<th class=cellHead >Ciudad Poseedor</th>";
             $mHtml .= "<th class=cellHead >Mercanc&iacute;a</th>";
+            $mHtml .= "<th class=cellHead >N. Agencia</th>";
             if ($_REQUEST['ind_noveda'] == '1') {
                 $mHtml .= "<th class=cellHead >
                     <table border='1' id='export' class='table table-bordered'>
@@ -391,6 +395,7 @@ class InformViajes {
                 $mHtml .= "<td class='cellInfo' align ='left' >".( $row['dir_poseed'] != '' ? $row['dir_poseed'] : 'DESCONOCIDA' )."</td>"; // Direccion Poseedor
                 $mHtml .= "<td class='cellInfo' align ='left' >".( $row['ciu_poseed'] != '' ? $row['ciu_poseed'] : 'DESCONOCIDA' )."</td>"; // Ciudad Poseedor
                 $mHtml .= "<td class='cellInfo' align ='left' >".( isset($row['nom_mercan']) ? $row['nom_mercan'] : 'DESCONOCIDO' )."</td>"; //Mercancia
+                $mHtml .= "<td class='cellInfo' align ='left' >".($row['nom_agenci'] !='' ? strtoupper($row['nom_agenci']):'')."</td>"; //Nombre de Agencia
                 if ($_REQUEST['ind_noveda'] == '1') {
                     $resultsegui= InformViajes::getTiempoTransport($row['cod_transp'], $row['cod_tipdes']) ;
                     if($mSizeNoved > 0){
