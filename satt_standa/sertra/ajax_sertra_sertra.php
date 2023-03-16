@@ -1586,7 +1586,7 @@ class ajax_certra_certra {
     private function getEals() {
         //Parche para traer unicamente los puestos de control con tipo de puesto 3: Puesto Pausas Activas ID:408315
         if(BASE_DATOS != 'satt_faro'){
-            $cond = ' AND cod_tpcont = 3';
+            $cond = ' AND cod_tpcont = 4';
         }
         $sql = "SELECT cod_contro, nom_contro FROM " . BASE_DATOS . ".tab_genera_contro WHERE ind_virtua = 0 AND nom_contro NOT LIKE '%DEST%' AND ind_estado = 1 AND ind_pcpadr = 1 ".$cond;
         $consulta = new Consulta($sql, self::$cConexion);
