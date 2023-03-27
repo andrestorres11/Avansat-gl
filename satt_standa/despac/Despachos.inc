@@ -4091,14 +4091,14 @@ class Despachos
                      ON a.num_despac = r.num_dessat 
              INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu s 
                      ON b.num_placax = s.num_placax 
-             INNER JOIN ".BASE_DATOS.".tab_genera_marcas t 
+             LEFT JOIN ".BASE_DATOS.".tab_genera_marcas t 
                      ON s.cod_marcax = t.cod_marcax 
-             INNER JOIN ".BASE_DATOS.".tab_vehige_lineas u 
+             LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas u 
                      ON s.cod_marcax = u.cod_marcax 
                     AND s.cod_lineax = u.cod_lineax 
-             INNER JOIN ".BASE_DATOS.".tab_vehige_colore v 
+             LEFT JOIN ".BASE_DATOS.".tab_vehige_colore v 
                      ON s.cod_colorx = v.cod_colorx 
-             INNER JOIN ".BASE_DATOS.".tab_vehige_carroc w 
+             LEFT JOIN ".BASE_DATOS.".tab_vehige_carroc w 
                      ON s.cod_carroc = w.cod_carroc 
               LEFT JOIN ".BASE_DATOS.".tab_despac_gpsxxx x
                      ON a.num_despac = x.num_despac 

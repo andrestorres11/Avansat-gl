@@ -66,7 +66,7 @@
             <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/validator.css' type='text/css'>
             <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/bootstrap.css' type='text/css'>
             <link rel='stylesheet' href='../<?= DIR_APLICA_CENTRAL ?>/estilos/informes.css' type='text/css'>
-            <form id="formulario" type="submit">
+            <form id="formulario" type="submit" enctype="multipart/form-data" type="post">
                 <div id="acordeonID" class="col-md-12 accordion defecto ancho">
                   <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Tipo de Servicio</b></h1>
                   <div id="contenido">

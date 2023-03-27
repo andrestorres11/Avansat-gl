@@ -28,6 +28,12 @@ class trans {
             @include_once( "../lib/ajax.inc" );
             @include_once( "../lib/general/constantes.inc" );
             self::$cConexion = $AjaxConnection;
+
+            $opcion = $_REQUEST[Option];
+            if(!$opcion){
+            $opcion = $_REQUEST[opcion];
+            }
+
         } else {
             self::$cConexion = $co;
             self::$cUsuario = $us;
@@ -36,7 +42,7 @@ class trans {
 
         if ($_REQUEST[Ajax] === 'on') {
 
-            switch ($_REQUEST[Option]) {
+            switch ($opcion) {
                 case 'buscarTransportadora':
                     self::buscarTransportadora();
                     break;
@@ -513,6 +519,14 @@ class trans {
         $agencia->usr_creaci = $usuario;
         $agencia->cod_tercer = $transp->cod_tercer;
 
+        if($_FILES){
+            if(move_uploaded_file($_FILES['foto']['tmp_name'], "../../".NOM_URL_APLICA."/".URL_TRANSP.$transp->cod_tercer.".jpg")){
+                $emptra->rut_logoxx= URL_TRANSP.$transp->cod_tercer.".jpg";
+            }
+        }else{
+            $emptra->rut_logoxx = "NULL";
+        }
+
         #consulta si ya existe algun registro en la tabla tab_tercer_tercer con el mismo nit
         $sql = "SELECT cod_tercer FROM " . BASE_DATOS . ".tab_tercer_tercer WHERE cod_tercer = '$transp->cod_tercer'";
         $consulta = new Consulta($sql, self::$cConexion);
@@ -595,12 +609,12 @@ class trans {
                         (cod_tercer,cod_minins,num_resolu,fec_resolu,num_region,ran_iniman,
                          ran_finman,ind_gracon,ind_ceriso,fec_ceriso,ind_cerbas,fec_cerbas,
                          otr_certif,ind_cobnal,ind_cobint,nro_habnal,fec_resnal,nom_repleg,
-                         usr_creaci,fec_creaci)
+                         rut_logoxx,usr_creaci,fec_creaci)
                         VALUES (
                         '$emptra->cod_tercer','$emptra->cod_minins','$emptra->num_resolu','$emptra->fec_resolu','$emptra->num_region','$emptra->ran_iniman',
                         '$emptra->ran_finman','$emptra->ind_gracon','$emptra->ind_ceriso','$emptra->fec_ceriso','$emptra->ind_cerbas','$emptra->fec_cerbas',
                         '$emptra->otr_certif','$emptra->ind_cobnal','$emptra->ind_cobint','$emptra->nro_habnal','$emptra->fec_resolu','$emptra->nom_repleg',
-                        '$emptra->usr_creaci','$emptra->fec_creaci')";
+                        '$emptra->rut_logoxx','$emptra->usr_creaci','$emptra->fec_creaci')";
             $insercion = new Consulta($query, self::$cConexion, "R");
 
 
@@ -649,20 +663,22 @@ class trans {
 
 
             if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-                $link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $_REQUEST[cod_servic] . " \"target=\"centralFrame\"><font style='color:#3F7506'>Insertar Otra Transportadora</font></a></b>";
+                header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1020&menant=1020&window=central&resultado=1&operacion=registro&transportadora='.$emptra->cod_tercer);
+                /*$link_a = "<br><b><a href=\"index.php?&window=central&cod_servic=" . $_REQUEST[cod_servic] . " \"target=\"centralFrame\"><font style='color:#3F7506'>Insertar Otra Transportadora</font></a></b>";
 
                 $mensaje = "<font color='#000000'>Se Inserto la Transportadora <b>$transp->abr_tercer</b> Exitosamente.<br></font>" . $link_a;
                 $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
                 $mens = new mensajes();
-                echo $mens->correcto2("INSERTAR TRANSPORTADORA", $mensaje);
+                echo $mens->correcto2("INSERTAR TRANSPORTADORA", $mensaje);*/
             } else {
-                $div = "<div style='text-align:center'>
+                header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1020&menant=1020&window=central&resultado=0&operacion=registro&transportadora='.$emptra->cod_tercer);
+                /*$div = "<div style='text-align:center'>
                     <span><h2><font style='color:red'><b>Ocurri&oacute; un error en el registro</b></font>, por favor revisa la informaci&oacute;n e intenta nuevamente.<br>
                     Si el problema persiste por favor informa a soporte.</h2>
                      </span><br><br>
                   <input type='button' name='cerrar' id='closeID' value='Finalizar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/>
               </div>";
-                echo $div;
+                echo $div;*/
             }
         } else {
 
@@ -757,13 +773,13 @@ class trans {
                 $nuevo_consec = $ag[0]['cod_agenci'];
             }
 
-            $this->modificar("Registrï¿½", $nuevo_consec);
+            $this->modificar("Registró", $nuevo_consec);
         }
     }
 
     /*     * ****************************************************************************
      *  \fn: activar                                                              *
-     *  \brief: funciï¿½n para activar una transportadora                           *
+     *  \brief: función para activar una transportadora                           *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 07/09/2015                                                         *
      *  \date modified:                                                           *
@@ -818,7 +834,7 @@ class trans {
 
     /*     * ****************************************************************************
      *  \fn: inactivar                                                              *
-     *  \brief: funciï¿½n para inactivar una transportadora                           *
+     *  \brief: función para inactivar una transportadora                           *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 07/09/2015                                                         *
      *  \date modified:                                                           *
@@ -871,7 +887,7 @@ class trans {
 
     /*     * ****************************************************************************
      *  \fn: modificar                                                            *
-     *  \brief: funciï¿½n para modificar una transportadoras                        *
+     *  \brief: función para modificar una transportadoras                        *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 07/09/2015                                                         *
      *  \date modified:                                                           *
@@ -883,7 +899,7 @@ class trans {
     private function modificar($operacion = null, $cod_agenci = null) {
 
         if (!$operacion) {
-            $operacion = "Modificï¿½";
+            $operacion = "Modificó";
         }
 
         # lleno los objetos nesesarios para la correcta modificaciï¿½n en la base de datos.
@@ -903,10 +919,19 @@ class trans {
         $emptra->cod_tercer = $transp->cod_tercer;
         $emptra->fec_modifi = $fec_actual;
         $emptra->usr_modifi = $usuario;
+        $emptra->rut_logoxx = "NULL";
+
         $agencia->dir_emailx = $transp->dir_emailx;
         $agencia->num_faxxxx = $transp->num_faxxxx;
         $agencia->usr_modifi = $usuario;
         $agencia->cod_tercer = $transp->cod_tercer;
+        $foto = "";
+        if($_FILES){
+            if(move_uploaded_file($_FILES['foto']['tmp_name'], "../../".NOM_URL_APLICA."/".URL_TRANSP.$transp->cod_tercer.".jpg")){
+                $emptra->rut_logoxx= URL_TRANSP.$transp->cod_tercer.".jpg";
+                $foto = "rut_logoxx = '".URL_TRANSP.$transp->cod_tercer.".jpg',";
+            }
+        }
 
         /* echo '<pre>';
           print_r($agencia);
@@ -975,6 +1000,7 @@ class trans {
                         ind_cobint = '$emptra->ind_cobint',
                         nro_habnal = '$emptra->nro_habnal',
                         fec_resnal = '$emptra->fec_resnal',
+                        ".$foto."
                         nom_repleg = '$emptra->nom_repleg',
                         usr_modifi = '$emptra->usr_modifi',
                         fec_modifi = '$emptra->fec_modifi'
@@ -1017,10 +1043,13 @@ class trans {
         }
 
         if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-            $mensaje = "Se $operacion la Transportadora " . $transp->abr_tercer . " exitosamente.";
+            header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1020&menant=1020&window=central&resultado=1&operacion='.$operacion.'&transportadora='.$emptra->cod_tercer);
+            /*$mensaje = "Se $operacion la Transportadora " . $transp->abr_tercer . " exitosamente.";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='confirmado()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
-            $mens->correcto2("ACTUALIZAR TRANSPORTADORA", $mensaje);
+            $mens->correcto2("ACTUALIZAR TRANSPORTADORA", $mensaje);*/
+        }else{
+            header('Location: ../../'.NOM_URL_APLICA.'/index.php?cod_servic=1020&menant=1020&window=central&resultado=0&operacion='.$operacion.'&transportadora='.$emptra->cod_tercer);
         }
     }
 
