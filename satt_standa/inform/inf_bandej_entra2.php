@@ -39,6 +39,7 @@ class infBandeja
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.css' type='text/css'>\n";
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
+		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/tooltip_image.css' type='text/css'>\n";
 
 		switch($_REQUEST[opcion])
 		{

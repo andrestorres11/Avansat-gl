@@ -2990,6 +2990,10 @@ class Despac
 			array_splice($mTittle, $colItiner, 0, 'ITINERARIO' );
 		}
 
+		if(BASE_DATOS!='satt_faro'){
+			array_splice($mTittle, 2, 0, 'NOV' );
+		}
+
 		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO FARO', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
 		
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
@@ -3272,11 +3276,16 @@ class Despac
 					}
 				}
 				$mTxt = substr($row[color], 3);
+				$IconNov  = self::getAlertIconNovedad($row[num_despac]);
 				$mColor = $mTxt > 2 ? '#FFFFFF;' : '#000000;';
 				$mLink = '<a href="index.php?cod_servic=3302&window=central&despac='.$row[num_despac].'&tie_ultnov='.$row[tiempo].'&opcion=1" style="color:'.$mColor.'">'.$row[num_despac].'</a>';
 				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$n.'</th>';
 				$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$gif.'</th>';
+				if(BASE_DATOS!='satt_faro'){
+					$IconNov  = self::getAlertIconNovedad($row[num_despac]);
+					$mHtml .= 	'<th class="classHead" nowrap="" align="left">'.$IconNov.'</th>';
+				}
 				$mHtml .= 	'<td class="classCell bt '.$row[color].'" nowrap="" align="left">'.$mLink.'</td>';
 				if($mViewBa->tie_alarma->ind_visibl==1){
 				
@@ -3309,6 +3318,94 @@ class Despac
 		$mHtml .= '<br/>';
 		$_SESSION['precargue']['detallado'] = $mHtml;
 		return $mHtml;
+	}
+
+	/*! \fn: getAlertIconNovedad
+	 *  \brief: Obtiene el icono a mostrar si el despacho tiene alguna novedad
+	 *  \author: Ing. Cristian Andrés Torres
+	 *	\date: 27/03/2023
+	 *	\date modified: dia/mes/año
+	 *  \return: html
+	 */
+	private function getAlertIconNovedad( $mNumDespac ){
+		$icon = '';
+		//Validamos que no cuente con novedades para retornar el icono de alarma de primera llamada.
+		if(sizeof(self::getNovedadControl($mNumDespac)) < 1 ){
+			$icon = 1;
+		}else{
+			$icon = 2;
+			$ult_noveda = self::getUltimaNovedad($mNumDespac);
+		}
+
+		$image = '';
+		switch($icon){
+			case 1:
+				$image = '<div class="tooltip-container">
+							<img tooltip="true" width="20px" height="20px" src="../satt_standa/images/phone-call.png" alt="Icono de Primera Llamada">
+							<span class="tooltip-text">Primera Llamada</span>
+						  </div>';
+				return $image;
+				break;
+			case 2:
+				if($ult_noveda['rut_iconox'] != ''){
+					$image = '<div class="tooltip-container">
+								<img tooltip="true" width="20px" height="20px" src="'.$ult_noveda['rut_iconox'].'" alt="Icono de '.$ult_noveda['nom_noveda'].'">
+								<span class="tooltip-text">'.$ult_noveda['nom_noveda'].'</span>
+						  	 </div>';
+				}
+				return $image;
+				break;
+
+		}
+	}
+
+	/*! \fn: getNovedadControl
+	 *  \brief: Consulta las novedades de controlador de un despacho
+	 *  \author: Ing. Cristian Andrés Torres
+	 *	\date: 30/03/2023
+	 *	\date modified: 30/03/2023
+	 *  \param: mNumDespac  String   Numero de despacho
+	 *  \return: Integer
+	 */
+	private function getNovedadControl( $mNumDespac )
+	{
+		$mSql = "( SELECT a.num_despac, a.obs_contro, a.fec_creaci 
+				   		FROM ".BASE_DATOS.".tab_despac_contro a
+				  INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON  a.cod_noveda = b.cod_noveda
+				  		WHERE a.num_despac = '".$mNumDespac."' AND
+							  b.cod_tipoxx = 1
+				 )
+				  UNION
+				 ( SELECT a.num_despac, a.des_noveda, a.fec_creaci 
+				  		FROM ".BASE_DATOS.".tab_despac_noveda a
+				  INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON  a.cod_noveda = b.cod_noveda
+				 		WHERE a.num_despac = '".$mNumDespac."' AND
+						      b.cod_tipoxx = 1
+				 )";
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+		$mResult = $mConsult -> ret_matrix('a');
+		return $mResult;
+	}
+
+	/*! \fn: getUltimaNovedad
+	 *  \brief: Obtiene la ultima novedad registrada en un despacho
+	 *  \author: Ing. Fabian Salinas
+	 *	\date: 08/09/2015
+	 *	\date modified: dia/mes/año
+	 *  \param: mNumViajex  String   Numero de Viaje
+	 *  \return: Integer
+	 */
+	private function getUltimaNovedad( $mNumDespac )
+	{
+		$mSql = "SELECT a.num_despac, a.obs_contro, a.fec_creaci, b.rut_iconox, b.nom_noveda
+				   FROM ".BASE_DATOS.".tab_despac_contro a
+			 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda
+				  WHERE a.num_despac = '".$mNumDespac."'
+				  		ORDER BY a.fec_creaci DESC";
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+		$mResult = $mConsult -> ret_arreglo();
+
+		return $mResult;
 	}
 
 	/*! \fn: orderMatrizDetail
