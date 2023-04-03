@@ -24,8 +24,6 @@ class Ins_config_emptra {
            	case 1:
            		$this->Formulario();
            	break;
-
-
             default:
                 $this->filtro();
                 break;
@@ -68,7 +66,7 @@ class Ins_config_emptra {
         $mHtml->SetJs("fecha");
         $mHtml->SetJs("jquery");
         $mHtml->SetJs("functions");
-        $mHtml->SetJs("ajax_transp_transp");
+		$mHtml -> SetBody(' <script src="../'.DIR_APLICA_CENTRAL.'/js/ajax_transp_transp.js"></script> ');
         $mHtml->SetJs("InsertProtocolo");
         $mHtml->SetJs("new_ajax"); 
         $mHtml->SetJs("dinamic_list"); 
@@ -92,6 +90,9 @@ class Ins_config_emptra {
 		$mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
 		$mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
 		$mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>''));
+		$mHtml->Hidden(array( "name" => "resultado", "id" => "resultado", 'value'=>$_REQUEST['resultado']));
+		$mHtml->Hidden(array( "name" => "opera", "id" => "opera", 'value'=>$_REQUEST['operacion']));
+		$mHtml->Hidden(array( "name" => "transportadora", "id" => "transportadora", 'value'=>$_REQUEST['transportadora']));
 		$mHtml->Hidden(array( "name" => "cod_transp", "id" => "cod_transpID", 'value'=>$mCodTransp));
 		$mHtml->Hidden(array( "name" => "cod_agenci", "id" => "cod_agenciID", 'value'=>''));
 		$mHtml->Hidden(array( "name" => "abr_tercer", "id" => "abr_tercerID", 'value'=>''));
@@ -288,7 +289,7 @@ class Ins_config_emptra {
         $mHtml->SetCssJq("validator");		
         # incluye Css
         $mHtml->SetCssJq("jquery");
-
+		$mHtml->CloseTable("tr");
         # coloca titulo
         $mHtml->SetTitle("Crear Transportadora");
 
@@ -296,7 +297,7 @@ class Ins_config_emptra {
         $mHtml->Body(array("menubar" => "no"));
 
         # Abre Form
-        $mHtml->Form(array("action" => "index.php",
+        $mHtml->Form(array("action" => "../".DIR_APLICA_CENTRAL."/transp/ajax_transp_transp.php",
             "method" => "post",
             "name" => "form_transpor",
             "header" => "Transportadoras",
@@ -316,10 +317,14 @@ class Ins_config_emptra {
 		$mHtml->Hidden(array( "name" => "window", "id" => "windowID", 'value'=>'central'));
 		$mHtml->Hidden(array( "name" => "cod_servic", "id" => "cod_servicID", 'value'=>$_REQUEST['cod_servic']));
 		$mHtml->Hidden(array( "name" => "opcion", "id" => "opcionID", 'value'=>''));
-
+		$mHtml->Hidden(array( "name" => "imagen", "id" => "imagen", 'value'=>"1"));
+      	$mHtml->Hidden(array( "name" => "Ajax", "id" => "Ajax", 'value'=>"on"));
+			
 	        # Construye accordion
 	        $mHtml->Row("td");
 	        $mHtml->OpenDiv("id:contentID; class:contentAccordion");
+
+			
 	        	# Accordion1
 	        	$mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
 	        		$mHtml->SetBody("<h3 style='padding:6px;'><center>Informaci&oacute;n B&aacute;sica de la Transportadora</center></h3>");
@@ -353,10 +358,13 @@ class Ins_config_emptra {
 						        
 								$mHtml->Label("Estado:", "width:25%; :1;");
 						        if($datos->principal->cod_estado == 1){						        	
-					        		$mHtml->Input(array("type" => "text", "name" => "estado", "id" => "estado","minlength" => "8", "maxlength" => "100", "width" => "25%", "value" => 'Activa', 'disabled'=>true, "end" => true));
+					        		$mHtml->Input(array("type" => "text", "name" => "estado", "id" => "estado","minlength" => "8", "maxlength" => "100", "width" => "25%", "value" => 'Activa', 'disabled'=>true));
 					    		}else{
-					    			$mHtml->Input(array("type" => "text", "name" => "estado", "id" => "estado","minlength" => "8", "maxlength" => "100", "width" => "25%", "value" => 'Inactiva', 'disabled'=>true, "end" => true));
+					    			$mHtml->Input(array("type" => "text", "name" => "estado", "id" => "estado","minlength" => "8", "maxlength" => "100", "width" => "25%", "value" => 'Inactiva', 'disabled'=>true));
 					    		}
+
+								$mHtml->Label("Logo:", "width:25%; :1;");
+                    			$mHtml->File(array("name" => "foto",  "id" => "foto", "validate"=>"file", "format"=>"jpg,jpeg,png", "width" => "25%", "end" => true) );
 								
 						        $mHtml->Label("Observaciones:", "width:25%; :1;");
 						        $mHtml->TextArea($mString, array("cols" => 100, "rows" => 8, "colspan" => "3", "name" => "transp[obs_tercer]", "id" => "obs_tercer", "width" => "25%", "value" => $datos->principal->obs_tercer, "end" => true));
@@ -480,9 +488,10 @@ class Ins_config_emptra {
 			        
 	        	$mHtml->CloseTable("tr");
 	        $mHtml->CloseDiv();
-
+				
 	        $mHtml->CloseDiv();
 	        $mHtml->CloseRow("td");
+			
         	# Cierra formulario
         $mHtml->CloseForm();
         # Cierra Body

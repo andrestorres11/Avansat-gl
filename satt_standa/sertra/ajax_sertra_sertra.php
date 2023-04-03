@@ -141,6 +141,17 @@ class ajax_certra_certra {
         return $servicios;
     }
 
+    private function getTipoEstudioSeguridad(){
+        
+        //consulto los tipos de servicios y los agrego al objeto principal
+        $query = "SELECT cod_estseg, nom_tipest
+        FROM " . BASE_DATOS . ".tab_genera_estseg
+        WHERE ind_status = '1'";
+        $consulta = new Consulta($query, self::$cConexion);
+        $tipest = $consulta->ret_matrix("a");
+        return $tipest;
+    }
+
     /* ! \fn: getDataFomrmTipSer
      *  \brief: funcion para cargar los datos de la ultima configuracion de una transportadora
      *  \author: Ing. Alexander Correa
@@ -181,7 +192,8 @@ class ajax_certra_certra {
             tgl_prcnac, tgl_prcurb,tgl_prcexp, tgl_prcimp, tgl_prctr1,tgl_prctr2,
             tgl_carnac,tgl_carurb,tgl_carexp,tgl_carimp,tgl_cartr1,tgl_cartr2,
             tgl_contro,tgl_conurb,tgl_traexp,tgl_traimp,tgl_tratr1,tgl_tratr2,
-            tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2,ind_bolrut,vig_estseg
+            tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2,ind_bolrut,vig_estseg,
+            ind_estseg, tip_estseg,ind_segxml,rut_segxml,rut_estpdf
             FROM " . BASE_DATOS . ".tab_transp_tipser 
             WHERE cod_transp = '$datos->cod_transp' 
             AND num_consec = $datos->num_consec";
@@ -297,6 +309,7 @@ class ajax_certra_certra {
      */
     private function pintarFormulario($datos) {
         $servicios = self::getTipoServicios();
+        $tipos_estudio = self::getTipoEstudioSeguridad();
         $grupos = $this->getGrupos();
         $operaciones = $this->getOperaciones();
         $eals = $this->getEals();
@@ -493,7 +506,47 @@ class ajax_certra_certra {
                                 <input type="text" class="text-center ancho"  name="vig_estseg"  id="vig_estseg"  value="<?= $datos->principal['vig_estseg'] ?>" style="width: 156px;">
                             </div>
                         </div>
+
+                        <div class="row">          
+                        <div class="col-md-6">
+                            <input type="hidden" name="ind_segxml" value="<?= $datos->principal['ind_segxml'] ?>">
+                            <input type="hidden" name="rut_segxml" value="<?= $datos->principal['rut_segxml'] ?>">
+                            <input type="hidden" name="rut_estpdf" value="<?= $datos->principal['rut_estpdf'] ?>">
+                            <div class="col-md-6 text-right">Estudio de Seguridad Contratado</div>
+                                <div class="col-md-6 text-left">
+                                    <?php
+                                        $ind_estseg = "";
+                                        if ($datos->principal['ind_estseg'] == 1) {
+                                        $ind_estseg = "checked='true'";
+                                        }
+                                    ?>
+                                    <input type="checkbox" name="ind_estseg" id="ind_estseg" value="1" <?= $ind_estseg ?> >
+                                </div>
+                            </div>
+                        <div class="col-md-6">
+                            <div class="col-md-6 text-right">Tipo de estudio</div>
+                            <div class="col-md-6 text-left">
+                                <select id="tip_estsegID" name="tip_estseg" class="ancho" obl="1" validate="select">
+                                    <option value="">Seleccione una Opci&oacute;n.</option>
+                                    <?php
+                                    foreach ($tipos_estudio as $key => $value) {
+                                        $sel = "";
+                                        if ($value['cod_estseg'] == $datos->principal['tip_estseg']) {
+                                            $sel = "selected";
+                                        }
+                                        ?>
+                                        <option <?= $sel ?> value="<?= $value['cod_estseg'] ?>"><?= $value['nom_tipest'] ?></option>
+                                    <?php } ?>
+                                </select>
+                            </div>
                         </div>
+                        </div>
+
+                        </div>
+
+                        
+
+
                         <div class="row">
                         <div class="col-md-12">
                         &nbsp;
@@ -1681,6 +1734,7 @@ class ajax_certra_certra {
         $datos->tie_trazab = $datos->tie_trazab * 60;
         $datos->ind_bolrut = $datos->ind_bolrut;
         $datos->vig_estseg = ($datos->vig_estseg ? $datos->vig_estseg:NULL);
+        $datos->ind_estseg = $datos->ind_estseg == '1' ? '1' : '0';
 
         $query = "INSERT INTO " . BASE_DATOS . ".tab_transp_tipser
         (   num_consec, cod_tipser, tie_contro, ind_estado, tie_conurb, ind_llegad,  
@@ -1700,7 +1754,8 @@ class ajax_certra_certra {
             tgl_prcnac, tgl_prcurb,tgl_prcexp, tgl_prcimp, tgl_prctr1,tgl_prctr2,
             tgl_carnac,tgl_carurb,tgl_carexp,tgl_carimp,tgl_cartr1,tgl_cartr2,
             tgl_contro,tgl_conurb,tgl_traexp,tgl_traimp,tgl_tratr1,tgl_tratr2,
-            tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2, ind_bolrut,vig_estseg
+            tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2, ind_bolrut,vig_estseg,
+            ind_estseg,tip_estseg,ind_segxml,rut_segxml,rut_estpdf
         ) VALUES  ( 
         '$datos->num_consec', '$datos->cod_tipser', '$datos->tie_contro', '$datos->ind_estado', '$datos->tie_conurb', '$datos->ind_llegad', 
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
@@ -1719,7 +1774,8 @@ class ajax_certra_certra {
         '$datos->tgl_prcnac','$datos->tgl_prcurb','$datos->tgl_prcexp','$datos->tgl_prcimp','$datos->tgl_prctr1','$datos->tgl_prctr2',
         '$datos->tgl_carnac','$datos->tgl_carurb','$datos->tgl_carexp','$datos->tgl_carimp','$datos->tgl_cartr1','$datos->tgl_cartr2',
         '$datos->tgl_contro','$datos->tgl_conurb','$datos->tgl_traexp','$datos->tgl_traimp','$datos->tgl_tratr1','$datos->tgl_tratr2',
-        '$datos->tgl_desnac','$datos->tgl_desurb','$datos->tgl_desexp','$datos->tgl_desimp','$datos->tgl_destr1','$datos->tgl_destr2','$datos->ind_bolrut','$datos->vig_estseg'
+        '$datos->tgl_desnac','$datos->tgl_desurb','$datos->tgl_desexp','$datos->tgl_desimp','$datos->tgl_destr1','$datos->tgl_destr2','$datos->ind_bolrut','$datos->vig_estseg',
+        '$datos->ind_estseg','$datos->tip_estseg','$datos->ind_segxml','$datos->rut_segxml','$datos->rut_estpdf'
         )";
 
         $mSql = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 

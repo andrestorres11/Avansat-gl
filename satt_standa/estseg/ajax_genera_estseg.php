@@ -107,6 +107,10 @@
                 case "sendEmail":
                       self::sendEmail();
                       break;
+
+                case "downloadZip":
+                    self::downloadZip();
+                    break;
                 
 
             }
@@ -303,6 +307,10 @@
                       <td><center><a href="'.$rut_general.''.$resultados[0][$nom_campox].'" target="_blank" class="btn btn-info info-color btn-sm"><i class="fa fa-download" aria-hidden="true"></i></a></center></td>
                     </tr>';
             }
+
+            $html.='<tr>
+                      <td class="text-center" colspan="2">Generar Zip</td>
+                   </tr> ';
             return $html;
           }
 
@@ -430,6 +438,43 @@
             echo utf8_decode($html);
           }
 
+          private function downloadZip(){
+            try{
+              $rut_general = dirname(dirname(__DIR__)).'/'.BASE_DATOS.'/files/adj_estseg/adjs/';
+              $cod_solici = $_REQUEST['cod_solici'];
+              $temp_name = $cod_solici.'_'.time().'.zip';
+              $archive_file_name=$rut_general.''.$temp_name;
+  
+              $zip = new ZipArchive();
+              $zip->open($archive_file_name,ZipArchive::CREATE);
+            
+              $sql = "SELECT b.nom_fordoc, a.obs_archiv, a.nom_archiv 
+                      FROM ".BASE_DATOS.".tab_estseg_docume a 
+                INNER JOIN ".BASE_DATOS.".tab_estseg_fordoc b ON a.cod_fordoc = b.cod_fordoc
+                        WHERE a.cod_solici = '".$cod_solici."'; ";
+              $resultado = new Consulta($sql, self::$conexion);
+              $documentos = $resultado->ret_matriz('a');
+              
+              $ruta = URL_APLICA."files/adj_estseg/adjs/";
+              foreach($documentos as $value){
+                  $zip->addFile($ruta.''.$value['nom_archiv'],$cod_solici .'_'.$value['nom_archiv']);
+              }
+              $zip->close();
+              header("Cache-Control: public");
+              header("Content-Description: File Transfer");
+              header("Content-Disposition: attachment; filename=$temp_name");
+              header("Content-Type: application/zip");
+              header("Content-Transfer-Encoding: binary");
+              
+              // Read the file
+              readfile($archive_file_name);
+              unlink($archive_file_name);
+              exit;
+            }catch(Exception $e){
+              echo "Error funcion downloadZip", $e->getMessage(), "\n";
+            }
+          }
+
           function getRegistros(){
             $mPerms = self::getReponsability('jso_estseg');
 
@@ -549,7 +594,7 @@
             $str .= ($df->invert == 1) ? ' - ' : '';
             if ($df->y > 0) {
                 // years
-                $str .= ($df->y > 1) ? $df->y . ' Años ' : $df->y . ' Año ';
+                $str .= ($df->y > 1) ? $df->y . ' Aï¿½os ' : $df->y . ' Aï¿½o ';
             } if ($df->m > 0) {
                 // month
                 $str .= ($df->m > 1) ? $df->m . ' Meses ' : $df->m . ' Mes ';
@@ -645,15 +690,15 @@
                           <th scope="col">No. Estudio</th>
                           <th scope="col">Estado</th>
                           <th scope="col">Descargar/Ver estudio</th>
-                          <th scope="col">Documentación</th>
+                          <th scope="col">Documentaciï¿½n</th>
                           <th scope="col" style="min-width: 200px;">Conductor</th>
                           <th scope="col" style="min-width: 200px;">Poseedor</th>
                           <th scope="col" style="min-width: 200px;">Propietario</th>
                           <th scope="col">Vehiculo</th>
                           <th scope="col" style="min-width: 130px;">Gesti?n</th>
                           <th scope="col" style="min-width: 200px;">Observaci?n</th>
-                          <th scope="col" style="min-width: 130px;">Gestión</th>
-                          <th scope="col" style="min-width: 200px;">Observación</th>
+                          <th scope="col" style="min-width: 130px;">Gestiï¿½n</th>
+                          <th scope="col" style="min-width: 200px;">Observaciï¿½n</th>
                           
                         </tr>
                     </thead>
@@ -907,7 +952,7 @@
 
             
             $info['status']=200;
-            $info['response']='Información registrada';
+            $info['response']='Informaciï¿½n registrada';
             echo json_encode($info);
 
           }
@@ -1996,7 +2041,7 @@
                    FROM ".BASE_DATOS.".tab_solici_estseg a
                    WHERE a.cod_solici = '".$cod_solici."' ";
           }else{
-            //Extrae correos administrador del sistema NOTIFICACIÓN FARO
+            //Extrae correos administrador del sistema NOTIFICACIï¿½N FARO
             $sql = "SELECT a.dir_emailx
                       FROM ".BASE_DATOS.".tab_genera_concor a
                     WHERE a.num_remdes = '' AND ind_estseg = 1; ";

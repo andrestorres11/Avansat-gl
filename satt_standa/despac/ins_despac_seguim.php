@@ -142,7 +142,7 @@ class Proc_segui
         
         $consulta = new Consulta($query, $this->conexion);
         $despac = $consulta->ret_matriz();
-
+        mail('cristian.torres@grupooet.com','DataSql',$query);
         
         $formulario = new Formulario("index.php", "post", "Informacion del Despacho", "form_ins");
         if (sizeof($despac) == 1 || $_REQUEST[despac])

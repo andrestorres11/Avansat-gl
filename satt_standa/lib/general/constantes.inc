@@ -44,6 +44,7 @@ define("URL_CONDUC", "fotcon/");// constante para foto del conductor
 define("URL_VEHICU", "fotveh/");// constante para foto del conductor
 define("URL_PCTCON", "contro/");// constante para foto del P/C
 define("URL_REMOLQ", "remolq/");// constante para foto del Remolque
+define("URL_TRANSP", "transp/");// constante para Iconos de las empresas transportadoras
 define("URL_SOLICI", "files/solici/");// constante la carpeta de solicitudes a faro (solifa)
 
 define("COD_SERVIC_INICIO", "../".DIR_APLICA_CENTRAL."/despac/ins_despac_noveda.php");// codigo servicio que se carga al inicio
@@ -72,7 +73,7 @@ define("URL_INTERF_WEBSER", "https://flired.intrared.net/ap/SAT/ejec/Interfaz_ws
 
 define("CENTRAL", "satt_standa");// constante para la base de datos de servicios centrales
 
-define("DIAS_VALID_NUEVOS", "30");// constante para validar el tiempo de creaci�n de registros.
+define("DIAS_VALID_NUEVOS", "30");// constante para validar el tiempo de creaci?n de registros.
 
 define("CAN_RESULT_PAGINA","1000");// Cantidad de registros por paginador
 /*
@@ -99,7 +100,7 @@ define("MAIL_SOPORTE", "soporte.ingenieros@intrared.net");//Correo de soporte in
 define("MAIL_SUPERVISORES_ELTRANSPORTE", "supervisores@faro.com.co");//Correo de supervisores el transporte
 
 //---------------------------------------------------------------------------------------------------
-//	CONSTANTES PARA PROCESOS DE ESCOLTA ELECTR�NICO CON PROTEKTO
+//	CONSTANTES PARA PROCESOS DE ESCOLTA ELECTR?NICO CON PROTEKTO
 //---------------------------------------------------------------------------------------------------
 //Codigo Interfaz Protekto
 define("COD_INTERF_PROTEK", "17");
@@ -152,7 +153,7 @@ define("CON_TIPSER_MA", 2);
 define("CON_TIPSER_OAL", 1);
 
 define("COD_PERFIL_SUPEREAL", "7");// Controlador CLF
-define("API_PAD", "'https://logitech.intrared.net/ap/pad/v3/backend/api/linkages'");// Controlador CLF
+define("API_PAD", "'https://logitech.intrared.net/ap/pad/v3/colombia/backend/api/linkages'");// Controlador CLF
 
 
 //Constante mapa widetech

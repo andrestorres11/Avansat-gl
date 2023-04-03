@@ -5,15 +5,16 @@ $(document).ready(function() {
     getFormulRegist();
     initFormulRegist();
     //Formulario Propietario
-    $("#esPropieID").on('click', function() {
+    $(".esPropieClass").on('click', function() {
+        const FormAsi = $(this).attr("showForm");
         if ($(this).is(':checked')) {
-            $("#formPropiet").slideUp();
-            $('#formPropiet .form-control').each(function() {
+            $("#" + FormAsi).slideUp();
+            $('#' + FormAsi + ' .form-control').each(function() {
                 $(this).removeAttr('validate');
             });
         } else {
-            $("#formPropiet").slideDown('slow');
-            $('#formPropiet .form-control').each(function() {
+            $("#" + FormAsi).slideDown('slow');
+            $('#' + FormAsi + ' .form-control').each(function() {
                 $(this).attr('validate', true);
             });
         }
@@ -45,30 +46,52 @@ $(document).ready(function() {
         }
 
     });
+
+    $('.ciu_despac').focusout(function() {
+        setTimeout(busquedaRuta, 1000);
+    });
+
+    //setInterval(refreshInfoRealTime, 1000);
 });
 
 //Usada
 function getFormulRegist() {
     //Default
     var formActi = 'formVehicuSolici';
-    var formHide = 'formConducSolici';
-    $("#" + formHide).slideUp();
+    var formHide1 = 'formConducSolici';
+    var formHide2 = 'formCombinadoSolici';
+    $("#" + formHide1).slideUp();
+    $("#" + formHide2).slideUp();
     $("#" + formActi).slideDown('slow');
 
     $("[name='tip_estudi']").change(function() {
         var opcion = $(this).val();
         if (opcion == "V") {
             $("#formConducSolici").slideUp();
+            $("#formCombinadoSolici").slideUp();
             $("#formVehicuSolici").slideDown('slow');
             formActi = 'formVehicuSolici';
-            formHide = 'formConducSolici';
-        } else {
+            formHide1 = 'formConducSolici';
+            formHide2 = 'formCombinadoSolici';
+        } else if (opcion == "C") {
             $("#formVehicuSolici").slideUp();
+            $("#formCombinadoSolici").slideUp();
             $("#formConducSolici").slideDown('slow');
             formActi = 'formConducSolici';
-            formHide = 'formVehicuSolici';
+            formHide1 = 'formVehicuSolici';
+            formHide2 = 'formCombinadoSolici';
+        } else if (opcion == "CV") {
+            $("#formVehicuSolici").slideUp();
+            $("#formConducSolici").slideUp();
+            $("#formCombinadoSolici").slideDown('slow');
+            formActi = 'formCombinadoSolici';
+            formHide1 = 'formVehicuSolici';
+            formHide2 = 'formConducSolici';
         }
-        $('#' + formHide + ' .form-control').each(function() {
+        $('#' + formHide1 + ' .form-control').each(function() {
+            $(this).removeAttr('validate');
+        });
+        $('#' + formHide2 + ' .form-control').each(function() {
             $(this).removeAttr('validate');
         });
         $('#' + formActi + ' .form-control').each(function() {
@@ -220,7 +243,6 @@ function setTercerFormulVehicu(num_placax) {
     });
 }
 
-
 function loadAjax(x) {
     try {
         if (x == "start") {
@@ -241,7 +263,7 @@ function asignaTransportadora(campo) {
     var dataString = 'key=' + key + '&opcion=' + opcion;
     var nameid = $(campo).attr('id');
     $.ajax({
-        url: "../" + standa + "/estseg/ajax_genera_estseg.php",
+        url: "../" + standa + "/estsegv2/ajax_genera_estseg.php",
         method: 'POST',
         data: dataString,
         success: function(data) {
@@ -258,7 +280,7 @@ function asignaTransportadora(campo) {
                 dataString = 'cod_transp=' + id + '&opcion=' + opcion;
 
                 $.ajax({
-                    url: "../" + standa + "/estseg/ajax_genera_estseg.php?" + dataString,
+                    url: "../" + standa + "/estsegv2/ajax_genera_estseg.php?" + dataString,
                     method: 'POST',
                     async: false,
                     dataType: "json",
@@ -269,6 +291,7 @@ function asignaTransportadora(campo) {
                         $("#cor_soliciID").val(data['dir_emailx']);
                         $("#tel_soliciID").val(data['num_telefo']);
                         $("#cel_soliciID").val(data['num_telmov']);
+                        $("#tip_estudioc").val(data['nom_tipest']);
                         $("#cod_transp").val(data['cod_tercer']);
                         $("#nom_soliciID").removeAttr("disabled");
                         $("#cor_soliciID").removeAttr("disabled");
@@ -378,10 +401,11 @@ function borrarEstudio(elemento) {
 }
 
 function validacionesCampos(formulario) {
-    $('#' + formulario + ' .form-control').each(function() {
+    $('#' + formulario + ' .form-control[id]').each(function() {
         if ($(this).attr('validate') != undefined) {
+            var idcamp = "#" + this.id;
             if ($(this).hasClass("req")) {
-                $(this).rules("add", {
+                $(idcamp).rules("add", {
                     required: true,
                     messages: {
                         required: "Este campo es requerido"
@@ -390,7 +414,7 @@ function validacionesCampos(formulario) {
             }
 
             if ($(this).hasClass("num")) {
-                $(this).rules("add", {
+                $(idcamp).rules("add", {
                     number: true,
                     messages: {
                         number: "Solo se aceptan numeros"
@@ -399,7 +423,7 @@ function validacionesCampos(formulario) {
             }
 
             if ($(this).hasClass("ema")) {
-                $(this).rules("add", {
+                $(idcamp).rules("add", {
                     email: true,
                     messages: {
                         email: "El correo no es válido"
@@ -408,7 +432,7 @@ function validacionesCampos(formulario) {
             }
 
             if ($(this).hasClass("min6max6")) {
-                $(this).rules("add", {
+                $(idcamp).rules("add", {
                     minlength: 6,
                     maxlength: 6,
                     messages: {
@@ -418,9 +442,9 @@ function validacionesCampos(formulario) {
                 });
             }
 
-
-
-
+        } else {
+            $(this.id).rules("remove");
+            console.log(this.id);
         }
     });
 
@@ -437,86 +461,25 @@ function validacionesCampos(formulario) {
         }
     });
 
-
-
 }
 
 //usado
 function validateInicial() {
     $('#InsSolici').removeData('validator');
+
+
     var validator = $("#InsSolici").validate({
         ignore: []
     });
+
     validacionesCampos("InsSolici");
+
     if ($("#InsSolici").valid()) {
         almacenarSolicitud();
     }
 }
+
 //VALIDACIONES FORMULARIOS
-
-//Validacion de formulario de solicitud
-function InsSoliciValidate() {
-    $("#InsSolici").validate({
-        rules: {
-            'tip_docume[]': {
-                required: true
-            },
-            'num_docume[]': {
-                required: true,
-                number: true,
-            },
-            nom_person: {
-                required: true
-            },
-            nom_apell1: {
-                required: true
-            },
-            num_telmov: {
-                required: true
-            },
-            dir_emailx: {
-                required: true,
-                email: true,
-            },
-            num_placax: {
-                required: true,
-                minlength: 6,
-                maxlength: 6
-            }
-        },
-        messages: {
-            tip_docume: {
-                required: "El tipo de documento es requerido"
-            },
-            num_docume: {
-                required: "El número de documento es requerido",
-                number: "Solo se aceptan números"
-            },
-            nom_person: {
-                required: "El nombre del conductor es requerido"
-            },
-            nom_apell1: {
-                required: "El apellido del conductor es requerido"
-            },
-            num_telmov: {
-                required: "El numero de celular requerido"
-            },
-            dir_emailx: {
-                required: "La direccion de correo es requerido",
-                email: "El correo no es válido"
-            },
-            num_placax: {
-                minlength: "Debe tener almenos 6 caracteres",
-                maxlength: "Solo es permitido maximo 6 caracteres",
-                required: "La placa del vehiculo es requerida"
-            }
-        },
-        submitHandler: function(form) {
-            almacenarSolicitud(form);
-        }
-    });
-}
-
 function addReq(elemento) {
     $(elemento + ' input').each(function() {
         if ($(this).attr('sol')) {
@@ -846,9 +809,13 @@ function almacenarSolicitud() {
     data.append('cor_solici', $("#cor_soliciID").val());
     data.append('tel_solici', $("#tel_soliciID").val());
     data.append('cel_solici', $("#cel_soliciID").val());
-    data.append('num_documePro', $("#num_documeProID").val());
-    data.append('num_documePos', $("#num_documePosID").val());
-    data.append('num_documeCon', $("#num_documeConID").val());
+
+    if ($('#genDespac').is(':checked')) {
+        data.append('ind_credes', 1);
+    } else {
+        data.append('ind_credes', 0);
+    }
+
     if ($("#cod_transp").val() == undefined || $("#cod_transp").val() == '') {
         Swal.fire({
             title: 'Advertencia',
@@ -880,8 +847,6 @@ function almacenarSolicitud() {
         },
     });
 }
-
-
 
 function almacenarFase1() {
     var standa = 'satt_standa';
@@ -997,8 +962,12 @@ function cambioIndicadores(elemento) {
 function generaPDFSend(cod_solici, emails, information) {
     var standa = 'satt_standa';
     var dataString = 'cod_solici=' + cod_solici;
+    var rut_pdfxxx = $("#rut_estpdfID").val();
+    if (rut_pdfxxx == '' || rut_pdfxxx == null) {
+        rut_pdfxxx = 'estsegv2/inf_pdfxxx_genera.php';
+    }
     $.ajax({
-        url: "../" + standa + "/estsegv2/inf_estseg_pdfxxx.php?" + dataString,
+        url: "../" + standa + "/" + rut_pdfxxx + "?" + dataString,
         xhrFields: { responseType: 'blob' },
         success: function(data) {
             var blob = new Blob([data]);
@@ -1285,7 +1254,7 @@ function busquedaCiudad(campo) {
     var dataString = 'key=' + key + '&opcion=' + opcion;
     var nameid = $(campo).attr('id');
     $.ajax({
-        url: "../" + standa + "/estseg/ajax_genera_estseg.php",
+        url: "../" + standa + "/estsegv2/ajax_genera_estseg.php",
         method: 'POST',
         data: dataString,
         success: function(data) {
@@ -1643,7 +1612,6 @@ function inicializarTablas() {
 
 }
 
-
 function executeFilter() {
     rellenaTablas();
 }
@@ -1691,4 +1659,59 @@ function rellenaTablas() {
         }
 
     });
+}
+
+function refreshInfoRealTime() {
+    var standa = 'satt_standa';
+    //Variables
+    var dataString = 'opcion=getRegistros';
+    var cod_emptra = $("#transportadoraID").val();
+    var num_solici = $("#num_soliciID").val();
+    var fec_inicio = $("#fec_inicio").val();
+    var fec_finalx = $("#fec_finxxx").val();
+    fil_fechas = false;
+    if ($('#fil_fechasID').is(':checked')) {
+        fil_fechas = true;
+    }
+    $.ajax({
+        data: {
+            cod_emptra,
+            num_solici,
+            fec_inicio,
+            fec_finalx,
+            fil_fechas
+        },
+        type: "POST",
+        url: "../" + standa + "/estsegv2/ajax_genera_estseg.php?" + dataString,
+        dataType: "json",
+        success: function(data) {
+            var table = $('#tabla_inf_registradas').DataTable();
+            table.clear();
+            table.rows.add(data['registrados']).draw();
+            var table = $('#tabla_inf_finalizadas').DataTable();
+            table.clear();
+            table.rows.add(data['finalizados']).draw();
+        },
+    });
+}
+
+function busquedaRuta() {
+
+    var ciu_origen = $("#ciu_origen").val();
+    var ciu_destin = $("#ciu_destin").val();
+
+    if (ciu_origen != '' && ciu_destin != '') {
+        var standa = 'satt_standa';
+        var dataString = 'opcion=getRutas&ciu_origen=' + ciu_origen + '&ciu_destin=' + ciu_destin;
+        $.ajax({
+            url: "../" + standa + "/estsegv2/ajax_genera_estseg.php?" + dataString,
+            method: 'POST',
+            async: false,
+            dataType: 'html',
+            success: function(data) {
+                $("#rut_despacID").empty();
+                $("#rut_despacID").append(data);
+            },
+        });
+    }
 }

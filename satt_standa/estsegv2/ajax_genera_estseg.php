@@ -59,6 +59,10 @@
                 case "consultaCiudades":
                     self::consultaCiudades();
                     break;
+
+                case "getRutas":
+                    self::getRutas();
+                    break;
                 
                 case "consulta_transportadoras":
                       self::consultaTransportadoras();
@@ -148,13 +152,28 @@
 
         public function consultaTransportadoras(){
           $busqueda = $_REQUEST['key'];
-          $sql="SELECT a.cod_tercer,a.nom_tercer
-                  FROM ".BASE_DATOS.".tab_tercer_tercer a,
-                      ".BASE_DATOS.".tab_tercer_activi b
-                WHERE a.cod_tercer = b.cod_tercer AND
-                      b.cod_activi = '".COD_FILTRO_EMPTRA."'
-                      AND cod_estado = 1
-                      AND a.nom_tercer LIKE '%".$busqueda."%'";
+            $sql="SELECT a.cod_tercer, a.nom_tercer
+                    FROM 
+                                 ".BASE_DATOS.".tab_tercer_tercer a 
+                      INNER JOIN ".BASE_DATOS.".tab_tercer_activi b ON a.cod_tercer = b.cod_tercer 
+                      INNER JOIN ".BASE_DATOS.".tab_transp_tipser c ON c.cod_transp = a.cod_tercer 
+                    WHERE 
+                        b.cod_activi = '".COD_FILTRO_EMPTRA."' 
+                        AND a.cod_estado = 1 
+                        AND c.num_consec = (
+                          SELECT 
+                            MAX(num_consec) 
+                          FROM 
+                            ".BASE_DATOS.".tab_transp_tipser 
+                          WHERE 
+                            cod_transp = c.cod_transp
+                        )
+                        AND c.ind_estseg = 1
+                        AND a.nom_tercer LIKE '%".$busqueda."%'
+                      GROUP BY 
+                        c.cod_transp 
+                      ORDER BY 
+                        c.num_consec DESC";
             $resultado = new Consulta($sql, self::$conexion);
             $resultados = $resultado->ret_matriz();
             $htmls='';
@@ -167,9 +186,16 @@
         public function getInfoTransportadora(){
           $sql = "SELECT a.cod_tercer, a.nom_tercer, a.dir_emailx,
                         CONCAT(a.num_telef1,' ', a.num_telef2) as 'num_telefo',
-                        a.num_telmov
-                  FROM ".BASE_DATOS.".tab_tercer_tercer a 
-                  WHERE a.cod_tercer = '".$_REQUEST['cod_transp']."'";
+                        a.num_telmov, b.tip_estseg, c.nom_tipest
+                  FROM ".BASE_DATOS.".tab_tercer_tercer a
+                  INNER JOIN ".BASE_DATOS.".tab_transp_tipser b ON a.cod_tercer = b.cod_transp
+                  INNER JOIN ".BASE_DATOS.".tab_genera_estseg c ON b.tip_estseg = c.cod_estseg
+                  WHERE a.cod_tercer = '".$_REQUEST['cod_transp']."' 
+                  AND b.num_consec = (
+                    SELECT MAX(num_consec)
+                    FROM tab_transp_tipser
+                    WHERE cod_transp = a.cod_tercer
+                  )";
           $consulta = new Consulta($sql, self::$conexion);
           $resultados = $consulta->ret_matriz();
           echo json_encode($resultados[0]);
@@ -177,7 +203,7 @@
 
         public function consultaCiudades(){
           $busqueda = $_REQUEST['key'];
-          $sql="SELECT a.cod_ciudad, a.nom_ciudad, b.nom_depart, c.nom_paisxx FROM ".BASE_DATOS.".tab_genera_ciudad a
+          $sql="SELECT a.cod_ciudad, a.nom_ciudad, b.nom_depart, a.cod_paisxx, c.nom_paisxx FROM ".BASE_DATOS.".tab_genera_ciudad a
                    INNER JOIN ".BASE_DATOS.".tab_genera_depart b ON a.cod_depart = b.cod_depart
                    INNER JOIN ".BASE_DATOS.".tab_genera_paises c ON a.cod_paisxx = c.cod_paisxx
                    WHERE a.ind_estado = 1 AND a.nom_ciudad LIKE '%$busqueda%' ORDER BY a.nom_ciudad LIMIT 3";
@@ -186,7 +212,7 @@
             $resultados = $resultado->ret_matriz();
             $htmls='';
             foreach($resultados as $valor){
-              $htmls.='<div><a class="suggest-element bk-principal_color white-color" data="'.$valor['cod_ciudad'].' - '.$valor['nom_ciudad'].'" id="'.$valor['cod_ciudad'].'">('.substr($valor['nom_paisxx'], 0, 3).') - '.substr($valor['nom_depart'], 0, 4).' - '.$valor['nom_ciudad'].'</a></div>';
+              $htmls.='<div><a class="suggest-element bk-principal_color white-color" data="'.$valor['nom_ciudad'].' ('.$valor['cod_ciudad'].'-'.$valor['cod_paisxx'].')" id="'.$valor['cod_ciudad'].'">('.substr($valor['nom_paisxx'], 0, 3).') - '.substr($valor['nom_depart'], 0, 4).' - '.$valor['nom_ciudad'].'</a></div>';
             }
             echo utf8_decode($htmls);
       
@@ -277,30 +303,46 @@
 
         //usado
         function registroIniVehicu(){
+            $cod_tipest = $_REQUEST['tip_estudi'];
+            $num_placax = $_REQUEST['num_placax_'.$cod_tipest];
             $cod_poseed = $this->registroIniPoseed();
 
-            if($_REQUEST['esPropie']){
+            if($_REQUEST['esPropie_'.$cod_tipest]){
               $cod_propie = $this->registroIniPoseed();
             }else{
               $cod_propie = $this->registroIniPropiet();
             }
             
-            if(!$this->validRegPlaca($_REQUEST['num_placax'])){
+            if(!$this->validRegPlaca($num_placax)){
               $mSql = "INSERT INTO ".BASE_DATOS.".tab_estseg_vehicu(
                           num_placax, cod_poseed, cod_propie,
                           usr_creaci, fec_creaci
                         ) VALUES (
-                          '".strtoupper($_REQUEST['num_placax'])."', '".$cod_poseed."', '".$cod_propie."',
+                          '".strtoupper($num_placax)."', '".$cod_poseed."', '".$cod_propie."',
                           '".self::$cod_usuari."', NOW()
                         )";
             }else{
               $mSql = "UPDATE ".BASE_DATOS.".tab_estseg_vehicu SET
                           cod_poseed = '".$cod_poseed."', 
                           cod_propie = '".$cod_propie."'
-                      WHERE num_placax = '".$_REQUEST['num_placax']."'";
+                      WHERE num_placax = '".$num_placax."'";
             }
             new Consulta($mSql, self::$conexion);
-            return $_REQUEST['num_placax'];
+            return $num_placax;
+        }
+
+        function registroIniDespacho(){
+          $mSql = "INSERT INTO ".BASE_DATOS.".tab_estseg_despac(
+                      usr_creaci, fec_creaci
+                    ) VALUES (
+                      '".self::$cod_usuari."', NOW()
+                    );";
+          new Consulta($mSql, self::$conexion);
+
+          $mSql = "SELECT MAX(cod_despac) FROM ".BASE_DATOS.".tab_estseg_despac";
+          $mEjec = new Consulta($mSql, self::$conexion);
+          $respuesta = $mEjec->ret_matriz();    
+          return $respuesta[0][0] == NULL ? 1 : $respuesta[0][0];
         }
 
         //usado
@@ -386,6 +428,31 @@
           echo json_encode($info);
         }
 
+        function getRutas(){
+          $cod_ciuori = self::separarCodigoCiudad($_REQUEST['ciu_origen']);
+          $cod_paiori = self::separarCodigoCiudad($_REQUEST['ciu_origen'],2);
+          $cod_ciudes = self::separarCodigoCiudad($_REQUEST['ciu_destin']);
+          $cod_paides = self::separarCodigoCiudad($_REQUEST['ciu_destin'],2);
+
+          $mSql = "SELECT a.cod_rutasx, a.nom_rutasx
+                          FROM ".BASE_DATOS.".tab_genera_rutasx a
+                            WHERE ind_estado = 1 AND
+                                  cod_paiori = '".$cod_paiori."' AND
+                                  cod_ciuori = '".$cod_ciuori."' AND
+                                  cod_paides = '".$cod_paides."' AND
+                                  cod_ciudes = '".$cod_ciudes."'
+                                  ";
+          $consulta = new Consulta($mSql, self::$conexion);
+          $resultados = $consulta->ret_matriz();
+          $htmls = '';
+          if(count($resultados)>0){
+           foreach($resultados as $valor){
+            $htmls .= '<option value="'.$valor['cod_rutasx'].'">'.$valor['nom_rutasx'].'</option>';
+            }
+          }
+          echo utf8_decode($htmls);
+        }
+
         function getVehicu(){
           $info = [];
           $info['resp'] = false;
@@ -469,24 +536,26 @@
 
         //usado
         function registroIniConduc(){
+          $cod_tipest = $_REQUEST['tip_estudi'];
           $inf_conduc = NULL;
-          $information = $this->formatInfoTercer($_REQUEST['num_documeCon'],$_REQUEST['tip_documeCon'], $_REQUEST['nom_apell1Con'], $_REQUEST['nom_apell2Con'], $_REQUEST['nom_personCon'], $_REQUEST['num_telmovCon'], $_REQUEST['dir_emailxCon']);
-          if(!$this->validRegTercer($_REQUEST['num_documeCon'])){
+          $information = $this->formatInfoTercer($_REQUEST['num_documeCon_'.$cod_tipest],$_REQUEST['tip_documeCon_'.$cod_tipest], $_REQUEST['nom_apell1Con_'.$cod_tipest], $_REQUEST['nom_apell2Con_'.$cod_tipest], $_REQUEST['nom_personCon_'.$cod_tipest], $_REQUEST['num_telmovCon_'.$cod_tipest], $_REQUEST['dir_emailxCon_'.$cod_tipest]);
+          if(!$this->validRegTercer($_REQUEST['num_documeCon_'.$cod_tipest])){
             $status = $this->setRegTercer($information);
           }else{
              $this->updateRegConduc($information);
-             $inf_conduc = $this->getRegTercer($_REQUEST['num_documeCon']);
+             $inf_conduc = $this->getRegTercer($_REQUEST['num_documeCon_'.$cod_tipest]);
           }
-          $inf_conduc = $this->getRegTercer($_REQUEST['num_documeCon']);
+          $inf_conduc = $this->getRegTercer($_REQUEST['num_documeCon_'.$cod_tipest]);
           return $inf_conduc['cod_tercer'];
         }
 
         //usado
         function registroIniPoseed(){
-          $num_docume = $_REQUEST['num_documePos'];
+          $cod_tipest = $_REQUEST['tip_estudi'];
+          $num_docume = $_REQUEST['num_documePos_'.$cod_tipest];
           $inf_poseed = NULL;
           if(!$this->validRegTercer($num_docume)){
-            $information = $this->formatInfoTercer($num_docume,$_REQUEST['tip_documePos'], $_REQUEST['nom_apell1Pos'], $_REQUEST['nom_apell2Pos'], $_REQUEST['nom_personPos'], '', '');
+            $information = $this->formatInfoTercer($num_docume,$_REQUEST['tip_documePos_'.$cod_tipest], $_REQUEST['nom_apell1Pos_'.$cod_tipest], $_REQUEST['nom_apell2Pos_'.$cod_tipest], $_REQUEST['nom_personPos_'.$cod_tipest], '', '');
             $status = $this->setRegTercer($information);
             if($status){
               $inf_poseed = $this->getRegTercer($num_docume);
@@ -498,10 +567,11 @@
         }
 
         function registroIniPropiet(){
-          $num_docume = $_REQUEST['num_documePro'];
+          $cod_tipest = $_REQUEST['tip_estudi'];
+          $num_docume = $_REQUEST['num_documePro_'.$cod_tipest];
           $inf_propie = NULL;
           if(!$this->validRegTercer($num_docume)){
-            $information = $this->formatInfoTercer($num_docume,$_REQUEST['tip_documePro'], $_REQUEST['nom_apell1Pro'], $_REQUEST['nom_apell2Pro'], $_REQUEST['nom_personPro'], '', '');
+            $information = $this->formatInfoTercer($num_docume,$_REQUEST['tip_documePro_'.$cod_tipest], $_REQUEST['nom_apell1Pro_'.$cod_tipest], $_REQUEST['nom_apell2Pro_'.$cod_tipest], $_REQUEST['nom_personPro_'.$cod_tipest], '', '');
             $status = $this->setRegTercer($information);
             if($status){
               $inf_propie = $this->getRegTercer($num_docume);
@@ -525,21 +595,37 @@
             if($_REQUEST['tip_estudi'] == 'V'){
               $cod_conduc = NULL;
               $cod_vehicu = $this->registroIniVehicu();
-            }else{
+            }else if($_REQUEST['tip_estudi'] == 'C'){
               $cod_conduc = $this->registroIniConduc();
               $cod_vehicu = NULL;
+            }else{
+              $cod_vehicu = $this->registroIniVehicu();
+              $cod_conduc = $this->registroIniConduc();
             }
+
+            //Indicador de creación del despachos al finalizar el estudio de seguridad.
+            $ind_credes = $_REQUEST['ind_credes'];
+            $cod_despac = NULL;
+            if($ind_credes==1){
+              $cod_despac = $this->registroIniDespacho();
+            }
+
+
+            //Consulta el tipo de estudio configurado para la transportadora de acuerdo al tipo de servicio
+            $tip_servic = $this->getConfigTipSer($cod_emptra);
+  
 
             $mSql="INSERT INTO ".BASE_DATOS.".tab_estseg_solici(
                       cod_emptra, cor_solici, tel_solici,
-                      cel_solici, cod_tipest, cod_conduc,
-                      cod_vehicu, ind_estseg, usr_creaci,
+                      cel_solici, cod_estcon, cod_tipest,
+                      ind_credes, cod_conduc, cod_vehicu,
+                      cod_despac, ind_estseg, usr_creaci,
                       fec_creaci
                     ) VALUES (
                       '".$cod_emptra."', '".$cor_solici."', '".$tel_solici."',
-                      '".$cel_solici."', '".$cod_tipest."', '".$cod_conduc."',
-                      '".$cod_vehicu."', 'P', '".self::$cod_usuari."',
-                      NOW()
+                      '".$cel_solici."', '".$tip_servic['tip_estseg']."', '".$cod_tipest."', 
+                      '".$ind_credes."', '".$cod_conduc."', '".$cod_vehicu."',
+                      '".$cod_despac."', 'P', '".self::$cod_usuari."', NOW()
                     )";
             $query = new Consulta($mSql, self::$conexion);
             
@@ -569,7 +655,19 @@
             }
 
             echo json_encode($info);
-          }
+        }
+
+        function getConfigTipSer($cod_transp){
+          $mSql="SELECT ind_estseg, tip_estseg, ind_segxml, rut_segxml, rut_estpdf 
+                  FROM 
+                    ".BASE_DATOS.".tab_transp_tipser 
+                  WHERE 
+                    cod_transp = '".$cod_transp."' 
+                  ORDER BY num_consec DESC 
+                  LIMIT 1";
+          $query = new Consulta($mSql, self::$conexion);
+          return $query->ret_arreglo();
+        }
 
 
           //usado
@@ -1493,8 +1591,9 @@
                       a.cod_solici, a.cod_emptra, c.nom_tercer,
                       a.cor_solici, a.tel_solici, a.cel_solici,
                       a.cod_tipest, a.cod_conduc, a.cod_vehicu,
-                      b.cod_poseed, b.cod_propie, a.ind_estseg,
-                      a.obs_estseg, a.usr_estseg, a.fec_venest
+                      b.cod_poseed, b.cod_propie, a.ind_credes,
+                      a.cod_despac, a.ind_estseg, a.obs_estseg,
+                      a.usr_estseg, a.fec_venest
                     FROM ".BASE_DATOS.".tab_estseg_solici a
                     LEFT JOIN ".BASE_DATOS.".tab_estseg_vehicu b ON 
                       a.cod_vehicu = b.num_placax
@@ -1511,12 +1610,19 @@
             $cod_solici = $_REQUEST['cod_solici'];
             $inf_solici = self::getInfoSolici($cod_solici);
             $process = false;
-            if($inf_solici['cod_tipest'] != 'V'){
+            if($inf_solici['cod_tipest'] == 'C'){
               //Actualiza Informacion del conductor
               $process = self::procesaConductor($_REQUEST, $inf_solici);
-            }else{
+            }else if($inf_solici['cod_tipest'] == 'V'){
               //Actualiza Informacion del vehiculo
               $process = self::procesaVehiculo($_REQUEST, $inf_solici);
+            }else{
+              $process = self::procesaVehiculo($_REQUEST, $inf_solici);
+              $process = self::procesaConductor($_REQUEST, $inf_solici);
+            }
+
+            if($inf_solici['ind_credes']==1){
+              $process = self::procesaDespacho($_REQUEST, $inf_solici);
             }
 
               if($process){
@@ -1532,14 +1638,24 @@
           function guardado(){
             $cod_solici = $_REQUEST['cod_solici'];
             $inf_solici = self::getInfoSolici($cod_solici);
+            $inf_tipser = self::getConfigTipSer($inf_solici['cod_emptra']);
             $process = false;
-            if($inf_solici['cod_tipest'] != 'V'){
+            
+            if($inf_solici['cod_tipest'] == 'C'){
               //Actualiza Informacion del conductor
               $process = self::procesaConductor($_REQUEST, $inf_solici);
-            }else{
+            }else if($inf_solici['cod_tipest'] == 'V'){
               //Actualiza Informacion del vehiculo
               $process = self::procesaVehiculo($_REQUEST, $inf_solici);
+            }else{
+              $process = self::procesaVehiculo($_REQUEST, $inf_solici);
+              $process = self::procesaConductor($_REQUEST, $inf_solici);
             }
+
+            if($inf_solici['ind_credes']==1){
+              $process = self::procesaDespacho($_REQUEST, $inf_solici);
+            }
+            
             //Consulta los dias habilitados
             $mSql=' SELECT vig_estseg
                     FROM '.BASE_DATOS.'.tab_transp_tipser 
@@ -1576,15 +1692,28 @@
                 $info['status']=100; 
             } 
             $array_generado = self::armaArrayInfo($cod_solici);
-           
+            
+            if( $inf_solici['ind_credes'] ){
+              $mensaje = self::creaDespacho($array_generado);
+              if(!$mensaje){
+                $info['despac_msg'] = $mensaje['msg'];
+                $info['despac_status'] = $mensaje['status'];
+              }
+            }
+
             $ident_xml = '';
-            if($inf_solici['cod_tipest'] != 'V'){
+            if($inf_solici['cod_tipest'] == 'V'){
+              $ident_xml = $inf_solici['cod_vehicu'];
+            }else if($inf_solici['cod_tipest'] == 'C'){
               $ident_xml = $inf_solici['cod_conduc'];
             }else{
-              $ident_xml = $inf_solici['cod_vehicu'];
+              $ident_xml = $inf_solici['cod_vehicu']."_".$inf_solici['cod_conduc'];
             }
-            self::createXML($array_generado,'SOL_'.$ident_xml.'.xml');
 
+            if($inf_tipser['ind_segxml']){
+              self::createXML($array_generado,'SOL_'.$ident_xml.'.xml', $inf_tipser['rut_segxml']);
+            }
+            
             if($info['status']==200){
                   $info['status']=200;
                   $info['redire']=1;
@@ -1599,7 +1728,390 @@
               
           }
 
-          function getCodePersona($num_docume){
+          /* ! \fn: creaDespacho
+          *  \brief: guarda la informacion del despacho
+          *  \author: Cristian Andrés Torres
+          *  \date: 20/12/2017
+          *  \date modified: dd/mm/aaaa
+          *  \return: json
+          */
+          private function creaDespacho($data){
+            try{
+                //DATA
+                $num_despac = NULL;
+                $dispatch = $data['dispatch'];
+                $cod_transp = $data['company_code'];
+                $cod_manifi = $dispatch['manifest_code'];
+                $cod_tipdes = $dispatch['dispatch_type'];
+                $cod_paiori = $dispatch['origin']['country_code'];
+                $cod_ciuori = $dispatch['origin']['city_code'];
+                $cod_paides = $dispatch['destination']['country_code'];
+                $cod_ciudes = $dispatch['destination']['city_code'];
+                $cod_rutaxx = $dispatch['route_code'];
+                $val_declar = $dispatch['value_declarade'];
+                $val_pesoxx = $dispatch['weight'];
+                $cod_agenci = $dispatch['agenci_code'];
+                $cod_conduc = $data['driver']['document_number'];
+                $num_placax = $data['vehicle']['placa'];
+                $obs_despac = 'Despacho creado automaticamente a traves del módulo de estudio de seguridad';
+
+
+                #consulta el ultimo consecutivo del despacho
+                $mSelect = "SELECT MAX( num_despac ) AS maximo
+                            FROM ".BASE_DATOS.".tab_despac_despac ";
+
+                $consec = new Consulta( $mSelect, self::$conexion, "BR" );
+                $ultimo = $consec->ret_matriz();
+
+                #incrementa el consecutivo
+                $ultimo_consec = $ultimo[0][0];
+                $num_despac = $ultimo_consec + 1;  
+
+                #consulta el pais y el departamento de la ciudad origen
+                $mSelect = "SELECT a.cod_paisxx, a.cod_depart
+                        FROM ".BASE_DATOS.".tab_genera_ciudad a
+                        WHERE a.cod_ciudad = '$cod_ciuori' AND a.cod_paisxx = '$cod_paiori'";
+                $consulta = new Consulta( $mSelect, self::$conexion, "R" );
+                $paidepori = $consulta->ret_matriz();
+                $cod_depori = $paidepori[0][1];
+
+                #consulta el pais y el departamento de la ciudad destino
+                $mSelect = "SELECT a.cod_paisxx,a.cod_depart
+                        FROM ".BASE_DATOS.".tab_genera_ciudad a
+                        WHERE a.cod_ciudad = '$cod_ciudes' AND a.cod_paisxx = '$cod_paides'";
+                $consulta = new Consulta($mSelect, self::$conexion, "R");
+                $paidepdes = $consulta->ret_matriz();
+                $cod_depdes = $paidepdes[0][1];
+
+                $usr_creaci = $_SESSION['datos_usuario']['cod_usuari'];
+
+                //PENDIENTE REMITENTE
+                /*
+                $mSql = "SELECT UPPER(a.nom_remdes) AS nom_remdes
+                        FROM ".BASE_DATOS.".tab_genera_remdes a
+                        WHERE  a.ind_remdes = 1 
+                        AND a.ind_estado = 1 
+                        AND a.cod_remdes != 0 
+                        AND a.cod_remdes = '".$datos->cod_sitcar."'   
+                    GROUP BY  1";
+                $consulta = new Consulta( $mSql, $this->conexion );
+                $sitCar = $consulta->ret_matriz();
+                $datos->nom_sitcar = $sitCar[0][0];*/
+
+                $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_despac
+                ( 
+                      num_despac, cod_manifi, fec_despac, cod_tipdes,
+                      cod_client, cod_paiori, cod_depori, cod_ciuori,
+                      cod_paides, cod_depdes, cod_ciudes, fec_citcar,
+                      hor_citcar, nom_sitcar, val_flecon, val_despac,
+                      val_antici, val_retefu, nom_carpag, nom_despag,
+                      cod_agedes, fec_pagoxx, obs_despac, val_declara,
+                      usr_creaci, fec_creaci, val_pesoxx, cod_asegur,
+                      num_poliza, fec_salida, ind_planru 
+                    ) VALUES (
+                      '$num_despac','$cod_manifi','".DATE('Y-m-d H:i:s')."','$cod_tipdes',
+                      NULL,'".$cod_paiori."', '".$cod_depori."', '".$cod_ciuori."',
+                      '".$cod_paides."','".$cod_depdes."', '".$cod_ciudes."', NULL,
+                      NULL, NULL, 0, 0,
+                      0, 0, NULL,NULL,
+                      '$cod_agenci',NULL, '".$obs_despac."','".$val_declar."',
+                      '$usr_creaci', NOW(), '".$val_pesoxx."', NULL,
+                      NULL, NULL, 'N' 
+                    )"; 
+                $consulta = new Consulta($mInsert, self::$conexion, "S");    
+                //Valida el registro del conductor y/o actualizacion
+                self::setTercero($data['driver'], 4);     
+                //Valida el registro del vehiculo y/o actualizacion
+                self::setvehicu($data['vehicle'], $cod_conduc);
+
+                $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_vehige
+                                    (
+                                    num_despac, cod_transp, cod_agenci, 
+                                    cod_rutasx, cod_conduc, num_placax, 
+                                    num_trayle, obs_medcom, ind_activo, 
+                                    usr_creaci, fec_creaci
+                                    )
+                                VALUES 
+                                    (
+                                    '$num_despac', '$cod_transp', '$cod_agenci', 
+                                    '$cod_rutaxx', '$cod_conduc', '$num_placax', 
+                                    NULL, '', 'S',
+                                    '$usr_creaci', NOW() 
+                                    )"; 
+                $consulta = new Consulta( $mInsert,self::$conexion, "R" );
+                                  
+                /*
+                $can_remesa = count($datos->num_remesa);
+                for($i=0; $i < $can_remesa; $i++){
+
+                    $mSql = "SELECT a.cod_remdes,  
+                                UPPER (a.nom_remdes) AS nom_remdes
+                        FROM ".BASE_DATOS.".tab_genera_remdes a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_ciudad b
+                            ON  a.cod_ciudad = b.cod_ciudad AND b.ind_estado = 1
+                        WHERE  a.ind_remdes = 2
+                            AND a.ind_estado = 1 
+                            AND a.cod_remdes = '".$datos->cod_destin[$i]."'       
+                    GROUP BY  1";
+            
+                    $consulta = new Consulta( $mSql, $this->conexion );
+                    $nomDestin = $consulta->ret_matriz();
+                    $datos->nom_destin[$i] = $nomDestin[0][1];
+                    $cod_genera = $datos->cod_client != "" && $datos->cod_client != NULL ? "".$datos->cod_client."" : "NULL" ;
+                    $nom_genera = strtoupper($this->getInfoTercer($cod_genera)['nom_tercer']);
+                    $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_destin
+                                        (
+                                        num_despac, num_docume, num_docalt, cod_genera, nom_genera,
+                                        nom_destin, cod_ciudad, dir_destin, num_destin, 
+                                        fec_citdes, hor_citdes, usr_creaci, fec_creaci,
+                                        cod_remdes
+                                        )
+                                VALUES
+                                        (
+                                        '$datos->num_despac', '".$datos->num_remesa[$i]."','".$datos->num_docalt[$i]."', '".$cod_genera."', '".$nom_genera."',
+                                        '".$datos->nom_destin[$i]."', '".$datos->cod_ciucli[$i]."','".$datos->nom_dircli[$i]."', '".$datos->cod_destin[$i]."',  
+                                        '".$datos->fec_citdes[$i]."', '".$datos->hor_citdes[$i]."','$datos->usr_creaci', NOW(), 
+                                        '".$datos->cod_destin[$i]."')";
+                    $consulta = new Consulta( $mInsert, $this->conexion, "R" );
+
+                    $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_remesa (num_despac,cod_remesa,num_trayle,fec_estent,val_pesoxx,
+                                                                        val_volume,des_empaqu,des_mercan,abr_client,
+                                                                        usr_creaci,fec_creaci)
+                                                                    VALUES('$datos->num_despac','".$datos->num_remesa[$i]."', '".$datos->num_plarem[$i]."','".$datos->fec_citdes[$i]." ".$datos->hor_citdes[$i]."','".$datos->val_pesoxx[$i]."',
+                                                                        '".$datos->val_volume[$i]."','".$datos->nom_empaqu[$i]."','".$datos->nom_mercan[$i]."','".$datos->nom_destin[$i]."',
+                                                                        '$datos->usr_creaci', NOW())";
+                    $consulta = new Consulta( $mInsert, $this->conexion, "R" );
+
+            }*/
+
+            # Agrega los datos de viaje en caso de que exista
+            /*
+                if( $datos->cod_desext != '' )
+                {
+                    $mInsert = "INSERT INTO ".BASE_DATOS.".tab_despac_sisext
+                                        ( num_despac, num_desext )
+                                VALUES( '$datos->num_despac','$datos->cod_desext')";
+                    $consulta = new Consulta($mInsert, $this->conexion, "R");
+                    $mInsert = "INSERT INTO  ".BASE_DATOS.".tab_despac_viajex 
+                                    ( num_despac, num_placax, num_viajex, cod_transp, usr_creaci, fec_creaci ) 
+                                VALUES 
+                                    ('$datos->num_despac', '$datos->cod_placaxI', '$datos->cod_desext', '$datos->cod_transp', '$datos->usr_creaci', NOW() ) ";
+                    $consulta = new Consulta($mInsert, $this -> conexion, "R");
+                }*/
+
+                
+            
+                //Respuesta
+                if( $insercion = new Consulta( "COMMIT",self::$conexion ) ){
+                    return $data = [
+                      'num_despac' => $num_despac,
+                      'cod_manifi' => $cod_manifi,
+                      'status' => true,
+                      'msg' => 'Despacho creado exitosamente'
+                    ];
+                }
+                return false;
+            } catch(Exception $e){
+                echo "<pre> Error Funcion saveDespac:";print_r($e);echo "</pre>";
+            }
+
+          }
+
+          private function setTercero($dataTercer, $cod_activi){
+            $cod_usuari = $_SESSION['datos_usuario']['cod_usuari'];
+            $mExist = self::getTerceroByID( $dataTercer['document_number'] );
+            if(sizeof($mExist) <= 0){
+              $mQuery = "INSERT IGNORE ". BASE_DATOS .".tab_tercer_tercer  
+              ( 
+                cod_tercer, cod_tipdoc, nom_tercer, 
+                abr_tercer, nom_apell1, nom_apell2,
+                cod_paisxx, cod_depart, cod_ciudad,
+                dir_domici, num_telef1, num_telmov,
+                cod_estado, usr_creaci, fec_creaci
+              ) 
+              VALUES 
+              (  
+                '".$dataTercer['document_number']."', '".$dataTercer['document_typeID']['id']."', '".$dataTercer['names']."', 
+                '".$dataTercer['names']." ".$dataTercer['surname']." ".$dataTercer['second_surname']."', '".$dataTercer['surname']."', '".$dataTercer['second_surname']."',
+                '".$dataTercer['residence_city']['country']['code']."', '".$dataTercer['residence_city']['departament']['code']."', '".$dataTercer['residence_city']['departament']['city']."',
+                '".$dataTercer['address']."', '".$dataTercer['phone']."', '".$dataTercer['mobile1']."',
+                1, '".$cod_usuari."' ,NOW()
+              ) ";
+            } else {
+              $mQuery = "UPDATE ". BASE_DATOS .".tab_tercer_tercer  
+                            SET
+                              cod_tipdoc = '".$dataTercer['document_typeID']['id']."', 
+                              nom_tercer = '".$dataTercer['names']."', 
+                              abr_tercer = '".$dataTercer['names']." ".$dataTercer['surname']." ".$dataTercer['second_surname']."', 
+                              nom_apell1 = '".$dataTercer['surname']."', 
+                              nom_apell2 = '".$dataTercer['second_surname']."',
+                              dir_domici = '".$dataTercer['address']."', 
+                              cod_paisxx = '".$dataTercer['residence_city']['country']['code']."', 
+                              cod_depart = '".$dataTercer['residence_city']['departament']['code']."', 
+                              cod_ciudad = '".$dataTercer['residence_city']['departament']['city']."', 
+                              num_telef1 = '".$dataTercer['phone']."', 
+                              num_telmov = '".$dataTercer['mobile1']."', 
+                              cod_estado = 1, 
+                              usr_modifi = '".$cod_usuari."', 
+                              fec_modifi = NOW()      
+                              WHERE 
+                              cod_tercer = '".$dataTercer['document_number']."' 
+                ";
+            }
+            $query = new Consulta($mQuery, self::$conexion);
+            self::setTercDet( $dataTercer['document_number'], $cod_activi);
+            return  $query;
+          }
+
+          private function setvehicu($dataVehicu, $cod_conduc){
+            $cod_usuari = $_SESSION['datos_usuario']['cod_usuari'];
+            $mExistPropieta = self::getTerceroByID($dataVehicu['owner']['document_number']);
+            if(sizeof($mExistPropieta) <= 0){
+              self::setTercero($dataVehicu['owner'], 5);
+            }
+            $mExistPoseedor = self::getTerceroByID($dataVehicu['holder']['document_number']);
+            if(sizeof($mExistPoseedor) <= 0){
+              self::setTercero($dataVehicu['holder'], 6);
+            }
+            $mExistVehicu = self::vehicuExists($dataVehicu['placa']);
+            if(sizeof($mExistVehicu) <= 0){
+              $QueryVehicu = "REPLACE INTO " . BASE_DATOS . ".tab_vehicu_vehicu  
+                        ( num_placax, cod_marcax, cod_lineax, 
+                          cod_colorx, ano_modelo, num_motorx, 
+                          num_chasis, num_poliza, fec_vigfin, 
+                          num_config, cod_propie, 
+                          cod_tenedo, cod_conduc, 
+                          ind_estado, usr_creaci, fec_creaci,
+                          cod_opegps, usr_gpsxxx, clv_gpsxxx, idx_gpsxxx
+                       )
+                      VALUES 
+                       ( 
+                            '".$dataVehicu['placa']."', '".$dataVehicu['brand']['code']."', '".$dataVehicu['line']['code']."', 
+                            '".$dataVehicu['color']['code']."', '".$dataVehicu['model']."', '".$dataVehicu['engine_number']."', 
+                            '".$dataVehicu['chassis_number']."', '".$dataVehicu['soat_policy_number']."', '".$dataVehicu['fec_vigsoa']."', 
+                            '".$dataVehicu['configuration']['code']."', '".$dataVehicu['owner']['document_number']."',
+                            '".$dataVehicu['holder']['document_number']."', '".$cod_conduc."',
+                            1, '".$cod_usuari."',NOW(), 
+                            '".$dataVehicu['gps']['code']."','".$dataVehicu['gps']['username']."','".$dataVehicu['gps']['password']."','".$dataVehicu['gps']['id']."'
+                        )";
+            }else{
+              $QueryVehicu = "UPDATE " . BASE_DATOS . ".tab_vehicu_vehicu  
+                                SET
+                                cod_marcax = '".$dataVehicu['brand']['code']."',
+                                cod_lineax = '".$dataVehicu['line']['code']."',
+                                cod_colorx = '".$dataVehicu['color']['code']."',
+                                ano_modelo = '".$dataVehicu['model']."',
+                                num_motorx = '".$dataVehicu['engine_number']."',
+                                num_chasis = '".$dataVehicu['chassis_number']."',
+                                num_poliza = '".$dataVehicu['soat_policy_number']."',
+                                fec_vigfin = '".$dataVehicu['fec_vigsoa']."',
+                                num_config = '".$dataVehicu['configuration']['code']."',
+                                cod_propie = '".$dataVehicu['owner']['document_number']."',
+                                cod_tenedo = '".$dataVehicu['holder']['document_number']."',
+                                cod_conduc = '".$cod_conduc."'
+                                WHERE
+                                num_placax = '".$dataVehicu['placa']."'
+
+                        ";
+            }
+            $query = new Consulta($QueryVehicu, self::$conexion);
+            return  $query;
+          }
+
+          /* ! \fn: getValidateTercerExist
+          *  \brief: Valida si el tercero existe
+          *  \author: Cristian Andrés Torres
+          *  \date: 20/12/2017
+          *  \date modified: dd/mm/aaaa
+          *  \return: json
+          */
+          private function getTercerActivi($cod_tercer, $cod_activi){
+              $sql="SELECT cod_tercer, cod_activi  FROM ". BASE_DATOS .".tab_tercer_activi 
+                     WHERE cod_tercer =  '".$cod_tercer."'  AND cod_activi =  '".$cod_activi."'  ";
+              $query = new Consulta($sql, self::$conexion);
+              $resultado = $query->ret_matriz('a')[0];
+
+              return  $resultado;
+          }
+
+
+           /* ! \fn: setTercDet
+          *  \brief : Valida que la empresa exista como transprtadora
+          *  \author: Ing. Nelson Liberato
+          *  \date: 10/09/2019
+          *  \param1: code codigo de la novedad request
+          *  \return: array con novedad homologada al proceso, bool
+          */  
+          private function setTercDet( $mCodTercer = NULL, $mCodActivi = NULL)
+          {
+            $cod_usuari = $_SESSION['datos_usuario']['cod_usuari'];
+            if( sizeof( self::getTercerActivi($mCodTercer, $mCodActivi ) ) <= 0 ){ 
+                  $fTercerActivy  = "INSERT IGNORE ". BASE_DATOS .".tab_tercer_activi 
+                                        ( cod_tercer, cod_activi ) VALUES ( '".$mCodTercer."' , '".$mCodActivi."' )";
+                  $mReturn = new Consulta($fTercerActivy, self::$conexion);
+            } 
+
+            if( "4" == $mCodActivi ){
+              if(  sizeof(self::conducExists( $mCodTercer ))  <= 0){
+                  $fQueryConduc = "INSERT IGNORE ". BASE_DATOS .".tab_tercer_conduc 
+                                  ( cod_tercer, cod_tipsex, num_catlic, usr_creaci, fec_creaci, cod_operad ) 
+                                  VALUES 
+                                  ( '".$mCodTercer."', 1, NULL, '".$cod_usuari."', NOW(), NULL )";
+                                  $mReturn = new Consulta($fQueryConduc, self::$conexion);          
+              }
+            }
+              
+          return $mReturn;
+          }
+
+          /* ! \fn: conducExists
+          *  \brief : Valida si el documento existe en tercer_conduc
+          *  \author: Ing. Nelson Liberato
+          *  \date: 10/09/2019
+          *  \param1: code codigo de la novedad request
+          *  \return: array con novedad homologada al proceso, bool
+          */ 
+          private function conducExists($mCodConduc) { 
+              $mQuery = "SELECT cod_tercer FROM ". BASE_DATOS .".tab_tercer_conduc  WHERE cod_tercer =  '".$mCodConduc."' ";
+              $query = new Consulta($mQuery, self::$conexion);
+              $resultado = $query->ret_matriz('a')[0];
+              return  $resultado;
+          }
+
+          /* ! \fn: vehicuExists
+          *  \brief : Valida si el documento existe en tercer_conduc
+          *  \author: Ing. Nelson Liberato
+          *  \date: 10/09/2019
+          *  \param1: code codigo de la novedad request
+          *  \return: array con novedad homologada al proceso, bool
+          */ 
+          private function vehicuExists($mNumPlacax) { 
+            $mQuery = "SELECT num_placax FROM ". BASE_DATOS .".tab_vehicu_vehicu  WHERE num_placax =  '".$mNumPlacax."' ";
+            $query = new Consulta($mQuery, self::$conexion);
+            $resultado = $query->ret_matriz('a');
+            return  $resultado;
+          }
+
+          /* ! \fn: getTerceroByID
+          *  \brief: Valida si el tercero existe
+          *  \author: Cristian Andrés Torres
+          *  \date: 20/12/2017
+          *  \date modified: dd/mm/aaaa
+          *  \return: json
+          */
+          private function getTerceroByID($cod_tercer){
+            $sql="SELECT 
+                        a.cod_tercer, a.nom_tercer
+                  FROM
+                        ". BASE_DATOS .".tab_tercer_tercer a
+                  WHERE
+                        a.cod_tercer = '".$cod_tercer."' ";
+            $query = new Consulta($sql, self::$conexion);
+            $resultado = $query->ret_matriz('a');
+            return  $resultado;
+          }
+
+          private function getCodePersona($num_docume){
             $sql="SELECT cod_segper FROM ".BASE_DATOS.".tab_estudi_person
                     WHERE 
                       num_docume = '".$num_docume."' ORDER BY cod_segper DESC";
@@ -1609,8 +2121,8 @@
           }
 
           //usado
-          function createXML($array,$name){
-            $ruta_name = "/var/www/html/ap/interf/app/integracion_ceva/src/runtime/safety_study/".$name;
+          function createXML($array,$name,$ruta){
+            $ruta_name = $ruta.''.$name;
             //$ruta_name = "/var/www/html/ap/ctorres/sat-gl-2015/satt_intgps/files/adj_estseg/".$name;
             $xml_data = new SimpleXMLElement('<?xml version="1.0" encoding="ISO-8859-1"?><data></data>');
             self::array_to_xml($array,$xml_data);
@@ -1840,6 +2352,52 @@
             return false;
 
           }
+
+          function procesaDespacho($data, $dataSol){
+            $cod_ciuori = self::separarCodigoCiudad($_REQUEST['ciu_origen']);
+            $cod_paiori = self::separarCodigoCiudad($_REQUEST['ciu_origen'],2);
+            $cod_depori = self::getInfoUbicacion($cod_ciuori, $cod_paiori)['cod_depart'];
+            $cod_ciudes = self::separarCodigoCiudad($_REQUEST['ciu_destin']);
+            $cod_paides = self::separarCodigoCiudad($_REQUEST['ciu_destin'],2);
+            $cod_depdes = self::getInfoUbicacion($cod_ciudes, $cod_paides)['cod_depart'];
+            $code_manifi = str_pad($dataSol['cod_solici'], 6, '0', STR_PAD_LEFT);
+            $cod_manifi = 'ES'.$code_manifi;
+            $sql="UPDATE ".BASE_DATOS.".tab_estseg_despac
+                    SET  
+                      cod_manifi = '".$cod_manifi ."', 
+                      fec_despac = 'NOW()',
+                      cod_tipdes = '".$data['tip_despac']."',
+                      cod_paiori = '".$cod_paiori."', 
+                      cod_depori = '".$cod_depori."', 
+                      cod_ciuori = '".$cod_ciuori."', 
+                      cod_paides = '".$cod_paides."',
+                      cod_depdes = '".$cod_depdes."',
+                      cod_ciudes = '".$cod_ciudes."',
+                      cod_rutasx = '".$data['rut_despac']."',
+                      val_declar = '".$data['val_declar']."',
+                      val_pesoxx = '".$data['val_pesoxx']."',
+                      cod_agenci = '".$data['age_despac']."', 
+                      cod_genera = '".$data['gen_despac']."', 
+                      usr_modifi = '".self::$cod_usuari."', 
+                      fec_modifi = NOW() 
+                    WHERE 
+                      cod_despac = '".$dataSol['cod_despac']."' ";
+            $query = new Consulta($sql, self::$conexion);
+            if($query){
+              return true;
+            }
+            return false;
+          }
+
+          function getInfoUbicacion($cod_ciudad, $cod_paisx){
+            $sql = "SELECT cod_paisxx, cod_depart, cod_ciudad
+                      FROM ".BASE_DATOS.".tab_genera_ciudad
+                    WHERE cod_ciudad = '".$cod_ciudad."' AND
+                          cod_paisxx = '".$cod_paisxx."'; ";
+            $query = new Consulta($sql, self::$conexion);
+            $resultado = $query->ret_matriz('a')[0];
+            return $resultado;
+          }
           
 
           function combinaCondPoseePropie($nam_column, $valor, $cod_estseg){
@@ -1856,9 +2414,16 @@
             }
           }
 
-          function separarCodigoCiudad($dato){
-            $cod_ciudad = explode(" ", $dato);
-            return trim($cod_ciudad[0]);
+          function separarCodigoCiudad($dato, $retorno = 1) {
+            $regex = '/\((\d+)\-(\d+)\)/';
+            if (preg_match($regex, $dato, $matches)) {
+                // Almacenar los valores en una sola variable
+                $codigo = array(trim($matches[1]), trim($matches[2]));
+                // Devolver el valor correspondiente basado en el parámetro $retorno
+                return ($retorno == 1) ? $codigo[0] : $codigo[1];
+            }
+            // Devolver un valor por defecto en caso de que no haya coincidencia
+            return '';
           }
 
           function darDatosCiudad($cod_ciudad){
@@ -1888,10 +2453,17 @@
               'expiration' => $infoGen['fec_venest']
             );
 
-            if($infoGen['cod_tipest'] != 'V'){
+            if($infoGen['cod_tipest'] == 'C'){
               $dataSol['driver'] = self::armaArrayPerson($infoGen['cod_conduc'],1,$infoGen['cod_solici'],2);
+            }else if($infoGen['cod_tipest'] == 'V'){
+              $dataSol['vehicle'] = self::armaArrayVehicu($infoGen['cod_vehicu'], $infoGen['cod_solici']);
             }else{
               $dataSol['vehicle'] = self::armaArrayVehicu($infoGen['cod_vehicu'], $infoGen['cod_solici']);
+              $dataSol['driver'] = self::armaArrayPerson($infoGen['cod_conduc'],1,$infoGen['cod_solici'],2);
+            }
+
+            if( $infoGen['ind_credes'] ){
+              $dataSol['dispatch'] = self::armaArrayDespac($infoGen['cod_despac'],$infoGen['cod_solici']);
             }
 
             return $dataSol;
@@ -2037,6 +2609,36 @@
                 'files' => self::getFiles(1,$cod_solici)
               );
               return $dataVehicu;
+          }
+
+          function armaArrayDespac($cod_despac, $cod_solici){
+            $sql = "SELECT
+                      a.cod_manifi, a.cod_tipdes, a.cod_paiori, a.cod_ciuori,
+                      a.cod_paides, a.cod_ciudes, a.cod_rutasx, a.val_declar,
+                      a.val_pesoxx, a.cod_genera, a.cod_agenci
+                    FROM ".BASE_DATOS.".tab_estseg_despac a
+                      WHERE a.cod_despac = '".$cod_despac."'";
+              $query = new Consulta($sql, self::$conexion);
+              $resultados = $query -> ret_matrix('a')[0];
+             
+              $dataDespac= array(
+                'manifest_code' => $resultados['cod_manifi'],
+                'dispatch_type' => $resultados['cod_tipdes'],
+                'origin' => array(
+                    'country_code' => $resultados['cod_paiori'],
+                    'city_code' => $resultados['cod_ciuori']
+                ),
+                'destination' => array(
+                  'country_code' => $resultados['cod_paides'],
+                  'city_code' => $resultados['cod_ciudes']
+                ),
+                'route_code' => $resultados['cod_rutasx'],
+                'value_declarade' =>  $resultados['val_declar'],
+                'weight' =>  $resultados['val_pesoxx'],
+                'agenci_code' => $resultados['cod_agenci'],
+                'generator_code' =>  $resultados['cod_genera']
+              );
+              return $dataDespac;
           }
 
           //usado
