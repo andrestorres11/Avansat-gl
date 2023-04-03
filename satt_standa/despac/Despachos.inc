@@ -2644,7 +2644,8 @@ class Despachos
                                     "tip_vehicu" => "Tipo Vehiculo", 
                                     "can_noveda" => "No. Novedades",
                                     "cod_transp" => "Nit Transportadora",
-                                    "cod_itiner" => "No. itinerario"
+                                    "cod_itiner" => "No. itinerario",
+                                    "msg_itiner" => "Msg Itinerario"
                                     );
 
         $mTittle[1] = array( "id" => "dat_comple", "tittle" => "DATOS COMPLEMENTARIOS DEL DESPACHO");
@@ -2722,6 +2723,19 @@ class Despachos
                                             }
                                             $mTxt = array($tittle, $mTxt);
                                             break;
+                                        case 'msg_itiner':
+                                                $msg_itiner = explode(",", $mData[$key])[0];
+                                                if($msg_itiner=='Viaje creado exitosamente.' || $msg_itiner=='Viaje creado exitosamente CRON OET.' || $msg_itiner=='N/A' ){
+                                                    $mTxt = '<p style="color:green;">'.$msg_itiner.'</p>';
+                                                    if($msg_itiner=='N/A'){
+                                                        $mTxt = '<p>No Aplica</p>';
+                                                    }
+                                                }else{
+                                                    $mTxt = '<p style="color:red;">'.$msg_itiner.'</p>';
+                                                }
+
+                                                $mTxt = array($tittle, $mTxt);
+                                                break;
                                         case 'can_noveda':
                                             $cod_operad = '50';
                                             if(BASE_DATOS == 'satt_intgps'){
@@ -4046,7 +4060,7 @@ class Despachos
                         x.idx_gpsxxx,
                         a.gps_urlxxx,
                         IF(b.fec_itiner IS NULL OR b.fec_itiner = '' OR b.fec_itiner = '0000-00-00 00:00:00', '', b.cod_itiner) AS cod_itiner,
-                        b.msg_itiner,
+                        IF(b.msg_itiner IS NULL OR b.msg_itiner = '', 'N/A', b.msg_itiner) AS msg_itiner,
                         b.map_tokenx
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 

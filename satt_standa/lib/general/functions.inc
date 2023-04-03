@@ -26,7 +26,7 @@ function GetUniqueCol( $mCol, $mMatrix )
 }
 
 /*
- * Funciï¿½n que da formato de moneda a una cadena nï¿½merica. Exp. ->2000000, ->2.000.000
+ * Función que da formato de moneda a una cadena númerica. Exp. ->2000000, ->2.000.000
  */
 function MoneyFormat( $num )
 {
@@ -61,10 +61,10 @@ function ReturnDate( $date = NULL )
     case '0' : $day = "Domingo";    break;
     case '1' : $day = "Lunes";      break;
     case '2' : $day = "Martes";     break;
-    case '3' : $day = "Miï¿½rcoles";  break;
+    case '3' : $day = "Miércoles";  break;
     case '4' : $day = "Jueves";     break;
     case '5' : $day = "Viernes";    break;
-    case '6' : $day = "Sï¿½bado";     break;
+    case '6' : $day = "Sábado";     break;
   }
   return $day.", ".$time[2]." de ".$month." de ".$time[0];
 }
@@ -256,7 +256,7 @@ function SortMatrix( $mMatrix, $mColumn, $mOrder = "ASC" )
 }
 
 /*
-$a[] = array( 'cod_tercer' => '98765430', 'nom_tercer' => 'Mauricio Cï¿½bides', 'age_tercer' => '28' );
+$a[] = array( 'cod_tercer' => '98765430', 'nom_tercer' => 'Mauricio Cúbides', 'age_tercer' => '28' );
 $a[] = array( 'cod_tercer' => '56457567', 'nom_tercer' => 'Ricardo Delgado', 'age_tercer' => '22' );
 $a[] = array( 'cod_tercer' => '21343543', 'nom_tercer' => 'Yahira Soquer', 'age_tercer' => '28' );
 $a[] = array( 'cod_tercer' => '96775626', 'nom_tercer' => 'Christiam Barrera', 'age_tercer' => '25' );
@@ -401,7 +401,7 @@ function sumarMinutosFecha($FechaStr, $MinASumar) {
  *  \brief: Trae la diferencia en minutos de dos fechas
  *  \author: Ing. Fabian Salinas
  *  \date: 02/06/2015
- *  \date modified: dia/mes/aï¿½o
+ *  \date modified: dia/mes/año
  *  \param: $mFec1 date 
  *  \param: $mFec2 date
  *  \return: Diferencia en Minutos
@@ -418,9 +418,9 @@ function getDiffTime($mFec1, $mFec2)
  *  \brief: Trae los puestos de control del plan de ruta del despacho
  *  \author: Ing. Fabian Salinas
  *  \date: 01/06/2015
- *  \date modified: dia/mes/aï¿½o
- *  \param: $mConexion   Conexiï¿½n BD
- *  \param: $mDespac     Integer  Nï¿½mero Despacho
+ *  \date modified: dia/mes/año
+ *  \param: $mConexion   Conexión BD
+ *  \param: $mDespac     Integer  Número Despacho
  *  \param: $mTipReturn  String   sql: Retorna String Query; 1PC: Retorna primer PC
  *  \return: Sql o Matriz
  */
@@ -469,9 +469,9 @@ function getControDespac(&$mConexion, $mDespac, $mTipReturn = NULL )
  *  \brief: Trae los PC del despacho y las novedades correspondientes por PC 
  *  \author: Ing. Fabian Salinas
  *  \date: 23/06/2015
- *  \date modified: dia/mes/aï¿½o
- *  \param: $mConexion  Conexiï¿½n BD
- *  \param: $mNumDespac  Integer  Nï¿½mero del Despacho
+  *  \date modified: dia/mes/año
+ *  \param: $mConexion  Conexión BD
+ *  \param: $mNumDespac  Integer  Número del Despacho
  *  \param: $mIndReturn  Integer  (0:PC con/sin Novedades; 1:PC con Novedades; 2:Ultimo PC con Novedad)
  *  \param: $mFiltro  String  sql Where Inyectado Inicia con AND
  *  \return: Matriz
@@ -572,19 +572,22 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                               AND a.obs_ejecuc IS NOT NULL 
                           GROUP BY a.cod_contro 
                     )";
+
             }else{
                 $mSubquery = "(       SELECT a.fec_contro AS fec_noveda,
-                                UPPER(b.nom_noveda) AS nom_noveda,
-                                a.usr_creaci, a.fec_creaci,
-                                UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox,
-                                a.obs_contro AS obs_noveda,
-                                f.ind_novesp as 'nov_especi', a.cod_noveda,
-                                '1' AS tab_origen, a.cod_consec,
-                                a.cod_contro, '0' AS ind_ensiti,
-                                f.ind_fuepla, a.tiem_duraci,
-                                b.cod_etapax, f.ind_limpio,
-                                f.ind_manale as 'ind_manala',
-                                f.ind_manale as 'ind_alarma',
+                                            UPPER(b.nom_noveda) AS nom_noveda,
+                                            a.usr_creaci, a.fec_creaci,
+                                            UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox,
+                                            a.obs_contro AS obs_noveda,
+                                            IF(f.ind_novesp IS NULL, 0, f.ind_novesp)  as 'nov_especi', a.cod_noveda,
+                                            '1' AS tab_origen, a.cod_consec,
+                                            a.cod_contro, '0' AS ind_ensiti,
+                                            IF(f.ind_fuepla IS NULL, 0, f.ind_fuepla)  as 'ind_fuepla',
+                                            a.tiem_duraci,
+                                            b.cod_etapax,
+                                            IF(f.ind_limpio IS NULL, 0, f.ind_limpio) as 'ind_limpio',
+                                            IF(f.ind_manale IS NULL OR f.ind_status = 0, 1, f.ind_manale) as 'ind_manala',
+                                            IF(f.ind_manale IS NULL OR f.ind_status = 0, 1, f.ind_manale) as 'ind_alarma',
                                 a.num_despac
                         FROM ".BASE_DATOS.".tab_despac_contro a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
@@ -595,7 +598,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                             ON a.cod_contro = d.cod_contro
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
                             ON a.num_despac = e.num_despac
-                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg f
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON b.cod_noveda = f.cod_noveda AND
                                 f.cod_transp = e.cod_transp
                         WHERE a.num_despac = '{$mNumDespac}'
@@ -608,13 +611,16 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                 a.fec_creaci, 
                                 '' AS nom_sitiox,
                                 a.des_noveda AS obs_noveda,
-                                e.ind_novesp as 'nov_especi', a.cod_noveda,
+                                IF(e.ind_novesp IS NULL, 0, e.ind_novesp)  as 'nov_especi',
+                                a.cod_noveda,
                                 '2' AS tab_origen, '1' AS cod_consec,
                                 a.cod_contro, '1' AS ind_ensiti,
-                                e.ind_fuepla, a.tiem_duraci,
-                                b.cod_etapax, e.ind_limpio,
-                                e.ind_manale as 'ind_manala',
-                                e.ind_manale as 'ind_alarma',
+                                IF(e.ind_fuepla IS NULL, 0, e.ind_fuepla)  as 'ind_fuepla',
+                                a.tiem_duraci,
+                                b.cod_etapax,
+                                IF(e.ind_limpio IS NULL, 0, e.ind_limpio) as 'ind_limpio',
+                                IF(e.ind_manale IS NULL OR e.ind_status = 0, 1, e.ind_manale) as 'ind_manala',
+                                IF(e.ind_manale IS NULL OR e.ind_status = 0, 1, e.ind_manale) as 'ind_alarma',
                                 a.num_despac
                         FROM ".BASE_DATOS.".tab_despac_noveda a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
@@ -623,7 +629,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                             ON a.cod_contro = c.cod_contro
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige d
                             ON a.num_despac = d.num_despac
-                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg e
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e
                             ON b.cod_noveda = e.cod_noveda AND
                                 e.cod_transp = d.cod_transp
                         WHERE a.num_despac = '{$mNumDespac}'
@@ -639,10 +645,12 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                 '0' AS nov_especi, a.cod_noveda,
                                 '3' AS tab_origen, d.cod_consec,
                                 a.cod_contro, '0' AS ind_ensiti,
-                                f.ind_fuepla, '' AS tiem_duraci,
-                                c.cod_etapax, '0' AS ind_limpio,
-                                f.ind_manale as 'ind_manala',
-                                f.ind_manale as 'ind_alarma',
+                                IF(f.ind_fuepla IS NULL, 0, f.ind_fuepla)  as 'ind_fuepla',
+                                '' AS tiem_duraci,
+                                c.cod_etapax,
+                                '0' AS ind_limpio,
+                                IF(f.ind_manale IS NULL OR f.ind_status = 0, 1, f.ind_manale) as 'ind_manala',
+                                IF(f.ind_manale IS NULL OR f.ind_status = 0, 1, f.ind_manale) as 'ind_alarma',
                                 a.num_despac
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
@@ -653,7 +661,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                             ON a.cod_recome = d.cod_consec
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
                             ON a.num_despac = e.num_despac
-                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg f
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON c.cod_noveda = f.cod_noveda AND
                                 e.cod_transp = e.cod_transp 
                         WHERE a.num_despac = '{$mNumDespac}'
@@ -670,10 +678,12 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                                 '0' AS nov_especi, a.cod_noveda,
                                 '4' AS tab_origen, d.cod_consec,
                                 a.cod_contro, '1' AS ind_ensiti,
-                                f.ind_fuepla, '' AS tiem_duraci,
-                                c.cod_etapax, '1' AS ind_limpio,
-                                f.ind_manale as 'ind_manala',
-                                f.ind_manale as 'ind_alarma',
+                                IF(f.ind_fuepla IS NULL, 0, f.ind_fuepla)  as 'ind_fuepla',
+                                '' AS tiem_duraci,
+                                c.cod_etapax,
+                                '1' AS ind_limpio,
+                                IF(f.ind_manale IS NULL OR f.ind_status = 0, 1, f.ind_manale) as 'ind_manala',
+                                IF(f.ind_manale IS NULL OR f.ind_status = 0, 1, f.ind_manale) as 'ind_alarma',
                                 a.num_despac
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
@@ -684,7 +694,7 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
                             ON a.cod_recome = d.cod_consec
                     INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
                             ON a.num_despac = e.num_despac
-                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg f
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON c.cod_noveda = f.cod_noveda AND
                                 e.cod_transp = e.cod_transp 
                         WHERE a.num_despac = '{$mNumDespac}'
@@ -742,9 +752,9 @@ function getNovedadesDespac( &$mConexion, $mNumDespac, $mIndReturn, $mFiltro = N
  *  \brief: Trae el siguiente PC del plan de Ruta
  *  \author: Ing. Fabian Salinas
  *  \date: 03/07/2015
- *  \date modified: dia/mes/aï¿½o
- *  \param: $mConexion  Conexiï¿½n BD
- *  \param: $mNumDespac  Integer  Nï¿½mero del Despacho
+ *  \date modified: dia/mes/año
+ *  \param: $mConexion  Conexión BD
+ *  \param: $mNumDespac  Integer  Número del Despacho
  *  \return: Array
  */
 function getNextPC( &$mConexion, $mNumDespac )
@@ -777,8 +787,8 @@ function getNextPC( &$mConexion, $mNumDespac )
  *  \brief: Trae el ultimo registro por transportadora de tab_transp_tipser
  *  \author: Ing. Fabian Salinas
  *  \date: 17/07/2015
- *  \date modified: dia/mes/aï¿½o
- *  \param: mConexion  Conexiï¿½n BD
+ *  \date modified: dia/mes/año
+ *  \param: mConexion  Conexión BD
  *  \param: mSqlWhere   string   sql Where Inyectado Inicia con AND
  *  \param: mNomCampo   Array    Compos a retornar
  *  \return: Matriz
@@ -987,7 +997,7 @@ function DataMethod()
    *  \brief: Crea una lista desplegable para el formulario
    *  \author: Ing. Fabian Salinas
    *  \date: 14/07/2015
-   *  \date modified: dia/mes/aï¿½o
+   *  \date modified: dia/mes/año
    *  \param: mTitulo  String  Titulo del Campo
    *  \param: mNomSel  String  Nombre del Select
    *  \param: mMatriz  Matriz  Matriz con las opciones
@@ -1014,10 +1024,10 @@ function DataMethod()
   }
 
 /*! \fn: getRealIP
- *  \brief: Develve la direcciï¿½n real IP de la ubicaciï¿½n del computador cliente con el cual se accede a AVANSAT
+ *  \brief: Develve la dirección real IP de la ubicación del computador cliente con el cual se accede a AVANSAT
  *  \author: TERCEROS (https://ejemplocodigo.com/ejemplo-php-obtener-la-ip-real-de-una-visita/)
  *  \date: 18/09/2014
- *  \return Una cadena con la direcciï¿½n IP (4 nï¿½meros separados por puntos)
+ *  \return Una cadena con la dirección IP (4 números separados por puntos)
  */
 function getRealIP()
 {
@@ -1038,10 +1048,10 @@ function getRealIP()
 
 /*! \fn: guardarInformacionAcceso
  *  \brief: Permite guardar un registro en la tabla de accesos
- *  \author: Ing. David Rincï¿½n
+ *  \author: Ing. David Rincón
  *  \date: 14/02/2020
  *  \param: 
- *  \return Una cadena con la direcciï¿½n IP (4 nï¿½meros separados por puntos)
+ *  \return Una cadena con la dirección IP (4 números separados por puntos)
  */
 function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
     $direccionIP = getRealIP();
@@ -1057,7 +1067,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
 
 /*! \fn: getTranspPerfil
     *  \brief: Funcion que retorna la empresa transportadora segun el perfil
-    *  \author: Cristian Andrï¿½s Torres
+    *  \author: Cristian Andrés Torres
     *  \date: 2021-08-16
     *  \param:  mConexion = conexion a bd;
     *  \return: Array informacion de la empresa transportadora (consulta)
@@ -1073,9 +1083,9 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
       $mResult = $mConsult -> ret_arreglo();
       return $mResult;
     }
-/*! \fn: getTranspPerfil
+    /*! \fn: getTranspPerfil
     *  \brief: Funcion que envia Email
-    *  \author: Cristian Andrï¿½s Torres
+    *  \author: Cristian Andrés Torres
     *  \date: 2022-01-28
     *  \param:  mConexion = conexion a bd;
     *  \
@@ -1135,7 +1145,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
     *  \param:  mConexion = conexion a bd;
                 int num_despac: Numero del despacho.
                 int cod_estado: Estado - null
-                int tip_transa: Tipo de transacciï¿½n - Estado = 1 / Novedad = 2
+                int tip_transa: Tipo de transacción - Estado = 1 / Novedad = 2
                 int cod_noveda: Novedad - null
     */ 
     function setTrackingDespac(&$mConexion, $num_despac, $cod_estado = null, $tip_transa, $cod_noveda = null ){
@@ -1220,7 +1230,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
  }
   /*! \fn: arrayMergeIfNotNull
     *  \brief: Funcion que fusiona dos array validando si son nulos
-    *  \author: Cristian Andrï¿½s Torres
+    *  \author: Cristian Andrés Torres
     *  \date: 2022-01-28
     *  \param:  mConexion = conexion a bd;
     *  \
@@ -1233,7 +1243,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
 
  /*! \fn: getParameOpeGPS
     *  \brief: Funcion que consulta la parametrizacion de operadores estandar o propios
-    *  \author: Cristian Andrï¿½s Torres
+    *  \author: Cristian Andrés Torres
     *  \date: 2022-01-28
     *  \param:  mConexion = conexion a bd;
     *  \
