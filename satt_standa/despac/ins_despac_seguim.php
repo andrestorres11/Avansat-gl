@@ -142,8 +142,8 @@ class Proc_segui
         
         $consulta = new Consulta($query, $this->conexion);
         $despac = $consulta->ret_matriz();
-        mail('cristian.torres@grupooet.com','DataSql',$query);
-        
+
+
         $formulario = new Formulario("index.php", "post", "Informacion del Despacho", "form_ins");
         if (sizeof($despac) == 1 || $_REQUEST[despac])
         {
@@ -238,6 +238,7 @@ class Proc_segui
 
     function darLlegad()
     {
+        include("../".DIR_APLICA_CENTRAL."/lib/general/functions.inc");
         $query = "UPDATE " . $base_datos . ".tab_despac_despac 
                    SET fec_llegad = NOW(),
                        obs_llegad = '" . $_REQUEST[obs_llegad] . "',
@@ -251,7 +252,6 @@ class Proc_segui
             $mensaje .= "<b>Se dio Llegada con exito al Despacho " . $_REQUEST[despac] . "</b>";
             $mens = new mensajes();
             $mens->correcto("REGISTRO DE NOVEDADES", $mensaje);
-
 
             ini_set('display_errors', true);
             error_reporting(E_ALL & ~E_NOTICE);
@@ -293,6 +293,7 @@ class Proc_segui
             {
                 if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
                 {   
+
                     $mHubGPS = new InterfHubIntegradorGPS($this->conexion, ['cod_transp' => $mDataDespac[0]['cod_transp']] );
 
                     // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
@@ -1062,6 +1063,7 @@ class Proc_segui
             }
         }
 
+        
         $mArrayTiempo = array();
         if( $tiem ){
             $mArrayTiempo[] = array('', '--');
