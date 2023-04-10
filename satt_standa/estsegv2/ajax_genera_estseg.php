@@ -2887,7 +2887,7 @@
             $mail = new PHPMailer();
             $mail->CharSet = 'UTF-8';
             $mail->Host = "localhost";
-            $mail->From = 'supervisores@faro.com.co';
+            $mail->From = 'seguimientos@faro.com.co';
             $mail->FromName = 'EST. SEGURIDAD';
             $mail->Subject = utf8_decode($subject) ;
             foreach($emails as $email){
@@ -3019,7 +3019,7 @@
                 require_once("../planti/class.phpmailer.php");
                 $mail = new PHPMailer();
                 $mail->Host = "localhost";
-                $mail->From = 'supervisores@faro.com.co';
+                $mail->From = 'seguimientos@faro.com.co';
                 $mail->FromName = 'EST. SEGURIDAD';
                 $mail->Subject = $subject ;
                 foreach($emails as $email){
@@ -3081,7 +3081,7 @@
                   require_once("../planti/class.phpmailer.php");
                   $mail = new PHPMailer();
                   $mail->Host = "localhost";
-                  $mail->From = 'supervisores@faro.com.co';
+                  $mail->From = 'seguimientos@faro.com.co';
                   $mail->FromName = 'EST. SEGURIDAD';
                   $mail->Subject = $subject ;
                   foreach($emails as $email){
@@ -3271,7 +3271,7 @@
               require_once("../planti/class.phpmailer.php");
               $mail = new PHPMailer();
               $mail->Host = "localhost";
-              $mail->From = 'supervisores@faro.com.co';
+              $mail->From = 'seguimientos@faro.com.co';
               $mail->FromName = 'EST. SEGURIDAD';
               $mail->Subject = $subject;
               foreach ($emails as $email) {
