@@ -174,9 +174,10 @@
             $Msql="SELECT a.cod_noveda, a.nom_noveda
                              FROM ".BASE_DATOS.".tab_genera_noveda a
                             WHERE a.ind_estado = 1 ".$cond;
+            /* Se comenta condicion de perfil y novedades ID: 431640
             if(self::$cod_perfil != COD_PERFIL_ADMINIST){
                 $Msql.=" AND a.cod_noveda BETWEEN 1 AND 8999 ";
-            }
+            }*/
             $resultado = new Consulta($Msql, self::$conexion);
             $novedades = $resultado->ret_matriz();
 
