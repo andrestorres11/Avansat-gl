@@ -1701,17 +1701,20 @@
               }
             }
 
-            $ident_xml = '';
-            if($inf_solici['cod_tipest'] == 'V'){
-              $ident_xml = $inf_solici['cod_vehicu'];
-            }else if($inf_solici['cod_tipest'] == 'C'){
-              $ident_xml = $inf_solici['cod_conduc'];
-            }else{
-              $ident_xml = $inf_solici['cod_vehicu']."_".$inf_solici['cod_conduc'];
-            }
-
             if($inf_tipser['ind_segxml']){
-              self::createXML($array_generado,'SOL_'.$ident_xml.'.xml', $inf_tipser['rut_segxml']);
+              $ident_xml = '';
+              if($inf_solici['cod_tipest'] == 'V'){
+                $ident_xml = $inf_solici['cod_vehicu'];
+                self::createXML($array_generado,'SOL_'.$ident_xml.'.xml', $inf_tipser['rut_segxml']);
+              }else if($inf_solici['cod_tipest'] == 'C'){
+                $ident_xml = $inf_solici['cod_conduc'];
+                self::createXML($array_generado,'SOL_'.$ident_xml.'.xml', $inf_tipser['rut_segxml']);
+              }else{
+                $array_generado = self::armaArrayInfo($cod_solici,'V');
+                self::createXML($array_generado,'SOL_'.$inf_solici['cod_vehicu'].'.xml', $inf_tipser['rut_segxml']);
+                $array_generado = self::armaArrayInfo($cod_solici,'C');
+                self::createXML($array_generado,'SOL_'.$inf_solici['cod_conduc'].'.xml', $inf_tipser['rut_segxml']);
+              }
             }
             
             if($info['status']==200){
@@ -2437,7 +2440,7 @@
 
           /* Arma Array Info */
 
-          function armaArrayInfo($cod_solici){
+          function armaArrayInfo($cod_solici, $type = NULL){
             $infoGen = self::getInfoSolici($cod_solici);
             $dataSol = array(
               'application_number' => $infoGen['cod_solici'],
@@ -2457,9 +2460,12 @@
               $dataSol['driver'] = self::armaArrayPerson($infoGen['cod_conduc'],1,$infoGen['cod_solici'],2);
             }else if($infoGen['cod_tipest'] == 'V'){
               $dataSol['vehicle'] = self::armaArrayVehicu($infoGen['cod_vehicu'], $infoGen['cod_solici']);
-            }else{
-              $dataSol['vehicle'] = self::armaArrayVehicu($infoGen['cod_vehicu'], $infoGen['cod_solici']);
-              $dataSol['driver'] = self::armaArrayPerson($infoGen['cod_conduc'],1,$infoGen['cod_solici'],2);
+            }else if($infoGen['cod_tipest'] == 'CV'){
+              if($type=='C'){
+                $dataSol['driver'] = self::armaArrayPerson($infoGen['cod_conduc'],1,$infoGen['cod_solici'],2);
+              }else if($type=='V'){
+                $dataSol['vehicle'] = self::armaArrayVehicu($infoGen['cod_vehicu'], $infoGen['cod_solici']);
+              } 
             }
 
             if( $infoGen['ind_credes'] ){
