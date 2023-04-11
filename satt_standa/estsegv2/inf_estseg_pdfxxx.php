@@ -420,6 +420,17 @@ class PDFInformeEstudioSeguridad extends PDF
       }
     }
 
+    $pdf -> Ln(2);
+    $pdf -> SetWidths(array(196));
+    $pdf -> Row(array('OBSERVACI�N FINAL: '.$info['obs_estseg']),1,'J',0);
+    $pdf -> SetFillColor(1, 11, 64);
+    $pdf -> SetTextColor(255,255,255);
+    $resultado = $info['ind_estseg'] == 'A' ? 'RECOMENDADO' : 'NO RECOMENDADO';
+    $pdf -> Cell(45,6,'RESULTADO DE ESTUDIO: ',1,0,'L',1);
+    $pdf -> SetTextColor(0,0,0);
+    $pdf -> Cell(151,6, $resultado,1,1,'L');
+    $pdf -> Ln(1);
+
     $pdf -> SetFont('Arial','',8);
     $txt="NOTA: PARA EL ESTUDIO PRELIMINAR ADJUNTAR LOS SIGUIENTES DOCUMENTOS: CÉDULAS DE CIUDADANÍA - LICENCIA CONDUCCIÓN - LICENCIA DE TRÁNSITO - FORMATO APERTURA HOJA DE VIDA. LOS ANTERIORES DOCUMENTOS DEBEN SER ESCANEADOS EN ALTA RESOLUCION Y A COLOR.";
     $pdf -> MultiCell(196,4,utf8_decode($txt) ,1, 'J',0);
@@ -693,6 +704,7 @@ class PDFInformeEstudioSeguridad extends PDF
   {   
     $sql = "SELECT  a.cod_solici, a.cod_emptra, a.cor_solici,
                     a.tel_solici, a.cel_solici, a.cod_tipest,
+                    a.obs_estseg, a.ind_estseg,
                     b.nom_tercer, c.cod_tercer as 'num_doccon', c.cod_tipdoc as 'cod_tipcon',
                     c.ciu_expdoc as 'ciu_expcon', n.nom_ciudad as 'ciu_expcon', c.nom_apell1 as 'nom_ap1con',
                     c.nom_apell2 as 'nom_ap2con', c.nom_person as 'nom_nomcon', c.num_licenc as 'num_licenc',
