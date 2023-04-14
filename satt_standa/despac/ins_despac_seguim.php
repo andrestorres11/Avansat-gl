@@ -1329,11 +1329,13 @@ class Proc_segui
 
                                 if( $tiem )
                                     $mHtml->Select2( $mArrayTiempo, array("class"=>'celda_info', 'width'=>'50px', "name"=>'tiempo', "id"=>'tiemID') );
-
-                                if ($_REQUEST['ind_virtua'] == 0 && !$contro)
+                                
+                                if ($_REQUEST['ind_virtua'] == 0 && $contro){
                                     $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20') );
-                                else
-                                     $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) ); 
+                                }else{
+                                    $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) );
+                                }
+                                
                                 $mHtml->SetBody("<td class='celda_info' >");
                                // $mHtml->SetBody("<textarea name='obs' id='obsID'  onkeyup='UpperText( $(this) )'  ols='20' Rows='4'></textarea>");
                                 $mHtml->SetBody("<textarea name='obs' id='obsID'  ols='20' Rows='4' style='width: 205px;'></textarea>");
