@@ -734,14 +734,14 @@ class seguri {
                 VALUES
                 ('$datos->cod_usuari', '$datos->num_cedula', '$datos->clv_usuari', '$datos->nom_usuari', '$datos->usr_emailx', $datos->ind_cambio,
                   $datos->num_diasxx,  $datos->fec_cambio,   '$datos->cod_perfil',  $datos->cod_grupox,   $datos->cod_priori,  $datos->cod_contro,
-                  $datos->ind_estado , $datos->usr_interf, '$datos->usr_creaci', NOW(), '$datos->ali_usuari')";
+                  $datos->ind_estado , '$datos->usr_interf', '$datos->usr_creaci', NOW(), '$datos->ali_usuari')";
         if ($consulta = new Consulta($sql, self::$cConexion)) {
             $fil = $datos->val_filtro;
             if ($datos->cod_filtro) {
                 $sqlx = "INSERT INTO " . BASE_DATOS . ".tab_aplica_filtro_usuari  (cod_aplica, cod_filtro, cod_usuari, clv_filtro) VALUES ";
                 foreach ($datos->cod_filtro as $key => $value) {
 
-                    $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value AND cod_perfil = $datos->cod_perfil";
+                    $sql = "SELECT cod_filtro FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari WHERE cod_filtro = $value AND cod_usuari = $datos->cod_perfil";
 
                     $consulta = new Consulta($sql, self::$cConexion);
                     $filtro = $consulta->ret_matrix("a");
