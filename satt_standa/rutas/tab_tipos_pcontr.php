@@ -144,11 +144,11 @@ class tab_tipos_pcontr
                               <tr>
                                 <th>Codigo</th>
                                 <th>Via</th>
+                                <th>Icon</th>
                                 <th>Usuario Creador</th>
                                 <th>Fecha Creación</th>
                                 <th>Usuario Modificación</th>
                                 <th>Fecha Modificación</th>
-                                <th>Estado</th>
                                 <th>Opciones</th>
                               </tr>
                             </thead>
@@ -159,12 +159,7 @@ class tab_tipos_pcontr
                   </div>
                 </div>
                 '.$this->modalRegistro().'
-
-                <form method="POST" class="FormularioVia">
-                <div id="modal-edit">
-                </div>
-                </form>
-
+                '.$this->modalEdit().'
               </table>
             </td>';
 
@@ -183,7 +178,7 @@ class tab_tipos_pcontr
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form method="POST" class="FormularioVia">
+            <form method="POST" id="FormularioVia" class="FormularioVia" enctype="multipart/form-data">
             <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -195,7 +190,22 @@ class tab_tipos_pcontr
                             <label class="col-12 control-label"><span class="redObl">*</span> Nombre del tipo de pc</label>
                             <input class="form-control form-control-sm" type="text" placeholder="Nombre del tipo de pc" id="nom_tpcontID" name="nom_tpcont" required>
                         </div>
+                        <div class="col-md-8 col-sm-8">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <img id="previewImagen">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label for="rut_iconoxID">Icono</label>
+                                <input type="file" class="form-control-file" id="rut_iconoxID" name="rut_iconox" accept="image/*" onchange="cargaImagen(this)">
+                                <label class="mt-2" for="rut_iconoxID"><strong>Se aceptan formatos jpg y png. tama&ntilde;os (16x16, 24x24, 32x32, 64x64, 128x128, 256x256, 512x512 px)</strong></label>
+                            </div>
+                        </div>
                     </div>
+                  </div>
+                    
             </div>
             <div class="modal-footer"><center>
                 <button id="guarServic" type="submit" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block; background-color: rgb(51, 102, 0); border-left-color: rgb(51, 102, 0); border-right-color: rgb(51, 102, 0);">Guardar</button>
@@ -208,6 +218,60 @@ class tab_tipos_pcontr
     </div>';
     return $html;
   }
+
+  function modalEdit(){
+    $html = '<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="ediRegistro">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+          <div class="modal-header text-center header-modal">
+              EDITAR PUESTO DE CONTROL
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form method="POST" id="FormEdit" enctype="multipart/form-data">
+          <input type="hidden" name="cod_tpcont" id="cod_tpcont">
+          <div class="modal-body">
+                  <div class="row">
+                      <div class="col-md-12">
+                          <p>Los campos marcados con (<span class="redObl">*</span>) son OBLIGATORIOS para el registro del servicio en el sistema.</p>
+                      </div>
+                  </div>
+                  <div class="row margin-top-row">
+                      <div class="col-md-4">
+                          <label class="col-12 control-label"><span class="redObl">*</span> Nombre del tipo de pc</label>
+                          <input class="form-control form-control-sm" type="text" placeholder="Nombre del tipo de pc" id="nom_tpcontID_e" name="nom_tpcont" required>
+                      </div>
+                      <div class="col-md-8 col-sm-8">
+                      <div class="row">
+                          <div class="col-md-4">
+                              <img id="previewImagen_e" src="">
+                          </div>
+                      </div>
+                      <div class="row">
+                          <div class="col-md-8">
+                              <label for="rut_iconoxID">Icono</label>
+                              <input type="file" class="form-control-file" id="rut_iconoxID_e" name="rut_iconox" accept="image/*" onchange="cargaImagenE(this)">
+                              <input type="hidden" name="img_iconx" id="img_iconx">
+                              <label class="mt-2" for="rut_iconoxID"><strong>Se aceptan formatos jpg y png. tama&ntilde;os (16x16, 24x24, 32x32, 64x64, 128x128, 256x256, 512x512 px)</strong></label>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+                  
+          </div>
+          <div class="modal-footer"><center>
+              <button id="guardEdicion" type="button" class="swal2-confirm swal2-styled" aria-label="" style="display: inline-block; background-color: rgb(51, 102, 0); border-left-color: rgb(51, 102, 0); border-right-color: rgb(51, 102, 0);">Guardar</button>
+              <button type="button" data-dismiss="modal" class="swal2-cancel swal2-styled" aria-label="" style="display: inline-block; background-color: rgb(170, 170, 170);">Cancelar</button></center>
+          </div>
+          </form>
+      </div>
+      </form>
+    </div>
+  </div>';
+  return $html;
+}
+
 
 }
 

@@ -57,6 +57,10 @@ $(function() {
         }
 
     });
+
+    $("#guardEdicion").on("click", null, function() {
+        guardEdicion();
+    });
 });
 
 
@@ -66,7 +70,6 @@ $(".loan-input").on("focusout", null, function() {
     var input = $(this).val();
     $(this).val(numeral(input).format('$ 000.00'));
 });
-
 
 $(".FormularioVia").validate({
     rules: {
@@ -136,12 +139,18 @@ function almacenarDatos() {
     var standa = 'satt_standa';
     var opcion = 'registrar';
     var dataString = 'option=' + opcion;
+    var data = new FormData(document.getElementById('FormularioVia'));
     $.ajax({
         url: "../" + standa + "/rutas/ajax_tipos_pcontr.php?" + dataString,
         method: 'POST',
-        data: $(".FormularioVia").serialize(),
+        data,
         async: false,
         dataType: "json",
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+            cargando("Guardando. Por favor espere.")
+        },
         success: function(data) {
             if (data['status'] == 200) {
                 Swal.fire({
@@ -162,9 +171,86 @@ function almacenarDatos() {
                     confirmButtonColor: '#336600'
                 })
             }
-
-        }
+        },
     });
+}
+
+function guardEdicion() {
+    var standa = 'satt_standa';
+    var opcion = 'registrar';
+    var dataString = 'option=' + opcion;
+    var data = new FormData(document.getElementById('FormEdit'));
+    $.ajax({
+        url: "../" + standa + "/rutas/ajax_tipos_pcontr.php?" + dataString,
+        method: 'POST',
+        data,
+        async: false,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+            cargando("Guardando. Por favor espere.")
+        },
+        success: function(data) {
+            if (data['status'] == 200) {
+                Swal.fire({
+                    title: 'Registrado!',
+                    text: data['response'],
+                    type: 'success',
+                    confirmButtonColor: '#336600'
+                }).then((result) => {
+                    if (result.value) {
+                        location.reload();
+                    }
+                })
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data['response'],
+                    type: 'error',
+                    confirmButtonColor: '#336600'
+                })
+            }
+        },
+    });
+}
+
+function cargando(texto) {
+    var standa = 'satt_standa';
+    Swal.fire({
+        title: 'Cargando',
+        text: texto,
+        imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+        imageAlt: 'Custom image',
+        showConfirmButton: false,
+        allowOutsideClick: false,
+    })
+}
+
+function cargaImagen(elemento) {
+    input_file = $("#rut_iconoxID");
+    if (elemento.files && elemento.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#previewImagen + img').remove();
+            $('#previewImagen').after('<img src="' + e.target.result + '" width="40%"/>');
+            input_file.addClass('pt-3');
+        }
+        reader.readAsDataURL(elemento.files[0]);
+    }
+}
+
+function cargaImagenE(elemento) {
+    input_file = $("#rut_iconoxID_e");
+    if (elemento.files && elemento.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $('#previewImagen_e + img').remove();
+            $('#previewImagen_e').after('<img src="' + e.target.result + '" width="40%"/>');
+            input_file.addClass('pt-3');
+        }
+        reader.readAsDataURL(elemento.files[0]);
+    }
 }
 
 function edit(cod) {
@@ -240,6 +326,100 @@ function updEst(objet) {
     } catch (error) {
         console.error(error);
     }
+}
+
+function logicDelete(code, option) {
+    var palabra = 'deshabilitar';
+    var number = 0;
+    if (option == 'enable') {
+        palabra = 'habilitar';
+        var number = 1;
+    }
+    var titulo = 'Esta seguro';
+    var texto = 'Que desea ' + palabra + ' este registro?';
+    Swal.fire({
+        title: titulo,
+        text: texto,
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#336600',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No',
+    }).then((result) => {
+        if (result.value) {
+            ajaxLogicDelete(code, number);
+        }
+    })
+}
+
+function ajaxLogicDelete(code, option) {
+    swal.close();
+    var standa = 'satt_standa';
+    var dataString = 'option=disaenable';
+    var data = new FormData();
+    data.append('cod_tpcont', code);
+    data.append('ind_status', option);
+    $.ajax({
+        url: "../" + standa + "/rutas/ajax_tipos_pcontr.php?" + dataString,
+        method: 'POST',
+        data,
+        async: false,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+            cargando("Guardando. Por favor espere.")
+        },
+        success: function(data) {
+            if (data['status'] == 1000) {
+                swal.close();
+                Swal.fire({
+                    title: 'Registrado!',
+                    text: data['response'],
+                    type: 'success',
+                    confirmButtonColor: '#336600'
+                }).then((result) => {
+                    if (result.value) {
+                        location.reload();
+                    }
+                })
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data['response'],
+                    type: 'error',
+                    confirmButtonColor: '#336600'
+                })
+            }
+        },
+    });
+}
+
+function opeEdit(code, option) {
+    var standa = 'satt_standa';
+    var dataString = 'option=getRegistro&cod_tpcont=' + code;
+    $.ajax({
+        url: "../" + standa + "/rutas/ajax_tipos_pcontr.php?" + dataString,
+        method: 'POST',
+        async: false,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        beforeSend: function() {
+            cargando("Guardando. Por favor espere.")
+        },
+        success: function(data) {
+            swal.close();
+            console.log(data['nom_tpcont']);
+            $("#nom_tpcontID_e").val(data['nom_tpcont']);
+            $("#cod_tpcont").val(data['cod_tpcont']);
+            $('#previewImagen_e + img').remove();
+            $('#previewImagen_e').after('<img src="' + data['rut_iconoxC'] + '" width="40%"/>');
+            $("#img_iconx").val(data['rut_iconox']);
+            $("#ediRegistro").modal("show");
+        },
+    });
 }
 
 function decode_utf8(word) {
