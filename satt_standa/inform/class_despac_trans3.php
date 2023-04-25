@@ -1508,7 +1508,7 @@ class Despac
 		#Filtros por usuario
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
-		echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
+		// echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
 		
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -2099,7 +2099,7 @@ class Despac
 		#Filtros por usuario
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
-		echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
+		// echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -2980,6 +2980,7 @@ class Despac
 		$mViewBa = self::getView('jso_bandej');
 		
 		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		$mColor = array('', 'bgT1', 'bgT2', 'bgT3', 'bgT4');
 		$colItiner = 4;
 		if($mViewBa->tie_alarma->ind_visibl==1){
 			array_splice($mTittle, 3, 0, 'TIEMPO GL' );
@@ -3553,8 +3554,24 @@ class Despac
 	 */
 	private function search( $mIndFinrut = false )
 	{
-		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		$mViewBa = self::getView('jso_bandej');
+
+		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 		$mColor = array('', 'bgT1', 'bgT2', 'bgT3', 'bgT4');
+		$colItiner = 4;		
+		if($mViewBa->tie_alarma->ind_visibl==1){
+			array_splice($mTittle, 3, 0, 'TIEMPO GL' );
+			$colItiner = 5;
+		}
+
+		if($mViewBa->col_itiner->ind_visibl==1){
+			array_splice($mTittle, $colItiner, 0, 'ITINERARIO' );
+		}
+
+		if(BASE_DATOS!='satt_faro'){
+			array_splice($mTittle, 2, 0, 'NOV' );
+		}
+
 		$mIndConsol = false;
 
 		$mDespac = self::getDataSearch( $mIndFinrut );
@@ -3623,6 +3640,7 @@ class Despac
 				$mDespac[$i][fec_planea] = $mData[fec_planea];
 				$mDespac[$i][fec_planGl] = $mData[fec_planGl];
 				$mDespac[$i][ind_finrut] = $mData[sig_pcontr][ind_finrut]; 
+				$mDespac[$i][coliti] = self::validaAlarmaItiner($mDespac[$i]);
 
 				$mDespacho[0] = $mDespac[$i];
 				$mData = self::calTimeAlarma( $mDespacho, $mTransp, 0, 'sinF', $mColor );
@@ -3705,7 +3723,16 @@ class Despac
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, b.cod_transp, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
-						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin 
+						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
+						IF(
+                           b.cod_itiner IS NOT NULL AND b.cod_itiner != 0,
+                           b.cod_itiner,
+                           IF(
+                               m.nom_operad IS NULL OR m.nom_operad = '',
+                               'No Requiere',
+                               'Por Iniciar'
+                            )
+                        ) AS itinerario
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -3736,7 +3763,11 @@ class Despac
 			 INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
 					 ON a.cod_tipdes = i.cod_tipdes 
 			  LEFT JOIN ".BASE_DATOS.".tab_despac_sisext x 
-					 ON a.num_despac = x.num_despac 
+					 ON a.num_despac = x.num_despac
+			  LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
+					 ON a.cod_client = k.cod_tercer
+				LEFT JOIN ".BASE_DATOS.".tab_genera_opegps m
+					 ON a.gps_operad = m.cod_operad
 			  LEFT JOIN ".BASE_DATOS.".tab_despac_destin y 
 					 ON a.num_despac = y.num_despac 
 				  WHERE 1=1 ";
@@ -3762,7 +3793,7 @@ class Despac
 		$mSql .= $mIndFinrut == false ? "" : " ORDER BY a.fec_llegad DESC ";
 		$mSql .= $mIndFinrut == false ? "" : " LIMIT 10 ";
 		//echo $mSql;
-		echo "<pre id='TorresAndres' $mNumDespac $mIndFinrut style='display:none' >"; print_r($mSql); echo "</pre>";
+		// echo "<pre id='TorresAndres' $mNumDespac $mIndFinrut style='display:none' >"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $mConsult -> ret_matrix('a');
 	}
