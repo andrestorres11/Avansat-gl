@@ -351,8 +351,8 @@ function generaNuevoEstudio() {
         </select>
       </div>
       <div class="col-4 form-group">
-        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>N° de documento Conductor:</label>
-        <input class="form-control form-control-sm req num" type="text" placeholder="N° de documento" id="num_documeID` + incrme + `" name="num_docume[` + incrme + `]" required>
+        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nï¿½ de documento Conductor:</label>
+        <input class="form-control form-control-sm req num" type="text" placeholder="Nï¿½ de documento" id="num_documeID` + incrme + `" name="num_docume[` + incrme + `]" required>
       </div>
       <div class="col-4 form-group">
       <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Conductor:</label>
@@ -369,14 +369,14 @@ function generaNuevoEstudio() {
         <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_apell2ID` + cantid + `" name="nom_apell2[` + incrme + `]">
       </div>
       <div class="col-4 form-group">
-      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Número de celular del Conductor:</label>
-      <input class="form-control form-control-sm req" type="text" placeholder="Número de celular" id="num_telmovID` + cantid + `" name="num_telmov[` + incrme + `]" required>
+      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nï¿½mero de celular del Conductor:</label>
+      <input class="form-control form-control-sm req" type="text" placeholder="Nï¿½mero de celular" id="num_telmovID` + cantid + `" name="num_telmov[` + incrme + `]" required>
       </div>
     </div>
     <div class="row">
       <div class="col-4 form-group">
-        <label for="nom_soliciID" class="labelinput">Número de celular 2 del Conductor:</label>
-        <input class="form-control form-control-sm" type="text" placeholder="Número de celular 2" id="num_telmo2ID` + cantid + `" name="num_telmo2[` + incrme + `]">
+        <label for="nom_soliciID" class="labelinput">Nï¿½mero de celular 2 del Conductor:</label>
+        <input class="form-control form-control-sm" type="text" placeholder="Nï¿½mero de celular 2" id="num_telmo2ID` + cantid + `" name="num_telmo2[` + incrme + `]">
       </div>
       <div class="col-5 form-group">
         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email del Conductor:</label>
@@ -426,7 +426,7 @@ function validacionesCampos(formulario) {
                 $(idcamp).rules("add", {
                     email: true,
                     messages: {
-                        email: "El correo no es válido"
+                        email: "El correo no es vï¿½lido"
                     }
                 });
             }
@@ -611,7 +611,7 @@ function validateEstudioSoliciFinal() {
 function valSaveGestioSolici() {
     Swal.fire({
         type: 'warning',
-        title: '¿Desea guardar y terminar la gestión de la solicitud?',
+        title: 'ï¿½Desea guardar y terminar la gestiï¿½n de la solicitud?',
         showDenyButton: true,
         showCancelButton: true,
         confirmButtonText: 'Terminar',
@@ -626,25 +626,6 @@ function valSaveGestioSolici() {
             $("#modalPreGuardadoF1").modal("show");
         }
     })
-}
-
-function consInfoSolicitud(elemento) {
-    var cod_solici = $(elemento).attr('data-dato');
-    var standa = 'satt_standa';
-    var dataString = 'opcion=armaProcesoSolicitud&cod_solici=' + cod_solici;
-    $.ajax({
-        url: "../" + standa + "/estseg/ajax_genera_estseg.php?" + dataString,
-        method: 'POST',
-        async: false,
-        dataType: 'html',
-        success: function(data) {
-            $("#title-modal-procSol").empty();
-            $("#title-modal-procSol").append('Proceso estudio de seguridad No. ' + cod_solici);
-            $("#cont_procesoSolicitudModal").empty();
-            $("#cont_procesoSolicitudModal").append(data);
-            $("#procesoSolicitudModal").modal("show");
-        },
-    });
 }
 
 function registFormDinamic(cod_person, tip_refere, cod_identi) {
@@ -861,7 +842,7 @@ function almacenarFase1() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Guardando la información. Por favor espere.");
+            cargando("Guardando la informaciï¿½n. Por favor espere.");
         },
         success: function(data) {
             swal.close();
@@ -892,7 +873,7 @@ function almacenarEstudioFinal() {
     var ind_estudi = $('input[name="ind_estudi"]:checked').val();
     if (ind_estudi == '' || ind_estudi == undefined) {
         Swal.fire({
-            title: '¡Error!',
+            title: 'ï¿½Error!',
             text: 'Debe diligenciar la respuesta final de la solicitud.',
             type: 'error',
             confirmButtonColor: '#336600'
@@ -905,8 +886,8 @@ function almacenarEstudioFinal() {
     }
     if (obs_gestio == '') {
         Swal.fire({
-            title: '¡Error!',
-            text: 'Debe diligenciar la observación.',
+            title: 'ï¿½Error!',
+            text: 'Debe diligenciar la observaciï¿½n.',
             type: 'error',
             confirmButtonColor: '#336600'
         });
@@ -929,7 +910,7 @@ function almacenarEstudioFinal() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Guardando la información. Por favor espere.")
+            cargando("Guardando la informaciï¿½n. Por favor espere.")
         },
         success: function(data) {
             if (data['status'] == 200) {
@@ -1002,7 +983,7 @@ function generaPDFSend(cod_solici, emails, information) {
                         });
                     } else {
                         Swal.fire({
-                            title: '¡Error!',
+                            title: 'ï¿½Error!',
                             text: backParam.error.message,
                             type: 'warning',
                             confirmButtonColor: '#336600'
@@ -1324,8 +1305,8 @@ function preguardado() {
         });
     } else {
         Swal.fire({
-            title: '¡Error!',
-            text: 'Debe diligenciar la observación.',
+            title: 'ï¿½Error!',
+            text: 'Debe diligenciar la observaciï¿½n.',
             type: 'error',
             confirmButtonColor: '#336600'
         });
@@ -1345,7 +1326,7 @@ function PorAprobValidate() {
         },
         messages: {
             AproServicio: {
-                required: "Por favor Seleccione una opción"
+                required: "Por favor Seleccione una opciï¿½n"
             }
         },
         submitHandler: function(form) {
@@ -1448,7 +1429,7 @@ function viewPdf(elemento) {
             if (data.status) {
                 window.open(data.resp.file_url, '_blank');
                 Swal.fire({
-                    title: '¡Exito!',
+                    title: 'ï¿½Exito!',
                     text: data.message,
                     type: 'success',
                     confirmButtonColor: '#336600'
@@ -1641,7 +1622,7 @@ function rellenaTablas() {
         url: "../" + standa + "/estsegv2/ajax_genera_estseg.php?" + dataString,
         dataType: "json",
         beforeSend: function() {
-            cargando('Cargando la información...');
+            cargando('Cargando la informaciï¿½n...');
         },
         success: function(data) {
             var table = $('#tabla_inf_registradas').DataTable();

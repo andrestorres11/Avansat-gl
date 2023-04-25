@@ -241,7 +241,6 @@
                                     </div>
                                 </div>
                                 '.$this->nuevaSolicitudModal().'
-                                '.$this->procesoSolicitudModal().'
                                 '.$this->modalVisualizarPDF().'
                                 '.$this->modalVisualizarDocuments().'
                 </td>
@@ -2608,33 +2607,6 @@
 
           return $html;
         }
-
-
-        private function procesoSolicitudModal(){
-          $html = '<!-- Modal Proceso de Solicitud-->
-          <div class="modal fade" id="procesoSolicitudModal" role="dialog">
-            <div class="modal-dialog modal-lg">
-              <!-- Modal content-->
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 id="title-modal-procSol" class="modal-title text-center"></h5>
-                  <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                  <div class="modal-body">
-                    <div class="row" style="overflow: auto;">
-                      <div class="col-12" id="cont_procesoSolicitudModal" style="margin-right: 30px;">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary secondary-color btn-sm" data-dismiss="modal">Cerrar</button>
-                  </div>
-              </div>
-              
-            </div>
-          </div>';
-          return $html;
-      }
 
       private function modalVisualizarPDF(){
         $html = '<!-- Modal Visualizar PDF y opciones-->
