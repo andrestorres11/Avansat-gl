@@ -2429,11 +2429,16 @@ class Despachos
         // FORAECH DE PUNTOS DE PLAN DE RUTA DEL DESPACHO
         foreach ($puntFis as $key => $value) {
             if($value['val_longit'] != '' && $value['val_latitu'] != ''){
-
                 //Go through data to clean it
                 foreach($value as $key1 => $value1){
                     $value[$key1] = utf8_encode($value1);
-                } 
+                }
+                if(isset($value['rut_iconox']) && $value['rut_iconox']!=''){
+                    $value['rut_iconox'] = URL_APLICA."".$value['rut_iconox'];
+                }else{
+                    $value['rut_iconox'] = URL_STANDA."imagenes/placeholder.png";
+                }
+                
                 $latLon[] = $value;
             }
         }
@@ -5388,6 +5393,8 @@ class Despachos
         $add = "'O'";
       }else{
         $add = "IF(c.cod_tpcont = 1,'P','O')";
+        $column = ", d.rut_iconox";
+        $complementario = "LEFT JOIN  ".BASE_DATOS.".tab_tipos_pcontr d ON d.cod_tpcont = c.cod_tpcont";
       }
       $mSql = " 
       SELECT
@@ -5396,15 +5403,16 @@ class Despachos
             (b.fec_alarma) AS `fec_noveda`,
             c.nom_contro AS `obs_noveda`,
             ".$add." AS `tip_pointx`
+            ".$column."
         FROM
             ".BASE_DATOS.".tab_despac_despac a
             INNER JOIN ".BASE_DATOS.".tab_despac_seguim b ON b.num_despac = a.num_despac
             INNER JOIN ".BASE_DATOS.".tab_genera_contro c ON c.cod_contro = b.cod_contro
+            $complementario 
         WHERE
             c.ind_virtua = '0' AND
             a.num_despac = '" . $mNumDespac . "' 
       ";
-
       $mConsult = new Consulta( $mSql, $this -> conexion );
       return $mConsult -> ret_matrix('a');
     }
