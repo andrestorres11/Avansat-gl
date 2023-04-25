@@ -3,7 +3,7 @@
 	NOMBRE:   GeneraEstudioSeguridad
 	FUNCION:  Muestra las solicitudes del estudio de seguridad. 
 	FECHA DE MODIFICACION: 15/09/2020
-	CREADO POR: Ing. Cristian Andrés Torres
+	CREADO POR: Ing. Cristian Andrés Torres 
 	MODIFICADO 
 	****************************************************************************/
 	/*ini_set('error_reporting', E_ALL);

@@ -41,7 +41,7 @@ $(document).ready(function() {
         let extensiones = ["jpg", "png", "jpeg", "pdf"];
 
         if (extensiones.indexOf(extension) === -1) {
-            alert("Extensión NO permitida (Solo se aceptan jpg, png, jpeg o pdf)");
+            alert("Extensión NO permitida (Solo se aceptan jpg, png, jpeg o pdf)"); 
             $(e.target).val('');
         }
 
