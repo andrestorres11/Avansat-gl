@@ -113,9 +113,92 @@ class InfEstudiSeguriTable {
 
             $where
         ";
+
         $consulta  = new Consulta($mSql, $this -> conexion);
         $data = $consulta -> ret_matriz();
-        echo '
+        if(count($data) == 0 ){
+            $where ='WHERE 1=1 ';
+            $where .= $_GET['cod_transp']  ? " AND a.cod_emptra IN (".$_GET['cod_transp'].") " : "";
+            $where .= $_GET['cod_solici'] ? " AND a.cod_solici = '".$_GET['cod_solici']."'" : "";
+            $where .= $_GET['fec_inicia'] && $_GET['fec_finali'] ? " AND a.fec_creaci BETWEEN '".$_GET['fec_inicia']."' AND '".$_GET['fec_finali']."'" : ""; 
+
+            $mSql="SELECT 
+                a.cod_solici,
+                b.nom_tipest,
+                a.cod_emptra,
+                C.nom_tercer,
+                d.cod_tercer as 'num_docume', 
+                UCASE(
+                    CONCAT(
+                        d.nom_apell1, ' ', d.nom_apell2, ' ', 
+                        d.nom_person
+                    )
+                ) as nom_conduct,
+                e.num_placax,  
+                a.ind_estseg, 
+                a.obs_estseg,
+                a.usr_estseg,
+                a.fec_creaci,
+                a.usr_modifi,
+                a.fec_finsol
+                    FROM ".BASE_DATOS.".tab_estseg_solici a 
+                        INNER JOIN .tab_estseg_tipoxx b ON a.cod_tipest = b.cod_tipest 
+                        INNER JOIN .tab_tercer_tercer c ON a.cod_emptra = c.cod_tercer 
+                        LEFT JOIN .tab_estseg_tercer d ON a.cod_conduc = d.cod_tercer 
+                        LEFT JOIN .tab_estseg_vehicu e ON a.cod_vehicu = e.num_placax 
+
+                $where
+            ";
+            
+            $consulta  = new Consulta($mSql, $this -> conexion);
+            $data1 = $consulta -> ret_matriz();
+        }
+
+        if(count($data) == 0){
+
+            echo '
+            <table id="tablaRegistros" class="table table-striped table-bordered table-sm" style="width: 90vw;font-size:10px;">
+                <thead>
+                <tr>
+                    <th>No. Codigo Solic</th>
+                    <th>Tipo Solicitud</th>
+                    <th>Nit Empresa</th>
+                    <th>Nombre Empresa</th>
+                    <th>No. Documento Conductor</th>
+                    <th>Nombre Conductor</th>
+                    <th>Placa</th>
+                    <th>Estado</th>
+                    <th>Observaciones</th>
+                    <th>Usuario Creación</th>
+                    <th>Fecha Solicitud</th>
+                    <th>Usuario Modificación</th>
+                    <th>Fecha Respuesta</th>
+                </tr>
+                </thead>
+                <tbody>';
+                foreach($data1 as $value){
+                    echo "<tr>";
+                    echo "<td>".$value['cod_solici']."</td>";
+                    echo "<td>".$value['nom_tipest']."</td>";
+                    echo "<td>".$value['cod_emptra']."</td>";
+                    echo "<td>".$value['nom_tercer']."</td>";
+                    echo "<td>".$value['num_docume']."</td>";
+                    echo "<td>".$value['nom_conduct']."</td>";
+                    echo "<td>".$value['num_placax']."</td>";
+                    echo "<td>".($value['ind_estseg'] =='A' ? 'Aprobado':($value['ind_estudi']=='R' ? 'Rechazado':($value['ind_estudi']=='P' ? 'Pendiente':'N/a')))."</td>";
+                    echo "<td>".$value['obs_estseg']."</td>";
+                    echo "<td>".$value['usr_estseg']."</td>";
+                    echo "<td>".$value['fec_creaci']."</td>";
+                    echo "<td>".$value['usr_modifi']."</td>";
+                    echo "<td>".$value['fec_finsol']."</td>";
+                    echo "</tr>";
+                }
+            echo '</tbody>
+            </table>';
+        
+        }else{
+
+            echo '
             <table id="tablaRegistros" class="table table-striped table-bordered table-sm" style="width: 90vw;font-size:10px;">
                 <thead>
                 <tr>
@@ -154,6 +237,7 @@ class InfEstudiSeguriTable {
                 }
             echo '</tbody>
             </table>';
+        }
     }
 }
 
