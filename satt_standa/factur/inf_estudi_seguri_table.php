@@ -126,7 +126,7 @@ class InfEstudiSeguriTable {
                 a.cod_solici,
                 b.nom_tipest,
                 a.cod_emptra,
-                C.nom_tercer,
+                c.nom_tercer,
                 d.cod_tercer as 'num_docume', 
                 UCASE(
                     CONCAT(
