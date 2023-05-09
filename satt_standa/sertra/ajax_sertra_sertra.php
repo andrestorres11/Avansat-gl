@@ -526,7 +526,7 @@ class ajax_certra_certra {
                         <div class="col-md-6">
                             <div class="col-md-6 text-right">Tipo de estudio</div>
                             <div class="col-md-6 text-left">
-                                <select id="tip_estsegID" name="tip_estseg" class="ancho" obl="1" validate="select">
+                                <select id="tip_estsegID" name="tip_estseg" class="ancho" obl="1">
                                     <option value="">Seleccione una Opci&oacute;n.</option>
                                     <?php
                                     foreach ($tipos_estudio as $key => $value) {
@@ -1043,7 +1043,7 @@ class ajax_certra_certra {
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
-                        Ubicación de seguimiento 
+                        Ubicaciï¿½n de seguimiento 
                         <?php
                         if ($datos->principal['ubi_seguim'] == 1) {
                             $ubi_seguim = "checked='true'";
