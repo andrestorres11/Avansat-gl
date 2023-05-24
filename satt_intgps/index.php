@@ -260,6 +260,10 @@ class Aplicacion_Seguridad
 			{
 				$_REQUEST["cod_servic"] = "7075";
 			}
+      else if( $_SESSION[datos_usuario][cod_perfil] == '704' )
+			{
+				$_REQUEST["cod_servic"] = "1315";
+			}
 		}
 		
 		$servicio = new Servic($_REQUEST[cod_servic]);
