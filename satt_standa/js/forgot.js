@@ -3,6 +3,7 @@ function setForgot()
   try
   {
     var Standa = $("#standaID").val();
+    var Bd = $("#clientID").val();
     $("#forgotID").dialog({
       modal : true,
       resizable : false,
@@ -19,7 +20,7 @@ function setForgot()
 
     $.ajax({
       url: "../" + Standa + "/forgot/ajax_forgot_forgot.php",
-      data : 'standa=' + Standa +'&option=setForgot',
+      data : 'standa=' + Standa +'&option=setForgot&bd='+Bd,
       method : 'POST',
       success : 
         function ( data ) 

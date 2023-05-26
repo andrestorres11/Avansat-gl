@@ -30,7 +30,7 @@ class AjaxForgotPass
       include_once('../lib/bd/seguridad/aplica_filtro_perfil_lib.inc');
       include_once('../lib/bd/seguridad/aplica_filtro_usuari_lib.inc');
       include_once('../lib/general/constantes.inc');
-      include_once('../../satt_faro/constantes.inc');
+      include_once('../../'.$_AJAX['bd'].'/constantes.inc');
       include_once('../lib/ajax.inc');  
     }
     $this -> conexion = $AjaxConnection;
@@ -107,7 +107,6 @@ class AjaxForgotPass
     
     $consulta = new Consulta( $mSelect, $this -> conexion );
     $mValida = $consulta -> ret_matriz();
-
     if( sizeof( $mValida ) > 0 )
     {
       //$mUrl = str_replace('http', 'https', DIREC_APLICA ).'forgot.php?cod_usuari='.base64_encode($mData['cod_usuari']).'&ema_usuari='.base64_encode($mData['ema_usuari']).'&token='.sha1( $mData['cod_usuari'] );
