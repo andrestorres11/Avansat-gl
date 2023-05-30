@@ -211,13 +211,13 @@ class Califi
 					<div class="col-md-6">
 						<div class="col-md-3 text-right">Usuario:<font style="color:red">*</font></div>
 						<div class="col-md-9 text-left">
-							<input type="text" class="text-center ancho" name="gps_usuari" id="gps_usuariID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_usuari'] ?>"></input>
+							<input type="text" class="text-center ancho" name="gps_usuari" id="gps_usuariID" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_usuari'] ?>"></input>
 						</div>
 					</div>
 					<div class="col-md-6">
-						<div class="col-md-3 text-right">Contraseï¿½a:<font style="color:red">*</font></div>
+						<div class="col-md-3 text-right">Contraseña:<font style="color:red">*</font></div>
 						<div class="col-md-9 text-left">
-							<input type="text" class="text-center ancho" name="gps_paswor" id="gps_pasworID" validate="text" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_paswor'] ?>"></input>
+							<input type="text" class="text-center ancho" name="gps_paswor" id="gps_pasworID" obl="1" maxlength="250" minlength="10" value="<?= $informacion['gps_paswor'] ?>"></input>
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -1140,7 +1140,7 @@ class Califi
 		$mIntegradorGPS = getValidaInterfaz(self::$cConexion, '53', $mDataDesp['cod_transp'], true, 'data');
 
 		if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
-		{   
+		{
 		  $mHubGPS = new InterfHubIntegradorGPS(self::$cConexion, ['cod_transp' => $mDataDesp['cod_transp']] );
 		  // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
 		  $mResp = $mHubGPS -> setTrakingStart([
