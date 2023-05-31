@@ -321,11 +321,11 @@ function habIdOperaGps(elemento) {
 function editaGps(num_despac) {
 
     var conn = checkConnection();
-
+    var gps_usuari = $("#gps_usuariID").val();
     if (conn) {
         var standa = $("#central").val();
         var gps_operad = $("#cod_operadEditID").val();
-        var gps_usuari = $("#gps_usuariID").val();
+        
         var gps_paswor = $("#gps_pasworID").val();
         var gps_idxxxx = $("#gps_idxxxxID").val();
 
@@ -362,7 +362,7 @@ function editaGps(num_despac) {
             $.ajax({
                 type: "POST",
                 url: "../" + standa + "/califi/class_califi_califi.php",
-                data: "Ajax=on&Option=editaGps&standa=" + standa + "&gps_operad=" + gps_operad + "&gps_usuari=" + gps_usuari + "&gps_paswor=" + gps_paswor + "&gps_idxxxx=" + gps_idxxxx + "&num_despac=" + num_despac,
+                data: "Ajax=on&Option=editaGps&standa=" + standa + "&gps_operad=" + gps_operad + "&gps_usuari=" + encodeURIComponent(gps_usuari) + "&gps_paswor=" + encodeURIComponent(gps_paswor) + "&gps_idxxxx=" + gps_idxxxx + "&num_despac=" + num_despac,
                 async: true,
                 beforeSend: function() {
                     $.blockUI({
