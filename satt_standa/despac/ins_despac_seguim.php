@@ -901,72 +901,112 @@ class Proc_segui
               var limit = 2000;
               var nueva_longitud = 0;
               var text;
-
+              let token;
+              setTimeout(() => {
+                token = autoTokenPad();
+              }, "500");
+              
               const xhr = new XMLHttpRequest();
               var formData = new FormData();
               
-              function InsertInPAD(data,api_url,name) {
+              function InsertInPAD(data,name,api_url) {
+                let isChecked = $("#habPAD2").is(":checked");
+                if (isChecked == true){
                     Swal.fire({
-                            title: "Estas seguro?",
-                            text: "Habilitación de disponibilidad del recurso a Pad.",
-                            icon: "warning",
-                            html: "<p><b>1.</b> El conductor autoriza habilitar su datos para recibir información de central pad?</p><input type=\'checkbox\' id=\'inf_pad\' /><label>Si</label><br>" +
-                            "<p><b>2.</b> El conductor autoriza recibir informacion del transporte.com?</p><input type=\'checkbox\' id=\'inf_transp\' /><label>Si</label>",
-                            showCancelButton: true,
-                            confirmButtonColor: "#285c00",
-                            cancelButtonColor: "#d33",
-                            confirmButtonText: "Si,Confirmar",
-                            preConfirm: () => {
-                                var inf_pad = Swal.getPopup().querySelector("#inf_pad").checked
-                                var inf_transp = Swal.getPopup().querySelector("#inf_transp").checked
-                                return {inf_pad: inf_pad, inf_transp: inf_transp}
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                var checkBox = document.getElementById("habPAD2");
-                                if (checkBox.checked == true){
-                                    formData.append("use_id", data[0]["cod_tercer"]);
-                                    formData.append("use_name", data[0]["nombres"]);
-                                    formData.append("usu_cellph", data[0]["num_telmov"]);
-                                    formData.append("lic_plate", data[0]["num_placax"]);
-                                    formData.append("use_settin", data[0]["num_config"]);
-                                    formData.append("lin_app", "Avansat GL");
-                                    formData.append("lin_status", 1);
-                                    formData.append("use_creaci", name);
-                                    formData.append("num_despac", data[0]["num_despac"]);
-                                    formData.append("inf_pad", result.value.inf_pad);
-                                    formData.append("inf_transp", result.value.inf_transp);
-
-                                    xhr.open("POST", `${api_url}`);
-                                    xhr.send(formData);
-                
-                                    xhr.onreadystatechange = function () {
-                                        if (this.readyState === XMLHttpRequest.DONE) {
-                                            if (this.status == 200)
-                                            {
-                                                Swal.fire(
-                                                    "Proceso Exitoso",
-                                                    "Se ha registrado la sugerencia del recurso de manera exitosa.",
-                                                    "success"
-                                                    )
-                                            }
-                                            if (this.status == 422)
-                                            {
-                                                Swal.fire(
-                                                    "Error!",
-                                                    "No es posible realizar la sugerencia del recurso ya que se encuentra registrado.",
-                                                    "error"
-                                                    )
-                                            }
-                
-                                        }
+                        title: "Estas seguro?",
+                        text: "Habilitación de disponibilidad del recurso a Pad.",
+                        icon: "warning",
+                        html: "<p><b>1.</b> El conductor autoriza habilitar su datos para recibir información de central pad?</p><input type=\'checkbox\' id=\'inf_pad\' /><label>Si</label><br>" +
+                        "<p><b>2.</b> El conductor autoriza recibir informacion del transporte.com?</p><input type=\'checkbox\' id=\'inf_transp\' /><label>Si</label>",
+                        showCancelButton: true,
+                        confirmButtonColor: "#285c00",
+                        cancelButtonColor: "#d33",
+                        confirmButtonText: "Si,Confirmar",
+                        preConfirm: () => {
+                            var inf_pad = Swal.getPopup().querySelector("#inf_pad").checked
+                            var inf_transp = Swal.getPopup().querySelector("#inf_transp").checked
+                            return {inf_pad: inf_pad, inf_transp: inf_transp}
+                        }
+                    }).then((result) => {
+                        
+                        let  api_pad = api_url+"linkages";
+                       
+                        if (result.isConfirmed) {
+                            
+                                let data2 = {
+                                    "use_id": data[0]["cod_tercer"],
+                                    "use_name": data[0]["nombres"],
+                                    "usu_cellph": data[0]["num_telmov"],
+                                    "lic_plate": data[0]["num_placax"],
+                                    "use_settin": data[0]["num_config"],
+                                    "lin_app": "Avansat GL",
+                                    "lin_status": 1,
+                                    "use_creaci": name,
+                                    "num_despac": data[0]["num_despac"],
+                                    "inf_pad": result.value.inf_pad == true ? 1:0,
+                                    "inf_transp": result.value.inf_transp == true ? 1:0,
+                                };
+                                
+                                let token = JSON.parse(sessionStorage.getItem("tokenPad"));
+                                
+                                fetch(api_pad, {
+                                    method: "POST", 
+                                    body: JSON.stringify(data),
+                                    headers:{
+                                      "Content-Type": "application/json",
+                                      "Authorization": "Bearer "+token?.access_token,
                                     }
-                                }
-                            }
-                            else{
-                                $("#habPAD2").attr("checked", false);
-                            }
-                        })
+                                }).then(res => res.json())
+                                  .catch(error => {
+                                    Swal.fire(
+                                        "Error!",
+                                        "No es posible realizar la sugerencia del recurso ya que se encuentra registrado.",
+                                        "error"
+                                        )
+                                  })
+                                  .then(response_ => { 
+                                    if (response_.status !== 401) {
+                                        Swal.fire(
+                                            "Proceso Exitoso",
+                                            "Se ha registrado la sugerencia del recurso de manera exitosa.",
+                                            "success"
+                                            )
+                                    }else{
+                                        Swal.fire(
+                                            "Error!",
+                                            "No es posible realizar la sugerencia del recurso ya que se encuentra registrado.",
+                                            "error"
+                                            )
+                                    }
+                                  });
+                        }
+                        else{
+                            $("#habPAD2").attr("checked", false);
+                        }
+                    })
+                }
+                    
+              }
+
+              function autoTokenPad(){
+                let api_pad = $("#api_padID").val();
+                    api_pad = api_pad+"generateTokenApi";
+                    let data = {
+                        "email": $("#api_paduserID").val(),
+                        "password": $("#not_visibID").val()
+                     }
+    
+                    fetch(api_pad, {
+                        method: "POST", 
+                        body: JSON.stringify(data),
+                        headers:{
+                          "Content-Type": "application/json"
+                        }
+                    }).then(res => res.json())
+                      .catch(error => console.log(error))
+                      .then(response => { 
+                        sessionStorage.setItem("tokenPad",JSON.stringify(response?.succesResponse));
+                      });
               }
 
               $("#obsID").attr("spellcheck", true);
@@ -1343,7 +1383,7 @@ class Proc_segui
                                 $mHtml->SetBody("</td>");
                                 $name = "'".$datos_usuario['nom_usuari']."'";
                                 
-                                $mHtml->CheckBox( array("class"=>'celda_info', "value"=>'1',"id"=>"habPAD2", "name"=>'habPAD2', "onclick"=>'InsertInPAD('.htmlspecialchars(json_encode($driverData)).','.API_PAD.','.htmlspecialchars($name).')') );
+                                $mHtml->CheckBox( array("class"=>'celda_info', "value"=>'1',"id"=>"habPAD2", "name"=>'habPAD2', "onclick"=>'InsertInPAD('.htmlspecialchars(json_encode($driverData)).','.htmlspecialchars($name).',\''.API_PAD.'\')') );
                                 
                                 $mHtml->Javascript( $mScript2 );
 
@@ -1402,6 +1442,10 @@ class Proc_segui
                                     $mHtml->Hidden( array("name"=>"ind_resolu", "id"=>"ind_resoluID",   "value"=>"") );
                                     $mHtml->Hidden( array("name"=>"ind_segcar", "id"=>"ind_segcarID",   "value"=>"") );
                                     $mHtml->Hidden( array("name"=>"not_obsnov", "id"=>"not_obsnovID",   "value"=>$nota) );
+                                    $mHtml->Hidden( array("name"=>"api_pad", "id"=>"api_padID",   "value"=>API_PAD));
+                                    $mHtml->Hidden( array("name"=>"api_paduser", "id"=>"api_paduserID",   "value"=>API_PAD_USER));
+                                    $mHtml->Hidden( array("name"=>"not_visib", "id"=>"not_visibID",   "value"=>API_PAD_PASS));
+
                                     if( $_REQUEST['noved'] != '' && $_REQUEST['noved'] != NULL ){
                                         $mHtml->Javascript( $mScript4 );
                                         $mHtml->Hidden( array("name"=>"ind_soluci", "id"=>"indShowSoluciID", "value"=>($mValidRecome != NULL ? '1' : '0') ) );

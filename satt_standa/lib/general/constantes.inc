@@ -153,8 +153,9 @@ define("CON_TIPSER_MA", 2);
 define("CON_TIPSER_OAL", 1);
 
 define("COD_PERFIL_SUPEREAL", "7");// Controlador CLF
-define("API_PAD", "'https://logitech.intrared.net/ap/pad/v3/colombia/backend/api/linkages'");// Controlador CLF
-
+define("API_PAD", "https://logitech.intrared.net/ap/pad/v3/colombia/backend/api/");// api pad
+define("API_PAD_USER", "externo_api@grupooet.com");// api pad usuario
+define("API_PAD_PASS", "11111111");// api pad usuario
 
 //Constante mapa widetech
 define("URL_MAPA_WIDETECH", "https://gps.widetech.co/site/OnLineMap.aspx");
