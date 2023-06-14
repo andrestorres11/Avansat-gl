@@ -948,37 +948,29 @@ class Proc_segui
                                 };
                                 
                                 let token = JSON.parse(sessionStorage.getItem("tokenPad"));
-                                
-                                fetch(api_pad, {
-                                    method: "POST", 
-                                    body: JSON.stringify(data),
-                                    headers:{
-                                      "Content-Type": "application/json",
-                                      "Authorization": "Bearer "+token?.access_token,
-                                    }
-                                }).then(res => res.json())
-                                  .catch(error => {
-                                    Swal.fire(
-                                        "Error!",
-                                        "No es posible realizar la sugerencia del recurso ya que se encuentra registrado.",
-                                        "error"
-                                        )
-                                  })
-                                  .then(response_ => { 
-                                    if (response_.status !== 401) {
+                                $.ajax({
+                                    type: "POST",
+                                    url: api_pad,
+                                    beforeSend: function (xhr){ 
+                                        xhr.setRequestHeader("Authorization","Bearer "+token?.access_token); 
+                                    },
+                                    data: data2,
+                                    success: function (data) {
                                         Swal.fire(
                                             "Proceso Exitoso",
                                             "Se ha registrado la sugerencia del recurso de manera exitosa.",
                                             "success"
-                                            )
-                                    }else{
+                                        )
+                                    },
+                                    error: function (data, textStatus, errorThrown) {
+                                        console.log(data?.response?.error?.message);
                                         Swal.fire(
                                             "Error!",
                                             "No es posible realizar la sugerencia del recurso ya que se encuentra registrado.",
                                             "error"
-                                            )
-                                    }
-                                  });
+                                        )
+                                    },
+                                });
                         }
                         else{
                             $("#habPAD2").attr("checked", false);
@@ -995,18 +987,18 @@ class Proc_segui
                         "email": $("#api_paduserID").val(),
                         "password": $("#not_visibID").val()
                      }
-    
-                    fetch(api_pad, {
-                        method: "POST", 
-                        body: JSON.stringify(data),
-                        headers:{
-                          "Content-Type": "application/json"
-                        }
-                    }).then(res => res.json())
-                      .catch(error => console.log(error))
-                      .then(response => { 
-                        sessionStorage.setItem("tokenPad",JSON.stringify(response?.succesResponse));
-                      });
+
+                    $.ajax({
+                        type: "POST",
+                        url: api_pad,
+                        data: data,
+                        success: function (data) {
+                            sessionStorage.setItem("tokenPad",JSON.stringify(data?.succesResponse));
+                        },
+                        error: function (data, textStatus, errorThrown) {
+                            console.log(data);
+                        },
+                    });
               }
 
               $("#obsID").attr("spellcheck", true);
