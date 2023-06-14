@@ -179,7 +179,8 @@ class ajax_certra_certra {
             cod_tipser, tie_contro, ind_estado, tie_conurb, ind_llegad, cod_server, 
             ind_notage, tip_factur, tie_prcurb, tie_prcnac, tie_prcimp, tie_prcexp,
             tie_prctr1, tie_prctr2, tie_carurb, tie_carnac, tie_carimp, tie_carexp,
-            tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ind_excala, 
+            tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ini_trazab,
+            fin_trazab, ind_excala, 
             ind_calcon, ind_segcar, ind_segtra, ind_segdes, val_regist, tie_cartr1, 
             val_despac, tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, ubi_seguim, 
             ind_biomet, can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, 
@@ -980,7 +981,7 @@ class ajax_certra_certra {
         <div id="otra_parameID" class="col-md-12 accordion defecto ancho">
             <h3 style='padding:6px;'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Otras Parametrizaiones</b></h3>
             <div id="contenido_etap">
-                <div class="StyleDIV contenido" style="min-height: 210px !important;" >
+                <div class="StyleDIV contenido" style="min-height: 260px !important;" >
                     <div class="col-md-5 derecha">
                         Activa 
                         <?php
@@ -1043,7 +1044,7 @@ class ajax_certra_certra {
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
-                        Ubicaciï¿½n de seguimiento 
+                        Ubicación de seguimiento 
                         <?php
                         if ($datos->principal['ubi_seguim'] == 1) {
                             $ubi_seguim = "checked='true'";
@@ -1071,11 +1072,30 @@ class ajax_certra_certra {
                         </select>
                     </div>
                     <div class="col-md-2">&nbsp;</div>
-                    <div class="col-md-5 izquierda">
+
+                    <div class="col-md-2 izquierda">
                         <?php $tie_trazab = str_replace(',', '.', round($datos->principal['tie_trazab'] / 60, 1)); ?>
-                        <input class="centrado select" value="<?= $tie_trazab ?>"  onblur="validaCampo()" maxlength="4" minlength="1" type="text" name="tie_trazab" id="tie_trazabID" >
+                        <input class="centrado select" value="<?= $tie_trazab ?>"  onblur="validaCampo()" maxlength="4" minlength="1" type="text" name="tie_trazab" id="tie_trazabID" style="width:60px">
                         Tiempo Trazabilidad Diaria
+                    </div>      
+
+                    <div class="col-md-1 derecha">
+                        <?php $ini_trazab = $datos->principal['ini_trazab'] == NULL || $datos->principal['ini_trazab'] == '' ? '00:00' : $datos->principal['ini_trazab'] ?>
+                        Hora de inicio
+                        <input type="text" class="hora centrado" name="hor_initra" id="hor_initraID" value="<?= $ini_trazab ?>" style="width:50px;">
                     </div>
+                    <div class="col-md-1 izquierda">
+                        Hora de final
+                        <?php $fin_trazab = $datos->principal['fin_trazab'] == NULL || $datos->principal['fin_trazab'] == '' ? '00:00' : $datos->principal['fin_trazab'] ?>
+                        <input type="text" class="hora centrado" name="hor_fintra" id="hor_fintraID" value="<?= $fin_trazab ?>" style="width:50px;">
+                    </div>
+                    
+
+
+
+
+
+
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
                         Prioridad <font style="color:red">*</font>
@@ -1739,7 +1759,8 @@ class ajax_certra_certra {
         $query = "INSERT INTO " . BASE_DATOS . ".tab_transp_tipser
         (   num_consec, cod_tipser, tie_contro, ind_estado, tie_conurb, ind_llegad,  
             ind_notage, tip_factur, tie_carurb, tie_carnac, tie_carimp, tie_carexp,
-            tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ind_excala, 
+            tie_desurb, tie_desnac, tie_desimp, tie_desexp, tie_trazab, ini_trazab,
+            fin_trazab, ind_excala, 
             ind_calcon, ind_segcar, ind_segtra, ind_segdes, val_regist, val_despac,
             tie_cartr1, tie_cartr2, tie_destr1, tie_destr2, ind_camrut, dup_manifi, ubi_seguim, 
             ind_biomet, can_llaurb, can_llanac, can_llaimp, can_llaexp, can_llatr1, 
@@ -1759,7 +1780,8 @@ class ajax_certra_certra {
         ) VALUES  ( 
         '$datos->num_consec', '$datos->cod_tipser', '$datos->tie_contro', '$datos->ind_estado', '$datos->tie_conurb', '$datos->ind_llegad', 
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
-        '$datos->tie_desurb', '$datos->tie_desnac', '$datos->tie_desimp', '$datos->tie_desexp', '$datos->tie_trazab', '$datos->ind_excala', 
+        '$datos->tie_desurb', '$datos->tie_desnac', '$datos->tie_desimp', '$datos->tie_desexp', '$datos->tie_trazab', '$datos->hor_initra',
+        '$datos->hor_fintra', '$datos->ind_excala', 
         '$datos->ind_calcon', '$datos->ind_segcar', '$datos->ind_segtra', '$datos->ind_segdes', '$datos->val_regist', '$datos->val_despac', 
         '$datos->tie_cartr1', '$datos->tie_cartr2', '$datos->tie_destr1', '$datos->tie_destr2', '$datos->ind_camrut', '$datos->dup_manifi', '$datos->ubi_seguim',
         '$datos->ind_biomet', '$datos->can_llaurb', '$datos->can_llanac', '$datos->can_llaimp', '$datos->can_llaexp', '$datos->can_llatr1', 

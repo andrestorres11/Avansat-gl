@@ -133,6 +133,7 @@ class parametrizacion_correos
                                 <th>Envio Notificación API</th>
                                 <th>Not. Estudio de seguridad</th>
                                 <th>Not. Novedades Especiales</th>
+                                <th>Not. Trazabilidad Diaria</th>
                                 <th>Opciones</th>
                               </tr>
                             </thead>
@@ -147,6 +148,7 @@ class parametrizacion_correos
 
     echo utf8_decode($html);
 
+    
     self::scripts();
   }
 
