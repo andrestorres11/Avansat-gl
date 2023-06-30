@@ -303,7 +303,8 @@ class Proc_segui
                                                           'num_despac' => $mDataDespac[0]['num_despac'],
                                                           'fec_inicio' => date("Y-m-d H:i:s"),
                                                           'fec_finali' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")."+ 5 day ")),
-                                                          'cod_itiner' => $mDataDespac[0]['cod_itiner']
+                                                          'cod_itiner' => $mDataDespac[0]['cod_itiner'],
+                                                          'obs_cierre' => 'Cierre por llegada del despacho 2 '.$usuario,
                                                           ]);
                     if($mDesGPS['code'] == '1000'){ 
                         ShowMessage("s", "REGISTRO HUB GPS", $mDesGPS['message']);
