@@ -304,7 +304,7 @@ class Despac
 	private function printInform( $mIndEtapa, $mTittle )
 	{
 		$mTransp = self::getTranspServic( $mIndEtapa );
-		echo "<pre style='display:none'>"; print_r($mTransp ); echo "</pre>";
+		//echo "<pre style='display:none'>"; print_r($mTransp ); echo "</pre>";
 		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
 		$mHtml = '';
 		$j=1;
@@ -509,7 +509,7 @@ class Despac
 	private function printInformContr( $mIndEtapa, $mTittle )
 	{
 		$mTransp = self::getTranspServic( $mIndEtapa );
-		echo "<pre style='display:none'>"; print_r($mTransp ); echo "</pre>";
+		//echo "<pre style='display:none'>"; print_r($mTransp ); echo "</pre>";
 		$mLimitFor = self::$cTypeUser[tip_perfil] == 'OTRO' ? sizeof($mTittle[texto]) : sizeof($mTittle[texto])-1;
 		$mHtml = '';
 		//Variables necesarias
@@ -1072,7 +1072,7 @@ class Despac
 		$mSql .= ($mDespacPrcCargue != NULL || $mDespacPrcCargue != ''?" AND xx.num_despac NOT IN ( {$mDespacPrcCargue} ) ":"");
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND xx.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( aa.cod_propie = yy.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
-						echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
+						//echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 
@@ -1149,7 +1149,7 @@ class Despac
 			#Filtros por usuario
 			$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		}
-		echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
+		//echo "<pre style='display:none'>"; print_r($mSql); echo "</pre>";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 		$mTipValida = self::tipValidaTiempo( $mTransp );
@@ -1811,7 +1811,7 @@ class Despac
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
 
-		echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
+		//echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -1980,7 +1980,7 @@ class Despac
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
 
-		echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
+		//echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');

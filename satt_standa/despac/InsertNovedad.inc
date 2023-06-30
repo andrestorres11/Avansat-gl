@@ -3609,7 +3609,8 @@ class InsertNovedad {
                                                         'num_despac' => $regist['despac'],
                                                         'fec_inicio' => date("Y-m-d H:i:s"),
                                                         'fec_finali' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")."+ 5 day ")),
-                                                        'cod_itiner' => $mDatDespac['cod_itiner']
+                                                        'cod_itiner' => $mDatDespac['cod_itiner'],
+                                                        'obs_cierre' => 'Cierre por novedad en sitio LUGAR DE ENTREGA'
                                                         ]);
 
                     if($mDesGPS['code'] == '1000'){ 
@@ -5135,7 +5136,11 @@ class InsertNovedad {
                   ];
                     ini_set("soap.wsdl_cache_enabled", 0);
                     $mSoap = new SoapClient( $mReporte['url_webser'], ['trace' => 1,'exception' => 1 ] );
-                    $mResponse = $mSoap -> __soapCall( 'setNovedadNC', $mParams );
+                    if($mReporte['metodo']=='pc'){
+						$mResponse = $mSoap -> __soapCall("setNovedadPC", $mParams); // Se coloca la novedad en SITIO
+					}else{
+						$mResponse = $mSoap -> __soapCall("setNovedadNC", $mParams); // Se coloca la novedad en ANTES DE SITIO
+					}
                     $mResult  = explode( "; ", $mResponse );
                     $mCodResp = explode( ":", $mResult[0] );  
                     $mMsgResp = explode( ":", $mResult[1] );

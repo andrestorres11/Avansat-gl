@@ -115,7 +115,8 @@ class cronCloseItinerario
                                                             'ind_origen' => '3',
                                                             'tie_report' => $value["tie_report"],
                                                             'cod_itiner' => $value["cod_itiner"],
-                                                            'url_webser' => $value["url_webser"]
+                                                            'url_webser' => $value["url_webser"],
+                                                            'obs_cierre' => 'Cerrado por cron',
                                                         ]);
             }
 

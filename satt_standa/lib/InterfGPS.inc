@@ -736,7 +736,7 @@
                            "usuario: *WidetechInt3grador*", 
                            "clave: lxdG-+gJX:oYju+b5n"
                           );
-
+          mail('cristian.torres@grupooet.com','SendManual',URL_INTERF_GPSEVE."/setItinerary");                
           # Recorre las variables para concatenarlas en un solo string como si fuera un GET para enviarla por cUrl------------------------
           //$mParamsString = "inputAvansat=".json_encode($sendData);
           $mParamsString = json_encode($sendData);
@@ -752,7 +752,6 @@
           $error = curl_error($ch);
           $http_status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
           curl_close($ch);
-           
           //echo "<pre>mParamsString: "; print_r(URL_INTERF_GPSEVE."/setItinerary  " ); echo "</pre>";
          // echo "<pre>mParamsString: "; print_r($mParamsString); echo "</pre>";
           //echo "<pre>setPlacaparaevento: "; print_r($raw_data); echo "</pre>";
@@ -1356,7 +1355,7 @@
         $data['nom_transp'] = $parameRutfar[0]['nom_tercer'];
     
         if( $mDataVehicu['nit_operad']  == NULL ) { 
-          return ['code' => 2005, 'message' =>'NO se envia a HUB, porque el Vehï¿½culo  '.$mData['num_placax'].' no tiene GPS asignado' ];
+          return ['code' => 2005, 'message' =>'NO se envia a HUB, porque el Vehículo  '.$mData['num_placax'].' no tiene GPS asignado' ];
         }
  
 
@@ -1371,7 +1370,8 @@
                       "asset"                     => $mData['num_placax'],
                       "begin_tracking"            => $mData["fec_inicio"],
                       "finish_tracking"           => $mData["fec_finali"],
-                      "cod_integr"                => $mData["cod_itiner"]
+                      "cod_integr"                => $mData["cod_itiner"],
+                      "clo_reason"                => isset($mData["obs_cierre"]) ? $mData["obs_cierre"] : "No especificado",
                     ];
 
         //echo "<pre>"; print_r($sendData); echo "</pre>";  die();
