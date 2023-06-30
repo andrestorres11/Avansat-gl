@@ -1764,7 +1764,16 @@ class Despac
 						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
-						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera 
+						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
+						IF(
+                           b.cod_itiner IS NOT NULL AND b.cod_itiner != 0,
+                           b.cod_itiner,
+                           IF(
+                               m.nom_operad IS NULL OR m.nom_operad = '',
+                               'No Requiere',
+                               'Por Iniciar'
+                            )
+                        ) AS itinerario 
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -1801,6 +1810,8 @@ class Despac
 			 	 	 ON a.num_despac = j.num_dessat
 			 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
 					 ON a.cod_client = k.cod_tercer
+			LEFT JOIN ".BD_STANDA.".tab_genera_opegps m
+					 ON a.gps_operad = m.cod_operad
 				  WHERE 1=1     ";
 
 		#Filtros por Formulario
