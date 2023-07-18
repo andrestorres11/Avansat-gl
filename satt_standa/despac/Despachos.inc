@@ -1463,7 +1463,7 @@ class Despachos
                         $ciudad_o = $this->getSeleccCiudad($desenruta[$i][2], 1);
                         $ciudad_d = $this->getSeleccCiudad($desenruta[$i][3], 1);
 
-                        //Obtiene la información
+                        //Obtiene la informaci?n
                             $query = "SELECT a.usr_ultnov, a.cod_conult, a.cod_ultnov, " .
                                     "IF( a.fec_ultnov IS NULL, DATE_FORMAT( a.fec_salida, '%Y-%m-%d %H:%i' ), DATE_FORMAT( a.fec_ultnov, '%Y-%m-%d %H:%i' )  ), " .
                                     "a.fec_salida, a.fec_manala ,if(a.ind_defini = '1','SI','NO') as defini " .
@@ -2333,7 +2333,7 @@ class Despachos
      *  \brief: quita acentos del string enviado
      *  \author: Ing. Miguel Romero
      *    \date: 04/03/2015
-     *    \date modified: dia/mes/año
+     *    \date modified: dia/mes/a?o
      *  \param: string  = string a sanear
      *  \return string sin acentos
      */
@@ -2342,54 +2342,54 @@ class Despachos
         $string = (string)trim(utf8_encode($string));
      
         $string = str_replace(
-            array('á', 'à', 'ä', 'â', 'ª', '??', '??', '??', '??'),
+            array('?', '?', '?', '?', '?', '??', '??', '??', '??'),
             array('a', 'a', 'a', 'a', 'a', 'A', 'A', 'A', 'A'),
             $string
         );
      
         $string = str_replace(
-            array('é', 'è', 'ë', 'ê', '??', '??', '??', '??'),
+            array('?', '?', '?', '?', '??', '??', '??', '??'),
             array('e', 'e', 'e', 'e', 'E', 'E', 'E', 'E'),
             $string
         );
      
         $string = str_replace(
-            array('í', 'ì', 'ï', 'î', '??', '??', '??', '??'),
+            array('?', '?', '?', '?', '??', '??', '??', '??'),
             array('i', 'i', 'i', 'i', 'I', 'I', 'I', 'I'),
             $string
         );
      
         $string = str_replace(
-            array('ó', 'ò', 'ö', 'ô', '??', '??', '??', '??'),
+            array('?', '?', '?', '?', '??', '??', '??', '??'),
             array('o', 'o', 'o', 'o', 'O', 'O', 'O', 'O'),
             $string
         );
      
         $string = str_replace(
-            array('ú', 'ù', 'ü', 'û', '??', '??', '??', '??'),
+            array('?', '?', '?', '?', '??', '??', '??', '??'),
             array('u', 'u', 'u', 'u', 'U', 'U', 'U', 'U'),
             $string
         );
      
         $string = str_replace(
-            array('ñ', '??', 'ç', '??'),
+            array('?', '??', '?', '??'),
             array('n', 'N', 'c', 'C',),
             $string
         );
      
-        //Esta parte se encarga de eliminar cualquier caracter extraño
+        //Esta parte se encarga de eliminar cualquier caracter extra?o
         $string = str_replace(
-            array("·", "$", "%", "&", "/",
-                 "(", ")", "?", "'", "¡",
-                 "¿", "[", "^", "<code>", "]",
-                 "+", "}", "{", "¨", "´",
+            array("?", "$", "%", "&", "/",
+                 "(", ")", "?", "'", "?",
+                 "?", "[", "^", "<code>", "]",
+                 "+", "}", "{", "?", "?",
                  ">", "< ", ";", ",", ":",
                  "."),
             '',
             $string
         );
 
-        $string = str_replace( array('Vía'), array('via'), $string);
+        $string = str_replace( array('V?a'), array('via'), $string);
      
         return $string;
     }
@@ -2398,7 +2398,7 @@ class Despachos
      *  \brief:  valida si el despacho tiene novedades de GPS 4999
      *  \author: Ing. Miguel Romero
      *    \date: 04/03/2016
-     *    \date modified: dia/mes/año
+     *    \date modified: dia/mes/a?o
      *  \param: mNumDespac
      *  \return arreglo con las novedades y el estado de la novedad
      */
@@ -2474,7 +2474,7 @@ class Despachos
      *  \brief: funcion que retorna el html del div donde se va a pintar el mapa
      *  \author: Ing. Miguel Romero
      *    \date: 04/03/2016
-     *    \date modified: dia/mes/año
+     *    \date modified: dia/mes/a?o
      *  \param: mNovedades 
      *  \return retorna el html del div donde se va a pintar el mapa
      */
@@ -3440,8 +3440,8 @@ class Despachos
         $mCanNov = sizeof($mNovedades)-1;
 
         $j=0;
-        $pattern = "/trafic/i"; $pattern2 = "/tráfic/i";
-        $pattern3 = "/gps/i"; $pattern4 = "/movil/i";  $pattern5 = "/movíl/i";
+        $pattern = "/trafic/i"; $pattern2 = "/tr?fic/i";
+        $pattern3 = "/gps/i"; $pattern4 = "/movil/i";  $pattern5 = "/mov?l/i";
         $u=0;
         for ($i = $mCanNov; $i >=0; $i--)
         {
@@ -3486,22 +3486,22 @@ class Despachos
 
             $comp='';
             
-            if(preg_match($pattern3, $_RUTASX[$i][nom_tipoxx]))
+            if($_RUTASX[$i][cod_tipoxx]==2)
             { //a?ade class para ocultar o mostrar con js
                 
-                $mHtml->SetBody(('<tr class="nov_gps_notes">'));
-                //$mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
+                //$mHtml->SetBody(('<tr class="nov_gps_notes">'));
+                $mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
             }
-            else if((preg_match($pattern, $_RUTASX[$i][nom_tipoxx]) || preg_match($pattern2, $_RUTASX[$i][nom_tipoxx])))
+            else if($_RUTASX[$i][cod_tipoxx]==1)
             { //a?ade class para ocultar o mostrar con js
                 if($u== 0){
                     $comp=' one';
                     $u++;
                 }
-                $mHtml->SetBody(('<tr class="nov_seguimiento_notes'.$comp.'">'));
-                //$mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
+                //$mHtml->SetBody(('<tr class="nov_seguimiento_notes'.$comp.'">'));
+                $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes '.$comp.'"');
             }
-            elseif(preg_match($pattern4, $_RUTASX[$i][nom_tipoxx]) || preg_match($pattern5, $_RUTASX[$i][nom_tipoxx]) )
+            else if($_RUTASX[$i][cod_tipoxx]==3)
             {
                 $mHtml->RowProperties("",FALSE,'class="nov_movil_notes"');
             }
@@ -3707,8 +3707,8 @@ class Despachos
 
 
               $mEstServ = self::getView('jso_encabe');
-              $pattern = "/trafic/i"; $pattern2 = "/tráfic/i";
-              $pattern3 = "/gps/i"; $pattern4 = "/movil/i";  $pattern5 = "/movíl/i";
+              $pattern = "/trafic/i"; $pattern2 = "/tr?fic/i";
+              $pattern3 = "/gps/i"; $pattern4 = "/movil/i";  $pattern5 = "/mov?l/i";
               foreach ( $_RUTASX as $row ) 
               {
              
@@ -3717,13 +3717,13 @@ class Despachos
                         unset($row);
                     }
                 }
-                if(preg_match($pattern3, $row['nom_tipoxx'])){ //a?ade class para ocultar o mostrar con js
+                if($row['cod_tipoxx']==2){ //a?ade class para ocultar o mostrar con js
                     $mHtml->RowProperties("",FALSE,'class="nov_gps"');
                 }
-                else if(preg_match($pattern, $row['nom_tipoxx']) || preg_match($pattern2, $row['nom_tipoxx'])){ //a?ade class para ocultar o mostrar con js
+                else if($row['cod_tipoxx']==1){ //a?ade class para ocultar o mostrar con js
                     $mHtml->RowProperties("",FALSE,'class="nov_seguimiento"');
                 }
-                elseif(preg_match($pattern4, $row['nom_tipoxx']) || preg_match($pattern5, $row['nom_tipoxx']) )
+                elseif($row['cod_tipoxx']==3)
                 {
                     $mHtml->RowProperties("",FALSE,'class="nov_movil"');
                 }
@@ -3768,13 +3768,13 @@ class Despachos
                 $mHtml->CloseRow();
 
                 $row = end($_RUTASX);
-                if(preg_match($pattern3, $row['nom_tipoxx'])){ //a?ade class para ocultar o mostrar con js
+                if($row['cod_tipoxx']==2){ //a?ade class para ocultar o mostrar con js
                     $mHtml->RowProperties("",FALSE,'class="nov_gps"');
                 }
-                else if(preg_match($pattern, $row['nom_tipoxx']) || preg_match($pattern2, $row['nom_tipoxx'])){ //a?ade class para ocultar o mostrar con js
+                else if($row['cod_tipoxx']==1){ //a?ade class para ocultar o mostrar con js
                     $mHtml->RowProperties("",FALSE,'class="nov_seguimiento"');
                 }
-                elseif(preg_match($pattern4, $row['nom_tipoxx']) || preg_match($pattern5, $row['nom_tipoxx']) )
+                elseif($row['cod_tipoxx']==3)
                 {
                     $mHtml->RowProperties("",FALSE,'class="nov_movil"');
                 }
@@ -4697,13 +4697,13 @@ class Despachos
               $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
               if(BASE_DATOS=='satt_faro'){
                 if($codseg==0){
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[nom_tipoxx]);
+                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
                   }else{
                     $nom_control = strtoupper(Despachos::getSitioNom(Despachos::getSitioControlNum($row['cod_contro'])));
-                    $mResult[$j] = Despachos::arrayRuta( $nom_control, $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[nom_tipoxx]);      
+                    $mResult[$j] = Despachos::arrayRuta( $nom_control, $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);      
                   }
               }else{
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[nom_tipoxx]);
+                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
               }
               
               $j++;
@@ -4722,14 +4722,14 @@ class Despachos
                 $mTime[1] = $row[fec_creaci];
                 $mTime[2] = Despachos::getTime($mTime[0], $mTime[1]);
                 $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
-                $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $row[fec_noveda], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFF9', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[nom_tipoxx]);
+                $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $row[fec_noveda], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFF9', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
                 $j++;
               }
             }
             elseif($mRutax[$i][ind_virtua] == '0')
             {#Sin Novedad En Sitio
               $mSitio = '<span style="color:#FF564D">'.$mRutax[$i][nom_contro].'</span>';
-              $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $mNoR, $mNoR, $mNoR, $mNoR, 'D8DFEA', $mNoR, $mNoR, '0', $mRutax[$i][cod_contro], '', '', '','');
+              $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $mNoR, $mNoR, $mNoR, $mNoR, 'D8DFEA', $mNoR, $mNoR, '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx]);
               $j++;
             }
           }
@@ -4749,21 +4749,21 @@ class Despachos
                 $mTime[1] = $row[fec_creaci];
                 $mTime[2] = Despachos::getTime($mTime[0], $mTime[1]);
                 $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
-                $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $row[fec_noveda], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFF9', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], '',$row[nom_tipoxx]);
+                $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $row[fec_noveda], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFF9', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], '',$row[cod_tipoxx]);
                 $j++;
               }
             }
             else
             {#Sin Novedad En Sitio 
               $mSitio = Despachos::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
-              $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '','');
+              $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx]);
               $j++;
             }
           }
           else
           {#PC es posterior al ultimo PC con novedad
             $mSitio = Despachos::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
-            $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '','' );
+            $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx] );
             $j++;
           }
         }
@@ -4773,7 +4773,7 @@ class Despachos
         for ($i=0; $i < sizeof($mRutax); $i++) 
         {
           $mSitio = Despachos::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
-          $mResult[$i] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '','' );
+          $mResult[$i] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx] );
         }
       }
       return $mResult;
@@ -4790,7 +4790,7 @@ class Despachos
      *          codigo PC, codigo Novedad, codigo consecutivo novedad
      *  \return: Posicion array
      */
-    private function arrayRuta( $sit_seguim, $ubi_seguim, $fec_progra, $fec_planea, $fec_noveda, $cal_tiempo, $nom_noveda, $cod_usuari, $bac_ground, $fec_creaci, $obs_noveda, $ind_notcon, $nov_especi, $cod_contro, $cod_noveda, $tab_origen, $cod_consec = NULL,$nom_tipoxx )
+    private function arrayRuta( $sit_seguim, $ubi_seguim, $fec_progra, $fec_planea, $fec_noveda, $cal_tiempo, $nom_noveda, $cod_usuari, $bac_ground, $fec_creaci, $obs_noveda, $ind_notcon, $nov_especi, $cod_contro, $cod_noveda, $tab_origen, $cod_consec = NULL,$cod_tipoxx )
     {
         
       $mResult[sit_seguim] = $sit_seguim;
@@ -4809,7 +4809,7 @@ class Despachos
       $mResult[cod_noveda] = $cod_noveda;
       $mResult[tab_origen] = $tab_origen;
       $mResult[cod_consec] = $cod_consec;
-      $mResult[nom_tipoxx] = $nom_tipoxx;
+      $mResult[cod_tipoxx] = $cod_tipoxx;
 
       $mResult[bg] = $bac_ground;
       return $mResult;
@@ -4849,7 +4849,7 @@ class Despachos
                                     UPPER(c.nom_sitiox) AS nom_sitiox,
                                     a.obs_contro AS obs_noveda, 
                                     b.nov_especi, a.cod_noveda, 
-                                    IFNULL(e.nom_tipoxx,'N/a') as nom_tipoxx,
+                                    IFNULL(e.cod_tipoxx,'N/a') as cod_tipoxx,
                                     '1' AS tab_origen, a.cod_consec, a.cod_contro
                                 FROM ".BASE_DATOS.".tab_despac_contro a 
                         INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
@@ -4872,7 +4872,7 @@ class Despachos
                                     UPPER(b.nom_contro) AS nom_sitiox,
                                     GROUP_CONCAT( d.tex_encabe ) AS obs_noveda, 
                                     '0' AS nov_especi, a.cod_noveda, 
-                                    IFNULL(e.nom_tipoxx,'N/a') as nom_tipoxx,
+                                    IFNULL(e.cod_tipoxx,'N/a') as cod_tipoxx,
                                     '3' AS tab_origen, d.cod_consec, a.cod_contro
                                 FROM ".BASE_DATOS.".tab_recome_asigna a 
                         INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
@@ -4896,7 +4896,7 @@ class Despachos
                                     UPPER(b.nom_contro) AS nom_sitiox, 
                                     GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda, 
                                     '0' AS nov_especi, a.cod_noveda, 
-                                    IFNULL(e.nom_tipoxx,'N/a') as nom_tipoxx,
+                                    IFNULL(e.cod_tipoxx,'N/a') as cod_tipoxx,
                                     '4' AS tab_origen, d.cod_consec, a.cod_contro 
                                 FROM ".BASE_DATOS.".tab_recome_asigna a 
                         INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
@@ -4922,7 +4922,7 @@ class Despachos
                             UPPER(c.nom_sitiox) AS nom_sitiox,
                             a.obs_contro AS obs_noveda, 
                             e.ind_novesp as 'nov_especi', a.cod_noveda, 
-                            IFNULL(g.nom_tipoxx,'N/a') as nom_tipoxx,
+                            IFNULL(g.cod_tipoxx,'N/a') as cod_tipoxx,
                             '1' AS tab_origen, a.cod_consec 
                         FROM ".BASE_DATOS.".tab_despac_contro a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
@@ -4950,7 +4950,7 @@ class Despachos
                             UPPER(b.nom_contro) AS nom_sitiox,
                             GROUP_CONCAT( d.tex_encabe ) AS obs_noveda, 
                             '0' AS nov_especi, a.cod_noveda, 
-                            IFNULL(g.nom_tipoxx,'N/a') as nom_tipoxx,
+                            IFNULL(g.cod_tipoxx,'N/a') as cod_tipoxx,
                             '3' AS tab_origen, d.cod_consec
                         FROM ".BASE_DATOS.".tab_recome_asigna a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
@@ -4979,7 +4979,7 @@ class Despachos
                             UPPER(b.nom_contro) AS nom_sitiox,
                             GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda, 
                             '0' AS nov_especi, a.cod_noveda, 
-                            IFNULL(g.nom_tipoxx,'N/a') as nom_tipoxx,
+                            IFNULL(g.cod_tipoxx,'N/a') as cod_tipoxx,
                             '4' AS tab_origen, d.cod_consec 
                         FROM ".BASE_DATOS.".tab_recome_asigna a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
@@ -5019,7 +5019,7 @@ class Despachos
                     a.usr_creaci, a.fec_creaci, 
                     UPPER(b.nom_noveda) AS nom_noveda, 
                     a.des_noveda AS obs_noveda, b.nov_especi, 
-                    a.cod_noveda, '2' AS tab_origen, IFNULL(e.nom_tipoxx,'N/a') as nom_tipoxx,
+                    a.cod_noveda, '2' AS tab_origen, IFNULL(e.cod_tipoxx,'N/a') as cod_tipoxx,
                     '0' AS cod_consec
             FROM ".BASE_DATOS.".tab_despac_noveda a 
             INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
@@ -5034,7 +5034,7 @@ class Despachos
                         a.usr_creaci, a.fec_creaci, 
                         UPPER(b.nom_noveda) AS nom_noveda, 
                         a.des_noveda AS obs_noveda, d.ind_novesp as 'nov_especi', 
-                        a.cod_noveda, '2' AS tab_origen, IFNULL(e.nom_tipoxx,'N/a') as nom_tipoxx,
+                        a.cod_noveda, '2' AS tab_origen, IFNULL(e.cod_tipoxx,'N/a') as cod_tipoxx,
                         '0' AS cod_consec
                 FROM ".BASE_DATOS.".tab_despac_noveda a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
@@ -7153,7 +7153,7 @@ class Despachos
 
                                     $oSoapClient = new soapclient( $url_webser, array( 'encoding'=>'ISO-8859-1' ) );
                                     
-                                    //Métodos disponibles en el WS
+                                    //M?todos disponibles en el WS
                                     $respuesta = $oSoapClient -> __call( 'setPCIntracarga', $parametros );
                                     echo "<pre>";
                                     print_r($respuesta);
