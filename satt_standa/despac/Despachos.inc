@@ -2721,8 +2721,14 @@ class Despachos
                                             $mTxt = array($tittle, $mData['nom_operad']." - ".$mTxt);
                                             break;
                                         case 'cod_itiner':
+                                            $paramGps = self::getValidaParamGPS(53,$mData['cod_transp']);
                                             if($mData[$key]==''){
-                                                $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reenviar Itinerario]</a>';
+                                                if($paramGps){
+                                                    $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reenviar Itinerario]</a>';
+                                                }else{
+                                                    $mTxt = 'No Habilitado';
+                                                }
+                                                
                                             }else{
                                                 $mTxt = $mData[$key];
                                             }
@@ -3375,6 +3381,7 @@ class Despachos
 
             $mHtml->Table("tr");
 
+
       if( $_RUTASX )
       {
         $mSalLinea = $_SESSION['datos_usuario']['cod_usuari'] == 'mgarcia' || $_SESSION['datos_usuario']['cod_usuari'] == 'soporte' ? 0 : 1;
@@ -3440,9 +3447,8 @@ class Despachos
         $mCanNov = sizeof($mNovedades)-1;
 
         $j=0;
-        $pattern = "/trafic/i"; $pattern2 = "/tr?fic/i";
-        $pattern3 = "/gps/i"; $pattern4 = "/movil/i";  $pattern5 = "/mov?l/i";
         $u=0;
+
         for ($i = $mCanNov; $i >=0; $i--)
         {
           $mSolEfecti = "";
@@ -3485,14 +3491,14 @@ class Despachos
           $mHtml->Row();
 
             $comp='';
-            
-            if($_RUTASX[$i][cod_tipoxx]==2)
+           
+            if($mNovedades[$i]['cod_tipoxx']==2 )
             { //a?ade class para ocultar o mostrar con js
                 
                 //$mHtml->SetBody(('<tr class="nov_gps_notes">'));
                 $mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
             }
-            else if($_RUTASX[$i][cod_tipoxx]==1)
+            else if($mNovedades[$i]['cod_tipoxx']==1 )
             { //a?ade class para ocultar o mostrar con js
                 if($u== 0){
                     $comp=' one';
@@ -3501,16 +3507,17 @@ class Despachos
                 //$mHtml->SetBody(('<tr class="nov_seguimiento_notes'.$comp.'">'));
                 $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes '.$comp.'"');
             }
-            else if($_RUTASX[$i][cod_tipoxx]==3)
+            else if($mNovedades[$i]['cod_tipoxx']==3 )
             {
+                //$mHtml->SetBody(('<tr class="nov_movil_notes">'));
                 $mHtml->RowProperties("",FALSE,'class="nov_movil_notes"');
-            }
-            else{
-                $mHtml->SetBody( ('<tr>') );
+            }else{
+                $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
             }
             
             //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
             $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
+            
 
             // if para las novedades actualizadas
 
@@ -3551,6 +3558,7 @@ class Despachos
             	}
             }
           $mHtml->CloseRow();
+          $mHtml->SetBody('</tr>');
         }
       }
 
@@ -3587,6 +3595,40 @@ class Despachos
 
         return $result;
 
+    }
+
+
+
+    /*! \fn: checkNovedaUpd
+     *  \brief: revisa si la novedad fue modificada
+     *  \author: Ing. Miguel Romero
+     *    \date: 29/07/2016 
+     *  \param: mData arreglo con los datos de la novedad
+     *  \param: despacho a revisar
+     *  \return valor que retorna
+     */
+    
+
+     private function getValidaParamGPS($mCodOperad = 53, $mCodTransp = NULL){
+
+        $query = "SELECT a.int_config 
+                    FROM ".BASE_DATOS.".tab_interf_parame a
+                    WHERE a.cod_operad = '".$mCodOperad."'
+                        AND a.cod_transp = '".$mCodTransp."'
+                        AND a.ind_estado = '1'";
+        $consulta = new Consulta( $query, $this -> conexion );
+        $interfaces = $consulta -> ret_matrix("a");
+
+        $interfacesFiltradas = array_filter($interfaces, function($interfaz) {
+            $intConfig = json_decode($interfaz['int_config'], true);
+            return isset($intConfig['gpsIntegration']) && $intConfig['gpsIntegration'] === true;
+        });
+        // Actualizar la variable $despachos con los registros filtrados
+        $interfaces = array_values($interfacesFiltradas);
+        if(sizeof($interfaces)>0){
+            return true;
+        }
+        return false;
     }
 
     /*! \fn: divLlegada
@@ -3707,8 +3749,7 @@ class Despachos
 
 
               $mEstServ = self::getView('jso_encabe');
-              $pattern = "/trafic/i"; $pattern2 = "/tr?fic/i";
-              $pattern3 = "/gps/i"; $pattern4 = "/movil/i";  $pattern5 = "/mov?l/i";
+              
               foreach ( $_RUTASX as $row ) 
               {
              
@@ -5173,7 +5214,7 @@ class Despachos
                             b.ind_fuepla, a.tiem_duraci, 
                             b.cod_etapax, b.ind_limpio, 
                             b.ind_manala, 
-                            a.val_longit, a.val_latitu
+                            a.val_longit, a.val_latitu, e.cod_tipoxx
                     FROM ".BASE_DATOS.".tab_despac_contro a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                         ON a.cod_noveda = b.cod_noveda 
@@ -5181,6 +5222,8 @@ class Despachos
                         ON a.cod_sitiox = c.cod_sitiox 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro d 
                         ON a.cod_contro = d.cod_contro 
+                LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e
+                    ON b.cod_tipoxx = e.cod_tipoxx
                     WHERE a.num_despac = '{$mNumDespac}' 
                 )
                 UNION 
@@ -5197,12 +5240,15 @@ class Despachos
                             b.ind_fuepla, a.tiem_duraci, 
                             b.cod_etapax, b.ind_limpio, 
                             b.ind_manala,
-                            '' AS val_longit, '' AS val_latitu
+                            '' AS val_longit, '' AS val_latitu,
+                            e.cod_tipoxx
                     FROM ".BASE_DATOS.".tab_despac_noveda a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                         ON a.cod_noveda = b.cod_noveda 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro c 
                         ON a.cod_contro = c.cod_contro 
+                LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e
+                    ON b.cod_tipoxx = e.cod_tipoxx
                     WHERE a.num_despac = '{$mNumDespac}' 
                 )
                 UNION
@@ -5219,7 +5265,8 @@ class Despachos
                             c.ind_fuepla, '' AS tiem_duraci, 
                             c.cod_etapax, '0' AS ind_limpio, 
                             c.ind_manala,
-                            '' AS val_longit, '' AS val_latitu
+                            '' AS val_longit, '' AS val_latitu,
+                            e.cod_tipoxx
                     FROM ".BASE_DATOS.".tab_recome_asigna a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                         ON a.cod_contro = b.cod_contro 
@@ -5227,6 +5274,8 @@ class Despachos
                         ON a.cod_noveda = c.cod_noveda 
                 INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
                         ON a.cod_recome = d.cod_consec 
+                LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e
+                    ON c.cod_tipoxx = e.cod_tipoxx
                     WHERE a.num_despac = '{$mNumDespac}' 
                 GROUP BY a.cod_contro 
                 )
@@ -5244,7 +5293,8 @@ class Despachos
                             c.ind_fuepla, '' AS tiem_duraci, 
                             c.cod_etapax, '1' AS ind_limpio, 
                             c.ind_manala, 
-                            '' AS val_longit, '' AS val_latitu
+                            '' AS val_longit, '' AS val_latitu,
+                            e.cod_tipoxx
                     FROM ".BASE_DATOS.".tab_recome_asigna a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                         ON a.cod_contro = b.cod_contro 
@@ -5252,6 +5302,8 @@ class Despachos
                         ON a.cod_noveda = c.cod_noveda 
                 INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
                         ON a.cod_recome = d.cod_consec 
+                LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e
+                    ON c.cod_tipoxx = e.cod_tipoxx
                     WHERE a.num_despac = '{$mNumDespac}' 
                         AND a.obs_ejecuc IS NOT NULL 
                 GROUP BY a.cod_contro 
@@ -5269,7 +5321,7 @@ class Despachos
                                 f.ind_fuepla, a.tiem_duraci,
                                 b.cod_etapax, f.ind_limpio,
                                 f.ind_manale as 'ind_manala',
-                                a.val_longit, a.val_latitu
+                                a.val_longit, a.val_latitu, g.cod_tipoxx
                         FROM ".BASE_DATOS.".tab_despac_contro a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
@@ -5282,6 +5334,8 @@ class Despachos
                     LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON b.cod_noveda = f.cod_noveda AND
                                 f.cod_transp = e.cod_transp
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                                ON b.cod_tipoxx = g.cod_tipoxx
                         WHERE a.num_despac = '{$mNumDespac}'
                 )
                 UNION
@@ -5298,7 +5352,8 @@ class Despachos
                                 e.ind_fuepla, a.tiem_duraci,
                                 b.cod_etapax, e.ind_limpio,
                                 e.ind_manale as 'ind_manala',
-                                '' AS val_longit, '' AS val_latitu
+                                '' AS val_longit, '' AS val_latitu,
+                                f.cod_tipoxx
                         FROM ".BASE_DATOS.".tab_despac_noveda a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
@@ -5309,6 +5364,8 @@ class Despachos
                     LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e
                             ON b.cod_noveda = e.cod_noveda AND
                                 e.cod_transp = d.cod_transp
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx f
+                            ON b.cod_tipoxx = f.cod_tipoxx
                         WHERE a.num_despac = '{$mNumDespac}'
                 )
                 UNION
@@ -5325,7 +5382,8 @@ class Despachos
                                 f.ind_fuepla, '' AS tiem_duraci,
                                 c.cod_etapax, '0' AS ind_limpio,
                                 f.ind_manale as 'ind_manala',
-                                '' AS val_longit, '' AS val_latitu
+                                '' AS val_longit, '' AS val_latitu,
+                                g.cod_tipoxx
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
@@ -5338,6 +5396,8 @@ class Despachos
                     LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON c.cod_noveda = f.cod_noveda AND
                                 e.cod_transp = e.cod_transp 
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                            ON c.cod_tipoxx = g.cod_tipoxx
                         WHERE a.num_despac = '{$mNumDespac}'
                     GROUP BY a.cod_contro
                 )
@@ -5355,7 +5415,8 @@ class Despachos
                                 f.ind_fuepla, '' AS tiem_duraci,
                                 c.cod_etapax, '1' AS ind_limpio,
                                 f.ind_manale as 'ind_manala',
-                                '' AS val_longit, '' AS val_latitu
+                                '' AS val_longit, '' AS val_latitu,
+                                g.cod_tipoxx
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
@@ -5368,6 +5429,8 @@ class Despachos
                     LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                             ON c.cod_noveda = f.cod_noveda AND
                                 e.cod_transp = e.cod_transp 
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                            ON c.cod_tipoxx = g.cod_tipoxx
                         WHERE a.num_despac = '{$mNumDespac}'
                             AND a.obs_ejecuc IS NOT NULL
                     GROUP BY a.cod_contro
