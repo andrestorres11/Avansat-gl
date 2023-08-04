@@ -3267,7 +3267,7 @@ class Despachos
             $mHtml->SetBody('<img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="CreateObserva('.$_DESPAC[0][num_despac].', '.$_DESPAC[0][cod_transp].');" >');
            }
           $mHtml->Table("tr");
-              
+
               $mHtml->Label( 'Observaciones', array("align"=>"left", "class"=>"celda_etiqueta") );
               $mHtml->Label( 'Fecha R', array("align"=>"left", "class"=>"celda_etiqueta") );
               $mHtml->Label( 'Usuario', array("align"=>"left", "class"=>"celda_etiqueta") );
@@ -3296,7 +3296,7 @@ class Despachos
               if ( !$_DESPAC[0][obs_proesp] )
                 $_DESPAC[0][obs_proesp] = "- - -";
             
-                $mHtml->TextArea( $_DESPAC[0][obs_despac], array("width"=>"25%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"80", "rows"=>"4","disabled"=>"disabled") );
+                $mHtml->Label( $_DESPAC[0][obs_despac], array("align"=>"left", "class"=>"cell") );
                 $mHtml->CloseRow();
 
                 $mSelectObs= "SELECT num_despac, obs_obsgen,usr_creaci, fec_creaci FROM ".BASE_DATOS.".tab_infdes_obsgen WHERE num_despac ='".$_DESPAC[0][num_despac]."'";
@@ -3304,8 +3304,7 @@ class Despachos
                 $Observaciones = $consultaObs->ret_matriz();
 
                 foreach($Observaciones as $observacion){
-                    $mHtml->TextArea( $observacion[obs_obsgen], array("width"=>"25%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"80", "rows"=>"4","disabled"=>"disabled") );
-                    //$mHtml->Label( $observacion[obs_obsgen], array("align"=>"left", "class"=>"cell") );
+                    $mHtml->Label( $observacion[obs_obsgen], array("align"=>"left", "class"=>"cell") );
                     $mHtml->Label( $observacion[fec_creaci], array("align"=>"left", "class"=>"cell") );
                     $mHtml->Label( $observacion[usr_creaci], array("align"=>"left", "class"=>"cell") );
                     $mHtml->CloseRow();
@@ -9967,8 +9966,7 @@ class Despachos
                         $mHtml->Row();
                         $mHtml->Label( strtoupper($value['nom_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mHtml->Label( strtoupper($value['car_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
-                        $mHtml->TextArea( strtoupper($value['obs_contac']), array("width"=>"15%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"80", "rows"=>"4","disabled"=>"disabled") );
-                        //$mHtml->Label( strtoupper($value['obs_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['obs_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mTxt = '<a style="color:green;" href="sip:'.$value['tel_contac'].'_'.$placa.'_'.$despac.'@pbx.intrared.net" target="blank">'.$value['tel_contac'].'</a>';
                         $mHtml->Label( $mTxt, array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mHtml->Label( strtoupper($value['ema_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );  
