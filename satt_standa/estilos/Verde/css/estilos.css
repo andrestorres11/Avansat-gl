@@ -640,3 +640,8 @@ a:hover {
 .white-color{
     color:#fff !important;
 }
+
+.textarea-inv > textarea{
+    border: none;
+    outline: none;
+}
