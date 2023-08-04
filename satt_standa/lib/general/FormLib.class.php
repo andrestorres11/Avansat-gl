@@ -2042,7 +2042,7 @@ class FormLib
     $properties = GetAttributes( $properties );
 
     $mForm = $this -> OpenCell( $properties["id"], ($properties["class"] ? $properties["class"] : 'celda_info'), "left", $properties["valign"], $properties["rowspan"], $properties["colspan"], $properties["width"] );
-    $mForm .= '<textarea';
+    $mForm .= '<textarea class="campo_texto"';
     $mForm .= $this -> SetProperties( $properties );
     $mForm .= '>';
     $mForm .= htmlentities( $value );
