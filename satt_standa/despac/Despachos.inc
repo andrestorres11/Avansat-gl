@@ -3531,7 +3531,7 @@ class Despachos
             }else{ 
                 $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
             }
-            $mHtml->Label( '<b class="'.$cNocopy.'">'.$mNovedades[$i][obs_noveda].'</b>', array("align"=>"left", "class"=>$mStyle) );
+            $mHtml->TextArea( $mNovedades[$i][obs_noveda] , array("align"=>"left", "class"=>"textarea-inv ".$mStyle, "cols"=>"40", "rows"=>"4","disabled"=>"disabled") );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
 
@@ -9967,7 +9967,7 @@ class Despachos
                         $mHtml->Row();
                         $mHtml->Label( strtoupper($value['nom_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mHtml->Label( strtoupper($value['car_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
-                        $mHtml->TextArea( strtoupper($value['obs_contac']), array("width"=>"15%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"80", "rows"=>"4","disabled"=>"disabled") );
+                        $mHtml->TextArea( strtoupper($value['obs_contac']), array("width"=>"15%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"50", "rows"=>"4","disabled"=>"disabled") );
                         //$mHtml->Label( strtoupper($value['obs_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mTxt = '<a style="color:green;" href="sip:'.$value['tel_contac'].'_'.$placa.'_'.$despac.'@pbx.intrared.net" target="blank">'.$value['tel_contac'].'</a>';
                         $mHtml->Label( $mTxt, array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
@@ -9978,8 +9978,8 @@ class Despachos
                         foreach ($agencias as $agencia) {
                             $value['nom_agenci'] .= $agencia['nom_agenci'].",";
                         }
-                        
-                        $mHtml->Label( strtoupper($value['nom_agenci']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->TextArea( strtoupper($value['nom_agenci']), array("width"=>"15%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"80", "rows"=>"4","disabled"=>"disabled") );
+                        //$mHtml->Label( strtoupper($value['nom_agenci']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mHtml->CloseRow();
                     }
                 }else{
