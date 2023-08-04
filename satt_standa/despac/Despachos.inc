@@ -3296,7 +3296,7 @@ class Despachos
               if ( !$_DESPAC[0][obs_proesp] )
                 $_DESPAC[0][obs_proesp] = "- - -";
             
-                $mHtml->TextArea( $_DESPAC[0][obs_despac], array("width"=>"25%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"80", "rows"=>"4","disabled"=>"disabled") );
+                $mHtml->TextArea( $_DESPAC[0][obs_despac], array("width"=>"25%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"30", "rows"=>"4","disabled"=>"disabled") );
                 $mHtml->CloseRow();
 
                 $mSelectObs= "SELECT num_despac, obs_obsgen,usr_creaci, fec_creaci FROM ".BASE_DATOS.".tab_infdes_obsgen WHERE num_despac ='".$_DESPAC[0][num_despac]."'";
@@ -3304,7 +3304,7 @@ class Despachos
                 $Observaciones = $consultaObs->ret_matriz();
 
                 foreach($Observaciones as $observacion){
-                    $mHtml->TextArea( $observacion[obs_obsgen], array("width"=>"25%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"80", "rows"=>"4","disabled"=>"disabled") );
+                    $mHtml->TextArea( $observacion[obs_obsgen], array("width"=>"25%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"30", "rows"=>"4","disabled"=>"disabled") );
                     //$mHtml->Label( $observacion[obs_obsgen], array("align"=>"left", "class"=>"cell") );
                     $mHtml->Label( $observacion[fec_creaci], array("align"=>"left", "class"=>"cell") );
                     $mHtml->Label( $observacion[usr_creaci], array("align"=>"left", "class"=>"cell") );
@@ -3531,7 +3531,7 @@ class Despachos
             }else{ 
                 $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
             }
-            $mHtml->TextArea( $mNovedades[$i][obs_noveda] , array("align"=>"left", "class"=>"textarea-inv ".$mStyle, "cols"=>"40", "rows"=>"4","disabled"=>"disabled") );
+            $mHtml->TextArea( $mNovedades[$i][obs_noveda] , array("align"=>"left", "class"=>"textarea-inv ".$mStyle, "cols"=>"30", "rows"=>"4","disabled"=>"disabled") );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
 
@@ -3663,7 +3663,7 @@ class Despachos
                 if($mDataLlegada == NULL)
                 {
                     $mHtml->Label( '<b>Observacion de LLegada :</b>', array("align"=>"left", "class"=>"celda_info", "width"=>"100px") );
-                    $mHtml->TextArea( '', array("width"=>"15%", "align"=>"left", "class"=>"celda_info", "cols"=>"50", "rows"=>"2", "id"=>"obs_llegadID", "name"=>"obs_llegad") );
+                    $mHtml->TextArea( '', array("width"=>"15%", "align"=>"left", "class"=>"celda_info", "cols"=>"30", "rows"=>"2", "id"=>"obs_llegadID", "name"=>"obs_llegad") );
                     $mHtml->Button( array("value"=>"Llegada", "onclick"=>"guarllegad()", "class"=>"crmButton small save", "align"=>"left") );
                 }
                 else
@@ -9967,7 +9967,7 @@ class Despachos
                         $mHtml->Row();
                         $mHtml->Label( strtoupper($value['nom_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mHtml->Label( strtoupper($value['car_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
-                        $mHtml->TextArea( strtoupper($value['obs_contac']), array("width"=>"15%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"50", "rows"=>"4","disabled"=>"disabled") );
+                        $mHtml->TextArea( strtoupper($value['obs_contac']), array("width"=>"15%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"30", "rows"=>"4","disabled"=>"disabled") );
                         //$mHtml->Label( strtoupper($value['obs_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mTxt = '<a style="color:green;" href="sip:'.$value['tel_contac'].'_'.$placa.'_'.$despac.'@pbx.intrared.net" target="blank">'.$value['tel_contac'].'</a>';
                         $mHtml->Label( $mTxt, array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
@@ -9978,7 +9978,7 @@ class Despachos
                         foreach ($agencias as $agencia) {
                             $value['nom_agenci'] .= $agencia['nom_agenci'].",";
                         }
-                        $mHtml->TextArea( strtoupper($value['nom_agenci']), array("width"=>"15%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"80", "rows"=>"4","disabled"=>"disabled") );
+                        $mHtml->TextArea( strtoupper($value['nom_agenci']), array("width"=>"15%", "align"=>"left", "class"=>"textarea-inv", "cols"=>"30", "rows"=>"4","disabled"=>"disabled") );
                         //$mHtml->Label( strtoupper($value['nom_agenci']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mHtml->CloseRow();
                     }
