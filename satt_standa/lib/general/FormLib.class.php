@@ -1002,6 +1002,67 @@ class FormLib
     }
   }
 
+
+  /*********************************************************************
+   * Metodo Publico que retorna el arreglo de archivos js.             *
+   * HTML indentada a 2 espacios.                                      *
+   * @fn SetTab                                                        *
+   * @brief retorna el identificador del resultado                     *
+   * @return cIdResultel id del resultado                              *
+   *********************************************************************/
+  public function OpenCellTit( $id = "", $class = "celda_info", $align = "", $valign = "middle", $rowspan = 1,
+                            $colspan = 1, $width = "", $mReturn = TRUE, $height="" )
+  {
+    if( !$align )
+    {
+      $align = "right";
+    }
+
+    if( $id )
+    {
+      $id = $id."TH";
+    }
+    $mForm = "\n      ";
+    $mForm .= '<th id="'.$id.'" class="'.$class.'" align="'.$align.'" valign="'.$valign.'" rowspan="'.$rowspan.'" colspan="'.$colspan.'" width="'.$width.'" height="'.$height.'">';
+    $mForm .= "\n        ";
+
+    if( $mReturn )
+    {
+      return $mForm;
+    }
+    else
+    {
+      $this -> SetBody( $mForm );
+    }
+  }
+
+  /*********************************************************************
+   * Metodo Publico que retorna el arreglo de archivos js.             *
+   * HTML indentada a 2 espacios.                                      *
+   * @fn SetTab                                                        *
+   * @brief retorna el identificador del resultado                     *
+   * @return cIdResultel id del resultado                              *
+   *********************************************************************/
+  public function CloseCellTit( $end="", $mReturn = TRUE )
+  {
+    $mForm = "\n      ";
+    $mForm .= '</th>';
+    if ( $end )
+    {
+      $mForm .= "\n    </tr>";
+      $mForm .= "\n    <tr>";
+    }
+
+    if( $mReturn )
+    {
+      return $mForm;
+    }
+    else
+    {
+      $this -> SetBody( $mForm );
+    }
+  }
+
   /*********************************************************************
    * Metodo Publico que retorna el arreglo de archivos js.             *
    * HTML indentada a 2 espacios.                                      *
@@ -1495,6 +1556,66 @@ class FormLib
 
     $mForm .= '</label>';
     $mForm .= $this -> CloseCell( $properties["end"] ); 
+
+    if( $mReturn )
+    {
+    	return $mForm;
+    }
+    else
+    {
+      $this -> SetBody( $mForm );    	
+    }
+  }
+
+  /*********************************************************************
+	 * Metodo Publico que retorna el arreglo de archivos js.             *
+	 * HTML indentada a 2 espacios.                                      *
+	 * @fn SetTab                                                        *
+	 * @brief retorna el identificador del resultado                     *
+	 * @return cIdResultel id del resultado                              *
+   *********************************************************************/
+  public function LabelTit( $label = "", $properties = "", $mReturn = FALSE )
+  {
+    $properties = GetAttributes( $properties );
+    if( !$properties["class"] )
+    {
+      $properties["class"] = "celda_etiqueta";    	
+    }
+    
+    $mForm = $this -> OpenCellTit( $properties["name"], $properties["class"], $properties["align"], $properties["valign"], $properties["rowspan"], $properties["colspan"], $properties["width"], false, $properties["height"] );
+    $properties["class"] = "";
+    $mForm .= '<label';
+    $mForm .= $this -> SetProperties( $properties );
+    $mForm .= '>';
+
+    if( $properties["*"] )
+    {
+      #$mForm .= '<img src="'.DirImg.'general/asterisco.gif" />';
+      $mForm .= '*';
+      $mForm .= "&nbsp;";
+    }
+
+    if( $properties["error"] )
+    {
+      $mForm .= '<font color="red">';
+    }
+
+    if ( $properties ["exp"] )
+    {
+      $mForm .= $label;
+    }
+    else
+    {
+      $mForm .= $label;
+    }
+
+    if( $properties["error"] )
+    {
+      $mForm .= '</font>';
+    }
+
+    $mForm .= '</label>';
+    $mForm .= $this -> CloseCellTit( $properties["end"] ); 
 
     if( $mReturn )
     {

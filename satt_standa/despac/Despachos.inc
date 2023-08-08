@@ -1874,6 +1874,10 @@ class Despachos
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>";
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/validator.css' type='text/css'>";
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/js/dashboard/vendors/sweetAlert/sweetalert2.min.css' type='text/css'>";
+        echo "<style>
+        td > label {
+            word-break: break-all;
+        }</style>";
     }//Fin Funcion IncludeJsStyle
 
     public function verifyConsolHijo( $despac )
@@ -3267,10 +3271,10 @@ class Despachos
             $mHtml->SetBody('<img class="pointer" width="15px" height="15px" src="../'.DIR_APLICA_CENTRAL.'/images/edit.png" onclick="CreateObserva('.$_DESPAC[0][num_despac].', '.$_DESPAC[0][cod_transp].');" >');
            }
           $mHtml->Table("tr");
-
-              $mHtml->Label( 'Observaciones', array("align"=>"left", "class"=>"celda_etiqueta") );
-              $mHtml->Label( 'Fecha R', array("align"=>"left", "class"=>"celda_etiqueta") );
-              $mHtml->Label( 'Usuario', array("align"=>"left", "class"=>"celda_etiqueta") );
+              
+              $mHtml->LabelTit( 'Observaciones', array("width"=>"33%","align"=>"left", "class"=>"celda_etiqueta") );
+              $mHtml->LabelTit( 'Fecha R', array("width"=>"33%","align"=>"left", "class"=>"celda_etiqueta") );
+              $mHtml->LabelTit( 'Usuario', array("width"=>"33%","align"=>"left", "class"=>"celda_etiqueta") );
               $mHtml->CloseRow();
 
               if( $this -> verifyConsol( $mNumDespac ) )
@@ -3296,7 +3300,7 @@ class Despachos
               if ( !$_DESPAC[0][obs_proesp] )
                 $_DESPAC[0][obs_proesp] = "- - -";
             
-                $mHtml->Label( $_DESPAC[0][obs_despac], array("align"=>"left", "class"=>"cell") );
+                $mHtml->Label( $_DESPAC[0][obs_despac], array("width"=>"33%", "align"=>"left", "class"=>"cell") );
                 $mHtml->CloseRow();
 
                 $mSelectObs= "SELECT num_despac, obs_obsgen,usr_creaci, fec_creaci FROM ".BASE_DATOS.".tab_infdes_obsgen WHERE num_despac ='".$_DESPAC[0][num_despac]."'";
@@ -3304,9 +3308,10 @@ class Despachos
                 $Observaciones = $consultaObs->ret_matriz();
 
                 foreach($Observaciones as $observacion){
-                    $mHtml->Label( $observacion[obs_obsgen], array("align"=>"left", "class"=>"cell") );
-                    $mHtml->Label( $observacion[fec_creaci], array("align"=>"left", "class"=>"cell") );
-                    $mHtml->Label( $observacion[usr_creaci], array("align"=>"left", "class"=>"cell") );
+                    $mHtml->Label( $observacion[obs_obsgen], array("width"=>"33%", "align"=>"left", "class"=>"cell") );
+                    //$mHtml->Label( $observacion[obs_obsgen], array("align"=>"left", "class"=>"cell") );
+                    $mHtml->Label( $observacion[fec_creaci], array("width"=>"33%","align"=>"left", "class"=>"cell") );
+                    $mHtml->Label( $observacion[usr_creaci], array("width"=>"33%","align"=>"left", "class"=>"cell") );
                     $mHtml->CloseRow();
                 }
 
@@ -3386,29 +3391,29 @@ class Despachos
       {
         $mSalLinea = $_SESSION['datos_usuario']['cod_usuari'] == 'mgarcia' || $_SESSION['datos_usuario']['cod_usuari'] == 'soporte' ? 0 : 1;
 
-        $mHtml->Label( 'Sitio de Seguimiento', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-        $mHtml->Label( 'Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-        $mHtml->Label( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"20%") );
-        $mHtml->Label( 'Fecha Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-        $mHtml->Label( 'Fecha Sistema', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+        $mHtml->LabelTit( 'Sitio de Seguimiento', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+        $mHtml->LabelTit( 'Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+        $mHtml->LabelTit( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"20%") );
+        $mHtml->LabelTit( 'Fecha Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+        $mHtml->LabelTit( 'Fecha Sistema', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         if ( $mViewNotCon->sub->usr_creaci == '1' ) {
-            $mHtml->Label( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+            $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         }
 
         $viewAlias = self::getView('jso_plarut');
         $watchAlias = $viewAlias->inf_planru->sub->ali_usuari; 
         if( $watchAlias == 1 ){
-            $mHtml->Label( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
+            $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
         }
 
         if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
-          $mHtml->Label( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+          $mHtml->LabelTit( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         }
         
-        $mHtml->Label( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+        $mHtml->LabelTit( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         
         if( $viewAlias->ind_novnem->ind_visibl == 1 ){
-          $mHtml->Label( 'Solucion a NEM', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+          $mHtml->LabelTit( 'Solucion a NEM', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         }
         $mHtml->CloseRow();
 
@@ -3456,7 +3461,7 @@ class Despachos
             $mLinkUpd = '
               <spam style="color:#416F1E; cursor:pointer"
               onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,1)">
-                [Editar]</spam>&nbsp;&nbsp;';
+                [Editar]</spam>&nbsp;';
 
             if($_SESSION["datos_usuario"]["cod_usuari"] == 'mgarcia' || $_SESSION["datos_usuario"]["cod_usuari"] == 'soporte') {
               $mLinkUpd .= '
@@ -3530,7 +3535,7 @@ class Despachos
             }else{ 
                 $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
             }
-            $mHtml->Label( '<b class="'.$cNocopy.'">'.$mNovedades[$i][obs_noveda].'</b>', array("align"=>"left", "class"=>$mStyle) );
+            $mHtml->Label( $mNovedades[$i][obs_noveda] , array("align"=>"left", "class"=>$mStyle) );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
 
@@ -3662,7 +3667,7 @@ class Despachos
                 if($mDataLlegada == NULL)
                 {
                     $mHtml->Label( '<b>Observacion de LLegada :</b>', array("align"=>"left", "class"=>"celda_info", "width"=>"100px") );
-                    $mHtml->TextArea( '', array("width"=>"15%", "align"=>"left", "class"=>"celda_info", "cols"=>"50", "rows"=>"2", "id"=>"obs_llegadID", "name"=>"obs_llegad") );
+                    $mHtml->TextArea( '', array("width"=>"15%", "align"=>"left", "class"=>"celda_info", "cols"=>"30", "rows"=>"2", "id"=>"obs_llegadID", "name"=>"obs_llegad") );
                     $mHtml->Button( array("value"=>"Llegada", "onclick"=>"guarllegad()", "class"=>"crmButton small save", "align"=>"left") );
                 }
                 else
@@ -4540,7 +4545,6 @@ class Despachos
                   color: #000000;
                   padding-left: 10px;
                   padding-right: 10px;
-                  white-space: nowrap;
                 }
               </style>";
 
@@ -9952,32 +9956,31 @@ class Despachos
           $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
             $mHtml->Table("tr");
                 
-                $mHtml->Label( 'NOMBRE CONTACTO', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
-                $mHtml->Label( 'CARGO', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
-                $mHtml->Label( 'OBSERVACI&Oacute;N', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
-                $mHtml->Label( 'TELEFONO', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
-                $mHtml->Label( 'E-MAIL', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
-                $mHtml->Label( 'AGENCIA', array("align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->LabelTit( 'NOMBRE CONTACTO', array("width"=>"16%","align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->LabelTit( 'CARGO', array("width"=>"16%","align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->LabelTit( 'OBSERVACI&Oacute;N', array("width"=>"16%","align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->LabelTit( 'TELEFONO', array("width"=>"16%","align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->LabelTit( 'E-MAIL', array("width"=>"16%","align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
+                $mHtml->LabelTit( 'AGENCIA', array("width"=>"16%","align"=>"left", "class"=>"celda_titulo2", "width"=>"15%") );
                 $mHtml->CloseRow();
                 
                 if ($datos) {
           
                     foreach ($datos as $row => $value) {
                         $mHtml->Row();
-                        $mHtml->Label( strtoupper($value['nom_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
-                        $mHtml->Label( strtoupper($value['car_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
-                        $mHtml->Label( strtoupper($value['obs_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['nom_contac']), array("width"=>"16%","align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['car_contac']), array("width"=>"16%","align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['obs_contac']), array("width"=>"16%", "align"=>"left", "class"=>"celda_info2") );
                         $mTxt = '<a style="color:green;" href="sip:'.$value['tel_contac'].'_'.$placa.'_'.$despac.'@pbx.intrared.net" target="blank">'.$value['tel_contac'].'</a>';
-                        $mHtml->Label( $mTxt, array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
-                        $mHtml->Label( strtoupper($value['ema_contac']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );  
+                        $mHtml->Label( $mTxt, array("width"=>"16%","align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['ema_contac']), array("width"=>"16%","align"=>"left", "class"=>"celda_info2", "width"=>"15%") );  
 
                         $agencias = $this->getAgenContac($value['ema_contac'], $transport);
                         $value['nom_agenci'] = "";
                         foreach ($agencias as $agencia) {
                             $value['nom_agenci'] .= $agencia['nom_agenci'].",";
                         }
-                        
-                        $mHtml->Label( strtoupper($value['nom_agenci']), array("align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
+                        $mHtml->Label( strtoupper($value['nom_agenci']), array("width"=>"16%","align"=>"left", "class"=>"celda_info2", "width"=>"15%") );
                         $mHtml->CloseRow();
                     }
                 }else{
