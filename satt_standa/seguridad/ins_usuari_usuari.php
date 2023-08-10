@@ -4,7 +4,7 @@
  *  \author: Ing. Alexander Correa
  *  \author: aleander.correa@intrared.net
  *  \date: 08/04/206
- *  \date modified: dia/mes/año
+ *  \date modified: dia/mes/a?o
  *  \warning:   
  *  \ 
  */
@@ -54,7 +54,7 @@ class ins_usuari_usuari {
      *  \brief: funcion inicial que muestra una lista con los perfiles creados
      *  \author: Ing. Alexander Correa
      *  \date: 06/04/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return 
      */
@@ -92,7 +92,7 @@ class ins_usuari_usuari {
      *  \brief: pinta el formulario para crear, editar y copiar un usuario
      *  \author: Ing. Alexander Correa
      *  \date: 08/04/2016
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/a?o
      *  \param: 
      *  \return 
      */

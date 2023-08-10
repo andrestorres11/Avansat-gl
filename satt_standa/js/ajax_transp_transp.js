@@ -20,10 +20,10 @@ $(document).ready(function() {
             mensaje += "<div style='background-color:#2c368d; border-radius:6px; -moz-border-radius:6px; -webkit-border-radius:6px;'>";
             mensaje += "<label style='color:#FFF; font-weight: bold;'>Transportadpra</label>";
             mensaje += "<div style='width:97%'>";
-            mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurrió un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
+            mensaje += "<div style='background-color:#FFFFFF'><font color='#000000'>Ocurriï¿½ un Error inesperado <br> verifique e intente nuevamente.<br>Si el error persiste informe a mesa de apoyo</font><br><img src='" + src + "'>";
             mensaje += "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br></div></div></div></div></div>";
         }
-        LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
+        LoadPopupJQNoButton('open', 'Resultado de la OperaciÃ³n', 'auto', 'auto', false, false, true);
         var popup = $("#popID");
         popup.empty();
         popup.parent().children().children('.ui-dialog-titlebar-close').hide();
@@ -99,15 +99,14 @@ $(document).ready(function() {
         $(this).val('');
         $('#cod_paisxxID').val('');
     });
-
-
+    
 });
 
 
 /******************************************************************************
  *	\fn: registrar												  			  *
  *	\brief: funcion para registros nuevos y modificaciones de transportadoras *
- *		  recibe un string con la operación a realizar registrar o modificar  *
+ *		  recibe un string con la operaciï¿½n a realizar registrar o modificar  *
  *  \author: Ing. Alexander Correa 											  *
  *  \date: 31/08/2015														  *
  *  \date modified: 														  *
@@ -121,7 +120,7 @@ function registrar(operacion) {
     //valido los datos generales del formulario
     var val = validaciones();
     if (val == true) {
-        //si pasa la validación general valido los datos condicionales
+        //si pasa la validaciï¿½n general valido los datos condicionales
 
         //certificaciones iso y basc
         var iso = $("#ind_cerisoID").attr("checked") ? true : false;
@@ -149,7 +148,7 @@ function registrar(operacion) {
 
             if (validar) {
                 //crea el popUp para el mensaje de  respuesta del guardado  
-                LoadPopupJQNoButton('open', 'Resultado de la Operación', 'auto', 'auto', false, false, true);
+                LoadPopupJQNoButton('open', 'Resultado de la OperaciÃ³n', 'auto', 'auto', false, false, true);
                 var popup = $("#popID");
 
                 var parametros = "Option=" + operacion + "&Ajax=on&";
@@ -212,13 +211,13 @@ function borrar() {
 //funcion de confirmacion para la edicion, eliminacion e inactivacion de transportadoras
 function confirmar(operacion) {
 
-    LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+    LoadPopupJQNoButton('open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true);
     var popup = $("#popID");
     var transportadora = $("#abr_tercerID").val();
     var onclick = "onclick='registrar(\"";
     onclick += operacion;
     onclick += "\")'";
-    var msj = "<div style='text-align:center'>¿Está seguro de <b>" + operacion + "</b> la transportadora: <b>" + transportadora + "?</b><br><br><br><br>";
+    var msj = "<div style='text-align:center'>EstÃ¡ seguro de <b>" + operacion + "</b> la transportadora: <b>" + transportadora + "?</b><br><br><br><br>";
     msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
     msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 
@@ -243,10 +242,10 @@ function editarDistribuidora(tipo, objeto) {
     } else if (tipo == 2) {
         confirmar('inactivar');
     } else {
-        LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+        LoadPopupJQNoButton('open', 'Confirmar OperaciÃ³n', 'auto', 'auto', false, false, true);
         var popup = $("#popID");
         var transportadora = $("#abr_tercerID").val();
-        var msj = "<div style='text-align:center'>¿Está seguro de <b>editar</b> la transportadora: <b>" + transportadora + "?</b><br><br><br><br>";
+        var msj = "<div style='text-align:center'>EstÃ¡ seguro de <b>editar</b> la transportadora: <b>" + transportadora + "?</b><br><br><br><br>";
         msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
         msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 
@@ -257,4 +256,29 @@ function editarDistribuidora(tipo, objeto) {
 
 function vaciaInput(elemento) {
     $(elemento).val('');
+}
+
+function regionChange(item,selected) {
+    console.log(selected);
+    var standa = $("#standaID").val();
+    var parametros = "Option=listaUsuarioRegion&Ajax=on&cod_region="+item.value;
+    $("#cod_consecID").empty();
+    $("#cod_consecID").append("<option value=''>-----</option>");
+    $.ajax({
+        url: "../" + standa + "/transp/ajax_transp_transp.php",
+        type: "GET",
+        data: parametros,
+        async: false,
+        dataType: 'json',
+        success: function(data) {
+            data.forEach((element) =>{
+                if(element.value==selected){
+                    $("#cod_consecID").append("<option value='"+element.value+"' selected>"+element.label+"</option>");
+                }else{
+                    $("#cod_consecID").append("<option value='"+element.value+"'>"+element.label+"</option>");
+                }
+                
+            });
+        }
+    });
 }

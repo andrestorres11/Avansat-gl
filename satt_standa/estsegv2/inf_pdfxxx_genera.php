@@ -135,7 +135,7 @@ class PDF extends FPDF{
     $this -> Cell(28,6,'04/10/2022',1,1,'C');
     $this -> SetX($_x);
     $this -> SetFillColor(255, 255, 0);
-    $this -> Cell(56, 6, 'INFORMACIóN INTERNA', 'R,T,L', 1, 'C', true);
+    $this -> Cell(56, 6, 'INFORMACIÓN INTERNA', 'R,T,L', 1, 'C', true);
     $this -> SetX($_x);
     $this -> Cell(56, 6, 'Página '.$this ->PageNo().' de '."{nb}", 'R,L,B', 0, 'C', true);
     $this -> Ln(10);
@@ -181,7 +181,7 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> SetTextColor(255,255,255);
     $pdf -> Cell(98,6,utf8_decode('DATOS GENERALES DE LA SOLICITUD'),1,0,'C',1);
     $clx =  $pdf -> GetX();
-    $pdf -> Cell(98,6,'DATOS DEL CONDUCTOR / VEHÍCULO',1,1,'C',1);
+    $pdf -> Cell(98,6,utf8_decode('DATOS DEL CONDUCTOR / VEHÍCULO'),1,1,'C',1);
 
     $pdf -> SetTextColor(0,0,0);
     $pdf -> Cell(40,6,utf8_decode('Orden de Servicio No.:'),1,0,'L');
@@ -230,6 +230,12 @@ class PDFInformeEstudioSeguridad extends PDF
     $resultados = $query -> ret_matriz('a');
 
     foreach($resultados as $registro){
+      $pdf -> Ln(2);
+      $pdf -> SetFont('Arial','B',8);
+      $pdf -> SetFillColor(1, 11, 64);
+      $pdf -> SetTextColor(255,255,255);
+      $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.$key+1),1,1,'C',1);
+
       $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
@@ -240,8 +246,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('OBSERVACIÓN'),1,0,'L',1);
-      $pdf -> Cell(157,5,utf8_decode($registro['obs_refere']),1,1,'L');
+      $pdf -> MultiCell(196,5,utf8_decode('OBSERVACIÓN: '.$registro['obs_refere']),1, 'J',0);
     }
 
     $pdf -> SetFont('Arial','B',8);
@@ -261,7 +266,14 @@ class PDFInformeEstudioSeguridad extends PDF
     $query = new Consulta($mSelect, $this -> conexion);
     $resultados = $query -> ret_matriz('a');
 
-    foreach($resultados as $registro){
+    foreach($resultados as $key => $registro){
+      $pdf -> Ln(2);
+      $pdf -> SetFont('Arial','B',8);
+      $pdf -> SetFillColor(1, 11, 64);
+      $pdf -> SetTextColor(255,255,255);
+      $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
+
+      
       $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
@@ -272,8 +284,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('OBSERVACIÓN'),1,0,'L',1);
-      $pdf -> Cell(157,5,utf8_decode($registro['obs_refere']),1,1,'L');
+      $pdf -> MultiCell(196,5,utf8_decode('OBSERVACIÓN: '.$registro['obs_refere']),1, 'J',0);
     }
 
     $pdf -> SetFont('Arial','B',8);
@@ -311,19 +322,19 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> Cell(196,6,'RESULTADO DE CONSULTAS',1,1,'C',1);
     $pdf -> SetTextColor(0,0,0);
 
-    $pdf -> Cell(148,6,'El conductor presenta comparendos? : '.$info['pre_comcon'],1,0,'L');
+    $pdf -> Cell(148,6,utf8_decode('El conductor presenta comparendos? : '.$info['pre_comcon']),1,0,'L');
     $pdf -> Cell(16,6,'Valor:',1,0,'R');
     $pdf -> Cell(32,6,'$'.$info['val_comcon'],1,1,'L');
 
-    $pdf -> Cell(148,6,'El conductor presenta resoluciones? : '.$info['pre_rescon'],1,0,'L');
+    $pdf -> Cell(148,6,utf8_decode('El conductor presenta resoluciones? : '.$info['pre_rescon']),1,0,'L');
     $pdf -> Cell(16,6,'Valor:',1,0,'R');
     $pdf -> Cell(32,6,'$'.$info['val_rescon'],1,1,'L');
 
-    $pdf -> Cell(148,6,'El vehóculo presenta comparendos? : '.$info['ind_preveh'],1,0,'L');
+    $pdf -> Cell(148,6,utf8_decode('El vehículo presenta comparendos? : '.$info['ind_preveh']),1,0,'L');
     $pdf -> Cell(16,6,'Valor:',1,0,'R');
     $pdf -> Cell(32,6,'$'.$info['val_comveh'],1,1,'L');
 
-    $pdf -> Cell(148,6,'El vehóculo presenta resoluciones? : '.$info['ind_preres'],1,0,'L');
+    $pdf -> Cell(148,6,utf8_decode('El vehículo presenta resoluciones? : '.$info['ind_preres']),1,0,'L');
     $clx =  $pdf -> GetX();
     $pdf -> Cell(16,6,'Valor:',1,0,'R');
     $pdf -> Cell(32,6,'$'.$info['val_resveh'],1,1,'L');
@@ -336,20 +347,20 @@ class PDFInformeEstudioSeguridad extends PDF
 
     $pdf -> Ln(8);
     $pdf -> SetWidths(array(196));
-    $pdf -> Row(array('OBSERVACIÓN FINAL: '.$info['obs_estseg']),1,'J',0);
+    $pdf -> Row(array(utf8_decode('OBSERVACIÓN FINAL: '.$info['obs_estseg'])),1,'J',0);
     $pdf -> SetFillColor(1, 11, 64);
     $pdf -> SetTextColor(255,255,255);
     $resultado = $info['ind_estseg'] == 'A' ? 'RECOMENDADO' : 'NO RECOMENDADO';
     $pdf -> Cell(45,6,'RESULTADO DE ESTUDIO: ',1,0,'L',1);
     $pdf -> SetTextColor(0,0,0);
-    $pdf -> Cell(151,6, $resultado,1,1,'L');
+    $pdf -> Cell(151,6, utf8_decode($resultado),1,1,'L');
     $pdf -> Ln(5);
 
     $pdf -> SetFont('Arial','',8);
     $txt="NOTA: PARA EL ESTUDIO PRELIMINAR ADJUNTAR LOS SIGUIENTES DOCUMENTOS: CÉDULAS DE CIUDADANÍA - LICENCIA CONDUCCIÓN - LICENCIA DE TRÁNSITO - FORMATO APERTURA HOJA DE VIDA. LOS ANTERIORES DOCUMENTOS DEBEN SER ESCANEADOS EN ALTA RESOLUCION Y A COLOR.";
     $pdf -> MultiCell(196,4,utf8_decode($txt) ,1, 'J',0);
     $txt="DECLARACIóN DE TRATAMIENTO DE DATOS: La presente política de privacidad y protección de datos se rige por la Ley 1581 de 2012 y el Decreto Reglamentario 1377 de 2013, que establecen los principios, obligaciones y procedimientos para la protección de los datos personales en Colombia. En cumplimiento de estas leyes y normas, informamos que la recolección, almacenamiento, uso, circulación y supresión de datos personales en el presente estudio de seguridad de conductor y/o vehóculo se realizaró con estricto respeto a los derechos y garantóas constitucionales de los participantes, si desea mós información acerca del cumplimiento de la polótica de tratamiento de datos aquó relacionado por favor ingrese al siguiente link:\nhttps://www.grupooet.com/politicas_de_tratamiento_de_datos.php";
-    $pdf -> MultiCell(196,4,$txt ,1, 'J',0);
+    $pdf -> MultiCell(196,4,utf8_decode($txt) ,1, 'J',0);
     $pdf -> SetFont('Arial','',9);
     
     $rut_general = URL_APLICA.'files/adj_estseg/adjs/';
@@ -362,7 +373,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEHóCULO'),1,1,'C',1);
+      $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEHÍCULO'),1,1,'C',1);
 
       for($i = 0; $i < count($img_vehicu); $i++){
         if($pdf->GetY()>=145){
@@ -377,7 +388,7 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> SetFont('Arial','B',8);
         $pdf -> Cell(196,84, $pdf->Image($rut_general.$img_vehicu[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,80),1,1,'C');
         $pdf -> SetWidths(array(196));
-        $pdf -> Row(array(utf8_decode('OBSERVACIóN: '.$img_vehicu[$i]['obs_archiv'])));
+        $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_vehicu[$i]['obs_archiv'])));
 
       }
 
