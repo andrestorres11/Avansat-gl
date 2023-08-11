@@ -103,6 +103,10 @@ class trans {
                     self::inactivarConfig();
                     break;
 
+                case 'listaUsuarioRegion':
+                        self::listaUsuarioRegion();
+                    break;
+
                 default:
                     header('Location: index.php?window=central&cod_servic=1366&menant=1366');
                     break;
@@ -278,6 +282,36 @@ class trans {
         echo json_encode($inputs[$cod_paisxx]);
     }
 
+    /* *********************************************************************************
+     *   \fn: listaUsuarioRegion                                                             *
+     *  \brief: funcion para listar los terceros de una transportadoras                 *
+     *  \author: Ing. Alexander Correa                                                  *
+     *  \date:  4/09/2015                                                               *
+     *  \date modified:                                                                 *
+     *  \param: $cod_transp codigo de la Trasnportador                                  *     
+     *  \param:                                                                         * 
+     *  \return tabla con la lista de los terceros                                      *
+     * ********************************************************************************* */
+    private function listaUsuarioRegion(){
+        $cod_region = $_REQUEST['cod_region'];
+        $mSql = "SELECT a.cod_consec, a.nom_usuari 
+            FROM tab_genera_usuari as a 
+            INNER JOIN tab_aplica_filtro_usuari  as b on a.cod_usuari=b.cod_usuari and cod_filtro= 10
+            INNER JOIN tab_genera_region as c on b.clv_filtro=c.cod_region
+            where c.cod_region = '".$cod_region."'
+            group by a.nom_usuari";
+
+        $mConsult = new Consulta($mSql, self::$cConexion);
+        $mResult = $mConsult->ret_matrix('a');
+
+        $regiones = array();
+        for ($i = 0; $i < sizeof($mResult); $i++) {
+            $regiones[] = array('value' => utf8_decode($mResult[$i][cod_consec]), 'label' => utf8_decode($mResult[$i][nom_usuari]));
+        }
+        echo json_encode($regiones);
+
+    }
+    
 
      /* *********************************************************************************
      *   \fn: listaTerceros                                                             *
@@ -428,7 +462,7 @@ class trans {
                        g.cod_terreg,g.nom_terreg, h.cod_minins,i.cod_agenci, i.nom_agenci,
                        i.con_agenci,i.dir_emailx,i.cod_ciudad cod_ciudaa, CONCAT( UPPER(k.abr_ciudad), '(', LEFT(l.nom_depart, 4), ') - ', LEFT(m.nom_paisxx, 3) ) abr_ciudaa,
                        i.dir_agenci,i.tel_agenci,i.num_faxxxx, a.cod_estado,
-                       a.cod_region, n.cod_region
+                       a.cod_region, n.cod_region, b.cod_consec
                   FROM " . BASE_DATOS . ".tab_tercer_tercer a
 
                        INNER JOIN " . BASE_DATOS . ".tab_tercer_emptra b ON  a.cod_tercer = b.cod_tercer
@@ -609,12 +643,12 @@ class trans {
                         (cod_tercer,cod_minins,num_resolu,fec_resolu,num_region,ran_iniman,
                          ran_finman,ind_gracon,ind_ceriso,fec_ceriso,ind_cerbas,fec_cerbas,
                          otr_certif,ind_cobnal,ind_cobint,nro_habnal,fec_resnal,nom_repleg,
-                         rut_logoxx,usr_creaci,fec_creaci)
+                         rut_logoxx,cod_consec,usr_creaci,fec_creaci)
                         VALUES (
                         '$emptra->cod_tercer','$emptra->cod_minins','$emptra->num_resolu','$emptra->fec_resolu','$emptra->num_region','$emptra->ran_iniman',
                         '$emptra->ran_finman','$emptra->ind_gracon','$emptra->ind_ceriso','$emptra->fec_ceriso','$emptra->ind_cerbas','$emptra->fec_cerbas',
                         '$emptra->otr_certif','$emptra->ind_cobnal','$emptra->ind_cobint','$emptra->nro_habnal','$emptra->fec_resolu','$emptra->nom_repleg',
-                        '$emptra->rut_logoxx','$emptra->usr_creaci','$emptra->fec_creaci')";
+                        '$emptra->rut_logoxx','$emptra->cod_consec','$emptra->usr_creaci','$emptra->fec_creaci')";
             $insercion = new Consulta($query, self::$cConexion, "R");
 
 
@@ -773,13 +807,13 @@ class trans {
                 $nuevo_consec = $ag[0]['cod_agenci'];
             }
 
-            $this->modificar("Registró", $nuevo_consec);
+            $this->modificar("Registro", $nuevo_consec);
         }
     }
 
     /*     * ****************************************************************************
      *  \fn: activar                                                              *
-     *  \brief: función para activar una transportadora                           *
+     *  \brief: funciï¿½n para activar una transportadora                           *
      *  \author: Ing. Alexander Correa                                            *
      *  \date: 07/09/2015                                                         *
      *  \date modified:                                                           *
@@ -878,7 +912,7 @@ class trans {
 
 
         if ($consulta = new Consulta("COMMIT", self::$cConexion)) {
-            $mensaje = "Se inactivï¿½ la Transportadora " . $nom_transp . " exitosamente.";
+            $mensaje = "Se inactivá la Transportadora " . $nom_transp . " exitosamente.";
             $mensaje .= "<br><br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closed()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
             $mens = new mensajes();
             $mens->correcto2("INACTIVAR TRANSPORTADORA", $mensaje);
@@ -899,14 +933,15 @@ class trans {
     private function modificar($operacion = null, $cod_agenci = null) {
 
         if (!$operacion) {
-            $operacion = "Modificó";
+            $operacion = "Modificación";
         }
 
-        # lleno los objetos nesesarios para la correcta modificaciï¿½n en la base de datos.
+        # lleno los objetos nesesarios para la correcta modificación en la base de datos.
         $transp = (object) $_POST['transp']; //objeto para llenar la tabla tab_tercer_tercer
         $emptra = (object) $_POST['emptra']; //objeto para llenar la tabla tab_tercer_emptra
         $agencia = (object) $_POST['agencia']; //objeto para llenar la tabla tab_genera_agenci
         $modali = (object) $_POST['modali']; //para las modalidades de la transportadora
+
         if ($cod_agenci) {
             $agencia->cod_agenci = $cod_agenci;
         }
@@ -983,6 +1018,7 @@ class trans {
         if (!$emptra->ind_gracon) {
             $emptra->ind_gracon = 'N';
         }
+
         $query = "UPDATE " . BASE_DATOS . ".tab_tercer_emptra
                     SET cod_minins = '$emptra->cod_minins',
                         num_resolu = '$emptra->num_resolu',
@@ -1002,6 +1038,7 @@ class trans {
                         fec_resnal = '$emptra->fec_resnal',
                         ".$foto."
                         nom_repleg = '$emptra->nom_repleg',
+                        cod_consec = '$emptra->cod_consec',
                         usr_modifi = '$emptra->usr_modifi',
                         fec_modifi = '$emptra->fec_modifi'
                   WHERE cod_tercer = '$emptra->cod_tercer'";

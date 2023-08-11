@@ -229,7 +229,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $H = $pdf->GetY();
       $height= $H-$Y;
       $pdf->SetXY(10,$Y);
-      $pdf->Cell(39,$height,utf8_decode('OBSERVACION GPS'),1,0,'L',1); 
+      $pdf->Cell(39,$height,utf8_decode('OBSERVACIÓN GPS'),1,0,'L',1); 
       $pdf -> setY($H);
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(196,6,utf8_decode('INFORMACIÓN DEL POSEEDOR TENEDOR'),1,1,'C',1);
@@ -349,7 +349,13 @@ class PDFInformeEstudioSeguridad extends PDF
       $query = new Consulta($mSelect, $this -> conexion);
       $resultados = $query -> ret_matriz('a');
 
-      foreach($resultados as $registro){
+      foreach($resultados as $key => $registro){
+        $pdf -> Ln(2);
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> SetFillColor(1, 11, 64);
+        $pdf -> SetTextColor(255,255,255);
+        $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
+
         $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
         $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
@@ -360,10 +366,10 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('OBSERVACIÓN'),1,0,'L',1);
-        $pdf -> Cell(157,5,utf8_decode($registro['obs_refere']),1,1,'L');
+        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACIÓN: '.$registro['obs_refere']),1, 'J',0);
       }
 
+      $pdf -> Ln(2);
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
@@ -381,7 +387,13 @@ class PDFInformeEstudioSeguridad extends PDF
       $query = new Consulta($mSelect, $this -> conexion);
       $resultados = $query -> ret_matriz('a');
 
-      foreach($resultados as $registro){
+      foreach($resultados as $key => $registro){
+        $pdf -> Ln(2);
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> SetFillColor(1, 11, 64);
+        $pdf -> SetTextColor(255,255,255);
+        $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
+
         $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
         $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
@@ -392,10 +404,10 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('OBSERVACIÓN'),1,0,'L',1);
-        $pdf -> Cell(157,5,utf8_decode($registro['obs_refere']),1,1,'L');
+        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACIÓN: '.$registro['obs_refere']),1, 'J',0);
       }
 
+      $pdf -> Ln(2);
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
@@ -416,7 +428,7 @@ class PDFInformeEstudioSeguridad extends PDF
       foreach($resultados as $key=>$registro){
         $pdf -> Cell(39,5,utf8_decode(($key+1).'. TRANSPORTADORA'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['nom_transp']),1,0,'L');
-        $pdf -> Cell(39,5,utf8_decode('TELóFONO'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
         $pdf -> Cell(39,5,utf8_decode('INFORMACIÓN DADA POR'),1,0,'L',1);
@@ -575,10 +587,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetTextColor(255,255,255);
       $pdf -> Cell(196,6,utf8_decode('REFERENCIAS FAMILIARES DEL CONDUCTOR'),1,1,'C',1);
 
-      $pdf -> SetFillColor(180, 181, 179);
-      $pdf -> SetTextColor(0,0,0);
-      $pdf -> SetFont('Arial','B',8);
-
+      
       $mSelect = "SELECT b.nom_refere, b.nom_parent, b.dir_domici, b.num_telefo, b.obs_refere
                       FROM ".BASE_DATOS.".tab_estseg_relref a
                   INNER JOIN ".BASE_DATOS.".tab_estseg_refere b ON
@@ -587,7 +596,18 @@ class PDFInformeEstudioSeguridad extends PDF
       $query = new Consulta($mSelect, $this -> conexion);
       $resultados = $query -> ret_matriz('a');
 
-      foreach($resultados as $registro){
+      foreach($resultados as $key => $registro){
+      
+        $pdf -> Ln(2);
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> SetFillColor(1, 11, 64);
+        $pdf -> SetTextColor(255,255,255);
+        $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
+
+        $pdf -> SetFillColor(180, 181, 179);
+        $pdf -> SetTextColor(0,0,0);
+        $pdf -> SetFont('Arial','B',8);
+
         $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
         $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
@@ -598,19 +618,16 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('OBSERVACIÓN'),1,0,'L',1);
-        $pdf -> Cell(157,5,utf8_decode($registro['obs_refere']),1,1,'L');
+        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACIÓN: '.$registro['obs_refere']),1, 'J',0);
       }
 
+      $pdf -> Ln(2);
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
       $pdf -> Cell(196,6,utf8_decode('REFERENCIAS PERSONALES DEL CONDUCTOR'),1,1,'C',1);
 
-      $pdf -> SetFillColor(180, 181, 179);
-      $pdf -> SetTextColor(0,0,0);
-      $pdf -> SetFont('Arial','B',8);
-
+    
       $mSelect = "SELECT b.nom_refere, b.nom_parent, b.dir_domici, b.num_telefo, b.obs_refere
                       FROM ".BASE_DATOS.".tab_estseg_relref a
                   INNER JOIN ".BASE_DATOS.".tab_estseg_refere b ON
@@ -619,7 +636,17 @@ class PDFInformeEstudioSeguridad extends PDF
       $query = new Consulta($mSelect, $this -> conexion);
       $resultados = $query -> ret_matriz('a');
 
-      foreach($resultados as $registro){
+      foreach($resultados as $key => $registro){
+        $pdf -> Ln(2);
+        $pdf -> SetFont('Arial','B',8);
+        $pdf -> SetFillColor(1, 11, 64);
+        $pdf -> SetTextColor(255,255,255);
+        $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
+
+        $pdf -> SetFillColor(180, 181, 179);
+        $pdf -> SetTextColor(0,0,0);
+        $pdf -> SetFont('Arial','B',8);
+
         $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
         $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
@@ -630,10 +657,10 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('OBSERVACIÓN'),1,0,'L',1);
-        $pdf -> Cell(157,5,utf8_decode($registro['obs_refere']),1,1,'L');
+        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACIÓN: '.$registro['obs_refere']),1, 'J',0);
       }
 
+      $pdf -> Ln(2);
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
@@ -654,7 +681,7 @@ class PDFInformeEstudioSeguridad extends PDF
       foreach($resultados as $key=>$registro){
         $pdf -> Cell(39,5,utf8_decode(($key+1).'. TRANSPORTADORA'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['nom_transp']),1,0,'L');
-        $pdf -> Cell(39,5,utf8_decode('TELóFONO'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
         $pdf -> Cell(39,5,utf8_decode('INFORMACIÓN DADA POR'),1,0,'L',1);
@@ -667,7 +694,7 @@ class PDFInformeEstudioSeguridad extends PDF
 
     $pdf -> Ln(2);
     $pdf -> SetWidths(array(196));
-    $pdf -> Row(array('OBSERVACI?N FINAL: '.$info['obs_estseg']),1,'J',0);
+    $pdf -> Row(array(utf8_decode('OBSERVACIÓN FINAL: '.$info['obs_estseg'])),1,'J',0);
     $pdf -> SetFillColor(1, 11, 64);
     $pdf -> SetTextColor(255,255,255);
     $resultado = $info['ind_estseg'] == 'A' ? 'RECOMENDADO' : 'NO RECOMENDADO';
@@ -699,7 +726,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEHóCULO'),1,1,'C',1);
+      $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEHÍCULO'),1,1,'C',1);
 
       for($i = 0; $i < count($img_vehicu); $i++){
         if($pdf->GetY()>=155){
@@ -714,7 +741,7 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> SetFont('Arial','B',8);
         $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_vehicu[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
         $pdf -> SetWidths(array(196));
-        $pdf -> Row(array(utf8_decode('OBSERVACIóN: '.$img_vehicu[$i]['obs_archiv'])));
+        $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_vehicu[$i]['obs_archiv'])));
 
       }
 
@@ -820,7 +847,7 @@ class PDFInformeEstudioSeguridad extends PDF
           $pdf -> SetFont('Arial','B',8);
           $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_propie[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
           $pdf -> SetWidths(array(196));
-          $pdf -> Row(array(utf8_decode('OBSERVACIóN: '.$img_propie[$i]['obs_archiv'])));
+          $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_propie[$i]['obs_archiv'])));
 
         }
       }
