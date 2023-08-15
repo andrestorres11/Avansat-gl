@@ -103,7 +103,7 @@ class seguri {
         $list = new DinamicList(self::$cConexion, $sql, "2", "no", 'ASC');
         $list->SetClose('no');
         $list->SetCreate("Crear Perfil", "onclick:formulario()");
-        $list->SetHeader(utf8_decode("Código de Perfil"), "field:cod_perfil; width:1%;  ");
+        $list->SetHeader(utf8_decode("C?digo de Perfil"), "field:cod_perfil; width:1%;  ");
         $list->SetHeader("Perfil", "field:nom_perfil; width:1%");
         $list->SetHeader("Responsable", "field:nom_respon; width:1%");
         $list->SetHeader("Usuarios Asociados", "field:can_usuari; type:link; onclick:getUsersPerfil(this); width:1%");

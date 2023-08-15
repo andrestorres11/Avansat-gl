@@ -1919,11 +1919,7 @@ class Despac
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( aa.cod_propie = yy.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
-
-		if($mTransp=='830079716'){
-			mail('cristian.torres@grupooet.com','QueryCeva2',$mSql);
-		}
-
+		
 		if( sizeof($mDespac) < 1 )
 			return false;
 

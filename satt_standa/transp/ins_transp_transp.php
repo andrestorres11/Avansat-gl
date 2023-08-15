@@ -268,7 +268,6 @@ class Ins_config_emptra {
     function Formulario() {
 
         $datos = self::$cFunciones->getDatosTrasnportadora($_REQUEST['cod_tercer']);
-
         
         /*echo "<pre>";
         print_r($datos);die;*/
@@ -289,6 +288,7 @@ class Ins_config_emptra {
         $mHtml->SetCssJq("validator");		
         # incluye Css
         $mHtml->SetCssJq("jquery");
+		
 		$mHtml->CloseTable("tr");
         # coloca titulo
         $mHtml->SetTitle("Crear Transportadora");
@@ -309,6 +309,7 @@ class Ins_config_emptra {
     	$mHtml->Hidden(array( "name" => "agencia[cod_ciudad]", "id" => "cod_ciudaaID", "value"=>$datos->principal->cod_ciudaa)); //el codigo de la ciudad de la agencia
     	$mHtml->Hidden(array( "name" => "agencia[cod_agenci]", "id" => "cod_agenciID", "value"=>$datos->principal->cod_agenci)); //el codigo de la ciudad de la agencia
 		$mHtml->Hidden(array( "name" => "transp[cod_tipdoc]", "id" => "cod_tipdocID", "value" => $namesInputs['tipdoc']['value'])); //el codigo de la ciudad de la 
+		$mHtml->Hidden(array( "name" => "cod_consecEdi", "id" => "cod_consecEdiID", "value" => (isset($datos->principal->cod_consec) ? $datos->principal->cod_consec:0))); //el codigo de usuario asignado
 		if($datos->principal->cod_tercer!=''){
 			$mHtml->Hidden(array( "name" => "cod_tercer", "id" => "cod_tercerID", "value" => $datos->principal->cod_tercer)); //el codigo de la transportadora
 		}
@@ -342,10 +343,10 @@ class Ins_config_emptra {
 						        $mHtml->Input(array("type" => "alpha", "name" => "transp[nom_tercer]", "id" => "nom_tercer", "size"=>30, "validate" => "alpha",  "obl" => "1", "minlength" => "5", "maxlength" => "100", "width" => "100px", "value" => $datos->principal->nom_tercer, "end" => true));
 								
 								$mHtml->Label("Regional:", "width:25%; *:1;"); 
-						        $mHtml->Select2	($datos->region,  array("name" => "transp[cod_region]", "validate" => "select",  "obl" => "1", "id" => "cod_regionID", "width" => "25%", "key"=> $datos->principal->cod_region) );						        
-						        $mHtml->Label(utf8_decode("Código de Empresa:"), "width:25%; :1;");
-						        $mHtml->Input(array("type" => "numeric", "name" => "emptra[cod_minins]", "validate" => "numero", "minlength" => "1", "maxlength" => "4", "id" => "abr_tercer", "width" => "25%", "value" => $datos->principal->cod_minins, "end" => true));
-						        
+						        $mHtml->Select	($datos->region,  array("name" => "transp[cod_region]", "validate" => "select",  "obl" => "1", "id" => "cod_regionID", "width" => "25%", "key"=> $datos->principal->cod_region,"onchange"=>"regionChange(this,null)") );						        
+						        $mHtml->Label(utf8_decode("Encargado:"), "width:25%; :1;");
+								$mHtml->Select2 (array(),  array("name" => "emptra[cod_consec]", "validate" => "select",  "obl" => "1", "id" => "cod_consecID", "width" => "25%", "key"=> $datos->principal->cod_consec,"end" => true) );						        
+								
 								$mHtml->Label("Ciudad:", "width:25%; *:1;");
 						        $mHtml->Input(array("type" => "text", "name" => "ciudad", "id" => "ciudadID", "validate" => "dir", "minlength" => "8", "maxlength" => "100",  "obl" => "1", "width" => "25%", "value" => $datos->principal->abr_ciudad));
 						        $mHtml->Label(utf8_decode("Dirección:"), "width:25%; *:1;");
@@ -366,8 +367,11 @@ class Ins_config_emptra {
 								$mHtml->Label("Logo:", "width:25%; :1;");
                     			$mHtml->File(array("name" => "foto",  "id" => "foto", "validate"=>"file", "format"=>"jpg,jpeg,png", "width" => "25%", "end" => true) );
 								
+								$mHtml->Label(utf8_decode("Código de Empresa:"), "width:25%; :1;");
+						        $mHtml->Input(array("type" => "numeric", "obl" => "yes","name" => "emptra[cod_minins]", "validate" => "numero", "minlength" => "1", "maxlength" => "4", "id" => "abr_tercer", "width" => "25%", "value" => $datos->principal->cod_minins,"end" => true));
+
 						        $mHtml->Label("Observaciones:", "width:25%; :1;");
-						        $mHtml->TextArea($mString, array("cols" => 100, "rows" => 8, "colspan" => "3", "name" => "transp[obs_tercer]", "id" => "obs_tercer", "width" => "25%", "value" => $datos->principal->obs_tercer, "end" => true));
+						        $mHtml->TextArea($mString, array("cols" => 100, "rows" => 8, "colspan" => "3", "name" => "transp[obs_tercer]", "id" => "obs_tercer", "width" => "25%", "value" => $datos->principal->obs_tercer,"end" => true));
 	    					$mHtml->CloseTable("tr");
 	    				$mHtml->CloseDiv();
 	    			$mHtml->CloseDiv();
@@ -494,10 +498,15 @@ class Ins_config_emptra {
 			
         	# Cierra formulario
         $mHtml->CloseForm();
+		$mHtml -> SetBody('<script>
+		let region = document.getElementById("cod_regionID");
+		let selected = document.getElementById("cod_consecEdiID").value; 
+		regionChange(region,selected);</script>');
+
         # Cierra Body
         $mHtml->CloseBody();
-
         # Muestra Html
+
         echo $mHtml->MakeHtml();
     }
 
