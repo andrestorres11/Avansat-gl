@@ -21,7 +21,10 @@
   define("WSDL_EXTERNO", WEB_PROTOCOL.$_SERVER['HTTP_HOST'].'/ap/interf/app/externo/externo.php?wsdl'); // URL de acceso al WebService
   
   define( "ValDir", "/var/www/html/ap/interf/app/corona/validator/" );   //Librerias generales.
-  define( "LogDir", "var/www/html/ap/integradorgps/satt_dingps/crones/logs/" );        //Constantes de la aplicacion cliente.
+  define( "LogDir", "var/www/html/ap/satt_intgps/logs/" );        //Constantes de la aplicacion cliente.
+
+  define( "LogIntGPS", "/var/www/html/ap/satt_intgps/logs/IntegrationsGPS/" );        //Ruta Logs Integraciones por CRON status
+
   //define( "DictDir", "/var/www/html/ap/interf/app/corona/dictionary/" ); //Directorio Diccionario de terminos.
   //define( "WsDirx", "/var/www/html/ap/interf/app/corona/wsdl/" );
   //define( "FarMai", "supervisores@faro.com.co" ); //Mail de notificacion de creacion de rutas
@@ -41,4 +44,5 @@
   define("URL_INTERF_GPSEVE", "https://central.intrared.net/ap/interf/APIIntegradorGPS/v1/index.php");
   // define("URL_INTERF_GPSEVE", "http://10.0.100.12/ap/interf/APIIntegradorGPS/v1/index.php/setItinerary");
   
+
   ?>

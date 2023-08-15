@@ -896,7 +896,8 @@
     ********************************************************************************/
     public function verifyParameIntgps( $mCodOperad = '53', $mCodTransp =NULL )
     {
-      $mSql = "SELECT a.cod_transp, c.nom_tercer, a.nom_usuari, a.clv_usuari, a.cod_tokenx, a.url_webser, a.ind_deseta, IFNULL( b.tie_repgps, 30) AS tie_report
+      $mSql = "SELECT a.cod_transp, c.nom_tercer, a.nom_usuari, a.clv_usuari, a.cod_tokenx, a.url_webser, a.ind_deseta, IFNULL( b.tie_repgps, 30) AS tie_report,
+                      a.int_config
               FROM ".BASE_DATOS.".tab_interf_parame a
               INNER JOIN (
                             SELECT a.cod_transp, a.tie_repgps
@@ -914,7 +915,16 @@
                 AND a.cod_transp = '".$mCodTransp."'
                 AND a.ind_estado = '1'";
       $consulta = new Consulta( $mSql, $this -> cConexion ); 
-      return $consulta -> ret_matrix( 'a' );
+      $interfaces = $consulta -> ret_matrix( 'a' );
+
+      $interfacesFiltradas = array_filter($interfaces, function($interfaz) {
+        $intConfig = json_decode($interfaz['int_config'], true);
+        return isset($intConfig['gpsIntegration']) && $intConfig['gpsIntegration'] === true;
+      });
+      
+      // Actualizar la variable $despachos con los registros filtrados
+      $interfaces = array_values($interfacesFiltradas);
+      return $interfaces;
     }
   }
 
@@ -1019,7 +1029,8 @@
     public function verifyParameIntgps( $mCodOperad = '53' )
     {
       //Se verifica si tiene activa interfaz con FARO 
-      $mSql = "SELECT a.cod_transp, c.nom_tercer, a.nom_usuari, a.clv_usuari, a.cod_tokenx, a.url_webser, a.ind_deseta, IFNULL( b.tie_repgps, 30) AS tie_report
+      $mSql = "SELECT a.cod_transp, c.nom_tercer, a.nom_usuari, a.clv_usuari, a.cod_tokenx, a.url_webser, a.ind_deseta, IFNULL( b.tie_repgps, 30) AS tie_report,
+                      a.int_config
               FROM ".BASE_DATOS.".tab_interf_parame a
               INNER JOIN (
                             SELECT a.cod_transp, a.tie_repgps
@@ -1037,7 +1048,16 @@
                 AND a.cod_transp = '".$this -> NIT_TRANSPOR."'
                 AND a.ind_estado = '1'";
       $consulta = new Consulta( $mSql, $this -> cConexion ); 
-      return $consulta -> ret_matriz( 'a' );
+      $interfaces = $consulta -> ret_matrix( 'a' );
+          
+      $interfacesFiltradas = array_filter($interfaces, function($interfaz) {
+        $intConfig = json_decode($interfaz['int_config'], true);
+        return isset($intConfig['gpsIntegration']) && $intConfig['gpsIntegration'] === true;
+      });
+                
+      // Actualizar la variable $despachos con los registros filtrados
+      $interfaces = array_values($interfacesFiltradas);
+      return $interfaces;
     }
     
     /*! \fn: sendError    

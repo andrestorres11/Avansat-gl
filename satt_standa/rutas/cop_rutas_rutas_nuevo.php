@@ -303,8 +303,11 @@ class Proc_rutas
     if(BASE_DATOS != 'satt_faro'){
       $formulario -> lista_value( "Salida Vial:", "cod_salvia\" id=\"cod_salviaID", $salvia, 1, 40, $matriz[0]['cod_salvia'] );
     }
-    $formulario -> caja( "Crear via de retorno:", "ind_doblevia\" id=\"ind_dobleviaID", $_REQUEST['ind_doblevia'], 0, 1);
 
+    if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ADMINIST){
+    $formulario -> caja( "Crear via de retorno:", "ind_doblevia\" id=\"ind_dobleviaID", $_REQUEST['ind_doblevia'], 0, 1);
+    }
+    
     $formulario -> nueva_tabla();
     $formulario -> linea("Puestos de Control",0,"t2");
 
@@ -648,6 +651,11 @@ class Proc_rutas
                   )";
       $consulta = new Consulta($query, $this -> conexion,"R");
 
+
+
+
+
+      /*
       $pcDevuelta = array_reverse($contro);
 
       for($i = 0; $i < $_REQUEST[cont]; $i++){
@@ -670,6 +678,36 @@ class Proc_rutas
           $insercion = new Consulta($query, $this -> conexion,"R");
           $j++;
         }
+      }*/
+
+
+
+
+      $SqlPCOrdenado = "SELECT a.cod_rutasx, a.cod_contro, a.val_duraci, a.val_distan, a.ind_estado
+                FROM ".BASE_DATOS.".tab_genera_rutcon a WHERE a.cod_rutasx = '".$ultimo_consec2."' AND a.cod_contro NOT IN (9999, 9997) ORDER BY a.val_duraci ASC";
+      $result = new Consulta($SqlPCOrdenado, $this->conexion, "BR");
+      $PCOrdenados = $result->ret_matriz();
+
+      // Invertir solo la segunda columna (cod_contro) en $PCOrdenados
+      $numeroFilas = count($PCOrdenados);
+      for ($i = 0; $i < floor($numeroFilas / 2); $i++) {
+          $temp = $PCOrdenados[$i]['cod_contro'];
+          $PCOrdenados[$i]['cod_contro'] = $PCOrdenados[$numeroFilas - 1 - $i]['cod_contro'];
+          $PCOrdenados[$numeroFilas - 1 - $i]['cod_contro'] = $temp;
+      }
+
+      // Insertar los registros modificados en la base de datos
+      foreach ($PCOrdenados as $pc) {
+          $cod_rutasx = $pc['cod_rutasx'];
+          $cod_contro = $pc['cod_contro'];
+          $val_duraci = $pc['val_duraci'];
+          $val_distan = $pc['val_distan'];
+          $usr_creaci = $_REQUEST['usuario'];
+
+          $query = "INSERT INTO ".BASE_DATOS.".tab_genera_rutcon
+                          ( cod_rutasx, cod_contro, val_duraci, val_distan, usr_creaci, fec_creaci )
+                  VALUES ( '$nuevo_consec2', '$cod_contro', '$val_duraci', '$val_distan', '$usr_creaci', NOW() ) ";
+          $insercion = new Consulta($query, $this->conexion, "R");
       }
 
       //query de insercion

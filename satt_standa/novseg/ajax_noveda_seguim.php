@@ -77,8 +77,8 @@
             }
 
             $sql = "SELECT a.cod_noveda, a.nom_noveda, CONCAT(UPPER(LEFT(b.nom_etapax, 1)), LOWER(SUBSTRING(b.nom_etapax, 2))) as 'nom_etapax',
+                           c.nom_riesgo, IFNULL(d.nom_tipoxx,'N/a') as nom_tipoxx,a.rut_iconox, a.nom_observ,
                            c.nom_riesgo, a.rut_iconox, a.nom_observ,
-                           c.nom_riesgo,IFNULL(d.nom_tipoxx,'N/a') as nom_tipoxx, a.rut_iconox, a.nom_observ,
                             a.ind_estado
                            FROM ".BASE_DATOS.".tab_genera_noveda a
                            INNER JOIN ".BASE_DATOS.".tab_genera_etapax b

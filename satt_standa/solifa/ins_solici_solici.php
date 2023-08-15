@@ -20,6 +20,7 @@ class Solici_solici
 			"cod_usuari"=>$this->getInterfParame("nom_usuari"),//USR_INTERF_FAROXX,
 			"pwd_clavex"=>$this->getInterfParame("clv_usuari"),//PWD_INTERF_FAROXX,
 			"cod_transp"=>$this->getInterfParame("cod_transp"),//NIT_TRANSPOR,
+			"nom_instan"=>BASE_DATOS,
 			"nom_aplica"=>BASE_DATOS,
 			"url_aplica"=>null,//$_SERVER["PHP_SELF"],//url de retorno para respuesta
 			"cod_solici"=>@$_SESSION["datos_usuario"]["cod_usuari"],

@@ -40,26 +40,59 @@ class ajax_infope_gpsxxx
   *  \return HTML
   */
   private function setRegistros() {
-    $mSql = " SELECT  
-                a.cod_operad,
-                a.nit_operad,
-                a.nom_operad,
-                a.url_gpsxxx,
-                IF(a.apl_idxxxx=1,'SI','NO') as 'apl_idxxxx',
-                IF(a.ind_cronxx=1,'SI','NO') as 'ind_cronxx',
-                IF(a.ind_intgps=1,'SI','NO') as 'ind_intgps',
-                IF(a.ind_rndcxx=1,'SI','NO') as 'ind_rndcxx',
-                IF(a.ind_estado=1,'ACTIVO','INACTIVO') as 'ind_estado'
-                FROM  ". BASE_DATOS .".tab_genera_opegps a ";
+    /*
+    $mSql = " SELECT 
+                  a.cod_operad COLLATE latin1_general_ci AS cod_operad, 
+                  a.nit_operad COLLATE latin1_general_ci AS nit_operad, 
+                  a.nom_operad COLLATE latin1_general_ci AS nom_operad, 
+                  a.url_gpsxxx COLLATE latin1_general_ci AS url_gpsxxx, 
+                  IF(a.apl_idxxxx = 1, 'SI', 'NO') as 'apl_idxxxx', 
+                  IF(a.ind_cronxx = 1, 'SI', 'NO') as 'ind_cronxx', 
+                  IF(a.ind_intgps = 1, 'SI', 'NO') as 'ind_intgps', 
+                  IF(a.ind_rndcxx = 1, 'SI', 'NO') as 'ind_rndcxx', 
+                  IF(a.ind_estado = 1, 'ACTIVO', 'INACTIVO') as 'ind_estado' 
+              FROM 
+                  ".BASE_DATOS.".tab_genera_opegps a
+              UNION
+
+              SELECT 
+                  b.cod_operad COLLATE latin1_general_ci  AS cod_operad, 
+                  b.nit_operad COLLATE latin1_general_ci  AS nit_operad, 
+                  b.nom_operad COLLATE latin1_general_ci  AS nom_operad, 
+                  b.url_operad COLLATE latin1_general_ci  AS url_gpsxxx, 
+                  IF(b.ind_usaidx = 1, 'SI', 'NO') as 'apl_idxxxx', 
+                  IF(b.ind_cronxx = 1, 'SI', 'NO') as 'ind_cronxx', 
+                  IF(b.ind_intgps = 1, 'SI', 'NO') as 'ind_intgps', 
+                  IF(b.ind_rndcxx = 1, 'SI', 'NO') as 'ind_rndcxx', 
+                  IF(b.ind_estado = 1, 'ACTIVO', 'INACTIVO') as 'ind_estado' 
+              FROM 
+                  ".BD_STANDA.".tab_genera_opegps b";
+                  */
+    $mSql = "
+              SELECT 
+                  b.cod_operad COLLATE latin1_general_ci  AS cod_operad, 
+                  b.nit_operad COLLATE latin1_general_ci  AS nit_operad, 
+                  b.nom_operad COLLATE latin1_general_ci  AS nom_operad, 
+                  b.url_operad COLLATE latin1_general_ci  AS url_gpsxxx, 
+                  IF(b.ind_usaidx = 1, 'SI', 'NO') as 'apl_idxxxx', 
+                  IF(b.ind_cronxx = 1, 'SI', 'NO') as 'ind_cronxx', 
+                  IF(b.ind_intgps = 1, 'SI', 'NO') as 'ind_intgps', 
+                  IF(b.ind_rndcxx = 1, 'SI', 'NO') as 'ind_rndcxx', 
+                  IF(b.ind_estado = 1, 'ACTIVO', 'INACTIVO') as 'ind_estado',
+                  1 as 'ope_standa' 
+              FROM 
+                  ".BD_STANDA.".tab_genera_opegps b
+                  WHERE b.ind_intgps = 1";
     $mMatriz = new Consulta($mSql, $this->conexion);
     $mMatriz =  self::cleanArray($mMatriz->ret_matrix("a"));
     
     $data = [];
     foreach ($mMatriz as $key => $datos) {
       $ind_intgps = $datos['ind_intgps'];
+      $ope_estada = $datos['ope_standa'];
     	foreach ($datos as $campo => $valor) {
         if($campo == "ind_estado"){
-          if($ind_intgps== 'NO'){
+          if($ind_intgps== 'NO' || !$ope_estada){
             if($valor == 'ACTIVO'){
                 $html ='<button onclick="updEst(this)" value="'.$datos['cod_operad'].'" data-estado="1" class="btn btn-danger"><i class="fa fa-times" aria-hidden="true"></i></button>&nbsp;';
               }else{

@@ -462,7 +462,12 @@ class FacturFaro
               $no_com =array(63,325,296,311);
             }*/
 
-            $no_com =array(52,70,156);
+            if(BASE_DATOS == 'satt_faro'){
+                $no_com =array(52,70,156);
+              }else{
+                $no_com =array(33);
+            }
+
             $cuenta = 0;
             foreach ($novedades as $key => $value) {
               if(in_array($value['cod_noveda'], $no_com)){

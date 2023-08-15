@@ -1138,8 +1138,8 @@ class Califi
 		$mDataDesp = self::getDatadespac( $_REQUEST['num_despac'] );
 
 		$mIntegradorGPS = getValidaInterfaz(self::$cConexion, '53', $mDataDesp['cod_transp'], true, 'data');
-
-		if ($mIntegradorGPS['ind_operad'] == '3') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
+		//Ajuste temporar detektor
+		if ($mIntegradorGPS['ind_operad'] == '3' || $mDataDesp['gps_operad']=='9010949280') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
 		{
 		  $mHubGPS = new InterfHubIntegradorGPS(self::$cConexion, ['cod_transp' => $mDataDesp['cod_transp']] );
 		  // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
@@ -1156,8 +1156,13 @@ class Califi
 		    $mSage = $mResp['message'];
 		  }
 		  else{
-		    $mCode = $mResp['code'];
-		    $mSage = $mResp['message'];
+			if($mDataDesp['gps_operad']=='9010949280'){
+				$mCode = 1000;
+		    	$mSage = 'Despacho añadido';
+			}else{
+				$mCode = $mResp['code'];
+		    	$mSage = $mResp['message'];
+			}
 		  }
 		  // Fin proceso de generar itinerario HUB al despacho ---------------------------------------------------------------------------
 		}
@@ -1202,7 +1207,7 @@ class Califi
      */
 	private function getDatadespac($mNumDespac)
 	{
- 		$mSql = "SELECT a.num_despac, a.cod_manifi, b.num_placax, b.cod_transp
+ 		$mSql = "SELECT a.num_despac, a.cod_manifi, b.num_placax, b.cod_transp, a.gps_operad
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 

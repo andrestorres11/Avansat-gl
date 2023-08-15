@@ -1087,6 +1087,7 @@ class Proc_segui
 
 
         $mArraySitio = array();
+        $block_lugar = false;
         if (!$contro){
             if (in_array($_SESSION['datos_usuario']['cod_perfil'], array('708','709','710','711','712') ) ) {
                 $mArraySitio[] = array('A', 'Antes');
@@ -1094,6 +1095,9 @@ class Proc_segui
                 $mArraySitio[] = array('A', 'Antes');
                 $mArraySitio[] = array('S', 'Sitio');
             }
+        }else{
+            $mArraySitio[] = array('S', 'Sitio');
+            $block_lugar = true;
         }
 
         
@@ -1364,7 +1368,12 @@ class Proc_segui
                                     $mHtml->Select2( $mArrayTiempo, array("class"=>'celda_info', 'width'=>'50px', "name"=>'tiempo', "id"=>'tiemID') );
                                 
                                 if ($_REQUEST['ind_virtua'] == 0 && $contro){
-                                    $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20') );
+                                    if($block_lugar){
+                                        $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20') );
+                                    }else{
+                                        $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true') );
+                                    }
+                                    
                                 }else{
                                     $mHtml->Input( array("class"=>'celda_info', "name"=>'sitio', "id"=>'sitioID', "maxlength"=>'50', "size"=>'20', "readonly"=>'true', "value"=>$_REQUEST[pc]) );
                                 }

@@ -742,7 +742,7 @@ function r(){
 								tie_respue = parseInt(tie_respue) * parseInt(24);								
 							}
 							
-							var fecha_soli = data[i].fec_creaci;
+							var fecha_soli = data[i].fec_creaci|| '2023-08-10';
 							var fecha_hoy = new Date()
 
 							fecha_solicitud = new Date(fecha_soli)
@@ -1038,7 +1038,7 @@ function r(){
 							
 						
 						
-
+							console.log(data);
 						canTotal = canTotal+1; 
 						currTab.find("table.indicador-detallado2")
 						.append(
@@ -1046,21 +1046,21 @@ function r(){
 							"<td><div class=\"indicador-detallado-solici link\">"+ data[i].num_solici +"</div></td>"+
 							"<td>"+ data[i].nom_tipsol +"</td>"+
 							"<td>"+ findTercer(data[i].cod_transp) +"</td>"+
-							"<td>"+ data[i].det_solici +"</td>"+
+							"<td>"+ (data[i].det_solici !=undefined && data[i].det_solici !=null ? data[i].det_solici:'N/a')  +"</td>"+
 							"<td>"+ data[i].fec_creaci +"</td>"+
-							"<td>"+ data[i].fec_modifi +"</td>"+
+							"<td>"+ (data[i].fec_modifi !=undefined && data[i].fec_modifi !=null ? data[i].fec_modifi:'N/a')+"</td>"+
 							"<td>"+ data[i].fec_difere +"</td>"+
 							"<td class=\"semaforo"+semaforo+"\">"+ cumplido +"</td>"+
 							"<td data-native-value=\""+data[i].cod_estado+"\">"+ data[i].nom_estado +"</td>"+
 							"<td>"+ data[i].nom_usrsol+"</td>"+
-							"<td>"+ data[i].usr_modifi+"</td>"+
+							"<td>"+ (data[i].usr_modifi !=undefined && data[i].usr_modifi !=null ? data[i].usr_modifi:'N/a')  +"</td>"+
 							"</tr>"
 						);
 						data_detalles = data_detalles+"<tr>"+
 						"<td>"+ data[i].num_solici +"</td>"+
 						"<td>"+ data[i].nom_tipsol +"</td>"+
 						"<td>"+ findTercer(data[i].cod_transp) +"</td>"+
-						"<td>"+ delete_codif_espec(data[i].det_solici) +"</td>"+
+						"<td>"+ (data[i].det_solici!=undefined && data[i].det_solici!=null ? delete_codif_espec(data[i].det_solici):'') +"</td>"+
 						"<td>"+ data[i].fec_creaci +"</td>"+
 						"<td>"+ data[i].fec_modifi +"</td>"+
 						"<td>"+ data[i].fec_difere +"</td>"+

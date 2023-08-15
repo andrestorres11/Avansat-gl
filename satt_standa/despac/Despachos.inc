@@ -5341,6 +5341,7 @@ class Despachos
                     LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
                                 ON b.cod_tipoxx = g.cod_tipoxx
                         WHERE a.num_despac = '{$mNumDespac}'
+                        group by a.val_longit, a.val_latitu, a.fec_contro
                 )
                 UNION
                 (
