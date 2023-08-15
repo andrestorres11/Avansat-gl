@@ -221,7 +221,7 @@ class Despac
 	private function infoTransito()
 	{
 		$mIndEtapa = 'ind_segtra';
-		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'No. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solucion', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
+		$mTittle['texto'] = array('NO.', 'TIPO SERVICIO','SERVICIO', 'HORARIO DE SEGUIMIENTO', 'EMPRESA', 'No. DESPACHOS', 'SIN RETRASO', 'CON ALARMA', 'AMARILLO (SEGUIMIENTO) (0-30 MIN)', 'ALARMA NARANJA (31-60 MIN)', 'ALARMA ROJA (61-90 MIN)', 'ALARMA VIOLETA (91 MIN) hasta solucion','D. URBANOS', 'ESTADO PERNOCTACION', /*'POR LLEGADA',*/ 'A CARGO EMPRESA', 'USUARIO ASIGNADO' );
 		$mTittle['style'] = array('', '', '', '','', '', '', '', 'bgT1', 'bgT2', 'bgT3', 'bgT4', '', '');
 
 		$mHtml  = '<div id=table3ID>';
@@ -361,6 +361,11 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_31A60x] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_31A60x].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_61A90x] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_61A90x].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[con_91Amas] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[con_91Amas].'</td>';
+
+				if($mIndEtapa == 'ind_segtra'){
+					$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[des_urbano] == 0 ? '' : 'onclick="showDetailBand(\'des_urbano\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[des_urbano].'</td>';
+				}
+				
 				$mHtml .= 	'<td class="classCell" nowrap="" align="center" '. ( $mData[est_pernoc] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mTransp[$i][cod_transp].'\');" style="cursor: pointer"' ) .' >'.$mData[est_pernoc].'</td>';
 
 				
@@ -386,7 +391,7 @@ class Despac
 				$mTotal[6] += $mData[con_91Amas];
 				$mTotal[7] += $mData[est_pernoc];
 				$mTotal[9] += $mData[ind_acargo];
-
+				$mTotal[10] += $mData[des_urbano];
 				if( $mIndEtapa != 'ind_segcar' )
 					$mTotal[8] += $mData[fin_rutaxx];
 
@@ -408,6 +413,10 @@ class Despac
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[4] == 0 ? '' : 'onclick="showDetailBand(\'con_31A60x\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[4].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[5] == 0 ? '' : 'onclick="showDetailBand(\'con_61A90x\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[5].'</th>';
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[6] == 0 ? '' : 'onclick="showDetailBand(\'con_91Amas\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[6].'</th>';
+		
+		if($mIndEtapa == 'ind_segtra'){
+			$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[10] == 0 ? '' : 'onclick="showDetailBand(\'des_urbano\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[10].'</th>';
+		}
 		$mHtml1 .= '<th class="classTotal" nowrap="" align="center" '. ( $mTotal[7] == 0 ? '' : 'onclick="showDetailBand(\'est_pernoc\', \''.$mIndEtapa.'\', \''.$mCodTransp.'\');" style="cursor: pointer;"' ) .' >'.$mTotal[7].'</th>';
 
 		/*
@@ -871,7 +880,7 @@ class Despac
 		$mDespac = join( ',', GetColumnFromMatrix( $mDespac, 'num_despac' ) ); #Despachos en ruta Sin hora salida del sistema
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
 						UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin,
@@ -1086,7 +1095,7 @@ class Despac
 
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
 						UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
@@ -1326,7 +1335,7 @@ class Despac
 		#Informacion de los despachos en Etapa Descargue
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
@@ -1447,9 +1456,10 @@ class Despac
 	 */
 	public function getDespacTransi1( $mTransp )
 	{
+		$tieAnticDespa = self::getTipserUnic($mTransp[cod_transp])['tie_visdes'];
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
@@ -1461,12 +1471,12 @@ class Despac
                                'No Requiere',
                                'Por Iniciar'
                             )
-                        ) AS itinerario 
+                        ) AS itinerario		
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac
-					AND a.fec_salida IS NOT NULL 
-					AND a.fec_salida <= NOW() 
+					AND a.fec_salida IS NOT NULL  
+					AND a.fec_salida <= DATE_ADD(NOW(), INTERVAL ".$tieAnticDespa." MINUTE)
 					AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
 					AND a.ind_planru = 'S' 
 					AND a.ind_anulad = 'R'
@@ -1497,7 +1507,7 @@ class Despac
 			INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu l
 					 ON b.num_placax = l.num_placax
 			LEFT JOIN ".BD_STANDA.".tab_genera_opegps m
-					 ON a.gps_operad = m.cod_operad
+					 ON a.gps_operad = m.cod_operad	 
 				  WHERE 1=1 ";
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND a.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( l.cod_propie = b.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
@@ -1509,10 +1519,10 @@ class Despac
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
 		// echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
-		
+		//mail("cristian.torres@grupooet.com","VistaSql",$mSql);
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
-
+						
 		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		# Verifica Novedades por despacho
@@ -1577,7 +1587,7 @@ class Despac
 	{
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
@@ -1589,7 +1599,7 @@ class Despac
                                'No Requiere',
                                'Por Iniciar'
                             )
-                        ) AS itinerario 
+                        ) AS itinerario
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac
@@ -1706,6 +1716,7 @@ class Despac
 		$mDespacPrcCargue = self::getDespacPrcCargue( $mTransp, 'list', true );
 		$mDespacCarDes = self::getDespacDescar( $mTransp, 'list2', true ); #Despachos en Etapas Cargue y Descargue
 		$mDespacCarDes = trim($mDespacCarDes, ',');
+		
 		#Despachos en ruta  
 		$mSql = "	 SELECT xx.num_despac
 					   FROM ".BASE_DATOS.".tab_despac_despac xx 
@@ -1761,7 +1772,7 @@ class Despac
 
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
@@ -1886,6 +1897,7 @@ class Despac
 		$mDespacPrcCargue = self::getDespacPrcCargue( $mTransp, 'list', true );
 		$mDespacCarDes = self::getDespacDescar( $mTransp, 'list2', true ); #Despachos en Etapas Cargue y Descargue
 		$mDespacCarDes = trim($mDespacCarDes, ',');
+		$tieAnticDespa = self::getTipserUnic($mTransp)['tie_visdes'];
 		#Despachos en ruta  
 		$mSql = "	 SELECT xx.num_despac
 					   FROM ".BASE_DATOS.".tab_despac_despac xx 
@@ -1896,7 +1908,6 @@ class Despac
 				INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu aa
 						 ON yy.num_placax = aa.num_placax 
 					  WHERE xx.fec_salida IS NOT NULL 
-						AND xx.fec_salida <= NOW() 
 						AND (xx.fec_llegad IS NULL OR xx.fec_llegad = '0000-00-00 00:00:00')
 						AND xx.ind_planru = 'S' 
 						AND xx.ind_anulad = 'R'
@@ -1908,6 +1919,10 @@ class Despac
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( aa.cod_propie = yy.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
+
+		if($mTransp=='830079716'){
+			mail('cristian.torres@grupooet.com','QueryCeva2',$mSql);
+		}
 
 		if( sizeof($mDespac) < 1 )
 			return false;
@@ -1941,10 +1956,10 @@ class Despac
 
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
-						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera 
+						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera
 				   FROM ".BASE_DATOS.".tab_despac_despac a 
 			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
 					 ON a.num_despac = b.num_despac 
@@ -2042,6 +2057,139 @@ class Despac
 		return $mResult;
 	}
 
+
+
+
+
+	/*! \fn: getDespacTransi1
+	 *  \brief: Trae los despachos para las empresas que solo tienen parametrizado ind_transi
+	 *  \author: Ing. Fabian Salinas
+	 *	\date: 26/06/2015
+	 *	\date modified: dia/mes/a�o
+	 *  \param: mTransp  Array  Informacion transportadora
+	 *  \return: Matriz
+	 */
+	public function getDespacUrbanos( $mTransp )
+	{
+		$tieAnticDespa = self::getTipserUnic($mTransp[cod_transp])['tie_visdes'];
+		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
+						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
+						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
+						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
+						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
+						IF(
+                           b.cod_itiner IS NOT NULL AND b.cod_itiner != 0,
+                           b.cod_itiner,
+                           IF(
+                               m.nom_operad IS NULL OR m.nom_operad = '',
+                               'No Requiere',
+                               'Por Iniciar'
+                            )
+                        ) AS itinerario		
+				   FROM ".BASE_DATOS.".tab_despac_despac a 
+			 INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+					 ON a.num_despac = b.num_despac
+					AND a.fec_salida IS NOT NULL  
+					AND a.fec_salida <= DATE_ADD(NOW(), INTERVAL ".$tieAnticDespa." MINUTE)
+					AND (a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00')
+					AND a.ind_planru = 'S' 
+					AND a.ind_anulad = 'R'
+					AND b.ind_activo = 'S' 
+					AND b.cod_transp = '".$mTransp[cod_transp]."'
+			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
+					 ON b.cod_transp = c.cod_tercer 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
+					 ON a.cod_ciuori = d.cod_ciudad 
+					AND a.cod_depori = d.cod_depart 
+					AND a.cod_paiori = d.cod_paisxx 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_ciudad e 
+					 ON a.cod_ciudes = e.cod_ciudad 
+					AND a.cod_depdes = e.cod_depart 
+					AND a.cod_paides = e.cod_paisxx 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_depart f 
+					 ON a.cod_depori = f.cod_depart 
+					AND a.cod_paiori = f.cod_paisxx 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_depart g 
+					 ON a.cod_depdes = g.cod_depart 
+					AND a.cod_paides = g.cod_paisxx 
+			 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer h 
+					 ON b.cod_conduc = h.cod_tercer 
+			 INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
+					 ON a.cod_tipdes = i.cod_tipdes
+			 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
+					 ON a.cod_client = k.cod_tercer
+			INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu l
+					 ON b.num_placax = l.num_placax
+			LEFT JOIN ".BD_STANDA.".tab_genera_opegps m
+					 ON a.gps_operad = m.cod_operad	 
+				  WHERE a.cod_tipdes = 1";
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND a.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( l.cod_propie = b.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
+		#Filtros por Formulario
+		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
+		$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
+
+		#Filtros por usuario
+		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
+		
+		// echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
+		
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+		$mDespac = $mConsult -> ret_matrix('a');
+						
+		$mTipValida = self::tipValidaTiempo( $mTransp );
+
+		# Verifica Novedades por despacho
+		$j=0;
+		$mResult = array();
+		for( $i=0; $i<sizeof($mDespac); $i++ )
+		{
+			$mData = self::getInfoDespac( $mDespac[$i], $mTransp, $mTipValida );
+
+			#warning1
+			if( $_REQUEST[ind_limpio] === '1' || $_REQUEST[ind_limpio] === '0' )
+			{
+				if(		( $_REQUEST[ind_limpio] === '1' && ($mData[ind_limpio] === '1' || $mData[ind_limpio] == '') ) #Despachos Limpios
+					||	( $_REQUEST[ind_limpio] === '0' && $mData[ind_limpio] === '0' ) #Despachos no Limpios 
+				)
+				{
+					$mResult[$j] = $mDespac[$i];
+					$mResult[$j][can_noveda] = $mData[can_noveda];
+					$mResult[$j][fec_ultnov] = $mData[fec_ultnov];
+					$mResult[$j][ind_fuepla] = $mData[ind_fuepla];
+					$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
+					$mResult[$j][nov_especi] = $mData[nov_especi];
+					$mResult[$j][ind_alarma] = $mData[ind_alarma];
+					$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
+					$mResult[$j][fec_planea] = $mData[fec_planea];
+					$mResult[$j][fec_planGl] = $mData[fec_planGl];
+					$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
+					$mResult[$j][coliti] = self::validaAlarmaItiner($mDespac[$i]);
+					$j++;
+				}
+			}
+			else
+			{
+				$mResult[$j] = $mDespac[$i];
+				$mResult[$j][can_noveda] = $mData[can_noveda];
+				$mResult[$j][fec_ultnov] = $mData[fec_ultnov];
+				$mResult[$j][ind_fuepla] = $mData[ind_fuepla];
+				$mResult[$j][nov_especi] = $mData[nov_especi];
+				$mResult[$j][ind_alarma] = $mData[ind_alarma];
+				$mResult[$j][nom_ultnov] = $mData[nom_ultnov];
+				$mResult[$j][nom_sitiox] = $mData[nom_sitiox];
+				$mResult[$j][fec_planea] = $mData[fec_planea];
+				$mResult[$j][fec_planGl] = $mData[fec_planGl];
+				$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
+				$mResult[$j][coliti] = self::validaAlarmaItiner($mDespac[$i]);
+				$j++;
+			}
+		}
+
+		return $mResult;
+	}
+
 	/*! \fn: getDespacControl
 	 *  \brief: Trae los despachos para las empresas que solo tienen parametrizado ind_segctrl
 	 *  \author: Ing. Luis Manrique
@@ -2054,7 +2202,7 @@ class Despac
 	{
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, a.tie_contra, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
@@ -2572,12 +2720,12 @@ class Despac
 	public function calTimeAlarma( $mDespac, $mTransp, $mIndCant = 0, $mFiltro = NULL, $mColor = NULL )
 	{
 		$mTipValida = self::tipValidaTiempo( $mTransp );
-	
 		if( $mIndCant == 1 )
 		{ #Define Cantidades seg�n estado
 			$mResult[fin_rutaxx] = 0;
 			$mResult[ind_acargo] = 0;
 			$mResult[est_pernoc] = 0;
+			$mResult[des_urbano] = 0;
 			$mResult[sin_retras] = 0;
 			$mResult[con_alarma] = 0;
 			$mResult[con_00A30x] = 0;
@@ -2601,6 +2749,10 @@ class Despac
 		{
 			$mPernoc = false; #Bandera para despachos estado pernoctacion
 			$mFecPerno = '';
+			//contador de despachos urbanos
+			if($mDespac[$i][cod_tipdes]==1){
+				$mResult[des_urbano]++;
+			}
 
 			if( $mDespac[$i][can_noveda] > 0 )
 			{#Despacho con Novedades
@@ -2659,7 +2811,7 @@ class Despac
 						$mResult[con_91Amas]++;
 						$mResult[con_alarma]++;
 						$mResult[enx_seguim]++;
-					} 
+					}
 					else{
 						continue;
 					}
@@ -2699,6 +2851,9 @@ class Despac
 						$mResult[con_91Amas]++;
 						$mResult[con_alarma]++;
 						$mResult[enx_seguim]++;
+					}elseif( $mDespac[$i][cod_tipdes] == 1 ){
+						# Contador de despachos urbanos
+						$mResult[des_urbano]++;
 					} 
 					else{
 						continue;
@@ -2990,7 +3145,7 @@ class Despac
 		
 		$mViewBa = self::getView('jso_bandej');
 		
-		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'TIPO DE DESPACHO','ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 		$mColor = array('', 'bgT1', 'bgT2', 'bgT3', 'bgT4');
 		$colItiner = 4;
 		if($mViewBa->tie_alarma->ind_visibl==1){
@@ -3111,6 +3266,9 @@ class Despac
 					$mDespac1 = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, 'enx_seguim', $mColor );
 					$mDespac2 = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, 'ind_acargo', $mColor );
 					$mDespac =  array_merge((array)$mDespac1, (array)$mDespac2);
+				}elseif($_REQUEST['ind_filtro']=='des_urbano' && $_REQUEST['ind_etapax']=='ind_segtra'){
+					$mDespac1 = self::getDespacUrbanos( $mTransp[$i] );
+					$mDespac = self::calTimeAlarma( $mDespac1, $mTransp[$i], 0, 'sinF', $mColor );
 				}else{
 					$mDespac = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
 				}
@@ -3310,6 +3468,7 @@ class Despac
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ind_defini].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[cod_manifi].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[can_noveda].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[nom_tipdes].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ciu_origen].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[ciu_destin].'</td>';
 				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row[nom_transp].'</td>';
@@ -3731,7 +3890,7 @@ class Despac
 	{
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax, 
 						UPPER(h.abr_tercer) AS nom_conduc, h.num_telmov, a.fec_salida, 
-						a.cod_tipdes, i.nom_tipdes, UPPER(c.abr_tercer) AS nom_transp, 
+						a.cod_tipdes, UPPER(i.nom_tipdes) as 'nom_tipdes', UPPER(c.abr_tercer) AS nom_transp, 
 						IF(a.ind_defini = '0', 'NO', 'SI' ) AS ind_defini, b.cod_transp, 
 						CONCAT(d.abr_ciudad, ' (', UPPER(LEFT(f.abr_depart, 4)), ')') AS ciu_origen, 
 						CONCAT(e.abr_ciudad, ' (', UPPER(LEFT(g.abr_depart, 4)), ')') AS ciu_destin, UPPER(k.abr_tercer) AS nom_genera,
@@ -4859,6 +5018,19 @@ class Despac
 		{
 			echo "Error en la funcion getNovedad: ", $e->getMessage();
 		}
+	}
+
+
+
+	public function getTipserUnic($cod_transp){
+		$query = "SELECT tie_visdes " .
+                "FROM " . BASE_DATOS . ".tab_transp_tipser " .
+                "WHERE cod_transp='".$cod_transp."' AND 
+			                num_consec= (SELECT MAX(num_consec) FROM " . BASE_DATOS . ".tab_transp_tipser
+			                						 WHERE cod_transp='" . $cod_transp . "') ";
+	    $consulta = new Consulta($query, self::$cConexion);
+	    $transpor = $consulta->ret_matriz();
+		return  $transpor[0];
 	}
 
 	/*! \fn: getInfNovedad

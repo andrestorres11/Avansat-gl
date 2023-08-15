@@ -85,7 +85,7 @@ class cronAvansatAlertasCEVA
 		try 
 		{ 
 			$fecha_actual = DATE('Y-m-d');
-			$mQuery = "SELECT a.cod_bitaco, a.cod_manifi, a.cod_transp, a.obs_noveda, a.fec_creaci FROM ".BASE_DATOS.".tab_bitaco_gendes a WHERE a.cod_status = 2000 AND a.ind_enviad = 0";
+			$mQuery = "SELECT a.cod_bitaco, a.cod_manifi, a.cod_transp, a.obs_noveda, a.fec_creaci FROM ".BASE_DATOS.".tab_bitaco_gendes a WHERE a.ind_enviad = 0";
 			//echo "<pre>"; print_r( $mQuery );  echo "</pre>";	 
 			self::$cPendientes = self::setExecuteQuery($mQuery, NULL,true);
 			//echo "<pre>"; print_r( self::$cPendientes );  echo "</pre>"; 

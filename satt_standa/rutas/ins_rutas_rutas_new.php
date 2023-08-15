@@ -80,8 +80,15 @@ class Proc_rutas
 
     $formulario -> lista( "Via:", "cod_viasxx\" id=\"cod_viasxxID", $vias, 0, 40, 40, "", $_REQUEST['cod_viasxx'], 0, 0, 0, 1 );
     $formulario -> lista( "Salida Vial:", "cod_salvia\" id=\"cod_salviaID", $salvia, 1, 0, 40, "", $_REQUEST['cod_salvia'], 0, 0, 0, 1 );
-    $formulario -> caja( "Crear via de retorno:", "ind_doblevia\" id=\"ind_dobleviaID", $_REQUEST['ind_doblevia'], 0, 1);
+    /*
+    echo "<pre>";
+    print_r($_SESSION);
+    echo "</pre>";*/
 
+    if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ADMINIST){
+      $formulario -> caja( "Crear via de retorno:", "ind_doblevia\" id=\"ind_dobleviaID", $_REQUEST['ind_doblevia'], 0, 1);
+    }
+    
     $formulario -> nueva_tabla();
     $formulario -> linea("Puestos de Control",1,"t2");
 

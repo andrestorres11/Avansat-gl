@@ -403,7 +403,7 @@ png, jpeg, zip, rar)
 			
 				$formato =	"insert into tab_solici_seguim (num_solici,cod_estado,obs_seguim,dir_archiv,usr_creaci,fec_creaci) values(%d,%d,'%s','%s','%s',%s);";
 				$sql=sprintf($formato,$this->raw->num_solici,$this->raw->cod_estado,$this->raw->obs_seguim,$this->raw->dir_archiv,@$_SESSION["datos_usuario"]["cod_usuari"],"now()");
-				
+
 				$consulta = new Consulta( $sql, $this->conexion );
 				print json_encode(array("message"=>"Registro con &eacute;xito el seguimiento","status"=>"success"));
 				//print json_encode(array("message"=>$sql,"status"=>"success"));
@@ -447,7 +447,7 @@ png, jpeg, zip, rar)
 
 	function getTercerTransp(){
 		$trans = $this->getTransLogin();
-		$sql='select t.cod_tercer as "key", t.abr_tercer as "value"  from tab_tercer_tercer t inner join (select distinct a.cod_transp from satt_faro.tab_solici_datosx a order by a.cod_transp) sd on sd.cod_transp=t.cod_tercer inner join tab_tercer_activi ta on ta.cod_tercer=t.cod_tercer and ta.cod_activi = 1 '.($trans != NULL?' and t.cod_tercer='.$trans:'');
+		$sql='select t.cod_tercer as "key", t.abr_tercer as "value"  from tab_tercer_tercer t inner join (select distinct a.cod_transp from '.BASE_DATOS.'.tab_solici_datosx a order by a.cod_transp) sd on sd.cod_transp=t.cod_tercer inner join tab_tercer_activi ta on ta.cod_tercer=t.cod_tercer and ta.cod_activi = 1 '.($trans != NULL?' and t.cod_tercer='.$trans:'');
 		$consulta = new Consulta( $sql, $this->conexion );
 		$datos    = $consulta->ret_matrix( 'a' );
 		//$datosc   = $this->arrIso2ascii($datos);

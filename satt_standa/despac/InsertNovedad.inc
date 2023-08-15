@@ -3651,7 +3651,6 @@ class InsertNovedad {
 
                 $nit_empres = $regist['nittra']; //NIT EMPRESA.
                 $mData = self::getDataSoap($regist);
-
                 #<FOR 5.1.1.1>
                 for ($i = 0; $i < $interfaz->totalact; $i++) {
                     #<IF 5.1.1.1.1>
@@ -4036,13 +4035,11 @@ class InsertNovedad {
                     }
                     #</IF 5.1.1.1.5>
                     #<IF 5.1.1.1.6>
-                    if (50 == $interfaz->interfaz[$i]['operad']) {//SI ESTA ACTIVA LA INTERFAZ "FARO".
+                    if (50 == $interfaz->interfaz[$i]['operad']) {//SI ESTA ACTIVA LA INTERFAZ "FARO". 
                         $error_ = NULL;
-
                         ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
                         try {
                             $oSoapClient = new soapclient($mData['url_webser'], array('encoding' => 'ISO-8859-1'));
-
                             //Métodos disponibles en el WS
                             $mResult = $oSoapClient->__call('aplicaExists', array("nom_aplica" => $interfaz->interfaz[$i]['nombre']));
                             $mResult = explode("; ", $mResult);
@@ -4079,6 +4076,8 @@ class InsertNovedad {
                             'bin_fotcon' => $regist['bin_fotcon']
                         );
 
+                        
+
                         if (!$error_) {
                             for ($index1 = 0; $index1 < count($mData['cod_pcxbas']); $index1++) {
                                 $parametros['cod_conbas'] = $mData['cod_pcxbas'][$index1][0];
@@ -4090,7 +4089,6 @@ class InsertNovedad {
                                     $mResult = explode("; ", $respuesta);
                                     $mCodResp = explode(":", $mResult[0]);
                                     $mMsgResp = explode(":", $mResult[1]);
-                                    
                                     if ("1000" != $mCodResp[1]) {
                                         $error_ = $mMsgResp[1];
                                     } else {
@@ -4338,6 +4336,217 @@ class InsertNovedad {
                         }
 
                     }
+
+                    if (53 == $interfaz->interfaz[$i]['operad']) {//SI ESTA ACTIVA LA INTERFAZ "FARO". 
+                        if($interfaz->interfaz[$i]['nombre'] != '' && $interfaz->interfaz[$i]['nombre'] != 'satt_intgps'){
+                            $error_ = NULL;
+                            ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
+                            try {
+                                $oSoapClient = new soapclient($mData['url_webser'], array('encoding' => 'ISO-8859-1'));
+                                //Métodos disponibles en el WS
+                                $mResult = $oSoapClient->__call('aplicaExists', array("nom_aplica" => $interfaz->interfaz[$i]['nombre']));
+                                $mResult = explode("; ", $mResult);
+                                $mCodResp = explode(":", $mResult[0]);
+                                $mMsgResp = explode(":", $mResult[1]);
+                                if ("1000" != $mCodResp[1]) {
+                                    $error_ = $mMsgResp[1];
+                                }
+                            } catch (SoapFault $e) {
+                                $error_ = $e->getMessage();
+                            }
+
+                            
+                            $parametros = array("nom_usuari" => $interfaz->interfaz[$i]['usuari'],
+                                "pwd_clavex" => $interfaz->interfaz[$i]['passwo'],
+                                "nom_aplica" => $interfaz->interfaz[$i]['nombre'],
+                                "num_manifi" => $mDatDespac['cod_manifi'],
+                                "num_placax" => $mDatDespac['num_placax'],
+                                "cod_novbas" => 0,
+                                "cod_conbas" => 0,
+                                "tim_duraci" => $regist['tieadi'],
+                                "fec_noveda" => date('Y-m-d H:i', strtotime($regist['fecnov'])),
+                                "des_noveda" => str_replace(["\"", "'"], ["", ""], $regist['observ']) ,
+                                "nom_contro" => $mData['nom_contro'],
+                                "nom_sitiox" => substr($regist['sitio'], 0, 50),
+                                "cod_confar" => $regist['contro'],
+                                'cod_novfar' => $regist['noveda'],
+                                'nom_noveda' => $mDatNoveda['nom_noveda'],
+                                'ind_alarma' => $mDatNoveda['ind_alarma'],
+                                'ind_tiempo' => $mDatNoveda['ind_tiempo'],
+                                'nov_especi_' => $mDatNoveda['nov_especi'],
+                                'ind_manala' => $mDatNoveda['ind_manala'],
+                                'bin_fotcon' => $regist['bin_fotcon'],
+                            );
+
+                            if (!$error_) {
+                                try {
+                                    //M?odos disponibles en el WS
+                                    $respuesta = $oSoapClient->__call($mOption[0], $parametros);
+                                    if($mDatDespac['cod_manifi']=='NT29'){
+                                        mail('cristian.torres@grupooet.com','Respuesta: '.$mDatDespac['cod_manifi'],var_export($respuesta,true));
+                                    }
+                                    $mResult = explode("; ", $respuesta);
+                                    $mCodResp = explode(":", $mResult[0]);
+                                    $mMsgResp = explode(":", $mResult[1]);
+                                    if ("1000" != $mCodResp[1]) {
+                                        $error_ = $mMsgResp[1];
+                                    } else {
+                                        $error_ = NULL;
+                                        //Hace la actualizaci? del indicador estado de novedad enviada a tms
+                                        self::updateEstadoEnviadoTms($regist, $mIndEnSiti);
+                                        break;
+                                    }
+                                } catch (SoapFault $e) {
+                                    $error_ = $e->getMessage();
+                                    if($mDatDespac['cod_manifi']=='NT29'){
+                                        mail('cristian.torres@grupooet.com','Error: '.$mDatDespac['cod_manifi'],$error_);
+                                    }
+                                }
+
+
+
+                                if ($error_ != NULL) {
+                                    echo '<meta name="viewport" content="width=device-width, initial-scale=1">
+                                        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+                                        <style>
+                                            
+                                            .alert{
+                                                text-align: center;
+                                                background-color: #f44336;
+                                                color: white;
+                                                margin: auto;
+                                                width: 80%;
+                                                border-radius: 20px;
+                                                border: 5px #f44336 solid;
+                                            }
+                                            .contenedorAlert{
+                                                border-radius: 10px;
+                                                padding: 10px;
+                                                background-color: #f44336;
+                                            }
+                                            
+                                            .contenedorWarning{
+                                                font-size:20px;
+                                                padding: 10px;
+                                                background-color: #ffffff;
+                                                color: #000000;
+                                                border-radius: 0px 0px 20px 20px;
+                                            }
+                                            
+                                            .warning{
+                                                margin: 0 auto;
+                                                font-size:100px;
+                                                color: white;
+                                            }
+
+                                            @keyframes anim1 {  
+                                                from { transform: scaleX(1) rotate(0deg) ;-o-transform: scaleX(1) rotate(0deg) ; }
+                                                to { transform: scaleX(-1) rotate(0deg);  -o-transform: scaleX(-1) rotate(0deg);}
+                                            }
+                                            @-webkit-keyframes anim1 {  
+                                                from { -webkit-transform: scaleX(1) rotate(-15deg) ; }
+                                                to { -webkit-transform: scaleX(-1) rotate(15deg);  }
+                                            }
+
+                                            .contenedorAlert i{
+                                                animation: anim1 2s ease-in-out alternate infinite;
+                                                -webkit-animation: anim1 2s ease-in-out alternate infinite;
+                                        }
+                                        </style>
+                                        <div class="alert">
+                                            <div class="contenedorAlert">
+                                                <i class="material-icons warning" >warning</i><br>
+                                                <strong>Error!</strong> 
+                                            </div>
+                                            <div class="contenedorWarning">
+                                                Error en WebserviceA - Insertar ' . $mOption[1] . ' en ' . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . '</b>
+                                            </div>
+                                        </div>';
+                                    $mMessage = "******** Encabezado ******** <br>";
+                                    $mMessage .= "Fecha y hora: " . date("Y-m-d H:i") . " <br>";
+                                    $mMessage .= "Empresa de transporte: " . $regist['nittra'] . " <br>";
+                                    $mMessage .= "Aplicacion: " . $interfaz->interfaz[$i]['nombre'] . " <br>";
+                                    $mMessage .= "Numero de despacho SAT: " . $regist['despac'] . " <br>";
+                                    $mMessage .= "Placa del vehiculo: " . $mDatDespac['num_placax'] . " <br>";
+                                    $mMessage .= "Codigo puesto de control: " . $regist['contro'] . " <br>";
+                                    $mMessage .= "Codigo novedad: " . $regist['noveda'] . " <br>";
+                                    $mMessage .= "Nombre novedad: " . $mDatNoveda['nom_noveda'] . " <br>";
+                                    $mMessage .= "******** Detalle ******** <br>";
+                                    $mMessage .= "Codigo de error: " . $e->faultcode . " <br>";
+                                    $mMessage .= "Mesaje de error: " . $error_ . " <br>";
+
+                                    $novedaError['cod_respon'] = $e->faultcode;
+                                    $novedaError['msg_respon'] = $error_;
+                                    $novedaError['det_respon'] = $mMessage;
+                                    //Se registran errores de la interfaz en la BD
+                                    $this->setNovedadError($parametros, $regist, $novedaError, $mOption[2]);
+                                }
+                            } else {
+                                $novedaError['cod_respon'] = '';
+                                $novedaError['msg_respon'] = '';
+                                $novedaError['det_respon'] = $error_;
+
+                                $this->setNovedadError($parametros, $regist, $novedaError, $mOption[2]);
+                                echo '<meta name="viewport" content="width=device-width, initial-scale=1">
+                                        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+                                        <style>
+                                            
+                                            .alert{
+                                                text-align: center;
+                                                background-color: #f44336;
+                                                color: white;
+                                                margin: auto;
+                                                width: 80%;
+                                                border-radius: 20px;
+                                                border: 5px #f44336 solid;
+                                            }
+                                            .contenedorAlert{
+                                                border-radius: 10px;
+                                                padding: 10px;
+                                                background-color: #f44336;
+                                            }
+                                            
+                                            .contenedorWarning{
+                                                font-size:20px;
+                                                padding: 10px;
+                                                background-color: #ffffff;
+                                                color: #000000;
+                                                border-radius: 0px 0px 20px 20px;
+                                            }
+                                            
+                                            .warning{
+                                                margin: 0 auto;
+                                                font-size:100px;
+                                                color: white;
+                                            }
+
+                                            @keyframes anim1 {  
+                                                from { transform: scaleX(1) rotate(0deg) ;-o-transform: scaleX(1) rotate(0deg) ; }
+                                                to { transform: scaleX(-1) rotate(0deg);  -o-transform: scaleX(-1) rotate(0deg);}
+                                            }
+                                            @-webkit-keyframes anim1 {  
+                                                from { -webkit-transform: scaleX(1) rotate(-15deg) ; }
+                                                to { -webkit-transform: scaleX(-1) rotate(15deg);  }
+                                            }
+
+                                            .contenedorAlert i{
+                                                animation: anim1 2s ease-in-out alternate infinite;
+                                                -webkit-animation: anim1 2s ease-in-out alternate infinite;
+                                        }
+                                        </style>
+                                        <div class="alert">
+                                            <div class="contenedorAlert">
+                                                <i class="material-icons warning" >warning</i><br>
+                                                <strong>Error!</strong> 
+                                            </div>
+                                            <div class="contenedorWarning">
+                                                Error en Webservice - Insertar novedad en ' . $interfaz->interfaz[$i]['nombre'] . ':' . $error_ . '</b>
+                                            </div>
+                                        </div>';
+                            }
+                        }
+                    }
+
                     #</IF 5.1.1.1.66>
                     #<IF 5.1.1.1.7>
                     if (56 == $interfaz->interfaz[$i]['operad']) {//transportadora referencia =  800081833 || Trasportadora FW 
@@ -4801,7 +5010,6 @@ class InsertNovedad {
         $mConsult = new Consulta($mSql, $this->conexion);
         $nom_contro = $mConsult->ret_matrix('i');
         $mResult['nom_contro'] = $nom_contro[0][0];
-
         $mSql = "SELECT cod_pcxbas 
                    FROM " . BASE_DATOS . ".tab_homolo_trafico 
                   WHERE cod_transp = '" . $mDatRegist['nittra'] . "'

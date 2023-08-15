@@ -103,7 +103,6 @@ error_reporting(E_ALL & ~E_NOTICE);*/
 		    {
                 $data_r=array();
                 $mNameFunction = $mTransp[$i]['ind_segcar'] == '1' && $mTransp[$i]['ind_segdes'] == '1' ? 'getDespacTransiReport2' : 'getDespacTransiReport1';
-                
                 $mDespac = $mClassDespac ->$mNameFunction( $mTransp[$i] );
                 $mDespac = $mClassDespac -> calTimeAlarma( $mDespac, $mTransp[$i], 0,'sinF', $mColor );
                 $mNegTieesp = $mDespac['neg_tieesp'] ? array_merge($mNegTieesp, $mDespac['neg_tieesp']) : $mNegTieesp;
@@ -116,7 +115,7 @@ error_reporting(E_ALL & ~E_NOTICE);*/
                 $mPosAcargo = $mDespac['pos_acargo'] ? array_merge($mPosAcargo, $mDespac['pos_acargo']) : $mPosAcargo;
 
                 $mData = $mClassDespac -> orderMatrizDetail( $mNegTieesp, $mPosTieesp, $mNegTiempo, $mPosTiempo, $mNegFinrut, $mPosFinrut, $mNegAcargo, $mPosAcargo );
-        
+                
                 #Pinta tablas
                 for ($u=0; $u < sizeof($mData['tiempo']); $u++) { 
                     if ($mData['tiempo'][$u]['nov_especi'] == '1' && $mData['tiempo'][$u]['ind_alarma'] == 'S' ) {
@@ -696,7 +695,7 @@ error_reporting(E_ALL & ~E_NOTICE);*/
                     'origen'=>$row1[ciu_origen],
                     'destino'=>$row1[ciu_destin],
                     'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row1[num_despac]),
-                    'localizacion'=>$this->getLocalizacion($row1[num_despac]),
+                    'localizacion'=>utf8_encode($this->getLocalizacion($row1[num_despac])),
                     'fechaDeCargue'=>$arrFecCarg[0],
                     'colorCargue'=>$arrFecCarg[1],
                     'estadoDeCargue'=>$this->getEstadoCarge($row1[num_despac]),
@@ -736,7 +735,7 @@ error_reporting(E_ALL & ~E_NOTICE);*/
                     'origen'=>$row2[ciu_origen],
                     'destino'=>$row2[ciu_destin],
                     'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row2[num_despac]),
-                    'localizacion'=>$this->getLocalizacion($row2[num_despac]),
+                    'localizacion'=>utf8_encode($this->getLocalizacion($row2[num_despac])),
                     'fechaDeCargue'=>$arrFecCarg[0],
                     'colorCargue'=>$arrFecCarg[1],
                     'estadoDeCargue'=>$this->getEstadoCarge($row2[num_despac]),
@@ -775,7 +774,7 @@ error_reporting(E_ALL & ~E_NOTICE);*/
                     'origen'=>$row3[ciu_origen],
                     'destino'=>$row3[ciu_destin],
                     'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row3[num_despac]),
-                    'localizacion'=>$this->getLocalizacion($row3[num_despac]),
+                    'localizacion'=>utf8_encode($this->getLocalizacion($row3[num_despac])),
                     'fechaDeCargue'=>$arrFecCarg[0],
                     'colorCargue'=>$arrFecCarg[1],
                     'estadoDeCargue'=>$this->getEstadoCarge($row3[num_despac]),
@@ -814,7 +813,7 @@ error_reporting(E_ALL & ~E_NOTICE);*/
                     'origen'=>$row4[ciu_origen],
                     'destino'=>$row4[ciu_destin],
                     'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row4[num_despac]),
-                    'localizacion'=>$this->getLocalizacion($row4[num_despac]),
+                    'localizacion'=>utf8_encode($this->getLocalizacion($row4[num_despac])),
                     'fechaDeCargue'=>$arrFecCarg[0],
                     'colorCargue'=>$arrFecCarg[1],
                     'estadoDeCargue'=>$this->getEstadoCarge($row4[num_despac]),
@@ -853,7 +852,7 @@ error_reporting(E_ALL & ~E_NOTICE);*/
                     'origen'=>$row5[ciu_origen],
                     'destino'=>$row5[ciu_destin],
                     'cumplimientoDePlanDeRuta'=>$this->getCumplimientoDePlanDeRuta($row5[num_despac]),
-                    'localizacion'=>$this->getLocalizacion($row5[num_despac]),
+                    'localizacion'=>utf8_encode($this->getLocalizacion($row5[num_despac])),
                     'fechaDeCargue'=>$arrFecCarg[0],
                     'colorCargue'=>$arrFecCarg[1],
                     'estadoDeCargue'=>$this->getEstadoCarge($row5[num_despac]),
@@ -986,7 +985,6 @@ error_reporting(E_ALL & ~E_NOTICE);*/
             );
 
             $json = json_encode($json);
-
             echo $json;
         }
 

@@ -194,7 +194,7 @@ class ajax_certra_certra {
             tgl_carnac,tgl_carurb,tgl_carexp,tgl_carimp,tgl_cartr1,tgl_cartr2,
             tgl_contro,tgl_conurb,tgl_traexp,tgl_traimp,tgl_tratr1,tgl_tratr2,
             tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2,ind_bolrut,vig_estseg,
-            ind_estseg, tip_estseg,ind_segxml,rut_segxml,rut_estpdf
+            ind_estseg, tip_estseg,ind_segxml,rut_segxml,rut_estpdf,tie_visdes
             FROM " . BASE_DATOS . ".tab_transp_tipser 
             WHERE cod_transp = '$datos->cod_transp' 
             AND num_consec = $datos->num_consec";
@@ -541,6 +541,16 @@ class ajax_certra_certra {
                                 </select>
                             </div>
                         </div>
+                        </div>
+
+
+                        <div class="row mt-2">
+                            <div class="col-md-6">
+                                <div class="col-md-6 text-right">Tie. visua. Despachos (Min)<font style="color:red">*</font></div>
+                                <div class="col-md-6 text-left">
+                                    <input type="text" class="text-center ancho" name="tie_visdes" id="tie_visdesID" validate="numero" obl="1" maxlength="5" value="<?= $datos->principal['tie_visdes'] ?>" >
+                                </div>
+                            </div>
                         </div>
 
                         </div>
@@ -1044,7 +1054,7 @@ class ajax_certra_certra {
                     </div>
                     <div class="col-md-12">&nbsp;</div>
                     <div class="col-md-5 derecha">
-                        Ubicación de seguimiento 
+                        Ubicaciï¿½n de seguimiento 
                         <?php
                         if ($datos->principal['ubi_seguim'] == 1) {
                             $ubi_seguim = "checked='true'";
@@ -1776,7 +1786,7 @@ class ajax_certra_certra {
             tgl_carnac,tgl_carurb,tgl_carexp,tgl_carimp,tgl_cartr1,tgl_cartr2,
             tgl_contro,tgl_conurb,tgl_traexp,tgl_traimp,tgl_tratr1,tgl_tratr2,
             tgl_desnac,tgl_desurb,tgl_desexp,tgl_desimp,tgl_destr1,tgl_destr2, ind_bolrut,vig_estseg,
-            ind_estseg,tip_estseg,ind_segxml,rut_segxml,rut_estpdf
+            ind_estseg,tip_estseg,ind_segxml,rut_segxml,rut_estpdf,tie_visdes
         ) VALUES  ( 
         '$datos->num_consec', '$datos->cod_tipser', '$datos->tie_contro', '$datos->ind_estado', '$datos->tie_conurb', '$datos->ind_llegad', 
         '$datos->ind_notage', '$datos->tip_factur', '$datos->tie_carurb', '$datos->tie_carnac', '$datos->tie_carimp', '$datos->tie_carexp', 
@@ -1797,7 +1807,7 @@ class ajax_certra_certra {
         '$datos->tgl_carnac','$datos->tgl_carurb','$datos->tgl_carexp','$datos->tgl_carimp','$datos->tgl_cartr1','$datos->tgl_cartr2',
         '$datos->tgl_contro','$datos->tgl_conurb','$datos->tgl_traexp','$datos->tgl_traimp','$datos->tgl_tratr1','$datos->tgl_tratr2',
         '$datos->tgl_desnac','$datos->tgl_desurb','$datos->tgl_desexp','$datos->tgl_desimp','$datos->tgl_destr1','$datos->tgl_destr2','$datos->ind_bolrut','$datos->vig_estseg',
-        '$datos->ind_estseg','$datos->tip_estseg','$datos->ind_segxml','$datos->rut_segxml','$datos->rut_estpdf'
+        '$datos->ind_estseg','$datos->tip_estseg','$datos->ind_segxml','$datos->rut_segxml','$datos->rut_estpdf','$datos->tie_visdes'
         )";
 
         $mSql = "UPDATE ".BASE_DATOS.".tab_tercer_tercer 

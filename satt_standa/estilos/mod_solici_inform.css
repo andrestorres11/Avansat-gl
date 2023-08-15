@@ -102,14 +102,14 @@ a.ui-tabs-anchor{
 }
 .inf_solici_solici td.title
 {
-    background:#35650f;
+    background:#2c368d;
     color:black;
     width:100%;
 }
 .inf_solici_solici tr.title1 th,
 .inf_solici_solici tr.title1 td
 {
-    background:#35650f;
+    background:#2c368d;
     color:white;
     width: 100%;
 }
@@ -134,9 +134,9 @@ a.ui-tabs-anchor{
     left: 16px;
     bottom: 0px;
     z-index: 300;
-    background:green;
+    background:#2c368d;
     color: black;
-    border: 1px solid green;
+    border: 1px solid #2c368d;
     padding: black;
     overflow-x: hidden;
     overflow-y: auto;

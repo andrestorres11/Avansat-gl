@@ -662,7 +662,7 @@ function executeFilter(){
             },
             success: function(data){
 
-                console.log(data[0]);   
+                console.log(data);   
 
                 //Clean table body
                 table.rows().remove().draw();

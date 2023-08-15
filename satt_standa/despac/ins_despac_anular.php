@@ -744,7 +744,7 @@ class Proc_anula
 	if($consulta = new Consulta("COMMIT", $this -> conexion))
     {
 
-        $query = "SELECT a.ind_segfar, a.cod_tipser, b.num_placax, a.cod_manifi, b.cod_conduc, a.cod_ciuori, a.cod_ciudes, a.ind_seggps, b.cod_itiner
+        $query = "SELECT a.cod_tipser, b.num_placax, a.cod_manifi, b.cod_conduc, a.cod_ciuori, a.cod_ciudes, a.ind_seggps, b.cod_itiner
                     FROM " . BASE_DATOS . ".tab_despac_despac a
               INNER JOIN " . BASE_DATOS . ".tab_despac_vehige b ON a.num_despac = b.num_despac
                    WHERE a.num_despac = '" . $_REQUEST['despac'] . "' ";
