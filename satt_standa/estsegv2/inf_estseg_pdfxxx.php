@@ -352,8 +352,8 @@ class PDFInformeEstudioSeguridad extends PDF
       foreach($resultados as $key => $registro){
         $pdf -> Ln(2);
         $pdf -> SetFont('Arial','B',8);
-        $pdf -> SetFillColor(1, 11, 64);
-        $pdf -> SetTextColor(255,255,255);
+        $pdf -> SetFillColor(180, 181, 179);
+        $pdf -> SetTextColor(0,0,0);
         $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
 
         $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
@@ -390,8 +390,8 @@ class PDFInformeEstudioSeguridad extends PDF
       foreach($resultados as $key => $registro){
         $pdf -> Ln(2);
         $pdf -> SetFont('Arial','B',8);
-        $pdf -> SetFillColor(1, 11, 64);
-        $pdf -> SetTextColor(255,255,255);
+        $pdf -> SetFillColor(180, 181, 179);
+        $pdf -> SetTextColor(0,0,0);
         $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
 
         $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
@@ -934,7 +934,7 @@ class PDFInformeEstudioSeguridad extends PDF
         }
       } */
     } else if($info['cod_tipest']=='CV'){
-
+      
       $img_vehicu = $this->getImagenesEstSeg(1, $_REQUEST['cod_solici']);
       $img_poseed = $this->getImagenesEstSeg(3, $_REQUEST['cod_solici']);
       $img_propie = $this->getImagenesEstSeg(4, $_REQUEST['cod_solici']);
@@ -961,6 +961,7 @@ class PDFInformeEstudioSeguridad extends PDF
 
       }
 
+      
       $pdf -> AddPage('P','Letter');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
@@ -984,6 +985,7 @@ class PDFInformeEstudioSeguridad extends PDF
 
       }
 
+      
       if($info['num_docpos']!=$info['num_docpro']){
         $pdf -> AddPage('P','Letter');
         $pdf -> SetFont('Arial','B',8);
@@ -1010,7 +1012,7 @@ class PDFInformeEstudioSeguridad extends PDF
       }
       
 
-
+      
       $pdf -> AddPage('P','Letter');
       $img_conduc = $this->getImagenesEstSeg(2, $_REQUEST['cod_solici']);
       $pdf_conduc = $this->getPDFEstSeg(2, $_REQUEST['cod_solici']);
@@ -1035,8 +1037,6 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Row(array(utf8_decode('OBSERVACIÓN: '.$img_conduc[$i]['obs_archiv'])));
 
       }
-
-
     }  
     $_PDF = 'Resultados_EstudioSeguridad_'.$info['cod_solici'].'.pdf';
 
