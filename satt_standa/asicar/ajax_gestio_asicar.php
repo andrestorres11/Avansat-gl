@@ -2398,6 +2398,7 @@
               
               //$directorio = "../../".NOM_URL_APLICA."/files/asicar"; //Declaramos un  variable con la ruta donde guardaremos los archivos
               $directorio = "/var/www/html/ap/satt_faro/files/asicar";
+              
               //Validamos si la ruta de destino existe, en caso de no existir la creamos
               if(!file_exists($directorio)){
                   mkdir($directorio, 0777) or die("No se puede crear el directorio de extracci&oacute;n");	
@@ -2521,6 +2522,8 @@
         $observacion=$_REQUEST['txt_observaciones'];
         $idinicio=$_REQUEST['idinicio'];
         $user=$_SESSION['datos_usuario']['cod_usuari'];
+
+        self::sendEmailComercialFinalizado($num_solici);
   
         $sqlbit="INSERT INTO ".BASE_DATOS.".tab_seguim_solasi(
                   cod_solasi, ind_estado, obs_detall,
@@ -2806,7 +2809,75 @@
   }
 
 
+  private function sendEmailComercialFinalizado($num_solici){
+    $informacion = $this->darInformacion($num_solici);
+    $nom_asiste = $this->tipSolicitud($num_solici);
+    $comercial = $this->getUsuariComercial($informacion['cod_transp']);
+    $nom_client = $this->getNombreTransportadora($informacion['cod_client']);
+    $total = $this->getTotalServic($num_solici);
+    $emails = $comercial['usr_emailx'];
+    
+    if($emails == ''){
+      $emails = MAIL_SUPERVISORES;
+    }
 
+    $tmpl_file = URL_ARCHIV_STANDA.'satt_standa/planti/pla_notifi_asicar.html';
+    $logo = "https://avansatgl.intrared.net/ap/satt_standa/imagenes/asistencia.png";
+    $ano = date('Y');
+    $subject = "NUEVA SOLICITUD DE ASISTENCIA EN CARRETERA PENDIENTE POR FACTURAR - #".$num_solici;
+
+    $bodymessage.='<p class="colortext"><strong class="colortext">Solicitud de : </strong>'.$nom_asiste.'</p>';
+    $bodymessage.='<p class="colortext"><strong class="colortext">Fecha y Hora : </strong>'.$informacion['fec_creaci'].'</p>'; 
+    $bodymessage.='<p class="colortext"><strong class="colortext">Señor(a): </strong>'.$comercial['nom_usuari'].'</p>';
+    $bodymessage.='<p class="colortext">Por medio del presente correo la linea de servicio Asistencia Logística del GRUPO OET, le informa que la solicitud se encentra en el</p>';
+    $bodymessage.='<p class="colortext">Estado: <strong class="colortext">PENDIENTE POR FACTURAR</strong></p><br>';
+    $bodymessage.='<p class="colortext"><strong class="colortext">Nota: </strong>Para realizar la respectiva aprobación de la pre factura por favor ingrese a Avansat GL en el modulo Asistencia en Carretera > Aprobar Facturas Asicar</p>';
+    $bodymessage.='<br>';
+    $bodymessage.='<p class="colortext"><strong class="colortext">Empresa Solicitante: </strong>'.$nom_client.'</p>'; 
+    $bodymessage.='<p class="colortext"><strong class="colortext">Total:</strong>$'.$total.' COP</p>';
+
+    $bodymessage = utf8_encode($bodymessage);
+    $thefile = implode("", file( $tmpl_file ) );
+    $thefile = addslashes($thefile);
+    $thefile = "\$r_file=\"".$thefile."\";";
+    eval( $thefile );
+    $mHtml = $r_file;
+
+    require_once("../planti/class.phpmailer.php");
+    $mail = new PHPMailer();
+    $mail->CharSet = 'UTF-8';
+    $mail->Host = "localhost";
+    $mail->From = 'asistencias@faro.com';
+
+    $mail->FromName = 'Asistencia en carretera';
+    $mail->Subject = utf8_decode($subject) ;
+    $mail->AddAddress( $emails );
+    $mail->Body = $mHtml;
+    $mail->IsHTML( true );
+    $mail->send();
+      
+  }
+
+  private function getTotalServic($num_solici){
+    $sql="SELECT SUM(val_servic) as 'total'  FROM ".BASE_DATOS.".tab_servic_solasi
+              WHERE cod_solasi = '$num_solici';";
+    $consulta = new Consulta($sql, self::$conexion);
+    $total = $consulta->ret_arreglo();
+    return $total['total'];
+  }
+
+  private function getUsuariComercial($cod_transp){
+    $sql="SELECT b.cod_usuari, b.nom_usuari, b.usr_emailx FROM ".BASE_DATOS.".tab_tercer_emptra a 
+              INNER JOIN ".BASE_DATOS.".tab_genera_usuari b
+              ON a.cod_consec = b.cod_consec
+              WHERE a.cod_tercer = '$cod_transp';";
+    $consulta = new Consulta($sql, self::$conexion);
+    $usr_comerci = $consulta->ret_arreglo();
+    return $usr_comerci;
+  }
+
+
+  
 
   
   }
