@@ -1,7 +1,7 @@
 <?php
 //define("URL_DIREC_APLICA", "190.143.80.47/ap");
-define("URL_DIREC_APLICA", "avansatgl.intrared.net/ap");	//ORIGINAL 
-define("DBSERVER", "aglbd.intrared.net:3306"); // nueva constante para el servidor de bd
+define("URL_DIREC_APLICA", "oet-avansatgl.intrared.net/ap");	//ORIGINAL 
+define("DBSERVER", "oet-avansatglbd.intrared.net"); // nueva constante para el servidor de bd
 
 //define("COD_PERFIL_SUPERUSR", "666");// constante para perfil administrador del sistema
 define("COD_PERFIL_SUPERUSR", "73");// constante para perfil administrador del sistema
@@ -125,24 +125,24 @@ define("DirCssJq", "../".DIR_APLICA_CENTRAL."/estilos");
 
 #configuracion para SPG con Panel de Control
 //define("URL_INTERF_PCONTROL","https://dev.intrared.net:8084/ap/dev/panel_control_rc1/web/app.php/spg/validate");
-define( 'URL_INTERF_PCONTROL' , 'https://central.intrared.net/ap/dev/panel_control_rc1/web/app.php/spg/validate');
+define( 'URL_INTERF_PCONTROL' , 'https://oet-central.intrared.net/ap/dev/panel_control_rc1/web/app.php/spg/validate');
 define( 'URL_INTERF_SPG' , 'https://web6.intrared.net:8083/ap/interf/app/spg/wsdl/spg2.wsdl' );
 //define( 'URL_INTERF_SPG_PANEL' , 'https://dev.intrared.net:8083/ap/interf/app/spg_new/spg.php?wsdl' );
 define( 'URL_INTERF_SPG_PANEL' , 'https://interno.intrared.net:8083/ap/interf/app/spg_new/spg.php?wsdl' );
 define( 'USR_LOGSPG' , 'usr_seguim_empres' );
 define( 'PWD_LOGSPG' , '7f403c30fc28639297d4d7d63d3397ec' );
-define( 'URL_INTERF_SPG_MODULES' ,'https://avansatgl.intrared.net/ap/interf/app/ws_panel/ws_panel.php?wsdl');
+define( 'URL_INTERF_SPG_MODULES' ,'https://oet-avansatgl.intrared.net/ap/interf/app/ws_panel/ws_panel.php?wsdl');
 
 //Constante Interfaz con FARO
 #define("URL_INTERF_FAROXX", "https://web10.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl");
 #define("URL_INTERF_FAROXX", "https://54.215.8.158/ap/interf/app/faro/wsdl/faro.wsdl");
-define("URL_INTERF_FAROXX", "https://dev.intrared.net:8083/ap/interf/app/faro/wsdl/faro.wsdl");
+define("URL_INTERF_FAROXX", "https://oet-avansatgl.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl");
 define("USR_INTERF_FAROXX", "SOPORTE");
 define("PWD_INTERF_FAROXX", "ifx2016");
 
 
 //Constante Interfaz para eventos GPS, debe apuntar al servidor central
-define("URL_INTERF_GPSEVE", "https://central.intrared.net/ap/interf/APIIntegradorGPS/v1/index.php");
+define("URL_INTERF_GPSEVE", "https://oet-central.intrared.net/ap/interf/APIIntegradorGPS/v1/index.php");
 
 //Constante Solicitudes Asistencia en Carretera
 define("CON_SOLICI_ASISTE", 1);

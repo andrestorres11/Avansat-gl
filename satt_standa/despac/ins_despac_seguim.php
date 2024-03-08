@@ -9,8 +9,9 @@
  *  \bug: 
  *  \warning: 
  */
- 
-
+/* 
+ error_reporting(E_ALL);
+ ini_set('display_errors', '1');*/
 session_start();
 
 /*! \class: Proc_segui
@@ -34,6 +35,7 @@ class Proc_segui
             case 'web7':    $this->cBD = "bd7.intrared.net:3306"; break;
             case 'web13':   $this->cBD = "bd13.intrared.net:3306"; break;
             case 'avansatgl':   $this->cBD = "aglbd.intrared.net"; break;
+            case 'oet-avansatgl':   $this->cBD = "oet-avansatglbd.intrared.net"; break;
         }
 
         $this->principal();
@@ -1089,12 +1091,8 @@ class Proc_segui
         $mArraySitio = array();
         $block_lugar = false;
         if (!$contro){
-            if (in_array($_SESSION['datos_usuario']['cod_perfil'], array('708','709','710','711','712') ) ) {
-                $mArraySitio[] = array('A', 'Antes');
-            }else{
-                $mArraySitio[] = array('A', 'Antes');
-                $mArraySitio[] = array('S', 'Sitio');
-            }
+            $mArraySitio[] = array('A', 'Antes');
+            $mArraySitio[] = array('S', 'Sitio');
         }else{
             $mArraySitio[] = array('S', 'Sitio');
             $block_lugar = true;

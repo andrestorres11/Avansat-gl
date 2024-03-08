@@ -303,7 +303,7 @@ class ajax_hojvid_ctxxxx
                                                                 )
                                                             ),
                                        "dir_domici" => array(
-	                                                            'name' => "Dirección", 
+	                                                            'name' => "Direcci&oacute;n", 
 	                                                            'type' => "input",
 	                                                            'class' => "validate", 
 	                                                            'atribute' => array(
@@ -512,7 +512,7 @@ class ajax_hojvid_ctxxxx
                                                                 )
                                                             ),
                                        "num_cuenta" => array(
-	                                                            'name' => "Número de cuenta", 
+	                                                            'name' => "N&uacute;mero de cuenta", 
 	                                                            'type' => "input",
 	                                                            'class' => "validate", 
 	                                                            'atribute' => array(

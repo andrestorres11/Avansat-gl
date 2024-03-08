@@ -276,7 +276,7 @@ class ajax_horari_monito {
                   FROM " . BASE_DATOS . ".tab_genera_usuari a
             INNER JOIN " . BASE_DATOS . ".tab_monito_encabe b ON b.cod_usuari = a.cod_usuari
             INNER JOIN " . BASE_DATOS . ".tab_callce_grupox c ON a.cod_grupox = c.cod_grupox
-                 WHERE a.cod_grupox = $cod_grupox 
+                 WHERE a.cod_grupox IN (1,4)
                    AND (
                             ('$fecInicia' BETWEEN DATE_FORMAT(b.fec_inicia, '%Y-%m-%d %H:%i') AND DATE_FORMAT(b.fec_finalx, '%Y-%m-%d %H:%i')) OR
                             ('$fecFinali' BETWEEN DATE_FORMAT(b.fec_inicia, '%Y-%m-%d %H:%i') AND DATE_FORMAT(b.fec_finalx, '%Y-%m-%d %H:%i')) OR 
@@ -385,7 +385,7 @@ class ajax_horari_monito {
                                                    AND d.ind_planru = 'S' 
                                                    AND d.ind_anulad = 'R'
                                                    AND c.ind_activo = 'S' 
-                                                   AND a.cod_grupox = $cod_grupox
+                                                   AND a.cod_grupox IN (1,4)
                                                        ".( $listTransp == null ? "" : " AND a.cod_transp IN ($listTransp) " )."
                                               GROUP BY b.cod_tercer
                                        ) x
@@ -420,7 +420,7 @@ class ajax_horari_monito {
                                                    AND d.ind_planru = 'S' 
                                                    AND d.ind_anulad = 'R'
                                                    AND c.ind_activo = 'S'*/ 
-                                                   AND a.cod_grupox = $cod_grupox
+                                                   AND a.cod_grupox IN (1,4)
                                                        ".( $listTransp == null ? "" : " AND a.cod_transp IN ($listTransp) " )."
                                               GROUP BY b.cod_tercer
                                        ) x
@@ -826,11 +826,30 @@ class ajax_horari_monito {
      *  \param: $transportadoras => arreglo con las transportadoras
      *  \return arreglo con la informacion ordenada
      */
-    private function ordenarDatos($users, $transp) {
+    private function ordenarDatosxx($users, $transp) {
         $x=0;
         $despac = $this->sumDespacByPrioriTransp($transp); 
         $mMaxDespac = round(($despac[1]+ $despac[2] + $despac[3])/count($users))+1; #la cantidad de despachos por persona no puede ser superior a esta
+
         $datos = array(); #arreglo para almacenar los datos de las transportadoras asignadas a cada usuario
+
+
+        // Inicializa un arreglo para contar la cantidad de usuarios asignados a cada grupo
+        $usuariosPorGrupo = array();
+
+        // Inicializa los grupos con 0 usuarios asignados
+        foreach ($transp as $trans) {
+            $usuariosPorGrupo[$trans['cod_grupox']] = 0;
+        }
+
+
+        if($_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps'){
+
+            echo "<pre>";
+            print_r($usuariosPorGrupo);
+            echo "</pre>";
+        }
+
 
         #Recorre los Usuarios para agregar la cantidad de despachos y transportadoras a las cuales hacerles seguimiento
         foreach ($users as $i => $user) {
@@ -842,6 +861,16 @@ class ajax_horari_monito {
 
             #Recorre las transportadoras que necesitan seguimiento y asigna al controlador
             foreach ($transp as $j => $trans) {
+                /*
+                $exists = $this->busquedaArray($transp, 'cod_grupox', $user->cod_grupox, 1);
+                if(!$exists){
+                    break;
+                }else{
+                    $index = $this->busquedaArray($transp, 'cod_grupox', $user->cod_grupox, 0);
+                    $trans = $transp[$index];
+                }*/
+
+                
                 $trans = (object)$trans;
 
                 $mCapaci = $mMaxDespac - $datos[$user->cod_usuari]['despachos'];
@@ -869,7 +898,18 @@ class ajax_horari_monito {
             }
         }
 
+
+         if($_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps'){
+
+            echo "<pre>";
+            print_r($usuariosPorGrupo);
+            echo "</pre>";
+        }
+
+
         #Recorre las transportadoras pendientes por asignar y las asigna, teniendo como prioridad al usuario que menos despachos tiene asignados
+
+        
         foreach ($transp as $i => $trans) {
             $trans = (object)$trans;
             $val = 0;
@@ -894,6 +934,110 @@ class ajax_horari_monito {
 
         return $datos;
     }
+
+
+    private function ordenarDatos($users, $transp) {
+        $x = 0;
+        $despac = $this->sumDespacByPrioriTransp($transp);
+        $mMaxDespac = round(($despac[1] + $despac[2] + $despac[3]) / count($users)) + 1;
+    
+        $datos = array(); // Arreglo para almacenar los datos de las transportadoras asignadas a cada usuario
+    
+        // Inicializa un arreglo para contar la cantidad de usuarios asignados a cada grupo
+        $usuariosPorGrupo = array();
+    
+        // Inicializa los grupos con 0 usuarios asignados
+        foreach ($transp as $trans) {
+            $usuariosPorGrupo[$trans['cod_grupox']] = 0;
+        }
+    
+        // Recorre los Usuarios para agregar la cantidad de despachos y transportadoras a las cuales hacerles seguimiento
+        foreach ($users as $user) {
+            $user = (object) $user;
+    
+            $datos[$user->cod_usuari]['categoria'] = $user->nom_grupox . '-' . $user->cod_priori;
+            $datos[$user->cod_usuari]['usr_emailx'] = $user->usr_emailx;
+            $datos[$user->cod_usuari]['despachos'] = 0;
+    
+            // Filtra las transportadoras por el mismo grupo (cod_grupox) que el usuario
+            $filteredTransp = array_filter($transp, function ($trans) use ($user) {
+                return $trans['cod_grupox'] == $user->cod_grupox;
+            });
+    
+            foreach ($filteredTransp as $j => $trans) {
+                $trans = (object) $trans;
+    
+                $mCapaci = $mMaxDespac - $datos[$user->cod_usuari]['despachos'];
+                $mPorcen = ($trans->despac * 100) / $mMaxDespac;
+    
+                if ($mCapaci >= $trans->despac || ($trans->despac > $mMaxDespac && $mPorcen <= 110 && $datos[$user->cod_usuari]['despachos'] == 0)) {
+                    $datos[$user->cod_usuari]['datos'][$x]['nits'] = $trans->cod_tercer;
+                    $datos[$user->cod_usuari]['datos'][$x]['empresas'] = $trans->abr_tercer;
+                    $datos[$user->cod_usuari]['despachos'] += $trans->despac;
+                    $datos[$user->cod_usuari]['datos'][$x]['des'] = $trans->despac;
+                    $datos[$user->cod_usuari]['datos'][$x]['cat'] = $trans->cod_priori;
+                    $x++;
+    
+                    unset($transp[$j]);
+                } elseif ($trans->despac > $mMaxDespac && $mPorcen > 110 && $datos[$user->cod_usuari]['despachos'] == 0) {
+                    $transp[$j]['despac'] = $trans->despac - $mMaxDespac;
+    
+                    $datos[$user->cod_usuari]['datos'][$x]['nits'] = $trans->cod_tercer;
+                    $datos[$user->cod_usuari]['datos'][$x]['empresas'] = $trans->abr_tercer;
+                    $datos[$user->cod_usuari]['despachos'] += $mMaxDespac;
+                    $datos[$user->cod_usuari]['datos'][$x]['des'] = $mMaxDespac;
+                    $datos[$user->cod_usuari]['datos'][$x]['cat'] = $trans->cod_priori;
+                    $x++;
+                }
+            }
+        }
+        
+        // Recorre las transportadoras pendientes por asignar y las asigna, teniendo como prioridad al usuario que menos despachos tiene asignados
+        foreach ($transp as $i => $trans) {
+            $trans = (object) $trans;
+            $val = 0;
+            $key = "";
+    
+            foreach ($datos as $j => $row) {
+                if ($val == 0 || $val > $row['despachos']) {
+                    $val = $row['despachos'];
+                    $key = $j;
+                }
+            }
+    
+            $datos[$key]['datos'][$x]['nits'] = $trans->cod_tercer;
+            $datos[$key]['datos'][$x]['empresas'] = $trans->abr_tercer;
+            $datos[$key]['despachos'] += $trans->despac;
+            $datos[$key]['datos'][$x]['des'] = $trans->despac;
+            $datos[$key]['datos'][$x]['cat'] = $trans->cod_priori;
+            $x++;
+    
+            unset($transp[$i]);
+        }
+    
+        return $datos;
+    }
+
+
+
+
+
+    
+
+    private function busquedaArray($array, $col, $valor, $flag){
+        foreach ($array as $indice => $elemento) {
+            if ($elemento[$col] == $valor) {
+                if($flag){
+                    return true;
+                }else{
+                    return $indice;
+                }              
+                break; // Termina el bucle una vez que se encuentra la coincidencia
+            }
+        }
+        return false;
+    }
+
 
     /* ! \fn: EditarCarga
      *  \brief: funcion para editar la carga laboral generada por el sistema de un usuario

@@ -1,6 +1,6 @@
 <?php
-ini_set('display_errors', true);
-error_reporting(E_ALL &~E_NOTICE);
+/*ini_set('display_errors', true);
+error_reporting(E_ALL &~E_NOTICE);*/
 /* ! \file: ajax_certra_certra.php
  *  \brief: archivo con multiples funciones para la configuracion de los tipos de servicio de una transportadora
  *  \author: Ing. Alexander Correa

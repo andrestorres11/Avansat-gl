@@ -31,6 +31,7 @@ class Solici_solici
 			"cod_tipsol"=>null,//se actualiza mas adelante
 			"nom_tipsol"=>null//se actualiza mas adelante
 		);
+
 	}
 	function Main()
 	{
@@ -462,7 +463,7 @@ EOF;
 										  'asunto' => "Creacion Ruta: ".$this->getTransSolici($num_solici[0],"1")[0]['origen']." - ".$this->getTransSolici($num_solici[0], "1")[0]['destino']." Via ".$this->getTransSolici($num_solici[0])[0]['nom_viaxxx'],
 			                              'cod_estado'  =>  "Abierta",
 			                              'obs_solici'  =>  "Solicitud De Creacion Ruta: ".$this->getTransSolici($num_solici[0],"1")[0]['origen']." - ".$this->getTransSolici($num_solici[0], "1")[0]['destino']." Via ".$this->getTransSolici($num_solici[0])[0]['nom_viaxxx'],
-			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
+			                              'mailTo'  =>  $this->getTransSolici($num_solici[0])[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR,
 			                          );
 			      	$this->sendMailSolifa($dataMail);
 					$obs_config = $this->getTransSolici($num_solici[0], "1")[0]['obs_config'];

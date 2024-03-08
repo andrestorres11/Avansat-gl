@@ -145,6 +145,7 @@ class InfNovedadesUsuario{
     function getInforme(){
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_noveda_transp.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
         
@@ -178,6 +179,7 @@ class InfNovedadesUsuario{
         $mHtml .= "<tr>";
             $mHtml .= "<th class=cellHead >TRANSPORTADORA</th>";
             $mHtml .= "<th class=cellHead >Novedad Especial</th>";
+            $mHtml .= "<th class=cellHead >Novedad Especial MA</th>";
             $mHtml .= "<th class=cellHead >Solicita Tiempo</th>";
             $mHtml .= "<th class=cellHead >Mantiene Alarma</th>";
             $mHtml .= "<th class=cellHead >Otros</th>";
@@ -185,6 +187,7 @@ class InfNovedadesUsuario{
         $mHtml .= "</tr>";
         
         $_NOVESP = $this -> getNovedadesEspeciales( $_REQUEST );
+        $_NOVESPMA = $this -> getNovedadesEspecialesMa( $_REQUEST );
         $_SOLTIE = $this -> getSolicitaTiempo( $_REQUEST ); 
         $_MANALA = $this -> getMantieneAlarma( $_REQUEST ); 
         $_OTROXX = $this -> getOtros( $_REQUEST ); 
@@ -197,14 +200,16 @@ class InfNovedadesUsuario{
         if((int)$_TODOSX[ $row['cod_tercer'] ] == 0) continue;
             
             $_TOTAL_[0]+= (int)$_NOVESP[ $row['cod_tercer'] ];
-            $_TOTAL_[1]+= (int)$_SOLTIE[ $row['cod_tercer'] ];
-            $_TOTAL_[2]+= (int)$_MANALA[ $row['cod_tercer'] ];
-            $_TOTAL_[3]+= (int)$_OTROXX[ $row['cod_tercer'] ];
-            $_TOTAL_[4]+= (int)$_TODOSX[ $row['cod_tercer'] ];                
+            $_TOTAL_[1]+= (int)$_NOVESPMA[ $row['cod_tercer'] ];
+            $_TOTAL_[2]+= (int)$_SOLTIE[ $row['cod_tercer'] ];
+            $_TOTAL_[3]+= (int)$_MANALA[ $row['cod_tercer'] ];
+            $_TOTAL_[4]+= (int)$_OTROXX[ $row['cod_tercer'] ];
+            $_TOTAL_[5]+= (int)$_TODOSX[ $row['cod_tercer'] ];                
             
           $mHtml .= "<tr class='row'>";
             $mHtml .= "<td class='cellInfo' align='left' ><b>".$row['cod_tercer']."</b> - ".$row['abr_tercer']."</td>";
             $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_NOVESP[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('NE',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_NOVESP[ $row['cod_tercer'] ])."</td>";
+            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_NOVESPMA[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('NEMA',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_NOVESPMA[ $row['cod_tercer'] ])."</td>";
             $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_SOLTIE[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('ST',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_SOLTIE[ $row['cod_tercer'] ])."</td>";
             $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_MANALA[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('MA',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_MANALA[ $row['cod_tercer'] ])."</td>";
             $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_OTROXX[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('OT',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_OTROXX[ $row['cod_tercer'] ])."</td>";
@@ -236,7 +241,7 @@ class InfNovedadesUsuario{
         
          echo '<tr><td><div id="AplicationEndDIV"></div>
           <div id="RyuCalendarDIV" style="position: absolute; background: white; left: 0px; top: 0px; z-index: 3; display: none; border: 1px solid black; "></div>
-          <div id="popupDIV" style="position: absolute; left: 0px; top: 0px; width: 300px; height: 300px; z-index: 3; visibility: hidden; overflow: auto; border: 5px solid #333333; background: white; ">
+          <div id="popupDIV" style="position: absolute; left: 0px; top: 0px; width: 300px; height: 300px; z-index: 3; visibility: hidden; overflow: auto; border: 1px solid #333333; background: white; ">
 
 		  <div id="filtros" >
 		  </div>
@@ -275,6 +280,9 @@ class InfNovedadesUsuario{
                    AND a.ind_alarma !='S' ";
         if($__REQUEST['tipo']=='NE')
             $aux= "a.nov_especi ='1'";
+        if($__REQUEST['tipo']=='NEMA')
+            $aux= "g.ind_novesp = '1'
+               AND a.cod_tipoxx = '1'";
         if($__REQUEST['tipo']=='ST')
             $aux= "a.ind_tiempo ='1'";
         if($__REQUEST['tipo']=='MA')
@@ -292,8 +300,11 @@ class InfNovedadesUsuario{
                        ".BASE_DATOS.".tab_tercer_tercer d,
                        ".BASE_DATOS.".tab_tercer_tercer z,
                        ".BASE_DATOS.".tab_despac_despac e,
-                       ".BASE_DATOS.".tab_genera_agenci f
+                       ".BASE_DATOS.".tab_genera_agenci f,
+                       ".BASE_DATOS.".tab_parame_novseg g 
                  WHERE a.cod_noveda = b.cod_noveda
+                   AND g.cod_transp = '".$__REQUEST[cod_transp]."'
+                   AND g.cod_noveda = b.cod_noveda
                    AND $aux
                    AND c.num_despac = b.num_despac
                    AND c.cod_conduc = z.cod_tercer
@@ -315,9 +326,12 @@ class InfNovedadesUsuario{
                       ".BASE_DATOS.".tab_tercer_tercer d,
                       ".BASE_DATOS.".tab_tercer_tercer z,
                       ".BASE_DATOS.".tab_despac_despac e,
-                      ".BASE_DATOS.".tab_genera_agenci f
+                      ".BASE_DATOS.".tab_genera_agenci f,
+                      ".BASE_DATOS.".tab_parame_novseg g 
                 WHERE a.cod_noveda = b.cod_noveda
-                  AND $aux
+                AND g.cod_transp = '".$__REQUEST[cod_transp]."'
+                AND g.cod_noveda = b.cod_noveda
+                AND $aux
                   AND c.num_despac = b.num_despac
                   AND c.cod_transp = d.cod_tercer
                   AND c.cod_conduc = z.cod_tercer
@@ -332,14 +346,15 @@ class InfNovedadesUsuario{
                         ' - ' as Conductor, '' AS agencia, '' AS usr_noveda, '' AS usr_creaci, '' AS fec_creaci
                         FROM ".BASE_DATOS.".tab_genera_noveda a, 
                         ".BASE_DATOS.".tab_report_noveda b,
+                        ".BASE_DATOS.".tab_parame_novseg c,
                         ".BASE_DATOS.".tab_tercer_tercer d
                   WHERE a.cod_noveda = b.cod_noveda
-                    AND $aux
+                    AND c.ind_novesp = '1'
+                    AND a.cod_tipoxx = '1'
                     AND b.cod_tercer = d.cod_tercer
                     AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                     AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."'
                     AND b.cod_tercer = '".$__REQUEST[cod_transp]."')";
-        
         if($__REQUEST['tipo']=='OT')  
         { 
         $aux= "a.ind_alarma ='S'";
@@ -351,9 +366,13 @@ class InfNovedadesUsuario{
                        ".BASE_DATOS.".tab_despac_contro b,
                        ".BASE_DATOS.".tab_despac_vehige c,
                        ".BASE_DATOS.".tab_tercer_tercer d,
+                       ".BASE_DATOS.".tab_parame_novseg e,
                        ".BASE_DATOS.".tab_tercer_tercer z
                  WHERE a.cod_noveda = b.cod_noveda
-                   AND $aux
+                   AND e.cod_transp = '".$__REQUEST[cod_transp]."'
+                   AND e.cod_noveda = b.cod_noveda
+                   AND e.ind_novesp = '1'
+                   AND a.cod_tipoxx = '1'
                    AND c.num_despac = b.num_despac
                    AND c.cod_conduc = z.cod_tercer
                    AND c.cod_transp = d.cod_tercer
@@ -369,9 +388,13 @@ class InfNovedadesUsuario{
                       ".BASE_DATOS.".tab_despac_noveda b,
                       ".BASE_DATOS.".tab_despac_vehige c,
                       ".BASE_DATOS.".tab_tercer_tercer d,
+                      ".BASE_DATOS.".tab_parame_novseg e,
                       ".BASE_DATOS.".tab_tercer_tercer z
                 WHERE a.cod_noveda = b.cod_noveda
-                  AND $aux
+                  AND e.cod_transp = '".$__REQUEST[cod_transp]."'
+                  AND e.cod_noveda = b.cod_noveda
+                  AND e.ind_novesp = '1'
+                  AND a.cod_tipoxx = '1'
                   AND c.num_despac = b.num_despac
                   AND c.cod_transp = d.cod_tercer
                   AND c.cod_conduc = z.cod_tercer
@@ -383,20 +406,24 @@ class InfNovedadesUsuario{
                         b.obs_repnov, d.abr_tercer, b.num_placax,
                         ' - ' as Conductor
                         FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                        ".BASE_DATOS.".tab_report_noveda b,
-                        ".BASE_DATOS.".tab_tercer_tercer d
+                             ".BASE_DATOS.".tab_report_noveda b,
+                             ".BASE_DATOS.".tab_parame_novseg c,
+                             ".BASE_DATOS.".tab_tercer_tercer d
                   WHERE a.cod_noveda = b.cod_noveda
-                    AND $aux
+                    AND c.cod_transp = '".$__REQUEST[cod_transp]."'
+                    AND c.cod_noveda = b.cod_noveda
+                    AND c.ind_novesp = '1'
+                    AND a.cod_tipoxx = '1'
                     AND b.cod_tercer = d.cod_tercer
                     AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
                     AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."'
                     AND b.cod_tercer = '".$__REQUEST[cod_transp]."')";
         }
-        
         $sql .= " ORDER BY 5,1,3 ";
+        // echo '<pre>'; print_r($sql); echo '</pre>';
         $consulta  = new Consulta($sql, $this -> conexion);
         $despachos = $consulta -> ret_matriz();
-            
+           
         $formulario = new Formulario("index.php\" enctype=\"multipart/form-data\"", "post", "INFORMACION DE NOVEDADES", "formulario");
         $formulario -> nueva_tabla(); 
         $formulario -> botoni("Excel","exportarXls()",0);//Jorge 2703-2012 
@@ -505,7 +532,6 @@ class InfNovedadesUsuario{
                        ".BASE_DATOS.".tab_tercer_tercer b
                  WHERE a.cod_transp = b.cod_tercer
                 GROUP BY 2 ";  
-
         $consul = new Consulta($sql, $this -> conexion);
         
         $MATRIZ = array(); 
@@ -514,6 +540,62 @@ class InfNovedadesUsuario{
         }
         return $MATRIZ; 
     }
+
+    function getNovedadesEspecialesMa( $__REQUEST ){
+      $sql ="SELECT  c.cod_transp 
+               FROM ".BASE_DATOS.".tab_genera_noveda a, 
+                    ".BASE_DATOS.".tab_despac_contro b,
+                    ".BASE_DATOS.".tab_despac_vehige c,
+                    ".BASE_DATOS.".tab_parame_novseg d
+              WHERE a.cod_noveda = b.cod_noveda
+                AND d.cod_noveda = b.cod_noveda
+                AND d.cod_transp = c.cod_transp
+                AND d.ind_novesp ='1'
+                AND a.cod_tipoxx ='1'
+                AND c.num_despac = b.num_despac
+                AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
+                AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+                AND b.cod_noveda != 4999
+             UNION ALL      
+             SELECT c.cod_transp 
+               FROM ".BASE_DATOS.".tab_genera_noveda a, 
+                    ".BASE_DATOS.".tab_despac_noveda b,
+                    ".BASE_DATOS.".tab_despac_vehige c,
+                    ".BASE_DATOS.".tab_parame_novseg d
+              WHERE a.cod_noveda = b.cod_noveda
+                AND d.cod_noveda = b.cod_noveda
+                AND d.cod_transp = c.cod_transp
+                AND d.ind_novesp ='1'
+                AND a.cod_tipoxx ='1'
+                AND c.num_despac = b.num_despac
+                AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
+                AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+             UNION ALL      
+             SELECT b.cod_tercer AS cod_transp
+               FROM ".BASE_DATOS.".tab_genera_noveda a, 
+                    ".BASE_DATOS.".tab_report_noveda b,
+                    ".BASE_DATOS.".tab_parame_novseg c
+              WHERE a.cod_noveda = b.cod_noveda
+                AND c.cod_noveda = b.cod_noveda
+                AND c.cod_transp = cod_transp
+                AND c.ind_novesp ='1'
+                AND a.cod_tipoxx ='1'
+                AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
+                AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
+
+        $sql = "SELECT COUNT(*), b.cod_tercer
+                FROM ( ".$sql." ) AS a, 
+                     ".BASE_DATOS.".tab_tercer_tercer b
+               WHERE a.cod_transp = b.cod_tercer
+              GROUP BY 2 ";  
+      $consul = new Consulta($sql, $this -> conexion);
+      
+      $MATRIZ = array(); 
+      foreach ( $consul -> ret_matriz() as $row){
+          $MATRIZ[ $row[1] ] = $row[0];
+      }
+      return $MATRIZ; 
+  }
     
     
     function getSolicitaTiempo( $__REQUEST ){

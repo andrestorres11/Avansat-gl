@@ -825,7 +825,7 @@ function getTransTipser( &$mConexion, $mSqlWhere = NULL, $mNomCampo = NULL )
                                          c.hor_pe2urb, c.hor_pe1nac, c.hor_pe2nac, 
                                          c.hor_pe1imp, c.hor_pe2imp, c.hor_pe1exp, 
                                          c.hor_pe2exp, c.hor_pe1tr1, c.hor_pe2tr1, 
-                                         c.hor_pe1tr2, c.hor_pe2tr2 
+                                         c.hor_pe1tr2, c.hor_pe2tr2
                                     FROM ".BASE_DATOS.".tab_transp_tipser c 
                               INNER JOIN ".BASE_DATOS.".tab_genera_tipser d 
                                       ON c.cod_tipser = d.cod_tipser 
@@ -1064,6 +1064,37 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
 }
 
 
+function corregirTildes($cadena) {
+  $reemplazos = array(
+      'Ã¡' => 'á',
+      'Ã©' => 'é',
+      'Ã­' => 'í',
+      'Ã³' => 'ó',
+      'Ãº' => 'ú',
+      'Ã¼' => 'ü',
+      'Ã±' => 'ñ',
+      'Ã' => 'Á',
+      'Ã?' => 'É',
+      'Ã' => 'Í',
+      'Ã?' => 'Ó',
+      'Ã?' => 'Ú',
+      'Ã?' => 'Ü',
+      'Ã?' => 'Ñ',
+      'ï¿½' => 'í',
+      'Ã?'  => 'ñ',
+      'Ã?Â?' => 'Ñ',
+      'Ã?Â?' => 'Ú',
+      'Ã?' => 'Ú',
+      '?' => 'í'
+  );
+  $cadena = strtr(utf8_decode($cadena), $reemplazos);
+  $cadena_utf8 = $cadena;
+  $cadena_corregida = strtr($cadena_utf8, $reemplazos);
+
+  return $cadena_corregida;
+}
+
+
 
 /*! \fn: getTranspPerfil
     *  \brief: Funcion que retorna la empresa transportadora segun el perfil
@@ -1092,6 +1123,15 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
     *  \return: null
     */
     function envioEmailsTemplate(&$mConexion,$nom_urlxxx,$subject,$title,$emails,$encabezamsj,$bodymsj,$adicional_html='',$file=NULL){
+
+
+      $mLogFile = '/var/www/html/ap/interf/app/api_glintegradorgps/logs/despachos/'."log_sendCorreosIntegrador_".date( "Y_m_d" ).".log";
+      $file = fopen( $mLogFile, "a+" );
+      $reg = fwrite( $file, "\n---------------------------------------------------" );
+      $reg = fwrite( $file, "\nExecution Date-Time: ".date( "Y/m/d H:i:s" )."" );
+      $reg = fwrite( $file, "\nCorreos: ".$emails."" );
+      $close = fclose( $file );
+
       $tmpl_file = $nom_urlxxx;
       //logo
       $logo = "http://".$_SERVER['SERVER_NAME']."/ap/".BASE_DATOS."/logos/LogoCLFaro.png";
@@ -1111,7 +1151,7 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
         case 'dev.intrared.net':
             require_once(URL_ARCHIV_STANDA."satt_standa/planti/class.phpmailer.php");
             break;
-        case 'avansatgl.intrared.net':
+        case 'oet-avansatgl.intrared.net':
           require_once(URL_ARCHIV_STANDA."satt_standa/planti/class.phpmailer.php");
           break;
     }
@@ -1124,7 +1164,6 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
       $mail->FromName = "Novedades Centro Logistico Faro";
       $mail->Subject = $subject ;
 
-
       foreach($emails as $email){
         $mail->AddAddress( $email );
       }
@@ -1135,9 +1174,9 @@ function guardarInformacionAcceso($cod_usuari, $cod_perfil, $conexion) {
         $mail->AddAttachment($file);
       }
       if(!$mail->Send()){
-        mail("cristian.torres@grupooet.com", "Error envio de correo", var_export($emails, true));
       };
     }
+
     /*! \fn: setTrackingDespac
     *  \brief: Funcion que Inserta los estados o novedades Homologadas por el cliente
     *  \author: Luis Carlos Manrique Boada

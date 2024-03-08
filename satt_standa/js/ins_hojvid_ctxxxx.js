@@ -74,8 +74,8 @@ function formRegistro(modulo, tam, cod_docume = null) {
     try {
         var boton = cod_docume == null ? 'Crear' : 'Actualizar';
         Swal.fire({
-            title: decode_utf8('¿Estas seguro?'),
-            text: decode_utf8("¿Estas seguro que desea " + boton + " este registro?"),
+            title: ('¿Estas seguro?'),
+            text: ("¿Estas seguro que desea " + boton + " este registro?"),
             type: 'question',
             showCancelButton: true,
             confirmButtonColor: '#336600',
@@ -185,8 +185,8 @@ function updEst(objet) {
     var estText = $(objet).attr('data-estado') == 1 ? 'desactivar' : 'activar';
     try {
         Swal.fire({
-            title: decode_utf8('¿Estas seguro?'),
-            text: decode_utf8("¿Estas seguro que desea " + estText + " este registro?"),
+            title: ('¿Estas seguro?'),
+            text: ("¿Estas seguro que desea " + estText + " este registro?"),
             type: 'question',
             showCancelButton: true,
             confirmButtonColor: '#336600',

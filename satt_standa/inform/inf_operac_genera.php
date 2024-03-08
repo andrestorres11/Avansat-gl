@@ -156,7 +156,7 @@ class InformViajes {
                 LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k ON v.cod_tenedo = k.cod_tercer
 	            LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad r ON k.cod_ciudad  = r.cod_ciudad 
                 LEFT JOIN ".BASE_DATOS.".tab_despac_remesa s ON t.num_despac = s.num_despac
-                LEFT JOIN satt_faro.tab_genera_agenci ag ON t.cod_agedes = ag.cod_agenci
+                LEFT JOIN ".BASE_DATOS.".tab_genera_agenci ag ON t.cod_agedes = ag.cod_agenci
                 LEFT JOIN ".BASE_DATOS.".tab_genera_tipveh y ON v.cod_tipveh = y.cod_tipveh
 	                AND t.fec_salida IS NOT NULL 
 	                AND t.fec_salida <= NOW() 

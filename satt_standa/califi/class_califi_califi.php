@@ -191,6 +191,7 @@ class Califi
 			<div class="col-md-1">&nbsp;</div>
 				<div class="col-md-10">
 					<div class="col-md-6">
+						<input type="hidden" value="<?= $informacion['num_placax'] ?>" name="placa_id" id="placa_id">
 						<div class="col-md-6 text-right">Operador GPS<font style="color:red">*</font></div>
 						<div class="col-md-6 text-left">
 							<select id="cod_operadEditID" name="cod_operad" class="ancho" obl="1" validate="select" onchange="habIdOperaGps(this)">
@@ -237,7 +238,7 @@ class Califi
      *  \brief: inserta un nuevo contacto
      *  \author: Ing. Andres Martinez
      *  \date: 12/02/2018
-     *  \date modified: dia/mes/aï¿½o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -257,9 +258,18 @@ class Califi
 
 	private function getGPS($num_despac) {
         
-        $sql = "SELECT a.gps_operad, a.gps_usuari, a.gps_paswor, a.gps_idxxxx 
-                  FROM " . BASE_DATOS . ".tab_despac_despac a
-				  WHERE a.num_despac = '".$num_despac."'";
+        $sql = "SELECT 
+					a.num_despac, 
+					a.gps_operad, 
+					a.gps_usuari, 
+					a.gps_paswor, 
+					a.gps_idxxxx, 
+					b.num_placax 
+				FROM 
+					tab_despac_despac a 
+					INNER JOIN tab_despac_vehige b ON a.num_despac = b.num_despac 
+				WHERE 
+					a.num_despac = '".$num_despac."'";
 
         $consulta = new Consulta($sql, self::$cConexion);
         $getGps = $consulta->ret_matriz();
@@ -316,17 +326,18 @@ class Califi
      */
     private function editaGps() {
         $mData = $_POST;
-		
+
 		$urlGps = self::getUrlGps($mData['gps_operad']);
         $mUpdate = "UPDATE " . BASE_DATOS . ".tab_despac_despac SET 
 					gps_operad = '".$mData['gps_operad']."',
-                    gps_usuari = '".utf8_decode($mData['gps_usuari'])."', 
-                    gps_paswor = '".utf8_decode($mData['gps_paswor'])."',
+                    gps_usuari = '".$mData['gps_usuari']."', 
+                    gps_paswor = '".$mData['gps_paswor']."',
 					gps_idxxxx = '".$mData['gps_idxxxx']."',
 					gps_urlxxx = '".$urlGps."',
                     usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
                     fec_modifi = NOW()
                     WHERE num_despac = '".$mData['num_despac']."'";
+
 		new Consulta($mUpdate, self::$cConexion);
 					
 		$codConsecutivo = (self::getDespactGps($mData['num_despac'])+1);
@@ -352,7 +363,16 @@ class Califi
 				'".$_SESSION['datos_usuario']['cod_usuari']."',
 				NOW()
 			)";	
-				
+
+			$mUpdate1 = "UPDATE " . BASE_DATOS . ".tab_estseg_vehicu SET 
+			cod_opegps = '".$mData['gps_operad']."',
+			usr_gpsxxx = '".$mData['gps_usuari']."', 
+			clv_gpsxxx = '".$mData['gps_paswor']."',
+			idx_gpsxxx = '".$mData['gps_idxxxx']."',
+			url_gpsxxx = '".$urlGps."'
+			WHERE num_placax = '".$mData['placa_id']."'";
+			new Consulta($mUpdate1, self::$cConexion);
+
         if ($consulta = new Consulta($mInsert, self::$cConexion)) {
             echo "1000";
         } else {
@@ -1130,7 +1150,7 @@ class Califi
      *  \modified by: 
      */
 	private function reeItiner(){
-		
+		self::reiniciarDataIntegrador($_REQUEST['num_despac']);
 		include( '../lib/InterfGPS.inc' );
 		//$mInterfGps = new InterfGPS( self::$cConexion ); 		
 		//$mResp = $mInterfGps->setPlacaIntegradorGPS( $_REQUEST['num_despac'], ['ind_transa' => 'I'] );
@@ -1138,18 +1158,29 @@ class Califi
 		$mDataDesp = self::getDatadespac( $_REQUEST['num_despac'] );
 
 		$mIntegradorGPS = getValidaInterfaz(self::$cConexion, '53', $mDataDesp['cod_transp'], true, 'data');
+
+		self::sendFechaSendIntegrador($_REQUEST['num_despac']);
+
+		if($value['gps_operad']=='9010949280'){
+			$mIntegradorGPS["url_webser"] = 'https://oet-central.intrared.net/ap/interf/APIIntegradorGPS/v2/index.php';
+		}
+
 		//Ajuste temporar detektor
 		if ($mIntegradorGPS['ind_operad'] == '3' || $mDataDesp['gps_operad']=='9010949280') // SOLO REPORTES UBICACION SI TIENE IND_OPERAD = 3 --> HUB
 		{
 		  $mHubGPS = new InterfHubIntegradorGPS(self::$cConexion, ['cod_transp' => $mDataDesp['cod_transp']] );
 		  // Proceso de generar itinerario a placa del manifiesto---------------------------------------------------------------------------
 		  $mResp = $mHubGPS -> setTrakingStart([
+												  'cod_transp' => $mDataDesp["cod_transp"],
 		                                          'num_placax' => $mDataDesp['num_placax'],
 		                                          'num_despac' => $_REQUEST['num_despac'],
+												  'cod_tokenx' => $mIntegradorGPS["cod_tokenx"],
 		                                          'num_docume' => $mDataDesp['cod_manifi'],
 		                                          'fec_inicio' => date("Y-m-d H:i:s"),
 		                                          'fec_finali' => date("Y-m-d H:i:s", strtotime(date("Y-m-d H:i:s")."+ 5 day ")),
-		                                          'ind_origen' => '3', // 3 = DESPACHO
+		                                          'ind_origen' => '3', // 3 = DESPACHO,
+												  'url_webser' => $mIntegradorGPS["url_webser"],
+												  'tie_report' => $mIntegradorGPS["tie_report"],
 		                                          ]);
 		  if($mResp['code'] == '1000') { 
 		    $mCode = $mResp['code'];
@@ -1198,6 +1229,43 @@ class Califi
 		echo json_encode($respuesta);
 	}
 
+
+	/*! \fn: reiniciarDataIntegrador
+     *  \brief: Reevia Itinerario
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 02/06/2022
+     *  \date modified: dd/mm/aaaa
+     *  \modified by: 
+     */
+	private function reiniciarDataIntegrador($num_despac){
+		$mSql = "UPDATE 
+						".BASE_DATOS.".tab_despac_vehige 
+					SET 
+						cod_itiner = NULL, 
+						msg_itiner = NULL, 
+						fec_itiner = NULL, 
+						cod_integr = NULL, 
+						dat_reques = NULL, 
+						dat_respon = NULL, 
+						cod_respon = NULL 
+					WHERE 
+						num_despac = '".$num_despac."' ";
+		new Consulta($mSql, self::$cConexion );
+	}
+
+
+	/*! \fn: reiniciarDataIntegrador
+     *  \brief: Reevia Itinerario
+     *  \author: Ing. Cristian Andrés Torres
+     *  \date: 02/06/2022
+     *  \date modified: dd/mm/aaaa
+     *  \modified by: 
+     */
+	private function sendFechaSendIntegrador($num_despac){
+		$mSql = "UPDATE ".BASE_DATOS.".tab_despac_vehige SET fec_envint = NOW() WHERE num_despac = '".$num_despac."' ";
+		new Consulta($mSql, self::$cConexion );
+	}
+
 	/*! \fn: reeNovedades
      *  \brief: Realiza el reenvio de novedades a avansat
      *  \author: Ing. Cristian Andrés Torres
@@ -1210,7 +1278,7 @@ class Califi
  		$mSql = "SELECT a.num_despac, a.cod_manifi, b.num_placax, b.cod_transp, a.gps_operad
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
-                     ON a.num_despac = b.num_despac 
+                     ON a.num_despac = b.num_despac
                   WHERE a.num_despac = '".$mNumDespac."' ";
         $mConsult = new Consulta($mSql, self::$cConexion );
         $mData = $mConsult->ret_matrix('a');

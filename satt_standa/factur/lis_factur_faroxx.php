@@ -411,10 +411,10 @@ class FacturFaro
         AND b.fec_creaci >= '".$_REQUEST["fecini"]." 00:00:00' 
         AND b.fec_creaci <= '".$_REQUEST["fecfin"]." 23:59:59' 
         */
-
         if(!empty($_REQUEST['transp'])){
           $query.= " AND b.cod_transp IN(".$_REQUEST['transp'].") ";
         }
+        
         $query.= " GROUP BY 1 ORDER BY b.cod_transp ";
 
         $consulta = new Consulta($query, $this -> conexion);
@@ -448,7 +448,7 @@ class FacturFaro
                        AND a.cod_perfil IN (".$perfiles.")
                     )
                   ";
-
+            
             $consulta = new Consulta($sql, $this -> conexion);
             $novedades = $consulta -> ret_matriz();
 

@@ -184,10 +184,10 @@
                 $_REQUEST[hor_corte] .= ':00';
             
             $_USUARIOS = $this->getUsuarios( $_REQUEST );
-            /*
+            
             echo "<pre>";
             print_r($_USUARIOS);
-            echo "</pre>";*/
+            echo "</pre>";
             
             $_REQUEST[fecha_corte] = $_REQUEST[fec_corte].' '.$_REQUEST[hor_corte];
             

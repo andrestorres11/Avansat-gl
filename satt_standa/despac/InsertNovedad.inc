@@ -109,7 +109,6 @@ class InsertNovedad {
      *  \param: base_datos
      *  \return: 
      */
-
     function getMailProtoc($cod_protoc, $num_despac, $cod_noveda, $base_datos) {
 
         #Cuando la novedad es no EFECTIVA debe buscar el protocolo de enviado , el anterior.
@@ -908,6 +907,24 @@ class InsertNovedad {
         return $mEmailAgenci[0][0];
     }
 
+
+    function getEmailParame($num_despac) {
+        $mQuery = 
+        "  SELECT    b.dir_emailx  
+                FROM    " . BASE_DATOS . ".tab_despac_despac a   
+        INNER JOIN    " . BASE_DATOS . ".tab_despac_vehige e
+                ON    a.num_despac = e.num_despac
+        INNER JOIN    " . BASE_DATOS . ".tab_genera_concor b 
+                ON    e.cod_transp = b.num_remdes
+            WHERE    a.num_despac = '" . $num_despac . "'
+                    AND b.ind_nfarox = 1";
+        $consulta = new Consulta($mQuery, $this->conexion);
+        $mEmailParame = $consulta->ret_matriz();
+
+        return $mEmailParame[0][0];
+    }
+
+
     /* ! \fn: setNovedadError
      *  \brief: 
      *  \author: 
@@ -1272,44 +1289,45 @@ class InsertNovedad {
                 $mDatTransp = $mDatTransp[0];
                 $mIndProtoc = self::indProtoc($regist['nittra'], $regist['noveda']);
                 
-                if(BASE_DATOS != 'satt_faro'){
+                    #<Envio de Correos>                
+                    if ($mDatNoveda['ind_notsup'] == 1 && $mIndProtoc == false) { #CORREO NOTIFICA SUPERVISOR.
+                        if (!self::SendMailSupervisores($regist, $mDatDespac, $mDatNoveda)) {
+                            $_ERROR[] = 'Error envio correo Notificacion Supervisores.';
+                        }
+                    }
+
                     //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
                     if($mDatNoveda['num_tiempo'] > 0){
                         $regist['tieadi'] = $mDatNoveda['num_tiempo'];
                     }
-                    $this->sendEmailNotNoveda($regist,BASE_DATOS);
-                }
-                
-                #<Envio de Correos>                
-                if ($mDatNoveda['ind_notsup'] == 1 && $mIndProtoc == false) { #CORREO NOTIFICA SUPERVISOR.
-                    if (!self::SendMailSupervisores($regist, $mDatDespac, $mDatNoveda)) {
-                        $_ERROR[] = 'Error envio correo Notificacion Supervisores.';
-                    }
-                }
-                if ($mDatNoveda['nov_especi'] == 1 && (!in_array($mDatDespac['cod_transp'], self::$cLisTrans['NoMailNovEsp'])) && $regist['noveda'] != CONS_NOVEDA_ACAEMP && $regist['noveda'] != CONS_NOVEDA_ACAFAR && $mIndProtoc == false
-                ) { #Novedad Especial diferente a (a cargo faro, a cargo empresa), Notificacion correo
-                    $mResult = self::SendMailNovedadEspeci($regist, $mDatDespac, $mDatNoveda);
-                    if (!$mResult) {
-                        $_ERROR[] = 'Error envio correo Novedad Especial.';
-                    }
-                    $regist['observ'] .= $mResult;
-                }
-                if ($regist['noveda'] == CONS_NOVEDA_ACAEMP || $regist['noveda'] == CONS_NOVEDA_ACAFAR) { #Envia correo a la empresa y al usuario en las novedades de acargo empresa y acargo faro
-                    $mResult = self::sendMailACargo($regist, $mDatDespac, $mDatNoveda);
-                    if (!$mResult) {
-                        $_ERROR[] = 'Error envio correo A cargo Empersa o A cargo Faro.';
-                    }
-                    $regist['observ'] .= $mResult;
-
                     
-                }
-                #</Envio de Correos>
-                if ($_REQUEST['ind_solRec'] == '1') { #Guarda el indicador de solucion de la recomendacion
-                    $mResult = self::updateSoluciRecome($regist);
-                    if (!$mResult[0]) {
-                        $_ERROR[] = $mResult[1];
+                    if ($mDatNoveda['nov_especi'] == 1 && (!in_array($mDatDespac['cod_transp'], self::$cLisTrans['NoMailNovEsp'])) && $regist['noveda'] != CONS_NOVEDA_ACAEMP && $regist['noveda'] != CONS_NOVEDA_ACAFAR && $mIndProtoc == false
+                    ) { #Novedad Especial diferente a (a cargo faro, a cargo empresa), Notificacion correo
+                        if($mDatTransp['cod_tipser'] == 1 || $mDatTransp['cod_tipser'] == 4 ){
+                            $this->sendEmailNotNoveda($regist,BASE_DATOS);
+                        }else{
+                            $mResult = self::SendMailNovedadEspeci($regist, $mDatDespac, $mDatNoveda);
+                            if (!$mResult) {
+                                $_ERROR[] = 'Error envio correo Novedad Especial.';
+                            }
+                            $regist['observ'] .= $mResult;
+                        }
                     }
-                }
+                    if ($regist['noveda'] == CONS_NOVEDA_ACAEMP || $regist['noveda'] == CONS_NOVEDA_ACAFAR) { #Envia correo a la empresa y al usuario en las novedades de acargo empresa y acargo faro
+                        $mResult = self::sendMailACargo($regist, $mDatDespac, $mDatNoveda);
+                        if (!$mResult) {
+                            $_ERROR[] = 'Error envio correo A cargo Empersa o A cargo Faro.';
+                        }
+                        $regist['observ'] .= $mResult;
+                    }
+                    #</Envio de Correos>
+                    if ($_REQUEST['ind_solRec'] == '1') { #Guarda el indicador de solucion de la recomendacion
+                        $mResult = self::updateSoluciRecome($regist);
+                        if (!$mResult[0]) {
+                            $_ERROR[] = $mResult[1];
+                        }
+                    }
+                
                 #Inserta la novedad
                 $mInsNoveda = self::insertNovedad($regist, $mDifTieAla, $mCodSitiox, $mIndEnSiti, $mDatUsuari);
                 if (!$mInsNoveda[0]) {
@@ -1493,26 +1511,33 @@ class InsertNovedad {
                 $mDatTransp = $mDatTransp[0];
                 $mIndProtoc = self::indProtoc($regist['nittra'], $regist['noveda']);
                 
-                if(BASE_DATOS != 'satt_faro'){
-                    //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
-                    if($mDatNoveda['num_tiempo'] > 0){
-                        $regist['tieadi'] = $mDatNoveda['num_tiempo'];
-                    }
-                    $this->sendEmailNotNoveda($regist,BASE_DATOS);
-                }
+                
                 #<Envio de Correos>
                 if ($mDatNoveda['ind_notsup'] == 1 && $mIndProtoc == false) { #CORREO NOTIFICA SUPERVISOR.
                     if (!self::SendMailSupervisores($regist, $mDatDespac, $mDatNoveda))
                         $_ERROR[] = 'Error envio correo Notificacion Supervisores.';
                 }
 
+                //Valida si la parametrizacion de la novedad tiene tiempo parametrizado
+                if($mDatNoveda['num_tiempo'] > 0){
+                    $regist['tieadi'] = $mDatNoveda['num_tiempo'];
+                }
+
                 if ($mDatNoveda['nov_especi'] == 1 && (!in_array($mDatDespac['cod_transp'], self::$cLisTrans['NoMailNovEsp'])) && $regist['noveda'] != CONS_NOVEDA_ACAEMP && $regist['noveda'] != CONS_NOVEDA_ACAFAR && $mIndProtoc == false
                 ) { #Novedad Especial diferente a (a cargo faro, a cargo empresa), Notificacion correo
-                    $mResult = self::SendMailNovedadEspeci($regist, $mDatDespac, $mDatNoveda);
-                    if (!$mResult[0])
-                        $_ERROR[] = 'Error envio correo Novedad Especial.';
-
-                    $regist['observ'] .= $mResult;
+                    if ($mDatNoveda['nov_especi'] == 1 && (!in_array($mDatDespac['cod_transp'], self::$cLisTrans['NoMailNovEsp'])) && $regist['noveda'] != CONS_NOVEDA_ACAEMP && $regist['noveda'] != CONS_NOVEDA_ACAFAR && $mIndProtoc == false
+                    ) { #Novedad Especial diferente a (a cargo faro, a cargo empresa), Notificacion correo
+                        if($mDatTransp['cod_tipser'] == 1 || $mDatTransp['cod_tipser'] == 4 ){
+                            
+                            $this->sendEmailNotNoveda($regist,BASE_DATOS);
+                        }else{
+                            $mResult = self::SendMailNovedadEspeci($regist, $mDatDespac, $mDatNoveda);
+                            if (!$mResult) {
+                                $_ERROR[] = 'Error envio correo Novedad Especial.';
+                            }
+                            $regist['observ'] .= $mResult;
+                        }
+                    }
                 }
 
                 if ($regist['noveda'] == CONS_NOVEDA_ACAEMP || $regist['noveda'] == CONS_NOVEDA_ACAFAR) { #Envia correo a la empresa y al usuario en las novedades de acargo empresa y acargo faro
@@ -1920,12 +1945,18 @@ class InsertNovedad {
         $mIndNotage = $mConsult->ret_arreglo();
 
         $mEmailAgenci = self::getEmailAgecni($mDatRegist['despac']);
-
-        if ($mIndNotage[0] == 1 && $mEmailAgenci)
+        $mEmailGenera = self::getEmailParame($mDatRegist['despac']);
+        if ($mIndNotage[0] == 1 && $mEmailAgenci){
             $mMail = $mEmailAgenci;
-        else
+        } 
+        else{
             $mMail = $mDatDespac['mai_transp'];
+        }
+            
         #</Carga la variable mMail>
+        if($mEmailGenera != '' || $mEmailGenera != NULL){
+            $mMail.=', '.$mEmailGenera;
+        }
 
         $datos->nom_noveda = $mDatNoveda['nom_noveda'];
         $datos->num_placax = $mDatDespac['num_placax'];
@@ -1948,7 +1979,7 @@ class InsertNovedad {
         $datos->nom_config = $mDatDespac['nom_config'];
 
         if (self::sendMail($datos)){
-            return ". Se enviÃ³ Correos a: ".$mMail . ". Tiempo Ultima Novedad: ".$mDatRegist['tie_ultnov']." Minutos <br>";
+            return ". Se envían correos a: ".$mMail . ". Tiempo Ultima Novedad: ".$mDatRegist['tie_ultnov']." Minutos <br>";
         }else{
             return false;
         }
@@ -2107,7 +2138,7 @@ class InsertNovedad {
                                 VALUES 
                                 (
                                     '" . $mDatRegist['despac'] . "',  '" . $mDatRegist['rutax'] . "', '" . $mDatRegist['contro'] . "', 
-                                    '" . $mMax . "',     '" . addslashes($mDatRegist['observ']) . "', '" . $mDatRegist['noveda'] . "', 
+                                    '" . $mMax . "',     '" . corregirTildes(addslashes($mDatRegist['observ'])) . "', '" . $mDatRegist['noveda'] . "', 
                                     '" . $mDatRegist['tieadi'] . "', '" . $mDatRegist['fecnov'] . "', '" . $mDifTieAla . "', 
                                     '" . $mCodSitiox . "',           '" . $mDatRegist['indsit'] . "', '" . $mDatUsuari['cod_consec'] . "', 
                                     '" . $mDatRegist['usuari'] . "', '" . $mDatRegist['fecact'] . "'
@@ -3367,7 +3398,7 @@ class InsertNovedad {
                 $mHtmlxx = $r_file;
                 #if (HOST_WEB == HOST_WEB_PRO) {
                     mail($_CENOPE['ema_conprX'], $mAsunto, '<div name="'.HOST_WEB.'_faro_06">' . $mHtmlxx . '</div>', $mCabece . 'Cc: ' . $_CENOPE['ema_otrcoX'] . "\r\n");
-                    mail(MAIL_SUPERVISORES.", maribel.garcia@eltransporte.org", $mAsunto . " - Validacion Correo PARA ", '<div name="'.HOST_WEB.'_faro_07">' . $mHtmlxx . '</div>' . "<br><br>ENVIADO A: " . $_CENOPE['ema_conprX'] . "<br>COPIADO A: " . $_CENOPE['ema_otrcoX'], $mCabece);
+                    //mail(MAIL_SUPERVISORES.", maribel.garcia@grupooet.com", $mAsunto . " - Validacion Correo PARA ", '<div name="'.HOST_WEB.'_faro_07">' . $mHtmlxx . '</div>' . "<br><br>ENVIADO A: " . $_CENOPE['ema_conprX'] . "<br>COPIADO A: " . $_CENOPE['ema_otrcoX'], $mCabece);
                 #}
             }
             #</IF 3.2>
@@ -3684,7 +3715,7 @@ class InsertNovedad {
                             $error_ = $e->getMessage();
 
                             if ($e->faultcode != '2' && $e->faultcode != '1' && $e->faultstring != 'NINGUNO') {
-                                $mMessage = "******** Encabezado ******** <br>";
+                               /* $mMessage = "******** Encabezado ******** <br>";
                                 $mMessage .= "Fecha y hora: " . date("Y-m-d H:i") . " <br>";
                                 $mMessage .= "Empresa de transporte: " . $regist['nittra'] . " <br>";
                                 $mMessage .= "Codigo alianza: " . $mData['cod_alianz'] . " <br>";
@@ -3699,7 +3730,7 @@ class InsertNovedad {
                                 $mMessage .= "Mesaje de error: " . $e->faultstring . " <br>";
                                 $mMessage .= "Observaciones: " . $e->detail . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Alianza", '<div name="'.HOST_WEB.'_faro_09">' . $mMessage . '</div>', $mCabeceSoporte);
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Alianza", '<div name="'.HOST_WEB.'_faro_09">' . $mMessage . '</div>', $mCabeceSoporte);*/
                             }
                         }
                     }
@@ -3736,7 +3767,7 @@ class InsertNovedad {
                             $error_ = $e->getMessage();
 
                             if ($e->faultcode && $e->faultcode != '2' && $e->faultcode != '1' && $e->faultstring != 'NINGUNO') {
-                                $mMessage = "******** Encabezado ******** <br>";
+                                /*$mMessage = "******** Encabezado ******** <br>";
                                 $mMessage .= "Fecha y hora: " . date("Y-m-d H:i") . " <br>";
                                 $mMessage .= "Empresa de transporte: " . $regist['nittra'] . " <br>";
                                 $mMessage .= "Codigo ecom: " . $mData['cod_alianz'] . " <br>";
@@ -3751,7 +3782,7 @@ class InsertNovedad {
                                 $mMessage .= "Mesaje de error: " . $e->faultstring . " <br>";
                                 $mMessage .= "Observaciones: " . $e->detail . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Faro - EcomColocar", '<div name="'.HOST_WEB.'_faro_10">' . $mMessage . '</div>', $mCabeceSoporte);
+                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Faro - EcomColocar", '<div name="'.HOST_WEB.'_faro_10">' . $mMessage . '</div>', $mCabeceSoporte);*/
                             }
                         }
                     }
@@ -3821,7 +3852,6 @@ class InsertNovedad {
 
                                 //MÃ©todos disponibles en el WS
                                 $respuesta = $oSoapClient-> __soapCall( 'puestocontrol', $parametros );
-
                                 if ($respuesta != 'OK REPORTO.') {
                                     $error_ = $respuesta;
                                 }
@@ -3845,9 +3875,9 @@ class InsertNovedad {
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
-                                mail(MAIL_SOPORTE, 
+                                /*mail(MAIL_SOPORTE, 
                                 	"Error Web service Humadea - Colombiasoftware", 
-                                	'<div name="'.HOST_WEB.'_faro_11">' . $mMessage."\n". var_export($parametros, true ) . '</div>', $mCabeceSoporte);
+                                	'<div name="'.HOST_WEB.'_faro_11">' . $mMessage."\n". var_export($parametros, true ) . '</div>', $mCabeceSoporte);*/
                             }
                             //Insert de BitÃ¡cora 
                             $mLog = array();
@@ -3891,7 +3921,6 @@ class InsertNovedad {
 
                                 //MÃ©todos disponibles en el WS
                                 $respuesta = $oSoapClient->__soapCall('novedades', $parametros);
-
                                 if ($respuesta != 'OK REPORTO.') {
                                     $error_ = $respuesta;
                                 }
@@ -3913,7 +3942,7 @@ class InsertNovedad {
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $error_ . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", '<div name="'.HOST_WEB.'_faro_12">' . $mMessage . '</div>', $mCabeceSoporte);
+                                //mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", '<div name="'.HOST_WEB.'_faro_12">' . $mMessage . '</div>', $mCabeceSoporte);
                             }
                             //Insert de BitÃ¡cora 
                             $mLog = array();
@@ -3977,7 +4006,7 @@ class InsertNovedad {
                                 $mMessage .= "Mesaje de error: " . $e->faultstring . " <br>";
                                 $mMessage .= "Observaciones: " . $e->detail . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Faro - OnlineTools GMT", '<div name="'.HOST_WEB.'_faro_13">' . $mMessage . '</div>', $mCabeceSoporte);
+                                //mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Faro - OnlineTools GMT", '<div name="'.HOST_WEB.'_faro_13">' . $mMessage . '</div>', $mCabeceSoporte);
                             }
                         }
                     }
@@ -4029,7 +4058,7 @@ class InsertNovedad {
                                 $mMessage .= "Mesaje de error: " . $e->faultstring . " <br>";
                                 $mMessage .= "Observaciones: " . $e->detail . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Faro - EcomCoounidas", '<div name="'.HOST_WEB.'_faro_14">' . $mMessage . '</div>', $mCabeceSoporte);
+                                //mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Faro - EcomCoounidas", '<div name="'.HOST_WEB.'_faro_14">' . $mMessage . '</div>', $mCabeceSoporte);
                             }
                         }
                     }
@@ -4378,29 +4407,57 @@ class InsertNovedad {
                                 'bin_fotcon' => $regist['bin_fotcon'],
                             );
 
+                            // Convert mParams array to a JSON-formatted string with indentation
+                            $mParamsFormatted = json_encode($parametros, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
                             if (!$error_) {
                                 try {
                                     //M?odos disponibles en el WS
                                     $respuesta = $oSoapClient->__call($mOption[0], $parametros);
-                                    if($mDatDespac['cod_manifi']=='NT29'){
-                                        mail('cristian.torres@grupooet.com','Respuesta: '.$mDatDespac['cod_manifi'],var_export($respuesta,true));
-                                    }
                                     $mResult = explode("; ", $respuesta);
                                     $mCodResp = explode(":", $mResult[0]);
                                     $mMsgResp = explode(":", $mResult[1]);
+                                    $mReporte = [];
+                                    $mResulta = [];
+                                    $mReporte['num_despac'] = $regist['despac'];
+                                    $mReporte['usuari'] = $regist['usuari'];
+                                    $mReporte['origen'] = $mIndEnSiti == 1 ? 'tab_despac_noveda' : 'tab_despac_contro';
+                                    $mReporte['cod_connov'] = self::maxCodConsec($regist['despac'], $mReporte['origen']);
+                                    $mResulta['cod_status'] = $mCodResp[1];
+                                    $mResulta['msj_status'] = $mMsgResp[1];
+                                    self::setTransaccion( $mReporte , $mResulta);
+                                       
+                                    $mLogFile = '/var/www/html/ap/satt_intgps/logs/sendNovedades/'."log_novedades_".date( "Y_m_d" ).".log";
+                                    $file = fopen( $mLogFile, "a+" );
+                                    $reg = fwrite( $file, "\n---------------------------------------------------\n" );
+                                    $reg = fwrite( $file, "Execution Date-Time: ".date( "Y/m/d H:i:s" )."\n" );
+                                    $reg = fwrite( $file, "Despacho: ".$regist['despac']."   Manifiesto: ".$mDatDespac['cod_manifi']."   Placa: ".$mDatDespac['num_placax']."   Aplicación: ".$interfaz->interfaz[$i]['nombre']."\n" );
+
                                     if ("1000" != $mCodResp[1]) {
                                         $error_ = $mMsgResp[1];
+                                        $reg = fwrite( $file, "Status: ERROR \n" );;
+                                        $reg = fwrite($file, "Data: ".$mParamsFormatted."\n");
+                                        $reg = fwrite( $file, "Resp: ".$mData['url_webser']." --- ".$mMsgResp[1]."\n" );
+                                        $close = fclose( $file );
+
+                                        $errormessage .= "Status: ERROR\n";
+                                        $errormessage .= "Data: ".$mParamsFormatted."\n";
+                                        $errormessage .= "Resp: ".$mData['url_webser']." --- ".$mMsgResp[1]."\n";
+
                                     } else {
                                         $error_ = NULL;
+                                        $reg = fwrite( $file, "Status: SUCCESS \n" );
+                                        $reg = fwrite($file, "Data: ".$mParamsFormatted."\n");
+                                        $reg = fwrite( $file, "Resp: ".$mData['url_webser']." --- ".$mMsgResp[1]."\n" );
+                                        $close = fclose( $file );
                                         //Hace la actualizaci? del indicador estado de novedad enviada a tms
                                         self::updateEstadoEnviadoTms($regist, $mIndEnSiti);
                                         break;
                                     }
+                                    
+
                                 } catch (SoapFault $e) {
                                     $error_ = $e->getMessage();
-                                    if($mDatDespac['cod_manifi']=='NT29'){
-                                        mail('cristian.torres@grupooet.com','Error: '.$mDatDespac['cod_manifi'],$error_);
-                                    }
                                 }
 
 
@@ -4589,7 +4646,7 @@ class InsertNovedad {
                                 $mMessage .= "******** Detalle ******** <br>";
                                 $mMessage .= "Mensaje de error: " . $respuesta . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Error Web service Trans FW - SISTEMA ARGO", '<div name="'.HOST_WEB.'_faro_15">' . $mMessage . '</div>', $mCabeceSoporte);
+                                //mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Error Web service Trans FW - SISTEMA ARGO", '<div name="'.HOST_WEB.'_faro_15">' . $mMessage . '</div>', $mCabeceSoporte);
                             }
                         } catch (SoapFault $e) {
                             $error_ = $e->getMessage();
@@ -4645,8 +4702,8 @@ class InsertNovedad {
                                 $mMessage .= "Error: " . $e->faultstring . " <br>";
                                 $mMessage .= "Error Detallado: " . $result . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Intracarga Fault", '<div name="'.HOST_WEB.'_faro_17">' . $mMessage . '</div>', $mCabeceSoporte
-                                );
+                                /*mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Intracarga Fault", '<div name="'.HOST_WEB.'_faro_17">' . $mMessage . '</div>', $mCabeceSoporte
+                                );*/
                             }
                         }
                     }
@@ -4701,7 +4758,7 @@ class InsertNovedad {
                                 $mMessage .= "Error: " . $e->faultstring . " <br>";
                                 $mMessage .= "Error Detallado: " . $result . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service MCT Error Catch", '<div name="'.HOST_WEB.'_faro_18">' . $mMessage . '</div>', $mCabeceSoporte);
+                                //mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service MCT Error Catch", '<div name="'.HOST_WEB.'_faro_18">' . $mMessage . '</div>', $mCabeceSoporte);
                             }
                         }
                     }
@@ -4744,7 +4801,7 @@ class InsertNovedad {
                                 $mMessage .= "Error: " . $e->faultstring . " <br>";
                                 $mMessage .= "Error Detallado: " . $result . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service MCT Notas controlador Error Catch", '<div name="'.HOST_WEB.'_faro_19">' . $mMessage . '</div>', $mCabeceSoporte);
+                                //mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service MCT Notas controlador Error Catch", '<div name="'.HOST_WEB.'_faro_19">' . $mMessage . '</div>', $mCabeceSoporte);
                             }
                         }
                     }
@@ -4890,7 +4947,7 @@ class InsertNovedad {
                                 $mMessage .= "Error: " . $e->getMessage() . " <br>";
                                 $mMessage .= "Error Detallado: " . $mResponse . " <br>";
 
-                                mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Carga Antioquia Notas controlador Error Catch", '<div name="'.HOST_WEB.'_faro_19">' . $mMessage . '</div>', $mCabeceSoporte);
+                                //mail(MAIL_SUPERVISORES . ", " . MAIL_SOPORTE, "Web service Carga Antioquia Notas controlador Error Catch", '<div name="'.HOST_WEB.'_faro_19">' . $mMessage . '</div>', $mCabeceSoporte);
                              
                         }
                     }
@@ -5167,7 +5224,7 @@ class InsertNovedad {
             $mail->AddAddress( $destin );
             //return mail($destin, $asunto, $msj, $cabeceras);
         } else {
-            $mail->AddAddress( "luis.manrique@eltransporte.org, maribel.garcia@eltransporte.org" );
+            //$mail->AddAddress( "luis.manrique@eltransporte.org, maribel.garcia@eltransporte.org" );
             //return mail("luis.manrique@eltransporte.org", $asunto, $msj, $cabeceras);
         }
 
@@ -5205,6 +5262,75 @@ class InsertNovedad {
                     AND cod_noveda = '".$mData['noveda']."' 
                     AND ".$colum." = '".$mData['fecnov']."'";
         new Consulta($mSql, $this->conexion);     
+    }
+
+
+
+    /*! \fn: setTransaccion
+	*  \brief: Setea en la tabla el resultado de la transaccion
+	*  \author: Ing. Cristian Andrés Torres
+	*  \date: 2021-12-02
+	*  \return: none
+	*/
+	private function setTransaccion( $mReporte = NULL, $mResulta = NULL){
+		$mRegTran = self::transaTable( $mReporte );
+		if($mRegTran==FALSE){
+			$mQuery = "INSERT INTO tab_transa_noveda(
+						num_despac, cod_consec, nom_tablax,
+						cod_status, msj_status, fec_transa,
+						fec_creaci, usr_creaci
+					) 
+					VALUES 
+						(
+							'".$mReporte['num_despac']."', '".$mReporte['cod_connov']."', '".$mReporte['origen']."',
+							'".$mResulta['cod_status']."', '".$mResulta['msj_status']."', NOW(),
+							NOW(), '".$mReporte['usuari']."'
+						)";
+			
+		}else{
+
+			$mQuery = "UPDATE tab_transa_noveda
+							SET   
+								cod_status = '".$mResulta['cod_status']."', 
+								msj_status = '".$mResulta['msj_status']."', 
+								fec_transa = NOW(), 
+								can_transa = '".($mRegTran['can_transa']+1)."',  
+								fec_modifi = NOW(), 
+								usr_modifi = '".$mReporte['usuari']."'
+							WHERE
+								cod_transa = '".$mRegTran['cod_transa']."'";
+		}
+		new Consulta($mQuery, $this->conexion);   
+	}
+
+    /*! \fn: transaTable
+	*  \brief: consulta la información de la tabla transaccional de la novedades
+	*  \author: Ing. Cristian Andrés Torres
+	*  \date: 2021-12-02
+	*  \return: none
+	*/
+	private function transaTable( $mReporte = NULL){
+		$mQuery = "SELECT a.cod_transa, a.can_transa FROM tab_transa_noveda a
+					 WHERE 	a.num_despac = '".$mReporte['num_despac']."'
+					    AND a.cod_consec = '".$mReporte['cod_connov']."'
+						AND a.nom_tablax = '".$mReporte['origen']."'";
+        $mConsult = new Consulta($mQuery, $this->conexion);
+        $registro = $mConsult->ret_matrix('a');
+		if(sizeof($registro)>0){
+			return $registro[0];
+		}else{
+			return false;
+		}
+	}
+
+    private function maxCodConsec( $mNumDespac = NULL, $origen = 'tab_despac_contro'){
+        $mSql = " SELECT MAX(cod_consec) AS maximo 
+                        FROM " . BASE_DATOS . ".".$origen." 
+                       WHERE num_despac = '" . $mNumDespac . "' ";
+        $mConsult = new Consulta($mSql, $this->conexion);
+        $mMax = $mConsult->ret_arreglo();
+        $mMax = $mMax[0];
+        return $mMax;
     }
 
      /*! \fn: reenviaNovedadesAvansat
@@ -5255,7 +5381,7 @@ class InsertNovedad {
                                         AND	a.ind_enviad = 0
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S'  
-                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
                                         /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                     GROUP BY aa.num_despac, a.fec_creaci
                                 )
@@ -5291,7 +5417,7 @@ class InsertNovedad {
                                         AND	a.ind_enviad = 0
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S' 
-                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
                                         /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                         GROUP BY aa.num_despac, a.fec_creaci
                                 )
@@ -5299,7 +5425,7 @@ class InsertNovedad {
                         ";
             $mConsult = new Consulta($mQuery, $this->conexion);
             $cNovPendientes = $mConsult->ret_matrix('a');
-            
+
             $errores = '';
             if(sizeof($cNovPendientes) > 0){
 
@@ -5353,30 +5479,66 @@ class InsertNovedad {
                     $mCodResp = explode( ":", $mResult[0] );  
                     $mMsgResp = explode( ":", $mResult[1] );
                     
+
+                    // Convert mParams array to a JSON-formatted string with indentation
+                    $mParamsFormatted = json_encode($mParams, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
                     if( "1000" != $mCodResp[1] ){
                         $errores .= "<p>Despacho: ".$mReporte['num_despac']." - Manifiesto: ".$mReporte['cod_manifi']." - Ws: ".$mReporte['url_webser']." --Error::".$mMsgResp[1]."-- </p>";
                         $msj = 'El despacho esta presentando inconveniente al reenviar las novedades';
+                        $icon = 'error';
+                        $title = 'Error';
+
+                        $mLogFile = '/var/www/html/ap/satt_intgps/logs/sendNovedades/'."log_novedades_".date( "Y_m_d" ).".log";
+                        $file = fopen( $mLogFile, "a+" );
+                        $reg = fwrite( $file, "\n---------------------------------------------------\n" );
+                        $reg = fwrite( $file, "Execution Date-Time: ".date( "Y/m/d H:i:s" )."\n" );
+                        $reg = fwrite( $file, "DESDE EL REENVIO DE NOVEDADES\n" );
+                        $reg = fwrite( $file, "Despacho: ".$mReporte['num_despac']."   Manifiesto: ".$mReporte['cod_manifi']."   Placa: ".$mReporte['cod_manifi']."   Aplicación: ".$mReporte['nom_operad']."\n" );
+                        $reg = fwrite( $file, "Status: ERROR \n" );
+                        $reg = fwrite($file, "Data: ".$mParamsFormatted."\n");
+                        $reg = fwrite( $file, "Resp: ".$mReporte['url_webser']." --- ".$mMsgResp[1]."\n" );
+                        $close = fclose( $file );
+
 				    }else{
                         $msj = 'Se realizo el reenvio de novedades de manera exitosa';
+                        $icon = 'success';
+                        $title = '¡Exito!';
+
+
+                        $mLogFile = '/var/www/html/ap/satt_intgps/logs/sendNovedades/'."log_novedades_".date( "Y_m_d" ).".log";
+                        $file = fopen( $mLogFile, "a+" );
+                        $reg = fwrite( $file, "\n---------------------------------------------------\n" );
+                        $reg = fwrite( $file, "Execution Date-Time: ".date( "Y/m/d H:i:s" )."\n" );
+                        $reg = fwrite( $file, "DESDE EL REENVIO DE NOVEDADES\n" );
+                        $reg = fwrite( $file, "Despacho: ".$mReporte['num_despac']."   Manifiesto: ".$mReporte['cod_manifi']."   Placa: ".$mReporte['cod_manifi']."   Aplicación: ".$mReporte['nom_operad']."\n" );
+                        $reg = fwrite( $file, "Status: SUCCESS \n" );
+                        $reg = fwrite($file, "Data: ".$mParamsFormatted."\n");
+                        $reg = fwrite( $file, "Resp: ".$mMsgResp[1]."\n" );
+                        $close = fclose( $file );
+
                     }
 
                     //Actualiza el registro de la novedad indicando que ya fue enviado
-                    $mUpdate = "UPDATE ".BASE_DATOS.".".$mReporte['origen']." SET ind_enviad = 1 WHERE num_despac = ". $mReporte['num_despac']." AND  fec_creaci = '".$mReporte['fec_creaci']."' ";
-                    $transaccion = 'R';
-                    if($mIndex==0){
-                        $transaccion = 'BR';
+                    if($mCodResp[1]==1000){
+                        $mUpdate = "UPDATE ".BASE_DATOS.".".$mReporte['origen']." SET ind_enviad = 1 WHERE num_despac = ". $mReporte['num_despac']." AND  fec_creaci = '".$mReporte['fec_creaci']."' ";
+                        
+                        /*
+                        $transaccion = 'R';
+                        if($mIndex==0){
+                            $transaccion = 'BR';
+                        }
+                        if(count($cNovPendientes)-1 == $mIndex){
+                            $transaccion = 'RC';
+                        }*/
+                        new Consulta($mUpdate, $this->conexion);
                     }
-                    if(count($cNovPendientes)-1 == $mIndex){
-                        $transaccion = 'RC';
-                    }
-                    new Consulta($mUpdate, $this->conexion, $transaccion);
                 }
                 $cRespuest['info'] = $errores;
                 $cRespuest['noveda'] = $cReportes;
                 $cRespuest['status'] = true;
                 $cRespuest['msj'] = $msj;
-                $cRespuest['title'] = '¡Exito!';
-                $cRespuest['type'] = 'success';
+                $cRespuest['title'] = $title;
+                $cRespuest['type'] = $icon;
                 
             }else{
                 $cRespuest['status'] = true;

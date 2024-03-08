@@ -169,7 +169,9 @@
                             cod_transp = c.cod_transp
                         )
                         AND c.ind_estseg = 1
-                        AND a.nom_tercer LIKE '%".$busqueda."%'
+                        AND (a.nom_tercer LIKE '%".$busqueda."%' OR
+                             a.abr_tercer LIKE '%".$busqueda."%'
+                            )
                       GROUP BY 
                         c.cod_transp 
                       ORDER BY 
@@ -603,7 +605,7 @@
               $cod_conduc = $this->registroIniConduc();
             }
 
-            //Indicador de creación del despachos al finalizar el estudio de seguridad.
+            //Indicador de creaciï¿½n del despachos al finalizar el estudio de seguridad.
             $ind_credes = $_REQUEST['ind_credes'];
             $cod_despac = NULL;
             if($ind_credes==1){
@@ -683,7 +685,7 @@
             foreach($documentos as $key=>$value){
               $ruta = URL_APLICA."files/adj_estseg/adjs/";
               if($value['obs_archiv']=='' || $value['obs_archiv'] == NULL){
-                $value['obs_archiv'] = utf8_encode('**SIN OBSERVACIÓN**');
+                $value['obs_archiv'] = utf8_encode('**SIN OBSERVACIï¿½N**');
               }
               $html.='<tr>
                         <td>'.$value['nom_fordoc'].'</td>
@@ -853,8 +855,8 @@
               $filtro = $mMatriz[0]['clv_filtro'];
               $cond .= " AND a.cod_emptra = '".$filtro."' ";
             }else{
-              if($_REQUEST['transportadora'] != NULL || $_REQUEST['transportadora'] != ''){
-                $cond .= " AND a.cod_emptra = '".$_REQUEST['transportadora']."' ";
+              if($_REQUEST['cod_emptra'] != NULL || $_REQUEST['cod_emptra'] != ''){
+                $cond .= " AND a.cod_emptra = '".$_REQUEST['cod_emptra']."' ";
               }
             }
 
@@ -864,6 +866,11 @@
 
             if($_REQUEST['fec_inicio'] != NULL || $_REQUEST['fec_inicio'] != '' && $_REQUEST['fec_finalx'] != NULL || $_REQUEST['fec_finalx'] != '' && !$_REQUEST['fil_fechas']){
               $cond .= " AND a.fec_creaci BETWEEN '".$_REQUEST['fec_inicio']." 00:00:00' AND '".$_REQUEST['fec_finalx']." 23:59:59' ";
+            }
+
+
+            if($_REQUEST['num_identifi'] != NULL || $_REQUEST['num_identifi'] != ''){
+              $cond .= " AND (a.cod_conduc = '".$_REQUEST['num_identifi']."' OR a.cod_vehicu = '".$_REQUEST['num_identifi']."') ";
             }
 
             $sql = "SELECT a.cod_solici, b.nom_tercer,
@@ -892,9 +899,13 @@
                   $btn = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" data-dato="'.$datos['cod_solici'].'" onclick="consInfoSolicitud(this)">'.$datos['cod_solici'].'</span></h6></center>';
                 }
 
-                $col_identi = $datos['num_placax'];
-                if($datos['cod_tipest'] != 'V'){
+                
+                if($datos['cod_tipest'] == 'C'){
                   $col_identi = $datos['num_docume'];
+                }else if($datos['cod_tipest'] == 'V'){
+                  $col_identi = $datos['num_placax'];
+                }else{
+                  $col_identi = $datos['num_docume']." - ".$datos['num_placax'];
                 }
 
                 $col_nommar = $datos['nom_marcax'];
@@ -904,7 +915,8 @@
 
                 $fec_creaci = new DateTime($datos['fec_creaci']);
                 $fecha_actual = new DateTime(date('Y-m-d H:i:s'));
-                $tie_transcu = $fec_creaci->diff($fecha_actual);
+                $fec_finali = new DateTime($datos['fec_finsol']);
+                $tie_transcu = $fec_creaci->diff($fec_finali);
                 
                 if($datos['ind_estseg']=='P'){
                   $arr_regist = array(
@@ -918,16 +930,27 @@
                   );
                   array_push($dataReturn['registrados'],(array)$arr_regist);
                 }else{
-                  $view = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" data-dato="'.$datos['cod_solici'].'" onclick="openModalViewPdf(this)"><i class="fa fa-eye" aria-hidden="true"></i></span></h6></center>';
-                  $viewD = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" data-dato="'.$datos['cod_solici'].'" onclick="openModalViewDocuments(this)"><i class="fa fa-eye" aria-hidden="true"></i></span></h6></center>';
+                  $view = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" data-dato="'.$datos['cod_solici'].'" onclick="openModalViewPdf(this)" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></span></h6></center>';
+                  $viewD = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" data-dato="'.$datos['cod_solici'].'" onclick="openModalViewDocuments(this)" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></span></h6></center>';
                   
                   if($datos['fec_venest']>date('Y-m-d')){
                     $badge_venest = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" style="background-color:#4caf50 !important">'.$datos['fec_venest'].'</span></h6></center>';
                   }else{
                     $badge_venest = '<center><h6><span class="badge badge-pill badge-danger c_pointer btn-danger">'.$datos['fec_venest'].'</span></h6></center>';
                   }
+
+                  $badge_result = '';
+                  if($datos['ind_estseg']=='A'){
+                    $badge_result = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" style="background-color:#4caf50 !important">RECOMENDADO</span></h6></center>';
+                  }else if($datos['ind_estseg']=='R'){
+                    $badge_result = '<center><h6><span class="badge badge-pill badge-danger c_pointer btn-danger" style="background-color:#dd0246 !important">RECHAZADO</span></h6></center>';
+                  }else if($datos['ind_estseg']=='C'){
+                    $badge_result = '<center><h6><span class="badge badge-pill badge-warning c_pointer btn-warning" style="background-color:#dd9c02 !important">CANCELADO</span></h6></center>';
+                  }
+
                   $fec_finsol = new DateTime($datos['fec_creaci']);
-                  $tie_transcu = $fec_finsol->diff($fecha_actual);
+                  $fec_finali = new DateTime($datos['fec_finsol']);
+                  $tie_transcu = $fec_finsol->diff($fec_finali);
                   $arr_regist = array(
                     0 => $btn,
                     1 => $datos['nom_tercer'],
@@ -939,7 +962,8 @@
                     7 => $datos['fec_creaci'],
                     8 => $datos['fec_finsol'],
                     9 => $this->get_format($tie_transcu),
-                    10 => $badge_venest
+                    10 => $badge_result,
+                    11 => $badge_venest
                   );
                   array_push($dataReturn['finalizados'],(array)$arr_regist);
                 }
@@ -984,7 +1008,7 @@
             $str .= ($df->invert == 1) ? ' - ' : '';
             if ($df->y > 0) {
                 // years
-                $str .= ($df->y > 1) ? $df->y . ' Años ' : $df->y . ' Año ';
+                $str .= ($df->y > 1) ? $df->y . ' Aï¿½os ' : $df->y . ' Aï¿½o ';
             } if ($df->m > 0) {
                 // month
                 $str .= ($df->m > 1) ? $df->m . ' Meses ' : $df->m . ' Mes ';
@@ -1085,10 +1109,10 @@
                           <th scope="col" style="min-width: 200px;">Poseedor</th>
                           <th scope="col" style="min-width: 200px;">Propietario</th>
                           <th scope="col">Vehiculo</th>
-                          <th scope="col" style="min-width: 130px;">Gestión</th>
+                          <th scope="col" style="min-width: 130px;">Gestiï¿½n</th>
                           <th scope="col" style="min-width: 200px;">Observaci?n</th>
-                          <th scope="col" style="min-width: 130px;">Gestión</th>
-                          <th scope="col" style="min-width: 200px;">Observación</th>
+                          <th scope="col" style="min-width: 130px;">Gestiï¿½n</th>
+                          <th scope="col" style="min-width: 200px;">Observaciï¿½n</th>
                           
                         </tr>
                     </thead>
@@ -1150,7 +1174,7 @@
 
           private function buscaDocumento($cod_estseg, $ind_estudi){
             if($ind_estudi=='A' || $ind_estudi=='R'){
-              $html.='<center><button class="btn btn-info info-color btn-sm" data-code="'.$cod_estseg.'" data-dato="'.self::darCodigoSolicitud($cod_estseg).'" onclick="openModalViewPdf(this)"><i class="fa fa-eye" aria-hidden="true"></i></button></center>';
+              $html.='<center><button class="btn btn-info info-color btn-sm" data-code="'.$cod_estseg.'" data-dato="'.self::darCodigoSolicitud($cod_estseg).'" onclick="openModalViewPdf(this)" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></button></center>';
             }else{
               $html.='<center>NO DISPONIBLE</center>';
             }
@@ -1165,7 +1189,7 @@
             $resultados = $resultado->ret_matriz('a');
             $html = '';
             if(count($resultados)>0){
-              $html.='<center><button class="btn btn-info info-color btn-sm" data-code="'.$cod_estseg.'" data-dato="'.self::darCodigoSolicitud($cod_estseg).'" onclick="openModalViewDocuments(this)"><i class="fa fa-eye" aria-hidden="true"></i></button></center>';
+              $html.='<center><button class="btn btn-info info-color btn-sm" data-code="'.$cod_estseg.'" data-dato="'.self::darCodigoSolicitud($cod_estseg).'" onclick="openModalViewDocuments(this)" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></button></center>';
             }else{
               $html.='<center>NO DISPONIBLE</center>';
             }
@@ -1344,7 +1368,7 @@
 
             
             $info['status']=200;
-            $info['response']='Información registrada';
+            $info['response']='Informaciï¿½n registrada';
             echo json_encode($info);
 
           }
@@ -1487,7 +1511,7 @@
           */
           
           //usada
-          function guardaArchivos($cod_solici, $cod_tipper){
+          /* function guardaArchivos($cod_solici, $cod_tipper){
             $mSql="SELECT a.cod_fordoc, a.nom_fordoc, a.nom_slugxx FROM ".BASE_DATOS.".tab_estseg_fordoc a
                               WHERE a.ind_status = 1 AND
                                     a.cod_tipper = '".$cod_tipper."'
@@ -1506,7 +1530,7 @@
                 $destino_temporal=tempnam("tmp/","tmp");
                 if (move_uploaded_file($_FILES[$nom_tipdoc]['tmp_name'], $nombre)) {
                   if(end($ext)=='jpg' || end($ext)=='png' || end($ext)=='jpeg'){
-                    if(self::redimensionarImagen($nombre, $destino_temporal, 640, 480, 50) ){
+                    if(self::redimensionarImagen($nombre, $destino_temporal, 640, 480, 90) ){
                       unlink($path);
                       $fp=fopen($nombre,"w");
                       fputs($fp,fread(fopen($destino_temporal,"r"),filesize($destino_temporal)));
@@ -1526,7 +1550,42 @@
               self::guardadoObservacion($cod_solici, $documento['cod_fordoc'], ucfirst(strtolower($observacion)));
             }
           }
-          }
+          } */
+
+          function guardaArchivos($cod_solici, $cod_tipper){
+            $mSql = "SELECT a.cod_fordoc, a.nom_fordoc, a.nom_slugxx FROM ".BASE_DATOS.".tab_estseg_fordoc a
+                            WHERE a.ind_status = 1 AND
+                            a.cod_tipper = '".$cod_tipper."'
+                            ORDER BY ind_ordenx, a.nom_fordoc ASC
+            ";
+            $resultado = new Consulta($mSql, self::$conexion);
+            $documentos = $resultado->ret_matriz('a');
+            $ruta = "../../".BASE_DATOS."/files/adj_estseg/adjs/";
+            $errores = false;
+            
+            foreach($documentos as $key=>$documento){
+                $nom_tipdoc = $documento['nom_slugxx'];
+                if($_FILES[$nom_tipdoc]['name'] != null || $_FILES[$nom_tipdoc]['name'] != ''){
+                    $ext = explode(".", ($_FILES[$nom_tipdoc]['name']));
+                    $nombre = $ruta.''.$cod_solici.'_'.$nom_tipdoc.'_'.time().".".end($ext);
+                    $nom_final = $cod_solici.'_'.$nom_tipdoc.'_'.time().".".end($ext);
+                    
+                    if (move_uploaded_file($_FILES[$nom_tipdoc]['tmp_name'], $nombre)) {
+                        $observacion = $_REQUEST[$nom_tipdoc."OBS"];
+                        $nom_tipfil = strtolower(end($ext));
+                        self::guardadoDeDocumentos($cod_solici, $documento['cod_fordoc'], $nom_final, $nombre, $observacion, $nom_tipfil);
+                    } else {
+                        $errores = true;
+                        $doc_nosubi = ' - '.$_FILES[$nom_tipdoc]['name'];
+                    }
+                }
+                
+                $observacion = $_REQUEST[$nom_tipdoc."OBS"];
+                if($observacion!=''){
+                    self::guardadoObservacion($cod_solici, $documento['cod_fordoc'], ucfirst(strtolower($observacion)));
+                }
+            }
+        }
 
           /**
            * Funcion para redimensionar imagenes
@@ -1538,53 +1597,36 @@
            * @param integer $jpgQuality (opcional) Calidad para la imagen jpg
            * @return boolean true = Se ha redimensionada|false = La imagen es mas peque?a que el nuevo tama?o
            */
-          function redimensionarImagen($origin,$destino,$newWidth,$newHeight,$jpgQuality=100)
-          {
-              // getimagesize devuelve un array con: anchura,altura,tipo,cadena de 
-              // texto con el valor correcto height="yyy" width="xxx"
-              $datos=getimagesize($origin);
-              // comprobamos que la imagen sea superior a los tama?os de la nueva imagen
-              if($datos[0]>$newWidth || $datos[1]>$newHeight)
-              {
-                  // creamos una nueva imagen desde el original dependiendo del tipo
-                  if($datos[2]==1)
-                      $img=imagecreatefromgif($origin);
-                  if($datos[2]==2)
-                      $img=imagecreatefromjpeg($origin);
-                  if($datos[2]==3)
-                      $img=imagecreatefrompng($origin);
-          
-                  // Redimensionamos proporcionalmente
-                  if(rad2deg(atan($datos[0]/$datos[1]))>rad2deg(atan($newWidth/$newHeight)))
-                  {
-                      $anchura=$newWidth;
-                      $altura=round(($datos[1]*$newWidth)/$datos[0]);
-                  }else{
-                      $altura=$newHeight;
-                      $anchura=round(($datos[0]*$newHeight)/$datos[1]);
-                  }
-          
-                  // creamos la imagen nueva
-                  $newImage = imagecreatetruecolor($anchura,$altura);
-          
-                  // redimensiona la imagen original copiandola en la imagen
-                  imagecopyresampled($newImage, $img, 0, 0, 0, 0, $anchura, $altura, $datos[0], $datos[1]);
-          
-                  // guardar la nueva imagen redimensionada donde indicia $destino
-                  if($datos[2]==1)
-                      imagegif($newImage,$destino);
-                  if($datos[2]==2)
-                      imagejpeg($newImage,$destino,$jpgQuality);
-                  if($datos[2]==3)
-                      imagepng($newImage,$destino);
-          
-                  // eliminamos la imagen temporal
-                  imagedestroy($newImage);
-          
-                  return true;
-              }
-              return false;
-          }
+          function redimensionarImagen($origin, $destino, $newWidth, $newHeight, $jpgQuality = 85) {
+            // Obtener las dimensiones de la imagen original
+            list($origWidth, $origHeight) = getimagesize($origin);
+        
+            // Crear una imagen desde el archivo original
+            $origImage = imagecreatefromjpeg($origin);
+        
+            // Redimensionar proporcionalmente
+            $ratio = $origWidth / $origHeight;
+            if ($newWidth / $newHeight > $ratio) {
+                $newWidth = $newHeight * $ratio;
+            } else {
+                $newHeight = $newWidth / $ratio;
+            }
+        
+            // Crear una imagen nueva con las nuevas dimensiones
+            $newImage = imagecreatetruecolor($newWidth, $newHeight);
+        
+            // Redimensionar la imagen original a la imagen nueva
+            imagecopyresampled($newImage, $origImage, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
+        
+            // Guardar la nueva imagen redimensionada con compresión JPEG
+            imagejpeg($newImage, $destino, $jpgQuality);
+        
+            // Liberar memoria
+            imagedestroy($newImage);
+            imagedestroy($origImage);
+        
+            return true;
+        }
           
           function getInfoSolici($cod_solici){
             $sql = "SELECT 
@@ -1733,7 +1775,7 @@
 
           /* ! \fn: creaDespacho
           *  \brief: guarda la informacion del despacho
-          *  \author: Cristian Andrés Torres
+          *  \author: Cristian Andrï¿½s Torres
           *  \date: 20/12/2017
           *  \date modified: dd/mm/aaaa
           *  \return: json
@@ -1756,7 +1798,7 @@
                 $cod_agenci = $dispatch['agenci_code'];
                 $cod_conduc = $data['driver']['document_number'];
                 $num_placax = $data['vehicle']['placa'];
-                $obs_despac = 'Despacho creado automaticamente a traves del módulo de estudio de seguridad';
+                $obs_despac = 'Despacho creado automaticamente a traves del mï¿½dulo de estudio de seguridad';
 
 
                 #consulta el ultimo consecutivo del despacho
@@ -2023,7 +2065,7 @@
 
           /* ! \fn: getValidateTercerExist
           *  \brief: Valida si el tercero existe
-          *  \author: Cristian Andrés Torres
+          *  \author: Cristian Andrï¿½s Torres
           *  \date: 20/12/2017
           *  \date modified: dd/mm/aaaa
           *  \return: json
@@ -2097,7 +2139,7 @@
 
           /* ! \fn: getTerceroByID
           *  \brief: Valida si el tercero existe
-          *  \author: Cristian Andrés Torres
+          *  \author: Cristian Andrï¿½s Torres
           *  \date: 20/12/2017
           *  \date modified: dd/mm/aaaa
           *  \return: json
@@ -2422,7 +2464,7 @@
             if (preg_match($regex, $dato, $matches)) {
                 // Almacenar los valores en una sola variable
                 $codigo = array(trim($matches[1]), trim($matches[2]));
-                // Devolver el valor correspondiente basado en el parámetro $retorno
+                // Devolver el valor correspondiente basado en el parï¿½metro $retorno
                 return ($retorno == 1) ? $codigo[0] : $codigo[1];
             }
             // Devolver un valor por defecto en caso de que no haya coincidencia
@@ -2567,9 +2609,6 @@
                     WHERE a.num_placax = '".$cod_vehicu."'";
               $query = new Consulta($sql, self::$conexion);
               $resultados = $query -> ret_matrix('a')[0];
-              if($resultados['cod_opegps']==''){
-                mail('cristian.torres@grupooet.com','Alerta estudio de seguridad Operador GPS',$sql);
-              }
               $dataVehicu = array(
                 'placa' => $resultados['num_placax'],
                 'trailer_number' => $resultados['num_remolq'],
@@ -2934,7 +2973,6 @@
                 $name = $cod_solici.'_InformeFinal_'.time()."_Temp.pdf";
                 $path = $ruta.''.$name;
                 if(!move_uploaded_file($_FILES['file']['tmp_name'], $path)){
-                  mail('cristian.torres@grupooet.com', 'Prueba', 'No se pudo guardar el archivo -> ' . $path);
                 }
                 $fileArray= array($path);
                 if($info['cod_tipest']=='V'){
@@ -2950,9 +2988,27 @@
                   foreach($pdf_propie as $docume){
                     array_push($fileArray, $rutaad.$docume['nom_archiv']);
                   }
+                }else if($info['cod_tipest']=='C'){
+                  $pdf_conduc = self::getPDFEstSeg(2,$cod_solici);
+                  foreach($pdf_conduc as $docume){
+                    array_push($fileArray, $rutaad.$docume['nom_archiv']);
+                  }
                 }else{
                   $pdf_conduc = self::getPDFEstSeg(2,$cod_solici);
                   foreach($pdf_conduc as $docume){
+                    array_push($fileArray, $rutaad.$docume['nom_archiv']);
+                  }
+
+                  $pdf_vehicu = self::getPDFEstSeg(1,$cod_solici);
+                  foreach($pdf_vehicu as $docume){
+                    array_push($fileArray, $rutaad.$docume['nom_archiv']);
+                  }
+                  $pdf_poseed = self::getPDFEstSeg(3,$cod_solici);
+                  foreach($pdf_poseed as $docume){
+                    array_push($fileArray, $rutaad.$docume['nom_archiv']);
+                  }
+                  $pdf_propie = self::getPDFEstSeg(4,$cod_solici);
+                  foreach($pdf_propie as $docume){
                     array_push($fileArray, $rutaad.$docume['nom_archiv']);
                   }
                 }
@@ -2980,7 +3036,7 @@
                   );
                 };
           } catch (Exception $e) {
-            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
+            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
             return array(
               'status' => false,
               'error' => array(
@@ -3045,7 +3101,7 @@
                   throw new Exception("No se pudo enviar el correo.", "2001");
                 }
           } catch (Exception $e) {
-            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
+            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
             echo json_encode(array(
               'status' => false,
               'error' => array(
@@ -3107,7 +3163,7 @@
                     throw new Exception("No se pudo enviar el correo.", "2001");
                   }
           } catch (Exception $e) {
-            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
+            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
             echo json_encode(array(
               'status' => false,
               'error' => array(
@@ -3244,13 +3300,13 @@
                   'file_url' => URL_APLICA.'files/adj_estseg/pdfs/'.$docume['fil_result'],
                   'file_name' => $docume['fil_result']
                 ),
-                'message' => utf8_encode('PDF Abierto en una nueva pestaña')
+                'message' => utf8_encode('PDF Abierto en una nueva pestaï¿½a')
               ));
             }else{
               throw new Exception("No hay archivo PDF Generado", "2001");
             }
           } catch (Exception $e) {
-            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());            echo json_encode(array(
+            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());            echo json_encode(array(
               'status' => false,
               'error' => array(
                   'code' => $e->getCode(),

@@ -274,8 +274,7 @@
             
             group by desptercer.cod_tercer, DATE_FORMAT(despac.fec_despac, '%d-%m-%Y')
             ORDER BY despac.fec_despac ASC";
-        // echo $sql;
-            
+        // echo $sql; 
         $query = new Consulta($sql, self::$conexion);
         $datos = $query -> ret_num_rows();
         
@@ -331,7 +330,7 @@
                         group by despvehige.cod_transp
                         ORDER BY `desptercer`.`abr_tercer` ASC, despac.fec_despac
                         ";
-                    //echo $sql2;
+                    // echo $sql2;
                     $query2 = new Consulta($sql2, self::$conexion);
                     $datos2 = $query2 -> ret_matrix('a');
                     //echo "<pre>";
@@ -387,7 +386,7 @@
                             
                             $total = $total + $transp2[$i];
                         }
-                        $cuerpobody .='<td>'.$total.'</td>';
+                        $cuerpobody .='<td onclick="dathortransp('.$varcompeto.')"><a href="#">'.$transp2[$i].'</td>';
                         $cuerpobody .='</tr>';
                     }
                     $finbody='</tbody>'; 
@@ -469,9 +468,9 @@
         
         
         INNER JOIN tab_genera_ciudad f 
-        ON a.cod_ciuori = F.cod_ciudad 
-        AND a.cod_depori = F.cod_depart 
-        AND a.cod_paiori = F.cod_paisxx 
+        ON a.cod_ciuori = f.cod_ciudad 
+        AND a.cod_depori = f.cod_depart 
+        AND a.cod_paiori = f.cod_paisxx 
         
         INNER JOIN tab_genera_ciudad g
         ON a.cod_ciudes = g.cod_ciudad
@@ -497,7 +496,7 @@
         WHERE DATE_FORMAT(a.fec_despac, '%d-%m-%Y') >= '".$varfech."' AND
         DATE_FORMAT(a.fec_despac, '%d-%m-%Y') <= '".$varfech."' AND
         DATE_FORMAT(a.fec_despac, '%H') = '".$varhor."' AND
-        C.cod_tercer=$vartransp";
+        c.cod_tercer=$vartransp";
 
 $query = new Consulta($sql, self::$conexion);
 $datos = $query -> ret_matrix('a');

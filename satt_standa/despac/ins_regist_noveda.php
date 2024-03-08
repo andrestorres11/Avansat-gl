@@ -123,7 +123,7 @@ class Proc_despac {
                      AND a.ind_anulad = 'R' 
                      AND a.ind_planru = 'S' 
                      AND (a.cod_conult != '9999' 
-                            OR a.cod_conult !=(SELECT f.cod_contro FROM satt_faro.tab_despac_seguim f WHERE f.num_despac = a.num_despac AND f.cod_rutasx = d.cod_rutasx ORDER BY f.fec_planea DESC LIMIT 1)
+                            OR a.cod_conult !=(SELECT f.cod_contro FROM " . BASE_DATOS . ".tab_despac_seguim f WHERE f.num_despac = a.num_despac AND f.cod_rutasx = d.cod_rutasx ORDER BY f.fec_planea DESC LIMIT 1)
                             OR a.cod_conult IS NULL)";
 
         if ($_REQUEST['ind_despac'] == 0) {
@@ -296,7 +296,7 @@ class Proc_despac {
                          AND a.ind_planru = 'S'
                          AND b.num_placax = '" . $_REQUEST[placa] . "' 
                          AND (a.cod_conult != '9999' 
-                                OR a.cod_conult !=(SELECT f.cod_contro FROM satt_faro.tab_despac_seguim f WHERE f.num_despac = a.num_despac AND f.cod_rutasx = b.cod_rutasx ORDER BY f.fec_planea DESC LIMIT 1)
+                                OR a.cod_conult !=(SELECT f.cod_contro FROM " . BASE_DATOS . ".tab_despac_seguim f WHERE f.num_despac = a.num_despac AND f.cod_rutasx = b.cod_rutasx ORDER BY f.fec_planea DESC LIMIT 1)
                                 OR a.cod_conult IS NULL) ";
 
             if ($_REQUEST[buffpal])

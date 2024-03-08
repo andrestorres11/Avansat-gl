@@ -8,11 +8,13 @@ CREADO POR: Ing. Luis Carlos Manrique
 MODIFICADO POR: Luis Carlos Manrique
 
 ****************************************************************************/
-/*ini_set('error_reporting', E_ALL);
-ini_set("display_errors", 1);*/
+// ini_set('error_reporting', E_ALL);
+// ini_set("display_errors", 1);
+
+
 class suspensiones {
   //Variables de clase 
-
+  
   var $AjaxConnection;
 
   function __construct($co = null, $ajax = null)
@@ -52,8 +54,8 @@ class suspensiones {
    */
   function SetSuspensiones($cod_tercer = null, $cod_usuari = null, $eje_noveda = null, $ajax = null)
   {
-  	if($_SERVER['SERVER_NAME'] == 'avansatgl.intrared.net'){
-  		$urlWS = "https://ut.intrared.net/ap/consultor/app/client/facturacionVencida/fact_vencida_faro.php";
+  	if($_SERVER['SERVER_NAME'] == 'oet-avansatgl.intrared.net'){
+  		$urlWS = "https://oet-interno.intrared.net:8083/ap/consultor/app/client/fact_vencida_faro.php";
   	}else{
   		$urlWS = "https://dev.intrared.net:8083/ap/cmaya/ut/consultor/app/client/facturacionVencida/fact_vencida_faro.php";
   	}
@@ -65,15 +67,22 @@ class suspensiones {
 
     $this -> conexion = new Conexion( HOST, USUARIO, CLAVE, BASE_DATOS );*/
 	
-
+    
     //Captura el codigo del tercero por Request o por parametro.
     $cod_tercer = isset($_REQUEST['cod_tercer']) ? $_REQUEST['cod_tercer'] : $cod_tercer;
+    $context = stream_context_create([
+      'http' => [
+          'method' => 'POST',
+          'header'  => "Content-type: application/x-www-form-urlencoded\r\n"
+        ], 
+    ]);
+    
     //Valida codigo de tercero - Usuario de sesión.
     if(!is_null($cod_tercer)){
       //Consume Api con parametros
         $dataTerceros = json_decode(file_get_contents($urlWS.'?cod_tercero='.$cod_tercer), true);
     }else if(!is_null($cod_usuari)){
-
+      // echo $cod_usuari;
       //Se crea la consulta para traer el Nit
       $sql =  "SELECT   * 
                  FROM   ".BASE_DATOS.".tab_aplica_filtro_usuari ".
@@ -82,16 +91,16 @@ class suspensiones {
       //Ejecuta la consulta
       $consulta = new Consulta( $sql, $this -> conexion );
       $cod_tercer = $consulta->ret_matrix( 'a' );
-
+      // print_r($cod_tercer);
       //Consume Api con parametros
       $dataTerceros = json_decode(file_get_contents($urlWS.'?cod_tercero='.$cod_tercer[0]['clv_filtro']), true);
-
+      // $dataTerceros = json_decode(file_get_contents($urlWS.'?cod_tercero=900204148'), true);
     }else if(!is_null($ajax)){
         //Consume Api de toda la data
-        $dataTerceros = json_decode(file_get_contents($urlWS), true);
+        $dataTerceros = json_decode(file_get_contents($urlWS,  false, $context), true);
     }else{
       //Consume Api de toda la data
-      $dataTerceros = json_decode(file_get_contents($urlWS), true);
+      $dataTerceros = json_decode(file_get_contents($urlWS,  false, $context), true);
     }
 
     //Codifica en Hson
@@ -101,7 +110,6 @@ class suspensiones {
     //$cReturn = json_decode($raw_data, true);
     //Se agrega la variable $dataTerceros.
     $cReturn = $dataTerceros;
-
     //Eliminan las empresas que estan inactivas o no están en la base terceros
     foreach ($cReturn as $key => $value) {
       //Se crea la consulta para traer el estado de la empresa

@@ -1798,9 +1798,6 @@
                     WHERE a.cod_segveh = '".$cod_vehicu."'";
               $query = new Consulta($sql, self::$conexion);
               $resultados = $query -> ret_matrix('a')[0];
-              if($resultados['cod_opegps']==''){
-                mail('cristian.torres@grupooet.com','Alerta estudio de seguridad Operador GPS',$sql);
-              }
               $dataVehicu = array(
                 'placa' => $resultados['num_placax'],
                 'trailer_number' => $resultados['num_remolq'],

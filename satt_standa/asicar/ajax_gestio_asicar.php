@@ -2397,7 +2397,7 @@
               $source = $_FILES["archivo"]["tmp_name"][$key]; //Obtenemos un nombre temporal del archivo
               
               //$directorio = "../../".NOM_URL_APLICA."/files/asicar"; //Declaramos un  variable con la ruta donde guardaremos los archivos
-              $directorio = "/var/www/html/ap/satt_faro/files/asicar";
+              $directorio = "/var/www/html/ap/satt_intgps/files/asicar";
               
               //Validamos si la ruta de destino existe, en caso de no existir la creamos
               if(!file_exists($directorio)){
@@ -2486,7 +2486,7 @@
         $regid=$_REQUEST['regid'];
         $regeliminar=$_REQUEST['regeliminar'];
         $info=[];
-        $directorio = "/var/www/html/ap/satt_faro/files/asicar/";
+        $directorio = "/var/www/html/ap/satt_intgps/files/asicar/";
         
         If (unlink($directorio.$regeliminar)) {
           $sql="DELETE FROM tab_asiste_eviden WHERE id=$regid";
@@ -2509,10 +2509,10 @@
       function almacenararchivos(){
         switch ($_SERVER['SERVER_NAME']) {
           case 'dev.intrared.net':
-              $rutdirectorio="/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_faro/files/asicar";
+              $rutdirectorio="/var/www/html/ap/obocanegra/gl/sat-gl-2015/satt_intgps/files/asicar";
             break;
           case 'avansatgl.intrared.net':
-            $rutdirectorio="/var/www/html/ap/satt_faro/files/asicar";
+            $rutdirectorio="/var/www/html/ap/satt_intgps/files/asicar";
             break;
         }
         $return=[];

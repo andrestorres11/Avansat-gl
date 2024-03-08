@@ -328,6 +328,7 @@ function editaGps(num_despac) {
         
         var gps_paswor = $("#gps_pasworID").val();
         var gps_idxxxx = $("#gps_idxxxxID").val();
+        var placa_id = $("#placa_id").val();
 
         var attrigpd = $("#gps_idxxxxID").attr('obl');
         var errores = false;
@@ -362,7 +363,7 @@ function editaGps(num_despac) {
             $.ajax({
                 type: "POST",
                 url: "../" + standa + "/califi/class_califi_califi.php",
-                data: "Ajax=on&Option=editaGps&standa=" + standa + "&gps_operad=" + gps_operad + "&gps_usuari=" + encodeURIComponent(gps_usuari) + "&gps_paswor=" + encodeURIComponent(gps_paswor) + "&gps_idxxxx=" + gps_idxxxx + "&num_despac=" + num_despac,
+                data: "Ajax=on&Option=editaGps&standa=" + standa + "&gps_operad=" + gps_operad + "&gps_usuari=" + encodeURIComponent(gps_usuari) + "&gps_paswor=" + encodeURIComponent(gps_paswor) + "&gps_idxxxx=" + gps_idxxxx + "&placa_id=" + placa_id + "&num_despac=" + num_despac,
                 async: true,
                 beforeSend: function() {
                     $.blockUI({
@@ -900,8 +901,11 @@ function ReeItiner(num_despac, num_placax) {
                                 icon: resp['type'],
                                 html: resp['info'],
                                 showCancelButton: false,
-                                confirmButtonText: 'Aceptar'
                             })
+
+                            setTimeout(function() {
+                                location.reload();
+                            }, 2000); // 3000 ms = 3 segundos
                         },
                     });
 

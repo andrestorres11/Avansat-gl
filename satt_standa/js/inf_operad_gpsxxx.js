@@ -74,8 +74,8 @@ $(function() {
     try {
         var boton = cod_operad == null ? 'Crear' : 'Actualizar';
         Swal.fire({
-          title: decode_utf8('Â¿Estas seguro?'),
-          text: decode_utf8("Â¿Estas seguro que desea "+boton+" este registro?"),
+          title: 'Â¿Esta seguro?',
+          text: 'Â¿Esta seguro que desea '+boton+' este registro?',
           type: 'question',
           showCancelButton: true,
           confirmButtonColor: '#336600',
@@ -166,7 +166,7 @@ $(function() {
 
 //---------------------------------------------
   /*! \fn: updEst
-  *  \brief: Genera popup con la confirmación para actualziar estado
+  *  \brief: Genera popup con la confirmaciï¿½n para actualziar estado
   *  \author: Ing. Luis Manrique
   *  \date: 28/04/2020
   *  \date modified: 
@@ -177,8 +177,8 @@ $(function() {
     var estText = $(objet).attr('data-estado') == 1 ? 'desactivar':'activar';
     try {
         Swal.fire({
-          title: '¿Estas seguro?',
-          text: "¿Estas seguro que desea "+estText+" este registro?",
+          title: 'Â¿Esta seguro?',
+          text: "Â¿Esta seguro que desea "+estText+" este registro?",
           type: 'question',
           showCancelButton: true,
           confirmButtonColor: '#336600',
@@ -234,7 +234,7 @@ $(function() {
 
  //---------------------------------------------
   /*! \fn: validateFields
-  *  \brief: Toma la función validaciones y actualiza la visual y gestión de los datos
+  *  \brief: Toma la funciÃ³n validaciones y actualiza la visual y gestiÃ³n de los datos
   *  \author: Ing. Luis Manrique
   *  \date: 28/04/2020
   *  \date modified: 

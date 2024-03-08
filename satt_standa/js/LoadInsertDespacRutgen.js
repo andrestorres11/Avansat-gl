@@ -434,9 +434,28 @@ function SaveDespacho() {
   try {
     var params = 'option=InsertDespacho';
     var standa = $("#standaID").val();
+    var cod_ciuori = $("#cod_ciuoriID").val();
+    var cod_ciudes = $("#cod_ciudesID").val();
+    var cod_rutaxx = $("#cod_rutaxxID").val();
+    var cod_agenci = $("#cod_agenciID").val();
+    var cod_tipdes = $("#cod_tipdesID").val();
+    var cod_client = $("#cod_clientID").val();
+    var cod_opegps = $("#cod_opegpsID").val();
+    var nom_asegur = $("#nom_asegurID").val();
+    var aiuda = '';
     params += '&standa=' + standa;
+    params += '&cod_ciuori=' + cod_ciuori;
+    params += '&cod_ciudes=' + cod_ciudes;
+    params += '&cod_rutaxx=' + cod_rutaxx;
+    params += '&cod_agenci=' + cod_agenci;
+    params += '&cod_tipdes=' + cod_tipdes;
+    params += '&cod_client=' + cod_client;
+    params += '&cod_opegps=' + cod_opegps;
+    params += '&nom_asegur=' + nom_asegur;
+    params += '&aiuda=' + aiuda;
     params += getDataForm();
     var cod_transp = $("#cod_transpID").val();
+    
     $.ajax({
       type: "POST",
       url: "../" + standa + "/desnew/ajax_desnew_rutgen.php",

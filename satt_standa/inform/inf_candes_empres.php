@@ -167,7 +167,7 @@ class CanDesTra
                     $mHtml .= "<th class=cellHead width='25%' >ORIGEN</th>";
                     $mHtml .= "<th class=cellHead width='25%' >CANTIDAD</th>";
                     $mHtml .= "<th class=cellHead width='25%' >%</th>";
-                    $mHtml .= "<th class=cellHead width='25%' >NOVEDADES <br>(Varados, Accidentes Tránsito, Hurtos, continua no comunicación, saqueo)</th>";
+                    $mHtml .= "<th class=cellHead width='25%' >NOVEDADES <br>(Varados, Accidentes Tr?nsito, Hurtos, continua no comunicaci?n, saqueo)</th>";
                 $mHtml .= "</tr>";
 
                 $origen = $this -> GetDespachos( $transpor['cod_tercer'], 1, $fec_inici, $fec_final);
@@ -319,7 +319,7 @@ class CanDesTra
         $formulario -> botoni("Cerrar","ClosePopup()",1);
         $formulario -> cerrar();
     }
-    
+
     function GetTransporta( $ind = NULL )
     {
         $query ="SELECT a.cod_tercer, UPPER( a.abr_tercer ) AS abr_tercer

@@ -2876,7 +2876,7 @@ class AjaxNotifiNotifi
 	   		$sql = "SELECT COUNT(c.num_despac) AS can_cargax, GROUP_CONCAT(c.num_despac) as num_despac, b.cod_transp, b.num_placax, b.cod_conduc, d.abr_tercer AS nom_tercer
 	   				 FROM ".BASE_DATOS.".tab_despac_despac a 
 	   		   INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
-	   		   		   ON a.num_despac = b.num_despac AND b.num_despac NOT IN (  SELECT e.num_despac FROM satt_faro.tab_despac_noveda e WHERE e.cod_contro = 9999  ) AND b.num_despac NOT IN (  SELECT g.num_despac FROM satt_faro.tab_despac_contro g WHERE g.cod_contro = 9999  ) 
+	   		   		   ON a.num_despac = b.num_despac AND b.num_despac NOT IN (  SELECT e.num_despac FROM ".BASE_DATOS.".tab_despac_noveda e WHERE e.cod_contro = 9999  ) AND b.num_despac NOT IN (  SELECT g.num_despac FROM ".BASE_DATOS.".tab_despac_contro g WHERE g.cod_contro = 9999  ) 
 	   		   INNER JOIN ".BASE_DATOS.".tab_despac_despac c 
 	   		 		   ON b.num_despac = c.num_despac
 	   		 	INNER JOIN ".BASE_DATOS.".tab_tercer_tercer d

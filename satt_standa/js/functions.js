@@ -35,7 +35,7 @@ function SelectExtra(fTag, fId, fEvent) {
 
 
 //---------------------------------------------------------------------------
-//@VALIDA QUE LOS CAPOS NO ESTEN VACIOS PARA AÃ‘ADIR NUEVO O ENVIAR FORMULARIO
+//@VALIDA QUE LOS CAPOS NO ESTEN VACIOS PARA AÑADIR NUEVO O ENVIAR FORMULARIO
 function ValidateGridRow(fForm, fContainer) {
     //-----------------------------------------------------------------
     //@SE OBTIENE EL FORMULARIO
@@ -384,7 +384,7 @@ function removeElement(id) {
 
 
 //--------------------------------------------------------------------------------------------------------------
-//RETORNA UNA MATRIZ CON LOS AÃ‘OS COMPRENDIDOS ENTRE LOS LIMITES INGRESADOS APTA PARA LOS OPTIONS DE LOS SELECTS
+//RETORNA UNA MATRIZ CON LOS AÑOS COMPRENDIDOS ENTRE LOS LIMITES INGRESADOS APTA PARA LOS OPTIONS DE LOS SELECTS
 function ArrayYears(fElement, fYear1, fYear2) {
     try {
         fElement = typeof(fElement) == 'string' ? document.getElementById(fElement) : fElement;
@@ -579,7 +579,7 @@ function exportToXL(eSrc) {
 
 
 /*
- *@FunciÃ³n que Oculta y Muestra un Frame
+ *@Función que Oculta y Muestra un Frame
  */
 function DisplayFrame(fFrameID, fCols) {
     var fFrameset = parent.document.getElementById(frameID);
@@ -608,14 +608,14 @@ function AjaxLoader(fDisplay, fParent) {
 //------------------------------------------------------------------------------------------------------
 
 /*
- *@FunciÃ³n fija la clase CSS de un Tag HTML
+ *@Función fija la clase CSS de un Tag HTML
  */
 function SetClassName(fTag, fClass) {
     fTag.className = fClass;
 }
 
 /*
- *@FunciÃ³n fija el foco sobre un Elemento HTML
+ *@Función fija el foco sobre un Elemento HTML
  */
 function FocusTag(fTag) {
     fTag.focus();
@@ -663,7 +663,7 @@ function Moneda(value) {
 }
 
 /*
- *@FunciÃ³n que restringe el ingreso de caracteres a sÃ³lo nÃºmericos
+ *@Función que restringe el ingreso de caracteres a sólo númericos
  */
 function NumericInput(fEvent) {
     var fKeyPressed = (fEvent.which) ? fEvent.which : fEvent.keyCode;
@@ -671,7 +671,7 @@ function NumericInput(fEvent) {
 }
 
 /*
- *@FunciÃ³n que determina si una cadena es nÃºmerica. Retorno Booleano.
+ *@Función que determina si una cadena es númerica. Retorno Booleano.
  */
 function IsNumeric(fText) {
     var fChars = "0123456789.";
@@ -687,7 +687,7 @@ function IsNumeric(fText) {
 }
 
 /*
- *@FunciÃ³n que limpia el valor de un Elemento HTML en caso de no ser nÃºmerico.
+ *@Función que limpia el valor de un Elemento HTML en caso de no ser númerico.
  */
 function FormatNumericInput(fInput) {
     if (!fInput.value)
@@ -699,7 +699,7 @@ function FormatNumericInput(fInput) {
 }
 
 /*
- *@FunciÃ³n que restringe el ingreso de caracteres a sÃ³lo decimales
+ *@Función que restringe el ingreso de caracteres a sólo decimales
  */
 function DecimalInput(fEvent) {
     var fKeyPressed = (fEvent.which) ? fEvent.which : fEvent.keyCode;
@@ -707,7 +707,7 @@ function DecimalInput(fEvent) {
 }
 
 /*
- *@FunciÃ³n que restringe el ingreso de varios puntos en una cadena. Invocada en el evento HTML onkeydown
+ *@Función que restringe el ingreso de varios puntos en una cadena. Invocada en el evento HTML onkeydown
  */
 function DecimalFormat(fInput) {
     var fStr = fInput.value;
@@ -725,7 +725,7 @@ function DecimalFormat(fInput) {
 }
 
 /*
- *@FunciÃ³n que restringe el ingreso de caracteres a formato placa Colombiana (AAA000) o Venezolana (AA0000)
+ *@Función que restringe el ingreso de caracteres a formato placa Colombiana (AAA000) o Venezolana (AA0000)
  */
 function PlacaInput(fInput) {
     fInput.value = fInput.value.toUpperCase();
@@ -747,7 +747,7 @@ function PlacaInput(fInput) {
 }
 
 /*
- *@FunciÃ³n que limpia el valor de un Elemento HTML en caso de no estar en formato Placa.
+ *@Función que limpia el valor de un Elemento HTML en caso de no estar en formato Placa.
  */
 function FormatPlacaInput(fInput) {
     var fPlaca = fInput.value;
@@ -992,7 +992,7 @@ function NegativeMoneyInput( fInput )
 
 
 /*
- *@FunciÃ³n que limpia el valor de un Elemento HTML en caso de no ser nÃºmerico.
+ *@Función que limpia el valor de un Elemento HTML en caso de no ser númerico.
  */
 function FormatDateInput(fInput) {
     if (!fInput.value)
@@ -1192,7 +1192,7 @@ function NegativeMoneyInput(fEvent, fInput) {
 function CharsInput(fTag, fSize) {
     if (fTag.value.length != fSize) {
         fTag.value = "";
-        //alert( "Este campo debe tener "+String( fSize )+" carÃ¡cteres exÃ¡ctamente." );
+        //alert( "Este campo debe tener "+String( fSize )+" carácteres exáctamente." );
     } else
         return false;
 }
@@ -1427,7 +1427,7 @@ function in_array(fItem, fArray) {
 
 
 //-----------------------------------------------------------------------------------------
-//Nota: Debe enviarse un campo "OFFSET" oculto para poder leer el lÃ­mite offset
+//Nota: Debe enviarse un campo "OFFSET" oculto para poder leer el límite offset
 function LimitDays(YearID, MonthID, DayID, Offset) {
     if (!Offset) {
         Offset = 1;
@@ -1560,7 +1560,7 @@ function VerifyNum(nit, inputId) {
 
         input.value = digito_chequeo;
     } catch (e) {
-        alert('Error FunciÃ³n VerifyNum : ' + e.message);
+        alert('Error Función VerifyNum : ' + e.message);
     }
 }
 
@@ -1731,7 +1731,7 @@ function onBlurDecim(thisInput) {
             thisInput.value = MoneyDecimal(valor, ',');
         }
     } catch (e) {
-        alert('Error FunciÃ³n onBlurDecim : ' + e.message);
+        alert('Error Función onBlurDecim : ' + e.message);
     }
 }
 
@@ -1812,7 +1812,7 @@ function AlphaInput(evt) {
 
 /*************************************************************************
  *Metodo que recoge todos los campos obligatorios dentro de un formulario*
- *y realiza la validaciÃ³n.                                               *
+ *y realiza la validación.                                               *
  *
  *@return retorna un booleano
  *
@@ -1826,7 +1826,7 @@ function validaciones() {
             var tipo = ""; // tipo de dato a validar. Consultar tipos en : validator.js
             var min = ""; // cantidad minima de caracteres
             var max = ""; // cantidad maxima de carcteres
-            //var com = ""; // Validar con confirmar contraseÃ±a
+            //var com = ""; // Validar con confirmar contraseña
             var obl = ""; // obligatorio booleano
 
             if ($(this).attr("type") == "radio") {
@@ -1947,7 +1947,7 @@ function validaciones() {
  *  \brief: Crea o destruye PopUp
  *  \author: Ing. Fabian Salinas
  * \date: 24/06/2015
- * \date modified: dia/mes/aÃ±o
+ * \date modified: dia/mes/año
  *  \param: opcion   String   open, close
  *  \param: titulo   String   Titulo del PopUp
  *  \param: alto   Integer  Altura PopUp
@@ -1988,10 +1988,10 @@ function LoadPopupJQ(opcion, titulo, alto, ancho, redimen, dragg, lockBack, idPo
 }
 
 /*! \fn: LoadPopupJQNoButton
- *  \brief: Crea o destruye PopUp similar al LoadPopupJQ pero el boton se inyecta por html de acuerdo a la operaciÃ³n realizada
+ *  \brief: Crea o destruye PopUp similar al LoadPopupJQ pero el boton se inyecta por html de acuerdo a la operación realizada
  *  \author: Ing. Alexander Correa
  * \date: 04/09/2015
- * \date modified: dia/mes/aÃ±o
+ * \date modified: dia/mes/año
  *  \param: opcion   String   open, close
  *  \param: titulo   String   Titulo del PopUp
  *  \param: alto   Integer  Altura PopUp
@@ -2125,8 +2125,8 @@ function checkConnection() {
  *  \date:  01/02/2015
  *  \date modified: dd/mm/aaaa
  *  \modified by: 
- *  \param: txt           String  Mensaje de ConfirmaciÃ³n
- *  \param: nameFunction  String  Nombre de la funciÃ³n y sus parametros nameFunction(var1, var2, ...); si presionan SI
+ *  \param: txt           String  Mensaje de Confirmación
+ *  \param: nameFunction  String  Nombre de la función y sus parametros nameFunction(var1, var2, ...); si presionan SI
  *  \runExample:  confirmGL(txt, "editActivi2(\'" + ind_estado + "\', \'" + obj.val() + "\');" );
  *  \return: 
  */
@@ -2201,7 +2201,7 @@ function BlocK(txt, ind) {
  *  \brief: elimina el ancho del selector de hora para su correcta visualizacion
  *  \author: Ing. Alexander Correa
  *  \date: 19/04/2016
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \param: id => int => id del campo que hace de selector de hora     
  *  \return 
  */
@@ -2212,7 +2212,7 @@ function removeStyle(id) {
 
 /*! \fn: cargarPopupAlert
  *  \brief: Crea un popUp y lo coloca sobre los iframe
- *  \author: Ing. Nelson Liberato, modified by Ing. David RincÃ³n
+ *  \author: Ing. Nelson Liberato, modified by Ing. David Rincón
  *  \date modified: 01/08/2016
  *  \param: NINGUNO
  *  \return No devuelve valores pero prepara los divs contenedores
@@ -2259,7 +2259,7 @@ function cargarPopupAlert() {
         fondo.style.width = "100%";
         fondo.style.height = (y + 50) + "px";*/
         popup.focus();
-        //window.pageYOffset es la posiciÃ³n del scroll en la pantalla
+        //window.pageYOffset es la posición del scroll en la pantalla
         //popup.style.top = (top+window.pageYOffset) + "px";
         popup.style.top = "0px";
 
@@ -2270,11 +2270,11 @@ function cargarPopupAlert() {
 }
 
 /*! \fn: colocarPopupAlert
- *  \brief: Carga un javascript sobre los iframe, ya que el objeto que busca estÃ¡ por dentro de uno de los iframe
- *  \author: Ing. Nelson Liberato, modified by Ing. David RincÃ³n
+ *  \brief: Carga un javascript sobre los iframe, ya que el objeto que busca está por dentro de uno de los iframe
+ *  \author: Ing. Nelson Liberato, modified by Ing. David Rincón
  *  \date modified: 01/08/2016
  *  \param: NINGUNO
- *  \return No devuelve valores pero coloca el popUp que quedarÃ¡ listo para su impresiÃ³n
+ *  \return No devuelve valores pero coloca el popUp que quedará listo para su impresión
  */
 
 function colocarPopupAlert() {
@@ -2297,10 +2297,10 @@ function colocarPopupAlert() {
 
 /*! \fn: getViewportYAlert
  *  \brief: Devuelve el valor de Y en la pantalla
- *  \author: Ing. Nelson Liberato, modified by Ing. David RincÃ³n
+ *  \author: Ing. Nelson Liberato, modified by Ing. David Rincón
  *  \date modified: 01/08/2016
  *  \param: NINGUNO
- *  \return No devuelve valores pero retorna un nÃºmero con el valor de Y
+ *  \return No devuelve valores pero retorna un número con el valor de Y
  */
 function getViewportYAlert() {
     var viewportheight;
@@ -2330,7 +2330,7 @@ function getViewportYAlert() {
  *  \author: Edward Serrano
  *  \date modified: 05/04/2017
  *  \param: opcion: opcion de la clase donde se encuntra la funcion de exportar
- *  \return No devuelve valores pero retorna un nÃºmero con el valor de Y
+ *  \return No devuelve valores pero retorna un número con el valor de Y
  */
 function exportExcel(opcion) {
     try {
@@ -2560,46 +2560,4 @@ function camelCaseFormatter(string) {
     });
 
     return convertedString
-}
-
-function LoadPopup() {
-    /*try
-     {
-     var objEnd = document.getElementById("AplicationEndDIV");
-     LockAplication("lock");
-     var objPopup = document.getElementById("popupDIV");
-     
-     var width = screen.height;
-     var height = screen.width;
-     
-     var width = Math.round( screen.width / 1.5 );
-     var height = Math.round( screen.height / 1.5 );
-     var left = Math.round( screen.width / 10 );
-     var top = Math.round( screen.height / 15 );
-     
-     
-     
-     objPopup.style.width = String(width) + "px";
-     objPopup.style.height = String(height) + "px";
-     objPopup.style.left = String(left) + "px";
-     objPopup.style.top = String(top) + "px";
-     objPopup.style.visibility = "visible";
-     objPopup.scrollIntoView( true );
-     }
-     catch (e)
-     {
-     alert("Error " + e.message);
-     }*/
-    setTimeout(function() {
-        if ($("#popupDIV").find("h4").length > 0) {
-            var title = $("#popupDIV").find("h4").first().html();
-            $("#popupDIV").find("h4").first().remove();
-            title = title == '' ? 'AVANSAT - EMPRESARIAL' : title;
-        } else {
-            var title = 'AVANSAT - EMPRESARIAL';
-        }
-        $("#popupDIV").prev().find('.ui-dialog-title').first().html(title)
-        $("#popupDIV").dialog("open")
-    }, 400);
-
 }

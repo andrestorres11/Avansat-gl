@@ -24,7 +24,7 @@
              @include_once( "../lib/ajax.inc" );
              @include_once( "../lib/general/constantes.inc" );
              @include_once( "../lib/general/functions.inc" );
-             @include_once( "../../satt_faro/constantes.inc" );
+             @include_once( "../../satt_intgps/constantes.inc" );
  
              self::$conexion = $AjaxConnection;
              self::$usuario = $us;
@@ -584,7 +584,7 @@
                     $res_servic1 = self::getDataFormulariow($_REQUEST['cod_solici'], $servicio['id'],1);
                     $tot_servic1 = self::getDataFormulariow($_REQUEST['cod_solici'], $servicio['id'],2);
                     $rut_imagen = DIREC_APLICA."gesdoc/tab_formul_respue/";
-                    $rut_imagen2 = "/ap/satt_faro/files/asicar/"; 
+                    $rut_imagen2 = "/ap/satt_intgps/files/asicar/"; 
                     if($tot_servic<=0 && $tot_servic1 <=0){
                       $html.='<div class="col-md-12">
                       <div class=" m-3 alert alert-warning" role="alert">

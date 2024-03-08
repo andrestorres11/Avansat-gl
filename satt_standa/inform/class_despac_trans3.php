@@ -18,7 +18,8 @@
  */
 
 date_default_timezone_get('America/Bogota');
-
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
 /*! \class: Despac
  *  \brief: Clase que realiza las consultas para retornar la informaciï¿½n de los Despachos en Cargue, Transito o Descargue
  */
@@ -785,7 +786,7 @@ class Despac
 		$mPerfil = $_SESSION[datos_usuario][cod_perfil];
 		$mResult = array();
 
-		if( $mPerfil == '7' || $mPerfil == '713' )
+		if( $mPerfil == '7')
 			$mResult[tip_perfil] = 'CONTROL'; #Perfil Controlador
 		elseif( $mPerfil == '70' || $mPerfil == '80' || $mPerfil == '669' )
 			$mResult[tip_perfil] = 'EAL'; #Perfil EAL
@@ -1518,8 +1519,6 @@ class Despac
 		#Filtros por usuario
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
-		// echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
-		//mail("cristian.torres@grupooet.com","VistaSql",$mSql);
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
 						
@@ -1551,6 +1550,7 @@ class Despac
 					$mResult[$j][fec_planGl] = $mData[fec_planGl];
 					$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
 					$mResult[$j][coliti] = self::validaAlarmaItiner($mDespac[$i]);
+					$mResult[$j][mTipValida] = $mTipValida;
 					$j++;
 				}
 			}
@@ -1568,6 +1568,7 @@ class Despac
 				$mResult[$j][fec_planGl] = $mData[fec_planGl];
 				$mResult[$j][ind_finrut] = $mData[sig_pcontr][ind_finrut]; #Aplica para empresas que solo tienen parametrizado seguimiento Transito
 				$mResult[$j][coliti] = self::validaAlarmaItiner($mDespac[$i]);
+				$mResult[$j][mTipValida] = $mTipValida;
 				$j++;
 			}
 		}
@@ -2335,7 +2336,8 @@ class Despac
 		$mResult[nom_sitiox] = $mNovDespac[$mPosN][nom_sitiox] == '' ? '-' : $mNovDespac[$mPosN][nom_sitiox];
 		$mResult[sig_pcontr] = getNextPC( self::$cConexion, $mDespac[num_despac] );
 		$mResult[pla_rutaxx] = getControDespac( self::$cConexion, $mDespac[num_despac] ); # Plan de Ruta del Despacho -- Script /lib/general/function.inc
-	
+		
+
 		if( $mTipValida == 'tie_parame' )
 		{
 			if( $mDespac[tie_contra] != '' ){ #Tiempo parametrizado por Despacho
@@ -2355,6 +2357,8 @@ class Despac
 					$mTimeprc = $mTransp[tgl_nacprc];
 				}
 			$mFecUltReport = $mDespac[fec_salida];
+			
+
 			#Verifica la ultima novedad que no mantienen alarma
 			for ($i=$mPosN; $i >= 0; $i--)
 			{
@@ -2566,7 +2570,7 @@ class Despac
 											   c.hor_pe2imp, c.hor_pe1exp, c.hor_pe2exp, 
 											   c.hor_pe1tr1, c.hor_pe2tr1, c.hor_pe1tr2, 
 											   c.hor_pe2tr2, 
-											   c.tgl_contro AS tgl_nacion, c.tgl_contro AS tgl_urbano,
+											   c.tgl_contro AS tgl_nacion, c.tgl_conurb AS tgl_urbano,
 											   c.tgl_prcnac AS tgl_nacprc, c.tgl_prcurb AS tgl_urbprc
 										  FROM ".BASE_DATOS.".tab_transp_tipser c 
 									INNER JOIN ".BASE_DATOS.".tab_genera_tipser d 
@@ -2715,6 +2719,7 @@ class Despac
 	 */
 	public function calTimeAlarma( $mDespac, $mTransp, $mIndCant = 0, $mFiltro = NULL, $mColor = NULL )
 	{
+
 		$mTipValida = self::tipValidaTiempo( $mTransp );
 		if( $mIndCant == 1 )
 		{ #Define Cantidades segï¿½n estado
@@ -3237,6 +3242,9 @@ class Despac
 				$mDespac = self::$mNameFunction( $mTransp[$i] );
 
 			}
+
+
+
 			if($_REQUEST['ind_etapax']=='ind_segprc'){
 
 				
@@ -3267,7 +3275,10 @@ class Despac
 					$mDespac = self::calTimeAlarma( $mDespac1, $mTransp[$i], 0, 'sinF', $mColor );
 				}else{
 					$mDespac = self::calTimeAlarma( $mDespac, $mTransp[$i], 0, $_REQUEST['ind_filtro'], $mColor );
+					
 				}
+
+
 				$mNegTieesp = $mDespac['neg_tieesp'] ? array_merge($mNegTieesp, $mDespac['neg_tieesp']) : $mNegTieesp;
 				$mPosTieesp = $mDespac['pos_tieesp'] ? array_merge($mPosTieesp, $mDespac['pos_tieesp']) : $mPosTieesp;
 				$mNegTiempo = $mDespac['neg_tiempo'] ? array_merge($mNegTiempo, $mDespac['neg_tiempo']) : $mNegTiempo;
@@ -3280,6 +3291,12 @@ class Despac
 			
 		}
 		
+		//Esto ayuda para revisar las alarmas CRISTIAN TORRES
+		/* if($_SESSION['datos_usuario']['cod_usuari']=="soporteIntgps"){
+			echo "<pre>";
+			print_r($mDespac);
+			echo "</pre>";
+		} */
 
 		if($_REQUEST['ind_etapax']=='ind_segprc'){
 			#Pinta tablas
@@ -3489,9 +3506,9 @@ class Despac
 
 	/*! \fn: getAlertIconNovedad
 	 *  \brief: Obtiene el icono a mostrar si el despacho tiene alguna novedad
-	 *  \author: Ing. Cristian Andrés Torres
+	 *  \author: Ing. Cristian Andrï¿½s Torres
 	 *	\date: 27/03/2023
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 *  \return: html
 	 */
 	private function getAlertIconNovedad( $mNumDespac ){
@@ -3528,7 +3545,7 @@ class Despac
 
 	/*! \fn: getNovedadControl
 	 *  \brief: Consulta las novedades de controlador de un despacho
-	 *  \author: Ing. Cristian Andrés Torres
+	 *  \author: Ing. Cristian Andrï¿½s Torres
 	 *	\date: 30/03/2023
 	 *	\date modified: 30/03/2023
 	 *  \param: mNumDespac  String   Numero de despacho
@@ -3558,7 +3575,7 @@ class Despac
 	 *  \brief: Obtiene la ultima novedad registrada en un despacho
 	 *  \author: Ing. Fabian Salinas
 	 *	\date: 08/09/2015
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 *  \param: mNumViajex  String   Numero de Viaje
 	 *  \return: Integer
 	 */

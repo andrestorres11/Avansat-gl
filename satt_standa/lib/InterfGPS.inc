@@ -88,18 +88,18 @@
                          a.cod_transp,
                          IF( d.num_despac IS NOT NULL, e.nom_operad, c.nom_operad ) AS nom_operad, 
                          DATE_FORMAT( b.fec_salida, '%Y-%m-%d %h:%i' ) AS fec_salida,
-                         IF( d.num_despac IS NOT NULL, e.ind_usaidx, c.ind_usaidx ) AS ind_usaidx, 
-                         IF( d.num_despac IS NOT NULL, IF(e.nit_operad IS NOT NULL, e.nit_operad, c.nit_operad)   /*d.gps_operad*/, b.gps_operad ) AS cod_opegps,
-                         IF( d.num_despac IS NOT NULL, IF(d.gps_usuari IS NOT NULL, d.gps_usuari, b.gps_usuari), b.gps_usuari ) AS gps_usuari,
-                         IF( d.num_despac IS NOT NULL, IF(d.gps_paswor IS NOT NULL, d.gps_paswor, b.gps_paswor), b.gps_paswor ) AS gps_paswor,
-                         IF( d.num_despac IS NOT NULL, IF(d.gps_idxxxx = 'n/a' , NULL, d.gps_idxxxx), b.gps_otroxx ) AS gps_otroxx,
+                         IF( d.num_despac IS NOT NULL, e.ind_usaidx, c.ind_usaidx ) AS ind_usaidx,
+                         IF( d.num_despac IS NOT NULL, IF(c.nit_operad IS NOT NULL, c.nit_operad, d.gps_operad), c.nit_operad ) AS cod_opegps,
+                         IF( d.num_despac IS NOT NULL, IF(b.gps_usuari IS NOT NULL, b.gps_usuari, d.gps_usuari), b.gps_usuari ) AS gps_usuari,
+                         IF( d.num_despac IS NOT NULL, IF(b.gps_paswor IS NOT NULL, b.gps_paswor, d.gps_paswor), b.gps_paswor ) AS gps_paswor,
+                         IF( d.num_despac IS NOT NULL, IF(b.gps_idxxxx = 'n/a' , NULL, d.gps_idxxxx), b.gps_otroxx ) AS gps_otroxx,
                          IF( d.num_despac IS NOT NULL, d.cod_manifi, b.cod_manifi ) AS cod_manifi,
                          IF( d.num_despac IS NOT NULL, 'corona', 'normal' ) AS ind_tiptra, /* Tipo de despacho, corona o normal*/
                          f.nom_tercer AS nom_conduc,
                          CONCAT(f.nom_apell1, ' ', f.nom_apell2) AS nom_apelli,
                          a.cod_conduc,
                          f.num_telmov AS num_telmov,
-                         -- Se realiza parche ya que la fecha incial puede ser del dï¿½a anterior a la fecha actual y widetech no permite crear itinerarios con despachos viejos
+                         -- Se realiza parche ya que la fecha incial puede ser del día anterior a la fecha actual y widetech no permite crear itinerarios con despachos viejos
                          -- Si fecha de salida del despacho es menor de un dia a atras a la actual, se debe cambiar y enviar la fecha actual, igualmente si cambiamos la inicial toca correr tambien la final
 
                          -- Reajuste a DateInitial
@@ -428,7 +428,7 @@
             $mCodResp = explode( ":", $mResult[0] );
             $mMsgResp = explode( ":", $mResult[1] );
             $aditionalData['cod_errorx'] = $mCodResp[1];
-      
+            
             if( "1000" != $mCodResp[1] )
             {
               //Notifica Errores retornados por el WS
@@ -735,8 +735,7 @@
                            "Authorization: e14804819d57fc7497bb747204ce337b", 
                            "usuario: *WidetechInt3grador*", 
                            "clave: lxdG-+gJX:oYju+b5n"
-                          );
-          mail('cristian.torres@grupooet.com','SendManual',URL_INTERF_GPSEVE."/setItinerary");                
+                          );             
           # Recorre las variables para concatenarlas en un solo string como si fuera un GET para enviarla por cUrl------------------------
           //$mParamsString = "inputAvansat=".json_encode($sendData);
           $mParamsString = json_encode($sendData);
@@ -1187,7 +1186,7 @@
         $cReturn = json_decode($raw_data, true);         
         //---------------------------------
         $ret = FALSE; //VARIABLE QUE CONTENDRï¿½ EL VALOR
-
+        
         //Procesa el resultado del WS
         $mStatus  = $cReturn['status'];
         $mCodResp = $cReturn['code_resp'];

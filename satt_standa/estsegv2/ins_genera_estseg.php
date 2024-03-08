@@ -3,7 +3,7 @@
 	NOMBRE:   GeneraEstudioSeguridad
 	FUNCION:  Muestra las solicitudes del estudio de seguridad. 
 	FECHA DE MODIFICACION: 15/09/2020
-	CREADO POR: Ing. Cristian Andrés Torres 
+	CREADO POR: Ing. Cristian Andrï¿½s Torres 
 	MODIFICADO 
 	****************************************************************************/
 	/*ini_set('error_reporting', E_ALL);
@@ -38,7 +38,7 @@
 
         /*! \fn: styles
 		   *  \brief: incluye todos los archivos necesarios para los estilos
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andrï¿½s Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -72,7 +72,7 @@
 
         /*! \fn: scripts
 		   *  \brief: incluye todos los archivos necesarios para los eeventos js
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andrï¿½s Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -115,7 +115,7 @@
         
         /*! \fn: filtros
 		   *  \brief: Crea el html de las tablas filtros y segmentos del modulo
-		   *  \author: Ing. Cristian Andrés Torres
+		   *  \author: Ing. Cristian Andrï¿½s Torres
 		   *  \date: 04-06-2020
 		   *  \date modified: dd/mm/aaaa
 		   *  \param: 
@@ -178,7 +178,7 @@
                                                       <label>Placa / Identificación:</label>
                                                     </div>
                                                     <div class="col-2">
-                                                      <input type="text" id="num_soliciID" name="num_solici">
+                                                      <input type="text" id="num_identifiID" name="num_identifiID">
                                                     </div>
 
                                                 </div>
@@ -452,7 +452,7 @@
                                     </div>
                                     <div class="col-6">
                                       <div class="form-group">
-                                        <label for="nom_soliciID" class="labelinput">Correo electrónico:</label>
+                                        <label for="nom_soliciID" class="labelinput">Correo electrï¿½nico:</label>
                                         <input class="form-control form-control-sm" type="text" placeholder="Correo electronico" id="cor_soliciID" name="cor_solici" disabled value="'.$info['cor_solici'].'">
                                       </div>
                                     </div>
@@ -461,14 +461,14 @@
                                   <div class="row">
                                     <div class="col-6">
                                       <div class="form-group">
-                                        <label for="nom_soliciID" class="labelinput">Número de teléfono:</label>
-                                        <input class="form-control form-control-sm" type="text" placeholder="Número de teléfono" id="tel_soliciID" name="tel_solici" disabled value="'.$info['tel_solici'].'">
+                                        <label for="nom_soliciID" class="labelinput">NÃºmero de TelÃ©fono:</label>
+                                        <input class="form-control form-control-sm" type="text" placeholder="NÃºmero de TelÃ©fono" id="tel_soliciID" name="tel_solici" disabled value="'.$info['tel_solici'].'">
                                       </div>
                                     </div>
                                     <div class="col-6">
                                       <div class="form-group">
-                                        <label for="nom_soliciID" class="labelinput">Número de celular:</label>
-                                        <input class="form-control form-control-sm" type="text" placeholder="Número de celular" id="cel_soliciID" name="cel_solici" disabled value="'.$info['cel_solici'].'">
+                                        <label for="nom_soliciID" class="labelinput">NÃºmero de celular:</label>
+                                        <input class="form-control form-control-sm" type="text" placeholder="NÃºmero de celular" id="cel_soliciID" name="cel_solici" disabled value="'.$info['cel_solici'].'">
                                       </div>
                                     </div>
                                   </div>
@@ -483,7 +483,7 @@
                                         }
 
                                         echo '<li class="nav-item m-2">
-                                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">vehículo</a>
+                                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">vehÃ­culo</a>
                                               </li>
                                               <li class="nav-item m-2">
                                                   <a class="btn btn-success btn-sm"  id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">'.$label_pestana.'</a>
@@ -506,7 +506,7 @@
                         }
 
                         echo '<li class="nav-item m-2">
-                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">vehículo</a>
+                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">vehÃ­culo</a>
                               </li>
                               <li class="nav-item m-2">
                                   <a class="btn btn-success btn-sm"  id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">'.$label_pestana.'</a>
@@ -523,7 +523,7 @@
 
                      }
 
-                     //Pestaña creación de despacho
+                     //Pestaï¿½a creaciï¿½n de despacho
                      if($info['ind_credes']==1){
                       echo '<li class="nav-item m-2">
                               <a class="btn btn-success btn-sm"  id="pills-despacho-tab" data-toggle="pill" href="#pills-despacho" role="tab" aria-controls="pills-despacho" aria-selected="true">Despacho</a>
@@ -610,8 +610,8 @@
                       <th scope="col">Nombre</th>
                       <th scope="col">Parentesco</th>
                       <th scope="col">Direccion</th>
-                      <th scope="col">Teléfono</th>
-                      <th scope="col">Observación</th>
+                      <th scope="col">TelÃ©fono</th>
+                      <th scope="col">ObservaciÃ³n</th>
                       <th scope="col">Opciones</th>
                     </tr>
                   </thead>
@@ -644,7 +644,7 @@
         </div>
         <div class="row mt-2">
           <div class="col-md-7 col-sm-12 mb-3 ">
-            <label class="labelinput" for="obs_refereID">Observación:</label>
+            <label class="labelinput" for="obs_refereID">ObservaciÃ³n:</label>
             <textarea class="form-control Req_ReferenceFyP" id="obs_refereID_'.$llave.'" name="obs_refere_'.$llave.'" rows="2"></textarea>
           </div>
         </div>
@@ -686,8 +686,8 @@
                   <thead>
                     <tr>
                       <th scope="col">Transportadora</th>
-                      <th scope="col">Teléfono</th>
-                      <th scope="col">Información dada por</th>
+                      <th scope="col">TelÃ©fono</th>
+                      <th scope="col">InformaciÃ³n dada por</th>
                       <th scope="col">No Viajes</th>
                       <th scope="col">Opciones</th>
                     </tr>
@@ -709,7 +709,7 @@
             <input class="form-control form-control-sm Req_ReferenceLaboral" type="text" id="num_telefoID_'.$llave.'" name="num_telefo_'.$llave.'">
           </div>
           <div class="col-md-3 col-sm-12 mb-3">
-            <label for="nom_soliciID" class="labelinput">Información dada por:</label>
+            <label for="nom_soliciID" class="labelinput">InformaciÃ³n dada por:</label>
             <input class="form-control form-control-sm Req_ReferenceLaboral" type="text" id="inf_suminiID_'.$llave.'" name="inf_sumini_'.$llave.'">
           </div>
           <div class="col-md-3 col-sm-12 mb-3">
@@ -753,7 +753,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Licencia de tránsito del vehículo
+                          Licencia de trÃ¡nsito del vehÃ­culo
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 3).'" name="fil_licveh" id="fil_licveh" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 1).'
@@ -771,7 +771,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Tarjeta de Propiedad del Tráiler
+                          Tarjeta de Propiedad del Trailer
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 3).'" name="fil_tartra" id="fil_tartra" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_tartra', $nom_tablax, $con_wherex, 1).'
@@ -792,7 +792,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Tecno mecánica
+                          Tecno mecï¿½nica
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 3).'" name="fil_tecmec" id="fil_tecmec" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_tecmec', $nom_tablax, $con_wherex, 1).'
@@ -849,7 +849,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                         <div class="obl">*</div>
-                          Cedula de ciudadanía del propietario
+                          Cedula de ciudadanï¿½a del propietario
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 3).'" name="fil_cedpro" id="fil_cedpro" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_cedpro', $nom_tablax, $con_wherex, 1).'
@@ -871,7 +871,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                            Cédula de ciudadanía del conductor
+                            Cï¿½dula de ciudadanï¿½a del conductor
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 3).'" name="fil_cedcon" id="fil_cedcon" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_cedcon', $nom_tablax, $con_wherex, 1).'
@@ -889,7 +889,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                         <div class="obl">*</div>
-                          Licencia de conducción conductor
+                          Licencia de conducciï¿½n conductor
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 3).'" name="fil_liccon" id="fil_liccon" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 1).'
@@ -928,7 +928,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Registro Fotográfico del vehículo.
+                          Registro Fotogrï¿½fico del vehÃ­culo.
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 3).'" name="fil_regveh" id="fil_regveh" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_regveh', $nom_tablax, $con_wherex, 1).'
@@ -999,7 +999,7 @@
             <div class="container border">
               <div class="row">
                   <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
-                      Datos Básicos del Conductor
+                      Datos BÃ¡sicos del Conductor
                   </div>
               </div>
               <div class="row">
@@ -1015,7 +1015,7 @@
                       <input class="form-control form-control-sm req num" type="text" id="num_docconID" name="num_doccon" value="'.$info['num_doccon'].'" disabled>
                   </div>
                   <div class="col-md-3 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedición:</label>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expediciÃ³n:</label>
                       <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_expcon" name="lug_expcon" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_expcon']).'" validate>
                       <div id="lug_expcon-suggestions" class="suggestions" style="top: 50px !important;"></div>
                   </div>
@@ -1038,17 +1038,17 @@
                       <input class="form-control form-control-sm req" type="text" placeholder="Numero de celular" id="num_mo1conID" name="num_mo1con" value="'.$info['num_mo1con'].'" validate>
                   </div>
                   <div class="col-md-3 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Teléfono</label>
-                      <input class="form-control form-control-sm req" type="text" placeholder="Teléfono" id="num_telconID" name="num_telcon" value="'.$info['num_telcon'].'" validate>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>TelÃ©fono</label>
+                      <input class="form-control form-control-sm req" type="text" placeholder="TelÃ©fono" id="num_telconID" name="num_telcon" value="'.$info['num_telcon'].'" validate>
                   </div>
               </div>';
 
-              //Información Complementaria Conductor
+              //InformaciÃ³n Complementaria Conductor
               if($info['cod_estcon']=='3'){
                 $html.='
                           <div class="row">
                               <div class="col-md-3 col-sm-12 form-group">
-                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Licencia de conducción No.:</label>
+                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Licencia de conducciï¿½n No.:</label>
                                   <input class="form-control form-control-sm req num" type="text" id="num_licencID" name="num_licenc" value="'.$info['num_licenc'].'" validate>
                               </div>
                               <div class="col-md-2 col-sm-12 form-group">
@@ -1072,8 +1072,8 @@
                           </div>
                           <div class="row">
                               <div class="col-md-4 col-sm-12 form-group">
-                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Dirección:</label>
-                                  <input class="form-control form-control-sm req" type="text" placeholder="Dirección" id="dir_domconID" name="dir_domcon" value="'.$info['dir_domcon'].'" validate>
+                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>DirecciÃ³n:</label>
+                                  <input class="form-control form-control-sm req" type="text" placeholder="DirecciÃ³n" id="dir_domconID" name="dir_domcon" value="'.$info['dir_domcon'].'" validate>
                               </div>
                               <div class="col-md-4 col-sm-12 form-group">
                                   <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad:</label>
@@ -1104,7 +1104,7 @@
                 <div class="col-md-6 col-sm-12 form-group">
                     <div class="row mt-2">
                         <div class="col-md-6 col-sm-6 text-left">
-                            <label class="form-check-label labelinput" for="exampleCheck1">¿El conductor presenta comparendos?</label>
+                            <label class="form-check-label labelinput" for="exampleCheck1">ï¿½El conductor presenta comparendos?</label>
                         </div>
                         <div class="col-md-4 col-sm-6">
                             <div class="form-check form-check-inline">
@@ -1127,7 +1127,7 @@
                     </div>
                     <div class="row mt-2">
                         <div class="col-md-6 col-sm-6 text-left">
-                            <label class="form-check-label labelinput" for="exampleCheck1">¿El conductor presenta resoluciones?</label>
+                            <label class="form-check-label labelinput" for="exampleCheck1">ï¿½El conductor presenta resoluciones?</label>
                         </div>
                         <div class="col-md-4 col-sm-6">
                             <div class="form-check form-check-inline">
@@ -1193,7 +1193,7 @@
           $html.='<div class="container border">
                       <div class="row">
                       <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
-                          Datos Básicos del vehículo
+                          Datos BÃ¡sicos del vehÃ­culo
                       </div>
                     </div>
                     <div class="row">
@@ -1216,7 +1216,7 @@
                       <div class="col-3 form-group">
                           <label for="nom_soliciID" class="labelinput">
                             <div class="obl">*</div>
-                              Tipo de vehículo:
+                              Tipo de vehÃ­culo:
                           </label>
                           <select class="form-control form-control-sm req" id="num_configID" name="num_config" validate>
                           '.$this->getTipoVehiculo($info['num_config']).'
@@ -1225,7 +1225,7 @@
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Tipo de Carrocería:
+                          Tipo de CarrocerÃ­a:
                         </label>
                         <select class="form-control form-control-sm req" id="cod_carrocID" name="cod_carroc" validate>
                         '.$this->getTipoCarroc($info['cod_carroc']).'
@@ -1273,21 +1273,21 @@
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Número de chasis:
+                          NÃºmero de chasis:
                         </label>
                         <input class="form-control form-control-sm req" type="text" id="num_chasisID" name="num_chasis" value="'.$info['num_chasis'].'" validate>
                       </div>
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Número del motor:
+                          NÃºmero del motor:
                         </label>
                         <input class="form-control form-control-sm req" type="text" id="num_motorxID" name="num_motorx" value="'.$info['num_motorx'].'" validate>
                       </div>
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Número del soat:
+                          NÃºmero del soat:
                         </label>
                         <input class="form-control form-control-sm req" type="text" id="num_soatxxID" name="num_soatxx" value="'.$info['num_soatxx'].'" validate>
                       </div>
@@ -1304,7 +1304,7 @@
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Número de licencia de transito:
+                          NÃºmero de licencia de transito:
                         </label>
                         <input class="form-control form-control-sm req" type="text" id="num_lictraID" name="num_lictra" value="'.$info['num_lictra'].'" validate>
                       </div>
@@ -1319,7 +1319,7 @@
           $html.=' <div class="container border">
                     <div class="row">
                       <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
-                        Información del operador GPS
+                        InformaciÃ³n del operador GPS
                       </div>
                     </div>
                     <div class="row">
@@ -1341,7 +1341,7 @@
                         <div class="col-4 form-group">
                           <label for="nom_soliciID" class="labelinput">
                             <div class="obl">*</div>
-                              Contraseña:
+                              ContraseÃ±a:
                           </label>
                           <input class="form-control form-control-sm req" type="text" id="clv_gpsxxxID" name="clv_gpsxxx" value="'.$info['clv_gpsxxx'].'" validate>
                         </div>
@@ -1356,7 +1356,7 @@
                         <div class="col-6 form-group">
                           <label for="nom_soliciID" class="labelinput">
                             <div class="obl">*</div>
-                              Observación:
+                              ObservaciÃ³n:
                           </label>
                           <input class="form-control form-control-sm req" type="text" id="obs_opegpsID" name="obs_opegps" value="'.$info['obs_opegps'].'">
                         </div>
@@ -1375,7 +1375,7 @@
             $html.=' <div class="container border">
                     <div class="row">
                       <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
-                        Información del operador GPS
+                        InformaciÃ³n del operador GPS
                       </div>
                     </div>
                     <div class="row">
@@ -1395,7 +1395,7 @@
                         </div>
                         <div class="col-4 form-group">
                           <label for="nom_soliciID" class="labelinput">
-                              Contraseña:
+                              ContraseÃ±a:
                           </label>
                           <input class="form-control form-control-sm" type="text" id="clv_gpsxxxID" name="clv_gpsxxx" value="'.$info['clv_gpsxxx'].'">
                         </div>
@@ -1409,7 +1409,7 @@
                         </div>
                         <div class="col-6 form-group">
                           <label for="nom_soliciID" class="labelinput">
-                              Observación:
+                              ObservaciÃ³n:
                           </label>
                           <input class="form-control form-control-sm" type="text" id="obs_opegpsID" name="obs_opegps" value="'.$info['obs_opegps'].'">
                         </div>
@@ -1428,7 +1428,7 @@
           $html.='<div class="container border">
                     <div class="row">
                       <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
-                        Estudio de seguridad del vehículo
+                        Estudio de seguridad del vehÃ­culo
                       </div>
                     </div>
                     '.$this->getFormulDocume(1, $info['cod_solici']).'
@@ -1438,7 +1438,7 @@
                       <div class="col-md-12 col-sm-12 form-group">
                         <div class="row" style="display: flex; align-items: center;">
                           <div class="col-4 text-left">
-                            <label class="form-check-label labelinput" for="exampleCheck1">¿El vehículo presenta resoluciones?</label>
+                            <label class="form-check-label labelinput" for="exampleCheck1">Â¿El vehÃ­culo presenta resoluciones?</label>
                           </div>
                           <div class="col-2">
                             <div class="form-check form-check-inline">
@@ -1468,7 +1468,7 @@
             <div class="container border">
               <div class="row">
                   <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
-                      Datos Básicos del Poseedor
+                      Datos BÃ¡sicos del Poseedor
                   </div>
               </div>
               <div class="row">
@@ -1485,7 +1485,7 @@
           if($info['cod_estcon']=='3'){
           $tam = '4';
           $html.='<div class="col-md-3 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedición:</label>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expediciÃ³n:</label>
                       <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_exppos" name="lug_exppos" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_exppos']).'" validate>
                       <div id="lug_exppos-suggestions" class="suggestions" style="top: 50px !important;"></div>
                   </div>';
@@ -1513,14 +1513,14 @@
                       <input class="form-control form-control-sm req" type="text" placeholder="Numero de celular" id="num_mo1posID" name="num_mo1pos" value="'.$info['num_mo1pos'].'" validate>
                   </div>
                   <div class="col-md-3 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Teléfono</label>
-                      <input class="form-control form-control-sm req" type="text" placeholder="Teléfono" id="num_telposID" name="num_telpos" value="'.$info['num_telpos'].'" validate>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>TelÃ©fono</label>
+                      <input class="form-control form-control-sm req" type="text" placeholder="TelÃ©fono" id="num_telposID" name="num_telpos" value="'.$info['num_telpos'].'" validate>
                   </div>
               </div>
               <div class="row">
                   <div class="col-md-4 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Dirección:</label>
-                      <input class="form-control form-control-sm req" type="text" placeholder="Dirección" id="dir_domposID" name="dir_dompos" value="'.$info['dir_dompos'].'" validate>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>DirecciÃ³n:</label>
+                      <input class="form-control form-control-sm req" type="text" placeholder="DirecciÃ³n" id="dir_domposID" name="dir_dompos" value="'.$info['dir_dompos'].'" validate>
                   </div>
                   <div class="col-md-4 col-sm-12 form-group">
                       <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad:</label>
@@ -1554,7 +1554,7 @@
             <div class="container border">
               <div class="row">
                   <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
-                      Datos Básicos del Propietario
+                      Datos BÃ¡sicos del Propietario
                   </div>
               </div>
               <div class="row">
@@ -1571,7 +1571,7 @@
             if($info['cod_estcon']=='3'){
             $tam = '4';
             $html.='<div class="col-md-3 col-sm-12 form-group">
-                          <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedición:</label>
+                          <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expediciÃ³n:</label>
                           <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_exppro" name="lug_exppro" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_exppro']).'" validate>
                           <div id="lug_exppro-suggestions" class="suggestions" style="top: 50px !important;"></div>
                      </div>';
@@ -1592,21 +1592,21 @@
                       <label for="nom_soliciID" class="labelinput">Segundo apellido:</label>
                       <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_ap2proID" name="nom_ap2pro" value="'.$info['nom_ap2pro'].'" disabled>
                   </div>';
-              //Información Complementaria Poseedor
+              //InformaciÃ³n Complementaria Poseedor
               if($info['cod_estcon']=='3'){
                 $html.='<div class="col-md-3 col-sm-12 form-group">
                             <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Numero de celular:</label>
                             <input class="form-control form-control-sm req" type="text" placeholder="Numero de celular" id="num_mo1proID" name="num_mo1pro" value="'.$info['num_mo1pro'].'" validate>
                         </div>
                         <div class="col-md-3 col-sm-12 form-group">
-                            <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Teléfono</label>
-                            <input class="form-control form-control-sm req" type="text" placeholder="Teléfono" id="num_telproID" name="num_telpro" value="'.$info['num_telpro'].'" validate>
+                            <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>TelÃ©fono</label>
+                            <input class="form-control form-control-sm req" type="text" placeholder="TelÃ©fono" id="num_telproID" name="num_telpro" value="'.$info['num_telpro'].'" validate>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-4 col-sm-12 form-group">
-                            <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Dirección:</label>
-                            <input class="form-control form-control-sm req" type="text" placeholder="Dirección" id="dir_domproID" name="dir_dompro" value="'.$info['dir_dompro'].'" validate>
+                            <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>DirecciÃ³n:</label>
+                            <input class="form-control form-control-sm req" type="text" placeholder="DirecciÃ³n" id="dir_domproID" name="dir_dompro" value="'.$info['dir_dompro'].'" validate>
                         </div>
                         <div class="col-md-4 col-sm-12 form-group">
                             <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad:</label>
@@ -1640,7 +1640,7 @@
             <div class="container border">
               <div class="row">
                   <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
-                      Información Básica Creación del Despacho
+                      InformaciÃ³n BÃ¡sica CreaciÃ³n del Despacho
                   </div>
               </div>
               <div class="row">
@@ -1717,7 +1717,7 @@
                             <thead>
                               <tr class="bk-sure">
                                 <th scope="col">Estado</th>
-                                <th scope="col">Observación</th>
+                                <th scope="col">ObservaciÃ³n</th>
                                 <th scope="col">Usuario</th>
                                 <th scope="col">Fecha</th>
                               </tr>
@@ -1780,7 +1780,7 @@
                                     <div class="col-md-12 col-sm-12 mb-2">
                                       <div class="d-flex justify-content-between alert alert-success" role="alert">
                                         <div><strong><i class="fa fa-check" aria-hidden="true"></i> Documento Guardado: </strong> '.$documento['nom_archiv'].'</div>
-                                        <div><a class="text-right" href="'.URL_APLICA.'files/adj_estseg/adjs/'.$documento['nom_archiv'].'"><i class="fa fa-eye" aria-hidden="true"></i></a></div>
+                                        <div><a class="text-right" href="'.URL_APLICA.'files/adj_estseg/adjs/'.$documento['nom_archiv'].'" target="_blank"><i class="fa fa-eye" aria-hidden="true"></i></a></div>
                                       </div>
                                     </div>
                                   </div>';
@@ -1795,14 +1795,14 @@
                             <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
                               <div class="row">
                                 <div class="col-md-12 col-sm-12 mb-2">
-                                  <label for="'.$registro['nom_slugxx'].'ID" class="labelinput docreq">'.$oblHtml.''.$registro['nom_fordoc'].'</label>
+                                  <label for="'.$registro['nom_slugxx'].'ID" class="labelinput docreq">'.$oblHtml.''.utf8_encode($registro['nom_fordoc']).'</label>
                                   <input type="file" class="inputDocument docreq" id="'.$registro['nom_slugxx'].'ID" name="'.$registro['nom_slugxx'].'" '.$attrDoc.'>
                                 </div>
                               </div>
                               '.$documentohtml.'
                               <div class="row">
                                 <div class="col-md-12 col-sm-12 mb-3">
-                                  <label class="labelinput" for="'.$registro['nom_slugxx'].'OBS_ID">Observación:</label>
+                                  <label class="labelinput" for="'.$registro['nom_slugxx'].'OBS_ID">ObservaciÃ³n:</label>
                                   <textarea class="form-control" id="'.$registro['nom_slugxx'].'OBS_ID" rows="2" name="'.$registro['nom_slugxx'].'OBS">'.$documento['obs_archiv'].'</textarea>
                                 </div>
                               </div>
@@ -2186,7 +2186,7 @@
                           <th>No. Solicitud</th> 
                           <th>Empresa Solicitante</th>
                           <th>Tipo de Solicitud</th>
-                          <th>Identificación</th>
+                          <th>IdentificaciÃ³n</th>
                           <th>Nombre / Marca</th>
                           <th>Fecha / Hora de Solicitud</th>
                           <th>Tiempo Transcurrido</th>
@@ -2209,13 +2209,14 @@
                         <th>No. Solicitud</th> 
                         <th>Empresa Solicitante</th>
                         <th>Tipo de Solicitud</th>
-                        <th>Identificación</th>
+                        <th>IdentificaciÃ³n</th>
                         <th>Nombre / Marca</th>
-                        <th>Documentación</th>
+                        <th>DocumentaciÃ³n</th>
                         <th>Descargar/Ver</th>
                         <th>Fecha / Hora de Solicitud</th>
-                        <th>Fecha / Hora de Finalización</th>
+                        <th>Fecha / Hora de FinalizaciÃ³n</th>
                         <th>Tiempo de Respuesta</th>
+                        <th>Respuesta</th>
                         <th>Vencimiento</th>
                     </tr>
                 </thead>
@@ -2272,7 +2273,7 @@
             }
             $html='<div class="card" style="margin:5px;">
             <div class="card-header color-heading bk-sure text-center">
-              Datos Básicos del solicitante
+              Datos BÃ¡sicos del solicitante
             </div>
           <div class="card-body">
             '.$addTransp.'
@@ -2285,8 +2286,8 @@
               </div>
               <div class="col-6">
                 <div class="form-group">
-                  <label for="nom_soliciID" class="labelinput">Correo electrónico:</label>
-                  <input class="form-control form-control-sm req ema" type="text" placeholder="Correo electronico" id="cor_soliciID" name="cor_solici" validate disabled value="'.$emptra['dir_emailx'].'">
+                  <label for="nom_soliciID" class="labelinput">Correo electrÃ³nico:</label>
+                  <input class="form-control form-control-sm req ema" type="text" placeholder="Correo electronico" id="cor_soliciID" name="cor_solici" validate value="'.$emptra['dir_emailx'].'">
                 </div>
               </div>
             </div>
@@ -2294,14 +2295,14 @@
             <div class="row">
               <div class="col-4">
                 <div class="form-group">
-                  <label for="nom_soliciID" class="labelinput">Número de Teléfono:</label>
-                  <input class="form-control form-control-sm" type="text" placeholder="Número de Teléfono" id="tel_soliciID" name="tel_solici" disabled value="'.$emptra['num_telefo'].'">
+                  <label for="nom_soliciID" class="labelinput">NÃºmero de TelÃ©fono:</label>
+                  <input class="form-control form-control-sm" type="text" placeholder="NÃºmero de TelÃ©fono" id="tel_soliciID" name="tel_solici" disabled value="'.$emptra['num_telefo'].'">
                 </div>
               </div>
               <div class="col-4">
                 <div class="form-group">
-                  <label for="nom_soliciID" class="labelinput">Número de celular:</label>
-                  <input class="form-control form-control-sm" type="text" placeholder="Número de celular" id="cel_soliciID" name="cel_solici" disabled value="'.$emptra['num_telmov'].'" validate>
+                  <label for="nom_soliciID" class="labelinput">NÃºmero de celular:</label>
+                  <input class="form-control form-control-sm" type="text" placeholder="NÃºmero de celular" id="cel_soliciID" name="cel_solici" value="'.$emptra['num_telmov'].'" validate>
                 </div>
               </div>
               <div class="col-4">
@@ -2318,13 +2319,13 @@
                 <div class="form-group" style="margin-bottom:0px;">
                   <label for="nom_soliciID" class="labelinput">Tipo de estudio:</label>
                   <label class="ml-2 mr-2 radio-inline">
-                    <input class="mr-1" type="radio" name="tip_estudi" value="V" checked>Vehículo
+                    <input class="mr-1" type="radio" name="tip_estudi" value="V" checked>vehÃ­culo
                   </label>
                   <label class="ml-2 mr-2 radio-inline">
                     <input class="mr-1" type="radio" name="tip_estudi" value="C">Conductor
                   </label>
                   <label class="ml-2 mr-2 radio-inline">
-                    <input class="mr-1" type="radio" name="tip_estudi" value="CV">Combinado (Vehículo/Conductor)
+                    <input class="mr-1" type="radio" name="tip_estudi" value="CV">Combinado (vehÃ­culo/Conductor)
                   </label>
                 </div>
               </div>
@@ -2348,7 +2349,7 @@
                 </div>
                 <div class="row">
                   <div class="col-12">
-                    <div class="header-row">Asignación de Poseedor</div>
+                    <div class="header-row">AsignaciÃ³n de Poseedor</div>
                   </div>
                 </div>
                 <div class="row">
@@ -2359,8 +2360,8 @@
                       </select>
                   </div>
                   <div class="col-4 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>N° de documento Poseedor:</label>
-                      <input class="form-control form-control-sm req num" type="text" placeholder="N° de documento" id="num_documePosID_V" name="num_documePos_V" validate>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>No de documento Poseedor:</label>
+                      <input class="form-control form-control-sm req num" type="text" placeholder="No de documento" id="num_documePosID_V" name="num_documePos_V" validate>
                   </div>
                   <div class="col-4 form-group">
                       <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Poseedor:</label>
@@ -2380,13 +2381,13 @@
                 <div class="row ml-2">
                   <div class="col-4 form-group">
                     <input type="checkbox" class="form-check-input esPropieClass" name="esPropie_V" showForm="formPropietV">
-                    <label class="form-check-label p-1" for="esPropieID">¿El poseedor es propietario?</label>
+                    <label class="form-check-label p-1" for="esPropieID">Â¿El poseedor es propietario?</label>
                   </div>
                 </div>
                 <div id="formPropietV">
                   <div class="row">
                     <div class="col-12">
-                      <div class="header-row">Asignación de Propietario</div>
+                      <div class="header-row">AsignaciÃ³n de Propietario</div>
                     </div>
                   </div>
                   <div class="row">
@@ -2397,8 +2398,8 @@
                         </select>
                     </div>
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>N° de documento Propietario:</label>
-                        <input class="form-control form-control-sm req num" type="text" placeholder="N° de documento" id="num_documeProID_V" name="num_documePro_V" validate>
+                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>No de documento Propietario:</label>
+                        <input class="form-control form-control-sm req num" type="text" placeholder="No de documento" id="num_documeProID_V" name="num_documePro_V" validate>
                     </div>
                     <div class="col-4 form-group">
                         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Propietario:</label>
@@ -2427,8 +2428,8 @@
                       </select>
                   </div>
                   <div class="col-4 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>N° de documento Conductor:</label>
-                      <input class="form-control form-control-sm req num" type="text" placeholder="N° de documento" id="num_documeConID_C" name="num_documeCon_C">
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>No de documento Conductor:</label>
+                      <input class="form-control form-control-sm req num" type="text" placeholder="No de documento" id="num_documeConID_C" name="num_documeCon_C">
                   </div>
                   <div class="col-4 form-group">
                       <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Conductor:</label>
@@ -2445,14 +2446,14 @@
                         <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_apell2ConID_C" name="nom_apell2Con_C">
                     </div>
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Núm. de celular del Conductor:</label>
-                        <input class="form-control form-control-sm req" type="text" placeholder="Núm. de celular" id="num_telmovConID_C" name="num_telmovCon_C">
+                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>NÃºm. de celular del Conductor:</label>
+                        <input class="form-control form-control-sm req" type="text" placeholder="NÃºm. de celular" id="num_telmovConID_C" name="num_telmovCon_C">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput">Núm. de celular 2 del Conductor:</label>
-                        <input class="form-control form-control-sm" type="text" placeholder="Núm. de celular 2" id="num_telmo2ConID_C" name="num_telmo2Con_C">
+                        <label for="nom_soliciID" class="labelinput">NÃºm. de celular 2 del Conductor:</label>
+                        <input class="form-control form-control-sm" type="text" placeholder="NÃºm. de celular 2" id="num_telmo2ConID_C" name="num_telmo2Con_C">
                     </div>
                     <div class="col-5 form-group">
                         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email:</label>
@@ -2472,7 +2473,7 @@
 
                 <div class="row">
                   <div class="col-12">
-                    <div class="header-row">Asignación de Conductor</div>
+                    <div class="header-row">AsignaciÃ³n de Conductor</div>
                   </div>
                 </div>
 
@@ -2484,8 +2485,8 @@
                       </select>
                   </div>
                   <div class="col-4 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>N° de documento Conductor:</label>
-                      <input class="form-control form-control-sm req num" type="text" placeholder="N° de documento" id="num_documeConID_CV" name="num_documeCon_CV">
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>No de documento Conductor:</label>
+                      <input class="form-control form-control-sm req num" type="text" placeholder="No de documento" id="num_documeConID_CV" name="num_documeCon_CV">
                   </div>
                   <div class="col-4 form-group">
                       <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Conductor:</label>
@@ -2502,14 +2503,14 @@
                         <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_apell2ConID_CV" name="nom_apell2Con_CV">
                     </div>
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Núm. de celular del Conductor:</label>
-                        <input class="form-control form-control-sm req" type="text" placeholder="Núm. de celular" id="num_telmovConID_CV" name="num_telmovCon_CV">
+                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>NÃºm. de celular del Conductor:</label>
+                        <input class="form-control form-control-sm req" type="text" placeholder="NÃºm. de celular" id="num_telmovConID_CV" name="num_telmovCon_CV">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput">Núm. de celular 2 del Conductor:</label>
-                        <input class="form-control form-control-sm" type="text" placeholder="Núm.  de celular 2" id="num_telmo2ConID_CV" name="num_telmo2Con_CV">
+                        <label for="nom_soliciID" class="labelinput">NÃºm. de celular 2 del Conductor:</label>
+                        <input class="form-control form-control-sm" type="text" placeholder="NÃºm.  de celular 2" id="num_telmo2ConID_CV" name="num_telmo2Con_CV">
                     </div>
                     <div class="col-5 form-group">
                         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email:</label>
@@ -2519,7 +2520,7 @@
 
                 <div class="row">
                   <div class="col-12">
-                    <div class="header-row">Asignación de Poseedor</div>
+                    <div class="header-row">AsignaciÃ³n de Poseedor</div>
                   </div>
                 </div>
                 <div class="row">
@@ -2530,8 +2531,8 @@
                       </select>
                   </div>
                   <div class="col-4 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>N° de documento Poseedor:</label>
-                      <input class="form-control form-control-sm req num" type="text" placeholder="N° de documento" id="num_documePosID_CV" name="num_documePos_CV">
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>No de documento Poseedor:</label>
+                      <input class="form-control form-control-sm req num" type="text" placeholder="No de documento" id="num_documePosID_CV" name="num_documePos_CV">
                   </div>
                   <div class="col-4 form-group">
                       <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Poseedor:</label>
@@ -2551,13 +2552,13 @@
                 <div class="row ml-2">
                   <div class="col-4 form-group">
                     <input type="checkbox" class="form-check-input esPropieClass" name="esPropie_CV" showForm="formPropietCom">
-                    <label class="form-check-label p-1" for="esPropieID">¿El poseedor es propietario?</label>
+                    <label class="form-check-label p-1" for="esPropieID">Â¿El poseedor es propietario?</label>
                   </div>
                 </div>
                 <div id="formPropietCom">
                   <div class="row">
                     <div class="col-12">
-                      <div class="header-row">Asignación de Propietario</div>
+                      <div class="header-row">AsignaciÃ³n de Propietario</div>
                     </div>
                   </div>
                   <div class="row">
@@ -2568,8 +2569,8 @@
                         </select>
                     </div>
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>N° de documento Propietario:</label>
-                        <input class="form-control form-control-sm req num" type="text" placeholder="N° de documento" id="num_documeProID_CV" name="num_documePro_CV">
+                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>No de documento Propietario:</label>
+                        <input class="form-control form-control-sm req num" type="text" placeholder="Node documento" id="num_documeProID_CV" name="num_documePro_CV">
                     </div>
                     <div class="col-4 form-group">
                         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Propietario:</label>
@@ -2593,7 +2594,7 @@
                 <div class="row mt-2 ml-2">
                   <div class="col-6 form-group">
                     <input type="checkbox" class="form-check-input" id="genDespac" name="genDespac">
-                    <label class="form-check-label p-1" for="genDespacID"> Generar la creación del despacho al finalizar</label>
+                    <label class="form-check-label p-1" for="genDespacID"> Generar la creaciÃ³n del despacho al finalizar</label>
                   </div>
                 </div>
 
@@ -2764,7 +2765,7 @@ private function modalGuardadoFinal(){
                   </div>
                   <div class="row mt-2">
                     <div class="mt-2 col-12 form-group">
-                      <label class="labelinput" for="obs_gestio"><div class="obl">*</div> Observación:</label>
+                      <label class="labelinput" for="obs_gestio"><div class="obl">*</div> ObservaciÃ³n:</label>
                       <textarea class="form-control" id="obs_gestio_f" rows="4" name="obs_gestio"></textarea>
                     </div>
                   </div>
@@ -2871,14 +2872,14 @@ private function modalGuardadoFinal(){
                     </div>
                     <div class="col-4 form-group">
                       <label for="nom_soliciID" class="labelinput">
-                          N° de celular del Conductor:
+                          Nï¿½ de celular del Conductor:
                       </label>
                       <input class="form-control form-control-sm" type="text" id="num_telmovID_preview" value="'.$info['num_mo1con'].'" disabled>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-4 form-group">
-                      <label for="nom_soliciID" class="labelinput">N° de celular 2 del Conductor:</label>
+                      <label for="nom_soliciID" class="labelinput">No de celular 2 del Conductor:</label>
                       <input class="form-control form-control-sm" type="text" id="num_telmo2ID_preview" value="'.$info['num_mo2con'].'" disabled>
                     </div>
                     <div class="col-5 form-group">

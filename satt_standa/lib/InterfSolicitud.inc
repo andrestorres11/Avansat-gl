@@ -14,7 +14,7 @@ class InterfSolicitud {
 	var $developer_mode=true;
 
 	function InterfSolicitud(){
-		$this->wsdl_url = $_SERVER['HTTP_HOST'] == 'dev.intrared.net:8083' ? 'https://dev.intrared.net:8083/ap/interf/app/faro/faro.php?wsdl':'https://avansatgl.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl';
+		$this->wsdl_url = $_SERVER['HTTP_HOST'] == 'oet-dev.intrared.net:8083' ? 'https://oet-dev.intrared.net:8083/ap/interf/app/faro/faro.php?wsdl':'https://oet-avansatgl.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl';
 		$this->__load();
 	}
 	//function __construct(){

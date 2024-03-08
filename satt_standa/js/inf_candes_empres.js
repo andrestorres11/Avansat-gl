@@ -7,7 +7,6 @@ function MostrarResul()
     {
         var fec_ini = document.getElementById('fec_inicialID');
         var fec_final = document.getElementById('fec_finalID');
-        var busq_transp = document.getElementById('busq_transpID');
         
         if (fec_ini.value == '') 
         {
@@ -18,11 +17,6 @@ function MostrarResul()
         {
             alert('La Fecha Final es Obligatoria');
             return fec_final.focus();
-        }
-        if (busq_transp.value == '') 
-        {
-            alert('La Transportadora es Obligatoria');
-            return busq_transp.focus();
         }
         document.getElementById('opcionID').value = 1;
         document.getElementById('formularioID').submit();

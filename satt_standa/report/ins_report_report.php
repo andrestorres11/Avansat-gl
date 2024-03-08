@@ -130,13 +130,13 @@ class Reporte
 		
 		if( $correo )
 		{
-			$to = $correo.","."eclfaro@grupooet.com";
+			$to = $correo;
 
 			$subject = 'Reporte de Novedad';
 
 			$headers  = 'MIME-Version: 1.0' . "\r\n";
 	        $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-	        $headers .= 'From: seguimientosfaro@eltransporte.org\r\n';
+	        $headers .= 'From: '.MAIL_SUPERVISORES.'\r\n';
 
 			
 			$message = "";
@@ -213,7 +213,6 @@ class Reporte
                     </div>
 
                 </div>';
-                $to .= ", miguel.chavez@klogistics.com.co";
                 //mail( $to, $subject, $mensaje, $headers ); 
                 //mail( 'jorge.preciado@intrared.net', $subject, $mensaje, $headers ); 
             }
@@ -251,7 +250,7 @@ class Reporte
 		$_POST = NULL;
 	}
   
-  //Retorna usuario y contraseña
+  //Retorna usuario y contraseï¿½a
   function getInterfData( $cod_tercer, $cod_operad )
   {
     $query = "SELECT b.nom_usuari, b.clv_usuari
@@ -352,6 +351,7 @@ class Reporte
 		    
 		    if( "1000" != trim( $mCodResp[1] ) )
 		    {
+				/*
 		      $mMessage = "******** Encabezado ******** \n";
 		      $mMessage .= "Fecha de la novedad:".$sendData['fec_noveda'].". \n";
 		      $mMessage .= "Hora de la novedad:".$sendData['hor_noveda'].". \n";
@@ -373,7 +373,7 @@ class Reporte
 		      $mensaje .= "<br>Error:".$result;
 		      $mens = new mensajes();
 		      $mens -> advert( "Registrar Novedades", $mensaje );
-		      die();
+		      die();*/
 		    }
 		  }
       catch( SoapFault $e )
@@ -404,7 +404,7 @@ class Reporte
 		      $mMessage .= "Cod Error: ". $e -> faultcode ." \n";
 		      $mMessage .= "Error: ". $e -> faultstring ." \n";
 		      $mMessage .= "Error Detallado: ".$result." \n";
-		      mail( "soporte.ingenieros@intrared.net", "Web service Intracarga", $mMessage,'From: soporte.ingenieros@intrared.net' );
+		      //mail( "soporte.ingenieros@intrared.net", "Web service Intracarga", $mMessage,'From: soporte.ingenieros@intrared.net' );
 		      
 		      $mensaje  = "Se Registro la Novedad con Exito<br>Nro. de Verificacion <h3>".$aditionalData["num_repnov"]."</h3>";
 		      $mensaje .= "<br><h3>No se pudo reportar la novedad mediante la interfaz en Intracarga</h3>.";

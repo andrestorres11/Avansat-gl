@@ -147,6 +147,8 @@ class trans {
 
         $mSql .= $_REQUEST[term] ? " AND (a.abr_tercer LIKE '%" . $_REQUEST[term] . "%' OR a.cod_tercer LIKE '%" . $_REQUEST[term] . "%' )" : "";
         $mSql .= " ORDER BY a.abr_tercer ASC ";
+        //echo $mSql;
+        //die();
         $consulta = new Consulta($mSql, self::$cConexion);
         $mResult = $consulta->ret_matrix('a');
 
@@ -157,8 +159,10 @@ class trans {
                 $mTranps[] = array('value' => utf8_decode($mResult[$i][nom_tercer]), 'label' => $mTxt, 'id' => $mResult[$i][cod_tercer]);
             }
             echo json_encode($mTranps);
-        } else
+        } else {
             return $mResult;
+        }
+            
     }
 
     /* ! \fn: buscarPaises
@@ -481,8 +485,6 @@ class trans {
                  WHERE 
                        a.cod_tercer = '" . $cod_transp . "'
                ";
-        /* echo "<pre>";
-          echo $query;die; */
         $consulta = new Consulta($query, self::$cConexion);
         $transpor = $consulta->ret_matrix("a");
         $datos->principal = (object) $transpor[0];

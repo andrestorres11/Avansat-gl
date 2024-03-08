@@ -402,6 +402,7 @@ png, jpeg, zip, rar)
 				}
 			
 				$formato =	"insert into tab_solici_seguim (num_solici,cod_estado,obs_seguim,dir_archiv,usr_creaci,fec_creaci) values(%d,%d,'%s','%s','%s',%s);";
+				
 				$sql=sprintf($formato,$this->raw->num_solici,$this->raw->cod_estado,$this->raw->obs_seguim,$this->raw->dir_archiv,@$_SESSION["datos_usuario"]["cod_usuari"],"now()");
 
 				$consulta = new Consulta( $sql, $this->conexion );
@@ -420,7 +421,7 @@ png, jpeg, zip, rar)
 									  'inform'=> $this->getTransSolici($this->raw->num_solici)[0]['dir_usrmai'],
 		                              'cod_estado'  =>  $this->getEstado($this->raw->cod_estado)[0]['nom_estado'],
 		                              'obs_solici'  =>  $this->raw->obs_seguim,
-		                              'mailTo'  =>  $this->getTransSolici($this->raw->num_solici)[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR.",maribel.garcia@eltransporte.org",
+		                              'mailTo'  =>  $this->getTransSolici($this->raw->num_solici)[0]['dir_usrmai'].",".$_SESSION["datos_usuario"]["usr_emailx"].",".SUPERVISOR,
 		                          );
 		      	$this->sendMailSolifa($dataMail);
 				return false;
@@ -701,7 +702,7 @@ EOF;
 			die("La fecha no es v&aacute;lida (fin)");
 		}
 
-		$fec_mod_max=60 * 60 * 24 * 365 * 100;//diferencia maxima entre fecha 1 y fecha 2 (100 años)
+		$fec_mod_max=60 * 60 * 24 * 365 * 100;//diferencia maxima entre fecha 1 y fecha 2 (100 aï¿½os)
 		$fec_inifil="$fec_inifil 00:00:00";
 		$fec_finfil="$fec_finfil 23:59:59";
 		$fec_finmax=date("Y-m-d")." 23:59:59";
@@ -1019,7 +1020,7 @@ EOF;
 				                if($d['cod_transp'] == $sus_terceros['cod_tercer']){
 				                    //Genera la lista de empresas suspendidas a mostrar en pantalla.
 				                    $emp_suspencion[] = $sus_terceros['cod_tercer']." - ".$sus_terceros['abr_tercer'];
-				                    //Elimina la posición de la empresas suspendida
+				                    //Elimina la posiciï¿½n de la empresas suspendida
 				                    unset($d);
 				                }
 				            }
@@ -1112,7 +1113,7 @@ EOF;
 			if(!empty($d["nom_viaxxx"]) && !$isFull){
 				$msg.="V&iacute;a: ".$d["nom_viaxxx"].", ";
 			}elseif(!empty($d["nom_viaxxx"]) && $isFull){
-				$msg.="Vía: ".$d["nom_viaxxx"].", ";
+				$msg.="Vï¿½a: ".$d["nom_viaxxx"].", ";
 			}
 			if(!empty($d["lis_placas"])){
 				$msg.="Placa(s): ".$d["lis_placas"].", ";
@@ -1123,7 +1124,7 @@ EOF;
 			if(!empty($d["obs_solici"]) && !$isFull){
 				$msg.="Observaci&oacute;n: ".$d["obs_solici"].", ";
 			}elseif(!empty($d["obs_solici"]) && $isFull){
-				$msg.="Observación: ".$d["obs_solici"].", ";
+				$msg.="Observaciï¿½n: ".$d["obs_solici"].", ";
 			}
 			if(!empty($d["dir_archiv"])){
 				$msg.="(con archivo adjunto)";
@@ -1338,28 +1339,28 @@ EOF;
 	} 
 
 	function encode2($msg){
-	    $msg = str_replace("á","&aacute;", $msg);
-	    $msg = str_replace("é","&eacute;", $msg);
-	    $msg = str_replace("í","&iacute;", $msg);
-	    $msg = str_replace("ó","&oacute;", $msg);
-	    $msg = str_replace("ú","&uacute;", $msg);
-	    $msg = str_replace("Á","&Aacute;", $msg);
-	    $msg = str_replace("É","&Eacute;", $msg);
-	    $msg = str_replace("Í","&Iacute;", $msg);
-	    $msg = str_replace("Ó","&Oacute;", $msg);
-	    $msg = str_replace("Ú","&Uacute;", $msg);
-	    $msg = str_replace("ñ","&ntilde;", $msg);
-	    $msg = str_replace("Ñ","&Ntilde;", $msg);
-	    $msg = str_replace("à","&agrave;", $msg);
-	    $msg = str_replace("À","&Agrave;", $msg);
-	    $msg = str_replace("Ç","&Ccedil;", $msg);
-	    $msg = str_replace("ç","&ccedil;", $msg);
-	    $msg = str_replace("ï","&iuml;", $msg);
-	    $msg = str_replace("Ï","&Iuml;", $msg);
-	    $msg = str_replace("ò","&ograve;", $msg);
-	    $msg = str_replace("Ò","&Ograve;",  $msg);
-	    $msg = str_replace("ü","&uuml;",  $msg);
-	    $msg = str_replace("Ü","&Uuml;",  $msg);
+	    $msg = str_replace("ï¿½","&aacute;", $msg);
+	    $msg = str_replace("ï¿½","&eacute;", $msg);
+	    $msg = str_replace("ï¿½","&iacute;", $msg);
+	    $msg = str_replace("ï¿½","&oacute;", $msg);
+	    $msg = str_replace("ï¿½","&uacute;", $msg);
+	    $msg = str_replace("ï¿½","&Aacute;", $msg);
+	    $msg = str_replace("ï¿½","&Eacute;", $msg);
+	    $msg = str_replace("ï¿½","&Iacute;", $msg);
+	    $msg = str_replace("ï¿½","&Oacute;", $msg);
+	    $msg = str_replace("ï¿½","&Uacute;", $msg);
+	    $msg = str_replace("ï¿½","&ntilde;", $msg);
+	    $msg = str_replace("ï¿½","&Ntilde;", $msg);
+	    $msg = str_replace("ï¿½","&agrave;", $msg);
+	    $msg = str_replace("ï¿½","&Agrave;", $msg);
+	    $msg = str_replace("ï¿½","&Ccedil;", $msg);
+	    $msg = str_replace("ï¿½","&ccedil;", $msg);
+	    $msg = str_replace("ï¿½","&iuml;", $msg);
+	    $msg = str_replace("ï¿½","&Iuml;", $msg);
+	    $msg = str_replace("ï¿½","&ograve;", $msg);
+	    $msg = str_replace("ï¿½","&Ograve;",  $msg);
+	    $msg = str_replace("ï¿½","&uuml;",  $msg);
+	    $msg = str_replace("ï¿½","&Uuml;",  $msg);
 	    return $msg;
 	}
 
@@ -1384,7 +1385,7 @@ EOF;
 		    $mHtmlxx = $r_file;
 		    if($_SERVER['HTTP_HOST'] == 'dev.intrared.net:8083')
 		    {
-		      	$mailToS = "edward.serrano@intrared.net, maribel.garcia@eltransporte.org";
+		      	//$mailToS = "edward.serrano@intrared.net, maribel.garcia@eltransporte.org";
 		    }
 		    else
 		    {

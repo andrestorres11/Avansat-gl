@@ -143,7 +143,7 @@
           $mDateYes = date("Y-m-d", strtotime($mDateTem ->date));
 
           //Body
-          echo utf8_decode('<table style="width: 100%;" id="dashBoardTableTrans">
+          echo ('<table style="width: 100%;" id="dashBoardTableTrans">
           <tr>
               <td>
                   <meta name="viewport" content= "width=device-width, initial-scale=1.0">

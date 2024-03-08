@@ -348,7 +348,7 @@ class AjaxInsertarAutorizacion
 					$asunto="Código de activación aplicación de INSPECCIÓN VEHICULAR ";
 				}
 
-                mail($_REQUEST['mail'].", maribel.garcia@eltransporte.org", $asunto, $mHtmlxx, $mCabece); 
+                mail($_REQUEST['mail'].", maribel.garcia@grupooet.com", $asunto, $mHtmlxx, $mCabece); 
 				echo "ok";
 			}
 			else{

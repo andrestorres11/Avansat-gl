@@ -1392,7 +1392,6 @@ class Despachos
                 $llamadas2 = $consulta->ret_matriz();
                 $llamadas2 = $llamadas2[0][0];
             }
-            //mail('cristian.torres@grupooet.com', 'despac', var_export($despac, true));
             if ($desfut)
                 $desenruta = $this->orderMultiDimensionalArray($desenruta, 'tiempo', 0);
             
@@ -2539,6 +2538,7 @@ class Despachos
         #echo " <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js\"></script>";
         
         echo "<link rel=\"stylesheet\" href=\"../" . DIR_APLICA_CENTRAL . "/estilos/ol.css\" type=\"text/css\">";
+        echo "<link rel=\"stylesheet\" href=\"../" . DIR_APLICA_CENTRAL . "/estilos/tooltip_image.css\" type=\"text/css\">";
         echo "<script src=\"../" . DIR_APLICA_CENTRAL . "/js/ol.js\"></script>";
         echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/mapaGoogle.js\"></script>\n"; 
         //echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?"></script>';
@@ -2679,9 +2679,9 @@ class Despachos
 
 
         $mTittle[2] = array( "id" => "dat_fechas", "tittle" => "FECHAS DEL DESPACHO");
-        $mTittle[2]['data'] = array("fec_creaci" => "Hora/Fecha Sistema", 
+        $mTittle[2]['data'] = array("fec_despac" => "Hora/Fecha Sistema", 
                                     "fec_salida" => "Fecha Salida del Despacho", 
-                                    "fec_despac" => "Fecha de Creaci&oacute;n", 
+                                    "fec_creaci" => "Fecha de Creaci&oacute;n", 
                                     "fec_citcar" => "Fecha Cita de Cargue", 
                                     "fec_llegpl" => "Fecha Planeada Llegada", 
                                     "fec_findes" => "Fecha Fin Descargue", 
@@ -2728,13 +2728,41 @@ class Despachos
                                             $paramGps = self::getValidaParamGPS(53,$mData['cod_transp']);
                                             if($mData[$key]==''){
                                                 if($paramGps){
-                                                    $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reenviar Itinerario]</a>';
+
+                                                    $fechaC = new DateTime($mData['fec_envint']);
+                                                    $fechaActual = new DateTime(date('Y-m-d H:i:s'));
+                                                    $interval = $fechaC->diff($fechaActual);
+                                                    $minutosDiferencia = $interval->days * 24 * 60 + $interval->h * 60 + $interval->i;
+
+                                                    if($minutosDiferencia >= 10 || $mData['fec_envint'] == NULL || $mData['msg_itiner'] == NULL){
+                                                        $mTxt = '<a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">[Reenviar Itinerario]</a>';
+                                                    }else{
+                                                        $mTxt = '<div class="tooltip-container">';
+                                                        $mTxt .= '<img src="'.URL_STANDA.'images/spinner.gif" width="15px" style="cursor: pointer">';
+                                                        $mTxt .= '<span style="max-width:400px !important" class="tooltip-text">Esperando respuesta del integrador</span>';
+                                                        $mTxt .= '</div>';
+                                                    }
+
+                                                    
+                                                   
                                                 }else{
                                                     $mTxt = 'No Habilitado';
                                                 }
                                                 
                                             }else{
+
                                                 $mTxt = $mData[$key];
+
+                                                if((self::getTiempoUltNovGPS($mData['num_despac']) || self::getNovedaSinSenalGPS($mData['num_despac'])) && self::valLLegada($mData['num_despac'])){
+                                                    $mTxt = '<span style="color:red">'.$mData[$key].'</span>';
+                                                    $mtitulo = '[Forzar Nuevo Reenvio]';
+                                                    if(self::getNovedaSinSenalGPS($mData['num_despac'])){
+                                                        $mTxt .= ' <img src="'.URL_STANDA.'imagenes/Alert1.gif" width="15px" style="cursor: pointer">';
+                                                        $mtitulo = '[Reiniciar Itinerario] - SIN SENAL GPS';
+                                                    }
+                                                    $mTxt .= '  <a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">'.$mtitulo.'</a>';
+
+                                                }
                                             }
                                             $mTxt = array($tittle, $mTxt);
                                             break;
@@ -2768,9 +2796,8 @@ class Despachos
                                             
                                             //Novedades pendientes por reenviar
                                             $cNovPendientes = $this->getNovedadesReenviar($mNumDespac, $cod_operad);
-                                            //mail('cristian.torres@grupooet.com','DataNovedades',var_export($cNovPendientes,true));
                                             if(($mData[$key]!=0) && (count($registros)>0) && ($mView->ree_noveda->ind_visibl) && (sizeof($cNovPendientes) > 0)){
-                                                $mTxt = $mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reenviar Novedades]</a>';
+                                                $mTxt = sizeof($cNovPendientes).' / '.$mData[$key].' <a style="color:blue;" onclick="ReeNovedades('.$mData['num_despac'].')">[Reenviar Novedades]</a>';
                                             }else{
                                                 $mTxt = $mData[$key];
                                             }
@@ -3409,6 +3436,10 @@ class Despachos
         if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
           $mHtml->LabelTit( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         }
+
+        if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
+            $mHtml->LabelTit( 'Enviado a Cliente', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+        }
         
         $mHtml->LabelTit( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
         
@@ -3535,7 +3566,7 @@ class Despachos
             }else{ 
                 $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
             }
-            $mHtml->Label( $mNovedades[$i][obs_noveda] , array("align"=>"left", "class"=>$mStyle) );
+            $mHtml->Label( utf8_encode($mNovedades[$i][obs_noveda]) , array("align"=>"left", "class"=>$mStyle) );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
             $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
 
@@ -3548,6 +3579,20 @@ class Despachos
 
             if( $mViewUsu->edi_noveda->ind_visibl == 1 )
               $mHtml->Label( $mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
+
+
+            if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
+                $mNomTabla = $mNovedades[$i]['cod_consec'] == 1 ? 'tab_despac_noveda' : 'tab_despac_contro';
+                $infoStatus = self::consultaStatusNovedad($mNumDespac, $mNovedades[$i]['cod_consec'], $mNomTabla );
+                if($infoStatus==NULL){
+                    $message_status = "Novedad sin registro de transacción";
+                }else{
+                    $message_status = "Mensaje: ".$infoStatus['msj_status']."<br>Fecha: ".$infoStatus['fec_transa']."<br>Cantidad Transacciones: ".$infoStatus['can_transa'];
+                }
+
+                $image = $mNovedades[$i][ind_enviad] == 1 ? 'active.png' : 'error.png';
+                $mHtml->Label( '<b><div class="tooltip-container"><img alt="Icono de estado de enviado" tooltip="true" src="'.URL_STANDA.'images/'.$image.'" width="16px"><span style="max-width:400px !important" class="tooltip-text">'.$message_status.'</span></div></b>', array("align"=>"center", "class"=>$mStyle) );
+            }
 
             $mHtml->SetBody( '<td align="right" class="'.$mStyle.'" width="30%" ><b>'.$mSolEfecti.'</b></td>' );
 
@@ -3583,8 +3628,6 @@ class Despachos
      *  \param: despacho a revisar
      *  \return valor que retorna
      */
-    
-
     private function checkNovedaUpd($mData = NULL, $mNumDespac = NULL){
 
         $query = "SELECT a.cod_novold, a.obs_novold, a.obs_motivo, 
@@ -3599,7 +3642,26 @@ class Despachos
         $result = $consulta -> ret_matrix("a");
 
         return $result;
+    }
 
+
+    /*! \fn: checkNovedaUpd
+     *  \brief: revisa si la novedad fue modificada
+     *  \author: Ing. Miguel Romero
+     *    \date: 29/07/2016 
+     *  \param: mData arreglo con los datos de la novedad
+     *  \param: despacho a revisar
+     *  \return valor que retorna
+     */
+    private function consultaStatusNovedad($mNumDespac = NULL, $mCodConsec = NULL, $mNomTabla = 'tab_despac_contro'){
+        $query = "SELECT a.msj_status, a.can_transa, a.fec_transa
+                    FROM " . BASE_DATOS . ".tab_transa_noveda a
+                   WHERE a.num_despac = '".$mNumDespac."'
+                     AND a.cod_consec = '".$mCodConsec."'
+                     AND a.nom_tablax = '".$mNomTabla."'";
+        $consulta = new Consulta( $query, $this -> conexion );
+        $result = $consulta -> ret_matrix("a")[0];
+        return $result;
     }
 
 
@@ -3631,6 +3693,59 @@ class Despachos
         // Actualizar la variable $despachos con los registros filtrados
         $interfaces = array_values($interfacesFiltradas);
         if(sizeof($interfaces)>0){
+            return true;
+        }
+        return false;
+    }
+
+
+
+    private function getTiempoUltNovGPS($mCodDespac){
+        $query = "SELECT a.fec_creaci  FROM ".BASE_DATOS.".tab_despac_contro a 
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON 
+                                    a.cod_noveda = b.cod_noveda 
+                    WHERE a.num_despac = '".$mCodDespac."' AND
+                          b.cod_tipoxx = 2
+                    ORDER BY a.fec_creaci DESC";
+        $consulta = new Consulta( $query, $this -> conexion );
+        $tiempoCon = $consulta -> ret_matrix("a");
+        if(sizeof($tiempoCon) > 0){
+            $fechaC = new DateTime($tiempoCon[0]['fec_creaci']);
+            $fechaActual = new DateTime(date('Y-m-d H:i:s'));
+            $interval = $fechaC->diff($fechaActual);
+            $minutosDiferencia = $interval->days * 24 * 60 + $interval->h * 60 + $interval->i;
+            if($minutosDiferencia >= 60){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private function getNovedaSinSenalGPS($mCodDespac){
+        $query = "SELECT a.cod_noveda  FROM ".BASE_DATOS.".tab_despac_contro a 
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON 
+                                    a.cod_noveda = b.cod_noveda 
+                    WHERE a.num_despac = '".$mCodDespac."'
+                    ORDER BY a.fec_creaci DESC LIMIT 20";
+        $consulta = new Consulta( $query, $this -> conexion );
+        $ultNoveda = $consulta -> ret_matrix("a");
+        $hab = true;
+        for($i = 0; $i<=4; $i++){
+            if($ultNoveda[$i]['cod_noveda'] != '9169'){
+                $hab = false;
+            }
+        }
+
+        return $hab;
+    }
+
+    private function valLLegada($mCodDespac){
+        $query = "SELECT a.fec_llegad  FROM ".BASE_DATOS.".tab_despac_despac a 
+                    WHERE a.num_despac = '".$mCodDespac."' AND a.fec_llegad IS NULL";
+        $consulta = new Consulta( $query, $this -> conexion );
+        $valLlegad = $consulta -> ret_matrix("a");
+        if(count($valLlegad)>0){
             return true;
         }
         return false;
@@ -4112,7 +4227,7 @@ class Despachos
                         a.gps_urlxxx,
                         IF(b.fec_itiner IS NULL OR b.fec_itiner = '' OR b.fec_itiner = '0000-00-00 00:00:00', '', b.cod_itiner) AS cod_itiner,
                         IF(b.msg_itiner IS NULL OR b.msg_itiner = '', 'N/A', b.msg_itiner) AS msg_itiner,
-                        b.map_tokenx
+                        b.map_tokenx, b.fec_envint, b.fec_itiner
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
@@ -5218,7 +5333,8 @@ class Despachos
                             b.ind_fuepla, a.tiem_duraci, 
                             b.cod_etapax, b.ind_limpio, 
                             b.ind_manala, 
-                            a.val_longit, a.val_latitu, e.cod_tipoxx
+                            a.val_longit, a.val_latitu, e.cod_tipoxx,
+                            a.ind_enviad
                     FROM ".BASE_DATOS.".tab_despac_contro a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                         ON a.cod_noveda = b.cod_noveda 
@@ -5245,7 +5361,7 @@ class Despachos
                             b.cod_etapax, b.ind_limpio, 
                             b.ind_manala,
                             '' AS val_longit, '' AS val_latitu,
-                            e.cod_tipoxx
+                            e.cod_tipoxx, a.ind_enviad
                     FROM ".BASE_DATOS.".tab_despac_noveda a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
                         ON a.cod_noveda = b.cod_noveda 
@@ -5270,7 +5386,7 @@ class Despachos
                             c.cod_etapax, '0' AS ind_limpio, 
                             c.ind_manala,
                             '' AS val_longit, '' AS val_latitu,
-                            e.cod_tipoxx
+                            e.cod_tipoxx, '0' as 'ind_enviad'
                     FROM ".BASE_DATOS.".tab_recome_asigna a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                         ON a.cod_contro = b.cod_contro 
@@ -5298,7 +5414,7 @@ class Despachos
                             c.cod_etapax, '1' AS ind_limpio, 
                             c.ind_manala, 
                             '' AS val_longit, '' AS val_latitu,
-                            e.cod_tipoxx
+                            e.cod_tipoxx,  '0' as 'ind_enviad'
                     FROM ".BASE_DATOS.".tab_recome_asigna a 
                 INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
                         ON a.cod_contro = b.cod_contro 
@@ -5325,7 +5441,8 @@ class Despachos
                                 f.ind_fuepla, a.tiem_duraci,
                                 b.cod_etapax, f.ind_limpio,
                                 f.ind_manale as 'ind_manala',
-                                a.val_longit, a.val_latitu, g.cod_tipoxx
+                                a.val_longit, a.val_latitu, g.cod_tipoxx,
+                                a.ind_enviad
                         FROM ".BASE_DATOS.".tab_despac_contro a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
@@ -5341,7 +5458,6 @@ class Despachos
                     LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
                                 ON b.cod_tipoxx = g.cod_tipoxx
                         WHERE a.num_despac = '{$mNumDespac}'
-                        group by a.val_longit, a.val_latitu, a.fec_contro
                 )
                 UNION
                 (
@@ -5358,7 +5474,7 @@ class Despachos
                                 b.cod_etapax, e.ind_limpio,
                                 e.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                f.cod_tipoxx
+                                f.cod_tipoxx, a.ind_enviad
                         FROM ".BASE_DATOS.".tab_despac_noveda a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
@@ -5388,7 +5504,7 @@ class Despachos
                                 c.cod_etapax, '0' AS ind_limpio,
                                 f.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                g.cod_tipoxx
+                                g.cod_tipoxx, '0' as ind_enviad
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
@@ -5421,7 +5537,7 @@ class Despachos
                                 c.cod_etapax, '1' AS ind_limpio,
                                 f.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                g.cod_tipoxx
+                                g.cod_tipoxx, '0' as ind_enviad
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
@@ -6262,7 +6378,7 @@ class Despachos
                                         $mMessage .= "Observaciones: " . $e -> detail . " \n";
                                         
                                         //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Alianza", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Alianza", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }      
                                 }
                                 /********************* **************** *********************/
@@ -6356,7 +6472,7 @@ class Despachos
                                         $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                         //COMENTARIAR THIS
-                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomColocar", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomColocar", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                 }
                                 /********************* **************** *********************/
@@ -6498,7 +6614,7 @@ class Despachos
                                       $mMessage .= "******** Detalle ******** \n";
                                       $mMessage .= "Mensaje de error: " . $error_  . " \n";
                                       
-                                      mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                      //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                       //mail("nelson.liberato@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                      //Insert de Bit?cora 
@@ -6607,7 +6723,7 @@ class Despachos
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $error_ . " \n";
                                         //echo $mMessage;
-                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                         //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                      //Insert de Bit?cora 
@@ -6709,7 +6825,7 @@ class Despachos
                                       $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                       //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                      mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - OnlineTools GMT", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                      //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - OnlineTools GMT", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                   }
 
                               }                           
@@ -6800,7 +6916,7 @@ class Despachos
                                         $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                         //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomCoounidas", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomCoounidas", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
 
                                 }
@@ -7007,7 +7123,7 @@ class Despachos
                                         $this->setNovedadError($parametros, $regist, $novedaError, 'pc');
 
                                         //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                        mail("hugo.malagon@intrared.net", "Web service TRAFICO - SAT - NOVEDAD PC", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        //mail("hugo.malagon@intrared.net", "Web service TRAFICO - SAT - NOVEDAD PC", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                         //mail( "faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service TRAFICO - SAT", $mMessage,'From: soporte.ingenieros@intrared.net' );
                                     }
                                 }
@@ -7140,7 +7256,7 @@ class Despachos
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $respuesta . " \n";
                                         //echo $mMessage;
-                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Trans FW - SISTEMA ARGO", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Trans FW - SISTEMA ARGO", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                         //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                   }
@@ -7203,7 +7319,7 @@ class Despachos
                                 try
                                 {
                                     //Ruta Web Service Faro.
-                                    $url_webser = "https://avansatgl.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl";
+                                    $url_webser = "https://oet-avansatgl.intrared.net/ap/interf/app/faro/wsdl/faro.wsdl";
                                     $mFecha[0] = date('Y-m-d', strtotime($regist["fecnov"]));
                                     $mFecha[1] = date('H:i', strtotime($regist["fecnov"]));
 
@@ -7248,7 +7364,7 @@ class Despachos
                                         $mMessage .= "Error Detallado: " . $result . " \n";
 
                                         //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Intracarga", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        //mail("soporte.ingenieros@intrared.net", "Web service Intracarga", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
 
                                 }
@@ -7873,7 +7989,7 @@ class Despachos
                 $asunto = "NOVEDAD A Cargo de Faro";
 
             //$dir_email .= ", engmiguelgarcia@gmail.com"; //COMENTARIAR THIS
-            mail("$dir_email", $asunto, $info, 'From: faroavansat@eltransporte.com');
+            //mail("$dir_email", $asunto, $info, 'From: faroavansat@eltransporte.com');
         }
 
         $query = "SELECT cod_contro
@@ -8179,7 +8295,7 @@ class Despachos
                                     $this->setNovedadError($parametros, $regist, $novedaError, 'nc');
 
                                     //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                    mail("hugo.malagon@intrared.net", "Web service TRAFICO - SAT - NOVEDAD NC", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                    //mail("hugo.malagon@intrared.net", "Web service TRAFICO - SAT - NOVEDAD NC", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     //mail( "faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service TRAFICO - SAT", $mMessage,'From: soporte.ingenieros@intrared.net' );
                                 }
                                 /********************* **************** *********************/
@@ -8292,7 +8408,7 @@ class Despachos
                                     $mMessage .= "******** Detalle ******** \n";
                                     $mMessage .= "Mensaje de error: " . $error_ . " \n";
                                     //echo $mMessage;
-                                    mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                    //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Colombia Software - Colombiasoftware Puestos virtuales", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                 }
                                  //Insert de Bit?cora 
@@ -8422,7 +8538,7 @@ class Despachos
                                         $mMessage .= "******** Detalle ******** \n";
                                         $mMessage .= "Mensaje de error: " . $respuesta . " \n";
                                         //echo $mMessage;
-                                        mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Trans FW - SISTEMA ARGO", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                        //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Error Web service Trans FW - SISTEMA ARGO", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                         //mail("hugo.malagon@intrared.net", "Error Web service Humadea - Colombiasoftware", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                     }
                                   }
@@ -8523,7 +8639,7 @@ class Despachos
                                       $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                       //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                      mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - OnlineTools GMT", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                      //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - OnlineTools GMT", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                   }
 
                               }                                    
@@ -8615,7 +8731,7 @@ class Despachos
                                     $mMessage .= "Observaciones: " . $e -> detail . " \n";
 
                                     //COMENTARIAR THIS -> engmiguelgarcia@gmail.com
-                                    mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomCoounidas", $mMessage, 'From: soporte.ingenieros@intrared.net');
+                                    //mail("faroavansat@eltransporte.com, soporte.ingenieros@intrared.net", "Web service Faro - EcomCoounidas", $mMessage, 'From: soporte.ingenieros@intrared.net');
                                 }
 
                             }
@@ -10187,7 +10303,7 @@ class Despachos
                                         AND	a.ind_enviad = 0
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S'  
-                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
                                         /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                     GROUP BY aa.num_despac, a.fec_creaci
                                 )
@@ -10223,7 +10339,7 @@ class Despachos
                                         AND	a.ind_enviad = 0
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S' 
-                                        AND dd.cod_server IN (14,16,17,18,19,20,21)
+                                        AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
                                         /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                         GROUP BY aa.num_despac, a.fec_creaci
                                 )
