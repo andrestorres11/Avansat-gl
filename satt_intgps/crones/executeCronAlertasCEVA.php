@@ -5,8 +5,8 @@
 *  \date: 2021-12-02
 *  \return: null
 */
-ini_set('display_errors', true);
-error_reporting(E_ALL & ~E_NOTICE);
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
 /*! Incluye script de constantes de conexion a la BD */
 //echo getcwd();
@@ -130,12 +130,12 @@ class cronAvansatAlertasCEVA
 	private function sendEmail($mReporte, $cod_manifi){
 			$sEmails = self::getEmailsNotifi($mReporte[0]['cod_transp']);
 			$html_body = '<p>Estimado Cliente, </p>';
-			$html_body .= '<p><strong>Centro LogÃ­stico Faro</strong> informa que su solicitud de despacho con el manifiesto nÃºmero <strong>'.$cod_manifi.'</strong> se encuentra con las siguientes novedades:</p>';
+			$html_body .= '<p><strong>Centro Logí­stico Faro</strong> informa que su solicitud de despacho con el manifiesto número <strong>'.$cod_manifi.'</strong> se encuentra con las siguientes novedades:</p>';
 			$html_body .= '<br>
 							<table>
 								<thead>
 									<tr>
-										<th>ObservaciÃ³n</th>
+										<th>Observación</th>
 										<th>Fecha</th>
 									</tr>
 								</thead>
@@ -148,7 +148,6 @@ class cronAvansatAlertasCEVA
 			}
 			$html_body .= '		</tbody>
 							</table>';
-
 			$base_mensaje = $html_body;
 			$mAsunto = utf8_encode("Novedad al crear el despacho - Manifiesto: ".$cod_manifi);
 			$year=date('Y');
@@ -156,10 +155,10 @@ class cronAvansatAlertasCEVA
             $plantilla = "pla_notifi_gendes.html";
             $mResult = array();
             $mCabece  = 'MIME-Version: 1.0' . "\r\n";
-            $mCabece .= 'Content-type: text/html; charset=UTF-8' . "\r\n";
-            $mCabece .= 'From: Novedades Centro Logistico FARO <supervisores@faro.com.co>' . "\r\n";
+            $mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
+            $mCabece .= 'From: Novedades Centro Logistico FARO <no-reply@intrared.net>' . "\r\n";
             $tmpl_file = '/var/www/html/ap/satt_standa/planti/'.$plantilla;
-            $logo = "https://".$_SERVER['SERVER_NAME']."/ap/satt_faro/logos/LogoCLFaro.png";
+            $logo = "https://".$_SERVER['SERVER_NAME']."/ap/satt_intgps/logos/LogoCLFaro.png";
             if(!file_exists($tmpl_file)) {
                 throw new Exception("No existe la plantilla: ".$plantilla, 9999);              
             }
@@ -168,7 +167,14 @@ class cronAvansatAlertasCEVA
             $thefile = "\$r_file=\"".$thefile."\";";
             eval( $thefile );
             $mHtmlxx = $r_file;
-            mail($sEmails, $mAsunto, $mHtmlxx, $mCabece);
+			if (mail($sEmails, $mAsunto, $mHtmlxx, $mCabece)) {
+				echo "El correo se enviÃ³ correctamente a:".$sEmails;
+
+			} else {
+				echo "Error al enviar el correo.";
+			}
+
+			
 	}
 
 	/*! \fn: obtenerRegistrosUnicos
@@ -280,7 +286,7 @@ class cronAvansatAlertasCEVA
 	{
 		try { 
 
-			self::$cConn  = new PDO('mysql:host=aglbd.intrared.net;dbname='.BASE_DATOS.';port=3306;charset=utf8', USUARIO, CLAVE, [PDO::ATTR_PERSISTENT => true] );
+			self::$cConn  = new PDO('mysql:host=oet-avansatglbd.intrared.net;dbname='.BASE_DATOS.';port=3306;charset=utf8', USUARIO, CLAVE, [PDO::ATTR_PERSISTENT => true] );
 
             self::$cConn ->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
             self::$cConn ->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );

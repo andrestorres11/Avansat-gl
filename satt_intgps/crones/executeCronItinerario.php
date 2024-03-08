@@ -30,7 +30,7 @@ class cronItinerario
             $this->logFileSuccess = LogIntGPS.'success/';
             $this->fExcept = new Error(array("dirlog" => $this->logFileError, "notlog" => TRUE, "logmai" => NotMai));
             $this->fExcept->SetUser('CronItinerario');
-            $this->fExcept->SetParams("Faro", "Validaciï¿½n de fechas cita de cargue y creaciï¿½n de itinerario");
+            $this->fExcept->SetParams("Faro", "Validación de fechas cita de cargue y creación de itinerario");
             $fLogs = array();
             $this->db4 = new Consult(array("server" => HOST, "user"  => USUARIO, "passwd" => CLAVE, "db" => BASE_DATOS), $this->fExcept);
              
@@ -46,13 +46,6 @@ class cronItinerario
 
     function getDespachos()
     {
-
-        //Prueba de envï¿½o
-        //mail("edgar.clavijo@eltransporte.org", "Prueba", "Envï¿½o cron");
-
-        //Create query
- 
-
         $query = "
                      SELECT
                             a.num_despac AS Despacho, a.cod_manifi, 
@@ -61,12 +54,13 @@ class cronItinerario
                             DATE_FORMAT( CONCAT(a.fec_citcar, ' ', a.hor_citcar) , '%Y-%m-%d %H:%i:%s' ) AS FECHA_CITA_CARGUE,
                             b.num_placax, a.fec_salida AS fec_inicio, DATE_ADD(a.fec_salida, INTERVAL 5 DAY ) AS fec_finali,
                             c.url_webser, c.cod_tokenx, c.ind_deseta, c.tie_report, b.cod_transp,
-                            c.int_config, a.gps_operad
+                            c.int_config, a.gps_operad, d.nom_tercer, b.fec_envint, b.cod_respon
                        FROM 
                                       " . BASE_DATOS . ".tab_despac_despac a 
                            INNER JOIN " . BASE_DATOS . ".tab_despac_vehige b ON a.num_despac = b.num_despac
                            INNER JOIN " . BASE_DATOS . ".tab_interf_parame c ON b.cod_transp = c.cod_transp AND c.ind_estado = '1' AND 
                                                                                                                 c.cod_operad = 53
+                           INNER JOIN satt_intgps.tab_tercer_tercer d ON b.cod_transp = d.cod_tercer
                        WHERE -- a.num_despac = 399 AND
                                a.fec_salida IS NOT NULL 
                            AND a.fec_salida <= NOW() 
@@ -81,20 +75,20 @@ class cronItinerario
                                     AND b.msg_itiner NOT LIKE '%El usuario o el password no son correctos o WS no arroja datos CRON OET.%'  
                                     AND b.msg_itiner NOT LIKE '%El Robot ya esta ejecutado%' /*Reenvia excepto estos mensajes */
                                     AND b.msg_itiner NOT LIKE '%La placa no pertenece al usuario%' /*Reenvia excepto estos mensajes */
-                                    AND b.msg_itiner NOT LIKE '%No es posible entrar al sistema. Por favor comunï¿½quese con su proveedor%' /*Reenvia excepto estos mensajes */
+                                    AND b.msg_itiner NOT LIKE '%No es posible entrar al sistema. Por favor comuníquese con su proveedor%' /*Reenvia excepto estos mensajes */
                                     AND b.msg_itiner NOT LIKE '%Plataforma NO homologada%' /*Plataforma no homologada */
                                     AND b.msg_itiner NOT LIKE '%Punto(s) no georeferenciado(s) o no coinciden las coordenadas recibidas%' /*Punto(s) no georeferenciado(s) */
                                     AND b.msg_itiner NOT LIKE '%El ID del gps no puede ser con letras debe ser solo numerico%' /*El ID del gps no puede ser con letras */
                                     AND b.msg_itiner NOT LIKE '%Cliente no existe en plataforma.%' /*El ID del gps no puede ser con letras */
-                                    AND b.msg_itiner NOT LIKE '%Fecha menor a fecha actual%' /*El ID del gps no puede ser con letras */
                                     OR b.msg_itiner IS NULL
                                )
                            AND a.gps_operad IS NOT NULL
                            AND a.gps_usuari IS NOT NULL
-                           AND a.gps_paswor IS NOT NULL 
+                           AND a.gps_paswor IS NOT NULL
+                           -- AND (b.cod_respon IS NULL OR b.cod_respon = 201)
+                           AND (b.fec_envint IS NULL OR TIMESTAMPDIFF(MINUTE, fec_envint, NOW()) > 10);
                       ";
-
- 
+                
         $mExec = $this->db4->ExecuteCons($query); 
         $despachos = $this->db4->RetMatrix("a");
         
@@ -107,9 +101,7 @@ class cronItinerario
         // Actualizar la variable $despachos con los registros filtrados
         $despachos = array_values($despachosFiltrados);
 
-        echo "<pre>Despachos a enviar: "; print_r( count($despachos) ); echo "</pre>";
-      
-
+        //echo "<pre>Despachos a enviar: "; print_r( count($despachos) ); echo "</pre>";
         
         $mItiner = new IntegradorGps($this->fExcept, $this->db4); // Instancia a integrador GPS    
         $mHUB    = new InterfHubIntegradorGPS($this->db4); // Instancia a HUB GPS    
@@ -119,24 +111,42 @@ class cronItinerario
         $mDestin = [];
         $mParam  = [];
         $mGL     = [];
+
+        echo '<table style="font-family: Arial, sans-serif; border-collapse: collapse; width: 100%;">
+                <tr>
+                    <th style="border: 1px solid #dddddd; background-color: #f2f2f2; padding: 8px;">Despacho</th>
+                    <th style="border: 1px solid #dddddd; background-color: #f2f2f2; padding: 8px;">Manifiesto</th>
+                    <th style="border: 1px solid #dddddd; background-color: #f2f2f2; padding: 8px;">Placa</th>
+                    <th style="border: 1px solid #dddddd; background-color: #f2f2f2; padding: 8px;">Transportadora</th>
+                    <th style="border: 1px solid #dddddd; background-color: #f2f2f2; padding: 8px;">Tipo</th>
+                    <th style="border: 1px solid #dddddd; background-color: #f2f2f2; padding: 8px;">Tiempo</th>
+                    <th style="border: 1px solid #dddddd; background-color: #f2f2f2; padding: 8px;">Respuesta Integrador</th>
+                </tr>';
         foreach ($despachos as $key => $value) {
             
-            echo "<pre><h1>Despacho: "; print_r($value["Despacho"]  ); echo "   Manifiesto: ".$value["cod_manifi"] ."</pre>";
-            // Envï¿½o a integrador GPS el despacho si y solo si tiene informaciï¿½n de GPS para hacer el primer itinerario para la parte de cargues
             $mIndDesEta = json_decode($value['ind_deseta'], true);
-            echo "Tipo:".$mIndDesEta['TIPO'];
-
+            $sHub = 0;
+            $sWid = 0;
             //Ajuste temporal si el operador es DETEKTOR solo integra por tipo HUB con el fin de no usar widetech 
             if($value['gps_operad']=='9010949280'){
                 $mIndDesEta['TIPO'] = 'HUB';
-                $value["url_webser"] = 'https://central.intrared.net/ap/interf/APIIntegradorGPS/v2/index.php';
+                $value["url_webser"] = 'https://oet-central.intrared.net/ap/interf/APIIntegradorGPS/v2/index.php';
             }
 
+            
             if($mIndDesEta['TIPO'] == 'FULL' || $mIndDesEta['TIPO'] == 'BASICO_1' || $mIndDesEta['TIPO'] == 'BASICO_2')
             { 
                 $mRespItiner = $mItiner->setCarguePlacaIntegradorGPS($value["Despacho"], ['ind_transa' => 'I'], "CronItinerario", $value);
+                $sWid = 1;
             }
             else {
+                //Parche para evitar errores
+
+                //Error de Fecha menor a fecha actual - 201
+                if($value["cod_respon"] == 201){
+                    $value["fec_inicio"] = date('Y-m-d H:i:s');
+                }
+
                 $mRespItiner = $mHUB -> setTrakingStart([
                                                             'cod_transp' => $value["cod_transp"],
                                                             'cod_tokenx' => $value["cod_tokenx"],
@@ -149,31 +159,38 @@ class cronItinerario
                                                             'tie_report' => $value["tie_report"],
                                                             'url_webser' => $value["url_webser"]
                                                         ]);
+                $sHub = 1;
+                                                        
             }
 
-            echo "<pre>Reponse Intgrador: "; print_r($mRespItiner); echo "</pre>";
             $message = "Despacho: ". $value["Despacho"]."\n";
             $message .= "Manifiesto: ". $value["cod_manifi"]."\n";
             $message .= "Transportadora: ". $value["cod_transp"]."\n";
             $message .= "Placa: ". $value["num_placax"]."\n";
             $message .= "Tipo Send: ". $mIndDesEta['TIPO']."\n";
             $message .= "Resp Send: ". var_export($mRespItiner, true)."\n";
+            $respuesta = '';
             if($mRespItiner['code']=='1000' OR $mRespItiner['code_resp']=='1000'){
                 $this->log($message,'SUCCESS');
+                $respuesta = 'Exito - ';
+                $respuesta .= $sHub ? $mRespItiner['message'] : $mRespItiner['msg_resp'];
+                $color = '#FFF';
+                $this->updateDateSend($value["Despacho"]);
             }else{
                 $this->log($message,'ERROR');
+                $respuesta = 'Error - ';
+                $respuesta .= $sHub ? $mRespItiner['message'] :$mRespItiner[0];
+                $color = '#FB5858';
             }
-            
-
-            // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            // ----------------------------------------------------       D A T O S  P A R A   E N V I A R.  A.  L A   A P P         -----------------------------------------------------------------------------------
-            // ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            /*$response = $controlador1->registrar($this->db4, $value["Despacho"], "860068121");   
-            if ($response->cod_respon != '1000') 
-            {
-                $this->fExcept->CatchError($response->cod_respon, 'DespachoControlador APP :'.$value['Despacho'].' - '.$value['cod_manifi'].' - '.$value['num_placax'].' '.$response->msg_respon , '.....', '168'); 
-            }*/
-         
+            echo '<tr>
+                    <td style="border: 1px solid #dddddd; padding: 8px;">'.$value["Despacho"].'</td>
+                    <td style="border: 1px solid #dddddd; padding: 8px;">'.$value["cod_manifi"].'</td>
+                    <td style="border: 1px solid #dddddd; padding: 8px;">'.$value["num_placax"].'</td>
+                    <td style="border: 1px solid #dddddd; padding: 8px;">'.$value["nom_tercer"].'</td>
+                    <td style="border: 1px solid #dddddd; padding: 8px;">'.$mIndDesEta['TIPO'].'</td>
+                    <td style="border: 1px solid #dddddd; padding: 8px;">'.$value["tie_report"].'</td>
+                    <td style="border: 1px solid #dddddd; padding: 8px; background-color:'.$color.'">'.$respuesta .'</td>
+                </tr>'; 
             
         }
         
@@ -187,6 +204,7 @@ class cronItinerario
             $rut_log = $this->logFileError;
         }
         // Obtener la fecha y hora actual
+        /*
         $date = date('Y-m-d H:i:s');
         $mLogFile = $rut_log."log_".date( "Y_m_d" ).".log";
         $file = fopen( $mLogFile, "a+" );
@@ -196,8 +214,15 @@ class cronItinerario
         fwrite($file, "{$message}\n");
         
         // Cerrar el archivo
-        fclose($file);
+        fclose($file);*/
     }
+
+
+    function updateDateSend($num_despac){
+        $query = "UPDATE ".BASE_DATOS.".tab_despac_vehige SET fec_envint = NOW() WHERE num_despac = '".$num_despac."' ";
+        $mExec = $this->db4->ExecuteCons($query); 
+    }
+
 }
 
 $_CRON = new cronItinerario();

@@ -252,7 +252,7 @@ class cronAvansatTmsReportesUbicacion
 	{
 		try { 
 
-			self::$cConn  = new PDO('mysql:host=aglbd.intrared.net;dbname='.BASE_DATOS.';port=3306;charset=utf8', USUARIO, CLAVE, [PDO::ATTR_PERSISTENT => true] );
+			self::$cConn  = new PDO('mysql:host=oet-avansatglbd.intrared.net;dbname='.BASE_DATOS.';port=3306;charset=utf8', USUARIO, CLAVE, [PDO::ATTR_PERSISTENT => true] );
 
             self::$cConn ->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
             self::$cConn ->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );
