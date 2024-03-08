@@ -38,10 +38,18 @@ $(document).ready(function() {
         let nombArchivo = archivo.name;
         var extension = nombArchivo.split(".").slice(-1);
         extension = extension[0];
-        let extensiones = ["jpg", "png", "jpeg", "pdf"];
+        let extensiones = ["jpg", "JPG", "png", "PNG", "jpeg", "JPEG"];
+
+        const maxSize = 90 * 1024; // Tamaño máximo permitido en bytes (90KB)
+
+        if (archivo.size > maxSize) {
+            alert("El tamaño del archivo es mayor a 90KB. Por favor, elige un archivo más pequeño.");
+            $(e.target).val('');
+            return; // Detener la ejecución
+        }
 
         if (extensiones.indexOf(extension) === -1) {
-            alert("Extensión NO permitida (Solo se aceptan jpg, png, jpeg o pdf)"); 
+            alert("Extensión NO permitida (Solo se aceptan jpg, png, jpeg.)"); 
             $(e.target).val('');
         }
 
@@ -1606,6 +1614,7 @@ function rellenaTablas() {
     var num_solici = $("#num_soliciID").val();
     var fec_inicio = $("#fec_inicio").val();
     var fec_finalx = $("#fec_finxxx").val();
+    var num_identifi = $("#num_identifiID").val();
     fil_fechas = false;
     if ($('#fil_fechasID').is(':checked')) {
         fil_fechas = true;
@@ -1616,13 +1625,14 @@ function rellenaTablas() {
             num_solici,
             fec_inicio,
             fec_finalx,
-            fil_fechas
+            fil_fechas,
+            num_identifi
         },
         type: "POST",
         url: "../" + standa + "/estsegv2/ajax_genera_estseg.php?" + dataString,
         dataType: "json",
         beforeSend: function() {
-            cargando('Cargando la informaciï¿½n...');
+            cargando('Cargando la información...');
         },
         success: function(data) {
             var table = $('#tabla_inf_registradas').DataTable();
