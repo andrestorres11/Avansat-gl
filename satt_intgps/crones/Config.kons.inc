@@ -41,7 +41,7 @@
   define( "DirPhotoConduc", "/var/www/html/ap/satt_corona/fotcon/" );                                           //Direcci�n para la foto de conductor.
   define( "DirPhotoVehicu", "/var/www/html/ap/satt_corona/fotveh/" );                                           //Direcci�n para la foto del vehiculo
 
-  define("URL_INTERF_GPSEVE", "https://central.intrared.net/ap/interf/APIIntegradorGPS/v1/index.php");
+  define("URL_INTERF_GPSEVE", "https://oet-central.intrared.net/ap/interf/APIIntegradorGPS/v1/index.php");
   // define("URL_INTERF_GPSEVE", "http://10.0.100.12/ap/interf/APIIntegradorGPS/v1/index.php/setItinerary");
   
 
