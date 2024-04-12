@@ -119,9 +119,9 @@ class PDF extends FPDF{
     $rut_general = URL_APLICA.'logos/';
     $nom_logo = 'LOGO_CEVA_LOGISTICS.png';
     $this -> SetFont('Arial','B',9);
-    $this -> Cell(39,9,utf8_decode('VersiÛn: 1.0'),1,0,'C');
+    $this -> Cell(39,9,utf8_decode('Versi√≥n: 1.0'),1,0,'C');
     $this -> Cell(91,9,'Ceva Freight Management de Colombia S.A.S',1,0,'C');
-    $this -> Cell(30,9,utf8_decode('CÛdigo documento'),1,0,'C');
+    $this -> Cell(30,9,utf8_decode('C√≥digo documento'),1,0,'C');
     $this -> Cell(36,16,$this->Image($rut_general.''.$nom_logo, $this->GetX(), $this->GetY(),40,0),1,1,'C');
     $this -> SetY(19);
     $this -> Cell(39,7,utf8_decode('Fecha: 14/07/2021'),1,0,'C');
@@ -190,7 +190,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,6,utf8_decode('INFORMACI”N DEL VEHÕCULO'),1,1,'C',1);
+      $pdf -> Cell(196,6,utf8_decode('INFORMACI√ìN DEL VEH√ìCULO'),1,1,'C',1);
 
       $pdf -> SetFillColor(180, 181, 179);
       $pdf -> SetTextColor(0,0,0);
@@ -201,26 +201,26 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('Remolque'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['num_remolq']),1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('VehÌculo Tipo'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('Veh√≠culo Tipo'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['nom_config']),1,0,'L');
-      $pdf -> Cell(39,5,utf8_decode('Carrocer?a Tipo'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('Carrocer√≠a Tipo'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['nom_carroc']),1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('Modelo (aÒo) repotenciado'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('Modelo (a&ntilde;o) repotenciado'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['ano_modelo']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('Color'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['nom_colorx']),1,1,'L');
 
       $pdf -> Cell(39,5,utf8_decode('Usuario de GPS'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['usr_gpsxxx']),1,0,'L');
-      $pdf -> Cell(39,5,utf8_decode('ContraseÒa de GPS'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('Contrase√±a de GPS'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['clv_gpsxxx']),1,1,'L');
 
       $pdf -> Cell(39,5,utf8_decode('Plataforma GPS (URL)'),1,0,'L',1);
-      $pdf -> Cell(157,5,utf8_decode($info['url_gpsxxx']),1,1,'L');
+      $pdf -> Cell(157,5,utf8_decode($info['nom_operad'].' ('.$info['url_operad'].')'),1,1,'L');
       
       if($info['obs_opegps'] == ''){
-        $info['obs_opegps'] = '**SIN OBSERVACI”N**';
+        $info['obs_opegps'] = '**SIN OBSERVACI√ìN**';
       }
 
       $pdf -> setX(49);
@@ -229,10 +229,10 @@ class PDFInformeEstudioSeguridad extends PDF
       $H = $pdf->GetY();
       $height= $H-$Y;
       $pdf->SetXY(10,$Y);
-      $pdf->Cell(39,$height,utf8_decode('OBSERVACI”N GPS'),1,0,'L',1); 
+      $pdf->Cell(39,$height,utf8_decode('OBSERVACI√ìN GPS'),1,0,'L',1); 
       $pdf -> setY($H);
       $pdf -> SetFont('Arial','B',8);
-      $pdf -> Cell(196,6,utf8_decode('INFORMACI”N DEL POSEEDOR TENEDOR'),1,1,'C',1);
+      $pdf -> Cell(196,6,utf8_decode('INFORMACI√ìN DEL POSEEDOR TENEDOR'),1,1,'C',1);
       $pdf -> SetFont('Arial','B',8);
 
       $pdf -> Cell(39,5,utf8_decode('APELLIDOS'),1,0,'L',1);
@@ -240,27 +240,27 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('NOMBRES'),1,0,'L',1);
       $pdf -> Cell(66,5,$info['nom_nompos'],1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('C…DULA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('C√âDULA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_docpos']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('DE'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_exppos']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('DIRECCI”N DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['dir_dompos']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_respos']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('TEL…FONO DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('TEL√âFONO DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_telpos']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_respos']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',8);
-      $pdf -> Cell(196,6,utf8_decode('INFORMACI”N DEL PROPIETARIO'),1,1,'C',1);
+      $pdf -> Cell(196,6,utf8_decode('INFORMACI√ìN DEL PROPIETARIO'),1,1,'C',1);
       $pdf -> SetFont('Arial','B',8);
       
       $pdf -> Cell(39,5,utf8_decode('APELLIDOS'),1,0,'L',1);
@@ -268,20 +268,20 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('NOMBRES'),1,0,'L',1);
       $pdf -> Cell(66,5,$info['nom_nompro'],1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('C…DULA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('C√âDULA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_docpro']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('DE'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_exppro']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('DIRECCI”N DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['dir_dompro']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_respos']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('TEL…FONO DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('TEL√âFONO DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_telpro']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD'),1,0,'L',1);
@@ -290,7 +290,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,6,utf8_decode('INFORMACI”N DEL CONDUCTOR'),1,1,'C',1);
+      $pdf -> Cell(196,6,utf8_decode('INFORMACI√ìN DEL CONDUCTOR'),1,1,'C',1);
 
       $pdf -> SetFillColor(180, 181, 179);
       $pdf -> SetTextColor(0,0,0);
@@ -301,13 +301,13 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('NOMBRES'),1,0,'L',1);
       $pdf -> Cell(66,5,$info['nom_nomcon'],1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('C…DULA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('C√âDULA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_doccon']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('DE'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_expcon']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',6);
-      $pdf -> Cell(39,5,utf8_decode('LICENCIA DE CONDUCCI”N No.'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('LICENCIA DE CONDUCCI√ìN No.'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_licenc']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('VENCE'),1,0,'L',1);
@@ -319,14 +319,14 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(66,5,utf8_decode($info['nom_epsxxx']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('DIRECCI”N DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['dir_domcon']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_rescon']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('TEL…FONO DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('TEL√ìFONO DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_telcon']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD'),1,0,'L',1);
@@ -361,12 +361,12 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['nom_parent']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('DIRECCI?N'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['dir_domici']),1,0,'L');
-        $pdf -> Cell(39,5,utf8_decode('TEL?FONO'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('TEL√âFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACI”N: '.$registro['obs_refere']),1, 'J',0);
+        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACI√ìN: '.$registro['obs_refere']),1, 'J',0);
       }
 
       $pdf -> Ln(2);
@@ -399,12 +399,12 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['nom_parent']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('DIRECCI”N'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['dir_domici']),1,0,'L');
-        $pdf -> Cell(39,5,utf8_decode('TEL…FONO'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('TEL√âFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACI”N: '.$registro['obs_refere']),1, 'J',0);
+        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACI√ìN: '.$registro['obs_refere']),1, 'J',0);
       }
 
       $pdf -> Ln(2);
@@ -428,10 +428,10 @@ class PDFInformeEstudioSeguridad extends PDF
       foreach($resultados as $key=>$registro){
         $pdf -> Cell(39,5,utf8_decode(($key+1).'. TRANSPORTADORA'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['nom_transp']),1,0,'L');
-        $pdf -> Cell(39,5,utf8_decode('TEL…FONO'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('TEL√âFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('INFORMACI”N DADA POR'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('INFORMACI√ìN DADA POR'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['inf_sumini']),1,0,'L');
         $pdf -> Cell(39,5,utf8_decode('No. DE VIAJES'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_viajes']),1,1,'L');
@@ -440,7 +440,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,6,utf8_decode('INFORMACI”N DEL VEHÕCULO'),1,1,'C',1);
+      $pdf -> Cell(196,6,utf8_decode('INFORMACI√ìN DEL VEH√çCULO'),1,1,'C',1);
 
       $pdf -> SetFillColor(180, 181, 179);
       $pdf -> SetTextColor(0,0,0);
@@ -451,26 +451,26 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('Remolque'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['num_remolq']),1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('VehÌculo Tipo'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('Veh√≠culo Tipo'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['nom_config']),1,0,'L');
-      $pdf -> Cell(39,5,utf8_decode('CarrocerÌa Tipo'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('Carrocer√≠a Tipo'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['nom_carroc']),1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('Modelo (aÒo) repotenciado'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('Modelo (a√±o) repotenciado'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['ano_modelo']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('Color'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['nom_colorx']),1,1,'L');
 
       $pdf -> Cell(39,5,utf8_decode('Usuario de GPS'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['usr_gpsxxx']),1,0,'L');
-      $pdf -> Cell(39,5,utf8_decode('ContraseÒa de GPS'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('Contrase√±a de GPS'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['clv_gpsxxx']),1,1,'L');
 
       $pdf -> Cell(39,5,utf8_decode('Plataforma GPS (URL)'),1,0,'L',1);
-      $pdf -> Cell(157,5,utf8_decode($info['url_gpsxxx']),1,1,'L');
+      $pdf -> Cell(157,5,utf8_decode($info['nom_operad'].' ('.$info['url_operad'].')'),1,1,'L');
       
       if($info['obs_opegps'] == ''){
-        $info['obs_opegps'] = '**SIN OBSERVACI”N**';
+        $info['obs_opegps'] = '**SIN OBSERVACI√ìN**';
       }
 
       $pdf -> setX(49);
@@ -482,7 +482,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf->Cell(39,$height,utf8_decode('OBSERVACION GPS'),1,0,'L',1); 
       $pdf -> setY($H);
       $pdf -> SetFont('Arial','B',8);
-      $pdf -> Cell(196,6,utf8_decode('INFORMACI”N DEL POSEEDOR TENEDOR'),1,1,'C',1);
+      $pdf -> Cell(196,6,utf8_decode('INFORMACI√ìN DEL POSEEDOR TENEDOR'),1,1,'C',1);
       $pdf -> SetFont('Arial','B',8);
 
       $pdf -> Cell(39,5,utf8_decode('APELLIDOS'),1,0,'L',1);
@@ -490,27 +490,27 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('NOMBRES'),1,0,'L',1);
       $pdf -> Cell(66,5,$info['nom_nompos'],1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('C…DULA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('C√âDULA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_docpos']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('DE'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_exppos']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('DIRECCI”N DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['dir_dompos']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_respos']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('TEL…FONO DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('TEL√âFONO DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_telpos']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_respos']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',8);
-      $pdf -> Cell(196,6,utf8_decode('INFORMACI”N DEL PROPIETARIO'),1,1,'C',1);
+      $pdf -> Cell(196,6,utf8_decode('INFORMACI√ìN DEL PROPIETARIO'),1,1,'C',1);
       $pdf -> SetFont('Arial','B',8);
       
       $pdf -> Cell(39,5,utf8_decode('APELLIDOS'),1,0,'L',1);
@@ -518,20 +518,20 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('NOMBRES'),1,0,'L',1);
       $pdf -> Cell(66,5,$info['nom_nompro'],1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('C…DULA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('C√âDULA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_docpro']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('DE'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_exppro']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('DIRECCI”N DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['dir_dompro']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_respos']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('TEL…FONO DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('TEL√âFONO DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_telpro']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD'),1,0,'L',1);
@@ -540,7 +540,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,6,utf8_decode('INFORMACI”N DEL CONDUCTOR'),1,1,'C',1);
+      $pdf -> Cell(196,6,utf8_decode('INFORMACI√ìN DEL CONDUCTOR'),1,1,'C',1);
 
       $pdf -> SetFillColor(180, 181, 179);
       $pdf -> SetTextColor(0,0,0);
@@ -551,13 +551,13 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('NOMBRES'),1,0,'L',1);
       $pdf -> Cell(66,5,$info['nom_nomcon'],1,1,'L');
 
-      $pdf -> Cell(39,5,utf8_decode('C…DULA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('C√âDULA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_doccon']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('DE'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_expcon']),1,1,'L');
 
-      $pdf -> SetFont('Arial','B',6);
-      $pdf -> Cell(39,5,utf8_decode('LICENCIA DE CONDUCCI”N No.'),1,0,'L',1);
+      $pdf -> SetFont('Arial','B',8);
+      $pdf -> Cell(39,5,utf8_decode('LICENCIA DE CONDUCCI√ìN No.'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_licenc']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('VENCE'),1,0,'L',1);
@@ -568,15 +568,15 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> Cell(39,5,utf8_decode('EPS'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['nom_epsxxx']),1,1,'L');
 
-      $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('DIRECCI”N DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> SetFont('Arial','B',8);
+      $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['dir_domcon']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(66,5,utf8_decode($info['ciu_rescon']),1,1,'L');
 
       $pdf -> SetFont('Arial','B',7);
-      $pdf -> Cell(39,5,utf8_decode('TEL…FONO DE RESIDENCIA'),1,0,'L',1);
+      $pdf -> Cell(39,5,utf8_decode('TEL√âFONO DE RESIDENCIA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($info['num_telcon']),1,0,'L');
       $pdf -> SetFont('Arial','B',8);
       $pdf -> Cell(39,5,utf8_decode('CIUDAD'),1,0,'L',1);
@@ -613,12 +613,12 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['nom_parent']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('DIRECCI?N'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['dir_domici']),1,0,'L');
-        $pdf -> Cell(39,5,utf8_decode('TEL?FONO'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('TEL√âFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACI”N: '.$registro['obs_refere']),1, 'J',0);
+        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACI√ìN: '.$registro['obs_refere']),1, 'J',0);
       }
 
       $pdf -> Ln(2);
@@ -652,12 +652,12 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['nom_parent']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('DIRECCI”N'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('DIRECCI√ìN'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['dir_domici']),1,0,'L');
-        $pdf -> Cell(39,5,utf8_decode('TEL…FONO'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('TEL√âFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACI”N: '.$registro['obs_refere']),1, 'J',0);
+        $pdf -> MultiCell(196,5,utf8_decode('OBSERVACI√ìN: '.$registro['obs_refere']),1, 'J',0);
       }
 
       $pdf -> Ln(2);
@@ -681,10 +681,10 @@ class PDFInformeEstudioSeguridad extends PDF
       foreach($resultados as $key=>$registro){
         $pdf -> Cell(39,5,utf8_decode(($key+1).'. TRANSPORTADORA'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['nom_transp']),1,0,'L');
-        $pdf -> Cell(39,5,utf8_decode('TEL…FONO'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('TEL√âFONO'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
 
-        $pdf -> Cell(39,5,utf8_decode('INFORMACI”N DADA POR'),1,0,'L',1);
+        $pdf -> Cell(39,5,utf8_decode('INFORMACI√ìN DADA POR'),1,0,'L',1);
         $pdf -> Cell(52,5,utf8_decode($registro['inf_sumini']),1,0,'L');
         $pdf -> Cell(39,5,utf8_decode('No. DE VIAJES'),1,0,'L',1);
         $pdf -> Cell(66,5,utf8_decode($registro['num_viajes']),1,1,'L');
@@ -694,7 +694,7 @@ class PDFInformeEstudioSeguridad extends PDF
 
     $pdf -> Ln(2);
     $pdf -> SetWidths(array(196));
-    $pdf -> Row(array(utf8_decode('OBSERVACI”N FINAL: '.$info['obs_estseg'])),1,'J',0);
+    $pdf -> Row(array(utf8_decode('OBSERVACI√ìN FINAL: '.$info['obs_estseg'])),1,'J',0);
     $pdf -> SetFillColor(1, 11, 64);
     $pdf -> SetTextColor(255,255,255);
     $resultado = $info['ind_estseg'] == 'A' ? 'RECOMENDADO' : 'NO RECOMENDADO';
@@ -704,12 +704,12 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> Ln(1);
 
     $pdf -> SetFont('Arial','',8);
-    $txt="NOTA: PARA EL ESTUDIO PRELIMINAR ADJUNTAR LOS SIGUIENTES DOCUMENTOS: C?DULAS DE CIUDADAN?A - LICENCIA CONDUCCI”N - LICENCIA DE TR¡NSITO - FORMATO APERTURA HOJA DE VIDA. LOS ANTERIORES DOCUMENTOS DEBEN SER ESCANEADOS EN ALTA RESOLUCION Y A COLOR.";
+    $txt="NOTA: PARA EL ESTUDIO PRELIMINAR ADJUNTAR LOS SIGUIENTES DOCUMENTOS: C√âDULAS DE CIUDADAN√çA - LICENCIA CONDUCCI√ìN - LICENCIA DE TR√ÅNSITO - FORMATO APERTURA HOJA DE VIDA. LOS ANTERIORES DOCUMENTOS DEBEN SER ESCANEADOS EN ALTA RESOLUCION Y A COLOR.";
     $pdf -> MultiCell(196,4,utf8_decode($txt) ,1, 'J',0);
-    $txt="DECLARACI”N DE TRATAMIENTO DE DATOS: De acuerdo con la ley 1581 de 2012, el Decreto reglamentario 1377 de 2015 y las dem?s normas que lo modifiquen o adicionen, autorizo para que se le dÈ tratamiento respectivo a mis datos personales y dem?s informaciÛn solicitada, en el proceso de registro de asociado de negocio, operaciÛn o cualquier informaciÛn adicional a la que se pueda llegar a tener acceso como consecuencia de la relaciÛn comercial. Confirmo y acepto por medio de este documento que he leÌdo y comprendido la polÌtica para el manejo de datos personales de la organizaciÛn.";
+    $txt="DECLARACI√ìN DE TRATAMIENTO DE DATOS: De acuerdo con la ley 1581 de 2012, el Decreto reglamentario 1377 de 2015 y las dem√°s normas que lo modifiquen o adicionen, autorizo para que se le d√© tratamiento respectivo a mis datos personales y dem√°s informaci√≥n solicitada, en el proceso de registro de asociado de negocio, operaci√≥n o cualquier informaci√≥n adicional a la que se pueda llegar a tener acceso como consecuencia de la relaci√≥n comercial. Confirmo y acepto por medio de este documento que he le√≠do y comprendido la pol√°tica para el manejo de datos personales de la organizaci√≥n.";
     $pdf -> MultiCell(196,4,utf8_decode($txt) ,1, 'J',0);
     $pdf -> SetFont('Arial','',9);
-    $txt="AUTORIZACION: Yo, ............................................................................, mayor de edad, identificado con la cÈdula de ciudadanÌa n˙mero ................................, de ......................................, en calidad de propietario del veh?culo de placas XXX-000, AUTORIZO al conductor ya identificado,, para que CEVA FREIGH MANANGMENT SAS, entregue o consigne las sumas correspondientes a saldos y/o pagos de los servicios por concepto de prestaciÛn de servicios de transporte terrestre por carretera a esta sociedad.
+    $txt="AUTORIZACION: Yo, ............................................................................, mayor de edad, identificado con la c√©dula de ciudadan√≠a n√∫mero ................................, de ......................................, en calidad de propietario del veh√≠culo de placas XXX-000, AUTORIZO al conductor ya identificado,, para que CEVA FREIGH MANANGMENT SAS, entregue o consigne las sumas correspondientes a saldos y/o pagos de los servicios por concepto de prestaci√≥n de servicios de transporte terrestre por carretera a esta sociedad.
     Autoriza,                                                            Acepta,";
     $pdf -> MultiCell(196,5,utf8_decode($txt) ,1, 'J',0);
 
@@ -726,7 +726,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEHÕCULO'),1,1,'C',1);
+      $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEH√çCULO'),1,1,'C',1);
 
       for($i = 0; $i < count($img_vehicu); $i++){
         if($pdf->GetY()>=155){
@@ -741,7 +741,7 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> SetFont('Arial','B',8);
         $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_vehicu[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
         $pdf -> SetWidths(array(196));
-        $pdf -> Row(array(utf8_decode('OBSERVACI?N: '.$img_vehicu[$i]['obs_archiv'])));
+        $pdf -> Row(array(utf8_decode('OBSERVACI√ìN: '.$img_vehicu[$i]['obs_archiv'])));
 
       }
 
@@ -793,7 +793,7 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> SetFont('Arial','B',8);
         $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_poseed[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
         $pdf -> SetWidths(array(196));
-        $pdf -> Row(array(utf8_decode('OBSERVACI”N: '.$img_poseed[$i]['obs_archiv'])));
+        $pdf -> Row(array(utf8_decode('OBSERVACI√ìN: '.$img_poseed[$i]['obs_archiv'])));
 
       }
 
@@ -847,7 +847,7 @@ class PDFInformeEstudioSeguridad extends PDF
           $pdf -> SetFont('Arial','B',8);
           $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_propie[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
           $pdf -> SetWidths(array(196));
-          $pdf -> Row(array(utf8_decode('OBSERVACI”N: '.$img_propie[$i]['obs_archiv'])));
+          $pdf -> Row(array(utf8_decode('OBSERVACI√ìN: '.$img_propie[$i]['obs_archiv'])));
 
         }
       }
@@ -902,7 +902,7 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> SetFont('Arial','B',8);
         $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_conduc[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
         $pdf -> SetWidths(array(196));
-        $pdf -> Row(array(utf8_decode('OBSERVACI”N: '.$img_conduc[$i]['obs_archiv'])));
+        $pdf -> Row(array(utf8_decode('OBSERVACI√ìN: '.$img_conduc[$i]['obs_archiv'])));
 
       }
 
@@ -944,7 +944,7 @@ class PDFInformeEstudioSeguridad extends PDF
       $pdf -> SetFont('Arial','B',8);
       $pdf -> SetFillColor(1, 11, 64);
       $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEHÕCULO'),1,1,'C',1);
+      $pdf -> Cell(196,5,utf8_decode('ADJUNTOS VEH√çCULO'),1,1,'C',1);
 
       for($i = 0; $i < count($img_vehicu); $i++){
         if($pdf->GetY()>=155){
@@ -959,7 +959,7 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf -> SetFont('Arial','B',8);
         $pdf -> Cell(196,100, $pdf->Image($rut_general.$img_vehicu[$i]['nom_archiv'], $pdf->GetX()+2, $pdf->GetY()+2,192,96),1,1,'C');
         $pdf -> SetWidths(array(196));
-        $pdf -> Row(array(utf8_decode('OBSERVACI”N: '.$img_vehicu[$i]['obs_archiv'])));
+        $pdf -> Row(array(utf8_decode('OBSERVACI√ìN: '.$img_vehicu[$i]['obs_archiv'])));
 
       }
 
@@ -996,7 +996,7 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf->Image($imagencita['nom_rutfil'], $x + 2, $y + 2, 192, $imageHeight);
 
         $pdf->SetWidths(array(196));
-        $pdf->Row(array(utf8_decode('OBSERVACI”N: ' . $imagencita['obs_archiv'])));
+        $pdf->Row(array(utf8_decode('OBSERVACI√ìN: ' . $imagencita['obs_archiv'])));
       }
 
       
@@ -1034,7 +1034,7 @@ class PDFInformeEstudioSeguridad extends PDF
             $pdf->Image($imagePath, $x + 2, $y + 2, 192, $imageHeight);
     
             $pdf->SetWidths(array(196));
-            $pdf->Row(array(utf8_decode('OBSERVACI”N: ' . $img_propie[$i]['obs_archiv'])));
+            $pdf->Row(array(utf8_decode('OBSERVACI√ìN: ' . $img_propie[$i]['obs_archiv'])));
         }
       }
       
@@ -1078,7 +1078,7 @@ class PDFInformeEstudioSeguridad extends PDF
         $pdf->Image(URL_ARCHIV."files/adj_estseg/adjs/".$img_conduc[$i]['nom_archiv'], $x + 2, $y + 2, 192, $imageHeight);
         
         $pdf->SetWidths(array(196));
-        $pdf->Row(array(utf8_decode('OBSERVACI”N: ' . $img_conduc[$i]['obs_archiv'])));
+        $pdf->Row(array(utf8_decode('OBSERVACI√ìN: ' . $img_conduc[$i]['obs_archiv'])));
 
       }
 
@@ -1143,8 +1143,9 @@ class PDFInformeEstudioSeguridad extends PDF
                     d.ano_modelo, d.cod_colorx, i.nom_colorx, d.cod_carroc,
                     d.num_config, d.num_chasis, d.num_motorx,
                     d.num_soatxx, d.fec_vigsoa, d.num_lictra,
-                    d.cod_opegps, d.usr_gpsxxx, d.clv_gpsxxx,
-                    d.url_gpsxxx, d.idx_gpsxxx, d.obs_opegps,
+                    p.nom_operad, p.url_operad, d.cod_opegps,
+                    d.usr_gpsxxx, d.clv_gpsxxx, d.url_gpsxxx, 
+                    d.idx_gpsxxx, d.obs_opegps,
                     d.fre_opegps, d.ind_precom as 'ind_preveh', d.val_compar as 'val_comveh',
                     d.ind_preres as 'ind_preveh', d.val_resolu as 'val_resveh',
                     e.cod_tercer as 'num_docpos', e.cod_tipdoc as 'cod_tippos', e.ciu_expdoc as 'ciu_exppos',
@@ -1185,8 +1186,9 @@ class PDFInformeEstudioSeguridad extends PDF
                   f.cod_ciudad = m.cod_ciudad AND f.cod_depart = m.cod_depart AND f.cod_paisxx = m.cod_paisxx
                 LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad n ON
                   c.ciu_expdoc = n.cod_ciudad
-                  LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad o ON
+                LEFT JOIN ".BASE_DATOS.".tab_genera_ciudad o ON
                   c.cod_ciudad = o.cod_ciudad AND c.cod_depart = o.cod_depart AND c.cod_paisxx = o.cod_paisxx
+                LEFT JOIN ".BD_STANDA.".tab_genera_opegps p ON p.cod_operad = d.cod_opegps
                 WHERE a.cod_solici = '".$cod_solici."'; ";
     $query = new Consulta($sql, $this -> conexion);
     $resultados = $query -> ret_matriz('a')[0];

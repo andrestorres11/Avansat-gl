@@ -1618,7 +1618,7 @@
             // Redimensionar la imagen original a la imagen nueva
             imagecopyresampled($newImage, $origImage, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
         
-            // Guardar la nueva imagen redimensionada con compresión JPEG
+            // Guardar la nueva imagen redimensionada con compresiï¿½n JPEG
             imagejpeg($newImage, $destino, $jpgQuality);
         
             // Liberar memoria
@@ -2231,7 +2231,7 @@
             $pai_reside = NULL;
             $dep_reside = NULL;
             $ciu_reside = NULL;
-            if($data['lug_expcon'] != '' || $data['lug_expcon'] != '0 - No Registrada'){
+            if($data['lug_expcon'] != '' && $data['lug_expcon'] != '0 - No Registrada'){
               $ciu_expcon = self::separarCodigoCiudad($data['lug_expcon']);
             }
             if($data['ciu_conduc'] != '' || $data['ciu_conduc'] != '0 - No Registrada'){

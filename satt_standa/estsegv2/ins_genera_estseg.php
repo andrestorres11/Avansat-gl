@@ -175,7 +175,7 @@
                                                         <input type="text" id="num_soliciID" name="num_solici" size="8">
                                                     </div>
                                                     <div class="col-2 text-right">
-                                                      <label>Placa / Identificación:</label>
+                                                      <label>Placa / Identificaciï¿½n:</label>
                                                     </div>
                                                     <div class="col-2">
                                                       <input type="text" id="num_identifiID" name="num_identifiID">
@@ -348,7 +348,7 @@
           $query = new Consulta($sql, $this->conexion);
           $resultado = $query -> ret_matrix('a')[0];
           if(count($resultado)>0){
-            return $resultado['cod_ciudad'].' - '.$resultado['nom_ciudad'];
+            return $resultado['nom_ciudad'].' - '.$resultado['cod_ciudad'];
           }else{
             return '';
           } 
