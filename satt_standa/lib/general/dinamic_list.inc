@@ -3,7 +3,7 @@
 -------------------------------------------------------------------------------------------------------------------------------------------------
 @Class: DinamicList
 @Author: Ing. Christiam Barrera Arango
-@Company: Intrared LTDA. Bogotï¿½ - Colombia
+@Company: Intrared LTDA. Bogotá - Colombia
 @Date: 2008-08-31
 -------------------------------------------------------------------------------------------------------------------------------------------------
 */
@@ -55,7 +55,7 @@ Class DinamicList    {
 
       //------------------------------
       if( !$this -> limit )
-        $this -> limit = 100;
+        $this -> limit = 10;
       //------------------------------
 
       if( !$this -> sort_col )
@@ -291,7 +291,7 @@ Class DinamicList    {
 
       //------------------------------
       if( !$this -> limit )
-        $this -> limit = 100;
+        $this -> limit = 10;
       //------------------------------
 
       $sql .= " LIMIT ".$this -> offset.", ".$this -> limit." ";
@@ -428,42 +428,42 @@ Class DinamicList    {
     $mReturn .= "\n             ";
     $mReturn .= htmlentities( "Paginar Listado cada ", ENT_COMPAT, 'ISO-8859-1', true);
 
-    if( $this -> length < 100 )
+    if( $this -> length < 10 )
     {
       $mReturn .= "<b>".$this -> limit."</b> ";
       $mReturn .= "\n             ";
-      $mReturn .= '<input type="hidden" name="DLLimiter" id="DLLimiterID" value="100" />';
+      $mReturn .= '<input type="hidden" name="DLLimiter" id="DLLimiterID" value="10" />';
     }
     else
     {
       $mReturn .= "\n             ";
       $mReturn .= '<select name="DLLimiter" id="DLLimiterID" onchange="javascript:DLLimit( this );">';
-      ( $this -> limit == 100 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+      ( $this -> limit == 10 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
       $mReturn .= "\n               ";
-      $mReturn .= '<option value="100"'.$mSelected.'>100</option>';
-      if( $this -> length >= 250 )
+      $mReturn .= '<option value="10"'.$mSelected.'>10</option>';
+      if( $this -> length >= 20 )
       {
-        ( $this -> limit == 250 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+        ( $this -> limit == 20 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
         $mReturn .= "\n               ";
-        $mReturn .= '<option value="250"'.$mSelected.'>250</option>';
+        $mReturn .= '<option value="20"'.$mSelected.'>20</option>';
+      }
+      if( $this -> length >= 50 )
+      {
+        ( $this -> limit == 50 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+        $mReturn .= "\n               ";
+        $mReturn .= '<option value="50"'.$mSelected.'>50</option>';
+      }
+      if( $this -> length >= 750 )
+      {
+        ( $this -> limit == 100 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+        $mReturn .= "\n               ";
+        $mReturn .= '<option value="100"'.$mSelected.'>100</option>';
       }
       if( $this -> length >= 500 )
       {
         ( $this -> limit == 500 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
         $mReturn .= "\n               ";
         $mReturn .= '<option value="500"'.$mSelected.'>500</option>';
-      }
-      if( $this -> length >= 750 )
-      {
-        ( $this -> limit == 750 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
-        $mReturn .= "\n               ";
-        $mReturn .= '<option value="750"'.$mSelected.'>750</option>';
-      }
-      if( $this -> length >= 1000 )
-      {
-        ( $this -> limit == 1000 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
-        $mReturn .= "\n               ";
-        $mReturn .= '<option value="1000"'.$mSelected.'>1000</option>';
       }
       $mReturn .= "\n             ";
       $mReturn .= '</select>';
@@ -556,12 +556,12 @@ Class DinamicList    {
     }
     if( $this -> page == $mPages )
     {
-      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Siguiente ] [ Última ] " , ENT_COMPAT, 'ISO-8859-1', true).'</span>';
+      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Siguiente ] [ última ] " , ENT_COMPAT, 'ISO-8859-1', true).'</span>';
     }
     else
     {
       $mReturn .= '<a href="#" onclick="javascript:DLPage( '.( $this -> page + 1 ).' );" title="'.htmlentities( "Ir a la Siguiente Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $this -> page+1 ).')">[ Siguiente ]</a> ';
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$mPages.' );" title="'.htmlentities( "Ir a la ultima Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $mPages ).')">[ '.htmlentities( "Última", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a> ';
+      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$mPages.' );" title="'.htmlentities( "Ir a la ultima Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $mPages ).')">[ '.htmlentities( "última", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a> ';
     }
     
     if( $this -> create )
