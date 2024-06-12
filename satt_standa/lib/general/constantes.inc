@@ -96,6 +96,8 @@ define("URL_INTERF_CENTRAL", "https://central.intrared.net");
 
 
 define("MAIL_SUPERVISORES", "supervisores@faro.com.co");//Correo de supervisores
+//Correo remitente/saliente
+define("CONS_EMAIL_NOTIFICACION", "notificaciones@faro.com.co");//Correo saliente
 define("MAIL_SOPORTE", "soporte.ingenieros@intrared.net");//Correo de soporte intrared
 define("MAIL_SUPERVISORES_ELTRANSPORTE", "supervisores@faro.com.co");//Correo de supervisores el transporte
 

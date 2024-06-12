@@ -79,7 +79,7 @@ class Proc_ins_despac {
 												<a href="../' . DIR_APLICA_CENTRAL . '/planea/plantilla/FORMATO_IMP_PEDIDOS_DEMO.csv" target="_blank"><img src="../' . DIR_APLICA_CENTRAL . '/images/excel_logo.png" width="30" height="30" /> Descargar Plantilla Demo</a>
 											</div>
                                             <div class="col">
-												<a href="../' . DIR_APLICA_CENTRAL . '/planea/plantilla/FORMATO_IMP_PEDIDOS__V1.csv" target="_blank"><img src="../' . DIR_APLICA_CENTRAL . '/images/excel_logo.png" width="30" height="30" /> Descargar Plantilla</a>
+												<a href="../' . DIR_APLICA_CENTRAL . '/despac/archiv_plan.xls" target="_blank"><img src="../' . DIR_APLICA_CENTRAL . '/images/excel_logo.png" width="30" height="30" /> Descargar Plantilla</a>
 											</div>
 											<div class="col">
 												<a href="../' . DIR_APLICA_CENTRAL . '/planea/instructivos/Instructivo_de_importacion_de_pedidos_Avansat_GL.pdf" target="_blank"><img src="../' . DIR_APLICA_CENTRAL . '/imagenes/pdf.jpg" width="30" height="30" /> Instructivo</a>

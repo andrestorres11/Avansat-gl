@@ -342,13 +342,13 @@
         }
 
         private function darCiudadInput($cod_ciudad){
-          $sql = "SELECT a.cod_ciudad, a.nom_ciudad 
+          $sql = "SELECT a.cod_ciudad, a.nom_ciudad, a.cod_paisxx
                   FROM ".BASE_DATOS.".tab_genera_ciudad a
                   WHERE a.cod_ciudad = '".$cod_ciudad."';";
           $query = new Consulta($sql, $this->conexion);
           $resultado = $query -> ret_matrix('a')[0];
           if(count($resultado)>0){
-            return $resultado['nom_ciudad'].' - '.$resultado['cod_ciudad'];
+            return $resultado['nom_ciudad'].' ('.$resultado['cod_ciudad'].'-'.$resultado['cod_paisxx'].')';
           }else{
             return '';
           } 
@@ -452,7 +452,7 @@
                                     </div>
                                     <div class="col-6">
                                       <div class="form-group">
-                                        <label for="nom_soliciID" class="labelinput">Correo electr�nico:</label>
+                                        <label for="nom_soliciID" class="labelinput">Correo electr&oacute;nico:</label>
                                         <input class="form-control form-control-sm" type="text" placeholder="Correo electronico" id="cor_soliciID" name="cor_solici" disabled value="'.$info['cor_solici'].'">
                                       </div>
                                     </div>
@@ -753,7 +753,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Licencia de tránsito del vehículo
+                          Licencia de tr�nsito del veh��culo
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 3).'" name="fil_licveh" id="fil_licveh" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 1).'
@@ -889,7 +889,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                         <div class="obl">*</div>
-                          Licencia de conducci�n conductor
+                          Licencia de conducci&oacute;n conductor
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 3).'" name="fil_liccon" id="fil_liccon" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 1).'
@@ -1015,7 +1015,7 @@
                       <input class="form-control form-control-sm req num" type="text" id="num_docconID" name="num_doccon" value="'.$info['num_doccon'].'" disabled>
                   </div>
                   <div class="col-md-3 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedición:</label>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedici&oacute;n:</label>
                       <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_expcon" name="lug_expcon" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_expcon']).'" validate>
                       <div id="lug_expcon-suggestions" class="suggestions" style="top: 50px !important;"></div>
                   </div>
@@ -1048,7 +1048,7 @@
                 $html.='
                           <div class="row">
                               <div class="col-md-3 col-sm-12 form-group">
-                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Licencia de conducci�n No.:</label>
+                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Licencia de conducci&oacute;n No.:</label>
                                   <input class="form-control form-control-sm req num" type="text" id="num_licencID" name="num_licenc" value="'.$info['num_licenc'].'" validate>
                               </div>
                               <div class="col-md-2 col-sm-12 form-group">
@@ -1304,7 +1304,7 @@
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Número de licencia de transito:
+                          N&uacute;mero de licencia de transito:
                         </label>
                         <input class="form-control form-control-sm req" type="text" id="num_lictraID" name="num_lictra" value="'.$info['num_lictra'].'" validate>
                       </div>
@@ -1485,7 +1485,7 @@
           if($info['cod_estcon']=='3'){
           $tam = '4';
           $html.='<div class="col-md-3 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedición:</label>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedici&oacute;n:</label>
                       <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_exppos" name="lug_exppos" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_exppos']).'" validate>
                       <div id="lug_exppos-suggestions" class="suggestions" style="top: 50px !important;"></div>
                   </div>';
@@ -1571,7 +1571,7 @@
             if($info['cod_estcon']=='3'){
             $tam = '4';
             $html.='<div class="col-md-3 col-sm-12 form-group">
-                          <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedición:</label>
+                          <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedici&oacute;n:</label>
                           <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_exppro" name="lug_exppro" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_exppro']).'" validate>
                           <div id="lug_exppro-suggestions" class="suggestions" style="top: 50px !important;"></div>
                      </div>';
@@ -2286,7 +2286,7 @@
               </div>
               <div class="col-6">
                 <div class="form-group">
-                  <label for="nom_soliciID" class="labelinput">Correo electrónico:</label>
+                  <label for="nom_soliciID" class="labelinput">Correo electr&oacute;nico:</label>
                   <input class="form-control form-control-sm req ema" type="text" placeholder="Correo electronico" id="cor_soliciID" name="cor_solici" validate value="'.$emptra['dir_emailx'].'">
                 </div>
               </div>

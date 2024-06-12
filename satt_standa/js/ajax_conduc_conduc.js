@@ -105,6 +105,7 @@ function mostrar() {
 		async: false,
 
 		success: function(data) {
+			$("#sec1").css("height", "auto");
 			$("#sec2").css("height", "auto");
 			$("#form3").append(data); // pinta los datos de la consulta					
 		}

@@ -88,7 +88,7 @@ class cronItinerario
                            -- AND (b.cod_respon IS NULL OR b.cod_respon = 201)
                            AND (b.fec_envint IS NULL OR TIMESTAMPDIFF(MINUTE, fec_envint, NOW()) > 10);
                       ";
-                
+        echo "<pre>".$query."</pre>";   
         $mExec = $this->db4->ExecuteCons($query); 
         $despachos = $this->db4->RetMatrix("a");
         

@@ -533,7 +533,7 @@ function ValidateFormExt(cod_tipnot) {
     var jsonArray = {};
     if (cod_tipnot == 3) {
         jsonArray.SUPERVISORES = {};
-        $("#jsonFormDigi").find("input[type=text]").each(function() {
+        $("#jsonFormDigi").find("input[type=text], textarea").each(function() {
             dato = $(this);
             if ($(this).val() != "") {
                 jsonArray.SUPERVISORES[dato.attr('name')] = dato.val();
@@ -542,7 +542,7 @@ function ValidateFormExt(cod_tipnot) {
             }
         });
         jsonArray.CONTROLADORES = {};
-        $("#jsonContro").find("input[type=text]").each(function() {
+        $("#jsonContro").find("input[type=text], textarea").each(function() {
             dato = $(this);
             if ($(this).val() != "") {
                 jsonArray.CONTROLADORES[dato.attr('name')] = dato.val();
@@ -550,7 +550,7 @@ function ValidateFormExt(cod_tipnot) {
                 status.NOTNULL.push(dato.attr('name'), dato.val());
             }
         });
-        jsonArray.ENCUESTAS = {};
+        /*jsonArray.ENCUESTAS = {};
         $("#jsonEncu").find("input[type=text]").each(function() {
             dato = $(this);
             if ($(this).val() != "") {
@@ -558,9 +558,9 @@ function ValidateFormExt(cod_tipnot) {
             } else {
                 status.NOTNULL.push(dato.attr('name'), dato.val());
             }
-        });
+        });*/
         jsonArray.ESPECIFICAS = {};
-        $("#jsonEspeci").find("input[type=text]").each(function() {
+        $("#jsonEspeci").find("input[type=text], textarea").each(function() {
             dato = $(this);
             if ($(this).val() != "") {
                 jsonArray.ESPECIFICAS[dato.attr('name')] = dato.val();

@@ -2,7 +2,7 @@
 //ini_set('display_errors', true);
 //error_reporting(E_ALL &~E_NOTICE); 
 
-#die("<center><fieldset><legend>URL Inactivada</legend>URL Inactivada, por favor ingrese a la siguiente URL <br><a href='https://avansatgl.intrared.net/ap/satt_demo/index.php?'>Aquí</a></fieldset></center>");
+#die("<center><fieldset><legend>URL Inactivada</legend>URL Inactivada, por favor ingrese a la siguiente URL <br><a href='https://avansatgl.intrared.net/ap/satt_demo/index.php?'>Aqu?</a></fieldset></center>");
 
 include ("constantes.inc");
 include ("../".DIR_APLICA_CENTRAL."/lib/generales.inc");
@@ -244,10 +244,14 @@ class Aplicacion_Seguridad
 			$servic_ini = $consulta -> ret_matriz();
 			
 			if( !$servic_ini )
-				$_REQUEST["cod_servic"] = "3302";
+				$_REQUEST["cod_servic"] = "1366";
 			else
 				$_REQUEST["cod_servic"] = "1366";
-				
+
+      if(  $_SESSION[datos_usuario][cod_perfil] == '1' )
+      {
+          $_REQUEST["cod_servic"] = "1366";
+      }	
 			if(  $_SESSION[datos_usuario][cod_perfil] == '7' )
 			{
 				$_REQUEST["cod_servic"] = "1366";
@@ -386,7 +390,7 @@ class Aplicacion_Seguridad
                             </TR>
                             <TR>
                                 <td colspan='5'>
-                                <img id=\"MenuRow1ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Menú\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
+                                <img id=\"MenuRow1ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Men?\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
                                     <input type=\"hidden\" id=\"MenuRowHiddenID\" value=\"left\">
                                 </td>
                             </TR>
@@ -396,13 +400,15 @@ class Aplicacion_Seguridad
            }
 
            //Incluye la clase para validar 
+           
           include("../".DIR_APLICA_CENTRAL.'/lib/general/suspensiones.php');
+          
           $sus_terceros = new suspensiones($this -> conexion);
           
 
-          if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 7, 8))){
+          if(in_array($_SESSION['datos_usuario']['cod_perfil'], array(1, 2, 7, 8))){
             if(in_array($_REQUEST["cod_servic"], array(1366))){
-              //Funcion Alerta de suspensión empresas
+              //Funcion Alerta de suspensi?n empresas
               $data = $sus_terceros->SetSuspensiones(null, null, 1);
               if (count($data['suspendido']) > 0) {
                 $this->alertMensajeSuspenAdmin($data);
@@ -412,7 +418,7 @@ class Aplicacion_Seguridad
           	$data = $sus_terceros->SetSuspensiones(null, $_SESSION['datos_usuario']['cod_usuari']);
           	//Funcion bloqueo servicios
   	        $this->bloServSuspension($data);
-  	        //Funcion Alerta de suspensión
+  	        //Funcion Alerta de suspensi?n
   	        $this->alertMensajeSuspension($data);
           }
 
@@ -420,13 +426,13 @@ class Aplicacion_Seguridad
 
           include("../".DIR_APLICA_CENTRAL.'/'.$datos_servicio['rut_archiv']);
 
-           if(($_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2')|| ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas')))
+           if(( $_REQUEST["cod_servic"] == "1308" || $_REQUEST["cod_servic"] == "499" || $_REQUEST["cod_servic"] == "1315" || $_REQUEST["cod_servic"] == "1410" || $_REQUEST["cod_servic"] == "1415" || $_REQUEST["cod_servic"] == "1420")&&($_REQUEST[opcion] == '1' || ($_REQUEST["cod_servic"] == "1420" && $_REQUEST[opcion] == '2')|| ($_REQUEST["cod_servic"] == "34219" && $_REQUEST[option] == 'getExcelLlamadas')))
            	echo '';
            else
            echo "\n    
            <TR>
             <td colspan='5'>
-            <img id=\"MenuRow2ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Menú\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
+            <img id=\"MenuRow2ID\" src=\"../satt_standa/imagenes/ryu_calendar/row_left.gif\" style=\"cursor:pointer\" title=\"Ocultar Men?\" onmouseover=\"OnMouseOverMenuRow( 'satt_standa' );\" onmouseout=\"OnMouseOutMenuRow( 'satt_standa' );\" onclick=\"SATMenuEvent();\">
             <input type=\"hidden\" id=\"MenuRowHiddenID\" value=\"left\">
             </td>
             </TR>
@@ -587,7 +593,7 @@ class Aplicacion_Seguridad
       if(in_array($_REQUEST["cod_servic"], array(20160426, 20151236, 20151238))){
         $ban = 0;
         $fact = []; 
-        //Si retorna información de suspendidos
+        //Si retorna informaci?n de suspendidos
         if(!empty($data)){
           foreach ($data['suspendido'] as $ident => $campos) {
             $ban = 1;
@@ -595,7 +601,7 @@ class Aplicacion_Seguridad
             $fact [$ident]['val_totalx'] = "$".$campos['val_totalx'];
           }
 
-          //Verifica que si exita suspensión
+          //Verifica que si exita suspensi?n
           if ($ban == 1) {
             echo '<script src="../'.DIR_APLICA_CENTRAL.'/js/lib/bootstrap/dist/js/bootstrap.min.js"></script>';
             echo '<link href="../'.DIR_APLICA_CENTRAL.'/js/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>';
@@ -622,7 +628,7 @@ class Aplicacion_Seguridad
                 $body .= '\'</table>\'+
                             \'Si ya realizo el pago correspondiente, por favor enviar soporte al correo: <strong>pagos@grupooet.com</strong>';
 
-            $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+            $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
             die();
           }
         } 
@@ -630,7 +636,7 @@ class Aplicacion_Seguridad
     }
 
     /*! \fn: alertMensajeSuspension
-	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensión
+	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensi?n
 	 *  \author: Ing. Luis Manrique
 	 *  \date: 27-02-2020
 	 *  \date modified: dd/mm/aaaa
@@ -646,34 +652,42 @@ class Aplicacion_Seguridad
         if(!isset($_SESSION['datos_usuario']['ale_suspen'])){
           $_SESSION['datos_usuario']['ale_suspen'] = 0;
         }
-        
-        //Valida variable de sesión
-        if($_SESSION['datos_usuario']['ale_suspen'] == 0){
 
+        // echo "<pre>222";
+        // print_r($_SESSION['datos_usuario']);
+        // echo "</pre>";
+        // exit();
+        
+        //Valida variable de sesi?n
+        if($_SESSION['datos_usuario']['ale_suspen'] == 0){
+          
           //Variables necesarias para alerta
-          $tittle = 'Aviso de suspensión!';
+          $tittle = utf8_encode('Aviso de suspensiÃ³n!');
           $viewButton = 'true';
           $backdrop = 'true';
 
-          //Recorre la data para asignar información de las facturas
+          //Recorre la data para asignar informaci?n de las facturas
           foreach ($data as $estado => $mData) {
+            // if($mData[]){
+
+            // }
             foreach ($mData as $ident => $campos) {
 
               //Valida estados
               If($estado == 'suspendido'){
                 //Variables necesarias para alerta
-                $body = "Se ha suspendido el servicio de su cuenta, si ya realizó el pago, por favor enviar el soporte al correo: <b>pagos@grupooet.com.</b>";
+                $body = "Se ha suspendido el servicio de su cuenta, si ya realiz? el pago, por favor enviar el soporte al correo: <b>pagos@grupooet.com.</b>";
                 $type = 'error';
                 $colorBoton = "#ff0000";
               }else{
                  //Variables necesarias para alerta
-                $body = "Su servicio será suspendido el día ".$campos['fec_suspen'].', por favor realice el pago antes de que sea suspendida la cuenta.';
+                $body = "Su servicio ser? suspendido el d?a ".$campos['fec_suspen'].', por favor realice el pago antes de que sea suspendida la cuenta.';
                 $type = 'warning';
                 $colorBoton = "#f8bb86";
               }
 
-              //Ejecuta función que crea alerta
-              $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+              //Ejecuta funci?n que crea alerta
+              $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
               
               $_SESSION['datos_usuario']['ale_suspen'] = 1; 
 
@@ -685,7 +699,7 @@ class Aplicacion_Seguridad
     }
 
     /*! \fn: alertMensajeSuspension
-	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensión
+	 *  \brief: Valida si tiene servicio suspendidos o a punto de suspender para mostrar alerta de suspensi?n
 	 *  \author: Ing. Luis Manrique
 	 *  \date: 27-02-2020
 	 *  \date modified: dd/mm/aaaa
@@ -697,7 +711,7 @@ class Aplicacion_Seguridad
       if(!empty($data)){
         
         if(in_array($_REQUEST["cod_servic"], array(1366))){
-          	$tittle = 'Aviso de suspensión!';
+          	$tittle = 'Aviso de suspensi&oacute;n';
           	$viewButton = 'true';
           	$backdrop = 'true';
           	$emp_suspen = [];
@@ -708,20 +722,20 @@ class Aplicacion_Seguridad
             	$emp_suspen[] = $campos['abr_tercer'];
           	}
 
-          	$body = 'Las siguientes empresas se encuentran en estado de suspensión:<br><br>\'+';
+          	$body = 'Las siguientes empresas se encuentran en estado de suspensi&oacute;n:<br><br>\'+';
           		foreach (array_unique($emp_suspen) as $key => $value) {
                  	 $body .= '\''.$value.'<br>\'+';
                 }
             $body .= '\'';
 	        
 
-           $this->mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
+           $this->mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton);
         }
       }
     }
 
-    /*! \fn: mensajeSuspensión
-	 *  \brief: Crea Alerta por JS dando información
+    /*! \fn: mensajeSuspension
+	 *  \brief: Crea Alerta por JS dando informaci?n
 	 *  \author: Ing. Luis Manrique
 	 *  \date: 27-02-2020
 	 *  \date modified: dd/mm/aaaa
@@ -729,7 +743,7 @@ class Aplicacion_Seguridad
 	 *  \return: html
 	 */
 
-    function mensajeSuspensión($tittle, $body, $type, $viewButton, $backdrop, $colorBoton = null){
+    function mensajeSuspension($tittle, $body, $type, $viewButton, $backdrop, $colorBoton = null){
         $script .= '<!-- Toastr -->';
         $script .='<script src="../' . DIR_APLICA_CENTRAL . '/js/sweetalert2.all.8.11.8.js"></script>';
 

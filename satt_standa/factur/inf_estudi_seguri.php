@@ -47,7 +47,7 @@ class InfEstudiSeguri
 		echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/multiselect/jquery.multiselect.filter.css' type='text/css'>\n";
 
         
-        echo "<script src='../".DIR_APLICA_CENTRAL ."/js/dinamic_list.js' language='javascript'></script>";
+        echo "<script src='../".DIR_APLICA_CENTRAL ."/js/dinamic_list.js?v=0111' language='javascript'></script>";
         echo "<link type='text/css' href='../". DIR_APLICA_CENTRAL ."/estilos/dinamic_list.css' rel='stylesheet'>";
         
         echo "<style> 
@@ -166,7 +166,7 @@ class InfEstudiSeguri
                 END as nom_estseg, a.obs_estseg, 
                 a.fec_finsol, a.fec_venest, b.cod_tercer as 'cod_conduc', 
                 b.cod_tipdoc as 'tip_doccon', b.nom_apell1 as 'nom_ape1con', b.nom_apell2 as 'nom_ape2con', 
-                b.nom_person 'nom_nomcon', b.num_licenc as 'num_liccon', c.nom_catlic as 'nom_catcon', 
+                b.nom_person as 'nom_nomcon', b.num_licenc as 'num_liccon', c.nom_catlic as 'nom_catcon', 
                 b.fec_venlic as 'fec_vliccon', b.nom_arlxxx as 'nom_arlcon', b.nom_epsxxx as 'nom_epscon', 
                 b.num_telmov as 'num_movcon', b.num_telefo as 'num_telcon', d.nom_ciudad as 'nom_ciucon', 
                 b.dir_domici as 'dir_rescon', b.dir_emailx as 'dir_emacon', 
@@ -265,16 +265,16 @@ class InfEstudiSeguri
                 $list->SetClose('no');
                 $list->SetExcel('excel','onclick:exportExcel()');
                 $list->SetHeader("No. Codigo Solic", "field:cod_solici;");
-                $list->SetHeader("Tipo Solicitud", "field:nom_tipest;");
+                $list->SetHeader("Tipo Solicitud", "field:a.cod_tipest;");
                 $list->SetHeader("Nit Empresa", "field:cod_emptra;");
                 $list->SetHeader("Nombre Empresa", "field:nom_tercer;");
                 $list->SetHeader("No. Documento Conductor", "field:num_docume;");
                 $list->SetHeader("Nombre Conductor", "field:nom_conduct;");
                 $list->SetHeader("Placa", "field:num_placax;");
-                $list->SetHeader("Estado", "field:nom_estseg;");
+                $list->SetHeader("Estado", "field:a.ind_estseg;");
                 $list->SetHeader("Observaciones", "field:obs_estseg;");
                 $list->SetHeader("Usuario Creación", "field:usr_estseg;");
-                $list->SetHeader("Fecha Solicitud", "field:fec_creaci;");
+                $list->SetHeader("Fecha Solicitud", "field:a.fec_creaci;");
                 $list->SetHeader("Usuario Modificación", "field:usr_modifi;");
                 $list->SetHeader("Fecha Respuesta", "field:fec_finsol;");
                 $list->Display($this->conexion);
@@ -290,42 +290,42 @@ class InfEstudiSeguri
             $list->SetClose('no');
             $list->SetExcel('excel','onclick:exportExcel()');
             $list->SetHeader("Número de Solicitud", "field:cod_solici;");
-            $list->SetHeader("Fecha de Solicitud", "field:fec_creaci;");
+            $list->SetHeader("Fecha de Solicitud", "field:a.fec_creaci;");
             $list->SetHeader("Correo", "field:cor_solici;");
             $list->SetHeader("Telefono", "field:tel_solici;");
             $list->SetHeader("Celular", "field:cel_solici;");
-            $list->SetHeader("Estudio", "field:nom_estcon;");
-            $list->SetHeader("Tipo de Estudio", "field:nom_tipest;");
-            $list->SetHeader("Resultado", "field:nom_estseg;");
-            $list->SetHeader("Observación", "field:obs_estseg;");
-            $list->SetHeader("Fecha de finalización", "field:fec_finsol;");
-            $list->SetHeader("Fecha de vencimiento", "field:fec_venest;");
-            $list->SetHeader("Código del Conductor", "field:cod_conduc;");
-            $list->SetHeader("Tipo de documento", "field:tip_doccon;");
-            $list->SetHeader("Primer Apellido", "field:nom_ape1con;");
-            $list->SetHeader("Segundo Apellido", "field:nom_ape2con;");
-            $list->SetHeader("Nombres", "field:nom_nomcon;");
-            $list->SetHeader("Número de Licencia", "field:num_liccon;");
-            $list->SetHeader("Categoria", "field:nom_catcon;");
-            $list->SetHeader("Vencimiento de Licencia", "field:fec_vliccon;");
-            $list->SetHeader("ARL", "field:nom_arlcon;");
-            $list->SetHeader("EPS", "field:nom_epscon;");
-            $list->SetHeader("Celular", "field:num_movcon;");
-            $list->SetHeader("Telefono", "field:num_telcon;");
-            $list->SetHeader("Ciudad", "field:nom_ciucon;");
-            $list->SetHeader("Dirección", "field:dir_rescon;");
-            $list->SetHeader("Correo", "field:dir_emacon;");
-            $list->SetHeader("Presenta Comparendos?", "field:ind_precom;");
-            $list->SetHeader("Valor", "field:val_compar;");
-            $list->SetHeader("Presenta Resoluciones?", "field:ind_preres;");
-            $list->SetHeader("Valor", "field:val_resolu;");
+            $list->SetHeader("Estudio", "field:nom_estcon;having:true;");
+            $list->SetHeader("Tipo de Estudio", "field:nom_tipest;having:true;");
+            $list->SetHeader("Resultado", "field:nom_estseg;having:true;");
+            $list->SetHeader("Observación", "field:a.obs_estseg;");
+            $list->SetHeader("Fecha de finalización", "field:a.fec_finsol;");
+            $list->SetHeader("Fecha de vencimiento", "field:a.fec_venest;");
+            $list->SetHeader("Código del Conductor", "field:b.cod_tercer;");
+            $list->SetHeader("Tipo de documento", "field:b.cod_tipdoc;");
+            $list->SetHeader("Primer Apellido", "field:b.nom_apell1;");
+            $list->SetHeader("Segundo Apellido", "field:b.nom_apell2;");
+            $list->SetHeader("Nombres", "field:b.nom_person;");
+            $list->SetHeader("Número de Licencia", "field:b.num_licenc;");
+            $list->SetHeader("Categoria", "field:c.nom_catlic;");
+            $list->SetHeader("Vencimiento de Licencia", "field:b.fec_venlic;");
+            $list->SetHeader("ARL", "field:b.nom_arlxxx;");
+            $list->SetHeader("EPS", "field:b.nom_epsxxx;");
+            $list->SetHeader("Celular", "field:b.num_telmov;");
+            $list->SetHeader("Telefono", "field:b.num_telefo;");
+            $list->SetHeader("Ciudad", "field:d.nom_ciudad;");
+            $list->SetHeader("Dirección", "field:b.dir_domici;");
+            $list->SetHeader("Correo", "field:b.dir_emailx;");
+            $list->SetHeader("Presenta Comparendos?", "field:b.ind_precom;");
+            $list->SetHeader("Valor", "field:b.val_compar;");
+            $list->SetHeader("Presenta Resoluciones?", "field:b.ind_preres;");
+            $list->SetHeader("Valor", "field:b.val_resolu;");
             $list->SetHeader("Placa", "field:num_placax;");
             $list->SetHeader("Remolque", "field:num_remolq;");
             $list->SetHeader("Marca", "field:nom_marcax;");
             $list->SetHeader("Linea", "field:nom_lineax;");
             $list->SetHeader("Modelo", "field:ano_modelo;");
             $list->SetHeader("Color", "field:nom_colorx;");
-            $list->SetHeader("Carrocería", "field:cod_carroc;");
+            $list->SetHeader("Carrocería", "field:i.cod_carroc;");
             $list->SetHeader("Chasis", "field:num_chasis;");
             $list->SetHeader("Número Motor", "field:num_motorx;");
             $list->SetHeader("SOAT", "field:num_soatxx;");
@@ -336,19 +336,19 @@ class InfEstudiSeguri
             $list->SetHeader("Contraseña", "field:clv_gpsxxx;");
             $list->SetHeader("Observacion", "field:obs_opegps;");
             $list->SetHeader("Frecuencia", "field:fre_opegps;");
-            $list->SetHeader("Presenta Comparendos?", "field:ind_vehcom;");
-            $list->SetHeader("Valor", "field:val_comveh;");
-            $list->SetHeader("Presenta Resoluciones?", "field:ind_preveh;");
-            $list->SetHeader("Valor", "field:val_resveh;");
+            $list->SetHeader("Presenta Comparendos?", "field:ind_vehcom;having:true;");
+            $list->SetHeader("Valor", "field:e.val_compar;");
+            $list->SetHeader("Presenta Resoluciones?", "field:ind_preveh;having:true;");
+            $list->SetHeader("Valor", "field:e.val_resolu;");
             $list->SetHeader("Código Propietario", "field:cod_propie;");
-            $list->SetHeader("Tipo de Documento", "field:tip_docpro;");
-            $list->SetHeader("Primer Apellido", "field:nom_ape1pro;");
-            $list->SetHeader("Segundo Apellido", "field:nom_ape2pro;");
-            $list->SetHeader("Nombres", "field:nom_nompro;");
-            $list->SetHeader("Telefono", "field:num_movpro;");
-            $list->SetHeader("Ciudad", "field:nom_ciupro;");
-            $list->SetHeader("Direccion", "field:dir_respro;");
-            $list->SetHeader("Correo", "field:dir_emapro;");
+            $list->SetHeader("Tipo de Documento", "field:k.cod_tipdoc;");
+            $list->SetHeader("Primer Apellido", "field:k.nom_apell1;");
+            $list->SetHeader("Segundo Apellido", "field:k.nom_apell2;");
+            $list->SetHeader("Nombres", "field:k.nom_person;");
+            $list->SetHeader("Telefono", "field:k.num_telmov;");
+            $list->SetHeader("Ciudad", "field:l.nom_ciudad;");
+            $list->SetHeader("Direccion", "field:k.dir_domici;");
+            $list->SetHeader("Correo", "field:k.dir_emailx;");
             $list->Display($this->conexion);
             $_SESSION["DINAMIC_LIST"] = $list;
 
@@ -412,7 +412,7 @@ class InfEstudiSeguri
                 <table id="tablaRegistros" class="table table-striped table-bordered table-sm" style="width: 100%;font-size:10px;">
                 <thead>
                     <tr>
-                        <th>Nï¿½mero de Solicitud</th>
+                        <th>Número de Solicitud</th>
                         <th>Fecha de Solicitud</th>
                         <th>Correo</th>
                         <th>Telefono</th>
@@ -420,15 +420,15 @@ class InfEstudiSeguri
                         <th>Estudio</th>
                         <th>Tipo de Estudio</th>
                         <th>Resultado</th>
-                        <th>Observaciï¿½n</th>
-                        <th>Fecha de finalizaciï¿½n</th>
+                        <th>Observación</th>
+                        <th>Fecha de finalización</th>
                         <th>Fecha de vencimiento</th>
-                        <th>Cï¿½digo del Conductor</th>
+                        <th>Código del Conductor</th>
                         <th>Tipo de documento</th>
                         <th>Primer Apellido</th>
                         <th>Segundo Apellido</th>
                         <th>Nombres</th>
-                        <th>Nï¿½mero de Licencia</th>
+                        <th>Número de Licencia</th>
                         <th>Categoria</th>
                         <th>Vencimiento de Licencia</th>
                         <th>ARL</th>
@@ -436,11 +436,11 @@ class InfEstudiSeguri
                         <th>Celular</th>
                         <th>Telefono</th>
                         <th>Ciudad</th>
-                        <th>Direcciï¿½n</th>
+                        <th>Dirección</th>
                         <th>Correo</th>
-                        <th>ï¿½Presenta Comparendos?</th>
+                        <th>¿Presenta Comparendos?</th>
                         <th>Valor</th>
-                        <th>ï¿½Presenta Resoluciones?</th>
+                        <th>¿Presenta Resoluciones?</th>
                         <th>Valor</th>
                         <th>Placa</th>
                         <th>Remolque</th>
@@ -448,22 +448,22 @@ class InfEstudiSeguri
                         <th>Linea</th>
                         <th>Modelo</th>
                         <th>Color</th>
-                        <th>Carrocerï¿½a</th>
+                        <th>Carrocería</th>
                         <th>Chasis</th>
-                        <th>Nï¿½mero Motor</th>
+                        <th>Número Motor</th>
                         <th>SOAT</th>
                         <th>Vigencia SOAT</th>
                         <th>Licencia de transito</th>
                         <th>Operador GPS</th>
                         <th>Usuario</th>
-                        <th>Contraseï¿½a</th>
+                        <th>Contraseña</th>
                         <th>Observacion</th>
                         <th>Frecuencia</th>
-                        <th>ï¿½Presenta Comparendos?</th>
+                        <th>¿Presenta Comparendos?</th>
                         <th>Valor</th>
-                        <th>ï¿½Presenta Resoluciones?</th>
+                        <th>¿Presenta Resoluciones?</th>
                         <th>Valor</th>
-                        <th>Cï¿½digo Propietario</th>
+                        <th>Código Propietario</th>
                         <th>Tipo de Documento</th>
                         <th>Primer Apellido</th>
                         <th>Segundo Apellido</th>
@@ -485,14 +485,14 @@ class InfEstudiSeguri
                    $export .="<td>".$registro['cor_solici']."</td>";
                    $export .="<td>".$registro['tel_solici']."</td>";
                    $export .="<td>".$registro['cel_solici']."</td>";
-                   $export .="<td>".$registro['cod_estcon']."</td>";
-                   $export .="<td>".$registro['cod_tipest']."</td>";
-                   $export .="<td>".$registro['ind_estseg']."</td>";
+                   $export .="<td>".$registro['nom_estcon']."</td>";
+                   $export .="<td>".$registro['nom_tipest']."</td>";
+                   $export .="<td>".$registro['nom_estseg']."</td>";
                    $export .="<td>".$registro['obs_estseg']."</td>";
                    $export .="<td>".$registro['fec_finsol']."</td>";
                    $export .="<td>".$registro['fec_venest']."</td>";
                    $export .="<td>".$registro['cod_conduc']."</td>";
-                   $export .="<td>Cï¿½dula de Ciudadanï¿½a</td>";
+                   $export .="<td>Cédula de Ciudadanía</td>";
                    $export .="<td>".$registro['nom_ape1con']."</td>";
                    $export .="<td>".$registro['nom_ape2con']."</td>";
                    $export .="<td>".$registro['nom_nomcon']."</td>";
@@ -532,7 +532,7 @@ class InfEstudiSeguri
                    $export .="<td>".$registro['ind_preveh']."</td>";
                    $export .="<td>".$registro['val_resveh']."</td>";
                    $export .="<td>".$registro['cod_propie']."</td>";
-                   $export .="<td>Cï¿½dula de Ciudadanï¿½a</td>";
+                   $export .="<td>Cédula de Ciudadanía</td>";
                    $export .="<td>".$registro['nom_ape1pro']."</td>";
                    $export .="<td>".$registro['nom_ape2pro']."</td>";
                    $export .="<td>".$registro['nom_nompro']."</td>";

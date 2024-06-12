@@ -610,6 +610,7 @@ class AjaxNotifiNotifi
 			$ENCUESTAS=NULL;
 			$ESPECIFICAS=NULL;
 			$ASISTENCIAS=NULL;
+			$RECOMENDADOS=NULL;
 			$ESTADO_VEHICULOS=NULL;
 			$RECURSOS_ASIGNADOS=NULL;
 			if($ActionForm->ActionForm=="idi")
@@ -623,6 +624,7 @@ class AjaxNotifiNotifi
 				$ENCUESTAS = self::JsonRecor($Json,"ENCUESTAS");
 				$ESPECIFICAS = self::JsonRecor($Json,"ESPECIFICAS");
 				$ASISTENCIAS = self::JsonRecor($Json,"ASISTENCIAS");
+				$RECOMENDADOS = self::JsonRecor($Json,"RECOMENDADOS");
 				$ESTADO_VEHICULOS = self::JsonRecor($Json,"ESTADO_VEHICULOS");
 				$RECURSOS_ASIGNADOS = self::JsonRecor($Json,"RECURSOS_ASIGNADOS");
 			}
@@ -640,6 +642,7 @@ class AjaxNotifiNotifi
 				$ENCUESTAS = self::JsonRecor($Json,"ENCUESTAS");
 				$ESPECIFICAS = self::JsonRecor($Json,"ESPECIFICAS");
 				$ASISTENCIAS = self::JsonRecor($Json,"ASISTENCIAS");
+				$RECOMENDADOS = self::JsonRecor($Json,"RECOMENDADOS");
 				$ESTADO_VEHICULOS = self::JsonRecor($Json,"ESTADO_VEHICULOS");
 				$RECURSOS_ASIGNADOS = self::JsonRecor($Json,"RECURSOS_ASIGNADOS");
 			}
@@ -1044,26 +1047,33 @@ class AjaxNotifiNotifi
 							$mHtml->CloseRow();
 							*/
 							$mHtml->Row();
-								$mHtml->line("","i",0,7);
+								$mHtml->line("","i",0,10);
 							$mHtml->CloseRow();
 							/*$mHtml->Row();
 								$mHtml->Label( "SUPERVISORES",  array("align"=>"center", "class"=>"celda_titulo infJson","colspan"=>"7") );
 							$mHtml->CloseRow();*/
 							$mHtml->Row();
-								$mHtml->Label( "Supervisor111 Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+								$mHtml->Label( "Supervisor Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 								$mHtml->Label( "Controlador Master Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 								$mHtml->Label( "Supervisor Saliente",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
+								
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
 								$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($SUPERVISORES,"supe_entrante")!="")?self::JsonRecor($SUPERVISORES,"supe_entrante"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_entranteID')"));
 								$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($SUPERVISORES,"cont_Mentrant")!="")?self::JsonRecor($SUPERVISORES,"cont_Mentrant"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','cont_MentrantID')"));
 								$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3", "value"=>(self::JsonRecor($SUPERVISORES,"supe_saliente")!="")?self::JsonRecor($SUPERVISORES,"supe_saliente"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_salienteID')"));
-							/*
+								/*
 								$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2", "value"=>" 00 ", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_entranteID')"));
 								$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2", "value"=>"00", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','cont_MentrantID')"));
 								$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3", "value"=>"00", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_salienteID')"));
 							*/
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->Label( "Observaciones",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->TextArea((self::JsonRecor($SUPERVISORES,"obs_supervisor")!="")?self::JsonRecor($SUPERVISORES,"obs_supervisor"):"", array("name" => "obs_supervisor", "id" => "obs_supervisorID", "colspan"=>"7", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,100000,'alfa','obs_supervisorID')"));
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1084,12 +1094,12 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "CONTROLADORES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 							$mHtml->CloseRow();*/
 							$mHtml->Row();
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° En Turno",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Ausentes",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Incapacitados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. En Turno",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Ausentes",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Incapacitados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
@@ -1104,13 +1114,19 @@ class AjaxNotifiNotifi
 							*/
 							$mHtml->CloseRow();
 							$mHtml->Row();
+								$mHtml->Label( "Observaciones",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->TextArea((self::JsonRecor($CONTROLADORES,"obs_controlador")!="")?self::JsonRecor($CONTROLADORES,"obs_controlador"):"", array("name" => "obs_controlador", "id" => "obs_controladorID", "colspan"=>"7", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,100000,'alfa','obs_controladorID')"));
+							$mHtml->CloseRow();
+							$mHtml->Row();
 								$mHtml->line("","i",0,7);
 							$mHtml->CloseRow();
 						$mHtml->CloseTable('tr');
 					$mHtml->CloseDiv();
 				$mHtml->CloseDiv();
 				/* ENCUESTAS */
-	     	$mHtml->OpenDiv("id:Notificontainer5; class:accordian");
+	     		/*$mHtml->OpenDiv("id:Notificontainer5; class:accordian");
 					$mHtml->SetBody("<h3 style='padding:6px;'><center>ENCUESTAS</center></h3>");
 					$mHtml->OpenDiv("id:jsonEncu");
 						$mHtml->Table("tr");
@@ -1119,14 +1135,14 @@ class AjaxNotifiNotifi
 							$mHtml->CloseRow();
 							/*$mHtml->Row();
 								$mHtml->Label( "ENCUESTAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-							$mHtml->CloseRow();*/
+							$mHtml->CloseRow();
 							$mHtml->Row();
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Registradas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Por subir a SPG",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Registradas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Por subir a SPG",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
@@ -1138,14 +1154,14 @@ class AjaxNotifiNotifi
 								$mHtml->Input(array("name" => "numb_enreali", "id" => "numb_enrealiID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_enrealiID')"));
 								$mHtml->Input(array("name" => "numb_registr", "id" => "numb_registrID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_registrID')"));
 								$mHtml->Input(array("name" => "numb_subaspg", "id" => "numb_subaspgID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_subaspgID')"));
-								*/
+								
 								$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
 							$mHtml->CloseRow();
 						$mHtml->CloseTable('tr');
 					$mHtml->CloseDiv();
-				$mHtml->CloseDiv();
+				$mHtml->CloseDiv();*/
 				/* ESPECIFICAS */
 				$mHtml->OpenDiv("id:Notificontainer6; class:accordian");
 					$mHtml->SetBody("<h3 style='padding:6px;'><center>ESPECIFICAS</center></h3>");
@@ -1158,13 +1174,13 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "ESPECIFICAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 							$mHtml->CloseRow();*/
 							$mHtml->Row();
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
@@ -1179,6 +1195,12 @@ class AjaxNotifiNotifi
 								$mHtml->Input(array("name" => "numb_espende", "id" => "numb_espendeID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_espendeID')"));								
 								$mHtml->Input(array("name" => "numb_espenda", "id" => "numb_espendaID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_espendaID')"));
 								*/
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->Label( "Observaciones",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->TextArea((self::JsonRecor($ESPECIFICAS,"obs_especificas")!="")?self::JsonRecor($ESPECIFICAS,"obs_especificas"):"", array("name" => "obs_especificas", "id" => "obs_especificasID", "colspan"=>"7", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,100000,'alfa','obs_especificasID')"));
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1198,13 +1220,13 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "ASISTENCIAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 							$mHtml->CloseRow();*/
 							$mHtml->Row();
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
@@ -1218,6 +1240,99 @@ class AjaxNotifiNotifi
 								$mHtml->Input(array("name" => "numb_aspende", "id" => "numb_aspendeID", "width" => "10%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_aspendeID')"));
 								$mHtml->Input(array("name" => "numb_aspenda", "id" => "numb_aspendaID", "width" => "10%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_aspendaID')"));
 								*/
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->line("","i",0,7);
+							$mHtml->CloseRow();
+						$mHtml->CloseTable('tr');
+					$mHtml->CloseDiv();
+				$mHtml->CloseDiv(); 
+
+				/* RECOMENDADOS */
+				$mHtml->OpenDiv("id:Notificontainer7; class:accordian");
+					$mHtml->SetBody("<h3 style='padding:6px;'><center>RECOMENDADOS</center></h3>");
+					$mHtml->OpenDiv("id:jsonAsist");
+						$mHtml->Table("tr");
+							$mHtml->Row();
+								$mHtml->line("","i",0,7);
+							$mHtml->CloseRow();
+							/*$mHtml->Row();
+								$mHtml->Label( "RECOMENDADOS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();*/
+							$mHtml->Row();
+								$mHtml->Label( "No. Placa",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "Observacion",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "Adjunto",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "numb_placaxx1", "id" => "numb_placaxx1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx1")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx1ID')"));
+								$mHtml->Input(array("name" => "obs_recomend1", "id" => "obs_recomend1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend1")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend1ID')"));
+								$mHtml->file(array("name" => "adj_recomend1", "id" => "adj_recomend1ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "numb_placaxx2", "id" => "numb_placaxx2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx2")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx2ID')"));
+								$mHtml->Input(array("name" => "obs_recomend2", "id" => "obs_recomend2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend2")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend2ID')"));
+								$mHtml->file(array("name" => "adj_recomend2", "id" => "adj_recomend2ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "numb_placaxx3", "id" => "numb_placaxx3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx3")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx3ID')"));
+								$mHtml->Input(array("name" => "obs_recomend3", "id" => "obs_recomend3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend3")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend3ID')"));
+								$mHtml->file(array("name" => "adj_recomend3", "id" => "adj_recomend3ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->line("","i",0,7);
+							$mHtml->CloseRow();
+						$mHtml->CloseTable('tr');
+					$mHtml->CloseDiv();
+				$mHtml->CloseDiv(); 
+
+				/* CANDADOS SATELITALES */
+				$mHtml->OpenDiv("id:Notificontainer7; class:accordian");
+					$mHtml->SetBody("<h3 style='padding:6px;'><center>CANDADOS SATELITALES</center></h3>");
+					$mHtml->OpenDiv("id:jsonAsist");
+						$mHtml->Table("tr");
+							$mHtml->Row();
+								$mHtml->line("","i",0,7);
+							$mHtml->CloseRow();
+							/*$mHtml->Row();
+								$mHtml->Label( "CANDADOS SATELITALES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();*/
+							$mHtml->Row();
+								$mHtml->Label( "No. Candado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Placa",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "Observaciones",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "num_candadox1", "id" => "num_candadox11ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"num_candadox11")!="")?self::JsonRecor($RECOMENDADOS,"num_candadox11"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox11ID')"));
+								$mHtml->Input(array("name" => "numb_placaxx1", "id" => "numb_placaxx1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx1")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx1ID')"));
+								$mHtml->Input(array("name" => "obs_recomend1", "id" => "obs_recomend1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend1")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend1ID')"));
+								
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "num_candadox2", "id" => "num_candadox2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"num_candadox2")!="")?self::JsonRecor($RECOMENDADOS,"num_candadox2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox2ID')"));
+								$mHtml->Input(array("name" => "numb_placaxx2", "id" => "numb_placaxx2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx2")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx2ID')"));
+								$mHtml->Input(array("name" => "obs_recomend2", "id" => "obs_recomend2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend2")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend2ID')"));
+								
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "num_candadox3", "id" => "num_candadox3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"num_candadox3")!="")?self::JsonRecor($RECOMENDADOS,"num_candadox3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox3ID')"));
+								$mHtml->Input(array("name" => "numb_placaxx3", "id" => "numb_placaxx3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx3")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx3ID')"));
+								$mHtml->Input(array("name" => "obs_recomend3", "id" => "obs_recomend3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend3")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend3ID')"));
+								
+								
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1240,7 +1355,7 @@ class AjaxNotifiNotifi
 							$mHtml->Label( "RECURSOS ASIGNADOS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 						$mHtml->CloseRow();*/
 						$mHtml->Row();
-							$mHtml->Label( "N° de puesto Asignado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+							$mHtml->Label( "No. de puesto Asignado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Estado de la diadema",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Estado del mouse",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
 						$mHtml->CloseRow();
@@ -1275,7 +1390,7 @@ class AjaxNotifiNotifi
 						$mHtml->Row();
 							$mHtml->Label( "Estado del Pad Mouse",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Aseo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-							$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+							$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->Label( "Registros realizados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 						$mHtml->CloseRow();
 						$mHtml->Row();
@@ -2554,7 +2669,7 @@ class AjaxNotifiNotifi
 		try {
 			$mCabece  = 'MIME-Version: 1.0' . "\r\n";
 			$mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			$mCabece .= 'From: AVANSAT <avansat@intrared.net>' . "\r\n";
+			$mCabece .= 'From: AVANSAT <notificaciones.avansat@intrared.net>' . "\r\n";
 			$plantilla = 'pla_notifi_notifi.html';
 			/*variables*/
 			switch ($datos->cod_tipnot) {
@@ -2640,7 +2755,7 @@ class AjaxNotifiNotifi
         	eval($thefile);
         	$mHtmlxx = $r_file;
         	$mailSend='faroavansat@eltransporte.com';
-        	//$mailSend='edward.serrano@intrared.net';
+        	$mailSend='andres.torres@grupooet.com';
         	mail($mailSend, $mAsunto, '<div name="pruebaNotifi">' . $mHtmlxx . '</div>', $mCabece);
 		} catch (Exception $e) {
 			echo "error getPlantillaEnvio :".$e;

@@ -1845,7 +1845,9 @@ class InsertNovedad {
                              IFNULL(b.ind_manale, 0) as 'ind_alarma',
                              0 as 'ind_insveh',
                              IFNULL(b.ind_soltie, 0) as 'ind_tiempo',
-                             IFNULL(b.num_tiempo, 0) as 'num_tiempo'
+                             IFNULL(b.num_tiempo, 0) as 'num_tiempo',
+                             a.rut_iconox,
+                             a.cod_tipoxx
                         FROM " . BASE_DATOS . ".tab_genera_noveda a 
                         LEFT JOIN " . BASE_DATOS . ".tab_parame_novseg b ON
                         a.cod_noveda = b.cod_noveda AND
@@ -3666,7 +3668,7 @@ class InsertNovedad {
                 }
         }
 
-
+        
 
         #<IF 5>
         if ($ominter != 2 && $regist['wsdl'] != "NO") {
@@ -4367,6 +4369,9 @@ class InsertNovedad {
                     }
 
                     if (53 == $interfaz->interfaz[$i]['operad']) {//SI ESTA ACTIVA LA INTERFAZ "FARO". 
+
+
+
                         if($interfaz->interfaz[$i]['nombre'] != '' && $interfaz->interfaz[$i]['nombre'] != 'satt_intgps'){
                             $error_ = NULL;
                             ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
@@ -4404,7 +4409,15 @@ class InsertNovedad {
                                 'ind_tiempo' => $mDatNoveda['ind_tiempo'],
                                 'nov_especi_' => $mDatNoveda['nov_especi'],
                                 'ind_manala' => $mDatNoveda['ind_manala'],
-                                'bin_fotcon' => $regist['bin_fotcon'],
+                                'bin_fotcon' => '',
+                                'bin_fotpre' => '',
+                                'cod_remdes' => '',
+                                'tim_sigpun' => '',
+                                'tim_ultpun' => '',
+                                'kms_vehicu' => '',
+                                'man_ordcar' => '',
+                                'url_iconov' => DIREC_APLICA.$mDatNoveda['rut_iconox'],
+                                'tip_noveda' => $mDatNoveda['cod_tipoxx']
                             );
 
                             // Convert mParams array to a JSON-formatted string with indentation
@@ -4417,6 +4430,18 @@ class InsertNovedad {
                                     $mResult = explode("; ", $respuesta);
                                     $mCodResp = explode(":", $mResult[0]);
                                     $mMsgResp = explode(":", $mResult[1]);
+
+                                    if($mDatDespac['cod_manifi']=='23303'){
+                                        $to     = 'cristian.torres@grupooet.com';
+                                        $subject = 'Envio de Informacion - avansat gl';
+                                        $message = $mParamsFormatted;
+                                        $message .= "<br>-----<br>";
+                                        $message .= var_export($mMsgResp,true);
+                                        $message .= "<br>Servidor: ".$mData['url_webser'];
+                                        $from = 'notificaciones@faro.com.co';
+                                        mail($to,$subject,$message,"From: <$from>","-f $from -r $from");
+                                    }
+                                    
                                     $mReporte = [];
                                     $mResulta = [];
                                     $mReporte['num_despac'] = $regist['despac'];
@@ -5144,7 +5169,7 @@ class InsertNovedad {
         /*$cabeceras = 'MIME-Version: 1.0' . "\r\n";
         $cabeceras .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
         $cabeceras .= 'From: ' . MAIL_SUPERVISORES;*/
-        $from = MAIL_SUPERVISORES;
+        $from = CONS_EMAIL_NOTIFICACION;
 
         if($datos->rutpla != "")
         {
@@ -5178,7 +5203,7 @@ class InsertNovedad {
         $cabeceras .= 'Content-type: text/plain; charset=UTF-8"' . "\r\n";
         $cabeceras .= 'From: ' . MAIL_SUPERVISORES . "\r\n";*/
 
-        $from = MAIL_SUPERVISORES;
+        $from = CONS_EMAIL_NOTIFICACION;
 
         $msj  = "Novedad: $datos->nom_noveda\r\n";
         $msj .= "Placa: $datos->num_placax\r\n";
@@ -5209,7 +5234,7 @@ class InsertNovedad {
      *  \param: destin
      *  \return: boolean
      */
-    private function mail($destin, $asunto, $msj, $from) {
+    /*private function mail($destin, $asunto, $msj, $from) {
         @require_once('../' . DIR_APLICA_CENTRAL . '/planti/class.phpmailer.php');
 
         $mail = new PHPMailer();
@@ -5233,6 +5258,26 @@ class InsertNovedad {
         }else{
           echo 'Error: ' . $mail->ErrorInfo;
           return false;
+        }
+    }*/
+
+
+    private function mail($destin, $asunto, $msj, $from) {
+        $headers = "From: $from\r\n";
+        $headers .= "MIME-Version: 1.0\r\n";
+        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        $additional_parameters = "-f $from -r $from";
+    
+        if (HOST_WEB == HOST_WEB_PRO) {
+            if (mail($destin, $asunto, $msj, $headers, $additional_parameters)) {
+                return true;
+            } else {
+                echo 'Error al enviar el correo';
+                return false;
+            }
+        } else {
+            echo 'No se especificó el caso para HOST_WEB diferente de HOST_WEB_PRO';
+            return false;
         }
     }
 

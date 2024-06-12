@@ -31,7 +31,7 @@ class Ins_tercer_tercer {
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 31/09/2015
-     *  \date modified: dia/mes/aï¿½o
+     *  \date modified: dia/mes/año
      *  \param: 
      *  \param: 
      *  \return 
@@ -65,7 +65,7 @@ class Ins_tercer_tercer {
         $mHtml->SetCssJq("jquery");
         $mHtml->Body(array("menubar" => "no")); 
 
-        $mHtml -> SetBody(' <script src="../'.DIR_APLICA_CENTRAL.'/js/ajax_tercer_tercer.js"></script> ');
+        $mHtml -> SetBody(' <script src="../'.DIR_APLICA_CENTRAL.'/js/ajax_tercer_tercer.js?v=0011"></script> ');
 
         # Abre Form
         $mHtml->Form(array("action" => "index.php",
@@ -91,7 +91,7 @@ class Ins_tercer_tercer {
               # Accordion1
               $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
                 $mHtml->SetBody("<h1 style='padding:6px'><b>INSERTAR TERCEROS</b></h1>");
-                $mHtml->OpenDiv("id:sec1;");
+                $mHtml->OpenDiv("id:sec1");
                   $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                     $mHtml->Table("tr");
                         $mHtml->Label("Transportadora:", "width:35%; *:1;");
