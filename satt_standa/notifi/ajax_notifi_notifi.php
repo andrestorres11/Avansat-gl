@@ -100,7 +100,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna formulario general
 	 *  \author: Edward Serrano
 	 *	\date:  05/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	public function getFormGeneral()
 	{
@@ -223,7 +223,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta general de notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getGeneralNotifi($data = NULL,$cod_tipnot = NULL,$option = NULL)
 	{
@@ -249,7 +249,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta de notificaciones por tipo
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getNotifi($mDatosGN)
 	{
@@ -272,7 +272,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta de notificaciones por tipo
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getCodUsuario($cod_usuari){
 		try
@@ -292,7 +292,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getForm()
 	{
@@ -419,7 +419,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  18/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getDinamiList($permisosActuales,$datos)
 	{	
@@ -481,7 +481,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifi()
 	{	
@@ -507,7 +507,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifi2()
 	{	
@@ -532,7 +532,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete a supervisores y controladores y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifiSelect($ActionForm=NULL)
 	{
@@ -595,7 +595,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete a supervisores y controladores y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifiExt($ActionForm=NULL)
 	{
@@ -613,6 +613,7 @@ class AjaxNotifiNotifi
 			$RECOMENDADOS=NULL;
 			$ESTADO_VEHICULOS=NULL;
 			$RECURSOS_ASIGNADOS=NULL;
+			$CANDADOS = NULL;
 			if($ActionForm->ActionForm=="idi")
 			{
 				#realizar consulta
@@ -625,6 +626,7 @@ class AjaxNotifiNotifi
 				$ESPECIFICAS = self::JsonRecor($Json,"ESPECIFICAS");
 				$ASISTENCIAS = self::JsonRecor($Json,"ASISTENCIAS");
 				$RECOMENDADOS = self::JsonRecor($Json,"RECOMENDADOS");
+				$CANDADOS = self::JsonRecor($Json,"CANDADOS");
 				$ESTADO_VEHICULOS = self::JsonRecor($Json,"ESTADO_VEHICULOS");
 				$RECURSOS_ASIGNADOS = self::JsonRecor($Json,"RECURSOS_ASIGNADOS");
 			}
@@ -643,6 +645,7 @@ class AjaxNotifiNotifi
 				$ESPECIFICAS = self::JsonRecor($Json,"ESPECIFICAS");
 				$ASISTENCIAS = self::JsonRecor($Json,"ASISTENCIAS");
 				$RECOMENDADOS = self::JsonRecor($Json,"RECOMENDADOS");
+				$CANDADOS = self::JsonRecor($Json,"CANDADOS");
 				$ESTADO_VEHICULOS = self::JsonRecor($Json,"ESTADO_VEHICULOS");
 				$RECURSOS_ASIGNADOS = self::JsonRecor($Json,"RECURSOS_ASIGNADOS");
 			}
@@ -785,7 +788,7 @@ class AjaxNotifiNotifi
 								background:#DEDFDE
 							}
 							.DLRow_usuario{
-								background:#3f7506;
+								background:#2f3cad;
 								color:white;
 							}
 		
@@ -1251,14 +1254,14 @@ class AjaxNotifiNotifi
 				/* RECOMENDADOS */
 				$mHtml->OpenDiv("id:Notificontainer7; class:accordian");
 					$mHtml->SetBody("<h3 style='padding:6px;'><center>RECOMENDADOS</center></h3>");
-					$mHtml->OpenDiv("id:jsonAsist");
+					$mHtml->OpenDiv("id:jsonRecomen");
 						$mHtml->Table("tr");
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
 							$mHtml->CloseRow();
-							/*$mHtml->Row();
+							$mHtml->Row();
 								$mHtml->Label( "RECOMENDADOS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-							$mHtml->CloseRow();*/
+							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->Label( "No. Placa",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 								$mHtml->Label( "Observacion",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
@@ -1296,7 +1299,7 @@ class AjaxNotifiNotifi
 				/* CANDADOS SATELITALES */
 				$mHtml->OpenDiv("id:Notificontainer7; class:accordian");
 					$mHtml->SetBody("<h3 style='padding:6px;'><center>CANDADOS SATELITALES</center></h3>");
-					$mHtml->OpenDiv("id:jsonAsist");
+					$mHtml->OpenDiv("id:jsonCanSat");
 						$mHtml->Table("tr");
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1312,25 +1315,25 @@ class AjaxNotifiNotifi
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
-								$mHtml->Input(array("name" => "num_candadox1", "id" => "num_candadox11ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"num_candadox11")!="")?self::JsonRecor($RECOMENDADOS,"num_candadox11"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox11ID')"));
-								$mHtml->Input(array("name" => "numb_placaxx1", "id" => "numb_placaxx1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx1")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx1ID')"));
-								$mHtml->Input(array("name" => "obs_recomend1", "id" => "obs_recomend1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend1")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend1ID')"));
+								$mHtml->Input(array("name" => "num_candadox1", "id" => "num_candadox1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"num_candadox1")!="")?self::JsonRecor($CANDADOS,"num_candadox1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox1ID')"));
+								$mHtml->Input(array("name" => "numb_placacc1", "id" => "numb_placacc1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"numb_placacc1")!="")?self::JsonRecor($CANDADOS,"numb_placacc1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placacc1ID')"));
+								$mHtml->Input(array("name" => "obs_recomend1", "id" => "obs_recomend1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"obs_recomend1")!="")?self::JsonRecor($CANDADOS,"obs_recomend1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend1ID')"));
 								
 								
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
-								$mHtml->Input(array("name" => "num_candadox2", "id" => "num_candadox2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"num_candadox2")!="")?self::JsonRecor($RECOMENDADOS,"num_candadox2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox2ID')"));
-								$mHtml->Input(array("name" => "numb_placaxx2", "id" => "numb_placaxx2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx2")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx2ID')"));
-								$mHtml->Input(array("name" => "obs_recomend2", "id" => "obs_recomend2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend2")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend2ID')"));
+								$mHtml->Input(array("name" => "num_candadox2", "id" => "num_candadox2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"num_candadox2")!="")?self::JsonRecor($CANDADOS,"num_candadox2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox2ID')"));
+								$mHtml->Input(array("name" => "numb_placacc2", "id" => "numb_placacc2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"numb_placacc2")!="")?self::JsonRecor($CANDADOS,"numb_placacc2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placacc2ID')"));
+								$mHtml->Input(array("name" => "obs_recomend2", "id" => "obs_recomend2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"obs_recomend2")!="")?self::JsonRecor($CANDADOS,"obs_recomend2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend2ID')"));
 								
 								
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
-								$mHtml->Input(array("name" => "num_candadox3", "id" => "num_candadox3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"num_candadox3")!="")?self::JsonRecor($RECOMENDADOS,"num_candadox3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox3ID')"));
-								$mHtml->Input(array("name" => "numb_placaxx3", "id" => "numb_placaxx3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx3")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx3ID')"));
-								$mHtml->Input(array("name" => "obs_recomend3", "id" => "obs_recomend3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend3")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend3ID')"));
+								$mHtml->Input(array("name" => "num_candadox3", "id" => "num_candadox3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"num_candadox3")!="")?self::JsonRecor($CANDADOS,"num_candadox3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox3ID')"));
+								$mHtml->Input(array("name" => "numb_placacc3", "id" => "numb_placacc3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"numb_placacc3")!="")?self::JsonRecor($CANDADOS,"numb_placacc3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placacc3ID')"));
+								$mHtml->Input(array("name" => "obs_recomend3", "id" => "obs_recomend3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"obs_recomend3")!="")?self::JsonRecor($CANDADOS,"obs_recomend3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend3ID')"));
 								
 								
 							$mHtml->CloseRow();
@@ -1620,7 +1623,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifiComun($ActionForm=NULL)
 	{
@@ -1892,7 +1895,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve array de responsables
 	 *  \author: Edward Serrano
 	 *	\date:  10/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getLisRespon ( $mCodNivel = NULL)
 	{
@@ -1914,7 +1917,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve array de notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  18/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getInfoNotifiEdit ( $mData = NULL)
 	{
@@ -1959,7 +1962,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve array de usuarios
 	 *  \author: Edward Serrano
 	 *	\date:  10/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getNomUsuario()
 	{  
@@ -1987,7 +1990,7 @@ class AjaxNotifiNotifi
 	 *  \brief: alamcena las nuevas notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  12/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function NuevaNotifiComun()
 	{
@@ -2089,7 +2092,7 @@ class AjaxNotifiNotifi
 	 *  \brief: alamcena las nuevas notificaciones para supervisores y controladores
 	 *  \author: Edward Serrano
 	 *	\date:  12/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function NuevaNotifiExten()
 	{
@@ -2202,7 +2205,7 @@ class AjaxNotifiNotifi
 	 *  \brief: elimina las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function elimiNotifi()
 	{
@@ -2243,7 +2246,7 @@ class AjaxNotifiNotifi
 	 *  \brief: recorrer json de las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function JsonRecor($json=NULL, $param=NULL)
 	{
@@ -2271,7 +2274,7 @@ class AjaxNotifiNotifi
 	 *  \brief: recorrer json de las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  20/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function getHistoNotifi($ActionForm=NULL)
 	{
@@ -2294,7 +2297,7 @@ class AjaxNotifiNotifi
 	 *  \brief: documente asociados
 	 *  \author: Edward Serrano
 	 *	\date:  23/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getDocument($ActionForm=NULL)
 	{
@@ -2316,7 +2319,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  23/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function responderNotifi()
 	{
@@ -2362,7 +2365,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	public function getRefDocumet(){
 		$datos = (object) $_REQUEST;
@@ -2387,7 +2390,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  25/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	public function elimiDocument()
 	{
@@ -2441,7 +2444,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function EditNotifiComun()
 	{
@@ -2534,7 +2537,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita notificaciones para supervisores y controladores
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function EditNotifiExten()
 	{
@@ -2640,7 +2643,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve la fecha en texto
 	 *  \author: Edward Serrano
 	 *	\date:  30/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function getFormatFecha($fechaFormat)
 	{
@@ -2650,7 +2653,7 @@ class AjaxNotifiNotifi
 			$mResult=strftime("%A, %d de %B de %Y" ,gmmktime(0, 0, 0, date("m", $fechaFormat), date("d", $fechaFormat), date("Y", $fechaFormat)));
 	  		/*echo "mes:".date("m", $fechaFormat);
 	  		echo "dia:".date("d", $fechaFormat);
-	  		echo "año:".date("Y", $fechaFormat);
+	  		echo "aï¿½o:".date("Y", $fechaFormat);
 	  		echo $fechaFormat."----------------".$mResult."||||||||";*/
 			return $mResult;
 		} catch (Exception $e) {
@@ -2662,7 +2665,7 @@ class AjaxNotifiNotifi
 	 *  \brief: envia correo de notificacion
 	 *  \author: Edward Serrano
 	 *	\date:  01/02/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function getPlantillaEnvio($datos)
 	{
@@ -2768,7 +2771,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermOet(){
 		return $_SESSION['subNotifi']['PermOet'];
@@ -2778,7 +2781,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermOet($mPermOet = NULL){
 		$_SESSION['subNotifi']['PermOet']=$mPermOet;
@@ -2788,7 +2791,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermClf(){
 		return $_SESSION['subNotifi']['PermClf'];
@@ -2798,7 +2801,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermClf($mPermClf = NULL){
 		$_SESSION['subNotifi']['PermClf']=$mPermClf;
@@ -2808,7 +2811,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermSup(){
 		return $_SESSION['subNotifi']['PermSup'];
@@ -2818,7 +2821,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermSup($mPermSup = NULL){
 		$_SESSION['subNotifi']['PermSup']=$mPermSup;
@@ -2828,7 +2831,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermCon(){
 		return $_SESSION['subNotifi']['PermCon'];
@@ -2838,7 +2841,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermCon($mPermCon = NULL){
 		$_SESSION['subNotifi']['PermCon']=$mPermCon;
@@ -2848,7 +2851,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermCli(){
 		return $_SESSION['subNotifi']['PermCli'];
@@ -2858,7 +2861,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermCli($mPermCli = NULL){
 		$_SESSION['subNotifi']['PermCli']=$mPermCli;
