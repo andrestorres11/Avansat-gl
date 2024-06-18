@@ -913,7 +913,7 @@ function almacenarFase1() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Guardando la informaciï¿½n. Por favor espere.");
+            cargando("Guardando la información. Por favor espere.");
         },
         success: function(data) {
             swal.close();
@@ -944,7 +944,7 @@ function almacenarEstudioFinal() {
     var ind_estudi = $('input[name="ind_estudi"]:checked').val();
     if (ind_estudi == '' || ind_estudi == undefined) {
         Swal.fire({
-            title: 'ï¿½Error!',
+            title: '¡Error!',
             text: 'Debe diligenciar la respuesta final de la solicitud.',
             type: 'error',
             confirmButtonColor: '#336600'
@@ -957,8 +957,8 @@ function almacenarEstudioFinal() {
     }
     if (obs_gestio == '') {
         Swal.fire({
-            title: 'ï¿½Error!',
-            text: 'Debe diligenciar la observaciï¿½n.',
+            title: '¡Error!',
+            text: 'Debe diligenciar la observación.',
             type: 'error',
             confirmButtonColor: '#336600'
         });
@@ -981,7 +981,7 @@ function almacenarEstudioFinal() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Guardando la informaciï¿½n. Por favor espere.")
+            cargando("Guardando la información. Por favor espere.")
         },
         success: function(data) {
             if (data['status'] == 200) {
@@ -1347,7 +1347,7 @@ function preguardado() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                cargando("Pre Guardando la informaciï¿½n. Por favor espere.")
+                cargando("Pre Guardando la información. Por favor espere.")
             },
             success: function(data) {
                 swal.close();
@@ -1376,8 +1376,8 @@ function preguardado() {
         });
     } else {
         Swal.fire({
-            title: 'ï¿½Error!',
-            text: 'Debe diligenciar la observaciï¿½n.',
+            title: '¡Error!',
+            text: 'Debe diligenciar la observación.',
             type: 'error',
             confirmButtonColor: '#336600'
         });
@@ -1397,7 +1397,7 @@ function PorAprobValidate() {
         },
         messages: {
             AproServicio: {
-                required: "Por favor Seleccione una opciï¿½n"
+                required: "Por favor Seleccione una opción"
             }
         },
         submitHandler: function(form) {
@@ -1500,7 +1500,7 @@ function viewPdf(elemento) {
             if (data.status) {
                 window.open(data.resp.file_url, '_blank');
                 Swal.fire({
-                    title: 'ï¿½Exito!',
+                    title: '¡Exito!',
                     text: data.message,
                     type: 'success',
                     confirmButtonColor: '#336600'
@@ -1770,3 +1770,4 @@ function busquedaRuta() {
         });
     }
 }
+

@@ -130,9 +130,9 @@ class conduc{
         $list->SetHeader(utf8_decode("Nombres"), "field:a.nom_tercer; width:1%");
         $list->SetHeader(utf8_decode("Nº Teléfono Móvil"), "field:a.num_telmov" );
         $list->SetHeader(utf8_decode("Nº de Licencia"), "field:c.num_licenc" );
-        $list->SetHeader(utf8_decode("Vigencia"), "field:a.fec_venlic" );
+        $list->SetHeader(utf8_decode("Vigencia"), "field:c.fec_venlic" );
         $list->SetHeader(utf8_decode("Categoria"), "field:d.nom_catlic" );
-        $list->SetHeader(utf8_decode("Estado"), "field:a.cod_estado" );
+        $list->SetHeader(utf8_decode("Estado"), "field:cod_estado;having:true;" );
         $list->SetOption(utf8_decode("Opciones"),"field:cod_option; width:1%; onclikDisable:editarConductor( 2, this ); onclikEnable:editarConductor( 1, this ); onclikEdit:editarConductor( 99, this ); onclikPrint:editarConductor(3, this);" );
         $list->SetHidden("cod_tercer", "0" );
         $list->SetHidden("nom_tercer", "1" );

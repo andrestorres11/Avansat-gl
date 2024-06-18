@@ -1,0 +1,14 @@
+================================================
+Fecha: 2023-01-30 12:51:04
+------------------------------------------------
+Error::Correo no enviado:::::::::SOLICITUD INICIAL VALIDACION DE RECURSO || No se pudo enviar el correo.
+Code::2001
+
+
+================================================
+Fecha: 2023-01-30 12:55:48
+------------------------------------------------
+Error::Correo no enviado:::::::::SOLICITUD INICIAL VALIDACION DE RECURSO || No se pudo enviar el correo.
+Code::2001
+
+

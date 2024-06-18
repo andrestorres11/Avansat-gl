@@ -3,7 +3,7 @@
 -------------------------------------------------------------------------------------------------------------------------------------------------
 @Class: DinamicList
 @Author: Ing. Christiam Barrera Arango
-@Company: Intrared LTDA. Bogotï¿½ - Colombia
+@Company: Intrared LTDA. Bogotá - Colombia
 @Date: 2008-08-31
 -------------------------------------------------------------------------------------------------------------------------------------------------
 */
@@ -21,6 +21,7 @@ Class DinamicList    {
     var $limit;
     var $length;
     var $fields;
+    var $fieldsHaving;
     var $rows;
     var $cols;
     var $labels;
@@ -35,6 +36,7 @@ Class DinamicList    {
     var $cClose    = NULL;
     var $cHiddens    = NULL;
     var $excel;
+    var $search;
 
     function __construct( &$conecction, $base, $pkey=1, $check="no", $way= "ASC" )
     {
@@ -55,7 +57,7 @@ Class DinamicList    {
 
       //------------------------------
       if( !$this -> limit )
-        $this -> limit = 100;
+        $this -> limit = 10;
       //------------------------------
 
       if( !$this -> sort_col )
@@ -85,9 +87,9 @@ Class DinamicList    {
       $this -> base = $base;
     }
 
-    function SetHeader( $label, $properties="", $options="" )
+    function SetHeader( $label, $properties="", $options="", $having=false)
     {
-      $this -> headers[] = Array( $label, $properties, $options );
+      $this -> headers[] = Array( $label, $properties, $options, $having );
     }    
 
     function SetOption( $label, $properties="", $options="" )
@@ -160,8 +162,10 @@ Class DinamicList    {
         $this -> selected = $selected;
     }
 
-    function Ajax( &$conecction, $action, $sort_col="", $way="ASC", $filters="", $limit="", $page="", $selected="" )
+    function Ajax( &$conecction, $action, $sort_col="", $way="ASC", $filters="", $limit="", $page="", $selected="", $search="" )
     {
+
+      $this->search = $search;
 
     if( $sort_col )
         $this -> sort_col = $sort_col;
@@ -199,21 +203,38 @@ Class DinamicList    {
     {
       $QueryGrou = explode( "GROUP", $sql );
       $sql = "";
+      $sqlHaving = "";
       if( FALSE !== strpos( $QueryGrou[0], "UNION" ) )
       {
          $QuerysDiv = explode( "UNION", $QueryGrou[0] );
+         $QuerysDivHaving = array();
 
          for( $k = 0, $tot = count( $QuerysDiv ); $k < $tot; $k++ )
          {
            for( $i = 0; $i < $this -> cols; $i++ )
            {
-             if( $this -> filters[$i] )
-             {
-               $QuerysDiv[$k] .= " AND ";
-               $QuerysDiv[$k] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
-             }
+              if( $this -> filters[$i] && !$this -> fieldsHaving[$i] && $search=="")
+              {
+                $QuerysDiv[$k] .= " AND ";
+                $QuerysDiv[$k] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
+              }
+
+              if($this -> filters[$i] && $this -> fieldsHaving[$i] && $search=="")
+              {
+                  $QuerysDivHaving[$k] .= " AND ";
+                  $QuerysDivHaving[$k] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
+              }
+
+              if(!$this -> fieldsHaving[$i] && $search!="")
+              {
+                $QuerysDiv[$k] .= $i ==0 ? "":" OR ";
+                $QuerysDiv[$k] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $search )."%'";
+              }
+
+
            }
-           $sql .= $QuerysDiv[$k]; 
+            $sql .=  $search!="" ? "AND (".$QuerysDiv[$k].")": $QuerysDiv[$k];
+            $sqlHaving .= $QuerysDivHaving[$k];
 
            if( $k+1 < $tot )
            {
@@ -225,34 +246,68 @@ Class DinamicList    {
        {
          for( $i = 0; $i < $this -> cols; $i++ )
          {
-           if( $this -> filters[$i] )
-           {
-             $QueryGrou[0] .= " AND ";
-             $QueryGrou[0] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
-           }
+            if( $this -> filters[$i] && !$this -> fieldsHaving[$i] && $search=="")
+            {
+              $QueryGrou[0] .= " AND ";
+              $QueryGrou[0] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
+            }
+
+            if($this -> fieldsHaving[$i] && $search=="")
+            {
+              $QuerysDivHaving[0] .= " AND ";
+              $QuerysDivHaving[0] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
+            }
+
+            if(!$this -> fieldsHaving[$i] && $search!="")
+            {
+              $QuerysDiv[0] .= $i ==0 ? "": " OR ";
+              $QuerysDiv[0] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $search )."%'";
+            }
+
+
          }
-         $sql .= $QueryGrou[0];
+         $sql .=  $QueryGrou[0];
+         $sql .= $search!="" ? "AND (".$QuerysDiv[0].")":'';
+         $sqlHaving .= $QuerysDivHaving[0];
        }
+
+
 
        $sql .=" GROUP ".$QueryGrou[1];
     }
      elseif( FALSE !== strpos( $sql, "UNION" ) )
      {
        $QuerysDiv = explode( "UNION", $sql[0] );
+       $QuerysDivHaving = array();
        $sql = "";
+       $sqlHaving = "";
 
        for( $k = 0, $tot = count( $QuerysDiv ); $k < $tot; $k++ )
        {
          for( $i = 0; $i < $this -> cols; $i++ )
          {
-           if( $this -> filters[$i] )
+           if( $this -> filters[$i] && !$this -> fieldsHaving[$i] && $search=="")
            {
              $QuerysDiv[$k] .= " AND ";
              $QuerysDiv[$k] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
            }
+
+           if($this -> fieldsHaving[$i] && $search=="")
+           {
+            $QuerysDivHaving[$k] .= " AND ";
+            $QuerysDivHaving[$k] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
+           }
+
+           if(!$this -> fieldsHaving[$i] && $search!="")
+           {
+             $QuerysDiv[$k] .= $i ==0 ? "":" OR ";
+             $QuerysDiv[$k] .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $search )."%'";
+           }
+
          }
 
-         $sql .= $QuerysDiv[$k]; 
+         $sql .= $search!="" ? "AND (".$QuerysDiv[$k].")":$QuerysDiv[$k]; 
+         $sqlHaving .= $QuerysDivHaving[$k];
 
          if( $k+1 < $tot )
          {
@@ -262,18 +317,37 @@ Class DinamicList    {
       }
       else
       {
+        $slqWhere = '';
+
         for( $i = 0; $i < $this -> cols; $i++ )
         {
-          if( $this -> filters[$i] )
+          if( $this -> filters[$i] && !$this -> fieldsHaving[$i] && $search=="")
           {
             $sql .= " AND ";
             $sql .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
           }
-        }
-      }
 
+          if($this -> fieldsHaving[$i] && $search=="")
+          {
+            $sqlHaving  .= " AND ";
+            $sqlHaving  .= "LOWER(".$this -> fields[$i].") LIKE '%".strtolower( $this -> filters[$i] )."%'";
+          }
+
+          if(!$this -> fieldsHaving[$i] && $search!="")
+          {
+            $slqWhere .= $i ==0 ? "":" OR ";
+            $slqWhere .= "LOWER(".$this -> fields[$i].") LIKE '%".$search ."%'";
+          }
+
+        }
+
+        $sql .=  $search!="" ? "AND (".$slqWhere.")": "";
+      }
+      
+      $sql .= " HAVING 1=1 ".$sqlHaving;
       $sql .= " ORDER BY ".$this -> sort_col." ".$this -> way;
-      //$sql = rawurlencode( $sql );
+      
+     //$sql = rawurlencode( $sql );
 
       //var_dump( $sql );
       
@@ -291,7 +365,7 @@ Class DinamicList    {
 
       //------------------------------
       if( !$this -> limit )
-        $this -> limit = 100;
+        $this -> limit = 10;
       //------------------------------
 
       $sql .= " LIMIT ".$this -> offset.", ".$this -> limit." ";
@@ -402,7 +476,7 @@ Class DinamicList    {
     if( !$this -> page )
       $this -> page = 1;
 
-    if( $this -> length <= 100 )
+    if( $this -> length <= 10 )
     {
       $mPages = 1;
     }
@@ -411,456 +485,377 @@ Class DinamicList    {
       $mPages = ceil( $this -> length / $this -> limit );
     }
 
+    $mReturn .="<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/bootstrap.css' type='text/css'>";
+
+    $mReturn .= "<div id='tableData' >";
+      $mReturn .= "<div class='row'>";
+        $mReturn .= "<div class='col-sm-3'>";
+          $mReturn .= "<div class='form-group row'>";
+              $mReturn .= "<label class='col-sm-4 col-form-label' style='margin-top: 10px;'>Buscar:</label>";
+              $mReturn .= "<div class='col-sm-8'>";
+                $mReturn .= "<input type='search' class='form-control input-sm' id='DLSeachID' value='".$this->search."' onchange='javascript:DLFilter();'  placeholder='....'>";
+              $mReturn .= "</div>";
+          $mReturn .= "</div>";
+        $mReturn .= "</div>";
+        $mReturn .= "<div class='col-sm-2'>";
+        $mReturn .= "</div>";
+        $mReturn .= "<div class='col-sm-2'>";
+          $mReturn .= "<div class='form-group row'>";
+              $mReturn .= "<label class='col-sm-4 col-form-label' style='margin-top: 10px;'>Mostrar:</label>";
+              $mReturn .= "<div class='col-sm-8'>";
+                $mReturn .= "<select class='form-control custom-select' name='DLLimiter' id='DLLimiterID' onchange='javascript:DLLimit( this );'>";
+                    ( $this -> limit == 10 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+                    $mReturn .= '<option value="10"'.$mSelected.'>10</option>';
+
+                    if( $this -> length >= 20 )
+                    {
+                      ( $this -> limit == 20 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+                      $mReturn .= '<option value="20"'.$mSelected.'>20</option>';
+                    }
+                    if( $this -> length >= 50 )
+                    {
+                      ( $this -> limit == 50 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+                      $mReturn .= '<option value="50"'.$mSelected.'>50</option>';
+                    }
+                    if( $this -> length >= 750 )
+                    {
+                      ( $this -> limit == 100 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+                      $mReturn .= '<option value="100"'.$mSelected.'>100</option>';
+                    }
+                    if( $this -> length >= 500 )
+                    {
+                      ( $this -> limit == 500 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
+                      $mReturn .= '<option value="500"'.$mSelected.'>500</option>';
+                    }
+                        
+                $mReturn .="</select>";
+              $mReturn .= "</div>";
+          $mReturn .= "</div>";
+        $mReturn .= "</div>";
+        $mReturn .= "<div class='col-sm-1'>";
+        $mReturn .= "</div>";
+        $mReturn .= "<div class='col-sm-4'>";
+
+          $mReturn .= "<div class='row'>";
+            if( $this -> excel )
+            {
+                
+                $mReturn .= "<div class='col-sm-4'>";
+                  $mOptionse = $this -> GetProperties( $this -> excel[1] );
+                  if( !isset( $mOptionse["align"] ) )
+                    $mOptionse["align"] = "center";
+
+                  if( !isset( $mOptionse["onclick"] ) )
+                    $mOptionse["onclick"] = "";
+
+                  $mReturn .= '<a href="#" onclick="javascript:'.$mOptionse["onclick"].'" class="btn btn-success" title="Exportar Excel">'. $this -> excel[0].'</a> ';
+                $mReturn .= "</div>";
+            }
+
+            if( $this -> create )
+            {
+              $mReturn .= "<div class='col-sm-4'>";
+                $mOptionsx = $this -> GetProperties( $this -> create[1] );
+                if( !isset( $mOptionsx["align"] ) )
+                  $mOptionsx["align"] = "center";
+
+                if( !isset( $mOptionsx["onclick"] ) )
+                  $mOptionsx["onclick"] = "";
+
+                $mReturn .= '<a href="#" onclick="javascript:'.$mOptionsx["onclick"].'" class="btn btn-success" title="Crear Registro">'. $this -> create[0].'</a> ';
+              $mReturn .= "</div>";
+            }
+
+            if ( strtolower( $this -> cClose ) != "no" )
+            {
+              $mReturn .= "<div class='col-sm-4'>";
+                $mReturn .= '<a href="#" onclick="javascript:DLClose();" title="'.htmlentities( "Cerrar Listado" , ENT_COMPAT, 'ISO-8859-1', true).'">[ '.htmlentities( "Cerrar Listado", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a>';
+              $mReturn .= "</div>";
+            }
+          $mReturn .= "</div>";
+
+        $mReturn .= "</div>";
+
+      $mReturn .= "</div>";
+    $mReturn .= "</div>";
+
+
     $mReturn .= "\n  ";
     $mReturn .= '<table cellpadding="1" cellspacing="1" align="center" width="100%">';
-    $mReturn .= "\n    ";
-    $mReturn .= "<tr>";
-    $mReturn .= "\n     ";
-    $mReturn .= "<td>";
-    $mReturn .= "\n  ";
-    $mReturn .= "\n       ";
-
-    $mReturn .= '<table class="DLInfoTable" cellpadding="1" cellspacing="1" align="center" width="100%">';
-    $mReturn .= "\n         ";
-    $mReturn .= "<tr>";
-    $mReturn .= "\n           ";
-    $mReturn .= "<td>";
-    $mReturn .= "\n             ";
-    $mReturn .= htmlentities( "Paginar Listado cada ", ENT_COMPAT, 'ISO-8859-1', true);
-
-    if( $this -> length < 100 )
-    {
-      $mReturn .= "<b>".$this -> limit."</b> ";
-      $mReturn .= "\n             ";
-      $mReturn .= '<input type="hidden" name="DLLimiter" id="DLLimiterID" value="100" />';
-    }
-    else
-    {
-      $mReturn .= "\n             ";
-      $mReturn .= '<select name="DLLimiter" id="DLLimiterID" onchange="javascript:DLLimit( this );">';
-      ( $this -> limit == 100 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
-      $mReturn .= "\n               ";
-      $mReturn .= '<option value="100"'.$mSelected.'>100</option>';
-      if( $this -> length >= 250 )
-      {
-        ( $this -> limit == 250 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
-        $mReturn .= "\n               ";
-        $mReturn .= '<option value="250"'.$mSelected.'>250</option>';
-      }
-      if( $this -> length >= 500 )
-      {
-        ( $this -> limit == 500 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
-        $mReturn .= "\n               ";
-        $mReturn .= '<option value="500"'.$mSelected.'>500</option>';
-      }
-      if( $this -> length >= 750 )
-      {
-        ( $this -> limit == 750 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
-        $mReturn .= "\n               ";
-        $mReturn .= '<option value="750"'.$mSelected.'>750</option>';
-      }
-      if( $this -> length >= 1000 )
-      {
-        ( $this -> limit == 1000 ) ? $mSelected = ' selected="selected"' : $mSelected = '';
-        $mReturn .= "\n               ";
-        $mReturn .= '<option value="1000"'.$mSelected.'>1000</option>';
-      }
-      $mReturn .= "\n             ";
-      $mReturn .= '</select>';
-      $mReturn .= "\n           ";
-    }
-
-    $mReturn .= "registros.";
-    $mReturn .= "\n         ";
-    $mReturn .= "</td>";
-    $mReturn .= "\n       ";
-    $mReturn .= "</tr>";
-    $mReturn .= "\n       ";
-    $mReturn .= "<tr>";
-    $mReturn .= "\n         ";
-    $mReturn .= "<td>";
-    $mReturn .= "\n           ";
-    $mReturn .= "Total Registros: <b>".$this -> length."</b>.  Listados <b>".$this -> rows."</b>";
-    $mReturn .= " del <b>".( $this -> offset + 1 )."</b> al <b>".( $this -> rows + $this -> offset )."</b>.";
-    $mReturn .= "\n         ";
-    $mReturn .= "</td>";
-    $mReturn .= "\n       ";
-    $mReturn .= "</tr>";
-    $mReturn .= "\n       ";
-    $mReturn .= "<tr>";
-    $mReturn .= "\n         ";
-    $mReturn .= "<td>";
-
-    $mReturn .= htmlentities( "Pagina", ENT_COMPAT, 'ISO-8859-1', true )." Nro. ";
-
-    if( $this -> length < 100 )
-    {
-      $mReturn .= "<b>".$this -> page."</b> ";
-      $mReturn .= "\n           ";
-      $mReturn .= '<input type="hidden" id="DLNroPageID" value="'.$this -> page.'" />';
-    }
-    else
-    {
-      $mReturn .= "\n           ";
-      $mReturn .= '<input type="text" id="DLNroPageID" value="'.$this -> page.'" maxlength="'.strlen( $mPages ).'" size="1" ';
-      $mReturn .= 'onblur="javascript:DLPage( this.value );" ';
-      $mReturn .= 'onkeypress="return NumericInput( event );" ';
-      //$mReturn .= 'onkeypress="return DLPageOnEnter( event, this.value );" ';
-      $mReturn .= 'onkeyup="javascript:DLPageFormat( this, '.$mPages.' )" ';
-      $mReturn .= '/>';
-      $mReturn .= "\n           ";
-    }
-    $mReturn .= "de <b>".$mPages."</b> ".htmlentities( "páginas." , ENT_COMPAT, 'ISO-8859-1', true);
-    $mReturn .= " Orden por <b>\"".( htmlentities( $this -> headers[$this -> sort_col-1][0], ENT_COMPAT, 'ISO-8859-1', true ) )."\"</b> ";
-
-    if( $this -> way == "ASC" ) 
-      $mReturn .= "Ascendente.";
-    else
-      $mReturn .= "Descendente.";
-
-    $mReturn .= "</td>";
-    $mReturn .= "\n         ";
-    $mReturn .= "</tr>";
-    $mReturn .= "\n         ";
-    $mReturn .= "<tr>";
-    $mReturn .= "\n           ";
-    $mReturn .= "<td>";
-    $mReturn .= "\n             ";
-
-    if( $this -> page == 1 )
-    {
-      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Primera ] [ Anterior ] " , ENT_COMPAT, 'ISO-8859-1', true).'</span>';
-    }
-    else
-    {
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( 1 );" title="'.htmlentities( "Ir a la Primera Pagina (1)", ENT_COMPAT, 'ISO-8859-1', true ).'">[ Primera ]</a> ';
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.( $this -> page - 1 ).' );" title="'.htmlentities( "Ir a la Anterior Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $this -> page-1 ).')">[ Anterior ]</a> ';
-    }
-    ( $this -> page > 7 ) ? $s = $this -> page - 7 : $s = 1;
-    $p = $s + 14;
-
-    if( $p > $mPages )
-      $p = $mPages;
-
-    for( $i=$s; $i<=$p; $i++ )
-    {
-      if( $this->page == $i )
-      {
-        $mReturn .= '<span class="DLNormal">'.$i.'</span>';
-      }
-      else
-      {
-        $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$i.' );" title="'.htmlentities( "Ir a la Pagina ".$i , ENT_COMPAT, 'ISO-8859-1', true).'">'.$i.'</a>';
-      }
-      $mReturn .= " ";
-    }
-    if( $this -> page == $mPages )
-    {
-      $mReturn .= '<span class="DLNormal">'.htmlentities( "[ Siguiente ] [ Última ] " , ENT_COMPAT, 'ISO-8859-1', true).'</span>';
-    }
-    else
-    {
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.( $this -> page + 1 ).' );" title="'.htmlentities( "Ir a la Siguiente Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $this -> page+1 ).')">[ Siguiente ]</a> ';
-      $mReturn .= '<a href="#" onclick="javascript:DLPage( '.$mPages.' );" title="'.htmlentities( "Ir a la ultima Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $mPages ).')">[ '.htmlentities( "Última", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a> ';
-    }
-    
-    if( $this -> create )
-    {
-        $mOptionsx = $this -> GetProperties( $this -> create[1] );
-        if( !isset( $mOptionsx["align"] ) )
-          $mOptionsx["align"] = "center";
-
-        if( !isset( $mOptionsx["onclick"] ) )
-          $mOptionsx["onclick"] = "";
-
-         $mReturn .= '<a href="#" onclick="javascript:'.$mOptionsx["onclick"].'" title="Crear Registro">[ '. $this -> create[0].' ]</a> ';
-    }
-
-    if( $this -> excel )
-    {
-        $mOptionse = $this -> GetProperties( $this -> excel[1] );
-        if( !isset( $mOptionse["align"] ) )
-          $mOptionse["align"] = "center";
-
-        if( !isset( $mOptionse["onclick"] ) )
-          $mOptionse["onclick"] = "";
-
-         $mReturn .= '<a href="#" onclick="javascript:'.$mOptionse["onclick"].'" title="Exportar Excel">[ '. $this -> excel[0].' ]</a> ';
-    }
-    
-    if ( strtolower( $this -> cClose ) != "no" )
-    {
-        $mReturn .= '<a href="#" onclick="javascript:DLClose();" title="'.htmlentities( "Cerrar Listado" , ENT_COMPAT, 'ISO-8859-1', true).'">[ '.htmlentities( "Cerrar Listado", ENT_COMPAT, 'ISO-8859-1', true ).' ]</a>';
-    }
-
-    $mReturn .= "\n           ";
-    $mReturn .= "</td>";
-    $mReturn .= "\n         ";
-    $mReturn .= "</tr>";
-    $mReturn .= "\n       ";
-    $mReturn .= "</table>";
-
-    $mReturn .= "\n  ";
-    $mReturn .= "\n     ";
-    $mReturn .= "</td>";
-    $mReturn .= "\n   ";
-    $mReturn .= "</tr>";
-    $mReturn .= "\n   ";
     $mReturn .= "<tr>";
     $mReturn .= "\n     ";
     $mReturn .= "<td>";
 
     $mReturn .= "\n       ";
-    $mReturn .= '<table class="DLTable" cellpadding="1" cellspacing="1" align="center" width="100%">';
-    if( $this -> headers )
-    {
-      $mReturn .= "\n         ";
-      $mReturn .= '<tr id="DLRowHeader" class="DLRowHeader">';
-      if( $this -> check != "no" )
+    $mReturn .= "<table class='table table-striped table-bordered  table-sm'>";
+      if( $this -> headers )
       {
-        $mReturn .= "\n           ";
-        $mReturn .= '<th>';
-        $mReturn .= "\n             ";
-        $mReturn .= '<input type="checkbox" id="DLCheckAll" checked="checked" disabled="disabled" />';
-        $mReturn .= "\n           ";
-        $mReturn .= '</th>';
-      }
-
-      for( $h=0, $this -> cols = count( $this -> headers ); $h < $this -> cols; $h++ ) 
-      {
-        $mHeader = $this -> headers[$h];
-        $mProperties = $this -> GetProperties( $mHeader[1] );
-        $this -> fields[] = $mProperties["field"];
-        isset( $mProperties["width"] ) ? $width = $mProperties["width"] : $mWidth = "";
-
-        if( $this -> way == "ASC" && ( $this -> sort_col - 1 ) == $h )
-          $htitle = "Ordenar por ".htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true)." Descendente.";
-        else
-          $htitle = "Ordenar por ".htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true)." Ascendente.";
-
-        $mReturn .= "\n           ";
-        $mReturn .= '<th align="center" width="'.$width.'">';
-        $mReturn .= "\n             ";
-        $mReturn .= '<a id="DLHeader" class="DLHeader" href="#" onclick="javascript:DLSort( '.( $h + 1 ).' );" title="'.$htitle.'">';
-        $mReturn .= htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true);
-        $mReturn .= '</a>';
-
-        if( ( $this -> sort_col-1 ) == $h )
-        {
-          $mReturn .= '&nbsp;';
-          if( $this -> way == "ASC" )
-            $mReturn .= '<img src="../'.DIR_APLICA_CENTRAL.'/imagenes/dinamic_list/row_up.gif" />';//
-          else
-            $mReturn .= '<img src="../'.DIR_APLICA_CENTRAL.'/imagenes/dinamic_list/row_down.gif" />';//
-        }
-        $mReturn .= "\n             ";
-        $mReturn .= '<br />';
-        $mReturn .= "\n             ";
-
-        if( $this -> filters[$h] )
-        {
-          $value = $this -> filters[$h];
-        }
-        else     
-        {
-          if( !isset( $mProperties["value"] ) )
-            $value = "";
-          else
-            $value  = $mProperties["value"];
-        }
-
-        if( $mHeader[2] )
-        {
-          $mReturn .=  '<select id="DLFilter'.$h.'" class="DLSelect" onchange="javascript:DLFilter();">';
-
-          for( $o = 0, $osize = count( $mHeader[2] ); $o < $osize; $o++ )
-          {
-            $mOption = $mHeader[2][$o];
-            $mReturn .= "\n               ";
-            $mReturn .= '<option value="'.$mOption[0].'"';
-            if( $mOption[0] == $value )
-              $mReturn .= ' selected="selected"';
-            $mReturn .= '>';
-            $mReturn .= htmlentities( $mOption[1] , ENT_COMPAT, 'ISO-8859-1', true);
-            $mReturn .= '</option>';
-          }
-          $mReturn .= "\n             ";
-          $mReturn .= '</select>';
-        }
-        else
-        {
-          $mReturn .= '<input type="text" id="DLFilter'.$h.'" class="DLInput" value="'.$value.'" onblur="javascript:DLFilter();" onkeypress="return DLFilterOnEnter( event );" />';
-        }
-        $mReturn .= "\n           ";
-        $mReturn .= '</th>';
-
-      } // fin del for
-
-      $mReturn .= "\n         ";
-
-      if( $this -> options)
-      {
-        $mReturn .= '<th width="1%"  >';
-        $mReturn .= '<span id="DLHeader" class="DLHeader" href="#" onclick="javascript:DLSort( '.( $h + 1 ).' );" title="'.$htitle.'">Opciones</span>';
-        $mReturn .= '</th>';
-      }
-
-      $mReturn .= '</tr>';
-    }
-
-
-
-    if( count( $this -> matrix ) == 0 )  // Si no hay registros.
-    {
-      ( $this -> check != "no" ) ? $ck = $this -> cols + 1 : $ck = $this -> cols;
-      $mReturn .= "\n         ";
-      $mReturn .= '<tr id="DLNullRow" class="DLNULLRow">';
-      $mReturn .= "\n           ";
-      $mReturn .= '<td id="DLNullCell" colspan="'.$ck.'" style="color:white">';
-      $mReturn .= htmlentities( "No se encontraron registros." , ENT_COMPAT, 'ISO-8859-1', true  );
-      $mReturn .= '</td>';
-      $mReturn .= "\n         ";
-      $mReturn .= '</tr>';
-    }
-    else   // Si hay registros.
-    {
-      $mArraySelected = explode( "::", $this -> selected );
-      
-      for( $r=0, $size = count( $this -> matrix ); $r < $size; $r++ )
-      {
-
-        $r % 2 == 0 ? $style = "DLRow1" : $style = "DLRow2";
-
-/*
-        if( in_array( $this -> matrix[$r][$this -> pkey - 1], $mArraySelected ) )
-          $mRowClass = "DLRowClick";
-        else
-*/
-          $mRowClass = $style;
-
-
-        $rid = "DLRow".$r;
-        $row = $this -> matrix[$r];
-        $mReturn .= "\n         ";
-        $mReturn .= '<tr id="'.$rid.'" class="'.$mRowClass.'" ';
-        $mReturn .= 'onclick="DLRowClick( \''.$r.'\', \''.( $this -> pkey - 1 ).'\', \''.$style.'\', \''.$this -> check.'\' );" ';
-        #$mReturn .= 'title="Fila '.( $r+1 ).', Registro '.( $this -> offset + $r+1 ).'." ';
-        $mReturn .= '>';
-
+        $mReturn .= "<thead>";
         if( $this -> check != "no" )
         {
-          $mReturn .= "\n           ";
-          $mReturn .= '<td>';
-          $mReturn .= "\n             ";
-
-          if( in_array( $this -> matrix[$r][$this -> pkey - 1], $mArraySelected ) )
-            $mReturn .= '<input type="checkbox" id="DLCheck'.$r.'" checked="checked" />';
-          else
-            $mReturn .= '<input type="checkbox" id="DLCheck'.$r.'" />';
-
-          $mReturn .= "\n           ";
-          $mReturn .= '</td>';
+          $mReturn .= '<th scope="col">';
+            $mReturn .= '<input type="checkbox" id="DLCheckAll" checked="checked" disabled="disabled" />';
+          $mReturn .= '</th>';
         }
-         
-        for( $c=0; $c < $this -> cols; $c++ )
+        
+        for( $h=0, $this -> cols = count( $this -> headers ); $h < $this -> cols; $h++ ) 
         {
-
-          $mHeader = $this -> headers[$c];
+          $mHeader = $this -> headers[$h];
           $mProperties = $this -> GetProperties( $mHeader[1] );
-          $cid = "DLCell".$r."-".$c;
-          $mItemLink = "DLLink".$r."-".$c;
-          $mItem = $row[$c];
+          $this -> fields[] = $mProperties["field"];
+          $this -> fieldsHaving[] = isset($mProperties["having"]) ? true: false;
 
-          if( !isset( $mProperties["align"] ) )
-            $mProperties["align"] = "left";
+          isset( $mProperties["width"] ) ? $width = $mProperties["width"] : $mWidth = "";
 
-          if( !isset( $mProperties["onclick"] ) )
-            $mProperties["onclick"] = "";
+          if( $this -> way == "ASC" && ( $this -> sort_col - 1 ) == $h )
+            $htitle = "Ordenar por ".htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true)." Descendente.";
+          else
+            $htitle = "Ordenar por ".htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true)." Ascendente.";
 
-          $mReturn .= "\n           ";
-          $mReturn .= '<td id="'.$cid.'" align="'.$mProperties["align"].'">';
-
-          if( !isset( $mProperties["type"] ) )
-            $mProperties["type"] = "";
-
-          if( $mProperties["type"] == "link" )
-            $mReturn .= '<a class="DLLink" style="color:  #000000;" id="'.$mItemLink.'" onclick="DLGet_Item( \''.$r.'\', \''.$c.'\'  ); '.$mProperties["onclick"].'">';
-
-          $mReturn .= htmlentities( $mItem , ENT_COMPAT, 'ISO-8859-1', true );
-
-          if( $mProperties["type"] == "link" )
+          $mReturn .= '<th scope="col">';
+            $mReturn .= '<a id="DLHeader" style="color: black;" class="" href="#" onclick="javascript:DLSort( '.( $h + 1 ).' );" title="'.$htitle.'">';
+              
+              $mReturn .= htmlentities( $mHeader[0] , ENT_COMPAT, 'ISO-8859-1', true);
+              if( ( $this -> sort_col-1 ) == $h )
+              {
+                if( $this -> way == "ASC" )
+                  $mReturn .= '<img src="../'.DIR_APLICA_CENTRAL.'/imagenes/dinamic_list/row_up.gif" />';//
+                else
+                  $mReturn .= '<img src="../'.DIR_APLICA_CENTRAL.'/imagenes/dinamic_list/row_down.gif" />';//
+              }
             $mReturn .= '</a>';
-            $mReturn .= '</td>';
+
+
+            if( $this -> filters[$h] )
+            {
+              $value = $this -> filters[$h];
+            }
+            else     
+            {
+              if( !isset( $mProperties["value"] ) )
+                $value = "";
+              else
+                $value  = $mProperties["value"];
+            }
+
+            if( $mHeader[2] )
+            {
+              $mReturn .=  '<select id="DLFilter'.$h.'" class="form-control custom-select" onchange="javascript:DLFilter();">';
+
+              for( $o = 0, $osize = count( $mHeader[2] ); $o < $osize; $o++ )
+              {
+                $mOption = $mHeader[2][$o];
+                $mReturn .= "\n               ";
+                $mReturn .= '<option value="'.$mOption[0].'"';
+                if( $mOption[0] == $value )
+                  $mReturn .= ' selected="selected"';
+                $mReturn .= '>';
+                $mReturn .= htmlentities( $mOption[1] , ENT_COMPAT, 'ISO-8859-1', true);
+                $mReturn .= '</option>';
+              }
+              $mReturn .= "\n             ";
+              $mReturn .= '</select>';
+            }
+            else
+            {
+              $mReturn .= '<input type="text" id="DLFilter'.$h.'" class="form-control input-sm" style="height: 20;" value="'.$value.'" onblur="javascript:DLFilter();" onkeypress="return DLFilterOnEnter( event );" />';
+            }
+
+          $mReturn .= '</th>';
+
         }
-        # Trae la ultima columna de una fila para validar las imagenes de las opciones de editar, inactivar, activar
+
         if( $this -> options )
         { 
-           $mOptionsx = $this -> GetProperties( $this -> options[1] );
-           if( !isset( $mOptionsx["align"] ) )
-            $mOptionsx["align"] = "center";
-
-           if( !isset( $mOptionsx["onclick"] ) )
-            $mOptionsx["onclick"] = "";
-
-          if( !isset( $mOptionsx["onclikdisable"] ) )
-            $mOptionsx["onclikdisable"] = "";
-
-          if( !isset( $mOptionsx["onclikenable"] ) )
-            $mOptionsx["onclikenable"] = "";
-
-          if( !isset( $mOptionsx["onclikedit"] ) )
-            $mOptionsx["onclikedit"] = "";
-
-          if( !isset( $mOptionsx["onclikprint"] ) )
-            $mOptionsx["onclikprint"] = "";
-
-          if( !isset( $mOptionsx["onclickcopy"] ) )
-            $mOptionsx["onclickcopy"] = "";
-
-          
-           $mOpt = end($row);
-          
-           $mReturn .= '<td style="text-align:center">';
-           # Si esta activo muestra inactivar
-            if($mOptionsx["onclikdisable"] != "" || $mOptionsx["onclikenable"] != ""){
-              if( $mOpt == '1' ) { 
-               $mReturn .='<img title="Inactivar"  class="ImagenDinamicList" src="../'.DIR_APLICA_CENTRAL.'/images/delete.png"  onclick="javascript:'. $mOptionsx["onclikdisable"].'"   />&nbsp;&nbsp;&nbsp;&nbsp;';
-              }elseif( $mOpt == '0' ){ 
-               $mReturn .='<img title="Activar"  class="ImagenDinamicList"   src="../'.DIR_APLICA_CENTRAL.'/images/active.png" onclick="javascript:'. $mOptionsx["onclikenable"].'"     />&nbsp;&nbsp;&nbsp;&nbsp;';
-              }
-            }
-           if($mOptionsx["onclikedit"]){          
-                $mReturn .='<img title="Editar" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/edit.png"   onclick="javascript:'. $mOptionsx["onclikedit"].'"/>';
-           }
-
-            if($mOptionsx["onclikprint"] != ""){
-               $mReturn .='&nbsp;&nbsp;&nbsp;&nbsp;<img title="Imprimir" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/print.png"   onclick="javascript:'.  $mOptionsx["onclikprint"].'"/>';
-            }
-
-            if($mOptionsx["onclickcopy"] != ""){
-               $mReturn .='&nbsp;&nbsp;&nbsp;&nbsp;<img title="Copiar" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/cp.png"   onclick="javascript:'.  $mOptionsx["onclickcopy"].'"/>';
-            }
-           $mReturn .= '</td>';
+              $mReturn .= '<th scope="col">';
+                $mReturn .= htmlentities( $this -> options[0] , ENT_COMPAT, 'ISO-8859-1', true);
+              $mReturn .= '</th>';
         }
+        $mReturn .= "</thead>";
+          
+      }
 
-
+      $mReturn .= "<tbody>";
+        if( count( $this -> matrix ) == 0 )  // Si no hay registros.
+        {
+          ( $this -> check != "no" ) ? $ck = $this -> cols + 1 : $ck = $this -> cols;
         
+          $mReturn .= '<tr>';
+            $mReturn .= '<td  colspan="'.$ck.'">';
+            $mReturn .= htmlentities( "No se encontraron registros." , ENT_COMPAT, 'ISO-8859-1', true  );
+            $mReturn .= '</td>';
+          $mReturn .= '</tr>';
+        }else{
+          $mArraySelected = explode( "::", $this -> selected );
 
-
-
- 
-        if( is_array( $this -> cHiddens) )
-          foreach( $this -> cHiddens as $mHiddens )
+          for( $r=0, $size = count( $this -> matrix ); $r < $size; $r++ )
           {
-            $ind = $mHiddens['value'];
-            $mReturn .= "\n           ";
-            $mReturn .= '<input type="hidden" name="'.$mHiddens['name'].$r.'" id="'.$mHiddens['name'].$r.'ID" value="'.$this -> matrix[$r][$ind].'" />';
+            $r % 2 == 0 ? $style = "DLRow1" : $style = "DLRow2";
+
+            $row = $this -> matrix[$r];
+            $mReturn .= '<tr onclick="DLRowClick( \''.$r.'\', \''.( $this -> pkey - 1 ).'\', \''.$style.'\', \''.$this -> check.'\' );" >';
+
+            if( $this -> check != "no" )
+            {
+              
+              $mReturn .= '<td>';
+
+              if( in_array( $this -> matrix[$r][$this -> pkey - 1], $mArraySelected ) )
+                $mReturn .= '<input type="checkbox" id="DLCheck'.$r.'" checked="checked" />';
+              else
+                $mReturn .= '<input type="checkbox" id="DLCheck'.$r.'" />';
+
+              $mReturn .= '</td>';
+            }
+
+            for( $c=0; $c < $this -> cols; $c++ )
+            {
+    
+              $mHeader = $this -> headers[$c];
+              $mProperties = $this -> GetProperties( $mHeader[1] );
+              $cid = "DLCell".$r."-".$c;
+              $mItemLink = "DLLink".$r."-".$c;
+              $mItem = $row[$c];
+    
+              if( !isset( $mProperties["align"] ) )
+                $mProperties["align"] = "center";
+    
+              if( !isset( $mProperties["onclick"] ) )
+                $mProperties["onclick"] = "";
+    
+              $mReturn .= '<td id="'.$cid.'" align="'.$mProperties["align"].'">';
+    
+              if( !isset( $mProperties["type"] ) )
+                $mProperties["type"] = "";
+    
+              if( $mProperties["type"] == "link" )
+                $mReturn .= '<a  id="'.$mItemLink.'" onclick="DLGet_Item( \''.$r.'\', \''.$c.'\'  ); '.$mProperties["onclick"].'">';
+    
+              $mReturn .= htmlentities( $mItem , ENT_COMPAT, 'ISO-8859-1', true );
+    
+              if( $mProperties["type"] == "link" )
+                $mReturn .= '</a>';
+              
+              $mReturn .= '</td>';
+            }
+
+            # Trae la ultima columna de una fila para validar las imagenes de las opciones de editar, inactivar, activar
+            if( $this -> options )
+            { 
+                $mOptionsx = $this -> GetProperties( $this -> options[1] );
+                if( !isset( $mOptionsx["align"] ) )
+                  $mOptionsx["align"] = "center";
+
+                if( !isset( $mOptionsx["onclick"] ) )
+                  $mOptionsx["onclick"] = "";
+
+                if( !isset( $mOptionsx["onclikdisable"] ) )
+                  $mOptionsx["onclikdisable"] = "";
+
+                if( !isset( $mOptionsx["onclikenable"] ) )
+                  $mOptionsx["onclikenable"] = "";
+
+                if( !isset( $mOptionsx["onclikedit"] ) )
+                  $mOptionsx["onclikedit"] = "";
+
+                if( !isset( $mOptionsx["onclikprint"] ) )
+                  $mOptionsx["onclikprint"] = "";
+
+                if( !isset( $mOptionsx["onclickcopy"] ) )
+                  $mOptionsx["onclickcopy"] = "";
+
+
+                $mOpt = end($row);
+
+                $mReturn .= '<td style="text-align:center">';
+                # Si esta activo muestra inactivar
+                  if($mOptionsx["onclikdisable"] != "" || $mOptionsx["onclikenable"] != ""){
+                    if( $mOpt == '1' || $mOpt == 1) { 
+                    $mReturn .='<img title="Inactivar"  class="ImagenDinamicList" src="../'.DIR_APLICA_CENTRAL.'/images/delete.png"  onclick="javascript:'. $mOptionsx["onclikdisable"].'"   />&nbsp;&nbsp;&nbsp;&nbsp;';
+                    }elseif( $mOpt == '0' || $mOpt == 0){ 
+                    $mReturn .='<img title="Activar"  class="ImagenDinamicList"   src="../'.DIR_APLICA_CENTRAL.'/images/active.png" onclick="javascript:'. $mOptionsx["onclikenable"].'"     />&nbsp;&nbsp;&nbsp;&nbsp;';
+                    }
+                  }
+                if($mOptionsx["onclikedit"]){          
+                      $mReturn .='<img title="Editar" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/edit.png"   onclick="javascript:'. $mOptionsx["onclikedit"].'"/>';
+                }
+
+                  if($mOptionsx["onclikprint"] != ""){
+                    $mReturn .='&nbsp;&nbsp;&nbsp;&nbsp;<img title="Imprimir" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/print.png"   onclick="javascript:'.  $mOptionsx["onclikprint"].'"/>';
+                  }
+
+                  if($mOptionsx["onclickcopy"] != ""){
+                    $mReturn .='&nbsp;&nbsp;&nbsp;&nbsp;<img title="Copiar" class="ImagenDinamicList"     src="../'.DIR_APLICA_CENTRAL.'/images/cp.png"   onclick="javascript:'.  $mOptionsx["onclickcopy"].'"/>';
+                  }
+                $mReturn .= '</td>';
+            }
+
+            if( is_array( $this -> cHiddens) )
+            foreach( $this -> cHiddens as $mHiddens )
+            {
+              $ind = $mHiddens['value'];
+              $mReturn .= '<input type="hidden" name="'.$mHiddens['name'].$r.'" id="'.$mHiddens['name'].$r.'ID" value="'.$this -> matrix[$r][$ind].'" />';
+            }
+
+            $mReturn .= '</tr>';
+
+
           }
 
-        $mReturn .= "\n          ";
-        $mReturn .= '</tr>';
-      }
-    }
+        }
+
+      $mReturn .= "</tbody>";
+    $mReturn .= "</table>";
+
+    $mReturn .= "<div class='row'>";
+        $mReturn .= "<div class='col-sm-4'>";
+          $mReturn .= "Mostrando registros del ".( $this -> offset + 1 )." al ".( $this -> rows + $this -> offset )." de un total de ".$this -> length." registros";
+        $mReturn .= "</div>";
+        $mReturn .= "<div class='col-sm-8'>";
+          $mReturn .= "<nav>";
+            $mReturn .= "<ul class='pagination justify-content-end'>";
+              $disabledPrevius =$this -> page == 1 ? 'disabled': '';
+              $mReturn .= "<li class='page-item ".$disabledPrevius."'>";
+              $mReturn .= '<a class="page-link" href="#" tabindex="-1" aria-disabled="true" onclick="javascript:DLPage( '.( $this -> page - 1 ).' );" title="'.htmlentities( "Ir a la Anterior Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $this -> page-1 ).')">Anterior</a>';
+              $mReturn .= "</li>";
+
+              ( $this -> page > 7 ) ? $s = $this -> page - 7 : $s = 1;
+              $p = $s + 14;
+
+              if( $p > $mPages )
+                $p = $mPages;
+
+              for( $i=$s; $i<=$p; $i++ )
+              {
+                if( $this->page == $i )
+                {
+                  $mReturn .= '<li class="page-item active"><a class="page-link" href="#">'.$i.'</a></li>';
+                }
+                else
+                {
+                  $mReturn .= '<li class="page-item"><a class="page-link" href="#" onclick="javascript:DLPage( '.$i.' );" title="'.htmlentities( "Ir a la Pagina ".$i , ENT_COMPAT, 'ISO-8859-1', true).'">'.$i.'</a>';
+                }
+              }
+
+              if( $this -> page == $mPages )
+              {
+                $mReturn .= '<li class="page-item disabled"><a class="page-link" href="#">Siguiente</a></li>';
+              }
+              else
+              {
+                $mReturn .= '<li class="page-item"><a class="page-link" href="#" onclick="javascript:DLPage( '.( $this -> page + 1 ).' );" title="'.htmlentities( "Ir a la Siguiente Pagina" , ENT_COMPAT, 'ISO-8859-1', true).' ('.( $this -> page+1 ).')">Siguiente</a></li>';
+              }     
+
+            $mReturn .= "</ul>";
+          $mReturn .= "</nav>";
+        $mReturn .= "</div>";
+    $mReturn .= "</div>";
+
+    
+
+
+    $mReturn .= '<table class="DLTable" cellpadding="1" cellspacing="1" align="center" width="100%">';
+    
     $mReturn .= "\n        ";
     $mReturn .= '</table>';
 

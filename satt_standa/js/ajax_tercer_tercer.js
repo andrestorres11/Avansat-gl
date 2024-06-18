@@ -82,6 +82,7 @@
 			async: false,
 
 			success: function(data) {
+				$("#sec1").css("height", "auto");
 				$("#sec2").css("height", "auto");
 				$("#form3").append(data); // pinta los datos de la consulta					
 			}
@@ -151,7 +152,7 @@
 		var onclick = "onclick='registrar(\"";
 		onclick += operacion;
 		onclick += "\")'";
-		var msj = "<div style='text-align:center'¿Est\u00E1 seguro de <b>" + operacion + "</b> el Tercero: <b>" + tercero + "?</b><br><br><br><br>";
+		var msj = "<div style='text-align:center'ï¿½Est\u00E1 seguro de <b>" + operacion + "</b> el Tercero: <b>" + tercero + "?</b><br><br><br><br>";
 		msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
 		msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
 
@@ -176,7 +177,7 @@
 			LoadPopupJQNoButton('open', 'Confirmar Operaci\u00F3n', 'auto', 'auto', false, false, true);
 			var popup = $("#popID");
 			var conductor = $("#nom_tercerID").val();
-			var msj = "<div style='text-align:center'>¿Est\u00E1 seguro de <b>editar</b> el tercero: <b>" + conductor + "?</b><br><br><br><br>";
+			var msj = "<div style='text-align:center'>ï¿½Est\u00E1 seguro de <b>editar</b> el tercero: <b>" + conductor + "?</b><br><br><br><br>";
 			msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
 			msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 

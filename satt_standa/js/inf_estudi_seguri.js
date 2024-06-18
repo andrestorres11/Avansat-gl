@@ -1,18 +1,3 @@
-$( document ).ready(function() {
-    $("#cod_transpID").multiselect().multiselectfilter();
-
-    $( "#fec_inicialID,#fec_finalID" ).datepicker();
-
-    $.mask.definitions["A"]="[12]";
-    $.mask.definitions["M"]="[01]";
-    $.mask.definitions["D"]="[0123]";
-    $.mask.definitions["H"]="[012]";
-    $.mask.definitions["N"]="[012345]";
-    $.mask.definitions["n"]="[0123456789]";
-
-    $( "#fec_inicialID,#fec_finalID" ).mask("Annn-Mn-Dn");
-
-  });
 
   function listar()
   {
@@ -28,24 +13,36 @@ $( document ).ready(function() {
           alert('La Fecha Final es Obligatoria');
           return $( "#fec_finalID").focus();
         }
-        var cod_transp = 0;
 
-        $("input[type=checkbox]:checked").each(function(i,o){
-             
-          if($(this).attr("name") == 'multiselect_cod_transpID' ){
-            if( cod_transp == 0 ){
-                cod_transp =  $(this).val() ;
-            }else{
-                cod_transp += ','+ $(this).val();
+        var box_checke = $("input[type=checkbox]:checked");
+        var cod_transp = '';
+        box_checke.each(function(i, o) {
+          if ($(this).attr("name") == 'multiselect_cod_transpID'){
+            if(i>1){
+              cod_transp += ',';
             }
-          }
-        });
-
+            if($(this).val()!=''){
+              cod_transp += '"' + $(this).val() + '"';
+            }
+          }  
+        })
+    
+        $("#transp").val(cod_transp);
+        $("#cod_transpID").val('prueba');
         $("#optionID").val(99);
-        $("#cod_transpID_").val(cod_transp)
         $("#formularioID").submit();
     }
     catch (e){
       alert( "Error Listar " + e.message);
+    }
+  }
+
+  function exportExcel(){
+    
+    try {
+        window.open("../satt_standa/factur/inf_estudi_seguri_excel.php")
+    } catch (e) {
+        console.log("Error Fuction pintar: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
     }
   }

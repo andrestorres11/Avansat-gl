@@ -7,149 +7,8 @@
  *  \warning: 
  */
 var standa = 'satt_standa';
-$(function() {
 
-    $('#contenedor #tablaRegistros thead tr th').each(function(i) {
-        var title = $(this).text();
-        $(this).html('<label style="display:none;">' + title + '</label><input type="text" placeholder="Buscar ' + title + '" />');
 
-        $('input', this).on('keyup change', function() {
-            if (table.column(i).search() !== this.value) {
-                table
-                    .column(i)
-                    .search(this.value)
-                    .draw();
-            }
-        });
-    });
-
-    // $("#cod_ciudadID").chosen();
-
-    $("#img").change(function () {
-        filePreview(this);
-    });
-
-    var table = $("#contenedor #tablaRegistros").DataTable({
-        "ajax": {
-            "url": "../" + standa + "/pcontr/ajax_genera_contro.php",
-            "data": ({ option: 'setRegistros' }),
-            "type": 'POST'
-        },
-        'processing': true,
-        "deferRender": true,
-        "autoWidth": false,
-        "search": {
-            "regex": true,
-            "caseInsensitive": false,
-        },
-        'paging': true,
-        'info': true,
-        'filter': true,
-        'orderCellsTop': true,
-        'fixedHeader': true,
-        'language': {
-            "url": "//cdn.datatables.net/plug-ins/1.10.20/i18n/Spanish.json"
-        },
-        "dom": "<'row'<'col-md-4'<'#crear'>>><'row'<'col-md-4'B><'col-md-4'l><'col-md-4'f>r>t<'row'<'col-md-4'i>><'row'<'#colvis'>p>",
-        "buttons": [
-            'copyHtml5',
-            'excelHtml5',
-            'csvHtml5',
-            'pdfHtml5',
-        ],
-        fnInitComplete: function() {
-            $("#crear").html('<div><a  class="small-box-footer btn btn-success btn-sm" data-toggle="modal" data-target="#regService" aria-controls="tablaRegistros"><span>Nuevo puesto de control</span></a></div><br>');
-        }
-
-    });
-});
-
-function filePreview(input) {
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            $('#imgUpload').attr('src', e.target.result);
-            $('#imgUpload').attr('src', e.target.result);
-            // $('#uploadForm').after('<img src="'+e.target.result+'" width="450" height="300"/>');
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-}
-
-// Jquery Dependency
-$(".loan-input").on("focusout", null, function() {
-    var input = $(this).val();
-    $(this).val(numeral(input).format('$ 000.00'));
-});
-
-$("#cod_colorxID").spectrum({
-    color: "#285c00",
-    preferredFormat: "hex",
-});
-
-$(".FormularioVia").validate({
-    rules: {
-        abr_servic: {
-            required: true
-        },
-        des_servic: {
-            required: true
-        },
-        tipSolici: {
-            required: true
-        },
-        tipFormul: {
-            required: true
-        },
-        nom_campox: {
-            required: true
-        },
-        tar_diurna: {
-            required: true
-        },
-        tar_noctur: {
-            required: true
-        },
-        hor_ininoc: {
-            required: true
-        },
-        hor_finnoc: {
-            required: true
-        }
-    },
-    messages: {
-        abr_servic: {
-            required: "Por favor escriba la abreviatura del servicio"
-        },
-        des_servic: {
-            required: "Por favor escriba la descripcion del servicio"
-        },
-        tipSolici: {
-            required: "Seleccion el tipo de de solicitud"
-        },
-        tipFormul: {
-            required: "Seleccione formulario asociado al servicio"
-        },
-        nom_campox: {
-            required: "Por favor escriba el nombre del campo"
-        },
-        tar_diurna: {
-            required: "Registre la tarifa diurna"
-        },
-        tar_noctur: {
-            required: "Registre la tarifa nocturna"
-        },
-        hor_ininoc: {
-            required: "Registre la hora de inicio"
-        },
-        hor_finnoc: {
-            required: "Ingrese la hora de fin"
-        }
-    },
-    submitHandler: function(form) {
-        almacenarDatos();
-    }
-});
 
 function almacenarDatos() {
     var standa = 'satt_standa';
@@ -264,3 +123,137 @@ function updEst(objet) {
 function decode_utf8(word) {
     return decodeURIComponent(escape(word));
 }
+
+function editCont(tipo, objeto) {
+	var DLRow = $(objeto).parent().parent();
+    var cod_contro = DLRow.find("input[id^=cod_contro]").val();
+
+    if(tipo == 1){
+        confirmar('activar',cod_contro);
+    }else if (tipo == 2) {
+		confirmar('inactivar',cod_contro);
+	}else{
+        LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+		var popup = $("#popID");
+		var msj = "<div style='text-align:center'>¿Está seguro de <b>editar</b> el Puesto  de control : <b>" + cod_contro + "?</b><br><br><br><br>";
+		msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='editarPuestoContro("+cod_contro+")' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
+		msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
+
+		popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+		popup.append(msj); // //lanza el popUp
+    }
+	/*var num_trayle = DLRow.find("input[id^=num_trayle]").val();
+	var nom_propie = DLRow.find("input[id^=nom_propie]").val();
+	$("#cod_tercerID").val(num_trayle);
+	$("#nom_tercerID").val(nom_propie);
+
+	if (tipo == 1) {
+		confirmar('activar');
+	} else if (tipo == 2) {
+		confirmar('inactivar');
+	} else {
+		LoadPopupJQNoButton('open', 'Confirmar Operación', 'auto', 'auto', false, false, true);
+		var popup = $("#popID");
+		var conductor = $("#nom_tercerID").val();
+		var msj = "<div style='text-align:center'>¿Está seguro de <b>editar</b> el Trayler de: <b>" + conductor + "?</b><br><br><br><br>";
+		msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
+		msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
+
+		popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+		popup.append(msj); // //lanza el popUp
+	}*/
+}
+
+function confirmar(operacion,id) {
+
+    LoadPopupJQNoButton('open', 'Confirmar Operaci&oacute;n', 'auto', 'auto', false, false, true);
+    var popup = $("#popID");
+
+    var onclick = "onclick='registrar(\"";
+    onclick += operacion;
+    onclick += "\","+id+")'";
+
+    if (operacion == "inactivar") {
+        operacion = "inactivar";
+    } else if (operacion == "activar") {
+        operacion = "activar";
+    }
+    var msj = "<div style='text-align:center'>&#191;Est&aacute; seguro de <b>" + operacion + "</b> el puesto de control #: <b>" + id + "?</b><br><br><br><br>";
+    msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
+    msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
+
+    popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+
+    popup.append(msj); // //lanza el popUp
+}
+
+
+function registrar(operacion,id) {
+    //cierra popUp si hay inicialiado
+    LoadPopupJQNoButton('close');
+    var standa = $("#standaID").val();
+
+
+    let estado = 0;
+    if (operacion == "inactivar") {
+        estado = 1;
+    } else if (operacion == "activar") {
+        estado = 0;
+    }
+    LoadPopupJQNoButton('open', 'Resultado de la Operaci&oacute;n', 'auto', 'auto', false, false, true);
+    var popup = $("#popID");
+
+    $.ajax({
+        url: "../" + standa + "/pcontr/ajax_genera_contro.php",
+        type: "post",
+        data: ({ option: 'updEst', estado: estado, cod_contro: id }),
+        async: false,
+        beforeSend: function() {
+            popup.parent().children().children('.ui-dialog-titlebar-close')?.hide();
+        },
+        success: function(data) {
+            popup.append(data); // lanza el popUp
+        }
+    });
+
+}
+
+function nuevoPuestoContro(){
+
+    try {
+        var cod_servic = $("#cod_servicID").val();
+        var url = "index.php?window=central&cod_servic="+cod_servic+"&option=1";
+    
+        var opciones = "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, width=1000, height=600, top=30, left=140";
+        window.open( url, 'popupBusqVeh', opciones); 
+        
+    } catch (e) {
+        alert("Error " + e.message);
+    }
+
+}
+
+function editarPuestoContro(id){
+
+    try {
+        var cod_servic = $("#cod_servicID").val();
+        var url = "index.php?window=central&cod_servic="+cod_servic+"&option=2&cod="+id;
+    
+        var opciones = "toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=yes, width=1000, height=600, top=30, left=140";
+        window.open( url, 'popupBusqVeh', opciones); 
+        
+    } catch (e) {
+        alert("Error " + e.message);
+    }
+
+}
+
+function exportExcel(){
+    
+    try {
+        window.open("../satt_standa/pcontr/export_excelx.php")
+    } catch (e) {
+        console.log("Error Fuction pintar: " + e.message + "\nLine: " + e.lineNumber);
+        return false;
+    }
+  }

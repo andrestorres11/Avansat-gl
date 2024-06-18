@@ -3,9 +3,14 @@ var gPager = "block";
 function DLFilter() 
 {
   var selected = document.getElementById( "DLSelectedRowsID" ).value;
+  var search  = document.getElementById( "DLSeachID" ).value;
   var params = "Action=filter";
   params += "&Filters="+DLFilterValues();
   params += "&Selected="+selected;
+  if(search!=''){
+    params += "&Search="+search;
+  }
+ 
   //alert( params );
   //getData( "../satb_sta155/dinamic_list.php?"+params, "DinamicListDIV", "POST" );
   AjaxGetData( '../satt_standa/dinamic_list.php?', params, 'DinamicListDIV', 'post' );
@@ -27,7 +32,7 @@ function DLFilterOnEnter( e )
     return true;
 }
 
-function DLFilterValues()   
+function DLFilterValues(search='')   
 {
   var headers = Number( document.getElementById( "HeadersID" ).value );
   if( headers == 0 )
@@ -38,7 +43,7 @@ function DLFilterValues()
   for( var h=0; h<headers; h++ )
   {
     var filter = document.getElementById( "DLFilter"+String( h ) ).value;
-    values += String( filter );
+    values += String( filter )+ search;
     if( h < headers-1 )
       values += "::";
   }

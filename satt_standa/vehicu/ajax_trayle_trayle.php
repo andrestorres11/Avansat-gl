@@ -170,11 +170,11 @@ private function getValidaIdGPS()
         $list->SetCreate("Agregar Remolque", "onclick:formulario()");
         $list->SetHeader(("Nro. de Remolque"), "field:a.num_trayle; width:1%;  ");
         $list->SetHeader(("Poseedor"), "field:a.nom_propie; width:1%");
-        $list->SetHeader(("Marca"), "field:a.nom_martra; width:1%");
-        $list->SetHeader(("Color"), "field:a.nom_colorx" );
+        $list->SetHeader(("Marca"), "field:b.nom_martra; width:1%");
+        $list->SetHeader(("Color"), "field:d.nom_colorx" );
         $list->SetHeader(("Capacidad (TN)"), "field:a.tra_capaci" );
-        $list->SetHeader(("Carroceria"), "field:a.nom_carroc" );
-        $list->SetHeader(("Estado"), "field:a.cod_estado" );
+        $list->SetHeader(("Carroceria"), "field:e.nom_carroc" );
+        $list->SetHeader(("Estado"), "field:cod_estado;having:true;" );
         $list->SetOption(("Opciones"),"field:cod_option; width:1%; onclikDisable:editarRemolque( 2, this ); onclikEnable:editarRemolque( 1, this ); onclikEdit:editarRemolque( 99, this );" );
         $list->SetHidden("num_trayle", "0" );
         $list->SetHidden("nom_propie", "1" );
@@ -634,33 +634,45 @@ private function getValidaIdGPS()
 
       $parOpeSt = $paramGps[0];
       $parOpePr = $paramGps[1];
+      $cod_paisxx = $paramGps[2];
       $opegpsPropio = NULL;
       $opegpsStanda = NULL;
-      //Validacion 
-      if($parOpeSt){
-        $cod_paisxx = $paramGps[2];
-        $query = "SELECT a.cod_operad, CONCAT(a.nom_operad, ' [INTEGRADOR ESTANDAR]') as 'nom_operad' 
+
+      if ($parOpeSt && $parOpePr) {
+        // Consulta combinada con UNION
+        $query = "SELECT a.cod_operad, CONCAT(a.nom_operad, ' [INTEGRADOR ESTANDAR]') as nom_operad 
                   FROM ".BD_STANDA.".tab_genera_opegps a
                   INNER JOIN ".BD_STANDA.".tab_genera_paises b ON b.cod_paisgl = $cod_paisxx
                   INNER JOIN ".BD_STANDA.".tab_opegps_paisxx c ON b.cod_paisxx = c.cod_paisxx
-               WHERE ind_estado = '1'
-           GROUP BY a.cod_operad
-           ORDER BY nom_operad ASC ";
-        $consulta = new Consulta($query, self::$cConexion);
-        $opegpsStanda = cleanArray($consulta->ret_matriz("a"));
-      }
-
-      if($parOpePr){
-        $query = "SELECT cod_operad,nom_operad
-               FROM ".BASE_DATOS.".tab_genera_opegps
-               WHERE ind_estado = '1'
-           ORDER BY nom_operad ASC ";
-        $consulta = new Consulta($query, self::$cConexion);
-        $opegpsPropio = cleanArray($consulta->ret_matriz("a"));
-      }
-
-      $operadores = SortMatrix(arrayMergeIgnoringNull($opegpsStanda,$opegpsPropio), 'nom_operad', 'ASC') ;
-      $datos->opegps = $operadores;
+                  WHERE a.ind_estado = '1'
+                  UNION
+                  SELECT cod_operad, nom_operad
+                  FROM ".BASE_DATOS.".tab_genera_opegps
+                  WHERE ind_estado = '1'
+                  ORDER BY nom_operad ASC";
+    } elseif ($parOpeSt) {
+        // Solo operadores estï¿½ndar
+        $query = "SELECT a.cod_operad, CONCAT(a.nom_operad, ' [INTEGRADOR ESTANDAR]') as nom_operad 
+                  FROM ".BD_STANDA.".tab_genera_opegps a
+                  INNER JOIN ".BD_STANDA.".tab_genera_paises b ON b.cod_paisgl = $cod_paisxx
+                  INNER JOIN ".BD_STANDA.".tab_opegps_paisxx c ON b.cod_paisxx = c.cod_paisxx
+                  WHERE a.ind_estado = '1'
+                  ORDER BY nom_operad ASC";
+    } elseif ($parOpePr) {
+        // Solo operadores propios
+        $query = "SELECT cod_operad, nom_operad
+                  FROM ".BASE_DATOS.".tab_genera_opegps
+                  WHERE ind_estado = '1'
+                  ORDER BY nom_operad ASC";
+    } else {
+        $datos->opegps = [];
+        return;
+    }
+    
+    $consulta = new Consulta($query, self::$cConexion);
+    $operadores = cleanArray($consulta->ret_matriz("a"));
+    $datos->opegps = $operadores;
+    
       #las configuraciones
       $query = "SELECT num_config,num_config
                FROM ".BASE_DATOS.".tab_vehige_config
@@ -1208,7 +1220,7 @@ private function getValidaIdGPS()
           $mensaje .= "<br><input type='button' name='cerrar' id='closeID' value='cerrar' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><br><br>";
           $mens = new mensajes();
 
-          echo $mens->error2("ACTIVAR VEHÍCULO", $mensaje);
+          echo $mens->error2("ACTIVAR VEHï¿½CULO", $mensaje);
 
       }
     }

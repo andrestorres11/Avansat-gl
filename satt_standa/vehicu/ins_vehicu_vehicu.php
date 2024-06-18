@@ -67,7 +67,7 @@ class Ins_vehicu_vehicu {
         $mHtml->SetJs("fecha");
         $mHtml->SetJs("jquery");
         $mHtml->SetJs("functions");
-        $mHtml -> SetBody(' <script src="../'.DIR_APLICA_CENTRAL.'/js/ajax_vehicu_vehicu.js"></script> ');
+        $mHtml -> SetBody(' <script src="../'.DIR_APLICA_CENTRAL.'/js/ajax_vehicu_vehicu.js?v=002"></script> ');
         $mHtml->SetJs("InsertProtocolo");
         $mHtml->SetJs("new_ajax"); 
         $mHtml->SetJs("dinamic_list");
@@ -105,7 +105,7 @@ class Ins_vehicu_vehicu {
           # Accordion1
           	$mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
 	            $mHtml->SetBody("<h1 style='padding:6px'><b>Agregar Vehiculos</b></h1>");
-	            $mHtml->OpenDiv("id:sec1;");
+	            $mHtml->OpenDiv("id:sec1");
 	              $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
 	                $mHtml->Table("tr");
 	                    $mHtml->Label("Transportadora:", "width:35%; :1;");
@@ -115,10 +115,13 @@ class Ins_vehicu_vehicu {
 	              $mHtml->CloseDiv();
 	            $mHtml->CloseDiv();
           	$mHtml->CloseDiv();
-          # Fin accordion1    
+          # Fin accordion1  
+        $mHtml->CloseRow("td");
+
+        $mHtml->Row("td");
           # Accordion2
 	          $mHtml->OpenDiv("id:datos; class:accordion");
-	            $mHtml->SetBody("<h1 style='padding:6px'><b>Listado de Vehiculos</b></h1>");
+	            $mHtml->SetBody("<h1 style='padding:6px;'><b>Listado de Vehiculos</b></h1>");
 	            $mHtml->OpenDiv("id:sec2");
 	              $mHtml->OpenDiv("id:form3; class:contentAccordionForm");
 	                
@@ -128,6 +131,11 @@ class Ins_vehicu_vehicu {
         # Fin accordion2
         	$mHtml->CloseDiv();
       	$mHtml->CloseRow("td");
+
+        
+        
+        
+
           # Cierra formulario
         $mHtml->CloseForm();
         # Cierra Body
@@ -194,7 +202,7 @@ class Ins_vehicu_vehicu {
             # Accordion1
             $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
               $mHtml->SetBody("<h3 style='padding:6px;'><center>Datos B&aacute;sicos</center></h3>");
-            $mHtml->OpenDiv("id:sec1;");
+            $mHtml->OpenDiv("id:sec1");
               $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                 $mHtml->Table("tr");
                   $mHtml->Label("Placa:", "width:25%; *:1;");

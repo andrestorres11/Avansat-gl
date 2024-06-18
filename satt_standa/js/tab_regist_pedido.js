@@ -31,13 +31,13 @@ $(document).ready(function() {
             "zeroRecords": "No se han encontrado coincidencias.",
             "paginate": {
                 "first": "Primera",
-                "last": "Ãšltima",
+                "last": "ultima",
                 "next": "Siguiente",
                 "previous": "Anterior"
             },
             "aria": {
-                "sortAscending": "OrdenaciÃ³n ascendente",
-                "sortDescending": "OrdenaciÃ³n descendente"
+                "sortAscending": "Ordenacion ascendente",
+                "sortDescending": "Ordenacion descendente"
             }
         }
     });
@@ -80,7 +80,7 @@ function mostrarMensaje(mensaje) {
 
 function validarClic(opcion, id_producto) {
     if (opcion == 'eliminar') {
-        var texto_titulo = '¿Seguro desea eliminar el producto?';
+        var texto_titulo = 'Seguro desea eliminar el producto?';
         var mensaje = 'Producto eliminado';
     }
     event.preventDefault();
@@ -101,7 +101,7 @@ function validarClic(opcion, id_producto) {
 function Validator() {
     if ($('#archivo').val() == '') {
         $('#errorID').hide();
-        $('#errorID').html("<div class='alert alert-danger' role='alert' >No ha seleccionado ningún archivo.</div>");
+        $('#errorID').html("<div class='alert alert-danger' role='alert' >No ha seleccionado ningun archivo.</div>");
         $('#errorID').show('slow');
     } else {
         $('#formID').submit();
@@ -112,7 +112,7 @@ function ValidateIt(rut_archiv) {
     var patt = /\.csv$/g;
     if (!patt.test(rut_archiv.val())) {
         $('#errorID').hide();
-        $('#errorID').html("<div class='alert alert-danger' role='alert' >La extensión del archivo es Incorrecta.</div>");
+        $('#errorID').html("<div class='alert alert-danger' role='alert' >La extension del archivo es Incorrecta.</div>");
         $('#errorID').show('slow');
         rut_archiv.val('');
         return false;
@@ -120,7 +120,7 @@ function ValidateIt(rut_archiv) {
 }
 
 function anularPedido(num_pedido) {
-    var texto_titulo = '¿Seguro desea Anular el Pedido?';
+    var texto_titulo = 'Seguro desea Anular el Pedido?';
     var mensaje = 'Pedido Anulado';
     var standa = "satt_standa";
     var parametros = "Option=anulaPedido&pedido=" + num_pedido + "";
@@ -174,7 +174,7 @@ function anularPedido(num_pedido) {
                             }
                         })
                     } else {
-                        ErrorAlerta("Error no fue posible realizar el registro. Verifique la información e intente de nuevo");
+                        ErrorAlerta("Error no fue posible realizar el registro. Verifique la informacion e intente de nuevo");
                     }
                 }
             });
@@ -185,7 +185,7 @@ function anularPedido(num_pedido) {
 function prePlaneaPedidos() {
     let contador = 0;
     let pedidos = "";
-    let texto_titulo = '¿Seguro desea Planear Estos Pedidos?';
+    let texto_titulo = 'Seguro desea Planear Estos Pedidos?';
     let mensaje = 'Pedidos planeados';
     let standa = "satt_standa";
 
@@ -253,7 +253,7 @@ function prePlaneaPedidos() {
                                 }
                             })
                         } else {
-                            ErrorAlerta("Error no fue posible realizar el registro. Verifique la información e intente de nuevo");
+                            ErrorAlerta("Error no fue posible realizar el registro. Verifique la informacion e intente de nuevo");
                         }
                     }
                 });

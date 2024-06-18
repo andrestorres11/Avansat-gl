@@ -379,6 +379,18 @@ class notifi
 	                	height: 100px;
 	    				width: 100%;
 	            	}
+					#obs_supervisorID {
+	                	height: 100px;
+	    				width: 100%;
+	            	}
+					#obs_controladorID {
+	                	height: 100px;
+	    				width: 100%;
+	            	}
+					#obs_especificasID {
+	                	height: 100px;
+	    				width: 100%;
+	            	}
 	            	#obs_responID {
 	                	height: 100px;
 	    				width: 100%;

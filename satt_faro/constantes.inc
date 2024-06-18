@@ -9,8 +9,8 @@ define("BD_STANDA","satt_standa");// constante para la base de datos Estandar de
 
 define("ESTILO","Verde");//constante para BD estandar de SAT Basico
 
-define("USUARIO", "satt_faro");// constante para la base de datos de la aplicacion
-define("CLAVE", "sattfaro");// constante para la base de datos de la aplicacion
+define("USUARIO", "atorres");// satt_faro constante para la base de datos de la aplicacion
+define("CLAVE", "oPi;itas");// sattfaro constante para la base de datos de la aplicacion
 define("MOVIL_USUARIO", "satb_movil");// constante para el usuario de movil
 define("MOVIL_CLAVE", "satb_movil1");// constante para el clave de movil
 
@@ -30,9 +30,9 @@ $mHost = explode('.', $_SERVER['HTTP_HOST']);
 switch ($mHost[0]) {
 	case 'web7': $mBD  = 'bd7.intrared.net:3306'; break;
 	case 'web13': $mBD = 'bd13.intrared.net:3306'; break;
-	case 'avansatgl': $mBD = 'aglbd.intrared.net'; break;
+	case 'oet-avansatgl': $mBD = 'oet-avansatglbd'.net'; break;
 	case 'dev': $mBD = 'devbd.intrared.net:3306'; break;
-	default: $mBD = 'aglbd.intrared.net'; break; #Esta URL No existe!
+	default: $mBD = 'oet-avansatglbd'; break; #Esta URL No existe!
 }
 
 

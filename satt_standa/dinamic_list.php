@@ -43,9 +43,10 @@ if ( !isset( $_AJAX["Filters"] ) ) $_AJAX["Filters"] = "";
 if ( !isset( $_AJAX["Limit"] ) ) $_AJAX["Limit"] = "";
 if ( !isset( $_AJAX["Page"] ) ) $_AJAX["Page"] = "";
 if ( !isset( $_AJAX["Selected"] ) ) $_AJAX["Selected"] = "";
+if ( !isset( $_AJAX["Search"] ) ) $_AJAX["Search"] = "";
 
 $list = $_SESSION["DINAMIC_LIST"];
-$list -> Ajax( $conexion, $_AJAX["Action"], $_AJAX["Sort_Col"], $_AJAX["Way"], $_AJAX["Filters"], $_AJAX["Limit"],  $_AJAX["Page"], $_AJAX["Selected"] );
+$list -> Ajax( $conexion, $_AJAX["Action"], $_AJAX["Sort_Col"], $_AJAX["Way"], $_AJAX["Filters"], $_AJAX["Limit"],  $_AJAX["Page"], $_AJAX["Selected"], $_AJAX["Search"] );
 
 echo $list -> GetHtml();
 

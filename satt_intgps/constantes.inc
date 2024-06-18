@@ -3,12 +3,12 @@
 define("DIR_APLICA_CENTRAL", "satt_standa");
 @include("../" . DIR_APLICA_CENTRAL . "/lib/general/constantes.inc");
 
-define("NOM_URL_APLICA","satt_intgps");//constante para el nombre del directorio - aplicaciï¿½n
+define("NOM_URL_APLICA","satt_intgps");//constante para el nombre del directorio - aplicación
 define("BASE_DATOS", "satt_intgps");// constante para la base de datos de la aplicacion
-define("BD_STANDA","satt_standa");// constante para la base de datos Estandar de SAT Bï¿½sico.
+define("BD_STANDA","satt_standa");// constante para la base de datos Estandar de SAT Básico.
 
 define("USUARIO", "satt_intgps");// constante para la base de datos de la aplicacion
-define("CLAVE", "jIB%kNzBYF6u4S2");// constante para la base de datos de la aplicacion
+define("CLAVE", "BMrduk8AP5FLEjI9VX6Q");// constante para la base de datos de la aplicacion
 define("MOVIL_USUARIO", "satb_movil");// constante para el usuario de movil
 define("MOVIL_CLAVE", "satb_movil1");// constante para el clave de movil
 
@@ -18,7 +18,7 @@ define("URL_STANDA", "http://".URL_DIREC_APLICA."/satt_standa/");// constante pa
 define("PAGINA", "http://".URL_DIREC_APLICA."/satt_intgps/");// constante para direccion de la pagina
 define("URL_ARCHIV", URL_ARCHIV_STANDA."satt_intgps/");// constante para foto del conductor
 
-define("NIT_TRANSPOR", "8888888");// constante NIT DE LA EMPRESA
+define("NIT_TRANSPOR", "830076669");// constante NIT DE LA EMPRESA
 define("NOMSAD", "CENTRO LOGISTICO FARO");// CONSTANTE PARA NOMBRE DE LA APLICACION
 define("NOM_TRANMENU", "SATT FARO");// Nombre Aplicacion WAP
 define("COD_NOVEDAD", "9, 57,27, 13, 52,70 , 12");// Codigos de novedades
@@ -28,9 +28,9 @@ $mHost = explode('.', $_SERVER['HTTP_HOST']);
 switch ($mHost[0]) {
 	case 'web7': $mBD  = 'bd7.intrared.net:3306'; break;
 	case 'web13': $mBD = 'bd13.intrared.net:3306'; break;
-	case 'avansatgl': $mBD = 'aglbd.intrared.net'; break;
+	case 'oet-avansatgl': $mBD = 'oet-avansatglbd'; break;
 	case 'dev': $mBD = 'devbd.intrared.net:3306'; break;
-	default: $mBD = 'aglbd.intrared.net'; break; #Esta URL No existe!
+	default: $mBD = 'oet-avansatglbd'; break; #Esta URL No existe!
 }
 
 
@@ -40,7 +40,7 @@ define("HOST", $mBD);
 define("HOST_WEB", $mHost[0]);   #Host Actual
 define("HOST_WEB_DEV", "web7");  #Host Desarrollo
 define("HOST_WEB_TES", "web13"); #Host Pruebas
-define("HOST_WEB_PRO", "avansatgl"); #Host Produccion
+define("HOST_WEB_PRO", "oet-avansatgl"); #Host Produccion
 
 //Constantes Para los Logos
 define("LOGOFARO", URL_APLICA."logos/LogoCLFaro.png");// URL LOGO FARO

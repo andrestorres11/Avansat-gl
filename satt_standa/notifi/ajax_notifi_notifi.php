@@ -100,7 +100,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna formulario general
 	 *  \author: Edward Serrano
 	 *	\date:  05/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	public function getFormGeneral()
 	{
@@ -223,7 +223,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta general de notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getGeneralNotifi($data = NULL,$cod_tipnot = NULL,$option = NULL)
 	{
@@ -249,7 +249,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta de notificaciones por tipo
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getNotifi($mDatosGN)
 	{
@@ -272,7 +272,7 @@ class AjaxNotifiNotifi
 	 *  \brief: retorna consulta de notificaciones por tipo
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getCodUsuario($cod_usuari){
 		try
@@ -292,7 +292,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getForm()
 	{
@@ -419,7 +419,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  18/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getDinamiList($permisosActuales,$datos)
 	{	
@@ -481,7 +481,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifi()
 	{	
@@ -507,7 +507,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifi2()
 	{	
@@ -532,7 +532,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete a supervisores y controladores y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifiSelect($ActionForm=NULL)
 	{
@@ -595,7 +595,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete a supervisores y controladores y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifiExt($ActionForm=NULL)
 	{
@@ -610,8 +610,10 @@ class AjaxNotifiNotifi
 			$ENCUESTAS=NULL;
 			$ESPECIFICAS=NULL;
 			$ASISTENCIAS=NULL;
+			$RECOMENDADOS=NULL;
 			$ESTADO_VEHICULOS=NULL;
 			$RECURSOS_ASIGNADOS=NULL;
+			$CANDADOS = NULL;
 			if($ActionForm->ActionForm=="idi")
 			{
 				#realizar consulta
@@ -623,6 +625,8 @@ class AjaxNotifiNotifi
 				$ENCUESTAS = self::JsonRecor($Json,"ENCUESTAS");
 				$ESPECIFICAS = self::JsonRecor($Json,"ESPECIFICAS");
 				$ASISTENCIAS = self::JsonRecor($Json,"ASISTENCIAS");
+				$RECOMENDADOS = self::JsonRecor($Json,"RECOMENDADOS");
+				$CANDADOS = self::JsonRecor($Json,"CANDADOS");
 				$ESTADO_VEHICULOS = self::JsonRecor($Json,"ESTADO_VEHICULOS");
 				$RECURSOS_ASIGNADOS = self::JsonRecor($Json,"RECURSOS_ASIGNADOS");
 			}
@@ -640,6 +644,8 @@ class AjaxNotifiNotifi
 				$ENCUESTAS = self::JsonRecor($Json,"ENCUESTAS");
 				$ESPECIFICAS = self::JsonRecor($Json,"ESPECIFICAS");
 				$ASISTENCIAS = self::JsonRecor($Json,"ASISTENCIAS");
+				$RECOMENDADOS = self::JsonRecor($Json,"RECOMENDADOS");
+				$CANDADOS = self::JsonRecor($Json,"CANDADOS");
 				$ESTADO_VEHICULOS = self::JsonRecor($Json,"ESTADO_VEHICULOS");
 				$RECURSOS_ASIGNADOS = self::JsonRecor($Json,"RECURSOS_ASIGNADOS");
 			}
@@ -782,7 +788,7 @@ class AjaxNotifiNotifi
 								background:#DEDFDE
 							}
 							.DLRow_usuario{
-								background:#3f7506;
+								background:#2f3cad;
 								color:white;
 							}
 		
@@ -1044,26 +1050,33 @@ class AjaxNotifiNotifi
 							$mHtml->CloseRow();
 							*/
 							$mHtml->Row();
-								$mHtml->line("","i",0,7);
+								$mHtml->line("","i",0,10);
 							$mHtml->CloseRow();
 							/*$mHtml->Row();
 								$mHtml->Label( "SUPERVISORES",  array("align"=>"center", "class"=>"celda_titulo infJson","colspan"=>"7") );
 							$mHtml->CloseRow();*/
 							$mHtml->Row();
-								$mHtml->Label( "Supervisor111 Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+								$mHtml->Label( "Supervisor Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 								$mHtml->Label( "Controlador Master Entrante",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 								$mHtml->Label( "Supervisor Saliente",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
+								
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
 								$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($SUPERVISORES,"supe_entrante")!="")?self::JsonRecor($SUPERVISORES,"supe_entrante"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_entranteID')"));
 								$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2", "value"=>(self::JsonRecor($SUPERVISORES,"cont_Mentrant")!="")?self::JsonRecor($SUPERVISORES,"cont_Mentrant"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','cont_MentrantID')"));
 								$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3", "value"=>(self::JsonRecor($SUPERVISORES,"supe_saliente")!="")?self::JsonRecor($SUPERVISORES,"supe_saliente"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_salienteID')"));
-							/*
+								/*
 								$mHtml->Input(array("name" => "supe_entrante", "id" => "supe_entranteID", "width" => "100%", "colspan"=>"2", "value"=>" 00 ", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_entranteID')"));
 								$mHtml->Input(array("name" => "cont_Mentrant", "id" => "cont_MentrantID", "width" => "100%", "colspan"=>"2", "value"=>"00", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','cont_MentrantID')"));
 								$mHtml->Input(array("name" => "supe_saliente", "id" => "supe_salienteID", "width" => "100%", "colspan"=>"3", "value"=>"00", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,20,'alfa','supe_salienteID')"));
 							*/
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->Label( "Observaciones",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->TextArea((self::JsonRecor($SUPERVISORES,"obs_supervisor")!="")?self::JsonRecor($SUPERVISORES,"obs_supervisor"):"", array("name" => "obs_supervisor", "id" => "obs_supervisorID", "colspan"=>"7", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,100000,'alfa','obs_supervisorID')"));
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1084,12 +1097,12 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "CONTROLADORES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 							$mHtml->CloseRow();*/
 							$mHtml->Row();
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° En Turno",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Ausentes",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Incapacitados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. En Turno",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Ausentes",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Incapacitados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
@@ -1104,13 +1117,19 @@ class AjaxNotifiNotifi
 							*/
 							$mHtml->CloseRow();
 							$mHtml->Row();
+								$mHtml->Label( "Observaciones",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->TextArea((self::JsonRecor($CONTROLADORES,"obs_controlador")!="")?self::JsonRecor($CONTROLADORES,"obs_controlador"):"", array("name" => "obs_controlador", "id" => "obs_controladorID", "colspan"=>"7", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,100000,'alfa','obs_controladorID')"));
+							$mHtml->CloseRow();
+							$mHtml->Row();
 								$mHtml->line("","i",0,7);
 							$mHtml->CloseRow();
 						$mHtml->CloseTable('tr');
 					$mHtml->CloseDiv();
 				$mHtml->CloseDiv();
 				/* ENCUESTAS */
-	     	$mHtml->OpenDiv("id:Notificontainer5; class:accordian");
+	     		/*$mHtml->OpenDiv("id:Notificontainer5; class:accordian");
 					$mHtml->SetBody("<h3 style='padding:6px;'><center>ENCUESTAS</center></h3>");
 					$mHtml->OpenDiv("id:jsonEncu");
 						$mHtml->Table("tr");
@@ -1119,14 +1138,14 @@ class AjaxNotifiNotifi
 							$mHtml->CloseRow();
 							/*$mHtml->Row();
 								$mHtml->Label( "ENCUESTAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
-							$mHtml->CloseRow();*/
+							$mHtml->CloseRow();
 							$mHtml->Row();
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Registradas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Por subir a SPG",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Registradas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Por subir a SPG",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
@@ -1138,14 +1157,14 @@ class AjaxNotifiNotifi
 								$mHtml->Input(array("name" => "numb_enreali", "id" => "numb_enrealiID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_enrealiID')"));
 								$mHtml->Input(array("name" => "numb_registr", "id" => "numb_registrID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_registrID')"));
 								$mHtml->Input(array("name" => "numb_subaspg", "id" => "numb_subaspgID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_subaspgID')"));
-								*/
+								
 								$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
 							$mHtml->CloseRow();
 						$mHtml->CloseTable('tr');
 					$mHtml->CloseDiv();
-				$mHtml->CloseDiv();
+				$mHtml->CloseDiv();*/
 				/* ESPECIFICAS */
 				$mHtml->OpenDiv("id:Notificontainer6; class:accordian");
 					$mHtml->SetBody("<h3 style='padding:6px;'><center>ESPECIFICAS</center></h3>");
@@ -1158,13 +1177,13 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "ESPECIFICAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 							$mHtml->CloseRow();*/
 							$mHtml->Row();
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
@@ -1179,6 +1198,12 @@ class AjaxNotifiNotifi
 								$mHtml->Input(array("name" => "numb_espende", "id" => "numb_espendeID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_espendeID')"));								
 								$mHtml->Input(array("name" => "numb_espenda", "id" => "numb_espendaID", "width" => "10%", "colspan"=>"1","value"=>"0","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_espendaID')"));
 								*/
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->Label( "Observaciones",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->TextArea((self::JsonRecor($ESPECIFICAS,"obs_especificas")!="")?self::JsonRecor($ESPECIFICAS,"obs_especificas"):"", array("name" => "obs_especificas", "id" => "obs_especificasID", "colspan"=>"7", "readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,100000,'alfa','obs_especificasID')"));
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1198,13 +1223,13 @@ class AjaxNotifiNotifi
 								$mHtml->Label( "ASISTENCIAS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 							$mHtml->CloseRow();*/
 							$mHtml->Row();
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								//$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
-								$mHtml->Label( "N° Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Realizadas",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Consecutivo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Pendientes por despacho",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								//$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Pendientes por atender",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->CloseRow();
 							$mHtml->Row();
 							
@@ -1218,6 +1243,99 @@ class AjaxNotifiNotifi
 								$mHtml->Input(array("name" => "numb_aspende", "id" => "numb_aspendeID", "width" => "10%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_aspendeID')"));
 								$mHtml->Input(array("name" => "numb_aspenda", "id" => "numb_aspendaID", "width" => "10%", "colspan"=>"1","value"=>"00","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(0,3,'num','numb_aspendaID')"));
 								*/
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->line("","i",0,7);
+							$mHtml->CloseRow();
+						$mHtml->CloseTable('tr');
+					$mHtml->CloseDiv();
+				$mHtml->CloseDiv(); 
+
+				/* RECOMENDADOS */
+				$mHtml->OpenDiv("id:Notificontainer7; class:accordian");
+					$mHtml->SetBody("<h3 style='padding:6px;'><center>RECOMENDADOS</center></h3>");
+					$mHtml->OpenDiv("id:jsonRecomen");
+						$mHtml->Table("tr");
+							$mHtml->Row();
+								$mHtml->line("","i",0,7);
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->Label( "RECOMENDADOS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->Label( "No. Placa",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "Observacion",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "Adjunto",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "numb_placaxx1", "id" => "numb_placaxx1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx1")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx1ID')"));
+								$mHtml->Input(array("name" => "obs_recomend1", "id" => "obs_recomend1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend1")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend1ID')"));
+								$mHtml->file(array("name" => "adj_recomend1", "id" => "adj_recomend1ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "numb_placaxx2", "id" => "numb_placaxx2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx2")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx2ID')"));
+								$mHtml->Input(array("name" => "obs_recomend2", "id" => "obs_recomend2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend2")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend2ID')"));
+								$mHtml->file(array("name" => "adj_recomend2", "id" => "adj_recomend2ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "numb_placaxx3", "id" => "numb_placaxx3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"numb_placaxx3")!="")?self::JsonRecor($RECOMENDADOS,"numb_placaxx3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placaxx3ID')"));
+								$mHtml->Input(array("name" => "obs_recomend3", "id" => "obs_recomend3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($RECOMENDADOS,"obs_recomend3")!="")?self::JsonRecor($RECOMENDADOS,"obs_recomend3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend3ID')"));
+								$mHtml->file(array("name" => "adj_recomend3", "id" => "adj_recomend3ID", "width" => "100%", "colspan"=>"6","readonly"=>$readonly,"disabled"=>$disabled));
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+								$mHtml->line("","i",0,7);
+							$mHtml->CloseRow();
+						$mHtml->CloseTable('tr');
+					$mHtml->CloseDiv();
+				$mHtml->CloseDiv(); 
+
+				/* CANDADOS SATELITALES */
+				$mHtml->OpenDiv("id:Notificontainer7; class:accordian");
+					$mHtml->SetBody("<h3 style='padding:6px;'><center>CANDADOS SATELITALES</center></h3>");
+					$mHtml->OpenDiv("id:jsonCanSat");
+						$mHtml->Table("tr");
+							$mHtml->Row();
+								$mHtml->line("","i",0,7);
+							$mHtml->CloseRow();
+							/*$mHtml->Row();
+								$mHtml->Label( "CANDADOS SATELITALES",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
+							$mHtml->CloseRow();*/
+							$mHtml->Row();
+								$mHtml->Label( "No. Candado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "No. Placa",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								$mHtml->Label( "Observaciones",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "num_candadox1", "id" => "num_candadox1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"num_candadox1")!="")?self::JsonRecor($CANDADOS,"num_candadox1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox1ID')"));
+								$mHtml->Input(array("name" => "numb_placacc1", "id" => "numb_placacc1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"numb_placacc1")!="")?self::JsonRecor($CANDADOS,"numb_placacc1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placacc1ID')"));
+								$mHtml->Input(array("name" => "obs_recomend1", "id" => "obs_recomend1ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"obs_recomend1")!="")?self::JsonRecor($CANDADOS,"obs_recomend1"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend1ID')"));
+								
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "num_candadox2", "id" => "num_candadox2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"num_candadox2")!="")?self::JsonRecor($CANDADOS,"num_candadox2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox2ID')"));
+								$mHtml->Input(array("name" => "numb_placacc2", "id" => "numb_placacc2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"numb_placacc2")!="")?self::JsonRecor($CANDADOS,"numb_placacc2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placacc2ID')"));
+								$mHtml->Input(array("name" => "obs_recomend2", "id" => "obs_recomend2ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"obs_recomend2")!="")?self::JsonRecor($CANDADOS,"obs_recomend2"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend2ID')"));
+								
+								
+							$mHtml->CloseRow();
+							$mHtml->Row();
+							
+								$mHtml->Input(array("name" => "num_candadox3", "id" => "num_candadox3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"num_candadox3")!="")?self::JsonRecor($CANDADOS,"num_candadox3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','num_candadox3ID')"));
+								$mHtml->Input(array("name" => "numb_placacc3", "id" => "numb_placacc3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"numb_placacc3")!="")?self::JsonRecor($CANDADOS,"numb_placacc3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','numb_placacc3ID')"));
+								$mHtml->Input(array("name" => "obs_recomend3", "id" => "obs_recomend3ID", "width" => "10%", "colspan"=>"1","value"=>(self::JsonRecor($CANDADOS,"obs_recomend3")!="")?self::JsonRecor($CANDADOS,"obs_recomend3"):"","readonly"=>$readonly, "disabled"=>$disabled, "onkeyup"=>"validarKey(5,50,'alfa','obs_recomend3ID')"));
+								
+								
 							$mHtml->CloseRow();
 							$mHtml->Row();
 								$mHtml->line("","i",0,7);
@@ -1240,7 +1358,7 @@ class AjaxNotifiNotifi
 							$mHtml->Label( "RECURSOS ASIGNADOS",  array("align"=>"center", "class"=>"celda_titulo","colspan"=>"7") );
 						$mHtml->CloseRow();*/
 						$mHtml->Row();
-							$mHtml->Label( "N° de puesto Asignado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
+							$mHtml->Label( "No. de puesto Asignado",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Estado de la diadema",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Estado del mouse",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"3") );
 						$mHtml->CloseRow();
@@ -1275,7 +1393,7 @@ class AjaxNotifiNotifi
 						$mHtml->Row();
 							$mHtml->Label( "Estado del Pad Mouse",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 							$mHtml->Label( "Aseo",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
-							$mHtml->Label( "N°",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
+							$mHtml->Label( "No.",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"1") );
 							$mHtml->Label( "Registros realizados",  array("align"=>"left", "class"=>"celda_titulo","colspan"=>"2") );
 						$mHtml->CloseRow();
 						$mHtml->Row();
@@ -1505,7 +1623,7 @@ class AjaxNotifiNotifi
 	 *  \brief: identifica el formulario correspondiete y lo pinta
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	protected function getFormNuevaNotifiComun($ActionForm=NULL)
 	{
@@ -1777,7 +1895,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve array de responsables
 	 *  \author: Edward Serrano
 	 *	\date:  10/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getLisRespon ( $mCodNivel = NULL)
 	{
@@ -1799,7 +1917,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve array de notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  18/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getInfoNotifiEdit ( $mData = NULL)
 	{
@@ -1844,7 +1962,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve array de usuarios
 	 *  \author: Edward Serrano
 	 *	\date:  10/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getNomUsuario()
 	{  
@@ -1872,7 +1990,7 @@ class AjaxNotifiNotifi
 	 *  \brief: alamcena las nuevas notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  12/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function NuevaNotifiComun()
 	{
@@ -1974,7 +2092,7 @@ class AjaxNotifiNotifi
 	 *  \brief: alamcena las nuevas notificaciones para supervisores y controladores
 	 *  \author: Edward Serrano
 	 *	\date:  12/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function NuevaNotifiExten()
 	{
@@ -2087,7 +2205,7 @@ class AjaxNotifiNotifi
 	 *  \brief: elimina las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function elimiNotifi()
 	{
@@ -2128,7 +2246,7 @@ class AjaxNotifiNotifi
 	 *  \brief: recorrer json de las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function JsonRecor($json=NULL, $param=NULL)
 	{
@@ -2156,7 +2274,7 @@ class AjaxNotifiNotifi
 	 *  \brief: recorrer json de las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  20/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function getHistoNotifi($ActionForm=NULL)
 	{
@@ -2179,7 +2297,7 @@ class AjaxNotifiNotifi
 	 *  \brief: documente asociados
 	 *  \author: Edward Serrano
 	 *	\date:  23/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getDocument($ActionForm=NULL)
 	{
@@ -2201,7 +2319,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  23/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function responderNotifi()
 	{
@@ -2247,7 +2365,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	public function getRefDocumet(){
 		$datos = (object) $_REQUEST;
@@ -2272,7 +2390,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  25/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	public function elimiDocument()
 	{
@@ -2326,7 +2444,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita las notificaciones
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function EditNotifiComun()
 	{
@@ -2419,7 +2537,7 @@ class AjaxNotifiNotifi
 	 *  \brief: edita notificaciones para supervisores y controladores
 	 *  \author: Edward Serrano
 	 *	\date:  19/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function EditNotifiExten()
 	{
@@ -2525,7 +2643,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve la fecha en texto
 	 *  \author: Edward Serrano
 	 *	\date:  30/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function getFormatFecha($fechaFormat)
 	{
@@ -2535,7 +2653,7 @@ class AjaxNotifiNotifi
 			$mResult=strftime("%A, %d de %B de %Y" ,gmmktime(0, 0, 0, date("m", $fechaFormat), date("d", $fechaFormat), date("Y", $fechaFormat)));
 	  		/*echo "mes:".date("m", $fechaFormat);
 	  		echo "dia:".date("d", $fechaFormat);
-	  		echo "año:".date("Y", $fechaFormat);
+	  		echo "aï¿½o:".date("Y", $fechaFormat);
 	  		echo $fechaFormat."----------------".$mResult."||||||||";*/
 			return $mResult;
 		} catch (Exception $e) {
@@ -2547,14 +2665,14 @@ class AjaxNotifiNotifi
 	 *  \brief: envia correo de notificacion
 	 *  \author: Edward Serrano
 	 *	\date:  01/02/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function getPlantillaEnvio($datos)
 	{
 		try {
 			$mCabece  = 'MIME-Version: 1.0' . "\r\n";
 			$mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-			$mCabece .= 'From: AVANSAT <avansat@intrared.net>' . "\r\n";
+			$mCabece .= 'From: AVANSAT <notificaciones.avansat@intrared.net>' . "\r\n";
 			$plantilla = 'pla_notifi_notifi.html';
 			/*variables*/
 			switch ($datos->cod_tipnot) {
@@ -2640,7 +2758,7 @@ class AjaxNotifiNotifi
         	eval($thefile);
         	$mHtmlxx = $r_file;
         	$mailSend='faroavansat@eltransporte.com';
-        	//$mailSend='edward.serrano@intrared.net';
+        	$mailSend='andres.torres@grupooet.com';
         	mail($mailSend, $mAsunto, '<div name="pruebaNotifi">' . $mHtmlxx . '</div>', $mCabece);
 		} catch (Exception $e) {
 			echo "error getPlantillaEnvio :".$e;
@@ -2653,7 +2771,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermOet(){
 		return $_SESSION['subNotifi']['PermOet'];
@@ -2663,7 +2781,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermOet($mPermOet = NULL){
 		$_SESSION['subNotifi']['PermOet']=$mPermOet;
@@ -2673,7 +2791,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermClf(){
 		return $_SESSION['subNotifi']['PermClf'];
@@ -2683,7 +2801,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermClf($mPermClf = NULL){
 		$_SESSION['subNotifi']['PermClf']=$mPermClf;
@@ -2693,7 +2811,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermSup(){
 		return $_SESSION['subNotifi']['PermSup'];
@@ -2703,7 +2821,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermSup($mPermSup = NULL){
 		$_SESSION['subNotifi']['PermSup']=$mPermSup;
@@ -2713,7 +2831,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermCon(){
 		return $_SESSION['subNotifi']['PermCon'];
@@ -2723,7 +2841,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermCon($mPermCon = NULL){
 		$_SESSION['subNotifi']['PermCon']=$mPermCon;
@@ -2733,7 +2851,7 @@ class AjaxNotifiNotifi
 	 *  \brief: asigna objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getmPermCli(){
 		return $_SESSION['subNotifi']['PermCli'];
@@ -2743,7 +2861,7 @@ class AjaxNotifiNotifi
 	 *  \brief: devuelve objecto de permisos
 	 *  \author: Edward Serrano
 	 *	\date:  06/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function setmPermCli($mPermCli = NULL){
 		$_SESSION['subNotifi']['PermCli']=$mPermCli;

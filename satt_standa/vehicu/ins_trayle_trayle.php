@@ -31,7 +31,7 @@ class Ins_trayle_trayle {
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 31/09/2015
-     *  \date modified: dia/mes/año
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \param: 
      *  \return 
@@ -65,7 +65,7 @@ class Ins_trayle_trayle {
         $mHtml->SetCssJq("jquery");
         $mHtml->Body(array("menubar" => "no")); 
 
-        $mHtml -> SetBody(' <script src="../'.DIR_APLICA_CENTRAL.'/js/ajax_trayle_trayle.js"></script> ');
+        $mHtml -> SetBody(' <script src="../'.DIR_APLICA_CENTRAL.'/js/ajax_trayle_trayle.js?v=001"></script> ');
 
         # Abre Form
         $mHtml->Form(array("action" => "index.php",
@@ -93,7 +93,7 @@ class Ins_trayle_trayle {
               # Accordion1
               $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
                 $mHtml->SetBody("<h1 style='padding:6px'><b>REMOLQUES</b></h1>");
-                $mHtml->OpenDiv("id:sec1;");
+                $mHtml->OpenDiv("id:sec1");
                   $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                     $mHtml->Table("tr");
                         $mHtml->Label("Transportadora:", "width:35%; *:1;");
