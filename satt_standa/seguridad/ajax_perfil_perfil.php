@@ -51,6 +51,11 @@ class seguri {
                 case 'getOtherFilters':
                     self::getOtherFilters();
                     break;
+                
+                case 'getFiltersAsegurad':
+                    self::getFiltersAsegurad();
+                    break;
+                
 
                 case 'RegisterDataUser':
                     self::RegisterDataUser();
@@ -482,6 +487,74 @@ class seguri {
         }
     }
 
+    /* ! \fn: listaUsuarios
+     *  \brief: trae la lista de todos los usuarios del sistema
+     *  \author: Ing. Alexander Correa
+     *  \date: dia/mes/a?o
+     *  \date modified: dia/mes/a?o
+     *  \param: 
+     *  \return html con el listado ordenado
+     */
+
+     public function listaUsuariosAsegurados() {
+        $cod_asegura = self::getAseguradora();
+        $datos = (object) $_POST;
+        if ($datos->cod_perfil) {
+            $and = " AND a.cod_perfil = $datos->cod_perfil ";
+        } else {
+            $onclickEdit = "onclikEdit:editarUsuario( this )";
+        }
+
+        $sql = "SELECT a.cod_usuari, a.nom_usuari, e.nom_tercer, a.usr_emailx, IF(a.ind_estado = 1, 'ACTIVO', 'DESHABILITADO') estado, a.cod_consec, a.ind_estado
+                      FROM " . BASE_DATOS . ".tab_genera_usuari a 
+                INNER JOIN " . BASE_DATOS . ".tab_genera_perfil b ON a.cod_perfil = b.cod_perfil 
+                INNER JOIN " . BASE_DATOS . ".tab_aplica_filtro_usuari c ON a.cod_usuari = c.cod_usuari AND c.cod_filtro = '".COD_FILTRO_EMPTRA."'
+                INNER JOIN " . BASE_DATOS . ".tab_asegur_transp d ON c.clv_filtro = d.cod_transp
+                INNER JOIN " . BASE_DATOS . ".tab_tercer_tercer e ON d.cod_transp = e.cod_tercer
+                WHERE a.cod_perfil = '".COD_PERFIL_ASEGURADO."' $and
+                  AND d.cod_asegur = '".$cod_asegura."'
+                ";
+
+        $_SESSION["queryXLS"] = $sql;
+
+        if (!class_exists(DinamicList)) {
+            include_once("../" . DIR_APLICA_CENTRAL . "/lib/general/dinamic_list.inc");
+        }
+        $estados[0] = array(0 => "", 1 => "Seleccione");
+        $estados[1] = array(0 => "0", 1 => "INACTIVO");
+        $estados[2] = array(0 => "1", 1 => "ACTIVO");
+        $list = new DinamicList(self::$cConexion, $sql, "5", "no", 'ASC');
+        $list->SetClose('no');
+        if (!$datos->cod_perfil) {
+            $list->SetCreate("Crear Usuario", "onclick:formulario()");
+        }
+        $list->SetHeader("Usuario", "field:a.cod_usuari; width:1%;  ");
+        $list->SetHeader("Nombre", "field:a.nom_usuari; width:1%");
+        $list->SetHeader("Transportadora", "field:b.nom_tercer; width:1%");
+        $list->SetHeader("E-Mail", "field:a.usr_emailx; width:1%");
+        $list->SetHeader("Estado", "field:IF( a.ind_estado =1, 'ACTIVO', 'DESHABILITADO' ); width:1%");
+        $list->SetOption("Opciones", "field:ind_estado; width:1%; onclikDisable:inactivarUsuario( this ); onclikEnable:activarUsuario( this ); $onclickEdit");
+        $list->SetHidden("cod_usuari", "0");
+        $list->SetHidden("nom_usuari", "1");
+        $list->SetHidden("cod_consec", "5");
+        $list->Display(self::$cConexion);
+
+        $_SESSION["DINAMIC_LIST"] = $list;
+
+        $Html = $list->GetHtml();
+
+        if ($datos->cod_perfil) {
+            $Html .= "<div class='col-md-12 text-right'>
+            <button aria-disabled='false' role='button' class='ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only' onclick='closePopUp(\"popID\");' type='button'>
+                <span class='ui-button-text'>Cerrar</span>
+            </button></div>";
+            $Html = "<div class='contenido'>" . $Html . "</div>";
+            echo $Html;
+        } else {
+            return $Html;
+        }
+    }
+
     /* ! \fn: cambiarEstadoUsuario
      *  \brief: activa o inactiva un usuario en la base de datos
      *  \author: Ing. Alexander Correa
@@ -675,6 +748,53 @@ class seguri {
                 <div class='col-md-3'></div>
             </diiv>";
         }
+        echo $div;
+    }
+
+    /* ! \fn: getFiltersAsegurad
+     *  \brief: muestra select con los filtros para configurar a un usuario asegurado
+     *  \author: Ing. Alexander Correa
+     *  \date: 12/04/2016
+     *  \date modified: dia/mes/a?o
+     *  \param: $cod_usuari = String => codigo del usuario para el cual aplicaran los filtros
+     *  \return html con los filtros
+     */
+
+     public function getFiltersAsegurad() {
+        $cod_usuari = $_REQUEST['cod_usuari'];
+        $cod_asegura = self::getAseguradora();
+        $sql = "SELECT a.cod_transp, b.nom_tercer
+                        FROM " . BASE_DATOS . ".tab_asegur_transp a
+                        INNER JOIN " . BASE_DATOS.".tab_tercer_tercer b ON a.cod_transp = b.cod_tercer
+                        WHERE a.cod_asegur = '".$cod_asegura."' ORDER BY b.nom_tercer ASC";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $options = $consulta->ret_matrix("a");
+        $optionshtml = "<option value=''>Seleccione una Opci&oacute;n</option>;";
+
+
+        $sql = "SELECT a.clv_filtro
+                    FROM " . BASE_DATOS . ".tab_aplica_filtro_usuari a
+                    WHERE a.cod_usuari = '".$cod_usuari."' AND a.cod_filtro = '".COD_FILTRO_EMPTRA."'";
+        $consulta = new Consulta($sql, self::$cConexion);
+        $filtro = $consulta->ret_matrix("a");
+        
+
+        foreach($options as $option){
+            $selected = '';
+            if($filtro[0]['clv_filtro'] == $option['cod_transp']){
+                $selected = 'selected';
+            }
+            $optionshtml .= "<option value='".$option['cod_transp']."' ".$selected.">".$option['nom_tercer']."</option>;";
+        }
+        $div .= "<div class='col-md-12 ancho text-center'>
+                    <div class='col-md-6 text-right'>Transportadora:</div>
+                        <div class='col-md-3'>
+                            <select id='1' name='1' class='ancho'>
+                                ".$optionshtml."
+                            </select>
+                        </div>
+                    <div class='col-md-3'></div>
+                </div>";
         echo $div;
     }
 
@@ -1123,6 +1243,18 @@ class seguri {
             $Transpor=NULL;
         }
         return $Transpor;
+    }
+
+    public function getAseguradora(){
+        $sql="SELECT a.clv_filtro, b.nom_tercer FROM ".BASE_DATOS.".tab_aplica_filtro_usuari a
+                  INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.clv_filtro = b.cod_tercer
+                 WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_ASEGUR."'";
+        $resultado = new Consulta($sql, self::$cConexion);
+        $resultados = $resultado->ret_matriz();
+        if(sizeof($resultados)>0){
+            return $resultados[0][0];
+        }
+        return null;
     }
 
 }

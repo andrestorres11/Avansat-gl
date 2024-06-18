@@ -175,7 +175,7 @@
                                                         <input type="text" id="num_soliciID" name="num_solici" size="8">
                                                     </div>
                                                     <div class="col-2 text-right">
-                                                      <label>Placa / Identificaciï¿½n:</label>
+                                                      <label>Placa / Identificación:</label>
                                                     </div>
                                                     <div class="col-2">
                                                       <input type="text" id="num_identifiID" name="num_identifiID">
@@ -202,6 +202,19 @@
                                                         <input type="date" id="fec_finxxx" name="fec_finxxx" value="'.$mDateNOW.'">
                                                     </div>
                                                 </div>
+
+                                                <div class="row mt-3">
+                                                    <div class="col-2 text-right">
+                                                        <label>Aseguradora:</label>
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <select id="aseguradoraID" name="aseguradora" style="width:150px;">
+                                                            <option value="">Seleccione</option>
+                                                            '.$this->darAseguradora().'
+                                                        </select>
+                                                    </div>
+                                                </div>
+
                                                 <div class="row mt-4">
                                                     <div class="col-12 text-center">
                                                         <button type="button" onclick="executeFilter()" class="btn btn-success btn-sm">Filtrar</button>
@@ -342,13 +355,13 @@
         }
 
         private function darCiudadInput($cod_ciudad){
-          $sql = "SELECT a.cod_ciudad, a.nom_ciudad 
+          $sql = "SELECT a.cod_ciudad, a.nom_ciudad, a.cod_paisxx
                   FROM ".BASE_DATOS.".tab_genera_ciudad a
                   WHERE a.cod_ciudad = '".$cod_ciudad."';";
           $query = new Consulta($sql, $this->conexion);
           $resultado = $query -> ret_matrix('a')[0];
           if(count($resultado)>0){
-            return $resultado['nom_ciudad'].' - '.$resultado['cod_ciudad'];
+            return $resultado['nom_ciudad'].' ('.$resultado['cod_ciudad'].'-'.$resultado['cod_paisxx'].')';
           }else{
             return '';
           } 
@@ -431,6 +444,8 @@
           $con_wheveh = ' cod_segveh = '.$info['cod_vehicu'];
           */
           
+
+
           echo '<table style="width: 100%;" id="dashBoardTableTrans">
                   <tr>
                       <td>
@@ -452,7 +467,7 @@
                                     </div>
                                     <div class="col-6">
                                       <div class="form-group">
-                                        <label for="nom_soliciID" class="labelinput">Correo electrï¿½nico:</label>
+                                        <label for="nom_soliciID" class="labelinput">Correo electr&oacute;nico:</label>
                                         <input class="form-control form-control-sm" type="text" placeholder="Correo electronico" id="cor_soliciID" name="cor_solici" disabled value="'.$info['cor_solici'].'">
                                       </div>
                                     </div>
@@ -753,7 +768,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          Licencia de trÃ¡nsito del vehÃ­culo
+                          Licencia de tránsito del vehí­culo
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 3).'" name="fil_licveh" id="fil_licveh" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_licveh', $nom_tablax, $con_wherex, 1).'
@@ -889,7 +904,7 @@
                       <div class="col-md-12 col-sm-12 mb-2">
                         <label for="nom_soliciID" class="labelinput">
                         <div class="obl">*</div>
-                          Licencia de conducciï¿½n conductor
+                          Licencia de conducci&oacute;n conductor
                         </label>
                         <input type="file" class="'.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 3).'" name="fil_liccon" id="fil_liccon" accept="image/png,image/jpeg, image/jpg">
                         '.$this->buscaDocumento('fil_liccon', $nom_tablax, $con_wherex, 1).'
@@ -1015,7 +1030,7 @@
                       <input class="form-control form-control-sm req num" type="text" id="num_docconID" name="num_doccon" value="'.$info['num_doccon'].'" disabled>
                   </div>
                   <div class="col-md-3 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expediciÃ³n:</label>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedici&oacute;n:</label>
                       <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_expcon" name="lug_expcon" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_expcon']).'" validate>
                       <div id="lug_expcon-suggestions" class="suggestions" style="top: 50px !important;"></div>
                   </div>
@@ -1048,7 +1063,7 @@
                 $html.='
                           <div class="row">
                               <div class="col-md-3 col-sm-12 form-group">
-                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Licencia de conducciï¿½n No.:</label>
+                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Licencia de conducci&oacute;n No.:</label>
                                   <input class="form-control form-control-sm req num" type="text" id="num_licencID" name="num_licenc" value="'.$info['num_licenc'].'" validate>
                               </div>
                               <div class="col-md-2 col-sm-12 form-group">
@@ -1304,7 +1319,7 @@
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
-                          NÃºmero de licencia de transito:
+                          N&uacute;mero de licencia de transito:
                         </label>
                         <input class="form-control form-control-sm req" type="text" id="num_lictraID" name="num_lictra" value="'.$info['num_lictra'].'" validate>
                       </div>
@@ -1485,7 +1500,7 @@
           if($info['cod_estcon']=='3'){
           $tam = '4';
           $html.='<div class="col-md-3 col-sm-12 form-group">
-                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expediciÃ³n:</label>
+                      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedici&oacute;n:</label>
                       <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_exppos" name="lug_exppos" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_exppos']).'" validate>
                       <div id="lug_exppos-suggestions" class="suggestions" style="top: 50px !important;"></div>
                   </div>';
@@ -1571,7 +1586,7 @@
             if($info['cod_estcon']=='3'){
             $tam = '4';
             $html.='<div class="col-md-3 col-sm-12 form-group">
-                          <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expediciÃ³n:</label>
+                          <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad de expedici&oacute;n:</label>
                           <input class="form-control form-control-sm req" type="text" placeholder="De" id="lug_exppro" name="lug_exppro" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_exppro']).'" validate>
                           <div id="lug_exppro-suggestions" class="suggestions" style="top: 50px !important;"></div>
                      </div>';
@@ -1819,7 +1834,40 @@
         }
 
         private function darTransportadora(){
-            $sql="SELECT b.cod_tercer, b.nom_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer ORDER BY b.nom_tercer ASC";
+
+
+          if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ASEGURADO){
+            $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                  WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_EMPTRA."'";
+            $resultado = new Consulta($sql, $this -> conexion);
+            $resultados = $resultado->ret_matriz();
+            $filtro_transportadora .= " AND b.cod_tercer = '".$resultados[0]['clv_filtro']."' ";
+          }
+
+          if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ASEGURADORA){
+            $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                    WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_ASEGUR."'";
+              $resultado = new Consulta($sql, $this -> conexion);
+              $resultados = $resultado->ret_matriz();
+
+              if (sizeof($resultados) > 0) {
+                $mSql = "SELECT a.cod_transp
+                          FROM ".BASE_DATOS.".tab_asegur_transp a 
+                          WHERE a.cod_asegur = '".$resultados[0]['clv_filtro']."' ";
+                $mConsult = new Consulta($mSql, $this -> conexion);
+                $mData = $mConsult->ret_matriz('a');
+                $cod_terceres = array();
+                foreach ($mData as $tercero) {
+                  $cod_terceres[] = "'".$tercero['cod_transp']."'";
+                }
+                if (count($cod_terceres) > 0) {
+                  $filtro_transportadora .= ' AND a.cod_tercer IN (' . implode(',', $cod_terceres) . ')';
+                }
+              }
+          }
+
+
+            $sql="SELECT b.cod_tercer, b.nom_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer WHERE 1 = 1 ".$filtro_transportadora." ORDER BY b.nom_tercer ASC";
             $resultado = new Consulta($sql, $this->conexion);
             $resultados = $resultado->ret_matriz('a');
             $html='';
@@ -1828,6 +1876,52 @@
             }
             return utf8_encode($html);
         }
+
+        private function darAseguradora(){
+          $filtro_asegurado = '';
+          if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ASEGURADO){
+              $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                    WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_EMPTRA."'";
+              $resultado = new Consulta($sql, $this -> conexion);
+              $resultados = $resultado->ret_matriz();
+              if (sizeof($resultados) > 0) {
+                $mSql = "SELECT b.cod_tercer, b.nom_tercer
+                          FROM ".BASE_DATOS.".tab_asegur_transp a 
+                    INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b 
+                            ON a.cod_asegur = b.cod_tercer 
+                          WHERE a.cod_transp = '".$resultados[0]['clv_filtro']."' ";
+                $mConsult = new Consulta($mSql, $this -> conexion);
+                $mData = $mConsult->ret_matriz('a');
+                $cod_terceres = array();
+                foreach ($mData as $aseguradora) {
+                    $cod_terceres[] = $aseguradora['cod_tercer'];
+                }
+                if (count($cod_terceres) > 0) {
+                    $filtro_asegurado = ' AND b.cod_tercer IN (' . implode(',', $cod_terceres) . ')';
+                }
+              }
+          }
+
+          if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ASEGURADORA){
+            $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                    WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_ASEGUR."'";
+              $resultado = new Consulta($sql, $this -> conexion);
+              $resultados = $resultado->ret_matriz();
+              $filtro_asegurado .= ' AND b.cod_tercer = "'.$resultados[0]['clv_filtro'].'" ';
+          }
+
+          $sql="SELECT b.cod_tercer, b.nom_tercer FROM ".BASE_DATOS.".tab_tercer_emptra a INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_tercer = b.cod_tercer  
+                  WHERE a.esx_asegur = 1 
+                    ".$filtro_asegurado."
+                  ORDER BY b.nom_tercer ASC";
+          $resultado = new Consulta($sql, $this->conexion);
+          $resultados = $resultado->ret_matriz('a');
+          $html='';
+          foreach ($resultados as $registro){
+              $html .= '<option value="'.$registro['cod_tercer'].'">'.$registro['nom_tercer'].'</option>';
+          }
+          return utf8_encode($html);
+      }
 
         function obtenerTransportadoraPerfil(){
           $sql = "SELECT c.cod_tercer, c.nom_tercer, c.dir_emailx,
@@ -2185,8 +2279,9 @@
                       <tr>
                           <th>No. Solicitud</th> 
                           <th>Empresa Solicitante</th>
+                          <th>Empresa Aseguradora</th>
                           <th>Tipo de Solicitud</th>
-                          <th>IdentificaciÃ³n</th>
+                          <th>Identificación</th>
                           <th>Nombre / Marca</th>
                           <th>Fecha / Hora de Solicitud</th>
                           <th>Tiempo Transcurrido</th>
@@ -2209,9 +2304,9 @@
                         <th>No. Solicitud</th> 
                         <th>Empresa Solicitante</th>
                         <th>Tipo de Solicitud</th>
-                        <th>IdentificaciÃ³n</th>
+                        <th>Identificación</th>
                         <th>Nombre / Marca</th>
-                        <th>DocumentaciÃ³n</th>
+                        <th>Documentación</th>
                         <th>Descargar/Ver</th>
                         <th>Fecha / Hora de Solicitud</th>
                         <th>Fecha / Hora de FinalizaciÃ³n</th>
@@ -2246,7 +2341,7 @@
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-secondary secondary-color btn-sm" data-dismiss="modal">Cerrar</button>
-                      <button type="button" onclick="validateInicial()" class="btn btn-success btn-sm">Crear Solicitud</button>
+                      <button type="button" onclick="validateInicial()" id="crearSolicitudBTN" class="btn btn-success btn-sm">Crear Solicitud</button>
                     </div>
                   </form>
                 </div>
@@ -2260,6 +2355,24 @@
         private function camposFormulPrincipal(){
             $emptra = $this->obtenerTransportadoraPerfil();
             $mPerms = $this->getReponsability('jso_estseg');
+
+            if($_SESSION['datos_usuario']['cod_perfil'] == COD_PERFIL_ASEGURADO){
+              $input_aseguradora = '<div class="row">
+                                      <div class="col-6">
+                                        <div class="form-group">
+                                          <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Aseguradora:</label>
+                                          <select class="form-control form-control-sm req" id="cod_aseguraID" name="cod_asegura" validate>
+                                            '.$this->getAseguradora().'
+                                          </select>
+                                        </div>
+                                      </div>
+                                    </div>';
+              $input_aseguradora.= $this->getTransportadoraDefault();
+            }
+            
+
+
+
             if($mPerms->dat_regtra->ind_visibl == 1){
             $addTransp = '<div class="row">
                             <div class="col-6">
@@ -2273,10 +2386,16 @@
             }
             $html='<div class="card" style="margin:5px;">
             <div class="card-header color-heading bk-sure text-center">
-              Datos BÃ¡sicos del solicitante
+              Datos Básicos del solicitante
             </div>
           <div class="card-body">
+
+            <div class="alert alert-info" role="alert" style="display:none;" id="nc">
+              <h6 class="no-margin-bottom">La Transportadora no esta configurada para estudios de seguridad.</h6>
+            </div>
             '.$addTransp.'
+
+            '.$input_aseguradora.'
             <div class="row">
               <div class="col-6">
                 <div class="form-group">
@@ -2286,7 +2405,7 @@
               </div>
               <div class="col-6">
                 <div class="form-group">
-                  <label for="nom_soliciID" class="labelinput">Correo electrÃ³nico:</label>
+                  <label for="nom_soliciID" class="labelinput">Correo electr&oacute;nico:</label>
                   <input class="form-control form-control-sm req ema" type="text" placeholder="Correo electronico" id="cor_soliciID" name="cor_solici" validate value="'.$emptra['dir_emailx'].'">
                 </div>
               </div>
@@ -2295,14 +2414,14 @@
             <div class="row">
               <div class="col-4">
                 <div class="form-group">
-                  <label for="nom_soliciID" class="labelinput">NÃºmero de TelÃ©fono:</label>
-                  <input class="form-control form-control-sm" type="text" placeholder="NÃºmero de TelÃ©fono" id="tel_soliciID" name="tel_solici" disabled value="'.$emptra['num_telefo'].'">
+                  <label for="nom_soliciID" class="labelinput">Número de Teléfono:</label>
+                  <input class="form-control form-control-sm" type="text" placeholder="Número de Teléfono" id="tel_soliciID" name="tel_solici" disabled value="'.$emptra['num_telefo'].'">
                 </div>
               </div>
               <div class="col-4">
                 <div class="form-group">
-                  <label for="nom_soliciID" class="labelinput">NÃºmero de celular:</label>
-                  <input class="form-control form-control-sm" type="text" placeholder="NÃºmero de celular" id="cel_soliciID" name="cel_solici" value="'.$emptra['num_telmov'].'" validate>
+                  <label for="nom_soliciID" class="labelinput">Número de celular:</label>
+                  <input class="form-control form-control-sm" type="text" placeholder="Número de celular" id="cel_soliciID" name="cel_solici" value="'.$emptra['num_telmov'].'" validate>
                 </div>
               </div>
               <div class="col-4">
@@ -2316,16 +2435,16 @@
 
             <div class="row">
               <div class="col-12">
-                <div class="form-group" style="margin-bottom:0px;">
+                <div class="form-group radsol" style="margin-bottom:0px;">
                   <label for="nom_soliciID" class="labelinput">Tipo de estudio:</label>
                   <label class="ml-2 mr-2 radio-inline">
-                    <input class="mr-1" type="radio" name="tip_estudi" value="V" checked>vehÃ­culo
+                    <input class="mr-1" type="radio" name="tip_estudi" value="V" checked>vehí­culo
                   </label>
                   <label class="ml-2 mr-2 radio-inline">
                     <input class="mr-1" type="radio" name="tip_estudi" value="C">Conductor
                   </label>
                   <label class="ml-2 mr-2 radio-inline">
-                    <input class="mr-1" type="radio" name="tip_estudi" value="CV">Combinado (vehÃ­culo/Conductor)
+                    <input class="mr-1" type="radio" name="tip_estudi" value="CV">Combinado (vehí­culo/Conductor)
                   </label>
                 </div>
               </div>
@@ -2334,7 +2453,7 @@
           </div>
           </div>
 
-          <div class="card sol_estseg" style="margin:5px;">
+          <div class="card sol_estseg" style="margin:5px;" id="card_estseg">
             <div class="card-header text-center color-heading bk-sure">
               Estudio de Seguridad
             </div>
@@ -2349,7 +2468,7 @@
                 </div>
                 <div class="row">
                   <div class="col-12">
-                    <div class="header-row">AsignaciÃ³n de Poseedor</div>
+                    <div class="header-row">Asignación de Poseedor</div>
                   </div>
                 </div>
                 <div class="row">
@@ -2381,13 +2500,13 @@
                 <div class="row ml-2">
                   <div class="col-4 form-group">
                     <input type="checkbox" class="form-check-input esPropieClass" name="esPropie_V" showForm="formPropietV">
-                    <label class="form-check-label p-1" for="esPropieID">Â¿El poseedor es propietario?</label>
+                    <label class="form-check-label p-1" for="esPropieID">¿El poseedor es propietario?</label>
                   </div>
                 </div>
                 <div id="formPropietV">
                   <div class="row">
                     <div class="col-12">
-                      <div class="header-row">AsignaciÃ³n de Propietario</div>
+                      <div class="header-row">Asignación de Propietario</div>
                     </div>
                   </div>
                   <div class="row">
@@ -2446,14 +2565,14 @@
                         <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_apell2ConID_C" name="nom_apell2Con_C">
                     </div>
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>NÃºm. de celular del Conductor:</label>
-                        <input class="form-control form-control-sm req" type="text" placeholder="NÃºm. de celular" id="num_telmovConID_C" name="num_telmovCon_C">
+                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Núm. de celular del Conductor:</label>
+                        <input class="form-control form-control-sm req" type="text" placeholder="Núm. de celular" id="num_telmovConID_C" name="num_telmovCon_C">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4 form-group">
                         <label for="nom_soliciID" class="labelinput">NÃºm. de celular 2 del Conductor:</label>
-                        <input class="form-control form-control-sm" type="text" placeholder="NÃºm. de celular 2" id="num_telmo2ConID_C" name="num_telmo2Con_C">
+                        <input class="form-control form-control-sm" type="text" placeholder="Núm. de celular 2" id="num_telmo2ConID_C" name="num_telmo2Con_C">
                     </div>
                     <div class="col-5 form-group">
                         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email:</label>
@@ -2473,7 +2592,7 @@
 
                 <div class="row">
                   <div class="col-12">
-                    <div class="header-row">AsignaciÃ³n de Conductor</div>
+                    <div class="header-row">Asignación de Conductor</div>
                   </div>
                 </div>
 
@@ -2503,14 +2622,14 @@
                         <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_apell2ConID_CV" name="nom_apell2Con_CV">
                     </div>
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>NÃºm. de celular del Conductor:</label>
-                        <input class="form-control form-control-sm req" type="text" placeholder="NÃºm. de celular" id="num_telmovConID_CV" name="num_telmovCon_CV">
+                        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Núm. de celular del Conductor:</label>
+                        <input class="form-control form-control-sm req" type="text" placeholder="Núm. de celular" id="num_telmovConID_CV" name="num_telmovCon_CV">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-4 form-group">
-                        <label for="nom_soliciID" class="labelinput">NÃºm. de celular 2 del Conductor:</label>
-                        <input class="form-control form-control-sm" type="text" placeholder="NÃºm.  de celular 2" id="num_telmo2ConID_CV" name="num_telmo2Con_CV">
+                        <label for="nom_soliciID" class="labelinput">Núm. de celular 2 del Conductor:</label>
+                        <input class="form-control form-control-sm" type="text" placeholder="Núm. de celular 2" id="num_telmo2ConID_CV" name="num_telmo2Con_CV">
                     </div>
                     <div class="col-5 form-group">
                         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email:</label>
@@ -2520,7 +2639,7 @@
 
                 <div class="row">
                   <div class="col-12">
-                    <div class="header-row">AsignaciÃ³n de Poseedor</div>
+                    <div class="header-row">Asignación de Poseedor</div>
                   </div>
                 </div>
                 <div class="row">
@@ -2552,13 +2671,13 @@
                 <div class="row ml-2">
                   <div class="col-4 form-group">
                     <input type="checkbox" class="form-check-input esPropieClass" name="esPropie_CV" showForm="formPropietCom">
-                    <label class="form-check-label p-1" for="esPropieID">Â¿El poseedor es propietario?</label>
+                    <label class="form-check-label p-1" for="esPropieID">¿El poseedor es propietario?</label>
                   </div>
                 </div>
                 <div id="formPropietCom">
                   <div class="row">
                     <div class="col-12">
-                      <div class="header-row">AsignaciÃ³n de Propietario</div>
+                      <div class="header-row">Asignación de Propietario</div>
                     </div>
                   </div>
                   <div class="row">
@@ -2594,7 +2713,7 @@
                 <div class="row mt-2 ml-2">
                   <div class="col-6 form-group">
                     <input type="checkbox" class="form-check-input" id="genDespac" name="genDespac">
-                    <label class="form-check-label p-1" for="genDespacID"> Generar la creaciÃ³n del despacho al finalizar</label>
+                    <label class="form-check-label p-1" for="genDespacID"> Generar la creación del despacho al finalizar</label>
                   </div>
                 </div>
 
@@ -2951,6 +3070,41 @@ private function modalGuardadoFinal(){
             $mData = $mConsult->ret_matrix('a');
 
             return json_decode($mData[0][$mCatego]);
+        }
+
+        function getAseguradora(){
+          $html='';
+          $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_EMPTRA."'";
+          $resultado = new Consulta($sql, $this -> conexion);
+          $resultados = $resultado->ret_matriz();
+          if (sizeof($resultados) > 0) {
+            $mSql = "SELECT b.cod_tercer, b.nom_tercer
+                      FROM ".BASE_DATOS.".tab_asegur_transp a 
+                INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b 
+                        ON a.cod_asegur = b.cod_tercer 
+                      WHERE a.cod_transp = '".$resultados[0]['clv_filtro']."' ";
+            $mConsult = new Consulta($mSql, $this -> conexion);
+            $mData = $mConsult->ret_matrix('a');
+            foreach($mData as $aseguradora){
+              $html.='<option value="'.$aseguradora['cod_tercer'].'">'.$aseguradora['nom_tercer'].'</option>';
+            }
+          }
+
+          return $html;
+        }
+
+
+        function getTransportadoraDefault(){
+          $html='';
+          $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_EMPTRA."'";
+          $resultado = new Consulta($sql, $this -> conexion);
+          $resultados = $resultado->ret_matriz();
+          if (sizeof($resultados) > 0) {
+            $html.='<input type="hidden" value="'.$resultados[0]['clv_filtro'].'" name="transp_def" id="transp_defID">';
+          }
+          return $html;
         }
 
     }

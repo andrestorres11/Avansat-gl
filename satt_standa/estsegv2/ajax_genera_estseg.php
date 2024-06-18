@@ -151,33 +151,60 @@
         }
 
         public function consultaTransportadoras(){
+          
+          $filtro_aseguradora = '';
+          if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ASEGURADORA){
+            $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                    WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_ASEGUR."'";
+              $resultado = new Consulta($sql, self::$conexion);
+              $resultados = $resultado->ret_matriz();
+
+              if (sizeof($resultados) > 0) {
+                $mSql = "SELECT a.cod_transp
+                          FROM ".BASE_DATOS.".tab_asegur_transp a 
+                          WHERE a.cod_asegur = '".$resultados[0]['clv_filtro']."' ";
+                $mConsult = new Consulta($mSql, self::$conexion);
+                $mData = $mConsult->ret_matriz('a');
+                $cod_terceres = array();
+                foreach ($mData as $tercero) {
+                  $cod_terceres[] = $tercero['cod_transp'];
+                }
+                if (count($cod_terceres) > 0) {
+                    $filtro_aseguradora = ' AND a.cod_tercer IN (' . implode(',', $cod_terceres) . ')';
+                }
+              }
+          }
+
           $busqueda = $_REQUEST['key'];
             $sql="SELECT a.cod_tercer, a.nom_tercer
                     FROM 
                                  ".BASE_DATOS.".tab_tercer_tercer a 
                       INNER JOIN ".BASE_DATOS.".tab_tercer_activi b ON a.cod_tercer = b.cod_tercer 
-                      INNER JOIN ".BASE_DATOS.".tab_transp_tipser c ON c.cod_transp = a.cod_tercer 
+                      INNER JOIN (
+                          SELECT 
+                              cod_transp, 
+                              MAX(num_consec) AS max_num_consec
+                          FROM 
+                              ".BASE_DATOS.".tab_transp_tipser
+                          GROUP BY 
+                              cod_transp
+                      ) c_max ON c_max.cod_transp = a.cod_tercer
+                      INNER JOIN ".BASE_DATOS.".tab_transp_tipser c ON c.cod_transp = c_max.cod_transp AND c.num_consec = c_max.max_num_consec
                     WHERE 
                         b.cod_activi = '".COD_FILTRO_EMPTRA."' 
                         AND a.cod_estado = 1 
-                        AND c.num_consec = (
-                          SELECT 
-                            MAX(num_consec) 
-                          FROM 
-                            ".BASE_DATOS.".tab_transp_tipser 
-                          WHERE 
-                            cod_transp = c.cod_transp
-                        )
-                        AND c.ind_estseg = 1
+                        AND c.ind_estseg = 1 
                         AND (a.nom_tercer LIKE '%".$busqueda."%' OR
                              a.abr_tercer LIKE '%".$busqueda."%'
                             )
+                        ".$filtro_aseguradora."
                       GROUP BY 
                         c.cod_transp 
                       ORDER BY 
                         c.num_consec DESC";
             $resultado = new Consulta($sql, self::$conexion);
             $resultados = $resultado->ret_matriz();
+            
             $htmls='';
             foreach($resultados as $valor){
               $htmls.='<div><a class="suggest-element bk-principal_color white-color" data="'.$valor['cod_tercer'].' - '.$valor['nom_tercer'].'" id="'.$valor['cod_tercer'].'">'.$valor['cod_tercer'].' - '.$valor['nom_tercer'].'</a></div>';
@@ -588,6 +615,7 @@
         //usado
         function guardarSolicitud(){
             $emptra = $this->obtenerTransportadoraPerfil();
+            $cod_asegur = $_REQUEST['cod_asegur'];
             $cod_tipest = $_REQUEST['tip_estudi'];
             $cod_emptra = $_REQUEST['cod_transp'];
             $cor_solici = $_REQUEST['cor_solici'];
@@ -615,16 +643,15 @@
 
             //Consulta el tipo de estudio configurado para la transportadora de acuerdo al tipo de servicio
             $tip_servic = $this->getConfigTipSer($cod_emptra);
-  
-
+            
             $mSql="INSERT INTO ".BASE_DATOS.".tab_estseg_solici(
-                      cod_emptra, cor_solici, tel_solici,
+                      cod_emptra, cod_asegur, cor_solici, tel_solici,
                       cel_solici, cod_estcon, cod_tipest,
                       ind_credes, cod_conduc, cod_vehicu,
                       cod_despac, ind_estseg, usr_creaci,
                       fec_creaci
                     ) VALUES (
-                      '".$cod_emptra."', '".$cor_solici."', '".$tel_solici."',
+                      '".$cod_emptra."', '".$cod_asegur."','".$cor_solici."', '".$tel_solici."',
                       '".$cel_solici."', '".$tip_servic['tip_estseg']."', '".$cod_tipest."', 
                       '".$ind_credes."', '".$cod_conduc."', '".$cod_vehicu."',
                       '".$cod_despac."', 'P', '".self::$cod_usuari."', NOW()
@@ -844,16 +871,54 @@
           //usada
           function getRegistros(){
             $mPerms = self::getReponsability('jso_estseg');
-
+            $filtro_aseguradora = '';
             
             $sql = "SELECT a.clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_perfil a
                       WHERE a.cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."' ";
             $query = new Consulta($sql, self::$conexion);
             $mMatriz = $query -> ret_matrix('a');
 
+            if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ASEGURADO){
+              $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_EMPTRA."'";
+              $query = new Consulta($sql, self::$conexion);
+              $mMatriz = $query -> ret_matrix('a');
+            }
+
+
+            if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ASEGURADORA){
+              $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+              WHERE cod_usuari = '".$_SESSION['datos_usuario']['cod_usuari']."' AND cod_filtro = '".COD_FILTRO_ASEGUR."'";
+              $resultado = new Consulta($sql, self::$conexion);
+              $resultados = $resultado->ret_matriz();
+
+              if (sizeof($resultados) > 0) {
+                $mSql = "SELECT a.cod_transp as clv_filtro
+                          FROM ".BASE_DATOS.".tab_asegur_transp a 
+                          WHERE a.cod_asegur = '".$resultados[0]['clv_filtro']."' ";
+                $mConsult = new Consulta($mSql, self::$conexion);
+                $mMatriz = $mConsult->ret_matriz('a');
+
+                foreach ($mMatriz as $tercero) {
+                  $cod_terceres[] = $tercero['clv_filtro'];
+                }
+                if (count($cod_terceres) > 0) {
+                    $filtro_aseguradora = ' AND a.cod_emptra IN (' . implode(',', $cod_terceres) . ')';
+                }
+
+              }
+            }
+
             if(count($mMatriz)>0){
-              $filtro = $mMatriz[0]['clv_filtro'];
-              $cond .= " AND a.cod_emptra = '".$filtro."' ";
+              if(count($mMatriz)>1){
+                if($_SESSION['datos_usuario']['cod_perfil']==COD_PERFIL_ASEGURADORA){
+                  $cond.=$filtro_aseguradora;
+                }
+              }else{
+                $filtro = $mMatriz[0]['clv_filtro'];
+                $cond .= " AND a.cod_emptra = '".$filtro."' ";
+              }
+              
             }else{
               if($_REQUEST['cod_emptra'] != NULL || $_REQUEST['cod_emptra'] != ''){
                 $cond .= " AND a.cod_emptra = '".$_REQUEST['cod_emptra']."' ";
@@ -873,7 +938,12 @@
               $cond .= " AND (a.cod_conduc = '".$_REQUEST['num_identifi']."' OR a.cod_vehicu = '".$_REQUEST['num_identifi']."') ";
             }
 
+            if($_REQUEST['cod_asegur'] != NULL || $_REQUEST['cod_asegur'] != ''){
+              $cond .= " AND a.cod_asegur = '".$_REQUEST['cod_asegur']."' ";
+            }
+
             $sql = "SELECT a.cod_solici, b.nom_tercer,
+                           g.nom_tercer as 'nom_asegur',
                            c.nom_tipest, '' as 'col_indent', '' as 'col_nommar',
                            a.fec_creaci, a.cod_tipest, 0 as 'tie_gestio',
                            a.ind_estseg, 
@@ -888,6 +958,7 @@
                            LEFT JOIN ".BASE_DATOS.".tab_estseg_tercer d ON a.cod_conduc = d.cod_tercer
                            LEFT JOIN ".BASE_DATOS.".tab_estseg_vehicu e ON a.cod_vehicu = e.num_placax
                            LEFT JOIN ".BASE_DATOS.".tab_genera_marcas f ON e.cod_marcax = f.cod_marcax
+                           LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer g ON a.cod_asegur = g.cod_tercer
                         WHERE 1=1 ".$cond."; ";
               $query = new Consulta($sql, self::$conexion);
               $mMatriz = $query -> ret_matrix('a');
@@ -919,14 +990,18 @@
                 $tie_transcu = $fec_creaci->diff($fec_finali);
                 
                 if($datos['ind_estseg']=='P'){
+
+                  $datos['nom_asegur'] = $datos['nom_asegur']!='' ||$datos['nom_asegur']!='NULL' ? $datos['nom_asegur'] : 'NR';
+
                   $arr_regist = array(
                     0 => $btn,
                     1 => $datos['nom_tercer'],
-                    2 => $datos['nom_tipest'],
-                    3 => $col_identi,
-                    4 => $col_nommar,
-                    5 => $datos['fec_creaci'],
-                    6 => $this->get_format($tie_transcu),
+                    2 => $datos['nom_asegur'],
+                    3 => $datos['nom_tipest'],
+                    4 => $col_identi,
+                    5 => $col_nommar,
+                    6 => $datos['fec_creaci'],
+                    7 => $this->get_format($tie_transcu),
                   );
                   array_push($dataReturn['registrados'],(array)$arr_regist);
                 }else{
@@ -2234,7 +2309,8 @@
             if($data['lug_expcon'] != '' && $data['lug_expcon'] != '0 - No Registrada'){
               $ciu_expcon = self::separarCodigoCiudad($data['lug_expcon']);
             }
-            if($data['ciu_conduc'] != '' || $data['ciu_conduc'] != '0 - No Registrada'){
+
+            if($data['ciu_conduc'] != '' || $data['ciu_conduc'] != '0 - No Registrada' && $data['ciu_conduc'] != 'No Registrada (0-3)'){
               $dat_rescon = self::darDatosCiudad(self::separarCodigoCiudad($data['ciu_conduc']));
               $pai_reside = $dat_rescon['cod_paisxx'];
               $dep_reside = $dat_rescon['cod_depart'];
@@ -2264,7 +2340,6 @@
                     WHERE 
                       cod_tercer = '".$dataSol['cod_conduc']."' ";
             $query = new Consulta($sql, self::$conexion);
-            
             self::guardaArchivos($dataSol['cod_solici'], 2);
             if($query){
               return true;

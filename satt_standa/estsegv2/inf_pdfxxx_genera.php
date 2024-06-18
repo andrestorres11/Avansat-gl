@@ -211,6 +211,7 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> SetX($clx);
     $pdf -> Cell(40,6,utf8_decode('Destino'),1,0,'L');
     $pdf -> Cell(58,6,$info['ciu_desdes'],1,1,'L');
+
   if($info['cod_tipest']=='CV'){
     $pdf -> SetFont('Arial','B',8);
     $pdf -> SetFillColor(1, 11, 64);
@@ -227,26 +228,23 @@ class PDFInformeEstudioSeguridad extends PDF
                     a.cod_refere = b.cod_refere
             WHERE a.cod_estper = ".$info['num_doccon']." AND a.tip_refere = 'F'; ";
     $query = new Consulta($mSelect, $this -> conexion);
-    $resultados = $query -> ret_matriz('a');
+    $resultadosf = $query -> ret_matriz('a');
 
-    foreach($resultados as $key => $registro){
-      $pdf -> Ln(2);
-      $pdf -> SetFont('Arial','B',8);
-      $pdf -> SetFillColor(1, 11, 64);
-      $pdf -> SetTextColor(255,255,255);
-      $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.$key+1),1,1,'C',1);
+    foreach($resultadosf as $key => $familiar){
+
+      $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
 
       $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
-      $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
+      $pdf -> Cell(52,5,utf8_decode($familiar['nom_refere']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
-      $pdf -> Cell(66,5,utf8_decode($registro['nom_parent']),1,1,'L');
+      $pdf -> Cell(66,5,utf8_decode($familiar['nom_parent']),1,1,'L');
 
       $pdf -> Cell(39,5,utf8_decode('DIRECCIÓN'),1,0,'L',1);
-      $pdf -> Cell(52,5,utf8_decode($registro['dir_domici']),1,0,'L');
+      $pdf -> Cell(52,5,utf8_decode($familiar['dir_domici']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('TELÉFONO'),1,0,'L',1);
-      $pdf -> Cell(66,5,utf8_decode($registro['num_telefo']),1,1,'L');
+      $pdf -> Cell(66,5,utf8_decode($familiar['num_telefo']),1,1,'L');
 
-      $pdf -> MultiCell(196,5,utf8_decode('OBSERVACIÓN: '.$registro['obs_refere']),1, 'J',0);
+      $pdf -> MultiCell(196,5,utf8_decode('OBSERVACIÓN: '.$familiar['obs_refere']),1, 'J',0);
     }
 
     $pdf -> SetFont('Arial','B',8);
@@ -267,13 +265,9 @@ class PDFInformeEstudioSeguridad extends PDF
     $resultados = $query -> ret_matriz('a');
 
     foreach($resultados as $key => $registro){
-      $pdf -> Ln(2);
-      $pdf -> SetFont('Arial','B',8);
-      $pdf -> SetFillColor(1, 11, 64);
-      $pdf -> SetTextColor(255,255,255);
+
       $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
 
-      
       $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);
@@ -305,6 +299,7 @@ class PDFInformeEstudioSeguridad extends PDF
     $resultados = $query -> ret_matriz('a');
 
     foreach($resultados as $key=>$registro){
+      
       $pdf -> Cell(39,5,utf8_decode(($key+1).'. TRANSPORTADORA'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($registro['nom_transp']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('TELEFONO'),1,0,'L',1);
@@ -337,10 +332,7 @@ class PDFInformeEstudioSeguridad extends PDF
     $resultados = $query -> ret_matriz('a');
 
     foreach($resultados as $key => $registro){
-      $pdf -> Ln(2);
-      $pdf -> SetFont('Arial','B',8);
-      $pdf -> SetFillColor(1, 11, 64);
-      $pdf -> SetTextColor(255,255,255);
+      
       $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.$key+1),1,1,'C',1);
 
       $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
@@ -374,13 +366,9 @@ class PDFInformeEstudioSeguridad extends PDF
     $resultados = $query -> ret_matriz('a');
 
     foreach($resultados as $key => $registro){
-      $pdf -> Ln(2);
-      $pdf -> SetFont('Arial','B',8);
-      $pdf -> SetFillColor(1, 11, 64);
-      $pdf -> SetTextColor(255,255,255);
+
       $pdf -> Cell(196,6,utf8_decode('REFERENCIAS #'.($key+1)),1,1,'C',1);
 
-      
       $pdf -> Cell(39,5,utf8_decode('NOMBRE COMPLETO'),1,0,'L',1);
       $pdf -> Cell(52,5,utf8_decode($registro['nom_refere']),1,0,'L');
       $pdf -> Cell(39,5,utf8_decode('PARENTESCO'),1,0,'L',1);

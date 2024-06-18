@@ -47,6 +47,33 @@ class Aplica_Filtro_Usuari
         return $num_filas;
     }
 
+    
+    function listarAseguradas($conexion){
+        
+        $sql="SELECT clv_filtro FROM ".BASE_DATOS.".tab_aplica_filtro_usuari 
+                WHERE cod_usuari = '".$this -> cod_usuari."' AND cod_filtro = '".COD_FILTRO_ASEGUR."'";
+        $resultado = new Consulta($sql, $conexion);
+        $resultados = $resultado->ret_matriz();
+        if (sizeof($resultados) > 0) {
+            $query = "SELECT cod_transp as clv_filtro
+                      FROM " . BASE_DATOS . ".tab_asegur_transp
+                      WHERE cod_asegur = '" . $resultados[0]['clv_filtro'] . "' ";
+            $consulta = new Consulta($query, $conexion);
+            $num_filas = $consulta->ret_num_rows();
+            if ($num_filas > 0) {
+                $datos = $consulta->ret_matriz();
+                $clv_filtros = array();
+                foreach ($datos as $dato) {
+                    $clv_filtros[] = "'".$dato['clv_filtro']."'";
+                }
+                // Unir los valores con coma
+                $resultados_comas = implode(',', $clv_filtros);
+            }
+        }
+    
+        return $resultados_comas;
+    }
+
     function actualizar($conexion, $transaccion, $cf)
     {
         $query = "UPDATE ".BASE_DATOS.".tab_filtro_usuari
