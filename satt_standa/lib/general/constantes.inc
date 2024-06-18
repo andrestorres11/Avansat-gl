@@ -13,7 +13,7 @@ define("COD_PERFIL_DIRECTOR", "74");// Director CLF
 define("COD_PERFIL_SUPEREAL", "77");// Director CLF
 define("COD_PERFIL_CONTROLA", "7");// Controlador CLF
 define("COD_PERFIL_COORDINA", "73");// Controlador CLF
-define("COD_PERFIL_ASEGURADORA", "749");// ASEGURADORA
+define("COD_PERFIL_ASEGURADORA", "752");// ASEGURADORA
 define("COD_PERFIL_ASEGURADO", "751");// ASEGURADO
 
 
