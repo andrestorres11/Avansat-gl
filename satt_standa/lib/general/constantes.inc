@@ -162,5 +162,6 @@ define("API_PAD_PASS", "11111111");// api pad usuario
 //Constante mapa widetech
 define("URL_MAPA_WIDETECH", "https://gps.widetech.co/site/OnLineMap.aspx");
 
+define( 'URL_CENTRAL_APP' , 'https://oet-central.intrared.net/ap/interf/api_gateway/web/index.php' );
 
 ?>
