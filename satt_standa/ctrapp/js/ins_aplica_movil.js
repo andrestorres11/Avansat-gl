@@ -5,11 +5,15 @@ $(document).ready(function(){
 		var id = $(this).children(":selected").val();
 		var transp = $('#cod_transpID').val();
 		var op = 'datosConductor';
-		if(id==3){
+		var busq = 'buscarConductor';
+
+		if(id==4){
 			op = 'datosHojadeVidaCT';
+			busq = 'buscarAsistente';
 		}
+
 		$( "[name=num_docume]" ).autocomplete({
-			source: "../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=buscarConductor&activity="+id+"&nit_transp="+transp,
+			source: "../"+standa+"/ctrapp/ajax_insapl_movilx.php?op="+busq+"&activity="+id+"&nit_transp="+transp,
 			minLength: 3, 
 			delay: 100,
 			select: function(event, ui){ 
@@ -18,6 +22,7 @@ $(document).ready(function(){
 					data:{"cod_tercer":ui.item.value},
 					success: function(result){
 						data = JSON.parse(result);
+						console.log(data);
 						$("[name=tip_person]").val(data.cod_tipper);
 						$("[name=tip_docume]").val(data.cod_tipdoc);
 						$("[name=nom_usuari]").val(data.nom_tercer);
@@ -35,6 +40,72 @@ $(document).ready(function(){
 			}
 		});
 	});
+
+	$( "#num_documeID" ).change(function() {
+		$("[name=tip_person]").val('');
+		$("[name=tip_docume]").val('');
+		$("[name=nom_usuari]").val('');
+		$("[name=nom_appel1]").val('');
+		$("[name=nom_appel2]").val(''); 
+		$("[name=num_telef1]").val('');
+		$("[name=num_telef2]").val('');
+		$("[name=num_movilx]").val('');   
+		$("[name=num_direcc]").val(''); 
+		$("[name=nom_emailx]").val(''); 
+		$("[name=cod_seriex]").val(''); 
+	});
+
+	$("#nom_usrappID").change(function() {
+		var standa = $("[name=standa]").val(); 
+		var nom_usrapp = $("[name=nom_usrapp]").val();
+		var cod_transp = $("[name=cod_transp]").val();
+
+		$.ajax({
+			url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=validarUsuario",
+			data:{
+					"cod_usuari":nom_usrapp,
+					"cod_transp":cod_transp,
+				 },
+			beforeSend: function() {
+				Swal.fire({
+					title: 'Cargando',
+					text: 'Por favor espere...',
+					imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+					imageAlt: 'Custom image',
+					showConfirmButton: false,
+				});
+			},
+			success: function(result){
+				dataF = JSON.parse(result);
+				
+				if(dataF['response'] == "ok"){
+					msn = "Usuario Disponible";
+
+					Swal.fire({
+						title: 'Correcto!',
+						text: msn,
+						type: 'success',
+						confirmButtonColor: '#336600'
+					});
+				}
+				else{
+					msn = dataF['error'];
+					$("[name=nom_usrapp]").val('');
+
+					Swal.fire({
+						title: 'Error!',
+						text: msn,
+						type: 'error',
+						confirmButtonColor: '#336600'
+					});
+				}
+
+				
+			}
+		});
+
+	});
+	
 	
 	// validacion para saber si es un usuaraio administrador o de una transportadora y mostrar los datos de la misma
 	var total = $("#total").val();
@@ -66,9 +137,12 @@ $(document).ready(function(){
 
 function guardar(action){
 	var standa = $("[name=standa]").val(); 
+	var nom_usuari =  $("[name=nom_usuari]").val();
+	var nom_appel1 = $("[nom_appel1]").val();
 	var cod_tercer = $("[name=num_docume]").val();
 	var cod_usuari = $("[name=nom_usrapp]").val();
 	var cod_hashxx = $("[name=cod_seriex]").val();
+	var num_telef1 = $("[num_telef1]").val();
 	var ind_activo = $("#cod_estadoID").val();
 	var ind_admini = $("#ind_adminiID").val();
 	var nit_transpor = $("#nit_transpor").val();
@@ -119,27 +193,57 @@ function guardar(action){
 						"ind_admini":ind_admini,
 						"nit_transpor": nit_transpor,
 						"mail": mail,
-						"cod_transp": cod_transp
+						"cod_transp": cod_transp,
+						"nom_usuari": nom_usuari,
+						"nom_appel1": nom_appel1,
+						"num_telef1": num_telef1,
 					 },
+				beforeSend: function() {
+					Swal.fire({
+						title: 'Cargando',
+						text: 'Por favor espere...',
+						imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+						imageAlt: 'Custom image',
+						showConfirmButton: false,
+					})
+				},
 				success: function(result){
-					if(result == "ok"){
+					dataF = JSON.parse(result);
+					
+					if(dataF['response'] == "ok"){
 						msn = "Se ha registrado el usuario Exitosamente";
 						document.forms[0].reset();
+
+						Swal.fire({
+							title: 'Correcto!',
+							text: msn,
+							type: 'success',
+							confirmButtonColor: '#336600'
+						});
 					}
 					else{
-						msn = "ha ocurrido un error en el registro del usuario\npor favor intente mas tarde";
+						msn = dataF['error'];
+
+						Swal.fire({
+							title: 'Error!',
+							text: msn,
+							type: 'error',
+							confirmButtonColor: '#336600'
+						});
 					}
-					LoadPopupJQNoButton('open', 'Usuario Movil', 'auto', 'auto', false, false, true);
-					var popup = $("#popID");
-					var msj = "<div style='text-align:center'>"+msn+"</b><br><br><br><br>";
-						msj += "<input type='button' name='no' id='noID' value='Cerrar' style='cursor:pointer' onclick='Guardar(\"forward\")' class='crmButton small save'/><div>";			
-					popup.parent().children().children('.ui-dialog-titlebar-close').hide();
-					popup.append(msj); // //lanza el popUp
+
 				}
 			});
 	}
 	else{
-		alert("le han faltado campos por llenar\npor favor verifique\n"+message);
+		msn = "le han faltado campos por llenar\npor favor verifique\n"+message;
+
+		Swal.fire({
+			title: 'Error!',
+			text: msn,
+			type: 'error',
+			confirmButtonColor: '#336600'
+		})
 	}
 
 
@@ -156,8 +260,9 @@ function mostrar() {
 		type: "POST",
 		data: parametros,
 		async: false,
-
+		
 		success: function(data) {
+			$("#sec1").css("height", "auto");
 			$("#sec2").css("height", "auto");
 			$("#form3").append(data); // pinta los datos de la consulta
 			unCyfre();
@@ -245,21 +350,37 @@ function confirmar(action, obj)
 {
 	var cod_tercer = obj.find("input[id^=cod_tercer]").val();
 	var nom_tercer = obj.find("input[id^=nom_tercer]").val();
+	var cod_transp = $("[name=cod_transp]").val();
 	var standa = $("#standaID").val();
-	var parametros = "op=incativarUsuario&Ajax=on&cod_tercer=" + cod_tercer + "&action=" + action;
+	var parametros = "op=incativarUsuario&Ajax=on&cod_tercer=" + cod_tercer + "&action=" + action+"&cod_transp="+cod_transp;
 	$.ajax({
 		url: "../" + standa + "/ctrapp/ajax_insapl_movilx.php",
 		type: "POST",
 		data: parametros,
 		async: false,
-
+		beforeSend: function() {
+			Swal.fire({
+				title: 'Cargando',
+				text: 'Por favor espere...',
+				imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+				imageAlt: 'Custom image',
+				showConfirmButton: false,
+			})
+		},
 		success: function(data) {
-			LoadPopupJQNoButton('open', 'Estado Usuario', 'auto', 'auto', false, false, true);
-			var popup = $("#popID");
-			var msj = "<div style='text-align:center'>El usuario: <b>" + nom_tercer + " ha sido "+(action=='activarUsuario'?"activado":"inactivado")+"</b><br><br><br><br>";
-				msj += "<input type='button' name='no' id='noID' value='Cerrar' style='cursor:pointer' onclick='CerrarPopuUS()' class='crmButton small save'/><div>";			
-			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
-			popup.append(msj); // //lanza el popUp
+
+			msn = "El usuario" + nom_tercer + " ha sido "+(action=='activarUsuario'?"activado":"inactivado");
+			Swal.fire({
+				title: 'Estado Usuario!',
+				text: msn,
+				type: 'success',
+				confirmButtonColor: '#336600'
+			}).then((result) => {
+				if (result.value) {
+					location.reload();
+				}
+			});
+			
 		}
 	});
 }
@@ -280,22 +401,38 @@ function RestablecerUsuario()
 		type: "POST",
 		data: parametros,
 		async: false,
+		beforeSend: function() {
+			Swal.fire({
+				title: 'Cargando',
+				text: 'Por favor espere...',
+				imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
+				imageAlt: 'Custom image',
+				showConfirmButton: false,
+			})
+		},
 		success: function(data) {
-			console.log(data);
-			if(data=="ok")
+			dataF = JSON.parse(data);
+			if(dataF['response'] == "ok")
 			{
-				msn = "Se ha re establecido correctamente la contrase�a.";
+				msn = "Se ha re establecido correctamente la contraseña.";
+				Swal.fire({
+					title: 'Correcto!',
+					text: msn,
+					type: 'success',
+					confirmButtonColor: '#336600'
+				});
 			}
 			else
 			{
-				msn = "ha ocurrido un error en el registro del usuario\npor favor intente mas tarde.";
+				msn = dataF['error'];
+
+				Swal.fire({
+					title: 'Error!',
+					text: msn,
+					type: 'error',
+					confirmButtonColor: '#336600'
+				});
 			}
-			LoadPopupJQNoButton('open', 'Usuario Movil', 'auto', 'auto', false, false, true);
-			var popup = $("#popID");
-			var msj = "<div style='text-align:center'>"+msn+"</b><br><br><br><br>";
-				msj += "<input type='button' name='no' id='noID' value='Cerrar' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";			
-			popup.parent().children().children('.ui-dialog-titlebar-close').hide();
-			popup.append(msj); // //lanza el popUp
 		}
 	});
 }

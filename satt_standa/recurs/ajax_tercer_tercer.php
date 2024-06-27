@@ -183,12 +183,12 @@ class tercer {
                            cod_tercer,cod_tipdoc,nom_apell1,nom_apell2,nom_tercer,abr_tercer,
                            dir_domici,num_telef1,num_telef2,num_telmov,cod_paisxx,cod_depart,
                            cod_ciudad,cod_estado,obs_tercer,usr_creaci,fec_creaci,num_verifi,
-                           dir_emailx,dir_urlweb,num_faxxxx)
+                           dir_emailx,dir_urlweb,num_faxxxx,cod_contro)
                     VALUES( 
                             '$tercer->cod_tercer','$tercer->cod_tipdoc','$tercer->nom_apell1','$tercer->nom_apell2','$tercer->nom_tercer','$tercer->abr_tercer',
                             '$tercer->dir_domici','$tercer->num_telef1','$tercer->num_telef2','$tercer->num_telmov','$tercer->cod_paisxx','$tercer->cod_depart',
                             '$tercer->cod_ciudad','$tercer->cod_estado','$tercer->obs_tercer','$tercer->usr_creaci','$tercer->fec_creaci','$tercer->num_verifi',
-                            '$tercer->dir_emailx','$tercer->dir_urlweb','$tercer->num_faxxx') ";
+                            '$tercer->dir_emailx','$tercer->dir_urlweb','$tercer->num_faxxx','$tercer->cod_contro') ";
                 $insercion = new Consulta($query, self::$cConexion, "BR");
                 #inserta la relacion entre el tercero y la transportadora
                 $query = "INSERT INTO " . BASE_DATOS . ".tab_transp_tercer 
@@ -391,7 +391,8 @@ class tercer {
                           num_verifi = '$tercer->num_verifi',
                           dir_emailx = '$tercer->dir_emailx',
                           dir_urlweb = '$tercer->dir_urlweb',
-                          num_faxxxx = '$tercer->num_faxxx'
+                          num_faxxxx = '$tercer->num_faxxx',
+                          cod_contro = '$tercer->cod_contro'
                                       WHERE
                           cod_tercer = '$tercer->cod_tercer'";
             $insercion = new Consulta($query, self::$cConexion, "BR");
@@ -508,7 +509,7 @@ class tercer {
                    a.num_faxxxx,a.num_telef2, a.cod_terreg,a.num_verifi,a.cod_paisxx,
                    a.cod_depart,a.usr_creaci, a.fec_creaci,a.usr_modifi, a.fec_modifi,
                    CONCAT( UPPER(b.abr_ciudad), '(', LEFT(c.nom_depart, 4), ') - ', LEFT(d.nom_paisxx, 3) ) abr_ciudad,
-                   a.num_faxxxx num_faxxx, e.nom_paisxx
+                   a.num_faxxxx num_faxxx, e.nom_paisxx,a.cod_contro
               FROM " . BASE_DATOS . ".tab_tercer_tercer a
               INNER JOIN " . BASE_DATOS . ".tab_genera_ciudad b ON b.cod_ciudad = a.cod_ciudad
               INNER JOIN " . BASE_DATOS . ".tab_genera_depart c ON c.cod_depart = b.cod_depart

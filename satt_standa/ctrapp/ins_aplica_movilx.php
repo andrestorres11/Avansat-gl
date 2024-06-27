@@ -65,6 +65,7 @@ class InsertarAutorizacion{
    		echo "<link rel='stylesheet' href='../".DIR_APLICA_CENTRAL."/estilos/jquery.css' type='text/css'>";
 		echo "<script language='JavaScript' src='../".DIR_APLICA_CENTRAL."/ctrapp/js/ins_aplica_movil.js'></script>";
 		echo "<script language='JavaScript' src='../".DIR_APLICA_CENTRAL."/js/functions.js'></script>";
+		echo "<script src='../" . DIR_APLICA_CENTRAL . "/js/sweetalert2.all.8.11.8.js'></script>";
 		
 		$form -> nueva_tabla( ); 
 		$form -> linea("<center>Tipo de usuario</center>","1","t"); 	
@@ -109,7 +110,7 @@ class InsertarAutorizacion{
 
 		$form -> nueva_tabla( );
 
-		$form -> botoni("Guardar","guardar()","1");
+		$form ->StyleButton("name:send;  id:guardarID; value:Guardar; onclick:guardar(); align:center; colspan:4;  class:crmButton small save");
 		$form -> cerrar();
 	}
 }

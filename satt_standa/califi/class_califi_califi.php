@@ -1182,6 +1182,8 @@ class Califi
 												  'url_webser' => $mIntegradorGPS["url_webser"],
 												  'tie_report' => $mIntegradorGPS["tie_report"],
 		                                          ]);
+
+
 		  if($mResp['code'] == '1000') { 
 		    $mCode = $mResp['code'];
 		    $mSage = $mResp['message'];

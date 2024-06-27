@@ -463,6 +463,10 @@ class Proc_despac {
                     }
                 }
 
+                if($cod_usuari=='JavierAmaya'){
+                    print_r($in_homol);
+                }
+
 
                 // ----------------------------------------------
 
@@ -498,6 +502,8 @@ class Proc_despac {
                 $query .=" ORDER BY d.fec_planea ";
                 $consulta = new Consulta($query, $this->conexion);
                 $matrizlink = $consulta->ret_matriz();
+                
+
 
                 if (count($in_homol) > 0 && sizeof($matrizlink) <= 0) {
                     $mens = new mensajes();

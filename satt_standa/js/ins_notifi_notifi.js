@@ -596,6 +596,27 @@ function ValidateFormExt(cod_tipnot) {
             status.NOTNULL.push(dato.attr('name'), dato.val());
         }
     });
+
+    jsonArray.RECOMENDADOS = {};
+    $("#jsonRecomen").find("input[type=text]").each(function() {
+        dato = $(this);
+        if ($(this).val() != "") {
+            jsonArray.RECOMENDADOS[dato.attr('name')] = dato.val();
+        }/* else {
+            status.NOTNULL.push(dato.attr('name'), dato.val());
+        }*/
+    });
+
+    jsonArray.CANDADOS = {};
+    $("#jsonCanSat").find("input[type=text]").each(function() {
+        dato = $(this);
+        if ($(this).val() != "") {
+            jsonArray.CANDADOS[dato.attr('name')] = dato.val();
+        }/* else {
+            status.NOTNULL.push(dato.attr('name'), dato.val());
+        }*/
+    });
+
     if (status.NOTNULL.length > 0) {
         return status;
     } else {

@@ -3812,7 +3812,9 @@ class InsertNovedad {
                             strpos($mData['nom_contro'], "oal") !== FALSE || 
                             strpos($mData['nom_contro'], "ecl") !== FALSE
                            ) {
-                            $mControPadre = self::getPCPadre($regist);
+                            //$mControPadre = self::getPCPadre($regist);
+
+                            $mControPadre['cod_contro'] = $regist['contro'];
 
                             /*                             * ****************** TRATAMIENTO SOAP ******************** */
                             ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
@@ -3848,12 +3850,26 @@ class InsertNovedad {
                                 $parametros['hora'] = $mFecha[1];
                                 $parametros['fecha'] = $mFecha[0];
                                 $parametros['placa'] = trim($mDatDespac['num_placax']);
+
+                                /*                             * ****************** TRATAMIENTO SOAP ******************** */
+                                ini_set("soap.wsdl_cache_enabled", "0"); // disabling WSDL cache
+
                                 // $parametros['manifiesto_codigo'] = $mDatDespac['cod_manifi'];
 
                                 $oSoapClient = new SoapClient($url_webser, array('encoding' => 'ISO-8859-1'));
 
                                 //Métodos disponibles en el WS
                                 $respuesta = $oSoapClient-> __soapCall( 'puestocontrol', $parametros );
+
+                                $mLogFile = '/var/www/html/ap/satt_intgps/logs/sendNovedades/log_Silogtrans_'.date( "Y_m_d" ).'.log';
+                                $file = fopen( $mLogFile, "a+" );
+                                $reg = fwrite( $file, "\n---------------------------------------------------" );
+                                $reg = fwrite( $file, "\nExecution Date-Time: ".date( "Y/m/d H:i:s" )."" );
+                                $reg = fwrite( $file, "\nTransportadora: ".$regist["nittra"]."" );
+                                $reg = fwrite( $file, "\nSend: ".var_export($parametros,true)."" );
+                                $reg = fwrite( $file, "\nResponse: ".var_export($respuesta,true)."" );
+                                $close = fclose( $file );
+
                                 if ($respuesta != 'OK REPORTO.') {
                                     $error_ = $respuesta;
                                 }

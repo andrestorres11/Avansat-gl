@@ -68,6 +68,30 @@
 	});
 
 
+	//validar marcación actividad proveedor asistencia 
+	function validateProvAsist(){
+
+		$("#cod_controID").attr('disabled', true);
+		let activi = [];
+
+		$('input[type="checkbox"]').each(function(key,data) {
+			if(data.checked &&  data.value == 14){
+				$("#cod_controID").attr('disabled', false);
+				activi.push(true);
+			}else if(data.checked){
+				activi.push(false);
+			}
+		});		
+
+		const result = activi.filter((val) => val == true);
+		console.log(result.length);
+		if(result.length==0){
+			$('#cod_controID').val('0');
+		}
+		
+	}
+
+
 
 	//funcion para mostrar la lista de los terceros de una transportadora
 	function mostrar() {
@@ -152,7 +176,7 @@
 		var onclick = "onclick='registrar(\"";
 		onclick += operacion;
 		onclick += "\")'";
-		var msj = "<div style='text-align:center'�Est\u00E1 seguro de <b>" + operacion + "</b> el Tercero: <b>" + tercero + "?</b><br><br><br><br>";
+		var msj = "<div style='text-align:center' Est\u00E1 seguro de <b>" + operacion + "</b> el Tercero: <b>" + tercero + "?</b><br><br><br><br>";
 		msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' " + onclick + " class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/> &nbsp;&nbsp;&nbsp;&nbsp";
 		msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save ui-button ui-widget ui-state-default ui-corner-all'/><div>";
 
@@ -177,7 +201,7 @@
 			LoadPopupJQNoButton('open', 'Confirmar Operaci\u00F3n', 'auto', 'auto', false, false, true);
 			var popup = $("#popID");
 			var conductor = $("#nom_tercerID").val();
-			var msj = "<div style='text-align:center'>�Est\u00E1 seguro de <b>editar</b> el tercero: <b>" + conductor + "?</b><br><br><br><br>";
+			var msj = "<div style='text-align:center'> Est\u00E1 seguro de <b>editar</b> el tercero: <b>" + conductor + "?</b><br><br><br><br>";
 			msj += "<input type='button' name='si' id='siID' value='Si' style='cursor:pointer' onclick='formulario()' class='crmButton small save'/> &nbsp;&nbsp;&nbsp;&nbsp";
 			msj += "<input type='button' name='no' id='noID' value='No' style='cursor:pointer' onclick='closePopUp()' class='crmButton small save'/><div>";
 

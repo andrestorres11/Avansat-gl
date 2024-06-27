@@ -355,7 +355,7 @@ class Proc_alerta
    {
      if( $selectedArray['cod_contro']==$contro['cod_contro'] )
      {
-        $nom_contro = $contro['nom_contro'];
+        $nom_contro = $contro['cod_contro']." - ".$contro['nom_contro'];
      }
    }
    if( $nom_contro )

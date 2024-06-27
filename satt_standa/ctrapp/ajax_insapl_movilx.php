@@ -1,4 +1,6 @@
 <?php 
+/*ini_set('display_errors', true);
+    error_reporting(E_ALL & ~E_NOTICE);*/
 
   define("URL_ARCHIV_STANDA", "/var/www/html/ap/");
 class AjaxInsertarAutorizacion
@@ -15,6 +17,10 @@ class AjaxInsertarAutorizacion
 
 			case 'buscarConductor':
 				$this -> buscarConductor();
+				break;
+
+			case 'buscarAsistente':
+				$this-> buscarAsistente();
 				break;
 
 			case 'datosConductor':
@@ -37,9 +43,8 @@ class AjaxInsertarAutorizacion
 			case 'RestablecerUsuario':
 				$this -> RestablecerUsuario();
 				break;
-			
-			default:
-				echo "hola";
+			case 'validarUsuario':
+				$this -> validateUniqueUser();
 				break;
 		}
 	}
@@ -96,6 +101,24 @@ class AjaxInsertarAutorizacion
 		$data = array();
 		for($i=0, $len = count($tercer); $i<$len; $i++){
 		 	$data [] = '{"label":"'.$tercer[$i]['cod_tercer'] . " - " . $tercer[$i]['abr_tercer'].'","value":"'. ($tercer[$i]['cod_tercer']).'"}'; 
+		}
+		echo '['.join(', ',$data).']';
+
+	}
+
+	function buscarAsistente(){
+
+		$query = "SELECT a.cod_tercer,a.abr_tercer
+					FROM ".BASE_DATOS.".tab_tercer_tercer a 
+					INNER JOIN ".BASE_DATOS.".tab_tercer_activi b ON a.cod_tercer = b.cod_tercer AND b.cod_activi = '14'
+					WHERE a.cod_tercer LIKE '%".$_REQUEST['term']."%'";
+
+		$consulta = new Consulta($query, $this -> conexion);
+		$tercer = $consulta -> ret_matriz("a");
+
+		$data = array();
+		for($i=0, $len = count($tercer); $i<$len; $i++){
+		$data [] = '{"label":"'.$tercer[$i]['cod_tercer'] . " - " . $tercer[$i]['abr_tercer'].'","value":"'. ($tercer[$i]['cod_tercer']).'"}'; 
 		}
 		echo '['.join(', ',$data).']';
 
@@ -171,20 +194,22 @@ class AjaxInsertarAutorizacion
 
 		include("../ctrapp/seguridad/AESClass.php");
 
-		$query = "SELECT IF(ISNULL(a.pri_apelli) OR a.pri_apelli = '', 'N/A' , a.pri_apelli) AS nom_tercer,
-						 IF(ISNULL(a.seg_apelli) OR a.seg_apelli = '', 'N/A' , a.seg_apelli) AS nom_apell1,
-						 IF(ISNULL(a.nom_contra) OR a.nom_contra = '', 'N/A' , a.nom_contra) AS nom_apell2,
-						 '' AS num_telef1,
-						 '' AS num_telef2,
-						 IF(ISNULL(a.num_celula) OR a.num_celula = '', 'N/A' , a.num_celula) AS num_telmov, 
+		$query = "SELECT IF(ISNULL(a.nom_tercer) OR a.nom_tercer = '', 'N/A' , a.nom_tercer) AS nom_tercer,
+						 IF(ISNULL(a.nom_apell1) OR a.nom_apell1 = '', 'N/A' , a.nom_apell1) AS nom_apell1,
+						 IF(ISNULL(a.nom_apell2) OR a.nom_apell2 = '', 'N/A' , a.nom_apell2) AS nom_apell2,
+						 IF(ISNULL(a.num_telef1) OR a.num_telef1 = '', 'N/A' , a.num_telef1) AS num_telef1,
+						 IF(ISNULL(a.num_telef2) OR a.num_telef2 = '', 'N/A' , a.num_telef2) AS num_telef2,
+						 IF(ISNULL(a.num_telmov) OR a.num_telmov = '', 'N/A' , a.num_telmov) AS num_telmov, 
 						 IF(ISNULL(a.dir_domici) OR a.dir_domici = '', 'N/A' , a.dir_domici) AS dir_domici,
 						 IF(ISNULL(a.dir_emailx) OR a.dir_emailx = '', 'N/A' , a.dir_emailx) AS dir_emailx,
 						 IF(ISNULL(a.fec_creaci) OR a.fec_creaci = '', 'N/A' , a.fec_creaci) AS fec_creaci,
-						 IF(ISNULL(a.cod_docume) OR a.cod_docume = '', 'N/A' , a.cod_docume) AS cod_tercer,
+						 IF(ISNULL(a.cod_tercer) OR a.cod_tercer = '', 'N/A' , a.cod_tercer) AS cod_tercer,
 						 IF(a.cod_tipdoc = 'C' , 'N'   , 'J' ) AS cod_tipper,
 						 IF(ISNULL(a.cod_tipdoc) OR a.cod_tipdoc = '', 'C'   , a.cod_tipdoc ) AS cod_tipdoc 
-					FROM ".BASE_DATOS.".tab_hojvid_ctxxxx a 
-				   WHERE a.cod_docume = '".$_REQUEST['cod_tercer']."'";
+					FROM ".BASE_DATOS.".tab_tercer_tercer a 
+			  LEFT JOIN ".BASE_DATOS.".tab_tercer_conduc b 
+			  		  ON a.cod_tercer = b.cod_tercer
+				   WHERE a.cod_tercer = '".$_REQUEST['cod_tercer']."'";
 
 		$consulta = new Consulta($query, $this -> conexion);
 		$tercer = $consulta -> ret_matriz("a");
@@ -223,13 +248,11 @@ class AjaxInsertarAutorizacion
      */
 	function guardarUsuario(){ 
     
-    $pri_clave = "";
-    for ($i=0; $i<6; $i++){
-        $pri_clave .=  dechex(rand(0,15));
-    }
- 
- 	 	$pri_clave2 = base64_encode($pri_clave);
- 	 	$decodedPass = base64_decode($pri_clave2);
+    
+		$password = $this->generatePassword();
+ 	 	$pri_clave2 = base64_encode($password);
+		$decodedPass = $password;
+
  	 	if($_REQUEST['Restablecer'] == "Restablecer")
  	 	{
  	 		$query = "UPDATE ".BASE_DATOS.".tab_usuari_movilx SET 
@@ -292,18 +315,20 @@ class AjaxInsertarAutorizacion
 
 		$consulta = new Consulta($query, $this -> conexion);
 
-		$consultaNit = "SELECT a.cod_transp 
-						  FROM " . BASE_DATOS . ".tab_interf_parame a WHERE a.cod_operad = 85 AND cod_transp = '".$_REQUEST['cod_transp']."' ";
-		
-		$nit = new Consulta($consultaNit, $this->conexion);
-		$nit = $nit->ret_matriz();
-		$nit = $nit[0]['cod_transp'];
+		$nit = $_REQUEST['cod_transp'];
+
+		$tip_usuari = NULL;
+		if( isset($_REQUEST['ind_admini']) ){
+			$tip_usuari = $_REQUEST['ind_admini'];
+		}else if( isset($_REQUEST['tip_usuari']) ){
+			$tip_usuari = $_REQUEST['tip_usuari'];
+		}
 
 		$data = array(
 
 			"cod_tercer" => $_REQUEST['cod_tercer'],
 			"cod_usuari" => $_REQUEST['cod_usuari'],
-			"clv_usuari" => $pri_clave2,
+			"clv_usuari" => $decodedPass,
 			"cod_hashxx" => $_REQUEST['cod_hashxx'],
 			"ind_activo" => $_REQUEST['ind_activo'],
 			"nit_transp" => $nit,
@@ -311,21 +336,114 @@ class AjaxInsertarAutorizacion
 			"usr_creaci" => $_SESSION['datos_usuario']['cod_usuari'],
 			"usr_modifi" => $_SESSION['datos_usuario']['cod_usuari'],
 			"source" => "SAT",
-			"ind_admini" => $_REQUEST['ind_admini']
- 
+			"ind_admini" => $tip_usuari,
+			"url_fotcon" => NULL,
+			"dir_emailx" => $_REQUEST['mail'],
+			"nom_usuari" => $_REQUEST['nom_usuari'],
+			"ape_usuari" => $_REQUEST['nom_appel1'],
+			"tel_usuari" => $_REQUEST['num_telef1'],
+ 			"ind_aprova" => 0,
+            "ind_estilo" => 0,
 		);	
+
+		
+
+		$error = '';
+		$pattern = '/20[0-9]/i';
+        include_once('../lib/InterfCentralApps.inc');
+        $centralApps = new IntefCentralApps('central');
 	
 		if(	$consulta ){
 
-			include URL_ARCHIV_STANDA."interf/app/APIClienteApp/controlador/UsuarioControlador.php";
-			$cliente = new UsuarioControlador();
-			if($_REQUEST['Restablecer'] == "Restablecer")
+			$respuesta = "ok";
+			$response = $centralApps ->auth_token(); //solicitud de token
+			
+			if(!preg_match($pattern, $response['code'])){
+				$respuesta = "no";
+				$error = 'Fallo autentificacion hacia central ';
+			}
+
+			$responsex = $centralApps ->rewNewTokenTranport($response['response']->renew,$nit);
+			
+			if(!preg_match($pattern, $responsex)){
+				$respuesta = "no";
+				$error = 'Se genero un error Generando token de transportadora ';
+			}
+
+			$campos = '&cod_tercer='.intval($_REQUEST['cod_tercer']); //envio de filtro por url cod_usuari=xxxx&nit_transp=xxxxx
+          	$responseData = $centralApps -> viewPetition('usuari-appsat',$campos);
+			
+			if(!preg_match($pattern, $responseData['code'])){
+				$respuesta = "no";
+				$error = 'Se genero un error validando usuario ';
+			}
+
+			$cod_consec = count($responseData['response']->items)>0 ? $responseData['response']->items[0]->cod_consec:0;
+
+			if($_REQUEST['Restablecer'] == "Restablecer" || $cod_consec!=0)
  	 		{
- 	 			$respuesta = $cliente -> actualizar($data);
+				$responseUpdate = $centralApps ->updatePetition('usuari-appsat',$data,$cod_consec);
+				
+				if(!preg_match($pattern, $responseUpdate['code'])){
+					$respuesta = "no";
+					$error = 'Se genero un error actualizando usuario ';
+				}else{
+					$campos = '&cod_tercer='.intval($_REQUEST['cod_tercer']).'&nit_transp='.$nit;
+					$responseTransportData = $centralApps -> viewPetition('transp-usuari',$campos);
+
+					if(!preg_match($pattern, $responseTransportData['code'])){
+						$respuesta = "no";
+						$error = 'Se genero un error validando usuario ';
+					}
+              
+					if(count($responseTransportData['response']->items)==0){ //insertar si no existe
+
+						$dataTransp = array(
+						"nit_transp" => $_REQUEST['cod_transp'],
+						"cod_tercer" => $_REQUEST['cod_tercer'],
+						"fec_creaci" => date("Y-m-d H:i:s"),
+						);
+
+						$responseInsert = $centralApps ->createPetition('transp-usuari',$dataTransp);
+						if(!preg_match($pattern, $responseInsert['code'])){
+							$respuesta = "no";
+							$error = 'Se genero un error actualizando usuario ';
+						}
+
+					}
+				}
+ 	 			
  			}
  			else
  			{
-				$respuesta = $cliente -> registrar($data); 
+				$responseInsert = $centralApps ->createPetition('usuari-appsat',$data);
+				if(!preg_match($pattern, $responseInsert['code'])){
+					$respuesta = "no";
+					$error = 'Se genero un error creando usuario ';
+				}
+
+				$campos = '&cod_tercer='.intval($_REQUEST['cod_tercer']).'&nit_transp='.$nit;
+				$responseTransportData = $centralApps -> viewPetition('transp-usuari',$campos);
+
+				if(!preg_match($pattern, $responseTransportData['code'])){
+					$respuesta = "no";
+					$error = 'Se genero un error validando usuario ';
+				}
+			
+				if(count($responseTransportData['response']->items)==0){ //insertar si no existe
+
+					$dataTransp = array(
+					"nit_transp" => $nit,
+					"cod_tercer" => $_REQUEST['cod_tercer'],
+					"fec_creaci" => date("Y-m-d H:i:s"),
+					);
+
+					$responseInsert = $centralApps ->createPetition('transp-usuari',$dataTransp);
+					if(!preg_match($pattern, $responseInsert['code'])){
+						$respuesta = "no";
+						$error = 'Se genero un error actualizando usuario ';
+					}
+				}
  			}
  
 			if($respuesta == "ok"){
@@ -348,18 +466,35 @@ class AjaxInsertarAutorizacion
 					$asunto="Código de activación aplicación de INSPECCIÓN VEHICULAR ";
 				}
 
-                mail($_REQUEST['mail'].", maribel.garcia@grupooet.com", $asunto, $mHtmlxx, $mCabece); 
-				echo "ok";
+				$to= $_REQUEST['mail'];
+				$subject = 'OET-AVANSATGL';
+				$from = 'notificaciones@faro.com.co';
+
+				mail($to,$subject,$asunto,"From: <$from>","-f $from -r $from");
+
+				echo json_encode(array("response"=>"ok","error"=>""));
 			}
 			else{
-				echo "no";
+
+				echo json_encode(array("response"=>"no","error"=>$error));
 			}
 
 		}
 		else{
-			echo "no";
+			echo json_encode(array("response"=>"no","error"=>$error));
 		}
 
+	}
+
+	private function generatePassword()
+	{
+		$key = "";
+		$pattern = "1234567890abcdefghijklmnopqrstuvwxyz";
+		$max = strlen($pattern)-1;
+		for($i = 0; $i < 6; $i++){
+			$key .= substr($pattern, mt_rand(0,$max), 1);
+		}
+		return $key;
 	}
 
 	/*! \fn: listaUsuariosMoviles
@@ -376,7 +511,7 @@ class AjaxInsertarAutorizacion
 		$mQuery = "SELECT   a.cod_transp, a.cod_tercer, c.cod_usuari, b.nom_tercer, b.nom_apell1, b.nom_apell2, 
 		IFNULL((SELECT `num_placax` FROM `tab_vehicu_vehicu` WHERE `cod_conduc`=a.cod_tercer LIMIT 1),'-') as 'num_placax',
 		b.dir_emailx, c.clv_usuari,
-		IF(c.ind_admini=0,'CONDUCTOR',IF(c.ind_admini=1,'ADMINISTRADOR',IF(c.ind_admini = 2,'INSPECCIONES','-'))) as 'ind_admini', IF( b.fec_creaci IS NULL OR a.fec_creaci = '', 'N/A', b.fec_creaci) AS fec_creaci, c.cod_tercer AS cod_pendie, c.ind_activo AS ind_estado
+		IF(c.ind_admini=0,'CONDUCTOR',IF(c.ind_admini=1,'ADMINISTRADOR',IF(c.ind_admini = 4,'INSPECCIONES','-'))) as 'ind_admini', IF( b.fec_creaci IS NULL OR a.fec_creaci = '', 'N/A', b.fec_creaci) AS fec_creaci, c.cod_tercer AS cod_pendie, c.ind_activo AS ind_estado
                    
 				   
 				   FROM  
@@ -403,7 +538,7 @@ class AjaxInsertarAutorizacion
 		$cList -> SetHeader( "Placa", "field:c.clv_usuari" );
 		$cList -> SetHeader( "Correo", "field:b.dir_emailx" );
 
-		$cList -> SetHeader( "Contraseña", "field:c.clv_usuari" );
+		$cList -> SetHeader( "Contrasena", "field:c.clv_usuari" );
 		$cList -> SetHeader( "Tipo Usuario", "field:c.ind_admini" );
 
 		$cList -> SetOption(utf8_decode("Opciones"),"field:cod_option; width:1%; onclikDisable:editarUsuarioMovil( 2, this ); onclikEnable:editarUsuarioMovil( 1, this ); onclikEdit:editarUsuarioMovil( 99, this );" );
@@ -428,6 +563,7 @@ class AjaxInsertarAutorizacion
 	{
 		try
         {
+			$nit = $_REQUEST['cod_transp'];
         	$ind_activo = null;
 			switch ($_REQUEST['action']) {
 				case 'activarUsuario':
@@ -445,11 +581,58 @@ class AjaxInsertarAutorizacion
 	                              usr_modifi = '".$_SESSION['datos_usuario']['cod_usuari']."',
 	                              fec_modifi = NOW()
 	                        WHERE cod_tercer = '".$_REQUEST['cod_tercer']."'";
+
 	        $consulta = new Consulta($mSql, $this -> conexion, "BR");
 	        if($consulta)
 	        {
-	          $consultaFinal = new Consulta("COMMIT", $this -> conexion);
-	          echo "ok";
+				$pattern = '/20[0-9]/i';
+        		include_once( '../lib/InterfCentralApps.inc');
+        		$centralApps = new IntefCentralApps('central');
+				
+				$error = '';
+				$respuesta = "ok";
+				$response = $centralApps ->auth_token(); //solicitud de token
+				if(!preg_match($pattern, $response['code'])){
+					$respuesta = "no";
+					$error = 'Fallo autentificacion hacia central ';
+				}
+
+				$responsex = $centralApps ->rewNewTokenTranport($response['response']->renew,$nit);
+				if(!preg_match($pattern, $responsex)){
+					$respuesta = "no";
+					$error = 'Se genero un error Generando token de transportadora ';
+				}
+
+				$campos = '&cod_tercer='.intval($_REQUEST['cod_tercer']); //envio de filtro por url cod_usuari=xxxx&nit_transp=xxxxx
+				$responseData = $centralApps -> viewPetition('usuari-appsat',$campos);
+
+				if(!preg_match($pattern, $responseData['code'])){
+					$respuesta = "no";
+					$error = "Error validando usuario central!";
+				}
+
+				$cod_consec = count($responseData['response']->items)>0 ? $responseData['response']->items[0]->cod_consec:0;
+
+				if($cod_consec!=0)
+				{
+					$data = array(
+						"ind_activo" => $ind_activo,
+					);	
+
+					$responseUpdate = $centralApps ->updatePetition('usuari-appsat',$data,$cod_consec);
+					if(!preg_match($pattern, $responseUpdate['code'])){
+						$respuesta = "no";
+						$error = "Error Actualizando usuario central!";
+					}
+				}
+
+				if($respuesta == "ok"){
+					$consultaFinal = new Consulta("COMMIT", $this -> conexion);
+					echo "ok";
+				}else{
+					$consultaFinal = new Consulta("ROLLBACK", $this -> conexion);
+					echo "error";
+				}
 	        }
 	        else
 	        {
@@ -487,6 +670,44 @@ class AjaxInsertarAutorizacion
         echo "Error en la funcion RestablecerUsuario:",  $e->getMessage(), "\n";
       }
     }
+
+	public function validateUniqueUser(){
+		include_once('../lib/InterfCentralApps.inc');
+		$respuesta = "ok";
+        $centralApps = new IntefCentralApps('central');
+
+		$response = $centralApps ->auth_token(); //solicitud de token
+			
+		if(!preg_match($pattern, $response['code'])){
+			$respuesta = "no";
+			$error = 'Fallo autentificaci?n hacia central ';
+		}
+
+		$responsex = $centralApps ->rewNewTokenTranport($response['response']->renew,$_REQUEST['cod_transp']);
+		if(!preg_match($pattern, $responsex)){
+			$respuesta = "no";
+			$error = 'Se genero un error Generando token de transportadora ';
+		}
+
+		$campos = '&cod_usuari='.$_REQUEST['cod_usuari'];
+		$responseData = $centralApps -> viewPetition('usuari-appsat',$campos);
+
+		if(!preg_match($pattern, $responseData['code'])){
+			$respuesta = "no";
+			$error = 'Se genero un error validando usuario ';
+			
+		}
+  
+		if(count($responseData['response']->items[0])>0){ //insertar si no existe
+			$respuesta = "no";
+			$error = 'Usuario ya en uso, utiliza un nuevo usuario';
+		}else{
+			$respuesta = "ok";
+			$error = '';
+		}
+
+		echo json_encode(array("response"=>$respuesta,"error"=>$error));
+	}
 }
 
 $ajax = new AjaxInsertarAutorizacion();
