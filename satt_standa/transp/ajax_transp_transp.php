@@ -466,7 +466,7 @@ class trans {
                        g.cod_terreg,g.nom_terreg, h.cod_minins,i.cod_agenci, i.nom_agenci,
                        i.con_agenci,i.dir_emailx,i.cod_ciudad cod_ciudaa, CONCAT( UPPER(k.abr_ciudad), '(', LEFT(l.nom_depart, 4), ') - ', LEFT(m.nom_paisxx, 3) ) abr_ciudaa,
                        i.dir_agenci,i.tel_agenci,i.num_faxxxx, a.cod_estado,
-                       a.cod_region, n.cod_region, b.cod_consec
+                       a.cod_region, n.cod_region, b.cod_consec, b.esx_asegur
                   FROM " . BASE_DATOS . ".tab_tercer_tercer a
 
                        INNER JOIN " . BASE_DATOS . ".tab_tercer_emptra b ON  a.cod_tercer = b.cod_tercer
@@ -586,14 +586,14 @@ class trans {
               cod_terreg, nom_tercer, abr_tercer,
               dir_domici, num_telef1, cod_paisxx, 
               cod_depart, cod_ciudad, dir_emailx,
-              num_faxxxx, obs_tercer, usr_creaci, 
+              num_faxxxx, obs_tercer, usr_creaci,
               fec_creaci, cod_estado, cod_region)
                   VALUES(
                     '$transp->cod_tercer', '$transp->num_verifi', '$transp->cod_tipdoc',
                     '$transp->cod_terreg', '$transp->nom_tercer', '$transp->abr_tercer', 
                     '$transp->dir_domici', '$transp->num_telef1', '$transp->cod_paisxx',
                     '$transp->cod_depart', '$transp->cod_ciudad', '$transp->dir_emailx',
-                    '$transp->num_faxxxx', '$transp->obs_tercer', '$transp->usr_creaci', 
+                    '$transp->num_faxxxx', '$transp->obs_tercer', '$transp->usr_creaci',
                     '$transp->fec_creaci', '1', '$transp->cod_region')";
 
 
@@ -644,12 +644,12 @@ class trans {
             $query = "INSERT INTO " . BASE_DATOS . ".tab_tercer_emptra
                         (cod_tercer,cod_minins,num_resolu,fec_resolu,num_region,ran_iniman,
                          ran_finman,ind_gracon,ind_ceriso,fec_ceriso,ind_cerbas,fec_cerbas,
-                         otr_certif,ind_cobnal,ind_cobint,nro_habnal,fec_resnal,nom_repleg,
+                         otr_certif,ind_cobnal,ind_cobint,esx_asegur,nro_habnal,fec_resnal,nom_repleg,
                          rut_logoxx,cod_consec,usr_creaci,fec_creaci)
                         VALUES (
                         '$emptra->cod_tercer','$emptra->cod_minins','$emptra->num_resolu','$emptra->fec_resolu','$emptra->num_region','$emptra->ran_iniman',
                         '$emptra->ran_finman','$emptra->ind_gracon','$emptra->ind_ceriso','$emptra->fec_ceriso','$emptra->ind_cerbas','$emptra->fec_cerbas',
-                        '$emptra->otr_certif','$emptra->ind_cobnal','$emptra->ind_cobint','$emptra->nro_habnal','$emptra->fec_resolu','$emptra->nom_repleg',
+                        '$emptra->otr_certif','$emptra->ind_cobnal','$emptra->ind_cobint','$emptra->esx_asegur', '$emptra->nro_habnal','$emptra->fec_resolu','$emptra->nom_repleg',
                         '$emptra->rut_logoxx','$emptra->cod_consec','$emptra->usr_creaci','$emptra->fec_creaci')";
             $insercion = new Consulta($query, self::$cConexion, "R");
 
@@ -1021,6 +1021,11 @@ class trans {
             $emptra->ind_gracon = 'N';
         }
 
+        //es aseguradora
+        if (!$emptra->esx_asegur) {
+            $emptra->esx_asegur = '0';
+        }
+
         $query = "UPDATE " . BASE_DATOS . ".tab_tercer_emptra
                     SET cod_minins = '$emptra->cod_minins',
                         num_resolu = '$emptra->num_resolu',
@@ -1036,6 +1041,7 @@ class trans {
                         otr_certif = '$emptra->otr_certif',
                         ind_cobnal = '$emptra->ind_cobnal',
                         ind_cobint = '$emptra->ind_cobint',
+                        esx_asegur = '$emptra->esx_asegur',
                         nro_habnal = '$emptra->nro_habnal',
                         fec_resnal = '$emptra->fec_resnal',
                         ".$foto."

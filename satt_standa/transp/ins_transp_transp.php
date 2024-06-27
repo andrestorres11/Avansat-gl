@@ -339,7 +339,11 @@ class Ins_config_emptra {
 
 						        $mHtml->Label("Abreviatura:", "width:25%; *:1;");
 						        $mHtml->Input(array("type" => "alpha", "name" => "transp[abr_tercer]", "validate" => "alpha", "obl" => "1", "minlength" => "5", "maxlength" => "50", "id" => "abr_tercerID", "width" => "25%", "value" => $datos->principal->abr_tercer));
+<<<<<<< HEAD
+						        $mHtml->Label("Nombre o Razón Social:", "width:25%; *:1;");
+=======
 						        $mHtml->Label(utf8_encode("Nombre o Razï¿½n Social:"), "width:25%; *:1;");
+>>>>>>> 6c620623f3d1acf67784d372c1818b63262278d3
 						        $mHtml->Input(array("type" => "alpha", "name" => "transp[nom_tercer]", "id" => "nom_tercer", "size"=>30, "validate" => "alpha",  "obl" => "1", "minlength" => "5", "maxlength" => "100", "width" => "100px", "value" => $datos->principal->nom_tercer, "end" => true));
 								
 								$mHtml->Label("Regional:", "width:25%; *:1;"); 
@@ -349,7 +353,11 @@ class Ins_config_emptra {
 								
 								$mHtml->Label("Ciudad:", "width:25%; *:1;");
 						        $mHtml->Input(array("type" => "text", "name" => "ciudad", "id" => "ciudadID", "validate" => "dir", "minlength" => "8", "maxlength" => "100",  "obl" => "1", "width" => "25%", "value" => $datos->principal->abr_ciudad));
+<<<<<<< HEAD
+						        $mHtml->Label("Dirección:", "width:25%; *:1;");
+=======
 						        $mHtml->Label(utf8_encode("Direcciï¿½n:"), "width:25%; *:1;");
+>>>>>>> 6c620623f3d1acf67784d372c1818b63262278d3
 						        $mHtml->Input(array( "name" => "transp[dir_domici]", "validate" => "dir",  "obl" => "1", "minlength" => "5", "maxlength" => "100", "id" => "dir_domici", "width" => "25%", "value" => $datos->principal->dir_domici, "end" => true));
 						        
 								$mHtml->Label("Telefono:", "width:25%; *:1;");
@@ -367,8 +375,16 @@ class Ins_config_emptra {
 								$mHtml->Label("Logo:", "width:25%; :1;");
                     			$mHtml->File(array("name" => "foto",  "id" => "foto", "validate"=>"file", "format"=>"jpg,jpeg,png", "width" => "25%", "end" => true) );
 								
+<<<<<<< HEAD
+								$mHtml->Label("Código de Empresa:", "width:25%; :1;");
+						        $mHtml->Input(array("type" => "numeric", "obl" => "yes","name" => "emptra[cod_minins]", "validate" => "numero", "minlength" => "1", "maxlength" => "4", "id" => "abr_tercer", "width" => "25%", "value" => $datos->principal->cod_minins));
+								
+								$mHtml->Label("¿Es aseguradora?:", "width:25%; :1;");
+					        	$mHtml->CheckBox(array("name" => "emptra[esx_asegur]", "id" => "esx_asegur", "width" => "25%", "value"=>"1", "checked"=>( $datos->principal->esx_asegur== "1" ? true : false),"end" => true));
+=======
 								$mHtml->Label(utf8_encode("Cï¿½digo de Empresa:"), "width:25%; :1;");
 						        $mHtml->Input(array("type" => "numeric", "obl" => "yes","name" => "emptra[cod_minins]", "validate" => "numero", "minlength" => "1", "maxlength" => "4", "id" => "abr_tercer", "width" => "25%", "value" => $datos->principal->cod_minins,"end" => true));
+>>>>>>> 6c620623f3d1acf67784d372c1818b63262278d3
 
 						        $mHtml->Label("Observaciones:", "width:25%; :1;");
 						        $mHtml->TextArea($mString, array("cols" => 100, "rows" => 8, "colspan" => "3", "name" => "transp[obs_tercer]", "id" => "obs_tercer", "width" => "25%", "value" => $datos->principal->obs_tercer,"end" => true));
@@ -383,7 +399,11 @@ class Ins_config_emptra {
 	    		$mHtml->OpenDiv("id:sec2");
 	    			$mHtml->OpenDiv("id:form2; class:contentAccordionForm");
 	    				$mHtml->Table("tr");
+<<<<<<< HEAD
+	    					$mHtml->Label("Distribución:", "width:25%; :1;");
+=======
 	    					$mHtml->Label(utf8_encode("Distribuciï¿½n:"), "width:25%; :1;");
+>>>>>>> 6c620623f3d1acf67784d372c1818b63262278d3
 					        $mHtml->CheckBox(array("name" => "modali[cod_modali1]", "checked"=>($datos->modalidades[0][0] == 1 ? true : false), "width" => "25%", "value" =>1));
 					        $mHtml->Label("Masivo:", "width:25%; :1;");
 					        $mHtml->CheckBox(array("name" => "modali[cod_modali2]",  "checked"=>($datos->modalidades[1][0] == 2 ? true : false), "width" => "25%", "value" =>2, "end" => true));
@@ -406,7 +426,11 @@ class Ins_config_emptra {
 					        $mHtml->CheckBox(array("name" => "emptra[ind_cobnal]", "id" => "ind_cobnal", "width" => "25%", "value"=>"S", "checked"=>( $datos->principal->ind_cobnal== "S" ? true : false)));
 					        $mHtml->Label("Cobertura Internacional:", "width:25%; :1;");
 					        $mHtml->CheckBox(array("name" => "emptra[ind_cobint]", "id" => "ind_cobint", "width" => "25%", "value"=>"S", "checked"=>( $datos->principal->ind_cobint== "S" ? true : false), "end" => true));
+<<<<<<< HEAD
+							$mHtml->Label("Nro Habilitación Nacional:", "width:25%; :1;");
+=======
 							$mHtml->Label(utf8_encode("Nro Habilitaciï¿½n Nacional:"), "width:25%; :1;");
+>>>>>>> 6c620623f3d1acf67784d372c1818b63262278d3
 	        				$mHtml->Input(array("type" => "alpha", "type" => "numeric",  "validate" => "alpha", "minlength" => "1", "maxlength" => "30", "name" => "emptra[nro_habnal]", "id" => "nro_habnal", "width" => "25%", "value" => $datos->principal->nro_habnal));
 					        $mHtml->Label(utf8_encode("Fecha Resoluciï¿½n (AAAA-MM-DD):"), "width:25%; :1;");
 					        $mHtml->Input(array("type" => "date", "obl" => "yes", "name" => "emptra[fec_resnal]", "id" => "fec_resnal", "width" => "25%", "maxlength" => "10", "value" => $datos->principal->fec_resnal, "end" => true));
@@ -434,11 +458,19 @@ class Ins_config_emptra {
 	    		$mHtml->OpenDiv("id:sec2");
 	    			$mHtml->OpenDiv("id:form2; class:contentAccordionForm");
 	    				$mHtml->Table("tr");
+<<<<<<< HEAD
+	    					$mHtml->Label("Certificación ISO:", "width:25%; :1;");
+					        $mHtml->CheckBox(array("name" => "emptra[ind_ceriso]", "checked"=>($datos->principal->ind_ceriso == "S" ? true : false), "id"=>"ind_cerisoID", "width" => "25%", "value" =>"S"));
+					        $mHtml->Label("Vigencia(AAAA-MM-DD):", "width:25%; :1;");
+					        $mHtml->Input(array("type" => "date", "obl" => "yes", "id"=>"fec_cerisoID", "validate" => "date", "name" => "emptra[fec_ceriso]", "width" => "25%", "maxlength" => "10", "value" => $datos->principal->fec_ceriso, "end" => true));
+					        $mHtml->Label("Certificación BASC:", "width:25%; :1;");
+=======
 	    					$mHtml->Label(utf8_encode("Certificaciï¿½n ISO:"), "width:25%; :1;");
 					        $mHtml->CheckBox(array("name" => "emptra[ind_ceriso]", "checked"=>($datos->principal->ind_ceriso == "S" ? true : false), "id"=>"ind_cerisoID", "width" => "25%", "value" =>"S"));
 					        $mHtml->Label("Vigencia(AAAA-MM-DD):", "width:25%; :1;");
 					        $mHtml->Input(array("type" => "date", "obl" => "yes", "id"=>"fec_cerisoID", "validate" => "date", "name" => "emptra[fec_ceriso]", "width" => "25%", "maxlength" => "10", "value" => $datos->principal->fec_ceriso, "end" => true));
 					        $mHtml->Label(utf8_encode("Certificaciï¿½n BASC:"), "width:25%; :1;");
+>>>>>>> 6c620623f3d1acf67784d372c1818b63262278d3
 					        $mHtml->CheckBox(array("name" => "emptra[ind_cerbas]", "id"=>"ind_cerbasID", "checked"=>($datos->principal->ind_cerbas == "S" ? true : false), "width" => "25%", "value" => "S"));
 					        $mHtml->Label("Vigencia(AAAA-MM-DD):", "width:25%; :1;");
 					        $mHtml->Input(array("type" => "date", "obl" => "yes", "name" => "emptra[fec_cerbas]", "id" => "fec_cerbasID", "width" => "25%", "maxlength" => "10", "value" => $datos->principal->fec_cerbas, "end" => true));
@@ -460,11 +492,19 @@ class Ins_config_emptra {
 	        				$mHtml->Input(array("type" => "text", "type" => "alpha", "validate" => "dir", "obl" => "1", "minlength" => "5", "maxlength" => "100", "name" => "agencia[nom_agenci]", "id" => "nom_agenciID", "width" => "25%", "value" => $datos->principal->nom_agenci, "end" => true));
 					        $mHtml->Label(utf8_decode("Ciudad:"), "width:25%; *:1;");
 					        $mHtml->Input(array("type" => "text", "validate" => "dir", "obl" => "1", "minlength" => "5", "maxlength" => "50", "name" => "agencia[abr_ciudad]", "id" => "abr_ciudadID", "width" => "25%",  "value" => $datos->principal->abr_ciudaa));
+<<<<<<< HEAD
+					        $mHtml->Label("Dirección:", "width:25%; *:1;");
+					        $mHtml->Input(array("validate" => "dir", "obl" => "1", "minlength" => "5", "maxlength" => "100", "name" => "agencia[dir_agenci]", "id" => "dir_agenci", "width" => "25%", "value" => $datos->principal->dir_agenci, "end" => true));
+					        $mHtml->Label(utf8_decode("Contacto:"), "width:25%; *:1;");
+					        $mHtml->Input(array("type" => "text", "validate" => "texto", "obl" => "1", "minlength" => "5", "maxlength" => "50", "name" => "agencia[con_agenci]", "id" => "con_agenci", "width" => "25%",  "value" => $datos->principal->con_agenci));
+					        $mHtml->Label(" Teléfono:", "width:25%; *:1;");					        $mHtml->Input(array("type" => "numeric", "validate" => "numero", "obl" => "1", "minlength" => "7", "maxlength" => "10", "name" => "agencia[tel_agenci]", "id" => "tel_agenci", "width" => "25%", "value" => $datos->principal->tel_agenci, "end" => true));
+=======
 					        $mHtml->Label(utf8_encode("Direcciï¿½n:"), "width:25%; *:1;");
 					        $mHtml->Input(array("validate" => "dir", "obl" => "1", "minlength" => "5", "maxlength" => "100", "name" => "agencia[dir_agenci]", "id" => "dir_agenci", "width" => "25%", "value" => $datos->principal->dir_agenci, "end" => true));
 					        $mHtml->Label(utf8_decode("Contacto:"), "width:25%; *:1;");
 					        $mHtml->Input(array("type" => "text", "validate" => "texto", "obl" => "1", "minlength" => "5", "maxlength" => "50", "name" => "agencia[con_agenci]", "id" => "con_agenci", "width" => "25%",  "value" => $datos->principal->con_agenci));
 					        $mHtml->Label(utf8_encode(" Telï¿½fono:"), "width:25%; *:1;");					        $mHtml->Input(array("type" => "numeric", "validate" => "numero", "obl" => "1", "minlength" => "7", "maxlength" => "10", "name" => "agencia[tel_agenci]", "id" => "tel_agenci", "width" => "25%", "value" => $datos->principal->tel_agenci, "end" => true));
+>>>>>>> 6c620623f3d1acf67784d372c1818b63262278d3
 					        $mHtml->Label(utf8_decode("Fax:"), "width:25%; :1;");
 					        $mHtml->Input(array("type" => "numeric", "validate" => "numero",  "minlength" => "7", "maxlength" => "10", "name" => "transp[num_faxxxx]", "id" => "num_faxxxx", "width" => "25%",  "value" => $datos->principal->num_faxxxx));
 					        $mHtml->Label(utf8_decode("E-Mail:"), "width:25%; :1;");

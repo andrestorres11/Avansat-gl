@@ -656,13 +656,24 @@ class Despac
 				  WHERE b.cod_activi = ".COD_FILTRO_EMPTRA." 
 					AND a.cod_estado = ".COD_ESTADO_ACTIVO."
 					";
-		if ( $_SESSION['datos_usuario']['cod_perfil'] == NULL ) 
+		if ( $_SESSION['datos_usuario']['cod_perfil'] == NULL || $_SESSION['datos_usuario']['cod_perfil'] == COD_PERFIL_ASEGURADO || $_SESSION['datos_usuario']['cod_perfil'] == COD_PERFIL_ASEGURADORA) 
 		{#PARA EL FILTRO DE EMPRESA
 			$filtro = new Aplica_Filtro_Usuari( 1, COD_FILTRO_EMPTRA, $_SESSION[datos_usuario][cod_usuari] );
-			if ( $filtro -> listar( self::$cConexion ) ) : 
-				$datos_filtro = $filtro -> retornar();
-				$mSql .= " AND a.cod_tercer = '".$datos_filtro[clv_filtro]."' ";
-			endif;
+			if($_SESSION['datos_usuario']['cod_perfil'] == COD_PERFIL_ASEGURADORA){
+				$datos_filtro = $filtro -> listarAseguradas( self::$cConexion );
+				if($datos_filtro!='' || $datos_filtro!=null){
+					$mSql .= " AND a.cod_tercer IN (".$datos_filtro.") ";
+				}else{
+					$mSql .= " AND 1 = 0 ";
+				}
+				
+			}else{
+				if ( $filtro -> listar( self::$cConexion ) ) : 
+					$datos_filtro = $filtro -> retornar();
+					$mSql .= " AND a.cod_tercer = '".$datos_filtro[clv_filtro]."' ";
+				endif;
+			}
+			
 		}else{#PARA EL FILTRO DE EMPRESA
 			$filtro = new Aplica_Filtro_Perfil( 1, COD_FILTRO_EMPTRA, $_SESSION[datos_usuario][cod_perfil] );
 			if ( $filtro -> listar( self::$cConexion ) ) : 
@@ -671,6 +682,7 @@ class Despac
 			endif;
 		}
 		$mSql .= " ORDER BY a.abr_tercer ASC ";
+
 		$consulta = new Consulta( $mSql, self::$cConexion );
 		return $mResult = $consulta -> ret_matrix('i');
 	}
@@ -2601,10 +2613,22 @@ class Despac
 		if( self::$cTypeUser[tip_perfil] == 'CLIENTE' )
 			$mSql .= " AND a.cod_transp = '". self::$cTypeUser[cod_transp] ."' ";
 		else{
-			if( $mCodTransp != NULL )
+			if( $mCodTransp != NULL ){
 				$mSql .= $mCodTransp != 'TODAS' ? " AND a.cod_transp IN ( {$mCodTransp} ) " : "";
-			else
-				$mSql .= $_REQUEST[cod_transp] ? " AND a.cod_transp IN ( {$_REQUEST[cod_transp]} ) " : "";
+			}	
+			else{
+				if($_SESSION['datos_usuario']['cod_perfil'] != COD_PERFIL_ASEGURADORA){
+					$mSql .= $_REQUEST[cod_transp] ? " AND a.cod_transp IN ( {$_REQUEST[cod_transp]} ) " : "";
+				}else{
+					if(isset($_REQUEST[cod_transp])){
+						$mSql .= $_REQUEST[cod_transp] ? " AND a.cod_transp IN ( {$_REQUEST[cod_transp]} ) " : "";
+					}else{
+						$mSql .= " AND 1 = 0";
+					}
+					
+				}
+			}
+				
 		}
 
 		$mCodUsuari = explode(',', $_REQUEST[cod_usuari]);
@@ -2633,7 +2657,7 @@ class Despac
 		$mSql .= $mFilHorasx;
 		
 		$mSql .= " GROUP BY a.cod_transp ORDER BY h.cod_usuari, a.nom_transp ASC ";
-
+ 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		
 		return $mConsult -> ret_matrix('a');

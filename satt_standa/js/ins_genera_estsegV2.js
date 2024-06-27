@@ -60,6 +60,13 @@ $(document).ready(function() {
     });
 
     //setInterval(refreshInfoRealTime, 1000);
+
+
+
+    if ($("#transp_defID").length && $("#transp_defID").val().trim() !== "") {
+        asignaTransportadoraDefault();
+    }
+
 });
 
 //Usada
@@ -314,6 +321,60 @@ function asignaTransportadora(campo) {
             });
         }
     });
+}
+
+function asignaTransportadoraDefault() {
+    var standa = 'satt_standa';
+    var opcion = 'getInfoTransportadora';
+    var id=$("#transp_defID").val();
+    dataString = 'cod_transp=' + id + '&opcion=' + opcion;
+    $.ajax({
+        url: "../" + standa + "/estsegv2/ajax_genera_estseg.php?" + dataString,
+        method: 'POST',
+        async: false,
+        dataType: "json",
+        contentType: false,
+        processData: false,
+        success: function(data) {
+            if (data) {
+                $("#bus_transp").val(data['cod_tercer']+" - "+data['nom_tercer']);
+                $("#bus_transp").prop('disabled', true);
+                $("#nom_soliciID").val(data['nom_tercer']);
+                $("#cor_soliciID").val(data['dir_emailx']);
+                $("#tel_soliciID").val(data['num_telefo']);
+                $("#cel_soliciID").val(data['num_telmov']);
+                $("#tip_estudioc").val(data['nom_tipest']);
+                $("#cod_transp").val(data['cod_tercer']);
+                $("#nom_soliciID").removeAttr("disabled");
+                $("#cor_soliciID").removeAttr("disabled");
+                $("#tel_soliciID").removeAttr("disabled");
+                $("#cel_soliciID").removeAttr("disabled");
+            } else {
+                $("#nc").show();
+                $("#bus_transp").prop('disabled', true);
+                $("#cod_aseguraID").prop('disabled', true);
+                $("#cor_soliciID").prop('disabled', true);
+                $("#cel_soliciID").prop('disabled', true);
+                $('.radsol input[type="radio"]').prop('disabled', true);
+                $("#crearSolicitudBTN").prop('disabled', true);
+                $("#card_estseg").hide();
+            }
+        },
+        error: function() {
+            $("#nc").show();
+            $("#bus_transp").prop('disabled', true);
+            $("#cod_aseguraID").prop('disabled', true);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se encontro la transportadora configurada, para estudios de seguridad.'
+            });
+        }
+
+    });
+
+        
+    
 }
 
 function vaciaInputTransportadora(campo) {
@@ -793,7 +854,9 @@ function almacenarSolicitud() {
     var standa = 'satt_standa';
     var dataString = 'opcion=guardarSolicitud';
     var data = new FormData(document.getElementById('InsSolici'));
-
+    if($("#cod_aseguraID").length > 0){
+        data.append('cod_asegur', $("#cod_aseguraID").val());
+    }
     data.append('nom_solici', $("#nom_soliciID").val());
     data.append('cor_solici', $("#cor_soliciID").val());
     data.append('tel_solici', $("#tel_soliciID").val());
@@ -1615,6 +1678,7 @@ function rellenaTablas() {
     var fec_inicio = $("#fec_inicio").val();
     var fec_finalx = $("#fec_finxxx").val();
     var num_identifi = $("#num_identifiID").val();
+    var cod_asegur = $("#aseguradoraID").val();
     fil_fechas = false;
     if ($('#fil_fechasID').is(':checked')) {
         fil_fechas = true;
@@ -1626,7 +1690,7 @@ function rellenaTablas() {
             fec_inicio,
             fec_finalx,
             fil_fechas,
-            num_identifi
+            cod_asegur
         },
         type: "POST",
         url: "../" + standa + "/estsegv2/ajax_genera_estseg.php?" + dataString,
@@ -1706,3 +1770,4 @@ function busquedaRuta() {
         });
     }
 }
+

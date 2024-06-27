@@ -159,7 +159,7 @@ class infBandeja
 						$mHtml1 .= '</tr>';
 
 						$mHtml1 .= '<tr>';
-						$mHtml1 .= self::$cDespac -> lista( 'Transportadora:', 'cod_transp', array_merge( self::$cNull, $mArrayTransp), 'cellInfo1' );
+						$mHtml1 .= self::$cDespac -> lista( 'Transportadoraa:', 'cod_transp', array_merge( self::$cNull, $mArrayTransp), 'cellInfo1' );
 						$mHtml1 .= self::$cDespac -> lista( 'Tipo de Transporte:', 'cod_tiptra', array_merge( self::$cNull, $mArrayTipTra), 'cellInfo1' );
 						$mHtml1 .= '</tr>';
 						$mHtml1 .= '<tr>';
