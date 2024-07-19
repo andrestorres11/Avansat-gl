@@ -633,7 +633,7 @@
               $cod_conduc = $this->registroIniConduc();
             }
 
-            //Indicador de creación del despachos al finalizar el estudio de seguridad.
+            //Indicador de creaciï¿½n del despachos al finalizar el estudio de seguridad.
             $ind_credes = $_REQUEST['ind_credes'];
             $cod_despac = NULL;
             if($ind_credes==1){
@@ -712,7 +712,7 @@
             foreach($documentos as $key=>$value){
               $ruta = URL_APLICA."files/adj_estseg/adjs/";
               if($value['obs_archiv']=='' || $value['obs_archiv'] == NULL){
-                $value['obs_archiv'] = utf8_encode('**SIN OBSERVACIÓN**');
+                $value['obs_archiv'] = utf8_encode('**SIN OBSERVACIï¿½N**');
               }
               $html.='<tr>
                         <td>'.$value['nom_fordoc'].'</td>
@@ -1083,7 +1083,7 @@
             $str .= ($df->invert == 1) ? ' - ' : '';
             if ($df->y > 0) {
                 // years
-                $str .= ($df->y > 1) ? $df->y . ' Años ' : $df->y . ' Año ';
+                $str .= ($df->y > 1) ? $df->y . ' Aï¿½os ' : $df->y . ' Aï¿½o ';
             } if ($df->m > 0) {
                 // month
                 $str .= ($df->m > 1) ? $df->m . ' Meses ' : $df->m . ' Mes ';
@@ -1179,15 +1179,15 @@
                           <th scope="col">No. Estudio</th>
                           <th scope="col">Estado</th>
                           <th scope="col">Descargar/Ver estudio</th>
-                          <th scope="col">Documentación</th>
+                          <th scope="col">Documentaciï¿½n</th>
                           <th scope="col" style="min-width: 200px;">Conductor</th>
                           <th scope="col" style="min-width: 200px;">Poseedor</th>
                           <th scope="col" style="min-width: 200px;">Propietario</th>
                           <th scope="col">Vehiculo</th>
-                          <th scope="col" style="min-width: 130px;">Gestión</th>
+                          <th scope="col" style="min-width: 130px;">Gestiï¿½n</th>
                           <th scope="col" style="min-width: 200px;">Observaci?n</th>
-                          <th scope="col" style="min-width: 130px;">Gestión</th>
-                          <th scope="col" style="min-width: 200px;">Observación</th>
+                          <th scope="col" style="min-width: 130px;">Gestiï¿½n</th>
+                          <th scope="col" style="min-width: 200px;">Observaciï¿½n</th>
                           
                         </tr>
                     </thead>
@@ -1443,7 +1443,7 @@
 
             
             $info['status']=200;
-            $info['response']='Información registrada';
+            $info['response']='Informaciï¿½n registrada';
             echo json_encode($info);
 
           }
@@ -1693,7 +1693,7 @@
             // Redimensionar la imagen original a la imagen nueva
             imagecopyresampled($newImage, $origImage, 0, 0, 0, 0, $newWidth, $newHeight, $origWidth, $origHeight);
         
-            // Guardar la nueva imagen redimensionada con compresión JPEG
+            // Guardar la nueva imagen redimensionada con compresiï¿½n JPEG
             imagejpeg($newImage, $destino, $jpgQuality);
         
             // Liberar memoria
@@ -1786,6 +1786,8 @@
             $dias = $dias_habilitados != NULL ? $dias_habilitados : 30;
             $date = date("Y-m-d");
             $fec_venest = date("Y-m-d",strtotime($date."+ ".$dias." days"));
+            $fecha_hora = $_REQUEST['fec_recdoc'].' '.$_REQUEST['hor_recdoc'];
+
             if($process){
               $sql="UPDATE ".BASE_DATOS.".tab_estseg_solici
                         SET 
@@ -1794,6 +1796,7 @@
                           usr_estseg = '".self::$cod_usuari."',
                           fec_finsol = NOW(),
                           fec_venest = '".$fec_venest."',
+                          fec_recdoc = '". $fecha_hora."',
                           usr_modifi = '".self::$cod_usuari."', 
                           fec_modifi = NOW() 
                     WHERE 
@@ -1850,7 +1853,7 @@
 
           /* ! \fn: creaDespacho
           *  \brief: guarda la informacion del despacho
-          *  \author: Cristian Andrés Torres
+          *  \author: Cristian Andrï¿½s Torres
           *  \date: 20/12/2017
           *  \date modified: dd/mm/aaaa
           *  \return: json
@@ -1873,7 +1876,7 @@
                 $cod_agenci = $dispatch['agenci_code'];
                 $cod_conduc = $data['driver']['document_number'];
                 $num_placax = $data['vehicle']['placa'];
-                $obs_despac = 'Despacho creado automaticamente a traves del módulo de estudio de seguridad';
+                $obs_despac = 'Despacho creado automaticamente a traves del mï¿½dulo de estudio de seguridad';
 
 
                 #consulta el ultimo consecutivo del despacho
@@ -2140,7 +2143,7 @@
 
           /* ! \fn: getValidateTercerExist
           *  \brief: Valida si el tercero existe
-          *  \author: Cristian Andrés Torres
+          *  \author: Cristian Andrï¿½s Torres
           *  \date: 20/12/2017
           *  \date modified: dd/mm/aaaa
           *  \return: json
@@ -2539,7 +2542,7 @@
             if (preg_match($regex, $dato, $matches)) {
                 // Almacenar los valores en una sola variable
                 $codigo = array(trim($matches[1]), trim($matches[2]));
-                // Devolver el valor correspondiente basado en el parámetro $retorno
+                // Devolver el valor correspondiente basado en el parï¿½metro $retorno
                 return ($retorno == 1) ? $codigo[0] : $codigo[1];
             }
             // Devolver un valor por defecto en caso de que no haya coincidencia
@@ -3111,7 +3114,7 @@
                   );
                 };
           } catch (Exception $e) {
-            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
+            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
             return array(
               'status' => false,
               'error' => array(
@@ -3176,7 +3179,7 @@
                   throw new Exception("No se pudo enviar el correo.", "2001");
                 }
           } catch (Exception $e) {
-            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
+            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
             echo json_encode(array(
               'status' => false,
               'error' => array(
@@ -3238,7 +3241,7 @@
                     throw new Exception("No se pudo enviar el correo.", "2001");
                   }
           } catch (Exception $e) {
-            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
+            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
             echo json_encode(array(
               'status' => false,
               'error' => array(
@@ -3351,7 +3354,7 @@
         }
 
         /*! \fn: getPDFGenerado
-        *  \brief: retorna la ubicación del PDF generado del estudio de seguridad
+        *  \brief: retorna la ubicaciï¿½n del PDF generado del estudio de seguridad
         *  \author: Ing. Cristian Andres Torres
         *  \date:  25/11/2022
         *  \date modified: dd/mm/aaaa
@@ -3375,13 +3378,13 @@
                   'file_url' => URL_APLICA.'files/adj_estseg/pdfs/'.$docume['fil_result'],
                   'file_name' => $docume['fil_result']
                 ),
-                'message' => utf8_encode('PDF Abierto en una nueva pestaña')
+                'message' => utf8_encode('PDF Abierto en una nueva pestaï¿½a')
               ));
             }else{
               throw new Exception("No hay archivo PDF Generado", "2001");
             }
           } catch (Exception $e) {
-            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());            echo json_encode(array(
+            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());            echo json_encode(array(
               'status' => false,
               'error' => array(
                   'code' => $e->getCode(),

@@ -94,7 +94,7 @@ class InfEstudiSeguriTable {
         $mSql="SELECT a.cod_solici, a.fec_creaci, a.cor_solici, 
                 a.tel_solici, a.cel_solici, a.cod_estcon, 
                 a.cod_tipest, a.ind_estseg, a.obs_estseg, 
-                a.fec_finsol, a.fec_venest, b.cod_tercer as 'cod_conduc', 
+                a.fec_finsol, a.fec_recdoc,a.fec_venest, b.cod_tercer as 'cod_conduc', 
                 b.cod_tipdoc as 'tip_doccon', b.nom_apell1 as 'nom_ape1con', b.nom_apell2 as 'nom_ape2con', 
                 b.nom_person 'nom_nomcon', b.num_licenc as 'num_liccon', c.nom_catlic as 'nom_catcon', 
                 b.fec_venlic as 'fec_vliccon', b.nom_arlxxx as 'nom_arlcon', b.nom_epsxxx as 'nom_epscon', 
@@ -155,7 +155,8 @@ class InfEstudiSeguriTable {
                 a.usr_estseg,
                 a.fec_creaci,
                 a.usr_modifi,
-                a.fec_finsol
+                a.fec_finsol,
+                a.fec_recdoc
                     FROM ".BASE_DATOS.".tab_estseg_solici a 
                         INNER JOIN .tab_estseg_tipoxx b ON a.cod_tipest = b.cod_tipest 
                         INNER JOIN .tab_tercer_tercer c ON a.cod_emptra = c.cod_tercer 
@@ -226,6 +227,7 @@ class InfEstudiSeguriTable {
                         <th>Tipo de Estudio</th>
                         <th>Resultado</th>
                         <th>Observación</th>
+                        <th>Fecha/Hora llegada documentos</th>
                         <th>Fecha de finalización</th>
                         <th>Fecha de vencimiento</th>
                         <th>Código del Conductor</th>
@@ -322,6 +324,7 @@ class InfEstudiSeguriTable {
                     echo "<td>".$registro['cod_tipest']."</td>";
                     echo "<td>".$registro['ind_estseg']."</td>";
                     echo "<td>".$registro['obs_estseg']."</td>";
+                    echo "<td>".$registro['fec_recdoc']."</td>";
                     echo "<td>".$registro['fec_finsol']."</td>";
                     echo "<td>".$registro['fec_venest']."</td>";
                     echo "<td>".$registro['cod_conduc']."</td>";

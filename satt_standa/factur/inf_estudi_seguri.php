@@ -164,7 +164,7 @@ class InfEstudiSeguri
                     WHEN a.ind_estseg='P' THEN 'Pendiente'
                     WHEN a.ind_estseg='C' THEN 'Cancelado'
                 END as nom_estseg, a.obs_estseg, 
-                a.fec_finsol, a.fec_venest, b.cod_tercer as 'cod_conduc', 
+                a.fec_recdoc, a.fec_finsol, a.fec_venest, b.cod_tercer as 'cod_conduc', 
                 b.cod_tipdoc as 'tip_doccon', b.nom_apell1 as 'nom_ape1con', b.nom_apell2 as 'nom_ape2con', 
                 b.nom_person as 'nom_nomcon', b.num_licenc as 'num_liccon', c.nom_catlic as 'nom_catcon', 
                 b.fec_venlic as 'fec_vliccon', b.nom_arlxxx as 'nom_arlcon', b.nom_epsxxx as 'nom_epscon', 
@@ -244,6 +244,7 @@ class InfEstudiSeguri
                 a.usr_estseg,
                 a.fec_creaci,
                 a.usr_modifi,
+                a.fec_recdoc,
                 a.fec_finsol
                 FROM ".BASE_DATOS.".tab_estseg_solici a 
                 INNER JOIN ".BASE_DATOS.".tab_estseg_tipoxx b ON a.cod_tipest = b.cod_tipest 
@@ -298,6 +299,7 @@ class InfEstudiSeguri
             $list->SetHeader("Tipo de Estudio", "field:nom_tipest;having:true;");
             $list->SetHeader("Resultado", "field:nom_estseg;having:true;");
             $list->SetHeader("Observación", "field:a.obs_estseg;");
+            $list->SetHeader("Fecha/Hora llegada documentos", "field:a.fec_recdoc;");
             $list->SetHeader("Fecha de finalización", "field:a.fec_finsol;");
             $list->SetHeader("Fecha de vencimiento", "field:a.fec_venest;");
             $list->SetHeader("Código del Conductor", "field:b.cod_tercer;");
@@ -421,6 +423,7 @@ class InfEstudiSeguri
                         <th>Tipo de Estudio</th>
                         <th>Resultado</th>
                         <th>Observación</th>
+                        <th>Fecha/Hora llegada documentos</th>
                         <th>Fecha de finalización</th>
                         <th>Fecha de vencimiento</th>
                         <th>Código del Conductor</th>
@@ -489,6 +492,7 @@ class InfEstudiSeguri
                    $export .="<td>".$registro['nom_tipest']."</td>";
                    $export .="<td>".$registro['nom_estseg']."</td>";
                    $export .="<td>".$registro['obs_estseg']."</td>";
+                   $export .="<td>".$registro['fec_recdoc']."</td>";
                    $export .="<td>".$registro['fec_finsol']."</td>";
                    $export .="<td>".$registro['fec_venest']."</td>";
                    $export .="<td>".$registro['cod_conduc']."</td>";
