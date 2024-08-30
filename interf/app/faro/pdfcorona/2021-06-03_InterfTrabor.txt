@@ -1,0 +1,3 @@
+2021-06-03 08:12:13|830141359|15666|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-03 09:35:38|830141359|15665|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-03 11:47:55|830141359|15666|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

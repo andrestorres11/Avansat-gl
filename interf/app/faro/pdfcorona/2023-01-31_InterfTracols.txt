@@ -1,0 +1,2 @@
+2023-01-31 09:34:02|901297510|0010414|74|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 74. "}
+2023-01-31 12:33:18|901297510|0010414|74|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 74. "}

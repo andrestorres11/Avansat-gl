@@ -1,0 +1,2 @@
+2021-04-14 12:45:16|900845839|IMP995|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-04-14 16:50:58|900845839|IMP995|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

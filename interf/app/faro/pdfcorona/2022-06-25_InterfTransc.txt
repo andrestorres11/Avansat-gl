@@ -1,0 +1,2 @@
+2022-06-25 08:58:52|800089325|09355413|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2022-06-25 09:00:27|800089325|09355413|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

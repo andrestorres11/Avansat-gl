@@ -1,0 +1,9 @@
+nom_usuari= required:yes; minlength:4; maxlength:20
+pwd_clavex= required:yes; minlength:4; maxlength:20
+cod_transp= required:yes; maxlength:12; type:numeric
+num_manifi= required:yes; minlength:1; maxlength:8
+num_placax= required:yes; minlength:6; maxlength:6; type:plate
+cod_rutasx= required:yes; maxlength:7; type:numeric
+tim_duraci= required:yes; maxlength:5; type:numeric
+cod_pcbase= required:yes; type:numeric
+cod_contrs= required:yes

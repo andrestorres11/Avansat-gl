@@ -1,0 +1,4 @@
+2023-02-06 06:57:03|901297510|0010492|5|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 5. "}
+2023-02-06 09:51:04|901297510|0010492|5|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 5. "}
+2023-02-06 12:32:20|901297510|0010492|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}
+2023-02-06 14:32:30|901297510|0010492|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}

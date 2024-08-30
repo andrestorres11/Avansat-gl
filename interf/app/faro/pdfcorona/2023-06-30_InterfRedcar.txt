@@ -1,0 +1,5 @@
+2023-06-30 07:17:39|900836827|9720|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-30 07:20:34|900836827|RCT0179|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-30 10:54:51|900836827|9720|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
+2023-06-30 14:43:23|900836827|9720|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}
+2023-06-30 17:03:55|900836827|9724|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

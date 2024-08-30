@@ -1,0 +1,1 @@
+2022-10-10 11:51:56|900499919|HAL006521|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

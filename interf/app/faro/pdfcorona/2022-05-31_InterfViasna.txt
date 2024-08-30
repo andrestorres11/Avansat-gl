@@ -1,0 +1,4 @@
+2022-05-31 09:44:16|830082247|53862|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-05-31 09:46:11|830082247|53857|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
+2022-05-31 09:47:13|830082247|53858|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
+2022-05-31 10:05:13|830082247|53858|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}

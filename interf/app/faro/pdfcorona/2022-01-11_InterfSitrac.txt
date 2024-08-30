@@ -1,0 +1,17 @@
+2022-01-11 06:51:58|830040809|1162406|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 09:18:43|830040809|1162410|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 09:20:55|830040809|1162390|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 09:55:59|830040809|1162398|44|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 44. "}
+2022-01-11 10:04:04|830040809|1162404|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 10:19:40|830040809|1162414|44|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 44. "}
+2022-01-11 12:20:03|830040809|1162406|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 12:24:00|830040809|1162357|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 12:30:10|830040809|1162398|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 12:36:13|830040809|1162404|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 12:45:24|830040809|1162414|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}
+2022-01-11 15:09:00|830040809|1162390|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 15:24:11|830040809|1162376|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 15:39:57|830040809|1162415|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 15:46:07|830040809|1162357|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 15:53:16|830040809|1162426|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-01-11 15:54:48|830040809|1162427|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

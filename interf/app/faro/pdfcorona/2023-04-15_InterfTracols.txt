@@ -1,0 +1,1 @@
+2023-04-15 11:12:53|901297510|0012707|105|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 105. "}

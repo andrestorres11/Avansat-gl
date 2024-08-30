@@ -1,0 +1,1 @@
+2022-11-04 22:22:46|900089269|0001933|90|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 90. "}

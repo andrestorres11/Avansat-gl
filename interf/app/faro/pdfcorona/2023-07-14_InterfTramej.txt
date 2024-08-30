@@ -1,0 +1,4 @@
+2023-07-14 06:53:31|800181408|0180835|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-07-14 06:55:38|800181408|0180850|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-07-14 12:29:52|800181408|0180835|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-07-14 12:31:29|800181408|0180850|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

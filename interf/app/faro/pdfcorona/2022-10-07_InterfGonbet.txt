@@ -1,0 +1,5 @@
+2022-10-07 07:30:39|811001497|10075435|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-10-07 07:33:01|811001497|10075376|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-10-07 07:37:57|811001497|10075288|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-10-07 14:59:58|811001497|10075288|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2022-10-07 15:10:30|811001497|10075475|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

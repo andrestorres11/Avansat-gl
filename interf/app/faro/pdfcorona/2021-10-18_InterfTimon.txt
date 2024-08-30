@@ -1,0 +1,2 @@
+2021-10-18 00:40:41|800166412|00035453|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}
+2021-10-18 03:25:42|800166412|00035453|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}

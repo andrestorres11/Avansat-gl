@@ -1,0 +1,2 @@
+2022-02-12 21:40:33|901237466|043500|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-02-12 21:57:03|901237466|043489|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

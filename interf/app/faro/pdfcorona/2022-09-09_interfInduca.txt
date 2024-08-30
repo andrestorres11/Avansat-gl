@@ -1,0 +1,6 @@
+2022-09-09 07:29:29|900805898|14913|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2022-09-09 11:29:13|900805898|14904|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-09-09 12:58:09|900805898|14917|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-09-09 13:38:02|900805898|14918|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-09-09 14:12:31|900805898|14919|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-09-09 16:47:15|900805898|14922|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

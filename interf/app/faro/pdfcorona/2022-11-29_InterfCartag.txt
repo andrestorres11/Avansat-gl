@@ -1,0 +1,2 @@
+2022-11-29 13:35:21|800021603|BG5476|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-11-29 15:16:22|800021603|BG5475|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

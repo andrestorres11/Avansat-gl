@@ -1,0 +1,4 @@
+2021-12-16 14:49:37|777777779|M1000539|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-12-16 14:50:22|777777779|M1000539|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-12-16 14:51:34|777777779|M1000539|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-12-16 14:53:42|777777779|M1000539|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

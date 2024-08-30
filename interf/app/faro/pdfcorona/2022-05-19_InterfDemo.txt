@@ -1,0 +1,2 @@
+2022-05-19 16:55:50|777777779|1234567|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-05-19 16:56:52|777777779|1234567|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

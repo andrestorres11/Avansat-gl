@@ -1,0 +1,17 @@
+2022-02-06 05:58:01|900657956|36451-1|9010|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9010. "}
+2022-02-06 06:05:59|900657956|36451-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-02-06 06:07:14|900657956|36451-1|9018|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9018. "}
+2022-02-06 08:25:26|900657956|36451-1|355|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 355. "}
+2022-02-06 08:26:51|900657956|36451-1|9018|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9018. "}
+2022-02-06 11:17:03|900657956|36451-1|9020|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9020. "}
+2022-02-06 20:18:51|900657956|36462-1|9023|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9023. "}
+2022-02-06 20:18:56|900657956|36462-1|9024|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9024. "}
+2022-02-06 20:20:04|900657956|36462-1|9008|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9008. "}
+2022-02-06 21:19:41|900657956|36384-1|9023|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9023. "}
+2022-02-06 21:19:47|900657956|36384-1|9024|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9024. "}
+2022-02-06 21:20:08|900657956|36384-1|9010|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9010. "}
+2022-02-06 21:38:07|900657956|36384-1|9010|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9010. "}
+2022-02-06 23:40:06|900657956|36384-1|407|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 407. "}
+2022-02-06 23:40:12|900657956|36384-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-02-06 23:41:17|900657956|36384-1|407|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 407. "}
+2022-02-06 23:41:22|900657956|36384-1|355|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 355. "}

@@ -1,0 +1,4 @@
+2023-04-04 09:30:27|901420688|1195|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-04 09:30:50|901420688|1198|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-04 19:47:53|901420688|1203|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-04 19:48:16|901420688|1202|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

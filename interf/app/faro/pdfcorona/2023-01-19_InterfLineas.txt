@@ -1,0 +1,1 @@
+2023-01-19 15:21:01|901167319|LLC003239|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

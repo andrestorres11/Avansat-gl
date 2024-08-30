@@ -1,0 +1,1 @@
+2022-11-17 10:01:11|900587608|12507|380|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 380. "}

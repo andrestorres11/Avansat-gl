@@ -1,0 +1,2 @@
+2022-04-27 16:50:44|900805898|13477|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-04-27 23:02:02|900805898|13484|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,0 +1,13 @@
+cod_transp= required:yes; minlength:6; maxlength:10
+num_despac= type:numeric
+cod_noveda= required:yes; type:numeric
+fec_noveda= required:yes; maxlength:16; type:date-time
+des_noveda= required:yes; maxlength:255
+val_longit= required:yes; type:numeric
+val_latitu= required:yes; type:numeric
+nom_llavex= maxlength:50
+cod_operad= maxlength:10
+nom_usuari= minlength:4; maxlength:20
+pwd_clavex= minlength:4; maxlength:60
+cod_manifi= minlength:1; maxlength:14
+num_placax= minlength:6; maxlength:12

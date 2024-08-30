@@ -1,0 +1,2 @@
+2023-04-04 12:54:56|800157847|48229|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2023-04-04 12:56:06|800157847|48224|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

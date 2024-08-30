@@ -1,0 +1,2 @@
+2022-07-28 09:07:58|800199898|9905297|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-28 13:00:00|800199898|9905297|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,0 +1,2 @@
+2021-08-24 11:12:13|830141359|16019|106|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 106. "}
+2021-08-24 11:16:15|830141359|16018|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

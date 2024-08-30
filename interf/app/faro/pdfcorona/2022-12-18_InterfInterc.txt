@@ -1,0 +1,2 @@
+2022-12-18 13:21:19|900883707|008903|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}
+2022-12-18 13:23:04|900883707|008903|9003|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9003. "}

@@ -1,0 +1,2 @@
+2022-02-28 10:42:45|830098260|0017650|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}
+2022-02-28 10:43:36|830098260|0017651|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}

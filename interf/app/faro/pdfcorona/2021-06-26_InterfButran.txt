@@ -1,0 +1,1 @@
+2021-06-26 11:45:43|800170695|MD189|5|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 5. "}

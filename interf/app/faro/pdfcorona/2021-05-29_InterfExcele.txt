@@ -1,0 +1,2 @@
+2021-05-29 09:20:14|900587608|8871|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-05-29 13:11:04|900587608|8871|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

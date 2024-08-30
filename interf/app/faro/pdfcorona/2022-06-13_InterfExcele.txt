@@ -1,0 +1,2 @@
+2022-06-13 15:02:45|900587608|11128|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-06-13 17:59:59|900587608|11137|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

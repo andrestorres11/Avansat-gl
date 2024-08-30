@@ -1,0 +1,2 @@
+2021-06-19 09:13:42|900301751|8989583|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-19 09:15:06|900301751|8989612|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

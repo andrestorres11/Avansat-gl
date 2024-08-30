@@ -1,0 +1,2 @@
+2021-11-15 09:14:38|830038608|003986|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-11-15 09:22:32|830038608|003982|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

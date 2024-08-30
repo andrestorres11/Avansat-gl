@@ -1,0 +1,1 @@
+2023-06-18 15:36:03|900836827|9614|34|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 34. "}

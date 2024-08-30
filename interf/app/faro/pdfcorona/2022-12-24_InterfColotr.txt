@@ -1,0 +1,3 @@
+2022-12-24 09:20:37|900179614|0021060|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-12-24 13:06:18|900179614|0021060|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-12-24 13:07:16|900179614|0021060|90|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 90. "}

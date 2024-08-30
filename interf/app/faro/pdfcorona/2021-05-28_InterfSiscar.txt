@@ -1,0 +1,1 @@
+2021-05-28 18:16:18|900029975|0030835|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

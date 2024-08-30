@@ -1,0 +1,4 @@
+2023-07-31 15:03:24|811001497|10089201|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-07-31 15:59:13|811001497|10089398|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-07-31 16:06:00|811001497|10089342|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
+2023-07-31 20:41:48|811001497|10089342|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}

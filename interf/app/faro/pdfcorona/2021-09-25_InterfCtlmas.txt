@@ -1,0 +1,17 @@
+2021-09-25 07:08:20|901140841|01002445|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-25 07:11:37|901140841|01002453|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-25 07:18:09|901140841|01002452|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-25 07:27:03|901140841|01002437|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-25 07:47:11|901140841|01002445|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-25 07:52:28|901140841|01002446|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-25 07:57:59|901140841|01002453|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-25 11:07:58|901140841|01002455|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-25 11:51:09|901140841|01002456|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-25 11:52:33|901140841|01002445|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-25 11:53:43|901140841|01002446|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-25 11:55:20|901140841|01002453|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-25 16:39:58|901140841|01002460|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-09-25 16:43:39|901140841|01002461|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-09-25 16:46:19|901140841|01002462|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-09-25 16:49:07|901140841|01002463|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-09-25 19:29:20|901140841|01002457|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

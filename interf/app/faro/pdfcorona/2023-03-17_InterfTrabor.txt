@@ -1,0 +1,2 @@
+2023-03-17 08:18:40|830141359|18669|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-03-17 15:55:14|830141359|18673|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

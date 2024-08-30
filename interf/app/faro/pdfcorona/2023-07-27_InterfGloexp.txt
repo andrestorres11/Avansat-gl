@@ -1,0 +1,2 @@
+2023-07-27 07:44:46|901420688|MC1487|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-07-27 08:05:44|901420688|MC1486|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

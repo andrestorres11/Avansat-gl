@@ -1,0 +1,4 @@
+cod_opegps= maxlength:10; type:numeric
+nom_usrgps= maxlength:64
+clv_usrgps= maxlength:64
+idx_gpsxxx= maxlength:20

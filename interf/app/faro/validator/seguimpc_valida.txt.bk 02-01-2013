@@ -1,0 +1,12 @@
+nom_usuari= required:yes; minlength:4; maxlength:20
+pwd_clavex= required:yes; minlength:6; maxlength:20
+cod_tranps= required:yes; maxlength:12; type:numeric
+cod_manifi= required:yes; minlength:1; maxlength:14; type:numeric
+dat_fechax= required:yes; maxlength:16; type:date-time
+cod_placax= required:yes; minlength:6; maxlength:6; type:plate
+cod_rutaxx= maxlength:6; type:numeric
+obs_coment= maxlength:80
+cod_ciuori= minlength:6; maxlength:20
+cod_ciudes= minlength:6; maxlength:20
+con_telmov= maxlength:15; type:numeric
+nom_conduc= minlength:4; maxlength:100

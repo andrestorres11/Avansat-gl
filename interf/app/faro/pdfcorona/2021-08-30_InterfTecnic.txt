@@ -1,0 +1,4 @@
+2021-08-30 07:03:30|900431160|0041001|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
+2021-08-30 07:09:11|900431160|0041004|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-08-30 09:21:34|900431160|0041002|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-08-30 22:46:39|900431160|0041014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

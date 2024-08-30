@@ -1,0 +1,5 @@
+nom_usuari= required:yes; minlength:4; maxlength:20
+pwd_clavex= required:yes; minlength:6; maxlength:20
+cod_tranps= required:yes; maxlength:10; type:numeric
+cod_conduc= required:yes; maxlength:10; type:numeric
+tel_conduc= required:yes; maxlength:30

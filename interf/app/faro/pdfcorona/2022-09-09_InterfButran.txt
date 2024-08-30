@@ -1,0 +1,3 @@
+2022-09-09 08:22:24|800170695|MD818|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2022-09-09 11:05:30|800170695|GB42789|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2022-09-09 16:21:06|800170695|GB42874|9995|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9995. "}

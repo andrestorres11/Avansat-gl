@@ -1,0 +1,3 @@
+2022-10-09 07:35:17|830040809|1167971|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-10-09 07:45:59|830040809|1167927|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-10-09 18:40:15|830040809|1167961|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

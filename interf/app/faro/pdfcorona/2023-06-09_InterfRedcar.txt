@@ -1,0 +1,4 @@
+2023-06-09 06:28:27|900836827|9570|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-09 06:31:12|900836827|9572|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-09 10:54:01|900836827|9570|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
+2023-06-09 22:51:13|900836827|9580|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

@@ -1,0 +1,4 @@
+2021-04-16 09:05:52|830075219|9661072|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-04-16 09:12:37|830075219|9661070|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-04-16 15:35:15|830075219|9661070|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-04-16 17:26:24|830075219|9661070|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,0 +1,4 @@
+2022-11-12 09:43:53|900301751|09000046|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-11-12 09:48:38|900301751|09000030|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-11-12 09:52:46|900301751|09000045|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-11-12 09:54:41|900301751|09000019|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

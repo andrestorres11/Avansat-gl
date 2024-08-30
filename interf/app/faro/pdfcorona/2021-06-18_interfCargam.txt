@@ -1,0 +1,5 @@
+2021-06-18 09:08:09|900732377|0005634|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-18 09:09:48|900732377|0005631|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-18 12:21:33|900732377|0005632|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-18 12:24:08|900732377|0005631|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-18 12:25:07|900732377|0005635|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

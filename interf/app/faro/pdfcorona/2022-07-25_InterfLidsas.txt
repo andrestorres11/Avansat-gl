@@ -1,0 +1,5 @@
+2022-07-25 17:21:23|901121844|7894|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
+2022-07-25 17:25:03|901121844|7895|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
+2022-07-25 17:27:29|901121844|7897|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
+2022-07-25 17:31:55|901121844|7898|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
+2022-07-25 17:36:09|901121844|7877|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}

@@ -1,0 +1,4 @@
+2021-12-24 06:47:15|830134066|0056167|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-12-24 06:50:18|830134066|0056162|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-12-24 07:16:50|830134066|0056152|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-12-24 07:21:53|830134066|0056152|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

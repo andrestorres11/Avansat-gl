@@ -1,0 +1,1 @@
+2023-07-07 14:14:33|800021603|BG6254|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

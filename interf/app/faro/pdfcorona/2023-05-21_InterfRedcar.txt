@@ -1,0 +1,1 @@
+2023-05-21 14:30:41|900836827|9415|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

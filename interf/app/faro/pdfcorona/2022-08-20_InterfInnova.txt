@@ -1,0 +1,4 @@
+2022-08-20 09:10:48|901237466|057187|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-20 09:42:43|901237466|057776|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-20 09:43:56|901237466|057775|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-20 10:26:50|901237466|057508|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

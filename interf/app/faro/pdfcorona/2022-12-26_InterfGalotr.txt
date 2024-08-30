@@ -1,0 +1,14 @@
+2022-12-26 09:33:00|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 09:38:03|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 09:43:06|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 09:48:08|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 09:53:10|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 09:58:12|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 10:03:14|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 10:08:16|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 10:13:18|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 10:18:20|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 10:23:22|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 10:28:24|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 10:33:26|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-12-26 10:38:28|800199898|9905949|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}

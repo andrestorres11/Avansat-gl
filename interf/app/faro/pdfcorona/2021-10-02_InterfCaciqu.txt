@@ -1,0 +1,3 @@
+2021-10-02 11:02:50|900301751|8991616|368|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 368. "}
+2021-10-02 11:04:01|900301751|8991586|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-02 11:04:55|900301751|8991584|123|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 123. "}

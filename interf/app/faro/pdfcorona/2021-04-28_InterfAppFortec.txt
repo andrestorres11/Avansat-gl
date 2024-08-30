@@ -1,0 +1,4 @@
+2021-04-28 14:14:53|900657956|31891-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2021-04-28 14:15:01|900657956|31891-1|355|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 355. "}
+2021-04-28 14:15:08|900657956|31891-1|356|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 356. "}
+2021-04-28 14:17:08|900657956|31891-1|9020|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9020. "}

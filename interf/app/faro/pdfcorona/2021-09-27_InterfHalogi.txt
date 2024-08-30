@@ -1,0 +1,1 @@
+2021-09-27 08:42:51|900499919|HAL004705|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

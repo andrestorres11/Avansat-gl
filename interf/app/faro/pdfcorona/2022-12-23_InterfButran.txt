@@ -1,0 +1,6 @@
+2022-12-23 08:27:31|800170695|BR1602|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-12-23 08:33:29|800170695|BR1603|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-12-23 09:58:41|800170695|GB47760|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2022-12-23 10:59:48|800170695|BR1602|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-12-23 11:12:19|800170695|BR1603|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-12-23 16:55:28|800170695|BR1602|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

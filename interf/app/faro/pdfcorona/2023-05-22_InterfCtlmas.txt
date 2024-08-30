@@ -1,0 +1,1 @@
+2023-05-22 18:55:55|901140841|01006519|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

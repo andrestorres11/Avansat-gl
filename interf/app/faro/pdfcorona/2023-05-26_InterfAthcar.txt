@@ -1,0 +1,6 @@
+2023-05-26 08:14:14|900134456|8695794|8|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 8. "}
+2023-05-26 13:48:02|900134456|8695774|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}
+2023-05-26 13:48:41|900134456|8695789|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}
+2023-05-26 13:51:04|900134456|8695795|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}
+2023-05-26 13:52:29|900134456|8695787|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}
+2023-05-26 13:54:09|900134456|8695792|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}

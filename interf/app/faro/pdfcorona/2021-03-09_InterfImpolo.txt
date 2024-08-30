@@ -1,0 +1,2 @@
+2021-03-09 09:02:08|900845839|IMP929|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-03-09 17:01:53|900845839|IMP929|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

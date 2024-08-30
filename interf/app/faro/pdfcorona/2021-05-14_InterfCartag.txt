@@ -1,0 +1,1 @@
+2021-05-14 11:32:18|800021603|BG3485|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

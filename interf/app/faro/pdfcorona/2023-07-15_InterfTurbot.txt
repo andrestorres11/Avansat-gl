@@ -1,0 +1,2 @@
+2023-07-15 14:55:46|900745904|TT103781|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2023-07-15 14:58:56|900745904|TT103781|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

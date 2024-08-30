@@ -1,0 +1,5 @@
+2022-07-26 08:48:12|800199898|9905295|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-26 08:53:15|800199898|9905295|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-26 08:58:19|800199898|9905295|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-26 09:03:22|800199898|9905295|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-26 15:15:17|800199898|9905295|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

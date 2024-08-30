@@ -1,0 +1,2 @@
+2021-08-30 09:03:31|900957102|2001166|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-08-30 18:54:58|900957102|6008163|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

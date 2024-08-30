@@ -1,0 +1,4 @@
+2021-04-22 08:16:35|800021603|CA5881|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2021-04-22 08:19:33|800021603|CA5869|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2021-04-22 08:28:10|800021603|CA5883|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-04-22 16:54:11|800021603|CA5864|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

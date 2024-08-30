@@ -1,0 +1,6 @@
+2021-03-25 09:13:17|800170695|GB21660|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-03-25 09:17:23|800170695|GB21652|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-03-25 10:55:07|800170695|GB21716|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-03-25 17:09:09|800170695|GB21731|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-03-25 17:17:06|800170695|GB21734|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-03-25 17:25:44|800170695|GB21768|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

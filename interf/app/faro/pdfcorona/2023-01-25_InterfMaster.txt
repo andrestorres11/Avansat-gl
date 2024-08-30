@@ -1,0 +1,2 @@
+2023-01-25 08:24:09|900746988|0013426|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-01-25 14:43:40|900746988|0013449|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

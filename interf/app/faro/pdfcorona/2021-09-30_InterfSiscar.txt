@@ -1,0 +1,1 @@
+2021-09-30 15:02:47|900029975|0032325|68|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 68. "}

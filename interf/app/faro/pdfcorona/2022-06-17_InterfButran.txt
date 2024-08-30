@@ -1,0 +1,1 @@
+2022-06-17 10:50:07|800170695|BR1102|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

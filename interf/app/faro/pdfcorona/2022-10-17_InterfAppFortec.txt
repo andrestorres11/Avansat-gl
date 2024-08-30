@@ -1,0 +1,1 @@
+2022-10-17 23:41:29|900657956|40751-5|407|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 407. "}

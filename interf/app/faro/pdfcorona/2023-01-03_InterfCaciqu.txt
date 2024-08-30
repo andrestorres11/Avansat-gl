@@ -1,0 +1,1 @@
+2023-01-03 19:50:32|900301751|09001128|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

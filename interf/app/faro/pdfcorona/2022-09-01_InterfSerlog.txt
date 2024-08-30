@@ -1,0 +1,2 @@
+2022-09-01 08:36:24|900483925|Man19042|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-09-01 15:22:55|900483925|Man19059|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

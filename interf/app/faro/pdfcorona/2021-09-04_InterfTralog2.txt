@@ -1,0 +1,4 @@
+2021-09-04 17:25:14|900503325|0656569|48|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 48. "}
+2021-09-04 17:27:45|900503325|0656552|48|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 48. "}
+2021-09-04 17:30:46|900503325|0656556|48|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 48. "}
+2021-09-04 17:33:42|900503325|0656568|48|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 48. "}

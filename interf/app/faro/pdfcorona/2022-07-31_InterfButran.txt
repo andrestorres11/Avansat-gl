@@ -1,0 +1,3 @@
+2022-07-31 11:16:29|800170695|BR1235|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-31 17:04:07|800170695|GB41073|9995|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9995. "}
+2022-07-31 20:30:08|800170695|GB41073|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

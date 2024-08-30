@@ -1,0 +1,1 @@
+2022-09-29 19:46:45|800049934|44180|34|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 34. "}

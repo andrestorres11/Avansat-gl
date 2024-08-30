@@ -1,0 +1,10 @@
+2023-05-29 08:55:53|800199898|9903375|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-29 09:02:14|800199898|9906014|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-29 16:28:07|800199898|9906014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-05-29 16:33:10|800199898|9906014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-05-29 16:38:13|800199898|9906014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-05-29 16:43:16|800199898|9906014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-05-29 16:48:19|800199898|9906014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-05-29 16:53:21|800199898|9906014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-05-29 16:58:24|800199898|9906014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-05-29 17:03:26|800199898|9906014|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

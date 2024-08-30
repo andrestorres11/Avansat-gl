@@ -1,0 +1,1 @@
+2022-10-15 07:56:52|901167319|LLC002680|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

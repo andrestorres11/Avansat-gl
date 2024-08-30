@@ -1,0 +1,2 @@
+2023-04-10 09:07:41|901140841|01006257|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-10 12:41:18|901140841|01006257|81|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 81. "}

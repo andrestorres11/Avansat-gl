@@ -1,0 +1,2 @@
+2023-05-29 11:11:47|800021603|BG6099|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-29 17:41:52|800021603|CA12123|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

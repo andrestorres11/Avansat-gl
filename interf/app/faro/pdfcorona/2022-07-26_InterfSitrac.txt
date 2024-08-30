@@ -1,0 +1,17 @@
+2022-07-26 06:54:15|830040809|1166457|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 07:15:22|830040809|1166449|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 07:16:00|830040809|1166452|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 07:16:16|830040809|1166428|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 07:16:59|830040809|1166427|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-07-26 07:19:29|830040809|1166437|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-07-26 07:20:52|830040809|1166433|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 09:31:21|830040809|1166448|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 09:38:32|830040809|1166463|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 12:02:12|830040809|1166448|44|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 44. "}
+2022-07-26 12:03:07|830040809|1166458|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 12:05:26|830040809|1166464|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 12:07:41|830040809|1166449|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 12:49:57|830040809|1166463|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2022-07-26 13:57:18|830040809|1166463|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 14:39:59|830040809|1166449|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2022-07-26 14:53:38|830040809|1166478|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}

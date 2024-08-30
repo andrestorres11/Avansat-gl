@@ -1,0 +1,3 @@
+2022-07-05 16:23:42|901217005|05953|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2022-07-05 16:27:21|901217005|05953|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-05 17:48:32|901217005|05953|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

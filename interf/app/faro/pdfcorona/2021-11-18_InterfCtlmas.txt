@@ -1,0 +1,17 @@
+2021-11-18 07:19:11|901140841|01002850|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 07:21:18|901140841|01002852|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 07:38:21|901140841|01002858|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 07:40:00|901140841|01002853|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 08:38:14|901140841|01002850|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-11-18 09:31:57|901140841|01002855|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-11-18 12:24:33|901140841|01002848|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 12:25:40|901140841|01002854|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 12:33:37|901140841|01002847|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 12:37:17|901140841|01002845|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 12:38:16|901140841|01002846|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 12:42:54|901140841|01002853|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 12:47:08|901140841|01002857|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-11-18 12:49:18|901140841|01002844|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2021-11-18 16:42:07|901140841|01002864|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-11-18 16:42:48|901140841|01002863|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-11-18 16:43:47|901140841|01002865|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

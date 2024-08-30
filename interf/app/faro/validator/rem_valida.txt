@@ -1,0 +1,14 @@
+cod_remesa= required:yes; maxlength:20
+pes_cargax= type:numeric
+vol_cargax= type:numeric
+nom_empaqu= maxlength:255
+abr_mercan= maxlength:255
+abr_tercer= maxlength:255
+nom_remite= maxlength:255
+nom_destin= maxlength:255
+fec_estent= type:date-time
+fec_lledes= type:date-time
+fec_saldes= type:date-time
+fec_ldesti= type:date-time
+dir_emailx= maxlength:60
+cod_client= maxlength:11

@@ -1,0 +1,2 @@
+2022-10-24 16:17:56|901389202|9532|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2022-10-24 16:20:03|901389202|9532|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

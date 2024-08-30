@@ -1,0 +1,4 @@
+2023-01-10 08:31:52|900179614|0021089|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-01-10 08:34:45|900179614|0021095|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
+2023-01-10 16:06:12|900179614|0021095|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2023-01-10 16:27:02|900179614|0021098|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

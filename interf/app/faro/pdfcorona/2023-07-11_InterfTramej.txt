@@ -1,0 +1,5 @@
+2023-07-11 06:32:39|800181408|0180830|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
+2023-07-11 06:38:30|800181408|0180824|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
+2023-07-11 06:50:40|800181408|0180835|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-07-11 12:18:06|800181408|0180835|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}
+2023-07-11 19:52:00|800181408|0180835|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}

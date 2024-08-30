@@ -1,0 +1,2 @@
+2021-12-21 08:35:06|800170695|BR447|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-12-21 11:42:38|800170695|BR447|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

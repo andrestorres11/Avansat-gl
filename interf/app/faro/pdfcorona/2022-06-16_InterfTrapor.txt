@@ -1,0 +1,1 @@
+2022-06-16 16:21:37|900033633|5026341|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

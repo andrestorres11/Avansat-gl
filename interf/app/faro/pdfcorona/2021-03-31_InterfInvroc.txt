@@ -1,0 +1,5 @@
+2021-03-31 10:48:45|830134066|0103699|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-03-31 13:37:19|830134066|0103704|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-03-31 13:43:54|830134066|0103703|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-03-31 13:45:13|830134066|0103705|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-03-31 13:46:19|830134066|0036635|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

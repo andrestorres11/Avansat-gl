@@ -1,0 +1,4 @@
+2021-05-05 08:58:39|830099596|00035527|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-05-05 11:33:01|830099596|00035518|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2021-05-05 23:25:21|830099596|00035521|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-05-05 23:27:14|830099596|00035527|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

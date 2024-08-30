@@ -1,0 +1,2 @@
+2023-03-11 15:34:12|900836827|8970|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-03-11 15:35:28|900836827|RCT0070|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}

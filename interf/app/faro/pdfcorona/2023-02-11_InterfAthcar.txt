@@ -1,0 +1,3 @@
+2023-02-11 12:11:32|900134456|8695125|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-02-11 12:12:07|900134456|8695126|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-02-11 12:12:56|900134456|8695129|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

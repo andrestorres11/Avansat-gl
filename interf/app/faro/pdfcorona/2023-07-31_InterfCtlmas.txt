@@ -1,0 +1,3 @@
+2023-07-31 10:12:44|901140841|01006972|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2023-07-31 10:27:22|901140841|01006980|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
+2023-07-31 17:27:01|901140841|01006996|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}

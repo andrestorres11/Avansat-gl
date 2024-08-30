@@ -1,0 +1,4 @@
+2022-09-30 12:16:09|830134066|0076383|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2022-09-30 12:40:19|830134066|0076384|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2022-09-30 12:42:19|830134066|0150321|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2022-09-30 12:43:06|830134066|0150322|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

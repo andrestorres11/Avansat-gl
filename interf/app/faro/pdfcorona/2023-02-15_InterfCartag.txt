@@ -1,0 +1,4 @@
+2023-02-15 16:04:26|800021603|BG5722|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-02-15 16:05:16|800021603|BG5721|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-02-15 16:46:16|800021603|BG5730|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-02-15 16:47:47|800021603|BG5732|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

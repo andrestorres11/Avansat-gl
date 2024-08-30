@@ -1,0 +1,7 @@
+2023-08-01 00:01:54|900220423|8720981|407|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 407. "}
+2023-08-01 00:02:01|900220423|1803895|443|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 443. "}
+2023-08-01 00:03:39|900220423|1803894|443|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 443. "}
+2023-08-01 00:03:50|900220423|1803897|443|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 443. "}
+2023-08-01 00:05:11|900220423|1803896|443|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 443. "}
+2023-08-01 00:05:40|900220423|1803903|443|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 443. "}
+2023-08-01 00:06:14|900220423|1803902|443|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 443. "}

@@ -1,0 +1,2 @@
+2022-12-20 16:37:16|900033633|5027426|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-12-20 16:39:07|900033633|5027428|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}

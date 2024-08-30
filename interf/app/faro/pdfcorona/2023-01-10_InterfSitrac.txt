@@ -1,0 +1,17 @@
+2023-01-10 06:47:06|830040809|1169539|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 07:00:08|830040809|1169530|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 07:01:20|830040809|1169538|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 07:05:01|830040809|1169563|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 07:05:49|830040809|1169608|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
+2023-01-10 09:11:01|830040809|1169547|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 09:22:30|830040809|1169597|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 09:23:32|830040809|1169613|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 11:09:34|830040809|1169625|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 12:13:32|830040809|1169635|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 14:13:24|830040809|1169628|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 14:15:00|830040809|1169629|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 14:18:34|830040809|1169638|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-01-10 14:37:36|830040809|1169604|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 15:55:54|830040809|1169644|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2023-01-10 16:04:25|830040809|1169622|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-01-10 16:19:20|830040809|1169628|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

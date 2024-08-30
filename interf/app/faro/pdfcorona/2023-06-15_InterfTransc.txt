@@ -1,0 +1,2 @@
+2023-06-15 21:39:24|800089325|09360273|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-15 21:40:05|800089325|09360263|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

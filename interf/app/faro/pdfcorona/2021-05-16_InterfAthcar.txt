@@ -1,0 +1,2 @@
+2021-05-16 16:49:16|900134456|8691306|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
+2021-05-16 16:50:06|900134456|8691310|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

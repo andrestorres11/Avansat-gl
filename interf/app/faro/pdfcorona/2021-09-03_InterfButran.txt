@@ -1,0 +1,10 @@
+2021-09-03 08:21:14|800170695|GB27365|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 08:41:49|800170695|BR251|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 10:47:11|800170695|BR250|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 10:50:07|800170695|BR251|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 14:52:04|800170695|GB27334|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 14:54:00|800170695|GB27398|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 15:39:08|800170695|GB27417|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 16:46:34|800170695|BR251|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 17:01:04|800170695|GB27417|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2021-09-03 17:15:21|800170695|GB27435|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

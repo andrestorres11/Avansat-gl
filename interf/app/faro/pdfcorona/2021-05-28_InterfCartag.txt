@@ -1,0 +1,4 @@
+2021-05-28 10:54:58|800021603|CA5969|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-05-28 10:55:31|800021603|CA5943|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2021-05-28 10:56:06|800021603|CA5971|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-05-28 10:57:41|800021603|CM280|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

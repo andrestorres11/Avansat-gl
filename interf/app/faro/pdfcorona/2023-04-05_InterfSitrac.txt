@@ -1,0 +1,4 @@
+2023-04-05 07:32:24|830040809|1171385|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-04-05 07:33:52|830040809|1171391|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-04-05 09:31:18|830040809|1171362|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
+2023-04-05 09:37:24|830040809|1171393|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

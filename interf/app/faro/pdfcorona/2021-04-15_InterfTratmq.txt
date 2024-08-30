@@ -1,0 +1,2 @@
+2021-04-15 13:40:36|811037875|1M003769|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-04-15 13:49:42|811037875|1M003765|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

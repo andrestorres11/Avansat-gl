@@ -1,0 +1,2 @@
+2023-04-17 07:23:16|900213844|008380|111|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 111. "}
+2023-04-17 11:13:10|900213844|008380|98|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 98. "}

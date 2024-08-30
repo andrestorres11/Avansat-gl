@@ -1,0 +1,5 @@
+2023-04-07 07:19:22|900635112|040468|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-07 07:48:36|900635112|040432|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-07 07:58:54|900635112|040457|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-07 18:55:07|900635112|040432|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-07 18:56:24|900635112|040434|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

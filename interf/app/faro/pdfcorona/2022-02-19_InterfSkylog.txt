@@ -1,0 +1,1 @@
+2022-02-19 18:25:16|900714469|2828|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

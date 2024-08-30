@@ -1,0 +1,1 @@
+2022-02-15 14:27:47|901217005|05457|71|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 71. "}

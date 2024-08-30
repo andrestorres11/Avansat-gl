@@ -1,0 +1,4 @@
+2023-04-02 13:40:52|830075219|9661606|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-02 13:42:45|830075219|9661606|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-02 13:46:19|830075219|9661606|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-04-02 13:48:52|830075219|9661605|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

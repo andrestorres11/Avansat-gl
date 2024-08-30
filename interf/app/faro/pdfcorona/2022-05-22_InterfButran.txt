@@ -1,0 +1,1 @@
+2022-05-22 14:04:30|800170695|GB38150|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

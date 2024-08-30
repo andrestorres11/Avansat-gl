@@ -1,0 +1,5 @@
+2021-10-29 08:53:05|900587608|9665|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-29 11:08:26|900587608|9665|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-29 13:17:59|900587608|9665|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-29 13:23:03|900587608|9665|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-29 15:30:15|900587608|9665|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

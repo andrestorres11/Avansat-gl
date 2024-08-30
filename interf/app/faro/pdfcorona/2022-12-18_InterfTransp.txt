@@ -1,0 +1,7 @@
+2022-12-18 19:24:25|900775200|0090660|15|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 15. "}
+2022-12-18 20:48:18|900775200|0090660|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-12-18 23:34:11|900775200|0090663|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-12-18 23:34:44|900775200|0090665|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-12-18 23:35:55|900775200|0090666|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-12-18 23:40:11|900775200|0090667|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-12-18 23:41:02|900775200|0090664|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

@@ -1,0 +1,1 @@
+2021-10-20 10:09:11|901217005|04918|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

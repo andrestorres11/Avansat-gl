@@ -1,0 +1,8 @@
+2022-07-11 09:10:13|800199898|9905278|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-11 09:11:28|800199898|9905280|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-11 09:12:28|800199898|9905281|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-11 09:13:58|800199898|9905276|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-07-11 09:15:45|800199898|9905277|9|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9. "}
+2022-07-11 11:47:54|800199898|9905278|5|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 5. "}
+2022-07-11 11:52:43|800199898|9905280|123|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 123. "}
+2022-07-11 16:41:04|800199898|9905278|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

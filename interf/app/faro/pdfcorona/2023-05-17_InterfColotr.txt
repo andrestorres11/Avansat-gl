@@ -1,0 +1,4 @@
+2023-05-17 07:49:46|900179614|0019626|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-17 08:03:47|900179614|0019627|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-17 08:22:11|900179614|0019628|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-17 11:30:55|900179614|0021383|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

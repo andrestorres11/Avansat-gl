@@ -1,0 +1,3 @@
+2022-03-06 18:57:25|900657956|37021-1|9008|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9008. "}
+2022-03-06 23:31:42|900657956|36824-4|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-03-06 23:32:50|900657956|36824-4|407|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 407. "}

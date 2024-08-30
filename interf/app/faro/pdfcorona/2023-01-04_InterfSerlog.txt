@@ -1,0 +1,1 @@
+2023-01-04 08:42:46|900483925|Man21014|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

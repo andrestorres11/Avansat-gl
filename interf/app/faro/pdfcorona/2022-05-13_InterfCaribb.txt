@@ -1,0 +1,1 @@
+2022-05-13 09:00:30|901389202|7064|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

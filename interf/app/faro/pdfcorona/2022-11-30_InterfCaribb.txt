@@ -1,0 +1,1 @@
+2022-11-30 14:05:33|901389202|10124|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

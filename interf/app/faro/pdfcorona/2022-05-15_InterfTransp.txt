@@ -1,0 +1,4 @@
+2022-05-15 20:21:13|900775200|0079876|55|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 55. "}
+2022-05-15 23:12:18|900775200|0079931|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-05-15 23:43:20|900775200|0079916|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-05-15 23:43:47|900775200|0079918|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

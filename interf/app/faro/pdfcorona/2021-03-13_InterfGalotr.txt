@@ -1,0 +1,2 @@
+2021-03-13 09:21:52|800199898|9903013|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2021-03-13 09:45:43|800199898|9903012|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

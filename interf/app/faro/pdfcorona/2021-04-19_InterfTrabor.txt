@@ -1,0 +1,2 @@
+2021-04-19 08:36:25|830141359|15442|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}
+2021-04-19 08:40:48|830141359|15452|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

@@ -1,0 +1,3 @@
+2022-06-05 12:33:43|900306833|0063468|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-06-05 18:13:18|900306833|0063489|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-06-05 18:14:39|900306833|0063468|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

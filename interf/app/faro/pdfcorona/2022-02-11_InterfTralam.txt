@@ -1,0 +1,1 @@
+2022-02-11 09:01:18|901217005|05440|9032|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9032. "}

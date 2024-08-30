@@ -1,0 +1,4 @@
+2022-09-26 09:09:47|901217005|06311|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-09-26 09:27:33|901217005|06309|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-09-26 13:02:08|901217005|06311|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-09-26 16:22:36|901217005|06313|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

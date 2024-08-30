@@ -1,0 +1,8 @@
+2023-05-05 06:38:08|800181408|0179889|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
+2023-05-05 12:12:11|800181408|0179889|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
+2023-05-05 12:16:25|800181408|0179917|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}
+2023-05-05 12:27:43|800181408|0179916|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}
+2023-05-05 16:19:37|800181408|0179895|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-05 19:51:06|800181408|0179916|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
+2023-05-05 19:52:38|800181408|0179889|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
+2023-05-05 20:07:46|800181408|0179917|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

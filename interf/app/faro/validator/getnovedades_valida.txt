@@ -1,0 +1,2 @@
+nom_usuari= required:yes; minlength:4; maxlength:20
+pwd_clavex= required:yes; minlength:6; maxlength:20

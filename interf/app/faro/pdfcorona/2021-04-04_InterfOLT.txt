@@ -1,0 +1,5 @@
+2021-04-04 09:14:37|900218311|8148681|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2021-04-04 09:18:55|900218311|8148685|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-04-04 09:21:54|900218311|8148682|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2021-04-04 09:24:45|900218311|8148684|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-04-04 09:27:03|900218311|8148683|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,0 +1,4 @@
+2021-05-12 07:19:12|901140841|01001746|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-05-12 09:35:55|901140841|01001744|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-05-12 09:44:03|901140841|01001740|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-05-12 09:48:47|901140841|01001755|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

@@ -1,0 +1,2 @@
+2021-10-04 09:03:28|800021603|CA7227|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-04 09:17:17|800021603|CA7231|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

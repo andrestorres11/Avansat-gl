@@ -1,0 +1,2 @@
+2022-06-13 06:55:01|900301751|8996997|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-06-13 06:57:15|900301751|8997001|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

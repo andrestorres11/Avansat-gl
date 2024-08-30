@@ -1,0 +1,7 @@
+2022-08-31 07:04:04|900301751|08998523|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-31 07:07:03|900301751|08998527|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-31 07:08:48|900301751|08998528|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-31 07:10:09|900301751|08998526|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-31 07:11:45|900301751|08998525|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-31 07:13:04|900301751|08998510|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-08-31 07:16:59|900301751|08998511|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

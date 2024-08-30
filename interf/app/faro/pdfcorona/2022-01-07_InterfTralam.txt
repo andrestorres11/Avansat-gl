@@ -1,0 +1,1 @@
+2022-01-07 10:21:14|901217005|05330|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}

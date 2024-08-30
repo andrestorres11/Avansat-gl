@@ -1,0 +1,2 @@
+2023-07-18 14:55:44|901297510|0015300|74|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 74. "}
+2023-07-18 14:59:04|901297510|0015300|74|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 74. "}

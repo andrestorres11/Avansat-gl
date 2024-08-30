@@ -1,0 +1,17 @@
+2022-04-09 02:55:37|900657956|37828-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-04-09 02:55:46|900657956|37828-1|355|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 355. "}
+2022-04-09 05:04:17|900657956|37828-1|356|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 356. "}
+2022-04-09 05:05:41|900657956|37828-1|9020|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9020. "}
+2022-04-09 05:34:08|900657956|37820-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-04-09 07:19:50|900657956|37820-1|407|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 407. "}
+2022-04-09 07:20:02|900657956|37820-1|355|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 355. "}
+2022-04-09 07:56:59|900657956|37820-1|356|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 356. "}
+2022-04-09 08:00:43|900657956|37820-1|9020|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9020. "}
+2022-04-09 08:31:12|900657956|37745-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-04-09 08:31:48|900657956|37745-1|407|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 407. "}
+2022-04-09 08:36:00|900657956|37837-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-04-09 08:36:00|900657956|37837-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-04-09 08:36:44|900657956|37837-1|355|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 355. "}
+2022-04-09 09:36:19|900657956|37745-1|9020|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9020. "}
+2022-04-09 12:21:44|900657956|37837-1|9020|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9020. "}
+2022-04-09 22:48:17|900657956|37825-1|9008|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9008. "}

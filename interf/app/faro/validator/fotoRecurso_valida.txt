@@ -1,0 +1,4 @@
+fot_namexx= required:yes; minlength:4; maxlength:100; type:text
+fot_typexx= required:yes; minlength:6; maxlength:20; type:text
+fot_sizexx= required:yes; minlength:2; maxlength:300; type:numeric
+fot_binary= required:yes

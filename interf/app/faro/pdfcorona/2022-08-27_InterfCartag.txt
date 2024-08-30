@@ -1,0 +1,1 @@
+2022-08-27 09:32:58|800021603|CA10082|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

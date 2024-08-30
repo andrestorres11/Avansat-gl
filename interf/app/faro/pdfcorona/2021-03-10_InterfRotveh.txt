@@ -1,0 +1,4 @@
+2021-03-10 00:13:51|900434012|T7448|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-03-10 23:11:36|900434012|6874|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2021-03-10 23:12:37|900434012|6876|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2021-03-10 23:17:07|900434012|6873|156|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 156. "}

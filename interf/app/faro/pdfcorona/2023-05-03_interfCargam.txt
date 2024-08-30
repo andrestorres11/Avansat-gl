@@ -1,0 +1,3 @@
+2023-05-03 13:24:19|900732377|0008152|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-03 13:25:15|900732377|0008156|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-03 13:25:40|900732377|0008157|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

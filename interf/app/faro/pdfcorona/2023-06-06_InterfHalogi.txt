@@ -1,0 +1,11 @@
+2023-06-06 08:58:21|900499919|HAL007898|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 08:59:40|900499919|HABM1352|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 09:00:50|900499919|HAL007897|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 11:57:12|900499919|HAL007896|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 11:59:43|900499919|HAL007901|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 13:08:21|900499919|HAL007900|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}
+2023-06-06 14:41:47|900499919|HABM1353|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 14:42:30|900499919|HAL007896|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 15:31:22|900499919|HABM1355|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 16:16:31|900499919|HAL007901|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-06-06 17:20:43|900499919|HAL007902|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,0 +1,1 @@
+2022-07-12 10:44:47|830109831|332304|92|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 92. "}

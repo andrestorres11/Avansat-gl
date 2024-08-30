@@ -1,0 +1,1 @@
+2021-07-01 15:53:49|800170695|GB24779|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}

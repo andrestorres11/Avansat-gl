@@ -1,0 +1,2 @@
+2022-01-27 12:43:55|900499919|HABM0259|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-01-27 15:52:23|900499919|HABM0261|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

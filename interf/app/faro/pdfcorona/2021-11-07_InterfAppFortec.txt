@@ -1,0 +1,2 @@
+2021-11-07 20:22:27|900657956|34808-1|9024|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9024. "}
+2021-11-07 20:24:21|900657956|34808-1|9008|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9008. "}

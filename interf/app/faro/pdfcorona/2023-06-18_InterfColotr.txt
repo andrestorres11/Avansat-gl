@@ -1,0 +1,2 @@
+2023-06-18 08:16:55|900179614|0019704|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2023-06-18 08:16:55|900179614|0019704|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

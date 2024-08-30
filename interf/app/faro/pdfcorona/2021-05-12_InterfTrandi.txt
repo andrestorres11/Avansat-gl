@@ -1,0 +1,1 @@
+2021-05-12 21:14:21|830038608|003605|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

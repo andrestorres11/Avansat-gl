@@ -1,0 +1,2 @@
+2021-05-11 09:41:55|830141359|15555|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-05-11 14:20:08|830141359|15555|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}

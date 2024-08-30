@@ -1,0 +1,2 @@
+2021-12-04 09:42:16|901217005|05239|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
+2021-12-04 12:09:03|901217005|05239|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}

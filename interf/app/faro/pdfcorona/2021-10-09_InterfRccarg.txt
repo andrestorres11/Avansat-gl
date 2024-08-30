@@ -1,0 +1,2 @@
+2021-10-09 07:36:53|830109831|331022|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-10-09 09:36:00|830109831|263973|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

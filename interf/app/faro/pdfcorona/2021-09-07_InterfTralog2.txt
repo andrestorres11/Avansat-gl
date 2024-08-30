@@ -1,0 +1,1 @@
+2021-09-07 18:12:50|900503325|0652334|88|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 88. "}

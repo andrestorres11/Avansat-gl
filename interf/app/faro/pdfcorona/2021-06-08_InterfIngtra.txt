@@ -1,0 +1,4 @@
+2021-06-08 07:43:49|830075219|9659604|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-08 15:05:16|830075219|9659605|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-08 15:08:47|830075219|9659604|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-06-08 15:10:23|830075219|9659606|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

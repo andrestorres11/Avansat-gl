@@ -1,0 +1,3 @@
+2022-09-12 08:30:34|800199898|9905361|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-09-12 08:31:31|800199898|9905362|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
+2022-09-12 16:36:26|800199898|9905364|5|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 5. "}

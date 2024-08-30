@@ -1,0 +1,1 @@
+2021-07-29 18:57:17|900883707|006924|9003|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9003. "}

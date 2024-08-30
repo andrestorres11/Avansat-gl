@@ -1,0 +1,4 @@
+2022-10-28 08:36:57|900805898|15368|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2022-10-28 11:59:56|900805898|15340|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-10-28 15:10:47|900805898|15373|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-10-28 17:56:12|900805898|15378|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

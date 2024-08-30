@@ -1,0 +1,1 @@
+2021-06-29 08:14:03|900665582|6940|398|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 398. "}

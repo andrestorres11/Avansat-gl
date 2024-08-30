@@ -1,0 +1,1 @@
+2022-10-22 13:42:27|900805898|15310|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

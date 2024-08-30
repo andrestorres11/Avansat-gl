@@ -1,0 +1,4 @@
+2023-03-22 16:21:58|901237466|074989|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-03-22 16:25:31|901237466|075144|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-03-22 16:31:07|901237466|074873|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-03-22 16:37:13|901237466|074707|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

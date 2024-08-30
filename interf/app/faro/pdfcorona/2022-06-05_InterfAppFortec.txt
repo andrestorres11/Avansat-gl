@@ -1,0 +1,4 @@
+2022-06-05 06:43:49|900657956|38716-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
+2022-06-05 06:44:01|900657956|38716-1|355|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 355. "}
+2022-06-05 06:44:50|900657956|38716-1|407|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 407. "}
+2022-06-05 10:04:33|900657956|38716-1|9020|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9020. "}

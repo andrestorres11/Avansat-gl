@@ -1,0 +1,1 @@
+2021-03-30 18:14:59|800170695|GB21989|56|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 56. "}

@@ -1,0 +1,1 @@
+2022-08-11 16:40:25|901217005|06090|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

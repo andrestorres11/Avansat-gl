@@ -1,0 +1,2 @@
+2022-10-11 10:08:18|900732377|0007287|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-10-11 15:36:00|900732377|0007312|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

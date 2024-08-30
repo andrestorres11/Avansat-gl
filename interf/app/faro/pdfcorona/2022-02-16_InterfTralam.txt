@@ -1,0 +1,2 @@
+2022-02-16 12:59:06|901217005|05460|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-02-16 17:28:08|901217005|05458|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

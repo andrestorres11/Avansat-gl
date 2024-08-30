@@ -1,0 +1,3 @@
+2022-03-10 10:19:25|900587608|10380|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-03-10 11:44:07|900587608|10380|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-03-10 15:12:23|900587608|10428|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

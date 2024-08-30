@@ -1,0 +1,1 @@
+2021-07-24 00:06:00|900089269|0001501|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

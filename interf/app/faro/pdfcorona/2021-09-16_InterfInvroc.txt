@@ -1,0 +1,10 @@
+2021-09-16 09:15:50|830134066|0037754|9|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9. "}
+2021-09-16 09:21:06|830134066|0037748|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-16 09:26:10|830134066|0037748|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-16 12:17:29|830134066|0104337|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-16 12:18:02|830134066|0104334|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-16 12:18:36|830134066|0104338|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-16 12:19:51|830134066|0037757|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-09-16 15:05:28|830134066|0055893|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-16 19:41:49|830134066|0055893|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
+2021-09-16 19:45:58|830134066|0055897|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

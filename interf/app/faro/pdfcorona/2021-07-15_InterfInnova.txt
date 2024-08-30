@@ -1,0 +1,3 @@
+2021-07-15 11:48:15|901237466|029617|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-07-15 17:03:43|901237466|029691|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-07-15 17:05:15|901237466|029696|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

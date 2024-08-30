@@ -1,0 +1,3 @@
+2021-03-31 06:11:19|900134456|8691091|18|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 18. "}
+2021-03-31 06:11:51|900134456|8691092|8|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 8. "}
+2021-03-31 11:00:22|900134456|8691093|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}

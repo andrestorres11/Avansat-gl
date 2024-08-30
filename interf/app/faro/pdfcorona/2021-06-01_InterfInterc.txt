@@ -1,0 +1,4 @@
+2021-06-01 11:40:26|900883707|006673|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}
+2021-06-01 11:42:39|900883707|006673|9003|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9003. "}
+2021-06-01 19:58:36|900883707|006677|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}
+2021-06-01 19:58:37|900883707|006677|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}

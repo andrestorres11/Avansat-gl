@@ -1,0 +1,2 @@
+2021-03-17 12:57:06|900883707|006396|9019|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9019. "}
+2021-03-17 12:58:20|900883707|006396|9001|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9001. "}

@@ -1,0 +1,2 @@
+2023-05-27 08:10:57|901340624|1619|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2023-05-27 09:06:17|901340624|1620|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

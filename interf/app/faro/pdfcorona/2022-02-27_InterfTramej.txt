@@ -1,0 +1,3 @@
+2022-02-27 11:27:35|800181408|0167665|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-02-27 11:59:14|800181408|0167518|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-02-27 12:02:26|800181408|0167626|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

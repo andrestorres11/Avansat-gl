@@ -1,0 +1,1 @@
+2022-11-08 17:07:30|900301751|08999938|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

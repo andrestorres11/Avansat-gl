@@ -1,0 +1,1 @@
+2023-05-26 07:21:43|800181408|0180194|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}

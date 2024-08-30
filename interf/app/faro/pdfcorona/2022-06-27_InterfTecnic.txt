@@ -1,0 +1,3 @@
+2022-06-27 08:19:11|900431160|0046283|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-06-27 17:12:00|900431160|0046283|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2022-06-27 20:55:53|900431160|0046283|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

@@ -1,0 +1,4 @@
+2021-10-06 08:42:11|900746988|0011357|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-06 11:57:21|900746988|0011364|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-06 18:14:16|900746988|0011362|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-06 18:15:48|900746988|0011368|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

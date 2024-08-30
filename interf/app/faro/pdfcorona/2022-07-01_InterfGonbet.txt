@@ -1,0 +1,1 @@
+2022-07-01 15:33:38|811001497|10070489|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

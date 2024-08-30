@@ -1,0 +1,2 @@
+2022-08-14 09:24:50|900499919|HAL006264|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
+2022-08-14 09:34:19|900499919|HAL006260|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

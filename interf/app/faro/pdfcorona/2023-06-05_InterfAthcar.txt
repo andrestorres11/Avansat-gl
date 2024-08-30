@@ -1,0 +1,3 @@
+2023-06-05 13:01:55|900134456|8695845|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}
+2023-06-05 13:02:45|900134456|8695846|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}
+2023-06-05 13:19:59|900134456|8695844|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}

@@ -1,0 +1,6 @@
+2021-10-17 14:27:03|900306833|0058385|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-17 14:28:14|900306833|0058372|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-17 18:54:54|900306833|0058385|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-17 19:35:06|900306833|0058405|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2021-10-17 21:18:47|900306833|0058373|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
+2021-10-17 21:42:14|900306833|0058405|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

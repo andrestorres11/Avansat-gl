@@ -1,0 +1,6 @@
+2023-02-18 09:59:39|800170695|GB50659|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2023-02-18 10:02:49|800170695|GB50727|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2023-02-18 10:05:57|800170695|GB50762|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2023-02-18 11:00:14|800170695|GB50793|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2023-02-18 11:21:55|800170695|GB50727|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
+2023-02-18 11:23:28|800170695|GB50762|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

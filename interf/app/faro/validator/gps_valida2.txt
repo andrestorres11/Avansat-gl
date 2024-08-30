@@ -1,0 +1,5 @@
+nom_operad= maxlength:120
+nom_usrgps= maxlength:64
+clv_usrgps= maxlength:64
+idx_gpsxxx= maxlength:20
+gps_urlxxx= maxlength:255

@@ -1,0 +1,2 @@
+2021-03-18 11:22:48|900827148|2516|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
+2021-03-18 11:24:00|900827148|2520|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

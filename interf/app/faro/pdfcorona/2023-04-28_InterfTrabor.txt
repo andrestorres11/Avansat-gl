@@ -1,0 +1,1 @@
+2023-04-28 15:31:59|830141359|18965|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

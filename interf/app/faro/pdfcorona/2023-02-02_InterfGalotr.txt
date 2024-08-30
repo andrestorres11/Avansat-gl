@@ -1,0 +1,2 @@
+2023-02-02 08:20:01|800199898|9905459|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-02-02 16:51:27|800199898|9905459|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

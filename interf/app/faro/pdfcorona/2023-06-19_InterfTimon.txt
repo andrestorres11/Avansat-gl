@@ -1,0 +1,4 @@
+2023-06-19 00:03:34|800166412|00050932|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}
+2023-06-19 00:07:46|800166412|00050933|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}
+2023-06-19 04:01:10|800166412|9894367|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}
+2023-06-19 07:39:32|800166412|9894365|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}

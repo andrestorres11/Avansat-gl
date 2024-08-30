@@ -1,0 +1,2 @@
+2023-07-07 08:39:09|901237466|083155|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-07-07 16:36:06|901237466|083155|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

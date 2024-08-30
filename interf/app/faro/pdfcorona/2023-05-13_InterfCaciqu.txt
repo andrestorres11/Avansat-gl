@@ -1,0 +1,5 @@
+2023-05-13 11:04:24|900301751|09003610|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-13 11:07:52|900301751|09003623|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-13 11:09:48|900301751|09003609|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-13 11:11:36|900301751|09003622|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-13 11:13:46|900301751|09003619|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

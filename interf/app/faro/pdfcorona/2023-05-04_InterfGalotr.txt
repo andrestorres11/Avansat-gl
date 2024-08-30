@@ -1,0 +1,3 @@
+2023-05-04 08:38:14|800199898|9903362|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-04 08:39:18|800199898|9903363|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
+2023-05-04 13:28:42|800199898|9903366|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

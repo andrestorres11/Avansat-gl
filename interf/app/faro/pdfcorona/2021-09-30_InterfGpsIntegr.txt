@@ -1,0 +1,7 @@
+2021-09-30 11:03:14|900440999|24688|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
+2021-09-30 11:06:05|900440999|24688|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
+2021-09-30 11:15:21|900440999|123456|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
+2021-09-30 11:35:29|900440999|24688|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
+2021-09-30 11:36:37|900440999|1058888|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
+2021-09-30 11:41:43|900440999|1058898|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
+2021-09-30 12:41:39|900440999|24688|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
