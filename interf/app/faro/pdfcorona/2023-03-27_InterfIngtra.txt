@@ -1,3 +1,0 @@
-2023-03-27 00:00:20|830075219|9661602|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-27 08:16:57|830075219|9663439|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-27 08:32:03|830075219|9661603|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

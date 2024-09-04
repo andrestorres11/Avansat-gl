@@ -1,4 +1,0 @@
-2022-11-07 00:54:41|800166412|9892488|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}
-2022-11-07 01:04:40|800166412|9892490|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
-2022-11-07 08:16:35|800166412|9892490|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
-2022-11-07 10:12:21|800166412|9892488|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}

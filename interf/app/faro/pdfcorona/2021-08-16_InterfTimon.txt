@@ -1,2 +1,0 @@
-2021-08-16 01:42:15|800166412|9888395|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}
-2021-08-16 01:54:29|800166412|9888395|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}

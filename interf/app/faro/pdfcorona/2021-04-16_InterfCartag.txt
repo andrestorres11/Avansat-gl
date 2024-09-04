@@ -1,1 +1,0 @@
-2021-04-16 08:07:45|800021603|CA5814|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

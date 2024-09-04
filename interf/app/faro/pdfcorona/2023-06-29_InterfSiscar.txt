@@ -1,1 +1,0 @@
-2023-06-29 14:04:30|900029975|0039776|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}

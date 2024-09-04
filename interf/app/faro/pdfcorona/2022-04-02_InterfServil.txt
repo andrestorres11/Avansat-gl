@@ -1,1 +1,0 @@
-2022-04-02 07:21:18|830098260|0017679|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}

@@ -1,5 +1,0 @@
-2022-07-22 08:16:22|901237466|055381|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
-2022-07-22 08:33:59|901237466|055407|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-07-22 09:35:24|901237466|055317|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-07-22 10:53:03|901237466|055382|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-07-22 12:44:30|901237466|055423|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

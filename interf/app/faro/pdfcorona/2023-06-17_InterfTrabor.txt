@@ -1,2 +1,0 @@
-2023-06-17 10:44:37|830141359|19326|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
-2023-06-17 10:49:31|830141359|19328|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

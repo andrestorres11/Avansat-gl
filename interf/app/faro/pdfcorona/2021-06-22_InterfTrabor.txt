@@ -1,3 +1,0 @@
-2021-06-22 10:48:19|830141359|15730|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}
-2021-06-22 11:56:59|830141359|15730|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}
-2021-06-22 16:01:08|830141359|15731|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

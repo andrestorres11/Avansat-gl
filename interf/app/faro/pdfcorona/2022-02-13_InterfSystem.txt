@@ -1,1 +1,0 @@
-2022-02-13 07:29:41|900517571|00000828|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}

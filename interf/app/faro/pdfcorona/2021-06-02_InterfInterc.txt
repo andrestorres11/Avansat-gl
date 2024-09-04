@@ -1,1 +1,0 @@
-2021-06-02 16:05:21|900883707|006679|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}

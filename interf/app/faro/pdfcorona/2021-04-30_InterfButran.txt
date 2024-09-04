@@ -1,1 +1,0 @@
-2021-04-30 17:25:53|800170695|BT6949|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

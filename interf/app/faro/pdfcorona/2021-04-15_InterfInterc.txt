@@ -1,1 +1,0 @@
-2021-04-15 15:47:39|900883707|006515|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}

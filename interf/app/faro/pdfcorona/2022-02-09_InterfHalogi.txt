@@ -1,1 +1,0 @@
-2022-02-09 10:20:34|900499919|HABM0322|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

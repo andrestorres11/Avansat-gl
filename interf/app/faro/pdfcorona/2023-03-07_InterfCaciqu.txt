@@ -1,6 +1,0 @@
-2023-03-07 07:00:17|900301751|09002353|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-07 07:01:44|900301751|09002351|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-07 07:02:41|900301751|09002352|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-07 07:04:06|900301751|09002354|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-07 07:07:01|900301751|09002349|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-07 07:08:21|900301751|09002357|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

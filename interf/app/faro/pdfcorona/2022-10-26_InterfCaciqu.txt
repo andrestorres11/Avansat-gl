@@ -1,2 +1,0 @@
-2022-10-26 09:20:11|900301751|08999690|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-10-26 09:21:41|900301751|08999690|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

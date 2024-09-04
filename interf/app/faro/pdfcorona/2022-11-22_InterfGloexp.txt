@@ -1,4 +1,0 @@
-2022-11-22 18:19:21|901420688|909|86|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 86. "}
-2022-11-22 18:24:23|901420688|909|86|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 86. "}
-2022-11-22 18:29:26|901420688|909|86|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 86. "}
-2022-11-22 18:34:29|901420688|909|86|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 86. "}

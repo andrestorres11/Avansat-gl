@@ -1,3 +1,0 @@
-2021-04-27 08:49:33|830141359|15492|54|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 54. "}
-2021-04-27 08:51:45|830141359|15495|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-04-27 08:53:19|830141359|15490|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}

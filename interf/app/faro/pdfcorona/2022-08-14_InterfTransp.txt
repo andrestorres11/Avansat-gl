@@ -1,4 +1,0 @@
-2022-08-14 21:15:45|900775200|0084424|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-08-14 22:26:48|900775200|0084425|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
-2022-08-14 22:27:19|900775200|0084426|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
-2022-08-14 22:29:00|900775200|0084427|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

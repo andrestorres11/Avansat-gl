@@ -1,3 +1,0 @@
-2023-05-12 16:30:20|901237466|078776|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-05-12 16:32:18|901237466|078686|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-05-12 16:43:33|901237466|078686|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

@@ -1,4 +1,0 @@
-2022-03-03 16:32:40|900517571|00000923|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
-2022-03-03 16:36:10|900517571|00000918|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
-2022-03-03 17:06:25|900517571|00000925|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
-2022-03-03 17:15:41|900517571|00000922|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}

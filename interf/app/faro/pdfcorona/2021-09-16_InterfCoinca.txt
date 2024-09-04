@@ -1,2 +1,0 @@
-2021-09-16 08:16:50|900957102|OF5009399|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-09-16 15:06:39|900957102|OF5009406|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

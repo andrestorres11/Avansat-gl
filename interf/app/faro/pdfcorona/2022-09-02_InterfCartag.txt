@@ -1,4 +1,0 @@
-2022-09-02 09:23:52|800021603|CA10155|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-09-02 09:39:37|800021603|CA10168|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-09-02 09:41:15|800021603|CA10140|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-09-02 09:59:40|800021603|CA10181|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

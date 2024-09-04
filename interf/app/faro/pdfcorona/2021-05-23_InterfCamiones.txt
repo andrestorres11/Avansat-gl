@@ -1,3 +1,0 @@
-2021-05-23 19:29:40|805027046|0101270595|68|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 68. "}
-2021-05-23 19:32:05|805027046|0101270585|68|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 68. "}
-2021-05-23 19:35:16|805027046|0101270583|68|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 68. "}

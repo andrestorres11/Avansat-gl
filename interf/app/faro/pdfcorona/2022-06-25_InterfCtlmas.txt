@@ -1,3 +1,0 @@
-2022-06-25 08:12:39|901140841|01004414|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
-2022-06-25 08:23:51|901140841|01004413|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
-2022-06-25 09:18:48|901140841|01004410|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

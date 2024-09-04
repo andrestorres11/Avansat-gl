@@ -1,4 +1,0 @@
-2021-12-17 10:07:08|901217005|05288|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
-2021-12-17 10:11:30|901217005|05283|71|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 71. "}
-2021-12-17 10:12:36|901217005|05286|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
-2021-12-17 15:20:55|901217005|05284|71|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 71. "}

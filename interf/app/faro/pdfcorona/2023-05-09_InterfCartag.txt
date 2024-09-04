@@ -1,1 +1,0 @@
-2023-05-09 08:00:35|800021603|BG6017|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

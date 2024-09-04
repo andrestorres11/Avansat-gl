@@ -1,2 +1,0 @@
-2021-08-20 11:09:12|830141359|16000|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
-2021-08-20 11:10:24|830141359|16001|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}

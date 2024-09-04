@@ -1,2 +1,0 @@
-2021-03-18 13:57:14|900089269|0001403|20|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 20. "}
-2021-03-18 13:59:28|900089269|0001403|20|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 20. "}

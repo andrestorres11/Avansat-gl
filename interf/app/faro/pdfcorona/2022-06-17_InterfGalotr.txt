@@ -1,5 +1,0 @@
-2022-06-17 09:05:41|800199898|9905249|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-17 13:48:28|800199898|9905253|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-17 13:49:18|800199898|9905252|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-17 16:07:14|800199898|9905253|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-17 16:07:55|800199898|9905252|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

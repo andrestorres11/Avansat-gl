@@ -1,2 +1,0 @@
-2022-07-05 09:42:04|901121844|7743|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
-2022-07-05 09:43:52|901121844|7744|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}

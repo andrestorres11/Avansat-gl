@@ -1,1 +1,0 @@
-2021-04-10 11:02:32|800170695|GB22254|80|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 80. "}

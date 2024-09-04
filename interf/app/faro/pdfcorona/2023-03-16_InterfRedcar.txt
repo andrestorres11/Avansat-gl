@@ -1,1 +1,0 @@
-2023-03-16 11:30:20|900836827|RCT0073|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}

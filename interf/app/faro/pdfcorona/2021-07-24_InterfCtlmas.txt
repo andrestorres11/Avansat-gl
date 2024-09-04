@@ -1,2 +1,0 @@
-2021-07-24 11:56:35|901140841|01002093|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-07-24 12:13:50|901140841|01002094|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

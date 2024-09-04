@@ -1,5 +1,0 @@
-2022-11-10 08:52:53|900483925|Man20121|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2022-11-10 09:03:21|900483925|Man20133|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2022-11-10 10:17:54|900483925|Man20126|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2022-11-10 10:28:41|900483925|Man20122|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}
-2022-11-10 10:30:13|900483925|Man20115|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

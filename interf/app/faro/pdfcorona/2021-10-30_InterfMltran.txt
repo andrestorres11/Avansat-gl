@@ -1,4 +1,0 @@
-2021-10-30 21:47:35|900213844|005805|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-10-30 21:49:16|900213844|005795|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-10-30 21:54:25|900213844|005804|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-10-30 21:56:11|900213844|005798|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

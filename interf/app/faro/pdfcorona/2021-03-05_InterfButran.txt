@@ -1,1 +1,0 @@
-2021-03-05 17:39:41|800170695|GB20915|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

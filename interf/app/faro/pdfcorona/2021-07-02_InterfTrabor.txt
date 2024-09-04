@@ -1,1 +1,0 @@
-2021-07-02 16:32:30|830141359|15788|90|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 90. "}

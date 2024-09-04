@@ -1,2 +1,0 @@
-2021-09-26 10:19:41|811001497|10054256|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
-2021-09-26 12:36:00|811001497|10054256|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

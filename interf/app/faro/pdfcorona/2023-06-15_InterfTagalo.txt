@@ -1,1 +1,0 @@
-2023-06-15 08:23:18|901196694|0099587|113|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 113. "}

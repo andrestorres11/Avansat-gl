@@ -1,3 +1,0 @@
-2021-04-19 11:02:19|800199898|9903066|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-04-19 11:10:25|800199898|9903067|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-04-19 11:10:54|800199898|9903069|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

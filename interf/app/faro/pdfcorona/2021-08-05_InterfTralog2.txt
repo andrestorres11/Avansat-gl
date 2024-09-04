@@ -1,3 +1,0 @@
-2021-08-05 15:45:53|900503325|0646976|88|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 88. "}
-2021-08-05 15:46:08|900503325|0656065|88|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 88. "}
-2021-08-05 15:46:27|900503325|0647004|88|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 88. "}

@@ -1,2 +1,0 @@
-2022-05-20 15:19:17|901420688|518|86|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 86. "}
-2022-05-20 15:24:20|901420688|518|86|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 86. "}

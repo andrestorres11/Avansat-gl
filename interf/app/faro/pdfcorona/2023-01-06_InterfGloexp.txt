@@ -1,2 +1,0 @@
-2023-01-06 19:20:56|901420688|1007|398|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 398. "}
-2023-01-06 19:21:55|901420688|1005|398|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 398. "}

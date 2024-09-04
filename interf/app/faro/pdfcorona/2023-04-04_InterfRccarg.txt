@@ -1,9 +1,0 @@
-2023-04-04 07:50:53|830109831|266908|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 08:38:31|830109831|333250|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 08:44:39|830109831|333253|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 08:45:44|830109831|333252|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 08:48:37|830109831|333255|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 09:13:18|830109831|370417|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 09:36:38|830109831|370412|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 09:43:32|830109831|344918|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 09:48:42|830109831|365755|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

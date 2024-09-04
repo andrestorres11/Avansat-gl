@@ -1,4 +1,0 @@
-2022-02-19 07:49:50|900134456|8693022|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}
-2022-02-19 07:50:50|900134456|8693023|104|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 104. "}
-2022-02-19 07:51:56|900134456|8693015|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
-2022-02-19 13:36:32|900134456|8693027|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

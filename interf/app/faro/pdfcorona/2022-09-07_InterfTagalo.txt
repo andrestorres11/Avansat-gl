@@ -1,4 +1,0 @@
-2022-09-07 12:18:45|901196694|0078133|9023|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9023. "}
-2022-09-07 12:18:57|901196694|0078133|9023|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9023. "}
-2022-09-07 12:20:09|901196694|0078133|9019|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9019. "}
-2022-09-07 12:20:20|901196694|0078133|9023|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9023. "}

@@ -1,1 +1,0 @@
-2022-05-05 15:57:45|900883707|008069|9003|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9003. "}

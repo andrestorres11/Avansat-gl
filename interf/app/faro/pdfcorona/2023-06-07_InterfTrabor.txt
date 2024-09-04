@@ -1,3 +1,0 @@
-2023-06-07 08:11:23|830141359|19251|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2023-06-07 10:59:13|830141359|19251|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2023-06-07 15:25:49|830141359|19258|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

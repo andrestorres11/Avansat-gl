@@ -1,4 +1,0 @@
-2022-10-13 09:13:20|901217005|06381|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-10-13 14:21:58|901217005|06381|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-10-13 14:28:48|901217005|06378|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-10-13 14:54:38|901217005|06386|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

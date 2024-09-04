@@ -1,1 +1,0 @@
-2022-09-26 09:39:05|900483925|Man19412|123|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 123. "}

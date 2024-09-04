@@ -1,3 +1,0 @@
-2021-07-21 08:52:00|901237466|029946|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-07-21 14:59:30|901237466|030056|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-07-21 17:00:46|901237466|030056|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

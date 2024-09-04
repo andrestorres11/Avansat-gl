@@ -1,1 +1,0 @@
-2021-10-19 13:45:40|900440999|789654|9169|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9169. "}

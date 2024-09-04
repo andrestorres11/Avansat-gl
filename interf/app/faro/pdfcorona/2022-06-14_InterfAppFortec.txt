@@ -1,1 +1,0 @@
-2022-06-14 18:35:33|900657956|38882-1|9008|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9008. "}

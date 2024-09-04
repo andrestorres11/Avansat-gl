@@ -1,4 +1,0 @@
-2023-07-09 09:17:06|900635112|042753|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-07-09 09:23:23|900635112|042752|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-07-09 09:43:34|900635112|042785|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-07-09 23:58:12|900635112|042753|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

@@ -1,2 +1,0 @@
-2022-06-08 14:31:02|800157847|38813|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
-2022-06-08 15:05:57|800157847|38830|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

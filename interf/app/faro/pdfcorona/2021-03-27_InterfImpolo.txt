@@ -1,2 +1,0 @@
-2021-03-27 08:23:41|900845839|IMP966|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-03-27 08:39:44|900845839|IMP970|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

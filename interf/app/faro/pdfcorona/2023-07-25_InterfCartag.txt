@@ -1,2 +1,0 @@
-2023-07-25 09:03:22|800021603|CA12576|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-07-25 16:22:45|800021603|CA12576|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,1 +1,0 @@
-2021-06-24 16:56:46|900836827|3259|9995|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9995. "}

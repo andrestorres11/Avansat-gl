@@ -1,1 +1,0 @@
-2021-04-03 07:49:53|900029975|0030585|94|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 94. "}

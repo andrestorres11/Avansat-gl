@@ -1,1 +1,0 @@
-2021-04-24 20:18:31|900714469|3236|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

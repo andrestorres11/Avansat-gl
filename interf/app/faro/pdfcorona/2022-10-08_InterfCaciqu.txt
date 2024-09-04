@@ -1,3 +1,0 @@
-2022-10-08 13:57:13|900301751|08999331|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-10-08 13:59:37|900301751|08999333|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-10-08 14:03:18|900301751|08999326|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

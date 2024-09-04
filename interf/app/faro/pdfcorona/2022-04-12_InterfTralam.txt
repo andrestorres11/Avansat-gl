@@ -1,3 +1,0 @@
-2022-04-12 08:52:33|901217005|05666|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-04-12 09:20:40|901217005|05665|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
-2022-04-12 14:24:47|901217005|05665|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}

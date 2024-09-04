@@ -1,2 +1,0 @@
-2022-02-25 10:54:32|901217005|05489|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
-2022-02-25 10:57:52|901217005|05489|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

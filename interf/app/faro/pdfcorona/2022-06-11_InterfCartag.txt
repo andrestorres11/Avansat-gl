@@ -1,3 +1,0 @@
-2022-06-11 08:45:23|800021603|CA9457|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-11 08:49:51|800021603|CA9445|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-11 08:53:28|800021603|CA9449|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

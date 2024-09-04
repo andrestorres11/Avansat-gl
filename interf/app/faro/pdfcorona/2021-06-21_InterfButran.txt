@@ -1,1 +1,0 @@
-2021-06-21 12:01:02|800170695|CL6276|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

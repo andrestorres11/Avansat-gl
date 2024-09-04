@@ -1,3 +1,0 @@
-2022-06-22 15:53:38|811001497|10070090|92|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 92. "}
-2022-06-22 16:11:04|811001497|10070071|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-22 18:52:30|811001497|10070104|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

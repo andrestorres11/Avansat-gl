@@ -1,2 +1,0 @@
-2022-05-18 09:13:12|900483925|Man17419|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}
-2022-05-18 17:16:21|900483925|Man17438|115|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 115. "}

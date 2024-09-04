@@ -1,1 +1,0 @@
-2023-01-23 08:01:52|830141359|18268|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

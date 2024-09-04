@@ -1,5 +1,0 @@
-2021-05-06 14:41:41|900883707|006593|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}
-2021-05-06 14:41:58|900883707|006593|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}
-2021-05-06 14:41:59|900883707|006593|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}
-2021-05-06 14:43:06|900883707|006593|9003|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9003. "}
-2021-05-06 20:01:07|900883707|006594|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}

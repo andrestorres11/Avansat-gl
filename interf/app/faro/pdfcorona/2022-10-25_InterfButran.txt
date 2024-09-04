@@ -1,1 +1,0 @@
-2022-10-25 16:58:30|800170695|BR1455|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,3 +1,0 @@
-2022-09-04 20:03:06|900657956|40234-1|9010|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9010. "}
-2022-09-04 21:21:17|900657956|40234-1|256|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 256. "}
-2022-09-04 21:22:26|900657956|40234-1|9018|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9018. "}

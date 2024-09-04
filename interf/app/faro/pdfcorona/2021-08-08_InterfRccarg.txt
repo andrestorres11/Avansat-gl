@@ -1,1 +1,0 @@
-2021-08-08 14:21:43|830109831|340953|92|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 92. "}

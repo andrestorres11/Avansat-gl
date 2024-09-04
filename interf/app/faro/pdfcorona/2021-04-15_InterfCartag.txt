@@ -1,5 +1,0 @@
-2021-04-15 07:37:12|800021603|CA5802|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-04-15 07:38:23|800021603|CA5800|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-04-15 07:52:04|800021603|CA5791|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-04-15 17:58:41|800021603|CA5802|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-04-15 18:01:13|800021603|CA5800|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

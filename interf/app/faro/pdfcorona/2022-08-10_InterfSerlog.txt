@@ -1,1 +1,0 @@
-2022-08-10 09:36:41|900483925|Man18715|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}

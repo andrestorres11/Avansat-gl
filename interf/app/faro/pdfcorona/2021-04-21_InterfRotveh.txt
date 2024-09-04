@@ -1,1 +1,0 @@
-2021-04-21 21:15:36|900434012|T7832|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

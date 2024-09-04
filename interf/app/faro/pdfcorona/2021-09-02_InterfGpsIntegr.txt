@@ -1,1 +1,0 @@
-2021-09-02 09:26:37|830076669|1234567|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}

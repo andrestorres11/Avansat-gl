@@ -1,2 +1,0 @@
-2021-10-08 11:26:28|890301075|7777777|9025|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9025. "}
-2021-10-08 11:26:28|890301075|656565656|9025|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9025. "}

@@ -1,3 +1,0 @@
-2022-09-25 23:15:33|900775200|0086561|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
-2022-09-25 23:16:36|900775200|0086563|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
-2022-09-25 23:17:23|900775200|0086562|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

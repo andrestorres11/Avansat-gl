@@ -1,1 +1,0 @@
-2021-03-14 10:43:27|811001497|10042569|92|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 92. "}

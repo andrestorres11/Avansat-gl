@@ -1,4 +1,0 @@
-2021-03-28 21:34:26|900657956|30942-13|9023|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9023. "}
-2021-03-28 21:34:32|900657956|30942-13|9024|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9024. "}
-2021-03-28 21:34:57|900657956|30942-13|9010|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9010. "}
-2021-03-28 21:45:47|900657956|30942-13|9010|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9010. "}

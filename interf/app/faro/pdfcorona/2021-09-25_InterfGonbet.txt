@@ -1,2 +1,0 @@
-2021-09-25 07:57:49|811001497|10054256|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
-2021-09-25 08:03:06|811001497|10054256|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}

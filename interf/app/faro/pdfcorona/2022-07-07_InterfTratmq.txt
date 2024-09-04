@@ -1,2 +1,0 @@
-2022-07-07 18:51:19|811037875|4P004857|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
-2022-07-07 18:54:20|811037875|4P004857|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

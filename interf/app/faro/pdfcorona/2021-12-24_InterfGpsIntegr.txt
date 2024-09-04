@@ -1,3 +1,0 @@
-2021-12-24 12:38:42|900284054|0000002|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
-2021-12-24 12:59:48|900284054|0000002|9129|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9129. "}
-2021-12-24 13:16:09|900284054|000002|9129|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9129. "}

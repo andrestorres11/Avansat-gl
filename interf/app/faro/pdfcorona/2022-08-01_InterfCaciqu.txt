@@ -1,1 +1,0 @@
-2022-08-01 15:43:05|900301751|8997938|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,5 +1,0 @@
-2021-03-22 07:07:27|830040809|1157035|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2021-03-22 07:21:05|830040809|1157020|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
-2021-03-22 10:12:10|830040809|1157052|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2021-03-22 13:10:28|830040809|1157052|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2021-03-22 16:16:05|830040809|1157052|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

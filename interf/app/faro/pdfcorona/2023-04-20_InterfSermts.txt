@@ -1,1 +1,0 @@
-2023-04-20 13:52:25|900665582|12756|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

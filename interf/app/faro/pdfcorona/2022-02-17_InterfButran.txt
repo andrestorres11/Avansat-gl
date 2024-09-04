@@ -1,4 +1,0 @@
-2022-02-17 08:35:26|800170695|GB34250|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
-2022-02-17 08:50:20|800170695|GB34283|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
-2022-02-17 08:54:05|800170695|GB34291|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
-2022-02-17 10:45:22|800170695|GB34219|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

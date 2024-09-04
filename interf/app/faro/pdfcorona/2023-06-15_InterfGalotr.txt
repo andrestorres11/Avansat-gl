@@ -1,3 +1,0 @@
-2023-06-15 08:57:27|800199898|9903378|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-15 16:56:25|800199898|9903378|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-15 16:57:23|800199898|9906023|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

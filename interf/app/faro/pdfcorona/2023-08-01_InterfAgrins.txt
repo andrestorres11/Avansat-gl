@@ -1,1 +1,0 @@
-2023-08-01 00:02:08|809000555|AYO3988|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,2 +1,0 @@
-2021-03-27 10:43:07|800170695|GB21794|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
-2021-03-27 12:45:19|800170695|GB21865|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

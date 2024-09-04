@@ -1,2 +1,0 @@
-2023-07-16 07:52:29|800181408|0180853|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
-2023-07-16 09:12:33|800181408|0180835|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}

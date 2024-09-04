@@ -1,2 +1,0 @@
-2023-06-16 07:08:47|800181408|0180613|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
-2023-06-16 07:10:02|800181408|0180635|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}

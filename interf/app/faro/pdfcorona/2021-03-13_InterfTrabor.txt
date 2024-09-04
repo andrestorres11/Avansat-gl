@@ -1,1 +1,0 @@
-2021-03-13 11:35:38|830141359|15301|5|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 5. "}

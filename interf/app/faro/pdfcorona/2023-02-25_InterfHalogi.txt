@@ -1,2 +1,0 @@
-2023-02-25 08:16:49|900499919|HABM1182|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-02-25 08:24:01|900499919|HAL007185|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}

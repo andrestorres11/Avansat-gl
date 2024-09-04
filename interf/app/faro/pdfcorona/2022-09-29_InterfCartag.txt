@@ -1,2 +1,0 @@
-2022-09-29 08:03:47|800021603|BG5293|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-09-29 08:21:21|800021603|CA10380|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

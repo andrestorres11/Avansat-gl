@@ -1,4 +1,0 @@
-2022-06-21 12:16:53|900805898|14050|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-21 15:31:07|900805898|14051|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-21 15:31:38|900805898|14049|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-06-21 15:44:28|900805898|14052|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

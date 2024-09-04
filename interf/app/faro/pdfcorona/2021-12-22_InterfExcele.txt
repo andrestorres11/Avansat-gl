@@ -1,3 +1,0 @@
-2021-12-22 15:01:10|900587608|9940|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-12-22 16:53:15|900587608|9940|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-12-22 16:58:18|900587608|9940|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

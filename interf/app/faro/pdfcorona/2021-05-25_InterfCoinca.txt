@@ -1,4 +1,0 @@
-2021-05-25 09:34:46|900957102|5008257|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-05-25 14:47:32|900957102|5008258|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-05-25 15:18:24|900957102|5008265|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-05-25 18:10:52|900957102|5008265|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

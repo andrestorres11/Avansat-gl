@@ -1,4 +1,0 @@
-2023-06-04 22:23:35|900775200|0098721|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-04 22:24:33|900775200|0098725|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-04 22:30:06|900775200|0098726|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}
-2023-06-04 22:35:18|900775200|0098727|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

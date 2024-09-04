@@ -1,3 +1,0 @@
-2023-01-20 08:43:19|800199898|9903338|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}
-2023-01-20 08:45:17|800199898|9905962|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-01-20 13:00:25|800199898|9905962|84|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 84. "}

@@ -1,3 +1,0 @@
-2023-01-05 14:37:41|811001497|10079992|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
-2023-01-05 17:48:47|811001497|10079992|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
-2023-01-05 17:55:19|811001497|10079992|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}

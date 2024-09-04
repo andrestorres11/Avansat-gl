@@ -1,4 +1,0 @@
-2022-05-09 09:18:46|901217005|05764|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
-2022-05-09 14:50:18|901217005|05769|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
-2022-05-09 15:10:22|901217005|05769|71|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 71. "}
-2022-05-09 17:40:39|901217005|05769|71|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 71. "}

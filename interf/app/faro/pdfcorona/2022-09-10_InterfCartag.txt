@@ -1,1 +1,0 @@
-2022-09-10 11:02:21|800021603|BG5233|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}

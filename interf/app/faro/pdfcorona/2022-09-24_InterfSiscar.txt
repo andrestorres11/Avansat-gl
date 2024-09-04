@@ -1,2 +1,0 @@
-2022-09-24 00:09:05|900029975|0036554|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}
-2022-09-24 00:24:43|900029975|0036554|78|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 78. "}

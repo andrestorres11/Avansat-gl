@@ -1,2 +1,0 @@
-2022-09-09 10:21:52|900499919|HAL006373|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-09-09 15:23:23|900499919|HAL006375|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

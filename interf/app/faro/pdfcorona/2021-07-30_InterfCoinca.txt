@@ -1,4 +1,0 @@
-2021-07-30 07:18:24|900957102|6007929|71|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 71. "}
-2021-07-30 11:17:25|900957102|5008896|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-07-30 14:57:35|900957102|6007929|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-07-30 17:36:55|900957102|5008881|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

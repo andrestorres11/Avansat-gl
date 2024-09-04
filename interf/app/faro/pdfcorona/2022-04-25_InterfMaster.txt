@@ -1,3 +1,0 @@
-2022-04-25 08:16:18|900746988|0012097|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-04-25 08:24:18|900746988|0012071|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-04-25 12:11:02|900746988|0012100|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,6 +1,0 @@
-2023-05-20 08:13:34|800181408|0180199|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
-2023-05-20 09:03:09|800181408|0180199|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
-2023-05-20 09:10:17|800181408|0180193|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
-2023-05-20 09:29:45|800181408|0180180|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
-2023-05-20 09:32:31|800181408|0180218|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
-2023-05-20 09:33:58|800181408|0180206|30|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 30. "}

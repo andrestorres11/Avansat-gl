@@ -1,2 +1,0 @@
-2022-12-07 10:41:57|811037875|5P003583|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
-2022-12-07 11:10:48|811037875|5P003583|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

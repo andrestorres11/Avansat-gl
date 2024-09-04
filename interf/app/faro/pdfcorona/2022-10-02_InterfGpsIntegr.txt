@@ -1,2 +1,0 @@
-2022-10-02 14:27:11|830079716|158136750|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}
-2022-10-02 14:55:05|830079716|158136750|9226|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9226. "}

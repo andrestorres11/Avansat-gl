@@ -1,4 +1,0 @@
-2022-03-02 07:38:57|900301751|8994876|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-03-02 07:46:14|900301751|8994880|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-03-02 07:52:36|900301751|8994873|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-03-02 07:58:25|900301751|8994875|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

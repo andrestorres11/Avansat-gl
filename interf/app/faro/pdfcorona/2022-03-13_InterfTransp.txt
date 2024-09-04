@@ -1,3 +1,0 @@
-2022-03-13 23:21:51|900775200|0076833|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-03-13 23:36:42|900775200|0076822|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-03-13 23:42:57|900775200|0076823|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

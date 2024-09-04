@@ -1,4 +1,0 @@
-2023-02-26 23:42:19|900775200|0094132|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-02-26 23:54:07|900775200|0094135|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-02-26 23:54:21|900775200|0094136|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-02-26 23:54:53|900775200|0094141|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

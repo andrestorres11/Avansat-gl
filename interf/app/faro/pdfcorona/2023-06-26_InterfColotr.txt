@@ -1,4 +1,0 @@
-2023-06-26 18:24:35|900179614|0021437|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-26 18:40:33|900179614|0021439|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-26 19:01:29|900179614|0019725|73|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 73. "}
-2023-06-26 19:05:00|900179614|0019726|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

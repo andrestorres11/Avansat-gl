@@ -1,1 +1,0 @@
-2022-01-26 11:17:09|900033633|5025437|5|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 5. "}

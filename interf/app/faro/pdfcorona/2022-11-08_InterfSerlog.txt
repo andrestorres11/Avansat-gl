@@ -1,3 +1,0 @@
-2022-11-08 11:46:41|900483925|Man20075|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2022-11-08 14:18:26|900483925|Man20089|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2022-11-08 17:43:23|900483925|Man20071|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

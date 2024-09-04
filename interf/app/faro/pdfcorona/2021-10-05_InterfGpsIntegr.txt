@@ -1,1 +1,0 @@
-2021-10-05 14:16:13|900440999|000001|9273|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9273. "}

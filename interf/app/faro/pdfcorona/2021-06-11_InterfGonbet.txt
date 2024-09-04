@@ -1,4 +1,0 @@
-2021-06-11 01:11:07|811001497|10047468|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
-2021-06-11 01:53:04|811001497|10047283|35|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 35. "}
-2021-06-11 07:04:41|811001497|10047468|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}
-2021-06-11 11:56:16|811001497|10047379|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

@@ -1,1 +1,0 @@
-2022-01-20 16:36:58|800170695|GB33221|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

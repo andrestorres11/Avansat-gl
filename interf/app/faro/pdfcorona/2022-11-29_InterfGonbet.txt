@@ -1,1 +1,0 @@
-2022-11-29 16:09:43|811001497|10078218|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

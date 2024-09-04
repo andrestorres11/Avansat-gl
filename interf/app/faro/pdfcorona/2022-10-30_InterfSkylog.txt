@@ -1,1 +1,0 @@
-2022-10-30 13:50:43|900714469|20528|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

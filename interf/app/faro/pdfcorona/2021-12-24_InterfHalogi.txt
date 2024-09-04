@@ -1,3 +1,0 @@
-2021-12-24 07:35:54|900499919|HABM0127|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-12-24 07:36:46|900499919|HABM0126|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-12-24 13:26:46|900499919|HABM0136|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

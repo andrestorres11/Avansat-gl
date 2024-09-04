@@ -1,1 +1,0 @@
-2021-10-31 10:03:08|800021603|BG4142|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

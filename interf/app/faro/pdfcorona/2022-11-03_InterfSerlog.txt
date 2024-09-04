@@ -1,1 +1,0 @@
-2022-11-03 08:25:08|900483925|Man20020|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}

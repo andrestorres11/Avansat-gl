@@ -1,2 +1,0 @@
-2023-04-14 09:56:38|800021603|CA11839|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-14 10:04:06|800021603|CA11838|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

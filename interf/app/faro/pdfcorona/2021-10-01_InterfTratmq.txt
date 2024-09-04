@@ -1,1 +1,0 @@
-2021-10-01 09:00:24|811037875|2B015193|81|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 81. "}

@@ -1,3 +1,0 @@
-2023-03-16 07:44:41|800021603|CA11634|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-16 07:52:45|800021603|CA11635|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-03-16 17:30:16|800021603|BG5841|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

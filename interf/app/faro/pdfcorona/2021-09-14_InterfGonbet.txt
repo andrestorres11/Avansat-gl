@@ -1,3 +1,0 @@
-2021-09-14 09:30:57|811001497|10053619|52|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 52. "}
-2021-09-14 21:34:00|811001497|10053607|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-09-14 22:05:17|811001497|10053670|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

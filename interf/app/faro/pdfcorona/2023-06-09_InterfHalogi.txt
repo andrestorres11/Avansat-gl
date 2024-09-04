@@ -1,5 +1,0 @@
-2023-06-09 09:26:50|900499919|HAL007904|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-09 09:36:18|900499919|HAL007915|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-09 13:41:38|900499919|HAL007904|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-09 15:02:53|900499919|HAL007920|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-09 19:45:18|900499919|HABM1362|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

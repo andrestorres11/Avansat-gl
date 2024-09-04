@@ -1,1 +1,0 @@
-2021-10-10 17:52:50|900657956|34299-1|9020|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9020. "}

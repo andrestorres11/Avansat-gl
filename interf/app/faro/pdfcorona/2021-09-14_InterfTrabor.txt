@@ -1,1 +1,0 @@
-2021-09-14 08:54:07|830141359|16113|37|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 37. "}

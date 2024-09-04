@@ -1,3 +1,0 @@
-2021-11-16 08:46:34|800170695|MD391|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
-2021-11-16 11:08:10|800170695|GB30405|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}
-2021-11-16 11:09:15|800170695|GB30405|93|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 93. "}

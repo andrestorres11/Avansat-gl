@@ -1,2 +1,0 @@
-2023-04-04 08:39:22|830038608|005449|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-04-04 15:16:53|830038608|005454|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

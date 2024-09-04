@@ -1,4 +1,0 @@
-2022-10-31 08:22:39|901140841|01005246|110|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 110. "}
-2022-10-31 10:09:02|901140841|01005230|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-10-31 10:16:56|901140841|01005234|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2022-10-31 10:30:27|901140841|01005246|110|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 110. "}

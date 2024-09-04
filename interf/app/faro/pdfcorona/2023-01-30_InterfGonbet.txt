@@ -1,2 +1,0 @@
-2023-01-30 08:02:26|811001497|10081109|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-01-30 11:26:42|811001497|10081092|43|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 43. "}

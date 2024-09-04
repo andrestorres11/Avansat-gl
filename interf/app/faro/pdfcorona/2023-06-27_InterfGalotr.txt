@@ -1,2 +1,0 @@
-2023-06-27 11:53:15|800199898|9903380|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-06-27 11:55:36|800199898|9906034|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

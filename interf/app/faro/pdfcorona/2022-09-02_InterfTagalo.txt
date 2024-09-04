@@ -1,1 +1,0 @@
-2022-09-02 14:04:49|901196694|0077729|9023|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9023. "}

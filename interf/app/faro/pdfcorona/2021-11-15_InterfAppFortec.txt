@@ -1,1 +1,0 @@
-2021-11-15 20:23:05|900657956|34922-1|9008|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9008. "}

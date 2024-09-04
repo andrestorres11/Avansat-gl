@@ -1,1 +1,0 @@
-2023-07-17 08:25:54|800021603|CA12503|9995|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9995. "}

@@ -1,4 +1,0 @@
-2023-08-05 08:50:52|800181408|0180954|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-08-05 09:02:03|800181408|0180950|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2023-08-05 09:25:29|800181408|0180953|213|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 213. "}
-2023-08-05 11:56:56|800181408|0180948|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

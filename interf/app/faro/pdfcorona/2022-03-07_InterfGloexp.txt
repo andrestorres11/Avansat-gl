@@ -1,1 +1,0 @@
-2022-03-07 19:03:55|901420688|360|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}

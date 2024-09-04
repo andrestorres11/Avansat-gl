@@ -1,1 +1,0 @@
-2022-09-27 17:22:49|901413217|TLP0349|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}

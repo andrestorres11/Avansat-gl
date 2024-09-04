@@ -1,1 +1,0 @@
-2021-05-30 03:04:26|900657956|32202-5|9010|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9010. "}

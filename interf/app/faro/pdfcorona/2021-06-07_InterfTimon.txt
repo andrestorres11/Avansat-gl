@@ -1,2 +1,0 @@
-2021-06-07 00:38:51|800166412|9887970|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}
-2021-06-07 00:42:11|800166412|9887969|1|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 1. "}

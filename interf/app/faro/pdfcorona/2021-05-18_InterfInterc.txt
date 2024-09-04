@@ -1,1 +1,0 @@
-2021-05-18 16:35:56|900883707|006621|9002|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9002. "}

@@ -1,2 +1,0 @@
-2021-11-13 13:19:17|901140841|01002835|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}
-2021-11-13 13:21:19|901140841|01002838|69|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 69. "}

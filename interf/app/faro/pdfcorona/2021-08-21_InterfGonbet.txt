@@ -1,2 +1,0 @@
-2021-08-21 08:42:58|811001497|10051977|92|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 92. "}
-2021-08-21 11:09:24|811001497|10052089|92|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 92. "}

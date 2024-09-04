@@ -1,4 +1,0 @@
-2021-05-31 11:38:37|900883707|006669|9003|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9003. "}
-2021-05-31 11:56:01|900883707|006669|9003|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9003. "}
-2021-05-31 16:59:37|900883707|006671|9021|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9021. "}
-2021-05-31 17:00:51|900883707|006671|9003|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9003. "}

@@ -1,2 +1,0 @@
-2021-04-16 09:32:44|901237466|024725|2|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 2. "}
-2021-04-16 19:27:32|901237466|024737|6|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 6. "}

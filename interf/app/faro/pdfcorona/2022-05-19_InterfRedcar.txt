@@ -1,6 +1,0 @@
-2022-05-19 09:20:53|900836827|6234|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}
-2022-05-19 09:23:47|900836827|6209|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}
-2022-05-19 09:35:09|900836827|6231|9991|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 9991. "}
-2022-05-19 11:03:04|900836827|6225|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}
-2022-05-19 11:04:54|900836827|6221|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}
-2022-05-19 11:44:42|900836827|6232|404|{"cod_respon":3001,"msg_respon":"No existe protocolo para la novedad: 404. "}
