@@ -1,0 +1,6 @@
+nom_usuari= required:yes; minlength:4; maxlength:20
+pwd_clavex= required:yes; minlength:6; maxlength:20
+cod_ciuori= required:yes; minlength:6; maxlength:20
+cod_ciudes= required:yes; minlength:6; maxlength:20
+cod_rutaxx= maxlength:6; type:numeric
+nom_rutaxx= maxlength:255

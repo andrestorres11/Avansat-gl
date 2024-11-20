@@ -1,0 +1,7 @@
+nom_usuari= required:yes; minlength:4; maxlength:20
+pwd_clavex= required:yes; minlength:5; maxlength:20
+cod_transp= required:yes; minlength:9; maxlength:12; type:numeric
+cod_manifi= required:yes; minlength:1; maxlength:14
+num_placax= required:yes; minlength:6; maxlength:6; type:plate
+fec_salida= required:yes; maxlength:19; type:date-time
+obs_salida= maxlength:100

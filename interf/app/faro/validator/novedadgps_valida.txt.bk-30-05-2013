@@ -1,0 +1,8 @@
+cod_transp= required:yes; minlength:6; maxlength:10
+num_despac= required:yes; type:numeric
+cod_noveda= required:yes; type:numeric
+fec_noveda= required:yes; maxlength:16; type:date-time
+des_noveda= required:yes; maxlength:255
+val_longit= required:yes; type:numeric
+val_latitu= required:yes; type:numeric
+nom_llavex= required:yes; maxlength:50

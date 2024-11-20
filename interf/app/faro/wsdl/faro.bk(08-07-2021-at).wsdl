@@ -1,0 +1,2120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="server" targetNamespace="http://www.example.org/server/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="http://www.example.org/server/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/server/">
+        <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/"/><xsd:import namespace="http://schemas.xmlsoap.org/wsdl/"/>
+
+        <xsd:complexType name="arrDatsol">
+            <xsd:all>
+                <xsd:element name="cod_usuari" type="xsd:string"/>
+                <xsd:element name="pwd_clavex" type="xsd:string"/>
+                <xsd:element name="cod_transp" type="xsd:string"/>
+                <xsd:element name="nom_aplica" type="xsd:string"/>
+                <xsd:element name="url_aplica" type="xsd:string"/>
+                <xsd:element name="cod_solici" type="xsd:string"/>
+                <xsd:element name="nom_solici" type="xsd:string"/>
+                <xsd:element name="mai_solici" type="xsd:string"/>
+                <xsd:element name="fij_solici" type="xsd:string"/>
+                <xsd:element name="cel_solici" type="xsd:string"/>
+                <xsd:element name="cod_tipsol" type="xsd:string"/>
+                <xsd:element name="nom_tipsol" type="xsd:string"/>
+                <xsd:element name="cod_usrsol" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+
+        
+        <xsd:complexType name="arrRutsol">
+            <xsd:all>
+                <xsd:element name="cod_ciuori" type="xsd:string"/>
+                <xsd:element name="cod_ciudes" type="xsd:string"/>
+                <xsd:element name="nom_viaxxx" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="filArchiv">
+            <xsd:all>
+                <xsd:element name="tip_format" type="xsd:string"/>
+                <xsd:element name="bin_archiv" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+
+        <xsd:complexType name="ResponseCall">
+            <xsd:all>
+                <xsd:element name="cod_respon" type="xsd:string"/>
+                <xsd:element name="msg_respon" type="xsd:string"/>
+                <xsd:element name="dat_respon" type="xsd:string"/>                
+            </xsd:all>
+        </xsd:complexType> 
+        <xsd:complexType name="Contro">
+            <xsd:all>
+                <xsd:element name="cod_contro" type="xsd:string"/>
+                <xsd:element name="nom_contro" type="xsd:string"/>
+                <xsd:element name="cod_ciudad" type="xsd:string"/>
+                <xsd:element name="dir_contro" type="xsd:string"/>
+                <xsd:element name="ind_virtua" type="xsd:string"/>
+                <xsd:element name="ind_estado" type="xsd:string"/>
+                <xsd:element name="ind_urbano" type="xsd:string"/>
+                <xsd:element name="val_duraci" type="xsd:string"/>
+                <xsd:element name="val_distan" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="arrayContros">
+            <xsd:complexContent>
+                <xsd:restriction base="SOAP-ENC:Array">
+                    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:Contro[]"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:complexType name="HomoloData">
+            <xsd:all>
+                <xsd:element name="cod_pcxfar" type="xsd:string"/>
+                <xsd:element name="cod_pcxbas" type="xsd:string"/>
+                <xsd:element name="ind_estado" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="PCsContratado">
+            <xsd:all>
+                <xsd:element name="cod_contro" type="xsd:string"/>
+                <xsd:element name="nom_contro" type="xsd:string"/>
+                <xsd:element name="ind_virtua" type="xsd:string"/>
+                <xsd:element name="cod_ciudad" type="xsd:string"/>
+                <xsd:element name="ind_urbano" type="xsd:string"/>
+                <xsd:element name="val_duraci" type="xsd:string"/>
+                <xsd:element name="ind_obliga" type="xsd:string"/>
+                <xsd:element name="dir_contro" type="xsd:string"/>
+                <xsd:element name="val_longit" type="xsd:string"/>
+                <xsd:element name="val_latitu" type="xsd:string"/>
+                <xsd:element name="url_wazexx" type="xsd:string"/>
+                <xsd:element name="url_google" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="Novedad">
+            <xsd:all>
+                <xsd:element name="cod_noveda" type="xsd:string"/>
+                <xsd:element name="des_noveda" type="xsd:string"/>
+                <xsd:element name="nom_noveda" type="xsd:string"/>
+                <xsd:element name="ind_alarma" type="xsd:string"/>
+                <xsd:element name="ind_tiempo" type="xsd:string"/>
+                <xsd:element name="nov_especi" type="xsd:string"/>
+                <xsd:element name="ind_manala" type="xsd:string"/>
+                <xsd:element name="num_minuto" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="Ruta">
+            <xsd:all>
+                <xsd:element name="cod_rutasx" type="xsd:string"/>
+                <xsd:element name="nom_rutasx" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="arrayHomoloData">
+            <xsd:complexContent>
+                <xsd:restriction base="SOAP-ENC:Array">
+                    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:HomoloData[]"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:complexType name="arrayPCsContratados">
+            <xsd:complexContent>
+                <xsd:restriction base="SOAP-ENC:Array">
+                    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:PCsContratado[]"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:complexType name="arrayRutas">
+            <xsd:complexContent>
+                <xsd:restriction base="SOAP-ENC:Array">
+                    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:Ruta[]"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:complexType name="arrayNovedades">
+            <xsd:complexContent>
+                <xsd:restriction base="SOAP-ENC:Array">
+                    <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:Novedad[]"/>
+                </xsd:restriction>
+            </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:complexType name="ControSeguim">
+            <xsd:all>
+                <xsd:element name="cod_contro" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="val_duraci" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="ind_virtua" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="arrayControsSeguim">
+              <xsd:complexContent>
+                  <xsd:restriction base="SOAP-ENC:Array">
+                      <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:ControSeguim[]"/>
+                  </xsd:restriction>
+              </xsd:complexContent>
+          </xsd:complexType>
+       
+       <!-- Campos requeridos Agencia Despac -->
+           <xsd:complexType name="DataAgencia">
+            <xsd:all>
+                <xsd:element name="cod_agenci" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="nom_agenci" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_ciudad" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="dir_agenci" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="tel_agenci" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="con_agenci" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="dir_emailx" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="num_faxxxx" minOccurs="0" maxOccurs="1" type="xsd:string"/>               
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="arrayDataAgencia">
+              <xsd:complexContent>
+                  <xsd:restriction base="SOAP-ENC:Array">
+                      <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:DataAgencia[]"/>
+                  </xsd:restriction>
+              </xsd:complexContent>
+          </xsd:complexType>
+          <!-- Campos requeridos GPS -->
+           <xsd:complexType name="DataGps">
+            <xsd:all>
+                <xsd:element name="cod_opegps" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="nom_usrgps" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="clv_usrgps" minOccurs="0" maxOccurs="1" type="xsd:string"/>                             
+                <xsd:element name="idx_gpsxxx" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="arrayDataGps">
+              <xsd:complexContent>
+                  <xsd:restriction base="SOAP-ENC:Array">
+                      <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:DataGps[]"/>
+                  </xsd:restriction>
+              </xsd:complexContent>
+          </xsd:complexType>          
+
+          <!-- Campos requeridos GPS OTRO-->
+           <xsd:complexType name="DataGps2">
+            <xsd:all>
+                <xsd:element name="nom_operad" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="nom_usrgps" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="clv_usrgps" minOccurs="0" maxOccurs="1" type="xsd:string"/>                             
+                <xsd:element name="idx_gpsxxx" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="gps_urlxxx" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+          <!-- Campos Remesa -->
+          
+          <xsd:complexType name="DataRem">
+            <xsd:all>
+                <xsd:element name="cod_remesa" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="pes_cargax" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="vol_cargax" minOccurs="0" maxOccurs="1" type="xsd:string"/>                             
+                <xsd:element name="nom_empaqu" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="abr_mercan" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="abr_tercer" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="nom_remite" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="nom_destin" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="fec_estent" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="fec_lledes" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="fec_saldes" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="fec_ldesti" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="dir_emailx" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_client" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="dir_destin" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="ciu_destin" minOccurs="0" maxOccurs="1" type="xsd:string"/>                
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="arrayDataRem">
+              <xsd:complexContent>
+                  <xsd:restriction base="SOAP-ENC:Array">
+                      <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:DataRem[]"/>
+                  </xsd:restriction>
+              </xsd:complexContent>
+          </xsd:complexType>
+         
+          
+        <xsd:complexType name="setRutaFaro">
+            <xsd:all>
+                <xsd:element name="cod_rutfar" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_rutbas" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="arr_homolo" minOccurs="0" maxOccurs="1" type="tns:arrayHomoloData"/>
+                <xsd:element name="cod_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="msg_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="getPCsContratados">
+            <xsd:all>
+                <xsd:element name="arr_pcscon" minOccurs="0" maxOccurs="1" type="tns:arrayPCsContratados"/>
+                <xsd:element name="tie_contro" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_tipser" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_rutaxx" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="msg_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="getRutas">
+            <xsd:all>
+                <xsd:element name="arr_rutasx" minOccurs="0" maxOccurs="1" type="tns:arrayRutas"/>
+                <xsd:element name="cod_tipser" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="tie_contro" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="msg_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+        <xsd:complexType name="getNovedades">
+            <xsd:all>
+                <xsd:element name="arr_noveda" minOccurs="0" maxOccurs="1" type="tns:arrayNovedades"/>
+                <xsd:element name="cod_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="msg_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+    
+        <xsd:complexType name="cliente">
+            <xsd:all>
+                <xsd:element name="nom_destin" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="abr_ciudad" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="dir_destin" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="num_destin" minOccurs="0" maxOccurs="1" type="xsd:string"/>                
+                <xsd:element name="fec_citdes2" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="num_docume" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="num_docalt" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_genera" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="abr_tercer" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="ind_descar" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="ind_entrad" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="ind_inides" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="ind_findes" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+            </xsd:all>
+        </xsd:complexType>
+
+        <xsd:complexType name="arrayClientes">
+              <xsd:complexContent>
+                  <xsd:restriction base="SOAP-ENC:Array">
+                      <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns: []"/>
+                  </xsd:restriction>
+              </xsd:complexContent>
+          </xsd:complexType>
+
+        <xsd:complexType name="getTipser">
+            <xsd:all>
+                <xsd:element name="cod_tipser" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="tie_contro" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="cod_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="msg_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+            </xsd:all>
+        </xsd:complexType>
+
+        <xsd:complexType name="dataClientes">
+            <xsd:all> 
+                <xsd:element name="cod_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="msg_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="dat_respon" minOccurs="0" maxOccurs="1" type="tns:arrayClientes"/>
+            </xsd:all>
+        </xsd:complexType>
+
+        <xsd:complexType name="simpleResponse">
+            <xsd:all> 
+                <xsd:element name="cod_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="msg_respon" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+            </xsd:all>
+        </xsd:complexType>
+        
+        <xsd:complexType name="ResponNovedaEvent">
+              <xsd:complexContent>
+                  <xsd:restriction base="SOAP-ENC:Array">
+                      <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:DataNovEvent[]"/>
+                  </xsd:restriction>
+              </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:complexType name="DataNovEvent">
+            <xsd:all> 
+                <xsd:element name="cod_noveda" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="nom_noveda" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="cod_etapax" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="nom_etapax" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="ind_tiempo" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="ind_manala" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="ind_apsees" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="ind_tisees" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="num_minuto" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="cod_opegps" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="cod_evento" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="nom_evento" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="fec_modifi" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+            </xsd:all>
+        </xsd:complexType>         
+
+
+
+        <xsd:complexType name="dataTrafico">
+              <xsd:complexContent>
+                  <xsd:restriction base="SOAP-ENC:Array">
+                      <xsd:attribute ref="SOAP-ENC:arrayType" wsdl:arrayType="tns:dataTraficoList[]"/>
+                  </xsd:restriction>
+              </xsd:complexContent>
+        </xsd:complexType>
+        <xsd:complexType name="dataTraficoList">
+            <xsd:all> 
+                <xsd:element name="fec_creaci" minOccurs="0" maxOccurs="1" type="xsd:string"/>
+                <xsd:element name="nom_contro" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="obs_contro" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="nom_noveda" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="cod_contro" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+                <xsd:element name="usr_creaci" minOccurs="0" maxOccurs="1" type="xsd:string"/> 
+            </xsd:all>
+        </xsd:complexType> 
+
+
+    </xsd:schema>
+</wsdl:types>
+
+
+    <wsdl:message name="setSoliciRutaRequest">
+        <wsdl:part name="arr_datsol" type="tns:arrDatsol"></wsdl:part>
+        <wsdl:part name="arr_rutsol" type="tns:arrRutsol"></wsdl:part>
+    </wsdl:message>
+
+    <wsdl:message name="setSoliciRutaResponse">
+        <wsdl:part name="response" type="xsd:string"></wsdl:part>
+    </wsdl:message>
+
+    <wsdl:message name="setSoliciSegimientoEspecialRequest">
+        <wsdl:part name="arr_datsol" type="tns:arrDatsol"></wsdl:part>
+        <wsdl:part name="ind_segesp" type="xsd:string"></wsdl:part>
+        <wsdl:part name="fec_iniseg" type="xsd:string"></wsdl:part>
+        <wsdl:part name="fec_finseg" type="xsd:string"></wsdl:part>
+        <wsdl:part name="lis_placax" type="xsd:string"></wsdl:part>
+        <wsdl:part name="obs_solici" type="xsd:string"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="setSoliciSegimientoEspecialResponse">
+        <wsdl:part name="response" type="xsd:string"></wsdl:part>
+    </wsdl:message>
+
+    <wsdl:message name="setSoliciPQRRequest">
+        <wsdl:part name="arr_datsol" type="tns:arrDatsol"></wsdl:part>
+        <wsdl:part name="ind_pqrsxx" type="xsd:string"></wsdl:part>
+        <wsdl:part name="nom_pqrsxx" type="xsd:string"></wsdl:part>
+        <wsdl:part name="obs_pqrsxx" type="xsd:string"></wsdl:part>
+        <wsdl:part name="fil_archiv" type="tns:filArchiv"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="setSoliciPQRResponse">
+        <wsdl:part name="response" type="xsd:string"></wsdl:part>
+    </wsdl:message>
+
+    <wsdl:message name="setSoliciOtrosRequest">
+        <wsdl:part name="arr_datsol" type="tns:arrDatsol"></wsdl:part>
+        <wsdl:part name="nom_otroxx" type="xsd:string"></wsdl:part>
+        <wsdl:part name="obs_otroxx" type="xsd:string"></wsdl:part>
+        <wsdl:part name="fil_archiv" type="tns:filArchiv"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="setSoliciOtrosResponse">
+        <wsdl:part name="response" type="xsd:string"></wsdl:part>
+    </wsdl:message>
+
+  <!--PDF -->
+  <wsdl:message name="setDespacPdfRequest">
+    <!-- Campos requeridos -->
+    <!-- Datos autenticacion -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <!-- Datos del despacho -->
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>    
+    <!-- Datos del vehiculo -->
+    <wsdl:part name="cod_placax" type="xsd:string"></wsdl:part>
+    
+  </wsdl:message>
+  <wsdl:message name="setDespacPdfResponse">
+    <wsdl:part name="response" type="xsd:base64Binary"></wsdl:part>
+  </wsdl:message>  
+  <!-- Fin SetDespacPdf -->
+  
+  <!--RegistrarCall -->
+  <wsdl:message name="RegistrarCallRequest">
+    <!-- Campos  -->
+    <wsdl:part name="usr_callxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="clv_callxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tok_callxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_despac" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_telefo" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tie_duraci" type="xsd:string"></wsdl:part>
+    <wsdl:part name="idx_llamad" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_estado" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="rut_audiox" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RegistrarCallResponse">
+    <wsdl:part name="response" type="tns:ResponseCall"></wsdl:part>
+  </wsdl:message>  
+  <!-- Fin RegistrarCall -->
+  <!--RegistrarCall -->
+  <wsdl:message name="RegistrarCallInRequest">
+    <!-- Campos  -->
+    <wsdl:part name="usr_callxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="clv_callxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tok_callxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_telefo" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tie_duraci" type="xsd:string"></wsdl:part>
+    <wsdl:part name="idx_llamad" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_estado" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="rut_audiox" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_extenc" type="xsd:string"></wsdl:part>
+    <wsdl:part name="idx_servic" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="RegistrarCallInResponse">
+    <wsdl:part name="response" type="tns:ResponseCall"></wsdl:part>
+  </wsdl:message>  
+  <!-- Fin RegistrarCall -->
+
+  <wsdl:message name="setSeguimRequest">
+    <!-- Campos requeridos -->
+    <!-- Datos autenticacion -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <!-- Datos del despacho -->
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="dat_fechax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciudes" type="xsd:string"></wsdl:part>
+    <!-- Datos del vehiculo -->
+    <wsdl:part name="cod_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_modelo" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_marcax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_lineax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_colorx" type="xsd:string"></wsdl:part>
+    <!-- Datos del conductor -->
+    <wsdl:part name="cod_conduc" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_conduc" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ciu_conduc" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tel_conduc" type="xsd:string"></wsdl:part>
+    <wsdl:part name="mov_conduc" type="xsd:string"></wsdl:part>
+
+    <!-- Campos opcionales -->
+    <!-- Datos del despacho -->
+    <wsdl:part name="obs_coment" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutaxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_rutaxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ind_naturb" type="xsd:string"></wsdl:part>
+
+    <!-- Datos del vehiculo -->
+    <wsdl:part name="num_config" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_carroc" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_chasis" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_motorx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_soatxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="dat_vigsoa" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_ciasoa" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_tarpro" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_trayle" type="xsd:string"></wsdl:part>
+
+    <!-- Datos del conductor -->
+    <wsdl:part name="cat_licenc" type="xsd:string"></wsdl:part>
+    <wsdl:part name="dir_conduc" type="xsd:string"></wsdl:part>
+
+    <!-- Datos del poseedor -->
+    <wsdl:part name="cod_poseed" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_poseed" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ciu_poseed" type="xsd:string"></wsdl:part>
+    <wsdl:part name="dir_poseed" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_agedes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_contrs" type="tns:arrayControsSeguim"></wsdl:part>
+    
+    <!-- Datos de la agencia del despacho-->
+    <wsdl:part name="cod_agenci" type="tns:arrayDataAgencia"></wsdl:part>
+    <wsdl:part name="cod_operad" type="xsd:string"></wsdl:part>   
+    <wsdl:part name="cod_gpsxxx" type="tns:arrayDataGps"></wsdl:part>
+    
+    <wsdl:part name="cod_remesa" type="tns:arrayDataRem"></wsdl:part>  
+    <wsdl:part name="bin_huella" type="xsd:string"></wsdl:part>    
+    <wsdl:part name="num_viajex" type="xsd:string"></wsdl:part>    
+    <wsdl:part name="dat_gps2xx" type="tns:DataGps2"></wsdl:part>
+    <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part>
+    
+  </wsdl:message>
+  <wsdl:message name="setSeguimResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="setSeguimPCRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="dat_fechax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutaxx" type="xsd:string"></wsdl:part>
+
+    <!-- Campos opcionales -->
+    <wsdl:part name="obs_coment" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciudes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="con_telmov" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_conduc" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setSeguimPCResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="setSalidaRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fec_salida" type="xsd:string"></wsdl:part>
+    <wsdl:part name="obs_salida" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setSalidaResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="setSeguimFTPRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="dat_fechax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutaxx" type="xsd:string"></wsdl:part>
+
+    <!-- Campos opcionales -->
+    <wsdl:part name="obs_coment" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciudes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="con_telmov" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_conduc" type="xsd:string"></wsdl:part>
+    
+    <!-- Datos Adicionales -->
+    <wsdl:part name="cod_condu2" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_clien2" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_client" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ema_client" type="xsd:string"></wsdl:part>
+    
+  </wsdl:message>
+  <wsdl:message name="setSeguimFTPResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="setRutaFaroRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutasx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_rutasx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_paiori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_depori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_paides" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_depdes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciudes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="arr_pcxxxx" type="tns:arrayContros"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setRutaFaroResponse">
+    <wsdl:part name="response" type="tns:setRutaFaro"></wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="getHomoloDataRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutasx" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getHomoloDataResponse">
+    <wsdl:part name="response" type="tns:setRutaFaro"></wsdl:part>
+  </wsdl:message>
+  
+
+  <wsdl:message name="setHomoloDataRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutfar" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutbas" type="xsd:string"></wsdl:part>
+    <wsdl:part name="arr_homdat" type="tns:arrayHomoloData"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setHomoloDataResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+ 
+  <wsdl:message name="setLlegadaRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fec_llegad" type="xsd:string"></wsdl:part>
+    <wsdl:part name="obs_llegad" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_proces" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_despac" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setLlegadaResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="setAnuladRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fec_anulad" type="xsd:string"></wsdl:part>
+    <wsdl:part name="obs_anulad" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setAnuladResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="routExistsRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciudes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutaxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_rutaxx" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="routExistsResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="setRoutRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciudes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_rutaxx" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setRoutResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="setPcRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutaxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_contro" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_contro" type="xsd:string"></wsdl:part>
+    <wsdl:part name="val_duraci" type="xsd:string"></wsdl:part>
+    <wsdl:part name="val_distan" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setPcResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="setPCIntracargaRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fec_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="hor_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_contro" type="xsd:string"></wsdl:part>
+    <wsdl:part name="des_observ" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_llavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fec_pronov" type="xsd:string"></wsdl:part>
+    <wsdl:part name="hor_pronov" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setPCIntracargaResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="getPCsContratadosRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tipdes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutaxx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tie_holgur" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getPCsContratadosResponse">
+    <wsdl:part name="response" type="tns:getPCsContratados"></wsdl:part>
+  </wsdl:message>
+  
+   <wsdl:message name="getTipserRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tipdes" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTipserResponse">
+    <wsdl:part name="response" type="tns:getTipser"></wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="getRutasRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciudes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="not_rutasx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tipdes" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getRutasResponse">
+    <wsdl:part name="response" type="tns:getRutas"></wsdl:part>
+  </wsdl:message>
+
+  <!-- Campos setNovedadPC -->
+  <wsdl:message name="setNovedadRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_contro" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tim_duraci" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fec_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="des_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_contro" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_sitiox" type="xsd:string"></wsdl:part>    
+    <wsdl:part name="num_viajex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fot_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_remdes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tim_sigpun" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tim_ultpun" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setNovedadResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="setNovedadGPSRequest">
+    <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_despac" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fec_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="des_noveda" type="xsd:string"></wsdl:part>
+    <wsdl:part name="val_longit" type="xsd:string"></wsdl:part>
+    <wsdl:part name="val_latitu" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_llavex" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="cod_operad" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setNovedadGPSResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="getNovedadesRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getNovedadesResponse">
+    <wsdl:part name="response" type="tns:getNovedades"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="setCambioRutaRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_manifi" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_rutasx" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tim_duraci" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_pcbase" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_contrs" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setCambioRutaResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="setTelConducRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_tranps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_conduc" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tel_conduc" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setTelConducResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+    <wsdl:message name="getDestinRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="num_despac" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part> 
+  </wsdl:message>
+  <wsdl:message name="getDestinResponse">
+    <wsdl:part name="response" type="tns:dataClientes"></wsdl:part>
+  </wsdl:message>
+
+    <wsdl:message name="setFecAditioRequest">
+    <!-- Campos requeridos -->
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="num_despac" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="tip_fechax" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="num_fechax" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="num_factur" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="cod_remdes" type="xsd:string"></wsdl:part> 
+    <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part> 
+  </wsdl:message>
+  <wsdl:message name="setFecAditioResponse">
+    <wsdl:part name="response" type="tns:simpleResponse"></wsdl:part>
+  </wsdl:message>
+  
+  <!-- Metodo para consultar la novedad de un evento por transportadora -->
+  <wsdl:message name="getNovedadEventRequest">
+  <!-- Campos requeridos -->
+      <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+      <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="cod_evento" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part>  
+      <wsdl:part name="cod_noveda" type="xsd:string"></wsdl:part>  
+  </wsdl:message>
+  <wsdl:message name="getNovedadEventResponse">
+      <wsdl:part name="cod_respon" type="xsd:string"></wsdl:part>
+      <wsdl:part name="msg_respon" type="xsd:string"></wsdl:part>
+      <!--<wsdl:part name="dat_noveda" type="tns:DataNovEvent"></wsdl:part> -->
+      <wsdl:part name="dat_noveda" type="tns:ResponNovedaEvent"></wsdl:part>
+  </wsdl:message>
+
+  <!-- Metodo par consultar la trazabilidad de un despacho -->
+  <wsdl:message name="getTraficoManifiestoRequest">
+  <!-- Campos requeridos -->
+      <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+      <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="cod_manifi" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>   
+  </wsdl:message>
+  <wsdl:message name="getTraficoManifiestoResponse">
+      <wsdl:part name="cod_respon" type="xsd:string"></wsdl:part>
+      <wsdl:part name="msg_respon" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="dat_trafic" type="tns:dataTrafico"></wsdl:part>
+  </wsdl:message>  
+
+
+  <!-- Metodo para colocar codigo de itinerario integrador GPS en el despacho -->
+  <wsdl:message name="setStatusItineraryRequest">
+  <!-- Campos requeridos -->
+      <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+      <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="cod_transp" type="xsd:string"></wsdl:part> 
+      <wsdl:part name="num_manifi" type="xsd:string"></wsdl:part>   
+      <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>   
+      <wsdl:part name="cod_itiner" type="xsd:string"></wsdl:part>   
+      <wsdl:part name="msg_itiner" type="xsd:string"></wsdl:part>   
+      <wsdl:part name="fec_itiner" type="xsd:string"></wsdl:part>   
+  </wsdl:message>
+  <wsdl:message name="setStatusItineraryResponse">
+      <wsdl:part name="cod_respon" type="xsd:string"></wsdl:part>
+      <wsdl:part name="msg_respon" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+<!-- Campos example -->
+  <wsdl:message name="getDatosExampleRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDatosExampleResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+   <!-- Datos Solicitudes -->
+  <wsdl:message name="getDatosSolicitudesRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_client" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDatosSolicitudesResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+ <!-- Tipo Solicitud -->
+  <wsdl:message name="getTipoSolicitudRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTipoSolicitudResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <!-- Servicios -->
+  <wsdl:message name="getServicesRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tip_asiste" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getServicesResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <!-- Ciudades -->
+  <wsdl:message name="getCiudadesRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_ciudad" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCiudadesResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <!-- Costo Ciudades Trayecto -->
+  <wsdl:message name="getCosTraRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_ciudes" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getCosTraResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="setNuevaAsistenciaRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tip_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="est_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_client" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cor_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tel_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cel_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ase_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_poliza" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ap1_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ap2_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ce1_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ce2_transp" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_placax" type="xsd:string"></wsdl:part>
+    <wsdl:part name="mar_vehicu" type="xsd:string"></wsdl:part>
+    <wsdl:part name="col_vehicu" type="xsd:string"></wsdl:part>
+    <wsdl:part name="tip_vehicu" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_remolq" type="xsd:string"></wsdl:part>
+    <wsdl:part name="url_opegps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_opegps" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="con_vehicu" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ubi_vehicu" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pun_refere" type="xsd:string"></wsdl:part>
+    <wsdl:part name="des_asiste" type="xsd:string"></wsdl:part>
+    <wsdl:part name="fec_servic" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ciu_origen" type="xsd:string"></wsdl:part>
+    <wsdl:part name="dir_ciuori" type="xsd:string"></wsdl:part>
+    <wsdl:part name="ciu_destin" type="xsd:string"></wsdl:part>
+    <wsdl:part name="dir_ciudes" type="xsd:string"></wsdl:part>
+    <wsdl:part name="obs_acompa" type="xsd:string"></wsdl:part>
+    <wsdl:part name="servicios" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setNuevaAsistenciaResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+<!-- Dar Datos solicitud -->
+  <wsdl:message name="getInfoSolicitudRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_client" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getInfoSolicitudResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+<!-- Dar Aprobacion de la asistencia -->
+  <wsdl:message name="setAprobAsitenciaRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="apr_asiste" type="xsd:string"></wsdl:part>
+    <wsdl:part name="obs_aproba" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="raz_finali" type="xsd:string"></wsdl:part>
+    <wsdl:part name="est_siguie" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setAprobAsitenciaResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+<!-- Dar Informacion envio correos -->
+  <wsdl:message name="getDataSendEmailSoliciRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="num_solici" type="xsd:string"></wsdl:part>
+    <wsdl:part name="cod_client" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDataSendEmailSoliciResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <!-- Set Informacion Aprobacion de terminos y condiciones faro -->
+<wsdl:message name="setAprobaTerminosFaroRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="datos_cliente" type="tns:datos_cliente"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="setAprobaTerminosFaroResponse">
+    <wsdl:part name="response" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="getTransportRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part>
+    <wsdl:part name="val_busque" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getTransportResponse">
+    <wsdl:part name="response" type="tns:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="getVehicuRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="nom_aplica" type="xsd:string"></wsdl:part>
+    <wsdl:part name="val_busque" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getVehicuResponse">
+    <wsdl:part name="response" type="tns:string"></wsdl:part>
+  </wsdl:message>
+
+  <wsdl:message name="getDataFormularioRequest">
+    <wsdl:part name="nom_usuari" type="xsd:string"></wsdl:part>
+    <wsdl:part name="pwd_clavex" type="xsd:string"></wsdl:part>
+    <wsdl:part name="val_busque" type="xsd:string"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="getDataFormularioResponse">
+    <wsdl:part name="response" type="tns:string"></wsdl:part>
+  </wsdl:message>
+
+<wsdl:portType name="faroType">
+
+    <wsdl:operation name="setSoliciRuta">
+        <wsdl:input message="tns:setSoliciRutaRequest"></wsdl:input>
+        <wsdl:output message="tns:setSoliciRutaResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setSoliciSegimientoEspecial">
+        <wsdl:input message="tns:setSoliciSegimientoEspecialRequest"></wsdl:input>
+        <wsdl:output message="tns:setSoliciSegimientoEspecialResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setSoliciPQR">
+        <wsdl:input message="tns:setSoliciPQRRequest"></wsdl:input>
+        <wsdl:output message="tns:setSoliciPQRResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setSoliciOtros">
+        <wsdl:input message="tns:setSoliciOtrosRequest"></wsdl:input>
+        <wsdl:output message="tns:setSoliciOtrosResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setSeguim">
+      <wsdl:input message="tns:setSeguimRequest"></wsdl:input>
+      <wsdl:output message="tns:setSeguimResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="RegistrarCall">
+      <wsdl:input message="tns:RegistrarCallRequest"></wsdl:input>
+      <wsdl:output message="tns:RegistrarCallResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="RegistrarCallIn">
+      <wsdl:input message="tns:RegistrarCallInRequest"></wsdl:input>
+      <wsdl:output message="tns:RegistrarCallInResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setDespacPdf">
+      <wsdl:input message="tns:setDespacPdfRequest"></wsdl:input>
+      <wsdl:output message="tns:setDespacPdfResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setSeguimPC">
+      <wsdl:input message="tns:setSeguimPCRequest"></wsdl:input>
+      <wsdl:output message="tns:setSeguimPCResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setSalida">
+      <wsdl:input message="tns:setSalidaRequest"></wsdl:input>
+      <wsdl:output message="tns:setSalidaResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setSeguimFTP">
+      <wsdl:input message="tns:setSeguimFTPRequest"></wsdl:input>
+      <wsdl:output message="tns:setSeguimFTPResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setRutaFaro">
+      <wsdl:input message="tns:setRutaFaroRequest"></wsdl:input>
+      <wsdl:output message="tns:setRutaFaroResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="getHomoloData">
+      <wsdl:input message="tns:getHomoloDataRequest"></wsdl:input>
+      <wsdl:output message="tns:getHomoloDataResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setHomoloData">
+      <wsdl:input message="tns:setHomoloDataRequest"></wsdl:input>
+      <wsdl:output message="tns:setHomoloDataResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setLlegada">
+      <wsdl:input message="tns:setLlegadaRequest"></wsdl:input>
+      <wsdl:output message="tns:setLlegadaResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setAnulad">
+      <wsdl:input message="tns:setAnuladRequest"></wsdl:input>
+      <wsdl:output message="tns:setAnuladResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setRevSalida">
+      <wsdl:input message="tns:setAnuladRequest"></wsdl:input>
+      <wsdl:output message="tns:setAnuladResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setRevLlegada">
+      <wsdl:input message="tns:setAnuladRequest"></wsdl:input>
+      <wsdl:output message="tns:setAnuladResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="routExists">
+      <wsdl:input message="tns:routExistsRequest"></wsdl:input>
+      <wsdl:output message="tns:routExistsResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setRout">
+      <wsdl:input message="tns:setRoutRequest"></wsdl:input>
+      <wsdl:output message="tns:setRoutResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setPc">
+      <wsdl:input message="tns:setPcRequest"></wsdl:input>
+      <wsdl:output message="tns:setPcResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setPCIntracarga">
+      <wsdl:input message="tns:setPCIntracargaRequest"></wsdl:input>
+      <wsdl:output message="tns:setPCIntracargaResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getPCsContratados">
+      <wsdl:input message="tns:getPCsContratadosRequest"></wsdl:input>
+      <wsdl:output message="tns:getPCsContratadosResponse"></wsdl:output>
+    </wsdl:operation>
+  
+    <wsdl:operation name="getTipser">
+      <wsdl:input message="tns:getTipserRequest"></wsdl:input>
+      <wsdl:output message="tns:getTipserResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="getRutas">
+      <wsdl:input message="tns:getRutasRequest"></wsdl:input>
+      <wsdl:output message="tns:getRutasResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setNovedadPC">
+      <wsdl:input message="tns:setNovedadRequest"></wsdl:input>
+      <wsdl:output message="tns:setNovedadResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setNovedadGPS">
+      <wsdl:input message="tns:setNovedadGPSRequest"></wsdl:input>
+      <wsdl:output message="tns:setNovedadGPSResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setNovedadNC">
+      <wsdl:input message="tns:setNovedadRequest"></wsdl:input>
+      <wsdl:output message="tns:setNovedadResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="getNovedades">
+      <wsdl:input message="tns:getNovedadesRequest"></wsdl:input>
+      <wsdl:output message="tns:getNovedadesResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setCambioRuta">
+      <wsdl:input message="tns:setCambioRutaRequest"></wsdl:input>
+      <wsdl:output message="tns:setCambioRutaResponse"></wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setTelConduc">
+      <wsdl:input message="tns:setTelConducRequest"></wsdl:input>
+      <wsdl:output message="tns:setTelConducResponse"></wsdl:output>
+    </wsdl:operation>    
+
+    <wsdl:operation name="getDestin">
+      <wsdl:input message="tns:getDestinRequest"></wsdl:input>
+      <wsdl:output message="tns:getDestinResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setFecAditio">
+      <wsdl:input message="tns:setFecAditioRequest"></wsdl:input>
+      <wsdl:output message="tns:setFecAditioResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getNovedadEvent">
+      <wsdl:input message="tns:getNovedadEventRequest"></wsdl:input>
+      <wsdl:output message="tns:getNovedadEventResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getTraficoManifiesto">
+      <wsdl:input message="tns:getTraficoManifiestoRequest"></wsdl:input>
+      <wsdl:output message="tns:getTraficoManifiestoResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setStatusItinerary">
+      <wsdl:input message="tns:setStatusItineraryRequest"></wsdl:input>
+      <wsdl:output message="tns:setStatusItineraryResponse"></wsdl:output>
+    </wsdl:operation>
+
+<wsdl:operation name="getDatosExample">
+      <wsdl:input message="tns:getDatosExampleRequest"></wsdl:input>
+      <wsdl:output message="tns:getDatosExampleResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getDatosSolicitudes">
+      <wsdl:input message="tns:getDatosSolicitudesRequest"></wsdl:input>
+      <wsdl:output message="tns:getDatosSolicitudesResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getTipoSolicitud">
+      <wsdl:input message="tns:getTipoSolicitudRequest"></wsdl:input>
+      <wsdl:output message="tns:getTipoSolicitudResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getServices">
+      <wsdl:input message="tns:getServicesRequest"></wsdl:input>
+      <wsdl:output message="tns:getServicesResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getCiudades">
+      <wsdl:input message="tns:getCiudadesRequest"></wsdl:input>
+      <wsdl:output message="tns:getCiudadesResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getCosTra">
+      <wsdl:input message="tns:getCosTraRequest"></wsdl:input>
+      <wsdl:output message="tns:getCosTraResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setNuevaAsistencia">
+      <wsdl:input message="tns:setNuevaAsistenciaRequest"></wsdl:input>
+      <wsdl:output message="tns:setNuevaAsistenciaResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getInfoSolicitud">
+      <wsdl:input message="tns:getInfoSolicitudRequest"></wsdl:input>
+      <wsdl:output message="tns:getInfoSolicitudResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setAprobAsitencia">
+      <wsdl:input message="tns:setAprobAsitenciaRequest"></wsdl:input>
+      <wsdl:output message="tns:setAprobAsitenciaResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getDataSendEmailSolici">
+      <wsdl:input message="tns:getDataSendEmailSoliciRequest"></wsdl:input>
+      <wsdl:output message="tns:getDataSendEmailSoliciResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setAprobaTerminosFaro">
+      <wsdl:input message="tns:setAprobaTerminosFaroRequest"></wsdl:input>
+      <wsdl:output message="tns:setAprobaTerminosFaroResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getTransport">
+      <wsdl:input message="tns:getTransportRequest"></wsdl:input>
+      <wsdl:output message="tns:getTransportResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getVehicu">
+      <wsdl:input message="tns:getVehicuRequest"></wsdl:input>
+      <wsdl:output message="tns:getVehicuResponse"></wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getDataFormulario">
+      <wsdl:input message="tns:getDataFormularioRequest"></wsdl:input>
+      <wsdl:output message="tns:getDataFormularioResponse"></wsdl:output>
+    </wsdl:operation>
+    
+  </wsdl:portType>
+
+  <wsdl:binding name="faroBinding" type="tns:faroType">
+  	<soap:binding style="rpc"
+  		transport="http://schemas.xmlsoap.org/soap/http" />
+
+
+    <wsdl:operation name="setSoliciRuta">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setSoliciSegimientoEspecial">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setSoliciPQR">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setSoliciOtros">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    
+  	<wsdl:operation name="setSeguim">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+    <wsdl:operation name="RegistrarCall">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="RegistrarCallIn">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setDespacPdf">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+  	<wsdl:operation name="setSeguimPC">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+    
+    <wsdl:operation name="setSalida">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+    <wsdl:operation name="setSeguimFTP">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+    
+    <wsdl:operation name="setLlegada">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+    
+    <wsdl:operation name="setAnulad">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+    <wsdl:operation name="setRevSalida">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+    
+    <wsdl:operation name="setRevLlegada">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+    <wsdl:operation name="routExists">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+    <wsdl:operation name="setRout">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+    <wsdl:operation name="setPc">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+    
+    <wsdl:operation name="setPCIntracarga">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+
+    <wsdl:operation name="getPCsContratados">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+  	
+    <wsdl:operation name="getTipser">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+    
+    <wsdl:operation name="getRutas">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+  	</wsdl:operation>
+    
+  	<wsdl:operation name="setNovedadPC">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setNovedadGPS">
+      <soap:operation
+        soapAction="http://www.example.org/server/Processing" />
+      <wsdl:input>
+        <soap:body use="encoded"
+          namespace="http://www.example.org/server/"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded"
+          namespace="http://www.example.org/server/"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    
+  	<wsdl:operation name="setNovedadNC">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+    </wsdl:operation>
+    
+  	<wsdl:operation name="getNovedades">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setCambioRuta">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setRutaFaro">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="getHomoloData">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+    </wsdl:operation>
+    
+    <wsdl:operation name="setTelConduc">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="setHomoloData">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getDestin">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setFecAditio">
+  		<soap:operation
+  			soapAction="http://www.example.org/server/Processing" />
+  		<wsdl:input>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:input>
+  		<wsdl:output>
+  			<soap:body use="encoded"
+  				namespace="http://www.example.org/server/"
+  				encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+  		</wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getNovedadEvent">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+
+    <wsdl:operation name="getTraficoManifiesto">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setStatusItinerary">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+
+<wsdl:operation name="getDatosExample">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getDatosSolicitudes">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getTipoSolicitud">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getServices">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getCiudades">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getCosTra">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setNuevaAsistencia">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getInfoSolicitud">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="setAprobAsitencia">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getDataSendEmailSolici">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+   <wsdl:operation name="setAprobaTerminosFaro">
+        <soap:operation
+            soapAction="http://www.example.org/server/Processing" />
+        <wsdl:input>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:input>
+        <wsdl:output>
+            <soap:body use="encoded"
+                namespace="http://www.example.org/server/"
+                encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+        </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getTransport">
+      <soap:operation
+        soapAction="http://www.example.org/server/Processing" />
+      <wsdl:input>
+        <soap:body use="encoded"
+          namespace="http://www.example.org/server/"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded"
+          namespace="http://www.example.org/server/"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getVehicu">
+      <soap:operation
+        soapAction="http://www.example.org/server/Processing" />
+      <wsdl:input>
+        <soap:body use="encoded"
+          namespace="http://www.example.org/server/"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded"
+          namespace="http://www.example.org/server/"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+
+    <wsdl:operation name="getDataFormulario">
+      <soap:operation
+        soapAction="http://www.example.org/server/Processing" />
+      <wsdl:input>
+        <soap:body use="encoded"
+          namespace="http://www.example.org/server/"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="encoded"
+          namespace="http://www.example.org/server/"
+          encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" />
+      </wsdl:output>
+    </wsdl:operation>
+    
+  </wsdl:binding>
+
+  <wsdl:service name="faro">
+    <wsdl:port name="faroPort" binding="tns:faroBinding">
+      <soap:address location="https://avansatgl.intrared.net/ap/interf/app/faro/faro.php"></soap:address>
+    </wsdl:port>
+  </wsdl:service>
+
+</wsdl:definitions>
