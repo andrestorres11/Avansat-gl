@@ -12,10 +12,11 @@ $(document).ready(function(){
 			busq = 'buscarAsistente';
 		}
 
+
 		$( "[name=num_docume]" ).autocomplete({
 			source: "../"+standa+"/ctrapp/ajax_insapl_movilx.php?op="+busq+"&activity="+id+"&nit_transp="+transp,
-			minLength: 3, 
-			delay: 100,
+			minLength: 1, 
+			delay: 0,
 			select: function(event, ui){ 
 				$.ajax({
 					url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op="+op,
@@ -55,56 +56,6 @@ $(document).ready(function(){
 		$("[name=cod_seriex]").val(''); 
 	});
 
-	$("#nom_usrappID").change(function() {
-		var standa = $("[name=standa]").val(); 
-		var nom_usrapp = $("[name=nom_usrapp]").val();
-		var cod_transp = $("[name=cod_transp]").val();
-
-		$.ajax({
-			url:"../"+standa+"/ctrapp/ajax_insapl_movilx.php?op=validarUsuario",
-			data:{
-					"cod_usuari":nom_usrapp,
-					"cod_transp":cod_transp,
-				 },
-			beforeSend: function() {
-				Swal.fire({
-					title: 'Cargando',
-					text: 'Por favor espere...',
-					imageUrl: '../' + standa + '/imagenes/ajax-loader.gif',
-					imageAlt: 'Custom image',
-					showConfirmButton: false,
-				});
-			},
-			success: function(result){
-				dataF = JSON.parse(result);
-				
-				if(dataF['response'] == "ok"){
-					msn = "Usuario Disponible";
-
-					Swal.fire({
-						title: 'Correcto!',
-						text: msn,
-						type: 'success',
-						confirmButtonColor: '#336600'
-					});
-				}
-				else{
-					msn = dataF['error'];
-					$("[name=nom_usrapp]").val('');
-
-					Swal.fire({
-						title: 'Error!',
-						text: msn,
-						type: 'error',
-						confirmButtonColor: '#336600'
-					});
-				}
-
-				
-			}
-		});
-
-	});
 	
 	
 	// validacion para saber si es un usuaraio administrador o de una transportadora y mostrar los datos de la misma

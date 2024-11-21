@@ -73,15 +73,15 @@ class AjaxInsertarAutorizacion
 				break;
 		}
 		$query = "SELECT a.cod_tercer, a.abr_tercer 
-					FROM tab_tercer_tercer a 
-			  INNER JOIN tab_tercer_activi b 
+					FROM ".BASE_DATOS.".tab_tercer_tercer a 
+			  INNER JOIN ".BASE_DATOS.".tab_tercer_activi b 
 			          ON a.cod_tercer = b.cod_tercer
     				 AND b.cod_activi = '".$activity."'
-			  -- INNER JOIN tab_transp_tercer c ON c.cod_tercer = a.cod_tercer 
-			  		 -- AND c.cod_transp = '".$_REQUEST['nit_transp']."'
+			  INNER JOIN ".BASE_DATOS.".tab_transp_tercer c ON c.cod_tercer = a.cod_tercer 
+			  		 AND c.cod_transp = '".$_REQUEST['nit_transp']."'
 				   WHERE a.cod_tercer LIKE '%".$_REQUEST['term']."%' 
 					 AND a.cod_tercer NOT IN( SELECT cod_tercer 
-												FROM tab_usuari_movilx 
+												FROM ".BASE_DATOS.".tab_usuari_movilx 
 											   WHERE 1 = 1)
 				";
 		if($_REQUEST['activity'] == 3){
@@ -315,7 +315,7 @@ class AjaxInsertarAutorizacion
 
 		$consulta = new Consulta($query, $this -> conexion);
 
-		$nit = $_REQUEST['cod_transp'];
+		$nit =  $_REQUEST['cod_transp'];
 
 		$tip_usuari = NULL;
 		if( isset($_REQUEST['ind_admini']) ){
@@ -323,6 +323,8 @@ class AjaxInsertarAutorizacion
 		}else if( isset($_REQUEST['tip_usuari']) ){
 			$tip_usuari = $_REQUEST['tip_usuari'];
 		}
+
+		$cod_perfil =  $_REQUEST['ind_admini'] == 0 ? 1:4;
 
 		$data = array(
 
@@ -344,6 +346,7 @@ class AjaxInsertarAutorizacion
 			"tel_usuari" => $_REQUEST['num_telef1'],
  			"ind_aprova" => 0,
             "ind_estilo" => 0,
+			"cod_perfil" => $cod_perfil,
 		);	
 
 		
@@ -362,9 +365,10 @@ class AjaxInsertarAutorizacion
 				$respuesta = "no";
 				$error = 'Fallo autentificacion hacia central ';
 			}
+			
 
 			$responsex = $centralApps ->rewNewTokenTranport($response['response']->renew,$nit);
-			
+
 			if(!preg_match($pattern, $responsex)){
 				$respuesta = "no";
 				$error = 'Se genero un error Generando token de transportadora ';
@@ -417,6 +421,7 @@ class AjaxInsertarAutorizacion
  			else
  			{
 				$responseInsert = $centralApps ->createPetition('usuari-appsat',$data);
+				
 				if(!preg_match($pattern, $responseInsert['code'])){
 					$respuesta = "no";
 					$error = 'Se genero un error creando usuario ';
@@ -448,18 +453,22 @@ class AjaxInsertarAutorizacion
  
 			if($respuesta == "ok"){
 
-	            $mCabece = 'MIME-Version: 1.0' . "\r\n";
+				$mCabece = 'MIME-Version: 1.0' . "\r\n";
                 $mCabece .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
                 $mCabece .= 'From: Aplicacion SAT <avansat@intrared.net>' . "\r\n";
-
-                $mYear = date("Y");
-                $banner = "https://".$_SERVER['HTTP_HOST']."/ap/".BASE_DATOS."/images/banner.jpg";
+      
+					
+				$banner = "https://".$_SERVER['HTTP_HOST']."/ap/".BASE_DATOS."/images/banner.jpg";
 				$tmpl_file = "planti/planti_usuari_appsat2.html"; 
-                $thefile = implode("", file($tmpl_file));
-                $thefile = addslashes($thefile);
-                $thefile = "\$r_file=\"" . $thefile . "\";";
+				$thefile = implode("", file($tmpl_file));
+				$thefile = addslashes($thefile);
+				$thefile = "\$r_file=\"" . $thefile . "\";";
+
+
                 eval($thefile);
-				$mHtmlxx = $r_file;
+                $mHtmlxx = $r_file;
+
+
 				$asunto="Código de activación aplicación AVANSAT ";
 
 				if($_REQUEST['ind_admini']==2){
@@ -467,10 +476,10 @@ class AjaxInsertarAutorizacion
 				}
 
 				$to= $_REQUEST['mail'];
-				$subject = 'OET-AVANSATGL';
+				$subject = $asunto;
 				$from = 'notificaciones@faro.com.co';
 
-				mail($to,$subject,$asunto,"From: <$from>","-f $from -r $from");
+				mail($to,$subject,$mHtmlxx,$mCabece,"-f $from");
 
 				echo json_encode(array("response"=>"ok","error"=>""));
 			}
