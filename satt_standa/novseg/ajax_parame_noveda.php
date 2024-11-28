@@ -44,6 +44,12 @@
                 case "save":
                     self::save();
                     break;
+                case "saveProtoNov":
+                    self::saveProtoNov();
+                    break;
+                case "getProtoNov":
+                    self::getProtoNov();
+                    break;
             }
         }
 
@@ -212,10 +218,15 @@
                         $resultado['num_tiempo'] = 0;
                     }
 
+                    $modal = '<a class="small-box-footer btn btn-success btn-sm" onclick="selNoveda(\''.$cod_transp.'\', \''.$cod_novedad.'\')" data-toggle="modal" data-target="#Asignar" aria-controls="tablaRegistros">
+                                <span style="color: white;">Asignar</span>
+                            </a>';
+
                     $data .= '<tr>
                                 <td><input type="checkbox" class="colcheck_'.$cod_etapax.'" onclick="selectRow(this)" data="'.$cod_etapax.'"></td>
                                 <td class="text-center">'.$cod_novedad.'</td>
                                 <td>'.$nom_novedad.'</td>
+                                <td class="text-center">'.$modal.'</td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' activo_'.$cod_novedad.'" data="activo_'.$cod_novedad.'" name="activo_'.$name.'" '.self::validacheck($resultado['ind_status']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' novesp_'.$cod_novedad.'" data="novesp_'.$cod_novedad.'" name="novesp_'.$name.'" '.self::validacheck($resultado['ind_novesp']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' manale_'.$cod_novedad.'" data="manale_'.$cod_novedad.'" name="manale_'.$name.'" '.self::validacheck($resultado['ind_manale']).' onclick="selectGemelo(this);disableTime(this)" code="'.$cod_novedad.'" onchange="Selector(this)"></td>
@@ -238,6 +249,7 @@
                                     <th><input type="checkbox" id="SelecAll_'.$cod_etapax.'" data="'.$cod_etapax.'" onclick="selectedAll(this)"></th>
                                     <th>C&oacute;digo</th> 
                                     <th>Nombre de la novedad</th>
+                                    <th>Protocolo</th>
                                     <th>Activo</th>
                                     <th>Novedad Especial</th>
                                     <th>Mantiene Alerta</th>
@@ -298,10 +310,15 @@
                         $resultado['num_tiempo'] = 0;
                     }
 
+                    $modal = '<a class="small-box-footer btn btn-success btn-sm" onclick="selNoveda(\''.$cod_transp.'\', \''.$cod_novedad.'\')" data-toggle="modal" data-target="#Asignar" aria-controls="tablaRegistros">
+                                <span style="color: white;">Asignar</span>
+                            </a>';
+
                     $data .= '<tr>
                                 <td><input type="checkbox" class="colcheck_'.$cod_etapax.'" onclick="selectRow(this)" data="'.$cod_etapax.'"></td>
                                 <td class="text-center">'.$cod_novedad.'</td>
                                 <td>'.$nom_novedad.'</td>
+                                <td class="text-center">'.$modal.'</td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' activo_'.$cod_novedad.'" data="activo_'.$cod_novedad.'" name="activo_'.$name.'" '.self::validacheck($resultado['ind_status']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' novesp_'.$cod_novedad.'" data="novesp_'.$cod_novedad.'" name="novesp_'.$name.'" '.self::validacheck($resultado['ind_novesp']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' manale_'.$cod_novedad.'" data="manale_'.$cod_novedad.'" name="manale_'.$name.'" '.self::validacheck($resultado['ind_manale']).' onclick="selectGemelo(this);disableTime(this)" code="'.$cod_novedad.'" onchange="Selector(this)"></td>
@@ -324,6 +341,7 @@
                                     <th><input type="checkbox" id="SelecAll_'.$cod_etapax.'" data="'.$cod_etapax.'" onclick="selectedAll(this)"></th>
                                     <th>C&oacute;digo</th> 
                                     <th>Nombre de la novedad</th>
+                                    <th>Protocolo</th>
                                     <th>Activo</th>
                                     <th>Novedad Especial</th>
                                     <th>Mantiene Alerta</th>
@@ -448,21 +466,21 @@
             }
             
                 $info['status']=200;
-                $info['msj']='Error no se pudo registrar la informaci?n.';
+                $info['msj']='Error no se pudo registrar la información.';
                 if( $insercion = new Consulta( "COMMIT" , self::$conexion ) ){
                     $info['status']=100;
-                    $info['msj']='Se ha actualizado correctamente la parametrizaci?n.';
+                    $info['msj']='Se ha actualizado correctamente la parametrización.';
                 }
             echo json_encode(self::cleanArray($info));
         }
 
 
         /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaci?n
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que ser? analizado por la funci?n
+           *  \param: $arrau => Arreglo que ser? analizado por la función
            *  \return: array
         */
         function cleanArray($array){
@@ -490,6 +508,61 @@
             }
             //Return array
             return $arrayReturn;
+        }
+
+        function saveProtoNov(){
+            
+            $consulta = new Consulta("SELECT 1", self::$conexion, "BR");
+            
+            $cod_usuari = $_SESSION['datos_usuario']['cod_usuari'];
+            $cod_transp = trim($_POST['cod_transp']);
+            $cod_noveda = trim($_POST['cod_noveda']);
+
+            $cod_matpr = isset($_POST['cod_matpr']) && $_POST['cod_matpr'] != ''  ? "'".$_POST['cod_matpr']."'": "NULL";
+            $cod_formul = isset($_POST['cod_formul']) && $_POST['cod_formul'] != ''  ? "'".$_POST['cod_formul']."'": "NULL";
+
+
+            $qInsReg = "INSERT INTO ".BASE_DATOS.".tab_parame_protoc (cod_transp, cod_noveda, cod_matpr,
+                            cod_formul, nom_observ, usr_creaci,fec_creaci
+                           ) VALUES (
+                           '".$cod_transp."', '".$cod_noveda."', $cod_matpr ,
+                           $cod_formul , '".$_POST['nom_observ']."', '".$cod_usuari."', NOW()
+                           )
+                            ON DUPLICATE KEY UPDATE cod_matpr = $cod_matpr , cod_formul = $cod_formul , nom_observ = '".$_POST['nom_observ']."',
+                             usr_modifi = '".$cod_usuari."',
+                            fec_modifi = NOW() ;";   
+            $resultado = new Consulta($qInsReg, self::$conexion, "R");
+
+            
+            $info['status']=100;
+            $info['msj']='Error no se pudo registrar la asignaciÃ³n.';
+            if( $insercion = new Consulta( "COMMIT" , self::$conexion ) ){
+                $info['status']=200;
+                $info['msj']='la AcciÃ³n has sido asignada correctamente!.';
+            }
+            echo json_encode(self::cleanArray($info));
+        }
+
+        function getProtoNov(){
+
+            $cod_transp = trim($_POST['cod_transp']);
+            $cod_noveda = trim($_POST['cod_noveda']);
+
+            $sqlNov = "SELECT a.cod_matpr,a.cod_formul,a.nom_observ
+            FROM ".BASE_DATOS.".tab_parame_protoc a
+            WHERE a.cod_transp = '".$cod_transp."' AND a.cod_noveda = '".$cod_noveda."'";
+
+            $resultado = new Consulta($sqlNov, self::$conexion);
+            $resultados = $resultado->ret_matriz();
+
+
+            foreach($resultados as $key_pro => $resultado){
+                $info['cod_matpr'] = $resultado["cod_matpr"];
+                $info['cod_formul'] = $resultado["cod_formul"];
+                $info['nom_observ'] = $resultado["nom_observ"];
+            }
+
+            echo json_encode(self::cleanArray($info));
         }
 }
 
