@@ -10,6 +10,8 @@
  */
 $(document).on("ready", function() {
 
+    
+
 });
 
 function autocompletable(campo) {
@@ -277,4 +279,93 @@ function disableTime(elemento) {
         var tiempo = Row.find('.tiempo_' + code);
         $(tiempo).attr('disabled', false);
     }
+}
+
+
+function selNoveda(cod_transp, cod_novedad) {
+    $('#cod_transpID').val(cod_transp);
+    $('#cod_novedaID').val(cod_novedad);
+
+
+    var standa = 'satt_standa';
+    var opcion = 'getProtoNov';
+    var dataString = 'opcion=' + opcion;
+    $.ajax({
+        url: "../" + standa + "/novseg/ajax_parame_noveda.php?" + dataString,
+        method: 'POST',
+        data: $(".FormProtocol").serialize(),
+        async: false,
+        dataType: "json",
+        success: function(data) {
+            $('#cod_matprID').val(data.cod_matpr);
+            $('#cod_formulID').val(data.cod_formul);
+            $('#nom_observID').val(data.nom_observ);
+        }
+    });
+
+}
+
+$(".FormProtocol").validate({
+    rules: {
+        cod_matpr: {
+            required: false
+        },
+        cod_formul: {
+            required: false
+        },
+        nom_observ: {
+            required: true,
+            maxlength: 200
+        },
+    },
+    messages: {
+        cod_matpr: {
+            required: "Por favor escriba protocolo"
+        },
+        cod_formul: {
+            required: "Por favor escriba el formulario"
+        },
+        nom_observ: {
+            required: "Por favor escriba la acciones",
+            maxlength: "No puede superar los 200 caracteres."
+        },
+    },
+    submitHandler: function(form) {
+        almacenarDatos();
+    }
+});
+
+
+function almacenarDatos() {
+    var standa = 'satt_standa';
+    var opcion = 'saveProtoNov';
+    var dataString = 'opcion=' + opcion;
+    $.ajax({
+        url: "../" + standa + "/novseg/ajax_parame_noveda.php?" + dataString,
+        method: 'POST',
+        data: $(".FormProtocol").serialize(),
+        async: false,
+        dataType: "json",
+        success: function(data) {
+            console.log(data)
+            if (data['status'] == 200) {
+                Swal.fire({
+                    title: 'Registrado!',
+                    text: data['response'],
+                    type: 'success',
+                    confirmButtonColor: '#336600'
+                }).then((result) => {
+                    $('#Asignar').modal('hide');
+                });
+            } else {
+                Swal.fire({
+                    title: 'Error!',
+                    text: data['response'],
+                    type: 'error',
+                    confirmButtonColor: '#336600'
+                })
+            }
+
+        }
+    });
 }
