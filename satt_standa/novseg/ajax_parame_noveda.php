@@ -1,9 +1,9 @@
 <?php
     /****************************************************************************
     NOMBRE:   AjaxInsNovedaSeguim
-    FUNCION:  Retorna todos los datos necesarios para construir la información
+    FUNCION:  Retorna todos los datos necesarios para construir la informaci?n
     FECHA DE MODIFICACION: 24/11/2021
-    CREADO POR: Ing. Cristian Andrés Torres
+    CREADO POR: Ing. Cristian Andr?s Torres
     MODIFICADO 
     ****************************************************************************/
     
@@ -188,7 +188,7 @@
                 $nom_novedad = $valor['nom_noveda'];
                 $name =  $valor['cod_noveda'];
                 $sqlNov = "SELECT b.ind_status, b.ind_novesp, b.ind_manale, b.ind_fuepla,
-                                  b.ind_soltie, b.inf_visins, b.ind_notsup,
+                                  b.ind_soltie, b.inf_visins, b.ind_notsup, b.ind_gpsalar,
                                   b.ind_limpio, b.num_tiempo
                             FROM ".BASE_DATOS.".tab_parame_novseg b
                             WHERE b.cod_transp = '".$cod_transp."' AND b.cod_noveda = '".$cod_novedad."'";
@@ -223,6 +223,7 @@
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' soltie_'.$cod_novedad.'" data="soltie_'.$cod_novedad.'" name="soltie_'.$name.'" '.self::validacheck($resultado['ind_soltie']).' onclick="selectGemelo(this);disableTime(this)" code="'.$cod_novedad.'" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' visins_'.$cod_novedad.'" data="visins_'.$cod_novedad.'" name="visins_'.$name.'" '.self::validacheck($resultado['inf_visins']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' notsup_'.$cod_novedad.'" data="notsup_'.$cod_novedad.'" name="notsup_'.$name.'" '.self::validacheck($resultado['ind_notsup']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
+                                <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' gpsalar_'.$cod_novedad.'" data="gpsalar_'.$cod_novedad.'" name="gpsalar_'.$name.'" '.self::validacheck($resultado['ind_gpsalar']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' limpio_'.$cod_novedad.'" data="limpio_'.$cod_novedad.'" name="limpio_'.$name.'" '.self::validacheck($resultado['ind_limpio']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td><input type="text" class="tiempo_'.$cod_novedad.'" size="6" name="tiempo_'.$name.'" value="'.$resultado['num_tiempo'].'" onchange="insertGemelo(this)" '.$input_disabled.' onchange="Selector(this)"></td>
                             </tr>';
@@ -244,6 +245,7 @@
                                     <th>Solicita Tiempo</th>
                                     <th>Visibilidad (N/S)</th>
                                     <th>Notifica Supervisor</th>
+                                    <th>Mantiene Alerta GPS</th>
                                     <th>Limpio</th>
                                     <th>Tiempo</th>
                                 </tr>
@@ -272,7 +274,7 @@
                 $nom_novedad = $valor['nom_noveda'];
                 $name =  $valor['cod_noveda'];
                 $sqlNov = "SELECT b.ind_status, b.ind_novesp, b.ind_manale, b.ind_fuepla,
-                                  b.ind_soltie, b.inf_visins, b.ind_notsup,
+                                  b.ind_soltie, b.inf_visins, b.ind_notsup, b.ind_gpsalar,
                                   b.ind_limpio, b.num_tiempo
                             FROM ".BASE_DATOS.".tab_parame_novseg b
                             WHERE b.cod_transp = '".$cod_transp."' AND b.cod_noveda = '".$cod_novedad."'";
@@ -307,6 +309,7 @@
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' soltie_'.$cod_novedad.'" data="soltie_'.$cod_novedad.'" name="soltie_'.$name.'" '.self::validacheck($resultado['ind_soltie']).' onclick="selectGemelo(this);disableTime(this)" code="'.$cod_novedad.'" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' visins_'.$cod_novedad.'" data="visins_'.$cod_novedad.'" name="visins_'.$name.'" '.self::validacheck($resultado['inf_visins']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' notsup_'.$cod_novedad.'" data="notsup_'.$cod_novedad.'" name="notsup_'.$name.'" '.self::validacheck($resultado['ind_notsup']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
+                                <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' gpsalar_'.$cod_novedad.'" data="gpsalar_'.$cod_novedad.'" name="gpsalar_'.$name.'" '.self::validacheck($resultado['ind_gpsalar']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td class="text-center"><input type="checkbox" send="true" value="1" class="chkb_'.$cod_etapax.' limpio_'.$cod_novedad.'" data="limpio_'.$cod_novedad.'" name="limpio_'.$name.'" '.self::validacheck($resultado['ind_limpio']).' onclick="selectGemelo(this)" onchange="Selector(this)"></td>
                                 <td><input type="text" class="tiempo_'.$cod_novedad.'" size="6" name="tiempo_'.$name.'" value="'.$resultado['num_tiempo'].'" onchange="insertGemelo(this)" '.$input_disabled.' onchange="Selector(this)"></td>
                             </tr>';
@@ -328,6 +331,7 @@
                                     <th>Solicita Tiempo</th>
                                     <th>Visibilidad (N/S)</th>
                                     <th>Notifica Supervisor</th>
+                                    <th>Mantiene Alerta GPS</th>
                                     <th>Limpio</th>
                                     <th>Tiempo</th>
                                 </tr>
@@ -402,6 +406,11 @@
                             $notsup = $_POST['notsup_'.$cod_noveda."_T"] ? $_POST['notsup_'.$cod_noveda."_T"]:0;
                         }
 
+                        $gpsalar = $_POST['gpsalar_'.$cod_noveda] ? $_POST['gpsalar_'.$cod_noveda]:0;
+                        if($gpsalar==0){
+                            $gpsalar = $_POST['gpsalar_'.$cod_noveda."_T"] ? $_POST['gpsalar_'.$cod_noveda."_T"]:0;
+                        }
+
                         $limpio = $_POST['limpio_'.$cod_noveda] ? $_POST['limpio_'.$cod_noveda]:0;
                         if($limpio==0){
                             $limpio = $_POST['limpio_'.$cod_noveda."_T"] ? $_POST['limpio_'.$cod_noveda."_T"]:0;
@@ -418,18 +427,18 @@
                         
                         $qInsReg = "INSERT INTO ".BASE_DATOS.".tab_parame_novseg (cod_transp, cod_noveda, ind_status,
                             ind_novesp, ind_manale, ind_fuepla,
-                            ind_soltie, inf_visins, ind_notsup,
+                            ind_soltie, inf_visins, ind_notsup, ind_gpsalar,
                             ind_limpio, num_tiempo, usr_creaci,
                             fec_creaci
                            ) VALUES (
                            '".$cod_transp."', '".$cod_noveda."', '".$activo."',
                            '".$novesp."', '".$manale."', '".$fuepla."',
-                           '".$soltie."', '".$visins."', '".$notsup."',
+                           '".$soltie."', '".$visins."', '".$notsup."', '".$gpsalar."',
                            '".$limpio."', '".$tiempo."', '".$cod_usuari."',
                            NOW()
                            )
                             ON DUPLICATE KEY UPDATE ind_status = '".$activo."', ind_novesp = '".$novesp."', ind_manale = '".$manale."', ind_fuepla = '".$fuepla."',
-                            ind_soltie = '".$soltie."', inf_visins = '".$visins."', ind_notsup = '".$notsup."',
+                            ind_soltie = '".$soltie."', inf_visins = '".$visins."', ind_notsup = '".$notsup."', ind_gpsalar = '".$gpsalar."',
                             ind_limpio = '".$limpio."', num_tiempo = '".$tiempo."', usr_modifi = '".$cod_usuari."',
                             fec_modifi = NOW() ;";   
                         $resultado = new Consulta($qInsReg, self::$conexion, "R");
@@ -439,21 +448,21 @@
             }
             
                 $info['status']=200;
-                $info['msj']='Error no se pudo registrar la información.';
+                $info['msj']='Error no se pudo registrar la informaci?n.';
                 if( $insercion = new Consulta( "COMMIT" , self::$conexion ) ){
                     $info['status']=100;
-                    $info['msj']='Se ha actualizado correctamente la parametrización.';
+                    $info['msj']='Se ha actualizado correctamente la parametrizaci?n.';
                 }
             echo json_encode(self::cleanArray($info));
         }
 
 
         /*! \fn: cleanArray
-           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificación
+           *  \brief: Limpia los datos de cualquier caracter especial para corregir codificaci?n
            *  \author: Ing. Luis Manrique
            *  \date: 03-04-2020
            *  \date modified: dd/mm/aaaa
-           *  \param: $arrau => Arreglo que será analizado por la función
+           *  \param: $arrau => Arreglo que ser? analizado por la funci?n
            *  \return: array
         */
         function cleanArray($array){
