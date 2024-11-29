@@ -67,7 +67,7 @@ class ListarusuariosMoviles {
         $mHtml->SetJs("fecha");
         $mHtml->SetJs("jquery");
         $mHtml->SetJs("functions");
-        echo "<script language='JavaScript' src='../".DIR_APLICA_CENTRAL."/ctrapp/js/ins_aplica_movil.js?v=0001'></script>";
+        echo "<script language='JavaScript' src='../".DIR_APLICA_CENTRAL."/ctrapp/js/ins_aplica_movil.js?v=".time()."'></script>";
         $mHtml->SetJs("InsertProtocolo");
         $mHtml->SetJs("new_ajax"); 
         $mHtml->SetJs("dinamic_list");
@@ -157,7 +157,7 @@ class ListarusuariosMoviles {
           $mHtml->SetJs("fecha");
           $mHtml->SetJs("jquery");
           $mHtml->SetJs("functions");
-          echo "<script language='JavaScript' src='../".DIR_APLICA_CENTRAL."/ctrapp/js/ins_aplica_movil.js?v1=001'></script>";          
+          echo "<script language='JavaScript' src='../".DIR_APLICA_CENTRAL."/ctrapp/js/ins_aplica_movil.js?v=".time()."'></script>";          
           $mHtml->SetJs("new_ajax"); 
           $mHtml->SetJs("dinamic_list");
           $mHtml->SetCss("dinamic_list");
@@ -249,7 +249,9 @@ class ListarusuariosMoviles {
                           ".BASE_DATOS.".tab_usuari_movilx c ON b.cod_tercer = c.cod_tercer
                   WHERE
                           a.ind_estado = 1 AND
-                          c.cod_tercer = '".$_REQUEST["conductor"]."'  LIMIT 1 ";  
+                          c.cod_tercer = '".$_REQUEST["conductor"]."' 
+                          and a.cod_transp = '".$_REQUEST["cod_tercer"]."' 
+                          LIMIT 1 ";  
 
         $nit = new Consulta($mQuery, self::$conexion);
         $nit = $nit -> ret_matriz("a");
