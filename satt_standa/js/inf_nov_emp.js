@@ -24,14 +24,14 @@ function MostrarResul()
 }
 
 
-function infoNovEmp(tipo,empres,fec_ini,fec_fin,horini,horfin){
+function infoNovEmp(tipo,empres,fec_ini,fec_fin,horini,horfin,desTransi,desFinal){
   try
     {
       var url_archiv = document.getElementById( 'url_archivID' );
       var dir_aplica = document.getElementById( 'dir_aplicaID' );
       LoadPopup();
       var atributes  = "opcion=3";
-		  atributes += "&tipo=" + tipo +"&empres="+ empres +"&fec_inicial=" + fec_ini +"&fec_final=" + fec_fin;
+		  atributes += "&tipo=" + tipo +"&empres="+ empres +"&fec_inicial=" + fec_ini +"&fec_final=" + fec_fin+"&des_transi="+desTransi+"&des_final="+desFinal;
        atributes += "&horaini=" + horini +"&horafin=" + horfin;
       AjaxGetData( "../"+dir_aplica.value+"/inform/"+url_archiv.value+"?", atributes, 'popupDIV', "post" );
     }

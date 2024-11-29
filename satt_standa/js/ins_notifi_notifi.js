@@ -78,6 +78,7 @@ function preFunction() {
  *  \return: 
  */
 function validarKey(min, max, type, campo) {
+    console.log(campo);
     $('.error').fadeOut();
     if ($('#' + campo).val().length < min) {
         $('#' + campo).focus().after('<span class="error-notifi" onclick="cerrarAlert()">Valor minimo no cumple</span>');
@@ -399,7 +400,6 @@ function ValidateFormComun(accion) {
                                             processData: false,
                                             cache: false,
                                             success: function(data) {
-                                                //alert(data);
                                                 if (data == "OK") {
                                                     alert("Se " + ((accion == "ins") ? "almaceno" : "edito") + " la notificacion correctamente");
                                                     limpiarForm();

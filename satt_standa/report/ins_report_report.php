@@ -123,20 +123,25 @@ class Reporte
 		$consult = new Consulta( $query, $this -> conexion );      
 		$correo = $consult -> ret_matriz( 'a' );
 		$correo = $correo[0][dir_emailx];
-        
+		
+		
+
         /*echo "<pre>";
         print_r($_POST);
         echo "</pre>";*/
 		
 		if( $correo )
 		{
+
+			
+
 			$to = $correo;
 
 			$subject = 'Reporte de Novedad';
 
 			$headers  = 'MIME-Version: 1.0' . "\r\n";
 	        $headers .= 'Content-type: text/html; charset=iso-8859-1' . "\r\n";
-	        $headers .= 'From: '.MAIL_SUPERVISORES.'\r\n';
+	        $headers .= 'From: <'.CONS_EMAIL_NOTIFICACION.'>\r\n';
 
 			
 			$message = "";
@@ -170,7 +175,7 @@ class Reporte
                                       '27','60','13','62','64',
                                       '49','12','41','9','4',
                                       '124','22','117','99');
-            if ($cod_tercer == "900419270" && !in_array( $cod_noveda, $no_correos) )//SI ES "K Logistics" OJO REEMPLAZAR EN EL IF -> 900419270.
+            if ( !in_array( $cod_noveda, $no_correos) )//SI ES "K Logistics" OJO REEMPLAZAR EN EL IF -> 900419270.
             {
 				
                 $fech_nov = str_replace( "-", "/", $_POST[date] ) ;
@@ -189,9 +194,33 @@ class Reporte
                 $vehicul = $consulta -> ret_matriz();
                 //$vehicul = $vehicul[0][0];
                 
-                $mensaje = '
+                // $mensaje = '
+                // <div id="mensaje" style="color:#7F7F7F; border:0px; padding:0px; width:700px; text-align:justify;">
+                //     <img src="https://oet-central.intrared.net/ap/dev/panel_control_rc1/web/assets/images/transports/oal.png" style="width: 230px;">
+                //     <div style="color:#7F7F7F; font-family: Arial, sans-serif; font-size: 12pt;">
+                //         <div style="padding:20px" >
+                            
+                //             <strong>Fecha </strong> ' . $fech_nov . '<br/>
+                //             <strong>Hora Novedad </strong> ' . $_POST[hora] . '<br/><br/>
+
+                //             <strong>Conductor </strong> ' .ucwords( strtolower( $vehicul[0][1] ) ) . '<br/>
+                //             <strong>Veh&iacute;culo </strong> '.ucwords( strtolower($vehicul[0][0])).'<br/>
+                //             <strong>Tel&eacute;fono </strong> ' . ucwords( strtolower($vehicul[0][2])) . '<br/>
+                //             <strong>Placa </strong> ' . strtoupper($_POST[num_placax]) . '<br/><br/>
+
+                //              <strong>Puesto de Control </strong> ' . ucwords( strtolower(trim( $nom_contro))) . '<br/><br/>
+
+                //             <strong>NOVEDAD: </strong> ' . trim( $nom_noveda ) . '<br/><br/>
+                //             <strong>Nro. Verificacion: </strong> ' . $num_repnov . '<br/><br/>
+                            
+                //         </div>
+                //         <img src="https://oet-central.intrared.net/ap/dev/panel_control_rc1/web/assets/images/transports/clfaro.png" style="width: 230px;">
+                //     </div>
+
+                // </div>';
+				$mensaje = '
                 <div id="mensaje" style="color:#7F7F7F; border:0px; padding:0px; width:700px; text-align:justify;">
-                    <img src="https://ap.intrared.net:444/ap/satt_standa/imagenes/klogis/image001.jpg">
+                    <img src="https://oet-central.intrared.net/ap/dev/panel_control_rc1/web/assets/images/transports/oal.png" style="width: 230px;">
                     <div style="color:#7F7F7F; font-family: Arial, sans-serif; font-size: 12pt;">
                         <div style="padding:20px" >
                             
@@ -209,12 +238,13 @@ class Reporte
                             <strong>Nro. Verificacion: </strong> ' . $num_repnov . '<br/><br/>
                             
                         </div>
-                        <img src="https://ap.intrared.net:444/ap/satt_standa/imagenes/klogis/image002.jpg">
+                        <img src="https://oet-central.intrared.net/ap/dev/panel_control_rc1/web/assets/images/transports/clfaro.png" style="width: 230px;">
                     </div>
 
                 </div>';
                 //mail( $to, $subject, $mensaje, $headers ); 
                 //mail( 'jorge.preciado@intrared.net', $subject, $mensaje, $headers ); 
+				mail($to,$subject,$mensaje,$headers,"-f ".CONS_EMAIL_NOTIFICACION." -r ".CONS_EMAIL_NOTIFICACION."");
             }
       
 		}
@@ -250,7 +280,7 @@ class Reporte
 		$_POST = NULL;
 	}
   
-  //Retorna usuario y contrase�a
+  //Retorna usuario y contraseï¿½a
   function getInterfData( $cod_tercer, $cod_operad )
   {
     $query = "SELECT b.nom_usuari, b.clv_usuari
@@ -461,14 +491,13 @@ class Reporte
 			        FROM ".BASE_DATOS.".tab_genera_noveda a 
 			   LEFT JOIN ".BASE_DATOS.".tab_perfil_noveda b 
 					  ON a.cod_noveda = b.cod_noveda 
-				   WHERE a.cod_noveda != '9998'
+				   WHERE a.cod_noveda = '71'
 				     /*AND a.ind_manala = 0 */
 		             AND a.ind_visibl = '1'";
 		$query .= $_SESSION['datos_usuario']['cod_perfil'] == '' ? "" : " AND b.cod_perfil = '".$_SESSION['datos_usuario']['cod_perfil']."' ";
 		$query .= " ORDER BY 2";
 		$consulta = new Consulta( $query, $this -> conexion );
 		$noveda = $consulta -> ret_matriz();
-	
 		
 		echo '
 		<script>

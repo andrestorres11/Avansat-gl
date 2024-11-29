@@ -136,6 +136,8 @@ class InfNovEmp
     $formulario -> texto ("Hora Inicial","text","horaini\" id=\"horainiID",1,7,7,"","" );
     $formulario -> texto ("Fecha Final","text","fec_final\" id=\"fec_finalID",0,7,7,"","" );
     $formulario -> texto ("Hora Final","text","horafin\" id=\"horafinID",1,7,7,"","" );
+    $formulario -> caja ("Transito","des_transi\" id=\"des_transiID",1,0,0);
+    $formulario -> caja ("Finalizados","des_final\" id=\"des_finalID",1,0,1);
     $formulario -> texto ("Nit / Nombre","text","busq_transp\" id=\"busq_transpID",1,30,30,"","" );
     
     $formulario -> nueva_tabla();
@@ -157,6 +159,12 @@ class InfNovEmp
     echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_nov_emp.js\"></script>\n";
     echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
     echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
+    echo "<style> 
+      .header {
+      color: blue;
+      }
+    </style>";
+    
     if(!$_REQUEST["horaini"])
       $_REQUEST["horaini"]='00:00:00';
     if(!$_REQUEST["horafin"])
@@ -192,255 +200,312 @@ class InfNovEmp
     $totne=0;
     $totma=0;
     $totst=0;
-    $totga=0;
     $h=0;
+
+
+    $des_final = isset($_REQUEST["des_final"]) ? 1:0;
+    $des_transi = isset($_REQUEST["des_transi"]) ? 1:0;
+
     foreach($transporta AS $transpor)
     {
       $total=0;
-      $sql ="SELECT  b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_contro b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-                    AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
-                    AND d.abr_tercer = '".$transpor[1]."' ";
-      $consulta = new Consulta($sql, $this -> conexion);
-      $tot = $consulta -> ret_matriz();
-      $total += sizeof($tot);
-      
-      $sql ="SELECT b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_noveda b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-                    AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
-                    AND d.abr_tercer = '".$transpor[1]."' ";
-      $consulta = new Consulta($sql, $this -> conexion);
-      $tot = $consulta -> ret_matriz();
-      $total += sizeof($tot);
-      
-      if($total=='')
-        $total='0';
-      $grantotal+= $total;
-      
       $otros=0;
-      $sql ="SELECT  b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_contro b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-					AND a.nov_especi !='1'
-					AND a.ind_tiempo !='1'
-					AND a.ind_manala !='1'
-					AND a.ind_alarma !='S'			  
-                    AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+
+      $sql = "SELECT SUM(c) as c FROM (
+        SELECT count(*) as c
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda 
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+            inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+          WHERE 
+            f.ind_fuepla = 1
+            AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+            AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+            AND d.abr_tercer = '".$transpor[1]."'";
+        
+        if(isset($_REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                    AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+        }
+
+        if(isset($_REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                    AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+        }
+
+      $sql .= "UNION
+                SELECT count(*) as c
+                  FROM 
+                    ".BASE_DATOS.".tab_genera_noveda a 
+                    inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+                    inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+                    inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+                    inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+                    inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+                  WHERE 
+                    f.ind_fuepla = 1
+                    AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                    AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
                     AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $otr = $consulta -> ret_matriz();
-	  $otros += sizeof($otr);
-	  $sql ="SELECT b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_noveda b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-			        AND a.nov_especi !='1'
-				    AND a.ind_tiempo !='1'
-				    AND a.ind_manala !='1'
-				    AND a.ind_alarma !='S'
-                    AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $otr = $consulta -> ret_matriz();
-	  $otros += sizeof($otr);
+
+        if(isset($_REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                    AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+        }
+
+        if(isset($_REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                    AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+        } 
+
+      $sql .= ") as aa ";
+
+    $consulta = new Consulta($sql, $this -> conexion); 
+    $otr = $consulta->ret_matriz("a");
+    $otros = $otr[0]['c'];
 	  if($otros=='')
 		$otros='0';
 	  $totot +=  $otros;	  
-      
+    $total += $otros;  
+
 	  $especi=0;
-	  $sql ="SELECT  b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_contro b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-					AND a.nov_especi ='1'
-					AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $nov_especi = $consulta -> ret_matriz();
-	  $especi += sizeof($nov_especi);
-	  $sql ="SELECT b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_noveda b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-			        AND a.nov_especi ='1'
-				    AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $nov_especi = $consulta -> ret_matriz();
-	  $especi += sizeof($nov_especi);
+
+
+    $sql = "SELECT SUM(c) as c FROM (
+      SELECT count(*) as c
+        FROM 
+          ".BASE_DATOS.".tab_genera_noveda a 
+          inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda 
+          inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+          inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+          inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+          inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+        WHERE 
+          b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+          AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+          AND d.abr_tercer = '".$transpor[1]."'
+          AND f.ind_novesp = 1 ";
+      
+      if(isset($_REQUEST["des_transi"]))
+      {
+        $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      }
+
+      if(isset($_REQUEST["des_final"]))
+      {
+        $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      }
+
+    $sql .= "UNION
+      SELECT count(*) as c
+        FROM 
+          ".BASE_DATOS.".tab_genera_noveda a 
+          inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+          inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+          inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+          inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+          inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+        WHERE 
+          b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+          AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+          AND d.abr_tercer = '".$transpor[1]."'
+          AND f.ind_novesp = 1 ";
+
+      if(isset($_REQUEST["des_transi"]))
+      {
+        $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      }
+
+      if(isset($_REQUEST["des_final"]))
+      {
+        $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      } 
+
+    $sql .= ") as aa ";
+
+    $consulta = new Consulta($sql, $this -> conexion); 
+    $nov_especi = $consulta->ret_matriz("a");
+    $especi = $nov_especi[0]['c'];
+
 	  if($especi=='')
 		$especi='0';
 	  $totne += $especi; 
-      
+    $total += $especi;     
+  
 	  $tiempo=0;
-	  $sql ="SELECT  b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_contro b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-					AND a.ind_tiempo ='1'
-					AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $tiem = $consulta -> ret_matriz();
-	  $tiempo += sizeof($tiem);
-	  $sql ="SELECT b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_noveda b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-			        AND a.ind_tiempo ='1'
-				    AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $tiem = $consulta -> ret_matriz();
-	  $tiempo += sizeof($tiem);
-	   if($tiempo=='')
+
+    $sql = "SELECT SUM(c) as c FROM (
+      SELECT count(*) as c
+        FROM 
+          ".BASE_DATOS.".tab_genera_noveda a 
+          inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda 
+          inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+          inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+          inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+          inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+        WHERE 
+          b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+          AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+          AND d.abr_tercer = '".$transpor[1]."'
+          AND f.ind_soltie = 1 ";
+
+      if(isset($_REQUEST["des_transi"]))
+      {
+        $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      }
+
+      if(isset($_REQUEST["des_final"]))
+      {
+        $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      }
+
+    $sql .= "UNION
+      SELECT count(*) as c
+        FROM 
+          ".BASE_DATOS.".tab_genera_noveda a 
+          inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+          inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+          inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+          inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+          inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+        WHERE 
+          b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+          AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+          AND d.abr_tercer = '".$transpor[1]."'
+          AND f.ind_soltie = 1 ";
+
+      if(isset($_REQUEST["des_transi"]))
+      {
+        $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      }
+
+      if(isset($_REQUEST["des_final"]))
+      {
+        $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      } 
+    
+    $sql .= ") as aa ";
+
+    $consulta = new Consulta($sql, $this -> conexion); 
+    $tiem = $consulta->ret_matriz("a");
+    $tiempo = $tiem[0]['c'];
+
+	  if($tiempo=='')
 		$tiempo='0';
 	  $totst += $tiempo;
+    $total += $tiempo;  
 	  
 	  $mantiene=0;
-	  $sql ="SELECT  b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_contro b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-					AND a.ind_manala ='1'
-					AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $man = $consulta -> ret_matriz();
-	  $mantiene += sizeof($man);
-	  $sql ="SELECT b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_noveda b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-			        AND a.ind_manala ='1'
-				    AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $man = $consulta -> ret_matriz();
-	  $mantiene += sizeof($man);
+
+    $sql = "SELECT SUM(c) as c FROM (
+      SELECT count(*) as c
+        FROM 
+          ".BASE_DATOS.".tab_genera_noveda a 
+          inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda 
+          inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+          inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+          inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+          inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+        WHERE 
+          b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+          AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+          AND d.abr_tercer = '".$transpor[1]."'
+          AND f.ind_manale = 1 ";
+
+    if(isset($_REQUEST["des_transi"]))
+    {
+      $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+    }
+
+    if(isset($_REQUEST["des_final"]))
+    {
+      $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+    }
+
+    $sql .= "UNION
+      SELECT count(*) as c
+        FROM 
+          ".BASE_DATOS.".tab_genera_noveda a 
+          inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+          inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+          inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+          inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+          inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+        WHERE 
+          b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+          AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+          AND d.abr_tercer = '".$transpor[1]."'
+          AND f.ind_manale = 1 ";
+
+      if(isset($_REQUEST["des_transi"]))
+      {
+        $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      }
+
+      if(isset($_REQUEST["des_final"]))
+      {
+        $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                  AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+      } 
+    
+    $sql .= ") as aa ";
+
+    $consulta = new Consulta($sql, $this -> conexion); 
+    $man = $consulta->ret_matriz("a");
+    $mantiene = $man[0]['c'];
+     
+
 	  if($mantiene=='')
 		$mantiene='0';
 	  $totma += $mantiene;
+    $total += $mantiene;
+     
 	  
-	  $genera=0;
-	  $sql ="SELECT  b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_contro b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-					AND a.ind_alarma ='S'
-					AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $alarma = $consulta -> ret_matriz();
-	  $genera += sizeof($alarma);
-	  $sql ="SELECT b.usr_creaci 
-               FROM ".BASE_DATOS.".tab_genera_noveda a,
-                    ".BASE_DATOS.".tab_despac_noveda b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_tercer_tercer d
-              WHERE a.cod_noveda = b.cod_noveda
-			        AND a.ind_alarma ='S'
-				    AND c.num_despac = b.num_despac
-                    AND c.cod_transp = d.cod_tercer
-                    AND b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."'
-                    AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'  
-                    AND d.abr_tercer = '".$transpor[1]."'";
-	  $consulta = new Consulta($sql, $this -> conexion);
-	  $alarma = $consulta -> ret_matriz();
-	  $genera += sizeof($alarma);
-	  if($genera=='')
-		$genera='0';
-	  $totga += $genera;  
 	  
       /// Pinta el resto
-      if($especi || $genera || $mantiene || $tiempo || $otros){
+      if($especi || $mantiene || $tiempo || $otros){
             $formulario -> nueva_tabla();
-            $formulario -> linea("NIT: ".$transpor[0]." - Trasnportadora: ".$transpor[1],1,"t2");
+            $formulario -> linea("NIT: ".$transpor[0]." - Transportadora: ".$transpor[1],"","h");
             $formulario -> nueva_tabla();
             $formulario -> linea("Total",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('TO','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
+            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('TO','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."','".$des_transi."','".$des_final."');\">";
       echo "<b>$total ";
             echo "</td></tr>";
             $formulario -> linea("Otros",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('OT','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
+            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('OT','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."','".$des_transi."','".$des_final."');\">";
       echo "<b>$otros ";
             echo "</td></tr>";
             $formulario -> linea("Novedad Especial",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('NE','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
+            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('NE','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."','".$des_transi."','".$des_final."');\">";
       echo "<b>$especi ";
             echo "</td></tr>";
             $formulario -> linea("Solicita Tiempo",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('ST','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
+            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('ST','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."','".$des_transi."','".$des_final."');\">";
       echo "<b>$tiempo ";
             echo "</td></tr>";
             $formulario -> linea("Mantiene Alerta",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('MA','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
+            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('MA','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."','".$des_transi."','".$des_final."');\">";
       echo "<b>$mantiene ";
             echo "</td></tr>";
-            $formulario -> linea("Genera Alarma",0,"t");
-            echo "<td align='left' class='celda_titulo' style='cursor:pointer;' onclick=\"infoNovEmp('GA','".$transpor[1]."','".$_REQUEST['fec_inicial']."','".$_REQUEST['fec_final']."','".$_REQUEST['horaini']."', '".$_REQUEST['horafin']."');\">";
-      echo "<b>$genera ";
-            echo "</td></tr>";
+            
         $novedatotal[$h]['NIT']=$transpor[0];
         $novedatotal[$h]['Transportadora']=$transpor[1];
         $novedatotal[$h]['Total']=$total;
@@ -448,12 +513,15 @@ class InfNovEmp
         $novedatotal[$h]['Novedad Especial']=$especi;
         $novedatotal[$h]['Solicita Tiempo']=$tiempo;
         $novedatotal[$h]['Mantiene Alerta']=$mantiene;
-        $novedatotal[$h]['Genera Alarma']=$genera;
         $h++;
+        $grantotal +=$total;
       }
       
     }
 
+    $formulario -> nueva_tabla();
+    $formulario -> linea("RESULTADOS",1,"h");
+    $formulario -> nueva_tabla();
     $formulario -> nueva_tabla();
     $formulario -> linea("Gran Total",1,"t2");
     $formulario -> nueva_tabla();
@@ -477,10 +545,7 @@ class InfNovEmp
     echo "<td align='left' class='celda_titulo' );\">";
     echo "<b>$totma ";
     echo "</td></tr>";
-    $formulario -> linea("Genera Alarma",0,"t");
-    echo "<td align='left' class='celda_titulo' );\">";
-    echo "<b>$totga ";
-    echo "</td></tr>";
+
         $novedatotal[$h]['NIT']="Gran Total";
         $novedatotal[$h]['Transportadora']=$h;
         $novedatotal[$h]['Total']=$grantotal;
@@ -488,8 +553,8 @@ class InfNovEmp
         $novedatotal[$h]['Novedad Especial']=$totne;
         $novedatotal[$h]['Solicita Tiempo']=$totst;
         $novedatotal[$h]['Mantiene Alerta']=$totma;
-        $novedatotal[$h]['Genera Alarma']=$totga;
     $_SESSION['LIST_TOTAL']=$novedatotal;
+    $matrix = $_SESSION['LIST_TOTAL'];
     
     $formulario -> nueva_tabla();
     $formulario -> botoni("Excel","exportarXls2()",0);
@@ -498,6 +563,7 @@ class InfNovEmp
     $formulario -> nueva_tabla();
 
     $formulario -> cerrar();
+    
 
     echo '<tr><td><div id="AplicationEndDIV"></div>
          <div id="RyuCalendarDIV" style="position: absolute; background: white; left: 0px; top: 0px; z-index: 3; display: none; border: 1px solid black; "></div>
@@ -528,49 +594,86 @@ class InfNovEmp
 		include( "../lib/general/form_lib.inc" );
 		include( "../lib/general/tabla_lib.inc" );
     $this -> conexion = new Conexion( $_SESSION['HOST'], $_SESSION[USUARIO], $_SESSION[CLAVE], $BASE  );
-		if($_POST['tipo']=='TO')    
-      $aux=" 1='1'";
-    if($_POST['tipo']=='OT')    
-      $aux=" a.nov_especi !='1'
-             AND a.ind_tiempo !='1'
-             AND a.ind_manala !='1'
-             AND a.ind_alarma !='S'";
-    if($_POST['tipo']=='NE')
-      $aux= "a.nov_especi ='1'";
-    if($_POST['tipo']=='ST')
-      $aux= "a.ind_tiempo ='1'";
-    if($_POST['tipo']=='MA')
-      $aux= "a.ind_manala ='1'";
-    if($_POST['tipo']=='GA')
-      $aux= "a.ind_alarma ='S'";  
-    $sql ="(SELECT b.num_despac as Despacho, a.nom_noveda as Novedad,b.fec_contro as Fecha,
-                   b.obs_contro as Observacion, b.usr_creaci as Usuario
-           FROM ".BASE_DATOS.".tab_genera_noveda a,
-                ".BASE_DATOS.".tab_despac_contro b,
-                ".BASE_DATOS.".tab_despac_vehige c,
-                ".BASE_DATOS.".tab_tercer_tercer d
-           WHERE a.cod_noveda = b.cod_noveda
-                 AND $aux
-                 AND c.num_despac = b.num_despac
-                 AND c.cod_transp = d.cod_tercer
-                 AND b.fec_contro >= '".$_POST['fec_inicial']." ".$_REQUEST['horaini']."'
-                 AND b.fec_contro <= '".$_POST['fec_final']." ".$_REQUEST['horafin']."' 
-                 AND d.abr_tercer = '".$_POST['empres']."') 
-           UNION ALL
-           (SELECT b.num_despac, a.nom_noveda, b.fec_noveda ,
-                   b.des_noveda, b.usr_creaci
-           FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                ".BASE_DATOS.".tab_despac_noveda b,
-                ".BASE_DATOS.".tab_despac_vehige c,
-                ".BASE_DATOS.".tab_tercer_tercer d
-           WHERE a.cod_noveda = b.cod_noveda
-                 AND $aux
-                 AND c.num_despac = b.num_despac
-                 AND c.cod_transp = d.cod_tercer
-                 AND b.fec_noveda >= '".$_POST['fec_inicial']." ".$_REQUEST['horaini']."'
-                 AND b.fec_noveda <= '".$_POST['fec_final']." ".$_REQUEST['horafin']."' 
-                 AND d.abr_tercer = '".$_POST['empres']."')
-           ORDER BY 3,5";
+
+    $sql = "SELECT * FROM (
+      SELECT b.num_despac as Despacho,a.nom_noveda as Novedad, b.fec_contro as Fecha,
+              b.obs_contro as Observacion, b.usr_creaci as Usuario
+        FROM 
+          ".BASE_DATOS.".tab_genera_noveda a 
+          inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda 
+          inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+          inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+          inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+          inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+        WHERE 
+          b.fec_contro >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+          AND b.fec_contro <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+          AND d.abr_tercer = '".$_REQUEST['empres']."'";
+      
+    if($_REQUEST["des_transi"]==1)
+    {
+      $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+    }
+
+    if($_REQUEST["des_final"]==1)
+    {
+      $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+    } 
+
+    if($_REQUEST['tipo']=='OT')
+            $sql .= " AND f.ind_fuepla = 1 ";
+
+    if($_REQUEST['tipo']=='NE')
+            $sql .= " AND f.ind_novesp = 1 ";
+
+    if($_REQUEST['tipo']=='ST')
+            $sql .= " AND f.ind_soltie = 1 ";  
+    
+    if($__REQUEST['tipo']=='MA')
+            $sql .= " AND f.ind_manale = 1 ";
+
+    $sql .= "UNION
+            SELECT b.num_despac as Despacho,a.nom_noveda as Novedad,b.fec_noveda as Fecha,
+                  b.des_noveda as Observacion, b.usr_creaci as Usuario
+              FROM 
+                ".BASE_DATOS.".tab_genera_noveda a 
+                inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+                inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+                inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+                inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+                inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+              WHERE 
+                b.fec_noveda >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                AND b.fec_noveda <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."' 
+                AND d.abr_tercer = '".$_REQUEST['empres']."'";
+
+    if($_REQUEST["des_transi"]==1)
+    {
+      $sql .=" AND e.fec_despac  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                AND e.fec_despac <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+    }
+
+    if($_REQUEST["des_final"]==1)
+    {
+      $sql .=" AND e.fec_llegad  >= '".$_REQUEST['fec_inicial']." ".$_REQUEST['horaini']."' 
+                AND e.fec_llegad <= '".$_REQUEST['fec_final']." ".$_REQUEST['horafin']."'";
+    } 
+            
+    if($_REQUEST['tipo']=='OT')
+            $sql .= " AND f.ind_fuepla = 1 ";
+
+    if($_REQUEST['tipo']=='NE')
+            $sql .= " AND f.ind_novesp = 1 ";
+
+    if($_REQUEST['tipo']=='ST')
+            $sql .= " AND f.ind_soltie = 1 ";  
+    
+    if($__REQUEST['tipo']=='MA')
+            $sql .= " AND f.ind_manale = 1 ";
+
+    $sql .= ") as aa ORDER BY 3,5 ";
     
     $consulta = new Consulta($sql, $this -> conexion);
     $despachos = $consulta -> ret_matriz('a');

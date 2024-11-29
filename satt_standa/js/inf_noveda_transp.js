@@ -1,3 +1,7 @@
+document.addEventListener("DOMContentLoaded", () => {// también puede usar window.addEventListener('load', (event) => {
+  BlocK();
+});
+
 function ValidaInform()
 {
   try {
@@ -11,6 +15,17 @@ function ValidaInform()
         alert('La Fecha Final es Obligatoria');
         return fec_final.focus();
       }
+
+      var des_transi = document.getElementById('des_transiID');
+      var des_final = document.getElementById('des_finalID');
+      
+      valCheck = des_transi.checked || des_final.checked ? true: false;
+      if (!valCheck) {
+        alert('Debe marcar minimo un tipo de informe: transito / finalizados.');
+        return des_transi.focus();
+      }
+
+      BlocK('Cargando Detalle...', 1);
       document.getElementById('formularioID').submit();
   }
   catch (e)
@@ -34,13 +49,13 @@ function exportarXls(  )
 }
 
 
-function infoNoveda(tipo,usuari,fec_ini,fec_fin){
+function infoNoveda(tipo,usuari,fec_ini,fec_fin,des_transi,des_final){
   try
     {
       var url_archiv = document.getElementById( 'url_archivID' );
       var dir_aplica = document.getElementById( 'dir_aplicaID' );
       LoadPopup();
-      var atributes  =  "option=getDetalles&tipo=" + tipo +"&cod_transp="+ usuari +"&fecha_ini=" + fec_ini +"&fecha_fin=" + fec_fin;
+      var atributes  =  "option=getDetalles&tipo=" + tipo +"&cod_transp="+ usuari +"&fecha_ini=" + fec_ini +"&fecha_fin=" + fec_fin+"&des_transi="+des_transi+"&des_final="+des_final;
       AjaxGetData( "../"+dir_aplica.value+"/inform/"+url_archiv.value+"?", atributes, 'popupDIV', "post" );
     }
     catch (e)

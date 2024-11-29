@@ -2573,6 +2573,8 @@ class Despachos
                 //----------------------
 
                 //----------------------
+
+                
                 $mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
                 if(!is_null($mData['cod_itiner']) && !is_null($mData['map_tokenx'])){
                     $mHtml->SetBody("<div class='crmButton small save'><a href='".URL_MAPA_WIDETECH.$mData['map_tokenx']."' target='_blank' style='color: white !important; padding:2px;'>[Ver mapa]</a></div>");
@@ -3224,8 +3226,8 @@ class Despachos
      */
     private function divImgDespac( $mNumDespac )
     {
-      $mSelect = "SELECT num_docume, num_consec, url_imagex 
-                FROM ".BASE_DATOS.".tab_cumpli_despac 
+      $mSelect = "SELECT cod_remesa, fil_fircon, fil_fircli
+                FROM ".BASE_DATOS.".tab_cumpli_remesa 
                  WHERE num_despac = '".$mNumDespac."' ";
 
       $consulta = new Consulta( $mSelect, $this -> conexion );
@@ -3234,9 +3236,9 @@ class Despachos
       if( sizeof( $_IMAGEN ) > 0 )
       {
         echo '<script>
-                function showImage( num_docume )
+                function showImage( cod_remesa )
                 { 
-                    $("<div><img  height=\'450\' width=\'450\' src=\'"+window.atob(num_docume)+"\'></div>").dialog({
+                    $("<div><img  height=\'450\' width=\'450\' src=\'"+window.atob(cod_remesa)+"\'></div>").dialog({
                        width: 500,
                        height: 500,
                        modal: true,
@@ -3245,10 +3247,9 @@ class Despachos
                     });
                 }
               </script>';
-
         foreach( $_IMAGEN as $row )
         {
-          $tmp_file = $row['url_imagex']; 
+          $tmp_file = $row['fil_fircon']; 
           $mSrc = $tmp_file;
           $mHtml2 .= '&nbsp;&nbsp;&nbsp;<img style="border:1px solid #35650F; cursor:pointer;" onclick="showImage(\''.$mSrc.'\');" src="'.base64_decode($tmp_file).'" width="100" height="100"/>';
         }
@@ -3413,204 +3414,205 @@ class Despachos
 
             $mHtml->Table("tr");
 
-
-      if( $_RUTASX )
-      {
-        $mSalLinea = $_SESSION['datos_usuario']['cod_usuari'] == 'mgarcia' || $_SESSION['datos_usuario']['cod_usuari'] == 'soporte' ? 0 : 1;
-
-        $mHtml->LabelTit( 'Sitio de Seguimiento', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-        $mHtml->LabelTit( 'Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-        $mHtml->LabelTit( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"20%") );
-        $mHtml->LabelTit( 'Fecha Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-        $mHtml->LabelTit( 'Fecha Sistema', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-        if ( $mViewNotCon->sub->usr_creaci == '1' ) {
-            $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-        }
-
-        $viewAlias = self::getView('jso_plarut');
-        $watchAlias = $viewAlias->inf_planru->sub->ali_usuari; 
-        if( $watchAlias == 1 ){
-            $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
-        }
-
-        if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
-          $mHtml->LabelTit( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-        }
-
-        if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
-            $mHtml->LabelTit( 'Enviado a Cliente', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-        }
-        
-        $mHtml->LabelTit( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-        
-        if( $viewAlias->ind_novnem->ind_visibl == 1 ){
-          $mHtml->LabelTit( 'Solucion a NEM', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-        }
-        $mHtml->CloseRow();
-
-      
-        $mNovedades = self::getNovedad( $mNumDespac );
-        $mEstServ = self::getView('jso_encabe'); 
-
-        //Crea Array
-        $dataNov = [];
-        //Se Recorre las novedades
-        foreach ($mNovedades as $key => $data) {
-            //Valida Permisos
-            if( $mEstServ->est_servic->ind_visibl != 1 ){
-                //Valida tipo de novedad y elimina posici?n
-                if(in_array($data['cod_noveda'], array(9271,9272,9273))){
-                    unset($mNovedades[$key]);
-                }
-            }
-        }
-
-        //Permiso de no poder copiar las notas controlador
-        $RespPlaRut = self::getView('jso_plarut');
-        $cNocopy = '';
-        if(!$RespPlaRut->inf_notcon->sub->cop_notcon){
-            $cNocopy = 'noselect';
-        }
-
-        //Se recorre las novedades para calcular el key automaticamente
-        foreach ($mNovedades as $key => $data) {
-            $dataNov[] = $data;
-        }
-
-        //Reemplaza el arreglo de Novedades
-        $mNovedades = $dataNov;
-        
-        $mCanNov = sizeof($mNovedades)-1;
-
-        $j=0;
-        $u=0;
-
-        for ($i = $mCanNov; $i >=0; $i--)
-        {
-          $mSolEfecti = "";
-          if( $mViewUsu->edi_noveda->ind_visibl == 1 && ($mNovedades[$i][tab_origen] == 1 || $_RUTASX[$i][tab_origen] == 2) ){
-            $mLinkUpd = '
-              <spam style="color:#416F1E; cursor:pointer"
-              onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,1)">
-                [Editar]</spam>&nbsp;';
-
-            if($_SESSION["datos_usuario"]["cod_usuari"] == 'mgarcia' || $_SESSION["datos_usuario"]["cod_usuari"] == 'soporte') {
-              $mLinkUpd .= '
-                <spam style="color:#416F1E; cursor:pointer"
-                onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,2)">
-                  [Eliminar]
-                </spam>';
-            }
-          }
-          if( $_RUTASX[$i][nov_especi] == 1 )
-          {
-            $mStyle = $j % 2 ? 'cellPar' : 'cellImpar';
-            $j++;
-          }else
-            $mStyle = 'cell';
-
-          if($_RUTASX[$i][cod_noveda] != 342)
-          {
-            $consecutivoProtocolo = $this -> verifyNoveda($_RUTASX[$i][cod_noveda], $mNumDespac, $_RUTASX[$i]['fec_noveda']);   
-
-            if($consecutivoProtocolo[0][num_consec])
-            {
-              if($consecutivoProtocolo[0][ind_solnov] == '' || $consecutivoProtocolo[0][ind_solnov] == 0)
-              {
-                $mSolEfecti = "<input type='radio' name='ind_solefe".$i."' onclick='solucionEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> SI <input type='radio' name='ind_solefe".$i."' onclick='solucionNoEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> NO ";
-              }
-              elseif($consecutivoProtocolo[0][ind_solnov] == 1)
-                $mSolEfecti = "<label>SI</label>";
-            }
-          }
-
-          $mHtml->Row();
-
-            $comp='';
            
-            if($mNovedades[$i]['cod_tipoxx']==2 )
-            { //a?ade class para ocultar o mostrar con js
-                
-                //$mHtml->SetBody(('<tr class="nov_gps_notes">'));
-                $mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
-            }
-            else if($mNovedades[$i]['cod_tipoxx']==1 )
-            { //a?ade class para ocultar o mostrar con js
-                if($u== 0){
-                    $comp=' one';
-                    $u++;
-                }
-                //$mHtml->SetBody(('<tr class="nov_seguimiento_notes'.$comp.'">'));
-                $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes '.$comp.'"');
-            }
-            else if($mNovedades[$i]['cod_tipoxx']==3 )
+            if( $_RUTASX )
             {
-                //$mHtml->SetBody(('<tr class="nov_movil_notes">'));
-                $mHtml->RowProperties("",FALSE,'class="nov_movil_notes"');
-            }else{
-                $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
-            }
-            
-            //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
-            $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
-            
+                $mSalLinea = $_SESSION['datos_usuario']['cod_usuari'] == 'mgarcia' || $_SESSION['datos_usuario']['cod_usuari'] == 'soporte' ? 0 : 1;
 
-            // if para las novedades actualizadas
-
-            $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
-            if( $mUpdated[0]){
-                $dataJson = base64_encode(json_encode($mUpdated));
-                $link = "<a href='#' onclick='drawNovUpd(\"".$dataJson."\")'><u><font color='#000'>".htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true )."</font></u></a>";
- 
-                $mHtml->Label( $link, array("align"=>"left", "class"=>$mStyle) );
-            }else{ 
-                $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
-            }
-            $mHtml->Label( utf8_encode($mNovedades[$i][obs_noveda]) , array("align"=>"left", "class"=>$mStyle) );
-            $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
-            $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
-
-            if ( $mViewNotCon->sub->usr_creaci == '1' ) {
-                $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][usr_creaci], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"right", "class"=>$mStyle) );
-            }
-            if( $watchAlias == 1 ){ 
-                $mHtml->Label( '<b>'.self::getAlias($mNovedades[$i][usr_creaci]).'</b>', array("align"=>"right", "class"=>$mStyle) ); 
-            }
-
-            if( $mViewUsu->edi_noveda->ind_visibl == 1 )
-              $mHtml->Label( $mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
-
-
-            if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
-                $mNomTabla = $mNovedades[$i]['cod_consec'] == 1 ? 'tab_despac_noveda' : 'tab_despac_contro';
-                $infoStatus = self::consultaStatusNovedad($mNumDespac, $mNovedades[$i]['cod_consec'], $mNomTabla );
-                if($infoStatus==NULL){
-                    $message_status = "Novedad sin registro de transacción";
-                }else{
-                    $message_status = "Mensaje: ".$infoStatus['msj_status']."<br>Fecha: ".$infoStatus['fec_transa']."<br>Cantidad Transacciones: ".$infoStatus['can_transa'];
+                $mHtml->LabelTit( 'Sitio de Seguimiento', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->LabelTit( 'Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->LabelTit( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"20%") );
+                $mHtml->LabelTit( 'Fecha Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                $mHtml->LabelTit( 'Fecha Sistema', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                if ( $mViewNotCon->sub->usr_creaci == '1' ) {
+                    $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
                 }
 
-                $image = $mNovedades[$i][ind_enviad] == 1 ? 'active.png' : 'error.png';
-                $mHtml->Label( '<b><div class="tooltip-container"><img alt="Icono de estado de enviado" tooltip="true" src="'.URL_STANDA.'images/'.$image.'" width="16px"><span style="max-width:400px !important" class="tooltip-text">'.$message_status.'</span></div></b>', array("align"=>"center", "class"=>$mStyle) );
-            }
+                $viewAlias = self::getView('jso_plarut');
+                $watchAlias = $viewAlias->inf_planru->sub->ali_usuari; 
+                if( $watchAlias == 1 ){
+                    $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
+                }
 
-            $mHtml->SetBody( '<td align="right" class="'.$mStyle.'" width="30%" ><b>'.$mSolEfecti.'</b></td>' );
+                if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
+                $mHtml->LabelTit( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                }
 
-            if( $viewAlias->ind_novnem->ind_visibl == 1 ){
-              	#verifico si la novedad es movil para pintar el radio de solucion de novedades NEM
-              	if(self::getNovedadNEM($mNovedades[$i]['cod_noveda'])[0])
-              	{
-	              $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "class"=>$mStyle, "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."', '".$_DESPAC[0][cod_transp]."')"));
-            	}
-            	else
-            	{
-            		$mHtml->Label( '', array("align"=>"right", "class"=>$mStyle) );
-            	}
+                /*if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
+                    $mHtml->LabelTit( 'Enviado a Cliente', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                }*/
+                
+                $mHtml->LabelTit( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                
+                if( $viewAlias->ind_novnem->ind_visibl == 1 ){
+                $mHtml->LabelTit( 'Solucion a NEM', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                }
+                $mHtml->CloseRow();
+
+            
+                $mNovedades = self::getNovedad( $mNumDespac );
+                $mEstServ = self::getView('jso_encabe'); 
+
+                //Crea Array
+                $dataNov = [];
+                //Se Recorre las novedades
+                foreach ($mNovedades as $key => $data) {
+                    //Valida Permisos
+                    if( $mEstServ->est_servic->ind_visibl != 1 ){
+                        //Valida tipo de novedad y elimina posici?n
+                        if(in_array($data['cod_noveda'], array(9271,9272,9273))){
+                            unset($mNovedades[$key]);
+                        }
+                    }
+                }
+
+                //Permiso de no poder copiar las notas controlador
+                $RespPlaRut = self::getView('jso_plarut');
+                $cNocopy = '';
+                if(!$RespPlaRut->inf_notcon->sub->cop_notcon){
+                    $cNocopy = 'noselect';
+                }
+
+                //Se recorre las novedades para calcular el key automaticamente
+                foreach ($mNovedades as $key => $data) {
+                    $dataNov[] = $data;
+                }
+
+                //Reemplaza el arreglo de Novedades
+                $mNovedades = $dataNov;
+                
+                $mCanNov = sizeof($mNovedades)-1;
+
+                $j=0;
+                $u=0;
+
+                for ($i = $mCanNov; $i >=0; $i--)
+                {
+                $mSolEfecti = "";
+                if( $mViewUsu->edi_noveda->ind_visibl == 1 && ($mNovedades[$i][tab_origen] == 1 || $_RUTASX[$i][tab_origen] == 2) ){
+                    $mLinkUpd = '
+                    <spam style="color:#416F1E; cursor:pointer"
+                    onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,1)">
+                        [Editar]</spam>&nbsp;';
+
+                    if($_SESSION["datos_usuario"]["cod_usuari"] == 'mgarcia' || $_SESSION["datos_usuario"]["cod_usuari"] == 'soporte') {
+                    $mLinkUpd .= '
+                        <spam style="color:#416F1E; cursor:pointer"
+                        onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,2)">
+                        [Eliminar]
+                        </spam>';
+                    }
+                }
+                if( $_RUTASX[$i][nov_especi] == 1 )
+                {
+                    $mStyle = $j % 2 ? 'cellPar' : 'cellImpar';
+                    $j++;
+                }else
+                    $mStyle = 'cell';
+
+                if($_RUTASX[$i][cod_noveda] != 342)
+                {
+                    $consecutivoProtocolo = $this -> verifyNoveda($_RUTASX[$i][cod_noveda], $mNumDespac, $_RUTASX[$i]['fec_noveda']);   
+
+                    if($consecutivoProtocolo[0][num_consec])
+                    {
+                    if($consecutivoProtocolo[0][ind_solnov] == '' || $consecutivoProtocolo[0][ind_solnov] == 0)
+                    {
+                        $mSolEfecti = "<input type='radio' name='ind_solefe".$i."' onclick='solucionEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> SI <input type='radio' name='ind_solefe".$i."' onclick='solucionNoEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> NO ";
+                    }
+                    elseif($consecutivoProtocolo[0][ind_solnov] == 1)
+                        $mSolEfecti = "<label>SI</label>";
+                    }
+                }
+
+                $mHtml->Row();
+
+                    $comp='';
+                
+                    if($mNovedades[$i]['cod_tipoxx']==2 )
+                    { //a?ade class para ocultar o mostrar con js
+                        
+                        //$mHtml->SetBody(('<tr class="nov_gps_notes">'));
+                        $mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
+                    }
+                    else if($mNovedades[$i]['cod_tipoxx']==1 )
+                    { //a?ade class para ocultar o mostrar con js
+                        if($u== 0){
+                            $comp=' one';
+                            $u++;
+                        }
+                        //$mHtml->SetBody(('<tr class="nov_seguimiento_notes'.$comp.'">'));
+                        $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes '.$comp.'"');
+                    }
+                    else if($mNovedades[$i]['cod_tipoxx']==3 )
+                    {
+                        //$mHtml->SetBody(('<tr class="nov_movil_notes">'));
+                        $mHtml->RowProperties("",FALSE,'class="nov_movil_notes"');
+                    }else{
+                        $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
+                    }
+                    
+                    //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
+                    $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
+                    
+
+                    // if para las novedades actualizadas
+
+                    $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
+                    if( $mUpdated[0]){
+                        $dataJson = base64_encode(json_encode($mUpdated));
+                        $link = "<a href='#' onclick='drawNovUpd(\"".$dataJson."\")'><u><font color='#000'>".htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true )."</font></u></a>";
+        
+                        $mHtml->Label( $link, array("align"=>"left", "class"=>$mStyle) );
+                    }else{ 
+                        $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
+                    }
+                    $mHtml->Label( utf8_encode($mNovedades[$i][obs_noveda]) , array("align"=>"left", "class"=>$mStyle) );
+                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
+                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
+
+                    if ( $mViewNotCon->sub->usr_creaci == '1' ) {
+                        $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][usr_creaci], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"right", "class"=>$mStyle) );
+                    }
+                    if( $watchAlias == 1 ){ 
+                        $mHtml->Label( '<b>'.self::getAlias($mNovedades[$i][usr_creaci]).'</b>', array("align"=>"right", "class"=>$mStyle) ); 
+                    }
+
+                    if( $mViewUsu->edi_noveda->ind_visibl == 1 )
+                    $mHtml->Label( $mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
+
+
+                    /*if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
+                        $mNomTabla = $mNovedades[$i]['cod_consec'] == 1 ? 'tab_despac_noveda' : 'tab_despac_contro';
+                        $infoStatus = self::consultaStatusNovedad($mNumDespac, $mNovedades[$i]['cod_consec'], $mNomTabla );
+                        if($infoStatus==NULL){
+                            $message_status = "Novedad sin registro de transacci?n";
+                        }else{
+                            $message_status = "Mensaje: ".$infoStatus['msj_status']."<br>Fecha: ".$infoStatus['fec_transa']."<br>Cantidad Transacciones: ".$infoStatus['can_transa'];
+                        }
+
+                        $image = $mNovedades[$i][ind_enviad] == 1 ? 'active.png' : 'error.png';
+                        $mHtml->Label( '<b><div class="tooltip-container"><img alt="Icono de estado de enviado" tooltip="true" src="'.URL_STANDA.'images/'.$image.'" width="16px"><span style="max-width:400px !important" class="tooltip-text">'.$message_status.'</span></div></b>', array("align"=>"center", "class"=>$mStyle) );
+                    }*/
+
+                    $mHtml->SetBody( '<td align="right" class="'.$mStyle.'" width="30%" ><b>'.$mSolEfecti.'</b></td>' );
+
+                    if( $viewAlias->ind_novnem->ind_visibl == 1 ){
+                        #verifico si la novedad es movil para pintar el radio de solucion de novedades NEM
+                        if(self::getNovedadNEM($mNovedades[$i]['cod_noveda'])[0])
+                        {
+                        $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "class"=>$mStyle, "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."', '".$_DESPAC[0][cod_transp]."')"));
+                        }
+                        else
+                        {
+                            $mHtml->Label( '', array("align"=>"right", "class"=>$mStyle) );
+                        }
+                    }
+                $mHtml->CloseRow();
+                $mHtml->SetBody('</tr>');
+                }
             }
-          $mHtml->CloseRow();
-          $mHtml->SetBody('</tr>');
-        }
-      }
+       
 
             $mHtml->CloseTable('tr');
           $mHtml->CloseDiv();
@@ -4547,7 +4549,7 @@ class Despachos
                     AND (a.bin_fotoxx != '' OR a.bin_fotox2 != '') ";
         $mConsult = new Consulta( $mSql, $this -> conexion );
         $mFotos = $mConsult->ret_matrix('a');
-  
+
         if( sizeof($mFotos) < 1 )
           return false;
 
@@ -4566,23 +4568,23 @@ class Despachos
             $mHtml .= $mFotos[$j] ? '<th colspan="2" align="center" >'.($j+1).') '.$mFotos[$j]['nom_contro'].'</th>' : '<th>&nbsp;</th>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
-            $mHtml .=    '<td>';
+            $mHtml .=    '<td colspan="2">';
             $mHtml .=        '<center><b>Conductor</b></center>';
             $mHtml .=        '<img src="'.$mFotos[$i]['bin_fotoxx'].'" width="300" height="200" border="2"/>';
             $mHtml .=    '</td>';
-            $mHtml .=    '<td>';
-            $mHtml .=        '<center><b>Precinto</b></center>';
-            $mHtml .=        '<img src="'.$mFotos[$i]['bin_fotox2'].'" width="300" height="200" border="2"/>';
-            $mHtml .=    '</td>';
+            // $mHtml .=    '<td>';
+            // $mHtml .=        '<center><b>Precinto</b></center>';
+            // $mHtml .=        '<img src="'.$mFotos[$i]['bin_fotox2'].'" width="300" height="200" border="2"/>';
+            // $mHtml .=    '</td>';
             $mHtml .=    '<td>&nbsp;</td>';
-            $mHtml .=    '<td>';
+            $mHtml .=    '<td colspan="2">';
             $mHtml .= $mFotos[$j] ? '<center><b>Conductor</b></center>' : '&nbsp;';
             $mHtml .= $mFotos[$j] ? '<img src="'.$mFotos[$j]['bin_fotoxx'].'" width="300" height="200" border="2"/>' : '&nbsp;';
             $mHtml .=    '</td>';
-            $mHtml .=    '<td>';
-            $mHtml .= $mFotos[$j] ? '<center><b>Precinto</b></center>' : '&nbsp;';
-            $mHtml .= $mFotos[$j] ? '<img src="'.$mFotos[$j]['bin_fotox2'].'" width="300" height="200" border="2"/>' : '&nbsp;';
-            $mHtml .=    '</td>';
+            // $mHtml .=    '<td>';
+            // $mHtml .= $mFotos[$j] ? '<center><b>Precinto</b></center>' : '&nbsp;';
+            // $mHtml .= $mFotos[$j] ? '<img src="'.$mFotos[$j]['bin_fotox2'].'" width="300" height="200" border="2"/>' : '&nbsp;';
+            // $mHtml .=    '</td>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
             $mHtml .=    '<th colspan="2" align="center" >'.date($mFotos[$i]['fec_creaci']).'</th>';

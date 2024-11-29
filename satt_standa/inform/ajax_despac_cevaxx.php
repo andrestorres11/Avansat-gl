@@ -52,22 +52,25 @@
         }
 
         function getRegistros(){
+            $cond = '';
+            
             if($_REQUEST['apl_filtro']==1){
                 if($_REQUEST['cod_manifi'] != NULL || $_REQUEST['cod_manifi'] != ''){
                     $cond .= " AND a.cod_manifi = '".$_REQUEST['cod_manifi']."' ";
                 }
+            }
 
-                if($_REQUEST['fec_inicia'] != NULL || $_REQUEST['fec_finxxx'] != ''){
+            if($_REQUEST['fec_inicia'] != NULL || $_REQUEST['fec_finxxx'] != '')
+            {
                     $cond .= " AND a.fec_creaci BETWEEN '".$_REQUEST['fec_inicia']." 00:00:00' AND '".$_REQUEST['fec_finxxx']." 23:59:59' ";
-                }
             }
 
             $sql = "SELECT a.cod_manifi, a.cod_status, a.obs_noveda,
                            a.fec_creaci, a.cor_enviad, a.fec_enviad
                            FROM ".BASE_DATOS.".tab_bitaco_gendes a
                          WHERE a.cod_transp = '830079716' ".$cond."; ";
-              $query = new Consulta($sql, self::$conexion);
-              $mMatriz = $query -> ret_matrix('a');
+            $query = new Consulta($sql, self::$conexion);
+            $mMatriz = $query -> ret_matrix('a');
             
              foreach ($mMatriz as $key => $datos) {
                 foreach ($datos as $campo => $valor) {

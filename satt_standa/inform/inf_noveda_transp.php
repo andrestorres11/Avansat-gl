@@ -39,11 +39,12 @@ class InfNovedadesUsuario{
         if( !$_POST['horafin'] )
           $_POST['horafin'] = date('H:i');    
           
-        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_noveda_transp.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_noveda_transp.js?v=003\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/min.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.blockUI.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/es.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/time.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/mask.js\"></script>\n";
@@ -128,6 +129,8 @@ class InfNovedadesUsuario{
         $formulario -> texto ("Hora Inicial","text","horaini\" id=\"horainiID\" readonly=\"readonly\" ",1,7,7,"",$_POST['horaini'] );
         $formulario -> texto ("Fecha Final","text","fec_final\" id=\"fec_finalID\" readonly=\"readonly\" ",0,7,7,"",$_POST['fec_final'] );
         $formulario -> texto ("Hora Final","text","horafin\" id=\"horafinID\" readonly=\"readonly\" ",1,7,7,"",$_POST['horafin'] );
+        $formulario -> caja ("Transito","des_transi\" id=\"des_transiID",1,0,0);
+        $formulario -> caja ("Finalizados","des_final\" id=\"des_finalID",1,0,1);
         $formulario -> texto ("Nit / Nombre","text","busq_transp\" id=\"busq_transpID\" ".$readonly,1,30,30,"",$cod_transp );
 
         $formulario -> nueva_tabla();
@@ -143,12 +146,17 @@ class InfNovedadesUsuario{
     
     
     function getInforme(){
-        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_noveda_transp.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/inf_noveda_transp.js?v=003\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/new_ajax.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.js\"></script>\n";
+        echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/jquery.blockUI.js\"></script>\n";
         echo "<script language=\"JavaScript\" src=\"../".DIR_APLICA_CENTRAL."/js/functions.js\"></script>\n";
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>\n";
         
+        echo "<script language=\"JavaScript\">
+                BlocK('Cargando Detalle...', 1);
+        </script>\n";
+
         if(empty($_REQUEST[horaini]))
             $_REQUEST[horaini] = '00:00:00';
         
@@ -178,42 +186,49 @@ class InfNovedadesUsuario{
 
         $mHtml .= "<tr>";
             $mHtml .= "<th class=cellHead >TRANSPORTADORA</th>";
+            $mHtml .= "<th class=cellHead >Despachos</th>";
             $mHtml .= "<th class=cellHead >Novedad Especial</th>";
-            $mHtml .= "<th class=cellHead >Novedad Especial MA</th>";
             $mHtml .= "<th class=cellHead >Solicita Tiempo</th>";
             $mHtml .= "<th class=cellHead >Mantiene Alarma</th>";
+            $mHtml .= "<th class=cellHead >Total Nov. Gps</th>";
             $mHtml .= "<th class=cellHead >Otros</th>";
             $mHtml .= "<th class=cellHead >TOTAL</th>";
         $mHtml .= "</tr>";
         
         $_NOVESP = $this -> getNovedadesEspeciales( $_REQUEST );
-        $_NOVESPMA = $this -> getNovedadesEspecialesMa( $_REQUEST );
         $_SOLTIE = $this -> getSolicitaTiempo( $_REQUEST ); 
         $_MANALA = $this -> getMantieneAlarma( $_REQUEST ); 
+        $_NOVGPS = $this -> getNovedaGps( $_REQUEST );
         $_OTROXX = $this -> getOtros( $_REQUEST ); 
-        $_TODOSX = $this -> getTodos( $_REQUEST );
-        $_TOTAL_ = array();            
+        $_DESPAC = $this -> getDespacTotal( $_REQUEST );
+        $_TOTAL_ = array();   
+        
+        $des_transi  = isset($_REQUEST[des_transi]) ? 1:0;
+        $des_final  = isset($_REQUEST[des_final]) ? 1:0;
         
         foreach( $_TRANSPORTADORA as $row)
         {
-        
-        if((int)$_TODOSX[ $row['cod_tercer'] ] == 0) continue;
+            $_TOTAL_U = 0;
             
-            $_TOTAL_[0]+= (int)$_NOVESP[ $row['cod_tercer'] ];
-            $_TOTAL_[1]+= (int)$_NOVESPMA[ $row['cod_tercer'] ];
+            $_TOTAL_[0]+= (int)$_DESPAC[ $row['cod_tercer'] ];
+            $_TOTAL_[1]+= (int)$_NOVESP[ $row['cod_tercer'] ];
             $_TOTAL_[2]+= (int)$_SOLTIE[ $row['cod_tercer'] ];
             $_TOTAL_[3]+= (int)$_MANALA[ $row['cod_tercer'] ];
             $_TOTAL_[4]+= (int)$_OTROXX[ $row['cod_tercer'] ];
-            $_TOTAL_[5]+= (int)$_TODOSX[ $row['cod_tercer'] ];                
+            $_TOTAL_[5]+= $_TOTAL_[1] + $_TOTAL_[2] + $_TOTAL_[3] + $_TOTAL_[4];  
+            $_TOTAL_U = (int)$_NOVESP[ $row['cod_tercer'] ] + (int)$_SOLTIE[ $row['cod_tercer'] ] + (int)$_MANALA[ $row['cod_tercer'] ] + (int)$_OTROXX[ $row['cod_tercer'] ];  
+
+          if($_TOTAL_U == 0) continue;               
             
           $mHtml .= "<tr class='row'>";
             $mHtml .= "<td class='cellInfo' align='left' ><b>".$row['cod_tercer']."</b> - ".$row['abr_tercer']."</td>";
-            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_NOVESP[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('NE',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_NOVESP[ $row['cod_tercer'] ])."</td>";
-            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_NOVESPMA[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('NEMA',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_NOVESPMA[ $row['cod_tercer'] ])."</td>";
-            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_SOLTIE[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('ST',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_SOLTIE[ $row['cod_tercer'] ])."</td>";
-            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_MANALA[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('MA',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_MANALA[ $row['cod_tercer'] ])."</td>";
-            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_OTROXX[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('OT',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_OTROXX[ $row['cod_tercer'] ])."</td>";
-            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_TODOSX[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('All',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."');\" " : null )."  >".((int)$_TODOSX[ $row['cod_tercer'] ])."</td>";
+            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;'>".( (int)$_DESPAC[ $row['cod_tercer'] ])."</td>";
+            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_NOVESP[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('NE',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."','".$des_transi."','".$des_final."');\" " : null )."  >".((int)$_NOVESP[ $row['cod_tercer'] ])."</td>";
+            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_SOLTIE[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('ST',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."','".$des_transi."','".$des_final."');\" " : null )."  >".((int)$_SOLTIE[ $row['cod_tercer'] ])."</td>";
+            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_MANALA[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('MA',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."','".$des_transi."','".$des_final."');\" " : null )."  >".((int)$_MANALA[ $row['cod_tercer'] ])."</td>";
+            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_NOVGPS[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('NG',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."','".$des_transi."','".$des_final."');\" " : null )."  >".((int)$_NOVGPS[ $row['cod_tercer'] ])."</td>";
+            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ((int)$_OTROXX[ $row['cod_tercer'] ]) > 0 ? "  onclick=\"infoNoveda('OT',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."','".$des_transi."','".$des_final."');\" " : null )."  >".((int)$_OTROXX[ $row['cod_tercer'] ])."</td>";
+            $mHtml .= "<td class='cellInfo' align='right' style='width: 12%; cursor: pointer;' ".( ($_TOTAL_U) > 0 ? "  onclick=\"infoNoveda('All',  '".$row['cod_tercer']."','".$_REQUEST[fecha_ini]."','".$_REQUEST[fecha_fin]."','".$des_transi."','".$des_final."');\" " : null )."  >".($_TOTAL_U)."</td>";
           $mHtml .= "</tr>";
         } 
         
@@ -221,7 +236,11 @@ class InfNovedadesUsuario{
         {
           $mHtml .= "<tr>";
         $mHtml .= "<th class='cellHead' style='text-align: right;' >TOTAL:</th>";
-        foreach ($_TOTAL_ as $row){
+        foreach ($_TOTAL_ as $key => $row){
+            if($key == 4){
+              $mHtml .= "<th class='cellHead' style='text-align: right;' ></th>";
+            }
+
             $mHtml .= "<th class='cellHead' style='text-align: right;' >{$row}</th>";
         }
         $mHtml .= "</tr>";
@@ -272,155 +291,105 @@ class InfNovedadesUsuario{
         $_USUARIO_ = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
 
         $array = array();
+
+        $sql = "SELECT * FROM ( SELECT b.num_despac as Despacho,a.nom_noveda as Novedad,b.fec_contro as Fecha,
+                      b.obs_contro as Observacion,d.abr_tercer as Transportadora,c.num_placax as Placa,
+                      IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(d.abr_tercer) ) as Conductor,
+                      g.nom_agenci AS agencia, b.usr_creaci AS usr_noveda,e.usr_creaci, e.fec_creaci,
+                      IFNULL(e.fec_llegad,'N/a') as fec_llegad, IFNULL(e.fec_despac,'N/a') as fec_despac
+
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac
+            inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
+            inner join ".BASE_DATOS.".tab_genera_agenci g on e.cod_agedes = g.cod_agenci
+
+          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
+                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."' 
+                  AND d.cod_tercer = '".$__REQUEST[cod_transp]."'";
+        
+        if($__REQUEST["des_transi"] == 1)
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if($__REQUEST["des_final"] == 1)
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if($__REQUEST['tipo']=='NE')
+            $sql .= " AND f.ind_novesp = 1 ";
+        
+        if($__REQUEST['tipo']=='ST')
+            $sql .= " AND f.ind_soltie = 1 ";
+
+        if($__REQUEST['tipo']=='MA')
+            $sql .= " AND f.ind_manale = 1 
+                      AND a.cod_tipoxx = 1 ";
+
+        if($__REQUEST['tipo']=='OT')
+            $sql .= " AND f.ind_fuepla = 1 ";
+
+        if($__REQUEST['tipo']=='NG')
+            $sql .= " AND a.cod_tipoxx = 2 ";
+
+        $sql .= "UNION ALL
+          SELECT b.num_despac as Despacho,a.nom_noveda as Novedad, b.fec_noveda as Fecha,
+                 b.des_noveda as Observacion,d.abr_tercer as Transportadora,c.num_placax as Placa,
+                 IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(d.abr_tercer) ) as Conductor,
+                 g.nom_agenci AS agencia, b.usr_creaci AS usr_noveda,e.usr_creaci, e.fec_creaci,
+                 IFNULL(e.fec_llegad,'N/a') as fec_llegad, IFNULL(e.fec_despac,'N/a') as fec_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+            inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda
+            inner join ".BASE_DATOS.".tab_genera_agenci g on e.cod_agedes = g.cod_agenci 
+
+          WHERE 
+            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
+            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            AND d.cod_tercer = '".$__REQUEST[cod_transp]."'";
+
+        if($__REQUEST["des_transi"] == 1)
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if($__REQUEST["des_final"] == 1)
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if($__REQUEST['tipo']=='NE')
+            $sql .= " AND f.ind_novesp = 1 ";
+        
+        if($__REQUEST['tipo']=='ST')
+            $sql .= " AND f.ind_soltie = 1 ";
+        
+        if($__REQUEST['tipo']=='MA')
+            $sql .= " AND f.ind_manale = 1 
+                      AND a.cod_tipoxx = 1 ";
         
         if($__REQUEST['tipo']=='OT')
-            $aux="     a.nov_especi !='1'
-                   AND a.ind_tiempo !='1'
-                   AND a.ind_manala !='1'
-                   AND a.ind_alarma !='S' ";
-        if($__REQUEST['tipo']=='NE')
-            $aux= "a.nov_especi ='1'";
-        if($__REQUEST['tipo']=='NEMA')
-            $aux= "g.ind_novesp = '1'
-               AND a.cod_tipoxx = '1'";
-        if($__REQUEST['tipo']=='ST')
-            $aux= "a.ind_tiempo ='1'";
-        if($__REQUEST['tipo']=='MA')
-            $aux= "a.ind_manala ='1'";               
-        if($__REQUEST['tipo']=='All')
-            $aux = '1=1';
+            $sql .= " AND f.ind_fuepla = 1 ";
         
-        $sql ="(SELECT b.num_despac as Despacho, a.nom_noveda as Novedad,b.fec_contro as Fecha,
-                       b.obs_contro as Observacion, d.abr_tercer as Transportadora, c.num_placax as Placa,
-                       IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(z.abr_tercer) ) as Conductor, f.nom_agenci AS agencia, 
-                       b.usr_creaci AS usr_noveda, e.usr_creaci, e.fec_creaci
-                  FROM ".BASE_DATOS.".tab_genera_noveda a,
-                       ".BASE_DATOS.".tab_despac_contro b,
-                       ".BASE_DATOS.".tab_despac_vehige c,
-                       ".BASE_DATOS.".tab_tercer_tercer d,
-                       ".BASE_DATOS.".tab_tercer_tercer z,
-                       ".BASE_DATOS.".tab_despac_despac e,
-                       ".BASE_DATOS.".tab_genera_agenci f,
-                       ".BASE_DATOS.".tab_parame_novseg g 
-                 WHERE a.cod_noveda = b.cod_noveda
-                   AND g.cod_transp = '".$__REQUEST[cod_transp]."'
-                   AND g.cod_noveda = b.cod_noveda
-                   AND $aux
-                   AND c.num_despac = b.num_despac
-                   AND c.cod_conduc = z.cod_tercer
-                   AND c.cod_transp = d.cod_tercer
-                   AND e.cod_agedes = f.cod_agenci
-                   AND e.num_despac = c.num_despac
-                   AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                   AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
-                   AND c.cod_transp = '".$__REQUEST[cod_transp]."'
-                   AND a.cod_noveda != 4999 )  
-               UNION ALL
-              (SELECT b.num_despac, a.nom_noveda, b.fec_noveda ,
-                      b.des_noveda, d.abr_tercer,c.num_placax,
-                       IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(z.abr_tercer) ) as Conductor, f.nom_agenci AS agencia, 
-                       b.usr_creaci AS usr_noveda, e.usr_creaci, e.fec_creaci
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_noveda b,
-                      ".BASE_DATOS.".tab_despac_vehige c,
-                      ".BASE_DATOS.".tab_tercer_tercer d,
-                      ".BASE_DATOS.".tab_tercer_tercer z,
-                      ".BASE_DATOS.".tab_despac_despac e,
-                      ".BASE_DATOS.".tab_genera_agenci f,
-                      ".BASE_DATOS.".tab_parame_novseg g 
-                WHERE a.cod_noveda = b.cod_noveda
-                AND g.cod_transp = '".$__REQUEST[cod_transp]."'
-                AND g.cod_noveda = b.cod_noveda
-                AND $aux
-                  AND c.num_despac = b.num_despac
-                  AND c.cod_transp = d.cod_tercer
-                  AND c.cod_conduc = z.cod_tercer
-                  AND e.cod_agedes = f.cod_agenci
-                  AND e.num_despac = c.num_despac
-                  AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-                  AND c.cod_transp = '".$__REQUEST[cod_transp]."')
-                UNION ALL
-                (SELECT b.num_repnov, a.nom_noveda, b.fec_repnov ,
-                        b.obs_repnov, d.abr_tercer, b.num_placax,
-                        ' - ' as Conductor, '' AS agencia, '' AS usr_noveda, '' AS usr_creaci, '' AS fec_creaci
-                        FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                        ".BASE_DATOS.".tab_report_noveda b,
-                        ".BASE_DATOS.".tab_parame_novseg c,
-                        ".BASE_DATOS.".tab_tercer_tercer d
-                  WHERE a.cod_noveda = b.cod_noveda
-                    AND c.ind_novesp = '1'
-                    AND a.cod_tipoxx = '1'
-                    AND b.cod_tercer = d.cod_tercer
-                    AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                    AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."'
-                    AND b.cod_tercer = '".$__REQUEST[cod_transp]."')";
-        if($__REQUEST['tipo']=='OT')  
-        { 
-        $aux= "a.ind_alarma ='S'";
-          $sql .= "UNION ALL
-                  (SELECT b.num_despac as Despacho, a.nom_noveda as Novedad,b.fec_contro as Fecha,
-                       b.obs_contro as Observacion, d.abr_tercer as Transportadora, c.num_placax as Placa,
-                       IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(z.abr_tercer) ) as Conductor
-                  FROM ".BASE_DATOS.".tab_genera_noveda a,
-                       ".BASE_DATOS.".tab_despac_contro b,
-                       ".BASE_DATOS.".tab_despac_vehige c,
-                       ".BASE_DATOS.".tab_tercer_tercer d,
-                       ".BASE_DATOS.".tab_parame_novseg e,
-                       ".BASE_DATOS.".tab_tercer_tercer z
-                 WHERE a.cod_noveda = b.cod_noveda
-                   AND e.cod_transp = '".$__REQUEST[cod_transp]."'
-                   AND e.cod_noveda = b.cod_noveda
-                   AND e.ind_novesp = '1'
-                   AND a.cod_tipoxx = '1'
-                   AND c.num_despac = b.num_despac
-                   AND c.cod_conduc = z.cod_tercer
-                   AND c.cod_transp = d.cod_tercer
-                   AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                   AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
-                   AND c.cod_transp = '".$__REQUEST[cod_transp]."'
-                   AND a.cod_noveda != 4999 )  
-               UNION ALL
-              (SELECT b.num_despac, a.nom_noveda, b.fec_noveda ,
-                      b.des_noveda, d.abr_tercer,c.num_placax,
-                       IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(z.abr_tercer) ) as Conductor
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_noveda b,
-                      ".BASE_DATOS.".tab_despac_vehige c,
-                      ".BASE_DATOS.".tab_tercer_tercer d,
-                      ".BASE_DATOS.".tab_parame_novseg e,
-                      ".BASE_DATOS.".tab_tercer_tercer z
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND e.cod_transp = '".$__REQUEST[cod_transp]."'
-                  AND e.cod_noveda = b.cod_noveda
-                  AND e.ind_novesp = '1'
-                  AND a.cod_tipoxx = '1'
-                  AND c.num_despac = b.num_despac
-                  AND c.cod_transp = d.cod_tercer
-                  AND c.cod_conduc = z.cod_tercer
-                  AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-                  AND c.cod_transp = '".$__REQUEST[cod_transp]."')
-                UNION ALL
-                (SELECT b.num_repnov, a.nom_noveda, b.fec_repnov ,
-                        b.obs_repnov, d.abr_tercer, b.num_placax,
-                        ' - ' as Conductor
-                        FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                             ".BASE_DATOS.".tab_report_noveda b,
-                             ".BASE_DATOS.".tab_parame_novseg c,
-                             ".BASE_DATOS.".tab_tercer_tercer d
-                  WHERE a.cod_noveda = b.cod_noveda
-                    AND c.cod_transp = '".$__REQUEST[cod_transp]."'
-                    AND c.cod_noveda = b.cod_noveda
-                    AND c.ind_novesp = '1'
-                    AND a.cod_tipoxx = '1'
-                    AND b.cod_tercer = d.cod_tercer
-                    AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                    AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."'
-                    AND b.cod_tercer = '".$__REQUEST[cod_transp]."')";
-        }
-        $sql .= " ORDER BY 5,1,3 ";
-        // echo '<pre>'; print_r($sql); echo '</pre>';
+        if($__REQUEST['tipo']=='NG')
+            $sql .= " AND a.cod_tipoxx = 2 ";
+        
+        $sql .= ") as aa ORDER BY 5,1,3 ";
+
+        //echo '<pre>'; print_r($sql); echo '</pre>';
         $consulta  = new Consulta($sql, $this -> conexion);
         $despachos = $consulta -> ret_matriz();
            
@@ -435,12 +404,27 @@ class InfNovedadesUsuario{
         $formulario -> linea("Total de Novedades: ".sizeof($despachos)." - ".$_USUARIO_[0][1],0,"t2","15%");
         
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
-        
-        $mHtml  = "<table width='100%'>";
+        echo "<style>
+            .table-int {
+                margin: 0 auto;
+                height: 20vh;
+                width: 40vh;
+            }
+
+            .table-int,
+            th,
+            td {
+                border-collapse: collapse;
+            }
+        </style>";
+
+        $mHtml  = "<table width='100%'  border='1' class='table-int' >";
         $mHtml .= "<tr>";
             $mHtml .= "<th class=cellHead >Transportadora</th>";
             $mHtml .= "<th class=cellHead >Agencia</th>";
             $mHtml .= "<th class=cellHead >Despacho</th>";
+            $mHtml .= "<th class=cellHead >Fecha Salida</th>";
+            $mHtml .= "<th class=cellHead >Fecha Llegada</th>";
             $mHtml .= "<th class=cellHead >Placa</th>";
             $mHtml .= "<th class=cellHead >Conductor</th>";
             $mHtml .= "<th class=cellHead >Novedad</th>";
@@ -456,11 +440,13 @@ class InfNovedadesUsuario{
                 $mHtml .= "<td class='cellInfo' >{$row[4]}</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[7]}</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[0]}</td>";
+                $mHtml .= "<td class='cellInfo' >{$row[11]}</td>";
+                $mHtml .= "<td class='cellInfo' >{$row[12]}</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[5]}</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[6]}</td>";
-                $mHtml .= "<td class='cellInfo' >{$row[1]}</td>";
+                $mHtml .= "<td class='cellInfo' >".htmlentities( $row[1], ENT_COMPAT, 'ISO-8859-1', true )."</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[2]}</td>";
-                $mHtml .= "<td class='cellInfo' >{$row[3]}&nbsp</td>";
+                $mHtml .= "<td class='cellInfo' ><textarea name='textarea' rows='3' cols='50' readonly style='border: none;'>".htmlentities( $row[3], ENT_COMPAT, 'ISO-8859-1', true )."</textarea></td>";
                 $mHtml .= "<td class='cellInfo' >{$row[8]}&nbsp</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[9]}&nbsp</td>";
                 $mHtml .= "<td class='cellInfo' >{$row[10]}&nbsp</td>";
@@ -496,324 +482,397 @@ class InfNovedadesUsuario{
       $consulta = new Consulta($query, $this -> conexion);
       return $consulta -> ret_matriz();
     }
+
+    function getDespacTotal($__REQUEST){
+      $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
+      $MATRIZ = array(); 
+
+      foreach($transporta AS $transpor)
+      {
+        $sql = "SELECT COUNT(a.num_despac) as c
+          FROM 
+            ".BASE_DATOS.".tab_despac_despac a 
+            inner join ".BASE_DATOS.".tab_despac_vehige b on a.num_despac = b.num_despac
+            inner join ".BASE_DATOS.".tab_tercer_tercer c on b.cod_transp = c.cod_tercer
+          WHERE c.cod_tercer = '".$transpor[0]."'";
+
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND a.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND a.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND a.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND a.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+       
+        $consulta = new Consulta($sql, $this -> conexion); 
+        $data = $consulta->ret_matriz("a");
+        $MATRIZ[ $transpor[0] ] = $data[0]['c'];
+      }
+
+      return $MATRIZ;
+    }
     
     function getNovedadesEspeciales( $__REQUEST ){
-        $sql ="SELECT  c.cod_transp 
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_contro b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.nov_especi ='1'
-                  AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
-                  AND b.cod_noveda != 4999
-               UNION ALL      
-               SELECT c.cod_transp 
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_noveda b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.nov_especi ='1'
-                  AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-               UNION ALL      
-               SELECT b.cod_tercer AS cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_report_noveda b
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND a.nov_especi ='1'
-                  AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
 
-        $sql = "SELECT COUNT(*), b.cod_tercer
-                  FROM ( ".$sql." ) AS a, 
-                       ".BASE_DATOS.".tab_tercer_tercer b
-                 WHERE a.cod_transp = b.cod_tercer
-                GROUP BY 2 ";  
-        $consul = new Consulta($sql, $this -> conexion);
+      $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
+      $MATRIZ = array(); 
+
+      foreach($transporta AS $transpor)
+      {
+        $sql = "SELECT COUNT(aa.num_despac) as c  FROM (
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac
+            inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
+          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
+                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+                  AND f.ind_novesp = 1 
+                  AND d.cod_tercer = '".$transpor[0]."'";
         
-        $MATRIZ = array(); 
-        foreach ( $consul -> ret_matriz() as $row){
-            $MATRIZ[ $row[1] ] = $row[0];
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
         }
-        return $MATRIZ; 
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        $sql .= "UNION ALL
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+            inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+          WHERE 
+            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
+            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            AND f.ind_novesp = 1 
+            AND d.cod_tercer = '".$transpor[0]."'";
+
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+        
+        $sql .= ") as aa ";
+
+  
+        $consulta = new Consulta($sql, $this -> conexion); 
+        $data = $consulta->ret_matriz("a");
+        $MATRIZ[ $transpor[0] ] = $data[0]['c'];
+        
+      }
+
+      return $MATRIZ;
     }
 
-    function getNovedadesEspecialesMa( $__REQUEST ){
-      $sql ="SELECT  c.cod_transp 
-               FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                    ".BASE_DATOS.".tab_despac_contro b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_parame_novseg d
-              WHERE a.cod_noveda = b.cod_noveda
-                AND d.cod_noveda = b.cod_noveda
-                AND d.cod_transp = c.cod_transp
-                AND d.ind_novesp ='1'
-                AND a.cod_tipoxx ='1'
-                AND c.num_despac = b.num_despac
-                AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
-                AND b.cod_noveda != 4999
-             UNION ALL      
-             SELECT c.cod_transp 
-               FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                    ".BASE_DATOS.".tab_despac_noveda b,
-                    ".BASE_DATOS.".tab_despac_vehige c,
-                    ".BASE_DATOS.".tab_parame_novseg d
-              WHERE a.cod_noveda = b.cod_noveda
-                AND d.cod_noveda = b.cod_noveda
-                AND d.cod_transp = c.cod_transp
-                AND d.ind_novesp ='1'
-                AND a.cod_tipoxx ='1'
-                AND c.num_despac = b.num_despac
-                AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-             UNION ALL      
-             SELECT b.cod_tercer AS cod_transp
-               FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                    ".BASE_DATOS.".tab_report_noveda b,
-                    ".BASE_DATOS.".tab_parame_novseg c
-              WHERE a.cod_noveda = b.cod_noveda
-                AND c.cod_noveda = b.cod_noveda
-                AND c.cod_transp = cod_transp
-                AND c.ind_novesp ='1'
-                AND a.cod_tipoxx ='1'
-                AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
-
-        $sql = "SELECT COUNT(*), b.cod_tercer
-                FROM ( ".$sql." ) AS a, 
-                     ".BASE_DATOS.".tab_tercer_tercer b
-               WHERE a.cod_transp = b.cod_tercer
-              GROUP BY 2 ";  
-      $consul = new Consulta($sql, $this -> conexion);
-      
-      $MATRIZ = array(); 
-      foreach ( $consul -> ret_matriz() as $row){
-          $MATRIZ[ $row[1] ] = $row[0];
-      }
-      return $MATRIZ; 
-  }
     
     
     function getSolicitaTiempo( $__REQUEST ){
-        $sql ="SELECT c.cod_transp 
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_contro b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.ind_tiempo ='1'
-                  AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
+
+      $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
+      $MATRIZ = array();
+
+      foreach($transporta AS $transpor)
+      {
+        $sql = "SELECT COUNT(aa.num_despac) as c  FROM (
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac
+            inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
+          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
                   AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
-                  AND b.cod_noveda != 4999
-               UNION ALL
-               SELECT c.cod_transp 
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_noveda b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.ind_tiempo ='1'
-                  AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-               UNION ALL
-               SELECT b.cod_tercer AS cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_report_noveda b
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND a.ind_tiempo ='1'
-                  AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
-
-        $sql = "SELECT COUNT(*), b.cod_tercer
-                  FROM ( ".$sql." ) AS a, 
-                       ".BASE_DATOS.".tab_tercer_tercer b
-                 WHERE a.cod_transp = b.cod_tercer
-                GROUP BY 2 ";
-
-        $consul = new Consulta($sql, $this -> conexion);
+                  AND f.ind_soltie = 1 
+                  AND d.cod_tercer = '".$transpor[0]."'";
         
-        $MATRIZ = array(); 
-        foreach ( $consul -> ret_matriz() as $row){
-            $MATRIZ[ $row[1] ] = $row[0];
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
         }
-        return $MATRIZ;
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        $sql .= "UNION ALL
+          SELECT b.num_despac 
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+            inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+          WHERE 
+            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
+            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            AND f.ind_soltie = 1
+            AND d.cod_tercer = '".$transpor[0]."'";
+
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+        
+        $sql .= ") as aa ";
+
+        $consulta = new Consulta($sql, $this -> conexion); 
+        $data = $consulta->ret_matriz("a");
+        $MATRIZ[ $transpor[0] ] = $data[0]['c'];
+      }
+ 
+      return $MATRIZ;
     }
     
     function getMantieneAlarma( $__REQUEST ){
-        $sql ="SELECT c.cod_transp 
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_contro b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.ind_manala ='1'
-                  AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."' 
-                  AND b.cod_noveda != 4999
-               UNION ALL  
-               SELECT c.cod_transp 
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_noveda b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.ind_manala ='1'
-                  AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-               UNION ALL  
-               SELECT b.cod_tercer AS cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_report_noveda b
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND a.ind_manala ='1'
-                  AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
 
-        $sql = "SELECT COUNT(*), b.cod_tercer
-                  FROM ( ".$sql." ) AS a, 
-                       ".BASE_DATOS.".tab_tercer_tercer b
-                 WHERE a.cod_transp = b.cod_tercer
-                GROUP BY 2 ";
+      $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
+      $MATRIZ = array();
 
+      foreach($transporta AS $transpor)
+      {
+        $sql = "SELECT COUNT(aa.num_despac) as c  FROM (
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac
+            inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
+          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
+                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+                  AND f.ind_manale = 1 
+                  AND a.cod_tipoxx = 1
+                  AND d.cod_tercer = '".$transpor[0]."'";
         
-        $consul = new Consulta($sql, $this -> conexion);
-        
-        $MATRIZ = array(); 
-        foreach ( $consul -> ret_matriz() as $row){
-            $MATRIZ[ $row[1] ] = $row[0];
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
         }
-        return $MATRIZ;
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        $sql .= "UNION ALL
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+            inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+          WHERE 
+            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
+            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            AND f.ind_manale = 1
+            AND a.cod_tipoxx = 1
+            AND d.cod_tercer = '".$transpor[0]."'";
+
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+        
+        $sql .= ") as aa ";
+
+        $consulta = new Consulta($sql, $this -> conexion); 
+        $data = $consulta->ret_matriz("a");
+        $MATRIZ[ $transpor[0] ] = $data[0]['c'];
+      }
+
+      return $MATRIZ;
     }
     
     
     function getOtros( $__REQUEST ){
-        $sql ="SELECT c.cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_contro b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.nov_especi !='1'
-                  AND a.ind_tiempo !='1'
-                  AND a.ind_manala !='1'
-                  AND a.ind_alarma !='S'
-                  AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."' 
-                  AND b.cod_noveda != 4999
-               UNION ALL
-               SELECT c.cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_noveda b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.nov_especi !='1'
-                  AND a.ind_tiempo !='1'
-                  AND a.ind_manala !='1'
-                  AND a.ind_alarma !='S'
-                  AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-               UNION ALL
-               SELECT b.cod_tercer AS cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_report_noveda b
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND a.nov_especi !='1'
-                  AND a.ind_tiempo !='1'
-                  AND a.ind_manala !='1'
-                  AND a.ind_alarma !='S'
-                  AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' 
-               UNION ALL 
-               SELECT c.cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_contro b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.ind_alarma ='S'
-                  AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."' 
-                  AND b.cod_noveda != 4999
-               UNION ALL  
-               SELECT c.cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_noveda b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND a.ind_alarma ='S'
-                  AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-               UNION ALL  
-               SELECT b.cod_tercer AS cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_report_noveda b
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND a.ind_alarma ='S'
-                  AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
-      
-       $sql = "SELECT COUNT(*), b.cod_tercer
-                  FROM ( ".$sql." ) AS a, 
-                       ".BASE_DATOS.".tab_tercer_tercer b
-                 WHERE a.cod_transp = b.cod_tercer
-                GROUP BY 2 "; 
 
-      $consul = new Consulta($sql, $this -> conexion);
-      
-      $MATRIZ = array(); 
-      foreach ( $consul -> ret_matriz() as $row){
-          $MATRIZ[ $row[1] ] = $row[0];
+      $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
+      $MATRIZ = array();
+
+      foreach($transporta AS $transpor)
+      {
+        $sql = "SELECT COUNT(aa.num_despac) as c  FROM (
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac
+            inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
+          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
+                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+                  AND f.ind_fuepla = 1 
+                  AND d.cod_tercer = '".$transpor[0]."'";
+        
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        $sql .= "UNION ALL
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+            inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+          WHERE 
+            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
+            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            AND f.ind_fuepla = 1
+            AND d.cod_tercer = '".$transpor[0]."'";
+
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+        
+        $sql .= ") as aa ";
+
+        $consulta = new Consulta($sql, $this -> conexion); 
+        $data = $consulta->ret_matriz("a");
+        $MATRIZ[ $transpor[0] ] = $data[0]['c'];
       }
+
+      return $MATRIZ;
+    }
+
+    function getNovedaGps( $__REQUEST ){
+
+      $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
+      $MATRIZ = array();
+
+      foreach($transporta AS $transpor)
+      {
+        $sql = "SELECT COUNT(aa.num_despac) as c  FROM (
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac
+            inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
+          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
+                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+                  AND a.cod_tipoxx = 2
+                  AND d.cod_tercer = '".$transpor[0]."'";
+        
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        $sql .= "UNION ALL
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+            inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+          WHERE 
+            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
+            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            AND a.cod_tipoxx = 2
+            AND d.cod_tercer = '".$transpor[0]."'";
+
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+        
+        $sql .= ") as aa ";
+
+        $consulta = new Consulta($sql, $this -> conexion); 
+        $data = $consulta->ret_matriz("a");
+        $MATRIZ[ $transpor[0] ] = $data[0]['c'];
+      }
+
       return $MATRIZ;
     }
     
-    function getTodos( $__REQUEST ){
-        $sql ="SELECT c.cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_contro b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."' 
-                  AND b.cod_noveda != 4999
-               UNION ALL
-               SELECT c.cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_despac_noveda b,
-                      ".BASE_DATOS.".tab_despac_vehige c
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND c.num_despac = b.num_despac
-                  AND b.fec_noveda >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-               UNION ALL
-               SELECT b.cod_tercer AS cod_transp
-                 FROM ".BASE_DATOS.".tab_genera_noveda a, 
-                      ".BASE_DATOS.".tab_report_noveda b
-                WHERE a.cod_noveda = b.cod_noveda
-                  AND b.fec_repnov >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_repnov <= '".$__REQUEST[fecha_fin]."' ";
-      
-       $sql = "SELECT COUNT(*), b.cod_tercer
-                  FROM ( ".$sql." ) AS a, 
-                       ".BASE_DATOS.".tab_tercer_tercer b
-                 WHERE a.cod_transp = b.cod_tercer
-                GROUP BY 2 ";
-
-        $consul = new Consulta($sql, $this -> conexion);
-      
-        $MATRIZ = array(); 
-        foreach ( $consul -> ret_matriz() as $row){
-            $MATRIZ[ $row[1] ] = $row[0];
-        }
-        return $MATRIZ; 
-    }
 }
 $service = new InfNovedadesUsuario($_SESSION['conexion']);
 

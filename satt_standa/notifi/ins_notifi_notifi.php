@@ -9,8 +9,8 @@
  *  \warning: 
  */
 
-//ini_set('display_errors', true);
-//error_reporting(E_ALL & ~E_NOTICE);
+/*ini_set('display_errors', true);
+error_reporting(E_ALL & ~E_NOTICE);*/
 
 /*! \class: notifi
  *  \brief: Lista notificaciones
@@ -74,7 +74,7 @@ class notifi
 	 *  \brief: Vista principal de modulo
 	 *  \author: Edward serrano
 	 *	\date: 	
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	private function lista()
 	{
@@ -211,7 +211,7 @@ class notifi
 	 *  \brief: retorna los permisos sobre los submodulos
 	 *  \author: Edward Serrano
 	 *	\date: 
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 *  \return:
 	 */
 	protected function getRespond()
@@ -237,7 +237,7 @@ class notifi
 	 *  \brief: Reccorre json con los permisos asignados
 	 *  \author: Edward Serrano
 	 *	\date: 
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 *  \param: $JsonRe-> json de datos
 	 *  \param: $Panel-> subnivel del json
 	 *  \param: arrSub-> Paramentros de bsuqueda
@@ -282,7 +282,7 @@ class notifi
 	 *  \brief: estilos adicionales para el framework
 	 *  \author: Edward Serrano
 	 *	\date: 
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 *  \return:
 	 */
 	function GridStyle()
@@ -470,63 +470,123 @@ class notifi
 	 *  \brief: descarga de archivos adjuntos a la notificacion
 	 *  \author: Edward Serrano
 	 *	\date:  23/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
     function verDocumentos()
     {
-    	try
-    	{
-	    	$datos = (object) $_REQUEST;
+		echo self::GridStyle();
+		print "<style>
+				.alert-pet {
+					padding: 20px;
+					background-color: #f44336; /* Red */
+					color: white;
+					margin-bottom: 15px;
+				}
+
+				.info-pet {
+					padding: 20px;
+					background-color: #2196F3; /* azul */
+					color: white;
+					margin-bottom: 15px;
+				}
+
+				/* The close button */
+				.closebtn {
+				margin-left: 15px;
+				color: white;
+				font-weight: bold;
+				float: right;
+				font-size: 22px;
+				line-height: 20px;
+				cursor: pointer;
+				transition: 0.3s;
+				}
+
+				/* When moving the mouse over the close button */
+				.closebtn:hover {
+				color: black;
+				}
+				.ui-accordion .ui-accordion-content {
+					height:81vh;
+				}
+			  </style>";
+
+		try
+		{
+			$datos = (object) $_REQUEST;
 			$Refdocument=self::getDocument($datos);
 			$fileInfo = finfo_open(FILEINFO_MIME_TYPE);
 			$detected_type = finfo_file( $fileInfo, substr($Refdocument[0]['url_ficher'], 3) );
+			$out = "";
+
+			
 			switch ($Refdocument[0]['tip_ficher']) {				
-				case 'jpg' : case 'jpeg': case 'bmp' : case 'tiff' : case 'png' : case 'pdf' : case 'zip' : case 'rar' :  
-					header("MIME-Version: 1.0");
-				    header( "Content-type: '".$detected_type."'" );
-				    header( "Content-transfer-encoding: 8bit");
-				    header( "Content-disposition: inline; filename=".str_replace("+","_",urlencode($Refdocument[0]['nom_ficher'])) );
-				    ob_end_clean();
-				    $handle = fopen(substr($Refdocument[0]['url_ficher'], 3), 'rb');
-				    while ( !feof($handle) ) {
-				        print fread($handle, 8192);
-				    }
-				    fclose($handle);
-				    //@readfile(substr($Refdocument[0]['url_ficher'], 3) );
+				case 'jpg' : case 'jpeg': case 'bmp' : case 'tiff' : case 'png' : case 'pdf' :  
+					$Refdocument[0]['url_ficher'] = substr($Refdocument[0]['url_ficher'], 3);
+					if(file_exists($Refdocument[0]['url_ficher']))
+					{
+						$out = "<embed src='".$Refdocument[0]['url_ficher']."' type='".$detected_type."' width='100%' height='100%'>";
+					}else{
+						$out = "<div class='alert-pet'>
+									<span class='closebtn' onclick='this.parentElement.style.display='none';'>&times;</span>
+									El archivo no existe en el servidor!!.
+								</div>";
+					}
 				break;
 				
 				default:
-					$zip = new ZipArchive();
- 					$nameFileZip=explode(".", $Refdocument[0]['nom_ficher']);
-					$filename = '../'.BASE_DATOS.'/filnot/'.$nameFileZip[0].'.zip';
-					 
-					if($zip->open($filename,ZIPARCHIVE::CREATE)===true) {
-					    $zip->addFile(substr($Refdocument[0]['url_ficher'], 3),$Refdocument[0]['nom_ficher']);
-					    $zip->close();
-					    if(file_exists($filename))
-					    {
-					    	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-						    header("Content-type: application/zip");
-						    header("Content-Transfer-Encoding: binary");
-							header("Content-disposition: attachment; filename=".str_replace(" ","_",$nameFileZip[0]).".zip");
-							ob_end_clean();
-							readfile($filename);
-							ob_end_flush();
-							unlink($filename);	
-					    }
-					    else
-					    {
-					    	echo " el archivo no existe";
-					    }
-					}
-					else 
+					
+					$Refdocument[0]['url_ficher'] = substr($Refdocument[0]['url_ficher'], 3);
+
+					if(file_exists($filename))
 					{
-					    echo 'Error creando '.$filename;
+						
+						$out = "<div class='info-pet'>
+									<span class='closebtn' onclick='this.parentElement.style.display='none';'>&times;</span>
+									<a href='https://blogandweb.com/wp-content/uploads/2013/10/archivo.pdf' download> Descargar PDF </a>
+								</div>";
+					}else{
+						$out =  "<div class='alert-pet'>
+									<span class='closebtn' onclick='this.parentElement.style.display='none';'>&times;</span>
+									El archivo no existe en el servidor!!.
+								</div>";
 					}
+				
 				break;
 			}
+
+			#HTML
+			$mHtml = new Formlib(2);
+			$mHtml->Hidden(array( "name" => "standa", "id" => "standaID", 'value'=>DIR_APLICA_CENTRAL));
+			$mHtml->Table("tr");
+				$mHtml->SetBody("<td>");
+
+					$mHtml->OpenDiv("id:contentID; class:contentAccordion;");
+						$mHtml->OpenDiv("id:notifiID; class:accordion");
+							$mHtml->SetBody("<h3 style='padding:6px;'><center>Visor</center></h3>");
+							$mHtml->OpenDiv("id:secID");
+								$mHtml->OpenDiv("id:form_notifiID; class:contentAccordionForm; style:height: 100%;");
+									$mHtml->SetBody($out);
+								$mHtml->CloseDiv();
+								
+							$mHtml->CloseDiv();
+						$mHtml->CloseDiv();
+					$mHtml->CloseDiv();
+
+				$mHtml->SetBody('</td>');
+			$mHtml->CloseTable('tr');
+			echo $mHtml->MakeHtml();
+		
+    	
+	    	
+			 
+			
 		}catch (Exception $e) {
-			echo "error verDocumentos ".$e;
+			echo $e;
+			print "<div class='alert'>
+  							<span class='closebtn' onclick='this.parentElement.style.display='none';'>&times;</span>
+ 							 Error al avrir el archivo. ".$e."
+						</div>";
 		}
     }
 
@@ -534,7 +594,7 @@ class notifi
 	 *  \brief: documente asociados
 	 *  \author: Edward Serrano
 	 *	\date:  23/01/2017
-	 *	\date modified: dia/mes/año
+	 *	\date modified: dia/mes/aï¿½o
 	 */
 	function getDocument($ActionForm=NULL)
 	{

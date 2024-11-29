@@ -192,6 +192,8 @@ class infDespacFinali
 						"fec_novant" => "Fecha Ult. Novedad (Antes)", 
 						"obs_llegad" => "Observacion Llegada", 
 						"fec_llegad" => "Fecha Llegada", 
+						"obs_anulad" => "Observacion Anulado", 
+						"fec_anulad" => "Fecha Anulado", 
 					  );
 
 		$mHtml = new Formlib(2);
@@ -209,7 +211,9 @@ class infDespacFinali
 
 			$mHtml->SetBody("<label style='color: black'>Se encontraron $mSize registros.</label><br>");
 
-			$mHtml->SetBody('<table id="'.$mIdxTab.'" width="100%" cellspacing="1" cellpadding="3" border="0" align="center"><tbody><tr>');
+			$mHtml->SetBody('<div style="overflow-x:auto;"> 
+								<table id="'.$mIdxTab.'" width="100%" cellspacing="1" cellpadding="3" border="0" align="center">
+									<tbody><tr>');
 
 			foreach ($mTitl as $key => $tit) {
 				$mHtml->Label( $tit, array("class"=>"CellHead") );
@@ -243,7 +247,8 @@ class infDespacFinali
 				$i++;
 			}
 
-			$mHtml->SetBody('</table>');
+			$mHtml->SetBody('</table></div>');
+
 		}
 
 		$mHtml->CloseDiv();
@@ -425,11 +430,13 @@ class infDespacFinali
 	 *  \return: 
 	 */
 	private function getData(){
+		
 		$mSql = "SELECT f.abr_tercer AS nom_transp, 
 						o.abr_tercer AS nom_client, 
 						n.abr_tercer AS nom_asegur, /*Nombre aseguradora*/
 						a.num_despac, a.cod_manifi, d.num_placax, 
 						a.fec_llegad, a.obs_llegad, 
+						IF(a.ind_anulad = 'A',a.fec_modifi,'N/A') as fec_anulad, IF(a.ind_anulad = 'A',d.obs_anulad,'N/A') as obs_anulad,
 						IF(m.num_desext IS NULL,'N/A' ,m.num_desext ) as num_viajex, 
 						IF(a.con_telmov IS NULL, e.num_telmov, a.con_telmov ) AS num_celcon, 
 						IF(d.nom_conduc IS NOT NULL, CONCAT(d.cod_conduc, ' - ', d.nom_conduc), CONCAT(d.cod_conduc, ' - ', e.abr_tercer)) AS nom_conduc, 
@@ -439,6 +446,7 @@ class infDespacFinali
 						'' AS fec_novant,
 						'' AS nom_novsit,
 						'' AS nom_novant
+
 						-- (	SELECT aa.fec_noveda 
 						-- 	  FROM ".BASE_DATOS.".tab_despac_noveda aa 
 						-- 	 WHERE aa.num_despac = a.num_despac 
@@ -499,11 +507,12 @@ class infDespacFinali
 			  LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer o 
 					 ON a.cod_client = o.cod_tercer 
 				  WHERE a.fec_salida IS NOT NULL 
-					AND a.ind_anulad IN (".($_REQUEST[Des_finaliID] && $_REQUEST[Des_anuladID]? "'$_REQUEST[Des_finaliID]','$_REQUEST[Des_anuladID]'":($_REQUEST[Des_finaliID]?"'$_REQUEST[Des_finaliID]'":($_REQUEST[Des_anuladID]?"'$_REQUEST[Des_anuladID]'":""))).") 
 					AND a.ind_planru = 'S' 
-					AND a.fec_llegad IS NOT NULL 
 					AND d.cod_transp IN ($_REQUEST[cod_transp]) 
 				";
+
+		$mSql .= !$_REQUEST[Des_finaliID] ? "" : " AND a.ind_anulad = '$_REQUEST[Des_finaliID]' AND  a.fec_llegad IS NOT NULL  ";
+		$mSql .= !$_REQUEST[Des_anuladID] ? "" : " AND a.ind_anulad = '$_REQUEST[Des_anuladID]' ";
 
 		$mSql .= !$_REQUEST['num_despac'] ? "" : " AND a.num_despac = '$_REQUEST[num_despac]' ";
 		$mSql .= !$_REQUEST['cod_ciuori'] ? "" : " AND a.cod_ciuori IN ($_REQUEST[cod_ciuori]) ";
@@ -512,7 +521,7 @@ class infDespacFinali
 		$mSql .= !$_REQUEST['cod_client'] ? "" : " AND a.cod_client IN ($_REQUEST[cod_client]) ";
 		$mSql .= !$_REQUEST['num_viajex'] ? "" : " AND m.num_desext LIKE '$_REQUEST[num_viajex]' ";
 		$mSql .= !$_REQUEST['num_placax'] ? "" : " AND d.num_placax LIKE '$_REQUEST[num_placax]' ";
-		$mSql .= $_REQUEST['fec_inicia'] && $_REQUEST['fec_finali'] ? " AND DATE(a.fec_llegad) BETWEEN '$_REQUEST[fec_inicia]' AND '$_REQUEST[fec_finali]' " : "";
+		$mSql .= $_REQUEST['fec_inicia'] && $_REQUEST['fec_finali'] ? " AND ( DATE(a.fec_creaci) BETWEEN '$_REQUEST[fec_inicia] 00:00:00' AND '$_REQUEST[fec_finali] 23:59:59' OR DATE(a.fec_modifi) BETWEEN '$_REQUEST[fec_inicia] 00:00:00' AND '$_REQUEST[fec_finali] 23:59:59' )"  : "";
 		
 
 
@@ -583,7 +592,7 @@ class infDespacFinali
 		}
 
 		$mSql .= " ORDER BY a.fec_llegad ASC ";
-		// echo "<pre>"; print_r($mSql); echo "</pre>"; die();
+		//echo "<pre>"; print_r($mSql); echo "</pre>"; die();
 		$mConsult = new Consulta($mSql, self::$cConexion );
 		return $mConsult -> ret_matrix('a');
 	}

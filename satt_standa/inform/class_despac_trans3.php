@@ -2593,6 +2593,7 @@ class Despac
 														FROM ".BASE_DATOS.".tab_transp_tipser  
 													GROUP BY cod_transp 
 											   ) f ON c.cod_transp = f.cod_transp AND c.num_consec = f.num_consec
+									WHERE e.cod_estado = 1
 									  GROUP BY c.cod_transp
 						 ) a 
 						 LEFT JOIN (
@@ -2604,7 +2605,7 @@ class Despac
 								cod_usuari, cod_transp
 						) h ON a.cod_transp = h.cod_transp 
 						LEFT JOIN ".BASE_DATOS.".tab_config_horlab i ON a.cod_transp = i.cod_tercer 
-					WHERE 1=1 ";
+					WHERE 1=1";
 
 		$mSql .= $mTipEtapax == NULL ? "" : " AND a.{$mTipEtapax} = 1 ";
 		$mSql .= $mAddWherex == NULL ? "" : $mAddWherex;
@@ -3170,7 +3171,7 @@ class Despac
 		
 		$mViewBa = self::getView('jso_bandej');
 		
-		$mTittle = array('NO.', 'NEM', 'DESPACHO', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'TIPO DE DESPACHO','ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
+		$mTittle = array('NO.', 'ESTADO', 'DESPACHO', 'TIEMPO CLIENTE', 'A C. EMPRESA', 'NO. TRANSPORTE', 'NOVEDADES', 'TIPO DE DESPACHO','ORIGEN', 'DESTINO', 'TRANSPORTADORA', 'GENERADOR', 'PLACA', 'CONDUCTOR', 'CELULAR', 'UBICACI&Oacute;N', 'FECHA SALIDA', 'ULTIMA NOVEDAD' );
 		$mColor = array('', 'bgT1', 'bgT2', 'bgT3', 'bgT4');
 		$colItiner = 4;
 		if($mViewBa->tie_alarma->ind_visibl==1){
@@ -3186,7 +3187,7 @@ class Despac
 			array_splice($mTittle, 2, 0, 'NOV' );
 		}
 
-		$mTittle2 = array('NO.', 'NEM', 'DESPACHO', 'NO. SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO FARO', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
+		$mTittle2 = array('NO.', 'ESTADO', 'DESPACHO', 'NO. SOLICITUD', 'NO. TRANSPORTE', 'TIEMPO SEGUIMIENTO FARO', 'TIEMPO SEGUIMIENTO', 'TIEMPO CITA DE CARGUE', 'NO. NOVEDADES', 'PLACA', 'ORIGEN', 'ESTADO', 'ULTIMA NOVEDAD', 'OBSERVACION', 'FECHA Y HORA NOVEDAD' );
 		
 		$mTransp = self::getTranspServic( $_REQUEST['ind_etapax'], $_REQUEST['cod_transp'] );
 
@@ -3474,14 +3475,14 @@ class Despac
 			
 			foreach ($mData as $row)
 			{
-				$gif = "";
-				if(isset($row['num_despac']))
+				$gif = 	self::getAlertEstadoNovedad( $row[num_despac] );
+				/*if(isset($row['num_despac']))
 				{
 					if(self::getNovedadNem($row['num_despac'])[0]['ind_soluci']=="0" && $mViewPr->ind_novnem->ind_visibl == 1)
 					{
 						$gif = "<img src='../".CENTRAL."/imagenes/Alert.gif' width='15px' height='15px'>";
 					}
-				}
+				}*/
 				$mTxt = substr($row[color], 3);
 				$IconNov  = self::getAlertIconNovedad($row[num_despac]);
 				$mColor = $mTxt > 2 ? '#FFFFFF;' : '#000000;';
@@ -3565,6 +3566,33 @@ class Despac
 				break;
 
 		}
+	}
+
+
+	/*! \fn: getAlertIconNovedad
+	 *  \brief: Obtiene el icono a mostrar si el despacho tiene alguna novedad
+	 *  \author: Ing. Cristian Andrés Torres
+	 *	\date: 27/03/2023
+	 *	\date modified: dia/mes/año
+	 *  \return: html
+	 */
+	private function getAlertEstadoNovedad( $mNumDespac ){
+
+		$mSql = "	 SELECT b.nom_estado, b.ico_estado
+					   FROM ".BASE_DATOS.".tab_despac_despac a 
+					   INNER JOIN ".BASE_DATOS.".tab_genera_estadox b ON a.cod_estado = b.cod_estado
+					  WHERE a.num_despac = '".$mNumDespac."' ";
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+					  
+		$estadoNovedad = $mConsult -> ret_matrix('a')[0];
+		
+		if($estadoNovedad['ico_estado'] != ''){
+			$image = '<div class="tooltip-container">
+						<img tooltip="true" width="20px" height="20px" src="'.$estadoNovedad['ico_estado'].'" alt="Icono de '.$estadoNovedad['nom_estado'].'">
+						<span class="tooltip-text">'.$estadoNovedad['nom_estado'].'</span>
+					   </div>';
+		}
+		return $image;
 	}
 
 	/*! \fn: getNovedadControl

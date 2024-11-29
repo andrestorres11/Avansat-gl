@@ -9,7 +9,7 @@
             "children": [
                 {
                     "tag": "h5", 
-                    "style": "background:#35650f;color:white;width:100%;height: 30px;padding-top: 7;",
+                    "style": "background:#2c368d;color:white;width:100%;height: 30px;padding-top: 7;",
                     "align": "center",
                     "html": "Filtros Generales"
                 }, 
@@ -74,7 +74,7 @@
                                                 {
                                                     "tag": "h5", 
                                                     "html": "",
-                                                    "style": "background:#35650f;color:white;width:100%;height: 30px;padding-top: 7;",
+                                                    "style": "background:#2c368d;color:white;width:100%;height: 30px;padding-top: 7;",
                                                     "align": "center",
                                                     "children": [
                                                         {

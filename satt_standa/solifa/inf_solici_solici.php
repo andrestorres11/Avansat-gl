@@ -490,7 +490,6 @@ png, jpeg, zip, rar)
 				$sql='SELECT cod_operad,cod_transp,nom_operad,nom_usuari,clv_usuari,val_timtra,ind_intind,ind_operad,ind_estado,url_webser '.
 						'FROM '.BASE_DATOS.'.'.$table.' '.
 						'WHERE '.
-						'cod_operad=50 and '.
 						'ind_estado=1 '.
 						'limit 1';
 				$consulta = new Consulta( $sql, $this->conexion );

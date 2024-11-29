@@ -184,21 +184,21 @@ class Proc_rutas
    }
 
    
-   //PARA EL FILTRO DE EMPRESA
-   $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
-   if($filtro -> listar($this -> conexion))
-   {
-    $datos_filtro = $filtro -> retornar();
+   //PARA EL FILTRO DE EMPRESA Se comentarea para vizualizar el proceso de mostrar las rutas del CL Faro 
+  //  $filtro = new Aplica_Filtro_Perfil($this -> cod_aplica,COD_FILTRO_EMPTRA,$datos_usuario["cod_perfil"]);
+  //  if($filtro -> listar($this -> conexion))
+  //  {
+  //   $datos_filtro = $filtro -> retornar();
     
-    if($indwhere)
-      $query = $query . " AND a.cod_rutasx IN( SELECT cod_rutasx FROM ".BASE_DATOS.".tab_genera_ruttra WHERE cod_transp =  '$datos_filtro[clv_filtro]' GROUP BY cod_rutasx ) ";
-    else
-    {
-      $query = $query . " WHERE a.cod_rutasx IN( SELECT cod_rutasx FROM ".BASE_DATOS.".tab_genera_ruttra WHERE cod_transp =  '$datos_filtro[clv_filtro]' GROUP BY cod_rutasx ) ";
-      $indwhere = 1;
-    }
+  //   if($indwhere)
+  //     $query = $query . " AND a.cod_rutasx IN( SELECT cod_rutasx FROM ".BASE_DATOS.".tab_genera_ruttra WHERE cod_transp =  '$datos_filtro[clv_filtro]' GROUP BY cod_rutasx ) ";
+  //   else
+  //   {
+  //     $query = $query . " WHERE a.cod_rutasx IN( SELECT cod_rutasx FROM ".BASE_DATOS.".tab_genera_ruttra WHERE cod_transp =  '$datos_filtro[clv_filtro]' GROUP BY cod_rutasx ) ";
+  //     $indwhere = 1;
+  //   }
     
-   }
+  //  }
    
    
   $query .= " GROUP BY 1 ORDER BY 2";

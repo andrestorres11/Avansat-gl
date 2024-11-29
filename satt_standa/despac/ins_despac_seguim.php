@@ -744,6 +744,14 @@ class Proc_segui
                 WHERE a.ind_estado = 1
             ORDER BY 2 ASC";
         }
+
+
+        /*$to     = 'cristian.torres@grupooet.com';
+        $subject = 'Prueba desde PHP - OET-AVANSATGL';
+        $message = 'Desde OET-AVANSATGL por medo de AWS SES';
+        $from = 'notificaciones@faro.com.co';
+        mail($to,$subject,$query,"From: <$from>","-f $from -r $from");*/
+
         $consulta = new Consulta($query, $this->conexion);
         $novedades = $consulta->ret_matriz();
 		$nota = "";
@@ -1537,7 +1545,7 @@ class Proc_segui
         $regist["virtua"] = $_REQUEST['ind_virtua'];
         $regist["tip_servic"] = $_REQUEST['tip_servic'];
         $regist["celular"] = $_REQUEST['celu'];
-
+        $regist["tie_finalx"] = $_REQUEST['date'] . " " . $_REQUEST['hora'];
         if ($_REQUEST[sit] == 'S')
         {
             $fec_actual = date("Y-m-d H:i:s");

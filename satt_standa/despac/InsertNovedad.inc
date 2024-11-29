@@ -1846,8 +1846,10 @@ class InsertNovedad {
                              0 as 'ind_insveh',
                              IFNULL(b.ind_soltie, 0) as 'ind_tiempo',
                              IFNULL(b.num_tiempo, 0) as 'num_tiempo',
+                             IFNULL(b.ind_gpsalar, 0) as 'ind_gpsalar',
                              a.rut_iconox,
-                             a.cod_tipoxx
+                             a.cod_tipoxx,
+                             a.cod_etapax
                         FROM " . BASE_DATOS . ".tab_genera_noveda a 
                         LEFT JOIN " . BASE_DATOS . ".tab_parame_novseg b ON
                         a.cod_noveda = b.cod_noveda AND
@@ -2159,6 +2161,56 @@ class InsertNovedad {
                     cod_contro = '" . $mDatRegist['contro'] . "' ";
             $consulta = new Consulta($query, $this->conexion, "R");
         }
+
+        switch ($mDatRegist['noveda']) {
+            case 78:
+                $cod_estado = '2';
+                $nov_estado = 1;
+                $fec_inicia = '0000-00-00 00:00:00';
+                $fec_finalx = '0000-00-00 00:00:00';
+                break;
+            case 79:
+                $cod_estado = '3';
+                $nov_estado = 1;
+                $fec_inicia = date('Y-m-d H:i:s');
+                $fec_finalx = $mDatRegist["tie_finalx"];
+                break;
+            case 80:
+                $cod_estado = '4';
+                $nov_estado = 1;
+                $fec_inicia = date('Y-m-d H:i:s');
+                $fec_finalx = $mDatRegist["tie_finalx"];
+                break;
+            case 27:
+                $cod_estado = '5';
+                $nov_estado = 1;
+                $fec_inicia = date('Y-m-d H:i:s');
+                $fec_finalx = $mDatRegist["tie_finalx"];
+                break;
+            default:
+                $nov_estado = 0;
+                break;
+        }
+
+        if($nov_estado){
+            
+            $query = "UPDATE " . BASE_DATOS . ".tab_despac_despac
+                SET cod_estado = '".$cod_estado."'
+              WHERE num_despac = '" . $mDatRegist['despac'] . "'";
+            $consulta = new Consulta($query, $this->conexion, "R");
+
+            
+            $query = "INSERT INTO " . BASE_DATOS . ".tab_despac_estadox
+                        (num_despac, cod_estado, obs_estado,
+                        usr_estado, fec_estado, fec_inicia,
+                        fec_finalx) VALUES (
+                        '".$mDatRegist['despac']."', '".$cod_estado."', '" . corregirTildes(addslashes($mDatRegist['observ'])) . "',
+                        '" . $mDatRegist['usuari'] . "', NOW(), '".$fec_inicia."',
+                        '".$fec_finalx."')";
+            $consulta = new Consulta($query, $this->conexion, "R");
+        }
+        
+
 
         if ($mConsult->id_resultado == 1) {
             $mResult[0] = true;
@@ -4425,6 +4477,7 @@ class InsertNovedad {
                                 'ind_tiempo' => $mDatNoveda['ind_tiempo'],
                                 'nov_especi_' => $mDatNoveda['nov_especi'],
                                 'ind_manala' => $mDatNoveda['ind_manala'],
+                                'ind_gpsalar' => $regist['noveda'] >= 9000 ? $mDatNoveda['ind_gpsalar'] : 0,
                                 'bin_fotcon' => '',
                                 'bin_fotpre' => '',
                                 'cod_remdes' => '',
@@ -4433,7 +4486,8 @@ class InsertNovedad {
                                 'kms_vehicu' => '',
                                 'man_ordcar' => '',
                                 'url_iconov' => DIREC_APLICA.$mDatNoveda['rut_iconox'],
-                                'tip_noveda' => $mDatNoveda['cod_tipoxx']
+                                'tip_noveda' => $mDatNoveda['cod_tipoxx'],
+                                'cod_etapax' => $mDatNoveda['cod_etapax']
                             );
 
                             // Convert mParams array to a JSON-formatted string with indentation
@@ -4447,7 +4501,7 @@ class InsertNovedad {
                                     $mCodResp = explode(":", $mResult[0]);
                                     $mMsgResp = explode(":", $mResult[1]);
 
-                                    if($mDatDespac['cod_manifi']=='23303'){
+                                    if($mDatDespac['cod_manifi']=='0089090'){
                                         $to     = 'cristian.torres@grupooet.com';
                                         $subject = 'Envio de Informacion - avansat gl';
                                         $message = $mParamsFormatted;
@@ -4467,7 +4521,54 @@ class InsertNovedad {
                                     $mResulta['cod_status'] = $mCodResp[1];
                                     $mResulta['msj_status'] = $mMsgResp[1];
                                     self::setTransaccion( $mReporte , $mResulta);
-                                       
+                                    
+
+                                    switch ($regist['noveda']) {
+                                        case 78:
+                                            $cod_estado = '2';
+                                            $nov_estado = 1;
+                                            $fec_inicia = '0000-00-00 00:00:00';
+                                            $fec_finalx = '0000-00-00 00:00:00';
+                                            break;
+                                        case 79:
+                                            $cod_estado = '3';
+                                            $nov_estado = 1;
+                                            $fec_inicia = date('Y-m-d H:i:s');
+                                            $fec_finalx = $regist["tie_finalx"];
+                                            break;
+                                        case 80:
+                                            $cod_estado = '4';
+                                            $nov_estado = 1;
+                                            $fec_inicia = date('Y-m-d H:i:s');
+                                            $fec_finalx = $regist["tie_finalx"];
+                                            break;
+                                        case 27:
+                                            $cod_estado = '5';
+                                            $nov_estado = 1;
+                                            $fec_inicia = date('Y-m-d H:i:s');
+                                            $fec_finalx = $regist["tie_finalx"];
+                                            break;
+                                        default:
+                                            $nov_estado = 0;
+                                            break;
+                                    }
+
+                                    if($nov_estado){
+                                        $mParams =  [ 
+                                            'nom_usuari'  => $interfaz->interfaz[$i]['usuari'],
+                                            'pwd_clavex'  => $interfaz->interfaz[$i]['passwo'],
+                                            'nom_aplica'  => $interfaz->interfaz[$i]['nombre'],
+                                            'num_manifi'  => $mDatDespac['cod_manifi'],
+                                            'cod_status'  => $cod_estado,
+                                            'usr_status'  => $regist['usuari'],
+                                            'obs_status'  => corregirTildes(addslashes($regist['observ'])),
+                                            'fec_inicia'  => $fec_inicia,
+                                            'fec_finalx'  => $fec_finalx,
+                                        ];
+                                        $respuesta2 = $oSoapClient->__call("setStatusDispatch", $mParams);
+                                    }
+                                    
+
                                     $mLogFile = '/var/www/html/ap/satt_intgps/logs/sendNovedades/'."log_novedades_".date( "Y_m_d" ).".log";
                                     $file = fopen( $mLogFile, "a+" );
                                     $reg = fwrite( $file, "\n---------------------------------------------------\n" );
@@ -5417,7 +5518,7 @@ class InsertNovedad {
                                             'pc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
                                             a.num_despac, aa.cod_manifi, bb.num_placax,
                                             a.cod_contro, a.fec_noveda, a.des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala,  
-                                            '' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, a.fec_creaci
+                                            '' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, a.fec_creaci, a.val_veloci
                                     FROM
                                             ".BASE_DATOS.".tab_despac_despac aa
                                 INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
@@ -5452,7 +5553,7 @@ class InsertNovedad {
                                             'nc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
                                             a.num_despac, aa.cod_manifi, bb.num_placax, 
                                             a.cod_contro, a.fec_contro AS fec_noveda, a.obs_contro AS des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala, 
-                                            a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, a.fec_creaci
+                                            a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, a.fec_creaci, a.val_veloci
                                     FROM
                                             ".BASE_DATOS.".tab_despac_despac aa
                                 INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
@@ -5529,6 +5630,8 @@ class InsertNovedad {
                       'kms_vehicu'  => $mReporte['val_veloci'],
                       'man_ordcar'  => NULL
                   ];
+                  
+
                     ini_set("soap.wsdl_cache_enabled", 0);
                     $mSoap = new SoapClient( $mReporte['url_webser'], ['trace' => 1,'exception' => 1 ] );
                     if($mReporte['metodo']=='pc'){
