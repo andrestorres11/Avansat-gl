@@ -30,7 +30,7 @@ class Ins_emptra_agenci {
  *  \brief: Trae las transportadoras
  *  \author: Ing. Fabian Salinas
  * \date: 17/06/2015
- * \date modified: dia/mes/a√±o
+ * \date modified: dia/mes/aÒo
  *  \param: 
  *  \return:
  */
@@ -66,7 +66,7 @@ public function getTransp()
      *  \brief: funcion inicial para buscar una transportadora
      *  \author: Ing. Alexander Correa
      *  \date: 09/09/2015
-     *  \date modified: dia/mes/a√±o
+     *  \date modified: dia/mes/aÒo
      *  \param: 
      *  \param: 
      *  \return 
@@ -236,17 +236,17 @@ public function getTransp()
           $mHtml->OpenDiv("id:contentID; class:contentAccordion");
             # Accordion1
             $mHtml->OpenDiv("id:DatosBasicosID; class:accordion");
-              $mHtml->SetBody("<h3 style='padding:6px;'><center>Informaci√≥n de la Agencia</center></h3>");
+              $mHtml->SetBody("<h3 style='padding:6px;'><center>Informacion de la Agencia</center></h3>");
             $mHtml->OpenDiv("id:sec1;");
               $mHtml->OpenDiv("id:form1; class:contentAccordionForm");
                 $mHtml->Table("tr");
                   $mHtml->Label("Transportadora:", "width:25%; *:1;");
-                    $mHtml->Input(array("type" => "alpha", "name" => "transp", "id" => "nom_transpID", "width" => "25%", "maxlength" => "100", "minlength"=>"5", "validate" => "dir", "obl" => "1", "value" => $datos->abr_tercer));
+                    $mHtml->Input(array("type" => "alpha", "name" => "transp", "id" => "nom_transpID", "width" => "25%", "maxlength" => "100", "minlength"=>"3", "validate" => "dir", "obl" => "1", "value" => $datos->abr_tercer));
                     $mHtml->Label(utf8_decode("C&oacute;digo:"), "width:25%; :1;");
                     $mHtml->Input(array("type" => "numeric", "name" => "agenci[cod_agenci]", "id" => "num_verifiID", "width" => "10%", "disabled"=>true, "value" =>  $datos->cod_agenci, "end" => true));
 
                     $mHtml->Label("Nombre De La Agencia:", "width:25%; *:1;");
-                    $mHtml->Input(array("type" => "alpha", "name" => "agenci[nom_agenci]", "validate" => "alpha", "obl" => "1", "minlength" => "5", "maxlength" => "50", "id" => "nom_agenciID", "width" => "25%", "value" => $datos->nom_agenci));
+                    $mHtml->Input(array("type" => "alpha", "name" => "agenci[nom_agenci]", "validate" => "alpha", "obl" => "1", "minlength" => "3", "maxlength" => "50", "id" => "nom_agenciID", "width" => "25%", "value" => $datos->nom_agenci));
 
                     $mHtml->Label(utf8_decode("Ciudad:"), "width:25%; *:1;");
                     $mHtml->Input(array("type" => "alpha", "name" => "ciudad", "id" => "ciudadID", "size"=>30, "validate" => "dir",  "obl" => "1", "minlength" => "5", "maxlength" => "100", "width" => "100px", "value" => $datos->abr_ciudad, "end" => true));
