@@ -15,7 +15,7 @@
 @include_once(dirname(dirname(__DIR__))."/".DIR_APLICA_CENTRAL . "/lib/general/constantes.inc");   
 
 // CONSULTA LAS NOVEDADES DE INTEGRADOR GPS REGISTRADAS EN EL GL INTEGRADOR PARA REENVIARLAS AL TMS (Empresrial, Pyme) DEL CLIENTE
- 
+
 
 class cronAvansatTmsReportesUbicacion
 {
@@ -60,7 +60,7 @@ class cronAvansatTmsReportesUbicacion
 			//}
 			self::envioReportes();
 			if (sizeof(self::$cReportes) > 0) {
-				self::actualizarEnviados(); // actualiza como enviado los que si pasaron al TMS despues de acabar el foreach de los pendientes
+				//self::actualizarEnviados(); // actualiza como enviado los que si pasaron al TMS despues de acabar el foreach de los pendientes
 			}
 		}
 		else{
@@ -89,16 +89,13 @@ class cronAvansatTmsReportesUbicacion
 								SELECT
 								        'pc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
 										a.num_despac, a.cod_consec as 'cod_connov', aa.cod_manifi, bb.num_placax,
-										a.cod_contro, a.fec_noveda, a.des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala,  
-										'' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, f.rut_iconox, a.fec_creaci
+										a.cod_contro, a.fec_noveda, a.des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma, h.ind_soltie as 'ind_tiempo', h.ind_novesp as 'nov_especi', h.ind_manale as 'ind_manala', h.ind_gpsalar, 
+										'' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, f.rut_iconox, a.fec_creaci, a.val_veloci, f.cod_tipoxx
 								  FROM
 								        ".BASE_DATOS.".tab_despac_despac aa
 							 INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
-							 INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = (
-							 																										SELECT MAX(xx.num_consec) AS num_consec
-							 																										  FROM ".BASE_DATOS.".tab_transp_tipser xx
-							 																										 WHERE xx.cod_transp = bb.cod_transp
-							 																									 )
+							 INNER JOIN ".BASE_DATOS.".vis_transp_tipser vt ON vt.cod_transp = bb.cod_transp
+							 INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = vt.num_consec
 							 INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
 							 INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
 							 												AND ee.cod_operad = 53 /*Debe tener interfaz con TMS */
@@ -109,8 +106,8 @@ class cronAvansatTmsReportesUbicacion
 							  LEFT JOIN ".BASE_DATOS.".tab_errorx_noveda b  ON a.num_despac !=  b.num_despac 
 							 										   	   AND a.cod_contro !=  b.cod_contro
 							  LEFT JOIN ".BASE_DATOS.".tab_despac_sitio  c  ON a.cod_sitiox  =  c.cod_sitiox
-							  LEFT JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
-
+							  INNER JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+							LEFT JOIN ".BASE_DATOS.".tab_parame_novseg h ON a.cod_noveda = h.cod_noveda AND cc.cod_transp = h.cod_transp
 							     WHERE
 							     		a.ind_enviad = 0
 							     	AND aa.ind_anulad = 'R'
@@ -119,25 +116,23 @@ class cronAvansatTmsReportesUbicacion
 							     	AND aa.fec_llegad IS NULL  
 							     	AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29)
 							     	-- AND aa.num_despac IN (271)
-									 AND bb.cod_transp NOT IN('830109831')
+									 AND bb.cod_transp NOT IN('830109831', '830079716')
 									 AND ee.ind_integr = 1
 							     	AND DATE(a.fec_creaci) = DATE(NOW())
+									GROUP BY a.cod_consec
 							)
 							UNION ALL
 							(
 								SELECT
 								        'nc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
 										a.num_despac, a.cod_consec as 'cod_connov', aa.cod_manifi, bb.num_placax, 
-										a.cod_contro, a.fec_contro AS fec_noveda, a.obs_contro AS des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala, 
-										a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, f.rut_iconox, a.fec_creaci
+										a.cod_contro, a.fec_contro AS fec_noveda, a.obs_contro AS des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma, h.ind_soltie as 'ind_tiempo', h.ind_novesp as 'nov_especi', h.ind_manale as 'ind_manala', h.ind_gpsalar,
+										a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, f.rut_iconox, a.fec_creaci, a.val_veloci, f.cod_tipoxx
 								  FROM
 								        ".BASE_DATOS.".tab_despac_despac aa
 							 INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
-							 INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = (
-							 																										SELECT MAX(xx.num_consec) AS num_consec
-							 																										  FROM ".BASE_DATOS.".tab_transp_tipser xx
-							 																										 WHERE xx.cod_transp = bb.cod_transp
-							 																									 )
+							 INNER JOIN ".BASE_DATOS.".vis_transp_tipser vt ON vt.cod_transp = bb.cod_transp
+							 INNER JOIN ".BASE_DATOS.".tab_transp_tipser cc ON bb.cod_transp = cc.cod_transp AND cc.num_consec = vt.num_consec
 							 INNER JOIN ".BD_STANDA.".tab_genera_server  dd  ON cc.cod_server = dd.cod_server
 							 INNER JOIN ".BASE_DATOS.".tab_interf_parame ee  ON cc.cod_transp = ee.cod_transp 
 							 												AND ee.cod_operad = 53 /*Debe tener interfaz con TMS */
@@ -148,7 +143,8 @@ class cronAvansatTmsReportesUbicacion
 							  LEFT JOIN ".BASE_DATOS.".tab_errorx_noveda b  ON a.num_despac != b.num_despac 
 							 										       AND a.cod_contro != b.cod_contro
 							  LEFT JOIN ".BASE_DATOS.".tab_despac_sitio  c  ON a.cod_sitiox = c.cod_sitiox
-							  LEFT JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+							  INNER JOIN ".BASE_DATOS.".tab_genera_noveda f ON a.cod_noveda  =  f.cod_noveda
+							  LEFT JOIN ".BASE_DATOS.".tab_parame_novseg h ON a.cod_noveda = h.cod_noveda AND cc.cod_transp = h.cod_transp
 
 							     WHERE
 							     		a.ind_enviad = 0
@@ -159,14 +155,14 @@ class cronAvansatTmsReportesUbicacion
 							     	AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29)
 									AND ee.ind_integr = 1
 							     	-- AND aa.num_despac IN (271)
-									 AND bb.cod_transp NOT IN('830109831')
+									 AND bb.cod_transp NOT IN('830109831', '830079716')
 							     	AND DATE(a.fec_creaci) = DATE(NOW())
-							     	GROUP BY aa.num_despac, a.fec_creaci
+							     	GROUP BY aa.num_despac, a.fec_creaci, a.cod_consec
 							)
 							ORDER BY cod_server
-
 					  ";
-			//echo "<pre>"; print_r( $mQuery );  echo "</pre>";	 
+					  
+			echo "<pre>"; print_r( $mQuery );  echo "</pre>";	 
 			self::$cPendientes = self::setExecuteQuery($mQuery, NULL,true);
 
 			//echo "<pre>"; print_r( self::$cPendientes );  echo "</pre>"; 
@@ -203,7 +199,7 @@ class cronAvansatTmsReportesUbicacion
 				}
 				else
 				{
-					$mDesNoveda  = 'Coordenadas: SIN COORDENADAS ';
+					$mDesNoveda  = 'Coordenadas: SIN COORDENADAS';
 				}
 
 				$urlIcon = NULL;
@@ -218,7 +214,7 @@ class cronAvansatTmsReportesUbicacion
 								'nom_aplica'  => $mReporte['nom_operad'],
 								'num_manifi'  => $mReporte['cod_manifi'],
 								'num_placax'  => $mReporte['num_placax'],
-								'cod_novbas'  => $mReporte['cod_noveda'] >= 9000 ? $mReporte['cod_noveda'] : '0',//$mReporte['cod_noveda'], //9183,
+								'cod_novbas'  => $mReporte['cod_noveda'],//$mReporte['cod_noveda'], //9183,
 								'cod_conbas'  => 0,
 								'tim_duraci'  => $mReporte['tiem_duraci'], 
 								//'fec_noveda'  => $mReporte['fec_noveda'],
@@ -227,12 +223,13 @@ class cronAvansatTmsReportesUbicacion
 								'nom_contro'  => NULL,
 								'nom_sitiox'  => $mReporte['nom_sitiox'],
 								'cod_confar'  => $mReporte['cod_contro'],
-								'cod_novfar'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['cod_noveda'], 
-								'nom_noveda'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['nom_noveda'], 
+								'cod_novfar'  => $mReporte['cod_noveda'],
+								'nom_noveda'  => $mReporte['nom_noveda'], 
 								'ind_alarma'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['ind_alarma'],
-								'ind_tiempo'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['ind_tiempo'],
-								'nov_especi_' => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['nov_especi'],
-								'ind_manala'  => $mReporte['cod_noveda'] >= 9000 ? NULL : $mReporte['ind_manala'],
+								'ind_tiempo'  => $mReporte['ind_tiempo'],
+								'nov_especi_' => $mReporte['nov_especi'],
+								'ind_manala'  => $mReporte['cod_noveda'] >= 9000 ? '1' : $mReporte['ind_manala'],
+								'ind_gpsalar' => $mReporte['cod_noveda'] >= 9000 ?  $mReporte['ind_gpsalar'] : 0,
 								'bin_fotcon'  => NULL,
 								'bin_fotpre'  => NULL,
 								'cod_remdes'  => NULL,
@@ -240,7 +237,8 @@ class cronAvansatTmsReportesUbicacion
 								'tim_ultpun'  => NULL,
 								'kms_vehicu'  => $mReporte['val_veloci'],
 								'man_ordcar'  => NULL,
-								'url_iconov'  => $urlIcon
+								'url_iconov'  => $urlIcon,
+								'tip_noveda' => $mReporte['cod_tipoxx']
 							];
 				echo "<pre style='display:none';> <hr>".$mReporte['num_despac']." - ".$mReporte['fec_creaci']; print_r( $mParams); echo "</pre>";  //die();
 				ini_set("soap.wsdl_cache_enabled", 0);
@@ -289,8 +287,10 @@ class cronAvansatTmsReportesUbicacion
 					self::$cReportes[$mIndex]['origen'] = $mReporte['origen'];
 					self::$cReportes[$mIndex]['num_despac'] = $mReporte['num_despac'];
 					self::$cReportes[$mIndex]['fec_creaci'] = $mReporte['fec_creaci'];
+					self::$cReportes[$mIndex]['cod_connov'] = $mReporte['cod_connov'];
 					self::setTransaccion( $mReporte , $mResulta);
 					echo "<pre>OK :  ".$mReporte['num_despac']." -> ".$mReporte['cod_manifi']."- ".$mReporte['url_webser']." -> "; print_r($mMsgResp[1] ); echo "</pre>";  
+					self::actualizarEnviado(self::$cReportes[$mIndex]);
 				}
 
 			}
@@ -310,6 +310,27 @@ class cronAvansatTmsReportesUbicacion
 		}
 	}
   
+
+	/*! \fn: actualizarEnviado
+	*  \brief: funcion que coloca la bandera de reporte enviado, si curl no genera error
+	*  \author: Ing. Nelson Liberato
+	*  \date: 2021-12-02
+	*  \return: none
+	*/
+	private function actualizarEnviado( $mReporte = NULL )
+	{
+		try 
+		{
+			print_r($mReporte);
+			$mUpdate = "UPDATE ".BASE_DATOS.".".$mReporte['origen']." SET ind_enviad = 1 WHERE num_despac = ". $mReporte['num_despac']." AND cod_consec='".$mReporte['cod_connov']."' ";
+			echo "<pre><hr>UPDATE "; print_r($mUpdate); echo "</pre>";  
+			self::setExecuteQuery($mUpdate, NULL,false); 
+		} 
+		catch (Exception $e) 
+		{
+			
+		}
+	}
 
 	/*! \fn: actualizarEnviados
 	*  \brief: funcion que coloca la bandera de reporte enviado, si curl no genera error
@@ -336,8 +357,8 @@ class cronAvansatTmsReportesUbicacion
 
 
 	/*! \fn: transaTable
-	*  \brief: consulta la información de la tabla transaccional de la novedades
-	*  \author: Ing. Cristian Andrés Torres
+	*  \brief: consulta la informaciï¿½n de la tabla transaccional de la novedades
+	*  \author: Ing. Cristian Andrï¿½s Torres
 	*  \date: 2021-12-02
 	*  \return: none
 	*/
@@ -402,7 +423,7 @@ class cronAvansatTmsReportesUbicacion
 	{
 		try { 
 
-			self::$cConn  = new PDO('mysql:host=oet-avansatglbd.intrared.net;dbname='.BASE_DATOS.';port=3306;charset=utf8', USUARIO, CLAVE, [PDO::ATTR_PERSISTENT => true] );
+			self::$cConn  = new PDO('mysql:host=oet-avansatglbd.intrared.net;dbname='.BASE_DATOS.';port=3306;charset=utf8', 'atorres', 'oPi;itas', [PDO::ATTR_PERSISTENT => true] );
 
             self::$cConn ->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION );
             self::$cConn ->setAttribute( PDO::ATTR_EMULATE_PREPARES, false );

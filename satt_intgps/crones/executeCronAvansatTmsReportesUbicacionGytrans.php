@@ -13,7 +13,7 @@
 
 @include_once(dirname(__DIR__)."/constantes.inc");   
 @include_once(dirname(dirname(__DIR__))."/".DIR_APLICA_CENTRAL . "/lib/general/constantes.inc");   
-
+die();
 // CONSULTA LAS NOVEDADES DE INTEGRADOR GPS REGISTRADAS EN EL GL INTEGRADOR PARA REENVIARLAS AL TMS (Empresrial, Pyme) DEL CLIENTE
  
 
@@ -90,7 +90,7 @@ class cronAvansatTmsReportesUbicacion
 								        'pc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
 										a.num_despac, a.cod_consec as 'cod_connov', aa.cod_manifi, bb.num_placax,
 										a.cod_contro, a.fec_noveda, a.des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala,  
-										'' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, f.rut_iconox, a.fec_creaci
+										'' AS val_longit, '' AS val_latitu, 'tab_despac_noveda' AS origen, f.rut_iconox, a.fec_creaci, a.val_veloci
 								  FROM
 								        ".BASE_DATOS.".tab_despac_despac aa
 							 INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
@@ -130,7 +130,7 @@ class cronAvansatTmsReportesUbicacion
 								        'nc' AS metodo, cc.num_consec, cc.cod_transp, cc.cod_server, dd.nom_server, dd.url_webser, ee.nom_operad, ee.nom_usuari, ee.clv_usuari,
 										a.num_despac, a.cod_consec as 'cod_connov', aa.cod_manifi, bb.num_placax, 
 										a.cod_contro, a.fec_contro AS fec_noveda, a.obs_contro AS des_noveda, a.tiem_duraci, a.cod_sitiox, c.nom_sitiox, a.cod_noveda, f.nom_noveda, f.ind_alarma,f.ind_tiempo, f.nov_especi,f.ind_manala, 
-										a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, f.rut_iconox, a.fec_creaci
+										a.val_longit, a.val_latitu, 'tab_despac_contro' AS origen, f.rut_iconox, a.fec_creaci, a.val_veloci
 								  FROM
 								        ".BASE_DATOS.".tab_despac_despac aa
 							 INNER JOIN ".BASE_DATOS.".tab_despac_vehige bb ON aa.num_despac = bb.num_despac
@@ -205,7 +205,7 @@ class cronAvansatTmsReportesUbicacion
 				}
 				else
 				{
-					$mDesNoveda  = 'Coordenadas: SIN COORDENADAS ';
+					$mDesNoveda  = 'Coordenadas: SIN COORDENADAS -- ';
 				}
 
 				$urlIcon = NULL;
@@ -338,8 +338,8 @@ class cronAvansatTmsReportesUbicacion
 
 
 	/*! \fn: transaTable
-	*  \brief: consulta la información de la tabla transaccional de la novedades
-	*  \author: Ing. Cristian Andrés Torres
+	*  \brief: consulta la informaciï¿½n de la tabla transaccional de la novedades
+	*  \author: Ing. Cristian Andrï¿½s Torres
 	*  \date: 2021-12-02
 	*  \return: none
 	*/

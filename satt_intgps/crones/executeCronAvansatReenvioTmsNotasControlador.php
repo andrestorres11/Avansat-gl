@@ -94,7 +94,7 @@ class cronAvansatTmsReportesUbicacion
 									AND a.val_longit IS NULL
 									AND a.val_latitu IS NULL
 									AND (a.cod_noveda < 9000 OR a.cod_noveda = '9995' OR a.cod_noveda = '9996' OR a.cod_noveda = '9226')
-								
+									AND a.cod_noveda != 77
 						GROUP BY aa.num_despac, a.fec_creaci		
 						ORDER BY cod_server
 
@@ -134,6 +134,7 @@ class cronAvansatTmsReportesUbicacion
 												AND dd.cod_server IN (14,16,17,18,19,20,21,23,24,25,26,27,28,29)
 												AND a.fec_creaci BETWEEN '".$fecha_ayerxx." 00:00:00' AND '".$fecha_actual." 23:59:59'
 												AND (a.cod_noveda < 9000 OR a.cod_noveda = '9995' OR a.cod_noveda = '9996' OR a.cod_noveda = '9226')
+												AND a.cod_noveda != 77
 										GROUP BY aa.num_despac, a.fec_creaci		
 										ORDER BY cod_server
 						)
@@ -180,7 +181,7 @@ class cronAvansatTmsReportesUbicacion
 								'tim_duraci'  => $mReporte['tiem_duraci'], 
 								//'fec_noveda'  => $mReporte['fec_noveda'],
 								'fec_noveda'  => $mReporte['fec_creaci'],
-								'des_noveda'  => $mReporte['des_noveda'],
+								'des_noveda'  => $mReporte['des_noveda']." -- .",
 								'nom_contro'  => $mReporte['nom_contro'],
 								'nom_sitiox'  => $mReporte['nom_sitiox'],
 								'cod_confar'  => $mReporte['cod_contro'],

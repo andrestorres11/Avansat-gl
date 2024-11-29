@@ -86,7 +86,7 @@ class cronItinerario
                            AND a.gps_usuari IS NOT NULL
                            AND a.gps_paswor IS NOT NULL
                            -- AND (b.cod_respon IS NULL OR b.cod_respon = 201)
-                           AND (b.fec_envint IS NULL OR TIMESTAMPDIFF(MINUTE, fec_envint, NOW()) > 10);
+                           AND (b.fec_envint IS NULL OR TIMESTAMPDIFF(MINUTE, fec_envint, NOW()) > 10) ;
                       ";
         echo "<pre>".$query."</pre>";   
         $mExec = $this->db4->ExecuteCons($query); 
@@ -133,6 +133,18 @@ class cronItinerario
                 $value["url_webser"] = 'https://oet-central.intrared.net/ap/interf/APIIntegradorGPS/v2/index.php';
             }
 
+
+            //Parche para no enviar la integracion a widetech
+            if($value['cod_transp']=='900306833' && $value['gps_operad']=='8301060079'){
+                $mIndDesEta['TIPO'] = 'HUB';
+                $value["url_webser"] = 'https://oet-central.intrared.net/ap/interf/APIIntegradorGPS/v2/index.php';
+            }
+
+            //Parche para no enviar la integracion a widetech
+            if($value['cod_transp']=='900284054' && $value['gps_operad']=='8301060079'){
+                $mIndDesEta['TIPO'] = 'HUB';
+                $value["url_webser"] = 'https://oet-central.intrared.net/ap/interf/APIIntegradorGPS/v2/index.php';
+            }
             
             if($mIndDesEta['TIPO'] == 'FULL' || $mIndDesEta['TIPO'] == 'BASICO_1' || $mIndDesEta['TIPO'] == 'BASICO_2')
             { 
@@ -140,7 +152,6 @@ class cronItinerario
                 $sWid = 1;
             }
             else {
-                //Parche para evitar errores
 
                 //Error de Fecha menor a fecha actual - 201
                 if($value["cod_respon"] == 201){
