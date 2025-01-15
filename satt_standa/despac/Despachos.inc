@@ -3503,6 +3503,31 @@ class Despachos
                         </spam>';
                     }
                 }
+                
+                $ori = $mNovedades[$i][tab_origen] == 1 ? 'NC' : 'PC';
+                $mBtnOpePrev = "";
+                if($mNovedades[$i][cod_noveda]=="24"){
+                    $cod_consec = $mNovedades[$i][cod_consec]; 
+   
+                    if(self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, true)){
+                        $informaOpePrev = self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, false);
+                        $mBtnOpePrev = '
+                        <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
+                        onclick="openPDF(\'' . $informaOpePrev[0]['cod_consec'] . '\')">
+                        [Ver O.P.]
+                        </spam>';
+                    }else{
+                        $mBtnOpePrev = '
+                        <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
+                        onclick="showFormOperativoPreventivo(\''.$ori.'\', \''.$cod_consec.'\')">
+                        [Reg. O.P.]
+                        </spam>';
+                    }
+                    
+                }
+
+
+
                 if( $_RUTASX[$i][nov_especi] == 1 )
                 {
                     $mStyle = $j % 2 ? 'cellPar' : 'cellImpar';
@@ -3579,7 +3604,7 @@ class Despachos
                     }
 
                     if( $mViewUsu->edi_noveda->ind_visibl == 1 )
-                    $mHtml->Label( $mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
+                    $mHtml->Label( $mBtnOpePrev."".$mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
 
 
                     /*if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
@@ -10306,8 +10331,9 @@ class Despachos
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S'  
                                         AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
-                                        /*AND DATE(a.fec_creaci) = DATE(NOW())*/
+                                        AND DATE(a.fec_creaci) = DATE(NOW())
                                     GROUP BY aa.num_despac, a.fec_creaci
+                                    
                                 )
                                 UNION ALL
                                 (
@@ -10342,14 +10368,38 @@ class Despachos
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S' 
                                         AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
-                                        /*AND DATE(a.fec_creaci) = DATE(NOW())*/
+                                        AND DATE(a.fec_creaci) = DATE(NOW())
                                         GROUP BY aa.num_despac, a.fec_creaci
+                                        
                                 )
                                 ORDER BY cod_server
                         ";
             $mConsult = new Consulta($mQuery, $this->conexion);
             $cNovPendientes = $mConsult->ret_matrix('a');
             return $cNovPendientes;
+    }
+
+
+    function getOperacionPreventiva($num_despac, $num_consec, $tip_seguim, $flag = true){
+        $query = "SELECT cod_consec 
+                        FROM " . BASE_DATOS . ".tab_noveda_opprev 
+                        WHERE num_despac = '" . $num_despac . "' AND
+                              cod_connov = '" . $num_consec . "' AND
+                              tip_seguim = '" . $tip_seguim . "'";
+        
+        $consulta = new Consulta($query, $this->conexion);
+        $getOpePrev = $consulta->ret_matrix('a');
+        if($flag){
+            if(sizeof($getOpePrev)>0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return $getOpePrev;
+        }
+        
+        
     }
 }
 
