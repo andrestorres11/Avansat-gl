@@ -1312,6 +1312,39 @@ function LoadPopupJQ3(opcion, titulo, alto, ancho, redimen, dragg, lockBack) {
 	}
 }
 
+
+function LoadPopupJQ4(opcion, titulo, alto, ancho, redimen, dragg, lockBack) {
+	try {
+		if (opcion == 'hidden') {
+			$("#popID").dialog('close');
+		} else if (opcion == 'close') {
+			$("#popID").dialog("destroy").remove();
+		} else {
+			$("<div id='popID' name='pop' />").dialog({
+				height: alto,
+				width: ancho,
+				modal: lockBack,
+				title: titulo,
+				closeOnEscape: false,
+				resizable: redimen,
+				draggable: dragg,
+				buttons: {
+					CERRAR: function() {
+						LoadPopupJQ3('close')
+					}
+				},
+				close: function() {
+                    // Asegurar que el pop-up se destruye correctamente al cerrar con la "X"
+                    LoadPopupJQ3('close');
+                }
+			});
+		}
+	} catch (e) {
+		console.log("Error Function LoadPopupJQ3: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
 /*! \fn: getFormNoveda
 * \brief: redirecciona formulario novedad
 * \author: Edward Serrano
@@ -1871,4 +1904,108 @@ function getListDespac(cod_despac, cod_manifi)
         console.log("Error Fuction getListDespac: " + e.message + "\nLine: " + e.lineNumber);
         return false;
     }
+}
+
+
+
+function showFormOperativoPreventivo(ori, cod_consec) {
+	try {
+		var fStandar = $("#dir_aplicaID");
+		var atributes = 'Ajax=on&Option=FormNovedadOperativoPreventivo&standa=' + fStandar.val();
+		atributes += '&num_despac=' + $("#num_despacID").val()+'&ori='+ori+'&consec='+cod_consec;
+		//Load PopUp
+		$("#popID").empty();
+		LoadPopupJQ4('open', 'Registro Operativo Preventivo - Informacion Adicional', 'auto', '700px', false, false, true);
+		$.ajax({
+			url: "../" + fStandar.val() + "/despac/ajax_despac_opprev.php",
+			type: "POST",
+			data: atributes,
+			async: false,
+			beforeSend: function() {
+				$("#popID").html("<center>Cargando Formulario...</center>");
+			},
+			success: function(data) {
+				$("#popID").html(data);
+			},
+			complete: function() {
+				CenterDIV1();
+			}
+		});
+	} catch (e) {
+		console.log("Error Fuction showFormOperativoPreventivo: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+function validateAndSubmitForm() {
+    var fStandar = $("#dir_aplicaID");
+    
+    const requiredFields = [
+        { id: 'persona_impulsa', name: 'Persona que impulsa el caso' },
+        { id: 'numero_contacto', name: 'Número de contacto' },
+        { id: 'empresa_generadora', name: 'Empresa generadora de la carga' },
+        { id: 'mercancia_transportada', name: 'Mercancí­a transportada' },
+        { id: 'ultimo_reporte', name: 'Último reporte' },
+        { id: 'descripcion_caso', name: 'Descripción del caso' },
+        { id: 'latitud', name: 'Latitud' },
+        { id: 'longitud', name: 'Longitud' }
+    ];
+
+    var isValid = true; 
+
+    $.each(requiredFields, function(index, field) {
+        var value = $("#" + field.id).val().trim();
+        if (!value) {
+            alert(`Por favor diligencie el campo: ${field.name}`);
+            $("#" + field.id).focus();
+            isValid = false;
+            return false; // Salir del bucle $.each
+        }
+    });
+
+    if (!isValid) {
+        return false; 
+    }
+
+    const additionalFields = {
+        Ajax: 'on',
+        Option: 'SaveNovedadOperativoPreventivo',
+        standa: fStandar.val(),
+		num_despac: $("#num_despacID").val(),
+		ori: $("#ori").val(),
+		consec: $("#consec").val()
+    };
+
+    var formData = $('#formOperativoPreventivo').serialize(); // Serializar el formulario existente
+
+    $.each(additionalFields, function(key, value) {
+        formData += `&${key}=${encodeURIComponent(value)}`;
+    });
+
+    $.ajax({
+        url: "../" + fStandar.val() + "/despac/ajax_despac_opprev.php", // URL del procesamiento
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            const result = JSON.parse(response);
+            if (result.success) {
+                alert(result.message);
+                LoadPopupJQ4('close'); // Cerrar el popup
+				location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        },
+        error: function(error) {
+            alert('Ocurrió un error al enviar el formulario');
+        }
+    });
+
+    return false; // Prevenir el envÃ­o estÃ¡ndar del formulario
+}
+
+function openPDF(cod_consec) {
+    const fStandar = $("#dir_aplicaID").val(); // Obtiene el valor de fStandar
+    const url = `../${fStandar}/inform/inf_operat_preven.php?cod_consec=${encodeURIComponent(cod_consec)}`;
+    window.open(url, '_blank'); // Abre en una nueva pestaña o ventana
 }
