@@ -170,7 +170,7 @@ class Maestra_lineas_lis
 
         // $query = "SELECT a.cod_lineax, a.cod_marcax, a.cod_marmin, a.nom_lineax, a.cod_mintra, a.ind_estado FROM ".BASE_DATOS.".tab_vehige_lineas a";
         $query = "SELECT a.cod_mintra, a.nom_lineax, a.cod_marcax, b.nom_marcax, c.cod_mintra AS mintra_cliente, c.ind_estado
-                            FROM ".BD_STANDA.".tab_vehige_lineas a
+                            FROM ".BD_STANDA.".tab_genera_lineas a
                             INNER JOIN ".BD_STANDA.".tab_genera_marcas b ON a.cod_marcax = b.cod_marcax
                             LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_mintra = c.cod_mintra AND a.cod_marcax = c.cod_marcax";
 
@@ -261,7 +261,7 @@ class Maestra_lineas_lis
         $vec_mensaj[1] = "";
 
         $sql_valida = "SELECT a.cod_lineax, a.cod_mintra, a.nom_lineax, a.cod_marcax, c.ind_estado, c.cod_mintra AS mintra_cliente
-        FROM ".BD_STANDA.".tab_vehige_lineas a
+        FROM ".BD_STANDA.".tab_genera_lineas a
               LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_mintra = c.cod_mintra AND a.cod_marcax = c.cod_marcax 
         WHERE a.cod_mintra = '".$_REQUEST["cod_lineas"]."' AND a.cod_marmin = '".$_REQUEST["cod_marcas"]."' ";
         $con_valida = new Consulta($sql_valida, $this->conexion);
@@ -308,9 +308,17 @@ class Maestra_lineas_lis
                 $val_linea['nom_lineax'] = str_replace("'","`",$val_linea['nom_lineax']);
             }
 
-            
+            $sql_linea_err_1 = "SELECT a.cod_lineax, a.cod_mintra, a.nom_lineax, a.cod_marcax FROM ".BASE_DATOS.".tab_vehige_lineas a
+            WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' AND a.cod_lineax != a.cod_mintra ";
+            $con_linea_err_1 = new Consulta($sql_linea_err_1, $this->conexion);
+            $err_linea_1 = $con_linea_err_1->ret_matriz();
 
-            if(sizeof($existe_marca) > 0){
+            $sql_linea_err_2 = "SELECT a.cod_lineax, a.cod_mintra, a.nom_lineax, a.cod_marcax FROM ".BASE_DATOS.".tab_vehige_lineas a
+            WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' AND a.cod_marcax != a.cod_marmin ";
+            $con_linea_err_2 = new Consulta($sql_linea_err_2, $this->conexion);
+            $err_linea_2 = $con_linea_err_2->ret_matriz();
+
+            if(sizeof($existe_marca) > 0 && sizeof($err_linea_1) == 0 && sizeof($err_linea_2) == 0){
                 $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_vehige_lineas
                         (
                             cod_lineax, cod_marcax, cod_marmin,
@@ -341,6 +349,12 @@ class Maestra_lineas_lis
                 $vec_mensaj[0] = "3";
                 $vec_mensaj[1] = "<br />Hubo un fallo de sistema. Por favor, vuelva a intentar.";
             }
+        }else if(sizeof($err_linea_1) > 0){
+            $vec_mensaj[0] = "3";
+            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de la linea, donde los codigos de Avansat no coinciden con los del RNDC, por favor contactar con soporte para solventar la novedad";
+        }else if(sizeof($err_linea_2) > 0){
+            $vec_mensaj[0] = "3";
+            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de marcas de la linea, donde los codigos de Avansat no coinciden con los del RNDC, por favor contactar con soporte para solventar la novedad";
         }else{
             $vec_mensaj[0] = "3";
             $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." que desea insertar no tiene la marca insertada en su plataforma, por favor primero insertar la marca y posteriormente la línea";

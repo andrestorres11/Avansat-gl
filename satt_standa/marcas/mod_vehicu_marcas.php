@@ -287,12 +287,18 @@ class Mod_Vehicu_Marcas
 
             // $consec = $matriz_consec[0][0] + 1;
 
+            $sql_marca_err = "SELECT a.cod_marcax, a.nom_marcax, a.cod_mintra FROM ".BASE_DATOS.".tab_genera_marcas a
+                                WHERE a.cod_marcax = '".$_REQUEST['cod_marcas']."' AND a.cod_marcax != a.cod_mintra";
+            $con_marca_err = new Consulta($sql_marca_err, $this->conexion);
+            $err_marca = $con_marca_err->ret_matriz();
+
             $anti_comilla = strpos($val_marcax[0]['nom_marcax'],"'");
             if($anti_comilla !== false){ // Si encuentra comilla simple, se reemplaza por ` para evitar novedades en SQL
                 $val_marcax[0]['nom_marcax'] = str_replace("'","`",$val_marcax[0]['nom_marcax']);
             }
 
-            $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_genera_marcas
+            if(sizeof($err_marca) == 0){
+                $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_genera_marcas
                             (
                                 cod_marcax, nom_marcax, cod_mintra, 
                                 ind_estado, usr_creaci, fec_creaci, 
@@ -304,23 +310,29 @@ class Mod_Vehicu_Marcas
                                 NULL, NULL
                             )
                     ";
+            }
+            
         }
 
         $consul_1 = new Consulta($query_1, $this->conexion, "R");
 
-        
-        if (!mysql_errno())
-        {
-            $end = new Consulta("COMMIT", $this->conexion);
-            $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con código de ministerio ".$_REQUEST["cod_marcas"] ." ha sido ".$mensaje." con Éxito.";
-        }
-        else
-        {
-            $end = new Consulta("ROLLBACK", $this->conexion);
+        if(sizeof($err_marca) == 0){
+            if (!mysql_errno())
+            {
+                $end = new Consulta("COMMIT", $this->conexion);
+                $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con código de ministerio ".$_REQUEST["cod_marcas"] ." ha sido ".$mensaje." con Éxito.";
+            }
+            else
+            {
+                $end = new Consulta("ROLLBACK", $this->conexion);
+                $vec_mensaj[0] = "3";
+                $vec_mensaj[1] = "<br />Hubo un fallo de sistema. Por favor, vuelva a intentar.";
+            }
+        }else{
             $vec_mensaj[0] = "3";
-            $vec_mensaj[1] = "<br />Hubo un fallo de sistema. Por favor, vuelva a intentar.";
+            $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con código de ministerio ".$_REQUEST["cod_marcas"] ." tiene una falla en los codigos, donde los codigos de Avansat no coinciden con el del RNDC, por favor contactar con soporte para solventar la novedad";
         }
-        
+
         unset($_REQUEST["cod_marcas"]);
         unset($_REQUEST["nom_marcax"]);
         return $vec_mensaj;
