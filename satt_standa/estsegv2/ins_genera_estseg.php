@@ -175,7 +175,7 @@
                                                         <input type="text" id="num_soliciID" name="num_solici" size="8">
                                                     </div>
                                                     <div class="col-2 text-right">
-                                                      <label>Placa / Identificación:</label>
+                                                      <label>Placa / Identificaci&oacute;n:</label>
                                                     </div>
                                                     <div class="col-2">
                                                       <input type="text" id="num_identifiID" name="num_identifiID">
@@ -246,14 +246,14 @@
                                             </ul>
 
                                       <div class="tab-content" id="pills-tabContent">
-                                        '.$this->vRegistradas().'
-                                        '.$this->vFinalizadas().'
+                                        '.utf8_encode($this->vRegistradas()).'
+                                        '.utf8_encode($this->vFinalizadas()).'
                                       </div>
 
                                         </div>
                                     </div>
                                 </div>
-                                '.$this->nuevaSolicitudModal().'
+                                '.utf8_encode($this->nuevaSolicitudModal()).'
                                 '.$this->modalVisualizarPDF().'
                                 '.$this->modalVisualizarDocuments().'
                 </td>
@@ -476,14 +476,14 @@
                                   <div class="row">
                                     <div class="col-6">
                                       <div class="form-group">
-                                        <label for="nom_soliciID" class="labelinput">Número de Teléfono:</label>
-                                        <input class="form-control form-control-sm" type="text" placeholder="Número de Teléfono" id="tel_soliciID" name="tel_solici" disabled value="'.$info['tel_solici'].'">
+                                        <label for="nom_soliciID" class="labelinput">N&uacute;mero de Tel&eacute;fono:</label>
+                                        <input class="form-control form-control-sm" type="text" placeholder="N&uacute;mero de Tel&eacute;fono" id="tel_soliciID" name="tel_solici" disabled value="'.$info['tel_solici'].'">
                                       </div>
                                     </div>
                                     <div class="col-6">
                                       <div class="form-group">
-                                        <label for="nom_soliciID" class="labelinput">Número de celular:</label>
-                                        <input class="form-control form-control-sm" type="text" placeholder="Número de celular" id="cel_soliciID" name="cel_solici" disabled value="'.$info['cel_solici'].'">
+                                        <label for="nom_soliciID" class="labelinput">N&uacute;mero de celular:</label>
+                                        <input class="form-control form-control-sm" type="text" placeholder="N&uacute;mero de celular" id="cel_soliciID" name="cel_solici" disabled value="'.$info['cel_solici'].'">
                                       </div>
                                     </div>
 
@@ -511,7 +511,7 @@
                                         }
 
                                         echo '<li class="nav-item m-2">
-                                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">vehículo</a>
+                                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">veh&iacute;culo</a>
                                               </li>
                                               <li class="nav-item m-2">
                                                   <a class="btn btn-success btn-sm"  id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">'.$label_pestana.'</a>
@@ -534,7 +534,7 @@
                         }
 
                         echo '<li class="nav-item m-2">
-                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">vehículo</a>
+                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">veh&iacute;culo</a>
                               </li>
                               <li class="nav-item m-2">
                                   <a class="btn btn-success btn-sm"  id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">'.$label_pestana.'</a>
@@ -1206,7 +1206,7 @@
                             </div>
                           </div>';
             }
-            return $html;
+            return utf8_encode($html);
         }
 
         private function viewPillsVehiculo($info){
@@ -1487,7 +1487,7 @@
                       </div>
                     </div>  ';
           
-          return $html;
+          return utf8_encode($html);
         }
 
         private function viewPillsPoseedor($info){
@@ -1573,7 +1573,7 @@
             $html.='</div></div>';
            }
             $html.='</div>';
-            return $html;
+            return utf8_encode($html);
         }
 
         private function viewPillsPropietario($info){
@@ -1659,7 +1659,7 @@
                 $html.='</div></div>';
               }
             $html.='</div>';
-            return $html;
+            return utf8_encode($html);
         }
 
         private function viewPillsDespacho($info){
@@ -1720,7 +1720,7 @@
                 </div>
               </div>
             </div>';
-            return $html;
+            return utf8_encode($html);
         }
 
         //usado
@@ -1768,7 +1768,7 @@
                         </div>
                       </div>
                   </div>';
-          return $html;
+          return utf8_encode($html);
         }
 
 
@@ -1823,7 +1823,7 @@
                             <div class="col-md-6 col-sm-12 form-group" style="margin-bottom: 0 !important;">
                               <div class="row">
                                 <div class="col-md-12 col-sm-12 mb-2">
-                                  <label for="'.$registro['nom_slugxx'].'ID" class="labelinput docreq">'.$oblHtml.''.utf8_encode($registro['nom_fordoc']).'</label>
+                                  <label for="'.$registro['nom_slugxx'].'ID" class="labelinput docreq">'.$oblHtml.''.$registro['nom_fordoc'].'</label>
                                   <input type="file" class="inputDocument docreq" id="'.$registro['nom_slugxx'].'ID" name="'.$registro['nom_slugxx'].'" '.$attrDoc.'>
                                 </div>
                               </div>
@@ -2290,7 +2290,8 @@
               <table class="table table-bordered" id="tabla_inf_registradas">
                   <thead>
                       <tr>
-                          <th>No. Solicitud</th> 
+                          <th>No. Solicitud</th>
+                          <th>Estado</th> 
                           <th>Empresa Solicitante</th>
                           <th>Empresa Aseguradora</th>
                           <th>Tipo de Solicitud</th>
@@ -2882,6 +2883,10 @@ private function modalGuardadoFinal(){
                     </div>
                     <div class="col-9">
                       <div class="form-check form-check-inline">
+                        <input class="form-check-input req" type="radio" name="ind_estudi" id="ind_estudi3" value="PA">
+                        <label class="form-check-label" for="inlineRadio3">Pre-Aprobado</label>
+                      </div>
+                      <div class="form-check form-check-inline">
                         <input class="form-check-input req" type="radio" name="ind_estudi" id="ind_estudi1" value="A">
                         <label class="form-check-label" for="inlineRadio1">Recomendado</label>
                       </div>
@@ -2913,7 +2918,7 @@ private function modalGuardadoFinal(){
           </div>
         </div>
       </div>';
-      return $html;
+      return utf8_encode($html);
 }
 
   private function modalRegistrarOperadoresGps(){

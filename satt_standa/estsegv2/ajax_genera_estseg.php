@@ -966,7 +966,7 @@
               foreach ($mMatriz as $key => $datos) {
                 
                 $btn = '<center><h6><a href="index.php?cod_servic=20221025&amp;window=central&amp;opcion=formEstSeguridad&cod_solici='.$datos['cod_solici'].'""><span class="badge badge-pill badge-success c_pointer btn-success">'.$datos['cod_solici'].'</span></h6></a></center>';
-                if($datos['ind_estseg'] != 'P'){
+                if($datos['ind_estseg'] != 'P' && $datos['ind_estseg'] != 'PA'){
                   $btn = '<center><h6><span class="badge badge-pill badge-success c_pointer btn-success" data-dato="'.$datos['cod_solici'].'" onclick="consInfoSolicitud(this)">'.$datos['cod_solici'].'</span></h6></center>';
                 }
 
@@ -989,19 +989,27 @@
                 $fec_finali = new DateTime($datos['fec_finsol']);
                 $tie_transcu = $fec_creaci->diff($fec_finali);
                 
-                if($datos['ind_estseg']=='P'){
+                if($datos['ind_estseg']=='P' || $datos['ind_estseg']=='PA'){
 
                   $datos['nom_asegur'] = $datos['nom_asegur']!='' ||$datos['nom_asegur']!='NULL' ? $datos['nom_asegur'] : 'NR';
-
+                  if($datos['ind_estseg']=='P'){
+                    $bad = 'btn-danger';
+                    $tex_btn = 'Pendiente';
+                  }else if($datos['ind_estseg']=='PA'){
+                    $bad = 'btn-warning';
+                    $tex_btn = 'Pre-Aprobado';
+                  }
+                  $btn_estado = '<center><h6><span class="badge badge-pill badge-success c_pointer '.$bad.'">'.$tex_btn.'</span></h6></center>';
                   $arr_regist = array(
                     0 => $btn,
-                    1 => $datos['nom_tercer'],
-                    2 => $datos['nom_asegur'],
-                    3 => $datos['nom_tipest'],
-                    4 => $col_identi,
-                    5 => $col_nommar,
-                    6 => $datos['fec_creaci'],
-                    7 => $this->get_format($tie_transcu),
+                    1 => $btn_estado,
+                    2 => $datos['nom_tercer'],
+                    3 => $datos['nom_asegur'],
+                    4 => $datos['nom_tipest'],
+                    5 => $col_identi,
+                    6 => $col_nommar,
+                    7 => $datos['fec_creaci'],
+                    8 => $this->get_format($tie_transcu),
                   );
                   array_push($dataReturn['registrados'],(array)$arr_regist);
                 }else{
@@ -1443,7 +1451,7 @@
 
             
             $info['status']=200;
-            $info['response']='Informaciï¿½n registrada';
+            $info['response']='Información registrada';
             echo json_encode($info);
 
           }
@@ -1485,6 +1493,7 @@
           }
 
           function guardadoObservacion($cod_solici, $cod_fordoc, $obs_archiv){
+            $obs_archiv = addslashes($obs_archiv);
             $sql = "SELECT a.cod_fordoc 
             FROM ".BASE_DATOS.".tab_estseg_docume a 
           WHERE a.cod_solici = '".$cod_solici."' 
@@ -1787,7 +1796,7 @@
             $date = date("Y-m-d");
             $fec_venest = date("Y-m-d",strtotime($date."+ ".$dias." days"));
             $fecha_hora = $_REQUEST['fec_recdoc'].' '.$_REQUEST['hor_recdoc'];
-
+           
             if($process){
               $sql="UPDATE ".BASE_DATOS.".tab_estseg_solici
                         SET 
@@ -1805,6 +1814,9 @@
               $cod_estado = 3;
               if($_REQUEST['ind_estudi'] == 'C'){
                 $cod_estado = 4;
+              }
+              if($_REQUEST['ind_estudi'] == 'PA'){
+                $cod_estado = 5;
               }
               self::registraBitacora($cod_solici,$cod_estado,utf8_encode(ucfirst(strtolower($_REQUEST['obs_gestio']))));
               $info['status']=200; 
@@ -3030,6 +3042,7 @@
             $mail->send();
         }
 
+
         function getPDFEstSeg( $cod_person, $cod_solici ){
           $mSelect = "SELECT b.nom_archiv, b.nom_tipfil, a.nom_fordoc, b.obs_archiv
                       FROM ".BASE_DATOS.".tab_estseg_fordoc a
@@ -3126,7 +3139,7 @@
         }
        
         //usado
-        private function sendEmail(){
+        /*private function sendEmail(){
           try {
                 $dataResp = self::armaPDF();
 
@@ -3188,69 +3201,235 @@
               )
             ));
           }
-        }
-
-        private function reSendEmail(){
+        }*/
+      
+        private function sendEmail() {
           try {
-                  $cod_solici = $_REQUEST['cod_solici'];
-                  $mSelect = "SELECT fil_result
-                                FROM ".BASE_DATOS.".tab_estseg_solici
-                              WHERE 
-                              cod_solici = '".$cod_solici."'";
-                  $query = new Consulta($mSelect, self::$conexion);
-                  $docume = $query -> ret_matriz('a')[0];
-                  if($docume['fil_result'] == NULL){
-                    throw new Exception("No hay archivo PDF Generado", "2001");
+              // Generar el PDF
+              $dataResp = self::armaPDF();
+              if (!$dataResp['status']) {
+                  throw new Exception("El archivo PDF no pudo ser generado", "2001");
+              }
+      
+              $cod_solici = $_REQUEST['cod_solici'];
+      
+              // Obtener el nombre del archivo PDF desde la base de datos
+              $mSelect = "SELECT fil_result FROM " . BASE_DATOS . ".tab_estseg_solici WHERE cod_solici = '" . $cod_solici . "'";
+              $query = new Consulta($mSelect, self::$conexion);
+              $docume = $query->ret_matriz('a')[0];
+      
+              // Obtener los correos desde la solicitud
+              $emailsTotal = $_REQUEST['emails'];
+              $emails = explode(",", $emailsTotal);
+              $subject = 'RESULTADO DE ESTUDIO DE SEGURIDAD No. ' . $cod_solici;
+      
+              // Cargar la plantilla de email
+              $tmp_file = dirname(dirname(__FILE__)) . '/estsegv2/planti/template-email.html';
+              if (file_exists($tmp_file)) {
+                  $mHtml = file_get_contents($tmp_file);
+              } else {
+                  $mHtml = "<html><body><p>No se encontró la plantilla de email.</p></body></html>";
+              }
+      
+              // Contenido del correo
+              $contenido = '<p>Centro Logístico FARO hace el envío del documento adjunto en este correo con el resultado del estudio de seguridad No. <strong>' . $cod_solici . '</strong></p>
+                            <p>No responder -- Este correo ha sido creado automáticamente.</p>';
+      
+              // Reemplazo de variables en la plantilla
+              $mHtml = str_replace([
+                  '$subject', 
+                  '$contenido', 
+                  '$logo', 
+                  '$ano'
+              ], [
+                  $subject, 
+                  utf8_encode($contenido), 
+                  LOGOFARO, 
+                  date('Y')
+              ], $mHtml);
+      
+              // Configurar destinatarios
+              $to = implode(',', array_map('trim', $emails));
+              $from = 'seguimientos@faro.com.co';
+      
+              if (empty($to)) {
+                  error_log("No hay destinatarios en el correo.");
+                  throw new Exception("No hay destinatarios válidos", "2002");
+              }
+      
+              // Configurar el boundary para manejar el archivo adjunto
+              $boundary = md5(time());
+      
+              // Encabezados del correo
+              $headers = "MIME-Version: 1.0\r\n";
+              $headers .= "From: <$from>\r\n";
+              $headers .= "Reply-To: $from\r\n";
+              $headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
+      
+              // Cuerpo del mensaje en formato HTML
+              $message = "--$boundary\r\n";
+              $message .= "Content-Type: text/html; charset=UTF-8\r\n";
+              $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
+              $message .= $mHtml . "\r\n\r\n";
+      
+              // Adjuntar el PDF si existe
+              if (!empty($docume['fil_result'])) {
+                  $file_path = URL_ARCHIV . "files/adj_estseg/pdfs/" . $docume['fil_result'];
+                  if (is_readable($file_path)) {
+                      $file_content = file_get_contents($file_path);
+                      $file_content = chunk_split(base64_encode($file_content));
+      
+                      $message .= "--$boundary\r\n";
+                      $message .= "Content-Type: application/pdf; name=\"" . $docume['fil_result'] . "\"\r\n";
+                      $message .= "Content-Disposition: attachment; filename=\"" . $docume['fil_result'] . "\"\r\n";
+                      $message .= "Content-Transfer-Encoding: base64\r\n\r\n";
+                      $message .= $file_content . "\r\n\r\n";
+                  } else {
+                      error_log("El archivo PDF no se encontró o no es legible: " . $file_path);
+                      throw new Exception("El archivo adjunto no está disponible", "2003");
                   }
-
-                  $emailsTotal = $_REQUEST['emails'];
-                  $subject = 'REE - :: RESULTADO DE ESTUDIO DE SEGURIDAD No. '.$cod_solici;
-
-                  $emails = explode(",", $emailsTotal);
-                  $tmp_file = dirname(dirname(__FILE__)).'/estsegv2/planti/template-email.html';
-                  
-                  $contenido = '<p>Centro Log&iacute;stico FARO hace el Reenvio del documento adjunto en este correo con el resultado del estudio de seguridad No.<strong>'.$cod_solici.'</strong></p>
-                                <p>No responder -- Este correo ha sido creado automaticamente.</p>';
-                  $logo = LOGOFARO;
-                  $ano = date('Y');
-                  $thefile = implode("", file( $tmp_file ) );
-                  $thefile = addslashes($thefile);
-                  $thefile = "\$r_file=\"".$thefile."\";";
-                  eval( $thefile );
-                  $mHtml = $r_file;
-                  require_once("../planti/class.phpmailer.php");
-                  $mail = new PHPMailer();
-                  $mail->Host = "localhost";
-                  $mail->From = 'seguimientos@faro.com.co';
-                  $mail->FromName = 'EST. SEGURIDAD';
-                  $mail->Subject = $subject ;
-                  foreach($emails as $email){
-                    $mail->AddAddress( $email );
-                  }
-                  $mail->Body = $mHtml;
-                  $mail->IsHTML( true );
-                  if($docume['fil_result'] != NULL){
-                    $mail->AddAttachment(URL_ARCHIV."files/adj_estseg/pdfs/".$docume['fil_result']);
-                  }
-                  if($mail->Send()){
-                    echo json_encode(array(
-                      'status' => true,
-                      'message' => 'Correo Enviado Correctamente.'
-                    ));
-                  }else{
-                    throw new Exception("No se pudo enviar el correo.", "2001");
-                  }
+              }
+      
+              // Finalizar el boundary
+              $message .= "--$boundary--";
+      
+              // Enviar el correo
+              $result = mail($to, $subject, $message, $headers, "-f $from -r $from");
+      
+              if (!$result) {
+                  error_log("Error al enviar el correo. Último error: " . print_r(error_get_last(), true));
+                  throw new Exception("No se pudo enviar el correo.", "2004");
+              }
+      
+              echo json_encode(array(
+                  'status' => true,
+                  'message' => 'Correo Enviado Correctamente.'
+              ));
           } catch (Exception $e) {
-            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());
-            echo json_encode(array(
-              'status' => false,
-              'error' => array(
-                  'code' => $e->getCode(),
-                  'message' => $e->getMessage()
-              )
-            ));
+              self::generateLog("Código Solicitud: " . $_REQUEST['cod_solici'] . " || " . $e->getMessage(), $e->getCode());
+              echo json_encode(array(
+                  'status' => false,
+                  'error' => array(
+                      'code' => $e->getCode(),
+                      'message' => $e->getMessage()
+                  )
+              ));
           }
+      }
+      
+        
+
+      private function reSendEmail() {
+        try {
+            $cod_solici = $_REQUEST['cod_solici'];
+    
+            // Obtener el nombre del archivo PDF desde la base de datos
+            $mSelect = "SELECT fil_result FROM " . BASE_DATOS . ".tab_estseg_solici WHERE cod_solici = '" . $cod_solici . "'";
+            $query = new Consulta($mSelect, self::$conexion);
+            $docume = $query->ret_matriz('a')[0];
+    
+            if ($docume['fil_result'] == NULL) {
+                throw new Exception("No hay archivo PDF Generado", "2001");
+            }
+    
+            // Obtener los correos desde la solicitud
+            $emailsTotal = $_REQUEST['emails'];
+            $emails = explode(",", $emailsTotal);
+            $subject = 'REE - :: RESULTADO DE ESTUDIO DE SEGURIDAD No. ' . $cod_solici;
+    
+            // Cargar la plantilla de email
+            $tmp_file = dirname(dirname(__FILE__)) . '/estsegv2/planti/template-email.html';
+            if (file_exists($tmp_file)) {
+                $mHtml = file_get_contents($tmp_file);
+            } else {
+                $mHtml = "<html><body><p>No se encontró la plantilla de email.</p></body></html>";
+            }
+    
+            // Contenido del correo
+            $contenido = '<p>Centro Logístico FARO hace el Reenvío del documento adjunto en este correo con el resultado del estudio de seguridad No. <strong>' . $cod_solici . '</strong></p>
+                          <p>No responder -- Este correo ha sido creado automáticamente.</p>';
+    
+            // Reemplazo de variables en la plantilla
+            $mHtml = str_replace([
+                '$subject', 
+                '$contenido', 
+                '$logo', 
+                '$ano'
+            ], [
+                $subject, 
+                utf8_encode($contenido), 
+                LOGOFARO, 
+                date('Y')
+            ], $mHtml);
+    
+            // Configurar destinatarios
+            $to = implode(',', array_map('trim', $emails));
+            $from = 'seguimientos@faro.com.co';
+    
+            if (empty($to)) {
+                error_log("No hay destinatarios en el correo.");
+                throw new Exception("No hay destinatarios válidos", "2002");
+            }
+    
+            // Configurar el boundary para manejar el archivo adjunto
+            $boundary = md5(time());
+    
+            // Encabezados del correo
+            $headers = "MIME-Version: 1.0\r\n";
+            $headers .= "From: <$from>\r\n";
+            $headers .= "Reply-To: $from\r\n";
+            $headers .= "Content-Type: multipart/mixed; boundary=\"$boundary\"\r\n";
+    
+            // Cuerpo del mensaje en formato HTML
+            $message = "--$boundary\r\n";
+            $message .= "Content-Type: text/html; charset=UTF-8\r\n";
+            $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
+            $message .= $mHtml . "\r\n\r\n";
+    
+            // Adjuntar el PDF si existe
+            if (!empty($docume['fil_result'])) {
+                $file_path = URL_ARCHIV . "files/adj_estseg/pdfs/" . $docume['fil_result'];
+                if (is_readable($file_path)) {
+                    $file_content = file_get_contents($file_path);
+                    $file_content = chunk_split(base64_encode($file_content));
+    
+                    $message .= "--$boundary\r\n";
+                    $message .= "Content-Type: application/pdf; name=\"" . $docume['fil_result'] . "\"\r\n";
+                    $message .= "Content-Disposition: attachment; filename=\"" . $docume['fil_result'] . "\"\r\n";
+                    $message .= "Content-Transfer-Encoding: base64\r\n\r\n";
+                    $message .= $file_content . "\r\n\r\n";
+                } else {
+                    error_log("El archivo PDF no se encontró o no es legible: " . $file_path);
+                    throw new Exception("El archivo adjunto no está disponible", "2003");
+                }
+            }
+    
+            // Finalizar el boundary
+            $message .= "--$boundary--";
+    
+            // Enviar el correo
+            $result = mail($to, $subject, $message, $headers, "-f $from -r $from");
+    
+            if (!$result) {
+                error_log("Error al enviar el correo. Último error: " . print_r(error_get_last(), true));
+                throw new Exception("No se pudo enviar el correo.", "2004");
+            }
+    
+            echo json_encode(array(
+                'status' => true,
+                'message' => 'Correo Reenviado Correctamente.'
+            ));
+        } catch (Exception $e) {
+            self::generateLog("Código Solicitud: " . $_REQUEST['cod_solici'] . " || " . $e->getMessage(), $e->getCode());
+            echo json_encode(array(
+                'status' => false,
+                'error' => array(
+                    'code' => $e->getCode(),
+                    'message' => $e->getMessage()
+                )
+            ));
         }
+    }
 
         private function generateLog($msj, $code){
           $logFile = fopen( URL_ARCHIV."files/adj_estseg/logs/"."log_".date("Y-m-d").".txt", 'a') or die("Error creando archivo");
@@ -3311,6 +3490,9 @@
             break;
             case 4:
               $estado = 'CANCELADO';
+            break;
+            case 5:
+                $estado = 'PRE-APROBADO';
             break;
           }
 
@@ -3384,7 +3566,7 @@
               throw new Exception("No hay archivo PDF Generado", "2001");
             }
           } catch (Exception $e) {
-            self::generateLog("Cï¿½digo Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());            echo json_encode(array(
+            self::generateLog("Código Solicitud: ".$_REQUEST['cod_solici']." || ".$e->getMessage(), $e->getCode());            echo json_encode(array(
               'status' => false,
               'error' => array(
                   'code' => $e->getCode(),

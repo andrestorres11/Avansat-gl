@@ -40,16 +40,16 @@ $(document).ready(function() {
         extension = extension[0];
         let extensiones = ["jpg", "JPG", "png", "PNG", "jpeg", "JPEG"];
 
-        const maxSize = 90 * 1024; // Tamaño máximo permitido en bytes (90KB)
+        const maxSize = 90 * 1024; // Tamaï¿½o mï¿½ximo permitido en bytes (90KB)
 
         if (archivo.size > maxSize) {
-            alert("El tamaño del archivo es mayor a 90KB. Por favor, elige un archivo más pequeño.");
+            alert("El tamaÃ±o del archivo es mayor a 90KB. Por favor, elige un archivo mÃ¡s pequeÃ±o.");
             $(e.target).val('');
-            return; // Detener la ejecución
+            return; // Detener la ejecuciï¿½n
         }
 
         if (extensiones.indexOf(extension) === -1) {
-            alert("Extensión NO permitida (Solo se aceptan jpg, png, jpeg.)"); 
+            alert("ExtensiÃ³n NO permitida (Solo se aceptan jpg, png, jpeg.)"); 
             $(e.target).val('');
         }
 
@@ -420,8 +420,8 @@ function generaNuevoEstudio() {
         </select>
       </div>
       <div class="col-4 form-group">
-        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nï¿½ de documento Conductor:</label>
-        <input class="form-control form-control-sm req num" type="text" placeholder="Nï¿½ de documento" id="num_documeID` + incrme + `" name="num_docume[` + incrme + `]" required>
+        <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>NÂ° de documento Conductor:</label>
+        <input class="form-control form-control-sm req num" type="text" placeholder="NÂ° de documento" id="num_documeID` + incrme + `" name="num_docume[` + incrme + `]" required>
       </div>
       <div class="col-4 form-group">
       <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nombres del Conductor:</label>
@@ -438,14 +438,14 @@ function generaNuevoEstudio() {
         <input class="form-control form-control-sm" type="text" placeholder="Segundo apellido" id="nom_apell2ID` + cantid + `" name="nom_apell2[` + incrme + `]">
       </div>
       <div class="col-4 form-group">
-      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Nï¿½mero de celular del Conductor:</label>
-      <input class="form-control form-control-sm req" type="text" placeholder="Nï¿½mero de celular" id="num_telmovID` + cantid + `" name="num_telmov[` + incrme + `]" required>
+      <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>NÃºmero de celular del Conductor:</label>
+      <input class="form-control form-control-sm req" type="text" placeholder="NÃºmero de celular" id="num_telmovID` + cantid + `" name="num_telmov[` + incrme + `]" required>
       </div>
     </div>
     <div class="row">
       <div class="col-4 form-group">
-        <label for="nom_soliciID" class="labelinput">Nï¿½mero de celular 2 del Conductor:</label>
-        <input class="form-control form-control-sm" type="text" placeholder="Nï¿½mero de celular 2" id="num_telmo2ID` + cantid + `" name="num_telmo2[` + incrme + `]">
+        <label for="nom_soliciID" class="labelinput">NÃºmero de celular 2 del Conductor:</label>
+        <input class="form-control form-control-sm" type="text" placeholder="NÃºmero de celular 2" id="num_telmo2ID` + cantid + `" name="num_telmo2[` + incrme + `]">
       </div>
       <div class="col-5 form-group">
         <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email del Conductor:</label>
@@ -495,7 +495,7 @@ function validacionesCampos(formulario) {
                 $(idcamp).rules("add", {
                     email: true,
                     messages: {
-                        email: "El correo no es vï¿½lido"
+                        email: "El correo no es vÃ¡lido"
                     }
                 });
             }
@@ -680,7 +680,7 @@ function validateEstudioSoliciFinal() {
 function valSaveGestioSolici() {
     Swal.fire({
         type: 'warning',
-        title: 'ï¿½Desea guardar y terminar la gestiï¿½n de la solicitud?',
+        title: 'Â¿Desea guardar y terminar la gestiÃ³n de la solicitud?',
         showDenyButton: true,
         showCancelButton: true,
         confirmButtonText: 'Terminar',
@@ -913,7 +913,7 @@ function almacenarFase1() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Guardando la información. Por favor espere.");
+            cargando("Guardando la informaciÃ³n. Por favor espere.");
         },
         success: function(data) {
             swal.close();
@@ -944,7 +944,7 @@ function almacenarEstudioFinal() {
     var ind_estudi = $('input[name="ind_estudi"]:checked').val();
     if (ind_estudi == '' || ind_estudi == undefined) {
         Swal.fire({
-            title: '¡Error!',
+            title: 'Â¡Error!',
             text: 'Debe diligenciar la respuesta final de la solicitud.',
             type: 'error',
             confirmButtonColor: '#336600'
@@ -957,8 +957,8 @@ function almacenarEstudioFinal() {
     }
     if (obs_gestio == '') {
         Swal.fire({
-            title: '¡Error!',
-            text: 'Debe diligenciar la observación.',
+            title: 'Â¡Error!',
+            text: 'Debe diligenciar la observaciÃ³n.',
             type: 'error',
             confirmButtonColor: '#336600'
         });
@@ -981,7 +981,7 @@ function almacenarEstudioFinal() {
         contentType: false,
         processData: false,
         beforeSend: function() {
-            cargando("Guardando la información. Por favor espere.")
+            cargando("Guardando la informaciÃ³n. Por favor espere.")
         },
         success: function(data) {
             if (data['status'] == 200) {
@@ -1054,7 +1054,7 @@ function generaPDFSend(cod_solici, emails, information) {
                         });
                     } else {
                         Swal.fire({
-                            title: 'ï¿½Error!',
+                            title: 'Â¡Error!',
                             text: backParam.error.message,
                             type: 'warning',
                             confirmButtonColor: '#336600'
@@ -1347,7 +1347,7 @@ function preguardado() {
             contentType: false,
             processData: false,
             beforeSend: function() {
-                cargando("Pre Guardando la información. Por favor espere.")
+                cargando("Pre Guardando la informaciÃ³n. Por favor espere.")
             },
             success: function(data) {
                 swal.close();
@@ -1376,8 +1376,8 @@ function preguardado() {
         });
     } else {
         Swal.fire({
-            title: '¡Error!',
-            text: 'Debe diligenciar la observación.',
+            title: 'Â¡Error!',
+            text: 'Debe diligenciar la observaciÃ³n.',
             type: 'error',
             confirmButtonColor: '#336600'
         });
@@ -1397,7 +1397,7 @@ function PorAprobValidate() {
         },
         messages: {
             AproServicio: {
-                required: "Por favor Seleccione una opción"
+                required: "Por favor Seleccione una opciÃ³n"
             }
         },
         submitHandler: function(form) {
@@ -1500,7 +1500,7 @@ function viewPdf(elemento) {
             if (data.status) {
                 window.open(data.resp.file_url, '_blank');
                 Swal.fire({
-                    title: '¡Exito!',
+                    title: 'Â¡Exito!',
                     text: data.message,
                     type: 'success',
                     confirmButtonColor: '#336600'
@@ -1696,7 +1696,7 @@ function rellenaTablas() {
         url: "../" + standa + "/estsegv2/ajax_genera_estseg.php?" + dataString,
         dataType: "json",
         beforeSend: function() {
-            cargando('Cargando la información...');
+            cargando('Cargando la informaciÃ³n...');
         },
         success: function(data) {
             var table = $('#tabla_inf_registradas').DataTable();
