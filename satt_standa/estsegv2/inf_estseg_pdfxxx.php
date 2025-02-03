@@ -697,7 +697,14 @@ class PDFInformeEstudioSeguridad extends PDF
     $pdf -> Row(array(utf8_decode('OBSERVACIÓN FINAL: '.$info['obs_estseg'])),1,'J',0);
     $pdf -> SetFillColor(1, 11, 64);
     $pdf -> SetTextColor(255,255,255);
-    $resultado = $info['ind_estseg'] == 'A' ? 'RECOMENDADO' : 'NO RECOMENDADO';
+
+    if($info['ind_estseg']=='A'){
+      $resultado = 'RECOMENDADO';
+    }else if($info['ind_estseg']=='PA'){
+      $resultado = 'PRE-APROBADO';
+    }else{
+      $resultado = 'NO RECOMENDADO';
+    }
     $pdf -> Cell(45,6,'RESULTADO DE ESTUDIO: ',1,0,'L',1);
     $pdf -> SetTextColor(0,0,0);
     $pdf -> Cell(151,6, $resultado,1,1,'L');
