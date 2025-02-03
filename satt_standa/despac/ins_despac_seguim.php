@@ -4,7 +4,7 @@
  *  \author: 
  *  \author: 
  *  \version: 
- *  \date: dia/mes/año
+ *  \date: dia/mes/aï¿½o
  *  \bug: 
  *  \bug: 
  *  \warning: 
@@ -44,8 +44,8 @@ class Proc_segui
     /*! \fn: principal
      *  \brief: 
      *  \author: 
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/aï¿½o
+     *  \date modified: dia/mes/aï¿½o
      *  \param: 
      *  \return:
      */
@@ -504,8 +504,8 @@ class Proc_segui
     /*! \fn: verifyViajeConsol
      *  \brief: Verifica si el Viaje esta consolidado
      *  \author: 
-     *  \date: dia/mes/año
-     *  \date modified: dia/mes/año
+     *  \date: dia/mes/aï¿½o
+     *  \date modified: dia/mes/aï¿½o
      *  \param: NumDespac
      *  \return:
      */
@@ -623,7 +623,7 @@ class Proc_segui
     /*! \fn: Formulario1
      *  \brief: Formulario para ingresar las novedades
      *  \author:
-     *  \date: dia/mes/año
+     *  \date: dia/mes/aï¿½o
      *  \date modified: 17/09/2015
      *  \modified By: Ing. Fabian Salinas
      *  \param:
@@ -925,9 +925,9 @@ class Proc_segui
                 if (isChecked == true){
                     Swal.fire({
                         title: "Estas seguro?",
-                        text: "Habilitación de disponibilidad del recurso a Pad.",
+                        text: "Habilitaciï¿½n de disponibilidad del recurso a Pad.",
                         icon: "warning",
-                        html: "<p><b>1.</b> El conductor autoriza habilitar su datos para recibir información de central pad?</p><input type=\'checkbox\' id=\'inf_pad\' /><label>Si</label><br>" +
+                        html: "<p><b>1.</b> El conductor autoriza habilitar su datos para recibir informaciï¿½n de central pad?</p><input type=\'checkbox\' id=\'inf_pad\' /><label>Si</label><br>" +
                         "<p><b>2.</b> El conductor autoriza recibir informacion del transporte.com?</p><input type=\'checkbox\' id=\'inf_transp\' /><label>Si</label>",
                         showCancelButton: true,
                         confirmButtonColor: "#285c00",
@@ -1194,6 +1194,55 @@ class Proc_segui
                 $mScript5 = '';
                 break;
         }
+
+        if($_REQUEST[noved]!=''){
+
+            $queryParame = "SELECT c.cod_matpr, c.cod_formul, c.nom_observ
+                        FROM " . BASE_DATOS . ".tab_despac_despac a 
+                        LEFT JOIN " . BASE_DATOS . ".tab_despac_vehige b ON a.num_despac = b.num_despac 
+                        LEFT JOIN " . BASE_DATOS . ".tab_parame_protoc c ON b.cod_transp = c.cod_transp 
+                        WHERE a.num_despac = " . $_REQUEST['despac'] . " AND
+                              c.cod_noveda = '".$_REQUEST[noved]."'; ";    
+            $consultaPar = new Consulta($queryParame, $this->conexion);
+            $parameProt = $consultaPar->ret_matriz(); 
+
+            if(sizeof($parameProt)>0){
+                $mScript6 = '
+                                jQuery(function($) { 
+
+                                    function updateVisualContent() {
+                                        console.log("Cambiando");
+                                        let content = ""; // Cadena acumuladora
+                                        // Iterar sobre todos los inputs y textareas en el formulario
+                                        $("#form-protoco input, #form-protoco textarea").each(function() {
+                                            let label = $(this).closest("div").find("label").text(); // Texto del label asociado
+                                            let value = $(this).val(); // Valor del campo
+                                            content += label.trim() + " " + (value || "Valor no registrado") + ", ";
+                                        });
+
+                                        // Quitar la Ãºltima coma y espacio, y actualizar el contenido del contenedor visual
+                                        if (content.length > 0) {
+                                            content = content.slice(0, -2); // Eliminar ", " final
+                                        }
+                                        
+                                        // Seleccionar el contenedor visual correctamente
+                                        $("#form-protoco .visual-content").text(content);
+                                    }
+
+                                    updateVisualContent();
+
+                                    $("input, textarea", "#form-protoco").live("input", function() {
+                                        updateVisualContent();
+                                    });
+
+                                    showFormProtocoFormato('.$_REQUEST['noved'].');
+
+                                }); 
+                            ';
+
+            }
+        }
+
         #Array de los estados Precarge
         $mEstadoPrecar = array(
                                array('2', 'SIN COMUNICACION'), 
@@ -1280,6 +1329,7 @@ class Proc_segui
                      ";
         $consulta = new Consulta($query, $this->conexion);
         $Tipo_etapa = $consulta->ret_matriz();
+
         #Inicio HTML
         $mHtml = new Formlib(2);
 
@@ -1300,7 +1350,6 @@ class Proc_segui
         echo '<script>$.blockUI({ theme: true,title: "Aplicando ajustes",draggable: false,message:"<center><img src=\"../satt_standa/imagenes/ajax-loader2.gif\" /><p>aplicando cambios</p></center>"  });"</script>';
         echo '<style type="text/css"> #form_asigNovedaID{ width: fit-content;}</style>';
         $mHtml->Javascript( $mScript1 );
-
         $mHtml->CloseTable('tr');
         $mHtml->Form( array("target"=>"_self", "action"=>"index.php", "method"=>"post", "id"=>"form_insID", "name"=>"form_ins"), false );
 
@@ -1309,7 +1358,7 @@ class Proc_segui
 
         $mHtml->OpenDiv("id:contentID; class:contentAccordion");
 
-            #<Asignación de Novedad>
+            #<Asignaciï¿½n de Novedad>
                 $mHtml->OpenDiv("id:asigNovedaID; class:accordion");
                     $mHtml->SetBody("<h3 style='padding:6px;'><center>ASIGNACION DE NOVEDAD</center></h3>");
                     $mHtml->OpenDiv("id:secID");
@@ -1400,7 +1449,7 @@ class Proc_segui
                                 $mParamcCalifi = $this -> VerifyInterfRit( $_REQUEST['despac'] ) ;
                                 if( $_REQUEST['codpc'] == '9999' && $mParamcCalifi == '1' )
                                 {
-                                    $mNumCalifi = array(array("0"=>"", "1"=>"--"),      array("0"=>"1","1"=>"Pésimo"),  array("0"=>"2","1"=>"Malo"),
+                                    $mNumCalifi = array(array("0"=>"", "1"=>"--"),      array("0"=>"1","1"=>"Pï¿½simo"),  array("0"=>"2","1"=>"Malo"),
                                                         array("0"=>"3","1"=>"Regular"), array("0"=>"4","1"=>"Bueno"),   array("0"=>"5","1"=>"Excelente"));
 
                                     $mHtml->CloseTable("tr");
@@ -1483,7 +1532,7 @@ class Proc_segui
                         $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
-            #</Asignación de Novedad>
+            #</Asignaciï¿½n de Novedad>
 
         $mHtml->CloseDiv();
 
@@ -1502,8 +1551,9 @@ class Proc_segui
 
         $mHtml->Javascript( $mScript3 );
         if( $mScript5 != '' )
-            $mHtml->Javascript( $mScript5 );
-
+            $mHtml->Javascript( $mScript5 );  
+        
+        $mHtml->Javascript( $mScript6 );
         $mHtml->CloseForm();
 
         echo $mHtml->MakeHtml();
@@ -1668,7 +1718,7 @@ class Proc_segui
                  * 
                  * *** */
 
-                //Verificar Check de Habilitación en PAD                
+                //Verificar Check de Habilitaciï¿½n en PAD                
                 if ($regist["habPAD"] == 1)
                 {
                       
@@ -1905,7 +1955,7 @@ class Proc_segui
                 $consulta = new Consulta( $mSql, $this -> conexion );
                 $mMaxConsec = $consulta -> ret_matriz( 'i' );
                 
-                // Inserta los datos de la calificación a nivel Local -----------------------------------------------------------------------
+                // Inserta los datos de la calificaciï¿½n a nivel Local -----------------------------------------------------------------------
                 $mSql = "INSERT INTO ".BASE_DATOS.".tab_califi_conduc 
                          ( 
                                   cod_consec, num_despac, cod_manifi, cod_conduc, num_placax, num_califi,
@@ -1924,7 +1974,7 @@ class Proc_segui
                                  <tr><td>Despacho: ".$_REQUEST['despac']."</td></tr>
                                  <tr><td><a href='?cod_servic=".$_REQUEST["cod_servic"]."&window=central'>CALIFICAR OTRO CONDUCTOR</a></td></tr>
                           </table>";
-                $mens->correcto("REGISTRO CALIFICACIÓN CONDUCTOR RIT", $mensaje);
+                $mens->correcto("REGISTRO CALIFICACIï¿½N CONDUCTOR RIT", $mensaje);
               }
               else
               {

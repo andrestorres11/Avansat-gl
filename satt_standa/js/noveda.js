@@ -1944,7 +1944,7 @@ function validateAndSubmitForm() {
         { id: 'persona_impulsa', name: 'Persona que impulsa el caso' },
         { id: 'numero_contacto', name: 'Número de contacto' },
         { id: 'empresa_generadora', name: 'Empresa generadora de la carga' },
-        { id: 'mercancia_transportada', name: 'Mercancí­a transportada' },
+        { id: 'mercancia_transportada', name: 'Mercancía transportada' },
         { id: 'ultimo_reporte', name: 'Último reporte' },
         { id: 'descripcion_caso', name: 'Descripción del caso' },
         { id: 'latitud', name: 'Latitud' },
@@ -2007,5 +2007,98 @@ function validateAndSubmitForm() {
 function openPDF(cod_consec) {
     const fStandar = $("#dir_aplicaID").val(); // Obtiene el valor de fStandar
     const url = `../${fStandar}/inform/inf_operat_preven.php?cod_consec=${encodeURIComponent(cod_consec)}`;
-    window.open(url, '_blank'); // Abre en una nueva pestaña o ventana
+    window.open(url, '_blank'); // Abre en una nueva pestaï¿½a o ventana
+}
+
+function showFormOperativoPreventivo(ori, cod_consec) {
+	try {
+		var fStandar = $("#dir_aplicaID");
+		var atributes = 'Ajax=on&Option=FormNovedadOperativoPreventivo&standa=' + fStandar.val();
+		atributes += '&num_despac=' + $("#num_despacID").val()+'&ori='+ori+'&consec='+cod_consec;
+		//Load PopUp
+		$("#popID").empty();
+		LoadPopupJQ4('open', 'Registro Operativo Preventivo - Informacion Adicional', 'auto', '700px', false, false, true);
+		$.ajax({
+			url: "../" + fStandar.val() + "/despac/ajax_despac_opprev.php",
+			type: "POST",
+			data: atributes,
+			async: false,
+			beforeSend: function() {
+				$("#popID").html("<center>Cargando Formulario...</center>");
+			},
+			success: function(data) {
+				$("#popID").html(data);
+			},
+			complete: function() {
+				CenterDIV1();
+			}
+		});
+	} catch (e) {
+		console.log("Error Fuction showFormOperativoPreventivo: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+
+function showFormProtocoFormato(noved) {
+	try {
+		var fStandar = $("#dir_aplicaID");
+		var atributes = 'Ajax=on&Option=FormProtocolo&standa=' + fStandar.val();
+		atributes += '&num_despac=' + $("#num_despacID").val()+'&noved='+noved;
+		//Load PopUp
+		$("#popID").empty();
+		LoadPopupJQ4('open', 'Formulario de Novedad '+noved, 'auto', '700px', false, false, true);
+		$.ajax({
+			url: "../" + fStandar.val() + "/despac/ajax_despac_protoc.php",
+			type: "POST",
+			data: atributes,
+			async: false,
+			beforeSend: function() {
+				$("#popID").html("<center>Cargando Formulario...</center>");
+			},
+			success: function(data) {
+				$("#popID").html(data);
+			},
+			complete: function() {
+				CenterDIV1();
+				setInputWidthTo100();
+			}
+		});
+	} catch (e) {
+		console.log("Error Fuction showFormOperativoPreventivo: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+function setInputWidthTo100() {
+	$('#form-protoco input[type="text"], #form-protoco textarea').css('width', '100%');
+}
+
+
+function validateForm() {
+	let allFieldsValid = true;
+	let firstInvalidField = null;
+
+	// Validar los campos del formulario
+	$("#form-protoco input, #form-protoco textarea").each(function() {
+		if ($(this).val().trim() === "") {
+			allFieldsValid = false;
+			firstInvalidField = firstInvalidField || this; // Guardar el primer campo inválido
+		}
+	});
+
+	if (!allFieldsValid) {
+		alert("Por favor, diligencie todos los campos.");
+		if (firstInvalidField) {
+			$(firstInvalidField).focus(); // Enfocar el primer campo inválido
+		}
+		return false; // Evitar continuar
+	}
+
+	// Si todos los campos son válidos, actualizar obsID
+	let content = $("#form-protoco .visual-content").text();
+	$("#obsID").val(content);
+	alert("Observacion Actualizada.");
+	LoadPopupJQ4('close');
+
 }
