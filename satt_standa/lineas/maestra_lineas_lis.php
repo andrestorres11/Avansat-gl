@@ -351,10 +351,10 @@ class Maestra_lineas_lis
             }
         }else if(sizeof($err_linea_1) > 0){
             $vec_mensaj[0] = "3";
-            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de la linea, donde los codigos de Avansat no coinciden con los del RNDC, por favor contactar con soporte para solventar la novedad";
+            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de la linea, donde los codigos de Avansat no coinciden con los Estandar, por favor contactar con soporte para solventar la novedad";
         }else if(sizeof($err_linea_2) > 0){
             $vec_mensaj[0] = "3";
-            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de marcas de la linea, donde los codigos de Avansat no coinciden con los del RNDC, por favor contactar con soporte para solventar la novedad";
+            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de marcas de la linea, donde los codigos de Avansat no coinciden con los Estandar, por favor contactar con soporte para solventar la novedad";
         }else{
             $vec_mensaj[0] = "3";
             $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." que desea insertar no tiene la marca insertada en su plataforma, por favor primero insertar la marca y posteriormente la línea";

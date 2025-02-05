@@ -330,7 +330,7 @@ class Mod_Vehicu_Marcas
             }
         }else{
             $vec_mensaj[0] = "3";
-            $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con código de ministerio ".$_REQUEST["cod_marcas"] ." tiene una falla en los codigos, donde los codigos de Avansat no coinciden con el del RNDC, por favor contactar con soporte para solventar la novedad";
+            $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con código de ministerio ".$_REQUEST["cod_marcas"] ." tiene una falla en los codigos, donde los codigos de Avansat no coinciden con el Estandar, por favor contactar con soporte para solventar la novedad";
         }
 
         unset($_REQUEST["cod_marcas"]);

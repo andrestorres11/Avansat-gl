@@ -6,13 +6,14 @@
 /*! \Cron: CronLinMarcColRUNT.php
 *  \brief: Este cron esta especificado para que se estructure de manera que se suministre el CSV con la informacion requerida, basada en la estructura de los 
 *          archivos planos de las lineas, marcas y colores del RUNT.
+*          Tener en cuenta que al ser de GL este cron, no hace interaccion con el RNDC, pero si se tiene en cuenta la informacion de los vehiculos en el RUNT
 *  Para que funcione se debe tener la siguiente estructura de CSV al momento de asignarlo al cron:
 *  Fila 1 (Lineas - Marcas - Colores): Esta fila esta reservada para el encabezado, esto con el objetivo de que se sepa en que columna va cada informacion
 *  CSV - Colores: Columna A como codigo del color y Columna B como descripcion del color en el CSV
 *  CSV - Marcas: Columna A como codigo de la marca y Columna B como descripcion de la marca en el CSV
 *  CSV - Lineas: Columna A como codigo de la marca, Columna B como codigo de la linea y Columna C como descripcion de la linea en el CSV
 *  \author: Ing. Jesus Sanchez
-*  \date: 2024-06-19
+*  \date: 2025-02-05
 */
 
 ini_set('display_errors', true);
@@ -108,9 +109,9 @@ if (!isset($_POST['usuario'])) {
                             if($_POST['action'] == "lineas"){ // Si se selecciono la opcion para las lineas del vehiculo
 
                                 // No se toma en cuenta la primera columna, ya que es un codigo para WS
-                                $datos[$i][] = $data[0]; // Codigo de la marca de la linea ante el RNDC
-                                $datos[$i][] = $data[1]; // Codigo de la linea ante el RNDC
-                                $datos[$i][] = $data[2]; // Descripcion de la linea ante el RNDC
+                                $datos[$i][] = $data[0]; // Codigo de la marca de la linea ante el RNDC (Para insumo de la BD Estandar de GL)
+                                $datos[$i][] = $data[1]; // Codigo de la linea ante el RNDC (Para insumo de la BD Estandar de GL)
+                                $datos[$i][] = $data[2]; // Descripcion de la linea ante el RNDC (Para insumo de la BD Estandar de GL)
 
                                 if(!empty($usuarioBD)){ // Se valida que se haya digitado el usuario de BD
                                     $anti_comilla = strpos(iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2]),"'"); 
@@ -166,8 +167,8 @@ if (!isset($_POST['usuario'])) {
 
                             }else if($_POST['action'] == "marcas"){ // Si se selecciono la opcion para marcas del vehiculo
 
-                                $datos[$i][] = $data[0]; // Codigo de la marca ante el RNDC
-                                $datos[$i][] = $data[1]; // Nombre o descripcion de la marca ante el RNDC
+                                $datos[$i][] = $data[0]; // Codigo de la marca ante el RNDC (Para insumo de la BD Estandar de GL)
+                                $datos[$i][] = $data[1]; // Nombre o descripcion de la marca ante el RNDC (Para insumo de la BD Estandar de GL)
 
                                 if(!empty($usuarioBD)){ // Se valida que se haya digitado el usuario que inserta los registros
                                     $anti_comilla = strpos(utf8_decode($data[1]),"'");
