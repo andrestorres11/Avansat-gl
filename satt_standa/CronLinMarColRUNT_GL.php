@@ -195,9 +195,9 @@ if (!isset($_POST['usuario'])) {
                                             $data[1] = $nc_data;
                                         }
                                         
-                                        $insert_sql = "INSERT INTO ".$baseDatos->Database.".tab_genera_marcas(cod_marcax, nom_marcax, ind_estado, 
+                                        $insert_sql = "INSERT INTO ".$baseDatos->Database.".tab_genera_marcas(cod_marcax, nom_marcax, abr_marcax, ind_estado, 
                                                                                                     usr_creaci, fec_creaci, usr_modifi, fec_modifi) 
-                                                                                            VALUES ('".$data[0]."','".utf8_decode($data[1])."','1',
+                                                                                            VALUES ('".$data[0]."','".utf8_decode($data[1])."','".utf8_decode($data[1])."','1',
                                                                                             '".$usuarioBD."', NOW(),NULL,NULL)
                                                                                             ON DUPLICATE KEY UPDATE nom_marcax = '".utf8_decode($data[1])."', usr_modifi = '".$usuarioBD."', fec_modifi = NOW()";
 
