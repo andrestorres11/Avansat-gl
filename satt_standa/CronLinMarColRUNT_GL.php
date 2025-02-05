@@ -131,13 +131,29 @@ if (!isset($_POST['usuario'])) {
                                     }
 
                                     $existe_lineas = mysqli_query($conexion, $sql);
+
+                                    if($i == 18243){
+                                        echo '<br>';
+                                        var_dump($data);
+                                        echo '<br>';
+                                        var_dump($datos[$i]);
+                                        echo '<br>';
+                                        var_dump($nc_data);
+                                        echo '<br>';
+                                    }
     
                                     if(mysqli_num_rows($existe_lineas) > 0){ // Si ya existe, se actualiza
                                         echo "La linea ".iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2])." de la fila ".$i." del CSV ya fue insertada previamente o ya esta presente, en la BD: ".$baseDatos->Database." <br>";
                                         
                                     }else{ // Si no existe, se inserta
-                                        if($nc_data != ""){ // Si la linea no existe y tiene comilla simple se reemplaza el caracter, para evitar novedades
+                                        if($nc_data != "" || !empty($nc_data)){ // Si la linea no existe y tiene comilla simple se reemplaza el caracter, para evitar novedades
                                             $data[2] = $nc_data; 
+                                        }
+
+                                        $valida_tildes = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2]);
+
+                                        if(!empty($valida_tildes)){ // Si la linea no existe y tiene comilla simple se reemplaza el caracter, para evitar novedades
+                                            $data[2] = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2]);
                                         }
  
                                         // $query_consec = "SELECT IF(a.cod_lineax IS NULL, 0, MAX(CAST(a.cod_lineax AS UNSIGNED)) + 1 ) AS 'consec' FROM sate_standa.tab_genera_lineas a";
@@ -148,17 +164,17 @@ if (!isset($_POST['usuario'])) {
 
                                         $insert_sql = "INSERT INTO ".$baseDatos->Database.".tab_genera_lineas(cod_lineax, cod_marcax, nom_lineax,           
                                                                                                 ind_estado, usr_creaci, fec_creaci, usr_modifi, fec_modifi) 
-                                                                                            VALUES ('".$data[1]."','".$data[0]."','".iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2])."',
+                                                                                            VALUES ('".$data[1]."','".$data[0]."','".$data[2]."',
                                                                                             '1','".$usuarioBD."',NOW(),NULL,NULL)
-                                                                                            ON DUPLICATE KEY UPDATE nom_lineax = '".iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2])."', usr_modifi = '".$usuarioBD."', fec_modifi = NOW()";
+                                                                                            ON DUPLICATE KEY UPDATE nom_lineax = '".$data[2]."', usr_modifi = '".$usuarioBD."', fec_modifi = NOW()";
                                              
                                         // die("No hay resultados");
                                         $insert_lineas = mysqli_query($conexion, $insert_sql);
 
                                         if(!mysqli_errno($conexion)){
-                                            echo "La linea '".iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2])."' de la fila ".$i." del CSV fue insertada correctamente, en la BD: ".$baseDatos->Database." <br>";
+                                            echo "La linea '".$data[2]."' de la fila ".$i." del CSV fue insertada correctamente, en la BD: ".$baseDatos->Database." <br>";
                                         }else{
-                                            echo "La linea '".iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2])."' de la fila ".$i." del CSV no fue insertada correctamente, en la BD: ".$baseDatos->Database." debido al siguiente error: <br>";
+                                            echo "La linea '".$data[2]."' de la fila ".$i." del CSV no fue insertada correctamente, en la BD: ".$baseDatos->Database." debido al siguiente error: <br>";
                                             echo mysqli_error($conexion) ."<br>";
                                         }
                                     }
