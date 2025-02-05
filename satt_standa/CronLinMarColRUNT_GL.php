@@ -142,7 +142,7 @@ if (!isset($_POST['usuario'])) {
 
                                         $valida_tildes = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2]);
 
-                                        if(!empty($valida_tildes)){ // Si la linea no existe y tiene comilla simple se reemplaza el caracter, para evitar novedades
+                                        if(!empty($valida_tildes)){ // Si la linea no existe debido a las tildes, no se reajusta los caracteres especiales
                                             $data[2] = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2]);
                                         }
  
