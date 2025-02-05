@@ -30,6 +30,7 @@ if (!isset($_POST['usuario'])) {
                     <label for="Action">Servidor:</label>
                     <select name="servidor">
                         <option value="oet-devbd.intrared.net">OET-DETV</option>
+                        <option value="oet-qabd.intrared.net">OET-QA</option>
                         <option value="oet-avansatglbd.intrared.net">OET-AVANSATGL</option>
                     </select>
                     <label for="Action">Archivo CSV de la tabla maestra a cargar (Debe tener el encabezado):</label>
