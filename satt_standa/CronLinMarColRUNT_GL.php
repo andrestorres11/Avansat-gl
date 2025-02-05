@@ -199,7 +199,7 @@ if (!isset($_POST['usuario'])) {
                                                                                                     usr_creaci, fec_creaci, usr_modifi, fec_modifi) 
                                                                                             VALUES ('".$data[0]."','".utf8_decode($data[1])."','".utf8_decode($data[1])."','1',
                                                                                             '".$usuarioBD."', NOW(),NULL,NULL)
-                                                                                            ON DUPLICATE KEY UPDATE nom_marcax = '".utf8_decode($data[1])."', usr_modifi = '".$usuarioBD."', fec_modifi = NOW()";
+                                                                                            ON DUPLICATE KEY UPDATE nom_marcax = '".utf8_decode($data[1])."', abr_marcax  = '".utf8_decode($data[1])."', usr_modifi = '".$usuarioBD."', fec_modifi = NOW()";
 
                                         // die("No hay resultados");
                                         $insert = mysqli_query($conexion, $insert_sql);
