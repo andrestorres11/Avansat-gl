@@ -131,16 +131,6 @@ if (!isset($_POST['usuario'])) {
                                     }
 
                                     $existe_lineas = mysqli_query($conexion, $sql);
-
-                                    if($i == 18243){
-                                        echo '<br>';
-                                        var_dump($data);
-                                        echo '<br>';
-                                        var_dump($datos[$i]);
-                                        echo '<br>';
-                                        var_dump($nc_data);
-                                        echo '<br>';
-                                    }
     
                                     if(mysqli_num_rows($existe_lineas) > 0){ // Si ya existe, se actualiza
                                         echo "La linea ".iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $data[2])." de la fila ".$i." del CSV ya fue insertada previamente o ya esta presente, en la BD: ".$baseDatos->Database." <br>";
