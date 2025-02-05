@@ -87,7 +87,7 @@ if (!isset($_POST['usuario'])) {
     // die('Fin');
     
     while ($baseDatos = mysqli_fetch_object($basesDatos)) { // A pesar de tener un while, el almacenamiento de la informacion CSV lo hace UNICAMANTE con la base de datos declarada para $bd
-        if((substr($baseDatos->Database,0,5) == "sate_" || substr($baseDatos->Database,0,5) == "sadc_" || substr($baseDatos->Database,0,6) == "spyme_" || substr($baseDatos->Database,0,5) == "satb_" ) && substr($baseDatos->Database,0,14) == $bd) {
+        if((substr($baseDatos->Database,0,5) == "sate_" || substr($baseDatos->Database,0,5) == "sadc_" || substr($baseDatos->Database,0,6) == "spyme_" || substr($baseDatos->Database,0,5) == "satb_" || substr($baseDatos->Database,0,5) == "satt_" ) && substr($baseDatos->Database,0,14) == $bd) {
             if (isset($_FILES['archivo'])) {
                 // Mover el archivo a una carpeta temporal
                 $encabezado = 1; //Se tomara en cuenta si esta en el encabezado, siendo 1 que lo esta y 0 donde no lo esta
