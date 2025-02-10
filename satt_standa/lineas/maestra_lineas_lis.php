@@ -7,8 +7,8 @@ FUNCION:  LISTAR LINEAS DE VEHICULOS
 
 ****************************************************************************/
 
-ini_set("display_errors", true);
-error_reporting(E_ALL ^ E_NOTICE);
+// ini_set("display_errors", true);
+// error_reporting(E_ALL ^ E_NOTICE);
 /* !\class: Maestra_lineas_lis
  *  \brief: Módulo de listado y administrador de Lineas
  *  \author: Ing. Jesus Sanchez

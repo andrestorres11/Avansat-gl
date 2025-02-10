@@ -1,6 +1,6 @@
 <?php
-ini_set("display_errors", true);
-error_reporting(E_ALL ^ E_NOTICE);
+// ini_set("display_errors", true);
+// error_reporting(E_ALL ^ E_NOTICE);
 /* !\class: Mod_Vehicu_Colore
  *  \brief: Módulo de listado y administrador de Colores
  *  \author: Ing. Jesus Sanchez
