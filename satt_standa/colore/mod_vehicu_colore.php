@@ -168,7 +168,7 @@ class Mod_Vehicu_Colore
         $form->Line("COLORES", "t2", 0, 0, "left", "", "", "");
         $form->CloseTable();
 
-        $query = "SELECT a.cod_colorx, a.nom_colorx, a.cod_mintra, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a 
+        $query = "SELECT a.cod_colorx, a.nom_colorx, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a 
                             LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON a.cod_mintra = b.cod_mintra";
 
         $consulta = new Consulta($query, $this->conexion);
@@ -212,7 +212,7 @@ class Mod_Vehicu_Colore
                 }
                 echo "<tr>";
                 echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_colorx"])."</td>";
-                echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_mintra"])."</td>";
+                echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_colorx"])."</td>";
                 echo "<td class='".$celdas."'>".utf8_decode(utf8_encode($matriz[$i]["nom_colorx"]))."</td>";
 
                 if(strpos(utf8_decode(utf8_encode($matriz[$i]["nom_colorx"])),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
@@ -221,7 +221,7 @@ class Mod_Vehicu_Colore
                     $color_cambiado = utf8_decode(utf8_encode($matriz[$i]["nom_colorx"]));
                 }
 
-                echo "<td class='".$celdas."'><a href='#' onclick='javascript:activarColores(\"".$matriz[$i]["cod_mintra"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$color_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";
+                echo "<td class='".$celdas."'><a href='#' onclick='javascript:activarColores(\"".$matriz[$i]["cod_colorx"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$color_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";
                 echo "</tr>";
             }
         }
@@ -254,8 +254,8 @@ class Mod_Vehicu_Colore
         $vec_mensaj[0] = "1";
         $vec_mensaj[1] = "";
 
-        $sql_valida = "SELECT a.cod_colorx, a.nom_colorx, a.cod_mintra, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a 
-                            LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON a.cod_mintra = b.cod_mintra WHERE a.cod_mintra = '".$_REQUEST['cod_colore']."'";
+        $sql_valida = "SELECT a.cod_colorx, a.nom_colorx, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a 
+                            LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON a.cod_colorx = b.cod_mintra WHERE a.cod_colorx = '".$_REQUEST['cod_colore']."'";
 
         $con_valida = new Consulta($sql_valida, $this->conexion);
         $val_colorx = $con_valida->ret_matriz();

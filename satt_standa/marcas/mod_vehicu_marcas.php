@@ -162,8 +162,8 @@ class Mod_Vehicu_Marcas
         $form->Line("MARCAS", "t2", 0, 0, "left", "", "", "");
         $form->CloseTable();
 
-        $query = "SELECT a.cod_marcax, a.nom_marcax, a.cod_mintra, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_mintra = b.cod_mintra";
+        $query = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
+                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra";
 
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
@@ -208,7 +208,7 @@ class Mod_Vehicu_Marcas
                 }
                 echo "<tr>";
                 echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_marcax"])."</td>";
-                echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_mintra"])."</td>";
+                echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_marcax"])."</td>";
                 echo "<td class='".$celdas."'>".utf8_decode(utf8_encode($matriz[$i]["nom_marcax"]))."</td>";
 
                 if(strpos(utf8_decode(utf8_encode($matriz[$i]["nom_marcax"])),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
@@ -217,7 +217,7 @@ class Mod_Vehicu_Marcas
                     $marca_cambiado = utf8_decode(utf8_encode($matriz[$i]["nom_marcax"]));
                 }
 
-                echo "<td class='".$celdas."'><a href='#' onclick='javascript:activarMarcas(\"".$matriz[$i]["cod_mintra"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$marca_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";
+                echo "<td class='".$celdas."'><a href='#' onclick='javascript:activarMarcas(\"".$matriz[$i]["cod_marcax"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$marca_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";
                 echo "</tr>";
             }
         }
@@ -251,8 +251,8 @@ class Mod_Vehicu_Marcas
         $vec_mensaj[0] = "1";
         $vec_mensaj[1] = "";
 
-        $sql_valida = "SELECT a.cod_marcax, a.nom_marcax, a.cod_mintra, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_mintra = b.cod_mintra WHERE a.cod_mintra = '".$_REQUEST['cod_marcas']."'";
+        $sql_valida = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
+                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra WHERE a.cod_marcax = '".$_REQUEST['cod_marcas']."'";
              
         $con_valida = new Consulta($sql_valida, $this->conexion);
         $val_marcax = $con_valida->ret_matriz();
