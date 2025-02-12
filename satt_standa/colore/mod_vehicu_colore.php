@@ -129,25 +129,25 @@ class Mod_Vehicu_Colore
                     AjaxLoader('block');
                 </script>";
 
-        $form = new Form("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_colore;");
+        $form = new Formulario("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_colore;");
 
         if($vec_respon[0] == "1")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("s", "Colores", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "2")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("a", "Colores", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "3")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("e", "Colores", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
 
         $query_consec = "SELECT MAX(a.cod_colorx) FROM ".BASE_DATOS.".tab_vehige_colore a";
@@ -157,16 +157,16 @@ class Mod_Vehicu_Colore
 
         $consec = $matriz_consec[0][0] + 1;
 
-        $form->Hidden("name:cod_colore; value:0; ");
-        $form->Hidden("name:option; value:2; ");
-        $form->Hidden("name:window; value:central; ");
-        $form->Hidden("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
-        $form->Hidden("name:usr_creaci; value:" . $usuario . ";");
-        $form->Hidden("name:standar; value:" . DIR_APLICA_CENTRAL);
+        $form->oculto("name:cod_colore; value:0; ");
+        $form->oculto("name:option; value:2; ");
+        $form->oculto("name:window; value:central; ");
+        $form->oculto("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
+        $form->oculto("name:usr_creaci; value:" . $usuario . ";");
+        $form->oculto("name:standar; value:" . DIR_APLICA_CENTRAL);
 
-        $form->Table();
-        $form->Line("COLORES", "t2", 0, 0, "left", "", "", "");
-        $form->CloseTable();
+        $form->nueva_tabla();
+        $form->linea("COLORES", "t2", 0, 0, "left", "", "", "");
+        $form->cerrar_tabla();
 
         $query = "SELECT a.cod_colorx, a.nom_colorx, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a 
                             LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON a.cod_mintra = b.cod_mintra";
@@ -174,7 +174,7 @@ class Mod_Vehicu_Colore
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
 
-        $form->Row("td");
+        echo "<td>";
         echo "<br />";
         // echo "<div class='container' style='margin-left:inherit;'>";
         echo "<div class='container'>";
@@ -232,8 +232,8 @@ class Mod_Vehicu_Colore
 
         echo "<br>";
 
-        $form->CloseRow("td");
-        $form->CloseForm();
+        echo "</td>";
+        $form->cerrar();
 
         echo "<script language='javascript'>
                     AjaxLoader('none');

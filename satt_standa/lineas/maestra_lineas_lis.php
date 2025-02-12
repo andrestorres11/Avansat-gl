@@ -135,38 +135,38 @@ class Maestra_lineas_lis
                 </script>";
         
                 
-        $form = new Form("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_lineas;");
+        $form = new Formulario("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_lineas;");
                 
         if($vec_respon[0] == "1")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("s", "Líneas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "2")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("a", "Líneas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "3")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("e", "Líneas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
 
-        $form->Hidden("name:cod_lineas; value:0; ");
-        $form->Hidden("name:cod_marcas; value:0; ");
-        $form->Hidden("name:option; value:2; ");
-        $form->Hidden("name:window; value:central; ");
-        $form->Hidden("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
-        $form->Hidden("name:usr_creaci; value:" . $usuario . ";");
-        $form->Hidden("name:standar; value:" . DIR_APLICA_CENTRAL);
+        $form->oculto("name:cod_lineas; value:0; ");
+        $form->oculto("name:cod_marcas; value:0; ");
+        $form->oculto("name:option; value:2; ");
+        $form->oculto("name:window; value:central; ");
+        $form->oculto("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
+        $form->oculto("name:usr_creaci; value:" . $usuario . ";");
+        $form->oculto("name:standar; value:" . DIR_APLICA_CENTRAL);
 
-        $form->Table();
-        $form->Line("LINEAS", "t2", 0, 0, "left", "", "", "");
-        $form->CloseTable();
+        $form->nueva_tabla();
+        $form->linea("LINEAS", "t2", 0, 0, "left", "", "", "");
+        $form->cerrar_tabla();
 
         // $query = "SELECT a.cod_lineax, a.cod_marcax, a.cod_marmin, a.nom_lineax, a.cod_mintra, a.ind_estado FROM ".BASE_DATOS.".tab_vehige_lineas a";
         $query = "SELECT a.cod_lineax, a.nom_lineax, a.cod_marcax, b.nom_marcax, c.cod_mintra AS mintra_cliente, c.ind_estado
@@ -177,7 +177,7 @@ class Maestra_lineas_lis
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
 
-        $form->Row("td");
+        echo "<td>";
         echo "<br />";
         // echo "<div class='container' style='margin-left:inherit;'>";
         echo "<div class='container'>";
@@ -237,9 +237,9 @@ class Maestra_lineas_lis
 
         echo "<br>";
 
-        $form->CloseRow("td");
+        echo "</td>";
 
-        $form->CloseForm();
+        $form->cerrar();
 
         echo "<script language='javascript'>
                     AjaxLoader('none');

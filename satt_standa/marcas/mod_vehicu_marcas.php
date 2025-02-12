@@ -130,37 +130,37 @@ class Mod_Vehicu_Marcas
                 </script>";
         
                 
-        $form = new Form("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_marcas;");
+        $form = new Formulario("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_marcas;");
                 
         if($vec_respon[0] == "1")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("s", "Marcas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "2")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("a", "Marcas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "3")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("e", "Marcas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
 
-        $form->Hidden("name:cod_marcas; value:0; ");
-        $form->Hidden("name:option; value:2; ");
-        $form->Hidden("name:window; value:central; ");
-        $form->Hidden("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
-        $form->Hidden("name:usr_creaci; value:" . $usuario . ";");
-        $form->Hidden("name:standar; value:" . DIR_APLICA_CENTRAL);
+        $form->oculto("name:cod_marcas; value:0; ");
+        $form->oculto("name:option; value:2; ");
+        $form->oculto("name:window; value:central; ");
+        $form->oculto("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
+        $form->oculto("name:usr_creaci; value:" . $usuario . ";");
+        $form->oculto("name:standar; value:" . DIR_APLICA_CENTRAL);
 
-        $form->Table();
-        $form->Line("MARCAS", "t2", 0, 0, "left", "", "", "");
-        $form->CloseTable();
+        $form->nueva_tabla();
+        $form->linea("MARCAS", "t2", 0, 0, "left", "", "", "");
+        $form->cerrar_tabla();
 
         $query = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
                         LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra";
@@ -168,7 +168,7 @@ class Mod_Vehicu_Marcas
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
 
-        $form->Row("td");
+        echo "<td>";
         echo "<br />";
         // echo "<div class='container' style='margin-left:inherit;'>";
         echo "<div class='container'>";
@@ -228,9 +228,9 @@ class Mod_Vehicu_Marcas
 
         echo "<br>";
 
-        $form->CloseRow("td");
+        echo "</td>";
 
-        $form->CloseForm();
+        $form->cerrar();
 
         echo "<script language='javascript'>
                     AjaxLoader('none');
