@@ -135,49 +135,49 @@ class Maestra_lineas_lis
                 </script>";
         
                 
-        $form = new Form("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_lineas;");
+        $form = new Formulario("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_lineas;");
                 
         if($vec_respon[0] == "1")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("s", "Líneas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "2")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("a", "Líneas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "3")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("e", "Líneas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
 
-        $form->Hidden("name:cod_lineas; value:0; ");
-        $form->Hidden("name:cod_marcas; value:0; ");
-        $form->Hidden("name:option; value:2; ");
-        $form->Hidden("name:window; value:central; ");
-        $form->Hidden("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
-        $form->Hidden("name:usr_creaci; value:" . $usuario . ";");
-        $form->Hidden("name:standar; value:" . DIR_APLICA_CENTRAL);
+        $form->oculto("name:cod_lineas; value:0; ");
+        $form->oculto("name:cod_marcas; value:0; ");
+        $form->oculto("name:option; value:2; ");
+        $form->oculto("name:window; value:central; ");
+        $form->oculto("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
+        $form->oculto("name:usr_creaci; value:" . $usuario . ";");
+        $form->oculto("name:standar; value:" . DIR_APLICA_CENTRAL);
 
-        $form->Table();
-        $form->Line("LINEAS", "t2", 0, 0, "left", "", "", "");
-        $form->CloseTable();
+        $form->nueva_tabla();
+        $form->linea("LINEAS", "t2", 0, 0, "left", "", "", "");
+        $form->cerrar_tabla();
 
         // $query = "SELECT a.cod_lineax, a.cod_marcax, a.cod_marmin, a.nom_lineax, a.cod_mintra, a.ind_estado FROM ".BASE_DATOS.".tab_vehige_lineas a";
-        $query = "SELECT a.cod_mintra, a.nom_lineax, a.cod_marcax, b.nom_marcax, c.cod_mintra AS mintra_cliente, c.ind_estado
+        $query = "SELECT a.cod_lineax, a.nom_lineax, a.cod_marcax, b.nom_marcax, c.cod_mintra AS mintra_cliente, c.ind_estado
                             FROM ".BD_STANDA.".tab_genera_lineas a
                             INNER JOIN ".BD_STANDA.".tab_genera_marcas b ON a.cod_marcax = b.cod_marcax
-                            LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_mintra = c.cod_mintra AND a.cod_marcax = c.cod_marcax";
+                            LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_lineax = c.cod_mintra AND a.cod_marcax = c.cod_marcax";
 
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
 
-        $form->Row("td");
+        echo "<td>";
         echo "<br />";
         // echo "<div class='container' style='margin-left:inherit;'>";
         echo "<div class='container'>";
@@ -215,7 +215,7 @@ class Maestra_lineas_lis
 
                 echo "<tr>";
                 // echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_lineax"])."</td>";
-                echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_mintra"])."</td>";
+                echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_lineax"])."</td>";
                 echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["nom_lineax"])."</td>";
                 echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_marcax"])."</td>";
                 echo "<td class='".$celdas."'>".utf8_decode(utf8_encode($matriz[$i]["nom_marcax"]))."</td>";
@@ -226,7 +226,7 @@ class Maestra_lineas_lis
                     $linea_cambiado = utf8_decode(utf8_encode($matriz[$i]["nom_lineax"]));
                 }
 
-                echo "<td class='".$celdas."'><a href='#' onclick='javascript:ActivarLineas(\"".$matriz[$i]["cod_mintra"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$matriz[$i]["ind_estado"]."\", \"".$linea_cambiado."\", \"".$matriz[$i]["cod_marcax"]."\")'>".$mensaje."</a></td>";
+                echo "<td class='".$celdas."'><a href='#' onclick='javascript:ActivarLineas(\"".$matriz[$i]["cod_lineax"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$matriz[$i]["ind_estado"]."\", \"".$linea_cambiado."\", \"".$matriz[$i]["cod_marcax"]."\")'>".$mensaje."</a></td>";
                 echo "</tr>";
             }
         }
@@ -237,9 +237,9 @@ class Maestra_lineas_lis
 
         echo "<br>";
 
-        $form->CloseRow("td");
+        echo "</td>";
 
-        $form->CloseForm();
+        $form->cerrar();
 
         echo "<script language='javascript'>
                     AjaxLoader('none');
@@ -260,10 +260,10 @@ class Maestra_lineas_lis
         $vec_mensaj[0] = "1";
         $vec_mensaj[1] = "";
 
-        $sql_valida = "SELECT a.cod_lineax, a.cod_mintra, a.nom_lineax, a.cod_marcax, c.ind_estado, c.cod_mintra AS mintra_cliente
+        $sql_valida = "SELECT a.cod_lineax, a.nom_lineax, a.cod_marcax, c.ind_estado, c.cod_mintra AS mintra_cliente
         FROM ".BD_STANDA.".tab_genera_lineas a
-              LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_mintra = c.cod_mintra AND a.cod_marcax = c.cod_marcax 
-        WHERE a.cod_mintra = '".$_REQUEST["cod_lineas"]."' AND a.cod_marmin = '".$_REQUEST["cod_marcas"]."' ";
+              LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_lineax = c.cod_mintra AND a.cod_marcax = c.cod_marcax 
+        WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' ";
         $con_valida = new Consulta($sql_valida, $this->conexion);
         $val_linea = $con_valida->ret_matriz();
 

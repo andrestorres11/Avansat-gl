@@ -130,45 +130,45 @@ class Mod_Vehicu_Marcas
                 </script>";
         
                 
-        $form = new Form("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_marcas;");
+        $form = new Formulario("action:index.php?cod_servic=" . $_REQUEST["cod_servic"] . "; method:post; name:form_marcas;");
                 
         if($vec_respon[0] == "1")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("s", "Marcas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "2")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("a", "Marcas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
         else if($vec_respon[0] == "3")
         {
-            $form->Row("td");
+            echo "<td>";
             ShowMessage("e", "Marcas", $vec_respon[1]);
-            $form->CloseRow("td");
+            echo "</td>";
         }
 
-        $form->Hidden("name:cod_marcas; value:0; ");
-        $form->Hidden("name:option; value:2; ");
-        $form->Hidden("name:window; value:central; ");
-        $form->Hidden("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
-        $form->Hidden("name:usr_creaci; value:" . $usuario . ";");
-        $form->Hidden("name:standar; value:" . DIR_APLICA_CENTRAL);
+        $form->oculto("name:cod_marcas; value:0; ");
+        $form->oculto("name:option; value:2; ");
+        $form->oculto("name:window; value:central; ");
+        $form->oculto("name:cod_servic; value:".$_REQUEST['cod_servic']."; ");
+        $form->oculto("name:usr_creaci; value:" . $usuario . ";");
+        $form->oculto("name:standar; value:" . DIR_APLICA_CENTRAL);
 
-        $form->Table();
-        $form->Line("MARCAS", "t2", 0, 0, "left", "", "", "");
-        $form->CloseTable();
+        $form->nueva_tabla();
+        $form->linea("MARCAS", "t2", 0, 0, "left", "", "", "");
+        $form->cerrar_tabla();
 
-        $query = "SELECT a.cod_marcax, a.nom_marcax, a.cod_mintra, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_mintra = b.cod_mintra";
+        $query = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
+                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra";
 
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
 
-        $form->Row("td");
+        echo "<td>";
         echo "<br />";
         // echo "<div class='container' style='margin-left:inherit;'>";
         echo "<div class='container'>";
@@ -208,7 +208,7 @@ class Mod_Vehicu_Marcas
                 }
                 echo "<tr>";
                 echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_marcax"])."</td>";
-                echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_mintra"])."</td>";
+                echo "<td class='".$celdas."'>".utf8_decode($matriz[$i]["cod_marcax"])."</td>";
                 echo "<td class='".$celdas."'>".utf8_decode(utf8_encode($matriz[$i]["nom_marcax"]))."</td>";
 
                 if(strpos(utf8_decode(utf8_encode($matriz[$i]["nom_marcax"])),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
@@ -217,7 +217,7 @@ class Mod_Vehicu_Marcas
                     $marca_cambiado = utf8_decode(utf8_encode($matriz[$i]["nom_marcax"]));
                 }
 
-                echo "<td class='".$celdas."'><a href='#' onclick='javascript:activarMarcas(\"".$matriz[$i]["cod_mintra"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$marca_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";
+                echo "<td class='".$celdas."'><a href='#' onclick='javascript:activarMarcas(\"".$matriz[$i]["cod_marcax"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$marca_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";
                 echo "</tr>";
             }
         }
@@ -228,9 +228,9 @@ class Mod_Vehicu_Marcas
 
         echo "<br>";
 
-        $form->CloseRow("td");
+        echo "</td>";
 
-        $form->CloseForm();
+        $form->cerrar();
 
         echo "<script language='javascript'>
                     AjaxLoader('none');
@@ -251,8 +251,8 @@ class Mod_Vehicu_Marcas
         $vec_mensaj[0] = "1";
         $vec_mensaj[1] = "";
 
-        $sql_valida = "SELECT a.cod_marcax, a.nom_marcax, a.cod_mintra, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_mintra = b.cod_mintra WHERE a.cod_mintra = '".$_REQUEST['cod_marcas']."'";
+        $sql_valida = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
+                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra WHERE a.cod_marcax = '".$_REQUEST['cod_marcas']."'";
              
         $con_valida = new Consulta($sql_valida, $this->conexion);
         $val_marcax = $con_valida->ret_matriz();
