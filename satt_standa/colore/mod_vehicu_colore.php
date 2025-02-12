@@ -168,8 +168,7 @@ class Mod_Vehicu_Colore
         $form->linea("COLORES", "t2", 0, 0, "left", "", "", "");
         $form->cerrar_tabla();
 
-        $query = "SELECT a.cod_colorx, a.nom_colorx, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a 
-                            LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON a.cod_mintra = b.cod_mintra";
+        $query = "SELECT a.cod_colorx, a.nom_colorx, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON a.cod_colorx = b.cod_mintra";
 
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
@@ -254,8 +253,7 @@ class Mod_Vehicu_Colore
         $vec_mensaj[0] = "1";
         $vec_mensaj[1] = "";
 
-        $sql_valida = "SELECT a.cod_colorx, a.nom_colorx, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a 
-                            LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON a.cod_colorx = b.cod_mintra WHERE a.cod_colorx = '".$_REQUEST['cod_colore']."'";
+        $sql_valida = "SELECT a.cod_colorx, a.nom_colorx, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_vehige_colore a LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON a.cod_colorx = b.cod_mintra WHERE a.cod_colorx = '".$_REQUEST['cod_colore']."'";
 
         $con_valida = new Consulta($sql_valida, $this->conexion);
         $val_colorx = $con_valida->ret_matriz();
@@ -266,21 +264,11 @@ class Mod_Vehicu_Colore
         if($val_colorx[0]["mintra_cliente"] != NULL && $val_colorx[0]["ind_estado"] == "1"){
             $mensaje = "Desactivado";
             /* VAMOS A ACTUALIZAR OPERADOR */
-            $query_1 = "UPDATE " . BASE_DATOS . ".tab_vehige_colore
-                    SET ind_estado = IF(ind_estado = '1', '0', '1'), 
-                    usr_modifi = '".$_REQUEST['usr_creaci']."', 
-                    fec_modifi = NOW()
-                    WHERE cod_mintra = '".$_REQUEST['cod_colore']."' 
-                ";
+            $query_1 = "UPDATE " . BASE_DATOS . ".tab_vehige_colore SET ind_estado = IF(ind_estado = '1', '0', '1'), usr_modifi = '".$_REQUEST['usr_creaci']."',  fec_modifi = NOW() WHERE cod_mintra = '".$_REQUEST['cod_colore']."' ";
         }else if($val_colorx[0]["mintra_cliente"] != NULL && $val_colorx[0]["ind_estado"] == "0"){
             $mensaje = "Activado";
             /* VAMOS A ACTUALIZAR OPERADOR */
-            $query_1 = "UPDATE " . BASE_DATOS . ".tab_vehige_colore
-                    SET ind_estado = IF(ind_estado = '1', '0', '1'),
-                    usr_modifi = '".$_REQUEST['usr_creaci']."', 
-                    fec_modifi = NOW()
-                    WHERE cod_mintra = '".$_REQUEST['cod_colore']."' 
-                ";
+            $query_1 = "UPDATE " . BASE_DATOS . ".tab_vehige_colore SET ind_estado = IF(ind_estado = '1', '0', '1'),  usr_modifi = '".$_REQUEST['usr_creaci']."',   fec_modifi = NOW() WHERE cod_mintra = '".$_REQUEST['cod_colore']."' ";
         }else{
             $mensaje = "Insertado";
 
@@ -296,17 +284,7 @@ class Mod_Vehicu_Colore
                 $val_colorx[0]['nom_colorx'] = str_replace("'","`",$val_colorx[0]['nom_colorx']);
             }
             
-            $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_vehige_colore
-                            (
-                                cod_colorx, nom_colorx, cod_mintra, 
-                                ind_estado, usr_creaci, fec_creaci, 
-                                usr_modifi, fec_modifi
-                            ) VALUES 
-                            (
-                                '".$_REQUEST["cod_colore"]."', '".$val_colorx[0]['nom_colorx']."', '".$_REQUEST["cod_colore"]."',
-                                '1', '".$_REQUEST['usr_creaci']."', NOW(),
-                                NULL, NULL)
-                    ";
+            $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_vehige_colore ( cod_colorx, nom_colorx, cod_mintra, ind_estado, usr_creaci, fec_creaci, usr_modifi, fec_modifi ) VALUES ( '".$_REQUEST["cod_colore"]."', '".$val_colorx[0]['nom_colorx']."', '".$_REQUEST["cod_colore"]."', '1', '".$_REQUEST['usr_creaci']."', NOW(), NULL, NULL) ";
         }
     
         $consul_1 = new Consulta($query_1, $this->conexion, "R");

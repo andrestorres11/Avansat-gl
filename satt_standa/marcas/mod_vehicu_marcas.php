@@ -162,8 +162,7 @@ class Mod_Vehicu_Marcas
         $form->linea("MARCAS", "t2", 0, 0, "left", "", "", "");
         $form->cerrar_tabla();
 
-        $query = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra";
+        $query = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra";
 
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
@@ -251,8 +250,7 @@ class Mod_Vehicu_Marcas
         $vec_mensaj[0] = "1";
         $vec_mensaj[1] = "";
 
-        $sql_valida = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a 
-                        LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra WHERE a.cod_marcax = '".$_REQUEST['cod_marcas']."'";
+        $sql_valida = "SELECT a.cod_marcax, a.nom_marcax, b.ind_estado, b.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_marcas a  LEFT JOIN ".BASE_DATOS.".tab_genera_marcas b ON a.cod_marcax = b.cod_mintra WHERE a.cod_marcax = '".$_REQUEST['cod_marcas']."'";
              
         $con_valida = new Consulta($sql_valida, $this->conexion);
         $val_marcax = $con_valida->ret_matriz();
@@ -261,21 +259,11 @@ class Mod_Vehicu_Marcas
         if($val_marcax[0]["mintra_cliente"] != NULL && $val_marcax[0]["ind_estado"] == "1"){
             $mensaje = "Desactivada";
             /* VAMOS A ACTUALIZAR OPERADOR */
-            $query_1 = "UPDATE " . BASE_DATOS . ".tab_genera_marcas
-                        SET ind_estado = IF(ind_estado = '1', '0', '1'), 
-                        usr_modifi = '".$_REQUEST['usr_creaci']."', 
-                        fec_modifi = NOW()
-                        WHERE cod_mintra = '".$_REQUEST['cod_marcas']."' 
-                    ";
+            $query_1 = "UPDATE " . BASE_DATOS . ".tab_genera_marcas SET ind_estado = IF(ind_estado = '1', '0', '1'), usr_modifi = '".$_REQUEST['usr_creaci']."',  fec_modifi = NOW() WHERE cod_mintra = '".$_REQUEST['cod_marcas']."' ";
         }else if($val_marcax[0]["mintra_cliente"] != NULL && $val_marcax[0]["ind_estado"] == "0"){
             $mensaje = "Activada";
             /* VAMOS A ACTUALIZAR OPERADOR */
-            $query_1 = "UPDATE " . BASE_DATOS . ".tab_genera_marcas
-                        SET ind_estado = IF(ind_estado = '1', '0', '1'),
-                        usr_modifi = '".$_REQUEST['usr_creaci']."', 
-                        fec_modifi = NOW()
-                        WHERE cod_mintra = '".$_REQUEST['cod_marcas']."' 
-                    ";
+            $query_1 = "UPDATE " . BASE_DATOS . ".tab_genera_marcas SET ind_estado = IF(ind_estado = '1', '0', '1'), usr_modifi = '".$_REQUEST['usr_creaci']."', fec_modifi = NOW() WHERE cod_mintra = '".$_REQUEST['cod_marcas']."' ";
         }else{
             $mensaje = "Insertada";
 
@@ -287,8 +275,7 @@ class Mod_Vehicu_Marcas
 
             // $consec = $matriz_consec[0][0] + 1;
 
-            $sql_marca_err = "SELECT a.cod_marcax, a.nom_marcax, a.cod_mintra FROM ".BASE_DATOS.".tab_genera_marcas a
-                                WHERE a.cod_marcax = '".$_REQUEST['cod_marcas']."' AND a.cod_marcax != a.cod_mintra";
+            $sql_marca_err = "SELECT a.cod_marcax, a.nom_marcax, a.cod_mintra FROM ".BASE_DATOS.".tab_genera_marcas a WHERE a.cod_marcax = '".$_REQUEST['cod_marcas']."' AND a.cod_marcax != a.cod_mintra";
             $con_marca_err = new Consulta($sql_marca_err, $this->conexion);
             $err_marca = $con_marca_err->ret_matriz();
 
@@ -298,18 +285,7 @@ class Mod_Vehicu_Marcas
             }
 
             if(sizeof($err_marca) == 0){
-                $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_genera_marcas
-                            (
-                                cod_marcax, nom_marcax, cod_mintra, 
-                                ind_estado, usr_creaci, fec_creaci, 
-                                usr_modifi, fec_modifi
-                            ) VALUES 
-                            (   
-                                '".$_REQUEST["cod_marcas"]."', '".$val_marcax[0]['nom_marcax']."', '".$_REQUEST["cod_marcas"]."',
-                                '1', '".$_REQUEST['usr_creaci']."', NOW(),
-                                NULL, NULL
-                            )
-                    ";
+                $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_genera_marcas ( cod_marcax, nom_marcax, cod_mintra, ind_estado, usr_creaci, fec_creaci, usr_modifi, fec_modifi ) VALUES ( '".$_REQUEST["cod_marcas"]."', '".$val_marcax[0]['nom_marcax']."', '".$_REQUEST["cod_marcas"]."', '1', '".$_REQUEST['usr_creaci']."', NOW(), NULL, NULL ) ";
             }
             
         }
