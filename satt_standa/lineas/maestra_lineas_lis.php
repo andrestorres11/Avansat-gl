@@ -169,10 +169,7 @@ class Maestra_lineas_lis
         $form->cerrar_tabla();
 
         // $query = "SELECT a.cod_lineax, a.cod_marcax, a.cod_marmin, a.nom_lineax, a.cod_mintra, a.ind_estado FROM ".BASE_DATOS.".tab_vehige_lineas a";
-        $query = "SELECT a.cod_lineax, a.nom_lineax, a.cod_marcax, b.nom_marcax, c.cod_mintra AS mintra_cliente, c.ind_estado
-                            FROM ".BD_STANDA.".tab_genera_lineas a
-                            INNER JOIN ".BD_STANDA.".tab_genera_marcas b ON a.cod_marcax = b.cod_marcax
-                            LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_lineax = c.cod_mintra AND a.cod_marcax = c.cod_marcax";
+        $query = "SELECT a.cod_lineax, a.nom_lineax, a.cod_marcax, b.nom_marcax, c.cod_mintra AS mintra_cliente, c.ind_estado FROM ".BD_STANDA.".tab_genera_lineas a INNER JOIN ".BD_STANDA.".tab_genera_marcas b ON a.cod_marcax = b.cod_marcax LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_lineax = c.cod_mintra AND a.cod_marcax = c.cod_marcax";
 
         $consulta = new Consulta($query, $this->conexion);
         $matriz = $consulta->ret_matriz();
@@ -260,10 +257,7 @@ class Maestra_lineas_lis
         $vec_mensaj[0] = "1";
         $vec_mensaj[1] = "";
 
-        $sql_valida = "SELECT a.cod_lineax, a.nom_lineax, a.cod_marcax, c.ind_estado, c.cod_mintra AS mintra_cliente
-        FROM ".BD_STANDA.".tab_genera_lineas a
-              LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_lineax = c.cod_mintra AND a.cod_marcax = c.cod_marcax 
-        WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' ";
+        $sql_valida = "SELECT a.cod_lineax, a.nom_lineax, a.cod_marcax, c.ind_estado, c.cod_mintra AS mintra_cliente FROM ".BD_STANDA.".tab_genera_lineas a LEFT JOIN ".BASE_DATOS.".tab_vehige_lineas c ON a.cod_lineax = c.cod_mintra AND a.cod_marcax = c.cod_marcax WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' ";
         $con_valida = new Consulta($sql_valida, $this->conexion);
         $val_linea = $con_valida->ret_matriz();
 
@@ -278,21 +272,11 @@ class Maestra_lineas_lis
             $mensaje = "Desactivada";
             /* VAMOS A ACTUALIZAR OPERADOR */
             
-            $query_1 = "UPDATE " . BASE_DATOS . ".tab_vehige_lineas
-                        SET ind_estado = IF(ind_estado = '1', '0', '1'), 
-                        usr_modifi = '".$_REQUEST['usr_creaci']."', 
-                        fec_modifi = NOW()
-                        WHERE cod_mintra = '".$_REQUEST['cod_lineas']."' 
-                        AND cod_marmin = '".$_REQUEST["cod_marcas"]."'";
+            $query_1 = "UPDATE " . BASE_DATOS . ".tab_vehige_lineas SET ind_estado = IF(ind_estado = '1', '0', '1'), usr_modifi = '".$_REQUEST['usr_creaci']."',  fec_modifi = NOW() WHERE cod_mintra = '".$_REQUEST['cod_lineas']."'  AND cod_marmin = '".$_REQUEST["cod_marcas"]."'";
         }else if($val_linea[0]["mintra_cliente"] != NULL && $val_linea[0]["ind_estado"] == "0"){
             $mensaje = "Activada";
             /* VAMOS A ACTUALIZAR OPERADOR */
-            $query_1 = "UPDATE " . BASE_DATOS . ".tab_vehige_lineas
-                        SET ind_estado = IF(ind_estado = '1', '0', '1'),
-                        usr_modifi = '".$_REQUEST['usr_creaci']."', 
-                        fec_modifi = NOW()
-                        WHERE cod_mintra = '".$_REQUEST['cod_lineas']."' 
-                        AND cod_marmin = '".$_REQUEST["cod_marcas"]."'";
+            $query_1 = "UPDATE " . BASE_DATOS . ".tab_vehige_lineas SET ind_estado = IF(ind_estado = '1', '0', '1'), usr_modifi = '".$_REQUEST['usr_creaci']."',  fec_modifi = NOW() WHERE cod_mintra = '".$_REQUEST['cod_lineas']."' AND cod_marmin = '".$_REQUEST["cod_marcas"]."'";
         }else{
             $mensaje = "Insertada";
 
@@ -308,31 +292,16 @@ class Maestra_lineas_lis
                 $val_linea['nom_lineax'] = str_replace("'","`",$val_linea['nom_lineax']);
             }
 
-            $sql_linea_err_1 = "SELECT a.cod_lineax, a.cod_mintra, a.nom_lineax, a.cod_marcax FROM ".BASE_DATOS.".tab_vehige_lineas a
-            WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' AND a.cod_lineax != a.cod_mintra ";
+            $sql_linea_err_1 = "SELECT a.cod_lineax, a.cod_mintra, a.nom_lineax, a.cod_marcax FROM ".BASE_DATOS.".tab_vehige_lineas a WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' AND a.cod_lineax != a.cod_mintra ";
             $con_linea_err_1 = new Consulta($sql_linea_err_1, $this->conexion);
             $err_linea_1 = $con_linea_err_1->ret_matriz();
 
-            $sql_linea_err_2 = "SELECT a.cod_lineax, a.cod_mintra, a.nom_lineax, a.cod_marcax FROM ".BASE_DATOS.".tab_vehige_lineas a
-            WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' AND a.cod_marcax != a.cod_marmin ";
+            $sql_linea_err_2 = "SELECT a.cod_lineax, a.cod_mintra, a.nom_lineax, a.cod_marcax FROM ".BASE_DATOS.".tab_vehige_lineas a WHERE a.cod_lineax = '".$_REQUEST["cod_lineas"]."' AND a.cod_marcax = '".$_REQUEST["cod_marcas"]."' AND a.cod_marcax != a.cod_marmin ";
             $con_linea_err_2 = new Consulta($sql_linea_err_2, $this->conexion);
             $err_linea_2 = $con_linea_err_2->ret_matriz();
 
             if(sizeof($existe_marca) > 0 && sizeof($err_linea_1) == 0 && sizeof($err_linea_2) == 0){
-                $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_vehige_lineas
-                        (
-                            cod_lineax, cod_marcax, cod_marmin,
-                            nom_lineax, cod_mintra, ind_estado,
-                            usr_creaci, fec_creaci, usr_modifi, 
-                            fec_modifi
-                        ) VALUES 
-                        (   
-                            '".$_REQUEST['cod_lineas']."', '".$val_linea[0]['cod_marcax']."', '".$val_linea[0]["cod_marcax"]."',
-                            '".$val_linea[0]["nom_lineax"]."','".$_REQUEST['cod_lineas']."','1',
-                            '".$_REQUEST['usr_creaci']."', NOW(), NULL, 
-                            NULL
-                        )
-                ";
+                $query_1 = "INSERT INTO " . BASE_DATOS . ".tab_vehige_lineas ( cod_lineax, cod_marcax, cod_marmin, nom_lineax, cod_mintra, ind_estado, usr_creaci, fec_creaci, usr_modifi,  fec_modifi ) VALUES ( '".$_REQUEST['cod_lineas']."', '".$val_linea[0]['cod_marcax']."', '".$val_linea[0]["cod_marcax"]."', '".$val_linea[0]["nom_lineax"]."','".$_REQUEST['cod_lineas']."','1', '".$_REQUEST['usr_creaci']."', NOW(), NULL, NULL ) ";
             }
         }
         $consul_1 = new Consulta($query_1, $this->conexion, "R");
