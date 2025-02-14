@@ -200,6 +200,7 @@ class InfNovedadesUsuario{
         $_MANALA = $this -> getMantieneAlarma( $_REQUEST ); 
         $_NOVGPS = $this -> getNovedaGps( $_REQUEST );
         $_OTROXX = $this -> getOtros( $_REQUEST ); 
+        $_NOVFAC = $this -> getNovedadesFacturacion( $_REQUEST );
         $_DESPAC = $this -> getDespacTotal( $_REQUEST );
         $_TOTAL_ = array();   
         
@@ -216,7 +217,8 @@ class InfNovedadesUsuario{
             $_TOTAL_[3]+= (int)$_MANALA[ $row['cod_tercer'] ];
             $_TOTAL_[4]+= (int)$_OTROXX[ $row['cod_tercer'] ];
             $_TOTAL_[5]+= $_TOTAL_[1] + $_TOTAL_[2] + $_TOTAL_[3] + $_TOTAL_[4];  
-            $_TOTAL_U = (int)$_NOVESP[ $row['cod_tercer'] ] + (int)$_SOLTIE[ $row['cod_tercer'] ] + (int)$_MANALA[ $row['cod_tercer'] ] + (int)$_OTROXX[ $row['cod_tercer'] ];  
+            $_TOTAL_[6]+= (int)$_NOVFAC[ $row['cod_tercer'] ];
+            $_TOTAL_U = (int) $_NOVFAC[ $row['cod_tercer'] ];  
 
           if($_TOTAL_U == 0) continue;               
             
@@ -275,6 +277,7 @@ class InfNovedadesUsuario{
     }
     
     function getDetalles( $__REQUEST ){
+        $perfiles="'1','7','8','73'";
         global $HTTP_POST_FILES;
         session_start();
         $BASE = $_SESSION[BASE_DATOS];
@@ -294,7 +297,7 @@ class InfNovedadesUsuario{
 
         $sql = "SELECT * FROM ( SELECT b.num_despac as Despacho,a.nom_noveda as Novedad,b.fec_contro as Fecha,
                       b.obs_contro as Observacion,d.abr_tercer as Transportadora,c.num_placax as Placa,
-                      IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(d.abr_tercer) ) as Conductor,
+                      CONCAT(i.nom_tercer, ' ', i.nom_apell1,' ', i.nom_apell2 ) as Conductor,
                       g.nom_agenci AS agencia, b.usr_creaci AS usr_noveda,e.usr_creaci, e.fec_creaci,
                       IFNULL(e.fec_llegad,'N/a') as fec_llegad, IFNULL(e.fec_despac,'N/a') as fec_despac
 
@@ -306,10 +309,13 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
             inner join ".BASE_DATOS.".tab_genera_agenci g on e.cod_agedes = g.cod_agenci
+            inner join ".BASE_DATOS.".tab_genera_usuari h on b.usr_creaci = h.cod_usuari
+            inner join ".BASE_DATOS.".tab_tercer_tercer i on c.cod_conduc = i.cod_tercer 
 
-          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."' 
-                  AND d.cod_tercer = '".$__REQUEST[cod_transp]."'";
+          WHERE 1=1
+                  AND h.cod_perfil IN (".$perfiles.")
+                  AND d.cod_tercer = '".$__REQUEST[cod_transp]."'
+                  AND c.ind_activo != 'N'";
         
         if($__REQUEST["des_transi"] == 1)
         {
@@ -342,7 +348,7 @@ class InfNovedadesUsuario{
         $sql .= "UNION ALL
           SELECT b.num_despac as Despacho,a.nom_noveda as Novedad, b.fec_noveda as Fecha,
                  b.des_noveda as Observacion,d.abr_tercer as Transportadora,c.num_placax as Placa,
-                 IF( c.cod_conduc = '1001', UPPER(c.nom_conduc), UPPER(d.abr_tercer) ) as Conductor,
+                 CONCAT(i.nom_tercer, ' ', i.nom_apell1,' ', i.nom_apell2 ) as Conductor, 
                  g.nom_agenci AS agencia, b.usr_creaci AS usr_noveda,e.usr_creaci, e.fec_creaci,
                  IFNULL(e.fec_llegad,'N/a') as fec_llegad, IFNULL(e.fec_despac,'N/a') as fec_despac
           FROM 
@@ -353,11 +359,14 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda
             inner join ".BASE_DATOS.".tab_genera_agenci g on e.cod_agedes = g.cod_agenci 
+            inner join ".BASE_DATOS.".tab_genera_usuari h on b.usr_creaci = h.cod_usuari
+            inner join ".BASE_DATOS.".tab_tercer_tercer i on c.cod_conduc = i.cod_tercer 
 
           WHERE 
-            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
-            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
-            AND d.cod_tercer = '".$__REQUEST[cod_transp]."'";
+            1=1
+            AND h.cod_perfil IN (".$perfiles.")
+            AND d.cod_tercer = '".$__REQUEST[cod_transp]."'
+            AND c.ind_activo != 'N'";
 
         if($__REQUEST["des_transi"] == 1)
         {
@@ -389,7 +398,6 @@ class InfNovedadesUsuario{
         
         $sql .= ") as aa ORDER BY 5,1,3 ";
 
-        //echo '<pre>'; print_r($sql); echo '</pre>';
         $consulta  = new Consulta($sql, $this -> conexion);
         $despachos = $consulta -> ret_matriz();
            
@@ -484,6 +492,7 @@ class InfNovedadesUsuario{
     }
 
     function getDespacTotal($__REQUEST){
+
       $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
       $MATRIZ = array(); 
 
@@ -494,7 +503,7 @@ class InfNovedadesUsuario{
             ".BASE_DATOS.".tab_despac_despac a 
             inner join ".BASE_DATOS.".tab_despac_vehige b on a.num_despac = b.num_despac
             inner join ".BASE_DATOS.".tab_tercer_tercer c on b.cod_transp = c.cod_tercer
-          WHERE c.cod_tercer = '".$transpor[0]."'";
+          WHERE c.cod_tercer = '".$transpor[0]."' AND b.ind_activo = 'S'";
 
         if(isset($__REQUEST["des_transi"]))
         {
@@ -507,16 +516,20 @@ class InfNovedadesUsuario{
           $sql .=" AND a.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
                     AND a.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
         }
+
        
         $consulta = new Consulta($sql, $this -> conexion); 
         $data = $consulta->ret_matriz("a");
         $MATRIZ[ $transpor[0] ] = $data[0]['c'];
+
       }
 
       return $MATRIZ;
     }
     
     function getNovedadesEspeciales( $__REQUEST ){
+
+      $perfiles="'1','7','8','73'";
 
       $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
       $MATRIZ = array(); 
@@ -532,10 +545,12 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
-          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari
+          WHERE 1=1
+                  AND g.cod_perfil IN (".$perfiles.")
                   AND f.ind_novesp = 1 
-                  AND d.cod_tercer = '".$transpor[0]."'";
+                  AND d.cod_tercer = '".$transpor[0]."'
+                  AND c.ind_activo != 'N'";
         
         if(isset($__REQUEST["des_transi"]))
         {
@@ -558,11 +573,13 @@ class InfNovedadesUsuario{
             inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari
           WHERE 
-            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
-            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            1=1
+            AND g.cod_perfil IN (".$perfiles.")
             AND f.ind_novesp = 1 
-            AND d.cod_tercer = '".$transpor[0]."'";
+            AND d.cod_tercer = '".$transpor[0]."'
+            AND c.ind_activo != 'N'";
 
         if(isset($__REQUEST["des_transi"]))
         {
@@ -577,8 +594,6 @@ class InfNovedadesUsuario{
         }
         
         $sql .= ") as aa ";
-
-  
         $consulta = new Consulta($sql, $this -> conexion); 
         $data = $consulta->ret_matriz("a");
         $MATRIZ[ $transpor[0] ] = $data[0]['c'];
@@ -591,6 +606,8 @@ class InfNovedadesUsuario{
     
     
     function getSolicitaTiempo( $__REQUEST ){
+
+      $perfiles="'1','7','8','73'";
 
       $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
       $MATRIZ = array();
@@ -606,10 +623,12 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
-          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari
+          WHERE 1=1
+                  AND g.cod_perfil IN (".$perfiles.")
                   AND f.ind_soltie = 1 
-                  AND d.cod_tercer = '".$transpor[0]."'";
+                  AND d.cod_tercer = '".$transpor[0]."'
+                  AND c.ind_activo = 'S'";
         
         if(isset($__REQUEST["des_transi"]))
         {
@@ -631,12 +650,14 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
             inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
-            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari 
           WHERE 
-            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
-            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            1=1
+            AND g.cod_perfil IN (".$perfiles.")
             AND f.ind_soltie = 1
-            AND d.cod_tercer = '".$transpor[0]."'";
+            AND d.cod_tercer = '".$transpor[0]."'
+            AND c.ind_activo = 'S'";
 
         if(isset($__REQUEST["des_transi"]))
         {
@@ -662,6 +683,8 @@ class InfNovedadesUsuario{
     
     function getMantieneAlarma( $__REQUEST ){
 
+      $perfiles="'1','7','8','73'";
+
       $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
       $MATRIZ = array();
 
@@ -676,11 +699,13 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
-          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari 
+          WHERE 1=1
+                  AND g.cod_perfil IN (".$perfiles.")
                   AND f.ind_manale = 1 
                   AND a.cod_tipoxx = 1
-                  AND d.cod_tercer = '".$transpor[0]."'";
+                  AND d.cod_tercer = '".$transpor[0]."'
+                  AND c.ind_activo != 'N'";
         
         if(isset($__REQUEST["des_transi"]))
         {
@@ -703,12 +728,14 @@ class InfNovedadesUsuario{
             inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari 
           WHERE 
-            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
-            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            1=1
+            AND g.cod_perfil IN (".$perfiles.")
             AND f.ind_manale = 1
             AND a.cod_tipoxx = 1
-            AND d.cod_tercer = '".$transpor[0]."'";
+            AND d.cod_tercer = '".$transpor[0]."'
+            AND c.ind_activo != 'N'";
 
         if(isset($__REQUEST["des_transi"]))
         {
@@ -735,6 +762,8 @@ class InfNovedadesUsuario{
     
     function getOtros( $__REQUEST ){
 
+      $perfiles="'1','7','8','73'";
+
       $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
       $MATRIZ = array();
 
@@ -749,10 +778,12 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
-          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari 
+          WHERE 1=1
+                  AND g.cod_perfil IN (".$perfiles.")
                   AND f.ind_fuepla = 1 
-                  AND d.cod_tercer = '".$transpor[0]."'";
+                  AND d.cod_tercer = '".$transpor[0]."'
+                  AND c.ind_activo != 'N'";
         
         if(isset($__REQUEST["des_transi"]))
         {
@@ -775,11 +806,13 @@ class InfNovedadesUsuario{
             inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari 
           WHERE 
-            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
-            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            1=1
+            AND g.cod_perfil IN (".$perfiles.")
             AND f.ind_fuepla = 1
-            AND d.cod_tercer = '".$transpor[0]."'";
+            AND d.cod_tercer = '".$transpor[0]."'
+            AND c.ind_activo != 'N'";
 
         if(isset($__REQUEST["des_transi"]))
         {
@@ -819,10 +852,10 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
-          WHERE b.fec_contro >= '".$__REQUEST[fecha_ini]."'
-                  AND b.fec_contro <= '".$__REQUEST[fecha_fin]."'
+          WHERE 1=1
                   AND a.cod_tipoxx = 2
-                  AND d.cod_tercer = '".$transpor[0]."'";
+                  AND d.cod_tercer = '".$transpor[0]."'
+                  AND c.ind_activo != 'N'";
         
         if(isset($__REQUEST["des_transi"]))
         {
@@ -846,10 +879,10 @@ class InfNovedadesUsuario{
             inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
             inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
           WHERE 
-            b.fec_noveda >= '".$__REQUEST[fecha_ini]."' 
-            AND b.fec_noveda <= '".$__REQUEST[fecha_fin]."'
+            1=1
             AND a.cod_tipoxx = 2
-            AND d.cod_tercer = '".$transpor[0]."'";
+            AND d.cod_tercer = '".$transpor[0]."'
+            AND c.ind_activo != 'N'";
 
         if(isset($__REQUEST["des_transi"]))
         {
@@ -868,6 +901,80 @@ class InfNovedadesUsuario{
         $consulta = new Consulta($sql, $this -> conexion); 
         $data = $consulta->ret_matriz("a");
         $MATRIZ[ $transpor[0] ] = $data[0]['c'];
+      }
+
+      return $MATRIZ;
+    }
+
+    function getNovedadesFacturacion( $__REQUEST ){
+
+      $perfiles="'1','7','8','73'";
+
+      $transporta = $this -> getTranspor( array('busq_transp' => $__REQUEST[cod_transp]) );
+      $MATRIZ = array(); 
+
+      foreach($transporta AS $transpor)
+      {
+        $sql = "SELECT COUNT(aa.num_despac) as c  FROM (
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_contro b on a.cod_noveda = b.cod_noveda
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac
+            inner join ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda 
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari
+          WHERE 1=1
+                  AND g.cod_perfil IN (".$perfiles.")
+                  AND d.cod_tercer = '".$transpor[0]."'
+                  AND c.ind_activo = 'S'";
+        
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        $sql .= "UNION ALL
+          SELECT b.num_despac
+          FROM 
+            ".BASE_DATOS.".tab_genera_noveda a 
+            inner join ".BASE_DATOS.".tab_despac_noveda b on a.cod_noveda = b.cod_noveda 
+            inner join ".BASE_DATOS.".tab_despac_vehige c on b.num_despac = c.num_despac 
+            inner join  ".BASE_DATOS.".tab_tercer_tercer d on c.cod_transp = d.cod_tercer 
+            inner join ".BASE_DATOS.".tab_despac_despac e on b.num_despac = e.num_despac
+            inner join ".BASE_DATOS.".tab_parame_novseg f on c.cod_transp = f.cod_transp AND b.cod_noveda = f.cod_noveda  
+            inner join ".BASE_DATOS.".tab_genera_usuari g on b.usr_creaci = g.cod_usuari
+          WHERE 
+            1=1
+            AND g.cod_perfil IN (".$perfiles.")
+            AND d.cod_tercer = '".$transpor[0]."'
+            AND c.ind_activo = 'S'";
+
+        if(isset($__REQUEST["des_transi"]))
+        {
+          $sql .=" AND e.fec_despac  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_despac <= '".$__REQUEST[fecha_fin]."'";
+        }
+
+        if(isset($__REQUEST["des_final"]))
+        {
+          $sql .=" AND e.fec_llegad  >= '".$__REQUEST[fecha_ini]."' 
+                    AND e.fec_llegad <= '".$__REQUEST[fecha_fin]."'";
+        }
+        
+        $sql .= ") as aa ";
+        $consulta = new Consulta($sql, $this -> conexion); 
+        $data = $consulta->ret_matriz("a");
+        $MATRIZ[ $transpor[0] ] = $data[0]['c'];
+        
       }
 
       return $MATRIZ;

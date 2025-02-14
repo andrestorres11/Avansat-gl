@@ -382,7 +382,7 @@ class PDFInformeOperativoPreventivo extends PDF
                 INNER JOIN ".BASE_DATOS.".tab_vehige_carroc f ON e.cod_carroc = f.cod_carroc
                 INNER JOIN ".BASE_DATOS.".tab_genera_marcas g ON e.cod_marcax = g.cod_marcax
                 INNER JOIN ".BASE_DATOS.".tab_vehige_colore h ON e.cod_colorx = h.cod_colorx
-                INNER JOIN satt_standa.tab_genera_opegps i ON b.gps_operad = i.nit_gpsglx
+                LEFT JOIN satt_standa.tab_genera_opegps i ON b.gps_operad = i.nit_gpsglx
                 INNER JOIN ".BASE_DATOS.".tab_tercer_tercer j ON c.cod_transp = j.cod_tercer
                 WHERE a.cod_consec = ".$cod_consec;
     $query = new Consulta($sql, $this -> conexion);

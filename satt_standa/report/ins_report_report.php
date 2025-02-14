@@ -183,13 +183,15 @@ class Reporte
                 $fech_nov = $fech_nov[2]."/".$fech_nov[1]."/".$fech_nov[0];	
                 
                 $select = "SELECT b.nom_carroc, d.abr_tercer, d.num_telmov 
-                             FROM ".$base_datos.".tab_vehicu_vehicu a,
-                                  ".$base_datos.".tab_vehige_carroc b,
-                                  ".$base_datos.".tab_tercer_tercer d
-                            WHERE a.num_placax = '".$_POST[num_placax]."' 
-                              AND b.cod_carroc = a.cod_carroc 
-                              AND a.cod_conduc = d.cod_tercer
-                           ";
+							FROM ".$base_datos.".tab_vehicu_vehicu a, 
+								 ".$base_datos.".tab_vehige_carroc b, 
+    							 ".$base_datos.".tab_despac_vehige c,
+								 ".$base_datos.".tab_tercer_tercer d
+							WHERE c.num_placax = '".$_POST[num_placax]."'
+								 AND b.cod_carroc = a.cod_carroc 
+								 AND c.cod_conduc = d.cod_tercer
+							ORDER BY c.fec_creaci DESC LIMIT 1
+							";
                 $consulta = new Consulta( $select, $this->conexion);
                 $vehicul = $consulta -> ret_matriz();
                 //$vehicul = $vehicul[0][0];
@@ -220,7 +222,7 @@ class Reporte
                 // </div>';
 				$mensaje = '
                 <div id="mensaje" style="color:#7F7F7F; border:0px; padding:0px; width:700px; text-align:justify;">
-                    <img src="https://oet-central.intrared.net/ap/dev/panel_control_rc1/web/assets/images/transports/oal.png" style="width: 230px;">
+                    <img src="https://oet-central.intrared.net/ap/dev/panel_control_rc1/web/assets/images/transports/oal.png" style="width: 70px;">
                     <div style="color:#7F7F7F; font-family: Arial, sans-serif; font-size: 12pt;">
                         <div style="padding:20px" >
                             

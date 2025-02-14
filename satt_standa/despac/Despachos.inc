@@ -3434,9 +3434,9 @@ class Despachos
                     $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
                 }
 
-                if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
+                // if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
                 $mHtml->LabelTit( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                }
+                // }
 
                 /*if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
                     $mHtml->LabelTit( 'Enviado a Cliente', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
@@ -3603,7 +3603,7 @@ class Despachos
                         $mHtml->Label( '<b>'.self::getAlias($mNovedades[$i][usr_creaci]).'</b>', array("align"=>"right", "class"=>$mStyle) ); 
                     }
 
-                    if( $mViewUsu->edi_noveda->ind_visibl == 1 )
+                    // if( $mViewUsu->edi_noveda->ind_visibl == 1 )
                     $mHtml->Label( $mBtnOpePrev."".$mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
 
 

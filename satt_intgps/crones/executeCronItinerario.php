@@ -128,7 +128,7 @@ class cronItinerario
             $sHub = 0;
             $sWid = 0;
             //Ajuste temporal si el operador es DETEKTOR solo integra por tipo HUB con el fin de no usar widetech 
-            if($value['gps_operad']=='9010949280'){
+            if($value['gps_operad']=='9010949280' && $mIndDesEta['TIPO'] != 'FULL'){
                 $mIndDesEta['TIPO'] = 'HUB';
                 $value["url_webser"] = 'https://oet-central.intrared.net/ap/interf/APIIntegradorGPS/v2/index.php';
             }

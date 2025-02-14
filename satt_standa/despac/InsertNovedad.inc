@@ -2097,17 +2097,23 @@ class InsertNovedad {
 
     private function insertNovedad($mDatRegist = null, $mDifTieAla = '0', $mCodSitiox = '94134', $mIndEnSiti = false, $mDatUsuari = null) {
         if ($mIndEnSiti == true) {
+            $mSql = " SELECT MAX(cod_consec) AS maximo 
+                        FROM " . BASE_DATOS . ".tab_despac_noveda 
+                       WHERE num_despac = '" . $mDatRegist['despac'] . "' ";
+            $mConsult = new Consulta($mSql, $this->conexion);
+            $mMax = $mConsult->ret_arreglo();
+            $mMax = $mMax[0] + 1;
             $mSql = " INSERT INTO " . BASE_DATOS . ".tab_despac_noveda 
                                 (
                                     num_despac, cod_rutasx,  cod_contro, 
-                                    cod_noveda, tiem_duraci, fec_noveda, 
+                                    cod_consec, cod_noveda, tiem_duraci, fec_noveda, 
                                     des_noveda, val_retras,  cod_sitiox, 
                                     cod_usrcre, usr_creaci,  fec_creaci 
                                 )
                                 VALUES 
                                 ( 
                                     '" . $mDatRegist['despac'] . "', '" . $mDatRegist['rutax'] . "',  '" . $mDatRegist['contro'] . "', 
-                                    '" . $mDatRegist['noveda'] . "', '" . $mDatRegist['tieadi'] . "', '" . $mDatRegist['fecnov'] . "', 
+                                    '" . $mMax . "', '" . $mDatRegist['noveda'] . "', '" . $mDatRegist['tieadi'] . "', '" . $mDatRegist['fecnov'] . "', 
                                     '" . addslashes($mDatRegist['observ']) . "', '" . $mDifTieAla . "', '" . $mCodSitiox . "', 
                                     '" . $mDatUsuari['cod_consec'] . "', '" . $mDatRegist['usuari'] . "', '" . $mDatRegist['fecact'] . "'
                                 )";
