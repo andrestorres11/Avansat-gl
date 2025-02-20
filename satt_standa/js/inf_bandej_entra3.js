@@ -69,6 +69,11 @@ $("body").ready(function() {
         Actualizarbadge("1", "liPreCar");
     });
 
+    $("#liAlerta").click(function() {
+        generalReport("infoAlertas", "tabs-8");
+        Actualizarbadge("8", "liAlerta");
+    });
+
     $("#generarprc").click(function() {
         if( ($('#hor_inicio').val() != "" && $('#hor_finxxx').val() != "") )
         {
