@@ -1,12 +1,12 @@
 /* !\file: ins_vehicu_lineas.js
- *  \brief: Modulo de funciones para validar en el módulo de Lineas
+ *  \brief: Modulo de funciones para validar en el mÃ³dulo de Lineas
  *  \author: Ing. Jesus Sanchez
  *  \date: 29/04/2024
  */
 
 
 /*! \fn: limpiarFormulario
- *  \brief: Limpia el formulario, dejándolo en modo de inserción
+ *  \brief: Limpia el formulario, dejÃ¡ndolo en modo de inserciÃ³n
  *  \author: Ing. Jesus Sanchez
  *  \date: 29/04/2024
  *  \param: NINGUNO
@@ -50,9 +50,9 @@ function ActivarLineas(cod_lineas, mintra_cliente, ind_estado, nom_lineax, cod_m
     
     try 
     {
-        swal({
-            title: "Lineas",
-            text: "¿Está seguro de "+mensaje+" la linea "+nom_lineax+" con código de ministerio "+cod_lineas+"?",
+        Swal.fire({
+            title: 'Lineas!',
+            text: "¿Está seguro de "+mensaje+" la linea "+nom_lineax+" con cÃ³digo de ministerio "+cod_lineas+"?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",  
@@ -60,18 +60,12 @@ function ActivarLineas(cod_lineas, mintra_cliente, ind_estado, nom_lineax, cod_m
             cancelButtonText: "No",
             closeOnConfirm: false,
             closeOnCancel: false
-        },
-        function(isConfirm)
-        {
-            if (isConfirm)
-            {
-                LockAplication('lock');
-                AjaxLoader('block')
-                // limpiarFormulario();
-                $("#optionID").val("5");
+        }).then((result) => {
+            if (result.value) {
+                $("#opcionID").val("5");
                 $("#cod_lineasID").val(cod_lineas);
                 $("#cod_marcasID").val(cod_marcax); 
-                $("input").prop("disabled", false);
+                //$("input").prop("disabled", false);
                 $("#form_lineasID").submit();
             }
             swal.close();
@@ -79,6 +73,11 @@ function ActivarLineas(cod_lineas, mintra_cliente, ind_estado, nom_lineax, cod_m
     } 
     catch ( e ) 
     {
-        sweetAlert("Lineas", "Error ActivarLineas " + e.message, "error");
+        Swal.fire({
+            title: 'Error!',
+            text: "Error ActivarLineas " + e.message,
+            type: 'error',
+            confirmButtonColor: '#336600'
+        });
     }
 }
