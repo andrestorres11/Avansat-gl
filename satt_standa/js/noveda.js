@@ -393,7 +393,7 @@ function UbicaGPS(num_despac) {
 			}
 		});
 	} catch (e) {
-		console.log("Error FunciÃ³n UbicaGPS: " + e.message + "\nLine: " + Error.lineNumber);
+		console.log("Error Función UbicaGPS: " + e.message + "\nLine: " + Error.lineNumber);
 		return false;
 	}
 }
@@ -740,7 +740,7 @@ function aceptar_inscarava() {
  *  \brief: Solucion de recomendaciones
  *  \author: Ing. Fabian Salinas
  *  \date: 25/05/2015
- *  \date modified: dia/mes/aÃƒÂ±o
+ *  \date modified: dia/mes/aÃ±o
  *  \param: 
  *  \return: 
  */
@@ -853,7 +853,7 @@ function CamDefini(element) {
  *  \brief: Se envian las recomendaciones
  *  \author: Ing. Fabian Salinas
  *  \date: 25/05/2015
- *  \date modified: dia/mes/aÃƒÂ±o
+ *  \date modified: dia/mes/aÃ±o
  *  \param: 
  *  \return: codContro PcPadre
  */
@@ -889,7 +889,7 @@ function setObserRecome() {
  *  \brief: PopUp con las recomendaciones para asignar al despacho
  *  \author: Ing. Fabian Salinas
  *  \date: 25/05/2015
- *  \date modified: dia/mes/aÃƒÂ±o
+ *  \date modified: dia/mes/aÃ±o
  *  \param: NumDespac
  *  \return:
  */
@@ -917,7 +917,7 @@ function showDespacRecome(num_despac) {
 			}
 		});
 	} catch (e) {
-		console.log("Error FunciÃ³n showDespacRecome: " + e.message + "\nLine: " + e.lineNumber);
+		console.log("Error Función showDespacRecome: " + e.message + "\nLine: " + e.lineNumber);
 		return false;
 	}
 }
@@ -926,7 +926,7 @@ function showDespacRecome(num_despac) {
  *  \brief: Muestra las rutas opcionales de la transportadora
  *  \author: Ing. Fabian Salinas
  *  \date: 27/05/2015
- *  \date modified: dia/mes/aÃƒÂ±o
+ *  \date modified: dia/mes/aÃ±o
  *  \param: Num_Despac, CodTransportadora, CodRuta, CodPuestoControl
  *  \return:
  */
@@ -966,7 +966,7 @@ function showRutasTransp(num_despac, cod_transp, cod_rutasx, cod_contro) {
  *  \brief: PopUp con las recomendaciones asignadas al despacho, para dar solucion
  *  \author: Ing. Fabian Salinas
  *  \date: 25/05/2015
- *  \date modified: dia/mes/aÃƒÂ±o
+ *  \date modified: dia/mes/aÃ±o
  *  \param: 
  *  \return:
  */
@@ -1004,7 +1004,7 @@ function showSoluciRecome() {
  *  \brief: PopUp con el detalle del puesto de control (Si el PC es hijo muestra el detalle del padre)
  *  \author: Ing. Fabian Salinas
  *  \date: 25/05/2015
- *  \date modified: dia/mes/aÃƒÂ±o
+ *  \date modified: dia/mes/aÃ±o
  *  \param: CodContro
  *  \return:
  */
@@ -1030,7 +1030,7 @@ function showDetallePc(cod_contro) {
 			}
 		});
 	} catch (e) {
-		console.log("Error FunciÃ³n showDetallePc: " + e.message + "\nLine: " + e.lineNumber);
+		console.log("Error Función showDetallePc: " + e.message + "\nLine: " + e.lineNumber);
 		return false;
 	}
 }
@@ -1039,7 +1039,7 @@ function showDetallePc(cod_contro) {
  *  \brief: Centra el PopUp
  *  \author: Ing. Fabian Salinas
  *  \date: 25/05/2015
- *  \date modified: dia/mes/aÃƒÂ±o
+ *  \date modified: dia/mes/aÃ±o
  *  \param: 
  *  \return:
  */
@@ -1117,7 +1117,7 @@ function showMapOpen() {
 */
 
 /*! \fn: TextInputAlpha
- *  \brief: validaciÃ³n alfanumerica (Solo NÃºmeros y Letras AZ - az: 09)
+ *  \brief: validación alfanumerica (Solo Números y Letras AZ - az: 09)
  *  \author: 
  *  \date:  dd/mm/aaaa
  *  \date modified: dd/mm/aaaa
@@ -1274,7 +1274,7 @@ function updRuta() {
  *  \brief: Crea o destruye PopUp
  *  \author: Ing. Fabian Salinas
  *  \date: 24/06/2015
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \param: opcion   String   open, close
  *  \param: titulo   String   Titulo del PopUp
  *  \param: alto     Integer  Altura PopUp
@@ -1349,7 +1349,7 @@ function LoadPopupJQ4(opcion, titulo, alto, ancho, redimen, dragg, lockBack) {
 * \brief: redirecciona formulario novedad
 * \author: Edward Serrano
 * \date: 31/03/2017
-* \date modified: dia/mes/aÃ±o
+* \date modified: dia/mes/año
 * \param: paramatro
 * \return valor que retorna
 */
@@ -1369,7 +1369,7 @@ function getFormNoveda(opcionForm)
 * \brief: redirecciona formulario editar noveda
 * \author: Edward Serrano
 * \date: 03/04/2017
-* \date modified: dia/mes/aÃ±o
+* \date modified: dia/mes/año
 * \param: paramatro
 * \return valor que retorna
 */
@@ -1391,7 +1391,7 @@ function editarNove(row)
 * \brief: redirecciona formulario editar noveda
 * \author: Edward Serrano
 * \date: 03/04/2017
-* \date modified: dia/mes/aÃ±o
+* \date modified: dia/mes/año
 * \param: paramatro
 * \return valor que retorna
 */
@@ -1414,7 +1414,7 @@ function eliminarNove(row)
 * \brief: volver al menu principal
 * \author: Edward Serrano
 * \date: 04/04/2017
-* \date modified: dia/mes/aÃ±o
+* \date modified: dia/mes/año
 * \param: paramatro
 * \return valor que retorna
 */
@@ -1434,7 +1434,7 @@ function VolverNovedad()
  * \brief: chequea todos los input del tab
  * \author: Edward Serrano
  * \date: 06/04/2017
- * \date modified: dia/mes/aÃ±o
+ * \date modified: dia/mes/año
  * \param: 
  * \return valor que retorna
  */
@@ -1472,7 +1472,7 @@ function VolverNovedad()
 * \brief: Validad si la novedad tiene protocolo
 * \author: Edward Serrano
 * \date: 10/05/2017
-* \date modified: dia/mes/aÃ±o
+* \date modified: dia/mes/año
 * \param: novedad
 * \return 
 */
@@ -1511,7 +1511,7 @@ function ValidarProtoNoveda(cod_noveda, cod_transp)
  *  \brief: array de novedades existenes
  *  \author: Edward Serrano
  *  \date: 12/05/2017
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \return: 
  */
 function getNovedadAutocomple() 
@@ -1554,7 +1554,7 @@ function getNovedadAutocomple()
  *  \brief: pinta fromulario dependiendo de la novedad seleccionada
  *  \author: Edward Serrano
  *  \date: 12/05/2017
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \return: 
  */
 function formNovedadGestion() 
@@ -1640,7 +1640,7 @@ function formNovedadGestion()
  *  \brief: Realiza la solucion de las novedades moviles
  *  \author: Edward Serrano
  *  \date: 17/05/2017
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \return: 
  */
 function SolucionNovNem() 
@@ -1674,7 +1674,7 @@ function SolucionNovNem()
  *  \brief: valida el formulario de solucion moviles
  *  \author: Edward Serrano
  *  \date: 17/05/2017
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \return: 
  */
 function ValidarFormNen() 
@@ -1780,7 +1780,7 @@ function ValidarFormNen()
  *  \brief: Ejecuta ajax para almacenar las novedades moviles
  *  \author: Edward Serrano
  *  \date: 17/05/2017
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \return: 
  */
 function AlmcenarSolucionNem() 
@@ -1831,7 +1831,7 @@ function AlmcenarSolucionNem()
  *  \brief: Cierra los popup de las alertas
  *  \author: Edward Serrano
  *  \date: 17/05/2017
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \return: 
  */
 function closePopUpAlert() 
@@ -1851,7 +1851,7 @@ function closePopUpAlert()
  *  \brief: Valida las novedades especiales
  *  \author: Edward Serrano
  *  \date: 24/05/2017
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \return: 
  */
 function validarNoveEspeciales() 
@@ -1872,7 +1872,7 @@ function validarNoveEspeciales()
  *  \brief: Obtiene la lista de despachos generada
  *  \author: Edward Serrano
  *  \date: 28/11/2017
- *  \date modified: dia/mes/aÃ±o
+ *  \date modified: dia/mes/año
  *  \return: 
  */
 function getListDespac(cod_despac, cod_manifi) 
@@ -1942,11 +1942,11 @@ function validateAndSubmitForm() {
     
     const requiredFields = [
         { id: 'persona_impulsa', name: 'Persona que impulsa el caso' },
-        { id: 'numero_contacto', name: 'Número de contacto' },
+        { id: 'numero_contacto', name: 'N?mero de contacto' },
         { id: 'empresa_generadora', name: 'Empresa generadora de la carga' },
-        { id: 'mercancia_transportada', name: 'Mercancía transportada' },
-        { id: 'ultimo_reporte', name: 'Último reporte' },
-        { id: 'descripcion_caso', name: 'Descripción del caso' },
+        { id: 'mercancia_transportada', name: 'Mercanc?a transportada' },
+        { id: 'ultimo_reporte', name: '?ltimo reporte' },
+        { id: 'descripcion_caso', name: 'Descripci?n del caso' },
         { id: 'latitud', name: 'Latitud' },
         { id: 'longitud', name: 'Longitud' }
     ];
@@ -1997,17 +1997,17 @@ function validateAndSubmitForm() {
             }
         },
         error: function(error) {
-            alert('Ocurrió un error al enviar el formulario');
+            alert('Ocurri? un error al enviar el formulario');
         }
     });
 
-    return false; // Prevenir el envÃ­o estÃ¡ndar del formulario
+    return false; // Prevenir el envío estándar del formulario
 }
 
 function openPDF(cod_consec) {
     const fStandar = $("#dir_aplicaID").val(); // Obtiene el valor de fStandar
     const url = `../${fStandar}/inform/inf_operat_preven.php?cod_consec=${encodeURIComponent(cod_consec)}`;
-    window.open(url, '_blank'); // Abre en una nueva pestaï¿½a o ventana
+    window.open(url, '_blank'); // Abre en una nueva pesta?a o ventana
 }
 
 function showFormOperativoPreventivo(ori, cod_consec) {
@@ -2083,22 +2083,153 @@ function validateForm() {
 	$("#form-protoco input, #form-protoco textarea").each(function() {
 		if ($(this).val().trim() === "") {
 			allFieldsValid = false;
-			firstInvalidField = firstInvalidField || this; // Guardar el primer campo inválido
+			firstInvalidField = firstInvalidField || this; // Guardar el primer campo inv?lido
 		}
 	});
 
 	if (!allFieldsValid) {
 		alert("Por favor, diligencie todos los campos.");
 		if (firstInvalidField) {
-			$(firstInvalidField).focus(); // Enfocar el primer campo inválido
+			$(firstInvalidField).focus(); // Enfocar el primer campo inv?lido
 		}
 		return false; // Evitar continuar
 	}
 
-	// Si todos los campos son válidos, actualizar obsID
+	// Si todos los campos son v?lidos, actualizar obsID
 	let content = $("#form-protoco .visual-content").text();
 	$("#obsID").val(content);
 	alert("Observacion Actualizada.");
 	LoadPopupJQ4('close');
 
 }
+
+function showFormSoluciAlarmaNovedad(cod_noveda, cod_consec, tip_noveda) {
+	try {
+		var fStandar = $("#dir_aplicaID");
+		var atributes = 'Ajax=on&Option=FormSoluciAlarmaNovedad&standa=' + fStandar.val();
+		atributes += '&num_despac=' + $("#num_despacID").val()+'&cod_noveda='+cod_noveda+'&consec='+cod_consec+'&tip_noveda='+tip_noveda;
+		//Load PopUp
+		$("#popID").empty();
+		LoadPopupJQ4('open', 'Registrar Solucion de Novedad - Alarma', 'auto', '700px', false, false, true);
+		$.ajax({
+			url: "../" + fStandar.val() + "/despac/ajax_despac_solnov.php",
+			type: "POST",
+			data: atributes,
+			async: false,
+			beforeSend: function() {
+				$("#popID").html("<center>Cargando Formulario...</center>");
+			},
+			success: function(data) {
+				$("#popID").html(data);
+			},
+			complete: function() {
+				CenterDIV1();
+			}
+		});
+	} catch (e) {
+		console.log("Error Fuction showFormOperativoPreventivo: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+
+
+function toggleFechaHora(){
+	var $tdFechaHora = $('#fecha_hora').closest('td');
+    if($('#solicita_tiempo').is(':checked')){
+        $tdFechaHora.fadeIn('slow'); // Aparece con transición
+    } else {
+        $tdFechaHora.fadeOut('slow'); // Desaparece con transición
+    }
+}
+
+
+function validateAndSubmitFormSoluci() {
+    var fStandar = $("#dir_aplicaID");
+    
+    const requiredFields = [
+        { id: 'detalle_novedad', name: 'Detalle de la solucion' },
+    ];
+
+    var isValid = true; 
+
+    $.each(requiredFields, function(index, field) {
+        var value = $("#" + field.id).val().trim();
+        if (!value) {
+            alert(`Por favor diligencie el campo: ${field.name}`);
+            $("#" + field.id).focus();
+            isValid = false;
+            return false; // Salir del bucle $.each
+        }
+    });
+
+    if (!isValid) {
+        return false; 
+    }
+
+    const additionalFields = {
+        Ajax: 'on',
+        Option: 'SaveSoluciNovedad',
+        standa: fStandar.val(),
+		num_despac: $("#num_despacSol").val(),
+		cod_noveda: $("#cod_novedaSol").val(),
+		consec: $("#consecSol").val(),
+		tip: $("#tipSol").val()
+    };
+
+    var formData = $('#formSoluciNovedad').serialize(); // Serializar el formulario existente
+
+    $.each(additionalFields, function(key, value) {
+        formData += `&${key}=${encodeURIComponent(value)}`;
+    });
+
+    $.ajax({
+        url: "../" + fStandar.val() + "/despac/ajax_despac_solnov.php", // URL del procesamiento
+        type: 'POST',
+        data: formData,
+        success: function(response) {
+            const result = JSON.parse(response);
+            if (result.success) {
+                alert(result.message);
+                LoadPopupJQ4('close'); // Cerrar el popup
+				location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        },
+        error: function(error) {
+            alert('Ocurrió un error al enviar el formulario');
+        }
+    });
+
+    return false; // Prevenir el envío estándar del formulario
+}
+
+function showInfoSolucion(cod_consec, tip_noveda) {
+	try {
+		var fStandar = $("#dir_aplicaID");
+		var atributes = 'Ajax=on&Option=showInfoSolucion&standa=' + fStandar.val();
+		atributes += '&num_despac=' + $("#num_despacID").val()+'&consec='+cod_consec+'&tip_noveda='+tip_noveda;
+		//Load PopUp
+		$("#popID").empty();
+		LoadPopupJQ4('open', 'Solucion de Novedad', 'auto', '700px', false, false, true);
+		$.ajax({
+			url: "../" + fStandar.val() + "/despac/ajax_despac_solnov.php",
+			type: "POST",
+			data: atributes,
+			async: false,
+			beforeSend: function() {
+				$("#popID").html("<center>Cargando Formulario...</center>");
+			},
+			success: function(data) {
+				$("#popID").html(data);
+			},
+			complete: function() {
+				CenterDIV1();
+			}
+		});
+	} catch (e) {
+		console.log("Error Fuction showFormOperativoPreventivo: " + e.message + "\nLine: " + e.lineNumber);
+		return false;
+	}
+}
+

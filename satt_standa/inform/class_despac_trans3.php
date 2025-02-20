@@ -99,6 +99,10 @@ class Despac
 				case 'infoDescargue':
 					self::infoDescargue();
 					break;
+				
+				case 'infoAlertas':
+					self::infoAlertas();
+					break;
 
 				case "detailBand":
 					self::detailBand();
@@ -447,6 +451,27 @@ class Despac
 		$mHtml2 .= '</table>';
 
 		return utf8_decode($mHtml2);
+	}
+
+
+	/*! \fn: infoAlertas
+	 *  \brief: Informe Alertas
+	 *  \author: Ing. Cristian Torres
+	 *	\date: 04/02/2025
+	 *	\date modified: dia/mes/año
+	 *  \param: 
+	 *  \return:
+	 */
+	private function infoAlertas()
+	{
+		$mIndEtapa = 'ind_alerta';
+		$mTittle['texto'] = array('NO.', 'TRANSPORTADORA','MANIFIESTO', 'No. DESPACHO', 'RIESGO', 'VELOCIDAD', 'POR SOLUCIONAR', 'T. SIN SOLUCIÓN', 'MODALIDAD', 'ORIGEN', 'DESTINO', 'GENERADOR','PLACA', 'CONDUCTOR');
+		$mTittle['style'] = array('', '', '', '','', '', '', '', '', '', '', '', '', '');
+		$mHtml  = '<div id=table8ID>';
+		$mHtml .= self::printInformAlertas( $mTittle );
+		$mHtml .= '</div>';
+
+		echo $mHtml;
 	}
 
 
@@ -1468,7 +1493,7 @@ class Despac
 	 *  \return: Matriz
 	 */
 	public function getDespacTransi1( $mTransp )
-	{
+	{	
 		$tieAnticDespa = self::getTipserUnic($mTransp[cod_transp])['tie_visdes'];
 		$mSql = "SELECT a.num_despac, a.cod_manifi, UPPER(b.num_placax) AS num_placax,
 						h.abr_tercer AS nom_conduc, h.num_telmov, a.fec_salida, 
@@ -1521,7 +1546,7 @@ class Despac
 					 ON b.num_placax = l.num_placax
 			LEFT JOIN ".BD_STANDA.".tab_genera_opegps m
 					 ON a.gps_operad = m.cod_operad	 
-				  WHERE 1=1 ";
+				  WHERE 1=1";
 		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND a.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( l.cod_propie = b.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		#Filtros por Formulario
@@ -1530,10 +1555,9 @@ class Despac
 
 		#Filtros por usuario
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
-		
+					
 		$mConsult = new Consulta( $mSql, self::$cConexion );
-		$mDespac = $mConsult -> ret_matrix('a');
-						
+		$mDespac = $mConsult -> ret_matrix('a');					
 		$mTipValida = self::tipValidaTiempo( $mTransp );
 
 		# Verifica Novedades por despacho
@@ -1752,7 +1776,7 @@ class Despac
 		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( aa.cod_propie = yy.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
-
+		//echo "<pre style='display:none;' id='mDespacTrasiandres'>"; print_r($mSql); echo "</pre>";
 		if( sizeof($mDespac) < 1 )
 			return false;
 
@@ -1958,7 +1982,7 @@ class Despac
 						   AND d.cod_etapax IN ( 3 )
 				) ";
 		$mConsult = new Consulta( $mSql, self::$cConexion );
-		echo "<pre style='display:none;' id='mDespacTrasiandres'>"; print_r($mSql); echo "</pre>";
+		//echo "<pre style='display:none;' id='mDespacTrasiandres'>"; print_r($mSql); echo "</pre>";
 		$mDespacTrasi = $mConsult -> ret_matrix('a');
 		$mDespacTrasi = join( ',', GetColumnFromMatrix( $mDespacTrasi, 'num_despac' ) );
 		$mDespacTrasi = $mDespacTrasi ? $mDespacTrasi : '0';
@@ -2015,7 +2039,7 @@ class Despac
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
 
-		//echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
+		echo "<pre style='display:none;' id='Transito2'>"; print_r($mSql); echo "</pre>";
 
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -2142,7 +2166,7 @@ class Despac
 		#Filtros por usuario
 		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
 		
-		// echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
+		//echo "<pre style='display:none;' id='andres2'>"; print_r($mSql); echo "</pre>";
 		
 		$mConsult = new Consulta( $mSql, self::$cConexion );
 		$mDespac = $mConsult -> ret_matrix('a');
@@ -2792,9 +2816,11 @@ class Despac
 				}
 			}
 			else{#Despacho Sin Novedades
-				$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
+				if ($mDespac[$i][fec_salida] != '<') {
+					$mDespac[$i][tiempo] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
+					$mDespac[$i][tiempoGl] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
+				}
 				
-				$mDespac[$i][tiempoGl] = getDiffTime( $mDespac[$i][fec_salida], self::$cHoy ); #Script /lib/general/function.inc
 			} 
 
 			$mViewBa = self::getView('jso_bandej');
@@ -4274,6 +4300,60 @@ class Despac
 		echo $mHtml;
 	}
 
+	private function printInformAlertas( $mTittle ){
+		
+		$mLimitFor = self::$cTypeUser['tip_perfil'] == 'OTRO' ? sizeof($mTittle['texto']) : sizeof($mTittle['texto'])-1;
+
+		#Dibuja la Tabla Completa
+		$mHtml  = '<table class="classTable" width="100%" cellspacing="0" cellpadding="0" align="center">';
+		$mHtml .= 	'<tr>';
+		for ($i=0; $i < $mLimitFor; $i++){
+			$mHtml .= '<th class="classHead bt '.$mTittle['style'][$i].'" align="center">'.$mTittle['texto'][$i].'</th>';
+		}
+		$mHtml .= 	'</tr>';
+		$mTransp = self::getTranspServic( 'ind_segtra' );
+		$codigos = array(); // Inicializamos un array vacío
+
+		foreach ($mTransp as $item) {
+			$codigos[] = "'" . $item['cod_transp'] . "'"; // Agregamos cada código con comillas simples
+		}
+		// Unimos los valores con coma y espacio
+		$mTransportadoras = implode(', ', $codigos);
+		$mData = self::getDataAlertas($mTransportadoras);
+		$j=1;
+		foreach($mData as $row){
+				$mHtml .= '<tr onclick="this.style.background=this.style.background==\'#CEF6CE\'?\'#eeeeee\':\'#CEF6CE\';">';
+				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$j.'</th>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['nom_transp'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['cod_manifi'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="center"><a href="index.php?cod_servic=3302&amp;window=central&amp;despac='.$row['num_despac'].'&amp;opcion=1" style="color:#FFF; font-weight: bold; background-color: #2c368d; padding: 2px 9px; border-radius: 5px;">'.$row['num_despac'].'</a></td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="center">'.$row['tip_riesgo'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="center">'.$row['val_veloci'].'</td>';
+				$mHtml .= 	'<th class="classCell" nowrap="" align="center">'.$row['por_soluci'].'</th>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['tie_soluci'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['nom_tipdes'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['ciu_origen'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['ciu_destin'].'</td>';
+				$mHtml .= 	'<th class="classCell" nowrap="" align="left">'.$row['nom_genera'].'</th>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['num_placax'].'</td>';
+				$mHtml .= 	'<td class="classCell" nowrap="" align="left">'.$row['nom_conduc'].'</td>';
+			$mHtml .= '<tr>';
+			$j++;
+		}
+
+		/*
+		
+		for($i=0; $i<sizeof($mTransp); $i++){
+			
+			
+		}*/
+		$mHtml .= '</table>';		
+
+			
+		
+		return $mHtml;
+	}
+
 	/*! \fn: getDataPernoc
 	 *  \brief: Trae la data para la pestaï¿½a C. PERNOCTACION
 	 *  \author: Ing. Fabian Salinas
@@ -4377,6 +4457,200 @@ class Despac
 			$mResult[$i]['usr_asigna'] = $row['usr_asigna'];
 
 			$i++;
+		}
+
+		return $mResult;
+	}
+
+
+	/*! \fn: getDataPernoc
+	 *  \brief: Trae la data para la pestaï¿½a C. PERNOCTACION
+	 *  \author: Ing. Fabian Salinas
+	 *  \date: 18/03/2016
+	 *  \date modified: dd/mm/aaaa
+	 *  \param: 
+	 *  \return: 
+	 */
+	private function getDataAlertas($mTransp){
+		$mSql = "SELECT 
+						a.num_despac, 
+						a.cod_manifi, 
+						UPPER(b.num_placax) AS num_placax, 
+						h.abr_tercer AS nom_conduc, 
+						h.num_telmov, 
+						a.fec_salida, 
+						a.cod_tipdes, 
+						UPPER(i.nom_tipdes) AS nom_tipdes, 
+						UPPER(c.abr_tercer) AS nom_transp, 
+						IF(a.ind_defini = '0', 'NO', 'SI') AS ind_defini, 
+						a.tie_contra, 
+						CONCAT(
+							d.abr_ciudad, 
+							' (', 
+							UPPER(LEFT(f.abr_depart, 4)), 
+							')'
+						) AS ciu_origen, 
+						CONCAT(
+							e.abr_ciudad, 
+							' (', 
+							UPPER(LEFT(g.abr_depart, 4)), 
+							')'
+						) AS ciu_destin, 
+						UPPER(k.abr_tercer) AS nom_genera,
+						nov.novedades_count AS 'tot_psoluc',
+						CASE 
+							WHEN TIMESTAMPDIFF(MINUTE, nov.fecha_mas_antigua, NOW()) < 60 
+								THEN CONCAT(TIMESTAMPDIFF(MINUTE, nov.fecha_mas_antigua, NOW()), ' min') 
+							WHEN TIMESTAMPDIFF(HOUR, nov.fecha_mas_antigua, NOW()) < 24 
+								THEN CONCAT(TIMESTAMPDIFF(HOUR, nov.fecha_mas_antigua, NOW()), ' hrs') 
+							ELSE 
+								CONCAT(TIMESTAMPDIFF(DAY, nov.fecha_mas_antigua, NOW()), ' días') 
+						END AS tiempo_sin_gestion,
+						COALESCE(ult_velocidad.kms_vehicu, '0') AS ultima_velocidad,
+
+						 -- Nivel de riesgo del despacho
+						CASE nov.nivel_riesgo
+							WHEN 3 THEN 'Alto'
+							WHEN 2 THEN 'Medio'
+							WHEN 1 THEN 'Bajo'
+							ELSE 'Sin datos'
+						END AS nivel_riesgo,
+						nov.nivel_riesgo as 'code_nivel_riesgo'
+
+					FROM 
+						".BASE_DATOS.".tab_despac_despac a 
+						INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
+							ON a.num_despac = b.num_despac 
+						AND a.fec_salida IS NOT NULL  
+						AND ( a.fec_llegad IS NULL OR a.fec_llegad = '0000-00-00 00:00:00' )
+						AND a.ind_planru = 'S' 
+						AND a.ind_anulad = 'R' 
+						AND b.ind_activo = 'S' 
+						AND b.cod_transp IN (".$mTransp.") 
+						INNER JOIN ".BASE_DATOS.".tab_tercer_tercer c 
+							ON b.cod_transp = c.cod_tercer 
+						INNER JOIN ".BASE_DATOS.".tab_genera_ciudad d 
+							ON a.cod_ciuori = d.cod_ciudad 
+						AND a.cod_depori = d.cod_depart 
+						AND a.cod_paiori = d.cod_paisxx 
+						INNER JOIN ".BASE_DATOS.".tab_genera_ciudad e 
+							ON a.cod_ciudes = e.cod_ciudad 
+						AND a.cod_depdes = e.cod_depart 
+						AND a.cod_paides = e.cod_paisxx 
+						INNER JOIN ".BASE_DATOS.".tab_genera_depart f 
+							ON a.cod_depori = f.cod_depart 
+						AND a.cod_paiori = f.cod_paisxx 
+						INNER JOIN ".BASE_DATOS.".tab_genera_depart g 
+							ON a.cod_depdes = g.cod_depart 
+						AND a.cod_paides = g.cod_paisxx 
+						INNER JOIN ".BASE_DATOS.".tab_tercer_tercer h 
+							ON b.cod_conduc = h.cod_tercer 
+						INNER JOIN ".BASE_DATOS.".tab_genera_tipdes i 
+							ON a.cod_tipdes = i.cod_tipdes 
+						LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer k 
+							ON a.cod_client = k.cod_tercer 
+						INNER JOIN ".BASE_DATOS.".tab_vehicu_vehicu l 
+							ON b.num_placax = l.num_placax 
+						LEFT JOIN ".BD_STANDA.".tab_genera_opegps m 
+							ON a.gps_operad = m.cod_operad 
+						-- Subconsulta que calcula el número de novedades (con ind_reqres = 1) y donde cod_soluci está sin diligenciar
+						INNER JOIN (
+							SELECT 
+								n.num_despac, 
+								COUNT(*) AS novedades_count,
+								MIN(n.fec_creaci) AS fecha_mas_antigua,
+								MAX(r.cod_riesgo) AS nivel_riesgo
+							FROM (
+								SELECT num_despac, cod_noveda, fec_creaci 
+								FROM ".BASE_DATOS.".tab_despac_noveda
+								WHERE cod_soluci IS NULL OR cod_soluci = '' OR cod_soluci = 0
+								UNION ALL
+								SELECT num_despac, cod_noveda, fec_creaci 
+								FROM ".BASE_DATOS.".tab_despac_contro
+								WHERE cod_soluci IS NULL OR cod_soluci = '' OR cod_soluci = 0
+							) n
+							INNER JOIN ".BASE_DATOS.".tab_parame_novseg p 
+								ON n.cod_noveda = p.cod_noveda
+							AND p.ind_reqres = 1
+							-- Se une para validar que el parámetro corresponde al cod_transp del despacho
+							INNER JOIN ".BASE_DATOS.".tab_despac_vehige b2 
+								ON n.num_despac = b2.num_despac
+							AND p.cod_transp = b2.cod_transp
+							INNER JOIN ".BASE_DATOS.".tab_genera_noveda r 
+        						ON n.cod_noveda = r.cod_noveda
+							GROUP BY n.num_despac
+							HAVING COUNT(*) >= 1
+						) nov 
+							ON a.num_despac = nov.num_despac
+						-- Subconsulta para obtener la última velocidad registrada
+						LEFT JOIN (
+							SELECT 
+								num_despac, 
+								kms_vehicu 
+							FROM ".BASE_DATOS.".tab_despac_contro 
+							WHERE kms_vehicu IS NOT NULL AND kms_vehicu <> '' 
+								AND fec_creaci = (
+									SELECT MAX(fec_creaci) 
+									FROM ".BASE_DATOS.".tab_despac_contro 
+									WHERE kms_vehicu IS NOT NULL AND kms_vehicu <> '' 
+										AND num_despac = tab_despac_contro.num_despac
+								)
+						) ult_velocidad ON a.num_despac = ult_velocidad.num_despac
+							
+					WHERE 1=1";
+
+		$mSql .= ($_REQUEST['cod_client'] != NULL || $_REQUEST['cod_client'] != ''?" AND a.cod_client IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_client']).") ":"");
+		$mSql .= ($_REQUEST['cod_tiptra'] != NULL || $_REQUEST['cod_tiptra'] != ''?" AND IF( l.cod_propie = b.cod_transp, 1, 2 ) IN (".str_replace(array('"",','"'),array('',''),$_REQUEST['cod_tiptra']).") ":"");
+
+		#Filtros por Formulario
+		#$mSql .= $_REQUEST[ind_limpio] ? " AND a.ind_limpio = '{$_REQUEST[ind_limpio]}' " : ""; #warning1
+		$mSql .= self::$cTipDespac != '""' ? " AND a.cod_tipdes IN (". self::$cTipDespac .") " : "";
+
+		#Filtros por usuario
+		$mSql .= self::$cTipDespacContro != '""' ? 'AND a.cod_tipdes IN ('. self::$cTipDespacContro .') ' : '';	
+		$mSql .= " ORDER BY nov.nivel_riesgo DESC";			
+		$mConsult = new Consulta( $mSql, self::$cConexion );
+		$mDespac = $mConsult -> ret_matrix('a');
+
+
+		for( $i=0; $i<sizeof($mDespac); $i++ )
+		{
+
+			// Definir el badge según el código de riesgo
+			$badgeColor = "";
+			$badgeText = "";
+		
+			switch ($mDespac[$i]['code_nivel_riesgo']) {
+				case 3:
+					$badgeColor = "background-color: red; color: white;"; 
+					$badgeText = "ALTO";
+					break;
+				case 2:
+					$badgeColor = "background-color: orange; color: white;";
+					$badgeText = "MEDIO";
+					break;
+				case 1:
+					$badgeColor = "background-color: green; color: white;";
+					$badgeText = "BAJO";
+					break;
+				default:
+					$badgeColor = "background-color: gray; color: white;";
+					$badgeText = "SIN DATOS";
+			}
+
+			$mResult[$i]['nom_transp'] = $mDespac[$i]['nom_transp'];
+			$mResult[$i]['cod_manifi'] = $mDespac[$i]['cod_manifi'];
+			$mResult[$i]['num_despac'] = $mDespac[$i]['num_despac'];
+			$mResult[$i]['tip_riesgo'] = "<span style='padding: 2px 10px; font-size: 12px; font-weight: bold; border-radius: 5px; $badgeColor'>$badgeText</span>";
+			$mResult[$i]['val_veloci'] = $mDespac[$i]['ultima_velocidad'];
+			$mResult[$i]['por_soluci'] = $mDespac[$i]['tot_psoluc'];
+			$mResult[$i]['tie_soluci'] = $mDespac[$i]['tiempo_sin_gestion'];
+			$mResult[$i]['nom_tipdes'] = $mDespac[$i]['nom_tipdes'];
+			$mResult[$i]['ciu_origen'] = $mDespac[$i]['ciu_origen'];
+			$mResult[$i]['ciu_destin'] = $mDespac[$i]['ciu_destin'];
+			$mResult[$i]['nom_genera'] = $mDespac[$i]['nom_genera'];
+			$mResult[$i]['num_placax'] = $mDespac[$i]['num_placax'];
+			$mResult[$i]['nom_conduc'] = $mDespac[$i]['nom_conduc'];
 		}
 
 		return $mResult;
