@@ -407,6 +407,8 @@ class infBandeja
 						}
 						$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liContrl" href="#tabs-7">CONTROL OP '.($mbadge>0?'<span class="badge">'.$mbadge.'</span>':'<span></span>').'</a></li>';
 					}
+					$mbadgeAlerts = 0;
+					$mBand .= '<li class="ui-state-default ui-corner-top"><a id="liAlerta" href="#tabs-8">ALERTAS '.($mbadgeAlerts>0?'<span class="badge">'.$mbadgeAlerts.'</span>':'<span></span>').'</a></li>';
 				$mBand .= '</ul>';
 
 				$mBand .= $mView->sec_inform->sub->pes_genera == 1 ? '<div id="tabs-1"></div>' : ''; #DIV General
@@ -416,7 +418,7 @@ class infBandeja
 				$mBand .= $mView->sec_inform->sub->pes_pernoc == 1 ? '<div id="tabs-5"></div>' : ''; #DIV c. Pernotacion
 				$mBand .= $mView->sec_inform->sub->pes_prcarg == 1 ? '<div id="tabs-6">'.$mHtml3.'</div>' : ''; #DIV Etapa PreCargue
 				$mBand .= $mView->sec_inform->sub->pes_contro == 1 ? '<div id="tabs-7"></div>' : ''; #DIV Etapa Control Operación
-
+				$mBand .= '<div id="tabs-8"></div>'; #DIV Alertas
 			$mBand .= '</div>';
 
 			echo $mBand;

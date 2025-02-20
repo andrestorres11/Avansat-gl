@@ -1876,7 +1876,15 @@ class Despachos
         echo "<style>
         td > label {
             word-break: break-all;
-        }</style>";
+        }
+        
+        input:disabled,
+textarea:disabled,
+select:disabled {
+  cursor: not-allowed;
+}
+        
+        </style>";
     }//Fin Funcion IncludeJsStyle
 
     public function verifyConsolHijo( $despac )
@@ -3380,6 +3388,169 @@ class Despachos
       return $alias[0][ali_usuari];
     }
 
+    /*! \fn: divNotasAlerta
+     *  \brief: Crea DIV de la seccion: Informacion de Notas Controlador
+     *  \author: Ing. Fabian Salinas
+     *  \date: 14/09/2015
+     *  \date modified: dia/mes/a?o
+     *  \param: mNumDespac  Integer  Numero del Despacho
+     *  \param: _DESPAC     Matriz   Informacion del Despacho
+     *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
+     *  \param: mView       Integer  1 Visible Opcion de Auditar
+     *  \param: mViewNotCon Array    Opciones de visualizacion de la seccion notas controlador
+     *  \return: HTML
+     */
+    private function divNotasAlerta( $mNumDespac, $_DESPAC, $_RUTASX, $mView, $mViewNotCon )
+    {
+      $mViewUsu = self::getViewUsu();
+
+      $mHtml = new Formlib(2);
+
+      $mHtml->OpenDiv("id:planRutaID; class:accordion");
+        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACIÃ“N DE ALARMA</center></h3>");
+        $mHtml->OpenDiv("id:secID");
+          $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
+            
+
+            $mHtml->Table("tr");
+
+           
+            if( $_RUTASX )
+            {
+                $mSalLinea = $_SESSION['datos_usuario']['cod_usuari'] == 'mgarcia' || $_SESSION['datos_usuario']['cod_usuari'] == 'soporte' ? 0 : 1;
+
+                $mHtml->LabelTit( 'Sitio de Seguimiento', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->LabelTit( 'Riesgo', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                $mHtml->LabelTit( 'Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
+                $mHtml->LabelTit( 'Agrup.', array("align"=>"center", "class"=>"cellTitu", "width"=>"5%") );
+                $mHtml->LabelTit( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"20%") );
+                $mHtml->LabelTit( 'Fecha Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                $mHtml->LabelTit( 'Fecha Sistema', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
+                $mHtml->LabelTit( 'Opciones', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
+                
+
+                $mHtml->CloseRow();
+
+            
+                $mNovedades = self::getNovedadAlarmas( $mNumDespac );
+                $mEstServ = self::getView('jso_encabe'); 
+
+                //Crea Array
+                $dataNov = [];
+                //Se Recorre las novedades
+                foreach ($mNovedades as $key => $data) {
+                    //Valida Permisos
+                    if( $mEstServ->est_servic->ind_visibl != 1 ){
+                        //Valida tipo de novedad y elimina posici?n
+                        if(in_array($data['cod_noveda'], array(9271,9272,9273))){
+                            unset($mNovedades[$key]);
+                        }
+                    }
+                }
+
+                //Permiso de no poder copiar las notas controlador
+                $RespPlaRut = self::getView('jso_plarut');
+                $cNocopy = '';
+                if(!$RespPlaRut->inf_notcon->sub->cop_notcon){
+                    $cNocopy = 'noselect';
+                }
+
+                //Se recorre las novedades para calcular el key automaticamente
+                foreach ($mNovedades as $key => $data) {
+                    $dataNov[] = $data;
+                }
+
+                //Reemplaza el arreglo de Novedades
+                $mNovedades = $dataNov;
+                
+                $mCanNov = sizeof($mNovedades);
+
+                $j=0;
+                $u=0;
+
+                for ($i = 0; $i < $mCanNov; $i++)
+                {
+
+                if( $_RUTASX[$i][nov_especi] == 1 )
+                {
+                    $mStyle = $j % 2 ? 'cellPar' : 'cellImpar';
+                    $j++;
+                }else{
+                    $mStyle = 'cell';
+                }
+                    
+
+                $mHtml->Row();
+
+                    $comp='';
+                
+                    //btn Riesgo
+
+
+                    switch ($mNovedades[$i][cod_riesgo]) {
+                        case 3:
+                            $badgeColor = "background-color: red; color: white;"; 
+                            $badgeText = "ALTO";
+                            break;
+                        case 2:
+                            $badgeColor = "background-color: orange; color: white;";
+                            $badgeText = "MEDIO";
+                            break;
+                        case 1:
+                            $badgeColor = "background-color: green; color: white;";
+                            $badgeText = "BAJO";
+                            break;
+                        default:
+                            $badgeColor = "background-color: gray; color: white;";
+                            $badgeText = "SIN DATOS";
+                    }
+
+                    $btn_riesgo = "<span style='padding: 2px 10px; font-size: 12px; font-weight: bold; border-radius: 5px; $badgeColor'>$badgeText</span>";
+                    //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
+                    $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
+                    $mHtml->Label( '<b>'.$btn_riesgo.'</b>', array("align"=>"center", "class"=>$mStyle) );
+
+                    // if para las novedades actualizadas
+
+                    $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
+                    if( $mUpdated[0]){
+                        $dataJson = base64_encode(json_encode($mUpdated));
+                        $link = "<a href='#' onclick='drawNovUpd(\"".$dataJson."\")'><u><font color='#000'>".htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true )."</font></u></a>";
+        
+                        $mHtml->Label( $link, array("align"=>"left", "class"=>$mStyle) );
+                    }else{ 
+                        $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
+                    }
+                    $mHtml->Label( '<b>'.$mNovedades[$i][cantidad].'</b>', array("align"=>"center", "class"=>$mStyle) );
+                    $mHtml->Label( utf8_encode($mNovedades[$i][obs_noveda]) , array("align"=>"left", "class"=>$mStyle) );
+                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
+                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
+                    $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][usr_creaci], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"right", "class"=>$mStyle) );
+                    $bnt_soluci = "<input type='button' onclick='showFormSoluciAlarmaNovedad(\"".$mNovedades[$i][cod_noveda]."\", \"".$mNovedades[$i][consecutivos]."\", \"".$mNovedades[$i][tip_noveda]."\")' value='Solucionar' style='background-color:rgb(25, 111, 1);color: #FFF;font-weight: bold;padding: 2px 30px;'>";    
+                    $mHtml->Label( $bnt_soluci, array("align"=>"center", "class"=>$mStyle) );
+
+                    
+
+
+
+
+
+
+                $mHtml->CloseRow();
+                $mHtml->SetBody('</tr>');
+                }
+            }
+       
+
+            $mHtml->CloseTable('tr');
+          $mHtml->CloseDiv();
+        $mHtml->CloseDiv();
+      $mHtml->CloseDiv();
+
+      return $mHtml->MakeHtml();
+    }
+
     /*! \fn: divNotasContro
      *  \brief: Crea DIV de la seccion: Informacion de Notas Controlador
      *  \author: Ing. Fabian Salinas
@@ -3549,6 +3720,21 @@ class Despachos
                         $mSolEfecti = "<label>SI</label>";
                     }
                 }
+
+                if($mNovedades[$i][ind_reqres]=='1'){
+                    //Si requiere gestion por faro activa el icono de alarma.
+                    if($mNovedades[$i][ind_resfar]=='1' && $mNovedades[$i][cod_soluci]=='0' ){
+                        $mSolEfecti = "<img src='../".CENTRAL."/imagenes/warning-gif.gif' width='15px' height='15px'>";
+                    }else if($mNovedades[$i][cod_soluci] != 0){
+                        $mSolEfecti = "<img src='../".CENTRAL."/imagenes/ver.png' width='15px' height='15px' style='cursor: pointer;' onclick='showInfoSolucion(\"".$mNovedades[$i][cod_consec]."\", \"".$mNovedades[$i][tip_noveda]."\")'>";
+                    }
+                   
+                }
+                
+
+
+
+
 
                 $mHtml->Row();
 
@@ -4757,7 +4943,7 @@ class Despachos
          $mHtml->SetBody( self::divPartic( $_DESPAC[0][cod_transp]));
        }
 
-
+       $mHtml->SetBody( self::divNotasAlerta( $despac, $_DESPAC, $_RUTASX, $mView->pop_califi->ind_visibl, $mView->inf_notcon) );
        
        #< 3: INFORMACION DE NOTAS DE CONTROLADOR >
        if( $mView->inf_notcon->ind_visibl == 1 )
@@ -5469,7 +5655,8 @@ class Despachos
                                 b.cod_etapax, f.ind_limpio,
                                 f.ind_manale as 'ind_manala',
                                 a.val_longit, a.val_latitu, g.cod_tipoxx,
-                                a.ind_enviad
+                                a.ind_enviad, f.ind_reqres, f.ind_resfar,
+                                f.ind_rescli, a.cod_soluci, 'NC' as 'tip_noveda'
                         FROM ".BASE_DATOS.".tab_despac_contro a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
@@ -5501,7 +5688,8 @@ class Despachos
                                 b.cod_etapax, e.ind_limpio,
                                 e.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                f.cod_tipoxx, a.ind_enviad
+                                f.cod_tipoxx, a.ind_enviad, e.ind_reqres, e.ind_resfar,
+                                e.ind_rescli, a.cod_soluci, 'PC' as 'tip_noveda'
                         FROM ".BASE_DATOS.".tab_despac_noveda a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
@@ -5531,7 +5719,9 @@ class Despachos
                                 c.cod_etapax, '0' AS ind_limpio,
                                 f.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                g.cod_tipoxx, '0' as ind_enviad
+                                g.cod_tipoxx, '0' as ind_enviad,
+                                f.ind_reqres, f.ind_resfar,
+                                f.ind_rescli, 0 as 'cod_soluci', '' as 'tip_noveda'
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
@@ -5564,7 +5754,8 @@ class Despachos
                                 c.cod_etapax, '1' AS ind_limpio,
                                 f.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                g.cod_tipoxx, '0' as ind_enviad
+                                g.cod_tipoxx, '0' as ind_enviad, f.ind_reqres,
+                                f.ind_resfar, f.ind_rescli, 0 as 'cod_soluci', '' as 'tip_noveda'
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
@@ -5588,6 +5779,295 @@ class Despachos
       $mConsult = new Consulta( $mSql, $this -> conexion );
       return $mConsult -> ret_matrix('a');
     }
+
+    /*! \fn: getNovedad
+     *  \brief: Trae las Novedades de un Despacho
+     *  \author: Ing. Fabian Salinas
+     *  \date: 
+     *  \date modified: dd/mm/aaaa
+     *  \param: mNumDespac   Integer   Numero de despacho
+     *  \param: mIndGPS      String    Aplica Inner Join o Left Join
+     *  \return: Matriz
+     */
+    /*
+    private function getNovedadAlarmas( $mNumDespac)
+    {
+        $mSql = "(       SELECT a.fec_contro AS fec_noveda,
+                                UPPER(b.nom_noveda) AS nom_noveda,
+                                a.usr_creaci, a.fec_creaci,
+                                UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox,
+                                a.obs_contro AS obs_noveda,a.cod_noveda,
+                                a.cod_consec, a.cod_contro, g.cod_tipoxx,
+                                a.ind_enviad, f.ind_resfar, b.cod_riesgo,
+                                'NC' as 'tip_noveda'
+                        FROM ".BASE_DATOS.".tab_despac_contro a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
+                            ON a.cod_noveda = b.cod_noveda
+                    INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
+                            ON a.cod_sitiox = c.cod_sitiox
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro d
+                            ON a.cod_contro = d.cod_contro
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
+                            ON a.num_despac = e.num_despac
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
+                            ON b.cod_noveda = f.cod_noveda AND
+                                f.cod_transp = e.cod_transp
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                                ON b.cod_tipoxx = g.cod_tipoxx
+                        WHERE a.num_despac = '{$mNumDespac}'
+                        AND   f.ind_reqres = 1
+                        AND   (a.cod_soluci = 0 OR a.cod_soluci = '' OR a.cod_soluci IS NULL)
+                )
+                UNION
+                (
+                        SELECT a.fec_noveda,
+                                UPPER(b.nom_noveda) AS nom_noveda,
+                                a.usr_creaci,
+                                a.fec_creaci, 
+                                UPPER(c.nom_contro) AS nom_sitiox,
+                                a.des_noveda AS obs_noveda, a.cod_noveda,
+                                a.cod_consec, a.cod_contro,f.cod_tipoxx,
+                                a.ind_enviad, e.ind_resfar,
+                                b.cod_riesgo, 'PC' as 'tip_noveda'
+                        FROM ".BASE_DATOS.".tab_despac_noveda a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
+                            ON a.cod_noveda = b.cod_noveda
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro c
+                            ON a.cod_contro = c.cod_contro
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige d
+                            ON a.num_despac = d.num_despac
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e
+                            ON b.cod_noveda = e.cod_noveda AND
+                                e.cod_transp = d.cod_transp
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx f
+                            ON b.cod_tipoxx = f.cod_tipoxx
+                        WHERE a.num_despac = '{$mNumDespac}'
+                        AND   e.ind_reqres = 1
+                        AND   (a.cod_soluci = 0 OR a.cod_soluci = '' OR a.cod_soluci IS NULL)
+                )
+                ORDER BY fec_creaci ASC";       
+      $mConsult = new Consulta( $mSql, $this -> conexion );
+      return $mConsult -> ret_matrix('a');
+    }*/
+
+
+    private function getNovedadAlarmas($mNumDespac)
+{
+    // Consulta unificada: se obtienen los registros de ambas tablas (NC y PC)
+    $mSql = "(
+                SELECT 
+                    a.fec_contro AS fec_noveda,
+                    UPPER(b.nom_noveda) AS nom_noveda,
+                    a.usr_creaci,
+                    a.fec_creaci,
+                    UPPER(IF(c.nom_sitiox IS NULL, d.nom_contro, c.nom_sitiox)) AS nom_sitiox,
+                    a.obs_contro AS obs_noveda,
+                    a.cod_noveda,
+                    a.cod_consec,
+                    a.cod_contro,
+                    g.cod_tipoxx,
+                    a.ind_enviad,
+                    f.ind_resfar,
+                    b.cod_riesgo,
+                    'NC' AS tip_noveda,
+                    (f.ind_reqres = 1) AS ind_reqres,
+                    a.cod_soluci
+                FROM ".BASE_DATOS.".tab_despac_contro a
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda
+                INNER JOIN ".BASE_DATOS.".tab_despac_sitio c ON a.cod_sitiox = c.cod_sitiox
+                INNER JOIN ".BASE_DATOS.".tab_genera_contro d ON a.cod_contro = d.cod_contro
+                INNER JOIN ".BASE_DATOS.".tab_despac_vehige e ON a.num_despac = e.num_despac
+                LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f ON b.cod_noveda = f.cod_noveda 
+                                                              AND f.cod_transp = e.cod_transp
+                LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g ON b.cod_tipoxx = g.cod_tipoxx
+                WHERE a.num_despac = '{$mNumDespac}'
+            )
+            UNION
+            (
+                SELECT 
+                    a.fec_noveda,
+                    UPPER(b.nom_noveda) AS nom_noveda,
+                    a.usr_creaci,
+                    a.fec_creaci, 
+                    UPPER(c.nom_contro) AS nom_sitiox,
+                    a.des_noveda AS obs_noveda,
+                    a.cod_noveda,
+                    a.cod_consec,
+                    a.cod_contro,
+                    f.cod_tipoxx,
+                    a.ind_enviad,
+                    e.ind_resfar,
+                    b.cod_riesgo,
+                    'PC' AS tip_noveda,
+                    e.ind_reqres AS ind_reqres,
+                    a.cod_soluci
+                FROM ".BASE_DATOS.".tab_despac_noveda a
+                INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda
+                INNER JOIN ".BASE_DATOS.".tab_genera_contro c ON a.cod_contro = c.cod_contro
+                INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
+                LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e ON b.cod_noveda = e.cod_noveda 
+                                                              AND e.cod_transp = d.cod_transp
+                LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx f ON b.cod_tipoxx = f.cod_tipoxx
+                WHERE a.num_despac = '{$mNumDespac}'
+            )
+            ORDER BY fec_creaci ASC ";
+
+    $mConsult = new Consulta($mSql, $this->conexion);
+    $records = $mConsult->ret_matrix('a'); // Se espera un array de registros asociativos
+
+    // Inicialización de la agrupación
+    $groups = array();
+    $currentGroup = array(); // Usamos este arreglo interno con '_groupRecords' para seguimiento
+
+    foreach ($records as $record) {
+        // Si no hay grupo iniciado, se inicia con el registro actual
+        if (empty($currentGroup)) {
+            $currentGroup = array(
+                'fec_noveda'    => $record['fec_noveda'],
+                'nom_noveda'    => $record['nom_noveda'],
+                'usr_creaci'    => $record['usr_creaci'],
+                'fec_creaci'    => $record['fec_creaci'],
+                'nom_sitiox'    => $record['nom_sitiox'],
+                'obs_noveda'    => $record['obs_noveda'],
+                'cod_noveda'    => $record['cod_noveda'],
+                'cod_consec'    => $record['cod_consec'],
+                'cod_contro'    => $record['cod_contro'],
+                'cod_tipoxx'    => $record['cod_tipoxx'],
+                'ind_enviad'    => $record['ind_enviad'],
+                'ind_resfar'    => $record['ind_resfar'],
+                'cod_riesgo'    => $record['cod_riesgo'],
+                'tip_noveda'    => $record['tip_noveda'],
+                'ind_reqres'    => $record['ind_reqres'],
+                'cod_soluci'    => $record['cod_soluci'],
+                '_groupRecords' => array($record)
+            );
+        } else {
+            // Se agrupa por cod_noveda, tip_noveda y cod_soluci
+            if (
+                $record['cod_noveda'] == $currentGroup['cod_noveda'] &&
+                $record['tip_noveda'] == $currentGroup['tip_noveda'] &&
+                $record['cod_soluci'] == $currentGroup['cod_soluci']
+            ) {
+                // Actualizamos campos variables:
+                $firstFecNoveda = $currentGroup['_groupRecords'][0]['fec_noveda'];
+                $currentFecNoveda = $record['fec_noveda'];
+                if ($firstFecNoveda != $currentFecNoveda) {
+                    $currentGroup['fec_noveda'] = $firstFecNoveda . " / " . $currentFecNoveda;
+                }
+                $firstFecCreaci = $currentGroup['_groupRecords'][0]['fec_creaci'];
+                $currentFecCreaci = $record['fec_creaci'];
+                if ($firstFecCreaci != $currentFecCreaci) {
+                    $currentGroup['fec_creaci'] = $firstFecCreaci . " / " . $currentFecCreaci;
+                }
+                $firstCodConsec = $currentGroup['_groupRecords'][0]['cod_consec'];
+                $currentCodConsec = $record['cod_consec'];
+                if ($firstCodConsec != $currentCodConsec) {
+                    $currentGroup['cod_consec'] = $firstCodConsec . " - " . $currentCodConsec;
+                }
+                $currentGroup['obs_noveda'] = $record['obs_noveda'];
+
+                // Agregamos el registro al grupo interno
+                $currentGroup['_groupRecords'][] = $record;
+            } else {
+                // Al cambiar de grupo, si el grupo actual cumple las condiciones...
+                if ((int)$currentGroup['ind_reqres'] === 1 &&
+                    ($currentGroup['cod_soluci'] === "0" || $currentGroup['cod_soluci'] === "" || is_null($currentGroup['cod_soluci']))) {
+
+                    // Se agrega la cantidad de registros agrupados
+                    $currentGroup['cantidad'] = count($currentGroup['_groupRecords']);
+
+                    // Procesamos el campo "consecutivos"
+                    $consArray = array_map(function($r) {
+                        return $r['cod_consec'];
+                    }, $currentGroup['_groupRecords']);
+                    sort($consArray, SORT_NUMERIC);
+                    if (count($consArray) == 1) {
+                        $currentGroup['consecutivos'] = $consArray[0];
+                    } else {
+                        $currentGroup['consecutivos'] = $consArray[0] . "-" . $consArray[count($consArray) - 1];
+                    }
+
+                    // Calculamos la fecha de creación mínima (la más antigua) para ordenar después
+                    $dates = array_map(function($r) {
+                        return strtotime($r['fec_creaci']);
+                    }, $currentGroup['_groupRecords']);
+                    $currentGroup['fec_creaci_min'] = date('Y-m-d H:i:s', min($dates));
+
+                    unset($currentGroup['_groupRecords']);
+                    $groups[] = $currentGroup;
+                }
+                // Iniciamos un nuevo grupo con el registro actual
+                $currentGroup = array(
+                    'fec_noveda'    => $record['fec_noveda'],
+                    'nom_noveda'    => $record['nom_noveda'],
+                    'usr_creaci'    => $record['usr_creaci'],
+                    'fec_creaci'    => $record['fec_creaci'],
+                    'nom_sitiox'    => $record['nom_sitiox'],
+                    'obs_noveda'    => $record['obs_noveda'],
+                    'cod_noveda'    => $record['cod_noveda'],
+                    'cod_consec'    => $record['cod_consec'],
+                    'cod_contro'    => $record['cod_contro'],
+                    'cod_tipoxx'    => $record['cod_tipoxx'],
+                    'ind_enviad'    => $record['ind_enviad'],
+                    'ind_resfar'    => $record['ind_resfar'],
+                    'cod_riesgo'    => $record['cod_riesgo'],
+                    'tip_noveda'    => $record['tip_noveda'],
+                    'ind_reqres'    => $record['ind_reqres'],
+                    'cod_soluci'    => $record['cod_soluci'],
+                    '_groupRecords' => array($record)
+                );
+            }
+        }
+    }
+
+    // Procesar el último grupo abierto (si existe)
+    if (!empty($currentGroup)) {
+        if ((int)$currentGroup['ind_reqres'] === 1 &&
+            ($currentGroup['cod_soluci'] === "0" || $currentGroup['cod_soluci'] === "" || is_null($currentGroup['cod_soluci']))) {
+            $currentGroup['cantidad'] = count($currentGroup['_groupRecords']);
+            $consArray = array_map(function($r) {
+                return $r['cod_consec'];
+            }, $currentGroup['_groupRecords']);
+            sort($consArray, SORT_NUMERIC);
+            if (count($consArray) == 1) {
+                $currentGroup['consecutivos'] = $consArray[0];
+            } else {
+                $currentGroup['consecutivos'] = $consArray[0] . "-" . $consArray[count($consArray) - 1];
+            }
+            $dates = array_map(function($r) {
+                return strtotime($r['fec_creaci']);
+            }, $currentGroup['_groupRecords']);
+            $currentGroup['fec_creaci_min'] = date('Y-m-d H:i:s', min($dates));
+            unset($currentGroup['_groupRecords']);
+            $groups[] = $currentGroup;
+        }
+    }
+
+    // Ordenar los grupos según los criterios deseados:
+    // 1. cod_riesgo: mayor primero (ALTO > MEDIO > BAJO)
+    // 2. cantidad: mayor cantidad primero
+    // 3. fec_creaci_min: fecha más antigua primero
+    usort($groups, function($a, $b) {
+        $a_risk = (int)$a['cod_riesgo'];
+        $b_risk = (int)$b['cod_riesgo'];
+        if ($a_risk !== $b_risk) {
+            return $b_risk - $a_risk; // mayor riesgo primero
+        }
+        if ($a['cantidad'] !== $b['cantidad']) {
+            return $b['cantidad'] - $a['cantidad']; // mayor cantidad primero
+        }
+        return strtotime($a['fec_creaci_min']) - strtotime($b['fec_creaci_min']); // fecha más antigua primero
+    });
+
+    return $groups;
+}
+
+
+
+
+
+
+
     
 
     /*! \fn: getPuntFisDespac
@@ -9197,6 +9677,8 @@ class Despachos
                         
                         $( 'input.dates' ).mask('Annn-Mn-Dn');
                         $( 'input.hours' ).mask('Hn:Nn');
+
+                         
                     });
               </script>";
     }
@@ -10168,7 +10650,7 @@ class Despachos
       $mHtml = new Formlib(2);
 
       $mHtml->OpenDiv("id:planRutaID; class:accordion");
-        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION PARICULARIDAD</center></h3>");
+        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION PARTICULARIDAD</center></h3>");
         $mHtml->OpenDiv("id:secID");
           $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
             $mHtml->Table("tr");
