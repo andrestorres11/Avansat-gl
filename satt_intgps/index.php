@@ -279,9 +279,9 @@ class Aplicacion_Seguridad
 
         $pagina_central = new Pagina("".ESAD."", "#FFFFFF", 0, 0, 0, 0, 0, "../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/css/estilos.css", $datos_servicio["bod_jscrip"], "../".DIR_APLICA_CENTRAL.'/'.$datos_servicio[rut_jscrip]);
 
-      echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/css/dhtmlgoodies_calendar.css?random=20051112\" media=\"screen\"></LINK>\n";
+        echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"../".DIR_APLICA_CENTRAL."/estilos/".ESTILO."/css/dhtmlgoodies_calendar.css?random=20051112\" media=\"screen\"></LINK>\n";
         echo "<SCRIPT type=\"text/javascript\" src=\"../".DIR_APLICA_CENTRAL."/js/dhtmlgoodies_calendar.js?random=20060118\"></script>\n";
-
+        echo "<link type=\"text/css\" rel=\"stylesheet\" href=\"../".DIR_APLICA_CENTRAL."/estilos/navbar.css?random=20051112\" media=\"screen\"></LINK>\n";
          $cod_hijo = $datos_servicio["cod_servic"];
            while($cod_hijo)
               {
@@ -367,7 +367,37 @@ class Aplicacion_Seguridad
                             <input type="hidden" id="hourID" value="'.$hour.'">
                         </div>';
             }            
-                      
+            $ipCliente =$_SERVER['HTTP_X_REAL_IP'];
+            $cod_usuari = $_SESSION['datos_usuario']['cod_usuari'];
+            $cod_perfil = $_SESSION['datos_usuario']['cod_perfil'];
+
+            if(in_array($cod_perfil, array(1, 2, 8, 7))){
+              echo '<div id="myCustomNavbar">
+                      <div class="navbar-pri">
+                        <!-- Sección izquierda: Título, Fecha/Hora e IP -->
+                        <div class="navbar-left">
+                          <div class="navbar-title">Avansat GL</div>
+                          <div class="navbar-user">'.$cod_usuari.'</div>
+                          <div class="navbar-datetime" id="navbarDate"></div>
+                          <div class="navbar-ip">'.$ipCliente.'</div>
+                          <input type="hidden" name="standar" id="standar" value="'.DIR_APLICA_CENTRAL.'">
+                        </div>
+                        
+                        <!-- Sección derecha: Botón y Dropdown de Alertas -->
+                        <div class="alert-container-pri">
+                          <button class="alert-button-pri" onclick="toggleAlerts()">
+                            Alertas Pendientes
+                            <span class="badge">0</span>
+                          </button>
+                          <!-- Dropdown con las notificaciones -->
+                          <div id="alert-dropdown" class="alert-dropdown">
+                          </div>
+                        </div>
+                      </div>
+                    </div>';
+
+            }
+            
             echo " 
                     <TR>
                         <TD>
@@ -451,7 +481,7 @@ class Aplicacion_Seguridad
             </TABLE></TD>
             </TR>
           </TABLE>";
-
+        echo '<script src="../'.DIR_APLICA_CENTRAL.'/js/navbar.js"></script>';
         $pagina_central -> cerrar();
     }
 
@@ -502,6 +532,16 @@ class Aplicacion_Seguridad
 
     include_once( "../".DIR_APLICA_CENTRAL."/lib/general/menu_new.inc" );  
     $menu = new Menu($datos_usuario, $tabla_permisos, $tipo_permiso, $cod_permiso, $this -> codigo, $this -> conexion);
+}
+
+function getRealIP() {
+  if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+      return $_SERVER['HTTP_CLIENT_IP'];
+  } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+      return $_SERVER['HTTP_X_FORWARDED_FOR'];
+  } else {
+      return $_SERVER['REMOTE_ADDR'];
+  }
 }
 
 
