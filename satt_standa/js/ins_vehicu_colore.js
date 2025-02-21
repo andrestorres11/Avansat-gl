@@ -67,10 +67,10 @@ function activarColores(cod_colore, mintra_cliente, nom_colorx, ind_estado){
                 LockAplication('lock');
                 AjaxLoader('block')
                 // limpiarFormulario(); 
-                $("#optionID").val("5");
+                $("#opcionID").val("5");
                 $("#cod_coloreID").val(cod_colore);
-                $("input").prop("disabled", false);
-                $("#form_coloreID").submit();
+                // $("input").prop("disabled", false);
+                $("#form_coloresID").submit();
             }
             swal.close();
         });

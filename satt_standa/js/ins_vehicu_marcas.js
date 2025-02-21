@@ -69,9 +69,9 @@ function activarMarcas(cod_marcas, mintra_cliente, nom_marcax, ind_estado){
                 LockAplication('lock');
                 AjaxLoader('block')
                 // limpiarFormulario();
-                $("#optionID").val("5");
+                $("#opcionID").val("5");
                 $("#cod_marcasID").val(cod_marcas);
-                $("input").prop("disabled", false);
+                // $("input").prop("disabled", false);
                 $("#form_marcasID").submit();
             }
             swal.close();
