@@ -1,0 +1,133 @@
+#myCustomNavbar .navbar-pri {
+    background-color: #2c368d; /* Color de fondo de la barra */
+    height: 40px;              /* Alto de la barra */
+    line-height: 40px;         /* Centrado vertical del contenido */
+    color: #fff;               /* Color del texto */
+    padding: 0 20px;           /* Espaciado horizontal */
+    position: relative;        /* Para posicionar elementos internos */
+    display: flex;             /* Alinea elementos en fila */
+    align-items: center;       /* Centra verticalmente */
+    justify-content: space-between; /* Separa la parte izquierda y derecha */
+  }
+  
+  /* Contenedor para la parte izquierda (título, fecha/hora e IP) */
+  #myCustomNavbar .navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espacio horizontal entre elementos */
+  }
+  
+  /* Título de la aplicación */
+  #myCustomNavbar .navbar-title {
+    font-weight: bold !important;
+    font-size: 15px !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+
+  #myCustomNavbar .navbar-user {
+    font-size: 12px !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+  
+  /* Fecha/hora e IP */
+  #myCustomNavbar .navbar-datetime,
+  #myCustomNavbar .navbar-ip {
+    font-size: 14px !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+  
+  /* Contenedor del botón de alertas y el dropdown */
+  #myCustomNavbar .alert-container-pri {
+    position: relative; /* Para posicionar el dropdown */
+  }
+  
+
+  /* Botón de Alertas */
+  #myCustomNavbar .alert-button-pri {
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    position: relative !important;
+    background-color: #0062cc !important;
+    border: none !important;
+    color: #fff !important;
+    padding: 5px 12px !important;
+    border-radius: 4px !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+  
+  /* Badge (contador) en el botón de alertas: redondo y centrado */
+  #myCustomNavbar .alert-button-pri .badge {
+    position: absolute !important;
+    top: -6px !important;
+    right: -6px !important;
+    background-color: red;
+    color: #fff;
+    width: 20px !important;           /* Ancho fijo para círculo */
+    height: 20px !important;          /* Alto fijo para círculo */
+    line-height: 20px !important;     /* Centrado vertical */
+    text-align: center;    /* Centrado horizontal */
+    border-radius: 50% !important;    /* Forma circular */
+    font-size: 12px !important;
+    font-weight: bold !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    display: inline-block !important;
+    min-width: 8px !important;
+    padding: 2px 4px !important;
+    box-sizing: content-box !important;
+  }
+  
+  /* Dropdown que contiene la lista de notificaciones */
+  #myCustomNavbar .alert-dropdown {
+    position: absolute;
+    top: 100%;      /* Justo debajo del botón */
+    right: 0;       /* Alineado a la derecha */
+    background-color: #2c368d;
+    width: 300px;
+    border: 1px solid #fff;
+    display: none;  /* Oculto por defecto */
+    z-index: 999;   /* Encima de otros elementos */
+    
+    /* Mostrar hasta 6 elementos; si hay más, scroll vertical */
+    max-height: 50em; /* Ajusta según la altura que desees */
+    overflow-y: auto;
+  }
+  
+  /* Cada elemento de la lista de alertas */
+  #myCustomNavbar .alert-item {
+    padding: 3px 5px;       /* Menor padding para reducir altura */
+    border-bottom: 1px solid #fff;
+    color: #fff;
+    display: flex;          /* Para alinear badge y texto en fila */
+    align-items: center;    /* Centrado vertical */
+    font-size: 11px !important;
+  }
+  
+  /* Badge al inicio de cada alerta: redondo y centrado */
+  #myCustomNavbar .item-badge {
+    display: inline-block;
+    width: 20px;           /* Ancho fijo */
+    height: 20px;          /* Alto fijo */
+    line-height: 20px;     /* Centrado vertical */
+    text-align: center;    /* Centrado horizontal */
+    background-color: red;
+    color: #fff;
+    border-radius: 50%;    /* Forma circular */
+    margin-right: 8px;     /* Espacio entre badge y texto */
+    font-size: 12px;
+  }
+  
+  /* Efecto hover en cada alerta */
+  #myCustomNavbar .alert-item:hover {
+    background-color: #ff9f00;
+  }
+  
+  /* Ajustes para enlaces dentro del dropdown (si los hay) */
+  #myCustomNavbar .alert-item a {
+    color: #fff;
+    text-decoration: none;
+  }
+  #myCustomNavbar .alert-item a:hover {
+    text-decoration: underline;
+  }
