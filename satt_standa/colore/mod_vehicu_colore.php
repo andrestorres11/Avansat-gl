@@ -77,7 +77,7 @@ class Mod_Vehicu_Colore
         IncludeJS( 'validator.js' );
         IncludeJS( 'par_califi_califi.js' );
         IncludeJS( '/dashboard/vendors/sweetAlert/sweetalert2.all.min.js' );
-        IncludeJS( 'ins_vehicu_lineas.js' );
+        IncludeJS( 'ins_vehicu_colore.js' );
         IncludeJS( 'par_confir_pernoc.js' );
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>";
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>";
