@@ -1,5 +1,5 @@
 <?php
-/*! \file: ajax_vehicu_lineas.php
+/*! \file: ajax_vehicu_marcas.php
  *  \brief: 
  *  \author: 
  *  \author: 

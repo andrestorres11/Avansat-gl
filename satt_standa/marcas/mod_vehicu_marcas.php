@@ -131,7 +131,7 @@ class Mod_Vehicu_Marcas
         
         $pagination = new Pagination($this->conexion);
 
-        $url = "../".DIR_APLICA_CENTRAL."/colores/ajax_vehicu_marcas.php";
+        $url = "../".DIR_APLICA_CENTRAL."/marcas/ajax_vehicu_marcas.php";
         $result = $pagination->view(1,$headers,$url,$params,'MARCAS',NULL,0,$options,4,1,25);
                 
         if($vec_respon[0] == "1")
