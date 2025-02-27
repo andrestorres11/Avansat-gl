@@ -78,7 +78,7 @@ class Mod_Vehicu_Marcas
         IncludeJS( 'validator.js' );
         IncludeJS( 'par_califi_califi.js' );
         IncludeJS( '/dashboard/vendors/sweetAlert/sweetalert2.all.min.js' );
-        IncludeJS( 'ins_vehicu_lineas.js' );
+        IncludeJS( 'ins_vehicu_marcas.js' );
         IncludeJS( 'par_confir_pernoc.js' );
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' type='text/css'>";
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/informes.css' type='text/css'>";
@@ -131,7 +131,7 @@ class Mod_Vehicu_Marcas
         
         $pagination = new Pagination($this->conexion);
 
-        $url = "../".DIR_APLICA_CENTRAL."/colores/ajax_vehicu_lineas.php";
+        $url = "../".DIR_APLICA_CENTRAL."/marcas/ajax_vehicu_marcas.php";
         $result = $pagination->view(1,$headers,$url,$params,'MARCAS',NULL,0,$options,4,1,25);
                 
         if($vec_respon[0] == "1")
