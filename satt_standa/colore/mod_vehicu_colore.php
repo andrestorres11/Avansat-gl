@@ -104,7 +104,7 @@ class Mod_Vehicu_Colore
         
         $pagination = new Pagination($this->conexion);
 
-        $url = "../".DIR_APLICA_CENTRAL."/colores/ajax_vehicu_colore.php";
+        $url = "../".DIR_APLICA_CENTRAL."/colore/ajax_vehicu_colore.php";
         $result = $pagination->view(1,$headers,$url,$params,'COLORES',NULL,0,$options,4,1,25);
 
         if($vec_respon[0] == "1")
