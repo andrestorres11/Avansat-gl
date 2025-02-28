@@ -2,7 +2,7 @@
 // ini_set("display_errors", true);
 // error_reporting(E_ALL ^ E_NOTICE);
 /* !\class: Mod_Vehicu_Colore
- *  \brief: Módulo de listado y administrador de Colores
+ *  \brief: Modulo de listado y administrador de Colores
  *  \author: Ing. Jesus Sanchez
  *  \date: 29/04/2024
  */
@@ -14,13 +14,13 @@ class Mod_Vehicu_Colore
         $cod_aplica = NULL;
 
     /* !\fn: __construct
-     *  \brief: Función Constructora
+     *  \brief: Funcion Constructora
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
-     *  \param1:$conexion (objeto vectorial de conexión a bases de datos)
+     *  \param1:$conexion (objeto vectorial de conexion a bases de datos)
      *  \param2:$us (Objeto vectorial con datos del usuario)
-     *  \param3:$ca (Cadena que indica si se aplica al código)
-     *  \return NADA, pero redirige a la función de menú
+     *  \param3:$ca (Cadena que indica si se aplica al codigo)
+     *  \return NADA, pero redirige a la funcion de menú
      */
     function __construct($conexion, $us, $ca) {
         $this->conexion = $conexion;
@@ -31,11 +31,11 @@ class Mod_Vehicu_Colore
     }
 
     /* !\fn: Menu
-     *  \brief: Navegabilidad por el módulo
+     *  \brief: Navegabilidad por el modulo
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
      *  \param1:NINGUNO
-     *  \return NADA, pero redirige a la función de menú
+     *  \return NADA, pero redirige a la funcion de menú
      */
     function Menu() {
         switch ($_REQUEST["opcion"]) {
@@ -53,10 +53,10 @@ class Mod_Vehicu_Colore
     }
 
     /* ! \fn: Listar_Colores
-     *  \brief: Muestra el listado de Colores, a la vez de manejar un formulario de inserción/actualización
+     *  \brief: Muestra el listado de Colores, a la vez de manejar un formulario de insercion/actualizacion
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
-     *  \param1:$vec_respon (Vector con la respuesta de cualquier operación de modificación de registros)
+     *  \param1:$vec_respon (Vector con la respuesta de cualquier operacion de modificacion de registros)
      *  \return NADA, pero pinta el formulario central
      */
     function Listar_Colores($vec_respon)
@@ -231,11 +231,11 @@ class Mod_Vehicu_Colore
     }
 
     /* ! \fn: ActivarColores
-     *  \brief: Permite la activación manual de los colores, si no esta presente en el cliente la inserta
+     *  \brief: Permite la activacion manual de los colores, si no esta presente en el cliente la inserta
      *  \author: Ing. Jesus Sanchez
      *    \date: 25/04/2019
      *  \param1:NINGUNO
-     *  \return Un vector con el indicador de aviso (1:Success/2:Warning/3:Error), y la descripción del mensaje
+     *  \return Un vector con el indicador de aviso (1:Success/2:Warning/3:Error), y la descripcion del mensaje
      */
     function ActivarColores() {
         $vec_mensaj = array();
@@ -284,7 +284,7 @@ class Mod_Vehicu_Colore
         if (!mysql_errno())
         {
             $end = new Consulta("COMMIT", $this->conexion);
-            $vec_mensaj[1] .= "<br />El color ".$val_colorx[0]["nom_colorx"]." con código de ministerio ".$_REQUEST["cod_colore"] ." ha sido ".$mensaje." con Éxito.";
+            $vec_mensaj[1] .= "<br />El color ".$val_colorx[0]["nom_colorx"]." con codigo de ministerio ".$_REQUEST["cod_colore"] ." ha sido ".$mensaje." con exito.";
         }
         else
         {

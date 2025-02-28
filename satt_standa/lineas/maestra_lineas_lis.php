@@ -10,7 +10,7 @@ FUNCION:  LISTAR LINEAS DE VEHICULOS
  /*ini_set("display_errors", true);
 error_reporting(E_ALL ^ E_NOTICE);*/
 /* !\class: Maestra_lineas_lis
- *  \brief: Módulo de listado y administrador de Lineas
+ *  \brief: Modulo de listado y administrador de Lineas
  *  \author: Ing. Jesus Sanchez
  *  \date: 29/04/2024
  */
@@ -23,13 +23,13 @@ class Maestra_lineas_lis
     var $cNull = array(array("", "--"));
 
     /* !\fn: __construct
-     *  \brief: Función Constructora
+     *  \brief: Funcion Constructora
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
-     *  \param1:$conexion (objeto vectorial de conexión a bases de datos)
+     *  \param1:$conexion (objeto vectorial de conexion a bases de datos)
      *  \param2:$us (Objeto vectorial con datos del usuario)
-     *  \param3:$ca (Cadena que indica si se aplica al código)
-     *  \return NADA, pero redirige a la función de menú
+     *  \param3:$ca (Cadena que indica si se aplica al codigo)
+     *  \return NADA, pero redirige a la funcion de menú
      */
     function __construct($conexion, $us, $ca) {
         $this->conexion = $conexion;
@@ -40,11 +40,11 @@ class Maestra_lineas_lis
     }
 
     /* !\fn: Menu
-     *  \brief: Navegabilidad por el módulo
+     *  \brief: Navegabilidad por el modulo
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
      *  \param1:NINGUNO
-     *  \return NADA, pero redirige a la función de menú
+     *  \return NADA, pero redirige a la funcion de menú
      */
     function Menu() {
         switch ($_REQUEST["opcion"]) {
@@ -62,10 +62,10 @@ class Maestra_lineas_lis
     }
 
     /* ! \fn: Listar_Lineas
-     *  \brief: Muestra el listado de Lineas, a la vez de manejar un formulario de inserción/actualización
+     *  \brief: Muestra el listado de Lineas, a la vez de manejar un formulario de insercion/actualizacion
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
-     *  \param1:$vec_respon (Vector con la respuesta de cualquier operación de modificación de registros)
+     *  \param1:$vec_respon (Vector con la respuesta de cualquier operacion de modificacion de registros)
      *  \return NADA, pero muestra el formulario central
      */
     function Listar_Lineas($vec_respon)
@@ -117,19 +117,19 @@ class Maestra_lineas_lis
         if($vec_respon[0] == "1")
         {
             echo "<td>";
-            ShowMessage("s", "Líneas", $vec_respon[1]);
+            ShowMessage("s", "Lineas", $vec_respon[1]);
             echo "</td>";
         }
         else if($vec_respon[0] == "2")
         {
             echo "<td>";
-            ShowMessage("a", "Líneas", $vec_respon[1]);
+            ShowMessage("a", "Lineas", $vec_respon[1]);
             echo "</td>";
         }
         else if($vec_respon[0] == "3")
         {
             echo "<td>";
-            ShowMessage("e", "Líneas", $vec_respon[1]);
+            ShowMessage("e", "Lineas", $vec_respon[1]);
             echo "</td>";
         }
 
@@ -165,11 +165,11 @@ class Maestra_lineas_lis
     }
 
     /* ! \fn: ActivarLineas
-     *  \brief: Permite la activación manual de las lineas
+     *  \brief: Permite la activacion manual de las lineas
      *  \author: Ing. Jesus Sanchez
      *    \date: 25/04/2019
      *  \param1:NINGUNO
-     *  \return Un vector con el indicador de aviso (1:Success/2:Warning/3:Error), y la descripción del mensaje
+     *  \return Un vector con el indicador de aviso (1:Success/2:Warning/3:Error), y la descripcion del mensaje
      */
     function ActivarLineas() {
         $vec_mensaj = array();
@@ -255,7 +255,7 @@ class Maestra_lineas_lis
             if (!mysql_errno())
             { 
                 $end = new Consulta("COMMIT", $this->conexion);
-                $vec_mensaj[1] .= "<br />La línea ".$val_linea[0]["nom_lineax"]." con código de ministerio ".$_REQUEST["cod_lineas"] ." de la marca ".$existe_marca[0][1]." ha sido ".$mensaje." con éxito.";
+                $vec_mensaj[1] .= "<br />La linea ".$val_linea[0]["nom_lineax"]." con codigo de ministerio ".$_REQUEST["cod_lineas"] ." de la marca ".$existe_marca[0][1]." ha sido ".$mensaje." con exito.";
             }
             else
             {
@@ -265,13 +265,13 @@ class Maestra_lineas_lis
             }
         }else if(sizeof($err_linea_1) > 0){
             $vec_mensaj[0] = "3";
-            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de la linea, donde los codigos de Avansat no coinciden con los Estandar, por favor contactar con soporte para solventar la novedad";
+            $vec_mensaj[1] = "<br />La linea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de la linea, donde los codigos de Avansat no coinciden con los Estandar, por favor contactar con soporte para solventar la novedad";
         }else if(sizeof($err_linea_2) > 0){
             $vec_mensaj[0] = "3";
-            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de marcas de la linea, donde los codigos de Avansat no coinciden con los Estandar, por favor contactar con soporte para solventar la novedad";
+            $vec_mensaj[1] = "<br />La linea ".$val_linea[0]["nom_lineax"]." posee un error de codigos de marcas de la linea, donde los codigos de Avansat no coinciden con los Estandar, por favor contactar con soporte para solventar la novedad";
         }else{
             $vec_mensaj[0] = "3";
-            $vec_mensaj[1] = "<br />La línea ".$val_linea[0]["nom_lineax"]." que desea insertar no tiene la marca insertada en su plataforma, por favor primero insertar la marca y posteriormente la línea";
+            $vec_mensaj[1] = "<br />La linea ".$val_linea[0]["nom_lineax"]." que desea insertar no tiene la marca insertada en su plataforma, por favor primero insertar la marca y posteriormente la linea";
         }
 
         unset($_REQUEST["cod_lineas"]);

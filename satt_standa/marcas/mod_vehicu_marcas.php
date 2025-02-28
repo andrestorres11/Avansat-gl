@@ -2,7 +2,7 @@
 // ini_set("display_errors", true);
 // error_reporting(E_ALL ^ E_NOTICE);
 /* !\class: Mod_Vehicu_Marcas
- *  \brief: Módulo de listado y administrador de Marcas
+ *  \brief: Modulo de listado y administrador de Marcas
  *  \author: Ing. Jesus Sanchez
  *  \date: 29/04/2024
  */
@@ -14,13 +14,13 @@ class Mod_Vehicu_Marcas
         $cod_aplica = NULL;
 
     /* !\fn: __construct
-     *  \brief: Función Constructora
+     *  \brief: Funcion Constructora
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
-     *  \param1:$conexion (objeto vectorial de conexión a bases de datos)
+     *  \param1:$conexion (objeto vectorial de conexion a bases de datos)
      *  \param2:$us (Objeto vectorial con datos del usuario)
-     *  \param3:$ca (Cadena que indica si se aplica al código)
-     *  \return NADA, pero redirige a la función de menú
+     *  \param3:$ca (Cadena que indica si se aplica al codigo)
+     *  \return NADA, pero redirige a la funcion de menú
      */
     function __construct($conexion, $us, $ca) {
         $this->conexion = $conexion;
@@ -31,11 +31,11 @@ class Mod_Vehicu_Marcas
     }
 
     /* !\fn: Menu
-     *  \brief: Navegabilidad por el módulo
+     *  \brief: Navegabilidad por el modulo
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
      *  \param1:NINGUNO
-     *  \return NADA, pero redirige a la función de menú
+     *  \return NADA, pero redirige a la funcion de menú
      */
     function Menu() {
         switch ($_REQUEST["opcion"]) {
@@ -53,10 +53,10 @@ class Mod_Vehicu_Marcas
     }
 
     /* ! \fn: Listar_Marcas
-     *  \brief: Muestra el listado de marcas, a la vez de manejar un formulario de inserción/actualización
+     *  \brief: Muestra el listado de marcas, a la vez de manejar un formulario de insercion/actualizacion
      *  \author: Ing. Jesus Sanchez
      *    \date: 29/04/2024
-     *  \param1:$vec_respon (Vector con la respuesta de cualquier operación de modificación de registros)
+     *  \param1:$vec_respon (Vector con la respuesta de cualquier operacion de modificacion de registros)
      *  \return NADA, pero muestra el formulario central
      */
     function Listar_Marcas($vec_respon)
@@ -103,7 +103,7 @@ class Mod_Vehicu_Marcas
         // echo '<script type="text/javascript" src="../'.DIR_APLICA_CENTRAL.'/js/jquery.dataTables.min.js"></script>';
         // echo '<link rel="stylesheet" type="text/css" href="../'.DIR_APLICA_CENTRAL.'/estilos/bootstrap/3.3.7/css/bootstrap.min.css">';
         // echo '<script type="text/javascript" src="../'.DIR_APLICA_CENTRAL.'/estilos/bootstrap/3.3.7/js/bootstrap.min.js"></script>';
-        // /*! \brief: Vamos a llamar las liberías encargadas de la exportación a Excel
+        // /*! \brief: Vamos a llamar las liberías encargadas de la exportacion a Excel
         //  */
         // echo '<script type="text/javascript" src="../'.DIR_APLICA_CENTRAL.'/js/js_export/buttons.flash.min.js"></script>';
         // echo '<script type="text/javascript" src="../'.DIR_APLICA_CENTRAL.'/js/js_export/buttons.html5.min.js"></script>';
@@ -266,11 +266,11 @@ class Mod_Vehicu_Marcas
     }
 
     /* ! \fn: ActivarMarcas
-     *  \brief: Permite la activación manual de las marcas, si no esta presente en el cliente la inserta
+     *  \brief: Permite la activacion manual de las marcas, si no esta presente en el cliente la inserta
      *  \author: Ing. Jesus Sanchez
      *    \date: 25/04/2019
      *  \param1:NINGUNO
-     *  \return Un vector con el indicador de aviso (1:Success/2:Warning/3:Error), y la descripción del mensaje
+     *  \return Un vector con el indicador de aviso (1:Success/2:Warning/3:Error), y la descripcion del mensaje
      */
     function ActivarMarcas() {
         $vec_mensaj = array();
@@ -326,7 +326,7 @@ class Mod_Vehicu_Marcas
             if (!mysql_errno())
             {
                 $end = new Consulta("COMMIT", $this->conexion);
-                $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con código de ministerio ".$_REQUEST["cod_marcas"] ." ha sido ".$mensaje." con Éxito.";
+                $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con codigo de ministerio ".$_REQUEST["cod_marcas"] ." ha sido ".$mensaje." con exito.";
             }
             else
             {
@@ -336,7 +336,7 @@ class Mod_Vehicu_Marcas
             }
         }else{
             $vec_mensaj[0] = "3";
-            $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con código de ministerio ".$_REQUEST["cod_marcas"] ." tiene una falla en los codigos, donde los codigos de Avansat no coinciden con el Estandar, por favor contactar con soporte para solventar la novedad";
+            $vec_mensaj[1] .= "<br />La marca ".$val_marcax[0]["nom_marcax"]." con codigo de ministerio ".$_REQUEST["cod_marcas"] ." tiene una falla en los codigos, donde los codigos de Avansat no coinciden con el Estandar, por favor contactar con soporte para solventar la novedad";
         }
 
         unset($_REQUEST["cod_marcas"]);

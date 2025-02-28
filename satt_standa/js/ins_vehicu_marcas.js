@@ -1,12 +1,12 @@
 /* !\file: ins_vehicu_marcas.js
- *  \brief: Modulo de funciones para validar en el módulo de Marcas
+ *  \brief: Modulo de funciones para validar en el modulo de Marcas
  *  \author: Ing. Jesus Sanchez
  *  \date: 29/04/2024
  */
 
 
 /*! \fn: limpiarFormulario
- *  \brief: Limpia el formulario, dejándolo en modo de inserción
+ *  \brief: Limpia el formulario, dejandolo en modo de insercion
  *  \author: Ing. Jesus Sanchez
  *  \date: 29/04/2024
  *  \param: NINGUNO
@@ -51,9 +51,9 @@ function activarMarcas(cod_marcas, mintra_cliente, nom_marcax, ind_estado){
     
     try 
     {
-        swal({
+        Swal.fire({
             title: "Marcas",
-            text: "¿Está seguro de "+mensaje+" la marca "+nom_marcax+" con código de ministerio "+cod_marcas+"?",
+            text: "¿Esta seguro de "+mensaje+" la marca "+nom_marcax+" con codigo de ministerio "+cod_marcas+"?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -61,13 +61,10 @@ function activarMarcas(cod_marcas, mintra_cliente, nom_marcax, ind_estado){
             cancelButtonText: "No",
             closeOnConfirm: false,
             closeOnCancel: false
-        },
-        function(isConfirm)
-        {
-            if (isConfirm)
-            {
-                LockAplication('lock');
-                AjaxLoader('block')
+        }).then((result) => {
+            if (result.value) {
+                // LockAplication('lock');
+                // AjaxLoader('block')
                 // limpiarFormulario();
                 $("#opcionID").val("5");
                 $("#cod_marcasID").val(cod_marcas);
@@ -79,6 +76,12 @@ function activarMarcas(cod_marcas, mintra_cliente, nom_marcax, ind_estado){
     } 
     catch ( e ) 
     {
-        sweetAlert("Marcas", "Error activarMarcas " + e.message, "error");
+        // sweetAlert("Marcas", "Error activarMarcas " + e.message, "error");
+        Swal.fire({
+            title: 'Error!',
+            text: "Error activarMarcas " + e.message,
+            type: 'error',
+            confirmButtonColor: '#336600'
+        });
     }
 }
