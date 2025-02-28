@@ -105,14 +105,14 @@ class AjaxVehicuColore
                 }
 
                 $output['data'] .= '<tr>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.utf8_decode($matriz[$i]["cod_colorx"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.utf8_decode($matriz[$i]["cod_colorx"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.utf8_decode(utf8_encode($matriz[$i]["nom_colorx"])).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["cod_colorx"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["cod_colorx"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["nom_colorx"]).'</td>';
 
-                    if(strpos(utf8_decode(utf8_encode($matriz[$i]["nom_colorx"])),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
-                        $color_cambiado = str_replace('"','`',utf8_decode(utf8_encode($matriz[$i]["nom_colorx"])));
+                    if(strpos(eliminarAcentos($matriz[$i]["nom_colorx"]),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
+                        $color_cambiado = str_replace('"','`',eliminarAcentos($matriz[$i]["nom_colorx"]));
                     }else{
-                        $color_cambiado = utf8_decode(utf8_encode($matriz[$i]["nom_colorx"]));
+                        $color_cambiado = eliminarAcentos($matriz[$i]["nom_colorx"]);
                     }
 
                     $output['data'] .= "<td class='celda_info  text-center' ><a href='#' onclick='javascript:activarColores(\"".$matriz[$i]["cod_colorx"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$color_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";
@@ -145,7 +145,26 @@ class AjaxVehicuColore
         echo json_encode($output, JSON_UNESCAPED_UNICODE);
     }
    
-
+    function eliminarAcentos($cadena){
+		
+		$caracteres = array(
+            // Vocales acentuadas
+            'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'A', 'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a',
+            'É' => 'E', 'È' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'Í' => 'I', 'Ì' => 'I', 'Î' => 'I', 'Ï' => 'I', 'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
+            'Ó' => 'O', 'Ò' => 'O', 'Ô' => 'O', 'Ö' => 'O', 'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ö' => 'o',
+            'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U', 'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+            // Otros caracteres especiales
+            'Ñ' => 'N', 'ñ' => 'n', 'Ç' => 'C', 'ç' => 'c', 'ß' => 'ss',
+            // Caracteres adicionales
+            'Ý' => 'Y', 'ý' => 'y', 'ÿ' => 'y', '*' => '',
+        );
+    
+        $cadena = strtr($cadena, $caracteres);
+        $cadena = preg_replace('/[\x{FFFD}]/u', '', $cadena);
+    
+        return $cadena;
+	}
 }
 //FIN CLASE PROC_DESPAC
 

@@ -1,10 +1,10 @@
 /* !\file: ins_vehicu_colore.js
-*  \brief: Modulo de funciones para validar en el módulo de colores
+*  \brief: Modulo de funciones para validar en el modulo de colores
 *  \author: Ing. Jesus Sanchez
 *  \date: 29/04/2024
 */
 /*! \fn: limpiarFormulario
- *  \brief: Limpia el formulario, dejándolo en modo de inserción
+ *  \brief: Limpia el formulario, dejandolo en modo de insercion
  *  \author: Ing. Jesus Sanchez
  *  \date: 29/04/2024
  *  \param: NINGUNO
@@ -51,7 +51,7 @@ function activarColores(cod_colore, mintra_cliente, nom_colorx, ind_estado){
     {
         swal({
             title: "Color",
-            text: "¿Está seguro de "+mensaje+" el Color "+nom_colorx+" con código de ministerio "+cod_colore+"?",
+            text: " Esta seguro de "+mensaje+" el Color "+nom_colorx+" con codigo de ministerio "+cod_colore+"?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
@@ -59,13 +59,10 @@ function activarColores(cod_colore, mintra_cliente, nom_colorx, ind_estado){
             cancelButtonText: "No",
             closeOnConfirm: false,
             closeOnCancel: false
-        },
-        function(isConfirm)
-        {
-            if (isConfirm)
-            {
-                LockAplication('lock');
-                AjaxLoader('block')
+        }).then((result) => {
+            if (result.value) {
+                // LockAplication('lock');
+                // AjaxLoader('block')
                 // limpiarFormulario(); 
                 $("#opcionID").val("5");
                 $("#cod_coloreID").val(cod_colore);
@@ -77,7 +74,12 @@ function activarColores(cod_colore, mintra_cliente, nom_colorx, ind_estado){
     } 
     catch ( e ) 
     {
-        sweetAlert("Colores", "Error activarColores " + e.message, "error");
+        Swal.fire({
+            title: 'Error!',
+            text: "Error activarColores " + e.message,
+            type: 'error',
+            confirmButtonColor: '#336600'
+        });
     }
 }
 

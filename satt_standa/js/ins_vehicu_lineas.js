@@ -52,7 +52,7 @@ function ActivarLineas(cod_lineas, mintra_cliente, ind_estado, nom_lineax, cod_m
     {
         Swal.fire({
             title: 'Lineas!',
-            text: "¿Está seguro de "+mensaje+" la linea "+nom_lineax+" con cÃ³digo de ministerio "+cod_lineas+"?",
+            text: " Esta seguro de "+mensaje+" la linea "+nom_lineax+" con codigo de ministerio "+cod_lineas+"?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",  
