@@ -53,7 +53,7 @@ function activarMarcas(cod_marcas, mintra_cliente, nom_marcax, ind_estado){
     {
         Swal.fire({
             title: "Marcas",
-            text: "¿Esta seguro de "+mensaje+" la marca "+nom_marcax+" con codigo de ministerio "+cod_marcas+"?",
+            text: " Esta seguro de "+mensaje+" la marca "+nom_marcax+" con codigo de ministerio "+cod_marcas+"?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",

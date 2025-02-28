@@ -51,7 +51,7 @@ function activarColores(cod_colore, mintra_cliente, nom_colorx, ind_estado){
     {
         swal({
             title: "Color",
-            text: "¿Esta seguro de "+mensaje+" el Color "+nom_colorx+" con codigo de ministerio "+cod_colore+"?",
+            text: " Esta seguro de "+mensaje+" el Color "+nom_colorx+" con codigo de ministerio "+cod_colore+"?",
             type: "warning",
             showCancelButton: true,
             confirmButtonColor: "#DD6B55",
