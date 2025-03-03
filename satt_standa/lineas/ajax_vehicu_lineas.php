@@ -112,15 +112,15 @@ class AjaxVehigeLineas
                 }
 
                 $output['data'] .= '<tr>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["cod_lineax"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["nom_lineax"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["cod_marcax"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["nom_marcax"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["cod_lineax"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["nom_lineax"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["cod_marcax"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["nom_marcax"]).'</td>';
 
-                    if(strpos(eliminarAcentos($matriz[$i]["nom_lineax"]),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
-                        $linea_cambiado = str_replace('"','`',eliminarAcentos($matriz[$i]["nom_lineax"]));
+                    if(strpos($this->eliminarAcentos($matriz[$i]["nom_lineax"]),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
+                        $linea_cambiado = str_replace('"','`',$this->eliminarAcentos($matriz[$i]["nom_lineax"]));
                     }else{
-                        $linea_cambiado = eliminarAcentos($matriz[$i]["nom_lineax"]);
+                        $linea_cambiado = $this->eliminarAcentos($matriz[$i]["nom_lineax"]);
                     }
 
                     $output['data'] .= "<td class='celda_info  text-center' ><a href='#' onclick='javascript:ActivarLineas(\"".$matriz[$i]["cod_lineax"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$matriz[$i]["ind_estado"]."\", \"".$linea_cambiado."\", \"".$matriz[$i]["cod_marcax"]."\")'>".$mensaje."</a></td>";

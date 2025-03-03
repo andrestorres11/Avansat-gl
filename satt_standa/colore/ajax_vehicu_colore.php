@@ -105,14 +105,14 @@ class AjaxVehicuColore
                 }
 
                 $output['data'] .= '<tr>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["cod_colorx"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["cod_colorx"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["nom_colorx"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["cod_colorx"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["cod_colorx"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["nom_colorx"]).'</td>';
 
-                    if(strpos(eliminarAcentos($matriz[$i]["nom_colorx"]),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
-                        $color_cambiado = str_replace('"','`',eliminarAcentos($matriz[$i]["nom_colorx"]));
+                    if(strpos($this->eliminarAcentos($matriz[$i]["nom_colorx"]),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
+                        $color_cambiado = str_replace('"','`',$this->eliminarAcentos($matriz[$i]["nom_colorx"]));
                     }else{
-                        $color_cambiado = eliminarAcentos($matriz[$i]["nom_colorx"]);
+                        $color_cambiado = $this->eliminarAcentos($matriz[$i]["nom_colorx"]);
                     }
 
                     $output['data'] .= "<td class='celda_info  text-center' ><a href='#' onclick='javascript:activarColores(\"".$matriz[$i]["cod_colorx"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$color_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";
