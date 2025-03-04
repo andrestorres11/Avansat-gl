@@ -106,14 +106,14 @@ class AjaxVehicuMarcas
                 }
 
                 $output['data'] .= '<tr>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["cod_marcax"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos($matriz[$i]["cod_marcax"]).'</td>';
-                    $output['data'] .= '<td class="celda_info  text-center" >'.eliminarAcentos(utf8_encode($matriz[$i]["nom_marcax"])).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["cod_marcax"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos($matriz[$i]["cod_marcax"]).'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$this->eliminarAcentos(utf8_encode($matriz[$i]["nom_marcax"])).'</td>';
 
-                    if(strpos(eliminarAcentos($matriz[$i]["nom_marcax"]),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
-                        $marca_cambiado = str_replace('"','`',eliminarAcentos($matriz[$i]["nom_marcax"]));
+                    if(strpos($this->eliminarAcentos($matriz[$i]["nom_marcax"]),'"') !== false){ // Si encuentra una comilla doble, la cambia por `
+                        $marca_cambiado = str_replace('"','`',$this->eliminarAcentos($matriz[$i]["nom_marcax"]));
                     }else{
-                        $marca_cambiado = eliminarAcentos($matriz[$i]["nom_marcax"]);
+                        $marca_cambiado = $this->eliminarAcentos($matriz[$i]["nom_marcax"]);
                     }
 
                     $output['data'] .= "<td class='celda_info  text-center' ><a href='#' onclick='javascript:activarMarcas(\"".$matriz[$i]["cod_marcax"]."\", \"".$matriz[$i]["mintra_cliente"]."\", \"".$marca_cambiado."\", \"".$matriz[$i]["ind_estado"]."\")'>".$mensaje."</a></td>";

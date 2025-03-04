@@ -49,7 +49,7 @@ function activarColores(cod_colore, mintra_cliente, nom_colorx, ind_estado){
 
     try 
     {
-        swal({
+        Swal.fire({
             title: "Color",
             text: " Esta seguro de "+mensaje+" el Color "+nom_colorx+" con codigo de ministerio "+cod_colore+"?",
             type: "warning",
