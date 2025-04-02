@@ -303,7 +303,7 @@
                              d.num_remolq, d.cod_marcax, d.cod_lineax,
                              d.ano_modelo, d.cod_colorx, d.cod_carroc,
                              d.num_config, d.num_chasis, d.num_motorx,
-                             d.num_soatxx, d.fec_vigsoa, d.num_lictra,
+                             d.num_soatxx, d.fec_vigsoa, d.fec_revmec, d.num_lictra,
                              d.cod_opegps, d.usr_gpsxxx, d.clv_gpsxxx,
                              d.url_gpsxxx, d.idx_gpsxxx, d.obs_opegps,
                              d.fre_opegps, d.ind_precom as 'ind_preveh', d.val_compar as 'val_comveh',
@@ -528,26 +528,85 @@
                                                 <a class="btn btn-success btn-sm"  id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="true">Conductor</a>
                                               </li>';
                      }else{
-                        $label_pestana = 'Poseedor / Tenedor';
-                        if ($info['num_docpos'] == $info['num_docpro']) {
-                          $label_pestana = 'Poseedor / Propietario';
-                        }
+
+                        $poseedor = $info['num_docpos'];
+                        $propietario = $info['num_docpro'];
+                        $conductor = $info['num_doccon'];
+
 
                         echo '<li class="nav-item m-2">
                                 <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">veh&iacute;culo</a>
-                              </li>
-                              <li class="nav-item m-2">
+                              </li>';
+
+                        // Caso 1: Las tres iguales
+                        if ($poseedor == $propietario && $propietario == $conductor) {
+                          $label_pestana = 'Poseedor / Propietario / Conductor';
+                          echo '<li class="nav-item m-2">
+                                  <a class="btn btn-success btn-sm" id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="true">'.$label_pestana.'</a>
+                                </li>';
+                        }
+
+                        // Caso 2: Poseedor y Propietario iguales y Conductor diferente
+                        else if ($poseedor == $propietario && $poseedor != $conductor) {
+                          $label_pestana = 'Poseedor / Propietario';
+                          echo '<li class="nav-item m-2">
+                                  <a class="btn btn-success btn-sm" id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">'.$label_pestana.'</a>
+                                </li>';
+
+                          echo '<li class="nav-item m-2">
+                                  <a class="btn btn-success btn-sm" id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="false">Conductor</a>
+                                </li>';
+                        }
+
+                        // Caso 3: Todas diferentes
+                        else {
+                          echo '<li class="nav-item m-2">
+                                  <a class="btn btn-success btn-sm" id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">Poseedor</a>
+                                </li>';
+
+                          echo '<li class="nav-item m-2">
+                                  <a class="btn btn-success btn-sm" id="pills-propietario-tab" data-toggle="pill" href="#pills-propietario" role="tab" aria-controls="pills-propietario" aria-selected="false">Propietario</a>
+                                </li>';
+
+                          echo '<li class="nav-item m-2">
+                                  <a class="btn btn-success btn-sm" id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="false">Conductor</a>
+                                </li>';
+                        }
+
+                        /*
+                        $label_pestana = 'Poseedor / Tenedor';
+                        if ($info['num_docpos'] == $info['num_docpro'] && $info['num_docpro'] == $info['num_doccon']) {
+                          $label_pestana = 'Poseedor / Propietario / Conductor';
+                        } else if ($info['num_docpos'] == $info['num_docpro']) {
+                            $label_pestana = 'Poseedor / Propietario';
+                        }else{
+                           $label_pestana = 'Conductor';
+                        }
+
+
+                        echo '<li class="nav-item m-2">
+                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">veh&iacute;culo</a>
+                              </li>';
+
+                        if($info['num_docpos'] != $info['num_doccon']){
+                          echo '<li class="nav-item m-2">
                                   <a class="btn btn-success btn-sm"  id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">'.$label_pestana.'</a>
                               </li>';
+                        }
+                        
 
                         if($info['num_docpos'] != $info['num_docpro']){
                         echo '<li class="nav-item m-2">
                                   <a class="btn btn-success btn-sm"  id="pills-propietario-tab" data-toggle="pill" href="#pills-propietario" role="tab" aria-controls="pills-propietario" aria-selected="false">Propietario</a>
                               </li>';
                         }
+
                         echo '<li class="nav-item m-2">
-                                                <a class="btn btn-success btn-sm"  id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="true">Conductor</a>
+                                                <a class="btn btn-success btn-sm"  id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="true">'.$label_pestana.'</a>
                                               </li>';
+
+
+                        */
 
                      }
 
@@ -580,21 +639,41 @@
                                echo '<div class="tab-pane fade show p-3 active" id="pills-conductor" role="tabpanel" aria-labelledby="pills-conductor-tab">
                                         '.$this->viewPillsConductor($info).'
                                      </div>';
-                       }else{
+                      }else{
+                        $poseedor = $info['num_docpos'];
+                        $propietario = $info['num_docpro'];
+                        $conductor = $info['num_doccon'];
                               echo '<div class="tab-pane fade show p-3 active" id="pills-vehiculo" role="tabpanel" aria-labelledby="pills-vehiculo-tab">
                                         '.$this->viewPillsVehiculo($info).'
-                                    </div>
-                                    <div class="tab-pane fade p-3" id="pills-poseedor" role="tabpanel" aria-labelledby="pills-poseedor-tab">
-                                        '.$this->viewPillsPoseedor($info).'
                                     </div>';
-                            if ($info['num_docpos'] != $info['num_docpro']) {
-                                echo '<div class="tab-pane fade p-3" id="pills-propietario" role="tabpanel" aria-labelledby="pills-propietario-tab">
-                                       ' . $this->viewPillsPropietario($info) . '
-                                      </div>';
-                              }
-                              echo '<div class="tab-pane fade show p-3" id="pills-conductor" role="tabpanel" aria-labelledby="pills-conductor-tab">
-                                      '.$this->viewPillsConductor($info).'
-                                    </div>';
+                        
+                        // Caso 1: Las tres iguales
+                        if ($poseedor == $propietario && $propietario == $conductor) {
+                          echo '<div class="tab-pane fade show p-3" id="pills-conductor" role="tabpanel" aria-labelledby="pills-conductor-tab">
+                                  '.$this->viewPillsConductor($info).'
+                                </div>';
+                        }// Caso 2: Poseedor y Propietario iguales y diferentes al Conductor
+                        else if ($info['num_docpos'] == $info['num_docpro'] && $info['num_docpro'] != $info['num_doccon']) {
+                          echo '<div class="tab-pane fade p-3" id="pills-poseedor" role="tabpanel" aria-labelledby="pills-poseedor-tab">
+                                  '.$this->viewPillsPoseedor($info).'
+                                </div>';
+
+                          echo '<div class="tab-pane fade p-3" id="pills-conductor" role="tabpanel" aria-labelledby="pills-conductor-tab">
+                                  '.$this->viewPillsConductor($info).'
+                                </div>';
+                        }else {
+                          echo '<div class="tab-pane fade p-3 active" id="pills-poseedor" role="tabpanel" aria-labelledby="pills-poseedor-tab">
+                                  '.$this->viewPillsPoseedor($info).'
+                                </div>';
+                      
+                          echo '<div class="tab-pane fade p-3" id="pills-propietario" role="tabpanel" aria-labelledby="pills-propietario-tab">
+                                  '.$this->viewPillsPropietario($info).'
+                                </div>';
+                      
+                          echo '<div class="tab-pane fade p-3" id="pills-conductor" role="tabpanel" aria-labelledby="pills-conductor-tab">
+                                  '.$this->viewPillsConductor($info).'
+                                </div>';
+                        }
                         }
                         
                         if($info['ind_credes']==1){
@@ -1329,6 +1408,13 @@
                     </div>
 
                     <div class="row">
+                      <div class="col-3 form-group">
+                        <label for="nom_soliciID" class="labelinput">
+                          <div class="obl">*</div>
+                            Fecha vigencia revisión Tecnico M:
+                        </label>
+                        <input class="form-control form-control-sm req" type="date" id="fec_revmecID" name="fec_revmec" value="'.$info['fec_revmec'].'" validate>
+                      </div>
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
@@ -2295,6 +2381,7 @@
                           <th>Empresa Solicitante</th>
                           <th>Empresa Aseguradora</th>
                           <th>Tipo de Solicitud</th>
+                          <th>Adjunto Inicial</th>
                           <th>Identificación</th>
                           <th>Nombre / Marca</th>
                           <th>Fecha / Hora de Solicitud</th>
@@ -2349,7 +2436,7 @@
                     <h5 id="title-modal" class="modal-title"><center>Crear Nueva Solicitud</center></h5>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                   </div>
-                  <form id="InsSolici"  action="" method="post">
+                  <form id="InsSolici"  action="" method="post" enctype="multipart/form-data">
                     <div class="modal-body">
                       '.$this->camposFormulPrincipal().'
                     </div>
@@ -2650,7 +2737,17 @@
                         <input class="form-control form-control-sm req ema" type="text" placeholder="Email" id="dir_emailxConID_CV" name="dir_emailxCon_CV">
                     </div>
                 </div>
-
+                <div class="row ml-2">
+                  <div class="col-4 form-group">
+                    <input type="checkbox" class="form-check-input esPoseedClass" name="esPoseedCon_CV" showForm="formPoseedCom">
+                    <label class="form-check-label p-1" for="esPoseedD">¿El conductor es proseedor?</label>
+                  </div>
+                  <div class="col-4 form-group">
+                    <input type="checkbox" class="form-check-input esPropieClass" name="esPropieCon_CV" showForm="formPropietCom">
+                    <label class="form-check-label p-1" for="esPropieID">¿El conductor es propietario?</label>
+                  </div>
+                </div>
+                <div id="formPoseedCom">
                 <div class="row">
                   <div class="col-12">
                     <div class="header-row">Asignación de Poseedor</div>
@@ -2687,6 +2784,7 @@
                     <input type="checkbox" class="form-check-input esPropieClass" name="esPropie_CV" showForm="formPropietCom">
                     <label class="form-check-label p-1" for="esPropieID">¿El poseedor es propietario?</label>
                   </div>
+                </div>
                 </div>
                 <div id="formPropietCom">
                   <div class="row">
@@ -2733,10 +2831,26 @@
 
               </div>
 
-
-
             </div>
           </div>
+
+
+          <div class="card sol_estseg" style="margin:5px;" id="card_estseg">
+              <div class="card-header text-center color-heading bk-sure">
+                Adjuntos
+              </div>
+              <div class="card-body">
+                <label for="archivoSolicitud" class="mr-2">Documento:</label>
+                <input 
+                  type="file" 
+                  class="form-control-file" 
+                  id="archivoSolicitud" 
+                  name="archivoSolicitud"
+                  data-sin-limite-tamano
+                  data-sin-limite-extension
+                >
+              </div>
+            </div>
           ';
 
           return $html;

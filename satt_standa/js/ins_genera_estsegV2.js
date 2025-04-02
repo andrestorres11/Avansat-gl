@@ -20,6 +20,22 @@ $(document).ready(function() {
         }
     });
 
+    $(".esPoseedClass").on('click', function() {
+        console.log("Checkeado");
+        const FormAsi = $(this).attr("showForm");
+        if ($(this).is(':checked')) {
+            $("#" + FormAsi).slideUp();
+            $('#' + FormAsi + ' .form-control').each(function() {
+                $(this).removeAttr('validate');
+            });
+        } else {
+            $("#" + FormAsi).slideDown('slow');
+            $('#' + FormAsi + ' .form-control').each(function() {
+                $(this).attr('validate', true);
+            });
+        }
+    });
+
     //Inicializacion de indicadores
     cambioIndicadores($('input[name="pregu1con"]:checked'));
     cambioIndicadores($('input[name="pre_comveh"]:checked'));
@@ -42,14 +58,16 @@ $(document).ready(function() {
 
         const maxSize = 90 * 1024; // Tamaï¿½o mï¿½ximo permitido en bytes (90KB)
 
-        if (archivo.size > maxSize) {
-            alert("El tamaÃ±o del archivo es mayor a 90KB. Por favor, elige un archivo mÃ¡s pequeÃ±o.");
+        const sinLimite = $(e.target).data("sin-limite-tamano") !== undefined;
+        const sinLimiteExtension = $(e.target).data("sin-limite-extension") !== undefined;
+        if (!sinLimite && archivo.size > maxSize) {
+            alert("El tamaño del archivo es mayor a 90KB. Por favor, elige un archivo más pequeño.");
             $(e.target).val('');
-            return; // Detener la ejecuciï¿½n
+            return;
         }
-
-        if (extensiones.indexOf(extension) === -1) {
-            alert("ExtensiÃ³n NO permitida (Solo se aceptan jpg, png, jpeg.)"); 
+    
+        if (!sinLimiteExtension && !extensiones.includes(extension)) {
+            alert("Extensión NO permitida (Solo se aceptan jpg, png, jpeg)."); 
             $(e.target).val('');
         }
 

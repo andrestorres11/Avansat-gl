@@ -335,7 +335,6 @@
             $cod_tipest = $_REQUEST['tip_estudi'];
             $num_placax = $_REQUEST['num_placax_'.$cod_tipest];
             $cod_poseed = $this->registroIniPoseed();
-
             if($_REQUEST['esPropie_'.$cod_tipest]){
               $cod_propie = $this->registroIniPoseed();
             }else{
@@ -492,7 +491,7 @@
                           num_remolq, cod_marcax, cod_lineax,
                           ano_modelo, cod_colorx, cod_carroc,
                           num_config, num_chasis, num_motorx,
-                          num_soatxx, fec_vigsoa, num_lictra
+                          num_soatxx, fec_vigsoa, fec_revmecm, num_lictra
                          FROM ".BASE_DATOS.".tab_estseg_vehicu 
                             WHERE num_placax = '".$num_placax."'";
           $consulta = new Consulta($mSql, self::$conexion);
@@ -568,6 +567,8 @@
           $cod_tipest = $_REQUEST['tip_estudi'];
           $inf_conduc = NULL;
           $information = $this->formatInfoTercer($_REQUEST['num_documeCon_'.$cod_tipest],$_REQUEST['tip_documeCon_'.$cod_tipest], $_REQUEST['nom_apell1Con_'.$cod_tipest], $_REQUEST['nom_apell2Con_'.$cod_tipest], $_REQUEST['nom_personCon_'.$cod_tipest], $_REQUEST['num_telmovCon_'.$cod_tipest], $_REQUEST['dir_emailxCon_'.$cod_tipest]);
+          
+          
           if(!$this->validRegTercer($_REQUEST['num_documeCon_'.$cod_tipest])){
             $status = $this->setRegTercer($information);
           }else{
@@ -629,8 +630,19 @@
               $cod_conduc = $this->registroIniConduc();
               $cod_vehicu = NULL;
             }else{
-              $cod_vehicu = $this->registroIniVehicu();
+
+              
+              if($_REQUEST['esPoseedCon_CV']){
+                //El conductor es poseedor
+                $_REQUEST['num_documePos_'.$cod_tipest] = $_REQUEST['num_documeCon_'.$cod_tipest];
+              }
+              
+              if($_REQUEST['esPropieCon_CV']){
+                //El conductor es propietario
+                $_REQUEST['num_documePro_'.$cod_tipest] = $_REQUEST['num_documeCon_'.$cod_tipest];
+              }
               $cod_conduc = $this->registroIniConduc();
+              $cod_vehicu = $this->registroIniVehicu();
             }
 
             //Indicador de creaci�n del despachos al finalizar el estudio de seguridad.
@@ -666,6 +678,29 @@
             $resultado = $consulta->ret_arreglo();
             $cod_solici = $resultado['cod_solici'];
             
+
+
+            $ruta = "../../".BASE_DATOS."/files/adj_estseg/adjs/";
+            if (isset($_FILES['archivoSolicitud']) && $_FILES['archivoSolicitud']['error'] === UPLOAD_ERR_OK) {
+                $tmp      = $_FILES['archivoSolicitud']['tmp_name'];
+                $ext      = pathinfo($_FILES['archivoSolicitud']['name'], PATHINFO_EXTENSION);
+                $timestamp= round(microtime(true)*1000);
+                $nombreFinal = "{$cod_solici}_ini_docume_{$timestamp}.{$ext}";
+                $destino = $ruta.$nombreFinal;
+        
+                if (!is_dir($ruta)) mkdir($ruta, 0755, true);
+        
+                if (move_uploaded_file($tmp, $destino)) {
+                    $sqlUpdate = "
+                        UPDATE ".BASE_DATOS.".tab_estseg_solici
+                        SET fil_adjunt='{$nombreFinal}'
+                        WHERE cod_solici='{$cod_solici}'
+                    ";
+                    $upd = new Consulta($sqlUpdate, self::$conexion);
+                }
+            }
+
+
             //Envio correo
             $subject = 'Solicitud de estudio de seguridad No. '.$cod_solici;
             $contenido = self::armaHtmlCreacion($cod_solici,1);
@@ -951,7 +986,7 @@
                            d.cod_tercer as 'num_docume',
                            d.nom_apell1, d.nom_apell2, d.nom_person,
                            IF(f.nom_marcax IS NULL, 'NR', f.nom_marcax) as 'nom_marcax',
-                           a.fec_finsol, a.fec_venest
+                           a.fec_finsol, a.fec_venest, a.fil_adjunt
                           FROM ".BASE_DATOS.".tab_estseg_solici a
                           INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b ON a.cod_emptra = b.cod_tercer
                           INNER JOIN ".BASE_DATOS.".tab_estseg_tipoxx c ON a.cod_tipest = c.cod_tipest
@@ -999,6 +1034,21 @@
                     $bad = 'btn-warning';
                     $tex_btn = 'Pre-Aprobado';
                   }
+                  $archivo = $datos['fil_adjunt'];
+                  $viewInicialDocument = '';
+                  if($datos['fil_adjunt']!=NULL){
+                    $rutaArchivo = "../".BASE_DATOS."/files/adj_estseg/adjs/".$archivo;
+                  
+                    $viewInicialDocument = '<center>
+                      <h6>
+                        <a href="'.$rutaArchivo.'" target="_blank" class="badge badge-pill badge-success c_pointer">
+                          <i class="fa fa-eye" aria-hidden="true"></i>
+                        </a>
+                      </h6>
+                    </center>';
+                  }
+                  
+
                   $btn_estado = '<center><h6><span class="badge badge-pill badge-success c_pointer '.$bad.'">'.$tex_btn.'</span></h6></center>';
                   $arr_regist = array(
                     0 => $btn,
@@ -1006,10 +1056,11 @@
                     2 => $datos['nom_tercer'],
                     3 => $datos['nom_asegur'],
                     4 => $datos['nom_tipest'],
-                    5 => $col_identi,
-                    6 => $col_nommar,
-                    7 => $datos['fec_creaci'],
-                    8 => $this->get_format($tie_transcu),
+                    5 =>$viewInicialDocument,
+                    6 => $col_identi,
+                    7 => $col_nommar,
+                    8 => $datos['fec_creaci'],
+                    9 => $this->get_format($tie_transcu),
                   );
                   array_push($dataReturn['registrados'],(array)$arr_regist);
                 }else{
@@ -1505,7 +1556,7 @@
                 $sql='UPDATE 
                           '.BASE_DATOS.'.tab_estseg_docume 
                         SET  
-                          obs_archiv = "'.$obs_archiv.'"
+                          obs_archiv = "'.utf8_decode($obs_archiv).'"
                         WHERE 
                           cod_solici = "'.$cod_solici.'" AND
                           cod_fordoc = "'.$cod_fordoc.'"';
@@ -1514,7 +1565,7 @@
                         cod_solici, cod_fordoc, obs_archiv,
                         usr_creaci, fec_creaci
                       ) VALUES (
-                            "'.$cod_solici.'", "'.$cod_fordoc.'", "'.$obs_archiv.'",
+                            "'.$cod_solici.'", "'.$cod_fordoc.'", "'.utf8_decode($obs_archiv).'",
                             "'.self::$cod_usuari.'", NOW()
                       )';
                 
@@ -2455,13 +2506,14 @@
                       num_motorx = '".$data['num_motorx']."',
                       num_soatxx = '".$data['num_soatxx']."',
                       fec_vigsoa = '".date("Y-m-d", strtotime($data['fec_vigsoa']))."',
+                      fec_revmec = '".date("Y-m-d", strtotime($data['fec_revmec']))."',
                       num_lictra = '".$data['num_lictra']."',
                       cod_opegps = '".$data['cod_opegps']."', 
                       usr_gpsxxx = '".utf8_decode($data['usr_gpsxxx'])."', 
                       clv_gpsxxx = '".utf8_decode($data['clv_gpsxxx'])."', 
                       url_gpsxxx = '', 
                       idx_gpsxxx = '".$data['idx_gpsxxx']."',
-                      obs_opegps = '".$data['obs_opegps']."',
+                      obs_opegps = '".utf8_decode($data['obs_opegps'])."',
                       fre_opegps = '".$data['fre_opegps']."',
                       ind_precom = '".$data['pre_comveh']."', 
                       val_compar = '".$data['val_comveh']."', 
@@ -2474,11 +2526,25 @@
             $query = new Consulta($sql, self::$conexion);
             self::guardaArchivos($dataSol['cod_solici'], 1);
             
-            if($dataSol['cod_poseed'] != $dataSol['cod_propie']){
+            /*if($dataSol['cod_poseed'] != $dataSol['cod_propie']){
               $valposeed = self::procesaPoseedor($data, $dataSol);
               $valpropiet =self::procesaPropietario($data, $dataSol);
             }else{
               $valposeed = self::procesaPoseedor($data, $dataSol);
+            }*/
+
+
+            if ($dataSol['cod_poseed'] == $dataSol['cod_propie'] && $dataSol['cod_propie'] == $dataSol['cod_conduc']) {
+              
+            } else if ($dataSol['cod_poseed'] == $dataSol['cod_propie'] && $dataSol['cod_poseed'] != $dataSol['cod_conduc']) {
+                // poseedor y propietario iguales, conductor diferente
+                $valpropiet = self::procesaPropietario($data, $dataSol); // diferente
+                $valposeed = self::procesaPoseedor($data, $dataSol); // cubre poseedor y propietario
+                
+            } else {
+                // Todas diferentes: se procesan las tres por separado
+                $valpropiet = self::procesaPropietario($data, $dataSol);
+                $valposeed = self::procesaPoseedor($data, $dataSol);
             }
             
             if($query){
@@ -2681,7 +2747,7 @@
             $sql = "SELECT
                       a.num_placax, a.cod_poseed, a.cod_propie, a.num_remolq, a.ano_modelo, a.cod_colorx, a.cod_marcax, e.nom_marcax, a.cod_lineax, f.nom_lineax,
                       b.nom_colorx, a.cod_carroc, c.nom_carroc, a.num_config, d.nom_config, a.num_chasis, a.num_motorx, a.num_soatxx,
-                      a.fec_vigsoa, a.num_lictra, g.cod_operad as 'cod_opegps', g.nit_operad, g.nom_operad, a.usr_gpsxxx, a.clv_gpsxxx, a.url_gpsxxx,
+                      a.fec_vigsoa, a.fec_revmec, a.num_lictra, g.cod_operad as 'cod_opegps', g.nit_operad, g.nom_operad, a.usr_gpsxxx, a.clv_gpsxxx, a.url_gpsxxx,
                       a.idx_gpsxxx, a.obs_opegps, a.fre_opegps
                     FROM ".BASE_DATOS.".tab_estseg_vehicu a
               LEFT JOIN ".BASE_DATOS.".tab_vehige_colore b ON 
@@ -2727,6 +2793,7 @@
                 'engine_number' => $resultados['num_motorx'],
                 'soat_policy_number' => $resultados['num_soatxx'],
                 'soat_policy_date' => $resultados['fec_vigsoa'],
+                'soat_policy_date' => $resultados['fec_revmec'],
                 'licence_number' => $resultados['num_lictra'],
                 'holder' => self::armaArrayPerson($resultados['cod_poseed'], 0, $cod_solici,3),
                 'owner' => self::armaArrayPerson($resultados['cod_propie'], 0, $cod_solici,4),
