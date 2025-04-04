@@ -1620,12 +1620,12 @@ class DespachosNew
                 }
             }
 
-            if($mNovedades[$i][ind_reqres] == '1'){
+            if($mNovedades[$i][ind_reqres] == 1){
                 //Si requiere gestion por faro activa el icono de alarma.
-                if($mNovedades[$i][ind_resfar]=='1' && $mNovedades[$i][cod_soluci]=='0' ){
-                    $mSolEfecti = "<img src='../".CENTRAL."/imagenes/warning-gif.gif' width='15px' height='15px'>";
+                if($mNovedades[$i][ind_resfar]== 1 && $mNovedades[$i][cod_soluci]==0 ){
+                    $mSolEfecti = "<img src='../".DIR_APLICA_CENTRAL."/imagenes/warning-gif.gif' width='15px' height='15px'>";
                 }else if($mNovedades[$i][cod_soluci] != 0){
-                    $mSolEfecti = "<img src='../".CENTRAL."/imagenes/ver.png' width='15px' height='15px' style='cursor: pointer;' onclick='showInfoSolucion(\"".$mNovedades[$i][cod_consec]."\", \"".$mNovedades[$i][tip_noveda]."\")'>";
+                    $mSolEfecti = "<img src='../".DIR_APLICA_CENTRAL."/imagenes/ver.png' width='15px' height='15px' style='cursor: pointer;' onclick='showInfoSolucion(\"".$mNovedades[$i][cod_consec]."\", \"".$mNovedades[$i][tip_noveda]."\")'>";
                 }
                
             }
@@ -8967,15 +8967,15 @@ class DespachosNew
 		
 		$caracteres = array(
             // Vocales acentuadas
-            'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'A', 'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a',
-            'É' => 'E', 'È' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
-            'Í' => 'I', 'Ì' => 'I', 'Î' => 'I', 'Ï' => 'I', 'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
-            'Ó' => 'O', 'Ò' => 'O', 'Ô' => 'O', 'Ö' => 'O', 'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ö' => 'o',
-            'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U', 'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+            '?' => 'A', '?' => 'A', '?' => 'A', '?' => 'A', '?' => 'a', '?' => 'a', '?' => 'a', '?' => 'a',
+            '?' => 'E', '?' => 'E', '?' => 'E', '?' => 'E', '?' => 'e', '?' => 'e', '?' => 'e', '?' => 'e',
+            '?' => 'I', '?' => 'I', '?' => 'I', '?' => 'I', '?' => 'i', '?' => 'i', '?' => 'i', '?' => 'i',
+            '?' => 'O', '?' => 'O', '?' => 'O', '?' => 'O', '?' => 'o', '?' => 'o', '?' => 'o', '?' => 'o',
+            '?' => 'U', '?' => 'U', '?' => 'U', '?' => 'U', '?' => 'u', '?' => 'u', '?' => 'u', '?' => 'u',
             // Otros caracteres especiales
-            'Ñ' => 'N', 'ñ' => 'n', 'Ç' => 'C', 'ç' => 'c', 'ß' => 'ss',
+            '?' => 'N', '?' => 'n', '?' => 'C', '?' => 'c', '?' => 'ss',
             // Caracteres adicionales
-            'Ý' => 'Y', 'ý' => 'y', 'ÿ' => 'y', '*' => '',
+            '?' => 'Y', '?' => 'y', '?' => 'y', '*' => '',
         );
     
         $cadena = strtr($cadena, $caracteres);

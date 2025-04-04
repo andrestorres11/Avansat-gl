@@ -2673,6 +2673,7 @@ select:disabled {
                                     "cod_propie" => "Documento", 
                                     "num_propie_telmov" => "Celular",
                                     "num_propie" => "Telefono", 
+                                    "" => "",
                                     );
 
         $mTittle[2] = array( "id" => "dat_comple", "tittle" => "DATOS COMPLEMENTARIOS DEL DESPACHO");
@@ -2896,6 +2897,7 @@ select:disabled {
                         $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
+                $mHtml->SetBody('</br></br>');
             }
         }
 
