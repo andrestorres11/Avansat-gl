@@ -480,6 +480,175 @@ class DespachosNew
 
     }
 
+    /*! \fn: Encabezado
+     *  \brief: Encabezado del despacho
+     *  \author: Ing. Fabian Salinas
+     *  \date: 03/09/2010
+     *  \date modified: dia/mes/a?o
+     *  \param: mNumDespac
+     *  \param: mDataUsuar
+     *  \param: mIndFinali
+     *  \param: mNomExp
+     *  \return:
+     */
+    function Encabezado($mNumDespac, $mDataUsuar, $mIndFinali = 0, $mRuta = NULL, $mReturn = false)
+    {
+        self::IncludeJsStyle();
+
+        echo '<style>
+                .ocultarTR{
+                  display:none
+                }
+              </style>
+             ';
+
+        $mObs = array('NA', 'DESCONOCIDA');
+        $mView = self::getView('jso_encabe');
+
+        #<Verifica Viaje Consolidado>
+            $mNumDesOri = $mNumDespac; #Guarda el Despacho Original
+            $mIndConsol = self::verifyConsol( $mNumDespac );
+
+            if( $mIndConsol )
+            {
+                $mNumConsol = $this -> getViajesConsol( $mNumDespac ); #Trayendo los despachos consolidados para este despacho
+                $mNumDespac = $mNumConsol;
+                $mNumConsol = explode(",", $mNumConsol);
+
+                //Codigo que agrega un link a los numeros de consolidados
+                for( $i = 0; $i < sizeof($mNumConsol); $i++ )
+                    $mNumConsol[$i] = '<a href="index.php?cod_servic=3302&window=central&despac='.$mNumConsol[$i].'&opcion=1" target="_blank" style="color:green;">'.$mNumConsol[$i].'</a>';
+
+                $mNumConsol = implode(", ", $mNumConsol);
+                $mStrDespac = $mNumDesOri . ' (Consolidado '.$mNumConsol.')'; #String Despacho
+                $mIndConsol = 1;
+            }
+            else
+            {
+                $mIndConhij = self::verifyConsolHijo( $mNumDespac );
+
+                if( $mIndConhij )
+                {
+                    $mNumDesPad = self::getDespacPadre( $mNumDespac ); # Numero Despacho Padre
+                    $mLink = '<a href="index.php?cod_servic=3302&window=central&despac='.$mNumDesPad.'&opcion=1" target="_blank">'.$mNumDesPad.'</a>';
+                    $mStrDespac = $mNumDespac." Consolidado a: ".$mLink; #String Despacho
+                } 
+                else
+                    $mStrDespac = $mNumDespac; #String Despacho
+
+                $mIndConsol = 0;
+            }
+        #</Verifica Viaje Consolidado>
+
+        #mData informaci?n de despacho
+        $mData = self::getDataEncabezado( $mNumDesOri, $mNumDespac, $mIndConsol, $mObs );
+        $mData['num_despac'] = $mStrDespac; 
+        #<Arma HTML>
+            $mHtml = new Formlib(2);
+
+            $mHtml->Table('tr');
+                $mHtml->SetBody("<td>");
+                    $mHtml->OpenDiv("id:contentID; class:contentAccordion ancho");
+
+                        #Datos Despacho
+                        $mHtml->SetBody( self::divDatosDespac( $mNumDesOri, $mData, $mView) );
+
+                        $mSelect = "SELECT a.obs_despac, b.obs_medcom, b.obs_proesp,
+                                           a.obs_llegad, a.fec_salida, b.cod_rutasx, 
+                                           a.cod_tipdes, b.cod_transp, a.cod_tipdes,a.num_despac
+                                      FROM " . BASE_DATOS . ".tab_despac_despac a 
+                                INNER JOIN " . BASE_DATOS . ".tab_despac_vehige b 
+                                        ON a.num_despac = b.num_despac 
+                                     WHERE a.num_despac = " . $mNumDesOri . " ";
+                            
+                        $consulta = new Consulta( $mSelect, $this -> conexion );
+                        $_DESPAC = $consulta -> ret_matrix('a');
+                        
+                        $mViewPlarut = self::getView('jso_plarut');
+                        #< 4: OBSERVACIONES GENERALES >
+                        if( $mViewPlarut->obs_genera->ind_visibl == 1 ){
+                            $mHtml->SetBody( self::divObsGenerales( $mNumDesOri, $_DESPAC) );
+
+                        }
+
+                        #Grilla Cargue
+                        if( $mView->gri_cargax->ind_visibl == 1 ){
+                            $mGrillaCargue = self::divGrillaCargue( $mNumDespac, $mNumDesOri );
+                            if( $mGrillaCargue != false )
+                                $mHtml->SetBody( $mGrillaCargue );
+                        }
+
+                        #Remesas
+                        if( $mView->gri_descar->ind_visibl == 1 ){
+                            $mRemesas = self::divRemesas( $mNumDesOri );
+                            if( $mRemesas != false )
+                                $mHtml->SetBody( $mRemesas );
+                        }
+
+                        #Estado del servicio
+                        if( $mView->est_servic->ind_visibl == 1 ){
+                            $mEstadoServ = self::divEstadoServicio( $mNumDesOri );
+                            if( $mEstadoServ != false )
+                                $mHtml->SetBody( $mEstadoServ );
+                        }
+
+                        #Grilla Descargue
+                        if( $mView->gri_descar->ind_visibl == 1 ){
+                            $mGrillaDescar = self::divGrillaDescar( $mNumDesOri );
+                            if( $mGrillaDescar != false )
+                                $mHtml->SetBody( $mGrillaDescar );
+                        }
+
+                        #Mapa Localizacion novedades GPS
+                        if( $mView->sec_mapaxx->ind_visibl == 1 ){
+                            $mValidaMapa = self::validaDivMapas($mNumDespac);
+
+                            if( $mValidaMapa['ind_estado'] == 1){
+                                $mapasHtml = self::divMapas($mValidaMapa['data'], $mData);
+                                $mHtml->SetBody( $mapasHtml );
+                            }
+                        }
+
+                        #Bitacora de cambios
+                        if( $mView->bit_cambio->ind_visibl == 1 ){
+                            $mBitacoCambio = self::divBitacoCambio();
+                            if( $mBitacoCambio != false )
+                                $mHtml->SetBody( $mBitacoCambio );
+                        }
+
+                        #Fotos
+                        if( $mView->sec_fotosx->ind_visibl == 1 ){
+                            $mFotos = self::divFotos( $mNumDesOri );
+                            if( $mFotos != false )
+                                $mHtml->SetBody( $mFotos );
+                        }
+                        
+                        #Plan de Ruta
+                        if( $mRuta ){
+                            $mHtml->SetBody( self::PlanDeRuta( $mNumDesOri, $mRuta['link'], $mRuta['finali'], $mRuta['opcurban'], $mDataUsuar, $mRuta['lleg'], $mRuta['tie_ultnov'], $mData['aux_placax'], $mData['cod_agenci']));
+                        }
+
+                    $mHtml->CloseDiv();
+                $mHtml->CloseRow('td');
+
+                $mHtml->Row('td');
+                $mHtml->Hidden( array("name"=>"based", "id"=>"basedID", "value"=>BASE_DATOS) );
+                $mHtml->Hidden( array("name"=>"dir_aplica", "id"=>"dir_aplicaID", "value"=>DIR_APLICA_CENTRAL) );
+                $mHtml->Hidden( array("name"=>"num_despac", "id"=>"num_despacID", "value"=>$mNumDesOri) );
+                $mHtml->Hidden( array("name"=>"cod_servic", "id"=>"cod_servicID", "value"=>$_REQUEST['cod_servic']) );
+                $mHtml->SetBody('</td></tr>');
+
+              $mHtml->Row('td');
+                $mHtml->SetBody( self::scriptEncabezado() );  
+              $mHtml->SetBody('</td>');
+            $mHtml->CloseTable('tr');
+        #</Arma HTML>
+
+        if( $mReturn == true )
+            return $mHtml->MakeHtml();
+        else
+            echo $mHtml->MakeHtml();
+    }
 
     /*! \fn: sanear_string
      *  \brief: quita acentos del string enviado
@@ -1564,8 +1733,6 @@ class DespachosNew
         for ($i = $mCanNov; $i >=0; $i--)
         {
             $mSolEfecti = "";
-            $mBtnOpePrev = "";
-
             if( $mViewUsu->edi_noveda->ind_visibl == 1 && $mNovedades[$i][tab_origen] == 1 )
             {
                 $mLinkUpd = '
@@ -1582,29 +1749,6 @@ class DespachosNew
                 }
             }
 
-            $ori = $mNovedades[$i][tab_origen] == 1 ? 'NC' : 'PC';
-            if($mNovedades[$i][cod_noveda] == 24)
-            {
-                $cod_consec = $mNovedades[$i][cod_consec]; 
-
-                if(self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, true)){
-                    $informaOpePrev = self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, false);
-                    $mBtnOpePrev = '
-                    <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
-                    onclick="openPDF(\'' . $informaOpePrev[0]['cod_consec'] . '\')">
-                    [Ver O.P.]
-                    </spam>';
-                }else{
-                    $mBtnOpePrev = '
-                    <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
-                    onclick="showFormOperativoPreventivo(\''.$ori.'\', \''.$cod_consec.'\')">
-                    [Reg. O.P.]
-                    </spam>';
-                }
-
-            }
-
-
             if($mNovedades[$i][cod_noveda] != 342)
             {
                 $consecutivoProtocolo = $this -> verifyNoveda($mNovedades[$i][cod_noveda], $mNumDespac, $mNovedades[$i]['fec_noveda']);   
@@ -1619,17 +1763,6 @@ class DespachosNew
                         $mSolEfecti = "<label>SI</label>";
                 }
             }
-
-            if($mNovedades[$i][ind_reqres] == 1){
-                //Si requiere gestion por faro activa el icono de alarma.
-                if($mNovedades[$i][ind_resfar]== 1 && $mNovedades[$i][cod_soluci]==0 ){
-                    $mSolEfecti = "<img src='../".DIR_APLICA_CENTRAL."/imagenes/warning-gif.gif' width='15px' height='15px'>";
-                }else if($mNovedades[$i][cod_soluci] != 0){
-                    $mSolEfecti = "<img src='../".DIR_APLICA_CENTRAL."/imagenes/ver.png' width='15px' height='15px' style='cursor: pointer;' onclick='showInfoSolucion(\"".$mNovedades[$i][cod_consec]."\", \"".$mNovedades[$i][tip_noveda]."\")'>";
-                }
-               
-            }
-
 
             $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
             if( $mUpdated[0]){
@@ -1656,7 +1789,10 @@ class DespachosNew
                 $mData[$i]['als_creaci'] = htmlentities(self::eliminarAcentos(self::getAlias($mNovedades[$i][usr_creaci])), ENT_COMPAT, 'ISO-8859-1', true );
             }
 
-            $mData[$i]['lin_action'] = self::eliminarAcentos($mBtnOpePrev)."".self::eliminarAcentos($mLinkUpd);
+            if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
+                $mData[$i]['lin_action'] =  self::eliminarAcentos($mLinkUpd);
+            }
+
             $mData[$i]['sol_efecti'] = self::eliminarAcentos($mSolEfecti);
             
 
@@ -1678,6 +1814,86 @@ class DespachosNew
         return array('results' => $mData, 'totalRegistros' => $results['totalRegistros'],  'totalFiltro' => $results['totalFiltro']);
     }
 
+    /*! \fn: divNotasContro
+     *  \brief: Crea DIV de la seccion: Informacion de Notas Controlador
+     *  \author: Ing. Fabian Salinas
+     *  \date: 14/09/2015
+     *  \date modified: dia/mes/a?o
+     *  \param: mNumDespac  Integer  Numero del Despacho
+     *  \param: _DESPAC     Matriz   Informacion del Despacho
+     *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
+     *  \param: mView       Integer  1 Visible Opcion de Auditar
+     *  \param: mViewNotCon Array    Opciones de visualizacion de la seccion notas controlador
+     *  \return: HTML
+     */
+    private function divNotasContro( $mNumDespac, $_DESPAC, $_RUTASX, $mView, $mViewNotCon )
+    {
+
+        $mViewUsu = self::getViewUsu();
+        $viewAlias = self::getView('jso_plarut');
+        $watchAlias = $viewAlias->inf_planru->sub->ali_usuari;
+
+        include_once("../".DIR_APLICA_CENTRAL."/lib/pagination/init.inc");
+
+        $options2 .= '
+                    <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_2.cardOpcion(1)">
+                        <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/phone-call.png" width="20" class="icons">
+                        <br>
+                        <small style="font-size: xx-small;">Seguimiento</small>
+                    </button>';
+                    
+        $options2 .= '
+                    <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_2.cardOpcion(2)">
+                        <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/gps.png" width="20" class="icons">
+                        <br>
+                        <small style="font-size: xx-small;">Nov. Gps</small>
+                    </button>';
+
+        $options2 .= '
+                    <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_2.cardOpcion(3)">
+                        <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/iphone.png" width="20" class="icons">
+                        <br>
+                        <small style="font-size: xx-small;">Movil</small>
+                    </button>';
+
+        $options2 .= '
+                    <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_2.cardOpcion(4)">
+                        <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/prohibition.png" width="20" class="icons">
+                        <br>
+                        <small style="font-size: xx-small;">Todos</small>
+                    </button>';
+
+        
+        $headers = array("Sitio de Seguimiento", "Novedad", "Observaci&oacute;n", "Fecha Novedad", "Fecha Sistema");
+        
+        if($mViewNotCon->sub->usr_creaci == '1') {
+            $headers[] = "Usuario";
+        }
+        if($watchAlias == 1) {
+            $headers[] = "Usuario";
+        }
+
+        if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
+            $headers[] = "Accion";
+        }
+
+        $headers[] = "Solucion Efectiva";
+
+        if( $viewAlias->ind_novnem->ind_visibl == 1 ){
+            $headers[] = "Solucion a NEM";
+        }
+
+        $params = array(
+            'option' => 'notasControDespac',
+            'num_despac' => $mNumDespac,
+        );
+
+        $pagination = new Pagination($this->conexion);
+
+        
+        $url = "../".DIR_APLICA_CENTRAL."/despac/ajax_despac_despac.php";
+        return $pagination->view(2,$headers,$url,$params,'INFORMACION DE NOTAS CONTROLADOR',NULL,0,$options2,12,1,25);
+    }
 
     /*! \fn: checkNovedaUpd
      *  \brief: revisa si la novedad fue modificada
@@ -1862,6 +2078,86 @@ class DespachosNew
         return false;
     }
 
+    /*! \fn: divObsGenerales
+     *  \brief: Crea DIV de la seccion: INFORMACION DEL PLAN DE RUTA
+     *  \author: Ing. Fabian Salinas
+     *  \date: 14/09/2015
+     *  \date modified: dia/mes/a?o
+     *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
+     *  \param: mIndConsol  Boolean  Indicador viaje consolidado
+     *  \param: mView       Array    Permisos de visibilidad en la seccion plan de ruta
+     *  \return: HTML
+     */
+    private function divPlanRuta( $mDespac, $mIndConsol = false, $mView )
+    {
+        $codtran=$this->cod_transp_tercero;
+        $queryseg="SELECT a.num_consec, a.cod_transp, a.ubi_seguim,
+                          a.ind_estado 
+                    FROM ".BASE_DATOS.".tab_transp_tipser a
+                    WHERE a.cod_transp LIKE '". $codtran."'
+                    ORDER BY a.num_consec DESC LIMIT 1";
+                    
+        $mConsultseg = new Consulta($queryseg, $this->conexion);
+        $codseg = $mConsultseg->ret_arreglo();
+        $codseg = $codseg[2] ;
+
+        $viewAlias = self::getView('jso_plarut');
+        $watchAlias = $viewAlias->inf_planru->sub->ali_usuari;
+
+        include_once("../".DIR_APLICA_CENTRAL."/lib/pagination/init.inc");
+
+        $options2 .= '
+                    <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_1.cardOpcion(1)">
+                        <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/phone-call.png" width="20" class="icons">
+                        <br>
+                        <small style="font-size: xx-small;">Seguimiento</small>
+                    </button>';
+                    
+        $options2 .= '
+                    <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_1.cardOpcion(2)">
+                        <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/gps.png" width="20" class="icons">
+                        <br>
+                        <small style="font-size: xx-small;">Nov. Gps</small>
+                    </button>';
+
+        $options2 .= '
+                    <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_1.cardOpcion(3)">
+                        <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/iphone.png" width="20" class="icons">
+                        <br>
+                        <small style="font-size: xx-small;">Movil</small>
+                    </button>';
+
+        $options2 .= '
+                    <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_1.cardOpcion(4)">
+                        <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/prohibition.png" width="20" class="icons">
+                        <br>
+                        <small style="font-size: xx-small;">Todos</small>
+                    </button>';
+
+        if(($codseg==1) && (BASE_DATOS=='satt_faro')){
+            $headers = array("Sitio de Seguimiento", "Ubicacion de Seguimiento", "Hora/Fecha Programada", "Hora/Fecha Planeada", "Hora/Fecha Sistema", "Tiempo", "Novedad");
+        }else{
+            $headers = array("Sitio de Seguimiento", "Hora/Fecha Programada", "Hora/Fecha Planeada", "Hora/Fecha Sistema", "Tiempo", "Novedad");
+        }
+        
+        if($mView->sub->usr_creaci == 1) {
+            $headers[] = "Usuario";
+        }
+        if($watchAlias == 1) {
+            $headers[] = "Usuario";
+        }
+
+        $params = array(
+            'option' => 'controDespac',
+            'num_despac' => $mDespac,
+        );
+
+        $pagination = new Pagination($this->conexion);
+
+        
+        $url = "../".DIR_APLICA_CENTRAL."/despac/ajax_despac_despac.php";
+        return $pagination->view(1,$headers,$url,$params,'INFORMACION DEL PLAN DE RUTA',NULL,0,$options2,12,1,25);
+    }
 
     /*! \fn: divCrossDoking
      *  \brief: Crea el Div para Cross Doking
@@ -2508,6 +2804,174 @@ class DespachosNew
         return $_RUTASX;
     }
 
+    /*! \fn: PlanDeRuta
+     *  \brief: Plan de ruta
+     *  \author: Ing. Fabian Salinas
+     *  \date: 29/05/2015
+     *  \date modified: dia/mes/a?o
+     *  \param: 
+     *  \param: 
+     *  \return: 
+     */
+    function PlanDeRuta( $despac, $link = 0, $finali = 0, $opcurban = 0, $datos_usuario = NULL, $lleg = NULL, $tie_ultnov = NULL, $placa, $cod_agenci)
+    {
+      #< 0. PRE >
+        self::IncludeJsStyle();
+        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/PDF.js\"></script>\n";
+        
+        echo "<style>
+                .D8DFF9{
+                  background: #D8DFF9;
+                }
+                .D8DFEA{
+                  background: #D8DFEA;
+                }
+                .cellTitu{
+                  border-bottom:1px solid #999;
+                  background-color:#F5F5F5;
+                  background-image:url('../imagenes/backg_01.gif');
+                  color:#333;
+                  font-weight:bold;
+                  padding:3px 10px;
+                }
+                .cellPar{
+                  padding-left: 10px;
+                  padding-right: 10px;
+                  border-bottom: 1px solid #EFEFEF;
+                  border-right: 1px solid #EFEFEF;
+                  color:#0B3B17;
+                  background:#E6E6E6;
+                }
+                .cellImpar{
+                  padding-left: 10px;
+                  padding-right: 10px;
+                  border-bottom: 1px solid #EFEFEF;
+                  border-right: 1px solid #EFEFEF;
+                  color:#0B3B17;
+                  background:#E0F8E0;
+                }
+                .cell{
+                  padding-left: 10px;
+                  padding-right: 10px;
+                  border-bottom: 1px solid #EFEFEF;
+                  border-right: 1px solid #EFEFEF;
+                  background-color: #ffffff;
+                }
+                .celda_info2 {
+                  background-color: #ffffff;
+                  border-bottom: 1px solid #efefef;
+                  border-right: 1px solid #efefef;
+                  color: #000000;
+                  padding-left: 10px;
+                  padding-right: 10px;
+                }
+              </style>";
+
+        $mView = self::getView('jso_plarut');
+        /******* FILTROS INICIALES *******/
+        $aux = "href";
+
+        if ( $_SESSION[datos_usuario][cod_perfil] == "" )
+        {
+          $filtro = new Aplica_Filtro_Usuari( $this -> cod_aplica, COD_FILTRO_CLIENT, $_SESSION[datos_usuario][cod_usuari] );
+          if ($filtro -> listar( $this -> conexion ) )
+          {
+            $datos_filtro = $filtro -> retornar();
+            $aux = "name";
+          }
+        }
+        else
+        {
+          $filtro = new Aplica_Filtro_Perfil( $this -> cod_aplica, COD_FILTRO_CLIENT, $_SESSION[datos_usuario][cod_usuari] );
+          if ( $filtro -> listar( $this -> conexion ) )
+          {
+            $datos_filtro = $filtro -> retornar();
+            $aux = "name";
+          }
+        }
+
+        /*********************************/
+
+        $mSelect = "SELECT a.obs_despac, b.obs_medcom, b.obs_proesp,
+                           a.obs_llegad, a.fec_salida, b.cod_rutasx, 
+                           a.cod_tipdes, b.cod_transp, a.cod_tipdes,a.num_despac
+                      FROM " . BASE_DATOS . ".tab_despac_despac a 
+                INNER JOIN " . BASE_DATOS . ".tab_despac_vehige b 
+                        ON a.num_despac = b.num_despac 
+                     WHERE a.num_despac = " . $despac . " ";
+        $consulta = new Consulta( $mSelect, $this -> conexion );
+        $_DESPAC = $consulta -> ret_matrix('a'); 
+
+        $mSelect = "SELECT cod_tipser
+                      FROM " . BASE_DATOS . ".tab_transp_tipser  
+                     WHERE cod_transp = '".$_DESPAC[0][cod_transp]."' 
+                       AND num_consec = ( SELECT MAX(num_consec) 
+                                            FROM ".BASE_DATOS.".tab_transp_tipser
+                                           WHERE cod_transp = '".$_DESPAC[0][cod_transp]."'
+                                        )";
+        $consulta = new Consulta( $mSelect, $this -> conexion );
+        $mTipSer = $consulta -> ret_arreglo();
+
+        $indConsol = $this -> verifyConsolHijo( $despac );
+        //$_RUTASX = DespachosNew::getRutaDespac( $despac, $opcurban, $tie_ultnov, $mTipSer[0], $aux );
+        //var_dump($_RUTASX);
+      #</ 0. PRE >
+
+      $mHtml = new Formlib(2);
+
+      #< 1: INFORMACION DEL PLAN DE RUTA >
+      if( $mView->inf_planru->ind_visibl == 1 )
+        $mHtml->SetBody( self::divPlanRuta( $despac, $indConsol, $mView->inf_planru) );
+
+      #< 1: INFORMACION DE LOS CONTACTOS >
+      $mViewContac = self::getView('jso_contac');
+      if( $mViewContac->dat_contac->ind_visibl == 1 ){
+        $mHtml->SetBody( self::divContacto( $placa, $_DESPAC[0][cod_transp], $_DESPAC[0][num_despac], $cod_agenci));
+      }
+
+       #< 1: INFORMACION PARTICULARIDAD >
+       $mViewPartic = self::getView('jso_partic');
+       if( $mViewPartic->dat_partic->ind_visibl == 1 ){
+         $mHtml->SetBody( self::divPartic( $_DESPAC[0][cod_transp]));
+       }
+
+
+       
+       #< 3: INFORMACION DE NOTAS DE CONTROLADOR >
+       if( $mView->inf_notcon->ind_visibl == 1 )
+       $mHtml->SetBody( self::divNotasContro( $despac, $_DESPAC, $_RUTASX, $mView->pop_califi->ind_visibl, $mView->inf_notcon) );
+       #< 2: LLEGADA >
+       if ( $lleg == 1 &&  $mView->inf_llegad->ind_visibl == 1 ){
+         $mLlegada = self::divLlegada( $indConsol );
+         if( $mLlegada != false )
+           $mHtml->SetBody( $mLlegada );
+       }
+
+       #< 3.5: TRAZABILIDAD CROSS DOKING >
+       if( $mView->inf_crodok->ind_visibl == 1 && in_array($_DESPAC[0]['cod_tipdes'],array(5,6)) ){
+        $mCross = self::divCrossDoking();
+        if( $mCross != false )
+          $mHtml->SetBody( $mCross );
+      }
+
+      #< 5: IMAGENES ADJUNTAS AL DESPACHO >
+      if( $mView->img_adjunt->ind_visibl == 1 ){
+        $mImgDespac = self::divImgDespac( $despac );
+        if( $mImgDespac != false )
+          $mHtml->SetBody( $mImgDespac );
+      }
+
+      $mHtml->Hidden( array("name"=>"central", "id"=>"central", "value"=> DIR_APLICA_CENTRAL));
+      $mHtml->Hidden( array("name"=>"cod_servic", "id"=>"cod_servic", "value"=> $this->servic));
+      $mHtml->Hidden( array("name"=>"cod_aplica", "id"=>"cod_aplica", "value"=> $this->cod_aplica));
+      $mHtml->Hidden( array("name"=>"bd_aplica", "id"=>"bd_aplica", "value"=> BASE_DATOS));
+      $mHtml->Hidden( array("name"=>"despac", "id"=>"despac", "value"=> $despac));
+      $mHtml->Hidden( array("name"=>"cross_doking", "id"=>"cross_dokingID", "value"=> "0"));
+      
+      return $mHtml->MakeHtml();
+      
+    }
+
     /*! \fn: verifyNoveda
      *  \brief: verifica su una novedad de un despacho tiene protocolos asignados
      *  \author: Ing. Miguel Romero "mamafoka" 
@@ -2542,7 +3006,6 @@ class DespachosNew
     {
         @include_once( "../".DIR_APLICA_CENTRAL."/lib/general/functions.inc" );
         $mRutax = getControDespac( $this -> conexion, $mDespac ); #Script = /satt_standa/lib/general/functions.inc
-        
 
         #Ultimo PC con novedad
         $mUlPCNov = getNovedadesDespac( $this -> conexion, $mDespac, 2 ); #Script = /satt_standa/lib/general/functions.inc
@@ -2556,9 +3019,8 @@ class DespachosNew
         {
             if( $mUlPCNov[cod_contro] != '' )
             {
-                if( $mUlPCNov[cod_contro] == $mRutax[$i][cod_contro] ){
+                if( $mUlPCNov[cod_contro] == $mRutax[$i][cod_contro] )
                     $mPcActive++;
-                }
 
                 if( $mPcActive == 0 ){
                     $pcNotInRoute[] = $mRutax[$i][cod_contro];
@@ -2570,6 +3032,7 @@ class DespachosNew
         }
 
         $orderInRoute = substr($orderInRoute, 0, -1);
+
 
         $mSql = "SELECT * FROM  ( 
             (
@@ -2969,10 +3432,10 @@ class DespachosNew
                 {#Con novedad en sitio
                     $u++;
                 }
-                /*if( $array[$i][cod_tpcont] != '4' && $filtro == 1)
+                if( $array[$i][cod_tpcont] != '4' && $filtro == 1)
                 {#tipo de puesto de control
                     $u++;
-                }*/
+                }
                 
             }
         }
@@ -2995,7 +3458,6 @@ class DespachosNew
 
 
       $mRutax = $results['results'];
-      //var_dump($mRutax);
       $mTrans = DespachosNew::getTranspDespac($mDespac);
 
       
@@ -3013,11 +3475,10 @@ class DespachosNew
       $codseg = $codseg[2] ;
 
       $j=0;#Consecutivo
-      
+      $mBandera=0;
 
       if( $mUlPCNov[cod_contro] != '' )
       {
-        $mBandera=0;
 
         foreach ($pcNotInRoute as $key => $value)
         {
@@ -3026,21 +3487,13 @@ class DespachosNew
                 unset($pcNotInRoute[$key]);
             }
         }
-
-        $mUltKey = 0;
-        //sacar ultimo valor donde paso la ruta
-        for ($u=0; $u < sizeof($mRutax); $u++) 
-        {
-            if ($mRutax[$u]['cod_contro'] == $mUlPCNov[cod_contro]) {
-                $mUltKey = $u;
-            }
-        }
-        
-        
+       
         #Recorre los puestos control data
         for ($i=0; $i < sizeof($mRutax); $i++) 
         {
-            
+            if( $mUlPCNov[cod_contro] == $mRutax[$i][cod_contro] )
+                $mBandera++;
+
             if( $mRutax[$i][tip_sitio] == 'A')
             {#Con novedad antes de sitio
 
@@ -3092,10 +3545,6 @@ class DespachosNew
                 $mSitio = '<span style="color:#FF564D">'.$mRutax[$i][nom_contro].'</span>';
                 $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $mNoR, $mNoR, $mNoR, $mNoR, 'D8DFEA', $mNoR, $mNoR, '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx]);
                 $j++;
-            }
-
-            if( $i == $mUltKey){
-                $mBandera++;
             }
 
         }
@@ -3546,7 +3995,7 @@ class DespachosNew
     private function linkNomSitio( $mNumDespac, $mNomSitio, $mCodContro, $mColor, $mCodTransp, $mIndVirtua, $tie_ultnov, $opcurban, $aux, $mTipSer = NULL )
     {
       $aux = ( strtolower( $_SESSION[datos_usuario][cod_usuari] ) == 'alogistica' || ( $mIndVirtua == 1 && $mTipSer == '' && $_SESSION[datos_usuario][cod_perfil] == '7' ) ) ? "name" : $aux ;
-      $mSpam  = '<span style="color:#'.$mColor.';">'.$mNomSitio.'</span>';
+      $mSpam  = '<span style="color:#1c02f5;">'.$mNomSitio.'</span>';
       $mLink  = '<a target="centralFrame" ';
       $mLink .= $aux.'="index.php?cod_servic='.$this -> servic.'&window=central&tie_ultnov='.$tie_ultnov;
       $mLink .= '&despac='.$mNumDespac.'&opcion=2&codpc='.$mCodContro.'&pc='.$mNomSitio;
@@ -3757,8 +4206,7 @@ class DespachosNew
                                     b.cod_etapax, f.ind_limpio,
                                     f.ind_manale as 'ind_manala',
                                     a.val_longit, a.val_latitu, g.cod_tipoxx,
-                                    a.ind_enviad, f.ind_reqres, f.ind_resfar,
-                                    f.ind_rescli, a.cod_soluci, 'NC' as 'tip_noveda'
+                                    a.ind_enviad
                             FROM ".BASE_DATOS.".tab_despac_contro a
                         INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                                 ON a.cod_noveda = b.cod_noveda
@@ -3790,9 +4238,7 @@ class DespachosNew
                                     b.cod_etapax, e.ind_limpio,
                                     e.ind_manale as 'ind_manala',
                                     '' AS val_longit, '' AS val_latitu,
-                                    f.cod_tipoxx, a.ind_enviad, e.ind_reqres,
-                                    e.ind_resfar, e.ind_rescli, a.cod_soluci, 
-                                    'PC' as 'tip_noveda'
+                                    f.cod_tipoxx, a.ind_enviad
                             FROM ".BASE_DATOS.".tab_despac_noveda a
                         INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                                 ON a.cod_noveda = b.cod_noveda
@@ -3822,9 +4268,7 @@ class DespachosNew
                                     c.cod_etapax, '0' AS ind_limpio,
                                     f.ind_manale as 'ind_manala',
                                     '' AS val_longit, '' AS val_latitu,
-                                    g.cod_tipoxx, '0' as ind_enviad,
-                                    f.ind_reqres, f.ind_resfar,
-                                    f.ind_rescli, 0 as 'cod_soluci', '' as 'tip_noveda'
+                                    g.cod_tipoxx, '0' as ind_enviad
                             FROM ".BASE_DATOS.".tab_recome_asigna a
                         INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                                 ON a.cod_contro = b.cod_contro
@@ -3836,7 +4280,7 @@ class DespachosNew
                                 ON a.num_despac = e.num_despac
                         LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                                 ON c.cod_noveda = f.cod_noveda AND
-                                    f.cod_transp = e.cod_transp 
+                                    e.cod_transp = e.cod_transp 
                         LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
                                 ON c.cod_tipoxx = g.cod_tipoxx
                             WHERE a.num_despac = '{$mNumDespac}'
@@ -3857,9 +4301,7 @@ class DespachosNew
                                     c.cod_etapax, '1' AS ind_limpio,
                                     f.ind_manale as 'ind_manala',
                                     '' AS val_longit, '' AS val_latitu,
-                                    g.cod_tipoxx, '0' as ind_enviad,
-                                    f.ind_reqres, f.ind_resfar,
-                                    f.ind_rescli, 0 as 'cod_soluci', '' as 'tip_noveda'
+                                    g.cod_tipoxx, '0' as ind_enviad
                             FROM ".BASE_DATOS.".tab_recome_asigna a
                         INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                                 ON a.cod_contro = b.cod_contro
@@ -3871,7 +4313,7 @@ class DespachosNew
                                 ON a.num_despac = e.num_despac
                         LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
                                 ON c.cod_noveda = f.cod_noveda AND
-                                    f.cod_transp = e.cod_transp 
+                                    e.cod_transp = e.cod_transp 
                         LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
                                 ON c.cod_tipoxx = g.cod_tipoxx
                             WHERE a.num_despac = '{$mNumDespac}'
@@ -8967,15 +9409,15 @@ class DespachosNew
 		
 		$caracteres = array(
             // Vocales acentuadas
-            '?' => 'A', '?' => 'A', '?' => 'A', '?' => 'A', '?' => 'a', '?' => 'a', '?' => 'a', '?' => 'a',
-            '?' => 'E', '?' => 'E', '?' => 'E', '?' => 'E', '?' => 'e', '?' => 'e', '?' => 'e', '?' => 'e',
-            '?' => 'I', '?' => 'I', '?' => 'I', '?' => 'I', '?' => 'i', '?' => 'i', '?' => 'i', '?' => 'i',
-            '?' => 'O', '?' => 'O', '?' => 'O', '?' => 'O', '?' => 'o', '?' => 'o', '?' => 'o', '?' => 'o',
-            '?' => 'U', '?' => 'U', '?' => 'U', '?' => 'U', '?' => 'u', '?' => 'u', '?' => 'u', '?' => 'u',
+            'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'A', 'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a',
+            'É' => 'E', 'È' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'Í' => 'I', 'Ì' => 'I', 'Î' => 'I', 'Ï' => 'I', 'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
+            'Ó' => 'O', 'Ò' => 'O', 'Ô' => 'O', 'Ö' => 'O', 'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ö' => 'o',
+            'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U', 'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
             // Otros caracteres especiales
-            '?' => 'N', '?' => 'n', '?' => 'C', '?' => 'c', '?' => 'ss',
+            'Ñ' => 'N', 'ñ' => 'n', 'Ç' => 'C', 'ç' => 'c', 'ß' => 'ss',
             // Caracteres adicionales
-            '?' => 'Y', '?' => 'y', '?' => 'y', '*' => '',
+            'Ý' => 'Y', 'ý' => 'y', 'ÿ' => 'y', '*' => '',
         );
     
         $cadena = strtr($cadena, $caracteres);
@@ -8983,28 +9425,6 @@ class DespachosNew
     
         return $cadena;
 	}
-
-    function getOperacionPreventiva($num_despac, $num_consec, $tip_seguim, $flag = true){
-        $query = "SELECT cod_consec 
-                        FROM " . BASE_DATOS . ".tab_noveda_opprev 
-                        WHERE num_despac = '" . $num_despac . "' AND
-                              cod_connov = '" . $num_consec . "' AND
-                              tip_seguim = '" . $tip_seguim . "'";
-        
-        $consulta = new Consulta($query, $this->conexion);
-        $getOpePrev = $consulta->ret_matrix('a');
-        if($flag){
-            if(sizeof($getOpePrev)>0){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return $getOpePrev;
-        }
-        
-        
-    }
 }
 
 ?>
