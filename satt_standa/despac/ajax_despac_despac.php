@@ -11,6 +11,8 @@
  */
 
 session_start();
+/*error_reporting(E_ALL);
+ini_set('display_errors', '1');*/
 
 /*! \class: AjaxDespac
  *  \brief: 
@@ -34,6 +36,8 @@ class AjaxDespac
         @include( "../lib/ajax.inc" );
 
         $this -> conexion = $AjaxConnection;
+        $paramsJson = json_decode($_REQUEST['paramsJson'],true);
+        $_REQUEST[Option] = isset($_REQUEST[Option]) ? $_REQUEST[Option]: $paramsJson["option"];
 
         switch ($_REQUEST[Option])
         {
@@ -62,16 +66,179 @@ class AjaxDespac
                 AjaxDespac::CambioRuta();
                 break;
 
-             case 'VerificarManifiesto':
+            case 'VerificarManifiesto':
                 AjaxDespac::VerificarManifiesto();
                 break;
-           
+            case 'controDespac':
+                AjaxDespac::getControDespac($paramsJson);
+                break;
+            case 'notasControDespac':
+                AjaxDespac::getNotasControDespac($paramsJson);
+                break;
             default:
                 header('Location: index.php?window=central&cod_servic=1366&menant=1366');
                 //$this->Listar();
                 break;
         }
     }
+
+    function getControDespac($paramsJson)
+    {
+        $datos_usuario = $this->usuario;
+    
+        $limit = isset($_REQUEST['registros']) ? intval($_REQUEST['registros']) : 100;
+        $pagina = isset($_REQUEST['pagina']) ? intVal($_REQUEST['pagina']) : 0;
+        $mRuta = array("link"=>1, "finali"=>0, "opcurban"=>0, "lleg"=>1, "tie_ultnov"=>$_REQUEST[tie_ultnov]);
+
+        @include_once( "../despac/DespachosNew.inc" );
+        $listado_prin = new DespachosNew($_REQUEST[cod_servic], 2, $this->cod_aplica, $this->conexion);
+
+        $paramsJson["filtro"] = isset($paramsJson["filtro"]) ? $paramsJson["filtro"]:'1';
+        $data = $listado_prin->dataPlanRuta($paramsJson["num_despac"], $datos_usuario,$mRuta, $limit, $pagina, $paramsJson["filtro"]);
+
+        // Mostrado resultados
+        $output = [];
+        $matriz = $data['results'];
+        $output['totalRegistros'] = $data['totalRegistros'];
+        $output['totalFiltro'] = $data['totalFiltro'];
+        $output['data'] = '';
+        $output['paginacion'] = '';
+        $output['pagina'] = $pagina;
+        $totalRegistros = $data['totalRegistros'];
+
+        if (!empty($matriz)) {
+
+            if( !$data['indConsol'])
+            {
+                foreach ($matriz as $row ) 
+                {
+                    $output['data'] .= '<tr>';
+                    $output['data'] .= '<td class="celda_info  text-center"  >'.$row['sit_seguim'].'</td>';
+                    if(($codseg==1) && (BASE_DATOS=='satt_faro')){
+                        $output['data'] .= '<td class="celda_info text-center"  >'.$row['ubi_seguim'].'</td>';
+                    } 
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['fec_progra'].'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['fec_planea'].'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['fec_creaci'].'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['cal_tiempo'].'</td>';
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['nom_noveda'].'</td>';
+
+                    if($data['viewAlias']->inf_planru->sub->usr_creaci == 1) {
+                        $output['data'] .= '<td class="celda_info  text-center" >'.$row['cod_usuari'].'</td>';
+                    }
+                    if($data['viewAlias']->inf_planru->sub->ali_usuari == 1) {
+                        $output['data'] .= '<td class="celda_info  text-center" >'.$listado_prin->getAlias($row['cod_usuari']).'</td>';
+                    }
+                    $output['data'] .= '</tr>';
+                }
+            }
+            
+          
+        }
+
+        // Paginación
+        if ($totalRegistros > 0) {
+          $totalPaginas = ceil($totalRegistros / $limit);
+          $output['totpag'] = $totalPaginas;
+
+          $output['paginacion'] .= '<nav>';
+          $output['paginacion'] .= '<ul class="pagination pagination-sm">';
+
+          $numeroInicio = max(1, $pagina - 4);
+          $numeroFin = min($totalPaginas, $numeroInicio + 9);
+
+          for ($i = $numeroInicio; $i <= $numeroFin; $i++) {
+              $output['paginacion'] .= '<li class="page-item' . ($pagina == $i ? ' active' : '') . '">';
+              $output['paginacion'] .= '<a class="page-link"  onclick="pag_1.nextPage(' . $i . ')">' . $i . '</a>';
+              $output['paginacion'] .= '</li>';
+          }
+
+          $output['paginacion'] .= '</ul>';
+          $output['paginacion'] .= '</nav>';
+        }
+
+        //$output = mb_convert_encoding($output, 'UTF-8', 'auto');
+        
+       
+        echo json_encode($output, JSON_UNESCAPED_UNICODE);
+    }
+
+    function getNotasControDespac($paramsJson)
+    {
+        $limit = isset($_REQUEST['registros']) ? intval($_REQUEST['registros']) : 25;
+        $pagina = isset($_REQUEST['pagina']) ? intVal($_REQUEST['pagina']) : 0;
+
+
+
+        @include_once( "../despac/DespachosNew.inc" );
+        $listado_prin = new DespachosNew($_REQUEST[cod_servic], 2, $this->cod_aplica, $this->conexion);
+        
+        $paramsJson["filtro"] = isset($paramsJson["filtro"]) ? $paramsJson["filtro"]:'1';
+        $data = $listado_prin->dataNotasContro($paramsJson["num_despac"], $limit, $pagina, $paramsJson["filtro"]);
+
+         // Mostrado resultados
+         $output = [];
+         $matriz = $data['results'];
+         $output['totalRegistros'] = $data['totalRegistros'];
+         $output['totalFiltro'] = $data['totalFiltro'];
+         $output['data'] = '';
+         $output['paginacion'] = '';
+         $output['pagina'] = $pagina;
+         $totalRegistros = $data['totalRegistros'];
+
+ 
+         //var_dump($matriz);
+        if (!empty($matriz)) {
+            foreach ($matriz as $row ) 
+            {
+                $output['data'] .= '<tr>';
+                $output['data'] .= '<td class="celda_info  text-center" ><textarea rows="3" cols="50" style="border: none; background-color: transparent;" readonly>'.$row['nom_sitiox'].'</textarea></td>';
+                $output['data'] .= '<td class="celda_info  text-center" >'.$row['nom_noveda'].'</td>';
+                $output['data'] .= '<td class="celda_info  text-center" ><textarea rows="3" cols="50" style="border: none; background-color: transparent;" readonly>'.$row['obs_noveda'].'</textarea></td>';
+                $output['data'] .= '<td class="celda_info  text-center" >'.$row['fec_noveda'].'</td>';
+                $output['data'] .= '<td class="celda_info  text-center" >'.$row['fec_creaci'].'</td>';
+                if(isset($row['usr_creaci'])){
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['usr_creaci'].'</td>';
+                }
+                if(isset($row['als_creaci'])){
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['als_creaci'].'</td>';
+                }
+                if(isset($row['lin_action'])){
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['lin_action'].'</td>';
+                }
+                $output['data'] .= '<td class="celda_info  text-center" >'.$row['sol_efecti'].'</td>';
+                
+                if(isset($row['sol_novnem'])){
+                    $output['data'] .= '<td class="celda_info  text-center" >'.$row['sol_novnem'].'</td>';
+                }
+                $output['data'] .= '</tr>';
+            }
+        }
+
+        // Paginación
+        if ($totalRegistros > 0) {
+            $totalPaginas = ceil($totalRegistros / $limit);
+            $output['totpag'] = $totalPaginas;
+  
+            $output['paginacion'] .= '<nav>';
+            $output['paginacion'] .= '<ul class="pagination pagination-sm">';
+  
+            $numeroInicio = max(1, $pagina - 4);
+            $numeroFin = min($totalPaginas, $numeroInicio + 9);
+  
+            for ($i = $numeroInicio; $i <= $numeroFin; $i++) {
+                $output['paginacion'] .= '<li class="page-item' . ($pagina == $i ? ' active' : '') . '">';
+                $output['paginacion'] .= '<a class="page-link"  onclick="pag_2.nextPage(' . $i . ')">' . $i . '</a>';
+                $output['paginacion'] .= '</li>';
+            }
+  
+            $output['paginacion'] .= '</ul>';
+            $output['paginacion'] .= '</nav>';
+        }
+  
+        echo json_encode($output, JSON_UNESCAPED_UNICODE);
+    }
+
     function FormNovedaUpdate()
     {
         echo "<link rel='stylesheet' href='../" . DIR_APLICA_CENTRAL . "/estilos/homolo.css' type='text/css'>\n";
@@ -186,14 +353,14 @@ class AjaxDespac
                 $mHtml .= '<td class="cellInfo1">'.$mData[0]["fec_contro"].' </td>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
-                $mHtml .= '<td class="CellHead">ObservaciÃ³n Novedad:</td>';
+                $mHtml .= '<td class="CellHead">Observación Novedad:</td>';
                 $mHtml .= '<td class="cellInfo1">
                             <textarea id="descripcionID" cols="60" rows="6">'.$mData[0]["obs_contro"].'</textarea>
                             <input type="hidden" id="old_descriID" value="'.$mData[0]["obs_contro"].'"/> 
                            </td>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
-                $mHtml .= '<td class="CellHead">Motivo ActualizaciÃ³n:</td>';
+                $mHtml .= '<td class="CellHead">Motivo Actualización:</td>';
                 $mHtml .= '<td class="cellInfo1">
                             <textarea id="obs_motivoID" cols="60" rows="6"></textarea>
                            </td>';
@@ -242,7 +409,7 @@ class AjaxDespac
                 $mHtml .= '<td class="cellInfo1">'.$mData[0]["fec_contro"].' Usuario: '.$mData[0]["usr_creaci"].' </td>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
-                $mHtml .= '<td class="CellHead">ObservaciÃ³n Novedad:</td>';
+                $mHtml .= '<td class="CellHead">Observación Novedad:</td>';
                 $mHtml .= '<td class="cellInfo1">'.$mData[0]["obs_contro"].' </td>';
             $mHtml .= '</tr>';
         $mHtml .= '</table></div>';

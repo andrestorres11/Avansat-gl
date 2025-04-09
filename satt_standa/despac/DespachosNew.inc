@@ -1,5 +1,5 @@
 <?php
-/*! \file: Despachos.inc
+/*! \file: DespachosNew.inc
  *  \brief: Archivo principal para los despachos
  *  \author: 
  *  \author: 
@@ -15,14 +15,13 @@
  */
 /*ini_set('error_reporting', E_ALL);
 ini_set("display_errors", 1);*/
-class Despachos
+class DespachosNew
 {
     var $cod_aplica = NULL;
     var $servic = NULL;
     var $opcion = NULL;
     var $conexion = NULL;
     var $opcion_base = NULL;
-    var $paginador = NULL;
     var $GeneralFunctions = NULL;
     var $cod_ciuori = NULL;
     var $nom_ciuori = NULL;
@@ -46,7 +45,6 @@ class Despachos
         $this->conexion = $conexion;
         $this->codPerfil = $_SESSION["datos_usuario"]["cod_perfil"];
         $this->opcion_base = $opcion_base;
-        $this->paginador = new Paginador_listado($opcion_base, $servic, $conexion);
         $this->GeneralFunctions = new GeneralFunctions($this->conexion);
     }
 
@@ -88,1758 +86,6 @@ class Despachos
       return $mArray[0];
     }
 
-   function ListadoPrincipal($datos_usuario, $busque = 0, $dir_export = "", $des_retras = 0, $validmatriz = NULL, $GLOBALS_ADD = NULL, $finali = 0, $desfut = 0, $liscon = 0, $matcondesp = NULL, $opcurban = 0) {
-        $this->ind_status = $GLOBALS_ADD[0]["valor"];
-
-        if ($GLOBALS_ADD[9]["valor"] != '')
-            $_REQUEST["bdespac"] = $GLOBALS_ADD[9]["valor"];
-
-        $query = "SELECT a.ind_remdes, a.ind_desurb
-  		     FROM " . BASE_DATOS . ".tab_config_parame a ";
-        $consulta = new Consulta($query, $this->conexion);
-        $manredes = $consulta->ret_arreglo();
-        $desurb = $manredes[1];
-        $manredes = $manredes[0];
-
-
-        $titori[0][0] = 0;
-        $titori[0][1] = "Origen";
-        $titdes[0][0] = 0;
-        $titpla[0][0] = 0;
-        $titpla[0][1] = "Placa";
-        $titdes[0][1] = "Destino";
-        $titra[0][0] = 0;
-        $titra[0][1] = "Transportadora";
-        $tipla[0][0] = 0;
-        $tipla[0][1] = "Placa";
-
-        $todas[0][0] = 0;
-        $todas[0][1] = "Todas";
-
-        $this->nom_transp = $titra[0][1];
-
-        if ($matcondesp[0]["cribus"] == 1 || !$matcondesp)
-            $nomtabcribus = "noveda";
-        else if ($matcondesp[0]["cribus"] == 2)
-            $nomtabcribus = "contro";
-
-        $query = "SELECT f.cod_ciudad, CONCAT(f.abr_ciudad,' (',LEFT(j.abr_depart,4),') ')
-              FROM " . BASE_DATOS . ".tab_despac_despac a
-         LEFT JOIN " . BASE_DATOS . ".tab_despac_sisext k
-                ON a.num_despac = k.num_despac,
-                   " . BASE_DATOS . ".tab_despac_seguim b,
-                   " . BASE_DATOS . ".tab_despac_vehige d,
-                   " . BASE_DATOS . ".tab_genera_ciudad f,
-                   " . BASE_DATOS . ".tab_genera_depart j 
-             WHERE a.num_despac = d.num_despac AND
-             	   	 a.num_despac = b.num_despac AND
-                   a.cod_ciuori = f.cod_ciudad AND
-                   f.cod_depart = j.cod_depart AND
-                   f.cod_paisxx = j.cod_paisxx AND
-                   a.fec_salida Is Not Null AND
-                   a.ind_anulad = 'R' AND
-                   a.ind_planru = 'S' ";
-
-        if (!$finali) {
-            if (!$desfut)
-                $query .= " AND a.fec_salida <= NOW()";
-            else
-                $query .= " AND a.fec_salida > NOW()";
-        }
-
-        if ($_REQUEST["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
-        if ($_REQUEST["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
-        if ($_REQUEST["bdespac"])
-            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
-
-        if (!$finali)
-            $query .= " AND a.fec_llegad Is Null";
-        else
-            $query .= " AND a.fec_llegad Is Not Null";
-
-        if ($_REQUEST["destino"])
-            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
-        if ($_REQUEST["origen"])
-            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
-        if ($_REQUEST["transp"])
-            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
-
-        if ($busque) {
-            if ($_REQUEST["placa"])
-                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
-            if ($_REQUEST["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
-            if ($_REQUEST["despac"])
-                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
-        }
-
-        if ($validmatriz) {
-            for ($i = 0; $i < sizeof($validmatriz); $i++)
-                $query .= $validmatriz[$i]["linea"];
-        }
-        if ($datos_usuario["cod_perfil"] == "") {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-
-            //PARA EL FILTRO DE EMPRESA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        } else {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-
-            //PARA EL FILTRO DE EMPRESA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        }
-
-        $query = $query . " GROUP BY 1 ORDER BY 2";
-        $consulta = new Consulta($query, $this->conexion);
-        $origen = $consulta->ret_matriz();
-
-        if ($_REQUEST["origen"])
-            $origen = array_merge($origen, $todas);
-        else
-            $origen = array_merge($titori, $origen);
-
-        $query = "SELECT f.cod_ciudad, CONCAT( f.abr_ciudad,' (',LEFT(j.abr_depart,4),') ' )
-				  FROM " . BASE_DATOS . ".tab_despac_despac a
-           LEFT JOIN " . BASE_DATOS . ".tab_despac_sisext k
-                  ON a.num_despac = k.num_despac,
-      					   " . BASE_DATOS . ".tab_despac_seguim b,
-      					   " . BASE_DATOS . ".tab_despac_vehige d,
-      					   " . BASE_DATOS . ".tab_genera_ciudad f,
-      					   " . BASE_DATOS . ".tab_genera_depart j
-      				  WHERE a.num_despac = d.num_despac AND
-      						a.num_despac = b.num_despac AND
-      						a.cod_ciudes = f.cod_ciudad AND
-      						f.cod_depart = j.cod_depart AND
-      						f.cod_paisxx = j.cod_paisxx AND
-      						a.fec_salida Is Not Null AND
-      						a.ind_anulad = 'R' AND
-      						a.ind_planru = 'S' ";
-		
-        if (!$finali) {
-            if (!$desfut)
-                $query .= " AND a.fec_salida <= NOW()";
-            else
-                $query .= " AND a.fec_salida > NOW()";
-        }
-
-        if ($_REQUEST["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
-        if ($_REQUEST["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
-        if ($_REQUEST["bdespac"])
-            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
-
-        if (!$finali)
-            $query .= " AND a.fec_llegad Is Null";
-        else
-            $query .= " AND a.fec_llegad Is Not Null";
-
-        if ($_REQUEST["destino"])
-            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
-        if ($_REQUEST["origen"])
-            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
-        if ($_REQUEST["transp"])
-            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
-
-        if ($busque) {
-            if ($_REQUEST["placa"])
-                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
-            if ($_REQUEST["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
-            if ($_REQUEST["despac"])
-                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
-        }
-
-        if ($validmatriz) {
-            for ($i = 0; $i < sizeof($validmatriz); $i++)
-                $query .= $validmatriz[$i]["linea"];
-        }
-
-        if ($datos_usuario["cod_perfil"] == "") {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE EMPRESA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        } else {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE EMPRESA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        }
-
-        $query = $query . " GROUP BY 1 ORDER BY 2";
-
-        $consulta = new Consulta($query, $this->conexion);
-        $destino = $consulta->ret_matriz();
-
-        if ($_REQUEST["destino"])
-            $destino = array_merge($destino, $todas);
-        else
-            $destino = array_merge($titdes, $destino);
-
-        $query = "SELECT e.cod_tercer,e.abr_tercer
-              FROM " . BASE_DATOS . ".tab_despac_despac a
-         LEFT JOIN " . BASE_DATOS . ".tab_despac_sisext k
-                ON a.num_despac = k.num_despac,
-                   " . BASE_DATOS . ".tab_despac_seguim b,
-                   " . BASE_DATOS . ".tab_despac_vehige d,
-                   " . BASE_DATOS . ".tab_tercer_tercer e
-             WHERE a.num_despac = d.num_despac AND
-             	   	 a.num_despac = b.num_despac AND
-                   d.cod_transp = e.cod_tercer AND
-                   a.fec_salida Is Not Null AND
-                   a.ind_anulad = 'R' AND
-                   a.ind_planru = 'S' ";
-                   
-
-        if (!$finali) {
-            if (!$desfut)
-                $query .= " AND a.fec_salida <= NOW()";
-            else
-                $query .= " AND a.fec_salida > NOW()";
-        }
-
-        if ($_REQUEST["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
-        if ($_REQUEST["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
-        if ($_REQUEST["bdespac"])
-            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
-
-        if (!$finali)
-            $query .= " AND a.fec_llegad Is Null";
-        else
-            $query .= " AND a.fec_llegad Is Not Null";
-
-        if ($_REQUEST["destino"])
-            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
-        if ($_REQUEST["origen"])
-            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
-        if ($_REQUEST["transp"])
-            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
-
-        if ($busque) {
-            if ($_REQUEST["placa"])
-                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
-            if ($_REQUEST["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
-            if ($_REQUEST["despac"])
-                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
-        }
-
-        if ($validmatriz) {
-            for ($i = 0; $i < sizeof($validmatriz); $i++)
-                $query .= $validmatriz[$i]["linea"];
-        }
-
-        if ($datos_usuario["cod_perfil"] == "") {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE EMPRESA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        } else {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        }
-
-        $query = $query . " GROUP BY 1 ORDER BY 2";
-
-        $consulta = new Consulta($query, $this->conexion);
-        $transpors = $consulta->ret_matriz();
-
-        if ($_REQUEST["transp"])
-            $transpors = array_merge($transpors, $todas);
-        else
-            $transpors = array_merge($titra, $transpors);
-                    
-        /* -------------------------------------------------------------------------------------------------------------------------------------- */
-        $query = "SELECT d.num_placax,d.num_placax
-              FROM " . BASE_DATOS . ".tab_despac_despac a
-         LEFT JOIN " . BASE_DATOS . ".tab_despac_sisext k
-                ON a.num_despac = k.num_despac,
-                   " . BASE_DATOS . ".tab_despac_seguim b,
-                   " . BASE_DATOS . ".tab_despac_vehige d,
-                   " . BASE_DATOS . ".tab_tercer_tercer e
-             WHERE a.num_despac = d.num_despac AND
-             	   	 a.num_despac = b.num_despac AND
-                   d.cod_transp = e.cod_tercer AND
-                   a.fec_salida Is Not Null AND
-                   a.ind_anulad = 'R' AND
-                   a.ind_planru = 'S' ";
-                   
-        if (!$finali) {
-            if (!$desfut)
-                $query .= " AND a.fec_salida <= NOW()";
-            else
-                $query .= " AND a.fec_salida > NOW()";
-        }
-
-        if ($_REQUEST["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
-        if ($_REQUEST["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
-        if ($_REQUEST["bdespac"])
-            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
-
-        if (!$finali)
-            $query .= " AND a.fec_llegad Is Null";
-        else
-            $query .= " AND a.fec_llegad Is Not Null";
-
-        if ($_REQUEST["destino"])
-            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
-        if ($_REQUEST["origen"])
-            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
-        if ($_REQUEST["transp"])
-            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
-
-        if ($busque) {
-            if ($_REQUEST["placa"])
-                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
-            if ($_REQUEST["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
-            if ($_REQUEST["despac"])
-                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
-        }
-
-        if ($validmatriz) {
-            for ($i = 0; $i < sizeof($validmatriz); $i++)
-                $query .= $validmatriz[$i]["linea"];
-        }
-
-        if ($datos_usuario["cod_perfil"] == "") {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE EMPRESA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        } else {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        }
-
-        $query = $query . " GROUP BY 1 ORDER BY 2";
-
-        $consulta = new Consulta($query, $this->conexion);
-        $placax = $consulta->ret_matriz();
-        
-        if ($_REQUEST["bplaca"])
-            $placax = array_merge($placax, $todas);
-        else
-            $placax = array_merge($tipla, $placax);
-        
-        /* -------------------------------------------------------------------------------------------------------------------------------------- */
-
-        
-
-        $defini = array(1, "SI");
-        //trae los despachos en ruta
-        $query = "SELECT a.num_despac, a.cod_manifi, a.cod_ciuori,
-	 								 a.cod_ciudes, f.abr_tercer, d.num_placax,
-									 IF( d.nom_conduc IS NOT NULL, d.nom_conduc, e.abr_tercer) AS abr_tercer,
-                   IF( a.con_telmov IS NULL, e.num_telmov, a.con_telmov ) AS num_telmov,
-                   '', '', '',
-									 '', '', '',
-									 '', d.cod_transp, a.ind_defini,
-									 DATE_FORMAT( a.fec_ultnov, '%Y-%m-%d %H:%i' ), n.abr_tercer AS aseguradora, 
-                   IF( k.num_desext IS NULL,'N/A' ,k.num_desext ) as num_desext,
-                   IF( k.num_solici IS NULL,'N/A' ,k.num_solici ) as num_solici
-              FROM " . BASE_DATOS . ".tab_despac_seguim b,
-                   " . BASE_DATOS . ".tab_despac_vehige d,
-                   " . BASE_DATOS . ".tab_tercer_tercer e,
-                   " . BASE_DATOS . ".tab_tercer_tercer f,
-                   " . BASE_DATOS . ".tab_despac_despac a
-         LEFT JOIN " . BASE_DATOS . ".tab_tercer_tercer n 
-                ON n.cod_tercer = a.cod_asegur
-         LEFT JOIN " . BASE_DATOS . ".tab_despac_sisext k
-                ON a.num_despac = k.num_despac
-             WHERE a.num_despac = d.num_despac AND
-                   a.num_despac = b.num_despac AND
-                   d.cod_conduc = e.cod_tercer AND
-                   d.cod_transp = f.cod_tercer AND
-                   a.fec_salida Is Not Null AND
-                   a.ind_anulad = 'R' AND
-                   a.ind_planru = 'S' ";
-
-        if (strtolower($datos_usuario["cod_usuari"]) == 'alogistica')
-            $query .= " AND d.cod_transp IN ( SELECT cod_tercer FROM " . BASE_DATOS . ".tab_config_alianz ) ";
-
-
-        if (!$finali) {
-            if (!$desfut)
-                $query .= " AND a.fec_salida <= NOW()";
-            else
-                $query .= " AND a.fec_salida > NOW()";
-        }
-
-        if ($_REQUEST["bplaca"])
-            $query = $query . " AND d.num_placax = '" . $_REQUEST["bplaca"] . "'";
-        if ($_REQUEST["bmanifi"])
-            $query = $query . " AND a.cod_manifi = '" . $_REQUEST["bmanifi"] . "'";
-        if ($_REQUEST["bdespac"])
-            $query = $query . " AND a.num_despac = " . $_REQUEST["bdespac"] . "";
-        if ($_REQUEST["busq_transp"])
-            $query = $query . " AND d.cod_conduc = '" . $_REQUEST["busq_transp"] . "'";
-            
-
-        if (!$finali)
-            $query .= " AND a.fec_llegad Is Null";
-        else
-            $query .= " AND a.fec_llegad Is Not Null";
-
-        if ($_REQUEST["destino"])
-            $query .= " AND a.cod_ciudes = " . $_REQUEST["destino"] . "";
-        if ($_REQUEST["origen"])
-            $query .= " AND a.cod_ciuori = " . $_REQUEST["origen"] . "";
-        if ($_REQUEST["transp"])
-            $query .= " AND d.cod_transp = " . $_REQUEST["transp"] . "";
-
-        if ($busque) {
-            if ($_REQUEST["placa"])
-                $query = $query . " AND d.num_placax = '" . $_REQUEST["placa"] . "'";
-            if ($_REQUEST["manifi"])
-                $query = $query . " AND a.cod_manifi = '" . $_REQUEST["manifi"] . "'";
-            if ($_REQUEST["despac"])
-                $query = $query . " AND a.num_despac = '" . $_REQUEST["despac"] . "'";
-        }
-
-
-        if ($validmatriz) {
-            for ($i = 0; $i < sizeof($validmatriz); $i++)
-                $query .= $validmatriz[$i]["linea"];
-        }
-
-        if ($datos_usuario["cod_perfil"] == "") {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE EMPRESA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-            $filtro = new Aplica_Filtro_Usuari($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_usuari"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        } else {
-            //PARA EL FILTRO DE CONDUCTOR
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CONDUC, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_conduc = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE EMPRESA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_EMPTRA, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_transp = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE ASEGURADORA
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_ASEGUR, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_asegur = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DEL CLIENTE
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_CLIENT, $datos_usuario["cod_perfil"]);
-            if ($filtro->listar($this->conexion)) {
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND a.cod_client = '$datos_filtro[clv_filtro]' ";
-            }
-            //PARA EL FILTRO DE LA AGENCIA
-
-            $filtro = new Aplica_Filtro_Perfil($this->cod_aplica, COD_FILTRO_AGENCI, $datos_usuario["cod_perfil"]);
-            echo "<div style='display:none' >Aplica=" . $this->cod_aplica . " CODFIltroagenci=" . COD_FILTRO_AGENCI . " perfil=" . $datos_usuario["cod_perfil"] . "</div>";
-            if ($filtro->listar($this->conexion)) {
-
-                $datos_filtro = $filtro->retornar();
-                $query = $query . " AND d.cod_agenci = '$datos_filtro[clv_filtro]' ";
-            }
-        }
-
-        if (!$finali)
-            $query = $query . " GROUP BY 1 ORDER BY b.fec_alarma,1 ";
-        else
-            $query = $query . " GROUP BY 1 ORDER BY a.fec_llegad,1";
-
-        $matriz = $this->paginador->ejecPaginador($_REQUEST["npagina"], $query);
-
-
-        $query_exp = $this->paginador->query;
-
-        $ind_porlleg = 0;
-        $ind_enrutas = 0;
-
-        if ($finali) {
-
-            for ($i = 0; $i < sizeof($matriz); $i++) {
-                if ($this->GeneralFunctions->ViewVisibilityInterf(array("transp" => $matriz[$i][15]))) {
-                    if ($manredes == 1) {
-                        $query = "SELECT a.num_docume
-	 			  FROM " . BASE_DATOS . ".tab_despac_remdes a
-                	 			 WHERE a.num_despac = " . $matriz[$i][0] . " ";
-
-                        $consulta = new Consulta($query, $this->conexion);
-                        $document_despac = $consulta->ret_matriz();
-
-                        if ($document_despac) {
-                            $remisiones_destin = $document_despac[0][0];
-
-                            for ($j = 1; $j < sizeof($document_despac); $j++)
-                                if ($document_despac[$j][0])
-                                    $remisiones_destin .= ", " . $document_despac[$j][0];
-
-                            if (!$remisiones_destin)
-                                $remisiones_destin = "-";
-                        } else
-                            $remisiones_destin = "-";
-
-                        $matriz[$i][12] = $remisiones_destin;
-
-                        $query = "SELECT a.num_pedido
-	 			  FROM " . BASE_DATOS . ".tab_despac_remdes a
-                	 			 WHERE a.num_despac = " . $matriz[$i][0] . " ";
-
-                        $consulta = new Consulta($query, $this->conexion);
-                        $document_despac = $consulta->ret_matriz();
-
-                        if ($document_despac) {
-                            $pedidos_destin = $document_despac[0][0];
-
-                            for ($j = 1; $j < sizeof($document_despac); $j++)
-                                if ($document_despac[$j][0])
-                                    $pedidos_destin .= ", " . $document_despac[$j][0];
-
-                            if (!$pedidos_destin)
-                                $pedidos_destin = "-";
-                        } else
-                            $pedidos_destin = "-";
-
-                        $matriz[$i][13] = $pedidos_destin;
-                    }
-
-                    $porllegad[] = $matriz[$i];
-                    $ind_porlleg++;
-                }
-            }
-        }
-        else {
-            for ($i = 0; $i < sizeof($matriz); $i++) {
-
-                if ($this->GeneralFunctions->ViewVisibilityInterf(array("transp" => $matriz[$i][15]))) {
-                    if ($manredes == 1) {
-                        $query = "SELECT a.num_docume
-	 			  FROM " . BASE_DATOS . ".tab_despac_remdes a
-                	 			 WHERE a.num_despac = " . $matriz[$i][0] . " ";
-
-                        $consulta = new Consulta($query, $this->conexion);
-                        $document_despac = $consulta->ret_matriz();
-
-                        if ($document_despac) {
-                            $remisiones_destin = $document_despac[0][0];
-
-                            for ($j = 1; $j < sizeof($document_despac); $j++)
-                                if ($document_despac[$j][0])
-                                    $remisiones_destin .= ", " . $document_despac[$j][0];
-
-                            if (!$remisiones_destin)
-                                $remisiones_destin = "-";
-                        } else
-                            $remisiones_destin = "-";
-
-                        $matriz[$i][12] = $remisiones_destin;
-
-                        $query = "SELECT a.num_pedido
-	 			  FROM " . BASE_DATOS . ".tab_despac_remdes a
-                	 			 WHERE a.num_despac = " . $matriz[$i][0] . " ";
-
-                        $consulta = new Consulta($query, $this->conexion);
-                        $document_despac = $consulta->ret_matriz();
-
-                        if ($document_despac) {
-                            $pedidos_destin = $document_despac[0][0];
-
-                            for ($j = 1; $j < sizeof($document_despac); $j++)
-                                if ($document_despac[$j][0])
-                                    $pedidos_destin .= ", " . $document_despac[$j][0];
-
-                            if (!$pedidos_destin)
-                                $pedidos_destin = "-";
-                        } else
-                            $pedidos_destin = "-";
-
-                        $matriz[$i][13] = $pedidos_destin;
-                    }
-
-                    $query = "SELECT a.cod_rutasx
-	             FROM " . BASE_DATOS . ".tab_despac_seguim a
-	            WHERE a.num_despac = " . $matriz[$i][0] . "
-        		          GROUP BY 1 ";
-
-                    $consulta = new Consulta($query, $this->conexion);
-                    $totrutas = $consulta->ret_matriz();
-
-                    if (sizeof($totrutas) < 2)
-                        $camporder = "fec_planea";
-                    else
-                        $camporder = "fec_alarma";
-
-                    $query = "SELECT a.cod_contro 
-  						  FROM " . BASE_DATOS . ".tab_despac_seguim a, 
-  						  	   " . BASE_DATOS . ".tab_despac_vehige c,
-                     (SELECT MAX(b." . $camporder . ") as fec 
-  								    FROM " . BASE_DATOS . ".tab_despac_seguim b 
-  								    WHERE b.num_despac = " . $matriz[$i][0] . " ) as  d 
-  						  WHERE a.num_despac = c.num_despac AND 
-  						  		  c.num_despac = " . $matriz[$i][0] . " AND 
-  								    a." . $camporder . " = d.fec ";
-                    $consulta = new Consulta($query, $this->conexion);
-
-                    $ultimopc = $consulta->ret_matriz();
-
-                    $query = "SELECT a.cod_contro, a.fec_noveda, d.fec_planea 
-						  FROM " . BASE_DATOS . ".tab_despac_noveda a, 
-							     " . BASE_DATOS . ".tab_despac_seguim d 
-						  WHERE a.num_despac = d.num_despac AND 
-								    a.cod_rutasx = d.cod_rutasx AND 
-								    a.cod_contro = d.cod_contro AND 
-								    a.num_despac = " . $matriz[$i][0] . " AND 
-								    a.fec_noveda = '" . $matriz[$i][17] . ":00" . "'";
-
-                    $consulta = new Consulta($query, $this->conexion);
-
-                    $ultimnov = $consulta->ret_matriz();
-
-                    if ($ultimnov) {
-                        $query = "SELECT a.ind_urbano
-	 		      FROM " . BASE_DATOS . ".tab_genera_contro a
-	 		     WHERE a.cod_contro = " . $ultimnov[0][0] . " AND
-                	 		     	   a.ind_urbano = '1' ";
-
-                        $consulta = new Consulta($query, $this->conexion);
-                        $pcontrurb = $consulta->ret_matriz();
-                    } else
-                        $pcontrurb = NULL;
-
-
-                    if ($manredes == 1 && $desurb == 1 && $pcontrurb)
-                        $pcomparar = $ultimnov[0][0];
-                    else
-                        $pcomparar = $ultimopc[0][0];
-
-
-
-                    if ($pcomparar == $ultimnov[0][0] || $ultimnov[0][0] == CONS_CODIGO_PCLLEG) {
-                        $porllegad[$ind_porlleg] = $matriz[$i];
-                        $ind_porlleg++;
-                    } else {
-                        if ($_REQUEST["defini"] == $matriz[$i]["ind_defini"] || $_REQUEST["defini"] == '') {
-                            $desenruta[$ind_enrutas] = $matriz[$i];
-                            $ind_enrutas++;
-                        }
-                    }
-                }
-            }
-        }
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/min.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/jquery.js\"></script>\n";
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/poppc.js\"></script>\n";
-        echo "<link href='../" . DIR_APLICA_CENTRAL . "/estilos/jquery.css' rel='stylesheet' type='text/css'>";
-
-        if ($desfut)
-            $formulario = new Formulario("index.php", "post", "Despachos Salida Futura", "form_item", "", "", "100%");
-        else if (!$finali) {
-            $query = "SELECT nom_alarma, cant_tiempo, cod_colorx
-               FROM " . BASE_DATOS . ".tab_genera_alarma
-                    ORDER BY 2 ";
-
-            $consulta = new Consulta($query, $this->conexion);
-
-            $alarmas = $consulta->ret_matriz();
-
-            $query = "SELECT cant_tiempo,cod_colorx
-           FROM " . BASE_DATOS . ".tab_genera_alarma ";
-            $consulta = new Consulta($query, $this->conexion);
-            $colores = $consulta->ret_matriz();
-
-            echo "<script>setTimeout('document.location.reload(\"index.php?window=central&cod_servic=" . $this->servic . "\")',300000); </script>";
-
-            $formulario = new Formulario("index.php", "post", "Despachos en Ruta", "form_item", "", "", "100%");
-        } else
-            $formulario = new Formulario("index.php", "post", "Despachos Finalizados", "form_item", "", "", "100%");
-
-
-        if ($busque) {
-            $formulario->nueva_tabla();
-            $formulario->linea("Filtros de Busqueda", 1, "t2");
-
-            $formulario->nueva_tabla();
-            $formulario->texto("Placa", "text", "placa", 0, 6, 6, "", $_REQUEST["placa"]);
-            $formulario->texto("Manifiesto", "text", "manifi", 0, 7, 7, "", $_REQUEST["manifi"]);
-            $formulario->texto("Despacho", "text", "despac", 1, 6, 6, "", $_REQUEST["despac"]);
-
-            $formulario->nueva_tabla();
-            $formulario->boton("Buscar", "button\" onClick=\"if(form_item.placa.value || form_item.manifi.value || form_item.despac.value){form.submit()}else{alert('Digite parametro de Busqueda')}", 0);
-            $formulario->boton("Todos", "button\" onClick=\"form_item.placa.value=''; form_item.manifi.value=''; form_item.despac.value=''; form.submit()", 0);
-        }
-
-        if ($dir_export != "") {
-            $_SESSION['sql'] = $query_exp;
-            //$query_exp = base64_encode($query_exp);
-            $exp .= "url=" . NOM_URL_APLICA . "&db=" . BASE_DATOS . "&nom_opcion=" . $dir_export . "&des_retras=" . $des_retras . "&finali=" . $finali;
-
-            $matlinkim[0][0] = "../" . DIR_APLICA_CENTRAL . "/imagenes/pdf.jpg";
-            $matlinkim[0][1] = "onClick=\"top.window.open('../" . DIR_APLICA_CENTRAL . "/export/exp_genera_despac.php?" . $exp . "&manpdf=1')\"";
-
-            $formulario->nueva_tabla();
-            $formulario->imagen("Exportar", "../" . DIR_APLICA_CENTRAL . "/imagenes/excel.jpg", "Exportar", 30, 30, 0, "onClick=\"top.window.open('../" . DIR_APLICA_CENTRAL . "/export/exp_genera_despac.php?" . $exp . "')\"", 1, 0, $matlinkim);
-        }
-
-
-        if (!$des_retras && !$datos_usuario["bandeja"]) {
-            $formulario->nueva_tabla();
-
-
-            $query = "SELECT  COUNT(a.num_despac)
-                    FROM    " . BASE_DATOS . ".tab_despac_despac a,
-                            " . BASE_DATOS . ".tab_despac_vehige b
-                    WHERE a.num_despac = b.num_despac AND
-                       a.fec_salida is not NULL AND
-                       a.fec_llegad is NULL AND
-                       b.ind_activo = 'S' ";
-
-            $consulta = new Consulta($query, $this->conexion);
-            $maxdespac = $consulta->ret_matriz();
-
-            $maxdespac = $maxdespac[0][0];
-
-
-            if ($desfut)
-                $formulario->linea("Se Encontro un Total de " . $ind_enrutas . " Despacho(s) con Salida Futuro", 0, "t2");
-            else if (!$finali) {
-                if ($GLOBALS_ADD[0]["campo"] == "alacla" && $GLOBALS_ADD[0]["valor"] == "L")
-                    $formulario->linea("* Se Encontro un Total de 0 Despacho(s) en Ruta", 0, "t2");
-                else if ($GLOBALS_ADD[1]["campo"] == "totregif" && $GLOBALS_ADD[1]["valor"])
-                    echo '<td align="left" id="totalID" class="celda_titulo2"><b>Se Encontro un Total de ' . sizeof($desenruta) . ' Despacho(s) en Ruta</b></td>';
-                //$formulario -> linea("Se Encontro un Total de ".$GLOBALS_ADD[1]["valor"]." Despacho(s) en Ruta",0,"t2");
-                //$formulario -> linea("Se Encontro un Total de ".$ind_enrutas." Despacho(s) en Ruta",0,"t2");          
-                //$formulario -> linea("Se Encontro un Total de ".sizeof( $desenruta)." Despacho(s) en Ruta",0,"t2");
-                else
-                    echo '<td align="left" id="totalID" class="celda_titulo2"><b>Se Encontro un Total de ' . sizeof($desenruta) . ' Despacho(s) en Ruta</b></td>';
-                //$formulario -> linea("Se Encontro un Total de ".sizeof( $desenruta )." Despacho(s) en Ruta",0,"t2");
-            }
-        }
-
-        $formulario->nueva_tabla();
-
-        $en_bandeja = 0;
-
-        if (!$finali) {
-            for ($i = 0; $i < sizeof($alarmas); $i++)
-                echo "<td style ='font-size: 8pt;color: #000000;background-color: " . $alarmas[$i][2] . "'>" . $alarmas[$i][0] . " = " . $alarmas[$i][1] . " Min</td>";
-
-            $formulario->nueva_tabla();
-            $formulario->texto("Despacho", "text", "bdespac\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()", 0, 6, 6, "", $_REQUEST["bdespac"], "", "", 1);
-            $formulario->linea("Tiempo", 0, "t");
-            echo '<td align="center" class="celda_titulo"><b>A cargo Empresa <br></b>';
-            echo '<select onchange="form_item.submit()"  id="definiID" onChange="form_item.submit()" name="defini" class="form_01">
-				
-				<option value=>-</option>
-				<option value=1>SI</option>
-				<option value=0>NO</option>
-			</select>';
-            echo "</td>";
-            $formulario->texto("Manifiesto", "text", "bmanifi\" onKeyUp=\"if(!isNaN(this.value)){if(this.value == '-'){alert('La Cantidad No es Valida');this.value=''}}else{this.value=''}\" onChange=\"form_item.submit()", 0, 7, 7, "", $_REQUEST["bmanifi"], "", "", 1);
-
-
-            if ($manredes == 1) {
-                $formulario->linea("Remisi&oacute;n", 0, "t");
-                $formulario->linea("Pedido", 0, "t");
-            }
-
-            if (!$des_retras) {
-                $formulario->lista_titulo("Origen", "origen\" onChange=\"form_item.submit()\"", $origen, 0);
-                $formulario->lista_titulo("Destino", "destino\" onChange=\"form_item.submit()\"", $destino, 0);
-                $formulario->lista_titulo("Transportadora", "transp\" onChange=\"form_item.submit()\"", $transpors, 0);
-            } else {
-                $formulario->linea("Origen", 0, "t");
-                $formulario->linea("Destino", 0, "t");
-                $formulario->linea("Transportadora", 0, "t");
-            }
-
-            $formulario->texto("Placa", "text", "bplaca\" onChange=\"form_item.submit()", 0, 6, 6, "", $_REQUEST["bplaca"], "", "", 1);
-            $formulario->linea("Conductor", 0, "t");
-            $formulario->linea("Celular", 0, "t");
-
-
-            $formulario->linea("Fecha Novedad", 0, "t");
-            $formulario->linea("Ultimo P/C", 0, "t");
-            $formulario->linea("Novedad", 0, "t");
-
-            $formulario->linea("Generador", 0, "t");
-            $formulario->linea("Ultima Nota Control", 0, "t");
-            $formulario->linea("Fecha N/C", 1, "t");
-            $ind_enrutas = 0;
-        //--------------------------------------------------------------------------      
-
-
-            for ($i = 0; $i < sizeof($desenruta); $i++) {
-
-                $query = "(SELECT e.ind_fuepla, a.cod_conult,a.cod_ultnov,a.fec_ultnov,a.usr_ultnov,
-                b.obs_contro,c.nom_contro,d.nom_noveda,	b.fec_contro,
-                b.cod_contro,e.nom_noveda,b.fec_creaci, c.cod_colorx
-                          FROM  " . BASE_DATOS . ".tab_despac_despac    a   LEFT    JOIN
-                                " . BASE_DATOS . ".tab_despac_contro    b   ON
-                                a.num_despac    =   b.num_despac    AND
-                                a.cod_consec    =   b.cod_consec    LEFT    JOIN
-                                " . BASE_DATOS . ".tab_genera_noveda    e   ON
-                                b.cod_noveda    =   e.cod_noveda,
-                                " . BASE_DATOS . ".tab_genera_contro    c,
-                                " . BASE_DATOS . ".tab_genera_noveda    d
-                         WHERE  a.cod_conult    =   c.cod_contro    AND
-                                a.cod_ultnov    =   d.cod_noveda    AND
-                                a.num_despac    =   '" . $desenruta[$i][0] . "')
-         UNION
-       (SELECT	e.ind_fuepla, a.cod_conult,a.cod_ultnov,a.fec_ultnov,a.usr_ultnov,
-                b.des_noveda,c.nom_contro,d.nom_noveda,b.fec_noveda,
-                                b.cod_contro,e.nom_noveda,  b.fec_creaci, c.cod_colorx
-                          FROM  " . BASE_DATOS . ".tab_despac_despac    a   LEFT    JOIN
-                                " . BASE_DATOS . ".tab_despac_noveda    b   ON
-                                a.num_despac    =   b.num_despac    
-                                LEFT    JOIN " . BASE_DATOS . ".tab_genera_noveda   e   ON
-                                b.cod_noveda    =   e.cod_noveda,
-                                " . BASE_DATOS . ".tab_genera_contro    c,
-                                " . BASE_DATOS . ".tab_genera_noveda    d
-                         WHERE  a.cod_conult    =   c.cod_contro    AND
-                                a.cod_ultnov    =   d.cod_noveda    AND
-                                a.num_despac    =   '" . $desenruta[$i][0] . "')
-                      ORDER BY  12  DESC    LIMIT   1";
-                $consulta = new Consulta($query, $this->conexion);
-                $fuer_plan = $consulta->ret_matriz();
-
-                if ($_REQUEST['FUEPLA'] == '1' && $fuer_plan[0][0] != '1') {
-                    continue;
-                }
-
-                //if( $fuer_plan[0][0]=='1' && $_REQUEST['alacla'] != 'F' )
-                //{
-                //continue;
-                //}
-
-                $valimp = 1;
-                $indicad_mostrar_condic = 1;
-
-                //validacion de alarmas nueva --jose
-                $query = "SELECT     cod_tipdes " .
-                        "FROM " . BASE_DATOS . ".tab_despac_despac " .
-                        "WHERE num_despac='" . $desenruta[$i][0] . "'";
-                $consulta = new Consulta($query, $this->conexion);
-                $cod_tipdes = $consulta->ret_matriz();
-
-                $query = "SELECT a.tie_conurb, a.tie_contro, a.cod_tipser 
-                FROM " . BASE_DATOS . ".tab_transp_tipser a,
-			 				 			 (SELECT MAX(num_consec) AS num_consec 
-                        FROM " . BASE_DATOS . ".tab_transp_tipser
-                       WHERE cod_transp='" . $desenruta[$i][15] . "') b
-               WHERE a.cod_transp='" . $desenruta[$i][15] . "' AND 
-                 		 a.num_consec= b.num_consec ";
-                $consulta = new Consulta($query, $this->conexion);
-                $transpor = $consulta->ret_matriz();
-
-                if ($transpor) {
-                    if ($transpor[0][2] == '1') {
-                        $tiem = 'P';
-                    } else {
-                        if ($cod_tipdes[0][0] == '1') {
-                            $tiem = $transpor[0][0];
-                        } else {
-                            $tiem = $transpor[0][1];
-                        }
-                    }
-                } else {
-                    if ($cod_tipdes[0][0] == '1')
-                        $tiem = 25;
-                    else
-                        $tiem = 80;
-                }
-
-                $query = "SELECT a.usr_ultnov, a.cod_conult, a.cod_ultnov, " .
-                        "IF( a.fec_ultnov IS NULL, DATE_FORMAT( a.fec_salida, '%Y-%m-%d %H:%i' ), DATE_FORMAT( a.fec_ultnov, '%Y-%m-%d %H:%i' )  ), " .
-                        "a.fec_salida, a.fec_manala ,if(a.ind_defini = '1','SI','NO') as defini " .
-                        "FROM " . BASE_DATOS . ".tab_despac_despac a " .
-                        "WHERE a.num_despac='" . $desenruta[$i][0] . "'";
-                $consulta = new Consulta($query, $this->conexion);
-                $despac = $consulta->ret_matriz();
-
-                //busca la novedad 
-                $tiem_diff = '';
-                $query = "SELECT nom_noveda, ind_fuepla
-                FROM " . BASE_DATOS . ".tab_genera_noveda 
-               WHERE cod_noveda = '" . $despac[0][2] . "'";
-                $consulta = new Consulta($query, $this->conexion);
-                $noveda = $consulta->ret_matriz();
-
-
-
-                $query = "SELECT nom_contro, cod_colorx
-                FROM " . BASE_DATOS . ".tab_genera_contro  
-               WHERE cod_contro = '" . $despac[0][1] . "'";
-                $consulta = new Consulta($query, $this->conexion);
-                $contro_actual = $consulta->ret_arreglo();
-
-                $noveda[0][1] = $contro_actual[0];
-
-                //agreega el tiempo de duracion de la pernoctacion
-                if ($despac[0][1] != '') {
-                    $query = "SELECT tiem_duraci 
-                 FROM " . BASE_DATOS . ".tab_despac_contro
-                WHERE num_despac = '" . $desenruta[$i][0] . "' AND
-                      fec_contro = '" . $despac[0][3] . "" . ":00'
-            ORDER BY fec_creaci DESC";
-                    $consulta = new Consulta($query, $this->conexion);
-                    $tiem_diff = $consulta->ret_matriz();
-                }
-
-                if ($tiem_diff && $tiem_diff[0][0] != 0) {
-                    $tiem = $tiem_diff[0][0];
-                } else {
-                    if ($despac[0][2] != '') {
-                        $query = "SELECT tiem_duraci 
-                   FROM " . BASE_DATOS . ".tab_despac_noveda
-                  WHERE num_despac = '" . $desenruta[$i][0] . "' AND
-                        fec_noveda = '" . $despac[0][3] . "" . ":00'
-               ORDER BY fec_creaci DESC";
-                        $consulta = new Consulta($query, $this->conexion);
-                        $tiem_diff = $consulta->ret_matriz();
-                    }
-                    if ($tiem_diff && $tiem_diff[0][0] != 0) {
-                        $tiem = $tiem_diff[0][0];
-                    }
-                }
-
-                if ($despac[0][2] == '' && $despac[0][1] == '' || ( $despac[0]['fec_manala'] == $despac[0]["fec_salida"] ))
-                    $tiem = '0';
-
-                //Se hace la validacion para alarmas acumulables
-                $query = "SELECT fec_manala 
-                FROM " . BASE_DATOS . ".tab_despac_despac 
-               WHERE num_despac = '" . $desenruta[$i][0] . "'";
-                $consulta = new Consulta($query, $this->conexion);
-                $mFecManala = $consulta->ret_matriz();
-
-                $mFecManala = $mFecManala[0][0];
-                $tiemdif = '';
-                if ($mFecManala) {
-                    $query = "SELECT CAST( (TIME_TO_SEC( TIMEDIFF(NOW(), '" . $mFecManala . "')) / 60) AS UNSIGNED INTEGER )";
-                    $consulta = new Consulta($query, $this->conexion);
-                    $mTieDif = $consulta->ret_matriz();
-                    $tiemdif = $mTieDif[0][0];
-                }
-
-                if (is_numeric($tiem)) {
-                    if ($tiemdif == '') {
-                        $query = "SELECT TIMEDIFF(  NOW(), '" . $despac[0][3] . "' ) ";
-                        $consulta = new Consulta($query, $this->conexion);
-                        $tiemdif = $consulta->ret_matriz();
-                        $tiemdif = explode(":", $tiemdif[0][0]);
-                        $tiemdif = ($tiemdif[0] * 60) + $tiemdif[1];
-                        //valida para monitoreo mixto y un perfil especifico si ya deberia haber pasado por un puesto
-                        $fisico = 0;
-                    }
-
-                    $tieret = "";
-                    if ($tiemdif > $tiem) {
-                        $indicad_mostrar_condic = 1;
-                        $tieret = $tiemdif - $tiem;
-                    }
-                } else {
-                    $query = "SELECT    a.cod_contro,a.fec_alarma " .
-                            "FROM " . BASE_DATOS . ".tab_despac_seguim a " .
-                            "WHERE a.num_despac='" . $desenruta[$i][0] . "'
-                       AND a.ind_estado = 1 
-                       AND a.cod_contro NOT IN (SELECT cod_contro FROM " . BASE_DATOS . ".tab_despac_noveda b 
-                       WHERE b.num_despac='" . $desenruta[$i][0] . "' AND a.num_despac = b.num_despac
-                       AND a.cod_rutasx = b.cod_rutasx)
-              ORDER BY a.fec_planea ";
-                    $consulta = new Consulta($query, $this->conexion);
-                    $sitios = $consulta->ret_matriz();
-
-                    $fecha = date('Y-m-d H:i:s');
-                    if ($fecha < $sitios[0][1])
-                        $query = "SELECT TIMEDIFF(  '" . $sitios[0][1] . "',NOW()   ) ";
-                    else
-                        $query = "SELECT TIMEDIFF(  NOW(),'" . $sitios[0][1] . "'   ) ";
-
-                    $consulta = new Consulta($query, $this->conexion);
-                    $tieret = $tiemdif;
-                    $tiemdif = $consulta->ret_matriz();
-                    $tiemdif = explode(":", $tiemdif[0][0]);
-                    $tiemdif = ($tiemdif[0] * 60) + $tiemdif[1];
-                    $tieret = "";
-                    $indicad_mostrar_condic = 1;
-                    $tieret = $tiemdif - $tieret;
-                    if ($fecha < $sitios[0][1])
-                        $tieret = $tieret * (-1);
-                }
-
-                if ($tieret > 0) {
-                    $y = 1;
-
-                    for ($z = 0; $z <= sizeof($colores); $z++) {
-                        if ($z + 1 == $_REQUEST['alacla']) {
-                            $color_alacla = $colores[$z][1];
-                        }
-                        if ($tieret <= $colores[$z][0]) {
-                            $x = $z;
-                            $y = 2;
-                            break;
-                        }
-                    }
-
-                    if ($y == 1) {
-                        $color_a[0] = $colores[sizeof($colores) - 1][1];
-                    } else {
-                        $color_a[0] = $colores[$x][1];
-                    }
-                } else {
-                    $color_a[0] = '#FFFFFF';
-
-
-                    if ('S' == $_REQUEST['alacla']) {
-                        $color_alacla = '#FFFFFF';
-                    }
-                }
-
-                if ($color_a[0] != $color_alacla && $_REQUEST["alacla"]) {
-                    //Si el despacho tiene un color distinto al del alacla no se imprime ese despacho
-                    continue;
-                } else {
-                    //Se cuentan cuantos despachos hay en ruta para ese alacla
-                    $total_desenruta++;
-                }
-
-                if ($tieret != "")
-                    $desenruta[$i]["tiempo"] = $tieret;
-                else
-                if ($tiemdif != "")
-                    $desenruta[$i]["tiempo"] = $tiemdif - $tiem;
-
-                //Generador del Manifiesto.
-                $generador = "SELECT a.abr_tercer
-				      		  FROM " . BASE_DATOS . ".tab_tercer_tercer a,
-						        	   " . BASE_DATOS . ".tab_despac_despac b
-						       WHERE a.cod_tercer = b.cod_client AND
-							           b.num_despac = '" . $desenruta[$i][0] . "' ";
-                $consulta = new Consulta($generador, $this->conexion);
-                $generador = $consulta->ret_matriz();
-
-                $generador = $generador [0][0];
-
-                $nota = "SELECT LEFT( a.obs_contro, 50 ), a.fec_contro
-		 				  FROM " . BASE_DATOS . ".tab_despac_contro a
-						  WHERE a.num_despac = '" . $desenruta[$i][0] . "' 
-				  ORDER BY a.cod_consec DESC ";
-                $consulta = new Consulta($nota, $this->conexion);
-                $nota = $consulta->ret_matriz();
-
-                $nota = $nota[0];
-
-                $llamadas1 = "SELECT COUNT( 1 )
-								  FROM " . BASE_DATOS . ".tab_despac_contro a
-								  WHERE a.num_despac = '" . $desenruta[$i][0] . "'";
-
-                $consulta = new Consulta($llamadas1, $this->conexion);
-                $llamadas1 = $consulta->ret_matriz();
-                $llamadas1 = $llamadas1[0][0];
-
-                $llamadas2 = "SELECT COUNT( 1 )
-								  FROM " . BASE_DATOS . ".tab_despac_noveda a
-								  WHERE a.num_despac = '" . $desenruta[$i][0] . "'";
-
-                $consulta = new Consulta($llamadas2, $this->conexion);
-                $llamadas2 = $consulta->ret_matriz();
-                $llamadas2 = $llamadas2[0][0];
-            }
-            if ($desfut)
-                $desenruta = $this->orderMultiDimensionalArray($desenruta, 'tiempo', 0);
-            
-            for ($i = 0; $i < sizeof($desenruta); $i++) {
-                
-                if ($datos_usuario["bandeja"]) {
-                    if ($valimp && $color_a[0] == "FFFF66") {
-                        if ($indicad_mostrar_condic) {
-                            $ciudad_o = $this->getSeleccCiudad($desenruta[$i][2], 1);
-                            $ciudad_d = $this->getSeleccCiudad($desenruta[$i][3], 1);
-
-                            $num_despac = $desenruta[$i][0];
-
-                            $desenruta[$i][0] = "<a href=\"index.php?cod_servic=" . $this->servic . "&window=central&despac=" . $desenruta[$i][0] . "&opcion=" . $this->opcion . " \"target=\"centralFrame\">" . $desenruta[$i][0] . "</a>";
-
-                            $formulario->linea($desenruta[$i][0], 0, "i", 0, 0, "left", $color_a[0]);
-
-                            $formulario->linea($desenruta[$i]["tiempo"], 0, "i");
-
-                            $formulario->linea($despac[0]["defini"], 0, "i");
-                            $formulario->linea($desenruta[$i][1], 0, "i");
-                            $formulario->linea($desenruta[$i]['aseguradora'], 0, "i");
-
-
-
-                            $formulario->linea(( (int) $llamadas1 + (int) $llamadas2), 0, "i");
-
-                            if ($manredes == 1) {
-                                $formulario->linea($desenruta[$i][12], 0, "i");
-                                $formulario->linea($desenruta[$i][13], 0, "i");
-                            }
-
-                            $formulario->linea($ciudad_o[0][1], 0, "i");
-                            $formulario->linea($ciudad_d[0][1], 0, "i");
-                            $formulario->linea($desenruta[$i][4], 0, "i");
-                            $formulario->linea($desenruta[$i][5], 0, "i");
-                            $formulario->linea($desenruta[$i][6], 0, "i");
-                            $formulario->linea($desenruta[$i][7], 0, "i");
-                            $formulario->linea($despac[0][3], 0, "i");
-                            $formulario->linea("--> ".$noveda[0][1], 0, "i");
-                            $formulario->linea($noveda[0][0], 0, "i");
-
-                            $formulario->linea($generador, 0, "i");
-                            echo "<td class='celda_info' style='width:100px' >$nota[0]&nbsp;</td>";
-                            $formulario->linea($nota[1], 1, "i");
-
-                            $en_bandeja++;
-                        }
-                    }
-                } else if ($valimp) {
-                    echo "<div style='display:none'>" . $desenruta[$i]["bandeja"] . "</div>";
-                    $indicad_mostrar_condic = 1;
-
-                    if ($indicad_mostrar_condic) {
-                        //vlix85
-                        $_EAL = TRUE;
-                        //-----------------------------------------------------------------------------------------------------
-                        if (in_array($_SESSION["datos_usuario"]['cod_perfil'], array(COD_PERFIL_ADMINIST, COD_PERFIL_SUPEFARO, COD_PERFIL_SUPERUSR, COD_PERFIL_SUPEGENE))) {
-                            $_EAL = $this->GET_EAL($desenruta[$i][0]);
-                            if (!$_EAL && (isset($_REQUEST["EAL"]) && (int) $_REQUEST["EAL"] == 1) && (int) $transpor[0][2] != 2)
-                                continue;
-                        }
-                        //-----------------------------------------------------------------------------------------------------
-
-
-                        $ind_enrutas++;
-                        $vlix1017 = $desenruta[$i][0];
-                        $ciudad_o = $this->getSeleccCiudad($desenruta[$i][2], 1);
-                        $ciudad_d = $this->getSeleccCiudad($desenruta[$i][3], 1);
-
-                        //Obtiene la informaci?n
-                            $query = "SELECT a.usr_ultnov, a.cod_conult, a.cod_ultnov, " .
-                                    "IF( a.fec_ultnov IS NULL, DATE_FORMAT( a.fec_salida, '%Y-%m-%d %H:%i' ), DATE_FORMAT( a.fec_ultnov, '%Y-%m-%d %H:%i' )  ), " .
-                                    "a.fec_salida, a.fec_manala ,if(a.ind_defini = '1','SI','NO') as defini " .
-                                    "FROM " . BASE_DATOS . ".tab_despac_despac a " .
-                                    "WHERE a.num_despac='" . $desenruta[$i][0] . "'";
-                            $consulta = new Consulta($query, $this->conexion);
-                            $despac = $consulta->ret_matriz();
-
-                            $query = "SELECT nom_noveda, ind_fuepla
-                                FROM " . BASE_DATOS . ".tab_genera_noveda 
-                            WHERE cod_noveda = '" . $despac[0][2] . "'";
-                            $consulta = new Consulta($query, $this->conexion);
-                            $noveda = $consulta->ret_matriz();
-
-                            $query = "SELECT nom_contro, cod_colorx
-                            FROM " . BASE_DATOS . ".tab_genera_contro  
-                            WHERE cod_contro = '" . $despac[0][1] . "'";
-                            $consulta = new Consulta($query, $this->conexion);
-                            $contro_actual = $consulta->ret_arreglo();
-            
-                            $noveda[0][1] = $contro_actual[0];
-
-                            $nota = "SELECT LEFT( a.obs_contro, 50 ), a.fec_contro
-                                    FROM " . BASE_DATOS . ".tab_despac_contro a
-                                    WHERE a.num_despac = '" . $desenruta[$i][0] . "' 
-                            ORDER BY a.cod_consec DESC ";
-                            $consulta = new Consulta($nota, $this->conexion);
-                            $nota = $consulta->ret_matriz();
-                            $nota = $nota[0];
-                            
-
-                        $desenruta[$i][0] = "<a href=\"index.php?cod_servic=" . $this->servic . "&window=central&tie_ultnov=" . $desenruta[$i]["tiempo"] . "&despac=" . $desenruta[$i][0] . "&opcion=" . $this->opcion . " \"target=\"centralFrame\">" . $desenruta[$i][0] . "</a>";
-                        //Jorge 120404
-                        $formulario->linea($desenruta[$i][0], 0, "i", 0, 0, "left", $color_a[0]);
-                        $formulario->linea($desenruta[$i]["tiempo"], 0, "i");
-                        $formulario->linea($despac[0]["defini"], 0, "i");
-
-                        //vlix85
-                        //-------------------------------------------
-                        if ($_EAL && in_array($_SESSION["datos_usuario"]['cod_perfil'], array(COD_PERFIL_ADMINIST, COD_PERFIL_SUPEFARO, COD_PERFIL_SUPERUSR, COD_PERFIL_SUPEGENE)) && (int) $transpor[0][2] != 2) {
-                            $formulario->linea($desenruta[$i][1], 0, "i", 0, 0, "center\" onclick=\"poppc($vlix1017);", "#7fff99; cursor:pointer");
-                        } else {
-                            $formulario->linea($desenruta[$i][1], 0, "i", 0, 0, "center", "#FFF");
-                        }
-                        //-------------------------------------------
-                        //$formulario->linea($desenruta[$i]['aseguradora'], 0, "i");
-                        //$formulario->linea(( (int) $llamadas1 + (int) $llamadas2), 0, "i");
-
-                        if ($manredes == 1) {
-                            $formulario->linea($desenruta[$i][12], 0, "i");
-                            $formulario->linea($desenruta[$i][13], 0, "i");
-                        }
-
-                        $formulario->linea($ciudad_o[0][1], 0, "i");
-                        $formulario->linea($ciudad_d[0][1], 0, "i");
-                        $formulario->linea($desenruta[$i][4], 0, "i");
-                        $formulario->linea($desenruta[$i][5], 0, "i");
-                        $formulario->linea($desenruta[$i][6], 0, "i");
-                        $formulario->linea($desenruta[$i][7], 0, "i");
-
-
-                        $formulario->linea($despac[0][3], 0, "i");
-                        $formulario->linea($noveda[0][1], 0, "i");
-                        $formulario->linea($noveda[0][0], 0, "i");
-
-                        $formulario->linea($generador, 0, "i");
-
-                        echo "<td class='celda_info' style='width:100px' >$nota[0]&nbsp;</td>";
-                        $formulario->linea($nota[1], 1, "i");
-                    }
-                }
-            }
-
-        //--------------------------------------------------------------------------     
-            $formulario->oculto("cod_cond\" id=\"totID", $ind_enrutas, 0);
-            echo "<script language=\"JavaScript\"> document.getElementById('totalID').innerHTML = 'Se Encontro un Total de '+ document.getElementById('totID').value +' Despacho(s) en Ruta';</script>\n";
-        }
-
-        //------------------------------------------------------------------
-        echo "<div id='pc' title='Puestos de Control sin Novedad' style='background: #FFF; padding: 0; margin: 0;'>&nbsp;</div>";
-        //------------------------------------------------------------------
-
-
-        if ($datos_usuario["bandeja"]) {
-            $formulario->nueva_tabla();
-            $formulario->linea("Se Encontro un Total de " . $en_bandeja . " Despacho(s) con Alarma Amarilla", 0, "t2");
-        }
-
-        //if($ind_porlleg && !$des_retras && !$desfut && $_REQUEST['alacla']!='ecl')
-        if ($ind_porlleg && !$des_retras && !$desfut) {
-
-            $formulario->nueva_tabla();
-
-
-            if (!$datos_usuario["bandeja"]) {
-
-                if (!$finali) {
-                    if ($GLOBALS_ADD[0]["campo"] == "alacla" && $GLOBALS_ADD[0]["valor"] != "L" && $GLOBALS_ADD[0]["valor"])
-                        $totalultdes = 0;
-                    else
-                        $totalultdes = $ind_porlleg;
-
-                    if ($manredes == 1 && $desurb == 1)
-                        $formulario->linea("Se Encontro un Total de <span id='tot2ID'>" . $totalultdes . "</span> Despacho(s) Urbanos &oacute; Pendientes por Llegada", 0, "t2");
-                    else
-                        $formulario->linea("Se Encontro un Total de <span id='tot2ID'>" . $totalultdes . "</span> Despacho(s) Pendientes por Llegada", 0, "t2");
-                } else
-                    $formulario->linea("Se Encontro un Total de <span id='tot2ID'>" . $this->paginador->totalr . "</span>  Despacho(s) Finalizado(s)", 0, "t2");
-
-                $varadici[$i]["nomvar"] = "origen";
-                $varadici[$i]["valvar"] = $_REQUEST["origen"];
-                $i++;
-                $varadici[$i]["nomvar"] = "destino";
-                $varadici[$i]["valvar"] = $_REQUEST["destino"];
-                $i++;
-                $varadici[$i]["nomvar"] = "despac";
-                $varadici[$i]["valvar"] = $_REQUEST["despac"];
-                $i++;
-                $varadici[$i]["nomvar"] = "manifi";
-                $varadici[$i]["valvar"] = $_REQUEST["manifi"];
-                $i++;
-                $varadici[$i]["nomvar"] = "placa";
-                $varadici[$i]["valvar"] = $_REQUEST["placa"];
-                $i++;
-                $varadici[$i]["nomvar"] = "transp";
-                $varadici[$i]["valvar"] = $_REQUEST["transp"];
-
-                $this->paginador->getPaginas($formulario, "npagina", $varadici);
-
-
-
-                $formulario->nueva_tabla();
-                $formulario->linea("Despacho", 0, "t");
-                $formulario->linea("Manifiesto", 0, "t");
-
-                if ($finali) {
-                  $formulario->linea("No. Viaje", 0, "t");
-                }
-                
-                if ($manredes == 1) {
-                    $formulario->linea("Remisi&oacute;n", 0, "t");
-                    $formulario->linea("Pedido", 0, "t");
-                }
-
-                if (!$des_retras && $finali) {
-                    $formulario->lista_titulo("Origen", "origen\" onChange=\"form_item.submit()\"", $origen, 0);
-                    $formulario->lista_titulo("Destino", "destino\" onChange=\"form_item.submit()\"", $destino, 0);
-                    $formulario->lista_titulo("Transportadora", "transp\" onChange=\"form_item.submit()\"", $transpors, 0);
-                    $formulario->lista_titulo("Placas", "bplaca\" onChange=\"form_item.submit()", $placax, 0); 
-                } else {
-                    $formulario->linea("Origen", 0, "t");
-                    $formulario->linea("Destino", 0, "t");
-                    $formulario->linea("Transportadora", 0, "t");
-                    $formulario->linea("Placa", 0, "t");
-                }
-
-                //$formulario->linea("Placa", 0, "t");
-                $formulario->linea("Conductor", 0, "t");
-                $formulario->linea("Celular", 0, "t");
-
-                $formulario->linea("Fecha Novedad", 0, "t");
-                //$formulario->linea("Ultimo P/C", 0, "t");
-                $formulario->linea("Novedad", 0, "t");
-
-                $formulario->linea("Generador", 0, "t");
-                $formulario->linea("Ultima Nota Control", 0, "t");
-                $formulario->linea("Fecha N/C", 1, "t");
-            }
-
-            
-            for ($i = 0; $i < sizeof($porllegad); $i++) {
-                //Si le dieron clic a los despachos por fuera de plataforma, los despachos pendientes por dar llegada no son necesarios
-                if ($_REQUEST['FUEPLA'] == '1') {
-                    continue;
-                }
-                $query = "SELECT a.ind_urbano
-       		      FROM " . BASE_DATOS . ".tab_genera_contro a,
-       		           " . BASE_DATOS . ".tab_despac_seguim b
-       		     WHERE a.cod_contro = b.cod_contro AND
-       		           a.ind_urbano = '1' AND
-       		           b.num_despac = " . $porllegad[$i][0] . "
-       		    ";
-
-                $consulta = new Consulta($query, $this->conexion);
-                $despurban = $consulta->ret_matriz();
-
-                //trae la ultima fecha de la ultima novedad
-
-
-                $query = "SELECT c.nom_contro,c.cod_contro
-                  FROM " . BASE_DATOS . ".tab_despac_noveda a,
-                       " . BASE_DATOS . ".tab_genera_contro c
-                 WHERE a.num_despac = '" . $porllegad[$i][0] . "' AND
-                       a.cod_contro = c.cod_contro AND
-                       a.fec_noveda = '" . $maximo[0][0] . "'
-                       GROUP BY a.num_despac ";
-                $nom_contro = new Consulta($query, $this->conexion);
-                $nom_contro = $nom_contro->ret_arreglo();
-
-                $query = "SELECT b.nom_noveda, b.cod_noveda, a.fec_ultnov
-                  FROM " . BASE_DATOS . ".tab_despac_despac a,
-                       " . BASE_DATOS . ".tab_genera_noveda b
-                 WHERE a.num_despac = '" . $porllegad[$i][0] . "' AND
-                       a.cod_ultnov = b.cod_noveda
-                       GROUP BY a.num_despac ";
-                $nom_noveda = new Consulta($query, $this->conexion);
-                $nom_noveda = $nom_noveda->ret_arreglo();
-                $maximo[0][0] = $nom_noveda[2];
-
-                //Generador del Manifiesto.
-                $generador = "SELECT a.abr_tercer
-									  FROM " . BASE_DATOS . ".tab_tercer_tercer a,
-										   " . BASE_DATOS . ".tab_despac_despac b
-									  WHERE a.cod_tercer = b.cod_client AND
-											b.num_despac = '" . $porllegad[$i][0] . "' ";
-
-                $consulta = new Consulta($generador, $this->conexion);
-                $generador = $consulta->ret_matriz();
-                $generador = $generador [0][0];
-
-                $nota = "SELECT LEFT( a.obs_contro, 50 ), a.fec_contro
-						  FROM " . BASE_DATOS . ".tab_despac_contro a
-						  WHERE a.num_despac = '" . $porllegad[$i][0] . "' 
-						  ORDER BY a.cod_consec DESC ";
-
-                $consulta = new Consulta($nota, $this->conexion);
-                $nota = $consulta->ret_matriz();
-                $nota = $nota[0];
-
-                //Trae la Ultima Observacion de nota de controlador
-                $query = "SELECT c.obs_contro
-                 FROM " . BASE_DATOS . ".tab_despac_contro c,
-											" . BASE_DATOS . ".tab_despac_despac a
-                WHERE a.num_despac = " . $porllegad[$i][0] . " AND
-											a.num_despac = c.num_despac AND
-                      c.cod_consec = a.cod_consec
-                      GROUP BY 1
-                  ";
-                $consulta = new Consulta($query, $this->conexion);
-                $ultnotco = $consulta->ret_matriz();
-
-                if (!$liscon) {
-                    $porllegad[$i][8] = $maximo[0][0];
-                    $porllegad[$i][9] = $nom_contro[0];
-                    $porllegad[$i][10] = $nom_noveda[0];
-                } else
-                    $porllegad[$i][8] = $ultnotco[0][0];
-
-
-                $indicad_mostrar_condic = 0;
-
-                if ($GLOBALS_ADD[0]["campo"] == "alacla" && $GLOBALS_ADD[0]["valor"] == "L")
-                    $indicad_mostrar_condic = 1;
-                else if ($GLOBALS_ADD[0]["campo"] == "alacla" && !$GLOBALS_ADD[0]["valor"])
-                    $indicad_mostrar_condic = 1;
-                else if ($finali || $desfut || !$GLOBALS_ADD)
-                    $indicad_mostrar_condic = 1;
-
-                $ciudad_o = $this->getSeleccCiudad($porllegad[$i][2]);
-                $ciudad_d = $this->getSeleccCiudad($porllegad[$i][3]);
-
-                $estilo_celda = "i";
-
-                if ($despurban)
-                    $estilo_celda = "iu";
-
-                $indicad_mostrar_condic = 1;
-
-                if ($datos_usuario["bandeja"]) {
-                    
-                } else if ($indicad_mostrar_condic) {
-                    //vlix85
-                    $_EAL1 = TRUE;
-                    //-----------------------------------------------------------------------------------------------------
-                    if (in_array($_SESSION["datos_usuario"]['cod_perfil'], array(COD_PERFIL_ADMINIST, COD_PERFIL_SUPEFARO, COD_PERFIL_SUPERUSR, COD_PERFIL_SUPEGENE))) {
-                        $_EAL1 = $this->GET_EAL($porllegad[$i][0]);
-                        if (!$_EAL1 && (isset($_REQUEST["EAL"]) && (int) $_REQUEST["EAL"] == 1) && (int) $transpor[0][2] != 2)
-                            continue;
-                    }
-                    $count++;
-                    //----------------------------------------------------------------------------------------------------- 
-                    $vlix1017 = $porllegad[$i][0];
-                    $porllegad[$i][0] = "<a href=\"index.php?cod_servic=" . $this->servic . "&window=central&despac=" . $porllegad[$i][0] . "&opcion=" . $this->opcion . " \"target=\"centralFrame\">" . $porllegad[$i][0] . "</a>";
-                    $formulario->linea($porllegad[$i][0], 0, $estilo_celda);
-                    //vlix85
-                    //-------------------------------------------
-                    if ($_EAL1 && in_array($_SESSION["datos_usuario"]['cod_perfil'], array(COD_PERFIL_ADMINIST, COD_PERFIL_SUPEFARO, COD_PERFIL_SUPERUSR, COD_PERFIL_SUPEGENE)) && (int) $transpor[0][2] != 2) {
-                        $formulario->linea($porllegad[$i][1], 0, "i", 0, 0, "center\" onclick=\"poppc($vlix1017);", "#7fff99; cursor: pointer;");
-                    } else {
-                        $formulario->linea($porllegad[$i][1], 0, "i", 0, 0, "center", "#FFF");
-                    }
-                    
-                    if ($finali) {
-                      $formulario->linea($porllegad[$i]['num_desext'], 0, $estilo_celda);
-                    }
-                    
-                    //-------------------------------------------
-                    //$formulario -> linea($porllegad[$i][1],0,$estilo_celda); OLD
-
-                    if ($manredes == 1) {
-                        $formulario->linea($porllegad[$i][12], 0, $estilo_celda);
-                        $formulario->linea($porllegad[$i][13], 0, $estilo_celda);
-                    }
-
-                    $formulario->linea($ciudad_o[0][1], 0, $estilo_celda);
-                    $formulario->linea($ciudad_d[0][1], 0, $estilo_celda);
-                    $formulario->linea($porllegad[$i][4], 0, $estilo_celda);
-                    $formulario->linea($porllegad[$i][5], 0, $estilo_celda);
-                    $formulario->linea($porllegad[$i][6], 0, $estilo_celda);
-                    $formulario->linea($porllegad[$i][7], 0, $estilo_celda);
-
-
-                    $formulario->linea($porllegad[$i][8], 0, $estilo_celda);
-                    //$formulario->linea($porllegad[$i][9], 0, $estilo_celda);
-                    $formulario->linea($porllegad[$i][10], 0, $estilo_celda);
-
-                    $formulario->linea($generador, 0, $estilo_celda);
-
-                    $style_td = "celda_info";
-                    if ($estilo_celda == 'iu')
-                        $style_td = "celda_urban_relleno";
-
-                    echo "<td class='$style_td' style='width:100px' >$nota[0]&nbsp;</td>";
-                    $formulario->linea($nota[1], 1, $estilo_celda);
-                }
-            }
-        }
-
-        if (!$ind_porlleg && !$desfut) {
-            $formulario->nueva_tabla();
-            if (!$finali)
-                $formulario->linea("No Se Encontrar&oacute;n Despachos Pendientes por dar Llegada", 0, "t2");
-            else
-                $formulario->linea("No Se Encontrar&oacute;n Despachos Finalizados", 0, "t2");
-        }
-
-
-        echo "<script language=\"JavaScript\"> document.getElementById('tot2ID').innerHTML = '" . $count . "';</script>\n";
-
-        $this->paginador->getPaginas($formulario, "npagina", $varadici);
-
-        $formulario->nueva_tabla();
-
-
-
-        if ($GLOBALS_ADD) {
-
-            for ($i = 0; $i < sizeof($GLOBALS_ADD); $i++)
-                $formulario->oculto($GLOBALS_ADD[$i]["campo"], $GLOBALS_ADD[$i]["valor"], 0);
-        }
-
-        if ($GLOBALS_ADD["atras"]) {
-            $formulario->botoni("Atras", "javascript:history.go(-1)", 0);
-            $formulario->oculto("atras", "si", 0);
-        }
-
-
-        $formulario->oculto("usuario", "$usuario", 0);
-
-        $formulario->oculto("valor", $valor, 0);
-
-        $formulario->oculto("window", "central", 0);
-
-        $formulario->oculto("cod_servic", $this->servic, 0);
-        $formulario->oculto("central\" id=\"central", DIR_APLICA_CENTRAL, 0);
-        if ($this->opcion_base)
-            $formulario->oculto("opcion", $this->opcion_base, 0);
-
-
-        $formulario->cerrar();
-
-        if ($_REQUEST["defini"] == 0 || $_REQUEST["defini"] == 1) {
-            echo "<script language=\"JavaScript\">";
-            echo "document.getElementById('definiID').value=" . $_REQUEST["defini"] . ";";
-            echo "</script>";
-        }
-    }
 
     public function IMPMAT( $parametros , $die = null )
     {
@@ -1876,15 +122,7 @@ class Despachos
         echo "<style>
         td > label {
             word-break: break-all;
-        }
-        
-        input:disabled,
-textarea:disabled,
-select:disabled {
-  cursor: not-allowed;
-}
-        
-        </style>";
+        }</style>";
     }//Fin Funcion IncludeJsStyle
 
     public function verifyConsolHijo( $despac )
@@ -2169,6 +407,78 @@ select:disabled {
         //$this -> IMPMAT( $encab99 );
         return $encab99;
     }//Fin Funcion getInfoEncab99
+
+
+    function dataPlanRuta($mNumDespac, $mDataUsuar, $mRuta = NULL, $limit, $pagina, $mfiltro)
+    {
+        $mObs = array('NA', 'DESCONOCIDA');
+        $mView = self::getView('jso_encabe');
+
+        
+
+        #<Verifica Viaje Consolidado>
+            $mNumDesOri = $mNumDespac; #Guarda el Despacho Original
+            $mIndConsol = self::verifyConsol( $mNumDespac );
+
+            if( $mIndConsol )
+            {
+                $mNumConsol = $this -> getViajesConsol( $mNumDespac ); #Trayendo los despachos consolidados para este despacho
+                $mNumDespac = $mNumConsol;
+                $mNumConsol = explode(",", $mNumConsol);
+
+                //Codigo que agrega un link a los numeros de consolidados
+                for( $i = 0; $i < sizeof($mNumConsol); $i++ )
+                    $mNumConsol[$i] = '<a href="index.php?cod_servic=3302&window=central&despac='.$mNumConsol[$i].'&opcion=1" target="_blank" style="color:green;">'.$mNumConsol[$i].'</a>';
+
+                $mNumConsol = implode(", ", $mNumConsol);
+                $mStrDespac = $mNumDesOri . ' (Consolidado '.$mNumConsol.')'; #String Despacho
+                $mIndConsol = 1;
+            }
+            else
+            {
+                $mIndConhij = self::verifyConsolHijo( $mNumDespac );
+
+                if( $mIndConhij )
+                {
+                    $mNumDesPad = self::getDespacPadre( $mNumDespac ); # Numero Despacho Padre
+                    $mLink = '<a href="index.php?cod_servic=3302&window=central&despac='.$mNumDesPad.'&opcion=1" target="_blank">'.$mNumDesPad.'</a>';
+                    $mStrDespac = $mNumDespac." Consolidado a: ".$mLink; #String Despacho
+                } 
+                else
+                    $mStrDespac = $mNumDespac; #String Despacho
+
+                $mIndConsol = 0;
+            }
+        #</Verifica Viaje Consolidado>
+
+        #mData informaci?n de despacho
+        $mData = self::getDataEncabezado( $mNumDesOri, $mNumDespac, $mIndConsol, $mObs );
+        $mData['num_despac'] = $mStrDespac; 
+
+        $codtran=$this->cod_transp_tercero;
+        $queryseg="SELECT a.num_consec, a.cod_transp, a.ubi_seguim,
+                          a.ind_estado 
+                    FROM ".BASE_DATOS.".tab_transp_tipser a
+                    WHERE a.cod_transp LIKE '". $codtran."'
+                    ORDER BY a.num_consec DESC LIMIT 1";
+                    
+        $mConsultseg = new Consulta($queryseg, $this->conexion);
+        $codseg = $mConsultseg->ret_arreglo();
+        $codseg = $codseg[2] ;
+
+        $mEstServ = self::getView('jso_encabe');
+
+        $viewAlias = self::getView('jso_plarut');
+        $watchAlias = $viewAlias->inf_planru->sub->ali_usuari;
+
+        $results = self::PlanDeRutaArray( $mNumDesOri, $mRuta['link'], $mRuta['finali'], $mRuta['opcurban'], $mDataUsuar, $mRuta['lleg'], $mRuta['tie_ultnov'], $mData['aux_placax'], $mData['cod_agenci'],$limit, $pagina, $mfiltro);
+        $results['codseg'] = $codseg;
+        $results['mEstServ'] = $mEstServ;
+        $results['viewAlias'] = $viewAlias;
+
+        return $results;
+
+    }
 
     /*! \fn: Encabezado
      *  \brief: Encabezado del despacho
@@ -2667,17 +977,8 @@ select:disabled {
                                     "msg_itiner" => "Msg Itinerario"
                                     );
 
-        $mTittle[1] = array( "id" => "dat_comple", "tittle" => "DATOS DEL PROPIETARIO");
-        $mTittle[1]['data'] = array( 
-                                    "nom_propie" => "Propietario", 
-                                    "cod_propie" => "Documento", 
-                                    "num_propie_telmov" => "Celular",
-                                    "num_propie" => "Telefono", 
-                                    "" => "",
-                                    );
-
-        $mTittle[2] = array( "id" => "dat_comple", "tittle" => "DATOS COMPLEMENTARIOS DEL DESPACHO");
-        $mTittle[2]['data'] = array("nom_colorx" => "Color", 
+        $mTittle[1] = array( "id" => "dat_comple", "tittle" => "DATOS COMPLEMENTARIOS DEL DESPACHO");
+        $mTittle[1]['data'] = array("nom_colorx" => "Color", 
                                     "nom_poseed" => "Poseedor", 
                                     "ano_modelo" => "Modelo", 
                                     "nom_genera" => "Generador",
@@ -2697,8 +998,8 @@ select:disabled {
                                     );
 
 
-        $mTittle[3] = array( "id" => "dat_fechas", "tittle" => "FECHAS DEL DESPACHO");
-        $mTittle[3]['data'] = array("fec_despac" => "Hora/Fecha Sistema", 
+        $mTittle[2] = array( "id" => "dat_fechas", "tittle" => "FECHAS DEL DESPACHO");
+        $mTittle[2]['data'] = array("fec_despac" => "Hora/Fecha Sistema", 
                                     "fec_salida" => "Fecha Salida del Despacho", 
                                     "fec_creaci" => "Fecha de Creaci&oacute;n", 
                                     "fec_citcar" => "Fecha Cita de Cargue", 
@@ -2712,8 +1013,6 @@ select:disabled {
         { #No tiene permisos de visualizacion de telefonos
             unset($mTittle[0]['data']['con_telmov']);
             unset($mTittle[0]['data']['con_telef1']);
-            unset($mTittle[1]['data']['num_propie_telmov']);
-            unset($mTittle[1]['data']['num_propie']);
         }
 
         $mHtml = new Formlib(2);
@@ -2764,7 +1063,6 @@ select:disabled {
                                                         $mTxt .= '</div>';
                                                     }
 
-                                                    $mTxt = 'No Habilitado Temporalmente.';
                                                     
                                                    
                                                 }else{
@@ -2774,7 +1072,7 @@ select:disabled {
                                             }else{
 
                                                 $mTxt = $mData[$key];
-                                                /*
+
                                                 if((self::getTiempoUltNovGPS($mData['num_despac']) || self::getNovedaSinSenalGPS($mData['num_despac'])) && self::valLLegada($mData['num_despac'])){
                                                     $mTxt = '<span style="color:red">'.$mData[$key].'</span>';
                                                     $mtitulo = '[Forzar Nuevo Reenvio]';
@@ -2783,8 +1081,8 @@ select:disabled {
                                                         $mtitulo = '[Reiniciar Itinerario] - SIN SENAL GPS';
                                                     }
                                                     $mTxt .= '  <a style="color:blue;" onclick="ReeItiner('.$mData['num_despac'].', `'.$mData['num_placax'].'`)">'.$mtitulo.'</a>';
-                                                    $mTxt = ' No Habilitado Temporalmente.';
-                                                }*/
+
+                                                }
                                             }
                                             $mTxt = array($tittle, $mTxt);
                                             break;
@@ -2802,7 +1100,7 @@ select:disabled {
                                                 $mTxt = array($tittle, $mTxt);
                                                 break;
                                         case 'can_noveda':
-                                            $cod_operad = '50';
+                                           /* $cod_operad = '50';
                                             if(BASE_DATOS == 'satt_intgps'){
                                                 $cod_operad = '53';
                                             }
@@ -2823,7 +1121,7 @@ select:disabled {
                                             }else{
                                                 $mTxt = $mData[$key];
                                             }
-                                            $mTxt = array($tittle, $mTxt);
+                                            $mTxt = array($tittle, $mTxt);*/
                                             break;
                                         case 'gps_urlxxx':
                                             $mViewEdt = self::getView('edt_gpsxxx');
@@ -2897,7 +1195,6 @@ select:disabled {
                         $mHtml->CloseDiv();
                     $mHtml->CloseDiv();
                 $mHtml->CloseDiv();
-                $mHtml->SetBody('</br></br>');
             }
         }
 
@@ -3247,8 +1544,8 @@ select:disabled {
      */
     private function divImgDespac( $mNumDespac )
     {
-      $mSelect = "SELECT cod_remesa, dir_fircon
-                FROM ".BASE_DATOS.".tab_cumpli_remesa 
+      $mSelect = "SELECT num_docume, num_consec, url_imagex 
+                FROM ".BASE_DATOS.".tab_cumpli_despac 
                  WHERE num_despac = '".$mNumDespac."' ";
 
       $consulta = new Consulta( $mSelect, $this -> conexion );
@@ -3257,9 +1554,9 @@ select:disabled {
       if( sizeof( $_IMAGEN ) > 0 )
       {
         echo '<script>
-                function showImage( url )
+                function showImage( num_docume )
                 { 
-                    $("<div><img  height=\'450\' width=\'450\' src=\'"+url+"\'></div>").dialog({
+                    $("<div><img  height=\'450\' width=\'450\' src=\'"+window.atob(num_docume)+"\'></div>").dialog({
                        width: 500,
                        height: 500,
                        modal: true,
@@ -3268,11 +1565,12 @@ select:disabled {
                     });
                 }
               </script>';
+
         foreach( $_IMAGEN as $row )
         {
-          $path = explode('/ap/',$row['dir_fircon']);
-          $mSrc =  "https://".$_SERVER['HTTP_HOST']."/ap/".$path[1];
-          $mHtml2 .= '&nbsp;&nbsp;&nbsp;<img style="border:1px solid #35650F; cursor:pointer;" onclick="showImage(\''.$mSrc.'\');" src="'.$mSrc.'" width="100" height="100"/>';
+          $tmp_file = $row['url_imagex']; 
+          $mSrc = $tmp_file;
+          $mHtml2 .= '&nbsp;&nbsp;&nbsp;<img style="border:1px solid #35650F; cursor:pointer;" onclick="showImage(\''.$mSrc.'\');" src="'.base64_decode($tmp_file).'" width="100" height="100"/>';
         }
 
         $mHtml = new Formlib(2);
@@ -3401,167 +1699,119 @@ select:disabled {
       return $alias[0][ali_usuari];
     }
 
-    /*! \fn: divNotasAlerta
-     *  \brief: Crea DIV de la seccion: Informacion de Notas Controlador
-     *  \author: Ing. Fabian Salinas
-     *  \date: 14/09/2015
-     *  \date modified: dia/mes/a?o
-     *  \param: mNumDespac  Integer  Numero del Despacho
-     *  \param: _DESPAC     Matriz   Informacion del Despacho
-     *  \param: _RUTASX     Matriz   Informacion de la ruta del despacho
-     *  \param: mView       Integer  1 Visible Opcion de Auditar
-     *  \param: mViewNotCon Array    Opciones de visualizacion de la seccion notas controlador
-     *  \return: HTML
-     */
-    private function divNotasAlerta( $mNumDespac, $_DESPAC, $_RUTASX, $mView, $mViewNotCon )
+    public function dataNotasContro( $mNumDespac, $limit, $pagina, $mfiltro)
     {
-      $mViewUsu = self::getViewUsu();
-
-      $mHtml = new Formlib(2);
-
-      $mHtml->OpenDiv("id:planRutaID; class:accordion");
-        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACIÃ“N DE ALARMA</center></h3>");
-        $mHtml->OpenDiv("id:secID");
-          $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
-            
-
-            $mHtml->Table("tr");
-
-           
-            if( $_RUTASX )
-            {
-                $mSalLinea = $_SESSION['datos_usuario']['cod_usuari'] == 'mgarcia' || $_SESSION['datos_usuario']['cod_usuari'] == 'soporte' ? 0 : 1;
-
-                $mHtml->LabelTit( 'Sitio de Seguimiento', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->LabelTit( 'Riesgo', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                $mHtml->LabelTit( 'Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->LabelTit( 'Agrup.', array("align"=>"center", "class"=>"cellTitu", "width"=>"5%") );
-                $mHtml->LabelTit( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"20%") );
-                $mHtml->LabelTit( 'Fecha Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                $mHtml->LabelTit( 'Fecha Sistema', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
-                $mHtml->LabelTit( 'Opciones', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                
-
-                $mHtml->CloseRow();
-
-            
-                $mNovedades = self::getNovedadAlarmas( $mNumDespac );
-                $mEstServ = self::getView('jso_encabe'); 
-
-                //Crea Array
-                $dataNov = [];
-                //Se Recorre las novedades
-                foreach ($mNovedades as $key => $data) {
-                    //Valida Permisos
-                    if( $mEstServ->est_servic->ind_visibl != 1 ){
-                        //Valida tipo de novedad y elimina posici?n
-                        if(in_array($data['cod_noveda'], array(9271,9272,9273))){
-                            unset($mNovedades[$key]);
-                        }
-                    }
-                }
-
-                //Permiso de no poder copiar las notas controlador
-                $RespPlaRut = self::getView('jso_plarut');
-                $cNocopy = '';
-                if(!$RespPlaRut->inf_notcon->sub->cop_notcon){
-                    $cNocopy = 'noselect';
-                }
-
-                //Se recorre las novedades para calcular el key automaticamente
-                foreach ($mNovedades as $key => $data) {
-                    $dataNov[] = $data;
-                }
-
-                //Reemplaza el arreglo de Novedades
-                $mNovedades = $dataNov;
-                
-                $mCanNov = sizeof($mNovedades);
-
-                $j=0;
-                $u=0;
-
-                for ($i = 0; $i < $mCanNov; $i++)
-                {
-
-                if( $_RUTASX[$i][nov_especi] == 1 )
-                {
-                    $mStyle = $j % 2 ? 'cellPar' : 'cellImpar';
-                    $j++;
-                }else{
-                    $mStyle = 'cell';
-                }
-                    
-
-                $mHtml->Row();
-
-                    $comp='';
-                
-                    //btn Riesgo
-
-
-                    switch ($mNovedades[$i][cod_riesgo]) {
-                        case 3:
-                            $badgeColor = "background-color: red; color: white;"; 
-                            $badgeText = "ALTO";
-                            break;
-                        case 2:
-                            $badgeColor = "background-color: orange; color: white;";
-                            $badgeText = "MEDIO";
-                            break;
-                        case 1:
-                            $badgeColor = "background-color: green; color: white;";
-                            $badgeText = "BAJO";
-                            break;
-                        default:
-                            $badgeColor = "background-color: gray; color: white;";
-                            $badgeText = "SIN DATOS";
-                    }
-
-                    $btn_riesgo = "<span style='padding: 2px 10px; font-size: 12px; font-weight: bold; border-radius: 5px; $badgeColor'>$badgeText</span>";
-                    //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
-                    $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
-                    $mHtml->Label( '<b>'.$btn_riesgo.'</b>', array("align"=>"center", "class"=>$mStyle) );
-
-                    // if para las novedades actualizadas
-
-                    $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
-                    if( $mUpdated[0]){
-                        $dataJson = base64_encode(json_encode($mUpdated));
-                        $link = "<a href='#' onclick='drawNovUpd(\"".$dataJson."\")'><u><font color='#000'>".htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true )."</font></u></a>";
+        $viewAlias = self::getView('jso_plarut');
+        $watchAlias = $viewAlias->inf_planru->sub->ali_usuari;
+        $mViewNotCon = $viewAlias->inf_notcon;
+        $mViewUsu = self::getViewUsu();
         
-                        $mHtml->Label( $link, array("align"=>"left", "class"=>$mStyle) );
-                    }else{ 
-                        $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
-                    }
-                    $mHtml->Label( '<b>'.$mNovedades[$i][cantidad].'</b>', array("align"=>"center", "class"=>$mStyle) );
-                    $mHtml->Label( utf8_encode($mNovedades[$i][obs_noveda]) , array("align"=>"left", "class"=>$mStyle) );
-                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
-                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
-                    $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][usr_creaci], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"right", "class"=>$mStyle) );
-                    $bnt_soluci = "<input type='button' onclick='showFormSoluciAlarmaNovedad(\"".$mNovedades[$i][cod_noveda]."\", \"".$mNovedades[$i][consecutivos]."\", \"".$mNovedades[$i][tip_noveda]."\")' value='Solucionar' style='background-color:rgb(25, 111, 1);color: #FFF;font-weight: bold;padding: 2px 30px;'>";    
-                    $mHtml->Label( $bnt_soluci, array("align"=>"center", "class"=>$mStyle) );
 
-                    
+        $mSelect = "SELECT a.obs_despac, b.obs_medcom, b.obs_proesp,
+                        a.obs_llegad, a.fec_salida, b.cod_rutasx, 
+                        a.cod_tipdes, b.cod_transp, a.cod_tipdes,a.num_despac
+                    FROM " . BASE_DATOS . ".tab_despac_despac a 
+                    INNER JOIN " . BASE_DATOS . ".tab_despac_vehige b 
+                        ON a.num_despac = b.num_despac 
+                    WHERE a.num_despac = '" . $mNumDespac . "' ";
+        $consulta = new Consulta( $mSelect, $this -> conexion );
+        $_DESPAC = $consulta -> ret_matrix('a'); 
 
 
+        $results = self::getNovedadPag( $mNumDespac ,NULL, $limit, $pagina, $mfiltro);
+        $mNovedades = $results['results'];
 
+        //Se recorre las novedades para calcular el key automaticamente
+        foreach ($mNovedades as $key => $data) {
+            $dataNov[] = $data;
+        }
 
+        //Reemplaza el arreglo de Novedades
+        $mNovedades = $dataNov;
+        $mCanNov = sizeof($mNovedades)-1;
 
+        for ($i = $mCanNov; $i >=0; $i--)
+        {
+            $mSolEfecti = "";
+            if( $mViewUsu->edi_noveda->ind_visibl == 1 && $mNovedades[$i][tab_origen] == 1 )
+            {
+                $mLinkUpd = '
+                <spam style="color:#416F1E; cursor:pointer"
+                onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,1)">
+                    [Editar]</spam>&nbsp;';
 
-                $mHtml->CloseRow();
-                $mHtml->SetBody('</tr>');
+                if($_SESSION["datos_usuario"]["cod_usuari"] == 'mgarcia' || $_SESSION["datos_usuario"]["cod_usuari"] == 'soporte') {
+                $mLinkUpd .= '
+                    <spam style="color:#416F1E; cursor:pointer"
+                    onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,2)">
+                    [Eliminar]
+                    </spam>';
                 }
             }
-       
 
-            $mHtml->CloseTable('tr');
-          $mHtml->CloseDiv();
-        $mHtml->CloseDiv();
-      $mHtml->CloseDiv();
+            if($mNovedades[$i][cod_noveda] != 342)
+            {
+                $consecutivoProtocolo = $this -> verifyNoveda($mNovedades[$i][cod_noveda], $mNumDespac, $mNovedades[$i]['fec_noveda']);   
 
-      return $mHtml->MakeHtml();
+                if($consecutivoProtocolo[0][num_consec])
+                {
+                    if($consecutivoProtocolo[0][ind_solnov] == '' || $consecutivoProtocolo[0][ind_solnov] == 0)
+                    {
+                        $mSolEfecti = "<input type='radio' name='ind_solefe".$i."' onclick='solucionEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> SI <input type='radio' name='ind_solefe".$i."' onclick='solucionNoEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> NO ";
+                    }
+                    elseif($consecutivoProtocolo[0][ind_solnov] == 1)
+                        $mSolEfecti = "<label>SI</label>";
+                }
+            }
+
+            $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
+            if( $mUpdated[0]){
+                $dataJson = base64_encode(json_encode($mUpdated));
+                $link = "<a href='#' onclick='drawNovUpd(\"".$dataJson."\")'><u><font color='#000'>".htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true )."</font></u></a>";
+            }else{ 
+                $link = '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>';
+            }
+
+            $mData[$i] = array(
+                'nom_sitiox' => htmlentities(self::eliminarAcentos($mNovedades[$i][nom_sitiox]), ENT_COMPAT, 'ISO-8859-1', true ),
+                'nom_noveda' => self::eliminarAcentos($link),
+                'obs_noveda' => htmlentities(self::eliminarAcentos($mNovedades[$i][obs_noveda]), ENT_COMPAT, 'ISO-8859-1', true ),
+                'fec_noveda' => htmlentities(self::eliminarAcentos($mNovedades[$i][fec_noveda]), ENT_COMPAT, 'ISO-8859-1', true ),
+                'fec_creaci' => htmlentities(self::eliminarAcentos($mNovedades[$i][fec_creaci]), ENT_COMPAT, 'ISO-8859-1', true ),
+            );
+
+            
+
+            if ( $mViewNotCon->sub->usr_creaci == '1' ) {
+                $mData[$i]['usr_creaci'] = htmlentities(self::eliminarAcentos($mNovedades[$i][usr_creaci]), ENT_COMPAT, 'ISO-8859-1', true );
+            }
+            if( $watchAlias == 1 ){ 
+                $mData[$i]['als_creaci'] = htmlentities(self::eliminarAcentos(self::getAlias($mNovedades[$i][usr_creaci])), ENT_COMPAT, 'ISO-8859-1', true );
+            }
+
+            if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
+                $mData[$i]['lin_action'] =  self::eliminarAcentos($mLinkUpd);
+            }
+
+            $mData[$i]['sol_efecti'] = self::eliminarAcentos($mSolEfecti);
+            
+
+            if( $viewAlias->ind_novnem->ind_visibl == 1 ){
+                #verifico si la novedad es movil para pintar el radio de solucion de novedades NEM
+                if(self::getNovedadNEM($mNovedades[$i]['cod_noveda'])[0])
+                {
+                    $mData[$i]['sol_novnem'] = self::eliminarAcentos('<input type="radio" id="ind_novnemID" name="ind_novnem" value="1" onclick="ValidarProtoNoveda(\''.$mNovedades[$i]['cod_noveda'].'\',\''.$_DESPAC[0][cod_transp].'\')" />');
+                }
+                else
+                {
+                    $mData[$i]['sol_novnem'] =  '';
+                }
+            }
+                    
+            
+        }
+
+        return array('results' => $mData, 'totalRegistros' => $results['totalRegistros'],  'totalFiltro' => $results['totalFiltro']);
     }
 
     /*! \fn: divNotasContro
@@ -3643,274 +1893,6 @@ select:disabled {
         
         $url = "../".DIR_APLICA_CENTRAL."/despac/ajax_despac_despac.php";
         return $pagination->view(2,$headers,$url,$params,'INFORMACION DE NOTAS CONTROLADOR',NULL,0,$options2,12,1,25);
-        
-
-      $mViewUsu = self::getViewUsu();
-
-      $mHtml = new Formlib(2);
-
-      $mHtml->OpenDiv("id:planRutaID; class:accordion");
-        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION DE NOTAS CONTROLADOR</center></h3>");
-        $mHtml->OpenDiv("id:secID");
-          $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
-            $mHtml->SetBody('<center><span style="color:#416F1E; cursor:pointer" onclick="todasNotas(1)" >[Seguimiento]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(2);" >[Operador GPS]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(3);" >[Movil]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(4);" >[Ver Todas]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(5);" >[Ocultar]</span>&nbsp;&nbsp;');
-
-            if( $mView == 1 ){
-              $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="formAuditarDespac();" >[Auditar]</span></center>');
-            }
-
-            $mHtml->Table("tr");
-
-           
-            if( $_RUTASX )
-            {
-                $mSalLinea = $_SESSION['datos_usuario']['cod_usuari'] == 'mgarcia' || $_SESSION['datos_usuario']['cod_usuari'] == 'soporte' ? 0 : 1;
-
-                $mHtml->LabelTit( 'Sitio de Seguimiento', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->LabelTit( 'Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->LabelTit( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"20%") );
-                $mHtml->LabelTit( 'Fecha Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                $mHtml->LabelTit( 'Fecha Sistema', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                if ( $mViewNotCon->sub->usr_creaci == '1' ) {
-                    $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                }
-
-                $viewAlias = self::getView('jso_plarut');
-                $watchAlias = $viewAlias->inf_planru->sub->ali_usuari; 
-                if( $watchAlias == 1 ){
-                    $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
-                }
-
-                // if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
-                $mHtml->LabelTit( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                // }
-
-                /*if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
-                    $mHtml->LabelTit( 'Enviado a Cliente', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                }*/
-                
-                $mHtml->LabelTit( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                
-                if( $viewAlias->ind_novnem->ind_visibl == 1 ){
-                $mHtml->LabelTit( 'Solucion a NEM', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                }
-                $mHtml->CloseRow();
-
-            
-                $mNovedades = self::getNovedad( $mNumDespac );
-                $mEstServ = self::getView('jso_encabe'); 
-
-                //Crea Array
-                $dataNov = [];
-                //Se Recorre las novedades
-                foreach ($mNovedades as $key => $data) {
-                    //Valida Permisos
-                    if( $mEstServ->est_servic->ind_visibl != 1 ){
-                        //Valida tipo de novedad y elimina posici?n
-                        if(in_array($data['cod_noveda'], array(9271,9272,9273))){
-                            unset($mNovedades[$key]);
-                        }
-                    }
-                }
-
-                //Permiso de no poder copiar las notas controlador
-                $RespPlaRut = self::getView('jso_plarut');
-                $cNocopy = '';
-                if(!$RespPlaRut->inf_notcon->sub->cop_notcon){
-                    $cNocopy = 'noselect';
-                }
-
-                //Se recorre las novedades para calcular el key automaticamente
-                foreach ($mNovedades as $key => $data) {
-                    $dataNov[] = $data;
-                }
-
-                //Reemplaza el arreglo de Novedades
-                $mNovedades = $dataNov;
-                
-                $mCanNov = sizeof($mNovedades)-1;
-
-                $j=0;
-                $u=0;
-
-                for ($i = $mCanNov; $i >=0; $i--)
-                {
-                $mSolEfecti = "";
-                if( $mViewUsu->edi_noveda->ind_visibl == 1 && ($mNovedades[$i][tab_origen] == 1 || $_RUTASX[$i][tab_origen] == 2) ){
-                    $mLinkUpd = '
-                    <spam style="color:#416F1E; cursor:pointer"
-                    onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,1)">
-                        [Editar]</spam>&nbsp;';
-
-                    if($_SESSION["datos_usuario"]["cod_usuari"] == 'mgarcia' || $_SESSION["datos_usuario"]["cod_usuari"] == 'soporte') {
-                    $mLinkUpd .= '
-                        <spam style="color:#416F1E; cursor:pointer"
-                        onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,2)">
-                        [Eliminar]
-                        </spam>';
-                    }
-                }
-                
-                $ori = $mNovedades[$i][tab_origen] == 1 ? 'NC' : 'PC';
-                $mBtnOpePrev = "";
-                if($mNovedades[$i][cod_noveda]=="24"){
-                    $cod_consec = $mNovedades[$i][cod_consec]; 
-   
-                    if(self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, true)){
-                        $informaOpePrev = self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, false);
-                        $mBtnOpePrev = '
-                        <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
-                        onclick="openPDF(\'' . $informaOpePrev[0]['cod_consec'] . '\')">
-                        [Ver O.P.]
-                        </spam>';
-                    }else{
-                        $mBtnOpePrev = '
-                        <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
-                        onclick="showFormOperativoPreventivo(\''.$ori.'\', \''.$cod_consec.'\')">
-                        [Reg. O.P.]
-                        </spam>';
-                    }
-                    
-                }
-
-
-
-                if( $_RUTASX[$i][nov_especi] == 1 )
-                {
-                    $mStyle = $j % 2 ? 'cellPar' : 'cellImpar';
-                    $j++;
-                }else
-                    $mStyle = 'cell';
-
-                if($_RUTASX[$i][cod_noveda] != 342)
-                {
-                    $consecutivoProtocolo = $this -> verifyNoveda($_RUTASX[$i][cod_noveda], $mNumDespac, $_RUTASX[$i]['fec_noveda']);   
-
-                    if($consecutivoProtocolo[0][num_consec])
-                    {
-                    if($consecutivoProtocolo[0][ind_solnov] == '' || $consecutivoProtocolo[0][ind_solnov] == 0)
-                    {
-                        $mSolEfecti = "<input type='radio' name='ind_solefe".$i."' onclick='solucionEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> SI <input type='radio' name='ind_solefe".$i."' onclick='solucionNoEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> NO ";
-                    }
-                    elseif($consecutivoProtocolo[0][ind_solnov] == 1)
-                        $mSolEfecti = "<label>SI</label>";
-                    }
-                }
-
-                if($mNovedades[$i][ind_reqres]=='1'){
-                    //Si requiere gestion por faro activa el icono de alarma.
-                    if($mNovedades[$i][ind_resfar]=='1' && $mNovedades[$i][cod_soluci]=='0' ){
-                        $mSolEfecti = "<img src='../".CENTRAL."/imagenes/warning-gif.gif' width='15px' height='15px'>";
-                    }else if($mNovedades[$i][cod_soluci] != 0){
-                        $mSolEfecti = "<img src='../".CENTRAL."/imagenes/ver.png' width='15px' height='15px' style='cursor: pointer;' onclick='showInfoSolucion(\"".$mNovedades[$i][cod_consec]."\", \"".$mNovedades[$i][tip_noveda]."\")'>";
-                    }
-                   
-                }
-                
-
-
-
-
-
-                $mHtml->Row();
-
-                    $comp='';
-                
-                    if($mNovedades[$i]['cod_tipoxx']==2 )
-                    { //a?ade class para ocultar o mostrar con js
-                        
-                        //$mHtml->SetBody(('<tr class="nov_gps_notes">'));
-                        $mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
-                    }
-                    else if($mNovedades[$i]['cod_tipoxx']==1 )
-                    { //a?ade class para ocultar o mostrar con js
-                        if($u== 0){
-                            $comp=' one';
-                            $u++;
-                        }
-                        //$mHtml->SetBody(('<tr class="nov_seguimiento_notes'.$comp.'">'));
-                        $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes '.$comp.'"');
-                    }
-                    else if($mNovedades[$i]['cod_tipoxx']==3 )
-                    {
-                        //$mHtml->SetBody(('<tr class="nov_movil_notes">'));
-                        $mHtml->RowProperties("",FALSE,'class="nov_movil_notes"');
-                    }else{
-                        $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
-                    }
-                    
-                    //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
-                    $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
-                    
-
-                    // if para las novedades actualizadas
-
-                    $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
-                    if( $mUpdated[0]){
-                        $dataJson = base64_encode(json_encode($mUpdated));
-                        $link = "<a href='#' onclick='drawNovUpd(\"".$dataJson."\")'><u><font color='#000'>".htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true )."</font></u></a>";
-        
-                        $mHtml->Label( $link, array("align"=>"left", "class"=>$mStyle) );
-                    }else{ 
-                        $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
-                    }
-                    $mHtml->Label( utf8_encode($mNovedades[$i][obs_noveda]) , array("align"=>"left", "class"=>$mStyle) );
-                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
-                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
-
-                    if ( $mViewNotCon->sub->usr_creaci == '1' ) {
-                        $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][usr_creaci], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"right", "class"=>$mStyle) );
-                    }
-                    if( $watchAlias == 1 ){ 
-                        $mHtml->Label( '<b>'.self::getAlias($mNovedades[$i][usr_creaci]).'</b>', array("align"=>"right", "class"=>$mStyle) ); 
-                    }
-
-                    // if( $mViewUsu->edi_noveda->ind_visibl == 1 )
-                    $mHtml->Label( $mBtnOpePrev."".$mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
-
-
-                    /*if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
-                        $mNomTabla = $mNovedades[$i]['cod_consec'] == 1 ? 'tab_despac_noveda' : 'tab_despac_contro';
-                        $infoStatus = self::consultaStatusNovedad($mNumDespac, $mNovedades[$i]['cod_consec'], $mNomTabla );
-                        if($infoStatus==NULL){
-                            $message_status = "Novedad sin registro de transacci?n";
-                        }else{
-                            $message_status = "Mensaje: ".$infoStatus['msj_status']."<br>Fecha: ".$infoStatus['fec_transa']."<br>Cantidad Transacciones: ".$infoStatus['can_transa'];
-                        }
-
-                        $image = $mNovedades[$i][ind_enviad] == 1 ? 'active.png' : 'error.png';
-                        $mHtml->Label( '<b><div class="tooltip-container"><img alt="Icono de estado de enviado" tooltip="true" src="'.URL_STANDA.'images/'.$image.'" width="16px"><span style="max-width:400px !important" class="tooltip-text">'.$message_status.'</span></div></b>', array("align"=>"center", "class"=>$mStyle) );
-                    }*/
-
-                    $mHtml->SetBody( '<td align="right" class="'.$mStyle.'" width="30%" ><b>'.$mSolEfecti.'</b></td>' );
-
-                    if( $viewAlias->ind_novnem->ind_visibl == 1 ){
-                        #verifico si la novedad es movil para pintar el radio de solucion de novedades NEM
-                        if(self::getNovedadNEM($mNovedades[$i]['cod_noveda'])[0])
-                        {
-                        $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "class"=>$mStyle, "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."', '".$_DESPAC[0][cod_transp]."')"));
-                        }
-                        else
-                        {
-                            $mHtml->Label( '', array("align"=>"right", "class"=>$mStyle) );
-                        }
-                    }
-                $mHtml->CloseRow();
-                $mHtml->SetBody('</tr>');
-                }
-            }
-       
-
-            $mHtml->CloseTable('tr');
-          $mHtml->CloseDiv();
-        $mHtml->CloseDiv();
-      $mHtml->CloseDiv();
-
-      return $mHtml->MakeHtml();
     }
 
     /*! \fn: checkNovedaUpd
@@ -4108,7 +2090,6 @@ select:disabled {
      */
     private function divPlanRuta( $mDespac, $mIndConsol = false, $mView )
     {
-        $options2 = '';
         $codtran=$this->cod_transp_tercero;
         $queryseg="SELECT a.num_consec, a.cod_transp, a.ubi_seguim,
                           a.ind_estado 
@@ -4175,7 +2156,7 @@ select:disabled {
 
         
         $url = "../".DIR_APLICA_CENTRAL."/despac/ajax_despac_despac.php";
-        return $pagination->view(1,$headers,$url,$params,'INFORMACION DEL PLAN DE RUTA',NULL,0,$options2,12,1,100);
+        return $pagination->view(1,$headers,$url,$params,'INFORMACION DEL PLAN DE RUTA',NULL,0,$options2,12,1,25);
     }
 
     /*! \fn: divCrossDoking
@@ -4398,11 +2379,7 @@ select:disabled {
                         a.gps_urlxxx,
                         IF(b.fec_itiner IS NULL OR b.fec_itiner = '' OR b.fec_itiner = '0000-00-00 00:00:00', '', b.cod_itiner) AS cod_itiner,
                         IF(b.msg_itiner IS NULL OR b.msg_itiner = '', 'N/A', b.msg_itiner) AS msg_itiner,
-                        b.map_tokenx, b.fec_envint, b.fec_itiner, a.cod_estado,
-                        s.cod_propie,
-                        IF( cc.abr_tercer IS NULL OR cc.abr_tercer = '', '$mObs[0]', UPPER(cc.abr_tercer) ) AS nom_propie,
-                        IF( cc.num_telmov IS NULL OR cc.num_telmov = '', '$mObs[0]', cc.num_telmov) AS num_propie_telmov,
-                        IF( cc.num_telef1 IS NULL OR cc.num_telef1 = '', '$mObs[0]', cc.num_telef1) AS num_propie
+                        b.map_tokenx, b.fec_envint, b.fec_itiner
                    FROM ".BASE_DATOS.".tab_despac_despac a 
              INNER JOIN ".BASE_DATOS.".tab_despac_vehige b 
                      ON a.num_despac = b.num_despac 
@@ -4467,8 +2444,6 @@ select:disabled {
                      ON k.cod_mercan = ab.cod_produc
               LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer jj 
                      ON a.cod_client = jj.cod_tercer
-              LEFT JOIN ".BASE_DATOS.".tab_tercer_tercer cc 
-                     ON s.cod_propie = cc.cod_tercer
               LEFT JOIN ".BD_STANDA .".tab_genera_opegps ac 
                      ON x.cod_opegps = ac.cod_operad 
                   WHERE a.num_despac = '{$mNumDesOri}'
@@ -4477,6 +2452,7 @@ select:disabled {
         $mConsult = new Consulta( $mSql, $this -> conexion );
         $mResult = $mConsult -> ret_matrix('a');
         $mResult = $mResult[0];
+
 
         #<Datos Despacho Consolidado>
             if( $mIndConsol == 1 )
@@ -4715,15 +2691,15 @@ select:disabled {
      */
     private function fotos( $mNumDespac )
     {
-        $mSql = "SELECT b.nom_contro, b.cod_contro, a.fec_creaci, a.num_consec, dir_docume
+        $mSql = "SELECT a.bin_fotoxx, b.nom_contro, b.cod_contro, a.fec_creaci, a.num_consec, a.bin_fotox2
                   FROM ".BASE_DATOS.".tab_despac_images a,
                        ".BASE_DATOS.".tab_genera_contro b
                   WHERE a.cod_contro = b.cod_contro 
                     AND a.num_despac = '{$mNumDespac}' 
-                    AND a.dir_docume != '' ";
+                    AND (a.bin_fotoxx != '' OR a.bin_fotox2 != '') ";
         $mConsult = new Consulta( $mSql, $this -> conexion );
         $mFotos = $mConsult->ret_matrix('a');
-
+  
         if( sizeof($mFotos) < 1 )
           return false;
 
@@ -4735,8 +2711,6 @@ select:disabled {
         $j=1;
         while( $i < sizeof($mFotos) )
         {
-            $path = explode('/ap/',$mFotos[$i]['dir_docume']);
-
             $mHtml .= '<tr><td colspan="4">&nbsp;</td></tr>';
             $mHtml .= '<tr>';
             $mHtml .=    '<th colspan="2" align="center" >'.($i+1).') '.$mFotos[$i]['nom_contro'].'</th>';
@@ -4744,19 +2718,23 @@ select:disabled {
             $mHtml .= $mFotos[$j] ? '<th colspan="2" align="center" >'.($j+1).') '.$mFotos[$j]['nom_contro'].'</th>' : '<th>&nbsp;</th>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
-            $mHtml .=    '<td colspan="2">';
+            $mHtml .=    '<td>';
             $mHtml .=        '<center><b>Conductor</b></center>';
-            $mHtml .=        '<img src="https://'.$_SERVER['HTTP_HOST'].'/ap/'.$path[1].'" width="300" height="200" border="2"/>';
+            $mHtml .=        '<img src="'.$mFotos[$i]['bin_fotoxx'].'" width="300" height="200" border="2"/>';
             $mHtml .=    '</td>';
-            // $mHtml .=    '<td>';
-            // $mHtml .=        '<center><b>Precinto</b></center>';
-            // $mHtml .=        '<img src="'.$mFotos[$i]['bin_fotox2'].'" width="300" height="200" border="2"/>';
-            // $mHtml .=    '</td>';
+            $mHtml .=    '<td>';
+            $mHtml .=        '<center><b>Precinto</b></center>';
+            $mHtml .=        '<img src="'.$mFotos[$i]['bin_fotox2'].'" width="300" height="200" border="2"/>';
+            $mHtml .=    '</td>';
             $mHtml .=    '<td>&nbsp;</td>';
-            // $mHtml .=    '<td>';
-            // $mHtml .= $mFotos[$j] ? '<center><b>Precinto</b></center>' : '&nbsp;';
-            // $mHtml .= $mFotos[$j] ? '<img src="'.$mFotos[$j]['bin_fotox2'].'" width="300" height="200" border="2"/>' : '&nbsp;';
-            // $mHtml .=    '</td>';
+            $mHtml .=    '<td>';
+            $mHtml .= $mFotos[$j] ? '<center><b>Conductor</b></center>' : '&nbsp;';
+            $mHtml .= $mFotos[$j] ? '<img src="'.$mFotos[$j]['bin_fotoxx'].'" width="300" height="200" border="2"/>' : '&nbsp;';
+            $mHtml .=    '</td>';
+            $mHtml .=    '<td>';
+            $mHtml .= $mFotos[$j] ? '<center><b>Precinto</b></center>' : '&nbsp;';
+            $mHtml .= $mFotos[$j] ? '<img src="'.$mFotos[$j]['bin_fotox2'].'" width="300" height="200" border="2"/>' : '&nbsp;';
+            $mHtml .=    '</td>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
             $mHtml .=    '<th colspan="2" align="center" >'.date($mFotos[$i]['fec_creaci']).'</th>';
@@ -4774,6 +2752,58 @@ select:disabled {
         return $mHtml;
     }
     
+
+    function PlanDeRutaArray( $despac, $link = 0, $finali = 0, $opcurban = 0, $datos_usuario = NULL, $lleg = NULL, $tie_ultnov = NULL, $placa, $cod_agenci, $limit, $pagina, $mfiltro)
+    {
+        $aux = "href";
+
+        if ( $_SESSION[datos_usuario][cod_perfil] == "" )
+        {
+          $filtro = new Aplica_Filtro_Usuari( $this -> cod_aplica, COD_FILTRO_CLIENT, $_SESSION[datos_usuario][cod_usuari] );
+          if ($filtro -> listar( $this -> conexion ) )
+          {
+            $datos_filtro = $filtro -> retornar();
+            $aux = "name";
+          }
+        }
+        else
+        {
+          $filtro = new Aplica_Filtro_Perfil( $this -> cod_aplica, COD_FILTRO_CLIENT, $_SESSION[datos_usuario][cod_usuari] );
+          if ( $filtro -> listar( $this -> conexion ) )
+          {
+            $datos_filtro = $filtro -> retornar();
+            $aux = "name";
+          }
+        }
+
+        /*********************************/
+
+        $mSelect = "SELECT a.obs_despac, b.obs_medcom, b.obs_proesp,
+                           a.obs_llegad, a.fec_salida, b.cod_rutasx, 
+                           a.cod_tipdes, b.cod_transp, a.cod_tipdes,a.num_despac
+                      FROM " . BASE_DATOS . ".tab_despac_despac a 
+                INNER JOIN " . BASE_DATOS . ".tab_despac_vehige b 
+                        ON a.num_despac = b.num_despac 
+                     WHERE a.num_despac = " . $despac . " ";
+        $consulta = new Consulta( $mSelect, $this -> conexion );
+        $_DESPAC = $consulta -> ret_matrix('a'); 
+
+        $mSelect = "SELECT cod_tipser
+                      FROM " . BASE_DATOS . ".tab_transp_tipser  
+                     WHERE cod_transp = '".$_DESPAC[0][cod_transp]."' 
+                       AND num_consec = ( SELECT MAX(num_consec) 
+                                            FROM ".BASE_DATOS.".tab_transp_tipser
+                                           WHERE cod_transp = '".$_DESPAC[0][cod_transp]."'
+                                        )";
+        $consulta = new Consulta( $mSelect, $this -> conexion );
+        $mTipSer = $consulta -> ret_arreglo();
+
+        $indConsol = $this -> verifyConsolHijo( $despac );
+        $_RUTASX = DespachosNew::getRutaDespacPag( $despac, $opcurban, $tie_ultnov, $mTipSer[0], $aux, $limit, $pagina, $mfiltro);
+        $_RUTASX['indConsol'] = $indConsol;
+        return $_RUTASX;
+    }
+
     /*! \fn: PlanDeRuta
      *  \brief: Plan de ruta
      *  \author: Ing. Fabian Salinas
@@ -4883,7 +2913,8 @@ select:disabled {
         $mTipSer = $consulta -> ret_arreglo();
 
         $indConsol = $this -> verifyConsolHijo( $despac );
-        $_RUTASX = Despachos::getRutaDespac( $despac, $opcurban, $tie_ultnov, $mTipSer[0], $aux );
+        //$_RUTASX = DespachosNew::getRutaDespac( $despac, $opcurban, $tie_ultnov, $mTipSer[0], $aux );
+        //var_dump($_RUTASX);
       #</ 0. PRE >
 
       $mHtml = new Formlib(2);
@@ -4895,7 +2926,7 @@ select:disabled {
       #< 1: INFORMACION DE LOS CONTACTOS >
       $mViewContac = self::getView('jso_contac');
       if( $mViewContac->dat_contac->ind_visibl == 1 ){
-        $mHtml->SetBody( self::divContacto( $_RUTASX, $placa, $_DESPAC[0][cod_transp], $_DESPAC[0][num_despac], $cod_agenci));
+        $mHtml->SetBody( self::divContacto( $placa, $_DESPAC[0][cod_transp], $_DESPAC[0][num_despac], $cod_agenci));
       }
 
        #< 1: INFORMACION PARTICULARIDAD >
@@ -4904,7 +2935,7 @@ select:disabled {
          $mHtml->SetBody( self::divPartic( $_DESPAC[0][cod_transp]));
        }
 
-       $mHtml->SetBody( self::divNotasAlerta( $despac, $_DESPAC, $_RUTASX, $mView->pop_califi->ind_visibl, $mView->inf_notcon) );
+
        
        #< 3: INFORMACION DE NOTAS DE CONTROLADOR >
        if( $mView->inf_notcon->ind_visibl == 1 )
@@ -4970,6 +3001,568 @@ select:disabled {
         return $mReturn;
     }
 
+
+    function getControDespacData($mDespac, $limit, $pagina, $mfiltro)
+    {
+        @include_once( "../".DIR_APLICA_CENTRAL."/lib/general/functions.inc" );
+        $mRutax = getControDespac( $this -> conexion, $mDespac ); #Script = /satt_standa/lib/general/functions.inc
+
+        #Ultimo PC con novedad
+        $mUlPCNov = getNovedadesDespac( $this -> conexion, $mDespac, 2 ); #Script = /satt_standa/lib/general/functions.inc
+
+        //negacion puesto control ya pasados
+        $pcNotInRoute = array();
+        $orderInRoute = '';
+            
+        $mPcActive=0;
+        for ($i=0; $i < sizeof($mRutax); $i++) 
+        {
+            if( $mUlPCNov[cod_contro] != '' )
+            {
+                if( $mUlPCNov[cod_contro] == $mRutax[$i][cod_contro] )
+                    $mPcActive++;
+
+                if( $mPcActive == 0 ){
+                    $pcNotInRoute[] = $mRutax[$i][cod_contro];
+                }
+                
+            }
+
+            $orderInRoute .= "'".$mRutax[$i][cod_contro]."',";
+        }
+
+        $orderInRoute = substr($orderInRoute, 0, -1);
+
+
+        $mSql = "SELECT * FROM  ( 
+            (
+                SELECT 
+                    if(
+                            f.ind_virtua = '1', 
+                            CONCAT(f.nom_contro, ' (Virtual)'), 
+                            f.nom_contro
+                        ) AS nom_contro,
+                    DATE_FORMAT(f.fec_planea, '%Y-%m-%d %H:%i') AS fec_progra, 
+                    if(
+                            a.fec_noveda IS NOT NULL, 
+                            DATE_FORMAT(a.fec_noveda, '%Y-%m-%d %H:%i'), 
+                            DATE_FORMAT(f.fec_planea, '%Y-%m-%d %H:%i')
+                    ) as fec_arre, 
+                    b.nom_noveda, 
+                    a.des_noveda as obs_noveda,
+                    f.cod_contro, 
+                    a.usr_creaci,  
+                    a.fec_creaci,  
+                    a.fec_noveda as fec_descon, 
+                    f.fec_planea, 
+                    f.ind_urbano, 
+                    a.val_retras, 
+                    a.fec_noveda as fec, 
+                    f.ind_virtua, 
+                    c.cod_transp, 
+                    f.ind_estado, 
+                    f.cod_rutasx, 
+                    f.cod_colorx,
+                    b.cod_noveda,
+                    'E' as tip_sitio,
+                    e.cod_tipoxx,
+                    UPPER(g.nom_sitiox) AS nom_sitiox,
+                    '2' AS tab_origen,
+                    d.ind_novesp as 'nov_especi', 
+                    '0' AS cod_consec,
+                    f.cod_tpcont 
+                FROM 
+                    ".BASE_DATOS.".tab_despac_noveda a 
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda 
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige c ON a.num_despac = c.num_despac 
+                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg d ON b.cod_noveda = d.cod_noveda AND d.cod_transp = c.cod_transp 
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e ON b.cod_tipoxx = e.cod_tipoxx 
+                    INNER JOIN (
+                        SELECT 
+                            b.num_despac,
+                            c.cod_contro, 
+                            d.ind_urbano, 
+                            d.ind_virtua, 
+                            UPPER(d.nom_contro) AS nom_contro, 
+                            IF(
+                                d.cod_colorx IS NULL, '336600', d.cod_colorx
+                            ) AS cod_colorx, 
+                            b.fec_planea AS fec_progra, 
+                            b.fec_alarma AS fec_planea, 
+                            b.cod_rutasx,
+                            b.ind_estado,
+                            d.cod_tpcont
+                        FROM 
+                            ".BASE_DATOS.".tab_despac_seguim b 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_rutcon c ON b.cod_contro = c.cod_contro 
+                            AND b.cod_rutasx = c.cod_rutasx 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_contro d ON c.cod_contro = d.cod_contro 
+                        WHERE 
+                            c.ind_estado = '1' 
+                            AND b.ind_estado != '2'
+                    ) as f ON f.num_despac = a.num_despac AND f.cod_contro = a.cod_contro 
+                    INNER JOIN ".BASE_DATOS.".tab_despac_sitio g ON a.cod_sitiox = g.cod_sitiox
+                WHERE 
+                    a.num_despac = '{$mDespac}' 
+            )
+            UNION all
+            (
+                SELECT 
+                    if(
+                            f.ind_virtua = '1', 
+                            CONCAT(f.nom_contro, ' (Virtual)'), 
+                            f.nom_contro
+                        ) AS nom_contro,
+                    DATE_FORMAT(f.fec_planea, '%Y-%m-%d %H:%i') AS fec_progra, 
+                    if(
+                            a.fec_contro IS NOT NULL, 
+                            DATE_FORMAT(a.fec_contro, '%Y-%m-%d %H:%i'), 
+                            DATE_FORMAT(f.fec_planea, '%Y-%m-%d %H:%i')
+                    ) as fec_arre, 
+                    b.nom_noveda, 
+                    a.obs_contro as obs_noveda,
+                    f.cod_contro, 
+                    a.usr_creaci,  
+                    a.fec_creaci,  
+                    a.fec_contro as fec_descon, 
+                    f.fec_planea, 
+                    f.ind_urbano, 
+                    a.val_retras, 
+                    a.fec_contro as fec, 
+                    f.ind_virtua, 
+                    c.cod_transp, 
+                    f.ind_estado, 
+                    f.cod_rutasx, 
+                    f.cod_colorx,
+                    b.cod_noveda,
+                    'A' as tip_sitio,
+                    e.cod_tipoxx,
+                    UPPER(g.nom_sitiox) AS nom_sitiox,
+                    '1' AS tab_origen,
+                    d.ind_novesp as 'nov_especi', 
+                    a.cod_consec,
+                    f.cod_tpcont
+                FROM 
+                    ".BASE_DATOS.".tab_despac_contro a 
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda 
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige c ON a.num_despac = c.num_despac 
+                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg d ON b.cod_noveda = d.cod_noveda AND d.cod_transp = c.cod_transp 
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e ON b.cod_tipoxx = e.cod_tipoxx 
+                    INNER JOIN (
+                        SELECT 
+                            b.num_despac,
+                            c.cod_contro, 
+                            d.ind_urbano, 
+                            d.ind_virtua, 
+                            UPPER(d.nom_contro) AS nom_contro, 
+                            IF(
+                                d.cod_colorx IS NULL, '336600', d.cod_colorx
+                            ) AS cod_colorx, 
+                            b.fec_planea AS fec_progra, 
+                            b.fec_alarma AS fec_planea, 
+                            b.cod_rutasx,
+                            b.ind_estado,
+                            d.cod_tpcont
+                        FROM 
+                            ".BASE_DATOS.".tab_despac_seguim b 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_rutcon c ON b.cod_contro = c.cod_contro 
+                            AND b.cod_rutasx = c.cod_rutasx 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_contro d ON c.cod_contro = d.cod_contro 
+                        WHERE 
+                            c.ind_estado = '1' 
+                            AND b.ind_estado != '2'
+                    ) as f ON f.num_despac = a.num_despac AND f.cod_contro = a.cod_contro 
+                    INNER JOIN ".BASE_DATOS.".tab_despac_sitio g ON a.cod_sitiox = g.cod_sitiox
+                WHERE 
+                    a.num_despac = '{$mDespac}' 
+            )
+            UNION all
+            (
+                SELECT 
+                    if(
+                            h.ind_virtua = '1', 
+                            CONCAT(h.nom_contro, ' (Virtual)'), 
+                            h.nom_contro
+                        ) AS nom_contro,
+                    DATE_FORMAT(h.fec_planea, '%Y-%m-%d %H:%i') AS fec_progra, 
+                    if(
+                            a.fec_solici IS NOT NULL, 
+                            DATE_FORMAT(a.fec_solici, '%Y-%m-%d %H:%i'), 
+                            DATE_FORMAT(h.fec_planea, '%Y-%m-%d %H:%i')
+                    ) as fec_arre, 
+                    c.nom_noveda, 
+                    GROUP_CONCAT( d.tex_encabe ) AS obs_noveda, 
+                    h.cod_contro, 
+                    a.usr_solici AS usr_creaci, 
+                    a.fec_solici AS fec_creaci, 
+                    a.fec_solici as fec_descon, 
+                    h.fec_planea, 
+                    h.ind_urbano, 
+                    '' as val_retras, 
+                    a.fec_solici as fec, 
+                    h.ind_virtua, 
+                    e.cod_transp, 
+                    h.ind_estado, 
+                    h.cod_rutasx, 
+                    h.cod_colorx,
+                    a.cod_noveda,
+                    'A' as tip_sitio,
+                    g.cod_tipoxx,
+                    UPPER(b.nom_contro) AS nom_sitiox,
+                    '3' AS tab_origen,
+                    '0' as 'nov_especi', 
+                    d.cod_consec,
+                    h.cod_tpcont
+                FROM 
+                    ".BASE_DATOS.".tab_recome_asigna a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro b ON a.cod_contro = b.cod_contro  
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda c ON a.cod_noveda = c.cod_noveda
+                    INNER JOIN ".BASE_DATOS.".tab_genera_recome d ON a.cod_recome = d.cod_consec
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige e ON a.num_despac = e.num_despac
+                    INNER JOIN ".BASE_DATOS.".tab_parame_novseg f ON c.cod_noveda = f.cod_noveda AND f.cod_transp = e.cod_transp
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g ON c.cod_tipoxx = g.cod_tipoxx
+                    INNER JOIN (
+                        SELECT 
+                            b.num_despac,
+                            c.cod_contro, 
+                            d.ind_urbano, 
+                            d.ind_virtua, 
+                            UPPER(d.nom_contro) AS nom_contro, 
+                            IF(
+                                d.cod_colorx IS NULL, '336600', d.cod_colorx
+                            ) AS cod_colorx, 
+                            b.fec_planea AS fec_progra, 
+                            b.fec_alarma AS fec_planea, 
+                            b.cod_rutasx,
+                            b.ind_estado,
+                            d.cod_tpcont
+                        FROM 
+                            ".BASE_DATOS.".tab_despac_seguim b 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_rutcon c ON b.cod_contro = c.cod_contro 
+                            AND b.cod_rutasx = c.cod_rutasx 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_contro d ON c.cod_contro = d.cod_contro 
+                        WHERE 
+                            c.ind_estado = '1' 
+                            AND b.ind_estado != '2'
+                    ) as h ON h.num_despac = a.num_despac AND h.cod_contro = a.cod_contro 
+                WHERE 
+                    a.num_despac = '{$mDespac}' 
+                GROUP BY a.cod_contro 
+            )
+            UNION all
+            (
+                SELECT 
+                    if(
+                            h.ind_virtua = '1', 
+                            CONCAT(h.nom_contro, ' (Virtual)'), 
+                            h.nom_contro
+                        ) AS nom_contro,
+                    DATE_FORMAT(h.fec_planea, '%Y-%m-%d %H:%i') AS fec_progra, 
+                    if(
+                            a.fec_ejecut IS NOT NULL, 
+                            DATE_FORMAT(a.fec_ejecut, '%Y-%m-%d %H:%i'), 
+                            DATE_FORMAT(h.fec_planea, '%Y-%m-%d %H:%i')
+                    ) as fec_arre, 
+                    'SOLUCION RECOMENDACION' AS nom_noveda,
+                    GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda,
+                    h.cod_contro, 
+                    a.usr_ejecut AS usr_creaci, 
+                    a.fec_ejecut AS fec_creaci, 
+                    a.fec_ejecut as fec_descon, 
+                    h.fec_planea, 
+                    h.ind_urbano, 
+                    '' as val_retras, 
+                    a.fec_ejecut as fec, 
+                    h.ind_virtua, 
+                    '' as cod_transp, 
+                    h.ind_estado, 
+                    h.cod_rutasx, 
+                    h.cod_colorx,
+                    a.cod_noveda,
+                    'A' as tip_sitio,
+                    g.cod_tipoxx,
+                    UPPER(b.nom_contro) AS nom_sitiox,
+                    '4' AS tab_origen,
+                    '0' as 'nov_especi', 
+                    d.cod_consec,
+                    h.cod_tpcont
+                FROM 
+                    ".BASE_DATOS.".tab_recome_asigna a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro b ON a.cod_contro = b.cod_contro  
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda c ON a.cod_noveda = c.cod_noveda
+                    INNER JOIN ".BASE_DATOS.".tab_genera_recome d ON a.cod_recome = d.cod_consec
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g ON c.cod_tipoxx = g.cod_tipoxx
+                    INNER JOIN (
+                        SELECT 
+                            b.num_despac,
+                            c.cod_contro, 
+                            d.ind_urbano, 
+                            d.ind_virtua, 
+                            UPPER(d.nom_contro) AS nom_contro, 
+                            IF(
+                                d.cod_colorx IS NULL, '336600', d.cod_colorx
+                            ) AS cod_colorx, 
+                            b.fec_planea AS fec_progra, 
+                            b.fec_alarma AS fec_planea, 
+                            b.cod_rutasx,
+                            b.ind_estado,
+                            d.cod_tpcont
+                        FROM 
+                            ".BASE_DATOS.".tab_despac_seguim b 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_rutcon c ON b.cod_contro = c.cod_contro 
+                            AND b.cod_rutasx = c.cod_rutasx 
+                            INNER JOIN ".BASE_DATOS.".tab_genera_contro d ON c.cod_contro = d.cod_contro 
+                        WHERE 
+                            c.ind_estado = '1' 
+                            AND b.ind_estado != '2'
+                    ) as h ON h.num_despac = a.num_despac AND h.cod_contro = a.cod_contro 
+                WHERE 
+                    a.num_despac = '{$mDespac}' 
+                    AND a.obs_ejecuc IS NOT NULL 
+                GROUP BY a.cod_contro 
+            )
+            UNION ALL
+            (
+                SELECT
+                    if(
+                        d.ind_virtua = '1', 
+                        CONCAT(d.nom_contro, ' (Virtual)'), 
+                        d.nom_contro
+                    ) AS nom_contro,
+                    DATE_FORMAT(b.fec_planea, '%Y-%m-%d %H:%i') AS fec_progra,
+                    DATE_FORMAT(b.fec_planea, '%Y-%m-%d %H:%i') AS fec_arre,
+                    '' as nom_noveda, 
+                    '' as obs_noveda,
+                    c.cod_contro, 
+                    '' as usr_creaci,
+                    '' as fec_creaci,  
+                    '' as fec_descon, 
+                    b.fec_planea, 
+                    d.ind_urbano, 
+                    '' as val_retras, 
+                    '' as fec, 
+                    d.ind_virtua, 
+                    '' as cod_transp, 
+                    b.ind_estado, 
+                    b.cod_rutasx, 
+                    IF( d.cod_colorx IS NULL, '336600', d.cod_colorx ) AS cod_colorx,
+                    '' as cod_noveda,
+                    '' as tip_sitio,
+                    '1' as cod_tipoxx,
+                    '' AS nom_sitiox,
+                    '' AS tab_origen,
+                    '0' as 'nov_especi', 
+                    '' as cod_consec,
+                    d.cod_tpcont
+                        FROM ".BASE_DATOS.".tab_despac_seguim b 
+                    INNER JOIN ".BASE_DATOS.".tab_genera_rutcon c 
+                            ON b.cod_contro = c.cod_contro 
+                        AND b.cod_rutasx = c.cod_rutasx 
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro d 
+                            ON c.cod_contro = d.cod_contro 
+                        WHERE b.num_despac = '{$mDespac}'
+                        AND c.ind_estado = '1'
+                        AND b.ind_estado != '2'
+                        ORDER BY c.val_duraci
+            )
+            
+        ) as uniall 
+         WHERE 1=1 ";
+
+        $mSql .= " AND ( uniall.nom_sitiox  LIKE '%" . $_REQUEST['campo'] . "%' OR uniall.obs_noveda  LIKE '%" . $_REQUEST['campo'] . "%' )";
+        
+        switch($mfiltro){
+            case 1:
+                $mSql .= " AND uniall.cod_tipoxx = '1' ";
+                break;
+            case 2:
+                $mSql .= " AND uniall.cod_tipoxx = '2' ";
+              break;
+            case 3:
+                $mSql .= " AND uniall.cod_tipoxx = '3' ";
+              break;
+            
+        }
+
+        $mSql .= " GROUP by nom_contro,fec,cod_noveda ";
+
+
+        if ($pagina==0) {
+            $inicio = 0;
+            $pagina = 1;
+        } else {
+            $inicio = ($pagina-1) * $limit;
+        }
+
+        $mSql .= " ORDER BY FIELD(cod_contro,".$orderInRoute."),3 ";
+
+        // Consulta para total de registro
+        $consult = new Consulta($mSql, $this->conexion);
+        $total = $consult->ret_matriz("a");
+        $totalRegistros = sizeof($total);
+
+        $mSql .= " LIMIT $inicio , $limit";
+       
+        //var_dump($mSql);
+        $consult = new Consulta($mSql, $this->conexion);
+        $matriz = $consult->ret_matriz("a");
+        $totalFiltro = sizeof($matriz);
+
+        return array(
+                'results' => $matriz, 
+                'totalRegistros' => $totalRegistros, 
+                'totalFiltro' => $totalFiltro,
+                'ulPCNov' => $mUlPCNov,
+                'pcNotInRoute' => $pcNotInRoute,
+            );
+    }
+
+    private function filter_array($array,$term,$filtro){
+        $matches = array();
+
+        $u = 0;
+        for ($i=0; $i < sizeof($array); $i++) 
+        {
+            if($array[$i][cod_contro] == $term){
+                if( $array[$i][tip_sitio] == 'A')
+                {#Con novedad antes de sitio
+                    $u++;
+                }
+                if( $array[$i][tip_sitio] == 'E')
+                {#Con novedad en sitio
+                    $u++;
+                }
+                if( $array[$i][cod_tpcont] != '4' && $filtro == 1)
+                {#tipo de puesto de control
+                    $u++;
+                }
+                
+            }
+        }
+        return $u;
+    }
+
+    private function getRutaDespacPag($mDespac, $opcurban = 0, $tie_ultnov = NULL, $mTipSer = NULL, $aux, $limit, $pagina, $mfiltro)
+    {
+      @include_once( "../".DIR_APLICA_CENTRAL."/lib/general/functions.inc" );
+      $mResult = array();
+      $results = DespachosNew::getControDespacData($mDespac, $limit, $pagina, $mfiltro);
+
+
+      #Ultimo PC con novedad
+      $mUlPCNov = $results['ulPCNov']; 
+      //negacion puesto control ya pasados
+      $pcNotInRoute = $results['pcNotInRoute'];
+      //var_dump($mRutax);
+
+
+
+      $mRutax = $results['results'];
+      $mTrans = DespachosNew::getTranspDespac($mDespac);
+
+      
+      $mNoR = 'NO REPORT&Oacute;';
+      $codtran=$mTrans['cod_transp'];
+
+      $queryseg="SELECT a.num_consec, a.cod_transp, a.ubi_seguim,
+                          a.ind_estado 
+                     FROM ".BASE_DATOS.".tab_transp_tipser a
+                     WHERE a.cod_transp LIKE '". $codtran."'
+                     ORDER BY a.num_consec DESC LIMIT 1";
+
+      $mConsultseg = new Consulta($queryseg, $this->conexion);
+      $codseg = $mConsultseg->ret_arreglo();
+      $codseg = $codseg[2] ;
+
+      $j=0;#Consecutivo
+      $mBandera=0;
+
+      if( $mUlPCNov[cod_contro] != '' )
+      {
+
+        foreach ($pcNotInRoute as $key => $value)
+        {
+            $ctNovedades = $this->filter_array($mRutax,$value,$mfiltro);
+            if($ctNovedades>0){
+                unset($pcNotInRoute[$key]);
+            }
+        }
+       
+        #Recorre los puestos control data
+        for ($i=0; $i < sizeof($mRutax); $i++) 
+        {
+            if( $mUlPCNov[cod_contro] == $mRutax[$i][cod_contro] )
+                $mBandera++;
+
+            if( $mRutax[$i][tip_sitio] == 'A')
+            {#Con novedad antes de sitio
+
+                $mTime[0] = $j==0 ? 0 : $mTime[1] ;
+                $mTime[1] = $mRutax[$i][fec_descon];
+                $mTime[2] = DespachosNew::getTime($mTime[0], $mTime[1]);
+                $mDate = date_format( ( date_create($mRutax[$i][fec_descon]) ), 'H:i d-m-Y');
+                if(BASE_DATOS=='satt_faro'){
+                    if($codseg==0){
+                        $mResult[$j] = DespachosNew::arrayRuta( $mRutax[$i][nom_sitiox], NULL, '---', '---', $mRutax[$i][fec_contro], $mTime[2], $mRutax[$i][nom_noveda], $mRutax[$i][usr_creaci], 'D8DFEA', $mDate, $mRutax[$i][obs_noveda], '1', $mRutax[$i][nov_especi], $mRutax[$i][cod_contro], $mRutax[$i][cod_noveda], $mRutax[$i][tab_origen], $mRutax[$i][cod_consec],$mRutax[$i][cod_tipoxx]);
+                    }else{
+                        $nom_control = strtoupper(DespachosNew::getSitioNom(DespachosNew::getSitioControlNum($mRutax[$i]['cod_contro'])));
+                        $mResult[$j] = DespachosNew::arrayRuta( $nom_control, $mRutax[$i][nom_sitiox], '---', '---', $mRutax[$i][fec_contro], $mTime[2], $mRutax[$i][nom_noveda], $mRutax[$i][usr_creaci], 'D8DFEA', $mDate, $mRutax[$i][obs_noveda], '1', $mRutax[$i][nov_especi], $mRutax[$i][cod_contro], $mRutax[$i][cod_noveda], $mRutax[$i][tab_origen], $mRutax[$i][cod_consec],$mRutax[$i][cod_tipoxx]);      
+                    }
+                }else{
+                    $mResult[$j] = DespachosNew::arrayRuta( $mRutax[$i][nom_sitiox], NULL, '---', '---', $mRutax[$i][fec_contro], $mTime[2], $mRutax[$i][nom_noveda], $mRutax[$i][usr_creaci], 'D8DFEA', $mDate, $mRutax[$i][obs_noveda], '1', $mRutax[$i][nov_especi], $mRutax[$i][cod_contro], $mRutax[$i][cod_noveda], $mRutax[$i][tab_origen], $mRutax[$i][cod_consec],$mRutax[$i][cod_tipoxx]);
+                }
+                
+                $j++;
+            }
+            else if( $mRutax[$i][tip_sitio] == 'E')
+            { #Con Novedad En Sitio
+
+                $mSitio = $mRutax[$i][ind_virtua] == '1' ? $mRutax[$i][nom_contro] : '<span style="color:#'.$mRutax[$i][cod_colorx].'">'.$mRutax[$i][nom_contro].'</span>';
+                $mCol = $mRutax[$i][ind_virtua] == '1' ? 'D8DFEA' : 'D8DFF9';
+                $mTime[0] = $j==0 ? 0 : $mTime[1] ;
+                $mTime[1] = $mRutax[$i][fec_descon];
+                $mTime[2] = DespachosNew::getTime($mTime[0], $mTime[1]);
+                $mDate = date_format( ( date_create($mRutax[$i][fec_descon]) ), 'H:i d-m-Y');
+                $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $mRutax[$i][fec_noveda], $mTime[2], $mRutax[$i][nom_noveda], $mRutax[$i][usr_creaci], 'D8DFF9', $mDate, $mRutax[$i][obs_noveda], '1', $mRutax[$i][nov_especi], $mRutax[$i][cod_contro], $mRutax[$i][cod_noveda], $mRutax[$i][tab_origen], $mRutax[$i][cod_consec],$mRutax[$i][cod_tipoxx]);
+                $j++;
+            }
+            /*else if($mRutax[$i][ind_virtua] == '0')
+            {#Sin Novedad En Sitio
+                $mSitio = '<span style="color:#FF564D">'.$mRutax[$i][nom_contro].'</span>';
+                $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $mNoR, $mNoR, $mNoR, $mNoR, 'D8DFEA', $mNoR, $mNoR, '0', $mRutax[$i][cod_contro], '', '', '',$mRutax[$i][cod_tipoxx]);
+                $j++;
+            }*/
+
+            if($mBandera > 0 && $mRutax[$i][tip_sitio] == ''){
+                #PC es posterior al ultimo PC con novedad
+                $mSitio = DespachosNew::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
+                $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx] );
+                $j++;
+                array_push($eval,true);
+            }
+
+            if(in_array($mRutax[$i][cod_contro],$pcNotInRoute) && $mRutax[$i][tip_sitio] == ''){
+                $mSitio = '<span style="color:#FF564D">'.$mRutax[$i][nom_contro].'</span>';
+                $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $mNoR, $mNoR, $mNoR, $mNoR, 'D8DFEA', $mNoR, $mNoR, '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx]);
+                $j++;
+            }
+
+        }
+      }else{
+        #Recorre los puestos control data
+        for ($i=0; $i < sizeof($mRutax); $i++) 
+        {
+            $mSitio = DespachosNew::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
+            $mResult[$i] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx] );  
+        }
+      }
+      
+
+      //var_dump($mResult);
+      return array('results' => $mResult, 'totalRegistros' => $results['totalRegistros'],  'totalFiltro' => $results['totalFiltro']);
+    }
+
+
     /*! \fn: getRutaDespac
      *  \brief: Trae la ruta y las novedades del despacho 
      *  \author: Ing. Fabian Salinas
@@ -4984,7 +3577,7 @@ select:disabled {
       @include_once( "../".DIR_APLICA_CENTRAL."/lib/general/functions.inc" );
       $mResult = array();
       $mRutax = getControDespac( $this -> conexion, $mDespac ); #Script = /satt_standa/lib/general/functions.inc
-      $mTrans = Despachos::getTranspDespac($mDespac);
+      $mTrans = DespachosNew::getTranspDespac($mDespac);
 
       $mUltPC = end($mRutax);
       $mNoR = 'NO REPORT&Oacute;';
@@ -5012,8 +3605,8 @@ select:disabled {
         #Recorre los puestos de control del plan de ruta
         for ($i=0; $i < sizeof($mRutax); $i++) 
         {
-          $mNovEnSitio = Despachos::getNovEnSitio( $mDespac, $mRutax[$i][cod_contro] );#Novedades en Sitio
-          $mNovAnSitio = Despachos::getNovAnSitio( $mDespac, $mRutax[$i][cod_contro] );#Novedades antes de Sitio
+          $mNovEnSitio = DespachosNew::getNovEnSitio( $mDespac, $mRutax[$i][cod_contro] );#Novedades en Sitio
+          $mNovAnSitio = DespachosNew::getNovAnSitio( $mDespac, $mRutax[$i][cod_contro] );#Novedades antes de Sitio
 
           if( $mBandera > 0 )
             $mBandera++;
@@ -5027,17 +3620,17 @@ select:disabled {
             {
               $mTime[0] = $j==0 ? 0 : $mTime[1] ;
               $mTime[1] = $row[fec_creaci];
-              $mTime[2] = Despachos::getTime($mTime[0], $mTime[1]);
+              $mTime[2] = DespachosNew::getTime($mTime[0], $mTime[1]);
               $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
               if(BASE_DATOS=='satt_faro'){
                 if($codseg==0){
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
+                    $mResult[$j] = DespachosNew::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
                   }else{
-                    $nom_control = strtoupper(Despachos::getSitioNom(Despachos::getSitioControlNum($row['cod_contro'])));
-                    $mResult[$j] = Despachos::arrayRuta( $nom_control, $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);      
+                    $nom_control = strtoupper(DespachosNew::getSitioNom(DespachosNew::getSitioControlNum($row['cod_contro'])));
+                    $mResult[$j] = DespachosNew::arrayRuta( $nom_control, $row[nom_sitiox], '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);      
                   }
               }else{
-                    $mResult[$j] = Despachos::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
+                    $mResult[$j] = DespachosNew::arrayRuta( $row[nom_sitiox], NULL, '---', '---', $row[fec_contro], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFEA', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
               }
               
               $j++;
@@ -5054,16 +3647,16 @@ select:disabled {
                 $mCol = $mRutax[$i][ind_virtua] == '1' ? 'D8DFEA' : 'D8DFF9';
                 $mTime[0] = $j==0 ? 0 : $mTime[1] ;
                 $mTime[1] = $row[fec_creaci];
-                $mTime[2] = Despachos::getTime($mTime[0], $mTime[1]);
+                $mTime[2] = DespachosNew::getTime($mTime[0], $mTime[1]);
                 $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
-                $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $row[fec_noveda], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFF9', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
+                $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $row[fec_noveda], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFF9', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], $row[cod_consec],$row[cod_tipoxx]);
                 $j++;
               }
             }
             elseif($mRutax[$i][ind_virtua] == '0')
             {#Sin Novedad En Sitio
               $mSitio = '<span style="color:#FF564D">'.$mRutax[$i][nom_contro].'</span>';
-              $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $mNoR, $mNoR, $mNoR, $mNoR, 'D8DFEA', $mNoR, $mNoR, '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx]);
+              $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $mNoR, $mNoR, $mNoR, $mNoR, 'D8DFEA', $mNoR, $mNoR, '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx]);
               $j++;
             }
           }
@@ -5073,7 +3666,7 @@ select:disabled {
             {#Con Novedad En Sitio
 
               if( $mUltPC[cod_contro] == $mRutax[$i][cod_contro] )
-                $mSitio = Despachos::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
+                $mSitio = DespachosNew::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
               else
                 $mSitio = $mRutax[$i][ind_virtua] == '1' ? $mRutax[$i][nom_contro] : '<span style="color:#'.$mRutax[$i][cod_colorx].'">'.$mRutax[$i][nom_contro].'</span>';
 
@@ -5081,23 +3674,23 @@ select:disabled {
               {
                 $mTime[0] = $j==0 ? 0 : $mTime[1] ;
                 $mTime[1] = $row[fec_creaci];
-                $mTime[2] = Despachos::getTime($mTime[0], $mTime[1]);
+                $mTime[2] = DespachosNew::getTime($mTime[0], $mTime[1]);
                 $mDate = date_format( ( date_create($row[fec_creaci]) ), 'H:i d-m-Y');
-                $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $row[fec_noveda], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFF9', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], '',$row[cod_tipoxx]);
+                $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], $row[fec_noveda], $mTime[2], $row[nom_noveda], $row[usr_creaci], 'D8DFF9', $mDate, $row[obs_noveda], '1', $row[nov_especi], $mRutax[$i][cod_contro], $row[cod_noveda], $row[tab_origen], '',$row[cod_tipoxx]);
                 $j++;
               }
             }
             else
             {#Sin Novedad En Sitio 
-              $mSitio = Despachos::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
-              $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx]);
+              $mSitio = DespachosNew::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
+              $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx]);
               $j++;
             }
           }
           else
           {#PC es posterior al ultimo PC con novedad
-            $mSitio = Despachos::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
-            $mResult[$j] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx] );
+            $mSitio = DespachosNew::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
+            $mResult[$j] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx] );
             $j++;
           }
         }
@@ -5106,8 +3699,8 @@ select:disabled {
       {#Despacho sin novedades
         for ($i=0; $i < sizeof($mRutax); $i++) 
         {
-          $mSitio = Despachos::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
-          $mResult[$i] = Despachos::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx] );
+          $mSitio = DespachosNew::linkNomSitio( $mDespac, $mRutax[$i][nom_contro], $mRutax[$i][cod_contro], $mRutax[$i][cod_colorx], $mTrans[cod_transp], $mRutax[$i][ind_virtua], $tie_ultnov, $opcurban, $aux, $mTipSer );
+          $mResult[$i] = DespachosNew::arrayRuta( $mSitio, '', $mRutax[$i][fec_progra], $mRutax[$i][fec_planea], '', '', '', '', '', '', '', '0', $mRutax[$i][cod_contro], '', '', '',$row[cod_tipoxx] );
         }
       }
       return $mResult;
@@ -5127,23 +3720,23 @@ select:disabled {
     private function arrayRuta( $sit_seguim, $ubi_seguim, $fec_progra, $fec_planea, $fec_noveda, $cal_tiempo, $nom_noveda, $cod_usuari, $bac_ground, $fec_creaci, $obs_noveda, $ind_notcon, $nov_especi, $cod_contro, $cod_noveda, $tab_origen, $cod_consec = NULL,$cod_tipoxx )
     {
         
-      $mResult[sit_seguim] = $sit_seguim;
-      $mResult[ubi_seguim] = $ubi_seguim;
-      $mResult[fec_progra] = $fec_progra;
-      $mResult[fec_planea] = $fec_planea;
-      $mResult[fec_noveda] = $fec_noveda;
-      $mResult[cal_tiempo] = $cal_tiempo;
-      $mResult[nom_noveda] = $nom_noveda;
-      $mResult[cod_usuari] = $cod_usuari;
-      $mResult[fec_creaci] = $fec_creaci;
-      $mResult[obs_noveda] = $obs_noveda;
-      $mResult[ind_notcon] = $ind_notcon;
-      $mResult[nov_especi] = $nov_especi;
-      $mResult[cod_contro] = $cod_contro;
-      $mResult[cod_noveda] = $cod_noveda;
-      $mResult[tab_origen] = $tab_origen;
-      $mResult[cod_consec] = $cod_consec;
-      $mResult[cod_tipoxx] = $cod_tipoxx;
+      $mResult[sit_seguim] = self::eliminarAcentos('<span style="color:#004e00;">'.$sit_seguim.'</span>');
+      $mResult[ubi_seguim] = self::eliminarAcentos($ubi_seguim);
+      $mResult[fec_progra] = self::eliminarAcentos($fec_progra);
+      $mResult[fec_planea] = self::eliminarAcentos($fec_planea);
+      $mResult[fec_noveda] = self::eliminarAcentos($fec_noveda);
+      $mResult[cal_tiempo] = self::eliminarAcentos($cal_tiempo);
+      $mResult[nom_noveda] = self::eliminarAcentos($nom_noveda);
+      $mResult[cod_usuari] = self::eliminarAcentos($cod_usuari);
+      $mResult[fec_creaci] = self::eliminarAcentos($fec_creaci);
+      $mResult[obs_noveda] = self::eliminarAcentos($obs_noveda);
+      $mResult[ind_notcon] = self::eliminarAcentos($ind_notcon);
+      $mResult[nov_especi] = self::eliminarAcentos($nov_especi);
+      $mResult[cod_contro] = self::eliminarAcentos($cod_contro);
+      $mResult[cod_noveda] = self::eliminarAcentos($cod_noveda);
+      $mResult[tab_origen] = self::eliminarAcentos($tab_origen);
+      $mResult[cod_consec] = self::eliminarAcentos($cod_consec);
+      $mResult[cod_tipoxx] = self::eliminarAcentos($cod_tipoxx);
 
       $mResult[bg] = $bac_ground;
       return $mResult;
@@ -5401,25 +3994,21 @@ select:disabled {
      */
     private function linkNomSitio( $mNumDespac, $mNomSitio, $mCodContro, $mColor, $mCodTransp, $mIndVirtua, $tie_ultnov, $opcurban, $aux, $mTipSer = NULL )
     {
-      if( $mColor == '' && $mIndVirtua == '1' )
-        $mColor = '336600';
-      elseif( $mColor == '' && $mIndVirtua == '0' )
-        $mColor = '0026FF';
       $aux = ( strtolower( $_SESSION[datos_usuario][cod_usuari] ) == 'alogistica' || ( $mIndVirtua == 1 && $mTipSer == '' && $_SESSION[datos_usuario][cod_perfil] == '7' ) ) ? "name" : $aux ;
-      $mSpam  = '<span style="color:#'.$mColor.'">'.$mNomSitio.'</span>';
+      $mSpam  = '<span style="color:#1c02f5;">'.$mNomSitio.'</span>';
       $mLink  = '<a target="centralFrame" ';
       $mLink .= $aux.'="index.php?cod_servic='.$this -> servic.'&window=central&tie_ultnov='.$tie_ultnov;
       $mLink .= '&despac='.$mNumDespac.'&opcion=2&codpc='.$mCodContro.'&pc='.$mNomSitio;
       $mLink .= '&ind_virtua='.$mIndVirtua.'&cod_transp='.$mCodTransp.'&opcurban='.$opcurban.'" >';
       $mLink  = $mLink.$mSpam.'</a>';
       #Verifica que el Puesto de Control sea Padre o este Homologado como Hijo, para mostrar el PopUp con los detalles del Puesto de Control Padre
-      $mDetallePc = Despachos::getVerifyPcPadre( $mCodContro );
+      $mDetallePc = DespachosNew::getVerifyPcPadre( $mCodContro );
       if( $mDetallePc != NULL && $mIndVirtua != '1' )
         $mLupa = '<span onclick="showDetallePc('.$mDetallePc[0].')"><img border="0" src="../satt_standa/imagenes/icon_buscar.png"></span>&nbsp;&nbsp;';
       else
         $mLupa = '';
       
-      return $mResult = $mLupa.$mLink;
+      return $mResult = self::eliminarAcentos($mLupa.$mLink);
     }
 
     /*! \fn: getTranspDespac
@@ -5484,6 +4073,298 @@ select:disabled {
       }
     }
     
+
+    private function getNovedadPag( $mNumDespac , $mIndGPS = 'INNER', $limit, $pagina, $mfiltro)
+    {
+        $mEstServ = self::getView('jso_encabe'); 
+
+        if(BASE_DATOS == 'satt_faro')
+        {
+            $mSql = " SELECT * FROM
+                ( 
+                    (      SELECT a.fec_contro AS fec_noveda, 
+                                UPPER(b.nom_noveda) AS nom_noveda, 
+                                a.usr_creaci, a.fec_creaci, 
+                                UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox, 
+                                a.obs_contro AS obs_noveda, 
+                                b.nov_especi, a.cod_noveda, 
+                                '1' AS tab_origen, a.cod_consec, 
+                                a.cod_contro, '0' AS ind_ensiti, 
+                                b.ind_fuepla, a.tiem_duraci, 
+                                b.cod_etapax, b.ind_limpio, 
+                                b.ind_manala, 
+                                a.val_longit, a.val_latitu, e.cod_tipoxx,
+                                a.ind_enviad
+                        FROM ".BASE_DATOS.".tab_despac_contro a 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
+                                ON a.cod_noveda = b.cod_noveda 
+                        $mIndGPS JOIN ".BASE_DATOS.".tab_despac_sitio c 
+                                ON a.cod_sitiox = c.cod_sitiox 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_contro d 
+                                ON a.cod_contro = d.cod_contro 
+                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e
+                            ON b.cod_tipoxx = e.cod_tipoxx
+                            WHERE a.num_despac = '{$mNumDespac}' 
+                    )
+                    UNION 
+                    (
+                        SELECT a.fec_noveda, 
+                                UPPER(b.nom_noveda) AS nom_noveda,
+                                a.usr_creaci, 
+                                a.fec_creaci,  
+                                UPPER(c.nom_contro) AS nom_sitiox, 
+                                a.des_noveda AS obs_noveda, 
+                                b.nov_especi, a.cod_noveda, 
+                                '2' AS tab_origen, '1' AS cod_consec, 
+                                a.cod_contro, '1' AS ind_ensiti, 
+                                b.ind_fuepla, a.tiem_duraci, 
+                                b.cod_etapax, b.ind_limpio, 
+                                b.ind_manala,
+                                '' AS val_longit, '' AS val_latitu,
+                                e.cod_tipoxx, a.ind_enviad
+                        FROM ".BASE_DATOS.".tab_despac_noveda a 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda b 
+                                ON a.cod_noveda = b.cod_noveda 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_contro c 
+                                ON a.cod_contro = c.cod_contro 
+                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e
+                            ON b.cod_tipoxx = e.cod_tipoxx
+                            WHERE a.num_despac = '{$mNumDespac}' 
+                    )
+                    UNION
+                    (
+                        SELECT a.fec_solici AS fec_noveda, 
+                                c.nom_noveda,
+                                a.usr_solici AS usr_creaci, 
+                                a.fec_solici AS fec_creaci, 
+                                UPPER(b.nom_contro) AS nom_sitiox, 
+                                GROUP_CONCAT( d.tex_encabe ) AS obs_noveda, 
+                                '0' AS nov_especi, a.cod_noveda, 
+                                '3' AS tab_origen, d.cod_consec, 
+                                a.cod_contro, '0' AS ind_ensiti, 
+                                c.ind_fuepla, '' AS tiem_duraci, 
+                                c.cod_etapax, '0' AS ind_limpio, 
+                                c.ind_manala,
+                                '' AS val_longit, '' AS val_latitu,
+                                e.cod_tipoxx, '0' as 'ind_enviad'
+                        FROM ".BASE_DATOS.".tab_recome_asigna a 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
+                                ON a.cod_contro = b.cod_contro 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda c 
+                                ON a.cod_noveda = c.cod_noveda 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
+                                ON a.cod_recome = d.cod_consec 
+                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e
+                            ON c.cod_tipoxx = e.cod_tipoxx
+                            WHERE a.num_despac = '{$mNumDespac}' 
+                        GROUP BY a.cod_contro 
+                    )
+                    UNION
+                    (
+                        SELECT a.fec_ejecut AS fec_noveda, 
+                                'SOLUCION RECOMENDACION' AS nom_noveda, 
+                                a.usr_ejecut AS usr_creaci,
+                                a.fec_ejecut AS fec_creaci, 
+                                UPPER(b.nom_contro) AS nom_sitiox, 
+                                GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda, 
+                                '0' AS nov_especi, a.cod_noveda, 
+                                '4' AS tab_origen, d.cod_consec, 
+                                a.cod_contro, '1' AS ind_ensiti, 
+                                c.ind_fuepla, '' AS tiem_duraci, 
+                                c.cod_etapax, '1' AS ind_limpio, 
+                                c.ind_manala, 
+                                '' AS val_longit, '' AS val_latitu,
+                                e.cod_tipoxx,  '0' as 'ind_enviad'
+                        FROM ".BASE_DATOS.".tab_recome_asigna a 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_contro b 
+                                ON a.cod_contro = b.cod_contro 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda c 
+                                ON a.cod_noveda = c.cod_noveda 
+                        INNER JOIN ".BASE_DATOS.".tab_genera_recome d 
+                                ON a.cod_recome = d.cod_consec 
+                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx e
+                            ON c.cod_tipoxx = e.cod_tipoxx
+                            WHERE a.num_despac = '{$mNumDespac}' 
+                                AND a.obs_ejecuc IS NOT NULL 
+                        GROUP BY a.cod_contro 
+                    ) 
+                ) as notUn
+                WHERE 1=1 ";
+        }else
+        {
+                $mSql = "SELECT * FROM
+                ( 
+                    (       SELECT a.fec_contro AS fec_noveda,
+                                    UPPER(b.nom_noveda) AS nom_noveda,
+                                    a.usr_creaci, a.fec_creaci,
+                                    UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox,
+                                    a.obs_contro AS obs_noveda,
+                                    f.ind_novesp as 'nov_especi', a.cod_noveda,
+                                    '1' AS tab_origen, a.cod_consec,
+                                    a.cod_contro, '0' AS ind_ensiti,
+                                    f.ind_fuepla, a.tiem_duraci,
+                                    b.cod_etapax, f.ind_limpio,
+                                    f.ind_manale as 'ind_manala',
+                                    a.val_longit, a.val_latitu, g.cod_tipoxx,
+                                    a.ind_enviad
+                            FROM ".BASE_DATOS.".tab_despac_contro a
+                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
+                                ON a.cod_noveda = b.cod_noveda
+                        INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
+                                ON a.cod_sitiox = c.cod_sitiox
+                        INNER JOIN ".BASE_DATOS.".tab_genera_contro d
+                                ON a.cod_contro = d.cod_contro
+                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
+                                ON a.num_despac = e.num_despac
+                        LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
+                                ON b.cod_noveda = f.cod_noveda AND
+                                    f.cod_transp = e.cod_transp
+                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                                    ON b.cod_tipoxx = g.cod_tipoxx
+                            WHERE a.num_despac = '{$mNumDespac}'
+                    )
+                    UNION
+                    (
+                            SELECT a.fec_noveda,
+                                    UPPER(b.nom_noveda) AS nom_noveda,
+                                    a.usr_creaci,
+                                    a.fec_creaci, 
+                                    UPPER(c.nom_contro) AS nom_sitiox,
+                                    a.des_noveda AS obs_noveda,
+                                    e.ind_novesp as 'nov_especi', a.cod_noveda,
+                                    '2' AS tab_origen, '1' AS cod_consec,
+                                    a.cod_contro, '1' AS ind_ensiti,
+                                    e.ind_fuepla, a.tiem_duraci,
+                                    b.cod_etapax, e.ind_limpio,
+                                    e.ind_manale as 'ind_manala',
+                                    '' AS val_longit, '' AS val_latitu,
+                                    f.cod_tipoxx, a.ind_enviad
+                            FROM ".BASE_DATOS.".tab_despac_noveda a
+                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
+                                ON a.cod_noveda = b.cod_noveda
+                        INNER JOIN ".BASE_DATOS.".tab_genera_contro c
+                                ON a.cod_contro = c.cod_contro
+                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige d
+                                ON a.num_despac = d.num_despac
+                        LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e
+                                ON b.cod_noveda = e.cod_noveda AND
+                                    e.cod_transp = d.cod_transp
+                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx f
+                                ON b.cod_tipoxx = f.cod_tipoxx
+                            WHERE a.num_despac = '{$mNumDespac}'
+                    )
+                    UNION
+                    (
+                            SELECT a.fec_solici AS fec_noveda,
+                                    c.nom_noveda,
+                                    a.usr_solici AS usr_creaci,
+                                    a.fec_solici AS fec_creaci,
+                                    UPPER(b.nom_contro) AS nom_sitiox,
+                                    GROUP_CONCAT( d.tex_encabe ) AS obs_noveda,
+                                    '0' AS nov_especi, a.cod_noveda,
+                                    '3' AS tab_origen, d.cod_consec,
+                                    a.cod_contro, '0' AS ind_ensiti,
+                                    f.ind_fuepla, '' AS tiem_duraci,
+                                    c.cod_etapax, '0' AS ind_limpio,
+                                    f.ind_manale as 'ind_manala',
+                                    '' AS val_longit, '' AS val_latitu,
+                                    g.cod_tipoxx, '0' as ind_enviad
+                            FROM ".BASE_DATOS.".tab_recome_asigna a
+                        INNER JOIN ".BASE_DATOS.".tab_genera_contro b
+                                ON a.cod_contro = b.cod_contro
+                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
+                                ON a.cod_noveda = c.cod_noveda
+                        INNER JOIN ".BASE_DATOS.".tab_genera_recome d
+                                ON a.cod_recome = d.cod_consec
+                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
+                                ON a.num_despac = e.num_despac
+                        LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
+                                ON c.cod_noveda = f.cod_noveda AND
+                                    e.cod_transp = e.cod_transp 
+                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                                ON c.cod_tipoxx = g.cod_tipoxx
+                            WHERE a.num_despac = '{$mNumDespac}'
+                        GROUP BY a.cod_contro
+                    )
+                    UNION
+                    (
+                            SELECT a.fec_ejecut AS fec_noveda,
+                                    'SOLUCION RECOMENDACION' AS nom_noveda,
+                                    a.usr_ejecut AS usr_creaci,
+                                    a.fec_ejecut AS fec_creaci,
+                                    UPPER(b.nom_contro) AS nom_sitiox,
+                                    GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda,
+                                    '0' AS nov_especi, a.cod_noveda,
+                                    '4' AS tab_origen, d.cod_consec,
+                                    a.cod_contro, '1' AS ind_ensiti,
+                                    f.ind_fuepla, '' AS tiem_duraci,
+                                    c.cod_etapax, '1' AS ind_limpio,
+                                    f.ind_manale as 'ind_manala',
+                                    '' AS val_longit, '' AS val_latitu,
+                                    g.cod_tipoxx, '0' as ind_enviad
+                            FROM ".BASE_DATOS.".tab_recome_asigna a
+                        INNER JOIN ".BASE_DATOS.".tab_genera_contro b
+                                ON a.cod_contro = b.cod_contro
+                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
+                                ON a.cod_noveda = c.cod_noveda
+                        INNER JOIN ".BASE_DATOS.".tab_genera_recome d
+                                ON a.cod_recome = d.cod_consec
+                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
+                                ON a.num_despac = e.num_despac
+                        LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
+                                ON c.cod_noveda = f.cod_noveda AND
+                                    e.cod_transp = e.cod_transp 
+                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                                ON c.cod_tipoxx = g.cod_tipoxx
+                            WHERE a.num_despac = '{$mNumDespac}'
+                                AND a.obs_ejecuc IS NOT NULL
+                        GROUP BY a.cod_contro
+                    )
+                ) as notUn
+                WHERE 1=1 ";
+        } 
+
+        $mSql .= " AND ( notUn.nom_sitiox  LIKE '%" . $_REQUEST['campo'] . "%' OR notUn.obs_noveda  LIKE '%" . $_REQUEST['campo'] . "%' OR  notUn.nom_noveda LIKE '%" . $_REQUEST['campo'] . "%')";
+
+        switch($mfiltro){
+            case 1:
+                $mSql .= " AND notUn.cod_tipoxx = '1' ";
+                break;
+            case 2:
+                $mSql .= " AND notUn.cod_tipoxx = '2' ";
+              break;
+            case 3:
+                $mSql .= " AND notUn.cod_tipoxx = '3' ";
+              break;
+        }
+
+        if( $mEstServ->est_servic->ind_visibl != 1 ){
+            $mSql .= " AND  notUn.cod_noveda NOT IN(9271,9272,9273) ";
+        }
+
+        if ($pagina==0) {
+            $inicio = 0;
+            $pagina = 1;
+        } else {
+            $inicio = ($pagina-1) * $limit;
+        }
+
+        $mSql .= " ORDER BY notUn.fec_creaci ASC ";
+
+        // Consulta para total de registro
+        $consult = new Consulta($mSql, $this->conexion);
+        $total = $consult->ret_matriz("a");
+        $totalRegistros = sizeof($total);
+
+        $mSql .= " LIMIT $inicio , $limit";
+        
+        $consult = new Consulta($mSql, $this->conexion);
+        $matriz = $consult->ret_matriz("a");
+        $totalFiltro = sizeof($matriz);
+
+
+        return array('results' => $matriz, 'totalRegistros' => $totalRegistros, 'totalFiltro' => $totalFiltro);
+    }
     /*! \fn: getNovedad
      *  \brief: Trae las Novedades de un Despacho
      *  \author: Ing. Fabian Salinas
@@ -5616,8 +4497,7 @@ select:disabled {
                                 b.cod_etapax, f.ind_limpio,
                                 f.ind_manale as 'ind_manala',
                                 a.val_longit, a.val_latitu, g.cod_tipoxx,
-                                a.ind_enviad, f.ind_reqres, f.ind_resfar,
-                                f.ind_rescli, a.cod_soluci, 'NC' as 'tip_noveda'
+                                a.ind_enviad
                         FROM ".BASE_DATOS.".tab_despac_contro a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
@@ -5649,8 +4529,7 @@ select:disabled {
                                 b.cod_etapax, e.ind_limpio,
                                 e.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                f.cod_tipoxx, a.ind_enviad, e.ind_reqres, e.ind_resfar,
-                                e.ind_rescli, a.cod_soluci, 'PC' as 'tip_noveda'
+                                f.cod_tipoxx, a.ind_enviad
                         FROM ".BASE_DATOS.".tab_despac_noveda a
                     INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
                             ON a.cod_noveda = b.cod_noveda
@@ -5680,9 +4559,7 @@ select:disabled {
                                 c.cod_etapax, '0' AS ind_limpio,
                                 f.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                g.cod_tipoxx, '0' as ind_enviad,
-                                f.ind_reqres, f.ind_resfar,
-                                f.ind_rescli, 0 as 'cod_soluci', '' as 'tip_noveda'
+                                g.cod_tipoxx, '0' as ind_enviad
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
@@ -5715,8 +4592,7 @@ select:disabled {
                                 c.cod_etapax, '1' AS ind_limpio,
                                 f.ind_manale as 'ind_manala',
                                 '' AS val_longit, '' AS val_latitu,
-                                g.cod_tipoxx, '0' as ind_enviad, f.ind_reqres,
-                                f.ind_resfar, f.ind_rescli, 0 as 'cod_soluci', '' as 'tip_noveda'
+                                g.cod_tipoxx, '0' as ind_enviad
                         FROM ".BASE_DATOS.".tab_recome_asigna a
                     INNER JOIN ".BASE_DATOS.".tab_genera_contro b
                             ON a.cod_contro = b.cod_contro
@@ -5740,295 +4616,6 @@ select:disabled {
       $mConsult = new Consulta( $mSql, $this -> conexion );
       return $mConsult -> ret_matrix('a');
     }
-
-    /*! \fn: getNovedad
-     *  \brief: Trae las Novedades de un Despacho
-     *  \author: Ing. Fabian Salinas
-     *  \date: 
-     *  \date modified: dd/mm/aaaa
-     *  \param: mNumDespac   Integer   Numero de despacho
-     *  \param: mIndGPS      String    Aplica Inner Join o Left Join
-     *  \return: Matriz
-     */
-    /*
-    private function getNovedadAlarmas( $mNumDespac)
-    {
-        $mSql = "(       SELECT a.fec_contro AS fec_noveda,
-                                UPPER(b.nom_noveda) AS nom_noveda,
-                                a.usr_creaci, a.fec_creaci,
-                                UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox,
-                                a.obs_contro AS obs_noveda,a.cod_noveda,
-                                a.cod_consec, a.cod_contro, g.cod_tipoxx,
-                                a.ind_enviad, f.ind_resfar, b.cod_riesgo,
-                                'NC' as 'tip_noveda'
-                        FROM ".BASE_DATOS.".tab_despac_contro a
-                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
-                            ON a.cod_noveda = b.cod_noveda
-                    INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
-                            ON a.cod_sitiox = c.cod_sitiox
-                    INNER JOIN ".BASE_DATOS.".tab_genera_contro d
-                            ON a.cod_contro = d.cod_contro
-                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
-                            ON a.num_despac = e.num_despac
-                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
-                            ON b.cod_noveda = f.cod_noveda AND
-                                f.cod_transp = e.cod_transp
-                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
-                                ON b.cod_tipoxx = g.cod_tipoxx
-                        WHERE a.num_despac = '{$mNumDespac}'
-                        AND   f.ind_reqres = 1
-                        AND   (a.cod_soluci = 0 OR a.cod_soluci = '' OR a.cod_soluci IS NULL)
-                )
-                UNION
-                (
-                        SELECT a.fec_noveda,
-                                UPPER(b.nom_noveda) AS nom_noveda,
-                                a.usr_creaci,
-                                a.fec_creaci, 
-                                UPPER(c.nom_contro) AS nom_sitiox,
-                                a.des_noveda AS obs_noveda, a.cod_noveda,
-                                a.cod_consec, a.cod_contro,f.cod_tipoxx,
-                                a.ind_enviad, e.ind_resfar,
-                                b.cod_riesgo, 'PC' as 'tip_noveda'
-                        FROM ".BASE_DATOS.".tab_despac_noveda a
-                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
-                            ON a.cod_noveda = b.cod_noveda
-                    INNER JOIN ".BASE_DATOS.".tab_genera_contro c
-                            ON a.cod_contro = c.cod_contro
-                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige d
-                            ON a.num_despac = d.num_despac
-                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e
-                            ON b.cod_noveda = e.cod_noveda AND
-                                e.cod_transp = d.cod_transp
-                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx f
-                            ON b.cod_tipoxx = f.cod_tipoxx
-                        WHERE a.num_despac = '{$mNumDespac}'
-                        AND   e.ind_reqres = 1
-                        AND   (a.cod_soluci = 0 OR a.cod_soluci = '' OR a.cod_soluci IS NULL)
-                )
-                ORDER BY fec_creaci ASC";       
-      $mConsult = new Consulta( $mSql, $this -> conexion );
-      return $mConsult -> ret_matrix('a');
-    }*/
-
-
-    private function getNovedadAlarmas($mNumDespac)
-{
-    // Consulta unificada: se obtienen los registros de ambas tablas (NC y PC)
-    $mSql = "(
-                SELECT 
-                    a.fec_contro AS fec_noveda,
-                    UPPER(b.nom_noveda) AS nom_noveda,
-                    a.usr_creaci,
-                    a.fec_creaci,
-                    UPPER(IF(c.nom_sitiox IS NULL, d.nom_contro, c.nom_sitiox)) AS nom_sitiox,
-                    a.obs_contro AS obs_noveda,
-                    a.cod_noveda,
-                    a.cod_consec,
-                    a.cod_contro,
-                    g.cod_tipoxx,
-                    a.ind_enviad,
-                    f.ind_resfar,
-                    b.cod_riesgo,
-                    'NC' AS tip_noveda,
-                    (f.ind_reqres = 1) AS ind_reqres,
-                    a.cod_soluci
-                FROM ".BASE_DATOS.".tab_despac_contro a
-                INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda
-                INNER JOIN ".BASE_DATOS.".tab_despac_sitio c ON a.cod_sitiox = c.cod_sitiox
-                INNER JOIN ".BASE_DATOS.".tab_genera_contro d ON a.cod_contro = d.cod_contro
-                INNER JOIN ".BASE_DATOS.".tab_despac_vehige e ON a.num_despac = e.num_despac
-                LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f ON b.cod_noveda = f.cod_noveda 
-                                                              AND f.cod_transp = e.cod_transp
-                LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g ON b.cod_tipoxx = g.cod_tipoxx
-                WHERE a.num_despac = '{$mNumDespac}'
-            )
-            UNION
-            (
-                SELECT 
-                    a.fec_noveda,
-                    UPPER(b.nom_noveda) AS nom_noveda,
-                    a.usr_creaci,
-                    a.fec_creaci, 
-                    UPPER(c.nom_contro) AS nom_sitiox,
-                    a.des_noveda AS obs_noveda,
-                    a.cod_noveda,
-                    a.cod_consec,
-                    a.cod_contro,
-                    f.cod_tipoxx,
-                    a.ind_enviad,
-                    e.ind_resfar,
-                    b.cod_riesgo,
-                    'PC' AS tip_noveda,
-                    e.ind_reqres AS ind_reqres,
-                    a.cod_soluci
-                FROM ".BASE_DATOS.".tab_despac_noveda a
-                INNER JOIN ".BASE_DATOS.".tab_genera_noveda b ON a.cod_noveda = b.cod_noveda
-                INNER JOIN ".BASE_DATOS.".tab_genera_contro c ON a.cod_contro = c.cod_contro
-                INNER JOIN ".BASE_DATOS.".tab_despac_vehige d ON a.num_despac = d.num_despac
-                LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e ON b.cod_noveda = e.cod_noveda 
-                                                              AND e.cod_transp = d.cod_transp
-                LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx f ON b.cod_tipoxx = f.cod_tipoxx
-                WHERE a.num_despac = '{$mNumDespac}'
-            )
-            ORDER BY fec_creaci ASC ";
-
-    $mConsult = new Consulta($mSql, $this->conexion);
-    $records = $mConsult->ret_matrix('a'); // Se espera un array de registros asociativos
-
-    // Inicialización de la agrupación
-    $groups = array();
-    $currentGroup = array(); // Usamos este arreglo interno con '_groupRecords' para seguimiento
-
-    foreach ($records as $record) {
-        // Si no hay grupo iniciado, se inicia con el registro actual
-        if (empty($currentGroup)) {
-            $currentGroup = array(
-                'fec_noveda'    => $record['fec_noveda'],
-                'nom_noveda'    => $record['nom_noveda'],
-                'usr_creaci'    => $record['usr_creaci'],
-                'fec_creaci'    => $record['fec_creaci'],
-                'nom_sitiox'    => $record['nom_sitiox'],
-                'obs_noveda'    => $record['obs_noveda'],
-                'cod_noveda'    => $record['cod_noveda'],
-                'cod_consec'    => $record['cod_consec'],
-                'cod_contro'    => $record['cod_contro'],
-                'cod_tipoxx'    => $record['cod_tipoxx'],
-                'ind_enviad'    => $record['ind_enviad'],
-                'ind_resfar'    => $record['ind_resfar'],
-                'cod_riesgo'    => $record['cod_riesgo'],
-                'tip_noveda'    => $record['tip_noveda'],
-                'ind_reqres'    => $record['ind_reqres'],
-                'cod_soluci'    => $record['cod_soluci'],
-                '_groupRecords' => array($record)
-            );
-        } else {
-            // Se agrupa por cod_noveda, tip_noveda y cod_soluci
-            if (
-                $record['cod_noveda'] == $currentGroup['cod_noveda'] &&
-                $record['tip_noveda'] == $currentGroup['tip_noveda'] &&
-                $record['cod_soluci'] == $currentGroup['cod_soluci']
-            ) {
-                // Actualizamos campos variables:
-                $firstFecNoveda = $currentGroup['_groupRecords'][0]['fec_noveda'];
-                $currentFecNoveda = $record['fec_noveda'];
-                if ($firstFecNoveda != $currentFecNoveda) {
-                    $currentGroup['fec_noveda'] = $firstFecNoveda . " / " . $currentFecNoveda;
-                }
-                $firstFecCreaci = $currentGroup['_groupRecords'][0]['fec_creaci'];
-                $currentFecCreaci = $record['fec_creaci'];
-                if ($firstFecCreaci != $currentFecCreaci) {
-                    $currentGroup['fec_creaci'] = $firstFecCreaci . " / " . $currentFecCreaci;
-                }
-                $firstCodConsec = $currentGroup['_groupRecords'][0]['cod_consec'];
-                $currentCodConsec = $record['cod_consec'];
-                if ($firstCodConsec != $currentCodConsec) {
-                    $currentGroup['cod_consec'] = $firstCodConsec . " - " . $currentCodConsec;
-                }
-                $currentGroup['obs_noveda'] = $record['obs_noveda'];
-
-                // Agregamos el registro al grupo interno
-                $currentGroup['_groupRecords'][] = $record;
-            } else {
-                // Al cambiar de grupo, si el grupo actual cumple las condiciones...
-                if ((int)$currentGroup['ind_reqres'] === 1 &&
-                    ($currentGroup['cod_soluci'] === "0" || $currentGroup['cod_soluci'] === "" || is_null($currentGroup['cod_soluci']))) {
-
-                    // Se agrega la cantidad de registros agrupados
-                    $currentGroup['cantidad'] = count($currentGroup['_groupRecords']);
-
-                    // Procesamos el campo "consecutivos"
-                    $consArray = array_map(function($r) {
-                        return $r['cod_consec'];
-                    }, $currentGroup['_groupRecords']);
-                    sort($consArray, SORT_NUMERIC);
-                    if (count($consArray) == 1) {
-                        $currentGroup['consecutivos'] = $consArray[0];
-                    } else {
-                        $currentGroup['consecutivos'] = $consArray[0] . "-" . $consArray[count($consArray) - 1];
-                    }
-
-                    // Calculamos la fecha de creación mínima (la más antigua) para ordenar después
-                    $dates = array_map(function($r) {
-                        return strtotime($r['fec_creaci']);
-                    }, $currentGroup['_groupRecords']);
-                    $currentGroup['fec_creaci_min'] = date('Y-m-d H:i:s', min($dates));
-
-                    unset($currentGroup['_groupRecords']);
-                    $groups[] = $currentGroup;
-                }
-                // Iniciamos un nuevo grupo con el registro actual
-                $currentGroup = array(
-                    'fec_noveda'    => $record['fec_noveda'],
-                    'nom_noveda'    => $record['nom_noveda'],
-                    'usr_creaci'    => $record['usr_creaci'],
-                    'fec_creaci'    => $record['fec_creaci'],
-                    'nom_sitiox'    => $record['nom_sitiox'],
-                    'obs_noveda'    => $record['obs_noveda'],
-                    'cod_noveda'    => $record['cod_noveda'],
-                    'cod_consec'    => $record['cod_consec'],
-                    'cod_contro'    => $record['cod_contro'],
-                    'cod_tipoxx'    => $record['cod_tipoxx'],
-                    'ind_enviad'    => $record['ind_enviad'],
-                    'ind_resfar'    => $record['ind_resfar'],
-                    'cod_riesgo'    => $record['cod_riesgo'],
-                    'tip_noveda'    => $record['tip_noveda'],
-                    'ind_reqres'    => $record['ind_reqres'],
-                    'cod_soluci'    => $record['cod_soluci'],
-                    '_groupRecords' => array($record)
-                );
-            }
-        }
-    }
-
-    // Procesar el último grupo abierto (si existe)
-    if (!empty($currentGroup)) {
-        if ((int)$currentGroup['ind_reqres'] === 1 &&
-            ($currentGroup['cod_soluci'] === "0" || $currentGroup['cod_soluci'] === "" || is_null($currentGroup['cod_soluci']))) {
-            $currentGroup['cantidad'] = count($currentGroup['_groupRecords']);
-            $consArray = array_map(function($r) {
-                return $r['cod_consec'];
-            }, $currentGroup['_groupRecords']);
-            sort($consArray, SORT_NUMERIC);
-            if (count($consArray) == 1) {
-                $currentGroup['consecutivos'] = $consArray[0];
-            } else {
-                $currentGroup['consecutivos'] = $consArray[0] . "-" . $consArray[count($consArray) - 1];
-            }
-            $dates = array_map(function($r) {
-                return strtotime($r['fec_creaci']);
-            }, $currentGroup['_groupRecords']);
-            $currentGroup['fec_creaci_min'] = date('Y-m-d H:i:s', min($dates));
-            unset($currentGroup['_groupRecords']);
-            $groups[] = $currentGroup;
-        }
-    }
-
-    // Ordenar los grupos según los criterios deseados:
-    // 1. cod_riesgo: mayor primero (ALTO > MEDIO > BAJO)
-    // 2. cantidad: mayor cantidad primero
-    // 3. fec_creaci_min: fecha más antigua primero
-    usort($groups, function($a, $b) {
-        $a_risk = (int)$a['cod_riesgo'];
-        $b_risk = (int)$b['cod_riesgo'];
-        if ($a_risk !== $b_risk) {
-            return $b_risk - $a_risk; // mayor riesgo primero
-        }
-        if ($a['cantidad'] !== $b['cantidad']) {
-            return $b['cantidad'] - $a['cantidad']; // mayor cantidad primero
-        }
-        return strtotime($a['fec_creaci_min']) - strtotime($b['fec_creaci_min']); // fecha más antigua primero
-    });
-
-    return $groups;
-}
-
-
-
-
-
-
-
     
 
     /*! \fn: getPuntFisDespac
@@ -9638,8 +8225,6 @@ select:disabled {
                         
                         $( 'input.dates' ).mask('Annn-Mn-Dn');
                         $( 'input.hours' ).mask('Hn:Nn');
-
-                         
                     });
               </script>";
     }
@@ -9772,16 +8357,16 @@ select:disabled {
             switch ($key) 
             {
                 case 'Origen':
-                    $mHtml .= '<b>'.$key.'</b>: '.( Despachos::getCiudad($value) ).'.<pre style="display:inline">&#09;</pre> ';
+                    $mHtml .= '<b>'.$key.'</b>: '.( DespachosNew::getCiudad($value) ).'.<pre style="display:inline">&#09;</pre> ';
                     break;
                 case 'Destino':
-                    $mHtml .= '<b>'.$key.'</b>: '.( Despachos::getCiudad($value) ).'.<pre style="display:inline">&#09;</pre> ';
+                    $mHtml .= '<b>'.$key.'</b>: '.( DespachosNew::getCiudad($value) ).'.<pre style="display:inline">&#09;</pre> ';
                     break;
                 case 'Ruta':
-                    $mHtml .= '<b>'.$key.'</b>: '.( Despachos::getRutasx($value) ).'.<pre style="display:inline">&#09;</pre> ';
+                    $mHtml .= '<b>'.$key.'</b>: '.( DespachosNew::getRutasx($value) ).'.<pre style="display:inline">&#09;</pre> ';
                     break;
                 case 'Mercancia':
-                    $mHtml .= '<b>'.$key.'</b>: '.( Despachos::getProduc($value) ).'.<pre style="display:inline">&#09;</pre> ';
+                    $mHtml .= '<b>'.$key.'</b>: '.( DespachosNew::getProduc($value) ).'.<pre style="display:inline">&#09;</pre> ';
                     break;
                 case 'Tipo Transportadora':
                     $mHtml .= '<b>'.$key.'</b>: '.( $this->ArrayTipTansp[$value] ).'.<pre style="display:inline">&#09;</pre> ';
@@ -10531,7 +9116,7 @@ select:disabled {
      *  \param: mView       Array    Permisos de visibilidad en la seccion plan de ruta
      *  \return: HTML
      */
-    private function divContacto( $_RUTASX, $placa, $transport, $despac, $cod_agenci)
+    private function divContacto($placa, $transport, $despac, $cod_agenci)
     {  
           
       $datos = $this->getContact($transport, $cod_agenci);
@@ -10611,7 +9196,7 @@ select:disabled {
       $mHtml = new Formlib(2);
 
       $mHtml->OpenDiv("id:planRutaID; class:accordion");
-        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION PARTICULARIDAD</center></h3>");
+        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION PARICULARIDAD</center></h3>");
         $mHtml->OpenDiv("id:secID");
           $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
             $mHtml->Table("tr");
@@ -10774,9 +9359,8 @@ select:disabled {
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S'  
                                         AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
-                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                     GROUP BY aa.num_despac, a.fec_creaci
-                                    
                                 )
                                 UNION ALL
                                 (
@@ -10811,9 +9395,8 @@ select:disabled {
                                         AND aa.ind_anulad = 'R'
                                         AND aa.ind_planru LIKE 'S' 
                                         AND dd.cod_server IN (14,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30)
-                                        AND DATE(a.fec_creaci) = DATE(NOW())
+                                        /*AND DATE(a.fec_creaci) = DATE(NOW())*/
                                         GROUP BY aa.num_despac, a.fec_creaci
-                                        
                                 )
                                 ORDER BY cod_server
                         ";
@@ -10822,29 +9405,26 @@ select:disabled {
             return $cNovPendientes;
     }
 
-
-    function getOperacionPreventiva($num_despac, $num_consec, $tip_seguim, $flag = true){
-        $query = "SELECT cod_consec 
-                        FROM " . BASE_DATOS . ".tab_noveda_opprev 
-                        WHERE num_despac = '" . $num_despac . "' AND
-                              cod_connov = '" . $num_consec . "' AND
-                              tip_seguim = '" . $tip_seguim . "'";
-        
-        $consulta = new Consulta($query, $this->conexion);
-        $getOpePrev = $consulta->ret_matrix('a');
-        if($flag){
-            if(sizeof($getOpePrev)>0){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return $getOpePrev;
-        }
-        
-        
-    }
+    function eliminarAcentos($cadena){
+		
+		$caracteres = array(
+            // Vocales acentuadas
+            'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'A', 'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a',
+            'É' => 'E', 'È' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'é' => 'e', 'è' => 'e', 'ê' => 'e', 'ë' => 'e',
+            'Í' => 'I', 'Ì' => 'I', 'Î' => 'I', 'Ï' => 'I', 'í' => 'i', 'ì' => 'i', 'î' => 'i', 'ï' => 'i',
+            'Ó' => 'O', 'Ò' => 'O', 'Ô' => 'O', 'Ö' => 'O', 'ó' => 'o', 'ò' => 'o', 'ô' => 'o', 'ö' => 'o',
+            'Ú' => 'U', 'Ù' => 'U', 'Û' => 'U', 'Ü' => 'U', 'ú' => 'u', 'ù' => 'u', 'û' => 'u', 'ü' => 'u',
+            // Otros caracteres especiales
+            'Ñ' => 'N', 'ñ' => 'n', 'Ç' => 'C', 'ç' => 'c', 'ß' => 'ss',
+            // Caracteres adicionales
+            'Ý' => 'Y', 'ý' => 'y', 'ÿ' => 'y', '*' => '',
+        );
     
+        $cadena = strtr($cadena, $caracteres);
+        $cadena = preg_replace('/[\x{FFFD}]/u', '', $cadena);
+    
+        return $cadena;
+	}
 }
 
 ?>
