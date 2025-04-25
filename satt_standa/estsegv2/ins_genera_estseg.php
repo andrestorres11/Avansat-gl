@@ -256,6 +256,7 @@
                                 '.utf8_encode($this->nuevaSolicitudModal()).'
                                 '.$this->modalVisualizarPDF().'
                                 '.$this->modalVisualizarDocuments().'
+                                </div>
                 </td>
             </tr>
                                                 ';
@@ -320,7 +321,8 @@
                              f.dir_domici as 'dir_dompro', f.dir_emailx as 'dir_emapro',
                              g.cod_despac, g.cod_tipdes, g.cod_paiori, g.cod_ciuori,
                              g.cod_paides, g.cod_ciudes, g.cod_rutasx, g.val_declar,
-                             g.val_pesoxx, g.cod_genera
+                             g.val_pesoxx, g.cod_genera, d.num_revtec, f.est_ruesxx, f.num_matric,
+                             c.tip_riearl, c.fec_venarl
               FROM ".BASE_DATOS.".tab_estseg_solici a
         INNER JOIN ".BASE_DATOS.".tab_tercer_tercer b
             ON a.cod_emptra = b.cod_tercer
@@ -387,64 +389,6 @@
           $info = $this->getInfoSolicitud($_REQUEST['cod_solici']);
           $infoTipSer = $this->getConfigTipServic($info['cod_emptra']);
           $cod_tipest = $info['cod_tipest'];
-
-          
-          /*
-          
-          //Indicador de fase
-          $disabledTabs1='';
-          $disabledTabs2='';
-          $activetab1='';
-          $activetab2='';
-          $ind_fase = $info['ind_fasexx'];
-          if($ind_fase==1){
-            $disabledTabs2 = 'disabledTab';
-            $activetab1='active';
-          }else{
-            $disabledTabs1 = 'disabledTab';
-            $activetab2='active';
-          }
-          
-          $che_pospro = '';
-          if($info['cod_poseed']==$info['cod_propie'] && $info['cod_poseed']!=NULL && $info['cod_propie']!=NULL){
-            $che_pospro = 'checked';
-          }
-
-          //Indicador si el vehiculo presenta comparendos
-          $ind_precomvehSi='';
-          $ind_precomvehNo='';
-          if($info['pre_comveh']==1){
-            $ind_precomvehSi='checked';
-          }else{
-            $ind_precomvehNo='checked';
-          }
-
-          //Indicador si el vehiculo presenta resoluciones
-          $pre_resvehSi='';
-          $pre_resvehNo='';
-          if($info['pre_resveh']==1){
-            $pre_resvehSi='checked';
-          }else{
-            $pre_resvehNo='checked';
-          }
-
-          //Indicadores para busqueda de documentos
-          $nom_tabper = 'tab_estudi_person';
-          $con_whepos = '';
-          $con_whepro = '';
-          if($info['cod_poseed'] != '' || $info['cod_poseed'] != NULL){
-            $con_whepos = ' cod_segper = '.$info['cod_poseed'];
-          }
-          
-          if($info['cod_propie'] != '' || $info['cod_propie'] != NULL){
-            $con_whepro = ' cod_segper = '.$info['cod_propie'];
-          }
-
-          $nom_tabveh = 'tab_estudi_vehicu';
-          $con_wheveh = ' cod_segveh = '.$info['cod_vehicu'];
-          */
-          
-
 
           echo '<table style="width: 100%;" id="dashBoardTableTrans">
                   <tr>
@@ -573,41 +517,6 @@
                                 </li>';
                         }
 
-                        /*
-                        $label_pestana = 'Poseedor / Tenedor';
-                        if ($info['num_docpos'] == $info['num_docpro'] && $info['num_docpro'] == $info['num_doccon']) {
-                          $label_pestana = 'Poseedor / Propietario / Conductor';
-                        } else if ($info['num_docpos'] == $info['num_docpro']) {
-                            $label_pestana = 'Poseedor / Propietario';
-                        }else{
-                           $label_pestana = 'Conductor';
-                        }
-
-
-                        echo '<li class="nav-item m-2">
-                                <a class="btn btn-success btn-sm"  id="pills-vehiculo-tab" data-toggle="pill" href="#pills-vehiculo" role="tab" aria-controls="pills-vehiculo" aria-selected="true">veh&iacute;culo</a>
-                              </li>';
-
-                        if($info['num_docpos'] != $info['num_doccon']){
-                          echo '<li class="nav-item m-2">
-                                  <a class="btn btn-success btn-sm"  id="pills-poseedor-tab" data-toggle="pill" href="#pills-poseedor" role="tab" aria-controls="pills-poseedor" aria-selected="false">'.$label_pestana.'</a>
-                              </li>';
-                        }
-                        
-
-                        if($info['num_docpos'] != $info['num_docpro']){
-                        echo '<li class="nav-item m-2">
-                                  <a class="btn btn-success btn-sm"  id="pills-propietario-tab" data-toggle="pill" href="#pills-propietario" role="tab" aria-controls="pills-propietario" aria-selected="false">Propietario</a>
-                              </li>';
-                        }
-
-                        echo '<li class="nav-item m-2">
-                                                <a class="btn btn-success btn-sm"  id="pills-conductor-tab" data-toggle="pill" href="#pills-conductor" role="tab" aria-controls="pills-conductor" aria-selected="true">'.$label_pestana.'</a>
-                                              </li>';
-
-
-                        */
-
                      }
 
                      //Pestaña creación de despacho
@@ -662,7 +571,7 @@
                                   '.$this->viewPillsConductor($info).'
                                 </div>';
                         }else {
-                          echo '<div class="tab-pane fade p-3 active" id="pills-poseedor" role="tabpanel" aria-labelledby="pills-poseedor-tab">
+                          echo '<div class="tab-pane fade p-3" id="pills-poseedor" role="tabpanel" aria-labelledby="pills-poseedor-tab">
                                   '.$this->viewPillsPoseedor($info).'
                                 </div>';
                       
@@ -685,7 +594,6 @@
                                echo '<div class="tab-pane fade p-3" id="pills-bitacora" role="tabpanel" aria-labelledby="pills-bitacora-tab">
                                         '.$this->viewPillsBitacora($info).'
                                      </div>
-                                  </div>
                                     
 
                                   <div class="row mt-3 mb-3">
@@ -1165,23 +1073,36 @@
                                   </select>
                               </div>
                               <div class="col-md-3 col-sm-12 form-group">
-                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Fecha de vencimiento:</label>
+                                  <label for="fec_venlicID" class="labelinput"><div class="obl">*</div>Fecha de vencimiento:</label>
                                   <input class="form-control form-control-sm req" type="date" id="fec_venlicID" name="fec_venlic" value="'.$info['fec_venlic'].'" validate>
                               </div>
                               <div class="col-md-2 col-sm-12 form-group">
-                                  <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Arl:</label>
+                                  <label for="nom_arlconID" class="labelinput"><div class="obl">*</div>Arl:</label>
                                   <input class="form-control form-control-sm req" type="text" placeholder="Arl" id="nom_arlconID" name="nom_arlcon" value="'.$info['nom_arlcon'].'" validate>
                               </div>
                               <div class="col-md-2 col-sm-12 form-group">
+                                  <label for="tip_riearlID" class="labelinput"><div class="obl">*</div>Riesgo ARL:</label>
+                                  <select class="form-control form-control-sm req" id="tip_riearlID" name="tip_riearl" validate>
+                                      '.$this->getTipoRiesgoARLOption($info['tip_riearl']).'
+                                  </select>
+                              </div>
+                              
+                          </div>
+                          <div class="row">
+                              <div class="col-md-4 col-sm-12 form-group">
+                                  <label for="fec_venarlID" class="labelinput"><div class="obl">*</div>Fecha de vencimiento ARL:</label>
+                                  <input class="form-control form-control-sm req" type="date" id="fec_venarlID" name="fec_venarl" value="'.$info['fec_venarl'].'" validate>
+                              </div>
+                              <div class="col-md-4 col-sm-12 form-group">
                                   <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Eps</label>
                                   <input class="form-control form-control-sm req" type="text" placeholder="Eps" id="nom_epsconID" name="nom_epscon" value="'.$info['nom_epscon'].'" validate>
                               </div>
-                          </div>
-                          <div class="row">
                               <div class="col-md-4 col-sm-12 form-group">
                                   <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Dirección:</label>
                                   <input class="form-control form-control-sm req" type="text" placeholder="Dirección" id="dir_domconID" name="dir_domcon" value="'.$info['dir_domcon'].'" validate>
                               </div>
+                          </div>
+                          <div class="row">
                               <div class="col-md-4 col-sm-12 form-group">
                                   <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Ciudad:</label>
                                   <input class="form-control form-control-sm req" type="text" id="ciu_conduc" name="ciu_conduc" onkeyup="busquedaCiudad(this)" onclick="limpia(this)" autocomplete="off" value="'.$this->darCiudadInput($info['ciu_rescon']).'" validate>
@@ -1196,6 +1117,14 @@
 
 
           $html.='
+          </div>
+          <div class="container border">
+              <div class="row">
+                  <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
+                      Validaciones
+                  </div>
+              </div>
+              '.$this->getFormulValidaciones(2, $info['cod_solici']).'
           </div>
           <div class="container border">
               <div class="row">
@@ -1411,6 +1340,13 @@
                       <div class="col-3 form-group">
                         <label for="nom_soliciID" class="labelinput">
                           <div class="obl">*</div>
+                          N&uacute;mero de revisión Tecnico M:
+                        </label>
+                        <input class="form-control form-control-sm req" type="text" id="num_revtecID" name="num_revtec" value="'.$info['num_revtec'].'" validate>
+                      </div>
+                      <div class="col-3 form-group">
+                        <label for="nom_soliciID" class="labelinput">
+                          <div class="obl">*</div>
                             Fecha vigencia revisión Tecnico M:
                         </label>
                         <input class="form-control form-control-sm req" type="date" id="fec_revmecID" name="fec_revmec" value="'.$info['fec_revmec'].'" validate>
@@ -1542,6 +1478,16 @@
           $html.='<div class="container border">
                     <div class="row">
                       <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
+                        Validaciones
+                      </div>
+                    </div>
+                       '.$this->getFormulValidaciones(1, $info['cod_solici']).'
+                  </div> 
+                    ';
+
+          $html.='<div class="container border">
+                    <div class="row">
+                      <div class="col-12 color-heading bk-sure text-center p-2 mb-3">
                         Estudio de seguridad del vehículo
                       </div>
                     </div>
@@ -1550,6 +1496,7 @@
                   <div class="container border">
                     <div class="row mt-2">
                       <div class="col-md-12 col-sm-12 form-group">
+
                         <div class="row" style="display: flex; align-items: center;">
                           <div class="col-4 text-left">
                             <label class="form-check-label labelinput" for="exampleCheck1">¿El vehículo presenta resoluciones?</label>
@@ -1569,9 +1516,10 @@
                             <input class="form-control form-control-sm" type="text" id="val_resvehID" name="val_resveh" value="'.$info['val_resveh'].'">
                           </div>
                         </div>
+
                       </div>
-                      </div>
-                    </div>  ';
+                    </div>
+                  </div>';
           
           return utf8_encode($html);
         }
@@ -1646,6 +1594,14 @@
                       <input class="form-control form-control-sm req ema" type="text" placeholder="Email" id="dir_emaposID" name="dir_emapos" value="'.$info['dir_emapos'].'" validate>
                   </div>
               </div>
+          </div>
+          <div class="container border">
+              <div class="row">
+                  <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
+                      Validaciones
+                  </div>
+              </div>
+              '.$this->getFormulValidaciones(3,  $info['cod_solici']).'    
           </div>
           <div class="container border">
               <div class="row">
@@ -1731,7 +1687,31 @@
                             <label for="nom_soliciID" class="labelinput"><div class="obl">*</div>Email:</label>
                             <input class="form-control form-control-sm req ema" type="text" placeholder="Email" id="dir_emaproID" name="dir_emapro" value="'.$info['dir_emapro'].'" validate>
                         </div>
+                    </div>';
+
+                if($info['cod_tippro']=='N'){
+                  $html.= '<div class="row">
+                        <div class="col-md-4 col-sm-12 form-group">
+                           <label for="est_ruesxxID" class="labelinput"><div class="obl">*</div>RUES/Registro Mercantil/Estado</label>
+                           <select class="form-control form-control-sm req" id="est_ruesxxID" name="est_ruesxx">
+                            '.$this->getEstadoOption($info['est_ruesxx']).'
+                           </select>
+                        </div>
+                        <div class="col-md-4 col-sm-12 form-group">
+                            <label for="num_matricID" class="labelinput"><div class="obl">*</div>Matricula N°:</label>
+                            <input class="form-control form-control-sm" type="text" placeholder="Matricula N°" id="num_matricID" name="num_matric" value="'.$info['num_matric'].'" validate>
+                        </div>
+                    </div>';
+                }    
+                
+                $html.= '</div>
+                <div class="container border">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 color-heading bk-sure text-center p-2 mb-3">
+                            Validaciones
+                        </div>
                     </div>
+                        '.$this->getFormulValidaciones(4,  $info['cod_solici']).'
                 </div>
                 <div class="container border">
                     <div class="row">
@@ -1931,6 +1911,69 @@
             }
             return $html;
         }
+
+        private function getFormulValidaciones($cod_person, $cod_solici) {
+          $html = '';
+          $mSql = "
+              SELECT a.cod_valfor, a.nom_slugxx, a.ing_obliga, a.nom_valfor
+              FROM ".BASE_DATOS.".tab_estseg_valfor a
+              WHERE a.ind_status = 1 AND a.cod_tipper = '$cod_person'
+              ORDER BY ind_ordenx, a.nom_valfor ASC
+          ";
+          
+          $resultado = new Consulta($mSql, $this->conexion);
+          $validaciones = $resultado->ret_matriz('a');
+      
+          foreach ($validaciones as $registro) {
+              $cod_valfor = $registro['cod_valfor'];
+              $slug = $registro['nom_slugxx'];
+      
+              $mSqlDetalle = "
+                  SELECT a.val_valfor, a.obs_valfor
+                  FROM ".BASE_DATOS.".tab_estseg_valdat a
+                  WHERE a.cod_solici = '$cod_solici' AND a.cod_valfor = '$cod_valfor'
+              ";
+      
+              $resul = new Consulta($mSqlDetalle, $this->conexion);
+              $mData = $resul->ret_matriz('a');
+              $respuesta = isset($mData[0]) ? $mData[0] : array();
+      
+              $val = isset($respuesta['val_valfor']) ? $respuesta['val_valfor'] : null;
+              $obs = isset($respuesta['obs_valfor']) ? $respuesta['obs_valfor'] : '';
+              $checkSi = ($val === "1") ? 'checked' : '';
+              $checkNo = ($val === "0" || $val === null) ? 'checked' : '';
+      
+              // Validación requerida
+              $attrDoc = ($registro['ing_obliga'] == 1) ? 'validate' : '';
+              $oblHtml = ($registro['ing_obliga'] == 1) ? '<div class="obl">*</div>' : '';
+      
+              $html .= '
+                  <div class="row align-items-center mb-3">
+                      <div class="col-md-4">
+                          <label class="form-label">'.$registro['nom_valfor'].' '.$oblHtml.'</label>
+                      </div>
+                      <div class="col-md-2">
+                          <div class="form-check form-check-inline">
+                              <input class="form-check-input '.$attrDoc.'" type="radio" name="check_'.$slug.'" id="'.$slug.'_SI" value="1" '.$checkSi.'>
+                              <label class="form-check-label" for="'.$slug.'_SI">Si</label>
+                          </div>
+                          <div class="form-check form-check-inline">
+                              <input class="form-check-input '.$attrDoc.'" type="radio" name="check_'.$slug.'" id="'.$slug.'_NO" value="0" '.$checkNo.'>
+                              <label class="form-check-label" for="'.$slug.'_NO">No</label>
+                          </div>
+                      </div>
+                      <div class="col-md-1">
+                          <label for="obs_'.$slug.'" class="form-label">Observación:</label>
+                      </div>
+                      <div class="col-md-5">
+                          <input type="text" class="form-control '.$attrDoc.'" id="obs_'.$slug.'ID" name="obs_'.$slug.'" value="'.htmlspecialchars($obs).'">
+                      </div>
+                  </div>
+              ';
+          }
+      
+          return $html;
+      }
 
         private function darTransportadora(){
 
@@ -2264,6 +2307,31 @@
           }
           return utf8_encode($html);
         }
+
+        private function getEstadoOption($estadoSeleccionado = null) {
+          $opciones = [
+              "1" => "Activo",
+              "0" => "Inactivo"
+          ];
+      
+          $html = '';
+          foreach ($opciones as $valor => $texto) {
+              $selected = ($estadoSeleccionado !== null && $estadoSeleccionado == $valor) ? 'selected' : '';
+              $html .= '<option value="' . $valor . '" ' . $selected . '>' . $texto . '</option>';
+          }
+      
+          return utf8_encode($html);
+      }
+
+      private function getTipoRiesgoARLOption($riesgoSeleccionado = null) {
+        $html = '';
+        for ($i = 1; $i <= 5; $i++) {
+            $selected = ($riesgoSeleccionado !== null && $riesgoSeleccionado == $i) ? 'selected' : '';
+            $html .= '<option value="' . $i . '" ' . $selected . '>' . $i . '</option>';
+        }
+    
+        return utf8_encode($html);
+    }
 
         private function getGenerador($cod_tercer = NULL, $cod_transp = NULL){
           $sql="SELECT a.cod_tercer, UPPER(a.abr_tercer) AS nom_tercer

@@ -1485,7 +1485,7 @@
             
             $arc_docini = array('fil_licveh', 'fil_tartra', 'fil_tecmec', 'fil_soatxx', 'fil_litcon', 'fil_cedpro', 'fil_cedcon', 'fil_liccon', 'fil_plsegs', 'fil_regveh', 'fil_polext');
             self::guardaArchivos($arc_docini, NULL, $cod_estseg, $_REQUEST, 'tab_estudi_docume', 'cod_estseg');
-
+            
             if(isset($_REQUEST['ind_guarf1']) && $_REQUEST['ind_guarf1']==true){
               self::cambiaEstado($cod_estseg,2,'P',2,'');
               self::registraBitacora($cod_estseg,6,'Fase 1 Completada');
@@ -1721,6 +1721,65 @@
                 }
             }
         }
+
+
+        function guardaValidaciones($cod_solici, $cod_tipper) {
+          $mSql = "
+              SELECT a.cod_valfor, a.nom_slugxx, a.ing_obliga
+              FROM ".BASE_DATOS.".tab_estseg_valfor a
+              WHERE a.ind_status = 1 AND a.cod_tipper = '".$cod_tipper."'
+              ORDER BY ind_ordenx, a.nom_valfor ASC
+          ";
+      
+          $resultado = new Consulta($mSql, self::$conexion);
+          $validaciones = $resultado->ret_matriz('a');
+          $errores = false;
+      
+          foreach ($validaciones as $validacion) {
+              $slug = $validacion['nom_slugxx'];
+              $cod_valfor = $validacion['cod_valfor'];
+      
+              $val_valfor = isset($_REQUEST["check_".$slug]) ? $_REQUEST["check_".$slug] : '0';
+              $obs_valfor = isset($_REQUEST["obs_".$slug]) ? $_REQUEST["obs_".$slug] : '';
+      
+              $val_valfor = ($val_valfor == '1') ? '1' : '0';
+              $obs_valfor = addslashes(trim($obs_valfor)); // puedes usar mysqli_real_escape_string si lo deseas
+      
+              $mSqlCheck = "
+                  SELECT COUNT(*) as existe
+                  FROM ".BASE_DATOS.".tab_estseg_valdat
+                  WHERE cod_solici = '$cod_solici' AND cod_valfor = '$cod_valfor'
+              ";
+      
+              $consultaCheck = new Consulta($mSqlCheck, self::$conexion);
+              $rowCheck =  $resultado->ret_matriz('a')[0];
+              if ($rowCheck['existe'] > 0) {
+                  $sql = "
+                      UPDATE ".BASE_DATOS.".tab_estseg_valdat
+                      SET val_valfor = '$val_valfor',
+                          obs_valfor = '$obs_valfor',
+                          usr_modifi = '".self::$cod_usuari."',
+                          fec_modifi = NOW()
+                      WHERE cod_solici = '$cod_solici' AND cod_valfor = '$cod_valfor'
+                  ";
+              } else {
+                  $sql = "
+                      INSERT INTO ".BASE_DATOS.".tab_estseg_valdat (
+                          cod_solici, cod_valfor, val_valfor, obs_valfor,
+                          usr_creaci, fec_creaci
+                      ) VALUES (
+                          '$cod_solici', '$cod_valfor', '$val_valfor', '$obs_valfor',
+                          '".self::$cod_usuari."', NOW()
+                      )
+                  ";
+              }
+      
+              $consulta = new Consulta($sql, self::$conexion);
+              
+          }
+      
+          return !$errores;
+      }
 
           /**
            * Funcion para redimensionar imagenes
@@ -2401,12 +2460,15 @@
                       val_compar = '".$data['val_comcon']."', 
                       ind_preres = '".$data['pregu2con']."',
                       val_resolu = '".$data['val_rescon']."', 
+                      tip_riearl = '".$data['tip_riearl']."',
+                      fec_venarl = '".$data['fec_venarl']."',
                       usr_modifi = '".self::$cod_usuari."', 
                       fec_modifi = NOW() 
                     WHERE 
                       cod_tercer = '".$dataSol['cod_conduc']."' ";
             $query = new Consulta($sql, self::$conexion);
             self::guardaArchivos($dataSol['cod_solici'], 2);
+            self::guardaValidaciones($dataSol['cod_solici'], 2);
             if($query){
               return true;
             }
@@ -2446,6 +2508,7 @@
             $query = new Consulta($sql, self::$conexion);
             
             self::guardaArchivos($dataSol['cod_solici'], 3);
+            self::guardaValidaciones($dataSol['cod_solici'], 3);
             if($query){
               return true;
             }
@@ -2477,6 +2540,8 @@
                       cod_ciudad = '".$ciu_reside."',
                       dir_domici = '".strtoupper(utf8_decode($data['dir_dompro']))."', 
                       dir_emailx = '".strtolower(utf8_decode($data['dir_emapro']))."',
+                      est_ruesxx = '".$data['est_ruesxx']."',
+                      num_matric = '".$data['num_matric']."',
                       usr_modifi = '".self::$cod_usuari."', 
                       fec_modifi = NOW() 
                     WHERE 
@@ -2484,6 +2549,7 @@
             $query = new Consulta($sql, self::$conexion);
             
             self::guardaArchivos($dataSol['cod_solici'], 4);
+            self::guardaValidaciones($dataSol['cod_solici'], 4);
             if($query){
               return true;
             }
@@ -2519,13 +2585,14 @@
                       val_compar = '".$data['val_comveh']."', 
                       ind_preres = '".$data['ind_preres']."',
                       val_resolu = '".$data['val_resveh']."', 
+                      num_revtec = '".$data['num_revtec']."',
                       usr_modifi = '".self::$cod_usuari."', 
                       fec_modifi = NOW() 
                     WHERE 
                       num_placax = '".$dataSol['cod_vehicu']."' ";
             $query = new Consulta($sql, self::$conexion);
             self::guardaArchivos($dataSol['cod_solici'], 1);
-            
+            self::guardaValidaciones($dataSol['cod_solici'], 1);
             /*if($dataSol['cod_poseed'] != $dataSol['cod_propie']){
               $valposeed = self::procesaPoseedor($data, $dataSol);
               $valpropiet =self::procesaPropietario($data, $dataSol);
