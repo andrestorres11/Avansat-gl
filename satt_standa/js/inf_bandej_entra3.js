@@ -17,12 +17,35 @@
  *  \return: 
  */
 $("body").ready(function() {
-    //Crea PestaÃ±as
+    //Crea Pestañas
     $("#tabs").tabs({
         beforeLoad: function(event, ui) {
-            ui.jqXHR.fail(function() {
-                ui.panel.html("Cargado...");
+
+            Swal.fire({
+                title: 'Cargando',
+                text: 'Por favor espere...',
+                imageUrl: '../' + Standar.val() + '/imagenes/ajax-loader.gif',
+                imageAlt: 'Cargando...',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false
             });
+
+            // Si la carga falla
+            ui.jqXHR.fail(function() {
+                ui.panel.html("Ocurri? un error al cargar el contenido.");
+                Swal.close(); // Cerrar Swal en caso de error
+            });
+
+            // Si la carga es exitosa
+            ui.jqXHR.done(function() {
+                Swal.close(); // Cerrar Swal despu?s de carga exitosa
+            });
+
+
+            /*ui.jqXHR.fail(function() {
+                ui.panel.html("Cargado...");
+            });*/
         }
     });
 
@@ -34,7 +57,7 @@ $("body").ready(function() {
     $("#tip_producID").multiselect().multiselectfilter();
     $("#cod_clientID").multiselect().multiselectfilter();
 
-    //Onclick PestaÃ±as
+    //Onclick Pestañas
     $("#liGenera").click(function() {
         verifiData();
         generalReport("infoGeneral", "tabs-1");
@@ -46,6 +69,7 @@ $("body").ready(function() {
     });
 
     $("#liTransi").click(function() {
+        console.log('click t')
         generalReport("infoTransito", "tabs-3");
         Actualizarbadge("3", "liTransi");
     });
@@ -294,7 +318,7 @@ function showDetailSearch(obj) {
 }
 
 /*! \fn: showDetailBand
- *  \brief: Solicita el ajax para mostrar el detallado del resultado de las pestaÃ±as
+ *  \brief: Solicita el ajax para mostrar el detallado del resultado de las pestañas
  *  \author: Ing. Fabian Salinas
  *  \date: 16/06/2015
  *  \date modified: dd/mm/aaaa
@@ -303,38 +327,58 @@ function showDetailSearch(obj) {
  */
 function showDetailBand(ind_filtro, ind_etapax, cod_transp) {
     try {
-        var pop = $(".ui-dialog").length;
-
-        if (pop > 0)
-            return false;
-
         var Standar = $("#standaID");
-        var attributes = 'Ajax=on&Option=detailBand&standa=' + Standar.val();
-        attributes += '&window=' + $("#windowID").val();
-        attributes += '&ind_filact=' + $("#ind_filactID").val();
-        attributes += getParameFilter();
-        attributes += '&ind_filtro=' + ind_filtro;
-        attributes += '&ind_etapax=' + ind_etapax;
-        attributes += '&cod_transp=' + cod_transp;
 
-        //Load PopUp
-        LoadPopupJQ('open', 'Detalle Bandeja', ($(window).height() - 50), ($(window).width() - 50), false, false, true);
-        var popup = $("#popID");
-        $.ajax({
-            url: "../" + Standar.val() + "/inform/class_despac_trans3.php",
-            type: "POST",
-            data: attributes,
-            async: false,
-            beforeSend: function() {
-                popup.parent().children().children('.ui-dialog-titlebar-close').hide();
-                popup.html("<center><img src=\"../" + Standar.val() + "/imagenes/ajax-loader.gif\"></center>");
-            },
-            success: function(data) {
-                popup.html(data);
-                popup.css('overflow-y', 'true');
-                popup.css('overflow-x', 'true');
-            }
-        });
+        Swal.fire({
+            title: 'Cargando',
+            text: 'Por favor espere...',
+            imageUrl: '../' + Standar.val() + '/imagenes/ajax-loader.gif',
+            imageAlt: 'Custom image',
+            showConfirmButton: false,
+            allowOutsideClick: false,  // Bloquea clics fuera del modal
+            allowEscapeKey: false      // Bloquea cerrar con la tecla Esc
+        })
+
+
+        setTimeout(function () {
+
+            var pop = $(".ui-dialog").length;
+
+            if (pop > 0)
+                return false;
+    
+            var attributes = 'Ajax=on&Option=detailBand&standa=' + Standar.val();
+            attributes += '&window=' + $("#windowID").val();
+            attributes += '&ind_filact=' + $("#ind_filactID").val();
+            attributes += getParameFilter();
+            attributes += '&ind_filtro=' + ind_filtro;
+            attributes += '&ind_etapax=' + ind_etapax;
+            attributes += '&cod_transp=' + cod_transp;
+    
+            //Load PopUp
+            LoadPopupJQ('open', 'Detalle Bandeja', ($(window).height() - 50), ($(window).width() - 50), false, false, true);
+            var popup = $("#popID");
+            $.ajax({
+                url: "../" + Standar.val() + "/inform/class_despac_trans3.php",
+                type: "POST",
+                data: attributes,
+                beforeSend: function() {
+                    popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+                    //popup.html("<center><img src=\"../" + Standar.val() + "/imagenes/ajax-loader.gif\"></center>");
+                },
+                success: function(data) {
+                    popup.html(data);
+                    popup.css('overflow-y', 'true');
+                    popup.css('overflow-x', 'true');
+                },
+                complete: function() {
+                    Swal.close();
+                }
+            });
+
+        }, 500); // 500 milisegundos de delay
+        
+        
     } catch (e) {
         console.log("Error Fuction showDetailBand: " + e.message + "\nLine: " + e.lineNumber);
         return false;
@@ -345,7 +389,7 @@ function showDetailBand(ind_filtro, ind_etapax, cod_transp) {
  *  \brief: Crea o destruye PopUp
  *  \author: Ing. Fabian Salinas
  *	\date: 24/06/2015
- *	\date modified: dia/mes/aÃ±o
+ *	\date modified: dia/mes/año
  *  \param: opcion   String   open, close
  *  \param: titulo   String   Titulo del PopUp
  *  \param: alto   	 Integer  Altura PopUp
@@ -405,48 +449,62 @@ function justNumbers(e) {
  */
 function generalReport(ind_etapax, id_div) {
     try {
-        var standar = $("#standaID");
-        var pop = $(".ui-dialog").length;
+        var Standar = $("#standaID");
 
-        if (pop > 0)
-            return false;
-        //LoadPopupJQ('close');
+        Swal.fire({
+            title: 'Cargando',
+            text: 'Por favor espere...',
+            imageUrl: '../' + Standar.val() + '/imagenes/ajax-loader.gif',
+            imageAlt: 'Custom image',
+            showConfirmButton: false,
+            allowOutsideClick: false,  // Bloquea clics fuera del modal
+            allowEscapeKey: false      // Bloquea cerrar con la tecla Esc
+        })
 
-        //Load PopUp
-        LoadPopupJQ('open', 'Cargando...', 'auto', 'auto', false, false, false);
-        var popup = $("#popID");
 
-        //Atributos del Ajax
-        var atributes = 'Ajax=on&Option=' + ind_etapax;
-        atributes += '&standa=' + standar.val();
-        atributes += '&ind_filact=' + $("#ind_filactID").val();
-        atributes += '&sel_transp=' + $("#sel_transpID").val();
-        atributes += '&sel_client=' + $("#sel_clientID").val();
-        atributes += '&sel_usuari=' + $("#sel_usuariID").val();
-        atributes += getParameFilter();
+        setTimeout(function () {
+            var pop = $(".ui-dialog").length;
 
-        //Ajax
-        $.ajax({
-            url: "../" + standar.val() + "/inform/class_despac_trans3.php",
-            type: "POST",
-            data: atributes,
-            async: true,
-            beforeSend: function() {
-                popup.parent().children().children('.ui-dialog-titlebar-close').hide();
-                popup.html("<center><img src=\"../" + standar.val() + "/imagenes/ajax-loader.gif\"></center>");
-                $(".ui-dialog-buttonpane").remove(); // Quitar la zona de botones
-                $(".ui-dialog").animate({ "left": ($(window).width() - 135), "top": ($(window).height() - 155) }, 2000);
-            },
-            success: function(data) {
-                $("#" + id_div).html(data);
-                $("#" + id_div).css("height", ($(window).height() - 166));
-                $("#" + id_div).css("overflow", "scroll");
-            },
-            complete: function() {
-                LoadPopupJQ('close');
-            }
-        });
-
+            if (pop > 0)
+                return false;
+            //LoadPopupJQ('close');
+    
+            //Load PopUp
+            //LoadPopupJQ('open', 'Cargando...', 'auto', 'auto', false, false, false);
+            var popup = $("#popID");
+    
+            //Atributos del Ajax
+            var atributes = 'Ajax=on&Option=' + ind_etapax;
+            atributes += '&standa=' + Standar.val();
+            atributes += '&ind_filact=' + $("#ind_filactID").val();
+            atributes += '&sel_transp=' + $("#sel_transpID").val();
+            atributes += '&sel_client=' + $("#sel_clientID").val();
+            atributes += '&sel_usuari=' + $("#sel_usuariID").val();
+            atributes += getParameFilter();
+    
+            //Ajax
+            $.ajax({
+                url: "../" + Standar.val() + "/inform/class_despac_trans3.php",
+                type: "POST",
+                data: atributes,
+                async: true,
+                beforeSend: function() {
+                    popup.parent().children().children('.ui-dialog-titlebar-close').hide();
+                    //popup.html("<center><img src=\"../" + standar.val() + "/imagenes/ajax-loader.gif\"></center>");
+                    $(".ui-dialog-buttonpane").remove(); // Quitar la zona de botones
+                    $(".ui-dialog").animate({ "left": ($(window).width() - 135), "top": ($(window).height() - 155) }, 2000);
+                },
+                success: function(data) {
+                    $("#" + id_div).html(data);
+                    $("#" + id_div).css("height", ($(window).height() - 166));
+                    $("#" + id_div).css("overflow", "scroll");
+                },
+                complete: function() {
+                    Swal.close();
+                    //LoadPopupJQ('close');
+                }
+            });
+        }, 500);
         
     } catch (e) {
         console.log("Error Fuction generalReport: " + e.message + "\nLine: " + e.lineNumber);

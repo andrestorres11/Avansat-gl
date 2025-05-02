@@ -601,12 +601,10 @@ class DespachosNew
 
                         #Mapa Localizacion novedades GPS
                         if( $mView->sec_mapaxx->ind_visibl == 1 ){
-                            $mValidaMapa = self::validaDivMapas($mNumDespac);
-
-                            if( $mValidaMapa['ind_estado'] == 1){
-                                $mapasHtml = self::divMapas($mValidaMapa['data'], $mData);
-                                $mHtml->SetBody( $mapasHtml );
-                            }
+                            
+                            $mapasHtml = self::divMapas($mData);
+                            $mHtml->SetBody( $mapasHtml );
+                            
                         }
 
                         #Bitacora de cambios
@@ -724,7 +722,7 @@ class DespachosNew
      *  \return arreglo con las novedades y el estado de la novedad
      */
     
-    private function validaDivMapas($mNumDespac){
+    public function validaDivMapas($mNumDespac){
         $novedades = self::getNovedad($mNumDespac , 'LEFT');
         $puntFis = self::getPuntFisDespac($mNumDespac);
         $infOriDes = self::getOrigeDesti($mNumDespac);
@@ -755,9 +753,9 @@ class DespachosNew
                     $value[$key1] = utf8_encode($value1);
                 }
                 if(isset($value['rut_iconox']) && $value['rut_iconox']!=''){
-                    $value['rut_iconox'] = URL_APLICA."".$value['rut_iconox'];
+                    $value['rut_iconox'] = "./".$value['rut_iconox'];
                 }else{
-                    $value['rut_iconox'] = URL_STANDA."imagenes/placeholder.png";
+                    $value['rut_iconox'] = "./imagenes/placeholder.png";
                 }
                 
                 $latLon[] = $value;
@@ -801,7 +799,7 @@ class DespachosNew
      */
     
 
-    private function divMapas( $mNovedades, $mData){
+    private function divMapas($mData){
         $mHtml = new Formlib(2);
         $mHtml -> SetBody('    <style>
                               .ol-popup {
@@ -871,33 +869,12 @@ class DespachosNew
             //----------------------
 
             $mHtml->OpenDiv("id:secID");
-                //----------------------
-
-               /* $mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
-
-                    $mHtml->Hidden( array("name"=>"dat_gpsxxx".$i, "id"=>'dat_gpsxxx'.$i, "value"=> base64_encode(json_encode($mNovedades))) );
-
-                $mHtml->CloseDiv();
-                //----------------------
-
-                //----------------------
-
-                $mHtml->OpenDiv("id:popupContenedor; class:ol-popup");
-                    $mHtml -> SetBody('<a href="#" id="popup-closer" class="ol-popup-closer"></a>');
-                    $mHtml -> OpenDiv('id:popupContent');
-                    $mHtml -> CloseDiv(); 
-                $mHtml->CloseDiv();*/
-
-                //----------------------
-
-                //----------------------
-
                 
                 $mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
                 if(!is_null($mData['cod_itiner']) && !is_null($mData['map_tokenx'])){
                     $mHtml->SetBody("<div class='crmButton small save'><a href='".URL_MAPA_WIDETECH.$mData['map_tokenx']."' target='_blank' style='color: white !important; padding:2px;'>[Ver mapa]</a></div>");
                 }
-                $mHtml->Hidden( array("name"=>"dat_gpsxxx".$i, "id"=>'dat_gpsxxx'.$i, "value"=> base64_encode(json_encode($mNovedades))) );
+                    $mHtml->SetBody("<div id='paintMapID'></div>");
 
                 $mHtml->CloseDiv();
                 //----------------------
@@ -911,21 +888,85 @@ class DespachosNew
                 $mHtml->CloseDiv();
                 
 
-                //----------------------
-
-                //----------------------
-                //$mHtml->OpenDiv("id:footer;");
-                //    $mHtml->SetBody('&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
-                //$mHtml->CloseDiv();
-                //----------------------
-
             $mHtml->CloseDiv();
             //----------------------
 
-        $mHtml->CloseDiv(); 
+        $mHtml->CloseDiv();
 
         return $mHtml->MakeHtml();
     }
+
+    public function divPaintMapas($mNovedades){
+
+        $mHtml = new Formlib(2);
+        $mHtml -> SetBody('    <style>
+                              .ol-popup {
+                                position: absolute;
+                                background-color: white;
+                                -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+                                filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
+                                padding: 15px;
+                                border-radius: 10px;
+                                border: 1px solid #cccccc;
+                                bottom: 12px;
+                                left: -50px;
+                                min-width: 280px;
+                              }
+                              .ol-popup:after, .ol-popup:before {
+                                top: 100%;
+                                border: solid transparent;
+                                content: " ";
+                                height: 0;
+                                width: 0;
+                                position: absolute;
+                                pointer-events: none;
+                              }
+                              .ol-popup:after {
+                                border-top-color: white;
+                                border-width: 10px;
+                                left: 48px;
+                                margin-left: -10px;
+                              }
+                              .ol-popup:before {
+                                border-top-color: #cccccc;
+                                border-width: 11px;
+                                left: 48px;
+                                margin-left: -11px;
+                              }
+                              .ol-popup-closer {
+                                text-decoration: none;
+                                position: absolute;
+                                top: 2px;
+                                right: 8px;
+                              }
+                              .ol-popup-closer:after {
+                                content: "a";
+                                color:#000000
+                              }
+                            </style>');
+
+                 //------ SOLO PARA ESTE CASO, CAMBIAR ---------
+        
+        echo "<script src=\"https://code.jquery.com/jquery-1.11.2.min.js\"></script>";
+        #echo " <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css\">";
+        #echo " <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js\"></script>";
+        
+        echo "<link rel=\"stylesheet\" href=\"../" . DIR_APLICA_CENTRAL . "/estilos/ol.css\" type=\"text/css\">";
+        echo "<link rel=\"stylesheet\" href=\"../" . DIR_APLICA_CENTRAL . "/estilos/tooltip_image.css\" type=\"text/css\">";
+        echo "<script src=\"../" . DIR_APLICA_CENTRAL . "/js/ol.js\"></script>";
+        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/mapaGoogle.js\"></script>\n"; 
+        //echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?"></script>';
+
+
+        //------------------ FIN ----------------------
+
+        $mHtml->Hidden( array("name"=>"dat_gpsxxx".$i, "id"=>'dat_gpsxxx'.$i, "value"=> base64_encode(json_encode($mNovedades))) );
+
+        return $mHtml->MakeHtml();
+    }
+
+
+
 
     /*! \fn: divDatosDespac
      *  \brief: Crea los DIV de las secciones: "DATOS BASICOS DEL DESPACHO", "DATOS COMPLEMENTARIOS DEL DESPACHO", "FECHAS DEL DESPACHO"
@@ -1726,12 +1767,14 @@ class DespachosNew
             $dataNov[] = $data;
         }
 
+       
+        //var_dump($dataNov);
         //Reemplaza el arreglo de Novedades
         $mNovedades = $dataNov;
-        $mCanNov = sizeof($mNovedades)-1;
+        //$mCanNov = sizeof($mNovedades)-1;
+        
+        for ($i=0; $i < sizeof($mNovedades); $i++) { 
 
-        for ($i = $mCanNov; $i >=0; $i--)
-        {
             $mSolEfecti = "";
             if( $mViewUsu->edi_noveda->ind_visibl == 1 && $mNovedades[$i][tab_origen] == 1 )
             {
@@ -1749,6 +1792,28 @@ class DespachosNew
                 }
             }
 
+            $ori = $mNovedades[$i][tab_origen] == 1 ? 'NC' : 'PC';
+            if($mNovedades[$i][cod_noveda] == 24)
+            {
+                $cod_consec = $mNovedades[$i][cod_consec]; 
+
+                if(self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, true)){
+                    $informaOpePrev = self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, false);
+                    $mBtnOpePrev = '
+                    <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
+                    onclick="openPDF(\'' . $informaOpePrev[0]['cod_consec'] . '\')">
+                    [Ver O.P.]
+                    </spam>';
+                }else{
+                    $mBtnOpePrev = '
+                    <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
+                    onclick="showFormOperativoPreventivo(\''.$ori.'\', \''.$cod_consec.'\')">
+                    [Reg. O.P.]
+                    </spam>';
+                }
+
+            }
+
             if($mNovedades[$i][cod_noveda] != 342)
             {
                 $consecutivoProtocolo = $this -> verifyNoveda($mNovedades[$i][cod_noveda], $mNumDespac, $mNovedades[$i]['fec_noveda']);   
@@ -1762,6 +1827,16 @@ class DespachosNew
                     elseif($consecutivoProtocolo[0][ind_solnov] == 1)
                         $mSolEfecti = "<label>SI</label>";
                 }
+            }
+
+            if($mNovedades[$i][ind_reqres] == 1){
+                //Si requiere gestion por faro activa el icono de alarma.
+                if($mNovedades[$i][ind_resfar]== 1 && $mNovedades[$i][cod_soluci]==0 ){
+                    $mSolEfecti = "<img src='../".DIR_APLICA_CENTRAL."/imagenes/warning-gif.gif' width='15px' height='15px'>";
+                }else if($mNovedades[$i][cod_soluci] != 0){
+                    $mSolEfecti = "<img src='../".DIR_APLICA_CENTRAL."/imagenes/ver.png' width='15px' height='15px' style='cursor: pointer;' onclick='showInfoSolucion(\"".$mNovedades[$i][cod_consec]."\", \"".$mNovedades[$i][tip_noveda]."\")'>";
+                }
+               
             }
 
             $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
@@ -1789,10 +1864,7 @@ class DespachosNew
                 $mData[$i]['als_creaci'] = htmlentities(self::eliminarAcentos(self::getAlias($mNovedades[$i][usr_creaci])), ENT_COMPAT, 'ISO-8859-1', true );
             }
 
-            if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
-                $mData[$i]['lin_action'] =  self::eliminarAcentos($mLinkUpd);
-            }
-
+            $mData[$i]['lin_action'] = self::eliminarAcentos($mBtnOpePrev)."".self::eliminarAcentos($mLinkUpd);
             $mData[$i]['sol_efecti'] = self::eliminarAcentos($mSolEfecti);
             
 
@@ -1807,8 +1879,6 @@ class DespachosNew
                     $mData[$i]['sol_novnem'] =  '';
                 }
             }
-                    
-            
         }
 
         return array('results' => $mData, 'totalRegistros' => $results['totalRegistros'],  'totalFiltro' => $results['totalFiltro']);
@@ -4192,136 +4262,143 @@ class DespachosNew
                 WHERE 1=1 ";
         }else
         {
-                $mSql = "SELECT * FROM
-                ( 
-                    (       SELECT a.fec_contro AS fec_noveda,
-                                    UPPER(b.nom_noveda) AS nom_noveda,
-                                    a.usr_creaci, a.fec_creaci,
-                                    UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox,
-                                    a.obs_contro AS obs_noveda,
-                                    f.ind_novesp as 'nov_especi', a.cod_noveda,
-                                    '1' AS tab_origen, a.cod_consec,
-                                    a.cod_contro, '0' AS ind_ensiti,
-                                    f.ind_fuepla, a.tiem_duraci,
-                                    b.cod_etapax, f.ind_limpio,
-                                    f.ind_manale as 'ind_manala',
-                                    a.val_longit, a.val_latitu, g.cod_tipoxx,
-                                    a.ind_enviad
-                            FROM ".BASE_DATOS.".tab_despac_contro a
-                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
-                                ON a.cod_noveda = b.cod_noveda
-                        INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
-                                ON a.cod_sitiox = c.cod_sitiox
-                        INNER JOIN ".BASE_DATOS.".tab_genera_contro d
-                                ON a.cod_contro = d.cod_contro
-                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
-                                ON a.num_despac = e.num_despac
-                        LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
-                                ON b.cod_noveda = f.cod_noveda AND
-                                    f.cod_transp = e.cod_transp
-                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
-                                    ON b.cod_tipoxx = g.cod_tipoxx
-                            WHERE a.num_despac = '{$mNumDespac}'
-                    )
-                    UNION
-                    (
-                            SELECT a.fec_noveda,
-                                    UPPER(b.nom_noveda) AS nom_noveda,
-                                    a.usr_creaci,
-                                    a.fec_creaci, 
-                                    UPPER(c.nom_contro) AS nom_sitiox,
-                                    a.des_noveda AS obs_noveda,
-                                    e.ind_novesp as 'nov_especi', a.cod_noveda,
-                                    '2' AS tab_origen, '1' AS cod_consec,
-                                    a.cod_contro, '1' AS ind_ensiti,
-                                    e.ind_fuepla, a.tiem_duraci,
-                                    b.cod_etapax, e.ind_limpio,
-                                    e.ind_manale as 'ind_manala',
-                                    '' AS val_longit, '' AS val_latitu,
-                                    f.cod_tipoxx, a.ind_enviad
-                            FROM ".BASE_DATOS.".tab_despac_noveda a
-                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
-                                ON a.cod_noveda = b.cod_noveda
-                        INNER JOIN ".BASE_DATOS.".tab_genera_contro c
-                                ON a.cod_contro = c.cod_contro
-                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige d
-                                ON a.num_despac = d.num_despac
-                        LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e
-                                ON b.cod_noveda = e.cod_noveda AND
-                                    e.cod_transp = d.cod_transp
-                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx f
-                                ON b.cod_tipoxx = f.cod_tipoxx
-                            WHERE a.num_despac = '{$mNumDespac}'
-                    )
-                    UNION
-                    (
-                            SELECT a.fec_solici AS fec_noveda,
-                                    c.nom_noveda,
-                                    a.usr_solici AS usr_creaci,
-                                    a.fec_solici AS fec_creaci,
-                                    UPPER(b.nom_contro) AS nom_sitiox,
-                                    GROUP_CONCAT( d.tex_encabe ) AS obs_noveda,
-                                    '0' AS nov_especi, a.cod_noveda,
-                                    '3' AS tab_origen, d.cod_consec,
-                                    a.cod_contro, '0' AS ind_ensiti,
-                                    f.ind_fuepla, '' AS tiem_duraci,
-                                    c.cod_etapax, '0' AS ind_limpio,
-                                    f.ind_manale as 'ind_manala',
-                                    '' AS val_longit, '' AS val_latitu,
-                                    g.cod_tipoxx, '0' as ind_enviad
-                            FROM ".BASE_DATOS.".tab_recome_asigna a
-                        INNER JOIN ".BASE_DATOS.".tab_genera_contro b
-                                ON a.cod_contro = b.cod_contro
-                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
-                                ON a.cod_noveda = c.cod_noveda
-                        INNER JOIN ".BASE_DATOS.".tab_genera_recome d
-                                ON a.cod_recome = d.cod_consec
-                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
-                                ON a.num_despac = e.num_despac
-                        LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
-                                ON c.cod_noveda = f.cod_noveda AND
-                                    e.cod_transp = e.cod_transp 
-                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
-                                ON c.cod_tipoxx = g.cod_tipoxx
-                            WHERE a.num_despac = '{$mNumDespac}'
-                        GROUP BY a.cod_contro
-                    )
-                    UNION
-                    (
-                            SELECT a.fec_ejecut AS fec_noveda,
-                                    'SOLUCION RECOMENDACION' AS nom_noveda,
-                                    a.usr_ejecut AS usr_creaci,
-                                    a.fec_ejecut AS fec_creaci,
-                                    UPPER(b.nom_contro) AS nom_sitiox,
-                                    GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda,
-                                    '0' AS nov_especi, a.cod_noveda,
-                                    '4' AS tab_origen, d.cod_consec,
-                                    a.cod_contro, '1' AS ind_ensiti,
-                                    f.ind_fuepla, '' AS tiem_duraci,
-                                    c.cod_etapax, '1' AS ind_limpio,
-                                    f.ind_manale as 'ind_manala',
-                                    '' AS val_longit, '' AS val_latitu,
-                                    g.cod_tipoxx, '0' as ind_enviad
-                            FROM ".BASE_DATOS.".tab_recome_asigna a
-                        INNER JOIN ".BASE_DATOS.".tab_genera_contro b
-                                ON a.cod_contro = b.cod_contro
-                        INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
-                                ON a.cod_noveda = c.cod_noveda
-                        INNER JOIN ".BASE_DATOS.".tab_genera_recome d
-                                ON a.cod_recome = d.cod_consec
-                        INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
-                                ON a.num_despac = e.num_despac
-                        LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
-                                ON c.cod_noveda = f.cod_noveda AND
-                                    e.cod_transp = e.cod_transp 
-                        LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
-                                ON c.cod_tipoxx = g.cod_tipoxx
-                            WHERE a.num_despac = '{$mNumDespac}'
-                                AND a.obs_ejecuc IS NOT NULL
-                        GROUP BY a.cod_contro
-                    )
-                ) as notUn
-                WHERE 1=1 ";
+            $mSql = "SELECT * FROM
+            ( 
+                (       SELECT a.fec_contro AS fec_noveda,
+                                UPPER(b.nom_noveda) AS nom_noveda,
+                                a.usr_creaci, a.fec_creaci,
+                                UPPER( IF(c.nom_sitiox = NULL, d.nom_contro, c.nom_sitiox) ) AS nom_sitiox,
+                                a.obs_contro AS obs_noveda,
+                                f.ind_novesp as 'nov_especi', a.cod_noveda,
+                                '1' AS tab_origen, a.cod_consec,
+                                a.cod_contro, '0' AS ind_ensiti,
+                                f.ind_fuepla, a.tiem_duraci,
+                                b.cod_etapax, f.ind_limpio,
+                                f.ind_manale as 'ind_manala',
+                                a.val_longit, a.val_latitu, g.cod_tipoxx,
+                                a.ind_enviad, f.ind_reqres, f.ind_resfar,
+                                f.ind_rescli, a.cod_soluci, 'NC' as 'tip_noveda'
+                        FROM ".BASE_DATOS.".tab_despac_contro a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
+                            ON a.cod_noveda = b.cod_noveda
+                    INNER JOIN ".BASE_DATOS.".tab_despac_sitio c
+                            ON a.cod_sitiox = c.cod_sitiox
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro d
+                            ON a.cod_contro = d.cod_contro
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
+                            ON a.num_despac = e.num_despac
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
+                            ON b.cod_noveda = f.cod_noveda AND
+                                f.cod_transp = e.cod_transp
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                                ON b.cod_tipoxx = g.cod_tipoxx
+                        WHERE a.num_despac = '{$mNumDespac}'
+                )
+                UNION
+                (
+                        SELECT a.fec_noveda,
+                                UPPER(b.nom_noveda) AS nom_noveda,
+                                a.usr_creaci,
+                                a.fec_creaci, 
+                                UPPER(c.nom_contro) AS nom_sitiox,
+                                a.des_noveda AS obs_noveda,
+                                e.ind_novesp as 'nov_especi', a.cod_noveda,
+                                '2' AS tab_origen, '1' AS cod_consec,
+                                a.cod_contro, '1' AS ind_ensiti,
+                                e.ind_fuepla, a.tiem_duraci,
+                                b.cod_etapax, e.ind_limpio,
+                                e.ind_manale as 'ind_manala',
+                                '' AS val_longit, '' AS val_latitu,
+                                f.cod_tipoxx, a.ind_enviad, e.ind_reqres,
+                                e.ind_resfar, e.ind_rescli, a.cod_soluci, 
+                                'PC' as 'tip_noveda'
+                        FROM ".BASE_DATOS.".tab_despac_noveda a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda b
+                            ON a.cod_noveda = b.cod_noveda
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro c
+                            ON a.cod_contro = c.cod_contro
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige d
+                            ON a.num_despac = d.num_despac
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg e
+                            ON b.cod_noveda = e.cod_noveda AND
+                                e.cod_transp = d.cod_transp
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx f
+                            ON b.cod_tipoxx = f.cod_tipoxx
+                        WHERE a.num_despac = '{$mNumDespac}'
+                )
+                UNION
+                (
+                        SELECT a.fec_solici AS fec_noveda,
+                                c.nom_noveda,
+                                a.usr_solici AS usr_creaci,
+                                a.fec_solici AS fec_creaci,
+                                UPPER(b.nom_contro) AS nom_sitiox,
+                                GROUP_CONCAT( d.tex_encabe ) AS obs_noveda,
+                                '0' AS nov_especi, a.cod_noveda,
+                                '3' AS tab_origen, d.cod_consec,
+                                a.cod_contro, '0' AS ind_ensiti,
+                                f.ind_fuepla, '' AS tiem_duraci,
+                                c.cod_etapax, '0' AS ind_limpio,
+                                f.ind_manale as 'ind_manala',
+                                '' AS val_longit, '' AS val_latitu,
+                                g.cod_tipoxx, '0' as ind_enviad,
+                                f.ind_reqres, f.ind_resfar,
+                                f.ind_rescli, 0 as 'cod_soluci', '' as 'tip_noveda'
+                        FROM ".BASE_DATOS.".tab_recome_asigna a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro b
+                            ON a.cod_contro = b.cod_contro
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
+                            ON a.cod_noveda = c.cod_noveda
+                    INNER JOIN ".BASE_DATOS.".tab_genera_recome d
+                            ON a.cod_recome = d.cod_consec
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
+                            ON a.num_despac = e.num_despac
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
+                            ON c.cod_noveda = f.cod_noveda AND
+                                f.cod_transp = e.cod_transp 
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                            ON c.cod_tipoxx = g.cod_tipoxx
+                        WHERE a.num_despac = '{$mNumDespac}'
+                    GROUP BY a.cod_contro
+                )
+                UNION
+                (
+                        SELECT a.fec_ejecut AS fec_noveda,
+                                'SOLUCION RECOMENDACION' AS nom_noveda,
+                                a.usr_ejecut AS usr_creaci,
+                                a.fec_ejecut AS fec_creaci,
+                                UPPER(b.nom_contro) AS nom_sitiox,
+                                GROUP_CONCAT( CONCAT(d.tex_encabe, ': ', a.obs_ejecuc) ) AS obs_noveda,
+                                '0' AS nov_especi, a.cod_noveda,
+                                '4' AS tab_origen, d.cod_consec,
+                                a.cod_contro, '1' AS ind_ensiti,
+                                f.ind_fuepla, '' AS tiem_duraci,
+                                c.cod_etapax, '1' AS ind_limpio,
+                                f.ind_manale as 'ind_manala',
+                                '' AS val_longit, '' AS val_latitu,
+                                g.cod_tipoxx, '0' as ind_enviad,
+                                f.ind_reqres, f.ind_resfar,
+                                f.ind_rescli, 0 as 'cod_soluci', '' as 'tip_noveda'
+                        FROM ".BASE_DATOS.".tab_recome_asigna a
+                    INNER JOIN ".BASE_DATOS.".tab_genera_contro b
+                            ON a.cod_contro = b.cod_contro
+                    INNER JOIN ".BASE_DATOS.".tab_genera_noveda c
+                            ON a.cod_noveda = c.cod_noveda
+                    INNER JOIN ".BASE_DATOS.".tab_genera_recome d
+                            ON a.cod_recome = d.cod_consec
+                    INNER JOIN ".BASE_DATOS.".tab_despac_vehige e
+                            ON a.num_despac = e.num_despac
+                    LEFT JOIN ".BASE_DATOS.".tab_parame_novseg f
+                            ON c.cod_noveda = f.cod_noveda AND
+                                f.cod_transp = e.cod_transp 
+                    LEFT JOIN ".BASE_DATOS.".tab_noveda_tipoxx g
+                            ON c.cod_tipoxx = g.cod_tipoxx
+                        WHERE a.num_despac = '{$mNumDespac}'
+                            AND a.obs_ejecuc IS NOT NULL
+                    GROUP BY a.cod_contro
+                )
+            ) as notUn
+            WHERE 1=1 ";
         } 
 
         $mSql .= " AND ( notUn.nom_sitiox  LIKE '%" . $_REQUEST['campo'] . "%' OR notUn.obs_noveda  LIKE '%" . $_REQUEST['campo'] . "%' OR  notUn.nom_noveda LIKE '%" . $_REQUEST['campo'] . "%')";
@@ -4349,7 +4426,8 @@ class DespachosNew
             $inicio = ($pagina-1) * $limit;
         }
 
-        $mSql .= " ORDER BY notUn.fec_creaci ASC ";
+        $mSql .= " ORDER BY notUn.fec_creaci DESC ";
+       
 
         // Consulta para total de registro
         $consult = new Consulta($mSql, $this->conexion);
@@ -9407,6 +9485,7 @@ class DespachosNew
 
     function eliminarAcentos($cadena){
 		
+
 		$caracteres = array(
             // Vocales acentuadas
             'Á' => 'A', 'À' => 'A', 'Â' => 'A', 'Ä' => 'A', 'á' => 'a', 'à' => 'a', 'â' => 'a', 'ä' => 'a',
@@ -9418,13 +9497,38 @@ class DespachosNew
             'Ñ' => 'N', 'ñ' => 'n', 'Ç' => 'C', 'ç' => 'c', 'ß' => 'ss',
             // Caracteres adicionales
             'Ý' => 'Y', 'ý' => 'y', 'ÿ' => 'y', '*' => '',
+            '°' => '',
         );
     
+        $cadena = mb_convert_encoding($cadena,'ISO-8859-1','UTF-8');
         $cadena = strtr($cadena, $caracteres);
         $cadena = preg_replace('/[\x{FFFD}]/u', '', $cadena);
+        $cadena = preg_replace('/[\x00-\x1F\x7F]/u', '', $cadena);
     
         return $cadena;
 	}
+
+    function getOperacionPreventiva($num_despac, $num_consec, $tip_seguim, $flag = true){
+        $query = "SELECT cod_consec 
+                        FROM " . BASE_DATOS . ".tab_noveda_opprev 
+                        WHERE num_despac = '" . $num_despac . "' AND
+                              cod_connov = '" . $num_consec . "' AND
+                              tip_seguim = '" . $tip_seguim . "'";
+        
+        $consulta = new Consulta($query, $this->conexion);
+        $getOpePrev = $consulta->ret_matrix('a');
+        if($flag){
+            if(sizeof($getOpePrev)>0){
+                return true;
+            }else{
+                return false;
+            }
+        }else{
+            return $getOpePrev;
+        }
+        
+        
+    }
 }
 
 ?>

@@ -2291,12 +2291,9 @@ select:disabled {
 
                         #Mapa Localizacion novedades GPS
                         if( $mView->sec_mapaxx->ind_visibl == 1 ){
-                            $mValidaMapa = self::validaDivMapas($mNumDespac);
-
-                            if( $mValidaMapa['ind_estado'] == 1){
-                                $mapasHtml = self::divMapas($mValidaMapa['data'], $mData);
-                                $mHtml->SetBody( $mapasHtml );
-                            }
+                            
+                            $mapasHtml = self::divMapas($mData);
+                            $mHtml->SetBody( $mapasHtml );
                         }
 
                         #Bitacora de cambios
@@ -2491,68 +2488,14 @@ select:disabled {
      */
     
 
-    private function divMapas( $mNovedades, $mData){
+    private function divMapas($mData){
         $mHtml = new Formlib(2);
-        $mHtml -> SetBody('    <style>
-                              .ol-popup {
-                                position: absolute;
-                                background-color: white;
-                                -webkit-filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-                                filter: drop-shadow(0 1px 4px rgba(0,0,0,0.2));
-                                padding: 15px;
-                                border-radius: 10px;
-                                border: 1px solid #cccccc;
-                                bottom: 12px;
-                                left: -50px;
-                                min-width: 280px;
-                              }
-                              .ol-popup:after, .ol-popup:before {
-                                top: 100%;
-                                border: solid transparent;
-                                content: " ";
-                                height: 0;
-                                width: 0;
-                                position: absolute;
-                                pointer-events: none;
-                              }
-                              .ol-popup:after {
-                                border-top-color: white;
-                                border-width: 10px;
-                                left: 48px;
-                                margin-left: -10px;
-                              }
-                              .ol-popup:before {
-                                border-top-color: #cccccc;
-                                border-width: 11px;
-                                left: 48px;
-                                margin-left: -11px;
-                              }
-                              .ol-popup-closer {
-                                text-decoration: none;
-                                position: absolute;
-                                top: 2px;
-                                right: 8px;
-                              }
-                              .ol-popup-closer:after {
-                                content: "a";
-                                color:#000000
-                              }
-                            </style>');
-
-                 //------ SOLO PARA ESTE CASO, CAMBIAR ---------
         
-        echo "<script src=\"https://code.jquery.com/jquery-1.11.2.min.js\"></script>";
-        #echo " <link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css\">";
-        #echo " <script src=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js\"></script>";
-        
-        echo "<link rel=\"stylesheet\" href=\"../" . DIR_APLICA_CENTRAL . "/estilos/ol.css\" type=\"text/css\">";
-        echo "<link rel=\"stylesheet\" href=\"../" . DIR_APLICA_CENTRAL . "/estilos/tooltip_image.css\" type=\"text/css\">";
-        echo "<script src=\"../" . DIR_APLICA_CENTRAL . "/js/ol.js\"></script>";
-        echo "<script language=\"JavaScript\" src=\"../" . DIR_APLICA_CENTRAL . "/js/mapaGoogle.js\"></script>\n"; 
-        //echo '<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?"></script>';
-
-
-        //------------------ FIN ----------------------
+        echo "<script src=\"../" . DIR_APLICA_CENTRAL . "/js/getMapData.js\"></script>";
+        echo "<script>
+                const sol = new DataMapaDespac('../" . DIR_APLICA_CENTRAL . "/despac/ajax_despac_despac.php', '" . $this->servic . "', '" . $mData['num_despac'] . "');
+                sol.getData();
+            </script>";
         
 
         $mHtml->OpenDiv("id:mapaID; class:accordion");
@@ -2561,33 +2504,14 @@ select:disabled {
             //----------------------
 
             $mHtml->OpenDiv("id:secID");
-                //----------------------
-
-               /* $mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
-
-                    $mHtml->Hidden( array("name"=>"dat_gpsxxx".$i, "id"=>'dat_gpsxxx'.$i, "value"=> base64_encode(json_encode($mNovedades))) );
-
-                $mHtml->CloseDiv();
-                //----------------------
-
-                //----------------------
-
-                $mHtml->OpenDiv("id:popupContenedor; class:ol-popup");
-                    $mHtml -> SetBody('<a href="#" id="popup-closer" class="ol-popup-closer"></a>');
-                    $mHtml -> OpenDiv('id:popupContent');
-                    $mHtml -> CloseDiv(); 
-                $mHtml->CloseDiv();*/
-
-                //----------------------
-
-                //----------------------
 
                 
                 $mHtml->OpenDiv("id:form_mapaID; class:contentAccordionForm; style:'float: left;' ");
                 if(!is_null($mData['cod_itiner']) && !is_null($mData['map_tokenx'])){
                     $mHtml->SetBody("<div class='crmButton small save'><a href='".URL_MAPA_WIDETECH.$mData['map_tokenx']."' target='_blank' style='color: white !important; padding:2px;'>[Ver mapa]</a></div>");
                 }
-                $mHtml->Hidden( array("name"=>"dat_gpsxxx".$i, "id"=>'dat_gpsxxx'.$i, "value"=> base64_encode(json_encode($mNovedades))) );
+
+                    $mHtml->SetBody("<div id='paintMapID'></div>");
 
                 $mHtml->CloseDiv();
                 //----------------------
@@ -2598,16 +2522,7 @@ select:disabled {
                     $mHtml -> SetBody('<a href="#" id="popup-closer" class="ol-popup-closer"></a>');
                     $mHtml -> OpenDiv('id:popupContent');
                     $mHtml -> CloseDiv(); 
-                $mHtml->CloseDiv();
-                
-
-                //----------------------
-
-                //----------------------
-                //$mHtml->OpenDiv("id:footer;");
-                //    $mHtml->SetBody('&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
-                //$mHtml->CloseDiv();
-                //----------------------
+                $mHtml->CloseDiv();            
 
             $mHtml->CloseDiv();
             //----------------------
@@ -2616,6 +2531,8 @@ select:disabled {
 
         return $mHtml->MakeHtml();
     }
+
+   
 
     /*! \fn: divDatosDespac
      *  \brief: Crea los DIV de las secciones: "DATOS BASICOS DEL DESPACHO", "DATOS COMPLEMENTARIOS DEL DESPACHO", "FECHAS DEL DESPACHO"
@@ -2724,7 +2641,7 @@ select:disabled {
         $mHtml -> OpenDiv('id:popupReeItinerID');
         $mHtml -> CloseDiv(); 
 
-        for ($i=0; $i<3; $i++)
+        for ($i=0; $i<4; $i++)
         {
             if( $mView->$mTittle[$i]['id']->ind_visibl == 1 )
             {#Pinta el DIV si el perfil tiene parametrizado su visualizacion
@@ -3606,6 +3523,15 @@ select:disabled {
                         <small style="font-size: xx-small;">Movil</small>
                     </button>';
 
+        if( $mView == 1 ){
+            $options2 .= '
+                        <button type="button" class="btn btn-outline-secondary position-relative" onclick="formAuditarDespac()">
+                            <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/checked.png" width="20" class="icons">
+                            <br>
+                            <small style="font-size: xx-small;">Auditar</small>
+                        </button>';
+        }
+
         $options2 .= '
                     <button type="button" class="btn btn-outline-secondary position-relative" onclick="pag_2.cardOpcion(4)">
                         <img src="../'.DIR_APLICA_CENTRAL.'/imagenes/seguimiento/buscadores/prohibition.png" width="20" class="icons">
@@ -3643,274 +3569,6 @@ select:disabled {
         
         $url = "../".DIR_APLICA_CENTRAL."/despac/ajax_despac_despac.php";
         return $pagination->view(2,$headers,$url,$params,'INFORMACION DE NOTAS CONTROLADOR',NULL,0,$options2,12,1,25);
-        
-
-      $mViewUsu = self::getViewUsu();
-
-      $mHtml = new Formlib(2);
-
-      $mHtml->OpenDiv("id:planRutaID; class:accordion");
-        $mHtml->SetBody("<h3 style='padding:6px;'><center>INFORMACION DE NOTAS CONTROLADOR</center></h3>");
-        $mHtml->OpenDiv("id:secID");
-          $mHtml->OpenDiv("id:form_planRutaID; class:contentAccordionForm");
-            $mHtml->SetBody('<center><span style="color:#416F1E; cursor:pointer" onclick="todasNotas(1)" >[Seguimiento]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(2);" >[Operador GPS]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(3);" >[Movil]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(4);" >[Ver Todas]</span>&nbsp;&nbsp;');
-            $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="todasNotas(5);" >[Ocultar]</span>&nbsp;&nbsp;');
-
-            if( $mView == 1 ){
-              $mHtml->SetBody('<span style="color:#416F1E; cursor:pointer" onclick="formAuditarDespac();" >[Auditar]</span></center>');
-            }
-
-            $mHtml->Table("tr");
-
-           
-            if( $_RUTASX )
-            {
-                $mSalLinea = $_SESSION['datos_usuario']['cod_usuari'] == 'mgarcia' || $_SESSION['datos_usuario']['cod_usuari'] == 'soporte' ? 0 : 1;
-
-                $mHtml->LabelTit( 'Sitio de Seguimiento', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->LabelTit( 'Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"15%") );
-                $mHtml->LabelTit( 'Observaci&oacute;n', array("align"=>"center", "class"=>"cellTitu", "width"=>"20%") );
-                $mHtml->LabelTit( 'Fecha Novedad', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                $mHtml->LabelTit( 'Fecha Sistema', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                if ( $mViewNotCon->sub->usr_creaci == '1' ) {
-                    $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                }
-
-                $viewAlias = self::getView('jso_plarut');
-                $watchAlias = $viewAlias->inf_planru->sub->ali_usuari; 
-                if( $watchAlias == 1 ){
-                    $mHtml->LabelTit( 'Usuario', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") ); 
-                }
-
-                // if( $mViewUsu->edi_noveda->ind_visibl == 1 ){
-                $mHtml->LabelTit( 'Accion', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                // }
-
-                /*if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
-                    $mHtml->LabelTit( 'Enviado a Cliente', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                }*/
-                
-                $mHtml->LabelTit( 'Solucion Efectiva', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                
-                if( $viewAlias->ind_novnem->ind_visibl == 1 ){
-                $mHtml->LabelTit( 'Solucion a NEM', array("align"=>"center", "class"=>"cellTitu", "width"=>"10%") );
-                }
-                $mHtml->CloseRow();
-
-            
-                $mNovedades = self::getNovedad( $mNumDespac );
-                $mEstServ = self::getView('jso_encabe'); 
-
-                //Crea Array
-                $dataNov = [];
-                //Se Recorre las novedades
-                foreach ($mNovedades as $key => $data) {
-                    //Valida Permisos
-                    if( $mEstServ->est_servic->ind_visibl != 1 ){
-                        //Valida tipo de novedad y elimina posici?n
-                        if(in_array($data['cod_noveda'], array(9271,9272,9273))){
-                            unset($mNovedades[$key]);
-                        }
-                    }
-                }
-
-                //Permiso de no poder copiar las notas controlador
-                $RespPlaRut = self::getView('jso_plarut');
-                $cNocopy = '';
-                if(!$RespPlaRut->inf_notcon->sub->cop_notcon){
-                    $cNocopy = 'noselect';
-                }
-
-                //Se recorre las novedades para calcular el key automaticamente
-                foreach ($mNovedades as $key => $data) {
-                    $dataNov[] = $data;
-                }
-
-                //Reemplaza el arreglo de Novedades
-                $mNovedades = $dataNov;
-                
-                $mCanNov = sizeof($mNovedades)-1;
-
-                $j=0;
-                $u=0;
-
-                for ($i = $mCanNov; $i >=0; $i--)
-                {
-                $mSolEfecti = "";
-                if( $mViewUsu->edi_noveda->ind_visibl == 1 && ($mNovedades[$i][tab_origen] == 1 || $_RUTASX[$i][tab_origen] == 2) ){
-                    $mLinkUpd = '
-                    <spam style="color:#416F1E; cursor:pointer"
-                    onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,1)">
-                        [Editar]</spam>&nbsp;';
-
-                    if($_SESSION["datos_usuario"]["cod_usuari"] == 'mgarcia' || $_SESSION["datos_usuario"]["cod_usuari"] == 'soporte') {
-                    $mLinkUpd .= '
-                        <spam style="color:#416F1E; cursor:pointer"
-                        onclick="ActionNovedad(\''.$mNumDespac.'\', \''.$mNovedades[$i][cod_contro].'\', \''.$mNovedades[$i][cod_noveda].'\', \''.$mNovedades[$i][fec_noveda].'\', \''.$mNovedades[$i][cod_consec].'\', \''.$mNovedades[$i][tab_origen].'\', \''.$mNovedades[$i][usr_creaci].'\', this,2)">
-                        [Eliminar]
-                        </spam>';
-                    }
-                }
-                
-                $ori = $mNovedades[$i][tab_origen] == 1 ? 'NC' : 'PC';
-                $mBtnOpePrev = "";
-                if($mNovedades[$i][cod_noveda]=="24"){
-                    $cod_consec = $mNovedades[$i][cod_consec]; 
-   
-                    if(self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, true)){
-                        $informaOpePrev = self::getOperacionPreventiva($mNumDespac, $cod_consec, $ori, false);
-                        $mBtnOpePrev = '
-                        <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
-                        onclick="openPDF(\'' . $informaOpePrev[0]['cod_consec'] . '\')">
-                        [Ver O.P.]
-                        </spam>';
-                    }else{
-                        $mBtnOpePrev = '
-                        <spam style="color:#416F1E; cursor:pointer; margin-right:5px;"
-                        onclick="showFormOperativoPreventivo(\''.$ori.'\', \''.$cod_consec.'\')">
-                        [Reg. O.P.]
-                        </spam>';
-                    }
-                    
-                }
-
-
-
-                if( $_RUTASX[$i][nov_especi] == 1 )
-                {
-                    $mStyle = $j % 2 ? 'cellPar' : 'cellImpar';
-                    $j++;
-                }else
-                    $mStyle = 'cell';
-
-                if($_RUTASX[$i][cod_noveda] != 342)
-                {
-                    $consecutivoProtocolo = $this -> verifyNoveda($_RUTASX[$i][cod_noveda], $mNumDespac, $_RUTASX[$i]['fec_noveda']);   
-
-                    if($consecutivoProtocolo[0][num_consec])
-                    {
-                    if($consecutivoProtocolo[0][ind_solnov] == '' || $consecutivoProtocolo[0][ind_solnov] == 0)
-                    {
-                        $mSolEfecti = "<input type='radio' name='ind_solefe".$i."' onclick='solucionEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> SI <input type='radio' name='ind_solefe".$i."' onclick='solucionNoEfectiva(".$i.", ".$_DESPAC[0][cod_transp].",".$mNovedades[$i][cod_noveda].",".$consecutivoProtocolo[0]['num_consec'].")'> NO ";
-                    }
-                    elseif($consecutivoProtocolo[0][ind_solnov] == 1)
-                        $mSolEfecti = "<label>SI</label>";
-                    }
-                }
-
-                if($mNovedades[$i][ind_reqres]=='1'){
-                    //Si requiere gestion por faro activa el icono de alarma.
-                    if($mNovedades[$i][ind_resfar]=='1' && $mNovedades[$i][cod_soluci]=='0' ){
-                        $mSolEfecti = "<img src='../".CENTRAL."/imagenes/warning-gif.gif' width='15px' height='15px'>";
-                    }else if($mNovedades[$i][cod_soluci] != 0){
-                        $mSolEfecti = "<img src='../".CENTRAL."/imagenes/ver.png' width='15px' height='15px' style='cursor: pointer;' onclick='showInfoSolucion(\"".$mNovedades[$i][cod_consec]."\", \"".$mNovedades[$i][tip_noveda]."\")'>";
-                    }
-                   
-                }
-                
-
-
-
-
-
-                $mHtml->Row();
-
-                    $comp='';
-                
-                    if($mNovedades[$i]['cod_tipoxx']==2 )
-                    { //a?ade class para ocultar o mostrar con js
-                        
-                        //$mHtml->SetBody(('<tr class="nov_gps_notes">'));
-                        $mHtml->RowProperties("",FALSE,'class="nov_gps_notes"');
-                    }
-                    else if($mNovedades[$i]['cod_tipoxx']==1 )
-                    { //a?ade class para ocultar o mostrar con js
-                        if($u== 0){
-                            $comp=' one';
-                            $u++;
-                        }
-                        //$mHtml->SetBody(('<tr class="nov_seguimiento_notes'.$comp.'">'));
-                        $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes '.$comp.'"');
-                    }
-                    else if($mNovedades[$i]['cod_tipoxx']==3 )
-                    {
-                        //$mHtml->SetBody(('<tr class="nov_movil_notes">'));
-                        $mHtml->RowProperties("",FALSE,'class="nov_movil_notes"');
-                    }else{
-                        $mHtml->RowProperties("",FALSE,'class="nov_seguimiento_notes"');
-                    }
-                    
-                    //$mHtml->SetBody( ($i == $mCanNov ? '<tr>' : '<tr class="ocultarTR">') );
-                    $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_sitiox], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
-                    
-
-                    // if para las novedades actualizadas
-
-                    $mUpdated = self::checkNovedaUpd($mNovedades[$i],$mNumDespac); 
-                    if( $mUpdated[0]){
-                        $dataJson = base64_encode(json_encode($mUpdated));
-                        $link = "<a href='#' onclick='drawNovUpd(\"".$dataJson."\")'><u><font color='#000'>".htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true )."</font></u></a>";
-        
-                        $mHtml->Label( $link, array("align"=>"left", "class"=>$mStyle) );
-                    }else{ 
-                        $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][nom_noveda], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"left", "class"=>$mStyle) );
-                    }
-                    $mHtml->Label( utf8_encode($mNovedades[$i][obs_noveda]) , array("align"=>"left", "class"=>$mStyle) );
-                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_noveda].'</b>', array("align"=>"right", "class"=>$mStyle) );
-                    $mHtml->Label( '<b>'.$mNovedades[$i][fec_creaci].'</b>', array("align"=>"right", "class"=>$mStyle) );
-
-                    if ( $mViewNotCon->sub->usr_creaci == '1' ) {
-                        $mHtml->Label( '<b>'.htmlentities($mNovedades[$i][usr_creaci], ENT_COMPAT, 'ISO-8859-1', true ).'</b>', array("align"=>"right", "class"=>$mStyle) );
-                    }
-                    if( $watchAlias == 1 ){ 
-                        $mHtml->Label( '<b>'.self::getAlias($mNovedades[$i][usr_creaci]).'</b>', array("align"=>"right", "class"=>$mStyle) ); 
-                    }
-
-                    // if( $mViewUsu->edi_noveda->ind_visibl == 1 )
-                    $mHtml->Label( $mBtnOpePrev."".$mLinkUpd, array("align"=>"center", "class"=>$mStyle) );
-
-
-                    /*if(  $_SESSION['datos_usuario']['cod_usuari'] == 'soporteIntgps' ){
-                        $mNomTabla = $mNovedades[$i]['cod_consec'] == 1 ? 'tab_despac_noveda' : 'tab_despac_contro';
-                        $infoStatus = self::consultaStatusNovedad($mNumDespac, $mNovedades[$i]['cod_consec'], $mNomTabla );
-                        if($infoStatus==NULL){
-                            $message_status = "Novedad sin registro de transacci?n";
-                        }else{
-                            $message_status = "Mensaje: ".$infoStatus['msj_status']."<br>Fecha: ".$infoStatus['fec_transa']."<br>Cantidad Transacciones: ".$infoStatus['can_transa'];
-                        }
-
-                        $image = $mNovedades[$i][ind_enviad] == 1 ? 'active.png' : 'error.png';
-                        $mHtml->Label( '<b><div class="tooltip-container"><img alt="Icono de estado de enviado" tooltip="true" src="'.URL_STANDA.'images/'.$image.'" width="16px"><span style="max-width:400px !important" class="tooltip-text">'.$message_status.'</span></div></b>', array("align"=>"center", "class"=>$mStyle) );
-                    }*/
-
-                    $mHtml->SetBody( '<td align="right" class="'.$mStyle.'" width="30%" ><b>'.$mSolEfecti.'</b></td>' );
-
-                    if( $viewAlias->ind_novnem->ind_visibl == 1 ){
-                        #verifico si la novedad es movil para pintar el radio de solucion de novedades NEM
-                        if(self::getNovedadNEM($mNovedades[$i]['cod_noveda'])[0])
-                        {
-                        $mHtml->Radio(array("value"=>"1","name" => "ind_novnem", "id" => "ind_novnemID", "class"=>$mStyle, "width" => "100%", "onclick"=>"ValidarProtoNoveda('".$mNovedades[$i]['cod_noveda']."', '".$_DESPAC[0][cod_transp]."')"));
-                        }
-                        else
-                        {
-                            $mHtml->Label( '', array("align"=>"right", "class"=>$mStyle) );
-                        }
-                    }
-                $mHtml->CloseRow();
-                $mHtml->SetBody('</tr>');
-                }
-            }
-       
-
-            $mHtml->CloseTable('tr');
-          $mHtml->CloseDiv();
-        $mHtml->CloseDiv();
-      $mHtml->CloseDiv();
-
-      return $mHtml->MakeHtml();
     }
 
     /*! \fn: checkNovedaUpd
