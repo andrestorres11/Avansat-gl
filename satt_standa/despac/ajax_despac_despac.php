@@ -75,6 +75,9 @@ class AjaxDespac
             case 'notasControDespac':
                 AjaxDespac::getNotasControDespac($paramsJson);
                 break;
+            case 'dataMapaDespac':
+                AjaxDespac::getDataMapaDespac($paramsJson);
+                break;
             default:
                 header('Location: index.php?window=central&cod_servic=1366&menant=1366');
                 //$this->Listar();
@@ -136,7 +139,7 @@ class AjaxDespac
           
         }
 
-        // Paginación
+        // Paginaciï¿½n
         if ($totalRegistros > 0) {
           $totalPaginas = ceil($totalRegistros / $limit);
           $output['totpag'] = $totalPaginas;
@@ -215,7 +218,7 @@ class AjaxDespac
             }
         }
 
-        // Paginación
+        // Paginaciï¿½n
         if ($totalRegistros > 0) {
             $totalPaginas = ceil($totalRegistros / $limit);
             $output['totpag'] = $totalPaginas;
@@ -353,14 +356,14 @@ class AjaxDespac
                 $mHtml .= '<td class="cellInfo1">'.$mData[0]["fec_contro"].' </td>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
-                $mHtml .= '<td class="CellHead">Observación Novedad:</td>';
+                $mHtml .= '<td class="CellHead">Observaciï¿½n Novedad:</td>';
                 $mHtml .= '<td class="cellInfo1">
                             <textarea id="descripcionID" cols="60" rows="6">'.$mData[0]["obs_contro"].'</textarea>
                             <input type="hidden" id="old_descriID" value="'.$mData[0]["obs_contro"].'"/> 
                            </td>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
-                $mHtml .= '<td class="CellHead">Motivo Actualización:</td>';
+                $mHtml .= '<td class="CellHead">Motivo Actualizaciï¿½n:</td>';
                 $mHtml .= '<td class="cellInfo1">
                             <textarea id="obs_motivoID" cols="60" rows="6"></textarea>
                            </td>';
@@ -409,7 +412,7 @@ class AjaxDespac
                 $mHtml .= '<td class="cellInfo1">'.$mData[0]["fec_contro"].' Usuario: '.$mData[0]["usr_creaci"].' </td>';
             $mHtml .= '</tr>';
             $mHtml .= '<tr>';
-                $mHtml .= '<td class="CellHead">Observación Novedad:</td>';
+                $mHtml .= '<td class="CellHead">Observaciï¿½n Novedad:</td>';
                 $mHtml .= '<td class="cellInfo1">'.$mData[0]["obs_contro"].' </td>';
             $mHtml .= '</tr>';
         $mHtml .= '</table></div>';
@@ -1034,6 +1037,20 @@ class AjaxDespac
                   )
               ";
       $consulta = new Consulta($mSql, $this->conexion);
+    }
+
+    public function getDataMapaDespac($paramsJson){
+       
+        $data = [];
+        @include_once( "../despac/DespachosNew.inc" );
+        $listado_prin = new DespachosNew($_REQUEST[cod_servic], 2, $this->cod_aplica, $this->conexion);
+        $mValidaMapa = $listado_prin->validaDivMapas($paramsJson["num_despac"]);
+        
+        if( $mValidaMapa['ind_estado'] == 1){
+            echo $listado_prin->divPaintMapas($mValidaMapa['data']);
+        }else{
+            echo '';
+        }
     }
 }
 //FIN CLASE PROC_DESPAC
